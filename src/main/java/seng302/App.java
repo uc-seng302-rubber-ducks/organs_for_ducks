@@ -1,9 +1,14 @@
 package seng302;
 
-public class App 
+import org.joda.time.DateTime;
+
+import java.util.Date;
+
+public class App
 {
     public static void main( String[] args )
     {
-        System.out.println( "Welcome to SENG302" );
+        Donor d = new Donor("bob", new Date(1,1,2018));
+        System.out.println(d);
     }
 }
