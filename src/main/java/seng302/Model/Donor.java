@@ -3,6 +3,7 @@ package seng302.Model;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashSet;
 import org.joda.time.DateTime;
 
 import java.text.DateFormat;
@@ -27,7 +28,7 @@ public class Donor {
    private String region;
    private DateTime timeCreated;
    private String name;
-   private ArrayList<Organs> organs;
+   private HashSet<Organs> organs;
 
     public Donor(Date dateOfBirth, Date dateOfDeath, String gender, double height, double weight, String bloodType, String currentAddress, String region, DateTime timeCreated, String name) {
         this.dateOfBirth = dateOfBirth;
@@ -131,14 +132,26 @@ public class Donor {
         return timeCreated;
     }
 
-    public ArrayList<Organs> getOrgans() {
+    public HashSet<Organs> getOrgans() {
       return organs;
     }
 
-  public void setOrgans(ArrayList<Organs> organs) {
+    public void setOrgans(HashSet<Organs> organs) {
     this.organs = organs;
-  }
+    }
 
+    public void AddOrgan(Organs organ) {
+      if( organs == null) {
+        organs = new HashSet<>();
+      }
+      this.organs.add(organ);
+    }
+
+    public void RemoveOrgan(Organs organ) {
+      if(organs.contains(organ)) {
+        organs.remove(organ);
+      }
+    }
   @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -167,6 +180,7 @@ public class Donor {
                 ", currentAddress='" + currentAddress + '\'' +
                 ", region='" + region + '\'' +
                 ", timeCreated=" + timeCreated +
+                ", organs="+organs +
                 '}';
     }
 }

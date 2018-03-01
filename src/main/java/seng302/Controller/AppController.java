@@ -6,6 +6,7 @@ import java.util.Date;
 import seng302.Model.Donor;
 import seng302.Model.JsonWriter;
 import seng302.View.ConsoleWriter;
+import seng302.Model.Organs;
 
 public class AppController {
 
@@ -33,9 +34,9 @@ public class AppController {
    * appends a single Donor to the list of donors stored in the controller
    * @param name
    * @param dateOfBirth
-   * @return boolean flag if the operation succeeded
+   * @return hashCode of the new donor or -1 on error
    */
-  public boolean Register(String name, Date dateOfBirth, Date dateOfDeath, String gender, double height, double weight,
+  public int Register(String name, Date dateOfBirth, Date dateOfDeath, String gender, double height, double weight,
       String bloodType, String currentAddress, String region) {
     try {
       Donor newDonor = new Donor(name, dateOfBirth);
@@ -47,27 +48,39 @@ public class AppController {
       newDonor.setCurrentAddress(currentAddress);
       newDonor.setRegion(region);
 
+      if(donors.contains(newDonor)) {
+        return -1;
+      }
       donors.add(newDonor);
-      return true;
+      return newDonor.hashCode();
     }
     catch (Exception e){
 
       //TODO debug writer?
       System.err.println(e.getMessage());
-      return false;
+      return -1;
     }
   }
 
-  public boolean Register(String name, Date dateOfBirth) {
+  /**
+   *
+   * @param name
+   * @param dateOfBirth
+   * @return hashCode of the new donor or -1 on error
+   */
+  public int Register(String name, Date dateOfBirth) {
     try {
       Donor newDonor = new Donor(name, dateOfBirth);
+      if(donors.contains(newDonor)) {
+        return -1;
+      }
       donors.add(newDonor);
-      return true;
+      return newDonor.hashCode();
     }
     catch (Exception e){
       //TODO debug writer?
       System.err.println(e.getMessage());
-      return false;
+      return -1;
     }
   }
 
@@ -110,6 +123,22 @@ public class AppController {
   public ArrayList<Donor> getDonors() {
     return donors;
   }
+
+  /**
+   * finds a single donor by their hashCode (unique id)
+   * @param hashCode
+   * @return Donor corresponding with the hashCode given or null if dne
+   */
+  public Donor getDonor(int hashCode) {
+    for(Donor donor : donors) {
+      if (donor.hashCode() == hashCode) {
+        return donor;
+      }
+    }
+    return null;
+  }
+
+
 
   public void setDonors(ArrayList<Donor> donors) {
     this.donors = donors;
