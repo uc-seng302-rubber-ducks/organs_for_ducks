@@ -207,11 +207,9 @@ public class ConsoleWriter {
     String input;
     Scanner sc = new Scanner(System.in);
     AppController controller = AppController.getInstance();
-    try {
+
       controller.setDonors(JsonReader.importJsonDonors());
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
+
     while(true) {
       input = sc.next();
       switch(input) {

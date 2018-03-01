@@ -29,14 +29,11 @@ public class App
             e.printStackTrace();
 
         }
-        try{
+
             ArrayList<Donor> donors;
             donors = JsonReader.importJsonDonors();
             for (Donor da : donors){
                 System.out.println(da);
             }
-        } catch (IOException e){
-            e.printStackTrace();
-        }
     }
 }
