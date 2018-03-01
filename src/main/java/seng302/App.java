@@ -6,8 +6,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import seng302.Model.Donor;
+import seng302.Model.JsonReader;
+import seng302.Model.JsonWriter;
 
-import static seng302.JsonReader.importJsonDonors;
 
 public class App
 {

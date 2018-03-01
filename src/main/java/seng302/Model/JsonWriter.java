@@ -1,7 +1,8 @@
-package seng302;
+package seng302.Model;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import seng302.Directory;
 
 import java.io.File;
 import java.io.FileOutputStream;

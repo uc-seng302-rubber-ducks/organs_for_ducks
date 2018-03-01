@@ -1,10 +1,11 @@
-package seng302;
+package seng302.Model;
 
 import org.joda.time.DateTime;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import seng302.Directory;
 
 import java.io.File;
 import java.io.FileReader;
