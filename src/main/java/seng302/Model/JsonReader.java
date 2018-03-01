@@ -15,8 +15,20 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+/**
+ * Class for reading from JSON file containing application data.
+ *
+ * @author Josh Burt
+ */
 public final class JsonReader {
 
+
+    /**
+     * Reads from the specified file and reads in a the JSON file containing the files. Should be called on startup
+     *
+     * @return List of donors present in the application during the last session
+     * @throws IOException thrown when file is not found or cannot be read.
+     */
     public static ArrayList<Donor> importJsonDonors() throws IOException{
         ArrayList<Donor> donorsIn = new ArrayList<>();
         File inFile = new File(Directory.JSON.directory()+"/donors.json");

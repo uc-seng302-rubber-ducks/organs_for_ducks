@@ -14,9 +14,21 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
+/**
+ * Class for writing to a JSON file to allow data persistence.
+ *
+ * @author Josh Burt
+ */
 public final class JsonWriter {
 
-
+    /**
+     * Method for saving in the list of donors at the end of a session. Should be called before closing the application.
+     *
+     * Takes an Arraylist of the donors present in the current session and saves them to a hidden folder on the user profile.
+     * Stores them as a JSON object. Any previous JSON files that exist at the current directory are overwritten.
+     * @param donors list of donors maintained by the application
+     * @throws IOException Caused by the system being unable to write to the specified file
+     */
     public static void saveCurrentDonorState(ArrayList<Donor> donors) throws IOException {
         Files.createDirectories(Paths.get(Directory.JSON.directory()));
         System.out.println("Created Directories:" + Directory.JSON.directory());
