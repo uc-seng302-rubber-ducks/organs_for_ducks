@@ -1,11 +1,14 @@
 package seng302.View;
 
 import java.io.Console;
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Scanner;
 import seng302.Controller.AppController;
+import seng302.Model.JsonReader;
+import seng302.Model.JsonWriter;
 
 public class ConsoleWriter {
 
@@ -69,10 +72,20 @@ public class ConsoleWriter {
     String input;
     Scanner sc = new Scanner(System.in);
     AppController controller = AppController.getInstance();
+    try {
+      controller.setDonors(JsonReader.importJsonDonors());
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
     while(true) {
       input = sc.next();
       switch(input) {
         case "quit":
+          try {
+            JsonWriter.saveCurrentDonorState(controller.getDonors());
+          } catch (IOException e) {
+            e.printStackTrace();
+          }
           System.exit(0);
         case "register":
           System.out.println("Do you wish to do a full sign-up or simple? (true for full)");

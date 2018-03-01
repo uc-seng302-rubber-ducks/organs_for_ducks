@@ -24,6 +24,8 @@ public class AppController {
     return controller;
   }
 
+
+
   /**
    * appends a single Donor to the list of donors stored in the controller
    * @param name
@@ -46,6 +48,7 @@ public class AppController {
       return true;
     }
     catch (Exception e){
+
       //TODO debug writer?
       System.err.println(e.getMessage());
       return false;
@@ -67,5 +70,9 @@ public class AppController {
 
   public ArrayList<Donor> getDonors() {
     return donors;
+  }
+
+  public void setDonors(ArrayList<Donor> donors) {
+    this.donors = donors;
   }
 }
