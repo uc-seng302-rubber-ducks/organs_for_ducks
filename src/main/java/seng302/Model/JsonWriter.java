@@ -31,7 +31,7 @@ public final class JsonWriter {
      */
     public static void saveCurrentDonorState(ArrayList<Donor> donors) throws IOException {
         Files.createDirectories(Paths.get(Directory.JSON.directory()));
-        System.out.println("Created Directories:" + Directory.JSON.directory());
+        //System.out.println("Created Directories:" + Directory.JSON.directory());
         File outFile = new File(Directory.JSON.directory()+"/donors.json");
 
         if (outFile.exists()){

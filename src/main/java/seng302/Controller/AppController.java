@@ -1,8 +1,11 @@
 package seng302.Controller;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import seng302.Model.Donor;
+import seng302.Model.JsonWriter;
+import seng302.View.ConsoleWriter;
 
 public class AppController {
 
@@ -66,6 +69,42 @@ public class AppController {
       System.err.println(e.getMessage());
       return false;
     }
+  }
+
+  /**
+   * Takes a donors name and dob, finds the donor in the session list and returns them.
+   *
+   * @param name Name of the donor
+   * @param dob date of birth of the donor
+   */
+  public Donor findDonor(String name, Date dob){
+    Donor check = null;
+    Donor testDonor = new Donor(name, dob); //creates temporary Donor to check against the donor list
+    ArrayList<Donor> sessionList = getDonors();
+    int place = sessionList.indexOf(testDonor);
+    if (place != -1){
+        return sessionList.get(place);
+    } else{
+        return check;
+    }
+  }
+
+
+    /**
+     * takes a passed donor and removes them from the maintained list of donors
+     *
+     * @param donor donor to remove
+     */
+  public void deleteDonor(Donor donor){
+      ArrayList<Donor> sessionList = getDonors();
+      sessionList.remove(donor);
+      setDonors(sessionList);
+      try {
+          JsonWriter.saveCurrentDonorState(sessionList);
+      } catch (IOException e) {
+          e.printStackTrace();
+      }
+
   }
 
   public ArrayList<Donor> getDonors() {

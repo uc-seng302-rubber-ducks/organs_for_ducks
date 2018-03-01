@@ -7,6 +7,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Scanner;
 import seng302.Controller.AppController;
+import seng302.Model.Donor;
 import seng302.Model.JsonReader;
 import seng302.Model.JsonWriter;
 
@@ -67,6 +68,36 @@ public class ConsoleWriter {
     return date;
   }
 
+  public static void delete(AppController controller, Scanner sc){
+      System.out.println("Please enter the name of the person you wish to delete");
+      String name = sc.next();
+      System.out.println("and the date of birth(dd/mm/yyy)");
+      String dobStr = sc.next();
+      Date dob = readDate(dobStr);
+      Donor toDelete = controller.findDonor(name, dob);
+      if (toDelete == null){
+          System.out.println("The Donor could not be found please try again");
+      } else {
+          System.out.println("Is this the donor you wish to delete:/n" + toDelete.toString());
+          boolean acceptable = false;
+          while(!acceptable) {
+              System.out.println("Please enter (y/n)");
+              String reponse = sc.next();
+              if(reponse.equalsIgnoreCase("y")){
+                  controller.deleteDonor(toDelete);
+                  acceptable = true;
+                  System.out.println("Donor " + toDelete.getName()+ " has been deleted");
+              }else if (reponse.equalsIgnoreCase("n")){
+                  System.out.println("Donor has not been removed");
+                  acceptable = true;
+              } else {
+                  System.out.println("Response was invalid please enter a valid response");
+              }
+          }
+
+      }
+  }
+
   public static void main( String[] args ){
     System.out.println("Welcome to the CLI");
     String input;
@@ -92,8 +123,11 @@ public class ConsoleWriter {
           boolean full = sc.nextBoolean();
           register(controller, sc, full);
           break;
+          case "delete":
+             delete(controller, sc);
+              break;
 
-        default:
+          default:
           System.out.println("Cannot find command: "+input+"\n Please check your spelling");
       }
     }
