@@ -8,6 +8,7 @@ import org.json.simple.parser.ParseException;
 import seng302.Directory;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.text.DateFormat;
@@ -27,15 +28,11 @@ public final class JsonReader {
      * Reads from the specified file and reads in a the JSON file containing the files. Should be called on startup
      *
      * @return List of donors present in the application during the last session
-     * @throws IOException thrown when file is not found or cannot be read.
      */
-    public static ArrayList<Donor> importJsonDonors() throws IOException{
+    public static ArrayList<Donor> importJsonDonors() {
         ArrayList<Donor> donorsIn = new ArrayList<>();
         File inFile = new File(Directory.JSON.directory()+"/donors.json");
         DateFormat dateFormat = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzzz yyyy");
-        if(!inFile.exists()) {
-            throw new IOException("File does not exist");
-        }
         JSONParser parser = new JSONParser();
         try {
             JSONArray a = (JSONArray) parser.parse(new FileReader(inFile));
@@ -64,6 +61,10 @@ public final class JsonReader {
             System.out.println("Parsing error please ensure that file is a correctly formatted JSON file. Nothing has been imported");
             e.printStackTrace();
         } catch (java.text.ParseException e) {
+            e.printStackTrace();
+        } catch (FileNotFoundException e) {
+            System.out.println("No previous user data has been found. Initiating blank session");
+        } catch (IOException e) {
             e.printStackTrace();
         }
         return donorsIn;
