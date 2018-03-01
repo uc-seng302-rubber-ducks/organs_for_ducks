@@ -13,9 +13,9 @@ public final class JsonWriter {
 
 
     public static void saveCurrentDonorState(ArrayList<Donor> donors) throws IOException {
-        Files.createDirectories(Paths.get(String.valueOf(Directory.JSON)));
-        System.out.println("Created Directories:" + String.valueOf(Directory.JSON));
-        File outFile = new File(Directory.JSON+"donors.json"); //#TODO: change to absolute file paths and create hidden folder for user data
+        Files.createDirectories(Paths.get(Directory.JSON.directory()));
+        System.out.println("Created Directories:" + Directory.JSON.directory());
+        File outFile = new File(Directory.JSON.directory()+"/donors.json"); //#TODO: change to absolute file paths and create hidden folder for user data
         if (outFile.exists()){
             outFile.delete(); //purge old data before writing new data in
         }

@@ -13,9 +13,11 @@ public class App
         System.out.println(d);
         ArrayList<Donor> ds = new ArrayList<Donor>();
         ds.add(d);
+        ds.add(d);
 
         try {
             JsonWriter.saveCurrentDonorState(ds);
+            System.out.println("file successfully created");
         } catch (IOException e) {
             e.printStackTrace();
 
