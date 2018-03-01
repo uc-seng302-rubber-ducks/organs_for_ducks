@@ -2,6 +2,7 @@ package seng302;
 
 import org.joda.time.DateTime;
 
+import java.text.DateFormat;
 import java.util.Date;
 import java.util.Objects;
 
@@ -24,6 +25,23 @@ public class Donor {
    private DateTime timeCreated;
    private String name;
 
+    public Donor(Date dateOfBirth, Date dateOfDeath, String gender, double height, double weight, String bloodType, String currentAddress, String region, DateTime timeCreated, String name) {
+        this.dateOfBirth = dateOfBirth;
+        this.dateOfDeath = dateOfDeath;
+        this.gender = gender;
+        this.height = height;
+        this.weight = weight;
+        this.bloodType = bloodType;
+        this.currentAddress = currentAddress;
+        this.region = region;
+        if (timeCreated == null){
+            this.timeCreated = DateTime.now();
+        } else {
+            this.timeCreated = timeCreated;
+        }
+
+        this.name = name;
+    }
 
     public Donor(String name, Date dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
