@@ -5,6 +5,7 @@ import java.io.IOException;
 
 import java.util.ArrayList;
 import java.util.Date;
+import seng302.Model.Donor;
 
 import static seng302.JsonReader.importJsonDonors;
 

@@ -1,5 +1,6 @@
-package seng302;
+package seng302.Model;
 
+import java.util.ArrayList;
 import org.joda.time.DateTime;
 
 import java.text.DateFormat;
@@ -24,6 +25,7 @@ public class Donor {
    private String region;
    private DateTime timeCreated;
    private String name;
+   private ArrayList<Organs> organs;
 
     public Donor(Date dateOfBirth, Date dateOfDeath, String gender, double height, double weight, String bloodType, String currentAddress, String region, DateTime timeCreated, String name) {
         this.dateOfBirth = dateOfBirth;
@@ -127,7 +129,15 @@ public class Donor {
         return timeCreated;
     }
 
-    @Override
+    public ArrayList<Organs> getOrgans() {
+      return organs;
+    }
+
+  public void setOrgans(ArrayList<Organs> organs) {
+    this.organs = organs;
+  }
+
+  @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
