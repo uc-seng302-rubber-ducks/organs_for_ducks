@@ -1,6 +1,7 @@
 package seng302.Model;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import org.joda.time.DateTime;
 
 import java.util.Date;
@@ -24,7 +25,7 @@ public class Donor {
    private String region;
    private DateTime timeCreated;
    private String name;
-   private ArrayList<Organs> organs;
+   private HashSet<Organs> organs;
 
 
     public Donor(String name, Date dateOfBirth) {
@@ -111,14 +112,26 @@ public class Donor {
         return timeCreated;
     }
 
-    public ArrayList<Organs> getOrgans() {
+    public HashSet<Organs> getOrgans() {
       return organs;
     }
 
-  public void setOrgans(ArrayList<Organs> organs) {
+    public void setOrgans(HashSet<Organs> organs) {
     this.organs = organs;
-  }
+    }
 
+    public void AddOrgan(Organs organ) {
+      if( organs == null) {
+        organs = new HashSet<>();
+      }
+      this.organs.add(organ);
+    }
+
+    public void RemoveOrgan(Organs organ) {
+      if(organs.contains(organ)) {
+        organs.remove(organ);
+      }
+    }
   @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -147,6 +160,7 @@ public class Donor {
                 ", currentAddress='" + currentAddress + '\'' +
                 ", region='" + region + '\'' +
                 ", timeCreated=" + timeCreated +
+                ", organs="+organs +
                 '}';
     }
 }

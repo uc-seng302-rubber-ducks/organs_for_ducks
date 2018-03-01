@@ -3,13 +3,16 @@ package seng302.View;
 import java.io.Console;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Scanner;
 import seng302.Controller.AppController;
+import seng302.Model.Donor;
+import seng302.Model.Organs;
 
 public class ConsoleWriter {
 
-  private static boolean register(AppController controller, Scanner sc, Boolean fullInfo) {
+  private static int register(AppController controller, Scanner sc, Boolean fullInfo) {
 
     System.out.println("Please enter a name");
     String name = sc.next();
@@ -43,12 +46,63 @@ public class ConsoleWriter {
         System.out.println("Please enter a region");
         region = sc.next();
       }
-      boolean response = controller.Register(name, dateOfBirth, dateOfDeath, gender, height,
+      int response = controller.Register(name, dateOfBirth, dateOfDeath, gender, height,
           weight, bloodType, currentAddress, region);
       return response;
     }
-    boolean response = controller.Register(name, dateOfBirth);
+    int response = controller.Register(name, dateOfBirth);
     return response;
+  }
+
+  private static boolean addOrgans(Scanner sc, Donor donor) {
+    System.out.println("Please enter which organs you want to donate");
+    System.out.println("list the entries separated by commas");
+    System.out.println("e.g. intestine, bone marrow");
+    sc.nextLine();
+    String input = sc.nextLine();
+    String[] organList = input.split(",");
+    for(String item: organList) {
+      switch(item.toLowerCase()) {
+        case "intestine":
+          donor.AddOrgan(Organs.INTESTINE);
+          break;
+        case "cornea":
+          donor.AddOrgan(Organs.CORNEA);
+          break;
+        case "liver":
+          donor.AddOrgan(Organs.LIVER);
+          break;
+        case "kidney":
+          donor.AddOrgan(Organs.KIDNEY);
+          break;
+        case "skin":
+          donor.AddOrgan(Organs.SKIN);
+          break;
+        case "connective tissue":
+          donor.AddOrgan(Organs.CONNECTIVE_TISSUE);
+          break;
+        case "pancreas":
+          donor.AddOrgan(Organs.PANCREAS);
+          break;
+        case "heart":
+          donor.AddOrgan(Organs.HEART);
+          break;
+        case "lung":
+          donor.AddOrgan(Organs.LUNG);
+          break;
+        case "middle ear":
+          donor.AddOrgan(Organs.MIDDLE_EAR);
+          break;
+        case "bone marrow":
+          donor.AddOrgan(Organs.BONE_MARROW);
+          break;
+        default:
+          System.out.println("Organ "+item.toLowerCase() +" not recognised");
+      }
+    }
+
+    return true;
+
   }
 
   private static Date readDate(String rawDate) {
@@ -77,9 +131,26 @@ public class ConsoleWriter {
         case "register":
           System.out.println("Do you wish to do a full sign-up or simple? (true for full)");
           boolean full = sc.nextBoolean();
-          register(controller, sc, full);
+          int code = register(controller, sc, full);
+          if (code == -1) {
+            System.out.println("Donor already exists");
+            break;
+          }
+          System.out.println("Donor registered with unique id: "+code);
+          addOrgans(sc, controller.getDonor(code));
           break;
 
+        case "view":
+          System.out.println("Please enter the unique id of the donor you wish to view");
+          System.out.println("all for all donors");
+          input = sc.next();
+          if(input.equals("all")) {
+            System.out.println(controller.getDonors());
+          } else {
+            code = Integer.parseInt(input);
+            System.out.println(controller.getDonor(code));
+          }
+          break;
         default:
           System.out.println("Cannot find command: "+input+"\n Please check your spelling");
       }
