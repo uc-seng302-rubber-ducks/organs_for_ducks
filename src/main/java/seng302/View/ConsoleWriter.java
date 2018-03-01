@@ -57,7 +57,7 @@ public class ConsoleWriter {
   private static boolean addOrgans(Scanner sc, Donor donor) {
     System.out.println("Please enter which organs you want to donate");
     System.out.println("list the entries separated by commas");
-    System.out.println("e.g. intestine, bone marrow");
+    System.out.println("e.g. intestine,bone marrow,liver");
     sc.nextLine();
     String input = sc.nextLine();
     String[] organList = input.split(",");
@@ -103,6 +103,56 @@ public class ConsoleWriter {
 
     return true;
 
+  }
+
+  private static boolean removeOrgans(Scanner sc, Donor donor) {
+    System.out.println("These organs are currently listed for donation:");
+    System.out.println(donor.getOrgans());
+    System.out.println("Which organs are no longer available?");
+    System.out.println("(e.g. Kidney,Bone marrow,heart)");
+    sc.nextLine();
+    String input = sc.nextLine();
+    String[] organList = input.split(",");
+    for (String item : organList) {
+      switch (item.toLowerCase()) {
+        case "intestine":
+          donor.RemoveOrgan(Organs.INTESTINE);
+          break;
+        case "cornea":
+          donor.RemoveOrgan(Organs.CORNEA);
+          break;
+        case "liver":
+          donor.RemoveOrgan(Organs.LIVER);
+          break;
+        case "kidney":
+          donor.RemoveOrgan(Organs.KIDNEY);
+          break;
+        case "skin":
+          donor.RemoveOrgan(Organs.SKIN);
+          break;
+        case "connective tissue":
+          donor.RemoveOrgan(Organs.CONNECTIVE_TISSUE);
+          break;
+        case "pancreas":
+          donor.RemoveOrgan(Organs.PANCREAS);
+          break;
+        case "heart":
+          donor.RemoveOrgan(Organs.HEART);
+          break;
+        case "lung":
+          donor.RemoveOrgan(Organs.LUNG);
+          break;
+        case "middle ear":
+          donor.RemoveOrgan(Organs.MIDDLE_EAR);
+          break;
+        case "bone marrow":
+          donor.RemoveOrgan(Organs.BONE_MARROW);
+          break;
+        default:
+          System.out.println("Organ " + item.toLowerCase() + " not recognised");
+      }
+    }
+    return true;
   }
 
   private static Date readDate(String rawDate) {
@@ -151,6 +201,26 @@ public class ConsoleWriter {
             System.out.println(controller.getDonor(code));
           }
           break;
+
+        case "update":
+          System.out.println("Which donor do you want to update? (enter their unique code)");
+          input = sc.next();
+          if(input.equals("")){
+            break;
+          }
+          code = Integer.parseInt(input);
+          Donor donor = controller.getDonor(code);
+          System.out.println("Do you want to add or remove organs to be donated?");
+          System.out.println("(Add/Remove)");
+          input = sc.next();
+          if(input.equals("add")) {
+            addOrgans(sc, donor);
+          }
+          else if (input.equals("remove")) {
+            removeOrgans(sc, donor);
+          }
+          break;
+
         default:
           System.out.println("Cannot find command: "+input+"\n Please check your spelling");
       }
