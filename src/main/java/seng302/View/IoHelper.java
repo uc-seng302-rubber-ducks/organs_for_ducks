@@ -5,6 +5,14 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class IoHelper {
+
+  /**
+   * tries to convert a string to a date
+   * requires format yyyy-MM-dd
+   * writes to System.err on failure
+   * @param rawDate
+   * @return Date or null
+   */
   public static Date readDate(String rawDate) {
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
     Date date;

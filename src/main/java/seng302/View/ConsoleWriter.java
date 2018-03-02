@@ -31,7 +31,6 @@ public class ConsoleWriter {
       Date dateOfDeath = readDate(rawDate);
 
       System.out.println("Please enter a gender");
-      //TODO enforce some kind of format (m/f)
       String gender = sc.next();
 
       System.out.println("Please enter a height in m (e.g. 1.85)");
