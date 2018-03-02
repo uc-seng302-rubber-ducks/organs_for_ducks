@@ -56,55 +56,19 @@ public class ConsoleWriter {
     return response;
   }
 
-  private static boolean addOrgans(Scanner sc, Donor donor) {
+
+  private static boolean addOrgans(Scanner sc, Donor donor){
     System.out.println("Please enter which organs you want to donate");
     System.out.println("list the entries separated by commas");
     System.out.println("e.g. intestine,bone marrow,liver");
     sc.nextLine();
     String input = sc.nextLine();
     String[] organList = input.split(",");
-    for(String item: organList) {
-      switch(item.toLowerCase()) {
-        case "intestine":
-          donor.addOrgan(Organs.INTESTINE);
-          break;
-        case "cornea":
-          donor.addOrgan(Organs.CORNEA);
-          break;
-        case "liver":
-          donor.addOrgan(Organs.LIVER);
-          break;
-        case "kidney":
-          donor.addOrgan(Organs.KIDNEY);
-          break;
-        case "skin":
-          donor.addOrgan(Organs.SKIN);
-          break;
-        case "connective tissue":
-          donor.addOrgan(Organs.CONNECTIVE_TISSUE);
-          break;
-        case "pancreas":
-          donor.addOrgan(Organs.PANCREAS);
-          break;
-        case "heart":
-          donor.addOrgan(Organs.HEART);
-          break;
-        case "lung":
-          donor.addOrgan(Organs.LUNG);
-          break;
-        case "middle ear":
-          donor.addOrgan(Organs.MIDDLE_EAR);
-          break;
-        case "bone marrow":
-          donor.addOrgan(Organs.BONE_MARROW);
-          break;
-        default:
-          System.out.println("Organ "+item.toLowerCase() +" not recognised");
-      }
+    for(String o : organList){
+      donor.addOrgan(Organs.valueOf(o.toUpperCase()));
     }
 
     return true;
-
   }
 
   private static boolean removeOrgans(Scanner sc, Donor donor) {
@@ -116,43 +80,7 @@ public class ConsoleWriter {
     String input = sc.nextLine();
     String[] organList = input.split(",");
     for (String item : organList) {
-      switch (item.toLowerCase()) {
-        case "intestine":
-          donor.removeOrgan(Organs.INTESTINE);
-          break;
-        case "cornea":
-          donor.removeOrgan(Organs.CORNEA);
-          break;
-        case "liver":
-          donor.removeOrgan(Organs.LIVER);
-          break;
-        case "kidney":
-          donor.removeOrgan(Organs.KIDNEY);
-          break;
-        case "skin":
-          donor.removeOrgan(Organs.SKIN);
-          break;
-        case "connective tissue":
-          donor.removeOrgan(Organs.CONNECTIVE_TISSUE);
-          break;
-        case "pancreas":
-          donor.removeOrgan(Organs.PANCREAS);
-          break;
-        case "heart":
-          donor.removeOrgan(Organs.HEART);
-          break;
-        case "lung":
-          donor.removeOrgan(Organs.LUNG);
-          break;
-        case "middle ear":
-          donor.removeOrgan(Organs.MIDDLE_EAR);
-          break;
-        case "bone marrow":
-          donor.removeOrgan(Organs.BONE_MARROW);
-          break;
-        default:
-          System.out.println("Organ " + item.toLowerCase() + " not recognised");
-      }
+      donor.removeOrgan(Organs.valueOf(item.toUpperCase()));
     }
     return true;
   }
