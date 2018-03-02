@@ -29,8 +29,9 @@ public class Donor {
    private DateTime timeCreated;
    private String name;
    private HashSet<Organs> organs;
+   private DateTime lastModified;
 
-    public Donor(Date dateOfBirth, Date dateOfDeath, String gender, double height, double weight, String bloodType, String currentAddress, String region, DateTime timeCreated, String name) {
+    public Donor(Date dateOfBirth, Date dateOfDeath, String gender, double height, double weight, String bloodType, String currentAddress, String region, DateTime timeCreated, String name, DateTime lastModified) {
         this.dateOfBirth = dateOfBirth;
         this.dateOfDeath = dateOfDeath;
         this.gender = gender;
@@ -46,21 +47,36 @@ public class Donor {
         }
 
         this.name = name;
+        if (lastModified == null) {
+            this.lastModified = DateTime.now();
+        } else {
+            this.lastModified = lastModified;
+        }
     }
 
     public Donor(String name, Date dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
         this.name = name;
         timeCreated = DateTime.now();
+        lastModified = DateTime.now();
     }
 
+    /**
+     * Utility function to update the last modified timestamp when a change is made to a donor.
+     * Can be changed later to allow writing to the JSON change log latter
+     */
+    public void updateLastModified(){
+        lastModified = DateTime.now();
+    }
 
+    public DateTime getLastModified(){return lastModified;}
 
     public String getName() {
         return name;
     }
 
     public void setName(String name) {
+        updateLastModified();
         this.name = name;
     }
 
@@ -69,6 +85,7 @@ public class Donor {
     }
 
     public void setDateOfBirth(Date dateOfBirth) {
+        updateLastModified();
         this.dateOfBirth = dateOfBirth;
     }
 
@@ -77,6 +94,7 @@ public class Donor {
     }
 
     public void setDateOfDeath(Date dateOfDeath) {
+        updateLastModified();
         this.dateOfDeath = dateOfDeath;
     }
 
@@ -85,6 +103,7 @@ public class Donor {
     }
 
     public void setGender(String gender) {
+        updateLastModified();
         this.gender = gender;
     }
 
@@ -93,14 +112,17 @@ public class Donor {
     }
 
     public void setHeight(double height) {
+        updateLastModified();
         this.height = height;
     }
 
     public double getWeight() {
+        updateLastModified();
         return weight;
     }
 
     public void setWeight(double weight) {
+        updateLastModified();
         this.weight = weight;
     }
 
@@ -109,6 +131,7 @@ public class Donor {
     }
 
     public void setBloodType(String bloodType) {
+        updateLastModified();
         this.bloodType = bloodType;
     }
 
@@ -117,6 +140,7 @@ public class Donor {
     }
 
     public void setCurrentAddress(String currentAddress) {
+        updateLastModified();
         this.currentAddress = currentAddress;
     }
 
@@ -125,6 +149,7 @@ public class Donor {
     }
 
     public void setRegion(String region) {
+        updateLastModified();
         this.region = region;
     }
 
@@ -137,17 +162,19 @@ public class Donor {
     }
 
     public void setOrgans(HashSet<Organs> organs) {
-    this.organs = organs;
+        updateLastModified();
+        this.organs = organs;
     }
 
-    public void AddOrgan(Organs organ) {
+    public void addOrgan(Organs organ) {
+        updateLastModified();
       if( organs == null) {
         organs = new HashSet<>();
       }
       this.organs.add(organ);
     }
 
-    public void RemoveOrgan(Organs organ) {
+    public void removeOrgan(Organs organ) {
       if(organs.contains(organ)) {
         organs.remove(organ);
       }
@@ -157,8 +184,7 @@ public class Donor {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Donor donor = (Donor) o;
-        return Objects.equals(dateOfBirth, donor.dateOfBirth) &&
-                Objects.equals(name, donor.name);
+        return Objects.equals(dateOfBirth, donor.dateOfBirth) && name.equalsIgnoreCase(donor.name);
     }
 
     @Override
@@ -173,12 +199,13 @@ public class Donor {
                 "\ndate Of Birth: " + dateOfBirth +
                 "\ndate Of Death :" + dateOfDeath +
                 "\ngender: " + gender +
-                "\nheight=" + height +
-                "\nweight=" + weight +
-                "\nbloodType='" + bloodType + '\'' +
-                "\ncurrentAddress='" + currentAddress + '\'' +
-                "\nregion='" + region + '\'' +
-                "\norgans="+organs +
-                "\ntimeCreated=" + timeCreated ;
+                "\nheight: " + height +
+                "\nweight: " + weight +
+                "\nblood Type: '" + bloodType + '\'' +
+                "\ncurrent Address: '" + currentAddress + '\'' +
+                "\nregion: '" + region + '\'' +
+                "\norgans: "+organs +
+                "\ntime Created: " + timeCreated +
+                "\nlast modified: " + lastModified;
     }
 }

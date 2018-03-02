@@ -1,6 +1,5 @@
 package seng302.View;
 
-import java.io.Console;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -10,7 +9,6 @@ import java.util.Scanner;
 import seng302.Controller.AppController;
 import seng302.Model.Donor;
 import seng302.Model.Organs;
-import seng302.Model.Donor;
 import seng302.Model.JsonReader;
 import seng302.Model.JsonWriter;
 
@@ -68,37 +66,37 @@ public class ConsoleWriter {
     for(String item: organList) {
       switch(item.toLowerCase()) {
         case "intestine":
-          donor.AddOrgan(Organs.INTESTINE);
+          donor.addOrgan(Organs.INTESTINE);
           break;
         case "cornea":
-          donor.AddOrgan(Organs.CORNEA);
+          donor.addOrgan(Organs.CORNEA);
           break;
         case "liver":
-          donor.AddOrgan(Organs.LIVER);
+          donor.addOrgan(Organs.LIVER);
           break;
         case "kidney":
-          donor.AddOrgan(Organs.KIDNEY);
+          donor.addOrgan(Organs.KIDNEY);
           break;
         case "skin":
-          donor.AddOrgan(Organs.SKIN);
+          donor.addOrgan(Organs.SKIN);
           break;
         case "connective tissue":
-          donor.AddOrgan(Organs.CONNECTIVE_TISSUE);
+          donor.addOrgan(Organs.CONNECTIVE_TISSUE);
           break;
         case "pancreas":
-          donor.AddOrgan(Organs.PANCREAS);
+          donor.addOrgan(Organs.PANCREAS);
           break;
         case "heart":
-          donor.AddOrgan(Organs.HEART);
+          donor.addOrgan(Organs.HEART);
           break;
         case "lung":
-          donor.AddOrgan(Organs.LUNG);
+          donor.addOrgan(Organs.LUNG);
           break;
         case "middle ear":
-          donor.AddOrgan(Organs.MIDDLE_EAR);
+          donor.addOrgan(Organs.MIDDLE_EAR);
           break;
         case "bone marrow":
-          donor.AddOrgan(Organs.BONE_MARROW);
+          donor.addOrgan(Organs.BONE_MARROW);
           break;
         default:
           System.out.println("Organ "+item.toLowerCase() +" not recognised");
@@ -120,37 +118,37 @@ public class ConsoleWriter {
     for (String item : organList) {
       switch (item.toLowerCase()) {
         case "intestine":
-          donor.RemoveOrgan(Organs.INTESTINE);
+          donor.removeOrgan(Organs.INTESTINE);
           break;
         case "cornea":
-          donor.RemoveOrgan(Organs.CORNEA);
+          donor.removeOrgan(Organs.CORNEA);
           break;
         case "liver":
-          donor.RemoveOrgan(Organs.LIVER);
+          donor.removeOrgan(Organs.LIVER);
           break;
         case "kidney":
-          donor.RemoveOrgan(Organs.KIDNEY);
+          donor.removeOrgan(Organs.KIDNEY);
           break;
         case "skin":
-          donor.RemoveOrgan(Organs.SKIN);
+          donor.removeOrgan(Organs.SKIN);
           break;
         case "connective tissue":
-          donor.RemoveOrgan(Organs.CONNECTIVE_TISSUE);
+          donor.removeOrgan(Organs.CONNECTIVE_TISSUE);
           break;
         case "pancreas":
-          donor.RemoveOrgan(Organs.PANCREAS);
+          donor.removeOrgan(Organs.PANCREAS);
           break;
         case "heart":
-          donor.RemoveOrgan(Organs.HEART);
+          donor.removeOrgan(Organs.HEART);
           break;
         case "lung":
-          donor.RemoveOrgan(Organs.LUNG);
+          donor.removeOrgan(Organs.LUNG);
           break;
         case "middle ear":
-          donor.RemoveOrgan(Organs.MIDDLE_EAR);
+          donor.removeOrgan(Organs.MIDDLE_EAR);
           break;
         case "bone marrow":
-          donor.RemoveOrgan(Organs.BONE_MARROW);
+          donor.removeOrgan(Organs.BONE_MARROW);
           break;
         default:
           System.out.println("Organ " + item.toLowerCase() + " not recognised");

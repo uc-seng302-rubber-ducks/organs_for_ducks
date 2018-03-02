@@ -13,6 +13,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashSet;
 
 /**
  * Class for writing to a JSON file to allow data persistence.
@@ -60,6 +61,14 @@ public final class JsonWriter {
             j.put("Current Address", d.getCurrentAddress());
             j.put("Region", d.getRegion());
             j.put("Time Created", d.getTimeCreated().toString());
+            j.put("Last Modified", d.getLastModified().toString());
+            JSONArray organs = new JSONArray();
+            HashSet<Organs> organsDonating = d.getOrgans();
+            for (Organs o: organsDonating) {
+                organs.add(o.toString());
+            }
+            j.put("Organs", organs);
+
             outerJSON.add(j);
         }
         outFileStream.write(outerJSON.toJSONString().getBytes());
