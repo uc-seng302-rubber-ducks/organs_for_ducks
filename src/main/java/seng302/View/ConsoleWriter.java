@@ -220,7 +220,7 @@ public class ConsoleWriter {
             e.printStackTrace();
           }
           System.exit(0);
-        case "register":
+        case "Register":
           System.out.println("Do you wish to do a full sign-up or simple? (true for full)");
           boolean full = sc.nextBoolean();
           int code = register(controller, sc, full);
