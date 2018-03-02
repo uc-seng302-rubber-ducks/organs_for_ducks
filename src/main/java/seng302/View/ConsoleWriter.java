@@ -237,7 +237,10 @@ public class ConsoleWriter {
           System.out.println("all for all donors");
           input = sc.next();
           if(input.equals("all")) {
-            System.out.println(controller.getDonors());
+            ArrayList<Donor> allDonors = controller.getDonors();
+            for (Donor d : allDonors) {
+              System.out.println(d);
+            }
           } else {
             code = Integer.parseInt(input);
             System.out.println(controller.getDonor(code));

@@ -169,18 +169,16 @@ public class Donor {
 
     @Override
     public String toString() {
-        return "Donor{" +
-                "name='" + name + '\'' +
-                ", date Of Birth=" + dateOfBirth +
-                ", date Of Death=" + dateOfDeath +
-                ", gender=" + gender +
-                ", height=" + height +
-                ", weight=" + weight +
-                ", bloodType='" + bloodType + '\'' +
-                ", currentAddress='" + currentAddress + '\'' +
-                ", region='" + region + '\'' +
-                ", timeCreated=" + timeCreated +
-                ", organs="+organs +
-                '}';
+        return  "name:'" + name + "\'" +
+                "\ndate Of Birth: " + dateOfBirth +
+                "\ndate Of Death :" + dateOfDeath +
+                "\ngender: " + gender +
+                "\nheight=" + height +
+                "\nweight=" + weight +
+                "\nbloodType='" + bloodType + '\'' +
+                "\ncurrentAddress='" + currentAddress + '\'' +
+                "\nregion='" + region + '\'' +
+                "\norgans="+organs +
+                "\ntimeCreated=" + timeCreated ;
     }
 }
