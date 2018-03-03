@@ -13,7 +13,7 @@ import seng302.Model.Organs;
 import seng302.Model.Donor;
 import seng302.Model.JsonReader;
 import seng302.Model.JsonWriter;
-
+@Deprecated
 public class ConsoleWriter {
 
   private static int register(AppController controller, Scanner sc, Boolean fullInfo) {

@@ -181,6 +181,7 @@ public class Donor {
                 ", region='" + region + '\'' +
                 ", timeCreated=" + timeCreated +
                 ", organs="+organs +
+                ", hashCode="+ hashCode() +
                 '}';
     }
 }
