@@ -102,6 +102,21 @@ public class AppController {
     }
   }
 
+  /**
+   * finds all donors who's name field contains the search string
+   * @param name
+   * @return
+   */
+  public ArrayList<Donor> findDonors (String name) {
+    ArrayList<Donor> toReturn = new ArrayList<>();
+    for (Donor donor : donors) {
+      if(donor.getName().toLowerCase().contains(name.toLowerCase())) {
+        toReturn.add(donor);
+      }
+    }
+    return toReturn;
+  }
+
 
     /**
      * takes a passed donor and removes them from the maintained list of donors

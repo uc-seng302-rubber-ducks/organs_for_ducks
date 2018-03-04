@@ -43,16 +43,20 @@ public class View implements Runnable{
       return;
     }
 
-    String name;
-    if(lastName != null) {
-      name = firstName + " " + lastName;
-    } else {
-      name = firstName;
-    }
-    if (dobString != null) {
-      Date dob = IoHelper.readDate(dobString);
-      if (dob != null) {
-        System.out.println(controller.findDonor(name, dob));
+    if (firstName != null) {
+      String name;
+      if (lastName != null) {
+        name = firstName + " " + lastName;
+      } else {
+        name = firstName;
+      }
+      if (dobString != null) {
+        Date dob = IoHelper.readDate(dobString);
+        if (dob != null) {
+          System.out.println(controller.findDonor(name, dob));
+        }
+      } else {
+        System.out.println(controller.findDonors(name));
       }
     }
   }
