@@ -206,6 +206,7 @@ public class Donor {
                 "\nregion: '" + region + '\'' +
                 "\norgans: "+organs +
                 "\ntime Created: " + timeCreated +
-                "\nlast modified: " + lastModified;
+                "\nlast modified: " + lastModified +
+                "\nhash code: "+ hashCode();
     }
 }
