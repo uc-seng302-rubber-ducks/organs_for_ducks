@@ -11,7 +11,7 @@ import seng302.Model.Donor;
 import seng302.Model.Organs;
 import seng302.Model.JsonReader;
 import seng302.Model.JsonWriter;
-
+@Deprecated
 public class ConsoleWriter {
 
   private static int register(AppController controller, Scanner sc, Boolean fullInfo) {
@@ -29,7 +29,6 @@ public class ConsoleWriter {
       Date dateOfDeath = readDate(rawDate);
 
       System.out.println("Please enter a gender");
-      //TODO enforce some kind of format (m/f)
       String gender = sc.next();
 
       System.out.println("Please enter a height in m (e.g. 1.85)");
@@ -146,7 +145,7 @@ public class ConsoleWriter {
             e.printStackTrace();
           }
           System.exit(0);
-        case "register":
+        case "Register":
           System.out.println("Do you wish to do a full sign-up or simple? (true for full)");
           boolean full = sc.nextBoolean();
           int code = register(controller, sc, full);
