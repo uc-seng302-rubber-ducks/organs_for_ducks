@@ -53,8 +53,14 @@ public final class JsonReader {
                 String bloodType = (String) donor.get("Blood Type");
                 String currentAddress = (String) donor.get("Current Address");
                 String region = (String) donor.get("Region");
-                DateTime timeCreated = (DateTime) donor.get("Date Created");
-                donorsIn.add(new Donor(dob,dod,gender,height,weight,bloodType,currentAddress,region,timeCreated,name));
+                DateTime timeCreated = new DateTime(donor.get("Time Created"));
+                DateTime lastModified = new DateTime(donor.get("Last Modified"));
+                Donor d = new Donor(dob,dod,gender,height,weight,bloodType,currentAddress,region,timeCreated,name, lastModified);
+                JSONArray organs = (JSONArray) donor.get("Organs");
+                for (Object org : organs){
+                    d.addOrgan(Organs.valueOf(org.toString()));
+                }
+                donorsIn.add(d);
 
             }
         } catch( ParseException e){

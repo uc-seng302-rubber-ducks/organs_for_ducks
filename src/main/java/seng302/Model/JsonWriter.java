@@ -1,11 +1,14 @@
 package seng302.Model;
 
+import org.joda.time.DateTime;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import seng302.Directory;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -13,6 +16,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashSet;
 
 /**
  * Class for writing to a JSON file to allow data persistence.
@@ -60,9 +64,46 @@ public final class JsonWriter {
             j.put("Current Address", d.getCurrentAddress());
             j.put("Region", d.getRegion());
             j.put("Time Created", d.getTimeCreated().toString());
+            j.put("Last Modified", d.getLastModified().toString());
+            JSONArray organs = new JSONArray();
+            HashSet<Organs> organsDonating = d.getOrgans();
+            for (Organs o: organsDonating) {
+                organs.add(o.toString());
+            }
+            j.put("Organs", organs);
+
             outerJSON.add(j);
         }
         outFileStream.write(outerJSON.toJSONString().getBytes());
         outFileStream.close();
+    }
+
+
+    /**
+     * Used to generate a machine and human readable changelog.
+     * The old changelog is imported into the method as a JSONArray
+     * The new change is then mapped to a JSON object with the timestamp attached
+     * The JSON object is then placed into the JSONArray and written back to the orignal place overwritting the file that is there
+     *
+     * @param toWrite change to be written into the changelog.
+     */
+    public void changeLog(String toWrite){
+        try {
+            Files.createDirectory(Paths.get(Directory.JSON.directory()));
+            File outfile = new File(Directory.JSON.directory() +"/changelog.json");
+            outfile.createNewFile(); //does nothing if file does not exist
+            JSONParser parser = new JSONParser(); //read file first as it must be created now to append data to any previous JSON changelogs.
+            JSONArray changeFile = (JSONArray) parser.parse(new FileReader(outfile));
+            JSONObject newChange = new JSONObject();
+            newChange.put(DateTime.now(), toWrite);
+            changeFile.add(newChange);
+            FileOutputStream outStream = new FileOutputStream(outfile, false);
+            outStream.write(changeFile.toJSONString().getBytes());
+            outStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (org.json.simple.parser.ParseException e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -1,6 +1,5 @@
 package seng302.View;
 
-import java.io.Console;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -10,7 +9,6 @@ import java.util.Scanner;
 import seng302.Controller.AppController;
 import seng302.Model.Donor;
 import seng302.Model.Organs;
-import seng302.Model.Donor;
 import seng302.Model.JsonReader;
 import seng302.Model.JsonWriter;
 @Deprecated
@@ -57,55 +55,19 @@ public class ConsoleWriter {
     return response;
   }
 
-  private static boolean addOrgans(Scanner sc, Donor donor) {
+
+  private static boolean addOrgans(Scanner sc, Donor donor){
     System.out.println("Please enter which organs you want to donate");
     System.out.println("list the entries separated by commas");
     System.out.println("e.g. intestine,bone marrow,liver");
     sc.nextLine();
     String input = sc.nextLine();
     String[] organList = input.split(",");
-    for(String item: organList) {
-      switch(item.toLowerCase()) {
-        case "intestine":
-          donor.AddOrgan(Organs.INTESTINE);
-          break;
-        case "cornea":
-          donor.AddOrgan(Organs.CORNEA);
-          break;
-        case "liver":
-          donor.AddOrgan(Organs.LIVER);
-          break;
-        case "kidney":
-          donor.AddOrgan(Organs.KIDNEY);
-          break;
-        case "skin":
-          donor.AddOrgan(Organs.SKIN);
-          break;
-        case "connective tissue":
-          donor.AddOrgan(Organs.CONNECTIVE_TISSUE);
-          break;
-        case "pancreas":
-          donor.AddOrgan(Organs.PANCREAS);
-          break;
-        case "heart":
-          donor.AddOrgan(Organs.HEART);
-          break;
-        case "lung":
-          donor.AddOrgan(Organs.LUNG);
-          break;
-        case "middle ear":
-          donor.AddOrgan(Organs.MIDDLE_EAR);
-          break;
-        case "bone marrow":
-          donor.AddOrgan(Organs.BONE_MARROW);
-          break;
-        default:
-          System.out.println("Organ "+item.toLowerCase() +" not recognised");
-      }
+    for(String o : organList){
+      donor.addOrgan(Organs.valueOf(o.toUpperCase()));
     }
 
     return true;
-
   }
 
   private static boolean removeOrgans(Scanner sc, Donor donor) {
@@ -117,43 +79,7 @@ public class ConsoleWriter {
     String input = sc.nextLine();
     String[] organList = input.split(",");
     for (String item : organList) {
-      switch (item.toLowerCase()) {
-        case "intestine":
-          donor.RemoveOrgan(Organs.INTESTINE);
-          break;
-        case "cornea":
-          donor.RemoveOrgan(Organs.CORNEA);
-          break;
-        case "liver":
-          donor.RemoveOrgan(Organs.LIVER);
-          break;
-        case "kidney":
-          donor.RemoveOrgan(Organs.KIDNEY);
-          break;
-        case "skin":
-          donor.RemoveOrgan(Organs.SKIN);
-          break;
-        case "connective tissue":
-          donor.RemoveOrgan(Organs.CONNECTIVE_TISSUE);
-          break;
-        case "pancreas":
-          donor.RemoveOrgan(Organs.PANCREAS);
-          break;
-        case "heart":
-          donor.RemoveOrgan(Organs.HEART);
-          break;
-        case "lung":
-          donor.RemoveOrgan(Organs.LUNG);
-          break;
-        case "middle ear":
-          donor.RemoveOrgan(Organs.MIDDLE_EAR);
-          break;
-        case "bone marrow":
-          donor.RemoveOrgan(Organs.BONE_MARROW);
-          break;
-        default:
-          System.out.println("Organ " + item.toLowerCase() + " not recognised");
-      }
+      donor.removeOrgan(Organs.valueOf(item.toUpperCase()));
     }
     return true;
   }
@@ -236,7 +162,10 @@ public class ConsoleWriter {
           System.out.println("all for all donors");
           input = sc.next();
           if(input.equals("all")) {
-            System.out.println(controller.getDonors());
+            ArrayList<Donor> allDonors = controller.getDonors();
+            for (Donor d : allDonors) {
+              System.out.println(d);
+            }
           } else {
             code = Integer.parseInt(input);
             System.out.println(controller.getDonor(code));
