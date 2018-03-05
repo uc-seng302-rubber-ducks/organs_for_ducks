@@ -7,9 +7,10 @@ import seng302.Controller.AppController;
 import seng302.View.IoHelper;
 
 @Command(name = "view", description = "first name, last name, and dob are required. all other are optional and must be tagged")
-public class View implements Runnable{
+public class View implements Runnable {
 
-  @Option(names = {"-h", "help", ""}, required = false, usageHelp = true, description = "display a help message")
+  @Option(names = {"-h", "help",
+      ""}, required = false, usageHelp = true, description = "display a help message")
   private Boolean helpRequested = false;
 
   @Option(names = {"-a", "all", "-all"})
