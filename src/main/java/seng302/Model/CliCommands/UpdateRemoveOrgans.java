@@ -54,7 +54,7 @@ public class UpdateRemoveOrgans implements Runnable {
       for (String item : organs) {
         try {
           Organs org = Organs.valueOf(item.toUpperCase());
-          donor.RemoveOrgan(org);
+          donor.removeOrgan(org);
         } catch (IllegalArgumentException ex) {
           System.err.println("Could not parse organ:" + item);
           System.err.println("multi-word organs must be entered with underscores");

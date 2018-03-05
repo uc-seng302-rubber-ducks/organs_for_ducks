@@ -3,6 +3,7 @@ package seng302.View;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import seng302.Model.Donor;
 
 public class IoHelper {
 
@@ -10,7 +11,7 @@ public class IoHelper {
    * tries to convert a string to a date
    * requires format yyyy-MM-dd
    * writes to System.err on failure
-   * @param rawDate
+   *
    * @return Date or null
    */
   public static Date readDate(String rawDate) {
@@ -18,12 +19,34 @@ public class IoHelper {
     Date date;
     try {
       date = sdf.parse(rawDate);
-    }
-    catch (ParseException e) {
-      System.err.println("Error parsing date: "+rawDate);
+    } catch (ParseException e) {
+      System.err.println("Error parsing date: " + rawDate);
       System.err.println("Please use format yyyy-MM-dd");
       date = null;
     }
     return date;
+  }
+
+  /**
+   * updates the name of a donor where either first or last name could be null.
+   * Only replaces the non-null value
+   */
+  public static void updateName(Donor donor, String firstName, String lastName) {
+
+    if (firstName == null && lastName == null) {
+      return;
+    }
+
+    //TODO review logic for edge cases
+    String[] names = donor.getName().split(" ");
+    if (firstName != null && lastName != null) {
+      donor.setName(firstName + " " + lastName);
+    }
+    else if (lastName == null && names.length > 1) {
+      donor.setName(firstName + " " + names[1]);
+    }
+    else if (firstName == null) {
+      donor.setName(names[0] + lastName);
+    }
   }
 }

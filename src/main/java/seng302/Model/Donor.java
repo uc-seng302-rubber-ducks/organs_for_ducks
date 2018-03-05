@@ -207,7 +207,6 @@ public class Donor {
                 "\norgans: "+organs +
                 "\ntime Created: " + timeCreated +
                 "\nlast modified: " + lastModified +
-                "\norgans="+organs +
                 "\nhashcode="+hashCode();
     }
 }

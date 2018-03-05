@@ -57,8 +57,10 @@ public final class JsonReader {
                 DateTime lastModified = new DateTime(donor.get("Last Modified"));
                 Donor d = new Donor(dob,dod,gender,height,weight,bloodType,currentAddress,region,timeCreated,name, lastModified);
                 JSONArray organs = (JSONArray) donor.get("Organs");
-                for (Object org : organs){
-                    d.addOrgan(Organs.valueOf(org.toString()));
+                if (organs != null) {
+                    for (Object org : organs) {
+                        d.addOrgan(Organs.valueOf(org.toString()));
+                    }
                 }
                 donorsIn.add(d);
 
