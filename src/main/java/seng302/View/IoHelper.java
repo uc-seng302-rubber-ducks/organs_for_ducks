@@ -30,11 +30,12 @@ public class IoHelper {
   /**
    * updates the name of a donor where either first or last name could be null.
    * Only replaces the non-null value
+   * @return boolean if changes were made or not
    */
-  public static void updateName(Donor donor, String firstName, String lastName) {
+  public static boolean updateName(Donor donor, String firstName, String lastName) {
 
     if (firstName == null && lastName == null) {
-      return;
+      return false;
     }
 
     //TODO review logic for edge cases
@@ -48,5 +49,6 @@ public class IoHelper {
     else if (firstName == null) {
       donor.setName(names[0] + lastName);
     }
+    return true;
   }
 }

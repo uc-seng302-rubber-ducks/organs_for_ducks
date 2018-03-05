@@ -1,10 +1,12 @@
 package seng302.Model.CliCommands;
 
+import java.io.IOException;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
 import seng302.Controller.AppController;
 import seng302.Model.Donor;
+import seng302.Model.JsonWriter;
 import seng302.View.IoHelper;
 
 @Command(name = "details", description = "Use -id to identify the the donor. All other tags will update values")
@@ -50,6 +52,7 @@ public class UpdateDetails implements Runnable {
 
   @Override
   public void run() {
+    Boolean changed;
     if (helpRequested) {
       System.out.println("help goes here");
       return;
@@ -60,29 +63,44 @@ public class UpdateDetails implements Runnable {
       System.err.println("Donor could not be found");
       return;
     }
-    IoHelper.updateName(donor, firstName, lastName);
+    changed = IoHelper.updateName(donor, firstName, lastName);
 
     if (dobString != null) {
       donor.setDateOfBirth(IoHelper.readDate(dobString));
+      changed = true;
     }
 
     if (dodString != null) {
       donor.setDateOfDeath(IoHelper.readDate(dodString));
+      changed = true;
     }
     if (weight != -1) {
       donor.setWeight(weight);
+      changed = true;
     }
     if (height != -1) {
       donor.setHeight(height);
+      changed = true;
     }
     if (gender != null) {
       donor.setGender(gender);
+      changed = true;
     }
     if (currentAddress != null) {
       donor.setCurrentAddress(currentAddress);
+      changed = true;
     }
     if (region != null) {
       donor.setRegion(region);
+      changed = true;
+    }
+    if (changed == true) {
+      try {
+        JsonWriter.saveCurrentDonorState(controller.getDonors());
+      }
+      catch (IOException ex) {
+        System.err.println("Could not update details on file");
+      }
     }
   }
 }
