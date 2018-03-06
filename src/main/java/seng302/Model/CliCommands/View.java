@@ -4,6 +4,7 @@ import java.util.Date;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import seng302.Controller.AppController;
+import seng302.Model.Donor;
 import seng302.View.IoHelper;
 
 @Command(name = "view", description = "first name, last name, and dob are required. all other are optional and must be tagged")
@@ -36,7 +37,7 @@ public class View implements Runnable {
 
     AppController controller = AppController.getInstance();
     if (viewAll) {
-      System.out.println(controller.getDonors());
+      System.out.println(IoHelper.prettyStringDonors(controller.getDonors()));
       return;
     }
     if (id != -1) {
@@ -54,10 +55,16 @@ public class View implements Runnable {
       if (dobString != null) {
         Date dob = IoHelper.readDate(dobString);
         if (dob != null) {
-          System.out.println(controller.findDonor(name, dob));
+          Donor donor = controller.findDonor(name, dob);
+          if(donor == (Donor)null) {
+          System.out.println("No donors found");
+          } else {
+            System.out.println(donor);
+          }
         }
       } else {
-        System.out.println(controller.findDonors(name));
+        System.out.println(IoHelper
+            .prettyStringDonors(controller.findDonors(name)));
       }
     }
   }

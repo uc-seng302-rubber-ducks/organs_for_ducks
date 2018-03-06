@@ -43,7 +43,7 @@ public final class JsonWriter {
         }
 
         outFile.createNewFile(); //creates new file if donors does not exist
-        FileOutputStream outFileStream = new FileOutputStream(outFile, true);
+        FileOutputStream outFileStream = new FileOutputStream(outFile, false);
         JSONArray outerJSON = new JSONArray();
 
         for (Donor d : donors){

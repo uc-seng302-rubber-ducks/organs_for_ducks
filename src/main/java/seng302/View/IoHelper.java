@@ -2,6 +2,7 @@ package seng302.View;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import seng302.Model.Donor;
 
@@ -50,5 +51,19 @@ public class IoHelper {
       donor.setName(names[0] + lastName);
     }
     return true;
+  }
+
+  public static String prettyStringDonors(ArrayList<Donor> donors) {
+    StringBuilder sb = new StringBuilder();
+    if(donors.size() > 0) {
+      for (Donor d : donors) {
+        sb.append(d.toString());
+        sb.append("\n");
+      }
+    } else {
+      sb.append("No donors found");
+    }
+
+    return sb.toString();
   }
 }
