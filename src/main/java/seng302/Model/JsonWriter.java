@@ -67,11 +67,14 @@ public final class JsonWriter {
             j.put("Last Modified", d.getLastModified().toString());
             JSONArray organs = new JSONArray();
             HashSet<Organs> organsDonating = d.getOrgans();
-            for (Organs o: organsDonating) {
-                organs.add(o.toString());
+            if (organsDonating == null) {
+                j.put("Organs", null);
+            } else {
+                for (Organs o : organsDonating) {
+                    organs.add(o.toString());
+                }
+                j.put("Organs", organs);
             }
-            j.put("Organs", organs);
-
             outerJSON.add(j);
         }
         outFileStream.write(outerJSON.toJSONString().getBytes());

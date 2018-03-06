@@ -12,9 +12,10 @@ import seng302.View.IoHelper;
 
 
 @Command(name = "register", description = "first name, last name, and dob are required. all other are optional and must be tagged")
-public class Register implements Runnable{
+public class Register implements Runnable {
 
-  @Option(names = {"-h", "help"}, required = false, usageHelp = true, description = "display a help message")
+  @Option(names = {"-h",
+      "help"}, required = false, usageHelp = true, description = "display a help message")
   private Boolean helpRequested = false;
 
   @Parameters(index = "0")
@@ -41,7 +42,8 @@ public class Register implements Runnable{
   @Option(names = {"-b", "-bloodType"}, description = "blood type")
   private String bloodType;
 
-  @Option(names = {"-a", "-addr", "-currentAddress"}, description = "Current address (Address line 1)")
+  @Option(names = {"-a", "-addr",
+      "-currentAddress"}, description = "Current address (Address line 1)")
   private String currentAddress;
 
   @Option(names = {"-r", "-region"}, description = "Region (Address line 2)")
@@ -56,10 +58,10 @@ public class Register implements Runnable{
     }
 
     Date dob = IoHelper.readDate(dobString);
-    if(dob == null) {
+    if (dob == null) {
       return;
     }
-    int id = controller.Register(firstName+" "+lastName, dob);
+    int id = controller.Register(firstName + " " + lastName, dob);
     Donor donor = controller.getDonor(id);
 
     if (dodString != null) {
@@ -81,13 +83,12 @@ public class Register implements Runnable{
       donor.setRegion(region);
     }
 
-    System.out.println("Donor "+ donor.toString() + " has been registered with ID number");
+    System.out.println("Donor " + donor.toString() + " has been registered with ID number");
     System.out.println(donor.hashCode());
     try {
       JsonWriter.saveCurrentDonorState(controller.getDonors());
-    }
-    catch (IOException ex) {
-      System.err.println("Error saving data to file\n"+ex.getMessage());
+    } catch (IOException ex) {
+      System.err.println("Error saving data to file\n" + ex.getMessage());
     }
   }
 
