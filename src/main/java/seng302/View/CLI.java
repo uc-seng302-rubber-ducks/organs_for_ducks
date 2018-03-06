@@ -19,9 +19,10 @@ public class CLI {
     String input;
     String[] arguments;
     input = scanner.nextLine();
-    JsonWriter.changeLog(input);
+
     while(!input.trim().equals("quit")) {
       arguments = input.split(" ");
+      JsonWriter.changeLog(arguments);
       new CommandLine(new CliRoot())
           .parseWithHandler(new CommandLine.RunLast(), System.err, arguments);
       input = scanner.nextLine();
