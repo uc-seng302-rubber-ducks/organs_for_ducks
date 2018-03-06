@@ -88,9 +88,9 @@ public final class JsonWriter {
      * The new change is then mapped to a JSON object with the timestamp attached
      * The JSON object is then placed into the JSONArray and written back to the orignal place overwritting the file that is there
      *
-     * @param toWrite change to be written into the changelog.
+     * @param toWriteArray change to be written into the changelog.
      */
-    public static void changeLog(String[] toWrite){
+    public static void changeLog(String[] toWriteArray){
         try {
             if(!Files.exists(Paths.get(Directory.JSON.directory()))) {
                 Files.createDirectories(Paths.get(Directory.JSON.directory()));
@@ -105,7 +105,11 @@ public final class JsonWriter {
                 changeFile = (JSONArray) parser.parse(new FileReader(outfile));
             }
             JSONObject newChange = new JSONObject();
-            newChange.put(DateTime.now(), toWrite.toString());
+            String toWrite = "";
+            for(String s : toWriteArray){
+                toWrite += s + " ";
+            }
+            newChange.put(DateTime.now(), toWrite);
             changeFile.add(newChange);
             FileOutputStream outStream = new FileOutputStream(outfile, false);
             outStream.write(changeFile.toJSONString().getBytes());
