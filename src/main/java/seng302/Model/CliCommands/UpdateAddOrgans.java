@@ -54,8 +54,6 @@ public class UpdateAddOrgans implements Runnable {
         try {
           Organs org = Organs.valueOf(item.toUpperCase());
           donor.addOrgan(org);
-        } catch (IllegalArgumentException ex) {
-          donor.addOrgan(org);
         }
         catch (IllegalArgumentException ex) {
           System.err.println("Could not parse organ:" + item);
