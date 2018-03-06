@@ -1,30 +1,30 @@
-package seng302.Model.CliCommands;
+package seng302.Controller.CliCommands;
 
 import java.io.IOException;
-import java.util.Date;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
-import picocli.CommandLine.Parameters;
 import seng302.Controller.AppController;
 import seng302.Model.Donor;
 import seng302.Model.JsonWriter;
 import seng302.View.IoHelper;
 
+@Command(name = "details", description = "Use -id to identify the the donor. All other tags will update values")
+public class UpdateDetails implements Runnable {
 
-@Command(name = "register", description = "first name, last name, and dob are required. all other are optional and must be tagged")
-public class Register implements Runnable {
 
+  @Option(names = {"-id"}, required = true)
+  private int id;
   @Option(names = {"-h",
       "help"}, required = false, usageHelp = true, description = "display a help message")
   private Boolean helpRequested = false;
 
-  @Parameters(index = "0")
+  @Option(names = {"-f", "-fname"})
   private String firstName;
 
-  @Parameters(index = "1")
+  @Option(names = {"-l", "-lname"})
   private String lastName;
 
-  @Parameters(index = "2", description = "format 'yyyy-mm-dd'")
+  @Option(names = {"-dob"}, description = "format 'yyyy-mm-dd'")
   private String dobString;
 
   @Option(names = {"-dod"}, description = "Date of death. same formatting as dob")
@@ -49,47 +49,57 @@ public class Register implements Runnable {
   @Option(names = {"-r", "-region"}, description = "Region (Address line 2)")
   private String region;
 
+  @Override
   public void run() {
-    //meat goes here
-    AppController controller = AppController.getInstance();
+    Boolean changed;
     if (helpRequested) {
       System.out.println("help goes here");
       return;
     }
-
-    Date dob = IoHelper.readDate(dobString);
-    if (dob == null) {
+    AppController controller = AppController.getInstance();
+    Donor donor = controller.getDonor(id);
+    if (donor == null) {
+      System.err.println("Donor could not be found");
       return;
     }
-    int id = controller.Register(firstName + " " + lastName, dob);
-    Donor donor = controller.getDonor(id);
+    changed = IoHelper.updateName(donor, firstName, lastName);
+
+    if (dobString != null) {
+      donor.setDateOfBirth(IoHelper.readDate(dobString));
+      changed = true;
+    }
 
     if (dodString != null) {
       donor.setDateOfDeath(IoHelper.readDate(dodString));
+      changed = true;
     }
     if (weight != -1) {
       donor.setWeight(weight);
+      changed = true;
     }
     if (height != -1) {
       donor.setHeight(height);
+      changed = true;
     }
     if (gender != null) {
       donor.setGender(gender);
+      changed = true;
     }
     if (currentAddress != null) {
       donor.setCurrentAddress(currentAddress);
+      changed = true;
     }
     if (region != null) {
       donor.setRegion(region);
+      changed = true;
     }
-
-    System.out.println("Donor " + donor.toString() + " has been registered with ID number");
-    System.out.println(donor.hashCode());
-    try {
-      JsonWriter.saveCurrentDonorState(controller.getDonors());
-    } catch (IOException ex) {
-      System.err.println("Error saving data to file\n" + ex.getMessage());
+    if (changed == true) {
+      try {
+        JsonWriter.saveCurrentDonorState(controller.getDonors());
+      }
+      catch (IOException ex) {
+        System.err.println("Could not update details on file");
+      }
     }
   }
-
 }

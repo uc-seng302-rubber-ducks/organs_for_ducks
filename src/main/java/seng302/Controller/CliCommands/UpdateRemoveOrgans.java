@@ -1,4 +1,4 @@
-package seng302.Model.CliCommands;
+package seng302.Controller.CliCommands;
 
 import java.io.IOException;
 import java.util.Date;
@@ -7,7 +7,6 @@ import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
 import seng302.Controller.AppController;
 import seng302.Model.Donor;
-import seng302.Model.JsonReader;
 import seng302.Model.JsonWriter;
 import seng302.Model.Organs;
 import seng302.View.IoHelper;

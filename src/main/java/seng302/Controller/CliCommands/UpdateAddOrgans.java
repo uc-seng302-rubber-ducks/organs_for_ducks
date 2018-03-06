@@ -1,4 +1,4 @@
-package seng302.Model.CliCommands;
+package seng302.Controller.CliCommands;
 
 import java.io.IOException;
 import java.util.Date;

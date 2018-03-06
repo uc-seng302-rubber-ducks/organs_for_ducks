@@ -1,4 +1,4 @@
-package seng302.Model.CliCommands;
+package seng302.Controller.CliCommands;
 
 import java.util.Date;
 import picocli.CommandLine.Command;
@@ -7,7 +7,7 @@ import seng302.Controller.AppController;
 import seng302.Model.Donor;
 import seng302.View.IoHelper;
 
-@Command(name = "view", description = "first name, last name, and dob are required. all other are optional and must be tagged")
+@Command(name = "view", description = "View all currently registered donors based on set parameters.")
 public class View implements Runnable {
 
   @Option(names = {"-h", "help",

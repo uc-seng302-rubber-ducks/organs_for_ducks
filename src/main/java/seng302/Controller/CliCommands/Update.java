@@ -1,4 +1,4 @@
-package seng302.Model.CliCommands;
+package seng302.Controller.CliCommands;
 
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
