@@ -6,6 +6,7 @@ import picocli.CommandLine;
 import seng302.Controller.AppController;
 import seng302.Model.CliCommands.CliRoot;
 import seng302.Model.JsonReader;
+import seng302.Model.JsonWriter;
 
 public class CLI {
 
@@ -18,6 +19,7 @@ public class CLI {
     String input;
     String[] arguments;
     input = scanner.nextLine();
+    JsonWriter.changeLog(input);
     while(!input.trim().equals("quit")) {
       arguments = input.split(" ");
       new CommandLine(new CliRoot())
