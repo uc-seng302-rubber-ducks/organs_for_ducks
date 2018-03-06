@@ -54,7 +54,8 @@ public class UpdateAddOrgans implements Runnable {
         try {
           Organs org = Organs.valueOf(item.toUpperCase());
           donor.addOrgan(org);
-        } catch (IllegalArgumentException ex) {
+        }
+        catch (IllegalArgumentException ex) {
           System.err.println("Could not parse organ:" + item);
           System.err.println("multi-word organs must be entered with underscores");
           System.err.println("e.g. bone_marrow");

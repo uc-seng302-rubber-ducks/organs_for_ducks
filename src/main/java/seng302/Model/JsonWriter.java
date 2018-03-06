@@ -90,13 +90,20 @@ public final class JsonWriter {
      *
      * @param toWrite change to be written into the changelog.
      */
-    public void changeLog(String toWrite){
+    public static void changeLog(String toWrite){
         try {
-            Files.createDirectory(Paths.get(Directory.JSON.directory()));
+            if(!Files.exists(Paths.get(Directory.JSON.directory()))) {
+                Files.createDirectory(Paths.get(Directory.JSON.directory()));
+            }
             File outfile = new File(Directory.JSON.directory() +"/changelog.json");
-            outfile.createNewFile(); //does nothing if file does not exist
-            JSONParser parser = new JSONParser(); //read file first as it must be created now to append data to any previous JSON changelogs.
-            JSONArray changeFile = (JSONArray) parser.parse(new FileReader(outfile));
+            boolean isCreated  = outfile.createNewFile(); //does nothing if file does not exist
+            JSONArray changeFile;
+            if (isCreated) {
+                changeFile = new JSONArray();
+            } else {
+                JSONParser parser = new JSONParser(); //read file first as it must be created now to append data to any previous JSON changelogs.
+                changeFile = (JSONArray) parser.parse(new FileReader(outfile));
+            }
             JSONObject newChange = new JSONObject();
             newChange.put(DateTime.now(), toWrite);
             changeFile.add(newChange);

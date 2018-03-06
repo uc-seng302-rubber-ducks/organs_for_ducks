@@ -66,7 +66,8 @@ public final class JsonReader {
 
             }
         } catch( ParseException e){
-            System.out.println("Parsing error please ensure that file is a correctly formatted JSON file. Nothing has been imported");
+            System.out.println("Parsing error please ensure that file is a correctly formatted JSON file. Nothing has been imported" +
+                    "\nAny data saved may overwrite previously saved data");
             e.printStackTrace();
         } catch (java.text.ParseException e) {
             e.printStackTrace();
