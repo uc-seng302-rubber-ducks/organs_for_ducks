@@ -42,7 +42,7 @@ public class UpdateRemoveTests {
   @Test
   public void ShouldRemoveSingleOrganLeavingEmpty() {
 
-    String[] args = {"-f=One", "-l=Organ", "-dob=1978-3-6", "lung"};
+    String[] args = {"-f=One", "-l=Organ", "-dob=1997-2-5", "lung"};
     new CommandLine(new UpdateRemoveOrgans())
         .parseWithHandler(new CommandLine.RunLast(), System.err, args);
 
@@ -53,7 +53,7 @@ public class UpdateRemoveTests {
 
   @Test
   public void ShouldRemoveSingleOrganLeavingOrgansRemaining() {
-    String[] args = {"-f=Three", "-l=Organs", "-dob=1997-2-5", "skin"};
+    String[] args = {"-f=Three", "-l=Organs", "-dob=1978-3-6", "skin"};
     new CommandLine(new UpdateRemoveOrgans())
         .parseWithHandler(new CommandLine.RunLast(), System.err, args);
 
@@ -68,12 +68,25 @@ public class UpdateRemoveTests {
 
   @Test
   public void ShouldRemoveMultipleOrgansLeavingEmpty() {
+    String[] args = {"-f=Three", "-l=Organs", "-dob=1978-3-6", "skin", "connective_tissue", "middle_ear"};
+    new CommandLine(new UpdateRemoveOrgans())
+        .parseWithHandler(new CommandLine.RunLast(), System.err, args);
 
+    Donor donor = controller.findDonors("Three Organs").get(0);
+    assert (donor.getOrgans().size() == 0);
   }
 
   @Test
   public void ShouldRemoveMultipleOrgansLeavingOrgansRemaining() {
+    String[] args = {"-f=Three", "-l=Organs", "-dob=1978-3-6", "skin", "middle_ear"};
+    new CommandLine(new UpdateRemoveOrgans())
+        .parseWithHandler(new CommandLine.RunLast(), System.err, args);
 
+    Donor donor = controller.findDonors("Three Organs").get(0);
+    HashSet<Organs> list = donor.getOrgans();
+
+    assert(list.contains(Organs.CONNECTIVE_TISSUE));
+    assert (donor.getOrgans().size() == 1);
   }
 
   @Test
@@ -81,5 +94,14 @@ public class UpdateRemoveTests {
     //we're using a hashmap so it can't
     //test exists for posterity
 
+    String[] args = {"-f=One", "-l=Organ", "-dob=1997-2-5", "heart"};
+    new CommandLine(new UpdateRemoveOrgans())
+        .parseWithHandler(new CommandLine.RunLast(), System.err, args);
+
+    Donor donor = controller.findDonors("One Organ").get(0);
+    HashSet<Organs> list = donor.getOrgans();
+
+    assert (list.contains(Organs.LUNG));
+    assert (donor.getOrgans().size() == 1);
   }
 }

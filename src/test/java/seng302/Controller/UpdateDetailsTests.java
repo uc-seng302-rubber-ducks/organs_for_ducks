@@ -19,31 +19,35 @@ public class UpdateDetailsTests {
 
   @Test
   public void ShouldUpdateFirstName() {
-
+    fail("not yet implemented");
   }
 
   @Test
   public void ShouldUpdateLastName() {
-
+    fail("not yet implemented");
   }
 
   @Test
   public void ShouldUpdateFullName() {
-
+    fail("not yet implemented");
   }
 
   @Test
   public void ShouldUpdateNumberField() {
     //height and weight are identical, no use testing both
+    //just checking it can parse numbers
+    fail("not yet implemented");
   }
 
   @Test
   public void ShouldUpdateDateField() {
     //dob and dod are identical, no use testing both
+    //just checking it can parse dates
+    fail("not yet implemented");
   }
 
   @Test
   public void ShouldUpdateLastModifiedTimestamp() {
-
+    fail("not yet implemented");
   }
 }
