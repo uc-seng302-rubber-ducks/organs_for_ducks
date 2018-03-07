@@ -49,7 +49,7 @@ public class UpdateAddOrgans implements Runnable {
 
       }
     }
-    if (donor != null) {
+    if (donor != null && organs != null) {
       for (String item : organs) {
         try {
           Organs org = Organs.valueOf(item.toUpperCase());
@@ -70,7 +70,7 @@ public class UpdateAddOrgans implements Runnable {
         System.err.println("Could not update file");
       }
     }
-    System.err.println("Please use either the -id tag or -f, -l, and -dob to identify a donor");
+    System.err.println("Please use either the -id tag or -f, -l, and -dob to identify a donor. Organs to be added should be specified after these arguments");
   }
 }
 
