@@ -48,7 +48,7 @@ public class IoHelper {
       donor.setName(firstName + " " + names[1]);
     }
     else if (firstName == null) {
-      donor.setName(names[0] + lastName);
+      donor.setName(names[0] +" "+ lastName);
     }
     return true;
   }
