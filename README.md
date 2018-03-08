@@ -12,7 +12,9 @@ and using the command `mvn clean package`.
 This will create the directory target with the JAR in it (and remove any previous 
 Maven builds for this project).
 The project can then by run with the command 
-java -jar target//#todo addajr details.
+`java -jar target/original-team-24-jbu71-tke34-sprint1-0.0.jar`
+
+or by navigating to the target directory and running the command without `target/`
 
 The program will create a hidden directory structure to hold the data files
 in the home directory of the user.
