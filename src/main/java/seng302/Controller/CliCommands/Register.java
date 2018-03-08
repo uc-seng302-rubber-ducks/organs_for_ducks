@@ -76,6 +76,9 @@ public class Register implements Runnable {
     if (gender != null) {
       donor.setGender(gender);
     }
+    if (bloodType != null) {
+      donor.setBloodType(bloodType);
+    }
     if (currentAddress != null) {
       donor.setCurrentAddress(currentAddress);
     }

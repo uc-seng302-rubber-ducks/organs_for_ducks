@@ -92,6 +92,10 @@ public class UpdateDetails implements Runnable {
       donor.setGender(gender);
       changed = true;
     }
+    if (bloodType != null) {
+      donor.setBloodType(bloodType);
+      changed = true;
+    }
     if (currentAddress != null) {
       donor.setCurrentAddress(currentAddress);
       changed = true;
