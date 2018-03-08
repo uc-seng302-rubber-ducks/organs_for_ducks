@@ -1,7 +1,8 @@
 # Examples
 
-You should also include example data files for your application that demonstrate the
-features of your application. These should contain adequate amounts of data that
-would be expected from actual use of your application.
-
-This file should provide a basic overview of the example files available.
+ 
+ These all contain different donors.
+ to use these JSON files navigate to the hidden .organs directory ( available after the first running of the application)
+ in the current users home. Navigate to the JSON folder and name the corresponding data file
+ donors.json . This operation will remove any donors previously created, unless the donors.json file in the dir is renamed
+ or moved.  
