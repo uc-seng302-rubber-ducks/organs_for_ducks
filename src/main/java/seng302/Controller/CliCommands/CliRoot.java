@@ -9,6 +9,8 @@ import picocli.CommandLine;
 @CommandLine.Command(name = "root", subcommands= {Register.class, View.class, Update.class, DeleteDonor.class})
 public class CliRoot implements Runnable{
 
+  @CommandLine.Option(names = {"-h", "help"}, required = false, usageHelp = true, description = "display a help message")
+  private Boolean helpRequested = false;
   @Override
   public void run() {
     //do nothing
