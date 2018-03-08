@@ -4,7 +4,7 @@
     <artifactId>app</artifactId>
     <packaging>jar</packaging>
     <version>0.0</version>
-    <name>app</name>
+    <name>team-24-jbu71-tke34-sprint1</name>
     <url>https://eng-git.canterbury.ac.nz/SENG302-2016/team-0</url>
 
     <properties>
