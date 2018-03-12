@@ -14,7 +14,8 @@ public class AppController {
   private int historyPointer = 0;
 
   private AppController() {
-    //constructor goes here
+    String[] empty = {""};
+    historyOfCommands.add(empty);//putting an empty string into the string array to be displayed if history pointer is 0
   }
 
   /**
@@ -61,9 +62,6 @@ public class AppController {
     }
   }
 
-  public int getHistoryPointer() {
-    return historyPointer;
-  }
 
   public void setHistoryPointer() {
     this.historyPointer = historyOfCommands.size();
@@ -79,6 +77,27 @@ public class AppController {
    */
   public void addToHistoryOfCommands(String[] command){
     historyOfCommands.add(command);
+  }
+
+
+  /**
+   * Updates the history pointer to ensure that the end of the array isnt overrun and the number stays positive so the history pointer doenst overrun.
+   * @param amount -1 for older commands 1 for newer commands
+   */
+  public void historyPointerUpdate(int amount){
+    if (historyPointer + amount <= 0){
+      historyPointer = 0;
+    } else if (historyPointer + amount > historyOfCommands.size()){
+      historyPointer = historyOfCommands.size();
+    }
+  }
+
+  /**
+   * When called queries the history pointer and acquires the command located at the appropriate point
+   * @return
+   */
+  public String[] getCommand(){
+    return historyOfCommands.get(historyPointer);
   }
 
   /**
