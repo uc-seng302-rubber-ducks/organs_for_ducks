@@ -10,6 +10,8 @@ public class AppController {
 
   private ArrayList<Donor> donors = new ArrayList<>();
   private static AppController controller;
+  private ArrayList<String[]> historyOfCommands = new ArrayList<>();
+  private int historyPointer = 0;
 
   private AppController() {
     //constructor goes here
@@ -57,6 +59,26 @@ public class AppController {
       System.err.println(e.getMessage());
       return -1;
     }
+  }
+
+  public int getHistoryPointer() {
+    return historyPointer;
+  }
+
+  public void setHistoryPointer() {
+    this.historyPointer = historyOfCommands.size();
+  }
+
+  /*public String[] getCommandHistoryFromCorrectIndex() { ;
+  }*/
+
+  /**
+   * Adds an executed command to the command history
+   *
+   * @param command Command to be added
+   */
+  public void addToHistoryOfCommands(String[] command){
+    historyOfCommands.add(command);
   }
 
   /**
