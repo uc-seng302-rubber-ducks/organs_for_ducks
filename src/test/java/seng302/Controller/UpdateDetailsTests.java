@@ -5,16 +5,13 @@ import static org.junit.Assert.fail;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import org.joda.time.DateTime;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import picocli.CommandLine;
 
 import seng302.Controller.CliCommands.UpdateDetails;
-import seng302.Controller.CliCommands.UpdateRemoveOrgans;
 import seng302.Model.Donor;
 
 public class UpdateDetailsTests {

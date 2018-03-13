@@ -3,16 +3,12 @@ package seng302.Controller;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import picocli.CommandLine;
-import picocli.CommandLine.RunLast;
-import seng302.Controller.CliCommands.CliRoot;
 import seng302.Controller.CliCommands.Register;
 import seng302.Model.Donor;
-import seng302.Model.Organs;
 
 public class RegisterTests {
 

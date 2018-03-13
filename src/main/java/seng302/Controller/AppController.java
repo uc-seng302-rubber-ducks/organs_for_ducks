@@ -16,7 +16,7 @@ public class AppController {
   }
 
   /**
-   * Returns the instance of the controller
+   * Returns the instance of the Controller
    *
    * @return AppController
    */
@@ -29,7 +29,7 @@ public class AppController {
 
 
   /**
-   * appends a single Donor to the list of donors stored in the controller
+   * appends a single Donor to the list of donors stored in the Controller
    *
    * @return hashCode of the new donor or -1 on error
    */
