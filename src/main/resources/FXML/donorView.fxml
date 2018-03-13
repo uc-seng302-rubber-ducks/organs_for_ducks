@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <TabPane layoutY="38.0" prefHeight="556.0" prefWidth="600.0" rotateGraphic="true" tabClosingPolicy="UNAVAILABLE">
+        <tabs>
+          <Tab text="Donor">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <Label layoutX="14.0" layoutY="23.0" text="Name" />
+                        <Label layoutX="14.0" layoutY="56.0" text="D.O.B" />
+                        <Label layoutX="12.0" layoutY="110.0" text="Gender" />
+                        <Label layoutX="12.0" layoutY="144.0" text="Blood Type" />
+                        <Label layoutX="9.0" layoutY="181.0" text="Height" />
+                        <Label layoutX="10.0" layoutY="212.0" text="Weight" />
+                        <Label layoutX="271.0" layoutY="111.0" text="Current Address" />
+                        <Label layoutX="14.0" layoutY="268.0" text="D.O.D" />
+                        <Label fx:id="ageLabel" layoutX="14.0" layoutY="84.0" prefHeight="16.0" prefWidth="68.0" text="Label" />
+                        <Label layoutX="278.0" layoutY="225.0" text="Region" />
+                        <DatePicker fx:id="dateOfBirthPicker" layoutX="101.0" layoutY="51.0" prefHeight="26.0" prefWidth="131.0" />
+                        <DatePicker fx:id="dateOfDeathPicker" layoutX="103.0" layoutY="263.0" prefHeight="26.0" prefWidth="128.0" />
+                        <Label layoutX="19.0" layoutY="204.0" />
+                        <CheckBox fx:id="isDonorDeceasedCheckBox" layoutX="12.0" layoutY="242.0" mnemonicParsing="false" text="Donor is Deceased" />
+                        <TextField fx:id="nameTextField" layoutX="101.0" layoutY="18.0" prefHeight="26.0" prefWidth="287.0" />
+                        <TextField fx:id="heightTextField" layoutX="98.0" layoutY="176.0" prefHeight="26.0" prefWidth="74.0" />
+                        <TextField fx:id="weightTextField" layoutX="100.0" layoutY="207.0" prefHeight="26.0" prefWidth="71.0" />
+                        <ComboBox fx:id="genderComboBox" layoutX="98.0" layoutY="106.0" prefHeight="26.0" prefWidth="69.0" />
+                        <ComboBox fx:id="bloodTypeComboBox" layoutX="100.0" layoutY="139.0" prefHeight="26.0" prefWidth="70.0" />
+                        <TextField fx:id="regionTextField" layoutX="387.0" layoutY="220.0" prefHeight="26.0" prefWidth="188.0" />
+                        <Label layoutX="190.0" layoutY="212.0" text="Kgs" />
+                        <Label layoutX="196.0" layoutY="181.0" text="M" />
+                        <Label layoutX="39.0" layoutY="309.0" text="Current Organs avalible for Donation" />
+                        <ListView fx:id="organsDonatingListView" layoutX="14.0" layoutY="341.0" prefHeight="171.0" prefWidth="267.0" />
+                        <Button layoutX="502.0" layoutY="263.0" mnemonicParsing="false" onAction="#updateDonor" text="Confirm" />
+                        <Button fx:id="undoButton" layoutX="456.0" layoutY="18.0" mnemonicParsing="false" onAction="#undo" text="Undo" />
+                        <Button fx:id="redoButton" layoutX="520.0" layoutY="18.0" mnemonicParsing="false" onAction="#redo" text="Redo" />
+                        <TextArea fx:id="currentAddressTextArea" layoutX="388.0" layoutY="109.0" prefHeight="97.0" prefWidth="188.0" />
+                        <Label layoutX="415.0" layoutY="309.0" text="Misc attributes" />
+                        <Separator layoutX="-13.0" layoutY="303.0" prefHeight="1.0" prefWidth="614.0" />
+                        <Button layoutX="292.0" layoutY="349.0" mnemonicParsing="false" onAction="#modifyOrgans" text="Organs" />
+                        <ListView fx:id="miscAttributeslistView" layoutX="363.0" layoutY="341.0" prefHeight="171.0" prefWidth="221.0" />
+                        <Button layoutX="301.0" layoutY="427.0" mnemonicParsing="false" onAction="#modifyMiscAttributes" text="Misc" />
+                     </children>
+                  </AnchorPane>
+            </content>
+          </Tab>
+          <Tab text="History">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <TableView fx:id="historyTableView" layoutX="-2.0" prefHeight="532.0" prefWidth="606.0">
+                          <columns>
+                            <TableColumn prefWidth="250.0" text="Time" />
+                            <TableColumn prefWidth="349.0" text="Action" />
+                          </columns>
+                        </TableView>
+                     </children>
+                  </AnchorPane>
+            </content>
+          </Tab>
+        </tabs>
+      </TabPane>
+      <Label layoutX="256.0" layoutY="3.0" text="Donor">
+         <font>
+            <Font size="29.0" />
+         </font>
+      </Label>
+   </children>
+</AnchorPane>
