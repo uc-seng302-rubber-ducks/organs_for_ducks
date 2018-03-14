@@ -34,7 +34,13 @@ public class Donor {
     public Donor(Date dateOfBirth, Date dateOfDeath, String gender, double height, double weight, String bloodType, String currentAddress, String region, DateTime timeCreated, String name, DateTime lastModified) {
         this.dateOfBirth = dateOfBirth;
         this.dateOfDeath = dateOfDeath;
-        this.gender = gender;
+        if(gender.startsWith("m") || gender.startsWith("M")){
+            this.gender = "M";
+        } else if (gender.startsWith("f") || gender.startsWith("F")){
+            this.gender = "F";
+        } else {
+            this.gender = "U";
+        }
         this.height = height;
         this.weight = weight;
         this.bloodType = bloodType;
@@ -59,6 +65,7 @@ public class Donor {
         this.name = name;
         timeCreated = DateTime.now();
         lastModified = DateTime.now();
+        this.gender = "U";
     }
 
     /**

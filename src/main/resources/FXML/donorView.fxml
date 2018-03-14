@@ -16,8 +16,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-
-<AnchorPane fx:controller="seng302.Controller.DonorController" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.Controller.DonorController">
    <children>
       <TabPane layoutY="38.0" prefHeight="556.0" prefWidth="600.0" rotateGraphic="true" tabClosingPolicy="UNAVAILABLE">
         <tabs>
@@ -32,13 +31,13 @@
                         <Label layoutX="9.0" layoutY="181.0" text="Height" />
                         <Label layoutX="10.0" layoutY="212.0" text="Weight" />
                         <Label layoutX="271.0" layoutY="111.0" text="Current Address" />
-                        <Label layoutX="14.0" layoutY="268.0" text="D.O.D" />
+                        <Label fx:id="dodLabel" layoutX="14.0" layoutY="268.0" text="D.O.D" />
                         <Label fx:id="ageLabel" layoutX="14.0" layoutY="84.0" prefHeight="16.0" prefWidth="68.0" text="Label" />
                         <Label layoutX="278.0" layoutY="225.0" text="Region" />
                         <DatePicker fx:id="dateOfBirthPicker" layoutX="101.0" layoutY="51.0" prefHeight="26.0" prefWidth="131.0" />
                         <DatePicker fx:id="dateOfDeathPicker" layoutX="103.0" layoutY="263.0" prefHeight="26.0" prefWidth="128.0" />
                         <Label layoutX="19.0" layoutY="204.0" />
-                        <CheckBox fx:id="isDonorDeceasedCheckBox" layoutX="12.0" layoutY="242.0" mnemonicParsing="false" text="Donor is Deceased" />
+                        <CheckBox fx:id="isDonorDeceasedCheckBox" layoutX="12.0" layoutY="242.0" mnemonicParsing="false" onAction="#changeDeceasedStatus" text="Donor is Deceased" />
                         <TextField fx:id="nameTextField" layoutX="101.0" layoutY="18.0" prefHeight="26.0" prefWidth="287.0" />
                         <TextField fx:id="heightTextField" layoutX="98.0" layoutY="176.0" prefHeight="26.0" prefWidth="74.0" />
                         <TextField fx:id="weightTextField" layoutX="100.0" layoutY="207.0" prefHeight="26.0" prefWidth="71.0" />

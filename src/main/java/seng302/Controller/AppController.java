@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import seng302.Model.Donor;
+import seng302.Model.JsonReader;
 import seng302.Model.JsonWriter;
 
 public class AppController {
@@ -12,7 +13,7 @@ public class AppController {
   private static AppController controller;
 
   private AppController() {
-    //constructor goes here
+    donors = JsonReader.importJsonDonors();
   }
 
   /**

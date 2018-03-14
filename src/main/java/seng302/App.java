@@ -6,34 +6,33 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+
+import javafx.application.Application;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+import seng302.Controller.AppController;
+import seng302.Controller.DonorController;
 import seng302.Model.Donor;
 import seng302.Model.JsonReader;
 import seng302.Model.JsonWriter;
 
-@Deprecated
-public class App
+import static javafx.application.Application.launch;
+
+public class App extends Application
 {
-    public static void main( String[] args ) {
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-        Date dob = new Date("01/01/1990");
-        Donor d = new Donor("Bob", dob);
-        System.out.println(d);
-        ArrayList<Donor> ds = new ArrayList<Donor>();
-        ds.add(d);
-        ds.add(d);
+    public static void main(String[] args) { launch(args);}
 
-        try {
-            JsonWriter.saveCurrentDonorState(ds);
-            System.out.println("file successfully created");
-        } catch (IOException e) {
-            e.printStackTrace();
-
-        }
-
-            ArrayList<Donor> donors;
-            donors = JsonReader.importJsonDonors();
-            for (Donor da : donors){
-                System.out.println(da);
-            }
+    @Override
+    public void start(Stage primaryStage) throws Exception {
+        //This looks confusing for now but ill explain it next time we have a stand up
+        FXMLLoader donorLoader = new FXMLLoader(getClass().getResource("/FXML/donorView.fxml"));
+        Parent root = donorLoader.load();
+        primaryStage.setScene(new Scene(root));
+        DonorController donorController =  donorLoader.getController();
+        donorController.init(AppController.getInstance());
+        primaryStage.show();
     }
 }
