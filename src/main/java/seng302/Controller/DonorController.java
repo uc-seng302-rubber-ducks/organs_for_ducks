@@ -39,7 +39,7 @@ public class DonorController {
   private ComboBox<String> genderComboBox;
 
   @FXML
-  private ComboBox<?> bloodTypeComboBox;
+  private ComboBox<String> bloodTypeComboBox;
 
   @FXML
   private TextField regionTextField;
@@ -69,6 +69,8 @@ public class DonorController {
 
   private List<String> possibleGenders = Arrays.asList("M","F","U");
 
+  private List<String> possibleBloodTypes = Arrays.asList("A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-", "U");
+
   private Donor currentDonor;
 
 
@@ -81,9 +83,13 @@ public class DonorController {
     ageLabel.setVisible(false);
     dateOfDeathPicker.setVisible(false);
     dodLabel.setVisible(false);
-
+    undoButton.setVisible(false);
+    redoButton.setVisible(false);
     ObservableList genders = FXCollections.observableList(possibleGenders);
     genderComboBox.getItems().addAll(genders);
+    ObservableList bloodTypes = FXCollections.observableList(possibleBloodTypes);
+    bloodTypeComboBox.getItems().addAll(bloodTypes);
+
     currentDonor = application.getDonors().get(0); //TODO: add code here to get donor that is being refered to on login
     showDonor(currentDonor);
   }
@@ -148,5 +154,6 @@ public class DonorController {
     currentAddressTextArea.setText(donor.getCurrentAddress());
     regionTextField.setText(donor.getRegion());
     organsDonatingListView.getItems().addAll(donor.getOrgans());
+    bloodTypeComboBox.getSelectionModel().select(donor.getBloodType());
   }
 }

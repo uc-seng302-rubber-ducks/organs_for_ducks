@@ -39,10 +39,10 @@
                         <Label layoutX="19.0" layoutY="204.0" />
                         <CheckBox fx:id="isDonorDeceasedCheckBox" layoutX="12.0" layoutY="242.0" mnemonicParsing="false" onAction="#changeDeceasedStatus" text="Donor is Deceased" />
                         <TextField fx:id="nameTextField" layoutX="101.0" layoutY="18.0" prefHeight="26.0" prefWidth="287.0" />
-                        <TextField fx:id="heightTextField" layoutX="98.0" layoutY="176.0" prefHeight="26.0" prefWidth="74.0" />
-                        <TextField fx:id="weightTextField" layoutX="100.0" layoutY="207.0" prefHeight="26.0" prefWidth="71.0" />
-                        <ComboBox fx:id="genderComboBox" layoutX="98.0" layoutY="106.0" prefHeight="26.0" prefWidth="69.0" />
-                        <ComboBox fx:id="bloodTypeComboBox" layoutX="100.0" layoutY="139.0" prefHeight="26.0" prefWidth="70.0" />
+                        <TextField fx:id="heightTextField" layoutX="98.0" layoutY="176.0" prefHeight="26.0" prefWidth="82.0" />
+                        <TextField fx:id="weightTextField" layoutX="100.0" layoutY="207.0" prefHeight="26.0" prefWidth="81.0" />
+                        <ComboBox fx:id="genderComboBox" layoutX="98.0" layoutY="106.0" prefHeight="26.0" prefWidth="78.0" />
+                        <ComboBox fx:id="bloodTypeComboBox" layoutX="100.0" layoutY="139.0" prefHeight="26.0" prefWidth="79.0" />
                         <TextField fx:id="regionTextField" layoutX="387.0" layoutY="220.0" prefHeight="26.0" prefWidth="188.0" />
                         <Label layoutX="190.0" layoutY="212.0" text="Kgs" />
                         <Label layoutX="196.0" layoutY="181.0" text="M" />

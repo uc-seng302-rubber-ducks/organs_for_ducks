@@ -43,7 +43,7 @@ public class Donor {
         }
         this.height = height;
         this.weight = weight;
-        this.bloodType = bloodType;
+        this.bloodType = groupBloodType(bloodType);
         this.currentAddress = currentAddress;
         this.region = region;
         if (timeCreated == null){
@@ -66,6 +66,7 @@ public class Donor {
         timeCreated = DateTime.now();
         lastModified = DateTime.now();
         this.gender = "U";
+        this.bloodType = "U";
     }
 
     /**
@@ -186,6 +187,42 @@ public class Donor {
         organs.remove(organ);
       }
     }
+
+
+    /**
+     * Method to ensure that all blood types are valid blood types
+     * returns U if not a valid blood type
+     *
+     * @param possibleType type to test
+     * @return correct blood type
+     */
+    public String groupBloodType(String possibleType){
+
+            if (possibleType == null){
+                return "U";
+            }
+            if (possibleType.equalsIgnoreCase("AB+")) {
+                return "AB+";
+            } else if(possibleType.equalsIgnoreCase("AB-")) {
+                return "AB-";
+            } else if(possibleType.equalsIgnoreCase("A+")) {
+                return "A+";
+            }else if(possibleType.equalsIgnoreCase("A-")) {
+                return "A-";
+            } else if(possibleType.equalsIgnoreCase("B+")) {
+                return "B+";
+            } else if(possibleType.equalsIgnoreCase("A-")) {
+                return "B-";
+            } else if(possibleType.equalsIgnoreCase("O+")) {
+                return "O+";
+            } else if(possibleType.equalsIgnoreCase("O-")) {
+                return "O-";
+            } else {
+                return "U";
+            }
+    }
+
+
   @Override
     public boolean equals(Object o) {
         if (this == o) return true;
