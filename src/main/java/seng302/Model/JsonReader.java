@@ -60,7 +60,8 @@ public final class JsonReader {
                     }
                     DateTime timeCreated = new DateTime(donor.get("Time Created"));
                     DateTime lastModified = new DateTime(donor.get("Last Modified"));
-                    Donor d = new Donor(dob, dod, gender, height, weight, bloodType, currentAddress, region, timeCreated, name, lastModified);
+                    Boolean isDeceased = (Boolean) donor.get("is Deceased");
+                    Donor d = new Donor(dob, dod, gender, height, weight, bloodType, currentAddress, region, timeCreated, name, lastModified, isDeceased);
                     JSONArray organs = (JSONArray) donor.get("Organs");
                     if (organs != null) {
                         for (Object org : organs) {
@@ -68,6 +69,11 @@ public final class JsonReader {
                         }
                     }
                     donorsIn.add(d);
+                    JSONArray miscAttributes = (JSONArray) donor.get("Misc");
+                    if (miscAttributes != null){
+                        for (Object attribute : miscAttributes)
+                            d.addAttribute(attribute.toString());
+                    }
                     imported++;
                 } catch (IllegalArgumentException e) {
                     System.out.println("malformed DateTime has been detected for Donor: " + name + " has not been imported. This record will be purged if changes are made in this session.");

@@ -146,6 +146,29 @@ public class AppController {
     return null;
   }
 
+  /**
+   * Method to update the donor of any changes passed in by the gui.
+   * Removes the old entry of the donor form the list and then adds the updated entry
+   * If the donor is not already in the list it is added
+   *
+   * TODO: each donor may need to be assigned a unique id for this part
+   *
+   * @param donor donor to be updated/added
+   */
+  public void update(Donor donor){
+    if (donors.contains(donor)){
+      donors.remove(donor);
+      donors.add(donor);
+    } else {
+      donors.add(donor);
+    }
+    try {
+      JsonWriter.saveCurrentDonorState(donors);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
+
 
   public void setDonors(ArrayList<Donor> donors) {
     this.donors = donors;

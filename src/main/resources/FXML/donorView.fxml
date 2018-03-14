@@ -57,6 +57,7 @@
                         <Button layoutX="292.0" layoutY="349.0" mnemonicParsing="false" onAction="#modifyOrgans" text="Organs" />
                         <ListView fx:id="miscAttributeslistView" layoutX="363.0" layoutY="341.0" prefHeight="171.0" prefWidth="221.0" />
                         <Button layoutX="301.0" layoutY="427.0" mnemonicParsing="false" onAction="#modifyMiscAttributes" text="Misc" />
+                        <Label fx:id="warningLabel" layoutX="263.0" layoutY="56.0" text="Label" />
                      </children>
                   </AnchorPane>
             </content>

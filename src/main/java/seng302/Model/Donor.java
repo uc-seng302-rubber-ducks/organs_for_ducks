@@ -2,13 +2,11 @@ package seng302.Model;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.*;
+
 import org.joda.time.DateTime;
 
 import java.text.DateFormat;
-import java.util.Date;
-import java.util.Objects;
 
 /**
  * Class for all donors created in this application
@@ -27,11 +25,15 @@ public class Donor {
    private String currentAddress;
    private String region;
    private DateTime timeCreated;
+   private Boolean isDeceased;
    private String name;
    private HashSet<Organs> organs;
    private DateTime lastModified;
+   private ArrayList<String> miscAttributes;
 
-    public Donor(Date dateOfBirth, Date dateOfDeath, String gender, double height, double weight, String bloodType, String currentAddress, String region, DateTime timeCreated, String name, DateTime lastModified) {
+    public Donor(Date dateOfBirth, Date dateOfDeath, String gender, double height, double weight, String bloodType,
+                 String currentAddress, String region, DateTime timeCreated, String name, DateTime lastModified,
+                 boolean isDeceased) {
         this.dateOfBirth = dateOfBirth;
         this.dateOfDeath = dateOfDeath;
         if(gender.startsWith("m") || gender.startsWith("M")){
@@ -58,6 +60,8 @@ public class Donor {
         } else {
             this.lastModified = lastModified;
         }
+        this.isDeceased = isDeceased;
+        miscAttributes = new ArrayList<>();
     }
 
     public Donor(String name, Date dateOfBirth) {
@@ -67,7 +71,14 @@ public class Donor {
         lastModified = DateTime.now();
         this.gender = "U";
         this.bloodType = "U";
+        miscAttributes = new ArrayList<>();
     }
+
+    /** empty constructor to allow an empty donor to be created for the gui
+     *
+     */
+    public Donor(){}
+
 
     /**
      * Utility function to update the last modified timestamp when a change is made to a donor.
@@ -188,6 +199,13 @@ public class Donor {
       }
     }
 
+    public Boolean getDeceased() {
+        return isDeceased;
+    }
+
+    public void setDeceased(Boolean deceased) {
+        isDeceased = deceased;
+    }
 
     /**
      * Method to ensure that all blood types are valid blood types
@@ -223,7 +241,23 @@ public class Donor {
     }
 
 
-  @Override
+    public ArrayList<String> getMiscAttributes() {
+        return miscAttributes;
+    }
+
+    public void setMiscAttributes(ArrayList<String> miscAttributes) {
+        this.miscAttributes = miscAttributes;
+    }
+
+    public void removeMiscAttribute(String attribute){
+        miscAttributes.remove(attribute);
+    }
+
+    public void addAttribute(String attribute){
+        miscAttributes.add(attribute);
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;

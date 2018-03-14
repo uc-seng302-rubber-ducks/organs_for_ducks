@@ -65,6 +65,7 @@ public final class JsonWriter {
             j.put("Region", d.getRegion());
             j.put("Time Created", d.getTimeCreated().toString());
             j.put("Last Modified", d.getLastModified().toString());
+            j.put("is Deceased", d.getDeceased());
             JSONArray organs = new JSONArray();
             HashSet<Organs> organsDonating = d.getOrgans();
             if (organsDonating == null) {
@@ -76,9 +77,20 @@ public final class JsonWriter {
                 j.put("Organs", organs);
             }
             outerJSON.add(j);
+            JSONArray miscAttributes = new JSONArray();
+            ArrayList<String> attributes = d.getMiscAttributes();
+            if (attributes == null){
+                j.put("Misc", null);
+            } else {
+                for(String a : attributes){
+                    miscAttributes.add(a);
+                }
+            }
+            j.put("Misc", miscAttributes);
         }
         outFileStream.write(outerJSON.toJSONString().getBytes());
         outFileStream.close();
+        System.out.println(donors.size() + " Donors Sucessfully saved");
     }
 
 
