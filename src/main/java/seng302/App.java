@@ -15,6 +15,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import seng302.Controller.AppController;
 import seng302.Controller.DonorController;
+import seng302.Controller.LoginController;
 import seng302.Model.Donor;
 import seng302.Model.JsonReader;
 import seng302.Model.JsonWriter;
@@ -28,11 +29,16 @@ public class App extends Application
     @Override
     public void start(Stage primaryStage) throws Exception {
         //This looks confusing for now but ill explain it next time we have a stand up
-        FXMLLoader donorLoader = new FXMLLoader(getClass().getResource("/FXML/donorView.fxml"));
-        Parent root = donorLoader.load();
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML/loginView.fxml"));
+        Parent root = null;
+        try {
+            root = loader.load();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        LoginController loginController = loader.getController();
+        loginController.init(AppController.getInstance(), primaryStage);
         primaryStage.setScene(new Scene(root));
-        DonorController donorController =  donorLoader.getController();
-        donorController.init(AppController.getInstance());
         primaryStage.show();
     }
 }

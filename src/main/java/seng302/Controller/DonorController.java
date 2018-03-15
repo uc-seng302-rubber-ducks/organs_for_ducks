@@ -88,7 +88,7 @@ public class DonorController {
    * Gives the donor view the application controller and hides all label and buttosns that are not needed on opening
    * @param controller
    */
-  public void init(AppController controller){
+  public void init(AppController controller, Donor donor){
     application = controller;
     ageLabel.setText("");
     //arbitrary default values
@@ -102,8 +102,10 @@ public class DonorController {
     ObservableList bloodTypes = FXCollections.observableList(possibleBloodTypes);
     bloodTypeComboBox.getItems().addAll(bloodTypes);
     warningLabel.setVisible(false);
-    currentDonor = application.getDonors().get(0); //TODO: add code here to get donor that is being referred to on login
-    showDonor(currentDonor);
+    currentDonor = donor;
+    if(donor.getName() != null) {
+        showDonor(currentDonor); // Assumes a donor with no name is a new sign up and does not pull values from a template
+    }
   }
   /**
    * fires when the Organs button is clicked

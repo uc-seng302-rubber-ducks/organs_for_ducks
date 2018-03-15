@@ -110,6 +110,21 @@ public class AppController {
     return toReturn;
   }
 
+  /**
+   * Finds donor by name only. This method will need to be migrated to unique username in later builds
+   * returns null if donor is not found
+   */
+  public Donor findDonor(String name) {
+    Donor toReturn = null;
+    for (Donor d : donors){
+      if(d.getName().equalsIgnoreCase(name)){
+        return d;
+      }
+    }
+    return toReturn;
+  }
+
+
 
   /**
    * takes a passed donor and removes them from the maintained list of donors
