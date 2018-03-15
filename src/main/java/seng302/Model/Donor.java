@@ -77,7 +77,9 @@ public class Donor {
     /** empty constructor to allow an empty donor to be created for the gui
      *
      */
-    public Donor(){}
+    public Donor(){
+      timeCreated = DateTime.now();
+    }
 
 
     /**

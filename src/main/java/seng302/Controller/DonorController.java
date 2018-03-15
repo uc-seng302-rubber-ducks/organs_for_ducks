@@ -1,5 +1,6 @@
 package seng302.Controller;
 
+import java.time.LocalDate;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -90,7 +91,10 @@ public class DonorController {
   public void init(AppController controller){
     application = controller;
     ageLabel.setText("");
-
+    //arbitrary default values
+    dateOfBirthPicker.setValue(LocalDate.of(1970,1,1));
+    dateOfDeathPicker.setValue(LocalDate.now());
+    changeDeceasedStatus();
     undoButton.setVisible(false);
     redoButton.setVisible(false);
     ObservableList genders = FXCollections.observableList(possibleGenders);
@@ -98,8 +102,8 @@ public class DonorController {
     ObservableList bloodTypes = FXCollections.observableList(possibleBloodTypes);
     bloodTypeComboBox.getItems().addAll(bloodTypes);
 
-    currentDonor = application.getDonors().get(0); //TODO: add code here to get donor that is being refered to on login
-    showDonor(currentDonor);
+    currentDonor = new Donor(); //TODO: add code here to get donor that is being refered to on login
+    //showDonor(currentDonor);
   }
   /**
    * fires when the Organs button is clicked
@@ -160,28 +164,48 @@ public class DonorController {
    */
   @FXML
   private void updateDonor() {
+    boolean isInputValid = true;
       warningLabel.setText("");
       if(nameTextField.getText().length() <= 3){
           warningLabel.setText("Names must be longer than 3 characters");
           return;
       }
-      currentDonor.setName(nameTextField.getText());
-      currentDonor.setDateOfBirth(Date.from(dateOfBirthPicker.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant()));
-      try {
+      String newName = nameTextField.getText();
+      if (newName != null) {
+        currentDonor.setName(newName);
+      } else {
+        isInputValid = false;
+        warningLabel.setText("Please enter a name");
+      }
+      Date newDob = Date.from(dateOfBirthPicker.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant());
+      currentDonor.setDateOfBirth(newDob);
+
+      //only if weight has been entered
+      if (!weightTextField.getText().equals("")) {
+        try {
           currentDonor.setWeight(Double.parseDouble(weightTextField.getText()));
-      } catch (NumberFormatException e){
+        } catch (NumberFormatException e) {
           warningLabel.setText("Weight must be a number");
           return;
+        }
       }
-      try {
+      if (!heightTextField.getText().equals("")) {
+        try {
           currentDonor.setHeight(Double.parseDouble(heightTextField.getText()));
-      } catch (NumberFormatException e){
+        } catch (NumberFormatException e) {
           warningLabel.setText("Height must be a number");
           return;
+        }
       }
+
       currentDonor.setCurrentAddress(currentAddressTextArea.getText());
       currentDonor.setRegion(regionTextField.getText());
-      currentDonor.setGender(genderComboBox.getValue());
+
+      String newGender = (genderComboBox.getValue());
+      if (newGender == null) {
+        newGender = "U";
+      }
+      currentDonor.setGender(newGender);
       currentDonor.setBloodType(bloodTypeComboBox.getValue());
       currentDonor.setDeceased(isDonorDeceasedCheckBox.isSelected());
       if(isDonorDeceasedCheckBox.isSelected()){
@@ -190,8 +214,9 @@ public class DonorController {
           currentDonor.setDateOfDeath(null);
       }
 
-      application.update(currentDonor);
-
+      if (isInputValid) {
+        application.update(currentDonor);
+      }
 
   }
 
