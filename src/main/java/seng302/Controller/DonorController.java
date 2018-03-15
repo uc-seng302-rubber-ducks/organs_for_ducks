@@ -75,6 +75,9 @@ public class DonorController {
   @FXML
   private Label warningLabel;
 
+  @FXML
+  private Button logoutButton;
+
   private AppController application;
 
   private List<String> possibleGenders = Arrays.asList("M","F","U");
@@ -82,13 +85,16 @@ public class DonorController {
   private List<String> possibleBloodTypes = Arrays.asList("A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-", "U");
 
   private Donor currentDonor;
+  private Stage stage;
+
 
 
   /**
    * Gives the donor view the application controller and hides all label and buttosns that are not needed on opening
    * @param controller
    */
-  public void init(AppController controller, Donor donor){
+  public void init(AppController controller, Donor donor, Stage stage){
+      this.stage= stage;
     application = controller;
     ageLabel.setText("");
     //arbitrary default values
@@ -141,7 +147,7 @@ public class DonorController {
 
   /**
    * fires when the Misc button is clicked
-   * #TODO: add view to modify these, should be super basic
+   *
    */
   @FXML
   private void modifyMiscAttributes() {
@@ -238,6 +244,23 @@ public class DonorController {
    */
   @FXML
   private void redo() {
+
+  }
+
+  @FXML
+  private void logout(){
+      updateDonor();
+      FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML/loginView.fxml"));
+      Parent root = null;
+      try {
+          root = loader.load();
+      } catch (IOException e) {
+          e.printStackTrace();
+      }
+      LoginController loginController = loader.getController();
+      loginController.init(AppController.getInstance(), stage);
+      stage.setScene(new Scene(root));
+      stage.show();
 
   }
 

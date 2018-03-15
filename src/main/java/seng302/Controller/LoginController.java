@@ -41,6 +41,7 @@ public class LoginController {
         this.appController = appController;
         donors = appController.getDonors();
         this.stage = stage;
+
     }
 
     @FXML
@@ -61,7 +62,7 @@ public class LoginController {
         }
         stage.setScene(new Scene(root));
         DonorController donorController =  donorLoader.getController();
-        donorController.init(AppController.getInstance(), donor);
+        donorController.init(AppController.getInstance(), donor, stage);
 
 
 
@@ -78,11 +79,10 @@ public class LoginController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        Stage primaryStage = new Stage();
-        primaryStage.setScene(new Scene(root));
+        stage.setScene(new Scene(root));
         DonorController donorController =  donorLoader.getController();
-        donorController.init(AppController.getInstance(), new Donor());
-        primaryStage.show();
+        donorController.init(AppController.getInstance(), new Donor(), stage);
+
     }
 
 }
