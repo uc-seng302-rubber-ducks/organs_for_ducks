@@ -63,7 +63,10 @@ public class Register implements Runnable {
     }
     int id = controller.Register(firstName + " " + lastName, dob);
     Donor donor = controller.getDonor(id);
-
+    if (donor == null){
+      System.out.println("Donor already exists. New donor has not been added");
+      return;
+    }
     if (dodString != null) {
       donor.setDateOfDeath(IoHelper.readDate(dodString));
     }
@@ -75,6 +78,9 @@ public class Register implements Runnable {
     }
     if (gender != null) {
       donor.setGender(gender);
+    }
+    if (bloodType != null) {
+      donor.setBloodType(bloodType);
     }
     if (currentAddress != null) {
       donor.setCurrentAddress(currentAddress);

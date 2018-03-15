@@ -41,9 +41,4 @@ public class AppControllerTest {
     Assert.assertTrue(controller.getDonors().contains(donor));
 
   }
-
-  @Test(expected = Exception.class)
-  public void ShouldThrowExceptionWhenGivenBadData() {
-    controller.Register(null, null);
-  }
 }

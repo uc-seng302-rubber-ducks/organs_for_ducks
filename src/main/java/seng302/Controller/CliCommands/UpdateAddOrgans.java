@@ -30,6 +30,8 @@ public class UpdateAddOrgans implements Runnable {
   @Parameters(description = "List of organs to be added. Use underscores for multi-word organs (e.g. bone_marrow")
   private String[] organs;
 
+  @Option(names = {"-h", "help"}, required = false, usageHelp = true, description = "display a help message")
+  private Boolean helpRequested = false;
 
   @Override
   public void run() {

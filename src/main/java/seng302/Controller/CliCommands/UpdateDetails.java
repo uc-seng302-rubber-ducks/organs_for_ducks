@@ -1,6 +1,7 @@
 package seng302.Controller.CliCommands;
 
 import java.io.IOException;
+import java.util.Date;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import seng302.Controller.AppController;
@@ -65,13 +66,19 @@ public class UpdateDetails implements Runnable {
     changed = IoHelper.updateName(donor, firstName, lastName);
 
     if (dobString != null) {
-      donor.setDateOfBirth(IoHelper.readDate(dobString));
-      changed = true;
+      Date newDate = IoHelper.readDate(dobString);
+      if (newDate != null) {
+        donor.setDateOfBirth(newDate);
+        changed = true;
+      }
     }
 
     if (dodString != null) {
-      donor.setDateOfDeath(IoHelper.readDate(dodString));
-      changed = true;
+      Date newDate = IoHelper.readDate(dobString);
+      if (newDate != null) {
+        donor.setDateOfDeath(newDate);
+        changed = true;
+      }
     }
     if (weight != -1) {
       donor.setWeight(weight);
@@ -83,6 +90,10 @@ public class UpdateDetails implements Runnable {
     }
     if (gender != null) {
       donor.setGender(gender);
+      changed = true;
+    }
+    if (bloodType != null) {
+      donor.setBloodType(bloodType);
       changed = true;
     }
     if (currentAddress != null) {

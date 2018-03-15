@@ -10,7 +10,7 @@ import seng302.Model.Donor;
 import seng302.Model.JsonReader;
 import seng302.Model.JsonWriter;
 
-
+@Deprecated
 public class App
 {
     public static void main( String[] args ) {
