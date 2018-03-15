@@ -47,6 +47,7 @@ public class MiscAttributesController {
     @FXML
     void addAttribute(ActionEvent event) {
         String toAdd = attributeTextFeild.getText();
+        attributeTextFeild.setText("");
         if(toAdd == null){
             return;
         }

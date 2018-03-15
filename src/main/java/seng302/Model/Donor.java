@@ -79,6 +79,7 @@ public class Donor {
      */
     public Donor(){
       timeCreated = DateTime.now();
+      organs = new HashSet<>();
     }
 
 

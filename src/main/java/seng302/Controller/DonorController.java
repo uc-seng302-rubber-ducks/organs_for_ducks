@@ -64,7 +64,7 @@ public class DonorController {
   private TextArea currentAddressTextArea;
 
   @FXML
-  private ListView<?> miscAttributeslistView;
+  private ListView<String> miscAttributeslistView;
 
   @FXML
   private TableView<?> historyTableView;
@@ -101,9 +101,9 @@ public class DonorController {
     genderComboBox.getItems().addAll(genders);
     ObservableList bloodTypes = FXCollections.observableList(possibleBloodTypes);
     bloodTypeComboBox.getItems().addAll(bloodTypes);
-
-    currentDonor = new Donor(); //TODO: add code here to get donor that is being refered to on login
-    //showDonor(currentDonor);
+    warningLabel.setVisible(false);
+    currentDonor = application.getDonors().get(0); //TODO: add code here to get donor that is being referred to on login
+    showDonor(currentDonor);
   }
   /**
    * fires when the Organs button is clicked
@@ -155,6 +155,8 @@ public class DonorController {
       miscAttributesController.init(currentDonor, application, stage);
       stage.setScene(new Scene(root));
       stage.show();
+      miscAttributeslistView.getItems().clear();
+      miscAttributeslistView.getItems().addAll(currentDonor.getMiscAttributes());
   }
 
   /**
@@ -165,6 +167,7 @@ public class DonorController {
   @FXML
   private void updateDonor() {
     boolean isInputValid = true;
+    warningLabel.setVisible(true);
       warningLabel.setText("");
       if(nameTextField.getText().length() <= 3){
           warningLabel.setText("Names must be longer than 3 characters");
@@ -174,8 +177,8 @@ public class DonorController {
       if (newName != null) {
         currentDonor.setName(newName);
       } else {
-        isInputValid = false;
         warningLabel.setText("Please enter a name");
+        return;
       }
       Date newDob = Date.from(dateOfBirthPicker.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant());
       currentDonor.setDateOfBirth(newDob);
@@ -244,14 +247,21 @@ public class DonorController {
     weightTextField.setText(Double.toString(donor.getWeight()));
     currentAddressTextArea.setText(donor.getCurrentAddress());
     regionTextField.setText(donor.getRegion());
-    organsDonatingListView.getItems().addAll(donor.getOrgans());
-    bloodTypeComboBox.getSelectionModel().select(donor.getBloodType());
+      if (donor.getOrgans() != null) {
+          organsDonatingListView.getItems().addAll(donor.getOrgans());
+      }
+      bloodTypeComboBox.getSelectionModel().select(donor.getBloodType());
       if (!currentDonor.getDeceased()){
           dateOfDeathPicker.setVisible(false);
           dodLabel.setVisible(false);
       } else {
           isDonorDeceasedCheckBox.setSelected(true);
           dateOfDeathPicker.setValue(donor.getDateOfDeath().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
+      }
+      if(donor.getMiscAttributes() != null){
+          for(String atty : donor.getMiscAttributes()) {
+              miscAttributeslistView.getItems().add(atty);
+          }
       }
   }
 }
