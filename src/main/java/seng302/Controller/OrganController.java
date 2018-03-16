@@ -1,6 +1,6 @@
 package seng302.Controller;
 
-import com.sun.deploy.util.ArrayUtil;
+
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -13,7 +13,6 @@ import seng302.Model.Organs;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Scanner;
 
 public class OrganController {
 
@@ -44,12 +43,12 @@ public class OrganController {
         this.appController = controller;
         currentDonor = donor;
         donorNameLabel.setText(donor.getName());
-        ArrayList<Organs> donating  = new ArrayList<>(donor.getOrgans());
+        ArrayList<Organs> donating  = new ArrayList<Organs>(donor.getOrgans());
         currentlyDonating.setItems(FXCollections.observableList(donating));
-        ArrayList leftOverOrgans = new ArrayList();
+        ArrayList<Organs> leftOverOrgans = new ArrayList<Organs>();
         Collections.addAll(leftOverOrgans, Organs.values());
         for (Organs o : donating){
-            leftOverOrgans.remove(donating);
+            leftOverOrgans.remove(o);
         }
         canDonate.setItems(FXCollections.observableList(leftOverOrgans));
 

@@ -58,6 +58,7 @@
                         <ListView fx:id="miscAttributeslistView" layoutX="363.0" layoutY="341.0" prefHeight="171.0" prefWidth="221.0" />
                         <Button layoutX="301.0" layoutY="427.0" mnemonicParsing="false" onAction="#modifyMiscAttributes" text="Misc" />
                         <Label fx:id="warningLabel" layoutX="263.0" layoutY="56.0" text="Label" />
+                        <Button fx:id="logOutButton" layoutX="388.0" layoutY="263.0" mnemonicParsing="false" onAction="#logout" text="Log Out" />
                      </children>
                   </AnchorPane>
             </content>
