@@ -77,7 +77,6 @@ public class UndoRedoStacks {
             donor = cloneDonor(undoCopy, donor);
 
         }
-        System.out.println(donor.getOrgans().toString());
         return donor; //Return the newly undone donor
     }
 
