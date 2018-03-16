@@ -216,6 +216,11 @@ public class Donor {
       }
     }
 
+    //Trial method
+    public void initOrgans() {
+        organs = new HashSet<>();
+    }
+
     public Boolean getDeceased() {
         return isDeceased;
     }

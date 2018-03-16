@@ -2,6 +2,7 @@ package seng302.Model;
 
 import org.joda.time.DateTime;
 
+import java.util.Iterator;
 import java.util.Stack;
 
 public class UndoRedoStacks {
@@ -30,6 +31,13 @@ public class UndoRedoStacks {
         donorClone.setName(donor.getName());
         donorClone.setDeceased(donor.getDeceased());
         donorClone.setMiscAttributes(donor.getMiscAttributes());
+        donorClone.initOrgans();
+
+        donorClone.getOrgans().clear();
+        for(Organs organ : donor.getOrgans()) {
+            donorClone.addOrgan(organ);
+        }
+
         //All .set functions call updateLastModified, not sure if we want undo to be an update
         donorClone.setLastModified(lastModified);
 
@@ -54,19 +62,22 @@ public class UndoRedoStacks {
     }
 
     /**
-     * Called when the 'Undo' button is clicked. Loads the latest donor save and stroes the current one in redoStack
+     * Called when the 'Undo' button is clicked. Loads the latest donor save and stores the current one in redoStack
      * @param donor Current donor save to go on the redo stack
      * @return donor Donor the latest donor save
      */
     public static Donor loadUndoCopy(Donor donor) {
+        //Donor undoCopy = new Donor();
         if (!undoStack.empty()) { //Make sure that and Undo can be done
             Donor redoCopy = new Donor(); //Create a donor instance to be the redoCopy
             redoCopy = cloneDonor(donor, redoCopy); //Copy the data from the current save
             redoStack.push(redoCopy); //Push the redo copy
 
-            Donor undoCopy = undoStack.pop(); //Get the latest undo copy
-            donor = undoCopy; //Make the current donor the latest undo copy
+            Donor undoCopy = undoStack.pop();//Make the current donor the latest undo copy
+            donor = cloneDonor(undoCopy, donor);
+
         }
+        System.out.println(donor.getOrgans().toString());
         return donor; //Return the newly undone donor
     }
 

@@ -10,6 +10,7 @@ import javafx.scene.control.ListView;
 import javafx.stage.Stage;
 import seng302.Model.Donor;
 import seng302.Model.Organs;
+import seng302.Model.UndoRedoStacks;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -56,6 +57,7 @@ public class OrganController {
 
     @FXML
     void donate(ActionEvent event) {
+        UndoRedoStacks.storeUndoCopy(currentDonor);
         Organs toDonate = canDonate.getSelectionModel().getSelectedItem();
         currentlyDonating.getItems().add(toDonate);
         currentDonor.addOrgan(toDonate);
@@ -66,6 +68,7 @@ public class OrganController {
 
     @FXML
     void undonate(ActionEvent event) {
+        UndoRedoStacks.storeUndoCopy(currentDonor);
         Organs toUndonate = currentlyDonating.getSelectionModel().getSelectedItem();
         currentlyDonating.getItems().remove(toUndonate);
         canDonate.getItems().add(toUndonate);
