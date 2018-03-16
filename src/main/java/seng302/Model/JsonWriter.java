@@ -76,7 +76,6 @@ public final class JsonWriter {
                 }
                 j.put("Organs", organs);
             }
-            outerJSON.add(j);
             JSONArray miscAttributes = new JSONArray();
             ArrayList<String> attributes = d.getMiscAttributes();
             if (attributes == null){
@@ -87,6 +86,8 @@ public final class JsonWriter {
                 }
             }
             j.put("Misc", miscAttributes);
+            outerJSON.add(j);
+
         }
         outFileStream.write(outerJSON.toJSONString().getBytes());
         outFileStream.close();
@@ -132,4 +133,32 @@ public final class JsonWriter {
             e.printStackTrace();
         }
     }
+
+    public static void saveClinicians(ArrayList<Clinician> clinicians){
+        try{
+            if(!Files.exists(Paths.get(Directory.JSON.directory()))){
+                Files.createDirectories(Paths.get(Directory.JSON.directory()));
+            }
+            File outfile = new File(Directory.JSON.directory()+"/clinicians.json");
+            FileOutputStream fileOutputStream = new FileOutputStream(outfile, false);
+
+            JSONArray outerJSON = new JSONArray();
+            for(Clinician c : clinicians){
+                JSONObject j = new JSONObject();
+                j.put("Name", c.getName());
+                j.put("Staff Id", c.getStaffId());
+                j.put("Work Address", c.getWorkAddress());
+                j.put("Region", c.getResion());
+                j.put("Password", c.getPassword());
+
+                outerJSON.add(j);
+            }
+
+            fileOutputStream.write(outerJSON.toJSONString().getBytes());
+            fileOutputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }
+

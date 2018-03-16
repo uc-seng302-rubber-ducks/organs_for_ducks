@@ -3,6 +3,8 @@ package seng302.Controller;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
+
+import seng302.Model.Clinician;
 import seng302.Model.Donor;
 import seng302.Model.JsonReader;
 import seng302.Model.JsonWriter;
@@ -10,10 +12,19 @@ import seng302.Model.JsonWriter;
 public class AppController {
 
   private ArrayList<Donor> donors = new ArrayList<>();
+  private ArrayList<Clinician> clinicians = new ArrayList<>();
   private static AppController controller;
 
   private AppController() {
     donors = JsonReader.importJsonDonors();
+    clinicians = JsonReader.importClinicians();
+    for(Clinician c : clinicians){
+      if(c.getStaffId() == 0){
+        return; //short circut out if defalut clinication exists
+      }
+    }
+    clinicians.add(new Clinician("Default",0,"","","admin"));
+    JsonWriter.saveClinicians(clinicians);
   }
 
   /**
@@ -188,4 +199,14 @@ public class AppController {
   public void setDonors(ArrayList<Donor> donors) {
     this.donors = donors;
   }
+
+  public Clinician getClinician(int id){
+   for (Clinician c : clinicians){
+     if (c.getStaffId() == id) {
+       return c;
+     }
+   }
+      return new Clinician();
+   }
+
 }
