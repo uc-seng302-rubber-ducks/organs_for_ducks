@@ -11,6 +11,7 @@ import javafx.scene.control.*;
 import javafx.stage.Stage;
 import seng302.Model.Donor;
 import seng302.Model.Organs;
+import seng302.Model.UndoRedoStacks;
 
 import java.io.IOException;
 import java.time.ZoneId;
@@ -95,8 +96,8 @@ public class DonorController {
     dateOfBirthPicker.setValue(LocalDate.of(1970,1,1));
     dateOfDeathPicker.setValue(LocalDate.now());
     changeDeceasedStatus();
-    undoButton.setVisible(false);
-    redoButton.setVisible(false);
+    undoButton.setVisible(true);
+    redoButton.setVisible(true);
     ObservableList genders = FXCollections.observableList(possibleGenders);
     genderComboBox.getItems().addAll(genders);
     ObservableList bloodTypes = FXCollections.observableList(possibleBloodTypes);
@@ -164,6 +165,7 @@ public class DonorController {
    */
   @FXML
   private void updateDonor() {
+    UndoRedoStacks.storeUndoCopy(currentDonor);
     boolean isInputValid = true;
       warningLabel.setText("");
       if(nameTextField.getText().length() <= 3){
@@ -225,6 +227,11 @@ public class DonorController {
    */
   @FXML
   private void undo() {
+      currentDonor = UndoRedoStacks.loadUndoCopy(currentDonor);
+      //System.out.println("Something happened");
+      System.out.println(currentDonor.getName());
+      //showDonor(currentDonor); Error with showing donors
+
 
   }
 
@@ -233,7 +240,10 @@ public class DonorController {
    */
   @FXML
   private void redo() {
-
+      currentDonor = UndoRedoStacks.loadRedoCopy(currentDonor);
+      //System.out.println("Something happened");
+      System.out.println(currentDonor.getName());
+      //showDonor(currentDonor);
   }
 
   private void showDonor(Donor donor){

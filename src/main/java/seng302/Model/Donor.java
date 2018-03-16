@@ -31,6 +31,8 @@ public class Donor {
    private DateTime lastModified;
    private ArrayList<String> miscAttributes;
 
+
+
     public Donor(Date dateOfBirth, Date dateOfDeath, String gender, double height, double weight, String bloodType,
                  String currentAddress, String region, DateTime timeCreated, String name, DateTime lastModified,
                  boolean isDeceased) {
@@ -91,6 +93,11 @@ public class Donor {
     }
 
     public DateTime getLastModified(){return lastModified;}
+
+    //For UndoRedoStacks
+    public void setLastModified(DateTime lastModified) {
+        this.lastModified = lastModified;
+    }
 
     public String getName() {
         return name;
@@ -176,6 +183,12 @@ public class Donor {
 
     public DateTime getTimeCreated() {
         return timeCreated;
+    }
+
+    //For UndoRedoStacks
+    public void setTimeCreated(DateTime timeCreated) {
+        updateLastModified();
+        this.timeCreated = timeCreated;
     }
 
     public HashSet<Organs> getOrgans() {
@@ -289,4 +302,5 @@ public class Donor {
                 "\nlast modified: " + lastModified +
                 "\nhashcode="+hashCode();
     }
+
 }
