@@ -20,22 +20,28 @@ import seng302.Controller.CliCommands.CliRoot;
 import seng302.Model.JsonReader;
 import seng302.Model.JsonWriter;
 
+
 public class CLI {
 
   private static LineReader getLineReader() {
     try {
       TerminalBuilder builder = TerminalBuilder.builder();
-      Terminal terminal = builder.system(true).build();
+      Terminal terminal = builder
+          .system(true)
+          .dumb(true)
+          .build();
       History history = new DefaultHistory();
-
       LineReader lineReader = LineReaderBuilder
-          .builder().terminal(terminal).history(history).build();
+          .builder().terminal(terminal)
+          .history(history)
+          .build();
       KeyMap<Binding> keyMap = lineReader.getKeyMaps().get(LineReader.MAIN);
-      keyMap.bind(new Reference(LineReader.UP_LINE_OR_HISTORY), KeyMap.key(terminal, Capability.key_up));
-      keyMap.bind(new Reference(LineReader.DOWN_LINE_OR_HISTORY), KeyMap.key(terminal, Capability.key_down));
+      keyMap.bind(new Reference(LineReader.UP_LINE_OR_HISTORY),
+          KeyMap.key(terminal, Capability.key_up));
+      keyMap.bind(new Reference(LineReader.DOWN_LINE_OR_HISTORY),
+          KeyMap.key(terminal, Capability.key_down));
       return lineReader;
-    }
-    catch (IOException ex) {
+    } catch (IOException ex) {
       ex.printStackTrace();
       System.exit(1);
       return null;
@@ -52,16 +58,15 @@ public class CLI {
     String[] arguments;
     LineReader lineReader = getLineReader();
 
-    input = lineReader.readLine();
-    while(!input.trim().equals("quit")) {
+    input = lineReader.readLine(">> ");
+    while (!input.trim().equals("quit")) {
       arguments = input.split(" ");
       JsonWriter.changeLog(arguments);
       controller.addToHistoryOfCommands(arguments);
       new CommandLine(new CliRoot())
           .parseWithHandler(new CommandLine.RunLast(), System.err, arguments);
       //System.out.println(lineReader.getHistory().last());
-      input = lineReader.readLine();
-
+      input = lineReader.readLine(">> ");
     }
   }
 }
