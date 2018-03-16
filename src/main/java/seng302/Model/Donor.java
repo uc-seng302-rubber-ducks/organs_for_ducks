@@ -1,5 +1,6 @@
 package seng302.Model;
 
+import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -30,6 +31,7 @@ public class Donor {
    private HashSet<Organs> organs;
    private DateTime lastModified;
    private ArrayList<String> miscAttributes;
+   private HashMap<String, String> updateHistory;
 
     public Donor(Date dateOfBirth, Date dateOfDeath, String gender, double height, double weight, String bloodType,
                  String currentAddress, String region, DateTime timeCreated, String name, DateTime lastModified,
@@ -62,6 +64,7 @@ public class Donor {
         }
         this.isDeceased = isDeceased;
         miscAttributes = new ArrayList<>();
+        updateHistory = new HashMap<>();
     }
 
     public Donor(String name, Date dateOfBirth) {
@@ -72,6 +75,8 @@ public class Donor {
         this.gender = "U";
         this.bloodType = "U";
         miscAttributes = new ArrayList<>();
+        updateHistory = new HashMap<>();
+        updateHistory.put(dateToString(getTimeCreated()), "Profile created.");
     }
 
     /** empty constructor to allow an empty donor to be created for the gui
@@ -249,6 +254,21 @@ public class Donor {
 
     public void setMiscAttributes(ArrayList<String> miscAttributes) {
         this.miscAttributes = miscAttributes;
+    }
+
+    // @TODO: find all instances of potential updates and add to the Hashmap
+
+    public HashMap<String, String> getUpdateHistory() { return updateHistory; }
+
+    public void setUpdateHistory(HashMap<String, String> updateHistory) {this.updateHistory = updateHistory; }
+
+    private String dateToString(DateTime dateTime) {
+        return new Timestamp(dateTime.getMillis()).toString();
+    }
+
+    public void addToUpdateHistory(DateTime dateTime, String action) {
+        String timeStamp = dateToString(dateTime);
+        updateHistory.put(timeStamp, action);
     }
 
     public void removeMiscAttribute(String attribute){

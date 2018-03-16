@@ -1,6 +1,10 @@
 package seng302.Controller;
 
 import java.time.LocalDate;
+
+import javafx.beans.Observable;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -8,15 +12,16 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
+import javafx.util.Callback;
+import org.joda.time.DateTime;
 import seng302.Model.Donor;
 import seng302.Model.Organs;
 
 import java.io.IOException;
 import java.time.ZoneId;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 public class DonorController {
 
@@ -254,4 +259,37 @@ public class DonorController {
           dateOfDeathPicker.setValue(donor.getDateOfDeath().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
       }
   }
+
+    private void showDonorHistory(Donor donor) {
+        //historyTableView
+        //use JsonReader and JsonWriter
+        //change log history - look at
+
+        // historyTableView.add(?)(donor.getLastUpdated, donor.getlastactionorwe)
+
+        TableColumn<Map.Entry<String, String>, String> dateCol = new TableColumn<>("Time");
+        dateCol.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Map.Entry<String, String>, String>, ObservableValue<String>>() {
+
+            @Override
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<Map.Entry<String, String>, String> p) {
+             return new SimpleStringProperty(p.getValue().getKey());
+            }
+        });
+
+        TableColumn<Map.Entry<String, String>, String> actionCol = new TableColumn<>("Action");
+        actionCol.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Map.Entry<String, String>, String>, ObservableValue<String>>() {
+
+            @Override
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<Map.Entry<String, String>, String> p) {
+                return new SimpleStringProperty(p.getValue().getValue());
+            }
+        });
+
+        ObservableList<Map.Entry<String, String>> items = FXCollections.observableArrayList(donor.getUpdateHistory().entrySet());
+        // @TODO: fix this so it isn't grumpy
+        historyTableView.setItems(items);
+
+        historyTableView.getColumns().setAll(dateCol, actionCol);
+
+    }
 }
