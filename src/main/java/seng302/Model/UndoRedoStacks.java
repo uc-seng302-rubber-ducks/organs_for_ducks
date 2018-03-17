@@ -30,9 +30,13 @@ public class UndoRedoStacks {
         donorClone.setTimeCreated(donor.getTimeCreated());
         donorClone.setName(donor.getName());
         donorClone.setDeceased(donor.getDeceased());
-        donorClone.setMiscAttributes(donor.getMiscAttributes());
-        donorClone.initOrgans();
+        //donorClone.setMiscAttributes(donor.getMiscAttributes());
 
+        donorClone.getMiscAttributes().clear();
+        for(String misc : donor.getMiscAttributes()) {
+            donorClone.addAttribute(misc);
+        }
+        //donorClone.initOrgans();
         donorClone.getOrgans().clear();
         for(Organs organ : donor.getOrgans()) {
             donorClone.addOrgan(organ);

@@ -304,6 +304,7 @@ public class DonorController {
           dateOfDeathPicker.setValue(donor.getDateOfDeath().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
     }
     if(donor.getMiscAttributes() != null){
+        miscAttributeslistView.getItems().clear(); // HERE
         for(String atty : donor.getMiscAttributes()) {
             miscAttributeslistView.getItems().add(atty);
         }
