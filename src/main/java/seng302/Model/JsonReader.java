@@ -120,8 +120,10 @@ public final class JsonReader {
                 String workAddress =(String) clinician.get("Work Address");
                 String region = (String) clinician.get("Region");
                 String password = (String) clinician.get("Password");
+                DateTime dateCreated = new DateTime(clinician.get("Date Created"));
+                DateTime dateLastModified = new DateTime(clinician.get("Last Modified"));
 
-                Clinician c = new Clinician(name,staffId,workAddress,region,password);
+                Clinician c = new Clinician(name,staffId,workAddress,region,password, dateCreated,dateLastModified);
                 clinicians.add(c);
                 imported += 1;
 

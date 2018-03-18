@@ -12,9 +12,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashSet;
 
@@ -148,14 +145,17 @@ public final class JsonWriter {
                 j.put("Name", c.getName());
                 j.put("Staff Id", c.getStaffId());
                 j.put("Work Address", c.getWorkAddress());
-                j.put("Region", c.getResion());
+                j.put("Region", c.getRegion());
                 j.put("Password", c.getPassword());
+                j.put("Date Created", c.getDateCreated().toString());
+                j.put("Last Modified", c.getDateLastModified().toString());
 
                 outerJSON.add(j);
             }
 
             fileOutputStream.write(outerJSON.toJSONString().getBytes());
             fileOutputStream.close();
+            System.out.println("Clinician Successfully saved");
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -82,7 +82,21 @@ public class LoginController {
             }
             String password = passwordField.getText();
             Clinician clinician = appController.getClinician(wantedClinician);
-            System.out.println(clinician.getName() + " has been retrieved");
+            if (!password.equals(clinician.getPassword())){
+                warningLabel.setText("Either the Clinician does not exist\n or the password is incorrect please try again");
+                return;
+            }
+            FXMLLoader clincianLoader = new FXMLLoader(getClass().getResource("/FXML/clinicianView.fxml"));
+            Parent root = null;
+            try {
+                root = clincianLoader.load();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            stage.setScene(new Scene(root));
+            ClinicianController clinicianController = clincianLoader.getController();
+            clinicianController.init(stage,appController,clinician);
+
         }
 
 

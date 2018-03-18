@@ -209,4 +209,16 @@ public class AppController {
       return new Clinician();
    }
 
+   public void updateClinicians(Clinician clinician){
+    if(clinicians.contains(clinician)){
+      clinicians.remove(clinician);
+      clinicians.add(clinician);
+
+    } else {
+      clinicians.add(clinician);
+    }
+
+    JsonWriter.saveClinicians(clinicians);
+   }
+
 }
