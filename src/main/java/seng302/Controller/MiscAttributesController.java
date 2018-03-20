@@ -54,7 +54,7 @@ public class MiscAttributesController {
             return;
         }
         currentDonor.addAttribute(toAdd);
-        attributesList.getItems().add(toAdd);
+        attributesList.setItems(FXCollections.observableList(currentDonor.getMiscAttributes()));
         appController.update(currentDonor);
     }
 
