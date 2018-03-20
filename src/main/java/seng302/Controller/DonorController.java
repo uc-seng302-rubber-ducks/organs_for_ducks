@@ -11,6 +11,7 @@ import javafx.scene.control.*;
 import javafx.stage.Stage;
 import seng302.Model.Donor;
 import seng302.Model.Organs;
+import seng302.Model.UndoRedoStacks;
 
 import java.io.IOException;
 import java.time.ZoneId;
@@ -101,8 +102,8 @@ public class DonorController {
     dateOfBirthPicker.setValue(LocalDate.of(1970,1,1));
     dateOfDeathPicker.setValue(LocalDate.now());
     changeDeceasedStatus();
-    undoButton.setVisible(false);
-    redoButton.setVisible(false);
+    undoButton.setVisible(true);
+    redoButton.setVisible(true);
     ObservableList genders = FXCollections.observableList(possibleGenders);
     genderComboBox.getItems().addAll(genders);
     ObservableList bloodTypes = FXCollections.observableList(possibleBloodTypes);
@@ -118,19 +119,23 @@ public class DonorController {
    */
   @FXML
   private void modifyOrgans() {
-      FXMLLoader organLoader = new FXMLLoader(getClass().getResource("/FXML/organsView.fxml"));
-      Parent root = null;
-      try {
-          root = organLoader.load();
-      } catch (IOException e) {
-          e.printStackTrace();
-      }
-      OrganController organController = organLoader.getController();
-      Stage stage = new Stage ();
-      organController.init(currentDonor, application,stage);
-      stage.setScene(new Scene(root));
-      stage.show();
-
+      if (currentDonor.getName() != null) {
+          FXMLLoader organLoader = new FXMLLoader(getClass().getResource("/FXML/organsView.fxml"));
+          Parent root = null;
+          try {
+              root = organLoader.load();
+          } catch (IOException e) {
+              e.printStackTrace();
+          }
+          OrganController organController = organLoader.getController();
+          Stage stage = new Stage();
+          organController.init(currentDonor, application, stage);
+          stage.setScene(new Scene(root));
+          stage.show();
+      } //else {
+      //Alert the user to finish making profile first
+    //}
+      showDonor(currentDonor);
   }
 
   @FXML
@@ -174,6 +179,8 @@ public class DonorController {
    */
   @FXML
   private void updateDonor() {
+    UndoRedoStacks.storeUndoCopy(currentDonor);
+
     boolean isInputValid = true;
     warningLabel.setVisible(true);
       warningLabel.setText("");
@@ -229,6 +236,8 @@ public class DonorController {
         application.update(currentDonor);
       }
 
+      showDonor(currentDonor);
+
   }
 
   /**
@@ -236,6 +245,11 @@ public class DonorController {
    */
   @FXML
   private void undo() {
+      currentDonor = UndoRedoStacks.loadUndoCopy(currentDonor);
+      //System.out.println("Something happened");
+      //System.out.println(currentDonor.getName());
+      showDonor(currentDonor); //Error with showing donors
+
 
   }
 
@@ -244,7 +258,10 @@ public class DonorController {
    */
   @FXML
   private void redo() {
-
+      currentDonor = UndoRedoStacks.loadRedoCopy(currentDonor);
+      //System.out.println("Something happened");
+      //System.out.println(currentDonor.getName());
+      showDonor(currentDonor);
   }
 
   @FXML
@@ -262,6 +279,8 @@ public class DonorController {
       stage.setScene(new Scene(root));
       stage.show();
 
+      UndoRedoStacks.clearStacks();
+
   }
 
   private void showDonor(Donor donor){
@@ -272,21 +291,23 @@ public class DonorController {
     weightTextField.setText(Double.toString(donor.getWeight()));
     currentAddressTextArea.setText(donor.getCurrentAddress());
     regionTextField.setText(donor.getRegion());
-      if (donor.getOrgans() != null) {
-          organsDonatingListView.getItems().addAll(donor.getOrgans());
-      }
-      bloodTypeComboBox.getSelectionModel().select(donor.getBloodType());
-      if (!currentDonor.getDeceased()){
+    if (donor.getOrgans() != null) {
+        organsDonatingListView.getItems().clear();
+        organsDonatingListView.getItems().addAll(donor.getOrgans());
+    }
+    bloodTypeComboBox.getSelectionModel().select(donor.getBloodType());
+    if (!currentDonor.getDeceased()){
           dateOfDeathPicker.setVisible(false);
           dodLabel.setVisible(false);
-      } else {
+    } else {
           isDonorDeceasedCheckBox.setSelected(true);
           dateOfDeathPicker.setValue(donor.getDateOfDeath().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
-      }
-      if(donor.getMiscAttributes() != null){
-          for(String atty : donor.getMiscAttributes()) {
-              miscAttributeslistView.getItems().add(atty);
-          }
-      }
+    }
+    if(donor.getMiscAttributes() != null){
+        miscAttributeslistView.getItems().clear(); // HERE
+        for(String atty : donor.getMiscAttributes()) {
+            miscAttributeslistView.getItems().add(atty);
+        }
+    }
   }
 }

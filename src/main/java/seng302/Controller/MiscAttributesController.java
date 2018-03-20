@@ -9,6 +9,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import seng302.Model.Donor;
+import seng302.Model.UndoRedoStacks;
 
 import java.util.ArrayList;
 
@@ -46,6 +47,7 @@ public class MiscAttributesController {
 
     @FXML
     void addAttribute(ActionEvent event) {
+        UndoRedoStacks.storeUndoCopy(currentDonor);
         String toAdd = attributeTextFeild.getText();
         attributeTextFeild.setText("");
         if(toAdd == null){
@@ -58,6 +60,7 @@ public class MiscAttributesController {
 
     @FXML
     void removeAttribute(ActionEvent event) {
+        UndoRedoStacks.storeUndoCopy(currentDonor);
         String selected =  attributesList.getSelectionModel().getSelectedItem();
         attributesList.getItems().remove(selected);
         currentDonor.removeMiscAttribute(selected);
