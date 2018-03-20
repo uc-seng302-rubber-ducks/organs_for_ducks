@@ -35,7 +35,7 @@ public class DonorController {
   private CheckBox isDonorDeceasedCheckBox;
 
   @FXML
-  private TextField nameTextField = new TextField();
+  private TextField nameTextField;
 
   @FXML
   private TextField heightTextField;
