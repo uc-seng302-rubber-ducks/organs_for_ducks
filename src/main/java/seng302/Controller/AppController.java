@@ -15,6 +15,7 @@ public class AppController {
   private ArrayList<Clinician> clinicians = new ArrayList<>();
   private static AppController controller;
 
+  private DonorController donorController = new DonorController();
   private AppController() {
     donors = JsonReader.importJsonDonors();
     clinicians = JsonReader.importClinicians();
@@ -221,4 +222,11 @@ public class AppController {
     JsonWriter.saveClinicians(clinicians);
    }
 
+  public DonorController getDonorController() {
+    return donorController;
+  }
+
+  public void setDonorController(DonorController donorController) {
+    this.donorController = donorController;
+  }
 }

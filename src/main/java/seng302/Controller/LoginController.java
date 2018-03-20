@@ -70,6 +70,7 @@ public class LoginController {
             }
             stage.setScene(new Scene(root));
             DonorController donorController = donorLoader.getController();
+            AppController.getInstance().setDonorController(donorController);
             donorController.init(AppController.getInstance(), donor, stage);
         } else if (accountTypeComboBox.getValue().equals("Clinician")) {
             warningLabel.setText("");
@@ -86,15 +87,15 @@ public class LoginController {
                 warningLabel.setText("Either the Clinician does not exist\n or the password is incorrect please try again");
                 return;
             }
-            FXMLLoader clincianLoader = new FXMLLoader(getClass().getResource("/FXML/clinicianView.fxml"));
+            FXMLLoader clinicianLoader = new FXMLLoader(getClass().getResource("/FXML/clinicianView.fxml"));
             Parent root = null;
             try {
-                root = clincianLoader.load();
+                root = clinicianLoader.load();
             } catch (IOException e) {
                 e.printStackTrace();
             }
             stage.setScene(new Scene(root));
-            ClinicianController clinicianController = clincianLoader.getController();
+            ClinicianController clinicianController = clinicianLoader.getController();
             clinicianController.init(stage,appController,clinician);
 
         }

@@ -83,6 +83,15 @@ public class OrganController {
 
     @FXML
     void goBack(ActionEvent event) {
+        AppController appController = AppController.getInstance();
+        DonorController donorController = appController.getDonorController();
+        try {
+            donorController.showDonor(currentDonor);
+        }
+        catch (NullPointerException ex) {
+            //TODO causes npe if donor is new in this session
+            //the text fields etc. are all null
+        }
         stage.close();
     }
 

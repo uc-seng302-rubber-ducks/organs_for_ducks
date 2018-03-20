@@ -35,7 +35,7 @@ public class DonorController {
   private CheckBox isDonorDeceasedCheckBox;
 
   @FXML
-  private TextField nameTextField;
+  private TextField nameTextField = new TextField();
 
   @FXML
   private TextField heightTextField;
@@ -300,7 +300,7 @@ public class DonorController {
 
   }
 
-  private void showDonor(Donor donor) {
+  public void showDonor(Donor donor) {
     nameTextField.setText(donor.getName());
     dateOfBirthPicker
         .setValue(donor.getDateOfBirth().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
@@ -319,6 +319,8 @@ public class DonorController {
       dodLabel.setVisible(false);
     } else {
       isDonorDeceasedCheckBox.setSelected(true);
+      dodLabel.setVisible(true);
+      dateOfDeathPicker.setVisible(true);
       dateOfDeathPicker.setValue(
           donor.getDateOfDeath().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
     }

@@ -38,8 +38,10 @@ public class UndoRedoStacks {
         }
         //donorClone.initOrgans();
         donorClone.getOrgans().clear();
-        for(Organs organ : donor.getOrgans()) {
-            donorClone.addOrgan(organ);
+        if (donor.getOrgans() != null) {
+            for (Organs organ : donor.getOrgans()) {
+                donorClone.addOrgan(organ);
+            }
         }
 
         //All .set functions call updateLastModified, not sure if we want undo to be an update
