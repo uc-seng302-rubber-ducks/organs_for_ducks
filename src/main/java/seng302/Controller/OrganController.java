@@ -44,7 +44,13 @@ public class OrganController {
         this.appController = controller;
         currentDonor = donor;
         donorNameLabel.setText(donor.getName());
-        ArrayList<Organs> donating  = new ArrayList<Organs>(donor.getOrgans());
+        ArrayList<Organs> donating;
+        try {
+            donating= new ArrayList<>(donor.getOrgans());
+        }
+        catch (NullPointerException ex) {
+            donating = new ArrayList<>();
+        }
         currentlyDonating.setItems(FXCollections.observableList(donating));
         ArrayList<Organs> leftOverOrgans = new ArrayList<Organs>();
         Collections.addAll(leftOverOrgans, Organs.values());
@@ -57,23 +63,22 @@ public class OrganController {
 
     @FXML
     void donate(ActionEvent event) {
-        UndoRedoStacks.storeUndoCopy(currentDonor);
         Organs toDonate = canDonate.getSelectionModel().getSelectedItem();
         currentlyDonating.getItems().add(toDonate);
         currentDonor.addOrgan(toDonate);
         appController.update(currentDonor);
         canDonate.getItems().remove(toDonate);
-
+        UndoRedoStacks.storeUndoCopy(currentDonor);
     }
 
     @FXML
     void undonate(ActionEvent event) {
-        UndoRedoStacks.storeUndoCopy(currentDonor);
         Organs toUndonate = currentlyDonating.getSelectionModel().getSelectedItem();
         currentlyDonating.getItems().remove(toUndonate);
         canDonate.getItems().add(toUndonate);
         currentDonor.removeOrgan(toUndonate);
         appController.update(currentDonor);
+        UndoRedoStacks.storeUndoCopy(currentDonor);
     }
 
     @FXML
