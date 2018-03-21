@@ -132,7 +132,7 @@ public class ClinicianController {
     searchTableView.setOnMouseClicked(new EventHandler<MouseEvent>() {
       @Override
       public void handle(MouseEvent event) {
-        if (event.isPrimaryButtonDown()) {
+        if (event.isPrimaryButtonDown() && event.getClickCount() == 2) {
 
         }
       }
