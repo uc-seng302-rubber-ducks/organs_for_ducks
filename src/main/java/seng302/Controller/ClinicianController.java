@@ -69,13 +69,14 @@ public class ClinicianController {
   private TableView<Donor> searchTableView;
 
   @FXML
-  private Pagination searchPaginationControl;
+  private Pagination searchPagination;
 
   private Stage stage;
   private AppController appController;
   private Clinician clinician;
   private ArrayList<Donor> donors;
 
+  private static int currentIndex = 0;
 
   public void init(Stage stage, AppController appController, Clinician clinician) {
     warningLabel.setText("");
@@ -87,7 +88,9 @@ public class ClinicianController {
     addressTextField.setText(clinician.getWorkAddress());
     regionTextField.setText(clinician.getRegion());
     donors = appController.getDonors();
-    initSearchTable();
+    initSearchTable(0);
+    //searchPagination = new Pagination((donors.size() / ROWS_PER_PAGE + 1), 0);
+
 
   }
 
@@ -95,7 +98,8 @@ public class ClinicianController {
   /**
    * initialises the search table, abstracted from main init function for clarity
    */
-  private void initSearchTable() {
+  private void initSearchTable(int startIndex) {
+    int endIndex = Math.min(startIndex+ROWS_PER_PAGE, donors.size());
     if (donors == null || donors.isEmpty()) {
       return;
     }
@@ -121,10 +125,6 @@ public class ClinicianController {
 
     //set table columns and contents
     searchTableView.getColumns().setAll(nameColumn, dobColumn, dodColumn);
-
-    searchPaginationControl = new Pagination((fListDonors.size() / ROWS_PER_PAGE + 1), 0);
-    //searchPaginationControl.setPageFactory(this::);
-
     searchTableView.setItems(sListDonors);
 
 
@@ -200,4 +200,24 @@ public class ClinicianController {
 
   }
 
+  @FXML
+  void goToNextPage() {
+    if(currentIndex + ROWS_PER_PAGE >= donors.size()) {
+      initSearchTable(currentIndex);
+    } else {
+      initSearchTable(currentIndex + ROWS_PER_PAGE);
+      currentIndex += ROWS_PER_PAGE;
+    }
+  }
+
+  @FXML
+  void goToPrevPage() {
+    if(currentIndex - ROWS_PER_PAGE < 0) {
+      initSearchTable(0);
+    } else {
+      initSearchTable(currentIndex - ROWS_PER_PAGE);
+      currentIndex -= ROWS_PER_PAGE;
+    }
+
+  }
 }
