@@ -15,6 +15,11 @@ import seng302.Model.UndoRedoStacks;
 import java.util.ArrayList;
 import java.util.Collections;
 
+/**
+ * class for the Organs view
+ *
+ * @author Josh Burt
+ */
 public class OrganController {
 
     @FXML

@@ -7,6 +7,8 @@ import org.joda.time.Days;
  * Class to do all the heavy lifting on durations and pairing up dates for starting and stopping medications
  * Also allows the medication listView to be populated
  * Duration is in days
+ *
+ * @author Josh Burt
  */
 public class MedicationDurations {
 

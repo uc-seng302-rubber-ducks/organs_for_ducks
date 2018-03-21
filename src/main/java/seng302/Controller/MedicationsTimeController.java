@@ -33,6 +33,14 @@ public class MedicationsTimeController {
     private Stage stage;
     private ObservableList medicationDurations;
 
+    /**
+     * Initilizes the view and passes important settings into the controller
+     *
+     * @param appController apllication state itself
+     * @param donor current donor for this view
+     * @param stage stage that the scene is shown on
+     * @param medicine medication this is having its history shown
+     */
     public void init(AppController appController, Donor donor, Stage stage, String medicine){
         this.appController = appController;
         this.donor = donor;
@@ -45,6 +53,12 @@ public class MedicationsTimeController {
 
     }
 
+    /**
+     * Sets up the tableview for the medicaitons
+     *
+     * @param current list of currently taken medication timestamps
+     * @param previous list of previously taken medication timetamps
+     */
     private void setUpTable(ArrayList<DateTime> current, ArrayList<DateTime> previous){
         if(current != null) {
             current.sort(Comparator.naturalOrder());
@@ -84,6 +98,11 @@ public class MedicationsTimeController {
 
     }
 
+
+    /**
+     * Closes the stage on back button being pressed
+     * @param event passed in automaticly by the gui
+     */
     @FXML
     void back(ActionEvent event) {
         stage.close();

@@ -13,6 +13,11 @@ import seng302.Model.UndoRedoStacks;
 
 import java.util.ArrayList;
 
+/**
+ * Class for controlling the miscallanous attributes view
+ *
+ * @author Josh Burt
+ */
 public class MiscAttributesController {
 
   @FXML
