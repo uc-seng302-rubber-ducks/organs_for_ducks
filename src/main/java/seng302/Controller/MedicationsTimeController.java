@@ -62,10 +62,15 @@ public class MedicationsTimeController {
     private void setUpTable(ArrayList<DateTime> current, ArrayList<DateTime> previous){
         if(current != null) {
             current.sort(Comparator.naturalOrder());
+        } else {
+            current = new ArrayList<>();
         }
         if(previous != null) {
             previous.sort(Comparator.naturalOrder());
-        } else if (current.size() > 1){
+        } else {
+            previous = new ArrayList<>();
+        }
+        if (current.size() > 1){
             System.out.println("Somehow the medicine wasn't stopped before starting again");// TODO: fix this properly
         }
         if(previous.size() > current.size()){
