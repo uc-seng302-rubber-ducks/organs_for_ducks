@@ -30,6 +30,8 @@ public class Donor {
    private HashSet<Organs> organs;
    private DateTime lastModified;
    private ArrayList<String> miscAttributes;
+   private ArrayList<String> previousMedication;
+   private ArrayList<String> currentMedication;
 
 
 
@@ -63,7 +65,9 @@ public class Donor {
             this.lastModified = lastModified;
         }
         this.isDeceased = isDeceased;
-        miscAttributes = new ArrayList<>();
+        this.miscAttributes = new ArrayList<>();
+        this.currentMedication = new ArrayList<>();
+        this.previousMedication = new ArrayList<>();
     }
 
     public Donor(String name, Date dateOfBirth) {
@@ -73,7 +77,9 @@ public class Donor {
         lastModified = DateTime.now();
         this.gender = "U";
         this.bloodType = "U";
-        miscAttributes = new ArrayList<>();
+        this.miscAttributes = new ArrayList<>();
+        this.currentMedication = new ArrayList<>();
+        this.previousMedication = new ArrayList<>();
     }
 
     /** empty constructor to allow an empty donor to be created for the gui
@@ -83,6 +89,8 @@ public class Donor {
       timeCreated = DateTime.now();
       organs = new HashSet<>();
       miscAttributes = new ArrayList<String>();
+        this.currentMedication = new ArrayList<>();
+        this.previousMedication = new ArrayList<>();
     }
 
 
@@ -279,6 +287,38 @@ public class Donor {
         miscAttributes.add(attribute);
     }
 
+    public ArrayList<String> getPreviousMedication() {
+        return previousMedication;
+    }
+
+    public void setPreviousMedication(ArrayList<String> previousMedication) {
+        this.previousMedication = previousMedication;
+    }
+
+    public ArrayList<String> getCurrentMedication() {
+        return currentMedication;
+    }
+
+    public void setCurrentMedication(ArrayList<String> currentMedication) {
+        this.currentMedication = currentMedication;
+    }
+
+    public void addCurrentMedication(String medication) {
+        currentMedication.add(medication);
+    }
+
+    public void addPreviousMedication(String medication) {
+        previousMedication.add(medication);
+    }
+
+
+    public void removeCurrentMedication(String medication) {
+        currentMedication.remove(medication);
+    }
+
+    public void removePreviousMedication(String medication) {
+        previousMedication.remove(medication);
+    }
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

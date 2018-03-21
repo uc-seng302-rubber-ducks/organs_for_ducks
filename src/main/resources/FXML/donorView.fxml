@@ -77,6 +77,24 @@
                   </AnchorPane>
             </content>
           </Tab>
+            <Tab text="Medication">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <ListView fx:id="currentMedicationListView" layoutX="356.0" layoutY="104.0" onMouseClicked="#clearPreviousMedSelection" prefHeight="287.0" prefWidth="227.0" />
+                        <ListView fx:id="previousMedicationListView" layoutX="22.0" layoutY="102.0" onMouseClicked="#clearCurrentMedSelection" prefHeight="285.0" prefWidth="221.0" />
+                        <Button fx:id="untakeMedicationButton" layoutX="281.0" layoutY="200.0" mnemonicParsing="false" onAction="#untakeMedication" text="&lt;&lt;" />
+                        <Button fx:id="takeMedicationButton" layoutX="280.0" layoutY="262.0" mnemonicParsing="false" onAction="#takeMedication" text="&gt;&gt;" />
+                        <Button fx:id="deleteButton" layoutX="70.0" layoutY="448.0" mnemonicParsing="false" onAction="#deleteMedication" text="Delete" />
+                        <TextField fx:id="medicationTextField" layoutX="215.0" layoutY="59.0" />
+                        <Button fx:id="addMedicationButton" layoutX="279.0" layoutY="149.0" mnemonicParsing="false" onAction="#addMedication" text="add" />
+                        <Label layoutX="31.0" layoutY="401.0" text="Previous Medications" />
+                        <Label layoutX="414.0" layoutY="401.0" text="Current Medications" />
+                        <Label layoutX="65.0" layoutY="64.0" text="Medication" />
+                     </children>
+                  </AnchorPane>
+              </content>
+            </Tab>
         </tabs>
       </TabPane>
       <Label layoutX="256.0" layoutY="3.0" text="Donor">

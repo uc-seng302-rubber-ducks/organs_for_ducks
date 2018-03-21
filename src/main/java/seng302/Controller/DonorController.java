@@ -2,12 +2,15 @@ package seng302.Controller;
 
 import java.time.LocalDate;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import seng302.Model.Donor;
 import seng302.Model.Organs;
@@ -18,6 +21,7 @@ import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Observable;
 
 public class DonorController {
 
@@ -79,7 +83,30 @@ public class DonorController {
   @FXML
   private Button logoutButton;
 
+  @FXML
+  private ListView<String> previousMedicationListView;
+
+  @FXML
+  private ListView<String> currentMedicationListView;
+
+  @FXML
+  private Button untakeMedicationButton;
+
+  @FXML
+  private Button takeMedicationButton;
+
+  @FXML
+  private Button deleteButton;
+
+  @FXML
+  private TextField medicationTextField;
+
+  @FXML
+  private Button addMedicationButton;
+
   private AppController application;
+  private ObservableList<String> currentMeds;
+  private ObservableList<String> previousMeds;
 
   private List<String> possibleGenders = Arrays.asList("M", "F", "U");
 
@@ -110,9 +137,20 @@ public class DonorController {
     bloodTypeComboBox.getItems().addAll(bloodTypes);
     warningLabel.setVisible(false);
     currentDonor = donor;
+    currentMeds = FXCollections.observableArrayList();
+    previousMeds = FXCollections.observableArrayList();
+    currentMedicationListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+    previousMedicationListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+    previousMeds.addListener((ListChangeListener.Change<? extends String> change )-> {
+      previousMedicationListView.setItems(previousMeds);
+      application.update(currentDonor);
+    });
+    currentMeds.addListener((ListChangeListener.Change<? extends String> change) -> {
+      currentMedicationListView.setItems(currentMeds);
+      application.update(currentDonor);
+    });
     if (donor.getName() != null) {
-      showDonor(
-          currentDonor); // Assumes a donor with no name is a new sign up and does not pull values from a template
+      showDonor(currentDonor); // Assumes a donor with no name is a new sign up and does not pull values from a template
     }
   }
 
@@ -330,5 +368,66 @@ public class DonorController {
         miscAttributeslistView.getItems().add(atty);
       }
     }
+    currentMeds.addAll(currentDonor.getCurrentMedication());
+    currentMedicationListView.setItems(currentMeds);
+    previousMeds.addAll(currentDonor.getPreviousMedication());
+    previousMedicationListView.setItems(previousMeds);
   }
+
+  @FXML
+  void addMedication(ActionEvent event) {
+    String medication = medicationTextField.getText();
+    if (medication.isEmpty()){
+      return;
+    }
+    medicationTextField.setText("");
+    currentMeds.add(medication);
+    currentDonor.addCurrentMedication(medication);
+
+
+  }
+
+  @FXML
+  void deleteMedication(ActionEvent event) {
+    String medCurrent  = currentMedicationListView.getSelectionModel().getSelectedItem();
+    String medPrevious = previousMedicationListView.getSelectionModel().getSelectedItem();
+
+    if(medCurrent != null){
+      currentMeds.remove(medCurrent);
+    }
+    if (medPrevious != null){
+      previousMeds.remove(medPrevious);
+    }
+  }
+
+  @FXML
+  void takeMedication(ActionEvent event) {
+    String med = previousMedicationListView.getSelectionModel().getSelectedItem();
+    currentMeds.add(med);
+    currentDonor.addCurrentMedication(med);
+    previousMeds.remove(med);
+    currentDonor.removePreviousMedication(med);
+
+  }
+
+  @FXML
+  void untakeMedication(ActionEvent event) {
+    String med = currentMedicationListView.getSelectionModel().getSelectedItem();
+    currentDonor.removeCurrentMedication(med);
+    currentMeds.remove(med);
+    previousMeds.add(med);
+    currentDonor.addPreviousMedication(med);
+  }
+
+  @FXML
+  void clearCurrentMedSelection(MouseEvent event) {
+    currentMedicationListView.getSelectionModel().clearSelection();
+  }
+
+  @FXML
+  void clearPreviousMedSelection(MouseEvent event){
+    previousMedicationListView.getSelectionModel().clearSelection();
+  }
+
+
 }

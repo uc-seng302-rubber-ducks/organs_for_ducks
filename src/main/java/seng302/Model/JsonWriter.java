@@ -82,7 +82,28 @@ public final class JsonWriter {
                     miscAttributes.add(a);
                 }
             }
-            j.put("Misc", miscAttributes);
+            JSONArray previousMedication = new JSONArray();
+            ArrayList<String> previousMeds = d.getPreviousMedication();
+            if (previousMeds == null){
+                j.put("Previous Medication", null);
+            } else{
+                for (String med : previousMeds) {
+                    previousMedication.add(med);
+                }
+                j.put("Previous Medication", previousMedication);
+            }
+
+            JSONArray currentMedication = new JSONArray();
+            ArrayList<String> currentMeds = d.getCurrentMedication();
+            if (currentMeds == null){
+                j.put("Current Medication", null);
+            } else{
+                for (String med : currentMeds) {
+                    currentMedication.add(med);
+                }
+                j.put("Current Medication", currentMedication);
+            }
+            j.put("Misc", miscAttributes); //why is this here?
             outerJSON.add(j);
 
         }

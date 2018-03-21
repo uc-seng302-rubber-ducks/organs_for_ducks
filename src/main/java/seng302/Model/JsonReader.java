@@ -74,6 +74,20 @@ public final class JsonReader {
                         for (Object attribute : miscAttributes)
                             d.addAttribute(attribute.toString());
                     }
+                    JSONArray previousMedication = (JSONArray) donor.get("Previous Medication");
+                        if(previousMedication != null){
+                            for(Object medication : previousMedication){
+                                d.addPreviousMedication((String) medication);
+                            }
+                        }
+
+                    JSONArray currentMedication = (JSONArray) donor.get("Current Medication");
+                        if(currentMedication != null){
+                            for(Object medication : currentMedication) {
+                                d.addCurrentMedication((String) medication);
+                            }
+                        }
+
                     imported++;
                 } catch (IllegalArgumentException e) {
                     System.out.println("malformed DateTime has been detected for Donor: " + name + " has not been imported. This record will be purged if changes are made in this session.");
