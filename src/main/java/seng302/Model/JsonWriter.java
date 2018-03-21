@@ -181,6 +181,49 @@ public final class JsonWriter {
         }
     }
 
+    /**
+     * Used to generate a machine and human readable changelog.
+     * The old changelog is imported into the method as a JSONArray
+     * The new change is then mapped to a JSON object with the timestamp attached
+     * The JSON object is then placed into the JSONArray and written back to the orignal place overwritting the file that is there
+     *
+     * @param toWrite change to be written into the changelog.
+     */
+    public static void changeLog(ArrayList<String> toWrite, String name){
+        try {
+            if(!Files.exists(Paths.get(Directory.JSON.directory()))) {
+                Files.createDirectories(Paths.get(Directory.JSON.directory()));
+            }
+            File outfile = new File(Directory.JSON.directory() +"/"+name+"changelog.json");
+            boolean isCreated  = outfile.createNewFile(); //does nothing if file does exist
+            JSONArray changeFile;
+            if (isCreated) {
+                changeFile = new JSONArray();
+            } else {
+                JSONParser parser = new JSONParser(); //read file first as it must be created now to append data to any previous JSON changelogs.
+                changeFile = (JSONArray) parser.parse(new FileReader(outfile));
+            }
+            for (String change : toWrite) {
+                JSONObject newChange = new JSONObject();
+                newChange.put(DateTime.now(), change);
+                changeFile.add(newChange);
+            }
+                FileOutputStream outStream = new FileOutputStream(outfile, false);
+                outStream.write(changeFile.toJSONString().getBytes());
+                outStream.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (org.json.simple.parser.ParseException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Saves clinicians as created by the application
+     *
+     * @param clinicians list of clinicians to save
+     */
     public static void saveClinicians(ArrayList<Clinician> clinicians){
         try{
             if(!Files.exists(Paths.get(Directory.JSON.directory()))){

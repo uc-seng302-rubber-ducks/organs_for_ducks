@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 
+import jdk.nashorn.internal.ir.debug.JSONWriter;
 import seng302.Model.Clinician;
 import seng302.Model.Donor;
 import seng302.Model.JsonReader;
@@ -183,14 +184,18 @@ public class AppController {
    * @param donor donor to be updated/added
    */
   public void update(Donor donor){
-    if (donors.contains(donor)){
-      donors.remove(donor);
-      donors.add(donor);
+      ArrayList<String > changelogWrite = new ArrayList<>();
+      if (donors.contains(donor)){
+        donors.remove(donor);
+        donors.add(donor);
     } else {
       donors.add(donor);
+      changelogWrite.add("Added Donor " + donor.getName());
     }
     try {
       JsonWriter.saveCurrentDonorState(donors);
+      JsonWriter.changeLog(changelogWrite, donor.getName().toLowerCase().replace(" ", "_"));
+
     } catch (IOException e) {
       e.printStackTrace();
     }
@@ -228,5 +233,76 @@ public class AppController {
 
   public void setDonorController(DonorController donorController) {
     this.donorController = donorController;
+  }
+
+
+  public void differanceInDonors(Donor oldDonor, Donor newDonor){
+   ArrayList<String> diffs = new ArrayList<>();
+   if (!oldDonor.getName().equalsIgnoreCase(newDonor.getName())){
+       diffs.add("Changed Name from "+ oldDonor.getName()+ " to " + newDonor.getName());
+   }
+   if (oldDonor.getDateOfBirth() != newDonor.getDateOfBirth()){
+       diffs.add("Changed DOB from  " + oldDonor.getDateOfBirth().toString() +" to "   + newDonor.getDateOfBirth());
+   }
+   if (oldDonor.getDateOfDeath() != newDonor.getDateOfDeath()){
+       diffs.add("Changed DOD from " + oldDonor.getDateOfDeath() +" to "+newDonor.getDateOfDeath());
+   }
+   if (!(oldDonor.getGender().equalsIgnoreCase(newDonor.getGender()))){
+       diffs.add("Changed Gender from " + oldDonor.getGender() + " to " + newDonor.getGender());
+   }
+   if(oldDonor.getHeight() != newDonor.getHeight()){
+       diffs.add("Changed Height from " + oldDonor.getHeight() + " to " + newDonor.getHeight());
+   }
+   if(oldDonor.getWeight() != newDonor.getWeight()){
+       diffs.add("Changed Weight from " + oldDonor.getWeight() + " to " + newDonor.getWeight());
+   }
+   if (!oldDonor.getBloodType().equalsIgnoreCase(newDonor.getBloodType())){
+       diffs.add("Changed Blood Type from " + oldDonor.getBloodType()+ " to " + newDonor.getBloodType());
+   }
+   if (!oldDonor.getCurrentAddress().equalsIgnoreCase(newDonor.getCurrentAddress())){
+       diffs.add("Changed Address from " + oldDonor.getCurrentAddress() + " to " + newDonor.getCurrentAddress());
+   }
+   if (!oldDonor.getRegion().equalsIgnoreCase(newDonor.getRegion())){
+       diffs.add("Changes Region from " + oldDonor.getRegion() +" to " + newDonor.getRegion());
+   }
+   if (oldDonor.getDeceased() != newDonor.getDeceased()){
+       diffs.add("Changed From Deceased = " + oldDonor.getDeceased() + " to " + newDonor.getDeceased());
+   }
+   if (oldDonor.getOrgans() != newDonor.getOrgans()){
+       diffs.add("Changed From Organs Donating = " + oldDonor.getOrgans() +" to " + newDonor.getOrgans());
+   }
+   for(String atty : oldDonor.getMiscAttributes()){
+       if (!newDonor.getMiscAttributes().contains(atty)){
+           diffs.add("Removed misc Atttribute " + atty);
+       }
+   }
+   for (String atty : newDonor.getMiscAttributes()){
+       if(!oldDonor.getMiscAttributes().contains(atty)){
+           diffs.add("Added misc Attribute " + atty);
+       }
+   }
+   for(String med : oldDonor.getPreviousMedication()){
+       if(!newDonor.getPreviousMedication().contains(med)){
+           diffs.add("Started taking "+ med + " again");
+       }
+   }
+   for(String med : newDonor.getPreviousMedication()){
+       if(!oldDonor.getPreviousMedication().contains(med)){
+           diffs.add(med + " was removed from the  donors records");
+       }
+   }
+   for (String med : oldDonor.getCurrentMedication()){
+       if(!newDonor.getCurrentMedication().contains(med)){
+           diffs.add("Stopped taking " + med);
+       }
+   }
+      for(String med : newDonor.getPreviousMedication()){
+          if(!oldDonor.getPreviousMedication().contains(med)){
+              diffs.add("Started taking "+ med);
+          }
+      }
+      if(diffs.size() > 0){
+          JsonWriter.changeLog(diffs,newDonor.getName().toLowerCase().replace(" ", "_"));
+      }
   }
 }

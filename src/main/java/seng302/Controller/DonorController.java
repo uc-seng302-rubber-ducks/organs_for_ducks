@@ -3,9 +3,7 @@ package seng302.Controller;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 
-import javafx.beans.Observable;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -24,15 +22,14 @@ import javafx.stage.Stage;
 import javafx.util.Callback;
 import org.joda.time.DateTime;
 import org.joda.time.DateTime;
+import seng302.Model.Change;
 import seng302.Model.Donor;
 import seng302.Model.Organs;
 import seng302.Model.UndoRedoStacks;
 
 import java.io.IOException;
 import java.time.ZoneId;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 public class DonorController {
 
@@ -126,7 +123,7 @@ public class DonorController {
 
   private Donor currentDonor;
   private Stage stage;
-
+  private ObservableList changelog;
 
   /**
    * Gives the donor view the application controller and hides all label and buttosns that are not
@@ -162,6 +159,8 @@ public class DonorController {
     });
     if (donor.getName() != null) {
       showDonor(currentDonor); // Assumes a donor with no name is a new sign up and does not pull values from a template
+      changelog = FXCollections.observableArrayList(currentDonor.getChanges());
+      showDonorHistory();
     }
     currentMedicationListView.setOnMouseClicked(new EventHandler<MouseEvent>() {
         @Override
@@ -255,6 +254,9 @@ public class DonorController {
   @FXML
   private void updateDonor() {
       UndoRedoStacks.storeUndoCopy(currentDonor);
+      Donor oldDonor = new Donor();
+      UndoRedoStacks.cloneDonor(currentDonor,oldDonor);
+
 
     boolean isInputValid = true;
     warningLabel.setVisible(true);
@@ -319,6 +321,7 @@ public class DonorController {
 
     if (isInputValid) {
       application.update(currentDonor);
+      application.differanceInDonors(oldDonor,currentDonor);
     }
 
     showDonor(currentDonor);
@@ -500,36 +503,30 @@ public class DonorController {
   }
 
 
-    private void showDonorHistory(Donor donor) {
+    private void showDonorHistory() {
         //historyTableView
         //use JsonReader and JsonWriter
         //change log history - look at
 
         // historyTableView.add(?)(donor.getLastUpdated, donor.getlastactionorwe)
-
+/*
         TableColumn<Map.Entry<String, String>, String> dateCol = new TableColumn<>("Time");
-        dateCol.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Map.Entry<String, String>, String>, ObservableValue<String>>() {
-
-            @Override
-            public ObservableValue<String> call(TableColumn.CellDataFeatures<Map.Entry<String, String>, String> p) {
-             return new SimpleStringProperty(p.getValue().getKey());
-            }
-        });
+        dateCol.setCellValueFactory(p -> new SimpleStringProperty(p.getValue().getKey()));
 
         TableColumn<Map.Entry<String, String>, String> actionCol = new TableColumn<>("Action");
-        actionCol.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Map.Entry<String, String>, String>, ObservableValue<String>>() {
-
-            @Override
-            public ObservableValue<String> call(TableColumn.CellDataFeatures<Map.Entry<String, String>, String> p) {
-                return new SimpleStringProperty(p.getValue().getValue());
-            }
-        });
+        actionCol.setCellValueFactory(p -> new SimpleStringProperty(p.getValue().getValue()));
 
         ObservableList<Map.Entry<String, String>> items = FXCollections.observableArrayList(donor.getUpdateHistory().entrySet());
         // @TODO: fix this so it isn't grumpy
         historyTableView.setItems(items);
 
-        historyTableView.getColumns().setAll(dateCol, actionCol);
+        historyTableView.getColumns().setAll(dateCol, actionCol);*/
+        TableColumn timeColumn = new TableColumn("Time");
+        TableColumn changeColumn = new TableColumn("Change");
+        timeColumn.setCellValueFactory(new PropertyValueFactory<Change, String>("time"));
+        changeColumn.setCellValueFactory(new PropertyValueFactory<Change,String>("change"));
+        historyTableView.setItems(changelog);
+        historyTableView.getColumns().addAll(timeColumn,changeColumn);
 
     }
 }

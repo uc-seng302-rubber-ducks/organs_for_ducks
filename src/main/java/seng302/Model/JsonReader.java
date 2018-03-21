@@ -14,10 +14,7 @@ import java.io.IOException;
 import java.lang.reflect.Array;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Class for reading from JSON file containing application data.
@@ -148,6 +145,11 @@ public final class JsonReader {
         return donorsIn;
     }
 
+    /**
+     * Import a list of clinicians from a file stored on a users computer
+     *
+     * @return clinicians avaliable in the session
+     */
     public static ArrayList<Clinician> importClinicians(){
 
         ArrayList<Clinician> clinicians = new ArrayList<>();
@@ -190,5 +192,41 @@ public final class JsonReader {
 
         System.out.println(imported + " Clinicians Successfully added");
         return clinicians;
+    }
+
+    /**
+     * Takes a donor as an input and loads their history from disk
+     *
+     * @param donor donors whos history to get
+     * @return map of the timestamp and change made
+     */
+    public static ArrayList<Change> importHistoryFromFile(Donor donor){
+        ArrayList<Change> results = new ArrayList<>();
+        String name = donor.getName().toLowerCase().replace(" ","_");
+        File infile = new File(Directory.JSON.directory()+"/"+name+"");
+        if(!infile.exists()){
+            System.out.println("No previous changelog exists");
+            return new ArrayList<>();
+        }
+        JSONParser parser = new JSONParser();
+
+        try {
+            JSONArray a  = (JSONArray) parser.parse(new FileReader(infile));
+            for(Object o : a){
+                JSONObject change = (JSONObject) o;
+                Set<String> keyset = change.keySet();
+                for (String key : keyset){
+                    String actualChange = (String) change.get(key);
+                    DateTime dateTime = new DateTime(key);
+                    results.add(new Change(dateTime,actualChange));
+                }
+            }
+            return results;
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return new ArrayList<>();
     }
 }

@@ -36,6 +36,7 @@ public class Donor {
    private ArrayList<String> currentMedication;
    private HashMap<String, ArrayList<DateTime>> previousMedicationTimes;
    private HashMap<String, ArrayList<DateTime>> currentMedicationTimes;
+   private ArrayList<Change> changes;
 
 
 
@@ -77,6 +78,7 @@ public class Donor {
         this.previousMedication = new ArrayList<>();
         this.currentMedicationTimes = new HashMap<>();
         this.previousMedicationTimes = new HashMap<>();
+        changes = JsonReader.importHistoryFromFile(this);
     }
 
     public Donor(String name, Date dateOfBirth) {
@@ -93,6 +95,7 @@ public class Donor {
         this.previousMedication = new ArrayList<>();
         this.currentMedicationTimes = new HashMap<>();
         this.previousMedicationTimes = new HashMap<>();
+        changes = JsonReader.importHistoryFromFile(this);
     }
 
     /** empty constructor to allow an empty donor to be created for the gui
@@ -106,6 +109,7 @@ public class Donor {
         this.previousMedication = new ArrayList<>();
         this.currentMedicationTimes = new HashMap<>();
         this.previousMedicationTimes = new HashMap<>();
+        changes = new ArrayList<>();
     }
 
 
@@ -436,6 +440,18 @@ public class Donor {
     }
 
 
+    public ArrayList<Change> getChanges() {
+        return changes;
+    }
+
+    public void setChanges(ArrayList<Change> changes) {
+        this.changes = changes;
+    }
+
+    public void addChange(String change){
+        DateTime dateTime = DateTime.now();
+        changes.add(new Change(dateTime,change));
+    }
 
     @Override
     public boolean equals(Object o) {
