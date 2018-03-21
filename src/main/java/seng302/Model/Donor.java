@@ -32,6 +32,14 @@ public class Donor {
    private DateTime lastModified;
    private ArrayList<String> miscAttributes;
    private HashMap<String, String> updateHistory;
+   private ArrayList<String> previousMedication;
+   private ArrayList<String> currentMedication;
+   private HashMap<String, ArrayList<DateTime>> previousMedicationTimes;
+   private HashMap<String, ArrayList<DateTime>> currentMedicationTimes;
+
+
+
+
 
     public Donor(Date dateOfBirth, Date dateOfDeath, String gender, double height, double weight, String bloodType,
                  String currentAddress, String region, DateTime timeCreated, String name, DateTime lastModified,
@@ -63,8 +71,12 @@ public class Donor {
             this.lastModified = lastModified;
         }
         this.isDeceased = isDeceased;
-        miscAttributes = new ArrayList<>();
         updateHistory = new HashMap<>();
+        this.miscAttributes = new ArrayList<>();
+        this.currentMedication = new ArrayList<>();
+        this.previousMedication = new ArrayList<>();
+        this.currentMedicationTimes = new HashMap<>();
+        this.previousMedicationTimes = new HashMap<>();
     }
 
     public Donor(String name, Date dateOfBirth) {
@@ -74,9 +86,13 @@ public class Donor {
         lastModified = DateTime.now();
         this.gender = "U";
         this.bloodType = "U";
-        miscAttributes = new ArrayList<>();
         updateHistory = new HashMap<>();
         updateHistory.put(dateToString(getTimeCreated()), "Profile created.");
+        this.miscAttributes = new ArrayList<>();
+        this.currentMedication = new ArrayList<>();
+        this.previousMedication = new ArrayList<>();
+        this.currentMedicationTimes = new HashMap<>();
+        this.previousMedicationTimes = new HashMap<>();
     }
 
     /** empty constructor to allow an empty donor to be created for the gui
@@ -84,6 +100,12 @@ public class Donor {
      */
     public Donor(){
       timeCreated = DateTime.now();
+      organs = new HashSet<>();
+      miscAttributes = new ArrayList<String>();
+        this.currentMedication = new ArrayList<>();
+        this.previousMedication = new ArrayList<>();
+        this.currentMedicationTimes = new HashMap<>();
+        this.previousMedicationTimes = new HashMap<>();
     }
 
 
@@ -96,6 +118,11 @@ public class Donor {
     }
 
     public DateTime getLastModified(){return lastModified;}
+
+    //For UndoRedoStacks
+    public void setLastModified(DateTime lastModified) {
+        this.lastModified = lastModified;
+    }
 
     public String getName() {
         return name;
@@ -183,6 +210,12 @@ public class Donor {
         return timeCreated;
     }
 
+    //For UndoRedoStacks
+    public void setTimeCreated(DateTime timeCreated) {
+        updateLastModified();
+        this.timeCreated = timeCreated;
+    }
+
     public HashSet<Organs> getOrgans() {
       return organs;
     }
@@ -204,6 +237,11 @@ public class Donor {
       if(organs.contains(organ)) {
         organs.remove(organ);
       }
+    }
+
+    //Trial method
+    public void initOrgans() {
+        organs = new HashSet<>();
     }
 
     public Boolean getDeceased() {
@@ -279,6 +317,126 @@ public class Donor {
         miscAttributes.add(attribute);
     }
 
+    public ArrayList<String> getPreviousMedication() {
+        return previousMedication;
+    }
+
+    public void setPreviousMedication(ArrayList<String> previousMedication) {
+        this.previousMedication = previousMedication;
+    }
+
+    public ArrayList<String> getCurrentMedication() {
+        return currentMedication;
+    }
+
+    public void setCurrentMedication(ArrayList<String> currentMedication) {
+        this.currentMedication = currentMedication;
+    }
+
+    public void addCurrentMedication(String medication) {
+        currentMedication.add(medication);
+        addCurrentMedicationTimes(medication);
+    }
+
+    public void addPreviousMedication(String medication) {
+        previousMedication.add(medication);
+        addPreviousMedicationTimes(medication);
+    }
+
+    public void addCurrentMedicationSetup(String medication) {
+        currentMedication.add(medication);
+    }
+
+    public void addPreviousMedicationSetUp(String medication) {
+        previousMedication.add(medication);
+    }
+
+
+    public void removeCurrentMedication(String medication) {
+        currentMedication.remove(medication);
+    }
+
+    public void removePreviousMedication(String medication) {
+        previousMedication.remove(medication);
+    }
+
+    public HashMap<String, ArrayList<DateTime>> getPreviousMedicationTimes() {
+        return previousMedicationTimes;
+    }
+
+    public void setPreviousMedicationTimes(HashMap<String, ArrayList<DateTime>> previousMedicationTimes) {
+        this.previousMedicationTimes = previousMedicationTimes;
+    }
+
+    public HashMap<String, ArrayList<DateTime>> getCurrentMedicationTimes() {
+        return currentMedicationTimes;
+    }
+
+
+    public void setCurrentMedicationTimes(HashMap<String, ArrayList<DateTime>> currentMedicationTimes) {
+        this.currentMedicationTimes = currentMedicationTimes;
+    }
+
+    /**
+     * Use this one when adding a new medication from the donor interface
+     * @param medication
+     */
+    public void addCurrentMedicationTimes(String medication) {
+        DateTime time  = DateTime.now();
+        updateLastModified();
+        ArrayList<DateTime> previouslyExists;
+        try {
+            previouslyExists = currentMedicationTimes.get(medication);
+            previouslyExists.add(time);
+        } catch (NullPointerException e){
+            previouslyExists = new ArrayList<DateTime>();
+            previouslyExists.add(time);
+        }
+
+        currentMedicationTimes.put(medication, previouslyExists);
+    }
+
+    /**
+     * Use this one when adding a new medication from the donor interface
+     * @param medication medication string key
+     *
+     */
+    public void addPreviousMedicationTimes(String medication) {
+        DateTime time  = DateTime.now();
+        updateLastModified();
+        ArrayList<DateTime> previouslyExists;
+        try {
+            previouslyExists = previousMedicationTimes.get(medication);
+            previouslyExists.add(time);
+        } catch (NullPointerException e) {
+            previouslyExists = new ArrayList<DateTime>();
+            previouslyExists.add(time);
+        }
+        previousMedicationTimes.put(medication, previouslyExists);
+    }
+
+    /**
+     * Use this one when creating the user from the json object
+     * @param medication medication string key
+     * @param stamps list of timestamps
+     */
+    public void addCurrentMedicationTimes(String medication, ArrayList<DateTime> stamps) {
+
+        currentMedicationTimes.put(medication, stamps);
+    }
+
+
+    /**
+     * Use this one when creating the user from the json object
+     * @param medication medication string key
+     * @param stamps list of timestamps
+     */
+    public void addPreviousMedicationTimes(String medication, ArrayList<DateTime> stamps) {
+        previousMedicationTimes.put(medication, stamps);
+    }
+
+
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -309,4 +467,5 @@ public class Donor {
                 "\nlast modified: " + lastModified +
                 "\nhashcode="+hashCode();
     }
+
 }

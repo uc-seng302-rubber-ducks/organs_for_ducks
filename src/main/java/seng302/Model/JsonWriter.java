@@ -12,10 +12,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 
 /**
@@ -76,7 +74,6 @@ public final class JsonWriter {
                 }
                 j.put("Organs", organs);
             }
-            outerJSON.add(j);
             JSONArray miscAttributes = new JSONArray();
             ArrayList<String> attributes = d.getMiscAttributes();
             if (attributes == null){
@@ -86,7 +83,58 @@ public final class JsonWriter {
                     miscAttributes.add(a);
                 }
             }
-            j.put("Misc", miscAttributes);
+            JSONArray previousMedication = new JSONArray();
+            ArrayList<String> previousMeds = d.getPreviousMedication();
+            if (previousMeds == null){
+                j.put("Previous Medication", null);
+            } else{
+                for (String med : previousMeds) {
+                    previousMedication.add(med);
+                }
+                j.put("Previous Medication", previousMedication);
+            }
+
+            JSONArray currentMedication = new JSONArray();
+            ArrayList<String> currentMeds = d.getCurrentMedication();
+            if (currentMeds == null){
+                j.put("Current Medication", null);
+            } else{
+                for (String med : currentMeds) {
+                    currentMedication.add(med);
+                }
+                j.put("Current Medication", currentMedication);
+            }
+            j.put("Misc", miscAttributes); //why is this here?
+            JSONArray currentMedicationTimeStamps = new JSONArray();
+            HashMap<String, ArrayList<DateTime>> currentMedsTimes = d.getCurrentMedicationTimes();
+            for(String key : currentMedsTimes.keySet()){
+                JSONArray times = new JSONArray();
+                ArrayList<DateTime> dateTimes = currentMedsTimes.get(key);
+                for (DateTime t : dateTimes){
+                    times.add((String) t.toString());
+                }
+                JSONObject hashMapGlue = new JSONObject();
+                hashMapGlue.put(key, times);
+                currentMedicationTimeStamps.add(hashMapGlue);
+            }
+            j.put("Current Medication TimeStamps", currentMedicationTimeStamps);
+            JSONArray previousMedicationTimeStamps = new JSONArray();
+            HashMap<String, ArrayList<DateTime>> previousMedsTimes = d.getPreviousMedicationTimes();
+            for(String key : previousMedsTimes.keySet()){
+                JSONArray times = new JSONArray();
+                ArrayList<DateTime> dateTimes = previousMedsTimes.get(key);
+                for (DateTime t : dateTimes){
+                    times.add((String) t.toString());
+                }
+                JSONObject hashMapGluePre = new JSONObject();
+                hashMapGluePre.put(key, times);
+                previousMedicationTimeStamps.add(hashMapGluePre);
+            }
+            j.put("Previous Medication TimeStamps", previousMedicationTimeStamps);
+
+            outerJSON.add(j);
+
+
         }
         outFileStream.write(outerJSON.toJSONString().getBytes());
         outFileStream.close();
@@ -132,4 +180,35 @@ public final class JsonWriter {
             e.printStackTrace();
         }
     }
+
+    public static void saveClinicians(ArrayList<Clinician> clinicians){
+        try{
+            if(!Files.exists(Paths.get(Directory.JSON.directory()))){
+                Files.createDirectories(Paths.get(Directory.JSON.directory()));
+            }
+            File outfile = new File(Directory.JSON.directory()+"/clinicians.json");
+            FileOutputStream fileOutputStream = new FileOutputStream(outfile, false);
+
+            JSONArray outerJSON = new JSONArray();
+            for(Clinician c : clinicians){
+                JSONObject j = new JSONObject();
+                j.put("Name", c.getName());
+                j.put("Staff Id", c.getStaffId());
+                j.put("Work Address", c.getWorkAddress());
+                j.put("Region", c.getRegion());
+                j.put("Password", c.getPassword());
+                j.put("Date Created", c.getDateCreated().toString());
+                j.put("Last Modified", c.getDateLastModified().toString());
+
+                outerJSON.add(j);
+            }
+
+            fileOutputStream.write(outerJSON.toJSONString().getBytes());
+            fileOutputStream.close();
+            System.out.println("Clinician Successfully saved");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }
+

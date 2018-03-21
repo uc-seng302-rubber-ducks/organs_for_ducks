@@ -1,6 +1,6 @@
 package seng302.Controller;
 
-import com.sun.deploy.util.ArrayUtil;
+
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -10,11 +10,16 @@ import javafx.scene.control.ListView;
 import javafx.stage.Stage;
 import seng302.Model.Donor;
 import seng302.Model.Organs;
+import seng302.Model.UndoRedoStacks;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Scanner;
 
+/**
+ * class for the Organs view
+ *
+ * @author Josh Burt
+ */
 public class OrganController {
 
     @FXML
@@ -44,12 +49,18 @@ public class OrganController {
         this.appController = controller;
         currentDonor = donor;
         donorNameLabel.setText(donor.getName());
-        ArrayList<Organs> donating  = new ArrayList<>(donor.getOrgans());
+        ArrayList<Organs> donating;
+        try {
+            donating= new ArrayList<>(donor.getOrgans());
+        }
+        catch (NullPointerException ex) {
+            donating = new ArrayList<>();
+        }
         currentlyDonating.setItems(FXCollections.observableList(donating));
-        ArrayList leftOverOrgans = new ArrayList();
+        ArrayList<Organs> leftOverOrgans = new ArrayList<Organs>();
         Collections.addAll(leftOverOrgans, Organs.values());
         for (Organs o : donating){
-            leftOverOrgans.remove(donating);
+            leftOverOrgans.remove(o);
         }
         canDonate.setItems(FXCollections.observableList(leftOverOrgans));
 
@@ -57,16 +68,17 @@ public class OrganController {
 
     @FXML
     void donate(ActionEvent event) {
+        UndoRedoStacks.storeUndoCopy(currentDonor);
         Organs toDonate = canDonate.getSelectionModel().getSelectedItem();
         currentlyDonating.getItems().add(toDonate);
         currentDonor.addOrgan(toDonate);
         appController.update(currentDonor);
         canDonate.getItems().remove(toDonate);
-
     }
 
     @FXML
     void undonate(ActionEvent event) {
+        UndoRedoStacks.storeUndoCopy(currentDonor);
         Organs toUndonate = currentlyDonating.getSelectionModel().getSelectedItem();
         currentlyDonating.getItems().remove(toUndonate);
         canDonate.getItems().add(toUndonate);
@@ -76,6 +88,15 @@ public class OrganController {
 
     @FXML
     void goBack(ActionEvent event) {
+        AppController appController = AppController.getInstance();
+        DonorController donorController = appController.getDonorController();
+        try {
+            donorController.showDonor(currentDonor);
+        }
+        catch (NullPointerException ex) {
+            //TODO causes npe if donor is new in this session
+            //the text fields etc. are all null
+        }
         stage.close();
     }
 
