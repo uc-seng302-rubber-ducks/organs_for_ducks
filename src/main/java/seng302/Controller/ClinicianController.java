@@ -118,14 +118,17 @@ public class ClinicianController {
 
     //TODO add more columns as wanted/needed
     FilteredList<Donor> fListDonors = new FilteredList<>(oListDonors);
-    fListDonors = filter(searchTextField, fListDonors);
+    fListDonors = filter(searchTextField, fListDonors, donors);
 
     SortedList<Donor> sListDonors = new SortedList<>(fListDonors);
     sListDonors.comparatorProperty().bind(searchTableView.comparatorProperty());
 
     //set table columns and contents
     searchTableView.getColumns().setAll(nameColumn, dobColumn, dodColumn);
-    searchTableView.setItems(FXCollections.observableList(sListDonors.subList(startIndex, endIndex)));
+
+    searchTableView.setItems(sListDonors);
+    //disables everything I just built up..
+    //searchTableView.setItems(FXCollections.observableList(sListDonors.subList(startIndex, endIndex)));
 
 
     //set on-click behaviour
@@ -146,7 +149,7 @@ public class ClinicianController {
    * @param fListDonors list to be filtered
    * @return filtered list with filter applied
    */
-  private static FilteredList<Donor> filter(TextField inputTextField, FilteredList<Donor> fListDonors ) {
+  private static FilteredList<Donor> filter(TextField inputTextField, FilteredList<Donor> fListDonors, ArrayList<Donor> donors ) {
     inputTextField.textProperty().addListener((observable, oldValue, newValue) -> {
       fListDonors.setPredicate(Donor -> {
         if (newValue == null || newValue.isEmpty()) {
