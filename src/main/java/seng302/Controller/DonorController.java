@@ -187,6 +187,7 @@ public class DonorController {
    */
   @FXML
   private void updateDonor() {
+      UndoRedoStacks.storeUndoCopy(currentDonor);
 
     boolean isInputValid = true;
     warningLabel.setVisible(true);
@@ -254,7 +255,6 @@ public class DonorController {
     }
 
     showDonor(currentDonor);
-    UndoRedoStacks.storeUndoCopy(currentDonor);
   }
 
   /**

@@ -1,8 +1,6 @@
 package seng302.Model;
 
 import org.joda.time.DateTime;
-
-import java.util.Iterator;
 import java.util.Stack;
 
 public class UndoRedoStacks {
@@ -36,7 +34,8 @@ public class UndoRedoStacks {
         for(String misc : donor.getMiscAttributes()) {
             donorClone.addAttribute(misc);
         }
-        //donorClone.initOrgans();
+
+        donorClone.initOrgans();
         donorClone.getOrgans().clear();
         if (donor.getOrgans() != null) {
             for (Organs organ : donor.getOrgans()) {
@@ -55,7 +54,7 @@ public class UndoRedoStacks {
      * @param donor The current state of the donor to be cloned and pushed to the undo stack.
      */
     public static void storeUndoCopy(Donor donor) {
-        if (donor.getName() != null) {
+        if (donor.getName() != null) { //Can't remember what this is for.
             Donor undoCopy = new Donor();
             undoCopy = cloneDonor(donor, undoCopy);
 
