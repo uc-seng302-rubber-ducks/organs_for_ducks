@@ -125,7 +125,7 @@ public class ClinicianController {
 
     //set table columns and contents
     searchTableView.getColumns().setAll(nameColumn, dobColumn, dodColumn);
-    searchTableView.setItems(sListDonors);
+    searchTableView.setItems(FXCollections.observableList(sListDonors.subList(startIndex, endIndex)));
 
 
     //set on-click behaviour
