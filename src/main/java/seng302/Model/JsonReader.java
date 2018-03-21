@@ -11,10 +11,13 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
+import java.util.Set;
 
 /**
  * Class for reading from JSON file containing application data.
@@ -77,16 +80,51 @@ public final class JsonReader {
                     JSONArray previousMedication = (JSONArray) donor.get("Previous Medication");
                         if(previousMedication != null){
                             for(Object medication : previousMedication){
-                                d.addPreviousMedication((String) medication);
+                                d.addPreviousMedicationSetUp((String) medication);
                             }
                         }
 
                     JSONArray currentMedication = (JSONArray) donor.get("Current Medication");
                         if(currentMedication != null){
                             for(Object medication : currentMedication) {
-                                d.addCurrentMedication((String) medication);
+                                d.addCurrentMedicationSetup((String) medication);
                             }
                         }
+                    JSONArray previousMedicationTimeStamps = (JSONArray) donor.get("Previous Medication TimeStamps");
+                        if(previousMedicationTimeStamps != null) {
+                            Iterator<Object> iterator = previousMedicationTimeStamps.iterator();
+                            while (iterator.hasNext()){
+                                JSONObject medication = (JSONObject) iterator.next();
+                                Set<String> keyset = medication.keySet();
+                                for(String key : keyset){
+                                    ArrayList<DateTime> timestamps = new ArrayList<>(); // Sorry about the cone of doom
+                                    JSONArray stamps = (JSONArray) medication.get(key);// unfortunalty it is needed
+                                    for(Object stamp : stamps){
+                                        DateTime dateTime = new DateTime((String) stamp);
+                                        timestamps.add(dateTime);
+                                    }
+                                    d.addPreviousMedicationTimes(key,timestamps);
+                                }
+                            }
+                        }
+
+                    JSONArray currentMedicationTimeStamps = (JSONArray) donor.get("Current Medication TimeStamps");
+                    if(previousMedicationTimeStamps != null) {
+                        Iterator<Object> iterator = currentMedicationTimeStamps.iterator();
+                        while (iterator.hasNext()){
+                            JSONObject medication = (JSONObject) iterator.next();
+                            Set<String> keyset = medication.keySet();
+                            for(String key : keyset){
+                                ArrayList<DateTime> timestamps = new ArrayList<>();
+                                JSONArray stamps = (JSONArray) medication.get(key);
+                                for(Object stamp : stamps){
+                                    DateTime dateTime = new DateTime((String) stamp);
+                                    timestamps.add(dateTime);
+                                }
+                                d.addCurrentMedicationTimes(key,timestamps);
+                            }
+                        }
+                    }
 
                     imported++;
                 } catch (IllegalArgumentException e) {

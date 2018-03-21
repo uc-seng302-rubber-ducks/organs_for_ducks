@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 
 /**
@@ -104,7 +105,35 @@ public final class JsonWriter {
                 j.put("Current Medication", currentMedication);
             }
             j.put("Misc", miscAttributes); //why is this here?
+            JSONArray currentMedicationTimeStamps = new JSONArray();
+            HashMap<String, ArrayList<DateTime>> currentMedsTimes = d.getCurrentMedicationTimes();
+            for(String key : currentMedsTimes.keySet()){
+                JSONArray times = new JSONArray();
+                ArrayList<DateTime> dateTimes = currentMedsTimes.get(key);
+                for (DateTime t : dateTimes){
+                    times.add((String) t.toString());
+                }
+                JSONObject hashMapGlue = new JSONObject();
+                hashMapGlue.put(key, times);
+                currentMedicationTimeStamps.add(hashMapGlue);
+            }
+            j.put("Current Medication TimeStamps", currentMedicationTimeStamps);
+            JSONArray previousMedicationTimeStamps = new JSONArray();
+            HashMap<String, ArrayList<DateTime>> previousMedsTimes = d.getPreviousMedicationTimes();
+            for(String key : previousMedsTimes.keySet()){
+                JSONArray times = new JSONArray();
+                ArrayList<DateTime> dateTimes = previousMedsTimes.get(key);
+                for (DateTime t : dateTimes){
+                    times.add((String) t.toString());
+                }
+                JSONObject hashMapGluePre = new JSONObject();
+                hashMapGluePre.put(key, times);
+                previousMedicationTimeStamps.add(hashMapGluePre);
+            }
+            j.put("Previous Medication TimeStamps", previousMedicationTimeStamps);
+
             outerJSON.add(j);
+
 
         }
         outFileStream.write(outerJSON.toJSONString().getBytes());
