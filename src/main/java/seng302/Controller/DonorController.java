@@ -1,27 +1,28 @@
 package seng302.Controller;
 
+import java.time.DateTimeException;
 import java.time.LocalDate;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
+import org.joda.time.DateTime;
 import seng302.Model.Donor;
 import seng302.Model.Organs;
 import seng302.Model.UndoRedoStacks;
 
 import java.io.IOException;
 import java.time.ZoneId;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Observable;
+import java.util.*;
 
 public class DonorController {
 
@@ -152,6 +153,24 @@ public class DonorController {
     if (donor.getName() != null) {
       showDonor(currentDonor); // Assumes a donor with no name is a new sign up and does not pull values from a template
     }
+    currentMedicationListView.setOnMouseClicked(new EventHandler<MouseEvent>() {
+        @Override
+        public void handle(MouseEvent event) {
+            if(event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2){
+                String med = currentMedicationListView.getSelectionModel().getSelectedItem();
+                lauchMedicationView(med);
+            }
+        }
+    });
+    previousMedicationListView.setOnMouseClicked(new EventHandler<MouseEvent>() {
+          @Override
+          public void handle(MouseEvent event) {
+              if(event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2){
+                  String med = previousMedicationListView.getSelectionModel().getSelectedItem();
+                  lauchMedicationView(med);
+              }
+          }
+      });
   }
 
   /**
@@ -377,8 +396,12 @@ public class DonorController {
   @FXML
   void addMedication(ActionEvent event) {
     String medication = medicationTextField.getText();
-    if (medication.isEmpty()){
+    if (medication.isEmpty() || medication == null){
       return;
+    }
+    if (currentMeds.contains(medication) || previousMeds.contains(medication)){
+        medicationTextField.setText("");
+        return;
     }
     medicationTextField.setText("");
     currentMeds.add(medication);
@@ -394,25 +417,43 @@ public class DonorController {
 
     if(medCurrent != null){
       currentMeds.remove(medCurrent);
+      currentDonor.removeCurrentMedication(medCurrent);
     }
     if (medPrevious != null){
       previousMeds.remove(medPrevious);
+      currentDonor.removePreviousMedication(medPrevious);
     }
   }
 
   @FXML
   void takeMedication(ActionEvent event) {
     String med = previousMedicationListView.getSelectionModel().getSelectedItem();
-    currentMeds.add(med);
-    currentDonor.addCurrentMedication(med);
-    previousMeds.remove(med);
-    currentDonor.removePreviousMedication(med);
+    if (med == null){
+        return;
+    }
+    if (currentMeds.contains(med)){
+        currentDonor.removePreviousMedication(med);
+        previousMeds.remove(med);
+        return;
+    }
+      currentMeds.add(med);
+      currentDonor.addCurrentMedication(med);
+      previousMeds.remove(med);
+      currentDonor.removePreviousMedication(med);
 
   }
 
   @FXML
   void untakeMedication(ActionEvent event) {
     String med = currentMedicationListView.getSelectionModel().getSelectedItem();
+      if (med == null){
+          return;
+      }
+      if(previousMeds.contains(med)) {
+          currentDonor.removeCurrentMedication(med);
+          currentMeds.remove(med);
+          return;
+      }
     currentDonor.removeCurrentMedication(med);
     currentMeds.remove(med);
     previousMeds.add(med);
@@ -429,5 +470,23 @@ public class DonorController {
     previousMedicationListView.getSelectionModel().clearSelection();
   }
 
+  private void lauchMedicationView(String med){
+      FXMLLoader medicationTimeViewLoader = new FXMLLoader(getClass().getResource("/FXML/medicationsTimeView.fxml"));
+      Parent root = null;
+      try {
+          root = medicationTimeViewLoader.load();
+      } catch (IOException e) {
+          e.printStackTrace();
+      }
+      Stage stage = new Stage();
+      stage.setScene(new Scene(root));
+      MedicationsTimeController medicationsTimeController = medicationTimeViewLoader.getController();
+      medicationsTimeController.init(application, currentDonor,stage, med);
+      stage.show();
+
+
+
+
+  }
 
 }
