@@ -80,7 +80,7 @@ public class DonorController {
   private ListView<String> miscAttributeslistView;
 
   @FXML
-  private TableView<?> historyTableView;
+  private TableView<Change> historyTableView;
 
   @FXML
   private Label dodLabel;
@@ -504,27 +504,10 @@ public class DonorController {
 
 
     private void showDonorHistory() {
-        //historyTableView
-        //use JsonReader and JsonWriter
-        //change log history - look at
-
-        // historyTableView.add(?)(donor.getLastUpdated, donor.getlastactionorwe)
-/*
-        TableColumn<Map.Entry<String, String>, String> dateCol = new TableColumn<>("Time");
-        dateCol.setCellValueFactory(p -> new SimpleStringProperty(p.getValue().getKey()));
-
-        TableColumn<Map.Entry<String, String>, String> actionCol = new TableColumn<>("Action");
-        actionCol.setCellValueFactory(p -> new SimpleStringProperty(p.getValue().getValue()));
-
-        ObservableList<Map.Entry<String, String>> items = FXCollections.observableArrayList(donor.getUpdateHistory().entrySet());
-        // @TODO: fix this so it isn't grumpy
-        historyTableView.setItems(items);
-
-        historyTableView.getColumns().setAll(dateCol, actionCol);*/
-        TableColumn timeColumn = new TableColumn("Time");
+      TableColumn timeColumn = new TableColumn("Time");
         TableColumn changeColumn = new TableColumn("Change");
         timeColumn.setCellValueFactory(new PropertyValueFactory<Change, String>("time"));
-        changeColumn.setCellValueFactory(new PropertyValueFactory<Change,String>("change"));
+        changeColumn.setCellValueFactory(new PropertyValueFactory<Change, String>("change"));
         historyTableView.setItems(changelog);
         historyTableView.getColumns().addAll(timeColumn,changeColumn);
 

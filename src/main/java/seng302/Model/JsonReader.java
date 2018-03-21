@@ -203,7 +203,7 @@ public final class JsonReader {
     public static ArrayList<Change> importHistoryFromFile(Donor donor){
         ArrayList<Change> results = new ArrayList<>();
         String name = donor.getName().toLowerCase().replace(" ","_");
-        File infile = new File(Directory.JSON.directory()+"/"+name+"");
+        File infile = new File(Directory.JSON.directory()+"/"+name+"changelog.json");
         if(!infile.exists()){
             System.out.println("No previous changelog exists");
             return new ArrayList<>();

@@ -27,4 +27,12 @@ public class Change {
     public void setChange(String change) {
         this.change = change;
     }
+
+    @Override
+    public String toString() {
+        return "Change{" +
+                "time=" + time +
+                ", change='" + change + '\'' +
+                '}';
+    }
 }

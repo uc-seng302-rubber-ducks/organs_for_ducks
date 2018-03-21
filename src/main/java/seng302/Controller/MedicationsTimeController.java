@@ -91,12 +91,12 @@ public class MedicationsTimeController {
 
         TableColumn startDateColumn = new TableColumn("Start Date");
         TableColumn endDateColumn = new TableColumn("End Date");
-        TableColumn duration = new TableColumn("Duration (Days)");
+        TableColumn durationColumn = new TableColumn("Duration (Days)");
         startDateColumn.setCellValueFactory( new PropertyValueFactory<MedicationDurations, String>("start"));
         endDateColumn.setCellValueFactory(new PropertyValueFactory<MedicationDurations, String>("stop"));
-        duration.setCellValueFactory(new PropertyValueFactory<MedicationDurations, String>("duration"));
+        durationColumn.setCellValueFactory(new PropertyValueFactory<MedicationDurations, String>("duration"));
         medicationTimeTable.setItems(medicationDurations);
-        medicationTimeTable.getColumns().addAll(startDateColumn,endDateColumn,duration);
+        medicationTimeTable.getColumns().addAll(startDateColumn,endDateColumn,durationColumn);
 
 
 
