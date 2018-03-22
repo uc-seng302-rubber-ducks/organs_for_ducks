@@ -1,7 +1,10 @@
 package seng302.Controller;
 
 import java.util.ArrayList;
+
+import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
@@ -12,16 +15,12 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.Pagination;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 import org.joda.time.DateTime;
 import seng302.Controller.AppController;
 import seng302.Model.Clinician;
@@ -64,6 +63,10 @@ public class ClinicianController {
 
   @FXML
   private TextField searchTextField;
+
+
+  @FXML
+  private Tooltip searchToolTip;
 
   @FXML
   private TableView<Donor> searchTableView;
@@ -126,18 +129,41 @@ public class ClinicianController {
     //set table columns and contents
     searchTableView.getColumns().setAll(nameColumn, dobColumn, dodColumn);
     searchTableView.setItems(FXCollections.observableList(sListDonors.subList(startIndex, endIndex)));
+    searchTableView.setRowFactory((searchTableView) ->{
+      return new TooltipTableRow<Donor>((Donor donor) ->{
+        return donor.getTooltip();
+      });
+    });
 
 
     //set on-click behaviour
     searchTableView.setOnMouseClicked(new EventHandler<MouseEvent>() {
       @Override
       public void handle(MouseEvent event) {
-        if (event.isPrimaryButtonDown() && event.getClickCount() == 2) {
-
+        if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
+          Donor donor = searchTableView.getSelectionModel().getSelectedItem();
+          launchDonor(donor);
         }
       }
     });
 
+
+  }
+
+  private void launchDonor(Donor donor){
+    FXMLLoader donorLoader = new FXMLLoader(getClass().getResource("/FXML/donorView.fxml"));
+    Parent root = null;
+    try {
+      root = donorLoader.load();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    Stage donorStage = new Stage();
+    donorStage.setScene(new Scene(root));
+    DonorController donorController = donorLoader.getController();
+    AppController.getInstance().setDonorController(donorController);
+    donorController.init(AppController.getInstance(), donor, donorStage);
+    donorStage.show();
   }
 
   /**
