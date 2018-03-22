@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 
-import jdk.nashorn.internal.ir.debug.JSONWriter;
 import seng302.Model.Clinician;
 import seng302.Model.Donor;
 import seng302.Model.JsonReader;
@@ -236,7 +235,7 @@ public class AppController {
   }
 
 
-  public void differanceInDonors(Donor oldDonor, Donor newDonor){
+  public ArrayList<String> differanceInDonors(Donor oldDonor, Donor newDonor){
    ArrayList<String> diffs = new ArrayList<>();
    if (!oldDonor.getName().equalsIgnoreCase(newDonor.getName())){
        diffs.add("Changed Name from "+ oldDonor.getName()+ " to " + newDonor.getName());
@@ -303,6 +302,10 @@ public class AppController {
       }
       if(diffs.size() > 0){
           JsonWriter.changeLog(diffs,newDonor.getName().toLowerCase().replace(" ", "_"));
+          for(String diff : diffs)
+          newDonor.addChange(diff);
+          return diffs;
       }
+      return diffs;
   }
 }

@@ -123,7 +123,7 @@ public class DonorController {
 
   private Donor currentDonor;
   private Stage stage;
-  private ObservableList changelog;
+  private ObservableList<Change> changelog;
 
   /**
    * Gives the donor view the application controller and hides all label and buttosns that are not
@@ -180,6 +180,9 @@ public class DonorController {
               }
           }
       });
+    changelog.addListener((ListChangeListener.Change<? extends Change> change ) -> {
+      historyTableView.setItems(changelog);
+    });
   }
 
   /**
@@ -321,7 +324,11 @@ public class DonorController {
 
     if (isInputValid) {
       application.update(currentDonor);
-      application.differanceInDonors(oldDonor,currentDonor);
+      ArrayList<String> diffs = application.differanceInDonors(oldDonor,currentDonor);
+      for(String diff : diffs){
+        Change c = new Change(DateTime.now(),diff);
+        changelog.add(c);
+      }
     }
 
     showDonor(currentDonor);
