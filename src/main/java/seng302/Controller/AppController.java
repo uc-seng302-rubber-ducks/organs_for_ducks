@@ -14,6 +14,8 @@ public class AppController {
   private ArrayList<Donor> donors = new ArrayList<>();
   private ArrayList<Clinician> clinicians = new ArrayList<>();
   private static AppController controller;
+  private ArrayList<String[]> historyOfCommands = new ArrayList<>();
+  private int historyPointer = 0;
 
   private DonorController donorController = new DonorController();
   private AppController() {
@@ -26,6 +28,8 @@ public class AppController {
     }
     clinicians.add(new Clinician("Default",0,"","","admin"));
     JsonWriter.saveClinicians(clinicians);
+    String[] empty = {""};
+    historyOfCommands.add(empty);//putting an empty string into the string array to be displayed if history pointer is 0
   }
 
   /**
@@ -70,6 +74,44 @@ public class AppController {
       System.err.println(e.getMessage());
       return -1;
     }
+  }
+
+
+  public void setHistoryPointer() {
+    this.historyPointer = historyOfCommands.size();
+  }
+
+  /*public String[] getCommandHistoryFromCorrectIndex() { ;
+  }*/
+
+  /**
+   * Adds an executed command to the command history
+   *
+   * @param command Command to be added
+   */
+  public void addToHistoryOfCommands(String[] command){
+    historyOfCommands.add(command);
+  }
+
+
+  /**
+   * Updates the history pointer to ensure that the end of the array isnt overrun and the number stays positive so the history pointer doenst overrun.
+   * @param amount -1 for older commands 1 for newer commands
+   */
+  public void historyPointerUpdate(int amount){
+    if (historyPointer + amount <= 0){
+      historyPointer = 0;
+    } else if (historyPointer + amount > historyOfCommands.size()){
+      historyPointer = historyOfCommands.size();
+    }
+  }
+
+  /**
+   * When called queries the history pointer and acquires the command located at the appropriate point
+   * @return
+   */
+  public String[] getCommand(){
+    return historyOfCommands.get(historyPointer);
   }
 
   /**

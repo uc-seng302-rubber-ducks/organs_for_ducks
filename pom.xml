@@ -36,6 +36,12 @@
             <artifactId>picocli</artifactId>
             <version>2.3.0</version>
         </dependency>
+        <!-- https://github.com/jline/jline3 -->
+        <dependency>
+            <groupId>org.jline</groupId>
+            <artifactId>jline</artifactId>
+            <version>3.5.1</version>
+        </dependency>
     </dependencies>
 
     <build>
