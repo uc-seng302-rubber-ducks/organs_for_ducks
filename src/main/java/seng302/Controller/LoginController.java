@@ -117,7 +117,8 @@ public class LoginController {
         }
         stage.setScene(new Scene(root));
         DonorController donorController =  donorLoader.getController();
-        donorController.init(AppController.getInstance(), new Donor(), stage);
+        Donor d = new Donor();
+        donorController.init(AppController.getInstance(), d, stage);
 
     }
 

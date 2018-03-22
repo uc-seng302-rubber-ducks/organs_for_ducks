@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 
 /**
@@ -82,8 +83,57 @@ public final class JsonWriter {
                     miscAttributes.add(a);
                 }
             }
-            j.put("Misc", miscAttributes);
+            JSONArray previousMedication = new JSONArray();
+            ArrayList<String> previousMeds = d.getPreviousMedication();
+            if (previousMeds == null){
+                j.put("Previous Medication", null);
+            } else{
+                for (String med : previousMeds) {
+                    previousMedication.add(med);
+                }
+                j.put("Previous Medication", previousMedication);
+            }
+
+            JSONArray currentMedication = new JSONArray();
+            ArrayList<String> currentMeds = d.getCurrentMedication();
+            if (currentMeds == null){
+                j.put("Current Medication", null);
+            } else{
+                for (String med : currentMeds) {
+                    currentMedication.add(med);
+                }
+                j.put("Current Medication", currentMedication);
+            }
+            j.put("Misc", miscAttributes); //why is this here?
+            JSONArray currentMedicationTimeStamps = new JSONArray();
+            HashMap<String, ArrayList<DateTime>> currentMedsTimes = d.getCurrentMedicationTimes();
+            for(String key : currentMedsTimes.keySet()){
+                JSONArray times = new JSONArray();
+                ArrayList<DateTime> dateTimes = currentMedsTimes.get(key);
+                for (DateTime t : dateTimes){
+                    times.add((String) t.toString());
+                }
+                JSONObject hashMapGlue = new JSONObject();
+                hashMapGlue.put(key, times);
+                currentMedicationTimeStamps.add(hashMapGlue);
+            }
+            j.put("Current Medication TimeStamps", currentMedicationTimeStamps);
+            JSONArray previousMedicationTimeStamps = new JSONArray();
+            HashMap<String, ArrayList<DateTime>> previousMedsTimes = d.getPreviousMedicationTimes();
+            for(String key : previousMedsTimes.keySet()){
+                JSONArray times = new JSONArray();
+                ArrayList<DateTime> dateTimes = previousMedsTimes.get(key);
+                for (DateTime t : dateTimes){
+                    times.add((String) t.toString());
+                }
+                JSONObject hashMapGluePre = new JSONObject();
+                hashMapGluePre.put(key, times);
+                previousMedicationTimeStamps.add(hashMapGluePre);
+            }
+            j.put("Previous Medication TimeStamps", previousMedicationTimeStamps);
+
             outerJSON.add(j);
+
 
         }
         outFileStream.write(outerJSON.toJSONString().getBytes());
@@ -131,6 +181,49 @@ public final class JsonWriter {
         }
     }
 
+    /**
+     * Used to generate a machine and human readable changelog.
+     * The old changelog is imported into the method as a JSONArray
+     * The new change is then mapped to a JSON object with the timestamp attached
+     * The JSON object is then placed into the JSONArray and written back to the orignal place overwritting the file that is there
+     *
+     * @param toWrite change to be written into the changelog.
+     */
+    public static void changeLog(ArrayList<String> toWrite, String name){
+        try {
+            if(!Files.exists(Paths.get(Directory.JSON.directory()))) {
+                Files.createDirectories(Paths.get(Directory.JSON.directory()));
+            }
+            File outfile = new File(Directory.JSON.directory() +"/"+name+"changelog.json");
+            boolean isCreated  = outfile.createNewFile(); //does nothing if file does exist
+            JSONArray changeFile;
+            if (isCreated) {
+                changeFile = new JSONArray();
+            } else {
+                JSONParser parser = new JSONParser(); //read file first as it must be created now to append data to any previous JSON changelogs.
+                changeFile = (JSONArray) parser.parse(new FileReader(outfile));
+            }
+            for (String change : toWrite) {
+                JSONObject newChange = new JSONObject();
+                newChange.put(DateTime.now(), change);
+                changeFile.add(newChange);
+            }
+                FileOutputStream outStream = new FileOutputStream(outfile, false);
+                outStream.write(changeFile.toJSONString().getBytes());
+                outStream.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (org.json.simple.parser.ParseException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Saves clinicians as created by the application
+     *
+     * @param clinicians list of clinicians to save
+     */
     public static void saveClinicians(ArrayList<Clinician> clinicians){
         try{
             if(!Files.exists(Paths.get(Directory.JSON.directory()))){

@@ -1,23 +1,35 @@
 package seng302.Controller;
 
+import java.time.DateTimeException;
 import java.time.LocalDate;
+
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
+import javafx.util.Callback;
+import org.joda.time.DateTime;
+import org.joda.time.DateTime;
+import seng302.Model.Change;
 import seng302.Model.Donor;
 import seng302.Model.Organs;
 import seng302.Model.UndoRedoStacks;
 
 import java.io.IOException;
 import java.time.ZoneId;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 public class DonorController {
 
@@ -68,7 +80,7 @@ public class DonorController {
   private ListView<String> miscAttributeslistView;
 
   @FXML
-  private TableView<?> historyTableView;
+  private TableView<Change> historyTableView;
 
   @FXML
   private Label dodLabel;
@@ -79,7 +91,30 @@ public class DonorController {
   @FXML
   private Button logoutButton;
 
+  @FXML
+  private ListView<String> previousMedicationListView;
+
+  @FXML
+  private ListView<String> currentMedicationListView;
+
+  @FXML
+  private Button untakeMedicationButton;
+
+  @FXML
+  private Button takeMedicationButton;
+
+  @FXML
+  private Button deleteButton;
+
+  @FXML
+  private TextField medicationTextField;
+
+  @FXML
+  private Button addMedicationButton;
+
   private AppController application;
+  private ObservableList<String> currentMeds;
+  private ObservableList<String> previousMeds;
 
   private List<String> possibleGenders = Arrays.asList("M", "F", "U");
 
@@ -88,7 +123,7 @@ public class DonorController {
 
   private Donor currentDonor;
   private Stage stage;
-
+  private ObservableList<Change> changelog;
 
   /**
    * Gives the donor view the application controller and hides all label and buttosns that are not
@@ -110,10 +145,44 @@ public class DonorController {
     bloodTypeComboBox.getItems().addAll(bloodTypes);
     warningLabel.setVisible(false);
     currentDonor = donor;
+    currentMeds = FXCollections.observableArrayList();
+    previousMeds = FXCollections.observableArrayList();
+    currentMedicationListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+    previousMedicationListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+    previousMeds.addListener((ListChangeListener.Change<? extends String> change )-> {
+      previousMedicationListView.setItems(previousMeds);
+      application.update(currentDonor);
+    });
+    currentMeds.addListener((ListChangeListener.Change<? extends String> change) -> {
+      currentMedicationListView.setItems(currentMeds);
+      application.update(currentDonor);
+    });
     if (donor.getName() != null) {
-      showDonor(
-          currentDonor); // Assumes a donor with no name is a new sign up and does not pull values from a template
+      showDonor(currentDonor); // Assumes a donor with no name is a new sign up and does not pull values from a template
+      changelog = FXCollections.observableArrayList(currentDonor.getChanges());
+      showDonorHistory();
     }
+    currentMedicationListView.setOnMouseClicked(new EventHandler<MouseEvent>() {
+        @Override
+        public void handle(MouseEvent event) {
+            if(event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2){
+                String med = currentMedicationListView.getSelectionModel().getSelectedItem();
+                lauchMedicationView(med);
+            }
+        }
+    });
+    previousMedicationListView.setOnMouseClicked(new EventHandler<MouseEvent>() {
+          @Override
+          public void handle(MouseEvent event) {
+              if(event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2){
+                  String med = previousMedicationListView.getSelectionModel().getSelectedItem();
+                  lauchMedicationView(med);
+              }
+          }
+      });
+    changelog.addListener((ListChangeListener.Change<? extends Change> change ) -> {
+      historyTableView.setItems(changelog);
+    });
   }
 
   /**
@@ -187,6 +256,10 @@ public class DonorController {
    */
   @FXML
   private void updateDonor() {
+      UndoRedoStacks.storeUndoCopy(currentDonor);
+      Donor oldDonor = new Donor();
+      UndoRedoStacks.cloneDonor(currentDonor,oldDonor);
+
 
     boolean isInputValid = true;
     warningLabel.setVisible(true);
@@ -251,10 +324,14 @@ public class DonorController {
 
     if (isInputValid) {
       application.update(currentDonor);
+      ArrayList<String> diffs = application.differanceInDonors(oldDonor,currentDonor);
+      for(String diff : diffs){
+        Change c = new Change(DateTime.now(),diff);
+        changelog.add(c);
+      }
     }
 
     showDonor(currentDonor);
-    UndoRedoStacks.storeUndoCopy(currentDonor);
   }
 
   /**
@@ -330,5 +407,116 @@ public class DonorController {
         miscAttributeslistView.getItems().add(atty);
       }
     }
+    currentMeds.addAll(currentDonor.getCurrentMedication());
+    currentMedicationListView.setItems(currentMeds);
+    previousMeds.addAll(currentDonor.getPreviousMedication());
+    previousMedicationListView.setItems(previousMeds);
   }
+
+  @FXML
+  void addMedication(ActionEvent event) {
+    String medication = medicationTextField.getText();
+    if (medication.isEmpty() || medication == null){
+      return;
+    }
+    if (currentMeds.contains(medication) || previousMeds.contains(medication)){
+        medicationTextField.setText("");
+        return;
+    }
+    medicationTextField.setText("");
+    currentMeds.add(medication);
+    currentDonor.addCurrentMedication(medication);
+
+
+  }
+
+  @FXML
+  void deleteMedication(ActionEvent event) {
+    String medCurrent  = currentMedicationListView.getSelectionModel().getSelectedItem();
+    String medPrevious = previousMedicationListView.getSelectionModel().getSelectedItem();
+
+    if(medCurrent != null){
+      currentMeds.remove(medCurrent);
+      currentDonor.removeCurrentMedication(medCurrent);
+    }
+    if (medPrevious != null){
+      previousMeds.remove(medPrevious);
+      currentDonor.removePreviousMedication(medPrevious);
+    }
+  }
+
+  @FXML
+  void takeMedication(ActionEvent event) {
+    String med = previousMedicationListView.getSelectionModel().getSelectedItem();
+    if (med == null){
+        return;
+    }
+    if (currentMeds.contains(med)){
+        currentDonor.removePreviousMedication(med);
+        previousMeds.remove(med);
+        return;
+    }
+      currentMeds.add(med);
+      currentDonor.addCurrentMedication(med);
+      previousMeds.remove(med);
+      currentDonor.removePreviousMedication(med);
+
+  }
+
+  @FXML
+  void untakeMedication(ActionEvent event) {
+    String med = currentMedicationListView.getSelectionModel().getSelectedItem();
+      if (med == null){
+          return;
+      }
+      if(previousMeds.contains(med)) {
+          currentDonor.removeCurrentMedication(med);
+          currentMeds.remove(med);
+          return;
+      }
+    currentDonor.removeCurrentMedication(med);
+    currentMeds.remove(med);
+    previousMeds.add(med);
+    currentDonor.addPreviousMedication(med);
+  }
+
+  @FXML
+  void clearCurrentMedSelection(MouseEvent event) {
+    currentMedicationListView.getSelectionModel().clearSelection();
+  }
+
+  @FXML
+  void clearPreviousMedSelection(MouseEvent event){
+    previousMedicationListView.getSelectionModel().clearSelection();
+  }
+
+  private void lauchMedicationView(String med){
+      FXMLLoader medicationTimeViewLoader = new FXMLLoader(getClass().getResource("/FXML/medicationsTimeView.fxml"));
+      Parent root = null;
+      try {
+          root = medicationTimeViewLoader.load();
+      } catch (IOException e) {
+          e.printStackTrace();
+      }
+      Stage stage = new Stage();
+      stage.setScene(new Scene(root));
+      MedicationsTimeController medicationsTimeController = medicationTimeViewLoader.getController();
+      medicationsTimeController.init(application, currentDonor,stage, med);
+      stage.show();
+
+
+
+
+  }
+
+
+    private void showDonorHistory() {
+      TableColumn timeColumn = new TableColumn("Time");
+        TableColumn changeColumn = new TableColumn("Change");
+        timeColumn.setCellValueFactory(new PropertyValueFactory<Change, String>("time"));
+        changeColumn.setCellValueFactory(new PropertyValueFactory<Change, String>("change"));
+        historyTableView.setItems(changelog);
+        historyTableView.getColumns().addAll(timeColumn,changeColumn);
+
+    }
 }

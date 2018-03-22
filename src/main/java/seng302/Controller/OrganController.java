@@ -15,6 +15,11 @@ import seng302.Model.UndoRedoStacks;
 import java.util.ArrayList;
 import java.util.Collections;
 
+/**
+ * class for the Organs view
+ *
+ * @author Josh Burt
+ */
 public class OrganController {
 
     @FXML
@@ -63,22 +68,22 @@ public class OrganController {
 
     @FXML
     void donate(ActionEvent event) {
+        UndoRedoStacks.storeUndoCopy(currentDonor);
         Organs toDonate = canDonate.getSelectionModel().getSelectedItem();
         currentlyDonating.getItems().add(toDonate);
         currentDonor.addOrgan(toDonate);
         appController.update(currentDonor);
         canDonate.getItems().remove(toDonate);
-        UndoRedoStacks.storeUndoCopy(currentDonor);
     }
 
     @FXML
     void undonate(ActionEvent event) {
+        UndoRedoStacks.storeUndoCopy(currentDonor);
         Organs toUndonate = currentlyDonating.getSelectionModel().getSelectedItem();
         currentlyDonating.getItems().remove(toUndonate);
         canDonate.getItems().add(toUndonate);
         currentDonor.removeOrgan(toUndonate);
         appController.update(currentDonor);
-        UndoRedoStacks.storeUndoCopy(currentDonor);
     }
 
     @FXML

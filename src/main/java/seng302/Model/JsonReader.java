@@ -11,10 +11,10 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
+import java.util.*;
 
 /**
  * Class for reading from JSON file containing application data.
@@ -74,6 +74,55 @@ public final class JsonReader {
                         for (Object attribute : miscAttributes)
                             d.addAttribute(attribute.toString());
                     }
+                    JSONArray previousMedication = (JSONArray) donor.get("Previous Medication");
+                        if(previousMedication != null){
+                            for(Object medication : previousMedication){
+                                d.addPreviousMedicationSetUp((String) medication);
+                            }
+                        }
+
+                    JSONArray currentMedication = (JSONArray) donor.get("Current Medication");
+                        if(currentMedication != null){
+                            for(Object medication : currentMedication) {
+                                d.addCurrentMedicationSetup((String) medication);
+                            }
+                        }
+                    JSONArray previousMedicationTimeStamps = (JSONArray) donor.get("Previous Medication TimeStamps");
+                        if(previousMedicationTimeStamps != null) {
+                            Iterator<Object> iterator = previousMedicationTimeStamps.iterator();
+                            while (iterator.hasNext()){
+                                JSONObject medication = (JSONObject) iterator.next();
+                                Set<String> keyset = medication.keySet();
+                                for(String key : keyset){
+                                    ArrayList<DateTime> timestamps = new ArrayList<>(); // Sorry about the cone of doom
+                                    JSONArray stamps = (JSONArray) medication.get(key);// unfortunalty it is needed
+                                    for(Object stamp : stamps){
+                                        DateTime dateTime = new DateTime((String) stamp);
+                                        timestamps.add(dateTime);
+                                    }
+                                    d.addPreviousMedicationTimes(key,timestamps);
+                                }
+                            }
+                        }
+
+                    JSONArray currentMedicationTimeStamps = (JSONArray) donor.get("Current Medication TimeStamps");
+                    if(previousMedicationTimeStamps != null) {
+                        Iterator<Object> iterator = currentMedicationTimeStamps.iterator();
+                        while (iterator.hasNext()){
+                            JSONObject medication = (JSONObject) iterator.next();
+                            Set<String> keyset = medication.keySet();
+                            for(String key : keyset){
+                                ArrayList<DateTime> timestamps = new ArrayList<>();
+                                JSONArray stamps = (JSONArray) medication.get(key);
+                                for(Object stamp : stamps){
+                                    DateTime dateTime = new DateTime((String) stamp);
+                                    timestamps.add(dateTime);
+                                }
+                                d.addCurrentMedicationTimes(key,timestamps);
+                            }
+                        }
+                    }
+
                     imported++;
                 } catch (IllegalArgumentException e) {
                     System.out.println("malformed DateTime has been detected for Donor: " + name + " has not been imported. This record will be purged if changes are made in this session.");
@@ -96,6 +145,11 @@ public final class JsonReader {
         return donorsIn;
     }
 
+    /**
+     * Import a list of clinicians from a file stored on a users computer
+     *
+     * @return clinicians avaliable in the session
+     */
     public static ArrayList<Clinician> importClinicians(){
 
         ArrayList<Clinician> clinicians = new ArrayList<>();
@@ -138,5 +192,41 @@ public final class JsonReader {
 
         System.out.println(imported + " Clinicians Successfully added");
         return clinicians;
+    }
+
+    /**
+     * Takes a donor as an input and loads their history from disk
+     *
+     * @param donor donors whos history to get
+     * @return map of the timestamp and change made
+     */
+    public static ArrayList<Change> importHistoryFromFile(Donor donor){
+        ArrayList<Change> results = new ArrayList<>();
+        String name = donor.getName().toLowerCase().replace(" ","_");
+        File infile = new File(Directory.JSON.directory()+"/"+name+"changelog.json");
+        if(!infile.exists()){
+            System.out.println("No previous changelog exists");
+            return new ArrayList<>();
+        }
+        JSONParser parser = new JSONParser();
+
+        try {
+            JSONArray a  = (JSONArray) parser.parse(new FileReader(infile));
+            for(Object o : a){
+                JSONObject change = (JSONObject) o;
+                Set<String> keyset = change.keySet();
+                for (String key : keyset){
+                    String actualChange = (String) change.get(key);
+                    DateTime dateTime = new DateTime(key);
+                    results.add(new Change(dateTime,actualChange));
+                }
+            }
+            return results;
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return new ArrayList<>();
     }
 }

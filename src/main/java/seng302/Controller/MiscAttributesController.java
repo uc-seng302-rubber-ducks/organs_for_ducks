@@ -13,6 +13,11 @@ import seng302.Model.UndoRedoStacks;
 
 import java.util.ArrayList;
 
+/**
+ * Class for controlling the miscallanous attributes view
+ *
+ * @author Josh Burt
+ */
 public class MiscAttributesController {
 
   @FXML
@@ -47,6 +52,7 @@ public class MiscAttributesController {
 
   @FXML
   void addAttribute(ActionEvent event) {
+    UndoRedoStacks.storeUndoCopy(currentDonor);
     String toAdd = attributeTextFeild.getText();
     attributeTextFeild.setText("");
     if (toAdd == null) {
@@ -55,16 +61,15 @@ public class MiscAttributesController {
     currentDonor.addAttribute(toAdd);
     attributesList.setItems(FXCollections.observableList(currentDonor.getMiscAttributes()));
     appController.update(currentDonor);
-    UndoRedoStacks.storeUndoCopy(currentDonor);
   }
 
   @FXML
   void removeAttribute(ActionEvent event) {
+    UndoRedoStacks.storeUndoCopy(currentDonor);
     String selected = attributesList.getSelectionModel().getSelectedItem();
     attributesList.getItems().remove(selected);
     currentDonor.removeMiscAttribute(selected);
     appController.update(currentDonor);
-    UndoRedoStacks.storeUndoCopy(currentDonor);
   }
 
   @FXML
