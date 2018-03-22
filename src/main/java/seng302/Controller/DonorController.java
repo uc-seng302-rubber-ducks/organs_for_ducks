@@ -1,14 +1,5 @@
 package seng302.Controller;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.time.DateTimeException;
-import java.time.LocalDate;
-
-import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -20,25 +11,19 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
-import javafx.util.Callback;
-import org.joda.time.DateTime;
-import org.joda.time.DateTime;
-import seng302.Model.Change;
-import seng302.Model.Donor;
-import seng302.Model.Organs;
-import seng302.Model.UndoRedoStacks;
+import seng302.Model.*;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.ZoneId;
-import java.util.*;
-import java.net.URL;
-import java.util.ResourceBundle;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 //import org.controlsfx.control;
 
 public class DonorController {
@@ -419,7 +404,8 @@ public class DonorController {
   @FXML
   void addMedication(ActionEvent event) {
     //String medication = medicationTextField.getText();
-      //TextFields.bindAutoCompletion();
+      String[] possibleSuggestions = HttpRequester.getSuggestedDrugs();
+      TextFields.bindAutoCompletion(medicationTextField, possibleSuggestions);
     medicationTextField.textProperty().addListener(new ChangeListener<String>() {
         @Override
         public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
