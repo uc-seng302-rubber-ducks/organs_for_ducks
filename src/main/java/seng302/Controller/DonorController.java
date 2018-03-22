@@ -1,9 +1,16 @@
 package seng302.Controller;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 
 import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -30,6 +37,9 @@ import seng302.Model.UndoRedoStacks;
 import java.io.IOException;
 import java.time.ZoneId;
 import java.util.*;
+import java.net.URL;
+import java.util.ResourceBundle;
+import org.controlsfx.control;
 
 public class DonorController {
 
@@ -408,17 +418,55 @@ public class DonorController {
 
   @FXML
   void addMedication(ActionEvent event) {
-    String medication = medicationTextField.getText();
-    if (medication.isEmpty() || medication == null){
-      return;
-    }
-    if (currentMeds.contains(medication) || previousMeds.contains(medication)){
-        medicationTextField.setText("");
-        return;
-    }
-    medicationTextField.setText("");
-    currentMeds.add(medication);
-    currentDonor.addCurrentMedication(medication);
+    //String medication = medicationTextField.getText();
+      TextFields.bindAutoCompletion()
+    medicationTextField.textProperty().addListener(new ChangeListener<String>() {
+        @Override
+        public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+
+            System.out.println("checking for typing");
+
+//            String request = "mapi-us.iterar.co/api/autocomplete?query=" + newValue;
+//
+//            try {
+//                URL url = new URL(request);
+//                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+//                connection.setDoInput(true);
+//                connection.setDoOutput(true);
+//                connection.setRequestMethod("GET");
+//                connection.setRequestProperty("Accept", "application/json");
+//                connection.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
+//                BufferedReader in = new BufferedReader(
+//                        new InputStreamReader(
+//                                connection.getInputStream()));
+//                String inputLine;
+//
+//                while ((inputLine = in.readLine()) != null)
+//                    System.out.println(inputLine);
+//                in.close();
+//
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+        }
+
+    });
+
+
+
+
+
+
+//      if (medication.isEmpty() || medication == null){
+//      return;
+//    }
+//    if (currentMeds.contains(medication) || previousMeds.contains(medication)){
+//        medicationTextField.setText("");
+//        return;
+//    }
+//    medicationTextField.setText("");
+//    currentMeds.add(medication);
+//    currentDonor.addCurrentMedication(medication);
 
 
   }
