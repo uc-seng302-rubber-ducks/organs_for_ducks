@@ -468,6 +468,22 @@ public class Donor {
         changes.add(new Change(dateTime,change));
     }
 
+    public String getTooltip(){
+        if(organs == null){
+            return name;
+        }
+        if (!organs.isEmpty()){
+            String toReturn = name + ". Donor: ";
+            for ( Organs o : organs){
+                toReturn += o.toString() + " ";
+            }
+            System.out.println(toReturn);
+            return toReturn;
+        } else {
+            return name;
+        }
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

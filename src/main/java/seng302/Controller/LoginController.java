@@ -71,7 +71,7 @@ public class LoginController {
             stage.setScene(new Scene(root));
             DonorController donorController = donorLoader.getController();
             AppController.getInstance().setDonorController(donorController);
-            donorController.init(AppController.getInstance(), donor, stage);
+            donorController.init(AppController.getInstance(), donor, stage,false);
         } else if (accountTypeComboBox.getValue().equals("Clinician")) {
             warningLabel.setText("");
             int wantedClinician = -1;
@@ -117,8 +117,7 @@ public class LoginController {
         }
         stage.setScene(new Scene(root));
         DonorController donorController =  donorLoader.getController();
-        Donor d = new Donor();
-        donorController.init(AppController.getInstance(), d, stage);
+        donorController.init(AppController.getInstance(), new Donor(), stage, false);
 
     }
 

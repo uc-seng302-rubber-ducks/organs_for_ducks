@@ -89,7 +89,7 @@ public class DonorController {
   private Label warningLabel;
 
   @FXML
-  private Button logoutButton;
+  private Button logOutButton;
 
   @FXML
   private ListView<String> previousMedicationListView;
@@ -129,10 +129,13 @@ public class DonorController {
    * Gives the donor view the application controller and hides all label and buttosns that are not
    * needed on opening
    */
-  public void init(AppController controller, Donor donor, Stage stage) {
+  public void init(AppController controller, Donor donor, Stage stage, Boolean fromClinician) {
     this.stage = stage;
     application = controller;
     ageLabel.setText("");
+    if(fromClinician){
+      logOutButton.setVisible(false);
+    }
     //arbitrary default values
     dateOfBirthPicker.setValue(LocalDate.of(1970, 1, 1));
     dateOfDeathPicker.setValue(LocalDate.now());

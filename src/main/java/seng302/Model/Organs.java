@@ -1,6 +1,19 @@
 package seng302.Model;
 
 public enum Organs {
-  LIVER, KIDNEY, PANCREAS, HEART, LUNG, INTESTINE, CORNEA,
-  MIDDLE_EAR, SKIN, BONE_MARROW, CONNECTIVE_TISSUE
+  LIVER("Liver") , KIDNEY("Kidney"), PANCREAS("Pancreas"), HEART("Heart"), LUNG("Lung"), INTESTINE("Intestine"), CORNEA("Cornea"),
+  MIDDLE_EAR("Middle Er"), SKIN("Skin"), BONE_MARROW("Bone Marrow"), CONNECTIVE_TISSUE("Connective Tissue");
+
+  public String organName;
+
+  Organs(String organName){
+    this.organName = organName;
+  }
+
+  @Override
+  public String toString(){
+    return organName;
+  }
+
+
 }

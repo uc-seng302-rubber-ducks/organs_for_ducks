@@ -3,7 +3,10 @@ package seng302.Controller;
 import java.util.ArrayList;
 import java.util.HashSet;
 import javafx.beans.binding.Bindings;
+
+import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
@@ -14,16 +17,13 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.Pagination;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
+import javafx.util.Callback;
 import org.joda.time.DateTime;
 import org.joda.time.Years;
 import seng302.Controller.AppController;
@@ -69,6 +69,10 @@ public class ClinicianController {
   @FXML
   private TextField searchTextField;
 
+
+  @FXML
+  private Tooltip searchToolTip;
+
   @FXML
   private TableView<Donor> searchTableView;
 
@@ -76,6 +80,7 @@ public class ClinicianController {
   private AppController appController;
   private Clinician clinician;
   private ArrayList<Donor> donors;
+  private ArrayList<Stage> openStages;
 
   private static int currentIndex = 0;
 
@@ -90,6 +95,18 @@ public class ClinicianController {
     regionTextField.setText(clinician.getRegion());
     donors = appController.getDonors();
     initSearchTable(0);
+    openStages = new ArrayList<>();
+    stage.setOnCloseRequest(new EventHandler<WindowEvent>(){
+      public void handle(WindowEvent we){
+        if(!openStages.isEmpty()){
+          for (Stage s : openStages){
+            s.close();
+          };
+        };
+      };
+    });
+    //searchPagination = new Pagination((donors.size() / ROWS_PER_PAGE + 1), 0);
+
 
   }
 
@@ -133,19 +150,44 @@ public class ClinicianController {
     //should limit the number of items shown to ROWS_PER_PAGE
     //squished = limit(fListDonors, sListDonors);
     //set table columns and contents
-    searchTableView.getColumns().setAll(nameColumn, dobColumn, dodColumn, ageColumn, organsColumn);
-    searchTableView.setItems(sListDonors);
+    searchTableView.getColumns().setAll(nameColumn, dobColumn, dodColumn);
+    searchTableView.setItems(FXCollections.observableList(sListDonors.subList(startIndex, endIndex)));
+    searchTableView.setRowFactory((searchTableView) ->{
+      return new TooltipTableRow<Donor>((Donor donor) ->{
+        return donor.getTooltip();
+      });
+    });
+
 
     //set on-click behaviour
     searchTableView.setOnMouseClicked(new EventHandler<MouseEvent>() {
       @Override
       public void handle(MouseEvent event) {
-        if (event.isPrimaryButtonDown() && event.getClickCount() == 2) {
-
+        if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
+          Donor donor = searchTableView.getSelectionModel().getSelectedItem();
+          launchDonor(donor);
         }
       }
     });
 
+
+  }
+
+  private void launchDonor(Donor donor){
+    FXMLLoader donorLoader = new FXMLLoader(getClass().getResource("/FXML/donorView.fxml"));
+    Parent root = null;
+    try {
+      root = donorLoader.load();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    Stage donorStage = new Stage();
+    donorStage.setScene(new Scene(root));
+    openStages.add(donorStage);
+    DonorController donorController = donorLoader.getController();
+    AppController.getInstance().setDonorController(donorController);
+    donorController.init(AppController.getInstance(), donor, donorStage,true);
+    donorStage.show();
   }
 
   /**
