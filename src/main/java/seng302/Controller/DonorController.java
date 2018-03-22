@@ -161,6 +161,8 @@ public class DonorController {
       showDonor(currentDonor); // Assumes a donor with no name is a new sign up and does not pull values from a template
       changelog = FXCollections.observableArrayList(currentDonor.getChanges());
       showDonorHistory();
+    } else {
+      changelog = FXCollections.observableArrayList(new ArrayList<Change>());
     }
     currentMedicationListView.setOnMouseClicked(new EventHandler<MouseEvent>() {
         @Override
