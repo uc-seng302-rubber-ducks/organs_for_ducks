@@ -1,6 +1,8 @@
 package seng302.Controller;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -23,11 +25,13 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import org.joda.time.DateTime;
+import org.joda.time.Years;
 import seng302.Controller.AppController;
 import seng302.Model.Clinician;
 
 import java.io.IOException;
 import seng302.Model.Donor;
+import seng302.Model.Organs;
 
 public class ClinicianController {
 
@@ -68,9 +72,6 @@ public class ClinicianController {
   @FXML
   private TableView<Donor> searchTableView;
 
-  @FXML
-  private Pagination searchPagination;
-
   private Stage stage;
   private AppController appController;
   private Clinician clinician;
@@ -89,8 +90,6 @@ public class ClinicianController {
     regionTextField.setText(clinician.getRegion());
     donors = appController.getDonors();
     initSearchTable(0);
-    //searchPagination = new Pagination((donors.size() / ROWS_PER_PAGE + 1), 0);
-
 
   }
 
@@ -116,20 +115,26 @@ public class ClinicianController {
     TableColumn<Donor, Integer> dodColumn = new TableColumn<>("Date of Death");
     dodColumn.setCellValueFactory(new PropertyValueFactory<>("dateOfDeath"));
 
+    TableColumn<Donor, Integer> ageColumn = new TableColumn<>("Age");
+    ageColumn.setCellValueFactory(new PropertyValueFactory<>("age"));
+
+    TableColumn<Donor, HashSet<Organs>> organsColumn = new TableColumn<>("Organs");
+    organsColumn.setCellValueFactory(new PropertyValueFactory<>("organs"));
+
     //TODO add more columns as wanted/needed
     FilteredList<Donor> fListDonors = new FilteredList<>(oListDonors);
-    fListDonors = filter(searchTextField, fListDonors, donors);
+    fListDonors = filter(searchTextField, fListDonors);
+    FilteredList<Donor> squished = new FilteredList<>(fListDonors);
 
-    SortedList<Donor> sListDonors = new SortedList<>(fListDonors);
+    SortedList<Donor> sListDonors = new SortedList<>(squished);
     sListDonors.comparatorProperty().bind(searchTableView.comparatorProperty());
 
+    //TODO predicate on this list not working properly
+    //should limit the number of items shown to ROWS_PER_PAGE
+    squished = limit(fListDonors, sListDonors);
     //set table columns and contents
-    searchTableView.getColumns().setAll(nameColumn, dobColumn, dodColumn);
-
-    searchTableView.setItems(sListDonors);
-    //disables everything I just built up..
-    //searchTableView.setItems(FXCollections.observableList(sListDonors.subList(startIndex, endIndex)));
-
+    searchTableView.getColumns().setAll(nameColumn, dobColumn, dodColumn, ageColumn, organsColumn);
+    searchTableView.setItems(squished);
 
     //set on-click behaviour
     searchTableView.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -144,14 +149,14 @@ public class ClinicianController {
   }
 
   /**
-   *  applies a filter to a filtered list
+   *  applies a change listener to the input text box and filters a filtered list accordingly
    * @param inputTextField text field from which the list will be filtered
    * @param fListDonors list to be filtered
    * @return filtered list with filter applied
    */
-  private static FilteredList<Donor> filter(TextField inputTextField, FilteredList<Donor> fListDonors, ArrayList<Donor> donors ) {
+  private static FilteredList<Donor> filter(TextField inputTextField, FilteredList<Donor> fListDonors) {
     inputTextField.textProperty().addListener((observable, oldValue, newValue) -> {
-      fListDonors.setPredicate(Donor -> {
+      fListDonors.predicateProperty().bind(Bindings.createObjectBinding(() -> Donor -> {
         if (newValue == null || newValue.isEmpty()) {
           return true;
         }
@@ -161,11 +166,20 @@ public class ClinicianController {
         }
         //if (other test case) return true
         return false;
-      });
+      }));
     });
     return fListDonors;
   }
 
+  private static FilteredList<Donor> limit(FilteredList<Donor> filteredList, SortedList<Donor> sortedList) {
+    filteredList.setPredicate(Donor -> {
+      if (sortedList.indexOf(Donor) > 30 ) {
+        return false;
+      }
+      return true;
+    });
+    return filteredList;
+  };
   @FXML
   void undo(ActionEvent event) {
 
