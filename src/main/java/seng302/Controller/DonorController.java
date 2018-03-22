@@ -39,7 +39,7 @@ import java.time.ZoneId;
 import java.util.*;
 import java.net.URL;
 import java.util.ResourceBundle;
-import org.controlsfx.control;
+//import org.controlsfx.control;
 
 public class DonorController {
 
@@ -419,7 +419,7 @@ public class DonorController {
   @FXML
   void addMedication(ActionEvent event) {
     //String medication = medicationTextField.getText();
-      TextFields.bindAutoCompletion()
+      //TextFields.bindAutoCompletion();
     medicationTextField.textProperty().addListener(new ChangeListener<String>() {
         @Override
         public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
