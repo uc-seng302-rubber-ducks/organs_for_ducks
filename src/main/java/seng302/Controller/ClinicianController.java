@@ -131,10 +131,10 @@ public class ClinicianController {
 
     //TODO predicate on this list not working properly
     //should limit the number of items shown to ROWS_PER_PAGE
-    squished = limit(fListDonors, sListDonors);
+    //squished = limit(fListDonors, sListDonors);
     //set table columns and contents
     searchTableView.getColumns().setAll(nameColumn, dobColumn, dodColumn, ageColumn, organsColumn);
-    searchTableView.setItems(squished);
+    searchTableView.setItems(sListDonors);
 
     //set on-click behaviour
     searchTableView.setOnMouseClicked(new EventHandler<MouseEvent>() {
