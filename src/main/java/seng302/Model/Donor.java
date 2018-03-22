@@ -477,7 +477,6 @@ public class Donor {
             for ( Organs o : organs){
                 toReturn += o.toString() + " ";
             }
-            System.out.println(toReturn);
             return toReturn;
         } else {
             return name;

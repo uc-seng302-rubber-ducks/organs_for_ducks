@@ -22,6 +22,7 @@ import javafx.stage.Stage;
 import javafx.util.Callback;
 import org.joda.time.DateTime;
 import org.joda.time.DateTime;
+import org.joda.time.Years;
 import seng302.Model.Change;
 import seng302.Model.Donor;
 import seng302.Model.Organs;
@@ -406,6 +407,7 @@ public class DonorController {
       dateOfDeathPicker.setValue(
           donor.getDateOfDeath().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
     }
+    ageLabel.setText(donor.getAge().toString().replace("P", "").replace("Y", "") + " Years");
     if (donor.getMiscAttributes() != null) {
       miscAttributeslistView.getItems().clear(); // HERE
       for (String atty : donor.getMiscAttributes()) {
