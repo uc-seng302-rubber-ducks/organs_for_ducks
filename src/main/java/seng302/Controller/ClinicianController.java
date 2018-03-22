@@ -204,7 +204,7 @@ public class ClinicianController {
           return true;
         }
         String lowerCaseFilterText = newValue.toLowerCase();
-        if (Donor.getName().contains(lowerCaseFilterText)) {
+        if (Donor.getName().toLowerCase().contains(lowerCaseFilterText)) {
           return true;
         }
         //if (other test case) return true
