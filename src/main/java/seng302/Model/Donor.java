@@ -286,7 +286,7 @@ public class Donor {
         if (!organs.isEmpty()){
             String toReturn = name + ". Donor: ";
             for ( Organs o : organs){
-                toReturn.concat( o.name()+ " ");
+                toReturn += o.toString() + " ";
             }
             System.out.println(toReturn);
             return toReturn;

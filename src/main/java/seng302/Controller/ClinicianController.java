@@ -20,6 +20,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import javafx.util.Callback;
 import org.joda.time.DateTime;
 import seng302.Controller.AppController;
@@ -78,6 +79,7 @@ public class ClinicianController {
   private AppController appController;
   private Clinician clinician;
   private ArrayList<Donor> donors;
+  private ArrayList<Stage> openStages;
 
   private static int currentIndex = 0;
 
@@ -92,6 +94,16 @@ public class ClinicianController {
     regionTextField.setText(clinician.getRegion());
     donors = appController.getDonors();
     initSearchTable(0);
+    openStages = new ArrayList<>();
+    stage.setOnCloseRequest(new EventHandler<WindowEvent>(){
+      public void handle(WindowEvent we){
+        if(!openStages.isEmpty()){
+          for (Stage s : openStages){
+            s.close();
+          };
+        };
+      };
+    });
     //searchPagination = new Pagination((donors.size() / ROWS_PER_PAGE + 1), 0);
 
 
@@ -160,9 +172,10 @@ public class ClinicianController {
     }
     Stage donorStage = new Stage();
     donorStage.setScene(new Scene(root));
+    openStages.add(donorStage);
     DonorController donorController = donorLoader.getController();
     AppController.getInstance().setDonorController(donorController);
-    donorController.init(AppController.getInstance(), donor, donorStage);
+    donorController.init(AppController.getInstance(), donor, donorStage,true);
     donorStage.show();
   }
 
