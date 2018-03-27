@@ -1,10 +1,10 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>seng302</groupId>
-    <artifactId>team-24-jbu71-tke34-sprint1</artifactId>
+    <artifactId>team-100-Rubber-Duckies</artifactId>
     <packaging>jar</packaging>
     <version>0.0</version>
-    <name>team-24-jbu71-tke34-sprint1</name>
+    <name>team-100-Rubber-Duckies</name>
     <url>https://eng-git.canterbury.ac.nz/SENG302-2016/team-0</url>
 
     <properties>
