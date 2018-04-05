@@ -74,13 +74,8 @@ public class LoginController {
             donorController.init(AppController.getInstance(), donor, stage,false);
         } else if (accountTypeComboBox.getValue().equals("Clinician")) {
             warningLabel.setText("");
-            int wantedClinician = -1;
-            try {
-                wantedClinician = Integer.parseInt(donorNameTextField.getText());
-            } catch (NumberFormatException e){
-                warningLabel.setText("Please enter your staff id number");
-                return;
-            }
+            String wantedClinician = "";
+            wantedClinician  = donorNameTextField.getText();
             String password = passwordField.getText();
             Clinician clinician = appController.getClinician(wantedClinician);
             if (!password.equals(clinician.getPassword())){

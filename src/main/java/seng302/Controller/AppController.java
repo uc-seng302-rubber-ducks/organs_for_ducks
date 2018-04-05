@@ -22,11 +22,11 @@ public class AppController {
     donors = JsonReader.importJsonDonors();
     clinicians = JsonReader.importClinicians();
     for(Clinician c : clinicians){
-      if(c.getStaffId() == 0){
+      if(c.getStaffId().equals("0")){
         return; //short circut out if defalut clinication exists
       }
     }
-    clinicians.add(new Clinician("Default",0,"","","admin"));
+    clinicians.add(new Clinician("Default","0","","","admin"));
     JsonWriter.saveClinicians(clinicians);
     String[] empty = {""};
     historyOfCommands.add(empty);//putting an empty string into the string array to be displayed if history pointer is 0
@@ -247,9 +247,9 @@ public class AppController {
     this.donors = donors;
   }
 
-  public Clinician getClinician(int id){
+  public Clinician getClinician(String id){
    for (Clinician c : clinicians){
-     if (c.getStaffId() == id) {
+     if (c.getStaffId().equals(id)) {
        return c;
      }
    }

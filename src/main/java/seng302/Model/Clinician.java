@@ -15,7 +15,7 @@ import java.util.Objects;
 public class Clinician {
 
     private String name;
-    private int staffId;
+    private String staffId;
     private String workAddress;
     private String region;
     private String password;
@@ -28,7 +28,7 @@ public class Clinician {
     }
 
 
-    public Clinician(String name, int staffId, String workAddress, String region, String password, DateTime dateCreated, DateTime dateLastModified) {
+    public Clinician(String name, String staffId, String workAddress, String region, String password, DateTime dateCreated, DateTime dateLastModified) {
         this.name = name;
         this.staffId = staffId;
         this.workAddress = workAddress;
@@ -39,7 +39,7 @@ public class Clinician {
 
     }
 
-    public Clinician(String name, int staffId, String workAddress, String region, String password) {
+    public Clinician(String name, String staffId, String workAddress, String region, String password) {
         this.name = name;
         this.staffId = staffId;
         this.workAddress = workAddress;
@@ -69,7 +69,7 @@ public class Clinician {
         this.name = name;
     }
 
-    public int getStaffId() {
+    public String getStaffId() {
         return staffId;
     }
 

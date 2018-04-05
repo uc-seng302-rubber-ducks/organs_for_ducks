@@ -249,13 +249,13 @@ public class Donor {
     }
   }
 
-  public Years getAge() {
+  public String getAge() {
     if (dateOfDeath != null) {
 
       return Years.yearsBetween(LocalDate.fromDateFields(dateOfBirth),
-          LocalDate.fromDateFields(dateOfDeath));
+          LocalDate.fromDateFields(dateOfDeath)).toString().replace("P","").replace("Y","");
     }
-    return Years.yearsBetween(LocalDate.fromDateFields(dateOfBirth), LocalDate.now());
+    return Years.yearsBetween(LocalDate.fromDateFields(dateOfBirth), LocalDate.now()).toString().replace("P","").replace("Y","");
   }
 
   //Trial method

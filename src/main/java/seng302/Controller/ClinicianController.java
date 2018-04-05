@@ -246,14 +246,16 @@ public class ClinicianController {
 
   @FXML
   void confirm(ActionEvent event) {
+    warningLabel.setText("");
     clinician.setName(nameTextField.getText());
     clinician.setWorkAddress(addressTextField.getText());
     clinician.setRegion(regionTextField.getText());
-    if (passwordField.getText().equals(conformPasswordField.getText()) && !passwordField.getText()
-        .equals("")) {
-      clinician.setPassword(passwordField.getText());
-    } else {
-      warningLabel.setText("Passwords did not match.\n Password was not updated.");
+    if(!passwordField.getText().equals("")) {
+      if (passwordField.getText().equals(conformPasswordField.getText())) {
+        clinician.setPassword(passwordField.getText());
+      } else {
+        warningLabel.setText("Passwords did not match.\n Password was not updated.");
+      }
     }
     clinician.setDateLastModified(DateTime.now());
     appController.updateClinicians(clinician);
