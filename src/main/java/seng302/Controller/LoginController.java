@@ -16,13 +16,16 @@ import java.util.ArrayList;
 public class LoginController {
 
     @FXML
+    private Button changeLogin;
+
+    @FXML
     private Button loginButton;
 
     @FXML
     private Button signUpButton;
 
     @FXML
-    private TextField donorNameTextField;
+    private TextField userIDTextField;
 
     @FXML
     private PasswordField passwordField;
@@ -34,7 +37,13 @@ public class LoginController {
     private Label warningLabel;
 
     @FXML
+    private Label idLabel;
+
+    @FXML
     private Label passwordLabel;
+
+    private Stage helpStage = null;
+    private boolean isUser = true;
 
     private AppController appController;
     private ArrayList<Donor> donors;
@@ -45,22 +54,44 @@ public class LoginController {
         this.appController = appController;
         donors = appController.getDonors();
         this.stage = stage;
-        accountTypeComboBox.getItems().add("Donor");
-        accountTypeComboBox.getItems().add("Clinician");
-        accountTypeComboBox.getSelectionModel().select("Donor");
+
+    }
+
+    @FXML
+    void changeUserButtonClicked() {
+            if (isUser) {
+                warningLabel.setText("");
+                idLabel.setText("Staff ID:");
+                userIDTextField.setText("");
+                passwordField.setVisible(true);
+                passwordLabel.setVisible(true);
+                isUser = false;
+                changeLogin.setText("Login as a Public User");
+
+            } else {
+                warningLabel.setText("");
+                idLabel.setText("NHI:");
+                userIDTextField.setText("");
+                passwordLabel.setVisible(false);
+                passwordField.setVisible(false);
+                isUser = true;
+                changeLogin.setText("Login as a Clinician");
+            }
 
     }
 
     @FXML
     void login(ActionEvent event) {
-        if(accountTypeComboBox.getValue().equals("Donor")) {
+        if(isUser) {
             warningLabel.setText("");
-            String wantedDonor = donorNameTextField.getText();
+            String wantedDonor = userIDTextField.getText();
             Donor donor = appController.findDonor(wantedDonor);
+
             if (donor == null) {
-                warningLabel.setText("Donor was not found. To register a new donor please click sign up");
+                warningLabel.setText("Donor was not found.\nTo register a new donor please click sign up.");
                 return;
             }
+
             FXMLLoader donorLoader = new FXMLLoader(getClass().getResource("/FXML/donorView.fxml"));
             Parent root = null;
             try {
@@ -72,37 +103,42 @@ public class LoginController {
             DonorController donorController = donorLoader.getController();
             AppController.getInstance().setDonorController(donorController);
             donorController.init(AppController.getInstance(), donor, stage,false);
-        } else if (accountTypeComboBox.getValue().equals("Clinician")) {
+
+        } else {
             warningLabel.setText("");
             int wantedClinician = -1;
+
             try {
-                wantedClinician = Integer.parseInt(donorNameTextField.getText());
+                wantedClinician = Integer.parseInt(userIDTextField.getText());
             } catch (NumberFormatException e){
                 warningLabel.setText("Please enter your staff id number");
                 return;
             }
+
             String password = passwordField.getText();
             Clinician clinician = appController.getClinician(wantedClinician);
-            if (!password.equals(clinician.getPassword())){
-                warningLabel.setText("Either the Clinician does not exist\n or the password is incorrect please try again");
+            System.out.println(clinician);
+
+            if (clinician == null){
+                warningLabel.setText("The Clinician does not exist");
+            } else if (!password.equals(clinician.getPassword())){
+                warningLabel.setText("Your password is incorrect please try again");
                 return;
-            }
-            FXMLLoader clinicianLoader = new FXMLLoader(getClass().getResource("/FXML/clinicianView.fxml"));
-            Parent root = null;
-            try {
-                root = clinicianLoader.load();
-            } catch (IOException e) {
-                e.printStackTrace();
+            } else {
+                FXMLLoader clinicianLoader = new FXMLLoader(getClass().getResource("/FXML/clinicianView.fxml"));
+                Parent root = null;
+                try {
+                    root = clinicianLoader.load();
+                } catch (IOException e) {
+                    e.printStackTrace();
             }
             stage.setScene(new Scene(root));
             ClinicianController clinicianController = clinicianLoader.getController();
             clinicianController.init(stage,appController,clinician);
-
+            }
         }
-
-
-
     }
+
 
     @FXML
     void signUp(ActionEvent event) {
@@ -121,6 +157,29 @@ public class LoginController {
 
     }
 
+
+    /**
+     * Displays a pop up window with instructions to help the user on the login page.
+     */
+    @FXML
+    public void helpButton() {
+
+        if (helpStage == null) {
+            try {
+                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/FXML/loginHelp.fxml"));
+                Parent root = fxmlLoader.load();
+                helpStage = new Stage();
+                helpStage.setTitle("Login Help");
+                helpStage.setScene(new Scene(root));
+                helpStage.setResizable(false);
+                helpStage.setOnCloseRequest(event -> helpStage = null);
+                helpStage.show();
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
 
 }

@@ -253,7 +253,8 @@ public class AppController {
        return c;
      }
    }
-      return new Clinician();
+      System.out.println("testing");
+      return null;
    }
 
    public void updateClinicians(Clinician clinician){
