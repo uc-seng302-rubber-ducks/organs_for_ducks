@@ -6,6 +6,7 @@ import picocli.CommandLine.Command;
 import seng302.Controller.AppController;
 import seng302.Model.Donor;
 import seng302.Model.JsonWriter;
+import seng302.Model.User;
 import seng302.View.IoHelper;
 
 import java.io.IOException;
@@ -40,7 +41,7 @@ public class DeleteDonor implements Runnable {
         if(dob == null) {
             return;
         }
-        Donor toDelete = controller.findDonor(firstName+" "+lastName, dob);
+        User toDelete = controller.findUser(firstName+" "+lastName, dob);
         if(toDelete == null){
             System.out.println("No Donor with those details was found");
             return;
@@ -63,10 +64,11 @@ public class DeleteDonor implements Runnable {
             }
         }
         //sc.close();
-        try {
-            JsonWriter.saveCurrentDonorState(controller.getDonors());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        //TODO fix json writer
+//        try {
+//            JsonWriter.saveCurrentDonorState(controller.getUsers());
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
     }
 }

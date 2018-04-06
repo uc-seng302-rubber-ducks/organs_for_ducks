@@ -12,6 +12,7 @@ import seng302.Model.Donor;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import seng302.Model.User;
 
 public class LoginController {
 
@@ -37,13 +38,13 @@ public class LoginController {
     private Label passwordLabel;
 
     private AppController appController;
-    private ArrayList<Donor> donors;
+    private ArrayList<User> users;
     private Stage stage;
 
     public void init(AppController appController, Stage stage){
         warningLabel.setText("");
         this.appController = appController;
-        donors = appController.getDonors();
+        users = appController.getUsers();
         this.stage = stage;
         accountTypeComboBox.getItems().add("Donor");
         accountTypeComboBox.getItems().add("Clinician");
@@ -56,9 +57,9 @@ public class LoginController {
         if(accountTypeComboBox.getValue().equals("Donor")) {
             warningLabel.setText("");
             String wantedDonor = donorNameTextField.getText();
-            Donor donor = appController.findDonor(wantedDonor);
-            if (donor == null) {
-                warningLabel.setText("Donor was not found. To register a new donor please click sign up");
+            User user = appController.findUser(wantedDonor);
+            if (user == null) {
+                warningLabel.setText("Donor was not found. To register a new user please click sign up");
                 return;
             }
             FXMLLoader donorLoader = new FXMLLoader(getClass().getResource("/FXML/donorView.fxml"));
@@ -71,7 +72,7 @@ public class LoginController {
             stage.setScene(new Scene(root));
             DonorController donorController = donorLoader.getController();
             AppController.getInstance().setDonorController(donorController);
-            donorController.init(AppController.getInstance(), donor, stage,false);
+            donorController.init(AppController.getInstance(), user, stage,false);
         } else if (accountTypeComboBox.getValue().equals("Clinician")) {
             warningLabel.setText("");
             int wantedClinician = -1;
@@ -117,7 +118,7 @@ public class LoginController {
         }
         stage.setScene(new Scene(root));
         DonorController donorController =  donorLoader.getController();
-        donorController.init(AppController.getInstance(), new Donor(), stage, false);
+        donorController.init(AppController.getInstance(), new User(), stage, false);
 
     }
 
