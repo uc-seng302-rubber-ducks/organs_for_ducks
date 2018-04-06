@@ -401,7 +401,7 @@ public class DonorController {
     previousMedicationListView.setItems(previousMeds);
   }
 
-  @FXML
+  /*@FXML
   void addMedication(ActionEvent event) {
     //String medication = medicationTextField.getText();
       String[] possibleSuggestions = HttpRequester.getSuggestedDrugs();
@@ -437,7 +437,7 @@ public class DonorController {
         }
 
     });
-
+*/
 
 
 
@@ -455,7 +455,7 @@ public class DonorController {
 //    currentDonor.addCurrentMedication(medication);
 
 
-  }
+  //}
 
   @FXML
   void deleteMedication(ActionEvent event) {
