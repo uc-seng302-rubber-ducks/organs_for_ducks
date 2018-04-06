@@ -19,7 +19,7 @@ public class AppController {
 
   private DonorController donorController = new DonorController();
   private AppController() {
-    donors = JsonReader.importJsonDonors();
+//    donors = JsonReader.importJsonDonors();
     clinicians = JsonReader.importClinicians();
     for(Clinician c : clinicians){
       if(c.getStaffId() == 0){

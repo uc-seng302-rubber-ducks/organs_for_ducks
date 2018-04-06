@@ -8,7 +8,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 
-public class DonorTests {
+public class DonorTest {
 
 
     @Test

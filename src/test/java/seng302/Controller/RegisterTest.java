@@ -10,7 +10,7 @@ import picocli.CommandLine;
 import seng302.Controller.CliCommands.Register;
 import seng302.Model.Donor;
 
-public class RegisterTests {
+public class RegisterTest {
 
   AppController controller;
   Donor minInfo;

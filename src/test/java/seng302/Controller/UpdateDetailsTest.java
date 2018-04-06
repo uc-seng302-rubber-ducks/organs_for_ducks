@@ -14,7 +14,7 @@ import picocli.CommandLine;
 import seng302.Controller.CliCommands.UpdateDetails;
 import seng302.Model.Donor;
 
-public class UpdateDetailsTests {
+public class UpdateDetailsTest {
 
   AppController controller;
   SimpleDateFormat sdf;

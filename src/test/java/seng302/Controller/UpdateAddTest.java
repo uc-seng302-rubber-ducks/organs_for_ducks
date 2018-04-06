@@ -12,7 +12,7 @@ import seng302.Controller.CliCommands.UpdateAddOrgans;
 import seng302.Model.Donor;
 import seng302.Model.Organs;
 
-public class UpdateAddTests {
+public class UpdateAddTest {
 
   AppController controller;
 

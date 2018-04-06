@@ -52,7 +52,7 @@ public class CLI {
     System.out.println("Welcome to the CLI. enter your command or type 'help' for help");
 
     AppController controller = AppController.getInstance();
-    controller.setDonors(JsonReader.importJsonDonors());
+ //   controller.setDonors(JsonReader.importJsonDonors());
 
     String input;
     String[] arguments;
@@ -64,7 +64,7 @@ public class CLI {
       JsonWriter.changeLog(arguments);
       controller.addToHistoryOfCommands(arguments);
       new CommandLine(new CliRoot())
-          .parseWithHandler(new CommandLine.RunLast(), System.err, arguments);
+          .parseWithHandler(new CommandLine.RunLast(), System.out, arguments);
       //System.out.println(lineReader.getHistory().last());
       input = lineReader.readLine(">> ");
     }
