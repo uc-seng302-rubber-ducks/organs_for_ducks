@@ -136,8 +136,9 @@ public class UpdateDetailsTests {
   }
 
   @Test
-  public void ShouldUpdateLastModifiedTimestamp() {
+  public void ShouldUpdateLastModifiedTimestamp() throws InterruptedException{
     User user = controller.getUser(id);
+    Thread.sleep(100);
     DateTime oldTime = user.getLastModified();
 
     String[] args = {"-id="+id, "-f=fred"};
