@@ -21,9 +21,8 @@ public class HttpRequester {
    * @return json formatted string containing the interactions between the two drugs
    * @throws IOException
    */
-  public static String getDrugInteractions(String drugOneName, String drugTwoName) throws IOException {
+  public static String getDrugInteractions(String drugOneName, String drugTwoName, OkHttpClient client) throws IOException {
 
-    OkHttpClient client = new OkHttpClient();
     String url = "https://www.ehealthme.com/api/v1/drug-interaction/"+drugOneName+"/"+drugTwoName+"/";
     Request request = new Request.Builder().url(url).build();
     Response response = client.newCall(request).execute();
@@ -35,12 +34,11 @@ public class HttpRequester {
   }
 
 
-  public static Set<String> getDrugInteractions(String drugOneName, String drugTwoName, String gender, int age) throws IOException {
+  public static Set<String> getDrugInteractions(String drugOneName, String drugTwoName, String gender, int age, OkHttpClient client) throws IOException {
 
     Set<String> results = new HashSet<>();
     Set<String> ageResults = new HashSet<>();
     Set<String> genderResults = new HashSet<>();
-    OkHttpClient client = new OkHttpClient();
     String url = "https://www.ehealthme.com/api/v1/drug-interaction/"+drugOneName+"/"+drugTwoName+"/";
     Request request = new Request.Builder().url(url).build();
     Response response = client.newCall(request).execute();
@@ -96,7 +94,7 @@ public class HttpRequester {
     System.out.println("Please don't run me, this is for testing only");
     try {
       //String res2 = getDrugInteractions("coumadin", "Acetaminophen");
-      Set<String> res = getDrugInteractions("coumadin", "Acetaminophen","male",36);
+      Set<String> res = getDrugInteractions("coumadin", "Acetaminophen","male",36, new OkHttpClient());
       System.out.println(res);
     }
     catch (Exception ex) {
