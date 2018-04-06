@@ -235,7 +235,7 @@ public final class JsonWriter {
             JSONArray outerJSON = new JSONArray();
             for(Clinician c : clinicians){
                 JSONObject j = new JSONObject();
-                j.put("Name", c.getName());
+                j.put("Name", c.getFullName());
                 j.put("Staff Id", c.getStaffId());
                 j.put("Work Address", c.getWorkAddress());
                 j.put("Region", c.getRegion());

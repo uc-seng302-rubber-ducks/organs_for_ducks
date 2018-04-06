@@ -132,6 +132,7 @@ public class LoginController {
                 } catch (IOException e) {
                     e.printStackTrace();
             }
+
             stage.setScene(new Scene(root));
             ClinicianController clinicianController = clinicianLoader.getController();
             clinicianController.init(stage,appController,clinician);
@@ -142,19 +143,38 @@ public class LoginController {
 
     @FXML
     void signUp(ActionEvent event) {
+        if(isUser) {
+            FXMLLoader donorLoader = new FXMLLoader(getClass().getResource("/FXML/createNewUser.fxml"));
+            Parent root = null;
+
+            try {
+                root = donorLoader.load();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            stage.setScene(new Scene(root));
+            NewUserController donorController = donorLoader.getController();
+            donorController.init(AppController.getInstance(), stage);
+
+        } else {
+            FXMLLoader clinicianLoader = new FXMLLoader(getClass().getResource("/FXML/createNewClinician.fxml"));
+            Parent root = null;
+
+            try {
+                root = clinicianLoader.load();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            stage.setScene(new Scene(root));
+            NewClinicianController newClinician = clinicianLoader.getController();
+            newClinician.init(stage, appController);
 
 
-        FXMLLoader donorLoader = new FXMLLoader(getClass().getResource("/FXML/donorView.fxml"));
-        Parent root = null;
-        try {
-            root = donorLoader.load();
-        } catch (IOException e) {
-            e.printStackTrace();
+//            DonorController donorController = donorLoader.getController();
+//            donorController.init(AppController.getInstance(), new Donor(), stage, false);
         }
-        stage.setScene(new Scene(root));
-        DonorController donorController =  donorLoader.getController();
-        donorController.init(AppController.getInstance(), new Donor(), stage, false);
-
     }
 
 

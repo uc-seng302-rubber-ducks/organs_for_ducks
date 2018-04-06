@@ -14,7 +14,9 @@ import java.util.Objects;
  */
 public class Clinician {
 
-    private String name;
+    private String firstName;
+    private String middleName;
+    private String lastName;
     private int staffId;
     private String workAddress;
     private String region;
@@ -29,7 +31,7 @@ public class Clinician {
 
 
     public Clinician(String name, int staffId, String workAddress, String region, String password, DateTime dateCreated, DateTime dateLastModified) {
-        this.name = name;
+        this.firstName = name;
         this.staffId = staffId;
         this.workAddress = workAddress;
         this.region = region;
@@ -39,10 +41,10 @@ public class Clinician {
 
     }
 
-    public Clinician(String name, int staffId, String workAddress, String region, String password) {
-        this.name = name;
+    public Clinician(String name, int staffId, String region, String password) {
+        this.firstName = name;
         this.staffId = staffId;
-        this.workAddress = workAddress;
+        //this.workAddress = workAddress;
         this.region = region;
         this.password = password;
         dateCreated = DateTime.now();
@@ -61,12 +63,48 @@ public class Clinician {
         this.dateLastModified = dateLastModified;
     }
 
-    public String getName() {
-        return name;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setFirstName(String name) {
+        this.firstName = name;
+    }
+
+    public String getMiddleName() {
+        return middleName;
+    }
+
+    public void setMiddleName(String name) {
+        this.middleName = name;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String name) {
+        this.lastName = name;
+    }
+
+
+    public String getFullName() {
+        String fullName;
+
+        if (middleName != null && lastName != null) {
+            fullName = firstName + " " + middleName  + " " + lastName;
+
+        } else if (middleName != null) {
+            fullName = firstName + " " + middleName;
+
+        } else if (lastName != null) {
+            fullName = firstName + " " + lastName;
+
+        } else {
+            fullName = firstName;
+        }
+
+        return fullName;
     }
 
     public int getStaffId() {

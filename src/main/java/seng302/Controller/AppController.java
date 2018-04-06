@@ -18,15 +18,18 @@ public class AppController {
   private int historyPointer = 0;
 
   private DonorController donorController = new DonorController();
+
   private AppController() {
     donors = JsonReader.importJsonDonors();
     clinicians = JsonReader.importClinicians();
+
     for(Clinician c : clinicians){
       if(c.getStaffId() == 0){
         return; //short circut out if defalut clinication exists
       }
     }
-    clinicians.add(new Clinician("Default",0,"","","admin"));
+
+    clinicians.add(new Clinician("Default",0,"","admin")); // TODO NOTE took out the work address
     JsonWriter.saveClinicians(clinicians);
     String[] empty = {""};
     historyOfCommands.add(empty);//putting an empty string into the string array to be displayed if history pointer is 0

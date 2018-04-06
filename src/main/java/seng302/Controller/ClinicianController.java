@@ -89,14 +89,15 @@ public class ClinicianController {
     this.stage = stage;
     this.appController = appController;
     this.clinician = clinician;
-    nameTextField.setText(clinician.getName());
+    nameTextField.setText(clinician.getFullName()); // TODO get the full name
     staffIdLabel.setText(String.valueOf(clinician.getStaffId()));
     addressTextField.setText(clinician.getWorkAddress());
     regionTextField.setText(clinician.getRegion());
     donors = appController.getDonors();
     initSearchTable(0);
+
     openStages = new ArrayList<>();
-    stage.setOnCloseRequest(new EventHandler<WindowEvent>(){
+    stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
       public void handle(WindowEvent we){
         if(!openStages.isEmpty()){
           for (Stage s : openStages){
@@ -246,7 +247,7 @@ public class ClinicianController {
 
   @FXML
   void confirm(ActionEvent event) {
-    clinician.setName(nameTextField.getText());
+    //clinician.setName(nameTextField.getText()); // TODO: change the update screen then fix this
     clinician.setWorkAddress(addressTextField.getText());
     clinician.setRegion(regionTextField.getText());
     if (passwordField.getText().equals(conformPasswordField.getText()) && !passwordField.getText()
