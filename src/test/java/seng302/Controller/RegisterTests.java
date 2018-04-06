@@ -9,20 +9,21 @@ import org.junit.Test;
 import picocli.CommandLine;
 import seng302.Controller.CliCommands.Register;
 import seng302.Model.Donor;
+import seng302.Model.User;
 
 public class RegisterTests {
 
   AppController controller;
-  Donor minInfo;
-  Donor maxInfo;
+  User minInfo;
+  User maxInfo;
   SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
   @Before
   public void setup() {
     controller = AppController.getInstance();
-    controller.setDonors(new ArrayList<>()); //reset donor list between tests
+    controller.setUsers(new ArrayList<>()); //reset donor list between tests
     try {
-      minInfo = new Donor("John Doe", sdf.parse("1961-2-12"));
-      maxInfo = new Donor("Gus Johnson", sdf.parse("1990-4-3"));
+      minInfo = new User("John Doe", sdf.parse("1961-2-12"));
+      maxInfo = new User("Gus Johnson", sdf.parse("1990-4-3"));
       maxInfo.setDateOfDeath(sdf.parse("2010-5-16"));
       maxInfo.setHeight(1.85);
       maxInfo.setWeight(86.3);
@@ -40,7 +41,7 @@ public class RegisterTests {
     String[] args = {"John", "Doe", "1961-2-12"};
     new CommandLine(new Register()).parseWithHandler(new CommandLine.RunLast(), System.err, args);
 
-    Assert.assertTrue(controller.getDonors().contains(minInfo));
+    Assert.assertTrue(controller.getUsers().contains(minInfo));
   }
 
   @Test
@@ -48,9 +49,9 @@ public class RegisterTests {
     String[] args = {"Gus", "Johnson", "1990-04-03", "-dod=2010-5-16", "-he=1.85", "-w=86.3",
         "-g=m", "-addr=42-wallaby-way", "-r=Sydney"};
     new CommandLine(new Register()).parseWithHandler(new CommandLine.RunLast(), System.err, args);
-    Donor registered = null;
+    User registered = null;
     try {
-      registered = controller.findDonor("Gus Johnson", sdf.parse("1990-04-03"));
+      registered = controller.findUser("Gus Johnson", sdf.parse("1990-04-03"));
     } catch (ParseException ex) {
       Assert.fail();
     }
@@ -69,7 +70,7 @@ public class RegisterTests {
     String[] args = {"Robert"};
 
     new CommandLine(new Register()).parseWithHandler(new CommandLine.RunLast(), System.err, args);
-    Assert.assertTrue(controller.getDonors().size() == 0);
+    Assert.assertTrue(controller.getUsers().size() == 0);
   }
 
   @Test
@@ -77,20 +78,20 @@ public class RegisterTests {
     String[] args = {"Frank", "Sinatra", "1967"}; //invalid date
     //TODO seems to accept garbage dates as long as they are in some-dashed-format
     new CommandLine(new Register()).parseWithHandler(new CommandLine.RunLast(), System.err, args);
-    Assert.assertTrue(controller.getDonors().size() == 0);
+    Assert.assertTrue(controller.getUsers().size() == 0);
   }
 
   @Test
   public void ShouldNotRegisterWhenMalformedOptions() {
     String[] args = {"Ryan", "Clark", "1967-21-3", "-he=myheight"};
     new CommandLine(new Register()).parseWithHandler(new CommandLine.RunLast(), System.err, args);
-    Assert.assertTrue(controller.getDonors().size() == 0);
+    Assert.assertTrue(controller.getUsers().size() == 0);
   }
 
   @Test
   public void ShouldCancelRegistrationWhenHelpFlagPresent() {
     String[] args = {"Les", "Claypool", "1967-21-3", "-h"};
     new CommandLine(new Register()).parseWithHandler(new CommandLine.RunLast(), System.err, args);
-    Assert.assertTrue(controller.getDonors().size() == 0);
+    Assert.assertTrue(controller.getUsers().size() == 0);
   }
 }

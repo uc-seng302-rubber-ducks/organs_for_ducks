@@ -18,6 +18,7 @@ import org.joda.time.Years;
  *
  * No methods in this class, as of 26/02/2018, are non standard.
  */
+@Deprecated
 public class Donor {
 
   private Date dateOfBirth;

@@ -16,6 +16,7 @@ import seng302.Model.MedicationDurations;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import seng302.Model.User;
 
 public class MedicationsTimeController {
 
@@ -29,7 +30,7 @@ public class MedicationsTimeController {
     private Button backButton;
 
     private AppController appController;
-    private Donor donor;
+    private User user;
     private Stage stage;
     private ObservableList medicationDurations;
 
@@ -37,17 +38,17 @@ public class MedicationsTimeController {
      * Initilizes the view and passes important settings into the controller
      *
      * @param appController apllication state itself
-     * @param donor current donor for this view
+     * @param user current user for this view
      * @param stage stage that the scene is shown on
      * @param medicine medication this is having its history shown
      */
-    public void init(AppController appController, Donor donor, Stage stage, String medicine){
+    public void init(AppController appController, User user, Stage stage, String medicine){
         this.appController = appController;
-        this.donor = donor;
+        this.user = user;
         this.stage = stage;
         medicineNameLabel.setText(medicine);
-        ArrayList<DateTime> currentTimeStamps = donor.getCurrentMedicationTimes().get(medicine);
-        ArrayList<DateTime> previousTimeStamps = donor.getPreviousMedicationTimes().get(medicine);
+        ArrayList<DateTime> currentTimeStamps = user.getCurrentMedicationTimes().get(medicine);
+        ArrayList<DateTime> previousTimeStamps = user.getPreviousMedicationTimes().get(medicine);
         medicationDurations = FXCollections.observableArrayList(new ArrayList<>());
         setUpTable(currentTimeStamps,previousTimeStamps);
 
