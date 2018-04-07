@@ -14,13 +14,17 @@ import java.io.IOException;
 import java.lang.reflect.Array;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 
 /**
  * Class for reading from JSON file containing application data.
- *
+ * This class is currently being deprecated
  * @author Josh Burt
+ *
  */
+@Deprecated
 public final class JsonReader {
 
 
@@ -30,7 +34,7 @@ public final class JsonReader {
      * @return List of donors present in the application during the last session
      */
     public static ArrayList<Donor> importJsonDonors() {
-        ArrayList<Donor> donorsIn = new ArrayList<>();
+        /*ArrayList<Donor> donorsIn = new ArrayList<>();
         File inFile = new File(Directory.JSON.directory() + "/donors.json");
         DateFormat dateFormat = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzzz yyyy");
         JSONParser parser = new JSONParser();
@@ -40,7 +44,7 @@ public final class JsonReader {
             imported = 0;
             for (Object o : a) {
                 JSONObject donor = (JSONObject) o;
-                Date dod;
+                LocalDate dod;
                 String name = (String) donor.get("Name");
 
                 String gender = (String) donor.get("Gender");
@@ -52,7 +56,7 @@ public final class JsonReader {
                 try {
                     Double height = (Double) donor.get("Height");
                     Double weight = (Double) donor.get("Weight");
-                    Date dob = dateFormat.parse(donor.get("DOB").toString());
+                    LocalDate dob = dateFormat.parse(donor.get("DOB").toString());
                     if (donor.get("DOD").toString().equals("null")) {
                         dod = null;
                     } else {
@@ -142,7 +146,8 @@ public final class JsonReader {
             e.printStackTrace();
         }
         System.out.println(imported + " Donors Successfully imported");
-        return donorsIn;
+        return donorsIn;*/
+        return new ArrayList<>();
     }
 
     /**
@@ -216,7 +221,7 @@ public final class JsonReader {
                 Set<String> keyset = change.keySet();
                 for (String key : keyset){
                     String actualChange = (String) change.get(key);
-                    DateTime dateTime = new DateTime(key);
+                    LocalDateTime dateTime = LocalDateTime.parse(key);
                     results.add(new Change(dateTime,actualChange));
                 }
             }

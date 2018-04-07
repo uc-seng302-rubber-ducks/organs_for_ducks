@@ -3,6 +3,7 @@ package seng302.View;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Scanner;
@@ -21,12 +22,12 @@ public class ConsoleWriter {
 
     System.out.println("Please enter a date of birth in the format \"21/12/2018\"");
     String rawDate = sc.next();
-    Date dateOfBirth = readDate(rawDate);
+    LocalDate dateOfBirth = readDate(rawDate);
 
     if (fullInfo) {
       System.out.println("Please enter a date of death");
       rawDate = sc.next();
-      Date dateOfDeath = readDate(rawDate);
+      LocalDate dateOfDeath = readDate(rawDate);
 
       System.out.println("Please enter a gender");
       String gender = sc.next();
@@ -84,11 +85,11 @@ public class ConsoleWriter {
     return true;
   }
 
-  private static Date readDate(String rawDate) {
+  private static LocalDate readDate(String rawDate) {
     SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-    Date date;
+    LocalDate date;
     try {
-      date = sdf.parse(rawDate);
+      date = LocalDate.parse(sdf.parse(rawDate).toString());
     }
     catch (ParseException e) {
       System.err.println("Error parsing date");
@@ -102,7 +103,7 @@ public class ConsoleWriter {
       String name = sc.next();
       System.out.println("and the date of birth(dd/mm/yyy)");
       String dobStr = sc.next();
-      Date dob = readDate(dobStr);
+      LocalDate dob = readDate(dobStr);
       Donor toDelete = controller.findDonor(name, dob);
       if (toDelete == null){
           System.out.println("The Donor could not be found please try again");

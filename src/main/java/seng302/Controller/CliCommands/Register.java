@@ -1,6 +1,7 @@
 package seng302.Controller.CliCommands;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.Date;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
@@ -57,7 +58,7 @@ public class Register implements Runnable {
       return;
     }
 
-    Date dob = IoHelper.readDate(dobString);
+    LocalDate dob = IoHelper.readDate(dobString);
     if (dob == null) {
       return;
     }

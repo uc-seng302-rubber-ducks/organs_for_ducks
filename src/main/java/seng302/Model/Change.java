@@ -2,21 +2,23 @@ package seng302.Model;
 
 import org.joda.time.DateTime;
 
+import java.time.LocalDateTime;
+
 public class Change {
 
-    private DateTime time;
+    private LocalDateTime time;
     private String change;
 
-    public Change(DateTime time, String change) {
+    public Change(LocalDateTime time, String change) {
         this.time = time;
         this.change = change;
     }
 
-    public DateTime getTime() {
+    public LocalDateTime getTime() {
         return time;
     }
 
-    public void setTime(DateTime time) {
+    public void setTime(LocalDateTime time) {
         this.time = time;
     }
 

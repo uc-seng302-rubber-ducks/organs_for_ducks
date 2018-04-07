@@ -9,6 +9,7 @@ import seng302.Model.JsonWriter;
 import seng302.View.IoHelper;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.Scanner;
 
@@ -36,7 +37,7 @@ public class DeleteDonor implements Runnable {
         if(helpRequested){
             System.out.println("Used to delete a Donor from the current Donor pool. Donor must be confirmed before deletion");
         }
-        Date dob = IoHelper.readDate(dobString);
+        LocalDate dob = IoHelper.readDate(dobString);
         if(dob == null) {
             return;
         }

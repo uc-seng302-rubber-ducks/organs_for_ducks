@@ -2,6 +2,7 @@ package seng302.View;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import seng302.Model.Donor;
@@ -15,11 +16,11 @@ public class IoHelper {
    *
    * @return Date or null
    */
-  public static Date readDate(String rawDate) {
+  public static LocalDate readDate(String rawDate) {
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-    Date date;
+    LocalDate date;
     try {
-      date = sdf.parse(rawDate);
+      date = LocalDate.parse(sdf.parse(rawDate).toString());
     } catch (ParseException e) {
       System.err.println("Error parsing date: " + rawDate);
       System.err.println("Please use format yyyy-MM-dd");

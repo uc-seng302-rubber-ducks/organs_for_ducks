@@ -12,6 +12,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -106,11 +107,11 @@ public final class JsonWriter {
             }
             j.put("Misc", miscAttributes); //why is this here?
             JSONArray currentMedicationTimeStamps = new JSONArray();
-            HashMap<String, ArrayList<DateTime>> currentMedsTimes = d.getCurrentMedicationTimes();
+            HashMap<String, ArrayList<LocalDateTime>> currentMedsTimes = d.getCurrentMedicationTimes();
             for(String key : currentMedsTimes.keySet()){
                 JSONArray times = new JSONArray();
-                ArrayList<DateTime> dateTimes = currentMedsTimes.get(key);
-                for (DateTime t : dateTimes){
+                ArrayList<LocalDateTime> dateTimes = currentMedsTimes.get(key);
+                for (LocalDateTime t : dateTimes){
                     times.add((String) t.toString());
                 }
                 JSONObject hashMapGlue = new JSONObject();
@@ -119,11 +120,11 @@ public final class JsonWriter {
             }
             j.put("Current Medication TimeStamps", currentMedicationTimeStamps);
             JSONArray previousMedicationTimeStamps = new JSONArray();
-            HashMap<String, ArrayList<DateTime>> previousMedsTimes = d.getPreviousMedicationTimes();
+            HashMap<String, ArrayList<LocalDateTime>> previousMedsTimes = d.getPreviousMedicationTimes();
             for(String key : previousMedsTimes.keySet()){
                 JSONArray times = new JSONArray();
-                ArrayList<DateTime> dateTimes = previousMedsTimes.get(key);
-                for (DateTime t : dateTimes){
+                ArrayList<LocalDateTime> dateTimes = previousMedsTimes.get(key);
+                for (LocalDateTime t : dateTimes){
                     times.add((String) t.toString());
                 }
                 JSONObject hashMapGluePre = new JSONObject();

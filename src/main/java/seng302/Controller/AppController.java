@@ -1,13 +1,12 @@
 package seng302.Controller;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 
-import seng302.Model.Clinician;
-import seng302.Model.Donor;
-import seng302.Model.JsonReader;
-import seng302.Model.JsonWriter;
+import seng302.Model.*;
 
 public class AppController {
 
@@ -19,7 +18,11 @@ public class AppController {
 
   private DonorController donorController = new DonorController();
   private AppController() {
-    donors = JsonReader.importJsonDonors();
+    try {
+      donors = JsonHandler.loadUsers();
+    } catch (FileNotFoundException e) {
+      e.printStackTrace();
+    }
     clinicians = JsonReader.importClinicians();
     for(Clinician c : clinicians){
       if(c.getStaffId().equals("0")){
@@ -50,9 +53,9 @@ public class AppController {
    *
    * @return hashCode of the new donor or -1 on error
    */
-  public int Register(String name, Date dateOfBirth, Date dateOfDeath, String gender, double height,
-      double weight,
-      String bloodType, String currentAddress, String region) {
+  public int Register(String name, LocalDate dateOfBirth, LocalDate dateOfDeath, String gender, double height,
+                      double weight,
+                      String bloodType, String currentAddress, String region) {
     try {
       Donor newDonor = new Donor(name, dateOfBirth);
       newDonor.setDateOfDeath(dateOfDeath);
@@ -117,7 +120,7 @@ public class AppController {
   /**
    * @return hashCode of the new donor or -1 on error
    */
-  public int Register(String name, Date dateOfBirth) {
+  public int Register(String name, LocalDate dateOfBirth) {
     try {
       Donor newDonor = new Donor(name, dateOfBirth);
       if (donors.contains(newDonor)) {
@@ -138,7 +141,7 @@ public class AppController {
    * @param name Name of the donor
    * @param dob date of birth of the donor
    */
-  public Donor findDonor(String name, Date dob) {
+  public Donor findDonor(String name, LocalDate dob) {
     Donor check = null;
     Donor testDonor = new Donor(name,
         dob); //creates temporary Donor to check against the donor list
@@ -227,14 +230,12 @@ public class AppController {
   public void update(Donor donor){
       ArrayList<String > changelogWrite = new ArrayList<>();
       if (donors.contains(donor)){
-        donors.remove(donor);
-        donors.add(donor);
     } else {
       donors.add(donor);
       changelogWrite.add("Added Donor " + donor.getName());
     }
     try {
-      JsonWriter.saveCurrentDonorState(donors);
+      JsonHandler.saveUsers(donors);
       JsonWriter.changeLog(changelogWrite, donor.getName().toLowerCase().replace(" ", "_"));
 
     } catch (IOException e) {

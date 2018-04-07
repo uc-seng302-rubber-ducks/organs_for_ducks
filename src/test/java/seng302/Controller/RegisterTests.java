@@ -1,3 +1,4 @@
+/*
 package seng302.Controller;
 
 import java.text.ParseException;
@@ -20,7 +21,8 @@ public class RegisterTests {
   public void setup() {
     controller = AppController.getInstance();
     controller.setDonors(new ArrayList<>()); //reset donor list between tests
-    try {
+ */
+/*   try {
       minInfo = new Donor("John Doe", sdf.parse("1961-2-12"));
       maxInfo = new Donor("Gus Johnson", sdf.parse("1990-4-3"));
       maxInfo.setDateOfDeath(sdf.parse("2010-5-16"));
@@ -32,7 +34,8 @@ public class RegisterTests {
     }
     catch (ParseException ex) {
       Assert.fail("Error in test setup. test Donor dates not parsed correctly");
-    }
+    }*//*
+
   }
 
   @Test
@@ -94,3 +97,4 @@ public class RegisterTests {
     Assert.assertTrue(controller.getDonors().size() == 0);
   }
 }
+*/

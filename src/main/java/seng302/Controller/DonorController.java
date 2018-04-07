@@ -1,5 +1,6 @@
 package seng302.Controller;
 
+import java.text.SimpleDateFormat;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 
@@ -29,7 +30,9 @@ import seng302.Model.Organs;
 import seng302.Model.UndoRedoStacks;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class DonorController {
@@ -281,10 +284,11 @@ public class DonorController {
       warningLabel.setText("Please enter a name");
       return;
     }
+    DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     Date newDob = Date
         .from(dateOfBirthPicker.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant());
-    currentDonor.setDateOfBirth(newDob);
-
+    LocalDate dob = LocalDate.parse(newDob.toInstant().atZone(ZoneId.systemDefault()).format(format)); //tried to make it one line but it broke - JB
+    currentDonor.setDateOfBirth(dob);
     //only if weight has been entered
     if (!weightTextField.getText().equals("")) {
       try {
@@ -315,15 +319,16 @@ public class DonorController {
     currentDonor.setDeceased(isDonorDeceasedCheckBox.isSelected());
     if (isDonorDeceasedCheckBox.isSelected()) {
       Date newDod =  Date.from(dateOfDeathPicker.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant());
-      if (newDod.before(newDob)) {
+      LocalDate dod = LocalDate.parse(newDod.toInstant().atZone(ZoneId.systemDefault()).format(format));
+      if (dod.isBefore(dod)) {
         warningLabel.setVisible(true);
         warningLabel.setText("Date of death must be after date of birth");
         //dod must be set for other functions to work.
         //using the best guess based on input
-        currentDonor.setDateOfDeath(newDob);
+        currentDonor.setDateOfDeath(dob);
         return;
       }
-      currentDonor.setDateOfDeath(newDod);
+      currentDonor.setDateOfDeath(dod);
     } else {
       currentDonor.setDateOfDeath(null);
     }
@@ -332,7 +337,7 @@ public class DonorController {
       application.update(currentDonor);
       ArrayList<String> diffs = application.differanceInDonors(oldDonor,currentDonor);
       for(String diff : diffs){
-        Change c = new Change(DateTime.now(),diff);
+        Change c = new Change(LocalDateTime.now(),diff);
         changelog.add(c);
       }
     }
@@ -386,7 +391,7 @@ public class DonorController {
   public void showDonor(Donor donor) {
     nameTextField.setText(donor.getName());
     dateOfBirthPicker
-        .setValue(donor.getDateOfBirth().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
+        .setValue(donor.getDateOfBirth());
     genderComboBox.getSelectionModel().select(donor.getGender());
     heightTextField.setText(Double.toString(donor.getHeight()));
     weightTextField.setText(Double.toString(donor.getWeight()));
@@ -405,7 +410,7 @@ public class DonorController {
       dodLabel.setVisible(true);
       dateOfDeathPicker.setVisible(true);
       dateOfDeathPicker.setValue(
-          donor.getDateOfDeath().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
+          donor.getDateOfDeath());
     }
     ageLabel.setText(donor.getAge().toString().replace("P", "").replace("Y", "") + " Years");
     if (donor.getMiscAttributes() != null) {

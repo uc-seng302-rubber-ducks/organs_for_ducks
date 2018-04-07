@@ -71,7 +71,12 @@
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <TableView fx:id="historyTableView" layoutX="-2.0" prefHeight="532.0" prefWidth="606.0" />
+                        <TableView fx:id="historyTableView" layoutX="-2.0" prefHeight="532.0" prefWidth="606.0">
+                          <columns>
+                            <TableColumn prefWidth="250.0" text="Time" />
+                            <TableColumn prefWidth="349.0" text="Action" />
+                          </columns>
+                        </TableView>
                      </children>
                   </AnchorPane>
             </content>
