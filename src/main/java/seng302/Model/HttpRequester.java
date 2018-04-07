@@ -53,6 +53,9 @@ public class HttpRequester {
       ageRange = Integer.toString((age / 10) * 10) +"-" + Integer.toString((age / 10) * 10 + 9);
     }
     try {
+      if (response.body().string() == null) {
+        return new HashSet<>();
+      }
       String rawString = response.body().string();
       JSONParser parser = new JSONParser();
       JSONObject json = (JSONObject) parser.parse(rawString);
@@ -76,7 +79,7 @@ public class HttpRequester {
       ageResults.retainAll(genderResults);
       return ageResults;
     } catch (Exception ex) {
-      return null;
+      return new HashSet<>();
     }
   }
 

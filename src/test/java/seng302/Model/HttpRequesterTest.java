@@ -30,7 +30,7 @@ public class HttpRequesterTest {
 
 
   @Test
-  public void ShouldSendDrugInteractionsRequest() throws IOException {
+  public void DrugInteractionsShouldSendDrugInteractionsRequest() throws IOException {
     //getDrugInteractions with two valid drug names
     Response mockResponse = mock(Response.class);
     //mock of the underlying classes not visible from source code
@@ -48,7 +48,7 @@ public class HttpRequesterTest {
   }
 
   @Test
-  public void ShouldReturnBlankIfNoResponseBody() throws IOException {
+  public void DrugInteractionsShouldReturnBlankIfNoResponseBody() throws IOException {
     //getDrugInteractions with two valid drug names
     Response mockResponse = mock(Response.class);
     //mock of the underlying classes not visible from source code
@@ -67,8 +67,7 @@ public class HttpRequesterTest {
   }
 
   @Test
-  public void ShouldRestrictResultsWhenAgeAndGenderPresent() throws Exception{
-    //getDrugInteractions with two valid drug names
+  public void DrugInteractionsShouldRestrictResultsWhenAgeAndGenderPresent() throws Exception{
     Response mockResponse = mock(Response.class);
     //mock of the underlying classes not visible from source code
     Call mockCall = mock(Call.class);
@@ -97,4 +96,21 @@ public class HttpRequesterTest {
     Assert.assertEquals(expected, results);
   }
 
+  @Test
+  public void DrugInteractionsShouldReturnEmptySetWhenNullResponse() throws IOException{
+    Response mockResponse = mock(Response.class);
+    //mock of the underlying classes not visible from source code
+    Call mockCall = mock(Call.class);
+    ResponseBody mockResponseBody = mock(ResponseBody.class);
+    //set behaviours
+    when(mockClient.newCall(any(Request.class))).thenReturn(mockCall);
+    when(mockCall.execute()).thenReturn(mockResponse);
+    when(mockResponseBody.string()).thenReturn(null);
+    when(mockResponse.body()).thenReturn(mockResponseBody);
+
+    Set<String> result = HttpRequester.getDrugInteractions("water", "milk", "male", 42, mockClient);
+
+    verify(mockCall, times(1)).execute();
+    assert(result.isEmpty());
+  }
 }
