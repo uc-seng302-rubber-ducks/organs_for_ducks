@@ -19,18 +19,18 @@ public class HttpRequester {
    * @param drugOneName string name of first drug
    * @param drugTwoName string name of second drug
    * @return json formatted string containing the interactions between the two drugs
-   * @throws IOException
+   * @throws IOException caused by error with server connection
    */
   public static String getDrugInteractions(String drugOneName, String drugTwoName, OkHttpClient client) throws IOException {
 
     String url = "https://www.ehealthme.com/api/v1/drug-interaction/"+drugOneName+"/"+drugTwoName+"/";
     Request request = new Request.Builder().url(url).build();
     Response response = client.newCall(request).execute();
-    try {
-      return response.body().string();
-    } catch (NullPointerException ex) {
-      return "";
+    String result = response.body().string();
+    if (result != null) {
+      return result;
     }
+    return "";
   }
 
 
@@ -93,7 +93,7 @@ public class HttpRequester {
   public static  void main(String[] args) {
     System.out.println("Please don't run me, this is for testing only");
     try {
-      //String res2 = getDrugInteractions("coumadin", "Acetaminophen");
+      //String res = getDrugInteractions("coumadin", "Acetaminophen", new OkHttpClient());
       Set<String> res = getDrugInteractions("coumadin", "Acetaminophen","male",36, new OkHttpClient());
       System.out.println(res);
     }
