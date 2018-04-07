@@ -1,7 +1,7 @@
 package seng302.Controller;
 
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
+import java.time.LocalDate;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -11,20 +11,22 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
-import seng302.Model.*;
+import org.joda.time.DateTime;
+import seng302.Model.Change;
+import seng302.Model.Donor;
+import seng302.Model.Organs;
+import seng302.Model.UndoRedoStacks;
 
 import java.io.IOException;
-import java.time.LocalDate;
 import java.time.ZoneId;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-//import org.controlsfx.control;
+import java.util.*;
+import seng302.Model.User;
 
 public class DonorController {
 
@@ -84,7 +86,7 @@ public class DonorController {
   private Label warningLabel;
 
   @FXML
-  private Button logoutButton;
+  private Button logOutButton;
 
   @FXML
   private ListView<String> previousMedicationListView;
@@ -116,18 +118,21 @@ public class DonorController {
   private List<String> possibleBloodTypes = Arrays
       .asList("A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-", "U");
 
-  private Donor currentDonor;
+  private User currentUser;
   private Stage stage;
-  private ObservableList changelog;
+  private ObservableList<Change> changelog;
 
   /**
    * Gives the donor view the application controller and hides all label and buttosns that are not
    * needed on opening
    */
-  public void init(AppController controller, Donor donor, Stage stage) {
+  public void init(AppController controller, User user, Stage stage, Boolean fromClinician) {
     this.stage = stage;
     application = controller;
     ageLabel.setText("");
+    if(fromClinician){
+      logOutButton.setVisible(false);
+    }
     //arbitrary default values
     dateOfBirthPicker.setValue(LocalDate.of(1970, 1, 1));
     dateOfDeathPicker.setValue(LocalDate.now());
@@ -139,23 +144,25 @@ public class DonorController {
     ObservableList bloodTypes = FXCollections.observableList(possibleBloodTypes);
     bloodTypeComboBox.getItems().addAll(bloodTypes);
     warningLabel.setVisible(false);
-    currentDonor = donor;
+    currentUser = user;
     currentMeds = FXCollections.observableArrayList();
     previousMeds = FXCollections.observableArrayList();
     currentMedicationListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
     previousMedicationListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
     previousMeds.addListener((ListChangeListener.Change<? extends String> change )-> {
       previousMedicationListView.setItems(previousMeds);
-      application.update(currentDonor);
+      application.update(currentUser);
     });
     currentMeds.addListener((ListChangeListener.Change<? extends String> change) -> {
       currentMedicationListView.setItems(currentMeds);
-      application.update(currentDonor);
+      application.update(currentUser);
     });
-    if (donor.getName() != null) {
-      showDonor(currentDonor); // Assumes a donor with no name is a new sign up and does not pull values from a template
-      changelog = FXCollections.observableArrayList(currentDonor.getChanges());
+    if (user.getName() != null) {
+      showUser(currentUser); // Assumes a donor with no name is a new sign up and does not pull values from a template
+      changelog = FXCollections.observableArrayList(currentUser.getChanges());
       showDonorHistory();
+    } else {
+      changelog = FXCollections.observableArrayList(new ArrayList<Change>());
     }
     currentMedicationListView.setOnMouseClicked(new EventHandler<MouseEvent>() {
         @Override
@@ -175,6 +182,9 @@ public class DonorController {
               }
           }
       });
+    changelog.addListener((ListChangeListener.Change<? extends Change> change ) -> {
+      historyTableView.setItems(changelog);
+    });
   }
 
   /**
@@ -182,7 +192,7 @@ public class DonorController {
    */
   @FXML
   private void modifyOrgans() {
-    if (currentDonor.getDateOfBirth() == null) {
+    if (currentUser.getDateOfBirth() == null) {
       warningLabel.setVisible(true);
       warningLabel.setText("Plese confirm donor before continuing");
       return;
@@ -196,10 +206,10 @@ public class DonorController {
     }
     OrganController organController = organLoader.getController();
     Stage stage = new Stage();
-    organController.init(currentDonor, application, stage);
+    organController.init(currentUser, application, stage);
     stage.setScene(new Scene(root));
     stage.show();
-    showDonor(currentDonor);
+    showUser(currentUser);
   }
 
   @FXML
@@ -219,7 +229,7 @@ public class DonorController {
    */
   @FXML
   private void modifyMiscAttributes() {
-    if (currentDonor.getDateOfBirth() == null) {
+    if (currentUser.getDateOfBirth() == null) {
       warningLabel.setVisible(true);
       warningLabel.setText("Plese confirm donor before continuing");
       return;
@@ -234,11 +244,11 @@ public class DonorController {
     }
     MiscAttributesController miscAttributesController = attributeLoader.getController();
     Stage stage = new Stage();
-    miscAttributesController.init(currentDonor, application, stage);
+    miscAttributesController.init(currentUser, application, stage);
     stage.setScene(new Scene(root));
     stage.show();
     miscAttributeslistView.getItems().clear();
-    miscAttributeslistView.getItems().addAll(currentDonor.getMiscAttributes());
+    miscAttributeslistView.getItems().addAll(currentUser.getMiscAttributes());
   }
 
   /**
@@ -248,9 +258,9 @@ public class DonorController {
    */
   @FXML
   private void updateDonor() {
-      UndoRedoStacks.storeUndoCopy(currentDonor);
-      Donor oldDonor = new Donor();
-      UndoRedoStacks.cloneDonor(currentDonor,oldDonor);
+      UndoRedoStacks.storeUndoCopy(currentUser);
+      User oldDonor = new User();
+      UndoRedoStacks.cloneUser(currentUser,oldDonor);
 
 
     boolean isInputValid = true;
@@ -262,19 +272,19 @@ public class DonorController {
     }
     String newName = nameTextField.getText();
     if (newName != null) {
-      currentDonor.setName(newName);
+      currentUser.setName(newName);
     } else {
       warningLabel.setText("Please enter a name");
       return;
     }
     Date newDob = Date
         .from(dateOfBirthPicker.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant());
-    currentDonor.setDateOfBirth(newDob);
+    currentUser.setDateOfBirth(newDob);
 
     //only if weight has been entered
     if (!weightTextField.getText().equals("")) {
       try {
-        currentDonor.setWeight(Double.parseDouble(weightTextField.getText()));
+        currentUser.setWeight(Double.parseDouble(weightTextField.getText()));
       } catch (NumberFormatException e) {
         warningLabel.setText("Weight must be a number");
         return;
@@ -282,23 +292,23 @@ public class DonorController {
     }
     if (!heightTextField.getText().equals("")) {
       try {
-        currentDonor.setHeight(Double.parseDouble(heightTextField.getText()));
+        currentUser.setHeight(Double.parseDouble(heightTextField.getText()));
       } catch (NumberFormatException e) {
         warningLabel.setText("Height must be a number");
         return;
       }
     }
 
-    currentDonor.setCurrentAddress(currentAddressTextArea.getText());
-    currentDonor.setRegion(regionTextField.getText());
+    currentUser.setCurrentAddress(currentAddressTextArea.getText());
+    currentUser.setRegion(regionTextField.getText());
 
     String newGender = (genderComboBox.getValue());
     if (newGender == null) {
       newGender = "U";
     }
-    currentDonor.setGender(newGender);
-    currentDonor.setBloodType(bloodTypeComboBox.getValue());
-    currentDonor.setDeceased(isDonorDeceasedCheckBox.isSelected());
+    currentUser.setGender(newGender);
+    currentUser.setBloodType(bloodTypeComboBox.getValue());
+    currentUser.setDeceased(isDonorDeceasedCheckBox.isSelected());
     if (isDonorDeceasedCheckBox.isSelected()) {
       Date newDod =  Date.from(dateOfDeathPicker.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant());
       if (newDod.before(newDob)) {
@@ -306,20 +316,24 @@ public class DonorController {
         warningLabel.setText("Date of death must be after date of birth");
         //dod must be set for other functions to work.
         //using the best guess based on input
-        currentDonor.setDateOfDeath(newDob);
+        currentUser.setDateOfDeath(newDob);
         return;
       }
-      currentDonor.setDateOfDeath(newDod);
+      currentUser.setDateOfDeath(newDod);
     } else {
-      currentDonor.setDateOfDeath(null);
+      currentUser.setDateOfDeath(null);
     }
 
     if (isInputValid) {
-      application.update(currentDonor);
-      application.differanceInDonors(oldDonor,currentDonor);
+      application.update(currentUser);
+      ArrayList<String> diffs = application.differanceInDonors(oldDonor, currentUser);
+      for(String diff : diffs){
+        Change c = new Change(DateTime.now(),diff);
+        changelog.add(c);
+      }
     }
 
-    showDonor(currentDonor);
+    showUser(currentUser);
   }
 
   /**
@@ -327,10 +341,10 @@ public class DonorController {
    */
   @FXML
   private void undo() {
-    currentDonor = UndoRedoStacks.loadUndoCopy(currentDonor);
+    currentUser = UndoRedoStacks.loadUndoCopy(currentUser);
     //System.out.println("Something happened");
-    //System.out.println(currentDonor.getName());
-    showDonor(currentDonor); //Error with showing donors
+    //System.out.println(currentUser.getName());
+    showUser(currentUser); //Error with showing donors
 
 
   }
@@ -340,10 +354,10 @@ public class DonorController {
    */
   @FXML
   private void redo() {
-    currentDonor = UndoRedoStacks.loadRedoCopy(currentDonor);
+    currentUser = UndoRedoStacks.loadRedoCopy(currentUser);
     //System.out.println("Something happened");
-    //System.out.println(currentDonor.getName());
-    showDonor(currentDonor);
+    //System.out.println(currentUser.getName());
+    showUser(currentUser);
   }
 
   @FXML
@@ -365,21 +379,21 @@ public class DonorController {
 
   }
 
-  public void showDonor(Donor donor) {
-    nameTextField.setText(donor.getName());
+  public void showUser(User user) {
+    nameTextField.setText(user.getName());
     dateOfBirthPicker
-        .setValue(donor.getDateOfBirth().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
-    genderComboBox.getSelectionModel().select(donor.getGender());
-    heightTextField.setText(Double.toString(donor.getHeight()));
-    weightTextField.setText(Double.toString(donor.getWeight()));
-    currentAddressTextArea.setText(donor.getCurrentAddress());
-    regionTextField.setText(donor.getRegion());
-    if (donor.getOrgans() != null) {
+        .setValue(user.getDateOfBirth().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
+    genderComboBox.getSelectionModel().select(user.getGender());
+    heightTextField.setText(Double.toString(user.getHeight()));
+    weightTextField.setText(Double.toString(user.getWeight()));
+    currentAddressTextArea.setText(user.getCurrentAddress());
+    regionTextField.setText(user.getRegion());
+    if (user.getDonorDetails().getOrgans() != null) {
       organsDonatingListView.getItems().clear();
-      organsDonatingListView.getItems().addAll(donor.getOrgans());
+      organsDonatingListView.getItems().addAll(user.getDonorDetails().getOrgans());
     }
-    bloodTypeComboBox.getSelectionModel().select(donor.getBloodType());
-    if (!currentDonor.getDeceased()) {
+    bloodTypeComboBox.getSelectionModel().select(user.getBloodType());
+    if (!currentUser.getDeceased()) {
       dateOfDeathPicker.setVisible(false);
       dodLabel.setVisible(false);
     } else {
@@ -387,75 +401,37 @@ public class DonorController {
       dodLabel.setVisible(true);
       dateOfDeathPicker.setVisible(true);
       dateOfDeathPicker.setValue(
-          donor.getDateOfDeath().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
+          user.getDateOfDeath().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
     }
-    if (donor.getMiscAttributes() != null) {
+    ageLabel.setText(user.getAge().toString().replace("P", "").replace("Y", "") + " Years");
+    if (user.getMiscAttributes() != null) {
       miscAttributeslistView.getItems().clear(); // HERE
-      for (String atty : donor.getMiscAttributes()) {
+      for (String atty : user.getMiscAttributes()) {
         miscAttributeslistView.getItems().add(atty);
       }
     }
-    currentMeds.addAll(currentDonor.getCurrentMedication());
+    currentMeds.addAll(currentUser.getCurrentMedication());
     currentMedicationListView.setItems(currentMeds);
-    previousMeds.addAll(currentDonor.getPreviousMedication());
+    previousMeds.addAll(currentUser.getPreviousMedication());
     previousMedicationListView.setItems(previousMeds);
   }
 
-  /*@FXML
+  @FXML
   void addMedication(ActionEvent event) {
-    //String medication = medicationTextField.getText();
-      String[] possibleSuggestions = HttpRequester.getSuggestedDrugs();
-      TextFields.bindAutoCompletion(medicationTextField, possibleSuggestions);
-    medicationTextField.textProperty().addListener(new ChangeListener<String>() {
-        @Override
-        public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-
-            System.out.println("checking for typing");
-
-//            String request = "mapi-us.iterar.co/api/autocomplete?query=" + newValue;
-//
-//            try {
-//                URL url = new URL(request);
-//                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-//                connection.setDoInput(true);
-//                connection.setDoOutput(true);
-//                connection.setRequestMethod("GET");
-//                connection.setRequestProperty("Accept", "application/json");
-//                connection.setRequestProperty("Content-Type", "application/json; charset=UTF-8");
-//                BufferedReader in = new BufferedReader(
-//                        new InputStreamReader(
-//                                connection.getInputStream()));
-//                String inputLine;
-//
-//                while ((inputLine = in.readLine()) != null)
-//                    System.out.println(inputLine);
-//                in.close();
-//
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-        }
-
-    });
-*/
+    String medication = medicationTextField.getText();
+    if (medication.isEmpty() || medication == null){
+      return;
+    }
+    if (currentMeds.contains(medication) || previousMeds.contains(medication)){
+        medicationTextField.setText("");
+        return;
+    }
+    medicationTextField.setText("");
+    currentMeds.add(medication);
+    currentUser.addCurrentMedication(medication);
 
 
-
-
-
-//      if (medication.isEmpty() || medication == null){
-//      return;
-//    }
-//    if (currentMeds.contains(medication) || previousMeds.contains(medication)){
-//        medicationTextField.setText("");
-//        return;
-//    }
-//    medicationTextField.setText("");
-//    currentMeds.add(medication);
-//    currentDonor.addCurrentMedication(medication);
-
-
-  //}
+  }
 
   @FXML
   void deleteMedication(ActionEvent event) {
@@ -464,11 +440,11 @@ public class DonorController {
 
     if(medCurrent != null){
       currentMeds.remove(medCurrent);
-      currentDonor.removeCurrentMedication(medCurrent);
+      currentUser.removeCurrentMedication(medCurrent);
     }
     if (medPrevious != null){
       previousMeds.remove(medPrevious);
-      currentDonor.removePreviousMedication(medPrevious);
+      currentUser.removePreviousMedication(medPrevious);
     }
   }
 
@@ -479,14 +455,14 @@ public class DonorController {
         return;
     }
     if (currentMeds.contains(med)){
-        currentDonor.removePreviousMedication(med);
+        currentUser.removePreviousMedication(med);
         previousMeds.remove(med);
         return;
     }
       currentMeds.add(med);
-      currentDonor.addCurrentMedication(med);
+      currentUser.addCurrentMedication(med);
       previousMeds.remove(med);
-      currentDonor.removePreviousMedication(med);
+      currentUser.removePreviousMedication(med);
 
   }
 
@@ -497,14 +473,14 @@ public class DonorController {
           return;
       }
       if(previousMeds.contains(med)) {
-          currentDonor.removeCurrentMedication(med);
+          currentUser.removeCurrentMedication(med);
           currentMeds.remove(med);
           return;
       }
-    currentDonor.removeCurrentMedication(med);
+    currentUser.removeCurrentMedication(med);
     currentMeds.remove(med);
     previousMeds.add(med);
-    currentDonor.addPreviousMedication(med);
+    currentUser.addPreviousMedication(med);
   }
 
   @FXML
@@ -528,7 +504,7 @@ public class DonorController {
       Stage stage = new Stage();
       stage.setScene(new Scene(root));
       MedicationsTimeController medicationsTimeController = medicationTimeViewLoader.getController();
-      medicationsTimeController.init(application, currentDonor,stage, med);
+      medicationsTimeController.init(application, currentUser,stage, med);
       stage.show();
 
 

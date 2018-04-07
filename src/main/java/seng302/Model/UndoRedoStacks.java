@@ -5,58 +5,58 @@ import java.util.Stack;
 
 public class UndoRedoStacks {
 
-    static Stack<Donor> undoStack = new Stack<Donor>();
-    static Stack<Donor> redoStack = new Stack<Donor>();
+    static Stack<User> undoStack = new Stack<>();
+    static Stack<User> redoStack = new Stack<>();
 
 
     //This probably shouldn't be in this class, so left Public
     /**
-     * Clones a the current Donor instance onto the Donor instance 'donorClone'
-     * @param donorClone The Donor instance to be cloned too
-     * @return donorClone with the cloned attributes
+     * Clones a the current Donor instance onto the Donor instance 'userClone'
+     * @param userClone The Donor instance to be cloned too
+     * @return userClone with the cloned attributes
      */
-    public static Donor cloneDonor(Donor donor, Donor donorClone) {
-        DateTime lastModified = donor.getLastModified();
-        donorClone.setDateOfBirth(donor.getDateOfBirth());
-        donorClone.setDateOfDeath(donor.getDateOfDeath());
-        donorClone.setGender(donor.getGender());
-        donorClone.setHeight(donor.getHeight());
-        donorClone.setWeight(donor.getWeight());
-        donorClone.setBloodType(donor.getBloodType());
-        donorClone.setCurrentAddress(donor.getCurrentAddress());
-        donorClone.setRegion(donor.getRegion());
-        donorClone.setTimeCreated(donor.getTimeCreated());
-        donorClone.setName(donor.getName());
-        donorClone.setDeceased(donor.getDeceased());
-        //donorClone.setMiscAttributes(donor.getMiscAttributes());
+    public static User cloneUser(User user, User userClone) {
+        DateTime lastModified = user.getLastModified();
+        userClone.setDateOfBirth(user.getDateOfBirth());
+        userClone.setDateOfDeath(user.getDateOfDeath());
+        userClone.setGender(user.getGender());
+        userClone.setHeight(user.getHeight());
+        userClone.setWeight(user.getWeight());
+        userClone.setBloodType(user.getBloodType());
+        userClone.setCurrentAddress(user.getCurrentAddress());
+        userClone.setRegion(user.getRegion());
+        userClone.setTimeCreated(user.getTimeCreated());
+        userClone.setName(user.getName());
+        userClone.setDeceased(user.getDeceased());
+        //userClone.setMiscAttributes(user.getMiscAttributes());
 
-        donorClone.getMiscAttributes().clear();
-        for(String misc : donor.getMiscAttributes()) {
-            donorClone.addAttribute(misc);
+        userClone.getMiscAttributes().clear();
+        for(String misc : user.getMiscAttributes()) {
+            userClone.addAttribute(misc);
         }
 
-        donorClone.initOrgans();
-        donorClone.getOrgans().clear();
-        if (donor.getOrgans() != null) {
-            for (Organs organ : donor.getOrgans()) {
-                donorClone.addOrgan(organ);
+        userClone.getDonorDetails().initOrgans();
+        userClone.getDonorDetails().getOrgans().clear();
+        if (user.getDonorDetails().getOrgans() != null) {
+            for (Organs organ : user.getDonorDetails().getOrgans()) {
+                userClone.getDonorDetails().addOrgan(organ);
             }
         }
 
         //All .set functions call updateLastModified, not sure if we want undo to be an update
-        donorClone.setLastModified(lastModified);
+        userClone.setLastModified(lastModified);
 
-        return donorClone;
+        return userClone;
     }
 
     /**
-     * Called when the 'Confirm' button is clicked. Stores the latest saves of the current donor
-     * @param donor The current state of the donor to be cloned and pushed to the undo stack.
+     * Called when the 'Confirm' button is clicked. Stores the latest saves of the current user
+     * @param user The current state of the user to be cloned and pushed to the undo stack.
      */
-    public static void storeUndoCopy(Donor donor) {
-        if (donor.getName() != null) { //Can't remember what this is for.
-            Donor undoCopy = new Donor();
-            undoCopy = cloneDonor(donor, undoCopy);
+    public static void storeUndoCopy(User user) {
+        if (user.getName() != null) { //Can't remember what this is for.
+            User undoCopy = new User();
+            undoCopy = cloneUser(user, undoCopy);
 
             undoStack.push(undoCopy);
 
@@ -67,38 +67,38 @@ public class UndoRedoStacks {
     }
 
     /**
-     * Called when the 'Undo' button is clicked. Loads the latest donor save and stores the current one in redoStack
-     * @param donor Current donor save to go on the redo stack
-     * @return donor Donor the latest donor save
+     * Called when the 'Undo' button is clicked. Loads the latest user save and stores the current one in redoStack
+     * @param user Current user save to go on the redo stack
+     * @return user Donor the latest user save
      */
-    public static Donor loadUndoCopy(Donor donor) {
+    public static User loadUndoCopy(User user) {
         //Donor undoCopy = new Donor();
         if (!undoStack.empty()) { //Make sure that and Undo can be done
-            Donor redoCopy = new Donor(); //Create a donor instance to be the redoCopy
-            redoCopy = cloneDonor(donor, redoCopy); //Copy the data from the current save
+            User redoCopy = new User(); //Create a user instance to be the redoCopy
+            redoCopy = cloneUser(user, redoCopy); //Copy the data from the current save
             redoStack.push(redoCopy); //Push the redo copy
 
-            Donor undoCopy = undoStack.pop();//Make the current donor the latest undo copy
-            donor = cloneDonor(undoCopy, donor);
+            User undoCopy = undoStack.pop();//Make the current user the latest undo copy
+            user = cloneUser(undoCopy, user);
 
         }
-        return donor; //Return the newly undone donor
+        return user; //Return the newly undone user
     }
 
     /**
      * Called when the 'Redo' button is clicked. Undoes the last 'Undo' click, unless the undo/redo chain is broken by manual save
-     * @param donor Current donor save to go on the undo stack
-     * @return donor New donor save from the redo stack
+     * @param user Current user save to go on the undo stack
+     * @return user New user save from the redo stack
      */
-    public static Donor loadRedoCopy(Donor donor) {
+    public static User loadRedoCopy(User user) {
         if (!redoStack.empty()) {
-            Donor undoCopy = new Donor();
-            undoCopy = cloneDonor(donor, undoCopy);
+            User undoCopy = new User();
+            undoCopy = cloneUser(user, undoCopy);
             undoStack.push(undoCopy);
 
-            donor = redoStack.pop();
+            user = redoStack.pop();
         }
-        return donor;
+        return user;
     }
 
 
