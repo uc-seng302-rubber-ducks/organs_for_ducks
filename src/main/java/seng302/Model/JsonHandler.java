@@ -11,7 +11,11 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
 
-
+/**
+ * Json Handler to import and save data
+ *
+ * @author Josh Burt
+ */
 public final class JsonHandler {
 
     //Initialise attributes
@@ -61,6 +65,12 @@ public final class JsonHandler {
     }
 
 
+    /**
+     * Saves a list of clinicians in the clinicians Json file
+     *
+     * @param clinicians list of clinicians to save
+     * @throws IOException thrown when file does not exist, can be ignored as file will be created
+     */
     public static void saveClinicians(ArrayList<Clinician> clinicians) throws IOException {
         Files.createDirectories(Paths.get(Directory.JSON.directory()));
         File outFile = new File(Directory.JSON.directory()+"/clinicians.json");
@@ -80,6 +90,11 @@ public final class JsonHandler {
     }
 
 
+    /**
+     * Loads the list of registered clinicians for the application
+     * @return List of registered clinicians
+     * @throws FileNotFoundException thrown if no clinicians exist
+     */
     public static ArrayList<Clinician> loadClinicians() throws FileNotFoundException {
         ArrayList<Clinician> results = new ArrayList<>();
         File inFile = new File(Directory.JSON.directory() + "/clinicians.json");
@@ -91,7 +106,13 @@ public final class JsonHandler {
         return results;
     }
 
-
+    /**
+     * Saves a personal changelog for each donor
+     *
+     * @param changes list of changes to be added top the change log
+     * @param name User name to be changed must be passed in format firstname[_middlename(s)]_lastname
+     * @throws IOException thrown if no file exists can be ignored as file is created
+     */
     public static void saveChangelog(ArrayList<Change> changes, String name) throws IOException {
         Files.createDirectories(Paths.get(Directory.JSON.directory()));
         File outFile = new File(Directory.JSON.directory()+"/"+name+"changelog.json");
@@ -111,6 +132,13 @@ public final class JsonHandler {
     }
 
 
+    /**
+     * imports the changelog data held for a passed in user
+     *
+     * @param name name of user whos change data is wanted. must be passed in format firstname[_middlename(s)]_lastname
+     * @return List of changes that have occured on this users profile
+     * @throws FileNotFoundException thrown if file is not found. Indicates no changes have been made to this user.
+     */
     public static ArrayList<Change> importHistoryFromFile(String name) throws FileNotFoundException {
         ArrayList<Change> results = new ArrayList<>();
 

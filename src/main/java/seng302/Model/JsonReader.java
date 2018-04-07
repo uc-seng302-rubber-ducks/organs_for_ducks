@@ -20,7 +20,7 @@ import java.util.*;
 
 /**
  * Class for reading from JSON file containing application data.
- * This class is currently being deprecated
+ * This class is deprecated please use JsonHandler
  * @author Josh Burt
  *
  */
