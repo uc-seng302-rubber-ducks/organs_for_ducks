@@ -20,19 +20,28 @@ public class AppController {
   private AppController() {
     try {
       donors = JsonHandler.loadUsers();
+      clinicians = JsonHandler.loadClinicians();
     } catch (FileNotFoundException e) {
       e.printStackTrace();
     }
-    clinicians = JsonReader.importClinicians();
-    for(Clinician c : clinicians){
-      if(c.getStaffId().equals("0")){
-        return; //short circut out if defalut clinication exists
-      }
-    }
-    clinicians.add(new Clinician("Default","0","","","admin"));
-    JsonWriter.saveClinicians(clinicians);
     String[] empty = {""};
     historyOfCommands.add(empty);//putting an empty string into the string array to be displayed if history pointer is 0
+    boolean defaultSeen = false;
+    for(Clinician c : clinicians){
+      if(c.getStaffId().equals("0")){
+        defaultSeen = true;
+        System.out.println("Default seen");
+        break;//short circuit out if default clinician exists
+      }
+    } //all code you wish to execute must be above this point!!!!!!!!
+    if (!defaultSeen) {
+      clinicians.add(new Clinician("Default", "0", "", "", "admin"));
+      try {
+        JsonHandler.saveClinicians(clinicians);
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
   }
 
   /**
@@ -259,14 +268,15 @@ public class AppController {
 
    public void updateClinicians(Clinician clinician){
     if(clinicians.contains(clinician)){
-      clinicians.remove(clinician);
-      clinicians.add(clinician);
-
     } else {
       clinicians.add(clinician);
     }
 
-    JsonWriter.saveClinicians(clinicians);
+     try {
+       JsonHandler.saveClinicians(clinicians);
+     } catch (IOException e) {
+       e.printStackTrace();
+     }
    }
 
   public DonorController getDonorController() {

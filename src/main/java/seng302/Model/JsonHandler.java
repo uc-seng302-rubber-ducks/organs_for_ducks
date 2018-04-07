@@ -61,40 +61,37 @@ public final class JsonHandler {
     }
 
 
-/*    public static void saveCommandLog(Stack<Command> commandStack) throws IOException {
+    public static void saveClinicians(ArrayList<Clinician> clinicians) throws IOException {
+        Files.createDirectories(Paths.get(Directory.JSON.directory()));
+        File outFile = new File(Directory.JSON.directory()+"/clinicians.json");
 
-        ArrayList<Command> commandList = new ArrayList<>();
-        GsonBuilder gsonBuilder = new GsonBuilder();
-        gsonBuilder.registerTypeAdapter(Command.class, new CommandAdapter());
-        Gson gson = gsonBuilder.create();
-        commandList = loadCommands();
-
-        FileWriter writer = new FileWriter("./src/main/resources/log.json");
-
-        while (!commandStack.isEmpty()) {
-            commandList.add(commandStack.pop());
+        if (outFile.exists()){
+            outFile.delete(); //purge old data before writing new data in
         }
 
-        String usersString = gson.toJson(commandList);
+        outFile.createNewFile(); //creates new file if donors does not exist
+        Gson gson = new GsonBuilder().registerTypeAdapter(DateTime.class, (JsonSerializer<DateTime>)
+                (json, typeOfSrc, context) -> new JsonPrimitive(ISODateTimeFormat.dateTime().print(json))).create();
+        FileWriter writer = new FileWriter(outFile);
+        String usersString = gson.toJson(clinicians);
         writer.write(usersString);
         writer.close();
+        System.out.println("Clinicians saved");
     }
 
-    public static ArrayList<Command> loadCommands() throws FileNotFoundException {
-        ArrayList<Command> commandList = new ArrayList<>();
-        GsonBuilder gsonBuilder = new GsonBuilder();
-        gsonBuilder.registerTypeAdapter(Command.class, new CommandAdapter());
-        Gson gson = gsonBuilder.create();
 
-        JsonReader reader = new JsonReader(new FileReader("./src/main/resources/log.json"));
+    public static ArrayList<Clinician> loadClinicians() throws FileNotFoundException {
+        ArrayList<Clinician> results = new ArrayList<>();
+        File inFile = new File(Directory.JSON.directory() + "/clinicians.json");
+        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss")
+                .create();
+        Reader reader =new FileReader(inFile);
+        Clinician[] clinicians = gson.fromJson(reader, Clinician[].class);
+        results.addAll(Arrays.asList(clinicians));
+        return results;
+    }
 
-        ExecutedCommand[] data = gson.fromJson(reader, ExecutedCommand[].class);
-        for (ExecutedCommand command : data) {
-            commandList.add(command);
-        }
 
-        return commandList;
-    }*/
 
 
 }

@@ -160,7 +160,7 @@ public final class JsonReader {
         ArrayList<Clinician> clinicians = new ArrayList<>();
 
 
-        File infile =  new File(Directory.JSON.directory()+"/clinicians.json");
+        /*File infile =  new File(Directory.JSON.directory()+"/clinicians.json");
         if(!infile.exists()){
             System.out.println("File did not exist creating new clinication list");
             return clinicians;
@@ -178,8 +178,8 @@ public final class JsonReader {
                 String workAddress =(String) clinician.get("Work Address");
                 String region = (String) clinician.get("Region");
                 String password = (String) clinician.get("Password");
-                DateTime dateCreated = new DateTime(clinician.get("Date Created"));
-                DateTime dateLastModified = new DateTime(clinician.get("Last Modified"));
+                LocalDateTime dateCreated = new DateTime(clinician.get("Date Created"));
+                LocalDateTime dateLastModified = new DateTime(clinician.get("Last Modified"));
 
                 Clinician c = new Clinician(name,staffId,workAddress,region,password, dateCreated,dateLastModified);
                 clinicians.add(c);
@@ -194,7 +194,7 @@ public final class JsonReader {
             e.printStackTrace();
         }
 
-        System.out.println(imported + " Clinicians Successfully added");
+        System.out.println(imported + " Clinicians Successfully added");*/
         return clinicians;
     }
 

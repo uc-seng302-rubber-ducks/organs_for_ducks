@@ -19,9 +19,10 @@ import java.util.HashSet;
 
 /**
  * Class for writing to a JSON file to allow data persistence.
- *
+ * Class is currently being deprecated please use JsonHandler
  * @author Josh Burt
  */
+@Deprecated
 public final class JsonWriter {
 
     /**
