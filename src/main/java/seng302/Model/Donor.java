@@ -1,5 +1,6 @@
 package seng302.Model;
 
+import java.io.FileNotFoundException;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
@@ -75,8 +76,12 @@ public class Donor {
         this.previousMedication = new ArrayList<>();
         this.currentMedicationTimes = new HashMap<String, ArrayList<LocalDateTime>>();
         this.previousMedicationTimes = new HashMap<String, ArrayList<LocalDateTime>>();
-        changes = JsonReader.importHistoryFromFile(this);
-    }
+      try {
+          changes = JsonHandler.importHistoryFromFile(name.toLowerCase().replace(" ", "_"));
+      } catch (FileNotFoundException e) {
+          e.printStackTrace();
+      }
+  }
 
     public Donor(String name, java.time.LocalDate dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
@@ -92,7 +97,11 @@ public class Donor {
         this.previousMedication = new ArrayList<>();
         this.currentMedicationTimes = new HashMap<String, ArrayList<LocalDateTime>>();
         this.previousMedicationTimes = new HashMap<String, ArrayList<LocalDateTime>>();
-        changes = JsonReader.importHistoryFromFile(this);
+        try {
+            changes = JsonHandler.importHistoryFromFile(name.toLowerCase().replace(" ", "_"));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     /** empty constructor to allow an empty donor to be created for the gui
@@ -455,9 +464,8 @@ public class Donor {
         this.changes = changes;
     }
 
-    public void addChange(String change){
-        LocalDateTime dateTime = LocalDateTime.now();
-        changes.add(new Change(dateTime,change));
+    public void addChange(Change change){
+        changes.add(change);
     }
 
     public String getTooltip(){

@@ -3,6 +3,7 @@ package seng302.Controller;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -237,15 +238,15 @@ public class AppController {
    * @param donor donor to be updated/added
    */
   public void update(Donor donor){
-      ArrayList<String > changelogWrite = new ArrayList<>();
+      ArrayList<Change> changelogWrite = new ArrayList<>();
       if (donors.contains(donor)){
     } else {
       donors.add(donor);
-      changelogWrite.add("Added Donor " + donor.getName());
+      changelogWrite.add(new Change(LocalDateTime.now(),"Added Donor " + donor.getName()));
     }
     try {
       JsonHandler.saveUsers(donors);
-      JsonWriter.changeLog(changelogWrite, donor.getName().toLowerCase().replace(" ", "_"));
+      JsonHandler.saveChangelog(changelogWrite, donor.getName().toLowerCase().replace(" ", "_"));
 
     } catch (IOException e) {
       e.printStackTrace();
@@ -288,90 +289,96 @@ public class AppController {
   }
 
 
-  public ArrayList<String> differanceInDonors(Donor oldDonor, Donor newDonor){
-   ArrayList<String> diffs = new ArrayList<>();
-   try {
-     if (!oldDonor.getName().equalsIgnoreCase(newDonor.getName())) {
-       diffs.add("Changed Name from " + oldDonor.getName() + " to " + newDonor.getName());
-     }
-     if (oldDonor.getDateOfBirth() != newDonor.getDateOfBirth()) {
-       diffs.add("Changed DOB from  " + oldDonor.getDateOfBirth().toString() + " to " + newDonor
-           .getDateOfBirth());
-     }
-     if (oldDonor.getDateOfDeath() != newDonor.getDateOfDeath()) {
-       diffs.add(
-           "Changed DOD from " + oldDonor.getDateOfDeath() + " to " + newDonor.getDateOfDeath());
-     }
-     if (!(oldDonor.getGender().equalsIgnoreCase(newDonor.getGender()))) {
-       diffs.add("Changed Gender from " + oldDonor.getGender() + " to " + newDonor.getGender());
-     }
-     if (oldDonor.getHeight() != newDonor.getHeight()) {
-       diffs.add("Changed Height from " + oldDonor.getHeight() + " to " + newDonor.getHeight());
-     }
-     if (oldDonor.getWeight() != newDonor.getWeight()) {
-       diffs.add("Changed Weight from " + oldDonor.getWeight() + " to " + newDonor.getWeight());
-     }
-     if (!oldDonor.getBloodType().equalsIgnoreCase(newDonor.getBloodType())) {
-       diffs.add(
-           "Changed Blood Type from " + oldDonor.getBloodType() + " to " + newDonor.getBloodType());
-     }
-     if (!oldDonor.getCurrentAddress().equalsIgnoreCase(newDonor.getCurrentAddress())) {
-       diffs.add("Changed Address from " + oldDonor.getCurrentAddress() + " to " + newDonor
-           .getCurrentAddress());
-     }
-     if (!oldDonor.getRegion().equalsIgnoreCase(newDonor.getRegion())) {
-       diffs.add("Changes Region from " + oldDonor.getRegion() + " to " + newDonor.getRegion());
-     }
-     if (oldDonor.getDeceased() != newDonor.getDeceased()) {
-       diffs.add(
-           "Changed From Deceased = " + oldDonor.getDeceased() + " to " + newDonor.getDeceased());
-     }
-     if (oldDonor.getOrgans() != newDonor.getOrgans()) {
-       diffs.add("Changed From Organs Donating = " + oldDonor.getOrgans() + " to " + newDonor
-           .getOrgans());
-     }
-     for (String atty : oldDonor.getMiscAttributes()) {
-       if (!newDonor.getMiscAttributes().contains(atty)) {
-         diffs.add("Removed misc Atttribute " + atty);
-       }
-     }
-     for (String atty : newDonor.getMiscAttributes()) {
-       if (!oldDonor.getMiscAttributes().contains(atty)) {
-         diffs.add("Added misc Attribute " + atty);
-       }
-     }
-
-     for (String med : oldDonor.getPreviousMedication()) {
-       if (!newDonor.getPreviousMedication().contains(med)) {
-         diffs.add("Started taking " + med + " again");
-       }
-     }
-     for (String med : newDonor.getPreviousMedication()) {
-       if (!oldDonor.getPreviousMedication().contains(med)) {
-         diffs.add(med + " was removed from the  donors records");
-       }
-     }
-     for (String med : oldDonor.getCurrentMedication()) {
-       if (!newDonor.getCurrentMedication().contains(med)) {
-         diffs.add("Stopped taking " + med);
-       }
-     }
-     for (String med : newDonor.getPreviousMedication()) {
-       if (!oldDonor.getPreviousMedication().contains(med)) {
-         diffs.add("Started taking " + med);
-       }
-     }
-   }
-   catch (NullPointerException ex) {
-     //no 'change', just added
-     //TODO add "added __ to __" messages
-   }
-      if(diffs.size() > 0){
-          JsonWriter.changeLog(diffs,newDonor.getName().toLowerCase().replace(" ", "_"));
-          for(String diff : diffs)
-          newDonor.addChange(diff);
-          return diffs;
+  public ArrayList<String> differanceInDonors(Donor oldDonor, Donor newDonor) {
+    ArrayList<String> diffs = new ArrayList<>();
+    try {
+      if (!oldDonor.getName().equalsIgnoreCase(newDonor.getName())) {
+        diffs.add("Changed Name from " + oldDonor.getName() + " to " + newDonor.getName());
       }
-      return diffs;
+      if (oldDonor.getDateOfBirth() != newDonor.getDateOfBirth()) {
+        diffs.add("Changed DOB from  " + oldDonor.getDateOfBirth().toString() + " to " + newDonor
+                .getDateOfBirth());
+      }
+      if (oldDonor.getDateOfDeath() != newDonor.getDateOfDeath()) {
+        diffs.add(
+                "Changed DOD from " + oldDonor.getDateOfDeath() + " to " + newDonor.getDateOfDeath());
+      }
+      if (!(oldDonor.getGender().equalsIgnoreCase(newDonor.getGender()))) {
+        diffs.add("Changed Gender from " + oldDonor.getGender() + " to " + newDonor.getGender());
+      }
+      if (oldDonor.getHeight() != newDonor.getHeight()) {
+        diffs.add("Changed Height from " + oldDonor.getHeight() + " to " + newDonor.getHeight());
+      }
+      if (oldDonor.getWeight() != newDonor.getWeight()) {
+        diffs.add("Changed Weight from " + oldDonor.getWeight() + " to " + newDonor.getWeight());
+      }
+      if (!oldDonor.getBloodType().equalsIgnoreCase(newDonor.getBloodType())) {
+        diffs.add(
+                "Changed Blood Type from " + oldDonor.getBloodType() + " to " + newDonor.getBloodType());
+      }
+      if (!oldDonor.getCurrentAddress().equalsIgnoreCase(newDonor.getCurrentAddress())) {
+        diffs.add("Changed Address from " + oldDonor.getCurrentAddress() + " to " + newDonor
+                .getCurrentAddress());
+      }
+      if (!oldDonor.getRegion().equalsIgnoreCase(newDonor.getRegion())) {
+        diffs.add("Changes Region from " + oldDonor.getRegion() + " to " + newDonor.getRegion());
+      }
+      if (oldDonor.getDeceased() != newDonor.getDeceased()) {
+        diffs.add(
+                "Changed From Deceased = " + oldDonor.getDeceased() + " to " + newDonor.getDeceased());
+      }
+      if (oldDonor.getOrgans() != newDonor.getOrgans()) {
+        diffs.add("Changed From Organs Donating = " + oldDonor.getOrgans() + " to " + newDonor
+                .getOrgans());
+      }
+      for (String atty : oldDonor.getMiscAttributes()) {
+        if (!newDonor.getMiscAttributes().contains(atty)) {
+          diffs.add("Removed misc Atttribute " + atty);
+        }
+      }
+      for (String atty : newDonor.getMiscAttributes()) {
+        if (!oldDonor.getMiscAttributes().contains(atty)) {
+          diffs.add("Added misc Attribute " + atty);
+        }
+      }
+
+      for (String med : oldDonor.getPreviousMedication()) {
+        if (!newDonor.getPreviousMedication().contains(med)) {
+          diffs.add("Started taking " + med + " again");
+        }
+      }
+      for (String med : newDonor.getPreviousMedication()) {
+        if (!oldDonor.getPreviousMedication().contains(med)) {
+          diffs.add(med + " was removed from the  donors records");
+        }
+      }
+      for (String med : oldDonor.getCurrentMedication()) {
+        if (!newDonor.getCurrentMedication().contains(med)) {
+          diffs.add("Stopped taking " + med);
+        }
+      }
+      for (String med : newDonor.getPreviousMedication()) {
+        if (!oldDonor.getPreviousMedication().contains(med)) {
+          diffs.add("Started taking " + med);
+        }
+      }
+    } catch (NullPointerException ex) {
+      //no 'change', just added
+      //TODO add "added __ to __" messages
+    }
+    ArrayList<Change> changes = new ArrayList<>();
+    if (diffs.size() > 0) {
+      for (String diff : diffs) {
+        Change c = new Change(LocalDateTime.now(), diff);
+        newDonor.addChange(c);
+        changes.add(c);
+      }
+      try {
+        JsonHandler.saveChangelog(changes, newDonor.getName().toLowerCase().replace(" ", "_"));
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
+    return diffs;
   }
 }

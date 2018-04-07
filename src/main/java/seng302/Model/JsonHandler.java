@@ -92,6 +92,43 @@ public final class JsonHandler {
     }
 
 
+    public static void saveChangelog(ArrayList<Change> changes, String name) throws IOException {
+        Files.createDirectories(Paths.get(Directory.JSON.directory()));
+        File outFile = new File(Directory.JSON.directory()+"/"+name+"changelog.json");
+
+
+        if (outFile.exists()){
+            changes.addAll(importHistoryFromFile(name)); //dont worry about the position in the array JSON is not parsed in order anyway
+        }
+
+        outFile.createNewFile(); //creates new file if donors does not exist
+        Gson gson = new GsonBuilder().registerTypeAdapter(DateTime.class, (JsonSerializer<DateTime>)
+                (json, typeOfSrc, context) -> new JsonPrimitive(ISODateTimeFormat.dateTime().print(json))).create();
+        FileWriter writer = new FileWriter(outFile);
+        String usersString = gson.toJson(changes);
+        writer.write(usersString);
+        writer.close();
+    }
+
+
+    public static ArrayList<Change> importHistoryFromFile(String name) throws FileNotFoundException {
+        ArrayList<Change> results = new ArrayList<>();
+
+        File infile = new File(Directory.JSON.directory()+"/"+name+"changelog.json");
+        if(!infile.exists()){
+            System.out.println("No previous changelog exists");
+            return new ArrayList<>();
+        }
+
+        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss")
+                .create();
+        Reader reader =new FileReader(infile);
+        Change[] changes = gson.fromJson(reader, Change[].class);
+        results.addAll(Arrays.asList(changes));
+        return results;
+    }
+
+
 
 
 }
