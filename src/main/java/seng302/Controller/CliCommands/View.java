@@ -5,6 +5,7 @@ import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import seng302.Controller.AppController;
 import seng302.Model.Donor;
+import seng302.Model.User;
 import seng302.View.IoHelper;
 
 @Command(name = "view", description = "View all currently registered donors based on set parameters.")
@@ -37,11 +38,11 @@ public class View implements Runnable {
 
     AppController controller = AppController.getInstance();
     if (viewAll) {
-      System.out.println(IoHelper.prettyStringDonors(controller.getDonors()));
+      System.out.println(IoHelper.prettyStringDonors(controller.getUsers()));
       return;
     }
     if (id != -1) {
-      System.out.println(controller.getDonor(id));
+      System.out.println(controller.getUser(id));
       return;
     }
 
@@ -55,16 +56,16 @@ public class View implements Runnable {
       if (dobString != null) {
         Date dob = IoHelper.readDate(dobString);
         if (dob != null) {
-          Donor donor = controller.findDonor(name, dob);
-          if(donor == (Donor)null) {
+          User user = controller.findUser(name, dob);
+          if(user == null) {
           System.out.println("No donors found");
           } else {
-            System.out.println(donor);
+            System.out.println(user);
           }
         }
       } else {
         System.out.println(IoHelper
-            .prettyStringDonors(controller.findDonors(name)));
+            .prettyStringDonors(controller.findUsers(name)));
       }
     }
   }

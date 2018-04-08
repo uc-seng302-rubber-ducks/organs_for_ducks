@@ -13,6 +13,7 @@ import picocli.CommandLine;
 
 import seng302.Controller.CliCommands.UpdateDetails;
 import seng302.Model.Donor;
+import seng302.Model.User;
 
 public class UpdateDetailsTest {
 
@@ -24,12 +25,12 @@ public class UpdateDetailsTest {
     sdf = new SimpleDateFormat("yyyy-MM-dd");
 
     controller = AppController.getInstance();
-    controller.setDonors(new ArrayList<>());
+    controller.setUsers(new ArrayList<>());
 
     try {
       id = controller.Register("test dummy", sdf.parse("1111-11-11"));
-      Donor donor = controller.findDonors("test dummy").get(0);
-      donor.setWeight(65.3);
+      User user = controller.findUsers("test dummy").get(0);
+      user.setWeight(65.3);
     }
     catch (Exception ex) {
       fail("Exception thrown setting up tests");
@@ -42,10 +43,10 @@ public class UpdateDetailsTest {
     new CommandLine(new UpdateDetails())
         .parseWithHandler(new CommandLine.RunLast(), System.err, args);
 
-    Donor mal = controller.findDonors("Mal dummy").get(0);
+    User mal = controller.findUsers("Mal dummy").get(0);
     Assert.assertNotNull(mal);
 
-    ArrayList<Donor> test = controller.findDonors("test dummy");
+    ArrayList<User> test = controller.findUsers("test dummy");
     assert(test.size() == 0);
   }
 
@@ -55,10 +56,10 @@ public class UpdateDetailsTest {
     new CommandLine(new UpdateDetails())
         .parseWithHandler(new CommandLine.RunLast(), System.err, args);
 
-    Donor muppet = controller.findDonors("test muppet").get(0);
+    User muppet = controller.findUsers("test muppet").get(0);
     Assert.assertNotNull(muppet);
 
-    ArrayList<Donor> test = controller.findDonors("test dummy");
+    ArrayList<User> test = controller.findUsers("test dummy");
     assert(test.size() == 0);
   }
 
@@ -68,10 +69,10 @@ public class UpdateDetailsTest {
     new CommandLine(new UpdateDetails())
         .parseWithHandler(new CommandLine.RunLast(), System.err, args);
 
-    Donor alan = controller.findDonors("stephen hawking").get(0);
+    User alan = controller.findUsers("stephen hawking").get(0);
     Assert.assertNotNull(alan);
 
-    ArrayList<Donor> test = controller.findDonors("test dummy");
+    ArrayList<User> test = controller.findUsers("test dummy");
     assert(test.size() == 0);
   }
 
@@ -83,7 +84,7 @@ public class UpdateDetailsTest {
     new CommandLine(new UpdateDetails())
         .parseWithHandler(new CommandLine.RunLast(), System.err, args);
 
-    Donor test = controller.findDonors("test dummy").get(0);
+    User test = controller.findUsers("test dummy").get(0);
     assert(test.getWeight() == 100);
   }
 
@@ -94,7 +95,7 @@ public class UpdateDetailsTest {
     new CommandLine(new UpdateDetails())
         .parseWithHandler(new CommandLine.RunLast(), System.err, args);
 
-    Donor test = controller.findDonors("test dummy").get(0);
+    User test = controller.findUsers("test dummy").get(0);
     assert(test.getWeight() == 65.3);
   }
 
@@ -107,7 +108,7 @@ public class UpdateDetailsTest {
     new CommandLine(new UpdateDetails())
         .parseWithHandler(new CommandLine.RunLast(), System.err, args);
 
-    Donor test = controller.findDonors("test dummy").get(0);
+    User test = controller.findUsers("test dummy").get(0);
     try {
       assert (test.getDateOfBirth().equals(sdf.parse("2020-3-4")));
     }
@@ -124,7 +125,7 @@ public class UpdateDetailsTest {
     new CommandLine(new UpdateDetails())
         .parseWithHandler(new CommandLine.RunLast(), System.err, args);
 
-    Donor test = controller.findDonors("test dummy").get(0);
+    User test = controller.findUsers("test dummy").get(0);
     try {
       assert (test.getDateOfBirth().equals(sdf.parse("1111-11-11")));
     }
@@ -135,16 +136,19 @@ public class UpdateDetailsTest {
   }
 
   @Test
-  public void ShouldUpdateLastModifiedTimestamp() {
-    Donor donor = controller.getDonor(id);
-    DateTime oldTime = donor.getLastModified();
+  public void ShouldUpdateLastModifiedTimestamp() throws InterruptedException{
+    User user = controller.getUser(id);
+    Thread.sleep(100);
+    DateTime oldTime = user.getLastModified();
 
     String[] args = {"-id="+id, "-f=fred"};
 
     new CommandLine(new UpdateDetails())
         .parseWithHandler(new CommandLine.RunLast(), System.err, args);
 
-    DateTime newTime = donor.getLastModified();
+    DateTime newTime = user.getLastModified();
+    System.out.println("New time: "+newTime);
+    System.out.println("Old time: "+ oldTime);
     assert(newTime.isAfter(oldTime));
   }
 }

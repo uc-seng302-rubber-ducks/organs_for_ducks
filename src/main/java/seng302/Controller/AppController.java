@@ -8,10 +8,11 @@ import seng302.Model.Clinician;
 import seng302.Model.Donor;
 import seng302.Model.JsonReader;
 import seng302.Model.JsonWriter;
+import seng302.Model.User;
 
 public class AppController {
 
-  private ArrayList<Donor> donors = new ArrayList<>();
+  private ArrayList<User> users = new ArrayList<>();
   private ArrayList<Clinician> clinicians = new ArrayList<>();
   private static AppController controller;
   private ArrayList<String[]> historyOfCommands = new ArrayList<>();
@@ -19,14 +20,15 @@ public class AppController {
 
   private DonorController donorController = new DonorController();
   private AppController() {
-//    donors = JsonReader.importJsonDonors();
+    //TODO update json reader/writer
+    //users = JsonReader.importJsonDonors();
     clinicians = JsonReader.importClinicians();
     for(Clinician c : clinicians){
-      if(c.getStaffId() == 0){
+      if(c.getStaffId().equals("0")){
         return; //short circut out if defalut clinication exists
       }
     }
-    clinicians.add(new Clinician("Default",0,"","","admin"));
+    clinicians.add(new Clinician("Default","0","","","admin"));
     JsonWriter.saveClinicians(clinicians);
     String[] empty = {""};
     historyOfCommands.add(empty);//putting an empty string into the string array to be displayed if history pointer is 0
@@ -46,7 +48,7 @@ public class AppController {
 
 
   /**
-   * appends a single Donor to the list of donors stored in the Controller
+   * appends a single Donor to the list of users stored in the Controller
    *
    * @return hashCode of the new donor or -1 on error
    */
@@ -54,7 +56,7 @@ public class AppController {
       double weight,
       String bloodType, String currentAddress, String region) {
     try {
-      Donor newDonor = new Donor(name, dateOfBirth);
+      User newDonor = new User(name, dateOfBirth);
       newDonor.setDateOfDeath(dateOfDeath);
       newDonor.setGender(gender);
       newDonor.setHeight(height);
@@ -63,10 +65,10 @@ public class AppController {
       newDonor.setCurrentAddress(currentAddress);
       newDonor.setRegion(region);
 
-      if (donors.contains(newDonor)) {
+      if (users.contains(newDonor)) {
         return -1;
       }
-      donors.add(newDonor);
+      users.add(newDonor);
       return newDonor.hashCode();
     } catch (Exception e) {
 
@@ -119,12 +121,12 @@ public class AppController {
    */
   public int Register(String name, Date dateOfBirth) {
     try {
-      Donor newDonor = new Donor(name, dateOfBirth);
-      if (donors.contains(newDonor)) {
+      User newUser = new User(name, dateOfBirth);
+      if (users.contains(newUser)) {
         return -1;
       }
-      donors.add(newDonor);
-      return newDonor.hashCode();
+      users.add(newUser);
+      return newUser.hashCode();
     } catch (Exception e) {
       //TODO debug writer?
       System.err.println(e.getMessage());
@@ -133,17 +135,17 @@ public class AppController {
   }
 
   /**
-   * Takes a donors name and dob, finds the donor in the session list and returns them.
+   * Takes a users name and dob, finds the donor in the session list and returns them.
    *
    * @param name Name of the donor
    * @param dob date of birth of the donor
    */
-  public Donor findDonor(String name, Date dob) {
-    Donor check = null;
-    Donor testDonor = new Donor(name,
-        dob); //creates temporary Donor to check against the donor list
-    ArrayList<Donor> sessionList = getDonors();
-    int place = sessionList.indexOf(testDonor);
+  public User findUser(String name, Date dob) {
+    User check = null;
+    User testUser = new User(name,
+        dob); //creates temporary user to check against the user list
+    ArrayList<User> sessionList = getUsers();
+    int place = sessionList.indexOf(testUser);
     if (place != -1) {
       return sessionList.get(place);
     } else {
@@ -152,13 +154,13 @@ public class AppController {
   }
 
   /**
-   * finds all donors who's name field contains the search string
+   * finds all users who's name field contains the search string
    */
-  public ArrayList<Donor> findDonors(String name) {
-    ArrayList<Donor> toReturn = new ArrayList<>();
-    for (Donor donor : donors) {
-      if (donor.getName().toLowerCase().contains(name.toLowerCase())) {
-        toReturn.add(donor);
+  public ArrayList<User> findUsers(String name) {
+    ArrayList<User> toReturn = new ArrayList<>();
+    for (User user : users) {
+      if (user.getName().toLowerCase().contains(name.toLowerCase())) {
+        toReturn.add(user);
       }
     }
     return toReturn;
@@ -168,11 +170,11 @@ public class AppController {
    * Finds donor by name only. This method will need to be migrated to unique username in later builds
    * returns null if donor is not found
    */
-  public Donor findDonor(String name) {
-    Donor toReturn = null;
-    for (Donor d : donors){
-      if(d.getName().equalsIgnoreCase(name)){
-        return d;
+  public User findUser(String name) {
+    User toReturn = null;
+    for (User u : users){
+      if(u.getName().equalsIgnoreCase(name)){
+        return u;
       }
     }
     return toReturn;
@@ -181,24 +183,25 @@ public class AppController {
 
 
   /**
-   * takes a passed donor and removes them from the maintained list of donors
+   * takes a passed donor and removes them from the maintained list of users
    *
-   * @param donor donor to remove
+   * @param user user to remove
    */
-  public void deleteDonor(Donor donor) {
-    ArrayList<Donor> sessionList = getDonors();
-    sessionList.remove(donor);
-    setDonors(sessionList);
-    try {
-      JsonWriter.saveCurrentDonorState(sessionList);
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
+  public void deleteDonor(User user) {
+    ArrayList<User> sessionList = getUsers();
+    sessionList.remove(user);
+    setUsers(sessionList);
+    //TODO fix json writer
+//    try {
+//      //JsonWriter.saveCurrentDonorState(sessionList);
+//    } catch (IOException e) {
+//      e.printStackTrace();
+//    }
 
   }
 
-  public ArrayList<Donor> getDonors() {
-    return donors;
+  public ArrayList<User> getUsers() {
+    return users;
   }
 
   /**
@@ -206,50 +209,51 @@ public class AppController {
    *
    * @return Donor corresponding with the hashCode given or null if dne
    */
-  public Donor getDonor(int hashCode) {
-    for (Donor donor : donors) {
-      if (donor.hashCode() == hashCode) {
-        return donor;
+  public User getUser(int hashCode) {
+    for (User user : users) {
+      if (user.hashCode() == hashCode) {
+        return user;
       }
     }
     return null;
   }
 
   /**
-   * Method to update the donor of any changes passed in by the gui.
-   * Removes the old entry of the donor form the list and then adds the updated entry
-   * If the donor is not already in the list it is added
+   * Method to update the user of any changes passed in by the gui.
+   * Removes the old entry of the user form the list and then adds the updated entry
+   * If the user is not already in the list it is added
    *
-   * TODO: each donor may need to be assigned a unique id for this part
+   * TODO: each user may need to be assigned a unique id for this part
    *
-   * @param donor donor to be updated/added
+   * @param user user to be updated/added
    */
-  public void update(Donor donor){
+  public void update(User user){
       ArrayList<String > changelogWrite = new ArrayList<>();
-      if (donors.contains(donor)){
-        donors.remove(donor);
-        donors.add(donor);
+      if (users.contains(user)){
+        users.remove(user);
+        users.add(user);
     } else {
-      donors.add(donor);
-      changelogWrite.add("Added Donor " + donor.getName());
+      users.add(user);
+      changelogWrite.add("Added Donor " + user.getName());
     }
-    try {
-      JsonWriter.saveCurrentDonorState(donors);
-      JsonWriter.changeLog(changelogWrite, donor.getName().toLowerCase().replace(" ", "_"));
-
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
+    //TODO fix json writer
+//    try {
+//      JsonWriter.saveCurrentDonorState(users);
+//      JsonWriter.changeLog(changelogWrite, user.getName().toLowerCase().replace(" ", "_"));
+//
+//    } catch (IOException e) {
+//      e.printStackTrace();
+//    }
   }
 
 
-  public void setDonors(ArrayList<Donor> donors) {
-    this.donors = donors;
+  public void setUsers(ArrayList<User> users) {
+    this.users = users;
   }
 
-  public Clinician getClinician(int id){
+  public Clinician getClinician(String id){
    for (Clinician c : clinicians){
-     if (c.getStaffId() == id) {
+     if (c.getStaffId().equals(id)) {
        return c;
      }
    }
@@ -277,76 +281,76 @@ public class AppController {
   }
 
 
-  public ArrayList<String> differanceInDonors(Donor oldDonor, Donor newDonor){
+  public ArrayList<String> differanceInDonors(User oldUser, User newUser){
    ArrayList<String> diffs = new ArrayList<>();
    try {
-     if (!oldDonor.getName().equalsIgnoreCase(newDonor.getName())) {
-       diffs.add("Changed Name from " + oldDonor.getName() + " to " + newDonor.getName());
+     if (!oldUser.getName().equalsIgnoreCase(newUser.getName())) {
+       diffs.add("Changed Name from " + oldUser.getName() + " to " + newUser.getName());
      }
-     if (oldDonor.getDateOfBirth() != newDonor.getDateOfBirth()) {
-       diffs.add("Changed DOB from  " + oldDonor.getDateOfBirth().toString() + " to " + newDonor
+     if (oldUser.getDateOfBirth() != newUser.getDateOfBirth()) {
+       diffs.add("Changed DOB from  " + oldUser.getDateOfBirth().toString() + " to " + newUser
            .getDateOfBirth());
      }
-     if (oldDonor.getDateOfDeath() != newDonor.getDateOfDeath()) {
+     if (oldUser.getDateOfDeath() != newUser.getDateOfDeath()) {
        diffs.add(
-           "Changed DOD from " + oldDonor.getDateOfDeath() + " to " + newDonor.getDateOfDeath());
+           "Changed DOD from " + oldUser.getDateOfDeath() + " to " + newUser.getDateOfDeath());
      }
-     if (!(oldDonor.getGender().equalsIgnoreCase(newDonor.getGender()))) {
-       diffs.add("Changed Gender from " + oldDonor.getGender() + " to " + newDonor.getGender());
+     if (!(oldUser.getGender().equalsIgnoreCase(newUser.getGender()))) {
+       diffs.add("Changed Gender from " + oldUser.getGender() + " to " + newUser.getGender());
      }
-     if (oldDonor.getHeight() != newDonor.getHeight()) {
-       diffs.add("Changed Height from " + oldDonor.getHeight() + " to " + newDonor.getHeight());
+     if (oldUser.getHeight() != newUser.getHeight()) {
+       diffs.add("Changed Height from " + oldUser.getHeight() + " to " + newUser.getHeight());
      }
-     if (oldDonor.getWeight() != newDonor.getWeight()) {
-       diffs.add("Changed Weight from " + oldDonor.getWeight() + " to " + newDonor.getWeight());
+     if (oldUser.getWeight() != newUser.getWeight()) {
+       diffs.add("Changed Weight from " + oldUser.getWeight() + " to " + newUser.getWeight());
      }
-     if (!oldDonor.getBloodType().equalsIgnoreCase(newDonor.getBloodType())) {
+     if (!oldUser.getBloodType().equalsIgnoreCase(newUser.getBloodType())) {
        diffs.add(
-           "Changed Blood Type from " + oldDonor.getBloodType() + " to " + newDonor.getBloodType());
+           "Changed Blood Type from " + oldUser.getBloodType() + " to " + newUser.getBloodType());
      }
-     if (!oldDonor.getCurrentAddress().equalsIgnoreCase(newDonor.getCurrentAddress())) {
-       diffs.add("Changed Address from " + oldDonor.getCurrentAddress() + " to " + newDonor
+     if (!oldUser.getCurrentAddress().equalsIgnoreCase(newUser.getCurrentAddress())) {
+       diffs.add("Changed Address from " + oldUser.getCurrentAddress() + " to " + newUser
            .getCurrentAddress());
      }
-     if (!oldDonor.getRegion().equalsIgnoreCase(newDonor.getRegion())) {
-       diffs.add("Changes Region from " + oldDonor.getRegion() + " to " + newDonor.getRegion());
+     if (!oldUser.getRegion().equalsIgnoreCase(newUser.getRegion())) {
+       diffs.add("Changes Region from " + oldUser.getRegion() + " to " + newUser.getRegion());
      }
-     if (oldDonor.getDeceased() != newDonor.getDeceased()) {
+     if (oldUser.getDeceased() != newUser.getDeceased()) {
        diffs.add(
-           "Changed From Deceased = " + oldDonor.getDeceased() + " to " + newDonor.getDeceased());
+           "Changed From Deceased = " + oldUser.getDeceased() + " to " + newUser.getDeceased());
      }
-     if (oldDonor.getOrgans() != newDonor.getOrgans()) {
-       diffs.add("Changed From Organs Donating = " + oldDonor.getOrgans() + " to " + newDonor
-           .getOrgans());
+     if (oldUser.getDonorDetails().getOrgans() != newUser.getDonorDetails().getOrgans()) {
+       diffs.add("Changed From Organs Donating = " + oldUser.getDonorDetails().getOrgans() + " to " + newUser
+           .getDonorDetails().getOrgans());
      }
-     for (String atty : oldDonor.getMiscAttributes()) {
-       if (!newDonor.getMiscAttributes().contains(atty)) {
+     for (String atty : oldUser.getMiscAttributes()) {
+       if (!newUser.getMiscAttributes().contains(atty)) {
          diffs.add("Removed misc Atttribute " + atty);
        }
      }
-     for (String atty : newDonor.getMiscAttributes()) {
-       if (!oldDonor.getMiscAttributes().contains(atty)) {
+     for (String atty : newUser.getMiscAttributes()) {
+       if (!oldUser.getMiscAttributes().contains(atty)) {
          diffs.add("Added misc Attribute " + atty);
        }
      }
 
-     for (String med : oldDonor.getPreviousMedication()) {
-       if (!newDonor.getPreviousMedication().contains(med)) {
+     for (String med : oldUser.getPreviousMedication()) {
+       if (!newUser.getPreviousMedication().contains(med)) {
          diffs.add("Started taking " + med + " again");
        }
      }
-     for (String med : newDonor.getPreviousMedication()) {
-       if (!oldDonor.getPreviousMedication().contains(med)) {
-         diffs.add(med + " was removed from the  donors records");
+     for (String med : newUser.getPreviousMedication()) {
+       if (!oldUser.getPreviousMedication().contains(med)) {
+         diffs.add(med + " was removed from the  users records");
        }
      }
-     for (String med : oldDonor.getCurrentMedication()) {
-       if (!newDonor.getCurrentMedication().contains(med)) {
+     for (String med : oldUser.getCurrentMedication()) {
+       if (!newUser.getCurrentMedication().contains(med)) {
          diffs.add("Stopped taking " + med);
        }
      }
-     for (String med : newDonor.getPreviousMedication()) {
-       if (!oldDonor.getPreviousMedication().contains(med)) {
+     for (String med : newUser.getPreviousMedication()) {
+       if (!oldUser.getPreviousMedication().contains(med)) {
          diffs.add("Started taking " + med);
        }
      }
@@ -356,9 +360,9 @@ public class AppController {
      //TODO add "added __ to __" messages
    }
       if(diffs.size() > 0){
-          JsonWriter.changeLog(diffs,newDonor.getName().toLowerCase().replace(" ", "_"));
+          JsonWriter.changeLog(diffs,newUser.getName().toLowerCase().replace(" ", "_"));
           for(String diff : diffs)
-          newDonor.addChange(diff);
+          newUser.addChange(diff);
           return diffs;
       }
       return diffs;

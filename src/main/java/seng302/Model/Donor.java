@@ -18,6 +18,7 @@ import org.joda.time.Years;
  *
  * No methods in this class, as of 26/02/2018, are non standard.
  */
+@Deprecated
 public class Donor {
 
   private Date dateOfBirth;
@@ -249,13 +250,13 @@ public class Donor {
     }
   }
 
-  public Years getAge() {
+  public String getAge() {
     if (dateOfDeath != null) {
 
       return Years.yearsBetween(LocalDate.fromDateFields(dateOfBirth),
-          LocalDate.fromDateFields(dateOfDeath));
+          LocalDate.fromDateFields(dateOfDeath)).toString().replace("P","").replace("Y","");
     }
-    return Years.yearsBetween(LocalDate.fromDateFields(dateOfBirth), LocalDate.now());
+    return Years.yearsBetween(LocalDate.fromDateFields(dateOfBirth), LocalDate.now()).toString().replace("P","").replace("Y","");
   }
 
   //Trial method

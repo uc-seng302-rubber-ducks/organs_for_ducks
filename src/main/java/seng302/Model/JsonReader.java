@@ -169,8 +169,7 @@ public final class JsonReader {
             for(Object o : a) {
                 JSONObject clinician = (JSONObject) o;
                 String name = (String) clinician.get("Name");
-                Long staffIdl =(Long) clinician.get("Staff Id");
-                int staffId = staffIdl.intValue();
+                String staffId = (String) clinician.get("Staff Id");
                 String workAddress =(String) clinician.get("Work Address");
                 String region = (String) clinician.get("Region");
                 String password = (String) clinician.get("Password");

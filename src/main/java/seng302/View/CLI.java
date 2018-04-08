@@ -1,9 +1,7 @@
 package seng302.View;
 
 
-import java.awt.event.KeyEvent;
 import java.io.IOException;
-import java.util.Scanner;
 import org.jline.keymap.KeyMap;
 import org.jline.reader.Binding;
 import org.jline.reader.History;
@@ -52,7 +50,8 @@ public class CLI {
     System.out.println("Welcome to the CLI. enter your command or type 'help' for help");
 
     AppController controller = AppController.getInstance();
- //   controller.setDonors(JsonReader.importJsonDonors());
+    //TODO fix json reader
+    //controller.setUsers(JsonReader.importJsonDonors());
 
     String input;
     String[] arguments;
@@ -64,7 +63,7 @@ public class CLI {
       JsonWriter.changeLog(arguments);
       controller.addToHistoryOfCommands(arguments);
       new CommandLine(new CliRoot())
-          .parseWithHandler(new CommandLine.RunLast(), System.out, arguments);
+          .parseWithHandler(new CommandLine.RunLast(), System.err, arguments);
       //System.out.println(lineReader.getHistory().last());
       input = lineReader.readLine(">> ");
     }
