@@ -1,12 +1,15 @@
-/*
 package seng302.Controller;
 
 import static org.junit.Assert.fail;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
-import org.joda.time.DateTime;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -18,17 +21,17 @@ import seng302.Model.Donor;
 public class UpdateDetailsTests {
 
   AppController controller;
-  SimpleDateFormat sdf;
+  DateTimeFormatter sdf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
   int id = -1;
   @Before
   public void resetDonor() {
-    sdf = new SimpleDateFormat("yyyy-MM-dd");
+
 
     controller = AppController.getInstance();
     controller.setDonors(new ArrayList<>());
 
     try {
-      id = controller.Register("test dummy", sdf.parse("1111-11-11"));
+      id = controller.Register("test dummy", LocalDate.parse("1111-11-11",sdf));
       Donor donor = controller.findDonors("test dummy").get(0);
       donor.setWeight(65.3);
     }
@@ -103,16 +106,16 @@ public class UpdateDetailsTests {
   public void ShouldUpdateDateField() {
     //dob and dod are identical, no use testing both
     //just checking it can parse dates
-    String[] args = {"-id="+id, "-dob=2020-3-4"};
+    String[] args = {"-id="+id, "-dob=2020-03-04"};
 
     new CommandLine(new UpdateDetails())
         .parseWithHandler(new CommandLine.RunLast(), System.err, args);
 
     Donor test = controller.findDonors("test dummy").get(0);
     try {
-      assert (test.getDateOfBirth().equals(sdf.parse("2020-3-4")));
+      assert (test.getDateOfBirth().equals(LocalDate.parse("2020-03-04",sdf)));
     }
-    catch (ParseException ex) {
+    catch (DateTimeParseException ex) {
       fail("Could not parse date (error in tester)");
     }
   }
@@ -127,9 +130,9 @@ public class UpdateDetailsTests {
 
     Donor test = controller.findDonors("test dummy").get(0);
     try {
-      assert (test.getDateOfBirth().equals(sdf.parse("1111-11-11")));
+      assert (test.getDateOfBirth().equals(LocalDate.parse("1111-11-11",sdf)));
     }
-    catch (ParseException ex) {
+    catch (DateTimeParseException ex) {
       fail("Could not parse date (error in tester)");
     }
 
@@ -138,15 +141,16 @@ public class UpdateDetailsTests {
   @Test
   public void ShouldUpdateLastModifiedTimestamp() {
     Donor donor = controller.getDonor(id);
-    DateTime oldTime = donor.getLastModified();
+    LocalDateTime oldTime = donor.getLastModified();
 
     String[] args = {"-id="+id, "-f=fred"};
 
     new CommandLine(new UpdateDetails())
         .parseWithHandler(new CommandLine.RunLast(), System.err, args);
 
-    DateTime newTime = donor.getLastModified();
+    LocalDateTime newTime = donor.getLastModified();
+    System.out.println(oldTime);
+    System.out.println(newTime); // test needs delay removing these lines will cause the test to fail
     assert(newTime.isAfter(oldTime));
   }
 }
-*/

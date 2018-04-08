@@ -23,7 +23,6 @@ public class AppController {
       donors = JsonHandler.loadUsers();
       clinicians = JsonHandler.loadClinicians();
     } catch (FileNotFoundException e) {
-      e.printStackTrace();
     }
     String[] empty = {""};
     historyOfCommands.add(empty);//putting an empty string into the string array to be displayed if history pointer is 0
