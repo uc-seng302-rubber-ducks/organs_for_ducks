@@ -13,6 +13,7 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -25,6 +26,8 @@ import org.joda.time.DateTime;
 import seng302.Model.Clinician;
 
 import java.io.IOException;
+import java.util.List;
+
 import seng302.Model.Donor;
 import seng302.Model.Organs;
 import seng302.Model.User;
@@ -32,6 +35,8 @@ import seng302.Model.User;
 public class ClinicianController {
 
   private final int ROWS_PER_PAGE = 30;
+  private int startIndex = 0;
+  private int endIndex = startIndex + 30;
   @FXML
   private TextField regionTextField;
 
@@ -72,6 +77,9 @@ public class ClinicianController {
   @FXML
   private TableView<User> searchTableView;
 
+  @FXML
+  private Pagination searchTablePagination;
+
   private Stage stage;
   private AppController appController;
   private Clinician clinician;
@@ -90,7 +98,7 @@ public class ClinicianController {
     addressTextField.setText(clinician.getWorkAddress());
     regionTextField.setText(clinician.getRegion());
     users = appController.getUsers();
-    initSearchTable(0);
+    initSearchTable();
 
     openStages = new ArrayList<>();
     stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
@@ -98,27 +106,30 @@ public class ClinicianController {
         if(!openStages.isEmpty()){
           for (Stage s : openStages){
             s.close();
-          };
-        };
-      };
+          }
+        }
+      }
     });
-    //searchPagination = new Pagination((users.size() / ROWS_PER_PAGE + 1), 0);
-
-
+    int count = users.size() / ROWS_PER_PAGE;
+    System.out.println(count);
+    searchTablePagination.setPageCount(count + 1);
+    System.out.println(users.size() / ROWS_PER_PAGE);
+    searchTablePagination.setPageFactory(this :: changePage);
   }
-
 
   /**
    * initialises the search table, abstracted from main init function for clarity
    */
-  private void initSearchTable(int startIndex) {
-    int endIndex = Math.min(startIndex+ROWS_PER_PAGE, users.size());
+  private void initSearchTable() {
+    endIndex = Math.min(startIndex+ROWS_PER_PAGE, users.size());
     if (users == null || users.isEmpty()) {
       return;
     }
+
+    List<User> usersSublist = getSearchData();
     //set up lists
     //table contents are SortedList of a FilteredList of an ObservableList of an ArrayList
-    ObservableList<User> oListDonors = FXCollections.observableArrayList(users);
+    ObservableList<User> oListDonors = FXCollections.observableList(usersSublist);
 
     TableColumn<User, String> nameColumn = new TableColumn<>("Name");
     nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
@@ -167,8 +178,17 @@ public class ClinicianController {
         }
       }
     });
+  }
 
+  private List<User> getSearchData() {
+    return users.subList(startIndex, endIndex);
+  }
 
+  private Node changePage(int pageIndex) {
+    startIndex = pageIndex * ROWS_PER_PAGE;
+    endIndex = Math.min(startIndex+ROWS_PER_PAGE, users.size());
+    searchTableView.setItems(FXCollections.observableList(getSearchData()));
+    return searchTableView;
   }
 
   private void launchDonor(User user){
@@ -258,25 +278,25 @@ public class ClinicianController {
     appController.updateClinicians(clinician);
 
   }
-
-  @FXML
-  void goToNextPage() {
-    if(currentIndex + ROWS_PER_PAGE >= users.size()) {
-      initSearchTable(currentIndex);
-    } else {
-      initSearchTable(currentIndex + ROWS_PER_PAGE);
-      currentIndex += ROWS_PER_PAGE;
-    }
-  }
-
-  @FXML
-  void goToPrevPage() {
-    if(currentIndex - ROWS_PER_PAGE < 0) {
-      initSearchTable(0);
-    } else {
-      initSearchTable(currentIndex - ROWS_PER_PAGE);
-      currentIndex -= ROWS_PER_PAGE;
-    }
-
-  }
+//
+//  @FXML
+//  void goToNextPage() {
+//    if(currentIndex + ROWS_PER_PAGE >= users.size()) {
+//      initSearchTable(currentIndex);
+//    } else {
+//      initSearchTable(currentIndex + ROWS_PER_PAGE);
+//      currentIndex += ROWS_PER_PAGE;
+//    }
+//  }
+//
+//  @FXML
+//  void goToPrevPage() {
+//    if(currentIndex - ROWS_PER_PAGE < 0) {
+//      initSearchTable(0);
+//    } else {
+//      initSearchTable(currentIndex - ROWS_PER_PAGE);
+//      currentIndex -= ROWS_PER_PAGE;
+//    }
+//
+//  }
 }
