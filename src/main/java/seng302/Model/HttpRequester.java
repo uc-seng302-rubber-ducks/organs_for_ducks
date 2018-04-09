@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
+import org.json.simple.parser.ParseException;
 
 public class HttpRequester {
 
@@ -93,12 +94,29 @@ public class HttpRequester {
     return list;
   }
 
+  public static String[] getActiveIngredients(String drug, OkHttpClient client) throws IOException {
+    String url = "http://mapi-us.iterar.co/api/" + drug + "/substances.json";
+    Request request = new Request.Builder().url(url).build();
+    Response response = client.newCall(request).execute();
+    String rawString = response.body().string();
+    JSONParser parser = new JSONParser();
+    try {
+      String formatted = rawString.substring(1, rawString.length() - 1);
+      return formatted.split(",");
+    } catch (Exception ex) {
+      return new String[]{};
+    }
+  }
   public static  void main(String[] args) {
     System.out.println("Please don't run me, this is for testing only");
     try {
       //String res = getDrugInteractions("coumadin", "Acetaminophen", new OkHttpClient());
-      Set<String> res = getDrugInteractions("coumadin", "Acetaminophen","male",36, new OkHttpClient());
-      System.out.println(res);
+      //Set<String> res = getDrugInteractions("coumadin", "Acetaminophen","male",36, new OkHttpClient());
+      String[] res = getActiveIngredients("reserpine", new OkHttpClient());
+      //System.out.println(res);
+      for (String s : res) {
+        System.out.println(s);
+      }
     }
     catch (Exception ex) {
       ex.printStackTrace();
