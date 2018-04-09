@@ -19,7 +19,7 @@ public class AppControllerTest {
   @Test
   public void ShouldAddDonorToListWhenUserRegistered() {
     //Arrange
-    User user = new User("Frank", LocalDate.parse("1 2 3",(DateTimeFormatter.ofPattern("y M d")));
+    User user = new User("Frank", LocalDate.parse("1 2 3",(DateTimeFormatter.ofPattern("y M d"))));
     //Act
     controller.Register("Frank",LocalDate.parse("1 2 3",(DateTimeFormatter.ofPattern("y M d"))));
     //Assert

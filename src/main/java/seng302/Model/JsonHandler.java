@@ -27,7 +27,7 @@ public final class JsonHandler {
      * @param users List of users to save
      * @throws IOException
      */
-    public static void saveUsers(ArrayList<Donor> users) throws IOException {
+    public static void saveUsers(ArrayList<User> users) throws IOException {
 
         Files.createDirectories(Paths.get(Directory.JSON.directory()));
         File outFile = new File(Directory.JSON.directory()+"/donors.json");
@@ -52,13 +52,13 @@ public final class JsonHandler {
      * @throws FileNotFoundException
      */
 
-    public static ArrayList<Donor> loadUsers() throws FileNotFoundException {
-        ArrayList<Donor> results = new ArrayList<>();
+    public static ArrayList<User> loadUsers() throws FileNotFoundException {
+        ArrayList<User> results = new ArrayList<>();
         File inFile = new File(Directory.JSON.directory() + "/donors.json");
         Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss")
                 .create();
         Reader reader =new FileReader(inFile);
-        Donor[] donors = gson.fromJson(reader, Donor[].class);
+        User[] donors = gson.fromJson(reader, User[].class);
         results.addAll(Arrays.asList(donors));
         return results;
 
@@ -81,7 +81,9 @@ public final class JsonHandler {
 
         outFile.createNewFile(); //creates new file if donors does not exist
         Gson gson = new GsonBuilder().registerTypeAdapter(DateTime.class, (JsonSerializer<DateTime>)
-                (json, typeOfSrc, context) -> new JsonPrimitive(ISODateTimeFormat.dateTime().print(json))).create();
+                (json, typeOfSrc, context) -> new JsonPrimitive(ISODateTimeFormat.dateTime().print(json)))
+                .excludeFieldsWithoutExposeAnnotation()
+                .create();
         FileWriter writer = new FileWriter(outFile);
         String usersString = gson.toJson(clinicians);
         writer.write(usersString);

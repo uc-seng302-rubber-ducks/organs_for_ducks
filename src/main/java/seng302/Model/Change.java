@@ -1,10 +1,14 @@
 package seng302.Model;
 
+import com.google.gson.annotations.Expose;
+
 import java.time.LocalDateTime;
 
 public class Change {
 
+    @Expose
     private LocalDateTime time;
+    @Expose
     private String change;
 
     public Change(LocalDateTime time, String change) {

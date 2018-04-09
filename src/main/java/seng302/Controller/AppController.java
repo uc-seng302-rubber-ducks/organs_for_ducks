@@ -19,16 +19,20 @@ public class AppController {
   private DonorController donorController = new DonorController();
   private AppController() {
     try {
-      donors = JsonHandler.loadUsers();
-      System.out.println(donors.size() + " donors were successfully loaded");
+      users = JsonHandler.loadUsers();
+      System.out.println(users.size() + " donors were successfully loaded");
       clinicians = JsonHandler.loadClinicians();
       System.out.println(clinicians.size() + " clinicians were successfully loaded");
     } catch (FileNotFoundException e) {
+      System.out.println("File was not found");
     }
     String[] empty = {""};
     historyOfCommands.add(empty);//putting an empty string into the string array to be displayed if history pointer is 0
     boolean defaultSeen = false;
     for(Clinician c : clinicians){
+      if(c.getStaffId() == null){
+        break;
+      }
       if(c.getStaffId().equals("0")){
         defaultSeen = true;
         System.out.println("Default seen");
@@ -152,11 +156,17 @@ public class AppController {
    * @param dob date of birth of the donor
    */
   public User findUser(String name, LocalDate dob) {
-      User check = null;
-      User testUser = new User(name,
-              dob); //creates temporary user to check against the user list
-      ArrayList<User> sessionList = getUsers();
-      int place = sessionList.indexOf(testUser);
+    User check = null;
+    User testUser = new User(name,
+            dob); //creates temporary user to check against the user list
+    ArrayList<User> sessionList = getUsers();
+    int place = sessionList.indexOf(testUser);
+    if (place != -1) {
+      return sessionList.get(place);
+    } else {
+      return check;
+    }
+
   }
 
   /**
@@ -243,7 +253,7 @@ public class AppController {
       changelogWrite.add("Added Donor " + user.getName());
     }
     try {
-      JsonHandler.saveUsers(donors);
+      JsonHandler.saveUsers(users);
       //JsonHandler.saveChangelog(changelogWrite, donor.getName().toLowerCase().replace(" ", "_"));
 
     } catch (IOException e) {

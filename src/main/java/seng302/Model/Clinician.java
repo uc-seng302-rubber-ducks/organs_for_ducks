@@ -1,6 +1,8 @@
 package seng302.Model;
 
 
+import com.google.gson.annotations.Expose;
+
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -12,12 +14,19 @@ import java.util.Objects;
  */
 public class Clinician {
 
+    @Expose
     private String name;
+    @Expose
     private String staffId;
+    @Expose
     private String workAddress;
+    @Expose
     private String region;
+    @Expose
     private String password;
+    @Expose
     private LocalDateTime dateCreated;
+    @Expose
     private LocalDateTime dateLastModified;
 
     public Clinician() {
@@ -108,5 +117,18 @@ public class Clinician {
     public int hashCode() {
 
         return Objects.hash(staffId);
+    }
+
+    @Override
+    public String toString() {
+        return "Clinician{" +
+                "name='" + name + '\'' +
+                ", staffId='" + staffId + '\'' +
+                ", workAddress='" + workAddress + '\'' +
+                ", region='" + region + '\'' +
+                ", password='" + password + '\'' +
+                ", dateCreated=" + dateCreated +
+                ", dateLastModified=" + dateLastModified +
+                '}';
     }
 }

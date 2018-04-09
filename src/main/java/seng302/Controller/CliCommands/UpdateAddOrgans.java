@@ -73,7 +73,7 @@ public class UpdateAddOrgans implements Runnable {
 //        System.err.println("Could not update file");
 //      }
     }
-    System.err.println("Please use either the -id tag or -f, -l, and -dob to identify a user. Organs to be added should be specified after these arguments");
+    System.err.println("Please use either the -id tag or -f, -l, and -dob to identify a donor. Organs to be added should be specified after these arguments");
   }
 }
 

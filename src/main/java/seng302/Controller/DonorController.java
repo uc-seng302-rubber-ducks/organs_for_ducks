@@ -26,6 +26,7 @@ import seng302.Model.UndoRedoStacks;
 
 import java.io.IOException;
 
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -280,9 +281,11 @@ public class DonorController {
       warningLabel.setText("Please enter a name");
       return;
     }
+    DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     Date newDob = Date
-        .from(dateOfBirthPicker.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant());
-    currentUser.setDateOfBirth(newDob);
+            .from(dateOfBirthPicker.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant());
+    LocalDate dob = LocalDate.parse(newDob.toInstant().atZone(ZoneId.systemDefault()).format(format)); //tried to make it one line but it broke - JB
+    currentUser.setDateOfBirth(dob);
 
     //only if weight has been entered
     if (!weightTextField.getText().equals("")) {
@@ -313,16 +316,18 @@ public class DonorController {
     currentUser.setBloodType(bloodTypeComboBox.getValue());
     currentUser.setDeceased(isDonorDeceasedCheckBox.isSelected());
     if (isDonorDeceasedCheckBox.isSelected()) {
-      Date newDod =  Date.from(dateOfDeathPicker.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant());
-      if (newDod.before(newDob)) {
+      Date newDod = Date.from(dateOfDeathPicker.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant());
+      LocalDate dod = LocalDate.parse(newDod.toInstant().atZone(ZoneId.systemDefault()).format(format));
+
+      if (dod.isBefore(dob)) {
         warningLabel.setVisible(true);
         warningLabel.setText("Date of death must be after date of birth");
         //dod must be set for other functions to work.
         //using the best guess based on input
-        currentUser.setDateOfDeath(newDob);
+        currentUser.setDateOfDeath(dod);
         return;
       }
-      currentUser.setDateOfDeath(newDod);
+      currentUser.setDateOfDeath(dod);
     } else {
       currentUser.setDateOfDeath(null);
     }
@@ -382,16 +387,16 @@ public class DonorController {
   public void showUser(User user) {
     nameTextField.setText(user.getName());
     dateOfBirthPicker
-        .setValue(user.getDateOfBirth().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
+        .setValue(user.getDateOfBirth());
     genderComboBox.getSelectionModel().select(user.getGender());
     heightTextField.setText(Double.toString(user.getHeight()));
     weightTextField.setText(Double.toString(user.getWeight()));
     currentAddressTextArea.setText(user.getCurrentAddress());
     regionTextField.setText(user.getRegion());
-    if (user.getDonorDetails().getOrgans() != null) {
-      organsDonatingListView.getItems().clear();
-      organsDonatingListView.getItems().addAll(user.getDonorDetails().getOrgans());
-    }
+    //if (user.getDonorDetails().getOrgans() != null) {
+      //organsDonatingListView.getItems().clear();
+      //organsDonatingListView.getItems().addAll(user.getDonorDetails().getOrgans());
+    //}
     bloodTypeComboBox.getSelectionModel().select(user.getBloodType());
     if (!currentUser.getDeceased()) {
       dateOfDeathPicker.setVisible(false);
@@ -401,7 +406,7 @@ public class DonorController {
       dodLabel.setVisible(true);
       dateOfDeathPicker.setVisible(true);
       dateOfDeathPicker.setValue(
-          user.getDateOfDeath().toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
+          user.getDateOfDeath());
     }
     ageLabel.setText(user.getAge().toString().replace("P", "").replace("Y", "") + " Years");
     if (user.getMiscAttributes() != null) {
