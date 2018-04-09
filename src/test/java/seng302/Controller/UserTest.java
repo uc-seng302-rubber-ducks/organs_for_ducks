@@ -61,13 +61,16 @@ public class UserTest {
 
   @Test
   public void UserWithEmptyReceiverDetailsHasIsReceiverFalse() {
-
+    Assert.assertFalse(testUser.isReceiver());
   }
 
   @Test
   public void UserWithRecentlyEmptyReceiverDetailsHasIsReceiverFalse() {
-    //create a user, give organs to receive, remove them
-    //assert isReceiver == false
+    HashSet<Organs> organs = new HashSet<>();
+    organs.add(Organs.CONNECTIVE_TISSUE);
+    testUser.getDonorDetails().setOrgans(organs);
+
+    Assert.assertTrue(testUser.isDonor());
   }
 
   @Test

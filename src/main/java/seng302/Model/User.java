@@ -169,11 +169,18 @@ public class User {
 
   //TODO details object is set at initialization. will always return true
   public boolean isDonor() {
-    return this.donorDetails != null;
+    if (this.donorDetails == null) {
+      return false;
+    }
+    return !this.donorDetails.isEmpty();
+
   }
 
   public boolean isReceiver() {
-    return this.receiverDetails != null;
+    if (this.receiverDetails == null) {
+      return false;
+    }
+    return !this.receiverDetails.isEmpty();
   }
 
   public String getNHI() {
