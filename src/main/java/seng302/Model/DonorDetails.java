@@ -1,10 +1,13 @@
 package seng302.Model;
 
+import com.google.gson.annotations.Expose;
+
 import java.util.HashSet;
 
 public class DonorDetails {
+  @Expose
   private HashSet<Organs> organs;
-  private User attachedUser;
+  private transient User attachedUser;
 
   public HashSet<Organs> getOrgans() {
     return organs;

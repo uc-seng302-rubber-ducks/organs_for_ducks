@@ -10,10 +10,9 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
-import org.joda.time.DateTime;
-import seng302.Model.Donor;
 import seng302.Model.MedicationDurations;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import seng302.Model.User;
@@ -47,8 +46,8 @@ public class MedicationsTimeController {
         this.user = user;
         this.stage = stage;
         medicineNameLabel.setText(medicine);
-        ArrayList<DateTime> currentTimeStamps = user.getCurrentMedicationTimes().get(medicine);
-        ArrayList<DateTime> previousTimeStamps = user.getPreviousMedicationTimes().get(medicine);
+        ArrayList<LocalDateTime> currentTimeStamps = user.getCurrentMedicationTimes().get(medicine);
+        ArrayList<LocalDateTime> previousTimeStamps = user.getPreviousMedicationTimes().get(medicine);
         medicationDurations = FXCollections.observableArrayList(new ArrayList<>());
         setUpTable(currentTimeStamps,previousTimeStamps);
 
@@ -60,7 +59,7 @@ public class MedicationsTimeController {
      * @param current list of currently taken medication timestamps
      * @param previous list of previously taken medication timetamps
      */
-    private void setUpTable(ArrayList<DateTime> current, ArrayList<DateTime> previous){
+    private void setUpTable(ArrayList<LocalDateTime> current, ArrayList<LocalDateTime> previous){
         if(current != null) {
             current.sort(Comparator.naturalOrder());
         } else {

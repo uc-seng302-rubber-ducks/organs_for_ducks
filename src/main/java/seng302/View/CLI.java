@@ -15,6 +15,7 @@ import org.jline.utils.InfoCmp.Capability;
 import picocli.CommandLine;
 import seng302.Controller.AppController;
 import seng302.Controller.CliCommands.CliRoot;
+import seng302.Model.JsonHandler;
 import seng302.Model.JsonReader;
 import seng302.Model.JsonWriter;
 
@@ -44,14 +45,17 @@ public class CLI {
       System.exit(1);
       return null;
     }
-  }
+  }}
 
-  public static void main(String[] args) {
+/*  public static void main(String[] args) {
     System.out.println("Welcome to the CLI. enter your command or type 'help' for help");
 
     AppController controller = AppController.getInstance();
-    //TODO fix json reader
-    //controller.setUsers(JsonReader.importJsonDonors());
+    try {
+      controller.setUsers(JsonHandler.loadUsers());
+    } catch (FileNotFoundException e) {
+      e.printStackTrace();
+    }
 
     String input;
     String[] arguments;
@@ -68,4 +72,4 @@ public class CLI {
       input = lineReader.readLine(">> ");
     }
   }
-}
+}*/

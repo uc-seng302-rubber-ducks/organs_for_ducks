@@ -1,6 +1,6 @@
 package seng302.Model;
 
-import org.joda.time.DateTime;
+import java.time.LocalDateTime;
 import java.util.Stack;
 
 public class UndoRedoStacks {
@@ -16,7 +16,7 @@ public class UndoRedoStacks {
      * @return userClone with the cloned attributes
      */
     public static User cloneUser(User user, User userClone) {
-        DateTime lastModified = user.getLastModified();
+        LocalDateTime lastModified = user.getLastModified();
         userClone.setDateOfBirth(user.getDateOfBirth());
         userClone.setDateOfDeath(user.getDateOfDeath());
         userClone.setGender(user.getGender());

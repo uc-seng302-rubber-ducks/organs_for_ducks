@@ -1,22 +1,26 @@
 package seng302.Model;
 
-import org.joda.time.DateTime;
+import com.google.gson.annotations.Expose;
+
+import java.time.LocalDateTime;
 
 public class Change {
 
-    private DateTime time;
+    @Expose
+    private LocalDateTime time;
+    @Expose
     private String change;
 
-    public Change(DateTime time, String change) {
+    public Change(LocalDateTime time, String change) {
         this.time = time;
         this.change = change;
     }
 
-    public DateTime getTime() {
+    public LocalDateTime getTime() {
         return time;
     }
 
-    public void setTime(DateTime time) {
+    public void setTime(LocalDateTime time) {
         this.time = time;
     }
 

@@ -1,5 +1,7 @@
 package seng302.Controller.CliCommands;
 
+import java.io.IOException;
+import java.time.LocalDate;
 import java.util.Date;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
@@ -41,7 +43,7 @@ public class UpdateAddOrgans implements Runnable {
     } else {
       if (fname != null && dobString != null) {
         String name = fname;
-        Date dob = IoHelper.readDate(dobString);
+        LocalDate dob = IoHelper.readDate(dobString);
         if (lname != null) {
           name += " " + lname;
         }
@@ -71,7 +73,7 @@ public class UpdateAddOrgans implements Runnable {
 //        System.err.println("Could not update file");
 //      }
     }
-    System.err.println("Please use either the -id tag or -f, -l, and -dob to identify a user. Organs to be added should be specified after these arguments");
+    System.err.println("Please use either the -id tag or -f, -l, and -dob to identify a donor. Organs to be added should be specified after these arguments");
   }
 }
 
