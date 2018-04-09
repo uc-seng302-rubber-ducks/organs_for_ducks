@@ -43,7 +43,7 @@ public final class JsonHandler {
         String usersString = gson.toJson(users);
         writer.write(usersString);
         writer.close();
-
+        System.out.println("Donors saved");
     }
 
     /**
@@ -129,6 +129,7 @@ public final class JsonHandler {
         String usersString = gson.toJson(changes);
         writer.write(usersString);
         writer.close();
+        System.out.println("Changelog saved");
     }
 
 

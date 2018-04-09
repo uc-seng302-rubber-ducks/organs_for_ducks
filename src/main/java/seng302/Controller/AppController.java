@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 
 import seng302.Model.*;
 
@@ -21,7 +20,9 @@ public class AppController {
   private AppController() {
     try {
       donors = JsonHandler.loadUsers();
+      System.out.println(donors.size() + " donors were successfully loaded");
       clinicians = JsonHandler.loadClinicians();
+      System.out.println(clinicians.size() + " clinicians were successfully loaded");
     } catch (FileNotFoundException e) {
     }
     String[] empty = {""};
@@ -245,7 +246,7 @@ public class AppController {
     }
     try {
       JsonHandler.saveUsers(donors);
-      JsonHandler.saveChangelog(changelogWrite, donor.getName().toLowerCase().replace(" ", "_"));
+      //JsonHandler.saveChangelog(changelogWrite, donor.getName().toLowerCase().replace(" ", "_"));
 
     } catch (IOException e) {
       e.printStackTrace();
@@ -288,7 +289,7 @@ public class AppController {
   }
 
 
-  public ArrayList<String> differanceInDonors(Donor oldDonor, Donor newDonor) {
+  public ArrayList<Change> differanceInDonors(Donor oldDonor, Donor newDonor) {
     ArrayList<String> diffs = new ArrayList<>();
     try {
       if (!oldDonor.getName().equalsIgnoreCase(newDonor.getName())) {
@@ -378,6 +379,6 @@ public class AppController {
         e.printStackTrace();
       }
     }
-    return diffs;
+    return changes;
   }
 }
