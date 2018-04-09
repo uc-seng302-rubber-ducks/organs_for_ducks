@@ -13,56 +13,59 @@
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
-<?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.Controller.DonorController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="675.0" prefWidth="894.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.Controller.DonorController">
    <children>
-      <TabPane layoutY="38.0" prefHeight="556.0" prefWidth="600.0" rotateGraphic="true" tabClosingPolicy="UNAVAILABLE">
+      <TabPane layoutY="38.0" prefHeight="639.0" prefWidth="894.0" rotateGraphic="true" tabClosingPolicy="UNAVAILABLE">
         <tabs>
           <Tab text="Donor">
             <content>
-              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="643.0" prefWidth="776.0">
                      <children>
-                        <Label layoutX="14.0" layoutY="23.0" text="Name" />
-                        <Label layoutX="14.0" layoutY="56.0" text="D.O.B" />
-                        <Label layoutX="12.0" layoutY="110.0" text="Gender" />
-                        <Label layoutX="12.0" layoutY="144.0" text="Blood Type" />
-                        <Label layoutX="9.0" layoutY="181.0" text="Height" />
-                        <Label layoutX="10.0" layoutY="212.0" text="Weight" />
-                        <Label layoutX="271.0" layoutY="111.0" text="Current Address" />
-                        <Label fx:id="dodLabel" layoutX="14.0" layoutY="268.0" text="D.O.D" />
-                        <Label fx:id="ageLabel" layoutX="14.0" layoutY="84.0" prefHeight="16.0" prefWidth="68.0" text="Label" />
-                        <Label layoutX="278.0" layoutY="225.0" text="Region" />
-                        <DatePicker fx:id="dateOfBirthPicker" layoutX="101.0" layoutY="51.0" prefHeight="26.0" prefWidth="131.0" />
-                        <DatePicker fx:id="dateOfDeathPicker" layoutX="103.0" layoutY="263.0" prefHeight="26.0" prefWidth="128.0" />
+                        <Label layoutX="14.0" layoutY="23.0" text="First Name" />
+                        <Label layoutX="14.0" layoutY="145.0" text="Date of Birth" />
+                        <Label layoutX="12.0" layoutY="199.0" text="Gender:" />
+                        <Label layoutX="425.0" layoutY="29.0" text="Blood Type" />
+                        <Label layoutX="423.0" layoutY="66.0" text="Height(cm)" />
+                        <Label layoutX="424.0" layoutY="97.0" text="Weight(Kgs)" />
+                        <Label fx:id="dodLabel" layoutX="14.0" layoutY="174.0" text="Date of Death" />
+                        <Label layoutX="14.0" layoutY="115.0" prefHeight="16.0" prefWidth="68.0" text="age:" />
                         <Label layoutX="19.0" layoutY="204.0" />
-                        <CheckBox fx:id="isDonorDeceasedCheckBox" layoutX="12.0" layoutY="242.0" mnemonicParsing="false" onAction="#changeDeceasedStatus" text="Donor is Deceased" />
-                        <TextField fx:id="nameTextField" layoutX="101.0" layoutY="18.0" prefHeight="26.0" prefWidth="287.0" />
-                        <TextField fx:id="heightTextField" layoutX="98.0" layoutY="176.0" prefHeight="26.0" prefWidth="82.0" />
-                        <TextField fx:id="weightTextField" layoutX="100.0" layoutY="207.0" prefHeight="26.0" prefWidth="81.0" />
-                        <ComboBox fx:id="genderComboBox" layoutX="98.0" layoutY="106.0" prefHeight="26.0" prefWidth="78.0" />
-                        <ComboBox fx:id="bloodTypeComboBox" layoutX="100.0" layoutY="139.0" prefHeight="26.0" prefWidth="79.0" />
-                        <TextField fx:id="regionTextField" layoutX="387.0" layoutY="220.0" prefHeight="26.0" prefWidth="188.0" />
-                        <Label layoutX="190.0" layoutY="212.0" text="Kgs" />
-                        <Label layoutX="196.0" layoutY="181.0" text="M" />
                         <Label layoutX="39.0" layoutY="309.0" text="Current Organs avalible for Donation" />
-                        <ListView fx:id="organsDonatingListView" layoutX="14.0" layoutY="341.0" prefHeight="171.0" prefWidth="267.0" />
-                        <Button layoutX="502.0" layoutY="263.0" mnemonicParsing="false" onAction="#updateDonor" text="Confirm" />
-                        <Button fx:id="undoButton" layoutX="456.0" layoutY="18.0" mnemonicParsing="false" onAction="#undo" text="Undo" />
-                        <Button fx:id="redoButton" layoutX="520.0" layoutY="18.0" mnemonicParsing="false" onAction="#redo" text="Redo" />
-                        <TextArea fx:id="currentAddressTextArea" layoutX="388.0" layoutY="109.0" prefHeight="97.0" prefWidth="188.0" />
-                        <Label layoutX="415.0" layoutY="309.0" text="Misc attributes" />
-                        <Separator layoutX="-13.0" layoutY="303.0" prefHeight="1.0" prefWidth="614.0" />
-                        <Button layoutX="292.0" layoutY="349.0" mnemonicParsing="false" onAction="#modifyOrgans" text="Organs" />
-                        <ListView fx:id="miscAttributeslistView" layoutX="363.0" layoutY="341.0" prefHeight="171.0" prefWidth="221.0" />
-                        <Button layoutX="301.0" layoutY="427.0" mnemonicParsing="false" onAction="#modifyMiscAttributes" text="Misc" />
-                        <Label fx:id="warningLabel" layoutX="263.0" layoutY="56.0" text="Label" />
-                        <Button fx:id="logOutButton" layoutX="388.0" layoutY="263.0" mnemonicParsing="false" onAction="#logout" text="Log Out" />
+                        <ListView fx:id="organsDonatingListView" layoutX="14.0" layoutY="384.0" prefHeight="171.0" prefWidth="267.0" />
+                        <Button layoutX="808.0" layoutY="313.0" mnemonicParsing="false" onAction="#updateDonor" text="Confirm" />
+                        <Button fx:id="undoButton" layoutX="758.0" layoutY="18.0" mnemonicParsing="false" onAction="#undo" text="Undo" />
+                        <Button fx:id="redoButton" layoutX="822.0" layoutY="18.0" mnemonicParsing="false" onAction="#redo" text="Redo" />
+                        <Label layoutX="447.0" layoutY="364.0" text="Misc attributes" />
+                        <Separator layoutX="-13.0" layoutY="294.0" prefHeight="12.0" prefWidth="903.0" />
+                        <Button layoutX="292.0" layoutY="529.0" mnemonicParsing="false" onAction="#modifyOrgans" text="Organs" />
+                        <ListView fx:id="miscAttributeslistView" layoutX="447.0" layoutY="388.0" prefHeight="171.0" prefWidth="221.0" />
+                        <Button layoutX="676.0" layoutY="532.0" mnemonicParsing="false" onAction="#modifyMiscAttributes" text="Misc" />
+                        <Button fx:id="logOutButton" layoutX="14.0" layoutY="570.0" mnemonicParsing="false" onAction="#logout" text="Log Out" />
+                        <Button layoutX="789.0" layoutY="573.0" mnemonicParsing="false" text="Edit Details" />
+                        <Label layoutX="422.0" layoutY="177.0" text="BMI:" />
+                        <Label layoutX="15.0" layoutY="69.0" text="MIddle Name:" />
+                        <Label layoutX="16.0" layoutY="95.0" text="Last Name:" />
+                        <Label layoutX="119.0" layoutY="69.0" text="Label" />
+                        <Label layoutX="119.0" layoutY="95.0" text="Label" />
+                        <Label layoutX="122.0" layoutY="25.0" text="Label" />
+                        <Label fx:id="ageLabel" layoutX="118.0" layoutY="117.0" text="Label" />
+                        <Label layoutX="118.0" layoutY="145.0" text="Label" />
+                        <Label layoutX="122.0" layoutY="174.0" text="Label" />
+                        <Label layoutX="122.0" layoutY="199.0" text="Label" />
+                        <Label layoutX="526.0" layoutY="177.0" text="Label" />
+                        <Label layoutX="508.0" layoutY="29.0" text="Label" />
+                        <Label layoutX="508.0" layoutY="66.0" text="Label" />
+                        <Label layoutX="508.0" layoutY="98.0" text="Label" />
+                        <Label layoutX="421.0" layoutY="123.0" text="Smoker:" />
+                        <Label layoutX="421.0" layoutY="152.0" text="Alcohol consumption:" />
+                        <Label layoutX="12.0" layoutY="44.0" text="Name:" />
+                        <Label layoutX="118.0" layoutY="46.0" text="Label" />
                      </children>
                   </AnchorPane>
             </content>
@@ -71,7 +74,7 @@
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <TableView fx:id="historyTableView" layoutX="-2.0" prefHeight="532.0" prefWidth="606.0" />
+                        <TableView fx:id="historyTableView" layoutX="-2.0" prefHeight="579.0" prefWidth="691.0" />
                      </children>
                   </AnchorPane>
             </content>
@@ -90,6 +93,43 @@
                         <Label layoutX="31.0" layoutY="401.0" text="Previous Medications" />
                         <Label layoutX="414.0" layoutY="401.0" text="Current Medications" />
                         <Label layoutX="65.0" layoutY="64.0" text="Medication" />
+                     </children>
+                  </AnchorPane>
+              </content>
+            </Tab>
+            <Tab text="Contact Details">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <Label layoutX="14.0" layoutY="14.0" text="Personal Contact Details" />
+                        <Label layoutX="14.0" layoutY="50.0" text="Home Phone:" />
+                        <Label layoutX="14.0" layoutY="80.0" text="Cell Phone:" />
+                        <Label layoutX="14.0" layoutY="110.0" text="Address:" />
+                        <Label layoutX="14.0" layoutY="180.0" text="Region:" />
+                        <Label layoutX="14.0" layoutY="210.0" text="Email:" />
+                        <Label layoutX="14.0" layoutY="242.0" text="Emergency Contact Details" />
+                        <Label layoutX="17.0" layoutY="280.0" text="Name:" />
+                        <Label layoutX="17.0" layoutY="310.0" text="Home Phone:" />
+                        <Label layoutX="17.0" layoutY="340.0" text="Cell Phone:" />
+                        <Label layoutX="17.0" layoutY="370.0" text="Address:" />
+                        <Label layoutX="17.0" layoutY="440.0" text="Region:" />
+                        <Label layoutX="17.0" layoutY="470.0" text="Email:" />
+                        <Label layoutX="17.0" layoutY="500.0" text="Relationship:" />
+                        <Separator layoutY="29.0" prefHeight="7.0" prefWidth="600.0" />
+                        <Separator layoutY="260.0" prefHeight="7.0" prefWidth="600.0" />
+                        <Separator layoutY="233.0" prefHeight="7.0" prefWidth="600.0" />
+                        <Label fx:id="pHomePhone" layoutX="120.0" layoutY="50.0" text="Label" />
+                        <Label fx:id="pCellPhone" layoutX="120.0" layoutY="80.0" text="Label" />
+                        <Label fx:id="pAddress" layoutX="120.0" layoutY="109.0" text="Label" />
+                        <Label fx:id="pRegion" layoutX="120.0" layoutY="179.0" text="Label" />
+                        <Label fx:id="pEmail" layoutX="120.0" layoutY="210.0" text="Label" />
+                        <Label fx:id="eName" layoutX="120.0" layoutY="278.0" text="Label" />
+                        <Label fx:id="eHomePhone" layoutX="120.0" layoutY="312.0" text="Label" />
+                        <Label fx:id="eCellPhone" layoutX="120.0" layoutY="340.0" text="Label" />
+                        <Label fx:id="eAddress" layoutX="120.0" layoutY="371.0" text="Label" />
+                        <Label fx:id="eRegion" layoutX="120.0" layoutY="442.0" text="Label" />
+                        <Label fx:id="eEmail" layoutX="120.0" layoutY="473.0" text="Label" />
+                        <Label fx:id="relationship" layoutX="120.0" layoutY="502.0" text="Label" />
                      </children>
                   </AnchorPane>
               </content>
