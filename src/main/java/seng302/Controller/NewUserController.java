@@ -7,7 +7,16 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
+import seng302.Model.BloodTypes;
+import seng302.Model.Donor;
+import seng302.Model.EmergencyContact;
+import seng302.Model.User;
+import seng302.Service.AttributeValidation;
+
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Date;
 
 
 /**
@@ -107,9 +116,6 @@ public class NewUserController {
     private ComboBox alcoholComboBox;
 
     @FXML
-    private ComboBox bloodPressureCB;
-
-    @FXML
     private DatePicker dobInput;
 
     @FXML
@@ -128,6 +134,8 @@ public class NewUserController {
     public void init(AppController controller, Stage stage) {
         this.controller = controller;
         this.stage = stage;
+        stage.setMinWidth(620);
+        stage.setMaxWidth(620);
     }
 
 
@@ -166,80 +174,73 @@ public class NewUserController {
      * @param fName First Name.
      * @param dob Date of birth.
      * @param dod Date of death.
-     * @param controller Allows variables to be passed between controllers.
      * @throws IOException
      */
-//    private boolean createUser(String nhi, String fName, LocalDate dob, LocalDate dod, UserOverviewController controller) throws IOException {
-//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-//        String birth = formatter.format(dobInput.getValue());
-//
-//
-//        String profileValues = "-p -id " + nhi + " -firstName  " + fName + " -dateOfBirth " + birth;
-//
-//        if (dod != null) {
-//            String death = formatter.format(dobInput.getValue());
-//            profileValues += " -dateOfDeath " + death;
-//        }
-//
-//        if (smokerComboBox.getValue() != null) {
-//            if (AttributeValidation.validateSmoker(smokerComboBox.getValue().toString())) {
-//                profileValues += " -smoker";
-//            }
-//        }
-//
-//        profileValues = AttributeValidation.addMultipleValues( profileValues, " -lastName ", lNameInput);
-//        profileValues = AttributeValidation.addMultipleValues( profileValues, " -middleNames ", mNameInput);
-//        profileValues = AttributeValidation.addMultipleValues( profileValues, " -region ", regionInput);
-//        profileValues = AttributeValidation.addMultipleValues( profileValues, " -address ", addressInput);
-//
-//        profileValues = AttributeValidation.addValues( profileValues, " -weight ", weightInput);
-//        profileValues = AttributeValidation.addValues( profileValues, " -height ", heightInput);
-//        profileValues = AttributeValidation.addValues( profileValues, " -email ", emailInput);
-//
-//        profileValues = AttributeValidation.addPhoneNumber( profileValues, " -homeNum ", phoneInput);
-//        profileValues = AttributeValidation.addPhoneNumber( profileValues, " -cellNum ", cellInput);
-//
-//        profileValues = AttributeValidation.addComboSelection(profileValues, " -bloodType ", bloodComboBox);
-////        profileValues = AttributeValidation.addComboSelection(profileValues, " -gender ", genderComboBox);
-//        profileValues = AttributeValidation.addComboSelection(profileValues, " -alcoholCons ", alcoholComboBox);
-//        profileValues = AttributeValidation.addComboSelection(profileValues, " -bloodPressure ", bloodPressureCB);
-//
-//
-//        if (genderComboBox.getValue() != null) {
-//            profileValues += " -gender " + genderComboBox.getValue().toString().charAt(0);
-//        }
-//
-//        CreateCommand create = new CreateCommand(profileValues, con);
-//        create.execute();
-//
-//
-//        // Form the update string for the emergency contact
-//        String emergencyDetails = "-id " + nhi;
-//
-//        emergencyDetails = AttributeValidation.addMultipleValues(emergencyDetails, " -eConName ", ecNameInput);
-//        emergencyDetails = AttributeValidation.addMultipleValues(emergencyDetails, " -eConAddress ", ecAddressInput);
-//        emergencyDetails = AttributeValidation.addMultipleValues(emergencyDetails, " -eConRegion ", ecRegionInput);
-//        emergencyDetails = AttributeValidation.addMultipleValues(emergencyDetails, " -eConRel ", ecRelationshipInput);
-//
-//        emergencyDetails = AttributeValidation.addValues(emergencyDetails, " -eConEmail ", ecEmailInput);
-//
-//        emergencyDetails = AttributeValidation.addPhoneNumber(emergencyDetails, " -eConHomeNum ", ecPhoneInput); // e c phone home
-//        emergencyDetails = AttributeValidation.addPhoneNumber(emergencyDetails, " -eConCellNum ", ecCellInput);
-//
-//        UpdateEmergencyContact updateEC = new UpdateEmergencyContact(emergencyDetails, con, false, true);
-//        updateEC.execute();
-//
-//        DonorProfile dp = con.search(nhi);
-//        System.out.println(dp.getCellNum());
-//
-//        if (dp != null) {
+    private void createUser(String nhi, String fName, LocalDate dob, LocalDate dod) throws IOException {
+
+        // TODO: Add in more validation and do not allow the user to be created if any of the fields are wrong.
+
+
+
+        // User attributes
+        String preferredFirstName = AttributeValidation.checkString(preferredFNameTextField.getText());
+        String middleName = AttributeValidation.checkString(mNameInput.getText());
+        String lastName = AttributeValidation.checkString(lNameInput.getText());
+
+        String birthGender = AttributeValidation.validateGender(birthGenderComboBox.getValue().toString());
+        String genderIdentity = AttributeValidation.validateGender(genderIdComboBox.getValue().toString());
+
+        double height = AttributeValidation.validateHeight(heightInput.getText());
+        double weight = AttributeValidation.validateWeight(weightInput.getText());
+
+        String bloodType = AttributeValidation.validateBlood(bloodComboBox.getValue().toString()).toString(); // TODO: Change the data type of the value stored in Donor to be BloodTypes
+        String alcoholConsumption = alcoholComboBox.getValue().toString();
+
+        String currentAddress = addressInput.getText();
+        String region = regionInput.getText();
+        String homePhone = phoneInput.getText();
+        String cellPhone = cellInput.getText();
+        String email = emailInput.getText();
+
+
+        boolean smoker;
+        if (smokerCheckBox.isSelected()) {
+            smoker = true;
+
+        } else {
+            smoker = false;
+        }
+
+
+        // Emergency Contact attributes
+        String eName = ecNameInput.getText();
+        String eCellPhone = ecCellInput.getText();
+
+
+        EmergencyContact contact = new EmergencyContact(eName, eCellPhone);
+
+
+        User dp = new User(nhi, dob, dod, birthGender, genderIdentity, height, weight, bloodType,
+                alcoholConsumption, smoker, currentAddress, region, homePhone, cellPhone, email, contact,
+                fName, fName, preferredFirstName, middleName, lastName);
+
+
+        if (dp != null) {
 //            saveUsers(con.getDonorList(), "src/main/resources/donors.json");
-//            controller.initProfile(dp); // passes the donor to the userOverviewController class
-//            return true;
-//        }
-//
-//        return false;
-//    }
+
+            FXMLLoader donorLoader = new FXMLLoader(getClass().getResource("/FXML/donorView.fxml"));
+            Parent root = null;
+            try {
+                root = donorLoader.load();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            stage.setScene(new Scene(root));
+            DonorController donorController = donorLoader.getController();
+            AppController.getInstance().setDonorController(donorController);
+            donorController.init(AppController.getInstance(), dp, stage,false);
+        }
+    }
 
 
     /**
@@ -249,71 +250,49 @@ public class NewUserController {
      */
     @FXML
     private void confirmCreation() throws IOException {
-//        hideErrorMessages();
-//        boolean valid = true;
-//
-//        String nhi = AttributeValidation.validateNHI(nhiInput.getText());
-//        String fName = AttributeValidation.checkString(fNameInput.getText());
-//
-//        LocalDate dob = dobInput.getValue();
-//        LocalDate dod = dodInput.getValue();
-//
-//        if (nhi == null) {
-//            invalidNHI.setVisible(true);
-//            valid = false;
-//        }
-//
-//        if (fName == null) {
-//            invalidFirstName.setVisible(true);
-//            valid = false;
-//        }
-//
-//        if (dob == null) {
-//            invalidDOB.setVisible(true);
-//            valid = false;
-//        }
-//
-//        if (dod != null) {
-//            valid = AttributeValidation.validateDates(dob, dod);
-//            if (!valid) invalidDOD.setVisible(true);
-//        }
-//
-//        DonorProfile donor = con.search(nhi); // checks if the nhi already exists within the system
-//
-//        if (valid && donor == null){
-//
-//            FXMLLoader loader = new FXMLLoader();
-//            loader.setLocation(getClass().getResource("/userOverview.fxml"));
-//            Parent root = loader.load();
-//
-//            UserOverviewController controller = loader.getController();
-//            boolean created = createUser(nhi, fName, dob, dod, controller);
-//
-//
-//            if (created) {
-//                Stage primaryStage = (Stage) confirmButton.getScene().getWindow();
-//                primaryStage.setScene(new Scene(root));
-//            } else {
-//                errorLabel.setVisible(true);
-//            }
-//
-//        }
-//
-//        if (donor != null) existingNHI.setVisible(true);
+        hideErrorMessages();
+        boolean valid = true;
+
+        String nhi = AttributeValidation.validateNHI(nhiInput.getText());
+        String fName = AttributeValidation.checkString(fNameInput.getText());
+
+        LocalDate dob = dobInput.getValue(); // TODO: use LocalDate objects?
+        LocalDate dod = dodInput.getValue();
 
 
+        if (nhi == null) {
+            invalidNHI.setVisible(true);
+            valid = false;
+        }
+
+        if (fName == null) {
+            invalidFirstName.setVisible(true);
+            valid = false;
+        }
+
+        if (dob == null) {
+            invalidDOB.setVisible(true);
+            valid = false;
+        }
+
+        if (dod != null) {
+            valid = AttributeValidation.validateDates(dob, dod);
+            if (!valid) invalidDOD.setVisible(true);
+        }
+
+        //Donor donor = controller.findDonor(nhi); // checks if the nhi already exists within the system
+        User user = controller.findUser(nhi, dob);
+        //User user = null;
+
+        if (valid && user == null){
+
+            createUser(nhi, fName, dob, dod);
 
 
-//        FXMLLoader clinicianLoader = new FXMLLoader(getClass().getResource("/FXML/clinicianView.fxml"));
-//        Parent root = null;
-//        try {
-//            root = clinicianLoader.load();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        stage.setScene(new Scene(root));
-//        ClinicianController clinicianController = clinicianLoader.getController();
-//        clinicianController.init(stage,appController,clinician);
+        } else if (user != null) {
+            existingNHI.setVisible(true);
+        }
+
     }
 
 

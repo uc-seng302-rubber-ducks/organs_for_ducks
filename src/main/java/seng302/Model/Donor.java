@@ -1,11 +1,11 @@
 package seng302.Model;
 
 import java.io.FileNotFoundException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 
-import org.joda.time.DateTime;
 
 /**
  * Class for all donors created in this application
@@ -15,33 +15,82 @@ import org.joda.time.DateTime;
 @Deprecated
 public class Donor {
 
-    private Date dateOfBirth;
-    private Date dateOfDeath;
-    private String birthGender;
-    private String genderIdentity;
-    private double height;
-    private double weight;
-    private String bloodType;
-    private String currentAddress;
-    private String region;
-    private DateTime timeCreated;
-    private Boolean isDeceased;
+    private String NHI;
     private String name; // TODO: Take this out and use the separated names
     private String firstName;
     private String preferredFirstName;
     private String middleName;
     private String lastName;
+    private LocalDate dateOfBirth;
+    private LocalDate dateOfDeath;
+    private Boolean isDeceased;
+    private String birthGender;
+    private String genderIdentity;
+    private double height;
+    private double weight;
+    private String bloodType;
+    private String alcoholConsumption;
+    private boolean smoker;
+    private String currentAddress;
+    private String region;
+    private String homePhone;
+    private String cellPhone;
+    private String email;
+    private EmergencyContact contact;
+
+    private LocalDateTime timeCreated;
     private HashSet<Organs> organs;
-    private DateTime lastModified;
+    private LocalDateTime lastModified;
     private ArrayList<String> miscAttributes;
     private HashMap<String, String> updateHistory;
     private ArrayList<String> previousMedication;
     private ArrayList<String> currentMedication;
-    private HashMap<String, ArrayList<DateTime>> previousMedicationTimes;
-    private HashMap<String, ArrayList<DateTime>> currentMedicationTimes;
+    private HashMap<String, ArrayList<LocalDateTime>> previousMedicationTimes;
+    private HashMap<String, ArrayList<LocalDateTime>> currentMedicationTimes;
     private ArrayList<Change> changes;
 
 
+    // updated constructor that works with the creation page
+    public Donor(String nhi, LocalDate dateOfBirth, LocalDate dateOfDeath, String birthGender, String genderIdentity,
+                 double height, double weight, String bloodType, String alcoholConsumption, boolean smoker,
+                 String currentAddress, String region, String homePhone, String cellPhone, String email,
+                 EmergencyContact contact, String name, String firstName, String preferredFirstName, String middleName,
+                 String lastName) {
+
+        this.NHI = nhi;
+        this.dateOfBirth = dateOfBirth;
+        this.dateOfDeath = dateOfDeath;
+
+        this.birthGender = birthGender;
+        this.genderIdentity = genderIdentity;
+        this.height = height;
+        this.weight = weight;
+        this.bloodType = bloodType;
+        this.alcoholConsumption = alcoholConsumption;
+        this.smoker = smoker;
+
+        this.currentAddress = currentAddress;
+        this.region = region;
+        this.homePhone = homePhone;
+        this.cellPhone = cellPhone;
+        this.email = email;
+        this.contact = contact;
+
+        this.name = name;
+        this.firstName = firstName;
+        this.preferredFirstName = preferredFirstName;
+        this.middleName = middleName;
+        this.lastName = lastName;
+
+        this.timeCreated = LocalDateTime.now();
+        updateHistory = new HashMap<>();
+        this.miscAttributes = new ArrayList<>();
+        this.currentMedication = new ArrayList<>();
+        this.previousMedication = new ArrayList<>();
+        this.currentMedicationTimes = new HashMap<>();
+        this.previousMedicationTimes = new HashMap<>();
+        //changes = JsonReader.importHistoryFromFile(this);
+    }
 
 
   public Donor(java.time.LocalDate dateOfBirth, java.time.LocalDate dateOfDeath, String gender, double height, double weight,
@@ -94,7 +143,7 @@ public class Donor {
         this.name = name;
         timeCreated = LocalDateTime.now();
         lastModified = LocalDateTime.now();
-        this.gender = "U";
+        this.birthGender = "U";
         this.bloodType = "U";
         updateHistory = new HashMap<>();
         updateHistory.put(dateToString(getTimeCreated()), "Profile created.");
@@ -151,9 +200,6 @@ public class Donor {
     this.name = name;
   }
 
-    public java.time.LocalDate getDateOfBirth() {
-        return dateOfBirth;
-    }
 
     public String getFirstName() {
         return firstName;
@@ -210,7 +256,7 @@ public class Donor {
         return fullName;
     }
 
-  public Date getDateOfBirth() {
+  public LocalDate getDateOfBirth() {
     return dateOfBirth;
   }
 

@@ -1,17 +1,33 @@
 package seng302.Model;
 
 import com.google.gson.annotations.Expose;
+import org.joda.time.DateTime;
 
 import java.io.FileNotFoundException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Objects;
 
 
 public class User {
+
+
+    private String firstName;
+    private String preferredFirstName;
+    private String middleName;
+    private String lastName;
+    private String birthGender;
+    private String genderIdentity;
+    private String alcoholConsumption;
+    private boolean smoker;
+    private String homePhone;
+    private String cellPhone;
+    private String email;
+    private EmergencyContact contact;
 
   @Expose
   private String NHI;
@@ -60,6 +76,50 @@ public class User {
   private DonorDetails donorDetails;
   @Expose
   private ReceiverDetails receiverDetails;
+
+
+  // updated constructor that works with the creation page
+  public User(String nhi, LocalDate dateOfBirth, LocalDate dateOfDeath, String birthGender, String genderIdentity,
+               double height, double weight, String bloodType, String alcoholConsumption, boolean smoker,
+               String currentAddress, String region, String homePhone, String cellPhone, String email,
+               EmergencyContact contact, String name, String firstName, String preferredFirstName, String middleName,
+               String lastName) {
+
+    this.NHI = nhi;
+    this.dateOfBirth = dateOfBirth;
+    this.dateOfDeath = dateOfDeath;
+
+    this.birthGender = birthGender;
+    this.genderIdentity = genderIdentity;
+    this.height = height;
+    this.weight = weight;
+    this.bloodType = bloodType;
+    this.alcoholConsumption = alcoholConsumption;
+    this.smoker = smoker;
+
+    this.currentAddress = currentAddress;
+    this.region = region;
+    this.homePhone = homePhone;
+    this.cellPhone = cellPhone;
+    this.email = email;
+    this.contact = contact;
+
+    this.name = name;
+    this.firstName = firstName;
+    this.preferredFirstName = preferredFirstName;
+    this.middleName = middleName;
+    this.lastName = lastName;
+
+    this.timeCreated = LocalDateTime.now();
+    updateHistory = new HashMap<>();
+    this.miscAttributes = new ArrayList<>();
+    this.currentMedication = new ArrayList<>();
+    this.previousMedication = new ArrayList<>();
+    this.currentMedicationTimes = new HashMap<>();
+    this.previousMedicationTimes = new HashMap<>();
+    //changes = JsonReader.importHistoryFromFile(this);
+  }
+
 
   public User(java.time.LocalDate dateOfBirth, java.time.LocalDate dateOfDeath, String gender, double height, double weight,
               String bloodType,
@@ -210,6 +270,62 @@ public class User {
     updateLastModified();
     this.name = name;
   }
+
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String name) {
+        updateLastModified();
+        this.firstName = name;
+    }
+
+    public String getPrefFirstName() {
+        return preferredFirstName;
+    }
+
+    public void setPrefFirstName(String name) {
+        updateLastModified();
+        this.preferredFirstName = name;
+    }
+
+    public String getMiddleName() {
+        return middleName;
+    }
+
+    public void setMiddleName(String name) {
+        updateLastModified();
+        this.middleName = name;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String name) {
+        updateLastModified();
+        this.lastName = name;
+    }
+
+    public String getFullName() {
+        String fullName;
+
+        if (middleName != null && lastName != null) {
+            fullName = firstName + " " + middleName  + " " + lastName;
+
+        } else if (middleName != null) {
+            fullName = firstName + " " + middleName;
+
+        } else if (lastName != null) {
+            fullName = firstName + " " + lastName;
+
+        } else {
+            fullName = firstName;
+        }
+
+        return fullName;
+    }
 
   public java.time.LocalDate getDateOfBirth() {
     return dateOfBirth;

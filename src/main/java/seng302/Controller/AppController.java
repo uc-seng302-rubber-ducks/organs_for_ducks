@@ -270,7 +270,6 @@ public class AppController {
        return c;
      }
    }
-      System.out.println("testing");
       return null;
    }
 

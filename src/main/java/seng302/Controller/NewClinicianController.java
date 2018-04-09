@@ -83,14 +83,12 @@ public class NewClinicianController {
 
 
         Clinician clinician;
-        int staffID = -1;
+        String staffID = "";
 
         if (!staffIDInput.getText().isEmpty()) {
-            try{
-                staffID = Integer.parseInt(staffIDInput.getText()); // TODO: CHANGE TO A STRING
-            } catch (NullPointerException e) {
-                requiredFieldIsPresent = false;
-            }
+            staffID = staffIDInput.getText();
+        } else {
+            requiredFieldIsPresent = false;
         }
 
 
@@ -127,7 +125,7 @@ public class NewClinicianController {
         }
 
         if (requiredFieldIsPresent) {
-            clinician = new Clinician(firstName, staffID, region, password);
+            clinician = new Clinician(firstName, staffID, "", region, password);
 
             if (!lastName.isEmpty()) {
                 clinician.setLastName(lastName);

@@ -8,7 +8,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 import seng302.Model.Clinician;
-import seng302.Model.Donor;
+import seng302.Model.User;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -86,7 +86,7 @@ public class LoginController {
         if(isUser) {
             warningLabel.setText("");
             String wantedDonor = userIDTextField.getText();
-            Donor donor = appController.findDonor(wantedDonor);
+            User donor = appController.findUser(wantedDonor);
 
             if (donor == null) {
                 warningLabel.setText("Donor was not found.\nTo register a new donor please click sign up.");
@@ -107,13 +107,13 @@ public class LoginController {
 
         } else {
             warningLabel.setText("");
-            int wantedClinician = -1;
+            String wantedClinician;
 
-            try {
-                wantedClinician = Integer.parseInt(userIDTextField.getText());
-            } catch (NumberFormatException e){
+            if (userIDTextField.getText().isEmpty()) {
                 warningLabel.setText("Please enter your staff id number");
                 return;
+            } else {
+                wantedClinician = userIDTextField.getText();
             }
 
             String password = passwordField.getText();

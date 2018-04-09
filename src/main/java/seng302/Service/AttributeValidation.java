@@ -6,6 +6,7 @@ import seng302.Model.BloodTypes;
 
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.Date;
 
 
 /**
@@ -70,63 +71,56 @@ public class AttributeValidation {
     }
 
 
-    /**
-     * Checks if the value is 'Yes' and returns the appropriate boolean.
-     * @param smokey The string value of being a smoker or not.
-     * @return true if the given value is equal to 'Yes', false otherwise.
-     */
-    public static boolean validateSmoker(String smokey) {
-        return smokey.equals("Yes");
-    }
 
 
-    /**
-     *
-     * @param values
-     * @param command
-     * @param type
-     * @return
-     */
-    public static String addMultipleValues(String values, String command, TextField type) {
-        if (!type.getText().isEmpty()) {
-            values += command + "\"" + type.getText() + "\"";
-        }
+//    /**
+//     *
+//     * @param values
+//     * @param command
+//     * @param type
+//     * @return
+//     */
+//    public static String addMultipleValues(String values, String command, TextField type) {
+//        if (!type.getText().isEmpty()) {
+//            values += command + "\"" + type.getText() + "\"";
+//        }
+//
+//        return values;
+//    }
+//
+//
+//    /**
+//     *
+//     * @param values
+//     * @param command
+//     * @param type
+//     * @return
+//     */
+//    public static String addValues(String values, String command, TextField type) {
+//        if (!type.getText().isEmpty()) {
+//            values += command + type.getText();
+//        }
+//
+//        return values;
+//    }
 
-        return values;
-    }
-
-
-    /**
-     *
-     * @param values
-     * @param command
-     * @param type
-     * @return
-     */
-    public static String addValues(String values, String command, TextField type) {
-        if (!type.getText().isEmpty()) {
-            values += command + type.getText();
-        }
-
-        return values;
-    }
-
-    public static String addPhoneNumber(String values, String command, TextField type) {
-        if (!type.getText().isEmpty()) {
-            values += command + type.getText().replaceAll("\\s+","");
-        }
-
-        return values;
-    }
-
-
-    public static String addComboSelection(String values, String command, ComboBox type) {
-        if (type.getValue() != null) {
-            values += command + type.getValue().toString();
-        }
-
-        return values;
-    }
+//    public static String addPhoneNumber(String values, String command, TextField type) {
+//        if (!type.getText().isEmpty()) {
+//            values += command + type.getText().replaceAll("\\s+","");
+//        }
+//
+//        return values;
+//    }
+//
+//
+//    public static String addComboSelection(ComboBox type) {
+//        String value;
+//        if (type.getValue() != null) {
+//            value += command + type.getValue().toString();
+//        }
+//
+//        return values;
+//    }
 
 
     /**
@@ -181,16 +175,16 @@ public class AttributeValidation {
 
     /**
      * Gets the first character of the given gender.
-     * @param gender The given gender.
+     * @param selectedGender The given gender.
      * @return The gender as a Character.
      */
-    public static Character validateGender(String gender) {
-        Character cGender = null;
+    public static String validateGender(String selectedGender) {
+        String gender = null;
 
-        if (gender != null) {
-            cGender = gender.charAt(0);
+        if (selectedGender != null) {
+            gender = Character.toString(selectedGender.charAt(0));
         }
 
-        return cGender;
+        return gender;
     }
 }
