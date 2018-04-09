@@ -1,14 +1,14 @@
 package seng302.Controller.CliCommands;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.Date;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
 import seng302.Controller.AppController;
-import seng302.Model.Donor;
-import seng302.Model.JsonWriter;
 import seng302.Model.Organs;
+import seng302.Model.User;
 import seng302.View.IoHelper;
 
 @Command(name = "add")
@@ -36,41 +36,42 @@ public class UpdateAddOrgans implements Runnable {
   @Override
   public void run() {
     AppController controller = AppController.getInstance();
-    Donor donor = null;
+    User user = null;
 
     if (id != -1) {
-      donor = controller.getDonor(id);
+      user = controller.getUser(id);
     } else {
       if (fname != null && dobString != null) {
         String name = fname;
-        Date dob = IoHelper.readDate(dobString);
+        LocalDate dob = IoHelper.readDate(dobString);
         if (lname != null) {
           name += " " + lname;
         }
-        donor = controller.findDonor(name, dob);
+        user = controller.findUser(name, dob);
 
       }
     }
-    if (donor != null && organs != null) {
+    if (user != null && organs != null) {
       for (String item : organs) {
         try {
           Organs org = Organs.valueOf(item.toUpperCase());
-          donor.addOrgan(org);
+          user.getDonorDetails().addOrgan(org);
         }
         catch (IllegalArgumentException ex) {
           System.err.println("Could not parse organ:" + item);
           System.err.println("multi-word organs must be entered with underscores");
           System.err.println("e.g. bone_marrow");
         } catch (NullPointerException ex) {
-          System.err.println("Could not find donor");
+          System.err.println("Could not find user");
         }
       }
-      try {
-        JsonWriter.saveCurrentDonorState(controller.getDonors());
-        return;
-      } catch (IOException ex) {
-        System.err.println("Could not update file");
-      }
+      //TODO fix json writer
+//      try {
+//        JsonWriter.saveCurrentDonorState(controller.getUsers());
+//        return;
+//      } catch (IOException ex) {
+//        System.err.println("Could not update file");
+//      }
     }
     System.err.println("Please use either the -id tag or -f, -l, and -dob to identify a donor. Organs to be added should be specified after these arguments");
   }

@@ -5,6 +5,8 @@ import org.junit.Test;
 import seng302.Model.Donor;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 
@@ -13,8 +15,9 @@ public class DonorTests {
 
     @Test
     public void testDonorEqualityEqual(){
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-        Date dob = new Date("01/01/1990");
+
+
+        LocalDate dob = LocalDate.parse("01/01/1990",(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
 
         Donor d1 = new Donor("John jacob", dob);
         Donor d2 = new Donor("John Jacob",dob);
@@ -24,8 +27,8 @@ public class DonorTests {
 
     @Test
     public void testDonorEqualityNotEqual(){
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-        Date dob = new Date("01/01/1990");
+
+        LocalDate dob = LocalDate.parse("01/01/1990",(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
 
         Donor d1 = new Donor("John jaxob", dob);
         Donor d2 = new Donor("John Jacob",dob);

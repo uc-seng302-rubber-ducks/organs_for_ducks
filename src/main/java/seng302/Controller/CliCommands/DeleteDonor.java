@@ -6,9 +6,11 @@ import picocli.CommandLine.Command;
 import seng302.Controller.AppController;
 import seng302.Model.Donor;
 import seng302.Model.JsonWriter;
+import seng302.Model.User;
 import seng302.View.IoHelper;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.Scanner;
 
@@ -36,11 +38,11 @@ public class DeleteDonor implements Runnable {
         if(helpRequested){
             System.out.println("Used to delete a Donor from the current Donor pool. Donor must be confirmed before deletion");
         }
-        Date dob = IoHelper.readDate(dobString);
+        LocalDate dob = IoHelper.readDate(dobString);
         if(dob == null) {
             return;
         }
-        Donor toDelete = controller.findDonor(firstName+" "+lastName, dob);
+        User toDelete = controller.findUser(firstName+" "+lastName, dob);
         if(toDelete == null){
             System.out.println("No Donor with those details was found");
             return;
@@ -63,10 +65,11 @@ public class DeleteDonor implements Runnable {
             }
         }
         //sc.close();
-        try {
-            JsonWriter.saveCurrentDonorState(controller.getDonors());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        //TODO fix json writer
+//        try {
+//            JsonWriter.saveCurrentDonorState(controller.getUsers());
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
     }
 }

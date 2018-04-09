@@ -12,6 +12,7 @@ import seng302.Model.Donor;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import seng302.Model.User;
 
 public class LoginController {
 
@@ -46,13 +47,13 @@ public class LoginController {
     private boolean isUser = true;
 
     private AppController appController;
-    private ArrayList<Donor> donors;
+    private ArrayList<User> users;
     private Stage stage;
 
     public void init(AppController appController, Stage stage){
         warningLabel.setText("");
         this.appController = appController;
-        donors = appController.getDonors();
+        users = appController.getUsers();
         this.stage = stage;
 
     }

@@ -1,7 +1,8 @@
 package seng302.Model;
 
-import org.joda.time.DateTime;
-import org.joda.time.Days;
+
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 /**
  * Class to do all the heavy lifting on durations and pairing up dates for starting and stopping medications
@@ -12,41 +13,41 @@ import org.joda.time.Days;
  */
 public class MedicationDurations {
 
-    private DateTime start;
-    private DateTime stop;
+    private LocalDateTime start;
+    private LocalDateTime stop;
     private int duration;
 
-    public MedicationDurations(DateTime start, DateTime stop) {
+    public MedicationDurations(java.time.LocalDateTime start, java.time.LocalDateTime stop) {
         this.start = start;
         this.stop = stop;
-        duration = Days.daysBetween(start.toInstant(), stop.toInstant()).getDays();
+        duration = (int) ChronoUnit.DAYS.between(start, stop);
     }
 
-    public MedicationDurations(DateTime start) {
+    public MedicationDurations(LocalDateTime start) {
         this.start = start;
         duration = 0;
     }
 
-    public DateTime getStart() {
+    public LocalDateTime getStart() {
         return start;
     }
 
-    public void setStart(DateTime start) {
+    public void setStart(LocalDateTime start) {
         this.start = start;
         if(stop != null){
-            duration = Days.daysBetween(start.toInstant(),stop.toInstant()).getDays();
+            duration = (int) ChronoUnit.DAYS.between(start,stop);
         } else {
             duration = 0;
         }
     }
 
-    public DateTime getStop() {
+    public LocalDateTime getStop() {
         return stop;
     }
 
-    public void setStop(DateTime stop) {
+    public void setStop(LocalDateTime stop) {
         this.stop = stop;
-        duration = Days.daysBetween(start.toInstant(),stop.toInstant()).getDays();
+        duration = (int) ChronoUnit.DAYS.between(start,stop);
     }
 
     public int getDuration() {

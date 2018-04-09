@@ -14,13 +14,17 @@ import java.io.IOException;
 import java.lang.reflect.Array;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 
 /**
  * Class for reading from JSON file containing application data.
- *
+ * This class is deprecated please use JsonHandler
  * @author Josh Burt
+ *
  */
+@Deprecated
 public final class JsonReader {
 
 
@@ -30,7 +34,7 @@ public final class JsonReader {
      * @return List of donors present in the application during the last session
      */
     public static ArrayList<Donor> importJsonDonors() {
-        ArrayList<Donor> donorsIn = new ArrayList<>();
+        /*ArrayList<Donor> donorsIn = new ArrayList<>();
         File inFile = new File(Directory.JSON.directory() + "/donors.json");
         DateFormat dateFormat = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzzz yyyy");
         JSONParser parser = new JSONParser();
@@ -40,7 +44,7 @@ public final class JsonReader {
             imported = 0;
             for (Object o : a) {
                 JSONObject donor = (JSONObject) o;
-                Date dod;
+                LocalDate dod;
                 String name = (String) donor.get("Name");
 
                 String gender = (String) donor.get("Gender");
@@ -52,7 +56,7 @@ public final class JsonReader {
                 try {
                     Double height = (Double) donor.get("Height");
                     Double weight = (Double) donor.get("Weight");
-                    Date dob = dateFormat.parse(donor.get("DOB").toString());
+                    LocalDate dob = dateFormat.parse(donor.get("DOB").toString());
                     if (donor.get("DOD").toString().equals("null")) {
                         dod = null;
                     } else {
@@ -142,7 +146,8 @@ public final class JsonReader {
             e.printStackTrace();
         }
         System.out.println(imported + " Donors Successfully imported");
-        return donorsIn;
+        return donorsIn;*/
+        return new ArrayList<>();
     }
 
     /**
@@ -155,7 +160,7 @@ public final class JsonReader {
         ArrayList<Clinician> clinicians = new ArrayList<>();
 
 
-        File infile =  new File(Directory.JSON.directory()+"/clinicians.json");
+        /*File infile =  new File(Directory.JSON.directory()+"/clinicians.json");
         if(!infile.exists()){
             System.out.println("File did not exist creating new clinication list");
             return clinicians;
@@ -169,13 +174,12 @@ public final class JsonReader {
             for(Object o : a) {
                 JSONObject clinician = (JSONObject) o;
                 String name = (String) clinician.get("Name");
-                Long staffIdl =(Long) clinician.get("Staff Id");
-                int staffId = staffIdl.intValue();
+                String staffId = (String) clinician.get("Staff Id");
                 String workAddress =(String) clinician.get("Work Address");
                 String region = (String) clinician.get("Region");
                 String password = (String) clinician.get("Password");
-                DateTime dateCreated = new DateTime(clinician.get("Date Created"));
-                DateTime dateLastModified = new DateTime(clinician.get("Last Modified"));
+                LocalDateTime dateCreated = new DateTime(clinician.get("Date Created"));
+                LocalDateTime dateLastModified = new DateTime(clinician.get("Last Modified"));
 
                 Clinician c = new Clinician(name,staffId,workAddress,region,password, dateCreated,dateLastModified);
                 clinicians.add(c);
@@ -190,7 +194,7 @@ public final class JsonReader {
             e.printStackTrace();
         }
 
-        System.out.println(imported + " Clinicians Successfully added");
+        System.out.println(imported + " Clinicians Successfully added");*/
         return clinicians;
     }
 
@@ -217,7 +221,7 @@ public final class JsonReader {
                 Set<String> keyset = change.keySet();
                 for (String key : keyset){
                     String actualChange = (String) change.get(key);
-                    DateTime dateTime = new DateTime(key);
+                    LocalDateTime dateTime = LocalDateTime.parse(key);
                     results.add(new Change(dateTime,actualChange));
                 }
             }
