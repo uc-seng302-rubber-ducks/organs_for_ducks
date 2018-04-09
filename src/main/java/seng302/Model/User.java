@@ -42,17 +42,17 @@ public class User {
   private LocalDateTime lastModified;
   @Expose
   private ArrayList<String> miscAttributes;
-  @Expose
+  //@Expose
   private HashMap<String, String> updateHistory;
-  @Expose
+  //@Expose
   private ArrayList<String> previousMedication;
-  @Expose
+  //@Expose
   private ArrayList<String> currentMedication;
-  @Expose
+  //@Expose
   private HashMap<String, ArrayList<LocalDateTime>> previousMedicationTimes;
-  @Expose
+  //@Expose
   private HashMap<String, ArrayList<LocalDateTime>> currentMedicationTimes;
-  @Expose
+  //@Expose
   private ArrayList<Change> changes;
 
   //flags and extra details for if the person is a donor or a receiver
@@ -61,7 +61,7 @@ public class User {
   @Expose
   private ReceiverDetails receiverDetails;
 
-  public User(java.time.LocalDate dateOfBirth, java.time.LocalDate dateOfDeath, String gender, double height, double weight,
+  public User(LocalDate dateOfBirth, LocalDate dateOfDeath, String gender, double height, double weight,
               String bloodType,
               String currentAddress, String region, LocalDateTime timeCreated, String name,
               LocalDateTime lastModified,
@@ -110,7 +110,7 @@ public class User {
     }
   }
 
-  public User(String name, java.time.LocalDate dateOfBirth) {
+  public User(String name, LocalDate dateOfBirth) {
     this.dateOfBirth = dateOfBirth;
     this.name = name;
     timeCreated = LocalDateTime.now();
