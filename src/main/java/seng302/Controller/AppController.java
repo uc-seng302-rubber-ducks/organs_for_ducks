@@ -30,9 +30,6 @@ public class AppController {
     historyOfCommands.add(empty);//putting an empty string into the string array to be displayed if history pointer is 0
     boolean defaultSeen = false;
     for(Clinician c : clinicians){
-      if(c.getStaffId() == null){
-        break;
-      }
       if(c.getStaffId().equals("0")){
         defaultSeen = true;
         System.out.println("Default seen");
