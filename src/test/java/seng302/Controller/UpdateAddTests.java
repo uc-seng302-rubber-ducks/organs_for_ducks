@@ -3,6 +3,8 @@ package seng302.Controller;
 import static org.junit.Assert.fail;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashSet;
 import org.junit.Before;
@@ -19,14 +21,14 @@ public class UpdateAddTests {
 
   @Before
   public void resetDonors() {
-    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+    DateTimeFormatter sdf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     controller = AppController.getInstance();
     controller.setUsers(new ArrayList<>());
     try {
-      controller.Register("No Organs", sdf.parse("1978-3-6"));
-      controller.Register("One Organ", sdf.parse("1997-2-5"));
-      User user = controller.findUsers("One Organ").get(0);
-      user.getDonorDetails().addOrgan(Organs.LUNG);
+      controller.Register("No Organs", LocalDate.parse("1978-03-06",sdf));
+      controller.Register("One Organ", LocalDate.parse("1997-02-05",sdf));
+        User user = controller.findUsers("One Organ").get(0);
+        user.getDonorDetails().addOrgan(Organs.LUNG);
     } catch (Exception ex) {
       fail("Error setting up before test");
     }
@@ -34,7 +36,7 @@ public class UpdateAddTests {
 
   @Test
   public void ShouldAddSingleOrgan() {
-    String[] args = {"-f=No", "-l=Organs", "-dob=1978-3-6", "kidney"};
+    String[] args = {"-f=No", "-l=Organs", "-dob=1978-03-06", "kidney"};
     new CommandLine(new UpdateAddOrgans())
         .parseWithHandler(new CommandLine.RunLast(), System.err, args);
 
@@ -50,7 +52,7 @@ public class UpdateAddTests {
 
   @Test
   public void ShouldAddMultipleOrgans() {
-    String[] args = {"-f=No", "-l=Organs", "-dob=1978-3-6", "kidney", "bone_marrow", "heart"};
+    String[] args = {"-f=No", "-l=Organs", "-dob=1978-03-06", "kidney", "bone_marrow", "heart"};
     new CommandLine(new UpdateAddOrgans())
         .parseWithHandler(new CommandLine.RunLast(), System.err, args);
 
@@ -71,7 +73,7 @@ public class UpdateAddTests {
   public void ShouldNotDuplicateOrgansAlreadyListed() {
     //we're using a hashmap so it can't
     //test exists for posterity
-    String[] args = {"-f=One", "-l=Organ", "-dob=1997-2-5", "lung"};
+    String[] args = {"-f=One", "-l=Organ", "-dob=1997-02-05", "lung"};
     new CommandLine(new UpdateAddOrgans())
         .parseWithHandler(new CommandLine.RunLast(), System.err, args);
 
@@ -87,7 +89,7 @@ public class UpdateAddTests {
 
   @Test
   public void ShouldNotDuplicateOrgansAlreadyListeedMultipleAdded() {
-    String[] args = {"-f=One", "-l=Organ", "-dob=1997-2-5", "intestine", "lung", "cornea"};
+    String[] args = {"-f=One", "-l=Organ", "-dob=1997-02-05", "intestine", "lung", "cornea"};
     new CommandLine(new UpdateAddOrgans())
         .parseWithHandler(new CommandLine.RunLast(), System.err, args);
 

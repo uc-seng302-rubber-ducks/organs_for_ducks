@@ -1,7 +1,8 @@
 package seng302.Controller;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import org.junit.Assert;
 import org.junit.Before;
@@ -14,31 +15,28 @@ import seng302.Model.User;
 public class RegisterTests {
 
   AppController controller;
+  DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd");
   User minInfo;
   User maxInfo;
-  SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
   @Before
   public void setup() {
     controller = AppController.getInstance();
     controller.setUsers(new ArrayList<>()); //reset donor list between tests
-    try {
-      minInfo = new User("John Doe", sdf.parse("1961-2-12"));
-      maxInfo = new User("Gus Johnson", sdf.parse("1990-4-3"));
-      maxInfo.setDateOfDeath(sdf.parse("2010-5-16"));
+
+      minInfo = new User("John Doe", LocalDate.parse("1961-02-12",format));
+      maxInfo = new User("Gus Johnson", LocalDate.parse("1990-04-03",format));
+      maxInfo.setDateOfDeath(LocalDate.parse("2010-05-16",format));
       maxInfo.setHeight(1.85);
       maxInfo.setWeight(86.3);
       maxInfo.setGender("m");
       maxInfo.setRegion("Sydney");
       maxInfo.setCurrentAddress("42-wallaby-way");
-    }
-    catch (ParseException ex) {
-      Assert.fail("Error in test setup. test Donor dates not parsed correctly");
-    }
+
   }
 
   @Test
   public void ShouldRegisterDonorWithMinimumInfo() {
-    String[] args = {"John", "Doe", "1961-2-12"};
+    String[] args = {"John", "Doe", "1961-02-12"};
     new CommandLine(new Register()).parseWithHandler(new CommandLine.RunLast(), System.err, args);
 
     Assert.assertTrue(controller.getUsers().contains(minInfo));
@@ -46,15 +44,11 @@ public class RegisterTests {
 
   @Test
   public void ShouldRegisterDonorWithMaximumInfo() {
-    String[] args = {"Gus", "Johnson", "1990-04-03", "-dod=2010-5-16", "-he=1.85", "-w=86.3",
+    String[] args = {"Gus", "Johnson", "1990-04-03", "-dod=2010-05-16", "-he=1.85", "-w=86.3",
         "-g=m", "-addr=42-wallaby-way", "-r=Sydney"};
     new CommandLine(new Register()).parseWithHandler(new CommandLine.RunLast(), System.err, args);
     User registered = null;
-    try {
-      registered = controller.findUser("Gus Johnson", sdf.parse("1990-04-03"));
-    } catch (ParseException ex) {
-      Assert.fail();
-    }
+    registered = controller.findUser("Gus Johnson", LocalDate.parse("1990-04-03",format));
     Assert.assertEquals(maxInfo, registered); //checks name and dob
     Assert.assertEquals(maxInfo.getDateOfDeath(), registered.getDateOfDeath());
     Assert.assertTrue(maxInfo.getHeight() == registered.getHeight());
@@ -83,14 +77,14 @@ public class RegisterTests {
 
   @Test
   public void ShouldNotRegisterWhenMalformedOptions() {
-    String[] args = {"Ryan", "Clark", "1967-21-3", "-he=myheight"};
+    String[] args = {"Ryan", "Clark", "1967-21-03", "-he=myheight"};
     new CommandLine(new Register()).parseWithHandler(new CommandLine.RunLast(), System.err, args);
     Assert.assertTrue(controller.getUsers().size() == 0);
   }
 
   @Test
   public void ShouldCancelRegistrationWhenHelpFlagPresent() {
-    String[] args = {"Les", "Claypool", "1967-21-3", "-h"};
+    String[] args = {"Les", "Claypool", "1967-21-03", "-h"};
     new CommandLine(new Register()).parseWithHandler(new CommandLine.RunLast(), System.err, args);
     Assert.assertTrue(controller.getUsers().size() == 0);
   }

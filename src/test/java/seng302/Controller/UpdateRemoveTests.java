@@ -2,7 +2,8 @@ package seng302.Controller;
 
 import static org.junit.Assert.fail;
 
-import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashSet;
 import org.junit.Before;
@@ -16,15 +17,16 @@ import seng302.Model.User;
 public class UpdateRemoveTests {
 
   AppController controller;
+  DateTimeFormatter sdf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
   @Before
   public void resetDonors() {
-    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-    controller = AppController.getInstance();
-    controller.setUsers(new ArrayList<>());
+
+      controller = AppController.getInstance();
+      controller.setUsers(new ArrayList<>());
     try {
-      controller.Register("Three Organs", sdf.parse("1978-3-6"));
-      controller.Register("One Organ", sdf.parse("1997-2-5"));
+      controller.Register("Three Organs", LocalDate.parse("1978-03-06",sdf));
+      controller.Register("One Organ", LocalDate.parse("1997-02-05",sdf));
 
       User three = controller.findUsers("Three Organs").get(0);
       three.getDonorDetails().addOrgan(Organs.CONNECTIVE_TISSUE);
@@ -42,7 +44,7 @@ public class UpdateRemoveTests {
   @Test
   public void ShouldRemoveSingleOrganLeavingEmpty() {
 
-    String[] args = {"-f=One", "-l=Organ", "-dob=1997-2-5", "lung"};
+    String[] args = {"-f=One", "-l=Organ", "-dob=1997-02-05", "lung"};
     new CommandLine(new UpdateRemoveOrgans())
         .parseWithHandler(new CommandLine.RunLast(), System.err, args);
 
@@ -53,7 +55,7 @@ public class UpdateRemoveTests {
 
   @Test
   public void ShouldRemoveSingleOrganLeavingOrgansRemaining() {
-    String[] args = {"-f=Three", "-l=Organs", "-dob=1978-3-6", "skin"};
+    String[] args = {"-f=Three", "-l=Organs", "-dob=1978-03-06", "skin"};
     new CommandLine(new UpdateRemoveOrgans())
         .parseWithHandler(new CommandLine.RunLast(), System.err, args);
 
@@ -68,7 +70,7 @@ public class UpdateRemoveTests {
 
   @Test
   public void ShouldRemoveMultipleOrgansLeavingEmpty() {
-    String[] args = {"-f=Three", "-l=Organs", "-dob=1978-3-6", "skin", "connective_tissue", "middle_ear"};
+    String[] args = {"-f=Three", "-l=Organs", "-dob=1978-03-06", "skin", "connective_tissue", "middle_ear"};
     new CommandLine(new UpdateRemoveOrgans())
         .parseWithHandler(new CommandLine.RunLast(), System.err, args);
 
@@ -78,7 +80,7 @@ public class UpdateRemoveTests {
 
   @Test
   public void ShouldRemoveMultipleOrgansLeavingOrgansRemaining() {
-    String[] args = {"-f=Three", "-l=Organs", "-dob=1978-3-6", "skin", "middle_ear"};
+    String[] args = {"-f=Three", "-l=Organs", "-dob=1978-03-06", "skin", "middle_ear"};
     new CommandLine(new UpdateRemoveOrgans())
         .parseWithHandler(new CommandLine.RunLast(), System.err, args);
 
@@ -94,7 +96,7 @@ public class UpdateRemoveTests {
     //we're using a hashmap so it can't
     //test exists for posterity
 
-    String[] args = {"-f=One", "-l=Organ", "-dob=1997-2-5", "heart"};
+    String[] args = {"-f=One", "-l=Organ", "-dob=1997-02-05", "heart"};
     new CommandLine(new UpdateRemoveOrgans())
         .parseWithHandler(new CommandLine.RunLast(), System.err, args);
 

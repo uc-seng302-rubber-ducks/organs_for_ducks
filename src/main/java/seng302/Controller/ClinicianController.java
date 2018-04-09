@@ -1,5 +1,6 @@
 package seng302.Controller;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import javafx.beans.binding.Bindings;
@@ -252,7 +253,7 @@ public class ClinicianController {
         warningLabel.setText("Passwords did not match.\n Password was not updated.");
       }
     }
-    clinician.setDateLastModified(DateTime.now());
+    clinician.setDateLastModified(LocalDateTime.now());
     appController.updateClinicians(clinician);
 
   }

@@ -1,6 +1,8 @@
 package seng302.Controller;
 
+
 import java.time.LocalDate;
+
 
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
@@ -17,14 +19,15 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
-import org.joda.time.DateTime;
 import seng302.Model.Change;
 import seng302.Model.Donor;
 import seng302.Model.Organs;
 import seng302.Model.UndoRedoStacks;
 
 import java.io.IOException;
+
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import seng302.Model.User;
 
@@ -212,17 +215,17 @@ public class DonorController {
     showUser(currentUser);
   }
 
-  @FXML
-  private void changeDeceasedStatus() {
-    if (!isDonorDeceasedCheckBox.isSelected()) {
-      dateOfDeathPicker.setVisible(false);
-      dodLabel.setVisible(false);
-    } else {
-      dodLabel.setVisible(true);
-      dateOfDeathPicker.setVisible(true);
-    }
+    @FXML
+    private void changeDeceasedStatus() {
+        if (!isDonorDeceasedCheckBox.isSelected()) {
+            dateOfDeathPicker.setVisible(false);
+            dodLabel.setVisible(false);
+        } else {
+            dodLabel.setVisible(true);
+            dateOfDeathPicker.setVisible(true);
+        }
 
-  }
+    }
 
   /**
    * fires when the Misc button is clicked
@@ -326,11 +329,8 @@ public class DonorController {
 
     if (isInputValid) {
       application.update(currentUser);
-      ArrayList<String> diffs = application.differanceInDonors(oldDonor, currentUser);
-      for(String diff : diffs){
-        Change c = new Change(DateTime.now(),diff);
-        changelog.add(c);
-      }
+      ArrayList<Change> diffs = application.differanceInDonors(oldDonor, currentUser);
+      changelog.addAll(diffs);
     }
 
     showUser(currentUser);
@@ -514,12 +514,12 @@ public class DonorController {
 
 
     private void showDonorHistory() {
-      TableColumn timeColumn = new TableColumn("Time");
+        TableColumn timeColumn = new TableColumn("Time");
         TableColumn changeColumn = new TableColumn("Change");
         timeColumn.setCellValueFactory(new PropertyValueFactory<Change, String>("time"));
         changeColumn.setCellValueFactory(new PropertyValueFactory<Change, String>("change"));
         historyTableView.setItems(changelog);
-        historyTableView.getColumns().addAll(timeColumn,changeColumn);
+        historyTableView.getColumns().addAll(timeColumn, changeColumn);
 
     }
 }

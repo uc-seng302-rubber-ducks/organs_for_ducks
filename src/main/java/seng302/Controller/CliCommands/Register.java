@@ -1,10 +1,12 @@
 package seng302.Controller.CliCommands;
 
-import java.util.Date;
+import java.io.IOException;
+import java.time.LocalDate;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
 import seng302.Controller.AppController;
+import seng302.Model.JsonHandler;
 import seng302.Model.User;
 import seng302.View.IoHelper;
 
@@ -55,7 +57,7 @@ public class Register implements Runnable {
       return;
     }
 
-    Date dob = IoHelper.readDate(dobString);
+    LocalDate dob = IoHelper.readDate(dobString);
     if (dob == null) {
       return;
     }
@@ -89,12 +91,11 @@ public class Register implements Runnable {
 
     System.out.println("Donor " + donor.toString() + " has been registered with ID number");
     System.out.println(donor.hashCode());
-    //TODO fix json writer
-//    try {
-//      JsonWriter.saveCurrentDonorState(controller.getUsers());
-//    } catch (IOException ex) {
-//      System.err.println("Error saving data to file\n" + ex.getMessage());
-//    }
+    try {
+      JsonHandler.saveUsers(controller.getUsers());
+    } catch (IOException ex) {
+      System.err.println("Error saving data to file\n" + ex.getMessage());
+    }
   }
 
 }

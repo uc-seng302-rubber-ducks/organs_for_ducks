@@ -1,5 +1,7 @@
 package seng302.Controller.CliCommands;
 
+import java.io.IOException;
+import java.time.LocalDate;
 import java.util.Date;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
@@ -41,7 +43,7 @@ public class UpdateAddOrgans implements Runnable {
     } else {
       if (fname != null && dobString != null) {
         String name = fname;
-        Date dob = IoHelper.readDate(dobString);
+        LocalDate dob = IoHelper.readDate(dobString);
         if (lname != null) {
           name += " " + lname;
         }

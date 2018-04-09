@@ -1,14 +1,12 @@
 package seng302.Controller;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 
-import seng302.Model.Clinician;
-import seng302.Model.Donor;
-import seng302.Model.JsonReader;
-import seng302.Model.JsonWriter;
-import seng302.Model.User;
+import seng302.Model.*;
 
 public class AppController {
 
@@ -20,18 +18,31 @@ public class AppController {
 
   private DonorController donorController = new DonorController();
   private AppController() {
-    //TODO update json reader/writer
-    //users = JsonReader.importJsonDonors();
-    clinicians = JsonReader.importClinicians();
-    for(Clinician c : clinicians){
-      if(c.getStaffId().equals("0")){
-        return; //short circut out if defalut clinication exists
-      }
+    try {
+      donors = JsonHandler.loadUsers();
+      System.out.println(donors.size() + " donors were successfully loaded");
+      clinicians = JsonHandler.loadClinicians();
+      System.out.println(clinicians.size() + " clinicians were successfully loaded");
+    } catch (FileNotFoundException e) {
     }
-    clinicians.add(new Clinician("Default","0","","","admin"));
-    JsonWriter.saveClinicians(clinicians);
     String[] empty = {""};
     historyOfCommands.add(empty);//putting an empty string into the string array to be displayed if history pointer is 0
+    boolean defaultSeen = false;
+    for(Clinician c : clinicians){
+      if(c.getStaffId().equals("0")){
+        defaultSeen = true;
+        System.out.println("Default seen");
+        break;//short circuit out if default clinician exists
+      }
+    } //all code you wish to execute must be above this point!!!!!!!!
+    if (!defaultSeen) {
+      clinicians.add(new Clinician("Default", "0", "", "", "admin"));
+      try {
+        JsonHandler.saveClinicians(clinicians);
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
   }
 
   /**
@@ -52,9 +63,9 @@ public class AppController {
    *
    * @return hashCode of the new donor or -1 on error
    */
-  public int Register(String name, Date dateOfBirth, Date dateOfDeath, String gender, double height,
-      double weight,
-      String bloodType, String currentAddress, String region) {
+  public int Register(String name, LocalDate dateOfBirth, LocalDate dateOfDeath, String gender, double height,
+                      double weight,
+                      String bloodType, String currentAddress, String region) {
     try {
       User newDonor = new User(name, dateOfBirth);
       newDonor.setDateOfDeath(dateOfDeath);
@@ -119,7 +130,7 @@ public class AppController {
   /**
    * @return hashCode of the new donor or -1 on error
    */
-  public int Register(String name, Date dateOfBirth) {
+  public int Register(String name, LocalDate dateOfBirth) {
     try {
       User newUser = new User(name, dateOfBirth);
       if (users.contains(newUser)) {
@@ -140,17 +151,12 @@ public class AppController {
    * @param name Name of the donor
    * @param dob date of birth of the donor
    */
-  public User findUser(String name, Date dob) {
-    User check = null;
-    User testUser = new User(name,
-        dob); //creates temporary user to check against the user list
-    ArrayList<User> sessionList = getUsers();
-    int place = sessionList.indexOf(testUser);
-    if (place != -1) {
-      return sessionList.get(place);
-    } else {
-      return check;
-    }
+  public User findUser(String name, LocalDate dob) {
+      User check = null;
+      User testUser = new User(name,
+              dob); //creates temporary user to check against the user list
+      ArrayList<User> sessionList = getUsers();
+      int place = sessionList.indexOf(testUser);
   }
 
   /**
@@ -236,14 +242,13 @@ public class AppController {
       users.add(user);
       changelogWrite.add("Added Donor " + user.getName());
     }
-    //TODO fix json writer
-//    try {
-//      JsonWriter.saveCurrentDonorState(users);
-//      JsonWriter.changeLog(changelogWrite, user.getName().toLowerCase().replace(" ", "_"));
-//
-//    } catch (IOException e) {
-//      e.printStackTrace();
-//    }
+    try {
+      JsonHandler.saveUsers(donors);
+      //JsonHandler.saveChangelog(changelogWrite, donor.getName().toLowerCase().replace(" ", "_"));
+
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
   }
 
 
@@ -262,14 +267,15 @@ public class AppController {
 
    public void updateClinicians(Clinician clinician){
     if(clinicians.contains(clinician)){
-      clinicians.remove(clinician);
-      clinicians.add(clinician);
-
     } else {
       clinicians.add(clinician);
     }
 
-    JsonWriter.saveClinicians(clinicians);
+     try {
+       JsonHandler.saveClinicians(clinicians);
+     } catch (IOException e) {
+       e.printStackTrace();
+     }
    }
 
   public DonorController getDonorController() {
@@ -281,7 +287,7 @@ public class AppController {
   }
 
 
-  public ArrayList<String> differanceInDonors(User oldUser, User newUser){
+  public ArrayList<Change> differanceInDonors(User oldUser, User newUser){
    ArrayList<String> diffs = new ArrayList<>();
    try {
      if (!oldUser.getName().equalsIgnoreCase(newUser.getName())) {
@@ -359,12 +365,19 @@ public class AppController {
      //no 'change', just added
      //TODO add "added __ to __" messages
    }
-      if(diffs.size() > 0){
-          JsonWriter.changeLog(diffs,newUser.getName().toLowerCase().replace(" ", "_"));
-          for(String diff : diffs)
-          newUser.addChange(diff);
-          return diffs;
+      ArrayList<Change> changes = new ArrayList<>();
+      if (diffs.size() > 0) {
+          for (String diff : diffs) {
+              Change c = new Change(LocalDateTime.now(), diff);
+              newUser.addChange(c);
+              changes.add(c);
+          }
+      try {
+        JsonHandler.saveChangelog(changes, newUser.getName().toLowerCase().replace(" ", "_"));
+      } catch (IOException e) {
+        e.printStackTrace();
       }
-      return diffs;
+    }
+    return changes;
   }
 }

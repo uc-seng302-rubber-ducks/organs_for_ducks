@@ -1,5 +1,6 @@
 package seng302.Controller.CliCommands;
 
+import java.time.LocalDate;
 import java.util.Date;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
@@ -54,7 +55,7 @@ public class View implements Runnable {
         name = firstName;
       }
       if (dobString != null) {
-        Date dob = IoHelper.readDate(dobString);
+        LocalDate dob = IoHelper.readDate(dobString);
         if (dob != null) {
           User user = controller.findUser(name, dob);
           if(user == null) {
