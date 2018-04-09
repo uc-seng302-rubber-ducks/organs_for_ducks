@@ -1,9 +1,9 @@
 package seng302.Model;
 
 
-import org.joda.time.DateTime;
+import com.google.gson.annotations.Expose;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 /**
@@ -14,21 +14,28 @@ import java.util.Objects;
  */
 public class Clinician {
 
+    @Expose
     private String name;
-    private int staffId;
+    @Expose
+    private String staffId;
+    @Expose
     private String workAddress;
+    @Expose
     private String region;
+    @Expose
     private String password;
-    private DateTime dateCreated;
-    private DateTime dateLastModified;
+    @Expose
+    private LocalDateTime dateCreated;
+    @Expose
+    private LocalDateTime dateLastModified;
 
     public Clinician() {
-        dateCreated = DateTime.now();
-        dateLastModified = DateTime.now();
+        dateCreated = LocalDateTime.now();
+        dateLastModified = LocalDateTime.now();
     }
 
 
-    public Clinician(String name, int staffId, String workAddress, String region, String password, DateTime dateCreated, DateTime dateLastModified) {
+    public Clinician(String name, String staffId, String workAddress, String region, String password, LocalDateTime dateCreated, LocalDateTime dateLastModified) {
         this.name = name;
         this.staffId = staffId;
         this.workAddress = workAddress;
@@ -39,25 +46,25 @@ public class Clinician {
 
     }
 
-    public Clinician(String name, int staffId, String workAddress, String region, String password) {
+    public Clinician(String name, String staffId, String workAddress, String region, String password) {
         this.name = name;
         this.staffId = staffId;
         this.workAddress = workAddress;
         this.region = region;
         this.password = password;
-        dateCreated = DateTime.now();
-        dateLastModified = DateTime.now();
+        dateCreated = LocalDateTime.now();
+        dateLastModified = LocalDateTime.now();
     }
 
-    public DateTime getDateCreated() {
+    public LocalDateTime getDateCreated() {
         return dateCreated;
     }
 
-    public DateTime getDateLastModified() {
+    public LocalDateTime getDateLastModified() {
         return dateLastModified;
     }
 
-    public void setDateLastModified(DateTime dateLastModified) {
+    public void setDateLastModified(LocalDateTime dateLastModified) {
         this.dateLastModified = dateLastModified;
     }
 
@@ -69,7 +76,7 @@ public class Clinician {
         this.name = name;
     }
 
-    public int getStaffId() {
+    public String getStaffId() {
         return staffId;
     }
 
@@ -110,5 +117,18 @@ public class Clinician {
     public int hashCode() {
 
         return Objects.hash(staffId);
+    }
+
+    @Override
+    public String toString() {
+        return "Clinician{" +
+                "name='" + name + '\'' +
+                ", staffId='" + staffId + '\'' +
+                ", workAddress='" + workAddress + '\'' +
+                ", region='" + region + '\'' +
+                ", password='" + password + '\'' +
+                ", dateCreated=" + dateCreated +
+                ", dateLastModified=" + dateLastModified +
+                '}';
     }
 }

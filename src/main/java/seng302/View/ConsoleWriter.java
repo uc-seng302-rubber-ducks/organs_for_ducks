@@ -1,16 +1,16 @@
 package seng302.View;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Scanner;
 import seng302.Controller.AppController;
-import seng302.Model.Donor;
-import seng302.Model.Organs;
-import seng302.Model.JsonReader;
-import seng302.Model.JsonWriter;
+import seng302.Model.*;
+
 @Deprecated
 public class ConsoleWriter {
 
@@ -21,12 +21,12 @@ public class ConsoleWriter {
 
     System.out.println("Please enter a date of birth in the format \"21/12/2018\"");
     String rawDate = sc.next();
-    Date dateOfBirth = readDate(rawDate);
+    LocalDate dateOfBirth = readDate(rawDate);
 
     if (fullInfo) {
       System.out.println("Please enter a date of death");
       rawDate = sc.next();
-      Date dateOfDeath = readDate(rawDate);
+      LocalDate dateOfDeath = readDate(rawDate);
 
       System.out.println("Please enter a gender");
       String gender = sc.next();
@@ -56,7 +56,7 @@ public class ConsoleWriter {
   }
 
 
-  private static boolean addOrgans(Scanner sc, Donor donor){
+  private static boolean addOrgans(Scanner sc, User donor){
     System.out.println("Please enter which organs you want to donate");
     System.out.println("list the entries separated by commas");
     System.out.println("e.g. intestine,bone marrow,liver");
@@ -64,31 +64,31 @@ public class ConsoleWriter {
     String input = sc.nextLine();
     String[] organList = input.split(",");
     for(String o : organList){
-      donor.addOrgan(Organs.valueOf(o.toUpperCase()));
+      //donor.getDonorDetails().addOrgan(Organs.valueOf(o.toUpperCase()));
     }
 
     return true;
   }
 
-  private static boolean removeOrgans(Scanner sc, Donor donor) {
+  private static boolean removeOrgans(Scanner sc, User donor) {
     System.out.println("These organs are currently listed for donation:");
-    System.out.println(donor.getOrgans());
+    //System.out.println(donor.getOrgans());
     System.out.println("Which organs are no longer available?");
     System.out.println("(e.g. Kidney,Bone marrow,heart)");
     sc.nextLine();
     String input = sc.nextLine();
     String[] organList = input.split(",");
     for (String item : organList) {
-      donor.removeOrgan(Organs.valueOf(item.toUpperCase()));
+     //donor.getDonorDetails().removeOrgan(Organs.valueOf(item.toUpperCase()));
     }
     return true;
   }
 
-  private static Date readDate(String rawDate) {
+  private static LocalDate readDate(String rawDate) {
     SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-    Date date;
+    LocalDate date;
     try {
-      date = sdf.parse(rawDate);
+      date = LocalDate.parse(sdf.parse(rawDate).toString());
     }
     catch (ParseException e) {
       System.err.println("Error parsing date");
@@ -102,8 +102,8 @@ public class ConsoleWriter {
       String name = sc.next();
       System.out.println("and the date of birth(dd/mm/yyy)");
       String dobStr = sc.next();
-      Date dob = readDate(dobStr);
-      Donor toDelete = controller.findDonor(name, dob);
+      LocalDate dob = readDate(dobStr);
+      User toDelete = controller.findUser(name, dob);
       if (toDelete == null){
           System.out.println("The Donor could not be found please try again");
       } else {
@@ -133,14 +133,18 @@ public class ConsoleWriter {
     Scanner sc = new Scanner(System.in);
     AppController controller = AppController.getInstance();
 
-      controller.setDonors(JsonReader.importJsonDonors());
+    try {
+      controller.setUsers(JsonHandler.loadUsers());
+    } catch (FileNotFoundException e) {
+      e.printStackTrace();
+    }
 
     while(true) {
       input = sc.next();
       switch(input) {
         case "quit":
           try {
-            JsonWriter.saveCurrentDonorState(controller.getDonors());
+            JsonHandler.saveUsers(controller.getUsers());
           } catch (IOException e) {
             e.printStackTrace();
           }
@@ -154,7 +158,7 @@ public class ConsoleWriter {
             break;
           }
           System.out.println("Donor registered with unique id: "+code);
-          addOrgans(sc, controller.getDonor(code));
+          addOrgans(sc, controller.getUser(code));
           break;
 
         case "view":
@@ -162,13 +166,13 @@ public class ConsoleWriter {
           System.out.println("all for all donors");
           input = sc.next();
           if(input.equals("all")) {
-            ArrayList<Donor> allDonors = controller.getDonors();
-            for (Donor d : allDonors) {
+            ArrayList<User> allDonors = controller.getUsers();
+            for (User d : allDonors) {
               System.out.println(d);
             }
           } else {
             code = Integer.parseInt(input);
-            System.out.println(controller.getDonor(code));
+            System.out.println(controller.getUser(code));
           }
           break;
 
@@ -179,7 +183,7 @@ public class ConsoleWriter {
             break;
           }
           code = Integer.parseInt(input);
-          Donor donor = controller.getDonor(code);
+          User donor = controller.getUser(code);
           System.out.println("Do you want to add or remove organs to be donated?");
           System.out.println("(Add/Remove)");
           input = sc.next();

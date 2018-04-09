@@ -14,6 +14,7 @@ import seng302.Model.UndoRedoStacks;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import seng302.Model.User;
 
 /**
  * class for the Organs view
@@ -41,17 +42,17 @@ public class OrganController {
     private Button backButton;
 
     private AppController appController;
-    private Donor currentDonor;
+    private User currentUser;
     private Stage stage;
 
-    public void init(Donor donor, AppController controller, Stage stage){
+    public void init(User user, AppController controller, Stage stage){
         this.stage = stage;
         this.appController = controller;
-        currentDonor = donor;
-        donorNameLabel.setText(donor.getName());
+        currentUser = user;
+        donorNameLabel.setText(user.getName());
         ArrayList<Organs> donating;
         try {
-            donating= new ArrayList<>(donor.getOrgans());
+            donating= new ArrayList<>(user.getDonorDetails().getOrgans());
         }
         catch (NullPointerException ex) {
             donating = new ArrayList<>();
@@ -68,22 +69,22 @@ public class OrganController {
 
     @FXML
     void donate(ActionEvent event) {
-        UndoRedoStacks.storeUndoCopy(currentDonor);
+        UndoRedoStacks.storeUndoCopy(currentUser);
         Organs toDonate = canDonate.getSelectionModel().getSelectedItem();
         currentlyDonating.getItems().add(toDonate);
-        currentDonor.addOrgan(toDonate);
-        appController.update(currentDonor);
+        currentUser.getDonorDetails().addOrgan(toDonate);
+        appController.update(currentUser);
         canDonate.getItems().remove(toDonate);
     }
 
     @FXML
     void undonate(ActionEvent event) {
-        UndoRedoStacks.storeUndoCopy(currentDonor);
+        UndoRedoStacks.storeUndoCopy(currentUser);
         Organs toUndonate = currentlyDonating.getSelectionModel().getSelectedItem();
         currentlyDonating.getItems().remove(toUndonate);
         canDonate.getItems().add(toUndonate);
-        currentDonor.removeOrgan(toUndonate);
-        appController.update(currentDonor);
+        currentUser.getDonorDetails().removeOrgan(toUndonate);
+        appController.update(currentUser);
     }
 
     @FXML
@@ -91,7 +92,7 @@ public class OrganController {
         AppController appController = AppController.getInstance();
         DonorController donorController = appController.getDonorController();
         try {
-            donorController.showDonor(currentDonor);
+            donorController.showUser(currentUser);
         }
         catch (NullPointerException ex) {
             //TODO causes npe if donor is new in this session

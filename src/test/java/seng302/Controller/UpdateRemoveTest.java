@@ -2,7 +2,8 @@ package seng302.Controller;
 
 import static org.junit.Assert.fail;
 
-import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashSet;
 import org.junit.Before;
@@ -11,27 +12,29 @@ import picocli.CommandLine;
 import seng302.Controller.CliCommands.UpdateRemoveOrgans;
 import seng302.Model.Donor;
 import seng302.Model.Organs;
+import seng302.Model.User;
 
 public class UpdateRemoveTest {
 
   AppController controller;
+  DateTimeFormatter sdf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
   @Before
   public void resetDonors() {
-    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-    controller = AppController.getInstance();
-    controller.setDonors(new ArrayList<>());
+
+      controller = AppController.getInstance();
+      controller.setUsers(new ArrayList<>());
     try {
-      controller.Register("Three Organs", sdf.parse("1978-3-6"));
-      controller.Register("One Organ", sdf.parse("1997-2-5"));
+      controller.Register("Three Organs", LocalDate.parse("1978-03-06",sdf));
+      controller.Register("One Organ", LocalDate.parse("1997-02-05",sdf));
 
-      Donor three = controller.findDonors("Three Organs").get(0);
-      three.addOrgan(Organs.CONNECTIVE_TISSUE);
-      three.addOrgan(Organs.MIDDLE_EAR);
-      three.addOrgan(Organs.SKIN);
+      User three = controller.findUsers("Three Organs").get(0);
+      three.getDonorDetails().addOrgan(Organs.CONNECTIVE_TISSUE);
+      three.getDonorDetails().addOrgan(Organs.MIDDLE_EAR);
+      three.getDonorDetails().addOrgan(Organs.SKIN);
 
-      Donor one = controller.findDonors("One Organ").get(0);
-      one.addOrgan(Organs.LUNG);
+      User one = controller.findUsers("One Organ").get(0);
+      one.getDonorDetails().addOrgan(Organs.LUNG);
     } catch (Exception ex) {
       fail("Error setting up before test");
     }
@@ -41,51 +44,51 @@ public class UpdateRemoveTest {
   @Test
   public void ShouldRemoveSingleOrganLeavingEmpty() {
 
-    String[] args = {"-f=One", "-l=Organ", "-dob=1997-2-5", "lung"};
+    String[] args = {"-f=One", "-l=Organ", "-dob=1997-02-05", "lung"};
     new CommandLine(new UpdateRemoveOrgans())
         .parseWithHandler(new CommandLine.RunLast(), System.err, args);
 
-    Donor donor = controller.findDonors("One Organ").get(0);
+    User user = controller.findUsers("One Organ").get(0);
 
-    assert (donor.getOrgans().size() == 0);
+    assert (user.getDonorDetails().getOrgans().size() == 0);
   }
 
   @Test
   public void ShouldRemoveSingleOrganLeavingOrgansRemaining() {
-    String[] args = {"-f=Three", "-l=Organs", "-dob=1978-3-6", "skin"};
+    String[] args = {"-f=Three", "-l=Organs", "-dob=1978-03-06", "skin"};
     new CommandLine(new UpdateRemoveOrgans())
         .parseWithHandler(new CommandLine.RunLast(), System.err, args);
 
-    Donor donor = controller.findDonors("Three Organs").get(0);
-    HashSet<Organs> list = donor.getOrgans();
+    User user = controller.findUsers("Three Organs").get(0);
+    HashSet<Organs> list = user.getDonorDetails().getOrgans();
 
     assert(list.contains(Organs.CONNECTIVE_TISSUE));
     assert(list.contains(Organs.MIDDLE_EAR));
 
-    assert (donor.getOrgans().size() == 2);
+    assert (user.getDonorDetails().getOrgans().size() == 2);
   }
 
   @Test
   public void ShouldRemoveMultipleOrgansLeavingEmpty() {
-    String[] args = {"-f=Three", "-l=Organs", "-dob=1978-3-6", "skin", "connective_tissue", "middle_ear"};
+    String[] args = {"-f=Three", "-l=Organs", "-dob=1978-03-06", "skin", "connective_tissue", "middle_ear"};
     new CommandLine(new UpdateRemoveOrgans())
         .parseWithHandler(new CommandLine.RunLast(), System.err, args);
 
-    Donor donor = controller.findDonors("Three Organs").get(0);
-    assert (donor.getOrgans().size() == 0);
+    User user = controller.findUsers("Three Organs").get(0);
+    assert (user.getDonorDetails().getOrgans().size() == 0);
   }
 
   @Test
   public void ShouldRemoveMultipleOrgansLeavingOrgansRemaining() {
-    String[] args = {"-f=Three", "-l=Organs", "-dob=1978-3-6", "skin", "middle_ear"};
+    String[] args = {"-f=Three", "-l=Organs", "-dob=1978-03-06", "skin", "middle_ear"};
     new CommandLine(new UpdateRemoveOrgans())
         .parseWithHandler(new CommandLine.RunLast(), System.err, args);
 
-    Donor donor = controller.findDonors("Three Organs").get(0);
-    HashSet<Organs> list = donor.getOrgans();
+    User user = controller.findUsers("Three Organs").get(0);
+    HashSet<Organs> list = user.getDonorDetails().getOrgans();
 
     assert(list.contains(Organs.CONNECTIVE_TISSUE));
-    assert (donor.getOrgans().size() == 1);
+    assert (user.getDonorDetails().getOrgans().size() == 1);
   }
 
   @Test
@@ -93,14 +96,14 @@ public class UpdateRemoveTest {
     //we're using a hashmap so it can't
     //test exists for posterity
 
-    String[] args = {"-f=One", "-l=Organ", "-dob=1997-2-5", "heart"};
+    String[] args = {"-f=One", "-l=Organ", "-dob=1997-02-05", "heart"};
     new CommandLine(new UpdateRemoveOrgans())
         .parseWithHandler(new CommandLine.RunLast(), System.err, args);
 
-    Donor donor = controller.findDonors("One Organ").get(0);
-    HashSet<Organs> list = donor.getOrgans();
+    User user = controller.findUsers("One Organ").get(0);
+    HashSet<Organs> list = user.getDonorDetails().getOrgans();
 
     assert (list.contains(Organs.LUNG));
-    assert (donor.getOrgans().size() == 1);
+    assert (user.getDonorDetails().getOrgans().size() == 1);
   }
 }

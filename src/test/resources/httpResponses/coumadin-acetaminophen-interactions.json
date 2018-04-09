@@ -1,0 +1,216 @@
+{
+  "age_interaction": {
+    "10-19": [
+      "haematoma",
+      "international normalised ratio increased",
+      "thrombosis",
+      "abdominal distension",
+      "abdominal pain upper",
+      "anaemia",
+      "application site dermatitis",
+      "bacteraemia",
+      "biliary colic",
+      "bradycardia"
+    ],
+    "20-29": [
+      "urinary tract infection",
+      "bronchitis",
+      "cardiac failure congestive",
+      "chest discomfort",
+      "influenza like illness",
+      "vomiting",
+      "intracardiac thrombus",
+      "tuberculin test positive",
+      "cholecystitis",
+      "hypertension"
+    ],
+    "30-39": [
+      "pain in extremity",
+      "nausea",
+      "convulsion",
+      "anaemia",
+      "fatigue",
+      "injury",
+      "muscle spasms",
+      "pneumonia",
+      "anxiety",
+      "catheter site inflammation"
+    ],
+    "40-49": [
+      "nausea",
+      "dyspnoea",
+      "osteonecrosis of jaw",
+      "chest pain",
+      "back pain",
+      "pneumonia",
+      "fatigue",
+      "asthenia",
+      "hypertension",
+      "pancytopenia"
+    ],
+    "50-59": [
+      "anxiety",
+      "injury",
+      "anaemia",
+      "oedema peripheral",
+      "pain in extremity",
+      "nausea",
+      "bone disorder",
+      "emotional distress",
+      "hypoaesthesia",
+      "dyspnoea"
+    ],
+    "60+": [
+      "anxiety",
+      "anaemia",
+      "international normalised ratio increased",
+      "fall",
+      "dyspnoea",
+      "asthenia",
+      "nausea",
+      "pneumonia",
+      "cardiac failure congestive",
+      "diarrhoea"
+    ],
+    "nan": [
+      "anxiety",
+      "dyspnoea",
+      "oedema peripheral",
+      "pleural effusion",
+      "anaemia",
+      "asthenia",
+      "nausea",
+      "fatigue",
+      "general physical health deterioration",
+      "osteonecrosis of jaw"
+    ]
+  },
+  "co_existing_conditions": {
+    "atrial fibrillation/flutter": 116,
+    "high blood pressure": 91,
+    "multiple myeloma": 140
+  },
+  "duration_interaction": {
+    "1 - 2 years": [
+      "international normalised ratio increased",
+      "haematoma",
+      "epistaxis",
+      "fall",
+      "anticoagulation drug level above therapeutic",
+      "cardiac stress test abnormal",
+      "head injury",
+      "loss of consciousness",
+      "nephrogenic systemic fibrosis",
+      "accidental overdose"
+    ],
+    "1 - 6 months": [
+      "international normalised ratio increased",
+      "haematuria",
+      "anaemia",
+      "international normalised ratio decreased",
+      "urinary tract infection",
+      "asthenia",
+      "cerebrovascular accident",
+      "confusional state",
+      "dehydration",
+      "drug level increased"
+    ],
+    "10+ years": [
+      "haemoglobin decreased",
+      "rectal haemorrhage",
+      "cardiac valve replacement complication",
+      "international normalised ratio increased",
+      "ischaemic stroke",
+      "umbilical haematoma"
+    ],
+    "2 - 5 years": [
+      "ascites",
+      "back pain",
+      "biopsy liver abnormal",
+      "chest pain",
+      "constipation",
+      "diverticulum intestinal",
+      "hepatic cirrhosis",
+      "hepatic fibrosis",
+      "hepatic necrosis",
+      "hepatic steatosis"
+    ],
+    "5 - 10 years": [
+      "epistaxis",
+      "hypotension",
+      "ileal ulcer",
+      "international normalised ratio increased",
+      "lower gastrointestinal haemorrhage",
+      "pneumonia",
+      "anticoagulation drug level above therapeutic",
+      "cardiac stress test abnormal",
+      "anaemia",
+      "blood disorder"
+    ],
+    "6 - 12 months": [
+      "cerebral haemorrhage",
+      "fall",
+      "hypotension",
+      "joint injury",
+      "bronchopneumonia",
+      "cerebral ischaemia",
+      "circulatory collapse",
+      "decreased appetite",
+      "febrile neutropenia",
+      "haemorrhage"
+    ],
+    "< 1 month": [
+      "anaemia",
+      "dehydration",
+      "anxiety",
+      "oedema peripheral",
+      "pruritus",
+      "burning sensation",
+      "dermatitis",
+      "dry skin",
+      "emotional distress",
+      "erythema"
+    ],
+    "not specified": [
+      "anxiety",
+      "dyspnoea",
+      "anaemia",
+      "nausea",
+      "oedema peripheral",
+      "asthenia",
+      "injury",
+      "osteonecrosis of jaw",
+      "fall",
+      "fatigue"
+    ]
+  },
+  "gender_interaction": {
+    "female": [
+      "anxiety",
+      "anaemia",
+      "nausea",
+      "asthenia",
+      "pain in extremity",
+      "fall",
+      "injury",
+      "oedema peripheral",
+      "dyspnoea",
+      "osteonecrosis of jaw"
+    ],
+    "male": [
+      "dyspnoea",
+      "anxiety",
+      "pneumonia",
+      "anaemia",
+      "oedema peripheral",
+      "dizziness",
+      "nausea",
+      "hypotension",
+      "injury",
+      "international normalised ratio increased"
+    ]
+  },
+  "reports": {
+    "amount": 1461
+  }
+}

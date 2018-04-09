@@ -1,12 +1,13 @@
 package seng302.Controller.CliCommands;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.Date;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import seng302.Controller.AppController;
-import seng302.Model.Donor;
 import seng302.Model.JsonWriter;
+import seng302.Model.User;
 import seng302.View.IoHelper;
 
 @Command(name = "details", description = "Use -id to identify the the donor. All other tags will update values")
@@ -58,59 +59,60 @@ public class UpdateDetails implements Runnable {
       return;
     }
     AppController controller = AppController.getInstance();
-    Donor donor = controller.getDonor(id);
-    if (donor == null) {
+    User user = controller.getUser(id);
+    if (user == null) {
       System.err.println("Donor could not be found");
       return;
     }
-    changed = IoHelper.updateName(donor, firstName, lastName);
+    changed = IoHelper.updateName(user, firstName, lastName);
 
     if (dobString != null) {
-      Date newDate = IoHelper.readDate(dobString);
+      LocalDate newDate = IoHelper.readDate(dobString);
       if (newDate != null) {
-        donor.setDateOfBirth(newDate);
+        user.setDateOfBirth(newDate);
         changed = true;
       }
     }
 
     if (dodString != null) {
-      Date newDate = IoHelper.readDate(dobString);
+      LocalDate newDate = IoHelper.readDate(dobString);
       if (newDate != null) {
-        donor.setDateOfDeath(newDate);
+        user.setDateOfDeath(newDate);
         changed = true;
       }
     }
     if (weight != -1) {
-      donor.setWeight(weight);
+      user.setWeight(weight);
       changed = true;
     }
     if (height != -1) {
-      donor.setHeight(height);
+      user.setHeight(height);
       changed = true;
     }
     if (gender != null) {
-      donor.setGender(gender);
+      user.setGender(gender);
       changed = true;
     }
     if (bloodType != null) {
-      donor.setBloodType(bloodType);
+      user.setBloodType(bloodType);
       changed = true;
     }
     if (currentAddress != null) {
-      donor.setCurrentAddress(currentAddress);
+      user.setCurrentAddress(currentAddress);
       changed = true;
     }
     if (region != null) {
-      donor.setRegion(region);
+      user.setRegion(region);
       changed = true;
     }
-    if (changed == true) {
-      try {
-        JsonWriter.saveCurrentDonorState(controller.getDonors());
-      }
-      catch (IOException ex) {
-        System.err.println("Could not update details on file");
-      }
-    }
+    //TODO fix json writer
+//    if (changed == true) {
+//      try {
+//        JsonWriter.saveCurrentDonorState(controller.getUsers());
+//      }
+//      catch (IOException ex) {
+//        System.err.println("Could not update details on file");
+//      }
+//    }
   }
 }
