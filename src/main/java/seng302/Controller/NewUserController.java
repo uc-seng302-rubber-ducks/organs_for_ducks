@@ -8,11 +8,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 import java.io.IOException;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 
-
-//TODO: ADD INITIALIZE METHOD AND INSTANTIATE THINGS THROUGH THERE.
 
 /**
  * Controller class for creating a new donor profile.
@@ -43,6 +39,9 @@ public class NewUserController {
 
     @FXML
     private TextField fNameInput;
+
+    @FXML
+    private TextField preferredFNameTextField;
 
     @FXML
     private TextField mNameInput;
@@ -93,13 +92,16 @@ public class NewUserController {
     private TextField ecRelationshipInput;
 
     @FXML
-    private ComboBox genderComboBox;
+    private ComboBox birthGenderComboBox;
+
+    @FXML
+    private ComboBox genderIdComboBox;
 
     @FXML
     private ComboBox bloodComboBox;
 
     @FXML
-    private ComboBox smokerComboBox;
+    private CheckBox smokerCheckBox;
 
     @FXML
     private ComboBox alcoholComboBox;

@@ -20,31 +20,36 @@ import org.joda.time.Years;
  */
 public class Donor {
 
-  private Date dateOfBirth;
-  private Date dateOfDeath;
-  private String gender;
-  private double height;
-  private double weight;
-  private String bloodType;
-  private String currentAddress;
-  private String region;
-  private DateTime timeCreated;
-  private Boolean isDeceased;
-  private String name;
-  private HashSet<Organs> organs;
-  private DateTime lastModified;
-  private ArrayList<String> miscAttributes;
-   private HashMap<String, String> updateHistory;
-   private ArrayList<String> previousMedication;
-   private ArrayList<String> currentMedication;
-   private HashMap<String, ArrayList<DateTime>> previousMedicationTimes;
-   private HashMap<String, ArrayList<DateTime>> currentMedicationTimes;
-   private ArrayList<Change> changes;
+    private Date dateOfBirth;
+    private Date dateOfDeath;
+    private String birthGender;
+    private String genderIdentity;
+    private double height;
+    private double weight;
+    private String bloodType;
+    private String currentAddress;
+    private String region;
+    private DateTime timeCreated;
+    private Boolean isDeceased;
+    private String name; // TODO: Take this out and use the separated names
+    private String firstName;
+    private String preferredFirstName;
+    private String middleName;
+    private String lastName;
+    private HashSet<Organs> organs;
+    private DateTime lastModified;
+    private ArrayList<String> miscAttributes;
+    private HashMap<String, String> updateHistory;
+    private ArrayList<String> previousMedication;
+    private ArrayList<String> currentMedication;
+    private HashMap<String, ArrayList<DateTime>> previousMedicationTimes;
+    private HashMap<String, ArrayList<DateTime>> currentMedicationTimes;
+    private ArrayList<Change> changes;
 
 
 
 
-  public Donor(Date dateOfBirth, Date dateOfDeath, String gender, double height, double weight,
+    public Donor(Date dateOfBirth, Date dateOfDeath, String gender, double height, double weight,
       String bloodType,
       String currentAddress, String region, DateTime timeCreated, String name,
       DateTime lastModified,
@@ -52,11 +57,11 @@ public class Donor {
     this.dateOfBirth = dateOfBirth;
     this.dateOfDeath = dateOfDeath;
     if (gender.startsWith("m") || gender.startsWith("M")) {
-      this.gender = "M";
+      this.birthGender = "M";
     } else if (gender.startsWith("f") || gender.startsWith("F")) {
-      this.gender = "F";
+      this.birthGender = "F";
     } else {
-      this.gender = "U";
+      this.birthGender = "U";
     }
     this.height = height;
     this.weight = weight;
@@ -90,7 +95,7 @@ public class Donor {
         this.name = name;
         timeCreated = DateTime.now();
         lastModified = DateTime.now();
-        this.gender = "U";
+        this.birthGender = "U";
         this.bloodType = "U";
         updateHistory = new HashMap<>();
         updateHistory.put(dateToString(getTimeCreated()), "Profile created.");
@@ -143,6 +148,61 @@ public class Donor {
     this.name = name;
   }
 
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String name) {
+        updateLastModified();
+        this.firstName = name;
+    }
+
+    public String getPrefFirstName() {
+        return preferredFirstName;
+    }
+
+    public void setPrefFirstName(String name) {
+        updateLastModified();
+        this.preferredFirstName = name;
+    }
+
+    public String getMiddleName() {
+        return middleName;
+    }
+
+    public void setMiddleName(String name) {
+        updateLastModified();
+        this.middleName = name;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String name) {
+        updateLastModified();
+        this.lastName = name;
+    }
+
+    public String getFullName() {
+        String fullName;
+
+        if (middleName != null && lastName != null) {
+            fullName = firstName + " " + middleName  + " " + lastName;
+
+        } else if (middleName != null) {
+            fullName = firstName + " " + middleName;
+
+        } else if (lastName != null) {
+            fullName = firstName + " " + lastName;
+
+        } else {
+            fullName = firstName;
+        }
+
+        return fullName;
+    }
+
   public Date getDateOfBirth() {
     return dateOfBirth;
   }
@@ -162,13 +222,22 @@ public class Donor {
   }
 
   public String getGender() {
-    return gender;
+    return birthGender;
   }
 
   public void setGender(String gender) {
     updateLastModified();
-    this.gender = gender;
+    this.birthGender = gender;
   }
+
+    public String getGenderId() {
+        return genderIdentity;
+    }
+
+    public void setGenderId(String gender) {
+        updateLastModified();
+        this.genderIdentity = gender;
+    }
 
   public double getHeight() {
     return height;
@@ -502,7 +571,7 @@ public class Donor {
     return "name:'" + name + "\'" +
         "\ndate Of Birth: " + dateOfBirth +
         "\ndate Of Death :" + dateOfDeath +
-        "\ngender: " + gender +
+        "\ngender: " + birthGender +
         "\nheight: " + height +
         "\nweight: " + weight +
         "\nblood Type: '" + bloodType + '\'' +
