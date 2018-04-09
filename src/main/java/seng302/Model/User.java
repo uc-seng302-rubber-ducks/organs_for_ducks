@@ -61,6 +61,10 @@ public class User {
   @Expose
   private ReceiverDetails receiverDetails;
 
+  private ArrayList<Disease> pastDiseases;
+
+  private ArrayList<Disease> currentDiseases;
+
   public User(java.time.LocalDate dateOfBirth, java.time.LocalDate dateOfDeath, String gender, double height, double weight,
               String bloodType,
               String currentAddress, String region, LocalDateTime timeCreated, String name,
@@ -94,11 +98,15 @@ public class User {
     }
     this.isDeceased = isDeceased;
     updateHistory = new HashMap<>();
+    updateHistory.put(dateToString(getTimeCreated()), "Profile created.");
     this.miscAttributes = new ArrayList<>();
     this.currentMedication = new ArrayList<>();
     this.previousMedication = new ArrayList<>();
     this.currentMedicationTimes = new HashMap<String, ArrayList<LocalDateTime>>();
     this.previousMedicationTimes = new HashMap<String, ArrayList<LocalDateTime>>();
+
+    this.currentDiseases = new ArrayList<>();
+    this.pastDiseases = new ArrayList<>();
 
     this.donorDetails = new DonorDetails(this);
     this.receiverDetails = new ReceiverDetails(this);
@@ -110,25 +118,31 @@ public class User {
     }
   }
 
+  /**
+   * Bare bones constructor that defaults to User(dateOfBirth, null, "U", 0.0, 0.0, "U", null, null, null, name, null, false)
+   * @param name name of the user
+   * @param dateOfBirth date of birth of the user
+   */
   public User(String name, java.time.LocalDate dateOfBirth) {
-    this.dateOfBirth = dateOfBirth;
-    this.name = name;
-    timeCreated = LocalDateTime.now();
-    lastModified = LocalDateTime.now();
-    this.gender = "U";
-    this.bloodType = "U";
-    updateHistory = new HashMap<>();
-    updateHistory.put(dateToString(getTimeCreated()), "Profile created.");
-    this.miscAttributes = new ArrayList<>();
-    this.currentMedication = new ArrayList<>();
-    this.previousMedication = new ArrayList<>();
-    this.currentMedicationTimes = new HashMap<String, ArrayList<LocalDateTime>>();
-    this.previousMedicationTimes = new HashMap<String, ArrayList<LocalDateTime>>();
-
-    this.donorDetails = new DonorDetails(this);
-    this.receiverDetails = new ReceiverDetails(this);
-    //TODO fix json reader
-    //changes = JsonReader.importHistoryFromFile(this);
+    this(dateOfBirth, null, "U", 0.0, 0.0, "U", null, null, null, name, null, false);
+//    this.dateOfBirth = dateOfBirth;
+//    this.name = name;
+//    timeCreated = LocalDateTime.now();
+//    lastModified = LocalDateTime.now();
+//    this.gender = "U";
+//    this.bloodType = "U";
+//    updateHistory = new HashMap<>();
+//
+//    this.miscAttributes = new ArrayList<>();
+//    this.currentMedication = new ArrayList<>();
+//    this.previousMedication = new ArrayList<>();
+//    this.currentMedicationTimes = new HashMap<String, ArrayList<LocalDateTime>>();
+//    this.previousMedicationTimes = new HashMap<String, ArrayList<LocalDateTime>>();
+//
+//    this.donorDetails = new DonorDetails(this);
+//    this.receiverDetails = new ReceiverDetails(this);
+//    //TODO fix json reader
+//    //changes = JsonReader.importHistoryFromFile(this);
   }
 
   /** empty constructor to allow an empty donor to be created for the gui
@@ -310,6 +324,22 @@ public class User {
     isDeceased = deceased;
   }
 
+  public ArrayList<Disease> getCurrentDiseases() {
+    return currentDiseases;
+  }
+
+  public void setCurrentDiseases(ArrayList<Disease> currentDiseases) {
+    this.currentDiseases = currentDiseases;
+  }
+
+  public ArrayList<Disease> getPastDiseases() {
+    return pastDiseases;
+  }
+
+  public void setPastDiseases(ArrayList<Disease> pastDiseases) {
+    this.pastDiseases = pastDiseases;
+  }
+
   /**
    * Method to ensure that all blood types are valid blood types returns U if not a valid blood
    * type
@@ -445,6 +475,7 @@ public class User {
     this.currentMedicationTimes = currentMedicationTimes;
   }
 
+  //TODO: Merge this and the method below into one method.
   /**
    * Use this one when adding a new medication from the donor interface
    * @param medication
