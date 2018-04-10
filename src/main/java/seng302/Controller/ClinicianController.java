@@ -1,5 +1,7 @@
 package seng302.Controller;
 
+import java.lang.reflect.Array;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -36,7 +38,7 @@ public class ClinicianController {
 
   private final int ROWS_PER_PAGE = 30;
   private int startIndex = 0;
-  private int endIndex = startIndex + 30;
+  private int endIndex;
   @FXML
   private TextField regionTextField;
 
@@ -85,6 +87,7 @@ public class ClinicianController {
   private Clinician clinician;
   private ArrayList<User> users;
   private ArrayList<Stage> openStages;
+  private FilteredList<User> fListDonors;
 
   private static int currentIndex = 0;
 
@@ -98,6 +101,9 @@ public class ClinicianController {
     addressTextField.setText(clinician.getWorkAddress());
     regionTextField.setText(clinician.getRegion());
     users = appController.getUsers();
+    for (int i = 0; i < 31; i++) {
+      users.add(new User(String.valueOf(i), LocalDate.now()));
+    }
     initSearchTable();
 
     openStages = new ArrayList<>();
@@ -111,10 +117,8 @@ public class ClinicianController {
       }
     });
     int count = users.size() / ROWS_PER_PAGE;
-    System.out.println(count);
     searchTablePagination.setPageCount(count + 1);
-    System.out.println(users.size() / ROWS_PER_PAGE);
-    searchTablePagination.setPageFactory(this :: changePage);
+    searchTablePagination.currentPageIndexProperty().addListener(((observable, oldValue, newValue) -> changePage(newValue.intValue())));
   }
 
   /**
@@ -126,10 +130,10 @@ public class ClinicianController {
       return;
     }
 
-    List<User> usersSublist = getSearchData();
+    List<User> usersSublist = getSearchData(users);
     //set up lists
     //table contents are SortedList of a FilteredList of an ObservableList of an ArrayList
-    ObservableList<User> oListDonors = FXCollections.observableList(usersSublist);
+    ObservableList<User> oListDonors = FXCollections.observableList(users);
 
     TableColumn<User, String> nameColumn = new TableColumn<>("Name");
     nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
@@ -147,7 +151,7 @@ public class ClinicianController {
     organsColumn.setCellValueFactory(new PropertyValueFactory<>("organs"));
 
     //TODO add more columns as wanted/needed
-    FilteredList<User> fListDonors = new FilteredList<>(oListDonors);
+    fListDonors = new FilteredList<>(oListDonors);
     fListDonors = filter(searchTextField, fListDonors);
     FilteredList<User> squished = new FilteredList<>(fListDonors);
 
@@ -180,14 +184,24 @@ public class ClinicianController {
     });
   }
 
-  private List<User> getSearchData() {
-    return users.subList(startIndex, endIndex);
+  private List<User> getSearchData(ArrayList<User> arrayList) {
+    return arrayList.subList(startIndex, endIndex);
   }
 
   private Node changePage(int pageIndex) {
     startIndex = pageIndex * ROWS_PER_PAGE;
     endIndex = Math.min(startIndex+ROWS_PER_PAGE, users.size());
-    searchTableView.setItems(FXCollections.observableList(getSearchData()));
+
+    int minIndex = Math.min(endIndex, fListDonors.size());
+
+    SortedList<User> sListDonors = new SortedList<>(FXCollections.observableArrayList(fListDonors.subList(Math.min(startIndex, minIndex), minIndex)));
+    sListDonors.comparatorProperty().bind(searchTableView.comparatorProperty());
+
+    searchTableView.setItems(sListDonors);
+
+    int count = users.size() / ROWS_PER_PAGE;
+    searchTablePagination.setPageCount(count + 1);
+
     return searchTableView;
   }
 
@@ -214,32 +228,25 @@ public class ClinicianController {
    * @param fListUsers list to be filtered
    * @return filtered list with filter applied
    */
-  private static FilteredList<User> filter(TextField inputTextField, FilteredList<User> fListUsers) {
+  private FilteredList<User> filter(TextField inputTextField, FilteredList<User> fListUsers) {
     inputTextField.textProperty().addListener((observable, oldValue, newValue) -> {
-      fListUsers.predicateProperty().bind(Bindings.createObjectBinding(() -> Donor -> {
+      fListUsers.predicateProperty().bind(Bindings.createObjectBinding(() -> donor -> {
         if (newValue == null || newValue.isEmpty()) {
           return true;
         }
         String lowerCaseFilterText = newValue.toLowerCase();
-        if (Donor.getName().toLowerCase().contains(lowerCaseFilterText)) {
+        if (donor.getName().toLowerCase().contains(lowerCaseFilterText)) {
           return true;
         }
         //if (other test case) return true
         return false;
       }));
+      changePage(searchTablePagination.getCurrentPageIndex());
     });
+    searchTablePagination.setPageCount(fListUsers.size() / ROWS_PER_PAGE);
     return fListUsers;
   }
 
-  private static FilteredList<User> limit(FilteredList<User> filteredList, SortedList<User> sortedList) {
-    filteredList.setPredicate(Donor -> {
-      if (sortedList.indexOf(Donor) > 30 ) {
-        return false;
-      }
-      return true;
-    });
-    return filteredList;
-  };
   @FXML
   void undo(ActionEvent event) {
 
