@@ -25,8 +25,8 @@ public class UpdateAddTests {
     controller = AppController.getInstance();
     controller.setUsers(new ArrayList<>());
     try {
-      controller.Register("No Organs", LocalDate.parse("1978-03-06",sdf));
-      controller.Register("One Organ", LocalDate.parse("1997-02-05",sdf));
+      controller.Register("No Organs", LocalDate.parse("1978-03-06", sdf), "ABC1234");
+      controller.Register("One Organ", LocalDate.parse("1997-02-05", sdf), "ASD2345");
         User user = controller.findUsers("One Organ").get(0);
         user.getDonorDetails().addOrgan(Organs.LUNG);
     } catch (Exception ex) {

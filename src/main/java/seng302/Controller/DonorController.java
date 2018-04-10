@@ -1,7 +1,6 @@
 package seng302.Controller;
 
 
-import java.awt.geom.Arc2D.Double;
 import java.time.LocalDate;
 
 
@@ -23,6 +22,8 @@ import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import seng302.Controller.UpdateUserController;
 import seng302.Model.*;
+import okhttp3.OkHttpClient;
+import org.controlsfx.control.textfield.TextFields;
 
 import java.io.IOException;
 
@@ -207,6 +208,22 @@ public class DonorController {
     currentMeds.addListener((ListChangeListener.Change<? extends String> change) -> {
       currentMedicationListView.setItems(currentMeds);
       application.update(currentUser);
+    });
+    medicationTextField.textProperty().addListener((observable) -> {
+      String newValue = medicationTextField.getText();
+      if(newValue.length() > 2){
+        try {
+          String autocompleteRaw = HttpRequester.getSuggestedDrugs(newValue, new OkHttpClient());
+          String[] values = autocompleteRaw.replaceAll("^\"", "").replaceAll("\\[","").replaceAll("\\]","").split("\"?(,|$)(?=(([^\"]*\"){2})*[^\"]*$) *\"?");
+          for(int i = 0; i < values.length; i++) {
+            values[i] = values[i].replace('"', ' ').trim();
+          }
+          TextFields.bindAutoCompletion(medicationTextField,values);
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
+
+      }
     });
     if (user.getName() != null) {
       showUser(currentUser); // Assumes a donor with no name is a new sign up and does not pull values from a template
