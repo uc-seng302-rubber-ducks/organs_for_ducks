@@ -134,8 +134,8 @@ public class NewUserController {
     public void init(AppController controller, Stage stage) {
         this.controller = controller;
         this.stage = stage;
-        stage.setMinWidth(620);
-        stage.setMaxWidth(620);
+        //stage.setMinWidth(620);
+        //stage.setMaxWidth(620);
     }
 
 
@@ -187,14 +187,18 @@ public class NewUserController {
         String middleName = AttributeValidation.checkString(mNameInput.getText());
         String lastName = AttributeValidation.checkString(lNameInput.getText());
 
-        String birthGender = AttributeValidation.validateGender(birthGenderComboBox.getValue().toString());
-        String genderIdentity = AttributeValidation.validateGender(genderIdComboBox.getValue().toString());
+        String birthGender = AttributeValidation.validateGender(birthGenderComboBox);
+        String genderIdentity = AttributeValidation.validateGender(genderIdComboBox);
 
         double height = AttributeValidation.validateHeight(heightInput.getText());
         double weight = AttributeValidation.validateWeight(weightInput.getText());
 
-        String bloodType = AttributeValidation.validateBlood(bloodComboBox.getValue().toString()).toString(); // TODO: Change the data type of the value stored in Donor to be BloodTypes
-        String alcoholConsumption = alcoholComboBox.getValue().toString();
+        String bloodType = AttributeValidation.validateBlood(bloodComboBox); // TODO: Change the data type of the value stored in User to be BloodTypes
+
+        String alcoholConsumption = null;
+        if (alcoholComboBox.getValue() != null) {
+            alcoholConsumption = alcoholComboBox.getValue().toString();
+        }
 
         String currentAddress = addressInput.getText();
         String region = regionInput.getText();
@@ -204,12 +208,7 @@ public class NewUserController {
 
 
         boolean smoker;
-        if (smokerCheckBox.isSelected()) {
-            smoker = true;
-
-        } else {
-            smoker = false;
-        }
+        smoker = smokerCheckBox.isSelected();
 
 
         // Emergency Contact attributes
@@ -223,7 +222,6 @@ public class NewUserController {
         User dp = new User(nhi, dob, dod, birthGender, genderIdentity, height, weight, bloodType,
                 alcoholConsumption, smoker, currentAddress, region, homePhone, cellPhone, email, contact,
                 fName, fName, preferredFirstName, middleName, lastName);
-
 
         if (dp != null) {
 //            saveUsers(con.getDonorList(), "src/main/resources/donors.json");
@@ -270,19 +268,33 @@ public class NewUserController {
             valid = false;
         }
 
+
+
+
         if (dob == null) {
+            //invalidDOB.setText("The date of birth cannot be before the current date.");
             invalidDOB.setVisible(true);
             valid = false;
+        } else if (!dob.isBefore(LocalDate.now().plusDays(1))) {
+            //invalidDOB.setText("The date of birth cannot be before the current date.");
+            invalidDOB.setVisible(true);
+            //valid = AttributeValidation.validateDates(dob, dod);
         }
 
         if (dod != null) {
-            valid = AttributeValidation.validateDates(dob, dod);
-            if (!valid) invalidDOD.setVisible(true);
+            boolean datesValid = AttributeValidation.validateDates(dob, dod); // checks if the dod is before the current date and that the dob is before the dod
+            if (!datesValid) {
+                invalidDOD.setVisible(true);
+                valid = false;
+            }
         }
 
         //Donor donor = controller.findDonor(nhi); // checks if the nhi already exists within the system
         User user = controller.findUser(nhi, dob);
         //User user = null;
+
+        System.out.println(fName);
+
 
         if (valid && user == null){
 

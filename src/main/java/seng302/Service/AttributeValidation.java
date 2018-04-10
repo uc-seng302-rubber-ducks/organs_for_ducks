@@ -1,12 +1,10 @@
 package seng302.Service;
 
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.TextField;
 import seng302.Model.BloodTypes;
 
 import java.time.LocalDate;
 import java.time.Period;
-import java.util.Date;
 
 
 /**
@@ -42,13 +40,15 @@ public class AttributeValidation {
     }
 
     /**
-     * Checks that the date of birth is before the date of death.
+     * Checks that the date of birth is before the date of death and the date of death is before tomorrow's date if the
+     * date of death is not null.
      * @param birth The date of birth.
-     * @param death The dat of death.
-     * @return true if the date of birth is valid and before the date of death, false otherwise.
+     * @param death The date of death.
+     * @return true if the date of death is null or the date of birth is before the date of death and the date of death
+     * is before the current date, false otherwise.
      */
     public static boolean validateDates(LocalDate birth, LocalDate death) {
-        return birth != null && (death == null || birth.isBefore(death));
+        return death == null || (birth.isBefore(death) && death.isBefore(LocalDate.now().plusDays(1)));
     }
 
 
@@ -72,68 +72,20 @@ public class AttributeValidation {
 
 
 
-
-//    /**
-//     *
-//     * @param values
-//     * @param command
-//     * @param type
-//     * @return
-//     */
-//    public static String addMultipleValues(String values, String command, TextField type) {
-//        if (!type.getText().isEmpty()) {
-//            values += command + "\"" + type.getText() + "\"";
-//        }
-//
-//        return values;
-//    }
-//
-//
-//    /**
-//     *
-//     * @param values
-//     * @param command
-//     * @param type
-//     * @return
-//     */
-//    public static String addValues(String values, String command, TextField type) {
-//        if (!type.getText().isEmpty()) {
-//            values += command + type.getText();
-//        }
-//
-//        return values;
-//    }
-
-//    public static String addPhoneNumber(String values, String command, TextField type) {
-//        if (!type.getText().isEmpty()) {
-//            values += command + type.getText().replaceAll("\\s+","");
-//        }
-//
-//        return values;
-//    }
-//
-//
-//    public static String addComboSelection(ComboBox type) {
-//        String value;
-//        if (type.getValue() != null) {
-//            value += command + type.getValue().toString();
-//        }
-//
-//        return values;
-//    }
-
-
     /**
      * Gets the enum value of BloodTypes by iterating through the string literals
      * and matching them to the given blood type.
-     * @param blood The given blood type.
+     *
      * @return The enum of the given blood type if found, null otherwise.
      */
-    public static BloodTypes validateBlood(String blood) {
+    public static String validateBlood(ComboBox bloodBox) {
 
-        for (BloodTypes type : BloodTypes.values()) {
-            if (type.equals(blood)) {
-                return type;
+        if (bloodBox.getValue() != null) {
+            String blood = bloodBox.getValue().toString();
+            for (BloodTypes type : BloodTypes.values()) {
+                if ((type.toString()).equals(blood)) {
+                    return blood;
+                }
             }
         }
 
@@ -146,12 +98,12 @@ public class AttributeValidation {
      * @param height The height string to be parsed.
      * @return The height as a Double, or null if there was an exception.
      */
-    public static Double validateHeight(String height) {
-        Double dHeight;
+    public static double validateHeight(String height) {
+        double dHeight;
         try {
             dHeight = Double.parseDouble(height);
         } catch (NumberFormatException e) {
-            dHeight = null;
+            dHeight = 0;
         }
         return dHeight;
     }
@@ -162,12 +114,12 @@ public class AttributeValidation {
      * @param weight The weight string to be parsed.
      * @return The weight as a Double, or null if there was an exception.
      */
-    public static Double validateWeight(String weight) {
-        Double dWeight;
+    public static double validateWeight(String weight) {
+        double dWeight;
         try {
             dWeight = Double.parseDouble(weight);
         } catch (NumberFormatException e) {
-            dWeight = null;
+            dWeight = 0;
         }
         return dWeight;
     }
@@ -175,14 +127,14 @@ public class AttributeValidation {
 
     /**
      * Gets the first character of the given gender.
-     * @param selectedGender The given gender.
+     *
      * @return The gender as a Character.
      */
-    public static String validateGender(String selectedGender) {
+    public static String validateGender(ComboBox type) {
         String gender = null;
 
-        if (selectedGender != null) {
-            gender = Character.toString(selectedGender.charAt(0));
+        if (type.getValue() != null && type.getValue().toString() != null) {
+            gender = Character.toString(type.getValue().toString().charAt(0));
         }
 
         return gender;
