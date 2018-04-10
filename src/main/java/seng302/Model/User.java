@@ -66,7 +66,7 @@ public class User {
       String bloodType,
       String currentAddress, String region, LocalDateTime timeCreated, String name,
       LocalDateTime lastModified,
-      boolean isDeceased) {
+      boolean isDeceased, String NHI) {
     this.dateOfBirth = dateOfBirth;
     this.dateOfDeath = dateOfDeath;
     if (gender.startsWith("m") || gender.startsWith("M")) {
@@ -100,7 +100,7 @@ public class User {
     this.previousMedication = new ArrayList<>();
     this.currentMedicationTimes = new HashMap<String, ArrayList<LocalDateTime>>();
     this.previousMedicationTimes = new HashMap<String, ArrayList<LocalDateTime>>();
-
+    this.NHI = NHI;
     this.donorDetails = new DonorDetails(this);
     this.receiverDetails = new ReceiverDetails(this);
     //TODO fix json reader
@@ -109,11 +109,13 @@ public class User {
     } catch (FileNotFoundException e) {
       e.printStackTrace();
     }
+
   }
 
-  public User(String name, java.time.LocalDate dateOfBirth) {
+  public User(String name, java.time.LocalDate dateOfBirth, String NHI) {
     this.dateOfBirth = dateOfBirth;
     this.name = name;
+    this.NHI = NHI;
     timeCreated = LocalDateTime.now();
     lastModified = LocalDateTime.now();
     this.gender = "U";
@@ -268,8 +270,9 @@ public class User {
   }
 
   public void setBloodType(String bloodType) {
+    String validType = groupBloodType(bloodType);
     updateLastModified();
-    this.bloodType = bloodType;
+    this.bloodType = validType;
   }
 
   public String getCurrentAddress() {
@@ -545,7 +548,6 @@ public class User {
       return false;
     }
     User other = (User) o;
-    //TODO change to use NHI when this is implemented. same with hashcode
     return this.NHI.equals(other.NHI);
     //return Objects.equals(dateOfBirth, other.dateOfBirth) && name.equalsIgnoreCase(other.name);
   }
@@ -553,12 +555,13 @@ public class User {
   @Override
   public int hashCode() {
 
-    return Objects.hash(dateOfBirth, name);
+    return Objects.hash(NHI);
   }
 
   @Override
   public String toString() {
     return "name:'" + name + "\'" +
+        "\nNHI: " + NHI +
         "\ndate Of Birth: " + dateOfBirth +
         "\ndate Of Death :" + dateOfDeath +
         "\ngender: " + gender +
@@ -569,7 +572,6 @@ public class User {
         "\nregion: '" + region + '\'' +
         "\norgans: " + donorDetails.getOrgans() +
         "\ntime Created: " + timeCreated +
-        "\nlast modified: " + lastModified +
-        "\nhashcode=" + hashCode();
+        "\nlast modified: " + lastModified;
   }
 }

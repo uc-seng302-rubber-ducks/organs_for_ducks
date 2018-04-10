@@ -24,7 +24,10 @@ public class Register implements Runnable {
   @Parameters(index = "1")
   private String lastName;
 
-  @Parameters(index = "2", description = "format 'yyyy-mm-dd'")
+  @Parameters(index = "2", description = "NHI 'ABC1234'")
+  private String NHI;
+
+  @Parameters(index = "3", description = "format 'yyyy-mm-dd'")
   private String dobString;
 
   @Option(names = {"-dod"}, description = "Date of death. same formatting as dob")
@@ -61,9 +64,9 @@ public class Register implements Runnable {
     if (dob == null) {
       return;
     }
-    int id = controller.Register(firstName + " " + lastName, dob);
+    int id = controller.Register(firstName + " " + lastName, dob, NHI);
     User donor = controller.getUser(id);
-    if (donor == null){
+    if (donor == null) {
       System.out.println("Donor already exists. New donor has not been added");
       return;
     }
