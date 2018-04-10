@@ -207,8 +207,11 @@ public class User {
     changes = new ArrayList<>();
   }
 
+    public EmergencyContact getContact() {
+        return contact;
+    }
 
-  public DonorDetails getDonorDetails() {
+    public DonorDetails getDonorDetails() {
     return donorDetails;
   }
 
@@ -425,6 +428,75 @@ public class User {
     updateLastModified();
     isDeceased = deceased;
   }
+
+  public String getPreferredFirstName() {
+    return preferredFirstName;
+  }
+
+  public void setPreferredFirstName(String preferredFirstName) {
+    this.preferredFirstName = preferredFirstName;
+  }
+
+  public String getBirthGender() {
+    return birthGender;
+  }
+
+  public void setBirthGender(String birthGender) {
+    this.birthGender = birthGender;
+  }
+
+  public String getGenderIdentity() {
+    return genderIdentity;
+  }
+
+  public void setGenderIdentity(String genderIdentity) {
+    this.genderIdentity = genderIdentity;
+  }
+
+  public String getAlcoholConsumption() {
+    return alcoholConsumption;
+  }
+
+  public void setAlcoholConsumption(String alcoholConsumption) {
+    this.alcoholConsumption = alcoholConsumption;
+  }
+
+  public boolean isSmoker() {
+    return smoker;
+  }
+
+  public void setSmoker(boolean smoker) {
+    this.smoker = smoker;
+  }
+
+  public String getHomePhone() {
+    return homePhone;
+  }
+
+  public void setHomePhone(String homePhone) {
+    this.homePhone = homePhone;
+  }
+
+  public String getCellPhone() {
+    return cellPhone;
+  }
+
+  public void setCellPhone(String cellPhone) {
+    this.cellPhone = cellPhone;
+  }
+
+  public String getEmail() {
+    return email;
+  }
+
+  public void setEmail(String email) {
+    this.email = email;
+  }
+
+  public void setContact(EmergencyContact contact) {
+    this.contact = contact;
+  }
+
 
   /**
    * Method to ensure that all blood types are valid blood types returns U if not a valid blood
