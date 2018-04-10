@@ -19,6 +19,8 @@ import java.util.Scanner;
 public class DeleteDonor implements Runnable {
 
   private InputStream inputStream = System.in;
+  private Scanner sc = new Scanner(inputStream);
+  private AppController controller = AppController.getInstance();
 
   @Option(names = {"-h",
       "help"}, required = false, usageHelp = true, description = "display a help message")
@@ -29,8 +31,6 @@ public class DeleteDonor implements Runnable {
 
   @Override
   public void run() {
-    AppController controller = AppController.getInstance();
-
     if (helpRequested) {
       System.out.println(
           "Used to delete a Donor from the current Donor pool. Donor must be confirmed before deletion");
@@ -43,7 +43,6 @@ public class DeleteDonor implements Runnable {
     }
     System.out.println("This will delete the following donor: " + toDelete.toString());
     System.out.println("Please enter Y/n to confirm deletion");
-    Scanner sc = new Scanner(System.in);
 
     while (true) {
       String confirmString = sc.next();
@@ -67,12 +66,12 @@ public class DeleteDonor implements Runnable {
 //        }
   }
 
-  /**
-   * stream is System.in by default. This method exists for mocking only
-   *
-   * @param inputStream new inputStream to use
-   */
-  public void setInputStream(InputStream inputStream) {
-    this.inputStream = inputStream;
+  public void setScanner(Scanner sc) {
+    this.sc = sc;
+  }
+
+  public void setController(AppController controller) {
+    this.controller = controller;
+
   }
 }
