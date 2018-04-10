@@ -54,6 +54,8 @@ public class User {
   private HashMap<String, ArrayList<LocalDateTime>> currentMedicationTimes;
   @Expose
   private ArrayList<Change> changes;
+  @Expose
+  private  ArrayList<MedicalProcedure> medicalProcedures;
 
   //flags and extra details for if the person is a donor or a receiver
   @Expose
@@ -66,7 +68,7 @@ public class User {
       String bloodType,
       String currentAddress, String region, LocalDateTime timeCreated, String name,
       LocalDateTime lastModified,
-      boolean isDeceased, String nhi) {
+      boolean isDeceased, String nhi, ArrayList<MedicalProcedure> medicalProcedures) {
     this.dateOfBirth = dateOfBirth;
     this.dateOfDeath = dateOfDeath;
     if (gender.startsWith("m") || gender.startsWith("M")) {
@@ -103,6 +105,7 @@ public class User {
     this.nhi = nhi;
     this.donorDetails = new DonorDetails(this);
     this.receiverDetails = new ReceiverDetails(this);
+    this.medicalProcedures = medicalProcedures;
     //TODO fix json reader
     try {
       changes = JsonHandler.importHistoryFromFile(name);
@@ -130,6 +133,7 @@ public class User {
 
     this.donorDetails = new DonorDetails(this);
     this.receiverDetails = new ReceiverDetails(this);
+    this.medicalProcedures =  new ArrayList<>();
     //TODO fix json reader
     //changes = JsonReader.importHistoryFromFile(this);
   }
@@ -522,6 +526,25 @@ public class User {
     changes.add(change);
   }
 
+  public ArrayList<MedicalProcedure> getMedicalProcedures() {
+    return medicalProcedures;
+  }
+
+  public void setMedicalProcedures(ArrayList<MedicalProcedure> medicalProcedures) {
+    updateLastModified();
+    this.medicalProcedures = medicalProcedures;
+  }
+
+  public void addMedicalProcedure(MedicalProcedure medicalProcedure){
+    updateLastModified();
+    medicalProcedures.add(medicalProcedure);
+  }
+
+  public void removeMedicalProcedure(MedicalProcedure medicalProcedure){
+    updateLastModified();
+    medicalProcedures.remove(medicalProcedure);
+  }
+
   public String getTooltip() {
     //TODO fix this to show full info where possible
     if (this.donorDetails.getOrgans() == null) {
@@ -548,8 +571,6 @@ public class User {
       return false;
     }
     User other = (User) o;
-    System.out.println(this);
-    System.out.println(other);
     return this.nhi.equals(other.getNhi());
     //return Objects.equals(dateOfBirth, other.dateOfBirth) && name.equalsIgnoreCase(other.name);
   }
