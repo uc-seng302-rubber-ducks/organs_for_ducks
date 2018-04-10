@@ -94,34 +94,26 @@ public class AttributeValidation {
 
 
     /**
-     * Checks that the given height can be parsed as a Double.
-     * @param height The height string to be parsed.
-     * @return The height as a Double, or null if there was an exception.
+     * Checks that the given value can be parsed as a Double.
+     * @param stringValue Either the height or weight to be parsed as a double.
+     * @return The value as a Double, -1 if the value was <= 0 or there was an exception, otherwise 0 if the value was empty.
      */
-    public static double validateHeight(String height) {
-        double dHeight;
-        try {
-            dHeight = Double.parseDouble(height);
-        } catch (NumberFormatException e) {
-            dHeight = 0;
-        }
-        return dHeight;
-    }
+    public static double validateDouble(String stringValue) {
+        double doubleValue;
 
-
-    /**
-     * Checks that the given weight can be parsed as a Double.
-     * @param weight The weight string to be parsed.
-     * @return The weight as a Double, or null if there was an exception.
-     */
-    public static double validateWeight(String weight) {
-        double dWeight;
-        try {
-            dWeight = Double.parseDouble(weight);
-        } catch (NumberFormatException e) {
-            dWeight = 0;
+        if (!stringValue.isEmpty()) {
+            try {
+                doubleValue = Double.parseDouble(stringValue);
+                if (doubleValue <= 0) {
+                    doubleValue = -1;
+                }
+            } catch (NumberFormatException e) {
+                doubleValue = -1;
+            }
+        } else {
+            doubleValue = 0;
         }
-        return dWeight;
+        return doubleValue;
     }
 
 

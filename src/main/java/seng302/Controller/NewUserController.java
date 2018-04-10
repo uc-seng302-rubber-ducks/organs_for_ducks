@@ -16,7 +16,10 @@ import seng302.Service.AttributeValidation;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.Date;
+
+import static seng302.Model.JsonHandler.saveUsers;
 
 
 /**
@@ -179,64 +182,94 @@ public class NewUserController {
     private void createUser(String nhi, String fName, LocalDate dob, LocalDate dod) throws IOException {
 
         // TODO: Add in more validation and do not allow the user to be created if any of the fields are wrong.
-
-
+        boolean valid = true;
 
         // User attributes
+        // check string returns null if the textfield is empty
         String preferredFirstName = AttributeValidation.checkString(preferredFNameTextField.getText());
         String middleName = AttributeValidation.checkString(mNameInput.getText());
         String lastName = AttributeValidation.checkString(lNameInput.getText());
 
         String birthGender = AttributeValidation.validateGender(birthGenderComboBox);
         String genderIdentity = AttributeValidation.validateGender(genderIdComboBox);
+        String bloodType = AttributeValidation.validateBlood(bloodComboBox);
 
-        double height = AttributeValidation.validateHeight(heightInput.getText());
-        double weight = AttributeValidation.validateWeight(weightInput.getText());
-
-        String bloodType = AttributeValidation.validateBlood(bloodComboBox); // TODO: Change the data type of the value stored in User to be BloodTypes
+        boolean smoker = smokerCheckBox.isSelected();
 
         String alcoholConsumption = null;
         if (alcoholComboBox.getValue() != null) {
             alcoholConsumption = alcoholComboBox.getValue().toString();
         }
 
-        String currentAddress = addressInput.getText();
-        String region = regionInput.getText();
+        // validate doubles return -1 if the value is 0 or below, and 0 if the textfield is empty
+        double height = AttributeValidation.validateDouble(heightInput.getText());
+        double weight = AttributeValidation.validateDouble(weightInput.getText());
+        if (height == -1 || weight == -1) {
+            errorLabel.setVisible(true);
+            valid = false;
+        }
+        // todo: add in validation for phone numbers and email
+        // contact details
+        String currentAddress = AttributeValidation.checkString(addressInput.getText());
+        String region = AttributeValidation.checkString(regionInput.getText());
         String homePhone = phoneInput.getText();
         String cellPhone = cellInput.getText();
         String email = emailInput.getText();
 
-
-        boolean smoker;
-        smoker = smokerCheckBox.isSelected();
-
-
         // Emergency Contact attributes
-        String eName = ecNameInput.getText();
+        String eName = AttributeValidation.checkString(ecNameInput.getText());
         String eCellPhone = ecCellInput.getText();
+        String eHomePhone = ecPhoneInput.getText();
+        String eAddress = AttributeValidation.checkString(ecAddressInput.getText());
+        String eRegion = AttributeValidation.checkString(ecRegionInput.getText());
+        String eEmail = ecEmailInput.getText();
+        String eRelationship = AttributeValidation.checkString(ecRelationshipInput.getText());
 
+        // the name and cell number are required if any other attributes are filled out
+        if ((eName == null || eCellPhone.isEmpty()) && (!eHomePhone.isEmpty() || eAddress != null || eRegion != null ||
+                !eEmail.isEmpty() || eRelationship != null)) {
+            valid = false;
+            errorLabel.setText("Name and cell phone number are required for an emergency contact.");
+            errorLabel.setVisible(true);
+        }
 
-        EmergencyContact contact = new EmergencyContact(eName, eCellPhone);
+        if (valid) {
+            EmergencyContact contact = null;
 
+            if (!(eName == null) && !eCellPhone.isEmpty()) {
+                // create the emergency contact
+                contact = new EmergencyContact(eName, eCellPhone);
+                contact.setHomePhoneNumber(eHomePhone);
+                contact.setAddress(eAddress);
+                contact.setRegion(eRegion);
+                contact.setEmail(eEmail);
+                contact.setRelationship(eRelationship);
+            }
 
-        User dp = new User(nhi, dob, dod, birthGender, genderIdentity, height, weight, bloodType,
-                alcoholConsumption, smoker, currentAddress, region, homePhone, cellPhone, email, contact,
-                fName, fName, preferredFirstName, middleName, lastName);
+            // create the new user
+            User newUser = new User(nhi, dob, dod, birthGender, genderIdentity, height, weight, bloodType,
+                    alcoholConsumption, smoker, currentAddress, region, homePhone, cellPhone, email, contact,
+                    fName, fName, preferredFirstName, middleName, lastName);
 
-        if (dp != null) {
-//            saveUsers(con.getDonorList(), "src/main/resources/donors.json");
+            // add the new user to the list of users and save them
+            ArrayList<User> users = controller.getUsers();
+            users.add(newUser);
+            saveUsers(users);
 
+            // load to the overview page
             FXMLLoader donorLoader = new FXMLLoader(getClass().getResource("/FXML/donorView.fxml"));
             Parent root = null;
+
             try {
                 root = donorLoader.load();
+                stage.setScene(new Scene(root));
+                DonorController donorController = donorLoader.getController();
+                AppController.getInstance().setDonorController(donorController);
+                donorController.init(AppController.getInstance(), newUser, stage,false);
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            stage.setScene(new Scene(root));
-            DonorController donorController = donorLoader.getController();
-            AppController.getInstance().setDonorController(donorController);
-            donorController.init(AppController.getInstance(), dp, stage,false);
         }
     }
 
@@ -254,9 +287,8 @@ public class NewUserController {
         String nhi = AttributeValidation.validateNHI(nhiInput.getText());
         String fName = AttributeValidation.checkString(fNameInput.getText());
 
-        LocalDate dob = dobInput.getValue(); // TODO: use LocalDate objects?
+        LocalDate dob = dobInput.getValue();
         LocalDate dod = dodInput.getValue();
-
 
         if (nhi == null) {
             invalidNHI.setVisible(true);
@@ -268,21 +300,15 @@ public class NewUserController {
             valid = false;
         }
 
-
-
-
         if (dob == null) {
-            //invalidDOB.setText("The date of birth cannot be before the current date.");
             invalidDOB.setVisible(true);
             valid = false;
-        } else if (!dob.isBefore(LocalDate.now().plusDays(1))) {
-            //invalidDOB.setText("The date of birth cannot be before the current date.");
+        } else if (!dob.isBefore(LocalDate.now().plusDays(1))) { // checks that the date of birth is before tomorrow's date
             invalidDOB.setVisible(true);
-            //valid = AttributeValidation.validateDates(dob, dod);
         }
 
         if (dod != null) {
-            boolean datesValid = AttributeValidation.validateDates(dob, dod); // checks if the dod is before the current date and that the dob is before the dod
+            boolean datesValid = AttributeValidation.validateDates(dob, dod); // checks if the dod is before tomorrow's date and that the dob is before the dod
             if (!datesValid) {
                 invalidDOD.setVisible(true);
                 valid = false;
@@ -290,21 +316,13 @@ public class NewUserController {
         }
 
         //Donor donor = controller.findDonor(nhi); // checks if the nhi already exists within the system
-        User user = controller.findUser(nhi, dob);
-        //User user = null;
-
-        System.out.println(fName);
-
+        User user = controller.findUser(fName); // TODO: change this to check for the nhi
 
         if (valid && user == null){
-
             createUser(nhi, fName, dob, dod);
-
-
         } else if (user != null) {
             existingNHI.setVisible(true);
         }
-
     }
 
 
@@ -319,6 +337,4 @@ public class NewUserController {
         invalidFirstName.setVisible(false);
         existingNHI.setVisible(false);
     }
-
-
 }

@@ -7,7 +7,6 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-
 <ScrollPane prefHeight="739.0" prefWidth="615.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.Controller.NewUserController">
    <content>
       <AnchorPane prefHeight="739.0" prefWidth="600.0">
@@ -28,12 +27,6 @@
                       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                   </rowConstraints>
                   <children>
-                      <TextField fx:id="nhiInput" prefHeight="25.0" prefWidth="131.0" GridPane.columnIndex="1" />
-                      <TextField fx:id="fNameInput" prefHeight="25.0" prefWidth="162.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                      <TextField fx:id="mNameInput" prefHeight="25.0" prefWidth="367.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                      <TextField fx:id="lNameInput" prefHeight="25.0" prefWidth="178.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                      <DatePicker fx:id="dobInput" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-                      <DatePicker fx:id="dodInput" GridPane.columnIndex="1" GridPane.rowIndex="6" />
                       <Label text="NHI*:" />
                       <Label text="First Name*:" GridPane.rowIndex="1" />
                       <Label text="Middle Name:" GridPane.rowIndex="3" />
@@ -54,7 +47,13 @@
                       <Label fx:id="invalidDOB" text="Invalid date of birth" textFill="#c63636" visible="false" GridPane.columnIndex="2" GridPane.rowIndex="5" />
                       <Label fx:id="invalidNHI" text="Invalid NHI" textFill="#c63636" visible="false" GridPane.columnIndex="2" />
                       <Label text="Preferred First Name:" GridPane.rowIndex="2" />
+                      <TextField fx:id="nhiInput" prefHeight="25.0" prefWidth="131.0" GridPane.columnIndex="1" />
+                      <TextField fx:id="fNameInput" prefHeight="25.0" prefWidth="162.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                       <TextField fx:id="preferredFNameTextField" layoutX="136.0" layoutY="56.0" prefHeight="25.0" prefWidth="162.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                      <TextField fx:id="mNameInput" prefHeight="25.0" prefWidth="367.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                      <TextField fx:id="lNameInput" prefHeight="25.0" prefWidth="178.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                      <DatePicker fx:id="dobInput" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                      <DatePicker fx:id="dodInput" GridPane.columnIndex="1" GridPane.rowIndex="6" />
                   </children>
                   <padding>
                       <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
@@ -74,6 +73,13 @@
                       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                   </rowConstraints>
                   <children>
+                      <Label prefHeight="20.0" prefWidth="89.0" text="Birth Gender:" />
+                      <Label prefHeight="15.0" prefWidth="81.0" text="Height (m):" GridPane.rowIndex="2" />
+                      <Label prefHeight="15.0" prefWidth="86.0" text="Weight (kg):" GridPane.rowIndex="3" />
+                      <Label text="Blood Type:" GridPane.columnIndex="2" />
+                      <Label text="Smoker:" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                      <Label text="Alcohol Consumption:" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                      <Label text="Gender Identity:" GridPane.rowIndex="1" />
                       <ComboBox fx:id="birthGenderComboBox" prefHeight="25.0" prefWidth="171.0" GridPane.columnIndex="1">
                           <items>
                               <FXCollections fx:factory="observableArrayList">
@@ -83,6 +89,17 @@
                               </FXCollections>
                           </items>
                       </ComboBox>
+                      <ComboBox fx:id="genderIdComboBox" layoutX="141.0" layoutY="23.0" prefHeight="25.0" prefWidth="171.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                          <items>
+                              <FXCollections fx:factory="observableArrayList">
+                                  <String fx:value="Female" />
+                                  <String fx:value="Male" />
+                                  <String fx:value="Non Binary" />
+                              </FXCollections>
+                          </items>
+                      </ComboBox>
+                      <TextField fx:id="heightInput" prefHeight="25.0" prefWidth="375.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                      <TextField fx:id="weightInput" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                       <ComboBox fx:id="bloodComboBox" prefHeight="25.0" prefWidth="151.0" GridPane.columnIndex="3">
                           <items>
                               <FXCollections fx:factory="observableArrayList">
@@ -97,12 +114,6 @@
                               </FXCollections>
                           </items>
                       </ComboBox>
-                      <TextField fx:id="heightInput" prefHeight="25.0" prefWidth="375.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                      <TextField fx:id="weightInput" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                      <Label prefHeight="20.0" prefWidth="89.0" text="Birth Gender:" />
-                      <Label prefHeight="15.0" prefWidth="81.0" text="Height (m):" GridPane.rowIndex="2" />
-                      <Label prefHeight="15.0" prefWidth="86.0" text="Weight (kg):" GridPane.rowIndex="3" />
-                      <Label text="Blood Type:" GridPane.columnIndex="2" />
                       <ComboBox fx:id="alcoholComboBox" prefWidth="150.0" GridPane.columnIndex="3" GridPane.rowIndex="1">
                           <items>
                               <FXCollections fx:factory="observableArrayList">
@@ -115,18 +126,6 @@
                           <value>
                               <String fx:value="None" />
                           </value>
-                      </ComboBox>
-                      <Label text="Smoker:" GridPane.columnIndex="2" GridPane.rowIndex="2" />
-                      <Label text="Alcohol Consumption:" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-                      <Label text="Gender Identity:" GridPane.rowIndex="1" />
-                      <ComboBox fx:id="genderIdComboBox" layoutX="141.0" layoutY="23.0" prefHeight="25.0" prefWidth="171.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
-                          <items>
-                              <FXCollections fx:factory="observableArrayList">
-                                  <String fx:value="Female" />
-                                  <String fx:value="Male" />
-                                  <String fx:value="Non Binary" />
-                              </FXCollections>
-                          </items>
                       </ComboBox>
                   <CheckBox fx:id="smokerCheckBox" mnemonicParsing="false" text="Yes" GridPane.columnIndex="3" GridPane.rowIndex="2" />
                   </children>
@@ -147,16 +146,16 @@
                       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                   </rowConstraints>
                   <children>
-                      <TextField fx:id="phoneInput" GridPane.columnIndex="1" />
-                      <TextField fx:id="cellInput" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                      <TextField fx:id="addressInput" prefHeight="7.0" prefWidth="183.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                      <TextField fx:id="regionInput" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                      <TextField fx:id="emailInput" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                       <Label text="Home Phone:" />
                       <Label text="Cell Phone:" GridPane.rowIndex="1" />
                       <Label text="Address:" GridPane.rowIndex="2" />
                       <Label text="Region:" GridPane.rowIndex="3" />
                       <Label text="Email:" GridPane.rowIndex="4" />
+                      <TextField fx:id="phoneInput" GridPane.columnIndex="1" />
+                      <TextField fx:id="cellInput" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                      <TextField fx:id="addressInput" prefHeight="7.0" prefWidth="183.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                      <TextField fx:id="regionInput" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                      <TextField fx:id="emailInput" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                   </children>
                   <padding>
                       <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
@@ -177,12 +176,6 @@
                       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                   </rowConstraints>
                   <children>
-                      <TextField fx:id="ecPhoneInput" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                      <TextField fx:id="ecCellInput" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                      <TextField fx:id="ecAddressInput" prefHeight="15.0" prefWidth="187.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                      <TextField fx:id="ecRegionInput" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                      <TextField fx:id="ecEmailInput" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-                      <TextField fx:id="ecRelationshipInput" GridPane.columnIndex="1" GridPane.rowIndex="6" />
                       <Label text="Home Phone:" GridPane.rowIndex="1" />
                       <Label text="Cell Phone:" GridPane.rowIndex="2" />
                       <Label text="Address:" GridPane.rowIndex="3" />
@@ -191,13 +184,17 @@
                       <Label text="Relationship:" GridPane.rowIndex="6" />
                       <Label text="Name:" />
                       <TextField fx:id="ecNameInput" GridPane.columnIndex="1" />
+                      <TextField fx:id="ecPhoneInput" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                      <TextField fx:id="ecCellInput" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                      <TextField fx:id="ecAddressInput" prefHeight="15.0" prefWidth="187.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                      <TextField fx:id="ecRegionInput" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                      <TextField fx:id="ecEmailInput" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                      <TextField fx:id="ecRelationshipInput" GridPane.columnIndex="1" GridPane.rowIndex="6" />
                   </children>
                   <padding>
                       <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                   </padding>
               </GridPane>
-              <Button fx:id="cancelButton" layoutX="10.0" layoutY="703.0" mnemonicParsing="false" onAction="#cancelCreation" text="Cancel" />
-              <Button fx:id="confirmButton" layoutX="479.0" layoutY="704.0" mnemonicParsing="false" onAction="#confirmCreation" text="Create Profile" />
               <Label layoutX="14.0" layoutY="9.0" text="Create New User">
                   <font>
                       <Font name="System Bold" size="15.0" />
@@ -221,7 +218,9 @@
                   </font>
               </Label>
               <Separator layoutY="278.0" prefHeight="3.0" prefWidth="600.0" />
-              <Label fx:id="errorLabel" layoutX="259.0" layoutY="674.0" prefHeight="42.0" prefWidth="226.0" text="Error in creating profile.&#10;Please make sure your details are correct." textFill="#c63636" visible="false" />
+              <Label fx:id="errorLabel" alignment="TOP_LEFT" layoutX="185.0" layoutY="689.0" prefHeight="42.0" prefWidth="226.0" text="Error in creating profile.&#10;Please make sure your details are correct." textFill="#c63636" visible="false" wrapText="true" />
+              <Button fx:id="cancelButton" layoutX="10.0" layoutY="703.0" mnemonicParsing="false" onAction="#cancelCreation" text="Cancel" />
+              <Button fx:id="confirmButton" layoutX="479.0" layoutY="704.0" mnemonicParsing="false" onAction="#confirmCreation" text="Create Profile" />
           </children>
       </AnchorPane>
    </content>
