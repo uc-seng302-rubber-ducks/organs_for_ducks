@@ -29,7 +29,7 @@ public class UpdateDetailsTests {
     controller.setUsers(new ArrayList<>());
 
     try {
-      id = controller.Register("test dummy", LocalDate.parse("1111-11-11",sdf));
+      id = controller.Register("test dummy", LocalDate.parse("1111-11-11", sdf), "ABC1234");
       User user = controller.findUsers("test dummy").get(0);
       user.setWeight(65.3);
     }
