@@ -129,20 +129,24 @@ public class AppController {
   }
 
   /**
-   * @return hashCode of the new donor or -1 on error
+   *
+   * @param name name of new user
+   * @param dateOfBirth dob of new user
+   * @param NHI NHI of new user
+   * @return true if the user was created, false if there was an error or user already exists
    */
-  public int Register(String name, LocalDate dateOfBirth, String NHI) {
+  public boolean Register(String name, LocalDate dateOfBirth, String NHI) {
     try {
       User newUser = new User(name, dateOfBirth, NHI);
       if (users.contains(newUser)) {
-        return -1;
+        return false;
       }
       users.add(newUser);
-      return newUser.hashCode();
+      return true;
     } catch (Exception e) {
       //TODO debug writer?
       System.err.println(e.getMessage());
-      return -1;
+      return false;
     }
   }
 
@@ -186,17 +190,17 @@ public class AppController {
   }
 
   /**
-   * Finds donor by name only. This method will need to be migrated to unique username in later builds
-   * returns null if donor is not found
+   * Find user by NHI
+   * @param NHI of user e.g. ABC1234
+   * @return User corresponding to this NHI or null if none found
    */
   public User findUser(String NHI) {
-    User toReturn = null;
     for (User u : users){
       if (u.getNHI().equals(NHI)) {
         return u;
       }
     }
-    return toReturn;
+    return null;
   }
 
 
@@ -224,13 +228,13 @@ public class AppController {
   }
 
   /**
-   * finds a single donor by their hashCode (unique id)
+   * finds a user by their NHI
    *
-   * @return Donor corresponding with the hashCode given or null if dne
+   * @return Donor corresponding with the NHI given or null if dne
    */
-  public User getUser(int hashCode) {
+  public User getUser(String NHI) {
     for (User user : users) {
-      if (user.hashCode() == hashCode) {
+      if (user.getNHI().equals(NHI)) {
         return user;
       }
     }

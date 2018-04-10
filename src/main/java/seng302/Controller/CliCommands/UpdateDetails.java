@@ -26,6 +26,9 @@ public class UpdateDetails implements Runnable {
   @Option(names = {"-l", "-lname"})
   private String lastName;
 
+  @Option(names = {"-NHI", "-nhi"})
+  private String NHI;
+
   @Option(names = {"-dob"}, description = "format 'yyyy-mm-dd'")
   private String dobString;
 

@@ -152,4 +152,10 @@ public class UpdateDetailsTests {
     System.out.println(newTime); // test needs delay removing these lines will cause the test to fail
     assert(newTime.isAfter(oldTime));
   }
+
+  @Test
+  public void ShouldNotUpdateNHItoDuplicateOfExistingUser() {
+    //one user cannot have the NHI changed to that of another user
+    fail("not yet implemented");
+  }
 }
