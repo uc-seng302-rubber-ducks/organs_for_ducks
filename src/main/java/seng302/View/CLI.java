@@ -1,6 +1,7 @@
 package seng302.View;
 
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import org.jline.keymap.KeyMap;
 import org.jline.reader.Binding;
@@ -45,9 +46,9 @@ public class CLI {
       System.exit(1);
       return null;
     }
-  }}
+  }
 
-/*  public static void main(String[] args) {
+  public static void main(String[] args) {
     System.out.println("Welcome to the CLI. enter your command or type 'help' for help");
 
     AppController controller = AppController.getInstance();
@@ -71,5 +72,6 @@ public class CLI {
       //System.out.println(lineReader.getHistory().last());
       input = lineReader.readLine(">> ");
     }
+    System.out.println("CLI exited.");
   }
-}*/
+}
