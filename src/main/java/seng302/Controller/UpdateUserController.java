@@ -133,10 +133,10 @@ public class UpdateUserController {
         this.stage = stage;
         currentUser = user;
         this.appController = controller;
-        UndoRedoStacks.storeUndoCopy(currentUser);
+        //UndoRedoStacks.storeUndoCopy(currentUser);
         currentUser = user;
         oldUser = new User();
-        UndoRedoStacks.cloneUser(currentUser,oldUser);
+        //UndoRedoStacks.cloneUser(currentUser,oldUser);
 
 
     }

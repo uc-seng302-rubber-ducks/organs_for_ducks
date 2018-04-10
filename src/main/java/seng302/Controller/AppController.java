@@ -181,13 +181,13 @@ public class AppController {
   }
 
   /**
-   * Finds donor by name only. This method will need to be migrated to unique username in later builds
+   * Finds donor by nhi only. This method will need to be migrated to unique username in later builds
    * returns null if donor is not found
    */
-  public User findUser(String name) {
+  public User findUser(String nhi) {
     User toReturn = null;
     for (User u : users){
-      if(u.getName().equalsIgnoreCase(name)){
+      if(u.getNHI().toLowerCase().equalsIgnoreCase(nhi.toLowerCase())){
         return u;
       }
     }
