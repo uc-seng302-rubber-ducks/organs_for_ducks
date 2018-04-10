@@ -111,9 +111,9 @@ public class LoginController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        stage.setScene(new Scene(root));
         DonorController donorController =  donorLoader.getController();
         donorController.init(AppController.getInstance(), new User(), stage, false);
+        stage.setScene(new Scene(root));
 
     }
 

@@ -1,6 +1,8 @@
 package seng302.Model;
 
 
+import com.google.gson.annotations.Expose;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 
@@ -10,9 +12,13 @@ import java.util.ArrayList;
  */
 public class MedicalProcedure {
 
+    @Expose
     private LocalDate procedureDate;
+    @Expose
     private String summary;
+    @Expose
     private String description;
+    @Expose
     private ArrayList<Organs> organsAffected;
 
     public MedicalProcedure(LocalDate procedureDate, String summary, String description, ArrayList<Organs> organsAffected) {
