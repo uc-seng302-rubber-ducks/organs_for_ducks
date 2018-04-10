@@ -14,6 +14,7 @@ import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
 import org.jline.utils.InfoCmp.Capability;
 import picocli.CommandLine;
+import seng302.App;
 import seng302.Controller.AppController;
 import seng302.Controller.CliCommands.CliRoot;
 import seng302.Model.JsonHandler;
@@ -73,5 +74,8 @@ public class CLI {
       input = lineReader.readLine(">> ");
     }
     System.out.println("CLI exited.");
+    if (args != null && args[0].equals("gui")) {
+      System.out.println("return to GUI");
+    }
   }
 }

@@ -120,7 +120,9 @@ public class LoginController {
 
   @FXML
   void openCLI(ActionEvent event) {
-    CLI.main(new String[]{});
+    stage.hide();
+    CLI.main(new String[]{"gui"});
+    stage.show();
   }
 }
 
