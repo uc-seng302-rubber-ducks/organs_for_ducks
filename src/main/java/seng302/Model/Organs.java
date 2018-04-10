@@ -11,6 +11,7 @@ public enum Organs {
   MIDDLE_EAR("Middle Er"),
   SKIN("Skin"),
   BONE_MARROW("Bone Marrow"),
+  BONE("Bone"),
   CONNECTIVE_TISSUE("Connective Tissue");
 
   public String organName;

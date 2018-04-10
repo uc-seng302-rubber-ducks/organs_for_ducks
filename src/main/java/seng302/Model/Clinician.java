@@ -29,7 +29,6 @@ public class Clinician {
     @Expose
     private LocalDateTime dateLastModified;
 
-
     private String firstName;
     private String middleName;
     private String lastName;
@@ -37,6 +36,20 @@ public class Clinician {
     public Clinician() {
         dateCreated = LocalDateTime.now();
         dateLastModified = LocalDateTime.now();
+    }
+
+    public Clinician(String staffId, String password, String firstName, String middleName, String lastName, String workAddress, String region) {
+        this.staffId = staffId;
+        this.password = password;
+        this.firstName = firstName;
+        this.middleName = middleName;
+        this.lastName = lastName;
+        this.workAddress = workAddress;
+        this.region = region;
+        dateCreated = LocalDateTime.now();
+        dateLastModified = LocalDateTime.now();
+
+        this.name = firstName; // todo: remove 'name'
     }
 
 
@@ -54,7 +67,7 @@ public class Clinician {
     public Clinician(String name, String staffId, String workAddress, String region, String password) {
         this.name = name;
         this.staffId = staffId;
-        this.workAddress = workAddress; // TODO: remove this as it is not compulsory
+        this.workAddress = workAddress;
         this.region = region;
         this.password = password;
         dateCreated = LocalDateTime.now();
@@ -127,6 +140,10 @@ public class Clinician {
 
     public String getStaffId() {
         return staffId;
+    }
+
+    public void setStaffId(String staffId) {
+        this.staffId = staffId;
     }
 
 
