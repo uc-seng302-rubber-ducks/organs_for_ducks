@@ -60,24 +60,24 @@ public class LoginController {
 
     @FXML
     void changeUserButtonClicked() {
-            if (isUser) {
-                warningLabel.setText("");
-                idLabel.setText("Staff ID:");
-                userIDTextField.setText("");
-                passwordField.setVisible(true);
-                passwordLabel.setVisible(true);
-                isUser = false;
-                changeLogin.setText("Login as a Public User");
+        if (isUser) {
+            warningLabel.setText("");
+            idLabel.setText("Staff ID:");
+            userIDTextField.setText("");
+            passwordField.setVisible(true);
+            passwordLabel.setVisible(true);
+            isUser = false;
+            changeLogin.setText("Login as a Public User");
 
-            } else {
-                warningLabel.setText("");
-                idLabel.setText("NHI:");
-                userIDTextField.setText("");
-                passwordLabel.setVisible(false);
-                passwordField.setVisible(false);
-                isUser = true;
-                changeLogin.setText("Login as a Clinician");
-            }
+        } else {
+            warningLabel.setText("");
+            idLabel.setText("NHI:");
+            userIDTextField.setText("");
+            passwordLabel.setVisible(false);
+            passwordField.setVisible(false);
+            isUser = true;
+            changeLogin.setText("Login as a Clinician");
+        }
 
     }
 
@@ -118,7 +118,7 @@ public class LoginController {
 
             String password = passwordField.getText();
             Clinician clinician = appController.getClinician(wantedClinician);
-            System.out.println(clinician);
+            //System.out.println(clinician);
 
             if (clinician == null){
                 warningLabel.setText("The Clinician does not exist");
@@ -132,11 +132,11 @@ public class LoginController {
                     root = clinicianLoader.load();
                 } catch (IOException e) {
                     e.printStackTrace();
-            }
+                }
 
-            stage.setScene(new Scene(root));
-            ClinicianController clinicianController = clinicianLoader.getController();
-            clinicianController.init(stage,appController,clinician);
+                stage.setScene(new Scene(root));
+                ClinicianController clinicianController = clinicianLoader.getController();
+                clinicianController.init(stage,appController,clinician);
             }
         }
     }
@@ -159,7 +159,7 @@ public class LoginController {
             donorController.init(AppController.getInstance(), stage);
 
         } else {
-            FXMLLoader clinicianLoader = new FXMLLoader(getClass().getResource("/FXML/createNewClinician.fxml"));
+            FXMLLoader clinicianLoader = new FXMLLoader(getClass().getResource("/FXML/updateClinician.fxml"));
             Parent root = null;
 
             try {
@@ -169,12 +169,8 @@ public class LoginController {
             }
 
             stage.setScene(new Scene(root));
-            NewClinicianController newClinician = clinicianLoader.getController();
-            newClinician.init(stage, appController);
-
-
-//            DonorController donorController = donorLoader.getController();
-//            donorController.init(AppController.getInstance(), new Donor(), stage, false);
+            UpdateClinicianController newClinician = clinicianLoader.getController();
+            newClinician.init(null, appController, stage, true);
         }
     }
 
@@ -183,7 +179,7 @@ public class LoginController {
      * Displays a pop up window with instructions to help the user on the login page.
      */
     @FXML
-    public void helpButton() {
+    private void helpButton() {
 
         if (helpStage == null) {
             try {

@@ -1,6 +1,5 @@
 package seng302.Controller;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import javafx.beans.binding.Bindings;
@@ -19,39 +18,18 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-import org.joda.time.DateTime;
-import seng302.Model.Clinician;
 
 import java.io.IOException;
-import seng302.Model.Donor;
 import seng302.Model.Organs;
 import seng302.Model.User;
+import seng302.Model.Clinician;
 
 public class ClinicianController {
 
   private final int ROWS_PER_PAGE = 30;
-  @FXML
-  private TextField regionTextField;
-
-  @FXML
-  private TextField addressTextField;
-
-  @FXML
-  private PasswordField conformPasswordField;
-
-  @FXML
-  private TextField nameTextField;
-
-  @FXML
-  private Button logoutButton;
-
-  @FXML
-  private PasswordField passwordField;
-
-  @FXML
-  private Button confirmButton;
 
   @FXML
   private Button undoButton;
@@ -60,11 +38,22 @@ public class ClinicianController {
   private Label staffIdLabel;
 
   @FXML
-  private Label warningLabel;
+  private Label fNameLabel;
+
+  @FXML
+  private Label mNameLabel;
+
+  @FXML
+  private Label lNameLabel;
+
+  @FXML
+  private Label addressLabel;
+
+  @FXML
+  private Label regionLabel;
 
   @FXML
   private TextField searchTextField;
-
 
   @FXML
   private Tooltip searchToolTip;
@@ -81,14 +70,10 @@ public class ClinicianController {
   private static int currentIndex = 0;
 
   public void init(Stage stage, AppController appController, Clinician clinician) {
-    warningLabel.setText("");
     this.stage = stage;
     this.appController = appController;
     this.clinician = clinician;
-    nameTextField.setText(clinician.getFullName()); // TODO get the full name
-    staffIdLabel.setText(String.valueOf(clinician.getStaffId()));
-    addressTextField.setText(clinician.getWorkAddress());
-    regionTextField.setText(clinician.getRegion());
+    showClinician();
     users = appController.getUsers();
     initSearchTable(0);
 
@@ -103,8 +88,17 @@ public class ClinicianController {
       };
     });
     //searchPagination = new Pagination((users.size() / ROWS_PER_PAGE + 1), 0);
+  }
 
 
+  private void showClinician() {
+    System.out.println(clinician.getMiddleName());
+    staffIdLabel.setText(clinician.getStaffId());
+    fNameLabel.setText(clinician.getFirstName());
+    mNameLabel.setText(clinician.getMiddleName());
+    lNameLabel.setText(clinician.getLastName());
+    addressLabel.setText(clinician.getWorkAddress());
+    regionLabel.setText(clinician.getRegion());
   }
 
 
@@ -201,7 +195,7 @@ public class ClinicianController {
           return true;
         }
         String lowerCaseFilterText = newValue.toLowerCase();
-        if (Donor.getName().toLowerCase().contains(lowerCaseFilterText)) {
+        if ((Donor.getName().toLowerCase()).contains(lowerCaseFilterText)) {
           return true;
         }
         //if (other test case) return true
@@ -220,14 +214,19 @@ public class ClinicianController {
     });
     return filteredList;
   };
+
   @FXML
   void undo(ActionEvent event) {
 
   }
 
+  /**
+   * Returns the user to the login screen
+   * @param event
+   */
   @FXML
   void logout(ActionEvent event) {
-    confirm(new ActionEvent());
+    //confirm(new ActionEvent());
     FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML/loginView.fxml"));
     Parent root = null;
     try {
@@ -241,22 +240,28 @@ public class ClinicianController {
     stage.show();
   }
 
+  /**
+   * Opens an edit window for the clinicians personal details
+   * @param event
+   */
   @FXML
-  void confirm(ActionEvent event) {
-    warningLabel.setText("");
-    clinician.setName(nameTextField.getText());
-    clinician.setWorkAddress(addressTextField.getText());
-    clinician.setRegion(regionTextField.getText());
-    if(!passwordField.getText().equals("")) {
-      if (passwordField.getText().equals(conformPasswordField.getText())) {
-        clinician.setPassword(passwordField.getText());
-      } else {
-        warningLabel.setText("Passwords did not match.\n Password was not updated.");
-      }
-    }
-    clinician.setDateLastModified(LocalDateTime.now());
-    appController.updateClinicians(clinician);
+  void edit(ActionEvent event) {
+    FXMLLoader updateLoader = new FXMLLoader(getClass().getResource("/FXML/updateClinician.fxml"));
+    Parent root = null;
+    System.out.println(updateLoader);
+    try {
+      root = updateLoader.load();
+      UpdateClinicianController updateClinicianController = updateLoader.getController();
+      Stage stage = new Stage();
+      updateClinicianController.init(clinician, appController, stage, false);
+      stage.setScene(new Scene(root));
+      stage.initModality(Modality.APPLICATION_MODAL); // background window is no longer selectable
+      stage.showAndWait();
+      showClinician();
 
+    } catch (IOException e){
+      e.printStackTrace();
+    }
   }
 
   @FXML
