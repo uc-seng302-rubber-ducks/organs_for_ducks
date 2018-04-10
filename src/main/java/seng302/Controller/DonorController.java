@@ -33,8 +33,8 @@ import java.util.*;
 
 public class DonorController {
 
-    //the Home page attributes
-    @FXML
+  //the Home page attributes
+  @FXML
   private Label ageValue;
 
   @FXML
@@ -210,7 +210,10 @@ public class DonorController {
     });
     if (user.getName() != null) {
       showUser(currentUser); // Assumes a donor with no name is a new sign up and does not pull values from a template
-      changelog = FXCollections.observableArrayList(currentUser.getChanges());
+      ArrayList<Change> changes = currentUser.getChanges();
+      if (changes != null) { // checks if the changes are null in case the user is a new user
+        changelog = FXCollections.observableArrayList(changes);
+      }
       showDonorHistory();
     } else {
       changelog = FXCollections.observableArrayList(new ArrayList<Change>());
@@ -317,20 +320,23 @@ public class DonorController {
     stage.show();
     showUser(currentUser);
   }
+
   @FXML
   private void updateDetails(ActionEvent actionEvent) throws IOException, InterruptedException {
-    FXMLLoader updateLoader = new FXMLLoader(getClass().getResource("/FXML/updateUser"));
+    FXMLLoader updateLoader = new FXMLLoader(getClass().getResource("/FXML/updateUser.fxml"));
     Parent root = null;
-    try{
+    System.out.println(updateLoader);
+    try {
       root = updateLoader.load();
+      UpdateUserController updateUserController = updateLoader.getController();
+      Stage stage = new Stage();
+      updateUserController.init(currentUser, application, stage);
+      stage.setScene(new Scene(root));
+      stage.show();
+
     } catch (IOException e){
       e.printStackTrace();
     }
-    UpdateUserController updateUserController = updateLoader.getController();
-    Stage stage = new Stage();
-    updateUserController.init(currentUser, application, stage);
-
-
   }
 
 //    @FXML
@@ -544,8 +550,11 @@ public class DonorController {
     }else{
       bmiValue.setText("");
     }
-    lastModifiedValue.setText(currentUser.getLastModified().toString());
-    //createdValue.setText(currentUser.getTimeCreated().toString());
+
+    if (currentUser.getLastModified() != null) {
+      lastModifiedValue.setText(currentUser.getLastModified().toString());
+    }
+    createdValue.setText(currentUser.getTimeCreated().toString());
     alcoholValue.setText(currentUser.getAlcoholConsumption());
 
 
