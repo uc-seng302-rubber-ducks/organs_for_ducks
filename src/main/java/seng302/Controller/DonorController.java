@@ -111,6 +111,9 @@ public class DonorController {
   @FXML
   private Button addMedicationButton;
 
+  @FXML
+  private TextField nhiTextField;
+
   private AppController application;
   private ObservableList<String> currentMeds;
   private ObservableList<String> previousMeds;
@@ -319,6 +322,10 @@ public class DonorController {
       }
     }
 
+    if(!nhiTextField.getText().equals(currentUser.getNhi())){
+      currentUser.setNhi(nhiTextField.getText());
+    }
+
     currentUser.setCurrentAddress(currentAddressTextArea.getText());
     currentUser.setRegion(regionTextField.getText());
 
@@ -399,6 +406,7 @@ public class DonorController {
   }
 
   public void showUser(User user) {
+    nhiTextField.setText(user.getNhi());
     nameTextField.setText(user.getName());
     dateOfBirthPicker
         .setValue(user.getDateOfBirth());
