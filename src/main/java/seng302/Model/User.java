@@ -14,7 +14,7 @@ import java.util.Objects;
 public class User {
 
   @Expose
-  private String NHI;
+  private String nhi;
   @Expose
   private String name;
   @Expose
@@ -66,7 +66,7 @@ public class User {
       String bloodType,
       String currentAddress, String region, LocalDateTime timeCreated, String name,
       LocalDateTime lastModified,
-      boolean isDeceased, String NHI) {
+      boolean isDeceased, String nhi) {
     this.dateOfBirth = dateOfBirth;
     this.dateOfDeath = dateOfDeath;
     if (gender.startsWith("m") || gender.startsWith("M")) {
@@ -100,7 +100,7 @@ public class User {
     this.previousMedication = new ArrayList<>();
     this.currentMedicationTimes = new HashMap<String, ArrayList<LocalDateTime>>();
     this.previousMedicationTimes = new HashMap<String, ArrayList<LocalDateTime>>();
-    this.NHI = NHI;
+    this.nhi = nhi;
     this.donorDetails = new DonorDetails(this);
     this.receiverDetails = new ReceiverDetails(this);
     //TODO fix json reader
@@ -112,10 +112,10 @@ public class User {
 
   }
 
-  public User(String name, java.time.LocalDate dateOfBirth, String NHI) {
+  public User(String name, java.time.LocalDate dateOfBirth, String nhi) {
     this.dateOfBirth = dateOfBirth;
     this.name = name;
-    this.NHI = NHI;
+    this.nhi = nhi;
     timeCreated = LocalDateTime.now();
     lastModified = LocalDateTime.now();
     this.gender = "U";
@@ -185,13 +185,13 @@ public class User {
     return !this.receiverDetails.isEmpty();
   }
 
-  public String getNHI() {
-    return NHI;
+  public String getNhi() {
+    return nhi;
   }
 
-  public void setNHI(String NHI) {
+  public void setNhi(String nhi) {
     updateLastModified();
-    this.NHI = NHI;
+    this.nhi = nhi;
   }
 
   /**
@@ -342,7 +342,7 @@ public class User {
       return "A-";
     } else if (possibleType.equalsIgnoreCase("B+")) {
       return "B+";
-    } else if (possibleType.equalsIgnoreCase("A-")) {
+    } else if (possibleType.equalsIgnoreCase("B-")) {
       return "B-";
     } else if (possibleType.equalsIgnoreCase("O+")) {
       return "O+";
@@ -548,20 +548,22 @@ public class User {
       return false;
     }
     User other = (User) o;
-    return this.NHI.equals(other.NHI);
+    System.out.println(this);
+    System.out.println(other);
+    return this.nhi.equals(other.getNhi());
     //return Objects.equals(dateOfBirth, other.dateOfBirth) && name.equalsIgnoreCase(other.name);
   }
 
   @Override
   public int hashCode() {
 
-    return Objects.hash(NHI);
+    return Objects.hash(nhi);
   }
 
   @Override
   public String toString() {
     return "name:'" + name + "\'" +
-        "\nNHI: " + NHI +
+        "\nnhi: " + nhi +
         "\ndate Of Birth: " + dateOfBirth +
         "\ndate Of Death :" + dateOfDeath +
         "\ngender: " + gender +
