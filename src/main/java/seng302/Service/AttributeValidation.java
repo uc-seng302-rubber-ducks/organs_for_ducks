@@ -96,7 +96,7 @@ public class AttributeValidation {
     /**
      * Checks that the given value can be parsed as a double.
      * @param stringValue Either the height or weight to be parsed as a double.
-     * @return The value as a double, -1 if the value was <= 0 or there was an exception, otherwise 0 if the value was empty.
+     * @return The value as a double, -1 if the value was less than or equal to 0 or there was an exception, otherwise 0 if the value was empty.
      */
     public static double validateDouble(String stringValue) {
         double doubleValue;

@@ -44,7 +44,7 @@ public class HttpRequester {
    * @param age age of the patient
    * @param client Http client to be used
    * @return A set of strings.
-   * @throws IOException
+   * @throws IOException when there is an error.
    */
   public static Set<String> getDrugInteractions(String drugOneName, String drugTwoName, String gender, int age, OkHttpClient client) throws IOException {
 
