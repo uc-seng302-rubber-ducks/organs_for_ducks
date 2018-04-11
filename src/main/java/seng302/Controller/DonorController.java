@@ -17,6 +17,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
+import okhttp3.OkHttpClient;
 import seng302.Model.*;
 import java.io.IOException;
 import java.util.*;
@@ -165,6 +166,7 @@ public class DonorController {
   private Stage stage;
   private EmergencyContact contact = null;
   private ObservableList<Change> changelog;
+  private OkHttpClient client = new OkHttpClient();
 
   /**
    * Gives the donor view the application controller and hides all label and buttons that are not
@@ -190,8 +192,9 @@ public class DonorController {
     currentMeds = FXCollections.observableArrayList();
     System.out.println("current " + currentMeds);
     previousMeds = FXCollections.observableArrayList();
-    currentMedicationListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-    previousMedicationListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+    currentMedicationListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+    previousMedicationListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+    //listeners to move meds from current <--> previous
     previousMeds.addListener((ListChangeListener.Change<? extends String> change )-> {
       previousMedicationListView.setItems(previousMeds);
       application.update(currentUser);
@@ -200,6 +203,26 @@ public class DonorController {
       currentMedicationListView.setItems(currentMeds);
       application.update(currentUser);
     });
+
+    currentMedicationListView.getSelectionModel().selectedItemProperty()
+        .addListener((observable, oldValue, newValue) -> {
+          ObservableList<String> selected = currentMedicationListView.getSelectionModel()
+              .getSelectedItems();
+
+          if (selected.size() == 2) {
+            try {
+              Set<String> res = HttpRequester
+                  .getDrugInteractions(selected.get(0), selected.get(1), currentUser.getGender(),
+                      currentUser.getAge(), client);
+              System.out.println("interactions: ");
+              res.forEach(System.out::println);
+
+            } catch (IOException ex) {
+              //TODO display connectivity error message
+            }
+          }
+        });
+
     if (user.getNhi() != null) {
       showUser(currentUser); // Assumes a donor with no name is a new sign up and does not pull values from a template
       ArrayList<Change> changes = currentUser.getChanges();
@@ -516,7 +539,7 @@ public class DonorController {
     if (currentUser.getLastName() != null) {
       lNameValue.setText(currentUser.getLastName());
     }
-    ageValue.setText(user.getAge().toString().replace("P", "").replace("Y", "") + " Years");
+    ageValue.setText(user.getStringAge().toString().replace("P", "").replace("Y", "") + " Years");
     if (currentUser.getDateOfDeath() != null) {
       DODValue.setText(currentUser.getDateOfDeath().toString());
       ageDeathValue.setText(Long.toString(

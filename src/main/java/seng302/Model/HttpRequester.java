@@ -69,6 +69,7 @@ public class HttpRequester {
     }
     try {
       String rawString = response.body().string();
+      response.close();
       if (rawString == null) {
         return new HashSet<>();
       }
@@ -80,10 +81,10 @@ public class HttpRequester {
       JSONArray ageProblems = (JSONArray) ageInteractions.get(ageRange);
       ageResults.addAll(ageProblems);
 
-      if(gender.startsWith("m") || gender.startsWith("M")){
+      if (gender != null && (gender.startsWith("m") || gender.startsWith("M"))) {
         JSONArray genderedInteractions  = (JSONArray) genderInteractions.get("male");
         genderResults.addAll(genderedInteractions);
-      } else if (gender.startsWith("f") || gender.startsWith("F")){
+      } else if (gender != null && (gender.startsWith("f") || gender.startsWith("F"))) {
         JSONArray genderedInteractions  = (JSONArray) genderInteractions.get("female");
         genderResults.addAll(genderedInteractions);
       } else {
@@ -163,7 +164,7 @@ public class HttpRequester {
       //String res = getDrugInteractions("coumadin", "Acetaminophen", new OkHttpClient());
       Set<String> res = getDrugInteractions("coumadin", "Acetaminophen","m",35, new OkHttpClient());
       //Set<String> res = getDrugInteractions("coumadin", "Acetaminophen","male",36, new OkHttpClient());
-      String res = getSuggestedDrugs("res", new OkHttpClient());
+      //String res = getSuggestedDrugs("res", new OkHttpClient());
       System.out.println(res);
     }
     catch (Exception ex) {
