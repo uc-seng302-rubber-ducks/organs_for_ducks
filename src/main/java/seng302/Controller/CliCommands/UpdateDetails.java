@@ -115,7 +115,7 @@ public class UpdateDetails implements Runnable {
         System.out.println("User with this NHI already exists");
         return;
       }
-      user.setNHI(newNHI);
+      user.setNhi(newNHI);
       changed = true;
     }
     //TODO fix json writer
