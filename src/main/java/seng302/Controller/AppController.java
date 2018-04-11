@@ -173,9 +173,11 @@ public class AppController {
     return toReturn;
   }
 
-  /**
-   * finds all users who's name field contains the search string
-   */
+    /**
+     * finds all users who's name field contains the search string
+     * @param name The name of the user
+     * @return an array list of users.
+     */
   public ArrayList<User> findUsers(String name) {
     ArrayList<User> toReturn = new ArrayList<>();
     for (User user : users) {
@@ -186,15 +188,16 @@ public class AppController {
     return toReturn;
   }
 
-  /**
-   * Finds donor by nhi only. This method will need to be migrated to unique username in later builds
-   * returns null if donor is not found
-   */
+    /**
+     * Finds donor by nhi only. This method will need to be migrated to unique username in later builds
+     * returns null if donor is not found
+     * @param nhi The unique identifier of a user (national health index)
+     * @return The user with the matching nhi, or null if no user matches.
+     */
   public User findUser(String nhi) {
     User toReturn = null;
     for (User u : users){
-      if((u.getNHI())
-              .equalsIgnoreCase(nhi)){
+      if((u.getNhi()).equalsIgnoreCase(nhi)){
         return u;
       }
     }

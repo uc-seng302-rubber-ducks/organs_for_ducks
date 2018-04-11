@@ -15,20 +15,6 @@ import java.util.Objects;
 
 public class User {
 
-
-    private String firstName;
-    private String preferredFirstName;
-    private String middleName;
-    private String lastName;
-    private String birthGender;
-    private String genderIdentity;
-    private String alcoholConsumption;
-    private boolean smoker;
-    private String homePhone;
-    private String cellPhone;
-    private String email;
-    private EmergencyContact contact;
-
   @Expose
   private String nhi;
   @Expose
@@ -53,6 +39,30 @@ public class User {
   private LocalDateTime timeCreated;
   @Expose
   private Boolean isDeceased;
+  @Expose
+  private String firstName;
+  @Expose
+  private String preferredFirstName;
+  @Expose
+  private String middleName;
+  @Expose
+  private String lastName;
+  @Expose
+  private String birthGender;
+  @Expose
+  private String genderIdentity;
+  @Expose
+  private String alcoholConsumption;
+  @Expose
+  private boolean smoker;
+  @Expose
+  private String homePhone;
+  @Expose
+  private String cellPhone;
+  @Expose
+  private String email;
+  @Expose
+  private EmergencyContact contact;
 
   @Expose
   private LocalDateTime lastModified;
@@ -84,7 +94,7 @@ public class User {
                 EmergencyContact contact, String name, String firstName, String preferredFirstName, String middleName,
                 String lastName) {
 
-        this.NHI = nhi;
+        this.nhi = nhi;
         this.dateOfBirth = dateOfBirth;
         this.dateOfDeath = dateOfDeath;
 

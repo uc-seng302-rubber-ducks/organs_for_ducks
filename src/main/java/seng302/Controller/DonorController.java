@@ -182,10 +182,14 @@ public class DonorController {
   private EmergencyContact contact = null;
   private ObservableList<Change> changelog;
 
-  /**
-   * Gives the donor view the application controller and hides all label and buttons that are not
-   * needed on opening
-   */
+    /**
+     * Gives the donor view the application controller and hides all label and buttons that are not
+     * needed on opening
+     * @param controller The application controller.
+     * @param user The current user.
+     * @param stage The application stage.
+     * @param fromClinician A flag indicating if the profile is the user logging in, or the clinician viewing it.
+     */
   public void init(AppController controller, User user, Stage stage, Boolean fromClinician) {
 
     this.stage = stage;
@@ -233,7 +237,7 @@ public class DonorController {
 
       }
     });
-    if (user.getNHI() != null) {
+    if (user.getNhi() != null) {
       showUser(currentUser); // Assumes a donor with no name is a new sign up and does not pull values from a template
       ArrayList<Change> changes = currentUser.getChanges();
       if (changes != null) { // checks if the changes are null in case the user is a new user
@@ -591,7 +595,7 @@ public class DonorController {
   }
 
   public void showUser(User user) {
-    NHIValue.setText(currentUser.getNHI());
+    NHIValue.setText(currentUser.getNhi());
     fNameValue.setText(currentUser.getFirstName());
     DOBValue.setText(currentUser.getDateOfBirth().toString());
     if (currentUser.getMiddleName() != null) {

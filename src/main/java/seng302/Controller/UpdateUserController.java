@@ -252,7 +252,7 @@ public class UpdateUserController {
         }
 
         if (!nhiInput.getText().equals("")) {
-          currentUser.setNHI(nhiInput.getText());
+          currentUser.setNhi(nhiInput.getText());
         }
 
         if (!mNameInput.getText().equals("")) {
