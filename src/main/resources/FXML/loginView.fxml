@@ -11,9 +11,9 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
-
 <?import javafx.scene.text.Font?>
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.Controller.LoginController">
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.Controller.LoginController">
    <children>
       <GridPane hgap="10.0" layoutX="128.0" layoutY="117.0" prefHeight="126.0" prefWidth="462.0" vgap="10.0">
         <columnConstraints>
@@ -43,7 +43,6 @@
       <Button fx:id="changeLogin" layoutX="14.0" layoutY="361.0" mnemonicParsing="false" onAction="#changeUserButtonClicked" text="Login as Clinician" />
       <Button fx:id="signUpButton" layoutX="455.0" layoutY="361.0" mnemonicParsing="false" onAction="#signUp" prefHeight="25.0" prefWidth="131.0" text="Sign up" />
       <Hyperlink fx:id="help" layoutX="539.0" layoutY="11.0" onAction="#helpButton" text="Help?" />
-     <Button layoutX="14.0" layoutY="361.0" mnemonicParsing="false" onAction="#openCLI"
-       text="Open CLI"/>
+     <Button layoutX="13.0" layoutY="13.0" mnemonicParsing="false" onAction="#openCLI" text="Open CLI" />
    </children>
 </AnchorPane>
