@@ -21,4 +21,9 @@ public class CreateUserTest extends ApplicationTest {
     verifyThat("#headerLabel", LabeledMatchers.hasText("Create New User"));
   }
 
+  @Test
+  public void testSignUpBasicInfo() {
+
+  }
+
 }
