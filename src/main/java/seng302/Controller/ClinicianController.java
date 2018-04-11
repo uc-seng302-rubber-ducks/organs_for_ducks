@@ -89,7 +89,7 @@ public class ClinicianController {
     showClinician();
     users = appController.getUsers();
     for (int i = 0; i < 31; i++) {
-      users.add(new User(String.valueOf(i), LocalDate.now()));
+      users.add(new User(String.valueOf(i), LocalDate.now(), "ABC1234"));
     }
     initSearchTable();
 
