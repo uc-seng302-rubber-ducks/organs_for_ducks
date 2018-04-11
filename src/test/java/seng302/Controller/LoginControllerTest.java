@@ -13,18 +13,18 @@ import seng302.App;
 import seng302.Model.User;
 
 public class LoginControllerTest extends ApplicationTest {
-
-  @BeforeClass
-  public static void setupSpec() throws Exception {
-    if (Boolean.getBoolean("headless")) {
-      System.setProperty("testfx.robot", "glass");
-      System.setProperty("testfx.headless", "true");
-      System.setProperty("prism.order", "sw");
-      System.setProperty("prism.text", "t2k");
-      System.setProperty("java.awt.headless", "true");
-    }
-    registerPrimaryStage();
-  }
+//
+//  @BeforeClass
+//  public static void setupSpec() throws Exception {
+//    if (Boolean.getBoolean("headless")) {
+//      System.setProperty("testfx.robot", "glass");
+//      System.setProperty("testfx.headless", "true");
+//      System.setProperty("prism.order", "sw");
+//      System.setProperty("prism.text", "t2k");
+//      System.setProperty("java.awt.headless", "true");
+//    }
+//    registerPrimaryStage();
+//  }
 
   @Override
   public void start(Stage stage) throws Exception {
