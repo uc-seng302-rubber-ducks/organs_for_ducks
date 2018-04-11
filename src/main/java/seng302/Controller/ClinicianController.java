@@ -89,9 +89,6 @@ public class ClinicianController {
     stage.setResizable(true);
     showClinician();
     users = appController.getUsers();
-    for (int i = 0; i < 31; i++) {
-      users.add(new User(String.valueOf(i), LocalDate.now()));
-    }
     initSearchTable();
 
     openStages = new ArrayList<>();

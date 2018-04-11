@@ -187,7 +187,8 @@ public class AppController {
   public User findUser(String nhi) {
     User toReturn = null;
     for (User u : users){
-      if(u.getNHI().toLowerCase().equalsIgnoreCase(nhi.toLowerCase())){
+      if((u.getNHI())
+              .equalsIgnoreCase(nhi)){
         return u;
       }
     }
