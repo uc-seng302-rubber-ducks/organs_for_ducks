@@ -117,7 +117,12 @@ public class User {
     this.previousMedication = new ArrayList<>();
     this.currentMedicationTimes = new HashMap<>();
     this.previousMedicationTimes = new HashMap<>();
-    //changes = JsonReader.importHistoryFromFile(this);
+
+    try {
+      changes = JsonHandler.importHistoryFromFile(name);
+    } catch (FileNotFoundException e) {
+      e.printStackTrace();
+    }
   }
 
 

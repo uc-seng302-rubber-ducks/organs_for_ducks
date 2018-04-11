@@ -182,6 +182,7 @@ public class DonorController {
    * needed on opening
    */
   public void init(AppController controller, User user, Stage stage, Boolean fromClinician) {
+
     this.stage = stage;
     application = controller;
     //ageValue.setText("");
@@ -195,9 +196,10 @@ public class DonorController {
     //warningLabel.setVisible(false);
     currentUser = user;
     contact = user.getContact();
-    setAttributes();
-    setContactPage();
+    //setAttributes();
+    //setContactPage();
     currentMeds = FXCollections.observableArrayList();
+    System.out.println("current " + currentMeds);
     previousMeds = FXCollections.observableArrayList();
     currentMedicationListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
     previousMedicationListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
@@ -225,7 +227,7 @@ public class DonorController {
 
       }
     });
-    if (user.getName() != null) {
+    if (user.getNHI() != null) {
       showUser(currentUser); // Assumes a donor with no name is a new sign up and does not pull values from a template
       ArrayList<Change> changes = currentUser.getChanges();
       if (changes != null) { // checks if the changes are null in case the user is a new user
@@ -253,24 +255,78 @@ public class DonorController {
               }
           }
       });
+    System.out.println(changelog);
     changelog.addListener((ListChangeListener.Change<? extends Change> change ) -> {
       historyTableView.setItems(changelog);
     });
+    showUser(currentUser);
 
   }
-  @FXML
-  private void setAttributes(){
-      NHIValue.setText(currentUser.getNHI());
-      fNameValue.setText(currentUser.getFirstName());
-      DOBValue.setText(currentUser.getDateOfBirth().toString());
-      if (currentUser.getMiddleName() != null){
-          mNameValue.setText(currentUser.getMiddleName());
-      }
-      if (currentUser.getPrefFirstName() != null) {
-          pNameValue.setText(currentUser.getPrefFirstName());
-      }
+//  @FXML
+//  private void setAttributes(){
+//    NHIValue.setText(currentUser.getNHI());
+//    fNameValue.setText(currentUser.getFirstName());
+//    DOBValue.setText(currentUser.getDateOfBirth().toString());
+//    if (currentUser.getMiddleName() != null) {
+//      mNameValue.setText(currentUser.getMiddleName());
+//    }
+//    if (currentUser.getPrefFirstName() != null) {
+//      pNameValue.setText(currentUser.getPrefFirstName());
+//    }
+//    if (currentUser.getLastName() != null) {
+//      lNameValue.setText(currentUser.getLastName());
+//    }
+//    ageValue.setText(currentUser.getAge().toString().replace("P", "").replace("Y", "") + " Years");
+//    if (currentUser.getDateOfDeath() != null) {
+//      DODValue.setText(currentUser.getDateOfDeath().toString());
+//      ageDeathValue.setText(Long.toString(
+//          ChronoUnit.YEARS.between(currentUser.getDateOfBirth(), currentUser.getDateOfDeath())));
+//    }
+//    if (currentUser.getBloodType() != null) {
+//      bloodTypeValue.setText(currentUser.getBloodType().toString());
+//    }
+//    if (currentUser.isSmoker()) {
+//      smokerValue.setText("Yes");
+//    } else {
+//      smokerValue.setText("No");
+//    }
+//    String weight;
+//    if (currentUser.getWeight() > 0 ) {
+//      weight = java.lang.Double.toString(currentUser.getWeight());
+//      weightValue.setText(weight);
+//    }
+//    String height;
+//    if (currentUser.getHeight() > 0){
+//      height = java.lang.Double.toString(currentUser.getHeight());
+//      heightValue.setText(height);
+//    }
+//    if (currentUser.getHeight() > 0&&currentUser.getWeight() > 0 ){
+//      //TODO fix BMI kg/m^2
+//      bmiValue.setText("1.8");
+//    }else{
+//      bmiValue.setText("");
+//    }
+//
+//    if (currentUser.getLastModified() != null) {
+//      lastModifiedValue.setText(currentUser.getLastModified().toString());
+//    }
+//    createdValue.setText(currentUser.getTimeCreated().toString());
+//    alcoholValue.setText(currentUser.getAlcoholConsumption());
+//
+//
+//    if (currentUser.getMiscAttributes() != null) {
+//      miscAttributeslistView.getItems().clear(); // HERE
+//      for (String atty : currentUser.getMiscAttributes()) {
+//        miscAttributeslistView.getItems().add(atty);
+//      }
+//    }
+//    currentMeds.addAll(currentUser.getCurrentMedication());
+//    currentMedicationListView.setItems(currentMeds);
+//    previousMeds.addAll(currentUser.getPreviousMedication());
+//    previousMedicationListView.setItems(previousMeds);
+//  }
 
-  }
+
   @FXML
   private void setContactPage() {
       if (contact != null) {
@@ -581,10 +637,16 @@ public class DonorController {
         miscAttributeslistView.getItems().add(atty);
       }
     }
+    if (currentUser.getCurrentMedication() != null) {
+      System.out.println(currentMeds);
     currentMeds.addAll(currentUser.getCurrentMedication());
+
     currentMedicationListView.setItems(currentMeds);
+    }
+    if (currentUser.getPreviousMedication() != null) {
     previousMeds.addAll(currentUser.getPreviousMedication());
     previousMedicationListView.setItems(previousMeds);
+  }
   }
 
   @FXML
