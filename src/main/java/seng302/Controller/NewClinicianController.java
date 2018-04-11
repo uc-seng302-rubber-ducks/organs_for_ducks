@@ -12,7 +12,7 @@ import seng302.Model.Clinician;
 
 import java.io.IOException;
 
-
+@Deprecated
 public class NewClinicianController {
 
     @FXML private TextField staffIDInput;
@@ -30,7 +30,11 @@ public class NewClinicianController {
     private Stage stage;
     private AppController appController;
 
-
+    /**
+     *
+     * @param stage The applications stage.
+     * @param appController An instance of AppController.
+     */
     public void init(Stage stage, AppController appController) {
         this.stage = stage;
         this.appController = appController;

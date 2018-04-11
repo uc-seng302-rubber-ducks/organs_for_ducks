@@ -134,6 +134,11 @@ public class NewUserController {
     Stage stage;
 
 
+    /**
+     * Initializes the NewUserController
+     * @param controller The applications controller.
+     * @param stage The applications stage.
+     */
     public void init(AppController controller, Stage stage) {
         this.controller = controller;
         this.stage = stage;
@@ -234,7 +239,7 @@ public class NewUserController {
         }
 
         if (valid) {
-            EmergencyContact contact = null;
+            EmergencyContact contact = new EmergencyContact(null, null);
 
             if (!(eName == null) && !eCellPhone.isEmpty()) {
                 // create the emergency contact

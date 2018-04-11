@@ -124,6 +124,7 @@ public class UpdateClinicianController {
 
     /**
      * Attempts to load the clinician overview window.
+     * @param clinician The current clinician.
      */
     private void loadOverview(Clinician clinician) {
         FXMLLoader clinicianLoader = new FXMLLoader(getClass().getResource("/FXML/clinicianView.fxml"));
@@ -141,7 +142,7 @@ public class UpdateClinicianController {
 
     /**
      * Closes the window without making any changes.
-     * @param event
+     * @param event an action event.
      */
     @FXML
     private void cancelUpdate(ActionEvent event) {
@@ -167,7 +168,7 @@ public class UpdateClinicianController {
     /**
      * Saves the clinician if all updated attributes are valid, otherwise error messages are displayed.
      * Upon a successful save, the window closes.
-     * @param event
+     * @param event an action event.
      */
     @FXML
     private void saveChanges(ActionEvent event) {

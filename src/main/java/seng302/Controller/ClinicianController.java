@@ -82,6 +82,13 @@ public class ClinicianController {
 
   private static int currentIndex = 0;
 
+
+    /**
+     * Initializes the controller class for the clinician overview.
+     * @param stage The applications stage.
+     * @param appController the applications controller.
+     * @param clinician The current clinician.
+     */
   public void init(Stage stage, AppController appController, Clinician clinician) {
     this.stage = stage;
     this.appController = appController;
@@ -181,10 +188,21 @@ public class ClinicianController {
     });
   }
 
+    /**
+     *
+     * @param arrayList An array list of users.
+     * @return A list of users.
+     */
   private List<User> getSearchData(ArrayList<User> arrayList) {
     return arrayList.subList(startIndex, endIndex);
   }
 
+
+    /**
+     *
+     * @param pageIndex the current page.
+     * @return the search table view node.
+     */
   private Node changePage(int pageIndex) {
     startIndex = pageIndex * ROWS_PER_PAGE;
     endIndex = Math.min(startIndex+ROWS_PER_PAGE, users.size());
@@ -202,6 +220,10 @@ public class ClinicianController {
     return searchTableView;
   }
 
+    /**
+     *
+     * @param user the selected user.
+     */
   private void launchDonor(User user){
     FXMLLoader donorLoader = new FXMLLoader(getClass().getResource("/FXML/donorView.fxml"));
     Parent root = null;
@@ -251,7 +273,7 @@ public class ClinicianController {
 
   /**
    * Returns the user to the login screen
-   * @param event
+   * @param event An action event
    */
   @FXML
   void logout(ActionEvent event) {
@@ -271,7 +293,7 @@ public class ClinicianController {
 
   /**
    * Opens an edit window for the clinicians personal details
-   * @param event
+   * @param event An action event
    */
   @FXML
   void edit(ActionEvent event) {

@@ -53,6 +53,12 @@ public class LoginController {
     private ArrayList<User> users;
     private Stage stage;
 
+
+    /**
+     * Initializes the Login controller.
+     * @param appController The applications controller.
+     * @param stage The applications stage.
+     */
     public void init(AppController appController, Stage stage){
         warningLabel.setText("");
         this.appController = appController;
@@ -92,6 +98,10 @@ public class LoginController {
 
     }
 
+    /**
+     *
+     * @param event An action event.
+     */
     @FXML
     void login(ActionEvent event) {
         if(isUser) {
@@ -162,6 +172,10 @@ public class LoginController {
     }
 
 
+    /**
+     *
+     * @param event An action event
+     */
     @FXML
     void signUp(ActionEvent event) {
         if(isUser) {

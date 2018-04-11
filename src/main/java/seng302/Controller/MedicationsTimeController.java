@@ -34,9 +34,9 @@ public class MedicationsTimeController {
     private ObservableList medicationDurations;
 
     /**
-     * Initilizes the view and passes important settings into the controller
+     * Initializes the view and passes important settings into the controller
      *
-     * @param appController apllication state itself
+     * @param appController application state itself
      * @param user current user for this view
      * @param stage stage that the scene is shown on
      * @param medicine medication this is having its history shown
@@ -106,7 +106,7 @@ public class MedicationsTimeController {
 
     /**
      * Closes the stage on back button being pressed
-     * @param event passed in automaticly by the gui
+     * @param event passed in automatically by the gui
      */
     @FXML
     void back(ActionEvent event) {

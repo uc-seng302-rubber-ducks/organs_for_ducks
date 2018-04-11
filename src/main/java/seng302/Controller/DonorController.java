@@ -404,6 +404,12 @@ public class DonorController {
     showUser(currentUser);
   }
 
+    /**
+     *
+     * @param actionEvent An action event.
+     * @throws IOException
+     * @throws InterruptedException
+     */
   @FXML
   private void updateDetails(ActionEvent actionEvent) throws IOException, InterruptedException {
     FXMLLoader updateLoader = new FXMLLoader(getClass().getResource("/FXML/updateUser.fxml"));
@@ -461,11 +467,11 @@ public class DonorController {
     miscAttributeslistView.getItems().addAll(currentUser.getMiscAttributes());
   }
 
-  /**
-   * fires when the Confirm button is clicked updates the current donor and overwrites or add it to
-   * the list of donors in the application Does not deal with organs  and misc attributes as they
-   * are confirmed in their own methods
-   */
+//  /**
+//   * fires when the Confirm button is clicked updates the current donor and overwrites or add it to
+//   * the list of donors in the application Does not deal with organs  and misc attributes as they
+//   * are confirmed in their own methods
+//   */
 //  @FXML
 //  private void updateDonor() {
 //      UndoRedoStacks.storeUndoCopy(currentUser);
@@ -594,6 +600,10 @@ public class DonorController {
     UndoRedoStacks.clearStacks();
   }
 
+    /**
+     *
+     * @param user The current user.
+     */
   public void showUser(User user) {
     NHIValue.setText(currentUser.getNhi());
     fNameValue.setText(currentUser.getFirstName());
@@ -663,6 +673,10 @@ public class DonorController {
   }
   }
 
+    /**
+     *
+     * @param event An action event
+     */
   @FXML
   void addMedication(ActionEvent event) {
     String medication = medicationTextField.getText();
@@ -680,6 +694,10 @@ public class DonorController {
 
   }
 
+    /**
+     *
+     * @param event An action event
+     */
   @FXML
   void deleteMedication(ActionEvent event) {
     String medCurrent  = currentMedicationListView.getSelectionModel().getSelectedItem();
@@ -695,6 +713,10 @@ public class DonorController {
     }
   }
 
+    /**
+     *
+     * @param event An action event
+     */
   @FXML
   void takeMedication(ActionEvent event) {
     String med = previousMedicationListView.getSelectionModel().getSelectedItem();
@@ -713,6 +735,10 @@ public class DonorController {
 
   }
 
+    /**
+     *
+     * @param event An action event
+     */
   @FXML
   void untakeMedication(ActionEvent event) {
     String med = currentMedicationListView.getSelectionModel().getSelectedItem();
@@ -730,16 +756,28 @@ public class DonorController {
     currentUser.addPreviousMedication(med);
   }
 
+    /**
+     *
+     * @param event A mouse event
+     */
   @FXML
   void clearCurrentMedSelection(MouseEvent event) {
     currentMedicationListView.getSelectionModel().clearSelection();
   }
 
+    /**
+     *
+     * @param event A mouse event
+     */
   @FXML
   void clearPreviousMedSelection(MouseEvent event){
     previousMedicationListView.getSelectionModel().clearSelection();
   }
 
+    /**
+     *
+     * @param med A string of medication
+     */
   private void lauchMedicationView(String med){
       FXMLLoader medicationTimeViewLoader = new FXMLLoader(getClass().getResource("/FXML/medicationsTimeView.fxml"));
       Parent root = null;
