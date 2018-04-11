@@ -342,7 +342,7 @@ public class User {
       return "A-";
     } else if (possibleType.equalsIgnoreCase("B+")) {
       return "B+";
-    } else if (possibleType.equalsIgnoreCase("A-")) {
+    } else if (possibleType.equalsIgnoreCase("B-")) {
       return "B-";
     } else if (possibleType.equalsIgnoreCase("O+")) {
       return "O+";
