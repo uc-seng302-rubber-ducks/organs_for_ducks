@@ -202,9 +202,6 @@ public class UpdateUserController {
         if (birthGenderComboBox.getValue() != null) {
             String birthGender = AttributeValidation.validateGender(birthGenderComboBox);
             currentUser.setBirthGender(birthGender);
-
-
-
         }
         if (genderIdComboBox.getValue() != null){
             String genderIdentity = AttributeValidation.validateGender(genderIdComboBox);
