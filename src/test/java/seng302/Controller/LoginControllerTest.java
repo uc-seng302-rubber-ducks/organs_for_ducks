@@ -1,30 +1,21 @@
 package seng302.Controller;
 
 import static org.testfx.api.FxAssert.verifyThat;
-import static org.testfx.api.FxToolkit.registerPrimaryStage;
 
 import java.time.LocalDate;
+import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.matcher.control.LabeledMatchers;
+import org.testfx.matcher.control.TextFlowMatchers;
+import org.testfx.matcher.control.TextMatchers;
+import org.testfx.util.NodeQueryUtils;
 import seng302.App;
 import seng302.Model.User;
 
 public class LoginControllerTest extends ApplicationTest {
-//
-//  @BeforeClass
-//  public static void setupSpec() throws Exception {
-//    if (Boolean.getBoolean("headless")) {
-//      System.setProperty("testfx.robot", "glass");
-//      System.setProperty("testfx.headless", "true");
-//      System.setProperty("prism.order", "sw");
-//      System.setProperty("prism.text", "t2k");
-//      System.setProperty("java.awt.headless", "true");
-//    }
-//    registerPrimaryStage();
-//  }
 
   @Override
   public void start(Stage stage) throws Exception {
@@ -73,6 +64,35 @@ public class LoginControllerTest extends ApplicationTest {
 
   @Test
   public void clinicianWrongPassword() {
+    clickOn("#changeLogin");
+    clickOn("#userIDTextField");
+    write("0");
+    clickOn("#passwordField");
+    write("garbledo");
+    clickOn("#loginButton");
+    verifyThat("#warningLabel", LabeledMatchers.hasText("Your password is incorrect please try again"));
 
   }
+
+  @Test
+  public void validDonorLoginEnterPressed() {
+    AppController.getInstance().getUsers().add(new User("A", LocalDate.now(), "ABC1234"));
+    clickOn("#userIDTextField");
+    write("ABC1234");
+    press(KeyCode.ENTER);
+    verifyThat("#NHIValue", LabeledMatchers.hasText("ABC1234"));
+  }
+
+  @Test
+  public void testChangeLoginButtonChanges() {
+    clickOn("#changeLogin");
+    clickOn("#changeLogin");
+    clickOn("#changeLogin");
+    clickOn("#changeLogin");
+    clickOn("#changeLogin");
+    clickOn("#changeLogin");
+    verifyThat("#idLabel", LabeledMatchers.hasText("NHI:"));
+  }
+
+
 }
