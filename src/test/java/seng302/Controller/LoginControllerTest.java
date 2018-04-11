@@ -3,8 +3,7 @@ package seng302.Controller;
 import static org.testfx.api.FxAssert.verifyThat;
 
 import java.time.LocalDate;
-import javafx.scene.Node;
-import javafx.scene.Parent;
+import javafx.scene.control.Labeled;
 import javafx.stage.Stage;
 import org.junit.Test;
 import org.testfx.framework.junit.ApplicationTest;
@@ -20,13 +19,13 @@ public class LoginControllerTest extends ApplicationTest {
   }
 
   @Test
-  public void cannotLogin() {
+  public void invalidDonorLogin() {
     clickOn("#loginButton");
     verifyThat("#warningLabel", LabeledMatchers.hasText("Donor was not found.\nTo register a new donor please click sign up."));
   }
 
   @Test
-  public void canLogin() {
+  public void validDonorLogin() {
     AppController.getInstance().getUsers().add(new User("A", LocalDate.now(), "ABC1234"));
     clickOn("#userIDTextField");
     write("ABC1234");
@@ -35,12 +34,30 @@ public class LoginControllerTest extends ApplicationTest {
   }
 
   @Test
-  public void clinicianLogin() {
-
+  public void ValidClinicianLogin() {
+    //Use default clinician
+    clickOn("#changeLogin");
+    clickOn("#userIDTextField");
+    write("0");
+    clickOn("#passwordField");
+    write("admin");
+    clickOn("#loginButton");
+    verifyThat("#staffIdLabel", LabeledMatchers.hasText("0"));
   }
 
   @Test
-  public void clinicianInvalid() {
+  public void clinicianInvalidClinician() {
+    clickOn("#changeLogin");
+    clickOn("#userIDTextField");
+    write("-1000");
+    clickOn("#passwordField");
+    write("admin");
+    clickOn("#loginButton");
+    verifyThat("#warningLabel", LabeledMatchers.hasText("The Clinician does not exist"));
+  }
+
+  @Test
+  public void clinicianWrongPassword() {
 
   }
 }

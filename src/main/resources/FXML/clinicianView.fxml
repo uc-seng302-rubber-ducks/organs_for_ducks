@@ -15,10 +15,10 @@
                         <Font size="20.0" />
                      </font>
                   </Label>
-                  <Label fx:id="staffIdLabel"layoutX="24.0" layoutY="18.0" text="StaffId" />
-                  <Button fx:id="undoButton" layoutX="253.0" layoutY="332.0" mnemonicParsing="false" onAction="#undo"text="Undo" />
-                  <Button layoutX="319.0" layoutY="332.0" mnemonicParsing="false"text="Redo" />
-                  <Button fx:id="logoutButton" layoutX="14.0" layoutY="332.0" mnemonicParsing="false" onAction="#logout"text="Logout" />
+                  <Label fx:id="staffIdLabel" layoutX="24.0" layoutY="18.0" text="StaffId" />
+                  <Button fx:id="undoButton" layoutX="253.0" layoutY="332.0" mnemonicParsing="false" onAction="#undo" text="Undo" />
+                  <Button layoutX="319.0" layoutY="332.0" mnemonicParsing="false" text="Redo" />
+                  <Button fx:id="logoutButton" layoutX="14.0" layoutY="332.0" mnemonicParsing="false" onAction="#logout" text="Logout" />
                   <Button layoutX="514.0" layoutY="332.0" mnemonicParsing="false" onAction="#edit" text="Edit Profile"/>
                   <GridPane layoutX="105.0" layoutY="79.0" prefHeight="215.0" prefWidth="374.0" >
                   <columnConstraints>
@@ -54,7 +54,7 @@
               <items>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="60.0" prefWidth="600.0">
                      <children>
-                        <Pagination fx:id="searchTablePagination" layoutX="271.0" layoutY="5.0" maxPageIndicatorCount="1"prefHeight="368.0" prefWidth="593.0" AnchorPane.bottomAnchor="2.0" AnchorPane.rightAnchor="4.0" />
+                        <Pagination fx:id="searchTablePagination" layoutX="271.0" layoutY="5.0" maxPageIndicatorCount="1" prefHeight="368.0" prefWidth="593.0" AnchorPane.bottomAnchor="2.0" AnchorPane.rightAnchor="4.0" />
                         <TableView fx:id="searchTableView" prefHeight="331.0" prefWidth="600.0">
                           <columns>
                             <TableColumn prefWidth="75.0" text="C1" />
