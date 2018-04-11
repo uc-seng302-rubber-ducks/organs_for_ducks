@@ -76,7 +76,8 @@ public class UpdateClinicianController {
      * @param clinician The given clinician.
      * @param controller The application controller.
      * @param stage The application stage.
-     */
+     * @param newClinician true if the current clinician is new, false if the clinician is being updated.
+     * */
     public void init(Clinician clinician, AppController controller, Stage stage, boolean newClinician) {
         currentClinician = clinician;
         this.newClinician = newClinician;

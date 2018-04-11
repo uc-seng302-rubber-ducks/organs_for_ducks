@@ -277,6 +277,7 @@ public class UpdateUserController {
     /**
      *
      * @param actionEvent an action event.
+     * @throws IOException doesn't look like this even throws..
      */
     @FXML
     public void confirmUpdate(ActionEvent actionEvent) throws IOException {

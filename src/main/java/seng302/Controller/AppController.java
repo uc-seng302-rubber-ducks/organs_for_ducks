@@ -132,7 +132,7 @@ public class AppController {
 
   /**
    * When called queries the history pointer and acquires the command located at the appropriate point
-   * @return
+   * @return A string array of the command history.
    */
   public String[] getCommand(){
     return historyOfCommands.get(historyPointer);
@@ -165,6 +165,7 @@ public class AppController {
    *
    * @param name Name of the donor
    * @param dob date of birth of the donor
+   * @return The user that matches the name and dob, otherwise null if no user was found.
    */
   public User findUser(String name, LocalDate dob) {
 //    User check = null;
@@ -243,7 +244,7 @@ public class AppController {
 
   /**
    * finds a single donor by their hashCode (unique id)
-   *
+   * @param hashCode the unique id of a user (formerly?)
    * @return Donor corresponding with the hashCode given or null if dne
    */
   public User getUser(int hashCode) {

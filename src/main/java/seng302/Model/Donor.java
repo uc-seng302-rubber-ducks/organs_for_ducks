@@ -519,7 +519,7 @@ public class Donor {
 
     /**
      * Use this one when adding a new medication from the donor interface
-     * @param medication
+     * @param medication medication string.
      */
     public void addCurrentMedicationTimes(String medication) {
         LocalDateTime time  = LocalDateTime.now();
@@ -558,7 +558,7 @@ public class Donor {
     /**
      * Use this one when creating the user from the json object
      * @param medication medication string key
-     * @param stamps list of timestamps
+     * @param stamps array list of timestamps
      */
     public void addCurrentMedicationTimes(String medication, ArrayList<LocalDateTime> stamps) {
 

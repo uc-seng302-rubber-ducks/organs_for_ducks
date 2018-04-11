@@ -19,6 +19,7 @@ public class HttpRequester {
    * uses ehealthme api to get interactions between two drugs
    * @param drugOneName string name of first drug
    * @param drugTwoName string name of second drug
+   * @param client the OkHttpClient.
    * @return json formatted string containing the interactions between the two drugs
    * @throws IOException caused by error with server connection
    */
@@ -42,7 +43,7 @@ public class HttpRequester {
    * @param gender gender of the patient
    * @param age age of the patient
    * @param client Http client to be used
-   * @return
+   * @return A set of strings.
    * @throws IOException
    */
   public static Set<String> getDrugInteractions(String drugOneName, String drugTwoName, String gender, int age, OkHttpClient client) throws IOException {
