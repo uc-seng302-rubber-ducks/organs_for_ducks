@@ -8,7 +8,7 @@ tag_checker:
 junit:
   stage: test
   script:
-    - mvn -B clean test -Djava.awt.headless=true -Dtestfx.robot=glass -Dtestfx.headless=true -Dprism.order=sw -Dprism.text=t2k
+    - mvn -B clean test
 
 recent-artifacts:
   stage: deploy
