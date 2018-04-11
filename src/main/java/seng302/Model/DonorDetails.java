@@ -25,6 +25,10 @@ public class DonorDetails {
     this.organs = organs;
   }
 
+  /**
+   * Adds an organ to the user profile.
+   * @param organ the enum of organs.
+   */
   public void addOrgan(Organs organ) {
     attachedUser.updateLastModified();
     if (organs == null) {
@@ -33,6 +37,10 @@ public class DonorDetails {
     this.organs.add(organ);
   }
 
+  /**
+   * Removes an organ from the user profile.
+   * @param organ the enum of organs.
+   */
   public void removeOrgan(Organs organ) {
     if (organs.contains(organ)) {
       organs.remove(organ);

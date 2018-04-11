@@ -24,6 +24,10 @@ import seng302.Model.JsonWriter;
 
 public class CLI {
 
+  /**
+   *
+   * @return A line reader.
+   */
   private static LineReader getLineReader() {
     try {
       TerminalBuilder builder = TerminalBuilder.builder();
