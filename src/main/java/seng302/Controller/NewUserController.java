@@ -163,9 +163,9 @@ public class NewUserController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        stage.setScene(new Scene(root));
         LoginController loginController = loader.getController();
         loginController.init(AppController.getInstance(), stage);
-        stage.setScene(new Scene(root));
         stage.show();
     }
 

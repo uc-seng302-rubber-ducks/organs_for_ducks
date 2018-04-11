@@ -183,6 +183,7 @@ public class DonorController {
   public void init(AppController controller, User user, Stage stage, Boolean fromClinician) {
 
     this.stage = stage;
+    stage.setResizable(true);
     application = controller;
     //ageValue.setText("");
     if(fromClinician){
@@ -554,9 +555,9 @@ public class DonorController {
     } catch (IOException e) {
       e.printStackTrace();
     }
+    stage.setScene(new Scene(root));
     LoginController loginController = loader.getController();
     loginController.init(AppController.getInstance(), stage);
-    stage.setScene(new Scene(root));
     stage.show();
 
 

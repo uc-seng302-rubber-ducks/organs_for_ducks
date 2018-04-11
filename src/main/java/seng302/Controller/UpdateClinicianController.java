@@ -83,6 +83,7 @@ public class UpdateClinicianController {
         this.controller = controller;
         this.stage = stage;
         stage.setTitle("Update Clinician Profile");
+        //stage.setResizable(false);
 
         if (!newClinician) {
             stage.setTitle("Update Clinician Profile");

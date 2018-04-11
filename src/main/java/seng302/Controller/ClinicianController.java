@@ -86,6 +86,7 @@ public class ClinicianController {
     this.stage = stage;
     this.appController = appController;
     this.clinician = clinician;
+    stage.setResizable(true);
     showClinician();
     users = appController.getUsers();
     for (int i = 0; i < 31; i++) {
@@ -234,7 +235,7 @@ public class ClinicianController {
           return true;
         }
         String lowerCaseFilterText = newValue.toLowerCase();
-        if (donor.getName().toLowerCase().contains(lowerCaseFilterText)) {
+        if ((donor.getName().toLowerCase()).contains(lowerCaseFilterText)) {
           return true;
         }
         //if (other test case) return true
@@ -265,9 +266,9 @@ public class ClinicianController {
     } catch (IOException e) {
       e.printStackTrace();
     }
+    stage.setScene(new Scene(root));
     LoginController loginController = loader.getController();
     loginController.init(AppController.getInstance(), stage);
-    stage.setScene(new Scene(root));
     stage.show();
   }
 
