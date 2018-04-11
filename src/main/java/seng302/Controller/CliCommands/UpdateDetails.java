@@ -1,6 +1,7 @@
 package seng302.Controller.CliCommands;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.Date;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
@@ -13,8 +14,9 @@ import seng302.View.IoHelper;
 public class UpdateDetails implements Runnable {
 
 
-  @Option(names = {"-id"}, required = true)
-  private int id;
+  @Option(names = {"-id", "-nhi", "-NHI"}, required = true)
+  private String NHI;
+
   @Option(names = {"-h",
       "help"}, required = false, usageHelp = true, description = "display a help message")
   private Boolean helpRequested = false;
@@ -24,6 +26,9 @@ public class UpdateDetails implements Runnable {
 
   @Option(names = {"-l", "-lname"})
   private String lastName;
+
+  @Option(names = {"-newNHI", "-newnhi"})
+  private String newNHI;
 
   @Option(names = {"-dob"}, description = "format 'yyyy-mm-dd'")
   private String dobString;
@@ -58,7 +63,7 @@ public class UpdateDetails implements Runnable {
       return;
     }
     AppController controller = AppController.getInstance();
-    User user = controller.getUser(id);
+    User user = controller.getUser(NHI);
     if (user == null) {
       System.err.println("Donor could not be found");
       return;
@@ -66,7 +71,7 @@ public class UpdateDetails implements Runnable {
     changed = IoHelper.updateName(user, firstName, lastName);
 
     if (dobString != null) {
-      Date newDate = IoHelper.readDate(dobString);
+      LocalDate newDate = IoHelper.readDate(dobString);
       if (newDate != null) {
         user.setDateOfBirth(newDate);
         changed = true;
@@ -74,7 +79,7 @@ public class UpdateDetails implements Runnable {
     }
 
     if (dodString != null) {
-      Date newDate = IoHelper.readDate(dobString);
+      LocalDate newDate = IoHelper.readDate(dobString);
       if (newDate != null) {
         user.setDateOfDeath(newDate);
         changed = true;
@@ -102,6 +107,15 @@ public class UpdateDetails implements Runnable {
     }
     if (region != null) {
       user.setRegion(region);
+      changed = true;
+    }
+    if (newNHI != null) {
+      User exists = controller.getUser(newNHI);
+      if (exists != null) {
+        System.out.println("User with this NHI already exists");
+        return;
+      }
+      user.setNhi(newNHI);
       changed = true;
     }
     //TODO fix json writer

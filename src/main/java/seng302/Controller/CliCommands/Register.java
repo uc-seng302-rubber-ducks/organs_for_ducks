@@ -1,10 +1,12 @@
 package seng302.Controller.CliCommands;
 
-import java.util.Date;
+import java.io.IOException;
+import java.time.LocalDate;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
 import seng302.Controller.AppController;
+import seng302.Model.JsonHandler;
 import seng302.Model.User;
 import seng302.View.IoHelper;
 
@@ -22,7 +24,10 @@ public class Register implements Runnable {
   @Parameters(index = "1")
   private String lastName;
 
-  @Parameters(index = "2", description = "format 'yyyy-mm-dd'")
+  @Parameters(index = "2", description = "NHI 'ABC1234'")
+  private String NHI;
+
+  @Parameters(index = "3", description = "format 'yyyy-mm-dd'")
   private String dobString;
 
   @Option(names = {"-dod"}, description = "Date of death. same formatting as dob")
@@ -48,20 +53,24 @@ public class Register implements Runnable {
   private String region;
 
   public void run() {
-    //meat goes here
     AppController controller = AppController.getInstance();
     if (helpRequested) {
       System.out.println("help goes here");
       return;
     }
 
-    Date dob = IoHelper.readDate(dobString);
+    LocalDate dob = IoHelper.readDate(dobString);
     if (dob == null) {
       return;
     }
-    int id = controller.Register(firstName + " " + lastName, dob);
-    User donor = controller.getUser(id);
-    if (donor == null){
+    boolean success = controller.Register(firstName + " " + lastName, dob, NHI);
+    if (!success) {
+      System.out.println("An error occurred when creating registering the new user\n"
+          + "maybe a user with that NHI already exists?");
+      return;
+    }
+    User donor = controller.getUser(NHI);
+    if (donor == null) {
       System.out.println("Donor already exists. New donor has not been added");
       return;
     }
@@ -89,12 +98,11 @@ public class Register implements Runnable {
 
     System.out.println("Donor " + donor.toString() + " has been registered with ID number");
     System.out.println(donor.hashCode());
-    //TODO fix json writer
-//    try {
-//      JsonWriter.saveCurrentDonorState(controller.getUsers());
-//    } catch (IOException ex) {
-//      System.err.println("Error saving data to file\n" + ex.getMessage());
-//    }
+    try {
+      JsonHandler.saveUsers(controller.getUsers());
+    } catch (IOException ex) {
+      System.err.println("Error saving data to file\n" + ex.getMessage());
+    }
   }
 
 }

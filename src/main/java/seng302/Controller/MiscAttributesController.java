@@ -40,6 +40,12 @@ public class MiscAttributesController {
   private AppController appController;
   private Stage stage;
 
+  /**
+   * Initializes the Misc Attributes Controller
+   * @param user The current user.
+   * @param appController An instance of AppController.
+   * @param stage The applications stage.
+   */
   public void init(User user, AppController appController, Stage stage) {
     currentUser = user;
     this.appController = appController;
@@ -48,6 +54,9 @@ public class MiscAttributesController {
 
   }
 
+  /**
+   * @param event passed in automatically by the gui
+   */
   @FXML
   void addAttribute(ActionEvent event) {
     UndoRedoStacks.storeUndoCopy(currentUser);
@@ -61,6 +70,9 @@ public class MiscAttributesController {
     appController.update(currentUser);
   }
 
+  /**
+   * @param event passed in automatically by the gui
+   */
   @FXML
   void removeAttribute(ActionEvent event) {
     UndoRedoStacks.storeUndoCopy(currentUser);
@@ -70,6 +82,9 @@ public class MiscAttributesController {
     appController.update(currentUser);
   }
 
+  /**
+   * @param event passed in automatically by the gui
+   */
   @FXML
   void goBack(ActionEvent event) {
     AppController appController = AppController.getInstance();

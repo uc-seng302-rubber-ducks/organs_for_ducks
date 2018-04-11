@@ -1,5 +1,8 @@
 package seng302.Controller;
 
+import java.lang.reflect.Array;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import javafx.beans.binding.Bindings;
@@ -12,45 +15,30 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-import org.joda.time.DateTime;
-import seng302.Model.Clinician;
 
 import java.io.IOException;
+import java.util.List;
+
 import seng302.Model.Donor;
 import seng302.Model.Organs;
 import seng302.Model.User;
+import seng302.Model.Clinician;
 
 public class ClinicianController {
 
   private final int ROWS_PER_PAGE = 30;
-  @FXML
-  private TextField regionTextField;
-
-  @FXML
-  private TextField addressTextField;
-
-  @FXML
-  private PasswordField conformPasswordField;
-
-  @FXML
-  private TextField nameTextField;
-
-  @FXML
-  private Button logoutButton;
-
-  @FXML
-  private PasswordField passwordField;
-
-  @FXML
-  private Button confirmButton;
+  private int startIndex = 0;
+  private int endIndex;
 
   @FXML
   private Button undoButton;
@@ -59,11 +47,22 @@ public class ClinicianController {
   private Label staffIdLabel;
 
   @FXML
-  private Label warningLabel;
+  private Label fNameLabel;
+
+  @FXML
+  private Label mNameLabel;
+
+  @FXML
+  private Label lNameLabel;
+
+  @FXML
+  private Label addressLabel;
+
+  @FXML
+  private Label regionLabel;
 
   @FXML
   private TextField searchTextField;
-
 
   @FXML
   private Tooltip searchToolTip;
@@ -71,52 +70,74 @@ public class ClinicianController {
   @FXML
   private TableView<User> searchTableView;
 
+  @FXML
+  private Pagination searchTablePagination;
+
   private Stage stage;
   private AppController appController;
   private Clinician clinician;
   private ArrayList<User> users;
   private ArrayList<Stage> openStages;
+  private FilteredList<User> fListDonors;
 
   private static int currentIndex = 0;
 
+
+    /**
+     * Initializes the controller class for the clinician overview.
+     * @param stage The applications stage.
+     * @param appController the applications controller.
+     * @param clinician The current clinician.
+     */
   public void init(Stage stage, AppController appController, Clinician clinician) {
-    warningLabel.setText("");
     this.stage = stage;
     this.appController = appController;
     this.clinician = clinician;
-    nameTextField.setText(clinician.getName());
-    staffIdLabel.setText(String.valueOf(clinician.getStaffId()));
-    addressTextField.setText(clinician.getWorkAddress());
-    regionTextField.setText(clinician.getRegion());
+    stage.setResizable(true);
+    showClinician();
     users = appController.getUsers();
-    initSearchTable(0);
+    initSearchTable();
+
     openStages = new ArrayList<>();
-    stage.setOnCloseRequest(new EventHandler<WindowEvent>(){
+    stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
       public void handle(WindowEvent we){
         if(!openStages.isEmpty()){
           for (Stage s : openStages){
             s.close();
-          };
-        };
-      };
+          }
+        }
+      }
     });
+    int count = users.size() / ROWS_PER_PAGE;
+    searchTablePagination.setPageCount(count + 1);
+    searchTablePagination.currentPageIndexProperty().addListener(((observable, oldValue, newValue) -> changePage(newValue.intValue())));
     //searchPagination = new Pagination((users.size() / ROWS_PER_PAGE + 1), 0);
-
-
   }
 
+
+  private void showClinician() {
+    System.out.println(clinician.getMiddleName());
+    staffIdLabel.setText(clinician.getStaffId());
+    fNameLabel.setText(clinician.getFirstName());
+    mNameLabel.setText(clinician.getMiddleName());
+    lNameLabel.setText(clinician.getLastName());
+    addressLabel.setText(clinician.getWorkAddress());
+    regionLabel.setText(clinician.getRegion());
+  }
 
   /**
    * initialises the search table, abstracted from main init function for clarity
    */
-  private void initSearchTable(int startIndex) {
-    int endIndex = Math.min(startIndex+ROWS_PER_PAGE, users.size());
+  private void initSearchTable() {
+    endIndex = Math.min(startIndex+ROWS_PER_PAGE, users.size());
     if (users == null || users.isEmpty()) {
       return;
     }
+
+    List<User> usersSublist = getSearchData(users);
     //set up lists
     //table contents are SortedList of a FilteredList of an ObservableList of an ArrayList
-    ObservableList<User> oListDonors = FXCollections.observableArrayList(users);
+    ObservableList<User> oListDonors = FXCollections.observableList(users);
 
     TableColumn<User, String> nameColumn = new TableColumn<>("Name");
     nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
@@ -134,7 +155,7 @@ public class ClinicianController {
     organsColumn.setCellValueFactory(new PropertyValueFactory<>("organs"));
 
     //TODO add more columns as wanted/needed
-    FilteredList<User> fListDonors = new FilteredList<>(oListDonors);
+    fListDonors = new FilteredList<>(oListDonors);
     fListDonors = filter(searchTextField, fListDonors);
     FilteredList<User> squished = new FilteredList<>(fListDonors);
 
@@ -165,10 +186,44 @@ public class ClinicianController {
         }
       }
     });
-
-
   }
 
+    /**
+     *
+     * @param arrayList An array list of users.
+     * @return A list of users.
+     */
+  private List<User> getSearchData(ArrayList<User> arrayList) {
+    return arrayList.subList(startIndex, endIndex);
+  }
+
+
+    /**
+     *
+     * @param pageIndex the current page.
+     * @return the search table view node.
+     */
+  private Node changePage(int pageIndex) {
+    startIndex = pageIndex * ROWS_PER_PAGE;
+    endIndex = Math.min(startIndex+ROWS_PER_PAGE, users.size());
+
+    int minIndex = Math.min(endIndex, fListDonors.size());
+
+    SortedList<User> sListDonors = new SortedList<>(FXCollections.observableArrayList(fListDonors.subList(Math.min(startIndex, minIndex), minIndex)));
+    sListDonors.comparatorProperty().bind(searchTableView.comparatorProperty());
+
+    searchTableView.setItems(sListDonors);
+
+    int count = users.size() / ROWS_PER_PAGE;
+    searchTablePagination.setPageCount(count + 1);
+
+    return searchTableView;
+  }
+
+    /**
+     *
+     * @param user the selected user.
+     */
   private void launchDonor(User user){
     FXMLLoader donorLoader = new FXMLLoader(getClass().getResource("/FXML/donorView.fxml"));
     Parent root = null;
@@ -192,40 +247,37 @@ public class ClinicianController {
    * @param fListUsers list to be filtered
    * @return filtered list with filter applied
    */
-  private static FilteredList<User> filter(TextField inputTextField, FilteredList<User> fListUsers) {
+  private FilteredList<User> filter(TextField inputTextField, FilteredList<User> fListUsers) {
     inputTextField.textProperty().addListener((observable, oldValue, newValue) -> {
-      fListUsers.predicateProperty().bind(Bindings.createObjectBinding(() -> Donor -> {
+      fListUsers.predicateProperty().bind(Bindings.createObjectBinding(() -> donor -> {
         if (newValue == null || newValue.isEmpty()) {
           return true;
         }
         String lowerCaseFilterText = newValue.toLowerCase();
-        if (Donor.getName().toLowerCase().contains(lowerCaseFilterText)) {
+        if ((donor.getName().toLowerCase()).contains(lowerCaseFilterText)) {
           return true;
         }
         //if (other test case) return true
         return false;
       }));
+      changePage(searchTablePagination.getCurrentPageIndex());
     });
+    searchTablePagination.setPageCount(fListUsers.size() / ROWS_PER_PAGE);
     return fListUsers;
   }
 
-  private static FilteredList<User> limit(FilteredList<User> filteredList, SortedList<User> sortedList) {
-    filteredList.setPredicate(Donor -> {
-      if (sortedList.indexOf(Donor) > 30 ) {
-        return false;
-      }
-      return true;
-    });
-    return filteredList;
-  };
   @FXML
   void undo(ActionEvent event) {
 
   }
 
+  /**
+   * Returns the user to the login screen
+   * @param event An action event
+   */
   @FXML
   void logout(ActionEvent event) {
-    confirm(new ActionEvent());
+    //confirm(new ActionEvent());
     FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML/loginView.fxml"));
     Parent root = null;
     try {
@@ -233,48 +285,54 @@ public class ClinicianController {
     } catch (IOException e) {
       e.printStackTrace();
     }
+    stage.setScene(new Scene(root));
     LoginController loginController = loader.getController();
     loginController.init(AppController.getInstance(), stage);
-    stage.setScene(new Scene(root));
     stage.show();
   }
 
+  /**
+   * Opens an edit window for the clinicians personal details
+   * @param event An action event
+   */
   @FXML
-  void confirm(ActionEvent event) {
-    warningLabel.setText("");
-    clinician.setName(nameTextField.getText());
-    clinician.setWorkAddress(addressTextField.getText());
-    clinician.setRegion(regionTextField.getText());
-    if(!passwordField.getText().equals("")) {
-      if (passwordField.getText().equals(conformPasswordField.getText())) {
-        clinician.setPassword(passwordField.getText());
-      } else {
-        warningLabel.setText("Passwords did not match.\n Password was not updated.");
-      }
-    }
-    clinician.setDateLastModified(DateTime.now());
-    appController.updateClinicians(clinician);
+  void edit(ActionEvent event) {
+    FXMLLoader updateLoader = new FXMLLoader(getClass().getResource("/FXML/updateClinician.fxml"));
+    Parent root = null;
+    System.out.println(updateLoader);
+    try {
+      root = updateLoader.load();
+      UpdateClinicianController updateClinicianController = updateLoader.getController();
+      Stage stage = new Stage();
+      updateClinicianController.init(clinician, appController, stage, false);
+      stage.setScene(new Scene(root));
+      stage.initModality(Modality.APPLICATION_MODAL); // background window is no longer selectable
+      stage.showAndWait();
+      showClinician();
 
-  }
-
-  @FXML
-  void goToNextPage() {
-    if(currentIndex + ROWS_PER_PAGE >= users.size()) {
-      initSearchTable(currentIndex);
-    } else {
-      initSearchTable(currentIndex + ROWS_PER_PAGE);
-      currentIndex += ROWS_PER_PAGE;
+    } catch (IOException e){
+      e.printStackTrace();
     }
   }
-
-  @FXML
-  void goToPrevPage() {
-    if(currentIndex - ROWS_PER_PAGE < 0) {
-      initSearchTable(0);
-    } else {
-      initSearchTable(currentIndex - ROWS_PER_PAGE);
-      currentIndex -= ROWS_PER_PAGE;
-    }
-
-  }
+//
+//  @FXML
+//  void goToNextPage() {
+//    if(currentIndex + ROWS_PER_PAGE >= users.size()) {
+//      initSearchTable(currentIndex);
+//    } else {
+//      initSearchTable(currentIndex + ROWS_PER_PAGE);
+//      currentIndex += ROWS_PER_PAGE;
+//    }
+//  }
+//
+//  @FXML
+//  void goToPrevPage() {
+//    if(currentIndex - ROWS_PER_PAGE < 0) {
+//      initSearchTable(0);
+//    } else {
+//      initSearchTable(currentIndex - ROWS_PER_PAGE);
+//      currentIndex -= ROWS_PER_PAGE;
+//    }
+//
+//  }
 }

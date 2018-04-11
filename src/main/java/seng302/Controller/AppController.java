@@ -1,14 +1,12 @@
 package seng302.Controller;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 
-import seng302.Model.Clinician;
-import seng302.Model.Donor;
-import seng302.Model.JsonReader;
-import seng302.Model.JsonWriter;
-import seng302.Model.User;
+import seng302.Model.*;
 
 public class AppController {
 
@@ -19,19 +17,34 @@ public class AppController {
   private int historyPointer = 0;
 
   private DonorController donorController = new DonorController();
+
   private AppController() {
-    //TODO update json reader/writer
-    //users = JsonReader.importJsonDonors();
-    clinicians = JsonReader.importClinicians();
-    for(Clinician c : clinicians){
-      if(c.getStaffId().equals("0")){
-        return; //short circut out if defalut clinication exists
-      }
+    try {
+      users = JsonHandler.loadUsers();
+      System.out.println(users.size() + " donors were successfully loaded");
+      clinicians = JsonHandler.loadClinicians();
+      System.out.println(clinicians.size() + " clinicians were successfully loaded");
+    } catch (FileNotFoundException e) {
+      System.out.println("File was not found");
     }
-    clinicians.add(new Clinician("Default","0","","","admin"));
-    JsonWriter.saveClinicians(clinicians);
     String[] empty = {""};
     historyOfCommands.add(empty);//putting an empty string into the string array to be displayed if history pointer is 0
+    boolean defaultSeen = false;
+    for(Clinician c : clinicians){
+      if(c.getStaffId().equals("0")){
+        defaultSeen = true;
+        System.out.println("Default seen");
+        break;//short circuit out if default clinician exists
+      }
+    } //all code you wish to execute must be above this point!!!!!!!!
+    if (!defaultSeen) {
+      clinicians.add(new Clinician("Default", "0", "", "", "admin"));
+      try {
+        JsonHandler.saveClinicians(clinicians);
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
   }
 
   /**
@@ -47,16 +60,25 @@ public class AppController {
   }
 
 
-  /**
-   * appends a single Donor to the list of users stored in the Controller
-   *
-   * @return hashCode of the new donor or -1 on error
-   */
-  public int Register(String name, Date dateOfBirth, Date dateOfDeath, String gender, double height,
-      double weight,
-      String bloodType, String currentAddress, String region) {
+    /**
+     * appends a single Donor to the list of users stored in the Controller
+     * @param name The name of the donor.
+     * @param dateOfBirth The date the donor was born.
+     * @param dateOfDeath The date the donor died.
+     * @param gender The gender of the donor.
+     * @param height The height of the donor.
+     * @param weight The weight of the donor.
+     * @param bloodType The blood type of the donor.
+     * @param currentAddress The address of the donor.
+     * @param region The region the donor lives in.
+     * @param NHI The unique identifier of the donor (national health index)
+     * @return hashCode of the new donor or -1 on error
+     */
+  public int Register(String name, LocalDate dateOfBirth, LocalDate dateOfDeath, String gender, double height,
+                      double weight,
+      String bloodType, String currentAddress, String region, String NHI) {
     try {
-      User newDonor = new User(name, dateOfBirth);
+      User newDonor = new User(name, dateOfBirth, NHI);
       newDonor.setDateOfDeath(dateOfDeath);
       newDonor.setGender(gender);
       newDonor.setHeight(height);
@@ -110,27 +132,31 @@ public class AppController {
 
   /**
    * When called queries the history pointer and acquires the command located at the appropriate point
-   * @return
+   * @return A string array of the command history.
    */
   public String[] getCommand(){
     return historyOfCommands.get(historyPointer);
   }
 
   /**
-   * @return hashCode of the new donor or -1 on error
+   *
+   * @param name name of new user
+   * @param dateOfBirth dob of new user
+   * @param NHI NHI of new user
+   * @return true if the user was created, false if there was an error or user already exists
    */
-  public int Register(String name, Date dateOfBirth) {
+  public boolean Register(String name, LocalDate dateOfBirth, String NHI) {
     try {
-      User newUser = new User(name, dateOfBirth);
+      User newUser = new User(name, dateOfBirth, NHI);
       if (users.contains(newUser)) {
-        return -1;
+        return false;
       }
       users.add(newUser);
-      return newUser.hashCode();
+      return true;
     } catch (Exception e) {
       //TODO debug writer?
       System.err.println(e.getMessage());
-      return -1;
+      return false;
     }
   }
 
@@ -139,23 +165,33 @@ public class AppController {
    *
    * @param name Name of the donor
    * @param dob date of birth of the donor
+   * @return The user that matches the name and dob, otherwise null if no user was found.
    */
-  public User findUser(String name, Date dob) {
-    User check = null;
-    User testUser = new User(name,
-        dob); //creates temporary user to check against the user list
-    ArrayList<User> sessionList = getUsers();
-    int place = sessionList.indexOf(testUser);
-    if (place != -1) {
-      return sessionList.get(place);
-    } else {
-      return check;
+  public User findUser(String name, LocalDate dob) {
+//    User check = null;
+//    User testUser = new User(name,
+//            dob); //creates temporary user to check against the user list
+//    ArrayList<User> sessionList = getUsers();
+//    int place = sessionList.indexOf(testUser);
+//    if (place != -1) {
+//      return sessionList.get(place);
+//    } else {
+//      return check;
+//    }
+    User toReturn = new User();
+    for (User user : users) {
+      if (user.getName().equals(name) && user.getDateOfBirth().equals(dob)) {
+        toReturn = user;
+      }
     }
+    return toReturn;
   }
 
-  /**
-   * finds all users who's name field contains the search string
-   */
+    /**
+     * finds all users who's name field contains the search string
+     * @param name The name of the user
+     * @return an array list of users.
+     */
   public ArrayList<User> findUsers(String name) {
     ArrayList<User> toReturn = new ArrayList<>();
     for (User user : users) {
@@ -166,18 +202,19 @@ public class AppController {
     return toReturn;
   }
 
-  /**
-   * Finds donor by name only. This method will need to be migrated to unique username in later builds
-   * returns null if donor is not found
-   */
-  public User findUser(String name) {
-    User toReturn = null;
+    /**
+     * Finds donor by nhi only. This method will need to be migrated to unique username in later builds
+     * returns null if donor is not found
+     * @param nhi The unique identifier of a user (national health index)
+     * @return The user with the matching nhi, or null if no user matches.
+     */
+  public User findUser(String nhi) {
     for (User u : users){
-      if(u.getName().equalsIgnoreCase(name)){
+      if((u.getNhi()).equalsIgnoreCase(nhi)){
         return u;
       }
     }
-    return toReturn;
+    return null;
   }
 
 
@@ -205,13 +242,13 @@ public class AppController {
   }
 
   /**
-   * finds a single donor by their hashCode (unique id)
-   *
-   * @return Donor corresponding with the hashCode given or null if dne
+   * finds a user by their NHI
+   * @param NHI the unique id of a user
+   * @return Donor corresponding with the NHI given or null if dne
    */
-  public User getUser(int hashCode) {
+  public User getUser(String NHI) {
     for (User user : users) {
-      if (user.hashCode() == hashCode) {
+      if (user.getNhi().equals(NHI)) {
         return user;
       }
     }
@@ -236,52 +273,76 @@ public class AppController {
       users.add(user);
       changelogWrite.add("Added Donor " + user.getName());
     }
-    //TODO fix json writer
-//    try {
-//      JsonWriter.saveCurrentDonorState(users);
-//      JsonWriter.changeLog(changelogWrite, user.getName().toLowerCase().replace(" ", "_"));
-//
-//    } catch (IOException e) {
-//      e.printStackTrace();
-//    }
+    try {
+      JsonHandler.saveUsers(users);
+      //JsonHandler.saveChangelog(changelogWrite, donor.getName().toLowerCase().replace(" ", "_"));
+
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
   }
 
 
+    /**
+     *
+     * @param users An array list of users.
+     */
   public void setUsers(ArrayList<User> users) {
     this.users = users;
   }
 
+
+    /**
+     *
+     * @param id The staff id (unique identifier) of the clinician
+     * @return The clinician that matches the given staff id, or null if no clinician matches.
+     */
   public Clinician getClinician(String id){
    for (Clinician c : clinicians){
      if (c.getStaffId().equals(id)) {
        return c;
      }
    }
-      return new Clinician();
+      return null;
    }
 
+    /**
+     *
+     * @param clinician The current clinician.
+     */
    public void updateClinicians(Clinician clinician){
     if(clinicians.contains(clinician)){
-      clinicians.remove(clinician);
-      clinicians.add(clinician);
-
     } else {
       clinicians.add(clinician);
     }
 
-    JsonWriter.saveClinicians(clinicians);
+     try {
+       JsonHandler.saveClinicians(clinicians);
+     } catch (IOException e) {
+       e.printStackTrace();
+     }
    }
 
   public DonorController getDonorController() {
     return donorController;
   }
 
+    /**
+     *
+     * @param donorController The controller class for the donor overview.
+     */
   public void setDonorController(DonorController donorController) {
     this.donorController = donorController;
   }
 
 
-  public ArrayList<String> differanceInDonors(User oldUser, User newUser){
+    /**
+     *
+     * @param oldUser The user before they were updated.
+     * @param newUser The user after they were updated.
+     * @return An array list of changes between the old and new user.
+     */
+  public ArrayList<Change> differanceInDonors(User oldUser, User newUser){
    ArrayList<String> diffs = new ArrayList<>();
    try {
      if (!oldUser.getName().equalsIgnoreCase(newUser.getName())) {
@@ -359,12 +420,19 @@ public class AppController {
      //no 'change', just added
      //TODO add "added __ to __" messages
    }
-      if(diffs.size() > 0){
-          JsonWriter.changeLog(diffs,newUser.getName().toLowerCase().replace(" ", "_"));
-          for(String diff : diffs)
-          newUser.addChange(diff);
-          return diffs;
+      ArrayList<Change> changes = new ArrayList<>();
+      if (diffs.size() > 0) {
+          for (String diff : diffs) {
+              Change c = new Change(LocalDateTime.now(), diff);
+              newUser.addChange(c);
+              changes.add(c);
+          }
+      try {
+        JsonHandler.saveChangelog(changes, newUser.getName().toLowerCase().replace(" ", "_"));
+      } catch (IOException e) {
+        e.printStackTrace();
       }
-      return diffs;
+    }
+    return changes;
   }
 }

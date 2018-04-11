@@ -1,9 +1,9 @@
 package seng302.Model;
 
 
-import org.joda.time.DateTime;
+import com.google.gson.annotations.Expose;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 /**
@@ -14,21 +14,46 @@ import java.util.Objects;
  */
 public class Clinician {
 
+    @Expose
     private String name;
+    @Expose
     private String staffId;
+    @Expose
     private String workAddress;
+    @Expose
     private String region;
+    @Expose
     private String password;
-    private DateTime dateCreated;
-    private DateTime dateLastModified;
+    @Expose
+    private LocalDateTime dateCreated;
+    @Expose
+    private LocalDateTime dateLastModified;
+
+    private String firstName;
+    private String middleName;
+    private String lastName;
 
     public Clinician() {
-        dateCreated = DateTime.now();
-        dateLastModified = DateTime.now();
+        dateCreated = LocalDateTime.now();
+        dateLastModified = LocalDateTime.now();
+    }
+
+    public Clinician(String staffId, String password, String firstName, String middleName, String lastName, String workAddress, String region) {
+        this.staffId = staffId;
+        this.password = password;
+        this.firstName = firstName;
+        this.middleName = middleName;
+        this.lastName = lastName;
+        this.workAddress = workAddress;
+        this.region = region;
+        dateCreated = LocalDateTime.now();
+        dateLastModified = LocalDateTime.now();
+
+        this.name = firstName; // todo: remove 'name'
     }
 
 
-    public Clinician(String name, String staffId, String workAddress, String region, String password, DateTime dateCreated, DateTime dateLastModified) {
+    public Clinician(String name, String staffId, String workAddress, String region, String password, LocalDateTime dateCreated, LocalDateTime dateLastModified) {
         this.name = name;
         this.staffId = staffId;
         this.workAddress = workAddress;
@@ -45,19 +70,19 @@ public class Clinician {
         this.workAddress = workAddress;
         this.region = region;
         this.password = password;
-        dateCreated = DateTime.now();
-        dateLastModified = DateTime.now();
+        dateCreated = LocalDateTime.now();
+        dateLastModified = LocalDateTime.now();
     }
 
-    public DateTime getDateCreated() {
+    public LocalDateTime getDateCreated() {
         return dateCreated;
     }
 
-    public DateTime getDateLastModified() {
+    public LocalDateTime getDateLastModified() {
         return dateLastModified;
     }
 
-    public void setDateLastModified(DateTime dateLastModified) {
+    public void setDateLastModified(LocalDateTime dateLastModified) {
         this.dateLastModified = dateLastModified;
     }
 
@@ -69,8 +94,56 @@ public class Clinician {
         this.name = name;
     }
 
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String name) {
+        this.firstName = name;
+    }
+
+    public String getMiddleName() {
+        return middleName;
+    }
+
+    public void setMiddleName(String name) {
+        this.middleName = name;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String name) {
+        this.lastName = name;
+    }
+
+
+    public String getFullName() {
+        String fullName;
+
+        if (middleName != null && lastName != null) {
+            fullName = firstName + " " + middleName  + " " + lastName;
+
+        } else if (middleName != null) {
+            fullName = firstName + " " + middleName;
+
+        } else if (lastName != null) {
+            fullName = firstName + " " + lastName;
+
+        } else {
+            fullName = firstName;
+        }
+
+        return fullName;
+    }
+
     public String getStaffId() {
         return staffId;
+    }
+
+    public void setStaffId(String staffId) {
+        this.staffId = staffId;
     }
 
 
@@ -110,5 +183,18 @@ public class Clinician {
     public int hashCode() {
 
         return Objects.hash(staffId);
+    }
+
+    @Override
+    public String toString() {
+        return "Clinician{" +
+                "name='" + name + '\'' +
+                ", staffId='" + staffId + '\'' +
+                ", workAddress='" + workAddress + '\'' +
+                ", region='" + region + '\'' +
+                ", password='" + password + '\'' +
+                ", dateCreated=" + dateCreated +
+                ", dateLastModified=" + dateLastModified +
+                '}';
     }
 }
