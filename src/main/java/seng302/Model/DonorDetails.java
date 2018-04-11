@@ -44,6 +44,9 @@ public class DonorDetails {
    * @return true if underlying organs list is empty
    */
   public boolean isEmpty() {
-    return organs.isEmpty();
+    if (organs != null) {
+      return organs.isEmpty();
+    }
+    return true;
   }
 }

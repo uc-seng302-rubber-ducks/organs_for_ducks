@@ -21,6 +21,9 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
+import okhttp3.OkHttpClient;
+import org.controlsfx.control.textfield.TextFields;
+import seng302.Model.*;
 import seng302.Controller.UpdateUserController;
 import seng302.Model.*;
 
@@ -162,6 +165,9 @@ public class DonorController {
   @FXML
   private Button addMedicationButton;
 
+  @FXML
+  private TextField nhiTextField;
+
   private AppController application;
   private ObservableList<String> currentMeds;
   private ObservableList<String> previousMeds;
@@ -210,6 +216,22 @@ public class DonorController {
     currentMeds.addListener((ListChangeListener.Change<? extends String> change) -> {
       currentMedicationListView.setItems(currentMeds);
       application.update(currentUser);
+    });
+    medicationTextField.textProperty().addListener((observable) -> {
+      String newValue = medicationTextField.getText();
+      if(newValue.length() > 2){
+        try {
+          String autocompleteRaw = HttpRequester.getSuggestedDrugs(newValue, new OkHttpClient());
+          String[] values = autocompleteRaw.replaceAll("^\"", "").replaceAll("\\[","").replaceAll("\\]","").split("\"?(,|$)(?=(([^\"]*\"){2})*[^\"]*$) *\"?");
+          for(int i = 0; i < values.length; i++) {
+            values[i] = values[i].replace('"', ' ').trim();
+          }
+          TextFields.bindAutoCompletion(medicationTextField,values);
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
+
+      }
     });
     if (user.getNHI() != null) {
       showUser(currentUser); // Assumes a donor with no name is a new sign up and does not pull values from a template
@@ -485,6 +507,10 @@ public class DonorController {
 //      }
 //    }
 //
+//    if(!nhiTextField.getText().equals(currentUser.getNhi())){
+//      currentUser.setNhi(nhiTextField.getText());
+//    }
+//
 //    currentUser.setCurrentAddress(currentAddressTextArea.getText());
 //    currentUser.setRegion(regionTextField.getText());
 //
@@ -515,7 +541,7 @@ public class DonorController {
 //    if (isInputValid) {
 //      application.update(currentUser);
 //      ArrayList<Change> diffs = application.differanceInDonors(oldDonor, currentUser);
-    //  changelog.addAll(diffs);
+//      changelog.addAll(diffs);
 //    }
 //
 //    showUser(currentUser);

@@ -67,9 +67,9 @@ public class AppController {
    */
   public int Register(String name, LocalDate dateOfBirth, LocalDate dateOfDeath, String gender, double height,
                       double weight,
-                      String bloodType, String currentAddress, String region) {
+      String bloodType, String currentAddress, String region, String NHI) {
     try {
-      User newDonor = new User(name, dateOfBirth);
+      User newDonor = new User(name, dateOfBirth, NHI);
       newDonor.setDateOfDeath(dateOfDeath);
       newDonor.setGender(gender);
       newDonor.setHeight(height);
@@ -132,9 +132,9 @@ public class AppController {
   /**
    * @return hashCode of the new donor or -1 on error
    */
-  public int Register(String name, LocalDate dateOfBirth) {
+  public int Register(String name, LocalDate dateOfBirth, String NHI) {
     try {
-      User newUser = new User(name, dateOfBirth);
+      User newUser = new User(name, dateOfBirth, NHI);
       if (users.contains(newUser)) {
         return -1;
       }
@@ -154,17 +154,23 @@ public class AppController {
    * @param dob date of birth of the donor
    */
   public User findUser(String name, LocalDate dob) {
-    User check = null;
-    User testUser = new User(name,
-            dob); //creates temporary user to check against the user list
-    ArrayList<User> sessionList = getUsers();
-    int place = sessionList.indexOf(testUser);
-    if (place != -1) {
-      return sessionList.get(place);
-    } else {
-      return check;
+//    User check = null;
+//    User testUser = new User(name,
+//            dob); //creates temporary user to check against the user list
+//    ArrayList<User> sessionList = getUsers();
+//    int place = sessionList.indexOf(testUser);
+//    if (place != -1) {
+//      return sessionList.get(place);
+//    } else {
+//      return check;
+//    }
+    User toReturn = new User();
+    for (User user : users) {
+      if (user.getName().equals(name) && user.getDateOfBirth().equals(dob)) {
+        toReturn = user;
+      }
     }
-
+    return toReturn;
   }
 
   /**
