@@ -105,6 +105,12 @@ public class EmergencyContact {
                  checkStrings(Relationship, otherContact.Relationship);
     }
 
+    /**
+     * Compares strings
+     * @param string1 The first string.
+     * @param string2 the second string.
+     * @return a boolean.
+     */
     private boolean checkStrings(String string1, String string2) {
         if (string1 == null || string2 == null) {
              return (string1 == string2);

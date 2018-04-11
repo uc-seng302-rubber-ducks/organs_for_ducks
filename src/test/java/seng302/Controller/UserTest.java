@@ -6,7 +6,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import org.joda.time.Years;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -20,7 +20,7 @@ public class UserTest {
   @Before
   public void createTestUser() {
     testUser = new User("Frank", LocalDate.of(1938, 2, 3), "ABC1234");
-    testUser.setNHI("ABC1234");
+    testUser.setNhi("ABC1234");
   }
 
   @Test

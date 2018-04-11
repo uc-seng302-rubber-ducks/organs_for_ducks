@@ -37,8 +37,8 @@ public class App extends Application
             e.printStackTrace();
         }
         LoginController loginController = loader.getController();
-        loginController.init(AppController.getInstance(), primaryStage);
         primaryStage.setScene(new Scene(root));
+        loginController.init(AppController.getInstance(), primaryStage);
         primaryStage.show();
     }
 }

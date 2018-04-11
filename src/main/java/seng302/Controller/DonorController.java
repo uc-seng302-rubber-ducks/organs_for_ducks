@@ -163,6 +163,9 @@ public class DonorController {
   @FXML
   private Button addMedicationButton;
 
+  @FXML
+  private TextField nhiTextField;
+
   private AppController application;
   private ObservableList<String> currentMeds;
   private ObservableList<String> previousMeds;
@@ -177,13 +180,18 @@ public class DonorController {
   private EmergencyContact contact = null;
   private ObservableList<Change> changelog;
 
-  /**
-   * Gives the donor view the application controller and hides all label and buttons that are not
-   * needed on opening
-   */
+    /**
+     * Gives the donor view the application controller and hides all label and buttons that are not
+     * needed on opening
+     * @param controller The application controller.
+     * @param user The current user.
+     * @param stage The application stage.
+     * @param fromClinician A flag indicating if the profile is the user logging in, or the clinician viewing it.
+     */
   public void init(AppController controller, User user, Stage stage, Boolean fromClinician) {
 
     this.stage = stage;
+    stage.setResizable(true);
     application = controller;
     //ageValue.setText("");
     if(fromClinician){
@@ -227,7 +235,7 @@ public class DonorController {
 
       }
     });
-    if (user.getNHI() != null) {
+    if (user.getNhi() != null) {
       showUser(currentUser); // Assumes a donor with no name is a new sign up and does not pull values from a template
       ArrayList<Change> changes = currentUser.getChanges();
       if (changes != null) { // checks if the changes are null in case the user is a new user
@@ -394,6 +402,12 @@ public class DonorController {
     showUser(currentUser);
   }
 
+    /**
+     *
+     * @param actionEvent An action event.
+     * @throws IOException
+     * @throws InterruptedException
+     */
   @FXML
   private void updateDetails(ActionEvent actionEvent) throws IOException, InterruptedException {
     FXMLLoader updateLoader = new FXMLLoader(getClass().getResource("/FXML/updateUser.fxml"));
@@ -451,11 +465,11 @@ public class DonorController {
     miscAttributeslistView.getItems().addAll(currentUser.getMiscAttributes());
   }
 
-  /**
-   * fires when the Confirm button is clicked updates the current donor and overwrites or add it to
-   * the list of donors in the application Does not deal with organs  and misc attributes as they
-   * are confirmed in their own methods
-   */
+//  /**
+//   * fires when the Confirm button is clicked updates the current donor and overwrites or add it to
+//   * the list of donors in the application Does not deal with organs  and misc attributes as they
+//   * are confirmed in their own methods
+//   */
 //  @FXML
 //  private void updateDonor() {
 //      UndoRedoStacks.storeUndoCopy(currentUser);
@@ -501,6 +515,10 @@ public class DonorController {
 //      }
 //    }
 //
+//    if(!nhiTextField.getText().equals(currentUser.getNhi())){
+//      currentUser.setNhi(nhiTextField.getText());
+//    }
+//
 //    currentUser.setCurrentAddress(currentAddressTextArea.getText());
 //    currentUser.setRegion(regionTextField.getText());
 //
@@ -531,7 +549,7 @@ public class DonorController {
 //    if (isInputValid) {
 //      application.update(currentUser);
 //      ArrayList<Change> diffs = application.differanceInDonors(oldDonor, currentUser);
-    //  changelog.addAll(diffs);
+//      changelog.addAll(diffs);
 //    }
 //
 //    showUser(currentUser);
@@ -571,17 +589,21 @@ public class DonorController {
     } catch (IOException e) {
       e.printStackTrace();
     }
+    stage.setScene(new Scene(root));
     LoginController loginController = loader.getController();
     loginController.init(AppController.getInstance(), stage);
-    stage.setScene(new Scene(root));
     stage.show();
 
 
     UndoRedoStacks.clearStacks();
   }
 
+    /**
+     *
+     * @param user The current user.
+     */
   public void showUser(User user) {
-    NHIValue.setText(currentUser.getNHI());
+    NHIValue.setText(currentUser.getNhi());
     fNameValue.setText(currentUser.getFirstName());
     DOBValue.setText(currentUser.getDateOfBirth().toString());
     if (currentUser.getMiddleName() != null) {
@@ -649,6 +671,10 @@ public class DonorController {
   }
   }
 
+    /**
+     *
+     * @param event An action event
+     */
   @FXML
   void addMedication(ActionEvent event) {
     String medication = medicationTextField.getText();
@@ -666,6 +692,10 @@ public class DonorController {
 
   }
 
+    /**
+     *
+     * @param event An action event
+     */
   @FXML
   void deleteMedication(ActionEvent event) {
     String medCurrent  = currentMedicationListView.getSelectionModel().getSelectedItem();
@@ -681,6 +711,10 @@ public class DonorController {
     }
   }
 
+    /**
+     *
+     * @param event An action event
+     */
   @FXML
   void takeMedication(ActionEvent event) {
     String med = previousMedicationListView.getSelectionModel().getSelectedItem();
@@ -699,6 +733,10 @@ public class DonorController {
 
   }
 
+    /**
+     *
+     * @param event An action event
+     */
   @FXML
   void untakeMedication(ActionEvent event) {
     String med = currentMedicationListView.getSelectionModel().getSelectedItem();
@@ -716,16 +754,28 @@ public class DonorController {
     currentUser.addPreviousMedication(med);
   }
 
+    /**
+     *
+     * @param event A mouse event
+     */
   @FXML
   void clearCurrentMedSelection(MouseEvent event) {
     currentMedicationListView.getSelectionModel().clearSelection();
   }
 
+    /**
+     *
+     * @param event A mouse event
+     */
   @FXML
   void clearPreviousMedSelection(MouseEvent event){
     previousMedicationListView.getSelectionModel().clearSelection();
   }
 
+    /**
+     *
+     * @param med A string of medication
+     */
   private void lauchMedicationView(String med){
       FXMLLoader medicationTimeViewLoader = new FXMLLoader(getClass().getResource("/FXML/medicationsTimeView.fxml"));
       Parent root = null;

@@ -60,11 +60,20 @@ public class AppController {
   }
 
 
-  /**
-   * appends a single Donor to the list of users stored in the Controller
-   *
-   * @return hashCode of the new donor or -1 on error
-   */
+    /**
+     * appends a single Donor to the list of users stored in the Controller
+     * @param name The name of the donor.
+     * @param dateOfBirth The date the donor was born.
+     * @param dateOfDeath The date the donor died.
+     * @param gender The gender of the donor.
+     * @param height The height of the donor.
+     * @param weight The weight of the donor.
+     * @param bloodType The blood type of the donor.
+     * @param currentAddress The address of the donor.
+     * @param region The region the donor lives in.
+     * @param NHI The unique identifier of the donor (national health index)
+     * @return hashCode of the new donor or -1 on error
+     */
   public int Register(String name, LocalDate dateOfBirth, LocalDate dateOfDeath, String gender, double height,
                       double weight,
       String bloodType, String currentAddress, String region, String NHI) {
@@ -123,15 +132,19 @@ public class AppController {
 
   /**
    * When called queries the history pointer and acquires the command located at the appropriate point
-   * @return
+   * @return A string array of the command history.
    */
   public String[] getCommand(){
     return historyOfCommands.get(historyPointer);
   }
 
-  /**
-   * @return hashCode of the new donor or -1 on error
-   */
+    /**
+     *
+     * @param name The name of the donor.
+     * @param dateOfBirth The date the donor was born.
+     * @param NHI The unique identifier of the donor (national health index).
+     * @return hashCode of the new donor or -1 on error
+     */
   public int Register(String name, LocalDate dateOfBirth, String NHI) {
     try {
       User newUser = new User(name, dateOfBirth, NHI);
@@ -152,6 +165,7 @@ public class AppController {
    *
    * @param name Name of the donor
    * @param dob date of birth of the donor
+   * @return The user that matches the name and dob, otherwise null if no user was found.
    */
   public User findUser(String name, LocalDate dob) {
 //    User check = null;
@@ -173,9 +187,11 @@ public class AppController {
     return toReturn;
   }
 
-  /**
-   * finds all users who's name field contains the search string
-   */
+    /**
+     * finds all users who's name field contains the search string
+     * @param name The name of the user
+     * @return an array list of users.
+     */
   public ArrayList<User> findUsers(String name) {
     ArrayList<User> toReturn = new ArrayList<>();
     for (User user : users) {
@@ -186,14 +202,16 @@ public class AppController {
     return toReturn;
   }
 
-  /**
-   * Finds donor by nhi only. This method will need to be migrated to unique username in later builds
-   * returns null if donor is not found
-   */
+    /**
+     * Finds donor by nhi only. This method will need to be migrated to unique username in later builds
+     * returns null if donor is not found
+     * @param nhi The unique identifier of a user (national health index)
+     * @return The user with the matching nhi, or null if no user matches.
+     */
   public User findUser(String nhi) {
     User toReturn = null;
     for (User u : users){
-      if(u.getNHI().toLowerCase().equalsIgnoreCase(nhi.toLowerCase())){
+      if((u.getNhi()).equalsIgnoreCase(nhi)){
         return u;
       }
     }
@@ -226,7 +244,7 @@ public class AppController {
 
   /**
    * finds a single donor by their hashCode (unique id)
-   *
+   * @param hashCode the unique id of a user (formerly?)
    * @return Donor corresponding with the hashCode given or null if dne
    */
   public User getUser(int hashCode) {
@@ -266,10 +284,20 @@ public class AppController {
   }
 
 
+    /**
+     *
+     * @param users An array list of users.
+     */
   public void setUsers(ArrayList<User> users) {
     this.users = users;
   }
 
+
+    /**
+     *
+     * @param id The staff id (unique identifier) of the clinician
+     * @return The clinician that matches the given staff id, or null if no clinician matches.
+     */
   public Clinician getClinician(String id){
    for (Clinician c : clinicians){
      if (c.getStaffId().equals(id)) {
@@ -279,6 +307,10 @@ public class AppController {
       return null;
    }
 
+    /**
+     *
+     * @param clinician The current clinician.
+     */
    public void updateClinicians(Clinician clinician){
     if(clinicians.contains(clinician)){
     } else {
@@ -296,11 +328,21 @@ public class AppController {
     return donorController;
   }
 
+    /**
+     *
+     * @param donorController The controller class for the donor overview.
+     */
   public void setDonorController(DonorController donorController) {
     this.donorController = donorController;
   }
 
 
+    /**
+     *
+     * @param oldUser The user before they were updated.
+     * @param newUser The user after they were updated.
+     * @return An array list of changes between the old and new user.
+     */
   public ArrayList<Change> differanceInDonors(User oldUser, User newUser){
    ArrayList<String> diffs = new ArrayList<>();
    try {

@@ -134,6 +134,11 @@ public class NewUserController {
     Stage stage;
 
 
+    /**
+     * Initializes the NewUserController
+     * @param controller The applications controller.
+     * @param stage The applications stage.
+     */
     public void init(AppController controller, Stage stage) {
         this.controller = controller;
         this.stage = stage;
@@ -163,9 +168,9 @@ public class NewUserController {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        stage.setScene(new Scene(root));
         LoginController loginController = loader.getController();
         loginController.init(AppController.getInstance(), stage);
-        stage.setScene(new Scene(root));
         stage.show();
     }
 
@@ -234,7 +239,7 @@ public class NewUserController {
         }
 
         if (valid) {
-            EmergencyContact contact = null;
+            EmergencyContact contact = new EmergencyContact(null, null);
 
             if (!(eName == null) && !eCellPhone.isEmpty()) {
                 // create the emergency contact

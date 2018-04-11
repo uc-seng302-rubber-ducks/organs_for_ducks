@@ -125,9 +125,9 @@ public class UpdateUserController {
 
     /**
      *
-     * @param user
-     * @param controller
-     * @param stage
+     * @param user The current user.
+     * @param controller An instance of the AppController class.
+     * @param stage The applications stage.
      */
     public void init(User user, AppController controller, Stage stage){
         this.stage = stage;
@@ -252,7 +252,7 @@ public class UpdateUserController {
         }
 
         if (!nhiInput.getText().equals("")) {
-          currentUser.setNHI(nhiInput.getText());
+          currentUser.setNhi(nhiInput.getText());
         }
 
         if (!mNameInput.getText().equals("")) {
@@ -276,7 +276,8 @@ public class UpdateUserController {
 
     /**
      *
-     * @param actionEvent
+     * @param actionEvent an action event.
+     * @throws IOException doesn't look like this even throws..
      */
     @FXML
     public void confirmUpdate(ActionEvent actionEvent) throws IOException {
@@ -306,6 +307,9 @@ public class UpdateUserController {
 
     }
 
+    /**
+     * @param event passed in automatically by the gui
+     */
     @FXML
     void goBack(ActionEvent event) {
         AppController appController = AppController.getInstance();
@@ -321,8 +325,7 @@ public class UpdateUserController {
     }
 
     /**
-     *
-     * @param actionEvent
+     * @param actionEvent passed in automatically by the gui
      */
     @FXML
     public void cancelCreation(ActionEvent actionEvent){

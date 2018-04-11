@@ -76,13 +76,15 @@ public class UpdateClinicianController {
      * @param clinician The given clinician.
      * @param controller The application controller.
      * @param stage The application stage.
-     */
+     * @param newClinician true if the current clinician is new, false if the clinician is being updated.
+     * */
     public void init(Clinician clinician, AppController controller, Stage stage, boolean newClinician) {
         currentClinician = clinician;
         this.newClinician = newClinician;
         this.controller = controller;
         this.stage = stage;
         stage.setTitle("Update Clinician Profile");
+        //stage.setResizable(false);
 
         if (!newClinician) {
             stage.setTitle("Update Clinician Profile");
@@ -123,6 +125,7 @@ public class UpdateClinicianController {
 
     /**
      * Attempts to load the clinician overview window.
+     * @param clinician The current clinician.
      */
     private void loadOverview(Clinician clinician) {
         FXMLLoader clinicianLoader = new FXMLLoader(getClass().getResource("/FXML/clinicianView.fxml"));
@@ -140,7 +143,7 @@ public class UpdateClinicianController {
 
     /**
      * Closes the window without making any changes.
-     * @param event
+     * @param event an action event.
      */
     @FXML
     private void cancelUpdate(ActionEvent event) {
@@ -166,7 +169,7 @@ public class UpdateClinicianController {
     /**
      * Saves the clinician if all updated attributes are valid, otherwise error messages are displayed.
      * Upon a successful save, the window closes.
-     * @param event
+     * @param event an action event.
      */
     @FXML
     private void saveChanges(ActionEvent event) {

@@ -15,22 +15,8 @@ import java.util.Objects;
 
 public class User {
 
-
-    private String firstName;
-    private String preferredFirstName;
-    private String middleName;
-    private String lastName;
-    private String birthGender;
-    private String genderIdentity;
-    private String alcoholConsumption;
-    private boolean smoker;
-    private String homePhone;
-    private String cellPhone;
-    private String email;
-    private EmergencyContact contact;
-
   @Expose
-  private String NHI;
+  private String nhi;
   @Expose
   private String name;
   @Expose
@@ -53,6 +39,30 @@ public class User {
   private LocalDateTime timeCreated;
   @Expose
   private Boolean isDeceased;
+  @Expose
+  private String firstName;
+  @Expose
+  private String preferredFirstName;
+  @Expose
+  private String middleName;
+  @Expose
+  private String lastName;
+  @Expose
+  private String birthGender;
+  @Expose
+  private String genderIdentity;
+  @Expose
+  private String alcoholConsumption;
+  @Expose
+  private boolean smoker;
+  @Expose
+  private String homePhone;
+  @Expose
+  private String cellPhone;
+  @Expose
+  private String email;
+  @Expose
+  private EmergencyContact contact;
 
   @Expose
   private LocalDateTime lastModified;
@@ -78,6 +88,7 @@ public class User {
   private ReceiverDetails receiverDetails;
 
 
+
   // updated constructor that works with the creation page
   public User(String nhi, LocalDate dateOfBirth, LocalDate dateOfDeath, String birthGender, String genderIdentity,
                double height, double weight, String bloodType, String alcoholConsumption, boolean smoker,
@@ -85,53 +96,52 @@ public class User {
                EmergencyContact contact, String name, String firstName, String preferredFirstName, String middleName,
                String lastName) {
 
-    this.NHI = nhi;
-    this.dateOfBirth = dateOfBirth;
-    this.dateOfDeath = dateOfDeath;
+        this.nhi = nhi;
+        this.dateOfBirth = dateOfBirth;
+        this.dateOfDeath = dateOfDeath;
 
-    this.birthGender = birthGender;
-    this.genderIdentity = genderIdentity;
-    this.height = height;
-    this.weight = weight;
-    this.bloodType = bloodType;
-    this.alcoholConsumption = alcoholConsumption;
-    this.smoker = smoker;
+        this.birthGender = birthGender;
+        this.genderIdentity = genderIdentity;
+        this.height = height;
+        this.weight = weight;
+        this.bloodType = bloodType;
+        this.alcoholConsumption = alcoholConsumption;
+        this.smoker = smoker;
 
-    this.currentAddress = currentAddress;
-    this.region = region;
-    this.homePhone = homePhone;
-    this.cellPhone = cellPhone;
-    this.email = email;
-    this.contact = contact;
+        this.currentAddress = currentAddress;
+        this.region = region;
+        this.homePhone = homePhone;
+        this.cellPhone = cellPhone;
+        this.email = email;
+        this.contact = contact;
 
-    this.name = name;
-    this.firstName = firstName;
-    this.preferredFirstName = preferredFirstName;
-    this.middleName = middleName;
-    this.lastName = lastName;
+        this.name = name;
+        this.firstName = firstName;
+        this.preferredFirstName = preferredFirstName;
+        this.middleName = middleName;
+        this.lastName = lastName;
 
-    this.timeCreated = LocalDateTime.now();
-    updateHistory = new HashMap<>();
-    this.miscAttributes = new ArrayList<>();
-    this.currentMedication = new ArrayList<>();
-    this.previousMedication = new ArrayList<>();
-    this.currentMedicationTimes = new HashMap<>();
-    this.previousMedicationTimes = new HashMap<>();
+        this.timeCreated = LocalDateTime.now();
+        updateHistory = new HashMap<>();
+        this.miscAttributes = new ArrayList<>();
+        this.currentMedication = new ArrayList<>();
+        this.previousMedication = new ArrayList<>();
+        this.currentMedicationTimes = new HashMap<>();
+        this.previousMedicationTimes = new HashMap<>();
 
-    try {
-      changes = JsonHandler.importHistoryFromFile(name);
-    } catch (FileNotFoundException e) {
-      e.printStackTrace();
+        try {
+            changes = JsonHandler.importHistoryFromFile(name);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
     }
-  }
-
 
   public User(java.time.LocalDate dateOfBirth, java.time.LocalDate dateOfDeath, String gender,
       double height, double weight,
       String bloodType,
       String currentAddress, String region, LocalDateTime timeCreated, String name,
       LocalDateTime lastModified,
-      boolean isDeceased, String NHI) {
+      boolean isDeceased, String nhi) {
     this.dateOfBirth = dateOfBirth;
     this.dateOfDeath = dateOfDeath;
     if (gender.startsWith("m") || gender.startsWith("M")) {
@@ -165,7 +175,7 @@ public class User {
     this.previousMedication = new ArrayList<>();
     this.currentMedicationTimes = new HashMap<String, ArrayList<LocalDateTime>>();
     this.previousMedicationTimes = new HashMap<String, ArrayList<LocalDateTime>>();
-    this.NHI = NHI;
+    this.nhi = nhi;
     this.donorDetails = new DonorDetails(this);
     this.receiverDetails = new ReceiverDetails(this);
     //TODO fix json reader
@@ -177,10 +187,10 @@ public class User {
 
   }
 
-  public User(String name, java.time.LocalDate dateOfBirth, String NHI) {
+  public User(String name, java.time.LocalDate dateOfBirth, String nhi) {
     this.dateOfBirth = dateOfBirth;
     this.name = name;
-    this.NHI = NHI;
+    this.nhi = nhi;
     timeCreated = LocalDateTime.now();
     lastModified = LocalDateTime.now();
     this.gender = "U";
@@ -257,13 +267,13 @@ public class User {
     return !this.receiverDetails.isEmpty();
   }
 
-  public String getNHI() {
-    return NHI;
+  public String getNhi() {
+    return nhi;
   }
 
-  public void setNHI(String NHI) {
+  public void setNhi(String nhi) {
     updateLastModified();
-    this.NHI = NHI;
+    this.nhi = nhi;
   }
 
   /**
@@ -539,7 +549,7 @@ public class User {
       return "A-";
     } else if (possibleType.equalsIgnoreCase("B+")) {
       return "B+";
-    } else if (possibleType.equalsIgnoreCase("A-")) {
+    } else if (possibleType.equalsIgnoreCase("B-")) {
       return "B-";
     } else if (possibleType.equalsIgnoreCase("O+")) {
       return "O+";
@@ -745,20 +755,22 @@ public class User {
       return false;
     }
     User other = (User) o;
-    return this.NHI.equals(other.NHI);
+    System.out.println(this);
+    System.out.println(other);
+    return this.nhi.equals(other.getNhi());
     //return Objects.equals(dateOfBirth, other.dateOfBirth) && name.equalsIgnoreCase(other.name);
   }
 
   @Override
   public int hashCode() {
 
-    return Objects.hash(NHI);
+    return Objects.hash(nhi);
   }
 
   @Override
   public String toString() {
     return "name:'" + name + "\'" +
-        "\nNHI: " + NHI +
+        "\nnhi: " + nhi +
         "\ndate Of Birth: " + dateOfBirth +
         "\ndate Of Death :" + dateOfDeath +
         "\ngender: " + gender +

@@ -190,6 +190,7 @@ public final class JsonWriter {
      * The JSON object is then placed into the JSONArray and written back to the orignal place overwritting the file that is there
      *
      * @param toWrite change to be written into the changelog.
+     * @param name the name of the file path to the change log json.
      */
     public static void changeLog(ArrayList<String> toWrite, String name){
         try {

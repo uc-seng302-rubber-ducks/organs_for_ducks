@@ -75,7 +75,7 @@ public class AttributeValidation {
     /**
      * Gets the enum value of BloodTypes by iterating through the string literals
      * and matching them to the given blood type.
-     *
+     * @param bloodBox the combobox containing blood types.
      * @return The enum of the given blood type if found, null otherwise.
      */
     public static String validateBlood(ComboBox bloodBox) {
@@ -94,9 +94,9 @@ public class AttributeValidation {
 
 
     /**
-     * Checks that the given value can be parsed as a Double.
+     * Checks that the given value can be parsed as a double.
      * @param stringValue Either the height or weight to be parsed as a double.
-     * @return The value as a Double, -1 if the value was <= 0 or there was an exception, otherwise 0 if the value was empty.
+     * @return The value as a double, -1 if the value was less than or equal to 0 or there was an exception, otherwise 0 if the value was empty.
      */
     public static double validateDouble(String stringValue) {
         double doubleValue;
@@ -119,14 +119,14 @@ public class AttributeValidation {
 
     /**
      * Gets the first character of the given gender.
-     *
-     * @return The gender as a Character.
+     * @param genderBox The combobox containing gender types.
+     * @return The gender value.
      */
-    public static String validateGender(ComboBox type) {
+    public static String validateGender(ComboBox genderBox) {
         String gender = null;
 
-        if (type.getValue() != null && type.getValue().toString() != null) {
-            gender = type.getValue().toString();
+        if (genderBox.getValue() != null && genderBox.getValue().toString() != null) {
+            gender = genderBox.getValue().toString();
         }
 
         return gender;

@@ -1,11 +1,14 @@
 package seng302.Controller;
 
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import seng302.Model.Clinician;
 import seng302.Model.User;
@@ -50,11 +53,25 @@ public class LoginController {
     private ArrayList<User> users;
     private Stage stage;
 
+
+    /**
+     * Initializes the Login controller.
+     * @param appController The applications controller.
+     * @param stage The applications stage.
+     */
     public void init(AppController appController, Stage stage){
         warningLabel.setText("");
         this.appController = appController;
         users = appController.getUsers();
         this.stage = stage;
+
+        Scene scene = stage.getScene();
+        scene.setOnKeyPressed(e -> {
+            if (e.getCode() == KeyCode.ENTER) {
+                login(new ActionEvent());
+            }
+        });
+
 
     }
 
@@ -81,12 +98,24 @@ public class LoginController {
 
     }
 
+    /**
+     *
+     * @param event An action event.
+     */
     @FXML
     void login(ActionEvent event) {
         if(isUser) {
             warningLabel.setText("");
             String wantedDonor = userIDTextField.getText();
-            User donor = appController.findUser(wantedDonor);
+
+            User donor = null;
+
+            if (wantedDonor.isEmpty()) {
+                warningLabel.setText("Please enter an NHI.");
+                return;
+            } else {
+                donor = appController.findUser(wantedDonor);
+            }
 
             if (donor == null) {
                 warningLabel.setText("Donor was not found.\nTo register a new donor please click sign up.");
@@ -128,6 +157,7 @@ public class LoginController {
             } else {
                 FXMLLoader clinicianLoader = new FXMLLoader(getClass().getResource("/FXML/clinicianView.fxml"));
                 Parent root = null;
+
                 try {
                     root = clinicianLoader.load();
                 } catch (IOException e) {
@@ -142,6 +172,10 @@ public class LoginController {
     }
 
 
+    /**
+     *
+     * @param event An action event
+     */
     @FXML
     void signUp(ActionEvent event) {
         if(isUser) {

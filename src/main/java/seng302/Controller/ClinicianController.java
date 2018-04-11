@@ -82,15 +82,20 @@ public class ClinicianController {
 
   private static int currentIndex = 0;
 
+
+    /**
+     * Initializes the controller class for the clinician overview.
+     * @param stage The applications stage.
+     * @param appController the applications controller.
+     * @param clinician The current clinician.
+     */
   public void init(Stage stage, AppController appController, Clinician clinician) {
     this.stage = stage;
     this.appController = appController;
     this.clinician = clinician;
+    stage.setResizable(true);
     showClinician();
     users = appController.getUsers();
-    for (int i = 0; i < 31; i++) {
-      users.add(new User(String.valueOf(i), LocalDate.now(), "ABC1234"));
-    }
     initSearchTable();
 
     openStages = new ArrayList<>();
@@ -183,10 +188,21 @@ public class ClinicianController {
     });
   }
 
+    /**
+     *
+     * @param arrayList An array list of users.
+     * @return A list of users.
+     */
   private List<User> getSearchData(ArrayList<User> arrayList) {
     return arrayList.subList(startIndex, endIndex);
   }
 
+
+    /**
+     *
+     * @param pageIndex the current page.
+     * @return the search table view node.
+     */
   private Node changePage(int pageIndex) {
     startIndex = pageIndex * ROWS_PER_PAGE;
     endIndex = Math.min(startIndex+ROWS_PER_PAGE, users.size());
@@ -204,6 +220,10 @@ public class ClinicianController {
     return searchTableView;
   }
 
+    /**
+     *
+     * @param user the selected user.
+     */
   private void launchDonor(User user){
     FXMLLoader donorLoader = new FXMLLoader(getClass().getResource("/FXML/donorView.fxml"));
     Parent root = null;
@@ -234,7 +254,7 @@ public class ClinicianController {
           return true;
         }
         String lowerCaseFilterText = newValue.toLowerCase();
-        if (donor.getName().toLowerCase().contains(lowerCaseFilterText)) {
+        if ((donor.getName().toLowerCase()).contains(lowerCaseFilterText)) {
           return true;
         }
         //if (other test case) return true
@@ -253,7 +273,7 @@ public class ClinicianController {
 
   /**
    * Returns the user to the login screen
-   * @param event
+   * @param event An action event
    */
   @FXML
   void logout(ActionEvent event) {
@@ -265,15 +285,15 @@ public class ClinicianController {
     } catch (IOException e) {
       e.printStackTrace();
     }
+    stage.setScene(new Scene(root));
     LoginController loginController = loader.getController();
     loginController.init(AppController.getInstance(), stage);
-    stage.setScene(new Scene(root));
     stage.show();
   }
 
   /**
    * Opens an edit window for the clinicians personal details
-   * @param event
+   * @param event An action event
    */
   @FXML
   void edit(ActionEvent event) {
