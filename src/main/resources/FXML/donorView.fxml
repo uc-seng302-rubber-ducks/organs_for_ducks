@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.ComboBox?>
@@ -15,7 +19,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.Controller.DonorController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.Controller.DonorController">
    <children>
       <TabPane layoutY="38.0" prefHeight="556.0" prefWidth="600.0" rotateGraphic="true" tabClosingPolicy="UNAVAILABLE">
         <tabs>
@@ -58,6 +62,8 @@
                         <Button layoutX="301.0" layoutY="427.0" mnemonicParsing="false" onAction="#modifyMiscAttributes" text="Misc" />
                         <Label fx:id="warningLabel" layoutX="263.0" layoutY="56.0" text="Label" />
                         <Button fx:id="logOutButton" layoutX="388.0" layoutY="263.0" mnemonicParsing="false" onAction="#logout" text="Log Out" />
+                        <TextField fx:id="nhiTextField" layoutX="388.0" layoutY="80.0" />
+                        <Label layoutX="307.0" layoutY="85.0" text="NHI" />
                      </children>
                   </AnchorPane>
             </content>

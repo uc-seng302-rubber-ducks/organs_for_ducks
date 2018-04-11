@@ -192,7 +192,7 @@ public class AppController {
   public User findUser(String NHI) {
     User toReturn = null;
     for (User u : users){
-      if (u.getNHI().equals(NHI)) {
+      if (u.getNhi().equals(NHI)) {
         return u;
       }
     }
