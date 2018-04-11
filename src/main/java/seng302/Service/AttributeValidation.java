@@ -126,7 +126,7 @@ public class AttributeValidation {
         String gender = null;
 
         if (type.getValue() != null && type.getValue().toString() != null) {
-            gender = Character.toString(type.getValue().toString().charAt(0));
+            gender = type.getValue().toString();
         }
 
         return gender;

@@ -133,10 +133,10 @@ public class UpdateUserController {
         this.stage = stage;
         currentUser = user;
         this.appController = controller;
-        UndoRedoStacks.storeUndoCopy(currentUser);
+        //UndoRedoStacks.storeUndoCopy(currentUser);
         currentUser = user;
         oldUser = new User();
-        UndoRedoStacks.cloneUser(currentUser,oldUser);
+        //UndoRedoStacks.cloneUser(currentUser,oldUser);
 
 
     }
@@ -202,9 +202,6 @@ public class UpdateUserController {
         if (birthGenderComboBox.getValue() != null) {
             String birthGender = AttributeValidation.validateGender(birthGenderComboBox);
             currentUser.setBirthGender(birthGender);
-
-
-
         }
         if (genderIdComboBox.getValue() != null){
             String genderIdentity = AttributeValidation.validateGender(genderIdComboBox);
