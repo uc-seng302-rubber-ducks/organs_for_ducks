@@ -85,11 +85,11 @@ public class HttpRequesterTest {
     when(mockResponseBody.string()).thenReturn(responseBody.toString());
     when(mockResponse.body()).thenReturn(mockResponseBody);
     Set<String> expected = new HashSet<>();
-    expected.add("anxiety");
-    expected.add("anaemia");
-    expected.add("pneumonia");
-    expected.add("injury");
-    expected.add("nausea");
+    expected.add("anxiety (< 1 month)");
+    expected.add("anaemia (1 - 6 months)");
+    expected.add("pneumonia (5 - 10 years)");
+    expected.add("injury (not specified)");
+    expected.add("nausea (not specified)");
 
     Set<String> results = HttpRequester.getDrugInteractions("coumadin", "acetaminophen", "m", 36, mockClient);
 
