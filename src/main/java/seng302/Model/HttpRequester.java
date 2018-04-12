@@ -92,7 +92,23 @@ public class HttpRequester {
       JSONObject ageInteractions = (JSONObject) json.get("age_interaction");
       JSONObject genderInteractions = (JSONObject) json.get("gender_interaction");
       JSONObject durationInteractions = (JSONObject) json.get("duration_interaction");
-      JSONArray ageProblems = (JSONArray) ageInteractions.get(ageRange);
+
+      JSONArray ageProblems = new JSONArray();
+      //get age interactions
+      if (ageInteractions.get(ageRange) != null) {
+        //try to get exact 10 year range (20-29)
+        ageProblems = (JSONArray) ageInteractions.get(ageRange);
+      } else {
+        //try to get any range containing 20 or 29
+        for (Object keyObj : ageInteractions.keySet()) {
+          String key = keyObj.toString();
+          if (key.contains(Integer.toString((age / 10) * 10)) || key
+              .contains(Integer.toString((age / 10) * 10 + 9))) {
+            ageProblems = (JSONArray) ageInteractions.get(key);
+          }
+        }
+      }
+      //otherwise there are no age interactions, only gender
       ageResults.addAll(ageProblems);
 
       if (gender.startsWith("m") || gender.startsWith("M")) {
