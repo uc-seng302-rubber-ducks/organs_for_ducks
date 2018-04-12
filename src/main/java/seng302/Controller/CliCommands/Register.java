@@ -24,7 +24,10 @@ public class Register implements Runnable {
   @Parameters(index = "1")
   private String lastName;
 
-  @Parameters(index = "2", description = "format 'yyyy-mm-dd'")
+  @Parameters(index = "2", description = "NHI 'ABC1234'")
+  private String NHI;
+
+  @Parameters(index = "3", description = "format 'yyyy-mm-dd'")
   private String dobString;
 
   @Option(names = {"-dod"}, description = "Date of death. same formatting as dob")
@@ -50,7 +53,6 @@ public class Register implements Runnable {
   private String region;
 
   public void run() {
-    //meat goes here
     AppController controller = AppController.getInstance();
     if (helpRequested) {
       System.out.println("help goes here");
@@ -61,9 +63,14 @@ public class Register implements Runnable {
     if (dob == null) {
       return;
     }
-    int id = controller.Register(firstName + " " + lastName, dob);
-    User donor = controller.getUser(id);
-    if (donor == null){
+    boolean success = controller.Register(firstName + " " + lastName, dob, NHI);
+    if (!success) {
+      System.out.println("An error occurred when creating registering the new user\n"
+          + "maybe a user with that NHI already exists?");
+      return;
+    }
+    User donor = controller.getUser(NHI);
+    if (donor == null) {
       System.out.println("Donor already exists. New donor has not been added");
       return;
     }

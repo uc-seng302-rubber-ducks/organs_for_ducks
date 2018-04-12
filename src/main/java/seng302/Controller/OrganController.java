@@ -45,6 +45,12 @@ public class OrganController {
     private User currentUser;
     private Stage stage;
 
+    /**
+     *
+     * @param user The current user.
+     * @param controller An instance of AppController.
+     * @param stage The applications stage.
+     */
     public void init(User user, AppController controller, Stage stage){
         this.stage = stage;
         this.appController = controller;
@@ -67,6 +73,9 @@ public class OrganController {
 
     }
 
+    /**
+     * @param event passed in automatically by the gui
+     */
     @FXML
     void donate(ActionEvent event) {
         UndoRedoStacks.storeUndoCopy(currentUser);
@@ -77,6 +86,9 @@ public class OrganController {
         canDonate.getItems().remove(toDonate);
     }
 
+    /**
+     * @param event passed in automatically by the gui
+     */
     @FXML
     void undonate(ActionEvent event) {
         UndoRedoStacks.storeUndoCopy(currentUser);
@@ -87,6 +99,9 @@ public class OrganController {
         appController.update(currentUser);
     }
 
+    /**
+     * @param event passed in automatically by the gui
+     */
     @FXML
     void goBack(ActionEvent event) {
         AppController appController = AppController.getInstance();

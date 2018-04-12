@@ -21,6 +21,7 @@ import okhttp3.ResponseBody;
 import okio.BufferedSource;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -163,5 +164,63 @@ public class HttpRequesterTest {
     String[] expected = {""};
     String[] results = HttpRequester.getActiveIngredients("reserpine", mockClient);
     Assert.assertArrayEquals(results, expected);
+  }
+
+  @Test
+  public void autoCompleteReturnsString() throws IOException {
+    Response mockResponse = mock(Response.class);
+
+    Call mockCall = mock(Call.class);
+    ResponseBody mockResponseBody = mock(ResponseBody.class);
+
+    JSONParser parser = new JSONParser();
+    JSONObject responseBody = null;
+    try {
+      responseBody = (JSONObject) parser.parse(new FileReader(
+              "src/test/resources/httpResponses/res-autocomplete-query.json"));
+    } catch (ParseException e) {
+      e.printStackTrace();
+    }
+
+    when(mockClient.newCall(any(Request.class))).thenReturn(mockCall);
+    when(mockCall.execute()).thenReturn(mockResponse);
+    when(mockResponseBody.string()).thenReturn(responseBody.toString());
+    when(mockResponse.body()).thenReturn(mockResponseBody);
+    String expected = "[\"Reserpine\",\"Resectisol\",\"Resectisol in plastic container\",\"Restoril\",\"Rescriptor\",\"Restasis\",\"Rescula\",\"Reserpine and hydrochlorothiazide\",\"Reserpine, hydralazine hydrochloride and hydrochlorothiazide\",\"Reserpine, hydrochlorothiazide, and hydralazine hydrochloride\",\"Reserpine and hydrochlorothiazide-50\",\"Reserpine and hydroflumethiazide\",\"Resporal\"]";
+
+    String result = HttpRequester.getSuggestedDrugs("res", mockClient);
+    verify(mockCall, times(1)).execute();
+    assert(result.equals(expected));
+  }
+
+
+  @Test
+  public void returnEmptyArrayStringOnError() throws IOException {
+    Response mockResponse = mock(Response.class);
+    //mock of the underlying classes not visible from source code
+    Call mockCall = mock(Call.class);
+    ResponseBody mockResponseBody = mock(ResponseBody.class);
+
+    JSONParser parser = new JSONParser();
+    JSONObject responseBody = null;
+    try {
+      responseBody = (JSONObject) parser.parse(new FileReader(
+              "src/test/resources/httpResponses/empty-Autocomplete.json"));
+    } catch (ParseException e) {
+      e.printStackTrace();
+    }
+
+    //set behaviours
+    when(mockClient.newCall(any(Request.class))).thenReturn(mockCall);
+    when(mockCall.execute()).thenReturn(mockResponse);
+    when(mockResponseBody.string()).thenReturn(responseBody.toString());
+    when(mockResponse.body()).thenReturn(mockResponseBody);
+
+
+
+    String result = HttpRequester.getSuggestedDrugs("aaa", mockClient);
+    verify(mockCall, times(1)).execute();
+    System.out.println(result);
+    assert(result.equals("[]"));
   }
 }

@@ -25,7 +25,7 @@ public final class JsonHandler {
      * save the current users in the system to the filename given
      * Based on: https://stackoverflow.com/questions/14996663/is-there-a-standard-implementation-for-a-gson-joda-time-serialiser
      * @param users List of users to save
-     * @throws IOException
+     * @throws IOException when there is an error writing to the file.
      */
     public static void saveUsers(ArrayList<User> users) throws IOException {
 
@@ -49,7 +49,7 @@ public final class JsonHandler {
     /**
      * loads the users from a file and returns an Arraylist
      * @return list of donors present
-     * @throws FileNotFoundException
+     * @throws FileNotFoundException  when the file cannot be located.
      */
 
     public static ArrayList<User> loadUsers() throws FileNotFoundException {

@@ -23,4 +23,15 @@ public class ReceiverDetails {
   }
   //TODO model from DonorDetails (get/set/add/remove/isEmpty etc)
 
+  /**
+   * check if underlying organs list is empty TODO extend this to new functionality when added
+   *
+   * @return true if organ list is empty
+   */
+  public boolean isEmpty() {
+    if (organs == null) {
+      return true;
+    }
+    return organs.isEmpty();
+  }
 }
