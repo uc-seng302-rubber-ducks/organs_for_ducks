@@ -135,8 +135,10 @@
                         <Label layoutX="31.0" layoutY="401.0" text="Previous Medications" />
                         <Label layoutX="489.0" layoutY="401.0" text="Current Medications" />
                         <Label layoutX="345.0" layoutY="60.0" text="Medication" />
-                       <Label layoutX="724.0" layoutY="104.0" text="Drug Interactions"/>
-                       <TextArea fx:id="drugInteractionsTextArea" editable="false" layoutX="670.0"
+                       <Label fx:id="drugDetailsLabel" alignment="CENTER" contentDisplay="CENTER"
+                         layoutX="671.0" layoutY="104.0" prefHeight="17.0" prefWidth="198.0"
+                         text="Drug Details" textAlignment="CENTER"/>
+                       <TextArea fx:id="drugDetailsTextArea" editable="false" layoutX="670.0"
                          layoutY="125.0" prefHeight="200.0" prefWidth="200.0" wrapText="true"/>
                      </children>
                   </AnchorPane>

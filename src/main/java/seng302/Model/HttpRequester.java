@@ -54,6 +54,15 @@ public class HttpRequester {
   public static Set<String> getDrugInteractions(String drugOneName, String drugTwoName,
       String gender, int age, OkHttpClient client) throws IOException {
 
+    //return empty set if drugs are null
+    if (drugOneName == null || drugTwoName == null) {
+      return new HashSet<>();
+    }
+    //ensures a result is given (for both genders if none is given)
+    if (gender == null) {
+      gender = "unknown";
+    }
+
     Set<String> results = new HashSet<>();
     Set<String> ageResults = new HashSet<>();
     Set<String> genderResults = new HashSet<>();
@@ -86,10 +95,10 @@ public class HttpRequester {
       JSONArray ageProblems = (JSONArray) ageInteractions.get(ageRange);
       ageResults.addAll(ageProblems);
 
-      if (gender != null && (gender.startsWith("m") || gender.startsWith("M"))) {
+      if (gender.startsWith("m") || gender.startsWith("M")) {
         JSONArray genderedInteractions  = (JSONArray) genderInteractions.get("male");
         genderResults.addAll(genderedInteractions);
-      } else if (gender != null && (gender.startsWith("f") || gender.startsWith("F"))) {
+      } else if (gender.startsWith("f") || gender.startsWith("F")) {
         JSONArray genderedInteractions  = (JSONArray) genderInteractions.get("female");
         genderResults.addAll(genderedInteractions);
       } else {

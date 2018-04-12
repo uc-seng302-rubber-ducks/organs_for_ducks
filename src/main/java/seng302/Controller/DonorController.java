@@ -152,7 +152,10 @@ public class DonorController {
   private Button addMedicationButton;
 
   @FXML
-  private TextArea drugInteractionsTextArea;
+  private TextArea drugDetailsTextArea;
+
+  @FXML
+  private Label drugDetailsLabel;
 
   private AppController application;
   private ObservableList<String> currentMeds;
@@ -211,16 +214,15 @@ public class DonorController {
         .addListener((observable, oldValue, newValue) -> {
           ObservableList<String> selected = currentMedicationListView.getSelectionModel()
               .getSelectedItems();
-          displayInteractions(selected);
+          displayDetails(selected);
         });
     previousMedicationListView.getSelectionModel().selectedItemProperty()
         .addListener(((observable, oldValue, newValue) -> {
           ObservableList<String> selected = previousMedicationListView.getSelectionModel()
               .getSelectedItems();
           System.out.println(selected);
-          displayInteractions(selected);
+          displayDetails(selected);
         }));
-
 
     if (user.getNhi() != null) {
       showUser(
@@ -261,33 +263,56 @@ public class DonorController {
   }
 
   /**
-   * takes selected items from lambda functions. handles http requesting and displaying results
+   * takes selected items from lambda functions. handles http requesting and displaying results if
+   * one item is selected, active ingredients will be shown. If two are selected, the interactions
+   * between the two will be displayed
    *
    * @param selected selected items from listview
    */
-  private void displayInteractions(ObservableList<String> selected) {
-    if (selected.size() != 2) {
-      drugInteractionsTextArea.setText(
-          "Please select any two drugs from either previous or current medications to view the interactions between them");
+  private void displayDetails(ObservableList<String> selected) {
+    if (selected.size() > 2) {
+      drugDetailsLabel.setText("Drug Details");
+      drugDetailsTextArea.setText(
+          "Please select any two drugs from either previous or current medications to view the interactions between them\n"
+              + "or select one drug to see it's active ingredients");
+      return;
     }
+
     try {
-      Set<String> res = HttpRequester
-          .getDrugInteractions(selected.get(0), selected.get(1), currentUser.getGender(),
-              currentUser.getAge(), client);
-      StringBuilder sb = new StringBuilder();
-      for (String symptom : res) {
-        sb.append(symptom);
-        sb.append("\n");
-      }
-      if (sb.toString().equals("")) {
-        drugInteractionsTextArea.setText("No interactions");
-        return;
-      }
-      drugInteractionsTextArea.setText(sb.toString());
+      //active ingredients
+      if (selected.size() == 1) {
+        String[] res = HttpRequester.getActiveIngredients(selected.get(0), client);
+        StringBuilder sb = new StringBuilder();
+        for (String ingredient : res) {
+          sb.append(ingredient);
+          sb.append("\n");
+        }
+        drugDetailsLabel.setText("Drug Details: Active Ingredients");
+        if (sb.toString().equals("")) {
+          drugDetailsTextArea.setText("Could not find active ingredients");
+          return;
+        }
+        drugDetailsTextArea.setText(sb.toString());
 
-
+      } else /*interactions*/ {
+        Set<String> res = HttpRequester
+            .getDrugInteractions(selected.get(0), selected.get(1), currentUser.getGender(),
+                currentUser.getAge(), client);
+        StringBuilder sb = new StringBuilder();
+        for (String symptom : res) {
+          sb.append(symptom);
+          sb.append("\n");
+        }
+        drugDetailsLabel.setText("Drug Details: Drug Interactions");
+        if (sb.toString().equals("")) {
+          drugDetailsTextArea.setText("No interactions");
+          return;
+        }
+        drugDetailsTextArea.setText(sb.toString());
+      }
     } catch (IOException ex) {
       //TODO display connectivity error message
+      System.out.println("oof");
     }
 
   }
