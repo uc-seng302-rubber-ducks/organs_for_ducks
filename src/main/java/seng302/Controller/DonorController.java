@@ -544,6 +544,13 @@ public class DonorController {
     if (currentUser.getLastName() != null) {
       lNameValue.setText(currentUser.getLastName());
     }
+
+    if (currentUser.getGenderIdentity() != null) {
+      genderValue.setText(currentUser.getGenderIdentity());
+    } else {
+      genderValue.setText(currentUser.getBirthGender());
+    }
+
     ageValue.setText(user.getAge().toString().replace("P", "").replace("Y", "") + " Years");
     if (currentUser.getDateOfDeath() != null) {
       DODValue.setText(currentUser.getDateOfDeath().toString());

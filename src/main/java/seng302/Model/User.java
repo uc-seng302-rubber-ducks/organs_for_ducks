@@ -767,13 +767,14 @@ public class User {
         "\nnhi: " + nhi +
         "\ndate Of Birth: " + dateOfBirth +
         "\ndate Of Death :" + dateOfDeath +
-        "\ngender: " + gender +
+        "\nbirth gender: " + birthGender +
+        "\npreferred gender: " + genderIdentity +
         "\nheight: " + height +
         "\nweight: " + weight +
         "\nblood Type: '" + bloodType + '\'' +
         "\ncurrent Address: '" + currentAddress + '\'' +
         "\nregion: '" + region + '\'' +
-        "\norgans: " + donorDetails.getOrgans() +
+        "\norgans: " + (donorDetails == null ? (name + "is not a donor") : donorDetails.getOrgans()) +
         "\ntime Created: " + timeCreated +
         "\nlast modified: " + lastModified;
   }
