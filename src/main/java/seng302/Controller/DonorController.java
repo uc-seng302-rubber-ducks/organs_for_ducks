@@ -17,6 +17,8 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import okhttp3.OkHttpClient;
+import org.controlsfx.control.textfield.TextFields;
+import okhttp3.OkHttpClient;
 import seng302.Model.*;
 import java.io.IOException;
 import java.util.*;
@@ -257,6 +259,14 @@ public class DonorController {
     changelog.addListener((ListChangeListener.Change<? extends Change> change) -> {
       historyTableView.setItems(changelog);
     });
+    medicationTextField.setOnMouseClicked(new EventHandler<MouseEvent>() {
+      @Override
+      public void handle(MouseEvent event) {
+        getDrugSuggestions();
+    }});
+    medicationTextField.textProperty().addListener((observable) -> {
+      getDrugSuggestions();
+    });
     showUser(currentUser);
 
 
@@ -316,6 +326,24 @@ public class DonorController {
     }
 
   }
+
+  private void getDrugSuggestions(){
+    String newValue = medicationTextField.getText();
+    if(newValue.length() > 1){
+      try {
+        String autocompleteRaw = HttpRequester.getSuggestedDrugs(newValue, new OkHttpClient());
+        String[] values = autocompleteRaw.replaceAll("^\"", "").replaceAll("\\[","").replaceAll("\\]","").split("\"?(,|$)(?=(([^\"]*\"){2})*[^\"]*$) *\"?");
+        for(int i = 0; i < values.length; i++) {
+          values[i] = values[i].replace('"', ' ').trim();
+        }
+        TextFields.bindAutoCompletion(medicationTextField,values);
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+
+    }
+  }
+
 
   @FXML
   private void setContactPage() {
