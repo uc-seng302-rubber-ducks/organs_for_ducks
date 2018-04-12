@@ -128,7 +128,7 @@ public class User {
         this.previousMedication = new ArrayList<>();
         this.currentMedicationTimes = new HashMap<>();
         this.previousMedicationTimes = new HashMap<>();
-
+        this.medicalProcedures  = new ArrayList<>();
         try {
             changes = JsonHandler.importHistoryFromFile(name);
         } catch (FileNotFoundException e) {
@@ -221,7 +221,7 @@ public class User {
     this.previousMedication = new ArrayList<>();
     this.currentMedicationTimes = new HashMap<String, ArrayList<LocalDateTime>>();
     this.previousMedicationTimes = new HashMap<String, ArrayList<LocalDateTime>>();
-
+    this.medicalProcedures = new ArrayList<>();
     this.donorDetails = new DonorDetails(this);
     this.receiverDetails = new ReceiverDetails(this);
     changes = new ArrayList<>();

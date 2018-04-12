@@ -18,9 +18,11 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.cell.TextFieldListCell;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
+import javafx.util.StringConverter;
 import okhttp3.OkHttpClient;
 import org.controlsfx.control.textfield.TextFields;
 import seng302.Model.*;
@@ -176,14 +178,20 @@ public class DonorController {
   private Label procedureWarningLabel;
 
   @FXML
-  private ListView<?> previousProcedureListView;
+  private ListView<MedicalProcedure> previousProcedureListView;
 
   @FXML
-  private ListView<?> pendingProcedureListView;
+  private ListView<MedicalProcedure> pendingProcedureListView;
+
+  @FXML
+  private TextArea descriptionTextArea;
 
   private AppController application;
   private ObservableList<String> currentMeds;
   private ObservableList<String> previousMeds;
+  private ObservableList<MedicalProcedure> medicalProcedures;
+  private ObservableList<MedicalProcedure> previousProcedures;
+  private ObservableList<MedicalProcedure> pendingProcedures;
 
   private List<String> possibleGenders = Arrays.asList("M", "F", "U");
 
@@ -217,7 +225,6 @@ public class DonorController {
     //setAttributes();
     //setContactPage();
     currentMeds = FXCollections.observableArrayList();
-    System.out.println("current " + currentMeds);
     previousMeds = FXCollections.observableArrayList();
     currentMedicationListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
     previousMedicationListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
@@ -229,16 +236,6 @@ public class DonorController {
       currentMedicationListView.setItems(currentMeds);
       application.update(currentUser);
     });
-    if (user.getNhi() != null) {
-      showUser(currentUser); // Assumes a donor with no name is a new sign up and does not pull values from a template
-      ArrayList<Change> changes = currentUser.getChanges();
-      if (changes != null) { // checks if the changes are null in case the user is a new user
-        changelog = FXCollections.observableArrayList(changes);
-      }
-      showDonorHistory();
-    } else {
-      changelog = FXCollections.observableArrayList(new ArrayList<Change>());
-    }
     currentMedicationListView.setOnMouseClicked(new EventHandler<MouseEvent>() {
       @Override
       public void handle(MouseEvent event) {
@@ -258,20 +255,27 @@ public class DonorController {
       }
     });
     System.out.println(changelog);
-    changelog.addListener((ListChangeListener.Change<? extends Change> change ) -> {
-      historyTableView.setItems(changelog);
-    });
-    medicationTextField.focusedProperty().addListener(new ChangeListener<Boolean>() {
-      @Override
-      public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-        new Thread(() -> getDrugSuggestions()).start();
-    }});
-    medicationTextField.textProperty().addListener((observable) -> {
-      new Thread(() -> getDrugSuggestions()).start();
-    });
+
+    medicationTextField.focusedProperty().addListener((observable, oldValue, newValue) -> new Thread(() -> getDrugSuggestions()).start());
+    medicationTextField.textProperty().addListener((observable) -> new Thread(() -> getDrugSuggestions()).start());
     procedureWarningLabel.setText("");
     procedureDateSelector.setValue(LocalDate.now());
-    showUser(currentUser);
+    previousProcedures = FXCollections.observableArrayList();
+    pendingProcedures = FXCollections.observableArrayList();
+    //showUser(currentUser);
+    if (user.getNhi() != null) {
+      showUser(currentUser); // Assumes a donor with no name is a new sign up and does not pull values from a template
+      ArrayList<Change> changes = currentUser.getChanges();
+      if (changes != null) { // checks if the changes are null in case the user is a new user
+        changelog = FXCollections.observableArrayList(changes);
+      }
+      changelog.addListener((ListChangeListener.Change<? extends Change> change ) -> {
+        historyTableView.setItems(changelog);
+      });
+      showDonorHistory();
+    } else {
+      changelog = FXCollections.observableArrayList(new ArrayList<Change>());
+    }
 
 
 
@@ -584,7 +588,7 @@ public class DonorController {
           ChronoUnit.YEARS.between(currentUser.getDateOfBirth(), currentUser.getDateOfDeath())));
     }
     if (currentUser.getBloodType() != null) {
-      bloodTypeValue.setText(currentUser.getBloodType().toString());
+      bloodTypeValue.setText(currentUser.getBloodType());
     }
     if (currentUser.isSmoker()) {
       smokerValue.setText("Yes");
@@ -631,8 +635,48 @@ public class DonorController {
       previousMeds.addAll(currentUser.getPreviousMedication());
       previousMedicationListView.setItems(previousMeds);
     }
-    System.out.println("made it");
     setContactPage();
+    medicalProcedures = FXCollections.observableList(currentUser.getMedicalProcedures());
+    for(MedicalProcedure procedure: medicalProcedures){
+      if(procedure.getProcedureDate().isBefore(LocalDate.now())){
+        previousProcedures.add(procedure);
+      } else {
+        pendingProcedures.add(procedure);
+      }
+    }
+    previousProcedureListView.setCellFactory(pplv -> {
+            TextFieldListCell<MedicalProcedure> cell = new TextFieldListCell<MedicalProcedure>();
+            cell.setConverter(new StringConverter<MedicalProcedure>() {
+              @Override
+              public String toString(MedicalProcedure object) {
+                return object.getSummary();
+              }
+
+              @Override
+              public MedicalProcedure fromString(String string) {
+                return null;
+              }
+            });
+            return cell;
+    });
+
+    pendingProcedureListView.setCellFactory(pplv -> {
+      TextFieldListCell<MedicalProcedure> cell = new TextFieldListCell<MedicalProcedure>();
+      cell.setConverter(new StringConverter<MedicalProcedure>() {
+        @Override
+        public String toString(MedicalProcedure object) {
+          return object.getSummary();
+        }
+
+        @Override
+        public MedicalProcedure fromString(String string) {
+          return null;
+        }
+      });
+      return cell;
+    });
+    previousProcedureListView.setItems(previousProcedures);
+    pendingProcedureListView.setItems(pendingProcedures);
   }
 
     /**
@@ -770,7 +814,16 @@ public class DonorController {
 
   @FXML
   void addProcedure(ActionEvent event) {
-
+    // TODO: 12/04/18 add support for organs
+    MedicalProcedure procedure = new MedicalProcedure(procedureDateSelector.getValue(), procedureTextField.getText(), descriptionTextArea.getText(), new ArrayList<Organs>());
+    medicalProcedures.add(procedure);
+    currentUser.addMedicalProcedure(procedure);
+    if(procedure.getProcedureDate().isBefore(LocalDate.now())){
+      previousProcedures.add(procedure);
+    } else {
+      pendingProcedures.add(procedure);
+    }
+    application.update(currentUser);
   }
 
   @FXML
