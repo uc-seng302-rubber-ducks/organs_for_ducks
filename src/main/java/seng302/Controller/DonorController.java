@@ -2,6 +2,7 @@ package seng302.Controller;
 
 
 
+import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 
 import javafx.beans.value.ChangeListener;
@@ -157,6 +158,29 @@ public class DonorController {
   @FXML
   private Button addMedicationButton;
 
+  //procedures
+
+  @FXML
+  private Button removeProcedureButton;
+
+  @FXML
+  private Button addProcedureButton;
+
+  @FXML
+  private DatePicker procedureDateSelector;
+
+  @FXML
+  private TextField procedureTextField;
+
+  @FXML
+  private Label procedureWarningLabel;
+
+  @FXML
+  private ListView<?> previousProcedureListView;
+
+  @FXML
+  private ListView<?> pendingProcedureListView;
+
   private AppController application;
   private ObservableList<String> currentMeds;
   private ObservableList<String> previousMeds;
@@ -245,12 +269,18 @@ public class DonorController {
     medicationTextField.textProperty().addListener((observable) -> {
       new Thread(() -> getDrugSuggestions()).start();
     });
+    procedureWarningLabel.setText("");
+    procedureDateSelector.setValue(LocalDate.now());
     showUser(currentUser);
 
 
 
   }
 
+  /**
+   * Takes the information in the medication text fields and then calls the required API to get auto complete information
+   * Which is then displayed. Should always be started on a new thread
+   */
   private void getDrugSuggestions(){
     String newValue = medicationTextField.getText();
     if(newValue.length() > 1){
@@ -736,4 +766,16 @@ public class DonorController {
     historyTableView.getColumns().addAll(timeColumn, changeColumn);
 
   }
+
+
+  @FXML
+  void addProcedure(ActionEvent event) {
+
+  }
+
+  @FXML
+  void removeProcedure(ActionEvent event) {
+
+  }
 }
+
