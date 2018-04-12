@@ -1,12 +1,14 @@
 package seng302.Model;
 
 import com.google.gson.annotations.Expose;
+import org.joda.time.DateTime;
 
 import java.io.FileNotFoundException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Objects;
 
@@ -37,6 +39,30 @@ public class User {
   private LocalDateTime timeCreated;
   @Expose
   private Boolean isDeceased;
+  @Expose
+  private String firstName;
+  @Expose
+  private String preferredFirstName;
+  @Expose
+  private String middleName;
+  @Expose
+  private String lastName;
+  @Expose
+  private String birthGender;
+  @Expose
+  private String genderIdentity;
+  @Expose
+  private String alcoholConsumption;
+  @Expose
+  private boolean smoker;
+  @Expose
+  private String homePhone;
+  @Expose
+  private String cellPhone;
+  @Expose
+  private String email;
+  @Expose
+  private EmergencyContact contact;
 
   @Expose
   private LocalDateTime lastModified;
@@ -62,6 +88,53 @@ public class User {
   private DonorDetails donorDetails;
   @Expose
   private ReceiverDetails receiverDetails;
+
+    // updated constructor that works with the creation page
+    public User(String nhi, LocalDate dateOfBirth, LocalDate dateOfDeath, String birthGender, String genderIdentity,
+                double height, double weight, String bloodType, String alcoholConsumption, boolean smoker,
+                String currentAddress, String region, String homePhone, String cellPhone, String email,
+                EmergencyContact contact, String name, String firstName, String preferredFirstName, String middleName,
+                String lastName) {
+
+        this.nhi = nhi;
+        this.dateOfBirth = dateOfBirth;
+        this.dateOfDeath = dateOfDeath;
+
+        this.birthGender = birthGender;
+        this.genderIdentity = genderIdentity;
+        this.height = height;
+        this.weight = weight;
+        this.bloodType = bloodType;
+        this.alcoholConsumption = alcoholConsumption;
+        this.smoker = smoker;
+
+        this.currentAddress = currentAddress;
+        this.region = region;
+        this.homePhone = homePhone;
+        this.cellPhone = cellPhone;
+        this.email = email;
+        this.contact = contact;
+
+        this.name = name;
+        this.firstName = firstName;
+        this.preferredFirstName = preferredFirstName;
+        this.middleName = middleName;
+        this.lastName = lastName;
+
+        this.timeCreated = LocalDateTime.now();
+        updateHistory = new HashMap<>();
+        this.miscAttributes = new ArrayList<>();
+        this.currentMedication = new ArrayList<>();
+        this.previousMedication = new ArrayList<>();
+        this.currentMedicationTimes = new HashMap<>();
+        this.previousMedicationTimes = new HashMap<>();
+
+        try {
+            changes = JsonHandler.importHistoryFromFile(name);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
 
   public User(java.time.LocalDate dateOfBirth, java.time.LocalDate dateOfDeath, String gender,
       double height, double weight,
@@ -154,8 +227,11 @@ public class User {
     changes = new ArrayList<>();
   }
 
+    public EmergencyContact getContact() {
+        return contact;
+    }
 
-  public DonorDetails getDonorDetails() {
+    public DonorDetails getDonorDetails() {
     return donorDetails;
   }
 
@@ -223,6 +299,62 @@ public class User {
     updateLastModified();
     this.name = name;
   }
+
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String name) {
+        updateLastModified();
+        this.firstName = name;
+    }
+
+    public String getPrefFirstName() {
+        return preferredFirstName;
+    }
+
+    public void setPrefFirstName(String name) {
+        updateLastModified();
+        this.preferredFirstName = name;
+    }
+
+    public String getMiddleName() {
+        return middleName;
+    }
+
+    public void setMiddleName(String name) {
+        updateLastModified();
+        this.middleName = name;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String name) {
+        updateLastModified();
+        this.lastName = name;
+    }
+
+    public String getFullName() {
+        String fullName;
+
+        if (middleName != null && lastName != null) {
+            fullName = firstName + " " + middleName  + " " + lastName;
+
+        } else if (middleName != null) {
+            fullName = firstName + " " + middleName;
+
+        } else if (lastName != null) {
+            fullName = firstName + " " + lastName;
+
+        } else {
+            fullName = firstName;
+        }
+
+        return fullName;
+    }
 
   public java.time.LocalDate getDateOfBirth() {
     return dateOfBirth;
@@ -324,6 +456,75 @@ public class User {
     isDeceased = deceased;
   }
 
+  public String getPreferredFirstName() {
+    return preferredFirstName;
+  }
+
+  public void setPreferredFirstName(String preferredFirstName) {
+    this.preferredFirstName = preferredFirstName;
+  }
+
+  public String getBirthGender() {
+    return birthGender;
+  }
+
+  public void setBirthGender(String birthGender) {
+    this.birthGender = birthGender;
+  }
+
+  public String getGenderIdentity() {
+    return genderIdentity;
+  }
+
+  public void setGenderIdentity(String genderIdentity) {
+    this.genderIdentity = genderIdentity;
+  }
+
+  public String getAlcoholConsumption() {
+    return alcoholConsumption;
+  }
+
+  public void setAlcoholConsumption(String alcoholConsumption) {
+    this.alcoholConsumption = alcoholConsumption;
+  }
+
+  public boolean isSmoker() {
+    return smoker;
+  }
+
+  public void setSmoker(boolean smoker) {
+    this.smoker = smoker;
+  }
+
+  public String getHomePhone() {
+    return homePhone;
+  }
+
+  public void setHomePhone(String homePhone) {
+    this.homePhone = homePhone;
+  }
+
+  public String getCellPhone() {
+    return cellPhone;
+  }
+
+  public void setCellPhone(String cellPhone) {
+    this.cellPhone = cellPhone;
+  }
+
+  public String getEmail() {
+    return email;
+  }
+
+  public void setEmail(String email) {
+    this.email = email;
+  }
+
+  public void setContact(EmergencyContact contact) {
+    this.contact = contact;
+  }
+
+
   /**
    * Method to ensure that all blood types are valid blood types returns U if not a valid blood
    * type
@@ -346,7 +547,7 @@ public class User {
       return "A-";
     } else if (possibleType.equalsIgnoreCase("B+")) {
       return "B+";
-    } else if (possibleType.equalsIgnoreCase("A-")) {
+    } else if (possibleType.equalsIgnoreCase("B-")) {
       return "B-";
     } else if (possibleType.equalsIgnoreCase("O+")) {
       return "O+";
