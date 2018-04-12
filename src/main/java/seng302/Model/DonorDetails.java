@@ -6,7 +6,7 @@ import java.util.HashSet;
 
 public class DonorDetails {
   @Expose
-  private HashSet<Organs> organs;
+  private HashSet<Organs> organs = new HashSet<>();
   private transient User attachedUser;
 
   public HashSet<Organs> getOrgans() {
@@ -20,6 +20,7 @@ public class DonorDetails {
   public void initOrgans() {
     organs = new HashSet<>();
   }
+
   public void setOrgans(HashSet<Organs> organs) {
     attachedUser.updateLastModified();
     this.organs = organs;
@@ -30,11 +31,13 @@ public class DonorDetails {
    * @param organ the enum of organs.
    */
   public void addOrgan(Organs organ) {
-    attachedUser.updateLastModified();
     if (organs == null) {
       organs = new HashSet<>();
+      organs.add(organ);
     }
     this.organs.add(organ);
+    //TODO attachedUser is always null
+    //attachedUser.updateLastModified();
   }
 
   /**
@@ -44,6 +47,8 @@ public class DonorDetails {
   public void removeOrgan(Organs organ) {
     if (organs.contains(organ)) {
       organs.remove(organ);
+      //TODO attachedUser is always null
+      //attachedUser.updateLastModified();
     }
   }
 
