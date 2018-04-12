@@ -17,8 +17,8 @@ import seng302.View.IoHelper;
 public class UpdateRemoveOrgans implements Runnable {
 
   @Option(names = {
-      "-id"}, description = "ID number of the donor to be updated")
-  private int id = -1;
+      "-id", "-NHI", "-nhi"}, description = "ID number of the donor to be updated")
+  private String NHI = "";
 
   @Option(names = {"-f", "-n", "-fname", "-name"}, description = "Donor's first name. If their name is a single word, it can be entered here")
   private String fname;
@@ -39,21 +39,7 @@ public class UpdateRemoveOrgans implements Runnable {
   @Override
   public void run() {
     AppController controller = AppController.getInstance();
-    User user = null;
-
-    if (id != -1) {
-      user = controller.getUser(id);
-    } else {
-      if (fname != null && dobString != null) {
-        String name = fname;
-        LocalDate dob = IoHelper.readDate(dobString);
-        if (lname != null) {
-          name += " " + lname;
-        }
-        user = controller.findUser(name, dob);
-
-      }
-    }
+    User user = Update.searchForUser(NHI, fname, lname, dobString, controller);
     if (user != null && organs != null) {
       for (String item : organs) {
         try {

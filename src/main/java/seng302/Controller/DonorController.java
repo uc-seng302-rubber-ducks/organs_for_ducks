@@ -14,7 +14,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
@@ -26,10 +25,6 @@ import okhttp3.OkHttpClient;
 import org.controlsfx.control.textfield.TextFields;
 
 import java.io.IOException;
-
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class DonorController {
@@ -163,9 +158,6 @@ public class DonorController {
   @FXML
   private Button addMedicationButton;
 
-  @FXML
-  private TextField nhiTextField;
-
   private AppController application;
   private ObservableList<String> currentMeds;
   private ObservableList<String> previousMeds;
@@ -180,18 +172,13 @@ public class DonorController {
   private EmergencyContact contact = null;
   private ObservableList<Change> changelog;
 
-    /**
-     * Gives the donor view the application controller and hides all label and buttons that are not
-     * needed on opening
-     * @param controller The application controller.
-     * @param user The current user.
-     * @param stage The application stage.
-     * @param fromClinician A flag indicating if the profile is the user logging in, or the clinician viewing it.
-     */
+  /**
+   * Gives the donor view the application controller and hides all label and buttons that are not
+   * needed on opening
+   */
   public void init(AppController controller, User user, Stage stage, Boolean fromClinician) {
 
     this.stage = stage;
-    stage.setResizable(true);
     application = controller;
     //ageValue.setText("");
     if(fromClinician){
@@ -219,22 +206,6 @@ public class DonorController {
       currentMedicationListView.setItems(currentMeds);
       application.update(currentUser);
     });
-    medicationTextField.textProperty().addListener((observable) -> {
-      String newValue = medicationTextField.getText();
-      if(newValue.length() > 2){
-        try {
-          String autocompleteRaw = HttpRequester.getSuggestedDrugs(newValue, new OkHttpClient());
-          String[] values = autocompleteRaw.replaceAll("^\"", "").replaceAll("\\[","").replaceAll("\\]","").split("\"?(,|$)(?=(([^\"]*\"){2})*[^\"]*$) *\"?");
-          for(int i = 0; i < values.length; i++) {
-            values[i] = values[i].replace('"', ' ').trim();
-          }
-          TextFields.bindAutoCompletion(medicationTextField,values);
-        } catch (IOException e) {
-          e.printStackTrace();
-        }
-
-      }
-    });
     if (user.getNhi() != null) {
       showUser(currentUser); // Assumes a donor with no name is a new sign up and does not pull values from a template
       ArrayList<Change> changes = currentUser.getChanges();
@@ -246,134 +217,73 @@ public class DonorController {
       changelog = FXCollections.observableArrayList(new ArrayList<Change>());
     }
     currentMedicationListView.setOnMouseClicked(new EventHandler<MouseEvent>() {
-        @Override
-        public void handle(MouseEvent event) {
-            if(event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2){
-                String med = currentMedicationListView.getSelectionModel().getSelectedItem();
-                lauchMedicationView(med);
-            }
+      @Override
+      public void handle(MouseEvent event) {
+        if(event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2){
+          String med = currentMedicationListView.getSelectionModel().getSelectedItem();
+          lauchMedicationView(med);
         }
+      }
     });
     previousMedicationListView.setOnMouseClicked(new EventHandler<MouseEvent>() {
-          @Override
-          public void handle(MouseEvent event) {
-              if(event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2){
-                  String med = previousMedicationListView.getSelectionModel().getSelectedItem();
-                  lauchMedicationView(med);
-              }
-          }
-      });
+      @Override
+      public void handle(MouseEvent event) {
+        if(event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2){
+          String med = previousMedicationListView.getSelectionModel().getSelectedItem();
+          lauchMedicationView(med);
+        }
+      }
+    });
     System.out.println(changelog);
     changelog.addListener((ListChangeListener.Change<? extends Change> change ) -> {
       historyTableView.setItems(changelog);
     });
     showUser(currentUser);
 
-  }
-//  @FXML
-//  private void setAttributes(){
-//    NHIValue.setText(currentUser.getNHI());
-//    fNameValue.setText(currentUser.getFirstName());
-//    DOBValue.setText(currentUser.getDateOfBirth().toString());
-//    if (currentUser.getMiddleName() != null) {
-//      mNameValue.setText(currentUser.getMiddleName());
-//    }
-//    if (currentUser.getPrefFirstName() != null) {
-//      pNameValue.setText(currentUser.getPrefFirstName());
-//    }
-//    if (currentUser.getLastName() != null) {
-//      lNameValue.setText(currentUser.getLastName());
-//    }
-//    ageValue.setText(currentUser.getAge().toString().replace("P", "").replace("Y", "") + " Years");
-//    if (currentUser.getDateOfDeath() != null) {
-//      DODValue.setText(currentUser.getDateOfDeath().toString());
-//      ageDeathValue.setText(Long.toString(
-//          ChronoUnit.YEARS.between(currentUser.getDateOfBirth(), currentUser.getDateOfDeath())));
-//    }
-//    if (currentUser.getBloodType() != null) {
-//      bloodTypeValue.setText(currentUser.getBloodType().toString());
-//    }
-//    if (currentUser.isSmoker()) {
-//      smokerValue.setText("Yes");
-//    } else {
-//      smokerValue.setText("No");
-//    }
-//    String weight;
-//    if (currentUser.getWeight() > 0 ) {
-//      weight = java.lang.Double.toString(currentUser.getWeight());
-//      weightValue.setText(weight);
-//    }
-//    String height;
-//    if (currentUser.getHeight() > 0){
-//      height = java.lang.Double.toString(currentUser.getHeight());
-//      heightValue.setText(height);
-//    }
-//    if (currentUser.getHeight() > 0&&currentUser.getWeight() > 0 ){
-//      //TODO fix BMI kg/m^2
-//      bmiValue.setText("1.8");
-//    }else{
-//      bmiValue.setText("");
-//    }
-//
-//    if (currentUser.getLastModified() != null) {
-//      lastModifiedValue.setText(currentUser.getLastModified().toString());
-//    }
-//    createdValue.setText(currentUser.getTimeCreated().toString());
-//    alcoholValue.setText(currentUser.getAlcoholConsumption());
-//
-//
-//    if (currentUser.getMiscAttributes() != null) {
-//      miscAttributeslistView.getItems().clear(); // HERE
-//      for (String atty : currentUser.getMiscAttributes()) {
-//        miscAttributeslistView.getItems().add(atty);
-//      }
-//    }
-//    currentMeds.addAll(currentUser.getCurrentMedication());
-//    currentMedicationListView.setItems(currentMeds);
-//    previousMeds.addAll(currentUser.getPreviousMedication());
-//    previousMedicationListView.setItems(previousMeds);
-//  }
 
+
+  }
 
   @FXML
   private void setContactPage() {
-      if (contact != null) {
-        eName.setText(contact.getName());
-        eCellPhone.setText(contact.getCellPhoneNumber());
-        if (contact.getAddress() != null){
-          eAddress.setText(contact.getAddress());
-        }
-        if (contact.getEmail() != null){
-          eEmail.setText(contact.getEmail());
-
-        }
-        if (contact.getHomePhoneNumber() != null){
-          eHomePhone.setText(contact.getHomePhoneNumber());
-
-        }
-        if (contact.getRegion() != null){
-          eRegion.setText(contact.getRegion());
-
-        }
-        if (contact.getRelationship() != null){
-          relationship.setText(contact.getRelationship());
-        }
-        if (currentUser.getCurrentAddress() != null){
-          pAddress.setText(currentUser.getCurrentAddress());
-        }
-        if (currentUser.getRegion() != null){
-          pRegion.setText(currentUser.getRegion());
-        }
-        if (currentUser.getEmail() != null){
-          pEmail.setText(currentUser.getEmail());
-        }
-        if (currentUser.getHomePhone() != null){
-          pHomePhone.setText(currentUser.getHomePhone());
-        }
-        if (currentUser.getCellPhone() != null){
-          pCellPhone.setText(currentUser.getCellPhone());
-        }
+    if (contact != null) {
+      eName.setText(contact.getName());
+      eCellPhone.setText(contact.getCellPhoneNumber());
+      if (contact.getAddress() != null){
+        eAddress.setText(contact.getAddress());
       }
+      if (contact.getEmail() != null){
+        eEmail.setText(contact.getEmail());
+
+      }
+      if (contact.getHomePhoneNumber() != null){
+        eHomePhone.setText(contact.getHomePhoneNumber());
+
+      }
+      if (contact.getRegion() != null){
+        eRegion.setText(contact.getRegion());
+
+      }
+      if (contact.getRelationship() != null){
+        relationship.setText(contact.getRelationship());
+      }
+    }
+      if (currentUser.getCurrentAddress() != null){
+        pAddress.setText(currentUser.getCurrentAddress());
+      }
+      if (currentUser.getRegion() != null){
+        pRegion.setText(currentUser.getRegion());
+      }
+      if (currentUser.getEmail() != null){
+        pEmail.setText(currentUser.getEmail());
+      }
+      if (currentUser.getHomePhone() != null){
+        pHomePhone.setText(currentUser.getHomePhone());
+      }
+      if (currentUser.getCellPhone() != null){
+        pCellPhone.setText(currentUser.getCellPhone());
+      }
+
 
   }
 
@@ -515,10 +425,6 @@ public class DonorController {
 //      }
 //    }
 //
-//    if(!nhiTextField.getText().equals(currentUser.getNhi())){
-//      currentUser.setNhi(nhiTextField.getText());
-//    }
-//
 //    currentUser.setCurrentAddress(currentAddressTextArea.getText());
 //    currentUser.setRegion(regionTextField.getText());
 //
@@ -549,7 +455,7 @@ public class DonorController {
 //    if (isInputValid) {
 //      application.update(currentUser);
 //      ArrayList<Change> diffs = application.differanceInDonors(oldDonor, currentUser);
-//      changelog.addAll(diffs);
+  //  changelog.addAll(diffs);
 //    }
 //
 //    showUser(currentUser);
@@ -589,9 +495,9 @@ public class DonorController {
     } catch (IOException e) {
       e.printStackTrace();
     }
-    stage.setScene(new Scene(root));
     LoginController loginController = loader.getController();
     loginController.init(AppController.getInstance(), stage);
+    stage.setScene(new Scene(root));
     stage.show();
 
 
@@ -603,6 +509,7 @@ public class DonorController {
      * @param user The current user.
      */
   public void showUser(User user) {
+    setContactPage();
     NHIValue.setText(currentUser.getNhi());
     fNameValue.setText(currentUser.getFirstName());
     DOBValue.setText(currentUser.getDateOfBirth().toString());
@@ -631,9 +538,9 @@ public class DonorController {
     }
     String weight;
     if (currentUser.getWeight() > 0 ) {
-    weight = java.lang.Double.toString(currentUser.getWeight());
-    weightValue.setText(weight);
-}
+      weight = java.lang.Double.toString(currentUser.getWeight());
+      weightValue.setText(weight);
+    }
     String height;
     if (currentUser.getHeight() > 0){
       height = java.lang.Double.toString(currentUser.getHeight());
@@ -661,14 +568,16 @@ public class DonorController {
     }
     if (currentUser.getCurrentMedication() != null) {
       System.out.println(currentMeds);
-    currentMeds.addAll(currentUser.getCurrentMedication());
+      currentMeds.addAll(currentUser.getCurrentMedication());
 
-    currentMedicationListView.setItems(currentMeds);
+      currentMedicationListView.setItems(currentMeds);
     }
     if (currentUser.getPreviousMedication() != null) {
-    previousMeds.addAll(currentUser.getPreviousMedication());
-    previousMedicationListView.setItems(previousMeds);
-  }
+      previousMeds.addAll(currentUser.getPreviousMedication());
+      previousMedicationListView.setItems(previousMeds);
+    }
+    System.out.println("made it");
+    setContactPage();
   }
 
     /**
@@ -682,8 +591,8 @@ public class DonorController {
       return;
     }
     if (currentMeds.contains(medication) || previousMeds.contains(medication)){
-        medicationTextField.setText("");
-        return;
+      medicationTextField.setText("");
+      return;
     }
     medicationTextField.setText("");
     currentMeds.add(medication);
@@ -719,17 +628,17 @@ public class DonorController {
   void takeMedication(ActionEvent event) {
     String med = previousMedicationListView.getSelectionModel().getSelectedItem();
     if (med == null){
-        return;
+      return;
     }
     if (currentMeds.contains(med)){
-        currentUser.removePreviousMedication(med);
-        previousMeds.remove(med);
-        return;
-    }
-      currentMeds.add(med);
-      currentUser.addCurrentMedication(med);
-      previousMeds.remove(med);
       currentUser.removePreviousMedication(med);
+      previousMeds.remove(med);
+      return;
+    }
+    currentMeds.add(med);
+    currentUser.addCurrentMedication(med);
+    previousMeds.remove(med);
+    currentUser.removePreviousMedication(med);
 
   }
 
@@ -740,14 +649,14 @@ public class DonorController {
   @FXML
   void untakeMedication(ActionEvent event) {
     String med = currentMedicationListView.getSelectionModel().getSelectedItem();
-      if (med == null){
-          return;
-      }
-      if(previousMeds.contains(med)) {
-          currentUser.removeCurrentMedication(med);
-          currentMeds.remove(med);
-          return;
-      }
+    if (med == null){
+      return;
+    }
+    if(previousMeds.contains(med)) {
+      currentUser.removeCurrentMedication(med);
+      currentMeds.remove(med);
+      return;
+    }
     currentUser.removeCurrentMedication(med);
     currentMeds.remove(med);
     previousMeds.add(med);
@@ -777,29 +686,29 @@ public class DonorController {
      * @param med A string of medication
      */
   private void lauchMedicationView(String med){
-      FXMLLoader medicationTimeViewLoader = new FXMLLoader(getClass().getResource("/FXML/medicationsTimeView.fxml"));
-      Parent root = null;
-      try {
-          root = medicationTimeViewLoader.load();
-      } catch (IOException e) {
-          e.printStackTrace();
-      }
-      Stage stage = new Stage();
-      stage.setScene(new Scene(root));
-      MedicationsTimeController medicationsTimeController = medicationTimeViewLoader.getController();
-      medicationsTimeController.init(application, currentUser,stage, med);
-      stage.show();
+    FXMLLoader medicationTimeViewLoader = new FXMLLoader(getClass().getResource("/FXML/medicationsTimeView.fxml"));
+    Parent root = null;
+    try {
+      root = medicationTimeViewLoader.load();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    Stage stage = new Stage();
+    stage.setScene(new Scene(root));
+    MedicationsTimeController medicationsTimeController = medicationTimeViewLoader.getController();
+    medicationsTimeController.init(application, currentUser,stage, med);
+    stage.show();
 
   }
 
 
-    private void showDonorHistory() {
-        TableColumn timeColumn = new TableColumn("Time");
-        TableColumn changeColumn = new TableColumn("Change");
-        timeColumn.setCellValueFactory(new PropertyValueFactory<Change, String>("time"));
-        changeColumn.setCellValueFactory(new PropertyValueFactory<Change, String>("change"));
-        historyTableView.setItems(changelog);
-        historyTableView.getColumns().addAll(timeColumn, changeColumn);
+  private void showDonorHistory() {
+    TableColumn timeColumn = new TableColumn("Time");
+    TableColumn changeColumn = new TableColumn("Change");
+    timeColumn.setCellValueFactory(new PropertyValueFactory<Change, String>("time"));
+    changeColumn.setCellValueFactory(new PropertyValueFactory<Change, String>("change"));
+    historyTableView.setItems(changelog);
+    historyTableView.getColumns().addAll(timeColumn, changeColumn);
 
-    }
+  }
 }
