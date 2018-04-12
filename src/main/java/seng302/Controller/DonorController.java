@@ -3,6 +3,9 @@ package seng302.Controller;
 
 
 import java.time.temporal.ChronoUnit;
+
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -234,13 +237,13 @@ public class DonorController {
     changelog.addListener((ListChangeListener.Change<? extends Change> change ) -> {
       historyTableView.setItems(changelog);
     });
-    medicationTextField.setOnMouseClicked(new EventHandler<MouseEvent>() {
+    medicationTextField.focusedProperty().addListener(new ChangeListener<Boolean>() {
       @Override
-      public void handle(MouseEvent event) {
-        getDrugSuggestions();
+      public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+        new Thread(() -> getDrugSuggestions()).start();
     }});
     medicationTextField.textProperty().addListener((observable) -> {
-      getDrugSuggestions();
+      new Thread(() -> getDrugSuggestions()).start();
     });
     showUser(currentUser);
 
