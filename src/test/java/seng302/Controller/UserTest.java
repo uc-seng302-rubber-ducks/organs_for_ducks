@@ -102,14 +102,14 @@ public class UserTest {
     LocalDate dob = testUser.getDateOfBirth();
     long expectedAge = ChronoUnit.YEARS.between(dob, LocalDate.now());
 
-    Assert.assertEquals(Long.toString(expectedAge), testUser.getAge());
+    Assert.assertEquals(Long.toString(expectedAge), testUser.getStringAge());
 
   }
 
   @Test
   public void AgeOfDeceasedUserShouldBeCorrect() {
     testUser.setDateOfDeath(LocalDate.of(1939, 2, 3));
-    Assert.assertEquals(testUser.getAge(), "1");
+    Assert.assertEquals(testUser.getStringAge(), "1");
   }
 
   @Test
