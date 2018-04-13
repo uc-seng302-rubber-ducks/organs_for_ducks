@@ -6,6 +6,7 @@ import okhttp3.Response;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -18,6 +19,7 @@ public class HttpRequester {
    * uses ehealthme api to get interactions between two drugs
    * @param drugOneName string name of first drug
    * @param drugTwoName string name of second drug
+   * @param client the OkHttpClient.
    * @return json formatted string containing the interactions between the two drugs
    * @throws IOException caused by error with server connection
    */
@@ -33,7 +35,17 @@ public class HttpRequester {
     return "";
   }
 
-
+  /**
+   * uses the ehealthme api to get the interactions between two drugs
+   * It then filters these to only return the interactions that will effect the given age and gender
+   * @param drugOneName first drug for interaction
+   * @param drugTwoName second drug for interaction
+   * @param gender gender of the patient
+   * @param age age of the patient
+   * @param client Http client to be used
+   * @return A set of strings.
+   * @throws IOException when there is an error.
+   */
   public static Set<String> getDrugInteractions(String drugOneName, String drugTwoName, String gender, int age, OkHttpClient client) throws IOException {
 
     Set<String> results = new HashSet<>();
@@ -83,21 +95,36 @@ public class HttpRequester {
     }
   }
 
-  public static String[] getSuggestedDrugs(String input) throws IOException {
-    String[] list = new String[]{};
-    OkHttpClient client = new OkHttpClient();
-    String url = "mapi-us.iterar.co/api/autocomplete?query=" + input;
+  /**
+   * Takes a string argument and provides auto completed results
+   *
+   * @param input string to be auto completed
+   * @param client client to make the request on
+   * @return String containing the results
+   * @throws IOException thrown when IO fails
+   */
+  public static String getSuggestedDrugs(String input, OkHttpClient client) throws IOException {
+
+    String url = "http://mapi-us.iterar.co/api/autocomplete?query=" + input;
     Request request = new Request.Builder().url(url).build();
-    Response responses = client.newCall(request).execute();
+    Response response = client.newCall(request).execute();
     //TODO: find a way to make the responses into a list to be sent back
-    return list;
+    JSONObject suggestions = null;
+    try {
+      suggestions = (JSONObject) new JSONParser().parse(response.body().string());
+      return suggestions.get("suggestions").toString();
+    } catch (ParseException e) {
+      e.printStackTrace();
+      return "";
+    }
   }
 
   public static  void main(String[] args) {
     System.out.println("Please don't run me, this is for testing only");
     try {
       //String res = getDrugInteractions("coumadin", "Acetaminophen", new OkHttpClient());
-      Set<String> res = getDrugInteractions("coumadin", "Acetaminophen","male",36, new OkHttpClient());
+      //Set<String> res = getDrugInteractions("coumadin", "Acetaminophen","male",36, new OkHttpClient());
+      String res = getSuggestedDrugs("res", new OkHttpClient());
       System.out.println(res);
     }
     catch (Exception ex) {

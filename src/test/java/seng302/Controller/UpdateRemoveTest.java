@@ -25,8 +25,8 @@ public class UpdateRemoveTest {
       controller = AppController.getInstance();
       controller.setUsers(new ArrayList<>());
     try {
-      controller.Register("Three Organs", LocalDate.parse("1978-03-06",sdf));
-      controller.Register("One Organ", LocalDate.parse("1997-02-05",sdf));
+      controller.Register("Three Organs", LocalDate.parse("1978-03-06", sdf), "THR3333");
+      controller.Register("One Organ", LocalDate.parse("1997-02-05", sdf), "ONE1111");
 
       User three = controller.findUsers("Three Organs").get(0);
       three.getDonorDetails().addOrgan(Organs.CONNECTIVE_TISSUE);
