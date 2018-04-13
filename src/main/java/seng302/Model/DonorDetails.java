@@ -15,6 +15,7 @@ public class DonorDetails {
 
   public DonorDetails(User attachedUser) {
     this.attachedUser = attachedUser;
+    this.organs = new HashSet<>();
   }
 
   public void initOrgans() {

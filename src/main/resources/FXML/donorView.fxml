@@ -1,13 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.CheckBox?>
-<?import javafx.scene.control.ComboBox?>
-<?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.Separator?>
@@ -19,7 +12,9 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="675.0" prefWidth="894.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.Controller.DonorController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+  prefHeight="675.0" prefWidth="894.0" xmlns="http://javafx.com/javafx/8.0.111"
+  xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.Controller.DonorController">
    <children>
       <TabPane layoutY="38.0" prefHeight="639.0" prefWidth="894.0" rotateGraphic="true" tabClosingPolicy="UNAVAILABLE">
         <tabs>
@@ -140,6 +135,11 @@
                         <Label layoutX="31.0" layoutY="401.0" text="Previous Medications" />
                         <Label layoutX="489.0" layoutY="401.0" text="Current Medications" />
                         <Label layoutX="345.0" layoutY="60.0" text="Medication" />
+                       <Label fx:id="drugDetailsLabel" alignment="CENTER" contentDisplay="CENTER"
+                         layoutX="671.0" layoutY="104.0" prefHeight="17.0" prefWidth="198.0"
+                         text="Drug Details" textAlignment="CENTER"/>
+                       <TextArea fx:id="drugDetailsTextArea" editable="false" layoutX="670.0"
+                         layoutY="125.0" prefHeight="200.0" prefWidth="200.0" wrapText="true"/>
                      </children>
                   </AnchorPane>
               </content>
