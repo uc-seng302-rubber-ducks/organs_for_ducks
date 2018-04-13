@@ -161,6 +161,24 @@ public class DonorController {
   @FXML
   private TableView<Disease> pastDiseaseTableView;
 
+  @FXML
+  private Button addPastDiseaseButton;
+
+  @FXML
+  private Button updatePastDiseaseButton;
+
+  @FXML
+  private Button deletePastDiseaseButton;
+
+  @FXML
+  private Button addCurrentDiseaseButton;
+
+  @FXML
+  private Button updateCurrentDiseaseButton;
+
+  @FXML
+  private Button deleteCurrentDiseaseButton;
+
 
   private AppController application;
   private ObservableList<String> currentMeds;
@@ -190,6 +208,12 @@ public class DonorController {
     //ageValue.setText("");
     if(fromClinician){
       logOutButton.setVisible(false);
+      addCurrentDiseaseButton.setVisible(true);
+      updateCurrentDiseaseButton.setVisible(true);
+      deleteCurrentDiseaseButton.setVisible(true);
+      addPastDiseaseButton.setVisible(true);
+      updatePastDiseaseButton.setVisible(true);
+      deletePastDiseaseButton.setVisible(true);
     }
     //arbitrary default values
     //changeDeceasedStatus();

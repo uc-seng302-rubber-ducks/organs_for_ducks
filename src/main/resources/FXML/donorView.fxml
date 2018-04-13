@@ -148,10 +148,16 @@
               <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <TableView fx:id="currentDiseaseTableView" layoutY="37.0" prefHeight="243.0" prefWidth="894.0" />
+                        <TableView fx:id="currentDiseaseTableView" layoutY="76.0" prefHeight="215.0" prefWidth="894.0" />
                         <Label layoutX="391.0" layoutY="14.0" text="Current Diseases" />
-                        <TableView fx:id="pastDiseaseTableView" layoutY="347.0" prefHeight="258.0" prefWidth="894.0" />
+                        <TableView fx:id="pastDiseaseTableView" layoutY="390.0" prefHeight="215.0" prefWidth="894.0" />
                         <Label layoutX="402.0" layoutY="303.0" text="Past Diseases" />
+                        <Button fx:id="addCurrentDiseaseButton" layoutX="329.0" layoutY="36.0" mnemonicParsing="false" text="Add" visible="false" />
+                        <Button fx:id="deleteCurrentDiseaseButton" layoutX="518.0" layoutY="36.0" mnemonicParsing="false" text="Delete" visible="false" />
+                        <Button fx:id="updateCurrentDiseaseButton" layoutX="416.0" layoutY="36.0" mnemonicParsing="false" text="Update" visible="false" />
+                        <Button fx:id="addPastDiseaseButton" layoutX="329.0" layoutY="344.0" mnemonicParsing="false" text="Add" visible="false" />
+                        <Button fx:id="deletePastDiseaseButton" layoutX="518.0" layoutY="344.0" mnemonicParsing="false" text="Delete" visible="false" />
+                        <Button fx:id="updatePastDiseaseButton" layoutX="416.0" layoutY="344.0" mnemonicParsing="false" text="Update" visible="false" />
                      </children>
                   </AnchorPane>
               </content>
