@@ -8,6 +8,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.stage.Stage;
+import seng302.Exceptions.OrgansInconsistentException;
 import seng302.Model.Donor;
 import seng302.Model.Organs;
 import seng302.Model.UndoRedoStacks;
@@ -78,12 +79,16 @@ public class OrganController {
      */
     @FXML
     void donate(ActionEvent event) {
-        UndoRedoStacks.storeUndoCopy(currentUser);
-        Organs toDonate = canDonate.getSelectionModel().getSelectedItem();
-        currentlyDonating.getItems().add(toDonate);
-        currentUser.getDonorDetails().addOrgan(toDonate);
-        appController.update(currentUser);
-        canDonate.getItems().remove(toDonate);
+        try {
+            UndoRedoStacks.storeUndoCopy(currentUser);
+            Organs toDonate = canDonate.getSelectionModel().getSelectedItem();
+            currentlyDonating.getItems().add(toDonate);
+            currentUser.getDonorDetails().addOrgan(toDonate);
+            appController.update(currentUser);
+            canDonate.getItems().remove(toDonate);
+        } catch (OrgansInconsistentException ex) {
+            //TODO better error logging
+        }
     }
 
     /**

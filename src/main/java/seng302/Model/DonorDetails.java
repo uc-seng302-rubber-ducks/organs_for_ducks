@@ -3,6 +3,7 @@ package seng302.Model;
 import com.google.gson.annotations.Expose;
 
 import java.util.HashSet;
+import seng302.Exceptions.OrgansInconsistentException;
 
 public class DonorDetails {
   @Expose
@@ -29,12 +30,15 @@ public class DonorDetails {
    * Adds an organ to the user profile.
    * @param organ the enum of organs.
    */
-  public void addOrgan(Organs organ) {
-    attachedUser.updateLastModified();
+  public void addOrgan(Organs organ) throws OrgansInconsistentException {
+    if (attachedUser.getReceiverDetails().isCurrentlyWaitingFor(organ)) {
+      throw new OrgansInconsistentException("Cannot donate an organ that is being received");
+    }
     if (organs == null) {
       organs = new HashSet<>();
     }
     this.organs.add(organ);
+    attachedUser.updateLastModified();
   }
 
   /**
@@ -47,6 +51,9 @@ public class DonorDetails {
     }
   }
 
+  private boolean isCurrentlyWaitingFor(Organs organ) {
+    return attachedUser.getReceiverDetails().isCurrentlyWaitingFor(organ);
+  }
   /**
    * TODO update if/when more details are added
    * @return true if underlying organs list is empty

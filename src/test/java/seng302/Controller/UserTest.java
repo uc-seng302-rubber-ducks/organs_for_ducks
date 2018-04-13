@@ -157,7 +157,7 @@ public class UserTest {
   }
 
   @Test
-  public void DonorToolTipShouldReturnNameAndOrgans() {
+  public void DonorToolTipShouldReturnNameAndOrgans() throws Exception {
     testUser.getDonorDetails().addOrgan(Organs.HEART);
     String tooltip = testUser.getTooltip();
     String name = testUser.getName();

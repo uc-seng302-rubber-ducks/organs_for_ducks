@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import seng302.Exceptions.OrgansInconsistentException;
 
 public class ReceiverDetails {
 
@@ -35,7 +36,10 @@ public class ReceiverDetails {
    * appends one organ to the list of organs this user is waiting for. If the user is already
    * waiting for this organ, no change will be made.
    */
-  public void startWaitingForOrgan(Organs organ) {
+  public void startWaitingForOrgan(Organs organ) throws OrgansInconsistentException {
+    if (isDonatingThisOrgan(organ)) {
+      throw new OrgansInconsistentException("The user cannot receive an organ they are donating");
+    }
     if (isCurrentlyWaitingFor(organ)) {
       return;
     }
@@ -75,7 +79,15 @@ public class ReceiverDetails {
     this.attachedUser = attachedUser;
   }
 
-  
+  /**
+   * uses attachedUser field to determine if the user is already donating the selected organ
+   *
+   * @param organ organ to be tested for
+   * @return true if the user's organs to donate contains the given organ
+   */
+  private boolean isDonatingThisOrgan(Organs organ) {
+    return attachedUser.getDonorDetails().getOrgans().contains(organ);
+  }
   /**
    * check if underlying organs list is empty TODO extend this to new functionality when added
    *
