@@ -321,7 +321,7 @@ public class NewUserController {
         }
 
         //Donor donor = controller.findDonor(nhi); // checks if the nhi already exists within the system
-        User user = controller.findUser(fName); // TODO: change this to check for the nhi
+        User user = controller.findUser(nhi);
 
         if (valid && user == null){
             createUser(nhi, fName, dob, dod);
