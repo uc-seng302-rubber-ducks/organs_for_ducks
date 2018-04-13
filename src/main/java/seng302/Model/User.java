@@ -774,7 +774,7 @@ public class User {
         "\nblood Type: '" + bloodType + '\'' +
         "\ncurrent Address: '" + currentAddress + '\'' +
         "\nregion: '" + region + '\'' +
-        "\norgans: " + (donorDetails == null ? (name + "is not a donor") : donorDetails.getOrgans()) +
+        "\norgans: " + (isDonor() ?  donorDetails.getOrgans() : (name + " is not a donor")) +
         "\ntime Created: " + timeCreated +
         "\nlast modified: " + lastModified;
   }
