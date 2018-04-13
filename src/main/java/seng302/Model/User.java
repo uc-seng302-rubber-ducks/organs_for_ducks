@@ -137,6 +137,9 @@ public class User {
       this.currentMedicationTimes = new HashMap<>();
       this.previousMedicationTimes = new HashMap<>();
 
+      this.currentDiseases = new ArrayList<>();
+      this.pastDiseases = new ArrayList<>();
+
       try {
         changes = JsonHandler.importHistoryFromFile(name);
       } catch (FileNotFoundException e) {
@@ -220,6 +223,9 @@ public class User {
 ////    this.previousMedication = new ArrayList<>();
 ////    this.currentMedicationTimes = new HashMap<String, ArrayList<LocalDateTime>>();
 ////    this.previousMedicationTimes = new HashMap<String, ArrayList<LocalDateTime>>();
+
+//      this.currentDiseases = new ArrayList<>();
+//      this.pastDiseases = new ArrayList<>();
 ////
 ////    this.donorDetails = new DonorDetails(this);
 ////    this.receiverDetails = new ReceiverDetails(this);
@@ -243,6 +249,9 @@ public class User {
     this.currentMedicationTimes = new HashMap<String, ArrayList<LocalDateTime>>();
     this.previousMedicationTimes = new HashMap<String, ArrayList<LocalDateTime>>();
 
+    this.currentDiseases = new ArrayList<>();
+    this.pastDiseases = new ArrayList<>();
+
     this.donorDetails = new DonorDetails(this);
     this.receiverDetails = new ReceiverDetails(this);
     //TODO fix json reader
@@ -258,6 +267,10 @@ public class User {
     miscAttributes = new ArrayList<String>();
     this.currentMedication = new ArrayList<>();
     this.previousMedication = new ArrayList<>();
+
+    this.currentDiseases = new ArrayList<>();
+    this.pastDiseases = new ArrayList<>();
+
     this.currentMedicationTimes = new HashMap<String, ArrayList<LocalDateTime>>();
     this.previousMedicationTimes = new HashMap<String, ArrayList<LocalDateTime>>();
 
@@ -499,16 +512,16 @@ public class User {
     return currentDiseases;
   }
 
-  public void setCurrentDiseases(ArrayList<Disease> currentDiseases) {
-    this.currentDiseases = currentDiseases;
+  public void addCurrentDisease(Disease currentDisease) {
+    currentDiseases.add(currentDisease);
   }
 
   public ArrayList<Disease> getPastDiseases() {
     return pastDiseases;
   }
 
-  public void setPastDiseases(ArrayList<Disease> pastDiseases) {
-    this.pastDiseases = pastDiseases;
+  public void addPastDisease(Disease pastDisease) {
+    this.pastDiseases.add(pastDisease);
   }
 
   public String getPreferredFirstName() {

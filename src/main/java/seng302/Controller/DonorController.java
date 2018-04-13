@@ -2,6 +2,7 @@ package seng302.Controller;
 
 
 
+import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
@@ -154,9 +155,19 @@ public class DonorController {
   @FXML
   private Button addMedicationButton;
 
+  @FXML
+  private TableView<Disease> currentDiseaseTableView;
+
+  @FXML
+  private TableView<Disease> pastDiseaseTableView;
+
+
   private AppController application;
   private ObservableList<String> currentMeds;
   private ObservableList<String> previousMeds;
+
+  private ObservableList<Disease> currentDisease;
+  private ObservableList<Disease> pastDisease;
 
   private List<String> possibleGenders = Arrays.asList("M", "F", "U");
 
@@ -244,7 +255,42 @@ public class DonorController {
     });
     showUser(currentUser);
 
+    if(user.getCurrentDiseases().size() != 0) {
+      currentDisease = FXCollections.observableList(user.getCurrentDiseases());
+      currentDiseaseTableView.setItems(currentDisease);
 
+    } else {
+      currentDiseaseTableView.setPlaceholder(new Label("No Current Diseases"));
+    }
+
+    if(user.getPastDiseases().size() != 0) {
+      pastDisease = FXCollections.observableList(user.getPastDiseases());
+      pastDiseaseTableView.setItems(pastDisease);
+
+    } else {
+      pastDiseaseTableView.setPlaceholder(new Label("No Past Diseases"));
+    }
+
+
+    TableColumn<Disease, LocalDate> diagnosisDateColumn = new TableColumn<>("Diagnosis Date");
+    diagnosisDateColumn.setMinWidth(230);
+    diagnosisDateColumn.setCellValueFactory(new PropertyValueFactory<>("diagnosisDate"));
+
+    TableColumn<Disease, String> nameColumn = new TableColumn<>("Disease Name");
+    nameColumn.setMinWidth(660);
+    nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+
+    currentDiseaseTableView.getColumns().addAll(diagnosisDateColumn, nameColumn);
+
+    TableColumn<Disease, LocalDate> diagnosisDateColumn2 = new TableColumn<>("Diagnosis Date");
+    diagnosisDateColumn2.setMinWidth(230);
+    diagnosisDateColumn2.setCellValueFactory(new PropertyValueFactory<>("diagnosisDate"));
+
+    TableColumn<Disease, String> nameColumn2 = new TableColumn<>("Disease Name");
+    nameColumn2.setMinWidth(660);
+    nameColumn2.setCellValueFactory(new PropertyValueFactory<>("name"));
+
+    pastDiseaseTableView.getColumns().addAll(diagnosisDateColumn2, nameColumn2);
 
   }
 

@@ -148,20 +148,10 @@
               <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <TableView fx:id="currentDiseaseTableView" layoutY="37.0" prefHeight="208.0" prefWidth="600.0">
-                          <columns>
-                            <TableColumn prefWidth="217.0" text="Diagnose Date" />
-                            <TableColumn prefWidth="383.0" text="Disease Name" />
-                          </columns>
-                        </TableView>
-                        <Label layoutX="244.0" layoutY="14.0" text="Current Diseases" />
-                        <TableView fx:id="pastDiseaseTableView" layoutY="294.0" prefHeight="233.0" prefWidth="600.0">
-                           <columns>
-                              <TableColumn prefWidth="217.0" text="Diagnose Date" />
-                              <TableColumn prefWidth="383.0" text="Disease Name" />
-                           </columns>
-                        </TableView>
-                        <Label layoutX="255.0" layoutY="272.0" text="Past Diseases" />
+                        <TableView fx:id="currentDiseaseTableView" layoutY="37.0" prefHeight="243.0" prefWidth="894.0" />
+                        <Label layoutX="391.0" layoutY="14.0" text="Current Diseases" />
+                        <TableView fx:id="pastDiseaseTableView" layoutY="347.0" prefHeight="258.0" prefWidth="894.0" />
+                        <Label layoutX="402.0" layoutY="303.0" text="Past Diseases" />
                      </children>
                   </AnchorPane>
               </content>

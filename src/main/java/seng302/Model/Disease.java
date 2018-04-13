@@ -22,7 +22,7 @@ public class Disease {
      * @param isCured true if disease is cured, false otherwise
      * @param diagnosisDate date of diagnosis done
      */
-    public Disease(String name, boolean isChronic, boolean isCured, LocalDate diagnosisDate){
+    public Disease(String name, boolean isChronic, boolean isCured, LocalDate diagnosisDate){ //TODO: date validation
         this.name = name;
         this.isChronic = isChronic;
         this.isCured = isCured;
@@ -43,11 +43,11 @@ public class Disease {
         this.diagnosisDate = LocalDate.now();
     }
 
-    public String getDiseaseName() {
+    public String getName() {
         return name;
     }
 
-    public void setDiseaseName(String diseaseName) {
+    public void setName(String diseaseName) {
         this.name = diseaseName;
     }
 
