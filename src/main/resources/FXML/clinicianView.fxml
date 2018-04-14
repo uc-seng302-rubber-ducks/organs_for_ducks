@@ -74,5 +74,14 @@
             </SplitPane>
          </content>
     </Tab>
+      <Tab text="Transplant Wait List">
+        <content>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+               <children>
+                  <TableView fx:id="transplantWaitListTableView" prefHeight="330.0" prefWidth="617.0" />
+               </children>
+            </AnchorPane>
+        </content>
+      </Tab>
   </tabs>
 </TabPane>

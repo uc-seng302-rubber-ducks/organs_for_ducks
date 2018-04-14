@@ -1,8 +1,5 @@
 package seng302.Controller;
 
-import java.lang.reflect.Array;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import javafx.beans.binding.Bindings;
@@ -29,7 +26,6 @@ import javafx.stage.WindowEvent;
 import java.io.IOException;
 import java.util.List;
 
-import seng302.Model.Donor;
 import seng302.Model.Organs;
 import seng302.Model.User;
 import seng302.Model.Clinician;
@@ -73,6 +69,9 @@ public class ClinicianController {
   @FXML
   private Pagination searchTablePagination;
 
+  @FXML
+  private TableView<User> transplantWaitListTableView;
+
   private Stage stage;
   private AppController appController;
   private Clinician clinician;
@@ -97,6 +96,7 @@ public class ClinicianController {
     showClinician();
     users = appController.getUsers();
     initSearchTable();
+    initWaitListTable();
 
     openStages = new ArrayList<>();
     stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
@@ -186,6 +186,28 @@ public class ClinicianController {
         }
       }
     });
+  }
+
+  private void initWaitListTable() {
+    //set up lists
+    //table contents are SortedList of a FilteredList of an ObservableList of an ArrayList
+    transplantWaitListTableView.setPlaceholder(new Label("No Recipients"));
+
+
+    TableColumn<User, String> recepientNameColumn = new TableColumn<>("Name");
+    recepientNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+
+    TableColumn<User, String> organNameColumn = new TableColumn<>("Organ");
+    organNameColumn.setCellValueFactory(new PropertyValueFactory<>("dateOfBirth"));
+
+    TableColumn<User, Integer> organRegistrationDateColumn = new TableColumn<>("Organ Registration Date");
+    organRegistrationDateColumn.setCellValueFactory(new PropertyValueFactory<>("dateOfDeath"));
+
+    TableColumn<User, String> recipientRegionColumn = new TableColumn<>("Region");
+    recipientRegionColumn.setCellValueFactory(new PropertyValueFactory<>("age"));
+
+    transplantWaitListTableView.getColumns().setAll(recepientNameColumn, organNameColumn, organRegistrationDateColumn, recipientRegionColumn);
+
   }
 
     /**
