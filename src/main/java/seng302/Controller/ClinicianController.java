@@ -1,5 +1,6 @@
 package seng302.Controller;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
 import javafx.beans.binding.Bindings;
@@ -27,6 +28,7 @@ import java.io.IOException;
 import java.util.List;
 
 import seng302.Model.Organs;
+import seng302.Model.TransplantDetails;
 import seng302.Model.User;
 import seng302.Model.Clinician;
 
@@ -70,7 +72,7 @@ public class ClinicianController {
   private Pagination searchTablePagination;
 
   @FXML
-  private TableView<User> transplantWaitListTableView;
+  private TableView<TransplantDetails> transplantWaitListTableView;
 
   private Stage stage;
   private AppController appController;
@@ -78,6 +80,9 @@ public class ClinicianController {
   private ArrayList<User> users;
   private ArrayList<Stage> openStages;
   private FilteredList<User> fListDonors;
+
+  private HashSet<Organs> organs;
+  private ObservableList<TransplantDetails> transplantList;
 
   private static int currentIndex = 0;
 
@@ -191,22 +196,43 @@ public class ClinicianController {
   private void initWaitListTable() {
     //set up lists
     //table contents are SortedList of a FilteredList of an ObservableList of an ArrayList
-    transplantWaitListTableView.setPlaceholder(new Label("No Recipients"));
+
+    for (User user : users) {
+      if (user.isReceiver()) {
+        organs = user.getReceiverDetails().getOrgans();
+        for (Organs organ : organs) {
+          appController.addTransplant(new TransplantDetails(user.getNhi(), user.getName(), organ.toString(), LocalDate.now(), user.getRegion())); //TODO replace LocalDate.now() with Organ Registration Date
+        }
+      }
+
+    }
+
+    if(appController.getTransplantList().size() != 0) {
+      transplantList = FXCollections.observableList(appController.getTransplantList());
+      transplantWaitListTableView.setItems(transplantList);
+
+    } else {
+      transplantWaitListTableView.setPlaceholder(new Label("No Recipients"));
+    }
 
 
-    TableColumn<User, String> recepientNameColumn = new TableColumn<>("Name");
-    recepientNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+    TableColumn<TransplantDetails, String> recipientNameColumn = new TableColumn<>("Name");
+    recipientNameColumn.setMinWidth(220);
+    recipientNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
 
-    TableColumn<User, String> organNameColumn = new TableColumn<>("Organ");
-    organNameColumn.setCellValueFactory(new PropertyValueFactory<>("dateOfBirth"));
+    TableColumn<TransplantDetails, String> organNameColumn = new TableColumn<>("Organ");
+    organNameColumn.setMinWidth(150);
+    organNameColumn.setCellValueFactory(new PropertyValueFactory<>("organ"));
 
-    TableColumn<User, Integer> organRegistrationDateColumn = new TableColumn<>("Organ Registration Date");
-    organRegistrationDateColumn.setCellValueFactory(new PropertyValueFactory<>("dateOfDeath"));
+    TableColumn<TransplantDetails, Integer> organRegistrationDateColumn = new TableColumn<>("ORD");
+    organRegistrationDateColumn.setMinWidth(100);
+    organRegistrationDateColumn.setCellValueFactory(new PropertyValueFactory<>("oRD"));
 
-    TableColumn<User, String> recipientRegionColumn = new TableColumn<>("Region");
-    recipientRegionColumn.setCellValueFactory(new PropertyValueFactory<>("age"));
+    TableColumn<TransplantDetails, String> recipientRegionColumn = new TableColumn<>("Region");
+    recipientRegionColumn.setMinWidth(140);
+    recipientRegionColumn.setCellValueFactory(new PropertyValueFactory<>("region"));
 
-    transplantWaitListTableView.getColumns().setAll(recepientNameColumn, organNameColumn, organRegistrationDateColumn, recipientRegionColumn);
+    transplantWaitListTableView.getColumns().setAll(recipientNameColumn, organNameColumn, organRegistrationDateColumn, recipientRegionColumn);
 
   }
 

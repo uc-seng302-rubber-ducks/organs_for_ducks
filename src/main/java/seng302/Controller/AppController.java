@@ -11,7 +11,7 @@ import seng302.Model.*;
 public class AppController {
 
   private ArrayList<User> users = new ArrayList<>();
-  private ArrayList<User> recipientList = new ArrayList<>();
+  private ArrayList<TransplantDetails> transplantList = new ArrayList<>();
   private ArrayList<Clinician> clinicians = new ArrayList<>();
   private static AppController controller;
   private ArrayList<String[]> historyOfCommands = new ArrayList<>();
@@ -437,7 +437,11 @@ public class AppController {
     return changes;
   }
 
-  public void addRecipient(User user) {
-    recipientList.add(user);
+    public java.util.ArrayList<TransplantDetails> getTransplantList() {
+        return transplantList;
+    }
+
+  public void addTransplant(TransplantDetails transplantDetails) {
+    transplantList.add(transplantDetails);
   }
 }
