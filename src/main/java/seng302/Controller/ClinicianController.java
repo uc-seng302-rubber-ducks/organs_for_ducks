@@ -111,7 +111,6 @@ public class ClinicianController {
     searchCount = users.size();
     initSearchTable();
     searchCountLabel.setText("Showing results "+(searchCount == 0 ? startIndex : startIndex+1) + " - " + (endIndex) + " of " + searchCount);
-    searchCount = 0; // reset this after setting label text so the future filters don't add to the total user count
     openStages = new ArrayList<>();
     stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
       public void handle(WindowEvent we){
@@ -122,8 +121,8 @@ public class ClinicianController {
         }
       }
     });
-    int count = users.size() / ROWS_PER_PAGE;
-    searchTablePagination.setPageCount(count + 1);
+    int pageCount = searchCount / ROWS_PER_PAGE;
+    searchTablePagination.setPageCount(pageCount > 0 ? pageCount : 1);
     searchTablePagination.currentPageIndexProperty().addListener(((observable, oldValue, newValue) -> changePage(newValue.intValue())));
     //searchPagination = new Pagination((users.size() / ROWS_PER_PAGE + 1), 0);
   }
@@ -234,10 +233,9 @@ public class ClinicianController {
     searchTableView.setItems(sListDonors);
 
 
-    int count = users.size() / ROWS_PER_PAGE;
-    searchTablePagination.setPageCount(count + 1);
+    int pageCount = searchCount / ROWS_PER_PAGE;
+    searchTablePagination.setPageCount(pageCount > 0 ? pageCount : 1);
     searchCountLabel.setText("Showing results "+(searchCount == 0 ? startIndex : startIndex+1) + " - " + (minIndex) + " of " + searchCount);
-    searchCount = 0;
 
     return searchTableView;
   }
@@ -271,6 +269,7 @@ public class ClinicianController {
    */
   private FilteredList<User> filter(TextField inputTextField, FilteredList<User> fListUsers) {
     inputTextField.textProperty().addListener((observable, oldValue, newValue) -> {
+      searchCount = 0;
       fListUsers.predicateProperty().bind(Bindings.createObjectBinding(() -> donor -> {
         if (newValue == null || newValue.isEmpty()) {
           searchCount++;
@@ -287,7 +286,7 @@ public class ClinicianController {
       }));
       changePage(searchTablePagination.getCurrentPageIndex());
     });
-    searchTablePagination.setPageCount(fListUsers.size() / ROWS_PER_PAGE);
+    searchTablePagination.setPageCount(searchCount / ROWS_PER_PAGE);
     return fListUsers;
   }
 
