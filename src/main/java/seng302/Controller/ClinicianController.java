@@ -22,12 +22,15 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.logging.Filter;
 
 import seng302.Model.Donor;
 import seng302.Model.Organs;
@@ -76,6 +79,24 @@ public class ClinicianController {
   @FXML
   private Label searchCountLabel;
 
+  @FXML
+  private AnchorPane filterAnchorPane;
+
+  @FXML
+  private ComboBox genderComboBox;
+
+  @FXML
+  private TextField regionTextField;
+
+  @FXML
+  private CheckBox donorFilterCheckBox;
+
+  @FXML
+  private CheckBox receiverFilterCheckBox;
+
+  @FXML
+  private Button expandButton;
+
   private Stage stage;
   private AppController appController;
   private Clinician clinician;
@@ -84,15 +105,16 @@ public class ClinicianController {
   private FilteredList<User> fListDonors;
 
   //Initiliase table columns as class level so it is accessible for sorting in pagination methods
-  TableColumn<User, String> fNameColumn;
-  TableColumn<User, String> lNameColumn;
-  TableColumn<User, String> dobColumn;
-  TableColumn<User, String> dodColumn;
-  TableColumn<User, String> ageColumn;
-  TableColumn<User, HashSet<Organs>> organsColumn;
+  private TableColumn<User, String> fNameColumn;
+  private TableColumn<User, String> lNameColumn;
+  private TableColumn<User, String> dobColumn;
+  private TableColumn<User, String> dodColumn;
+  private TableColumn<User, String> ageColumn;
+  private TableColumn<User, HashSet<Organs>> organsColumn;
 
 
   private static int searchCount = 0;
+  private boolean filterVisible = false;
 
 
     /**
@@ -110,6 +132,7 @@ public class ClinicianController {
     users = appController.getUsers();
     searchCount = users.size();
     initSearchTable();
+    setDefaultFilters();
     searchCountLabel.setText("Showing results "+(searchCount == 0 ? startIndex : startIndex+1) + " - " + (endIndex) + " of " + searchCount);
     openStages = new ArrayList<>();
     stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
@@ -127,6 +150,10 @@ public class ClinicianController {
     //searchPagination = new Pagination((users.size() / ROWS_PER_PAGE + 1), 0);
   }
 
+  private void setDefaultFilters() {
+    donorFilterCheckBox.setSelected(true);
+    receiverFilterCheckBox.setSelected(true);
+  }
 
   private void showClinician() {
     System.out.println(clinician.getMiddleName());
@@ -173,7 +200,7 @@ public class ClinicianController {
 
     //TODO add more columns as wanted/needed
     fListDonors = new FilteredList<>(oListDonors);
-    fListDonors = filter(searchTextField, fListDonors);
+    fListDonors = filter(fListDonors);
     FilteredList<User> squished = new FilteredList<>(fListDonors);
 
     SortedList<User> sListDonors = new SortedList<>(squished);
@@ -205,11 +232,11 @@ public class ClinicianController {
     });
   }
 
-    /**
-     *
-     * @param arrayList An array list of users.
-     * @return A list of users.
-     */
+  /**
+   *
+   * @param arrayList An array list of users.
+   * @return A list of users.
+   */
   private List<User> getSearchData(ArrayList<User> arrayList) {
     return arrayList.subList(startIndex, endIndex);
   }
@@ -263,31 +290,52 @@ public class ClinicianController {
 
   /**
    *  applies a change listener to the input text box and filters a filtered list accordingly
-   * @param inputTextField text field from which the list will be filtered
    * @param fListUsers list to be filtered
    * @return filtered list with filter applied
    */
-  private FilteredList<User> filter(TextField inputTextField, FilteredList<User> fListUsers) {
-    inputTextField.textProperty().addListener((observable, oldValue, newValue) -> {
-      searchCount = 0;
-      fListUsers.predicateProperty().bind(Bindings.createObjectBinding(() -> donor -> {
-        if (newValue == null || newValue.isEmpty()) {
-          searchCount++;
-          return true;
-        }
-        String lowerCaseFilterText = newValue.toLowerCase();
-        if ((donor.getFirstName().toLowerCase()).startsWith(lowerCaseFilterText) ||
-                (donor.getLastName().toLowerCase().startsWith(lowerCaseFilterText))) {
-          searchCount++;
-          return true;
-        }
-        //if (other test case) return true
-        return false;
-      }));
-      changePage(searchTablePagination.getCurrentPageIndex());
-    });
+  private FilteredList<User> filter(FilteredList<User> fListUsers) {
+    setTextFieldListener(searchTextField, fListUsers);
+    setTextFieldListener(regionTextField, fListUsers);
+    setCheckBoxListener(donorFilterCheckBox, fListUsers);
+    setCheckBoxListener(receiverFilterCheckBox, fListUsers);
+    genderComboBox.valueProperty().addListener((observable -> {
+      setFilteredListPredicate(fListUsers);
+    }));
+
     searchTablePagination.setPageCount(searchCount / ROWS_PER_PAGE);
     return fListUsers;
+  }
+
+  private void setTextFieldListener(TextField inputTextField, FilteredList<User> fListUsers) {
+    inputTextField.textProperty().addListener((observable) -> {
+      setFilteredListPredicate(fListUsers);
+    });
+  }
+
+  private void setCheckBoxListener(CheckBox checkBox, FilteredList<User> fListUsers) {
+    checkBox.selectedProperty().addListener(((observable) -> {
+      setFilteredListPredicate(fListUsers);
+    }));
+  }
+
+  private void setFilteredListPredicate(FilteredList<User> fList) {
+    searchCount = 0;
+    fList.predicateProperty().bind(Bindings.createObjectBinding(() -> user -> {
+      String lowerCaseFilterText = searchTextField.getText().toLowerCase();
+      if (((user.getFirstName().toLowerCase()).startsWith(lowerCaseFilterText) ||
+              (user.getLastName().toLowerCase().startsWith(lowerCaseFilterText))) &&
+              (user.getRegion().toLowerCase().startsWith(regionTextField.getText().toLowerCase())) &&
+              (user.getBirthGender().equalsIgnoreCase(genderComboBox.getValue().toString()) ||
+                      genderComboBox.getValue().toString().equalsIgnoreCase("All")) &&
+              (user.isDonor() == donorFilterCheckBox.isSelected()) &&
+              (user.isReceiver() == receiverFilterCheckBox.isSelected())) {
+        searchCount++;
+        return true;
+      }
+      //if (other test case) return true
+      return false;
+    }));
+    changePage(searchTablePagination.getCurrentPageIndex());
   }
 
   @FXML
@@ -337,6 +385,15 @@ public class ClinicianController {
     } catch (IOException e){
       e.printStackTrace();
     }
+  }
+
+  @FXML
+  public void expandFilter() {
+    double dividerPos = filterVisible ? 44 : 150;
+    filterAnchorPane.setMinHeight(dividerPos);
+    filterAnchorPane.setMaxHeight(dividerPos);
+    filterVisible = !filterVisible;
+    expandButton.setText(filterVisible ? "▲" : "▼");
   }
 //
 //  @FXML
