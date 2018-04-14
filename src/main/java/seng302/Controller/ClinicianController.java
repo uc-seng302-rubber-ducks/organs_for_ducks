@@ -73,6 +73,9 @@ public class ClinicianController {
   @FXML
   private Pagination searchTablePagination;
 
+  @FXML
+  private Label searchCountLabel;
+
   private Stage stage;
   private AppController appController;
   private Clinician clinician;
@@ -80,7 +83,16 @@ public class ClinicianController {
   private ArrayList<Stage> openStages;
   private FilteredList<User> fListDonors;
 
-  private static int currentIndex = 0;
+  //Initiliase table columns as class level so it is accessible for sorting in pagination methods
+  TableColumn<User, String> fNameColumn;
+  TableColumn<User, String> lNameColumn;
+  TableColumn<User, String> dobColumn;
+  TableColumn<User, String> dodColumn;
+  TableColumn<User, String> ageColumn;
+  TableColumn<User, HashSet<Organs>> organsColumn;
+
+
+  private static int searchCount = 0;
 
 
     /**
@@ -96,8 +108,10 @@ public class ClinicianController {
     stage.setResizable(true);
     showClinician();
     users = appController.getUsers();
+    searchCount = users.size();
     initSearchTable();
-
+    searchCountLabel.setText("Showing results "+(searchCount == 0 ? startIndex : startIndex+1) + " - " + (endIndex) + " of " + searchCount);
+    searchCount = 0; // reset this after setting label text so the future filters don't add to the total user count
     openStages = new ArrayList<>();
     stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
       public void handle(WindowEvent we){
@@ -139,19 +153,23 @@ public class ClinicianController {
     //table contents are SortedList of a FilteredList of an ObservableList of an ArrayList
     ObservableList<User> oListDonors = FXCollections.observableList(users);
 
-    TableColumn<User, String> nameColumn = new TableColumn<>("Name");
-    nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+    fNameColumn = new TableColumn<>("First name");
+    fNameColumn.setCellValueFactory(new PropertyValueFactory<>("firstName"));
 
-    TableColumn<User, Integer> dobColumn = new TableColumn<>("Date of Birth");
+    lNameColumn = new TableColumn<>("Last name");
+    lNameColumn.setCellValueFactory(new PropertyValueFactory<>("lastName"));
+    lNameColumn.setSortType(TableColumn.SortType.ASCENDING);
+
+    dobColumn = new TableColumn<>("Date of Birth");
     dobColumn.setCellValueFactory(new PropertyValueFactory<>("dateOfBirth"));
 
-    TableColumn<User, Integer> dodColumn = new TableColumn<>("Date of Death");
+    dodColumn = new TableColumn<>("Date of Death");
     dodColumn.setCellValueFactory(new PropertyValueFactory<>("dateOfDeath"));
 
-    TableColumn<User, Integer> ageColumn = new TableColumn<>("Age");
+    ageColumn = new TableColumn<>("Age");
     ageColumn.setCellValueFactory(new PropertyValueFactory<>("age"));
 
-    TableColumn<User, HashSet<Organs>> organsColumn = new TableColumn<>("Organs");
+    organsColumn = new TableColumn<>("Organs");
     organsColumn.setCellValueFactory(new PropertyValueFactory<>("organs"));
 
     //TODO add more columns as wanted/needed
@@ -166,7 +184,7 @@ public class ClinicianController {
     //should limit the number of items shown to ROWS_PER_PAGE
     //squished = limit(fListDonors, sListDonors);
     //set table columns and contents
-    searchTableView.getColumns().setAll(nameColumn, dobColumn, dodColumn, ageColumn, organsColumn);
+    searchTableView.getColumns().setAll(fNameColumn, lNameColumn, dobColumn, dodColumn, ageColumn, organsColumn);
     //searchTableView.setItems(FXCollections.observableList(sListDonors.subList(startIndex, endIndex)));
     searchTableView.setItems(sListDonors);
     searchTableView.setRowFactory((searchTableView) ->{
@@ -212,10 +230,14 @@ public class ClinicianController {
     SortedList<User> sListDonors = new SortedList<>(FXCollections.observableArrayList(fListDonors.subList(Math.min(startIndex, minIndex), minIndex)));
     sListDonors.comparatorProperty().bind(searchTableView.comparatorProperty());
 
+    lNameColumn.setSortType(TableColumn.SortType.ASCENDING);
     searchTableView.setItems(sListDonors);
+
 
     int count = users.size() / ROWS_PER_PAGE;
     searchTablePagination.setPageCount(count + 1);
+    searchCountLabel.setText("Showing results "+(searchCount == 0 ? startIndex : startIndex+1) + " - " + (minIndex) + " of " + searchCount);
+    searchCount = 0;
 
     return searchTableView;
   }
@@ -251,10 +273,13 @@ public class ClinicianController {
     inputTextField.textProperty().addListener((observable, oldValue, newValue) -> {
       fListUsers.predicateProperty().bind(Bindings.createObjectBinding(() -> donor -> {
         if (newValue == null || newValue.isEmpty()) {
+          searchCount++;
           return true;
         }
         String lowerCaseFilterText = newValue.toLowerCase();
-        if ((donor.getName().toLowerCase()).contains(lowerCaseFilterText)) {
+        if ((donor.getFirstName().toLowerCase()).startsWith(lowerCaseFilterText) ||
+                (donor.getLastName().toLowerCase().startsWith(lowerCaseFilterText))) {
+          searchCount++;
           return true;
         }
         //if (other test case) return true

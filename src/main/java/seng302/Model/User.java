@@ -757,8 +757,10 @@ public class User {
       return false;
     }
     User other = (User) o;
-    System.out.println(this);
+//    System.out.println(this);
+    System.out.println("===============================");
     System.out.println(other);
+    System.out.println("===============================");
     return this.nhi.equals(other.getNhi());
     //return Objects.equals(dateOfBirth, other.dateOfBirth) && name.equalsIgnoreCase(other.name);
   }
