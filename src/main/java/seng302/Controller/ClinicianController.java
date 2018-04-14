@@ -214,7 +214,7 @@ public class ClinicianController {
     //should limit the number of items shown to ROWS_PER_PAGE
     //squished = limit(fListDonors, sListDonors);
     //set table columns and contents
-    searchTableView.getColumns().setAll(fNameColumn, lNameColumn, dobColumn, dodColumn, ageColumn, organsColumn);
+    searchTableView.getColumns().setAll(fNameColumn, lNameColumn, dobColumn, dodColumn, ageColumn, regionColumn, organsColumn);
     //searchTableView.setItems(FXCollections.observableList(sListDonors.subList(startIndex, endIndex)));
     searchTableView.setItems(sListDonors);
     searchTableView.setRowFactory((searchTableView) ->{
