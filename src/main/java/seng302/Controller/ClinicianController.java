@@ -242,11 +242,11 @@ public class ClinicianController {
   }
 
 
-    /**
-     *
-     * @param pageIndex the current page.
-     * @return the search table view node.
-     */
+  /**
+   *
+   * @param pageIndex the current page.
+   * @return the search table view node.
+   */
   private Node changePage(int pageIndex) {
     startIndex = pageIndex * ROWS_PER_PAGE;
     endIndex = Math.min(startIndex+ROWS_PER_PAGE, users.size());
@@ -306,22 +306,38 @@ public class ClinicianController {
     return fListUsers;
   }
 
+  /**
+   * Method to add the predicate trough the listener
+   * @param inputTextField textfield to add the listener to
+   * @param fListUsers filteredList object of users to set predicate property of
+   */
   private void setTextFieldListener(TextField inputTextField, FilteredList<User> fListUsers) {
     inputTextField.textProperty().addListener((observable) -> {
       setFilteredListPredicate(fListUsers);
     });
   }
 
+  /**
+   * Method to add the predicate trough the listener
+   * @param checkBox checkBox object to add the listener to
+   * @param fListUsers filteredList object of users to set predicate property of
+   */
   private void setCheckBoxListener(CheckBox checkBox, FilteredList<User> fListUsers) {
     checkBox.selectedProperty().addListener(((observable) -> {
       setFilteredListPredicate(fListUsers);
     }));
   }
 
+  /**
+   * Sets the predicate property of filteredList to filter by specific properties
+   * @param fList filteredList object to modify the predicate property of
+   */
   private void setFilteredListPredicate(FilteredList<User> fList) {
-    searchCount = 0;
+    searchCount = 0; //refresh the searchCount every time so it recalculates it each search
+
     fList.predicateProperty().bind(Bindings.createObjectBinding(() -> user -> {
       String lowerCaseFilterText = searchTextField.getText().toLowerCase();
+
       if (((user.getFirstName().toLowerCase()).startsWith(lowerCaseFilterText) ||
               (user.getLastName().toLowerCase().startsWith(lowerCaseFilterText))) &&
               (user.getRegion().toLowerCase().startsWith(regionTextField.getText().toLowerCase())) &&
@@ -332,6 +348,7 @@ public class ClinicianController {
         searchCount++;
         return true;
       }
+
       //if (other test case) return true
       return false;
     }));
@@ -387,8 +404,11 @@ public class ClinicianController {
     }
   }
 
+  /**
+   * Callback method to change the divider position to show advanced filtering options in the GUI
+   */
   @FXML
-  public void expandFilter() {
+  private void expandFilter() {
     double dividerPos = filterVisible ? 44 : 150;
     filterAnchorPane.setMinHeight(dividerPos);
     filterAnchorPane.setMaxHeight(dividerPos);
