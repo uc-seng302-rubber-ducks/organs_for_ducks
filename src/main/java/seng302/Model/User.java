@@ -733,7 +733,7 @@ public class User {
 
   public String getTooltip() {
     //TODO fix this to show full info where possible
-    if (isDonor() || this.donorDetails.getOrgans() == null) {
+    if (this.donorDetails.getOrgans() == null) {
       return name;
     }
     if (!this.getDonorDetails().getOrgans().isEmpty()) {
