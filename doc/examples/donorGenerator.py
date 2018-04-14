@@ -17,8 +17,9 @@ def generate(num):
     outputFile = open("donors.json", "w")
     for i in range(0, num):
         donor = OrderedDict ({
-            "NHI": "ZXC"+''.join(random.sample("0123456789", 4)),
-            "name": "Donor #"+str(i),
+            "nhi": "ZXC"+''.join(random.sample("0123456789", 4)),
+            "firstName": "Donor",
+            "lastName": "#"+str(i),
             "dateOfBirth": {"year":1977+i%10, "month": i%12, "day": i%20},
             "dateOfDeath": {"year":2015+i%10, "month": i%12, "day": i%20},
             "gender": random.choice(genders),
