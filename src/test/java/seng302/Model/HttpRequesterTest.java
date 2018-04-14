@@ -85,11 +85,11 @@ public class HttpRequesterTest {
     when(mockResponseBody.string()).thenReturn(responseBody.toString());
     when(mockResponse.body()).thenReturn(mockResponseBody);
     Set<String> expected = new HashSet<>();
-    expected.add("anxiety");
-    expected.add("anaemia");
-    expected.add("pneumonia");
-    expected.add("injury");
-    expected.add("nausea");
+    expected.add("anxiety (< 1 month)");
+    expected.add("anaemia (1 - 6 months)");
+    expected.add("pneumonia (5 - 10 years)");
+    expected.add("injury (not specified)");
+    expected.add("nausea (not specified)");
 
     Set<String> results = HttpRequester.getDrugInteractions("coumadin", "acetaminophen", "m", 36, mockClient);
 
@@ -113,6 +113,57 @@ public class HttpRequesterTest {
 
     verify(mockCall, times(1)).execute();
     assert(result.isEmpty());
+  }
+
+  @Test
+  public void ActiveIngredientsReturnsIngredients() throws IOException {
+    Response mockResponse = mock(Response.class);
+    //mock of the underlying classes not visible from source code
+    Call mockCall = mock(Call.class);
+    ResponseBody mockResponseBody = mock(ResponseBody.class);
+    //set behaviours
+    when(mockClient.newCall(any(Request.class))).thenReturn(mockCall);
+    when(mockCall.execute()).thenReturn(mockResponse);
+    when(mockResponseBody.string()).thenReturn("[\"test result 1\",\"test result 2\"]");
+    when(mockResponse.body()).thenReturn(mockResponseBody);
+
+    String[] expected = new String[]{"test result 1", "test result 2"};
+    String[] results = HttpRequester.getActiveIngredients("reserpine", mockClient);
+    Assert.assertArrayEquals(expected, results);
+  }
+
+  @Test
+  public void ActiveIngredientsReturnsEmptyStringArrayWhenNoResponseGiven() throws IOException {
+    Response mockResponse = mock(Response.class);
+    //mock of the underlying classes not visible from source code
+    Call mockCall = mock(Call.class);
+    ResponseBody mockResponseBody = mock(ResponseBody.class);
+    //set behaviours
+    when(mockClient.newCall(any(Request.class))).thenReturn(mockCall);
+    when(mockCall.execute()).thenReturn(mockResponse);
+    when(mockResponseBody.string()).thenReturn(null);
+    when(mockResponse.body()).thenReturn(mockResponseBody);
+
+    String[] expected = {};
+    String[] results = HttpRequester.getActiveIngredients("reserpine", mockClient);
+    Assert.assertArrayEquals(results, expected);
+  }
+
+  @Test
+  public void ActiveIngredientsReturnsEmptyStringInArrayWhenEmptyResultsGiven() throws IOException {
+    Response mockResponse = mock(Response.class);
+    //mock of the underlying classes not visible from source code
+    Call mockCall = mock(Call.class);
+    ResponseBody mockResponseBody = mock(ResponseBody.class);
+    //set behaviours
+    when(mockClient.newCall(any(Request.class))).thenReturn(mockCall);
+    when(mockCall.execute()).thenReturn(mockResponse);
+    when(mockResponseBody.string()).thenReturn("[]");
+    when(mockResponse.body()).thenReturn(mockResponseBody);
+
+    String[] expected = {""};
+    String[] results = HttpRequester.getActiveIngredients("reserpine", mockClient);
+    Assert.assertArrayEquals(results, expected);
   }
 
   @Test
