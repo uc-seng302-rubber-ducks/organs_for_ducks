@@ -40,14 +40,18 @@
          <children>
             <Label text="Disease Name*:" />
             <Label text="Diagnosis Date*:" GridPane.rowIndex="1" />
-            <Label text="Chronic:" GridPane.rowIndex="2" />
             <TextField fx:id="diseaseNameInput" prefHeight="26.0" prefWidth="182.0" GridPane.columnIndex="1" />
-            <Label text="Cured:" GridPane.rowIndex="3" />
             <DatePicker fx:id="diagnosisDateInput" prefHeight="25.0" prefWidth="215.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-            <CheckBox fx:id="chronicCheckBox" mnemonicParsing="false" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-            <CheckBox fx:id="curedCheckBox" mnemonicParsing="false" GridPane.columnIndex="1" GridPane.rowIndex="3" />
             <Label fx:id="diseaseNameInputErrorMessage" text="Enter Disease Name" textFill="#e40404" GridPane.columnIndex="2" />
             <Label fx:id="diagnosisDateInputErrorMessage" text="Enter Diagnosis Date" textFill="#f20707" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+            <RadioButton fx:id="chronicRadioButton" mnemonicParsing="false" text="Chronic" GridPane.columnIndex="1" GridPane.rowIndex="2">
+               <toggleGroup>
+                  <ToggleGroup fx:id="diseaseStatus" />
+               </toggleGroup>
+            </RadioButton>
+            <RadioButton fx:id="curedRadioButton" mnemonicParsing="false" text="Cured" toggleGroup="$diseaseStatus" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+            <Label text="Status:" GridPane.rowIndex="2" />
+            <Button mnemonicParsing="false" onAction="#clearSelection" prefHeight="25.0" prefWidth="172.0" text="Clear Selecton" GridPane.columnIndex="1" GridPane.rowIndex="3" />
          </children>
       </GridPane>
    </children>

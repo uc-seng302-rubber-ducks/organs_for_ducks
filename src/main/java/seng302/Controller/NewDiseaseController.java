@@ -1,11 +1,15 @@
 package seng302.Controller;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.RadioButton;
+import javafx.scene.control.ToggleGroup;
 import javafx.stage.Stage;
+import seng302.Model.User;
 
 import java.awt.*;
 import java.io.IOException;
@@ -15,53 +19,60 @@ import java.io.IOException;
  * @author acb116
  */
 public class NewDiseaseController {
-    @FXML
-    public TextField diseaseNameInput;
+//    @FXML
+//    public TextField diseaseNameInput;
+//
+//    @FXML
+//    public DatePicker  diagnosisDateInput;
 
     @FXML
-    public DatePicker  diagnosisDateInput;
+    public RadioButton chronicRadioButton;
 
     @FXML
-    public Checkbox chronicCheckBox;
-
-    @FXML
-    public Checkbox curedCheckBox;
+    public RadioButton curedRadioButton;
 
     AppController controller;
     Stage stage;
+    private User currentUser;
 
     /**
      * Initializes the NewDiseaseController
      * @param controller The applications controller.
      * @param stage The applications stage.
      */
-    public void init(AppController controller, Stage stage) {
+    public void init(User user, AppController controller, Stage stage) {
         this.controller = controller;
         this.stage = stage;
+        currentUser = user;
         //stage.setMinWidth(620);
         //stage.setMaxWidth(620);
     }
 
     /**
-     * Returns the user to the DonorView.
-     * @throws IOException Throws an exception if the fxml cannot be located.
+     * @param event passed in automatically by the gui
      */
     @FXML
-    private void cancelCreation() throws IOException {
-//        Stage primaryStage = (Stage) cancelButton.getScene().getWindow();
-//        Parent root = FXMLLoader.load(getClass().getResource("/FXML/login.fxml"));
-//        primaryStage.setScene(new Scene(root));
-
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML/donorView.fxml"));
-        Parent root = null;
+    void cancelCreation(ActionEvent event) {
+        AppController appController = AppController.getInstance();
+        DonorController donorController = appController.getDonorController();
         try {
-            root = loader.load();
-        } catch (IOException e) {
-            e.printStackTrace();
+            donorController.showUser(currentUser);
         }
-//        stage.setScene(new Scene(root));
-//        LoginController loginController = loader.getController();
-//        loginController.init(AppController.getInstance(), stage);
-//        stage.show();
+        catch (NullPointerException ex) {
+            //TODO causes npe if donor is new in this session
+            //the text fields etc. are all null
+        }
+        stage.close();
+    }
+
+    /**
+     * clears all selecton from
+     * radio button that are in diseaseStatus toggle group
+     * @throws IOException
+     */
+    @FXML
+    private void clearSelection() throws IOException {
+        chronicRadioButton.setSelected(false);
+        curedRadioButton.setSelected(false);
     }
 }

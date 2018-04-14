@@ -162,22 +162,13 @@ public class DonorController {
   private TableView<Disease> pastDiseaseTableView;
 
   @FXML
-  private Button addPastDiseaseButton;
+  private Button addDiseaseButton;
 
   @FXML
-  private Button updatePastDiseaseButton;
+  private Button updateDiseaseButton;
 
   @FXML
-  private Button deletePastDiseaseButton;
-
-  @FXML
-  private Button addCurrentDiseaseButton;
-
-  @FXML
-  private Button updateCurrentDiseaseButton;
-
-  @FXML
-  private Button deleteCurrentDiseaseButton;
+  private Button deleteDiseaseButton;
 
 
   private AppController application;
@@ -208,12 +199,9 @@ public class DonorController {
     //ageValue.setText("");
     if(fromClinician){
       logOutButton.setVisible(false);
-      addCurrentDiseaseButton.setVisible(true);
-      updateCurrentDiseaseButton.setVisible(true);
-      deleteCurrentDiseaseButton.setVisible(true);
-      addPastDiseaseButton.setVisible(true);
-      updatePastDiseaseButton.setVisible(true);
-      deletePastDiseaseButton.setVisible(true);
+      addDiseaseButton.setVisible(true);
+      updateDiseaseButton.setVisible(true);
+      deleteDiseaseButton.setVisible(true);
     }
     //arbitrary default values
     //changeDeceasedStatus();
@@ -802,5 +790,25 @@ public class DonorController {
     historyTableView.setItems(changelog);
     historyTableView.getColumns().addAll(timeColumn, changeColumn);
 
+  }
+
+  /**
+   * fires when the add button at the Disease tab is clicked
+   */
+  @FXML
+  private void addDisease() {
+
+    FXMLLoader addDiseaseLoader = new FXMLLoader(getClass().getResource("/FXML/createNewDisease.fxml"));
+    Parent root = null;
+    try {
+      root = addDiseaseLoader.load();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    NewDiseaseController newDiseaseController = addDiseaseLoader.getController();
+    Stage stage = new Stage();
+    newDiseaseController.init(currentUser, application, stage);
+    stage.setScene(new Scene(root));
+    stage.show();
   }
 }
