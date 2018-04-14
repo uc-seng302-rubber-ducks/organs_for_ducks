@@ -111,6 +111,7 @@ public class ClinicianController {
   private TableColumn<User, String> dodColumn;
   private TableColumn<User, String> ageColumn;
   private TableColumn<User, HashSet<Organs>> organsColumn;
+  private TableColumn<User, String> regionColumn;
 
 
   private static int searchCount = 0;
@@ -194,6 +195,9 @@ public class ClinicianController {
 
     ageColumn = new TableColumn<>("Age");
     ageColumn.setCellValueFactory(new PropertyValueFactory<>("age"));
+
+    regionColumn = new TableColumn<>("Region");
+    regionColumn.setCellValueFactory(new PropertyValueFactory<>("region"));
 
     organsColumn = new TableColumn<>("Organs");
     organsColumn.setCellValueFactory(new PropertyValueFactory<>("organs"));
