@@ -81,4 +81,29 @@ public class WhenSteps {
         // Write code here that turns the phrase above into concrete actions
         throw new PendingException();
     }
+
+    @When("^I entered Disease Name \"([^\"]*)\" and used the default Diagnosis Date$")
+    public void iEnteredDiseaseNameAndUsedTheDefaultDiagnosisDate(String arg1) throws Throwable {
+        // Write code here that turns the phrase above into concrete actions
+        throw new PendingException();
+    }
+
+    @When("^clicked on Status Chronic$")
+    public void clickedOnStatusChronic() throws Throwable {
+        // Write code here that turns the phrase above into concrete actions
+        throw new PendingException();
+    }
+
+    @When("^clicked on Status Cured$")
+    public void clickedOnStatusCured() throws Throwable {
+        // Write code here that turns the phrase above into concrete actions
+        throw new PendingException();
+    }
+
+    @When("^I entered Disease Name \"([^\"]*)\" and Diagnosis Date \"([^\"]*)\"$")
+    public void iEnteredDiseaseNameAndDiagnosisDate(String arg1, String arg2) throws Throwable {
+        // Write code here that turns the phrase above into concrete actions
+        throw new PendingException();
+    }
+
 }

@@ -60,4 +60,11 @@ public class GivenSteps {
         throw new PendingException();
     }
 
+    @Given("^The Create New Disease screen is loaded$")
+    public void theCreateNewDiseaseScreenIsLoaded() throws Throwable {
+        // Write code here that turns the phrase above into concrete actions
+        throw new PendingException();
+    }
+
+
 }

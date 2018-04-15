@@ -87,4 +87,22 @@ public class ThenSteps {
         // Write code here that turns the phrase above into concrete actions
         throw new PendingException();
     }
+
+    @Then("^I should see the Disease Name \"([^\"]*)\" at the Current Diseases Table$")
+    public void iShouldSeeTheDiseaseNameAtTheCurrentDiseasesTable(String arg1) throws Throwable {
+        // Write code here that turns the phrase above into concrete actions
+        throw new PendingException();
+    }
+
+    @Then("^I should see the Disease Name \"([^\"]*)\" and the word \"([^\"]*)\" in red next to disease name at the Current Diseases Table$")
+    public void iShouldSeeTheDiseaseNameAndTheWordInRedNextToDiseaseNameAtTheCurrentDiseasesTable(String arg1, String arg2) throws Throwable {
+        // Write code here that turns the phrase above into concrete actions
+        throw new PendingException();
+    }
+
+    @Then("^I should see the Disease Name \"([^\"]*)\" at the Past Diseases Table$")
+    public void iShouldSeeTheDiseaseNameAtThePastDiseasesTable(String arg1) throws Throwable {
+        // Write code here that turns the phrase above into concrete actions
+        throw new PendingException();
+    }
 }
