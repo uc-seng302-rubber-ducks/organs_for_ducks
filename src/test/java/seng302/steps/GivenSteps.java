@@ -48,8 +48,14 @@ public class GivenSteps {
         throw new PendingException();
     }
 
-    @Given("^The sign up page is loaded$")
-    public void theSignUpPageIsLoaded() throws Throwable {
+    @Given("^The sign up screen is loaded$")
+    public void theSignUpScreenIsLoaded() throws Throwable {
+        // Write code here that turns the phrase above into concrete actions
+        throw new PendingException();
+    }
+
+    @Given("^The login screen is loaded$")
+    public void theLoginScreenIsLoaded() throws Throwable {
         // Write code here that turns the phrase above into concrete actions
         throw new PendingException();
     }

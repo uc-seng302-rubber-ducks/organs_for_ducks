@@ -57,4 +57,28 @@ public class WhenSteps {
         // Write code here that turns the phrase above into concrete actions
         throw new PendingException();
     }
+
+    @When("^I entered NHI \"([^\"]*)\"$")
+    public void iEnteredNHI(String arg1) throws Throwable {
+        // Write code here that turns the phrase above into concrete actions
+        throw new PendingException();
+    }
+
+    @When("^clicked on Login button$")
+    public void clickedOnLoginButton() throws Throwable {
+        // Write code here that turns the phrase above into concrete actions
+        throw new PendingException();
+    }
+
+    @When("^I clicked on Login As Clinician Button$")
+    public void iClickedOnLoginAsClinicianButton() throws Throwable {
+        // Write code here that turns the phrase above into concrete actions
+        throw new PendingException();
+    }
+
+    @When("^I entered Staff ID \"([^\"]*)\" and Password \"([^\"]*)\"$")
+    public void iEnteredStaffIDAndPassword(String arg1, String arg2) throws Throwable {
+        // Write code here that turns the phrase above into concrete actions
+        throw new PendingException();
+    }
 }

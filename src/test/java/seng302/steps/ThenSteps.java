@@ -46,8 +46,8 @@ public class ThenSteps {
         throw new PendingException();
     }
 
-    @Then("^The I should see my NHI \"([^\"]*)\" along with my other details at the donor view window$")
-    public void theIShouldSeeMyNHIAlongWithMyOtherDetailsAtTheDonorViewWindow(String arg1) throws Throwable {
+    @Then("^I should see my NHI \"([^\"]*)\" along with my other details at the donor view screen")
+    public void theIShouldSeeMyNHIAlongWithMyOtherDetailsAtTheDonorViewScreen(String arg1) throws Throwable {
         // Write code here that turns the phrase above into concrete actions
         throw new PendingException();
     }
@@ -64,16 +64,27 @@ public class ThenSteps {
         throw new PendingException();
     }
 
-    @Then("^The I should see my NHI \"([^\"]*)\" first name \"([^\"]*)\", Smoker is marked as \"([^\"]*)\", alcohol \"([^\"]*)\" and date of death \"([^\"]*)\"$")
+    @Then("^I should see my NHI \"([^\"]*)\" first name \"([^\"]*)\", Smoker is marked as \"([^\"]*)\", alcohol \"([^\"]*)\" and date of death \"([^\"]*)\"$")
     public void theIShouldSeeMyNHIFirstNameSmokerIsMarkedAsAlcoholAndDateOfDeath(String arg1, String arg2, String arg3, String arg4, String arg5) throws Throwable {
         // Write code here that turns the phrase above into concrete actions
         throw new PendingException();
     }
 
-    @Then("^The I should see my preferred name \"([^\"]*)\" along with my other details at the donor view window$")
-    public void theIShouldSeeMyPreferredNameAlongWithMyOtherDetailsAtTheDonorViewWindow(String arg1) throws Throwable {
+    @Then("^I should see my preferred name \"([^\"]*)\" along with my other details at the donor view screen")
+    public void theIShouldSeeMyPreferredNameAlongWithMyOtherDetailsAtTheDonorViewScreen(String arg1) throws Throwable {
         // Write code here that turns the phrase above into concrete actions
         throw new PendingException();
     }
 
+    @Then("^I should see error message \"([^\"]*)\"$")
+    public void iShouldSeeErrorMessage(String arg1) throws Throwable {
+        // Write code here that turns the phrase above into concrete actions
+        throw new PendingException();
+    }
+
+    @Then("^I should see my Staff ID \"([^\"]*)\" along with my other details at the clinician view screen$")
+    public void theIShouldSeeMyStaffIDAlongWithMyOtherDetailsAtTheClinicianViewScreen(String arg1) throws Throwable {
+        // Write code here that turns the phrase above into concrete actions
+        throw new PendingException();
+    }
 }
