@@ -19,9 +19,11 @@ public class AppControllerTest {
   @Test
   public void ShouldAddDonorToListWhenUserRegistered() {
     //Arrange
-    User user = new User("Frank", LocalDate.parse("1 2 3",(DateTimeFormatter.ofPattern("y M d"))));
+    User user = new User("Frank", LocalDate.parse("1 2 3", (DateTimeFormatter.ofPattern("y M d"))),
+        "ABC1234");
     //Act
-    controller.Register("Frank",LocalDate.parse("1 2 3",(DateTimeFormatter.ofPattern("y M d"))));
+    controller.Register("Frank", LocalDate.parse("1 2 3", (DateTimeFormatter.ofPattern("y M d"))),
+        "ABC1234");
     //Assert
     Assert.assertTrue(controller.getUsers().contains(user));
   }
@@ -29,7 +31,8 @@ public class AppControllerTest {
   @Test
   public void ShouldAddDonorToListWhenUserRegisteredFullDetail() {
     //Arrange
-    User user = new User("Geoff",LocalDate.parse("1 2 3",(DateTimeFormatter.ofPattern("y M d"))));
+    User user = new User("Geoff", LocalDate.parse("1 2 3", (DateTimeFormatter.ofPattern("y M d"))),
+        "ASD3214");
     user.setGender("m");
     user.setHeight(1.85);
     user.setWeight(90);
@@ -39,7 +42,7 @@ public class AppControllerTest {
     user.setRegion("Sydney");
     //Act
     controller.Register("Geoff", LocalDate.parse("1 2 3",(DateTimeFormatter.ofPattern("y M d"))),LocalDate.parse("2 3 4",(DateTimeFormatter.ofPattern("y M d"))), "m",
-        1.85, 90, "O-", "42 wallaby way", "Sydney");
+        1.85, 90, "O-", "42 wallaby way", "Sydney", "ASD3214");
     //Assert
     Assert.assertTrue(controller.getUsers().contains(user));
 

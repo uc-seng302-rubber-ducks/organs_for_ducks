@@ -20,7 +20,7 @@ public class UpdateDetailsTest {
 
   AppController controller;
   DateTimeFormatter sdf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-  int id = -1;
+  String NHI = "";
   @Before
   public void resetDonor() {
 
@@ -29,7 +29,8 @@ public class UpdateDetailsTest {
     controller.setUsers(new ArrayList<>());
 
     try {
-      id = controller.Register("test dummy", LocalDate.parse("1111-11-11",sdf));
+      controller.Register("test dummy", LocalDate.parse("1111-11-11", sdf), "ABC1234");
+      NHI = "ABC1234";
       User user = controller.findUsers("test dummy").get(0);
       user.setWeight(65.3);
     }
@@ -40,7 +41,7 @@ public class UpdateDetailsTest {
 
   @Test
   public void ShouldUpdateFirstName() {
-    String[] args = {"-id="+id, "-f=Mal"};
+    String[] args = {"-NHI=" + NHI, "-f=Mal"};
     new CommandLine(new UpdateDetails())
         .parseWithHandler(new CommandLine.RunLast(), System.err, args);
 
@@ -53,7 +54,7 @@ public class UpdateDetailsTest {
 
   @Test
   public void ShouldUpdateLastName() {
-    String[] args = {"-id="+id, "-l=muppet"};
+    String[] args = {"-NHI=" + NHI, "-l=muppet"};
     new CommandLine(new UpdateDetails())
         .parseWithHandler(new CommandLine.RunLast(), System.err, args);
 
@@ -66,7 +67,7 @@ public class UpdateDetailsTest {
 
   @Test
   public void ShouldUpdateFullName() {
-    String[] args = {"-id="+id, "-f=stephen", "-l=hawking"};
+    String[] args = {"-NHI=" + NHI, "-f=stephen", "-l=hawking"};
     new CommandLine(new UpdateDetails())
         .parseWithHandler(new CommandLine.RunLast(), System.err, args);
 
@@ -81,7 +82,7 @@ public class UpdateDetailsTest {
   public void ShouldUpdateNumberField() {
     //height and weight are identical, no use testing both
     //just checking it can parse numbers
-    String[] args = {"-id="+id, "-w=100"};
+    String[] args = {"-NHI=" + NHI, "-w=100"};
     new CommandLine(new UpdateDetails())
         .parseWithHandler(new CommandLine.RunLast(), System.err, args);
 
@@ -92,7 +93,7 @@ public class UpdateDetailsTest {
   @Test
   public void ShouldNotUpdateBadNumberField() {
     //height and weight are identical, no use testing both
-    String[] args = {"-id="+id, "-w=fat"};
+    String[] args = {"-NHI=" + NHI, "-w=fat"};
     new CommandLine(new UpdateDetails())
         .parseWithHandler(new CommandLine.RunLast(), System.err, args);
 
@@ -104,7 +105,7 @@ public class UpdateDetailsTest {
   public void ShouldUpdateDateField() {
     //dob and dod are identical, no use testing both
     //just checking it can parse dates
-    String[] args = {"-id="+id, "-dob=2020-03-04"};
+    String[] args = {"-NHI=" + NHI, "-dob=2020-03-04"};
 
     new CommandLine(new UpdateDetails())
         .parseWithHandler(new CommandLine.RunLast(), System.err, args);
@@ -121,7 +122,7 @@ public class UpdateDetailsTest {
   @Test
   public void ShouldNotUpdateBadDate() {
     //dob and dod are identical, no use testing both
-    String[] args = {"-id="+id, "-dob=1963"};
+    String[] args = {"-NHI=" + NHI, "-dob=1963"};
 
     new CommandLine(new UpdateDetails())
         .parseWithHandler(new CommandLine.RunLast(), System.err, args);
@@ -138,11 +139,11 @@ public class UpdateDetailsTest {
 
   @Test
   public void ShouldUpdateLastModifiedTimestamp() throws InterruptedException{
-    User user = controller.getUser(id);
+    User user = controller.getUser(NHI);
     Thread.sleep(100);
     LocalDateTime oldTime = user.getLastModified();
 
-    String[] args = {"-id="+id, "-f=fred"};
+    String[] args = {"-NHI=" + NHI, "-f=fred"};
 
     new CommandLine(new UpdateDetails())
         .parseWithHandler(new CommandLine.RunLast(), System.err, args);
@@ -151,5 +152,20 @@ public class UpdateDetailsTest {
     System.out.println(oldTime);
     System.out.println(newTime); // test needs delay removing these lines will cause the test to fail
     assert(newTime.isAfter(oldTime));
+  }
+
+  @Test
+  public void ShouldNotUpdateNHItoDuplicateOfExistingUser() {
+    //one user cannot have the NHI changed to that of another user
+    User user = controller.getUser(NHI);
+    controller.Register("Frank", LocalDate.of(1990, 3, 3), "CDE1234");
+    User other = controller.getUser("CDE1234");
+
+    String[] args = {"-NHI=ABC1234", "-newNHI=CDE1234"};
+    new CommandLine(new UpdateDetails())
+        .parseWithHandler(new CommandLine.RunLast(), System.err, args);
+
+    Assert.assertEquals(controller.getUser("CDE1234"), other);
+    Assert.assertEquals(controller.getUser("ABC1234"), user);
   }
 }

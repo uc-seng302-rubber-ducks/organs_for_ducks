@@ -1,11 +1,11 @@
 package seng302.Model;
 
 import java.io.FileNotFoundException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 
-import org.joda.time.DateTime;
 
 /**
  * Class for all donors created in this application
@@ -15,28 +15,82 @@ import org.joda.time.DateTime;
 @Deprecated
 public class Donor {
 
-  private java.time.LocalDate dateOfBirth;
-  private java.time.LocalDate dateOfDeath;
-  private String gender;
-  private double height;
-  private double weight;
-  private String bloodType;
-  private String currentAddress;
-  private String region;
-  private LocalDateTime timeCreated;
-  private Boolean isDeceased;
-  private String name;
-  private HashSet<Organs> organs;
-  private LocalDateTime lastModified;
-  private ArrayList<String> miscAttributes;
-   private HashMap<String, String> updateHistory;
-   private ArrayList<String> previousMedication;
-   private ArrayList<String> currentMedication;
-   private HashMap<String, ArrayList<LocalDateTime>> previousMedicationTimes;
-   private HashMap<String, ArrayList<LocalDateTime>> currentMedicationTimes;
-   private ArrayList<Change> changes;
+    private String NHI;
+    private String name; // TODO: Take this out and use the separated names
+    private String firstName;
+    private String preferredFirstName;
+    private String middleName;
+    private String lastName;
+    private LocalDate dateOfBirth;
+    private LocalDate dateOfDeath;
+    private Boolean isDeceased;
+    private String birthGender;
+    private String genderIdentity;
+    private double height;
+    private double weight;
+    private String bloodType;
+    private String alcoholConsumption;
+    private boolean smoker;
+    private String currentAddress;
+    private String region;
+    private String homePhone;
+    private String cellPhone;
+    private String email;
+    private EmergencyContact contact;
+
+    private LocalDateTime timeCreated;
+    private HashSet<Organs> organs;
+    private LocalDateTime lastModified;
+    private ArrayList<String> miscAttributes;
+    private HashMap<String, String> updateHistory;
+    private ArrayList<String> previousMedication;
+    private ArrayList<String> currentMedication;
+    private HashMap<String, ArrayList<LocalDateTime>> previousMedicationTimes;
+    private HashMap<String, ArrayList<LocalDateTime>> currentMedicationTimes;
+    private ArrayList<Change> changes;
 
 
+    // updated constructor that works with the creation page
+    public Donor(String nhi, LocalDate dateOfBirth, LocalDate dateOfDeath, String birthGender, String genderIdentity,
+                 double height, double weight, String bloodType, String alcoholConsumption, boolean smoker,
+                 String currentAddress, String region, String homePhone, String cellPhone, String email,
+                 EmergencyContact contact, String name, String firstName, String preferredFirstName, String middleName,
+                 String lastName) {
+
+        this.NHI = nhi;
+        this.dateOfBirth = dateOfBirth;
+        this.dateOfDeath = dateOfDeath;
+
+        this.birthGender = birthGender;
+        this.genderIdentity = genderIdentity;
+        this.height = height;
+        this.weight = weight;
+        this.bloodType = bloodType;
+        this.alcoholConsumption = alcoholConsumption;
+        this.smoker = smoker;
+
+        this.currentAddress = currentAddress;
+        this.region = region;
+        this.homePhone = homePhone;
+        this.cellPhone = cellPhone;
+        this.email = email;
+        this.contact = contact;
+
+        this.name = name;
+        this.firstName = firstName;
+        this.preferredFirstName = preferredFirstName;
+        this.middleName = middleName;
+        this.lastName = lastName;
+
+        this.timeCreated = LocalDateTime.now();
+        updateHistory = new HashMap<>();
+        this.miscAttributes = new ArrayList<>();
+        this.currentMedication = new ArrayList<>();
+        this.previousMedication = new ArrayList<>();
+        this.currentMedicationTimes = new HashMap<>();
+        this.previousMedicationTimes = new HashMap<>();
+        //changes = JsonReader.importHistoryFromFile(this);
+    }
 
 
   public Donor(java.time.LocalDate dateOfBirth, java.time.LocalDate dateOfDeath, String gender, double height, double weight,
@@ -47,11 +101,11 @@ public class Donor {
     this.dateOfBirth = dateOfBirth;
     this.dateOfDeath = dateOfDeath;
     if (gender.startsWith("m") || gender.startsWith("M")) {
-      this.gender = "M";
+      this.birthGender = "M";
     } else if (gender.startsWith("f") || gender.startsWith("F")) {
-      this.gender = "F";
+      this.birthGender = "F";
     } else {
-      this.gender = "U";
+      this.birthGender = "U";
     }
     this.height = height;
     this.weight = weight;
@@ -89,7 +143,7 @@ public class Donor {
         this.name = name;
         timeCreated = LocalDateTime.now();
         lastModified = LocalDateTime.now();
-        this.gender = "U";
+        this.birthGender = "U";
         this.bloodType = "U";
         updateHistory = new HashMap<>();
         updateHistory.put(dateToString(getTimeCreated()), "Profile created.");
@@ -146,7 +200,63 @@ public class Donor {
     this.name = name;
   }
 
-  public java.time.LocalDate getDateOfBirth() {
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String name) {
+        updateLastModified();
+        this.firstName = name;
+    }
+
+    public String getPrefFirstName() {
+        return preferredFirstName;
+    }
+
+    public void setPrefFirstName(String name) {
+        updateLastModified();
+        this.preferredFirstName = name;
+    }
+
+    public String getMiddleName() {
+        return middleName;
+    }
+
+    public void setMiddleName(String name) {
+        updateLastModified();
+        this.middleName = name;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String name) {
+        updateLastModified();
+        this.lastName = name;
+    }
+
+    public String getFullName() {
+        String fullName;
+
+        if (middleName != null && lastName != null) {
+            fullName = firstName + " " + middleName  + " " + lastName;
+
+        } else if (middleName != null) {
+            fullName = firstName + " " + middleName;
+
+        } else if (lastName != null) {
+            fullName = firstName + " " + lastName;
+
+        } else {
+            fullName = firstName;
+        }
+
+        return fullName;
+    }
+
+  public LocalDate getDateOfBirth() {
     return dateOfBirth;
   }
 
@@ -165,13 +275,22 @@ public class Donor {
   }
 
   public String getGender() {
-    return gender;
+    return birthGender;
   }
 
   public void setGender(String gender) {
     updateLastModified();
-    this.gender = gender;
+    this.birthGender = gender;
   }
+
+    public String getGenderId() {
+        return genderIdentity;
+    }
+
+    public void setGenderId(String gender) {
+        updateLastModified();
+        this.genderIdentity = gender;
+    }
 
   public double getHeight() {
     return height;
@@ -400,7 +519,7 @@ public class Donor {
 
     /**
      * Use this one when adding a new medication from the donor interface
-     * @param medication
+     * @param medication medication string.
      */
     public void addCurrentMedicationTimes(String medication) {
         LocalDateTime time  = LocalDateTime.now();
@@ -439,7 +558,7 @@ public class Donor {
     /**
      * Use this one when creating the user from the json object
      * @param medication medication string key
-     * @param stamps list of timestamps
+     * @param stamps array list of timestamps
      */
     public void addCurrentMedicationTimes(String medication, ArrayList<LocalDateTime> stamps) {
 
@@ -503,7 +622,7 @@ public class Donor {
     return "name:'" + name + "\'" +
         "\ndate Of Birth: " + dateOfBirth +
         "\ndate Of Death :" + dateOfDeath +
-        "\ngender: " + gender +
+        "\ngender: " + birthGender +
         "\nheight: " + height +
         "\nweight: " + weight +
         "\nblood Type: '" + bloodType + '\'' +

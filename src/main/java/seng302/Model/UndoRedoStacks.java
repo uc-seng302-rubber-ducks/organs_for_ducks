@@ -12,6 +12,7 @@ public class UndoRedoStacks {
     //This probably shouldn't be in this class, so left Public
     /**
      * Clones a the current Donor instance onto the Donor instance 'userClone'
+     * @param user The user instance.
      * @param userClone The Donor instance to be cloned too
      * @return userClone with the cloned attributes
      */

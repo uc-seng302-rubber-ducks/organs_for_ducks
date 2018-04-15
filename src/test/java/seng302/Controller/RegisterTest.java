@@ -18,25 +18,25 @@ public class RegisterTest {
   DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd");
   User minInfo;
   User maxInfo;
+
   @Before
   public void setup() {
     controller = AppController.getInstance();
     controller.setUsers(new ArrayList<>()); //reset donor list between tests
 
-      minInfo = new User("John Doe", LocalDate.parse("1961-02-12",format));
-      maxInfo = new User("Gus Johnson", LocalDate.parse("1990-04-03",format));
-      maxInfo.setDateOfDeath(LocalDate.parse("2010-05-16",format));
-      maxInfo.setHeight(1.85);
-      maxInfo.setWeight(86.3);
-      maxInfo.setGender("m");
-      maxInfo.setRegion("Sydney");
-      maxInfo.setCurrentAddress("42-wallaby-way");
-
+    minInfo = new User("John Doe", LocalDate.parse("1961-02-12", format), "ABC1234");
+    maxInfo = new User("Gus Johnson", LocalDate.parse("1990-04-03", format), "BCD2345");
+    maxInfo.setDateOfDeath(LocalDate.parse("2010-05-16", format));
+    maxInfo.setHeight(1.85);
+    maxInfo.setWeight(86.3);
+    maxInfo.setGender("m");
+    maxInfo.setRegion("Sydney");
+    maxInfo.setCurrentAddress("42-wallaby-way");
   }
 
   @Test
   public void ShouldRegisterDonorWithMinimumInfo() {
-    String[] args = {"John", "Doe", "1961-02-12"};
+    String[] args = {"John", "Doe", "ABC1234", "1961-02-12"};
     new CommandLine(new Register()).parseWithHandler(new CommandLine.RunLast(), System.err, args);
 
     Assert.assertTrue(controller.getUsers().contains(minInfo));
@@ -44,11 +44,12 @@ public class RegisterTest {
 
   @Test
   public void ShouldRegisterDonorWithMaximumInfo() {
-    String[] args = {"Gus", "Johnson", "1990-04-03", "-dod=2010-05-16", "-he=1.85", "-w=86.3",
+    String[] args = {"Gus", "Johnson", "BCD2345", "1990-04-03", "-dod=2010-05-16", "-he=1.85",
+        "-w=86.3",
         "-g=m", "-addr=42-wallaby-way", "-r=Sydney"};
     new CommandLine(new Register()).parseWithHandler(new CommandLine.RunLast(), System.err, args);
     User registered = null;
-    registered = controller.findUser("Gus Johnson", LocalDate.parse("1990-04-03",format));
+    registered = controller.findUser("Gus Johnson", LocalDate.parse("1990-04-03", format));
     Assert.assertEquals(maxInfo, registered); //checks name and dob
     Assert.assertEquals(maxInfo.getDateOfDeath(), registered.getDateOfDeath());
     Assert.assertTrue(maxInfo.getHeight() == registered.getHeight());
