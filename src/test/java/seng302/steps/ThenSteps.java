@@ -46,4 +46,34 @@ public class ThenSteps {
         throw new PendingException();
     }
 
+    @Then("^The I should see my NHI \"([^\"]*)\" along with my other details at the donor view window$")
+    public void theIShouldSeeMyNHIAlongWithMyOtherDetailsAtTheDonorViewWindow(String arg1) throws Throwable {
+        // Write code here that turns the phrase above into concrete actions
+        throw new PendingException();
+    }
+
+    @Then("^I should see an invalid date of birth, \"([^\"]*)\" error message$")
+    public void iShouldSeeAnInvalidDateOfBirthErrorMessage(String arg1) throws Throwable {
+        // Write code here that turns the phrase above into concrete actions
+        throw new PendingException();
+    }
+
+    @Then("^I should see an invalid date of death, \"([^\"]*)\" error message$")
+    public void iShouldSeeAnInvalidDateOfDeathErrorMessage(String arg1) throws Throwable {
+        // Write code here that turns the phrase above into concrete actions
+        throw new PendingException();
+    }
+
+    @Then("^The I should see my NHI \"([^\"]*)\" first name \"([^\"]*)\", Smoker is marked as \"([^\"]*)\", alcohol \"([^\"]*)\" and date of death \"([^\"]*)\"$")
+    public void theIShouldSeeMyNHIFirstNameSmokerIsMarkedAsAlcoholAndDateOfDeath(String arg1, String arg2, String arg3, String arg4, String arg5) throws Throwable {
+        // Write code here that turns the phrase above into concrete actions
+        throw new PendingException();
+    }
+
+    @Then("^The I should see my preferred name \"([^\"]*)\" along with my other details at the donor view window$")
+    public void theIShouldSeeMyPreferredNameAlongWithMyOtherDetailsAtTheDonorViewWindow(String arg1) throws Throwable {
+        // Write code here that turns the phrase above into concrete actions
+        throw new PendingException();
+    }
+
 }

@@ -28,5 +28,33 @@ public class WhenSteps {
         throw new PendingException();
     }
 
+    @When("^I register a donor using the GUI with the NHI \"([^\"]*)\", first name \"([^\"]*)\" and date of birth \"([^\"]*)\"$")
+    public void iRegisterADonorUsingTheGUIWithTheNHIFirstNameAndDateOfBirth(String arg1, String arg2, String arg3) throws Throwable {
+        // Write code here that turns the phrase above into concrete actions
+        throw new PendingException();
+    }
 
+    @When("^Clicked on the Create Profile button$")
+    public void clickedOnTheCreateProfileButton() throws Throwable {
+        // Write code here that turns the phrase above into concrete actions
+        throw new PendingException();
+    }
+
+    @When("^I register a donor using the GUI with the NHI \"([^\"]*)\", first name \"([^\"]*)\", date of birth \"([^\"]*)\" and date of death \"([^\"]*)\"$")
+    public void iRegisterADonorUsingTheGUIWithTheNHIFirstNameDateOfBirthAndDateOfDeath(String arg1, String arg2, String arg3, String arg4) throws Throwable {
+        // Write code here that turns the phrase above into concrete actions
+        throw new PendingException();
+    }
+
+    @When("^with health info, which consist of birth gender \"([^\"]*)\", height (\\d+.\\d+), weight (\\d+), blood type \"([^\"]*)\", alcohol consumption \"([^\"]*)\", and unticked on the smoker checkbox$")
+    public void withHealthInfoWhichConsistOfBirthGenderHeightWeightBloodTypeAlcoholConsumptionAndUntickedOnTheSmokerCheckbox(String arg1, int arg2, int arg3, int arg4, String arg5, String arg6) throws Throwable {
+        // Write code here that turns the phrase above into concrete actions
+        throw new PendingException();
+    }
+
+    @When("^entered preferred name \"([^\"]*)\"$")
+    public void enteredPreferredName(String arg1) throws Throwable {
+        // Write code here that turns the phrase above into concrete actions
+        throw new PendingException();
+    }
 }
