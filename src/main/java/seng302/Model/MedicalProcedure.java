@@ -68,4 +68,14 @@ public class MedicalProcedure {
     public void setOrgansAffected(ArrayList<Organs> organsAffected) {
         this.organsAffected = organsAffected;
     }
+
+    @Override
+    public String toString() {
+        return "MedicalProcedure{" +
+                "procedureDate=" + procedureDate +
+                ", summary='" + summary + '\'' +
+                ", description='" + description + '\'' +
+                ", organsAffected=" + organsAffected +
+                '}';
+    }
 }

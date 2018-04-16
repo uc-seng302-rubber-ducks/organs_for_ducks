@@ -5,6 +5,7 @@ package seng302.Controller;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 
+import com.sun.javafx.property.adapter.PropertyDescriptor;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -28,6 +29,7 @@ import org.controlsfx.control.textfield.TextFields;
 import seng302.Model.*;
 import java.io.IOException;
 import java.util.*;
+import java.util.regex.Pattern;
 
 public class DonorController {
 
@@ -169,6 +171,12 @@ public class DonorController {
   private Button addProcedureButton;
 
   @FXML
+  private Button updateProceduresButton;
+
+  @FXML
+  private Button clearProcedureButton;
+
+  @FXML
   private DatePicker procedureDateSelector;
 
   @FXML
@@ -262,6 +270,19 @@ public class DonorController {
     procedureDateSelector.setValue(LocalDate.now());
     previousProcedures = FXCollections.observableArrayList();
     pendingProcedures = FXCollections.observableArrayList();
+    pendingProcedureListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+    previousProcedureListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+    previousProcedureListView.getSelectionModel().selectedItemProperty().addListener(ListChangeListener-> {
+      pendingProcedureListView.getSelectionModel().select(null);
+      if(previousProcedureListView.getSelectionModel().getSelectedItem() != null){
+     showProcedure(previousProcedureListView.getSelectionModel().getSelectedItem());}
+            });
+    pendingProcedureListView.getSelectionModel().selectedItemProperty().addListener(ListChangeListener ->{
+      previousProcedureListView.getSelectionModel().select(null);
+      if(pendingProcedureListView.getSelectionModel().getSelectedItem() != null) {
+        showProcedure(pendingProcedureListView.getSelectionModel().getSelectedItem());
+      }
+    });
     //showUser(currentUser);
     if (user.getNhi() != null) {
       showUser(currentUser); // Assumes a donor with no name is a new sign up and does not pull values from a template
@@ -817,18 +838,77 @@ public class DonorController {
     // TODO: 12/04/18 add support for organs
     MedicalProcedure procedure = new MedicalProcedure(procedureDateSelector.getValue(), procedureTextField.getText(), descriptionTextArea.getText(), new ArrayList<Organs>());
     medicalProcedures.add(procedure);
-    currentUser.addMedicalProcedure(procedure);
+    if(procedure.getProcedureDate().isBefore(LocalDate.now())){
+      previousProcedures.add(procedure);
+    } else {
+      pendingProcedures.add(procedure);
+    }
+    clearProcedure();
+    application.update(currentUser);
+  }
+
+  @FXML
+  void updateProcedures(){
+    String newName =procedureTextField.getText();
+    LocalDate newDate  = procedureDateSelector.getValue();
+    String newDescription = descriptionTextArea.getText();
+    if(previousProcedureListView.getSelectionModel().getSelectedItem() != null) {
+      MedicalProcedure procedure = previousProcedureListView.getSelectionModel().getSelectedItem();
+      previousProcedures.remove(procedure);
+      updateProcedure(procedure, newName, newDate, newDescription);
+    } else if (pendingProcedureListView.getSelectionModel().getSelectedItem() != null) {
+      MedicalProcedure procedure = pendingProcedureListView.getSelectionModel().getSelectedItem();
+      pendingProcedures.remove(procedure);
+      updateProcedure(procedure, newName, newDate, newDescription);
+    }
+  }
+
+  /**
+   * Helper function for the updateProcedures button.
+   * Takes a procedure and updates it
+   * @param procedure procedure to be updated
+   */
+  private void updateProcedure(MedicalProcedure procedure, String newName, LocalDate newDate, String newDescription){
+    System.out.println(procedure.toString());
+    procedure.setSummary(newName);
+    procedure.setProcedureDate(newDate);
+    procedure.setDescription(newDescription);
     if(procedure.getProcedureDate().isBefore(LocalDate.now())){
       previousProcedures.add(procedure);
     } else {
       pendingProcedures.add(procedure);
     }
     application.update(currentUser);
+    System.out.println(procedure);
+  }
+
+  private void showProcedure(MedicalProcedure procedure){
+    procedureTextField.setText(procedure.getSummary());
+    procedureDateSelector.setValue(procedure.getProcedureDate());
+    descriptionTextArea.setText(procedure.getDescription());
+  }
+
+  @FXML
+  void clearProcedure(){
+    procedureTextField.setText("");
+    procedureDateSelector.setValue(LocalDate.now());
+    descriptionTextArea.setText("");
+    pendingProcedureListView.getSelectionModel().select(null);
+    previousProcedureListView.getSelectionModel().select(null);
   }
 
   @FXML
   void removeProcedure(ActionEvent event) {
-
+    if(previousProcedureListView.getSelectionModel().getSelectedItem() != null) {
+      medicalProcedures.remove(previousProcedureListView.getSelectionModel().getSelectedItem());
+      currentUser.removeMedicalProcedure(previousProcedureListView.getSelectionModel().getSelectedItem());
+      previousProcedures.remove(previousProcedureListView.getSelectionModel().getSelectedItem());
+    } else if (pendingProcedureListView.getSelectionModel().getSelectedItem() != null) {
+      medicalProcedures.remove(pendingProcedureListView.getSelectionModel().getSelectedItem());
+      currentUser.removeMedicalProcedure(pendingProcedureListView.getSelectionModel().getSelectedItem());
+      pendingProcedures.remove(pendingProcedureListView.getSelectionModel().getSelectedItem());
+    }
+    application.update(currentUser);
   }
 }
 
