@@ -186,10 +186,10 @@ public class DonorController {
   private Label procedureWarningLabel;
 
   @FXML
-  private ListView<MedicalProcedure> previousProcedureListView;
+  private TableView<MedicalProcedure> previousProcedureTableView;
 
   @FXML
-  private ListView<MedicalProcedure> pendingProcedureListView;
+  private TableView<MedicalProcedure> pendingProcedureTableView;
 
   @FXML
   private ListView<Organs> organsAffectedByProcedureListView;
@@ -197,7 +197,7 @@ public class DonorController {
   @FXML
   private TextArea descriptionTextArea;
 
-  private ListView<MedicalProcedure> currentProcedureList;
+  private TableView<MedicalProcedure> currentProcedureList;
 
   private AppController application;
   private ObservableList<String> currentMeds;
@@ -282,22 +282,22 @@ public class DonorController {
     procedureDateSelector.setValue(LocalDate.now());
     previousProcedures = FXCollections.observableArrayList();
     pendingProcedures = FXCollections.observableArrayList();
-    pendingProcedureListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-    previousProcedureListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-    previousProcedureListView.getSelectionModel().selectedItemProperty().addListener(ListChangeListener-> {
-      pendingProcedureListView.getSelectionModel().select(null);
-      if(previousProcedureListView.getSelectionModel().getSelectedItem() != null){
-        showProcedure(previousProcedureListView.getSelectionModel().getSelectedItem());
+    pendingProcedureTableView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+    previousProcedureTableView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+    previousProcedureTableView.getSelectionModel().selectedItemProperty().addListener(ListChangeListener-> {
+      pendingProcedureTableView.getSelectionModel().select(null);
+      if(previousProcedureTableView.getSelectionModel().getSelectedItem() != null){
+        showProcedure(previousProcedureTableView.getSelectionModel().getSelectedItem());
         modifyOrgansProcedureButton.setVisible(true);
-        currentProcedureList = previousProcedureListView;
+        currentProcedureList = previousProcedureTableView;
       }
             });
-    pendingProcedureListView.getSelectionModel().selectedItemProperty().addListener(ListChangeListener ->{
-      previousProcedureListView.getSelectionModel().select(null);
-      if(pendingProcedureListView.getSelectionModel().getSelectedItem() != null) {
-        showProcedure(pendingProcedureListView.getSelectionModel().getSelectedItem());
+    pendingProcedureTableView.getSelectionModel().selectedItemProperty().addListener(ListChangeListener ->{
+      previousProcedureTableView.getSelectionModel().select(null);
+      if(pendingProcedureTableView.getSelectionModel().getSelectedItem() != null) {
+        showProcedure(pendingProcedureTableView.getSelectionModel().getSelectedItem());
         modifyOrgansProcedureButton.setVisible(true);
-        currentProcedureList = pendingProcedureListView;
+        currentProcedureList = pendingProcedureTableView;
       }
     });
     //showUser(currentUser);
@@ -683,39 +683,21 @@ public class DonorController {
         pendingProcedures.add(procedure);
       }
     }
-    previousProcedureListView.setCellFactory(pplv -> {
-            TextFieldListCell<MedicalProcedure> cell = new TextFieldListCell<MedicalProcedure>();
-            cell.setConverter(new StringConverter<MedicalProcedure>() {
-              @Override
-              public String toString(MedicalProcedure object) {
-                return object.getSummary();
-              }
 
-              @Override
-              public MedicalProcedure fromString(String string) {
-                return null;
-              }
-            });
-            return cell;
-    });
-
-    pendingProcedureListView.setCellFactory(pplv -> {
-      TextFieldListCell<MedicalProcedure> cell = new TextFieldListCell<MedicalProcedure>();
-      cell.setConverter(new StringConverter<MedicalProcedure>() {
-        @Override
-        public String toString(MedicalProcedure object) {
-          return object.getSummary();
-        }
-
-        @Override
-        public MedicalProcedure fromString(String string) {
-          return null;
-        }
-      });
-      return cell;
-    });
-    previousProcedureListView.setItems(previousProcedures);
-    pendingProcedureListView.setItems(pendingProcedures);
+    TableColumn pendingProcedureColumn = new TableColumn("Procedure");
+    TableColumn pendingDateColumn = new TableColumn("Date");
+    TableColumn previousProcedureColumn = new TableColumn("Procedure");
+    TableColumn previousDateColumn = new TableColumn("Date");
+    pendingProcedureColumn.setCellValueFactory(new PropertyValueFactory<MedicalProcedure, String>("summary"));
+    previousProcedureColumn.setCellValueFactory(new PropertyValueFactory<MedicalProcedure, String>("summary"));
+    pendingDateColumn.setCellValueFactory(new PropertyValueFactory<Change, String>("procedureDate"));
+    previousDateColumn.setCellValueFactory(new PropertyValueFactory<Change, String>("procedureDate"));
+    previousProcedureTableView.setItems(previousProcedures);
+    pendingProcedureTableView.setItems(pendingProcedures);
+    previousProcedureTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+    pendingProcedureTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+    previousProcedureTableView.getColumns().addAll(previousProcedureColumn, previousDateColumn);
+    pendingProcedureTableView.getColumns().addAll(pendingProcedureColumn, pendingDateColumn);
     organsAffectedByProcedureListView.setCellFactory(oabp -> {
         TextFieldListCell<Organs> cell = new TextFieldListCell<>();
         cell.setConverter(new StringConverter<Organs>() {
@@ -868,8 +850,12 @@ public class DonorController {
 
   @FXML
   void addProcedure(ActionEvent event) {
-    // TODO: 12/04/18 add support for organs
-    MedicalProcedure procedure = new MedicalProcedure(procedureDateSelector.getValue(), procedureTextField.getText(), descriptionTextArea.getText(), new ArrayList<Organs>());
+    LocalDate procedureDate = procedureDateSelector.getValue();
+    if(procedureDate.isBefore(currentUser.getDateOfBirth())){
+      procedureWarningLabel.setText("Procedures may not occur before a patient has been born");
+      return;
+    }
+    MedicalProcedure procedure = new MedicalProcedure(procedureDate, procedureTextField.getText(), descriptionTextArea.getText(), new ArrayList<Organs>());
     medicalProcedures.add(procedure);
     if(procedure.getProcedureDate().isBefore(LocalDate.now())){
       previousProcedures.add(procedure);
@@ -885,12 +871,16 @@ public class DonorController {
     String newName =procedureTextField.getText();
     LocalDate newDate  = procedureDateSelector.getValue();
     String newDescription = descriptionTextArea.getText();
-    if(previousProcedureListView.getSelectionModel().getSelectedItem() != null) {
-      MedicalProcedure procedure = previousProcedureListView.getSelectionModel().getSelectedItem();
+    if (newDate.isBefore(currentUser.getDateOfBirth())){
+      procedureWarningLabel.setText("Procedures may not occur before a patient has been born");
+      return;
+    }
+    if(previousProcedureTableView.getSelectionModel().getSelectedItem() != null) {
+      MedicalProcedure procedure = previousProcedureTableView.getSelectionModel().getSelectedItem();
       previousProcedures.remove(procedure);
       updateProcedure(procedure, newName, newDate, newDescription);
-    } else if (pendingProcedureListView.getSelectionModel().getSelectedItem() != null) {
-      MedicalProcedure procedure = pendingProcedureListView.getSelectionModel().getSelectedItem();
+    } else if (pendingProcedureTableView.getSelectionModel().getSelectedItem() != null) {
+      MedicalProcedure procedure = pendingProcedureTableView.getSelectionModel().getSelectedItem();
       pendingProcedures.remove(procedure);
       updateProcedure(procedure, newName, newDate, newDescription);
     }
@@ -905,7 +895,6 @@ public class DonorController {
      * @param newDescription new procedure description
      */
   private void updateProcedure(MedicalProcedure procedure, String newName, LocalDate newDate, String newDescription){
-    System.out.println(procedure.toString());
     procedure.setSummary(newName);
     procedure.setProcedureDate(newDate);
     procedure.setDescription(newDescription);
@@ -915,7 +904,6 @@ public class DonorController {
       pendingProcedures.add(procedure);
     }
     application.update(currentUser);
-    System.out.println(procedure);
   }
 
   private void showProcedure(MedicalProcedure procedure){
@@ -930,8 +918,8 @@ public class DonorController {
     procedureTextField.setText("");
     procedureDateSelector.setValue(LocalDate.now());
     descriptionTextArea.setText("");
-    pendingProcedureListView.getSelectionModel().select(null);
-    previousProcedureListView.getSelectionModel().select(null);
+    pendingProcedureTableView.getSelectionModel().select(null);
+    previousProcedureTableView.getSelectionModel().select(null);
     organsAffectedByProcedureListView.setItems(FXCollections.observableList(new ArrayList<>()));
     modifyOrgansProcedureButton.setVisible(false);
     currentProcedureList = null;
@@ -939,14 +927,14 @@ public class DonorController {
 
   @FXML
   void removeProcedure(ActionEvent event) {
-    if(previousProcedureListView.getSelectionModel().getSelectedItem() != null) {
-      medicalProcedures.remove(previousProcedureListView.getSelectionModel().getSelectedItem());
-      currentUser.removeMedicalProcedure(previousProcedureListView.getSelectionModel().getSelectedItem());
-      previousProcedures.remove(previousProcedureListView.getSelectionModel().getSelectedItem());
-    } else if (pendingProcedureListView.getSelectionModel().getSelectedItem() != null) {
-      medicalProcedures.remove(pendingProcedureListView.getSelectionModel().getSelectedItem());
-      currentUser.removeMedicalProcedure(pendingProcedureListView.getSelectionModel().getSelectedItem());
-      pendingProcedures.remove(pendingProcedureListView.getSelectionModel().getSelectedItem());
+    if(previousProcedureTableView.getSelectionModel().getSelectedItem() != null) {
+      medicalProcedures.remove(previousProcedureTableView.getSelectionModel().getSelectedItem());
+      currentUser.removeMedicalProcedure(previousProcedureTableView.getSelectionModel().getSelectedItem());
+      previousProcedures.remove(previousProcedureTableView.getSelectionModel().getSelectedItem());
+    } else if (pendingProcedureTableView.getSelectionModel().getSelectedItem() != null) {
+      medicalProcedures.remove(pendingProcedureTableView.getSelectionModel().getSelectedItem());
+      currentUser.removeMedicalProcedure(pendingProcedureTableView.getSelectionModel().getSelectedItem());
+      pendingProcedures.remove(pendingProcedureTableView.getSelectionModel().getSelectedItem());
     }
     application.update(currentUser);
   }

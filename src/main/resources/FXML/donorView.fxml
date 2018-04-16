@@ -148,24 +148,24 @@
               <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <ListView fx:id="previousProcedureListView" layoutX="42.0" layoutY="312.0" prefHeight="200.0" prefWidth="200.0" />
-                        <ListView fx:id="pendingProcedureListView" layoutX="396.0" layoutY="312.0" prefHeight="200.0" prefWidth="200.0" />
+                        <TableView fx:id="previousProcedureTableView" layoutX="42.0" layoutY="312.0" prefHeight="200.0" prefWidth="281.0" />
+                        <TableView fx:id="pendingProcedureTableView" layoutX="396.0" layoutY="312.0" prefHeight="200.0" prefWidth="261.0" />
                         <Label layoutX="42.0" layoutY="286.0" text="Previous Procedures" />
                         <Label layoutX="408.0" layoutY="286.0" text="Pending Procedures" />
                         <Label layoutX="26.0" layoutY="45.0" text="Procedure Name:" />
                         <DatePicker fx:id="procedureDateSelector" layoutX="467.0" layoutY="40.0" />
                         <Label layoutX="353.0" layoutY="45.0" text="Procedure Date:" />
                         <TextField fx:id="procedureTextField" layoutX="142.0" layoutY="40.0" />
-                        <Button fx:id="addProcedureButton" layoutX="605.0" layoutY="241.0" mnemonicParsing="false" onAction="#addProcedure" text="Add" />
-                        <Button fx:id="removeProcedureButton" layoutX="282.0" layoutY="387.0" mnemonicParsing="false" onAction="#removeProcedure" text="Remove" />
+                        <Button fx:id="addProcedureButton" layoutX="510.0" layoutY="525.0" mnemonicParsing="false" onAction="#addProcedure" text="Add" />
+                        <Button fx:id="removeProcedureButton" layoutX="334.0" layoutY="525.0" mnemonicParsing="false" onAction="#removeProcedure" text="Remove" />
                         <Label fx:id="procedureWarningLabel" layoutX="66.0" layoutY="542.0" text="Label" />
                         <TextArea fx:id="descriptionTextArea" layoutX="40.0" layoutY="105.0" prefHeight="175.0" prefWidth="285.0" />
                         <Label layoutX="45.0" layoutY="81.0" text="Description:" />
-                        <Button fx:id="updateProceduresButton" layoutX="605.0" layoutY="207.0" mnemonicParsing="false" onAction="#updateProcedures" text="Update" />
-                        <Button fx:id="clearProcedureButton" layoutX="607.0" layoutY="177.0" mnemonicParsing="false" onAction="#clearProcedure" text="Clear" />
-                        <ListView fx:id="organsAffectedByProcedureListView" layoutX="380.0" layoutY="105.0" prefHeight="178.0" prefWidth="220.0" />
-                        <Label layoutX="388.0" layoutY="81.0" text="Organs Affected:" />
-                        <Button fx:id="modifyOrgansProcedureButton" layoutX="510.0" layoutY="76.0" mnemonicParsing="false" onAction="#modifyProcedureOrgans" prefHeight="25.0" prefWidth="140.0" text="Modify Organs" />
+                        <Button fx:id="updateProceduresButton" layoutX="580.0" layoutY="525.0" mnemonicParsing="false" onAction="#updateProcedures" text="Update" />
+                        <Button fx:id="clearProcedureButton" layoutX="421.0" layoutY="525.0" mnemonicParsing="false" onAction="#clearProcedure" text="Clear" />
+                        <ListView fx:id="organsAffectedByProcedureListView" layoutX="396.0" layoutY="105.0" prefHeight="178.0" prefWidth="265.0" />
+                        <Label layoutX="396.0" layoutY="81.0" text="Organs Affected:" />
+                        <Button fx:id="modifyOrgansProcedureButton" layoutX="178.0" layoutY="525.0" mnemonicParsing="false" onAction="#modifyProcedureOrgans" prefHeight="25.0" prefWidth="129.0" text="Modify Organs" />
                      </children>
                   </AnchorPane>
               </content>
