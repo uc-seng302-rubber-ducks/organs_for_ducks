@@ -280,18 +280,6 @@ public class DonorController {
           System.out.println(selected);
           displayDetails(selected);
         }));
-
-    if (user.getNhi() != null) {
-      showUser(
-          currentUser); // Assumes a donor with no name is a new sign up and does not pull values from a template
-      ArrayList<Change> changes = currentUser.getChanges();
-      if (changes != null) { // checks if the changes are null in case the user is a new user
-        changelog = FXCollections.observableArrayList(changes);
-      }
-      showDonorHistory();
-    } else {
-      changelog = FXCollections.observableArrayList(new ArrayList<Change>());
-    }
     currentMedicationListView.setOnMouseClicked(new EventHandler<MouseEvent>() {
       @Override
       public void handle(MouseEvent event) {
@@ -342,26 +330,19 @@ public class DonorController {
       if (changes != null) { // checks if the changes are null in case the user is a new user
         changelog = FXCollections.observableArrayList(changes);
       }
-      changelog.addListener((ListChangeListener.Change<? extends Change> change ) -> {
-        historyTableView.setItems(changelog);
-      });
+      changelog.addListener((ListChangeListener.Change<? extends Change> change ) -> historyTableView.setItems(changelog));
       showDonorHistory();
     } else {
       changelog = FXCollections.observableArrayList(new ArrayList<Change>());
     }
     System.out.println(changelog);
-    changelog.addListener((ListChangeListener.Change<? extends Change> change) -> {
-      historyTableView.setItems(changelog);
-    });
+    changelog.addListener((ListChangeListener.Change<? extends Change> change) -> historyTableView.setItems(changelog));
     medicationTextField.setOnMouseClicked(new EventHandler<MouseEvent>() {
       @Override
       public void handle(MouseEvent event) {
         getDrugSuggestions();
     }});
-    medicationTextField.textProperty().addListener((observable) -> {
-      getDrugSuggestions();
-    });
-    showUser(currentUser);
+    medicationTextField.textProperty().addListener((observable) -> getDrugSuggestions());
 
     modifyOrgansProcedureButton.setVisible(false);
 
