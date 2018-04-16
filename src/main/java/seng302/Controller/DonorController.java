@@ -5,9 +5,6 @@ package seng302.Controller;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 
-import com.sun.javafx.property.adapter.PropertyDescriptor;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -29,7 +26,6 @@ import org.controlsfx.control.textfield.TextFields;
 import seng302.Model.*;
 import java.io.IOException;
 import java.util.*;
-import java.util.regex.Pattern;
 
 public class DonorController {
 
@@ -222,6 +218,14 @@ public class DonorController {
     //ageValue.setText("");
     if(fromClinician){
       logOutButton.setVisible(false);
+    } else {
+        procedureDateSelector.setEditable(false);
+        procedureTextField.setEditable(false);
+        descriptionTextArea.setEditable(false);
+        addProcedureButton.setVisible(false);
+        removeProcedureButton.setVisible(false);
+        updateProceduresButton.setVisible(false);
+
     }
     //arbitrary default values
     //changeDeceasedStatus();
@@ -249,7 +253,7 @@ public class DonorController {
       public void handle(MouseEvent event) {
         if(event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2){
           String med = currentMedicationListView.getSelectionModel().getSelectedItem();
-          lauchMedicationView(med);
+          launchMedicationView(med);
         }
       }
     });
@@ -258,11 +262,10 @@ public class DonorController {
       public void handle(MouseEvent event) {
         if(event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2){
           String med = previousMedicationListView.getSelectionModel().getSelectedItem();
-          lauchMedicationView(med);
+          launchMedicationView(med);
         }
       }
     });
-    System.out.println(changelog);
 
     medicationTextField.focusedProperty().addListener((observable, oldValue, newValue) -> new Thread(() -> getDrugSuggestions()).start());
     medicationTextField.textProperty().addListener((observable) -> new Thread(() -> getDrugSuggestions()).start());
@@ -805,7 +808,7 @@ public class DonorController {
      *
      * @param med A string of medication
      */
-  private void lauchMedicationView(String med){
+  private void launchMedicationView(String med){
     FXMLLoader medicationTimeViewLoader = new FXMLLoader(getClass().getResource("/FXML/medicationsTimeView.fxml"));
     Parent root = null;
     try {
@@ -863,11 +866,14 @@ public class DonorController {
     }
   }
 
-  /**
-   * Helper function for the updateProcedures button.
-   * Takes a procedure and updates it
-   * @param procedure procedure to be updated
-   */
+    /**
+     * * Helper function for the updateProcedures button.
+     * Takes a procedure and updates it
+     * @param procedure procedure to be updated
+     * @param newName new procedure name
+     * @param newDate new procedure date
+     * @param newDescription new procedure description
+     */
   private void updateProcedure(MedicalProcedure procedure, String newName, LocalDate newDate, String newDescription){
     System.out.println(procedure.toString());
     procedure.setSummary(newName);
