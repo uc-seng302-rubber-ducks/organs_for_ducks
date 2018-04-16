@@ -54,7 +54,10 @@ public class DonorController {
   private Label DODValue;
 
   @FXML
-  private Label genderValue;
+  private Label genderIdentityValue;
+
+  @FXML
+  private Label birthGenderValue;
 
   @FXML
   private Label lastModifiedValue;
@@ -620,9 +623,15 @@ public class DonorController {
     }
 
     if (currentUser.getGenderIdentity() != null) {
-      genderValue.setText(currentUser.getGenderIdentity());
+      genderIdentityValue.setText(currentUser.getGenderIdentity());
     } else {
-      genderValue.setText(currentUser.getBirthGender());
+      genderIdentityValue.setText("");
+    }
+    if (currentUser.getBirthGender() != null){
+      birthGenderValue.setText(currentUser.getBirthGender());
+
+    }else{
+      birthGenderValue.setText("");
     }
 
     ageValue.setText(user.getStringAge().toString().replace("P", "").replace("Y", "") + " Years");
