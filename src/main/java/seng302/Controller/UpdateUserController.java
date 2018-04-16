@@ -266,6 +266,9 @@ public class UpdateUserController {
          if(dodInput.getValue()!=null) {
           currentUser.setDateOfDeath(dodInput.getValue());
         }
+        if (preferredFNameTextField.getText() != null){
+          currentUser.setPreferredFirstName(preferredFNameTextField.getText());
+        }
 
 }
 

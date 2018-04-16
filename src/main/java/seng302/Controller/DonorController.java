@@ -624,14 +624,9 @@ public class DonorController {
 
     if (currentUser.getGenderIdentity() != null) {
       genderIdentityValue.setText(currentUser.getGenderIdentity());
-    } else {
-      genderIdentityValue.setText("");
     }
     if (currentUser.getBirthGender() != null){
       birthGenderValue.setText(currentUser.getBirthGender());
-
-    }else{
-      birthGenderValue.setText("");
     }
 
     ageValue.setText(user.getStringAge().toString().replace("P", "").replace("Y", "") + " Years");
@@ -687,7 +682,6 @@ public class DonorController {
       previousMeds.addAll(currentUser.getPreviousMedication());
       previousMedicationListView.setItems(previousMeds);
     }
-    System.out.println("made it");
     setContactPage();
   }
 
