@@ -159,10 +159,13 @@
                         <Button fx:id="addProcedureButton" layoutX="605.0" layoutY="241.0" mnemonicParsing="false" onAction="#addProcedure" text="Add" />
                         <Button fx:id="removeProcedureButton" layoutX="282.0" layoutY="387.0" mnemonicParsing="false" onAction="#removeProcedure" text="Remove" />
                         <Label fx:id="procedureWarningLabel" layoutX="66.0" layoutY="542.0" text="Label" />
-                        <TextArea fx:id="descriptionTextArea" layoutX="40.0" layoutY="105.0" prefHeight="169.0" prefWidth="556.0" />
+                        <TextArea fx:id="descriptionTextArea" layoutX="40.0" layoutY="105.0" prefHeight="175.0" prefWidth="285.0" />
                         <Label layoutX="45.0" layoutY="81.0" text="Description:" />
                         <Button fx:id="updateProceduresButton" layoutX="605.0" layoutY="207.0" mnemonicParsing="false" onAction="#updateProcedures" text="Update" />
                         <Button fx:id="clearProcedureButton" layoutX="607.0" layoutY="177.0" mnemonicParsing="false" onAction="#clearProcedure" text="Clear" />
+                        <ListView fx:id="organsAffectedByProcedureListView" layoutX="380.0" layoutY="105.0" prefHeight="178.0" prefWidth="220.0" />
+                        <Label layoutX="388.0" layoutY="81.0" text="Organs Affected:" />
+                        <Button fx:id="modifyOrgansProcedureButton" layoutX="510.0" layoutY="76.0" mnemonicParsing="false" onAction="#modifyProcedureOrgans" prefHeight="25.0" prefWidth="140.0" text="Modify Organs" />
                      </children>
                   </AnchorPane>
               </content>

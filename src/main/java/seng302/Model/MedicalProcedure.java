@@ -26,15 +26,21 @@ public class MedicalProcedure {
         this.procedureDate = procedureDate;
         this.summary = summary;
         this.description = description;
-        this.organsAffected = organsAffected;
+        if (organsAffected == null){
+            this.organsAffected = new ArrayList<>();
+        } else {
+            this.organsAffected = organsAffected;
+        }
     }
 
     public MedicalProcedure(LocalDate procedureDate, String summary) {
         this.procedureDate = procedureDate;
         this.summary = summary;
+        organsAffected = new ArrayList<Organs>();
     }
 
     public MedicalProcedure() {
+        organsAffected = new ArrayList<Organs>();
     }
 
     public LocalDate getProcedureDate() {
@@ -67,6 +73,14 @@ public class MedicalProcedure {
 
     public void setOrgansAffected(ArrayList<Organs> organsAffected) {
         this.organsAffected = organsAffected;
+    }
+
+    public void addOrgan(Organs organ){
+        organsAffected.add(organ);
+    }
+
+    public void removeOrgan(Organs organ){
+        organsAffected.remove(organ);
     }
 
     @Override

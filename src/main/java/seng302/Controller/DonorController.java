@@ -19,6 +19,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldListCell;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
 import okhttp3.OkHttpClient;
@@ -170,6 +171,9 @@ public class DonorController {
   private Button updateProceduresButton;
 
   @FXML
+  private Button modifyOrgansProcedureButton;
+
+  @FXML
   private Button clearProcedureButton;
 
   @FXML
@@ -188,7 +192,12 @@ public class DonorController {
   private ListView<MedicalProcedure> pendingProcedureListView;
 
   @FXML
+  private ListView<Organs> organsAffectedByProcedureListView;
+
+  @FXML
   private TextArea descriptionTextArea;
+
+  private ListView<MedicalProcedure> currentProcedureList;
 
   private AppController application;
   private ObservableList<String> currentMeds;
@@ -225,7 +234,7 @@ public class DonorController {
         addProcedureButton.setVisible(false);
         removeProcedureButton.setVisible(false);
         updateProceduresButton.setVisible(false);
-
+        modifyOrgansProcedureButton.setVisible(false);
     }
     //arbitrary default values
     //changeDeceasedStatus();
@@ -278,12 +287,17 @@ public class DonorController {
     previousProcedureListView.getSelectionModel().selectedItemProperty().addListener(ListChangeListener-> {
       pendingProcedureListView.getSelectionModel().select(null);
       if(previousProcedureListView.getSelectionModel().getSelectedItem() != null){
-     showProcedure(previousProcedureListView.getSelectionModel().getSelectedItem());}
+        showProcedure(previousProcedureListView.getSelectionModel().getSelectedItem());
+        modifyOrgansProcedureButton.setVisible(true);
+        currentProcedureList = previousProcedureListView;
+      }
             });
     pendingProcedureListView.getSelectionModel().selectedItemProperty().addListener(ListChangeListener ->{
       previousProcedureListView.getSelectionModel().select(null);
       if(pendingProcedureListView.getSelectionModel().getSelectedItem() != null) {
         showProcedure(pendingProcedureListView.getSelectionModel().getSelectedItem());
+        modifyOrgansProcedureButton.setVisible(true);
+        currentProcedureList = pendingProcedureListView;
       }
     });
     //showUser(currentUser);
@@ -301,7 +315,7 @@ public class DonorController {
       changelog = FXCollections.observableArrayList(new ArrayList<Change>());
     }
 
-
+    modifyOrgansProcedureButton.setVisible(false);
 
   }
 
@@ -389,6 +403,7 @@ public class DonorController {
     }
     OrganController organController = organLoader.getController();
     Stage stage = new Stage();
+    stage.initModality(Modality.APPLICATION_MODAL);
     organController.init(currentUser, application, stage);
     stage.setScene(new Scene(root));
     stage.show();
@@ -701,6 +716,21 @@ public class DonorController {
     });
     previousProcedureListView.setItems(previousProcedures);
     pendingProcedureListView.setItems(pendingProcedures);
+    organsAffectedByProcedureListView.setCellFactory(oabp -> {
+        TextFieldListCell<Organs> cell = new TextFieldListCell<>();
+        cell.setConverter(new StringConverter<Organs>() {
+            @Override
+            public String toString(Organs object) {
+                return object.toString();
+            }
+
+            @Override
+            public Organs fromString(String string) {
+                return null;
+            }
+        });
+        return cell;
+    });
   }
 
     /**
@@ -892,6 +922,7 @@ public class DonorController {
     procedureTextField.setText(procedure.getSummary());
     procedureDateSelector.setValue(procedure.getProcedureDate());
     descriptionTextArea.setText(procedure.getDescription());
+    organsAffectedByProcedureListView.setItems(FXCollections.observableList(procedure.getOrgansAffected()));
   }
 
   @FXML
@@ -901,6 +932,9 @@ public class DonorController {
     descriptionTextArea.setText("");
     pendingProcedureListView.getSelectionModel().select(null);
     previousProcedureListView.getSelectionModel().select(null);
+    organsAffectedByProcedureListView.setItems(FXCollections.observableList(new ArrayList<>()));
+    modifyOrgansProcedureButton.setVisible(false);
+    currentProcedureList = null;
   }
 
   @FXML
@@ -916,5 +950,25 @@ public class DonorController {
     }
     application.update(currentUser);
   }
+
+    @FXML
+    void modifyProcedureOrgans(){
+      MedicalProcedure procedure  = currentProcedureList.getSelectionModel().getSelectedItem();
+      FXMLLoader affectedOrganLoader = new FXMLLoader(getClass().getResource("/FXML/organsAffectedView.fxml"));
+        Parent root = null;
+        try {
+            root = affectedOrganLoader.load();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        Stage s = new Stage();
+        s.setScene(new Scene(root));
+        s.initModality(Modality.APPLICATION_MODAL);
+        OrgansAffectedController organsAffectedController = affectedOrganLoader.getController();
+        organsAffectedController.init(application, s, procedure,currentUser);
+        s.showAndWait();
+        showProcedure(procedure);
+    }
 }
 
