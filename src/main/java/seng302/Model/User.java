@@ -441,12 +441,20 @@ public class User {
     this.timeCreated = timeCreated;
   }
 
-  public String getAge() {
+  public String getStringAge() {
     if (dateOfDeath != null) {
 
       return Long.toString(ChronoUnit.YEARS.between(dateOfBirth, dateOfDeath));
     }
     return Long.toString(ChronoUnit.YEARS.between(dateOfBirth, java.time.LocalDate.now()));
+  }
+
+  public int getAge() {
+    if (dateOfDeath != null) {
+
+      return Math.toIntExact(ChronoUnit.YEARS.between(dateOfBirth, dateOfDeath));
+    }
+    return Math.toIntExact(ChronoUnit.YEARS.between(dateOfBirth, java.time.LocalDate.now()));
   }
 
   public Boolean getDeceased() {
