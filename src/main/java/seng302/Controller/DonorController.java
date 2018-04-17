@@ -633,7 +633,7 @@ public class DonorController {
     if (currentUser.getDateOfDeath() != null) {
       DODValue.setText(currentUser.getDateOfDeath().toString());
       ageDeathValue.setText(Long.toString(
-          ChronoUnit.YEARS.between(currentUser.getDateOfBirth(), currentUser.getDateOfDeath())));
+          ChronoUnit.YEARS.between(currentUser.getDateOfBirth(), currentUser.getDateOfDeath())) + " Years");
     }
     if (currentUser.getBloodType() != null) {
       bloodTypeValue.setText(currentUser.getBloodType().toString());

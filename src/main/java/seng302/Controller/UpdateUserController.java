@@ -136,6 +136,9 @@ public class UpdateUserController {
         //UndoRedoStacks.storeUndoCopy(currentUser);
         currentUser = user;
         oldUser = new User();
+        if (user.isSmoker()){
+          smokerCheckBox.setSelected(true);
+        }
         //UndoRedoStacks.cloneUser(currentUser,oldUser);
 
 
@@ -217,10 +220,8 @@ public class UpdateUserController {
         }
         if (smokerCheckBox.isSelected()) {
           currentUser.setSmoker(true);
-
         }else{
           currentUser.setSmoker(false);
-
         }
         if (alcoholComboBox.getValue() != null) {
           currentUser.setAlcoholConsumption(alcoholComboBox.getValue().toString());
