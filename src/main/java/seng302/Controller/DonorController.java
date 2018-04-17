@@ -2,8 +2,6 @@ package seng302.Controller;
 
 
 import java.time.LocalDate;
-
-
 import java.time.temporal.ChronoUnit;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
@@ -158,9 +156,34 @@ public class DonorController {
   @FXML
   private Button addMedicationButton;
 
+  @FXML
+  private TableView<Disease> currentDiseaseTableView;
+
+  @FXML
+  private TableView<Disease> pastDiseaseTableView;
+
+  @FXML
+  private Button addDiseaseButton;
+
+  @FXML
+  private Button updateDiseaseButton;
+
+  @FXML
+  private Button deleteDiseaseButton;
+
+
+  @FXML
+  private TextArea drugDetailsTextArea;
+
+  @FXML
+  private Label drugDetailsLabel;
+
   private AppController application;
   private ObservableList<String> currentMeds;
   private ObservableList<String> previousMeds;
+
+  private ObservableList<Disease> currentDisease;
+  private ObservableList<Disease> pastDisease;
 
   private List<String> possibleGenders = Arrays.asList("M", "F", "U");
 
@@ -171,6 +194,7 @@ public class DonorController {
   private Stage stage;
   private EmergencyContact contact = null;
   private ObservableList<Change> changelog;
+  private OkHttpClient client = new OkHttpClient();
 
   /**
    * Gives the donor view the application controller and hides all label and buttons that are not
@@ -181,8 +205,11 @@ public class DonorController {
     this.stage = stage;
     application = controller;
     //ageValue.setText("");
-    if(fromClinician){
+    if (fromClinician) {
       logOutButton.setVisible(false);
+      addDiseaseButton.setVisible(true);
+      updateDiseaseButton.setVisible(true);
+      deleteDiseaseButton.setVisible(true);
     }
     //arbitrary default values
     //changeDeceasedStatus();
@@ -196,9 +223,11 @@ public class DonorController {
     currentMeds = FXCollections.observableArrayList();
     System.out.println("current " + currentMeds);
     previousMeds = FXCollections.observableArrayList();
-    currentMedicationListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-    previousMedicationListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-    previousMeds.addListener((ListChangeListener.Change<? extends String> change )-> {
+    currentMedicationListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+    previousMedicationListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+
+    //listeners to move meds from current <--> previous
+    previousMeds.addListener((ListChangeListener.Change<? extends String> change) -> {
       previousMedicationListView.setItems(previousMeds);
       application.update(currentUser);
     });
@@ -206,8 +235,25 @@ public class DonorController {
       currentMedicationListView.setItems(currentMeds);
       application.update(currentUser);
     });
+
+    //lambdas for drug interactions
+    currentMedicationListView.getSelectionModel().selectedItemProperty()
+        .addListener((observable, oldValue, newValue) -> {
+          ObservableList<String> selected = currentMedicationListView.getSelectionModel()
+              .getSelectedItems();
+          displayDetails(selected);
+        });
+    previousMedicationListView.getSelectionModel().selectedItemProperty()
+        .addListener(((observable, oldValue, newValue) -> {
+          ObservableList<String> selected = previousMedicationListView.getSelectionModel()
+              .getSelectedItems();
+          System.out.println(selected);
+          displayDetails(selected);
+        }));
+
     if (user.getNhi() != null) {
-      showUser(currentUser); // Assumes a donor with no name is a new sign up and does not pull values from a template
+      showUser(
+          currentUser); // Assumes a donor with no name is a new sign up and does not pull values from a template
       ArrayList<Change> changes = currentUser.getChanges();
       if (changes != null) { // checks if the changes are null in case the user is a new user
         changelog = FXCollections.observableArrayList(changes);
@@ -219,7 +265,7 @@ public class DonorController {
     currentMedicationListView.setOnMouseClicked(new EventHandler<MouseEvent>() {
       @Override
       public void handle(MouseEvent event) {
-        if(event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2){
+        if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
           String med = currentMedicationListView.getSelectionModel().getSelectedItem();
           lauchMedicationView(med);
         }
@@ -228,61 +274,142 @@ public class DonorController {
     previousMedicationListView.setOnMouseClicked(new EventHandler<MouseEvent>() {
       @Override
       public void handle(MouseEvent event) {
-        if(event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2){
+        if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
           String med = previousMedicationListView.getSelectionModel().getSelectedItem();
           lauchMedicationView(med);
         }
       }
     });
     System.out.println(changelog);
-    changelog.addListener((ListChangeListener.Change<? extends Change> change ) -> {
+    changelog.addListener((ListChangeListener.Change<? extends Change> change) -> {
       historyTableView.setItems(changelog);
+    });
+    medicationTextField.setOnMouseClicked(new EventHandler<MouseEvent>() {
+      @Override
+      public void handle(MouseEvent event) {
+        getDrugSuggestions();
+    }});
+    medicationTextField.textProperty().addListener((observable) -> {
+      getDrugSuggestions();
     });
     showUser(currentUser);
 
-
+    showDonorDiseases(currentUser, true);
 
   }
+
+  /**
+   * takes selected items from lambda functions. handles http requesting and displaying results if
+   * one item is selected, active ingredients will be shown. If two are selected, the interactions
+   * between the two will be displayed
+   *
+   * @param selected selected items from listview
+   */
+  private void displayDetails(ObservableList<String> selected) {
+    if (selected.size() > 2) {
+      drugDetailsLabel.setText("Drug Details");
+      drugDetailsTextArea.setText(
+          "Please select any two drugs from either previous or current medications to view the interactions between them\n"
+              + "or select one drug to see it's active ingredients");
+      return;
+    }
+
+    try {
+      //active ingredients
+      if (selected.size() == 1) {
+        String[] res = HttpRequester.getActiveIngredients(selected.get(0), client);
+        StringBuilder sb = new StringBuilder();
+        for (String ingredient : res) {
+          sb.append(ingredient);
+          sb.append("\n");
+        }
+        drugDetailsLabel.setText("Drug Details: Active Ingredients");
+        if (sb.toString().equals("")) {
+          drugDetailsTextArea.setText("Could not find active ingredients");
+          return;
+        }
+        drugDetailsTextArea.setText(sb.toString());
+
+      } else /*interactions*/ {
+        Set<String> res = HttpRequester
+            .getDrugInteractions(selected.get(0), selected.get(1), currentUser.getGender(),
+                currentUser.getAge(), client);
+        StringBuilder sb = new StringBuilder();
+        for (String symptom : res) {
+          sb.append(symptom);
+          sb.append("\n");
+        }
+        drugDetailsLabel.setText("Drug Details: Drug Interactions");
+        if (sb.toString().equals("")) {
+          drugDetailsTextArea.setText("No interactions");
+          return;
+        }
+        drugDetailsTextArea.setText(sb.toString());
+      }
+    } catch (IOException ex) {
+      //TODO display connectivity error message
+      System.out.println("oof");
+    }
+
+  }
+
+  private void getDrugSuggestions(){
+    String newValue = medicationTextField.getText();
+    if(newValue.length() > 1){
+      try {
+        String autocompleteRaw = HttpRequester.getSuggestedDrugs(newValue, new OkHttpClient());
+        String[] values = autocompleteRaw.replaceAll("^\"", "").replaceAll("\\[","").replaceAll("\\]","").split("\"?(,|$)(?=(([^\"]*\"){2})*[^\"]*$) *\"?");
+        for(int i = 0; i < values.length; i++) {
+          values[i] = values[i].replace('"', ' ').trim();
+        }
+        TextFields.bindAutoCompletion(medicationTextField,values);
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+
+    }
+  }
+
 
   @FXML
   private void setContactPage() {
     if (contact != null) {
       eName.setText(contact.getName());
       eCellPhone.setText(contact.getCellPhoneNumber());
-      if (contact.getAddress() != null){
+      if (contact.getAddress() != null) {
         eAddress.setText(contact.getAddress());
       }
-      if (contact.getEmail() != null){
+      if (contact.getEmail() != null) {
         eEmail.setText(contact.getEmail());
 
       }
-      if (contact.getHomePhoneNumber() != null){
+      if (contact.getHomePhoneNumber() != null) {
         eHomePhone.setText(contact.getHomePhoneNumber());
 
       }
-      if (contact.getRegion() != null){
+      if (contact.getRegion() != null) {
         eRegion.setText(contact.getRegion());
 
       }
-      if (contact.getRelationship() != null){
+      if (contact.getRelationship() != null) {
         relationship.setText(contact.getRelationship());
       }
     }
-      if (currentUser.getCurrentAddress() != null){
-        pAddress.setText(currentUser.getCurrentAddress());
-      }
-      if (currentUser.getRegion() != null){
-        pRegion.setText(currentUser.getRegion());
-      }
-      if (currentUser.getEmail() != null){
-        pEmail.setText(currentUser.getEmail());
-      }
-      if (currentUser.getHomePhone() != null){
-        pHomePhone.setText(currentUser.getHomePhone());
-      }
-      if (currentUser.getCellPhone() != null){
-        pCellPhone.setText(currentUser.getCellPhone());
-      }
+    if (currentUser.getCurrentAddress() != null) {
+      pAddress.setText(currentUser.getCurrentAddress());
+    }
+    if (currentUser.getRegion() != null) {
+      pRegion.setText(currentUser.getRegion());
+    }
+    if (currentUser.getEmail() != null) {
+      pEmail.setText(currentUser.getEmail());
+    }
+    if (currentUser.getHomePhone() != null) {
+      pHomePhone.setText(currentUser.getHomePhone());
+    }
+    if (currentUser.getCellPhone() != null) {
+      pCellPhone.setText(currentUser.getCellPhone());
+    }
 
 
   }
@@ -312,12 +439,9 @@ public class DonorController {
     showUser(currentUser);
   }
 
-    /**
-     *
-     * @param actionEvent An action event.
-     * @throws IOException
-     * @throws InterruptedException
-     */
+  /**
+   * @param actionEvent An action event.
+   */
   @FXML
   private void updateDetails(ActionEvent actionEvent) throws IOException, InterruptedException {
     FXMLLoader updateLoader = new FXMLLoader(getClass().getResource("/FXML/updateUser.fxml"));
@@ -331,7 +455,7 @@ public class DonorController {
       stage.setScene(new Scene(root));
       stage.show();
 
-    } catch (IOException e){
+    } catch (IOException e) {
       e.printStackTrace();
     }
   }
@@ -522,7 +646,7 @@ public class DonorController {
     if (currentUser.getLastName() != null) {
       lNameValue.setText(currentUser.getLastName());
     }
-    ageValue.setText(user.getAge().toString().replace("P", "").replace("Y", "") + " Years");
+    ageValue.setText(user.getStringAge().toString().replace("P", "").replace("Y", "") + " Years");
     if (currentUser.getDateOfDeath() != null) {
       DODValue.setText(currentUser.getDateOfDeath().toString());
       ageDeathValue.setText(Long.toString(
@@ -537,19 +661,19 @@ public class DonorController {
       smokerValue.setText("No");
     }
     String weight;
-    if (currentUser.getWeight() > 0 ) {
+    if (currentUser.getWeight() > 0) {
       weight = java.lang.Double.toString(currentUser.getWeight());
       weightValue.setText(weight);
     }
     String height;
-    if (currentUser.getHeight() > 0){
+    if (currentUser.getHeight() > 0) {
       height = java.lang.Double.toString(currentUser.getHeight());
       heightValue.setText(height);
     }
-    if (currentUser.getHeight() > 0&&currentUser.getWeight() > 0 ){
+    if (currentUser.getHeight() > 0 && currentUser.getWeight() > 0) {
       //TODO fix BMI kg/m^2
       bmiValue.setText("1.8");
-    }else{
+    } else {
       bmiValue.setText("");
     }
 
@@ -607,14 +731,14 @@ public class DonorController {
      */
   @FXML
   void deleteMedication(ActionEvent event) {
-    String medCurrent  = currentMedicationListView.getSelectionModel().getSelectedItem();
+    String medCurrent = currentMedicationListView.getSelectionModel().getSelectedItem();
     String medPrevious = previousMedicationListView.getSelectionModel().getSelectedItem();
 
-    if(medCurrent != null){
+    if (medCurrent != null) {
       currentMeds.remove(medCurrent);
       currentUser.removeCurrentMedication(medCurrent);
     }
-    if (medPrevious != null){
+    if (medPrevious != null) {
       previousMeds.remove(medPrevious);
       currentUser.removePreviousMedication(medPrevious);
     }
@@ -627,10 +751,10 @@ public class DonorController {
   @FXML
   void takeMedication(ActionEvent event) {
     String med = previousMedicationListView.getSelectionModel().getSelectedItem();
-    if (med == null){
+    if (med == null) {
       return;
     }
-    if (currentMeds.contains(med)){
+    if (currentMeds.contains(med)) {
       currentUser.removePreviousMedication(med);
       previousMeds.remove(med);
       return;
@@ -677,7 +801,7 @@ public class DonorController {
      * @param event A mouse event
      */
   @FXML
-  void clearPreviousMedSelection(MouseEvent event){
+  void clearPreviousMedSelection(MouseEvent event) {
     previousMedicationListView.getSelectionModel().clearSelection();
   }
 
@@ -696,7 +820,7 @@ public class DonorController {
     Stage stage = new Stage();
     stage.setScene(new Scene(root));
     MedicationsTimeController medicationsTimeController = medicationTimeViewLoader.getController();
-    medicationsTimeController.init(application, currentUser,stage, med);
+    medicationsTimeController.init(application, currentUser, stage, med);
     stage.show();
 
   }
@@ -710,5 +834,69 @@ public class DonorController {
     historyTableView.setItems(changelog);
     historyTableView.getColumns().addAll(timeColumn, changeColumn);
 
+  }
+
+    /**
+     * show the current and past diseases
+     * of the donor.
+     */
+  public void showDonorDiseases(User user, boolean init) {
+      if(user.getCurrentDiseases().size() != 0) {
+          currentDisease = FXCollections.observableList(user.getCurrentDiseases());
+          currentDiseaseTableView.setItems(currentDisease);
+
+      } else {
+          currentDiseaseTableView.setPlaceholder(new Label("No Current Diseases"));
+      }
+
+      if(user.getPastDiseases().size() != 0) {
+          pastDisease = FXCollections.observableList(user.getPastDiseases());
+          pastDiseaseTableView.setItems(pastDisease);
+
+      } else {
+          pastDiseaseTableView.setPlaceholder(new Label("No Past Diseases"));
+      }
+
+      if(init) {
+          TableColumn<Disease, LocalDate> diagnosisDateColumn = new TableColumn<>("Diagnosis Date");
+          diagnosisDateColumn.setMinWidth(140);
+          diagnosisDateColumn.setCellValueFactory(new PropertyValueFactory<>("diagnosisDate"));
+
+          TableColumn<Disease, String> nameColumn = new TableColumn<>("Disease Name");
+          nameColumn.setMinWidth(285);
+          nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+
+          currentDiseaseTableView.getColumns().addAll(diagnosisDateColumn, nameColumn);
+
+          TableColumn<Disease, LocalDate> diagnosisDateColumn2 = new TableColumn<>("Diagnosis Date");
+          diagnosisDateColumn2.setMinWidth(140);
+          diagnosisDateColumn2.setCellValueFactory(new PropertyValueFactory<>("diagnosisDate"));
+
+          TableColumn<Disease, String> nameColumn2 = new TableColumn<>("Disease Name");
+          nameColumn2.setMinWidth(285);
+          nameColumn2.setCellValueFactory(new PropertyValueFactory<>("name"));
+
+          pastDiseaseTableView.getColumns().addAll(diagnosisDateColumn2, nameColumn2);
+      }
+  }
+
+  /**
+   * fires when the add button at the Disease tab is clicked
+   */
+  @FXML
+  private void addDisease() {
+
+    FXMLLoader addDiseaseLoader = new FXMLLoader(getClass().getResource("/FXML/createNewDisease.fxml"));
+    Parent root = null;
+    try {
+      root = addDiseaseLoader.load();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    NewDiseaseController newDiseaseController = addDiseaseLoader.getController();
+    Stage stage = new Stage();
+    newDiseaseController.init(currentUser, application, stage);
+    stage.setScene(new Scene(root));
+    stage.show();
   }
 }

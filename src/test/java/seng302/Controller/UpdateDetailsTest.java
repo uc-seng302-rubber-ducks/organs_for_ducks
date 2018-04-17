@@ -16,7 +16,7 @@ import picocli.CommandLine;
 import seng302.Controller.CliCommands.UpdateDetails;
 import seng302.Model.User;
 
-public class UpdateDetailsTests {
+public class UpdateDetailsTest {
 
   AppController controller;
   DateTimeFormatter sdf = DateTimeFormatter.ofPattern("yyyy-MM-dd");

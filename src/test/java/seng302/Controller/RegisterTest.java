@@ -12,7 +12,7 @@ import seng302.Controller.CliCommands.Register;
 import seng302.Model.Donor;
 import seng302.Model.User;
 
-public class RegisterTests {
+public class RegisterTest {
 
   AppController controller;
   DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd");
