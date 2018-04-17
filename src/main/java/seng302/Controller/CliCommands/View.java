@@ -1,11 +1,9 @@
 package seng302.Controller.CliCommands;
 
 import java.time.LocalDate;
-import java.util.Date;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import seng302.Controller.AppController;
-import seng302.Model.Donor;
 import seng302.Model.User;
 import seng302.View.IoHelper;
 
@@ -28,8 +26,8 @@ public class View implements Runnable {
   @Option(names = {"-dob"})
   private String dobString;
 
-  @Option(names = {"-id"})
-  private int id = -1;
+  @Option(names = {"-NHI", "-nhi", "-NHI"})
+  private String NHI = "";
 
   @Override
   public void run() {
@@ -42,8 +40,8 @@ public class View implements Runnable {
       System.out.println(IoHelper.prettyStringDonors(controller.getUsers()));
       return;
     }
-    if (id != -1) {
-      System.out.println(controller.getUser(id));
+    if (!NHI.equals("")) {
+      System.out.println(controller.getUser(NHI));
       return;
     }
 

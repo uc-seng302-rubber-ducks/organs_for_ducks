@@ -8,7 +8,7 @@ public enum Organs {
   LUNG("Lung"),
   INTESTINE("Intestine"),
   CORNEA("Cornea"),
-  MIDDLE_EAR("Middle Er"),
+  MIDDLE_EAR("Middle Ear"),
   SKIN("Skin"),
   BONE_MARROW("Bone Marrow"),
   BONE("Bone"),
