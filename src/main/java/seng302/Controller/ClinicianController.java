@@ -36,6 +36,7 @@ import seng302.Model.Donor;
 import seng302.Model.Organs;
 import seng302.Model.User;
 import seng302.Model.Clinician;
+import seng302.Service.AttributeValidation;
 
 public class ClinicianController {
 
@@ -95,6 +96,9 @@ public class ClinicianController {
   private CheckBox receiverFilterCheckBox;
 
   @FXML
+  private CheckBox allCheckBox;
+
+  @FXML
   private Button expandButton;
 
   private Stage stage;
@@ -146,18 +150,16 @@ public class ClinicianController {
       }
     });
     int pageCount = searchCount / ROWS_PER_PAGE;
-    searchTablePagination.setPageCount(pageCount > 0 ? pageCount : 1);
+    searchTablePagination.setPageCount(pageCount > 0 ? pageCount+1 : 1);
     searchTablePagination.currentPageIndexProperty().addListener(((observable, oldValue, newValue) -> changePage(newValue.intValue())));
     //searchPagination = new Pagination((users.size() / ROWS_PER_PAGE + 1), 0);
   }
 
   private void setDefaultFilters() {
-    donorFilterCheckBox.setSelected(true);
-    receiverFilterCheckBox.setSelected(true);
+    allCheckBox.setSelected(true);
   }
 
   private void showClinician() {
-    System.out.println(clinician.getMiddleName());
     staffIdLabel.setText(clinician.getStaffId());
     fNameLabel.setText(clinician.getFirstName());
     mNameLabel.setText(clinician.getMiddleName());
@@ -265,7 +267,7 @@ public class ClinicianController {
 
 
     int pageCount = searchCount / ROWS_PER_PAGE;
-    searchTablePagination.setPageCount(pageCount > 0 ? pageCount : 1);
+    searchTablePagination.setPageCount(pageCount > 0 ? pageCount+1 : 1);
     searchCountLabel.setText("Showing results "+(searchCount == 0 ? startIndex : startIndex+1) + " - " + (minIndex) + " of " + searchCount);
 
     return searchTableView;
@@ -302,6 +304,7 @@ public class ClinicianController {
     setTextFieldListener(regionTextField, fListUsers);
     setCheckBoxListener(donorFilterCheckBox, fListUsers);
     setCheckBoxListener(receiverFilterCheckBox, fListUsers);
+    setCheckBoxListener(allCheckBox, fListUsers);
     genderComboBox.valueProperty().addListener((observable -> {
       setFilteredListPredicate(fListUsers);
     }));
@@ -341,14 +344,15 @@ public class ClinicianController {
 
     fList.predicateProperty().bind(Bindings.createObjectBinding(() -> user -> {
       String lowerCaseFilterText = searchTextField.getText().toLowerCase();
+      boolean regionMatch = AttributeValidation.checkRegionMatches(regionTextField.getText(), user);
 
       if (((user.getFirstName().toLowerCase()).startsWith(lowerCaseFilterText) ||
               (user.getLastName().toLowerCase().startsWith(lowerCaseFilterText))) &&
-              (user.getRegion().toLowerCase().startsWith(regionTextField.getText().toLowerCase())) &&
+              (regionMatch) &&
               (user.getBirthGender().equalsIgnoreCase(genderComboBox.getValue().toString()) ||
                       genderComboBox.getValue().toString().equalsIgnoreCase("All")) &&
-              (user.isDonor() == donorFilterCheckBox.isSelected()) &&
-              (user.isReceiver() == receiverFilterCheckBox.isSelected())) {
+          (((user.isDonor() == donorFilterCheckBox.isSelected()) &&
+              (user.isReceiver() == receiverFilterCheckBox.isSelected())) || allCheckBox.isSelected())) {
         searchCount++;
         return true;
       }
@@ -392,7 +396,6 @@ public class ClinicianController {
   void edit(ActionEvent event) {
     FXMLLoader updateLoader = new FXMLLoader(getClass().getResource("/FXML/updateClinician.fxml"));
     Parent root = null;
-    System.out.println(updateLoader);
     try {
       root = updateLoader.load();
       UpdateClinicianController updateClinicianController = updateLoader.getController();
