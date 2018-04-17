@@ -6,6 +6,7 @@ import javafx.scene.Node;
 import javafx.stage.Stage;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.testfx.framework.junit.ApplicationTest;
@@ -13,6 +14,18 @@ import org.testfx.matcher.control.LabeledMatchers;
 import seng302.App;
 
 public class CreateUserControllerTest extends ApplicationTest {
+
+  @BeforeClass
+  public static void initialization() {
+    if (Boolean.getBoolean("headless")) {
+      System.setProperty("testfx.robot", "glass");
+      System.setProperty("testfx.headless", "true");
+      System.setProperty("prism.order", "sw");
+      System.setProperty("prism.text", "t2k");
+      System.setProperty("java.awt.headless", "true");
+      System.setProperty("headless.geometry", "1920x1080-32");
+    }
+  }
 
   @Override
   public void start(Stage stage) throws Exception {
