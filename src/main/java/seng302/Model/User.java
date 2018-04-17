@@ -254,8 +254,11 @@ public class User {
 
     this.donorDetails = new DonorDetails(this);
     this.receiverDetails = new ReceiverDetails(this);
-    //TODO fix json reader
-    //changes = JsonReader.importHistoryFromFile(this);
+    try {
+      changes = JsonHandler.importHistoryFromFile(name);
+    } catch (FileNotFoundException e) {
+      e.printStackTrace();
+    }
   }
 
 

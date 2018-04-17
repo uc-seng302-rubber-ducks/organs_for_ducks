@@ -39,7 +39,7 @@ public class LoginControllerTest extends ApplicationTest {
     clickOn("#userIDTextField");
     write("AD");
     clickOn("#loginButton");
-    verifyThat("#warningLabel", LabeledMatchers.hasText("Donor was not found.\nTo register a new donor please click sign up."));
+    verifyThat("#warningLabel", LabeledMatchers.hasText("Donor was not found.\n To register a new donor please click sign up."));
   }
 
   @Test
