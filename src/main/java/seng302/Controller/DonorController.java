@@ -1,6 +1,8 @@
 package seng302.Controller;
 
 
+
+import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
@@ -80,6 +82,7 @@ public class DonorController {
   @FXML
   private Label bmiValue;
 
+
 // the contact page attributes
 
   //declaring all variables for the contacts page
@@ -154,6 +157,22 @@ public class DonorController {
   private Button addMedicationButton;
 
   @FXML
+  private TableView<Disease> currentDiseaseTableView;
+
+  @FXML
+  private TableView<Disease> pastDiseaseTableView;
+
+  @FXML
+  private Button addDiseaseButton;
+
+  @FXML
+  private Button updateDiseaseButton;
+
+  @FXML
+  private Button deleteDiseaseButton;
+
+
+  @FXML
   private TextArea drugDetailsTextArea;
 
   @FXML
@@ -162,6 +181,9 @@ public class DonorController {
   private AppController application;
   private ObservableList<String> currentMeds;
   private ObservableList<String> previousMeds;
+
+  private ObservableList<Disease> currentDisease;
+  private ObservableList<Disease> pastDisease;
 
   private List<String> possibleGenders = Arrays.asList("M", "F", "U");
 
@@ -185,6 +207,9 @@ public class DonorController {
     //ageValue.setText("");
     if (fromClinician) {
       logOutButton.setVisible(false);
+      addDiseaseButton.setVisible(true);
+      updateDiseaseButton.setVisible(true);
+      deleteDiseaseButton.setVisible(true);
     }
     //arbitrary default values
     //changeDeceasedStatus();
@@ -269,6 +294,7 @@ public class DonorController {
     });
     showUser(currentUser);
 
+    showDonorDiseases(currentUser, true);
 
   }
 
@@ -598,12 +624,14 @@ public class DonorController {
     stage.setScene(new Scene(root));
     stage.show();
 
+
     UndoRedoStacks.clearStacks();
   }
 
-  /**
-   * @param user The current user.
-   */
+    /**
+     *
+     * @param user The current user.
+     */
   public void showUser(User user) {
     setContactPage();
     NHIValue.setText(currentUser.getNhi());
@@ -655,6 +683,7 @@ public class DonorController {
     createdValue.setText(currentUser.getTimeCreated().toString());
     alcoholValue.setText(currentUser.getAlcoholConsumption());
 
+
     if (user.getMiscAttributes() != null) {
       miscAttributeslistView.getItems().clear(); // HERE
       for (String atty : user.getMiscAttributes()) {
@@ -675,16 +704,17 @@ public class DonorController {
     setContactPage();
   }
 
-  /**
-   * @param event An action event
-   */
+    /**
+     *
+     * @param event An action event
+     */
   @FXML
   void addMedication(ActionEvent event) {
     String medication = medicationTextField.getText();
-    if (medication.isEmpty() || medication == null) {
+    if (medication.isEmpty() || medication == null){
       return;
     }
-    if (currentMeds.contains(medication) || previousMeds.contains(medication)) {
+    if (currentMeds.contains(medication) || previousMeds.contains(medication)){
       medicationTextField.setText("");
       return;
     }
@@ -695,9 +725,10 @@ public class DonorController {
 
   }
 
-  /**
-   * @param event An action event
-   */
+    /**
+     *
+     * @param event An action event
+     */
   @FXML
   void deleteMedication(ActionEvent event) {
     String medCurrent = currentMedicationListView.getSelectionModel().getSelectedItem();
@@ -713,9 +744,10 @@ public class DonorController {
     }
   }
 
-  /**
-   * @param event An action event
-   */
+    /**
+     *
+     * @param event An action event
+     */
   @FXML
   void takeMedication(ActionEvent event) {
     String med = previousMedicationListView.getSelectionModel().getSelectedItem();
@@ -734,16 +766,17 @@ public class DonorController {
 
   }
 
-  /**
-   * @param event An action event
-   */
+    /**
+     *
+     * @param event An action event
+     */
   @FXML
   void untakeMedication(ActionEvent event) {
     String med = currentMedicationListView.getSelectionModel().getSelectedItem();
-    if (med == null) {
+    if (med == null){
       return;
     }
-    if (previousMeds.contains(med)) {
+    if(previousMeds.contains(med)) {
       currentUser.removeCurrentMedication(med);
       currentMeds.remove(med);
       return;
@@ -754,28 +787,30 @@ public class DonorController {
     currentUser.addPreviousMedication(med);
   }
 
-  /**
-   * @param event A mouse event
-   */
+    /**
+     *
+     * @param event A mouse event
+     */
   @FXML
   void clearCurrentMedSelection(MouseEvent event) {
     currentMedicationListView.getSelectionModel().clearSelection();
   }
 
-  /**
-   * @param event A mouse event
-   */
+    /**
+     *
+     * @param event A mouse event
+     */
   @FXML
   void clearPreviousMedSelection(MouseEvent event) {
     previousMedicationListView.getSelectionModel().clearSelection();
   }
 
-  /**
-   * @param med A string of medication
-   */
-  private void lauchMedicationView(String med) {
-    FXMLLoader medicationTimeViewLoader = new FXMLLoader(
-        getClass().getResource("/FXML/medicationsTimeView.fxml"));
+    /**
+     *
+     * @param med A string of medication
+     */
+  private void lauchMedicationView(String med){
+    FXMLLoader medicationTimeViewLoader = new FXMLLoader(getClass().getResource("/FXML/medicationsTimeView.fxml"));
     Parent root = null;
     try {
       root = medicationTimeViewLoader.load();
@@ -799,5 +834,69 @@ public class DonorController {
     historyTableView.setItems(changelog);
     historyTableView.getColumns().addAll(timeColumn, changeColumn);
 
+  }
+
+    /**
+     * show the current and past diseases
+     * of the donor.
+     */
+  public void showDonorDiseases(User user, boolean init) {
+      if(user.getCurrentDiseases().size() != 0) {
+          currentDisease = FXCollections.observableList(user.getCurrentDiseases());
+          currentDiseaseTableView.setItems(currentDisease);
+
+      } else {
+          currentDiseaseTableView.setPlaceholder(new Label("No Current Diseases"));
+      }
+
+      if(user.getPastDiseases().size() != 0) {
+          pastDisease = FXCollections.observableList(user.getPastDiseases());
+          pastDiseaseTableView.setItems(pastDisease);
+
+      } else {
+          pastDiseaseTableView.setPlaceholder(new Label("No Past Diseases"));
+      }
+
+      if(init) {
+          TableColumn<Disease, LocalDate> diagnosisDateColumn = new TableColumn<>("Diagnosis Date");
+          diagnosisDateColumn.setMinWidth(140);
+          diagnosisDateColumn.setCellValueFactory(new PropertyValueFactory<>("diagnosisDate"));
+
+          TableColumn<Disease, String> nameColumn = new TableColumn<>("Disease Name");
+          nameColumn.setMinWidth(285);
+          nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+
+          currentDiseaseTableView.getColumns().addAll(diagnosisDateColumn, nameColumn);
+
+          TableColumn<Disease, LocalDate> diagnosisDateColumn2 = new TableColumn<>("Diagnosis Date");
+          diagnosisDateColumn2.setMinWidth(140);
+          diagnosisDateColumn2.setCellValueFactory(new PropertyValueFactory<>("diagnosisDate"));
+
+          TableColumn<Disease, String> nameColumn2 = new TableColumn<>("Disease Name");
+          nameColumn2.setMinWidth(285);
+          nameColumn2.setCellValueFactory(new PropertyValueFactory<>("name"));
+
+          pastDiseaseTableView.getColumns().addAll(diagnosisDateColumn2, nameColumn2);
+      }
+  }
+
+  /**
+   * fires when the add button at the Disease tab is clicked
+   */
+  @FXML
+  private void addDisease() {
+
+    FXMLLoader addDiseaseLoader = new FXMLLoader(getClass().getResource("/FXML/createNewDisease.fxml"));
+    Parent root = null;
+    try {
+      root = addDiseaseLoader.load();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    NewDiseaseController newDiseaseController = addDiseaseLoader.getController();
+    Stage stage = new Stage();
+    newDiseaseController.init(currentUser, application, stage);
+    stage.setScene(new Scene(root));
+    stage.show();
   }
 }
