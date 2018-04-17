@@ -73,7 +73,7 @@ public class CLI {
       JsonWriter.changeLog(arguments);
       controller.addToHistoryOfCommands(arguments);
       new CommandLine(new CliRoot())
-          .parseWithHandler(new CommandLine.RunLast(), System.out, arguments);
+          .parseWithHandler(new CommandLine.RunLast(), System.err, arguments);
       //System.out.println(lineReader.getHistory().last());
       input = lineReader.readLine(">> ");
     }

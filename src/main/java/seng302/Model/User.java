@@ -768,7 +768,6 @@ public class User {
     updateLastModified();
   }
 
-
   /**
    * Use this one when creating the user from the json object
    *
