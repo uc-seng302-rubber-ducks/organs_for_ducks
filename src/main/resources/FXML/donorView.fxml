@@ -28,14 +28,13 @@
                         <Label layoutX="15.0" layoutY="145.0" text="Date of Birth:" />
                         <Label layoutX="15.0" layoutY="245.0" text="Gender:" />
                         <Label layoutX="420.0" layoutY="20.0" text="Blood Type:" />
-                        <Label layoutX="420.0" layoutY="45.0" text="Height(cm):" />
+                        <Label layoutX="420.0" layoutY="45.0" text="Height(m):" />
                         <Label layoutX="420.0" layoutY="70.0" text="Weight(Kgs):" />
                         <Label fx:id="dodLabel" layoutX="15.0" layoutY="195.0" text="Date of Death:" />
                         <Label layoutX="15.0" layoutY="170.0" prefHeight="16.0" prefWidth="36.0" text="Age:" />
                         <Label layoutX="19.0" layoutY="204.0" />
                         <Label layoutX="15.0" layoutY="355.0" text="Current Organs avalible for Donation" />
                         <ListView fx:id="organsDonatingListView" layoutX="15.0" layoutY="384.0" prefHeight="171.0" prefWidth="267.0" />
-                        <Button layoutX="808.0" layoutY="364.0" mnemonicParsing="false" text="Confirm" />
                         <Button fx:id="undoButton" layoutX="758.0" layoutY="18.0" mnemonicParsing="false" onAction="#undo" text="Undo" />
                         <Button fx:id="redoButton" layoutX="822.0" layoutY="18.0" mnemonicParsing="false" onAction="#redo" text="Redo" />
                         <Label layoutX="420.0" layoutY="364.0" text="Misc attributes" />
@@ -74,7 +73,7 @@
                         <Label layoutX="15.0" layoutY="220.0" text="Age at Death:" />
                         <Label fx:id="ageDeathValue" layoutX="110.0" layoutY="220.0" />
                         <Label layoutX="15.0" layoutY="270.0" text="Gender:" />
-                        <Label fx:id="genderIdentityValue" layoutX="77.0" layoutY="273.0" text="Label" />
+                        <Label fx:id="genderIdentityValue" layoutX="77.0" layoutY="273.0" />
                      </children>
                   </AnchorPane>
             </content>
@@ -100,18 +99,18 @@
                         <Separator layoutY="29.0" prefHeight="16.0" prefWidth="900.0" />
                         <Separator layoutY="260.0" prefHeight="10.0" prefWidth="894.0" />
                         <Separator layoutY="223.0" prefHeight="17.0" prefWidth="894.0" />
-                        <Label fx:id="pHomePhone" layoutX="120.0" layoutY="50.0" text="Label" />
-                        <Label fx:id="pCellPhone" layoutX="120.0" layoutY="80.0" text="Label" />
-                        <Label fx:id="pAddress" layoutX="120.0" layoutY="109.0" text="Label" />
-                        <Label fx:id="pRegion" layoutX="120.0" layoutY="179.0" text="Label" />
-                        <Label fx:id="pEmail" layoutX="120.0" layoutY="210.0" text="Label" />
-                        <Label fx:id="eName" layoutX="120.0" layoutY="278.0" text="Label" />
-                        <Label fx:id="eHomePhone" layoutX="120.0" layoutY="312.0" text="Label" />
-                        <Label fx:id="eCellPhone" layoutX="120.0" layoutY="340.0" text="Label" />
-                        <Label fx:id="eAddress" layoutX="120.0" layoutY="371.0" text="Label" />
-                        <Label fx:id="eRegion" layoutX="120.0" layoutY="442.0" text="Label" />
-                        <Label fx:id="eEmail" layoutX="120.0" layoutY="473.0" text="Label" />
-                        <Label fx:id="relationship" layoutX="120.0" layoutY="502.0" text="Label" />
+                        <Label fx:id="pHomePhone" layoutX="120.0" layoutY="50.0" />
+                        <Label fx:id="pCellPhone" layoutX="120.0" layoutY="80.0" />
+                        <Label fx:id="pAddress" layoutX="120.0" layoutY="109.0" />
+                        <Label fx:id="pRegion" layoutX="120.0" layoutY="179.0" />
+                        <Label fx:id="pEmail" layoutX="120.0" layoutY="210.0" />
+                        <Label fx:id="eName" layoutX="120.0" layoutY="278.0" />
+                        <Label fx:id="eHomePhone" layoutX="120.0" layoutY="312.0" />
+                        <Label fx:id="eCellPhone" layoutX="120.0" layoutY="340.0" />
+                        <Label fx:id="eAddress" layoutX="120.0" layoutY="371.0" />
+                        <Label fx:id="eRegion" layoutX="120.0" layoutY="442.0" />
+                        <Label fx:id="eEmail" layoutX="120.0" layoutY="473.0" />
+                        <Label fx:id="relationship" layoutX="120.0" layoutY="502.0" />
                      </children>
                   </AnchorPane>
               </content>
@@ -125,7 +124,7 @@
                   </AnchorPane>
             </content>
           </Tab>
-            <Tab text="Medication">
+            <Tab disable="true" text="Medication">
               <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
