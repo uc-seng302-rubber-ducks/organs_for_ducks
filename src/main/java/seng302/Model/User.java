@@ -83,9 +83,9 @@ public class User {
 
   //flags and extra details for if the person is a donor or a receiver
   @Expose
-  private DonorDetails donorDetails;
+  private DonorDetails donorDetails = new DonorDetails(this);
   @Expose
-  private ReceiverDetails receiverDetails;
+  private ReceiverDetails receiverDetails = new ReceiverDetails(this);
 
     // updated constructor that works with the creation page
     public User(String nhi, LocalDate dateOfBirth, LocalDate dateOfDeath, String birthGender, String genderIdentity,
@@ -126,7 +126,6 @@ public class User {
         this.previousMedication = new ArrayList<>();
         this.currentMedicationTimes = new HashMap<>();
         this.previousMedicationTimes = new HashMap<>();
-
         try {
             changes = JsonHandler.importHistoryFromFile(name);
         } catch (FileNotFoundException e) {
@@ -174,9 +173,6 @@ public class User {
     this.currentMedicationTimes = new HashMap<String, ArrayList<LocalDateTime>>();
     this.previousMedicationTimes = new HashMap<String, ArrayList<LocalDateTime>>();
     this.nhi = nhi;
-    this.donorDetails = new DonorDetails(this);
-    this.receiverDetails = new ReceiverDetails(this);
-    //TODO fix json reader
     try {
       changes = JsonHandler.importHistoryFromFile(name);
     } catch (FileNotFoundException e) {
@@ -200,11 +196,11 @@ public class User {
     this.previousMedication = new ArrayList<>();
     this.currentMedicationTimes = new HashMap<String, ArrayList<LocalDateTime>>();
     this.previousMedicationTimes = new HashMap<String, ArrayList<LocalDateTime>>();
-
-    this.donorDetails = new DonorDetails(this);
-    this.receiverDetails = new ReceiverDetails(this);
-    //TODO fix json reader
-    //changes = JsonReader.importHistoryFromFile(this);
+    try {
+      changes = JsonHandler.importHistoryFromFile(name);
+    } catch (FileNotFoundException e) {
+      e.printStackTrace();
+    }
   }
 
   /**

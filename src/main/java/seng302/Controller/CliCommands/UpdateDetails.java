@@ -6,6 +6,7 @@ import java.util.Date;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import seng302.Controller.AppController;
+import seng302.Model.JsonHandler;
 import seng302.Model.JsonWriter;
 import seng302.Model.User;
 import seng302.View.IoHelper;
@@ -118,14 +119,13 @@ public class UpdateDetails implements Runnable {
       user.setNhi(newNHI);
       changed = true;
     }
-    //TODO fix json writer
-//    if (changed == true) {
-//      try {
-//        JsonWriter.saveCurrentDonorState(controller.getUsers());
-//      }
-//      catch (IOException ex) {
-//        System.err.println("Could not update details on file");
-//      }
-//    }
+    if (changed) {
+      try {
+        JsonHandler.saveUsers(controller.getUsers());
+        //JsonWriter.saveCurrentDonorState(controller.getUsers());
+      } catch (IOException ex) {
+        System.err.println("Could not update details on file");
+      }
+    }
   }
 }
