@@ -679,12 +679,15 @@ public class DonorController {
       }
     }
     if (currentUser.getCurrentMedication() != null) {
-      System.out.println(currentMeds);
+      System.out.println("current: " + currentMeds);
+      currentMeds.clear();
       currentMeds.addAll(currentUser.getCurrentMedication());
 
       currentMedicationListView.setItems(currentMeds);
     }
     if (currentUser.getPreviousMedication() != null) {
+      System.out.println("previous: " + previousMeds);
+      previousMeds.clear();
       previousMeds.addAll(currentUser.getPreviousMedication());
       previousMedicationListView.setItems(previousMeds);
     }
@@ -731,9 +734,10 @@ public class DonorController {
     }
   }
 
-  /**
-   * @param event An action event
-   */
+    /**
+     * fires when a medication is moved from previous to current medications
+     * @param event An action event
+     */
   @FXML
   void takeMedication(ActionEvent event) {
     String med = previousMedicationListView.getSelectionModel().getSelectedItem();
@@ -752,9 +756,10 @@ public class DonorController {
 
   }
 
-  /**
-   * @param event An action event
-   */
+    /**
+     * fires when a medication is moved from current to previous
+     * @param event An action event
+     */
   @FXML
   void untakeMedication(ActionEvent event) {
     String med = currentMedicationListView.getSelectionModel().getSelectedItem();
