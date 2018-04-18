@@ -122,6 +122,9 @@ public class CreateUserControllerTest extends ApplicationTest {
     verifyThat("#fNameValue", LabeledMatchers.hasText("Dwayne"));
     verifyThat("#smokerValue", LabeledMatchers.hasText("No"));
     verifyThat("#alcoholValue", LabeledMatchers.hasText("None"));
+    verifyThat("#bloodTypeValue", LabeledMatchers.hasText("B+"));
+    verifyThat("#heightValue", LabeledMatchers.hasText("1.75"));
+    verifyThat("#weightValue", LabeledMatchers.hasText("65.0"));
     verifyThat("#DOBValue", LabeledMatchers.hasText("2017-01-03"));
   }
 
@@ -137,6 +140,25 @@ public class CreateUserControllerTest extends ApplicationTest {
     write("The Rock");
     clickOn("#confirmButton");
     verifyThat("#pNameValue", LabeledMatchers.hasText("The Rock"));
+  }
+
+  @Test
+  public void testContactDetails() {
+
+  }
+
+  @Test
+  public void testInvalidEmail() {
+
+  }
+
+  @Test
+  public void testInvalidHomePhone() {
+
+  }
+
+  @Test
+  public void testInvalidMobilePhone() {
   }
 
 }
