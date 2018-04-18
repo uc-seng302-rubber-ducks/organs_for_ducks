@@ -82,7 +82,7 @@ public class ClinicianController {
   private FilteredList<User> fListDonors;
 
   private HashSet<Organs> organs;
-  private ObservableList<TransplantDetails> transplantList;
+  private ObservableList<TransplantDetails> observableTransplantList;
 
   private static int currentIndex = 0;
 
@@ -208,8 +208,8 @@ public class ClinicianController {
     }
 
     if(appController.getTransplantList().size() != 0) {
-      transplantList = FXCollections.observableList(appController.getTransplantList());
-      transplantWaitListTableView.setItems(transplantList);
+      observableTransplantList = FXCollections.observableList(appController.getTransplantList());
+      transplantWaitListTableView.setItems(observableTransplantList);
 
     } else {
       transplantWaitListTableView.setPlaceholder(new Label("No Recipients"));
