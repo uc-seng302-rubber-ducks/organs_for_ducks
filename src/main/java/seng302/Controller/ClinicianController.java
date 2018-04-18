@@ -63,6 +63,9 @@ public class ClinicianController {
   private TextField searchTextField;
 
   @FXML
+  private TextField waitingRegionTextfield;
+
+  @FXML
   private Tooltip searchToolTip;
 
   @FXML
@@ -83,6 +86,7 @@ public class ClinicianController {
 
   private HashSet<Organs> organs;
   private ObservableList<TransplantDetails> observableTransplantList;
+  private FilteredList<TransplantDetails> fTransplantList;
 
   private static int currentIndex = 0;
 
@@ -209,7 +213,10 @@ public class ClinicianController {
 
     if(appController.getTransplantList().size() != 0) {
       observableTransplantList = FXCollections.observableList(appController.getTransplantList());
-      transplantWaitListTableView.setItems(observableTransplantList);
+      fTransplantList = new FilteredList<>(observableTransplantList);
+      fTransplantList = filterTransplantDetails(waitingRegionTextfield, fTransplantList);
+      SortedList<TransplantDetails> sTransplantList = new SortedList<>(fTransplantList);
+      transplantWaitListTableView.setItems(sTransplantList);
 
     } else {
       transplantWaitListTableView.setPlaceholder(new Label("No Recipients"));
@@ -312,6 +319,25 @@ public class ClinicianController {
     });
     searchTablePagination.setPageCount(fListUsers.size() / ROWS_PER_PAGE);
     return fListUsers;
+  }
+
+  private FilteredList<TransplantDetails> filterTransplantDetails(TextField inputTextField, FilteredList<TransplantDetails> fListTransplantDetails) {
+    inputTextField.textProperty().addListener((observable, oldValue, newValue) -> {
+      fListTransplantDetails.predicateProperty().bind(Bindings.createObjectBinding(() -> transplantDetails -> {
+        if (newValue == null || newValue.isEmpty()) {
+          return true;
+        }
+        String lowerCaseFilterText = newValue.toLowerCase();
+        if ((transplantDetails.getRegion().contains(lowerCaseFilterText))) {
+          return true;
+        }
+        //if (other test case) return true
+        return false;
+      }));
+      changePage(searchTablePagination.getCurrentPageIndex());
+    });
+    searchTablePagination.setPageCount(fListTransplantDetails.size() / ROWS_PER_PAGE);
+    return fListTransplantDetails;
   }
 
   @FXML
