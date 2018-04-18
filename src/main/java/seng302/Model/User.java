@@ -126,6 +126,9 @@ public class User {
         this.previousMedication = new ArrayList<>();
         this.currentMedicationTimes = new HashMap<>();
         this.previousMedicationTimes = new HashMap<>();
+        this.donorDetails = new DonorDetails(this);
+        this.receiverDetails = new ReceiverDetails(this);
+
         try {
             changes = JsonHandler.importHistoryFromFile(name);
         } catch (FileNotFoundException e) {
@@ -183,7 +186,8 @@ public class User {
 
   public User(String name, java.time.LocalDate dateOfBirth, String nhi) {
     this.dateOfBirth = dateOfBirth;
-    this.name = name;
+    this.name = name;    this.donorDetails = new DonorDetails(this);
+    this.receiverDetails = new ReceiverDetails(this);
     this.nhi = nhi;
     timeCreated = LocalDateTime.now();
     lastModified = LocalDateTime.now();
@@ -771,13 +775,14 @@ public class User {
         "\nnhi: " + nhi +
         "\ndate Of Birth: " + dateOfBirth +
         "\ndate Of Death :" + dateOfDeath +
-        "\ngender: " + gender +
+        "\nbirth gender: " + birthGender +
+        "\npreferred gender: " + genderIdentity +
         "\nheight: " + height +
         "\nweight: " + weight +
         "\nblood Type: '" + bloodType + '\'' +
         "\ncurrent Address: '" + currentAddress + '\'' +
         "\nregion: '" + region + '\'' +
-        "\norgans: " + donorDetails.getOrgans() +
+        "\norgans: " + (isDonor() ?  donorDetails.getOrgans() : (name + " is not a donor")) +
         "\ntime Created: " + timeCreated +
         "\nlast modified: " + lastModified;
   }
