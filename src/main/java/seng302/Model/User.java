@@ -85,9 +85,9 @@ public class User {
 
   //flags and extra details for if the person is a donor or a receiver
   @Expose
-  private DonorDetails donorDetails;
+  private DonorDetails donorDetails = new DonorDetails(this);
   @Expose
-  private ReceiverDetails receiverDetails;
+  private ReceiverDetails receiverDetails = new ReceiverDetails(this);
 
     // updated constructor that works with the creation page
     public User(String nhi, LocalDate dateOfBirth, LocalDate dateOfDeath, String birthGender, String genderIdentity,
@@ -128,6 +128,9 @@ public class User {
         this.previousMedication = new ArrayList<>();
         this.currentMedicationTimes = new HashMap<>();
         this.previousMedicationTimes = new HashMap<>();
+        this.donorDetails = new DonorDetails(this);
+        this.receiverDetails = new ReceiverDetails(this);
+
         this.medicalProcedures  = new ArrayList<>();
         try {
             changes = JsonHandler.importHistoryFromFile(name);
@@ -190,7 +193,8 @@ public class User {
 
   public User(String name, java.time.LocalDate dateOfBirth, String nhi) {
     this.dateOfBirth = dateOfBirth;
-    this.name = name;
+    this.name = name;    this.donorDetails = new DonorDetails(this);
+    this.receiverDetails = new ReceiverDetails(this);
     this.nhi = nhi;
     timeCreated = LocalDateTime.now();
     lastModified = LocalDateTime.now();
@@ -203,6 +207,11 @@ public class User {
     this.previousMedication = new ArrayList<>();
     this.currentMedicationTimes = new HashMap<String, ArrayList<LocalDateTime>>();
     this.previousMedicationTimes = new HashMap<String, ArrayList<LocalDateTime>>();
+    try {
+      changes = JsonHandler.importHistoryFromFile(name);
+    } catch (FileNotFoundException e) {
+      e.printStackTrace();
+    }
 
     this.donorDetails = new DonorDetails(this);
     this.receiverDetails = new ReceiverDetails(this);
@@ -796,13 +805,14 @@ public class User {
         "\nnhi: " + nhi +
         "\ndate Of Birth: " + dateOfBirth +
         "\ndate Of Death :" + dateOfDeath +
-        "\ngender: " + gender +
+        "\nbirth gender: " + birthGender +
+        "\npreferred gender: " + genderIdentity +
         "\nheight: " + height +
         "\nweight: " + weight +
         "\nblood Type: '" + bloodType + '\'' +
         "\ncurrent Address: '" + currentAddress + '\'' +
         "\nregion: '" + region + '\'' +
-        "\norgans: " + donorDetails.getOrgans() +
+        "\norgans: " + (isDonor() ?  donorDetails.getOrgans() : (name + " is not a donor")) +
         "\ntime Created: " + timeCreated +
         "\nlast modified: " + lastModified;
   }

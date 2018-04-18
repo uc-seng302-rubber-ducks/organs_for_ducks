@@ -3,6 +3,8 @@ package seng302.Controller;
 
 
 import java.time.LocalDate;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.time.temporal.ChronoUnit;
 
 import javafx.collections.FXCollections;
@@ -59,7 +61,10 @@ public class DonorController {
   private Label DODValue;
 
   @FXML
-  private Label genderValue;
+  private Label genderIdentityValue;
+
+  @FXML
+  private Label birthGenderValue;
 
   @FXML
   private Label lastModifiedValue;
@@ -249,8 +254,6 @@ public class DonorController {
     //warningLabel.setVisible(false);
     currentUser = user;
     contact = user.getContact();
-    //setAttributes();
-    //setContactPage();
     currentMeds = FXCollections.observableArrayList();
     previousMeds = FXCollections.observableArrayList();
     currentMedicationListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
@@ -438,7 +441,7 @@ public class DonorController {
 
       }
       if (contact.getHomePhoneNumber() != null) {
-        eHomePhone.setText(contact.getHomePhoneNumber());
+        eHomePhone.setText(contact.getHomePhoneNumber());    //System.out.println(attachedUser == null);
 
       }
       if (contact.getRegion() != null) {
@@ -515,7 +518,7 @@ public class DonorController {
     }
   }
 
-//    @FXML
+//    @FXML 22.9kg/m2
 //    private void changeDeceasedStatus() {
 //        if (!isDonorDeceasedCheckBox.isSelected()) {
 //            dateOfDeathPicker.setVisible(false);
@@ -560,7 +563,7 @@ public class DonorController {
 //   * are confirmed in their own methods
 //   */
 //  @FXML
-//  private void updateDonor() {
+//  private void updateDonor() { 22.9kg/m2
 //      UndoRedoStacks.storeUndoCopy(currentUser);
 //      User oldDonor = new User();
 //      UndoRedoStacks.cloneUser(currentUser,oldDonor);
@@ -593,7 +596,7 @@ public class DonorController {
 //      } catch (NumberFormatException e) {
 //        warningLabel.setText("Weight must be a number");
 //        return;
-//      }
+//      }    //System.out.println(attachedUser == null);
 //    }
 //    if (!heightTextField.getText().equals("")) {
 //      try {
@@ -613,7 +616,7 @@ public class DonorController {
 //    }
 //    currentUser.setGender(newGender);
 //    currentUser.setBloodType(bloodTypeComboBox.getValue());
-//    currentUser.setDeceased(isDonorDeceasedCheckBox.isSelected());
+//    currentUser.setDeceased(isDonorDeceasedCheckBox.isSelected())    //System.out.println(attachedUser == null);;
 //    if (isDonorDeceasedCheckBox.isSelected()) {
 //      Date newDod = Date.from(dateOfDeathPicker.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant());
 //      LocalDate dod = LocalDate.parse(newDod.toInstant().atZone(ZoneId.systemDefault()).format(format));
@@ -633,7 +636,8 @@ public class DonorController {
 //
 //    if (isInputValid) {
 //      application.update(currentUser);
-//      ArrayList<Change> diffs = application.differanceInDonors(oldDonor, currentUser);
+//      ArrayList<Change> diffs = application.differanceInDonors(oldDonor, currentUser);    organsDonatingListView.getItems().clear();
+//    organsDonatingListView.getItems().addAll(currentUser.getDonorDetails().getOrgans());
   //  changelog.addAll(diffs);
 //    }
 //
@@ -653,7 +657,8 @@ public class DonorController {
 
   }
 
-  /**
+  /**    organsDonatingListView.getItems().clear();
+    organsDonatingListView.getItems().addAll(currentUser.getDonorDetails().getOrgans());
    * fires when the Redo button is clicked
    */
   @FXML
@@ -686,6 +691,8 @@ public class DonorController {
    * @param user The current user.
    */
   public void showUser(User user) {
+    organsDonatingListView.getItems().clear();
+    organsDonatingListView.getItems().addAll(currentUser.getDonorDetails().getOrgans());
     setContactPage();
     NHIValue.setText(currentUser.getNhi());
     fNameValue.setText(currentUser.getFirstName());
@@ -698,19 +705,29 @@ public class DonorController {
     }
     if (currentUser.getLastName() != null) {
       lNameValue.setText(currentUser.getLastName());
+    }    organsDonatingListView.getItems().clear();
+    organsDonatingListView.getItems().addAll(currentUser.getDonorDetails().getOrgans());
+
+    if (currentUser.getGenderIdentity() != null) {
+      genderIdentityValue.setText(currentUser.getGenderIdentity());
     }
+    if (currentUser.getBirthGender() != null){
+      birthGenderValue.setText(currentUser.getBirthGender());
+    }
+
     ageValue.setText(user.getStringAge().toString().replace("P", "").replace("Y", "") + " Years");
     if (currentUser.getDateOfDeath() != null) {
       DODValue.setText(currentUser.getDateOfDeath().toString());
       ageDeathValue.setText(Long.toString(
-          ChronoUnit.YEARS.between(currentUser.getDateOfBirth(), currentUser.getDateOfDeath())));
+          ChronoUnit.YEARS.between(currentUser.getDateOfBirth(), currentUser.getDateOfDeath())) + " Years");
     }
     if (currentUser.getBloodType() != null) {
       bloodTypeValue.setText(currentUser.getBloodType());
     }
     if (currentUser.isSmoker()) {
       smokerValue.setText("Yes");
-    } else {
+    } else {    organsDonatingListView.getItems().clear();
+    organsDonatingListView.getItems().addAll(currentUser.getDonorDetails().getOrgans());
       smokerValue.setText("No");
     }
     String weight;
@@ -724,8 +741,9 @@ public class DonorController {
       heightValue.setText(height);
     }
     if (currentUser.getHeight() > 0 && currentUser.getWeight() > 0) {
-      //TODO fix BMI kg/m^2
-      bmiValue.setText("1.8");
+      //TODO fix BMI kg/m^
+      double bmi = currentUser.getWeight()/(currentUser.getHeight()*currentUser.getHeight());
+      bmiValue.setText(Double.toString(bmi));
     } else {
       bmiValue.setText("");
     }
@@ -743,15 +761,20 @@ public class DonorController {
       }
     }
     if (currentUser.getCurrentMedication() != null) {
-      System.out.println(currentMeds);
+      System.out.println("current: " + currentMeds);
+      currentMeds.clear();
       currentMeds.addAll(currentUser.getCurrentMedication());
 
       currentMedicationListView.setItems(currentMeds);
     }
     if (currentUser.getPreviousMedication() != null) {
+      System.out.println("previous: " + previousMeds);
+      previousMeds.clear();
       previousMeds.addAll(currentUser.getPreviousMedication());
       previousMedicationListView.setItems(previousMeds);
     }
+    organsDonatingListView.getItems().clear();
+    organsDonatingListView.getItems().addAll(currentUser.getDonorDetails().getOrgans());
     setContactPage();
     medicalProcedures = FXCollections.observableList(currentUser.getMedicalProcedures());
     for(MedicalProcedure procedure: medicalProcedures){
@@ -831,9 +854,10 @@ public class DonorController {
     }
   }
 
-  /**
-   * @param event An action event
-   */
+    /**
+     * fires when a medication is moved from previous to current medications
+     * @param event An action event
+     */
   @FXML
   void takeMedication(ActionEvent event) {
     String med = previousMedicationListView.getSelectionModel().getSelectedItem();
@@ -852,9 +876,10 @@ public class DonorController {
 
   }
 
-  /**
-   * @param event An action event
-   */
+    /**
+     * fires when a medication is moved from current to previous
+     * @param event An action event
+     */
   @FXML
   void untakeMedication(ActionEvent event) {
     String med = currentMedicationListView.getSelectionModel().getSelectedItem();

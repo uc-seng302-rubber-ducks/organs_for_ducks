@@ -8,15 +8,19 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import seng302.Controller.AppController;
 import seng302.Controller.DonorController;
 import seng302.Controller.LoginController;
 import seng302.Model.Donor;
+import seng302.Model.JsonHandler;
 import seng302.Model.JsonReader;
 import seng302.Model.JsonWriter;
 
@@ -38,7 +42,20 @@ public class App extends Application
         }
         LoginController loginController = loader.getController();
         primaryStage.setScene(new Scene(root));
-        loginController.init(AppController.getInstance(), primaryStage);
+        AppController controller = AppController.getInstance();
+        primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent event) {
+                try {
+                    JsonHandler.saveUsers(controller.getUsers());
+                } catch (IOException ex) {
+                    System.out.println("failed to save users");
+                }
+                Platform.exit();
+                System.exit(0);
+            }
+        });
+        loginController.init(controller, primaryStage);
         primaryStage.show();
     }
 }

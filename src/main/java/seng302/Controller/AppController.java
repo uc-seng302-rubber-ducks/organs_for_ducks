@@ -228,12 +228,12 @@ public class AppController {
     ArrayList<User> sessionList = getUsers();
     sessionList.remove(user);
     setUsers(sessionList);
-    //TODO fix json writer
-//    try {
-//      //JsonWriter.saveCurrentDonorState(sessionList);
-//    } catch (IOException e) {
-//      e.printStackTrace();
-//    }
+    try {
+      JsonHandler.saveUsers(sessionList);
+      //JsonWriter.saveCurrentDonorState(sessionList);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
 
   }
 

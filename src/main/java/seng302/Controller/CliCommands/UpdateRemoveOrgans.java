@@ -8,6 +8,7 @@ import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
 import seng302.Controller.AppController;
 import seng302.Model.Donor;
+import seng302.Model.JsonHandler;
 import seng302.Model.JsonWriter;
 import seng302.Model.Organs;
 import seng302.Model.User;
@@ -54,13 +55,13 @@ public class UpdateRemoveOrgans implements Runnable {
           System.err.println("Could not find user");
         }
       }
-      //TODO fix json writer
-//      try {
-//        JsonWriter.saveCurrentDonorState(controller.getUsers());
-//        return;
-//      } catch (IOException ex) {
-//        System.err.println("Could not update file");
-//      }
+      try {
+        JsonHandler.saveUsers(controller.getUsers());
+        //JsonWriter.saveCurrentDonorState(controller.getUsers());
+        return;
+      } catch (IOException ex) {
+        System.err.println("Could not update file");
+      }
     }
     System.err.println("Please use either the -id tag or -f, -l, and -dob to identify a user. Organs to be removed should be specified after these arguments");
   }
