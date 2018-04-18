@@ -65,4 +65,18 @@ public class DonorDetails {
     }
     return true;
   }
+
+  /**
+   * USE SPARINGLY. this can easily create consistency issues. Only sensible use case is
+   * user.getDonorDetails().setAttachedUser(user)
+   *
+   * @param attachedUser user to connect
+   */
+  public void setAttachedUser(User attachedUser) {
+    this.attachedUser = attachedUser;
+  }
+
+  public User getAttachedUser() {
+    return attachedUser;
+  }
 }

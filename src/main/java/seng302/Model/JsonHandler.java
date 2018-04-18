@@ -60,6 +60,10 @@ public final class JsonHandler {
         Reader reader =new FileReader(inFile);
         User[] donors = gson.fromJson(reader, User[].class);
         results.addAll(Arrays.asList(donors));
+        for (User result : results) {
+            result.getReceiverDetails().setAttachedUser(result);
+            result.getDonorDetails().setAttachedUser(result);
+        }
         return results;
 
     }

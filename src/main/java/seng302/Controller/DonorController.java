@@ -671,6 +671,14 @@ public class DonorController {
       previousMeds.addAll(currentUser.getPreviousMedication());
       previousMedicationListView.setItems(previousMeds);
     }
+
+    //set donating organs page
+    if (currentUser.isDonor()) {
+      HashSet<Organs> set = currentUser.getDonorDetails().getOrgans();
+      ArrayList<Organs> list = new ArrayList<Organs>(set);
+      organsDonatingListView.setItems(FXCollections.observableList(list));
+    }
+
     System.out.println("made it");
     setContactPage();
   }

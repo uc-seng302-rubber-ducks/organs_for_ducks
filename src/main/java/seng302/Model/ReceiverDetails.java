@@ -12,6 +12,7 @@ public class ReceiverDetails {
 
   @Expose
   private transient User attachedUser;
+  @Expose
   private HashMap<Organs, ArrayList<LocalDate>> organs = new HashMap<>();
 
   public ReceiverDetails(User attachedUser) {
