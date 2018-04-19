@@ -87,8 +87,10 @@ public class User {
   @Expose
   private ReceiverDetails receiverDetails;
 
+  @Expose
   private ArrayList<Disease> pastDiseases;
 
+  @Expose
   private ArrayList<Disease> currentDiseases;
 
 //  public User(java.time.LocalDate dateOfBirth, java.time.LocalDate dateOfDeath, String gender, double height, double weight,

@@ -1,5 +1,7 @@
 package seng302.Model;
 
+import com.google.gson.annotations.Expose;
+
 import java.time.LocalDate;
 
 /**
@@ -9,9 +11,13 @@ import java.time.LocalDate;
  * @author acb116 - Aaron Bong
  */
 public class Disease {
+    @Expose
     private String name;
+    @Expose
     private boolean isChronic;
+    @Expose
     private boolean isCured;
+    @Expose
     private LocalDate diagnosisDate;
 
     /**
