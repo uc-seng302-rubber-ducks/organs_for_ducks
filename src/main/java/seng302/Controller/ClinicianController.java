@@ -1,5 +1,6 @@
 package seng302.Controller;
 
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -21,16 +22,15 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.StackPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.logging.Filter;
 
 import seng302.Model.Organs;
+import static seng302.Model.Organs.*;
 import seng302.Model.TransplantDetails;
 import seng302.Model.User;
 import seng302.Model.Clinician;
@@ -105,6 +105,45 @@ public class ClinicianController {
   @FXML
   private Button expandButton;
 
+  @FXML
+  private CheckBox boneCheckBox;
+
+  @FXML
+  private CheckBox boneMarrowCheckBox;
+
+  @FXML
+  private CheckBox corneaCheckBox;
+
+  @FXML
+  private CheckBox connectiveTissueCheckBox;
+
+  @FXML
+  private CheckBox heartCheckBox;
+
+  @FXML
+  private CheckBox middleEarCheckBox;
+
+  @FXML
+  private CheckBox intestineCheckBox;
+
+  @FXML
+  private CheckBox pancreasCheckBox;
+
+  @FXML
+  private CheckBox lungCheckBox;
+
+  @FXML
+  private CheckBox kidneyCheckBox;
+
+  @FXML
+  private CheckBox liverCheckBox;
+
+  @FXML
+  private CheckBox skinCheckBox;
+
+  @FXML
+  private Label filtersLabel;
+
   private Stage stage;
   private AppController appController;
   private Clinician clinician;
@@ -115,6 +154,7 @@ public class ClinicianController {
   private HashSet<Organs> organs;
   private ObservableList<TransplantDetails> observableTransplantList;
   private FilteredList<TransplantDetails> fTransplantList;
+  private ArrayList<CheckBox> filterCheckBoxList = new ArrayList<>();
 
   private static int currentIndex = 0;
   //Initiliase table columns as class level so it is accessible for sorting in pagination methods
@@ -146,6 +186,7 @@ public class ClinicianController {
     users = appController.getUsers();
     searchCount = users.size();
     initSearchTable();
+    groupCheckBoxes();
     initWaitListTable();
 
     setDefaultFilters();
@@ -164,6 +205,21 @@ public class ClinicianController {
     searchTablePagination.setPageCount(pageCount > 0 ? pageCount+1 : 1);
     searchTablePagination.currentPageIndexProperty().addListener(((observable, oldValue, newValue) -> changePage(newValue.intValue())));
     //searchPagination = new Pagination((users.size() / ROWS_PER_PAGE + 1), 0);
+  }
+
+  private void groupCheckBoxes() {
+    filterCheckBoxList.add(boneCheckBox);
+    filterCheckBoxList.add(boneMarrowCheckBox);
+    filterCheckBoxList.add(corneaCheckBox);
+    filterCheckBoxList.add(connectiveTissueCheckBox);
+    filterCheckBoxList.add(heartCheckBox);
+    filterCheckBoxList.add(kidneyCheckBox);
+    filterCheckBoxList.add(lungCheckBox);
+    filterCheckBoxList.add(liverCheckBox);
+    filterCheckBoxList.add(middleEarCheckBox);
+    filterCheckBoxList.add(intestineCheckBox);
+    filterCheckBoxList.add(skinCheckBox);
+    filterCheckBoxList.add(pancreasCheckBox);
   }
 
   private void setDefaultFilters() {
@@ -263,11 +319,12 @@ public class ClinicianController {
 
     }
 
+    observableTransplantList = FXCollections.observableList(appController.getTransplantList());
+    fTransplantList = new FilteredList<>(observableTransplantList);
+    fTransplantList = filterTransplantDetails(fTransplantList);
+    SortedList<TransplantDetails> sTransplantList = new SortedList<>(fTransplantList);
+
     if(appController.getTransplantList().size() != 0) {
-      observableTransplantList = FXCollections.observableList(appController.getTransplantList());
-      fTransplantList = new FilteredList<>(observableTransplantList);
-      fTransplantList = filterTransplantDetails(waitingRegionTextfield, fTransplantList);
-      SortedList<TransplantDetails> sTransplantList = new SortedList<>(fTransplantList);
       transplantWaitListTableView.setItems(sTransplantList);
 
     } else {
@@ -292,6 +349,7 @@ public class ClinicianController {
     recipientRegionColumn.setCellValueFactory(new PropertyValueFactory<>("region"));
 
     transplantWaitListTableView.getColumns().setAll(recipientNameColumn, organNameColumn, organRegistrationDateColumn, recipientRegionColumn);
+    updateFiltersLabel();
 
   }/**
      *
@@ -418,23 +476,106 @@ public class ClinicianController {
     changePage(searchTablePagination.getCurrentPageIndex());
   }
 
-  private FilteredList<TransplantDetails> filterTransplantDetails(TextField inputTextField, FilteredList<TransplantDetails> fListTransplantDetails) {
-    inputTextField.textProperty().addListener((observable, oldValue, newValue) -> {
-      fListTransplantDetails.predicateProperty().bind(Bindings.createObjectBinding(() -> transplantDetails -> {
-        if (newValue == null || newValue.isEmpty()) {
-          return true;
-        }
-        String lowerCaseFilterText = newValue.toLowerCase();
-        if ((transplantDetails.getRegion().contains(lowerCaseFilterText))) {
-          return true;
-        }
-        //if (other test case) return true
-        return false;
-      }));
-      changePage(searchTablePagination.getCurrentPageIndex());
+  /**
+   * Sets listeners for the transplant waiting list
+   * @param fListTransplantDetails filtered list to add listener to.
+   * @return the filtered list.
+   */
+  private FilteredList<TransplantDetails> filterTransplantDetails(FilteredList<TransplantDetails> fListTransplantDetails) {
+    waitingRegionTextfield.textProperty().addListener((observable, oldValue, newValue) -> {
+      setTransplantListPredicate(fListTransplantDetails);
+      updateFiltersLabel();
     });
-    searchTablePagination.setPageCount(fListTransplantDetails.size() / ROWS_PER_PAGE);
+    for (CheckBox checkBox : filterCheckBoxList) {
+      checkBox.selectedProperty().addListener((observable -> {
+        setTransplantListPredicate(fListTransplantDetails);
+        updateFiltersLabel();
+      }));
+    }
+
     return fListTransplantDetails;
+  }
+
+  /**
+   * Updates the filters label to allow the user to easily see the filters that have been applied
+   */
+  private void updateFiltersLabel() {
+    String labelText = "Showing all receivers";
+    if (!waitingRegionTextfield.getText().isEmpty()) {
+      labelText += " from a place starting with " + waitingRegionTextfield.getText();
+    }
+    if (!getAllFilteredOrgans().isEmpty()) {
+      labelText += " who need a ";
+    }
+    for (Organs organ : getAllFilteredOrgans()) {
+      labelText += organ.toString() + " or ";
+    }
+    if (!getAllFilteredOrgans().isEmpty()) {
+      labelText = labelText.substring(0, labelText.length() - 4);
+    }
+
+    filtersLabel.setText(labelText);
+
+
+  }
+
+  /**
+   * Sets the predicate on the filteredList for Transplant details
+   * Cannot be overloaded as the the argument types are the same but have different erasures
+   * @param fList filteredList of TransplantDetails objects
+   */
+  private void setTransplantListPredicate(FilteredList<TransplantDetails> fList) {
+    fList.predicateProperty().bind(Bindings.createObjectBinding(() -> transplantDetails -> {
+
+      return ((transplantDetails.getRegion().contains(waitingRegionTextfield.getText().toLowerCase())) &&
+          (getAllFilteredOrgans().contains(transplantDetails.getOrgan()) || !checkAnyTransplantFilterCheckBoxSelected()));
+    }));
+  }
+
+  /**
+   * @return true if any of the transplant filter check boxes are checked
+   */
+  private boolean checkAnyTransplantFilterCheckBoxSelected() {
+    for (CheckBox checkBox : filterCheckBoxList) {
+      if (checkBox.isSelected()) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  /**
+   * Gets a list of organs that the user wants to filter by
+   * @return the relevant organs to filter by
+   */
+  private ArrayList<Organs> getAllFilteredOrgans() {
+    ArrayList<Organs> organs = new ArrayList<>();
+    if (boneCheckBox.isSelected())
+      organs.add(BONE);
+    if (boneMarrowCheckBox.isSelected())
+      organs.add(BONE_MARROW);
+    if (corneaCheckBox.isSelected())
+      organs.add(CORNEA);
+    if (connectiveTissueCheckBox.isSelected())
+      organs.add(CONNECTIVE_TISSUE);
+    if (heartCheckBox.isSelected())
+      organs.add(HEART);
+    if (middleEarCheckBox.isSelected())
+      organs.add(MIDDLE_EAR);
+    if (intestineCheckBox.isSelected())
+      organs.add(INTESTINE);
+    if (pancreasCheckBox.isSelected())
+      organs.add(PANCREAS);
+    if (lungCheckBox.isSelected())
+      organs.add(LUNG);
+    if (kidneyCheckBox.isSelected())
+      organs.add(KIDNEY);
+    if (liverCheckBox.isSelected())
+      organs.add(LIVER);
+    if (skinCheckBox.isSelected())
+      organs.add(SKIN);
+    return organs;
   }
 
   @FXML

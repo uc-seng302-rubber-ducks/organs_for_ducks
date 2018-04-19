@@ -119,7 +119,7 @@
         <content>
             <SplitPane dividerPositions="0.5" orientation="VERTICAL">
                <items>
-                  <AnchorPane fx:id="filterAnchorPane" maxHeight="115.0" minHeight="115.0" prefHeight="200.0" prefWidth="200.0">
+                  <AnchorPane maxHeight="115.0" minHeight="115.0" prefHeight="200.0" prefWidth="200.0">
                      <children>
                         <Label layoutX="21.0" layoutY="23.0" text="Region: " AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="18.0" />
                         <Label layoutX="14.0" layoutY="43.0" text="Organ:" />
@@ -141,7 +141,7 @@
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
                         <TableView fx:id="transplantWaitListTableView" prefHeight="330.0" prefWidth="617.0" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                        <Label layoutX="14.0" layoutY="222.0" text="Label" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="14.0" />
+                        <Label fx:id="filtersLabel" layoutX="14.0" layoutY="222.0" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="14.0" maxWidth="Infinity"/>
                      </children>
                   </AnchorPane>
                </items>
