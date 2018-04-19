@@ -185,9 +185,7 @@ public class NewUserController {
      * @throws IOException
      */
     private void createUser(String nhi, String fName, LocalDate dob, LocalDate dod) throws IOException {
-
-        // TODO: Add in more validation and do not allow the user to be created if any of the fields are wrong.
-        boolean valid = true;
+        boolean valid = true; // prevents the account being created if false
 
         // User attributes
         // check string returns null if the textfield is empty
@@ -213,26 +211,37 @@ public class NewUserController {
             errorLabel.setVisible(true);
             valid = false;
         }
-        // todo: add in validation for phone numbers and email
+
         // contact details
         String currentAddress = AttributeValidation.checkString(addressInput.getText());
         String region = AttributeValidation.checkString(regionInput.getText());
-        String homePhone = phoneInput.getText();
-        String cellPhone = cellInput.getText();
-        String email = emailInput.getText();
+        String homePhone = AttributeValidation.checkString(phoneInput.getText());
+        String cellPhone = AttributeValidation.checkString(cellInput.getText());
+        String email = AttributeValidation.checkString(emailInput.getText());
+
+        // validate email and phone numbers
+        valid = emailCheck(email, valid);
+        valid = homePhoneCheck(homePhone, valid);
+        valid = cellPhoneCheck(cellPhone, valid);
 
         // Emergency Contact attributes
         String eName = AttributeValidation.checkString(ecNameInput.getText());
-        String eCellPhone = ecCellInput.getText();
-        String eHomePhone = ecPhoneInput.getText();
+        String eCellPhone = AttributeValidation.checkString(ecCellInput.getText());
+        String eHomePhone = AttributeValidation.checkString(ecPhoneInput.getText());
         String eAddress = AttributeValidation.checkString(ecAddressInput.getText());
         String eRegion = AttributeValidation.checkString(ecRegionInput.getText());
-        String eEmail = ecEmailInput.getText();
+        String eEmail = AttributeValidation.checkString(ecEmailInput.getText());
         String eRelationship = AttributeValidation.checkString(ecRelationshipInput.getText());
 
+        // validate emergency contact email and phone numbers
+        valid = emailCheck(eEmail, valid);
+        valid = homePhoneCheck(eHomePhone, valid);
+        valid = cellPhoneCheck(eCellPhone, valid);
+
+
         // the name and cell number are required if any other attributes are filled out
-        if ((eName == null || eCellPhone.isEmpty()) && (!eHomePhone.isEmpty() || eAddress != null || eRegion != null ||
-                !eEmail.isEmpty() || eRelationship != null)) {
+        if ((eName == null || eCellPhone == null) && (eHomePhone != null || eAddress != null || eRegion != null ||
+                eEmail != null || eRelationship != null)) {
             valid = false;
             errorLabel.setText("Name and cell phone number are required for an emergency contact.");
             errorLabel.setVisible(true);
@@ -280,6 +289,69 @@ public class NewUserController {
 
 
     /**
+     * Checks that if the given email is not null, then it must be in the correct format.
+     *
+     * @param email The email address to be validated.
+     * @param valid A boolean indicating if there is an invalid user input.
+     * @return false if the email is not valid, otherwise the original value of the boolean.
+     */
+    private boolean emailCheck(String email, boolean valid) {
+        if (email != null) {
+            email = AttributeValidation.validateEmail(email);
+
+            if (email == null) {
+                valid = false;
+                errorLabel.setVisible(true);
+            }
+        }
+
+        return valid;
+    }
+
+
+    /**
+     * Checks that if the given home phone number is not null, then it must be in the correct format.
+     *
+     * @param homeNum The home phone number to be validated.
+     * @param valid A boolean indicating if there is an invalid user input.
+     * @return false if the home phone number is not valid, otherwise the original value of the boolean.
+     */
+    private boolean homePhoneCheck(String homeNum, boolean valid) {
+        if (homeNum != null) {
+            homeNum = AttributeValidation.validatePhoneNumber(homeNum);
+
+            if (homeNum == null) {
+                valid = false;
+                errorLabel.setVisible(true);
+            }
+        }
+
+        return valid;
+    }
+
+
+    /**
+     * Checks that if the given cell phone number is not null, then it must be in the correct format.
+     *
+     * @param cellNum The cell phone number to be validated.
+     * @param valid A boolean indicating if there is an invalid user input.
+     * @return false if the cell phone number is not valid, otherwise the original value of the boolean.
+     */
+    private boolean cellPhoneCheck(String cellNum, boolean valid) {
+        if (cellNum != null) {
+            cellNum = AttributeValidation.validateCellNumber(cellNum);
+
+            if (cellNum == null) {
+                valid = false;
+                errorLabel.setVisible(true);
+            }
+        }
+
+        return valid;
+    }
+
+
+    /**
      * Sends the user to the user overview window.
      * Validates the required attributes and sends messages if they are not valid.
      * @throws IOException Throws an exception if the fxml cannot be located.
@@ -287,6 +359,8 @@ public class NewUserController {
     @FXML
     private void confirmCreation() throws IOException {
         hideErrorMessages();
+        errorLabel.setText("Error in creating profile.\n" +
+                "Please make sure your details are correct.");
         boolean valid = true;
 
         String nhi = AttributeValidation.validateNHI(nhiInput.getText());
@@ -321,8 +395,7 @@ public class NewUserController {
             }
         }
 
-        //Donor donor = controller.findDonor(nhi); // checks if the nhi already exists within the system
-        User user = controller.findUser(fName); // TODO: change this to check for the nhi
+        User user = controller.findUser(nhi); // checks if the nhi already exists within the system
 
         if (valid && user == null){
             createUser(nhi, fName, dob, dod);
