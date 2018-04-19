@@ -313,10 +313,9 @@ public class ClinicianController {
       if (user.isReceiver()) {
         organs = user.getReceiverDetails().getOrgans();
         for (Organs organ : organs) {
-          appController.addTransplant(new TransplantDetails(user.getNhi(), user.getName(), organ.toString(), LocalDate.now(), user.getRegion())); //TODO replace LocalDate.now() with Organ Registration Date
+          appController.addTransplant(new TransplantDetails(user.getNhi(), user.getName(), organ, LocalDate.now(), user.getRegion())); //TODO replace LocalDate.now() with Organ Registration Date
         }
       }
-
     }
 
     observableTransplantList = FXCollections.observableList(appController.getTransplantList());
@@ -326,6 +325,18 @@ public class ClinicianController {
 
     if(appController.getTransplantList().size() != 0) {
       transplantWaitListTableView.setItems(sTransplantList);
+
+      //set on-click behaviour
+      transplantWaitListTableView.setOnMouseClicked(new EventHandler<MouseEvent>() {
+        @Override
+        public void handle(MouseEvent event) {
+          if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
+            TransplantDetails transplantDetails = transplantWaitListTableView.getSelectionModel().getSelectedItem();
+            User wantedUser = appController.findUser(transplantDetails.getNhi());
+            launchDonor(wantedUser);
+          }
+        }
+      });
 
     } else {
       transplantWaitListTableView.setPlaceholder(new Label("No Recipients"));
@@ -351,7 +362,9 @@ public class ClinicianController {
     transplantWaitListTableView.getColumns().setAll(recipientNameColumn, organNameColumn, organRegistrationDateColumn, recipientRegionColumn);
     updateFiltersLabel();
 
-  }/**
+}
+
+  /**
      *
      * @param arrayList An array list of users.
      * @return A list of users.

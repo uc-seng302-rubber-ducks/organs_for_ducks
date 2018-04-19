@@ -10,11 +10,11 @@ import java.time.LocalDate;
 public class TransplantDetails {
     private String nhi;
     private String name;
-    private String organ;
+    private Organs organ;
     private LocalDate ORD; //Organ Registration Date
     private String region;
 
-    public TransplantDetails(String nhi, String name, String organ, LocalDate ORD, String region){
+    public TransplantDetails(String nhi, String name, Organs organ, LocalDate ORD, String region){
         this.nhi = nhi;
         this.name = name;
         this.organ = organ;
@@ -31,7 +31,7 @@ public class TransplantDetails {
     }
 
 
-    public String getOrgan() {
+    public Organs getOrgan() {
         return organ;
     }
 
