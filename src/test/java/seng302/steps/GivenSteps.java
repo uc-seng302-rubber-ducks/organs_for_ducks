@@ -3,6 +3,7 @@ package seng302.steps;
 import cucumber.api.PendingException;
 import cucumber.api.java.en.Given;
 import javafx.stage.Stage;
+import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.matcher.control.LabeledMatchers;
 import seng302.App;
@@ -25,6 +26,13 @@ public class GivenSteps extends ApplicationTest{
     @Given("^I have started the CLI$")
     public void iHaveStartedTheCLI() throws Throwable {
         controller = AppController.getInstance();
+    }
+
+    @Given("^I have started the GUI$")
+    public void iHaveStartedTheGUI() throws Throwable {
+        FxToolkit.registerPrimaryStage();
+        FxToolkit.setupApplication(App.class);
+        //AppController.getInstance().getUsers().clear();
     }
 
     @Given("^a user with the NHI \"([^\"]*)\" exists$")
