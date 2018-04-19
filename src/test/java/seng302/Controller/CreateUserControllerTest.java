@@ -2,25 +2,41 @@ package seng302.Controller;
 
 import static org.testfx.api.FxAssert.verifyThat;
 
+import java.util.concurrent.TimeoutException;
 import javafx.scene.Node;
-import javafx.stage.Stage;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.matcher.control.LabeledMatchers;
 import seng302.App;
 
 public class CreateUserControllerTest extends ApplicationTest {
 
-  @Override
-  public void start(Stage stage) throws Exception {
-    new App().start(stage);
+  @BeforeClass
+  public static void initialization() {
+    if (Boolean.getBoolean("headless")) {
+      System.setProperty("testfx.robot", "glass");
+      System.setProperty("testfx.headless", "true");
+      System.setProperty("prism.order", "sw");
+      System.setProperty("prism.text", "t2k");
+      System.setProperty("java.awt.headless", "true");
+      System.setProperty("headless.geometry", "1920x1080-32");
+    }
   }
 
+//  @Before
+//  public void setup() throws Exception {
+//    ApplicationTest.launch(App.class);
+//  }
+
   @Before
-  public void setUpCreateScene() {
+  public void setUpCreateScene() throws TimeoutException {
+    FxToolkit.registerPrimaryStage();
+    FxToolkit.setupApplication(App.class);
     AppController.getInstance().getUsers().clear();
     clickOn("#signUpButton");
   }
@@ -106,7 +122,7 @@ public class CreateUserControllerTest extends ApplicationTest {
     verifyThat("#fNameValue", LabeledMatchers.hasText("Dwayne"));
     verifyThat("#smokerValue", LabeledMatchers.hasText("No"));
     verifyThat("#alcoholValue", LabeledMatchers.hasText("None"));
-    verifyThat("#DOBValue", LabeledMatchers.hasText("2017-03-01"));
+    verifyThat("#DOBValue", LabeledMatchers.hasText("2017-01-03"));
   }
 
   @Test
