@@ -2,8 +2,9 @@ package seng302.steps;
 
 import cucumber.api.PendingException;
 import cucumber.api.java.en.When;
+import org.testfx.framework.junit.ApplicationTest;
 
-public class WhenSteps {
+public class WhenSteps extends ApplicationTest {
     @When("^I view the previously created donor$")
     public void iViewThePreviouslyCreatedDonor() throws Throwable {
         // Write code here that turns the phrase above into concrete actions
@@ -70,6 +71,11 @@ public class WhenSteps {
         throw new PendingException();
     }
 
+    @When("^clicked on Create Button$")
+    public void clickedOnCreateButton() throws Throwable{
+        clickOn("#createButton");
+    }
+
     @When("^I clicked on Login As Clinician Button$")
     public void iClickedOnLoginAsClinicianButton() throws Throwable {
         // Write code here that turns the phrase above into concrete actions
@@ -83,9 +89,9 @@ public class WhenSteps {
     }
 
     @When("^I entered Disease Name \"([^\"]*)\" and used the default Diagnosis Date$")
-    public void iEnteredDiseaseNameAndUsedTheDefaultDiagnosisDate(String arg1) throws Throwable {
-        // Write code here that turns the phrase above into concrete actions
-        throw new PendingException();
+    public void iEnteredDiseaseNameAndUsedTheDefaultDiagnosisDate(String diseaseName) throws Throwable {
+        clickOn("#diseaseNameInput");
+        write(diseaseName);
     }
 
     @When("^clicked on Status Chronic$")

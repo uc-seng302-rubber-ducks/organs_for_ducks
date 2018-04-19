@@ -2,14 +2,25 @@ package seng302.steps;
 
 import cucumber.api.PendingException;
 import cucumber.api.java.en.Given;
+import javafx.stage.Stage;
+import org.testfx.framework.junit.ApplicationTest;
+import org.testfx.matcher.control.LabeledMatchers;
+import seng302.App;
 import seng302.Controller.AppController;
 import seng302.Model.User;
 
 import java.util.ArrayList;
-import java.util.Date;
 
-public class GivenSteps {
+import static org.testfx.api.FxAssert.verifyThat;
+import static seng302.Controller.TableViewsMethod.getCell;
+
+public class GivenSteps extends ApplicationTest{
     private AppController controller;
+
+    @Override
+    public void start(Stage stage) throws Exception {
+        new App().start(stage);
+    }
 
     @Given("^I have started the CLI$")
     public void iHaveStartedTheCLI() throws Throwable {
@@ -62,9 +73,17 @@ public class GivenSteps {
 
     @Given("^The Create New Disease screen is loaded$")
     public void theCreateNewDiseaseScreenIsLoaded() throws Throwable {
-        // Write code here that turns the phrase above into concrete actions
-        throw new PendingException();
+        //Use default clinician
+        clickOn("#changeLogin");
+        clickOn("#userIDTextField");
+        write("0");
+        clickOn("#passwordField");
+        write("admin");
+        clickOn("#loginButton");
+        verifyThat("#staffIdLabel", LabeledMatchers.hasText("0"));
+        clickOn("#searchTab");
+        doubleClickOn(getCell("#searchTableView", 0, 0));
+        clickOn("#diseaseTab");
+        clickOn("#addDiseaseButton");
     }
-
-
 }

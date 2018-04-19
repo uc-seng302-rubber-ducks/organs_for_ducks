@@ -3,6 +3,9 @@ package seng302.steps;
 import cucumber.api.PendingException;
 import cucumber.api.java.en.Then;
 
+import static org.junit.Assert.assertEquals;
+import static seng302.Controller.TableViewsMethod.*;
+
 public class ThenSteps {
     @Then("^There are two profiles with first name \"([^\"]*)\" and last name \"([^\"]*)\"$")
     public void thereAreTwoProfilesWithFirstNameAndLastName(String arg1, String arg2) throws Throwable {
@@ -89,9 +92,8 @@ public class ThenSteps {
     }
 
     @Then("^I should see the Disease Name \"([^\"]*)\" at the Current Diseases Table$")
-    public void iShouldSeeTheDiseaseNameAtTheCurrentDiseasesTable(String arg1) throws Throwable {
-        // Write code here that turns the phrase above into concrete actions
-        throw new PendingException();
+    public void iShouldSeeTheDiseaseNameAtTheCurrentDiseasesTable(String diseaseName) throws Throwable {
+        assertEquals(diseaseName, getCellValue("#currentDiseaseTableView", 1, 0).toString());
     }
 
     @Then("^I should see the Disease Name \"([^\"]*)\" and the word \"([^\"]*)\" in red next to disease name at the Current Diseases Table$")
