@@ -694,6 +694,13 @@ public class DonorController {
     organsDonatingListView.getItems().clear();
     organsDonatingListView.getItems().addAll(currentUser.getDonorDetails().getOrgans());
     setContactPage();
+    if (user.getLastName() != null) {
+      stage.setTitle("User Profile: " + user.getFirstName() + " " + user.getLastName());
+    } else{
+      stage.setTitle("User Profile: " + user.getFirstName());
+
+
+    }
   }
 
   /**

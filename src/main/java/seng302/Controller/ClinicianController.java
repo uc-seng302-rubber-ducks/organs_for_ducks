@@ -123,6 +123,7 @@ public class ClinicianController {
     lNameLabel.setText(clinician.getLastName());
     addressLabel.setText(clinician.getWorkAddress());
     regionLabel.setText(clinician.getRegion());
+    stage.setTitle("Clinician " + clinician.getFirstName() +" " + clinician.getLastName());
   }
 
   /**
