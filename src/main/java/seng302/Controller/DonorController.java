@@ -946,12 +946,21 @@ public class DonorController {
 
     @FXML
     void addProcedure(ActionEvent event) {
+        String procedureName = procedureTextField.getText();
+        if (procedureName.isEmpty()){
+            procedureWarningLabel.setText("A name must be entered for a procedure");
+            return;
+        }
         LocalDate procedureDate = procedureDateSelector.getValue();
+        if(procedureDate == null){
+            procedureWarningLabel.setText("A valid date must be entered for a procedure");
+            return;
+        }
         if (procedureDate.isBefore(currentUser.getDateOfBirth())) {
             procedureWarningLabel.setText("Procedures may not occur before a patient has been born");
             return;
         }
-        MedicalProcedure procedure = new MedicalProcedure(procedureDate, procedureTextField.getText(), descriptionTextArea.getText(), new ArrayList<Organs>());
+        MedicalProcedure procedure = new MedicalProcedure(procedureDate, procedureName, descriptionTextArea.getText(), new ArrayList<Organs>());
         medicalProcedures.add(procedure);
         if (procedure.getProcedureDate().isBefore(LocalDate.now())) {
             previousProcedures.add(procedure);
@@ -964,9 +973,18 @@ public class DonorController {
 
     @FXML
     void updateProcedures() {
+        procedureWarningLabel.setText("");
         String newName = procedureTextField.getText();
         LocalDate newDate = procedureDateSelector.getValue();
         String newDescription = descriptionTextArea.getText();
+        if (newName.isEmpty()){
+            procedureWarningLabel.setText("A name must be entered for a procedure");
+            return;
+        }
+        if (newDate == null){
+            procedureWarningLabel.setText("A valid date must be entered for a procedure");
+            return;
+        }
         if (newDate.isBefore(currentUser.getDateOfBirth())) {
             procedureWarningLabel.setText("Procedures may not occur before a patient has been born");
             return;
@@ -993,7 +1011,11 @@ public class DonorController {
      */
     private void updateProcedure(MedicalProcedure procedure, String newName, LocalDate newDate, String newDescription) {
         procedure.setSummary(newName);
-        procedure.setProcedureDate(newDate);
+        if (newDate == null){
+
+        } else {
+            procedure.setProcedureDate(newDate);
+        }
         procedure.setDescription(newDescription);
         if (procedure.getProcedureDate().isBefore(LocalDate.now())) {
             previousProcedures.add(procedure);
@@ -1012,6 +1034,7 @@ public class DonorController {
 
     @FXML
     void clearProcedure() {
+        procedureWarningLabel.setText("");
         procedureTextField.setText("");
         procedureDateSelector.setValue(LocalDate.now());
         descriptionTextArea.setText("");
