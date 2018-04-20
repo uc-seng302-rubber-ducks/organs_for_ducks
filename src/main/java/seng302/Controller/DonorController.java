@@ -1,7 +1,6 @@
 package seng302.Controller;
 
 
-
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import javafx.collections.FXCollections;
@@ -18,10 +17,11 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
+import seng302.Controller.UpdateUserController;
+import seng302.Model.*;
 import okhttp3.OkHttpClient;
 import org.controlsfx.control.textfield.TextFields;
-import okhttp3.OkHttpClient;
-import seng302.Model.*;
+
 import java.io.IOException;
 import java.util.*;
 
