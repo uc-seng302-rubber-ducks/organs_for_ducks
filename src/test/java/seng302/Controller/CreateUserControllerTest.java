@@ -143,22 +143,176 @@ public class CreateUserControllerTest extends ApplicationTest {
   }
 
   @Test
-  public void testContactDetails() {
+  public void testHomePhoneInput() {
+    clickOn("#nhiInput");
+    write("ADE1987");
+    clickOn("#fNameInput");
+    write("Dwayne");
+    clickOn("#dobInput");
+    write("3/1/2017");
+    clickOn("#phoneInput");
+    write("3552847");
+    clickOn("#confirmButton");
+    clickOn("#detailsTab");
+    verifyThat("#pHomePhone", LabeledMatchers.hasText("3552847"));
+  }
 
+  @Test @Ignore
+  public void testInvalidHomePhone() {
+    clickOn("#nhiInput");
+    write("ADE1987");
+    clickOn("#fNameInput");
+    write("Dwayne");
+    clickOn("#dobInput");
+    write("3/1/2017");
+    clickOn("#phoneInput");
+    write("asdf");
+    clickOn("#confirmButton");
+    //TODO: Check that an invalid label is shown
   }
 
   @Test
   public void testInvalidEmail() {
-
-  }
-
-  @Test
-  public void testInvalidHomePhone() {
-
+    clickOn("#nhiInput");
+    write("ADE1987");
+    clickOn("#fNameInput");
+    write("Dwayne");
+    clickOn("#dobInput");
+    write("3/1/2017");
+    clickOn("#emailInput");
+    write("asdf");
+    clickOn("#confirmButton");
+    //TODO: Check that an invalid label is shown
   }
 
   @Test
   public void testInvalidMobilePhone() {
+    clickOn("#nhiInput");
+    write("ADE1987");
+    clickOn("#fNameInput");
+    write("Dwayne");
+    clickOn("#dobInput");
+    write("3/1/2017");
+    clickOn("#cellInput");
+    write("asdf");
+    clickOn("#confirmButton");
+    //TODO: Check that an invalid label is shown
+  }
+
+  @Test
+  public void testValidMobilePhone() {
+    clickOn("#nhiInput");
+    write("ADE1987");
+    clickOn("#fNameInput");
+    write("Dwayne");
+    clickOn("#dobInput");
+    write("3/1/2017");
+    clickOn("#cellInput");
+    write("0224973642");
+    clickOn("#confirmButton");
+    clickOn("#detailsTab");
+    verifyThat("#pCellPhone", LabeledMatchers.hasText("0224973642"));
+  }
+
+  @Test
+  public void testValidEmail() {
+    clickOn("#nhiInput");
+    write("ADE1987");
+    clickOn("#fNameInput");
+    write("Dwayne");
+    clickOn("#dobInput");
+    write("3/1/2017");
+    clickOn("#emailInput");
+    write("dwayneRock@gmail.com");
+    clickOn("#confirmButton");
+    clickOn("#detailsTab");
+    verifyThat("#pEmail", LabeledMatchers.hasText("dwayneRock@gmail.com"));
+  }
+
+  @Test
+  public void testValidAddress() {
+    clickOn("#nhiInput");
+    write("ADE1987");
+    clickOn("#fNameInput");
+    write("Dwayne");
+    clickOn("#dobInput");
+    write("3/1/2017");
+    clickOn("#emailInput");
+    write("dwayneRock@gmail.com");
+    clickOn("#confirmButton");
+  }
+
+  @Test
+  public void testValidEmergencyContact() {
+    clickOn("#nhiInput");
+    write("ADE1987");
+    clickOn("#fNameInput");
+    write("Dwayne");
+    clickOn("#dobInput");
+    write("3/1/2017");
+    clickOn("#ecNameInput");
+    write("John Cena");
+    clickOn("#ecCellInput");
+    write("0214583341");
+    clickOn("#confirmButton");
+    clickOn("#detailsTab");
+    verifyThat("#eName", LabeledMatchers.hasText("John Cena"));
+    verifyThat("#eCellPhone", LabeledMatchers.hasText("0214583341"));
+  }
+
+  @Test
+  public void testInvalidEmergencyContactName() {
+    clickOn("#nhiInput");
+    write("ADE1987");
+    clickOn("#fNameInput");
+    write("Dwayne");
+    clickOn("#dobInput");
+    write("3/1/2017");
+    clickOn("#ecCellInput");
+    write("0214583341");
+    clickOn("#confirmButton");
+    verifyThat("#errorLabel", LabeledMatchers.hasText("Name and cell phone number are required for an emergency contact."));
+  }
+
+  @Test
+  public void testInvalidEmergencyPhone() {
+    clickOn("#nhiInput");
+    write("ADE1987");
+    clickOn("#fNameInput");
+    write("Dwayne");
+    clickOn("#dobInput");
+    write("3/1/2017");
+    clickOn("#ecNameInput");
+    write("John Cena");
+    clickOn("#confirmButton");
+    verifyThat("#errorLabel", LabeledMatchers.hasText("Name and cell phone number are required for an emergency contact."));
+  }
+
+  @Test
+  public void testAllEmergencyDetails() {
+    clickOn("#nhiInput");
+    write("ADE1987");
+    clickOn("#fNameInput");
+    write("Dwayne");
+    clickOn("#dobInput");
+    write("3/1/2017");
+    clickOn("#ecNameInput");
+    write("John Cena");
+    clickOn("#ecPhoneInput");
+    write("3594573");
+    clickOn("#ecCellInput");
+    write("0221557621");
+    clickOn("#ecAddressInput");
+    write("123 Example St");
+    clickOn("#ecRegionInput");
+    write("Canterbury");
+    clickOn("#ecEmailInput");
+    write("johnCena@gmail.com");
+    clickOn("#ecRelationshipInput");
+    write("Leader");
+    clickOn("#confirmButton");
+    clickOn("#detailsTab");
+    verifyThat("#eName", LabeledMatchers.hasText("John Cena"));
   }
 
 }

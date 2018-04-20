@@ -235,7 +235,7 @@ public class NewUserController {
 
         // the name and cell number are required if any other attributes are filled out
         if ((eName == null || eCellPhone.isEmpty()) && (!eHomePhone.isEmpty() || eAddress != null || eRegion != null ||
-                !eEmail.isEmpty() || eRelationship != null)) {
+            !eEmail.isEmpty() || eRelationship != null || eName != null || !eCellPhone.isEmpty())) {
             valid = false;
             errorLabel.setText("Name and cell phone number are required for an emergency contact.");
             errorLabel.setVisible(true);
