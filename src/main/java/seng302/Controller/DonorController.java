@@ -214,7 +214,7 @@ public class DonorController {
     private TableView<Map.Entry<Organs, LocalDate>> receiverOrgansTableView;
 
     @FXML
-    private Button ReceiverEditOrgansButton;
+    private Button ReceiverModifyOrgansButton;
 
     private TableView<MedicalProcedure> currentProcedureList;
 
@@ -249,7 +249,7 @@ public class DonorController {
         //ageValue.setText("");
         if (fromClinician) {
             logOutButton.setVisible(false);
-            ReceiverEditOrgansButton.setVisible(true);
+            ReceiverModifyOrgansButton.setVisible(true);
         } else {
             procedureDateSelector.setEditable(false);
             procedureTextField.setEditable(false);
@@ -1132,6 +1132,28 @@ public class DonorController {
             receiverOrgansTableView.setPlaceholder(new Label("Not registered as Receiver"));
         }
     }
+
+    /**
+     * fires when the organs button at under Receiver
+     * table is clicked
+     */
+    @FXML
+    private void modifyReceiverOrgans() {
+
+        FXMLLoader modifyReceiverOrgansLoader = new FXMLLoader(getClass().getResource("/FXML/receiverOrgansView.fxml"));
+        Parent root = null;
+        try {
+            root = modifyReceiverOrgansLoader.load();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        ReceiverOrganController newDiseaseController = modifyReceiverOrgansLoader.getController();
+        Stage stage = new Stage();
+        newDiseaseController.init(currentUser, application, stage);
+        stage.setScene(new Scene(root));
+        stage.show();
+    }
+
 
 }
 
