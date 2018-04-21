@@ -339,7 +339,7 @@ public class ClinicianController {
       });
 
     } else {
-      transplantWaitListTableView.setPlaceholder(new Label("No Recipients"));
+      transplantWaitListTableView.setPlaceholder(new Label("No Receivers currently registered"));
     }
 
 
