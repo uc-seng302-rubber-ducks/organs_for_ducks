@@ -80,6 +80,8 @@ public class User {
   private HashMap<String, ArrayList<LocalDateTime>> currentMedicationTimes;
   @Expose
   private ArrayList<Change> changes;
+  @Expose
+  private  ArrayList<MedicalProcedure> medicalProcedures;
 
   //flags and extra details for if the person is a donor or a receiver
   @Expose
@@ -126,6 +128,10 @@ public class User {
         this.previousMedication = new ArrayList<>();
         this.currentMedicationTimes = new HashMap<>();
         this.previousMedicationTimes = new HashMap<>();
+        this.donorDetails = new DonorDetails(this);
+        this.receiverDetails = new ReceiverDetails(this);
+
+        this.medicalProcedures  = new ArrayList<>();
         try {
             changes = JsonHandler.importHistoryFromFile(name);
         } catch (FileNotFoundException e) {
@@ -138,7 +144,7 @@ public class User {
       String bloodType,
       String currentAddress, String region, LocalDateTime timeCreated, String name,
       LocalDateTime lastModified,
-      boolean isDeceased, String nhi) {
+      boolean isDeceased, String nhi, ArrayList<MedicalProcedure> medicalProcedures) {
     this.dateOfBirth = dateOfBirth;
     this.dateOfDeath = dateOfDeath;
     if (gender.startsWith("m") || gender.startsWith("M")) {
@@ -173,6 +179,10 @@ public class User {
     this.currentMedicationTimes = new HashMap<String, ArrayList<LocalDateTime>>();
     this.previousMedicationTimes = new HashMap<String, ArrayList<LocalDateTime>>();
     this.nhi = nhi;
+    this.donorDetails = new DonorDetails(this);
+    this.receiverDetails = new ReceiverDetails(this);
+    this.medicalProcedures = medicalProcedures;
+    //TODO fix json reader
     try {
       changes = JsonHandler.importHistoryFromFile(name);
     } catch (FileNotFoundException e) {
@@ -183,7 +193,8 @@ public class User {
 
   public User(String name, java.time.LocalDate dateOfBirth, String nhi) {
     this.dateOfBirth = dateOfBirth;
-    this.name = name;
+    this.name = name;    this.donorDetails = new DonorDetails(this);
+    this.receiverDetails = new ReceiverDetails(this);
     this.nhi = nhi;
     timeCreated = LocalDateTime.now();
     lastModified = LocalDateTime.now();
@@ -201,6 +212,12 @@ public class User {
     } catch (FileNotFoundException e) {
       e.printStackTrace();
     }
+
+    this.donorDetails = new DonorDetails(this);
+    this.receiverDetails = new ReceiverDetails(this);
+    this.medicalProcedures =  new ArrayList<>();
+    //TODO fix json reader
+    //changes = JsonReader.importHistoryFromFile(this);
   }
 
   /**
@@ -213,7 +230,7 @@ public class User {
     this.previousMedication = new ArrayList<>();
     this.currentMedicationTimes = new HashMap<String, ArrayList<LocalDateTime>>();
     this.previousMedicationTimes = new HashMap<String, ArrayList<LocalDateTime>>();
-
+    this.medicalProcedures = new ArrayList<>();
     this.donorDetails = new DonorDetails(this);
     this.receiverDetails = new ReceiverDetails(this);
     changes = new ArrayList<>();
@@ -727,6 +744,25 @@ public class User {
     changes.add(change);
   }
 
+  public ArrayList<MedicalProcedure> getMedicalProcedures() {
+    return medicalProcedures;
+  }
+
+  public void setMedicalProcedures(ArrayList<MedicalProcedure> medicalProcedures) {
+    updateLastModified();
+    this.medicalProcedures = medicalProcedures;
+  }
+
+  public void addMedicalProcedure(MedicalProcedure medicalProcedure){
+    updateLastModified();
+    medicalProcedures.add(medicalProcedure);
+  }
+
+  public void removeMedicalProcedure(MedicalProcedure medicalProcedure){
+    updateLastModified();
+    medicalProcedures.remove(medicalProcedure);
+  }
+
   public String getTooltip() {
     //TODO fix this to show full info where possible
     if (this.donorDetails.getOrgans() == null) {
@@ -769,13 +805,14 @@ public class User {
         "\nnhi: " + nhi +
         "\ndate Of Birth: " + dateOfBirth +
         "\ndate Of Death :" + dateOfDeath +
-        "\ngender: " + gender +
+        "\nbirth gender: " + birthGender +
+        "\npreferred gender: " + genderIdentity +
         "\nheight: " + height +
         "\nweight: " + weight +
         "\nblood Type: '" + bloodType + '\'' +
         "\ncurrent Address: '" + currentAddress + '\'' +
         "\nregion: '" + region + '\'' +
-        "\norgans: " + donorDetails.getOrgans() +
+        "\norgans: " + (isDonor() ?  donorDetails.getOrgans() : (name + " is not a donor")) +
         "\ntime Created: " + timeCreated +
         "\nlast modified: " + lastModified;
   }
