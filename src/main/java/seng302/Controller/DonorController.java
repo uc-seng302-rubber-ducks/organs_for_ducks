@@ -211,7 +211,10 @@ public class DonorController {
     @FXML
     private TextArea descriptionTextArea;
     @FXML
-    private TableView receiverOrgansTableView;
+    private TableView<Map.Entry<Organs, LocalDate>> receiverOrgansTableView;
+
+    @FXML
+    private Button ReceiverEditOrgansButton;
 
     private TableView<MedicalProcedure> currentProcedureList;
 
@@ -246,6 +249,7 @@ public class DonorController {
         //ageValue.setText("");
         if (fromClinician) {
             logOutButton.setVisible(false);
+            ReceiverEditOrgansButton.setVisible(true);
         } else {
             procedureDateSelector.setEditable(false);
             procedureTextField.setEditable(false);
