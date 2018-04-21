@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.Controller.OrgansAffectedController">
+   <children>
+      <ListView fx:id="organsListView" layoutX="53.0" layoutY="100.0" prefHeight="274.0" prefWidth="200.0" />
+      <ListView fx:id="affectedOrgansListView" layoutX="354.0" layoutY="100.0" prefHeight="274.0" prefWidth="200.0" />
+      <Label layoutX="247.0" layoutY="27.0" text="Organs Affected" />
+      <Label layoutX="128.0" layoutY="71.0" text="Organs" />
+      <Label layoutX="400.0" layoutY="79.0" text="Affected" />
+      <Button fx:id="addOrganButton" layoutX="287.0" layoutY="125.0" mnemonicParsing="false" onAction="#addOrgan" text="&gt;&gt;" />
+      <Button fx:id="removeOrganButton" layoutX="287.0" layoutY="188.0" mnemonicParsing="false" onAction="#removeOrgan" text="&lt;&lt;" />
+      <Button fx:id="backButton" layoutX="282.0" layoutY="327.0" mnemonicParsing="false" onAction="#back" text="Back" />
+   </children>
+</AnchorPane>

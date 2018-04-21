@@ -313,6 +313,7 @@ public class NewUserController {
             valid = false;
         } else if (!dob.isBefore(LocalDate.now().plusDays(1))) { // checks that the date of birth is before tomorrow's date
             invalidDOB.setVisible(true);
+            valid = false;
         }
 
         if (dod != null) {
