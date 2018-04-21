@@ -1,10 +1,12 @@
 package seng302.Service;
 
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.TextField;
 import seng302.Model.BloodTypes;
 
 import java.time.LocalDate;
 import java.time.Period;
+import seng302.Model.User;
 
 
 /**
@@ -130,5 +132,19 @@ public class AttributeValidation {
         }
 
         return gender;
+    }
+
+    /**
+     * Check the entry of the string provided to see if the user's region matches the text
+     * @param regionString String object to check against the user's region
+     * @param user a User object
+     * @return true if the user's regions starts with the provided string
+     */
+    public static boolean checkRegionMatches(String regionString, User user) {
+        if (user.getRegion() == null) {
+            return regionString.equals("");
+        } else {
+            return user.getRegion().toLowerCase().startsWith(regionString.toLowerCase());
+        }
     }
 }
