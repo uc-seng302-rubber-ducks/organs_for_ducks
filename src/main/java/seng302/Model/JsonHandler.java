@@ -62,8 +62,8 @@ public final class JsonHandler {
         results.addAll(Arrays.asList(donors));
 
         for (User result : results) {
+            result.getReceiverDetails().setAttachedUser(result);
             result.getDonorDetails().setAttachedUser(result);
-            //TODO probably do the same with Receiver details
         }
         return results;
 

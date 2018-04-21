@@ -6,6 +6,9 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.time.temporal.ChronoUnit;
 
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -22,6 +25,7 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 import javafx.util.StringConverter;
 import okhttp3.OkHttpClient;
 import org.controlsfx.control.textfield.TextFields;
@@ -206,6 +210,8 @@ public class DonorController {
 
     @FXML
     private TextArea descriptionTextArea;
+    @FXML
+    private TableView receiverOrgansTableView;
 
     private TableView<MedicalProcedure> currentProcedureList;
 
@@ -215,6 +221,8 @@ public class DonorController {
     private ObservableList<MedicalProcedure> medicalProcedures;
     private ObservableList<MedicalProcedure> previousProcedures;
     private ObservableList<MedicalProcedure> pendingProcedures;
+    private HashMap<Organs, ArrayList<LocalDate>> receiverOrgans = new HashMap<>();
+
 
     private List<String> possibleGenders = Arrays.asList("M", "F", "U");
 
@@ -378,6 +386,7 @@ public class DonorController {
 
         modifyOrgansProcedureButton.setVisible(false);
 
+        showReceiverOrgans(currentUser);
     }
 
     /**
@@ -1078,5 +1087,47 @@ public class DonorController {
         s.showAndWait();
         showProcedure(procedure);
     }
+
+    /**
+     * show organs for receiver.
+     */
+    public void showReceiverOrgans(User currentUser) {
+        if (currentUser.isReceiver()) {
+             receiverOrgans = currentUser.getReceiverDetails().getOrgans();
+        }
+        // use fully detailed type for Map.Entry<String, LocalDate>
+        TableColumn<Map.Entry<Organs, LocalDate>, LocalDate> registrationDate = new TableColumn<>("Registration Date");
+        //registrationDate.setMinWidth(285);
+        registrationDate.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Map.Entry<Organs, LocalDate>, LocalDate>, ObservableValue<LocalDate>>() {
+
+            @Override
+            public ObservableValue<LocalDate> call(TableColumn.CellDataFeatures<Map.Entry<Organs, LocalDate>, LocalDate> p) {
+                return new SimpleObjectProperty<>(p.getValue().getValue());
+            }
+        });
+
+        TableColumn<Map.Entry<Organs, LocalDate>, Organs> organName = new TableColumn<>("Organ");
+        //organName.setMinWidth(285);
+        organName.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Map.Entry<Organs, LocalDate>, Organs>, ObservableValue<Organs>>() {
+
+            @Override
+            public ObservableValue<Organs> call(TableColumn.CellDataFeatures<Map.Entry<Organs, LocalDate>, Organs> p) {
+                return new SimpleObjectProperty(p.getValue().getKey());
+            }
+        });
+        receiverOrgansTableView.setPlaceholder(new Label("Not registered as Receiver"));
+
+        receiverOrgansTableView.getColumns().setAll(registrationDate, organName);
+
+        if(receiverOrgans.size() != 0) {
+
+            //ObservableList<Map.Entry<Organs, LocalDate>> items = FXCollections.observableArrayList(receiverOrgans.entrySet());
+            //receiverOrgansTableView.setItems(items);
+
+        } else {
+            receiverOrgansTableView.setPlaceholder(new Label("Not registered as Receiver"));
+        }
+    }
+
 }
 

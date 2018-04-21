@@ -21,6 +21,11 @@ public class ReceiverDetails {
 
   //TODO model from DonorDetails (get/set/add/remove/isEmpty etc)
 
+
+  public HashMap<Organs, ArrayList<LocalDate>> getOrgans() {
+    return organs;
+  }
+
   /**
    * determines whether a user is waiting for the given organ
    *
