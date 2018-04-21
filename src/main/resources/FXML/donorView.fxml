@@ -167,7 +167,8 @@
                         <ListView fx:id="organsAffectedByProcedureListView" layoutX="396.0" layoutY="105.0" prefHeight="178.0" prefWidth="265.0" />
                         <Label layoutX="396.0"
                         layoutY="81.0" text="Organs Affected:" />
-                        <Button fx:id="modifyOrgansProcedureButton" layoutX="178.0" layoutY="525.0" mnemonicParsing="false" onAction="#modifyProcedureOrgans"prefHeight="25.0" prefWidth="129.0" text="Modify Organs"/></children>
+                        <Button fx:id="modifyOrgansProcedureButton" layoutX="178.0" layoutY="525.0" mnemonicParsing="false" onAction="#modifyProcedureOrgans" prefHeight="25.0" prefWidth="129.0" text="Modify Organs"/>
+                     </children>
                   </AnchorPane>
               </content>
             </Tab>
