@@ -6,8 +6,9 @@ import java.util.HashSet;
 import seng302.Exceptions.OrgansInconsistentException;
 
 public class DonorDetails {
+
   @Expose
-  private HashSet<Organs> organs;
+  private HashSet<Organs> organs = new HashSet<>();
   private transient User attachedUser;
 
   public HashSet<Organs> getOrgans() {
@@ -22,6 +23,7 @@ public class DonorDetails {
   public void initOrgans() {
     organs = new HashSet<>();
   }
+
   public void setOrgans(HashSet<Organs> organs) {
     attachedUser.updateLastModified();
     this.organs = organs;
@@ -40,15 +42,20 @@ public class DonorDetails {
     }
     this.organs.add(organ);
     attachedUser.updateLastModified();
+    //TODO attachedUser is always null
+    attachedUser.updateLastModified();
   }
 
   /**
    * Removes an organ from the user profile.
+   *
    * @param organ the enum of organs.
    */
   public void removeOrgan(Organs organ) {
     if (organs.contains(organ)) {
       organs.remove(organ);
+      //TODO attachedUser is always null
+      attachedUser.updateLastModified();
     }
   }
 
@@ -57,6 +64,7 @@ public class DonorDetails {
   }
   /**
    * TODO update if/when more details are added
+   *
    * @return true if underlying organs list is empty
    */
   public boolean isEmpty() {

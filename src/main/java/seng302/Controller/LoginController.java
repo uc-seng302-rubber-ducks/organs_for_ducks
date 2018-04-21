@@ -48,7 +48,8 @@ public class LoginController {
   private Label passwordLabel;
 
     private Stage helpStage = null;
-    private boolean isUser = true;private AppController appController;
+    private boolean isUser = true;
+    private AppController appController;
     private ArrayList<User> users;
     private Stage stage;
 
