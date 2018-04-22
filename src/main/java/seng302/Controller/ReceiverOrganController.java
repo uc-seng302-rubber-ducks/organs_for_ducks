@@ -1,8 +1,10 @@
 package seng302.Controller;
 
 import javafx.collections.FXCollections;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.stage.Stage;
 import seng302.Model.Organs;
@@ -21,6 +23,9 @@ public class ReceiverOrganController {
 
     @FXML
     private ListView<Organs> notReceivingListView;
+
+    @FXML
+    private Label receiverNameLabel;
 
     AppController controller;
     Stage stage;
@@ -41,6 +46,7 @@ public class ReceiverOrganController {
         //showCurrentDate();
         //stage.setMinWidth(620);
         //stage.setMaxWidth(620);
+        receiverNameLabel.setText(user.getName());
         organs = new ArrayList<>(Arrays.asList(Organs.values()));
         organsComboBox.setItems(FXCollections.observableList(organs));
     }
@@ -85,5 +91,24 @@ public class ReceiverOrganController {
             currentlyReceivingListView.getItems().remove(toDeRegister);
         }
     }
+
+    /**
+     * returns to Donor View
+     * @param event passed in automatically by the gui
+     */
+    @FXML
+    void goBack(ActionEvent event) {
+        AppController appController = AppController.getInstance();
+        DonorController donorController = appController.getDonorController();
+        try {
+            donorController.showUser(currentUser);
+        }
+        catch (NullPointerException ex) {
+            //TODO causes npe if donor is new in this session
+            //the text fields etc. are all null
+        }
+        stage.close();
+    }
+
 
 }
