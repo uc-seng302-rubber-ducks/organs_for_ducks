@@ -241,7 +241,7 @@ public class NewUserController {
 
         // the name and cell number are required if any other attributes are filled out
         if ((eName == null || eCellPhone == null) && (eHomePhone != null || eAddress != null || eRegion != null ||
-                eEmail != null || eRelationship != null)) {
+                eEmail != null || eRelationship != null || eName != null || eCellPhone != null)) {
             valid = false;
             errorLabel.setText("Name and cell phone number are required for an emergency contact.");
             errorLabel.setVisible(true);
@@ -250,7 +250,7 @@ public class NewUserController {
         if (valid) {
             EmergencyContact contact = new EmergencyContact(null, null);
 
-            if (!(eName == null) && !eCellPhone.isEmpty()) {
+            if (eName != null && eCellPhone != null) {
                 // create the emergency contact
                 contact = new EmergencyContact(eName, eCellPhone);
                 contact.setHomePhoneNumber(eHomePhone);
