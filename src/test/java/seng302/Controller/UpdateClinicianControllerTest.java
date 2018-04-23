@@ -1,5 +1,6 @@
 package seng302.Controller;
 
+import javafx.scene.control.TextField;
 import org.junit.*;
 import org.testfx.api.FxToolkit;
 import org.testfx.matcher.control.LabeledMatchers;
@@ -9,7 +10,10 @@ import static javafx.scene.input.KeyCode.A;
 import static javafx.scene.input.KeyCode.BACK_SPACE;
 import static javafx.scene.input.KeyCode.SHORTCUT;
 import static org.testfx.api.FxAssert.verifyThat;
+
 import org.testfx.matcher.control.TextInputControlMatchers;
+import org.testfx.matcher.control.TextMatchers;
+import org.testfx.util.NodeQueryUtils;
 import seng302.App;
 
 import java.util.concurrent.TimeoutException;

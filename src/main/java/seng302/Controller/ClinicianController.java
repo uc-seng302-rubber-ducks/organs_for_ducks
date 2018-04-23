@@ -87,7 +87,7 @@ public class ClinicianController {
   private ComboBox genderComboBox;
 
   @FXML
-  private TextField regionTextField;
+  private TextField regionSearchTextField;
 
   @FXML
   private CheckBox donorFilterCheckBox;
@@ -301,7 +301,7 @@ public class ClinicianController {
    */
   private FilteredList<User> filter(FilteredList<User> fListUsers) {
     setTextFieldListener(searchTextField, fListUsers);
-    setTextFieldListener(regionTextField, fListUsers);
+    setTextFieldListener(regionSearchTextField, fListUsers);
     setCheckBoxListener(donorFilterCheckBox, fListUsers);
     setCheckBoxListener(receiverFilterCheckBox, fListUsers);
     setCheckBoxListener(allCheckBox, fListUsers);
@@ -344,7 +344,7 @@ public class ClinicianController {
     System.out.println(fList);
     fList.predicateProperty().bind(Bindings.createObjectBinding(() -> user -> {
       String lowerCaseFilterText = searchTextField.getText().toLowerCase();
-      boolean regionMatch = AttributeValidation.checkRegionMatches(regionTextField.getText(), user);
+      boolean regionMatch = AttributeValidation.checkRegionMatches(regionSearchTextField.getText(), user);
       boolean genderMatch = AttributeValidation.checkGenderMatches(genderComboBox.getValue().toString(), user);
 
       System.out.println(user);
