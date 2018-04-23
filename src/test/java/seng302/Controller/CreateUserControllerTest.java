@@ -71,7 +71,7 @@ public class CreateUserControllerTest extends ApplicationTest {
     verifyThat("#invalidDOB", Node::isVisible);
   }
 
-  @Test @Ignore
+  @Test
   public void testFutureDob() {
     clickOn("#nhiInput");
     write("ADE1987");
@@ -125,7 +125,7 @@ public class CreateUserControllerTest extends ApplicationTest {
     verifyThat("#bloodTypeValue", LabeledMatchers.hasText("B+"));
     verifyThat("#heightValue", LabeledMatchers.hasText("1.75"));
     verifyThat("#weightValue", LabeledMatchers.hasText("65.0"));
-    verifyThat("#DOBValue", LabeledMatchers.hasText("2017-01-03"));
+    verifyThat("#DOBValue", LabeledMatchers.hasText("2017-03-01"));
   }
 
   @Test
