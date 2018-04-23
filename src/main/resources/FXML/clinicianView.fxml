@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.String?>
+<?import javafx.collections.FXCollections?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Pagination?>
 <?import javafx.scene.control.SplitPane?>
@@ -16,7 +20,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
-<TabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="408.0" prefWidth="617.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.Controller.ClinicianController">
+<TabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="408.0" prefWidth="617.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.Controller.ClinicianController">
   <tabs>
     <Tab text="Details">
       <content>
@@ -64,12 +68,38 @@
     </Tab>
     <Tab fx:id="searchTab" text="Search">
          <content>
-            <SplitPane orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0">
+            <SplitPane dividerPositions="0.3" minHeight="-Infinity" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0">
               <items>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="60.0" prefWidth="600.0">
+                  <AnchorPane fx:id="filterAnchorPane" prefHeight="-Infinity" prefWidth="617.0" minHeight="45" maxHeight="45">
                      <children>
-                        <Pagination fx:id="searchTablePagination" layoutX="271.0" layoutY="5.0" maxPageIndicatorCount="1" prefHeight="368.0" prefWidth="593.0" AnchorPane.bottomAnchor="2.0" AnchorPane.rightAnchor="4.0" />
-                        <TableView fx:id="searchTableView" prefHeight="331.0" prefWidth="600.0">
+                     <TextField fx:id="searchTextField" layoutX="115.0" layoutY="10.0" prefHeight="25.0" prefWidth="200.0" AnchorPane.leftAnchor="115.0" AnchorPane.rightAnchor="329.0" AnchorPane.topAnchor="10.0" />
+                        <Button fx:id="expandButton" layoutX="576.0" layoutY="14.0" mnemonicParsing="false" onMouseClicked="#expandFilter" text="▼" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="10.0" />
+                        <Label layoutX="14.0" layoutY="18.0" text="Name:" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="14.0" />
+                        <Label layoutX="14.0" layoutY="50.0" text="Birth Gender: " AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="49.5" />
+                        <Label layoutX="14.0" layoutY="85.0" text="Region:" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="85.0" />
+                        <Label layoutX="14.0" layoutY="118.0" text="Donor status: " AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="120.5" />
+                        <ComboBox fx:id="genderComboBox" layoutX="115.0" layoutY="46.0" prefWidth="150.0" AnchorPane.leftAnchor="115.0" AnchorPane.topAnchor="46.0">
+                            <items>
+                                <FXCollections fx:factory="observableArrayList">
+                                    <String fx:value="Male" />
+                                    <String fx:value="Female" />
+                                    <String fx:value="All" />
+                                </FXCollections>
+                            </items>
+                            <value>
+                                <String fx:value="All" />
+                            </value>
+                        </ComboBox>
+                        <TextField fx:id="regionTextField" layoutX="59.0" layoutY="81.0" prefHeight="25.0" prefWidth="200.0" AnchorPane.leftAnchor="115.0" AnchorPane.rightAnchor="329.0" AnchorPane.topAnchor="81.0" />
+                        <CheckBox fx:id="donorFilterCheckBox" layoutX="115.0" layoutY="121.0" mnemonicParsing="false" text="Donor" AnchorPane.leftAnchor="115.0" AnchorPane.topAnchor="121.0" />
+                        <CheckBox fx:id="receiverFilterCheckBox" layoutX="199.0" layoutY="121.0" mnemonicParsing="false" text="Receiver" AnchorPane.leftAnchor="199.0" AnchorPane.topAnchor="121.0" />
+                       <CheckBox fx:id="allCheckBox" layoutX="290.0" layoutY="121.0" mnemonicParsing="false" text="All" AnchorPane.leftAnchor="290.0" AnchorPane.topAnchor="121.0" />
+                     </children>
+                  </AnchorPane>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="617.0">
+                     <children>
+                        <Pagination fx:id="searchTablePagination" layoutX="271.0" layoutY="5.0" maxPageIndicatorCount="1" prefHeight="368.0" prefWidth="593.0" AnchorPane.bottomAnchor="2.0" AnchorPane.leftAnchor="4.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="2.0" />
+                        <TableView fx:id="searchTableView" prefHeight="331.0" prefWidth="600.0" AnchorPane.bottomAnchor="48.0" AnchorPane.leftAnchor="4.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="2.0">
                           <columns>
                             <TableColumn prefWidth="75.0" text="C1" />
                             <TableColumn prefWidth="75.0" text="C2" />
@@ -78,7 +108,7 @@
                               <Tooltip fx:id="searchToolTip" text="Empty Tooltip" />
                            </tooltip>
                         </TableView>
-                     <TextField fx:id="searchTextField" layoutX="386.0" layoutY="332.0" prefHeight="25.0" prefWidth="200.0" />
+                        <Label fx:id="searchCountLabel" layoutX="14.0" layoutY="336.0" text="" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="14.0" />
                      </children>
                   </AnchorPane>
               </items>
