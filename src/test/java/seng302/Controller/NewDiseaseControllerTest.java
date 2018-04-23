@@ -13,10 +13,10 @@ import static seng302.Controller.TableViewsMethod.*;
 import static org.testfx.api.FxAssert.verifyThat;
 
 public class NewDiseaseControllerTest extends ApplicationTest {
-    @Override
-    public void start(Stage stage) throws Exception {
-        new App().start(stage);
-    }
+//    @Override
+//    public void start(Stage stage) throws Exception {
+//        new App().start(stage);
+//    }
 
 //    @Test
 //    public void ValidClinicianLogin() {

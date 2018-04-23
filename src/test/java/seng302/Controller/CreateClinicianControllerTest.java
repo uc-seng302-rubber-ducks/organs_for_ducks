@@ -12,6 +12,7 @@ import javafx.scene.Node;
 import seng302.App;
 
 import java.util.concurrent.TimeoutException;
+import seng302.Model.Clinician;
 
 /**
  * Tests the UpdateClinicianController specifically for creating new clinicians
@@ -34,14 +35,16 @@ public class CreateClinicianControllerTest extends ApplicationTest {
     public void setUpCreateScene() throws TimeoutException {
         FxToolkit.registerPrimaryStage();
         FxToolkit.setupApplication(App.class);
-        AppController.getInstance().getClinicians().clear();
+        AppController.getInstance().getUsers().clear();
+        AppController.getInstance().getClinicians().remove(AppController.getInstance().getClinician("Staff1"));
         clickOn("#changeLogin");
         clickOn("#signUpButton");
     }
 
     @After
     public void tearDown() {
-        AppController.getInstance().getClinicians().clear();
+        AppController.getInstance().getUsers().clear();
+        AppController.getInstance().getClinicians().remove(AppController.getInstance().getClinician("Staff1"));
     }
 
     @Test

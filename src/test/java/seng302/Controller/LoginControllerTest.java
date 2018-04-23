@@ -3,10 +3,14 @@ package seng302.Controller;
 import static org.testfx.api.FxAssert.verifyThat;
 
 import java.time.LocalDate;
+import java.util.concurrent.TimeoutException;
 import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.matcher.control.LabeledMatchers;
 import org.testfx.matcher.control.TextFlowMatchers;
@@ -29,9 +33,16 @@ public class LoginControllerTest extends ApplicationTest {
     }
   }
 
-  @Override
-  public void start(Stage stage) throws Exception {
-    new App().start(stage);
+  @Before
+  public void startUp() throws TimeoutException {
+    FxToolkit.registerPrimaryStage();
+    FxToolkit.setupApplication(App.class);
+    AppController.getInstance().getUsers().clear();
+  }
+
+  @After
+  public void tearDown() {
+    AppController.getInstance().getUsers().clear();
   }
 
   @Test

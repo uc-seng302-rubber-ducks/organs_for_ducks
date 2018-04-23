@@ -35,7 +35,8 @@ public class UpdateClinicianControllerTest extends ApplicationTest {
     public void setUpCreateScene() throws TimeoutException {
         FxToolkit.registerPrimaryStage();
         FxToolkit.setupApplication(App.class);
-        AppController.getInstance().getClinicians().clear();
+        AppController.getInstance().getUsers().clear();
+        AppController.getInstance().getClinicians().remove(AppController.getInstance().getClinician("Staff1"));
         clickOn("#changeLogin");
 
         // create a new clinician
@@ -63,7 +64,8 @@ public class UpdateClinicianControllerTest extends ApplicationTest {
     @After
     public void tearDown() {
         clickOn("#logoutButton");
-        AppController.getInstance().getClinicians().clear();
+        AppController.getInstance().getUsers().clear();
+        AppController.getInstance().getClinicians().remove(AppController.getInstance().getClinician("Staff1"));
     }
 
     @Test
