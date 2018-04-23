@@ -9,6 +9,7 @@ import json
 import random
 from collections import OrderedDict
 genders = ["m", "f", "u"]
+birthGenders = ['Male', 'Female']
 bloodTypes = ["AB+", "AB-", "A+", "A-", "B+", "B-", "O+", "O-", "U"] 
 
 donors = []
@@ -17,11 +18,13 @@ def generate(num):
     outputFile = open("donors.json", "w")
     for i in range(0, num):
         donor = OrderedDict ({
-            "NHI": "ZXC"+''.join(random.sample("0123456789", 4)),
-            "name": "Donor #"+str(i),
+            "nhi": "ZXC"+''.join(random.sample("0123456789", 4)),
+            "firstName": "Donor",
+            "lastName": "#"+str(i),
             "dateOfBirth": {"year":1977+i%10, "month": i%12, "day": i%20},
             "dateOfDeath": {"year":2015+i%10, "month": i%12, "day": i%20},
             "gender": random.choice(genders),
+            "birthGender": random.choice(birthGenders),
             "height": round(random.uniform(1,2), 2),
             "weight": round(random.uniform(50, 120), 2),
             "bloodType": random.choice(bloodTypes),
