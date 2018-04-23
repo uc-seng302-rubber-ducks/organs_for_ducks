@@ -130,6 +130,9 @@ public class NewUserController {
     @FXML
     private Button confirmButton;
 
+    @FXML
+    private Label headerLabel;
+
     AppController controller;
     Stage stage;
 

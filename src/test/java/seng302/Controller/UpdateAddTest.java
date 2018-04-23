@@ -15,7 +15,7 @@ import seng302.Model.Donor;
 import seng302.Model.Organs;
 import seng302.Model.User;
 
-public class UpdateAddTests {
+public class UpdateAddTest {
 
   AppController controller;
 
