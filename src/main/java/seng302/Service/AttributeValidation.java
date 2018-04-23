@@ -147,4 +147,12 @@ public class AttributeValidation {
             return user.getRegion().toLowerCase().startsWith(regionString.toLowerCase());
         }
     }
+
+    public static boolean checkGenderMatches(String genderValue, User user) {
+        if (user.getBirthGender() == null) {
+            return genderValue.equals("All");
+        }
+        return (user.getBirthGender().equalsIgnoreCase(genderValue) ||
+            genderValue.equalsIgnoreCase("All"));
+    }
 }

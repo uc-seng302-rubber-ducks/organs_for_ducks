@@ -91,6 +91,8 @@ public class UpdateClinicianController {
             titleLabel.setText("Update Clinician");
             confirmButton.setText("Save Changes");
             staffIDTextField.setText(clinician.getStaffId());
+            passwordField.setText(clinician.getPassword());
+            confirmPasswordField.setText(clinician.getPassword());
             firstNameTextField.setText(clinician.getFirstName());
             regionTextField.setText(clinician.getRegion());
 

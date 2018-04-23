@@ -10,7 +10,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 @Deprecated
-public class DonorTests {
+public class DonorTest {
 
 
     @Test

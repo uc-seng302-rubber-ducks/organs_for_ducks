@@ -292,6 +292,10 @@ public class AppController {
   }
 
 
+  public ArrayList<Clinician> getClinicians() {
+    return clinicians;
+  }
+
     /**
      *
      * @param id The staff id (unique identifier) of the clinician

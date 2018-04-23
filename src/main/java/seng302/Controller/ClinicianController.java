@@ -87,7 +87,7 @@ public class ClinicianController {
   private ComboBox genderComboBox;
 
   @FXML
-  private TextField regionTextField;
+  private TextField regionSearchTextField;
 
   @FXML
   private CheckBox donorFilterCheckBox;
@@ -301,7 +301,7 @@ public class ClinicianController {
    */
   private FilteredList<User> filter(FilteredList<User> fListUsers) {
     setTextFieldListener(searchTextField, fListUsers);
-    setTextFieldListener(regionTextField, fListUsers);
+    setTextFieldListener(regionSearchTextField, fListUsers);
     setCheckBoxListener(donorFilterCheckBox, fListUsers);
     setCheckBoxListener(receiverFilterCheckBox, fListUsers);
     setCheckBoxListener(allCheckBox, fListUsers);
@@ -341,16 +341,16 @@ public class ClinicianController {
    */
   private void setFilteredListPredicate(FilteredList<User> fList) {
     searchCount = 0; //refresh the searchCount every time so it recalculates it each search
-
+    System.out.println(fList);
     fList.predicateProperty().bind(Bindings.createObjectBinding(() -> user -> {
       String lowerCaseFilterText = searchTextField.getText().toLowerCase();
-      boolean regionMatch = AttributeValidation.checkRegionMatches(regionTextField.getText(), user);
+      boolean regionMatch = AttributeValidation.checkRegionMatches(regionSearchTextField.getText(), user);
+      boolean genderMatch = AttributeValidation.checkGenderMatches(genderComboBox.getValue().toString(), user);
 
+      System.out.println(user);
       if (((user.getFirstName().toLowerCase()).startsWith(lowerCaseFilterText) ||
               (user.getLastName().toLowerCase().startsWith(lowerCaseFilterText))) &&
-              (regionMatch) &&
-              (user.getBirthGender().equalsIgnoreCase(genderComboBox.getValue().toString()) ||
-                      genderComboBox.getValue().toString().equalsIgnoreCase("All")) &&
+              (regionMatch) && (genderMatch) &&
           (((user.isDonor() == donorFilterCheckBox.isSelected()) &&
               (user.isReceiver() == receiverFilterCheckBox.isSelected())) || allCheckBox.isSelected())) {
         searchCount++;
