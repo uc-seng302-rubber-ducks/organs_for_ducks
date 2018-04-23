@@ -87,7 +87,7 @@ public class UpdateClinicianController {
         //stage.setResizable(false);
 
         if (!newClinician) {
-            stage.setTitle("Update Clinician Profile");
+            stage.setTitle("Update Clinician: " + clinician.getFirstName());
             titleLabel.setText("Update Clinician");
             confirmButton.setText("Save Changes");
             staffIDTextField.setText(clinician.getStaffId());

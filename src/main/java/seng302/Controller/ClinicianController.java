@@ -123,7 +123,17 @@ public class ClinicianController {
     lNameLabel.setText(clinician.getLastName());
     addressLabel.setText(clinician.getWorkAddress());
     regionLabel.setText(clinician.getRegion());
-    stage.setTitle("Clinician " + clinician.getFirstName() +" " + clinician.getLastName());
+    System.out.println(clinician.getStaffId());
+    if (clinician.getFirstName() == null){
+      System.out.println("hi");
+      stage.setTitle("Clinician Admin");
+    } else if (clinician.getLastName() == null) {
+      System.out.println("hii");
+      stage.setTitle("Clinician " + clinician.getFirstName());
+    } else {
+      System.out.println("hiii");
+      stage.setTitle("Clinician " + clinician.getFirstName() +" " + clinician.getLastName());
+    }
   }
 
   /**

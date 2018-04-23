@@ -696,9 +696,8 @@ public class DonorController {
     setContactPage();
     if (user.getLastName() != null) {
       stage.setTitle("User Profile: " + user.getFirstName() + " " + user.getLastName());
-    } else{
+    } else {
       stage.setTitle("User Profile: " + user.getFirstName());
-
 
     }
   }

@@ -137,7 +137,11 @@ public class UpdateUserController {
         currentUser = user;
         oldUser = new User();
         setUserDetails(currentUser);
-
+        if (user.getLastName() != null) {
+          stage.setTitle("Update User: " + user.getFirstName() +" " + user.getLastName());
+        } else {
+          stage.setTitle("Update User: " + user.getFirstName());
+        }
         //UndoRedoStacks.cloneUser(currentUser,oldUser);
 
 
