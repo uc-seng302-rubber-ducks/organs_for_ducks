@@ -258,26 +258,35 @@ public class UpdateUserController {
         if (!ecPhoneInput.getText().isEmpty()) {
           currentUser.getContact().setHomePhoneNumber(ecPhoneInput.getText());
 
+        } else {
+          currentUser.getContact().setHomePhoneNumber(null);
         }
         if (!ecCellInput.getText().isEmpty() ) {
           currentUser.getContact().setCellPhoneNumber(ecCellInput.getText());
-
+        } else{
+          currentUser.getContact().setCellPhoneNumber(null);
         }
         if (!ecAddressInput.getText().isEmpty())  {
           currentUser.getContact().setAddress(ecAddressInput.getText());
-
+        } else {
+          currentUser.getContact().setAddress(null);
         }
         if (!ecRegionInput.getText().isEmpty()) {
           currentUser.getContact().setRegion(ecRegionInput.getText());
-
+        } else {
+          currentUser.getContact().setRegion(null);
         }
         if (!ecEmailInput.getText().isEmpty()) {
           currentUser.getContact().setEmail(ecEmailInput.getText());
 
+        } else {
+          currentUser.getContact().setEmail(null);
         }
         if (!ecRelationshipInput.getText().isEmpty()) {
           currentUser.getContact().setRelationship(ecRelationshipInput.getText());
 
+        } else {
+          currentUser.getContact().setRelationship(null);
         }
 
     }
