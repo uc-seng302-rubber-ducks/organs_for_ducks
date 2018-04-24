@@ -23,6 +23,7 @@ import javafx.util.Callback;
 import javafx.util.StringConverter;
 import okhttp3.OkHttpClient;
 import org.controlsfx.control.textfield.TextFields;
+import seng302.Exceptions.OrgansInconsistentException;
 import seng302.Model.*;
 
 import java.io.IOException;
@@ -225,8 +226,8 @@ public class DonorController {
     @FXML
     private TableView<Map.Entry<Organs, LocalDate>> receiverOrgansTableView;
 
-    @FXML
-    private Button ReceiverModifyOrgansButton;
+//    @FXML
+//    private Button ReceiverModifyOrgansButton;
 
     private TableView<MedicalProcedure> currentProcedureList;
 
@@ -287,7 +288,6 @@ public class DonorController {
             updateDiseaseButton.setVisible(true);
             deleteDiseaseButton.setVisible(true);
             logOutButton.setVisible(false);
-            ReceiverModifyOrgansButton.setVisible(true);
         } else {
             procedureDateSelector.setEditable(false);
             procedureTextField.setEditable(false);
@@ -429,7 +429,24 @@ public class DonorController {
         showDonorDiseases(currentUser, true);
         modifyOrgansProcedureButton.setVisible(false);
 
-        //showReceiverOrgans(currentUser);
+        //init receiver organs combo box
+        ArrayList<Organs> organs = new ArrayList<>(Arrays.asList(Organs.values()));
+        organsComboBox.setItems(FXCollections.observableList(organs));
+
+        //display registered and deregistered receiver organs if any
+        HashMap<Organs, ArrayList<LocalDate>> receiverOrgans = currentUser.getReceiverDetails().getOrgans();
+        if(!receiverOrgans.isEmpty()){
+            for (Organs organ : receiverOrgans.keySet()) {
+                if(currentUser.getReceiverDetails().isCurrentlyWaitingFor(organ)){
+                    currentlyReceivingListView.getItems().add(organ);
+                }
+                else {
+                    notReceivingListView.getItems().add(organ);
+                }
+            }
+
+        }
+
     }
 
     /**
@@ -1242,11 +1259,10 @@ public class DonorController {
      * for receiver
      */
     @FXML
-    public void registerOrgan () {
-        //TODO: link add organ functionality to receiver profile
-
+    public void registerOrgan () throws OrgansInconsistentException{
         Organs toRegister = organsComboBox.getSelectionModel().getSelectedItem();
-        if (!currentlyReceivingListView.getItems().contains(toRegister)) {
+        if (!currentlyReceivingListView.getItems().contains(toRegister) && toRegister != null) {
+            currentUser.getReceiverDetails().startWaitingForOrgan(toRegister);
             currentlyReceivingListView.getItems().add(toRegister);
         }
     }
@@ -1256,12 +1272,11 @@ public class DonorController {
      * for receiver
      */
     @FXML
-    public void reRegisterOrgan () {
-        //TODO: link add organ functionality to receiver profile
-
+    public void reRegisterOrgan () throws OrgansInconsistentException{
         Organs toReRegister = notReceivingListView.getSelectionModel().getSelectedItem();
         if (toReRegister != null) {
             currentlyReceivingListView.getItems().add(toReRegister);
+            currentUser.getReceiverDetails().startWaitingForOrgan(toReRegister);
             notReceivingListView.getItems().remove(toReRegister);
         }
     }
@@ -1271,12 +1286,11 @@ public class DonorController {
      * for receiver
      */
     @FXML
-    public void deRegisterOrgan () {
-        //TODO: link remove organ functionality to receiver profile
-
+    public void deRegisterOrgan () throws OrgansInconsistentException {
         Organs toDeRegister = currentlyReceivingListView.getSelectionModel().getSelectedItem();
         if (toDeRegister != null) {
             notReceivingListView.getItems().add(toDeRegister);
+            currentUser.getReceiverDetails().stopWaitingForOrgan(toDeRegister);
             currentlyReceivingListView.getItems().remove(toDeRegister);
         }
     }
