@@ -839,7 +839,7 @@ public class DonorController {
       currentMedicationListView.setItems(currentMeds);
 
     if (currentUser.getPreviousMedication() != null) {
-      System.out.println("previous: " + previousMeds);
+      //System.out.println("previous: " + previousMeds);
       previousMeds.clear();
       previousMeds.addAll(currentUser.getPreviousMedication());
       previousMedicationListView.setItems(previousMeds);
