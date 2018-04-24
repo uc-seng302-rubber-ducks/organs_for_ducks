@@ -354,7 +354,7 @@ public class ClinicianController {
       boolean regionMatch = AttributeValidation.checkRegionMatches(regionSearchTextField.getText(), user);
       boolean genderMatch = AttributeValidation.checkGenderMatches(genderComboBox.getValue().toString(), user);
 
-      //System.out.println(user);
+      System.out.println(user);
       if (((user.getFirstName().toLowerCase()).startsWith(lowerCaseFilterText) ||
               (user.getLastName().toLowerCase().startsWith(lowerCaseFilterText))) &&
               (regionMatch) && (genderMatch) &&

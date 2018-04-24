@@ -453,7 +453,7 @@ public class DonorController {
             }
         } catch (IOException ex) {
             //TODO display connectivity error message
-            //System.out.println("oof");
+            System.out.println("oof");
         }
 
     }
