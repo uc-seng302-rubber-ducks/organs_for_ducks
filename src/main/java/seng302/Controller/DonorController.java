@@ -1,13 +1,7 @@
 package seng302.Controller;
 
 
-import java.time.LocalDate;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
-import java.time.temporal.ChronoUnit;
-
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
@@ -32,6 +26,8 @@ import org.controlsfx.control.textfield.TextFields;
 import seng302.Model.*;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 public class DonorController {
@@ -217,6 +213,26 @@ public class DonorController {
     private Button ReceiverModifyOrgansButton;
 
     private TableView<MedicalProcedure> currentProcedureList;
+
+    //Receiver
+
+    @FXML
+    private ComboBox<Organs> organsComboBox;
+
+    @FXML
+    private ListView<Organs> currentlyReceivingListView;
+
+    @FXML
+    private ListView<Organs> notReceivingListView;
+
+    @FXML
+    private Button registerButton;
+
+    @FXML
+    private Button reRegisterButton;
+
+    @FXML
+    private Button deRegisterButton;
 
     private AppController application;
     private ObservableList<String> currentMeds;
@@ -1133,27 +1149,51 @@ public class DonorController {
         }
     }
 
+
+
     /**
-     * fires when the organs button at under Receiver
-     * table is clicked
+     * register an organ
+     * for receiver
      */
     @FXML
-    private void modifyReceiverOrgans() {
+    public void registerOrgan(){
+        //TODO: link add organ functionality to receiver profile
 
-        FXMLLoader modifyReceiverOrgansLoader = new FXMLLoader(getClass().getResource("/FXML/receiverOrgansView.fxml"));
-        Parent root = null;
-        try {
-            root = modifyReceiverOrgansLoader.load();
-        } catch (IOException e) {
-            e.printStackTrace();
+        Organs toRegister = organsComboBox.getSelectionModel().getSelectedItem();
+        if(!currentlyReceivingListView.getItems().contains(toRegister)) {
+            currentlyReceivingListView.getItems().add(toRegister);
         }
-        ReceiverOrganController newDiseaseController = modifyReceiverOrgansLoader.getController();
-        Stage stage = new Stage();
-        newDiseaseController.init(currentUser, application, stage);
-        stage.setScene(new Scene(root));
-        stage.show();
     }
 
+    /**
+     * re-register an organ
+     * for receiver
+     */
+    @FXML
+    public void reRegisterOrgan(){
+        //TODO: link add organ functionality to receiver profile
+
+        Organs toReRegister = notReceivingListView.getSelectionModel().getSelectedItem();
+        if(toReRegister != null) {
+            currentlyReceivingListView.getItems().add(toReRegister);
+            notReceivingListView.getItems().remove(toReRegister);
+        }
+    }
+
+    /**
+     * de-register an organ
+     * for receiver
+     */
+    @FXML
+    public void deRegisterOrgan(){
+        //TODO: link remove organ functionality to receiver profile
+
+        Organs toDeRegister = currentlyReceivingListView.getSelectionModel().getSelectedItem();
+        if(toDeRegister != null) {
+            notReceivingListView.getItems().add(toDeRegister);
+            currentlyReceivingListView.getItems().remove(toDeRegister);
+        }
+    }
 
 }
 
