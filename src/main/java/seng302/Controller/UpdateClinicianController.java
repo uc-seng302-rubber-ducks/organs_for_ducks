@@ -178,7 +178,6 @@ public class UpdateClinicianController {
         hideErrorMessages(); // clears the error messages
         boolean valid = true;
         String staffID = staffIDTextField.getText();
-        System.out.println("here");
 
         if (!staffID.isEmpty()) {
             Clinician foundClinician = controller.getClinician(staffID);

@@ -453,7 +453,7 @@ public class DonorController {
             }
         } catch (IOException ex) {
             //TODO display connectivity error message
-            System.out.println("oof");
+            //System.out.println("oof");
         }
 
     }
@@ -493,7 +493,7 @@ public class DonorController {
 
             }
             if (contact.getHomePhoneNumber() != null) {
-                eHomePhone.setText(contact.getHomePhoneNumber());    //System.out.println(attachedUser == null);
+                eHomePhone.setText(contact.getHomePhoneNumber());
 
             }
             if (contact.getRegion() != null) {

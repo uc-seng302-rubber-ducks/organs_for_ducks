@@ -326,7 +326,7 @@ public class UpdateUserController {
           try {
             currentUser.setWeight(Double.parseDouble(weightInput.getText()));
           } catch (NumberFormatException e){
-            System.out.println("nope");
+            //System.out.println("nope");
           }
 
         }
