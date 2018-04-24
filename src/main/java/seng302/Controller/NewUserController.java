@@ -130,6 +130,9 @@ public class NewUserController {
     @FXML
     private Button confirmButton;
 
+    @FXML
+    private Label headerLabel;
+
     AppController controller;
     Stage stage;
 
@@ -232,7 +235,7 @@ public class NewUserController {
 
         // the name and cell number are required if any other attributes are filled out
         if ((eName == null || eCellPhone.isEmpty()) && (!eHomePhone.isEmpty() || eAddress != null || eRegion != null ||
-                !eEmail.isEmpty() || eRelationship != null)) {
+            !eEmail.isEmpty() || eRelationship != null || eName != null || !eCellPhone.isEmpty())) {
             valid = false;
             errorLabel.setText("Name and cell phone number are required for an emergency contact.");
             errorLabel.setVisible(true);
@@ -322,7 +325,7 @@ public class NewUserController {
         }
 
         //Donor donor = controller.findDonor(nhi); // checks if the nhi already exists within the system
-        User user = controller.findUser(fName); // TODO: change this to check for the nhi
+        User user = controller.findUser(nhi);
 
         if (valid && user == null){
             createUser(nhi, fName, dob, dod);
