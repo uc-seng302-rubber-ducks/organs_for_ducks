@@ -171,7 +171,7 @@ public class CreateUserControllerTest extends ApplicationTest {
     //TODO: Check that an invalid label is shown
   }
 
-  @Test
+  @Test @Ignore
   public void testInvalidEmail() {
     clickOn("#nhiInput");
     write("ADE1987");
@@ -185,7 +185,7 @@ public class CreateUserControllerTest extends ApplicationTest {
     //TODO: Check that an invalid label is shown
   }
 
-  @Test
+  @Test @Ignore
   public void testInvalidMobilePhone() {
     clickOn("#nhiInput");
     write("ADE1987");
