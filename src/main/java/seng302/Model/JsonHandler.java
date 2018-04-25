@@ -38,7 +38,7 @@ public final class JsonHandler {
 
         outFile.createNewFile(); //creates new file if donors does not exist
         Gson gson = new GsonBuilder().registerTypeAdapter(DateTime.class, (JsonSerializer<DateTime>)
-                (json, typeOfSrc, context) -> new JsonPrimitive(ISODateTimeFormat.dateTime().print(json))).create();
+                (json, typeOfSrc, context) -> new JsonPrimitive(ISODateTimeFormat.dateTime().print(json))).setPrettyPrinting().create();
         FileWriter writer = new FileWriter(outFile);
         String usersString = gson.toJson(users);
         writer.write(usersString);
@@ -60,6 +60,11 @@ public final class JsonHandler {
         Reader reader =new FileReader(inFile);
         User[] donors = gson.fromJson(reader, User[].class);
         results.addAll(Arrays.asList(donors));
+
+        for (User result : results) {
+            result.getDonorDetails().setAttachedUser(result);
+            //TODO probably do the same with Receiver details
+        }
         return results;
 
     }

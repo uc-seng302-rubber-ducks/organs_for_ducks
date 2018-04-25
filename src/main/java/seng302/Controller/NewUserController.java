@@ -130,6 +130,9 @@ public class NewUserController {
     @FXML
     private Button confirmButton;
 
+    @FXML
+    private Label headerLabel;
+
     AppController controller;
     Stage stage;
 
@@ -232,7 +235,7 @@ public class NewUserController {
 
         // the name and cell number are required if any other attributes are filled out
         if ((eName == null || eCellPhone.isEmpty()) && (!eHomePhone.isEmpty() || eAddress != null || eRegion != null ||
-                !eEmail.isEmpty() || eRelationship != null)) {
+            !eEmail.isEmpty() || eRelationship != null || eName != null || !eCellPhone.isEmpty())) {
             valid = false;
             errorLabel.setText("Name and cell phone number are required for an emergency contact.");
             errorLabel.setVisible(true);
@@ -310,6 +313,7 @@ public class NewUserController {
             valid = false;
         } else if (!dob.isBefore(LocalDate.now().plusDays(1))) { // checks that the date of birth is before tomorrow's date
             invalidDOB.setVisible(true);
+            valid = false;
         }
 
         if (dod != null) {

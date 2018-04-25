@@ -65,7 +65,7 @@
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
             </rowConstraints>
             <children>
-                <Button mnemonicParsing="false" onAction="#cancelUpdate" text="Cancel" />
+                <Button fx:id="cancelButton" mnemonicParsing="false" onAction="#cancelUpdate" text="Cancel" />
                 <Button fx:id="confirmButton" mnemonicParsing="false" onAction="#saveChanges" text="Save Changes" GridPane.columnIndex="1" GridPane.halignment="RIGHT" />
             </children>
         </GridPane>

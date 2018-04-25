@@ -2,12 +2,14 @@ package seng302.Model;
 
 import com.google.gson.annotations.Expose;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 
 public class ReceiverDetails {
   @Expose
   private HashSet<Organs> organs;
   private transient User attachedUser;
+
 
   public ReceiverDetails (User attachedUser){
     this.attachedUser = attachedUser;
