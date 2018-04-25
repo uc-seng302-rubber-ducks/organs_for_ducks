@@ -285,6 +285,8 @@ public class DonorController {
     private ObservableList<Change> changelog;
     private OkHttpClient client = new OkHttpClient();
 
+    private OrganDeregisterReason organDeregisterationReason;
+
     /**
      * Gives the donor view the application controller and hides all label and buttons that are not
      * needed on opening
@@ -470,6 +472,14 @@ public class DonorController {
             notReceiverLabel.setVisible(true);
         }
 
+    }
+
+    public OrganDeregisterReason getOrganDeregisterationReason(){
+        return organDeregisterationReason;
+    }
+
+    public void setOrganDeregisterationReason(OrganDeregisterReason organDeregisterationReason){
+        this.organDeregisterationReason = organDeregisterationReason;
     }
 
     /**
@@ -1305,10 +1315,32 @@ public class DonorController {
     }
 
     /**
+     * opens the deregister organ reason window when the
+     * deregister button at the Receiver tab is clicked
+     */
+    @FXML
+    private void deregisterOrganReason () {
+        Organs toDeRegister = currentlyReceivingListView.getSelectionModel().getSelectedItem();
+        if (toDeRegister != null) {
+            FXMLLoader deregisterOrganReasonLoader = new FXMLLoader(getClass().getResource("/FXML/deregisterOrganReasonView.fxml"));
+            Parent root = null;
+            try {
+                root = deregisterOrganReasonLoader.load();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            deregisterOrganReasonController deregisterOrganReasonController = deregisterOrganReasonLoader.getController();
+            Stage stage = new Stage();
+            deregisterOrganReasonController.init(this, currentUser, application, stage);
+            stage.setScene(new Scene(root));
+            stage.show();
+        }
+    }
+
+    /**
      * de-register an organ
      * for receiver
      */
-    @FXML
     public void deRegisterOrgan () throws OrgansInconsistentException {
         Organs toDeRegister = currentlyReceivingListView.getSelectionModel().getSelectedItem();
         if (toDeRegister != null) {

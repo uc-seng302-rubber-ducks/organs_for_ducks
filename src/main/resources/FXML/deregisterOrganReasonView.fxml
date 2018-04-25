@@ -20,8 +20,8 @@
    <children>
       <Label fx:id="receiverName" layoutX="194.0" layoutY="14.0" text="receiverName" />
       <Separator layoutX="7.0" layoutY="34.0" prefHeight="11.0" prefWidth="479.0" />
-      <Button fx:id="cancelButton" layoutX="30.0" layoutY="424.0" mnemonicParsing="false" onAction="#cancel" text="Cancel" />
-      <Button fx:id="okButton" layoutX="400.0" layoutY="425.0" mnemonicParsing="false" text="OK" />
+      <Button fx:id="cancelButton" layoutX="30.0" layoutY="424.0" mnemonicParsing="false" onAction="#cancelDeregistration" text="Cancel" />
+      <Button fx:id="okButton" layoutX="400.0" layoutY="425.0" mnemonicParsing="false" onAction="#acceptDeregistration" text="OK" />
       <GridPane hgap="5.0" layoutY="40.0" prefHeight="355.0" prefWidth="479.0" vgap="5.0">
         <columnConstraints>
             <ColumnConstraints hgrow="SOMETIMES" maxWidth="206.0" minWidth="10.0" prefWidth="106.0" />
@@ -39,16 +39,15 @@
          <children>
             <Label text="Organ Name:" />
             <Label fx:id="organName" text="organName" GridPane.columnIndex="1" />
-            <RadioButton fx:id="treatmentCuredRadioButton" mnemonicParsing="false" text="the treatment has cured the disease, no longer requiring an organ transplant" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="2">
+            <RadioButton fx:id="diseaseCuredRadioButton" mnemonicParsing="false" text="the treatment has cured the disease, no longer requiring an organ transplant" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="2">
                <toggleGroup>
                   <ToggleGroup fx:id="deregisterReason" />
                </toggleGroup>
             </RadioButton>
-            <RadioButton fx:id="registeringErrorRadioButton" mnemonicParsing="false" text="the initial registering of the organ was an error" toggleGroup="$deregisterReason" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <RadioButton fx:id="registerationErrorRadioButton" mnemonicParsing="false" text="the initial registering of the organ was an error" toggleGroup="$deregisterReason" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="1" />
             <Label text="Reason:" GridPane.rowIndex="1" />
             <RadioButton fx:id="receiverDiedRadioButton" mnemonicParsing="false" text="the receiver has died" toggleGroup="$deregisterReason" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="3" />
          </children>
       </GridPane>
-      <Button layoutX="154.0" layoutY="425.0" mnemonicParsing="false" onAction="#clearSelection" prefHeight="25.0" prefWidth="172.0" text="Clear Selecton" />
    </children>
 </AnchorPane>
