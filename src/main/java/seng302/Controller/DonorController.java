@@ -286,6 +286,7 @@ public class DonorController {
     private OkHttpClient client = new OkHttpClient();
 
     private OrganDeregisterReason organDeregisterationReason;
+    private Organs toDeRegister;
 
     /**
      * Gives the donor view the application controller and hides all label and buttons that are not
@@ -1297,6 +1298,8 @@ public class DonorController {
         if (!currentlyReceivingListView.getItems().contains(toRegister) && toRegister != null) {
             currentUser.getReceiverDetails().startWaitingForOrgan(toRegister);
             currentlyReceivingListView.getItems().add(toRegister);
+
+            //JsonHandler.saveUsers(AppController.getInstance().getUsers());
         }
     }
 
@@ -1320,7 +1323,7 @@ public class DonorController {
      */
     @FXML
     private void deregisterOrganReason () {
-        Organs toDeRegister = currentlyReceivingListView.getSelectionModel().getSelectedItem();
+        toDeRegister = currentlyReceivingListView.getSelectionModel().getSelectedItem();
         if (toDeRegister != null) {
             FXMLLoader deregisterOrganReasonLoader = new FXMLLoader(getClass().getResource("/FXML/deregisterOrganReasonView.fxml"));
             Parent root = null;
@@ -1331,7 +1334,7 @@ public class DonorController {
             }
             deregisterOrganReasonController deregisterOrganReasonController = deregisterOrganReasonLoader.getController();
             Stage stage = new Stage();
-            deregisterOrganReasonController.init(this, currentUser, application, stage);
+            deregisterOrganReasonController.init(toDeRegister, this, currentUser, application, stage);
             stage.setScene(new Scene(root));
             stage.show();
         }
@@ -1342,7 +1345,6 @@ public class DonorController {
      * for receiver
      */
     public void deRegisterOrgan () throws OrgansInconsistentException {
-        Organs toDeRegister = currentlyReceivingListView.getSelectionModel().getSelectedItem();
         if (toDeRegister != null) {
             notReceivingListView.getItems().add(toDeRegister);
             currentUser.getReceiverDetails().stopWaitingForOrgan(toDeRegister);

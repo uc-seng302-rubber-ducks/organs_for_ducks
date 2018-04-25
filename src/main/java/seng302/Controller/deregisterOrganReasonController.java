@@ -2,10 +2,12 @@ package seng302.Controller;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.stage.Stage;
 import seng302.Exceptions.OrgansInconsistentException;
 import seng302.Model.OrganDeregisterReason;
+import seng302.Model.Organs;
 import seng302.Model.User;
 
 /**
@@ -24,6 +26,12 @@ public class deregisterOrganReasonController {
     @FXML
     private RadioButton receiverDiedRadioButton;
 
+    @FXML
+    private Label receiverName;
+
+    @FXML
+    private Label organName;
+
     AppController controller;
     Stage stage;
     private User currentUser;
@@ -31,14 +39,18 @@ public class deregisterOrganReasonController {
 
     /**
      * Initializes the NewDiseaseController
+     * @param organ name of receiver organ to be de-registered
+     * @param donorController class
      * @param controller The applications controller.
      * @param stage The applications stage.
      */
-    public void init(DonorController donorController ,User user, AppController controller, Stage stage) {
+    public void init(Organs organ, DonorController donorController, User user, AppController controller, Stage stage) {
         this.controller = controller;
         this.stage = stage;
         currentUser = user;
         this.donorController = donorController;
+        receiverName.setText(user.getName());
+        organName.setText(organ.organName);
         //stage.setMinWidth(620);
         //stage.setMaxWidth(620);
     }
