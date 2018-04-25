@@ -223,8 +223,6 @@ public class DonorController {
 
     @FXML
     private TextArea descriptionTextArea;
-    @FXML
-    private TableView<Map.Entry<Organs, LocalDate>> receiverOrgansTableView;
 
 //    @FXML
 //    private Button ReceiverModifyOrgansButton;
@@ -1271,47 +1269,6 @@ public class DonorController {
         }
 
         /*Receiver*/
-    /**
-     * show organs for receiver.
-     */
-    public void showReceiverOrgans(User currentUser){
-        if (currentUser.isReceiver()) {
-            receiverOrgans = currentUser.getReceiverDetails().getOrgans();
-        }
-        // use fully detailed type for Map.Entry<String, LocalDate>
-        TableColumn<Map.Entry<Organs, LocalDate>, LocalDate> registrationDate = new TableColumn<>("Registration Date");
-        //registrationDate.setMinWidth(285);
-        registrationDate.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Map.Entry<Organs, LocalDate>, LocalDate>, ObservableValue<LocalDate>>() {
-
-            @Override
-            public ObservableValue<LocalDate> call(TableColumn.CellDataFeatures<Map.Entry<Organs, LocalDate>, LocalDate> p) {
-                return new SimpleObjectProperty<>(p.getValue().getValue());
-            }
-        });
-
-        TableColumn<Map.Entry<Organs, LocalDate>, Organs> organName = new TableColumn<>("Organ");
-        //organName.setMinWidth(285);
-        organName.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Map.Entry<Organs, LocalDate>, Organs>, ObservableValue<Organs>>() {
-
-            @Override
-            public ObservableValue<Organs> call(TableColumn.CellDataFeatures<Map.Entry<Organs, LocalDate>, Organs> p) {
-                return new SimpleObjectProperty(p.getValue().getKey());
-            }
-        });
-        receiverOrgansTableView.setPlaceholder(new Label("Not registered as Receiver"));
-
-        receiverOrgansTableView.getColumns().setAll(registrationDate, organName);
-
-        if (receiverOrgans.size() != 0) {
-
-            //ObservableList<Map.Entry<Organs, LocalDate>> items = FXCollections.observableArrayList(receiverOrgans.entrySet());
-            //receiverOrgansTableView.setItems(items);
-
-        } else {
-            receiverOrgansTableView.setPlaceholder(new Label("Not registered as Receiver"));
-        }
-    }
-
 
     /**
      * register an organ

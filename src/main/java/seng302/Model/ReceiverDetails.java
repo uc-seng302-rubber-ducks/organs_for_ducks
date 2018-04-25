@@ -26,6 +26,10 @@ public class ReceiverDetails {
     return organs;
   }
 
+  public ArrayList<LocalDate> getOrganDates(Organs organ){
+    return organs.get(organ);
+  }
+
   /**
    * determines whether a user is waiting for the given organ
    *
