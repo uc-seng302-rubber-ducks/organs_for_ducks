@@ -237,10 +237,22 @@ public class DonorController {
     private ComboBox<Organs> organsComboBox;
 
     @FXML
+    private Label organLabel;
+
+    @FXML
     private ListView<Organs> currentlyReceivingListView;
 
     @FXML
     private ListView<Organs> notReceivingListView;
+
+    @FXML
+    private Label currentlyReceivingLabel;
+
+    @FXML
+    private Label notReceivingLabel;
+
+    @FXML
+    private Label notReceiverLabel;
 
     @FXML
     private Button registerButton;
@@ -296,6 +308,11 @@ public class DonorController {
             removeProcedureButton.setVisible(false);
             updateProceduresButton.setVisible(false);
             modifyOrgansProcedureButton.setVisible(false);
+            organLabel.setVisible(false);
+            organsComboBox.setVisible(false);
+            registerButton.setVisible(false);
+            reRegisterButton.setVisible(false);
+            deRegisterButton.setVisible(false);
         }
         //arbitrary default values
         //changeDeceasedStatus();
@@ -444,7 +461,13 @@ public class DonorController {
                     notReceivingListView.getItems().add(organ);
                 }
             }
-
+        }
+        else if (!fromClinician) {
+            currentlyReceivingLabel.setVisible(false);
+            notReceivingLabel.setVisible(false);
+            currentlyReceivingListView.setVisible(false);
+            notReceivingListView.setVisible(false);
+            notReceiverLabel.setVisible(true);
         }
 
     }
