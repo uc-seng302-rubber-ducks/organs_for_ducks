@@ -83,6 +83,7 @@
                       <ComboBox fx:id="birthGenderComboBox" prefHeight="25.0" prefWidth="171.0" GridPane.columnIndex="1">
                           <items>
                               <FXCollections fx:factory="observableArrayList">
+                                  <String fx:value="" />
                                   <String fx:value="Female" />
                                   <String fx:value="Male" />
                                   <String fx:value="Non Binary" />
@@ -92,6 +93,7 @@
                       <ComboBox fx:id="genderIdComboBox" layoutX="141.0" layoutY="23.0" prefHeight="25.0" prefWidth="171.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
                           <items>
                               <FXCollections fx:factory="observableArrayList">
+                                  <String fx:value="" />
                                   <String fx:value="Female" />
                                   <String fx:value="Male" />
                                   <String fx:value="Non Binary" />

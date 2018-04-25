@@ -301,11 +301,13 @@ public class UpdateUserController {
             String birthGender = AttributeValidation.validateGender(birthGenderComboBox);
             currentUser.setBirthGender(birthGender);
         }
-        if (genderIdComboBox.getValue() != null){
+        if (genderIdComboBox.getValue() != null && genderIdComboBox.getValue() != ""){
             String genderIdentity = AttributeValidation.validateGender(genderIdComboBox);
             currentUser.setGenderIdentity(genderIdentity);
-
-        }
+        } else if (birthGenderComboBox.getValue() != null) {
+           String birthGender = AttributeValidation.validateGender(birthGenderComboBox);
+           currentUser.setGenderIdentity(birthGender);
+      }
         if (bloodComboBox.getValue() != null) {
             String blood = AttributeValidation.validateBlood(bloodComboBox);
             //BloodTypes blood = AttributeValidation.validateBlood(bloodComboBox);
@@ -365,6 +367,8 @@ public class UpdateUserController {
         }
         if (preferredFNameTextField.getText() != null){
           currentUser.setPreferredFirstName(preferredFNameTextField.getText());
+        } else {
+          currentUser.setPreferredFirstName(fNameInput.getText());
         }
 
 }

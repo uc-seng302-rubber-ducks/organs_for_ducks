@@ -169,7 +169,8 @@ public class AttributeValidation {
     public static String validateGender(ComboBox genderBox) {
         String gender = null;
 
-        if (genderBox.getValue() != null && genderBox.getValue().toString() != null) {
+        if (genderBox.getValue() != null && genderBox.getValue().toString() != null && genderBox.getValue().toString() != "") {
+            System.out.println(genderBox.getValue().toString());
             gender = genderBox.getValue().toString();
         }
 

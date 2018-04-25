@@ -192,12 +192,22 @@ public class NewUserController {
 
         // User attributes
         // check string returns null if the textfield is empty
-        String preferredFirstName = AttributeValidation.checkString(preferredFNameTextField.getText());
+        String preferredFirstName;
+        if (AttributeValidation.checkString(preferredFNameTextField.getText()) == null){
+            preferredFirstName = fName;
+        } else {
+            preferredFirstName = AttributeValidation.checkString(preferredFNameTextField.getText());
+        }
         String middleName = AttributeValidation.checkString(mNameInput.getText());
         String lastName = AttributeValidation.checkString(lNameInput.getText());
 
         String birthGender = AttributeValidation.validateGender(birthGenderComboBox);
-        String genderIdentity = AttributeValidation.validateGender(genderIdComboBox);
+        String genderIdentity;
+        if (birthGender != null && AttributeValidation.validateGender(genderIdComboBox) == null){
+            genderIdentity = birthGender;
+        } else {
+            genderIdentity = AttributeValidation.validateGender(genderIdComboBox);
+        }
         String bloodType = AttributeValidation.validateBlood(bloodComboBox);
 
         boolean smoker = smokerCheckBox.isSelected();
