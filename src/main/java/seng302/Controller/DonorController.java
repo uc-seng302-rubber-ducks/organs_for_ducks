@@ -473,6 +473,30 @@ public class DonorController {
             notReceiverLabel.setVisible(true);
         }
 
+        if(!notReceivingListView.getItems().isEmpty()) {
+            notReceivingListView.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent event) {
+                    if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
+                        Organs notReceivingOrgan = notReceivingListView.getSelectionModel().getSelectedItem();
+                        launchReceiverOrganDateView(notReceivingOrgan);
+                    }
+                }
+            });
+        }
+
+
+        if(!currentlyReceivingListView.getItems().isEmpty()) {
+            currentlyReceivingListView.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent event) {
+                    if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
+                        Organs currentlyReceivingOrgan = currentlyReceivingListView.getSelectionModel().getSelectedItem();
+                        launchReceiverOrganDateView(currentlyReceivingOrgan);
+                    }
+                }
+            });
+        }
     }
 
     public OrganDeregisterReason getOrganDeregisterationReason(){
@@ -1246,6 +1270,7 @@ public class DonorController {
             stage.show();
         }
 
+        /*Receiver*/
     /**
      * show organs for receiver.
      */
@@ -1298,8 +1323,22 @@ public class DonorController {
         if (!currentlyReceivingListView.getItems().contains(toRegister) && toRegister != null) {
             currentUser.getReceiverDetails().startWaitingForOrgan(toRegister);
             currentlyReceivingListView.getItems().add(toRegister);
+//            try {
+//                JsonHandler.saveUsers(AppController.getInstance().getUsers()); //TODO uncomment this after json deserealiser can work with enums
+//            } catch (IOException e){
+//                e.printStackTrace();
+//            }
 
-            //JsonHandler.saveUsers(AppController.getInstance().getUsers());
+            //set mouse click for currentlyReceivingListView
+            currentlyReceivingListView.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent event) {
+                    if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
+                        Organs currentlyReceivingOrgan = currentlyReceivingListView.getSelectionModel().getSelectedItem();
+                        launchReceiverOrganDateView(currentlyReceivingOrgan);
+                    }
+                }
+            });
         }
     }
 
@@ -1314,6 +1353,21 @@ public class DonorController {
             currentlyReceivingListView.getItems().add(toReRegister);
             currentUser.getReceiverDetails().startWaitingForOrgan(toReRegister);
             notReceivingListView.getItems().remove(toReRegister);
+
+            //if notReceiving list view is empty, disable mouse click to prevent null pointer exception
+            if (notReceivingListView.getItems().isEmpty()) {
+                notReceivingListView.setOnMouseClicked(null);
+            }
+            //set mouse click for currentlyReceivingListView
+            currentlyReceivingListView.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent event) {
+                    if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
+                        Organs currentlyReceivingOrgan = currentlyReceivingListView.getSelectionModel().getSelectedItem();
+                        launchReceiverOrganDateView(currentlyReceivingOrgan);
+                    }
+                }
+            });
         }
     }
 
@@ -1349,6 +1403,38 @@ public class DonorController {
             notReceivingListView.getItems().add(toDeRegister);
             currentUser.getReceiverDetails().stopWaitingForOrgan(toDeRegister);
             currentlyReceivingListView.getItems().remove(toDeRegister);
+
+            //if currentlyReceivingListView is empty, disable mouse click to prevent null pointer exception
+            if (currentlyReceivingListView.getItems().isEmpty()) {
+                currentlyReceivingListView.setOnMouseClicked(null);
+            }
+            //set mouse click for notReceivingListView
+            notReceivingListView.setOnMouseClicked(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent event) {
+                    if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
+                        Organs currentlyReceivingOrgan = notReceivingListView.getSelectionModel().getSelectedItem();
+                        launchReceiverOrganDateView(currentlyReceivingOrgan);
+                    }
+                }
+            });
         }
     }
+
+    private void launchReceiverOrganDateView(Organs organs) {
+        FXMLLoader receiverOrganDateViewLoader = new FXMLLoader(getClass().getResource("/FXML/receiverOrganDateView.fxml"));
+        Parent root = null;
+        try {
+            root = receiverOrganDateViewLoader.load();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Stage stage = new Stage();
+        stage.setScene(new Scene(root));
+        receiverOrganDateController receiverOrganDateController = receiverOrganDateViewLoader.getController();
+        receiverOrganDateController.init(application, currentUser, stage, organs);
+        stage.show();
+
+    }
+
 }
