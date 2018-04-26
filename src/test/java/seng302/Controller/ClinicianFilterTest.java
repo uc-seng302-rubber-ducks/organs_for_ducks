@@ -28,17 +28,19 @@ public class ClinicianFilterTest extends ApplicationTest {
     AppController.getInstance().getUsers().add(adam);
     clickOn("#changeLogin");
     clickOn("#userIDTextField");
-    write("0");
+    write("0", 0);
     clickOn("#passwordField");
-    write("admin");
-    clickOn("#loginButton");
-    clickOn("#searchTab");
+    write("admin", 0);
+
   }
 
   @Test
   public void testFilterName() {
+    clickOn("#loginButton");
+    clickOn("#searchTab");
     clickOn("#searchTextField");
-    write("Adam");
+    System.out.println(AppController.getInstance().getUsers());
+    write("Adam", 0);
     doubleClickOn(TableViewsMethod.getCell("#searchTableView", 0, 0));
     verifyThat("#NHIValue", LabeledMatchers.hasText("ABC1234"));
   }
@@ -46,11 +48,17 @@ public class ClinicianFilterTest extends ApplicationTest {
   @Test
   public void testFilterManyResults() {
     for (int i = 0; i < 100; i++) {
-      AppController.getInstance().getUsers().add(new User());
+      User user = new User(Integer.toString(i), LocalDate.now(), "ABC00"+((i < 10 ? "0"+i : i)));
+      user.setFirstName("#");
+      user.setLastName(Integer.toString(i));
+      AppController.getInstance().getUsers().add(user);
     }
-    clickOn("#detailsTab");
+    clickOn("#loginButton");
     clickOn("#searchTab");
+    clickOn("#searchTextField");
+    write("Adam", 0);
     doubleClickOn(TableViewsMethod.getCell("#searchTableView", 0, 0));
+    verifyThat("#NHIValue", LabeledMatchers.hasText("ABC1234"));
   }
 
   @After
