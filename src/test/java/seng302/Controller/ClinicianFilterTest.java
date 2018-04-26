@@ -43,8 +43,19 @@ public class ClinicianFilterTest extends ApplicationTest {
     verifyThat("#NHIValue", LabeledMatchers.hasText("ABC1234"));
   }
 
+  @Test
+  public void testFilterManyResults() {
+    for (int i = 0; i < 100; i++) {
+      AppController.getInstance().getUsers().add(new User());
+    }
+    clickOn("#detailsTab");
+    clickOn("#searchTab");
+    doubleClickOn(TableViewsMethod.getCell("#searchTableView", 0, 0));
+  }
+
   @After
-  public void tearDown() {
+  public void tearDown() throws TimeoutException {
     AppController.getInstance().getUsers().clear();
+    FxToolkit.cleanupStages();
   }
 }
