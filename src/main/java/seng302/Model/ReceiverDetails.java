@@ -1,12 +1,11 @@
 package seng302.Model;
 
 import com.google.gson.annotations.Expose;
+import seng302.Exceptions.OrgansInconsistentException;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
-import seng302.Exceptions.OrgansInconsistentException;
 
 public class ReceiverDetails {
 
@@ -47,9 +46,6 @@ public class ReceiverDetails {
    * waiting for this organ, no change will be made.
    */
   public void startWaitingForOrgan(Organs organ) throws OrgansInconsistentException {
-    if (isDonatingThisOrgan(organ)) {
-      throw new OrgansInconsistentException("The user cannot receive an organ they are donating");
-    }
     if (isCurrentlyWaitingFor(organ)) {
       return;
     }
@@ -95,7 +91,7 @@ public class ReceiverDetails {
    * @param organ organ to be tested for
    * @return true if the user's organs to donate contains the given organ
    */
-  private boolean isDonatingThisOrgan(Organs organ) {
+  public boolean isDonatingThisOrgan(Organs organ) {
     return attachedUser.getDonorDetails().getOrgans().contains(organ);
   }
   /**

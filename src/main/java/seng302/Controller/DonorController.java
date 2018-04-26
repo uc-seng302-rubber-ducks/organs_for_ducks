@@ -1,8 +1,6 @@
 package seng302.Controller;
 
 
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -19,7 +17,6 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.util.Callback;
 import javafx.util.StringConverter;
 import okhttp3.OkHttpClient;
 import org.controlsfx.control.textfield.TextFields;
@@ -632,7 +629,7 @@ public class DonorController {
     private void modifyOrgans() {
         if (currentUser.getDateOfBirth() == null) {
             warningLabel.setVisible(true);
-            warningLabel.setText("Plese confirm donor before continuing");
+            warningLabel.setText("Please confirm donor before continuing");
             return;
         }
         FXMLLoader organLoader = new FXMLLoader(getClass().getResource("/FXML/organsView.fxml"));
@@ -1280,6 +1277,11 @@ public class DonorController {
         if (!currentlyReceivingListView.getItems().contains(toRegister) && toRegister != null) {
             currentUser.getReceiverDetails().startWaitingForOrgan(toRegister);
             currentlyReceivingListView.getItems().add(toRegister);
+            if (currentUser.getReceiverDetails().isDonatingThisOrgan(toRegister)) {
+                int index = currentlyReceivingListView.getItems().indexOf(toRegister);
+                currentlyReceivingListView.getSelectionModel().select(index);
+                //TODO change the colour of the font when selected to make it more readable
+            }
 //            try {
 //                JsonHandler.saveUsers(AppController.getInstance().getUsers()); //TODO uncomment this after json deserealiser can work with enums
 //            } catch (IOException e){
