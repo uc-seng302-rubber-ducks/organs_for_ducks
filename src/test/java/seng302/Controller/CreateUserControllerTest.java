@@ -151,10 +151,10 @@ public class CreateUserControllerTest extends ApplicationTest {
     clickOn("#dobInput");
     write("3/1/2017");
     clickOn("#phoneInput");
-    write("3552847");
+    write("033552847");
     clickOn("#confirmButton");
     clickOn("#detailsTab");
-    verifyThat("#pHomePhone", LabeledMatchers.hasText("3552847"));
+    verifyThat("#pHomePhone", LabeledMatchers.hasText("033552847"));
   }
 
   @Test @Ignore
@@ -299,7 +299,7 @@ public class CreateUserControllerTest extends ApplicationTest {
     clickOn("#ecNameInput");
     write("John Cena");
     clickOn("#ecPhoneInput");
-    write("3594573");
+    write("033594573");
     clickOn("#ecCellInput");
     write("0221557621");
     clickOn("#ecAddressInput");

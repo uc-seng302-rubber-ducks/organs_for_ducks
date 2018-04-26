@@ -30,6 +30,48 @@ public class AttributeValidation {
 
 
     /**
+     * A basic regular expression for validating that emails are in the correct format.
+     * Mainly checks that the '.' and '@' signs are in the correct place, the correct characters are used, and the
+     * domain name is longer than one character.
+     *
+     * @param email The user input of an email address to be validated.
+     * @return The given email if it is in the correct format, null otherwise.
+     */
+    public static String validateEmail(String email) {
+        if (email.matches("^[a-zA-Z0-9][a-zA-Z0-9._%+-]*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,}$")) {
+            return email;
+        } else return null;
+    }
+
+
+    /**
+     * A basic regular expression for validating NZ landline telephone numbers.
+     * The number must be 9 digits long, including a leading zero, a one-digit area code and a seven-digit phone number.
+     *
+     * @param phoneNum The user input of a NZ landline number to be validated.
+     * @return The given phone number if it is in the correct format, null otherwise.
+     */
+    public static String validatePhoneNumber(String phoneNum) {
+        if (phoneNum.matches("^[0][3|4|6|7|9]( |-)?[2-9][0-9]{2}( |-)?[0-9]{4}$")) {
+            return phoneNum;
+        } else return null;
+    }
+
+
+    /**
+     * A basic regular expression for validating NZ cell phone numbers.
+     * Checks that the number has a minimum length of 9 digits or a max of 11 digits (including the leading '02').
+     *
+     * @param cellNum
+     * @return
+     */
+    public static String validateCellNumber(String cellNum) {
+        if (cellNum.matches("^(02)[0-9]( |-)?[0-9]{3,4}( |-)?[0-9]{3,4}$")) {
+            return cellNum;
+        } else return null;
+    }
+
+    /**
      * Checks if the given attribute is empty.
      * @param attribute The attribute to be checked.
      * @return The attribute as a string if it is not empty, null otherwise.
@@ -127,7 +169,8 @@ public class AttributeValidation {
     public static String validateGender(ComboBox genderBox) {
         String gender = null;
 
-        if (genderBox.getValue() != null && genderBox.getValue().toString() != null) {
+        if (genderBox.getValue() != null && genderBox.getValue().toString() != null && genderBox.getValue().toString() != "") {
+            System.out.println(genderBox.getValue().toString());
             gender = genderBox.getValue().toString();
         }
 
