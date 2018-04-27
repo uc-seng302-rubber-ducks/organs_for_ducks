@@ -1,19 +1,16 @@
 package seng302.Model;
 
 import com.google.gson.annotations.Expose;
-import org.joda.time.DateTime;
-
 import java.io.FileNotFoundException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Objects;
 
 
-public class User {
+public class User extends Undoable<User> {
 
   @Expose
   private String nhi;
@@ -891,5 +888,108 @@ public class User {
         "\norgans: " + (isDonor() ?  donorDetails.getOrgans() : (name + " is not a donor")) +
         "\ntime Created: " + timeCreated +
         "\nlast modified: " + lastModified;
+  }
+
+  @Override
+  public void undo() {
+    if (undoStack.isEmpty()) {
+      return;
+    }
+    Memento<User> memento = undoStack.pop();
+    this.changeInto(memento.getOldObject());
+  }
+
+  @Override
+  public void redo() {
+
+  }
+
+  @Override
+  public User clone() {
+    User newUser = new User();
+    newUser.nhi = this.nhi;
+    newUser.dateOfBirth = this.dateOfBirth;
+    newUser.dateOfDeath = this.dateOfDeath;
+
+    newUser.birthGender = this.birthGender;
+    newUser.genderIdentity = this.genderIdentity;
+    newUser.height = this.height;
+    newUser.weight = this.weight;
+    newUser.bloodType = this.bloodType;
+    newUser.alcoholConsumption = this.alcoholConsumption;
+    newUser.smoker = this.smoker;
+
+    newUser.currentAddress = this.currentAddress;
+    newUser.region = this.region;
+    newUser.homePhone = this.homePhone;
+    newUser.cellPhone = this.cellPhone;
+    newUser.email = this.email;
+    newUser.contact = this.contact;
+
+    newUser.name = this.name;
+    newUser.firstName = this.firstName;
+    newUser.preferredFirstName = this.preferredFirstName;
+    newUser.middleName = this.middleName;
+    newUser.lastName = this.lastName;
+
+    newUser.timeCreated = this.timeCreated;
+    newUser.updateHistory = this.updateHistory;
+    newUser.miscAttributes = this.miscAttributes;
+    newUser.currentMedication = this.currentMedication;
+    newUser.previousMedication = this.previousMedication;
+    newUser.currentMedicationTimes = this.currentMedicationTimes;
+    newUser.previousMedicationTimes = this.previousMedicationTimes;
+    newUser.donorDetails = this.donorDetails;
+    newUser.receiverDetails = this.receiverDetails;
+
+    newUser.currentDiseases = this.currentDiseases;
+    newUser.pastDiseases = this.pastDiseases;
+    newUser.medicalProcedures = this.medicalProcedures;
+
+    newUser.changes = this.changes;
+    return newUser;
+  }
+
+  private void changeInto(User other) {
+    this.nhi = other.nhi;
+    this.dateOfBirth = other.dateOfBirth;
+    this.dateOfDeath = other.dateOfDeath;
+
+    this.birthGender = other.birthGender;
+    this.genderIdentity = other.genderIdentity;
+    this.height = other.height;
+    this.weight = other.weight;
+    this.bloodType = other.bloodType;
+    this.alcoholConsumption = other.alcoholConsumption;
+    this.smoker = other.smoker;
+
+    this.currentAddress = other.currentAddress;
+    this.region = other.region;
+    this.homePhone = other.homePhone;
+    this.cellPhone = other.cellPhone;
+    this.email = other.email;
+    this.contact = other.contact;
+
+    this.name = other.name;
+    this.firstName = other.firstName;
+    this.preferredFirstName = other.preferredFirstName;
+    this.middleName = other.middleName;
+    this.lastName = other.lastName;
+
+    this.timeCreated = other.timeCreated;
+    updateHistory = other.updateHistory;
+    this.miscAttributes = other.miscAttributes;
+    this.currentMedication = other.currentMedication;
+    this.previousMedication = other.previousMedication;
+    this.currentMedicationTimes = other.currentMedicationTimes;
+    this.previousMedicationTimes = other.previousMedicationTimes;
+    this.donorDetails = other.donorDetails;
+    this.receiverDetails = other.receiverDetails;
+
+    this.currentDiseases = other.currentDiseases;
+    this.pastDiseases = other.pastDiseases;
+    this.medicalProcedures = other.medicalProcedures;
+
+    this.changes = other.changes;
   }
 }

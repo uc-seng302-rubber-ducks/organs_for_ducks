@@ -1,14 +1,18 @@
 package seng302.Controller;
 
 
-import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
-import javafx.scene.control.*;
-import javafx.stage.Stage;
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
-import seng302.Model.Change;
-import seng302.Model.UndoRedoStacks;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.DatePicker;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import javafx.stage.Stage;
+import seng302.Model.Memento;
 import seng302.Model.User;
 import seng302.Service.AttributeValidation;
 
@@ -188,17 +192,17 @@ public class UpdateUserController {
       if (user.getContact().getRegion() != null) {
         ecRegionInput.setText(user.getContact().getRegion());
       }
-      if (user.getContact().getHomePhoneNumber() != null){
+      if (user.getContact().getHomePhoneNumber() != null) {
         ecPhoneInput.setText(user.getContact().getHomePhoneNumber());
       }
-      if (user.getContact().getEmail() != null){
+      if (user.getContact().getEmail() != null) {
         ecEmailInput.setText(user.getContact().getEmail());
       }
-      if (user.getContact().getAddress() != null){
+      if (user.getContact().getAddress() != null) {
         ecAddressInput.setText(user.getContact().getAddress());
 
       }
-      if (user.getContact().getCellPhoneNumber() != null){
+      if (user.getContact().getCellPhoneNumber() != null) {
         ecCellInput.setText(user.getContact().getCellPhoneNumber());
       }
       //h
@@ -385,15 +389,20 @@ public class UpdateUserController {
      */
     @FXML
     public void confirmUpdate(ActionEvent actionEvent) throws IOException {
+      Memento<User> memento = new Memento<>();
+      memento.setOldObject(currentUser.clone());
         //TODO save changes and go back to overview screen
         getPersonalDetails();
         getHealthDetails();
         getContactDetaisl();
         getEmergencyContact();
         //TODO change to be different
+
       appController.update(currentUser);
       //ArrayList<Change> diffs = appController.differanceInDonors(oldUser, currentUser);
       //changelog.addAll(diffs);
+      memento.setNewObject(currentUser.clone());
+      currentUser.getUndoStack().push(memento);
         AppController appController = AppController.getInstance();
         DonorController donorController = appController.getDonorController();
         try {
