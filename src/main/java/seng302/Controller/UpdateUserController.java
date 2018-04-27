@@ -136,81 +136,178 @@ public class UpdateUserController {
         //UndoRedoStacks.storeUndoCopy(currentUser);
         currentUser = user;
         oldUser = new User();
-        if (user.isSmoker()){
-          smokerCheckBox.setSelected(true);
+        setUserDetails(currentUser);
+        if (user.getLastName() != null) {
+          stage.setTitle("Update User: " + user.getFirstName() +" " + user.getLastName());
+        } else {
+          stage.setTitle("Update User: " + user.getFirstName());
         }
         //UndoRedoStacks.cloneUser(currentUser,oldUser);
 
 
+
     }
 
+    @FXML
+    public void setUserDetails(User user) {
+      //personal
+      fNameInput.setText(user.getFirstName());
+      nhiInput.setText(user.getNhi());
+      if (user.getLastName() != null) {
+        lNameInput.setText(user.getLastName());
+      }
+      if (user.getMiddleName() != null) {
+        mNameInput.setText(user.getMiddleName());
+      }
+      if (user.getPrefFirstName() != null) {
+        preferredFNameTextField.setText(user.getPrefFirstName());
+      }
+      //contact
+      if (user.getCurrentAddress() != null){
+        addressInput.setText(user.getCurrentAddress());
+      }
+      if (user.getRegion() != null){
+        regionInput.setText(user.getRegion());
+      }
+      if (user.getCellPhone() != null){
+        cellInput.setText(user.getCellPhone());
+      }
+      if (user.getHomePhone() != null){
+        phoneInput.setText(user.getHomePhone());
+      }
+      if (user.getEmail() != null){
+        emailInput.setText(user.getEmail());
+      }
+      //ec
+      if (user.getContact().getName() != null) {
+        ecNameInput.setText(user.getContact().getName());
+      }
+      if (user.getContact().getRelationship() != null) {
+        ecRelationshipInput.setText(user.getContact().getRelationship());
+      }
+      if (user.getContact().getRegion() != null) {
+        ecRegionInput.setText(user.getContact().getRegion());
+      }
+      if (user.getContact().getHomePhoneNumber() != null){
+        ecPhoneInput.setText(user.getContact().getHomePhoneNumber());
+      }
+      if (user.getContact().getEmail() != null){
+        ecEmailInput.setText(user.getContact().getEmail());
+      }
+      if (user.getContact().getAddress() != null){
+        ecAddressInput.setText(user.getContact().getAddress());
+
+      }
+      if (user.getContact().getCellPhoneNumber() != null){
+        ecCellInput.setText(user.getContact().getCellPhoneNumber());
+      }
+      //h
+      if (user.isSmoker()){
+        smokerCheckBox.setSelected(true);
+      }
+      if (user.getBloodType() != null) {
+        bloodComboBox.setValue(user.getBloodType());
+      }
+      if (user.getBirthGender() != null){
+        birthGenderComboBox.setValue(user.getBirthGender());
+      }
+      if (user.getGenderIdentity() != null){
+        genderIdComboBox.setValue(user.getGenderIdentity());
+      }
+      if (user.getWeight() > 0){
+        weightInput.setText(Double.toString(user.getWeight()));
+      }
+      if (user.getHeight() > 0){
+        heightInput.setText(Double.toString(user.getHeight()));
+      }
+
+    }
+
+    @FXML
     public void getContactDetaisl() {
         if (phoneInput.getText() != null){
           currentUser.setHomePhone(phoneInput.getText());
-
+        } else {
+          currentUser.setHomePhone(null);
         }
         if (cellInput.getText() != null){
           currentUser.setCellPhone(cellInput.getText());
-
+        } else{
+          currentUser.setCellPhone(null);
         }
         if (addressInput.getText() != null){
             String address = addressInput.getText().toString();
             currentUser.setCurrentAddress(address);
-
+        } else{
+          currentUser.setCurrentAddress(null);
         }
         if (regionInput.getText() != null){
           currentUser.setRegion(regionInput.getText());
-
+        } else {
+          currentUser.setRegion(null);
         }
         if (emailInput.getText() != null){
           currentUser.setEmail(emailInput.getText());
-
+        } else {
+          currentUser.setEmail(null);
         }
 
     }
 
+    @FXML
     public void getEmergencyContact() {
         if (!ecNameInput.getText().isEmpty()) {
           currentUser.getContact().setName(ecNameInput.getText());
-
         }
         if (!ecPhoneInput.getText().isEmpty()) {
           currentUser.getContact().setHomePhoneNumber(ecPhoneInput.getText());
 
+        } else {
+          currentUser.getContact().setHomePhoneNumber(null);
         }
         if (!ecCellInput.getText().isEmpty() ) {
           currentUser.getContact().setCellPhoneNumber(ecCellInput.getText());
-
+        } else{
+          currentUser.getContact().setCellPhoneNumber(null);
         }
         if (!ecAddressInput.getText().isEmpty())  {
           currentUser.getContact().setAddress(ecAddressInput.getText());
-
+        } else {
+          currentUser.getContact().setAddress(null);
         }
         if (!ecRegionInput.getText().isEmpty()) {
           currentUser.getContact().setRegion(ecRegionInput.getText());
-
+        } else {
+          currentUser.getContact().setRegion(null);
         }
         if (!ecEmailInput.getText().isEmpty()) {
           currentUser.getContact().setEmail(ecEmailInput.getText());
 
+        } else {
+          currentUser.getContact().setEmail(null);
         }
         if (!ecRelationshipInput.getText().isEmpty()) {
           currentUser.getContact().setRelationship(ecRelationshipInput.getText());
 
+        } else {
+          currentUser.getContact().setRelationship(null);
         }
 
     }
 
+    @FXML
     public void getHealthDetails() {
         if (birthGenderComboBox.getValue() != null) {
             String birthGender = AttributeValidation.validateGender(birthGenderComboBox);
             currentUser.setBirthGender(birthGender);
         }
-        if (genderIdComboBox.getValue() != null){
+        if (genderIdComboBox.getValue() != null && genderIdComboBox.getValue() != ""){
             String genderIdentity = AttributeValidation.validateGender(genderIdComboBox);
             currentUser.setGenderIdentity(genderIdentity);
-
-        }
+        } else if (birthGenderComboBox.getValue() != null) {
+           String birthGender = AttributeValidation.validateGender(birthGenderComboBox);
+           currentUser.setGenderIdentity(birthGender);
+      }
         if (bloodComboBox.getValue() != null) {
             String blood = AttributeValidation.validateBlood(bloodComboBox);
             //BloodTypes blood = AttributeValidation.validateBlood(bloodComboBox);
@@ -241,6 +338,7 @@ public class UpdateUserController {
     }
 
 
+    @FXML
     public void getPersonalDetails() {
         //TODO check why dateofbirth fails
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
@@ -269,6 +367,8 @@ public class UpdateUserController {
         }
         if (preferredFNameTextField.getText() != null){
           currentUser.setPreferredFirstName(preferredFNameTextField.getText());
+        } else {
+          currentUser.setPreferredFirstName(fNameInput.getText());
         }
 
 }

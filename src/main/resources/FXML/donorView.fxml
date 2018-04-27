@@ -27,7 +27,7 @@
                      <children>
                         <Label layoutX="15.0" layoutY="45.0" text="First Name:" />
                         <Label layoutX="15.0" layoutY="145.0" text="Date of Birth:" />
-                        <Label layoutX="15.0" layoutY="245.0" text="Gender:" />
+                        <Label layoutX="15.0" layoutY="245.0" text="Birth Gender:" />
                         <Label layoutX="420.0" layoutY="20.0" text="Blood Type:" />
                         <Label layoutX="420.0" layoutY="45.0" text="Height(m):" />
                         <Label layoutX="420.0" layoutY="70.0" text="Weight(Kgs):" />
@@ -54,7 +54,7 @@
                         <Label fx:id="ageValue" layoutX="47.0" layoutY="172.0" />
                         <Label fx:id="DOBValue" layoutX="106.0" layoutY="145.0" />
                         <Label fx:id="DODValue" layoutX="113.0" layoutY="195.0" />
-                        <Label fx:id="birthGenderValue" layoutX="72.0" layoutY="245.0" />
+                        <Label fx:id="birthGenderValue" layoutX="110.0" layoutY="245.0" />
                         <Label fx:id="bmiValue" layoutX="458.0" layoutY="145.0" />
                         <Label fx:id="bloodTypeValue" layoutX="508.0" layoutY="20.0" />
                         <Label fx:id="heightValue" layoutX="508.0" layoutY="45.0" />
@@ -73,8 +73,8 @@
                         <Label fx:id="NHIValue" layoutX="46.0" layoutY="20.0" />
                         <Label layoutX="15.0" layoutY="220.0" text="Age at Death:" />
                         <Label fx:id="ageDeathValue" layoutX="110.0" layoutY="220.0" />
-                        <Label layoutX="15.0" layoutY="270.0" text="Gender:" />
-                        <Label fx:id="genderIdentityValue" layoutX="77.0" layoutY="273.0" />
+                        <Label layoutX="15.0" layoutY="270.0" text="Gender Identity:" />
+                        <Label fx:id="genderIdentityValue" layoutX="130.0" layoutY="273.0" />
                      </children>
                   </AnchorPane>
             </content>

@@ -592,7 +592,7 @@ public class DonorController {
 
             }
             if (contact.getHomePhoneNumber() != null) {
-                eHomePhone.setText(contact.getHomePhoneNumber());    //System.out.println(attachedUser == null);
+                eHomePhone.setText(contact.getHomePhoneNumber());
 
             }
             if (contact.getRegion() != null) {
@@ -934,7 +934,25 @@ public class DonorController {
 
         previousProcedureTableView.setItems(previousProcedures);
         pendingProcedureTableView.setItems(pendingProcedures);
+
+      currentMedicationListView.setItems(currentMeds);
+
+    if (currentUser.getPreviousMedication() != null) {
+      //System.out.println("previous: " + previousMeds);
+      previousMeds.clear();
+      previousMeds.addAll(currentUser.getPreviousMedication());
+      previousMedicationListView.setItems(previousMeds);
     }
+    organsDonatingListView.getItems().clear();
+    organsDonatingListView.getItems().addAll(currentUser.getDonorDetails().getOrgans());
+    setContactPage();
+    if (user.getLastName() != null) {
+      stage.setTitle("User Profile: " + user.getFirstName() + " " + user.getLastName());
+    } else {
+      stage.setTitle("User Profile: " + user.getFirstName());
+
+    }
+  }
 
     /**
      * @param event An action event
