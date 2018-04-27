@@ -82,6 +82,9 @@ public class OrganController {
         try {
             UndoRedoStacks.storeUndoCopy(currentUser);
             Organs toDonate = canDonate.getSelectionModel().getSelectedItem();
+            if (currentUser.getReceiverDetails().isCurrentlyWaitingFor(toDonate)) {
+                currentUser.getOrganIntersection().addOrganIntersection(toDonate);
+            }
             currentlyDonating.getItems().add(toDonate);
             currentUser.getDonorDetails().addOrgan(toDonate);
             appController.update(currentUser);
@@ -98,6 +101,9 @@ public class OrganController {
     void undonate(ActionEvent event) {
         UndoRedoStacks.storeUndoCopy(currentUser);
         Organs toUndonate = currentlyDonating.getSelectionModel().getSelectedItem();
+        if(currentUser.getOrganIntersection().organIsPresent(toUndonate)) {
+            currentUser.getOrganIntersection().removeOrganIntersection(toUndonate);
+        }
         currentlyDonating.getItems().remove(toUndonate);
         canDonate.getItems().add(toUndonate);
         currentUser.getDonorDetails().removeOrgan(toUndonate);

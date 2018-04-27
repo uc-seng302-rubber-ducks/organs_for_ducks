@@ -492,6 +492,12 @@ public class DonorController {
                 }
             });
         }
+        //TODO add similar functionality for donor table
+        for (Organs organ: currentUser.getOrganIntersection().getIntersection()) {
+            int index = currentlyReceivingListView.getItems().indexOf(organ);
+            currentlyReceivingListView.getSelectionModel().select(index);
+            //TODO change the colour of the font when selected to make it more readable
+        }
     }
 
     public OrganDeregisterReason getOrganDeregisterationReason(){
@@ -1296,6 +1302,7 @@ public class DonorController {
             currentUser.getReceiverDetails().startWaitingForOrgan(toRegister);
             currentlyReceivingListView.getItems().add(toRegister);
             if (currentUser.getReceiverDetails().isDonatingThisOrgan(toRegister)) {
+                currentUser.getOrganIntersection().addOrganIntersection(toRegister);
                 int index = currentlyReceivingListView.getItems().indexOf(toRegister);
                 currentlyReceivingListView.getSelectionModel().select(index);
                 //TODO change the colour of the font when selected to make it more readable
@@ -1330,6 +1337,13 @@ public class DonorController {
             currentlyReceivingListView.getItems().add(toReRegister);
             currentUser.getReceiverDetails().startWaitingForOrgan(toReRegister);
             notReceivingListView.getItems().remove(toReRegister);
+
+            if (currentUser.getReceiverDetails().isDonatingThisOrgan(toReRegister)) {
+                currentUser.getOrganIntersection().addOrganIntersection(toReRegister);
+                int index = currentlyReceivingListView.getItems().indexOf(toReRegister);
+                currentlyReceivingListView.getSelectionModel().select(index);
+                //TODO change the colour of the font when selected to make it more readable
+            }
 
             //if notReceiving list view is empty, disable mouse click to prevent null pointer exception
             if (notReceivingListView.getItems().isEmpty()) {
@@ -1380,6 +1394,8 @@ public class DonorController {
             notReceivingListView.getItems().add(toDeRegister);
             currentUser.getReceiverDetails().stopWaitingForOrgan(toDeRegister);
             currentlyReceivingListView.getItems().remove(toDeRegister);
+
+            currentUser.getOrganIntersection().removeOrganIntersection(toDeRegister);
 
             //if currentlyReceivingListView is empty, disable mouse click to prevent null pointer exception
             if (currentlyReceivingListView.getItems().isEmpty()) {

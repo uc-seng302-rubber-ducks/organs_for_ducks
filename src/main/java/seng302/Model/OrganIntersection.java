@@ -22,4 +22,12 @@ public class OrganIntersection {
     public void addOrganIntersection(Organs organ) {
         intersection.add(organ);
     }
+
+    public void removeOrganIntersection(Organs organ) {
+        intersection.remove(organ);
+    }
+
+    public boolean organIsPresent(Organs organ) {
+        return intersection.contains(organ);
+    }
 }

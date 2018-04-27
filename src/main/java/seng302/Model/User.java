@@ -321,6 +321,10 @@ public class User {
     return receiverDetails;
   }
 
+  public OrganIntersection getOrganIntersection() {
+    return organIntersection;
+  }
+
   public void setReceiverDetails(ReceiverDetails receiverDetails) {
     updateLastModified();
     this.receiverDetails = receiverDetails;
