@@ -348,6 +348,8 @@ public class UpdateUserController {
 
         if (!lNameInput.getText().equals("")) {
           currentUser.setLastName(lNameInput.getText());
+        } else {
+          currentUser.setLastName("");
         }
 
         if (!nhiInput.getText().equals("")) {
@@ -356,6 +358,8 @@ public class UpdateUserController {
 
         if (!mNameInput.getText().equals("")) {
           currentUser.setMiddleName(mNameInput.getText());
+        } else {
+          currentUser.setMiddleName("");
         }
 
         if (dobInput.getValue() != null) {
@@ -365,7 +369,8 @@ public class UpdateUserController {
          if(dodInput.getValue()!=null) {
           currentUser.setDateOfDeath(dodInput.getValue());
         }
-        if (preferredFNameTextField.getText() != null){
+        if (!preferredFNameTextField.getText().isEmpty()){
+          System.out.println(preferredFNameTextField.getText());
           currentUser.setPreferredFirstName(preferredFNameTextField.getText());
         } else {
           currentUser.setPreferredFirstName(fNameInput.getText());
