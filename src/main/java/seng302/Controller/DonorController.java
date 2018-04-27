@@ -1300,11 +1300,11 @@ public class DonorController {
                 currentlyReceivingListView.getSelectionModel().select(index);
                 //TODO change the colour of the font when selected to make it more readable
             }
-//            try {
-//                JsonHandler.saveUsers(AppController.getInstance().getUsers()); //TODO uncomment this after json deserealiser can work with enums
-//            } catch (IOException e){
-//                e.printStackTrace();
-//            }
+            try {
+                JsonHandler.saveUsers(AppController.getInstance().getUsers()); //TODO uncomment this after json deserealiser can work with enums
+            } catch (IOException e){
+                e.printStackTrace();
+            }
 
             //set mouse click for currentlyReceivingListView
             currentlyReceivingListView.setOnMouseClicked(new EventHandler<MouseEvent>() {
