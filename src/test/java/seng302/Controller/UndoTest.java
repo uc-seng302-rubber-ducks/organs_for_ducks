@@ -1,10 +1,15 @@
 package seng302.Controller;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
 import java.time.LocalDate;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
+import seng302.Model.Memento;
 import seng302.Model.User;
 
 /**
@@ -21,51 +26,109 @@ public class UndoTest {
 
   @Test
   public void testSingleChangeSingleUndo() {
-    fail("not yet implemented");
+    testUser.setName("Geoff");
+    testUser.undo();
+    assertEquals("Frank", testUser.getName());
   }
 
   @Test
   public void testSingleChangeMultipleUndo() {
-    fail("not yet implemented");
+    testUser.setName("Geoff");
+    testUser.undo();
+    testUser.undo();
+    testUser.undo();
+    assertEquals("Frank", testUser.getName());
   }
 
   @Test
   public void testMultipleChangeMultipleUndo() {
-    fail("not yet implemented");
+    testUser.setBloodType("B+");
+    testUser.setCurrentAddress("42 wallaby way");
+    testUser.setRegion("Sydney");
+
+    testUser.undo();
+    assertNull(testUser.getRegion());
+
+    testUser.undo();
+    assertNull(testUser.getCurrentAddress());
+
+    testUser.undo();
+    assertEquals("U", testUser.getBloodType());
   }
 
   @Test
   public void testMultipleChangesSingleUndo() {
-    fail("not yet implemented");
+    testUser.setBloodType("B+");
+    testUser.setLastName("Jefferson");
+    testUser.setLastName("Doe");
+
+    testUser.undo();
+
+    assertEquals("Jefferson", testUser.getLastName());
   }
 
   @Test
   public void singleChangeMementoShouldContainTwoStates() {
-    //change first name
-    //memento should have user with old and new first name
-    fail("not yet implemented");
+    testUser.setName("Harold");
+    Memento<User> mem = testUser.getUndoStack().peek();
+    assert (mem.getOldObject() != null && mem.getNewObject() != null);
   }
 
   @Test
   public void singleChangeMementoShouldContainCorrectStates() {
-    fail("not yet implemented");
+    testUser.setName("Harold");
+    Memento<User> mem = testUser.getUndoStack().peek();
+    String oldName = mem.getOldObject().getName();
+    String newName = mem.getNewObject().getName();
+    assertEquals("Frank", oldName);
+    assertEquals("Harold", newName);
+
+    //two states of the same user
+    assert (mem.getNewObject().equals(mem.getOldObject()));
   }
 
   @Test
   public void multipleChangesConsecutiveMementosShouldShareState() {
     //state after one change should be the state before the next change
-    fail("not yet implemented");
+    testUser.setName("Geoff");
+    Memento<User> firstMem = testUser.getUndoStack().peek();
+
+    testUser.setName("Harold");
+    Memento<User> secondMem = testUser.getUndoStack().peek();
+
+    assert (firstMem.getNewObject().equals(secondMem.getOldObject()));
   }
 
   @Test
-  public void DonorAttributesAttachedUserIsCorrectAfterUndoneChange() {
-    //DonorAttributes.attachedUser() should be testUser at all times
-    //change nhi as this is what user.equals works on
-    fail("not yet implemented");
+  public void DonorAttributesAttachedUserIsCorrectWhenStored() {
+
+    assert (testUser.getDonorDetails().getAttachedUser().equals(testUser));
+    testUser.setNhi("QWE1234");
+    assert (testUser.getDonorDetails().getAttachedUser().equals(testUser));
+
+    Memento<User> mem = testUser.getUndoStack().peek();
+    User newUser = mem.getNewObject();
+    User oldUser = mem.getOldObject();
+
+    assertNotEquals(newUser, oldUser);
+    assert (oldUser.getDonorDetails().getAttachedUser().equals(oldUser));
+    assert (newUser.getDonorDetails().getAttachedUser().equals(newUser));
   }
 
   @Test
-  public void ReceiverAttributesAttachedUserIsCorrectAfterUndoneChange() {
-    fail("not yet implemented");
+  @Ignore
+  public void ReceiverAttributesAttachedUserIsCorrectWhenStored() {
+    fail("TODO implement when receiver branch merged");
+//    assert(testUser.getReceiverDetails().getAttachedUser().equals(testUser));
+//    testUser.setNhi("QWE1234");
+//    assert(testUser.getReceiverDetails().getAttachedUser().equals(testUser));
+//
+//    Memento<User> mem = testUser.getUndoStack().peek();
+//    User newUser = mem.getNewObject();
+//    User oldUser = mem.getOldObject();
+//
+//    assertNotEquals(newUser, oldUser);
+//    assert(oldUser.getReceiverDetails().getAttachedUser().equals(oldUser));
+//    assert(newUser.getReceiverDetails().getAttachedUser().equals(newUser));
   }
 }
