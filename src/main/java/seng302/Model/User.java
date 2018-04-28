@@ -1004,11 +1004,17 @@ public class User extends Undoable<User> {
     }
     Memento<User> memento = undoStack.pop();
     this.changeInto(memento.getOldObject());
+    redoStack.push(memento);
   }
 
   @Override
   public void redo() {
-
+    if (redoStack.isEmpty()) {
+      return;
+    }
+    Memento<User> memento = redoStack.pop();
+    this.changeInto(memento.getNewObject());
+    undoStack.push(memento);
   }
 
   @Override
@@ -1046,8 +1052,10 @@ public class User extends Undoable<User> {
     newUser.previousMedication = this.previousMedication;
     newUser.currentMedicationTimes = this.currentMedicationTimes;
     newUser.previousMedicationTimes = this.previousMedicationTimes;
-    newUser.donorDetails = this.donorDetails;
-    newUser.receiverDetails = this.receiverDetails;
+    newUser.donorDetails = new DonorDetails(newUser);
+    newUser.donorDetails.setOrgans(this.donorDetails.getOrgans());
+    newUser.receiverDetails = new ReceiverDetails(newUser);
+    newUser.receiverDetails.setOrgans(this.receiverDetails.getOrgans());
 
     newUser.currentDiseases = this.currentDiseases;
     newUser.pastDiseases = this.pastDiseases;

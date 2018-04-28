@@ -146,9 +146,9 @@ public class UpdateUserController {
         this.appController = controller;
         //UndoRedoStacks.storeUndoCopy(currentUser);
         currentUser = user;
-      Stack<Memento<User>> undoStack = user.getUndoStack();
-      Memento<User> bottom = undoStack.peek();
-        oldUser = new User();
+        //Stack<Memento<User>> undoStack = user.getUndoStack();
+//      Memento<User> bottom = undoStack.peek();
+//        oldUser = new User();
         setUserDetails(currentUser);
         if (user.getLastName() != null) {
           stage.setTitle("Update User: " + user.getFirstName() +" " + user.getLastName());
@@ -237,116 +237,100 @@ public class UpdateUserController {
     }
 
     @FXML
-    public void getContactDetaisl() {
-        if (phoneInput.getText() != null){
+    public void getContactDetails() {
+        if (phoneInput.getText() != null  && !phoneInput.getText().equals(currentUser.getHomePhone())){
           currentUser.setHomePhone(phoneInput.getText());
-        } else {
-          currentUser.setHomePhone(null);
         }
-        if (cellInput.getText() != null){
+        if (cellInput.getText() != null && !phoneInput.getText().equals(currentUser.getCellPhone())){
           currentUser.setCellPhone(cellInput.getText());
-        } else{
-          currentUser.setCellPhone(null);
         }
-        if (addressInput.getText() != null){
-            String address = addressInput.getText().toString();
+        if (addressInput.getText() != null && !phoneInput.getText().equals(currentUser.getCurrentAddress())){
+            String address = addressInput.getText();
             currentUser.setCurrentAddress(address);
-        } else{
-          currentUser.setCurrentAddress(null);
         }
-        if (regionInput.getText() != null){
+        if (regionInput.getText() != null && !phoneInput.getText().equals(currentUser.getRegion())){
           currentUser.setRegion(regionInput.getText());
-        } else {
-          currentUser.setRegion(null);
         }
-        if (emailInput.getText() != null){
+        if (emailInput.getText() != null && !phoneInput.getText().equals(currentUser.getEmail())){
           currentUser.setEmail(emailInput.getText());
-        } else {
-          currentUser.setEmail(null);
         }
 
     }
 
     @FXML
     public void getEmergencyContact() {
-        if (!ecNameInput.getText().isEmpty()) {
+        if (!ecNameInput.getText().isEmpty() && !ecNameInput.getText().equals(currentUser.getContact().getName())) {
           currentUser.getContact().setName(ecNameInput.getText());
         }
-        if (!ecPhoneInput.getText().isEmpty()) {
+        if (!ecPhoneInput.getText().isEmpty() && !ecPhoneInput.getText().equals(currentUser.getContact().getHomePhoneNumber())) {
           currentUser.getContact().setHomePhoneNumber(ecPhoneInput.getText());
 
-        } else {
-          currentUser.getContact().setHomePhoneNumber(null);
         }
-        if (!ecCellInput.getText().isEmpty() ) {
+        if (!ecCellInput.getText().isEmpty() && !ecCellInput.getText().equals(currentUser.getContact().getCellPhoneNumber())) {
           currentUser.getContact().setCellPhoneNumber(ecCellInput.getText());
-        } else{
-          currentUser.getContact().setCellPhoneNumber(null);
         }
-        if (!ecAddressInput.getText().isEmpty())  {
+        if (!ecAddressInput.getText().isEmpty() && !ecAddressInput.getText().equals(currentUser.getContact().getAddress()))  {
           currentUser.getContact().setAddress(ecAddressInput.getText());
-        } else {
-          currentUser.getContact().setAddress(null);
         }
-        if (!ecRegionInput.getText().isEmpty()) {
+        if (!ecRegionInput.getText().isEmpty() && !ecRegionInput.getText().equals(currentUser.getContact().getRegion())) {
           currentUser.getContact().setRegion(ecRegionInput.getText());
-        } else {
-          currentUser.getContact().setRegion(null);
         }
-        if (!ecEmailInput.getText().isEmpty()) {
+        if (!ecEmailInput.getText().isEmpty() && !ecEmailInput.getText().equals(currentUser.getContact().getEmail())) {
           currentUser.getContact().setEmail(ecEmailInput.getText());
 
-        } else {
-          currentUser.getContact().setEmail(null);
         }
-        if (!ecRelationshipInput.getText().isEmpty()) {
+        if (!ecRelationshipInput.getText().isEmpty() && !ecNameInput.getText().equals(currentUser.getContact().getRelationship())) {
           currentUser.getContact().setRelationship(ecRelationshipInput.getText());
 
-        } else {
-          currentUser.getContact().setRelationship(null);
         }
 
     }
 
     @FXML
     public void getHealthDetails() {
-        if (birthGenderComboBox.getValue() != null) {
+        if (birthGenderComboBox.getValue() != null && !birthGenderComboBox.getValue().equals(currentUser.getBirthGender())) {
             String birthGender = AttributeValidation.validateGender(birthGenderComboBox);
             currentUser.setBirthGender(birthGender);
         }
-        if (genderIdComboBox.getValue() != null && genderIdComboBox.getValue() != ""){
+        if (genderIdComboBox.getValue() != null && genderIdComboBox.getValue() != "" && !genderIdComboBox.getValue().equals(currentUser.getGenderIdentity())){
             String genderIdentity = AttributeValidation.validateGender(genderIdComboBox);
             currentUser.setGenderIdentity(genderIdentity);
-        } else if (birthGenderComboBox.getValue() != null) {
-           String birthGender = AttributeValidation.validateGender(birthGenderComboBox);
-           currentUser.setGenderIdentity(birthGender);
-      }
-        if (bloodComboBox.getValue() != null) {
+        }
+
+//        else if (birthGenderComboBox.getValue() != null) {
+//           String birthGender = AttributeValidation.validateGender(birthGenderComboBox);
+//           currentUser.setGenderIdentity(birthGender);
+//      }
+
+        if (bloodComboBox.getValue() != null && !bloodComboBox.getValue().equals(currentUser.getBloodType())) {
             String blood = AttributeValidation.validateBlood(bloodComboBox);
             //BloodTypes blood = AttributeValidation.validateBlood(bloodComboBox);
           currentUser.setBloodType(blood);
-
-
         }
-        if (smokerCheckBox.isSelected()) {
+
+        if (smokerCheckBox.isSelected() && smokerCheckBox.isSelected() != currentUser.isSmoker()) {
           currentUser.setSmoker(true);
         }else{
           currentUser.setSmoker(false);
         }
-        if (alcoholComboBox.getValue() != null) {
+        if (alcoholComboBox.getValue() != null && !alcoholComboBox.getValue().equals(currentUser.getAlcoholConsumption())) {
           currentUser.setAlcoholConsumption(alcoholComboBox.getValue().toString());
         }
 
         if (!weightInput.getText().equals("")) {
           try {
-            currentUser.setWeight(Double.parseDouble(weightInput.getText()));
-          } catch (NumberFormatException e){
+              if (Double.parseDouble(weightInput.getText()) != currentUser.getWeight()) {
+                  currentUser.setWeight(Double.parseDouble(weightInput.getText()));
+              }
+          } catch (NumberFormatException e) {
             System.out.println("nope");
           }
 
         }
         if (!heightInput.getText().equals("")) {
-          currentUser.setHeight(Double.parseDouble(heightInput.getText()));
+            if (Double.parseDouble(heightInput.getText()) != currentUser.getHeight()) {
+                currentUser.setHeight(Double.parseDouble(heightInput.getText()));
+            }
         }
     }
 
@@ -355,33 +339,31 @@ public class UpdateUserController {
     public void getPersonalDetails() {
         //TODO check why dateofbirth fails
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        if (!fNameInput.getText().equals("")) {
+        if (!fNameInput.getText().equals("") && !fNameInput.getText().equals(currentUser.getFirstName())) {
           currentUser.setFirstName(fNameInput.getText());
         }
 
-        if (!lNameInput.getText().equals("")) {
+        if (!lNameInput.getText().equals("") && !lNameInput.getText().equals(currentUser.getLastName())) {
           currentUser.setLastName(lNameInput.getText());
         }
 
-        if (!nhiInput.getText().equals("")) {
+        if (!nhiInput.getText().equals("") && !nhiInput.getText().equals(currentUser.getNhi())) {
           currentUser.setNhi(nhiInput.getText());
         }
 
-        if (!mNameInput.getText().equals("")) {
+        if (!mNameInput.getText().equals("") && !mNameInput.getText().equals(currentUser.getMiddleName())) {
           currentUser.setMiddleName(mNameInput.getText());
         }
 
-        if (dobInput.getValue() != null) {
+        if (dobInput.getValue() != null && !dobInput.getValue().equals(currentUser.getDateOfBirth())) {
           currentUser.setDateOfBirth(dobInput.getValue());
         }
 
-         if(dodInput.getValue()!=null) {
+         if(dodInput.getValue()!=null && !dodInput.getValue().equals(currentUser.getDateOfDeath())) {
           currentUser.setDateOfDeath(dodInput.getValue());
         }
-        if (preferredFNameTextField.getText() != null){
+        if (preferredFNameTextField.getText() != null && !preferredFNameTextField.getText().equals(currentUser.getPreferredFirstName())){
           currentUser.setPreferredFirstName(preferredFNameTextField.getText());
-        } else {
-          currentUser.setPreferredFirstName(fNameInput.getText());
         }
 
 }
@@ -398,20 +380,17 @@ public class UpdateUserController {
      */
     @FXML
     public void confirmUpdate(ActionEvent actionEvent) throws IOException {
-      Memento<User> memento = new Memento<>();
-      memento.setOldObject(currentUser.clone());
         //TODO save changes and go back to overview screen
         getPersonalDetails();
         getHealthDetails();
-        getContactDetaisl();
+        getContactDetails();
         getEmergencyContact();
         //TODO change to be different
 
       appController.update(currentUser);
       //ArrayList<Change> diffs = appController.differanceInDonors(oldUser, currentUser);
       //changelog.addAll(diffs);
-      memento.setNewObject(currentUser.clone());
-      currentUser.getUndoStack().push(memento);
+      currentUser.getRedoStack().clear(); // clear the redo stack if anything else is changed.
         AppController appController = AppController.getInstance();
         DonorController donorController = appController.getDonorController();
         try {

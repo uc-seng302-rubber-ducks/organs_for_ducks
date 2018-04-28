@@ -4,8 +4,8 @@ import java.util.Stack;
 
 public abstract class Undoable<T> {
 
-  Stack<Memento<T>> undoStack = new Stack<>();
-  Stack<Memento<T>> redoStack = new Stack<>();
+  transient Stack<Memento<T>> undoStack = new Stack<>();
+  transient Stack<Memento<T>> redoStack = new Stack<>();
 
   public void setUndoStack(Stack<Memento<T>> undoStack) {
     this.undoStack = undoStack;

@@ -291,9 +291,9 @@ public class DonorController {
     contact = user.getContact();
 
     // Sets the button to be disabled
-    if (currentUser.getUndoStack().isEmpty()) {
-      undoButton.setDisable(true);
-    }
+    undoButton.setDisable(currentUser.getUndoStack().isEmpty());
+    redoButton.setDisable(currentUser.getRedoStack().isEmpty());
+
 
     currentMeds = FXCollections.observableArrayList();
 
@@ -636,9 +636,7 @@ public class DonorController {
   private void undo() {
 
     currentUser.undo();
-    if (currentUser.getUndoStack().isEmpty()) {
-      undoButton.setDisable(true);
-    }
+    undoButton.setDisable(currentUser.getUndoStack().isEmpty());
     //currentUser = UndoRedoStacks.loadUndoCopy(currentUser);
     //System.out.println("Something happened");
     //System.out.println(currentUser.getName());
@@ -652,9 +650,8 @@ public class DonorController {
    */
   @FXML
   private void redo() {
-    currentUser = UndoRedoStacks.loadRedoCopy(currentUser);
-    //System.out.println("Something happened");
-    //System.out.println(currentUser.getName());
+    currentUser.redo();
+    redoButton.setDisable(currentUser.getRedoStack().isEmpty());
     showUser(currentUser);
   }
 
@@ -769,9 +766,8 @@ public class DonorController {
       stage.setTitle("User Profile: " + user.getFirstName());
 
     }
-    if (!currentUser.getUndoStack().isEmpty()) {
-      undoButton.setDisable(false);
-    }
+    undoButton.setDisable(currentUser.getUndoStack().isEmpty());
+    redoButton.setDisable(currentUser.getRedoStack().isEmpty());
   }
 
   /**
