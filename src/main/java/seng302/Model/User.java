@@ -303,8 +303,12 @@ public class User extends Undoable<User> {
   }
 
   public void setDonorDetails(DonorDetails donorDetails) {
+    Memento<User> mem = new Memento<>();
+    mem.setOldObject(this.clone());
     updateLastModified();
     this.donorDetails = donorDetails;
+    mem.setNewObject(this.clone());
+    undoStack.push(mem);
   }
 
   public ReceiverDetails getReceiverDetails() {
@@ -312,8 +316,12 @@ public class User extends Undoable<User> {
   }
 
   public void setReceiverDetails(ReceiverDetails receiverDetails) {
+    Memento<User> mem = new Memento<>();
+    mem.setOldObject(this.clone());
     updateLastModified();
     this.receiverDetails = receiverDetails;
+    mem.setNewObject(this.clone());
+    undoStack.push(mem);
   }
 
   //TODO details object is set at initialization. will always return true
@@ -337,8 +345,13 @@ public class User extends Undoable<User> {
   }
 
   public void setNhi(String nhi) {
+    Memento<User> mem = new Memento<>();
+    mem.setOldObject(this.clone());
     updateLastModified();
     this.nhi = nhi;
+    mem.setNewObject(this.clone());
+    undoStack.push(mem);
+
   }
 
   /**
@@ -353,7 +366,6 @@ public class User extends Undoable<User> {
     return lastModified;
   }
 
-  //For UndoRedoStacks
   public void setLastModified(LocalDateTime lastModified) {
     this.lastModified = lastModified;
   }
@@ -363,8 +375,12 @@ public class User extends Undoable<User> {
   }
 
   public void setName(String name) {
+    Memento<User> mem = new Memento<>();
+    mem.setOldObject(this.clone());
     updateLastModified();
     this.name = name;
+    mem.setNewObject(this.clone());
+    undoStack.push(mem);
   }
 
 
@@ -373,26 +389,27 @@ public class User extends Undoable<User> {
     }
 
     public void setFirstName(String name) {
-        updateLastModified();
-        this.firstName = name;
+      Memento<User> mem = new Memento<>();
+      mem.setOldObject(this.clone());
+      updateLastModified();
+      this.firstName = name;
+      mem.setNewObject(this.clone());
+      undoStack.push(mem);
+
     }
 
-    public String getPrefFirstName() {
-        return preferredFirstName;
-    }
-
-    public void setPrefFirstName(String name) {
-        updateLastModified();
-        this.preferredFirstName = name;
-    }
 
     public String getMiddleName() {
         return middleName;
     }
 
     public void setMiddleName(String name) {
-        updateLastModified();
-        this.middleName = name;
+      Memento<User> mem = new Memento<>();
+      mem.setOldObject(this.clone());
+      updateLastModified();
+      this.middleName = name;
+      mem.setNewObject(this.clone());
+      undoStack.push(mem);
     }
 
     public String getLastName() {
@@ -400,8 +417,12 @@ public class User extends Undoable<User> {
     }
 
     public void setLastName(String name) {
-        updateLastModified();
-        this.lastName = name;
+      Memento<User> mem = new Memento<>();
+      mem.setOldObject(this.clone());
+      updateLastModified();
+      this.lastName = name;
+      mem.setNewObject(this.clone());
+      undoStack.push(mem);
     }
 
     public String getFullName() {
@@ -428,8 +449,12 @@ public class User extends Undoable<User> {
   }
 
   public void setDateOfBirth(java.time.LocalDate dateOfBirth) {
+    Memento<User> mem = new Memento<>();
+    mem.setOldObject(this.clone());
     updateLastModified();
     this.dateOfBirth = dateOfBirth;
+    mem.setNewObject(this.clone());
+    undoStack.push(mem);
   }
 
   public java.time.LocalDate getDateOfDeath() {
@@ -437,8 +462,12 @@ public class User extends Undoable<User> {
   }
 
   public void setDateOfDeath(java.time.LocalDate dateOfDeath) {
+    Memento<User> mem = new Memento<>();
+    mem.setOldObject(this.clone());
     updateLastModified();
     this.dateOfDeath = dateOfDeath;
+    mem.setNewObject(this.clone());
+    undoStack.push(mem);
   }
 
   public String getGender() {
@@ -446,8 +475,12 @@ public class User extends Undoable<User> {
   }
 
   public void setGender(String gender) {
+    Memento<User> mem = new Memento<>();
+    mem.setOldObject(this.clone());
     updateLastModified();
     this.gender = gender;
+    mem.setNewObject(this.clone());
+    undoStack.push(mem);
   }
 
   public double getHeight() {
@@ -455,8 +488,12 @@ public class User extends Undoable<User> {
   }
 
   public void setHeight(double height) {
+    Memento<User> mem = new Memento<>();
+    mem.setOldObject(this.clone());
     updateLastModified();
     this.height = height;
+    mem.setNewObject(this.clone());
+    undoStack.push(mem);
   }
 
   public double getWeight() {
@@ -464,8 +501,12 @@ public class User extends Undoable<User> {
   }
 
   public void setWeight(double weight) {
+    Memento<User> mem = new Memento<>();
+    mem.setOldObject(this.clone());
     updateLastModified();
     this.weight = weight;
+    mem.setNewObject(this.clone());
+    undoStack.push(mem);
   }
 
   public String getBloodType() {
@@ -473,9 +514,13 @@ public class User extends Undoable<User> {
   }
 
   public void setBloodType(String bloodType) {
+    Memento<User> mem = new Memento<>();
+    mem.setOldObject(this.clone());
     String validType = groupBloodType(bloodType);
     updateLastModified();
     this.bloodType = validType;
+    mem.setNewObject(this.clone());
+    undoStack.push(mem);
   }
 
   public String getCurrentAddress() {
@@ -483,8 +528,12 @@ public class User extends Undoable<User> {
   }
 
   public void setCurrentAddress(String currentAddress) {
+    Memento<User> mem = new Memento<>();
+    mem.setOldObject(this.clone());
     updateLastModified();
     this.currentAddress = currentAddress;
+    mem.setNewObject(this.clone());
+    undoStack.push(mem);
   }
 
   public String getRegion() {
@@ -492,8 +541,12 @@ public class User extends Undoable<User> {
   }
 
   public void setRegion(String region) {
+    Memento<User> mem = new Memento<>();
+    mem.setOldObject(this.clone());
     updateLastModified();
     this.region = region;
+    mem.setNewObject(this.clone());
+    undoStack.push(mem);
   }
 
   public LocalDateTime getTimeCreated() {
@@ -527,8 +580,12 @@ public class User extends Undoable<User> {
   }
 
   public void setDeceased(Boolean deceased) {
+    Memento<User> mem = new Memento<>();
+    mem.setOldObject(this.clone());
     updateLastModified();
-    isDeceased = deceased;
+    this.isDeceased = deceased;
+    mem.setNewObject(this.clone());
+    undoStack.push(mem);
   }
 
   public ArrayList<Disease> getCurrentDiseases() {
@@ -552,7 +609,12 @@ public class User extends Undoable<User> {
   }
 
   public void setPreferredFirstName(String preferredFirstName) {
+    Memento<User> mem = new Memento<>();
+    mem.setOldObject(this.clone());
+    updateLastModified();
     this.preferredFirstName = preferredFirstName;
+    mem.setNewObject(this.clone());
+    undoStack.push(mem);
   }
 
   public String getBirthGender() {
@@ -560,7 +622,12 @@ public class User extends Undoable<User> {
   }
 
   public void setBirthGender(String birthGender) {
+    Memento<User> mem = new Memento<>();
+    mem.setOldObject(this.clone());
+    updateLastModified();
     this.birthGender = birthGender;
+    mem.setNewObject(this.clone());
+    undoStack.push(mem);
   }
 
   public String getGenderIdentity() {
@@ -568,7 +635,13 @@ public class User extends Undoable<User> {
   }
 
   public void setGenderIdentity(String genderIdentity) {
+
+    Memento<User> mem = new Memento<>();
+    mem.setOldObject(this.clone());
+    updateLastModified();
     this.genderIdentity = genderIdentity;
+    mem.setNewObject(this.clone());
+    undoStack.push(mem);
   }
 
   public String getAlcoholConsumption() {
@@ -576,7 +649,12 @@ public class User extends Undoable<User> {
   }
 
   public void setAlcoholConsumption(String alcoholConsumption) {
+    Memento<User> mem = new Memento<>();
+    mem.setOldObject(this.clone());
+    updateLastModified();
     this.alcoholConsumption = alcoholConsumption;
+    mem.setNewObject(this.clone());
+    undoStack.push(mem);
   }
 
   public boolean isSmoker() {
@@ -584,7 +662,12 @@ public class User extends Undoable<User> {
   }
 
   public void setSmoker(boolean smoker) {
+    Memento<User> mem = new Memento<>();
+    mem.setOldObject(this.clone());
+    updateLastModified();
     this.smoker = smoker;
+    mem.setNewObject(this.clone());
+    undoStack.push(mem);
   }
 
   public String getHomePhone() {
@@ -592,7 +675,12 @@ public class User extends Undoable<User> {
   }
 
   public void setHomePhone(String homePhone) {
+    Memento<User> mem = new Memento<>();
+    mem.setOldObject(this.clone());
+    updateLastModified();
     this.homePhone = homePhone;
+    mem.setNewObject(this.clone());
+    undoStack.push(mem);
   }
 
   public String getCellPhone() {
@@ -600,7 +688,12 @@ public class User extends Undoable<User> {
   }
 
   public void setCellPhone(String cellPhone) {
+    Memento<User> mem = new Memento<>();
+    mem.setOldObject(this.clone());
+    updateLastModified();
     this.cellPhone = cellPhone;
+    mem.setNewObject(this.clone());
+    undoStack.push(mem);
   }
 
   public String getEmail() {
@@ -608,11 +701,21 @@ public class User extends Undoable<User> {
   }
 
   public void setEmail(String email) {
+    Memento<User> mem = new Memento<>();
+    mem.setOldObject(this.clone());
+    updateLastModified();
     this.email = email;
+    mem.setNewObject(this.clone());
+    undoStack.push(mem);
   }
 
   public void setContact(EmergencyContact contact) {
+    Memento<User> mem = new Memento<>();
+    mem.setOldObject(this.clone());
+    updateLastModified();
     this.contact = contact;
+    mem.setNewObject(this.clone());
+    undoStack.push(mem);
   }
 
 
@@ -655,8 +758,12 @@ public class User extends Undoable<User> {
   }
 
   public void setMiscAttributes(ArrayList<String> miscAttributes) {
+    Memento<User> mem = new Memento<>();
+    mem.setOldObject(this.clone());
     updateLastModified();
     this.miscAttributes = miscAttributes;
+    mem.setNewObject(this.clone());
+    undoStack.push(mem);
   }
 
   // @TODO: find all instances of potential updates and add to the Hashmap

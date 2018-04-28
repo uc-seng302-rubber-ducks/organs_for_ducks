@@ -686,7 +686,8 @@ public class DonorController {
     DOBValue.setText(currentUser.getDateOfBirth().toString());
     mNameValue.setText(currentUser.getMiddleName() != null ? currentUser.getMiddleName() : "");
     pNameValue
-        .setText(currentUser.getPrefFirstName() != null ? currentUser.getPrefFirstName() : "");
+        .setText(
+            currentUser.getPreferredFirstName() != null ? currentUser.getPreferredFirstName() : "");
     lNameValue.setText(currentUser.getLastName() != null ? currentUser.getLastName() : "");
     genderIdentityValue
         .setText(currentUser.getGenderIdentity() != null ? currentUser.getGenderIdentity() : "");

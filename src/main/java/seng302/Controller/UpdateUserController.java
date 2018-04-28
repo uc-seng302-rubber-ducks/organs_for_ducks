@@ -172,8 +172,8 @@ public class UpdateUserController {
       if (user.getMiddleName() != null) {
         mNameInput.setText(user.getMiddleName());
       }
-      if (user.getPrefFirstName() != null) {
-        preferredFNameTextField.setText(user.getPrefFirstName());
+      if (user.getPreferredFirstName() != null) {
+        preferredFNameTextField.setText(user.getPreferredFirstName());
       }
       //contact
       if (user.getCurrentAddress() != null){
