@@ -20,4 +20,29 @@ public class Memento<T> {
   public void setNewObject(T newObject) {
     this.newObject = newObject;
   }
+
+  @Override
+  public String toString() {
+    return super.toString();
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (obj == null) {
+      return false;
+    }
+    if (!(obj instanceof Memento)) {
+      return false;
+    }
+    return (this.oldObject == ((Memento) obj).oldObject
+        && this.newObject == ((Memento) obj).newObject);
+  }
+
+  @Override
+  public int hashCode() {
+    int result = 17;
+    result = 31 * result + oldObject.hashCode();
+    result = 31 * result + newObject.hashCode();
+    return result;
+  }
 }

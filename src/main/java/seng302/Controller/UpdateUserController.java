@@ -3,6 +3,7 @@ package seng302.Controller;
 
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
+import java.util.Stack;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -121,6 +122,12 @@ public class UpdateUserController {
   @FXML
   private Button confirmButton;
 
+  @FXML
+  private Button undoButton;
+
+  @FXML
+  private Button redoButton;
+
     private Stage stage;
     private AppController appController;
     private User currentUser;
@@ -139,6 +146,8 @@ public class UpdateUserController {
         this.appController = controller;
         //UndoRedoStacks.storeUndoCopy(currentUser);
         currentUser = user;
+      Stack<Memento<User>> undoStack = user.getUndoStack();
+      Memento<User> bottom = undoStack.peek();
         oldUser = new User();
         setUserDetails(currentUser);
         if (user.getLastName() != null) {
