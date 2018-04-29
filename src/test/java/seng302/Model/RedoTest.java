@@ -1,15 +1,14 @@
-package seng302.Controller;
+package seng302.Model;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.fail;
+
+import java.time.LocalDate;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import seng302.Model.BloodTypes;
-import seng302.Model.Memento;
-import seng302.Model.User;
-
-import java.time.LocalDate;
-
-import static org.junit.Assert.*;
 
 /**
  * These tests are done on Users but are more focused on testing the undo stacks/memento system
@@ -110,6 +109,18 @@ public class RedoTest {
     assert (oldUser.getDonorDetails().getAttachedUser().equals(oldUser));
     User test = newUser.getDonorDetails().getAttachedUser();
     assert (newUser.getDonorDetails().getAttachedUser().equals(newUser));
+  }
+
+  @Test
+  public void testOrgansRedo() {
+    testUser.getDonorDetails().addOrgan(Organs.BONE);
+    testUser.getDonorDetails().addOrgan(Organs.BONE_MARROW);
+
+    testUser.undo();
+    testUser.redo();
+
+    Assert.assertTrue(testUser.getDonorDetails().getOrgans().contains(Organs.BONE));
+    Assert.assertTrue(testUser.getDonorDetails().getOrgans().contains(Organs.BONE_MARROW));
   }
 
   @Test

@@ -1,7 +1,6 @@
 package seng302.Model;
 
 import com.google.gson.annotations.Expose;
-
 import java.util.HashSet;
 
 public class DonorDetails {
@@ -34,6 +33,8 @@ public class DonorDetails {
    * @param organ the enum of organs.
    */
   public void addOrgan(Organs organ) {
+    Memento<User> memento = new Memento<>();
+    memento.setOldObject(attachedUser.clone());
     if (attachedUser != null){
       attachedUser.updateLastModified();
     }
@@ -42,8 +43,9 @@ public class DonorDetails {
       organs.add(organ);
     }
     this.organs.add(organ);
-    //TODO attachedUser is always null
     attachedUser.updateLastModified();
+    memento.setNewObject(attachedUser.clone());
+    attachedUser.getUndoStack().push(memento);
   }
 
   /**
@@ -52,11 +54,15 @@ public class DonorDetails {
    * @param organ the enum of organs.
    */
   public void removeOrgan(Organs organ) {
+    Memento<User> memento = new Memento<>();
+    memento.setOldObject(attachedUser.clone());
     if (organs.contains(organ)) {
       organs.remove(organ);
       //TODO attachedUser is always null
       attachedUser.updateLastModified();
     }
+    memento.setNewObject(attachedUser.clone());
+    attachedUser.getUndoStack().push(memento);
   }
 
   /**

@@ -3,25 +3,23 @@ package seng302.Controller;
 
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
+import java.util.Optional;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.Scene;
-import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
-import java.io.IOException;
-import java.time.format.DateTimeFormatter;
-import java.util.Optional;
-
 import seng302.Model.EmergencyContact;
 import seng302.Model.User;
 import seng302.Service.AttributeValidation;
@@ -748,7 +746,9 @@ public class UpdateUserController {
 
   }
 
-  /**
+
+  /*
+   *
    * @param actionEvent an action event.
    * @throws IOException doesn't look like this even throws..
    */
@@ -756,10 +756,10 @@ public class UpdateUserController {
   public void confirmUpdate(ActionEvent actionEvent) throws IOException {
     boolean changed = false;
     //TODO save changes and go back to overview screen
-    changed = changed || getPersonalDetails();
-    changed = changed || getHealthDetails();
-    changed = changed || getContactDetails();
-    changed = changed || getEmergencyContact();
+    changed = getPersonalDetails();
+    changed |= getHealthDetails();
+    changed |= getContactDetails();
+    changed |= getEmergencyContact();
     //TODO change to be different
 
     appController.update(currentUser);

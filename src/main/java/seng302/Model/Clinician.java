@@ -97,7 +97,7 @@ public class Clinician extends Undoable<Clinician> {
         memento.setOldObject(this.clone());
         this.name = name;
         memento.setNewObject(this.clone());
-        undoStack.push(memento);
+      getUndoStack().push(memento);
     }
 
     public String getFirstName() {
@@ -109,7 +109,7 @@ public class Clinician extends Undoable<Clinician> {
         memento.setOldObject(this.clone());
         this.firstName = name;
         memento.setNewObject(this.clone());
-        undoStack.push(memento);
+      getUndoStack().push(memento);
     }
 
     public String getMiddleName() {
@@ -121,7 +121,7 @@ public class Clinician extends Undoable<Clinician> {
         memento.setOldObject(this.clone());
         this.middleName = name;
         memento.setNewObject(this.clone());
-        undoStack.push(memento);
+      getUndoStack().push(memento);
     }
 
     public String getLastName() {
@@ -133,7 +133,7 @@ public class Clinician extends Undoable<Clinician> {
         memento.setOldObject(this.clone());
         this.lastName = name;
         memento.setNewObject(this.clone());
-        undoStack.push(memento);
+      getUndoStack().push(memento);
     }
 
 
@@ -165,7 +165,7 @@ public class Clinician extends Undoable<Clinician> {
         memento.setOldObject(this.clone());
         this.staffId = staffId;
         memento.setNewObject(this.clone());
-        undoStack.push(memento);
+      getUndoStack().push(memento);
     }
 
 
@@ -178,7 +178,7 @@ public class Clinician extends Undoable<Clinician> {
         memento.setOldObject(this.clone());
         this.workAddress = workAddress;
         memento.setNewObject(this.clone());
-        undoStack.push(memento);
+      getUndoStack().push(memento);
     }
 
     public String getRegion() {
@@ -190,7 +190,7 @@ public class Clinician extends Undoable<Clinician> {
         memento.setOldObject(this.clone());
         this.region = region;
         memento.setNewObject(this.clone());
-        undoStack.push(memento);
+      getUndoStack().push(memento);
     }
 
     public String getPassword() {
@@ -202,7 +202,7 @@ public class Clinician extends Undoable<Clinician> {
         memento.setOldObject(this.clone());
         this.password = password;
         memento.setNewObject(this.clone());
-        undoStack.push(memento);
+      getUndoStack().push(memento);
     }
 
     @Override
@@ -234,22 +234,22 @@ public class Clinician extends Undoable<Clinician> {
 
     @Override
     public void undo() {
-        if (undoStack.isEmpty()) {
+      if (getUndoStack().isEmpty()) {
             return;
         }
-        Memento<Clinician> memento = undoStack.pop();
+      Memento<Clinician> memento = getUndoStack().pop();
         this.changeInto(memento.getOldObject());
-        redoStack.push(memento);
+      getRedoStack().push(memento);
     }
 
     @Override
     public void redo() {
-        if (redoStack.isEmpty()) {
+      if (getRedoStack().isEmpty()) {
             return;
         }
-        Memento<Clinician> memento = redoStack.pop();
+      Memento<Clinician> memento = getRedoStack().pop();
         this.changeInto(memento.getNewObject());
-        undoStack.push(memento);
+      getUndoStack().push(memento);
     }
 
     @Override
