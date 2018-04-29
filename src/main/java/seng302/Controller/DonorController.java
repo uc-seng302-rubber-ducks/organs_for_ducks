@@ -487,6 +487,37 @@ public class DonorController {
 
     }
 
+
+  /**
+   *
+   * Creates a alert pop up to confirm that the user wants to delete the profile
+   *
+   */
+  @FXML
+  public void delete(ActionEvent actionEvent) throws IOException {
+    Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+    alert.setContentText("Are you sure you want to delete this user?");
+    Optional<ButtonType> result = alert.showAndWait();
+    if (result.get() == ButtonType.OK) {
+      application.deleteDonor(currentUser);
+      FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML/loginView.fxml"));
+      Parent root = null;
+      try {
+        root = loader.load();
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+      LoginController loginController = loader.getController();
+      loginController.init(AppController.getInstance(), stage);
+      stage.setScene(new Scene(root));
+      stage.setTitle("");
+      stage.setWidth(600);
+      stage.setHeight(420);
+      stage.show();
+
+    }
+  }
+
     /**
      * Takes the information in the medication text fields and then calls the required API to get auto complete information
      * Which is then displayed. Should always be started on a new thread
