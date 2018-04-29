@@ -3,6 +3,7 @@ package seng302.Controller;
 import static org.testfx.api.FxAssert.verifyThat;
 
 import java.time.LocalDate;
+import java.util.Stack;
 import java.util.concurrent.TimeoutException;
 import javafx.scene.Node;
 import org.junit.After;
@@ -13,6 +14,7 @@ import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.matcher.control.LabeledMatchers;
 import seng302.App;
 import seng302.Model.EmergencyContact;
+import seng302.Model.Memento;
 import seng302.Model.User;
 
 public class UndoDonorTest extends ApplicationTest {
@@ -26,6 +28,7 @@ public class UndoDonorTest extends ApplicationTest {
     user.setFirstName("Adam");
     user.setLastName("");
     user.setContact(new EmergencyContact("", ""));
+    user.getUndoStack().clear();
     AppController.getInstance().getUsers().add(user);
     clickOn("#userIDTextField");
     write("ABC1234", 0);
@@ -43,6 +46,7 @@ public class UndoDonorTest extends ApplicationTest {
    */
   @Test
   public void testUndoStackEmpty() {
+    System.out.println(AppController.getInstance().getUser("ABC1234").getUndoStack());
     verifyThat("#undoButton", Node::isDisabled);
   }
 
@@ -56,6 +60,7 @@ public class UndoDonorTest extends ApplicationTest {
     write("Jefferson");
     clickOn("#confirmButton");
     clickOn("#undoButton");
+    Stack<Memento<User>> stack = AppController.getInstance().getUser("ABC1234").getUndoStack();
     verifyThat("#lNameValue", LabeledMatchers.hasText(""));
   }
 
@@ -69,6 +74,7 @@ public class UndoDonorTest extends ApplicationTest {
     write("Jefferson");
     clickOn("#confirmButton");
     clickOn("#undoButton");
+    Stack<Memento<User>> stack = AppController.getInstance().getUser("ABC1234").getUndoStack();
     verifyThat("#undoButton", Node::isDisabled);
   }
 
@@ -77,23 +83,27 @@ public class UndoDonorTest extends ApplicationTest {
    */
   @Test
   public void testEqualChangesEqualUndos() {
+    Stack<Memento<User>> stack = AppController.getInstance().getUser("ABC1234").getUndoStack();
     clickOn("#editDetailsButton");
     clickOn("#lNameInput");
     write("Jefferson");
     clickOn("#confirmButton");
-
+    stack = AppController.getInstance().getUser("ABC1234").getUndoStack();
     clickOn("#editDetailsButton");
     clickOn("#genderIdComboBox");
     clickOn("Non Binary");
     clickOn("#confirmButton");
-
+    stack = AppController.getInstance().getUser("ABC1234").getUndoStack();
     clickOn("#editDetailsButton");
     clickOn("#smokerCheckBox");
     clickOn("#confirmButton");
-
+    stack = AppController.getInstance().getUser("ABC1234").getUndoStack();
     clickOn("#undoButton");
+    stack = AppController.getInstance().getUser("ABC1234").getUndoStack();
     clickOn("#undoButton");
+    stack = AppController.getInstance().getUser("ABC1234").getUndoStack();
     clickOn("#undoButton");
+    stack = AppController.getInstance().getUser("ABC1234").getUndoStack();
     verifyThat("#lNameValue", LabeledMatchers.hasText(""));
     verifyThat("#genderIdentityValue", LabeledMatchers.hasText(""));
     verifyThat("#smokerValue", LabeledMatchers.hasText("No"));
@@ -108,14 +118,17 @@ public class UndoDonorTest extends ApplicationTest {
     clickOn("#lNameInput");
     write("Jefferson");
     clickOn("#confirmButton");
+    Stack<Memento<User>> stack = AppController.getInstance().getUser("ABC1234").getUndoStack();
     clickOn("#editDetailsButton");
     clickOn("#genderIdComboBox");
     clickOn("Non Binary");
     clickOn("#confirmButton");
+    stack = AppController.getInstance().getUser("ABC1234").getUndoStack();
     clickOn("#editDetailsButton");
     clickOn("#smokerCheckBox");
     clickOn("#confirmButton");
     clickOn("#undoButton");
+    stack = AppController.getInstance().getUser("ABC1234").getUndoStack();
     verifyThat("#lNameValue", LabeledMatchers.hasText("Jefferson"));
     verifyThat("#genderIdentityValue", LabeledMatchers.hasText("Non Binary"));
     verifyThat("#smokerValue", LabeledMatchers.hasText("No"));
@@ -141,6 +154,7 @@ public class UndoDonorTest extends ApplicationTest {
     clickOn("#confirmButton");
 
     clickOn("#undoButton");
+    Stack<Memento<User>> stack = AppController.getInstance().getUser("ABC1234").getUndoStack();
 
     clickOn("#editDetailsButton");
     clickOn("#mNameInput");
@@ -153,8 +167,11 @@ public class UndoDonorTest extends ApplicationTest {
     clickOn("#confirmButton");
 
     clickOn("#undoButton");
+    stack = AppController.getInstance().getUser("ABC1234").getUndoStack();
     clickOn("#undoButton");
+    stack = AppController.getInstance().getUser("ABC1234").getUndoStack();
     clickOn("#undoButton");
+    stack = AppController.getInstance().getUser("ABC1234").getUndoStack();
 
     verifyThat("#lNameValue", LabeledMatchers.hasText("Jefferson"));
     verifyThat("#genderIdentityValue", LabeledMatchers.hasText(""));
@@ -175,6 +192,7 @@ public class UndoDonorTest extends ApplicationTest {
     clickOn("#confirmButton");
 
     clickOn("#undoButton");
+    Stack<Memento<User>> stack = AppController.getInstance().getUser("ABC1234").getUndoStack();
 
     verifyThat("#NHIValue", LabeledMatchers.hasText("ABC1234"));
   }

@@ -322,7 +322,6 @@ public class DonorController {
         .addListener(((observable, oldValue, newValue) -> {
           ObservableList<String> selected = previousMedicationListView.getSelectionModel()
               .getSelectedItems();
-          System.out.println(selected);
           displayDetails(selected);
         }));
     currentMedicationListView.setOnMouseClicked(new EventHandler<MouseEvent>() {

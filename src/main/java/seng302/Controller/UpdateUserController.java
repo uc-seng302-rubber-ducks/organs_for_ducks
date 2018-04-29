@@ -3,7 +3,6 @@ package seng302.Controller;
 
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
-import java.util.Stack;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -13,7 +12,6 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-import seng302.Model.Memento;
 import seng302.Model.User;
 import seng302.Service.AttributeValidation;
 
@@ -174,6 +172,8 @@ public class UpdateUserController {
       }
       if (user.getPreferredFirstName() != null) {
         preferredFNameTextField.setText(user.getPreferredFirstName());
+      } else {
+        preferredFNameTextField.setText(user.getFirstName());
       }
       //contact
       if (user.getCurrentAddress() != null){
@@ -237,64 +237,84 @@ public class UpdateUserController {
     }
 
     @FXML
-    public void getContactDetails() {
-        if (phoneInput.getText() != null  && !phoneInput.getText().equals(currentUser.getHomePhone())){
+    public boolean getContactDetails() {
+      boolean changed = false;
+      if (!phoneInput.getText().equals(currentUser.getHomePhone())) {
           currentUser.setHomePhone(phoneInput.getText());
+        changed = true;
         }
-        if (cellInput.getText() != null && !phoneInput.getText().equals(currentUser.getCellPhone())){
+      if (!cellInput.getText().equals(currentUser.getCellPhone())) {
           currentUser.setCellPhone(cellInput.getText());
+        changed = true;
         }
-        if (addressInput.getText() != null && !phoneInput.getText().equals(currentUser.getCurrentAddress())){
+      if (!addressInput.getText().equals(currentUser.getCurrentAddress())) {
             String address = addressInput.getText();
             currentUser.setCurrentAddress(address);
+        changed = true;
         }
-        if (regionInput.getText() != null && !phoneInput.getText().equals(currentUser.getRegion())){
+      if (!regionInput.getText().equals(currentUser.getRegion())) {
           currentUser.setRegion(regionInput.getText());
+        changed = true;
         }
-        if (emailInput.getText() != null && !phoneInput.getText().equals(currentUser.getEmail())){
+      if (!emailInput.getText().equals(currentUser.getEmail())) {
           currentUser.setEmail(emailInput.getText());
+        changed = true;
         }
+
+      return changed;
 
     }
 
     @FXML
-    public void getEmergencyContact() {
+    public boolean getEmergencyContact() {
+      boolean changed = false;
         if (!ecNameInput.getText().isEmpty() && !ecNameInput.getText().equals(currentUser.getContact().getName())) {
           currentUser.getContact().setName(ecNameInput.getText());
+          changed = true;
         }
         if (!ecPhoneInput.getText().isEmpty() && !ecPhoneInput.getText().equals(currentUser.getContact().getHomePhoneNumber())) {
           currentUser.getContact().setHomePhoneNumber(ecPhoneInput.getText());
+          changed = true;
 
         }
         if (!ecCellInput.getText().isEmpty() && !ecCellInput.getText().equals(currentUser.getContact().getCellPhoneNumber())) {
           currentUser.getContact().setCellPhoneNumber(ecCellInput.getText());
+          changed = true;
         }
         if (!ecAddressInput.getText().isEmpty() && !ecAddressInput.getText().equals(currentUser.getContact().getAddress()))  {
           currentUser.getContact().setAddress(ecAddressInput.getText());
+          changed = true;
         }
         if (!ecRegionInput.getText().isEmpty() && !ecRegionInput.getText().equals(currentUser.getContact().getRegion())) {
           currentUser.getContact().setRegion(ecRegionInput.getText());
+          changed = true;
         }
         if (!ecEmailInput.getText().isEmpty() && !ecEmailInput.getText().equals(currentUser.getContact().getEmail())) {
           currentUser.getContact().setEmail(ecEmailInput.getText());
+          changed = true;
 
         }
         if (!ecRelationshipInput.getText().isEmpty() && !ecNameInput.getText().equals(currentUser.getContact().getRelationship())) {
           currentUser.getContact().setRelationship(ecRelationshipInput.getText());
+          changed = true;
 
         }
+      return changed;
 
     }
 
     @FXML
-    public void getHealthDetails() {
+    public boolean getHealthDetails() {
+      boolean changed = false;
         if (birthGenderComboBox.getValue() != null && !birthGenderComboBox.getValue().equals(currentUser.getBirthGender())) {
             String birthGender = AttributeValidation.validateGender(birthGenderComboBox);
             currentUser.setBirthGender(birthGender);
+          changed = true;
         }
         if (genderIdComboBox.getValue() != null && genderIdComboBox.getValue() != "" && !genderIdComboBox.getValue().equals(currentUser.getGenderIdentity())){
             String genderIdentity = AttributeValidation.validateGender(genderIdComboBox);
             currentUser.setGenderIdentity(genderIdentity);
+          changed = true;
         }
 
 //        else if (birthGenderComboBox.getValue() != null) {
@@ -306,21 +326,26 @@ public class UpdateUserController {
             String blood = AttributeValidation.validateBlood(bloodComboBox);
             //BloodTypes blood = AttributeValidation.validateBlood(bloodComboBox);
           currentUser.setBloodType(blood);
+          changed = true;
         }
 
-        if (smokerCheckBox.isSelected() && smokerCheckBox.isSelected() != currentUser.isSmoker()) {
-          currentUser.setSmoker(true);
-        }else{
-          currentUser.setSmoker(false);
+      if (smokerCheckBox.isSelected() != currentUser.isSmoker()) {
+        currentUser.setSmoker(smokerCheckBox.isSelected());
+        changed = true;
         }
-        if (alcoholComboBox.getValue() != null && !alcoholComboBox.getValue().equals(currentUser.getAlcoholConsumption())) {
+
+      if (!(currentUser.getAlcoholConsumption() == null && alcoholComboBox.getValue()
+          .equals("None")) && !alcoholComboBox.getValue()
+          .equals(currentUser.getAlcoholConsumption())) {
           currentUser.setAlcoholConsumption(alcoholComboBox.getValue().toString());
+        changed = true;
         }
 
         if (!weightInput.getText().equals("")) {
           try {
               if (Double.parseDouble(weightInput.getText()) != currentUser.getWeight()) {
                   currentUser.setWeight(Double.parseDouble(weightInput.getText()));
+                changed = true;
               }
           } catch (NumberFormatException e) {
             System.out.println("nope");
@@ -330,41 +355,56 @@ public class UpdateUserController {
         if (!heightInput.getText().equals("")) {
             if (Double.parseDouble(heightInput.getText()) != currentUser.getHeight()) {
                 currentUser.setHeight(Double.parseDouble(heightInput.getText()));
+              changed = true;
             }
         }
+      return changed;
     }
 
 
     @FXML
-    public void getPersonalDetails() {
+    public boolean getPersonalDetails() {
         //TODO check why dateofbirth fails
+      boolean changed = false;
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        if (!fNameInput.getText().equals("") && !fNameInput.getText().equals(currentUser.getFirstName())) {
+      if (!fNameInput.getText().equals(currentUser.getFirstName())) {
           currentUser.setFirstName(fNameInput.getText());
+        changed = true;
         }
 
-        if (!lNameInput.getText().equals("") && !lNameInput.getText().equals(currentUser.getLastName())) {
+      if (!lNameInput.getText().equals(currentUser.getLastName())) {
           currentUser.setLastName(lNameInput.getText());
+        changed = true;
         }
 
-        if (!nhiInput.getText().equals("") && !nhiInput.getText().equals(currentUser.getNhi())) {
+      if (!nhiInput.getText().equals(currentUser.getNhi())) {
           currentUser.setNhi(nhiInput.getText());
+        changed = true;
         }
 
-        if (!mNameInput.getText().equals("") && !mNameInput.getText().equals(currentUser.getMiddleName())) {
+      if (!(mNameInput.getText().isEmpty() && currentUser.getMiddleName() == null) && !mNameInput
+          .getText().equals(currentUser.getMiddleName())) {
           currentUser.setMiddleName(mNameInput.getText());
+        changed = true;
         }
 
         if (dobInput.getValue() != null && !dobInput.getValue().equals(currentUser.getDateOfBirth())) {
           currentUser.setDateOfBirth(dobInput.getValue());
+          changed = true;
         }
 
-         if(dodInput.getValue()!=null && !dodInput.getValue().equals(currentUser.getDateOfDeath())) {
+      if (dodInput.getValue() != null && !dodInput.getValue()
+          .equals(currentUser.getDateOfDeath())) {
           currentUser.setDateOfDeath(dodInput.getValue());
+        changed = true;
         }
-        if (preferredFNameTextField.getText() != null && !preferredFNameTextField.getText().equals(currentUser.getPreferredFirstName())){
+      if (!preferredFNameTextField.getText().equals(currentUser.getPreferredFirstName())
+          || !preferredFNameTextField.getText().equals(currentUser.getFirstName())) {
           currentUser.setPreferredFirstName(preferredFNameTextField.getText());
+        changed = true;
         }
+
+      return changed;
 
 }
 
@@ -380,17 +420,20 @@ public class UpdateUserController {
      */
     @FXML
     public void confirmUpdate(ActionEvent actionEvent) throws IOException {
+      boolean changed = false;
         //TODO save changes and go back to overview screen
-        getPersonalDetails();
-        getHealthDetails();
-        getContactDetails();
-        getEmergencyContact();
+      changed = changed || getPersonalDetails();
+      changed = changed || getHealthDetails();
+      changed = changed || getContactDetails();
+      changed = changed || getEmergencyContact();
         //TODO change to be different
 
       appController.update(currentUser);
       //ArrayList<Change> diffs = appController.differanceInDonors(oldUser, currentUser);
       //changelog.addAll(diffs);
-      currentUser.getRedoStack().clear(); // clear the redo stack if anything else is changed.
+      if (changed) {
+        currentUser.getRedoStack().clear(); // clear the redo stack if anything is changed.
+      }
         AppController appController = AppController.getInstance();
         DonorController donorController = appController.getDonorController();
         try {

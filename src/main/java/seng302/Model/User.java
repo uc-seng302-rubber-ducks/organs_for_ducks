@@ -392,6 +392,10 @@ public class User extends Undoable<User> {
       Memento<User> mem = new Memento<>();
       mem.setOldObject(this.clone());
       updateLastModified();
+      // Changes the default case where the preferred name is the same as the first name
+      if (preferredFirstName == null || preferredFirstName.equals(firstName)) {
+        preferredFirstName = name;
+      }
       this.firstName = name;
       mem.setNewObject(this.clone());
       undoStack.push(mem);
@@ -625,6 +629,10 @@ public class User extends Undoable<User> {
     Memento<User> mem = new Memento<>();
     mem.setOldObject(this.clone());
     updateLastModified();
+    // Changes the default case where the gender identity is the same as the birth gender
+    if (genderIdentity == null || genderIdentity.equals(this.birthGender)) {
+      genderIdentity = this.birthGender;
+    }
     this.birthGender = birthGender;
     mem.setNewObject(this.clone());
     undoStack.push(mem);
