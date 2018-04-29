@@ -142,12 +142,9 @@ public class UpdateUserController {
         this.stage = stage;
         currentUser = user;
         this.appController = controller;
-        //UndoRedoStacks.storeUndoCopy(currentUser);
-        currentUser = user;
-        //Stack<Memento<User>> undoStack = user.getUndoStack();
-//      Memento<User> bottom = undoStack.peek();
-//        oldUser = new User();
         setUserDetails(currentUser);
+      undoButton.setDisable(true);
+      redoButton.setDisable(true);
         if (user.getLastName() != null) {
           stage.setTitle("Update User: " + user.getFirstName() +" " + user.getLastName());
         } else {
@@ -444,12 +441,21 @@ public class UpdateUserController {
             //the text fields etc. are all null
         }
         stage.close();
-
-
-
-
-
     }
+
+  @FXML
+  void undo() {
+    currentUser.undo();
+    undoButton.setDisable(currentUser.getUndoStack().isEmpty());
+    setUserDetails(currentUser);
+  }
+
+  @FXML
+  void redo() {
+    currentUser.redo();
+    redoButton.setDisable(currentUser.getRedoStack().isEmpty());
+    setUserDetails(currentUser);
+  }
 
     /**
      * @param event passed in automatically by the gui
