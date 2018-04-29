@@ -92,45 +92,8 @@ public class UpdateClinicianController {
             stage.setTitle("Update Clinician: " + clinician.getFirstName());
             titleLabel.setText("Update Clinician");
             confirmButton.setText("Save Changes");
-            staffIDTextField.setText(clinician.getStaffId());
-            passwordField.setText(clinician.getPassword());
-            confirmPasswordField.setText(clinician.getPassword());
 
-            String fName = clinician.getFirstName();
-            String mName = clinician.getMiddleName();
-            String lName = clinician.getLastName();
-            String address = clinician.getWorkAddress();
-            String region = clinician.getRegion();
-
-            if (fName == null) {
-                firstNameTextField.setText("");
-            } else {
-                firstNameTextField.setText(fName);
-            }
-
-            if (mName == null) {
-                middleNameTextField.setText("");
-            } else {
-                middleNameTextField.setText(mName);
-            }
-
-            if (lName == null) {
-                lastNameTextField.setText("");
-            } else {
-                lastNameTextField.setText(lName);
-            }
-
-            if (address == null) {
-                addressTextField.setText("");
-            } else {
-                addressTextField.setText(address);
-            }
-
-            if (region == null) {
-                regionTextField.setText("");
-            } else {
-                regionTextField.setText(region);
-            }
+            prefillFields(clinician);
 
             // checks if there was a change in any of the user input fields
             changesListener(staffIDTextField);
@@ -158,6 +121,38 @@ public class UpdateClinicianController {
             stage.setTitle("Create New Clinician Profile");
             titleLabel.setText("Create Clinician");
             confirmButton.setText("Create Clinician Profile");
+        }
+    }
+
+    private void prefillFields(Clinician clinician) {
+        staffIDTextField.setText(clinician.getStaffId());
+        passwordField.setText(clinician.getPassword());
+        confirmPasswordField.setText(clinician.getPassword());
+
+        String fName = clinician.getFirstName();
+        String mName = clinician.getMiddleName();
+        String lName = clinician.getLastName();
+        String address = clinician.getWorkAddress();
+        String region = clinician.getRegion();
+
+        if (fName != null) {
+            firstNameTextField.setText(fName);
+        }
+
+        if (mName != null) {
+            middleNameTextField.setText(mName);
+        }
+
+        if (lName != null) {
+            lastNameTextField.setText(lName);
+        }
+
+        if (address != null) {
+            addressTextField.setText(address);
+        }
+
+        if (region != null) {
+            regionTextField.setText(region);
         }
     }
 
@@ -218,7 +213,7 @@ public class UpdateClinicianController {
     }
 
     /**
-     * Changes the title bar to contain an asterix if a change was detected.
+     * Changes the title bar to contain an asterisk if a change was detected.
      * @param field The current textfield/password field element.
      */
     private void changesListener(TextField field) {

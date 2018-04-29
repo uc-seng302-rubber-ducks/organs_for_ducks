@@ -3,12 +3,18 @@ package seng302.Controller;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyCombination;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
-import seng302.Model.Change;
-import seng302.Model.UndoRedoStacks;
+import java.util.Optional;
+
+import seng302.Model.EmergencyContact;
 import seng302.Model.User;
 import seng302.Service.AttributeValidation;
 
@@ -144,8 +150,299 @@ public class UpdateUserController {
         }
         //UndoRedoStacks.cloneUser(currentUser,oldUser);
 
+        Scene scene = stage.getScene();
 
+        TextField[] allTextFields = {nhiInput, fNameInput, preferredFNameTextField, mNameInput, lNameInput,
+                heightInput, weightInput,
+        phoneInput, cellInput, addressInput, regionInput, emailInput,
+        ecNameInput, ecPhoneInput, ecCellInput, ecAddressInput, ecRegionInput, ecEmailInput, ecRelationshipInput};
 
+        // creates a listener for each text field
+        for (TextField tf: allTextFields) {
+            textFieldListener(tf);
+        }
+
+        comboBoxListener(birthGenderComboBox);
+        comboBoxListener(genderIdComboBox);
+        comboBoxListener(bloodComboBox);
+        comboBoxListener(alcoholComboBox);
+
+        datePickerListener(dobInput);
+        datePickerListener(dodInput);
+
+        final KeyCombination shortcutZ = new KeyCodeCombination(
+                KeyCode.Z, KeyCombination.SHORTCUT_DOWN);
+
+        scene.addEventFilter(KeyEvent.KEY_RELEASED, e -> {
+            if (shortcutZ.match(e)) {
+                if (checkChanges()) { // checks if reverting a textfield change restores all fields to their original state
+                    stage.setTitle("Update User: " + user.getFirstName());
+                }
+            }
+        });
+
+    }
+
+    /**
+     * Changes the title bar to add/remove an asterisk when a change was detected on the date picker.
+     * @param dp The current date picker.
+     */
+    private void datePickerListener(DatePicker dp) {
+        dp.valueProperty().addListener((observable, oldValue, newValue) -> {
+            if (checkChanges()) {
+                stage.setTitle("Update User: " + currentUser.getFirstName());
+            } else {
+                stage.setTitle("Update User: " + currentUser.getFirstName() + " *");
+            }
+        });
+    }
+
+    /**
+     * Changes the title bar to add/remove an asterisk when a change is detected on the ComboBox.
+     * @param cb The current ComboBox.
+     */
+    private void comboBoxListener(ComboBox cb) {
+        cb.valueProperty().addListener((observable, oldValue, newValue) -> {
+            if (checkChanges()) {
+                stage.setTitle("Update User: " + currentUser.getFirstName());
+            } else {
+                stage.setTitle("Update User: " + currentUser.getFirstName() + " *");
+            }
+        });
+
+    }
+
+    /**
+     * Changes the title bar to add/remove an asterisk when the smoker checkbox is selected/unselected.
+     * @param event The user selecting/deselecting the check box.
+     */
+    @FXML
+    private void smokerClicked(ActionEvent event) {
+        if (currentUser.isSmoker() == smokerCheckBox.isSelected()) {
+            if (checkChanges()) {
+                stage.setTitle("Update User: " + currentUser.getFirstName());
+            }
+        } else {
+            stage.setTitle("Update User: " + currentUser.getFirstName() + " *");
+        }
+    }
+
+    /**
+     * Changes the title bar to contain an asterisk if a change was detected on the textfields.
+     * @param field The current textfield.
+     */
+    private void textFieldListener(TextField field) {
+        field.textProperty().addListener((observable, oldValue, newValue) -> {
+            stage.setTitle("Update User: " + currentUser.getFirstName() + " *");
+        });
+    }
+
+    /**
+     * Checks if all fields are in their original state (i.e. no change has been made / all changes have been undone).
+     * @return true if all fields are in their original state, false if at least one field is different.
+     */
+    private boolean checkChanges() {
+        boolean noChange = true;
+
+        // user details
+        if (!(currentUser.getNhi()).equals(nhiInput.getText())) {
+            noChange = false;
+        }
+
+        if (!(currentUser.getFirstName()).equals(fNameInput.getText())) {
+            noChange = false;
+        }
+
+        if (!currentUser.getPrefFirstName().equals(preferredFNameTextField.getText())) {
+            noChange = false;
+        }
+
+        if (currentUser.getMiddleName() != null) {
+            if (!(currentUser.getMiddleName()).equals(mNameInput.getText())) {
+                noChange = false;
+            }
+        } else if (!mNameInput.getText().isEmpty()) {
+            noChange = false;
+        }
+
+        if (currentUser.getLastName() != null) {
+            if (!(currentUser.getLastName()).equals(lNameInput.getText())) {
+                noChange = false;
+            }
+        } else if (!lNameInput.getText().isEmpty()) {
+            noChange = false;
+        }
+
+        if (!currentUser.getDateOfBirth().isEqual(dobInput.getValue())) {
+            noChange = false;
+        }
+
+        if (currentUser.getDateOfDeath() != null) {
+            if (!currentUser.getDateOfDeath().isEqual(dodInput.getValue())) {
+                noChange = false;
+            }
+        } else if (dodInput.getValue() != null) {
+            noChange = false;
+        }
+
+        // health details
+        if (currentUser.getBirthGender() != null && birthGenderComboBox.getValue() != null) {
+            if (!(currentUser.getBirthGender()).equals(birthGenderComboBox.getValue().toString())) {
+                noChange = false;
+            }
+        } else if (birthGenderComboBox.getValue() != null && !birthGenderComboBox.getValue().toString().equals("")) {
+            noChange = false;
+        }
+
+        if (currentUser.getGenderIdentity() != null && genderIdComboBox.getValue() != null) {
+            if (!(currentUser.getGenderIdentity()).equals(genderIdComboBox.getValue().toString())) {
+                noChange = false;
+            }
+        } else if (genderIdComboBox.getValue() != null && !genderIdComboBox.getValue().toString().equals("")) {
+            noChange = false;
+        }
+        if (currentUser.getBloodType() != null && bloodComboBox.getValue() != null) {
+            if (!(currentUser.getBloodType()).equals(bloodComboBox.getValue().toString())) {
+                noChange = false;
+            }
+        } else if (bloodComboBox.getValue() != null) {
+            noChange = false;
+        }
+
+        if (currentUser.getAlcoholConsumption() != null && alcoholComboBox.getValue() != null) {
+            if (!(currentUser.getAlcoholConsumption()).equals(alcoholComboBox.getValue().toString())) {
+                noChange = false;
+            }
+        } else if (alcoholComboBox.getValue() != null) {
+            noChange = false;
+        }
+        if (currentUser.getWeight() > 0) {
+            try {
+                double weight = Double.parseDouble(weightInput.getText());
+                if (currentUser.getWeight() != weight) {
+                    noChange = false;
+                }
+            } catch (NumberFormatException e) {
+                noChange = false;
+            }
+        } else if (!weightInput.getText().isEmpty()) {
+            noChange = false;
+        }
+
+        if (currentUser.getHeight() > 0) {
+            try {
+                double height = Double.parseDouble(heightInput.getText());
+                if (currentUser.getHeight() != height) {
+                    noChange = false;
+                }
+            } catch (NumberFormatException e) {
+                noChange = false;
+            }
+        } else if (!heightInput.getText().isEmpty()) {
+            noChange = false;
+        }
+        if (!(currentUser.isSmoker() == smokerCheckBox.isSelected())) noChange = false;
+        // contact details
+        if (currentUser.getHomePhone() != null) {
+            if (!(currentUser.getHomePhone()).equals(phoneInput.getText())) {
+                noChange = false;
+            }
+        } else if (!phoneInput.getText().isEmpty()) {
+            noChange = false;
+        }
+
+        if (currentUser.getCellPhone() != null) {
+            if (!(currentUser.getCellPhone()).equals(cellInput.getText())) {
+                noChange = false;
+            }
+        } else if (!cellInput.getText().isEmpty()) {
+            noChange = false;
+        }
+
+        if (currentUser.getCurrentAddress() != null) {
+            if (!(currentUser.getCurrentAddress()).equals(addressInput.getText())) {
+                noChange = false;
+            }
+        } else if (!addressInput.getText().isEmpty()) {
+            noChange = false;
+        }
+
+        if (currentUser.getRegion() != null) {
+            if (!(currentUser.getRegion()).equals(regionInput.getText())) {
+                noChange = false;
+            }
+        } else if (!regionInput.getText().isEmpty()) {
+            noChange = false;
+        }
+
+        if (currentUser.getEmail() != null) {
+            if (!(currentUser.getEmail()).equals(emailInput.getText())) {
+                noChange = false;
+            }
+        } else if (!emailInput.getText().isEmpty()) {
+            noChange = false;
+        }
+
+        // emergency contact details
+        EmergencyContact contact = currentUser.getContact();
+
+        if (contact.getName() != null) {
+            if (!(contact.getName()).equals(ecNameInput.getText())) {
+                noChange = false;
+            }
+        } else if (!ecNameInput.getText().isEmpty()) {
+            noChange = false;
+        }
+
+        if (contact.getHomePhoneNumber() != null) {
+            if (!(contact.getHomePhoneNumber()).equals(ecPhoneInput.getText())) {
+                noChange = false;
+            }
+        } else if (!ecPhoneInput.getText().isEmpty()) {
+            noChange = false;
+        }
+
+        if (contact.getCellPhoneNumber() != null) {
+            if (!(contact.getCellPhoneNumber()).equals(ecCellInput.getText())) {
+                noChange = false;
+            }
+        } else if (!ecCellInput.getText().isEmpty()) {
+            noChange = false;
+        }
+
+        if (contact.getAddress() != null) {
+            if (!(contact.getAddress()).equals(ecAddressInput.getText())) {
+                noChange = false;
+            }
+        } else if (!ecAddressInput.getText().isEmpty()) {
+            noChange = false;
+        }
+
+        if (contact.getRegion() != null) {
+            if (!(contact.getRegion()).equals(ecRegionInput.getText())) {
+                noChange = false;
+            }
+        } else if (!ecRegionInput.getText().isEmpty()) {
+            noChange = false;
+        }
+
+        if (contact.getEmail() != null) {
+            if (!(contact.getEmail()).equals(ecEmailInput.getText())) {
+                noChange = false;
+            }
+        } else if (!ecEmailInput.getText().isEmpty()) {
+            noChange = false;
+        }
+
+        if (contact.getRelationship() != null) {
+            if (!(contact.getRelationship()).equals(ecRelationshipInput.getText())) {
+                noChange = false;
+            }
+        } else if (!ecRelationshipInput.getText().isEmpty()) {
+            noChange = false;
+        }
+
+        return noChange;
     }
 
     @FXML
@@ -162,6 +459,12 @@ public class UpdateUserController {
       if (user.getPrefFirstName() != null) {
         preferredFNameTextField.setText(user.getPrefFirstName());
       }
+
+      dobInput.setValue(user.getDateOfBirth());
+      if (user.getDateOfDeath() != null) {
+          dodInput.setValue(user.getDateOfDeath());
+      }
+
       //contact
       if (user.getCurrentAddress() != null){
         addressInput.setText(user.getCurrentAddress());
@@ -202,6 +505,7 @@ public class UpdateUserController {
         ecCellInput.setText(user.getContact().getCellPhoneNumber());
       }
       //h
+      alcoholComboBox.setValue(user.getAlcoholConsumption());
       if (user.isSmoker()){
         smokerCheckBox.setSelected(true);
       }
@@ -417,20 +721,44 @@ public class UpdateUserController {
     }
 
     /**
+     * Prompts the user with a warning alert if there are unsaved changes, otherwise cancels immediately.
      * @param event passed in automatically by the gui
      */
     @FXML
     void goBack(ActionEvent event) {
-        AppController appController = AppController.getInstance();
-        DonorController donorController = appController.getDonorController();
-        try {
-            donorController.showUser(currentUser);
+        if (stage.getTitle().equals("Update User: " + currentUser.getFirstName() + " *")) { // has changes
+            Alert alert = new Alert(Alert.AlertType.WARNING,
+                    "You have unsaved changes, are you sure you want to cancel?",
+                    ButtonType.YES, ButtonType.NO);
+
+            Button yesButton = (Button) alert.getDialogPane().lookupButton(ButtonType.YES);
+            yesButton.setId("yesButton");
+
+            Optional<ButtonType> result = alert.showAndWait();
+            if (result.get() == ButtonType.YES) {
+                AppController appController = AppController.getInstance();
+                DonorController donorController = appController.getDonorController();
+                try {
+                    donorController.showUser(currentUser);
+                }
+                catch (NullPointerException ex) {
+                    //TODO causes npe if donor is new in this session
+                    //the text fields etc. are all null
+                }
+                stage.close();
+            }
+        } else { // has no changes
+            AppController appController = AppController.getInstance();
+            DonorController donorController = appController.getDonorController();
+            try {
+                donorController.showUser(currentUser);
+            }
+            catch (NullPointerException ex) {
+                //TODO causes npe if donor is new in this session
+                //the text fields etc. are all null
+            }
+            stage.close();
         }
-        catch (NullPointerException ex) {
-            //TODO causes npe if donor is new in this session
-            //the text fields etc. are all null
-        }
-        stage.close();
     }
 
     /**

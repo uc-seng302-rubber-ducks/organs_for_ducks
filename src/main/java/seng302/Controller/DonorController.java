@@ -621,8 +621,8 @@ public class DonorController {
             root = updateLoader.load();
             UpdateUserController updateUserController = updateLoader.getController();
             Stage stage = new Stage();
-            updateUserController.init(currentUser, application, stage);
             stage.setScene(new Scene(root));
+            updateUserController.init(currentUser, application, stage);
             stage.show();
 
         } catch (IOException e) {
