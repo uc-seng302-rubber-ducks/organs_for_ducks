@@ -191,14 +191,14 @@ public class NewUserController {
         boolean valid = true; // prevents the account being created if false
 
         // User attributes
-        // check string returns null if the textfield is empty
         String preferredFirstName;
-        if (AttributeValidation.checkString(preferredFNameTextField.getText()) == null){
+        if (preferredFNameTextField.getText().isEmpty()){
             preferredFirstName = fName;
         } else {
-            preferredFirstName = AttributeValidation.checkString(preferredFNameTextField.getText());
+            preferredFirstName = preferredFNameTextField.getText();
         }
-        String middleName = AttributeValidation.checkString(mNameInput.getText());
+
+        String middleName = AttributeValidation.checkString(mNameInput.getText()); // checkString returns null if the textfield is empty
         String lastName = AttributeValidation.checkString(lNameInput.getText());
 
         String birthGender = AttributeValidation.validateGender(birthGenderComboBox);

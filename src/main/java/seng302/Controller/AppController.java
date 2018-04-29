@@ -38,7 +38,9 @@ public class AppController {
       }
     } //all code you wish to execute must be above this point!!!!!!!!
     if (!defaultSeen) {
-      clinicians.add(new Clinician("Default", "0", "", "", "admin"));
+      //clinicians.add(new Clinician("Default", "0", "", "", "admin"));
+      String nullRegion = null; // need this otherwise cannot differentiate between constructors
+      clinicians.add(new Clinician("0", "admin", "Default", null, null, null, nullRegion));
       try {
         JsonHandler.saveClinicians(clinicians);
       } catch (IOException e) {

@@ -384,9 +384,9 @@ public class User {
         return preferredFirstName;
     }
 
-    public void setPrefFirstName(String name) {
+    public void setPreferredFirstName(String preferredFirstName) {
         updateLastModified();
-        this.preferredFirstName = name;
+        this.preferredFirstName = preferredFirstName;
     }
 
     public String getMiddleName() {
@@ -548,14 +548,6 @@ public class User {
 
   public void addPastDisease(Disease pastDisease) {
     this.pastDiseases.add(pastDisease);
-  }
-
-  public String getPreferredFirstName() {
-    return preferredFirstName;
-  }
-
-  public void setPreferredFirstName(String preferredFirstName) {
-    this.preferredFirstName = preferredFirstName;
   }
 
   public String getBirthGender() {
