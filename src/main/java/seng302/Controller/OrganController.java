@@ -85,6 +85,7 @@ public class OrganController {
         appController.update(currentUser);
         canDonate.getItems().remove(toDonate);}
     }
+    }
 
     /**
      * @param event passed in automatically by the gui
@@ -97,6 +98,7 @@ public class OrganController {
         canDonate.getItems().add(toUndonate);
         currentUser.getDonorDetails().removeOrgan(toUndonate);
         appController.update(currentUser);}
+    }
     }
 
     /**

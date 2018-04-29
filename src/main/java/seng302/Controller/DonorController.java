@@ -498,6 +498,7 @@ public class DonorController {
     Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
     alert.setContentText("Are you sure you want to delete this user?");
     Optional<ButtonType> result = alert.showAndWait();
+
     if (result.get() == ButtonType.OK) {
       application.deleteDonor(currentUser);
       FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML/loginView.fxml"));
