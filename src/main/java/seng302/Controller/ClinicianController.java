@@ -419,8 +419,8 @@ public class ClinicianController {
       root = updateLoader.load();
       UpdateClinicianController updateClinicianController = updateLoader.getController();
       Stage stage = new Stage();
-      updateClinicianController.init(clinician, appController, stage, false);
       stage.setScene(new Scene(root));
+      updateClinicianController.init(clinician, appController, stage, false);
       stage.initModality(Modality.APPLICATION_MODAL); // background window is no longer selectable
       stage.showAndWait();
       showClinician();

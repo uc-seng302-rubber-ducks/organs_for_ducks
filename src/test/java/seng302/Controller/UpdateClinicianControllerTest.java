@@ -103,6 +103,7 @@ public class UpdateClinicianControllerTest extends ApplicationTest {
         clickOn("#firstNameTextField").push(SHORTCUT, A).push(BACK_SPACE);
         write("Not Affie");
         clickOn("#cancelButton");
+        clickOn("#yesButton");
         verifyThat("#fNameLabel", LabeledMatchers.hasText("Affie"));
     }
 }

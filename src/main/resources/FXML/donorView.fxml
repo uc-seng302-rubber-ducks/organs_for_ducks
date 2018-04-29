@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.media.*?>
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
@@ -33,11 +38,7 @@
                         <ListView fx:id="organsDonatingListView" layoutX="15.0" layoutY="384.0" prefHeight="171.0" prefWidth="267.0" />
                         <Button fx:id="undoButton" layoutX="758.0" layoutY="18.0" mnemonicParsing="false" onAction="#undo" text="Undo" />
                         <Button fx:id="redoButton" layoutX="822.0" layoutY="18.0" mnemonicParsing="false" onAction="#redo" text="Redo" />
-                        <Label layoutX="420.0" layoutY="364.0" text="Misc attributes" />
                         <Separator layoutX="-13.0" layoutY="331.0" prefHeight="12.0" prefWidth="903.0" />
-                        <Button layoutX="292.0" layoutY="529.0" mnemonicParsing="false" onAction="#modifyOrgans" text="Organs" />
-                        <ListView fx:id="miscAttributeslistView" layoutX="420.0" layoutY="388.0" prefHeight="171.0" prefWidth="221.0" />
-                        <Button layoutX="676.0" layoutY="532.0" mnemonicParsing="false" onAction="#modifyMiscAttributes" text="Misc" />
                         <Button fx:id="logOutButton" layoutX="14.0" layoutY="570.0" mnemonicParsing="false" onAction="#logout" text="Log Out" />
                        <Button fx:id="editDetailsButton" layoutX="789.0" layoutY="573.0"
                          mnemonicParsing="false" onAction="#updateDetails" text="Edit Details"/>
@@ -71,6 +72,7 @@
                         <Label fx:id="ageDeathValue" layoutX="110.0" layoutY="220.0" />
                         <Label layoutX="15.0" layoutY="270.0" text="Gender Identity:" />
                         <Label fx:id="genderIdentityValue" layoutX="130.0" layoutY="273.0" />
+                        <Button fx:id="deleteUser" layoutX="396.0" layoutY="570.0" mnemonicParsing="false" onAction="#delete" text="Delete User" />
                      </children>
                   </AnchorPane>
             </content>
@@ -178,6 +180,20 @@
                         <Button fx:id="updateDiseaseButton" layoutX="506.0" layoutY="549.0" mnemonicParsing="false" text="Update" visible="false" />
                      </children>
                   </AnchorPane>
+              </content>
+            </Tab>
+            <Tab fx:id="organsTab" text="organs to donate">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <ListView fx:id="canDonate" layoutX="101.0" layoutY="86.0" prefHeight="424.0" prefWidth="200.0" />
+                        <ListView fx:id="currentlyDonating" layoutX="576.0" layoutY="73.0" prefHeight="437.0" prefWidth="200.0" />
+                        <Label layoutX="165.0" layoutY="66.0" text="Donatable" />
+                        <Label layoutX="618.0" layoutY="51.0" text="Currently Donating" />
+                        <Button fx:id="donate" layoutX="397.0" layoutY="184.0" mnemonicParsing="false" onAction="#donate" text="&gt;&gt;" />
+                        <Button fx:id="undonateButton" layoutX="393.0" layoutY="286.0" mnemonicParsing="false" onAction="#undonate" text="&lt;&lt;" />
+                        <Label fx:id="donorNameLabel" layoutX="399.0" layoutY="26.0" text="Label" />
+                     </children></AnchorPane>
               </content>
             </Tab>
         </tabs>

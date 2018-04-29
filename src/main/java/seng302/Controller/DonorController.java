@@ -2,11 +2,14 @@ package seng302.Controller;
 
 
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
@@ -17,7 +20,9 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
@@ -141,8 +146,8 @@ public class DonorController {
   @FXML
   private Button redoButton;
 
-  @FXML
-  private ListView<String> miscAttributeslistView;
+    //@FXML
+    //private ListView<String> miscAttributeslistView;
 
   @FXML
   private TableView<Change> historyTableView;
@@ -238,6 +243,20 @@ public class DonorController {
   private TextArea descriptionTextArea;
 
   private TableView<MedicalProcedure> currentProcedureList;
+  @FXML
+  private ListView<Organs> currentlyDonating;
+
+  @FXML
+  private ListView<Organs> canDonate;
+
+  @FXML
+  private Button donateButton;
+
+  @FXML
+  private Button undonateButton;
+
+  @FXML
+  private Label donorNameLabel;
 
   private AppController application;
   private ObservableList<String> currentMeds;
@@ -289,6 +308,21 @@ public class DonorController {
     //warningLabel.setVisible(false);
     currentUser = user;
     contact = user.getContact();
+      donorNameLabel.setText(user.getName());
+      ArrayList<Organs> donating;
+      try {
+        donating= new ArrayList<>(user.getDonorDetails().getOrgans());
+      }
+      catch (NullPointerException ex) {
+        donating = new ArrayList<>();
+      }
+      currentlyDonating.setItems(FXCollections.observableList(donating));
+      ArrayList<Organs> leftOverOrgans = new ArrayList<Organs>();
+      Collections.addAll(leftOverOrgans, Organs.values());
+      for (Organs o : donating){
+        leftOverOrgans.remove(o);
+      }
+      canDonate.setItems(FXCollections.observableList(leftOverOrgans));
 
     // Sets the button to be disabled
     undoButton.setDisable(currentUser.getUndoStack().isEmpty());
@@ -511,6 +545,37 @@ public class DonorController {
   }
 
 
+  /**
+   *
+   * Creates a alert pop up to confirm that the user wants to delete the profile
+   *
+   */
+  @FXML
+  public void delete(ActionEvent actionEvent) throws IOException {
+    Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+    alert.setContentText("Are you sure you want to delete this user?");
+    Optional<ButtonType> result = alert.showAndWait();
+    if (result.get() == ButtonType.OK) {
+      application.deleteDonor(currentUser);
+      FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML/loginView.fxml"));
+      Parent root = null;
+      try {
+        root = loader.load();
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+      LoginController loginController = loader.getController();
+      loginController.init(AppController.getInstance(), stage);
+      stage.setScene(new Scene(root));
+      stage.setTitle("");
+      stage.setWidth(600);
+      stage.setHeight(420);
+      stage.show();
+
+    }
+  }
+
+
   @FXML
   private void setContactPage() {
     if (contact != null) {
@@ -598,53 +663,65 @@ public class DonorController {
     showUser(currentUser);
   }
 
-  /**
-   * @param actionEvent An action event.
-   */
-  @FXML
-  private void updateDetails(ActionEvent actionEvent) throws IOException, InterruptedException {
-    FXMLLoader updateLoader = new FXMLLoader(getClass().getResource("/FXML/updateUser.fxml"));
-    Parent root = null;
-    System.out.println(updateLoader);
-    try {
-      root = updateLoader.load();
-      UpdateUserController updateUserController = updateLoader.getController();
-      Stage stage = new Stage();
-      updateUserController.init(currentUser, application, stage);
-      stage.setScene(new Scene(root));
-      stage.show();
+    /**
+     * @param actionEvent An action event.
+     */
+    @FXML
+    private void updateDetails(ActionEvent actionEvent) throws IOException, InterruptedException {
+        FXMLLoader updateLoader = new FXMLLoader(getClass().getResource("/FXML/updateUser.fxml"));
+        Parent root = null;
+        System.out.println(updateLoader);
+        try {
+            root = updateLoader.load();
+            UpdateUserController updateUserController = updateLoader.getController();
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+            updateUserController.init(currentUser, application, stage);
+            stage.show();
 
     } catch (IOException e) {
       e.printStackTrace();
     }
   }
 
-  /**
-   * fires when the Misc button is clicked
-   */
-  @FXML
-  private void modifyMiscAttributes() {
-    if (currentUser.getDateOfBirth() == null) {
-      warningLabel.setVisible(true);
-      warningLabel.setText("Plese confirm donor before continuing");
-      return;
-    }
-    FXMLLoader attributeLoader = new FXMLLoader(
-        getClass().getResource("/FXML/miscAttributes.fxml"));
-    Parent root = null;
-    try {
-      root = attributeLoader.load();
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-    MiscAttributesController miscAttributesController = attributeLoader.getController();
-    Stage stage = new Stage();
-    miscAttributesController.init(currentUser, application, stage);
-    stage.setScene(new Scene(root));
-    stage.show();
-    miscAttributeslistView.getItems().clear();
-    miscAttributeslistView.getItems().addAll(currentUser.getMiscAttributes());
-  }
+//    @FXML 22.9kg/m2
+//    private void changeDeceasedStatus() {
+//        if (!isDonorDeceasedCheckBox.isSelected()) {
+//            dateOfDeathPicker.setVisible(false);
+//            dodLabel.setVisible(false);
+//        } else {
+//            dodLabel.setVisible(true);
+//            dateOfDeathPicker.setVisible(true);
+//        }
+//
+//    }
+
+//    /**
+//     * fires when the Misc button is clicked
+//     */
+//    @FXML
+//    private void modifyMiscAttributes() {
+//        if (currentUser.getDateOfBirth() == null) {
+//            warningLabel.setVisible(true);
+//            warningLabel.setText("Plese confirm donor before continuing");
+//            return;
+//        }
+//        FXMLLoader attributeLoader = new FXMLLoader(
+//                getClass().getResource("/FXML/miscAttributes.fxml"));
+//        Parent root = null;
+//        try {
+//            root = attributeLoader.load();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        MiscAttributesController miscAttributesController = attributeLoader.getController();
+//        Stage stage = new Stage();
+//        miscAttributesController.init(currentUser, application, stage);
+//        stage.setScene(new Scene(root));
+//        stage.show();
+//        miscAttributeslistView.getItems().clear();
+//        miscAttributeslistView.getItems().addAll(currentUser.getMiscAttributes());
+//    }
 
   /**
    * fires when the Undo button is clicked
@@ -690,43 +767,65 @@ public class DonorController {
     UndoRedoStacks.clearStacks();
   }
 
-  /**
-   * @param user The current user.
-   */
-  public void showUser(User user) {
-    setContactPage();
-    NHIValue.setText(currentUser.getNhi());
-    fNameValue.setText(currentUser.getFirstName());
-    DOBValue.setText(currentUser.getDateOfBirth().toString());
-    mNameValue.setText(currentUser.getMiddleName() != null ? currentUser.getMiddleName() : "");
-    pNameValue
-        .setText(
-            currentUser.getPreferredFirstName() != null ? currentUser.getPreferredFirstName() : "");
-    lNameValue.setText(currentUser.getLastName() != null ? currentUser.getLastName() : "");
-    genderIdentityValue
-        .setText(currentUser.getGenderIdentity() != null ? currentUser.getGenderIdentity() : "");
-    birthGenderValue
-        .setText(currentUser.getBirthGender() != null ? currentUser.getGenderIdentity() : "");
-    ageValue.setText(user.getStringAge().toString().replace("P", "").replace("Y", "") + " Years");
-    DODValue.setText(
-        currentUser.getDateOfDeath() != null ? currentUser.getDateOfDeath().toString() : "");
-    ageDeathValue.setText(currentUser.getDateOfDeath() != null ? Long.toString(
-        ChronoUnit.YEARS.between(currentUser.getDateOfBirth(), currentUser.getDateOfDeath()))
-        + " Years" : "");
-    bloodTypeValue.setText(currentUser.getBloodType() != null ? currentUser.getBloodType() : "");
-    smokerValue.setText(currentUser.isSmoker() ? "Yes" : "No");
-    weightValue
-        .setText(currentUser.getWeight() > 0 ? Double.toString(currentUser.getWeight()) : "");
-    heightValue
-        .setText(currentUser.getHeight() > 0 ? Double.toString(currentUser.getHeight()) : "");
+    /**
+     *
+     * @param user The current user.
+     */
+    public void showUser(User user) {
+        setContactPage();
+        NHIValue.setText(currentUser.getNhi());
+        fNameValue.setText(currentUser.getFirstName());
+        DOBValue.setText(currentUser.getDateOfBirth().toString());
+        if (currentUser.getMiddleName() != null) {
+            mNameValue.setText(currentUser.getMiddleName());
+        }
+        if (currentUser.getPreferredFirstName() != null) {
+            pNameValue.setText(currentUser.getPreferredFirstName());
+        }
+        if (currentUser.getLastName() != null) {
+            lNameValue.setText(currentUser.getLastName());
+        }
 
-    if (currentUser.getHeight() > 0 && currentUser.getWeight() > 0) {
-      //TODO fix BMI kg/m^
-      double bmi = currentUser.getWeight() / (currentUser.getHeight() * currentUser.getHeight());
-      bmiValue.setText(Double.toString(bmi));
-    } else {
-      bmiValue.setText("");
-    }
+        if (currentUser.getGenderIdentity() != null) {
+            genderIdentityValue.setText(currentUser.getGenderIdentity());
+        }
+        if (currentUser.getBirthGender() != null) {
+            birthGenderValue.setText(currentUser.getBirthGender());
+        }
+
+        ageValue.setText(user.getStringAge().toString().replace("P", "").replace("Y", "") + " Years");
+        if (currentUser.getDateOfDeath() != null) {
+            DODValue.setText(currentUser.getDateOfDeath().toString());
+            ageDeathValue.setText(Long.toString(
+                    ChronoUnit.YEARS.between(currentUser.getDateOfBirth(), currentUser.getDateOfDeath())) + " Years");
+        }
+        if (currentUser.getBloodType() != null) {
+            bloodTypeValue.setText(currentUser.getBloodType());
+        }
+        if (currentUser.isSmoker()) {
+            smokerValue.setText("Yes");
+        } else {
+            smokerValue.setText("No");
+        }
+        String weight;
+        if (currentUser.getWeight() > 0) {
+            weight = java.lang.Double.toString(currentUser.getWeight());
+            weightValue.setText(weight);
+        }
+        String height;
+        if (currentUser.getHeight() > 0) {
+            height = java.lang.Double.toString(currentUser.getHeight());
+            heightValue.setText(height);
+        }
+        if (currentUser.getHeight() > 0 && currentUser.getWeight() > 0) {
+            //TODO fix BMI kg/m^
+            DecimalFormat df = new DecimalFormat("#.00");
+            double bmi = (currentUser.getWeight() / (currentUser.getHeight() * currentUser.getHeight())*10000);
+            String formattedBmi = df.format(bmi);
+            bmiValue.setText(formattedBmi);
+        } else {
+            bmiValue.setText("");
+        }
 
     if (currentUser.getLastModified() != null) {
       lastModifiedValue.setText(currentUser.getLastModified().toString());
@@ -734,12 +833,12 @@ public class DonorController {
     createdValue.setText(currentUser.getTimeCreated().toString());
     alcoholValue.setText(currentUser.getAlcoholConsumption());
 
-    if (user.getMiscAttributes() != null) {
-      miscAttributeslistView.getItems().clear(); // HERE
-      for (String atty : user.getMiscAttributes()) {
-        miscAttributeslistView.getItems().add(atty);
-      }
-    }
+//    if (user.getMiscAttributes() != null) {
+//      miscAttributeslistView.getItems().clear(); // HERE
+//      for (String atty : user.getMiscAttributes()) {
+//        miscAttributeslistView.getItems().add(atty);
+//      }
+//    }
     if (currentUser.getCurrentMedication() != null) {
       //System.out.println("current: " +currentMeds);currentMeds.clear();
       currentMeds.addAll(currentUser.getCurrentMedication());
@@ -1120,5 +1219,35 @@ public class DonorController {
     newDiseaseController.init(currentUser, application, stage);
     stage.setScene(new Scene(root));
     stage.show();
+  }
+
+  /**
+   * @param event passed in automatically by the gui
+   */
+  @FXML
+  void donate(ActionEvent event) {
+    UndoRedoStacks.storeUndoCopy(currentUser);
+    if (!canDonate.getSelectionModel().isEmpty()){
+      Organs toDonate = canDonate.getSelectionModel().getSelectedItem();
+      currentlyDonating.getItems().add(toDonate);
+      currentUser.getDonorDetails().addOrgan(toDonate);
+      application.update(currentUser);
+      canDonate.getItems().remove(toDonate);
+    }
+  }
+
+  /**
+   * @param event passed in automatically by the gui
+   */
+  @FXML
+  void undonate(ActionEvent event) {
+    UndoRedoStacks.storeUndoCopy(currentUser);
+    if (!currentlyDonating.getSelectionModel().isEmpty()) {
+      Organs toUndonate = currentlyDonating.getSelectionModel().getSelectedItem();
+      currentlyDonating.getItems().remove(toUndonate);
+      canDonate.getItems().add(toUndonate);
+      currentUser.getDonorDetails().removeOrgan(toUndonate);
+      application.update(currentUser);
+    }
   }
 }
