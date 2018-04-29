@@ -2,7 +2,6 @@ package seng302.Model;
 
 
 import com.google.gson.annotations.Expose;
-
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -12,7 +11,7 @@ import java.util.Objects;
  * @author Josh Burt
  *
  */
-public class Clinician {
+public class Clinician extends Undoable<Clinician> {
 
     @Expose
     private String name;
@@ -94,7 +93,11 @@ public class Clinician {
     }
 
     public void setName(String name) {
+        Memento<Clinician> memento = new Memento<>();
+        memento.setOldObject(this.clone());
         this.name = name;
+        memento.setNewObject(this.clone());
+        undoStack.push(memento);
     }
 
     public String getFirstName() {
@@ -102,7 +105,11 @@ public class Clinician {
     }
 
     public void setFirstName(String name) {
+        Memento<Clinician> memento = new Memento<>();
+        memento.setOldObject(this.clone());
         this.firstName = name;
+        memento.setNewObject(this.clone());
+        undoStack.push(memento);
     }
 
     public String getMiddleName() {
@@ -110,7 +117,11 @@ public class Clinician {
     }
 
     public void setMiddleName(String name) {
+        Memento<Clinician> memento = new Memento<>();
+        memento.setOldObject(this.clone());
         this.middleName = name;
+        memento.setNewObject(this.clone());
+        undoStack.push(memento);
     }
 
     public String getLastName() {
@@ -118,7 +129,11 @@ public class Clinician {
     }
 
     public void setLastName(String name) {
+        Memento<Clinician> memento = new Memento<>();
+        memento.setOldObject(this.clone());
         this.lastName = name;
+        memento.setNewObject(this.clone());
+        undoStack.push(memento);
     }
 
 
@@ -146,7 +161,11 @@ public class Clinician {
     }
 
     public void setStaffId(String staffId) {
+        Memento<Clinician> memento = new Memento<>();
+        memento.setOldObject(this.clone());
         this.staffId = staffId;
+        memento.setNewObject(this.clone());
+        undoStack.push(memento);
     }
 
 
@@ -155,7 +174,11 @@ public class Clinician {
     }
 
     public void setWorkAddress(String workAddress) {
+        Memento<Clinician> memento = new Memento<>();
+        memento.setOldObject(this.clone());
         this.workAddress = workAddress;
+        memento.setNewObject(this.clone());
+        undoStack.push(memento);
     }
 
     public String getRegion() {
@@ -163,7 +186,11 @@ public class Clinician {
     }
 
     public void setRegion(String region) {
+        Memento<Clinician> memento = new Memento<>();
+        memento.setOldObject(this.clone());
         this.region = region;
+        memento.setNewObject(this.clone());
+        undoStack.push(memento);
     }
 
     public String getPassword() {
@@ -171,7 +198,11 @@ public class Clinician {
     }
 
     public void setPassword(String password) {
+        Memento<Clinician> memento = new Memento<>();
+        memento.setOldObject(this.clone());
         this.password = password;
+        memento.setNewObject(this.clone());
+        undoStack.push(memento);
     }
 
     @Override
@@ -199,5 +230,48 @@ public class Clinician {
                 ", dateCreated=" + dateCreated +
                 ", dateLastModified=" + dateLastModified +
                 '}';
+    }
+
+    @Override
+    public void undo() {
+        if (undoStack.isEmpty()) {
+            return;
+        }
+        Memento<Clinician> memento = undoStack.pop();
+        this.changeInto(memento.getOldObject());
+        redoStack.push(memento);
+    }
+
+    @Override
+    public void redo() {
+
+    }
+
+    @Override
+    public Clinician clone() {
+        Clinician newClinician = new Clinician();
+        newClinician.staffId = this.staffId;
+        newClinician.password = this.password;
+        newClinician.firstName = this.firstName;
+        newClinician.middleName = this.middleName;
+        newClinician.lastName = this.lastName;
+        newClinician.workAddress = this.workAddress;
+        newClinician.region = this.region;
+        newClinician.dateCreated = this.dateCreated;
+        newClinician.dateLastModified = this.dateLastModified;
+
+        return newClinician;
+    }
+
+    private void changeInto(Clinician clinician) {
+        this.staffId = clinician.staffId;
+        this.password = clinician.password;
+        this.firstName = clinician.firstName;
+        this.middleName = clinician.middleName;
+        this.lastName = clinician.lastName;
+        this.workAddress = clinician.workAddress;
+        this.region = clinician.region;
+        this.dateCreated = clinician.dateCreated;
+        this.dateLastModified = clinician.dateLastModified;
     }
 }

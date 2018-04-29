@@ -1,5 +1,8 @@
 package seng302.Controller;
 
+import java.io.IOException;
+import java.time.LocalDateTime;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -9,11 +12,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-import javafx.event.ActionEvent;
 import seng302.Model.Clinician;
-
-import java.io.IOException;
-import java.time.LocalDateTime;
 
 /**
  * Controller for updating clinicians
@@ -178,7 +177,6 @@ public class UpdateClinicianController {
         hideErrorMessages(); // clears the error messages
         boolean valid = true;
         String staffID = staffIDTextField.getText();
-        System.out.println("here");
 
         if (!staffID.isEmpty()) {
             Clinician foundClinician = controller.getClinician(staffID);
@@ -239,17 +237,31 @@ public class UpdateClinicianController {
         }
 
         if (valid && !newClinician) { // updates an existing clinician
-            System.out.println("valid");
             // updates the attributes
-            currentClinician.setStaffId(staffID);
-            currentClinician.setFirstName(fName);
-            currentClinician.setMiddleName(mName);
-            currentClinician.setLastName(lName);
-            currentClinician.setWorkAddress(address);
-            currentClinician.setRegion(region);
-            currentClinician.setPassword(password);
+            if (!staffID.equals(currentClinician.getStaffId())) {
+                currentClinician.setStaffId(staffID);
+            }
+            if (fName != null && !fName.equals(currentClinician.getFirstName())) {
+                currentClinician.setFirstName(fName);
+            }
+            if (mName != null && !mName.equals(currentClinician.getMiddleName())) {
+                currentClinician.setMiddleName(mName);
+            }
+            if (lName != null && !lName.equals(currentClinician.getLastName())) {
+                currentClinician.setLastName(lName);
+            }
+            if (address != null && !address.equals(currentClinician.getWorkAddress())) {
+                currentClinician.setWorkAddress(address);
+            }
+            if (region != null && !region.equals(currentClinician.getRegion())) {
+                currentClinician.setRegion(region);
+            }
+            if (!password.equals(currentClinician.getPassword())) {
+                currentClinician.setPassword(password);
+            }
 
             currentClinician.setDateLastModified(LocalDateTime.now()); // updates the modified date
+
             controller.updateClinicians(currentClinician); // saves the clinician
             stage.close(); // returns to the clinician overview window
 

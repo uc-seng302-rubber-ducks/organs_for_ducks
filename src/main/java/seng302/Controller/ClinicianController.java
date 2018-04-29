@@ -1,12 +1,10 @@
 package seng302.Controller;
 
-import java.lang.reflect.Array;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import javafx.beans.binding.Bindings;
-
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -18,24 +16,25 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.Pagination;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.StackPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-
-import java.io.IOException;
-import java.util.List;
-import java.util.logging.Filter;
-
-import seng302.Model.Donor;
+import seng302.Model.Clinician;
 import seng302.Model.Organs;
 import seng302.Model.User;
-import seng302.Model.Clinician;
 import seng302.Service.AttributeValidation;
 
 public class ClinicianController {
@@ -173,6 +172,7 @@ public class ClinicianController {
     } else {
       stage.setTitle("Clinician " + clinician.getFirstName() +" " + clinician.getLastName());
     }
+    undoButton.setDisable(clinician.getUndoStack().empty());
   }
 
   /**
@@ -354,7 +354,6 @@ public class ClinicianController {
       boolean regionMatch = AttributeValidation.checkRegionMatches(regionSearchTextField.getText(), user);
       boolean genderMatch = AttributeValidation.checkGenderMatches(genderComboBox.getValue().toString(), user);
 
-      System.out.println(user);
       if (((user.getFirstName().toLowerCase()).startsWith(lowerCaseFilterText) ||
               (user.getLastName().toLowerCase().startsWith(lowerCaseFilterText))) &&
               (regionMatch) && (genderMatch) &&
@@ -371,8 +370,10 @@ public class ClinicianController {
   }
 
   @FXML
-  void undo(ActionEvent event) {
-
+  private void undo(ActionEvent event) {
+    clinician.undo();
+    undoButton.setDisable(clinician.getUndoStack().empty());
+    showClinician();
   }
 
   /**
@@ -429,25 +430,5 @@ public class ClinicianController {
     filterVisible = !filterVisible;
     expandButton.setText(filterVisible ? "▲" : "▼");
   }
-//
-//  @FXML
-//  void goToNextPage() {
-//    if(currentIndex + ROWS_PER_PAGE >= users.size()) {
-//      initSearchTable(currentIndex);
-//    } else {
-//      initSearchTable(currentIndex + ROWS_PER_PAGE);
-//      currentIndex += ROWS_PER_PAGE;
-//    }
-//  }
-//
-//  @FXML
-//  void goToPrevPage() {
-//    if(currentIndex - ROWS_PER_PAGE < 0) {
-//      initSearchTable(0);
-//    } else {
-//      initSearchTable(currentIndex - ROWS_PER_PAGE);
-//      currentIndex -= ROWS_PER_PAGE;
-//    }
-//
-//  }
+
 }

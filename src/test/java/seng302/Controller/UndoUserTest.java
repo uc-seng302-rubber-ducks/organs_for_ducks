@@ -15,7 +15,7 @@ import seng302.Model.User;
 /**
  * These tests are done on Users but are more focused on testing the undo stacks/memento system
  */
-public class UndoTest {
+public class UndoUserTest {
 
   private User testUser;
 
