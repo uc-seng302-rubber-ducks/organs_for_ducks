@@ -239,24 +239,24 @@ public class UpdateUserController {
     @FXML
     public boolean getContactDetails() {
       boolean changed = false;
-      if (!phoneInput.getText().equals(currentUser.getHomePhone())) {
+      if ((!phoneInput.getText().isEmpty() && currentUser.getHomePhone() == null) && !phoneInput.getText().equals(currentUser.getHomePhone())) {
           currentUser.setHomePhone(phoneInput.getText());
         changed = true;
         }
-      if (!cellInput.getText().equals(currentUser.getCellPhone())) {
+      if ((!cellInput.getText().isEmpty() && currentUser.getCellPhone() == null) && !cellInput.getText().equals(currentUser.getCellPhone())) {
           currentUser.setCellPhone(cellInput.getText());
-        changed = true;
+          changed = true;
         }
-      if (!addressInput.getText().equals(currentUser.getCurrentAddress())) {
+      if ((!addressInput.getText().isEmpty() && currentUser.getCurrentAddress() == null) && !addressInput.getText().equals(currentUser.getCurrentAddress())) {
             String address = addressInput.getText();
             currentUser.setCurrentAddress(address);
         changed = true;
         }
-      if (!regionInput.getText().equals(currentUser.getRegion())) {
+      if ((!regionInput.getText().isEmpty() && currentUser.getRegion() == null) && !regionInput.getText().equals(currentUser.getRegion())) {
           currentUser.setRegion(regionInput.getText());
         changed = true;
         }
-      if (!emailInput.getText().equals(currentUser.getEmail())) {
+      if ((!emailInput.getText().isEmpty() && currentUser.getEmail() == null) && !emailInput.getText().equals(currentUser.getEmail())) {
           currentUser.setEmail(emailInput.getText());
         changed = true;
         }

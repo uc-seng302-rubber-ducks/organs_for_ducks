@@ -518,37 +518,55 @@ public class DonorController {
       eCellPhone.setText(contact.getCellPhoneNumber());
       if (contact.getAddress() != null) {
         eAddress.setText(contact.getAddress());
+      } else {
+        eAddress.setText("");
       }
       if (contact.getEmail() != null) {
         eEmail.setText(contact.getEmail());
 
+      } else {
+        eEmail.setText("");
       }
       if (contact.getHomePhoneNumber() != null) {
         eHomePhone.setText(contact.getHomePhoneNumber());
-
+      } else {
+        eHomePhone.setText("");
       }
       if (contact.getRegion() != null) {
         eRegion.setText(contact.getRegion());
-
+      } else {
+        eRegion.setText("");
       }
       if (contact.getRelationship() != null) {
         relationship.setText(contact.getRelationship());
+      } else {
+        relationship.setText("");
       }
     }
     if (currentUser.getCurrentAddress() != null) {
       pAddress.setText(currentUser.getCurrentAddress());
+    } else {
+      pAddress.setText("");
     }
     if (currentUser.getRegion() != null) {
       pRegion.setText(currentUser.getRegion());
+    } else {
+      pRegion.setText("");
     }
     if (currentUser.getEmail() != null) {
       pEmail.setText(currentUser.getEmail());
+    } else {
+      pEmail.setText("");
     }
     if (currentUser.getHomePhone() != null) {
       pHomePhone.setText(currentUser.getHomePhone());
+    } else {
+      pHomePhone.setText("");
     }
     if (currentUser.getCellPhone() != null) {
       pCellPhone.setText(currentUser.getCellPhone());
+    } else {
+      pCellPhone.setText("");
     }
 
 
