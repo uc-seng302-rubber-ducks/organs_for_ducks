@@ -100,6 +100,9 @@ public class ClinicianController {
   @FXML
   private Button expandButton;
 
+  @FXML
+  private Button redoButton;
+
   private Stage stage;
   private AppController appController;
   private Clinician clinician;
@@ -173,6 +176,7 @@ public class ClinicianController {
       stage.setTitle("Clinician " + clinician.getFirstName() +" " + clinician.getLastName());
     }
     undoButton.setDisable(clinician.getUndoStack().empty());
+    redoButton.setDisable(clinician.getRedoStack().empty());
   }
 
   /**
@@ -373,6 +377,13 @@ public class ClinicianController {
   private void undo(ActionEvent event) {
     clinician.undo();
     undoButton.setDisable(clinician.getUndoStack().empty());
+    showClinician();
+  }
+
+  @FXML
+  public void redo(ActionEvent event) {
+    clinician.redo();
+    redoButton.setDisable(clinician.getRedoStack().empty());
     showClinician();
   }
 

@@ -244,7 +244,12 @@ public class Clinician extends Undoable<Clinician> {
 
     @Override
     public void redo() {
-
+        if (redoStack.isEmpty()) {
+            return;
+        }
+        Memento<Clinician> memento = redoStack.pop();
+        this.changeInto(memento.getNewObject());
+        undoStack.push(memento);
     }
 
     @Override
@@ -263,6 +268,11 @@ public class Clinician extends Undoable<Clinician> {
         return newClinician;
     }
 
+    /**
+     * changes the attributes of the clinician into that of another clinician
+     *
+     * @param clinician Clinician object to turn into
+     */
     private void changeInto(Clinician clinician) {
         this.staffId = clinician.staffId;
         this.password = clinician.password;
