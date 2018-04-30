@@ -547,37 +547,58 @@ public class DonorController {
             eCellPhone.setText(contact.getCellPhoneNumber());
             if (contact.getAddress() != null) {
                 eAddress.setText(contact.getAddress());
+            } else {
+                eAddress.setText("");
             }
+
             if (contact.getEmail() != null) {
                 eEmail.setText(contact.getEmail());
-
+            } else {
+                eEmail.setText("");
             }
+
             if (contact.getHomePhoneNumber() != null) {
                 eHomePhone.setText(contact.getHomePhoneNumber());
-
+            } else {
+                eHomePhone.setText("");
             }
+
             if (contact.getRegion() != null) {
                 eRegion.setText(contact.getRegion());
-
+            } else {
+                eRegion.setText("");
             }
+
             if (contact.getRelationship() != null) {
                 relationship.setText(contact.getRelationship());
+            } else {
+                relationship.setText("");
             }
         }
         if (currentUser.getCurrentAddress() != null) {
             pAddress.setText(currentUser.getCurrentAddress());
+        } else {
+            pAddress.setText("");
         }
         if (currentUser.getRegion() != null) {
             pRegion.setText(currentUser.getRegion());
+        } else {
+            pRegion.setText("");
         }
         if (currentUser.getEmail() != null) {
             pEmail.setText(currentUser.getEmail());
+        } else {
+            pEmail.setText("");
         }
         if (currentUser.getHomePhone() != null) {
             pHomePhone.setText(currentUser.getHomePhone());
+        } else {
+            pHomePhone.setText("");
         }
         if (currentUser.getCellPhone() != null) {
             pCellPhone.setText(currentUser.getCellPhone());
+        } else {
+            pCellPhone.setText("");
         }
 
 
@@ -824,19 +845,29 @@ public class DonorController {
         DOBValue.setText(currentUser.getDateOfBirth().toString());
         if (currentUser.getMiddleName() != null) {
             mNameValue.setText(currentUser.getMiddleName());
+        } else {
+            mNameValue.setText("");
         }
-        if (currentUser.getPrefFirstName() != null) {
-            pNameValue.setText(currentUser.getPrefFirstName());
-        }
+        //if (currentUser.getPrefFirstName() != null) {
+        pNameValue.setText(currentUser.getPrefFirstName());
+//        } else {
+//            pNameValue.setText("");
+//        }
         if (currentUser.getLastName() != null) {
             lNameValue.setText(currentUser.getLastName());
+        } else {
+            lNameValue.setText("");
         }
 
         if (currentUser.getGenderIdentity() != null) {
             genderIdentityValue.setText(currentUser.getGenderIdentity());
+        } else {
+            genderIdentityValue.setText("");
         }
         if (currentUser.getBirthGender() != null) {
             birthGenderValue.setText(currentUser.getBirthGender());
+        } else {
+            birthGenderValue.setText("");
         }
 
         ageValue.setText(user.getStringAge().toString().replace("P", "").replace("Y", "") + " Years");
@@ -844,6 +875,8 @@ public class DonorController {
             DODValue.setText(currentUser.getDateOfDeath().toString());
             ageDeathValue.setText(Long.toString(
                     ChronoUnit.YEARS.between(currentUser.getDateOfBirth(), currentUser.getDateOfDeath())) + " Years");
+        } else {
+            DODValue.setText("");
         }
         if (currentUser.getBloodType() != null) {
             bloodTypeValue.setText(currentUser.getBloodType());
@@ -853,16 +886,20 @@ public class DonorController {
         } else {
             smokerValue.setText("No");
         }
-        String weight;
-        if (currentUser.getWeight() > 0) {
-            weight = java.lang.Double.toString(currentUser.getWeight());
-            weightValue.setText(weight);
-        }
-        String height;
-        if (currentUser.getHeight() > 0) {
-            height = java.lang.Double.toString(currentUser.getHeight());
-            heightValue.setText(height);
-        }
+        //String weight;
+        weightValue.setText(Double.toString(currentUser.getWeight()));
+//        if (currentUser.getWeight() > 0) {
+//            weight = java.lang.Double.toString(currentUser.getWeight());
+//            weightValue.setText(weight);
+//        } else {
+//            weightValue.setText(0.0);
+//        }
+//        String height;
+//        if (currentUser.getHeight() > 0) {
+//            height = java.lang.Double.toString(currentUser.getHeight());
+//            heightValue.setText(height);
+//        }
+        heightValue.setText(Double.toString(currentUser.getHeight()));
         if (currentUser.getHeight() > 0 && currentUser.getWeight() > 0) {
             //TODO fix BMI kg/m^
             DecimalFormat df = new DecimalFormat("#.00");

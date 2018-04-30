@@ -712,8 +712,13 @@ public class UpdateUserController {
             currentUser.setFirstName(fName);
         }
 
-        if (!currentUser.getPrefFirstName().equals(preferredFNameTextField.getText())) {
-            currentUser.setPreferredFirstName(preferredFNameTextField.getText());
+        String prefName = preferredFNameTextField.getText();
+        if (!currentUser.getPrefFirstName().equals(prefName)) {
+            if (prefName.isEmpty()) {
+                currentUser.setPreferredFirstName(fName);
+            } else {
+                currentUser.setPreferredFirstName(preferredFNameTextField.getText());
+            }
         }
 
         String mName = AttributeValidation.checkString(mNameInput.getText());
