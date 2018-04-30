@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -569,28 +570,28 @@ public class UpdateUserController {
   @FXML
   public boolean getContactDetails() {
     boolean changed = false;
-    if ((!phoneInput.getText().isEmpty() && currentUser.getHomePhone() == null) && !phoneInput
+    if (!(phoneInput.getText().isEmpty() && currentUser.getHomePhone() == null) && !phoneInput
         .getText().equals(currentUser.getHomePhone())) {
       currentUser.setHomePhone(phoneInput.getText());
       changed = true;
     }
-    if ((!cellInput.getText().isEmpty() && currentUser.getCellPhone() == null) && !cellInput
+    if (!(cellInput.getText().isEmpty() && currentUser.getCellPhone() == null) && !cellInput
         .getText().equals(currentUser.getCellPhone())) {
       currentUser.setCellPhone(cellInput.getText());
       changed = true;
     }
-    if ((!addressInput.getText().isEmpty() && currentUser.getCurrentAddress() == null)
+    if (!(addressInput.getText().isEmpty() && currentUser.getCurrentAddress() == null)
         && !addressInput.getText().equals(currentUser.getCurrentAddress())) {
       String address = addressInput.getText();
       currentUser.setCurrentAddress(address);
       changed = true;
     }
-    if ((!regionInput.getText().isEmpty() && currentUser.getRegion() == null) && !regionInput
+    if (!(regionInput.getText().isEmpty() && currentUser.getRegion() == null) && !regionInput
         .getText().equals(currentUser.getRegion())) {
       currentUser.setRegion(regionInput.getText());
       changed = true;
     }
-    if ((!emailInput.getText().isEmpty() && currentUser.getEmail() == null) && !emailInput.getText()
+    if (!(emailInput.getText().isEmpty() && currentUser.getEmail() == null) && !emailInput.getText()
         .equals(currentUser.getEmail())) {
       currentUser.setEmail(emailInput.getText());
       changed = true;
@@ -820,11 +821,10 @@ public class UpdateUserController {
   private void updateModel() {
     System.out.println("updateModel fired");
     boolean changed = false;
-    changed = changed || getPersonalDetails();
-    changed = changed || getHealthDetails();
-    changed = changed || getContactDetails();
-    changed = changed || getEmergencyContact();
-    System.out.println("changes made, updating currentUser");
+    changed = getPersonalDetails();
+    changed |= getHealthDetails();
+    changed |= getContactDetails();
+    changed |= getEmergencyContact();
     appController.update(currentUser);
     setUserDetails(currentUser);
     undoButton.setDisable(currentUser.getUndoStack().isEmpty());
