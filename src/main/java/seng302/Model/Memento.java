@@ -23,7 +23,7 @@ public class Memento<T> {
 
   @Override
   public String toString() {
-    return super.toString();
+    return "\nNEW OBJECT\n" + newObject.toString() + "\nOLD OBJECT\n" + oldObject.toString();
   }
 
   @Override

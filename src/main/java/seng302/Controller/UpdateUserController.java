@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -21,6 +22,7 @@ import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import seng302.Model.EmergencyContact;
+import seng302.Model.Memento;
 import seng302.Model.User;
 import seng302.Service.AttributeValidation;
 
@@ -139,28 +141,28 @@ public class UpdateUserController {
   private AppController appController;
   private User currentUser;
   private User oldUser;
+  private int undoMarker; //int used to hold the top of the stack before opening this window
 
 
-    /**
-
-     * @param user The current user.
-     * @param controller An instance of the AppController class.
-     * @param stage The applications stage.
-     */
-    public void init(User user, AppController controller, Stage stage){
-        this.stage = stage;
-        currentUser = user;
-        this.appController = controller;
-        setUserDetails(currentUser);
-        undoButton.setDisable(true);
-        redoButton.setDisable(true);
-        errorLabel.setText("");
-        if (user.getLastName() != null) {
-          stage.setTitle("Update User: " + user.getFirstName() +" " + user.getLastName());
-        } else {
-          stage.setTitle("Update User: " + user.getFirstName());
-        }
-        //UndoRedoStacks.cloneUser(currentUser,oldUser);
+  /**
+   * @param user The current user.
+   * @param controller An instance of the AppController class.
+   * @param stage The applications stage.
+   */
+  public void init(User user, AppController controller, Stage stage) {
+    this.stage = stage;
+    currentUser = user;
+    this.appController = controller;
+    setUserDetails(currentUser);
+    undoButton.setDisable(true);
+    redoButton.setDisable(true);
+    errorLabel.setText("");
+    undoMarker = currentUser.getUndoStack().size();if (user.getLastName() != null) {
+      stage.setTitle("Update User: " + user.getFirstName() + " " + user.getLastName());
+    } else {
+      stage.setTitle("Update User: " + user.getFirstName());
+    }
+    //UndoRedoStacks.cloneUser(currentUser,oldUser);
 
     Scene scene = stage.getScene();
 
@@ -209,6 +211,7 @@ public class UpdateUserController {
       } else {
         stage.setTitle("Update User: " + currentUser.getFirstName() + " *");
       }
+      updateModel();
     });
   }
 
@@ -224,6 +227,7 @@ public class UpdateUserController {
       } else {
         stage.setTitle("Update User: " + currentUser.getFirstName() + " *");
       }
+      updateModel();
     });
 
   }
@@ -243,6 +247,7 @@ public class UpdateUserController {
     } else {
       stage.setTitle("Update User: " + currentUser.getFirstName() + " *");
     }
+    updateModel();
   }
 
   /**
@@ -253,6 +258,7 @@ public class UpdateUserController {
   private void textFieldListener(TextField field) {
     field.textProperty().addListener((observable, oldValue, newValue) -> {
       stage.setTitle("Update User: " + currentUser.getFirstName() + " *");
+      updateModel();
     });
   }
 
@@ -479,9 +485,11 @@ public class UpdateUserController {
     if (user.getLastName() != null) {
       lNameInput.setText(user.getLastName());
     }
+
     if (user.getMiddleName() != null) {
       mNameInput.setText(user.getMiddleName());
     }
+
     if (user.getPreferredFirstName() != null) {
       preferredFNameTextField.setText(user.getPreferredFirstName());
     } else {
@@ -510,30 +518,33 @@ public class UpdateUserController {
       emailInput.setText(user.getEmail());
     }
     //ec
-    if (user.getContact().getName() != null) {
-      ecNameInput.setText(user.getContact().getName());
-    }
-    if (user.getContact().getRelationship() != null) {
-      ecRelationshipInput.setText(user.getContact().getRelationship());
-    }
-    if (user.getContact().getRegion() != null) {
-      ecRegionInput.setText(user.getContact().getRegion());
-    }
-    if (user.getContact().getHomePhoneNumber() != null) {
-      ecPhoneInput.setText(user.getContact().getHomePhoneNumber());
-    }
-    if (user.getContact().getEmail() != null) {
-      ecEmailInput.setText(user.getContact().getEmail());
-    }
-    if (user.getContact().getAddress() != null) {
-      ecAddressInput.setText(user.getContact().getAddress());
+    if (user.getContact() != null) {
+      if (user.getContact().getName() != null) {
+        ecNameInput.setText(user.getContact().getName());
+      }
+      if (user.getContact().getRelationship() != null) {
+        ecRelationshipInput.setText(user.getContact().getRelationship());
+      }
+      if (user.getContact().getRegion() != null) {
+        ecRegionInput.setText(user.getContact().getRegion());
+      }
+      if (user.getContact().getHomePhoneNumber() != null) {
+        ecPhoneInput.setText(user.getContact().getHomePhoneNumber());
+      }
+      if (user.getContact().getEmail() != null) {
+        ecEmailInput.setText(user.getContact().getEmail());
+      }
+      if (user.getContact().getAddress() != null) {
+        ecAddressInput.setText(user.getContact().getAddress());
 
-    }
-    if (user.getContact().getCellPhoneNumber() != null) {
-      ecCellInput.setText(user.getContact().getCellPhoneNumber());
+      }
+      if (user.getContact().getCellPhoneNumber() != null) {
+        ecCellInput.setText(user.getContact().getCellPhoneNumber());
+      }
     }
     //h
-    alcoholComboBox.setValue(user.getAlcoholConsumption());
+    alcoholComboBox
+        .setValue(user.getAlcoholConsumption() == null ? "None" : user.getAlcoholConsumption());
     if (user.isSmoker()) {
       smokerCheckBox.setSelected(true);
     }
@@ -558,28 +569,28 @@ public class UpdateUserController {
   @FXML
   public boolean getContactDetails() {
     boolean changed = false;
-    if ((!phoneInput.getText().isEmpty() && currentUser.getHomePhone() == null) && !phoneInput
+    if (!(phoneInput.getText().isEmpty() && currentUser.getHomePhone() == null) && !phoneInput
         .getText().equals(currentUser.getHomePhone())) {
       currentUser.setHomePhone(phoneInput.getText());
       changed = true;
     }
-    if ((!cellInput.getText().isEmpty() && currentUser.getCellPhone() == null) && !cellInput
+    if (!(cellInput.getText().isEmpty() && currentUser.getCellPhone() == null) && !cellInput
         .getText().equals(currentUser.getCellPhone())) {
       currentUser.setCellPhone(cellInput.getText());
       changed = true;
     }
-    if ((!addressInput.getText().isEmpty() && currentUser.getCurrentAddress() == null)
+    if (!(addressInput.getText().isEmpty() && currentUser.getCurrentAddress() == null)
         && !addressInput.getText().equals(currentUser.getCurrentAddress())) {
       String address = addressInput.getText();
       currentUser.setCurrentAddress(address);
       changed = true;
     }
-    if ((!regionInput.getText().isEmpty() && currentUser.getRegion() == null) && !regionInput
+    if (!(regionInput.getText().isEmpty() && currentUser.getRegion() == null) && !regionInput
         .getText().equals(currentUser.getRegion())) {
       currentUser.setRegion(regionInput.getText());
       changed = true;
     }
-    if ((!emailInput.getText().isEmpty() && currentUser.getEmail() == null) && !emailInput.getText()
+    if (!(emailInput.getText().isEmpty() && currentUser.getEmail() == null) && !emailInput.getText()
         .equals(currentUser.getEmail())) {
       currentUser.setEmail(emailInput.getText());
       changed = true;
@@ -715,8 +726,6 @@ public class UpdateUserController {
 
     if (!lNameInput.getText().equals(currentUser.getLastName())) {
       currentUser.setLastName(lNameInput.getText());
-    } else {
-      currentUser.setLastName("");
       changed = true;
     }
 
@@ -734,8 +743,6 @@ public class UpdateUserController {
         .getText().equals(currentUser.getMiddleName())) {
       currentUser.setMiddleName(mNameInput.getText());
       changed = true;
-    } else {
-      currentUser.setMiddleName("");
     }
 
     if (dobInput.getValue() != null && !dobInput.getValue().equals(currentUser.getDateOfBirth())) {
@@ -749,7 +756,6 @@ public class UpdateUserController {
       changed = true;
     }
     if (!preferredFNameTextField.getText().isEmpty()) {
-      System.out.println(preferredFNameTextField.getText());
       if (!preferredFNameTextField.getText().equals(currentUser.getPreferredFirstName())
           || !preferredFNameTextField.getText().equals(currentUser.getFirstName())) {
         currentUser.setPreferredFirstName(preferredFNameTextField.getText());
@@ -771,16 +777,30 @@ public class UpdateUserController {
     boolean changed = false;
     //TODO save changes and go back to overview screen
     changed = getPersonalDetails();
-    changed |= getHealthDetails();
-    changed |= getContactDetails();
-    changed |= getEmergencyContact();
+    changed = changed || getHealthDetails();
+    changed = changed || getContactDetails();
+    changed = changed ||getEmergencyContact();
     //TODO change to be different
 
     appController.update(currentUser);
+
+
+      Memento<User> sumChanges = new Memento<>();
+      System.out.println(undoMarker);
+      System.out.println(currentUser.getUndoStack().size());
+      while (currentUser.getUndoStack().size() > undoMarker + 1) {
+          System.out.println(currentUser.getUndoStack().size());
+          currentUser.getUndoStack().pop();
+      }
+      sumChanges.setOldObject(currentUser.getUndoStack().peek().getOldObject());
+      sumChanges.setNewObject(currentUser);
+      currentUser.getUndoStack().push(sumChanges);
+      System.out.println(sumChanges);
     //ArrayList<Change> diffs = appController.differanceInDonors(oldUser, currentUser);
     //changelog.addAll(diffs);
     if (changed) {
       currentUser.getRedoStack().clear(); // clear the redo stack if anything is changed.
+
     }
     AppController appController = AppController.getInstance();
     DonorController donorController = appController.getDonorController();
@@ -805,6 +825,23 @@ public class UpdateUserController {
     currentUser.redo();
     redoButton.setDisable(currentUser.getRedoStack().isEmpty());
     setUserDetails(currentUser);
+  }
+
+  /**
+   * take changes from the gui and put them onto the user model
+   */
+  private void updateModel() {
+    System.out.println("updateModel fired");
+    boolean changed = false;
+    changed = getPersonalDetails();
+    changed |= getHealthDetails();
+    changed |= getContactDetails();
+    changed |= getEmergencyContact();
+    if (changed) {
+        appController.update(currentUser);
+        setUserDetails(currentUser);
+    }
+    undoButton.setDisable(currentUser.getUndoStack().isEmpty());
   }
 
   /**
