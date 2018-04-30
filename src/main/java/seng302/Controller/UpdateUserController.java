@@ -21,6 +21,7 @@ import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import seng302.Model.EmergencyContact;
+import seng302.Model.Memento;
 import seng302.Model.User;
 import seng302.Service.AttributeValidation;
 
@@ -139,6 +140,7 @@ public class UpdateUserController {
   private AppController appController;
   private User currentUser;
   private User oldUser;
+  private int undoMarker; //int used to hold the top of the stack before opening this window
 
 
   /**
@@ -151,8 +153,10 @@ public class UpdateUserController {
     currentUser = user;
     this.appController = controller;
     setUserDetails(currentUser);
-    //undoButton.setDisable(true);
+    undoButton.setDisable(true);
     redoButton.setDisable(true);
+    undoMarker = currentUser.getUndoStack().size();
+
     if (user.getLastName() != null) {
       stage.setTitle("Update User: " + user.getFirstName() + " " + user.getLastName());
     } else {
@@ -767,10 +771,23 @@ public class UpdateUserController {
     //TODO change to be different
 
     appController.update(currentUser);
+
     //ArrayList<Change> diffs = appController.differanceInDonors(oldUser, currentUser);
     //changelog.addAll(diffs);
     if (changed) {
       currentUser.getRedoStack().clear(); // clear the redo stack if anything is changed.
+
+      Memento<User> sumChanges = new Memento<>();
+      System.out.println(undoMarker);
+      System.out.println(currentUser.getUndoStack().size());
+      while (currentUser.getUndoStack().size() > undoMarker + 1) {
+        System.out.println(currentUser.getUndoStack().size());
+        currentUser.getUndoStack().pop();
+      }
+      sumChanges.setOldObject(currentUser.getUndoStack().peek().getOldObject());
+      sumChanges.setNewObject(currentUser);
+      currentUser.getUndoStack().push(sumChanges);
+      System.out.println(sumChanges);
     }
     AppController appController = AppController.getInstance();
     DonorController donorController = appController.getDonorController();
