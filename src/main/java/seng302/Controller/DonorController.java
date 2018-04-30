@@ -259,6 +259,7 @@ public class DonorController {
     private EmergencyContact contact = null;
     private ObservableList<Change> changelog;
     private OkHttpClient client = new OkHttpClient();
+    private Boolean Clinician;
 
     /**
      * Gives the donor view the application controller and hides all label and buttons that are not
@@ -270,10 +271,13 @@ public class DonorController {
     application = controller;
     //ageValue.setText("");
     if (fromClinician) {
+      Clinician = true;
       logOutButton.setVisible(false);
     addDiseaseButton.setVisible(true);
       updateDiseaseButton.setVisible(true);
-      deleteDiseaseButton.setVisible(true);}else {
+      deleteDiseaseButton.setVisible(true);
+    } else {
+      Clinician = false;
             procedureDateSelector.setEditable(false);
             procedureTextField.setEditable(false);
             descriptionTextArea.setEditable(false);
@@ -501,6 +505,7 @@ public class DonorController {
 
     if (result.get() == ButtonType.OK) {
       application.deleteDonor(currentUser);
+      if (!Clinician){
       FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML/loginView.fxml"));
       Parent root = null;
       try {
@@ -515,7 +520,9 @@ public class DonorController {
       stage.setWidth(600);
       stage.setHeight(420);
       stage.show();
-
+      } else {
+        stage.close();
+      }
     }
   }
 

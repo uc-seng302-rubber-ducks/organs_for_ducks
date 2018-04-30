@@ -1,5 +1,7 @@
 package seng302.Controller;
 
+
+
 import static org.testfx.api.FxAssert.verifyThat;
 
 import java.time.LocalDate;
@@ -20,18 +22,39 @@ public class DeleteClinicianUserGUITest extends ApplicationTest{
     FxToolkit.setupApplication(App.class);
     AppController.getInstance().getUsers().clear();
     AppController.getInstance().getUsers().add(new User("A", LocalDate.now(), "ABC1234"));
+    AppController.getInstance().getUsers().add(new User("Aa", LocalDate.now(), "ABC1244"));
     clickOn("#changeLogin");
     clickOn("#userIDTextField");
     write("0");
     clickOn("#passwordField");
     write("admin");
     clickOn("#loginButton");
+    clickOn("#searchTab");
+    doubleClickOn(TableViewsMethod.getCell("#searchTableView", 0, 0));
   }
 
   @After
   public void tearDown() throws TimeoutException {
     AppController.getInstance().getUsers().clear();
     FxToolkit.cleanupStages();
+  }
+
+  @Test
+  public void deleteUser(){
+    clickOn("#deleteUser");
+    clickOn("OK");
+    verifyThat("#fNameLabel", LabeledMatchers.hasText("Default"));
+
+  }
+
+  @Test
+  public void canceledDeleteUser(){
+    clickOn("#deleteUser");
+    clickOn("Cancel");
+    //clickOn("exit");
+    // a back button may be added
+    verifyThat("#fNameLabel", LabeledMatchers.hasText("Default"));
+
   }
 
 }

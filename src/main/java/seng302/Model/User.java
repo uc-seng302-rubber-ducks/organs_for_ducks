@@ -150,7 +150,9 @@ public class User {
 
   public User(String name, java.time.LocalDate dateOfBirth, String nhi) {
     this.dateOfBirth = dateOfBirth;
-    this.name = name;    this.donorDetails = new DonorDetails(this);
+    this.name = name;
+    this.donorDetails = new DonorDetails(this);
+    this.firstName = name;
     this.receiverDetails = new ReceiverDetails(this);
     this.nhi = nhi;
     timeCreated = LocalDateTime.now();
