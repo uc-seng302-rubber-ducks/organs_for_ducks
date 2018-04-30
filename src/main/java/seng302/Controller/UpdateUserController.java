@@ -11,7 +11,7 @@ import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import java.io.IOException;
-import java.time.format.DateTimeFormatter;
+import java.time.LocalDate;
 import java.util.Optional;
 
 import seng302.Model.EmergencyContact;
@@ -152,9 +152,8 @@ public class UpdateUserController {
 
         Scene scene = stage.getScene();
 
-        TextField[] allTextFields = {nhiInput, fNameInput, preferredFNameTextField, mNameInput, lNameInput,
-                heightInput, weightInput,
-        phoneInput, cellInput, addressInput, regionInput, emailInput,
+        final TextField[] allTextFields = {nhiInput, fNameInput, preferredFNameTextField, mNameInput, lNameInput,
+                heightInput, weightInput, phoneInput, cellInput, addressInput, regionInput, emailInput,
         ecNameInput, ecPhoneInput, ecCellInput, ecAddressInput, ecRegionInput, ecEmailInput, ecRelationshipInput};
 
         // creates a listener for each text field
@@ -342,6 +341,7 @@ public class UpdateUserController {
             noChange = false;
         }
         if (!(currentUser.isSmoker() == smokerCheckBox.isSelected())) noChange = false;
+
         // contact details
         if (currentUser.getHomePhone() != null) {
             if (!(currentUser.getHomePhone()).equals(phoneInput.getText())) {
@@ -445,8 +445,8 @@ public class UpdateUserController {
         return noChange;
     }
 
-    @FXML
-    public void setUserDetails(User user) {
+
+    private void setUserDetails(User user) {
       //personal
       fNameInput.setText(user.getFirstName());
       nhiInput.setText(user.getNhi());
@@ -527,7 +527,6 @@ public class UpdateUserController {
 
     }
 
-    @FXML
     public void getContactDetaisl() {
         if (phoneInput.getText() != null){
           currentUser.setHomePhone(phoneInput.getText());
@@ -558,7 +557,6 @@ public class UpdateUserController {
 
     }
 
-    @FXML
     public void getEmergencyContact() {
         if (!ecNameInput.getText().isEmpty()) {
           currentUser.getContact().setName(ecNameInput.getText());
@@ -599,7 +597,6 @@ public class UpdateUserController {
 
     }
 
-    @FXML
     public void getHealthDetails() {
         if (birthGenderComboBox.getValue() != null) {
             String birthGender = AttributeValidation.validateGender(birthGenderComboBox);
@@ -642,10 +639,7 @@ public class UpdateUserController {
     }
 
 
-    @FXML
     public void getPersonalDetails() {
-        //TODO check why dateofbirth fails
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         if (!fNameInput.getText().equals("")) {
           currentUser.setFirstName(fNameInput.getText());
         }
@@ -679,7 +673,6 @@ public class UpdateUserController {
         } else {
           currentUser.setPreferredFirstName(fNameInput.getText());
         }
-
 }
 
 
@@ -688,37 +681,173 @@ public class UpdateUserController {
 
 
     /**
+     * Activates when the user clicks the save changes button.
+     * Calls a method to check if all field are valid and then updates the changes.
+     * Also resets error labels.
      *
-     * @param actionEvent an action event.
-     * @throws IOException doesn't look like this even throws..
+     * @param actionEvent The user clicks on the save changes button.
+     * @throws IOException input/output exception.
      */
     @FXML
     public void confirmUpdate(ActionEvent actionEvent) throws IOException {
-        //TODO save changes and go back to overview screen
-        getPersonalDetails();
-        getHealthDetails();
-        getContactDetaisl();
-        getEmergencyContact();
-        //TODO change to be different
-      appController.update(currentUser);
-      //ArrayList<Change> diffs = appController.differanceInDonors(oldUser, currentUser);
-      //changelog.addAll(diffs);
-        AppController appController = AppController.getInstance();
-        DonorController donorController = appController.getDonorController();
-        try {
-            donorController.showUser(currentUser);
-        }
-        catch (NullPointerException ex) {
-            //TODO causes npe if donor is new in this session
-            //the text fields etc. are all null
-        }
-        stage.close();
-
-
-
-
+        hideErrorMessages();
+        errorLabel.setText("Please make sure your details are correct.");
+        validateFields();
+//        getPersonalDetails();
+//        getHealthDetails();
+//        getContactDetaisl();
+//        getEmergencyContact();
 
     }
+
+    /**
+     * Checks if all fields that require validation are valid.
+     * Sets error messages visible if fields are invalid.
+     * Calls methods to update the changes if all fields are valid.
+     */
+    private void validateFields() {
+        boolean valid = true;
+        String nhi = AttributeValidation.validateNHI(nhiInput.getText());
+        LocalDate dob = dobInput.getValue();
+        LocalDate dod = dodInput.getValue();
+
+        if (nhi == null) {
+            invalidNHI.setVisible(true);
+            valid = false;
+        } else {
+            User user = appController.findUser(nhi);
+            if (user != null && !user.getNhi().equals(nhi)) { // if a user was found, but it is not the current user
+                existingNHI.setVisible(true);
+                valid = false;
+            }
+        }
+
+        String fName = fNameInput.getText();
+        if (fName.isEmpty()) {
+            invalidFirstName.setVisible(true);
+            valid = false;
+        }
+
+        if (dob == null) {
+            invalidDOB.setVisible(true);
+            valid = false;
+        } else if (!dob.isBefore(LocalDate.now().plusDays(1))) { // checks that the date of birth is before tomorrow's date
+            invalidDOB.setVisible(true);
+            valid = false;
+        }
+
+        if (dod != null) {
+            boolean datesValid = AttributeValidation.validateDates(dob, dod); // checks if the dod is before tomorrow's date and that the dob is before the dod
+            if (!datesValid) {
+                invalidDOD.setVisible(true);
+                valid = false;
+            }
+        }
+
+        double height = AttributeValidation.validateDouble(heightInput.getText());
+        double weight = AttributeValidation.validateDouble(weightInput.getText());
+        if (height == -1 || weight == -1) {
+            errorLabel.setVisible(true);
+            valid = false;
+        }
+
+        // validate contact info
+        String email = null;
+        if (!emailInput.getText().isEmpty()) {
+            email = AttributeValidation.validateEmail(emailInput.getText());
+
+            if (email == null) {
+                errorLabel.setVisible(true);
+                valid = false;
+            }
+        }
+
+        String homePhone = null;
+        if (!phoneInput.getText().isEmpty()) {
+            homePhone = AttributeValidation.validatePhoneNumber(phoneInput.getText());
+
+            if (homePhone == null) {
+                errorLabel.setVisible(true);
+                valid = false;
+            }
+        }
+
+        String cellPhone = null;
+        if (!cellInput.getText().isEmpty()) {
+            cellPhone = AttributeValidation.validateCellNumber(cellInput.getText());
+
+            if (cellPhone == null) {
+                errorLabel.setVisible(true);
+                valid = false;
+            }
+        }
+
+        // validate emergency contact info
+        String emergencyEmail = AttributeValidation.checkString(ecEmailInput.getText());
+        if (emergencyEmail != null) {
+            emergencyEmail = AttributeValidation.validateEmail(ecEmailInput.getText());
+
+            if (emergencyEmail == null) {
+                errorLabel.setVisible(true);
+                valid = false;
+            }
+        }
+
+        String emergencyPhone = AttributeValidation.checkString(ecPhoneInput.getText());
+        if (emergencyPhone != null) {
+            emergencyPhone = AttributeValidation.validatePhoneNumber(ecPhoneInput.getText());
+
+            if (emergencyPhone == null) {
+                errorLabel.setVisible(true);
+                valid = false;
+            }
+        }
+
+        String emergencyCell = AttributeValidation.checkString(ecCellInput.getText());
+        if (emergencyCell != null) {
+            emergencyCell = AttributeValidation.validateCellNumber(ecCellInput.getText());
+
+            if (emergencyCell == null) {
+                errorLabel.setVisible(true);
+                valid = false;
+            }
+        }
+
+        String eName = AttributeValidation.checkString(ecNameInput.getText());
+        String eAddress = AttributeValidation.checkString(ecAddressInput.getText());
+        String eRegion = AttributeValidation.checkString(ecRegionInput.getText());
+        String eRelationship = AttributeValidation.checkString(ecRelationshipInput.getText());
+
+        // the name and cell number are required if any other attributes are filled out
+        if ((eName == null || emergencyCell == null) && (emergencyPhone != null || eAddress != null || eRegion != null ||
+                emergencyEmail != null || eRelationship != null || eName != null || emergencyCell != null)) {
+            valid = false;
+            errorLabel.setText("Name and cell phone number are required for an emergency contact.");
+            errorLabel.setVisible(true);
+        }
+
+
+        if (valid) { // only updates if everything is valid
+            getPersonalDetails();
+            getHealthDetails();
+            getContactDetaisl();
+            getEmergencyContact();
+
+            appController.update(currentUser);
+            //ArrayList<Change> diffs = appController.differanceInDonors(oldUser, currentUser);
+            //changelog.addAll(diffs);
+            AppController appController = AppController.getInstance();
+            DonorController donorController = appController.getDonorController();
+            try {
+                donorController.showUser(currentUser);
+            } catch (NullPointerException ex) {
+                //TODO causes npe if donor is new in this session
+                //the text fields etc. are all null
+            }
+            stage.close();
+        }
+    }
+
 
     /**
      * Prompts the user with a warning alert if there are unsaved changes, otherwise cancels immediately.
@@ -776,5 +905,17 @@ public class UpdateUserController {
             //the text fields etc. are all null
         }
         stage.close();
+    }
+
+    /**
+     * Makes all the error messages no longer visible.
+     */
+    private void hideErrorMessages() {
+        existingNHI.setVisible(false);
+        invalidNHI.setVisible(false);
+        invalidDOB.setVisible(false);
+        invalidDOD.setVisible(false);
+        errorLabel.setVisible(false);
+        invalidFirstName.setVisible(false);
     }
 }

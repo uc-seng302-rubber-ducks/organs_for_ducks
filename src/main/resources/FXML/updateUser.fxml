@@ -82,6 +82,9 @@
                                   <String fx:value="Non Binary" />
                               </FXCollections>
                           </items>
+                          <value>
+                              <String fx:value="" />
+                          </value>
                       </ComboBox>
                       <ComboBox fx:id="bloodComboBox" prefHeight="25.0" prefWidth="151.0" GridPane.columnIndex="3">
                           <items>
@@ -128,6 +131,9 @@
                                   <String fx:value="Non Binary" />
                               </FXCollections>
                           </items>
+                          <value>
+                              <String fx:value="" />
+                          </value>
                       </ComboBox>
                   <CheckBox fx:id="smokerCheckBox" mnemonicParsing="false" onAction="#smokerClicked" text="Yes" GridPane.columnIndex="3" GridPane.rowIndex="2" />
                   </children>
