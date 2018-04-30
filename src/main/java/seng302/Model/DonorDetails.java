@@ -1,7 +1,6 @@
 package seng302.Model;
 
 import com.google.gson.annotations.Expose;
-import seng302.Exceptions.OrgansInconsistentException;
 
 import java.util.HashSet;
 
@@ -33,7 +32,7 @@ public class DonorDetails {
    * Adds an organ to the user profile.
    * @param organ the enum of organs.
    */
-  public void addOrgan(Organs organ) throws OrgansInconsistentException {
+  public void addOrgan(Organs organ) {
 //    if (attachedUser.getReceiverDetails().isCurrentlyWaitingFor(organ)) {
 //      throw new OrgansInconsistentException("Cannot donate an organ that is being received");
 //    }

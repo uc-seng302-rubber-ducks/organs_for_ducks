@@ -5,7 +5,6 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.stage.Stage;
-import seng302.Exceptions.OrgansInconsistentException;
 import seng302.Model.OrganDeregisterReason;
 import seng302.Model.Organs;
 import seng302.Model.User;
@@ -80,7 +79,7 @@ public class deregisterOrganReasonController {
      * @param event passed in automatically by the gui
      */
     @FXML
-    void acceptDeregistration(ActionEvent event) throws OrgansInconsistentException {
+    void acceptDeregistration(ActionEvent event) {
 
         if(registerationErrorRadioButton.isSelected()){
             donorController.setOrganDeregisterationReason(OrganDeregisterReason.REGISTRATION_ERROR);

@@ -12,7 +12,6 @@ import java.util.HashSet;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import seng302.Exceptions.OrgansInconsistentException;
 import seng302.Model.Organs;
 import seng302.Model.User;
 
@@ -167,36 +166,4 @@ public class UserTest {
     Assert.assertEquals(name + ". Donor: Heart ", tooltip);
   }
 
-
-  @Test
-  public void UserCannotDonateOrganBeingReceived() {
-    try {
-      testUser.getReceiverDetails().startWaitingForOrgan(Organs.LUNG);
-    } catch (OrgansInconsistentException ex) {
-      fail("error in setup");
-    }
-
-    try {
-      testUser.getDonorDetails().addOrgan(Organs.LUNG);
-      fail("no exception thrown");
-    } catch (OrgansInconsistentException ex) {
-      //do nothing
-    }
-  }
-
-  @Test
-  public void UserCannotReceiveOrganBeingDonated() {
-    try {
-      testUser.getDonorDetails().addOrgan(Organs.KIDNEY);
-    } catch (OrgansInconsistentException ex) {
-      fail("error in setup");
-    }
-
-    try {
-      testUser.getReceiverDetails().startWaitingForOrgan(Organs.KIDNEY);
-      fail("no exception thrown");
-    } catch (OrgansInconsistentException ex) {
-      //do nothing
-    }
-  }
 }

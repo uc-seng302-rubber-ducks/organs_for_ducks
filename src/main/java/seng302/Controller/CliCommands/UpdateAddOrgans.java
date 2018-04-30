@@ -7,7 +7,6 @@ import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
 import seng302.Controller.AppController;
 import seng302.Model.JsonHandler;
-import seng302.Exceptions.OrgansInconsistentException;
 import seng302.Model.Organs;
 import seng302.Model.User;
 import seng302.View.IoHelper;
@@ -42,11 +41,7 @@ public class UpdateAddOrgans implements Runnable {
       for (String item : organs) {
         try {
           Organs org = Organs.valueOf(item.toUpperCase());
-          try {
             user.getDonorDetails().addOrgan(org);
-          } catch (OrgansInconsistentException ex) {
-            System.err.println(ex.getMessage());
-          }
         }
         catch (IllegalArgumentException ex) {
           System.err.println("Could not parse organ:" + item);

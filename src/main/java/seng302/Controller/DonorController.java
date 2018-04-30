@@ -20,7 +20,6 @@ import javafx.stage.Stage;
 import javafx.util.StringConverter;
 import okhttp3.OkHttpClient;
 import org.controlsfx.control.textfield.TextFields;
-import seng302.Exceptions.OrgansInconsistentException;
 import seng302.Model.*;
 
 import java.io.IOException;
@@ -928,6 +927,13 @@ public class DonorController {
             previousMedicationListView.setItems(previousMeds);
         }
         organsDonatingListView.getItems().addAll(currentUser.getDonorDetails().getOrgans());
+        if (!currentUser.getOrganIntersection().intersectionIsEmpty()) {
+            for (Organs organ: currentUser.getOrganIntersection().getIntersection()) {
+                int index = organsDonatingListView.getItems().indexOf(organ);
+                organsDonatingListView.getSelectionModel().select(index);
+                //TODO change the colour of the font when selected to make it more readable
+            }
+        }
         setContactPage();
         medicalProcedures = FXCollections.observableList(currentUser.getMedicalProcedures());
         for (MedicalProcedure procedure : medicalProcedures) {
@@ -951,6 +957,13 @@ public class DonorController {
     }
     organsDonatingListView.getItems().clear();
     organsDonatingListView.getItems().addAll(currentUser.getDonorDetails().getOrgans());
+        if (!currentUser.getOrganIntersection().intersectionIsEmpty()) {
+            for (Organs organ: currentUser.getOrganIntersection().getIntersection()) {
+                int index = organsDonatingListView.getItems().indexOf(organ);
+                organsDonatingListView.getSelectionModel().select(index);
+                //TODO change the colour of the font when selected to make it more readable
+            }
+        }
     setContactPage();
     if (user.getLastName() != null) {
       stage.setTitle("User Profile: " + user.getFirstName() + " " + user.getLastName());
@@ -1296,7 +1309,7 @@ public class DonorController {
      * for receiver
      */
     @FXML
-    public void registerOrgan () throws OrgansInconsistentException{
+    public void registerOrgan () {
         Organs toRegister = organsComboBox.getSelectionModel().getSelectedItem();
         if (!currentlyReceivingListView.getItems().contains(toRegister) && toRegister != null) {
             currentUser.getReceiverDetails().startWaitingForOrgan(toRegister);
@@ -1331,7 +1344,7 @@ public class DonorController {
      * for receiver
      */
     @FXML
-    public void reRegisterOrgan () throws OrgansInconsistentException{
+    public void reRegisterOrgan () {
         Organs toReRegister = notReceivingListView.getSelectionModel().getSelectedItem();
         if (toReRegister != null) {
             currentlyReceivingListView.getItems().add(toReRegister);
@@ -1389,13 +1402,14 @@ public class DonorController {
      * de-register an organ
      * for receiver
      */
-    public void deRegisterOrgan () throws OrgansInconsistentException {
+    public void deRegisterOrgan () {
         if (toDeRegister != null) {
             notReceivingListView.getItems().add(toDeRegister);
             currentUser.getReceiverDetails().stopWaitingForOrgan(toDeRegister);
             currentlyReceivingListView.getItems().remove(toDeRegister);
-
-            currentUser.getOrganIntersection().removeOrganIntersection(toDeRegister);
+            if (currentUser.getOrganIntersection().organIsPresent(toDeRegister)) {
+                currentUser.getOrganIntersection().removeOrganIntersection(toDeRegister);
+            }
 
             //if currentlyReceivingListView is empty, disable mouse click to prevent null pointer exception
             if (currentlyReceivingListView.getItems().isEmpty()) {

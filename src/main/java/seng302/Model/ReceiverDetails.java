@@ -1,8 +1,6 @@
 package seng302.Model;
 
 import com.google.gson.annotations.Expose;
-import seng302.Exceptions.OrgansInconsistentException;
-
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -45,7 +43,7 @@ public class ReceiverDetails {
    * appends one organ to the list of organs this user is waiting for. If the user is already
    * waiting for this organ, no change will be made.
    */
-  public void startWaitingForOrgan(Organs organ) throws OrgansInconsistentException {
+  public void startWaitingForOrgan(Organs organ) {
     if (isCurrentlyWaitingFor(organ)) {
       return;
     }

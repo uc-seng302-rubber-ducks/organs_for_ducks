@@ -2,7 +2,6 @@ package seng302.Model;
 
 import java.time.LocalDateTime;
 import java.util.Stack;
-import seng302.Exceptions.OrgansInconsistentException;
 
 public class UndoRedoStacks {
 
@@ -41,11 +40,7 @@ public class UndoRedoStacks {
         userClone.getDonorDetails().getOrgans().clear();
         if (user.getDonorDetails().getOrgans() != null) {
             for (Organs organ : user.getDonorDetails().getOrgans()) {
-                try {
                     userClone.getDonorDetails().addOrgan(organ);
-                } catch (OrgansInconsistentException ex) {
-                    //TODO better error logging
-                }
             }
         }
 

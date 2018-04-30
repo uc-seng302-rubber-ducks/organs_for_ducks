@@ -30,4 +30,8 @@ public class OrganIntersection {
     public boolean organIsPresent(Organs organ) {
         return intersection.contains(organ);
     }
+
+    public boolean intersectionIsEmpty() {
+        return intersection.isEmpty();
+    }
 }
