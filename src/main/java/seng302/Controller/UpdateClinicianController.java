@@ -351,14 +351,8 @@ public class UpdateClinicianController {
         }
 
         if (valid && !newClinician) { // updates an existing clinician
-            // updates the attributes
-            currentClinician.setStaffId(staffID);
-            currentClinician.setFirstName(fName);
-            currentClinician.setMiddleName(mName);
-            currentClinician.setLastName(lName);
-            currentClinician.setWorkAddress(address);
-            currentClinician.setRegion(region);
-            currentClinician.setPassword(password);
+            // updates the attributes that have changed
+            updateChanges(staffID, fName, mName, lName, address, region, password);
 
             currentClinician.setDateLastModified(LocalDateTime.now()); // updates the modified date
             controller.updateClinicians(currentClinician); // saves the clinician
@@ -368,6 +362,51 @@ public class UpdateClinicianController {
             Clinician clinician = new Clinician(staffID, password, fName, mName, lName, address, region);
             controller.updateClinicians(clinician);
             loadOverview(clinician);
+        }
+    }
+
+    /**
+     * Only updates the values that have been changed.
+     */
+    private void updateChanges(String staffID, String fName, String mName, String lName, String address, String region, String password) {
+        if (!currentClinician.getStaffId().equals(staffID)) {
+            currentClinician.setStaffId(staffID);
+        }
+
+        if (!currentClinician.getPassword().equals(password)) {
+            currentClinician.setPassword(password);
+        }
+
+        if (!currentClinician.getFirstName().equals(fName)) {
+            currentClinician.setFirstName(fName);
+        }
+
+        String middle = currentClinician.getMiddleName();
+        if (middle != null && !middle.equals(mName)) {
+            currentClinician.setMiddleName(mName);
+        } else if (mName == null) {
+            currentClinician.setMiddleName(mName);
+        }
+
+        String last = currentClinician.getLastName();
+        if (last != null && !last.equals(lName)) {
+            currentClinician.setLastName(mName);
+        } else if (lName == null) {
+            currentClinician.setLastName(lName);
+        }
+
+        String add = currentClinician.getWorkAddress();
+        if (add != null && !add.equals(address)) {
+            currentClinician.setWorkAddress(address);
+        } else if (address == null) {
+            currentClinician.setWorkAddress(address);
+        }
+
+        String reg = currentClinician.getRegion();
+        if (reg != null && !reg.equals(region)) {
+            currentClinician.setRegion(region);
+        } else if (region == null) {
+            currentClinician.setRegion(region);
         }
     }
 
