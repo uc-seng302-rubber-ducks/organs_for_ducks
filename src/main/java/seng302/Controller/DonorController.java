@@ -867,7 +867,7 @@ public class DonorController {
         if (currentUser.getHeight() > 0 && currentUser.getWeight() > 0) {
             //TODO fix BMI kg/m^
             DecimalFormat df = new DecimalFormat("#.00");
-            double bmi = (currentUser.getWeight() / (currentUser.getHeight() * currentUser.getHeight())*10000);
+            double bmi = currentUser.getWeight() / (currentUser.getHeight() * currentUser.getHeight());
             String formattedBmi = df.format(bmi);
             bmiValue.setText(formattedBmi);
         } else {

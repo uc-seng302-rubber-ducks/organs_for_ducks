@@ -167,11 +167,11 @@ public class ClinicianController {
     addressLabel.setText(clinician.getWorkAddress());
     regionLabel.setText(clinician.getRegion());
     if (clinician.getFirstName() == null){
-      stage.setTitle("Clinician Admin");
+      stage.setTitle("Clinician: Admin");
     } else if (clinician.getLastName() == null) {
-      stage.setTitle("Clinician " + clinician.getFirstName());
+      stage.setTitle("Clinician: " + clinician.getFirstName());
     } else {
-      stage.setTitle("Clinician " + clinician.getFirstName() +" " + clinician.getLastName());
+      stage.setTitle("Clinician: " + clinician.getFirstName() +" " + clinician.getLastName());
     }
   }
 
