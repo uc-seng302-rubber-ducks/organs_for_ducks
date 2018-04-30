@@ -477,9 +477,11 @@ public class UpdateUserController {
     if (user.getLastName() != null) {
       lNameInput.setText(user.getLastName());
     }
+
     if (user.getMiddleName() != null) {
       mNameInput.setText(user.getMiddleName());
     }
+
     if (user.getPreferredFirstName() != null) {
       preferredFNameTextField.setText(user.getPreferredFirstName());
     } else {
@@ -508,30 +510,33 @@ public class UpdateUserController {
       emailInput.setText(user.getEmail());
     }
     //ec
-    if (user.getContact().getName() != null) {
-      ecNameInput.setText(user.getContact().getName());
-    }
-    if (user.getContact().getRelationship() != null) {
-      ecRelationshipInput.setText(user.getContact().getRelationship());
-    }
-    if (user.getContact().getRegion() != null) {
-      ecRegionInput.setText(user.getContact().getRegion());
-    }
-    if (user.getContact().getHomePhoneNumber() != null) {
-      ecPhoneInput.setText(user.getContact().getHomePhoneNumber());
-    }
-    if (user.getContact().getEmail() != null) {
-      ecEmailInput.setText(user.getContact().getEmail());
-    }
-    if (user.getContact().getAddress() != null) {
-      ecAddressInput.setText(user.getContact().getAddress());
+    if (user.getContact() != null) {
+      if (user.getContact().getName() != null) {
+        ecNameInput.setText(user.getContact().getName());
+      }
+      if (user.getContact().getRelationship() != null) {
+        ecRelationshipInput.setText(user.getContact().getRelationship());
+      }
+      if (user.getContact().getRegion() != null) {
+        ecRegionInput.setText(user.getContact().getRegion());
+      }
+      if (user.getContact().getHomePhoneNumber() != null) {
+        ecPhoneInput.setText(user.getContact().getHomePhoneNumber());
+      }
+      if (user.getContact().getEmail() != null) {
+        ecEmailInput.setText(user.getContact().getEmail());
+      }
+      if (user.getContact().getAddress() != null) {
+        ecAddressInput.setText(user.getContact().getAddress());
 
-    }
-    if (user.getContact().getCellPhoneNumber() != null) {
-      ecCellInput.setText(user.getContact().getCellPhoneNumber());
+      }
+      if (user.getContact().getCellPhoneNumber() != null) {
+        ecCellInput.setText(user.getContact().getCellPhoneNumber());
+      }
     }
     //h
-    alcoholComboBox.setValue(user.getAlcoholConsumption());
+    alcoholComboBox
+        .setValue(user.getAlcoholConsumption() == null ? "None" : user.getAlcoholConsumption());
     if (user.isSmoker()) {
       smokerCheckBox.setSelected(true);
     }
@@ -706,8 +711,6 @@ public class UpdateUserController {
 
     if (!lNameInput.getText().equals(currentUser.getLastName())) {
       currentUser.setLastName(lNameInput.getText());
-    } else {
-      currentUser.setLastName("");
       changed = true;
     }
 
@@ -720,8 +723,6 @@ public class UpdateUserController {
         .getText().equals(currentUser.getMiddleName())) {
       currentUser.setMiddleName(mNameInput.getText());
       changed = true;
-    } else {
-      currentUser.setMiddleName("");
     }
 
     if (dobInput.getValue() != null && !dobInput.getValue().equals(currentUser.getDateOfBirth())) {
@@ -735,7 +736,6 @@ public class UpdateUserController {
       changed = true;
     }
     if (!preferredFNameTextField.getText().isEmpty()) {
-      System.out.println(preferredFNameTextField.getText());
       if (!preferredFNameTextField.getText().equals(currentUser.getPreferredFirstName())
           || !preferredFNameTextField.getText().equals(currentUser.getFirstName())) {
         currentUser.setPreferredFirstName(preferredFNameTextField.getText());

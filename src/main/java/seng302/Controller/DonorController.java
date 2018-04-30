@@ -776,22 +776,39 @@ public class DonorController {
         NHIValue.setText(currentUser.getNhi());
         fNameValue.setText(currentUser.getFirstName());
         DOBValue.setText(currentUser.getDateOfBirth().toString());
-        if (currentUser.getMiddleName() != null) {
-            mNameValue.setText(currentUser.getMiddleName());
-        }
-        if (currentUser.getPreferredFirstName() != null) {
-            pNameValue.setText(currentUser.getPreferredFirstName());
-        }
-        if (currentUser.getLastName() != null) {
-            lNameValue.setText(currentUser.getLastName());
-        }
+      if (currentUser.getMiddleName() != null) {
+        mNameValue.setText(currentUser.getMiddleName());
+      } else {
+        mNameValue.setText("");
+      }
 
-        if (currentUser.getGenderIdentity() != null) {
-            genderIdentityValue.setText(currentUser.getGenderIdentity());
+      if (currentUser.getPreferredFirstName() != null) {
+        pNameValue.setText(currentUser.getPreferredFirstName());
+      } else {
+        pNameValue.setText("");
+      }
+
+      if (currentUser.getLastName() != null) {
+        lNameValue.setText(currentUser.getLastName());
+      } else {
+        lNameValue.setText("");
+      }
+
+      if (currentUser.getGenderIdentity() != null) {
+        genderIdentityValue.setText(currentUser.getGenderIdentity());
+      } else {
+        genderIdentityValue.setText("");
+      }
+
+      if (currentUser.getBirthGender() != null) {
+        birthGenderValue.setText(currentUser.getBirthGender());
+        if (currentUser.getGenderIdentity() == null || currentUser.getGenderIdentity()
+            .equals(currentUser.getBirthGender())) {
+          genderIdentityValue.setText(currentUser.getBirthGender());
         }
-        if (currentUser.getBirthGender() != null) {
-            birthGenderValue.setText(currentUser.getBirthGender());
-        }
+      } else {
+        birthGenderValue.setText("");
+      }
 
         ageValue.setText(user.getStringAge().toString().replace("P", "").replace("Y", "") + " Years");
         if (currentUser.getDateOfDeath() != null) {
@@ -799,25 +816,35 @@ public class DonorController {
             ageDeathValue.setText(Long.toString(
                     ChronoUnit.YEARS.between(currentUser.getDateOfBirth(), currentUser.getDateOfDeath())) + " Years");
         }
-        if (currentUser.getBloodType() != null) {
-            bloodTypeValue.setText(currentUser.getBloodType());
-        }
-        if (currentUser.isSmoker()) {
+      if (currentUser.getBloodType() != null) {
+        bloodTypeValue.setText(currentUser.getBloodType());
+      } else {
+        bloodTypeValue.setText("");
+      }
+
+      if (currentUser.isSmoker()) {
             smokerValue.setText("Yes");
         } else {
             smokerValue.setText("No");
         }
-        String weight;
-        if (currentUser.getWeight() > 0) {
-            weight = java.lang.Double.toString(currentUser.getWeight());
-            weightValue.setText(weight);
-        }
-        String height;
-        if (currentUser.getHeight() > 0) {
-            height = java.lang.Double.toString(currentUser.getHeight());
-            heightValue.setText(height);
-        }
-        if (currentUser.getHeight() > 0 && currentUser.getWeight() > 0) {
+
+      String weight;
+      if (currentUser.getWeight() > 0) {
+        weight = java.lang.Double.toString(currentUser.getWeight());
+        weightValue.setText(weight);
+      } else {
+        weightValue.setText("");
+      }
+
+      String height;
+      if (currentUser.getHeight() > 0) {
+        height = java.lang.Double.toString(currentUser.getHeight());
+        heightValue.setText(height);
+      } else {
+        heightValue.setText("");
+      }
+
+      if (currentUser.getHeight() > 0 && currentUser.getWeight() > 0) {
             //TODO fix BMI kg/m^
             DecimalFormat df = new DecimalFormat("#.00");
             double bmi = (currentUser.getWeight() / (currentUser.getHeight() * currentUser.getHeight())*10000);

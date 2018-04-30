@@ -5,8 +5,10 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-
-import seng302.Model.*;
+import seng302.Model.Change;
+import seng302.Model.Clinician;
+import seng302.Model.JsonHandler;
+import seng302.Model.User;
 
 public class AppController {
 
@@ -21,6 +23,11 @@ public class AppController {
   private AppController() {
     try {
       users = JsonHandler.loadUsers();
+      User user = new User("A", LocalDate.now(), "AGT1111");
+      user.setFirstName("first");
+      user.setLastName("last");
+      user.getUndoStack().clear();
+      users.add(user);
       System.out.println(users.size() + " donors were successfully loaded");
       clinicians = JsonHandler.loadClinicians();
       System.out.println(clinicians.size() + " clinicians were successfully loaded");
