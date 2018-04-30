@@ -151,7 +151,7 @@ public class UpdateUserController {
     currentUser = user;
     this.appController = controller;
     setUserDetails(currentUser);
-    undoButton.setDisable(true);
+    //undoButton.setDisable(true);
     redoButton.setDisable(true);
     if (user.getLastName() != null) {
       stage.setTitle("Update User: " + user.getFirstName() + " " + user.getLastName());
@@ -207,6 +207,7 @@ public class UpdateUserController {
       } else {
         stage.setTitle("Update User: " + currentUser.getFirstName() + " *");
       }
+      updateModel();
     });
   }
 
@@ -222,6 +223,7 @@ public class UpdateUserController {
       } else {
         stage.setTitle("Update User: " + currentUser.getFirstName() + " *");
       }
+      updateModel();
     });
 
   }
@@ -241,6 +243,7 @@ public class UpdateUserController {
     } else {
       stage.setTitle("Update User: " + currentUser.getFirstName() + " *");
     }
+    updateModel();
   }
 
   /**
@@ -251,6 +254,7 @@ public class UpdateUserController {
   private void textFieldListener(TextField field) {
     field.textProperty().addListener((observable, oldValue, newValue) -> {
       stage.setTitle("Update User: " + currentUser.getFirstName() + " *");
+      updateModel();
     });
   }
 
@@ -791,6 +795,22 @@ public class UpdateUserController {
     currentUser.redo();
     redoButton.setDisable(currentUser.getRedoStack().isEmpty());
     setUserDetails(currentUser);
+  }
+
+  /**
+   * take changes from the gui and put them onto the user model
+   */
+  private void updateModel() {
+    System.out.println("updateModel fired");
+    boolean changed = false;
+    changed = changed || getPersonalDetails();
+    changed = changed || getHealthDetails();
+    changed = changed || getContactDetails();
+    changed = changed || getEmergencyContact();
+    System.out.println("changes made, updating currentUser");
+    appController.update(currentUser);
+    setUserDetails(currentUser);
+    undoButton.setDisable(currentUser.getUndoStack().isEmpty());
   }
 
   /**
