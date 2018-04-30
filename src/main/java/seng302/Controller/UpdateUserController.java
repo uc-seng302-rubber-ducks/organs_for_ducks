@@ -774,9 +774,13 @@ public class UpdateUserController {
         }
 
         String genderIdentity = currentUser.getGenderIdentity();
-        String genderID = AttributeValidation.validateGender(birthGenderComboBox);
+        String genderID = AttributeValidation.validateGender(genderIdComboBox);
         if (genderIdentity != null && !genderIdentity.equals(genderID)) {
-            currentUser.setGenderIdentity(genderID);
+            if (genderID == null) {
+                currentUser.setGenderIdentity(birthGender);
+            } else {
+                currentUser.setGenderIdentity(genderID);
+            }
         } else if (genderIdentity == null && genderID != null) {
             currentUser.setGenderIdentity(genderID);
         }
