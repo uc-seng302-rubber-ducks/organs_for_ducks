@@ -272,15 +272,21 @@ public class UpdateUserController {
             noChange = false;
         }
 
-        if (!currentUser.getDateOfBirth().isEqual(dobInput.getValue())) {
+        if (dobInput.getValue() != null) {
+            if (!currentUser.getDateOfBirth().isEqual(dobInput.getValue())) {
+                noChange = false;
+            }
+        } else {
             noChange = false;
         }
 
-        if (currentUser.getDateOfDeath() != null) {
-            if (!currentUser.getDateOfDeath().isEqual(dodInput.getValue())) {
+        LocalDate deathDate = currentUser.getDateOfDeath();
+        LocalDate dod = dodInput.getValue();
+        if (deathDate != null && dod != null) {
+            if (!deathDate.isEqual(dod)) {
                 noChange = false;
             }
-        } else if (dodInput.getValue() != null) {
+        } else if ((deathDate == null && dod != null) || deathDate != null) {
             noChange = false;
         }
 
@@ -731,9 +737,11 @@ public class UpdateUserController {
         }
 
         LocalDate deathDate = currentUser.getDateOfDeath();
-        if (deathDate != null && !deathDate.isEqual(dod)) {
-            currentUser.setDateOfDeath(dod);
-        } else if (deathDate == null && dod != null) {
+        if (deathDate != null && dod != null) {
+            if (!deathDate.isEqual(dod)) {
+                currentUser.setDateOfDeath(dod);
+            }
+        } else if ((deathDate == null && dod != null) || deathDate != null) {
             currentUser.setDateOfDeath(dod);
         }
     }
