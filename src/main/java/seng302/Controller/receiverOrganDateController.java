@@ -1,7 +1,5 @@
 package seng302.Controller;
 
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -12,13 +10,12 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
-import javafx.util.Callback;
 import seng302.Model.Organs;
 import seng302.Model.User;
+import seng302.Model.ReceiverOrganDetails;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Map;
 
 public class receiverOrganDateController {
 
@@ -26,7 +23,7 @@ public class receiverOrganDateController {
     private Label organNameLabel;
 
     @FXML
-    private TableView<LocalDate> organTimeTable;
+    private TableView<ReceiverOrganDetails> organTimeTable;
 
     @FXML
     private Button backButton;
@@ -34,8 +31,7 @@ public class receiverOrganDateController {
     private AppController appController;
     private User user;
     private Stage stage;
-    private ArrayList<LocalDate> registerDateList;
-    private ArrayList<LocalDate> deRegisterDateList;
+    private ArrayList<ReceiverOrganDetails> receiverOrganDetailsList;
 
     /**
      * Initializes the receiverOrganDateView and passes important settings into the controller
@@ -46,7 +42,6 @@ public class receiverOrganDateController {
      * @param organ having its history shown
      */
     public void init(AppController appController, User user, Stage stage, Organs organ){
-        registerDateList = new ArrayList<>();
         this.appController = appController;
         this.user = user;
         this.stage = stage;
@@ -68,58 +63,42 @@ public class receiverOrganDateController {
      */
     private void showTimeTable(Organs organ){
         ArrayList<LocalDate> organDates = user.getReceiverDetails().getOrganDates(organ);
+        receiverOrganDetailsList = new ArrayList<>();
 
         if(!organDates.isEmpty()) {
-//            LocalDate registerDate;
-//            LocalDate deRegisterDate;
             for (int i = 0; i < organDates.size(); i += 2) {
-//                registerDate = organDates.get(i);
-//                if (registerDate != null) {
-//                }
-                registerDateList.add(organDates.get(i));
-
+                ReceiverOrganDetails receiverOrganDetails = new ReceiverOrganDetails();
+                receiverOrganDetails.setRegisterDate(organDates.get(i));
+                receiverOrganDetailsList.add(receiverOrganDetails);
             }
 
-//            for (int i = 1; i < organDates.size(); i += 2) {
-//                registerDateList.add(organDates.get(i));
-//            }
+            for (int i = 1; i < organDates.size(); i += 2) {
+                ReceiverOrganDetails receiverOrganDetails = new ReceiverOrganDetails();
+                receiverOrganDetails.setDeRegisterDare(organDates.get(i));
+                receiverOrganDetailsList.add(receiverOrganDetails);
+            }
         }
 
-//        if (currentUser.isReceiver()) {
-//            receiverOrgans = currentUser.getReceiverDetails().getOrgans();
-//        }
-        // use fully detailed type for Map.Entry<String, LocalDate>
-        TableColumn<LocalDate, LocalDate> registrationDate = new TableColumn<>("Registration Date");
-        //registrationDate.setMinWidth(285);
-        registrationDate.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<LocalDate, LocalDate>, ObservableValue<LocalDate>>() {
+        System.out.println("=============" + receiverOrganDetailsList.size());
 
-            @Override
-            public ObservableValue<LocalDate> call(TableColumn.CellDataFeatures<LocalDate, LocalDate> p) {
-                return new SimpleObjectProperty<>(p.getValue());
-            }
-        });
+        for (ReceiverOrganDetails o :
+                receiverOrganDetailsList) {
+            System.out.println("*********" + o.getRegisterDate());
+        }
 
-//        TableColumn<Map.Entry<Organs, LocalDate>, Organs> organName = new TableColumn<>("Organ");
-//        //organName.setMinWidth(285);
-//        organName.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Map.Entry<Organs, LocalDate>, Organs>, ObservableValue<Organs>>() {
-//
-//            @Override
-//            public ObservableValue<Organs> call(TableColumn.CellDataFeatures<Map.Entry<Organs, LocalDate>, Organs> p) {
-//                return new SimpleObjectProperty(p.getValue().getKey());
-//            }
-//        });
-//        receiverOrgansTableView.setPlaceholder(new Label("Not registered as Receiver"));
+        ObservableList<ReceiverOrganDetails> items = FXCollections.observableList(receiverOrganDetailsList);
+        organTimeTable.setItems(items);
 
-        organTimeTable.getColumns().setAll(registrationDate);
-//
-//        if (receiverOrgans.size() != 0) {
-//
-            ObservableList<LocalDate> items = FXCollections.observableArrayList(registerDateList);
-            organTimeTable.setItems(items);
-//
-//        } else {
-//            receiverOrgansTableView.setPlaceholder(new Label("Not registered as Receiver"));
-//        }
+        TableColumn<ReceiverOrganDetails, LocalDate> registrationDate = new TableColumn<>("Registration Date");
+        registrationDate.setMinWidth(285);
+        registrationDate.setCellValueFactory(new PropertyValueFactory<>("registerDate"));
+
+        TableColumn<ReceiverOrganDetails, LocalDate> deRegistrationDate = new TableColumn<>("De-registration Date");
+        deRegistrationDate.setMinWidth(285);
+        registrationDate.setCellValueFactory(new PropertyValueFactory<>("deRegisterDate"));
+
+        organTimeTable.getColumns().setAll(registrationDate, deRegistrationDate);
+
     }
 
 }
