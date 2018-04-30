@@ -40,20 +40,20 @@ import javafx.stage.Stage;
 import javafx.util.StringConverter;
 import okhttp3.OkHttpClient;
 import org.controlsfx.control.textfield.TextFields;
-import seng302.Model.Change;
-import seng302.Model.Disease;
-import seng302.Model.EmergencyContact;
-import seng302.Model.HttpRequester;
-import seng302.Model.MedicalProcedure;
-import seng302.Model.Organs;
-import seng302.Model.UndoRedoStacks;
-import seng302.Model.User;
+import okhttp3.OkHttpClient;
+import seng302.Model.*;
+
+import javax.xml.ws.FaultAction;
+import java.io.IOException;
+import java.util.*;
 
 public class DonorController {
 
-  //the Home page attributes
-  @FXML
-  private Label ageValue;
+    //the Home page attributes
+    @FXML
+    private Button backButton;
+    @FXML
+    private Label ageValue;
 
   @FXML
   private Label ageDeathValue;
@@ -287,19 +287,24 @@ public class DonorController {
     this.stage = stage;
     application = controller;
     //ageValue.setText("");
+        //This is the place to set visable and invisable controls for Clinician vs User
     if (fromClinician) {
-      logOutButton.setVisible(false);
-      addDiseaseButton.setVisible(true);
-      updateDiseaseButton.setVisible(true);
-      deleteDiseaseButton.setVisible(true);
+        logOutButton.setVisible(false);
+        addDiseaseButton.setVisible(true);
+        updateDiseaseButton.setVisible(true);
+        deleteDiseaseButton.setVisible(true);
     } else {
-      procedureDateSelector.setEditable(false);
-      procedureTextField.setEditable(false);
-      descriptionTextArea.setEditable(false);
-      addProcedureButton.setVisible(false);
-      removeProcedureButton.setVisible(false);
-      updateProceduresButton.setVisible(false);
-      modifyOrgansProcedureButton.setVisible(false);
+        procedureDateSelector.setEditable(false);
+        procedureTextField.setEditable(false);
+        descriptionTextArea.setEditable(false);
+        addProcedureButton.setVisible(false);
+        removeProcedureButton.setVisible(false);
+        updateProceduresButton.setVisible(false);
+        modifyOrgansProcedureButton.setVisible(false);
+        deleteButton.setVisible(false);
+        addMedicationButton.setVisible(false);
+        medicationTextField.setVisible(false);
+        backButton.setVisible(false);
     }
     //arbitrary default values
     //changeDeceasedStatus();
@@ -1250,4 +1255,10 @@ public class DonorController {
       application.update(currentUser);
     }
   }
+
+
+    @FXML
+    private void closeWindow(){
+      stage.close();
+    }
 }

@@ -141,24 +141,26 @@ public class UpdateUserController {
   private User oldUser;
 
 
-  /**
-   * @param user The current user.
-   * @param controller An instance of the AppController class.
-   * @param stage The applications stage.
-   */
-  public void init(User user, AppController controller, Stage stage) {
-    this.stage = stage;
-    currentUser = user;
-    this.appController = controller;
-    setUserDetails(currentUser);
-    undoButton.setDisable(true);
-    redoButton.setDisable(true);
-    if (user.getLastName() != null) {
-      stage.setTitle("Update User: " + user.getFirstName() + " " + user.getLastName());
-    } else {
-      stage.setTitle("Update User: " + user.getFirstName());
-    }
-    //UndoRedoStacks.cloneUser(currentUser,oldUser);
+    /**
+
+     * @param user The current user.
+     * @param controller An instance of the AppController class.
+     * @param stage The applications stage.
+     */
+    public void init(User user, AppController controller, Stage stage){
+        this.stage = stage;
+        currentUser = user;
+        this.appController = controller;
+        setUserDetails(currentUser);
+        undoButton.setDisable(true);
+        redoButton.setDisable(true);
+        errorLabel.setText("");
+        if (user.getLastName() != null) {
+          stage.setTitle("Update User: " + user.getFirstName() +" " + user.getLastName());
+        } else {
+          stage.setTitle("Update User: " + user.getFirstName());
+        }
+        //UndoRedoStacks.cloneUser(currentUser,oldUser);
 
     Scene scene = stage.getScene();
 
@@ -673,24 +675,31 @@ public class UpdateUserController {
       changed = true;
     }
 
-    if (!weightInput.getText().equals("")) {
-      try {
-        if (Double.parseDouble(weightInput.getText()) != currentUser.getWeight()) {
-          currentUser.setWeight(Double.parseDouble(weightInput.getText()));
-          changed = true;
+        if (!weightInput.getText().equals("")) {
+          try {
+        if (Double.parseDouble(weightInput.getText()) != currentUser.getWeight()) {    currentUser.setWeight(Double.parseDouble(weightInput.getText()));changed = true;
         }
-      } catch (NumberFormatException e) {
-        System.out.println("nope");
-      }
+          } catch (NumberFormatException e){
+            errorLabel.setText("Weight must be a valid number");
+            passes = false;
+          }
 
+        }
+        if (!heightInput.getText().equals("")) {
+            try {
+              if (Double.parseDouble(heightInput.getText()) != currentUser.getHeight()) {
+                currentUser.setHeight(Double.parseDouble(heightInput.getText()));
+                changed = true;
+              }
+            } catch (NumberFormatException e){
+                errorLabel.setText("Height must be a number");
+                passes = false;
+            }
+        }
+        return changed;
+        return passes;
     }
-    if (!heightInput.getText().equals("")) {
-      if (Double.parseDouble(heightInput.getText()) != currentUser.getHeight()) {
-        currentUser.setHeight(Double.parseDouble(heightInput.getText()));
-        changed = true;
-      }
-    }
-    return changed;
+
   }
 
 
@@ -711,10 +720,15 @@ public class UpdateUserController {
       changed = true;
     }
 
-    if (!nhiInput.getText().equals(currentUser.getNhi())) {
-      currentUser.setNhi(nhiInput.getText());
-      changed = true;
-    }
+        if (!nhiInput.getText().equals(currentUser.getNhi())) {
+          if (nhiInput.getText().matches("[A-Z]{3}[0-9]{4}")) {
+            currentUser.setNhi(nhiInput.getText());
+              changed = true;
+          } else {
+                errorLabel.setText("NHI is in valid please enter it in the form ABC1234");
+                passes = false;
+          }
+        }
 
     if (!(mNameInput.getText().isEmpty() && currentUser.getMiddleName() == null) && !mNameInput
         .getText().equals(currentUser.getMiddleName())) {
