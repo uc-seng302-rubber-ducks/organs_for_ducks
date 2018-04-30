@@ -766,29 +766,30 @@ public class UpdateUserController {
     boolean changed = false;
     //TODO save changes and go back to overview screen
     changed = getPersonalDetails();
-    changed |= getHealthDetails();
-    changed |= getContactDetails();
-    changed |= getEmergencyContact();
+    changed = changed || getHealthDetails();
+    changed = changed || getContactDetails();
+    changed = changed ||getEmergencyContact();
     //TODO change to be different
 
     appController.update(currentUser);
 
-    //ArrayList<Change> diffs = appController.differanceInDonors(oldUser, currentUser);
-    //changelog.addAll(diffs);
-    if (changed) {
-      currentUser.getRedoStack().clear(); // clear the redo stack if anything is changed.
 
       Memento<User> sumChanges = new Memento<>();
       System.out.println(undoMarker);
       System.out.println(currentUser.getUndoStack().size());
       while (currentUser.getUndoStack().size() > undoMarker + 1) {
-        System.out.println(currentUser.getUndoStack().size());
-        currentUser.getUndoStack().pop();
+          System.out.println(currentUser.getUndoStack().size());
+          currentUser.getUndoStack().pop();
       }
       sumChanges.setOldObject(currentUser.getUndoStack().peek().getOldObject());
       sumChanges.setNewObject(currentUser);
       currentUser.getUndoStack().push(sumChanges);
       System.out.println(sumChanges);
+    //ArrayList<Change> diffs = appController.differanceInDonors(oldUser, currentUser);
+    //changelog.addAll(diffs);
+    if (changed) {
+      currentUser.getRedoStack().clear(); // clear the redo stack if anything is changed.
+
     }
     AppController appController = AppController.getInstance();
     DonorController donorController = appController.getDonorController();
@@ -825,8 +826,10 @@ public class UpdateUserController {
     changed |= getHealthDetails();
     changed |= getContactDetails();
     changed |= getEmergencyContact();
-    appController.update(currentUser);
-    setUserDetails(currentUser);
+    if (changed) {
+        appController.update(currentUser);
+        setUserDetails(currentUser);
+    }
     undoButton.setDisable(currentUser.getUndoStack().isEmpty());
   }
 
