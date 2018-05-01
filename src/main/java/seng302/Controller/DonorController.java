@@ -508,23 +508,8 @@ public class DonorController {
 
     if (result.get() == ButtonType.OK) {
       application.deleteDonor(currentUser);
-      if (!Clinician){
-      FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML/loginView.fxml"));
-      Parent root = null;
-      try {
-        root = loader.load();
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
-      LoginController loginController = loader.getController();
-      loginController.init(AppController.getInstance(), stage);
-      stage.setScene(new Scene(root));
-      stage.setTitle("");
-      stage.setWidth(600);
-      stage.setHeight(420);
-      stage.show();
-      } else {
-        stage.close();
+      if (!Clinician) {
+        logout();
       }
     }
   }
@@ -839,9 +824,8 @@ public class DonorController {
         LoginController loginController = loader.getController();
         loginController.init(AppController.getInstance(), stage);
         stage.setScene(new Scene(root));
+        stage.hide();
         stage.show();
-
-    UndoRedoStacks.clearStacks();
   }
 
     /**
