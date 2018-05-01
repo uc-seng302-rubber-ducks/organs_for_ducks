@@ -235,11 +235,11 @@ public class ClinicianController {
     addressLabel.setText(clinician.getWorkAddress());
     regionLabel.setText(clinician.getRegion());
     if (clinician.getFirstName() == null){
-      stage.setTitle("Clinician Admin");
+      stage.setTitle("Clinician: Admin");
     } else if (clinician.getLastName() == null) {
-      stage.setTitle("Clinician " + clinician.getFirstName());
+      stage.setTitle("Clinician: " + clinician.getFirstName());
     } else {
-      stage.setTitle("Clinician " + clinician.getFirstName() +" " + clinician.getLastName());
+      stage.setTitle("Clinician: " + clinician.getFirstName() +" " + clinician.getLastName());
     }
   }
 
@@ -481,13 +481,13 @@ public class ClinicianController {
    */
   private void setFilteredListPredicate(FilteredList<User> fList) {
     searchCount = 0; //refresh the searchCount every time so it recalculates it each search
-    System.out.println(fList);
+    //System.out.println(fList);
     fList.predicateProperty().bind(Bindings.createObjectBinding(() -> user -> {
       String lowerCaseFilterText = searchTextField.getText().toLowerCase();
       boolean regionMatch = AttributeValidation.checkRegionMatches(regionSearchTextField.getText(), user);
       boolean genderMatch = AttributeValidation.checkGenderMatches(genderComboBox.getValue().toString(), user);
 
-      System.out.println(user);
+      //System.out.println(user);
       if (((user.getFirstName().toLowerCase()).startsWith(lowerCaseFilterText) ||
               (user.getLastName().toLowerCase().startsWith(lowerCaseFilterText))) &&
               (regionMatch) && (genderMatch) &&
@@ -642,8 +642,8 @@ public class ClinicianController {
       root = updateLoader.load();
       UpdateClinicianController updateClinicianController = updateLoader.getController();
       Stage stage = new Stage();
-      updateClinicianController.init(clinician, appController, stage, false);
       stage.setScene(new Scene(root));
+      updateClinicianController.init(clinician, appController, stage, false);
       stage.initModality(Modality.APPLICATION_MODAL); // background window is no longer selectable
       stage.showAndWait();
       showClinician();

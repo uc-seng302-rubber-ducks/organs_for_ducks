@@ -35,6 +35,7 @@ public class deregisterOrganReasonController {
     Stage stage;
     private User currentUser;
     private DonorController donorController;
+    private Organs toDeRegister;
 
     /**
      * Initializes the NewDiseaseController
@@ -50,6 +51,10 @@ public class deregisterOrganReasonController {
         this.donorController = donorController;
         receiverName.setText(user.getName());
         organName.setText(organ.organName);
+        this.toDeRegister = organ;
+        if (user.getDeceased() == null || !user.getDeceased()){
+            receiverDiedRadioButton.setDisable(true);
+        }
         //stage.setMinWidth(620);
         //stage.setMaxWidth(620);
     }
@@ -91,7 +96,7 @@ public class deregisterOrganReasonController {
             donorController.setOrganDeregisterationReason(OrganDeregisterReason.RECEIVER_DIED);
         }
 
-        donorController.deRegisterOrgan();
+        donorController.deRegisterOrgan(toDeRegister);
 
         AppController appController = AppController.getInstance();
         DonorController donorController = appController.getDonorController();

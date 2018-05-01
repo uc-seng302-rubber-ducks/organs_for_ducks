@@ -1,47 +1,55 @@
 package seng302.Model;
 
 import com.google.gson.annotations.Expose;
+import com.sun.org.apache.xpath.internal.operations.Or;
+
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
 
 public class ReceiverDetails {
 
-  @Expose
+
   private transient User attachedUser;
+
   @Expose
-  private HashMap<Organs, ArrayList<LocalDate>> organs = new HashMap<>();
+  private Map<Organs, ArrayList<LocalDate>> organs; // contains the organ start and stop dates
 
   public ReceiverDetails(User attachedUser) {
     this.attachedUser = attachedUser;
+    this.organs = new EnumMap<Organs, ArrayList<LocalDate>>(Organs.class);
+
   }
 
-  //TODO model from DonorDetails (get/set/add/remove/isEmpty etc)
+  public ReceiverDetails(User attachedUser, EnumMap<Organs, ArrayList<LocalDate>> organs) {
+    this.attachedUser = attachedUser;
+    this.organs = organs;
+  }
+//TODO model from DonorDetails (get/set/add/remove/isEmpty etc)
 
 
-  public HashMap<Organs, ArrayList<LocalDate>> getOrgans() {
+  public Map<Organs, ArrayList<LocalDate>> getOrgans() {
     return organs;
   }
 
-  public ArrayList<LocalDate> getOrganDates(Organs organ){
+  public List<LocalDate> getOrganDates(Organs organ){
     return organs.get(organ);
   }
 
   /**
    * determines whether a user is waiting for the given organ
-   *
+   * organ is in list and uneven number of time entries.
+   * time entries can be grouped in pairs of start/stop times. uneven would mean they are currently waiting
    * @param organ organ in question
    * @return true if organ is being waited for
    */
   public boolean isCurrentlyWaitingFor(Organs organ) {
-    //organ is in list and uneven number of time entries.
-    //time entries can be grouped in pairs of start/stop times. uneven would mean they are currently waiting
-    return organs.containsKey(organ) && organs.get(organ).size() % 2 == 1;
+    return organs != null && organs.containsKey(organ) && organs.get(organ).size() % 2 == 1;
   }
 
   /**
    * appends one organ to the list of organs this user is waiting for. If the user is already
    * waiting for this organ, no change will be made.
+   * @param organ
    */
   public void startWaitingForOrgan(Organs organ) {
     if (isCurrentlyWaitingFor(organ)) {
@@ -54,7 +62,7 @@ public class ReceiverDetails {
       //create new entry
       ArrayList<LocalDate> list = new ArrayList<>();
       list.add(LocalDate.now());
-      organs.put(organ, list);
+      organs.put(Organs.values()[organ.ordinal()], list);
     }
   }
 
@@ -65,7 +73,9 @@ public class ReceiverDetails {
    */
   public void stopWaitingForOrgan(Organs organ) {
     if (isCurrentlyWaitingFor(organ)) {
-      organs.get(organ).add(LocalDate.now());
+      ArrayList<LocalDate> dates = organs.get(organ);
+      dates.add(LocalDate.now());
+      organs.put(Organs.values()[organ.ordinal()], dates);
     }
   }
 
@@ -92,16 +102,14 @@ public class ReceiverDetails {
   public boolean isDonatingThisOrgan(Organs organ) {
     return attachedUser.getDonorDetails().getOrgans().contains(organ);
   }
+
   /**
    * check if underlying organs list is empty TODO extend this to new functionality when added
    *
    * @return true if organ list is empty
    */
   public boolean isEmpty() {
-    if (organs == null) {
-      return true;
-    }
-    return organs.isEmpty();
+    return organs == null || organs.isEmpty();
   }
 
 }

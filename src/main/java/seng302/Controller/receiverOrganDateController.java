@@ -62,42 +62,42 @@ public class receiverOrganDateController {
      * show organs for receiver.
      */
     private void showTimeTable(Organs organ){
-        ArrayList<LocalDate> organDates = user.getReceiverDetails().getOrganDates(organ);
+        ArrayList<LocalDate> organDates = (ArrayList<LocalDate>) user.getReceiverDetails().getOrganDates(organ);
+        System.out.println(organDates);
         receiverOrganDetailsList = new ArrayList<>();
 
-        if(!organDates.isEmpty()) {
-            for (int i = 0; i < organDates.size(); i += 2) {
+        if(organDates != null && !organDates.isEmpty()) {
+            for (int i = 0; i < organDates.size(); i += 1) {
                 ReceiverOrganDetails receiverOrganDetails = new ReceiverOrganDetails();
                 receiverOrganDetails.setRegisterDate(organDates.get(i));
-                receiverOrganDetailsList.add(receiverOrganDetails);
+                //receiverOrganDetailsList.add(receiverOrganDetails);
+                i +=1;
+                try {
+                    receiverOrganDetails.setDeRegisterDate(organDates.get(i));
+                } catch (IndexOutOfBoundsException e){
+
+                }
+                    receiverOrganDetailsList.add(receiverOrganDetails);
+
             }
 
-            for (int i = 1; i < organDates.size(); i += 2) {
-                ReceiverOrganDetails receiverOrganDetails = new ReceiverOrganDetails();
-                receiverOrganDetails.setDeRegisterDare(organDates.get(i));
-                receiverOrganDetailsList.add(receiverOrganDetails);
-            }
         }
-
-        System.out.println("=============" + receiverOrganDetailsList.size());
-
-        for (ReceiverOrganDetails o :
-                receiverOrganDetailsList) {
-            System.out.println("*********" + o.getRegisterDate());
-        }
-
-        ObservableList<ReceiverOrganDetails> items = FXCollections.observableList(receiverOrganDetailsList);
-        organTimeTable.setItems(items);
 
         TableColumn<ReceiverOrganDetails, LocalDate> registrationDate = new TableColumn<>("Registration Date");
         registrationDate.setMinWidth(285);
         registrationDate.setCellValueFactory(new PropertyValueFactory<>("registerDate"));
 
-        TableColumn<ReceiverOrganDetails, LocalDate> deRegistrationDate = new TableColumn<>("De-registration Date");
+        TableColumn<ReceiverOrganDetails, LocalDate> deRegistrationDate = new TableColumn<>("Deregistration Date");
         deRegistrationDate.setMinWidth(285);
-        registrationDate.setCellValueFactory(new PropertyValueFactory<>("deRegisterDate"));
+        deRegistrationDate.setCellValueFactory(new PropertyValueFactory<>("deRegisterDate"));
 
-        organTimeTable.getColumns().setAll(registrationDate, deRegistrationDate);
+        ObservableList<ReceiverOrganDetails> items = FXCollections.observableList(receiverOrganDetailsList);
+        for(ReceiverOrganDetails i: items){
+            System.out.println(i);
+        }
+
+        organTimeTable.setItems(items);
+        organTimeTable.getColumns().addAll(registrationDate, deRegistrationDate);
 
     }
 

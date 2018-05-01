@@ -8,13 +8,12 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.stage.Stage;
-import seng302.Model.Donor;
 import seng302.Model.Organs;
 import seng302.Model.UndoRedoStacks;
+import seng302.Model.User;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import seng302.Model.User;
 
 /**
  * class for the Organs view
@@ -64,8 +63,8 @@ public class OrganController {
             donating = new ArrayList<>();
         }
         currentlyDonating.setItems(FXCollections.observableList(donating));
-        if (!currentUser.getOrganIntersection().intersectionIsEmpty()){
-            for (Organs organ: currentUser.getOrganIntersection().getIntersection()) {
+        if (!currentUser.getCommonOrgans().isEmpty()){
+            for (Organs organ: currentUser.getCommonOrgans()) {
                 int index = currentlyDonating.getItems().indexOf(organ);
                 currentlyDonating.getSelectionModel().select(index);
             }
@@ -88,7 +87,7 @@ public class OrganController {
         Organs toDonate = canDonate.getSelectionModel().getSelectedItem();
         if(toDonate != null) {
             if (currentUser.getReceiverDetails().isCurrentlyWaitingFor(toDonate)) {
-                currentUser.getOrganIntersection().addOrganIntersection(toDonate);
+                currentUser.getCommonOrgans().add(toDonate);
                 int index = currentlyDonating.getItems().indexOf(toDonate);
                 currentlyDonating.getSelectionModel().select(index);
             }
@@ -106,34 +105,38 @@ public class OrganController {
     @FXML
     void undonate(ActionEvent event) {
         UndoRedoStacks.storeUndoCopy(currentUser);
-        Organs toUndonate = currentlyDonating.getSelectionModel().getSelectedItem();
+
+        if (!currentlyDonating.getSelectionModel().isEmpty()) {
+            Organs toUndonate = currentlyDonating.getSelectionModel().getSelectedItem();
         if(toUndonate != null) {
-            if(currentUser.getOrganIntersection().organIsPresent(toUndonate)) {
-                currentUser.getOrganIntersection().removeOrganIntersection(toUndonate);
+            if(currentUser.getCommonOrgans().contains(toUndonate)) {
+                currentUser.getCommonOrgans().remove(toUndonate);
             }
             currentlyDonating.getItems().remove(toUndonate);
             canDonate.getItems().add(toUndonate);
             currentUser.getDonorDetails().removeOrgan(toUndonate);
             appController.update(currentUser);
+            }
         }
     }
 
-    /**
-     * @param event passed in automatically by the gui
-     */
-    @FXML
-    void goBack(ActionEvent event) {
-        AppController appController = AppController.getInstance();
-        DonorController donorController = appController.getDonorController();
-        try {
-            donorController.showUser(currentUser);
-        }
-        catch (NullPointerException ex) {
-            //TODO causes npe if donor is new in this session
-            //the text fields etc. are all null
-        }
-        stage.close();
-    }
+
+//    /**
+//     * @param event passed in automatically by the gui
+//     */
+//    @FXML
+//    void goBack(ActionEvent event) {
+//        AppController appController = AppController.getInstance();
+//        DonorController donorController = appController.getDonorController();
+//        try {
+//            donorController.showUser(currentUser);
+//        }
+//        catch (NullPointerException ex) {
+//            //TODO causes npe if donor is new in this session
+//            //the text fields etc. are all null
+//        }
+//        stage.close();
+//    }
 
 }
 
