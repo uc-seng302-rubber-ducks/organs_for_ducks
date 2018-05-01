@@ -29,8 +29,11 @@ public class Clinician {
     @Expose
     private LocalDateTime dateLastModified;
 
+    @Expose
     private String firstName;
+    @Expose
     private String middleName;
+    @Expose
     private String lastName;
 
     public Clinician() {

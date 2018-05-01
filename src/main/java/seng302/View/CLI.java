@@ -3,6 +3,8 @@ package seng302.View;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
+
 import org.jline.keymap.KeyMap;
 import org.jline.reader.Binding;
 import org.jline.reader.History;
@@ -60,7 +62,8 @@ public class CLI {
     try {
       controller.setUsers(JsonHandler.loadUsers());
     } catch (FileNotFoundException e) {
-      e.printStackTrace();
+      System.out.println("No users file exists. Creating blank session");
+      controller.setUsers(new ArrayList<>());
     }
 
     String input;
@@ -73,7 +76,7 @@ public class CLI {
       JsonWriter.changeLog(arguments);
       controller.addToHistoryOfCommands(arguments);
       new CommandLine(new CliRoot())
-          .parseWithHandler(new CommandLine.RunLast(), System.out, arguments);
+          .parseWithHandler(new CommandLine.RunLast(), System.err, arguments);
       //System.out.println(lineReader.getHistory().last());
       input = lineReader.readLine(">> ");
     }

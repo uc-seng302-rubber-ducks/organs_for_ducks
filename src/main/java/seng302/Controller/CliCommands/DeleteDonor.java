@@ -6,6 +6,7 @@ import picocli.CommandLine.Option;
 import picocli.CommandLine.Command;
 import seng302.Controller.AppController;
 import seng302.Model.Donor;
+import seng302.Model.JsonHandler;
 import seng302.Model.JsonWriter;
 import seng302.Model.User;
 import seng302.View.IoHelper;
@@ -58,12 +59,12 @@ public class DeleteDonor implements Runnable {
       }
     }
     //sc.close();
-    //TODO fix json writer
-//        try {
-//            JsonWriter.saveCurrentDonorState(controller.getUsers());
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
+    try {
+      JsonHandler.saveUsers(controller.getUsers());
+      //JsonWriter.saveCurrentDonorState(controller.getUsers());
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
   }
 
   public void setScanner(Scanner sc) {
