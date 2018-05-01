@@ -51,9 +51,8 @@ public class DeleteClinicianUserGUITest extends ApplicationTest{
   public void canceledDeleteUser(){
     clickOn("#deleteUser");
     clickOn("Cancel");
-    //clickOn("back");
-    // a back button may be added
-    //verifyThat("#fNameLabel", LabeledMatchers.hasText("Default"));
+    clickOn("#backButton");
+    verifyThat("#fNameLabel", LabeledMatchers.hasText("Default"));
 
   }
 
