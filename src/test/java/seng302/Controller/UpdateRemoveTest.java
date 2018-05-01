@@ -14,7 +14,7 @@ import seng302.Model.Donor;
 import seng302.Model.Organs;
 import seng302.Model.User;
 
-public class UpdateRemoveTests {
+public class UpdateRemoveTest {
 
   AppController controller;
   DateTimeFormatter sdf = DateTimeFormatter.ofPattern("yyyy-MM-dd");

@@ -34,8 +34,8 @@
                   <Button fx:id="undoButton" layoutX="485.0" layoutY="13.0" mnemonicParsing="false" onAction="#undo" text="Undo" />
                   <Button layoutX="551.0" layoutY="13.0" mnemonicParsing="false" text="Redo" />
                   <Button fx:id="logoutButton" layoutX="14.0" layoutY="332.0" mnemonicParsing="false" onAction="#logout" text="Logout" />
-                  <Button layoutX="514.0" layoutY="332.0" mnemonicParsing="false" onAction="#edit" text="Edit Profile" />
-                  <GridPane layoutX="166.0" layoutY="83.0" prefHeight="210.0" prefWidth="363.0">
+                  <Button fx:id="editButton" layoutX="514.0" layoutY="332.0" mnemonicParsing="false" onAction="#edit" text="Edit Profile"/>
+                  <GridPane layoutX="166.0" layoutY="83.0" prefHeight="210.0" prefWidth="363.0" >
                   <columnConstraints>
                                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="257.0" minWidth="10.0" prefWidth="139.0" />
                                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="306.0" minWidth="10.0" prefWidth="224.0" />
@@ -66,7 +66,7 @@
                </children></AnchorPane>
       </content>
     </Tab>
-    <Tab text="Search">
+    <Tab fx:id="searchTab" text="Search">
          <content>
             <SplitPane dividerPositions="0.3" minHeight="-Infinity" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0">
               <items>
@@ -90,7 +90,7 @@
                                 <String fx:value="All" />
                             </value>
                         </ComboBox>
-                        <TextField fx:id="regionTextField" layoutX="59.0" layoutY="81.0" prefHeight="25.0" prefWidth="200.0" AnchorPane.leftAnchor="115.0" AnchorPane.rightAnchor="329.0" AnchorPane.topAnchor="81.0" />
+                        <TextField fx:id="regionSearchTextField" layoutX="59.0" layoutY="81.0" prefHeight="25.0" prefWidth="200.0" AnchorPane.leftAnchor="115.0" AnchorPane.rightAnchor="329.0" AnchorPane.topAnchor="81.0" />
                         <CheckBox fx:id="donorFilterCheckBox" layoutX="115.0" layoutY="121.0" mnemonicParsing="false" text="Donor" AnchorPane.leftAnchor="115.0" AnchorPane.topAnchor="121.0" />
                         <CheckBox fx:id="receiverFilterCheckBox" layoutX="199.0" layoutY="121.0" mnemonicParsing="false" text="Receiver" AnchorPane.leftAnchor="199.0" AnchorPane.topAnchor="121.0" />
                        <CheckBox fx:id="allCheckBox" layoutX="290.0" layoutY="121.0" mnemonicParsing="false" text="All" AnchorPane.leftAnchor="290.0" AnchorPane.topAnchor="121.0" />

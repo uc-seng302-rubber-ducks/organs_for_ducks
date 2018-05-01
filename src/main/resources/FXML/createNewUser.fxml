@@ -83,6 +83,7 @@
                       <ComboBox fx:id="birthGenderComboBox" prefHeight="25.0" prefWidth="171.0" GridPane.columnIndex="1">
                           <items>
                               <FXCollections fx:factory="observableArrayList">
+                                  <String fx:value="" />
                                   <String fx:value="Female" />
                                   <String fx:value="Male" />
                                   <String fx:value="Non Binary" />
@@ -92,6 +93,7 @@
                       <ComboBox fx:id="genderIdComboBox" layoutX="141.0" layoutY="23.0" prefHeight="25.0" prefWidth="171.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
                           <items>
                               <FXCollections fx:factory="observableArrayList">
+                                  <String fx:value="" />
                                   <String fx:value="Female" />
                                   <String fx:value="Male" />
                                   <String fx:value="Non Binary" />
@@ -195,7 +197,7 @@
                       <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                   </padding>
               </GridPane>
-              <Label layoutX="14.0" layoutY="9.0" text="Create New User">
+              <Label fx:id="headerLabel" layoutX="14.0" layoutY="9.0" text="Create New User">
                   <font>
                       <Font name="System Bold" size="15.0" />
                   </font>
@@ -218,7 +220,7 @@
                   </font>
               </Label>
               <Separator layoutY="278.0" prefHeight="3.0" prefWidth="600.0" />
-              <Label fx:id="errorLabel" alignment="TOP_LEFT" layoutX="185.0" layoutY="689.0" prefHeight="42.0" prefWidth="226.0" text="Error in creating profile.&#10;Please make sure your details are correct." textFill="#c63636" visible="false" wrapText="true" />
+              <Label fx:id="errorLabel" alignment="TOP_LEFT" layoutX="143.0" layoutY="689.0" prefHeight="42.0" prefWidth="319.0" text="Error in creating profile.&#10;Please make sure your details are correct." textFill="#c63636" visible="false" wrapText="true" />
               <Button fx:id="cancelButton" layoutX="10.0" layoutY="703.0" mnemonicParsing="false" onAction="#cancelCreation" text="Cancel" />
               <Button fx:id="confirmButton" layoutX="479.0" layoutY="704.0" mnemonicParsing="false" onAction="#confirmCreation" text="Create Profile" />
           </children>

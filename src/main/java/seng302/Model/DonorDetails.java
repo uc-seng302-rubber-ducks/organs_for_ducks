@@ -34,6 +34,9 @@ public class DonorDetails {
    * @param organ the enum of organs.
    */
   public void addOrgan(Organs organ) {
+    if (attachedUser != null){
+      attachedUser.updateLastModified();
+    }
     if (organs == null) {
       organs = new HashSet<>();
       organs.add(organ);
