@@ -263,6 +263,7 @@ public class DonorController {
     private EmergencyContact contact = null;
     private ObservableList<Change> changelog;
     private OkHttpClient client = new OkHttpClient();
+    private Boolean Clinician;
 
     /**
      * Gives the donor view the application controller and hides all label and buttons that are not
@@ -275,23 +276,21 @@ public class DonorController {
     //ageValue.setText("");
         //This is the place to set visable and invisable controls for Clinician vs User
     if (fromClinician) {
-        logOutButton.setVisible(false);
-        addDiseaseButton.setVisible(true);
-        updateDiseaseButton.setVisible(true);
-        deleteDiseaseButton.setVisible(true);
-    } else {
-        procedureDateSelector.setEditable(false);
-        procedureTextField.setEditable(false);
-        descriptionTextArea.setEditable(false);
-        addProcedureButton.setVisible(false);
-        removeProcedureButton.setVisible(false);
-        updateProceduresButton.setVisible(false);
-        modifyOrgansProcedureButton.setVisible(false);
+      Clinician = true;logOutButton.setVisible(false);
+    addDiseaseButton.setVisible(true);
+      updateDiseaseButton.setVisible(true);
+      deleteDiseaseButton.setVisible(true);}else {Clinician = false;
+            procedureDateSelector.setEditable(false);
+            procedureTextField.setEditable(false);
+            descriptionTextArea.setEditable(false);
+            addProcedureButton.setVisible(false);
+            removeProcedureButton.setVisible(false);
+            updateProceduresButton.setVisible(false);
+            modifyOrgansProcedureButton.setVisible(false);
         deleteButton.setVisible(false);
         addMedicationButton.setVisible(false);
         medicationTextField.setVisible(false);
-        backButton.setVisible(false);
-    }
+        backButton.setVisible(false);}
     //arbitrary default values
     //changeDeceasedStatus();
     undoButton.setVisible(true);
@@ -508,8 +507,10 @@ public class DonorController {
     Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
     alert.setContentText("Are you sure you want to delete this user?");
     Optional<ButtonType> result = alert.showAndWait();
+
     if (result.get() == ButtonType.OK) {
       application.deleteDonor(currentUser);
+      if (!Clinician){
       FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML/loginView.fxml"));
       Parent root = null;
       try {
@@ -524,7 +525,9 @@ public class DonorController {
       stage.setWidth(600);
       stage.setHeight(420);
       stage.show();
-
+      } else {
+        stage.close();
+      }
     }
   }
 
