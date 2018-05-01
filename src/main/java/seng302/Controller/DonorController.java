@@ -276,21 +276,22 @@ public class DonorController {
     //ageValue.setText("");
         //This is the place to set visable and invisable controls for Clinician vs User
     if (fromClinician) {
-      Clinician = true;logOutButton.setVisible(false);
-    addDiseaseButton.setVisible(true);
-      updateDiseaseButton.setVisible(true);
-      deleteDiseaseButton.setVisible(true);}else {Clinician = false;
-            procedureDateSelector.setEditable(false);
-            procedureTextField.setEditable(false);
-            descriptionTextArea.setEditable(false);
-            addProcedureButton.setVisible(false);
-            removeProcedureButton.setVisible(false);
-            updateProceduresButton.setVisible(false);
-            modifyOrgansProcedureButton.setVisible(false);
+        Clinician = true;logOutButton.setVisible(false);
+        addDiseaseButton.setVisible(true);
+        updateDiseaseButton.setVisible(true);
+        deleteDiseaseButton.setVisible(true);}else {Clinician = false;
+        procedureDateSelector.setEditable(false);
+        procedureTextField.setEditable(false);
+        descriptionTextArea.setEditable(false);
+        addProcedureButton.setVisible(false);
+        removeProcedureButton.setVisible(false);
+        updateProceduresButton.setVisible(false);
+        modifyOrgansProcedureButton.setVisible(false);
         deleteButton.setVisible(false);
         addMedicationButton.setVisible(false);
         medicationTextField.setVisible(false);
-        backButton.setVisible(false);}
+        backButton.setVisible(false);
+    }
     //arbitrary default values
     //changeDeceasedStatus();
     undoButton.setVisible(true);
@@ -298,7 +299,6 @@ public class DonorController {
     //warningLabel.setVisible(false);
     currentUser = user;
     contact = user.getContact();
-      donorNameLabel.setText(user.getName());
       ArrayList<Organs> donating;
       try {
         donating= new ArrayList<>(user.getDonorDetails().getOrgans());
