@@ -40,7 +40,7 @@ public class UndoRedoStacks {
         userClone.getDonorDetails().getOrgans().clear();
         if (user.getDonorDetails().getOrgans() != null) {
             for (Organs organ : user.getDonorDetails().getOrgans()) {
-                userClone.getDonorDetails().addOrgan(organ);
+                    userClone.getDonorDetails().addOrgan(organ);
             }
         }
 

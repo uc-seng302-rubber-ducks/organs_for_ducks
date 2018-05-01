@@ -93,6 +93,8 @@ public class User {
 
   private ArrayList<Disease> currentDiseases;
 
+  private OrganIntersection organIntersection;
+
 //  public User(java.time.LocalDate dateOfBirth, java.time.LocalDate dateOfDeath, String gender, double height, double weight,
 //              String bloodType,
 //              String currentAddress, String region, LocalDateTime timeCreated, String name,
@@ -140,6 +142,7 @@ public class User {
       this.previousMedicationTimes = new HashMap<>();
         this.donorDetails = new DonorDetails(this);
         this.receiverDetails = new ReceiverDetails(this);
+        this.organIntersection = new OrganIntersection(this);
 
       this.currentDiseases = new ArrayList<>();
       this.pastDiseases = new ArrayList<>();
@@ -201,6 +204,7 @@ public class User {
     this.nhi = nhi;
     this.donorDetails = new DonorDetails(this);
     this.receiverDetails = new ReceiverDetails(this);
+    this.organIntersection = new OrganIntersection(this);
     this.medicalProcedures = medicalProcedures;
     //TODO fix json reader
     try {
@@ -237,6 +241,7 @@ public class User {
 ////
 ////    this.donorDetails = new DonorDetails(this);
 ////    this.receiverDetails = new ReceiverDetails(this);
+////    this.organIntersection = new OrganIntersection(this);
 ////    //TODO fix json reader
 ////    //changes = JsonReader.importHistoryFromFile(this);
 //  }
@@ -268,6 +273,7 @@ public class User {
 
     this.donorDetails = new DonorDetails(this);
     this.receiverDetails = new ReceiverDetails(this);
+    this.organIntersection = new OrganIntersection(this);
     this.medicalProcedures =  new ArrayList<>();
     try {
       changes = JsonHandler.importHistoryFromFile(name);
@@ -294,6 +300,7 @@ public class User {
     this.medicalProcedures = new ArrayList<>();
     this.donorDetails = new DonorDetails(this);
     this.receiverDetails = new ReceiverDetails(this);
+    this.organIntersection = new OrganIntersection(this);
     changes = new ArrayList<>();
   }
 
@@ -312,6 +319,10 @@ public class User {
 
   public ReceiverDetails getReceiverDetails() {
     return receiverDetails;
+  }
+
+  public OrganIntersection getOrganIntersection() {
+    return organIntersection;
   }
 
   public void setReceiverDetails(ReceiverDetails receiverDetails) {

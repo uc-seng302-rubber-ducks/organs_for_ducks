@@ -64,6 +64,12 @@ public class OrganController {
             donating = new ArrayList<>();
         }
         currentlyDonating.setItems(FXCollections.observableList(donating));
+        if (!currentUser.getOrganIntersection().intersectionIsEmpty()){
+            for (Organs organ: currentUser.getOrganIntersection().getIntersection()) {
+                int index = currentlyDonating.getItems().indexOf(organ);
+                currentlyDonating.getSelectionModel().select(index);
+            }
+        }
         ArrayList<Organs> leftOverOrgans = new ArrayList<Organs>();
         Collections.addAll(leftOverOrgans, Organs.values());
         for (Organs o : donating){
@@ -81,11 +87,17 @@ public class OrganController {
         UndoRedoStacks.storeUndoCopy(currentUser);
         Organs toDonate = canDonate.getSelectionModel().getSelectedItem();
         if(toDonate != null) {
+            if (currentUser.getReceiverDetails().isCurrentlyWaitingFor(toDonate)) {
+                currentUser.getOrganIntersection().addOrganIntersection(toDonate);
+                int index = currentlyDonating.getItems().indexOf(toDonate);
+                currentlyDonating.getSelectionModel().select(index);
+            }
             currentlyDonating.getItems().add(toDonate);
             currentUser.getDonorDetails().addOrgan(toDonate);
             appController.update(currentUser);
             canDonate.getItems().remove(toDonate);
         }
+            UndoRedoStacks.storeUndoCopy(currentUser);
     }
 
     /**
@@ -96,6 +108,9 @@ public class OrganController {
         UndoRedoStacks.storeUndoCopy(currentUser);
         Organs toUndonate = currentlyDonating.getSelectionModel().getSelectedItem();
         if(toUndonate != null) {
+            if(currentUser.getOrganIntersection().organIsPresent(toUndonate)) {
+                currentUser.getOrganIntersection().removeOrganIntersection(toUndonate);
+            }
             currentlyDonating.getItems().remove(toUndonate);
             canDonate.getItems().add(toUndonate);
             currentUser.getDonorDetails().removeOrgan(toUndonate);
