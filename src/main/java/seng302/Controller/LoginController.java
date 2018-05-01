@@ -54,23 +54,23 @@ public class LoginController {
     private Stage stage;
 
   /**
-     * Initializes the Login controller.
-     * @param appController The applications controller.
-     * @param stage The applications stage.
-     */  public void init(AppController appController, Stage stage){
-        warningLabel.setText("");
-        this.appController = appController;
-        users = appController.getUsers();
-        this.stage = stage;
-        Scene scene = stage.getScene();
-        scene.setOnKeyPressed(e -> {
-        if (e.getCode() == KeyCode.ENTER) {
-                login(new ActionEvent());
-            }
-        });
-
-
-    }
+    * Initializes the Login controller.
+    * @param appController The applications controller.
+    * @param stage The applications stage.
+    */
+  public void init(AppController appController, Stage stage){
+    warningLabel.setText("");
+    this.appController = appController;
+    users = appController.getUsers();
+    this.stage = stage;
+    stage.setTitle("Login");
+    Scene scene = stage.getScene();
+    scene.setOnKeyPressed(e -> {
+    if (e.getCode() == KeyCode.ENTER) {
+            login(new ActionEvent());
+        }
+    });
+  }
 
     @FXML
     void changeUserButtonClicked() {

@@ -352,28 +352,8 @@ public class UpdateClinicianController {
         }
 
         if (valid && !newClinician) { // updates an existing clinician
-            // updates the attributes
-            if (!staffID.equals(currentClinician.getStaffId())) {
-                currentClinician.setStaffId(staffID);
-            }
-            if (fName != null && !fName.equals(currentClinician.getFirstName())) {
-                currentClinician.setFirstName(fName);
-            }
-            if (mName != null && !mName.equals(currentClinician.getMiddleName())) {
-                currentClinician.setMiddleName(mName);
-            }
-            if (lName != null && !lName.equals(currentClinician.getLastName())) {
-                currentClinician.setLastName(lName);
-            }
-            if (address != null && !address.equals(currentClinician.getWorkAddress())) {
-                currentClinician.setWorkAddress(address);
-            }
-            if (region != null && !region.equals(currentClinician.getRegion())) {
-                currentClinician.setRegion(region);
-            }
-            if (!password.equals(currentClinician.getPassword())) {
-                currentClinician.setPassword(password);
-            }
+            // updates the attributes that have changed
+            updateChanges(staffID, fName, mName, lName, address, region, password);
 
             currentClinician.setDateLastModified(LocalDateTime.now()); // updates the modified date
 
@@ -384,6 +364,51 @@ public class UpdateClinicianController {
             Clinician clinician = new Clinician(staffID, password, fName, mName, lName, address, region);
             controller.updateClinicians(clinician);
             loadOverview(clinician);
+        }
+    }
+
+    /**
+     * Only updates the values that have been changed.
+     */
+    private void updateChanges(String staffID, String fName, String mName, String lName, String address, String region, String password) {
+        if (!currentClinician.getStaffId().equals(staffID)) {
+            currentClinician.setStaffId(staffID);
+        }
+
+        if (!currentClinician.getPassword().equals(password)) {
+            currentClinician.setPassword(password);
+        }
+
+        if (!currentClinician.getFirstName().equals(fName)) {
+            currentClinician.setFirstName(fName);
+        }
+
+        String middle = currentClinician.getMiddleName();
+        if (middle != null && !middle.equals(mName)) {
+            currentClinician.setMiddleName(mName);
+        } else if (middle == null && mName != null) {
+            currentClinician.setMiddleName(mName);
+        }
+
+        String last = currentClinician.getLastName();
+        if (last != null && !last.equals(lName)) {
+            currentClinician.setLastName(mName);
+        } else if (last == null && lName != null) {
+            currentClinician.setLastName(lName);
+        }
+
+        String add = currentClinician.getWorkAddress();
+        if (add != null && !add.equals(address)) {
+            currentClinician.setWorkAddress(address);
+        } else if (add == null && address != null) {
+            currentClinician.setWorkAddress(address);
+        }
+
+        String reg = currentClinician.getRegion();
+        if (reg != null && !reg.equals(region)) {
+            currentClinician.setRegion(region);
+        } else if (reg == null && region != null) {
+            currentClinician.setRegion(region);
         }
     }
 

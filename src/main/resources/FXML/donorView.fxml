@@ -34,8 +34,6 @@
                         <Label fx:id="dodLabel" layoutX="15.0" layoutY="195.0" text="Date of Death:" />
                         <Label layoutX="15.0" layoutY="170.0" prefHeight="16.0" prefWidth="36.0" text="Age:" />
                         <Label layoutX="19.0" layoutY="204.0" />
-                        <Label layoutX="15.0" layoutY="355.0" text="Current Organs avalible for Donation" />
-                        <ListView fx:id="organsDonatingListView" layoutX="15.0" layoutY="384.0" prefHeight="171.0" prefWidth="267.0" />
                         <Button fx:id="undoButton" layoutX="758.0" layoutY="18.0" mnemonicParsing="false" onAction="#undo" text="Undo" />
                         <Button fx:id="redoButton" layoutX="822.0" layoutY="18.0" mnemonicParsing="false" onAction="#redo" text="Redo" />
                         <Separator layoutX="-13.0" layoutY="331.0" prefHeight="12.0" prefWidth="903.0" />

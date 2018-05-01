@@ -137,8 +137,8 @@ public class DonorController {
   @FXML
   private Label eName;
 
-  @FXML
-  private ListView<Organs> organsDonatingListView;
+    //@FXML
+    //private ListView<Organs> organsDonatingListView;
 
   @FXML
   private Button undoButton;
@@ -591,22 +591,25 @@ public class DonorController {
       } else {
         eAddress.setText("");
       }
+
       if (contact.getEmail() != null) {
         eEmail.setText(contact.getEmail());
-
       } else {
         eEmail.setText("");
       }
+
       if (contact.getHomePhoneNumber() != null) {
         eHomePhone.setText(contact.getHomePhoneNumber());
       } else {
         eHomePhone.setText("");
       }
+
       if (contact.getRegion() != null) {
         eRegion.setText(contact.getRegion());
       } else {
         eRegion.setText("");
       }
+
       if (contact.getRelationship() != null) {
         relationship.setText(contact.getRelationship());
       } else {
@@ -640,33 +643,33 @@ public class DonorController {
     }
 
 
-  }
-
-  /**
-   * fires when the Organs button is clicked
-   */
-  @FXML
-  private void modifyOrgans() {
-    if (currentUser.getDateOfBirth() == null) {
-      warningLabel.setVisible(true);
-      warningLabel.setText("Plese confirm donor before continuing");
-      return;
     }
-    FXMLLoader organLoader = new FXMLLoader(getClass().getResource("/FXML/organsView.fxml"));
-    Parent root = null;
-    try {
-      root = organLoader.load();
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-    OrganController organController = organLoader.getController();
-    Stage stage = new Stage();
-    stage.initModality(Modality.APPLICATION_MODAL);
-    organController.init(currentUser, application, stage);
-    stage.setScene(new Scene(root));
-    stage.show();
-    showUser(currentUser);
-  }
+//
+//    /**
+//     * fires when the Organs button is clicked
+//     */
+//    @FXML
+//    private void modifyOrgans() {
+//        if (currentUser.getDateOfBirth() == null) {
+//            warningLabel.setVisible(true);
+//            warningLabel.setText("Plese confirm donor before continuing");
+//            return;
+//        }
+//        FXMLLoader organLoader = new FXMLLoader(getClass().getResource("/FXML/organsView.fxml"));
+//        Parent root = null;
+//        try {
+//            root = organLoader.load();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        OrganController organController = organLoader.getController();
+//        Stage stage = new Stage();
+//        stage.initModality(Modality.APPLICATION_MODAL);
+//        organController.init(currentUser, application, stage);
+//        stage.setScene(new Scene(root));
+//        stage.show();
+//        showUser(currentUser);
+//    }
 
     /**
      * @param actionEvent An action event.
@@ -804,7 +807,6 @@ public class DonorController {
       } else {
         genderIdentityValue.setText("");
       }
-
       if (currentUser.getBirthGender() != null) {
         birthGenderValue.setText(currentUser.getBirthGender());
         if (currentUser.getGenderIdentity() == null || currentUser.getGenderIdentity()
@@ -820,6 +822,8 @@ public class DonorController {
             DODValue.setText(currentUser.getDateOfDeath().toString());
             ageDeathValue.setText(Long.toString(
                     ChronoUnit.YEARS.between(currentUser.getDateOfBirth(), currentUser.getDateOfDeath())) + " Years");
+        } else {
+            DODValue.setText("");
         }
       if (currentUser.getBloodType() != null) {
         bloodTypeValue.setText(currentUser.getBloodType());
@@ -852,7 +856,7 @@ public class DonorController {
       if (currentUser.getHeight() > 0 && currentUser.getWeight() > 0) {
             //TODO fix BMI kg/m^
             DecimalFormat df = new DecimalFormat("#.00");
-            double bmi = (currentUser.getWeight() / (currentUser.getHeight() * currentUser.getHeight())*10000);
+            double bmi = currentUser.getWeight() / (currentUser.getHeight() * currentUser.getHeight());
             String formattedBmi = df.format(bmi);
             bmiValue.setText(formattedBmi);
         } else {
@@ -883,7 +887,7 @@ public class DonorController {
       previousMeds.addAll(currentUser.getPreviousMedication());
       previousMedicationListView.setItems(previousMeds);
     }
-    organsDonatingListView.getItems().addAll(currentUser.getDonorDetails().getOrgans());
+    //organsDonatingListView.getItems().addAll(currentUser.getDonorDetails().getOrgans());
     setContactPage();
     medicalProcedures = FXCollections.observableList(currentUser.getMedicalProcedures());
     for (MedicalProcedure procedure : medicalProcedures) {
@@ -905,8 +909,8 @@ public class DonorController {
       previousMeds.addAll(currentUser.getPreviousMedication());
       previousMedicationListView.setItems(previousMeds);
     }
-    organsDonatingListView.getItems().clear();
-    organsDonatingListView.getItems().addAll(currentUser.getDonorDetails().getOrgans());
+    //organsDonatingListView.getItems().clear();
+    //organsDonatingListView.getItems().addAll(currentUser.getDonorDetails().getOrgans());
     setContactPage();
     if (user.getLastName() != null) {
       stage.setTitle("User Profile: " + user.getFirstName() + " " + user.getLastName());
