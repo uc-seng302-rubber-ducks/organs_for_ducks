@@ -22,6 +22,7 @@ import okhttp3.OkHttpClient;
 import org.controlsfx.control.textfield.TextFields;
 import seng302.Model.*;
 
+import javax.xml.ws.FaultAction;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -30,6 +31,8 @@ import java.util.*;
 public class DonorController {
 
     //the Home page attributes
+    @FXML
+    private Button backButton;
     @FXML
     private Label ageValue;
 
@@ -288,40 +291,46 @@ public class DonorController {
      */
     public void init(AppController controller, User user, Stage stage, Boolean fromClinician) {
 
-        this.stage = stage;
-        application = controller;
-        //ageValue.setText("");
-        if (fromClinician) {
-            logOutButton.setVisible(false);
-            addDiseaseButton.setVisible(true);
-            updateDiseaseButton.setVisible(true);
-            deleteDiseaseButton.setVisible(true);
-            logOutButton.setVisible(false);
-        } else {
-            procedureDateSelector.setEditable(false);
-            procedureTextField.setEditable(false);
-            descriptionTextArea.setEditable(false);
-            addProcedureButton.setVisible(false);
-            removeProcedureButton.setVisible(false);
-            updateProceduresButton.setVisible(false);
-            modifyOrgansProcedureButton.setVisible(false);
-            organLabel.setVisible(false);
-            organsComboBox.setVisible(false);
-            registerButton.setVisible(false);
-            reRegisterButton.setVisible(false);
-            deRegisterButton.setVisible(false);
-        }
-        //arbitrary default values
-        //changeDeceasedStatus();
-        undoButton.setVisible(true);
-        redoButton.setVisible(true);
-        //warningLabel.setVisible(false);
-        currentUser = user;
-        contact = user.getContact();
-        currentMeds = FXCollections.observableArrayList();
-        previousMeds = FXCollections.observableArrayList();
-        currentMedicationListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-        previousMedicationListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+    this.stage = stage;
+    application = controller;
+    //ageValue.setText("");
+        //This is the place to set visable and invisable controls for Clinician vs User
+    if (fromClinician) {
+        logOutButton.setVisible(false);
+        addDiseaseButton.setVisible(true);
+        updateDiseaseButton.setVisible(true);
+        deleteDiseaseButton.setVisible(true);
+    } else {
+        procedureDateSelector.setEditable(false);
+        procedureTextField.setEditable(false);
+        descriptionTextArea.setEditable(false);
+        addProcedureButton.setVisible(false);
+        removeProcedureButton.setVisible(false);
+        updateProceduresButton.setVisible(false);
+        modifyOrgansProcedureButton.setVisible(false);
+        deleteButton.setVisible(false);
+        addMedicationButton.setVisible(false);
+        medicationTextField.setVisible(false);
+        backButton.setVisible(false);
+        organLabel.setVisible(false);
+        organsComboBox.setVisible(false);
+        registerButton.setVisible(false);
+        reRegisterButton.setVisible(false);
+        deRegisterButton.setVisible(false);
+    }
+    //arbitrary default values
+    //changeDeceasedStatus();
+    undoButton.setVisible(true);
+    redoButton.setVisible(true);
+    //warningLabel.setVisible(false);
+    currentUser = user;
+    contact = user.getContact();
+
+    currentMeds = FXCollections.observableArrayList();
+
+    previousMeds = FXCollections.observableArrayList();
+    currentMedicationListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+    previousMedicationListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 
         //listeners to move meds from current <--> previous
         previousMeds.addListener((ListChangeListener.Change<? extends String> change) -> {
@@ -1444,4 +1453,10 @@ public class DonorController {
 
     }
 
+    @FXML
+    private void closeWindow(){
+        stage.close();
+    }
+
 }
+

@@ -222,7 +222,7 @@
                   </font>
               </Label>
               <Separator layoutY="278.0" prefHeight="3.0" prefWidth="600.0" />
-              <Label fx:id="errorLabel" layoutX="259.0" layoutY="674.0" prefHeight="42.0" prefWidth="226.0" text="Error in creating profile.&#10;Please make sure your details are correct." textFill="#c63636" visible="false" />
+              <Label fx:id="errorLabel" layoutX="81.0" layoutY="682.0" prefHeight="42.0" prefWidth="386.0" text="Label" textFill="#c63636" />
           </children>
       </AnchorPane>
    </content>
