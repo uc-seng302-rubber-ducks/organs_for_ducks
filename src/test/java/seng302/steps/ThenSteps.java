@@ -2,8 +2,10 @@ package seng302.steps;
 
 import cucumber.api.PendingException;
 import cucumber.api.java.en.Then;
+import org.testfx.matcher.control.LabeledMatchers;
 
 import static org.junit.Assert.assertEquals;
+import static org.testfx.api.FxAssert.verifyThat;
 import static seng302.Controller.TableViewsMethod.*;
 
 public class ThenSteps {
@@ -50,9 +52,8 @@ public class ThenSteps {
     }
 
     @Then("^I should see my NHI \"([^\"]*)\" along with my other details at the donor view screen")
-    public void theIShouldSeeMyNHIAlongWithMyOtherDetailsAtTheDonorViewScreen(String arg1) throws Throwable {
-        // Write code here that turns the phrase above into concrete actions
-        throw new PendingException();
+    public void theIShouldSeeMyNHIAlongWithMyOtherDetailsAtTheDonorViewScreen(String nhi) throws Throwable {
+        verifyThat("#NHIValue" ,LabeledMatchers.hasText(nhi));
     }
 
     @Then("^I should see an invalid date of birth, \"([^\"]*)\" error message$")

@@ -62,8 +62,8 @@ public class AttributeValidation {
      * A basic regular expression for validating NZ cell phone numbers.
      * Checks that the number has a minimum length of 9 digits or a max of 11 digits (including the leading '02').
      *
-     * @param cellNum
-     * @return
+     * @param cellNum The user input of a cell phone number to be validated.
+     * @return The given cell phone number if it is in the correct format, null otherwise.
      */
     public static String validateCellNumber(String cellNum) {
         if (cellNum.matches("^(02)[0-9]( |-)?[0-9]{3,4}( |-)?[0-9]{3,4}$")) {
@@ -169,8 +169,7 @@ public class AttributeValidation {
     public static String validateGender(ComboBox genderBox) {
         String gender = null;
 
-        if (genderBox.getValue() != null && genderBox.getValue().toString() != null && genderBox.getValue().toString() != "") {
-            System.out.println(genderBox.getValue().toString());
+        if (genderBox.getValue() != null && !genderBox.getValue().toString().equals("")) {
             gender = genderBox.getValue().toString();
         }
 

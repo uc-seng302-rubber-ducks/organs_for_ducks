@@ -106,6 +106,10 @@ public class OrganController {
     @FXML
     void undonate(ActionEvent event) {
         UndoRedoStacks.storeUndoCopy(currentUser);
+
+        if (!currentlyDonating.getSelectionModel().isEmpty()) {
+            Organs toUndonate = currentlyDonating.getSelectionModel().getSelectedItem();
+            if (toUndonate != null) {
         Organs toUndonate = currentlyDonating.getSelectionModel().getSelectedItem();
         if(toUndonate != null) {
             if(currentUser.getCommonOrgans().contains(toUndonate)) {
@@ -115,25 +119,27 @@ public class OrganController {
             canDonate.getItems().add(toUndonate);
             currentUser.getDonorDetails().removeOrgan(toUndonate);
             appController.update(currentUser);
+            }
         }
     }
 
-    /**
-     * @param event passed in automatically by the gui
-     */
-    @FXML
-    void goBack(ActionEvent event) {
-        AppController appController = AppController.getInstance();
-        DonorController donorController = appController.getDonorController();
-        try {
-            donorController.showUser(currentUser);
-        }
-        catch (NullPointerException ex) {
-            //TODO causes npe if donor is new in this session
-            //the text fields etc. are all null
-        }
-        stage.close();
-    }
+
+//    /**
+//     * @param event passed in automatically by the gui
+//     */
+//    @FXML
+//    void goBack(ActionEvent event) {
+//        AppController appController = AppController.getInstance();
+//        DonorController donorController = appController.getDonorController();
+//        try {
+//            donorController.showUser(currentUser);
+//        }
+//        catch (NullPointerException ex) {
+//            //TODO causes npe if donor is new in this session
+//            //the text fields etc. are all null
+//        }
+//        stage.close();
+//    }
 
 }
 

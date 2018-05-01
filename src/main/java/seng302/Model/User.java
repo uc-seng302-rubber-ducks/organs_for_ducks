@@ -155,53 +155,12 @@ public class User {
 
     }
 
-  public User(java.time.LocalDate dateOfBirth, java.time.LocalDate dateOfDeath, String gender,
-      double height, double weight,
-      String bloodType,
-      String currentAddress, String region, LocalDateTime timeCreated, String name,
-      LocalDateTime lastModified,
-      boolean isDeceased, String nhi, ArrayList<MedicalProcedure> medicalProcedures) {
+
+  public User(String name, java.time.LocalDate dateOfBirth, String nhi) {
     this.dateOfBirth = dateOfBirth;
-    this.dateOfDeath = dateOfDeath;
-    if (gender.startsWith("m") || gender.startsWith("M")) {
-      this.gender = "M";
-    } else if (gender.startsWith("f") || gender.startsWith("F")) {
-      this.gender = "F";
-    } else {
-      this.gender = "U";
-    }
-    this.height = height;
-    this.weight = weight;
-    this.bloodType = groupBloodType(bloodType);
-    this.currentAddress = currentAddress;
-    this.region = region;
-    if (timeCreated == null) {
-      this.timeCreated = LocalDateTime.now();
-    } else {
-      this.timeCreated = timeCreated;
-    }
-
-
     this.name = name;
-    if (lastModified == null) {
-      this.lastModified = LocalDateTime.now();
-    } else {
-      this.lastModified = lastModified;
-    }
-    this.isDeceased = isDeceased;
-    updateHistory = new HashMap<>();
-    updateHistory.put(dateToString(getTimeCreated()), "Profile created.");
-    this.miscAttributes = new ArrayList<>();
-    this.currentMedication = new ArrayList<>();
-    this.previousMedication = new ArrayList<>();
-    this.currentMedicationTimes = new HashMap<String, ArrayList<LocalDateTime>>();
-    this.previousMedicationTimes = new HashMap<String, ArrayList<LocalDateTime>>();
-
-    this.currentDiseases = new ArrayList<>();
-    this.pastDiseases = new ArrayList<>();
-
-    this.nhi = nhi;
     this.donorDetails = new DonorDetails(this);
+    this.firstName = name;
     this.receiverDetails = new ReceiverDetails(this);
     this.organIntersection = new OrganIntersection(this);
     this.medicalProcedures = medicalProcedures;
@@ -393,9 +352,9 @@ public class User {
         return preferredFirstName;
     }
 
-    public void setPrefFirstName(String name) {
+    public void setPreferredFirstName(String preferredFirstName) {
         updateLastModified();
-        this.preferredFirstName = name;
+        this.preferredFirstName = preferredFirstName;
     }
 
     public String getMiddleName() {
@@ -557,14 +516,6 @@ public class User {
 
   public void addPastDisease(Disease pastDisease) {
     this.pastDiseases.add(pastDisease);
-  }
-
-  public String getPreferredFirstName() {
-    return preferredFirstName;
-  }
-
-  public void setPreferredFirstName(String preferredFirstName) {
-    this.preferredFirstName = preferredFirstName;
   }
 
   public String getBirthGender() {
