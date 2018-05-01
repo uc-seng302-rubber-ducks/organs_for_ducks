@@ -1,21 +1,19 @@
 package seng302.Controller;
 
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import seng302.Model.Clinician;
 import seng302.Model.User;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import seng302.Model.User;
+
 import seng302.View.CLI;
 
 public class LoginController {
@@ -114,7 +112,7 @@ public class LoginController {
                 warningLabel.setText("Donor was not found. \nTo register a new donor please click sign up.");
                 return;}
 
-            FXMLLoader donorLoader = new FXMLLoader(getClass().getResource("/FXML/donorView.fxml"));
+            FXMLLoader donorLoader = new FXMLLoader(getClass().getResource("/FXML/userView.fxml"));
             Parent root = null;
             try {
                 root = donorLoader.load();
@@ -172,6 +170,7 @@ public class LoginController {
             e.printStackTrace();}
 
         stage.setScene(new Scene(root));
+        stage.setTitle("Create New User Profile");
         NewUserController donorController =  donorLoader.getController();
         donorController.init(AppController.getInstance(),  stage);
 

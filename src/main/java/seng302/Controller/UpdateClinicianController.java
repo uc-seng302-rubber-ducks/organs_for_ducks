@@ -124,6 +124,11 @@ public class UpdateClinicianController {
         }
     }
 
+    /**
+     * Prefills all the text fields as the attribute values.
+     * If the attributes are null, then the fields are set as empty strings.
+     * @param clinician The current clinician.
+     */
     private void prefillFields(Clinician clinician) {
         staffIDTextField.setText(clinician.getStaffId());
         passwordField.setText(clinician.getPassword());
@@ -218,7 +223,11 @@ public class UpdateClinicianController {
      */
     private void changesListener(TextField field) {
         field.textProperty().addListener((observable, oldValue, newValue) -> {
-            stage.setTitle("Update Clinician: " + currentClinician.getFirstName() + " *");
+            if (checkChanges()) { // checks if reverting a textfield change restores all fields to their original state
+                stage.setTitle("Update Clinician: " + currentClinician.getFirstName());
+            } else {
+                stage.setTitle("Update Clinician: " + currentClinician.getFirstName() + " *");
+            }
         });
     }
 
@@ -384,28 +393,28 @@ public class UpdateClinicianController {
         String middle = currentClinician.getMiddleName();
         if (middle != null && !middle.equals(mName)) {
             currentClinician.setMiddleName(mName);
-        } else if (mName == null) {
+        } else if (middle == null && mName != null) {
             currentClinician.setMiddleName(mName);
         }
 
         String last = currentClinician.getLastName();
         if (last != null && !last.equals(lName)) {
             currentClinician.setLastName(mName);
-        } else if (lName == null) {
+        } else if (last == null && lName != null) {
             currentClinician.setLastName(lName);
         }
 
         String add = currentClinician.getWorkAddress();
         if (add != null && !add.equals(address)) {
             currentClinician.setWorkAddress(address);
-        } else if (address == null) {
+        } else if (add == null && address != null) {
             currentClinician.setWorkAddress(address);
         }
 
         String reg = currentClinician.getRegion();
         if (reg != null && !reg.equals(region)) {
             currentClinician.setRegion(region);
-        } else if (region == null) {
+        } else if (reg == null && region != null) {
             currentClinician.setRegion(region);
         }
     }

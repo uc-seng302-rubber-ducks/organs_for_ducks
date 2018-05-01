@@ -7,17 +7,13 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
-import seng302.Model.BloodTypes;
-import seng302.Model.Donor;
 import seng302.Model.EmergencyContact;
 import seng302.Model.User;
 import seng302.Service.AttributeValidation;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.ArrayList;
-import java.util.Date;
 
 import static seng302.Model.JsonHandler.saveUsers;
 
@@ -284,7 +280,7 @@ public class NewUserController {
             saveUsers(users);
 
             // load to the overview page
-            FXMLLoader donorLoader = new FXMLLoader(getClass().getResource("/FXML/donorView.fxml"));
+            FXMLLoader donorLoader = new FXMLLoader(getClass().getResource("/FXML/userView.fxml"));
             Parent root = null;
 
             try {

@@ -89,6 +89,9 @@
                                   <String fx:value="Non Binary" />
                               </FXCollections>
                           </items>
+                          <value>
+                              <String fx:value="" />
+                          </value>
                       </ComboBox>
                       <ComboBox fx:id="genderIdComboBox" layoutX="141.0" layoutY="23.0" prefHeight="25.0" prefWidth="171.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
                           <items>
@@ -99,6 +102,9 @@
                                   <String fx:value="Non Binary" />
                               </FXCollections>
                           </items>
+                          <value>
+                              <String fx:value="" />
+                          </value>
                       </ComboBox>
                       <TextField fx:id="heightInput" prefHeight="25.0" prefWidth="375.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                       <TextField fx:id="weightInput" GridPane.columnIndex="1" GridPane.rowIndex="3" />
