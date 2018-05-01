@@ -157,7 +157,8 @@ public class UpdateUserController {
     undoButton.setDisable(true);
     redoButton.setDisable(true);
     errorLabel.setText("");
-    undoMarker = currentUser.getUndoStack().size();if (user.getLastName() != null) {
+    undoMarker = currentUser.getUndoStack().size();
+    if (user.getLastName() != null) {
       stage.setTitle("Update User: " + user.getFirstName() + " " + user.getLastName());
     } else {
       stage.setTitle("Update User: " + user.getFirstName());
@@ -231,6 +232,7 @@ public class UpdateUserController {
     });
 
   }
+  
 
   /**
    * Changes the title bar to add/remove an asterisk when the smoker checkbox is
@@ -506,42 +508,63 @@ public class UpdateUserController {
     //contact
     if (user.getCurrentAddress() != null) {
       addressInput.setText(user.getCurrentAddress());
+    } else {
+      addressInput.setText("");
     }
     if (user.getRegion() != null) {
       regionInput.setText(user.getRegion());
+    } else {
+      regionInput.setText("");
     }
     if (user.getCellPhone() != null) {
       cellInput.setText(user.getCellPhone());
+    } else {
+      cellInput.setText("");
     }
     if (user.getHomePhone() != null) {
       phoneInput.setText(user.getHomePhone());
+    } else {
+      phoneInput.setText("");
     }
     if (user.getEmail() != null) {
       emailInput.setText(user.getEmail());
+    } else {
+      emailInput.setText("");
     }
     //ec
     if (user.getContact() != null) {
       if (user.getContact().getName() != null) {
         ecNameInput.setText(user.getContact().getName());
+      } else {
+        ecNameInput.setText("");
       }
       if (user.getContact().getRelationship() != null) {
         ecRelationshipInput.setText(user.getContact().getRelationship());
+      } else {
+        ecRelationshipInput.setText("");
       }
       if (user.getContact().getRegion() != null) {
         ecRegionInput.setText(user.getContact().getRegion());
+      } else {
+        ecRegionInput.setText("");
       }
       if (user.getContact().getHomePhoneNumber() != null) {
         ecPhoneInput.setText(user.getContact().getHomePhoneNumber());
+      } else {
+        ecPhoneInput.setText("");
       }
       if (user.getContact().getEmail() != null) {
         ecEmailInput.setText(user.getContact().getEmail());
       }
       if (user.getContact().getAddress() != null) {
         ecAddressInput.setText(user.getContact().getAddress());
-
+      } else {
+        ecAddressInput.setText("");
       }
       if (user.getContact().getCellPhoneNumber() != null) {
         ecCellInput.setText(user.getContact().getCellPhoneNumber());
+      } else {
+        ecCellInput.setText("");
       }
     }
     //h
@@ -549,6 +572,8 @@ public class UpdateUserController {
         .setValue(user.getAlcoholConsumption() == null ? "None" : user.getAlcoholConsumption());
     if (user.isSmoker()) {
       smokerCheckBox.setSelected(true);
+    } else {
+      smokerCheckBox.setSelected(false);
     }
     if (user.getBloodType() != null) {
       bloodComboBox.setValue(user.getBloodType());
@@ -688,30 +713,30 @@ public class UpdateUserController {
       changed = true;
     }
 
-        if (!weightInput.getText().equals("")) {
-          try {
-            if (Double.parseDouble(weightInput.getText()) != currentUser.getWeight()) {
-              currentUser.setWeight(Double.parseDouble(weightInput.getText()));
-              changed = true;
+    if (!weightInput.getText().equals("")) {
+      try {
+        if (Double.parseDouble(weightInput.getText()) != currentUser.getWeight()) {
+          currentUser.setWeight(Double.parseDouble(weightInput.getText()));
+          changed = true;
         }
-          } catch (NumberFormatException e){
-            errorLabel.setText("Weight must be a valid number");
-            throw e;
-          }
+      } catch (NumberFormatException e) {
+        errorLabel.setText("Weight must be a valid number");
+        throw e;
+      }
 
+    }
+    if (!heightInput.getText().equals("")) {
+      try {
+        if (Double.parseDouble(heightInput.getText()) != currentUser.getHeight()) {
+          currentUser.setHeight(Double.parseDouble(heightInput.getText()));
+          changed = true;
         }
-        if (!heightInput.getText().equals("")) {
-            try {
-              if (Double.parseDouble(heightInput.getText()) != currentUser.getHeight()) {
-                currentUser.setHeight(Double.parseDouble(heightInput.getText()));
-                changed = true;
-              }
-            } catch (NumberFormatException e){
-                errorLabel.setText("Height must be a number");
-              throw e;
-            }
-        }
-        return changed;
+      } catch (NumberFormatException e) {
+        errorLabel.setText("Height must be a number");
+        throw e;
+      }
+    }
+    return changed;
   }
 
 
@@ -790,25 +815,20 @@ public class UpdateUserController {
 
     appController.update(currentUser);
 
-
-      Memento<User> sumChanges = new Memento<>();
-      System.out.println(undoMarker);
+    Memento<User> sumChanges = new Memento<>();
+    System.out.println(undoMarker);
+    System.out.println(currentUser.getUndoStack().size());
+    while (currentUser.getUndoStack().size() > undoMarker + 1) {
       System.out.println(currentUser.getUndoStack().size());
-      while (currentUser.getUndoStack().size() > undoMarker + 1) {
-          System.out.println(currentUser.getUndoStack().size());
-          currentUser.getUndoStack().pop();
-      }
+      currentUser.getUndoStack().pop();
+    }
     sumChanges.setOldObject(currentUser.getUndoStack().peek().getOldObject().clone());
     currentUser.getUndoStack().pop();
     sumChanges.setNewObject(currentUser.clone());
-      currentUser.getUndoStack().push(sumChanges);
-      System.out.println(sumChanges);
+    currentUser.getUndoStack().push(sumChanges);
+    System.out.println(sumChanges);
     //ArrayList<Change> diffs = appController.differanceInDonors(oldUser, currentUser);
     //changelog.addAll(diffs);
-    if (changed) {
-      currentUser.getRedoStack().clear(); // clear the redo stack if anything is changed.
-
-    }
     AppController appController = AppController.getInstance();
     DonorController donorController = appController.getDonorController();
     try {
@@ -849,10 +869,12 @@ public class UpdateUserController {
     changed |= getContactDetails();
     changed |= getEmergencyContact();
     if (changed) {
-        appController.update(currentUser);
-        setUserDetails(currentUser);
+      appController.update(currentUser);
+      setUserDetails(currentUser);
+      currentUser.getRedoStack().clear();
     }
     undoButton.setDisable(currentUser.getUndoStack().isEmpty());
+    redoButton.setDisable(currentUser.getRedoStack().isEmpty());
   }
 
   /**
