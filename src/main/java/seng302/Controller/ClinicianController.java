@@ -442,4 +442,21 @@ public class ClinicianController {
     expandButton.setText(filterVisible ? "▲" : "▼");
   }
 
+  @FXML
+  public void loadRecentlyDeleted(ActionEvent actionEvent) {
+    FXMLLoader deletedUserLoader = new FXMLLoader(
+        getClass().getResource("/FXML/deletedUsersView.fxml"));
+    Parent root = null;
+    try {
+      root = deletedUserLoader.load();
+      DeletedUserController deletedUserController = deletedUserLoader.getController();
+      Stage stage = new Stage();
+      stage.setScene(new Scene(root));
+      deletedUserController.init();
+      stage.initModality(Modality.APPLICATION_MODAL);
+      stage.showAndWait();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
 }

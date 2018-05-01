@@ -40,12 +40,14 @@ import javafx.stage.Stage;
 import javafx.util.StringConverter;
 import okhttp3.OkHttpClient;
 import org.controlsfx.control.textfield.TextFields;
-import okhttp3.OkHttpClient;
-import seng302.Model.*;
-
-import javax.xml.ws.FaultAction;
-import java.io.IOException;
-import java.util.*;
+import seng302.Model.Change;
+import seng302.Model.Disease;
+import seng302.Model.EmergencyContact;
+import seng302.Model.HttpRequester;
+import seng302.Model.MedicalProcedure;
+import seng302.Model.Organs;
+import seng302.Model.UndoRedoStacks;
+import seng302.Model.User;
 
 public class DonorController {
 
@@ -277,18 +279,20 @@ public class DonorController {
   private EmergencyContact contact = null;
   private ObservableList<Change> changelog;
   private OkHttpClient client = new OkHttpClient();
+  private boolean fromClinician = false;
 
   /**
    * Gives the donor view the application controller and hides all label and buttons that are not
    * needed on opening
    */
-  public void init(AppController controller, User user, Stage stage, Boolean fromClinician) {
+  public void init(AppController controller, User user, Stage stage, boolean fromClinician) {
 
     this.stage = stage;
     application = controller;
     //ageValue.setText("");
         //This is the place to set visable and invisable controls for Clinician vs User
     if (fromClinician) {
+      this.fromClinician = fromClinician;
         logOutButton.setVisible(false);
         addDiseaseButton.setVisible(true);
         updateDiseaseButton.setVisible(true);
@@ -569,13 +573,17 @@ public class DonorController {
       } catch (IOException e) {
         e.printStackTrace();
       }
-      LoginController loginController = loader.getController();
-      loginController.init(AppController.getInstance(), stage);
-      stage.setScene(new Scene(root));
-      stage.setTitle("");
-      stage.setWidth(600);
-      stage.setHeight(420);
-      stage.show();
+      if (!fromClinician) {
+        LoginController loginController = loader.getController();
+        loginController.init(AppController.getInstance(), stage);
+        stage.setScene(new Scene(root));
+        stage.setTitle("");
+        stage.setWidth(600);
+        stage.setHeight(420);
+        stage.show();
+      } else {
+        stage.close();
+      }
 
     }
   }
@@ -691,45 +699,6 @@ public class DonorController {
       e.printStackTrace();
     }
   }
-
-//    @FXML 22.9kg/m2
-//    private void changeDeceasedStatus() {
-//        if (!isDonorDeceasedCheckBox.isSelected()) {
-//            dateOfDeathPicker.setVisible(false);
-//            dodLabel.setVisible(false);
-//        } else {
-//            dodLabel.setVisible(true);
-//            dateOfDeathPicker.setVisible(true);
-//        }
-//
-//    }
-
-//    /**
-//     * fires when the Misc button is clicked
-//     */
-//    @FXML
-//    private void modifyMiscAttributes() {
-//        if (currentUser.getDateOfBirth() == null) {
-//            warningLabel.setVisible(true);
-//            warningLabel.setText("Plese confirm donor before continuing");
-//            return;
-//        }
-//        FXMLLoader attributeLoader = new FXMLLoader(
-//                getClass().getResource("/FXML/miscAttributes.fxml"));
-//        Parent root = null;
-//        try {
-//            root = attributeLoader.load();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        MiscAttributesController miscAttributesController = attributeLoader.getController();
-//        Stage stage = new Stage();
-//        miscAttributesController.init(currentUser, application, stage);
-//        stage.setScene(new Scene(root));
-//        stage.show();
-//        miscAttributeslistView.getItems().clear();
-//        miscAttributeslistView.getItems().addAll(currentUser.getMiscAttributes());
-//    }
 
   /**
    * fires when the Undo button is clicked
