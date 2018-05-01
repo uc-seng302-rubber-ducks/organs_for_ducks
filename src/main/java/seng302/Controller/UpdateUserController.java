@@ -187,6 +187,8 @@ public class UpdateUserController {
     datePickerListener(dobInput);
     datePickerListener(dodInput);
 
+    addCheckBoxListener(smokerCheckBox);
+
     final KeyCombination shortcutZ = new KeyCodeCombination(
         KeyCode.Z, KeyCombination.SHORTCUT_DOWN);
 
@@ -204,6 +206,14 @@ public class UpdateUserController {
     });
   }
 
+  private void update() {
+    if (checkChanges()) {
+      stage.setTitle("Update User: " + currentUser.getFirstName());
+    } else {
+      stage.setTitle("Update User: " + currentUser.getFirstName() + " *");
+    }
+    updateUndos();
+  }
   /**
    * Changes the title bar to add/remove an asterisk when a change was detected on the date picker.
    *
@@ -211,12 +221,13 @@ public class UpdateUserController {
    */
   private void datePickerListener(DatePicker dp) {
     dp.valueProperty().addListener((observable, oldValue, newValue) -> {
-      if (checkChanges()) {
-        stage.setTitle("Update User: " + currentUser.getFirstName());
-      } else {
-        stage.setTitle("Update User: " + currentUser.getFirstName() + " *");
-      }
-      updateUndos();
+      update();
+    });
+  }
+
+  private void addCheckBoxListener(CheckBox dp) {
+    dp.selectedProperty().addListener((observable, oldValue, newValue) -> {
+      update();
     });
   }
 
@@ -227,33 +238,9 @@ public class UpdateUserController {
    */
   private void comboBoxListener(ComboBox cb) {
     cb.valueProperty().addListener((observable, oldValue, newValue) -> {
-      if (checkChanges()) {
-        stage.setTitle("Update User: " + currentUser.getFirstName());
-      } else {
-        stage.setTitle("Update User: " + currentUser.getFirstName() + " *");
-      }
-      updateUndos();
+      update();
     });
 
-  }
-
-
-  /**
-   * Changes the title bar to add/remove an asterisk when the smoker checkbox is
-   * selected/unselected.
-   *
-   * @param event The user selecting/deselecting the check box.
-   */
-  @FXML
-  private void smokerClicked(ActionEvent event) {
-    if (currentUser.isSmoker() == smokerCheckBox.isSelected()) {
-      if (checkChanges()) {
-        stage.setTitle("Update User: " + currentUser.getFirstName());
-      }
-    } else {
-      stage.setTitle("Update User: " + currentUser.getFirstName() + " *");
-    }
-    updateUndos();
   }
 
   /**
@@ -263,8 +250,7 @@ public class UpdateUserController {
    */
   private void textFieldListener(TextField field) {
     field.textProperty().addListener((observable, oldValue, newValue) -> {
-      stage.setTitle("Update User: " + currentUser.getFirstName() + " *");
-      updateUndos();
+      update();
     });
   }
 

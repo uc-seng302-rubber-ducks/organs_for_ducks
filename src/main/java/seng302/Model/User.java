@@ -956,9 +956,13 @@ public class User extends Undoable<User> {
     newUser.homePhone = this.homePhone;
     newUser.cellPhone = this.cellPhone;
     newUser.email = this.email;
-    newUser.contact = new EmergencyContact(this.contact.getName(), this.contact.getCellPhoneNumber(),
-            this.contact.getHomePhoneNumber(), this.contact.getRegion(), this.contact.getAddress(),
-            this.contact.getEmail(), this.contact.getRelationship(), newUser);
+    if (this.contact != null) {
+      newUser.contact = new EmergencyContact(this.contact.getName(), this.contact.getCellPhoneNumber(),
+              this.contact.getHomePhoneNumber(), this.contact.getRegion(), this.contact.getAddress(),
+              this.contact.getEmail(), this.contact.getRelationship(), newUser);
+    } else {
+      newUser.contact = null;
+    }
 
     newUser.name = this.name;
     newUser.firstName = this.firstName;

@@ -22,9 +22,10 @@ public class UndoDonorTest extends ApplicationTest {
     FxToolkit.registerPrimaryStage();
     FxToolkit.setupApplication(App.class);
     AppController.getInstance().getUsers().clear();
-    User user = new User("A", LocalDate.now(), "ABC1234");
-    user.setFirstName("Adam");
-    user.setLastName("");
+    User user = new User("ABC1234", LocalDate.now().minusDays(2), LocalDate.now(), "", "", 0, 0,
+            "B+", "None", false, "", "", "", "", "",
+            null,
+            "Adam", "Adam", "Adam", "", "");
     user.setContact(new EmergencyContact("", "", user));
     user.getUndoStack().clear();
     AppController.getInstance().getUsers().add(user);
@@ -159,7 +160,7 @@ public class UndoDonorTest extends ApplicationTest {
 
     clickOn("#editDetailsButton");
     clickOn("#cellInput");
-    write("0800838383");
+    write("0200838013");
     clickOn("#confirmButton");
 
     clickOn("#undoButton");

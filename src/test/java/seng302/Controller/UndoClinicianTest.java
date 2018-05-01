@@ -5,21 +5,22 @@ import static org.junit.Assert.fail;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.testfx.framework.junit.ApplicationTest;
 import seng302.Model.Clinician;
 
-public class UndoClinicianTest {
+public class UndoClinicianTest extends ApplicationTest {
 
   private Clinician testUser;
 
   @Before
   public void setUp() {
     testUser = new Clinician("Staff1", "password", "John", "Angus", "McGurkinshaw",
-        "20 Kirkwood Ave", "Caterbury");
+        "20 Kirkwood Ave", "Canterbury");
   }
 
   @Test
   public void testSingleChangeSingleUndo() {
-
+    clickOn();
   }
 
   @Test
