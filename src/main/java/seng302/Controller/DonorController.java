@@ -341,7 +341,6 @@ public class DonorController {
                 .addListener(((observable, oldValue, newValue) -> {
                     ObservableList<String> selected = previousMedicationListView.getSelectionModel()
                             .getSelectedItems();
-                    System.out.println(selected);
                     displayDetails(selected);
                 }));
         currentMedicationListView.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -426,7 +425,6 @@ public class DonorController {
         } else {
             changelog = FXCollections.observableArrayList(new ArrayList<Change>());
         }
-        //System.out.println(changelog);
         changelog.addListener((ListChangeListener.Change<? extends Change> change) -> historyTableView.setItems(changelog));
         medicationTextField.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
@@ -650,7 +648,6 @@ public class DonorController {
     private void updateDetails(ActionEvent actionEvent) throws IOException, InterruptedException {
         FXMLLoader updateLoader = new FXMLLoader(getClass().getResource("/FXML/updateUser.fxml"));
         Parent root = null;
-        System.out.println(updateLoader);
         try {
             root = updateLoader.load();
             UpdateUserController updateUserController = updateLoader.getController();

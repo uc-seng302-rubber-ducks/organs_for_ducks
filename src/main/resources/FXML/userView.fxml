@@ -22,7 +22,7 @@
    <children>
       <TabPane layoutY="38.0" prefHeight="639.0" prefWidth="894.0" rotateGraphic="true" tabClosingPolicy="UNAVAILABLE">
         <tabs>
-          <Tab text="Donor">
+          <Tab text="User Profile">
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="643.0" prefWidth="776.0">
                      <children>
@@ -71,7 +71,7 @@
                         <Label layoutX="15.0" layoutY="270.0" text="Gender Identity:" />
                         <Label fx:id="genderIdentityValue" layoutX="130.0" layoutY="273.0" />
                         <Button fx:id="deleteUser" layoutX="396.0" layoutY="570.0" mnemonicParsing="false" onAction="#delete" text="Delete User" />
-                        <Button fx:id="backButton" layoutX="118.0" layoutY="570.0" mnemonicParsing="false" onAction="#closeWindow" text="Back" />
+                        <Button fx:id="backButton" layoutX="14.0" layoutY="570.0" mnemonicParsing="false" onAction="#closeWindow" text="Back" />
                      </children>
                   </AnchorPane>
             </content>
@@ -181,7 +181,7 @@
                   </AnchorPane>
               </content>
             </Tab>
-            <Tab fx:id="organsTab" text="organs to donate">
+            <Tab fx:id="organsTab" text="Donation">
               <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
@@ -197,7 +197,7 @@
             </Tab>
         </tabs>
       </TabPane>
-      <Label layoutX="256.0" layoutY="3.0" text="Donor">
+      <Label alignment="CENTER" layoutY="3.0" prefHeight="35.0" prefWidth="894.0" text="User">
          <font>
             <Font size="29.0" />
          </font>
