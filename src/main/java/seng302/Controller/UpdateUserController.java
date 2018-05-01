@@ -484,10 +484,14 @@ public class UpdateUserController {
     nhiInput.setText(user.getNhi());
     if (user.getLastName() != null) {
       lNameInput.setText(user.getLastName());
+    } else {
+      lNameInput.setText("");
     }
 
     if (user.getMiddleName() != null) {
       mNameInput.setText(user.getMiddleName());
+    } else {
+      mNameInput.setText("");
     }
 
     if (user.getPreferredFirstName() != null) {
@@ -497,9 +501,7 @@ public class UpdateUserController {
     }
 
     dobInput.setValue(user.getDateOfBirth());
-    if (user.getDateOfDeath() != null) {
-      dodInput.setValue(user.getDateOfDeath());
-    }
+    dodInput.setValue(user.getDateOfDeath());
 
     //contact
     if (user.getCurrentAddress() != null) {
