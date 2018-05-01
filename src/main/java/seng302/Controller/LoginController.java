@@ -170,6 +170,7 @@ public class LoginController {
             e.printStackTrace();}
 
         stage.setScene(new Scene(root));
+        stage.setTitle("Create New User Profile");
         NewUserController donorController =  donorLoader.getController();
         donorController.init(AppController.getInstance(),  stage);
 
