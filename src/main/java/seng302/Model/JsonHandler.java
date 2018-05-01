@@ -71,7 +71,9 @@ public final class JsonHandler {
 
         for (User result : results) {
             result.getDonorDetails().setAttachedUser(result);
-            result.getContact().setAttachedUser(result);
+            if (result.getContact() != null) {
+                result.getContact().setAttachedUser(result);
+            }
             //TODO probably do the same with Receiver details
         }
         return results;
