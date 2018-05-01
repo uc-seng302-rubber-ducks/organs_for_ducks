@@ -126,7 +126,6 @@ public class UpdateUserController {
     private Stage stage;
     private AppController appController;
     private User currentUser;
-    private User oldUser;
 
 
     /**
@@ -141,7 +140,6 @@ public class UpdateUserController {
         this.appController = controller;
         //UndoRedoStacks.storeUndoCopy(currentUser);
         currentUser = user;
-        oldUser = new User();
         setUserDetails(currentUser);
         errorLabel.setText("");
         if (user.getLastName() != null) {
@@ -950,23 +948,6 @@ public class UpdateUserController {
             }
             stage.close();
         }
-    }
-
-    /**
-     * @param actionEvent passed in automatically by the gui
-     */
-    @FXML
-    public void cancelCreation(ActionEvent actionEvent){
-        AppController appController = AppController.getInstance();
-        DonorController donorController = appController.getDonorController();
-        try {
-            donorController.showUser(currentUser);
-        }
-        catch (NullPointerException ex) {
-            //TODO causes npe if donor is new in this session
-            //the text fields etc. are all null
-        }
-        stage.close();
     }
 
     /**
