@@ -22,7 +22,7 @@ public class AttributeValidation {
      * @return The NHI as a string if it matches the correct format, null otherwise.
      */
     public static String validateNHI(String nhi) {
-        if (nhi.matches("[A-Z]{3}[0-9]{4}")) {
+        if (nhi.matches("[A-Za-z]{3}[0-9]{4}")) {
             return nhi;
         }
         return null;

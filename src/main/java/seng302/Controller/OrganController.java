@@ -79,8 +79,8 @@ public class OrganController {
     @FXML
     void donate(ActionEvent event) {
         UndoRedoStacks.storeUndoCopy(currentUser);
-        if (!canDonate.getSelectionModel().isEmpty()){
-            Organs toDonate = canDonate.getSelectionModel().getSelectedItem();
+        Organs toDonate = canDonate.getSelectionModel().getSelectedItem();
+        if(toDonate != null) {
             currentlyDonating.getItems().add(toDonate);
             currentUser.getDonorDetails().addOrgan(toDonate);
             appController.update(currentUser);
@@ -94,13 +94,11 @@ public class OrganController {
     @FXML
     void undonate(ActionEvent event) {
         UndoRedoStacks.storeUndoCopy(currentUser);
-        if (!currentlyDonating.getSelectionModel().isEmpty()) {
-            Organs toUndonate = currentlyDonating.getSelectionModel().getSelectedItem();
-            currentlyDonating.getItems().remove(toUndonate);
-            canDonate.getItems().add(toUndonate);
-            currentUser.getDonorDetails().removeOrgan(toUndonate);
-            appController.update(currentUser);
-        }
+        if (!currentlyDonating.getSelectionModel().isEmpty()) {Organs toUndonate = currentlyDonating.getSelectionModel().getSelectedItem();
+        if(toUndonate != null) {currentlyDonating.getItems().remove(toUndonate);
+        canDonate.getItems().add(toUndonate);
+        currentUser.getDonorDetails().removeOrgan(toUndonate);
+        appController.update(currentUser);}
     }
 
     /**

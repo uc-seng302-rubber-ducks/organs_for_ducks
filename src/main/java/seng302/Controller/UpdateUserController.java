@@ -143,6 +143,7 @@ public class UpdateUserController {
         currentUser = user;
         oldUser = new User();
         setUserDetails(currentUser);
+        errorLabel.setText("");
         if (user.getLastName() != null) {
           stage.setTitle("Update User: " + user.getFirstName() +" " + user.getLastName());
         } else {
