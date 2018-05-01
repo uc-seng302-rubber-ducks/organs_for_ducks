@@ -8,13 +8,12 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.stage.Stage;
-import seng302.Model.Donor;
 import seng302.Model.Organs;
 import seng302.Model.UndoRedoStacks;
+import seng302.Model.User;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import seng302.Model.User;
 
 /**
  * class for the Organs view
@@ -109,8 +108,6 @@ public class OrganController {
 
         if (!currentlyDonating.getSelectionModel().isEmpty()) {
             Organs toUndonate = currentlyDonating.getSelectionModel().getSelectedItem();
-            if (toUndonate != null) {
-        Organs toUndonate = currentlyDonating.getSelectionModel().getSelectedItem();
         if(toUndonate != null) {
             if(currentUser.getCommonOrgans().contains(toUndonate)) {
                 currentUser.getCommonOrgans().remove(toUndonate);

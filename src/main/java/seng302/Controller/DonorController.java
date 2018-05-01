@@ -1,11 +1,6 @@
 package seng302.Controller;
 
 
-import java.time.LocalDate;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
-import java.time.temporal.ChronoUnit;
-
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -25,11 +20,12 @@ import javafx.stage.Stage;
 import javafx.util.StringConverter;
 import okhttp3.OkHttpClient;
 import org.controlsfx.control.textfield.TextFields;
-import okhttp3.OkHttpClient;
 import seng302.Model.*;
 
-import javax.xml.ws.FaultAction;
 import java.io.IOException;
+import java.text.DecimalFormat;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 public class DonorController {
@@ -1052,14 +1048,14 @@ public class DonorController {
             previousMeds.addAll(currentUser.getPreviousMedication());
             previousMedicationListView.setItems(previousMeds);
         }
-        organsDonatingListView.getItems().addAll(currentUser.getDonorDetails().getOrgans());
-        if (!currentUser.getCommonOrgans().isEmpty()) {
-            for (Organs organ: currentUser.getCommonOrgans()) {
-                int index = organsDonatingListView.getItems().indexOf(organ);
-                organsDonatingListView.getSelectionModel().select(index);
-                //TODO change the colour of the font when selected to make it more readable
-            }
-        }
+//        organsDonatingListView.getItems().addAll(currentUser.getDonorDetails().getOrgans());
+//        if (!currentUser.getCommonOrgans().isEmpty()) {
+//            for (Organs organ: currentUser.getCommonOrgans()) {
+//                int index = organsDonatingListView.getItems().indexOf(organ);
+//                organsDonatingListView.getSelectionModel().select(index);
+//                //TODO change the colour of the font when selected to make it more readable
+//            }
+//        }
         //organsDonatingListView.getItems().addAll(currentUser.getDonorDetails().getOrgans());
         setContactPage();
         medicalProcedures = FXCollections.observableList(currentUser.getMedicalProcedures());
@@ -1084,13 +1080,13 @@ public class DonorController {
     }
     //organsDonatingListView.getItems().clear();
     //organsDonatingListView.getItems().addAll(currentUser.getDonorDetails().getOrgans());
-        if (!currentUser.getCommonOrgans().isEmpty()) {
-            for (Organs organ: currentUser.getCommonOrgans()) {
-                int index = organsDonatingListView.getItems().indexOf(organ);
-                organsDonatingListView.getSelectionModel().select(index);
-                //TODO change the colour of the font when selected to make it more readable
-            }
-        }
+//        if (!currentUser.getCommonOrgans().isEmpty()) {
+//            for (Organs organ: currentUser.getCommonOrgans()) {
+//                int index = organsDonatingListView.getItems().indexOf(organ);
+//                organsDonatingListView.getSelectionModel().select(index);
+//                //TODO change the colour of the font when selected to make it more readable
+//            }
+//        }
     setContactPage();
     if (user.getLastName() != null) {
       stage.setTitle("User Profile: " + user.getFirstName() + " " + user.getLastName());
