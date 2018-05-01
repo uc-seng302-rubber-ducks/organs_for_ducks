@@ -501,7 +501,7 @@ public class DonorController {
             });
         }
         //TODO add similar functionality for donor table
-        for (Organs organ: currentUser.getOrganIntersection().getIntersection()) {
+        for (Organs organ: currentUser.getCommonOrgans()) {
             int index = currentlyReceivingListView.getItems().indexOf(organ);
             currentlyReceivingListView.getSelectionModel().select(index);
             //TODO change the colour of the font when selected to make it more readable
@@ -936,8 +936,8 @@ public class DonorController {
             previousMedicationListView.setItems(previousMeds);
         }
         organsDonatingListView.getItems().addAll(currentUser.getDonorDetails().getOrgans());
-        if (!currentUser.getOrganIntersection().intersectionIsEmpty()) {
-            for (Organs organ: currentUser.getOrganIntersection().getIntersection()) {
+        if (!currentUser.getCommonOrgans().isEmpty()) {
+            for (Organs organ: currentUser.getCommonOrgans()) {
                 int index = organsDonatingListView.getItems().indexOf(organ);
                 organsDonatingListView.getSelectionModel().select(index);
                 //TODO change the colour of the font when selected to make it more readable
@@ -966,8 +966,8 @@ public class DonorController {
     }
     organsDonatingListView.getItems().clear();
     organsDonatingListView.getItems().addAll(currentUser.getDonorDetails().getOrgans());
-        if (!currentUser.getOrganIntersection().intersectionIsEmpty()) {
-            for (Organs organ: currentUser.getOrganIntersection().getIntersection()) {
+        if (!currentUser.getCommonOrgans().isEmpty()) {
+            for (Organs organ: currentUser.getCommonOrgans()) {
                 int index = organsDonatingListView.getItems().indexOf(organ);
                 organsDonatingListView.getSelectionModel().select(index);
                 //TODO change the colour of the font when selected to make it more readable
@@ -1324,7 +1324,7 @@ public class DonorController {
             currentUser.getReceiverDetails().startWaitingForOrgan(toRegister);
             currentlyReceivingListView.getItems().add(toRegister);
             if (currentUser.getReceiverDetails().isDonatingThisOrgan(toRegister)) {
-                currentUser.getOrganIntersection().addOrganIntersection(toRegister);
+                currentUser.getCommonOrgans().add(toRegister);
                 int index = currentlyReceivingListView.getItems().indexOf(toRegister);
                 currentlyReceivingListView.getSelectionModel().select(index);
                 //TODO change the colour of the font when selected to make it more readable
@@ -1361,7 +1361,7 @@ public class DonorController {
             notReceivingListView.getItems().remove(toReRegister);
 
             if (currentUser.getReceiverDetails().isDonatingThisOrgan(toReRegister)) {
-                currentUser.getOrganIntersection().addOrganIntersection(toReRegister);
+                currentUser.getCommonOrgans().add(toReRegister);
                 int index = currentlyReceivingListView.getItems().indexOf(toReRegister);
                 currentlyReceivingListView.getSelectionModel().select(index);
                 //TODO change the colour of the font when selected to make it more readable
@@ -1416,8 +1416,8 @@ public class DonorController {
             notReceivingListView.getItems().add(toDeRegister);
             currentUser.getReceiverDetails().stopWaitingForOrgan(toDeRegister);
             currentlyReceivingListView.getItems().remove(toDeRegister);
-            if (currentUser.getOrganIntersection().organIsPresent(toDeRegister)) {
-                currentUser.getOrganIntersection().removeOrganIntersection(toDeRegister);
+            if (currentUser.getCommonOrgans().contains(toDeRegister)) {
+                currentUser.getCommonOrgans().remove(toDeRegister);
             }
 
             //if currentlyReceivingListView is empty, disable mouse click to prevent null pointer exception

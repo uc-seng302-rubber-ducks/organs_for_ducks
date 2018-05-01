@@ -7,10 +7,7 @@ import java.io.FileNotFoundException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Objects;
+import java.util.*;
 
 
 public class User {
@@ -88,6 +85,8 @@ public class User {
   private DonorDetails donorDetails = new DonorDetails(this);
   @Expose
   private ReceiverDetails receiverDetails = new ReceiverDetails(this);
+
+  private Collection<Organs> commonOrgans = new HashSet<>();
 
   private ArrayList<Disease> pastDiseases;
 
@@ -241,7 +240,6 @@ public class User {
 ////
 ////    this.donorDetails = new DonorDetails(this);
 ////    this.receiverDetails = new ReceiverDetails(this);
-////    this.organIntersection = new OrganIntersection(this);
 ////    //TODO fix json reader
 ////    //changes = JsonReader.importHistoryFromFile(this);
 //  }
@@ -321,9 +319,9 @@ public class User {
     return receiverDetails;
   }
 
-  public OrganIntersection getOrganIntersection() {
-    return organIntersection;
-  }
+  public Collection<Organs> getCommonOrgans() {
+        return commonOrgans;
+    }
 
   public void setReceiverDetails(ReceiverDetails receiverDetails) {
     updateLastModified();
