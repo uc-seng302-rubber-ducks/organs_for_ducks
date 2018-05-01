@@ -1,12 +1,10 @@
 package seng302.Controller;
 
 
-import com.sun.org.apache.xpath.internal.operations.Or;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -251,10 +249,10 @@ public class DonorController {
     private Label organLabel;
 
     @FXML
-    private ListView<String> currentlyReceivingListView;
+    private ListView<Organs> currentlyReceivingListView;
 
     @FXML
-    private ListView<String> notReceivingListView;
+    private ListView<Organs> notReceivingListView;
 
     @FXML
     private Label currentlyReceivingLabel;
@@ -281,8 +279,8 @@ public class DonorController {
     private ObservableList<MedicalProcedure> previousProcedures;
     private ObservableList<MedicalProcedure> pendingProcedures;
     private HashMap<Organs, ArrayList<LocalDate>> receiverOrgans = new HashMap<>();
-    private ObservableList<String> currentlyRecieving;
-    private ObservableList<String> noLongerReceiving;
+    private ObservableList<Organs> currentlyRecieving;
+    private ObservableList<Organs> noLongerReceiving;
 
 
     private ObservableList<Disease> currentDisease;
@@ -383,25 +381,19 @@ public class DonorController {
                 .addListener(((observable, oldValue, newValue) -> {
                     ObservableList<String> selected = previousMedicationListView.getSelectionModel()
                             .getSelectedItems();
-                    System.out.println(selected);
+                    //System.out.println(selected);
                     displayDetails(selected);
                 }));
-        currentMedicationListView.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
-                    String med = currentMedicationListView.getSelectionModel().getSelectedItem();
-                    launchMedicationView(med);
-                }
+        currentMedicationListView.setOnMouseClicked(event -> {
+            if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
+                String med = currentMedicationListView.getSelectionModel().getSelectedItem();
+                launchMedicationView(med);
             }
         });
-        previousMedicationListView.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
-                    String med = previousMedicationListView.getSelectionModel().getSelectedItem();
-                    launchMedicationView(med);
-                }
+        previousMedicationListView.setOnMouseClicked(event -> {
+            if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
+                String med = previousMedicationListView.getSelectionModel().getSelectedItem();
+                launchMedicationView(med);
             }
         });
 
@@ -470,12 +462,7 @@ public class DonorController {
         }
         //System.out.println(changelog);
         changelog.addListener((ListChangeListener.Change<? extends Change> change) -> historyTableView.setItems(changelog));
-        medicationTextField.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                getDrugSuggestions();
-            }
-        });
+        medicationTextField.setOnMouseClicked(event -> getDrugSuggestions());
         medicationTextField.textProperty().addListener((observable) -> getDrugSuggestions());
 
         showDonorDiseases(currentUser, true);
@@ -486,14 +473,17 @@ public class DonorController {
         Collections.addAll(organs, Organs.values());
 
         //display registered and deregistered receiver organs if any
-        HashMap<String, ArrayList<LocalDate>> receiverOrgans = currentUser.getReceiverDetails().getOrgans();
+        HashMap<Organs, ArrayList<LocalDate>> receiverOrgans = currentUser.getReceiverDetails().getOrgans();
+        if (receiverOrgans == null){
+            receiverOrgans = new HashMap<>();
+        }
         currentlyRecieving = FXCollections.observableArrayList();
         noLongerReceiving = FXCollections.observableArrayList();
         if(!receiverOrgans.isEmpty()){
-            Set<String> allOrgans = receiverOrgans.keySet();
-            for (String organ : receiverOrgans.keySet()) {
+            Set<Organs> allOrgans = receiverOrgans.keySet();
+            for (Organs organ : receiverOrgans.keySet()) {
                 if(currentUser.getReceiverDetails().isCurrentlyWaitingFor(organ)){
-                    organs.remove(Organs.valueOf(organ.toUpperCase()));
+                    organs.remove(organ);
                     currentlyRecieving.add(organ);
                 } else {
                     organs.remove(organ);
@@ -515,26 +505,20 @@ public class DonorController {
         }
 
         if(!notReceivingListView.getItems().isEmpty()) {
-            notReceivingListView.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                @Override
-                public void handle(MouseEvent event) {
-                    if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
-                        Organs notReceivingOrgan = Organs.valueOf(notReceivingListView.getSelectionModel().getSelectedItem().toUpperCase());
-                        launchReceiverOrganDateView(notReceivingOrgan);
-                    }
+            notReceivingListView.setOnMouseClicked(event -> {
+                if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
+                    Organs notReceivingOrgan = notReceivingListView.getSelectionModel().getSelectedItem();
+                    launchReceiverOrganDateView(notReceivingOrgan);
                 }
             });
         }
 
 
         if(!currentlyReceivingListView.getItems().isEmpty()) {
-            currentlyReceivingListView.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                @Override
-                public void handle(MouseEvent event) {
-                    if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
-                        Organs currentlyReceivingOrgan = Organs.valueOf(currentlyReceivingListView.getSelectionModel().getSelectedItem().toUpperCase());
-                        launchReceiverOrganDateView(currentlyReceivingOrgan);
-                    }
+            currentlyReceivingListView.setOnMouseClicked(event -> {
+                if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
+                    Organs currentlyReceivingOrgan = currentlyReceivingListView.getSelectionModel().getSelectedItem();
+                    launchReceiverOrganDateView(currentlyReceivingOrgan);
                 }
             });
         }
@@ -763,13 +747,12 @@ public class DonorController {
 //    }
 
     /**
-     * @param actionEvent An action event.
      */
     @FXML
-    private void updateDetails(ActionEvent actionEvent) throws IOException, InterruptedException {
+    private void updateDetails() throws IOException, InterruptedException {
         FXMLLoader updateLoader = new FXMLLoader(getClass().getResource("/FXML/updateUser.fxml"));
         Parent root = null;
-        System.out.println(updateLoader);
+        //System.out.println(updateLoader);
         try {
             root = updateLoader.load();
             UpdateUserController updateUserController = updateLoader.getController();
@@ -1448,29 +1431,28 @@ public class DonorController {
      */
     @FXML
     public void registerOrgan () {
-        String toRegister = organsComboBox.getSelectionModel().getSelectedItem().organName.toUpperCase();
+        System.out.println(currentUser.getReceiverDetails().getOrgans());
+        Organs toRegister = organsComboBox.getSelectionModel().getSelectedItem();
         if (!currentlyReceivingListView.getItems().contains(toRegister)) {
             currentUser.getReceiverDetails().startWaitingForOrgan(toRegister);
-            if (currentUser.getReceiverDetails().isDonatingThisOrgan(Organs.valueOf(toRegister))){
-                currentUser.getCommonOrgans().add(Organs.valueOf(toRegister));
-                int index = currentlyReceivingListView.getItems().indexOf(toRegister);
-                currentlyReceivingListView.getSelectionModel().select(index);
+           // if (currentUser.getReceiverDetails().isDonatingThisOrgan(toRegister)){
+                currentUser.getCommonOrgans().add(toRegister);
+                currentlyRecieving.add(toRegister);
+                organsComboBox.getItems().remove(toRegister);
                 //TODO change the colour of the font when selected to make it more readable
-            }
+            //}
 
-            application.update(currentUser); //TODO uncomment this after json deserealiser can work with enums
+            application.update(currentUser);
 
             //set mouse click for currentlyReceivingListView
-            currentlyReceivingListView.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                @Override
-                public void handle(MouseEvent event) {
-                    if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
-                        Organs currentlyReceivingOrgan = Organs.valueOf(currentlyReceivingListView.getSelectionModel().getSelectedItem().toUpperCase());
-                        launchReceiverOrganDateView(currentlyReceivingOrgan);
-                    }
+            currentlyReceivingListView.setOnMouseClicked(event -> {
+                if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
+                    Organs currentlyReceivingOrgan = currentlyReceivingListView.getSelectionModel().getSelectedItem();
+                    launchReceiverOrganDateView(currentlyReceivingOrgan);
                 }
             });
         }
+        System.out.println(currentUser.getReceiverDetails().getOrgans().keySet());
     }
 
     /**
@@ -1479,14 +1461,14 @@ public class DonorController {
      */
     @FXML
     public void reRegisterOrgan () {
-        String toReRegister = notReceivingListView.getSelectionModel().getSelectedItem();
+        Organs toReRegister = notReceivingListView.getSelectionModel().getSelectedItem();
         if (toReRegister != null) {
             currentlyReceivingListView.getItems().add(toReRegister);
             currentUser.getReceiverDetails().startWaitingForOrgan(toReRegister);
             notReceivingListView.getItems().remove(toReRegister);
 
-            if (currentUser.getReceiverDetails().isDonatingThisOrgan(Organs.valueOf(toReRegister))) {
-                currentUser.getCommonOrgans().add(Organs.valueOf(toReRegister));
+            if (currentUser.getReceiverDetails().isDonatingThisOrgan(toReRegister)) {
+                currentUser.getCommonOrgans().add(toReRegister);
                 int index = currentlyReceivingListView.getItems().indexOf(toReRegister);
                 currentlyReceivingListView.getSelectionModel().select(index);
                 //TODO change the colour of the font when selected to make it more readable
@@ -1497,13 +1479,10 @@ public class DonorController {
                 notReceivingListView.setOnMouseClicked(null);
             }
             //set mouse click for currentlyReceivingListView
-            currentlyReceivingListView.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                @Override
-                public void handle(MouseEvent event) {
-                    if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
-                        Organs currentlyReceivingOrgan = Organs.valueOf(currentlyReceivingListView.getSelectionModel().getSelectedItem().toUpperCase());
-                        launchReceiverOrganDateView(currentlyReceivingOrgan);
-                    }
+            currentlyReceivingListView.setOnMouseClicked(event -> {
+                if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
+                    Organs currentlyReceivingOrgan = currentlyReceivingListView.getSelectionModel().getSelectedItem();
+                    launchReceiverOrganDateView(currentlyReceivingOrgan);
                 }
             });
         }
@@ -1515,7 +1494,7 @@ public class DonorController {
      */
     @FXML
     private void deregisterOrganReason () {
-        String toDeRegister = currentlyReceivingListView.getSelectionModel().getSelectedItem();
+        Organs toDeRegister = currentlyReceivingListView.getSelectionModel().getSelectedItem();
         if (toDeRegister != null) {
             FXMLLoader deregisterOrganReasonLoader = new FXMLLoader(getClass().getResource("/FXML/deregisterOrganReasonView.fxml"));
             Parent root = null;
@@ -1537,7 +1516,7 @@ public class DonorController {
      * for receiver
      * @param toDeRegister
      */
-    public void deRegisterOrgan (String toDeRegister) {
+    public void deRegisterOrgan (Organs toDeRegister) {
         if (toDeRegister != null) {
             notReceivingListView.getItems().add(toDeRegister);
             currentUser.getReceiverDetails().stopWaitingForOrgan(toDeRegister);
@@ -1551,13 +1530,10 @@ public class DonorController {
                 currentlyReceivingListView.setOnMouseClicked(null);
             }
             //set mouse click for notReceivingListView
-            notReceivingListView.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                @Override
-                public void handle(MouseEvent event) {
-                    if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
-                        Organs currentlyReceivingOrgan = Organs.valueOf(notReceivingListView.getSelectionModel().getSelectedItem().toUpperCase());
-                        launchReceiverOrganDateView(currentlyReceivingOrgan);
-                    }
+            notReceivingListView.setOnMouseClicked(event -> {
+                if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
+                    Organs currentlyReceivingOrgan = notReceivingListView.getSelectionModel().getSelectedItem();
+                    launchReceiverOrganDateView(currentlyReceivingOrgan);
                 }
             });
         }
@@ -1579,10 +1555,10 @@ public class DonorController {
     }
 
   /**
-   * @param event passed in automatically by the gui
+   *
    */
   @FXML
-  void donate(ActionEvent event) {
+  void donate() {
     UndoRedoStacks.storeUndoCopy(currentUser);
     if (!canDonate.getSelectionModel().isEmpty()){
       Organs toDonate = canDonate.getSelectionModel().getSelectedItem();
@@ -1600,11 +1576,9 @@ public class DonorController {
     }
   }
 
-  /**
-   * @param event passed in automatically by the gui
-   */
+
   @FXML
-  void undonate(ActionEvent event) {
+  void undonate() {
     UndoRedoStacks.storeUndoCopy(currentUser);
     if (!currentlyDonating.getSelectionModel().isEmpty()) {
       Organs toUndonate = currentlyDonating.getSelectionModel().getSelectedItem();
@@ -1622,6 +1596,7 @@ public class DonorController {
 
     @FXML
     private void closeWindow(){
+        application.update(currentUser);
         stage.close();
     }
 

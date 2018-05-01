@@ -66,7 +66,7 @@ public class receiverOrganDateController {
         System.out.println(organDates);
         receiverOrganDetailsList = new ArrayList<>();
 
-        if(!organDates.isEmpty() && organDates != null) {
+        if(organDates != null && !organDates.isEmpty()) {
             for (int i = 0; i < organDates.size(); i += 1) {
                 ReceiverOrganDetails receiverOrganDetails = new ReceiverOrganDetails();
                 receiverOrganDetails.setRegisterDate(organDates.get(i));
@@ -103,8 +103,8 @@ public class receiverOrganDateController {
         for(ReceiverOrganDetails i: items){
             System.out.println(i);
         }
-        organTimeTable.setItems(items);
 
+        organTimeTable.setItems(items);
         organTimeTable.getColumns().addAll(registrationDate, deRegistrationDate);
 
     }

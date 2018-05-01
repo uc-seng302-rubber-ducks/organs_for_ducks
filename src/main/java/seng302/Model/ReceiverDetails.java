@@ -3,6 +3,7 @@ package seng302.Model;
 import com.google.gson.annotations.Expose;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 
@@ -12,26 +13,27 @@ public class ReceiverDetails {
   private transient User attachedUser;
 
   @Expose
-  private HashMap<String, ArrayList<LocalDate>> organs; // contains the organ start and stop dates
+  private HashMap<Organs, ArrayList<LocalDate>> organs; // contains the organ start and stop dates
 
   public ReceiverDetails(User attachedUser) {
     this.attachedUser = attachedUser;
     this.organs = new HashMap<>();
+
   }
 
-  public ReceiverDetails(User attachedUser, HashMap<String, ArrayList<LocalDate>> organs) {
+  public ReceiverDetails(User attachedUser, HashMap<Organs, ArrayList<LocalDate>> organs) {
     this.attachedUser = attachedUser;
     this.organs = organs;
   }
 //TODO model from DonorDetails (get/set/add/remove/isEmpty etc)
 
 
-  public HashMap<String, ArrayList<LocalDate>> getOrgans() {
+  public HashMap<Organs, ArrayList<LocalDate>> getOrgans() {
     return organs;
   }
 
   public List<LocalDate> getOrganDates(Organs organ){
-    return organs.get(organ.toString().toUpperCase());
+    return organs.get(organ);
   }
 
   /**
@@ -41,9 +43,8 @@ public class ReceiverDetails {
    * @param organ organ in question
    * @return true if organ is being waited for
    */
-  public boolean isCurrentlyWaitingFor(String organ) {
-
-    return organs.containsKey(organ) && organs.get(organ).size() % 2 == 1;
+  public boolean isCurrentlyWaitingFor(Organs organ) {
+    return organs != null && organs.containsKey(organ) && organs.get(organ).size() % 2 == 1;
   }
 
   /**
@@ -51,7 +52,7 @@ public class ReceiverDetails {
    * waiting for this organ, no change will be made.
    * @param organ
    */
-  public void startWaitingForOrgan(String organ) {
+  public void startWaitingForOrgan(Organs organ) {
     if (isCurrentlyWaitingFor(organ)) {
       return;
     }
@@ -71,7 +72,7 @@ public class ReceiverDetails {
    *
    * @param organ organ to stop waiting for
    */
-  public void stopWaitingForOrgan(String organ) {
+  public void stopWaitingForOrgan(Organs organ) {
     if (isCurrentlyWaitingFor(organ)) {
       organs.get(organ).add(LocalDate.now());
     }

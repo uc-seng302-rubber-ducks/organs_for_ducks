@@ -35,7 +35,7 @@ public class deregisterOrganReasonController {
     Stage stage;
     private User currentUser;
     private DonorController donorController;
-    private String toDeRegister;
+    private Organs toDeRegister;
 
     /**
      * Initializes the NewDiseaseController
@@ -44,14 +44,17 @@ public class deregisterOrganReasonController {
      * @param controller The applications controller.
      * @param stage The applications stage.
      */
-    public void init(String organ, DonorController donorController, User user, AppController controller, Stage stage) {
+    public void init(Organs organ, DonorController donorController, User user, AppController controller, Stage stage) {
         this.controller = controller;
         this.stage = stage;
         currentUser = user;
         this.donorController = donorController;
         receiverName.setText(user.getName());
-        organName.setText(organ);
+        organName.setText(organ.organName);
         this.toDeRegister = organ;
+        if (user.getDeceased() == null || !user.getDeceased()){
+            receiverDiedRadioButton.setDisable(true);
+        }
         //stage.setMinWidth(620);
         //stage.setMaxWidth(620);
     }

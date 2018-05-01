@@ -86,7 +86,7 @@ public class OrganController {
         UndoRedoStacks.storeUndoCopy(currentUser);
         Organs toDonate = canDonate.getSelectionModel().getSelectedItem();
         if(toDonate != null) {
-            if (currentUser.getReceiverDetails().isCurrentlyWaitingFor(toDonate.organName)) {
+            if (currentUser.getReceiverDetails().isCurrentlyWaitingFor(toDonate)) {
                 currentUser.getCommonOrgans().add(toDonate);
                 int index = currentlyDonating.getItems().indexOf(toDonate);
                 currentlyDonating.getSelectionModel().select(index);
