@@ -42,7 +42,7 @@ public class DeleteUserGUITest extends ApplicationTest{
     verifyThat("#warningLabel", LabeledMatchers.hasText("Donor was not found. \nTo register a new donor please click sign up."));
   }
 
-  @Test @Ignore
+  @Test
   public void canceledDeletedUser(){
     clickOn("#deleteUser");
     clickOn("Cancel");
