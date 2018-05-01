@@ -18,11 +18,6 @@ import static seng302.Controller.TableViewsMethod.getCell;
 public class GivenSteps extends ApplicationTest{
     private AppController controller;
 
-    @Override
-    public void start(Stage stage) throws Exception {
-        new App().start(stage);
-    }
-
     @Given("^I have started the CLI$")
     public void iHaveStartedTheCLI() throws Throwable {
         controller = AppController.getInstance();
@@ -32,7 +27,6 @@ public class GivenSteps extends ApplicationTest{
     public void iHaveStartedTheGUI() throws Throwable {
         FxToolkit.registerPrimaryStage();
         FxToolkit.setupApplication(App.class);
-        //AppController.getInstance().getUsers().clear();
     }
 
     @Given("^a user with the NHI \"([^\"]*)\" exists$")
@@ -45,8 +39,7 @@ public class GivenSteps extends ApplicationTest{
 
     @Given("^There are no donors in the system$")
     public void thereAreNoDonorsInTheSystem() throws Throwable {
-        // Write code here that turns the phrase above into concrete actions
-        throw new PendingException();
+        AppController.getInstance().getUsers().clear();
     }
 
     @Given("^There exists a donor with the NHI \"([^\"]*)\", first name \"([^\"]*)\", last name \"([^\"]*)\" and date of birth \"([^\"]*)\"$")
@@ -63,20 +56,17 @@ public class GivenSteps extends ApplicationTest{
 
     @Given("^a donor with the NHI \"([^\"]*)\" does not exist$")
     public void aDonorWithTheNHIDoesNotExist(String NHI) throws Throwable {
-        // Write code here that turns the phrase above into concrete actions
-        throw new PendingException();
+        AppController.getInstance().getUsers().remove(AppController.getInstance().findUser(NHI));
     }
 
-    @Given("^The sign up screen is loaded$")
+    @Given("^The donor sign up screen is loaded$")
     public void theSignUpScreenIsLoaded() throws Throwable {
-        // Write code here that turns the phrase above into concrete actions
-        throw new PendingException();
+        clickOn("#signUpButton");
     }
 
     @Given("^The login screen is loaded$")
     public void theLoginScreenIsLoaded() throws Throwable {
-        // Write code here that turns the phrase above into concrete actions
-        throw new PendingException();
+
     }
 
     @Given("^The Create New Disease screen is loaded$")

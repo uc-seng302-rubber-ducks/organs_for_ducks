@@ -15,6 +15,7 @@ import org.testfx.matcher.control.TextInputControlMatchers;
 import org.testfx.matcher.control.TextMatchers;
 import org.testfx.util.NodeQueryUtils;
 import seng302.App;
+import seng302.Model.Clinician;
 
 import java.util.concurrent.TimeoutException;
 
@@ -41,27 +42,14 @@ public class UpdateClinicianControllerTest extends ApplicationTest {
         FxToolkit.setupApplication(App.class);
         AppController.getInstance().getUsers().clear();
         AppController.getInstance().getClinicians().remove(AppController.getInstance().getClinician("Staff1"));
+        AppController.getInstance().getClinicians().add(new Clinician("Staff1", "secure", "Affie", "Ali", "Al", "20 Kirkwood Ave", "Christchurch"));
         clickOn("#changeLogin");
 
-        // create a new clinician
-        clickOn("#signUpButton");
-        clickOn("#staffIDTextField");
+        clickOn("#userIDTextField");
         write("Staff1");
         clickOn("#passwordField");
         write("secure");
-        clickOn("#confirmPasswordField");
-        write("secure");
-        clickOn("#firstNameTextField");
-        write("Affie");
-        clickOn("#middleNameTextField");
-        write("Ali");
-        clickOn("#lastNameTextField");
-        write("Al");
-        clickOn("#addressTextField");
-        write("20 Kirkwood Ave");
-        clickOn("#regionTextField");
-        write("Christchurch");
-        clickOn("#confirmButton");
+        clickOn("#loginButton");
         clickOn("#editButton");
     }
 
@@ -103,6 +91,7 @@ public class UpdateClinicianControllerTest extends ApplicationTest {
         clickOn("#firstNameTextField").push(SHORTCUT, A).push(BACK_SPACE);
         write("Not Affie");
         clickOn("#cancelButton");
+        clickOn("#yesButton");
         verifyThat("#fNameLabel", LabeledMatchers.hasText("Affie"));
     }
 }

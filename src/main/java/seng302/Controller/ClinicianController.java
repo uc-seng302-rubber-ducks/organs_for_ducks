@@ -167,11 +167,11 @@ public class ClinicianController {
     addressLabel.setText(clinician.getWorkAddress());
     regionLabel.setText(clinician.getRegion());
     if (clinician.getFirstName() == null){
-      stage.setTitle("Clinician Admin");
+      stage.setTitle("Clinician: Admin");
     } else if (clinician.getLastName() == null) {
-      stage.setTitle("Clinician " + clinician.getFirstName());
+      stage.setTitle("Clinician: " + clinician.getFirstName());
     } else {
-      stage.setTitle("Clinician " + clinician.getFirstName() +" " + clinician.getLastName());
+      stage.setTitle("Clinician: " + clinician.getFirstName() +" " + clinician.getLastName());
     }
   }
 
@@ -407,8 +407,8 @@ public class ClinicianController {
       root = updateLoader.load();
       UpdateClinicianController updateClinicianController = updateLoader.getController();
       Stage stage = new Stage();
-      updateClinicianController.init(clinician, appController, stage, false);
       stage.setScene(new Scene(root));
+      updateClinicianController.init(clinician, appController, stage, false);
       stage.initModality(Modality.APPLICATION_MODAL); // background window is no longer selectable
       stage.showAndWait();
       showClinician();
