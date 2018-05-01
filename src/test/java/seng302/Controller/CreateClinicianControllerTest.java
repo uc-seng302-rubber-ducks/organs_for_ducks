@@ -9,6 +9,7 @@ import org.testfx.matcher.control.LabeledMatchers;
 import org.testfx.framework.junit.ApplicationTest;
 import static org.testfx.api.FxAssert.verifyThat;
 import javafx.scene.Node;
+import org.testfx.util.WaitForAsyncUtils;
 import seng302.App;
 
 import java.util.concurrent.TimeoutException;
@@ -72,6 +73,7 @@ public class CreateClinicianControllerTest extends ApplicationTest {
     @Test
     public void testSignUpNoInfo() {
         clickOn("#confirmButton");
+        WaitForAsyncUtils.waitForFxEvents();
         verifyThat("#invalidStaffIDLabel", Node::isVisible);
         verifyThat("#invalidStaffIDLabel", LabeledMatchers.hasText("Staff ID cannot be empty"));
         verifyThat("#emptyPasswordLabel", Node::isVisible);
