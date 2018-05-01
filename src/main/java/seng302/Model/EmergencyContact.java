@@ -4,8 +4,8 @@ public class EmergencyContact {
 
     //declaring attributes
     private String name;
-    private String HomePhoneNumber;
-    private String CellPhoneNumber;
+    private String homePhoneNumber;
+    private String cellPhoneNumber;
     private String address;
     private String region;
     private String Email;
@@ -15,12 +15,23 @@ public class EmergencyContact {
 
     public EmergencyContact(String Ename, String ECellPhone, User attachedUser) {
         name = Ename;
-        HomePhoneNumber = null;
-        CellPhoneNumber = ECellPhone;
+        homePhoneNumber = null;
+        cellPhoneNumber = ECellPhone;
         address = null;
         region = null;
         Email = null;
         Relationship = null;
+        this.attachedUser = attachedUser;
+    }
+
+    public EmergencyContact(String Ename, String ECellPhone, String homePhoneNumber, String region, String address, String email, String relationship, User attachedUser) {
+        name = Ename;
+        this.homePhoneNumber = homePhoneNumber;
+        this.cellPhoneNumber = ECellPhone;
+        this.address = address;
+        this.Email = email;
+        this.Relationship = relationship;
+        this.region = region;
         this.attachedUser = attachedUser;
     }
 
@@ -42,7 +53,7 @@ public class EmergencyContact {
     }
 
     public String getHomePhoneNumber() {
-        return HomePhoneNumber;
+        return homePhoneNumber;
     }
 
     public void setHomePhoneNumber(String homePhoneNumber) {
@@ -50,7 +61,7 @@ public class EmergencyContact {
         User clone = attachedUser.clone();
         clone.setContact(copy(this));
         memento.setOldObject(clone);
-        HomePhoneNumber = homePhoneNumber;
+        this.homePhoneNumber = homePhoneNumber;
         clone = attachedUser.clone();
         clone.setContact(copy(this));
         memento.setNewObject(clone);
@@ -58,7 +69,7 @@ public class EmergencyContact {
     }
 
     public String getCellPhoneNumber() {
-        return CellPhoneNumber;
+        return cellPhoneNumber;
     }
 
     public void setCellPhoneNumber(String cellPhoneNumber) {
@@ -66,7 +77,7 @@ public class EmergencyContact {
         User clone = attachedUser.clone();
         clone.setContact(copy(this));
         memento.setOldObject(clone);
-        CellPhoneNumber = cellPhoneNumber;
+        this.cellPhoneNumber = cellPhoneNumber;
         clone = attachedUser.clone();
         clone.setContact(copy(this));
         memento.setNewObject(clone);
@@ -154,7 +165,7 @@ public class EmergencyContact {
                 "Address: %s\n" +
                 "Region: %s\n" +
                 "Email: %s\n" +
-                "Relationship: %s\n", name, HomePhoneNumber, CellPhoneNumber, address, region, Email, Relationship);
+                "Relationship: %s\n", name, homePhoneNumber, cellPhoneNumber, address, region, Email, Relationship);
     }
 
     @Override
@@ -162,8 +173,8 @@ public class EmergencyContact {
         EmergencyContact otherContact = (EmergencyContact) other;
 
          return checkStrings(name, otherContact.name) &&
-                 checkStrings(HomePhoneNumber, otherContact.HomePhoneNumber) &&
-                 checkStrings(CellPhoneNumber, otherContact.CellPhoneNumber)
+                 checkStrings(homePhoneNumber, otherContact.homePhoneNumber) &&
+                 checkStrings(cellPhoneNumber, otherContact.cellPhoneNumber)
                  && checkStrings(Email, otherContact.Email) &&
                  checkStrings(address, otherContact.address) &&
                  checkStrings(region, otherContact.region) &&
@@ -189,11 +200,11 @@ public class EmergencyContact {
             return null;
         }
 
-        EmergencyContact newContact = new EmergencyContact(contact.name, contact.CellPhoneNumber,
+        EmergencyContact newContact = new EmergencyContact(contact.name, contact.cellPhoneNumber,
             contact.attachedUser);
         newContact.address = contact.address;
         newContact.region = contact.region;
-        newContact.HomePhoneNumber = contact.HomePhoneNumber;
+        newContact.homePhoneNumber = contact.homePhoneNumber;
         newContact.Email = contact.Email;
         newContact.Relationship = contact.Relationship;
 

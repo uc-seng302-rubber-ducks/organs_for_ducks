@@ -164,7 +164,7 @@ public class UpdateUserController {
     } else {
       stage.setTitle("Update User: " + user.getFirstName());
     }
-    //UndoRedoStacks.cloneUser(currentUser,oldUser);
+    oldUser = currentUser.clone();
 
     Scene scene = stage.getScene();
 
@@ -198,6 +198,10 @@ public class UpdateUserController {
       }
     });
 
+    stage.setOnCloseRequest(event -> {
+      event.consume();
+      goBack(new ActionEvent());
+    });
   }
 
   /**
@@ -562,7 +566,10 @@ public class UpdateUserController {
       }
       if (user.getContact().getEmail() != null) {
         ecEmailInput.setText(user.getContact().getEmail());
+      } else {
+        ecEmailInput.setText("");
       }
+
       if (user.getContact().getAddress() != null) {
         ecAddressInput.setText(user.getContact().getAddress());
       } else {
@@ -600,209 +607,7 @@ public class UpdateUserController {
 
   }
 
-  @FXML
-  public boolean getContactDetails() {
-    boolean changed = false;
-    if (!(phoneInput.getText().isEmpty() && currentUser.getHomePhone() == null) && !phoneInput
-        .getText().equals(currentUser.getHomePhone())) {
-      currentUser.setHomePhone(phoneInput.getText());
-      changed = true;
-    }
-    if (!(cellInput.getText().isEmpty() && currentUser.getCellPhone() == null) && !cellInput
-        .getText().equals(currentUser.getCellPhone())) {
-      currentUser.setCellPhone(cellInput.getText());
-      changed = true;
-    }
-    if (!(addressInput.getText().isEmpty() && currentUser.getCurrentAddress() == null)
-        && !addressInput.getText().equals(currentUser.getCurrentAddress())) {
-      String address = addressInput.getText();
-      currentUser.setCurrentAddress(address);
-      changed = true;
-    }
-    if (!(regionInput.getText().isEmpty() && currentUser.getRegion() == null) && !regionInput
-        .getText().equals(currentUser.getRegion())) {
-      currentUser.setRegion(regionInput.getText());
-      changed = true;
-    }
-    if (!(emailInput.getText().isEmpty() && currentUser.getEmail() == null) && !emailInput.getText()
-        .equals(currentUser.getEmail())) {
-      currentUser.setEmail(emailInput.getText());
-      changed = true;
-    }
-
-    return changed;
-
-  }
-
-  @FXML
-  public boolean getEmergencyContact() {
-    boolean changed = false;
-    if (!ecNameInput.getText().isEmpty() && !ecNameInput.getText()
-        .equals(currentUser.getContact().getName())) {
-      currentUser.getContact().setName(ecNameInput.getText());
-      changed = true;
-    }
-    if (!ecPhoneInput.getText().isEmpty() && !ecPhoneInput.getText()
-        .equals(currentUser.getContact().getHomePhoneNumber())) {
-      currentUser.getContact().setHomePhoneNumber(ecPhoneInput.getText());
-      changed = true;
-
-    }
-    if (!ecCellInput.getText().isEmpty() && !ecCellInput.getText()
-        .equals(currentUser.getContact().getCellPhoneNumber())) {
-      currentUser.getContact().setCellPhoneNumber(ecCellInput.getText());
-      changed = true;
-    }
-    if (!ecAddressInput.getText().isEmpty() && !ecAddressInput.getText()
-        .equals(currentUser.getContact().getAddress())) {
-      currentUser.getContact().setAddress(ecAddressInput.getText());
-      changed = true;
-    }
-    if (!ecRegionInput.getText().isEmpty() && !ecRegionInput.getText()
-        .equals(currentUser.getContact().getRegion())) {
-      currentUser.getContact().setRegion(ecRegionInput.getText());
-      changed = true;
-    }
-    if (!ecEmailInput.getText().isEmpty() && !ecEmailInput.getText()
-        .equals(currentUser.getContact().getEmail())) {
-      currentUser.getContact().setEmail(ecEmailInput.getText());
-      changed = true;
-
-    }
-    if (!ecRelationshipInput.getText().isEmpty() && !ecNameInput.getText()
-        .equals(currentUser.getContact().getRelationship())) {
-      currentUser.getContact().setRelationship(ecRelationshipInput.getText());
-      changed = true;
-
-    }
-    return changed;
-
-  }
-
-  @FXML
-  public boolean getHealthDetails() throws NumberFormatException {
-    boolean changed = false;
-    if (birthGenderComboBox.getValue() != null && !birthGenderComboBox.getValue()
-        .equals(currentUser.getBirthGender())) {
-      String birthGender = AttributeValidation.validateGender(birthGenderComboBox);
-      currentUser.setBirthGender(birthGender);
-      changed = true;
-    }
-    if (genderIdComboBox.getValue() != null && genderIdComboBox.getValue() != ""
-        && !genderIdComboBox.getValue().equals(currentUser.getGenderIdentity())) {
-      String genderIdentity = AttributeValidation.validateGender(genderIdComboBox);
-      currentUser.setGenderIdentity(genderIdentity);
-      changed = true;
-    }
-
-//        else if (birthGenderComboBox.getValue() != null) {
-//           String birthGender = AttributeValidation.validateGender(birthGenderComboBox);
-//           currentUser.setGenderIdentity(birthGender);
-//      }
-
-    if (bloodComboBox.getValue() != null && !bloodComboBox.getValue()
-        .equals(currentUser.getBloodType())) {
-      String blood = AttributeValidation.validateBlood(bloodComboBox);
-      //BloodTypes blood = AttributeValidation.validateBlood(bloodComboBox);
-      currentUser.setBloodType(blood);
-      changed = true;
-    }
-
-    if (smokerCheckBox.isSelected() != currentUser.isSmoker()) {
-      currentUser.setSmoker(smokerCheckBox.isSelected());
-      changed = true;
-    }
-
-    if (!(currentUser.getAlcoholConsumption() == null && alcoholComboBox.getValue()
-        .equals("None")) && !alcoholComboBox.getValue()
-        .equals(currentUser.getAlcoholConsumption())) {
-      currentUser.setAlcoholConsumption(alcoholComboBox.getValue().toString());
-      changed = true;
-    }
-
-    if (!weightInput.getText().equals("")) {
-      try {
-        if (Double.parseDouble(weightInput.getText()) != currentUser.getWeight()) {
-          currentUser.setWeight(Double.parseDouble(weightInput.getText()));
-          changed = true;
-        }
-      } catch (NumberFormatException e) {
-        errorLabel.setText("Weight must be a valid number");
-        throw e;
-      }
-
-    }
-    if (!heightInput.getText().equals("")) {
-      try {
-        if (Double.parseDouble(heightInput.getText()) != currentUser.getHeight()) {
-          currentUser.setHeight(Double.parseDouble(heightInput.getText()));
-          changed = true;
-        }
-      } catch (NumberFormatException e) {
-        errorLabel.setText("Height must be a number");
-        throw e;
-      }
-    }
-    return changed;
-  }
-
-
-  @FXML
-  public boolean getPersonalDetails() throws InvalidNhiException {
-    //TODO check why dateofbirth fails
-    boolean changed = false;
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-    if (!fNameInput.getText().equals(currentUser.getFirstName())) {
-      currentUser.setFirstName(fNameInput.getText());
-      changed = true;
-    }
-
-    if (!(lNameInput.getText().isEmpty() && currentUser.getMiddleName() == null) && !lNameInput
-        .getText().equals(currentUser.getLastName())) {
-      currentUser.setLastName(lNameInput.getText());
-      changed = true;
-    }
-
-    if (!nhiInput.getText().equals(currentUser.getNhi())) {
-      if (AttributeValidation.validateNHI(nhiInput.getText()) != null) {
-        currentUser.setNhi(nhiInput.getText());
-        changed = true;
-      } else {
-        errorLabel.setText("NHI is in valid please enter it in the form ABC1234");
-        throw new InvalidNhiException();
-      }
-    }
-
-    if (!(mNameInput.getText().isEmpty() && currentUser.getMiddleName() == null) && !mNameInput
-        .getText().equals(currentUser.getMiddleName())) {
-      currentUser.setMiddleName(mNameInput.getText());
-      changed = true;
-    }
-
-    if (dobInput.getValue() != null && !dobInput.getValue().equals(currentUser.getDateOfBirth())) {
-      currentUser.setDateOfBirth(dobInput.getValue());
-      changed = true;
-    }
-
-    if (dodInput.getValue() != null && !dodInput.getValue()
-        .equals(currentUser.getDateOfDeath())) {
-      currentUser.setDateOfDeath(dodInput.getValue());
-      changed = true;
-    }
-    if (!preferredFNameTextField.getText().isEmpty()) {
-      if (!preferredFNameTextField.getText().equals(currentUser.getPreferredFirstName())
-          || !preferredFNameTextField.getText().equals(currentUser.getFirstName())) {
-        currentUser.setPreferredFirstName(preferredFNameTextField.getText());
-        changed = true;
-      }
-    }
-    return changed;
-
-  }
-
-
-  /*
-   *
+  /**
    * @param actionEvent an action event.
    * @throws IOException doesn't look like this even throws..
    */
@@ -812,35 +617,49 @@ public class UpdateUserController {
 
     hideErrorMessages();
     errorLabel.setText("Please make sure your details are correct.");
-    validateFields();
+    boolean valid = validateFields();
 
     //TODO change to be different
 
-    appController.update(currentUser);
+    if (valid) {
+      sumAllChanged();
+      //ArrayList<Change> diffs = appController.differanceInDonors(oldUser, currentUser);
+      //changelog.addAll(diffs);
+      AppController appController = AppController.getInstance();
+      DonorController donorController = appController.getDonorController();
+      try {
+        donorController.showUser(currentUser);
+      } catch (NullPointerException ex) {
+        //TODO causes npe if donor is new in this session
+        //the text fields etc. are all null
+      }
+      stage.close();
+    }
+  }
 
+  /**
+   * Turns all form changes into one memento on the stack
+   */
+  private void sumAllChanged() {
     Memento<User> sumChanges = new Memento<>();
-    System.out.println(undoMarker);
-    System.out.println(currentUser.getUndoStack().size());
-    while (currentUser.getUndoStack().size() > undoMarker + 1) {
+    removeFormChanges(1);
+    if (!currentUser.getUndoStack().isEmpty()) {
+      sumChanges.setOldObject(currentUser.getUndoStack().peek().getOldObject().clone());
+      currentUser.getUndoStack().pop();
+      sumChanges.setNewObject(currentUser.clone());
+      currentUser.getUndoStack().push(sumChanges);
+    }
+  }
+
+  /**
+   * Pops all but the specified number of changes off the stack.
+   * @param offset an denotes how many changes to leave in the stack.
+   */
+  private void removeFormChanges(int offset) {
+    while (currentUser.getUndoStack().size() > undoMarker + offset) {
       System.out.println(currentUser.getUndoStack().size());
       currentUser.getUndoStack().pop();
     }
-    sumChanges.setOldObject(currentUser.getUndoStack().peek().getOldObject().clone());
-    currentUser.getUndoStack().pop();
-    sumChanges.setNewObject(currentUser.clone());
-    currentUser.getUndoStack().push(sumChanges);
-    System.out.println(sumChanges);
-    //ArrayList<Change> diffs = appController.differanceInDonors(oldUser, currentUser);
-    //changelog.addAll(diffs);
-    AppController appController = AppController.getInstance();
-    DonorController donorController = appController.getDonorController();
-    try {
-      donorController.showUser(currentUser);
-    } catch (NullPointerException ex) {
-      //TODO causes npe if donor is new in this session
-      //the text fields etc. are all null
-    }
-    stage.close();
   }
     /**
      * Activates when the user clicks the save changes button.
@@ -856,7 +675,7 @@ public class UpdateUserController {
      * Sets error messages visible if fields are invalid.
      * Calls methods to update the changes if all fields are valid.
      */
-    private void validateFields () {
+    private boolean validateFields () {
       boolean changed = false;
 
       boolean valid = true;
@@ -984,15 +803,19 @@ public class UpdateUserController {
         errorLabel.setVisible(true);
       }
       if (valid) { // only updates if everything is valid
-
+        appController.update(currentUser);
       }
+      return valid;
     }
 
-  public void updateUndos() {
+  /**
+   * Updates the undo stacks of the form.
+   */
+  private void updateUndos() {
     boolean changed = false;
     double weight;
     double height;
-    changed |= updatePersonalDetails(nhiInput.getText(), fNameInput.getText(), dobInput.getValue(),
+    changed = updatePersonalDetails(nhiInput.getText(), fNameInput.getText(), dobInput.getValue(),
         dodInput.getValue());
     try {
       height = Double
@@ -1016,7 +839,6 @@ public class UpdateUserController {
     }
     undoButton.setDisable(currentUser.getUndoStack().isEmpty());
     redoButton.setDisable(currentUser.getRedoStack().isEmpty());
-    appController.update(currentUser);
   }
 
     /**
@@ -1165,26 +987,26 @@ public class UpdateUserController {
 
       boolean changed = false;
 
-      if (homePhone == null && currentUser.getHomePhone() != null) {
+      if (homePhone.isEmpty() && currentUser.getHomePhone() != null) {
         currentUser.setHomePhone(null);
         changed = true;
-      } else if (homePhone != null && !homePhone.equals(currentUser.getHomePhone())) {
+      } else if (!homePhone.isEmpty() && !homePhone.equals(currentUser.getHomePhone())) {
         currentUser.setHomePhone(homePhone);
         changed = true;
       }
 
-      if (cellPhone != null && !cellPhone.equals(currentUser.getCellPhone())) {
+      if (!cellPhone.isEmpty() && !cellPhone.equals(currentUser.getCellPhone())) {
         currentUser.setCellPhone(cellPhone);
         changed = true;
-      } else if (cellPhone == null && currentUser.getCellPhone() != null) {
+      } else if (cellPhone.isEmpty() && currentUser.getCellPhone() != null) {
         currentUser.setCellPhone(null);
         changed = true;
       }
 
-      if (email != null && !email.equals(currentUser.getEmail())) {
+      if (!email.isEmpty() && !email.equals(currentUser.getEmail())) {
         currentUser.setEmail(email);
         changed = true;
-      } else if (email == null && currentUser.getEmail() != null) {
+      } else if (email.isEmpty() && currentUser.getEmail() != null) {
         currentUser.setEmail(null);
         changed = true;
       }
@@ -1227,64 +1049,101 @@ public class UpdateUserController {
       EmergencyContact contact = currentUser.getContact();
 
       String name = contact.getName();
-      if (!name.isEmpty() && !name.equals(eName)) {
-        contact.setName(eName);
-        changed = true;
-      } else if (name.isEmpty() && eName != null) {
-        contact.setName(eName);
-        changed = true;
+      if (name != null) {
+        if (!name.isEmpty() && !name.equals(eName)) {
+          contact.setName(eName);
+          changed = true;
+        } else if (name.isEmpty() && (eName != null && !eName.isEmpty())) {
+          contact.setName(eName);
+          changed = true;
+        }
+      } else {
+        if (!eName.isEmpty()) {
+          contact.setName(eName);
+          changed = true;
+        }
       }
 
       String ePhone = contact.getHomePhoneNumber();
-      if (!ePhone.isEmpty() && !ePhone.equals(emergencyPhone)) {
-        contact.setHomePhoneNumber(emergencyPhone);
-        changed = true;
-      } else if (ePhone.isEmpty() && emergencyPhone != null) {
+      if (ePhone != null) {
+        if (!ePhone.isEmpty() && !ePhone.equals(emergencyPhone)) {
+          contact.setHomePhoneNumber(emergencyPhone);
+          changed = true;
+        } else if (ePhone.isEmpty() && (emergencyPhone != null && !emergencyPhone.isEmpty())) {
+          contact.setHomePhoneNumber(emergencyPhone);
+          changed = true;
+        }
+      } else if (!emergencyPhone.isEmpty()) {
         contact.setHomePhoneNumber(emergencyPhone);
         changed = true;
       }
 
       String eCell = contact.getCellPhoneNumber();
-      if (!eCell.isEmpty() && !eCell.equals(emergencyCell)) {
-        contact.setCellPhoneNumber(emergencyCell);
-        changed = true;
-      } else if (eCell.isEmpty() && emergencyCell != null) {
+      if (eCell != null) {
+        if (!eCell.isEmpty() && !eCell.equals(emergencyCell)) {
+          contact.setCellPhoneNumber(emergencyCell);
+          changed = true;
+        } else if (eCell.isEmpty() && (emergencyCell != null && !emergencyCell.isEmpty())) {
+          contact.setCellPhoneNumber(emergencyCell);
+          changed = true;
+        }
+      } else if (!emergencyCell.isEmpty()) {
         contact.setCellPhoneNumber(emergencyCell);
         changed = true;
       }
 
       String address = contact.getAddress();
-      if (!address.isEmpty() && !address.equals(eAddress)) {
-        contact.setAddress(eAddress);
-        changed = true;
-      } else if (address.isEmpty() && eAddress != null) {
+      if (address != null) {
+        if (!address.isEmpty() && !address.equals(eAddress)) {
+          contact.setAddress(eAddress);
+          changed = true;
+        } else if (address.isEmpty() && (eAddress != null && !eAddress.isEmpty())) {
+          contact.setAddress(eAddress);
+          changed = true;
+        }
+      } else if (!eAddress.isEmpty()) {
         contact.setAddress(eAddress);
         changed = true;
       }
 
       String region = contact.getRegion();
-      if (!region.isEmpty() && !region.equals(eRegion)) {
-        contact.setRegion(eRegion);
-        changed = true;
-      } else if (region.isEmpty() && eRegion != null) {
+      if (region != null) {
+        if (!region.isEmpty() && !region.equals(eRegion)) {
+          contact.setRegion(eRegion);
+          changed = true;
+        } else if (region.isEmpty() && (eRegion != null && eRegion.isEmpty())) {
+          contact.setRegion(eRegion);
+          changed = true;
+        }
+      } else if (!eRegion.isEmpty()) {
         contact.setRegion(eRegion);
         changed = true;
       }
 
       String eEmail = contact.getEmail();
-      if (!eEmail.isEmpty() && !eEmail.equals(emergencyEmail)) {
-        contact.setEmail(emergencyEmail);
-        changed = true;
-      } else if (eEmail.isEmpty() && emergencyEmail != null) {
+      if (eEmail != null) {
+        if (!eEmail.isEmpty() && !eEmail.equals(emergencyEmail)) {
+          contact.setEmail(emergencyEmail);
+          changed = true;
+        } else if (eEmail.isEmpty() && (emergencyEmail != null && !emergencyEmail.isEmpty())) {
+          contact.setEmail(emergencyEmail);
+          changed = true;
+        }
+      } else if (!emergencyEmail.isEmpty()) {
         contact.setEmail(emergencyEmail);
         changed = true;
       }
 
       String relation = contact.getRelationship();
-      if (!relation.isEmpty() && !relation.equals(eRelationship)) {
-        contact.setRelationship(eRelationship);
-        changed = true;
-      } else if (relation.isEmpty() && eRelationship != null) {
+      if (relation != null) {
+        if (!relation.isEmpty() && !relation.equals(eRelationship)) {
+          contact.setRelationship(eRelationship);
+          changed = true;
+        } else if (relation.isEmpty() && (eRelationship != null && !eRelationship.isEmpty())) {
+          contact.setRelationship(eRelationship);
+          changed = true;
+        }
+      } else if (!eRelationship.isEmpty()) {
         contact.setRelationship(eRelationship);
         changed = true;
       }
@@ -1292,6 +1151,9 @@ public class UpdateUserController {
       return changed;
     }
 
+  /**
+   * Undoes a form change
+   */
   @FXML
     void undo () {
       currentUser.undo();
@@ -1299,7 +1161,10 @@ public class UpdateUserController {
       setUserDetails(currentUser);
     }
 
-    @FXML
+  /**
+   * Redoes a form change
+   */
+  @FXML
     void redo () {
       currentUser.redo();
       redoButton.setDisable(currentUser.getRedoStack().isEmpty());
@@ -1310,7 +1175,7 @@ public class UpdateUserController {
      * Prompts the user with a warning alert if there are unsaved changes, otherwise cancels
      * immediately.
      *
-     * @param event passed in automatically by the gui
+     * @param event An ActionEvent object usually automatically passed by the GUI.
      */
     @FXML
     void goBack (ActionEvent event){
@@ -1325,10 +1190,11 @@ public class UpdateUserController {
 
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.YES) {
+          //currentUser.changeInto(oldUser);
           AppController appController = AppController.getInstance();
           DonorController donorController = appController.getDonorController();
           try {
-            donorController.showUser(currentUser);
+            donorController.showUser(oldUser);
           } catch (NullPointerException ex) {
             //TODO causes npe if donor is new in this session
             //the text fields etc. are all null
@@ -1346,22 +1212,6 @@ public class UpdateUserController {
         }
         stage.close();
       }
-    }
-
-    /**
-     * @param actionEvent passed in automatically by the gui
-     */
-    @FXML
-    public void cancelCreation (ActionEvent actionEvent){
-      AppController appController = AppController.getInstance();
-      DonorController donorController = appController.getDonorController();
-      try {
-        donorController.showUser(currentUser);
-      } catch (NullPointerException ex) {
-        //TODO causes npe if donor is new in this session
-        //the text fields etc. are all null
-      }
-      stage.close();
     }
 
     /**

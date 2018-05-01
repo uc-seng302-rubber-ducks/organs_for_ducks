@@ -315,8 +315,7 @@ public class DonorController {
     undoButton.setVisible(true);
     redoButton.setVisible(true);
     //warningLabel.setVisible(false);
-    currentUser = user;
-    contact = user.getContact();
+    changeCurrentUser(user);
       donorNameLabel.setText(user.getName());
       ArrayList<Organs> donating;
       try {
@@ -474,6 +473,11 @@ public class DonorController {
     showDonorDiseases(currentUser, true);
     modifyOrgansProcedureButton.setVisible(false);
 
+  }
+
+  private void changeCurrentUser(User user) {
+    currentUser = user;
+    contact = user.getContact();
   }
 
   /**
@@ -705,15 +709,9 @@ public class DonorController {
    */
   @FXML
   private void undo() {
-
     currentUser.undo();
     undoButton.setDisable(currentUser.getUndoStack().isEmpty());
-    //currentUser = UndoRedoStacks.loadUndoCopy(currentUser);
-    //System.out.println("Something happened");
-    //System.out.println(currentUser.getName());
     showUser(currentUser); //Error with showing donors
-
-
   }
 
   /**
@@ -749,6 +747,7 @@ public class DonorController {
      * @param user The current user.
      */
     public void showUser(User user) {
+      changeCurrentUser(user);
         setContactPage();
         NHIValue.setText(currentUser.getNhi());
         fNameValue.setText(currentUser.getFirstName());

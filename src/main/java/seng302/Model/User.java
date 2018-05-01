@@ -956,7 +956,9 @@ public class User extends Undoable<User> {
     newUser.homePhone = this.homePhone;
     newUser.cellPhone = this.cellPhone;
     newUser.email = this.email;
-    newUser.contact = this.contact;
+    newUser.contact = new EmergencyContact(this.contact.getName(), this.contact.getCellPhoneNumber(),
+            this.contact.getHomePhoneNumber(), this.contact.getRegion(), this.contact.getAddress(),
+            this.contact.getEmail(), this.contact.getRelationship(), newUser);
 
     newUser.name = this.name;
     newUser.firstName = this.firstName;
@@ -981,10 +983,18 @@ public class User extends Undoable<User> {
     newUser.medicalProcedures = this.medicalProcedures;
 
     newUser.changes = this.changes;
+    newUser.getUndoStack().clear();
+    newUser.getUndoStack().addAll(this.getUndoStack());
+    newUser.getRedoStack().clear();
+    newUser.getRedoStack().addAll(this.getRedoStack());
     return newUser;
   }
 
-  private void changeInto(User other) {
+  /**
+   * Changes this instance of a user to become another user
+   * @param other other User object to convert this instance into.
+   */
+  public void changeInto(User other) {
     this.nhi = other.nhi;
     this.dateOfBirth = other.dateOfBirth;
     this.dateOfDeath = other.dateOfDeath;
