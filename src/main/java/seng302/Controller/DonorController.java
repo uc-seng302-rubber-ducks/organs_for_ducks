@@ -27,12 +27,16 @@ import okhttp3.OkHttpClient;
 import org.controlsfx.control.textfield.TextFields;
 import okhttp3.OkHttpClient;
 import seng302.Model.*;
+
+import javax.xml.ws.FaultAction;
 import java.io.IOException;
 import java.util.*;
 
 public class DonorController {
 
     //the Home page attributes
+    @FXML
+    private Button backButton;
     @FXML
     private Label ageValue;
 
@@ -254,19 +258,25 @@ public class DonorController {
     this.stage = stage;
     application = controller;
     //ageValue.setText("");
+        //This is the place to set visable and invisable controls for Clinician vs User
     if (fromClinician) {
-      logOutButton.setVisible(false);
-    addDiseaseButton.setVisible(true);
-      updateDiseaseButton.setVisible(true);
-      deleteDiseaseButton.setVisible(true);}else {
-            procedureDateSelector.setEditable(false);
-            procedureTextField.setEditable(false);
-            descriptionTextArea.setEditable(false);
-            addProcedureButton.setVisible(false);
-            removeProcedureButton.setVisible(false);
-            updateProceduresButton.setVisible(false);
-            modifyOrgansProcedureButton.setVisible(false);
-        }
+        logOutButton.setVisible(false);
+        addDiseaseButton.setVisible(true);
+        updateDiseaseButton.setVisible(true);
+        deleteDiseaseButton.setVisible(true);
+    } else {
+        procedureDateSelector.setEditable(false);
+        procedureTextField.setEditable(false);
+        descriptionTextArea.setEditable(false);
+        addProcedureButton.setVisible(false);
+        removeProcedureButton.setVisible(false);
+        updateProceduresButton.setVisible(false);
+        modifyOrgansProcedureButton.setVisible(false);
+        deleteButton.setVisible(false);
+        addMedicationButton.setVisible(false);
+        medicationTextField.setVisible(false);
+        backButton.setVisible(false);
+    }
     //arbitrary default values
     //changeDeceasedStatus();
     undoButton.setVisible(true);
@@ -1188,4 +1198,11 @@ public class DonorController {
     stage.setScene(new Scene(root));
     stage.show();
   }
+
+
+    @FXML
+    private void closeWindow(){
+      stage.close();
+    }
 }
+

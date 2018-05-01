@@ -75,6 +75,7 @@
                         <Label fx:id="ageDeathValue" layoutX="110.0" layoutY="220.0" />
                         <Label layoutX="15.0" layoutY="270.0" text="Gender Identity:" />
                         <Label fx:id="genderIdentityValue" layoutX="130.0" layoutY="273.0" />
+                        <Button fx:id="backButton" layoutX="118.0" layoutY="570.0" mnemonicParsing="false" onAction="#closeWindow" text="Back" />
                      </children>
                   </AnchorPane>
             </content>
@@ -125,7 +126,7 @@
                   </AnchorPane>
             </content>
           </Tab>
-            <Tab disable="true" text="Medication">
+            <Tab text="Medication">
               <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>

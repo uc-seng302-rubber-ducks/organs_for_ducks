@@ -137,6 +137,7 @@ public class UpdateUserController {
         currentUser = user;
         oldUser = new User();
         setUserDetails(currentUser);
+        errorLabel.setText("");
         if (user.getLastName() != null) {
           stage.setTitle("Update User: " + user.getFirstName() +" " + user.getLastName());
         } else {
@@ -224,7 +225,8 @@ public class UpdateUserController {
     }
 
     @FXML
-    public void getContactDetaisl() {
+    public boolean getContactDetaisl() {
+        boolean passes = true;
         if (phoneInput.getText() != null){
           currentUser.setHomePhone(phoneInput.getText());
         } else {
@@ -251,11 +253,12 @@ public class UpdateUserController {
         } else {
           currentUser.setEmail(null);
         }
-
+        return passes;
     }
 
     @FXML
-    public void getEmergencyContact() {
+    public boolean getEmergencyContact() {
+        boolean passes = true;
         if (!ecNameInput.getText().isEmpty()) {
           currentUser.getContact().setName(ecNameInput.getText());
         }
@@ -292,11 +295,13 @@ public class UpdateUserController {
         } else {
           currentUser.getContact().setRelationship(null);
         }
+        return passes;
 
     }
 
     @FXML
-    public void getHealthDetails() {
+    public boolean getHealthDetails() {
+        boolean passes = true;
         if (birthGenderComboBox.getValue() != null) {
             String birthGender = AttributeValidation.validateGender(birthGenderComboBox);
             currentUser.setBirthGender(birthGender);
@@ -328,19 +333,27 @@ public class UpdateUserController {
           try {
             currentUser.setWeight(Double.parseDouble(weightInput.getText()));
           } catch (NumberFormatException e){
-            System.out.println("nope");
+            errorLabel.setText("Weight must be a valid number");
+            passes = false;
           }
 
         }
         if (!heightInput.getText().equals("")) {
-          currentUser.setHeight(Double.parseDouble(heightInput.getText()));
+            try {
+                currentUser.setHeight(Double.parseDouble(heightInput.getText()));
+            } catch (NumberFormatException e){
+                errorLabel.setText("Height must be a number");
+                passes = false;
+            }
         }
+        return passes;
     }
 
 
     @FXML
-    public void getPersonalDetails() {
+    public boolean getPersonalDetails() {
         //TODO check why dateofbirth fails
+        boolean passes = true;
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         if (!fNameInput.getText().equals("")) {
           currentUser.setFirstName(fNameInput.getText());
@@ -351,7 +364,12 @@ public class UpdateUserController {
         }
 
         if (!nhiInput.getText().equals("")) {
-          currentUser.setNhi(nhiInput.getText());
+            if (nhiInput.getText().matches("[A-Z]{3}[0-9]{4}")) {
+                currentUser.setNhi(nhiInput.getText());
+            } else {
+                errorLabel.setText("NHI is in valid please enter it in the form ABC1234");
+                passes = false;
+            }
         }
 
         if (!mNameInput.getText().equals("")) {
@@ -371,6 +389,8 @@ public class UpdateUserController {
           currentUser.setPreferredFirstName(fNameInput.getText());
         }
 
+        return passes;
+
 }
 
 
@@ -386,11 +406,15 @@ public class UpdateUserController {
     @FXML
     public void confirmUpdate(ActionEvent actionEvent) throws IOException {
         //TODO save changes and go back to overview screen
-        getPersonalDetails();
-        getHealthDetails();
-        getContactDetaisl();
-        getEmergencyContact();
+        errorLabel.setText("");
+        boolean personalDetails = getPersonalDetails();
+        boolean healthDetails = getHealthDetails();
+        boolean contactDetails  = getContactDetaisl();
+        boolean emergencyDetails = getEmergencyContact();
         //TODO change to be different
+        if (!(personalDetails && healthDetails && contactDetails && emergencyDetails)){
+            return;
+        }
       appController.update(currentUser);
       //ArrayList<Change> diffs = appController.differanceInDonors(oldUser, currentUser);
       //changelog.addAll(diffs);
