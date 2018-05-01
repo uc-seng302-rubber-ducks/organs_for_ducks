@@ -538,7 +538,13 @@ public class DonorController {
                 }
             });
         }
-        //TODO add similar functionality for donor table
+        currentlyDonating.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        currentlyReceivingListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        for (Organs organ: currentUser.getCommonOrgans()) {
+            int index = currentlyDonating.getItems().indexOf(organ);
+            currentlyDonating.getSelectionModel().select(index);
+            //TODO change the colour of the font when selected to make it more readable
+        }
         for (Organs organ: currentUser.getCommonOrgans()) {
             int index = currentlyReceivingListView.getItems().indexOf(organ);
             currentlyReceivingListView.getSelectionModel().select(index);
@@ -1064,7 +1070,6 @@ public class DonorController {
 //            for (Organs organ: currentUser.getCommonOrgans()) {
 //                int index = organsDonatingListView.getItems().indexOf(organ);
 //                organsDonatingListView.getSelectionModel().select(index);
-//                //TODO change the colour of the font when selected to make it more readable
 //            }
 //        }
         //organsDonatingListView.getItems().addAll(currentUser.getDonorDetails().getOrgans());
@@ -1095,7 +1100,6 @@ public class DonorController {
 //            for (Organs organ: currentUser.getCommonOrgans()) {
 //                int index = organsDonatingListView.getItems().indexOf(organ);
 //                organsDonatingListView.getSelectionModel().select(index);
-//                //TODO change the colour of the font when selected to make it more readable
 //            }
 //        }
     setContactPage();
@@ -1584,6 +1588,13 @@ public class DonorController {
       Organs toDonate = canDonate.getSelectionModel().getSelectedItem();
       currentlyDonating.getItems().add(toDonate);
       currentUser.getDonorDetails().addOrgan(toDonate);
+      if (!currentUser.getCommonOrgans().isEmpty()) {
+            for (Organs organ: currentUser.getCommonOrgans()) {
+                int index = currentlyDonating.getItems().indexOf(organ);
+                currentlyDonating.getSelectionModel().select(index);
+                //TODO change the colour of the font when selected to make it more readable
+            }
+        }
       application.update(currentUser);
       canDonate.getItems().remove(toDonate);
     }
@@ -1599,7 +1610,11 @@ public class DonorController {
       Organs toUndonate = currentlyDonating.getSelectionModel().getSelectedItem();
       currentlyDonating.getItems().remove(toUndonate);
       canDonate.getItems().add(toUndonate);
-      currentUser.getDonorDetails().removeOrgan(toUndonate);
+        if (currentUser.getCommonOrgans().contains(toUndonate)) {
+            currentUser.getCommonOrgans().remove(toUndonate);
+        }
+
+        currentUser.getDonorDetails().removeOrgan(toUndonate);
       application.update(currentUser);
     }
   }
