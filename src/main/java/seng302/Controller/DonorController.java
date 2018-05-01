@@ -527,6 +527,8 @@ public class DonorController {
                 }
             });
         }
+        currentlyDonating.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        currentlyReceivingListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         for (Organs organ: currentUser.getCommonOrgans()) {
             int index = currentlyDonating.getItems().indexOf(organ);
             currentlyDonating.getSelectionModel().select(index);

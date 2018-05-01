@@ -2,12 +2,9 @@ package seng302.Controller;
 
 
 
-import static org.testfx.api.FxAssert.verifyThat;
-
-import java.time.LocalDate;
-import java.util.concurrent.TimeoutException;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
@@ -15,6 +12,11 @@ import org.testfx.matcher.control.LabeledMatchers;
 import seng302.App;
 import seng302.Model.User;
 
+import java.time.LocalDate;
+import java.util.concurrent.TimeoutException;
+
+import static org.testfx.api.FxAssert.verifyThat;
+@Ignore
 public class DeleteClinicianUserGUITest extends ApplicationTest{
   @Before
   public void setUpCreateScene() throws TimeoutException {
