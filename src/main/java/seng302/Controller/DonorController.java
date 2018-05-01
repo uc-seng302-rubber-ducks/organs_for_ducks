@@ -613,32 +613,32 @@ public class DonorController {
 
 
     }
-
-    /**
-     * fires when the Organs button is clicked
-     */
-    @FXML
-    private void modifyOrgans() {
-        if (currentUser.getDateOfBirth() == null) {
-            warningLabel.setVisible(true);
-            warningLabel.setText("Plese confirm donor before continuing");
-            return;
-        }
-        FXMLLoader organLoader = new FXMLLoader(getClass().getResource("/FXML/organsView.fxml"));
-        Parent root = null;
-        try {
-            root = organLoader.load();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        OrganController organController = organLoader.getController();
-        Stage stage = new Stage();
-        stage.initModality(Modality.APPLICATION_MODAL);
-        organController.init(currentUser, application, stage);
-        stage.setScene(new Scene(root));
-        stage.show();
-        showUser(currentUser);
-    }
+//
+//    /**
+//     * fires when the Organs button is clicked
+//     */
+//    @FXML
+//    private void modifyOrgans() {
+//        if (currentUser.getDateOfBirth() == null) {
+//            warningLabel.setVisible(true);
+//            warningLabel.setText("Plese confirm donor before continuing");
+//            return;
+//        }
+//        FXMLLoader organLoader = new FXMLLoader(getClass().getResource("/FXML/organsView.fxml"));
+//        Parent root = null;
+//        try {
+//            root = organLoader.load();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        OrganController organController = organLoader.getController();
+//        Stage stage = new Stage();
+//        stage.initModality(Modality.APPLICATION_MODAL);
+//        organController.init(currentUser, application, stage);
+//        stage.setScene(new Scene(root));
+//        stage.show();
+//        showUser(currentUser);
+//    }
 
     /**
      * @param actionEvent An action event.
