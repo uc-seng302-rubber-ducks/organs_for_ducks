@@ -45,7 +45,6 @@ public class receiverOrganDateController {
         this.appController = appController;
         this.user = user;
         this.stage = stage;
-        System.out.println(organ);
         organNameLabel.setText(organ.organName);
         showTimeTable(organ);
     }
@@ -64,9 +63,10 @@ public class receiverOrganDateController {
      */
     private void showTimeTable(Organs organ){
         ArrayList<LocalDate> organDates = (ArrayList<LocalDate>) user.getReceiverDetails().getOrganDates(organ);
+        System.out.println(organDates);
         receiverOrganDetailsList = new ArrayList<>();
 
-        if(!organDates.isEmpty()) {
+        if(!organDates.isEmpty() && organDates != null) {
             for (int i = 0; i < organDates.size(); i += 1) {
                 ReceiverOrganDetails receiverOrganDetails = new ReceiverOrganDetails();
                 receiverOrganDetails.setRegisterDate(organDates.get(i));

@@ -3,7 +3,6 @@ package seng302.Model;
 import com.google.gson.annotations.Expose;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
@@ -13,25 +12,26 @@ public class ReceiverDetails {
   private transient User attachedUser;
 
   @Expose
-  private HashMap<Organs, ArrayList<LocalDate>> organs = new HashMap<>(); // contains the organ start and stop dates
+  private HashMap<String, ArrayList<LocalDate>> organs; // contains the organ start and stop dates
 
   public ReceiverDetails(User attachedUser) {
     this.attachedUser = attachedUser;
+    this.organs = new HashMap<>();
   }
 
-  public ReceiverDetails(User attachedUser, HashMap<Organs, ArrayList<LocalDate>> organs) {
+  public ReceiverDetails(User attachedUser, HashMap<String, ArrayList<LocalDate>> organs) {
     this.attachedUser = attachedUser;
     this.organs = organs;
   }
 //TODO model from DonorDetails (get/set/add/remove/isEmpty etc)
 
 
-  public HashMap<Organs, ArrayList<LocalDate>> getOrgans() {
+  public HashMap<String, ArrayList<LocalDate>> getOrgans() {
     return organs;
   }
 
   public List<LocalDate> getOrganDates(Organs organ){
-    return organs.get(organ);
+    return organs.get(organ.toString().toUpperCase());
   }
 
   /**
@@ -41,7 +41,7 @@ public class ReceiverDetails {
    * @param organ organ in question
    * @return true if organ is being waited for
    */
-  public boolean isCurrentlyWaitingFor(Organs organ) {
+  public boolean isCurrentlyWaitingFor(String organ) {
 
     return organs.containsKey(organ) && organs.get(organ).size() % 2 == 1;
   }
@@ -49,8 +49,9 @@ public class ReceiverDetails {
   /**
    * appends one organ to the list of organs this user is waiting for. If the user is already
    * waiting for this organ, no change will be made.
+   * @param organ
    */
-  public void startWaitingForOrgan(Organs organ) {
+  public void startWaitingForOrgan(String organ) {
     if (isCurrentlyWaitingFor(organ)) {
       return;
     }
@@ -70,7 +71,7 @@ public class ReceiverDetails {
    *
    * @param organ organ to stop waiting for
    */
-  public void stopWaitingForOrgan(Organs organ) {
+  public void stopWaitingForOrgan(String organ) {
     if (isCurrentlyWaitingFor(organ)) {
       organs.get(organ).add(LocalDate.now());
     }
@@ -106,10 +107,7 @@ public class ReceiverDetails {
    * @return true if organ list is empty
    */
   public boolean isEmpty() {
-    if (organs == null) {
-      return true;
-    }
-    return organs.isEmpty();
+    return organs == null || organs.isEmpty();
   }
 
 }

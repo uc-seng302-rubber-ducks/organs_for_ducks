@@ -59,7 +59,7 @@ public class DonorDetails {
   }
 
   private boolean isCurrentlyWaitingFor(Organs organ) {
-    return attachedUser.getReceiverDetails().isCurrentlyWaitingFor(organ);
+    return attachedUser.getReceiverDetails().isCurrentlyWaitingFor(organ.organName);
   }
   /**
    * TODO update if/when more details are added
