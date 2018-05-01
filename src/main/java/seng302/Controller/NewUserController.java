@@ -261,24 +261,28 @@ public class NewUserController {
         }
 
         if (valid) {
-            EmergencyContact contact = new EmergencyContact(null, null, null);
+          // create the new user
+          User newUser = new User(nhi, dob, dod, birthGender, genderIdentity, height, weight,
+              bloodType,
+              alcoholConsumption, smoker, currentAddress, region, homePhone, cellPhone, email, null,
+              fName, fName, preferredFirstName, middleName, lastName);
+
+          EmergencyContact contact = new EmergencyContact("", "", newUser);
 
             if (eName != null && eCellPhone != null) {
                 // create the emergency contact
-                contact = new EmergencyContact(eName, eCellPhone, null);
-                contact.setHomePhoneNumber(eHomePhone);
-                contact.setAddress(eAddress);
-                contact.setRegion(eRegion);
-                contact.setEmail(eEmail);
-                contact.setRelationship(eRelationship);
+              contact = new EmergencyContact(eName, eCellPhone, newUser);
+
+              contact.setHomePhoneNumber(eHomePhone == null ? "" : eHomePhone);
+              contact.setAddress(eAddress == null ? "" : eAddress);
+              contact.setRegion(eRegion == null ? "" : eRegion);
+              contact.setEmail(eEmail == null ? "" : eEmail);
+              contact.setRelationship(eRelationship == null ? "" : eRelationship);
             }
 
-            // create the new user
-            User newUser = new User(nhi, dob, dod, birthGender, genderIdentity, height, weight, bloodType,
-                    alcoholConsumption, smoker, currentAddress, region, homePhone, cellPhone, email, contact,
-                    fName, fName, preferredFirstName, middleName, lastName);
+          newUser.setContact(contact);
 
-            newUser.getContact().setAttachedUser(newUser);
+          newUser.getUndoStack().clear();
 
             // add the new user to the list of users and save them
             ArrayList<User> users = controller.getUsers();

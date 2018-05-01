@@ -50,7 +50,6 @@ public class EmergencyContact {
         User clone = attachedUser.clone();
         clone.setContact(copy(this));
         memento.setOldObject(clone);
-        ;
         HomePhoneNumber = homePhoneNumber;
         clone = attachedUser.clone();
         clone.setContact(copy(this));
