@@ -119,8 +119,8 @@ public class DonorController {
     @FXML
     private Label eName;
 
-    @FXML
-    private ListView<Organs> organsDonatingListView;
+    //@FXML
+    //private ListView<Organs> organsDonatingListView;
 
     @FXML
     private Button undoButton;
@@ -934,7 +934,7 @@ public class DonorController {
             previousMeds.addAll(currentUser.getPreviousMedication());
             previousMedicationListView.setItems(previousMeds);
         }
-        organsDonatingListView.getItems().addAll(currentUser.getDonorDetails().getOrgans());
+        //organsDonatingListView.getItems().addAll(currentUser.getDonorDetails().getOrgans());
         setContactPage();
         medicalProcedures = FXCollections.observableList(currentUser.getMedicalProcedures());
         for (MedicalProcedure procedure : medicalProcedures) {
@@ -956,8 +956,8 @@ public class DonorController {
       previousMeds.addAll(currentUser.getPreviousMedication());
       previousMedicationListView.setItems(previousMeds);
     }
-    organsDonatingListView.getItems().clear();
-    organsDonatingListView.getItems().addAll(currentUser.getDonorDetails().getOrgans());
+    //organsDonatingListView.getItems().clear();
+    //organsDonatingListView.getItems().addAll(currentUser.getDonorDetails().getOrgans());
     setContactPage();
     if (user.getLastName() != null) {
       stage.setTitle("User Profile: " + user.getFirstName() + " " + user.getLastName());
