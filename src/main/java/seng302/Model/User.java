@@ -82,14 +82,17 @@ public class User {
 
   //flags and extra details for if the person is a donor or a receiver
   @Expose
-  private DonorDetails donorDetails = new DonorDetails(this);
+  private DonorDetails donorDetails;
   @Expose
-  private ReceiverDetails receiverDetails = new ReceiverDetails(this);
+  private ReceiverDetails receiverDetails;
 
+  @Expose
   private Collection<Organs> commonOrgans;
 
+  @Expose
   private ArrayList<Disease> pastDiseases;
 
+  @Expose
   private ArrayList<Disease> currentDiseases;
 
 //  public User(java.time.LocalDate dateOfBirth, java.time.LocalDate dateOfDeath, String gender, double height, double weight,

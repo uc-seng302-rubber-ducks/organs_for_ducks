@@ -3,39 +3,46 @@ package seng302.Model;
 import com.google.gson.annotations.Expose;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 
 public class ReceiverDetails {
 
-  @Expose
+
   private transient User attachedUser;
+
   @Expose
-  private HashMap<Organs, ArrayList<LocalDate>> organs = new HashMap<>();
+  private HashMap<Organs, ArrayList<LocalDate>> organs = new HashMap<>(); // contains the organ start and stop dates
 
   public ReceiverDetails(User attachedUser) {
     this.attachedUser = attachedUser;
   }
 
-  //TODO model from DonorDetails (get/set/add/remove/isEmpty etc)
+  public ReceiverDetails(User attachedUser, HashMap<Organs, ArrayList<LocalDate>> organs) {
+    this.attachedUser = attachedUser;
+    this.organs = organs;
+  }
+//TODO model from DonorDetails (get/set/add/remove/isEmpty etc)
 
 
   public HashMap<Organs, ArrayList<LocalDate>> getOrgans() {
     return organs;
   }
 
-  public ArrayList<LocalDate> getOrganDates(Organs organ){
+  public List<LocalDate> getOrganDates(Organs organ){
     return organs.get(organ);
   }
 
   /**
    * determines whether a user is waiting for the given organ
-   *
+   * organ is in list and uneven number of time entries.
+   * time entries can be grouped in pairs of start/stop times. uneven would mean they are currently waiting
    * @param organ organ in question
    * @return true if organ is being waited for
    */
   public boolean isCurrentlyWaitingFor(Organs organ) {
-    //organ is in list and uneven number of time entries.
-    //time entries can be grouped in pairs of start/stop times. uneven would mean they are currently waiting
+
     return organs.containsKey(organ) && organs.get(organ).size() % 2 == 1;
   }
 
@@ -92,6 +99,7 @@ public class ReceiverDetails {
   public boolean isDonatingThisOrgan(Organs organ) {
     return attachedUser.getDonorDetails().getOrgans().contains(organ);
   }
+
   /**
    * check if underlying organs list is empty TODO extend this to new functionality when added
    *
