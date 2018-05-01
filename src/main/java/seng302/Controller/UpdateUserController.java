@@ -231,7 +231,11 @@ public class UpdateUserController {
      */
     private void textFieldListener(TextField field) {
         field.textProperty().addListener((observable, oldValue, newValue) -> {
-            stage.setTitle("Update User: " + currentUser.getFirstName() + " *");
+            if (checkChanges()) {
+                stage.setTitle("Update User: " + currentUser.getFirstName());
+            } else {
+                stage.setTitle("Update User: " + currentUser.getFirstName() + " *");
+            }
         });
     }
 

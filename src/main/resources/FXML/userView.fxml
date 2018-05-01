@@ -20,7 +20,7 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="675.0" prefWidth="894.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.Controller.DonorController">
    <children>
-      <TabPane layoutY="38.0" prefHeight="639.0" prefWidth="894.0" rotateGraphic="true" tabClosingPolicy="UNAVAILABLE">
+      <TabPane layoutY="-4.0" prefHeight="681.0" prefWidth="894.0" rotateGraphic="true" tabClosingPolicy="UNAVAILABLE">
         <tabs>
           <Tab text="User Profile">
             <content>
@@ -191,16 +191,10 @@
                         <Label layoutX="618.0" layoutY="51.0" text="Currently Donating" />
                         <Button fx:id="donate" layoutX="397.0" layoutY="184.0" mnemonicParsing="false" onAction="#donate" text="&gt;&gt;" />
                         <Button fx:id="undonateButton" layoutX="393.0" layoutY="286.0" mnemonicParsing="false" onAction="#undonate" text="&lt;&lt;" />
-                        <Label fx:id="donorNameLabel" layoutX="399.0" layoutY="26.0" text="Label" />
                      </children></AnchorPane>
               </content>
             </Tab>
         </tabs>
       </TabPane>
-      <Label alignment="CENTER" layoutY="3.0" prefHeight="35.0" prefWidth="894.0" text="User">
-         <font>
-            <Font size="29.0" />
-         </font>
-      </Label>
    </children>
 </AnchorPane>
