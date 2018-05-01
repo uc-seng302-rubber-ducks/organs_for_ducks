@@ -384,6 +384,7 @@ public class ClinicianController {
     stage.setScene(new Scene(root));
     LoginController loginController = loader.getController();
     loginController.init(AppController.getInstance(), stage);
+    stage.hide();
     stage.show();
   }
 
