@@ -86,13 +86,11 @@ public class User {
   @Expose
   private ReceiverDetails receiverDetails = new ReceiverDetails(this);
 
-  private Collection<Organs> commonOrgans = new HashSet<>();
+  private Collection<Organs> commonOrgans;
 
   private ArrayList<Disease> pastDiseases;
 
   private ArrayList<Disease> currentDiseases;
-
-  private OrganIntersection organIntersection;
 
 //  public User(java.time.LocalDate dateOfBirth, java.time.LocalDate dateOfDeath, String gender, double height, double weight,
 //              String bloodType,
@@ -141,7 +139,7 @@ public class User {
       this.previousMedicationTimes = new HashMap<>();
         this.donorDetails = new DonorDetails(this);
         this.receiverDetails = new ReceiverDetails(this);
-        this.organIntersection = new OrganIntersection(this);
+        this.commonOrgans = new HashSet<>();
 
       this.currentDiseases = new ArrayList<>();
       this.pastDiseases = new ArrayList<>();
@@ -162,7 +160,7 @@ public class User {
     this.donorDetails = new DonorDetails(this);
     this.firstName = name;
     this.receiverDetails = new ReceiverDetails(this);
-    this.organIntersection = new OrganIntersection(this);
+    this.commonOrgans = new HashSet<>();
     this.medicalProcedures = medicalProcedures;
     //TODO fix json reader
     try {
@@ -230,7 +228,7 @@ public class User {
 
     this.donorDetails = new DonorDetails(this);
     this.receiverDetails = new ReceiverDetails(this);
-    this.organIntersection = new OrganIntersection(this);
+    this.commonOrgans = new HashSet<>();
     this.medicalProcedures =  new ArrayList<>();
     try {
       changes = JsonHandler.importHistoryFromFile(name);
@@ -257,7 +255,7 @@ public class User {
     this.medicalProcedures = new ArrayList<>();
     this.donorDetails = new DonorDetails(this);
     this.receiverDetails = new ReceiverDetails(this);
-    this.organIntersection = new OrganIntersection(this);
+    this.commonOrgans = new HashSet<>();
     changes = new ArrayList<>();
   }
 
