@@ -21,7 +21,7 @@
 <?import javafx.scene.text.Font?>
 <TabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
   prefHeight="408.0" prefWidth="617.0" tabClosingPolicy="UNAVAILABLE"
-  xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1"
+  xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
   fx:controller="seng302.Controller.ClinicianController">
   <tabs>
     <Tab text="Details">
@@ -72,10 +72,12 @@
     </Tab>
     <Tab fx:id="searchTab" text="Search">
          <content>
-            <SplitPane dividerPositions="0.3" minHeight="-Infinity" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0">
+           <SplitPane dividerPositions="50.0" minHeight="-Infinity" orientation="VERTICAL"
+             prefHeight="200.0" prefWidth="160.0"> <!---->
               <items>
-                <AnchorPane fx:id="filterAnchorPane" maxHeight="45" minHeight="45"
-                  prefHeight="-Infinity" prefWidth="617.0">
+                <AnchorPane fx:id="filterAnchorPane" maxHeight="183.0" minHeight="45"
+                  prefWidth="756.0" prefHeight="-Infinity">
+                  <!---->
                      <children>
                      <TextField fx:id="searchTextField" layoutX="115.0" layoutY="10.0" prefHeight="25.0" prefWidth="200.0" AnchorPane.leftAnchor="115.0" AnchorPane.rightAnchor="329.0" AnchorPane.topAnchor="10.0" />
                         <Button fx:id="expandButton" layoutX="576.0" layoutY="14.0" mnemonicParsing="false" onMouseClicked="#expandFilter" text="▼" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="10.0" />
@@ -99,6 +101,9 @@
                         <CheckBox fx:id="donorFilterCheckBox" layoutX="115.0" layoutY="121.0" mnemonicParsing="false" text="Donor" AnchorPane.leftAnchor="115.0" AnchorPane.topAnchor="121.0" />
                         <CheckBox fx:id="receiverFilterCheckBox" layoutX="199.0" layoutY="121.0" mnemonicParsing="false" text="Receiver" AnchorPane.leftAnchor="199.0" AnchorPane.topAnchor="121.0" />
                        <CheckBox fx:id="allCheckBox" layoutX="290.0" layoutY="121.0" mnemonicParsing="false" text="All" AnchorPane.leftAnchor="290.0" AnchorPane.topAnchor="121.0" />
+                       <Button fx:id="recentlyDeletedButton" layoutX="393.0" layoutY="118.0"
+                         mnemonicParsing="false" onAction="#loadRecentlyDeleted"
+                         text="Show Recently Deleted Users"/>
                      </children>
                   </AnchorPane>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="617.0">
