@@ -31,11 +31,6 @@ public class AppController {
   private AppController() {
     try {
       users = JsonHandler.loadUsers();
-      User user = new User("A", LocalDate.now(), "AGT1111");
-      user.setFirstName("first");
-      user.setLastName("last");
-      user.getUndoStack().clear();
-      users.add(user);
       System.out.println(users.size() + " donors were successfully loaded");
       clinicians = JsonHandler.loadClinicians();
       System.out.println(clinicians.size() + " clinicians were successfully loaded");

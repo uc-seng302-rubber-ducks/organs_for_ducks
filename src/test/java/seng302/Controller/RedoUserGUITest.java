@@ -26,7 +26,7 @@ public class RedoUserGUITest extends ApplicationTest {
     User user = new User("A", LocalDate.now(), "ABC1234");
     user.setFirstName("Adam");
     user.setLastName("");
-    user.setContact(new EmergencyContact("", ""));
+    user.setContact(new EmergencyContact("", "", user));
     user.getUndoStack().clear();
     AppController.getInstance().getUsers().add(user);
     clickOn("#userIDTextField");

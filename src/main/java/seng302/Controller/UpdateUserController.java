@@ -2,6 +2,7 @@ package seng302.Controller;
 
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 import javafx.event.ActionEvent;
@@ -21,10 +22,6 @@ import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import seng302.Exception.InvalidNhiException;
-import java.io.IOException;
-import java.time.LocalDate;
-import java.util.Optional;
-
 import seng302.Model.EmergencyContact;
 import seng302.Model.Memento;
 import seng302.Model.User;
@@ -215,7 +212,7 @@ public class UpdateUserController {
       } else {
         stage.setTitle("Update User: " + currentUser.getFirstName() + " *");
       }
-      updateModel();
+      updateUndos();
     });
   }
 
@@ -231,7 +228,7 @@ public class UpdateUserController {
       } else {
         stage.setTitle("Update User: " + currentUser.getFirstName() + " *");
       }
-      updateModel();
+      updateUndos();
     });
 
   }
@@ -252,7 +249,7 @@ public class UpdateUserController {
     } else {
       stage.setTitle("Update User: " + currentUser.getFirstName() + " *");
     }
-    updateModel();
+    updateUndos();
   }
 
   /**
@@ -263,7 +260,7 @@ public class UpdateUserController {
   private void textFieldListener(TextField field) {
     field.textProperty().addListener((observable, oldValue, newValue) -> {
       stage.setTitle("Update User: " + currentUser.getFirstName() + " *");
-      updateModel();
+      updateUndos();
     });
   }
 
@@ -803,12 +800,6 @@ public class UpdateUserController {
 
   }
 
-//            if(cellPhone ==null)
-//
-//  {
-//    errorLabel.setVisible(true);
-//    valid = false;
-//  }
 
   /*
    *
@@ -819,18 +810,10 @@ public class UpdateUserController {
   public void confirmUpdate(ActionEvent actionEvent) throws IOException {
     boolean changed = false;
 
-//    hideErrorMessages();
-//    errorLabel.setText("Please make sure your details are correct.");
-//    validateFields();
-    //TODO save changes and go back to overview screen
-    try {
-      changed = getPersonalDetails();
-    } catch (InvalidNhiException e) {
+    hideErrorMessages();
+    errorLabel.setText("Please make sure your details are correct.");
+    validateFields();
 
-    }
-    changed |= getHealthDetails();
-    changed |= getContactDetails();
-    changed |= getEmergencyContact();
     //TODO change to be different
 
     appController.update(currentUser);
@@ -874,6 +857,8 @@ public class UpdateUserController {
      * Calls methods to update the changes if all fields are valid.
      */
     private void validateFields () {
+      boolean changed = false;
+
       boolean valid = true;
       String nhi = AttributeValidation.validateNHI(nhiInput.getText());
       LocalDate dob = dobInput.getValue();
@@ -998,28 +983,41 @@ public class UpdateUserController {
         errorLabel.setText("Name and cell phone number are required for an emergency contact.");
         errorLabel.setVisible(true);
       }
-
       if (valid) { // only updates if everything is valid
-        updatePersonalDetails(nhi, fName, dob, dod);
-        updateHealthDetails(height, weight);
-        updateContactDetails(homePhone, cellPhone, email);
-        updateEmergencyContact(eName, emergencyPhone, emergencyCell, eAddress, eRegion,
-            emergencyEmail, eRelationship);
 
-        appController.update(currentUser);
-        //ArrayList<Change> diffs = appController.differanceInDonors(oldUser, currentUser);
-        //changelog.addAll(diffs);
-        AppController appController = AppController.getInstance();
-        DonorController donorController = appController.getDonorController();
-        try {
-          donorController.showUser(currentUser);
-        } catch (NullPointerException ex) {
-          //TODO causes npe if donor is new in this session
-          //the text fields etc. are all null
-        }
-        stage.close();
       }
     }
+
+  public void updateUndos() {
+    boolean changed = false;
+    double weight;
+    double height;
+    changed |= updatePersonalDetails(nhiInput.getText(), fNameInput.getText(), dobInput.getValue(),
+        dodInput.getValue());
+    try {
+      height = Double
+          .parseDouble(heightInput.getText().isEmpty() ? "0" : heightInput.getText());
+      weight = Double
+          .parseDouble(weightInput.getText().isEmpty() ? "0" : weightInput.getText());
+    } catch (NumberFormatException e) {
+      height = 0;
+      weight = 0;
+    }
+    changed |= updateHealthDetails(height, weight);
+    changed |= updateContactDetails(phoneInput.getText(), cellInput.getText(),
+        emailInput.getText());
+    changed |= updateEmergencyContact(ecNameInput.getText(), ecPhoneInput.getText(),
+        ecCellInput.getText(), ecAddressInput.getText(), ecRegionInput.getText(),
+        ecEmailInput.getText(), ecRelationshipInput.getText());
+    if (changed) {
+      appController.update(currentUser);
+      setUserDetails(currentUser);
+      currentUser.getRedoStack().clear();
+    }
+    undoButton.setDisable(currentUser.getUndoStack().isEmpty());
+    redoButton.setDisable(currentUser.getRedoStack().isEmpty());
+    appController.update(currentUser);
+  }
 
     /**
      * Updates all personal details that have changed.
@@ -1028,21 +1026,26 @@ public class UpdateUserController {
      * @param dob The date of birth to be checked for changes and possibly updated.
      * @param dod The date of death to be checked for changes and possibly updated.
      */
-    private void updatePersonalDetails (String nhi, String fName, LocalDate dob, LocalDate dod){
+    private boolean updatePersonalDetails(String nhi, String fName, LocalDate dob, LocalDate dod) {
+      boolean changed = false;
       if (!currentUser.getNhi().equals(nhi)) {
         currentUser.setNhi(nhi);
+        changed = true;
       }
 
       if (!currentUser.getFirstName().equals(fName)) {
         currentUser.setFirstName(fName);
+        changed = true;
       }
 
       String prefName = preferredFNameTextField.getText();
       if (!currentUser.getPreferredFirstName().equals(prefName)) {
         if (prefName.isEmpty()) {
           currentUser.setPreferredFirstName(fName);
+          changed = true;
         } else {
           currentUser.setPreferredFirstName(preferredFNameTextField.getText());
+          changed = true;
         }
       }
 
@@ -1050,30 +1053,39 @@ public class UpdateUserController {
       String middle = currentUser.getMiddleName();
       if (middle != null && !middle.equals(mName)) {
         currentUser.setMiddleName(mName);
+        changed = true;
       } else if (middle == null && mName != null) {
         currentUser.setMiddleName(mName);
+        changed = true;
       }
 
       String lName = AttributeValidation.checkString(lNameInput.getText());
       String last = currentUser.getLastName();
       if (last != null && !last.equals(lName)) {
         currentUser.setLastName(lName);
+        changed = true;
       } else if (last == null && lName != null) {
         currentUser.setLastName(lName);
+        changed = true;
       }
 
       if (!currentUser.getDateOfBirth().isEqual(dob)) {
         currentUser.setDateOfBirth(dob);
+        changed = true;
       }
 
       LocalDate deathDate = currentUser.getDateOfDeath();
       if (deathDate != null && dod != null) {
         if (!deathDate.isEqual(dod)) {
           currentUser.setDateOfDeath(dod);
+          changed = true;
         }
       } else if ((deathDate == null && dod != null) || deathDate != null) {
         currentUser.setDateOfDeath(dod);
+        changed = true;
       }
+
+      return changed;
     }
 
     /**
@@ -1081,21 +1093,26 @@ public class UpdateUserController {
      * @param height The height to be checked for changes and possibly updated.
      * @param weight The weight to be checked for changes and possibly updated.
      */
-    private void updateHealthDetails ( double height, double weight){
+    private boolean updateHealthDetails(double height, double weight) {
+      boolean changed = false;
       if (currentUser.getHeight() != height) {
         currentUser.setHeight(height);
+        changed = true;
       }
 
       if (currentUser.getWeight() != weight) {
         currentUser.setWeight(weight);
+        changed = true;
       }
 
       String birthGender = currentUser.getBirthGender();
       String bGender = AttributeValidation.validateGender(birthGenderComboBox);
       if (birthGender != null && !birthGender.equals(bGender)) {
         currentUser.setBirthGender(bGender);
+        changed = true;
       } else if (birthGender == null && bGender != null) {
         currentUser.setBirthGender(bGender);
+        changed = true;
       }
 
       String genderIdentity = currentUser.getGenderIdentity();
@@ -1103,30 +1120,39 @@ public class UpdateUserController {
       if (genderIdentity != null && !genderIdentity.equals(genderID)) {
         if (genderID == null) {
           currentUser.setGenderIdentity(birthGender);
+          changed = true;
         } else {
           currentUser.setGenderIdentity(genderID);
+          changed = true;
         }
       } else if (genderIdentity == null && genderID != null) {
         currentUser.setGenderIdentity(genderID);
+        changed = true;
       }
 
       String bloodType = currentUser.getBloodType();
       String blood = AttributeValidation.validateBlood(bloodComboBox);
       if (bloodType != null && !bloodType.equals(blood)) {
         currentUser.setBloodType(blood);
+        changed = true;
       } else if (bloodType == null && blood != null) {
         currentUser.setBloodType(blood);
+        changed = true;
       }
 
       String alcohol = alcoholComboBox.getValue().toString();
       if (!currentUser.getAlcoholConsumption().equals(alcohol)) {
         currentUser.setAlcoholConsumption(alcohol);
+        changed = true;
       }
 
       boolean smoker = smokerCheckBox.isSelected();
       if (currentUser.isSmoker() != smoker) {
         currentUser.setSmoker(smoker);
+        changed = true;
       }
+
+      return changed;
     }
 
     /**
@@ -1135,38 +1161,53 @@ public class UpdateUserController {
      * @param cellPhone The cell phone number to be checked for changes and possibly updated.
      * @param email The email address to be checked for changes and possibly updated.
      */
-    private void updateContactDetails (String homePhone, String cellPhone, String email){
-      if (homePhone != null && !homePhone.equals(currentUser.getHomePhone())) {
-        currentUser.setHomePhone(homePhone);
-      } else if (homePhone == null && currentUser.getHomePhone() != null) {
+    private boolean updateContactDetails(String homePhone, String cellPhone, String email) {
+
+      boolean changed = false;
+
+      if (homePhone == null && currentUser.getHomePhone() != null) {
         currentUser.setHomePhone(null);
+        changed = true;
+      } else if (homePhone != null && !homePhone.equals(currentUser.getHomePhone())) {
+        currentUser.setHomePhone(homePhone);
+        changed = true;
       }
 
       if (cellPhone != null && !cellPhone.equals(currentUser.getCellPhone())) {
         currentUser.setCellPhone(cellPhone);
+        changed = true;
       } else if (cellPhone == null && currentUser.getCellPhone() != null) {
         currentUser.setCellPhone(null);
+        changed = true;
       }
 
       if (email != null && !email.equals(currentUser.getEmail())) {
         currentUser.setEmail(email);
+        changed = true;
       } else if (email == null && currentUser.getEmail() != null) {
         currentUser.setEmail(null);
+        changed = true;
       }
 
       String address = addressInput.getText();
-      if (address.isEmpty() && currentUser.getCurrentAddress() != null) {
-        currentUser.setCurrentAddress(null);
-      } else if (!address.equals(currentUser.getCurrentAddress())) {
+      if (!address.isEmpty() && !address.equals(currentUser.getCurrentAddress())) {
         currentUser.setCurrentAddress(address);
+        changed = true;
+      } else if (address.isEmpty() && currentUser.getCurrentAddress() != null) {
+        currentUser.setCurrentAddress(null);
+        changed = true;
       }
 
       String region = regionInput.getText();
-      if (region.isEmpty() && currentUser.getRegion() != null) {
-        currentUser.setRegion(null);
-      } else if (!region.equals(currentUser.getRegion())) {
+      if (!region.isEmpty() && !region.equals(currentUser.getRegion())) {
         currentUser.setRegion(region);
+        changed = true;
+      } else if (region.isEmpty() && currentUser.getRegion() != null) {
+        currentUser.setRegion(null);
+        changed = true;
       }
+
+      return changed;
     }
 
     /**
@@ -1179,62 +1220,79 @@ public class UpdateUserController {
      * @param emergencyEmail The emergency contact email address to be checked for changes and possibly updated.
      * @param eRelationship The relationship between the emergency contact and user to be checked for changes and possibly updated.
      */
-    private void updateEmergencyContact (String eName, String emergencyPhone, String
+    private boolean updateEmergencyContact(String eName, String emergencyPhone, String
     emergencyCell, String eAddress,
         String eRegion, String emergencyEmail, String eRelationship){
-
+      boolean changed = false;
       EmergencyContact contact = currentUser.getContact();
 
       String name = contact.getName();
-      if (name != null && !name.equals(eName)) {
+      if (!name.isEmpty() && !name.equals(eName)) {
         contact.setName(eName);
-      } else if (name == null && eName != null) {
+        changed = true;
+      } else if (name.isEmpty() && eName != null) {
         contact.setName(eName);
+        changed = true;
       }
 
       String ePhone = contact.getHomePhoneNumber();
-      if (ePhone != null && !ePhone.equals(emergencyPhone)) {
+      if (!ePhone.isEmpty() && !ePhone.equals(emergencyPhone)) {
         contact.setHomePhoneNumber(emergencyPhone);
-      } else if (ePhone == null && emergencyPhone != null) {
+        changed = true;
+      } else if (ePhone.isEmpty() && emergencyPhone != null) {
         contact.setHomePhoneNumber(emergencyPhone);
+        changed = true;
       }
 
       String eCell = contact.getCellPhoneNumber();
-      if (eCell != null && !eCell.equals(emergencyCell)) {
+      if (!eCell.isEmpty() && !eCell.equals(emergencyCell)) {
         contact.setCellPhoneNumber(emergencyCell);
-      } else if (eCell == null && emergencyCell != null) {
+        changed = true;
+      } else if (eCell.isEmpty() && emergencyCell != null) {
         contact.setCellPhoneNumber(emergencyCell);
+        changed = true;
       }
 
       String address = contact.getAddress();
-      if (address != null && !address.equals(eAddress)) {
+      if (!address.isEmpty() && !address.equals(eAddress)) {
         contact.setAddress(eAddress);
-      } else if (address == null && eAddress != null) {
+        changed = true;
+      } else if (address.isEmpty() && eAddress != null) {
         contact.setAddress(eAddress);
+        changed = true;
       }
 
       String region = contact.getRegion();
-      if (region != null && !region.equals(eRegion)) {
+      if (!region.isEmpty() && !region.equals(eRegion)) {
         contact.setRegion(eRegion);
-      } else if (region == null && eRegion != null) {
+        changed = true;
+      } else if (region.isEmpty() && eRegion != null) {
         contact.setRegion(eRegion);
+        changed = true;
       }
 
       String eEmail = contact.getEmail();
-      if (eEmail != null && !eEmail.equals(emergencyEmail)) {
+      if (!eEmail.isEmpty() && !eEmail.equals(emergencyEmail)) {
         contact.setEmail(emergencyEmail);
-      } else if (eEmail == null && emergencyEmail != null) {
+        changed = true;
+      } else if (eEmail.isEmpty() && emergencyEmail != null) {
         contact.setEmail(emergencyEmail);
+        changed = true;
       }
 
       String relation = contact.getRelationship();
-      if (relation != null && !relation.equals(eRelationship)) {
+      if (!relation.isEmpty() && !relation.equals(eRelationship)) {
         contact.setRelationship(eRelationship);
-      } else if (relation == null && eRelationship != null) {
+        changed = true;
+      } else if (relation.isEmpty() && eRelationship != null) {
         contact.setRelationship(eRelationship);
+        changed = true;
       }
+
+      return changed;
     }
-    @FXML
+
+  @FXML
     void undo () {
       currentUser.undo();
       undoButton.setDisable(currentUser.getUndoStack().isEmpty());
@@ -1246,29 +1304,6 @@ public class UpdateUserController {
       currentUser.redo();
       redoButton.setDisable(currentUser.getRedoStack().isEmpty());
       setUserDetails(currentUser);
-    }
-
-    /**
-     * take changes from the gui and put them onto the user model
-     */
-    private void updateModel () {
-      System.out.println("updateModel fired");
-      boolean changed = false;
-      try {
-        changed = getPersonalDetails();
-      } catch (InvalidNhiException e) {
-        return;
-      }
-      changed |= getHealthDetails();
-      changed |= getContactDetails();
-      changed |= getEmergencyContact();
-      if (changed) {
-        appController.update(currentUser);
-        setUserDetails(currentUser);
-        currentUser.getRedoStack().clear();
-      }
-      undoButton.setDisable(currentUser.getUndoStack().isEmpty());
-      redoButton.setDisable(currentUser.getRedoStack().isEmpty());
     }
 
     /**

@@ -1,25 +1,25 @@
 package seng302.Controller;
 
 
+import static seng302.Model.JsonHandler.saveUsers;
+
+import java.io.IOException;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.DatePicker;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-import seng302.Model.BloodTypes;
-import seng302.Model.Donor;
 import seng302.Model.EmergencyContact;
 import seng302.Model.User;
 import seng302.Service.AttributeValidation;
-
-import java.io.IOException;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Date;
-
-import static seng302.Model.JsonHandler.saveUsers;
 
 
 /**
@@ -261,11 +261,11 @@ public class NewUserController {
         }
 
         if (valid) {
-            EmergencyContact contact = new EmergencyContact(null, null);
+            EmergencyContact contact = new EmergencyContact(null, null, null);
 
             if (eName != null && eCellPhone != null) {
                 // create the emergency contact
-                contact = new EmergencyContact(eName, eCellPhone);
+                contact = new EmergencyContact(eName, eCellPhone, null);
                 contact.setHomePhoneNumber(eHomePhone);
                 contact.setAddress(eAddress);
                 contact.setRegion(eRegion);
@@ -277,6 +277,8 @@ public class NewUserController {
             User newUser = new User(nhi, dob, dod, birthGender, genderIdentity, height, weight, bloodType,
                     alcoholConsumption, smoker, currentAddress, region, homePhone, cellPhone, email, contact,
                     fName, fName, preferredFirstName, middleName, lastName);
+
+            newUser.getContact().setAttachedUser(newUser);
 
             // add the new user to the list of users and save them
             ArrayList<User> users = controller.getUsers();

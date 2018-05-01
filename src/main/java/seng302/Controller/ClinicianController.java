@@ -352,7 +352,6 @@ public class ClinicianController {
    */
   private void setFilteredListPredicate(FilteredList<User> fList) {
     searchCount = 0; //refresh the searchCount every time so it recalculates it each search
-    System.out.println(fList);
     fList.predicateProperty().bind(Bindings.createObjectBinding(() -> user -> {
       String lowerCaseFilterText = searchTextField.getText().toLowerCase();
       boolean regionMatch = AttributeValidation.checkRegionMatches(regionSearchTextField.getText(), user);
