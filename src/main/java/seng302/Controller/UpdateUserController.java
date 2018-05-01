@@ -3,7 +3,6 @@ package seng302.Controller;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -21,7 +20,6 @@ import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
-import seng302.Exception.InvalidNhiException;
 import seng302.Model.EmergencyContact;
 import seng302.Model.Memento;
 import seng302.Model.User;
@@ -973,7 +971,8 @@ public class UpdateUserController {
 
       boolean changed = false;
 
-      if (homePhone.isEmpty() && currentUser.getHomePhone() != null) {
+      if (homePhone.isEmpty() && (currentUser.getHomePhone() != null && !currentUser.getHomePhone()
+          .isEmpty())) {
         currentUser.setHomePhone(null);
         changed = true;
       } else if (!homePhone.isEmpty() && !homePhone.equals(currentUser.getHomePhone())) {
@@ -992,7 +991,8 @@ public class UpdateUserController {
       if (!email.isEmpty() && !email.equals(currentUser.getEmail())) {
         currentUser.setEmail(email);
         changed = true;
-      } else if (email.isEmpty() && currentUser.getEmail() != null) {
+      } else if (email.isEmpty() && (currentUser.getEmail() != null && currentUser.getEmail()
+          .isEmpty())) {
         currentUser.setEmail(null);
         changed = true;
       }
@@ -1191,7 +1191,7 @@ public class UpdateUserController {
         AppController appController = AppController.getInstance();
         DonorController donorController = appController.getDonorController();
         try {
-          donorController.showUser(currentUser);
+          donorController.showUser(oldUser);
         } catch (NullPointerException ex) {
           //TODO causes npe if donor is new in this session
           //the text fields etc. are all null
