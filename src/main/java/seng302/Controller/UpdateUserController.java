@@ -818,6 +818,10 @@ public class UpdateUserController {
   @FXML
   public void confirmUpdate(ActionEvent actionEvent) throws IOException {
     boolean changed = false;
+
+//    hideErrorMessages();
+//    errorLabel.setText("Please make sure your details are correct.");
+//    validateFields();
     //TODO save changes and go back to overview screen
     try {
       changed = getPersonalDetails();
@@ -863,12 +867,6 @@ public class UpdateUserController {
      * @param actionEvent The user clicks on the save changes button.
      * @throws IOException input/output exception.
      */
-    @FXML
-    public void confirmUpdate (ActionEvent actionEvent) throws IOException {
-      hideErrorMessages();
-      errorLabel.setText("Please make sure your details are correct.");
-      validateFields();
-    }
 
     /**
      * Checks if all fields that require validation are valid.
@@ -1040,7 +1038,7 @@ public class UpdateUserController {
       }
 
       String prefName = preferredFNameTextField.getText();
-      if (!currentUser.getPrefFirstName().equals(prefName)) {
+      if (!currentUser.getPreferredFirstName().equals(prefName)) {
         if (prefName.isEmpty()) {
           currentUser.setPreferredFirstName(fName);
         } else {
