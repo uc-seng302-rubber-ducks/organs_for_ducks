@@ -17,7 +17,7 @@ import seng302.Model.ReceiverOrganDetails;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
-public class receiverOrganDateController {
+public class ReceiverOrganDateController {
 
     @FXML
     private Label organNameLabel;
@@ -63,14 +63,12 @@ public class receiverOrganDateController {
      */
     private void showTimeTable(Organs organ){
         ArrayList<LocalDate> organDates = (ArrayList<LocalDate>) user.getReceiverDetails().getOrganDates(organ);
-        System.out.println(organDates);
         receiverOrganDetailsList = new ArrayList<>();
 
         if(organDates != null && !organDates.isEmpty()) {
             for (int i = 0; i < organDates.size(); i += 1) {
                 ReceiverOrganDetails receiverOrganDetails = new ReceiverOrganDetails();
                 receiverOrganDetails.setRegisterDate(organDates.get(i));
-                //receiverOrganDetailsList.add(receiverOrganDetails);
                 i +=1;
                 try {
                     receiverOrganDetails.setDeRegisterDate(organDates.get(i));
@@ -92,9 +90,6 @@ public class receiverOrganDateController {
         deRegistrationDate.setCellValueFactory(new PropertyValueFactory<>("deRegisterDate"));
 
         ObservableList<ReceiverOrganDetails> items = FXCollections.observableList(receiverOrganDetailsList);
-        for(ReceiverOrganDetails i: items){
-            System.out.println(i);
-        }
 
         organTimeTable.setItems(items);
         organTimeTable.getColumns().addAll(registrationDate, deRegistrationDate);

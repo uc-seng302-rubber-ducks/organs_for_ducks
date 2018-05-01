@@ -21,7 +21,6 @@ import okhttp3.OkHttpClient;
 import org.controlsfx.control.textfield.TextFields;
 import seng302.Model.*;
 
-import javax.xml.ws.FaultAction;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
@@ -1506,7 +1505,7 @@ public class DonorController {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            deregisterOrganReasonController deregisterOrganReasonController = deregisterOrganReasonLoader.getController();
+            DeregisterOrganReasonController deregisterOrganReasonController = deregisterOrganReasonLoader.getController();
             Stage stage = new Stage();
             deregisterOrganReasonController.init(toDeRegister, this, currentUser, application, stage);
             stage.setScene(new Scene(root));
@@ -1552,7 +1551,7 @@ public class DonorController {
         }
         Stage stage = new Stage();
         stage.setScene(new Scene(root));
-        receiverOrganDateController receiverOrganDateController = receiverOrganDateViewLoader.getController();
+        ReceiverOrganDateController receiverOrganDateController = receiverOrganDateViewLoader.getController();
         receiverOrganDateController.init(application, currentUser, stage, organs);
         stage.show();
     }
