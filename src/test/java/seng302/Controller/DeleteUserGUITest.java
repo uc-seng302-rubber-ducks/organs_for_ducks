@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import java.util.concurrent.TimeoutException;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
@@ -41,7 +42,7 @@ public class DeleteUserGUITest extends ApplicationTest{
     verifyThat("#warningLabel", LabeledMatchers.hasText("Donor was not found. \nTo register a new donor please click sign up."));
   }
 
-  @Test
+  @Test @Ignore
   public void canceledDeletedUser(){
     clickOn("#deleteUser");
     clickOn("Cancel");
