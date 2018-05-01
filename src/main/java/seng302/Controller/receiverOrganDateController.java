@@ -83,14 +83,6 @@ public class receiverOrganDateController {
 
         }
 
-        System.out.println("=============" + receiverOrganDetailsList.size());
-
-        for (ReceiverOrganDetails o :
-                receiverOrganDetailsList) {
-            System.out.println("*********" + o.getRegisterDate());
-        }
-
-
         TableColumn<ReceiverOrganDetails, LocalDate> registrationDate = new TableColumn<>("Registration Date");
         registrationDate.setMinWidth(285);
         registrationDate.setCellValueFactory(new PropertyValueFactory<>("registerDate"));

@@ -473,9 +473,9 @@ public class DonorController {
         Collections.addAll(organs, Organs.values());
 
         //display registered and deregistered receiver organs if any
-        HashMap<Organs, ArrayList<LocalDate>> receiverOrgans = currentUser.getReceiverDetails().getOrgans();
+        Map<Organs, ArrayList<LocalDate>> receiverOrgans = currentUser.getReceiverDetails().getOrgans();
         if (receiverOrgans == null){
-            receiverOrgans = new HashMap<>();
+            receiverOrgans = new EnumMap<Organs, ArrayList<LocalDate>>(Organs.class);
         }
         currentlyRecieving = FXCollections.observableArrayList();
         noLongerReceiving = FXCollections.observableArrayList();

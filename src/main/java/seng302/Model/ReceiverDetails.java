@@ -1,11 +1,10 @@
 package seng302.Model;
 
 import com.google.gson.annotations.Expose;
+import com.sun.org.apache.xpath.internal.operations.Or;
+
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public class ReceiverDetails {
 
@@ -13,22 +12,22 @@ public class ReceiverDetails {
   private transient User attachedUser;
 
   @Expose
-  private HashMap<Organs, ArrayList<LocalDate>> organs; // contains the organ start and stop dates
+  private Map<Organs, ArrayList<LocalDate>> organs; // contains the organ start and stop dates
 
   public ReceiverDetails(User attachedUser) {
     this.attachedUser = attachedUser;
-    this.organs = new HashMap<>();
+    this.organs = new EnumMap<Organs, ArrayList<LocalDate>>(Organs.class);
 
   }
 
-  public ReceiverDetails(User attachedUser, HashMap<Organs, ArrayList<LocalDate>> organs) {
+  public ReceiverDetails(User attachedUser, EnumMap<Organs, ArrayList<LocalDate>> organs) {
     this.attachedUser = attachedUser;
     this.organs = organs;
   }
 //TODO model from DonorDetails (get/set/add/remove/isEmpty etc)
 
 
-  public HashMap<Organs, ArrayList<LocalDate>> getOrgans() {
+  public Map<Organs, ArrayList<LocalDate>> getOrgans() {
     return organs;
   }
 
@@ -63,7 +62,7 @@ public class ReceiverDetails {
       //create new entry
       ArrayList<LocalDate> list = new ArrayList<>();
       list.add(LocalDate.now());
-      organs.put(organ, list);
+      organs.put(Organs.values()[organ.ordinal()], list);
     }
   }
 
@@ -74,7 +73,9 @@ public class ReceiverDetails {
    */
   public void stopWaitingForOrgan(Organs organ) {
     if (isCurrentlyWaitingFor(organ)) {
-      organs.get(organ).add(LocalDate.now());
+      ArrayList<LocalDate> dates = organs.get(organ);
+      dates.add(LocalDate.now());
+      organs.put(Organs.values()[organ.ordinal()], dates);
     }
   }
 
