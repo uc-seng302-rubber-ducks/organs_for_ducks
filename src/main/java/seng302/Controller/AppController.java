@@ -19,6 +19,8 @@ public class AppController {
 
   private DonorController donorController = new DonorController();
 
+  private ClinicianController clinicianControllerInstance;
+
   private AppController() {
     try {
       users = JsonHandler.loadUsers();
@@ -58,6 +60,14 @@ public class AppController {
       controller = new AppController();
     }
     return controller;
+  }
+
+  public void setClinicianControllerInstance(ClinicianController clinicianController){
+    clinicianControllerInstance = clinicianController;
+  }
+
+  public ClinicianController getClinicianControllerInstance() {
+    return clinicianControllerInstance;
   }
 
 

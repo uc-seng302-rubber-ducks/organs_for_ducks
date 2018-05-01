@@ -285,6 +285,7 @@ public class DonorController {
     private OrganDeregisterReason organDeregisterationReason;
     private Organs toDeRegister;
 
+
     /**
      * Gives the donor view the application controller and hides all label and buttons that are not
      * needed on opening
@@ -1321,6 +1322,7 @@ public class DonorController {
         if (!currentlyReceivingListView.getItems().contains(toRegister) && toRegister != null) {
             currentUser.getReceiverDetails().startWaitingForOrgan(toRegister);
             currentlyReceivingListView.getItems().add(toRegister);
+            application.getClinicianControllerInstance().populateWaitListTable();
             if (currentUser.getReceiverDetails().isDonatingThisOrgan(toRegister)) {
                 currentUser.getOrganIntersection().addOrganIntersection(toRegister);
                 int index = currentlyReceivingListView.getItems().indexOf(toRegister);
@@ -1357,6 +1359,7 @@ public class DonorController {
             currentlyReceivingListView.getItems().add(toReRegister);
             currentUser.getReceiverDetails().startWaitingForOrgan(toReRegister);
             notReceivingListView.getItems().remove(toReRegister);
+            application.getClinicianControllerInstance().populateWaitListTable();
 
             if (currentUser.getReceiverDetails().isDonatingThisOrgan(toReRegister)) {
                 currentUser.getOrganIntersection().addOrganIntersection(toReRegister);
@@ -1414,6 +1417,8 @@ public class DonorController {
             notReceivingListView.getItems().add(toDeRegister);
             currentUser.getReceiverDetails().stopWaitingForOrgan(toDeRegister);
             currentlyReceivingListView.getItems().remove(toDeRegister);
+            application.getClinicianControllerInstance().populateWaitListTable();
+
             if (currentUser.getOrganIntersection().organIsPresent(toDeRegister)) {
                 currentUser.getOrganIntersection().removeOrganIntersection(toDeRegister);
             }

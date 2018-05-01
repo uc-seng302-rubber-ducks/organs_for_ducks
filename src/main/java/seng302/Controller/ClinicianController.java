@@ -28,6 +28,7 @@ import javafx.stage.WindowEvent;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Set;
 
 import seng302.Model.Organs;
 import static seng302.Model.Organs.*;
@@ -151,9 +152,8 @@ public class ClinicianController {
   private ArrayList<Stage> openStages;
   private FilteredList<User> fListDonors;
 
-  private HashSet<Organs> organs;
+  private Set<Organs> organs;
   private ObservableList<TransplantDetails> observableTransplantList;
-  private FilteredList<TransplantDetails> fTransplantList;
   private ArrayList<CheckBox> filterCheckBoxList = new ArrayList<>();
 
   private static int currentIndex = 0;
@@ -178,6 +178,7 @@ public class ClinicianController {
      * @param clinician The current clinician.
      */
   public void init(Stage stage, AppController appController, Clinician clinician) {
+    appController.setClinicianControllerInstance(this);
     this.stage = stage;
     this.appController = appController;
     this.clinician = clinician;
@@ -312,43 +313,10 @@ public class ClinicianController {
     });
   }
 
+  /**
+   * initialises the Wait List table, abstracted from main init function for clarity
+   */
     private void initWaitListTable() {
-    //set up lists
-    //table contents are SortedList of a FilteredList of an ObservableList of an ArrayList
-
-    for (User user : users) {
-      if (user.isReceiver()) {
-        organs = user.getReceiverDetails().getOrgans();
-        for (Organs organ : organs) {
-          appController.addTransplant(new TransplantDetails(user.getNhi(), user.getName(), organ, LocalDate.now(), user.getRegion())); //TODO replace LocalDate.now() with Organ Registration Date
-        }
-      }
-    }
-
-    observableTransplantList = FXCollections.observableList(appController.getTransplantList());
-    fTransplantList = new FilteredList<>(observableTransplantList);
-    fTransplantList = filterTransplantDetails(fTransplantList);
-    SortedList<TransplantDetails> sTransplantList = new SortedList<>(fTransplantList);
-
-    if(appController.getTransplantList().size() != 0) {
-      transplantWaitListTableView.setItems(sTransplantList);
-
-      //set on-click behaviour
-      transplantWaitListTableView.setOnMouseClicked(new EventHandler<MouseEvent>() {
-        @Override
-        public void handle(MouseEvent event) {
-          if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
-            TransplantDetails transplantDetails = transplantWaitListTableView.getSelectionModel().getSelectedItem();
-            User wantedUser = appController.findUser(transplantDetails.getNhi());
-            launchDonor(wantedUser);
-          }
-        }
-      });
-
-    } else {
-      transplantWaitListTableView.setPlaceholder(new Label("No Receivers currently registered"));
-    }
-
 
     TableColumn<TransplantDetails, String> recipientNameColumn = new TableColumn<>("Name");
     recipientNameColumn.setMinWidth(220);
@@ -368,7 +336,46 @@ public class ClinicianController {
 
     transplantWaitListTableView.getColumns().setAll(recipientNameColumn, organNameColumn, organRegistrationDateColumn, recipientRegionColumn);
     updateFiltersLabel();
+    populateWaitListTable();
+}
 
+  /**
+   * populates and add double click functionality to the Wait List Table.
+   */
+  public void populateWaitListTable(){
+    //transplantWaitListTableView.getItems().clear();
+  //set up lists
+  //table contents are SortedList of a FilteredList of an ObservableList of an ArrayList
+  appController.getTransplantList().clear();
+  for (User user : users) {
+    if (user.isReceiver()) {
+      organs = user.getReceiverDetails().getOrgans().keySet();
+      for (Organs organ : organs) {
+        appController.addTransplant(new TransplantDetails(user.getNhi(), user.getName(), organ, LocalDate.now(), user.getRegion()));
+      }
+    }
+  }
+
+  observableTransplantList = FXCollections.observableList(appController.getTransplantList());
+
+  if(appController.getTransplantList().size() != 0) {
+    transplantWaitListTableView.setItems(observableTransplantList);
+
+    //set on-click behaviour
+    transplantWaitListTableView.setOnMouseClicked(new EventHandler<MouseEvent>() {
+      @Override
+      public void handle(MouseEvent event) {
+        if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
+          TransplantDetails transplantDetails = transplantWaitListTableView.getSelectionModel().getSelectedItem();
+          User wantedUser = appController.findUser(transplantDetails.getNhi());
+          launchDonor(wantedUser);
+        }
+      }
+    });
+
+  } else {
+    transplantWaitListTableView.setPlaceholder(new Label("No Receivers currently registered"));
+  }
 }
 
   /**
