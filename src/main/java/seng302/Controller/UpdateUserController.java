@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -21,6 +20,7 @@ import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
+import seng302.Exception.InvalidNhiException;
 import seng302.Model.EmergencyContact;
 import seng302.Model.Memento;
 import seng302.Model.User;
@@ -646,7 +646,7 @@ public class UpdateUserController {
   }
 
   @FXML
-  public boolean getHealthDetails() {
+  public boolean getHealthDetails() throws NumberFormatException {
     boolean changed = false;
     if (birthGenderComboBox.getValue() != null && !birthGenderComboBox.getValue()
         .equals(currentUser.getBirthGender())) {
@@ -688,11 +688,13 @@ public class UpdateUserController {
 
         if (!weightInput.getText().equals("")) {
           try {
-        if (Double.parseDouble(weightInput.getText()) != currentUser.getWeight()) {    currentUser.setWeight(Double.parseDouble(weightInput.getText()));changed = true;
+            if (Double.parseDouble(weightInput.getText()) != currentUser.getWeight()) {
+              currentUser.setWeight(Double.parseDouble(weightInput.getText()));
+              changed = true;
         }
           } catch (NumberFormatException e){
             errorLabel.setText("Weight must be a valid number");
-            passes = false;
+            throw e;
           }
 
         }
@@ -704,18 +706,15 @@ public class UpdateUserController {
               }
             } catch (NumberFormatException e){
                 errorLabel.setText("Height must be a number");
-                passes = false;
+              throw e;
             }
         }
         return changed;
-        return passes;
-    }
-
   }
 
 
   @FXML
-  public boolean getPersonalDetails() {
+  public boolean getPersonalDetails() throws InvalidNhiException {
     //TODO check why dateofbirth fails
     boolean changed = false;
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
@@ -724,20 +723,21 @@ public class UpdateUserController {
       changed = true;
     }
 
-    if (!lNameInput.getText().equals(currentUser.getLastName())) {
+    if (!(lNameInput.getText().isEmpty() && currentUser.getMiddleName() == null) && !lNameInput
+        .getText().equals(currentUser.getLastName())) {
       currentUser.setLastName(lNameInput.getText());
       changed = true;
     }
 
-        if (!nhiInput.getText().equals(currentUser.getNhi())) {
-          if (nhiInput.getText().matches("[A-Z]{3}[0-9]{4}")) {
-            currentUser.setNhi(nhiInput.getText());
-              changed = true;
-          } else {
-                errorLabel.setText("NHI is in valid please enter it in the form ABC1234");
-                passes = false;
-          }
-        }
+    if (!nhiInput.getText().equals(currentUser.getNhi())) {
+      if (AttributeValidation.validateNHI(nhiInput.getText()) != null) {
+        currentUser.setNhi(nhiInput.getText());
+        changed = true;
+      } else {
+        errorLabel.setText("NHI is in valid please enter it in the form ABC1234");
+        throw new InvalidNhiException();
+      }
+    }
 
     if (!(mNameInput.getText().isEmpty() && currentUser.getMiddleName() == null) && !mNameInput
         .getText().equals(currentUser.getMiddleName())) {
@@ -776,10 +776,14 @@ public class UpdateUserController {
   public void confirmUpdate(ActionEvent actionEvent) throws IOException {
     boolean changed = false;
     //TODO save changes and go back to overview screen
-    changed = getPersonalDetails();
-    changed = changed || getHealthDetails();
-    changed = changed || getContactDetails();
-    changed = changed ||getEmergencyContact();
+    try {
+      changed = getPersonalDetails();
+    } catch (InvalidNhiException e) {
+
+    }
+    changed |= getHealthDetails();
+    changed |= getContactDetails();
+    changed |= getEmergencyContact();
     //TODO change to be different
 
     appController.update(currentUser);
@@ -792,8 +796,9 @@ public class UpdateUserController {
           System.out.println(currentUser.getUndoStack().size());
           currentUser.getUndoStack().pop();
       }
-      sumChanges.setOldObject(currentUser.getUndoStack().peek().getOldObject());
-      sumChanges.setNewObject(currentUser);
+    sumChanges.setOldObject(currentUser.getUndoStack().peek().getOldObject().clone());
+    currentUser.getUndoStack().pop();
+    sumChanges.setNewObject(currentUser.clone());
       currentUser.getUndoStack().push(sumChanges);
       System.out.println(sumChanges);
     //ArrayList<Change> diffs = appController.differanceInDonors(oldUser, currentUser);
@@ -833,7 +838,11 @@ public class UpdateUserController {
   private void updateModel() {
     System.out.println("updateModel fired");
     boolean changed = false;
-    changed = getPersonalDetails();
+    try {
+      changed = getPersonalDetails();
+    } catch (InvalidNhiException e) {
+      return;
+    }
     changed |= getHealthDetails();
     changed |= getContactDetails();
     changed |= getEmergencyContact();
