@@ -55,11 +55,6 @@ import seng302.Model.TransplantDetails;
 import seng302.Model.User;
 import seng302.Service.AttributeValidation;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-
 /**
  * Class for the functionality of the Clinician view of the application
  */

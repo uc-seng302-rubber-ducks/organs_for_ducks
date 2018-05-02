@@ -1,6 +1,19 @@
 package seng302.Controller;
 
 
+import java.io.IOException;
+import java.text.DecimalFormat;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -9,7 +22,19 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.DatePicker;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
+import javafx.scene.control.SelectionMode;
+import javafx.scene.control.TableCell;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldListCell;
 import javafx.scene.input.MouseButton;
@@ -17,17 +42,18 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.util.Callback;
 import javafx.util.StringConverter;
 import okhttp3.OkHttpClient;
 import org.controlsfx.control.textfield.TextFields;
-import seng302.Model.*;
-
-import java.io.IOException;
-import java.text.DecimalFormat;
-import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
-import java.util.*;
+import seng302.Model.Change;
+import seng302.Model.Disease;
+import seng302.Model.EmergencyContact;
+import seng302.Model.HttpRequester;
+import seng302.Model.MedicalProcedure;
+import seng302.Model.OrganDeregisterReason;
+import seng302.Model.Organs;
+import seng302.Model.UndoRedoStacks;
+import seng302.Model.User;
 
 /**
  * Class for the functionality of the User view of the application
@@ -488,7 +514,8 @@ public class DonorController {
             pastDiseaseTableView.getSelectionModel().select(null);
         });
         pastDiseaseTableView.getSelectionModel().selectedItemProperty().addListener(ListChangeListener -> {
-            currentDiseaseTableView.getSelectionModel().select(null);
+          currentDiseaseTableView.getSelectionModel().select(null);
+        });
 
 
         //init receiver organs combo box
@@ -558,6 +585,7 @@ public class DonorController {
             //TODO change the colour of the font when selected to make it more readable
         }
     }
+
 
     public OrganDeregisterReason getOrganDeregisterationReason(){
         return organDeregisterationReason;
@@ -763,7 +791,7 @@ public class DonorController {
      * @throws InterruptedException to make sure there is no interruption
      */
     @FXML
-    private void updateDetails() throws IOException, InterruptedException {
+    private void updateDetails(ActionEvent actionEvent) throws IOException, InterruptedException {
         FXMLLoader updateLoader = new FXMLLoader(getClass().getResource("/FXML/updateUser.fxml"));
         Parent root = null;
         try {
@@ -1641,7 +1669,7 @@ public class DonorController {
    * @param event passed in automatically by the gui
    */
   @FXML
-  void donate() {
+  void donate(ActionEvent event) {
     UndoRedoStacks.storeUndoCopy(currentUser);
     if (!canDonate.getSelectionModel().isEmpty()){
       Organs toDonate = canDonate.getSelectionModel().getSelectedItem();
@@ -1664,7 +1692,7 @@ public class DonorController {
    * @param event passed in automatically by the gui
    */
   @FXML
-  void undonate() {
+  void undonate(ActionEvent event) {
     UndoRedoStacks.storeUndoCopy(currentUser);
     if (!currentlyDonating.getSelectionModel().isEmpty()) {
       Organs toUndonate = currentlyDonating.getSelectionModel().getSelectedItem();
@@ -1791,7 +1819,5 @@ public class DonorController {
       application.update(currentUser);
       stage.close();
     }
-
-}
 
 }

@@ -1,13 +1,14 @@
 package seng302.Model;
 
 import com.google.gson.annotations.Expose;
-
 import java.io.FileNotFoundException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Objects;
 
 /**
