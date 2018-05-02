@@ -75,7 +75,7 @@
            <SplitPane dividerPositions="50.0" minHeight="-Infinity" orientation="VERTICAL"
              prefHeight="200.0" prefWidth="160.0"> <!---->
               <items>
-                <AnchorPane fx:id="filterAnchorPane" maxHeight="183.0" minHeight="45"
+                <AnchorPane fx:id="filterAnchorPane" maxHeight="45.0" minHeight="45"
                   prefWidth="756.0" prefHeight="-Infinity">
                   <!---->
                      <children>
