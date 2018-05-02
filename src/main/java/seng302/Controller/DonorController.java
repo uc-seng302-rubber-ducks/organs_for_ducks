@@ -842,6 +842,7 @@ public class DonorController {
         LoginController loginController = loader.getController();
         loginController.init(AppController.getInstance(), stage);
         stage.setScene(new Scene(root));
+        stage.show();
         stage.hide();
         stage.show();
   }
