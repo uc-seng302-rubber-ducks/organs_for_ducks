@@ -11,15 +11,12 @@ import seng302.Model.*;
 public class AppController {
 
   private ArrayList<User> users = new ArrayList<>();
-  private ArrayList<TransplantDetails> transplantList = new ArrayList<>();
   private ArrayList<Clinician> clinicians = new ArrayList<>();
   private static AppController controller;
   private ArrayList<String[]> historyOfCommands = new ArrayList<>();
   private int historyPointer = 0;
 
   private DonorController donorController = new DonorController();
-
-  private ClinicianController clinicianControllerInstance;
 
   private AppController() {
     try {
@@ -62,14 +59,6 @@ public class AppController {
       controller = new AppController();
     }
     return controller;
-  }
-
-  public void setClinicianControllerInstance(ClinicianController clinicianController){
-    clinicianControllerInstance = clinicianController;
-  }
-
-  public ClinicianController getClinicianControllerInstance() {
-    return clinicianControllerInstance;
   }
 
 
@@ -453,11 +442,5 @@ public class AppController {
     return changes;
   }
 
-    public java.util.ArrayList<TransplantDetails> getTransplantList() {
-        return transplantList;
-    }
 
-  public void addTransplant(TransplantDetails transplantDetails) {
-    transplantList.add(transplantDetails);
-  }
 }
