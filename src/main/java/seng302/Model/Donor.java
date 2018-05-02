@@ -92,7 +92,21 @@ public class Donor {
         //changes = JsonReader.importHistoryFromFile(this);
     }
 
-
+    /**
+     * Constructor for a Donor
+     * @param dateOfBirth donor date of birth
+     * @param dateOfDeath donor date of death
+     * @param gender donor gender
+     * @param height donor height
+     * @param weight donor weight
+     * @param bloodType donor bloodtype
+     * @param currentAddress donor current address
+     * @param region donor region
+     * @param timeCreated donor time created
+     * @param name donor name
+     * @param lastModified donor last modified
+     * @param isDeceased donor is deceased
+     */
   public Donor(java.time.LocalDate dateOfBirth, java.time.LocalDate dateOfDeath, String gender, double height, double weight,
                String bloodType,
                String currentAddress, String region, LocalDateTime timeCreated, String name,
@@ -138,6 +152,11 @@ public class Donor {
       }
   }
 
+    /**
+     * Constructor for a donor with minimum information
+     * @param name donor name
+     * @param dateOfBirth donor date of birth
+     */
     public Donor(String name, java.time.LocalDate dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
         this.name = name;
@@ -357,6 +376,10 @@ public class Donor {
     this.organs = organs;
   }
 
+    /**
+     * adds organ to organs set
+     * @param organ organ
+     */
   public void addOrgan(Organs organ) {
     updateLastModified();
     if (organs == null) {
@@ -365,6 +388,10 @@ public class Donor {
     this.organs.add(organ);
   }
 
+    /**
+     * removes organ for organ set
+     * @param organ organ
+     */
   public void removeOrgan(Organs organ) {
     if (organs.contains(organ)) {
       organs.remove(organ);
@@ -473,11 +500,19 @@ public class Donor {
         this.currentMedication = currentMedication;
     }
 
+    /**
+     * adds new medication for the user
+     * @param medication new medication
+     */
     public void addCurrentMedication(String medication) {
         currentMedication.add(medication);
         addCurrentMedicationTimes(medication);
     }
 
+    /**
+     * adds a previously taken medication for the user
+     * @param medication previously taken medication
+     */
     public void addPreviousMedication(String medication) {
         previousMedication.add(medication);
         addPreviousMedicationTimes(medication);
@@ -492,10 +527,18 @@ public class Donor {
     }
 
 
+    /**
+     * removes currently taking medication for the user
+     * @param medication currently taking medication
+     */
     public void removeCurrentMedication(String medication) {
         currentMedication.remove(medication);
     }
 
+    /**
+     * Removes a previously taken medication for the user
+     * @param medication previously taken medication
+     */
     public void removePreviousMedication(String medication) {
         previousMedication.remove(medication);
     }
@@ -603,6 +646,11 @@ public class Donor {
         }
     }
 
+    /**
+     * checkes for equality
+     * @param o object
+     * @return true if equals
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

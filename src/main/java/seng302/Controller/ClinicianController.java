@@ -1,9 +1,6 @@
 package seng302.Controller;
 
-import java.util.ArrayList;
-import java.util.HashSet;
 import javafx.beans.binding.Bindings;
-
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -23,15 +20,19 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-
-import java.io.IOException;
-import java.util.List;
-
+import seng302.Model.Clinician;
 import seng302.Model.Organs;
 import seng302.Model.User;
-import seng302.Model.Clinician;
 import seng302.Service.AttributeValidation;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+
+/**
+ * Class for the functionality of the Clinician view of the application
+ */
 public class ClinicianController {
 
   private final int ROWS_PER_PAGE = 30;
@@ -153,6 +154,9 @@ public class ClinicianController {
     allCheckBox.setSelected(true);
   }
 
+  /**
+   * initialises the clinicians details
+   */
   private void showClinician() {
     staffIdLabel.setText(clinician.getStaffId());
     fNameLabel.setText(clinician.getFirstName());
@@ -384,6 +388,8 @@ public class ClinicianController {
     stage.setScene(new Scene(root));
     LoginController loginController = loader.getController();
     loginController.init(AppController.getInstance(), stage);
+    stage.show();
+    stage.hide();
     stage.show();
   }
 

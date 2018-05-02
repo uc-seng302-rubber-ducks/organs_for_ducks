@@ -1,5 +1,8 @@
 package seng302.Model;
 
+/**
+ * Enum constructor for Blood Types
+ */
 public enum BloodTypes {
     AMINUS ("A-"),
     APLUS ("A+"),

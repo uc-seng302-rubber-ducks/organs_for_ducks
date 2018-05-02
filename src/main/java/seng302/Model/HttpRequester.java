@@ -1,6 +1,5 @@
 package seng302.Model;
 
-import java.util.HashMap;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -11,10 +10,14 @@ import org.json.simple.parser.ParseException;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.Callable;
 
+/**
+ * Class deals with using APIs for functionality within the application
+ */
 public class HttpRequester {
 
   private static class httpCallable implements Callable<String> {
@@ -226,6 +229,7 @@ public class HttpRequester {
    * @param drug the drug to be checked e.g. xanax, reserpine, etc.
    * @param client http client to be used. use new OkHttpClient() if you have no preference
    * @return string array of each active ingredient
+   * @throws IOException thrown when IO fails
    */
   public static String[] getActiveIngredients(String drug, OkHttpClient client) throws IOException {
     String url = "http://mapi-us.iterar.co/api/" + drug + "/substances.json";

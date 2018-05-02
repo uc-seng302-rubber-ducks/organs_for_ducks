@@ -1,15 +1,15 @@
 package seng302.View;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import seng302.Model.User;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
-import java.util.Date;
-import seng302.Model.Donor;
-import seng302.Model.User;
 
+/**
+ * Class to handle input and output
+ */
 public class IoHelper {
 
   /**

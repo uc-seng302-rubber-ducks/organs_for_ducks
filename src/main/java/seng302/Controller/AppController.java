@@ -1,13 +1,19 @@
 package seng302.Controller;
 
+import seng302.Model.Change;
+import seng302.Model.Clinician;
+import seng302.Model.JsonHandler;
+import seng302.Model.User;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
-import seng302.Model.*;
-
+/**
+ * Class for the functionality of the main app
+ */
 public class AppController {
 
   private ArrayList<User> users = new ArrayList<>();
@@ -18,6 +24,9 @@ public class AppController {
 
   private DonorController donorController = new DonorController();
 
+  /**
+   * Creates new instance of AppController
+   */
   private AppController() {
     try {
       users = JsonHandler.loadUsers();
@@ -267,17 +276,17 @@ public class AppController {
    * @param user user to be updated/added
    */
   public void update(User user){
-      ArrayList<String > changelogWrite = new ArrayList<>();
+      ArrayList<Change > changelogWrite = new ArrayList<>();
       if (users.contains(user)){
         users.remove(user);
         users.add(user);
     } else {
       users.add(user);
-      changelogWrite.add("Added Donor " + user.getName());
+      changelogWrite.add(new Change(LocalDateTime.now(), "Added Donor " + user.getName()));
     }
     try {
       JsonHandler.saveUsers(users);
-      //JsonHandler.saveChangelog(changelogWrite, donor.getName().toLowerCase().replace(" ", "_"));
+      //JsonHandler.saveChangelog(changelogWrite, user.getName().toLowerCase().replace(" ", "_"));
 
     } catch (IOException e) {
       e.printStackTrace();
@@ -347,6 +356,7 @@ public class AppController {
      * @param oldUser The user before they were updated.
      * @param newUser The user after they were updated.
      * @return An array list of changes between the old and new user.
+     * @deprecated
      */
   public ArrayList<Change> differanceInDonors(User oldUser, User newUser){
    ArrayList<String> diffs = new ArrayList<>();
