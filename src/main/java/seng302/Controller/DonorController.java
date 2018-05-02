@@ -20,8 +20,10 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldListCell;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 import javafx.util.StringConverter;
 import okhttp3.OkHttpClient;
 import org.controlsfx.control.textfield.TextFields;
@@ -37,6 +39,7 @@ public class DonorController {
     //the Home page attributes
     @FXML
     private Button backButton;
+
     @FXML
     private Label ageValue;
 
@@ -123,8 +126,8 @@ public class DonorController {
     @FXML
     private Label eName;
 
-    @FXML
-    private ListView<Organs> organsDonatingListView;
+    //@FXML
+    //private ListView<Organs> organsDonatingListView;
 
     @FXML
     private Button undoButton;
@@ -132,8 +135,8 @@ public class DonorController {
     @FXML
     private Button redoButton;
 
-    @FXML
-    private ListView<String> miscAttributeslistView;
+    //@FXML
+    //private ListView<String> miscAttributeslistView;
 
     @FXML
     private TableView<Change> historyTableView;
@@ -169,22 +172,22 @@ public class DonorController {
     private Button addMedicationButton;
 
     @FXML
-  private TableView<Disease> currentDiseaseTableView;
+    private TableView<Disease> currentDiseaseTableView;
 
-  @FXML
-  private TableView<Disease> pastDiseaseTableView;
+    @FXML
+    private TableView<Disease> pastDiseaseTableView;
 
-  @FXML
-  private Button addDiseaseButton;
+    @FXML
+    private Button addDiseaseButton;
 
-  @FXML
-  private Button updateDiseaseButton;
+    @FXML
+    private Button updateDiseaseButton;
 
-  @FXML
-  private Button deleteDiseaseButton;
+    @FXML
+    private Button deleteDiseaseButton;
 
 
-  @FXML
+    @FXML
     private TextArea drugDetailsTextArea;
 
     @FXML
@@ -228,6 +231,21 @@ public class DonorController {
     @FXML
     private TextArea descriptionTextArea;
 
+    @FXML
+    private ListView<Organs> currentlyDonating;
+
+    @FXML
+    private ListView<Organs> canDonate;
+
+    @FXML
+    private Button donateButton;
+
+    @FXML
+    private Button undonateButton;
+
+    @FXML
+    private Label donorNameLabel;
+
     private TableView<MedicalProcedure> currentProcedureList;
 
     private AppController application;
@@ -237,8 +255,9 @@ public class DonorController {
     private ObservableList<MedicalProcedure> previousProcedures;
     private ObservableList<MedicalProcedure> pendingProcedures;
 
-  private ObservableList<Disease> currentDisease;
-  private ObservableList<Disease> pastDisease;private List<String> possibleGenders = Arrays.asList("M", "F", "U");
+    private ObservableList<Disease> currentDisease;
+    private ObservableList<Disease> pastDisease;
+    private List<String> possibleGenders = Arrays.asList("M", "F", "U");
 
     private List<String> possibleBloodTypes = Arrays
             .asList("A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-", "U");
@@ -248,6 +267,9 @@ public class DonorController {
     private EmergencyContact contact = null;
     private ObservableList<Change> changelog;
     private OkHttpClient client = new OkHttpClient();
+    private Boolean Clinician;
+    private boolean isSortedByName = false;
+    private boolean isReverseSorted = false;
 
     /**
      * Gives the donor view the application controller and hides all label and buttons that are not
@@ -255,41 +277,56 @@ public class DonorController {
      */
     public void init(AppController controller, User user, Stage stage, Boolean fromClinician) {
 
-    this.stage = stage;
-    application = controller;
-    //ageValue.setText("");
+        this.stage = stage;
+        application = controller;
+        //ageValue.setText("");
         //This is the place to set visable and invisable controls for Clinician vs User
-    if (fromClinician) {
-        logOutButton.setVisible(false);
-        addDiseaseButton.setVisible(true);
-        updateDiseaseButton.setVisible(true);
-        deleteDiseaseButton.setVisible(true);
-    } else {
-        procedureDateSelector.setEditable(false);
-        procedureTextField.setEditable(false);
-        descriptionTextArea.setEditable(false);
-        addProcedureButton.setVisible(false);
-        removeProcedureButton.setVisible(false);
-        updateProceduresButton.setVisible(false);
-        modifyOrgansProcedureButton.setVisible(false);
-        deleteButton.setVisible(false);
-        addMedicationButton.setVisible(false);
-        medicationTextField.setVisible(false);
-        backButton.setVisible(false);
-    }
-    //arbitrary default values
-    //changeDeceasedStatus();
-    undoButton.setVisible(true);
-    redoButton.setVisible(true);
-    //warningLabel.setVisible(false);
-    currentUser = user;
-    contact = user.getContact();
+        if (fromClinician) {
+            Clinician = true;
+            logOutButton.setVisible(false);
+            addDiseaseButton.setVisible(true);
+            updateDiseaseButton.setVisible(true);
+            deleteDiseaseButton.setVisible(true);
+        } else {
+            Clinician = false;
+            procedureDateSelector.setEditable(false);
+            procedureTextField.setEditable(false);
+            descriptionTextArea.setEditable(false);
+            addProcedureButton.setVisible(false);
+            removeProcedureButton.setVisible(false);
+            updateProceduresButton.setVisible(false);
+            modifyOrgansProcedureButton.setVisible(false);
+            deleteButton.setVisible(false);
+            addMedicationButton.setVisible(false);
+            medicationTextField.setVisible(false);
+            backButton.setVisible(false);
+        }
+        //arbitrary default values
+        //changeDeceasedStatus();
+        undoButton.setVisible(true);
+        redoButton.setVisible(true);
+        //warningLabel.setVisible(false);
+        currentUser = user;
+        contact = user.getContact();
+        ArrayList<Organs> donating;
+        try {
+            donating = new ArrayList<>(user.getDonorDetails().getOrgans());
+        } catch (NullPointerException ex) {
+            donating = new ArrayList<>();
+        }
+        currentlyDonating.setItems(FXCollections.observableList(donating));
+        ArrayList<Organs> leftOverOrgans = new ArrayList<Organs>();
+        Collections.addAll(leftOverOrgans, Organs.values());
+        for (Organs o : donating) {
+            leftOverOrgans.remove(o);
+        }
+        canDonate.setItems(FXCollections.observableList(leftOverOrgans));
 
-    currentMeds = FXCollections.observableArrayList();
+        currentMeds = FXCollections.observableArrayList();
 
-    previousMeds = FXCollections.observableArrayList();
-    currentMedicationListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-    previousMedicationListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        previousMeds = FXCollections.observableArrayList();
+        currentMedicationListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        previousMedicationListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 
         //listeners to move meds from current <--> previous
         previousMeds.addListener((ListChangeListener.Change<? extends String> change) -> {
@@ -312,7 +349,6 @@ public class DonorController {
                 .addListener(((observable, oldValue, newValue) -> {
                     ObservableList<String> selected = previousMedicationListView.getSelectionModel()
                             .getSelectedItems();
-                    System.out.println(selected);
                     displayDetails(selected);
                 }));
         currentMedicationListView.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -358,7 +394,6 @@ public class DonorController {
                 currentProcedureList = pendingProcedureTableView;
             }
         });
-        //showUser(currentUser);
 
         TableColumn pendingProcedureColumn = new TableColumn("Procedure");
         TableColumn pendingDateColumn = new TableColumn("Date");
@@ -398,7 +433,6 @@ public class DonorController {
         } else {
             changelog = FXCollections.observableArrayList(new ArrayList<Change>());
         }
-        //System.out.println(changelog);
         changelog.addListener((ListChangeListener.Change<? extends Change> change) -> historyTableView.setItems(changelog));
         medicationTextField.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
@@ -408,8 +442,50 @@ public class DonorController {
         });
         medicationTextField.textProperty().addListener((observable) -> getDrugSuggestions());
 
-    showDonorDiseases(currentUser, true);
+        showDonorDiseases(currentUser, true);
         modifyOrgansProcedureButton.setVisible(false);
+
+
+        currentDiseaseTableView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+        pastDiseaseTableView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+
+        currentDiseaseTableView.getSelectionModel().selectedItemProperty().addListener(ListChangeListener -> {
+            pastDiseaseTableView.getSelectionModel().select(null);
+//            if (previousProcedureTableView.getSelectionModel().getSelectedItem() != null) {
+//                showProcedure(previousProcedureTableView.getSelectionModel().getSelectedItem());
+//                modifyOrgansProcedureButton.setVisible(true);
+//                currentProcedureList = previousProcedureTableView;
+//            }
+        });
+        pastDiseaseTableView.getSelectionModel().selectedItemProperty().addListener(ListChangeListener -> {
+            currentDiseaseTableView.getSelectionModel().select(null);
+//            if (pendingProcedureTableView.getSelectionModel().getSelectedItem() != null) {
+//                showProcedure(pendingProcedureTableView.getSelectionModel().getSelectedItem());
+//                modifyOrgansProcedureButton.setVisible(true);
+//                currentProcedureList = pendingProcedureTableView;
+//            }
+        });
+
+//        Callback<TableColumn<Disease, String>, TableCell<Disease, String>> cellFactory =
+//            new Callback<TableColumn<Disease, String>, TableCell<Disease, String>>() {
+//                public TableCell call(TableColumn p) {
+//                    TableCell cell = new TableCell<Disease, String>() {
+//                        @Override
+//                        public void updateItem(String item, boolean empty) {
+//                            super.updateItem(item, empty);
+//                            setText(empty ? null : getString());
+//                            setStyle("-fx-background-color:ff0033");
+//                        }
+//
+//                        private String getString() {
+//                            return getItem() == null ? "" : getItem().toString();
+//                        }
+//                    };
+//
+//                    return cell;
+//                }
+//            };
+
 
     }
 
@@ -468,6 +544,24 @@ public class DonorController {
 
     }
 
+
+    /**
+     * Creates a alert pop up to confirm that the user wants to delete the profile
+     */
+    @FXML
+    public void delete(ActionEvent actionEvent) throws IOException {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setContentText("Are you sure you want to delete this user?");
+        Optional<ButtonType> result = alert.showAndWait();
+
+        if (result.get() == ButtonType.OK) {
+            application.deleteDonor(currentUser);
+            if (!Clinician) {
+                logout();
+            }
+        }
+    }
+
     /**
      * Takes the information in the medication text fields and then calls the required API to get auto complete information
      * Which is then displayed. Should always be started on a new thread
@@ -497,67 +591,88 @@ public class DonorController {
             eCellPhone.setText(contact.getCellPhoneNumber());
             if (contact.getAddress() != null) {
                 eAddress.setText(contact.getAddress());
+            } else {
+                eAddress.setText("");
             }
+
             if (contact.getEmail() != null) {
                 eEmail.setText(contact.getEmail());
-
+            } else {
+                eEmail.setText("");
             }
+
             if (contact.getHomePhoneNumber() != null) {
                 eHomePhone.setText(contact.getHomePhoneNumber());
-
+            } else {
+                eHomePhone.setText("");
             }
+
             if (contact.getRegion() != null) {
                 eRegion.setText(contact.getRegion());
-
+            } else {
+                eRegion.setText("");
             }
+
             if (contact.getRelationship() != null) {
                 relationship.setText(contact.getRelationship());
+            } else {
+                relationship.setText("");
             }
         }
         if (currentUser.getCurrentAddress() != null) {
             pAddress.setText(currentUser.getCurrentAddress());
+        } else {
+            pAddress.setText("");
         }
         if (currentUser.getRegion() != null) {
             pRegion.setText(currentUser.getRegion());
+        } else {
+            pRegion.setText("");
         }
         if (currentUser.getEmail() != null) {
             pEmail.setText(currentUser.getEmail());
+        } else {
+            pEmail.setText("");
         }
         if (currentUser.getHomePhone() != null) {
             pHomePhone.setText(currentUser.getHomePhone());
+        } else {
+            pHomePhone.setText("");
         }
         if (currentUser.getCellPhone() != null) {
             pCellPhone.setText(currentUser.getCellPhone());
+        } else {
+            pCellPhone.setText("");
         }
 
 
     }
-
-    /**
-     * fires when the Organs button is clicked
-     */
-    @FXML
-    private void modifyOrgans() {
-        if (currentUser.getDateOfBirth() == null) {
-            warningLabel.setVisible(true);
-            warningLabel.setText("Plese confirm donor before continuing");
-            return;
-        }
-        FXMLLoader organLoader = new FXMLLoader(getClass().getResource("/FXML/organsView.fxml"));
-        Parent root = null;
-        try {
-            root = organLoader.load();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        OrganController organController = organLoader.getController();
-        Stage stage = new Stage();
-        stage.initModality(Modality.APPLICATION_MODAL);
-        organController.init(currentUser, application, stage);
-        stage.setScene(new Scene(root));
-        stage.show();
-        showUser(currentUser);
-    }
+//
+//    /**
+//     * fires when the Organs button is clicked
+//     */
+//    @FXML
+//    private void modifyOrgans() {
+//        if (currentUser.getDateOfBirth() == null) {
+//            warningLabel.setVisible(true);
+//            warningLabel.setText("Plese confirm donor before continuing");
+//            return;
+//        }
+//        FXMLLoader organLoader = new FXMLLoader(getClass().getResource("/FXML/organsView.fxml"));
+//        Parent root = null;
+//        try {
+//            root = organLoader.load();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        OrganController organController = organLoader.getController();
+//        Stage stage = new Stage();
+//        stage.initModality(Modality.APPLICATION_MODAL);
+//        organController.init(currentUser, application, stage);
+//        stage.setScene(new Scene(root));
+//        stage.show();
+//        showUser(currentUser);
+//    }
 
     /**
      * @param actionEvent An action event.
@@ -566,13 +681,12 @@ public class DonorController {
     private void updateDetails(ActionEvent actionEvent) throws IOException, InterruptedException {
         FXMLLoader updateLoader = new FXMLLoader(getClass().getResource("/FXML/updateUser.fxml"));
         Parent root = null;
-        System.out.println(updateLoader);
         try {
             root = updateLoader.load();
             UpdateUserController updateUserController = updateLoader.getController();
             Stage stage = new Stage();
-            updateUserController.init(currentUser, application, stage);
             stage.setScene(new Scene(root));
+            updateUserController.init(currentUser, application, stage);
             stage.show();
 
         } catch (IOException e) {
@@ -592,32 +706,32 @@ public class DonorController {
 //
 //    }
 
-    /**
-     * fires when the Misc button is clicked
-     */
-    @FXML
-    private void modifyMiscAttributes() {
-        if (currentUser.getDateOfBirth() == null) {
-            warningLabel.setVisible(true);
-            warningLabel.setText("Plese confirm donor before continuing");
-            return;
-        }
-        FXMLLoader attributeLoader = new FXMLLoader(
-                getClass().getResource("/FXML/miscAttributes.fxml"));
-        Parent root = null;
-        try {
-            root = attributeLoader.load();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        MiscAttributesController miscAttributesController = attributeLoader.getController();
-        Stage stage = new Stage();
-        miscAttributesController.init(currentUser, application, stage);
-        stage.setScene(new Scene(root));
-        stage.show();
-        miscAttributeslistView.getItems().clear();
-        miscAttributeslistView.getItems().addAll(currentUser.getMiscAttributes());
-    }
+//    /**
+//     * fires when the Misc button is clicked
+//     */
+//    @FXML
+//    private void modifyMiscAttributes() {
+//        if (currentUser.getDateOfBirth() == null) {
+//            warningLabel.setVisible(true);
+//            warningLabel.setText("Plese confirm donor before continuing");
+//            return;
+//        }
+//        FXMLLoader attributeLoader = new FXMLLoader(
+//                getClass().getResource("/FXML/miscAttributes.fxml"));
+//        Parent root = null;
+//        try {
+//            root = attributeLoader.load();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        MiscAttributesController miscAttributesController = attributeLoader.getController();
+//        Stage stage = new Stage();
+//        miscAttributesController.init(currentUser, application, stage);
+//        stage.setScene(new Scene(root));
+//        stage.show();
+//        miscAttributeslistView.getItems().clear();
+//        miscAttributeslistView.getItems().addAll(currentUser.getMiscAttributes());
+//    }
 
 //  /**
 //   * fires when the Confirm button is clicked updates the current donor and overwrites or add it to
@@ -720,7 +834,13 @@ public class DonorController {
     }
 
     /**
-     * organsDonatingListView.getItems().clear();
+     * organsDonatingListView.getItems().clear();@FXML
+     * private ListView<Organs> currentlyDonating;
+     *
+     * @FXML private ListView<Organs> canDonate;
+     * @FXML private Button donateButton;
+     * @FXML private Button undonateButton;
+     * @FXML private Label donorNameLabel;
      * organsDonatingListView.getItems().addAll(currentUser.getDonorDetails().getOrgans());
      * fires when the Redo button is clicked
      */
@@ -745,13 +865,13 @@ public class DonorController {
         LoginController loginController = loader.getController();
         loginController.init(AppController.getInstance(), stage);
         stage.setScene(new Scene(root));
+        stage.hide();
         stage.show();
 
-    UndoRedoStacks.clearStacks();
-  }
+        //UndoRedoStacks.clearStacks();
+    }
 
     /**
-     *
      * @param user The current user.
      */
     public void showUser(User user) {
@@ -761,19 +881,29 @@ public class DonorController {
         DOBValue.setText(currentUser.getDateOfBirth().toString());
         if (currentUser.getMiddleName() != null) {
             mNameValue.setText(currentUser.getMiddleName());
+        } else {
+            mNameValue.setText("");
         }
-        if (currentUser.getPrefFirstName() != null) {
-            pNameValue.setText(currentUser.getPrefFirstName());
-        }
+        //if (currentUser.getPrefFirstName() != null) {
+        pNameValue.setText(currentUser.getPrefFirstName());
+//        } else {
+//            pNameValue.setText("");
+//        }
         if (currentUser.getLastName() != null) {
             lNameValue.setText(currentUser.getLastName());
+        } else {
+            lNameValue.setText("");
         }
 
         if (currentUser.getGenderIdentity() != null) {
             genderIdentityValue.setText(currentUser.getGenderIdentity());
+        } else {
+            genderIdentityValue.setText("");
         }
         if (currentUser.getBirthGender() != null) {
             birthGenderValue.setText(currentUser.getBirthGender());
+        } else {
+            birthGenderValue.setText("");
         }
 
         ageValue.setText(user.getStringAge().toString().replace("P", "").replace("Y", "") + " Years");
@@ -781,6 +911,8 @@ public class DonorController {
             DODValue.setText(currentUser.getDateOfDeath().toString());
             ageDeathValue.setText(Long.toString(
                     ChronoUnit.YEARS.between(currentUser.getDateOfBirth(), currentUser.getDateOfDeath())) + " Years");
+        } else {
+            DODValue.setText("");
         }
         if (currentUser.getBloodType() != null) {
             bloodTypeValue.setText(currentUser.getBloodType());
@@ -790,20 +922,26 @@ public class DonorController {
         } else {
             smokerValue.setText("No");
         }
-        String weight;
-        if (currentUser.getWeight() > 0) {
-            weight = java.lang.Double.toString(currentUser.getWeight());
-            weightValue.setText(weight);
-        }
-        String height;
-        if (currentUser.getHeight() > 0) {
-            height = java.lang.Double.toString(currentUser.getHeight());
-            heightValue.setText(height);
-        }
+        //String weight;
+        weightValue.setText(Double.toString(currentUser.getWeight()));
+//        if (currentUser.getWeight() > 0) {
+//            weight = java.lang.Double.toString(currentUser.getWeight());
+//            weightValue.setText(weight);
+//        } else {
+//            weightValue.setText(0.0);
+//        }
+//        String height;
+//        if (currentUser.getHeight() > 0) {
+//            height = java.lang.Double.toString(currentUser.getHeight());
+//            heightValue.setText(height);
+//        }
+        heightValue.setText(Double.toString(currentUser.getHeight()));
         if (currentUser.getHeight() > 0 && currentUser.getWeight() > 0) {
             //TODO fix BMI kg/m^
+            DecimalFormat df = new DecimalFormat("#.00");
             double bmi = currentUser.getWeight() / (currentUser.getHeight() * currentUser.getHeight());
-            bmiValue.setText(Double.toString(bmi));
+            String formattedBmi = df.format(bmi);
+            bmiValue.setText(formattedBmi);
         } else {
             bmiValue.setText("");
         }
@@ -814,15 +952,15 @@ public class DonorController {
         createdValue.setText(currentUser.getTimeCreated().toString());
         alcoholValue.setText(currentUser.getAlcoholConsumption());
 
-    if (user.getMiscAttributes() != null) {
-      miscAttributeslistView.getItems().clear(); // HERE
-      for (String atty : user.getMiscAttributes()) {
-        miscAttributeslistView.getItems().add(atty);
-      }
-    }
-    if (currentUser.getCurrentMedication() != null) {
-      //System.out.println("current: " +currentMeds);currentMeds.clear();
-      currentMeds.addAll(currentUser.getCurrentMedication());
+//    if (user.getMiscAttributes() != null) {
+//      miscAttributeslistView.getItems().clear(); // HERE
+//      for (String atty : user.getMiscAttributes()) {
+//        miscAttributeslistView.getItems().add(atty);
+//      }
+//    }
+        if (currentUser.getCurrentMedication() != null) {
+            //System.out.println("current: " +currentMeds);currentMeds.clear();
+            currentMeds.addAll(currentUser.getCurrentMedication());
 
             currentMedicationListView.setItems(currentMeds);
         }
@@ -832,7 +970,7 @@ public class DonorController {
             previousMeds.addAll(currentUser.getPreviousMedication());
             previousMedicationListView.setItems(previousMeds);
         }
-        organsDonatingListView.getItems().addAll(currentUser.getDonorDetails().getOrgans());
+        //organsDonatingListView.getItems().addAll(currentUser.getDonorDetails().getOrgans());
         setContactPage();
         medicalProcedures = FXCollections.observableList(currentUser.getMedicalProcedures());
         for (MedicalProcedure procedure : medicalProcedures) {
@@ -846,36 +984,35 @@ public class DonorController {
         previousProcedureTableView.setItems(previousProcedures);
         pendingProcedureTableView.setItems(pendingProcedures);
 
-      currentMedicationListView.setItems(currentMeds);
+        currentMedicationListView.setItems(currentMeds);
 
-    if (currentUser.getPreviousMedication() != null) {
-      //System.out.println("previous: " + previousMeds);
-      previousMeds.clear();
-      previousMeds.addAll(currentUser.getPreviousMedication());
-      previousMedicationListView.setItems(previousMeds);
-    }
-    organsDonatingListView.getItems().clear();
-    organsDonatingListView.getItems().addAll(currentUser.getDonorDetails().getOrgans());
-    setContactPage();
-    if (user.getLastName() != null) {
-      stage.setTitle("User Profile: " + user.getFirstName() + " " + user.getLastName());
-    } else {
-      stage.setTitle("User Profile: " + user.getFirstName());
+        if (currentUser.getPreviousMedication() != null) {
+            //System.out.println("previous: " + previousMeds);
+            previousMeds.clear();
+            previousMeds.addAll(currentUser.getPreviousMedication());
+            previousMedicationListView.setItems(previousMeds);
+        }
+        //organsDonatingListView.getItems().clear();
+        //organsDonatingListView.getItems().addAll(currentUser.getDonorDetails().getOrgans());
+        setContactPage();
+        if (user.getLastName() != null) {
+            stage.setTitle("User Profile: " + user.getFirstName() + " " + user.getLastName());
+        } else {
+            stage.setTitle("User Profile: " + user.getFirstName());
 
+        }
     }
-  }
 
     /**
-     *
      * @param event An action event
      */
     @FXML
     void addMedication(ActionEvent event) {
         String medication = medicationTextField.getText();
-        if (medication.isEmpty() || medication == null){
+        if (medication.isEmpty() || medication == null) {
             return;
         }
-        if (currentMeds.contains(medication) || previousMeds.contains(medication)){
+        if (currentMeds.contains(medication) || previousMeds.contains(medication)) {
             medicationTextField.setText("");
             return;
         }
@@ -887,7 +1024,6 @@ public class DonorController {
     }
 
     /**
-     *
      * @param event An action event
      */
     @FXML
@@ -951,7 +1087,6 @@ public class DonorController {
     }
 
     /**
-     *
      * @param event A mouse event
      */
     @FXML
@@ -960,7 +1095,6 @@ public class DonorController {
     }
 
     /**
-     *
      * @param event A mouse event
      */
     @FXML
@@ -969,10 +1103,9 @@ public class DonorController {
     }
 
     /**
-     *
      * @param med A string of medication
      */
-    private void launchMedicationView(String med){
+    private void launchMedicationView(String med) {
         FXMLLoader medicationTimeViewLoader = new FXMLLoader(getClass().getResource("/FXML/medicationsTimeView.fxml"));
         Parent root = null;
         try {
@@ -1003,12 +1136,12 @@ public class DonorController {
     @FXML
     void addProcedure(ActionEvent event) {
         String procedureName = procedureTextField.getText();
-        if (procedureName.isEmpty()){
+        if (procedureName.isEmpty()) {
             procedureWarningLabel.setText("A name must be entered for a procedure");
             return;
         }
         LocalDate procedureDate = procedureDateSelector.getValue();
-        if(procedureDate == null){
+        if (procedureDate == null) {
             procedureWarningLabel.setText("A valid date must be entered for a procedure");
             return;
         }
@@ -1033,11 +1166,11 @@ public class DonorController {
         String newName = procedureTextField.getText();
         LocalDate newDate = procedureDateSelector.getValue();
         String newDescription = descriptionTextArea.getText();
-        if (newName.isEmpty()){
+        if (newName.isEmpty()) {
             procedureWarningLabel.setText("A name must be entered for a procedure");
             return;
         }
-        if (newDate == null){
+        if (newDate == null) {
             procedureWarningLabel.setText("A valid date must be entered for a procedure");
             return;
         }
@@ -1067,7 +1200,7 @@ public class DonorController {
      */
     private void updateProcedure(MedicalProcedure procedure, String newName, LocalDate newDate, String newDescription) {
         procedure.setSummary(newName);
-        if (newDate == null){
+        if (newDate == null) {
 
         } else {
             procedure.setProcedureDate(newDate);
@@ -1139,70 +1272,235 @@ public class DonorController {
      * show the current and past diseases
      * of the donor.
      */
-  public void showDonorDiseases(User user, boolean init) {
-      if(user.getCurrentDiseases().size() != 0) {
-          currentDisease = FXCollections.observableList(user.getCurrentDiseases());
-          currentDiseaseTableView.setItems(currentDisease);
+    public void showDonorDiseases(User user, boolean init) {
+        if (user.getCurrentDiseases().size() != 0) {
+            currentDisease = FXCollections.observableList(user.getCurrentDiseases());
+            currentDiseaseTableView.setItems(currentDisease);
 
-      } else {
-          currentDiseaseTableView.setPlaceholder(new Label("No Current Diseases"));
-      }
+        } else {
+            currentDiseaseTableView.setPlaceholder(new Label("No Current Diseases"));
+        }
 
-      if(user.getPastDiseases().size() != 0) {
-          pastDisease = FXCollections.observableList(user.getPastDiseases());
-          pastDiseaseTableView.setItems(pastDisease);
+        if (user.getPastDiseases().size() != 0) {
+            pastDisease = FXCollections.observableList(user.getPastDiseases());
+            pastDiseaseTableView.setItems(pastDisease);
+        } else {
+            pastDiseaseTableView.setPlaceholder(new Label("No Past Diseases"));
+        }
 
-      } else {
-          pastDiseaseTableView.setPlaceholder(new Label("No Past Diseases"));
-      }
+        if (init) {
+            TableColumn<Disease, LocalDate> diagnosisDateColumn = new TableColumn<>("Diagnosis Date");
+            diagnosisDateColumn.setMinWidth(110);
+            diagnosisDateColumn.setMaxWidth(110);
+            diagnosisDateColumn.setCellValueFactory(new PropertyValueFactory<>("diagnosisDate"));
 
-      if(init) {
-          TableColumn<Disease, LocalDate> diagnosisDateColumn = new TableColumn<>("Diagnosis Date");
-          diagnosisDateColumn.setMinWidth(140);
-          diagnosisDateColumn.setCellValueFactory(new PropertyValueFactory<>("diagnosisDate"));
+            TableColumn<Disease, String> nameColumn = new TableColumn<>("Disease Name");
+            nameColumn.setMinWidth(235);
+            nameColumn.setMaxWidth(235);
+            nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
 
-          TableColumn<Disease, String> nameColumn = new TableColumn<>("Disease Name");
-          nameColumn.setMinWidth(285);
-          nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+            TableColumn<Disease, Boolean> chronicColumn = new TableColumn<>("Chronic");
+            chronicColumn.setMinWidth(70);
+            chronicColumn.setMaxWidth(70);
+            chronicColumn.setCellValueFactory(new PropertyValueFactory<>("isChronic"));
 
-          currentDiseaseTableView.getColumns().addAll(diagnosisDateColumn, nameColumn);
+            chronicColumn.setCellFactory(column -> new TableCell<Disease, Boolean>() {
+                @Override
+                protected void updateItem(Boolean item, boolean empty) {
+                    super.updateItem(item, empty);
 
-          TableColumn<Disease, LocalDate> diagnosisDateColumn2 = new TableColumn<>("Diagnosis Date");
-          diagnosisDateColumn2.setMinWidth(140);
-          diagnosisDateColumn2.setCellValueFactory(new PropertyValueFactory<>("diagnosisDate"));
+                    setText(empty ? "" : getItem().toString());
+                    setGraphic(null);
 
-          TableColumn<Disease, String> nameColumn2 = new TableColumn<>("Disease Name");
-          nameColumn2.setMinWidth(285);
-          nameColumn2.setCellValueFactory(new PropertyValueFactory<>("name"));
+                    if (item == null) {
+                        return;
+                    }
 
-          pastDiseaseTableView.getColumns().addAll(diagnosisDateColumn2, nameColumn2);
-      }
-  }
+                    if(item) {
+                        setText("Chronic");
+                        setTextFill(Color.RED);
+                    } else {
+                        setText("");
+                    }
+                }
+            });
 
-  /**
-   * fires when the add button at the Disease tab is clicked
-   */
-  @FXML
-  private void addDisease() {
+            currentDiseaseTableView.getColumns().addAll(diagnosisDateColumn, nameColumn, chronicColumn);
 
-    FXMLLoader addDiseaseLoader = new FXMLLoader(getClass().getResource("/FXML/createNewDisease.fxml"));
-    Parent root = null;
-    try {
-      root = addDiseaseLoader.load();
-    } catch (IOException e) {
-      e.printStackTrace();
+            TableColumn<Disease, LocalDate> diagnosisDateColumn2 = new TableColumn<>("Diagnosis Date");
+            diagnosisDateColumn2.setMinWidth(110);
+            diagnosisDateColumn2.setMaxWidth(110);
+            diagnosisDateColumn2.setCellValueFactory(new PropertyValueFactory<>("diagnosisDate"));
+
+            TableColumn<Disease, String> nameColumn2 = new TableColumn<>("Disease Name");
+            nameColumn2.setMinWidth(305);
+            nameColumn2.setMaxWidth(305);
+            nameColumn2.setCellValueFactory(new PropertyValueFactory<>("name"));
+
+            pastDiseaseTableView.getColumns().addAll(diagnosisDateColumn2, nameColumn2);
+
+
+        }
     }
-    NewDiseaseController newDiseaseController = addDiseaseLoader.getController();
-    Stage stage = new Stage();
-    newDiseaseController.init(currentUser, application, stage);
-    stage.setScene(new Scene(root));
-    stage.show();
-  }
 
+    /**
+     * fires when the add button at the Disease tab is clicked
+     */
+    @FXML
+    private void addDisease() {
+
+        FXMLLoader addDiseaseLoader = new FXMLLoader(getClass().getResource("/FXML/createNewDisease.fxml"));
+        Parent root = null;
+        try {
+            root = addDiseaseLoader.load();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        NewDiseaseController newDiseaseController = addDiseaseLoader.getController();
+        Stage stage = new Stage();
+        Disease disease = new Disease("", false, false, LocalDate.now());
+        currentUser.addCurrentDisease(disease);
+        newDiseaseController.init(currentUser, application, stage, disease, this);
+        stage.setScene(new Scene(root));
+        stage.show();
+    }
+
+    /**
+     * @param event passed in automatically by the gui
+     */
+    @FXML
+    void donate(ActionEvent event) {
+        UndoRedoStacks.storeUndoCopy(currentUser);
+        if (!canDonate.getSelectionModel().isEmpty()) {
+            Organs toDonate = canDonate.getSelectionModel().getSelectedItem();
+            currentlyDonating.getItems().add(toDonate);
+            currentUser.getDonorDetails().addOrgan(toDonate);
+            application.update(currentUser);
+            canDonate.getItems().remove(toDonate);
+        }
+    }
+
+    /**
+     * @param event passed in automatically by the gui
+     */
+    @FXML
+    void undonate(ActionEvent event) {
+        UndoRedoStacks.storeUndoCopy(currentUser);
+        if (!currentlyDonating.getSelectionModel().isEmpty()) {
+            Organs toUndonate = currentlyDonating.getSelectionModel().getSelectedItem();
+            currentlyDonating.getItems().remove(toUndonate);
+            canDonate.getItems().add(toUndonate);
+            currentUser.getDonorDetails().removeOrgan(toUndonate);
+            application.update(currentUser);
+        }
+    }
+
+    /**
+     * Checks if a disease is selected in either 'Past' or 'Current' tables. If so, it passes that into NewDiseaseController
+     * to open up the 'disease editor' window. NewDiseaseController should probably be renamed to diseaseEditor
+     */
+    @FXML
+    private void updateDisease() {
+
+        FXMLLoader addDiseaseLoader = new FXMLLoader(getClass().getResource("/FXML/createNewDisease.fxml"));
+        Parent root = null;
+        try {
+            root = addDiseaseLoader.load();
+            root.requestFocus(); //Currently the below code thinks that focus = selected so will always take the focused
+            // thing in currentDiseases over the selected thing in pastDiseases. Trying to fix
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        if (currentDiseaseTableView.getSelectionModel().getSelectedItem() != null) { //Might error, dunno what it returns if nothing is selected, hopefully -1?
+            System.out.println(currentDiseaseTableView.getSelectionModel().getSelectedIndex());
+            Disease disease = currentDiseaseTableView.getSelectionModel().getSelectedItem(); //Get the selected disease
+
+            NewDiseaseController newDiseaseController = addDiseaseLoader.getController(); //Load some stuff
+            Stage stage = new Stage();
+            newDiseaseController.init(currentUser, application, stage, disease, this);
+            stage.setScene(new Scene(root));
+            stage.show();
+
+        } else if (pastDiseaseTableView.getSelectionModel().getSelectedItem() != null) {
+            Disease disease = pastDiseaseTableView.getSelectionModel().getSelectedItem();
+
+            NewDiseaseController newDiseaseController = addDiseaseLoader.getController();
+            Stage stage = new Stage();
+            //Disease disease = currentUser.getD
+            newDiseaseController.init(currentUser, application, stage, disease, this);
+            stage.setScene(new Scene(root));
+            stage.show();
+        }
+    }
+
+    /**
+     * Deletes the currently selected disease by moving it to the past diseases table
+     */
+    @FXML
+    private void deleteDisease() {
+        if (currentDiseaseTableView.getSelectionModel().getSelectedIndex() >= 0) {
+            currentUser.getCurrentDiseases().remove(currentDiseaseTableView.getSelectionModel().getSelectedItem());
+        } else if (pastDiseaseTableView.getSelectionModel().getSelectedIndex() >= 0) {
+            currentUser.getPastDiseases().remove(pastDiseaseTableView.getSelectionModel().getSelectedItem());
+        }
+
+        this.application.update(currentUser);
+        showDonorDiseases(currentUser, false); //Reload the scene?
+    }
+
+    //Yuck
+    public TableView<Disease> getPastDiseaseTableView() {
+        return pastDiseaseTableView;
+    }
+
+    public TableView<Disease> getCurrentDiseaseTableView() {
+        return currentDiseaseTableView;
+    }
+
+    public boolean getIsRevereSorted() {
+        return isReverseSorted;
+    }
+
+    public void setIsReverseSorted(boolean bool) {
+        isReverseSorted = bool;
+    }
+
+    public boolean getIsSortedByName() {
+        return isSortedByName;
+    }
+
+    public void setIsSortedByName(boolean bool) {
+        isSortedByName = bool;
+    }
+
+
+    public void diseaseRefresh(boolean isSortedByName, boolean isReverseSorted) {
+        Disease disease = new Disease("", false, false, LocalDate.now());
+        User user = new User("A", LocalDate.now(), "ABC1234"); //We always want to sort initially
+        Collections.sort(currentUser.getCurrentDiseases(), disease.diseaseNameComparator);
+        Collections.sort(currentUser.getCurrentDiseases(), disease.diseaseDateComparator);
+        Collections.sort(currentUser.getPastDiseases(), disease.diseaseNameComparator);
+        Collections.sort(currentUser.getPastDiseases(), disease.diseaseDateComparator);
+
+
+        if (isSortedByName) {
+            Collections.sort(currentUser.getCurrentDiseases(), disease.diseaseNameComparator);
+            Collections.sort(currentUser.getPastDiseases(), disease.diseaseNameComparator);
+
+        }
+        if (isReverseSorted) {
+            Collections.sort(currentUser.getCurrentDiseases(), Collections.reverseOrder());
+            Collections.sort(currentUser.getPastDiseases(), disease.diseaseNameComparator);
+        }
+        Collections.sort(currentUser.getCurrentDiseases(), disease.diseaseChronicComparator);
+        getCurrentDiseaseTableView().refresh();
+        getPastDiseaseTableView().refresh();
+    }
 
     @FXML
-    private void closeWindow(){
-      stage.close();
+    private void closeWindow() {
+        stage.close();
     }
-}
 
+}
