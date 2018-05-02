@@ -1330,9 +1330,6 @@ public class DonorController {
                         setText("Chronic");
                         setTextFill(Color.RED);
                     }
-                    else{
-                        setText("Not Chronic");
-                    }
                 }
             });
 
