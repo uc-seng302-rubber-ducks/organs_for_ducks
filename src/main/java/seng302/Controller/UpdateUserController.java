@@ -131,10 +131,10 @@ public class UpdateUserController {
   private Button confirmButton;
 
   @FXML
-  private Button undoButton;
+  private Button undoUpdateButton;
 
   @FXML
-  private Button redoButton;
+  private Button redoUpdateButton;
 
   private Stage stage;
   private AppController appController;
@@ -155,8 +155,8 @@ public class UpdateUserController {
     oldUser = currentUser.clone();
     this.appController = controller;
     setUserDetails(currentUser);
-    undoButton.setDisable(true);
-    redoButton.setDisable(true);
+    undoUpdateButton.setDisable(true);
+    redoUpdateButton.setDisable(true);
     errorLabel.setText("");
     undoMarker = currentUser.getUndoStack().size();
     if (user.getLastName() != null) {
@@ -837,8 +837,8 @@ public class UpdateUserController {
       setUserDetails(currentUser);
       currentUser.getRedoStack().clear();
     }
-    undoButton.setDisable(currentUser.getUndoStack().size() <= undoMarker);
-    redoButton.setDisable(currentUser.getRedoStack().isEmpty());
+    undoUpdateButton.setDisable(currentUser.getUndoStack().size() <= undoMarker);
+    redoUpdateButton.setDisable(currentUser.getRedoStack().isEmpty());
   }
 
     /**
@@ -1167,7 +1167,7 @@ public class UpdateUserController {
       currentUser.undo();
     System.out.println(undoMarker);
     System.out.println(currentUser.getUndoStack().size());
-    undoButton.setDisable(currentUser.getUndoStack().size() <= undoMarker);
+    undoUpdateButton.setDisable(currentUser.getUndoStack().size() <= undoMarker);
       setUserDetails(currentUser);
     }
 
@@ -1177,7 +1177,7 @@ public class UpdateUserController {
   @FXML
     void redo () {
       currentUser.redo();
-      redoButton.setDisable(currentUser.getRedoStack().isEmpty());
+      redoUpdateButton.setDisable(currentUser.getRedoStack().isEmpty());
       setUserDetails(currentUser);
     }
 

@@ -240,9 +240,9 @@
               </Label>
               <Separator layoutY="278.0" prefHeight="3.0" prefWidth="600.0" />
               <Label fx:id="errorLabel" layoutX="81.0" layoutY="682.0" prefHeight="42.0" prefWidth="386.0" text="Label" textFill="#c63636" />
-            <Button fx:id="undoButton" layoutX="462.0" layoutY="37.0" mnemonicParsing="false"
+            <Button fx:id="undoUpdateButton" layoutX="462.0" layoutY="37.0" mnemonicParsing="false"
               onAction="#undo" text="Undo"/>
-            <Button fx:id="redoButton" layoutX="527.0" layoutY="36.0" mnemonicParsing="false"
+            <Button fx:id="redoUpdateButton" layoutX="527.0" layoutY="36.0" mnemonicParsing="false"
               onAction="#redo" text="Redo"/>
           </children>
       </AnchorPane>
