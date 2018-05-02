@@ -253,7 +253,8 @@ public class DonorController {
     private ObservableList<MedicalProcedure> pendingProcedures;
 
   private ObservableList<Disease> currentDisease;
-  private ObservableList<Disease> pastDisease;private List<String> possibleGenders = Arrays.asList("M", "F", "U");
+  private ObservableList<Disease> pastDisease;
+  private List<String> possibleGenders = Arrays.asList("M", "F", "U");
 
     private List<String> possibleBloodTypes = Arrays
             .asList("A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-", "U");
@@ -416,15 +417,11 @@ public class DonorController {
         });
         if (user.getNhi() != null) {
             showUser(currentUser); // Assumes a donor with no name is a new sign up and does not pull values from a template
-            ArrayList<Change> changes = currentUser.getChanges();
-            if (changes != null) { // checks if the changes are null in case the user is a new user
-                changelog = FXCollections.observableArrayList(changes);
-            }
-            changelog.addListener((ListChangeListener.Change<? extends Change> change) -> historyTableView.setItems(changelog));
-            showDonorHistory();
+            changelog = FXCollections.observableList(currentUser.getChanges());
         } else {
             changelog = FXCollections.observableArrayList(new ArrayList<Change>());
         }
+        showDonorHistory();
         changelog.addListener((ListChangeListener.Change<? extends Change> change) -> historyTableView.setItems(changelog));
         medicationTextField.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
@@ -959,6 +956,7 @@ public class DonorController {
       stage.setTitle("User Profile: " + user.getFirstName());
 
     }
+    historyTableView.refresh();
   }
 
     /**
@@ -1090,6 +1088,8 @@ public class DonorController {
         TableColumn changeColumn = new TableColumn("Change");
         timeColumn.setCellValueFactory(new PropertyValueFactory<Change, String>("time"));
         changeColumn.setCellValueFactory(new PropertyValueFactory<Change, String>("change"));
+        historyTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+
         historyTableView.setItems(changelog);
         historyTableView.getColumns().addAll(timeColumn, changeColumn);
 
