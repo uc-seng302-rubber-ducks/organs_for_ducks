@@ -41,6 +41,16 @@ public class Clinician {
         dateLastModified = LocalDateTime.now();
     }
 
+    /**
+     * Constructor for Clinician
+     * @param staffId clinician staff id
+     * @param password clinician password
+     * @param firstName clinician first name
+     * @param middleName clinician middle name
+     * @param lastName clinician last name
+     * @param workAddress clinician work address
+     * @param region clinician region
+     */
     public Clinician(String staffId, String password, String firstName, String middleName, String lastName, String workAddress, String region) {
         this.staffId = staffId;
         this.password = password;
@@ -56,6 +66,16 @@ public class Clinician {
     }
 
 
+    /**
+     * Constructor for Clinician
+     * @param name clinician name
+     * @param staffId clinician staff id
+     * @param workAddress clinician work address
+     * @param region clinician region
+     * @param password clinician password
+     * @param dateCreated clinician date created
+     * @param dateLastModified clinician date last modified
+     */
     public Clinician(String name, String staffId, String workAddress, String region, String password, LocalDateTime dateCreated, LocalDateTime dateLastModified) {
         this.name = name;
         this.staffId = staffId;
@@ -67,6 +87,14 @@ public class Clinician {
 
     }
 
+    /**
+     * Constructor for Clinician
+     * @param name clinician name
+     * @param staffId clinician staff id
+     * @param workAddress clinician work address
+     * @param region clinician region
+     * @param password clinician password
+     */
     public Clinician(String name, String staffId, String workAddress, String region, String password) {
         this.name = name;
         this.staffId = staffId;

@@ -4,6 +4,10 @@ import com.google.gson.annotations.Expose;
 
 import java.util.HashSet;
 
+
+/**
+ * Class to track details for a donor
+ */
 public class DonorDetails {
 
   @Expose
@@ -14,11 +18,18 @@ public class DonorDetails {
     return organs;
   }
 
+  /**
+   * Constructor for organs for current user
+   * @param attachedUser current user
+   */
   public DonorDetails(User attachedUser) {
     this.attachedUser = attachedUser;
     this.organs = new HashSet<>();
   }
 
+  /**
+   * initialises organs
+   */
   public void initOrgans() {
     organs = new HashSet<>();
   }

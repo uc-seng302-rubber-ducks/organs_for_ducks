@@ -1,9 +1,13 @@
 package seng302.Controller;
-import java.util.function.Function;
-
 import javafx.scene.control.TableRow;
 import javafx.scene.control.Tooltip;
 
+import java.util.function.Function;
+
+/**
+ * Class for the Tooltip Table Row
+ * @param <T> table row
+ */
 public class TooltipTableRow<T> extends TableRow<T> {
 
     private Function<T, String> toolTipStringFunction;

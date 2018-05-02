@@ -12,7 +12,7 @@ import seng302.Model.UndoRedoStacks;
 import seng302.Model.User;
 
 /**
- * Class for controlling the miscallanous attributes view
+ * Class for controlling the miscellaneous attributes view
  *
  * @author Josh Burt
  */
@@ -55,6 +55,7 @@ public class MiscAttributesController {
   }
 
   /**
+   * Adds miscellaneous attribute to the current user profile
    * @param event passed in automatically by the gui
    */
   @FXML
@@ -71,6 +72,7 @@ public class MiscAttributesController {
   }
 
   /**
+   * Removes selected item from the user profile
    * @param event passed in automatically by the gui
    */
   @FXML
