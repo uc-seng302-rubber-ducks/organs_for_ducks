@@ -175,6 +175,8 @@ public class NewUserController {
         LoginController loginController = loader.getController();
         loginController.init(AppController.getInstance(), stage);
         stage.show();
+        stage.hide();
+        stage.show();
     }
 
 

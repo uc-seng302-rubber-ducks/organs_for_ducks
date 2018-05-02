@@ -48,6 +48,7 @@ public class DonorDetails {
     memento.setOldObject(attachedUser.clone());
     if (attachedUser != null){
       attachedUser.updateLastModified();
+      attachedUser.addChange(new Change("Added organ " + organ.toString()));
     }
     if (organs == null) {
       organs = new HashSet<>();
@@ -71,6 +72,7 @@ public class DonorDetails {
       organs.remove(organ);
       //TODO attachedUser is always null
       attachedUser.updateLastModified();
+      attachedUser.addChange(new Change("Removed organ " + organ.organName));
     }
     memento.setNewObject(attachedUser.clone());
     attachedUser.getUndoStack().push(memento);
