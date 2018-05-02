@@ -200,8 +200,11 @@ public class NewUserController {
             preferredFirstName = preferredFNameTextField.getText();
         }
 
-        String middleName = AttributeValidation.checkString(mNameInput.getText()); // checkString returns null if the textfield is empty
-        String lastName = AttributeValidation.checkString(lNameInput.getText());
+      String middleName = AttributeValidation.checkString(mNameInput.getText()) == null ? ""
+          : AttributeValidation.checkString(
+              mNameInput.getText()); // checkString returns null if the textfield is empty
+      String lastName = AttributeValidation.checkString(lNameInput.getText()) == null ? ""
+          : AttributeValidation.checkString(lNameInput.getText());
 
         String birthGender = AttributeValidation.validateGender(birthGenderComboBox);
         String genderIdentity;
@@ -228,11 +231,13 @@ public class NewUserController {
         }
 
         // contact details
-        String currentAddress = AttributeValidation.checkString(addressInput.getText());
-        String region = AttributeValidation.checkString(regionInput.getText());
-        String homePhone = AttributeValidation.checkString(phoneInput.getText());
-        String cellPhone = AttributeValidation.checkString(cellInput.getText());
-        String email = AttributeValidation.checkString(emailInput.getText());
+      String currentAddress = AttributeValidation.checkString(addressInput.getText()) == null ? ""
+          : AttributeValidation.checkString(addressInput.getText());
+      String region = AttributeValidation.checkString(regionInput.getText()) == null ? ""
+          : AttributeValidation.checkString(regionInput.getText());
+      String homePhone = AttributeValidation.validatePhoneNumber(phoneInput.getText());
+      String cellPhone = AttributeValidation.validateCellNumber(cellInput.getText());
+      String email = AttributeValidation.validateEmail(emailInput.getText());
 
         // validate email and phone numbers
         valid = emailCheck(email, valid);
@@ -241,11 +246,11 @@ public class NewUserController {
 
         // Emergency Contact attributes
         String eName = AttributeValidation.checkString(ecNameInput.getText());
-        String eCellPhone = AttributeValidation.checkString(ecCellInput.getText());
-        String eHomePhone = AttributeValidation.checkString(ecPhoneInput.getText());
+      String eCellPhone = AttributeValidation.validateCellNumber(ecCellInput.getText());
+      String eHomePhone = AttributeValidation.validatePhoneNumber(ecPhoneInput.getText());
         String eAddress = AttributeValidation.checkString(ecAddressInput.getText());
         String eRegion = AttributeValidation.checkString(ecRegionInput.getText());
-        String eEmail = AttributeValidation.checkString(ecEmailInput.getText());
+      String eEmail = AttributeValidation.validateEmail(ecEmailInput.getText());
         String eRelationship = AttributeValidation.checkString(ecRelationshipInput.getText());
 
         // validate emergency contact email and phone numbers
