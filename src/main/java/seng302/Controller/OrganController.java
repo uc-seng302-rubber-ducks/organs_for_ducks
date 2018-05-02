@@ -84,7 +84,6 @@ public class OrganController {
      */
     @FXML
     void donate(ActionEvent event) {
-        UndoRedoStacks.storeUndoCopy(currentUser);
         Organs toDonate = canDonate.getSelectionModel().getSelectedItem();
         if(toDonate != null) {
             if (currentUser.getReceiverDetails().isCurrentlyWaitingFor(toDonate)) {
@@ -97,7 +96,6 @@ public class OrganController {
             appController.update(currentUser);
             canDonate.getItems().remove(toDonate);
         }
-            UndoRedoStacks.storeUndoCopy(currentUser);
     }
 
     /**

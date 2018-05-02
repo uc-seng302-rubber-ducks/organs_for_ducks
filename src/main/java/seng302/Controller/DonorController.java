@@ -876,7 +876,6 @@ public class DonorController {
         stage.hide();
         stage.show();
 
-    //UndoRedoStacks.clearStacks();
   }
 
     /**
@@ -1557,7 +1556,6 @@ public class DonorController {
   @FXML
   void donate(ActionEvent event) {
 
-    UndoRedoStacks.storeUndoCopy(currentUser);
     if (!canDonate.getSelectionModel().isEmpty()){
       Organs toDonate = canDonate.getSelectionModel().getSelectedItem();
       currentlyDonating.getItems().add(toDonate);
@@ -1578,7 +1576,6 @@ public class DonorController {
    */
   @FXML
   void undonate(ActionEvent event) {
-    UndoRedoStacks.storeUndoCopy(currentUser);
     if (!currentlyDonating.getSelectionModel().isEmpty()) {
       Organs toUndonate = currentlyDonating.getSelectionModel().getSelectedItem();
       currentlyDonating.getItems().remove(toUndonate);
