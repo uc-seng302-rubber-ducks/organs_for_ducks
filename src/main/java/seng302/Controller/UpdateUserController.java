@@ -25,10 +25,6 @@ import seng302.Model.Memento;
 import seng302.Model.User;
 import seng302.Service.AttributeValidation;
 
-import java.io.IOException;
-import java.time.LocalDate;
-import java.util.Optional;
-
 /**
  * Class for updating the user
  */
@@ -671,7 +667,6 @@ public class UpdateUserController {
    */
   private void removeFormChanges(int offset) {
     while (currentUser.getUndoStack().size() > undoMarker + offset) {
-      System.out.println(currentUser.getUndoStack().size());
       currentUser.getUndoStack().pop();
     }
   }
