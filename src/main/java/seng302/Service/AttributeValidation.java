@@ -1,11 +1,10 @@
 package seng302.Service;
 
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.TextField;
-import seng302.Model.BloodTypes;
-
 import java.time.LocalDate;
 import java.time.Period;
+import javafx.scene.control.ComboBox;
+import seng302.Model.BloodTypes;
+import seng302.Model.TransplantDetails;
 import seng302.Model.User;
 
 
@@ -190,11 +189,41 @@ public class AttributeValidation {
         }
     }
 
+    /**
+     * Check the entry of the string provided to see if the user's region matches the text
+     *
+     * @param regionString String object to check against the user's region
+     * @param transplantDetails a User object
+     * @return true if the user's regions starts with the provided string
+     */
+    public static boolean checkRegionMatches(String regionString,
+        TransplantDetails transplantDetails) {
+        if (transplantDetails.getRegion() == null) {
+            return regionString.equals("");
+        } else {
+            return transplantDetails.getRegion().toLowerCase()
+                .startsWith(regionString.toLowerCase());
+        }
+    }
+
     public static boolean checkGenderMatches(String genderValue, User user) {
         if (user.getBirthGender() == null) {
             return genderValue.equals("All");
         }
         return (user.getBirthGender().equalsIgnoreCase(genderValue) ||
             genderValue.equalsIgnoreCase("All"));
+    }
+
+    public static boolean checkTextMatches(String text1, String text2) {
+        if (text1 == text2) {
+            return true;
+        }
+        if (text1 == null) {
+            return text2.equals("");
+        }
+        if (text2 == null) {
+            return text1.equals("");
+        }
+        return text1.toLowerCase().startsWith(text2.toLowerCase());
     }
 }
