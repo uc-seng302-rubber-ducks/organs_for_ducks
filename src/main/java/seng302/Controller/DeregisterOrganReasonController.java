@@ -14,7 +14,7 @@ import seng302.Model.User;
  * enter reasons for de-registering a receiver's organ.
  * @author acb116
  */
-public class deregisterOrganReasonController {
+public class DeregisterOrganReasonController {
 
     @FXML
     private RadioButton registerationErrorRadioButton;
