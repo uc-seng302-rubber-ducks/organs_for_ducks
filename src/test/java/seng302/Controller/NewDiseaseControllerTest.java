@@ -2,6 +2,8 @@ package seng302.Controller;
 
 import javafx.scene.input.KeyCode;
 import org.junit.*;
+import org.mockito.internal.matchers.Null;
+import org.testfx.api.FxRobotException;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.matcher.control.LabeledMatchers;
@@ -155,7 +157,33 @@ public class NewDiseaseControllerTest extends ApplicationTest {
     }
 
     //Only other things I can think of testing are the ordering
+    @Test
+    public void deletedChronicDiseaseShouldNotBeDeletedFromCurrentDiseases() {
+        clickOn(getCell("#currentDiseaseTableView", 0, 0));
+        clickOn("#updateDiseaseButton");
+        clickOn("#chronicRadioButton");
+        clickOn("#createButton");
+        clickOn(getCell("#currentDiseaseTableView", 0, 0));
+        clickOn("#deleteDiseaseButton");
+        assertEquals("A0", getCellValue("#currentDiseaseTableView", 1, 0).toString());
 
+    }
 
+    @Test (expected = FxRobotException.class)
+    public void generalUserShouldNotBeAbleToEditDiseases() {
+        clickOn("#userProfileTab");
+        //clickOn("#logOutButton");
+        clickOn("#backButton");
+        clickOn("#detailsTab");
+        clickOn("#logoutButton");
+        write("ABC1244", 0);
+        clickOn("#loginButton");
+        clickOn("#diseaseTab");
+        clickOn(getCell("#currentDiseaseTableView", 0, 0));
+        //These three should fail
+        clickOn("#updateDiseaseButton");
+        clickOn("#deleteDiseaseButton");
+        clickOn("#addDiseaseButton");
+    }
 
 }
