@@ -588,15 +588,13 @@ public class UpdateUserController {
     } else {
       smokerCheckBox.setSelected(false);
     }
-    if (user.getBloodType() != null) {
-      bloodComboBox.setValue(user.getBloodType());
-    }
-    if (user.getBirthGender() != null) {
-      birthGenderComboBox.setValue(user.getBirthGender());
-    }
-    if (user.getGenderIdentity() != null) {
-      genderIdComboBox.setValue(user.getGenderIdentity());
-    }
+
+    bloodComboBox.setValue(user.getBloodType() == null ? "" : user.getBloodType());
+
+    birthGenderComboBox.setValue(user.getBirthGender() == null ? "" : user.getBirthGender());
+
+    genderIdComboBox.setValue(user.getGenderIdentity() == null ? "" : user.getGenderIdentity());
+
     if (user.getWeight() > 0) {
       weightInput.setText(Double.toString(user.getWeight()));
     }
@@ -839,7 +837,7 @@ public class UpdateUserController {
       setUserDetails(currentUser);
       currentUser.getRedoStack().clear();
     }
-    undoButton.setDisable(currentUser.getUndoStack().isEmpty());
+    undoButton.setDisable(currentUser.getUndoStack().size() <= undoMarker);
     redoButton.setDisable(currentUser.getRedoStack().isEmpty());
   }
 
@@ -1167,7 +1165,9 @@ public class UpdateUserController {
   @FXML
     void undo () {
       currentUser.undo();
-      undoButton.setDisable(currentUser.getUndoStack().isEmpty());
+    System.out.println(undoMarker);
+    System.out.println(currentUser.getUndoStack().size());
+    undoButton.setDisable(currentUser.getUndoStack().size() <= undoMarker);
       setUserDetails(currentUser);
     }
 
