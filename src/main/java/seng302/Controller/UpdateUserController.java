@@ -597,9 +597,13 @@ public class UpdateUserController {
 
     if (user.getWeight() > 0) {
       weightInput.setText(Double.toString(user.getWeight()));
+    } else {
+      weightInput.setText("");
     }
     if (user.getHeight() > 0) {
       heightInput.setText(Double.toString(user.getHeight()));
+    } else {
+      heightInput.setText("");
     }
     listen = true;
 
@@ -817,15 +821,9 @@ public class UpdateUserController {
     double height;
     changed = updatePersonalDetails(nhiInput.getText(), fNameInput.getText(), dobInput.getValue(),
         dodInput.getValue());
-    try {
-      height = Double
-          .parseDouble(heightInput.getText().isEmpty() ? "0" : heightInput.getText());
-      weight = Double
-          .parseDouble(weightInput.getText().isEmpty() ? "0" : weightInput.getText());
-    } catch (NumberFormatException e) {
-      height = 0;
-      weight = 0;
-    }
+
+    height = getDoubleFromTextField(heightInput);
+    weight = getDoubleFromTextField(weightInput);
     changed |= updateHealthDetails(height, weight);
     changed |= updateContactDetails(phoneInput.getText(), cellInput.getText(),
         emailInput.getText());
@@ -839,6 +837,15 @@ public class UpdateUserController {
     }
     undoUpdateButton.setDisable(currentUser.getUndoStack().size() <= undoMarker);
     redoUpdateButton.setDisable(currentUser.getRedoStack().isEmpty());
+  }
+
+  private double getDoubleFromTextField(TextField textField) {
+    try {
+      return Double
+          .parseDouble(textField.getText().isEmpty() ? "0" : heightInput.getText());
+    } catch (NumberFormatException e) {
+      return 0;
+    }
   }
 
     /**
@@ -879,20 +886,20 @@ public class UpdateUserController {
 
       String mName = AttributeValidation.checkString(mNameInput.getText());
       String middle = currentUser.getMiddleName();
-      if (middle != null && !middle.equals(mName)) {
+      if (mName != null && !middle.equals(mName)) {
         currentUser.setMiddleName(mName);
         changed = true;
-      } else if (middle == null && mName != null) {
+      } else if ((middle != null && !middle.isEmpty())) {
         currentUser.setMiddleName(mName);
         changed = true;
       }
 
       String lName = AttributeValidation.checkString(lNameInput.getText());
       String last = currentUser.getLastName();
-      if (last != null && !last.equals(lName)) {
+      if (lName != null && !last.equals(lName)) {
         currentUser.setLastName(lName);
         changed = true;
-      } else if (last == null && lName != null) {
+      } else if (last != null && !last.isEmpty()) {
         currentUser.setLastName(lName);
         changed = true;
       }
@@ -935,7 +942,7 @@ public class UpdateUserController {
 
       String birthGender = currentUser.getBirthGender();
       String bGender = AttributeValidation.validateGender(birthGenderComboBox);
-      if (birthGender != null && !birthGender.equals(bGender)) {
+      if (bGender != null && !birthGender.equals(bGender)) {
         currentUser.setBirthGender(bGender);
         changed = true;
       } else if (birthGender == null && bGender != null) {
@@ -1005,7 +1012,8 @@ public class UpdateUserController {
       if (!cellPhone.isEmpty() && !cellPhone.equals(currentUser.getCellPhone())) {
         currentUser.setCellPhone(cellPhone);
         changed = true;
-      } else if (cellPhone.isEmpty() && currentUser.getCellPhone() != null) {
+      } else if (cellPhone.isEmpty() && (currentUser.getCellPhone() != null && !currentUser
+          .getCellPhone().isEmpty())) {
         currentUser.setCellPhone(null);
         changed = true;
       }
@@ -1013,7 +1021,7 @@ public class UpdateUserController {
       if (!email.isEmpty() && !email.equals(currentUser.getEmail())) {
         currentUser.setEmail(email);
         changed = true;
-      } else if (email.isEmpty() && (currentUser.getEmail() != null && currentUser.getEmail()
+      } else if (email.isEmpty() && (currentUser.getEmail() != null && !currentUser.getEmail()
           .isEmpty())) {
         currentUser.setEmail(null);
         changed = true;
@@ -1023,7 +1031,8 @@ public class UpdateUserController {
       if (!address.isEmpty() && !address.equals(currentUser.getCurrentAddress())) {
         currentUser.setCurrentAddress(address);
         changed = true;
-      } else if (address.isEmpty() && currentUser.getCurrentAddress() != null) {
+      } else if (address.isEmpty() && (currentUser.getCurrentAddress() != null && !currentUser
+          .getCurrentAddress().isEmpty())) {
         currentUser.setCurrentAddress(null);
         changed = true;
       }
@@ -1032,7 +1041,8 @@ public class UpdateUserController {
       if (!region.isEmpty() && !region.equals(currentUser.getRegion())) {
         currentUser.setRegion(region);
         changed = true;
-      } else if (region.isEmpty() && currentUser.getRegion() != null) {
+      } else if (region.isEmpty() && (currentUser.getRegion() != null && !currentUser.getRegion()
+          .isEmpty())) {
         currentUser.setRegion(null);
         changed = true;
       }

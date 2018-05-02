@@ -2,22 +2,24 @@ package seng302.Controller;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.Optional;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import seng302.Model.Clinician;
-
-import java.io.IOException;
-import java.time.LocalDateTime;
-import java.util.Optional;
 
 /**
  * Controller for updating clinicians
@@ -224,12 +226,121 @@ public class UpdateClinicianController {
      */
     private void changesListener(TextField field) {
         field.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (checkChanges()) { // checks if reverting a textfield change restores all fields to their original state
-                stage.setTitle("Update Clinician: " + currentClinician.getFirstName());
-            } else {
-                stage.setTitle("Update Clinician: " + currentClinician.getFirstName() + " *");
-            }
+            update();
         });
+    }
+
+    private void update() {
+        if (checkChanges()) { // checks if reverting a textfield change restores all fields to their original state
+            stage.setTitle("Update Clinician: " + currentClinician.getFirstName());
+        } else {
+            stage.setTitle("Update Clinician: " + currentClinician.getFirstName() + " *");
+        }
+        updateUndos();
+    }
+
+    private void updateUndos() {
+        boolean changed = false;
+        double weight;
+        double height;
+        changed = updateDetails(staffIDTextField.getText(), firstNameTextField.getText(),
+            lastNameTextField.getText(),
+            regionTextField.getText(), addressTextField.getText(), middleNameTextField.getText(),
+            passwordField.getText(), confirmPasswordField.getText());
+
+        if (changed) {
+            AppController.getInstance().updateClinicians(currentClinician);
+            prefillFields(currentClinician);
+            currentClinician.getRedoStack().clear();
+        }
+        //undoButton.setDisable(currentClinician.getUndoStack().size() <= undoMarker);
+        //redoButton.setDisable(currentClinician.getRedoStack().isEmpty());
+    }
+
+    private boolean updateDetails(String staffId, String fName, String lName, String region,
+        String address,
+        String mName, String password, String confirmPassword) {
+        boolean changed = false;
+        if (!currentClinician.getStaffId().equals(staffId)) {
+            currentClinician.setStaffId(staffId);
+            changed = true;
+        }
+
+        if (!currentClinician.getFirstName().equals(fName)) {
+            currentClinician.setFirstName(fName);
+            changed = true;
+        }
+
+        if (currentClinician.getLastName() != null) {
+            if (!currentClinician.getLastName().equals(lName)) {
+                currentClinician.setLastName(lName);
+                changed = true;
+            }
+        } else {
+            if (!lName.isEmpty()) {
+                currentClinician.setLastName(lName);
+                changed = true;
+            }
+        }
+
+        String middle = currentClinician.getMiddleName();
+        if (middle != null) {
+            if (!middle.equals(mName)) {
+                currentClinician.setMiddleName(mName);
+                changed = true;
+            }
+        } else {
+            if (!mName.isEmpty()) {
+                currentClinician.setMiddleName(mName);
+                changed = true;
+            }
+        }
+
+        if (currentClinician.getRegion() != null) {
+            if (!currentClinician.getRegion().equals(region)) {
+                currentClinician.setRegion(region);
+                changed = true;
+            }
+        } else {
+            if (!region.isEmpty()) {
+                currentClinician.setRegion(region);
+                changed = true;
+            }
+        }
+
+        if (currentClinician.getWorkAddress() != null) {
+            if (!currentClinician.getWorkAddress().equals(address)) {
+                currentClinician.setWorkAddress(address);
+                changed = true;
+            }
+        } else {
+            if (!address.isEmpty()) {
+                currentClinician.setWorkAddress(address);
+                changed = true;
+            }
+        }
+
+        changed |= checkPasswordChanges(password);
+        changed |= checkPasswordChanges(confirmPassword);
+
+        return changed;
+    }
+
+    private boolean checkPasswordChanges(String password) {
+        boolean changed = false;
+        if (currentClinician.getPassword() != null) {
+            if (!currentClinician.getPassword().equals(password)) {
+                currentClinician.setPassword(password);
+                changed = true;
+            }
+        } else {
+            if (!password.isEmpty()) {
+                currentClinician.setPassword(password);
+                changed = true;
+            }
+        }
+
+        return changed;
     }
 
     /**

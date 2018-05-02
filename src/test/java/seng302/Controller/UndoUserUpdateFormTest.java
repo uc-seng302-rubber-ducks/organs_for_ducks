@@ -5,21 +5,16 @@ import static org.testfx.api.FxAssert.verifyThat;
 import java.time.LocalDate;
 import java.util.concurrent.TimeoutException;
 import javafx.scene.Node;
-import javafx.scene.input.KeyCode;
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.matcher.control.LabeledMatchers;
 import org.testfx.matcher.control.TextInputControlMatchers;
-import org.testfx.matcher.control.TextMatchers;
 import seng302.App;
 import seng302.Model.EmergencyContact;
 import seng302.Model.User;
-
-import javax.xml.soap.Text;
 
 public class UndoUserUpdateFormTest extends ApplicationTest{
 
@@ -53,7 +48,7 @@ public class UndoUserUpdateFormTest extends ApplicationTest{
     write("i", 0);
 
     clickOn("#undoUpdateButton");
-    verifyThat("#preferredFNameTextField", TextInputControlMatchers.hasText("Frank") );
+    verifyThat("#preferredFNameTextField", TextInputControlMatchers.hasText("Frank"));
 
   }
 
