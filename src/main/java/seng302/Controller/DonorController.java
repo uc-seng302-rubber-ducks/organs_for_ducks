@@ -432,7 +432,6 @@ public class DonorController {
                 getDrugSuggestions();
             }
         });
-        medicationTextField.textProperty().addListener((observable) -> getDrugSuggestions());
 
     showDonorDiseases(currentUser, true);
         modifyOrgansProcedureButton.setVisible(false);
@@ -534,7 +533,6 @@ public class DonorController {
 
         }
     }
-
 
     @FXML
     private void setContactPage() {
