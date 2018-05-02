@@ -335,13 +335,13 @@ public class DonorController {
                 .addListener((observable, oldValue, newValue) -> {
                     ObservableList<String> selected = currentMedicationListView.getSelectionModel()
                             .getSelectedItems();
-                    displayDetails(selected);
+                    displayDetails(selected, drugDetailsLabel, drugDetailsTextArea);
                 });
         previousMedicationListView.getSelectionModel().selectedItemProperty()
                 .addListener(((observable, oldValue, newValue) -> {
                     ObservableList<String> selected = previousMedicationListView.getSelectionModel()
                             .getSelectedItems();
-                    displayDetails(selected);
+                    displayDetails(selected, drugDetailsLabel, drugDetailsTextArea);
                 }));
         currentMedicationListView.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
@@ -445,7 +445,7 @@ public class DonorController {
      *
      * @param selected selected items from listview
      */
-    private void displayDetails(ObservableList<String> selected) {
+    private void displayDetails(ObservableList<String> selected, Label drugDetailsLabel, TextArea drugDetailsTextArea) {
         if (selected.size() > 2) {
             drugDetailsLabel.setText("Drug Details");
             drugDetailsTextArea.setText(
