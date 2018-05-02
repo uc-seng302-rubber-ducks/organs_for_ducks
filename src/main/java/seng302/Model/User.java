@@ -1,18 +1,18 @@
 package seng302.Model;
 
 import com.google.gson.annotations.Expose;
-import org.joda.time.DateTime;
 
 import java.io.FileNotFoundException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Objects;
 
-
+/**
+ * Class for handling calls to user
+ */
 public class User {
 
   @Expose
@@ -89,17 +89,38 @@ public class User {
   @Expose
   private ReceiverDetails receiverDetails = new ReceiverDetails(this);
 
+  @Expose
   private ArrayList<Disease> pastDiseases;
 
+  @Expose
   private ArrayList<Disease> currentDiseases;
 
-//  public User(java.time.LocalDate dateOfBirth, java.time.LocalDate dateOfDeath, String gender, double height, double weight,
-//              String bloodType,
-//              String currentAddress, String region, LocalDateTime timeCreated, String name,
-//              LocalDateTime lastModified,
-//              boolean isDeceased) {
-
     // updated constructor that works with the creation page
+
+  /**
+   * Constructor for a User
+   * @param nhi National Health Index for user
+   * @param dateOfBirth users date of birth
+   * @param dateOfDeath users date of death
+   * @param birthGender users birth gender
+   * @param genderIdentity users gender identity
+   * @param height users height
+   * @param weight users weight
+   * @param bloodType users blood type
+   * @param alcoholConsumption users alcohol consumption
+   * @param smoker if user is a smoker
+   * @param currentAddress users current address
+   * @param region users region
+   * @param homePhone users home phone number
+   * @param cellPhone users cell phone number
+   * @param email users email
+   * @param contact users emergency contact
+   * @param name users name
+   * @param firstName users first name
+   * @param preferredFirstName users preferred name
+   * @param middleName users middle name
+   * @param lastName users last name
+   */
     public User(String nhi, LocalDate dateOfBirth, LocalDate dateOfDeath, String birthGender, String genderIdentity,
     double height, double weight, String bloodType, String alcoholConsumption,boolean smoker,
     String currentAddress, String region, String homePhone, String cellPhone, String email,
@@ -153,97 +174,17 @@ public class User {
 
     }
 
-  public User(java.time.LocalDate dateOfBirth, java.time.LocalDate dateOfDeath, String gender,
-      double height, double weight,
-      String bloodType,
-      String currentAddress, String region, LocalDateTime timeCreated, String name,
-      LocalDateTime lastModified,
-      boolean isDeceased, String nhi, ArrayList<MedicalProcedure> medicalProcedures) {
-    this.dateOfBirth = dateOfBirth;
-    this.dateOfDeath = dateOfDeath;
-    if (gender.startsWith("m") || gender.startsWith("M")) {
-      this.gender = "M";
-    } else if (gender.startsWith("f") || gender.startsWith("F")) {
-      this.gender = "F";
-    } else {
-      this.gender = "U";
-    }
-    this.height = height;
-    this.weight = weight;
-    this.bloodType = groupBloodType(bloodType);
-    this.currentAddress = currentAddress;
-    this.region = region;
-    if (timeCreated == null) {
-      this.timeCreated = LocalDateTime.now();
-    } else {
-      this.timeCreated = timeCreated;
-    }
-
-
-    this.name = name;
-    if (lastModified == null) {
-      this.lastModified = LocalDateTime.now();
-    } else {
-      this.lastModified = lastModified;
-    }
-    this.isDeceased = isDeceased;
-    updateHistory = new HashMap<>();
-    updateHistory.put(dateToString(getTimeCreated()), "Profile created.");
-    this.miscAttributes = new ArrayList<>();
-    this.currentMedication = new ArrayList<>();
-    this.previousMedication = new ArrayList<>();
-    this.currentMedicationTimes = new HashMap<String, ArrayList<LocalDateTime>>();
-    this.previousMedicationTimes = new HashMap<String, ArrayList<LocalDateTime>>();
-
-    this.currentDiseases = new ArrayList<>();
-    this.pastDiseases = new ArrayList<>();
-
-    this.nhi = nhi;
-    this.donorDetails = new DonorDetails(this);
-    this.receiverDetails = new ReceiverDetails(this);
-    this.medicalProcedures = medicalProcedures;
-    //TODO fix json reader
-    try {
-      changes = JsonHandler.importHistoryFromFile(name);
-    } catch (FileNotFoundException e) {
-      e.printStackTrace();
-    }
-  }
-
-  //TODO Someone needs to review if the following constructor is needed. It is commented out because this(dateOfBirth, null, "U"...); is not working
-//  /**
-//   * Bare bones constructor that defaults to User(dateOfBirth, null, "U", 0.0, 0.0, "U", null, null, null, name, null, false)
-//   * @param name name of the user
-//   * @param dateOfBirth date of birth of the user
-//   */
-//  public User(String name, java.time.LocalDate dateOfBirth) {
-//    this(dateOfBirth, null, "U", 0.0, 0.0, "U", null, null, null, name, null, false);
-////    this.dateOfBirth = dateOfBirth;
-////    this.name = name;
-////    timeCreated = LocalDateTime.now();
-////    lastModified = LocalDateTime.now();
-////    this.gender = "U";
-////    this.bloodType = "U";
-////    updateHistory = new HashMap<>();
-////
-////    this.miscAttributes = new ArrayList<>();
-////    this.currentMedication = new ArrayList<>();
-////    this.previousMedication = new ArrayList<>();
-////    this.currentMedicationTimes = new HashMap<String, ArrayList<LocalDateTime>>();
-////    this.previousMedicationTimes = new HashMap<String, ArrayList<LocalDateTime>>();
-
-//      this.currentDiseases = new ArrayList<>();
-//      this.pastDiseases = new ArrayList<>();
-////
-////    this.donorDetails = new DonorDetails(this);
-////    this.receiverDetails = new ReceiverDetails(this);
-////    //TODO fix json reader
-////    //changes = JsonReader.importHistoryFromFile(this);
-//  }
-
+  /**
+   * Constructor for a User
+   * @param name users name
+   * @param dateOfBirth users date of birth
+   * @param nhi users national health index
+   */
   public User(String name, java.time.LocalDate dateOfBirth, String nhi) {
     this.dateOfBirth = dateOfBirth;
-    this.name = name;    this.donorDetails = new DonorDetails(this);
+    this.name = name;
+    this.donorDetails = new DonorDetails(this);
+    this.firstName = name;
     this.receiverDetails = new ReceiverDetails(this);
     this.nhi = nhi;
     timeCreated = LocalDateTime.now();
@@ -320,6 +261,11 @@ public class User {
   }
 
   //TODO details object is set at initialization. will always return true
+
+  /**
+   * Checks to see if user is a donor
+   * @return true if donor
+   */
   public boolean isDonor() {
     if (this.donorDetails == null) {
       return false;
@@ -328,6 +274,10 @@ public class User {
 
   }
 
+  /**
+   * Checks to see if user is a receiver
+   * @return true if receiver
+   */
   public boolean isReceiver() {
     if (this.receiverDetails == null) {
       return false;
@@ -384,9 +334,9 @@ public class User {
         return preferredFirstName;
     }
 
-    public void setPrefFirstName(String name) {
+    public void setPreferredFirstName(String preferredFirstName) {
         updateLastModified();
-        this.preferredFirstName = name;
+        this.preferredFirstName = preferredFirstName;
     }
 
     public String getMiddleName() {
@@ -548,14 +498,6 @@ public class User {
 
   public void addPastDisease(Disease pastDisease) {
     this.pastDiseases.add(pastDisease);
-  }
-
-  public String getPreferredFirstName() {
-    return preferredFirstName;
-  }
-
-  public void setPreferredFirstName(String preferredFirstName) {
-    this.preferredFirstName = preferredFirstName;
   }
 
   public String getBirthGender() {
@@ -845,11 +787,11 @@ public class User {
       return name;
     }
     if (!this.getDonorDetails().getOrgans().isEmpty()) {
-      String toReturn = name + ". Donor: ";
+      StringBuilder toReturn = new StringBuilder(name + ". Donor: ");
       for (Organs o : this.donorDetails.getOrgans()) {
-        toReturn += o.toString() + " ";
+        toReturn.append(o.toString()).append(" ");
       }
-      return toReturn;
+      return toReturn.toString();
     } else {
       return name;
     }

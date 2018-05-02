@@ -1,12 +1,6 @@
 package seng302.Controller;
 
-import java.lang.reflect.Array;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashSet;
 import javafx.beans.binding.Bindings;
-
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -23,21 +17,22 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.StackPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-
-import java.io.IOException;
-import java.util.List;
-import java.util.logging.Filter;
-
-import seng302.Model.Donor;
+import seng302.Model.Clinician;
 import seng302.Model.Organs;
 import seng302.Model.User;
-import seng302.Model.Clinician;
 import seng302.Service.AttributeValidation;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+
+/**
+ * Class for the functionality of the Clinician view of the application
+ */
 public class ClinicianController {
 
   private final int ROWS_PER_PAGE = 30;
@@ -159,6 +154,9 @@ public class ClinicianController {
     allCheckBox.setSelected(true);
   }
 
+  /**
+   * initialises the clinicians details
+   */
   private void showClinician() {
     staffIdLabel.setText(clinician.getStaffId());
     fNameLabel.setText(clinician.getFirstName());
@@ -167,11 +165,11 @@ public class ClinicianController {
     addressLabel.setText(clinician.getWorkAddress());
     regionLabel.setText(clinician.getRegion());
     if (clinician.getFirstName() == null){
-      stage.setTitle("Clinician Admin");
+      stage.setTitle("Clinician: Admin");
     } else if (clinician.getLastName() == null) {
-      stage.setTitle("Clinician " + clinician.getFirstName());
+      stage.setTitle("Clinician: " + clinician.getFirstName());
     } else {
-      stage.setTitle("Clinician " + clinician.getFirstName() +" " + clinician.getLastName());
+      stage.setTitle("Clinician: " + clinician.getFirstName() +" " + clinician.getLastName());
     }
   }
 
@@ -285,7 +283,7 @@ public class ClinicianController {
      * @param user the selected user.
      */
   private void launchDonor(User user){
-    FXMLLoader donorLoader = new FXMLLoader(getClass().getResource("/FXML/donorView.fxml"));
+    FXMLLoader donorLoader = new FXMLLoader(getClass().getResource("/FXML/userView.fxml"));
     Parent root = null;
     try {
       root = donorLoader.load();
@@ -348,13 +346,11 @@ public class ClinicianController {
    */
   private void setFilteredListPredicate(FilteredList<User> fList) {
     searchCount = 0; //refresh the searchCount every time so it recalculates it each search
-    System.out.println(fList);
     fList.predicateProperty().bind(Bindings.createObjectBinding(() -> user -> {
       String lowerCaseFilterText = searchTextField.getText().toLowerCase();
       boolean regionMatch = AttributeValidation.checkRegionMatches(regionSearchTextField.getText(), user);
       boolean genderMatch = AttributeValidation.checkGenderMatches(genderComboBox.getValue().toString(), user);
 
-      System.out.println(user);
       if (((user.getFirstName().toLowerCase()).startsWith(lowerCaseFilterText) ||
               (user.getLastName().toLowerCase().startsWith(lowerCaseFilterText))) &&
               (regionMatch) && (genderMatch) &&
@@ -407,8 +403,8 @@ public class ClinicianController {
       root = updateLoader.load();
       UpdateClinicianController updateClinicianController = updateLoader.getController();
       Stage stage = new Stage();
-      updateClinicianController.init(clinician, appController, stage, false);
       stage.setScene(new Scene(root));
+      updateClinicianController.init(clinician, appController, stage, false);
       stage.initModality(Modality.APPLICATION_MODAL); // background window is no longer selectable
       stage.showAndWait();
       showClinician();

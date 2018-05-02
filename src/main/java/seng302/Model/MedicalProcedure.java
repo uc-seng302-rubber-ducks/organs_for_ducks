@@ -21,6 +21,13 @@ public class MedicalProcedure {
     @Expose
     private ArrayList<Organs> organsAffected;
 
+    /**
+     * Constructor for Medical Procedure
+     * @param procedureDate date of procedure
+     * @param summary summary of procedure
+     * @param description description of procedure
+     * @param organsAffected affected organs
+     */
     public MedicalProcedure(LocalDate procedureDate, String summary, String description, ArrayList<Organs> organsAffected) {
 
         this.procedureDate = procedureDate;
@@ -33,12 +40,20 @@ public class MedicalProcedure {
         }
     }
 
+    /**
+     * Constructor for Medical Procedure
+     * @param procedureDate date of procedure
+     * @param summary summary of procedure
+     */
     public MedicalProcedure(LocalDate procedureDate, String summary) {
         this.procedureDate = procedureDate;
         this.summary = summary;
         organsAffected = new ArrayList<Organs>();
     }
 
+    /**
+     * Constructor for Medical Procedure
+     */
     public MedicalProcedure() {
         organsAffected = new ArrayList<Organs>();
     }

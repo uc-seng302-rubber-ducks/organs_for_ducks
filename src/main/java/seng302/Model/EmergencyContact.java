@@ -1,7 +1,8 @@
 package seng302.Model;
 
-import javafx.scene.control.Cell;
-
+/**
+ * Class for the Emergency Contact details for a user
+ */
 public class EmergencyContact {
 
     //declaring attributes
@@ -13,7 +14,11 @@ public class EmergencyContact {
     private String Email;
     private String Relationship;
 
-
+    /**
+     * Constructor for emergency contact
+     * @param Ename Emergency contact name
+     * @param ECellPhone Emergency contact phone number
+     */
     public EmergencyContact(String Ename, String ECellPhone){
         name = Ename;
         HomePhoneNumber = null;
@@ -92,6 +97,11 @@ public class EmergencyContact {
                 "Relationship: %s\n", name, HomePhoneNumber, CellPhoneNumber, address, region, Email, Relationship);
     }
 
+    /**
+     * Checks for equality between two contacts
+     * @param other other contact object
+     * @return true if they are equal
+     */
     @Override
     public boolean equals(Object other) {
         EmergencyContact otherContact = (EmergencyContact) other;

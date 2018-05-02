@@ -1,13 +1,19 @@
 package seng302.Controller;
 
+import seng302.Model.Change;
+import seng302.Model.Clinician;
+import seng302.Model.JsonHandler;
+import seng302.Model.User;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
-import seng302.Model.*;
-
+/**
+ * Class for the functionality of the main app
+ */
 public class AppController {
 
   private ArrayList<User> users = new ArrayList<>();
@@ -18,6 +24,9 @@ public class AppController {
 
   private DonorController donorController = new DonorController();
 
+  /**
+   * Creates new instance of AppController
+   */
   private AppController() {
     try {
       users = JsonHandler.loadUsers();
@@ -38,7 +47,9 @@ public class AppController {
       }
     } //all code you wish to execute must be above this point!!!!!!!!
     if (!defaultSeen) {
-      clinicians.add(new Clinician("Default", "0", "", "", "admin"));
+      //clinicians.add(new Clinician("Default", "0", "", "", "admin"));
+      String nullRegion = null; // need this otherwise cannot differentiate between constructors
+      clinicians.add(new Clinician("0", "admin", "Default", null, null, null, nullRegion));
       try {
         JsonHandler.saveClinicians(clinicians);
       } catch (IOException e) {
