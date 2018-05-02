@@ -140,7 +140,6 @@ public class UpdateUserController {
         this.stage = stage;
         currentUser = user;
         this.appController = controller;
-        //UndoRedoStacks.storeUndoCopy(currentUser);
         currentUser = user;
         setUserDetails(currentUser);
         errorLabel.setText("");
@@ -149,7 +148,6 @@ public class UpdateUserController {
         } else {
           stage.setTitle("Update User: " + user.getFirstName());
         }
-        //UndoRedoStacks.cloneUser(currentUser,oldUser);
 
         Scene scene = stage.getScene();
 
