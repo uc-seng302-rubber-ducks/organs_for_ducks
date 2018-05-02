@@ -12,6 +12,12 @@ import seng302.Model.MedicalProcedure;
 import seng302.Model.Organs;
 import seng302.Model.User;
 
+import java.util.ArrayList;
+import java.util.Collections;
+
+/**
+ * Class for the Organs Affected view for Medical Procedures
+ */
 public class OrgansAffectedController {
 
     @FXML
@@ -37,6 +43,13 @@ public class OrgansAffectedController {
 
     private User user;
 
+    /**
+     * initialises the organs affected window for medical procedure
+     * @param appController given app controller
+     * @param stage given stage
+     * @param procedure current procedure
+     * @param user current user
+     */
     public void init(AppController appController, Stage stage, MedicalProcedure procedure, User user) {
         organsListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         affectedOrgansListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
@@ -63,6 +76,9 @@ public class OrgansAffectedController {
         organsListView.setItems(FXCollections.observableList(allOrgans));
     }
 
+    /**
+     * Adds the selected organ to the affected list for the current medical procedure
+     */
     @FXML
     void addOrgan() {
         Organs toAffect = organsListView.getSelectionModel().getSelectedItem();
@@ -73,6 +89,9 @@ public class OrgansAffectedController {
         }
     }
 
+    /**
+     * Removes the selected organ from the affected list for the current medical procedure
+     */
     @FXML
     void removeOrgan() {
         Organs toAffect = affectedOrgansListView.getSelectionModel().getSelectedItem();
@@ -83,6 +102,9 @@ public class OrgansAffectedController {
         }
     }
 
+    /**
+     * Goes back to the previous window
+     */
     @FXML
     void back() {
         appController.update(user);

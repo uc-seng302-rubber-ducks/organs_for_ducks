@@ -37,6 +37,14 @@ import seng302.Model.Organs;
 import seng302.Model.User;
 import seng302.Service.AttributeValidation;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+
+/**
+ * Class for the functionality of the Clinician view of the application
+ */
 public class ClinicianController {
 
   private final int ROWS_PER_PAGE = 30;
@@ -161,6 +169,9 @@ public class ClinicianController {
     allCheckBox.setSelected(true);
   }
 
+  /**
+   * initialises the clinicians details
+   */
   private void showClinician() {
     staffIdLabel.setText(clinician.getStaffId());
     fNameLabel.setText(clinician.getFirstName());

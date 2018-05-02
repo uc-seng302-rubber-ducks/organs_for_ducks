@@ -1,6 +1,7 @@
 package seng302.Model;
 
 import com.google.gson.annotations.Expose;
+
 import java.io.FileNotFoundException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -9,7 +10,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
 
-
+/**
+ * Class for handling calls to user
+ */
 public class User extends Undoable<User> {
 
   @Expose
@@ -86,11 +89,38 @@ public class User extends Undoable<User> {
   @Expose
   private ReceiverDetails receiverDetails = new ReceiverDetails(this);
 
+  @Expose
   private ArrayList<Disease> pastDiseases;
 
+  @Expose
   private ArrayList<Disease> currentDiseases;
 
     // updated constructor that works with the creation page
+
+  /**
+   * Constructor for a User
+   * @param nhi National Health Index for user
+   * @param dateOfBirth users date of birth
+   * @param dateOfDeath users date of death
+   * @param birthGender users birth gender
+   * @param genderIdentity users gender identity
+   * @param height users height
+   * @param weight users weight
+   * @param bloodType users blood type
+   * @param alcoholConsumption users alcohol consumption
+   * @param smoker if user is a smoker
+   * @param currentAddress users current address
+   * @param region users region
+   * @param homePhone users home phone number
+   * @param cellPhone users cell phone number
+   * @param email users email
+   * @param contact users emergency contact
+   * @param name users name
+   * @param firstName users first name
+   * @param preferredFirstName users preferred name
+   * @param middleName users middle name
+   * @param lastName users last name
+   */
     public User(String nhi, LocalDate dateOfBirth, LocalDate dateOfDeath, String birthGender, String genderIdentity,
     double height, double weight, String bloodType, String alcoholConsumption,boolean smoker,
     String currentAddress, String region, String homePhone, String cellPhone, String email,
@@ -144,7 +174,12 @@ public class User extends Undoable<User> {
 
     }
 
-
+  /**
+   * Constructor for a User
+   * @param name users name
+   * @param dateOfBirth users date of birth
+   * @param nhi users national health index
+   */
   public User(String name, java.time.LocalDate dateOfBirth, String nhi) {
     this.dateOfBirth = dateOfBirth;
     this.name = name;
@@ -234,6 +269,11 @@ public class User extends Undoable<User> {
   }
 
   //TODO details object is set at initialization. will always return true
+
+  /**
+   * Checks to see if user is a donor
+   * @return true if donor
+   */
   public boolean isDonor() {
     if (this.donorDetails == null) {
       return false;
@@ -242,6 +282,10 @@ public class User extends Undoable<User> {
 
   }
 
+  /**
+   * Checks to see if user is a receiver
+   * @return true if receiver
+   */
   public boolean isReceiver() {
     if (this.receiverDetails == null) {
       return false;
@@ -870,11 +914,11 @@ public class User extends Undoable<User> {
       return name;
     }
     if (!this.getDonorDetails().getOrgans().isEmpty()) {
-      String toReturn = name + ". Donor: ";
+      StringBuilder toReturn = new StringBuilder(name + ". Donor: ");
       for (Organs o : this.donorDetails.getOrgans()) {
-        toReturn += o.toString() + " ";
+        toReturn.append(o.toString()).append(" ");
       }
-      return toReturn;
+      return toReturn.toString();
     } else {
       return name;
     }

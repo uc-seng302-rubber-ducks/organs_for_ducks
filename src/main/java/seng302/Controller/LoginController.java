@@ -18,6 +18,12 @@ import seng302.Model.Clinician;
 import seng302.Model.User;
 import seng302.View.CLI;
 
+import java.io.IOException;
+import java.util.ArrayList;
+
+/**
+ * Class for the login functionality of the application
+ */
 public class LoginController {
 
   @FXML
@@ -72,6 +78,9 @@ public class LoginController {
     });
   }
 
+    /**
+     * Changes the login window view between Clinician login and User login
+     */
     @FXML
     void changeUserButtonClicked() {
         if (isUser) {
@@ -90,13 +99,13 @@ public class LoginController {
             passwordLabel.setVisible(false);
             passwordField.setVisible(false);
             isUser = true;
-            changeLogin.setText("Login as aClinician");
+            changeLogin.setText("Login as a Clinician");
         }
 
   }
 
     /**
-     *
+     * Logs in the person based on if they are a user or Clinician
      * @param event An action event.
      */@FXML
     void login(ActionEvent event) {
@@ -159,7 +168,8 @@ public class LoginController {
 
 
     /**
-     *
+     * Creates either a new user or clinician based on the login window
+     * Opens the sign up view based on the login view
      * @param event An action event
      */@FXML
     void signUp(ActionEvent event) {
@@ -217,6 +227,10 @@ public class LoginController {
     }
 
 
+    /**
+     * Opens the Command Line version of the application
+     * @param event
+     */
   @FXML
   void openCLI(ActionEvent event) {
     stage.hide();

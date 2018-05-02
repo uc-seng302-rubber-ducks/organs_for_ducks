@@ -25,7 +25,13 @@ import seng302.Model.Memento;
 import seng302.Model.User;
 import seng302.Service.AttributeValidation;
 
+import java.io.IOException;
+import java.time.LocalDate;
+import java.util.Optional;
 
+/**
+ * Class for updating the user
+ */
 public class UpdateUserController {
 
   @FXML
@@ -480,6 +486,10 @@ public class UpdateUserController {
     return noChange;
   }
 
+  /**
+   * Sets the details for the current user
+   * @param user
+   */
   @FXML
   public void setUserDetails(User user) {
     //personal

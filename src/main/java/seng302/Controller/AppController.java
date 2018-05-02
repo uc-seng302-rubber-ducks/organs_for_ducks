@@ -1,5 +1,10 @@
 package seng302.Controller;
 
+import seng302.Model.Change;
+import seng302.Model.Clinician;
+import seng302.Model.JsonHandler;
+import seng302.Model.User;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.time.LocalDate;
@@ -16,6 +21,10 @@ import seng302.Model.Clinician;
 import seng302.Model.JsonHandler;
 import seng302.Model.User;
 
+
+/**
+ * Class for the functionality of the main app
+ */
 public class AppController {
 
   private ArrayList<User> users = new ArrayList<>();
@@ -29,6 +38,9 @@ public class AppController {
   private Set<User> deletedUserStack = new HashSet<>();
   private Stack<User> redoStack = new Stack<>();
 
+  /**
+   * Creates new instance of AppController
+   */
   private AppController() {
     try {
       users = JsonHandler.loadUsers();
