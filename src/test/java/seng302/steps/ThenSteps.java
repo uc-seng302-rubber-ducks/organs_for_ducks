@@ -108,9 +108,4 @@ public class ThenSteps {
         assertTrue((boolean) getCellValue("#currentDiseaseTableView", 2, 0));
 
     }
-
-    @Then("^I should see the Disease Name \"([^\"]*)\" at the Past Diseases Table$")
-    public void iShouldSeeTheDiseaseNameAtThePastDiseasesTable(String diseaseName) throws Throwable {
-        assertEquals(diseaseName, getCellValue("#pastDiseaseTableView", 1, 0).toString());
-    }
 }

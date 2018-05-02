@@ -109,10 +109,7 @@ public class WhenSteps extends ApplicationTest {
         clickOn("#chronicRadioButton");
     }
 
-    @When("^clicked on Status Cured$")
-    public void clickedOnStatusCured() throws Throwable {
-        clickOn("#curedRadioButton");
-    }
+
 
     @When("^I entered Disease Name \"([^\"]*)\" and Diagnosis Date \"([^\"]*)\"$")
     public void iEnteredDiseaseNameAndDiagnosisDate(String diseaseName, String diagnosisDate) throws Throwable {
