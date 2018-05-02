@@ -8,7 +8,10 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import javafx.collections.FXCollections;
@@ -22,8 +25,10 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableCell;
@@ -47,6 +52,7 @@ import seng302.Model.EmergencyContact;
 import seng302.Model.HttpRequester;
 import seng302.Model.MedicalProcedure;
 import seng302.Model.Memento;
+import seng302.Model.OrganDeregisterReason;
 import seng302.Model.Organs;
 import seng302.Model.User;
 
@@ -264,9 +270,6 @@ public class DonorController {
 
   @FXML
   private Label donorNameLabel;
-
-    private TableView<MedicalProcedure> currentProcedureList;
-
     //Receiver
 
     @FXML
@@ -594,21 +597,11 @@ public class DonorController {
 
 
         if(!notReceivingListView.getItems().isEmpty()) {
-            notReceivingListView.setOnMouseClicked(event -> {
-                if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
-                    Organs notReceivingOrgan = notReceivingListView.getSelectionModel().getSelectedItem();
-                    launchReceiverOrganDateView(notReceivingOrgan);
-                }
-            });
+          openOrganFromDoubleClick(notReceivingListView);
         }
 
         if(!currentlyReceivingListView.getItems().isEmpty()) {
-            currentlyReceivingListView.setOnMouseClicked(event -> {
-                if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
-                    Organs currentlyReceivingOrgan = currentlyReceivingListView.getSelectionModel().getSelectedItem();
-                    launchReceiverOrganDateView(currentlyReceivingOrgan);
-                }
-            });
+          openOrganFromDoubleClick(currentlyReceivingListView);
         }
         currentlyDonating.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         currentlyReceivingListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
@@ -653,6 +646,19 @@ public class DonorController {
             }
         });
     }
+
+  public void openOrganFromDoubleClick(ListView<Organs> list) {
+    list.setOnMouseClicked(event -> {
+      if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
+        Organs currentlyReceivingOrgan = list.getSelectionModel().getSelectedItem();
+        launchReceiverOrganDateView(currentlyReceivingOrgan);
+      }
+    });
+  }
+
+  public void recolourConflictingCells(Organs item, boolean empty) {
+
+  }
 
 
     public OrganDeregisterReason getOrganDeregisterationReason(){
