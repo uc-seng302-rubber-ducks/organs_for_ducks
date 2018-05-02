@@ -45,6 +45,7 @@ public class NewDiseaseController {
 
     /**
      * Initializes the NewDiseaseController
+     * @param user the current user.
      * @param controller The applications controller.
      * @param stage The applications stage.
      */

@@ -2,9 +2,11 @@ package seng302.Model;
 
 import com.google.gson.annotations.Expose;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 
+/**
+ * Class for receiver organs
+ */
 public class ReceiverDetails {
   @Expose
   private HashSet<Organs> organs;

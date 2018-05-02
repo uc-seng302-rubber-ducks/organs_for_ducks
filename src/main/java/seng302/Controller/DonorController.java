@@ -1,11 +1,6 @@
 package seng302.Controller;
 
 
-import java.time.LocalDate;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
-import java.time.temporal.ChronoUnit;
-
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -27,13 +22,17 @@ import javafx.util.Callback;
 import javafx.util.StringConverter;
 import okhttp3.OkHttpClient;
 import org.controlsfx.control.textfield.TextFields;
-import okhttp3.OkHttpClient;
 import seng302.Model.*;
 
-import javax.xml.ws.FaultAction;
 import java.io.IOException;
+import java.text.DecimalFormat;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 
+/**
+ * Class for the functionality of the User view of the application
+ */
 public class DonorController {
 
     //the Home page attributes
@@ -274,6 +273,10 @@ public class DonorController {
     /**
      * Gives the donor view the application controller and hides all label and buttons that are not
      * needed on opening
+     * @param controller the application controller
+     * @param user the current user
+     * @param stage the application stage
+     * @param fromClinician boolean value indication if from clinician view
      */
     public void init(AppController controller, User user, Stage stage, Boolean fromClinician) {
 
@@ -546,11 +549,11 @@ public class DonorController {
     }
 
 
-  /**
-   *
-   * Creates a alert pop up to confirm that the user wants to delete the profile
-   *
-   */
+    /**
+     * Creates a alert pop up to confirm that the user wants to delete the profile
+     * @param actionEvent given from the GUI
+     * @throws IOException to make sure current I/O is used
+     */
   @FXML
   public void delete(ActionEvent actionEvent) throws IOException {
     Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -586,7 +589,9 @@ public class DonorController {
         }
     }
 
-
+    /**
+     * Sets the users contact information on the contact tab of the user profile
+     */
     @FXML
     private void setContactPage() {
         if (contact != null) {
@@ -678,7 +683,10 @@ public class DonorController {
 //    }
 
     /**
+     * Opens the update user details window
      * @param actionEvent An action event.
+     * @throws IOException to make sure I/O is correct
+     * @throws InterruptedException to make sure there is no interruption
      */
     @FXML
     private void updateDetails(ActionEvent actionEvent) throws IOException, InterruptedException {
@@ -852,6 +860,10 @@ public class DonorController {
     @FXML
     private Label donorNameLabel;
      * organsDonatingListView.getItems().addAll(currentUser.getDonorDetails().getOrgans());
+     */
+
+
+    /**
      * fires when the Redo button is clicked
      */
     @FXML
@@ -862,6 +874,10 @@ public class DonorController {
         showUser(currentUser);
     }
 
+    /**
+     * Fires when the logout button is clicked
+     * Ends the users session, and takes back to the login window
+     */
     @FXML
     private void logout() {
         //updateDonor();
@@ -882,6 +898,7 @@ public class DonorController {
   }
 
     /**
+     *Shows the user profile for the logged in user
      * @param user The current user.
      */
     public void showUser(User user) {
@@ -1014,6 +1031,7 @@ public class DonorController {
     }
 
     /**
+     *Adds a medication to the current users profile that they are taking
      * @param event An action event
      */
     @FXML
@@ -1034,6 +1052,7 @@ public class DonorController {
     }
 
     /**
+     *Deletes a currently taking medication from the current users profile
      * @param event An action event
      */
     @FXML
@@ -1097,6 +1116,7 @@ public class DonorController {
     }
 
     /**
+     *Removes the highlight of the currently selected medication
      * @param event A mouse event
      */
     @FXML
@@ -1105,6 +1125,7 @@ public class DonorController {
     }
 
     /**
+     *Removes the highlight of the previously selected medication
      * @param event A mouse event
      */
     @FXML
@@ -1113,6 +1134,7 @@ public class DonorController {
     }
 
     /**
+     *Opens the selected medication in a new window with additional information
      * @param med A string of medication
      */
     private void launchMedicationView(String med) {
@@ -1131,7 +1153,9 @@ public class DonorController {
 
     }
 
-
+    /**
+     * Shows the history of the Users profile such as added and removed information
+     */
     private void showDonorHistory() {
         TableColumn timeColumn = new TableColumn("Time");
         TableColumn changeColumn = new TableColumn("Change");
@@ -1142,7 +1166,10 @@ public class DonorController {
 
     }
 
-
+    /**
+     * Adds a procedure to the current user when a procedure name is entered
+     * @param event An action event.
+     */
     @FXML
     void addProcedure(ActionEvent event) {
         String procedureName = procedureTextField.getText();
@@ -1170,6 +1197,9 @@ public class DonorController {
         application.update(currentUser);
     }
 
+    /**
+     * Updates an existing procedures information
+     */
     @FXML
     void updateProcedures() {
         procedureWarningLabel.setText("");
@@ -1224,6 +1254,10 @@ public class DonorController {
         application.update(currentUser);
     }
 
+    /**
+     * Shows all the information for a given procedure
+     * @param procedure current medical procedure
+     */
     private void showProcedure(MedicalProcedure procedure) {
         procedureTextField.setText(procedure.getSummary());
         procedureDateSelector.setValue(procedure.getProcedureDate());
@@ -1231,6 +1265,9 @@ public class DonorController {
         organsAffectedByProcedureListView.setItems(FXCollections.observableList(procedure.getOrgansAffected()));
     }
 
+    /**
+     * Clears the information of a shown procedure
+     */
     @FXML
     void clearProcedure() {
         procedureWarningLabel.setText("");
@@ -1244,6 +1281,10 @@ public class DonorController {
         currentProcedureList = null;
     }
 
+    /**
+     * Removes a procedure from the curernt users profile
+     * @param event passed in automatically by the gui
+     */
     @FXML
     void removeProcedure(ActionEvent event) {
         if (previousProcedureTableView.getSelectionModel().getSelectedItem() != null) {
@@ -1258,6 +1299,9 @@ public class DonorController {
         application.update(currentUser);
     }
 
+    /**
+     * Opens the modify procedure organs window for the selected procedure
+     */
     @FXML
     void modifyProcedureOrgans() {
         MedicalProcedure procedure = currentProcedureList.getSelectionModel().getSelectedItem();
@@ -1376,6 +1420,7 @@ public class DonorController {
     }
 
   /**
+   * Moves selected organ from donatable to currently donating
    * @param event passed in automatically by the gui
    */
   @FXML
@@ -1391,6 +1436,7 @@ public class DonorController {
   }
 
   /**
+   * Moves selected organ from currently donating to donatable
    * @param event passed in automatically by the gui
    */
   @FXML
