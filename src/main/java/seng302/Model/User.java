@@ -222,6 +222,7 @@ this.changes = FXCollections.observableArrayList();
 */
     this.currentDiseases = new ArrayList<>();
     this.pastDiseases = new ArrayList<>();
+    this.commonOrgans = new HashSet<>();
 
     this.donorDetails = new DonorDetails(this);
     this.receiverDetails = new ReceiverDetails(this);
