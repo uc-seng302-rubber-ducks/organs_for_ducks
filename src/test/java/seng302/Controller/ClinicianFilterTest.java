@@ -13,6 +13,7 @@ import org.testfx.matcher.control.LabeledMatchers;
 import seng302.App;
 import seng302.Model.EmergencyContact;
 import seng302.Model.User;
+import seng302.Utils.TableViewsMethod;
 
 public class ClinicianFilterTest extends ApplicationTest {
 

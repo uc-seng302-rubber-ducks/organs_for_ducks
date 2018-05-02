@@ -1,24 +1,20 @@
 package seng302.Controller;
 
-import javafx.scene.Node;
 import javafx.scene.input.KeyCode;
-import javafx.stage.Stage;
 import org.junit.*;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.matcher.control.LabeledMatchers;
-import org.testfx.service.query.NodeQuery;
 import seng302.App;
 import seng302.Model.Disease;
 import seng302.Model.User;
 
-import javax.swing.text.DateFormatter;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.concurrent.TimeoutException;
 
 import static org.junit.Assert.assertEquals;
-import static seng302.Controller.TableViewsMethod.*;
+import static seng302.Utils.TableViewsMethod.*;
 
 import static org.testfx.api.FxAssert.verifyThat;
 
@@ -123,7 +119,7 @@ public class NewDiseaseControllerTest extends ApplicationTest {
         }
         write("12/01/2007", 0);
         clickOn("#createButton");
-        assertEquals(LocalDate.parse("2007-12-01", sdf), getCellValue("#currentDiseaseTableView", 0, 0));
+        assertEquals(LocalDate.parse("2007-01-12", sdf), getCellValue("#currentDiseaseTableView", 0, 0));
     }
 
     @Test

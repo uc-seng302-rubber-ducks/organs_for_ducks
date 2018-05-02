@@ -1,4 +1,4 @@
-package seng302.Controller;
+package seng302.Utils;
 
 import javafx.scene.Node;
 import javafx.scene.control.TableView;

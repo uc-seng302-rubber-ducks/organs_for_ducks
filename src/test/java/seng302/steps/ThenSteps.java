@@ -7,7 +7,7 @@ import org.testfx.matcher.control.LabeledMatchers;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.testfx.api.FxAssert.verifyThat;
-import static seng302.Controller.TableViewsMethod.*;
+import static seng302.Utils.TableViewsMethod.*;
 
 public class ThenSteps {
     @Then("^There are two profiles with first name \"([^\"]*)\" and last name \"([^\"]*)\"$")

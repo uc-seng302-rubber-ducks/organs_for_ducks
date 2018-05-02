@@ -12,7 +12,7 @@ import seng302.Model.User;
 import java.util.ArrayList;
 
 import static org.testfx.api.FxAssert.verifyThat;
-import static seng302.Controller.TableViewsMethod.getCell;
+import static seng302.Utils.TableViewsMethod.getCell;
 
 public class GivenSteps extends ApplicationTest{
     private AppController controller;
