@@ -311,7 +311,7 @@ public class DonorController {
         //This is the place to set visable and invisable controls for Clinician vs User
     if (fromClinician) {
       Clinician = true;logOutButton.setVisible(false);
-    addDiseaseButton.setVisible(true);
+      addDiseaseButton.setVisible(true);
       updateDiseaseButton.setVisible(true);
       deleteDiseaseButton.setVisible(true);}else {Clinician = false;
             procedureDateSelector.setEditable(false);
@@ -515,6 +515,7 @@ public class DonorController {
         }
 
 
+        System.out.println(currentUser.getReceiverDetails().getOrgans());
         if(!currentlyReceivingListView.getItems().isEmpty()) {
             currentlyReceivingListView.setOnMouseClicked(event -> {
                 if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
@@ -720,32 +721,6 @@ public class DonorController {
 
 
     }
-//
-//    /**
-//     * fires when the Organs button is clicked
-//     */
-//    @FXML
-//    private void modifyOrgans() {
-//        if (currentUser.getDateOfBirth() == null) {
-//            warningLabel.setVisible(true);
-//            warningLabel.setText("Please confirm donor before continuing");
-//            return;
-//        }
-//        FXMLLoader organLoader = new FXMLLoader(getClass().getResource("/FXML/organsView.fxml"));
-//        Parent root = null;
-//        try {
-//            root = organLoader.load();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        OrganController organController = organLoader.getController();
-//        Stage stage = new Stage();
-//        stage.initModality(Modality.APPLICATION_MODAL);
-//        organController.init(currentUser, application, stage);
-//        stage.setScene(new Scene(root));
-//        stage.show();
-//        showUser(currentUser);
-//    }
 
     /**
      */
@@ -766,132 +741,6 @@ public class DonorController {
             e.printStackTrace();
         }
     }
-
-//    @FXML 22.9kg/m2
-//    private void changeDeceasedStatus() {
-//        if (!isDonorDeceasedCheckBox.isSelected()) {
-//            dateOfDeathPicker.setVisible(false);
-//            dodLabel.setVisible(false);
-//        } else {
-//            dodLabel.setVisible(true);
-//            dateOfDeathPicker.setVisible(true);
-//        }
-//
-//    }
-
-//    /**
-//     * fires when the Misc button is clicked
-//     */
-//    @FXML
-//    private void modifyMiscAttributes() {
-//        if (currentUser.getDateOfBirth() == null) {
-//            warningLabel.setVisible(true);
-//            warningLabel.setText("Plese confirm donor before continuing");
-//            return;
-//        }
-//        FXMLLoader attributeLoader = new FXMLLoader(
-//                getClass().getResource("/FXML/miscAttributes.fxml"));
-//        Parent root = null;
-//        try {
-//            root = attributeLoader.load();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        MiscAttributesController miscAttributesController = attributeLoader.getController();
-//        Stage stage = new Stage();
-//        miscAttributesController.init(currentUser, application, stage);
-//        stage.setScene(new Scene(root));
-//        stage.show();
-//        miscAttributeslistView.getItems().clear();
-//        miscAttributeslistView.getItems().addAll(currentUser.getMiscAttributes());
-//    }
-
-//  /**
-//   * fires when the Confirm button is clicked updates the current donor and overwrites or add it to
-//   * the list of donors in the application Does not deal with organs  and misc attributes as they
-//   * are confirmed in their own methods
-//   */
-//  @FXML
-//  private void updateDonor() { 22.9kg/m2
-//      UndoRedoStacks.storeUndoCopy(currentUser);
-//      User oldDonor = new User();
-//      UndoRedoStacks.cloneUser(currentUser,oldDonor);
-//
-//
-//    boolean isInputValid = true;
-//    warningLabel.setVisible(true);
-//    warningLabel.setText("");
-//    if (nameTextField.getText().length() <= 3) {
-//      warningLabel.setText("Names must be longer than 3 characters");
-//      return;
-//    }
-//    String newName = nameTextField.getText();
-//    if (newName != null) {
-//      currentUser.setName(newName);
-//    } else {
-//      warningLabel.setText("Please enter a name");
-//      return;
-//    }
-//    DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-//    Date newDob = Date
-//            .from(dateOfBirthPicker.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant());
-//    LocalDate dob = LocalDate.parse(newDob.toInstant().atZone(ZoneId.systemDefault()).format(format)); //tried to make it one line but it broke - JB
-//    currentUser.setDateOfBirth(dob);
-//
-//    //only if weight has been entered
-//    if (!weightTextField.getText().equals("")) {
-//      try {
-//        currentUser.setWeight(Double.parseDouble(weightTextField.getText()));
-//      } catch (NumberFormatException e) {
-//        warningLabel.setText("Weight must be a number");
-//        return;
-//      }    //System.out.println(attachedUser == null);
-//    }
-//    if (!heightTextField.getText().equals("")) {
-//      try {
-//        currentUser.setHeight(Double.parseDouble(heightTextField.getText()));
-//      } catch (NumberFormatException e) {
-//        warningLabel.setText("Height must be a number");
-//        return;
-//      }
-//    }
-//
-//    currentUser.setCurrentAddress(currentAddressTextArea.getText());
-//    currentUser.setRegion(regionTextField.getText());
-//
-//    String newGender = (genderComboBox.getValue());
-//    if (newGender == null) {
-//      newGender = "U";
-//    }
-//    currentUser.setGender(newGender);
-//    currentUser.setBloodType(bloodTypeComboBox.getValue());
-//    currentUser.setDeceased(isDonorDeceasedCheckBox.isSelected())    //System.out.println(attachedUser == null);;
-//    if (isDonorDeceasedCheckBox.isSelected()) {
-//      Date newDod = Date.from(dateOfDeathPicker.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant());
-//      LocalDate dod = LocalDate.parse(newDod.toInstant().atZone(ZoneId.systemDefault()).format(format));
-//
-//      if (dod.isBefore(dob)) {
-//        warningLabel.setVisible(true);
-//        warningLabel.setText("Date of death must be after date of birth");
-//        //dod must be set for other functions to work.
-//        //using the best guess based on input
-//        currentUser.setDateOfDeath(dod);
-//        return;
-//      }
-//      currentUser.setDateOfDeath(dod);
-//    } else {
-//      currentUser.setDateOfDeath(null);
-//    }
-//
-//    if (isInputValid) {
-//      application.update(currentUser);
-//      ArrayList<Change> diffs = application.differanceInDonors(oldDonor, currentUser);    organsDonatingListView.getItems().clear();
-//    organsDonatingListView.getItems().addAll(currentUser.getDonorDetails().getOrgans());
-    //  changelog.addAll(diffs);
-//    }
-//
-//    showUser(currentUser);
-//  }
 
     /**
      * fires when the Undo button is clicked
@@ -1433,13 +1282,15 @@ public class DonorController {
     @FXML
     public void registerOrgan () {
         System.out.println(currentUser.getReceiverDetails().getOrgans());
-        Organs toRegister = organsComboBox.getSelectionModel().getSelectedItem();
-        if (!currentlyReceivingListView.getItems().contains(toRegister)) {
+        if (organsComboBox.getSelectionModel().getSelectedItem() != null){
+          Organs toRegister = organsComboBox.getSelectionModel().getSelectedItem();
+          if (!currentlyReceivingListView.getItems().contains(toRegister)) {
             currentUser.getReceiverDetails().startWaitingForOrgan(toRegister);
            // if (currentUser.getReceiverDetails().isDonatingThisOrgan(toRegister)){
                 currentUser.getCommonOrgans().add(toRegister);
                 currentlyRecieving.add(toRegister);
                 organsComboBox.getItems().remove(toRegister);
+                organsComboBox.setValue(null);
                 //TODO change the colour of the font when selected to make it more readable
             //}
 
@@ -1454,6 +1305,7 @@ public class DonorController {
             });
         }
         System.out.println(currentUser.getReceiverDetails().getOrgans().keySet());
+    }
     }
 
     /**
