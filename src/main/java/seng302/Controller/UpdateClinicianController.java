@@ -20,6 +20,7 @@ import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import seng302.Model.Clinician;
+import seng302.Model.Memento;
 
 /**
  * Controller for updating clinicians
@@ -71,10 +72,18 @@ public class UpdateClinicianController {
     @FXML
     private Button confirmButton;
 
+    @FXML
+    private Button undoClinicianFormButton;
+
+    @FXML
+    private Button redoClinicianFormButton;
+
     private AppController controller;
     private Stage stage;
     private Clinician currentClinician;
+    private Clinician oldClinician;
     private boolean newClinician;
+    int undoMarker;
 
     /**
      * Initializes the scene by setting all but the password text fields to contain the given clinicians attributes.
@@ -90,8 +99,12 @@ public class UpdateClinicianController {
         this.stage = stage;
         stage.setTitle("Update Clinician Profile");
         //stage.setResizable(false);
+        undoClinicianFormButton.setDisable(true);
+        redoClinicianFormButton.setDisable(true);
 
         if (!newClinician) {
+            oldClinician = currentClinician.clone();
+            undoMarker = currentClinician.getUndoStack().size();
             stage.setTitle("Update Clinician: " + clinician.getFirstName());
             titleLabel.setText("Update Clinician");
             confirmButton.setText("Save Changes");
@@ -100,7 +113,6 @@ public class UpdateClinicianController {
 
             // checks if there was a change in any of the user input fields
             changesListener(staffIDTextField);
-            changesListener(passwordField);
             changesListener(firstNameTextField);
             changesListener(middleNameTextField);
             changesListener(lastNameTextField);
@@ -110,21 +122,26 @@ public class UpdateClinicianController {
             Scene scene = stage.getScene();
 
             final KeyCombination shortcutZ = new KeyCodeCombination(
-                    KeyCode.Z, KeyCombination.SHORTCUT_DOWN);
+                KeyCode.Z, KeyCombination.CONTROL_DOWN);
 
             scene.addEventFilter(KeyEvent.KEY_RELEASED, e -> {
                 if (shortcutZ.match(e)) {
+                    undo(new ActionEvent());
                     if (checkChanges()) { // checks if reverting a textfield change restores all fields to their original state
                         stage.setTitle("Update Clinician: " + currentClinician.getFirstName());
                     }
                 }
             });
 
-        } else if (newClinician) {
+        } else {
             stage.setTitle("Create New Clinician Profile");
             titleLabel.setText("Create Clinician");
             confirmButton.setText("Create Clinician Profile");
         }
+
+        stage.setOnCloseRequest(event -> {
+            cancelUpdate(new ActionEvent());
+        });
     }
 
     /**
@@ -145,22 +162,32 @@ public class UpdateClinicianController {
 
         if (fName != null) {
             firstNameTextField.setText(fName);
+        } else {
+            firstNameTextField.setText("");
         }
 
         if (mName != null) {
             middleNameTextField.setText(mName);
+        } else {
+            middleNameTextField.setText("");
         }
 
         if (lName != null) {
             lastNameTextField.setText(lName);
+        } else {
+            lastNameTextField.setText("");
         }
 
         if (address != null) {
             addressTextField.setText(address);
+        } else {
+            addressTextField.setText("");
         }
 
         if (region != null) {
             regionTextField.setText(region);
+        } else {
+            regionTextField.setText("");
         }
     }
 
@@ -173,20 +200,20 @@ public class UpdateClinicianController {
     private boolean checkChanges() {
         boolean noChange = true;
 
-        if (!(currentClinician.getStaffId()).equals(staffIDTextField.getText())) {
+        if (!(currentClinician.getStaffId()).equals(oldClinician.getStaffId())) {
             noChange = false;
         }
 
-        if (!(currentClinician.getPassword()).equals(passwordField.getText())) {
+        if (!(currentClinician.getPassword()).equals(oldClinician.getPassword())) {
             noChange = false;
         }
 
-        if (!(currentClinician.getFirstName()).equals(firstNameTextField.getText())) {
+        if (!(currentClinician.getFirstName()).equals(oldClinician.getFirstName())) {
             noChange = false;
         }
 
         if (currentClinician.getMiddleName() != null) {
-            if (!(currentClinician.getMiddleName()).equals(middleNameTextField.getText())) {
+            if (!(currentClinician.getMiddleName()).equals(oldClinician.getMiddleName())) {
                 noChange = false;
             }
         } else if (!middleNameTextField.getText().isEmpty()) {
@@ -194,7 +221,7 @@ public class UpdateClinicianController {
         }
 
         if (currentClinician.getLastName() != null) {
-            if (!(currentClinician.getLastName()).equals(lastNameTextField.getText())) {
+            if (!(currentClinician.getLastName()).equals(oldClinician.getLastName())) {
                 noChange = false;
             }
         } else if (!lastNameTextField.getText().isEmpty()) {
@@ -202,7 +229,7 @@ public class UpdateClinicianController {
         }
 
         if (currentClinician.getWorkAddress() != null) {
-            if (!(currentClinician.getWorkAddress()).equals(addressTextField.getText())) {
+            if (!(currentClinician.getWorkAddress()).equals(oldClinician.getWorkAddress())) {
                 noChange = false;
             }
         } else if (!addressTextField.getText().isEmpty()) {
@@ -210,7 +237,7 @@ public class UpdateClinicianController {
         }
 
         if (currentClinician.getRegion() != null) {
-            if (!(currentClinician.getRegion()).equals(regionTextField.getText())) {
+            if (!(currentClinician.getRegion()).equals(oldClinician.getRegion())) {
                 noChange = false;
             }
         } else if (!regionTextField.getText().isEmpty()) {
@@ -231,30 +258,30 @@ public class UpdateClinicianController {
     }
 
     private void update() {
+        updateUndos();
         if (checkChanges()) { // checks if reverting a textfield change restores all fields to their original state
             stage.setTitle("Update Clinician: " + currentClinician.getFirstName());
         } else {
             stage.setTitle("Update Clinician: " + currentClinician.getFirstName() + " *");
         }
-        updateUndos();
     }
 
+    /**
+     * updates the undo stack
+     */
     private void updateUndos() {
         boolean changed = false;
-        double weight;
-        double height;
         changed = updateDetails(staffIDTextField.getText(), firstNameTextField.getText(),
             lastNameTextField.getText(),
             regionTextField.getText(), addressTextField.getText(), middleNameTextField.getText(),
             passwordField.getText(), confirmPasswordField.getText());
 
         if (changed) {
-            AppController.getInstance().updateClinicians(currentClinician);
             prefillFields(currentClinician);
             currentClinician.getRedoStack().clear();
         }
-        //undoButton.setDisable(currentClinician.getUndoStack().size() <= undoMarker);
-        //redoButton.setDisable(currentClinician.getRedoStack().isEmpty());
+        undoClinicianFormButton.setDisable(currentClinician.getUndoStack().size() <= undoMarker);
+        redoClinicianFormButton.setDisable(currentClinician.getRedoStack().isEmpty());
     }
 
     private boolean updateDetails(String staffId, String fName, String lName, String region,
@@ -320,26 +347,6 @@ public class UpdateClinicianController {
             }
         }
 
-        changed |= checkPasswordChanges(password);
-        changed |= checkPasswordChanges(confirmPassword);
-
-        return changed;
-    }
-
-    private boolean checkPasswordChanges(String password) {
-        boolean changed = false;
-        if (currentClinician.getPassword() != null) {
-            if (!currentClinician.getPassword().equals(password)) {
-                currentClinician.setPassword(password);
-                changed = true;
-            }
-        } else {
-            if (!password.isEmpty()) {
-                currentClinician.setPassword(password);
-                changed = true;
-            }
-        }
-
         return changed;
     }
 
@@ -348,16 +355,23 @@ public class UpdateClinicianController {
      * @param clinician The current clinician.
      */
     private void loadOverview(Clinician clinician) {
-        FXMLLoader clinicianLoader = new FXMLLoader(getClass().getResource("/FXML/clinicianView.fxml"));
-        Parent root = null;
+        if (!newClinician) {
+            ClinicianController clinicianController = AppController.getInstance()
+                .getClinicianController();
+            clinicianController.init(stage, controller, clinician);
+        } else {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML/clinicianView.fxml"));
+            Parent root = null;
 
-        try {
-            root = clinicianLoader.load();
-            stage.setScene(new Scene(root));
-            ClinicianController clinicianController = clinicianLoader.getController();
-            clinicianController.init(stage,controller,clinician);
-        } catch (IOException e) {
-            e.printStackTrace();
+            try {
+                root = loader.load();
+                ClinicianController clinicianController = loader.getController();
+                clinicianController.init(stage, AppController.getInstance(), clinician);
+                stage.setScene(new Scene(root));
+                stage.show();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -380,6 +394,9 @@ public class UpdateClinicianController {
 
                 Optional<ButtonType> result = alert.showAndWait();
                 if (result.get() == ButtonType.YES) {
+                    removeFormChanges(0);
+                    controller.updateClinicians(oldClinician);
+                    loadOverview(oldClinician);
                     stage.close();
                 }
             } else { // has no changes
@@ -399,6 +416,31 @@ public class UpdateClinicianController {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    /**
+     * Turns all form changes into one memento on the stack
+     */
+    private void sumAllChanged() {
+        Memento<Clinician> sumChanges = new Memento<>();
+        removeFormChanges(1);
+        if (!currentClinician.getUndoStack().isEmpty()) {
+            sumChanges.setOldObject(currentClinician.getUndoStack().peek().getOldObject().clone());
+            currentClinician.getUndoStack().pop();
+            sumChanges.setNewObject(currentClinician.clone());
+            currentClinician.getUndoStack().push(sumChanges);
+        }
+    }
+
+    /**
+     * Pops all but the specified number of changes off the stack.
+     *
+     * @param offset an denotes how many changes to leave in the stack.
+     */
+    private void removeFormChanges(int offset) {
+        while (currentClinician.getUndoStack().size() > undoMarker + offset) {
+            currentClinician.getUndoStack().pop();
         }
     }
 
@@ -476,7 +518,7 @@ public class UpdateClinicianController {
             updateChanges(staffID, fName, mName, lName, address, region, password);
 
             currentClinician.setDateLastModified(LocalDateTime.now()); // updates the modified date
-
+            sumAllChanged();
             controller.updateClinicians(currentClinician); // saves the clinician
             stage.close(); // returns to the clinician overview window
 
@@ -542,5 +584,20 @@ public class UpdateClinicianController {
         incorrectPasswordLabel.setVisible(false);
         emptyFNameLabel.setVisible(false);
         emptyRegionLabel.setVisible(false);
+    }
+
+    @FXML
+    public void redo(ActionEvent actionEvent) {
+        currentClinician.redo();
+        redoClinicianFormButton.setDisable(currentClinician.getRedoStack().isEmpty());
+        prefillFields(currentClinician);
+    }
+
+
+    @FXML
+    public void undo(ActionEvent actionEvent) {
+        currentClinician.undo();
+        undoClinicianFormButton.setDisable(currentClinician.getUndoStack().size() <= undoMarker);
+        prefillFields(currentClinician);
     }
 }

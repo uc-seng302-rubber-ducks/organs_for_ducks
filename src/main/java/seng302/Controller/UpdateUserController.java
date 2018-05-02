@@ -1175,8 +1175,6 @@ public class UpdateUserController {
   @FXML
     void undo () {
       currentUser.undo();
-    System.out.println(undoMarker);
-    System.out.println(currentUser.getUndoStack().size());
     undoUpdateButton.setDisable(currentUser.getUndoStack().size() <= undoMarker);
       setUserDetails(currentUser);
     }

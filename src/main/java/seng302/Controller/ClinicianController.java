@@ -133,7 +133,7 @@ public class ClinicianController {
   public void init(Stage stage, AppController appController, Clinician clinician) {
     this.stage = stage;
     this.appController = appController;
-    this.clinician = clinician;
+    this.clinician = clinician.clone();
     stage.setResizable(true);
     showClinician();
     users = appController.getUsers();

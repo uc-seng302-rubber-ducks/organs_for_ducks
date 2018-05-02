@@ -25,6 +25,7 @@ public class AppController {
   private int historyPointer = 0;
 
   private DonorController donorController = new DonorController();
+  private ClinicianController clinicianController = new ClinicianController();
   private Set<User> deletedUserStack = new HashSet<>();
   private Stack<User> redoStack = new Stack<>();
 
@@ -352,8 +353,15 @@ public class AppController {
     this.donorController = donorController;
   }
 
+  public ClinicianController getClinicianController() {
+    return clinicianController;
+  }
 
-    /**
+  public void setClinicianController(ClinicianController clinicianController) {
+    this.clinicianController = clinicianController;
+  }
+
+  /**
      *
      * @param oldUser The user before they were updated.
      * @param newUser The user after they were updated.
