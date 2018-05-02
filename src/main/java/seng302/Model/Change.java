@@ -4,6 +4,9 @@ import com.google.gson.annotations.Expose;
 
 import java.time.LocalDateTime;
 
+/**
+ * Class for tracking the time of changes
+ */
 public class Change {
 
     @Expose
