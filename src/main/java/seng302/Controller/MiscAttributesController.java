@@ -60,7 +60,6 @@ public class MiscAttributesController {
    */
   @FXML
   void addAttribute(ActionEvent event) {
-    UndoRedoStacks.storeUndoCopy(currentUser);
     String toAdd = attributeTextFeild.getText();
     attributeTextFeild.setText("");
     if (toAdd == null) {
@@ -77,7 +76,6 @@ public class MiscAttributesController {
    */
   @FXML
   void removeAttribute(ActionEvent event) {
-    UndoRedoStacks.storeUndoCopy(currentUser);
     String selected = attributesList.getSelectionModel().getSelectedItem();
     attributesList.getItems().remove(selected);
     currentUser.removeMiscAttribute(selected);
