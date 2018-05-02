@@ -289,7 +289,7 @@ public class ClinicianController {
      * @param user the selected user.
      */
   private void launchDonor(User user){
-    FXMLLoader donorLoader = new FXMLLoader(getClass().getResource("/FXML/donorView.fxml"));
+    FXMLLoader donorLoader = new FXMLLoader(getClass().getResource("/FXML/userView.fxml"));
     Parent root = null;
     try {
       root = donorLoader.load();

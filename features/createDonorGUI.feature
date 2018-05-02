@@ -1,7 +1,10 @@
 Feature: As an user, I want to create a donor account on the system.
 
   Background: User create a new donor account
-    Given The sign up screen is loaded
+    Given I have started the GUI
+    Given The donor sign up screen is loaded
+    And There are no donors in the system
+
 
   Scenario: I create a donor profile with basic info
     When I register a donor using the GUI with the NHI "ADE1987", first name "Dwayne" and date of birth "3/1/2017"

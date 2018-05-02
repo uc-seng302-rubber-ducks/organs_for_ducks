@@ -290,7 +290,7 @@ public class NewUserController {
             saveUsers(users);
 
             // load to the overview page
-            FXMLLoader donorLoader = new FXMLLoader(getClass().getResource("/FXML/donorView.fxml"));
+            FXMLLoader donorLoader = new FXMLLoader(getClass().getResource("/FXML/userView.fxml"));
             Parent root = null;
 
             try {

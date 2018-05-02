@@ -147,7 +147,9 @@ public class User extends Undoable<User> {
 
   public User(String name, java.time.LocalDate dateOfBirth, String nhi) {
     this.dateOfBirth = dateOfBirth;
-    this.name = name;    this.donorDetails = new DonorDetails(this);
+    this.name = name;
+    this.donorDetails = new DonorDetails(this);
+    this.firstName = name;
     this.receiverDetails = new ReceiverDetails(this);
     this.nhi = nhi;
     timeCreated = LocalDateTime.now();
@@ -971,20 +973,28 @@ public class User extends Undoable<User> {
     newUser.lastName = this.lastName;
 
     newUser.timeCreated = this.timeCreated;
-    newUser.updateHistory = this.updateHistory;
-    newUser.miscAttributes = this.miscAttributes;
-    newUser.currentMedication = this.currentMedication;
-    newUser.previousMedication = this.previousMedication;
-    newUser.currentMedicationTimes = this.currentMedicationTimes;
-    newUser.previousMedicationTimes = this.previousMedicationTimes;
+    newUser.updateHistory = new HashMap<>(this.updateHistory);
+    newUser.miscAttributes = new ArrayList<>(this.miscAttributes);
+    newUser.currentMedication = new ArrayList<>(this.currentMedication);
+    newUser.previousMedication = new ArrayList<>(this.previousMedication);
+    newUser.currentMedicationTimes = new HashMap<>(this.currentMedicationTimes);
+    newUser.previousMedicationTimes = new HashMap<>(this.previousMedicationTimes);
     newUser.donorDetails = new DonorDetails(newUser);
     newUser.donorDetails.setOrgans(this.donorDetails.getOrgans());
     newUser.receiverDetails = new ReceiverDetails(newUser);
     newUser.receiverDetails.setOrgans(this.receiverDetails.getOrgans());
 
-    newUser.currentDiseases = this.currentDiseases;
-    newUser.pastDiseases = this.pastDiseases;
-    newUser.medicalProcedures = this.medicalProcedures;
+    newUser.currentDiseases = new ArrayList<>(this.currentDiseases);
+    newUser.pastDiseases = new ArrayList<>(this.pastDiseases);
+    newUser.medicalProcedures = new ArrayList<>();
+    for (MedicalProcedure m : this.medicalProcedures) {
+      MedicalProcedure newMed = new MedicalProcedure();
+      newMed.setSummary(m.getSummary());
+      newMed.setDescription(m.getDescription());
+      newMed.setProcedureDate(m.getProcedureDate());
+      newMed.setOrgansAffected(new ArrayList<>(m.getOrgansAffected()));
+      newUser.medicalProcedures.add(newMed);
+    }
 
     newUser.changes = this.changes;
     newUser.getUndoStack().clear();
