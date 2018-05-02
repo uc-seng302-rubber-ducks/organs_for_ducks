@@ -934,7 +934,8 @@ public class DonorController {
         pendingProcedures.add(procedure);
       }
     }
-  historyTableView.refresh();}
+    historyTableView.refresh();
+
 
     previousProcedureTableView.setItems(previousProcedures);
     pendingProcedureTableView.setItems(pendingProcedures);
