@@ -1,7 +1,9 @@
 package seng302.Model;
 
 import com.google.gson.annotations.Expose;
+import org.omg.CORBA.ORB;
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
 
 
@@ -47,6 +49,7 @@ public class DonorDetails {
   public void addOrgan(Organs organ) {
     if (attachedUser != null){
       attachedUser.updateLastModified();
+      attachedUser.addChange(new Change("Added organ " + organ.toString()));
     }
     if (organs == null) {
       organs = new HashSet<>();
@@ -67,6 +70,7 @@ public class DonorDetails {
       organs.remove(organ);
       //TODO attachedUser is always null
       attachedUser.updateLastModified();
+      attachedUser.addChange(new Change("Removed organ " + organ.organName));
     }
   }
 

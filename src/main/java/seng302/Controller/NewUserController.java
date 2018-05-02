@@ -171,6 +171,8 @@ public class NewUserController {
         LoginController loginController = loader.getController();
         loginController.init(AppController.getInstance(), stage);
         stage.show();
+        stage.hide();
+        stage.show();
     }
 
 
@@ -396,7 +398,7 @@ public class NewUserController {
             valid = false;
         }
 
-        if (dod != null) {
+        if (dob != null && dod != null) {
             boolean datesValid = AttributeValidation.validateDates(dob, dod); // checks if the dod is before tomorrow's date and that the dob is before the dod
             if (!datesValid) {
                 invalidDOD.setVisible(true);
