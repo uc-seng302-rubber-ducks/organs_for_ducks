@@ -20,6 +20,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldListCell;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Callback;
@@ -1308,112 +1309,32 @@ public class DonorController {
             nameColumn.setMaxWidth(235);
             nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
 
-            TableColumn<Disease, String> chronicColumn = new TableColumn<>("Chronic");
+            TableColumn<Disease, Boolean> chronicColumn = new TableColumn<>("Chronic");
             chronicColumn.setMinWidth(70);
             chronicColumn.setMaxWidth(70);
             chronicColumn.setCellValueFactory(new PropertyValueFactory<>("isChronic"));
-//            chronicColumn.setCellValueFactory(
-//                    cellData -> cellData.getValue().getName();
-//            );
 
+            chronicColumn.setCellFactory(column -> new TableCell<Disease, Boolean>() {
+                @Override
+                protected void updateItem(Boolean item, boolean empty) {
+                    super.updateItem(item, empty);
 
-//            nameColumn.setCellFactory(new Callback<TableColumn<Disease, String>, TableCell<Disease, String>>() {
-//                public TableCell call(TableColumn param) {
-//                    return new TableCell<Disease, String>() {
-//
-//                        @Override
-//                        public void updateItem(String item, boolean empty) {
-//                            if(!isEmpty()) {
-//                                this.setTextFill(Color.RED);
-//                                // Get fancy and change color based on data
-//                                //if(item.contains("@"))
-//                                //    this.setTextFill(Color.BLUEVIOLET);
-//                                setText(item);
-//                            }
-//                        }
-//                    };
-//                }
-//            });
+                    setText(empty ? "" : getItem().toString());
+                    setGraphic(null);
 
+                    if (item == null) {
+                        return;
+                    }
 
-//            nameColumn.setCellFactory((new Callback<TableColumn<Disease, String>, TableCell<Disease, String>>() {
-//                @Override
-//                public TableCell<Disease, String> call(TableColumn<Disease, String> param) {
-//                    return null;
-//                }
-//            }));
-
-//            chronicColumn.setCellValueFactory(new PropertyValueFactory<Disease, String>("id"));
-//
-//            // Table cell coloring
-//            chronicColumn.setCellFactory(new Callback<TableColumn<Disease, String>, TableCell<Disease, String>>() {
-//                @Override
-//                public TableCell<Disease, String> call(TableColumn<Disease, String> param) {
-//                    return new TableCell<Disease, String>() {
-//
-//                        @Override
-//                        public void updateItem(String item, boolean empty) {
-//                            super.updateItem(item, empty);
-//                            if (!isEmpty()) {
-//                                this.setTextFill(Color.RED);
-//                                // Get fancy and change color based on data
-////                                if(item.contains("@"))
-////                                    this.setTextFill(Color.BLUEVIOLET);
-//                                setText(item);
-//
-//                            }
-//                        }
-//
-//                    };
-//                }
-//            });
-//            chronicColumn.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Disease, String>, ObservableValue<String>>() {
-//                @Override
-//                public ObservableValue<String> call(TableColumn.CellDataFeatures<Disease, String> param) {
-//                    return new ObservableValue<String>() {
-//
-//                    @Override
-//                    public void updateItem(String item, boolean empty) {
-//                        super.updateItem(item, empty);
-//                        if (!isEmpty()) {
-//                            this.setTextFill(Color.RED);
-//                            // Get fancy and change color based on data
-//                            if(item.contains("@"))
-//                                this.setTextFill(Color.BLUEVIOLET);
-//                            setText(item);
-//                        }
-//                    }
-//                };
-//            }
-//        });
-
-            //TableColumn chronicColumn = new TableColumn("Third Column");
-            //chronicColumn.setCellValueFactory(new PropertyValueFactory<Disease,String>("three"));
-
-            // ** The TableCell class has the method setTextFill(Paint p) that you
-            // ** need to override the text color
-            //   To obtain the TableCell we need to replace the Default CellFactory
-            //   with one that returns a new TableCell instance,
-            //   and @Override the updateItem(String item, boolean empty) method.
-            //
-//            chronicColumn.(new Callback<TableColumn, TableCell>() {
-//                public TableCell call(TableColumn param) {
-//                    return new TableCell<Disease, String>() {
-//
-//                        @Override
-//                        public void updateItem(String item, boolean empty) {
-//                            super.updateItem(item, empty);
-//                            if (!isEmpty()) {
-//                                this.setTextFill(Color.RED);
-//                                // Get fancy and change color based on data
-//                                if(item.contains("@"))
-//                                    this.setTextFill(Color.BLUEVIOLET);
-//                                setText(item);
-//                            }
-//                        }
-//                    };
-//                }
-//            });
+                    if(item) {
+                        setText("Chronic");
+                        setTextFill(Color.RED);
+                    }
+                    else{
+                        setText("Not Chronic");
+                    }
+                }
+            });
 
             currentDiseaseTableView.getColumns().addAll(diagnosisDateColumn, nameColumn, chronicColumn);
 
