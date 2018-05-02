@@ -7,6 +7,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import seng302.App;
 import seng302.Model.Disease;
 import seng302.Model.User;
 import seng302.Service.AttributeValidation;
@@ -38,7 +39,9 @@ public class NewDiseaseController {
 
     AppController controller;
     Stage stage;
+    DonorController donorController;
     private User currentUser;
+    private Disease editableDisease;
 
     /**
      * Initializes the NewDiseaseController
@@ -46,12 +49,25 @@ public class NewDiseaseController {
      * @param controller The applications controller.
      * @param stage The applications stage.
      */
-    public void init(User user, AppController controller, Stage stage) {
+    public void init(User user, AppController controller, Stage stage, Disease disease, DonorController donorController) {
         this.controller = controller;
         this.stage = stage;
+        this.donorController = donorController;
         currentUser = user;
-        showCurrentDate();
-        //stage.setMinWidth(620);
+        editableDisease = disease;
+
+        String diseaseName = disease.getName();
+        LocalDate date = disease.getDiagnosisDate();
+        boolean isCured = disease.getIsCured();
+        boolean isChronic = disease.getIsChronic();
+
+        diseaseNameInput.setText(diseaseName);
+        diagnosisDateInput.setValue(date);
+        curedRadioButton.setSelected(isCured);
+        chronicRadioButton.setSelected(isChronic);
+        
+        //showCurrentDate();
+        //stage.setMinWidth(620); //*Commented out by Aaron*
         //stage.setMaxWidth(620);
     }
 
@@ -90,6 +106,7 @@ public class NewDiseaseController {
             //TODO causes npe if donor is new in this session
             //the text fields etc. are all null
         }
+        this.controller.update(currentUser);
         stage.close();
     }
 
@@ -121,6 +138,12 @@ public class NewDiseaseController {
 
         String diseaseName = AttributeValidation.checkString(diseaseNameInput.getText());
         LocalDate diagnosisDate = diagnosisDateInput.getValue();
+        boolean isCured = curedRadioButton.isSelected();
+        boolean isChronic = chronicRadioButton.isSelected();
+
+        if (isChronic && isCured){
+            isValid = false;
+        }
 
         if (diseaseName == null) {
             diseaseNameInputErrorMessage.setVisible(true);
@@ -130,26 +153,49 @@ public class NewDiseaseController {
             diseaseNameInputErrorMessage.setVisible(false);
         }
 
-        if (diagnosisDate == null) { //TODO: date validation, eg: diagnosis date cannot be before DOB
+        if (diagnosisDate == null) {
             diagnosisDateInputErrorMessage.setVisible(true);
             isValid = false;
-
+        } else if (diagnosisDate.isAfter(LocalDate.now()) || diagnosisDate.isBefore(currentUser.getDateOfBirth())) {
+            diagnosisDateInputErrorMessage.setVisible(true);
+            isValid = false;
         } else {
             diagnosisDateInputErrorMessage.setVisible(false);
         }
 
         if (isValid) {
-            if(curedRadioButton.isSelected()){
-                currentUser.addPastDisease(new Disease(diseaseName, false, true, diagnosisDate));
 
-            } else if (chronicRadioButton.isSelected()){
-                currentUser.addCurrentDisease(new Disease(diseaseName, true, false, diagnosisDate));
+            //this if/if else ensures that cured diseases can only be in pastDiseases[] and chronic diseases can only be in currentDiseases[]
+            if (isCured && !editableDisease.getIsCured()) { //if it WASNT cured, but now IS, move to past
+                currentUser.getCurrentDiseases().remove(editableDisease);
+                currentUser.getPastDiseases().add(editableDisease);
 
+                editableDisease.setName(diseaseName);
+                editableDisease.setDiagnosisDate(diagnosisDate);
+                editableDisease.setIsCured(isCured);
+                editableDisease.setIsChronic(isChronic);
+
+            } else if (!isCured && editableDisease.getIsCured()) { //if it WAS cured, but now isn't, move to current
+                currentUser.getPastDiseases().remove(editableDisease);
+                currentUser.getCurrentDiseases().add(editableDisease);
+
+                editableDisease.setName(diseaseName);
+                editableDisease.setDiagnosisDate(diagnosisDate);
+                editableDisease.setIsCured(isCured);
+                editableDisease.setIsChronic(isChronic);
             } else {
-                currentUser.addCurrentDisease(new Disease(diseaseName, false, false, diagnosisDate));
+
+                editableDisease.setName(diseaseName);
+                editableDisease.setDiagnosisDate(diagnosisDate);
+                editableDisease.setIsCured(isCured);
+                editableDisease.setIsChronic(isChronic);
+
             }
 
+            //Refresh the view
+            donorController.diseaseRefresh(donorController.getIsSortedByName(), donorController.getIsRevereSorted());
             closeNewDiseaseWindow();
+
         }
     }
 }

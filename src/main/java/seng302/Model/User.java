@@ -89,8 +89,10 @@ public class User {
   @Expose
   private ReceiverDetails receiverDetails = new ReceiverDetails(this);
 
+  @Expose
   private ArrayList<Disease> pastDiseases;
 
+  @Expose
   private ArrayList<Disease> currentDiseases;
 
     // updated constructor that works with the creation page
@@ -785,11 +787,11 @@ public class User {
       return name;
     }
     if (!this.getDonorDetails().getOrgans().isEmpty()) {
-      String toReturn = name + ". Donor: ";
+      StringBuilder toReturn = new StringBuilder(name + ". Donor: ");
       for (Organs o : this.donorDetails.getOrgans()) {
-        toReturn += o.toString() + " ";
+        toReturn.append(o.toString()).append(" ");
       }
-      return toReturn;
+      return toReturn.toString();
     } else {
       return name;
     }
