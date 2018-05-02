@@ -287,17 +287,17 @@ public class AppController {
    * @param user user to be updated/added
    */
   public void update(User user){
-      ArrayList<String > changelogWrite = new ArrayList<>();
+      ArrayList<Change > changelogWrite = new ArrayList<>();
       if (users.contains(user)){
         users.remove(user);
         users.add(user);
     } else {
       users.add(user);
-      changelogWrite.add("Added Donor " + user.getName());
+      changelogWrite.add(new Change(LocalDateTime.now(), "Added Donor " + user.getName()));
     }
     try {
       JsonHandler.saveUsers(users);
-      //JsonHandler.saveChangelog(changelogWrite, donor.getName().toLowerCase().replace(" ", "_"));
+      //JsonHandler.saveChangelog(changelogWrite, user.getName().toLowerCase().replace(" ", "_"));
 
     } catch (IOException e) {
       e.printStackTrace();
@@ -367,6 +367,7 @@ public class AppController {
      * @param oldUser The user before they were updated.
      * @param newUser The user after they were updated.
      * @return An array list of changes between the old and new user.
+     * @deprecated
      */
   public ArrayList<Change> differanceInDonors(User oldUser, User newUser){
    ArrayList<String> diffs = new ArrayList<>();
