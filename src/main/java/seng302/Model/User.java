@@ -89,8 +89,10 @@ public class User {
   @Expose
   private ReceiverDetails receiverDetails = new ReceiverDetails(this);
 
+  @Expose
   private ArrayList<Disease> pastDiseases;
 
+  @Expose
   private ArrayList<Disease> currentDiseases;
 
     // updated constructor that works with the creation page
