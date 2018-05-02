@@ -3,6 +3,9 @@ package seng302.Model;
 
 import com.google.gson.annotations.SerializedName;
 
+/**
+ * Enum for organs that can be received/donated
+ */
 public enum Organs {
   @SerializedName("Liver")
   LIVER("Liver") ,

@@ -5,7 +5,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
 import javafx.beans.binding.Bindings;
-
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -30,13 +29,21 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 
+import seng302.Model.Clinician;
 import seng302.Model.Organs;
 import static seng302.Model.Organs.*;
 import seng302.Model.TransplantDetails;
 import seng302.Model.User;
-import seng302.Model.Clinician;
 import seng302.Service.AttributeValidation;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+
+/**
+ * Class for the functionality of the Clinician view of the application
+ */
 public class ClinicianController {
 
   private final int ROWS_PER_PAGE = 30;
@@ -227,6 +234,9 @@ public class ClinicianController {
     allCheckBox.setSelected(true);
   }
 
+  /**
+   * initialises the clinicians details
+   */
   private void showClinician() {
     staffIdLabel.setText(clinician.getStaffId());
     fNameLabel.setText(clinician.getFirstName());
@@ -418,7 +428,7 @@ public class ClinicianController {
      * @param user the selected user.
      */
   private void launchDonor(User user){
-    FXMLLoader donorLoader = new FXMLLoader(getClass().getResource("/FXML/donorView.fxml"));
+    FXMLLoader donorLoader = new FXMLLoader(getClass().getResource("/FXML/userView.fxml"));
     Parent root = null;
     try {
       root = donorLoader.load();
@@ -481,13 +491,11 @@ public class ClinicianController {
    */
   private void setFilteredListPredicate(FilteredList<User> fList) {
     searchCount = 0; //refresh the searchCount every time so it recalculates it each search
-    //System.out.println(fList);
     fList.predicateProperty().bind(Bindings.createObjectBinding(() -> user -> {
       String lowerCaseFilterText = searchTextField.getText().toLowerCase();
       boolean regionMatch = AttributeValidation.checkRegionMatches(regionSearchTextField.getText(), user);
       boolean genderMatch = AttributeValidation.checkGenderMatches(genderComboBox.getValue().toString(), user);
 
-      //System.out.println(user);
       if (((user.getFirstName().toLowerCase()).startsWith(lowerCaseFilterText) ||
               (user.getLastName().toLowerCase().startsWith(lowerCaseFilterText))) &&
               (regionMatch) && (genderMatch) &&

@@ -6,6 +6,9 @@ import com.sun.org.apache.xpath.internal.operations.Or;
 import java.time.LocalDate;
 import java.util.*;
 
+/**
+ * Class for receiver organs
+ */
 public class ReceiverDetails {
 
 

@@ -11,12 +11,15 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import seng302.Model.MedicationDurations;
+import seng302.Model.User;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
-import seng302.Model.User;
 
+/**
+ * Class for the functionality of the medication view
+ */
 public class MedicationsTimeController {
 
     @FXML

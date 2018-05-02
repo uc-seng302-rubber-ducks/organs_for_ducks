@@ -79,6 +79,7 @@ public class OrganController {
     }
 
     /**
+     * Adds the selected organ to currently donating for the current user
      * @param event passed in automatically by the gui
      */
     @FXML
@@ -100,12 +101,11 @@ public class OrganController {
     }
 
     /**
+     * Removes the selected organ from currently donating for the current user
      * @param event passed in automatically by the gui
      */
     @FXML
     void undonate(ActionEvent event) {
-        UndoRedoStacks.storeUndoCopy(currentUser);
-
         if (!currentlyDonating.getSelectionModel().isEmpty()) {
             Organs toUndonate = currentlyDonating.getSelectionModel().getSelectedItem();
         if(toUndonate != null) {
