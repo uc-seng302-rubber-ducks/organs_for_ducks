@@ -299,7 +299,6 @@ public class DonorController {
 
     private OrganDeregisterReason organDeregisterationReason;
 
-
     /**
      * Gives the donor view the application controller and hides all label and buttons that are not
      * needed on opening
@@ -1320,7 +1319,6 @@ public class DonorController {
             currentlyReceivingListView.getItems().add(toReRegister);
             currentUser.getReceiverDetails().startWaitingForOrgan(toReRegister);
             notReceivingListView.getItems().remove(toReRegister);
-            application.getClinicianControllerInstance().populateWaitListTable();
 
             if (currentUser.getReceiverDetails().isDonatingThisOrgan(toReRegister)) {
                 currentUser.getCommonOrgans().add(toReRegister);
@@ -1358,7 +1356,7 @@ public class DonorController {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            DeregisterOrganReasonController deregisterOrganReasonController = deregisterOrganReasonLoader.getController();
+            deregisterOrganReasonController deregisterOrganReasonController = deregisterOrganReasonLoader.getController();
             Stage stage = new Stage();
             deregisterOrganReasonController.init(toDeRegister, this, currentUser, application, stage);
             stage.setScene(new Scene(root));
@@ -1410,7 +1408,7 @@ public class DonorController {
         }
         Stage stage = new Stage();
         stage.setScene(new Scene(root));
-        ReceiverOrganDateController receiverOrganDateController = receiverOrganDateViewLoader.getController();
+        receiverOrganDateController receiverOrganDateController = receiverOrganDateViewLoader.getController();
         receiverOrganDateController.init(application, currentUser, stage, organs);
         stage.show();
     }
