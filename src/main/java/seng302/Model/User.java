@@ -748,11 +748,11 @@ public class User {
       return name;
     }
     if (!this.getDonorDetails().getOrgans().isEmpty()) {
-      String toReturn = name + ". Donor: ";
+      StringBuilder toReturn = new StringBuilder(name + ". Donor: ");
       for (Organs o : this.donorDetails.getOrgans()) {
-        toReturn += o.toString() + " ";
+        toReturn.append(o.toString()).append(" ");
       }
-      return toReturn;
+      return toReturn.toString();
     } else {
       return name;
     }

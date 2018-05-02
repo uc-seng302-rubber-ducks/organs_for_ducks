@@ -1450,7 +1450,11 @@ public class DonorController {
     @FXML
     private void deleteDisease() {
         if (currentDiseaseTableView.getSelectionModel().getSelectedIndex() >= 0) {
-            currentUser.getCurrentDiseases().remove(currentDiseaseTableView.getSelectionModel().getSelectedItem());
+            if(!currentDiseaseTableView.getSelectionModel().getSelectedItem().getIsChronic()){
+                currentUser.getCurrentDiseases().remove(currentDiseaseTableView.getSelectionModel().getSelectedItem());
+            } else {
+                return;
+            }
         } else if (pastDiseaseTableView.getSelectionModel().getSelectedIndex() >= 0) {
             currentUser.getPastDiseases().remove(pastDiseaseTableView.getSelectionModel().getSelectedItem());
         }
