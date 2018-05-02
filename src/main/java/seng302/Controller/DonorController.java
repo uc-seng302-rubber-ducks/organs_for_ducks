@@ -317,8 +317,8 @@ public class DonorController {
     redoButton.setVisible(true);
     //warningLabel.setVisible(false);
     changeCurrentUser(user);
-      donorNameLabel.setText(user.getName());
-      ArrayList<Organs> donating;
+
+    ArrayList<Organs> donating;
       try {
         donating= new ArrayList<>(user.getDonorDetails().getOrgans());
       }
