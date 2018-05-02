@@ -176,6 +176,7 @@ public class User {
     this.donorDetails = new DonorDetails(this);
     this.receiverDetails = new ReceiverDetails(this);
     this.medicalProcedures =  new ArrayList<>();
+    this.changes = FXCollections.observableArrayList();
     /*try {
       changes = JsonHandler.importHistoryFromFile(name);
     } catch (FileNotFoundException e) {
@@ -287,7 +288,7 @@ public class User {
     public void setFirstName(String name) {
         updateLastModified();
         this.firstName = name;
-      changes.add(new Change("Changed first name to " + name));
+       changes.add(new Change("Changed first name to " + name));
     }
 
     public String getPrefFirstName() {

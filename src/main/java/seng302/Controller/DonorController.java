@@ -417,7 +417,12 @@ public class DonorController {
         });
         if (user.getNhi() != null) {
             showUser(currentUser); // Assumes a donor with no name is a new sign up and does not pull values from a template
-            changelog = FXCollections.observableList(currentUser.getChanges());
+            List<Change> changes = currentUser.getChanges();
+            if (changes != null) {
+                changelog = FXCollections.observableList(changes);
+            } else {
+                changelog = FXCollections.observableArrayList(new ArrayList<Change>());
+            }
         } else {
             changelog = FXCollections.observableArrayList(new ArrayList<Change>());
         }
