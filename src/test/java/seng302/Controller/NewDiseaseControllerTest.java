@@ -23,6 +23,9 @@ import static seng302.Controller.TableViewsMethod.*;
 import static org.testfx.api.FxAssert.verifyThat;
 
 public class NewDiseaseControllerTest extends ApplicationTest {
+
+    DateTimeFormatter sdf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
     @BeforeClass
     public static void initialization() {
         if (Boolean.getBoolean("headless")) {
@@ -40,18 +43,19 @@ public class NewDiseaseControllerTest extends ApplicationTest {
         FxToolkit.registerPrimaryStage();
         FxToolkit.setupApplication(App.class);
         AppController.getInstance().getUsers().clear();
-        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        AppController.getInstance().getUsers().add(new User("Aa", LocalDate.parse("2000-01-20", dateFormatter), "ABC1244"));
-        AppController.getInstance().getUsers().get(0).getCurrentDiseases().add(new Disease("Cancer", true, false, LocalDate.now()));
+        //DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        AppController.getInstance().getUsers().add(new User("Aa", LocalDate.parse("2000-01-20", sdf), "ABC1244"));
+        AppController.getInstance().getUsers().get(0).getCurrentDiseases().add(new Disease("A0", false, false, LocalDate.now()));
+        AppController.getInstance().getUsers().get(0).getPastDiseases().add(new Disease("B0", false, true, LocalDate.now()));
 
         //Use default clinician
         clickOn("#changeLogin");
         clickOn("#userIDTextField");
         write("0", 0);
         clickOn("#passwordField");
-        write("admin", 0);
+        write("Banjo", 0);
         clickOn("#loginButton");
-        verifyThat("#staffIdLabel", LabeledMatchers.hasText("0"));
+        //verifyThat("#staffIdLabel", LabeledMatchers.hasText("0"));
         clickOn("#searchTab");
         doubleClickOn(getCell("#searchTableView", 0, 0));
         clickOn("#diseaseTab");
@@ -65,33 +69,49 @@ public class NewDiseaseControllerTest extends ApplicationTest {
     }
 
     @Test
-    public void createNotChronicDisease(){
+    public void createdDiseaseShouldBeInCurrentDiseaseTable(){
         clickOn("#addDiseaseButton");
         clickOn("#diseaseNameInput");
-        write("Dengue Fever", 0);
-        clickOn("#curedRadioButton");
+        write("A1", 0);
+        //Use default date
         clickOn("#createButton");
-        assertEquals("Dengue Fever", getCellValue("#pastDiseaseTableView", 1, 0).toString());
+        assertEquals("A1", getCellValue("#currentDiseaseTableView", 1, 1).toString());
     }
 
     @Test
-    public void updateDisease1(){
+    public void createdCuredDiseaseShouldBeInPastDiseaseTable(){
+        clickOn("#addDiseaseButton");
+        clickOn("#diseaseNameInput");
+        write("A1", 0);
+        clickOn("#curedRadioButton");
+        clickOn("#createButton");
+        assertEquals("A1", getCellValue("#pastDiseaseTableView", 1, 0).toString());
+    }
+
+    @Test
+    public void updatedDiseaseNameShouldBeDisplayedCorrectly(){
         clickOn(getCell("#currentDiseaseTableView", 0, 0));
         clickOn("#updateDiseaseButton");
         clickOn("#diseaseNameInput");
-        for(int i = 0; i < 10; i++) {
-            push(KeyCode.RIGHT);
-        }
-        for(int i = 0; i < 30; i++) {
-            push(KeyCode.BACK_SPACE);
-        }
-        write("Love Fever", 0);
+//        for(int i = 0; i < 10; i++) {
+//            push(KeyCode.RIGHT);
+//        }
+        push(KeyCode.RIGHT);
+        push(KeyCode.RIGHT);
+
+//        for(int i = 0; i < 30; i++) {
+//            push(KeyCode.BACK_SPACE);
+//        }
+        push(KeyCode.BACK_SPACE);
+        push(KeyCode.BACK_SPACE);
+
+        write("A1", 0);
         clickOn("#createButton");
-        assertEquals("Love Fever", getCellValue("#currentDiseaseTableView", 1, 0).toString());
+        assertEquals("A1", getCellValue("#currentDiseaseTableView", 1, 0).toString());
     }
 
     @Test
-    public void updateDisease2(){
+    public void updatedDiseaseDateShouldBeDisplayedCorrectly(){
         clickOn(getCell("#currentDiseaseTableView", 0, 0));
         clickOn("#updateDiseaseButton");
         clickOn("#diagnosisDateInput");
@@ -103,15 +123,43 @@ public class NewDiseaseControllerTest extends ApplicationTest {
         }
         write("12/01/2007", 0);
         clickOn("#createButton");
-        assertEquals("2007-01-12", getCellValue("#currentDiseaseTableView", 0, 0).toString());
+        assertEquals(LocalDate.parse("2007-12-01", sdf), getCellValue("#currentDiseaseTableView", 0, 0));
     }
 
     @Test
-    public void updateDisease3(){
+    public void diseaseShouldMoveToPastDiseaseTableWhenSetToCured(){
         clickOn(getCell("#currentDiseaseTableView", 0, 0));
         clickOn("#updateDiseaseButton");
         clickOn("#curedRadioButton");
         clickOn("#createButton");
-        assertEquals("Cancer", getCellValue("#pastDiseaseTableView", 1, 0).toString());
+        assertEquals("A0", getCellValue("#pastDiseaseTableView", 1, 0).toString());
     }
+
+    @Test
+    public void diseaseShouldMoveToCurrentDiseaseTableWhenNeitherCuredOrChronic() {
+        clickOn(getCell("#pastDiseaseTableView", 0, 0));
+        clickOn("#updateDiseaseButton");
+        clickOn("#clearSelection");
+        clickOn("#createButton");
+        assertEquals("B0", getCellValue("#currentDiseaseTableView", 1, 1).toString());
+    }
+
+    @Test (expected = NullPointerException.class)
+    public void deletedPastDiseaseShouldBeRemovedFromPastDiseases() {
+        clickOn(getCell("#pastDiseaseTableView", 0, 0));
+        clickOn("#deleteDiseaseButton");
+        getCellValue("#pastDiseaseTableView", 0, 0);
+    }
+
+    @Test (expected = NullPointerException.class)
+    public void deletedCurrentDiseaseShouldBeRemovedFromCurrentDisease() throws NullPointerException {
+        clickOn(getCell("#currentDiseaseTableView", 0, 0));
+        clickOn("#deleteDiseaseButton");
+        getCellValue("#currentDiseaseTableView", 0, 0);
+    }
+
+    //Only other things I can think of testing are the ordering
+
+
+
 }

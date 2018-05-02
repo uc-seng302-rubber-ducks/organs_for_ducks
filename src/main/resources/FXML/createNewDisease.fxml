@@ -48,7 +48,7 @@
             </RadioButton>
             <RadioButton fx:id="curedRadioButton" mnemonicParsing="false" text="Cured" toggleGroup="$diseaseStatus" GridPane.columnIndex="2" GridPane.rowIndex="2" />
             <Label text="Status:" GridPane.rowIndex="2" />
-            <Button mnemonicParsing="false" onAction="#clearSelection" prefHeight="25.0" prefWidth="172.0" text="Clear Selecton" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+            <Button fx:id="clearSelection" mnemonicParsing="false" onAction="#clearSelection" prefHeight="25.0" prefWidth="172.0" text="Clear Selecton" GridPane.columnIndex="1" GridPane.rowIndex="3" />
          </children>
       </GridPane>
    </children>
