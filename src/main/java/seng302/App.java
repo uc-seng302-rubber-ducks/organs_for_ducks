@@ -1,31 +1,23 @@
 package seng302;
 
 
-import java.io.IOException;
-
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
-import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import seng302.Controller.AppController;
-import seng302.Controller.DonorController;
 import seng302.Controller.LoginController;
-import seng302.Model.Donor;
 import seng302.Model.JsonHandler;
-import seng302.Model.JsonReader;
-import seng302.Model.JsonWriter;
 
-import static javafx.application.Application.launch;
+import java.io.IOException;
 
+/**
+ * The main class of the application
+ */
 public class App extends Application
 {
     public static void main(String[] args) { launch(args);}

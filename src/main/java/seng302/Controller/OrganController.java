@@ -8,13 +8,12 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.stage.Stage;
-import seng302.Model.Donor;
 import seng302.Model.Organs;
 import seng302.Model.UndoRedoStacks;
+import seng302.Model.User;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import seng302.Model.User;
 
 /**
  * class for the Organs view
@@ -64,6 +63,12 @@ public class OrganController {
             donating = new ArrayList<>();
         }
         currentlyDonating.setItems(FXCollections.observableList(donating));
+        if (!currentUser.getCommonOrgans().isEmpty()){
+            for (Organs organ: currentUser.getCommonOrgans()) {
+                int index = currentlyDonating.getItems().indexOf(organ);
+                currentlyDonating.getSelectionModel().select(index);
+            }
+        }
         ArrayList<Organs> leftOverOrgans = new ArrayList<Organs>();
         Collections.addAll(leftOverOrgans, Organs.values());
         for (Organs o : donating){
@@ -74,13 +79,18 @@ public class OrganController {
     }
 
     /**
+     * Adds the selected organ to currently donating for the current user
      * @param event passed in automatically by the gui
      */
     @FXML
     void donate(ActionEvent event) {
-        UndoRedoStacks.storeUndoCopy(currentUser);
         Organs toDonate = canDonate.getSelectionModel().getSelectedItem();
         if(toDonate != null) {
+            if (currentUser.getReceiverDetails().isCurrentlyWaitingFor(toDonate)) {
+                currentUser.getCommonOrgans().add(toDonate);
+                int index = currentlyDonating.getItems().indexOf(toDonate);
+                currentlyDonating.getSelectionModel().select(index);
+            }
             currentlyDonating.getItems().add(toDonate);
             currentUser.getDonorDetails().addOrgan(toDonate);
             appController.update(currentUser);
@@ -89,13 +99,17 @@ public class OrganController {
     }
 
     /**
+     * Removes the selected organ from currently donating for the current user
      * @param event passed in automatically by the gui
      */
     @FXML
     void undonate(ActionEvent event) {
         if (!currentlyDonating.getSelectionModel().isEmpty()) {
             Organs toUndonate = currentlyDonating.getSelectionModel().getSelectedItem();
-            if (toUndonate != null) {
+        if(toUndonate != null) {
+            if(currentUser.getCommonOrgans().contains(toUndonate)) {
+                currentUser.getCommonOrgans().remove(toUndonate);
+            }
             currentlyDonating.getItems().remove(toUndonate);
             canDonate.getItems().add(toUndonate);
             currentUser.getDonorDetails().removeOrgan(toUndonate);

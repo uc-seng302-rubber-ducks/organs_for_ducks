@@ -5,6 +5,10 @@ import cucumber.api.SnippetType;
 import cucumber.api.junit.Cucumber;
 import org.junit.runner.RunWith;
 
+/**
+ * Class for running Cucumber tests
+ */
+
 @RunWith(Cucumber.class)
 @CucumberOptions(features = "features",
 plugin = {

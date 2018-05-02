@@ -1,29 +1,25 @@
 package seng302.View;
 
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.ArrayList;
-
 import org.jline.keymap.KeyMap;
-import org.jline.reader.Binding;
-import org.jline.reader.History;
-import org.jline.reader.LineReader;
-import org.jline.reader.LineReaderBuilder;
-import org.jline.reader.Reference;
+import org.jline.reader.*;
 import org.jline.reader.impl.history.DefaultHistory;
 import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
 import org.jline.utils.InfoCmp.Capability;
 import picocli.CommandLine;
-import seng302.App;
 import seng302.Controller.AppController;
 import seng302.Controller.CliCommands.CliRoot;
 import seng302.Model.JsonHandler;
-import seng302.Model.JsonReader;
 import seng302.Model.JsonWriter;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.ArrayList;
 
+/**
+ * Class to run the command line version of the application
+ */
 public class CLI {
 
   /**

@@ -41,9 +41,7 @@ public class UpdateAddOrgans implements Runnable {
       for (String item : organs) {
         try {
           Organs org = Organs.valueOf(item.toUpperCase());
-          user
-              .getDonorDetails()
-              .addOrgan(org);
+            user.getDonorDetails().addOrgan(org);
         }
         catch (IllegalArgumentException ex) {
           System.err.println("Could not parse organ:" + item);
@@ -53,12 +51,14 @@ public class UpdateAddOrgans implements Runnable {
           System.err.println("Could not find user");
         }
       }
+
       try {
         JsonHandler.saveUsers(controller.getUsers());
         return;
       } catch (IOException ex) {
         System.err.println("Could not update file");
       }
+
     }
     System.err.println(
         "Please use either the -NHI tag or -f, -l, and -dob to identify a donor. Organs to be added should be specified after these arguments");

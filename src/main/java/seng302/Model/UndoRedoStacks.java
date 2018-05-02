@@ -3,6 +3,9 @@ package seng302.Model;
 import java.time.LocalDateTime;
 import java.util.Stack;
 
+/**
+ * Class for the functionality of Undo/Redo
+ */
 public class UndoRedoStacks {
 
     static Stack<User> undoStack = new Stack<>();
@@ -40,7 +43,7 @@ public class UndoRedoStacks {
         userClone.getDonorDetails().getOrgans().clear();
         if (user.getDonorDetails().getOrgans() != null) {
             for (Organs organ : user.getDonorDetails().getOrgans()) {
-                userClone.getDonorDetails().addOrgan(organ);
+                    userClone.getDonorDetails().addOrgan(organ);
             }
         }
 

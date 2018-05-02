@@ -12,7 +12,7 @@ import seng302.Model.UndoRedoStacks;
 import seng302.Model.User;
 
 /**
- * Class for controlling the miscallanous attributes view
+ * Class for controlling the miscellaneous attributes view
  *
  * @author Josh Burt
  */
@@ -55,11 +55,11 @@ public class MiscAttributesController {
   }
 
   /**
+   * Adds miscellaneous attribute to the current user profile
    * @param event passed in automatically by the gui
    */
   @FXML
   void addAttribute(ActionEvent event) {
-    UndoRedoStacks.storeUndoCopy(currentUser);
     String toAdd = attributeTextFeild.getText();
     attributeTextFeild.setText("");
     if (toAdd == null) {
@@ -71,11 +71,11 @@ public class MiscAttributesController {
   }
 
   /**
+   * Removes selected item from the user profile
    * @param event passed in automatically by the gui
    */
   @FXML
   void removeAttribute(ActionEvent event) {
-    UndoRedoStacks.storeUndoCopy(currentUser);
     String selected = attributesList.getSelectionModel().getSelectedItem();
     attributesList.getItems().remove(selected);
     currentUser.removeMiscAttribute(selected);

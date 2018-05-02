@@ -45,6 +45,7 @@ public class NewDiseaseController {
 
     /**
      * Initializes the NewDiseaseController
+     * @param user the current user.
      * @param controller The applications controller.
      * @param stage The applications stage.
      */
@@ -140,6 +141,10 @@ public class NewDiseaseController {
         boolean isCured = curedRadioButton.isSelected();
         boolean isChronic = chronicRadioButton.isSelected();
 
+        if (isChronic && isCured){
+            isValid = false;
+        }
+
         if (diseaseName == null) {
             diseaseNameInputErrorMessage.setVisible(true);
             isValid = false;
@@ -148,7 +153,7 @@ public class NewDiseaseController {
             diseaseNameInputErrorMessage.setVisible(false);
         }
 
-        if (diagnosisDate == null) { //TODO: date validation, eg: diagnosis date cannot be before DOB
+        if (diagnosisDate == null) {
             diagnosisDateInputErrorMessage.setVisible(true);
             isValid = false;
         } else if (diagnosisDate.isAfter(LocalDate.now()) || diagnosisDate.isBefore(currentUser.getDateOfBirth())) {
@@ -161,7 +166,7 @@ public class NewDiseaseController {
         if (isValid) {
 
             //this if/if else ensures that cured diseases can only be in pastDiseases[] and chronic diseases can only be in currentDiseases[]
-            if (isCured ==  true && editableDisease.getIsCured() == false ) { //if it WASNT cured, but now IS, move to past
+            if (isCured && !editableDisease.getIsCured()) { //if it WASNT cured, but now IS, move to past
                 currentUser.getCurrentDiseases().remove(editableDisease);
                 currentUser.getPastDiseases().add(editableDisease);
 
@@ -170,7 +175,7 @@ public class NewDiseaseController {
                 editableDisease.setIsCured(isCured);
                 editableDisease.setIsChronic(isChronic);
 
-            } else if (isCured == false && editableDisease.getIsCured() == true) { //if it WAS cured, but now isn't, move to current
+            } else if (!isCured && editableDisease.getIsCured()) { //if it WAS cured, but now isn't, move to current
                 currentUser.getPastDiseases().remove(editableDisease);
                 currentUser.getCurrentDiseases().add(editableDisease);
 

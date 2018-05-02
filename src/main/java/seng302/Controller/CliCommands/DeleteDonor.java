@@ -1,19 +1,14 @@
 package seng302.Controller.CliCommands;
 
-import java.io.InputStream;
-import picocli.CommandLine.Parameters;
-import picocli.CommandLine.Option;
 import picocli.CommandLine.Command;
+import picocli.CommandLine.Option;
+import picocli.CommandLine.Parameters;
 import seng302.Controller.AppController;
-import seng302.Model.Donor;
 import seng302.Model.JsonHandler;
-import seng302.Model.JsonWriter;
 import seng302.Model.User;
-import seng302.View.IoHelper;
 
 import java.io.IOException;
-import java.time.LocalDate;
-import java.util.Date;
+import java.io.InputStream;
 import java.util.Scanner;
 
 @Command(name = "delete", description = "first name, lastname, DOB. Required will locate donor and prompt for deletion")

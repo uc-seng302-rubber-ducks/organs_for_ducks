@@ -10,15 +10,17 @@ import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
-import java.io.IOException;
-import java.time.LocalDate;
-import java.util.Optional;
-
 import seng302.Model.EmergencyContact;
 import seng302.Model.User;
 import seng302.Service.AttributeValidation;
 
+import java.io.IOException;
+import java.time.LocalDate;
+import java.util.Optional;
 
+/**
+ * Class for updating the user
+ */
 public class UpdateUserController {
 
   @FXML
@@ -138,7 +140,6 @@ public class UpdateUserController {
         this.stage = stage;
         currentUser = user;
         this.appController = controller;
-        //UndoRedoStacks.storeUndoCopy(currentUser);
         currentUser = user;
         setUserDetails(currentUser);
         errorLabel.setText("");
@@ -147,7 +148,6 @@ public class UpdateUserController {
         } else {
           stage.setTitle("Update User: " + user.getFirstName());
         }
-        //UndoRedoStacks.cloneUser(currentUser,oldUser);
 
         Scene scene = stage.getScene();
 
@@ -455,6 +455,10 @@ public class UpdateUserController {
     }
 
 
+    /**
+     * Sets the details for the current user
+     * @param user
+     */
     private void setUserDetails(User user) {
       //personal
       fNameInput.setText(user.getFirstName());

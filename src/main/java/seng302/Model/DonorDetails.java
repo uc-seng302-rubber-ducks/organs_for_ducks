@@ -1,9 +1,15 @@
 package seng302.Model;
 
 import com.google.gson.annotations.Expose;
+import org.omg.CORBA.ORB;
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
 
+
+/**
+ * Class to track details for a donor
+ */
 public class DonorDetails {
 
   @Expose
@@ -14,11 +20,18 @@ public class DonorDetails {
     return organs;
   }
 
+  /**
+   * Constructor for organs for current user
+   * @param attachedUser current user
+   */
   public DonorDetails(User attachedUser) {
     this.attachedUser = attachedUser;
     this.organs = new HashSet<>();
   }
 
+  /**
+   * initialises organs
+   */
   public void initOrgans() {
     organs = new HashSet<>();
   }
@@ -30,18 +43,18 @@ public class DonorDetails {
 
   /**
    * Adds an organ to the user profile.
-   *
    * @param organ the enum of organs.
    */
   public void addOrgan(Organs organ) {
     if (attachedUser != null){
       attachedUser.updateLastModified();
+      attachedUser.addChange(new Change("Added organ " + organ.toString()));
     }
     if (organs == null) {
       organs = new HashSet<>();
-      organs.add(organ);
     }
     this.organs.add(organ);
+    attachedUser.updateLastModified();
     //TODO attachedUser is always null
     attachedUser.updateLastModified();
   }
@@ -56,9 +69,13 @@ public class DonorDetails {
       organs.remove(organ);
       //TODO attachedUser is always null
       attachedUser.updateLastModified();
+      attachedUser.addChange(new Change("Removed organ " + organ.organName));
     }
   }
 
+  private boolean isCurrentlyWaitingFor(Organs organ) {
+    return attachedUser.getReceiverDetails().isCurrentlyWaitingFor(organ);
+  }
   /**
    * TODO update if/when more details are added
    *
@@ -72,10 +89,10 @@ public class DonorDetails {
   }
 
   /**
-   * USE THIS SPARINGLY. can easily cause consistency issues user.getDonorDetails().setAttachedUser(user)
-   * is the only sensible use case and is a hack at best.
+   * USE SPARINGLY. this can easily create consistency issues. Only sensible use case is
+   * user.getDonorDetails().setAttachedUser(user)
    *
-   * @param attachedUser user the
+   * @param attachedUser user to connect
    */
   public void setAttachedUser(User attachedUser) {
     this.attachedUser = attachedUser;
