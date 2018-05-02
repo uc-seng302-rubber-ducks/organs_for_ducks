@@ -1560,7 +1560,7 @@ public class DonorController {
       Organs toDonate = canDonate.getSelectionModel().getSelectedItem();
       currentlyDonating.getItems().add(toDonate);
       currentUser.getDonorDetails().addOrgan(toDonate);
-      if (currentUser.getReceiverDetails().getOrgans().containsKey(toDonate)) {
+      if (currentlyRecieving.contains(toDonate)) {
           currentUser.getCommonOrgans().add(toDonate);
       }
       application.update(currentUser);
