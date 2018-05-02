@@ -1,7 +1,8 @@
 package seng302.Model;
 
-
-
+/**
+ * Enum for organs that can be received/donated
+ */
 public enum Organs {
   LIVER("Liver") ,
   KIDNEY("Kidney"),

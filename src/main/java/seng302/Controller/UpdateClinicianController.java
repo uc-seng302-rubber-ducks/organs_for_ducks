@@ -124,6 +124,11 @@ public class UpdateClinicianController {
         }
     }
 
+    /**
+     * Prefills all the text fields as the attribute values.
+     * If the attributes are null, then the fields are set as empty strings.
+     * @param clinician The current clinician.
+     */
     private void prefillFields(Clinician clinician) {
         staffIDTextField.setText(clinician.getStaffId());
         passwordField.setText(clinician.getPassword());
@@ -218,7 +223,11 @@ public class UpdateClinicianController {
      */
     private void changesListener(TextField field) {
         field.textProperty().addListener((observable, oldValue, newValue) -> {
-            stage.setTitle("Update Clinician: " + currentClinician.getFirstName() + " *");
+            if (checkChanges()) { // checks if reverting a textfield change restores all fields to their original state
+                stage.setTitle("Update Clinician: " + currentClinician.getFirstName());
+            } else {
+                stage.setTitle("Update Clinician: " + currentClinician.getFirstName() + " *");
+            }
         });
     }
 

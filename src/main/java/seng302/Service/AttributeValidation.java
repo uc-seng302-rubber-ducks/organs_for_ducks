@@ -4,8 +4,9 @@ import java.time.LocalDate;
 import java.time.Period;
 import javafx.scene.control.ComboBox;
 import seng302.Model.BloodTypes;
-import seng302.Model.TransplantDetails;
+
 import seng302.Model.User;
+import seng302.Model.TransplantDetails;
 
 
 /**
@@ -206,6 +207,12 @@ public class AttributeValidation {
         }
     }
 
+    /**
+     * Check the entry of the string provided to see if the users gender matches the text
+     * @param genderValue String object to check against the users gender
+     * @param user a User object
+     * @return true if the users gender starts with the provided string
+     */
     public static boolean checkGenderMatches(String genderValue, User user) {
         if (user.getBirthGender() == null) {
             return genderValue.equals("All");

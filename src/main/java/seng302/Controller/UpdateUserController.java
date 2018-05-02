@@ -10,15 +10,17 @@ import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
-import java.io.IOException;
-import java.time.LocalDate;
-import java.util.Optional;
-
 import seng302.Model.EmergencyContact;
 import seng302.Model.User;
 import seng302.Service.AttributeValidation;
 
+import java.io.IOException;
+import java.time.LocalDate;
+import java.util.Optional;
 
+/**
+ * Class for updating the user
+ */
 public class UpdateUserController {
 
   @FXML
@@ -231,7 +233,11 @@ public class UpdateUserController {
      */
     private void textFieldListener(TextField field) {
         field.textProperty().addListener((observable, oldValue, newValue) -> {
-            stage.setTitle("Update User: " + currentUser.getFirstName() + " *");
+            if (checkChanges()) {
+                stage.setTitle("Update User: " + currentUser.getFirstName());
+            } else {
+                stage.setTitle("Update User: " + currentUser.getFirstName() + " *");
+            }
         });
     }
 
@@ -451,6 +457,10 @@ public class UpdateUserController {
     }
 
 
+    /**
+     * Sets the details for the current user
+     * @param user
+     */
     private void setUserDetails(User user) {
       //personal
       fNameInput.setText(user.getFirstName());

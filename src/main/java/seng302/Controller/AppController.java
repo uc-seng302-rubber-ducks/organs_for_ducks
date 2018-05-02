@@ -1,13 +1,19 @@
 package seng302.Controller;
 
+import seng302.Model.Change;
+import seng302.Model.Clinician;
+import seng302.Model.JsonHandler;
+import seng302.Model.User;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 
-import seng302.Model.*;
-
+/**
+ * Class for the functionality of the main app
+ */
 public class AppController {
 
   private ArrayList<User> users = new ArrayList<>();
@@ -21,6 +27,9 @@ public class AppController {
 
   private ClinicianController clinicianControllerInstance;
 
+  /**
+   * Creates new instance of AppController
+   */
   private AppController() {
     try {
       users = JsonHandler.loadUsers();
