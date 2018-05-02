@@ -3,6 +3,9 @@ package seng302.Model;
 import java.time.LocalDateTime;
 import java.util.Stack;
 
+/**
+ * Class for the functionality of Undo/Redo
+ */
 public class UndoRedoStacks {
 
     static Stack<User> undoStack = new Stack<>();

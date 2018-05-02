@@ -1,18 +1,18 @@
 package seng302.Model;
 
 import com.google.gson.annotations.Expose;
-import org.joda.time.DateTime;
 
 import java.io.FileNotFoundException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Objects;
 
-
+/**
+ * Class for handling calls to user
+ */
 public class User {
 
   @Expose
@@ -94,6 +94,31 @@ public class User {
   private ArrayList<Disease> currentDiseases;
 
     // updated constructor that works with the creation page
+
+  /**
+   * Constructor for a User
+   * @param nhi
+   * @param dateOfBirth
+   * @param dateOfDeath
+   * @param birthGender
+   * @param genderIdentity
+   * @param height
+   * @param weight
+   * @param bloodType
+   * @param alcoholConsumption
+   * @param smoker
+   * @param currentAddress
+   * @param region
+   * @param homePhone
+   * @param cellPhone
+   * @param email
+   * @param contact
+   * @param name
+   * @param firstName
+   * @param preferredFirstName
+   * @param middleName
+   * @param lastName
+   */
     public User(String nhi, LocalDate dateOfBirth, LocalDate dateOfDeath, String birthGender, String genderIdentity,
     double height, double weight, String bloodType, String alcoholConsumption,boolean smoker,
     String currentAddress, String region, String homePhone, String cellPhone, String email,
@@ -147,7 +172,12 @@ public class User {
 
     }
 
-
+  /**
+   * Constructor for a User
+   * @param name
+   * @param dateOfBirth
+   * @param nhi
+   */
   public User(String name, java.time.LocalDate dateOfBirth, String nhi) {
     this.dateOfBirth = dateOfBirth;
     this.name = name;
@@ -229,6 +259,11 @@ public class User {
   }
 
   //TODO details object is set at initialization. will always return true
+
+  /**
+   * Checks to see if user is a donor
+   * @returns true or false
+   */
   public boolean isDonor() {
     if (this.donorDetails == null) {
       return false;
@@ -237,6 +272,10 @@ public class User {
 
   }
 
+  /**
+   * Checks to see if user is a receiver
+   * @returns true or false
+   */
   public boolean isReceiver() {
     if (this.receiverDetails == null) {
       return false;

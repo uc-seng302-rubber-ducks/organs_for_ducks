@@ -1,6 +1,5 @@
 package seng302.Model;
 
-import java.util.HashMap;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -11,9 +10,13 @@ import org.json.simple.parser.ParseException;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * Class deals with using APIs for functionality within the application
+ */
 public class HttpRequester {
 
   /**

@@ -17,12 +17,21 @@ public class MedicationDurations {
     private LocalDateTime stop;
     private int duration;
 
+    /**
+     * Constructor for Medication Durations
+     * @param start
+     * @param stop
+     */
     public MedicationDurations(java.time.LocalDateTime start, java.time.LocalDateTime stop) {
         this.start = start;
         this.stop = stop;
         duration = (int) ChronoUnit.DAYS.between(start, stop);
     }
 
+    /**
+     * Constructor for Medication Durations
+     * @param start
+     */
     public MedicationDurations(LocalDateTime start) {
         this.start = start;
         duration = 0;
