@@ -5,6 +5,7 @@ import cucumber.api.java.en.Then;
 import org.testfx.matcher.control.LabeledMatchers;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.testfx.api.FxAssert.verifyThat;
 import static seng302.Controller.TableViewsMethod.*;
 
@@ -80,10 +81,14 @@ public class ThenSteps {
         throw new PendingException();
     }
 
-    @Then("^I should see error message \"([^\"]*)\"$")
-    public void iShouldSeeErrorMessage(String arg1) throws Throwable {
-        // Write code here that turns the phrase above into concrete actions
-        throw new PendingException();
+    @Then("^I should see error message for disease name \"([^\"]*)\"$")
+    public void iShouldSeeErrorMessageForDiseaseName(String errorMessage) throws Throwable {
+        verifyThat("#diseaseNameInputErrorMessage", LabeledMatchers.hasText(errorMessage));
+    }
+
+    @Then("^I should see error message for diagnosis date \"([^\"]*)\"$")
+    public void iShouldSeeErrorMessageForDiagnosisDate(String errorMessage) throws Throwable {
+        verifyThat("#diagnosisDateInputErrorMessage", LabeledMatchers.hasText(errorMessage));
     }
 
     @Then("^I should see my Staff ID \"([^\"]*)\" along with my other details at the clinician view screen$")
@@ -97,15 +102,15 @@ public class ThenSteps {
         assertEquals(diseaseName, getCellValue("#currentDiseaseTableView", 1, 0).toString());
     }
 
-    @Then("^I should see the Disease Name \"([^\"]*)\" and the word \"([^\"]*)\" in red next to disease name at the Current Diseases Table$")
-    public void iShouldSeeTheDiseaseNameAndTheWordInRedNextToDiseaseNameAtTheCurrentDiseasesTable(String arg1, String arg2) throws Throwable {
-        // Write code here that turns the phrase above into concrete actions
-        throw new PendingException();
+    @Then("^I should see the Disease Name \"([^\"]*)\" and the word chronic in red next to disease name at the Current Diseases Table$")
+    public void iShouldSeeTheDiseaseNameAndTheWordInRedNextToDiseaseNameAtTheCurrentDiseasesTable(String diseaseName) throws Throwable {
+        assertEquals(diseaseName, getCellValue("#currentDiseaseTableView", 1, 0).toString());
+        assertTrue((boolean) getCellValue("#currentDiseaseTableView", 2, 0));
+
     }
 
     @Then("^I should see the Disease Name \"([^\"]*)\" at the Past Diseases Table$")
-    public void iShouldSeeTheDiseaseNameAtThePastDiseasesTable(String arg1) throws Throwable {
-        // Write code here that turns the phrase above into concrete actions
-        throw new PendingException();
+    public void iShouldSeeTheDiseaseNameAtThePastDiseasesTable(String diseaseName) throws Throwable {
+        assertEquals(diseaseName, getCellValue("#pastDiseaseTableView", 1, 0).toString());
     }
 }
