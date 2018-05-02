@@ -479,10 +479,10 @@ public class DonorController {
         }
         currentlyRecieving = FXCollections.observableArrayList();
         noLongerReceiving = FXCollections.observableArrayList();
-        if(!receiverOrgans.isEmpty()){
+        if(!receiverOrgans.isEmpty()) {
             Set<Organs> allOrgans = receiverOrgans.keySet();
             for (Organs organ : receiverOrgans.keySet()) {
-                if(currentUser.getReceiverDetails().isCurrentlyWaitingFor(organ)){
+                if (currentUser.getReceiverDetails().isCurrentlyWaitingFor(organ)) {
                     organs.remove(organ);
                     currentlyRecieving.add(organ);
                 } else {
@@ -491,18 +491,19 @@ public class DonorController {
                 }
             }
         }
-        organsComboBox.setItems(FXCollections.observableList(organs));
-        currentlyReceivingListView.setItems(currentlyRecieving);
-        notReceivingListView.setItems(noLongerReceiving);
 
-
-        if (!fromClinician) {
+        else if (!fromClinician) { //if user is not a receiver and not login as clinician
             currentlyReceivingLabel.setVisible(false);
             notReceivingLabel.setVisible(false);
             currentlyReceivingListView.setVisible(false);
             notReceivingListView.setVisible(false);
             notReceiverLabel.setVisible(true);
         }
+
+        currentlyReceivingListView.setItems(currentlyRecieving);
+        notReceivingListView.setItems(noLongerReceiving);
+        organsComboBox.setItems(FXCollections.observableList(organs));
+
 
         if(!notReceivingListView.getItems().isEmpty()) {
             notReceivingListView.setOnMouseClicked(event -> {
@@ -1539,6 +1540,12 @@ public class DonorController {
         }
     }
 
+    /**
+     * Launch the time table which shows the
+     * register and deregister date of a particular organ
+     *
+     * @param organs enum
+     */
     private void launchReceiverOrganDateView(Organs organs) {
         FXMLLoader receiverOrganDateViewLoader = new FXMLLoader(getClass().getResource("/FXML/receiverOrganDateView.fxml"));
         Parent root = null;
@@ -1555,7 +1562,7 @@ public class DonorController {
     }
 
   /**
-   *
+   * Donates an organ.
    */
   @FXML
   void donate() {
@@ -1564,7 +1571,7 @@ public class DonorController {
       Organs toDonate = canDonate.getSelectionModel().getSelectedItem();
       currentlyDonating.getItems().add(toDonate);
       currentUser.getDonorDetails().addOrgan(toDonate);
-      if (!currentUser.getCommonOrgans().isEmpty()) {
+      if (!currentUser.getCommonOrgans().isEmpty()) { //TODO: inline comment here to describe what its doing
             for (Organs organ: currentUser.getCommonOrgans()) {
                 int index = currentlyDonating.getItems().indexOf(organ);
                 currentlyDonating.getSelectionModel().select(index);
@@ -1577,6 +1584,9 @@ public class DonorController {
   }
 
 
+    /**
+     * undonates an organ
+     */
   @FXML
   void undonate() {
     UndoRedoStacks.storeUndoCopy(currentUser);
@@ -1584,7 +1594,7 @@ public class DonorController {
       Organs toUndonate = currentlyDonating.getSelectionModel().getSelectedItem();
       currentlyDonating.getItems().remove(toUndonate);
       canDonate.getItems().add(toUndonate);
-        if (currentUser.getCommonOrgans().contains(toUndonate)) {
+        if (currentUser.getCommonOrgans().contains(toUndonate)) { //TODO: inline comment here to describe what its doing
             currentUser.getCommonOrgans().remove(toUndonate);
         }
 
@@ -1593,7 +1603,9 @@ public class DonorController {
     }
   }
 
-
+    /**
+     * Closes current window.
+     */
     @FXML
     private void closeWindow(){
         application.update(currentUser);
