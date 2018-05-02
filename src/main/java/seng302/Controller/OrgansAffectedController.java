@@ -1,9 +1,9 @@
 package seng302.Controller;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.SelectionMode;
@@ -11,9 +11,6 @@ import javafx.stage.Stage;
 import seng302.Model.MedicalProcedure;
 import seng302.Model.Organs;
 import seng302.Model.User;
-
-import java.util.ArrayList;
-import java.util.Collections;
 
 public class OrgansAffectedController {
 

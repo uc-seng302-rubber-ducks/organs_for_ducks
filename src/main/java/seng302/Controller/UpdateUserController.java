@@ -141,6 +141,7 @@ public class UpdateUserController {
   private User currentUser;
   private User oldUser;
   private int undoMarker; //int used to hold the top of the stack before opening this window
+  private boolean listen = true;
 
 
   /**
@@ -151,6 +152,7 @@ public class UpdateUserController {
   public void init(User user, AppController controller, Stage stage) {
     this.stage = stage;
     currentUser = user;
+    oldUser = currentUser.clone();
     this.appController = controller;
     setUserDetails(currentUser);
     undoButton.setDisable(true);
@@ -162,7 +164,6 @@ public class UpdateUserController {
     } else {
       stage.setTitle("Update User: " + user.getFirstName());
     }
-    oldUser = currentUser.clone();
 
     Scene scene = stage.getScene();
 
@@ -248,10 +249,15 @@ public class UpdateUserController {
    */
   private void textFieldListener(TextField field) {
     field.textProperty().addListener((observable, oldValue, newValue) -> {
-      update();
+      if (listen) {
+        update();
+      }
     });
   }
 
+  private boolean checkChanges() {
+    return checkChanges(currentUser);
+  }
   /**
    * Checks if all fields are in their original state (i.e. no change has been made / all changes
    * have been undone).
@@ -259,32 +265,32 @@ public class UpdateUserController {
    * @return true if all fields are in their original state, false if at least one field is
    * different.
    */
-  private boolean checkChanges() {
+  private boolean checkChanges(User user) {
     boolean noChange = true;
 
     // user details
-    if (!(currentUser.getNhi()).equals(nhiInput.getText())) {
+    if (!(user.getNhi()).equals(nhiInput.getText())) {
       noChange = false;
     }
 
-    if (!(currentUser.getFirstName()).equals(fNameInput.getText())) {
+    if (!(user.getFirstName()).equals(fNameInput.getText())) {
       noChange = false;
     }
 
-    if (!currentUser.getPreferredFirstName().equals(preferredFNameTextField.getText())) {
+    if (!user.getPreferredFirstName().equals(preferredFNameTextField.getText())) {
       noChange = false;
     }
 
-    if (currentUser.getMiddleName() != null) {
-      if (!(currentUser.getMiddleName()).equals(mNameInput.getText())) {
+    if (user.getMiddleName() != null) {
+      if (!(user.getMiddleName()).equals(mNameInput.getText())) {
         noChange = false;
       }
     } else if (!mNameInput.getText().isEmpty()) {
       noChange = false;
     }
 
-    if (currentUser.getLastName() != null) {
-      if (!(currentUser.getLastName()).equals(lNameInput.getText())) {
+    if (user.getLastName() != null) {
+      if (!(user.getLastName()).equals(lNameInput.getText())) {
         noChange = false;
       }
     } else if (!lNameInput.getText().isEmpty()) {
@@ -292,14 +298,14 @@ public class UpdateUserController {
     }
 
     if (dobInput.getValue() != null) {
-      if (!currentUser.getDateOfBirth().isEqual(dobInput.getValue())) {
+      if (!user.getDateOfBirth().isEqual(dobInput.getValue())) {
         noChange = false;
       }
     } else {
       noChange = false;
     }
 
-    LocalDate deathDate = currentUser.getDateOfDeath();
+    LocalDate deathDate = user.getDateOfDeath();
     LocalDate dod = dodInput.getValue();
     if (deathDate != null && dod != null) {
       if (!deathDate.isEqual(dod)) {
@@ -310,8 +316,8 @@ public class UpdateUserController {
     }
 
     // health details
-    if (currentUser.getBirthGender() != null && birthGenderComboBox.getValue() != null) {
-      if (!(currentUser.getBirthGender()).equals(birthGenderComboBox.getValue().toString())) {
+    if (user.getBirthGender() != null && birthGenderComboBox.getValue() != null) {
+      if (!(user.getBirthGender()).equals(birthGenderComboBox.getValue().toString())) {
         noChange = false;
       }
     } else if (birthGenderComboBox.getValue() != null && !birthGenderComboBox.getValue().toString()
@@ -319,33 +325,33 @@ public class UpdateUserController {
       noChange = false;
     }
 
-    if (currentUser.getGenderIdentity() != null && genderIdComboBox.getValue() != null) {
-      if (!(currentUser.getGenderIdentity()).equals(genderIdComboBox.getValue().toString())) {
+    if (user.getGenderIdentity() != null && genderIdComboBox.getValue() != null) {
+      if (!(user.getGenderIdentity()).equals(genderIdComboBox.getValue().toString())) {
         noChange = false;
       }
     } else if (genderIdComboBox.getValue() != null && !genderIdComboBox.getValue().toString()
         .equals("")) {
       noChange = false;
     }
-    if (currentUser.getBloodType() != null && bloodComboBox.getValue() != null) {
-      if (!(currentUser.getBloodType()).equals(bloodComboBox.getValue().toString())) {
+    if (user.getBloodType() != null && bloodComboBox.getValue() != null) {
+      if (!(user.getBloodType()).equals(bloodComboBox.getValue().toString())) {
         noChange = false;
       }
     } else if (bloodComboBox.getValue() != null) {
       noChange = false;
     }
 
-    if (currentUser.getAlcoholConsumption() != null && alcoholComboBox.getValue() != null) {
-      if (!(currentUser.getAlcoholConsumption()).equals(alcoholComboBox.getValue().toString())) {
+    if (user.getAlcoholConsumption() != null && alcoholComboBox.getValue() != null) {
+      if (!(user.getAlcoholConsumption()).equals(alcoholComboBox.getValue().toString())) {
         noChange = false;
       }
     } else if (alcoholComboBox.getValue() != null) {
       noChange = false;
     }
-    if (currentUser.getWeight() > 0) {
+    if (user.getWeight() > 0) {
       try {
         double weight = Double.parseDouble(weightInput.getText());
-        if (currentUser.getWeight() != weight) {
+        if (user.getWeight() != weight) {
           noChange = false;
         }
       } catch (NumberFormatException e) {
@@ -355,10 +361,10 @@ public class UpdateUserController {
       noChange = false;
     }
 
-    if (currentUser.getHeight() > 0) {
+    if (user.getHeight() > 0) {
       try {
         double height = Double.parseDouble(heightInput.getText());
-        if (currentUser.getHeight() != height) {
+        if (user.getHeight() != height) {
           noChange = false;
         }
       } catch (NumberFormatException e) {
@@ -367,45 +373,45 @@ public class UpdateUserController {
     } else if (!heightInput.getText().isEmpty()) {
       noChange = false;
     }
-    if (!(currentUser.isSmoker() == smokerCheckBox.isSelected())) {
+    if (!(user.isSmoker() == smokerCheckBox.isSelected())) {
       noChange = false;
     }
 
     // contact details
-    if (currentUser.getHomePhone() != null) {
-      if (!(currentUser.getHomePhone()).equals(phoneInput.getText())) {
+    if (user.getHomePhone() != null) {
+      if (!(user.getHomePhone()).equals(phoneInput.getText())) {
         noChange = false;
       }
     } else if (!phoneInput.getText().isEmpty()) {
       noChange = false;
     }
 
-    if (currentUser.getCellPhone() != null) {
-      if (!(currentUser.getCellPhone()).equals(cellInput.getText())) {
+    if (user.getCellPhone() != null) {
+      if (!(user.getCellPhone()).equals(cellInput.getText())) {
         noChange = false;
       }
     } else if (!cellInput.getText().isEmpty()) {
       noChange = false;
     }
 
-    if (currentUser.getCurrentAddress() != null) {
-      if (!(currentUser.getCurrentAddress()).equals(addressInput.getText())) {
+    if (user.getCurrentAddress() != null) {
+      if (!(user.getCurrentAddress()).equals(addressInput.getText())) {
         noChange = false;
       }
     } else if (!addressInput.getText().isEmpty()) {
       noChange = false;
     }
 
-    if (currentUser.getRegion() != null) {
-      if (!(currentUser.getRegion()).equals(regionInput.getText())) {
+    if (user.getRegion() != null) {
+      if (!(user.getRegion()).equals(regionInput.getText())) {
         noChange = false;
       }
     } else if (!regionInput.getText().isEmpty()) {
       noChange = false;
     }
 
-    if (currentUser.getEmail() != null) {
-      if (!(currentUser.getEmail()).equals(emailInput.getText())) {
+    if (user.getEmail() != null) {
+      if (!(user.getEmail()).equals(emailInput.getText())) {
         noChange = false;
       }
     } else if (!emailInput.getText().isEmpty()) {
@@ -413,7 +419,7 @@ public class UpdateUserController {
     }
 
     // emergency contact details
-    EmergencyContact contact = currentUser.getContact();
+    EmergencyContact contact = user.getContact();
 
     if (contact.getName() != null) {
       if (!(contact.getName()).equals(ecNameInput.getText())) {
@@ -477,7 +483,15 @@ public class UpdateUserController {
   @FXML
   public void setUserDetails(User user) {
     //personal
+    listen = false;
     fNameInput.setText(user.getFirstName());
+
+    if (checkChanges(oldUser)) {
+      stage.setTitle("Update User: " + currentUser.getFirstName());
+    } else {
+      stage.setTitle("Update User: " + currentUser.getFirstName() + " *");
+    }
+
     nhiInput.setText(user.getNhi());
     if (user.getLastName() != null) {
       lNameInput.setText(user.getLastName());
@@ -491,7 +505,8 @@ public class UpdateUserController {
       mNameInput.setText("");
     }
 
-    if (user.getPreferredFirstName() != null) {
+    if (user.getPreferredFirstName() != null && !user.getPreferredFirstName()
+        .equals(user.getFirstName())) {
       preferredFNameTextField.setText(user.getPreferredFirstName());
     } else {
       preferredFNameTextField.setText(user.getFirstName());
@@ -588,6 +603,9 @@ public class UpdateUserController {
     if (user.getHeight() > 0) {
       heightInput.setText(Double.toString(user.getHeight()));
     }
+    listen = true;
+
+
 
   }
 
@@ -841,12 +859,18 @@ public class UpdateUserController {
 
       if (!currentUser.getFirstName().equals(fName)) {
         currentUser.setFirstName(fName);
+        if (currentUser.getPreferredFirstName().equals(currentUser.getFirstName())
+            || preferredFNameTextField.getText().isEmpty()) {
+          listen = false;
+          preferredFNameTextField.setText(currentUser.getFirstName());
+          listen = true;
+        }
         changed = true;
       }
 
       String prefName = preferredFNameTextField.getText();
       if (!currentUser.getPreferredFirstName().equals(prefName)) {
-        if (prefName.isEmpty()) {
+        if (prefName.isEmpty() && !preferredFNameTextField.isFocused()) {
           currentUser.setPreferredFirstName(fName);
           changed = true;
         } else {
