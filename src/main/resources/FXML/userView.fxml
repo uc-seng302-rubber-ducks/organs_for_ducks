@@ -25,6 +25,14 @@
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="643.0" prefWidth="776.0">
                      <children>
+                       <HBox alignment="CENTER" layoutX="9.0" layoutY="562.0" prefHeight="25.0"
+                         prefWidth="876.0" AnchorPane.bottomAnchor="10.0"
+                         AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0">
+                         <children>
+                           <Button fx:id="deleteUser" alignment="CENTER" contentDisplay="CENTER"
+                             mnemonicParsing="false" onAction="#delete" text="Delete User"/>
+                         </children>
+                       </HBox>
                         <Label layoutX="15.0" layoutY="45.0" text="First Name:" />
                         <Label layoutX="15.0" layoutY="145.0" text="Date of Birth:" />
                         <Label layoutX="15.0" layoutY="245.0" text="Birth Gender:" />
@@ -75,14 +83,6 @@
                        <Button fx:id="backButton" layoutX="14.0" layoutY="570.0"
                          mnemonicParsing="false" onAction="#closeWindow" text="Back"
                          AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0"/>
-                       <HBox alignment="CENTER" layoutX="9.0" layoutY="562.0" prefHeight="25.0"
-                         prefWidth="876.0" AnchorPane.bottomAnchor="10.0"
-                         AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0">
-                         <children>
-                           <Button fx:id="deleteUser" alignment="CENTER" contentDisplay="CENTER"
-                             mnemonicParsing="false" onAction="#delete" text="Delete User"/>
-                         </children>
-                       </HBox>
                      </children>
                   </AnchorPane>
             </content>
