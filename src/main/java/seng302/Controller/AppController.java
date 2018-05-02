@@ -1,9 +1,6 @@
 package seng302.Controller;
 
-import seng302.Model.Change;
-import seng302.Model.Clinician;
-import seng302.Model.JsonHandler;
-import seng302.Model.User;
+import seng302.Model.*;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -28,6 +25,7 @@ import seng302.Model.User;
 public class AppController {
 
   private ArrayList<User> users = new ArrayList<>();
+  private ArrayList<TransplantDetails> transplantList = new ArrayList<>();
   private ArrayList<Clinician> clinicians = new ArrayList<>();
   private static AppController controller;
   private ArrayList<String[]> historyOfCommands = new ArrayList<>();
@@ -37,6 +35,8 @@ public class AppController {
   private ClinicianController clinicianController = new ClinicianController();
   private Set<User> deletedUserStack = new HashSet<>();
   private Stack<User> redoStack = new Stack<>();
+
+  private ClinicianController clinicianControllerInstance;
 
   /**
    * Creates new instance of AppController
@@ -56,7 +56,6 @@ public class AppController {
     for(Clinician c : clinicians){
       if(c.getStaffId().equals("0")){
         defaultSeen = true;
-        System.out.println("Default seen");
         break;//short circuit out if default clinician exists
       }
     } //all code you wish to execute must be above this point!!!!!!!!
@@ -82,6 +81,14 @@ public class AppController {
       controller = new AppController();
     }
     return controller;
+  }
+
+  public void setClinicianControllerInstance(ClinicianController clinicianController){
+    clinicianControllerInstance = clinicianController;
+  }
+
+  public ClinicianController getClinicianControllerInstance() {
+    return clinicianControllerInstance;
   }
 
 
@@ -499,5 +506,11 @@ public class AppController {
   public List<User> getDeletedUsers() {
     return new ArrayList<>(deletedUserStack);
   }
+    public java.util.ArrayList<TransplantDetails> getTransplantList() {
+        return transplantList;
+    }
 
+  public void addTransplant(TransplantDetails transplantDetails) {
+    transplantList.add(transplantDetails);
+  }
 }

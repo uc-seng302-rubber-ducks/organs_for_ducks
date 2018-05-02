@@ -142,7 +142,7 @@ public class LoginController {
             } else {
             wantedClinician  = userIDTextField.getText();}
             String password = passwordField.getText();
-            Clinician clinician = appController.getClinician(wantedClinician);//System.out.println(clinician);
+            Clinician clinician = appController.getClinician(wantedClinician);
             if (clinician== null){
                 warningLabel.setText("The Clinician does not exist");
             } else if (!password.equals(clinician.getPassword())){

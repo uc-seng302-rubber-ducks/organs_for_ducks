@@ -1,5 +1,7 @@
 package seng302.Controller;
 
+import static org.junit.Assert.fail;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -157,10 +159,11 @@ public class UserTest {
   }
 
   @Test
-  public void DonorToolTipShouldReturnNameAndOrgans() {
+  public void DonorToolTipShouldReturnNameAndOrgans() throws Exception {
     testUser.getDonorDetails().addOrgan(Organs.HEART);
     String tooltip = testUser.getTooltip();
     String name = testUser.getName();
     Assert.assertEquals(name + ". Donor: Heart ", tooltip);
   }
+
 }
