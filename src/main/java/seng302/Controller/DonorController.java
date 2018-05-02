@@ -14,12 +14,15 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldListCell;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+
+import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
 import okhttp3.OkHttpClient;
 import org.controlsfx.control.textfield.TextFields;
 import seng302.Model.*;
+
 
 import java.io.IOException;
 import java.text.DecimalFormat;
@@ -382,7 +385,6 @@ public class DonorController {
                 .addListener(((observable, oldValue, newValue) -> {
                     ObservableList<String> selected = previousMedicationListView.getSelectionModel()
                             .getSelectedItems();
-                    //System.out.println(selected);
                     displayDetails(selected);
                 }));
         currentMedicationListView.setOnMouseClicked(event -> {
@@ -461,7 +463,6 @@ public class DonorController {
         } else {
             changelog = FXCollections.observableArrayList(new ArrayList<Change>());
         }
-        //System.out.println(changelog);
         changelog.addListener((ListChangeListener.Change<? extends Change> change) -> historyTableView.setItems(changelog));
         medicationTextField.setOnMouseClicked(event -> getDrugSuggestions());
         medicationTextField.textProperty().addListener((observable) -> getDrugSuggestions());
@@ -515,8 +516,6 @@ public class DonorController {
             });
         }
 
-
-        System.out.println(currentUser.getReceiverDetails().getOrgans());
         if(!currentlyReceivingListView.getItems().isEmpty()) {
             currentlyReceivingListView.setOnMouseClicked(event -> {
                 if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
@@ -527,17 +526,48 @@ public class DonorController {
         }
         currentlyDonating.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         currentlyReceivingListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-        for (Organs organ: currentUser.getCommonOrgans()) {
-            int index = currentlyDonating.getItems().indexOf(organ);
-            currentlyDonating.getSelectionModel().select(index);
-            //TODO change the colour of the font when selected to make it more readable
-        }
-        for (Organs organ: currentUser.getCommonOrgans()) {
-            int index = currentlyReceivingListView.getItems().indexOf(organ);
-            currentlyReceivingListView.getSelectionModel().select(index);
-            //TODO change the colour of the font when selected to make it more readable
-        }
+
+        currentlyDonating.setCellFactory(column -> new ListCell<Organs>() {
+            @Override
+            protected void updateItem(Organs item, boolean empty) {
+                super.updateItem(item, empty);
+                setText(empty ? "" : getItem().toString());
+                setGraphic(null);
+
+                if (item == null) {
+                    return;
+                }
+
+                if(currentUser.getCommonOrgans().contains(item)) {
+                    setTextFill(Color.RED);
+                }
+                else {
+                    setTextFill(Color.BLACK);
+                }
+            }
+        });
+
+        currentlyReceivingListView.setCellFactory(column -> new ListCell<Organs>() {
+            @Override
+            protected void updateItem(Organs item, boolean empty) {
+                super.updateItem(item, empty);
+                setText(empty ? "" : getItem().toString());
+                setGraphic(null);
+
+                if (item == null) {
+                    return;
+                }
+
+                if(currentUser.getCommonOrgans().contains(item)) {
+                    setTextFill(Color.RED);
+                }
+                else {
+                    setTextFill(Color.BLACK);
+                }
+            }
+        });
     }
+
 
     public OrganDeregisterReason getOrganDeregisterationReason(){
         return organDeregisterationReason;
@@ -729,7 +759,6 @@ public class DonorController {
     private void updateDetails() throws IOException, InterruptedException {
         FXMLLoader updateLoader = new FXMLLoader(getClass().getResource("/FXML/updateUser.fxml"));
         Parent root = null;
-        //System.out.println(updateLoader);
         try {
             root = updateLoader.load();
             UpdateUserController updateUserController = updateLoader.getController();
@@ -749,8 +778,6 @@ public class DonorController {
     @FXML
     private void undo() {
         currentUser = UndoRedoStacks.loadUndoCopy(currentUser);
-        //System.out.println("Something happened");
-        //System.out.println(currentUser.getName());
         showUser(currentUser); //Error with showing donors
 
 
@@ -777,8 +804,6 @@ public class DonorController {
     @FXML
     private void redo() {
         currentUser = UndoRedoStacks.loadRedoCopy(currentUser);
-        //System.out.println("Something happened");
-        //System.out.println(currentUser.getName());
         showUser(currentUser);
     }
 
@@ -888,13 +913,11 @@ public class DonorController {
 //      }
 //    }
     if (currentUser.getCurrentMedication() != null) {
-      //System.out.println("current: " +currentMeds);currentMeds.clear();
       currentMeds.addAll(currentUser.getCurrentMedication());
 
             currentMedicationListView.setItems(currentMeds);
         }
         if (currentUser.getPreviousMedication() != null) {
-            //System.out.println("previous: " + previousMeds);
             previousMeds.clear();
             previousMeds.addAll(currentUser.getPreviousMedication());
             previousMedicationListView.setItems(previousMeds);
@@ -923,7 +946,6 @@ public class DonorController {
       currentMedicationListView.setItems(currentMeds);
 
     if (currentUser.getPreviousMedication() != null) {
-      //System.out.println("previous: " + previousMeds);
       previousMeds.clear();
       previousMeds.addAll(currentUser.getPreviousMedication());
       previousMedicationListView.setItems(previousMeds);
@@ -1282,20 +1304,17 @@ public class DonorController {
      */
     @FXML
     public void registerOrgan () {
-        System.out.println(currentUser.getReceiverDetails().getOrgans());
-        if (organsComboBox.getSelectionModel().getSelectedItem() != null){
+        if (organsComboBox.getSelectionModel().getSelectedItem() != null) {
           Organs toRegister = organsComboBox.getSelectionModel().getSelectedItem();
           if (!currentlyReceivingListView.getItems().contains(toRegister)) {
             currentUser.getReceiverDetails().startWaitingForOrgan(toRegister);
-           // if (currentUser.getReceiverDetails().isDonatingThisOrgan(toRegister)){
-                currentUser.getCommonOrgans().add(toRegister);
-                currentlyRecieving.add(toRegister);
-                organsComboBox.getItems().remove(toRegister);
-                organsComboBox.setValue(null);
-                //TODO change the colour of the font when selected to make it more readable
-            //}
-
+            currentlyRecieving.add(toRegister);
+            organsComboBox.getItems().remove(toRegister);
+            organsComboBox.setValue(null);
             application.update(currentUser);
+            if (currentUser.getDonorDetails().getOrgans().contains(toRegister)) {
+                currentUser.getCommonOrgans().add(toRegister);
+            }
 
             //set mouse click for currentlyReceivingListView
             currentlyReceivingListView.setOnMouseClicked(event -> {
@@ -1304,9 +1323,11 @@ public class DonorController {
                     launchReceiverOrganDateView(currentlyReceivingOrgan);
                 }
             });
+          }
+
+          currentlyDonating.refresh();
+          currentlyReceivingListView.refresh();
         }
-        System.out.println(currentUser.getReceiverDetails().getOrgans().keySet());
-    }
     }
 
     /**
@@ -1324,9 +1345,6 @@ public class DonorController {
 
             if (currentUser.getReceiverDetails().isDonatingThisOrgan(toReRegister)) {
                 currentUser.getCommonOrgans().add(toReRegister);
-                int index = currentlyReceivingListView.getItems().indexOf(toReRegister);
-                currentlyReceivingListView.getSelectionModel().select(index);
-                //TODO change the colour of the font when selected to make it more readable
             }
 
             //if notReceiving list view is empty, disable mouse click to prevent null pointer exception
@@ -1341,6 +1359,9 @@ public class DonorController {
                 }
             });
         }
+
+        currentlyDonating.refresh();
+        currentlyReceivingListView.refresh();
     }
 
     /**
@@ -1369,7 +1390,7 @@ public class DonorController {
     /**
      * de-register an organ
      * for receiver
-     * @param toDeRegister
+     * @param toDeRegister the organ to be removed from the
      */
     public void deRegisterOrgan (Organs toDeRegister) {
         if (toDeRegister != null) {
@@ -1391,6 +1412,9 @@ public class DonorController {
                     launchReceiverOrganDateView(currentlyReceivingOrgan);
                 }
             });
+
+            currentlyDonating.refresh();
+            currentlyReceivingListView.refresh();
         }
     }
 
@@ -1420,21 +1444,20 @@ public class DonorController {
    */
   @FXML
   void donate() {
+
     UndoRedoStacks.storeUndoCopy(currentUser);
     if (!canDonate.getSelectionModel().isEmpty()){
       Organs toDonate = canDonate.getSelectionModel().getSelectedItem();
       currentlyDonating.getItems().add(toDonate);
       currentUser.getDonorDetails().addOrgan(toDonate);
-      if (!currentUser.getCommonOrgans().isEmpty()) { //TODO: inline comment here to describe what its doing
-            for (Organs organ: currentUser.getCommonOrgans()) {
-                int index = currentlyDonating.getItems().indexOf(organ);
-                currentlyDonating.getSelectionModel().select(index);
-                //TODO change the colour of the font when selected to make it more readable
-            }
-        }
+      if (currentUser.getReceiverDetails().getOrgans().containsKey(toDonate)) {
+          currentUser.getCommonOrgans().add(toDonate);
+      }
       application.update(currentUser);
       canDonate.getItems().remove(toDonate);
     }
+      currentlyDonating.refresh();
+    currentlyReceivingListView.refresh();
   }
 
 
@@ -1448,13 +1471,18 @@ public class DonorController {
       Organs toUndonate = currentlyDonating.getSelectionModel().getSelectedItem();
       currentlyDonating.getItems().remove(toUndonate);
       canDonate.getItems().add(toUndonate);
-        if (currentUser.getCommonOrgans().contains(toUndonate)) { //TODO: inline comment here to describe what its doing
+        if (currentUser.getCommonOrgans().contains(toUndonate)) {
             currentUser.getCommonOrgans().remove(toUndonate);
+            currentlyDonating.refresh();
         }
 
         currentUser.getDonorDetails().removeOrgan(toUndonate);
+        currentlyDonating.refresh();
       application.update(currentUser);
     }
+
+      currentlyDonating.refresh();
+      currentlyReceivingListView.refresh();
   }
 
     /**
