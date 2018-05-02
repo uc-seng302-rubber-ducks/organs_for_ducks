@@ -613,7 +613,8 @@ public class UpdateUserController {
     }
     listen = true;
 
-
+    undoUpdateButton.setDisable(currentUser.getUndoStack().size() <= undoMarker);
+    redoUpdateButton.setDisable(currentUser.getRedoStack().isEmpty());
 
   }
 
