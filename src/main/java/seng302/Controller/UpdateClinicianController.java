@@ -284,6 +284,8 @@ public class UpdateClinicianController {
                 loginController.init(AppController.getInstance(), stage);
                 stage.setScene(new Scene(root));
                 stage.show();
+                stage.hide();
+                stage.show();
             } catch (IOException e) {
                 e.printStackTrace();
             }

@@ -1,6 +1,9 @@
 package seng302.Model;
 
 import com.google.gson.annotations.Expose;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import org.joda.time.DateTime;
 
 import java.io.FileNotFoundException;
 import java.time.LocalDate;
@@ -8,6 +11,7 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Objects;
 import java.util.*;
 
@@ -65,24 +69,24 @@ public class User {
     @Expose
     private EmergencyContact contact;
 
-    @Expose
-    private LocalDateTime lastModified;
-    @Expose
-    private ArrayList<String> miscAttributes;
-    @Expose
-    private HashMap<String, String> updateHistory;
-    @Expose
-    private ArrayList<String> previousMedication;
-    @Expose
-    private ArrayList<String> currentMedication;
-    @Expose
-    private HashMap<String, ArrayList<LocalDateTime>> previousMedicationTimes;
-    @Expose
-    private HashMap<String, ArrayList<LocalDateTime>> currentMedicationTimes;
-    @Expose
-    private ArrayList<Change> changes;
-    @Expose
-    private  ArrayList<MedicalProcedure> medicalProcedures;
+  @Expose
+  private LocalDateTime lastModified;
+  @Expose
+  private ArrayList<String> miscAttributes;
+  @Expose
+  private HashMap<String, String> updateHistory;
+  @Expose
+  private ArrayList<String> previousMedication;
+  @Expose
+  private ArrayList<String> currentMedication;
+  @Expose
+  private HashMap<String, ArrayList<LocalDateTime>> previousMedicationTimes;
+  @Expose
+  private HashMap<String, ArrayList<LocalDateTime>> currentMedicationTimes;
+
+  private transient List<Change> changes;//
+  @Expose
+  private  ArrayList<MedicalProcedure> medicalProcedures;
 
   //flags and extra details for if the person is a donor or a receiver
   @Expose
@@ -173,15 +177,15 @@ public class User {
         this.receiverDetails = new ReceiverDetails(this);
         this.commonOrgans = new HashSet<>();
 
-        this.currentDiseases = new ArrayList<>();
-        this.pastDiseases = new ArrayList<>();
-        this.medicalProcedures  = new ArrayList<>();
-
-        try {
-            changes = JsonHandler.importHistoryFromFile(name);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
+      this.currentDiseases = new ArrayList<>();
+      this.pastDiseases = new ArrayList<>();
+      this.medicalProcedures  = new ArrayList<>();
+      this.changes = FXCollections.observableArrayList();
+      /*try {
+        changes = JsonHandler.importHistoryFromFile(name);
+      } catch (FileNotFoundException e) {
+        e.printStackTrace();
+      }*/
 
     }
 
@@ -209,25 +213,25 @@ public class User {
     this.previousMedication = new ArrayList<>();
     this.currentMedicationTimes = new HashMap<String, ArrayList<LocalDateTime>>();
     this.previousMedicationTimes = new HashMap<String, ArrayList<LocalDateTime>>();
-    try {
+    /*try {
       changes = JsonHandler.importHistoryFromFile(name);
     } catch (FileNotFoundException e) {
       e.printStackTrace();
     }
+*/
+    this.currentDiseases = new ArrayList<>();
+    this.pastDiseases = new ArrayList<>();
 
-        this.currentDiseases = new ArrayList<>();
-        this.pastDiseases = new ArrayList<>();
-
-        this.donorDetails = new DonorDetails(this);
-        this.receiverDetails = new ReceiverDetails(this);
-        this.commonOrgans = new HashSet<>();
-        this.medicalProcedures =  new ArrayList<>();
-        try {
-            changes = JsonHandler.importHistoryFromFile(name);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-    }
+    this.donorDetails = new DonorDetails(this);
+    this.receiverDetails = new ReceiverDetails(this);
+    this.commonOrgans = new HashSet<>();this.medicalProcedures =  new ArrayList<>();
+    this.changes = FXCollections.observableArrayList();
+    /*try {
+      changes = JsonHandler.importHistoryFromFile(name);
+    } catch (FileNotFoundException e) {
+      e.printStackTrace();
+    }*/
+  }
 
 
     /**
@@ -248,7 +252,7 @@ public class User {
         this.donorDetails = new DonorDetails(this);
         this.receiverDetails = new ReceiverDetails(this);
         this.commonOrgans = new HashSet<>();
-        changes = new ArrayList<>();
+        changes = FXCollections.observableArrayList();
     }
 
     public EmergencyContact getContact() {
@@ -303,10 +307,11 @@ public class User {
         return nhi;
     }
 
-    public void setNhi(String nhi) {
-        updateLastModified();
-        this.nhi = nhi;
-    }
+  public void setNhi(String nhi) {
+    updateLastModified();
+    this.nhi = nhi;
+    changes.add(new Change("Updated NHI to " + nhi));
+   }
 
     /**
      * Utility function to update the last modified timestamp when a change is made to a donor. Can be
@@ -329,10 +334,10 @@ public class User {
         return name;
     }
 
-    public void setName(String name) {
-        updateLastModified();
-        this.name = name;
-    }
+  public void setName(String name) {
+    updateLastModified();
+    this.name = name;
+  changes.add(new Change("Changed name to " + name));}
 
 
     public String getFirstName() {
@@ -342,6 +347,7 @@ public class User {
     public void setFirstName(String name) {
         updateLastModified();
         this.firstName = name;
+       changes.add(new Change("Changed first name to " + name));
     }
 
     public String getPrefFirstName() {
@@ -351,6 +357,7 @@ public class User {
     public void setPrefFirstName(String name) {
         updateLastModified();
         this.preferredFirstName = name;
+      changes.add(new Change("Changed preferred first name to " + preferredFirstName));
     }
 
     public String getMiddleName() {
@@ -360,6 +367,7 @@ public class User {
     public void setMiddleName(String name) {
         updateLastModified();
         this.middleName = name;
+      changes.add(new Change("Changed middle name to " + middleName));
     }
 
     public String getLastName() {
@@ -369,6 +377,7 @@ public class User {
     public void setLastName(String name) {
         updateLastModified();
         this.lastName = name;
+      changes.add(new Change("Changed last name to " + lastName));
     }
 
     public String getFullName() {
@@ -394,84 +403,88 @@ public class User {
         return dateOfBirth;
     }
 
-    public void setDateOfBirth(java.time.LocalDate dateOfBirth) {
-        updateLastModified();
-        this.dateOfBirth = dateOfBirth;
-    }
+  public void setDateOfBirth(java.time.LocalDate dateOfBirth) {
+    updateLastModified();
+    this.dateOfBirth = dateOfBirth;
+  changes.add(new Change("Changed date of birth to "+ dateOfBirth.toString()));}
 
     public java.time.LocalDate getDateOfDeath() {
         return dateOfDeath;
     }
 
-    public void setDateOfDeath(java.time.LocalDate dateOfDeath) {
-        updateLastModified();
-        this.dateOfDeath = dateOfDeath;
-    }
+  public void setDateOfDeath(java.time.LocalDate dateOfDeath) {
+    updateLastModified();
+    this.dateOfDeath = dateOfDeath;
+  changes.add(new Change("Changed date of death to "+ dateOfDeath.toString()));}
 
     public String getGender() {
         return gender;
     }
 
-    public void setGender(String gender) {
-        updateLastModified();
-        this.gender = gender;
-    }
+  public void setGender(String gender) {
+    updateLastModified();
+    this.gender = gender;
+  changes.add(new Change("Changed gender to " + gender));}
 
     public double getHeight() {
         return height;
     }
 
-    public void setHeight(double height) {
-        updateLastModified();
-        this.height = height;
-    }
+  public void setHeight(double height) {
+    updateLastModified();
+    this.height = height;
+  changes.add(new Change("Changed height to " + height));}
 
     public double getWeight() {
         return weight;
     }
 
-    public void setWeight(double weight) {
-        updateLastModified();
-        this.weight = weight;
-    }
+  public void setWeight(double weight) {
+    updateLastModified();
+    this.weight = weight;
+  changes.add(new Change("Changed weight to " + weight));}
 
     public String getBloodType() {
         return bloodType;
     }
 
-    public void setBloodType(String bloodType) {
-        String validType = groupBloodType(bloodType);
-        updateLastModified();
-        this.bloodType = validType;
-    }
+  public void setBloodType(String bloodType) {
+    String validType = groupBloodType(bloodType);
+    updateLastModified();
+    this.bloodType = validType;
+  changes.add(new Change("Changed blood type to " + bloodType));}
 
     public String getCurrentAddress() {
         return currentAddress;
     }
 
-    public void setCurrentAddress(String currentAddress) {
-        updateLastModified();
-        this.currentAddress = currentAddress;
-    }
+  public void setCurrentAddress(String currentAddress) {
+    updateLastModified();
+    this.currentAddress = currentAddress;
+  if (currentAddress != null && !currentAddress.equals("")){
+      changes.add(new Change("Changed current address  to " + currentAddress));
+    }}
 
     public String getRegion() {
         return region;
     }
 
-    public void setRegion(String region) {
-        updateLastModified();
-        this.region = region;
-    }
+  public void setRegion(String region) {
+    updateLastModified();
+    this.region = region;
+  if(currentAddress != null && !currentAddress.equals("")) {
+      changes.add(new Change("Changed region to " + region));
+    }}
 
     public LocalDateTime getTimeCreated() {
         return timeCreated;
     }
 
-    //For UndoRedoStacks
-    public void setTimeCreated(LocalDateTime timeCreated) {
-        updateLastModified();
-        this.timeCreated = timeCreated;
-    }
+  //For UndoRedoStacks
+  public void setTimeCreated(LocalDateTime timeCreated) {
+    updateLastModified();
+    this.timeCreated = timeCreated;
+  changes.add(new Change("Changed time created to " + timeCreated.toString()));}
 
     public String getStringAge() {
         if (dateOfDeath != null) {
@@ -493,26 +506,26 @@ public class User {
         return isDeceased;
     }
 
-    public void setDeceased(Boolean deceased) {
-        updateLastModified();
-        isDeceased = deceased;
-    }
+  public void setDeceased(Boolean deceased) {
+    updateLastModified();
+    isDeceased = deceased;
+  changes.add(new Change("Changed users corporal status"));}
 
     public ArrayList<Disease> getCurrentDiseases() {
         return currentDiseases;
     }
 
-    public void addCurrentDisease(Disease currentDisease) {
-        currentDiseases.add(currentDisease);
-    }
+  public void addCurrentDisease(Disease currentDisease) {
+    currentDiseases.add(currentDisease);
+  changes.add(new Change("Added current disease " + currentDisease.toString()));}
 
     public ArrayList<Disease> getPastDiseases() {
         return pastDiseases;
     }
 
-    public void addPastDisease(Disease pastDisease) {
-        this.pastDiseases.add(pastDisease);
-    }
+  public void addPastDisease(Disease pastDisease) {
+    changes.add(new Change("Added past disease " + pastDisease.toString()));this.pastDiseases.add(pastDisease);
+  }
 
     public String getPreferredFirstName() {
         return preferredFirstName;
@@ -526,57 +539,57 @@ public class User {
         return birthGender;
     }
 
-    public void setBirthGender(String birthGender) {
-        this.birthGender = birthGender;
-    }
+  public void setBirthGender(String birthGender) {
+    this.birthGender = birthGender;
+  changes.add(new Change("Changed birth gender to " + birthGender));}
 
     public String getGenderIdentity() {
         return genderIdentity;
     }
 
-    public void setGenderIdentity(String genderIdentity) {
-        this.genderIdentity = genderIdentity;
-    }
+  public void setGenderIdentity(String genderIdentity) {
+    this.genderIdentity = genderIdentity;
+  changes.add(new Change("Changed birth Identity to " + genderIdentity));}
 
     public String getAlcoholConsumption() {
         return alcoholConsumption;
     }
 
-    public void setAlcoholConsumption(String alcoholConsumption) {
-        this.alcoholConsumption = alcoholConsumption;
-    }
+  public void setAlcoholConsumption(String alcoholConsumption) {
+    this.alcoholConsumption = alcoholConsumption;
+  changes.add(new Change("Changed alcohol consumption to " + alcoholConsumption));}
 
     public boolean isSmoker() {
         return smoker;
     }
 
-    public void setSmoker(boolean smoker) {
-        this.smoker = smoker;
-    }
+  public void setSmoker(boolean smoker) {
+    this.smoker = smoker;
+  changes.add(new Change("Changed smoker status to " + smoker));}
 
     public String getHomePhone() {
         return homePhone;
     }
 
-    public void setHomePhone(String homePhone) {
-        this.homePhone = homePhone;
-    }
+  public void setHomePhone(String homePhone) {
+    this.homePhone = homePhone;
+  changes.add(new Change("Changed Home phone to " + homePhone));}
 
     public String getCellPhone() {
         return cellPhone;
     }
 
-    public void setCellPhone(String cellPhone) {
-        this.cellPhone = cellPhone;
-    }
+  public void setCellPhone(String cellPhone) {
+    this.cellPhone = cellPhone;
+  changes.add(new Change("Changed cell Phone to " + cellPhone));}
 
     public String getEmail() {
         return email;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
+  public void setEmail(String email) {
+    this.email = email;
+  changes.add(new Change("Changed email to " + email));}
 
     public void setContact(EmergencyContact contact) {
         this.contact = contact;
@@ -649,10 +662,10 @@ public class User {
         miscAttributes.remove(attribute);
     }
 
-    public void addAttribute(String attribute) {
-        updateLastModified();
-        miscAttributes.add(attribute);
-    }
+  public void addAttribute(String attribute) {
+    updateLastModified();
+    miscAttributes.add(attribute);
+  changes.add(new Change("added attribute " + attribute));}
 
     public ArrayList<String> getPreviousMedication() {
         return previousMedication;
@@ -666,42 +679,42 @@ public class User {
         return currentMedication;
     }
 
-    public void setCurrentMedication(ArrayList<String> currentMedication) {
-        this.currentMedication = currentMedication;
-    }
+  public void setCurrentMedication(ArrayList<String> currentMedication) {
+    this.currentMedication = currentMedication;
+  }
 
-    public void addCurrentMedication(String medication) {
-        updateLastModified();
-        currentMedication.add(medication);
-        addMedicationTimes(medication, currentMedicationTimes);
-    }
+  public void addCurrentMedication(String medication) {
+    updateLastModified();
+    currentMedication.add(medication);
+    addMedicationTimes(medication, currentMedicationTimes);
+  changes.add(new Change("Added current medication" + medication));}
 
-    public void addPreviousMedication(String medication) {
-        updateLastModified();
-        previousMedication.add(medication);
-        addMedicationTimes(medication, previousMedicationTimes);
-    }
+  public void addPreviousMedication(String medication) {
+    updateLastModified();
+    previousMedication.add(medication);
+    addMedicationTimes(medication, previousMedicationTimes);
+  changes.add(new Change("Added previous medication" + medication));}
 
-    public void addCurrentMedicationSetup(String medication) {
-        updateLastModified();
-        currentMedication.add(medication);
-    }
+  public void addCurrentMedicationSetup(String medication) {
+    updateLastModified();
+    currentMedication.add(medication);
+  changes.add(new Change("Added current medication" + medication));}
 
-    public void addPreviousMedicationSetUp(String medication) {
-        updateLastModified();
-        previousMedication.add(medication);
-    }
+  public void addPreviousMedicationSetUp(String medication) {
+    updateLastModified();
+    previousMedication.add(medication);
+  changes.add(new Change("Added previous medication" + medication));}
 
 
-    public void removeCurrentMedication(String medication) {
-        updateLastModified();
-        currentMedication.remove(medication);
-    }
+  public void removeCurrentMedication(String medication) {
+    updateLastModified();
+    currentMedication.remove(medication);
+  changes.add(new Change("Removed current medication" + medication));}
 
-    public void removePreviousMedication(String medication) {
-        updateLastModified();
-        previousMedication.remove(medication);
-    }
+  public void removePreviousMedication(String medication) {
+    updateLastModified();
+    previousMedication.remove(medication);
+  changes.add(new Change("Removed previous medication" + medication));}
 
     public HashMap<String, ArrayList<LocalDateTime>> getPreviousMedicationTimes() {
         return previousMedicationTimes;
@@ -772,11 +785,11 @@ public class User {
     }
 
 
-    public ArrayList<Change> getChanges() {
+    public List<Change> getChanges() {
         return changes;
     }
 
-    public void setChanges(ArrayList<Change> changes) {
+    public void setChanges(List<Change> changes) {
         this.changes = changes;
     }
 
@@ -793,15 +806,15 @@ public class User {
         this.medicalProcedures = medicalProcedures;
     }
 
-    public void addMedicalProcedure(MedicalProcedure medicalProcedure){
-        updateLastModified();
-        medicalProcedures.add(medicalProcedure);
-    }
+  public void addMedicalProcedure(MedicalProcedure medicalProcedure){
+    updateLastModified();
+    medicalProcedures.add(medicalProcedure);
+  changes.add(new Change("Added Medical Procedure" + medicalProcedure));}
 
-    public void removeMedicalProcedure(MedicalProcedure medicalProcedure){
-        updateLastModified();
-        medicalProcedures.remove(medicalProcedure);
-    }
+  public void removeMedicalProcedure(MedicalProcedure medicalProcedure){
+    updateLastModified();
+    medicalProcedures.remove(medicalProcedure);
+  changes.add(new Change("Removed Medical Procedure" + medicalProcedure));}
 
   public String getTooltip() {
     //TODO fix this to show full info where possible
@@ -819,8 +832,8 @@ public class User {
     }
   }
 
-    @Override
-    public boolean equals(Object o) {
+  @Override
+  public boolean equals(Object o) {
 
         if (this == o) {
             return true;
