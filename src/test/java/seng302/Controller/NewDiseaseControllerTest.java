@@ -53,7 +53,7 @@ public class NewDiseaseControllerTest extends ApplicationTest {
         clickOn("#userIDTextField");
         write("0", 0);
         clickOn("#passwordField");
-        write("Banjo", 0);
+        write("admin", 0);
         clickOn("#loginButton");
         //verifyThat("#staffIdLabel", LabeledMatchers.hasText("0"));
         clickOn("#searchTab");
