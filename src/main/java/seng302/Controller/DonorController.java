@@ -1611,7 +1611,6 @@ public class DonorController {
         }
 
         if (currentDiseaseTableView.getSelectionModel().getSelectedItem() != null) { //Might error, dunno what it returns if nothing is selected, hopefully -1?
-            System.out.println(currentDiseaseTableView.getSelectionModel().getSelectedIndex());
             Disease disease = currentDiseaseTableView.getSelectionModel().getSelectedItem(); //Get the selected disease
 
             NewDiseaseController newDiseaseController = addDiseaseLoader.getController(); //Load some stuff
