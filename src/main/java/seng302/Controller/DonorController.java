@@ -27,6 +27,7 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.SelectionMode;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
@@ -38,17 +39,17 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.util.Callback;
 import javafx.util.StringConverter;
 import okhttp3.OkHttpClient;
 import org.controlsfx.control.textfield.TextFields;
-import seng302.Model.*;
-
-import java.io.IOException;
-import java.text.DecimalFormat;
-import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
-import java.util.*;
+import seng302.Model.Change;
+import seng302.Model.Disease;
+import seng302.Model.EmergencyContact;
+import seng302.Model.HttpRequester;
+import seng302.Model.MedicalProcedure;
+import seng302.Model.Memento;
+import seng302.Model.Organs;
+import seng302.Model.User;
 
 /**
  * Class for the functionality of the User view of the application
