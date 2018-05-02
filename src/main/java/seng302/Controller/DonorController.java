@@ -274,12 +274,12 @@ public class DonorController {
   private List<String> possibleBloodTypes = Arrays
       .asList("A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-", "U");
 
-  private User currentUser;
-  private Stage stage;
-  private EmergencyContact contact = null;
-  private ObservableList<Change> changelog;
-  private OkHttpClient client = new OkHttpClient();
-  private boolean fromClinician = false;
+    private User currentUser;
+    private Stage stage;
+    private EmergencyContact contact = null;
+    private ObservableList<Change> changelog;
+    private OkHttpClient client = new OkHttpClient();
+    private Boolean Clinician;
 
   /**
    * Gives the donor view the application controller and hides all label and buttons that are not
@@ -292,12 +292,13 @@ public class DonorController {
     //ageValue.setText("");
         //This is the place to set visable and invisable controls for Clinician vs User
     if (fromClinician) {
-      this.fromClinician = fromClinician;
+        Clinician = true;
         logOutButton.setVisible(false);
         addDiseaseButton.setVisible(true);
         updateDiseaseButton.setVisible(true);
         deleteDiseaseButton.setVisible(true);
-    } else {
+    }else {
+      Clinician = false;
         procedureDateSelector.setEditable(false);
         procedureTextField.setEditable(false);
         descriptionTextArea.setEditable(false);
@@ -353,37 +354,38 @@ public class DonorController {
       application.update(currentUser);
     });
 
-    //lambdas for drug interactions
-    currentMedicationListView.getSelectionModel().selectedItemProperty()
-        .addListener((observable, oldValue, newValue) -> {
-          ObservableList<String> selected = currentMedicationListView.getSelectionModel()
-              .getSelectedItems();
-          displayDetails(selected);
+        //lambdas for drug interactions
+        currentMedicationListView.getSelectionModel().selectedItemProperty()
+                .addListener((observable, oldValue, newValue) -> {
+                    ObservableList<String> selected = currentMedicationListView.getSelectionModel()
+                            .getSelectedItems();
+                    displayDetails(selected);
+                });
+        previousMedicationListView.getSelectionModel().selectedItemProperty()
+                .addListener(((observable, oldValue, newValue) -> {
+                    ObservableList<String> selected = previousMedicationListView.getSelectionModel()
+                            .getSelectedItems();
+
+                    displayDetails(selected);
+                }));
+        currentMedicationListView.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
+                    String med = currentMedicationListView.getSelectionModel().getSelectedItem();
+                    launchMedicationView(med);
+                }
+            }
         });
-    previousMedicationListView.getSelectionModel().selectedItemProperty()
-        .addListener(((observable, oldValue, newValue) -> {
-          ObservableList<String> selected = previousMedicationListView.getSelectionModel()
-              .getSelectedItems();
-          displayDetails(selected);
-        }));
-    currentMedicationListView.setOnMouseClicked(new EventHandler<MouseEvent>() {
-      @Override
-      public void handle(MouseEvent event) {
-        if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
-          String med = currentMedicationListView.getSelectionModel().getSelectedItem();
-          launchMedicationView(med);
-        }
-      }
-    });
-    previousMedicationListView.setOnMouseClicked(new EventHandler<MouseEvent>() {
-      @Override
-      public void handle(MouseEvent event) {
-        if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
-          String med = previousMedicationListView.getSelectionModel().getSelectedItem();
-          launchMedicationView(med);
-        }
-      }
-    });
+        previousMedicationListView.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
+                    String med = previousMedicationListView.getSelectionModel().getSelectedItem();
+                    launchMedicationView(med);
+                }
+            }
+        });
 
     medicationTextField.focusedProperty().addListener(
         (observable, oldValue, newValue) -> new Thread(() -> getDrugSuggestions()).start());
@@ -439,36 +441,33 @@ public class DonorController {
           return object.toString();
         }
 
-        @Override
-        public Organs fromString(String string) {
-          return null;
+                @Override
+                public Organs fromString(String string) {
+                    return null;
+                }
+            });
+            return cell;
+        });
+        if (user.getNhi() != null) {
+            showUser(currentUser); // Assumes a donor with no name is a new sign up and does not pull values from a template
+            ArrayList<Change> changes = currentUser.getChanges();
+            if (changes != null) { // checks if the changes are null in case the user is a new user
+                changelog = FXCollections.observableArrayList(changes);
+            }
+            changelog.addListener((ListChangeListener.Change<? extends Change> change) -> historyTableView.setItems(changelog));
+            showDonorHistory();
+        } else {
+            changelog = FXCollections.observableArrayList(new ArrayList<Change>());
         }
-      });
-      return cell;
-    });
-    if (user.getNhi() != null) {
-      showUser(
-          currentUser); // Assumes a donor with no name is a new sign up and does not pull values from a template
-      ArrayList<Change> changes = currentUser.getChanges();
-      if (changes != null) { // checks if the changes are null in case the user is a new user
-        changelog = FXCollections.observableArrayList(changes);
-      }
-      changelog.addListener((ListChangeListener.Change<? extends Change> change) -> historyTableView
-          .setItems(changelog));
-      showDonorHistory();
-    } else {
-      changelog = FXCollections.observableArrayList(new ArrayList<Change>());
-    }
-    //System.out.println(changelog);
-    changelog.addListener((ListChangeListener.Change<? extends Change> change) -> historyTableView
-        .setItems(changelog));
-    medicationTextField.setOnMouseClicked(new EventHandler<MouseEvent>() {
-      @Override
-      public void handle(MouseEvent event) {
-        getDrugSuggestions();
-      }
-    });
-    medicationTextField.textProperty().addListener((observable) -> getDrugSuggestions());
+
+        changelog.addListener((ListChangeListener.Change<? extends Change> change) -> historyTableView.setItems(changelog));
+        medicationTextField.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                getDrugSuggestions();
+            }
+        });
+        medicationTextField.textProperty().addListener((observable) -> getDrugSuggestions());
 
     showDonorDiseases(currentUser, true);
     modifyOrgansProcedureButton.setVisible(false);
@@ -568,25 +567,11 @@ public class DonorController {
     Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
     alert.setContentText("Are you sure you want to delete this user?");
     Optional<ButtonType> result = alert.showAndWait();
+
     if (result.get() == ButtonType.OK) {
       application.deleteDonor(currentUser);
-      FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML/loginView.fxml"));
-      Parent root = null;
-      try {
-        root = loader.load();
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
-      if (!fromClinician) {
-        LoginController loginController = loader.getController();
-        loginController.init(AppController.getInstance(), stage);
-        stage.setScene(new Scene(root));
-        stage.setTitle("");
-        stage.setWidth(600);
-        stage.setHeight(420);
-        stage.show();
-      } else {
-        stage.close();
+      if (!Clinician) {
+        logout();
       }
 
     }
@@ -690,7 +675,6 @@ public class DonorController {
     private void updateDetails(ActionEvent actionEvent) throws IOException, InterruptedException {
         FXMLLoader updateLoader = new FXMLLoader(getClass().getResource("/FXML/updateUser.fxml"));
         Parent root = null;
-        System.out.println(updateLoader);
         try {
             root = updateLoader.load();
             UpdateUserController updateUserController = updateLoader.getController();
@@ -725,20 +709,21 @@ public class DonorController {
     showUser(currentUser);
   }
 
-  @FXML
-  private void logout() {
-    //updateDonor();
-    FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML/loginView.fxml"));
-    Parent root = null;
-    try {
-      root = loader.load();
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-    LoginController loginController = loader.getController();
-    loginController.init(AppController.getInstance(), stage);
-    stage.setScene(new Scene(root));
-    stage.show();
+    @FXML
+    private void logout() {
+        //updateDonor();
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML/loginView.fxml"));
+        Parent root = null;
+        try {
+            root = loader.load();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        LoginController loginController = loader.getController();
+        loginController.init(AppController.getInstance(), stage);
+        stage.setScene(new Scene(root));
+        stage.hide();
+        stage.show();
   }
 
     /**
