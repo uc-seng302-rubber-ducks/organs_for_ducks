@@ -6,7 +6,7 @@ import java.util.function.Function;
 
 /**
  * Class for the Tooltip Table Row
- * @param <T>
+ * @param <T> table row
  */
 public class TooltipTableRow<T> extends TableRow<T> {
 

@@ -198,6 +198,7 @@ public class HttpRequester {
    * @param drug the drug to be checked e.g. xanax, reserpine, etc.
    * @param client http client to be used. use new OkHttpClient() if you have no preference
    * @return string array of each active ingredient
+   * @throws IOException thrown when IO fails
    */
   public static String[] getActiveIngredients(String drug, OkHttpClient client) throws IOException {
     String url = "http://mapi-us.iterar.co/api/" + drug + "/substances.json";

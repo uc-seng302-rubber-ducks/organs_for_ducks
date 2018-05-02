@@ -23,10 +23,10 @@ public class MedicalProcedure {
 
     /**
      * Constructor for Medical Procedure
-     * @param procedureDate
-     * @param summary
-     * @param description
-     * @param organsAffected
+     * @param procedureDate date of procedure
+     * @param summary summary of procedure
+     * @param description description of procedure
+     * @param organsAffected affected organs
      */
     public MedicalProcedure(LocalDate procedureDate, String summary, String description, ArrayList<Organs> organsAffected) {
 
@@ -42,8 +42,8 @@ public class MedicalProcedure {
 
     /**
      * Constructor for Medical Procedure
-     * @param procedureDate
-     * @param summary
+     * @param procedureDate date of procedure
+     * @param summary summary of procedure
      */
     public MedicalProcedure(LocalDate procedureDate, String summary) {
         this.procedureDate = procedureDate;

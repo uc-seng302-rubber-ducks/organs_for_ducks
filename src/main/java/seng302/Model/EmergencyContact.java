@@ -16,8 +16,8 @@ public class EmergencyContact {
 
     /**
      * Constructor for emergency contact
-     * @param Ename
-     * @param ECellPhone
+     * @param Ename Emergency contact name
+     * @param ECellPhone Emergency contact phone number
      */
     public EmergencyContact(String Ename, String ECellPhone){
         name = Ename;
@@ -99,8 +99,8 @@ public class EmergencyContact {
 
     /**
      * Checks for equality between two contacts
-     * @param other
-     * @return
+     * @param other other contact object
+     * @return true if they are equal
      */
     @Override
     public boolean equals(Object other) {

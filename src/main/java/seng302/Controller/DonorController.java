@@ -267,6 +267,10 @@ public class DonorController {
     /**
      * Gives the donor view the application controller and hides all label and buttons that are not
      * needed on opening
+     * @param controller the application controller
+     * @param user the current user
+     * @param stage the application stage
+     * @param fromClinician boolean value indication if from clinician view
      */
     public void init(AppController controller, User user, Stage stage, Boolean fromClinician) {
 
@@ -494,11 +498,11 @@ public class DonorController {
     }
 
 
-  /**
-   *
-   * Creates a alert pop up to confirm that the user wants to delete the profile
-   *
-   */
+    /**
+     * Creates a alert pop up to confirm that the user wants to delete the profile
+     * @param actionEvent given from the GUI
+     * @throws IOException to make sure current I/O is used
+     */
   @FXML
   public void delete(ActionEvent actionEvent) throws IOException {
     Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -630,6 +634,8 @@ public class DonorController {
     /**
      * Opens the update user details window
      * @param actionEvent An action event.
+     * @throws IOException to make sure I/O is correct
+     * @throws InterruptedException to make sure there is no interruption
      */
     @FXML
     private void updateDetails(ActionEvent actionEvent) throws IOException, InterruptedException {
@@ -1109,7 +1115,7 @@ public class DonorController {
 
     /**
      * Adds a procedure to the current user when a procedure name is entered
-     * @param event A mouse event.
+     * @param event An action event.
      */
     @FXML
     void addProcedure(ActionEvent event) {
@@ -1197,7 +1203,7 @@ public class DonorController {
 
     /**
      * Shows all the information for a given procedure
-     * @param procedure
+     * @param procedure current medical procedure
      */
     private void showProcedure(MedicalProcedure procedure) {
         procedureTextField.setText(procedure.getSummary());

@@ -20,7 +20,7 @@ public class DonorDetails {
 
   /**
    * Constructor for organs for current user
-   * @param attachedUser
+   * @param attachedUser current user
    */
   public DonorDetails(User attachedUser) {
     this.attachedUser = attachedUser;

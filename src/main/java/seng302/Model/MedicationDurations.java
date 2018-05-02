@@ -19,8 +19,8 @@ public class MedicationDurations {
 
     /**
      * Constructor for Medication Durations
-     * @param start
-     * @param stop
+     * @param start start date/time
+     * @param stop stop date/time
      */
     public MedicationDurations(java.time.LocalDateTime start, java.time.LocalDateTime stop) {
         this.start = start;
@@ -30,7 +30,7 @@ public class MedicationDurations {
 
     /**
      * Constructor for Medication Durations
-     * @param start
+     * @param start start date/time
      */
     public MedicationDurations(LocalDateTime start) {
         this.start = start;

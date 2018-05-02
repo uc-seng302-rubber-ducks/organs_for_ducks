@@ -97,27 +97,27 @@ public class User {
 
   /**
    * Constructor for a User
-   * @param nhi
-   * @param dateOfBirth
-   * @param dateOfDeath
-   * @param birthGender
-   * @param genderIdentity
-   * @param height
-   * @param weight
-   * @param bloodType
-   * @param alcoholConsumption
-   * @param smoker
-   * @param currentAddress
-   * @param region
-   * @param homePhone
-   * @param cellPhone
-   * @param email
-   * @param contact
-   * @param name
-   * @param firstName
-   * @param preferredFirstName
-   * @param middleName
-   * @param lastName
+   * @param nhi National Health Index for user
+   * @param dateOfBirth users date of birth
+   * @param dateOfDeath users date of death
+   * @param birthGender users birth gender
+   * @param genderIdentity users gender identity
+   * @param height users height
+   * @param weight users weight
+   * @param bloodType users blood type
+   * @param alcoholConsumption users alcohol consumption
+   * @param smoker if user is a smoker
+   * @param currentAddress users current address
+   * @param region users region
+   * @param homePhone users home phone number
+   * @param cellPhone users cell phone number
+   * @param email users email
+   * @param contact users emergency contact
+   * @param name users name
+   * @param firstName users first name
+   * @param preferredFirstName users preferred name
+   * @param middleName users middle name
+   * @param lastName users last name
    */
     public User(String nhi, LocalDate dateOfBirth, LocalDate dateOfDeath, String birthGender, String genderIdentity,
     double height, double weight, String bloodType, String alcoholConsumption,boolean smoker,
@@ -174,9 +174,9 @@ public class User {
 
   /**
    * Constructor for a User
-   * @param name
-   * @param dateOfBirth
-   * @param nhi
+   * @param name users name
+   * @param dateOfBirth users date of birth
+   * @param nhi users national health index
    */
   public User(String name, java.time.LocalDate dateOfBirth, String nhi) {
     this.dateOfBirth = dateOfBirth;
@@ -262,7 +262,7 @@ public class User {
 
   /**
    * Checks to see if user is a donor
-   * @returns true or false
+   * @return true if donor
    */
   public boolean isDonor() {
     if (this.donorDetails == null) {
@@ -274,7 +274,7 @@ public class User {
 
   /**
    * Checks to see if user is a receiver
-   * @returns true or false
+   * @return true if receiver
    */
   public boolean isReceiver() {
     if (this.receiverDetails == null) {

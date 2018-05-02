@@ -43,10 +43,10 @@ public class OrgansAffectedController {
 
     /**
      * initialises the organs affected window for medical procedure
-     * @param appController
-     * @param stage
-     * @param procedure
-     * @param user
+     * @param appController given app controller
+     * @param stage given stage
+     * @param procedure current procedure
+     * @param user current user
      */
     public void init(AppController appController, Stage stage, MedicalProcedure procedure, User user) {
         organsListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);

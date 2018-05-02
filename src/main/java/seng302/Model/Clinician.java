@@ -43,13 +43,13 @@ public class Clinician {
 
     /**
      * Constructor for Clinician
-     * @param staffId
-     * @param password
-     * @param firstName
-     * @param middleName
-     * @param lastName
-     * @param workAddress
-     * @param region
+     * @param staffId clinician staff id
+     * @param password clinician password
+     * @param firstName clinician first name
+     * @param middleName clinician middle name
+     * @param lastName clinician last name
+     * @param workAddress clinician work address
+     * @param region clinician region
      */
     public Clinician(String staffId, String password, String firstName, String middleName, String lastName, String workAddress, String region) {
         this.staffId = staffId;
@@ -68,13 +68,13 @@ public class Clinician {
 
     /**
      * Constructor for Clinician
-     * @param name
-     * @param staffId
-     * @param workAddress
-     * @param region
-     * @param password
-     * @param dateCreated
-     * @param dateLastModified
+     * @param name clinician name
+     * @param staffId clinician staff id
+     * @param workAddress clinician work address
+     * @param region clinician region
+     * @param password clinician password
+     * @param dateCreated clinician date created
+     * @param dateLastModified clinician date last modified
      */
     public Clinician(String name, String staffId, String workAddress, String region, String password, LocalDateTime dateCreated, LocalDateTime dateLastModified) {
         this.name = name;
@@ -89,11 +89,11 @@ public class Clinician {
 
     /**
      * Constructor for Clinician
-     * @param name
-     * @param staffId
-     * @param workAddress
-     * @param region
-     * @param password
+     * @param name clinician name
+     * @param staffId clinician staff id
+     * @param workAddress clinician work address
+     * @param region clinician region
+     * @param password clinician password
      */
     public Clinician(String name, String staffId, String workAddress, String region, String password) {
         this.name = name;
