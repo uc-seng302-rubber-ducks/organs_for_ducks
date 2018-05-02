@@ -988,6 +988,7 @@ public class DonorController {
 //    }
     if (currentUser.getCurrentMedication() != null) {
       //System.out.println("current: " +currentMeds);currentMeds.clear();
+        currentMedicationListView.getItems().clear();
       currentMeds.addAll(currentUser.getCurrentMedication());
 
             currentMedicationListView.setItems(currentMeds);
