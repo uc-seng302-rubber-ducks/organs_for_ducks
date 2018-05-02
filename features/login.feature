@@ -1,6 +1,7 @@
 Feature: As an user, I want to login to the system, either as a Donor or Clinician.
 
   Background: User login to the system
+    Given I have started the GUI
     Given The login screen is loaded
 
   Scenario: I login as Donor with valid NHI
