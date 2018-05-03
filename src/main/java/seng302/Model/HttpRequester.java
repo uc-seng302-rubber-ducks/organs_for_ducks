@@ -13,12 +13,34 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.Callable;
 
 /**
  * Class deals with using APIs for functionality within the application
  */
 public class HttpRequester {
 
+  private static class httpCallable implements Callable<String> {
+
+    private Request req;
+    private OkHttpClient client;
+    @Override
+    public String call() throws Exception {
+      Response response = client.newCall(req).execute();
+      Response res = client.newCall(req).execute();
+      String results = res.body().toString();
+      response.close();
+      return results;
+    }
+
+    public void setReq(Request req) {
+      this.req = req;
+    }
+
+    public void setClient(OkHttpClient client) {
+      this.client = client;
+    }
+  }
   /**
    * uses ehealthme api to get interactions between two drugs
    *
@@ -73,8 +95,9 @@ public class HttpRequester {
     String url =
         "https://www.ehealthme.com/api/v1/drug-interaction/" + drugOneName + "/" + drugTwoName
             + "/";
-    Request request = new Request.Builder().url(url).build();
-    Response response = client.newCall(request).execute();
+
+
+
     String ageRange;
     if (age > 59) {
       ageRange = "60+";
@@ -85,8 +108,16 @@ public class HttpRequester {
       ageRange = Integer.toString((age / 10) * 10) + "-" + Integer.toString((age / 10) * 10 + 9);
     }
     try {
+
+
+//      httpCallable call = new httpCallable();
+//      call.setReq(new Request.Builder().url(url).build());
+//      call.setClient(client);
+//      String rawString = call.call();
+      Request request = new Request.Builder().url(url).build();
+      Response response = client.newCall(request).execute();
       String rawString = response.body().string();
-      response.close();
+
       if (rawString == null) {
         return new HashSet<>();
       }
@@ -186,7 +217,7 @@ public class HttpRequester {
       suggestions = (JSONObject) new JSONParser().parse(response.body().string());
       return suggestions.get("suggestions").toString();
     } catch (ParseException e) {
-      e.printStackTrace();
+      System.out.println(e.getMessage());
       return "";
     }
   }

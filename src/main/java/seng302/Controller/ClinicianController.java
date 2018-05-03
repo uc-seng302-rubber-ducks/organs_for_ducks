@@ -1,5 +1,17 @@
 package seng302.Controller;
 
+import static seng302.Model.Organs.BONE;
+import static seng302.Model.Organs.BONE_MARROW;
+import static seng302.Model.Organs.CONNECTIVE_TISSUE;
+import static seng302.Model.Organs.CORNEA;
+import static seng302.Model.Organs.HEART;
+import static seng302.Model.Organs.INTESTINE;
+import static seng302.Model.Organs.KIDNEY;
+import static seng302.Model.Organs.LIVER;
+import static seng302.Model.Organs.LUNG;
+import static seng302.Model.Organs.MIDDLE_EAR;
+import static seng302.Model.Organs.PANCREAS;
+import static seng302.Model.Organs.SKIN;
 
 import static seng302.Model.Organs.BONE;
 import static seng302.Model.Organs.BONE_MARROW;
@@ -14,6 +26,7 @@ import static seng302.Model.Organs.MIDDLE_EAR;
 import static seng302.Model.Organs.PANCREAS;
 import static seng302.Model.Organs.SKIN;
 
+import java.io.IOException;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -166,6 +179,9 @@ public class ClinicianController {
   @FXML
   private Label filtersLabel;
 
+  @FXML
+  private Button redoButton;
+
   private Stage stage;
   private AppController appController;
   private Clinician clinician;
@@ -204,9 +220,9 @@ public class ClinicianController {
     appController.setClinicianControllerInstance(this);
     this.stage = stage;
     this.appController = appController;
-    this.clinician = clinician;
+    this.clinician = clinician.clone();
     stage.setResizable(true);
-    showClinician();
+    showClinician(clinician);
     users = appController.getUsers();
     searchCount = users.size();
     initSearchTable();
@@ -253,7 +269,8 @@ public class ClinicianController {
   /**
    * initialises the clinicians details
    */
-  private void showClinician() {
+  public void showClinician(Clinician clinician) {
+    this.clinician = clinician;
     staffIdLabel.setText(clinician.getStaffId());
     fNameLabel.setText(clinician.getFirstName());
     mNameLabel.setText(clinician.getMiddleName());
@@ -267,6 +284,8 @@ public class ClinicianController {
     } else {
       stage.setTitle("Clinician: " + clinician.getFirstName() +" " + clinician.getLastName());
     }
+    undoButton.setDisable(clinician.getUndoStack().empty());
+    redoButton.setDisable(clinician.getRedoStack().empty());
   }
 
   /**
@@ -655,8 +674,17 @@ public class ClinicianController {
   }
 
   @FXML
-  void undo(ActionEvent event) {
+  private void undo(ActionEvent event) {
+    clinician.undo();
+    undoButton.setDisable(clinician.getUndoStack().empty());
+    showClinician(clinician);
+  }
 
+  @FXML
+  public void redo(ActionEvent event) {
+    clinician.redo();
+    redoButton.setDisable(clinician.getRedoStack().empty());
+    showClinician(clinician);
   }
 
   /**
@@ -697,7 +725,7 @@ public class ClinicianController {
       updateClinicianController.init(clinician, appController, stage, false);
       stage.initModality(Modality.APPLICATION_MODAL); // background window is no longer selectable
       stage.showAndWait();
-      showClinician();
+      showClinician(clinician);
 
     } catch (IOException e){
       e.printStackTrace();
@@ -741,4 +769,22 @@ public class ClinicianController {
 //    }
 //
 //  }
+
+  @FXML
+  public void loadRecentlyDeleted(ActionEvent actionEvent) {
+    FXMLLoader deletedUserLoader = new FXMLLoader(
+        getClass().getResource("/FXML/deletedUsersView.fxml"));
+    Parent root = null;
+    try {
+      root = deletedUserLoader.load();
+      DeletedUserController deletedUserController = deletedUserLoader.getController();
+      Stage stage = new Stage();
+      stage.setScene(new Scene(root));
+      deletedUserController.init();
+      stage.initModality(Modality.APPLICATION_MODAL);
+      stage.showAndWait();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
 }

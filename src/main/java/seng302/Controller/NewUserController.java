@@ -1,21 +1,25 @@
 package seng302.Controller;
 
 
-import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.*;
-import javafx.stage.Stage;
-import seng302.Model.EmergencyContact;
-import seng302.Model.User;
-import seng302.Service.AttributeValidation;
+import static seng302.Model.JsonHandler.saveUsers;
 
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
-
-import static seng302.Model.JsonHandler.saveUsers;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.DatePicker;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import javafx.stage.Stage;
+import seng302.Model.EmergencyContact;
+import seng302.Model.User;
+import seng302.Service.AttributeValidation;
 
 
 /**
@@ -196,8 +200,11 @@ public class NewUserController {
             preferredFirstName = preferredFNameTextField.getText();
         }
 
-        String middleName = AttributeValidation.checkString(mNameInput.getText()); // checkString returns null if the textfield is empty
-        String lastName = AttributeValidation.checkString(lNameInput.getText());
+      String middleName = AttributeValidation.checkString(mNameInput.getText()) == null ? ""
+          : AttributeValidation.checkString(
+              mNameInput.getText()); // checkString returns null if the textfield is empty
+      String lastName = AttributeValidation.checkString(lNameInput.getText()) == null ? ""
+          : AttributeValidation.checkString(lNameInput.getText());
 
         String birthGender = AttributeValidation.validateGender(birthGenderComboBox);
         String genderIdentity;
@@ -224,11 +231,13 @@ public class NewUserController {
         }
 
         // contact details
-        String currentAddress = AttributeValidation.checkString(addressInput.getText());
-        String region = AttributeValidation.checkString(regionInput.getText());
-        String homePhone = AttributeValidation.checkString(phoneInput.getText());
-        String cellPhone = AttributeValidation.checkString(cellInput.getText());
-        String email = AttributeValidation.checkString(emailInput.getText());
+      String currentAddress = AttributeValidation.checkString(addressInput.getText()) == null ? ""
+          : AttributeValidation.checkString(addressInput.getText());
+      String region = AttributeValidation.checkString(regionInput.getText()) == null ? ""
+          : AttributeValidation.checkString(regionInput.getText());
+      String homePhone = AttributeValidation.validatePhoneNumber(phoneInput.getText());
+      String cellPhone = AttributeValidation.validateCellNumber(cellInput.getText());
+      String email = AttributeValidation.validateEmail(emailInput.getText());
 
         // validate email and phone numbers
         valid = emailCheck(email, valid);
@@ -237,11 +246,11 @@ public class NewUserController {
 
         // Emergency Contact attributes
         String eName = AttributeValidation.checkString(ecNameInput.getText());
-        String eCellPhone = AttributeValidation.checkString(ecCellInput.getText());
-        String eHomePhone = AttributeValidation.checkString(ecPhoneInput.getText());
+      String eCellPhone = AttributeValidation.validateCellNumber(ecCellInput.getText());
+      String eHomePhone = AttributeValidation.validatePhoneNumber(ecPhoneInput.getText());
         String eAddress = AttributeValidation.checkString(ecAddressInput.getText());
         String eRegion = AttributeValidation.checkString(ecRegionInput.getText());
-        String eEmail = AttributeValidation.checkString(ecEmailInput.getText());
+      String eEmail = AttributeValidation.validateEmail(ecEmailInput.getText());
         String eRelationship = AttributeValidation.checkString(ecRelationshipInput.getText());
 
         // validate emergency contact email and phone numbers
@@ -259,22 +268,28 @@ public class NewUserController {
         }
 
         if (valid) {
-            EmergencyContact contact = new EmergencyContact(null, null);
+          // create the new user
+          User newUser = new User(nhi, dob, dod, birthGender, genderIdentity, height, weight,
+              bloodType,
+              alcoholConsumption, smoker, currentAddress, region, homePhone, cellPhone, email, null,
+              fName, fName, preferredFirstName, middleName, lastName);
+
+          EmergencyContact contact = new EmergencyContact("", "", newUser);
 
             if (eName != null && eCellPhone != null) {
                 // create the emergency contact
-                contact = new EmergencyContact(eName, eCellPhone);
-                contact.setHomePhoneNumber(eHomePhone);
-                contact.setAddress(eAddress);
-                contact.setRegion(eRegion);
-                contact.setEmail(eEmail);
-                contact.setRelationship(eRelationship);
+              contact = new EmergencyContact(eName, eCellPhone, newUser);
+
+              contact.setHomePhoneNumber(eHomePhone == null ? "" : eHomePhone);
+              contact.setAddress(eAddress == null ? "" : eAddress);
+              contact.setRegion(eRegion == null ? "" : eRegion);
+              contact.setEmail(eEmail == null ? "" : eEmail);
+              contact.setRelationship(eRelationship == null ? "" : eRelationship);
             }
 
-            // create the new user
-            User newUser = new User(nhi, dob, dod, birthGender, genderIdentity, height, weight, bloodType,
-                    alcoholConsumption, smoker, currentAddress, region, homePhone, cellPhone, email, contact,
-                    fName, fName, preferredFirstName, middleName, lastName);
+          newUser.setContact(contact);
+
+          newUser.getUndoStack().clear();
 
             // add the new user to the list of users and save them
             ArrayList<User> users = controller.getUsers();
