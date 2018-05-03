@@ -63,6 +63,12 @@ public class OrganController {
             donating = new ArrayList<>();
         }
         currentlyDonating.setItems(FXCollections.observableList(donating));
+        if (!currentUser.getCommonOrgans().isEmpty()){
+            for (Organs organ: currentUser.getCommonOrgans()) {
+                int index = currentlyDonating.getItems().indexOf(organ);
+                currentlyDonating.getSelectionModel().select(index);
+            }
+        }
         ArrayList<Organs> leftOverOrgans = new ArrayList<Organs>();
         Collections.addAll(leftOverOrgans, Organs.values());
         for (Organs o : donating){
@@ -78,9 +84,13 @@ public class OrganController {
      */
     @FXML
     void donate(ActionEvent event) {
-        UndoRedoStacks.storeUndoCopy(currentUser);
         Organs toDonate = canDonate.getSelectionModel().getSelectedItem();
         if(toDonate != null) {
+            if (currentUser.getReceiverDetails().isCurrentlyWaitingFor(toDonate)) {
+                currentUser.getCommonOrgans().add(toDonate);
+                int index = currentlyDonating.getItems().indexOf(toDonate);
+                currentlyDonating.getSelectionModel().select(index);
+            }
             currentlyDonating.getItems().add(toDonate);
             currentUser.getDonorDetails().addOrgan(toDonate);
             appController.update(currentUser);
@@ -96,7 +106,10 @@ public class OrganController {
     void undonate(ActionEvent event) {
         if (!currentlyDonating.getSelectionModel().isEmpty()) {
             Organs toUndonate = currentlyDonating.getSelectionModel().getSelectedItem();
-            if (toUndonate != null) {
+        if(toUndonate != null) {
+            if(currentUser.getCommonOrgans().contains(toUndonate)) {
+                currentUser.getCommonOrgans().remove(toUndonate);
+            }
             currentlyDonating.getItems().remove(toUndonate);
             canDonate.getItems().add(toUndonate);
             currentUser.getDonorDetails().removeOrgan(toUndonate);
