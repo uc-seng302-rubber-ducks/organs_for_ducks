@@ -7,6 +7,17 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.Stack;
+import seng302.Exception.UserAlreadyExistsException;
+import seng302.Exception.UserNotFoundException;
+import seng302.Model.Change;
+import seng302.Model.Clinician;
+import seng302.Model.JsonHandler;
+import seng302.Model.User;
+
 
 /**
  * Class for the functionality of the main app
@@ -21,6 +32,9 @@ public class AppController {
   private int historyPointer = 0;
 
   private DonorController donorController = new DonorController();
+  private ClinicianController clinicianController = new ClinicianController();
+  private Set<User> deletedUserStack = new HashSet<>();
+  private Stack<User> redoStack = new Stack<>();
 
   private ClinicianController clinicianControllerInstance;
 
@@ -245,6 +259,7 @@ public class AppController {
   public void deleteDonor(User user) {
     ArrayList<User> sessionList = getUsers();
     sessionList.remove(user);
+    deletedUserStack.add(user);
     setUsers(sessionList);
     try {
       JsonHandler.saveUsers(sessionList);
@@ -357,8 +372,15 @@ public class AppController {
     this.donorController = donorController;
   }
 
+  public ClinicianController getClinicianController() {
+    return clinicianController;
+  }
 
-    /**
+  public void setClinicianController(ClinicianController clinicianController) {
+    this.clinicianController = clinicianController;
+  }
+
+  /**
      *
      * @param oldUser The user before they were updated.
      * @param newUser The user after they were updated.
@@ -459,6 +481,31 @@ public class AppController {
     return changes;
   }
 
+  /**
+   * Method to remove the specified user object from the deleted user set and add it into the pool
+   * of users
+   *
+   * @param user user object to undo deletion of
+   * @throws UserNotFoundException if the user is not in the deletedUserSet
+   * @throws UserAlreadyExistsException if a user with the same NHI is in the users list
+   */
+  public void undoDeletion(User user) throws UserNotFoundException, UserAlreadyExistsException {
+    if (deletedUserStack.contains(user)) {
+      if (findUser(user.getNhi()) == null) {
+        deletedUserStack.remove(user);
+        users.add(user);
+        redoStack.push(user);
+      } else {
+        throw new UserAlreadyExistsException();
+      }
+    } else {
+      throw new UserNotFoundException();
+    }
+  }
+
+  public List<User> getDeletedUsers() {
+    return new ArrayList<>(deletedUserStack);
+  }
     public java.util.ArrayList<TransplantDetails> getTransplantList() {
         return transplantList;
     }

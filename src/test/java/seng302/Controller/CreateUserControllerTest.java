@@ -18,14 +18,12 @@ public class CreateUserControllerTest extends ApplicationTest {
 
   @BeforeClass
   public static void initialization() {
-    if (Boolean.getBoolean("headless")) {
-      System.setProperty("testfx.robot", "glass");
-      System.setProperty("testfx.headless", "true");
-      System.setProperty("prism.order", "sw");
-      System.setProperty("prism.text", "t2k");
-      System.setProperty("java.awt.headless", "true");
-      System.setProperty("headless.geometry", "1920x1080-32");
-    }
+      System.setProperty("Dtestfx.robot", "glass");
+      System.setProperty("Dtestfx.headless", "true");
+      System.setProperty("Dprism.order", "sw");
+      System.setProperty("Dprism.text", "t2k");
+      System.setProperty("Djava.awt.headless", "true");
+      System.setProperty("Dheadless.geometry", "1920x1080-32");
   }
 
 //  @Before
