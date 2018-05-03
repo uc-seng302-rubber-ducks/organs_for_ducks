@@ -948,7 +948,8 @@ public class UpdateUserController {
 
       String birthGender = currentUser.getBirthGender();
       String bGender = AttributeValidation.validateGender(birthGenderComboBox);
-      if (bGender != null && !birthGender.equals(bGender)) {
+
+      if (birthGender != null && !birthGender.equals(bGender)) {
         currentUser.setBirthGender(bGender);
         changed = true;
       } else if (birthGender == null && bGender != null) {
