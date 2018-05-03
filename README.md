@@ -8,11 +8,11 @@ This can be checked by running the command `mvn -version` on Linux.
 If it is not installed, it should be installed (see the section on this below).
 
 A tested, runnable jar can be built by navigating into the directory where the project has been downloaded to
-and using the command `mvn clean package`.
+and using the command `mvn clean package -DskipTests`. As tests take upwards of 6 minutes to complete removing the `-DskipTests` will run the tests
 This will create the directory target with the JAR in it (and remove any previous 
 Maven builds for this project).
 The project can then by run with the command 
-`java -jar target/original-team-24-jbu71-tke34-sprint1-0.0.jar`
+`java -jar target/team-100-Rubber-Duckies-0.0.jar`
 
 or by navigating to the target directory and running the command without `target/`
 
@@ -35,7 +35,7 @@ unzipped folder.
 #Importing the project into Intellij
 
 To import the source code, clone the git repository
-with the command `git clone git@eng-git.canterbury.ac.nz:seng302-2018/team-24.git`
+with the command `git clone git@eng-git.canterbury.ac.nz:seng302-2018/team-100.git`
 
 
 On the IntelliJ landing screen, select the option Import Project.
