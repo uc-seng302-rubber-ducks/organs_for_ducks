@@ -27,7 +27,7 @@ public class UpdateDonorControllerTest extends ApplicationTest {
         clickOn("#userIDTextField");
         write("ABC1234");
         clickOn("#loginButton");
-        clickOn("#editButton");
+        clickOn("#editDetailsButton");
     }
 
     @After

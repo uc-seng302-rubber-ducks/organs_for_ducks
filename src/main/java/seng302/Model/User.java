@@ -211,7 +211,7 @@ this.changes = FXCollections.observableArrayList();
     this.bloodType = "U";
     this.alcoholConsumption = "None";
     updateHistory = new HashMap<>();
-    this.contact = new EmergencyContact(null,null, null);
+    this.contact = new EmergencyContact(null,null, this);
     updateHistory.put(dateToString(getTimeCreated()), "Profile created.");
     this.miscAttributes = new ArrayList<>();
     this.currentMedication = new ArrayList<>();
