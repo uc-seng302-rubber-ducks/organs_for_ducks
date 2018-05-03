@@ -2,10 +2,11 @@ package seng302.steps;
 
 import cucumber.api.PendingException;
 import cucumber.api.java.en.When;
+import javafx.scene.input.KeyCode;
 import org.testfx.framework.junit.ApplicationTest;
 
 public class WhenSteps extends ApplicationTest {
-    @When("^I view the previously created donor$")
+        @When("^I view the previously created donor$")
     public void iViewThePreviouslyCreatedDonor() throws Throwable {
         // Write code here that turns the phrase above into concrete actions
         throw new PendingException();
@@ -105,20 +106,20 @@ public class WhenSteps extends ApplicationTest {
 
     @When("^clicked on Status Chronic$")
     public void clickedOnStatusChronic() throws Throwable {
-        // Write code here that turns the phrase above into concrete actions
-        throw new PendingException();
+        clickOn("#chronicRadioButton");
     }
 
-    @When("^clicked on Status Cured$")
-    public void clickedOnStatusCured() throws Throwable {
-        // Write code here that turns the phrase above into concrete actions
-        throw new PendingException();
-    }
+
 
     @When("^I entered Disease Name \"([^\"]*)\" and Diagnosis Date \"([^\"]*)\"$")
-    public void iEnteredDiseaseNameAndDiagnosisDate(String arg1, String arg2) throws Throwable {
-        // Write code here that turns the phrase above into concrete actions
-        throw new PendingException();
+    public void iEnteredDiseaseNameAndDiagnosisDate(String diseaseName, String diagnosisDate) throws Throwable {
+        clickOn("#diseaseNameInput");
+        write(diseaseName);
+        clickOn("#diagnosisDateInput");
+        for(int i = 0; i < 12; i++) {
+            push(KeyCode.BACK_SPACE);
+        }
+        write(diagnosisDate);
     }
 
 }

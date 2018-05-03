@@ -1,8 +1,13 @@
 package seng302.steps;
 
+import static org.testfx.api.FxAssert.verifyThat;
+import static seng302.Utils.TableViewsMethod.getCell;
+
 import cucumber.api.PendingException;
+import cucumber.api.java.After;
 import cucumber.api.java.en.Given;
-import javafx.stage.Stage;
+import java.util.ArrayList;
+import java.util.concurrent.TimeoutException;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.matcher.control.LabeledMatchers;
@@ -10,13 +15,15 @@ import seng302.App;
 import seng302.Controller.AppController;
 import seng302.Model.User;
 
-import java.util.ArrayList;
-
-import static org.testfx.api.FxAssert.verifyThat;
-import static seng302.Controller.TableViewsMethod.getCell;
-
 public class GivenSteps extends ApplicationTest{
     private AppController controller;
+
+  @After
+  public void tearDown() throws TimeoutException {
+    if (FxToolkit.isFXApplicationThreadRunning()) {
+      FxToolkit.cleanupStages();
+    }
+  }
 
     @Given("^I have started the CLI$")
     public void iHaveStartedTheCLI() throws Throwable {

@@ -11,12 +11,12 @@ import org.junit.runner.RunWith;
 
 @RunWith(Cucumber.class)
 @CucumberOptions(features = "features",
-format = {
+plugin = {
         "pretty",
         "html:target/site/cucumber-pretty",
         "json:target/cucumber.json"},
         snippets = SnippetType.CAMELCASE,
-        glue = "steps"
+        glue = "seng302/steps"
 )
 public class GenericRunnerTest {
 

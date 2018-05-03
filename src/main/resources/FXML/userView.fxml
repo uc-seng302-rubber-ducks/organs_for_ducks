@@ -20,7 +20,7 @@
        tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0"
        AnchorPane.rightAnchor="0" AnchorPane.topAnchor="45">
         <tabs>
-          <Tab text="User Profile">
+          <Tab fx:id="userProfileTab" text="User Profile">
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="643.0" prefWidth="776.0">
                      <children>

@@ -18,8 +18,9 @@ public class DonorViewControllerTest extends ApplicationTest {
     }
 
     @After
-    public void tearDown() {
+    public void tearDown() throws TimeoutException {
         AppController.getInstance().getUsers().clear();
+        FxToolkit.cleanupStages();
     }
 
     @Test
