@@ -42,9 +42,10 @@ public class CreateClinicianControllerTest extends ApplicationTest {
     }
 
     @After
-    public void tearDown() {
+    public void tearDown() throws TimeoutException {
         AppController.getInstance().getUsers().clear();
         AppController.getInstance().getClinicians().remove(AppController.getInstance().getClinician("Staff1"));
+      FxToolkit.cleanupStages();
     }
 
     @Test
