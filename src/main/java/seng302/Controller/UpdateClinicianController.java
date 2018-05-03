@@ -273,8 +273,7 @@ public class UpdateClinicianController {
         boolean changed = false;
         changed = updateDetails(staffIDTextField.getText(), firstNameTextField.getText(),
             lastNameTextField.getText(),
-            regionTextField.getText(), addressTextField.getText(), middleNameTextField.getText(),
-            passwordField.getText(), confirmPasswordField.getText());
+            regionTextField.getText(), addressTextField.getText(), middleNameTextField.getText());
 
         if (changed) {
             prefillFields(currentClinician);
@@ -286,7 +285,7 @@ public class UpdateClinicianController {
 
     private boolean updateDetails(String staffId, String fName, String lName, String region,
         String address,
-        String mName, String password, String confirmPassword) {
+        String mName) {
         boolean changed = false;
         if (!currentClinician.getStaffId().equals(staffId)) {
             currentClinician.setStaffId(staffId);
@@ -358,7 +357,9 @@ public class UpdateClinicianController {
         if (!newClinician) {
             ClinicianController clinicianController = AppController.getInstance()
                 .getClinicianController();
-            clinicianController.init(stage, controller, clinician);
+            clinicianController.showClinician(oldClinician);
+            stage.close();
+
         } else {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML/clinicianView.fxml"));
             Parent root = null;
