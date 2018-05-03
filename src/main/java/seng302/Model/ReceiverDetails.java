@@ -3,8 +3,12 @@ package seng302.Model;
 import com.google.gson.annotations.Expose;
 import com.sun.org.apache.xpath.internal.operations.Or;
 
+import java.util.HashSet;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Class for receiver organs
@@ -19,7 +23,7 @@ public class ReceiverDetails {
 
   public ReceiverDetails(User attachedUser) {
     this.attachedUser = attachedUser;
-    this.organs = new EnumMap<Organs, ArrayList<LocalDate>>(Organs.class);
+    this.organs = new EnumMap<>(Organs.class);
 
   }
 
@@ -32,6 +36,11 @@ public class ReceiverDetails {
 
   public Map<Organs, ArrayList<LocalDate>> getOrgans() {
     return organs;
+  }
+
+  public void setOrgans(
+      Map<Organs, ArrayList<LocalDate>> organs) {
+    this.organs = organs;
   }
 
   public List<LocalDate> getOrganDates(Organs organ){

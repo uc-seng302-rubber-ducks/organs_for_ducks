@@ -1,11 +1,17 @@
 package seng302.Controller;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 import seng302.Model.Clinician;
@@ -152,6 +158,7 @@ public class LoginController {
 
             stage.setScene(new Scene(root));
             ClinicianController clinicianController = clinicianLoader.getController();
+              AppController.getInstance().setClinicianController(clinicianController);
             clinicianController.init(stage,appController,clinician);
 }
         }

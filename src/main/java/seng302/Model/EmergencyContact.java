@@ -7,26 +7,39 @@ public class EmergencyContact {
 
     //declaring attributes
     private String name;
-    private String HomePhoneNumber;
-    private String CellPhoneNumber;
+    private String homePhoneNumber;
+    private String cellPhoneNumber;
     private String address;
     private String region;
     private String Email;
     private String Relationship;
+    private transient User attachedUser;
 
     /**
      * Constructor for emergency contact
      * @param Ename Emergency contact name
      * @param ECellPhone Emergency contact phone number
      */
-    public EmergencyContact(String Ename, String ECellPhone){
+    public EmergencyContact(String Ename, String ECellPhone, User attachedUser) {
         name = Ename;
-        HomePhoneNumber = null;
-        CellPhoneNumber = ECellPhone;
+        homePhoneNumber = null;
+        cellPhoneNumber = ECellPhone;
         address = null;
         region = null;
         Email = null;
         Relationship = null;
+        this.attachedUser = attachedUser;
+    }
+
+    public EmergencyContact(String Ename, String ECellPhone, String homePhoneNumber, String region, String address, String email, String relationship, User attachedUser) {
+        name = Ename;
+        this.homePhoneNumber = homePhoneNumber;
+        this.cellPhoneNumber = ECellPhone;
+        this.address = address;
+        this.Email = email;
+        this.Relationship = relationship;
+        this.region = region;
+        this.attachedUser = attachedUser;
     }
 
 
@@ -35,23 +48,47 @@ public class EmergencyContact {
     }
 
     public void setName(String name) {
+        Memento<User> memento = new Memento<>();
+        User clone = attachedUser.clone();
+        clone.setContact(copy(this));
+        memento.setOldObject(clone);
         this.name = name;
+        clone = attachedUser.clone();
+        clone.setContact(copy(this));
+        memento.setNewObject(clone);
+        attachedUser.getUndoStack().push(memento);
     }
 
     public String getHomePhoneNumber() {
-        return HomePhoneNumber;
+        return homePhoneNumber;
     }
 
     public void setHomePhoneNumber(String homePhoneNumber) {
-        HomePhoneNumber = homePhoneNumber;
+        Memento<User> memento = new Memento<>();
+        User clone = attachedUser.clone();
+        clone.setContact(copy(this));
+        memento.setOldObject(clone);
+        this.homePhoneNumber = homePhoneNumber;
+        clone = attachedUser.clone();
+        clone.setContact(copy(this));
+        memento.setNewObject(clone);
+        attachedUser.getUndoStack().push(memento);
     }
 
     public String getCellPhoneNumber() {
-        return CellPhoneNumber;
+        return cellPhoneNumber;
     }
 
     public void setCellPhoneNumber(String cellPhoneNumber) {
-        CellPhoneNumber = cellPhoneNumber;
+        Memento<User> memento = new Memento<>();
+        User clone = attachedUser.clone();
+        clone.setContact(copy(this));
+        memento.setOldObject(clone);
+        this.cellPhoneNumber = cellPhoneNumber;
+        clone = attachedUser.clone();
+        clone.setContact(copy(this));
+        memento.setNewObject(clone);
+        attachedUser.getUndoStack().push(memento);
     }
 
     public String getAddress() {
@@ -59,7 +96,15 @@ public class EmergencyContact {
     }
 
     public void setAddress(String address) {
+        Memento<User> memento = new Memento<>();
+        User clone = attachedUser.clone();
+        clone.setContact(copy(this));
+        memento.setOldObject(clone);
         this.address = address;
+        clone = attachedUser.clone();
+        clone.setContact(copy(this));
+        memento.setNewObject(clone);
+        attachedUser.getUndoStack().push(memento);
     }
 
     public String getRegion() {
@@ -67,7 +112,15 @@ public class EmergencyContact {
     }
 
     public void setRegion(String region) {
+        Memento<User> memento = new Memento<>();
+        User clone = attachedUser.clone();
+        clone.setContact(copy(this));
+        memento.setOldObject(clone);
         this.region = region;
+        clone = attachedUser.clone();
+        clone.setContact(copy(this));
+        memento.setNewObject(clone);
+        attachedUser.getUndoStack().push(memento);
     }
 
     public String getEmail() {
@@ -75,7 +128,16 @@ public class EmergencyContact {
     }
 
     public void setEmail(String email) {
+        Memento<User> memento = new Memento<>();
+        User clone = attachedUser.clone();
+        clone.setContact(copy(this));
+        memento.setOldObject(clone);
         Email = email;
+        clone = attachedUser.clone();
+        clone.setContact(copy(this));
+        memento.setNewObject(clone);
+        attachedUser.getUndoStack().push(memento);
+        ;
     }
 
     public String getRelationship() {
@@ -83,7 +145,23 @@ public class EmergencyContact {
     }
 
     public void setRelationship(String relationship) {
+        Memento<User> memento = new Memento<>();
+        User clone = attachedUser.clone();
+        clone.setContact(copy(this));
+        memento.setOldObject(clone);
         Relationship = relationship;
+        clone = attachedUser.clone();
+        clone.setContact(copy(this));
+        memento.setNewObject(clone);
+        attachedUser.getUndoStack().push(memento);
+    }
+
+    public User getAttachedUser() {
+        return attachedUser;
+    }
+
+    public void setAttachedUser(User attachedUser) {
+        this.attachedUser = attachedUser;
     }
 
     public String toString() {
@@ -94,7 +172,7 @@ public class EmergencyContact {
                 "Address: %s\n" +
                 "Region: %s\n" +
                 "Email: %s\n" +
-                "Relationship: %s\n", name, HomePhoneNumber, CellPhoneNumber, address, region, Email, Relationship);
+                "Relationship: %s\n", name, homePhoneNumber, cellPhoneNumber, address, region, Email, Relationship);
     }
 
     /**
@@ -107,8 +185,8 @@ public class EmergencyContact {
         EmergencyContact otherContact = (EmergencyContact) other;
 
          return checkStrings(name, otherContact.name) &&
-                 checkStrings(HomePhoneNumber, otherContact.HomePhoneNumber) &&
-                 checkStrings(CellPhoneNumber, otherContact.CellPhoneNumber)
+                 checkStrings(homePhoneNumber, otherContact.homePhoneNumber) &&
+                 checkStrings(cellPhoneNumber, otherContact.cellPhoneNumber)
                  && checkStrings(Email, otherContact.Email) &&
                  checkStrings(address, otherContact.address) &&
                  checkStrings(region, otherContact.region) &&
@@ -134,10 +212,11 @@ public class EmergencyContact {
             return null;
         }
 
-        EmergencyContact newContact = new EmergencyContact(contact.name, contact.CellPhoneNumber);
+        EmergencyContact newContact = new EmergencyContact(contact.name, contact.cellPhoneNumber,
+            contact.attachedUser);
         newContact.address = contact.address;
         newContact.region = contact.region;
-        newContact.HomePhoneNumber = contact.HomePhoneNumber;
+        newContact.homePhoneNumber = contact.homePhoneNumber;
         newContact.Email = contact.Email;
         newContact.Relationship = contact.Relationship;
 
