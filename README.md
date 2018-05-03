@@ -49,6 +49,11 @@ The project should now be open.
  - `src/` Your application source
  - `doc/` User and design documentation
  - `doc/examples/` Demo example files for use with your application
+ - 
+# Troubleshooting
+
+Most issues can be fixed by naviagting into your home directory and deleting 
+the hidden .organs folder. This will remove all user data from the application
  
 # Using the Application
  
