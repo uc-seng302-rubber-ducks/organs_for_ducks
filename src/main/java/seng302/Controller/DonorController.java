@@ -345,6 +345,8 @@ public class DonorController {
         registerButton.setVisible(false);
         reRegisterButton.setVisible(false);
         deRegisterButton.setVisible(false);
+      takeMedicationButton.setVisible(false);
+      untakeMedicationButton.setVisible(false);
     }
     //arbitrary default values
     //changeDeceasedStatus();
@@ -475,8 +477,9 @@ public class DonorController {
         }
         showDonorHistory();
         changelog.addListener((ListChangeListener.Change<? extends Change> change) -> historyTableView.setItems(changelog));
-        medicationTextField.setOnMouseClicked(event -> getDrugSuggestions());
-        medicationTextField.textProperty().addListener((observable) -> getDrugSuggestions());
+      medicationTextField.setOnMouseClicked(event -> new Thread(() -> getDrugSuggestions()));
+      medicationTextField.textProperty()
+          .addListener((observable) -> new Thread(() -> getDrugSuggestions()));
 
         showDonorDiseases(currentUser, true);
         modifyOrgansProcedureButton.setVisible(false);

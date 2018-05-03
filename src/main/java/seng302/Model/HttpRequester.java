@@ -217,7 +217,7 @@ public class HttpRequester {
       suggestions = (JSONObject) new JSONParser().parse(response.body().string());
       return suggestions.get("suggestions").toString();
     } catch (ParseException e) {
-      e.printStackTrace();
+      System.out.println(e.getMessage());
       return "";
     }
   }
