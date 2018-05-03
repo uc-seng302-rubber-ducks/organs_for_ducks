@@ -10,7 +10,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.*;
@@ -180,7 +182,7 @@ public class User extends Undoable<User> {
       this.currentDiseases = new ArrayList<>();
       this.pastDiseases = new ArrayList<>();
       this.medicalProcedures  = new ArrayList<>();
-      this.changes = FXCollections.observableArrayList();
+this.changes = FXCollections.observableArrayList();
       /*try {
         changes = JsonHandler.importHistoryFromFile(name);
       } catch (FileNotFoundException e) {
@@ -221,6 +223,7 @@ public class User extends Undoable<User> {
 */
     this.currentDiseases = new ArrayList<>();
     this.pastDiseases = new ArrayList<>();
+    this.commonOrgans = new HashSet<>();
 
     this.donorDetails = new DonorDetails(this);
     this.receiverDetails = new ReceiverDetails(this);

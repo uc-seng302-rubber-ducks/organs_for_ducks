@@ -13,6 +13,20 @@ import static seng302.Model.Organs.MIDDLE_EAR;
 import static seng302.Model.Organs.PANCREAS;
 import static seng302.Model.Organs.SKIN;
 
+import static seng302.Model.Organs.BONE;
+import static seng302.Model.Organs.BONE_MARROW;
+import static seng302.Model.Organs.CONNECTIVE_TISSUE;
+import static seng302.Model.Organs.CORNEA;
+import static seng302.Model.Organs.HEART;
+import static seng302.Model.Organs.INTESTINE;
+import static seng302.Model.Organs.KIDNEY;
+import static seng302.Model.Organs.LIVER;
+import static seng302.Model.Organs.LUNG;
+import static seng302.Model.Organs.MIDDLE_EAR;
+import static seng302.Model.Organs.PANCREAS;
+import static seng302.Model.Organs.SKIN;
+
+import java.io.IOException;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -25,6 +39,7 @@ import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -173,6 +188,8 @@ public class ClinicianController {
   private ArrayList<User> users;
   private ArrayList<Stage> openStages;
   private FilteredList<User> fListDonors;
+  private FilteredList<TransplantDetails> fTransplantList;
+
 
   private Set<Organs> organs;
   private ObservableList<TransplantDetails> observableTransplantList;
@@ -365,7 +382,7 @@ public class ClinicianController {
     transplantWaitListTableView.getColumns().setAll(recipientNameColumn, organNameColumn, organRegistrationDateColumn, recipientRegionColumn);
     updateFiltersLabel();
     populateWaitListTable();
-}
+    }
 
   /**
    * populates and add double click functionality to the Wait List Table.
@@ -379,15 +396,23 @@ public class ClinicianController {
     if (user.isReceiver()) {
       organs = user.getReceiverDetails().getOrgans().keySet();
       for (Organs organ : organs) {
-        appController.addTransplant(new TransplantDetails(user.getNhi(), user.getName(), organ, LocalDate.now(), user.getRegion()));
+        if (isReceiverNeedingFilteredOrgan(user.getNhi(), organs).contains(organ)) {
+
+          appController.addTransplant(
+              new TransplantDetails(user.getNhi(), user.getName(), organ, LocalDate.now(),
+                  user.getRegion()));
+        }
       }
     }
   }
 
   observableTransplantList = FXCollections.observableList(appController.getTransplantList());
+    fTransplantList = new FilteredList<>(observableTransplantList);
+    fTransplantList = filterTransplantDetails(fTransplantList);
+    SortedList<TransplantDetails> sTransplantList = new SortedList<>(fTransplantList);
 
-  if(appController.getTransplantList().size() != 0) {
-    transplantWaitListTableView.setItems(observableTransplantList);
+    if (appController.getTransplantList().size() != 0) {
+      transplantWaitListTableView.setItems(sTransplantList);
 
     //set on-click behaviour
     transplantWaitListTableView.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -514,8 +539,9 @@ public class ClinicianController {
       boolean regionMatch = AttributeValidation.checkRegionMatches(regionSearchTextField.getText(), user);
       boolean genderMatch = AttributeValidation.checkGenderMatches(genderComboBox.getValue().toString(), user);
 
-      if (((user.getFirstName().toLowerCase()).startsWith(lowerCaseFilterText) ||
-              (user.getLastName().toLowerCase().startsWith(lowerCaseFilterText))) &&
+      //System.out.println(user);
+      if (AttributeValidation.checkTextMatches(lowerCaseFilterText, user.getFirstName()) ||
+          AttributeValidation.checkTextMatches(lowerCaseFilterText, user.getLastName()) &&
               (regionMatch) && (genderMatch) &&
           (((user.isDonor() == donorFilterCheckBox.isSelected()) &&
               (user.isReceiver() == receiverFilterCheckBox.isSelected())) || allCheckBox.isSelected())) {
@@ -538,11 +564,13 @@ public class ClinicianController {
     waitingRegionTextfield.textProperty().addListener((observable, oldValue, newValue) -> {
       setTransplantListPredicate(fListTransplantDetails);
       updateFiltersLabel();
+      transplantWaitListTableView.refresh();
     });
     for (CheckBox checkBox : filterCheckBoxList) {
       checkBox.selectedProperty().addListener((observable -> {
         setTransplantListPredicate(fListTransplantDetails);
         updateFiltersLabel();
+        transplantWaitListTableView.refresh();
       }));
     }
 
@@ -579,10 +607,24 @@ public class ClinicianController {
    */
   private void setTransplantListPredicate(FilteredList<TransplantDetails> fList) {
     fList.predicateProperty().bind(Bindings.createObjectBinding(() -> transplantDetails -> {
-
-      return ((transplantDetails.getRegion().contains(waitingRegionTextfield.getText().toLowerCase())) &&
-          (getAllFilteredOrgans().contains(transplantDetails.getOrgan()) || !checkAnyTransplantFilterCheckBoxSelected()));
+      return (AttributeValidation
+          .checkRegionMatches(waitingRegionTextfield.getText(), transplantDetails) &&
+          (isReceiverNeedingFilteredOrgan(transplantDetails.getNhi(),
+              new HashSet<>(getAllFilteredOrgans())).contains(transplantDetails.getOrgan())
+              || !checkAnyTransplantFilterCheckBoxSelected()));
     }));
+  }
+
+  private ArrayList<Organs> isReceiverNeedingFilteredOrgan(String nhi,
+      Set<Organs> organs) {
+    ArrayList<Organs> result = new ArrayList<>();
+    for (Organs o : organs) {
+      if (appController.findUser(nhi).getReceiverDetails()
+          .isCurrentlyWaitingFor(o)) {
+        result.add(o);
+      }
+    }
+    return result;
   }
 
   /**
@@ -701,6 +743,32 @@ public class ClinicianController {
     filterVisible = !filterVisible;
     expandButton.setText(filterVisible ? "▲" : "▼");
   }
+
+  public void refreshTables(Event event) {
+    transplantWaitListTableView.refresh();
+    searchTableView.refresh();
+  }
+//
+//  @FXML
+//  void goToNextPage() {
+//    if(currentIndex + ROWS_PER_PAGE >= users.size()) {
+//      initSearchTable(currentIndex);
+//    } else {
+//      initSearchTable(currentIndex + ROWS_PER_PAGE);
+//      currentIndex += ROWS_PER_PAGE;
+//    }
+//  }
+//
+//  @FXML
+//  void goToPrevPage() {
+//    if(currentIndex - ROWS_PER_PAGE < 0) {
+//      initSearchTable(0);
+//    } else {
+//      initSearchTable(currentIndex - ROWS_PER_PAGE);
+//      currentIndex -= ROWS_PER_PAGE;
+//    }
+//
+//  }
 
   @FXML
   public void loadRecentlyDeleted(ActionEvent actionEvent) {

@@ -55,6 +55,15 @@ import seng302.Model.Memento;
 import seng302.Model.OrganDeregisterReason;
 import seng302.Model.Organs;
 import seng302.Model.User;
+import seng302.Model.Change;
+import seng302.Model.Disease;
+import seng302.Model.EmergencyContact;
+import seng302.Model.HttpRequester;
+import seng302.Model.MedicalProcedure;
+import seng302.Model.OrganDeregisterReason;
+import seng302.Model.Organs;
+import seng302.Model.UndoRedoStacks;
+import seng302.Model.User;
 
 /**
  * Class for the functionality of the User view of the application
@@ -364,6 +373,7 @@ public class DonorController {
         addMedicationButton.setVisible(false);
         medicationTextField.setVisible(false);
         backButton.setVisible(false);
+
         organLabel.setVisible(false);
         organsComboBox.setVisible(false);
         registerButton.setVisible(false);
@@ -525,40 +535,10 @@ public class DonorController {
 
         currentDiseaseTableView.getSelectionModel().selectedItemProperty().addListener(ListChangeListener -> {
             pastDiseaseTableView.getSelectionModel().select(null);
-//            if (previousProcedureTableView.getSelectionModel().getSelectedItem() != null) {
-//                showProcedure(previousProcedureTableView.getSelectionModel().getSelectedItem());
-//                modifyOrgansProcedureButton.setVisible(true);
-//                currentProcedureList = previousProcedureTableView;
-//            }
         });
         pastDiseaseTableView.getSelectionModel().selectedItemProperty().addListener(ListChangeListener -> {
-            currentDiseaseTableView.getSelectionModel().select(null);
-//            if (pendingProcedureTableView.getSelectionModel().getSelectedItem() != null) {
-//                showProcedure(pendingProcedureTableView.getSelectionModel().getSelectedItem());
-//                modifyOrgansProcedureButton.setVisible(true);
-//                currentProcedureList = pendingProcedureTableView;
-//            }
+          currentDiseaseTableView.getSelectionModel().select(null);
         });
-
-//        Callback<TableColumn<Disease, String>, TableCell<Disease, String>> cellFactory =
-//            new Callback<TableColumn<Disease, String>, TableCell<Disease, String>>() {
-//                public TableCell call(TableColumn p) {
-//                    TableCell cell = new TableCell<Disease, String>() {
-//                        @Override
-//                        public void updateItem(String item, boolean empty) {
-//                            super.updateItem(item, empty);
-//                            setText(empty ? null : getString());
-//                            setStyle("-fx-background-color:ff0033");
-//                        }
-//
-//                        private String getString() {
-//                            return getItem() == null ? "" : getItem().toString();
-//                        }
-//                    };
-//
-//                    return cell;
-//                }
-//            };
 
 
         //init receiver organs combo box
@@ -661,6 +641,7 @@ public class DonorController {
   public void recolourConflictingCells(Organs item, boolean empty) {
 
   }
+
 
 
     public OrganDeregisterReason getOrganDeregisterationReason(){
@@ -1474,20 +1455,22 @@ public class DonorController {
   @FXML
   private void addDisease() {
 
-    FXMLLoader addDiseaseLoader = new FXMLLoader(getClass().getResource("/FXML/createNewDisease.fxml"));
-    Parent root = null;
-    try {
-      root = addDiseaseLoader.load();
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-    NewDiseaseController newDiseaseController = addDiseaseLoader.getController();
-    Stage stage = new Stage();
-    Disease disease = new Disease("", false, false, LocalDate.now());
+            FXMLLoader addDiseaseLoader = new FXMLLoader(getClass().getResource("/FXML/createNewDisease.fxml"));
+            Parent root = null;
+            try {
+                root = addDiseaseLoader.load();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            NewDiseaseController newDiseaseController = addDiseaseLoader.getController();
+            Stage stage = new Stage();
+            Disease disease = new Disease("", false, false, LocalDate.now());
         currentUser.addCurrentDisease(disease);newDiseaseController.init(currentUser, application, stage, disease, this);
-    stage.setScene(new Scene(root));
-    stage.show();
-  }/*Receiver*/
+            stage.setScene(new Scene(root));
+            stage.show();
+
+
+        }/*Receiver*/
 
     /**
      * register an organ
@@ -1791,7 +1774,8 @@ public class DonorController {
 
     /**
      * Closes current window.
-     */@FXML
+     */
+    @FXML
     private void closeWindow() {
         application.update(currentUser);stage.close();
     }
