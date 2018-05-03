@@ -369,6 +369,8 @@ public class DonorController {
         registerButton.setVisible(false);
         reRegisterButton.setVisible(false);
         deRegisterButton.setVisible(false);
+      takeMedicationButton.setVisible(false);
+      untakeMedicationButton.setVisible(false);
     }
     //arbitrary default values
     //changeDeceasedStatus();
@@ -416,14 +418,13 @@ public class DonorController {
                 .addListener((observable, oldValue, newValue) -> {
                     ObservableList<String> selected = currentMedicationListView.getSelectionModel()
                             .getSelectedItems();
-                    displayDetails(selected);
+                    displayDetails(selected, drugDetailsLabel, drugDetailsTextArea);
                 });
         previousMedicationListView.getSelectionModel().selectedItemProperty()
                 .addListener(((observable, oldValue, newValue) -> {
                     ObservableList<String> selected = previousMedicationListView.getSelectionModel()
                             .getSelectedItems();
-
-                    displayDetails(selected);
+                    displayDetails(selected, drugDetailsLabel, drugDetailsTextArea);
                 }));
         currentMedicationListView.setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
@@ -512,8 +513,9 @@ public class DonorController {
         }
         showDonorHistory();
         changelog.addListener((ListChangeListener.Change<? extends Change> change) -> historyTableView.setItems(changelog));
-        medicationTextField.setOnMouseClicked(event -> getDrugSuggestions());
-        medicationTextField.textProperty().addListener((observable) -> getDrugSuggestions());
+      medicationTextField.setOnMouseClicked(event -> new Thread(() -> getDrugSuggestions()));
+      medicationTextField.textProperty()
+          .addListener((observable) -> new Thread(() -> getDrugSuggestions()));
 
         showDonorDiseases(currentUser, true);
     modifyOrgansProcedureButton.setVisible(false);
@@ -673,21 +675,21 @@ public class DonorController {
     contact = user.getContact();
   }
 
-  /**
-   * takes selected items from lambda functions. handles http requesting and displaying results if
-   * one item is selected, active ingredients will be shown. If two are selected, the interactions
-   * between the two will be displayed
-   *
-   * @param selected selected items from listview
-   */
-  private void displayDetails(ObservableList<String> selected) {
-    if (selected.size() > 2) {
-      drugDetailsLabel.setText("Drug Details");
-      drugDetailsTextArea.setText(
-          "Please select any two drugs from either previous or current medications to view the interactions between them\n"
-              + "or select one drug to see it's active ingredients");
-      return;
-    }
+    /**
+     * takes selected items from lambda functions. handles http requesting and displaying results if
+     * one item is selected, active ingredients will be shown. If two are selected, the interactions
+     * between the two will be displayed
+     *
+     * @param selected selected items from listview
+     */
+    private void displayDetails(ObservableList<String> selected, Label drugDetailsLabel, TextArea drugDetailsTextArea) {
+        if (selected.size() > 2) {
+            drugDetailsLabel.setText("Drug Details");
+            drugDetailsTextArea.setText(
+                    "Please select any two drugs from either previous or current medications to view the interactions between them\n"
+                            + "or select one drug to see it's active ingredients");
+            return;
+        }
 
     try {
       //active ingredients

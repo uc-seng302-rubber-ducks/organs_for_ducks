@@ -934,7 +934,7 @@ public class User extends Undoable<User> {
     if (!this.getDonorDetails().getOrgans().isEmpty()) {
       StringBuilder toReturn = new StringBuilder(name + ". Donor: ");
       for (Organs o : this.donorDetails.getOrgans()) {
-        toReturn .append( o.toString() ).append( " ");
+        toReturn.append(o.toString()).append(" ");
       }
       return toReturn.toString();
     } else {
