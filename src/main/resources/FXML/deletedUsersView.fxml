@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+  prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8"
+  xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.Controller.DeletedUserController">
+  <children>
+    <TableView fx:id="deletedUserTableView" layoutX="6.0" layoutY="56.0" prefHeight="335.0"
+      prefWidth="587.0" AnchorPane.bottomAnchor="9.0" AnchorPane.leftAnchor="9.0"
+      AnchorPane.rightAnchor="9.0">
+    </TableView>
+    <Label layoutX="130.0" layoutY="14.0" text="Recently Deleted Users">
+      <font>
+        <Font size="29.0"/>
+      </font>
+    </Label>
+    <Button fx:id="restoreButton" layoutX="512.0" layoutY="19.0" mnemonicParsing="false"
+      onAction="#undoDeletedUser" text="Restore"/>
+  </children>
+</AnchorPane>

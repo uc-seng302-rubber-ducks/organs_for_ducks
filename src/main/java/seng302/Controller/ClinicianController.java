@@ -1,9 +1,24 @@
 package seng302.Controller;
 
+import static seng302.Model.Organs.BONE;
+import static seng302.Model.Organs.BONE_MARROW;
+import static seng302.Model.Organs.CONNECTIVE_TISSUE;
+import static seng302.Model.Organs.CORNEA;
+import static seng302.Model.Organs.HEART;
+import static seng302.Model.Organs.INTESTINE;
+import static seng302.Model.Organs.KIDNEY;
+import static seng302.Model.Organs.LIVER;
+import static seng302.Model.Organs.LUNG;
+import static seng302.Model.Organs.MIDDLE_EAR;
+import static seng302.Model.Organs.PANCREAS;
+import static seng302.Model.Organs.SKIN;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -16,7 +31,15 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.Pagination;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -24,22 +47,11 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-
-import java.io.IOException;
-import java.util.List;
-import java.util.Set;
-
 import seng302.Model.Clinician;
 import seng302.Model.Organs;
-import static seng302.Model.Organs.*;
 import seng302.Model.TransplantDetails;
 import seng302.Model.User;
 import seng302.Service.AttributeValidation;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
 
 /**
  * Class for the functionality of the Clinician view of the application
@@ -152,6 +164,9 @@ public class ClinicianController {
   @FXML
   private Label filtersLabel;
 
+  @FXML
+  private Button redoButton;
+
   private Stage stage;
   private AppController appController;
   private Clinician clinician;
@@ -188,9 +203,9 @@ public class ClinicianController {
     appController.setClinicianControllerInstance(this);
     this.stage = stage;
     this.appController = appController;
-    this.clinician = clinician;
+    this.clinician = clinician.clone();
     stage.setResizable(true);
-    showClinician();
+    showClinician(clinician);
     users = appController.getUsers();
     searchCount = users.size();
     initSearchTable();
@@ -237,7 +252,8 @@ public class ClinicianController {
   /**
    * initialises the clinicians details
    */
-  private void showClinician() {
+  public void showClinician(Clinician clinician) {
+    this.clinician = clinician;
     staffIdLabel.setText(clinician.getStaffId());
     fNameLabel.setText(clinician.getFirstName());
     mNameLabel.setText(clinician.getMiddleName());
@@ -251,6 +267,8 @@ public class ClinicianController {
     } else {
       stage.setTitle("Clinician: " + clinician.getFirstName() +" " + clinician.getLastName());
     }
+    undoButton.setDisable(clinician.getUndoStack().empty());
+    redoButton.setDisable(clinician.getRedoStack().empty());
   }
 
   /**
@@ -614,8 +632,17 @@ public class ClinicianController {
   }
 
   @FXML
-  void undo(ActionEvent event) {
+  private void undo(ActionEvent event) {
+    clinician.undo();
+    undoButton.setDisable(clinician.getUndoStack().empty());
+    showClinician(clinician);
+  }
 
+  @FXML
+  public void redo(ActionEvent event) {
+    clinician.redo();
+    redoButton.setDisable(clinician.getRedoStack().empty());
+    showClinician(clinician);
   }
 
   /**
@@ -656,7 +683,7 @@ public class ClinicianController {
       updateClinicianController.init(clinician, appController, stage, false);
       stage.initModality(Modality.APPLICATION_MODAL); // background window is no longer selectable
       stage.showAndWait();
-      showClinician();
+      showClinician(clinician);
 
     } catch (IOException e){
       e.printStackTrace();
@@ -674,25 +701,22 @@ public class ClinicianController {
     filterVisible = !filterVisible;
     expandButton.setText(filterVisible ? "▲" : "▼");
   }
-//
-//  @FXML
-//  void goToNextPage() {
-//    if(currentIndex + ROWS_PER_PAGE >= users.size()) {
-//      initSearchTable(currentIndex);
-//    } else {
-//      initSearchTable(currentIndex + ROWS_PER_PAGE);
-//      currentIndex += ROWS_PER_PAGE;
-//    }
-//  }
-//
-//  @FXML
-//  void goToPrevPage() {
-//    if(currentIndex - ROWS_PER_PAGE < 0) {
-//      initSearchTable(0);
-//    } else {
-//      initSearchTable(currentIndex - ROWS_PER_PAGE);
-//      currentIndex -= ROWS_PER_PAGE;
-//    }
-//
-//  }
+
+  @FXML
+  public void loadRecentlyDeleted(ActionEvent actionEvent) {
+    FXMLLoader deletedUserLoader = new FXMLLoader(
+        getClass().getResource("/FXML/deletedUsersView.fxml"));
+    Parent root = null;
+    try {
+      root = deletedUserLoader.load();
+      DeletedUserController deletedUserController = deletedUserLoader.getController();
+      Stage stage = new Stage();
+      stage.setScene(new Scene(root));
+      deletedUserController.init();
+      stage.initModality(Modality.APPLICATION_MODAL);
+      stage.showAndWait();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
 }

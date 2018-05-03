@@ -1,23 +1,21 @@
 package seng302.Controller;
 
-import javafx.scene.control.TextField;
-import org.junit.*;
-import org.testfx.api.FxToolkit;
-import org.testfx.matcher.control.LabeledMatchers;
-import org.testfx.framework.junit.ApplicationTest;
-
 import static javafx.scene.input.KeyCode.A;
 import static javafx.scene.input.KeyCode.BACK_SPACE;
 import static javafx.scene.input.KeyCode.SHORTCUT;
 import static org.testfx.api.FxAssert.verifyThat;
 
+import java.util.concurrent.TimeoutException;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.testfx.api.FxToolkit;
+import org.testfx.framework.junit.ApplicationTest;
+import org.testfx.matcher.control.LabeledMatchers;
 import org.testfx.matcher.control.TextInputControlMatchers;
-import org.testfx.matcher.control.TextMatchers;
-import org.testfx.util.NodeQueryUtils;
 import seng302.App;
 import seng302.Model.Clinician;
-
-import java.util.concurrent.TimeoutException;
 
 /**
  * Tests the UpdateClinicianController specifically for updating existing clinicians
@@ -54,10 +52,11 @@ public class UpdateClinicianControllerTest extends ApplicationTest {
     }
 
     @After
-    public void tearDown() {
+    public void tearDown() throws TimeoutException {
         clickOn("#logoutButton");
         AppController.getInstance().getUsers().clear();
         AppController.getInstance().getClinicians().remove(AppController.getInstance().getClinician("Staff1"));
+        FxToolkit.cleanupStages();
     }
 
     @Test
