@@ -1,5 +1,7 @@
 package seng302.Controller;
 
+import seng302.Model.*;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.time.LocalDate;
@@ -45,7 +47,6 @@ public class AppController {
     for(Clinician c : clinicians){
       if(c.getStaffId().equals("0")){
         defaultSeen = true;
-        System.out.println("Default seen");
         break;//short circuit out if default clinician exists
       }
     } //all code you wish to execute must be above this point!!!!!!!!

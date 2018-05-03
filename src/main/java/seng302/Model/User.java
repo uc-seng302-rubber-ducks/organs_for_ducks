@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.*;
 
 /**
  * Class for handling calls to user
@@ -312,7 +313,8 @@ this.changes = FXCollections.observableArrayList();
   public void setNhi(String nhi) {
     updateLastModified();
     this.nhi = nhi;
-  changes.add(new Change("Updated NHI to " + nhi));}
+    changes.add(new Change("Updated NHI to " + nhi));
+  }
 
     /**
      * Utility function to update the last modified timestamp when a change is made to a donor. Can be

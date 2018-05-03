@@ -43,7 +43,6 @@ public final class JsonHandler {
         String usersString = gson.toJson(users);
         writer.write(usersString);
         writer.close();
-        System.out.println("Donors saved");
     }
 
     /**
@@ -93,7 +92,6 @@ public final class JsonHandler {
         String usersString = gson.toJson(clinicians);
         writer.write(usersString);
         writer.close();
-        System.out.println("Clinicians saved");
     }
 
 
@@ -136,7 +134,6 @@ public final class JsonHandler {
         String usersString = gson.toJson(changes);
         writer.write(usersString);
         writer.close();
-        System.out.println("Changelog saved");
     }
 
 
@@ -152,7 +149,6 @@ public final class JsonHandler {
 
         File infile = new File(Directory.JSON.directory()+"/"+name+"changelog.json");
         if(!infile.exists()){
-            System.out.println("No previous changelog exists");
             return new ArrayList<>();
         }
 
