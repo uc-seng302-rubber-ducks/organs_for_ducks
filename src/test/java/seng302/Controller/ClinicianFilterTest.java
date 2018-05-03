@@ -23,8 +23,10 @@ public class ClinicianFilterTest extends ApplicationTest {
     AppController.getInstance().getUsers().clear();
     User adam = new User("ABC1234", LocalDate.now(), null, "Male", "Female", 1.75, 78, "A+", "None",true,
     "2 Sherbet Drive", "Fairyland", "033567721", "02044436727", "sherberto@gmail.com",
-        new EmergencyContact("Letifa", "0118999124"), "Adam John Fairie", "Adam", "Abathur - Destroyer of worlds", "John",
+        null, "Adam John Fairie", "Adam", "Abathur - Destroyer of worlds", "John",
         "Fairie");
+    adam.setContact(new EmergencyContact("Letifa", "0118999124", adam));
+    adam.getUndoStack().clear();
     AppController.getInstance().getUsers().add(adam);
     clickOn("#changeLogin");
     clickOn("#userIDTextField");

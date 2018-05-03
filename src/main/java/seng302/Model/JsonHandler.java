@@ -1,15 +1,23 @@
 package seng302.Model;
 
-import com.google.gson.*;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonPrimitive;
+import com.google.gson.JsonSerializer;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Reader;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Arrays;
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
 import seng302.Directory;
-
-
-import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.*;
 
 /**
  * Json Handler to import and save data
@@ -63,6 +71,10 @@ public final class JsonHandler {
         for (User result : results) {
             result.getReceiverDetails().setAttachedUser(result);
             result.getDonorDetails().setAttachedUser(result);
+            if (result.getContact() != null) {
+                result.getContact().setAttachedUser(result);
+            }
+            //TODO probably do the same with Receiver details
         }
         return results;
 

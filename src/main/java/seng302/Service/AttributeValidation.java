@@ -65,7 +65,7 @@ public class AttributeValidation {
      * @return The given cell phone number if it is in the correct format, null otherwise.
      */
     public static String validateCellNumber(String cellNum) {
-        if (cellNum.matches("^(02)[0-9]( |-)?[0-9]{3,4}( |-)?[0-9]{3,4}$")) {
+        if (cellNum.matches("^[0-9]{7,13}$")) {
             return cellNum;
         } else return null;
     }

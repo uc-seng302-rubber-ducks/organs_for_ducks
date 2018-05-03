@@ -1,9 +1,6 @@
 package seng302.Model;
 
 import com.google.gson.annotations.Expose;
-import org.omg.CORBA.ORB;
-
-import java.time.LocalDateTime;
 import java.util.HashSet;
 
 
@@ -46,6 +43,8 @@ public class DonorDetails {
    * @param organ the enum of organs.
    */
   public void addOrgan(Organs organ) {
+    Memento<User> memento = new Memento<>();
+    memento.setOldObject(attachedUser.clone());
     if (attachedUser != null){
       attachedUser.updateLastModified();
       attachedUser.addChange(new Change("Added organ " + organ.toString()));
@@ -57,6 +56,8 @@ public class DonorDetails {
     attachedUser.updateLastModified();
     //TODO attachedUser is always null
     attachedUser.updateLastModified();
+    memento.setNewObject(attachedUser.clone());
+    attachedUser.getUndoStack().push(memento);
   }
 
   /**
@@ -65,12 +66,16 @@ public class DonorDetails {
    * @param organ the enum of organs.
    */
   public void removeOrgan(Organs organ) {
+    Memento<User> memento = new Memento<>();
+    memento.setOldObject(attachedUser.clone());
     if (organs.contains(organ)) {
       organs.remove(organ);
       //TODO attachedUser is always null
       attachedUser.updateLastModified();
       attachedUser.addChange(new Change("Removed organ " + organ.organName));
     }
+    memento.setNewObject(attachedUser.clone());
+    attachedUser.getUndoStack().push(memento);
   }
 
   private boolean isCurrentlyWaitingFor(Organs organ) {
