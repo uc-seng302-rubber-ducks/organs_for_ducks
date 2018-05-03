@@ -12,15 +12,17 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 
 /**
  * Class for writing to a JSON file to allow data persistence.
- *
+ * Class is deprecated please use JsonHandler
  * @author Josh Burt
  */
+@Deprecated
 public final class JsonWriter {
 
     /**
@@ -106,11 +108,11 @@ public final class JsonWriter {
             }
             j.put("Misc", miscAttributes); //why is this here?
             JSONArray currentMedicationTimeStamps = new JSONArray();
-            HashMap<String, ArrayList<DateTime>> currentMedsTimes = d.getCurrentMedicationTimes();
+            HashMap<String, ArrayList<LocalDateTime>> currentMedsTimes = d.getCurrentMedicationTimes();
             for(String key : currentMedsTimes.keySet()){
                 JSONArray times = new JSONArray();
-                ArrayList<DateTime> dateTimes = currentMedsTimes.get(key);
-                for (DateTime t : dateTimes){
+                ArrayList<LocalDateTime> dateTimes = currentMedsTimes.get(key);
+                for (LocalDateTime t : dateTimes){
                     times.add((String) t.toString());
                 }
                 JSONObject hashMapGlue = new JSONObject();
@@ -119,11 +121,11 @@ public final class JsonWriter {
             }
             j.put("Current Medication TimeStamps", currentMedicationTimeStamps);
             JSONArray previousMedicationTimeStamps = new JSONArray();
-            HashMap<String, ArrayList<DateTime>> previousMedsTimes = d.getPreviousMedicationTimes();
+            HashMap<String, ArrayList<LocalDateTime>> previousMedsTimes = d.getPreviousMedicationTimes();
             for(String key : previousMedsTimes.keySet()){
                 JSONArray times = new JSONArray();
-                ArrayList<DateTime> dateTimes = previousMedsTimes.get(key);
-                for (DateTime t : dateTimes){
+                ArrayList<LocalDateTime> dateTimes = previousMedsTimes.get(key);
+                for (LocalDateTime t : dateTimes){
                     times.add((String) t.toString());
                 }
                 JSONObject hashMapGluePre = new JSONObject();
@@ -188,6 +190,7 @@ public final class JsonWriter {
      * The JSON object is then placed into the JSONArray and written back to the orignal place overwritting the file that is there
      *
      * @param toWrite change to be written into the changelog.
+     * @param name the name of the file path to the change log json.
      */
     public static void changeLog(ArrayList<String> toWrite, String name){
         try {
@@ -235,7 +238,7 @@ public final class JsonWriter {
             JSONArray outerJSON = new JSONArray();
             for(Clinician c : clinicians){
                 JSONObject j = new JSONObject();
-                j.put("Name", c.getName());
+                j.put("Name", c.getFullName());
                 j.put("Staff Id", c.getStaffId());
                 j.put("Work Address", c.getWorkAddress());
                 j.put("Region", c.getRegion());

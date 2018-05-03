@@ -1,26 +1,30 @@
 package seng302.View;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import seng302.Model.Donor;
+import seng302.Model.User;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
+
+/**
+ * Class to handle input and output
+ */
 public class IoHelper {
 
   /**
    * tries to convert a string to a date
    * requires format yyyy-MM-dd
    * writes to System.err on failure
-   *
+   * @param rawDate The date as a String.
    * @return Date or null
    */
-  public static Date readDate(String rawDate) {
-    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-    Date date;
+  public static LocalDate readDate(String rawDate) {
+    DateTimeFormatter sdf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    LocalDate date;
     try {
-      date = sdf.parse(rawDate);
-    } catch (ParseException e) {
+      date = LocalDate.parse(rawDate,sdf);
+    } catch (DateTimeParseException e) {
       System.err.println("Error parsing date: " + rawDate);
       System.err.println("Please use format yyyy-MM-dd");
       date = null;
@@ -29,39 +33,47 @@ public class IoHelper {
   }
 
   /**
-   * updates the name of a donor where either first or last name could be null.
+   * updates the name of a user where either first or last name could be null.
    * Only replaces the non-null value
+   * @param user The current user.
+   * @param firstName The users first name.
+   * @param lastName The users last name.
    * @return boolean if changes were made or not
    */
-  public static boolean updateName(Donor donor, String firstName, String lastName) {
+  public static boolean updateName(User user, String firstName, String lastName) {
 
     if (firstName == null && lastName == null) {
       return false;
     }
 
     //TODO review logic for edge cases
-    String[] names = donor.getName().split(" ");
+    String[] names = user.getName().split(" ");
     if (firstName != null && lastName != null) {
-      donor.setName(firstName + " " + lastName);
+      user.setName(firstName + " " + lastName);
     }
     else if (lastName == null && names.length > 1) {
-      donor.setName(firstName + " " + names[1]);
+      user.setName(firstName + " " + names[1]);
     }
     else if (firstName == null) {
-      donor.setName(names[0] +" "+ lastName);
+      user.setName(names[0] +" "+ lastName);
     }
     return true;
   }
 
-  public static String prettyStringDonors(ArrayList<Donor> donors) {
+  /**
+   *
+   * @param users An array list of users.
+   * @return A String of all users separated by a new line.
+   */
+  public static String prettyStringDonors(ArrayList<User> users) {
     StringBuilder sb = new StringBuilder();
-    if(donors.size() > 0) {
-      for (Donor d : donors) {
-        sb.append(d.toString());
+    if(users.size() > 0) {
+      for (User u : users) {
+        sb.append(u.toString());
         sb.append("\n");
       }
     } else {
-      sb.append("No donors found");
+      sb.append("No users found");
     }
 
     return sb.toString();

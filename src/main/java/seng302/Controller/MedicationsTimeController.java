@@ -10,13 +10,16 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
-import org.joda.time.DateTime;
-import seng302.Model.Donor;
 import seng302.Model.MedicationDurations;
+import seng302.Model.User;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 
+/**
+ * Class for the functionality of the medication view
+ */
 public class MedicationsTimeController {
 
     @FXML
@@ -29,25 +32,25 @@ public class MedicationsTimeController {
     private Button backButton;
 
     private AppController appController;
-    private Donor donor;
+    private User user;
     private Stage stage;
     private ObservableList medicationDurations;
 
     /**
-     * Initilizes the view and passes important settings into the controller
+     * Initializes the view and passes important settings into the controller
      *
-     * @param appController apllication state itself
-     * @param donor current donor for this view
+     * @param appController application state itself
+     * @param user current user for this view
      * @param stage stage that the scene is shown on
      * @param medicine medication this is having its history shown
      */
-    public void init(AppController appController, Donor donor, Stage stage, String medicine){
+    public void init(AppController appController, User user, Stage stage, String medicine){
         this.appController = appController;
-        this.donor = donor;
+        this.user = user;
         this.stage = stage;
         medicineNameLabel.setText(medicine);
-        ArrayList<DateTime> currentTimeStamps = donor.getCurrentMedicationTimes().get(medicine);
-        ArrayList<DateTime> previousTimeStamps = donor.getPreviousMedicationTimes().get(medicine);
+        ArrayList<LocalDateTime> currentTimeStamps = user.getCurrentMedicationTimes().get(medicine);
+        ArrayList<LocalDateTime> previousTimeStamps = user.getPreviousMedicationTimes().get(medicine);
         medicationDurations = FXCollections.observableArrayList(new ArrayList<>());
         setUpTable(currentTimeStamps,previousTimeStamps);
 
@@ -59,7 +62,7 @@ public class MedicationsTimeController {
      * @param current list of currently taken medication timestamps
      * @param previous list of previously taken medication timetamps
      */
-    private void setUpTable(ArrayList<DateTime> current, ArrayList<DateTime> previous){
+    private void setUpTable(ArrayList<LocalDateTime> current, ArrayList<LocalDateTime> previous){
         if(current != null) {
             current.sort(Comparator.naturalOrder());
         } else {
@@ -106,7 +109,7 @@ public class MedicationsTimeController {
 
     /**
      * Closes the stage on back button being pressed
-     * @param event passed in automaticly by the gui
+     * @param event passed in automatically by the gui
      */
     @FXML
     void back(ActionEvent event) {

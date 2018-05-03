@@ -8,13 +8,11 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-import seng302.Model.Donor;
 import seng302.Model.UndoRedoStacks;
-
-import java.util.ArrayList;
+import seng302.Model.User;
 
 /**
- * Class for controlling the miscallanous attributes view
+ * Class for controlling the miscellaneous attributes view
  *
  * @author Josh Burt
  */
@@ -38,46 +36,61 @@ public class MiscAttributesController {
   @FXML
   private Button backButton;
 
-  private Donor currentDonor;
+  private User currentUser;
   private AppController appController;
   private Stage stage;
 
-  public void init(Donor donor, AppController appController, Stage stage) {
-    currentDonor = donor;
+  /**
+   * Initializes the Misc Attributes Controller
+   * @param user The current user.
+   * @param appController An instance of AppController.
+   * @param stage The applications stage.
+   */
+  public void init(User user, AppController appController, Stage stage) {
+    currentUser = user;
     this.appController = appController;
     this.stage = stage;
-    attributesList.setItems(FXCollections.observableList(donor.getMiscAttributes()));
+    attributesList.setItems(FXCollections.observableList(user.getMiscAttributes()));
 
   }
 
+  /**
+   * Adds miscellaneous attribute to the current user profile
+   * @param event passed in automatically by the gui
+   */
   @FXML
   void addAttribute(ActionEvent event) {
-    UndoRedoStacks.storeUndoCopy(currentDonor);
     String toAdd = attributeTextFeild.getText();
     attributeTextFeild.setText("");
     if (toAdd == null) {
       return;
     }
-    currentDonor.addAttribute(toAdd);
-    attributesList.setItems(FXCollections.observableList(currentDonor.getMiscAttributes()));
-    appController.update(currentDonor);
+    currentUser.addAttribute(toAdd);
+    attributesList.setItems(FXCollections.observableList(currentUser.getMiscAttributes()));
+    appController.update(currentUser);
   }
 
+  /**
+   * Removes selected item from the user profile
+   * @param event passed in automatically by the gui
+   */
   @FXML
   void removeAttribute(ActionEvent event) {
-    UndoRedoStacks.storeUndoCopy(currentDonor);
     String selected = attributesList.getSelectionModel().getSelectedItem();
     attributesList.getItems().remove(selected);
-    currentDonor.removeMiscAttribute(selected);
-    appController.update(currentDonor);
+    currentUser.removeMiscAttribute(selected);
+    appController.update(currentUser);
   }
 
+  /**
+   * @param event passed in automatically by the gui
+   */
   @FXML
   void goBack(ActionEvent event) {
     AppController appController = AppController.getInstance();
     DonorController donorController = appController.getDonorController();
     try {
-      donorController.showDonor(currentDonor);
+      donorController.showUser(currentUser);
     }
     catch (NullPointerException ex) {
       //TODO causes npe if donor is new in this session

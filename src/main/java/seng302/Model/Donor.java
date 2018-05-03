@@ -1,62 +1,125 @@
 package seng302.Model;
 
-import java.sql.Timestamp;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.Instant;
+import java.io.FileNotFoundException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 
-import org.joda.time.DateTime;
-
-import java.text.DateFormat;
-import org.joda.time.LocalDate;
-import org.joda.time.ReadableInstant;
-import org.joda.time.Years;
 
 /**
  * Class for all donors created in this application
  *
  * No methods in this class, as of 26/02/2018, are non standard.
  */
+@Deprecated
 public class Donor {
 
-  private Date dateOfBirth;
-  private Date dateOfDeath;
-  private String gender;
-  private double height;
-  private double weight;
-  private String bloodType;
-  private String currentAddress;
-  private String region;
-  private DateTime timeCreated;
-  private Boolean isDeceased;
-  private String name;
-  private HashSet<Organs> organs;
-  private DateTime lastModified;
-  private ArrayList<String> miscAttributes;
-   private HashMap<String, String> updateHistory;
-   private ArrayList<String> previousMedication;
-   private ArrayList<String> currentMedication;
-   private HashMap<String, ArrayList<DateTime>> previousMedicationTimes;
-   private HashMap<String, ArrayList<DateTime>> currentMedicationTimes;
-   private ArrayList<Change> changes;
+    private String NHI;
+    private String name; // TODO: Take this out and use the separated names
+    private String firstName;
+    private String preferredFirstName;
+    private String middleName;
+    private String lastName;
+    private LocalDate dateOfBirth;
+    private LocalDate dateOfDeath;
+    private Boolean isDeceased;
+    private String birthGender;
+    private String genderIdentity;
+    private double height;
+    private double weight;
+    private String bloodType;
+    private String alcoholConsumption;
+    private boolean smoker;
+    private String currentAddress;
+    private String region;
+    private String homePhone;
+    private String cellPhone;
+    private String email;
+    private EmergencyContact contact;
+
+    private LocalDateTime timeCreated;
+    private HashSet<Organs> organs;
+    private LocalDateTime lastModified;
+    private ArrayList<String> miscAttributes;
+    private HashMap<String, String> updateHistory;
+    private ArrayList<String> previousMedication;
+    private ArrayList<String> currentMedication;
+    private HashMap<String, ArrayList<LocalDateTime>> previousMedicationTimes;
+    private HashMap<String, ArrayList<LocalDateTime>> currentMedicationTimes;
+    private ArrayList<Change> changes;
 
 
+    // updated constructor that works with the creation page
+    public Donor(String nhi, LocalDate dateOfBirth, LocalDate dateOfDeath, String birthGender, String genderIdentity,
+                 double height, double weight, String bloodType, String alcoholConsumption, boolean smoker,
+                 String currentAddress, String region, String homePhone, String cellPhone, String email,
+                 EmergencyContact contact, String name, String firstName, String preferredFirstName, String middleName,
+                 String lastName) {
 
+        this.NHI = nhi;
+        this.dateOfBirth = dateOfBirth;
+        this.dateOfDeath = dateOfDeath;
 
-  public Donor(Date dateOfBirth, Date dateOfDeath, String gender, double height, double weight,
-      String bloodType,
-      String currentAddress, String region, DateTime timeCreated, String name,
-      DateTime lastModified,
-      boolean isDeceased) {
+        this.birthGender = birthGender;
+        this.genderIdentity = genderIdentity;
+        this.height = height;
+        this.weight = weight;
+        this.bloodType = bloodType;
+        this.alcoholConsumption = alcoholConsumption;
+        this.smoker = smoker;
+
+        this.currentAddress = currentAddress;
+        this.region = region;
+        this.homePhone = homePhone;
+        this.cellPhone = cellPhone;
+        this.email = email;
+        this.contact = contact;
+
+        this.name = name;
+        this.firstName = firstName;
+        this.preferredFirstName = preferredFirstName;
+        this.middleName = middleName;
+        this.lastName = lastName;
+
+        this.timeCreated = LocalDateTime.now();
+        updateHistory = new HashMap<>();
+        this.miscAttributes = new ArrayList<>();
+        this.currentMedication = new ArrayList<>();
+        this.previousMedication = new ArrayList<>();
+        this.currentMedicationTimes = new HashMap<>();
+        this.previousMedicationTimes = new HashMap<>();
+        //changes = JsonReader.importHistoryFromFile(this);
+    }
+
+    /**
+     * Constructor for a Donor
+     * @param dateOfBirth donor date of birth
+     * @param dateOfDeath donor date of death
+     * @param gender donor gender
+     * @param height donor height
+     * @param weight donor weight
+     * @param bloodType donor bloodtype
+     * @param currentAddress donor current address
+     * @param region donor region
+     * @param timeCreated donor time created
+     * @param name donor name
+     * @param lastModified donor last modified
+     * @param isDeceased donor is deceased
+     */
+  public Donor(java.time.LocalDate dateOfBirth, java.time.LocalDate dateOfDeath, String gender, double height, double weight,
+               String bloodType,
+               String currentAddress, String region, LocalDateTime timeCreated, String name,
+               LocalDateTime lastModified,
+               boolean isDeceased) {
     this.dateOfBirth = dateOfBirth;
     this.dateOfDeath = dateOfDeath;
     if (gender.startsWith("m") || gender.startsWith("M")) {
-      this.gender = "M";
+      this.birthGender = "M";
     } else if (gender.startsWith("f") || gender.startsWith("F")) {
-      this.gender = "F";
+      this.birthGender = "F";
     } else {
-      this.gender = "U";
+      this.birthGender = "U";
     }
     this.height = height;
     this.weight = weight;
@@ -64,14 +127,14 @@ public class Donor {
     this.currentAddress = currentAddress;
     this.region = region;
     if (timeCreated == null) {
-      this.timeCreated = DateTime.now();
+      this.timeCreated = LocalDateTime.now();
     } else {
       this.timeCreated = timeCreated;
     }
 
         this.name = name;
         if (lastModified == null) {
-            this.lastModified = DateTime.now();
+            this.lastModified = LocalDateTime.now();
         } else {
             this.lastModified = lastModified;
         }
@@ -80,39 +143,52 @@ public class Donor {
         this.miscAttributes = new ArrayList<>();
         this.currentMedication = new ArrayList<>();
         this.previousMedication = new ArrayList<>();
-        this.currentMedicationTimes = new HashMap<>();
-        this.previousMedicationTimes = new HashMap<>();
-        changes = JsonReader.importHistoryFromFile(this);
-    }
+        this.currentMedicationTimes = new HashMap<String, ArrayList<LocalDateTime>>();
+        this.previousMedicationTimes = new HashMap<String, ArrayList<LocalDateTime>>();
+      try {
+          changes = JsonHandler.importHistoryFromFile(name.toLowerCase().replace(" ", "_"));
+      } catch (FileNotFoundException e) {
+          e.printStackTrace();
+      }
+  }
 
-    public Donor(String name, Date dateOfBirth) {
+    /**
+     * Constructor for a donor with minimum information
+     * @param name donor name
+     * @param dateOfBirth donor date of birth
+     */
+    public Donor(String name, java.time.LocalDate dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
         this.name = name;
-        timeCreated = DateTime.now();
-        lastModified = DateTime.now();
-        this.gender = "U";
+        timeCreated = LocalDateTime.now();
+        lastModified = LocalDateTime.now();
+        this.birthGender = "U";
         this.bloodType = "U";
         updateHistory = new HashMap<>();
         updateHistory.put(dateToString(getTimeCreated()), "Profile created.");
         this.miscAttributes = new ArrayList<>();
         this.currentMedication = new ArrayList<>();
         this.previousMedication = new ArrayList<>();
-        this.currentMedicationTimes = new HashMap<>();
-        this.previousMedicationTimes = new HashMap<>();
-        changes = JsonReader.importHistoryFromFile(this);
+        this.currentMedicationTimes = new HashMap<String, ArrayList<LocalDateTime>>();
+        this.previousMedicationTimes = new HashMap<String, ArrayList<LocalDateTime>>();
+        try {
+            changes = JsonHandler.importHistoryFromFile(name.toLowerCase().replace(" ", "_"));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     /** empty constructor to allow an empty donor to be created for the gui
      *
      */
     public Donor(){
-      timeCreated = DateTime.now();
+      timeCreated = LocalDateTime.now();
       organs = new HashSet<>();
       miscAttributes = new ArrayList<String>();
         this.currentMedication = new ArrayList<>();
         this.previousMedication = new ArrayList<>();
-        this.currentMedicationTimes = new HashMap<>();
-        this.previousMedicationTimes = new HashMap<>();
+        this.currentMedicationTimes = new HashMap<String, ArrayList<LocalDateTime>>();
+        this.previousMedicationTimes = new HashMap<String, ArrayList<LocalDateTime>>();
         changes = new ArrayList<>();
     }
 
@@ -122,15 +198,15 @@ public class Donor {
    * changed later to allow writing to the JSON change log latter
    */
   public void updateLastModified() {
-    lastModified = DateTime.now();
+    lastModified = LocalDateTime.now();
   }
 
-  public DateTime getLastModified() {
+  public LocalDateTime getLastModified() {
     return lastModified;
   }
 
   //For UndoRedoStacks
-  public void setLastModified(DateTime lastModified) {
+  public void setLastModified(LocalDateTime lastModified) {
     this.lastModified = lastModified;
   }
 
@@ -143,32 +219,97 @@ public class Donor {
     this.name = name;
   }
 
-  public Date getDateOfBirth() {
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String name) {
+        updateLastModified();
+        this.firstName = name;
+    }
+
+    public String getPrefFirstName() {
+        return preferredFirstName;
+    }
+
+    public void setPrefFirstName(String name) {
+        updateLastModified();
+        this.preferredFirstName = name;
+    }
+
+    public String getMiddleName() {
+        return middleName;
+    }
+
+    public void setMiddleName(String name) {
+        updateLastModified();
+        this.middleName = name;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String name) {
+        updateLastModified();
+        this.lastName = name;
+    }
+
+    public String getFullName() {
+        String fullName;
+
+        if (middleName != null && lastName != null) {
+            fullName = firstName + " " + middleName  + " " + lastName;
+
+        } else if (middleName != null) {
+            fullName = firstName + " " + middleName;
+
+        } else if (lastName != null) {
+            fullName = firstName + " " + lastName;
+
+        } else {
+            fullName = firstName;
+        }
+
+        return fullName;
+    }
+
+  public LocalDate getDateOfBirth() {
     return dateOfBirth;
   }
 
-  public void setDateOfBirth(Date dateOfBirth) {
+  public void setDateOfBirth(java.time.LocalDate dateOfBirth) {
     updateLastModified();
     this.dateOfBirth = dateOfBirth;
   }
 
-  public Date getDateOfDeath() {
+  public java.time.LocalDate getDateOfDeath() {
     return dateOfDeath;
   }
 
-  public void setDateOfDeath(Date dateOfDeath) {
+  public void setDateOfDeath(java.time.LocalDate dateOfDeath) {
     updateLastModified();
     this.dateOfDeath = dateOfDeath;
   }
 
   public String getGender() {
-    return gender;
+    return birthGender;
   }
 
   public void setGender(String gender) {
     updateLastModified();
-    this.gender = gender;
+    this.birthGender = gender;
   }
+
+    public String getGenderId() {
+        return genderIdentity;
+    }
+
+    public void setGenderId(String gender) {
+        updateLastModified();
+        this.genderIdentity = gender;
+    }
 
   public double getHeight() {
     return height;
@@ -216,12 +357,12 @@ public class Donor {
     this.region = region;
   }
 
-  public DateTime getTimeCreated() {
+  public LocalDateTime getTimeCreated() {
     return timeCreated;
   }
 
   //For UndoRedoStacks
-  public void setTimeCreated(DateTime timeCreated) {
+  public void setTimeCreated(LocalDateTime timeCreated) {
     updateLastModified();
     this.timeCreated = timeCreated;
   }
@@ -235,6 +376,10 @@ public class Donor {
     this.organs = organs;
   }
 
+    /**
+     * adds organ to organs set
+     * @param organ organ
+     */
   public void addOrgan(Organs organ) {
     updateLastModified();
     if (organs == null) {
@@ -243,19 +388,22 @@ public class Donor {
     this.organs.add(organ);
   }
 
+    /**
+     * removes organ for organ set
+     * @param organ organ
+     */
   public void removeOrgan(Organs organ) {
     if (organs.contains(organ)) {
       organs.remove(organ);
     }
   }
 
-  public Years getAge() {
+  public String getAge() {
     if (dateOfDeath != null) {
 
-      return Years.yearsBetween(LocalDate.fromDateFields(dateOfBirth),
-          LocalDate.fromDateFields(dateOfDeath));
+      return Long.toString(ChronoUnit.YEARS.between(dateOfBirth,dateOfDeath));
     }
-    return Years.yearsBetween(LocalDate.fromDateFields(dateOfBirth), LocalDate.now());
+    return Long.toString(ChronoUnit.YEARS.between(dateOfBirth, java.time.LocalDate.now()));
   }
 
   //Trial method
@@ -319,11 +467,11 @@ public class Donor {
 
     public void setUpdateHistory(HashMap<String, String> updateHistory) {this.updateHistory = updateHistory; }
 
-    private String dateToString(DateTime dateTime) {
-        return new Timestamp(dateTime.getMillis()).toString();
+    private String dateToString(LocalDateTime dateTime) {
+        return dateTime.toString();
     }
 
-    public void addToUpdateHistory(DateTime dateTime, String action) {
+    public void addToUpdateHistory(LocalDateTime dateTime, String action) {
         String timeStamp = dateToString(dateTime);
         updateHistory.put(timeStamp, action);
     }
@@ -352,11 +500,19 @@ public class Donor {
         this.currentMedication = currentMedication;
     }
 
+    /**
+     * adds new medication for the user
+     * @param medication new medication
+     */
     public void addCurrentMedication(String medication) {
         currentMedication.add(medication);
         addCurrentMedicationTimes(medication);
     }
 
+    /**
+     * adds a previously taken medication for the user
+     * @param medication previously taken medication
+     */
     public void addPreviousMedication(String medication) {
         previousMedication.add(medication);
         addPreviousMedicationTimes(medication);
@@ -371,44 +527,52 @@ public class Donor {
     }
 
 
+    /**
+     * removes currently taking medication for the user
+     * @param medication currently taking medication
+     */
     public void removeCurrentMedication(String medication) {
         currentMedication.remove(medication);
     }
 
+    /**
+     * Removes a previously taken medication for the user
+     * @param medication previously taken medication
+     */
     public void removePreviousMedication(String medication) {
         previousMedication.remove(medication);
     }
 
-    public HashMap<String, ArrayList<DateTime>> getPreviousMedicationTimes() {
+    public HashMap<String, ArrayList<LocalDateTime>> getPreviousMedicationTimes() {
         return previousMedicationTimes;
     }
 
-    public void setPreviousMedicationTimes(HashMap<String, ArrayList<DateTime>> previousMedicationTimes) {
+    public void setPreviousMedicationTimes(HashMap<String, ArrayList<LocalDateTime>> previousMedicationTimes) {
         this.previousMedicationTimes = previousMedicationTimes;
     }
 
-    public HashMap<String, ArrayList<DateTime>> getCurrentMedicationTimes() {
+    public HashMap<String, ArrayList<LocalDateTime>> getCurrentMedicationTimes() {
         return currentMedicationTimes;
     }
 
 
-    public void setCurrentMedicationTimes(HashMap<String, ArrayList<DateTime>> currentMedicationTimes) {
+    public void setCurrentMedicationTimes(HashMap<String, ArrayList<LocalDateTime>> currentMedicationTimes) {
         this.currentMedicationTimes = currentMedicationTimes;
     }
 
     /**
      * Use this one when adding a new medication from the donor interface
-     * @param medication
+     * @param medication medication string.
      */
     public void addCurrentMedicationTimes(String medication) {
-        DateTime time  = DateTime.now();
+        LocalDateTime time  = LocalDateTime.now();
         updateLastModified();
-        ArrayList<DateTime> previouslyExists;
+        ArrayList<LocalDateTime> previouslyExists;
         try {
             previouslyExists = currentMedicationTimes.get(medication);
             previouslyExists.add(time);
         } catch (NullPointerException e){
-            previouslyExists = new ArrayList<DateTime>();
+            previouslyExists = new ArrayList<>();
             previouslyExists.add(time);
         }
 
@@ -421,14 +585,14 @@ public class Donor {
      *
      */
     public void addPreviousMedicationTimes(String medication) {
-        DateTime time  = DateTime.now();
+        LocalDateTime time  = LocalDateTime.now();
         updateLastModified();
-        ArrayList<DateTime> previouslyExists;
+        ArrayList<LocalDateTime> previouslyExists;
         try {
             previouslyExists = previousMedicationTimes.get(medication);
             previouslyExists.add(time);
         } catch (NullPointerException e) {
-            previouslyExists = new ArrayList<DateTime>();
+            previouslyExists = new ArrayList<>();
             previouslyExists.add(time);
         }
         previousMedicationTimes.put(medication, previouslyExists);
@@ -437,9 +601,9 @@ public class Donor {
     /**
      * Use this one when creating the user from the json object
      * @param medication medication string key
-     * @param stamps list of timestamps
+     * @param stamps array list of timestamps
      */
-    public void addCurrentMedicationTimes(String medication, ArrayList<DateTime> stamps) {
+    public void addCurrentMedicationTimes(String medication, ArrayList<LocalDateTime> stamps) {
 
         currentMedicationTimes.put(medication, stamps);
     }
@@ -450,7 +614,7 @@ public class Donor {
      * @param medication medication string key
      * @param stamps list of timestamps
      */
-    public void addPreviousMedicationTimes(String medication, ArrayList<DateTime> stamps) {
+    public void addPreviousMedicationTimes(String medication, ArrayList<LocalDateTime> stamps) {
         previousMedicationTimes.put(medication, stamps);
     }
 
@@ -463,9 +627,8 @@ public class Donor {
         this.changes = changes;
     }
 
-    public void addChange(String change){
-        DateTime dateTime = DateTime.now();
-        changes.add(new Change(dateTime,change));
+    public void addChange(Change change){
+        changes.add(change);
     }
 
     public String getTooltip(){
@@ -483,6 +646,11 @@ public class Donor {
         }
     }
 
+    /**
+     * checkes for equality
+     * @param o object
+     * @return true if equals
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -502,7 +670,7 @@ public class Donor {
     return "name:'" + name + "\'" +
         "\ndate Of Birth: " + dateOfBirth +
         "\ndate Of Death :" + dateOfDeath +
-        "\ngender: " + gender +
+        "\ngender: " + birthGender +
         "\nheight: " + height +
         "\nweight: " + weight +
         "\nblood Type: '" + bloodType + '\'' +
