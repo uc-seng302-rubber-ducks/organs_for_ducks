@@ -13,7 +13,7 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="675.0" prefWidth="894.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.Controller.DonorController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="675.0" prefWidth="894.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.Controller.DonorController">
    <children>
       <TabPane layoutY="-4.0" prefHeight="681.0" prefWidth="894.0" rotateGraphic="true" tabClosingPolicy="UNAVAILABLE">
         <tabs>
@@ -34,7 +34,7 @@
                         <Button fx:id="redoButton" layoutX="822.0" layoutY="18.0" mnemonicParsing="false" onAction="#redo" text="Redo" />
                         <Separator layoutX="-13.0" layoutY="331.0" prefHeight="12.0" prefWidth="903.0" />
                         <Button fx:id="logOutButton" layoutX="14.0" layoutY="570.0" mnemonicParsing="false" onAction="#logout" text="Log Out" />
-                        <Button layoutX="789.0" layoutY="573.0" mnemonicParsing="false" onAction="#updateDetails" text="Edit Details" />
+                        <Button fx:id="editButton" layoutX="789.0" layoutY="573.0" mnemonicParsing="false" onAction="#updateDetails" text="Edit Details" />
                         <Label layoutX="420.0" layoutY="145.0" text="BMI:" />
                         <Label layoutX="15.0" layoutY="95.0" text="MIddle Name:" />
                         <Label layoutX="15.0" layoutY="120.0" text="Last Name:" />

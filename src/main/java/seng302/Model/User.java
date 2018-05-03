@@ -204,9 +204,12 @@ public class User {
     this.nhi = nhi;
     timeCreated = LocalDateTime.now();
     lastModified = LocalDateTime.now();
+    this.preferredFirstName = name;
     this.gender = "U";
     this.bloodType = "U";
+    this.alcoholConsumption = "None";
     updateHistory = new HashMap<>();
+    this.contact = new EmergencyContact(null,null);
     updateHistory.put(dateToString(getTimeCreated()), "Profile created.");
     this.miscAttributes = new ArrayList<>();
     this.currentMedication = new ArrayList<>();
