@@ -350,33 +350,34 @@ public class UpdateUserController {
     } else if (alcoholComboBox.getValue() != null) {
       noChange = false;
     }
-    if (user.getWeight() > 0) {
-      try {
-        double weight = Double.parseDouble(weightInput.getText());
-        if (user.getWeight() != weight) {
+    if (weightInput.getText() != null) {
+      if (user.getWeight() > 0) {
+        try {
+          double weight = Double.parseDouble(weightInput.getText());
+          if (user.getWeight() != weight) {
+            noChange = false;
+          }
+        } catch (NumberFormatException e) {
           noChange = false;
         }
-      } catch (NumberFormatException e) {
+      } else if (!weightInput.getText().isEmpty()) {
         noChange = false;
       }
-    } else if (!weightInput.getText().isEmpty()) {
-      noChange = false;
     }
 
-    if (user.getHeight() > 0) {
-      try {
-        double height = Double.parseDouble(heightInput.getText());
-        if (user.getHeight() != height) {
+    if (heightInput != null) {
+      if (user.getHeight() > 0) {
+        try {
+          double height = Double.parseDouble(heightInput.getText());
+          if (user.getHeight() != height) {
+            noChange = false;
+          }
+        } catch (NumberFormatException e) {
           noChange = false;
         }
-      } catch (NumberFormatException e) {
+      } else if (!heightInput.getText().isEmpty()) {
         noChange = false;
       }
-    } else if (!heightInput.getText().isEmpty()) {
-      noChange = false;
-    }
-    if (!(user.isSmoker() == smokerCheckBox.isSelected())) {
-      noChange = false;
     }
 
     // contact details
@@ -601,13 +602,13 @@ public class UpdateUserController {
 
     genderIdComboBox.setValue(user.getGenderIdentity() == null ? "" : user.getGenderIdentity());
 
-    if (user.getWeight() > 0) {
-      weightInput.setText(Double.toString(user.getWeight()));
+    if (user.getWeightText() != null) {
+      weightInput.setText(user.getWeightText());
     } else {
       weightInput.setText("");
     }
-    if (user.getHeight() > 0) {
-      heightInput.setText(Double.toString(user.getHeight()));
+    if (user.getHeightText() != null) {
+      heightInput.setText(user.getHeightText());
     } else {
       heightInput.setText("");
     }
@@ -734,6 +735,9 @@ public class UpdateUserController {
       if (height == -1 || weight == -1) {
         errorLabel.setVisible(true);
         valid = false;
+      } else {
+        currentUser.setHeight(height);
+        currentUser.setWeight(weight);
       }
 
       // validate contact info
@@ -823,14 +827,10 @@ public class UpdateUserController {
    */
   private void updateUndos() {
     boolean changed = false;
-    double weight;
-    double height;
     changed = updatePersonalDetails(nhiInput.getText(), fNameInput.getText(), dobInput.getValue(),
         dodInput.getValue());
 
-    height = getDoubleFromTextField(heightInput);
-    weight = getDoubleFromTextField(weightInput);
-    changed |= updateHealthDetails(height, weight);
+    changed |= updateHealthDetails(heightInput.getText(), weightInput.getText());
     changed |= updateContactDetails(phoneInput.getText(), cellInput.getText(),
         emailInput.getText());
     changed |= updateEmergencyContact(ecNameInput.getText(), ecPhoneInput.getText(),
@@ -848,7 +848,7 @@ public class UpdateUserController {
   private double getDoubleFromTextField(TextField textField) {
     try {
       return Double
-          .parseDouble(textField.getText().isEmpty() ? "0" : heightInput.getText());
+          .parseDouble(textField.getText().isEmpty() ? "0" : textField.getText());
     } catch (NumberFormatException e) {
       return 0;
     }
@@ -890,23 +890,23 @@ public class UpdateUserController {
         }
       }
 
-      String mName = AttributeValidation.checkString(mNameInput.getText());
-      String middle = currentUser.getMiddleName();
-      if (mName != null && !middle.equals(mName)) {
+      String mName = mNameInput.getText();
+      if (!mName.isEmpty() && !mName.equals(currentUser.getMiddleName())) {
         currentUser.setMiddleName(mName);
         changed = true;
-      } else if ((middle != null && !middle.isEmpty())) {
-        currentUser.setMiddleName(mName);
+      } else if (mName.isEmpty() && (currentUser.getMiddleName() != null && !currentUser
+          .getMiddleName().isEmpty())) {
+        currentUser.setMiddleName(null);
         changed = true;
       }
 
-      String lName = AttributeValidation.checkString(lNameInput.getText());
-      String last = currentUser.getLastName();
-      if (lName != null && !last.equals(lName)) {
+      String lName = lNameInput.getText();
+      if (!lName.isEmpty() && !lName.equals(currentUser.getLastName())) {
         currentUser.setLastName(lName);
         changed = true;
-      } else if (last != null && !last.isEmpty()) {
-        currentUser.setLastName(lName);
+      } else if (lName.isEmpty() && (currentUser.getLastName() != null && !currentUser
+          .getLastName().isEmpty())) {
+        currentUser.setLastName(null);
         changed = true;
       }
 
@@ -934,15 +934,23 @@ public class UpdateUserController {
      * @param height The height to be checked for changes and possibly updated.
      * @param weight The weight to be checked for changes and possibly updated.
      */
-    private boolean updateHealthDetails(double height, double weight) {
+    private boolean updateHealthDetails(String height, String weight) {
       boolean changed = false;
-      if (currentUser.getHeight() != height) {
-        currentUser.setHeight(height);
+      if (height.isEmpty() && (currentUser.getHeightText() != null && !currentUser.getHeightText()
+          .isEmpty())) {
+        currentUser.setHeightText(null);
+        changed = true;
+      } else if (!height.isEmpty() && !height.equals(currentUser.getHeightText())) {
+        currentUser.setHeightText(height);
         changed = true;
       }
 
-      if (currentUser.getWeight() != weight) {
-        currentUser.setWeight(weight);
+      if (weight.isEmpty() && (currentUser.getWeightText() != null && !currentUser.getWeightText()
+          .isEmpty())) {
+        currentUser.setHeightText(null);
+        changed = true;
+      } else if (!weight.isEmpty() && !weight.equals(currentUser.getWeightText())) {
+        currentUser.setWeightText(weight);
         changed = true;
       }
 

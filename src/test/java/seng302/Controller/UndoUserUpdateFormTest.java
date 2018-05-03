@@ -114,7 +114,7 @@ public class UndoUserUpdateFormTest extends ApplicationTest{
 //    clickOn("#genderIdComboBox");
 //    clickOn("Male");
 
-    clickOn("#heightInput");
+    doubleClickOn("#heightInput");
     write("1");
 
     clickOn("#lNameInput");
@@ -126,7 +126,7 @@ public class UndoUserUpdateFormTest extends ApplicationTest{
 
 
     verifyThat("#lNameInput", TextInputControlMatchers.hasText(""));
-    verifyThat("#heightInput", TextInputControlMatchers.hasText(""));
+    verifyThat("#heightInput", TextInputControlMatchers.hasText("0.0"));
   }
 
   @Test
@@ -134,7 +134,7 @@ public class UndoUserUpdateFormTest extends ApplicationTest{
     //check we can traverse the stack properly
     clickOn("#editDetailsButton");
 
-    clickOn("#heightInput");
+    doubleClickOn("#heightInput");
     write("1");
 
     clickOn("#lNameInput");
@@ -146,7 +146,7 @@ public class UndoUserUpdateFormTest extends ApplicationTest{
     clickOn("#lNameInput");
     write("lasagna");
 
-    verifyThat("#heightInput", TextInputControlMatchers.hasText("1.0"));
+    verifyThat("#heightInput", TextInputControlMatchers.hasText("1"));
     verifyThat("#lNameInput", TextInputControlMatchers.hasText("lasagna"));
   }
 }

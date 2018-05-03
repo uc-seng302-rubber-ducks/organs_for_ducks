@@ -34,8 +34,10 @@ public class User extends Undoable<User> {
     private String gender;
     @Expose
     private double height;
-    @Expose
-    private double weight;
+  private transient String heightText;
+  @Expose
+  private double weight;
+  private transient String weightText;
     @Expose
     private String bloodType;
     @Expose
@@ -151,6 +153,9 @@ public class User extends Undoable<User> {
         this.genderIdentity = genderIdentity;
         this.height = height;
         this.weight = weight;
+      this.heightText = Double.toString(height);
+      this.weightText = Double.toString(weight);
+
         this.bloodType = bloodType;
         this.alcoholConsumption = alcoholConsumption;
         this.smoker = smoker;
@@ -218,6 +223,8 @@ this.changes = FXCollections.observableArrayList();
     this.previousMedication = new ArrayList<>();
     this.currentMedicationTimes = new HashMap<String, ArrayList<LocalDateTime>>();
     this.previousMedicationTimes = new HashMap<String, ArrayList<LocalDateTime>>();
+    this.heightText = "";
+    this.weightText = "";
     /*try {
       changes = JsonHandler.importHistoryFromFile(name);
     } catch (FileNotFoundException e) {
@@ -489,6 +496,31 @@ this.changes = FXCollections.observableArrayList();
     changes.add(new Change("Changed weight to " + weight));
   mem.setNewObject(this.clone());
     getUndoStack().push(mem);}
+
+  public String getHeightText() {
+    return heightText;
+  }
+
+  public void setHeightText(String height) {
+    Memento<User> mem = new Memento<>();
+    mem.setOldObject(this.clone());
+    updateLastModified();
+    this.heightText = height;
+    mem.setNewObject(this.clone());
+    getUndoStack().push(mem);}
+
+  public String getWeightText() {
+    return weightText;
+  }
+
+  public void setWeightText(String weight) {
+    Memento<User> mem = new Memento<>();
+    mem.setOldObject(this.clone());
+    updateLastModified();
+    this.weightText = weight;
+    mem.setNewObject(this.clone());
+    getUndoStack().push(mem);
+  }
 
     public String getBloodType() {
         return bloodType;
@@ -1017,6 +1049,8 @@ this.changes = FXCollections.observableArrayList();
     newUser.genderIdentity = this.genderIdentity;
     newUser.height = this.height;
     newUser.weight = this.weight;
+    newUser.heightText = this.heightText;
+    newUser.weightText = this.weightText;
     newUser.bloodType = this.bloodType;
     newUser.alcoholConsumption = this.alcoholConsumption;
     newUser.smoker = this.smoker;
@@ -1085,6 +1119,8 @@ this.changes = FXCollections.observableArrayList();
     this.genderIdentity = other.genderIdentity;
     this.height = other.height;
     this.weight = other.weight;
+    this.heightText = other.heightText;
+    this.weightText = other.weightText;
     this.bloodType = other.bloodType;
     this.alcoholConsumption = other.alcoholConsumption;
     this.smoker = other.smoker;

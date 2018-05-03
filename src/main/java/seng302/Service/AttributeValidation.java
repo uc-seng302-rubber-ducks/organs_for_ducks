@@ -148,7 +148,7 @@ public class AttributeValidation {
         if (!stringValue.isEmpty()) {
             try {
                 doubleValue = Double.parseDouble(stringValue);
-                if (doubleValue <= 0) {
+                if (doubleValue < 0) {
                     doubleValue = -1;
                 }
             } catch (NumberFormatException e) {
