@@ -454,6 +454,7 @@ this.changes = FXCollections.observableArrayList();
     mem.setOldObject(this.clone());
     updateLastModified();
     this.dateOfDeath = dateOfDeath;
+    this.isDeceased = dateOfDeath != null;
     changes.add(new Change("Changed date of death to "+ dateOfDeath.toString()));
   mem.setNewObject(this.clone());
     getUndoStack().push(mem);}

@@ -1,7 +1,10 @@
 package seng302.Controller;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.stage.Stage;
@@ -9,12 +12,17 @@ import seng302.Model.OrganDeregisterReason;
 import seng302.Model.Organs;
 import seng302.Model.User;
 
+import java.time.LocalDate;
+
 /**
  * Controller class for  for clinicians to
  * enter reasons for de-registering a receiver's organ.
  * @author acb116
  */
 public class DeregisterOrganReasonController {
+
+    @FXML
+    private RadioButton transplantReceivedRadioButton;
 
     @FXML
     private RadioButton registerationErrorRadioButton;
@@ -26,10 +34,16 @@ public class DeregisterOrganReasonController {
     private RadioButton receiverDiedRadioButton;
 
     @FXML
+    private DatePicker dODDatePicker;
+
+    @FXML
     private Label receiverName;
 
     @FXML
     private Label organName;
+
+    @FXML
+    private Label invalidDateErrorMessage;
 
     AppController controller;
     Stage stage;
@@ -52,11 +66,26 @@ public class DeregisterOrganReasonController {
         receiverName.setText(user.getName());
         organName.setText(organ.organName);
         this.toDeRegister = organ;
-        if (user.getDeceased() == null || !user.getDeceased()){
-            receiverDiedRadioButton.setDisable(true);
-        }
+        dODDatePicker.setValue(LocalDate.now());
+        dODDatePicker.setDisable(true);
+
+//        if (user.getDeceased() == null || !user.getDeceased()){
+//            receiverDiedRadioButton.setDisable(true);
+//        }
         //stage.setMinWidth(620);
         //stage.setMaxWidth(620);
+
+        //if receiverDiedRadioButton is selected, the DOD date picker will be enabled, otherwise it sets to disabled
+        receiverDiedRadioButton.selectedProperty().addListener(new ChangeListener<Boolean>() {
+            @Override
+            public void changed(ObservableValue<? extends Boolean> obs, Boolean wasPreviouslySelected, Boolean isNowSelected) {
+                if (isNowSelected) {
+                    dODDatePicker.setDisable(false);
+                } else {
+                    dODDatePicker.setDisable(true);
+                }
+            }
+        });
     }
 
     /**
@@ -85,28 +114,42 @@ public class DeregisterOrganReasonController {
      */
     @FXML
     void acceptDeregistration(ActionEvent event) {
+        boolean isValid = true;
+        if(transplantReceivedRadioButton.isSelected()){
+            donorController.setOrganDeregisterationReason(OrganDeregisterReason.TRANSPLANT_RECEIVED);
 
-        if(registerationErrorRadioButton.isSelected()){
+        } else if(registerationErrorRadioButton.isSelected()){
             donorController.setOrganDeregisterationReason(OrganDeregisterReason.REGISTRATION_ERROR);
 
         } else if (diseaseCuredRadioButton.isSelected()){
             donorController.setOrganDeregisterationReason(OrganDeregisterReason.DISEASE_CURED);
 
         } else if(receiverDiedRadioButton.isSelected()){
-            donorController.setOrganDeregisterationReason(OrganDeregisterReason.RECEIVER_DIED);
+            LocalDate dOD = dODDatePicker.getValue();
+            if(dOD == null){
+                isValid = false;
+                invalidDateErrorMessage.setVisible(true);
+            } else {
+                currentUser.setDateOfDeath(dOD);
+                //currentUser.setDeceased(true);
+                donorController.setOrganDeregisterationReason(OrganDeregisterReason.RECEIVER_DIED);
+            }
         }
 
-        donorController.deRegisterOrgan(toDeRegister);
+        if(isValid){
+            donorController.deRegisterOrgan(toDeRegister);
 
-        AppController appController = AppController.getInstance();
-        DonorController donorController = appController.getDonorController();
-        try {
-            donorController.showUser(currentUser);
+            AppController appController = AppController.getInstance();
+            DonorController donorController = appController.getDonorController();
+            try {
+                donorController.showUser(currentUser);
+            }
+            catch (NullPointerException ex) {
+                //TODO causes npe if donor is new in this session
+                //the text fields etc. are all null
+            }
+            stage.close();
         }
-        catch (NullPointerException ex) {
-            //TODO causes npe if donor is new in this session
-            //the text fields etc. are all null
-        }
-        stage.close();
     }
+
 }
