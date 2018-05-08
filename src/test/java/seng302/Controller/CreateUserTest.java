@@ -13,9 +13,9 @@ import seng302.Model.User;
 public class CreateUserTest {
 
   AppController controller;
-  DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-  User minInfo;
-  User maxInfo;
+  private DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+  private User minInfo;
+  private User maxInfo;
 
   @Before
   public void setup() {
@@ -32,6 +32,7 @@ public class CreateUserTest {
     maxInfo.setCurrentAddress("42-wallaby-way");
   }
 
+  //<editor-fold>
   @Test
   public void ShouldRegisterDonorWithMinimumInfo() {
     String[] args = {"John", "Doe", "ABC1234", "1961-02-12"};
@@ -50,12 +51,11 @@ public class CreateUserTest {
     registered = controller.findUser("Gus Johnson", LocalDate.parse("1990-04-03", format));
     Assert.assertEquals(maxInfo, registered); //checks name and dob
     Assert.assertEquals(maxInfo.getDateOfDeath(), registered.getDateOfDeath());
-    Assert.assertTrue(maxInfo.getHeight() == registered.getHeight());
-    Assert.assertTrue(maxInfo.getWeight() == registered.getWeight());
+    assert (maxInfo.getHeight() == registered.getHeight());
+    assert (maxInfo.getWeight() == registered.getWeight());
     Assert.assertEquals(maxInfo.getGender(), registered.getGender());
     Assert.assertEquals(maxInfo.getCurrentAddress(), registered.getCurrentAddress());
     Assert.assertEquals(maxInfo.getRegion(), registered.getRegion());
-    //Assert.assertEquals(maxInfo.toString(), registered.toString()); //includes time created/modified, so unusable
   }
 
   @Test
@@ -63,7 +63,7 @@ public class CreateUserTest {
     String[] args = {"Robert"};
 
     new CommandLine(new CreateUser()).parseWithHandler(new CommandLine.RunLast(), System.err, args);
-    Assert.assertTrue(controller.getUsers().size() == 0);
+    assert (controller.getUsers().size() == 0);
   }
 
   @Test
@@ -71,20 +71,20 @@ public class CreateUserTest {
     String[] args = {"Frank", "Sinatra", "1967"}; //invalid date
     //TODO seems to accept garbage dates as long as they are in some-dashed-format
     new CommandLine(new CreateUser()).parseWithHandler(new CommandLine.RunLast(), System.err, args);
-    Assert.assertTrue(controller.getUsers().size() == 0);
+    assert (controller.getUsers().size() == 0);
   }
 
   @Test
   public void ShouldNotRegisterWhenMalformedOptions() {
     String[] args = {"Ryan", "Clark", "1967-21-03", "-he=myheight"};
     new CommandLine(new CreateUser()).parseWithHandler(new CommandLine.RunLast(), System.err, args);
-    Assert.assertTrue(controller.getUsers().size() == 0);
+    assert (controller.getUsers().size() == 0);
   }
 
   @Test
   public void ShouldCancelRegistrationWhenHelpFlagPresent() {
     String[] args = {"Les", "Claypool", "1967-21-03", "-h"};
     new CommandLine(new CreateUser()).parseWithHandler(new CommandLine.RunLast(), System.err, args);
-    Assert.assertTrue(controller.getUsers().size() == 0);
+    assert (controller.getUsers().size() == 0);
   }
 }

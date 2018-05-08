@@ -11,6 +11,7 @@ import seng302.Model.Organs;
 import seng302.Model.User;
 import seng302.View.IoHelper;
 
+@Deprecated
 @Command(name = "add")
 public class UpdateAddOrgans implements Runnable {
 
@@ -41,9 +42,8 @@ public class UpdateAddOrgans implements Runnable {
       for (String item : organs) {
         try {
           Organs org = Organs.valueOf(item.toUpperCase());
-            user.getDonorDetails().addOrgan(org);
-        }
-        catch (IllegalArgumentException ex) {
+          user.getDonorDetails().addOrgan(org);
+        } catch (IllegalArgumentException ex) {
           System.err.println("Could not parse organ:" + item);
           System.err.println("multi-word organs must be entered with underscores");
           System.err.println("e.g. bone_marrow");
