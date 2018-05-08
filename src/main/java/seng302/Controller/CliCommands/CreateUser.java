@@ -11,8 +11,8 @@ import seng302.Model.User;
 import seng302.View.IoHelper;
 
 
-@Command(name = "register", description = "first name, last name, and dob are required. all other are optional and must be tagged")
-public class Register implements Runnable {
+@Command(name = "user", description = "first name, last name, and dob are required. all other are optional and must be tagged")
+public class CreateUser implements Runnable {
 
   @Option(names = {"-h",
       "help"}, required = false, usageHelp = true, description = "display a help message")

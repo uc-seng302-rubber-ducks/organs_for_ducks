@@ -1,21 +1,17 @@
 package seng302.Controller;
 
 import static org.junit.Assert.fail;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.time.LocalDate;
 import java.util.Scanner;
 import org.junit.Before;
 import org.junit.Test;
 import picocli.CommandLine;
 import seng302.Controller.CliCommands.DeleteDonor;
-import seng302.Controller.CliCommands.Register;
 import seng302.Model.User;
 
 public class DeleteTest {
