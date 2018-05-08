@@ -21,6 +21,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import seng302.Model.Clinician;
 import seng302.Model.Memento;
+import seng302.Service.PasswordManager;
 
 /**
  * Controller for updating clinicians
@@ -151,8 +152,6 @@ public class UpdateClinicianController {
      */
     private void prefillFields(Clinician clinician) {
         staffIDTextField.setText(clinician.getStaffId());
-        passwordField.setText(clinician.getPassword());
-        confirmPasswordField.setText(clinician.getPassword());
 
         String fName = clinician.getFirstName();
         String mName = clinician.getMiddleName();
@@ -204,9 +203,9 @@ public class UpdateClinicianController {
             noChange = false;
         }
 
-        if (!(currentClinician.getPassword()).equals(oldClinician.getPassword())) {
+/*        if (!(currentClinician.getPassword()).equals(oldClinician.getPassword())) {
             noChange = false;
-        }
+        }*/ //We shouldn't need this now for secure passwords
 
         if (!(currentClinician.getFirstName()).equals(oldClinician.getFirstName())) {
             noChange = false;
@@ -241,6 +240,10 @@ public class UpdateClinicianController {
                 noChange = false;
             }
         } else if (!regionTextField.getText().isEmpty()) {
+            noChange = false;
+        }
+
+        if(passwordField.getText().isEmpty()){
             noChange = false;
         }
 
@@ -479,15 +482,15 @@ public class UpdateClinicianController {
         String lName = null;
         String address = null;
         String region = null;
+        boolean updatePassword = false;
 
-        if ((passwordField.getText()).isEmpty()) {
-            emptyPasswordLabel.setVisible(true);
-            valid = false;
-        } else {
-            password = passwordField.getText();
-            if (!(confirmPasswordField.getText()).equals(password)) {
+        if (!(passwordField.getText()).isEmpty()) {
+            if (!(confirmPasswordField.getText()).equals(passwordField.getText()) || PasswordManager.isExpectedPassword(passwordField.getText(), currentClinician.getSalt(), currentClinician.getPassword())) {
                 incorrectPasswordLabel.setVisible(true);
                 valid = false;
+            } else {
+                updatePassword = true;
+                password = passwordField.getText();
             }
         }
 
@@ -518,7 +521,8 @@ public class UpdateClinicianController {
 
         if (valid && !newClinician) { // updates an existing clinician
             // updates the attributes that have changed
-            updateChanges(staffID, fName, mName, lName, address, region, password);
+            updateChanges(staffID, fName, mName, lName, address, region, password,updatePassword);
+
 
             currentClinician.setDateLastModified(LocalDateTime.now()); // updates the modified date
             sumAllChanged();
@@ -535,12 +539,12 @@ public class UpdateClinicianController {
     /**
      * Only updates the values that have been changed.
      */
-    private void updateChanges(String staffID, String fName, String mName, String lName, String address, String region, String password) {
+    private void updateChanges(String staffID, String fName, String mName, String lName, String address, String region, String password, boolean updatePassword) {
         if (!currentClinician.getStaffId().equals(staffID)) {
             currentClinician.setStaffId(staffID);
         }
 
-        if (!currentClinician.getPassword().equals(password)) {
+        if (updatePassword) {
             currentClinician.setPassword(password);
         }
 
