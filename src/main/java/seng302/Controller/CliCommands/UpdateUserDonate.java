@@ -9,25 +9,24 @@ import seng302.Model.User;
 @Command(name = "donate", description = "Updates a user's rawString to donate.")
 public class UpdateUserDonate implements Runnable {
 
-  private AppController controller;
-  @Parameters(description = "The NHI of the user to be updated")
+  private AppController controller = AppController.getInstance();
+  ;
+  @Parameters(index = "0", description = "The NHI of the user to be updated")
   private String nhi;
 
-  @Parameters(description =
-      "A list of the rawString to be updated separated by spaces prefixed by +/- \n"
-          + "e.g. +liver -bone_marrow")
-  private String rawString;
+  @Parameters(index = "1..*", description =
+      "A list of the organs to be updated separated by spaces prefixed by +/- \n"
+          + "e.g. +liver /bone_marrow")
+  private String[] rawOrgans;
 
   @Override
   public void run() {
-    controller = AppController.getInstance();
     User user = controller.getUser(nhi);
     if (user == null) {
       System.out.println("No users with this NHI could be found");
       return;
     }
 
-    String[] rawOrgans = rawString.split(" ");
 
     boolean changed = false;
     for (String rawOrgan : rawOrgans) {
@@ -42,14 +41,20 @@ public class UpdateUserDonate implements Runnable {
       switch (prefix) {
         case "+":
           user.getDonorDetails().addOrgan(organ);
+          changed = true;
           break;
-        case "-":
+        case "/":
           user.getDonorDetails().removeOrgan(organ);
+          changed = true;
           break;
         default:
           System.out.println("could not recognise argument" + rawOrgan);
           break;
       }
+    }
+    if (changed) {
+      System.out.println("User updated");
+      System.out.println(user.getDonorDetails().getOrgans().toString());
     }
   }
 
