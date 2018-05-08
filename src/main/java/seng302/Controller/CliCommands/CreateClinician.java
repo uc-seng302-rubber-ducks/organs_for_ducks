@@ -20,7 +20,7 @@ public class CreateClinician implements Runnable{
     @CommandLine.Parameters(index = "2")
     private String password = "";
 
-    @CommandLine.Parameters(index = "3")
+    @CommandLine.Parameters(index = "3..*")
     private String region;
 
     @CommandLine.Option(names = {"-h",
@@ -36,6 +36,8 @@ public class CreateClinician implements Runnable{
 
         Clinician clinician = new Clinician(firstName, id, null, region, password);
         controller.updateClinicians(clinician);
+        //TODO set first name
+        System.out.println(controller.getClinician(id).toString());
         System.out.println("Created new clinician with id " + id);
     }
 

@@ -72,27 +72,6 @@ public class Clinician extends Undoable<Clinician> {
      * @param workAddress clinician work address
      * @param region clinician region
      * @param password clinician password
-     * @param dateCreated clinician date created
-     * @param dateLastModified clinician date last modified
-     */
-    public Clinician(String name, String staffId, String workAddress, String region, String password, LocalDateTime dateCreated, LocalDateTime dateLastModified) {
-        this.name = name;
-        this.staffId = staffId;
-        this.workAddress = workAddress;
-        this.region = region;
-        this.password = password;
-        this.dateCreated = dateCreated;
-        this.dateLastModified = dateLastModified;
-
-    }
-
-    /**
-     * Constructor for Clinician
-     * @param name clinician name
-     * @param staffId clinician staff id
-     * @param workAddress clinician work address
-     * @param region clinician region
-     * @param password clinician password
      */
     public Clinician(String name, String staffId, String workAddress, String region, String password) {
         this.name = name;
@@ -100,6 +79,9 @@ public class Clinician extends Undoable<Clinician> {
         this.workAddress = workAddress;
         this.region = region;
         this.password = password;
+        this.firstName = name;
+        this.middleName = "";
+        this.lastName = "";
         dateCreated = LocalDateTime.now();
         dateLastModified = LocalDateTime.now();
     }

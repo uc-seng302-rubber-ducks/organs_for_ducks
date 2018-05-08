@@ -9,8 +9,7 @@ import seng302.View.IoHelper;
 
 @Command(name = "update", description =
     "Update details of a single donor\nUse 'update add' or 'update remove'"
-        + "to add or remove organs", subcommands = {UpdateAddOrgans.class, UpdateRemoveOrgans.class,
-    UpdateDetails.class})
+        + "to add or remove organs", subcommands = {UpdateUser.class, UpdateClinician.class})
 public class Update implements Runnable {
 
   @Option(names = {"-h", "-help", "help"}, usageHelp = true)
