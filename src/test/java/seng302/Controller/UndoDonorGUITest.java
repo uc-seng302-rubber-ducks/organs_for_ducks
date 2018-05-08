@@ -15,7 +15,7 @@ import seng302.App;
 import seng302.Model.EmergencyContact;
 import seng302.Model.User;
 
-public class UndoDonorTest extends ApplicationTest {
+public class UndoDonorGUITest extends ApplicationTest {
 
   @Before
   public void setUp() throws TimeoutException {

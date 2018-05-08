@@ -9,12 +9,20 @@ junit:
   stage: test
   script:
     - rm -rf ~/.organs
-    - mvn -B clean test -Djava.awt.headless=true -Dtestfx.robot=glass -Dtestfx.headless=true -Dprism.order=sw -Dprism.text=t2k -Dheadless.geometry=1920x1080-32
+    - mvn -B clean test -Punit-tests -Djava.awt.headless=true -Dtestfx.robot=glass -Dtestfx.headless=true -Dprism.order=sw -Dprism.text=t2k -Dheadless.geometry=1920x1080-32
+
+testFX:
+  stage: testfx
+  script:
+    - rm -rf ~/.organs
+    - mvn -B clean test -Pgui-tests -Djava.awt.headless=true -Dtestfx.robot=glass -Dtestfx.headless=true -Dprism.order=sw -Dprism.text=t2k -Dheadless.geometry=1920x1080-32 -Pgui-tests
+  only:
+    - schedules
 
 recent-artifacts:
   stage: deploy
   script:
-    - mvn -B clean site package -Djava.awt.headless=true -Dtestfx.robot=glass -Dtestfx.headless=true -Dprism.order=sw -Dprism.text=t2k -Dheadless.geometry=1920x1080-32
+    - mvn -B clean site package -Punit-tests -Djava.awt.headless=true -Dtestfx.robot=glass -Dtestfx.headless=true -Dprism.order=sw -Dprism.text=t2k -Dheadless.geometry=1920x1080-32
   artifacts:
     paths:
       - target/*.jar
@@ -25,7 +33,7 @@ recent-artifacts:
 release-artifacts:
   stage: deploy
   script:
-    - mvn -B clean site package -Djava.awt.headless=true -Dtestfx.robot=glass -Dtestfx.headless=true -Dprism.order=sw -Dprism.text=t2k -Dheadless.geometry=1920x1080-32
+    - mvn -B clean site package -Pgui-tests -Djava.awt.headless=true -Dtestfx.robot=glass -Dtestfx.headless=true -Dprism.order=sw -Dprism.text=t2k -Dheadless.geometry=1920x1080-32
   artifacts:
     paths:
     - target/*.jar
