@@ -1,26 +1,25 @@
 package seng302.Controller;
 
-import javafx.scene.input.KeyCode;
-import org.junit.*;
-import org.mockito.internal.matchers.Null;
-import org.testfx.api.FxRobotException;
-import org.testfx.api.FxToolkit;
-import org.testfx.framework.junit.ApplicationTest;
-import org.testfx.matcher.control.LabeledMatchers;
-import seng302.App;
-import seng302.Model.Disease;
-import seng302.Model.User;
+import static org.junit.Assert.assertEquals;
+import static seng302.Utils.TableViewsMethod.getCell;
+import static seng302.Utils.TableViewsMethod.getCellValue;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.concurrent.TimeoutException;
+import javafx.scene.input.KeyCode;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import org.testfx.api.FxRobotException;
+import org.testfx.api.FxToolkit;
+import org.testfx.framework.junit.ApplicationTest;
+import seng302.App;
+import seng302.Model.Disease;
+import seng302.Model.User;
 
-import static org.junit.Assert.assertEquals;
-import static seng302.Utils.TableViewsMethod.*;
-
-import static org.testfx.api.FxAssert.verifyThat;
-
-public class NewDiseaseControllerTest extends ApplicationTest {
+public class NewDiseaseControllerGUITest extends ApplicationTest {
 
     DateTimeFormatter sdf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 

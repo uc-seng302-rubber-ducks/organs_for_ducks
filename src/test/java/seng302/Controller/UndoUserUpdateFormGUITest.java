@@ -16,7 +16,7 @@ import seng302.App;
 import seng302.Model.EmergencyContact;
 import seng302.Model.User;
 
-public class UndoUserUpdateFormTest extends ApplicationTest{
+public class UndoUserUpdateFormGUITest extends ApplicationTest {
 
   @Before
   public void setUp() throws TimeoutException{

@@ -20,7 +20,7 @@ import seng302.Model.Clinician;
 /**
  * Tests the UpdateClinicianController specifically for updating existing clinicians
  */
-public class UpdateClinicianControllerTest extends ApplicationTest {
+public class UpdateClinicianControllerGUITest extends ApplicationTest {
 
     @BeforeClass
     public static void initialization() {
