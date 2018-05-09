@@ -5,6 +5,8 @@ import org.junit.Before;
 import org.junit.Test;
 import seng302.Service.PasswordManager;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Arrays;
 
 public class ClinicianTest {
@@ -13,18 +15,35 @@ public class ClinicianTest {
 
     @Before
     public void setup(){
+
         testClinician  = new Clinician("","0","","","password");
     }
 
+
     @Test
-    public void passwordIsCorrectlyHashed(){
+    public void passwordIsCorrectlyHashed() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         byte[] hash = PasswordManager.hash("password", testClinician.getSalt());
-        assert (Arrays.equals(hash, testClinician.getPassword()));
+        Clinician instance = new Clinician();
+        Class<?> secretClass = instance.getClass();
+
+        Method method  = secretClass.getDeclaredMethod("getPassword");
+        method.setAccessible(true);
+        assert (Arrays.equals(hash, (byte[]) method.invoke(testClinician)));
+    }
+
+    @Test
+    public void passwordIsCorrectlyAccepted(){
+        assert testClinician.isPasswordCorrect("password");
+    }
+
+    @Test
+    public void passwordIsNotAccepted(){
+        assert !testClinician.isPasswordCorrect("Password");
     }
 
     @Test
     public void passwordIsCorrectlyUpdated(){
         testClinician.setPassword("Password");
-        assert (PasswordManager.isExpectedPassword("Password", testClinician.getSalt(), testClinician.getPassword()));
+        assert testClinician.isPasswordCorrect("Password");
     }
 }

@@ -16,11 +16,7 @@ import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 import seng302.Model.Clinician;
 import seng302.Model.User;
-import seng302.Service.PasswordManager;
 import seng302.View.CLI;
-
-import java.io.IOException;
-import java.util.ArrayList;
 
 /**
  * Class for the login functionality of the application
@@ -146,7 +142,7 @@ public class LoginController {
             Clinician clinician = appController.getClinician(wantedClinician);
             if (clinician== null){
                 warningLabel.setText("The Clinician does not exist");
-            } else if (!PasswordManager.isExpectedPassword(password,clinician.getSalt(),clinician.getPassword())){
+            } else if (!clinician.isPasswordCorrect(password)){
                 warningLabel.setText("Your password is incorrect please try again");
                 return;
             }else {

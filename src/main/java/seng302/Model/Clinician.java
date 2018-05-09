@@ -225,10 +225,19 @@ public class Clinician extends Undoable<Clinician> {
       getUndoStack().push(memento);
     }
 
-    public byte[] getPassword() {
+    /**
+     * Private setter as no one should be able to retrieve password outside of the class
+     * @return hash of the password
+     */
+    private byte[] getPassword() {
         return password;
     }
 
+
+    /**
+     * updates the password by hashing it and storing the new salt
+     * @param password plaintext password to be hashed
+     */
     public void setPassword(String password) {
         Memento<Clinician> memento = new Memento<>();
         memento.setOldObject(this.clone());
@@ -247,9 +256,14 @@ public class Clinician extends Undoable<Clinician> {
         this.salt = salt;
     }
 
-    public void updatePasswordHash(byte[] password, byte[] salt){
-        this.password = password;
-        this.salt = salt;
+
+    /**
+     * A function to check the supplied password against the stored hash.
+     * @param password Password to be checked
+     * @return correctness of the password
+     */
+    public boolean isPasswordCorrect(String password){
+        return PasswordManager.isExpectedPassword(password, salt, getPassword());
     }
 
     @Override
