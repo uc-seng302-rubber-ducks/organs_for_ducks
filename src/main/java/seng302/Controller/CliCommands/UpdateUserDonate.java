@@ -1,6 +1,7 @@
 package seng302.Controller.CliCommands;
 
 import picocli.CommandLine.Command;
+import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
 import seng302.Controller.AppController;
 import seng302.Model.Organs;
@@ -19,6 +20,9 @@ public class UpdateUserDonate implements Runnable {
           + "e.g. +liver /bone_marrow")
   private String[] rawOrgans;
 
+  @Option(names = {"-h", "help"}, usageHelp = true)
+  boolean helpRequested;
+
   @Override
   public void run() {
     User user = controller.getUser(nhi);
@@ -29,14 +33,20 @@ public class UpdateUserDonate implements Runnable {
 
 
     boolean changed = false;
+    if (rawOrgans == null) {
+      System.out.println("Please enter some organs to update");
+      return;
+    }
     for (String rawOrgan : rawOrgans) {
-      String prefix = rawOrgan.substring(0, 0);
+      String prefix = rawOrgan.substring(0, 1);
       Organs organ;
       try {
-        organ = Organs.valueOf(rawOrgan.substring(1));
+        String org = rawOrgan.substring(1);
+        organ = Organs.valueOf(org.toUpperCase());
       } catch (IllegalArgumentException ex) {
         System.out.println("Organ " + rawOrgan + " not recognised");
-        return;
+        //skip this organ and try the next one
+        continue;
       }
       switch (prefix) {
         case "+":
