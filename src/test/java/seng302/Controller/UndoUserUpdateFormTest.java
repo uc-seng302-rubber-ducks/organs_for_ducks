@@ -1,9 +1,5 @@
 package seng302.Controller;
 
-import static org.testfx.api.FxAssert.verifyThat;
-
-import java.time.LocalDate;
-import java.util.concurrent.TimeoutException;
 import javafx.scene.Node;
 import org.junit.After;
 import org.junit.Before;
@@ -15,6 +11,11 @@ import org.testfx.matcher.control.TextInputControlMatchers;
 import seng302.App;
 import seng302.Model.EmergencyContact;
 import seng302.Model.User;
+
+import java.time.LocalDate;
+import java.util.concurrent.TimeoutException;
+
+import static org.testfx.api.FxAssert.verifyThat;
 
 public class UndoUserUpdateFormTest extends ApplicationTest{
 
@@ -32,7 +33,7 @@ public class UndoUserUpdateFormTest extends ApplicationTest{
     AppController.getInstance().getUsers().add(user);
     clickOn("#userIDTextField");
     write("ABC1234", 0);
-    clickOn("#loginButton");
+    clickOn("#loginUButton");
   }
 
   @After

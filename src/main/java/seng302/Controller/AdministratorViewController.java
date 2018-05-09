@@ -2,14 +2,9 @@ package seng302.Controller;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.Pagination;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
-import javafx.scene.control.Tooltip;
+import javafx.scene.control.*;
+import javafx.stage.Stage;
+import seng302.Model.Administrator;
 
 public class AdministratorViewController {
 
@@ -121,6 +116,10 @@ public class AdministratorViewController {
     @FXML
     private CheckBox liverCheckBox;
 
+    private AppController application;
+    private Administrator currentAdmin;
+    private Stage stage;
+
     @FXML
     void save(ActionEvent event) {
 
@@ -164,6 +163,11 @@ public class AdministratorViewController {
     @FXML
     void redo(ActionEvent event) {
 
+    }
+
+    public void init(Stage stage, AppController controller, Administrator administrator) {
+        this.stage = stage;
+        application = controller;
     }
 
 }

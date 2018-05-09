@@ -1,27 +1,14 @@
 package seng302.Controller;
 
+import seng302.Exception.UserAlreadyExistsException;
+import seng302.Exception.UserNotFoundException;
 import seng302.Model.*;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import seng302.Model.Change;
-import seng302.Model.Clinician;
-import seng302.Model.JsonHandler;
-import seng302.Model.TransplantDetails;
-import seng302.Model.User;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.Stack;
-import seng302.Exception.UserAlreadyExistsException;
-import seng302.Exception.UserNotFoundException;
-import seng302.Model.Change;
-import seng302.Model.Clinician;
-import seng302.Model.JsonHandler;
-import seng302.Model.User;
+import java.util.*;
 
 
 /**
@@ -32,12 +19,14 @@ public class AppController {
   private ArrayList<User> users = new ArrayList<>();
   private ArrayList<TransplantDetails> transplantList = new ArrayList<>();
   private ArrayList<Clinician> clinicians = new ArrayList<>();
+  private ArrayList<Administrator> administrators = new ArrayList<>();
   private static AppController controller;
   private ArrayList<String[]> historyOfCommands = new ArrayList<>();
   private int historyPointer = 0;
 
   private DonorController donorController = new DonorController();
   private ClinicianController clinicianController = new ClinicianController();
+  private AdministratorViewController administratorViewController = new AdministratorViewController();
   private Set<User> deletedUserStack = new HashSet<>();
   private Stack<User> redoStack = new Stack<>();
 
@@ -383,6 +372,20 @@ public class AppController {
 
   public void setClinicianController(ClinicianController clinicianController) {
     this.clinicianController = clinicianController;
+  }
+
+  public void setAdministratorViewController(AdministratorViewController administratorViewController) { this.administratorViewController = administratorViewController;}
+
+  public AdministratorViewController getAdministratorViewControlloer() { return administratorViewController; }
+
+
+  public Administrator getAdministrator(String username){
+    for (Administrator a : administrators){
+      if (a.getUserName().equals(username)) {
+        return a;
+      }
+    }
+    return null;
   }
 
   /**

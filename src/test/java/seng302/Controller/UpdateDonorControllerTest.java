@@ -1,11 +1,5 @@
 package seng302.Controller;
 
-import static javafx.scene.input.KeyCode.A;
-import static javafx.scene.input.KeyCode.BACK_SPACE;
-import static javafx.scene.input.KeyCode.SHORTCUT;
-import static org.testfx.api.FxAssert.verifyThat;
-
-import java.time.LocalDate;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -14,9 +8,13 @@ import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.matcher.control.LabeledMatchers;
 import seng302.App;
-
-import java.util.concurrent.TimeoutException;
 import seng302.Model.User;
+
+import java.time.LocalDate;
+import java.util.concurrent.TimeoutException;
+
+import static javafx.scene.input.KeyCode.*;
+import static org.testfx.api.FxAssert.verifyThat;
 
 public class UpdateDonorControllerTest extends ApplicationTest {
     @Before
@@ -27,7 +25,7 @@ public class UpdateDonorControllerTest extends ApplicationTest {
         AppController.getInstance().getUsers().add(new User("A", LocalDate.now().minusDays(1000), "ABC1234"));
         clickOn("#userIDTextField");
         write("ABC1234");
-        clickOn("#loginButton");
+        clickOn("#loginUButton");
         clickOn("#editDetailsButton");
     }
 

@@ -1,9 +1,5 @@
 package seng302.Controller;
 
-import static org.testfx.api.FxAssert.verifyThat;
-
-import java.time.LocalDate;
-import java.util.concurrent.TimeoutException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -14,6 +10,11 @@ import seng302.App;
 import seng302.Model.EmergencyContact;
 import seng302.Model.User;
 import seng302.Utils.TableViewsMethod;
+
+import java.time.LocalDate;
+import java.util.concurrent.TimeoutException;
+
+import static org.testfx.api.FxAssert.verifyThat;
 
 public class ClinicianFilterTest extends ApplicationTest {
 
@@ -29,17 +30,17 @@ public class ClinicianFilterTest extends ApplicationTest {
     adam.setContact(new EmergencyContact("Letifa", "0118999124", adam));
     adam.getUndoStack().clear();
     AppController.getInstance().getUsers().add(adam);
-    clickOn("#changeLogin");
-    clickOn("#userIDTextField");
+    clickOn("#clinicianTab");
+    clickOn("#staffIdTextField");
     write("0", 0);
-    clickOn("#passwordField");
+    clickOn("#staffPasswordField");
     write("admin", 0);
 
   }
 
   @Test
   public void testFilterName() {
-    clickOn("#loginButton");
+    clickOn("#loginCButton");
     clickOn("#searchTab");
     clickOn("#searchTextField");
     System.out.println(AppController.getInstance().getUsers());
@@ -56,7 +57,7 @@ public class ClinicianFilterTest extends ApplicationTest {
       user.setLastName(Integer.toString(i));
       AppController.getInstance().getUsers().add(user);
     }
-    clickOn("#loginButton");
+    clickOn("#loginCButton");
     clickOn("#searchTab");
     clickOn("#searchTextField");
     write("Adam", 0);

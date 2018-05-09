@@ -9,9 +9,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import seng302.Model.Administrator;
 import seng302.Model.Clinician;
 import seng302.Model.User;
-import seng302.View.CLI;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -169,36 +169,36 @@ public class LoginController {
     @FXML
         void loginAdmin(ActionEvent event) {
         //Checks if the admin login button is clicked and runs the admin login code
-//            adminWarningLabel.setText("");
-//            String wantedAdmin;
-//            if (adminUsernameTextField.getText().isEmpty()) {
-//                adminWarningLabel.setText("Please enter your Administrator username.");
-//                return;
-//            } else {
-//                wantedAdmin = adminUsernameTextField.getText();
-//            }
-//            String adminPassword = adminPasswordField.getText();
+            adminWarningLabel.setText("");
+            String wantedAdmin;
+            if (adminUsernameTextField.getText().isEmpty()) {
+                adminWarningLabel.setText("Please enter your Administrator username.");
+                return;
+            } else {
+                wantedAdmin = adminUsernameTextField.getText();
+            }
+            String adminPassword = adminPasswordField.getText();
             //uncomment  the following when Administrator is set up - change code to fit the admin class as need be
-//            Administrator administrator = appController.getAdministrator(wantedAdmin);
-//            if (administrator == null) {
-//                adminWarningLabel.setText("The administrator does not exist.");
-//            } else if (!adminPassword.equals(administrator.getPassword())) {
-//                adminWarningLabel.setText("Your password is incorrect. Please try again.");
-//                return;
-//            } else {
-//                FXMLLoader administratorLoader = new FXMLLoader(getClass().getResource("/FXML/administratorView.fxml"));
-//                Parent root = null;
-//                try {
-//                    root = administratorLoader.load();
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-//
-//                stage.setScene(new Scene(root));
-//                AdministratorController administratorController = administratorLoader.getController();
-//                AppController.getInstance().setAdministratorController(administratorController);
-//                administratorController.init(stage, appController, administrator);
-//            }
+            Administrator administrator = appController.getAdministrator(wantedAdmin);
+            if (administrator == null) {
+                adminWarningLabel.setText("The administrator does not exist.");
+            } else if (!adminPassword.equals(administrator.getPassword())) {
+                adminWarningLabel.setText("Your password is incorrect. Please try again.");
+                return;
+            } else {
+                FXMLLoader administratorLoader = new FXMLLoader(getClass().getResource("/FXML/administratorView.fxml"));
+                Parent root = null;
+                try {
+                    root = administratorLoader.load();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                stage.setScene(new Scene(root));
+                AdministratorViewController administratorController = administratorLoader.getController();
+                AppController.getInstance().setAdministratorViewController(administratorController);
+                administratorController.init(stage, appController, administrator);
+            }
   }
 
 
