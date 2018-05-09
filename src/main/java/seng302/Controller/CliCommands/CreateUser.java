@@ -70,7 +70,7 @@ public class CreateUser implements Runnable {
       return;
     }
     User donor = controller.getUser(NHI);
-    if (donor != null) {
+    if (donor == null) {
       System.out.println("User with this NHI already exists");
       return;
     }

@@ -7,7 +7,7 @@ import seng302.Controller.AppController;
 import seng302.Model.Organs;
 import seng302.Model.User;
 
-@Command(name = "donate", description = "Updates a user's rawString to donate.")
+@Command(name = "donate", description = "Updates a user's organs to donate.")
 public class UpdateUserDonate implements Runnable {
 
   private AppController controller = AppController.getInstance();
@@ -16,8 +16,8 @@ public class UpdateUserDonate implements Runnable {
   private String nhi;
 
   @Parameters(index = "1..*", description =
-      "A list of the organs to be updated separated by spaces prefixed by +/- \n"
-          + "e.g. +liver /bone_marrow")
+      "A list of the organs to be updated separated by spaces prefixed by + or / \n"
+          + "e.g. +liver /bone_marrow would add liver and remove bone marrow")
   private String[] rawOrgans;
 
   @Option(names = {"-h", "help"}, usageHelp = true)
@@ -65,6 +65,7 @@ public class UpdateUserDonate implements Runnable {
     if (changed) {
       System.out.println("User updated");
       System.out.println(user.getDonorDetails().getOrgans().toString());
+      controller.update(user);
     }
   }
 

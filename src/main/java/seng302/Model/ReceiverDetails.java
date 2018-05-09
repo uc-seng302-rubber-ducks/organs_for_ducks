@@ -62,10 +62,11 @@ public class ReceiverDetails {
    * appends one organ to the list of organs this user is waiting for. If the user is already
    * waiting for this organ, no change will be made.
    * @param organ
+   * @return true if the collection was modified
    */
-  public void startWaitingForOrgan(Organs organ) {
+  public boolean startWaitingForOrgan(Organs organ) {
     if (isCurrentlyWaitingFor(organ)) {
-      return;
+      return false;
     }
     //existing entry
     if (organs.containsKey(organ)) {
@@ -76,19 +77,23 @@ public class ReceiverDetails {
       list.add(LocalDate.now());
       organs.put(Organs.values()[organ.ordinal()], list);
     }
+    return true;
   }
 
   /**
    * if the user is currently waiting for an organ, adds a timestamp to the list
    *
    * @param organ organ to stop waiting for
+   * @return true if the collection was modified.
    */
-  public void stopWaitingForOrgan(Organs organ) {
+  public boolean stopWaitingForOrgan(Organs organ) {
     if (isCurrentlyWaitingFor(organ)) {
       ArrayList<LocalDate> dates = organs.get(organ);
       dates.add(LocalDate.now());
       organs.put(Organs.values()[organ.ordinal()], dates);
+      return true;
     }
+    return false;
   }
 
   public User getAttachedUser() {
@@ -124,4 +129,21 @@ public class ReceiverDetails {
     return organs == null || organs.isEmpty();
   }
 
+
+  /**
+   * creates a simple space separated string of the organs this user is currently waiting to
+   * receive
+   *
+   * @return String of format "organ1 organ2 organ3 "
+   */
+  public String stringIsWaitingFor() {
+    StringBuilder sb = new StringBuilder();
+    for (Organs o : organs.keySet()) {
+      if (isCurrentlyWaitingFor(o)) {
+        sb.append(o.organName);
+        sb.append(" ");
+      }
+    }
+    return sb.toString();
+  }
 }

@@ -37,6 +37,7 @@ public class UpdateUserDonateTest {
     command.setController(controller);
     new CommandLine(command)
         .parseWithHandler(new CommandLine.RunLast(), System.err, args);
+    //intelliJ shows error as getDonorDetails is returning an object, despite being in a verify stmt
     verify(user, times(0)).getDonorDetails();
   }
 
