@@ -1,6 +1,7 @@
 package seng302.Controller.CliCommands;
 
 import java.time.LocalDate;
+import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import seng302.Controller.AppController;
@@ -8,7 +9,7 @@ import seng302.Model.User;
 import seng302.View.IoHelper;
 
 @Command(name = "update", description =
-    "Update details of a single donor\nUse 'update add' or 'update remove'"
+    "Update details of a single user or clinician. Use the help flag to view subcommands"
         + "to add or remove organs", subcommands = {UpdateUser.class, UpdateClinician.class})
 public class Update implements Runnable {
 
@@ -17,9 +18,7 @@ public class Update implements Runnable {
 
   @Override
   public void run() {
-    if (helpRequested) {
-      System.out.println("help goes here");
-    }
+    CommandLine.usage(this, System.err);
   }
 
   protected static User searchForUser(String NHI, String fname, String lname, String dobString,

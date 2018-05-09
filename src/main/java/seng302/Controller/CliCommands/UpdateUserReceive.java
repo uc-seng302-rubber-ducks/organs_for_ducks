@@ -57,12 +57,18 @@ public class UpdateUserReceive implements Runnable {
       }
     }
     if (changed) {
-      System.out.println("User updated");
+      System.out.println("User " + user.getNhi() + " updated");
       System.out.println(user.getReceiverDetails().stringIsWaitingFor());
       controller.update(user);
     }
   }
 
+  /**
+   * sets the preferred AppController to be used. This is set by default and should only be
+   * overridden for testing/mocking
+   *
+   * @param controller AppController to be used
+   */
   public void setController(AppController controller) {
     this.controller = controller;
   }

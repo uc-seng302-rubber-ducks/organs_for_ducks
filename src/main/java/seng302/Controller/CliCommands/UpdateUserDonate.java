@@ -63,7 +63,7 @@ public class UpdateUserDonate implements Runnable {
       }
     }
     if (changed) {
-      System.out.println("User updated");
+      System.out.println("User " + user.getNhi() + " updated");
       System.out.println(user.getDonorDetails().getOrgans().toString());
       controller.update(user);
     }
