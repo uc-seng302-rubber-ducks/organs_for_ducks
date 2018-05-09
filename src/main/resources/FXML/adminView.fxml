@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.collections.FXCollections?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.Controller.AdministratorViewController">
+   <children>
+      <MenuBar prefHeight="50.0" prefWidth="600.0">
+        <menus>
+          <Menu mnemonicParsing="false" text="File">
+            <items>
+                  <MenuItem fx:id="adminSaveMenu" mnemonicParsing="false" onAction="#save" text="Save" />
+                  <MenuItem fx:id="adminImportMenu" mnemonicParsing="false" onAction="#importData" text="Import" />
+              <MenuItem mnemonicParsing="false" onAction="#close" text="Close" />
+            </items>
+          </Menu>
+        </menus>
+      </MenuBar>
+      <TabPane layoutY="33.0" prefHeight="348.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE">
+        <tabs>
+          <Tab text="Details">
+            <content>
+              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <Button layoutX="203.0" layoutY="281.0" mnemonicParsing="false" text="Edit details" />
+                        <Separator layoutX="294.0" layoutY="-4.0" orientation="VERTICAL" prefHeight="326.0" prefWidth="9.0" />
+                        <Button fx:id="addUserButton" layoutX="346.0" layoutY="194.0" mnemonicParsing="false" onAction="#addUser" prefHeight="25.0" prefWidth="197.0" text="Add Donor or Reciever" />
+                        <Button fx:id="addClinicianButton" layoutX="347.0" layoutY="236.0" mnemonicParsing="false" onAction="#addClinician" prefHeight="25.0" prefWidth="196.0" text="Add Clinician" />
+                        <Button fx:id="addAdminButton" layoutX="350.0" layoutY="281.0" mnemonicParsing="false" onAction="#addAdmin" prefHeight="25.0" prefWidth="194.0" text="Add Admin" />
+                        <Label fx:id="succesFailLabel" layoutX="427.0" layoutY="144.0" text="Label" />
+                        <Label layoutX="399.0" layoutY="46.0" prefHeight="29.0" prefWidth="93.0" text="Add users" textAlignment="CENTER">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="39.0" layoutY="53.0" text="Username: " />
+                        <Label layoutX="37.0" layoutY="117.0" text="First Name: " />
+                        <Label layoutX="38.0" layoutY="179.0" text="Middle Name:" />
+                        <Label layoutX="38.0" layoutY="229.0" text="Last Name: " />
+                        <Label fx:id="adminUsernameLable" layoutX="185.0" layoutY="53.0" text="Label" textAlignment="CENTER" />
+                        <Label fx:id="adminFirstnameLabel" layoutX="183.0" layoutY="117.0" text="Label" textAlignment="CENTER" />
+                        <Label fx:id="adminMiddleNameLabel" layoutX="184.0" layoutY="179.0" text="Label" textAlignment="CENTER" />
+                        <Label fx:id="adminLastNameLabel" layoutX="184.0" layoutY="229.0" text="Label" textAlignment="CENTER" />
+                     </children>
+                  </AnchorPane>
+            </content>
+          </Tab>
+          <Tab text="Search">
+              <content>
+                  <SplitPane minHeight="-Infinity" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0"> <!---->
+                      <items>
+                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="617.0">
+                              <children>
+                                  <Pagination fx:id="searchTablePagination" layoutX="271.0" layoutY="5.0" maxPageIndicatorCount="1" prefHeight="368.0" prefWidth="593.0" AnchorPane.bottomAnchor="2.0" AnchorPane.leftAnchor="4.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="2.0" />
+                                  <TableView fx:id="searchTableView" layoutY="32.0" prefHeight="240.0" prefWidth="592.0" AnchorPane.bottomAnchor="48.0" AnchorPane.leftAnchor="4.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="32.0">
+                                      <columns>
+                                          <TableColumn prefWidth="75.0" text="C1" />
+                                          <TableColumn prefWidth="75.0" text="C2" />
+                                      </columns>
+                                      <tooltip>
+                                          <Tooltip fx:id="searchToolTip" text="Empty Tooltip" />
+                                      </tooltip>
+                                  </TableView>
+                                  <Label fx:id="searchCountLabel" layoutX="14.0" layoutY="336.0" text="" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="14.0" />
+                              <TextField fx:id="adminSearchField" layoutX="67.0" layoutY="2.0" prefHeight="25.0" prefWidth="258.0" />
+                              <Label layoutX="14.0" layoutY="7.0" text="Search" />
+                              <CheckBox fx:id="adminUserCheckbox" layoutX="356.0" layoutY="8.0" mnemonicParsing="false" text="User" />
+                              <CheckBox fx:id="adminAdminCheckbox" layoutX="520.0" layoutY="8.0" mnemonicParsing="false" text="Admin" />
+                              <CheckBox fx:id="adminClinicianChecknbox" layoutX="424.0" layoutY="8.0" mnemonicParsing="false" text="Clinician" />
+                              </children>
+                          </AnchorPane>
+                      </items>
+                  </SplitPane>
+              </content>
+          </Tab>
+            <Tab text="Transplant Waiting List">
+              <content>
+                  <SplitPane dividerPositions="0.5" orientation="VERTICAL">
+                      <items>
+                          <AnchorPane maxHeight="115.0" minHeight="115.0" prefHeight="200.0" prefWidth="200.0">
+                              <children>
+                                  <Label layoutX="21.0" layoutY="23.0" text="Region: " AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="18.0" />
+                                  <Label layoutX="14.0" layoutY="43.0" text="Organ:" />
+                                  <CheckBox fx:id="boneCheckBox" layoutX="68.0" layoutY="42.0" mnemonicParsing="false" text="Bone" AnchorPane.leftAnchor="68.0" AnchorPane.topAnchor="42.0" />
+                                  <CheckBox fx:id="boneMarrowCheckBox" layoutX="148.0" layoutY="42.0" mnemonicParsing="false" text="Bone Marrow" AnchorPane.leftAnchor="148.0" AnchorPane.topAnchor="42.0" />
+                                  <CheckBox fx:id="corneaCheckBox" layoutX="277.0" layoutY="42.0" mnemonicParsing="false" text="Cornea" AnchorPane.leftAnchor="277.0" AnchorPane.topAnchor="42.0" />
+                                  <CheckBox fx:id="connectiveTissueCheckBox" layoutX="365.0" layoutY="42.0" mnemonicParsing="false" text="Connective Tissue" AnchorPane.leftAnchor="365.0" AnchorPane.topAnchor="42.0" />
+                                  <CheckBox fx:id="heartCheckBox" layoutX="68.0" layoutY="69.0" mnemonicParsing="false" text="Heart" AnchorPane.leftAnchor="68.0" AnchorPane.topAnchor="69.0" />
+                                  <CheckBox fx:id="middleEarCheckBox" layoutX="148.0" layoutY="69.0" mnemonicParsing="false" text="Middle Ear" AnchorPane.leftAnchor="148.0" AnchorPane.topAnchor="69.0" />
+                                  <CheckBox fx:id="intestineCheckBox" layoutX="277.0" layoutY="69.0" mnemonicParsing="false" text="Intestine" AnchorPane.leftAnchor="277.0" AnchorPane.topAnchor="69.0" />
+                                  <CheckBox fx:id="pancreasCheckBox" layoutX="365.0" layoutY="69.0" mnemonicParsing="false" text="Pancreas" AnchorPane.leftAnchor="365.0" AnchorPane.topAnchor="69.0" />
+                                  <CheckBox fx:id="lungCheckBox" layoutX="68.0" layoutY="92.0" mnemonicParsing="false" text="Lung" AnchorPane.leftAnchor="68.0" AnchorPane.topAnchor="92.0" />
+                                  <CheckBox fx:id="kidneyCheckBox" layoutX="148.0" layoutY="92.0" mnemonicParsing="false" text="Kidney" AnchorPane.leftAnchor="148.0" AnchorPane.topAnchor="92.0" />
+                                  <CheckBox fx:id="liverCheckBox" layoutX="277.0" layoutY="92.0" mnemonicParsing="false" text="Liver" AnchorPane.leftAnchor="277.0" AnchorPane.topAnchor="92.0" />
+                                  <CheckBox fx:id="skinCheckBox" layoutX="365.0" layoutY="92.0" mnemonicParsing="false" text="Skin" AnchorPane.leftAnchor="365.0" AnchorPane.topAnchor="92.0" />
+                                  <TextField fx:id="waitingRegionTextfield" layoutX="68.0" layoutY="13.0" prefHeight="25.0" prefWidth="442.0" AnchorPane.leftAnchor="68.0" AnchorPane.rightAnchor="107.0" AnchorPane.topAnchor="13.0" />
+                              </children>
+                          </AnchorPane>
+                          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                              <children>
+                                  <TableView fx:id="transplantWaitListTableView" prefHeight="330.0" prefWidth="617.0" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                                  <Label fx:id="filtersLabel" layoutX="14.0" layoutY="222.0" maxWidth="Infinity" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="14.0" />
+                              </children>
+                          </AnchorPane>
+                      </items>
+                  </SplitPane>
+              </content>
+            </Tab>
+            <Tab text="CLI">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+              </content>
+            </Tab>
+        </tabs>
+      </TabPane>
+      <Label layoutX="199.0" text="Administrator">
+         <font>
+            <Font size="24.0" />
+         </font>
+      </Label>
+      <Button fx:id="adminLogoutButton" layoutX="394.0" layoutY="2.0" mnemonicParsing="false" onAction="#logout" text="Logout" />
+      <Button fx:id="adminUndoButton" layoutX="464.0" layoutY="2.0" mnemonicParsing="false" onAction="#undo" text="Undo" />
+      <Button fx:id="adminRedoButton" layoutX="525.0" layoutY="2.0" mnemonicParsing="false" onAction="#redo" text="Redo" />
+   </children>
+</AnchorPane>
