@@ -51,7 +51,7 @@ public class UpdateDonorControllerGUITest extends ApplicationTest {
         clickOn("#fNameInput");
         write("Kate",0);
         clickOn("#cancelButton");
-        clickOn("Yes");
+        clickOn("#yesButton");
         verifyThat("#fNameValue", LabeledMatchers.hasText("A"));
     }
 
