@@ -6,9 +6,9 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.collections.FXCollections?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.Controller.AdministratorViewController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="400.0" minWidth="600.0" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.Controller.AdministratorViewController">
    <children>
-      <MenuBar prefHeight="50.0" prefWidth="600.0">
+      <MenuBar prefHeight="50.0" prefWidth="600.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <menus>
           <Menu mnemonicParsing="false" text="File">
             <items>
@@ -19,31 +19,31 @@
           </Menu>
         </menus>
       </MenuBar>
-      <TabPane layoutY="33.0" prefHeight="348.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE">
+      <TabPane layoutY="33.0" prefHeight="348.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="19.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="33.0">
         <tabs>
           <Tab text="Details">
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <Button layoutX="203.0" layoutY="281.0" mnemonicParsing="false" text="Edit details" />
-                        <Separator layoutX="294.0" layoutY="-4.0" orientation="VERTICAL" prefHeight="326.0" prefWidth="9.0" />
-                        <Button fx:id="addUserButton" layoutX="346.0" layoutY="194.0" mnemonicParsing="false" onAction="#addUser" prefHeight="25.0" prefWidth="197.0" text="Add Donor or Reciever" />
-                        <Button fx:id="addClinicianButton" layoutX="347.0" layoutY="236.0" mnemonicParsing="false" onAction="#addClinician" prefHeight="25.0" prefWidth="196.0" text="Add Clinician" />
-                        <Button fx:id="addAdminButton" layoutX="350.0" layoutY="281.0" mnemonicParsing="false" onAction="#addAdmin" prefHeight="25.0" prefWidth="194.0" text="Add Admin" />
-                        <Label fx:id="succesFailLabel" layoutX="427.0" layoutY="144.0" text="Label" />
-                        <Label layoutX="399.0" layoutY="46.0" prefHeight="29.0" prefWidth="93.0" text="Add users" textAlignment="CENTER">
+                        <Button layoutX="203.0" layoutY="281.0" mnemonicParsing="false" text="Edit details" AnchorPane.bottomAnchor="9.0" AnchorPane.leftAnchor="203.0" />
+                        <Separator layoutX="294.0" layoutY="-4.0" orientation="VERTICAL" prefHeight="326.0" prefWidth="9.0" AnchorPane.bottomAnchor="-7.0" AnchorPane.leftAnchor="294.0" AnchorPane.rightAnchor="297.0" AnchorPane.topAnchor="-4.0" />
+                        <Button fx:id="addUserButton" layoutX="346.0" layoutY="194.0" mnemonicParsing="false" onAction="#addUser" prefHeight="25.0" prefWidth="197.0" text="Add Donor or Reciever" AnchorPane.rightAnchor="57.0" />
+                        <Button fx:id="addClinicianButton" layoutX="347.0" layoutY="236.0" mnemonicParsing="false" onAction="#addClinician" prefHeight="25.0" prefWidth="196.0" text="Add Clinician" AnchorPane.rightAnchor="57.0" />
+                        <Button fx:id="addAdminButton" layoutX="350.0" layoutY="281.0" mnemonicParsing="false" onAction="#addAdmin" prefHeight="25.0" prefWidth="194.0" text="Add Admin" AnchorPane.rightAnchor="56.0" />
+                        <Label fx:id="succesFailLabel" layoutX="427.0" layoutY="144.0" text="Label" AnchorPane.rightAnchor="137.0" />
+                        <Label layoutX="399.0" layoutY="46.0" prefHeight="29.0" prefWidth="93.0" text="Add users" textAlignment="CENTER" AnchorPane.rightAnchor="108.0">
                            <font>
                               <Font size="18.0" />
                            </font>
                         </Label>
-                        <Label layoutX="39.0" layoutY="53.0" text="Username: " />
-                        <Label layoutX="37.0" layoutY="117.0" text="First Name: " />
-                        <Label layoutX="38.0" layoutY="179.0" text="Middle Name:" />
-                        <Label layoutX="38.0" layoutY="229.0" text="Last Name: " />
-                        <Label fx:id="adminUsernameLable" layoutX="185.0" layoutY="53.0" text="Label" textAlignment="CENTER" />
-                        <Label fx:id="adminFirstnameLabel" layoutX="183.0" layoutY="117.0" text="Label" textAlignment="CENTER" />
-                        <Label fx:id="adminMiddleNameLabel" layoutX="184.0" layoutY="179.0" text="Label" textAlignment="CENTER" />
-                        <Label fx:id="adminLastNameLabel" layoutX="184.0" layoutY="229.0" text="Label" textAlignment="CENTER" />
+                        <Label layoutX="39.0" layoutY="53.0" text="Username: " AnchorPane.leftAnchor="39.0" AnchorPane.topAnchor="53.0" />
+                        <Label layoutX="37.0" layoutY="117.0" text="First Name: " AnchorPane.leftAnchor="37.0" AnchorPane.topAnchor="117.0" />
+                        <Label layoutX="38.0" layoutY="179.0" text="Middle Name:" AnchorPane.leftAnchor="37.0" AnchorPane.topAnchor="179.0" />
+                        <Label layoutX="38.0" layoutY="229.0" text="Last Name: " AnchorPane.leftAnchor="37.0" AnchorPane.topAnchor="229.0" />
+                        <Label fx:id="adminUsernameLable" layoutX="185.0" layoutY="53.0" text="Label" textAlignment="CENTER" AnchorPane.leftAnchor="185.0" AnchorPane.topAnchor="53.0" />
+                        <Label fx:id="adminFirstnameLabel" layoutX="183.0" layoutY="117.0" text="Label" textAlignment="CENTER" AnchorPane.leftAnchor="185.0" AnchorPane.topAnchor="117.0" />
+                        <Label fx:id="adminMiddleNameLabel" layoutX="184.0" layoutY="179.0" text="Label" textAlignment="CENTER" AnchorPane.leftAnchor="185.0" AnchorPane.topAnchor="179.0" />
+                        <Label fx:id="adminLastNameLabel" layoutX="184.0" layoutY="229.0" text="Label" textAlignment="CENTER" AnchorPane.leftAnchor="184.0" AnchorPane.topAnchor="229.0" />
                      </children>
                   </AnchorPane>
             </content>
@@ -116,13 +116,13 @@
             </Tab>
         </tabs>
       </TabPane>
-      <Label layoutX="199.0" text="Administrator">
+      <Label layoutX="199.0" text="Administrator" AnchorPane.topAnchor="0.0">
          <font>
             <Font size="24.0" />
          </font>
       </Label>
-      <Button fx:id="adminLogoutButton" layoutX="394.0" layoutY="2.0" mnemonicParsing="false" onAction="#logout" text="Logout" />
-      <Button fx:id="adminUndoButton" layoutX="464.0" layoutY="2.0" mnemonicParsing="false" onAction="#undo" text="Undo" />
-      <Button fx:id="adminRedoButton" layoutX="525.0" layoutY="2.0" mnemonicParsing="false" onAction="#redo" text="Redo" />
+      <Button fx:id="adminLogoutButton" layoutX="394.0" layoutY="2.0" mnemonicParsing="false" onAction="#logout" text="Logout" AnchorPane.rightAnchor="143.0" AnchorPane.topAnchor="2.0" />
+      <Button fx:id="adminUndoButton" layoutX="464.0" layoutY="2.0" mnemonicParsing="false" onAction="#undo" text="Undo" AnchorPane.rightAnchor="84.0" AnchorPane.topAnchor="2.0" />
+      <Button fx:id="adminRedoButton" layoutX="525.0" layoutY="2.0" mnemonicParsing="false" onAction="#redo" text="Redo" AnchorPane.rightAnchor="23.0" AnchorPane.topAnchor="2.0" />
    </children>
 </AnchorPane>
