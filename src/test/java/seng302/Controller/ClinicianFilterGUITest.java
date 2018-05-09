@@ -15,7 +15,7 @@ import seng302.Model.EmergencyContact;
 import seng302.Model.User;
 import seng302.Utils.TableViewsMethod;
 
-public class ClinicianFilterTest extends ApplicationTest {
+public class ClinicianFilterGUITest extends ApplicationTest {
 
   @Before
   public void setUp() throws TimeoutException{
