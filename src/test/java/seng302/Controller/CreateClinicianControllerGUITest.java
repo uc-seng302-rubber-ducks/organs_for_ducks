@@ -116,7 +116,7 @@ public class CreateClinicianControllerGUITest extends ApplicationTest {
         clickOn("#regionTextField");
         write("Christchurch", 0);
         clickOn("#confirmButton");
-        verifyThat("#incorrectPasswordLabel", Node::isVisible);
+        verifyThat("#emptyPasswordLabel", Node::isVisible);
     }
 
     @Test

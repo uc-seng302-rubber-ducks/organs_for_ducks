@@ -3,6 +3,7 @@ package seng302.Controller;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Optional;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -21,6 +22,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import seng302.Model.Clinician;
 import seng302.Model.Memento;
+import seng302.Service.PasswordManager;
 
 /**
  * Controller for updating clinicians
@@ -87,11 +89,12 @@ public class UpdateClinicianController {
 
     /**
      * Initializes the scene by setting all but the password text fields to contain the given clinicians attributes.
-     * @param clinician The given clinician.
-     * @param controller The application controller.
-     * @param stage The application stage.
+     *
+     * @param clinician    The given clinician.
+     * @param controller   The application controller.
+     * @param stage        The application stage.
      * @param newClinician true if the current clinician is new, false if the clinician is being updated.
-     * */
+     */
     public void init(Clinician clinician, AppController controller, Stage stage, boolean newClinician) {
         currentClinician = clinician;
         this.newClinician = newClinician;
@@ -122,7 +125,7 @@ public class UpdateClinicianController {
             Scene scene = stage.getScene();
 
             final KeyCombination shortcutZ = new KeyCodeCombination(
-                KeyCode.Z, KeyCombination.CONTROL_DOWN);
+                    KeyCode.Z, KeyCombination.CONTROL_DOWN);
 
             scene.addEventFilter(KeyEvent.KEY_RELEASED, e -> {
                 if (shortcutZ.match(e)) {
@@ -147,12 +150,11 @@ public class UpdateClinicianController {
     /**
      * Prefills all the text fields as the attribute values.
      * If the attributes are null, then the fields are set as empty strings.
+     *
      * @param clinician The current clinician.
      */
     private void prefillFields(Clinician clinician) {
         staffIDTextField.setText(clinician.getStaffId());
-        passwordField.setText(clinician.getPassword());
-        confirmPasswordField.setText(clinician.getPassword());
 
         String fName = clinician.getFirstName();
         String mName = clinician.getMiddleName();
@@ -195,6 +197,7 @@ public class UpdateClinicianController {
     /**
      * Checks if all text fields are equal to their original pre-filled inputs.
      * The pre-filled inputs are the same as the clinicians attributes.
+     *
      * @return true if they are all equal, false if at least one is different.
      */
     private boolean checkChanges() {
@@ -204,9 +207,9 @@ public class UpdateClinicianController {
             noChange = false;
         }
 
-        if (!(currentClinician.getPassword()).equals(oldClinician.getPassword())) {
+/*        if (!(currentClinician.getPassword()).equals(oldClinician.getPassword())) {
             noChange = false;
-        }
+        }*/ //We shouldn't need this now for secure passwords
 
         if (!(currentClinician.getFirstName()).equals(oldClinician.getFirstName())) {
             noChange = false;
@@ -244,11 +247,16 @@ public class UpdateClinicianController {
             noChange = false;
         }
 
+        if (passwordField.getText().isEmpty()) {
+            noChange = false;
+        }
+
         return noChange;
     }
 
     /**
      * Changes the title bar to contain an asterisk if a change was detected.
+     *
      * @param field The current textfield/password field element.
      */
     private void changesListener(TextField field) {
@@ -272,8 +280,8 @@ public class UpdateClinicianController {
     private void updateUndos() {
         boolean changed = false;
         changed = updateDetails(staffIDTextField.getText(), firstNameTextField.getText(),
-            lastNameTextField.getText(),
-            regionTextField.getText(), addressTextField.getText(), middleNameTextField.getText());
+                lastNameTextField.getText(),
+                regionTextField.getText(), addressTextField.getText(), middleNameTextField.getText());
 
         if (changed) {
             prefillFields(currentClinician);
@@ -284,8 +292,8 @@ public class UpdateClinicianController {
     }
 
     private boolean updateDetails(String staffId, String fName, String lName, String region,
-        String address,
-        String mName) {
+                                  String address,
+                                  String mName) {
         boolean changed = false;
         if (!currentClinician.getStaffId().equals(staffId)) {
             currentClinician.setStaffId(staffId);
@@ -351,12 +359,13 @@ public class UpdateClinicianController {
 
     /**
      * Attempts to load the clinician overview window.
+     *
      * @param clinician The current clinician.
      */
     private void loadOverview(Clinician clinician) {
         if (!newClinician) {
             ClinicianController clinicianController = AppController.getInstance()
-                .getClinicianController();
+                    .getClinicianController();
             clinicianController.showClinician(oldClinician);
             stage.close();
 
@@ -379,6 +388,7 @@ public class UpdateClinicianController {
     /**
      * If changes are present, a pop up alert is displayed.
      * Closes the window without making any changes.
+     *
      * @param event an action event.
      */
     @FXML
@@ -450,6 +460,7 @@ public class UpdateClinicianController {
     /**
      * Saves the clinician if all updated attributes are valid, otherwise error messages are displayed.
      * Upon a successful save, the window closes.
+     *
      * @param event an action event.
      */
     @FXML
@@ -479,17 +490,31 @@ public class UpdateClinicianController {
         String lName = null;
         String address = null;
         String region = null;
+        boolean updatePassword = false;
 
-        if ((passwordField.getText()).isEmpty()) {
-            emptyPasswordLabel.setVisible(true);
-            valid = false;
+        if (newClinician) {
+            if (passwordField.getText().isEmpty() || confirmPasswordField.getText().isEmpty()) {
+                valid = false;
+                emptyPasswordLabel.setVisible(true);
+            }else if(passwordField.getText().equals(confirmPasswordField.getText())) {
+                password = passwordField.getText();
+            } else {
+                valid = false;
+                incorrectPasswordLabel.setVisible(true);
+            }
         } else {
-            password = passwordField.getText();
-            if (!(confirmPasswordField.getText()).equals(password)) {
+            /*if ((passwordField.getText().isEmpty() || (confirmPasswordField.getText().isEmpty()))) {
+                //this stops the rest of the if statement executing if the passwords are blank avoiding NPE
+            } else*/
+                if (!(confirmPasswordField.getText()).equals(passwordField.getText()) || currentClinician.isPasswordCorrect(passwordField.getText())){
                 incorrectPasswordLabel.setVisible(true);
                 valid = false;
+            } else {
+                updatePassword = true;
+                password = passwordField.getText();
             }
         }
+
 
         if ((firstNameTextField.getText()).isEmpty()) {
             emptyFNameLabel.setVisible(true);
@@ -518,7 +543,8 @@ public class UpdateClinicianController {
 
         if (valid && !newClinician) { // updates an existing clinician
             // updates the attributes that have changed
-            updateChanges(staffID, fName, mName, lName, address, region, password);
+            updateChanges(staffID, fName, mName, lName, address, region, password, updatePassword);
+
 
             currentClinician.setDateLastModified(LocalDateTime.now()); // updates the modified date
             sumAllChanged();
@@ -535,12 +561,13 @@ public class UpdateClinicianController {
     /**
      * Only updates the values that have been changed.
      */
-    private void updateChanges(String staffID, String fName, String mName, String lName, String address, String region, String password) {
+
+    private void updateChanges(String staffID, String fName, String mName, String lName, String address, String region, String password, boolean updatePassword) {
         if (!currentClinician.getStaffId().equals(staffID)) {
             currentClinician.setStaffId(staffID);
         }
 
-        if (!currentClinician.getPassword().equals(password)) {
+        if (updatePassword) {
             currentClinician.setPassword(password);
         }
 
