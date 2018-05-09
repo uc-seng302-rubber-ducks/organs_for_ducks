@@ -20,7 +20,9 @@ public class Administrator {
     @Expose
     private String lastName;
     @Expose
-    private String password;
+    private byte[] password;
+    @Expose
+    private byte[] salt;
     @Expose
     private LocalDateTime dateCreated;
     @Expose
@@ -34,7 +36,7 @@ public class Administrator {
         this.firstName = null;
         this.middleName = null;
         this.lastName = null;
-        password = "admin";
+        password = setPassword("admin");
         dateCreated = LocalDateTime.now();
         dateLastModified = LocalDateTime.now();
     }
@@ -47,7 +49,7 @@ public class Administrator {
      * @param lastName Administrator last name
      * @param password Administrator password
      */
-    public Administrator(String userName, String firstName, String middleName, String lastName, String password){
+    public Administrator(String userName, String firstName, String middleName, String lastName, byte[] password){
         this.userName = userName;
         this.firstName = firstName;
         this.middleName = middleName;
@@ -121,12 +123,22 @@ public class Administrator {
         return fullName;
     }
 
-    public String getPassword() {
+    private byte[] getPassword() {
         return password;
     }
 
     public void setPassword(String password) {
-        this.password = password;
+
+        this.salt = PasswordManager.getNextSalt;
+        this.password = PasswordManager.hash(password, salt);
+    }
+
+    public void setSalt(byte[] salt) {
+        this.salt = salt;
+    }
+
+    public void isExpectedPassword(String testPassword){
+        return PasswordManager.isExpectedPassword(testPassword, this.salt, getPassword());
     }
 
     @Override
