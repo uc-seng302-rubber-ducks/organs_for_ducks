@@ -235,9 +235,11 @@ public class LoginController {
             root = donorLoader.load();
         } catch (IOException e) {
             e.printStackTrace();}
-
-        stage.setScene(new Scene(root));
-        stage.setTitle("Create New User Profile");
+        Stage newStage  = new Stage();
+        newStage.initModality(Modality.APPLICATION_MODAL);
+        newStage.setScene(new Scene(root));
+        newStage.setTitle("Create New User Profile");
+        newStage.show();
         NewUserController donorController =  donorLoader.getController();
         donorController.init(AppController.getInstance(),  stage, newStage);
 
