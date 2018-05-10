@@ -6,7 +6,7 @@ import org.json.simple.JSONObject;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
-public class OrganAndDateHolderForReceiverDetails { //Don't @ my naming conventions.
+public class ReasonAndDateHolderForReceiverDetails { //Don't @ my naming conventions.
     //More seriously, we are starting to rack up classes and the naming for them needs to be more specific.
     // This might be over-doing it but wanted to start a discussion
 
@@ -20,7 +20,7 @@ public class OrganAndDateHolderForReceiverDetails { //Don't @ my naming conventi
      * @param stopDate LocalDate date of stopping needing to receive
      * @param reason OrganDeregisterReason (enum) of stopping needing to receive
      */
-    public OrganAndDateHolderForReceiverDetails(LocalDate startDate, LocalDate stopDate, OrganDeregisterReason reason) {
+    public ReasonAndDateHolderForReceiverDetails(LocalDate startDate, LocalDate stopDate, OrganDeregisterReason reason) {
         this.startDate = startDate;
         this.stopDate = stopDate;
         this.reason = reason;

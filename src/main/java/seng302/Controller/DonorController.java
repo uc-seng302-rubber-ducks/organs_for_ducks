@@ -5,15 +5,8 @@ import java.io.IOException;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -537,14 +530,14 @@ public class DonorController {
         Collections.addAll(organs, Organs.values());
 
         //display registered and deregistered receiver organs if any
-        Map<Organs, OrganAndDateHolderForReceiverDetails> receiverOrgans = currentUser.getReceiverDetails().getOrgans();
+        Map<Organs, Stack<ReasonAndDateHolderForReceiverDetails>> receiverOrgans = currentUser.getReceiverDetails().getOrgans();
         if (receiverOrgans == null){
-            receiverOrgans = new EnumMap<Organs, OrganAndDateHolderForReceiverDetails>(Organs.class);
+            receiverOrgans = new EnumMap<Organs, Stack<ReasonAndDateHolderForReceiverDetails>>(Organs.class);
         }
         currentlyRecieving = FXCollections.observableArrayList();
         noLongerReceiving = FXCollections.observableArrayList();
         if(!receiverOrgans.isEmpty()) {
-            Set<Organs> allOrgans = receiverOrgans.keySet();
+            Set<Organs> allOrgans = receiverOrgans.keySet(); //NOT USED
             for (Organs organ : receiverOrgans.keySet()) {
                 if (currentUser.getReceiverDetails().isCurrentlyWaitingFor(organ)) {
                     organs.remove(organ);
