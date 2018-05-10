@@ -263,7 +263,7 @@ public class LoginController {
         stage.setScene(new Scene(root));
         stage.setTitle("Administrator");
         AdministratorViewController administratorViewController = adminLoader.getController();
-        administratorViewController.init(stage, appController, new Administrator());
+        administratorViewController.init(new Administrator(),appController,stage);
     }
 }
 
