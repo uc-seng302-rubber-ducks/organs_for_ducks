@@ -85,7 +85,7 @@ public class UpdateClinicianController {
     private Clinician currentClinician;
     private Clinician oldClinician;
     private boolean newClinician;
-    int undoMarker;
+    private int undoMarker;
     private Stage ownStage;
 
     /**
@@ -280,7 +280,7 @@ public class UpdateClinicianController {
      * updates the undo stack
      */
     private void updateUndos() {
-        boolean changed = false;
+        boolean changed;
         changed = updateDetails(staffIDTextField.getText(), firstNameTextField.getText(),
                 lastNameTextField.getText(),
                 regionTextField.getText(), addressTextField.getText(), middleNameTextField.getText());
@@ -375,7 +375,7 @@ public class UpdateClinicianController {
             System.out.println(stage.getTitle());
             if (stage.getTitle().matches("Administrator*")) {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML/clinicianView.fxml"));
-                Parent root = null;
+                Parent root;
 
                 try {
                     root = loader.load();
@@ -483,11 +483,9 @@ public class UpdateClinicianController {
     /**
      * Saves the clinician if all updated attributes are valid, otherwise error messages are displayed.
      * Upon a successful save, the window closes.
-     *
-     * @param event an action event.
      */
     @FXML
-    private void saveChanges(ActionEvent event) {
+    private void saveChanges() {
         hideErrorMessages(); // clears the error messages
         boolean valid = true;
         String staffID = staffIDTextField.getText();

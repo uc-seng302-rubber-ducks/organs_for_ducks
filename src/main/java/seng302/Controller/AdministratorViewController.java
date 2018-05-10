@@ -108,6 +108,9 @@ public class AdministratorViewController {
     private Button addUserButton;
 
     @FXML
+    private Button updateButton;
+
+    @FXML
     private Label adminMiddleNameLabel;
 
     @FXML
@@ -136,6 +139,7 @@ public class AdministratorViewController {
         this.stage = stage;
         this.appController = appController;
         this.administrator = administrator;
+        //displayDetails();
     }
 
     @FXML
@@ -206,6 +210,27 @@ public class AdministratorViewController {
 
     @FXML
     void redo(ActionEvent event) {
+
+    }
+
+
+    /**
+     * load the labels on the admin view with the current admins details
+     */
+    void displayDetails(){
+        adminUsernameLable.setText(administrator.getUserName());
+        adminFirstnameLabel.setText(administrator.getFirstName());
+        if (!administrator.getMiddleName().isEmpty()){
+            adminMiddleNameLabel.setText(administrator.getMiddleName());
+        }
+        if (!administrator.getLastName().isEmpty()){
+            adminLastNameLabel.setText(administrator.getLastName());
+        }
+    }
+
+    @FXML
+    void updateAdmin(){
+
 
     }
 
