@@ -12,7 +12,7 @@ import seng302.Model.User;
 import seng302.View.IoHelper;
 
 @Command(name = "details", description = "Use -id to identify the the donor. All other tags will update values")
-public class UpdateDetails implements Runnable {
+public class UpdateUserDetails implements Runnable {
 
 
   @Option(names = {"-id", "-nhi", "-NHI"}, required = true)
@@ -120,12 +120,7 @@ public class UpdateDetails implements Runnable {
       changed = true;
     }
     if (changed) {
-      try {
-        JsonHandler.saveUsers(controller.getUsers());
-        //JsonWriter.saveCurrentDonorState(controller.getUsers());
-      } catch (IOException ex) {
-        System.err.println("Could not update details on file");
-      }
+      controller.update(user);
     }
   }
 }

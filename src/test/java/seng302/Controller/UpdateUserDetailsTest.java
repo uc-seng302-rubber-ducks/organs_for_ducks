@@ -13,10 +13,10 @@ import org.junit.Before;
 import org.junit.Test;
 import picocli.CommandLine;
 
-import seng302.Controller.CliCommands.UpdateDetails;
+import seng302.Controller.CliCommands.UpdateUserDetails;
 import seng302.Model.User;
 
-public class UpdateDetailsTest {
+public class UpdateUserDetailsTest {
 
   AppController controller;
   DateTimeFormatter sdf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -42,7 +42,7 @@ public class UpdateDetailsTest {
   @Test
   public void ShouldUpdateFirstName() {
     String[] args = {"-NHI=" + NHI, "-f=Mal"};
-    new CommandLine(new UpdateDetails())
+    new CommandLine(new UpdateUserDetails())
         .parseWithHandler(new CommandLine.RunLast(), System.err, args);
 
     User mal = controller.findUsers("Mal dummy").get(0);
@@ -55,7 +55,7 @@ public class UpdateDetailsTest {
   @Test
   public void ShouldUpdateLastName() {
     String[] args = {"-NHI=" + NHI, "-l=muppet"};
-    new CommandLine(new UpdateDetails())
+    new CommandLine(new UpdateUserDetails())
         .parseWithHandler(new CommandLine.RunLast(), System.err, args);
 
     User muppet = controller.findUsers("test muppet").get(0);
@@ -68,7 +68,7 @@ public class UpdateDetailsTest {
   @Test
   public void ShouldUpdateFullName() {
     String[] args = {"-NHI=" + NHI, "-f=stephen", "-l=hawking"};
-    new CommandLine(new UpdateDetails())
+    new CommandLine(new UpdateUserDetails())
         .parseWithHandler(new CommandLine.RunLast(), System.err, args);
 
     User alan = controller.findUsers("stephen hawking").get(0);
@@ -83,7 +83,7 @@ public class UpdateDetailsTest {
     //height and weight are identical, no use testing both
     //just checking it can parse numbers
     String[] args = {"-NHI=" + NHI, "-w=100"};
-    new CommandLine(new UpdateDetails())
+    new CommandLine(new UpdateUserDetails())
         .parseWithHandler(new CommandLine.RunLast(), System.err, args);
 
     User test = controller.findUsers("test dummy").get(0);
@@ -94,7 +94,7 @@ public class UpdateDetailsTest {
   public void ShouldNotUpdateBadNumberField() {
     //height and weight are identical, no use testing both
     String[] args = {"-NHI=" + NHI, "-w=fat"};
-    new CommandLine(new UpdateDetails())
+    new CommandLine(new UpdateUserDetails())
         .parseWithHandler(new CommandLine.RunLast(), System.err, args);
 
     User test = controller.findUsers("test dummy").get(0);
@@ -107,7 +107,7 @@ public class UpdateDetailsTest {
     //just checking it can parse dates
     String[] args = {"-NHI=" + NHI, "-dob=2020-03-04"};
 
-    new CommandLine(new UpdateDetails())
+    new CommandLine(new UpdateUserDetails())
         .parseWithHandler(new CommandLine.RunLast(), System.err, args);
 
     User test = controller.findUsers("test dummy").get(0);
@@ -124,7 +124,7 @@ public class UpdateDetailsTest {
     //dob and dod are identical, no use testing both
     String[] args = {"-NHI=" + NHI, "-dob=1963"};
 
-    new CommandLine(new UpdateDetails())
+    new CommandLine(new UpdateUserDetails())
         .parseWithHandler(new CommandLine.RunLast(), System.err, args);
 
       User test = controller.findUsers("test dummy").get(0);
@@ -145,7 +145,7 @@ public class UpdateDetailsTest {
 
     String[] args = {"-NHI=" + NHI, "-f=fred"};
 
-    new CommandLine(new UpdateDetails())
+    new CommandLine(new UpdateUserDetails())
         .parseWithHandler(new CommandLine.RunLast(), System.err, args);
 
     LocalDateTime newTime = user.getLastModified();
@@ -162,7 +162,7 @@ public class UpdateDetailsTest {
     User other = controller.getUser("CDE1234");
 
     String[] args = {"-NHI=ABC1234", "-newNHI=CDE1234"};
-    new CommandLine(new UpdateDetails())
+    new CommandLine(new UpdateUserDetails())
         .parseWithHandler(new CommandLine.RunLast(), System.err, args);
 
     Assert.assertEquals(controller.getUser("CDE1234"), other);
