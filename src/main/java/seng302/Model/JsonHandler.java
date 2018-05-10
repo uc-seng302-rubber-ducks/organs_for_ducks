@@ -4,20 +4,15 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializer;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.Reader;
+import org.joda.time.DateTime;
+import org.joda.time.format.ISODateTimeFormat;
+import seng302.Directory;
+
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
-import org.joda.time.DateTime;
-import org.joda.time.format.ISODateTimeFormat;
-import seng302.Directory;
 
 /**
  * Json Handler to import and save data
@@ -59,9 +54,9 @@ public final class JsonHandler {
      * @throws FileNotFoundException  when the file cannot be located.
      */
 
-    public static ArrayList<User> loadUsers() throws FileNotFoundException {
+    public static ArrayList<User> loadUsers(String filename) throws FileNotFoundException {
         ArrayList<User> results = new ArrayList<>();
-        File inFile = new File(Directory.JSON.directory() + "/donors.json");
+        File inFile = new File(Directory.JSON.directory() + filename);
         Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss")
                 .create();
         Reader reader =new FileReader(inFile);
@@ -112,9 +107,9 @@ public final class JsonHandler {
      * @return List of registered clinicians
      * @throws FileNotFoundException thrown if no clinicians exist
      */
-    public static ArrayList<Clinician> loadClinicians() throws FileNotFoundException {
+    public static ArrayList<Clinician> loadClinicians(String filename) throws FileNotFoundException {
         ArrayList<Clinician> results = new ArrayList<>();
-        File inFile = new File(Directory.JSON.directory() + "/clinicians.json");
+        File inFile = new File(Directory.JSON.directory() + filename);
         Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss")
                 .create();
         Reader reader =new FileReader(inFile);
