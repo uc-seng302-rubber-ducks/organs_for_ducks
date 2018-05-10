@@ -332,7 +332,7 @@ public class UpdateClinicianController {
     private void cancelUpdate(ActionEvent event) {
 
         if (!newClinician) {
-            if (stage.getTitle().equals("Update Clinician: " + currentClinician.getFirstName() + " *")) { // has changes
+            if (!undoClinicianFormButton.isDisabled()) {
                 Alert alert = new Alert(Alert.AlertType.WARNING,
                         "You have unsaved changes, are you sure you want to cancel?",
                         ButtonType.YES, ButtonType.NO);

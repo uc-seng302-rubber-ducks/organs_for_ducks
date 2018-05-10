@@ -982,8 +982,7 @@ public class UpdateUserController {
      */
     @FXML
     void goBack (ActionEvent event){
-      if (stage.getTitle()
-          .equals("Update User: " + currentUser.getFirstName() + " *")) { // has changes
+      if (!undoUpdateButton.isDisabled()) { // has changes
         Alert alert = new Alert(Alert.AlertType.WARNING,
             "You have unsaved changes, are you sure you want to cancel?",
             ButtonType.YES, ButtonType.NO);
