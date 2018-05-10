@@ -230,9 +230,17 @@ public class LoginController {
      */
   @FXML
   void openCLI(ActionEvent event) {
-    stage.hide();
+/*    stage.hide();
     CLI.main(new String[]{"gui"});
-    stage.show();
+    stage.show();*/
+    FXMLLoader adminLoader = new FXMLLoader(getClass().getResource("/FXML/adminView.fxml"));
+      Parent root = null;
+      try {
+          root = adminLoader.load();
+      } catch (IOException e) {
+          e.printStackTrace();
+      }
+      stage.setScene(new Scene(root));
   }
 }
 
