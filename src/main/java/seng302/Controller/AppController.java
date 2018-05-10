@@ -32,7 +32,6 @@ public class AppController {
   private ArrayList<User> users = new ArrayList<>();
   private ArrayList<TransplantDetails> transplantList = new ArrayList<>();
   private ArrayList<Clinician> clinicians = new ArrayList<>();
-  private ArrayList<Administrator> administrators = new ArrayList<>();
   private static AppController controller;
   private ArrayList<String[]> historyOfCommands = new ArrayList<>();
   private int historyPointer = 0;
@@ -410,7 +409,7 @@ public class AppController {
 
 
   public Administrator getAdministrator(String username){
-    for (Administrator a : administrators){
+    for (Administrator a : admins){
       if (a.getUserName().equals(username)) {
         return a;
       }

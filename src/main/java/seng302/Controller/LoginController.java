@@ -202,7 +202,7 @@ public class LoginController {
                 adminWarningLabel.setText("Your password is incorrect. Please try again.");
                 return;
             } else {
-                FXMLLoader administratorLoader = new FXMLLoader(getClass().getResource("/FXML/administratorView.fxml"));
+                FXMLLoader administratorLoader = new FXMLLoader(getClass().getResource("/FXML/adminView.fxml"));
                 Parent root = null;
                 try {
                     root = administratorLoader.load();
