@@ -10,6 +10,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import picocli.CommandLine;
+import seng302.Controller.AppController;
 import seng302.Controller.CliCommands.UpdateUserDonate;
 import seng302.Controller.CliCommands.UpdateUserReceive;
 import seng302.Model.DonorDetails;
