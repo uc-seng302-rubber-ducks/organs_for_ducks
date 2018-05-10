@@ -721,11 +721,11 @@ public class ClinicianController {
     try {
       root = updateLoader.load();
       UpdateClinicianController updateClinicianController = updateLoader.getController();
-      Stage stage = new Stage();
-      stage.setScene(new Scene(root));
-      updateClinicianController.init(clinician, appController, stage, false);
-      stage.initModality(Modality.APPLICATION_MODAL); // background window is no longer selectable
-      stage.showAndWait();
+      Stage newStage = new Stage();
+      newStage.setScene(new Scene(root));
+      updateClinicianController.init(clinician, appController, stage, false, newStage);
+      newStage.initModality(Modality.APPLICATION_MODAL); // background window is no longer selectable
+      newStage.showAndWait();
       showClinician(clinician);
 
     } catch (IOException e){
