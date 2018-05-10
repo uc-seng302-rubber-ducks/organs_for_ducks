@@ -26,7 +26,7 @@ public class UpdateDonorControllerGUITest extends ApplicationTest {
         AppController.getInstance().getUsers().add(new User("A", LocalDate.now().minusDays(1000), "ABC1234"));
         clickOn("#userIDTextField");
         write("ABC1234");
-        clickOn("#loginButton");
+        clickOn("#loginUButton");
         clickOn("#editDetailsButton");
     }
 

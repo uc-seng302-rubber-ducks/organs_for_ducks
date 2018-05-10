@@ -131,15 +131,22 @@ public class AdministratorViewController {
     @FXML
     private CheckBox liverCheckBox;
 
+    @FXML
+    private Button deleteAdminButton;
+
     private Stage stage;
     private AppController appController;
     private Administrator administrator;
 
-    public void init(Stage stage, AppController appController, Administrator administrator){
+    public void init(Administrator administrator, AppController appController, Stage stage){
         this.stage = stage;
         this.appController = appController;
         this.administrator = administrator;
         //displayDetails();
+
+        if (administrator.getUserName().equals("default")) {
+            deleteAdminButton.setDisable(true);
+        }
     }
 
     @FXML
@@ -228,9 +235,28 @@ public class AdministratorViewController {
         }
     }
 
-    @FXML
+  /**
+   * go to a form to update the admin
+   */
+  @FXML
     void updateAdmin(){
+      FXMLLoader adminLoader = new FXMLLoader(getClass().getResource("/FXML/updateAdmin.fxml"));
+      Parent root = null;
+      try {
+        root = adminLoader.load();
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+      Stage newStage = new Stage();
+      newStage.setScene(new Scene(root));
+      newStage.show();
+      UpdateAdminController updateAdminController = adminLoader.getController();
+      updateAdminController.init(administrator,appController,newStage);
 
+    }
+
+    @FXML
+    void deleteAdminAccount() {
 
     }
 

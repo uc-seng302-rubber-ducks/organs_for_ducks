@@ -29,17 +29,17 @@ public class ClinicianFilterGUITest extends ApplicationTest {
     adam.setContact(new EmergencyContact("Letifa", "0118999124", adam));
     adam.getUndoStack().clear();
     AppController.getInstance().getUsers().add(adam);
-    clickOn("#changeLogin");
-    clickOn("#userIDTextField");
+    clickOn("#clinicianTab");
+    clickOn("#staffIdTextField");
     write("0", 0);
-    clickOn("#passwordField");
+    clickOn("#staffPasswordField");
     write("admin", 0);
 
   }
 
   @Test
   public void testFilterName() {
-    clickOn("#loginButton");
+    clickOn("#loginCButton");
     clickOn("#searchTab");
     clickOn("#searchTextField");
     System.out.println(AppController.getInstance().getUsers());
@@ -56,7 +56,7 @@ public class ClinicianFilterGUITest extends ApplicationTest {
       user.setLastName(Integer.toString(i));
       AppController.getInstance().getUsers().add(user);
     }
-    clickOn("#loginButton");
+    clickOn("#loginCButton");
     clickOn("#searchTab");
     clickOn("#searchTextField");
     write("Adam", 0);
