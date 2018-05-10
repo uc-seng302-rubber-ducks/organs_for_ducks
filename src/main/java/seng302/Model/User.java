@@ -1,11 +1,6 @@
 package seng302.Model;
 
 import com.google.gson.annotations.Expose;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import org.joda.time.DateTime;
-
-import java.io.FileNotFoundException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -15,7 +10,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
-import java.util.*;
+import javafx.collections.FXCollections;
 
 /**
  * Class for handling calls to user
@@ -455,7 +450,8 @@ this.changes = FXCollections.observableArrayList();
     updateLastModified();
     this.dateOfDeath = dateOfDeath;
     this.isDeceased = dateOfDeath != null;
-    changes.add(new Change("Changed date of death to "+ dateOfDeath.toString()));
+    changes.add(new Change(isDeceased ? ("Changed date of death to " + dateOfDeath.toString())
+        : "Removed date of death"));
   mem.setNewObject(this.clone());
     getUndoStack().push(mem);}
 
