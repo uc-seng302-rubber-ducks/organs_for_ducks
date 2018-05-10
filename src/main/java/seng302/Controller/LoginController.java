@@ -1,7 +1,5 @@
 package seng302.Controller;
 
-import java.io.IOException;
-import java.util.ArrayList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -9,11 +7,16 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 import seng302.Model.Administrator;
 import seng302.Model.Clinician;
 import seng302.Model.User;
+
+import java.io.IOException;
+import java.util.ArrayList;
 
 /**
  * Class for the login functionality of the application
@@ -56,6 +59,9 @@ public class LoginController {
   @FXML
   private Label adminWarningLabel;
 
+  @FXML
+  private TabPane loginTabPane;
+
   //TODO delete this button once CLI is implemented in administrator
   @FXML
   private Button openCLIButton;
@@ -71,7 +77,7 @@ public class LoginController {
     * @param stage The applications stage.
     */
   public void init(AppController appController, Stage stage){
-    openCLIButton.setVisible(false);
+    //openCLIButton.setVisible(false);
     userWarningLabel.setText("");
     clinicianWarningLabel.setText("");
     adminWarningLabel.setText("");
@@ -80,10 +86,18 @@ public class LoginController {
     this.stage = stage;
     stage.setTitle("Login");
     Scene scene = stage.getScene();
+
     scene.setOnKeyPressed(e -> {
-//    if (e.getCode() == KeyCode.ENTER) {
-//            login(new ActionEvent());
-//        }
+        int currentPane = loginTabPane.getSelectionModel().getSelectedIndex();
+        if (e.getCode() == KeyCode.ENTER) {
+          if (currentPane == 0) {
+            loginUser(new ActionEvent());
+          } else if (currentPane == 1) {
+            loginClinician(new ActionEvent());
+          } else if (currentPane == 2) {
+            loginAdmin(new ActionEvent());
+          }
+        }
     });
   }
 
@@ -142,7 +156,7 @@ public class LoginController {
             Clinician clinician = appController.getClinician(wantedClinician);
             if (clinician == null) {
                 clinicianWarningLabel.setText("The Clinician does not exist");
-            } else if (!clinicianPassword.equals(clinician.getPassword())) {
+            } else if (!clinician.isPasswordCorrect(clinicianPassword)) {
                 clinicianWarningLabel.setText("Your password is incorrect please try again");
                 return;
             } else {
@@ -177,7 +191,6 @@ public class LoginController {
                 wantedAdmin = adminUsernameTextField.getText();
             }
             String adminPassword = adminPasswordField.getText();
-            //uncomment  the following when Administrator is set up - change code to fit the admin class as need be
             Administrator administrator = appController.getAdministrator(wantedAdmin);
             if (administrator == null) {
                 adminWarningLabel.setText("The administrator does not exist.");

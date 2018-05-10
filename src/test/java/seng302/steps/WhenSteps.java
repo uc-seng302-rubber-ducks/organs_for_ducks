@@ -75,9 +75,14 @@ public class WhenSteps extends ApplicationTest {
         throw new PendingException();
     }
 
-    @When("^clicked on Login button$")
-    public void clickedOnLoginButton() throws Throwable {
-        clickOn("#loginButton");
+    @When("^clicked on user Login button$")
+    public void clickedOnUserLoginButton() throws Throwable {
+        clickOn("#loginUButton");
+    }
+
+    @When("^clicked on clinician Login button$")
+    public void clickedOnClinicianLoginButton() throws Throwable {
+        clickOn("#loginCButton");
     }
 
     @When("^clicked on Create Button$")
@@ -87,14 +92,14 @@ public class WhenSteps extends ApplicationTest {
 
     @When("^I clicked on Login As Clinician Button$")
     public void iClickedOnLoginAsClinicianButton() throws Throwable {
-        clickOn("#changeLogin");
+        clickOn("#clinicianTab");
     }
 
     @When("^I entered Staff ID \"([^\"]*)\" and Password \"([^\"]*)\"$")
     public void iEnteredStaffIDAndPassword(String staffId, String password) throws Throwable {
-        clickOn("#userIDTextField");
+        clickOn("#staffIdTextField");
         write(staffId);
-        clickOn("#passwordField");
+        clickOn("#staffPasswordField");
         write(password);
     }
 

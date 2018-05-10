@@ -92,7 +92,6 @@ public class LoginControllerGUITest extends ApplicationTest {
 
   }
 
-  @Ignore
   @Test
   public void validDonorLoginEnterPressed() {
     AppController.getInstance().getUsers().add(new User("A", LocalDate.now(), "ABC1234"));
@@ -100,6 +99,45 @@ public class LoginControllerGUITest extends ApplicationTest {
     write("ABC1234");
     press(KeyCode.ENTER);
     verifyThat("#NHIValue", LabeledMatchers.hasText("ABC1234"));
+  }
+
+  @Ignore
+  @Test
+  public void validAdminLogin() {
+    //TODO finish once JSON handler is working with login
+    //use default admin
+    clickOn("#administratorTab");
+    clickOn("#adminUsernameTextField");
+    write("default");
+    clickOn("#adminPasswordField");
+    write("admin");
+    clickOn("#loginAButton");
+    //verifyThat();
+  }
+
+  @Test
+  public void invalidAdminLogin() {
+
+    clickOn("#administratorTab");
+    clickOn("#adminUsernameTextField");
+    write("therock");
+    clickOn("#adminPasswordField");
+    write("password");
+    clickOn("#loginAButton");
+    verifyThat("#adminWarningLabel", LabeledMatchers.hasText("The administrator does not exist."));
+  }
+
+  @Ignore
+  @Test
+  public void wrongAdminPassword() {
+    //TODO finish once JSON handler is working with login
+    clickOn("#administratorTab");
+    clickOn("#adminUsernameTextField");
+    write("default");
+    clickOn("#adminPasswordField");
+    write("notpassword");
+    clickOn("#loginAButton");
+    verifyThat("#adminWarningLabel", LabeledMatchers.hasText("Your password is incorrect. Please try again."));
   }
 
 }

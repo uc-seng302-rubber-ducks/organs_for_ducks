@@ -15,7 +15,7 @@
 
 <AnchorPane maxHeight="400.0" maxWidth="600.0" minHeight="400.0" minWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.Controller.LoginController">
    <children>
-      <TabPane prefHeight="400.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE">
+      <TabPane fx:id="loginTabPane" prefHeight="400.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE">
         <tabs>
           <Tab fx:id="userTab" text="User">
             <content>
@@ -51,7 +51,7 @@
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <GridPane layoutX="140.0" layoutY="79.0" prefHeight="164.0" prefWidth="383.0">
+                        <GridPane layoutX="121.0" layoutY="57.0" prefHeight="195.0" prefWidth="412.0">
                           <columnConstraints>
                             <ColumnConstraints hgrow="SOMETIMES" maxWidth="97.0" minWidth="10.0" prefWidth="75.0" />
                             <ColumnConstraints hgrow="SOMETIMES" maxWidth="153.0" minWidth="10.0" prefWidth="153.0" />
@@ -67,7 +67,7 @@
                               <TextField fx:id="staffIdTextField" GridPane.columnIndex="1" />
                               <Label text="Staff ID:" />
                               <Label text="Password:" GridPane.rowIndex="1" />
-                              <Label fx:id="clinicianWarningLabel" prefHeight="54.0" prefWidth="142.0" text="Label" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                              <Label fx:id="clinicianWarningLabel" prefHeight="73.0" prefWidth="177.0" text="Label" wrapText="true" GridPane.columnIndex="2" GridPane.rowIndex="2" />
                               <PasswordField fx:id="staffPasswordField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                            </children>
                         </GridPane>
@@ -78,7 +78,7 @@
               <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <GridPane layoutX="138.0" layoutY="78.0" prefHeight="163.0" prefWidth="399.0">
+                        <GridPane layoutX="105.0" layoutY="67.0" prefHeight="186.0" prefWidth="429.0">
                           <columnConstraints>
                             <ColumnConstraints hgrow="SOMETIMES" maxWidth="102.0" minWidth="10.0" prefWidth="70.0" />
                             <ColumnConstraints hgrow="SOMETIMES" maxWidth="146.0" minWidth="10.0" prefWidth="146.0" />
@@ -94,7 +94,7 @@
                               <TextField fx:id="adminUsernameTextField" GridPane.columnIndex="1" />
                               <Label text="Username:" />
                               <Label text="Password:" GridPane.rowIndex="1" />
-                              <Label fx:id="adminWarningLabel" prefHeight="73.0" prefWidth="183.0" text="Label" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                              <Label fx:id="adminWarningLabel" maxHeight="125.0" maxWidth="174.0" prefHeight="62.0" prefWidth="186.0" text="Label" wrapText="true" GridPane.columnIndex="2" GridPane.rowIndex="2" />
                               <PasswordField fx:id="adminPasswordField" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                            </children>
                         </GridPane>
