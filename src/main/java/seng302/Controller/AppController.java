@@ -48,10 +48,15 @@ public class AppController {
     try {
       users = JsonHandler.loadUsers();
       System.out.println(users.size() + " donors were successfully loaded");
+    } catch (FileNotFoundException e) {
+      System.out.println("Donor file was not found");
+    }
+
+    try {
       clinicians = JsonHandler.loadClinicians();
       System.out.println(clinicians.size() + " clinicians were successfully loaded");
     } catch (FileNotFoundException e) {
-      System.out.println("File was not found");
+      System.out.println("Clinician file was not found");
     }
 
     try {
@@ -60,6 +65,7 @@ public class AppController {
     } catch (FileNotFoundException e) {
         System.out.println("Administrator file was not found");
     }
+
     String[] empty = {""};
     historyOfCommands.add(empty);//putting an empty string into the string array to be displayed if history pointer is 0
 
