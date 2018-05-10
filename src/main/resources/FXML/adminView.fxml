@@ -56,8 +56,21 @@
                                     <Label fx:id="adminUsernameLable" layoutX="148.0" text="Label" textAlignment="CENTER" AnchorPane.leftAnchor="185.0" AnchorPane.topAnchor="53.0" />
                                     <Label fx:id="adminMiddleNameLabel" layoutX="148.0" layoutY="126.0" text="Label" textAlignment="CENTER" AnchorPane.leftAnchor="185.0" AnchorPane.topAnchor="179.0" />
                                     <Label layoutY="176.0" text="Last Name: " AnchorPane.leftAnchor="37.0" AnchorPane.topAnchor="229.0" />
-                                    <Button fx:id="updateButton" layoutX="166.0" layoutY="232.0" mnemonicParsing="false" onAction="#updateAdmin" text="Edit details" AnchorPane.bottomAnchor="9.0" AnchorPane.leftAnchor="203.0" />
                                     <Label layoutX="2.0" text="Username: " AnchorPane.leftAnchor="39.0" AnchorPane.topAnchor="53.0" />
+                                     <GridPane hgap="10.0" layoutX="22.0" layoutY="262.0" prefHeight="50.0" prefWidth="266.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="22.0" AnchorPane.rightAnchor="10.0">
+                                         <columnConstraints>
+                                             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                         </columnConstraints>
+                                         <rowConstraints>
+                                             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                         </rowConstraints>
+                                         <children>
+                                             <Button fx:id="updateButton" layoutX="166.0" layoutY="232.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#updateAdmin" text="Edit details" GridPane.columnIndex="1" />
+                                             <!--<Button fx:id="updateButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Edit details" GridPane.columnIndex="1" />-->
+                                             <Button fx:id="deleteAdminButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#deleteAdminAccount" text="Delete Account" />
+                                         </children>
+                                     </GridPane>
                                  </children>
                               </AnchorPane>
                            </children>
