@@ -6,16 +6,13 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
+import java.util.*;
+
 import seng302.Model.Change;
 import seng302.Model.Clinician;
 import seng302.Model.JsonHandler;
 import seng302.Model.TransplantDetails;
 import seng302.Model.User;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.Stack;
 import seng302.Exception.UserAlreadyExistsException;
 import seng302.Exception.UserNotFoundException;
 import seng302.Model.Change;
@@ -29,6 +26,7 @@ import seng302.Model.User;
  */
 public class AppController {
 
+  private Collection<Administrator> admins = new ArrayList<>();
   private ArrayList<User> users = new ArrayList<>();
   private ArrayList<TransplantDetails> transplantList = new ArrayList<>();
   private ArrayList<Clinician> clinicians = new ArrayList<>();
@@ -334,6 +332,10 @@ public class AppController {
     return clinicians;
   }
 
+  public Collection<Administrator> getAdmins() {
+      return admins;
+  }
+
     /**
      *
      * @param id The staff id (unique identifier) of the clinician
@@ -364,6 +366,8 @@ public class AppController {
        e.printStackTrace();
      }
    }
+
+
 
   public DonorController getDonorController() {
     return donorController;
