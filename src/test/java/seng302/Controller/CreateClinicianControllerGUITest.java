@@ -1,23 +1,22 @@
 package seng302.Controller;
 
+import static org.testfx.api.FxAssert.verifyThat;
+
+import java.util.concurrent.TimeoutException;
+import javafx.scene.Node;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.testfx.api.FxToolkit;
-import org.testfx.matcher.control.LabeledMatchers;
 import org.testfx.framework.junit.ApplicationTest;
-import static org.testfx.api.FxAssert.verifyThat;
-import javafx.scene.Node;
+import org.testfx.matcher.control.LabeledMatchers;
 import seng302.App;
-
-import java.util.concurrent.TimeoutException;
-import seng302.Model.Clinician;
 
 /**
  * Tests the UpdateClinicianController specifically for creating new clinicians
  */
-public class CreateClinicianControllerTest extends ApplicationTest {
+public class CreateClinicianControllerGUITest extends ApplicationTest {
 
     @BeforeClass
     public static void initialization() {
@@ -117,7 +116,7 @@ public class CreateClinicianControllerTest extends ApplicationTest {
         clickOn("#regionTextField");
         write("Christchurch", 0);
         clickOn("#confirmButton");
-        verifyThat("#incorrectPasswordLabel", Node::isVisible);
+        verifyThat("#emptyPasswordLabel", Node::isVisible);
     }
 
     @Test
