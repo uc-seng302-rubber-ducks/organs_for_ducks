@@ -12,10 +12,9 @@ import org.junit.Before;
 import org.junit.Test;
 import picocli.CommandLine;
 import seng302.Controller.AppController;
-import seng302.Controller.CliCommands.DeleteDonor;
 import seng302.Model.User;
 
-public class DeleteTest {
+public class DeleteUserTest {
 
   private AppController mockController = mock(AppController.class);
   private User testUser;
@@ -28,7 +27,7 @@ public class DeleteTest {
   @Test
   public void UserCanBeDeleted() {
     String[] args = {"ABC1234"};
-    DeleteDonor command = new DeleteDonor();
+    DeleteUser command = new DeleteUser();
     when(mockScanner.next()).thenReturn("y");
     when(mockController.findUser("ABC1234")).thenReturn(testUser);
     command.setScanner(mockScanner);
@@ -40,7 +39,7 @@ public class DeleteTest {
   @Test
   public void NonExistingUserCannotBeDeleted() {
     String[] args = {"ABC1234"};
-    DeleteDonor command = new DeleteDonor();
+    DeleteUser command = new DeleteUser();
     when(mockScanner.next()).thenReturn("y");
     when(mockController.findUser("ABC1234")).thenReturn(null);
     command.setScanner(mockScanner);
