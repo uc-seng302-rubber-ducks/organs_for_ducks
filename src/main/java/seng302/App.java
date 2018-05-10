@@ -34,6 +34,8 @@ public class App extends Application
         }
         LoginController loginController = loader.getController();
         primaryStage.setScene(new Scene(root));
+        primaryStage.setMinHeight(420);
+        primaryStage.setMinWidth(600);
         AppController controller = AppController.getInstance();
         primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override
