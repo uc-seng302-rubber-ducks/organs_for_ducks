@@ -123,6 +123,28 @@ public final class JsonHandler {
         return results;
     }
 
+
+    /**
+     * Saves the current list of administrators to a JSON file
+     *
+     * @param admins list of administrators to be saved
+     * @throws IOException thrown when file does not exist, can be ignored as file will be created
+     */
+    public static void saveAdmins(ArrayList<Administrator> admins) throws IOException {
+
+    }
+
+    /**
+     * Loads a list of administrators from a JSON file into the current session
+     *
+     * @return List of administrators
+     * @throws FileNotFoundException thrown if the JSON file of administrators does not exist
+     */
+    public static ArrayList<Administrator> loadAdmins() throws FileNotFoundException {
+        ArrayList<Administrator> admins = new ArrayList<>();
+        return admins;
+    }
+
     /**
      * Saves a personal changelog for each donor
      *
