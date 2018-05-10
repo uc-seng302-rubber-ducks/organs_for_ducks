@@ -1,5 +1,8 @@
 package seng302.Controller;
 
+import java.io.IOException;
+import java.util.ArrayList;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -10,6 +13,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TabPane;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import seng302.Model.Administrator;
 import seng302.Model.Clinician;
@@ -26,11 +30,11 @@ public class LoginController {
   @FXML
   private Button loginUButton;
 
-  @FXML
-  private Button signUpButton;
+    @FXML
+    private Button signUpButton;
 
-  @FXML
-  private TextField userIDTextField;
+    @FXML
+    private TextField userIDTextField;
 
   @FXML
   private Label userWarningLabel;
@@ -219,6 +223,7 @@ public class LoginController {
     /**
      * Creates either a new user or clinician based on the login window
      * Opens the sign up view based on the login view
+     *
      * @param event An action event
      */
     @FXML
@@ -265,21 +270,26 @@ public class LoginController {
 
     /**
      * Opens the Command Line version of the application
+     *
      * @param event
      */
-  @FXML
-  void openCLI(ActionEvent event) {
+    @FXML
+    void openCLI(ActionEvent event) {
 /*    stage.hide();
     CLI.main(new String[]{"gui"});
     stage.show();*/
-    FXMLLoader adminLoader = new FXMLLoader(getClass().getResource("/FXML/adminView.fxml"));
-      Parent root = null;
-      try {
-          root = adminLoader.load();
-      } catch (IOException e) {
-          e.printStackTrace();
-      }
-      stage.setScene(new Scene(root));
-  }
+        FXMLLoader adminLoader = new FXMLLoader(getClass().getResource("/FXML/adminView.fxml"));
+        Parent root = null;
+        try {
+            root = adminLoader.load();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        stage.setScene(new Scene(root));
+        stage.setTitle("Administrator");
+        AdministratorViewController administratorViewController = adminLoader.getController();
+        administratorViewController.init(stage, appController, new Administrator());
+    }
 }
 
