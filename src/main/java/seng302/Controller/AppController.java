@@ -376,6 +376,17 @@ public class AppController {
      }
    }
 
+    /**
+     * Removes the given admin from the list of administrators unless the given admin is the default admin.
+     *
+     * @param admin The given admin
+     */
+    public void deleteAdmin(Administrator admin) {
+        admins.remove(admin);
+        // todo: will probably need undo/redo for this similar to how the deleteDonor one has it
+        // auto save is on another branch..
+    }
+
 
 
   public DonorController getDonorController() {

@@ -292,6 +292,7 @@ public class NewUserController {
                 try {
                     root = donorLoader.load();
                     stage.setScene(new Scene(root));
+                    ownStage.close();
                     DonorController donorController = donorLoader.getController();
                     AppController.getInstance().setDonorController(donorController);
                     donorController.init(AppController.getInstance(), newUser, stage, false);
