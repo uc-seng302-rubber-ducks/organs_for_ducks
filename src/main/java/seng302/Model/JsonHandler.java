@@ -15,6 +15,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
 import seng302.Directory;
@@ -156,8 +158,8 @@ public final class JsonHandler {
      * @return List of administrator accounts
      * @throws FileNotFoundException thrown if the JSON file of administrators does not exist
      */
-    public static ArrayList<Administrator> loadAdmins() throws FileNotFoundException {
-        ArrayList<Administrator> admins = new ArrayList<>();
+    public static Collection<Administrator> loadAdmins() throws FileNotFoundException {
+        Collection<Administrator> admins = new ArrayList<>();
 
         File inFile = new File(Directory.JSON.directory() + "/administrators.json");
         Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss")

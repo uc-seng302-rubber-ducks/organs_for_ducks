@@ -53,6 +53,13 @@ public class AppController {
     } catch (FileNotFoundException e) {
       System.out.println("File was not found");
     }
+
+    try {
+        admins = JsonHandler.loadAdmins();
+        System.out.println(admins.size() + " administrators were successfully loaded");
+    } catch (FileNotFoundException e) {
+        System.out.println("Administrator file was not found");
+    }
     String[] empty = {""};
     historyOfCommands.add(empty);//putting an empty string into the string array to be displayed if history pointer is 0
     boolean defaultSeen = false;
@@ -272,6 +279,8 @@ public class AppController {
     }
 
   }
+
+
 
   public ArrayList<User> getUsers() {
     return users;
