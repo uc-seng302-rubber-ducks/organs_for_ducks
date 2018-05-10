@@ -1,4 +1,4 @@
-package seng302.Controller;
+package seng302.Controller.CliCommands;
 
 import static org.junit.Assert.fail;
 
@@ -13,6 +13,7 @@ import org.junit.Before;
 import org.junit.Test;
 import picocli.CommandLine;
 
+import seng302.Controller.AppController;
 import seng302.Controller.CliCommands.UpdateUserDetails;
 import seng302.Model.User;
 

@@ -1,9 +1,10 @@
-package seng302.Controller;
+package seng302.Controller.CliCommands;
 
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import picocli.CommandLine;
+import seng302.Controller.AppController;
 import seng302.Controller.CliCommands.UpdateClinician;
 import seng302.Controller.CliCommands.UpdateUserDetails;
 import seng302.Model.Clinician;
@@ -54,7 +55,7 @@ public class UpdateClinicianTest {
     @Ignore
     @Test
     public void shouldUpdateValidAttributesWhenInvalidGiven() {
-        //TODO Test tihs after input validation is ready
+        //TODO Test this after input validation is ready
         //if a bad
     }
 
