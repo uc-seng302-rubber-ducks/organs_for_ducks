@@ -13,7 +13,7 @@ import java.util.concurrent.TimeoutException;
 
 import static org.testfx.api.FxAssert.verifyThat;
 
-public class LoginControllerTest extends ApplicationTest {
+public class LoginControllerGUITest extends ApplicationTest {
 
   @BeforeClass
   public static void initialization() {

@@ -14,7 +14,7 @@ import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.matcher.control.LabeledMatchers;
 import seng302.App;
 
-public class CreateUserControllerTest extends ApplicationTest {
+public class CreateUserControllerGUITest extends ApplicationTest {
 
   @BeforeClass
   public static void initialization() {

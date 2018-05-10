@@ -19,7 +19,7 @@ import static org.testfx.api.FxAssert.verifyThat;
 /**
  * Tests the UpdateClinicianController specifically for updating existing clinicians
  */
-public class UpdateClinicianControllerTest extends ApplicationTest {
+public class UpdateClinicianControllerGUITest extends ApplicationTest {
 
     @BeforeClass
     public static void initialization() {

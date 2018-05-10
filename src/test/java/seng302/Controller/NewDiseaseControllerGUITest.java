@@ -1,5 +1,12 @@
 package seng302.Controller;
 
+import static org.junit.Assert.assertEquals;
+import static seng302.Utils.TableViewsMethod.getCell;
+import static seng302.Utils.TableViewsMethod.getCellValue;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.concurrent.TimeoutException;
 import javafx.scene.input.KeyCode;
 import org.junit.After;
 import org.junit.Before;
@@ -12,15 +19,7 @@ import seng302.App;
 import seng302.Model.Disease;
 import seng302.Model.User;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.concurrent.TimeoutException;
-
-import static org.junit.Assert.assertEquals;
-import static seng302.Utils.TableViewsMethod.getCell;
-import static seng302.Utils.TableViewsMethod.getCellValue;
-
-public class NewDiseaseControllerTest extends ApplicationTest {
+public class NewDiseaseControllerGUITest extends ApplicationTest {
 
     DateTimeFormatter sdf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 

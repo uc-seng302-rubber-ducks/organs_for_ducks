@@ -1,5 +1,12 @@
 package seng302.Controller;
 
+import static javafx.scene.input.KeyCode.A;
+import static javafx.scene.input.KeyCode.BACK_SPACE;
+import static javafx.scene.input.KeyCode.SHORTCUT;
+import static org.testfx.api.FxAssert.verifyThat;
+
+import java.time.LocalDate;
+import java.util.concurrent.TimeoutException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -10,13 +17,7 @@ import org.testfx.matcher.control.LabeledMatchers;
 import seng302.App;
 import seng302.Model.User;
 
-import java.time.LocalDate;
-import java.util.concurrent.TimeoutException;
-
-import static javafx.scene.input.KeyCode.*;
-import static org.testfx.api.FxAssert.verifyThat;
-
-public class UpdateDonorControllerTest extends ApplicationTest {
+public class UpdateDonorControllerGUITest extends ApplicationTest {
     @Before
     public void setUpCreateScene() throws TimeoutException {
         FxToolkit.registerPrimaryStage();
@@ -50,7 +51,7 @@ public class UpdateDonorControllerTest extends ApplicationTest {
         clickOn("#fNameInput");
         write("Kate",0);
         clickOn("#cancelButton");
-        clickOn("Yes");
+        clickOn("#yesButton");
         verifyThat("#fNameValue", LabeledMatchers.hasText("A"));
     }
 

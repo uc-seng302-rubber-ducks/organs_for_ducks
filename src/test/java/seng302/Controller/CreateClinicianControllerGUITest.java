@@ -14,7 +14,7 @@ import static org.testfx.api.FxAssert.verifyThat;
 /**
  * Tests the UpdateClinicianController specifically for creating new clinicians
  */
-public class CreateClinicianControllerTest extends ApplicationTest {
+public class CreateClinicianControllerGUITest extends ApplicationTest {
 
     @BeforeClass
     public static void initialization() {
@@ -119,7 +119,7 @@ public class CreateClinicianControllerTest extends ApplicationTest {
         clickOn("#regionTextField");
         write("Christchurch", 0);
         clickOn("#confirmButton");
-        verifyThat("#incorrectPasswordLabel", Node::isVisible);
+        verifyThat("#emptyPasswordLabel", Node::isVisible);
     }
 
     @Ignore

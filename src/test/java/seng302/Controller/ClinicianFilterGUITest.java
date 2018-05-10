@@ -1,5 +1,9 @@
 package seng302.Controller;
 
+import static org.testfx.api.FxAssert.verifyThat;
+
+import java.time.LocalDate;
+import java.util.concurrent.TimeoutException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -11,12 +15,7 @@ import seng302.Model.EmergencyContact;
 import seng302.Model.User;
 import seng302.Utils.TableViewsMethod;
 
-import java.time.LocalDate;
-import java.util.concurrent.TimeoutException;
-
-import static org.testfx.api.FxAssert.verifyThat;
-
-public class ClinicianFilterTest extends ApplicationTest {
+public class ClinicianFilterGUITest extends ApplicationTest {
 
   @Before
   public void setUp() throws TimeoutException{
