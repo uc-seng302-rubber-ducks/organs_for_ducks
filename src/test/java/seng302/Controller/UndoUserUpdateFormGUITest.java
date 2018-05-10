@@ -32,7 +32,7 @@ public class UndoUserUpdateFormGUITest extends ApplicationTest {
     AppController.getInstance().getUsers().add(user);
     clickOn("#userIDTextField");
     write("ABC1234", 0);
-    clickOn("#loginButton");
+    clickOn("#loginUButton");
   }
 
   @After

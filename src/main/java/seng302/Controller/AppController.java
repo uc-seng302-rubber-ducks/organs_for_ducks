@@ -1,5 +1,7 @@
 package seng302.Controller;
 
+import seng302.Exception.UserAlreadyExistsException;
+import seng302.Exception.UserNotFoundException;
 import seng302.Model.*;
 
 import java.io.FileNotFoundException;
@@ -30,12 +32,14 @@ public class AppController {
   private ArrayList<User> users = new ArrayList<>();
   private ArrayList<TransplantDetails> transplantList = new ArrayList<>();
   private ArrayList<Clinician> clinicians = new ArrayList<>();
+  private ArrayList<Administrator> administrators = new ArrayList<>();
   private static AppController controller;
   private ArrayList<String[]> historyOfCommands = new ArrayList<>();
   private int historyPointer = 0;
 
   private DonorController donorController = new DonorController();
   private ClinicianController clinicianController = new ClinicianController();
+  private AdministratorViewController administratorViewController = new AdministratorViewController();
   private Set<User> deletedUserStack = new HashSet<>();
   private Stack<User> redoStack = new Stack<>();
 
@@ -398,6 +402,20 @@ public class AppController {
 
   public void setClinicianController(ClinicianController clinicianController) {
     this.clinicianController = clinicianController;
+  }
+
+  public void setAdministratorViewController(AdministratorViewController administratorViewController) { this.administratorViewController = administratorViewController;}
+
+  public AdministratorViewController getAdministratorViewControlloer() { return administratorViewController; }
+
+
+  public Administrator getAdministrator(String username){
+    for (Administrator a : administrators){
+      if (a.getUserName().equals(username)) {
+        return a;
+      }
+    }
+    return null;
   }
 
   /**
