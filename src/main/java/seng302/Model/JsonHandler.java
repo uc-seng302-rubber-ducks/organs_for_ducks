@@ -95,7 +95,7 @@ public final class JsonHandler {
             outFile.delete(); //purge old data before writing new data in
         }
 
-        outFile.createNewFile(); //creates new file if donors does not exist
+        outFile.createNewFile(); //creates new file
         Gson gson = new GsonBuilder().registerTypeAdapter(DateTime.class, (JsonSerializer<DateTime>)
                 (json, typeOfSrc, context) -> new JsonPrimitive(ISODateTimeFormat.dateTime().print(json)))
                 .excludeFieldsWithoutExposeAnnotation()
@@ -131,17 +131,41 @@ public final class JsonHandler {
      * @throws IOException thrown when file does not exist, can be ignored as file will be created
      */
     public static void saveAdmins(ArrayList<Administrator> admins) throws IOException {
+        Files.createDirectories(Paths.get(Directory.JSON.directory()));
+        File outFile = new File(Directory.JSON.directory() + "/administrators.json");
 
+        if (outFile.exists()) {
+            outFile.delete(); // purge old data to get a clean file to write new data to
+        }
+
+        outFile.createNewFile(); // creates new file
+        Gson gson = new GsonBuilder().registerTypeAdapter(DateTime.class, (JsonSerializer<DateTime>)
+                (json, typeOfSrc, context) -> new JsonPrimitive(ISODateTimeFormat.dateTime().print(json)))
+                .excludeFieldsWithoutExposeAnnotation()
+                .create();
+
+        FileWriter writer = new FileWriter(outFile);
+        String adminsString = gson.toJson(admins);
+        writer.write(adminsString);
+        writer.close();
     }
 
     /**
      * Loads a list of administrators from a JSON file into the current session
      *
-     * @return List of administrators
+     * @return List of administrator accounts
      * @throws FileNotFoundException thrown if the JSON file of administrators does not exist
      */
     public static ArrayList<Administrator> loadAdmins() throws FileNotFoundException {
         ArrayList<Administrator> admins = new ArrayList<>();
+
+        File inFile = new File(Directory.JSON.directory() + "/administrators.json");
+        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss")
+                .create();
+
+        Reader reader = new FileReader(inFile);
+        Administrator[] administrators = gson.fromJson(reader, Administrator[].class);
+        admins.addAll(Arrays.asList(administrators));
         return admins;
     }
 
