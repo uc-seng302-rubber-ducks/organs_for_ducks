@@ -197,7 +197,7 @@ public class LoginController {
             newStage.setTitle("Create New User Profile");
             newStage.show();
             NewUserController donorController = donorLoader.getController();
-            donorController.init(AppController.getInstance(), stage);
+            donorController.init(AppController.getInstance(), stage, newStage);
 
         } else {
             FXMLLoader clinicianLoader = new FXMLLoader(getClass().getResource("/FXML/updateClinician.fxml"));
