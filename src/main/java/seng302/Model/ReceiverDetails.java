@@ -67,36 +67,41 @@ public class ReceiverDetails {
     return list;
   }
 
-  //TODO Refactor below code to accomodate changes made by OrganAndDateHolder
-
   /**
-   * determines whether a user is waiting for the given organ
-   * organ is in list and uneven number of time entries.
-   * time entries can be grouped in pairs of start/stop times. uneven would mean they are currently waiting
-   * @param organ organ in question
-   * @return true if organ is being waited for
+   * Retursn true if the receiver (user) is curently waiting for the particualr organ passed in.
+   * Checks this by seeing if the start date is not null (receiving has activated) and the stop
+   * date is null (has not been stopped)
+   * @param organ organ to check receiving status for
+   * @return boolean value of whether receiver is still receiving or not
    */
   public boolean isCurrentlyWaitingFor(Organs organ) {
-    return organs != null && organs.containsKey(organ) && organs.get(organ).size() % 2 == 1;
+    boolean result = false;
+    if ((organs.get(organ).getStartDate() != null) && (organs.get(organ).getStopDate() == null)) {
+      result = true;
+    }
+    return result;
   }
 
+
   /**
-   * appends one organ to the list of organs this user is waiting for. If the user is already
-   * waiting for this organ, no change will be made.
+   * appends one organ to the list of organs this user is waiting for, and adds a start date for receiving. If the
+   * user is already waiting for this organ, no change will be made.
    * @param organ
    */
   public void startWaitingForOrgan(Organs organ) {
     if (isCurrentlyWaitingFor(organ)) {
       return;
     }
+
     //existing entry
     if (organs.containsKey(organ)) {
-      organs.get(organ).add(LocalDate.now());
-    } else {
-      //create new entry
-      ArrayList<LocalDate> list = new ArrayList<>();
-      list.add(LocalDate.now());
-      organs.put(Organs.values()[organ.ordinal()], list);
+      organs.get(organ).setStartDate(LocalDate.now());
+      organs.get(organ).setOrganDeregisterReason(null); //This organ may have a previous reason that needs to be cleared
+
+    } else { //create new entry
+      OrganAndDateHolderForReceiverDetails holder = new OrganAndDateHolderForReceiverDetails(LocalDate.now(), null, null); //create a new holder for dates and reason
+      organs.put(Organs.values()[organ.ordinal()], holder); //create new key value pair for the organ EnumMap
+
     }
   }
 
@@ -107,10 +112,9 @@ public class ReceiverDetails {
    */
   public void stopWaitingForOrgan(Organs organ, OrganDeregisterReason reason) {
     if (isCurrentlyWaitingFor(organ)) {
-      ArrayList<LocalDate> dates = organs.get(organ);
-      dates.add(LocalDate.now());
-      organs.put(Organs.values()[organ.ordinal()], dates);
-    }
+      organs.get(organ).setStopDate(LocalDate.now());
+      organs.get(organ).setOrganDeregisterReason(reason);
+    } //else nothing (they cannot stop receiving something they are not receiving)
   }
 
   public User getAttachedUser() {

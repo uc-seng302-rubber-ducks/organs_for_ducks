@@ -1,15 +1,18 @@
 package seng302.Model;
 
 import com.sun.org.apache.xpath.internal.operations.Or;
+import org.json.simple.JSONObject;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 
-public class OrganAndDateHolderForReceiverDetails { //Don't @ my naming conventions
+public class OrganAndDateHolderForReceiverDetails { //Don't @ my naming conventions.
+    //More seriously, we are starting to rack up classes and the naming for them needs to be more specific.
+    // This might be over-doing it but wanted to start a discussion
 
-    private LocalDate startDate; //Date started receiving
-    private LocalDate stopDate; //Date stopped receiving
-    private OrganDeregisterReason reason; //Reason the organ was no longer needing to be received
+    private LocalDate startDate = null; //Date started receiving
+    private LocalDate stopDate = null; //Date stopped receiving
+    private OrganDeregisterReason reason = null; //Reason the organ was no longer needing to be received
 
     /**
      * Constructor
@@ -37,6 +40,10 @@ public class OrganAndDateHolderForReceiverDetails { //Don't @ my naming conventi
         return date;
     }
 
+    public void setStopDate(LocalDate date) {
+        stopDate = date;
+    }
+
     public OrganDeregisterReason getOrganDeregisterReason() {
         OrganDeregisterReason why = reason;
         return why;
@@ -44,6 +51,20 @@ public class OrganAndDateHolderForReceiverDetails { //Don't @ my naming conventi
 
     public void setOrganDeregisterReason(OrganDeregisterReason why) {
         reason = why;
+    }
+
+    @Override
+    public String toString() {
+        String start = "{\n    Start date: " + startDate.toString() + "\n";
+        String stop = "    End Date: " + stopDate.toString() + "\n";
+        String stringReason = "    Reason: ";
+        if (reason != null) {
+            stringReason += reason.toString() + "\n";
+        } else {
+            stringReason += "N/A\n}";
+        }
+
+        return (start + stop + stringReason);
     }
 
 }

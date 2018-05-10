@@ -46,15 +46,7 @@ import javafx.stage.Stage;
 import javafx.util.StringConverter;
 import okhttp3.OkHttpClient;
 import org.controlsfx.control.textfield.TextFields;
-import seng302.Model.Change;
-import seng302.Model.Disease;
-import seng302.Model.EmergencyContact;
-import seng302.Model.HttpRequester;
-import seng302.Model.MedicalProcedure;
-import seng302.Model.Memento;
-import seng302.Model.OrganDeregisterReason;
-import seng302.Model.Organs;
-import seng302.Model.User;
+import seng302.Model.*;
 import seng302.Model.Change;
 import seng302.Model.Disease;
 import seng302.Model.EmergencyContact;
@@ -62,7 +54,6 @@ import seng302.Model.HttpRequester;
 import seng302.Model.MedicalProcedure;
 import seng302.Model.OrganDeregisterReason;
 import seng302.Model.Organs;
-import seng302.Model.UndoRedoStacks;
 import seng302.Model.User;
 
 /**
@@ -546,9 +537,9 @@ public class DonorController {
         Collections.addAll(organs, Organs.values());
 
         //display registered and deregistered receiver organs if any
-        Map<Organs, ArrayList<LocalDate>> receiverOrgans = currentUser.getReceiverDetails().getOrgans();
+        Map<Organs, OrganAndDateHolderForReceiverDetails> receiverOrgans = currentUser.getReceiverDetails().getOrgans();
         if (receiverOrgans == null){
-            receiverOrgans = new EnumMap<Organs, ArrayList<LocalDate>>(Organs.class);
+            receiverOrgans = new EnumMap<Organs, OrganAndDateHolderForReceiverDetails>(Organs.class);
         }
         currentlyRecieving = FXCollections.observableArrayList();
         noLongerReceiving = FXCollections.observableArrayList();
@@ -1569,7 +1560,7 @@ public class DonorController {
     public void deRegisterOrgan (Organs toDeRegister) {
         if (toDeRegister != null) {
             notReceivingListView.getItems().add(toDeRegister);
-            currentUser.getReceiverDetails().stopWaitingForOrgan(toDeRegister);
+            currentUser.getReceiverDetails().stopWaitingForOrgan(toDeRegister, organDeregisterationReason);
             currentlyReceivingListView.getItems().remove(toDeRegister);
             if (currentUser.getCommonOrgans().contains(toDeRegister)) {
                 currentUser.getCommonOrgans().remove(toDeRegister);
