@@ -564,7 +564,7 @@ public class DonorController {
 
     stage.onCloseRequestProperty().setValue(event -> {
       if (fromClinician) {
-        application.getClinicianControllerInstance().refreshTables();
+        AppController.getInstance().getClinicianController().refreshTables();
       }
     });
   }
@@ -1486,22 +1486,24 @@ public class DonorController {
 
   }/*Receiver*/
 
-  /**
-   * register an organ for receiver
-   */
-  @FXML
-  public void registerOrgan() {
-    if (organsComboBox.getSelectionModel().getSelectedItem() != null) {
-      Organs toRegister = organsComboBox.getSelectionModel().getSelectedItem();
-      if (!currentlyReceivingListView.getItems().contains(toRegister)) {
-        currentUser.getReceiverDetails().startWaitingForOrgan(toRegister);
-        currentlyRecieving.add(toRegister);
-        organsComboBox.getItems().remove(toRegister);
-        organsComboBox.setValue(null);
-        application.update(currentUser);
-        if (currentUser.getDonorDetails().getOrgans().contains(toRegister)) {
-          currentUser.getCommonOrgans().add(toRegister);
-        }
+    /**
+     * register an organ
+     * for receiver
+     */
+    @FXML
+    public void registerOrgan () {
+        if (organsComboBox.getSelectionModel().getSelectedItem() != null) {
+          Organs toRegister = organsComboBox.getSelectionModel().getSelectedItem();
+          AppController.getInstance().getClinicianController().refreshTables();
+          if (!currentlyReceivingListView.getItems().contains(toRegister)) {
+            currentUser.getReceiverDetails().startWaitingForOrgan(toRegister);
+            currentlyRecieving.add(toRegister);
+            organsComboBox.getItems().remove(toRegister);
+            organsComboBox.setValue(null);
+            application.update(currentUser);
+            if (currentUser.getDonorDetails().getOrgans().contains(toRegister)) {
+                currentUser.getCommonOrgans().add(toRegister);
+            }
 
         //set mouse click for currentlyReceivingListView
         currentlyReceivingListView.setOnMouseClicked(event -> {
@@ -1518,21 +1520,21 @@ public class DonorController {
     }
   }
 
-  /**
-   * re-register an organ for receiver
-   */
-  @FXML
-  public void reRegisterOrgan() {
-    Organs toReRegister = notReceivingListView.getSelectionModel().getSelectedItem();
-    if (toReRegister != null) {
-      currentlyReceivingListView.getItems().add(toReRegister);
-      currentUser.getReceiverDetails().startWaitingForOrgan(toReRegister);
-      notReceivingListView.getItems().remove(toReRegister);
-      application.getClinicianControllerInstance().populateWaitListTable();
-
-      if (currentUser.getReceiverDetails().isDonatingThisOrgan(toReRegister)) {
-        currentUser.getCommonOrgans().add(toReRegister);
-      }
+    /**
+     * re-register an organ
+     * for receiver
+     */
+    @FXML
+    public void reRegisterOrgan () {
+        Organs toReRegister = notReceivingListView.getSelectionModel().getSelectedItem();
+        if (toReRegister != null) {
+            currentlyReceivingListView.getItems().add(toReRegister);
+            currentUser.getReceiverDetails().startWaitingForOrgan(toReRegister);
+            notReceivingListView.getItems().remove(toReRegister);
+            AppController.getInstance().getClinicianController().refreshTables();
+            if (currentUser.getReceiverDetails().isDonatingThisOrgan(toReRegister)) {
+                currentUser.getCommonOrgans().add(toReRegister);
+            }
 
       //if notReceiving list view is empty, disable mouse click to prevent null pointer exception
       if (notReceivingListView.getItems().isEmpty()) {
@@ -1577,19 +1579,27 @@ public class DonorController {
     }
   }
 
-  /**
-   * de-register an organ for receiver
-   *
-   * @param toDeRegister the organ to be removed from the
-   */
-  public void deRegisterOrgan(Organs toDeRegister) {
-    if (toDeRegister != null) {
-      notReceivingListView.getItems().add(toDeRegister);
-      currentUser.getReceiverDetails().stopWaitingForOrgan(toDeRegister);
-      currentlyReceivingListView.getItems().remove(toDeRegister);
-      if (currentUser.getCommonOrgans().contains(toDeRegister)) {
-        currentUser.getCommonOrgans().remove(toDeRegister);
-      }
+    /**
+     * de-register an organ
+     * for receiver
+     * @param toDeRegister the organ to be removed from the
+     */
+    public void deRegisterOrgan (Organs toDeRegister) {
+        if (toDeRegister != null) {
+
+            if(organDeregisterationReason == OrganDeregisterReason.TRANSPLANT_RECEIVED){
+                currentUser.getReceiverDetails().stopWaitingForOrgan(toDeRegister);
+
+            } else if(organDeregisterationReason == OrganDeregisterReason.REGISTRATION_ERROR){
+              currentUser.getReceiverDetails().stopWaitingForOrgan(toDeRegister);
+              currentUser.getChanges().add(new Change("Initial registering of the organ " + toDeRegister.organName + " was an error for receiver " + currentUser.getFullName()));
+            }
+
+            notReceivingListView.getItems().add(toDeRegister);
+            currentlyReceivingListView.getItems().remove(toDeRegister);
+            if (currentUser.getCommonOrgans().contains(toDeRegister)) {
+                currentUser.getCommonOrgans().remove(toDeRegister);
+            }
 
       //if currentlyReceivingListView is empty, disable mouse click to prevent null pointer exception
       if (currentlyReceivingListView.getItems().isEmpty()) {
