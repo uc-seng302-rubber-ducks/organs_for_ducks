@@ -1593,6 +1593,22 @@ public class DonorController {
             } else if(organDeregisterationReason == OrganDeregisterReason.REGISTRATION_ERROR){
               currentUser.getReceiverDetails().stopWaitingForOrgan(toDeRegister);
               currentUser.getChanges().add(new Change("Initial registering of the organ " + toDeRegister.organName + " was an error for receiver " + currentUser.getFullName()));
+
+            } else if (organDeregisterationReason == OrganDeregisterReason.DISEASE_CURED){
+              FXMLLoader addDiseaseLoader = new FXMLLoader(
+                      getClass().getResource("/FXML/createNewDisease.fxml"));
+              Parent root = null;
+              try {
+                root = addDiseaseLoader.load();
+              } catch (IOException e) {
+                e.printStackTrace();
+              }
+
+              NewDiseaseController newDiseaseController = addDiseaseLoader.getController();
+              Stage stage = new Stage();
+              newDiseaseController.init(currentUser, application, stage, this);
+              stage.setScene(new Scene(root));
+              stage.show();
             }
 
             notReceivingListView.getItems().add(toDeRegister);

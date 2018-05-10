@@ -1,11 +1,9 @@
 package seng302.Controller;
 
+import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.Label;
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
 import seng302.App;
 import seng302.Model.Disease;
@@ -13,6 +11,8 @@ import seng302.Model.User;
 import seng302.Service.AttributeValidation;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Controller class for creating new disease.
@@ -37,8 +37,12 @@ public class NewDiseaseController {
     @FXML
     public RadioButton curedRadioButton;
 
+    @FXML
+    public ComboBox<String> diseaseNameComboBox;
+
     AppController controller;
     Stage stage;
+    List<String> diseaseNameList = new ArrayList<>();
     DonorController donorController;
     private User currentUser;
     private Disease editableDisease;
@@ -66,6 +70,29 @@ public class NewDiseaseController {
         curedRadioButton.setSelected(isCured);
         chronicRadioButton.setSelected(isChronic);
         
+        //showCurrentDate();
+        //stage.setMinWidth(620); //*Commented out by Aaron*
+        //stage.setMaxWidth(620);
+    }
+
+    public void init(User user, AppController controller, Stage stage, DonorController donorController) {
+        this.controller = controller;
+        this.stage = stage;
+        this.donorController = donorController;
+        currentUser = user;
+
+        diseaseNameInput.setVisible(false);
+        diseaseNameComboBox.setVisible(true);
+
+        List<Disease> dieases = user.getCurrentDiseases();
+
+        for (Disease disease : dieases){
+            diseaseNameList.add(disease.getName());
+        }
+        diseaseNameComboBox.setItems(FXCollections.observableList(diseaseNameList));
+
+
+
         //showCurrentDate();
         //stage.setMinWidth(620); //*Commented out by Aaron*
         //stage.setMaxWidth(620);
