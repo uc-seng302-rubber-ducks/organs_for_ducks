@@ -2,6 +2,7 @@ package seng302.Controller;
 
 import java.io.IOException;
 import java.util.ArrayList;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -13,7 +14,9 @@ import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
+import seng302.Model.Administrator;
 import seng302.Model.Clinician;
 import seng302.Model.User;
 import seng302.View.CLI;
@@ -23,32 +26,32 @@ import seng302.View.CLI;
  */
 public class LoginController {
 
-  @FXML
+    @FXML
     private Button changeLogin;
 
     @FXML
-  private Button loginButton;
+    private Button loginButton;
 
-  @FXML
-  private Button signUpButton;
+    @FXML
+    private Button signUpButton;
 
-  @FXML
-  private TextField userIDTextField;
+    @FXML
+    private TextField userIDTextField;
 
-  @FXML
-  private PasswordField passwordField;
+    @FXML
+    private PasswordField passwordField;
 
-  @FXML
-  private ComboBox<String> accountTypeComboBox;
+    @FXML
+    private ComboBox<String> accountTypeComboBox;
 
-  @FXML
-  private Label warningLabel;
+    @FXML
+    private Label warningLabel;
 
-  @FXML
+    @FXML
     private Label idLabel;
 
     @FXML
-  private Label passwordLabel;
+    private Label passwordLabel;
 
     private Stage helpStage = null;
     private boolean isUser = true;
@@ -56,24 +59,25 @@ public class LoginController {
     private ArrayList<User> users;
     private Stage stage;
 
-  /**
-    * Initializes the Login controller.
-    * @param appController The applications controller.
-    * @param stage The applications stage.
-    */
-  public void init(AppController appController, Stage stage){
-    warningLabel.setText("");
-    this.appController = appController;
-    users = appController.getUsers();
-    this.stage = stage;
-    stage.setTitle("Login");
-    Scene scene = stage.getScene();
-    scene.setOnKeyPressed(e -> {
-    if (e.getCode() == KeyCode.ENTER) {
-            login(new ActionEvent());
-        }
-    });
-  }
+    /**
+     * Initializes the Login controller.
+     *
+     * @param appController The applications controller.
+     * @param stage         The applications stage.
+     */
+    public void init(AppController appController, Stage stage) {
+        warningLabel.setText("");
+        this.appController = appController;
+        users = appController.getUsers();
+        this.stage = stage;
+        stage.setTitle("Login");
+        Scene scene = stage.getScene();
+        scene.setOnKeyPressed(e -> {
+            if (e.getCode() == KeyCode.ENTER) {
+                login(new ActionEvent());
+            }
+        });
+    }
 
     /**
      * Changes the login window view between Clinician login and User login
@@ -99,14 +103,16 @@ public class LoginController {
             changeLogin.setText("Login as a Clinician");
         }
 
-  }
+    }
 
     /**
      * Logs in the person based on if they are a user or Clinician
+     *
      * @param event An action event.
-     */@FXML
+     */
+    @FXML
     void login(ActionEvent event) {
-        if(isUser) {
+        if (isUser) {
             warningLabel.setText("");
             String wantedDonor = userIDTextField.getText();
             User donor = null;
@@ -115,10 +121,12 @@ public class LoginController {
                 warningLabel.setText("Please enter an NHI.");
                 return;
             } else {
-                donor = appController.findUser(wantedDonor);}
+                donor = appController.findUser(wantedDonor);
+            }
             if (donor == null) {
                 warningLabel.setText("Donor was not found. \nTo register a new donor please click sign up.");
-                return;}
+                return;
+            }
 
             FXMLLoader donorLoader = new FXMLLoader(getClass().getResource("/FXML/userView.fxml"));
             Parent root = null;
@@ -130,72 +138,82 @@ public class LoginController {
             stage.setScene(new Scene(root));
             DonorController donorController = donorLoader.getController();
             AppController.getInstance().setDonorController(donorController);
-            donorController.init(AppController.getInstance(), donor, stage,false);
-        } else  {
+            donorController.init(AppController.getInstance(), donor, stage, false);
+        } else {
             warningLabel.setText("");
-            String wantedClinician ;if (userIDTextField.getText().isEmpty()) {
+            String wantedClinician;
+            if (userIDTextField.getText().isEmpty()) {
                 warningLabel.setText("Please enter your staff id number");
                 return;
             } else {
-            wantedClinician  = userIDTextField.getText();}
+                wantedClinician = userIDTextField.getText();
+            }
             String password = passwordField.getText();
             Clinician clinician = appController.getClinician(wantedClinician);
-            if (clinician== null){
+            if (clinician == null) {
                 warningLabel.setText("The Clinician does not exist");
-            } else if (!clinician.isPasswordCorrect(password)){
+            } else if (!clinician.isPasswordCorrect(password)) {
                 warningLabel.setText("Your password is incorrect please try again");
                 return;
-            }else {
-            FXMLLoader clinicianLoader = new FXMLLoader(getClass().getResource("/FXML/clinicianView.fxml"));
-            Parent root = null;
-            try {
-                root = clinicianLoader.load();
-            } catch (IOException e) {
-                e.printStackTrace();}
+            } else {
+                FXMLLoader clinicianLoader = new FXMLLoader(getClass().getResource("/FXML/clinicianView.fxml"));
+                Parent root = null;
+                try {
+                    root = clinicianLoader.load();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
 
-            stage.setScene(new Scene(root));
-            ClinicianController clinicianController = clinicianLoader.getController();
-              AppController.getInstance().setClinicianController(clinicianController);
-            clinicianController.init(stage,appController,clinician);
-}
+                stage.setScene(new Scene(root));
+                ClinicianController clinicianController = clinicianLoader.getController();
+                AppController.getInstance().setClinicianController(clinicianController);
+                clinicianController.init(stage, appController, clinician);
+            }
         }
-}
-
-
+    }
 
 
     /**
      * Creates either a new user or clinician based on the login window
      * Opens the sign up view based on the login view
+     *
      * @param event An action event
-     */@FXML
+     */
+    @FXML
     void signUp(ActionEvent event) {
 
 
-    if(isUser) {    FXMLLoader donorLoader = new FXMLLoader(getClass().getResource("/FXML/createNewUser.fxml"));
-        Parent root = null;
-        try {
-            root = donorLoader.load();
-        } catch (IOException e) {
-            e.printStackTrace();}
-
-        stage.setScene(new Scene(root));
-        stage.setTitle("Create New User Profile");
-        NewUserController donorController =  donorLoader.getController();
-        donorController.init(AppController.getInstance(),  stage);
+        if (isUser) {
+            FXMLLoader donorLoader = new FXMLLoader(getClass().getResource("/FXML/createNewUser.fxml"));
+            Parent root = null;
+            try {
+                root = donorLoader.load();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            Stage newStage  = new Stage();
+            newStage.initModality(Modality.APPLICATION_MODAL);
+            newStage.setScene(new Scene(root));
+            newStage.setTitle("Create New User Profile");
+            newStage.show();
+            NewUserController donorController = donorLoader.getController();
+            donorController.init(AppController.getInstance(), stage);
 
         } else {
             FXMLLoader clinicianLoader = new FXMLLoader(getClass().getResource("/FXML/updateClinician.fxml"));
             Parent root = null;
 
-    try {
+            try {
                 root = clinicianLoader.load();
             } catch (IOException e) {
-                e.printStackTrace();}
-
-            stage.setScene(new Scene(root));
+                e.printStackTrace();
+            }
+            Stage newStage  = new Stage();
+            newStage.initModality(Modality.APPLICATION_MODAL);
+            newStage.setScene(new Scene(root));
+            newStage.show();
             UpdateClinicianController newClinician = clinicianLoader.getController();
-            newClinician.init(null, appController, stage, true);
+            newClinician.init(null, appController, stage, true, newStage);
         }
     }
 
@@ -226,21 +244,26 @@ public class LoginController {
 
     /**
      * Opens the Command Line version of the application
+     *
      * @param event
      */
-  @FXML
-  void openCLI(ActionEvent event) {
+    @FXML
+    void openCLI(ActionEvent event) {
 /*    stage.hide();
     CLI.main(new String[]{"gui"});
     stage.show();*/
-    FXMLLoader adminLoader = new FXMLLoader(getClass().getResource("/FXML/adminView.fxml"));
-      Parent root = null;
-      try {
-          root = adminLoader.load();
-      } catch (IOException e) {
-          e.printStackTrace();
-      }
-      stage.setScene(new Scene(root));
-  }
+        FXMLLoader adminLoader = new FXMLLoader(getClass().getResource("/FXML/adminView.fxml"));
+        Parent root = null;
+        try {
+            root = adminLoader.load();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        stage.setScene(new Scene(root));
+        stage.setTitle("Administrator");
+        AdministratorViewController administratorViewController = adminLoader.getController();
+        administratorViewController.init(stage, appController, new Administrator());
+    }
 }
 

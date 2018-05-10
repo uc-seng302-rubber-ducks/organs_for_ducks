@@ -86,6 +86,7 @@ public class UpdateClinicianController {
     private Clinician oldClinician;
     private boolean newClinician;
     int undoMarker;
+    private Stage ownStage;
 
     /**
      * Initializes the scene by setting all but the password text fields to contain the given clinicians attributes.
@@ -95,12 +96,13 @@ public class UpdateClinicianController {
      * @param stage        The application stage.
      * @param newClinician true if the current clinician is new, false if the clinician is being updated.
      */
-    public void init(Clinician clinician, AppController controller, Stage stage, boolean newClinician) {
+    public void init(Clinician clinician, AppController controller, Stage stage, boolean newClinician, Stage ownStage) {
         currentClinician = clinician;
         this.newClinician = newClinician;
         this.controller = controller;
         this.stage = stage;
-        stage.setTitle("Update Clinician Profile");
+        this.ownStage = ownStage;
+        ownStage.setTitle("Update Clinician Profile");
         //stage.setResizable(false);
         undoClinicianFormButton.setDisable(true);
         redoClinicianFormButton.setDisable(true);
@@ -108,7 +110,7 @@ public class UpdateClinicianController {
         if (!newClinician) {
             oldClinician = currentClinician.clone();
             undoMarker = currentClinician.getUndoStack().size();
-            stage.setTitle("Update Clinician: " + clinician.getFirstName());
+            ownStage.setTitle("Update Clinician: " + clinician.getFirstName());
             titleLabel.setText("Update Clinician");
             confirmButton.setText("Save Changes");
 
@@ -122,7 +124,7 @@ public class UpdateClinicianController {
             changesListener(addressTextField);
             changesListener(regionTextField);
 
-            Scene scene = stage.getScene();
+            Scene scene = ownStage.getScene();
 
             final KeyCombination shortcutZ = new KeyCodeCombination(
                     KeyCode.Z, KeyCombination.CONTROL_DOWN);
@@ -131,18 +133,18 @@ public class UpdateClinicianController {
                 if (shortcutZ.match(e)) {
                     undo(new ActionEvent());
                     if (checkChanges()) { // checks if reverting a textfield change restores all fields to their original state
-                        stage.setTitle("Update Clinician: " + currentClinician.getFirstName());
+                        ownStage.setTitle("Update Clinician: " + currentClinician.getFirstName());
                     }
                 }
             });
 
         } else {
-            stage.setTitle("Create New Clinician Profile");
+            ownStage.setTitle("Create New Clinician Profile");
             titleLabel.setText("Create Clinician");
             confirmButton.setText("Create Clinician Profile");
         }
 
-        stage.setOnCloseRequest(event -> {
+        ownStage.setOnCloseRequest(event -> {
             cancelUpdate(new ActionEvent());
         });
     }
@@ -367,20 +369,40 @@ public class UpdateClinicianController {
             ClinicianController clinicianController = AppController.getInstance()
                     .getClinicianController();
             clinicianController.showClinician(oldClinician);
-            stage.close();
+            ownStage.close();
 
         } else {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML/clinicianView.fxml"));
-            Parent root = null;
+            System.out.println(stage.getTitle());
+            if (stage.getTitle().matches("Administrator*")) {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML/clinicianView.fxml"));
+                Parent root = null;
 
-            try {
-                root = loader.load();
-                ClinicianController clinicianController = loader.getController();
-                clinicianController.init(stage, AppController.getInstance(), clinician);
-                stage.setScene(new Scene(root));
-                stage.show();
-            } catch (IOException e) {
-                e.printStackTrace();
+                try {
+                    root = loader.load();
+                    ClinicianController clinicianController = loader.getController();
+                    Stage clinicianStage = new Stage();
+                    clinicianController.init(clinicianStage, AppController.getInstance(), clinician);
+                    clinicianStage.setScene(new Scene(root));
+                    clinicianStage.show();
+                    ownStage.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+            } else {
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML/clinicianView.fxml"));
+                Parent root = null;
+
+                try {
+                    root = loader.load();
+                    ClinicianController clinicianController = loader.getController();
+                    clinicianController.init(stage, AppController.getInstance(), clinician);
+                    stage.setScene(new Scene(root));
+                    stage.show();
+                    ownStage.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
@@ -408,14 +430,14 @@ public class UpdateClinicianController {
                     removeFormChanges(0);
                     controller.updateClinicians(oldClinician);
                     loadOverview(oldClinician);
-                    stage.close();
+                    ownStage.close();
                 }
             } else { // has no changes
-                stage.close();
+                ownStage.close();
             }
 
         } else {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML/loginView.fxml"));
+            /*FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML/loginView.fxml"));
             Parent root = null;
 
             try {
@@ -428,7 +450,8 @@ public class UpdateClinicianController {
                 stage.show();
             } catch (IOException e) {
                 e.printStackTrace();
-            }
+            }*/
+            ownStage.close();
         }
     }
 
@@ -549,7 +572,7 @@ public class UpdateClinicianController {
             currentClinician.setDateLastModified(LocalDateTime.now()); // updates the modified date
             sumAllChanged();
             controller.updateClinicians(currentClinician); // saves the clinician
-            stage.close(); // returns to the clinician overview window
+            ownStage.close(); // returns to the clinician overview window
 
         } else if (valid && newClinician) { // creates a new clinician
             Clinician clinician = new Clinician(staffID, password, fName, mName, lName, address, region);
