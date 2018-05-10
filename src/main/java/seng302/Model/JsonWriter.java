@@ -242,7 +242,7 @@ public final class JsonWriter {
                 j.put("Staff Id", c.getStaffId());
                 j.put("Work Address", c.getWorkAddress());
                 j.put("Region", c.getRegion());
-                j.put("Password", c.getPassword());
+                //j.put("Password", c.getPassword()); removed to stop  complilation failing module is deprecated and should be unused
                 j.put("Date Created", c.getDateCreated().toString());
                 j.put("Last Modified", c.getDateLastModified().toString());
 
