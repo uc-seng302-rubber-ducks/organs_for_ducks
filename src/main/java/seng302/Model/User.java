@@ -1079,9 +1079,14 @@ this.changes = FXCollections.observableArrayList();
     newUser.currentMedicationTimes = new HashMap<>(this.currentMedicationTimes);
     newUser.previousMedicationTimes = new HashMap<>(this.previousMedicationTimes);
     newUser.donorDetails = new DonorDetails(newUser);
-    newUser.donorDetails.setOrgans(this.donorDetails.getOrgans());
+    for (Organs o : this.donorDetails.getOrgans()) {
+      newUser.donorDetails.getOrgans().add(o);
+    }
     newUser.receiverDetails = new ReceiverDetails(newUser);
     newUser.receiverDetails.setOrgans(this.receiverDetails.getOrgans());
+    for (Organs o : this.receiverDetails.getOrgans().keySet()) {
+      newUser.receiverDetails.getOrgans().put(o, this.receiverDetails.getOrgans().get(o));
+    }
 
     newUser.currentDiseases = new ArrayList<>(this.currentDiseases);
     newUser.pastDiseases = new ArrayList<>(this.pastDiseases);

@@ -381,23 +381,10 @@ public class DonorController {
     //warningLabel.setVisible(false);
     changeCurrentUser(user);
 
-    ArrayList<Organs> donating;
-    try {
-      donating = new ArrayList<>(user.getDonorDetails().getOrgans());
-    } catch (NullPointerException ex) {
-      donating = new ArrayList<>();
-    }
-    currentlyDonating.setItems(FXCollections.observableList(donating));
-    ArrayList<Organs> leftOverOrgans = new ArrayList<Organs>();
-    Collections.addAll(leftOverOrgans, Organs.values());
-    for (Organs o : donating) {
-      leftOverOrgans.remove(o);
-    }
-    canDonate.setItems(FXCollections.observableList(leftOverOrgans));
+    populateOrganLists(user);
 
     // Sets the button to be disabled
-    undoButton.setDisable(currentUser.getUndoStack().isEmpty());
-    redoButton.setDisable(currentUser.getRedoStack().isEmpty());
+    updateUndoRedoButtons();
     currentMeds = FXCollections.observableArrayList();
 
     previousMeds = FXCollections.observableArrayList();
@@ -567,6 +554,22 @@ public class DonorController {
         application.getClinicianControllerInstance().refreshTables();
       }
     });
+  }
+
+  private void populateOrganLists(User user) {
+    ArrayList<Organs> donating;
+    try {
+      donating = new ArrayList<>(user.getDonorDetails().getOrgans());
+    } catch (NullPointerException ex) {
+      donating = new ArrayList<>();
+    }
+    currentlyDonating.setItems(FXCollections.observableList(donating));
+    ArrayList<Organs> leftOverOrgans = new ArrayList<Organs>();
+    Collections.addAll(leftOverOrgans, Organs.values());
+    for (Organs o : donating) {
+      leftOverOrgans.remove(o);
+    }
+    canDonate.setItems(FXCollections.observableList(leftOverOrgans));
   }
 
   private void moveSelectedProcedureTo(TableView<MedicalProcedure> from,
@@ -832,7 +835,7 @@ public class DonorController {
   @FXML
   private void undo() {
     currentUser.undo();
-    undoButton.setDisable(currentUser.getUndoStack().isEmpty());
+    updateUndoRedoButtons();
     showUser(currentUser); //Error with showing donors
 
   }
@@ -844,7 +847,7 @@ public class DonorController {
   @FXML
   private void redo() {
     currentUser.redo();
-    redoButton.setDisable(currentUser.getRedoStack().isEmpty());
+    updateUndoRedoButtons();
     showUser(currentUser);
   }
 
@@ -854,6 +857,7 @@ public class DonorController {
    */
   @FXML
   private void logout() {
+    currentUser.getUndoStack().clear();
     //updateDonor();
     FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML/loginView.fxml"));
     Parent root = null;
@@ -974,24 +978,17 @@ public class DonorController {
 
       currentMedicationListView.setItems(currentMeds);
     }
-    if (user.getPreviousMedication() != null) {
 
+    if (user.getPreviousMedication() != null) {
       previousMeds.clear();
       previousMeds.addAll(user.getPreviousMedication());
       previousMedicationListView.setItems(previousMeds);
     }
-//        organsDonatingListView.getItems().addAll(currentUser.getDonorDetails().getOrgans());
-//        if (!currentUser.getCommonOrgans().isEmpty()) {
-//            for (Organs organ: currentUser.getCommonOrgans()) {
-//                int index = organsDonatingListView.getItems().indexOf(organ);
-//                organsDonatingListView.getSelectionModel().select(index);
-//            }
-    //    }
+
+    populateOrganLists(user);
 
     updateProcedureTables(user);
 
-    //organsDonatingListView.getItems().clear();
-    //organsDonatingListView.getItems().addAll(user.getDonorDetails().getOrgans());
     setContactPage();
     if (user.getLastName() != null) {
       stage.setTitle("User Profile: " + user.getFirstName() + " " + user.getLastName());
@@ -999,8 +996,7 @@ public class DonorController {
       stage.setTitle("User Profile: " + user.getFirstName());
 
     }
-    undoButton.setDisable(user.getUndoStack().isEmpty());
-    redoButton.setDisable(user.getRedoStack().isEmpty());
+    updateUndoRedoButtons();
   }
 
   /**
@@ -1313,8 +1309,7 @@ public class DonorController {
     descriptionTextArea.setText(procedure.getDescription());
     organsAffectedByProcedureListView
         .setItems(FXCollections.observableList(procedure.getOrgansAffected()));
-    undoButton.setDisable(currentUser.getUndoStack().isEmpty());
-    redoButton.setDisable(currentUser.getRedoStack().isEmpty());
+    updateUndoRedoButtons();
     pendingProcedureTableView.refresh();
     previousProcedureTableView.refresh();
   }
@@ -1609,6 +1604,11 @@ public class DonorController {
     }
   }
 
+  public void updateUndoRedoButtons() {
+    undoButton.setDisable(currentUser.getUndoStack().isEmpty());
+    redoButton.setDisable(currentUser.getRedoStack().isEmpty());
+  }
+
   /**
    * Launch the time table which shows the register and deregister date of a particular organ
    *
@@ -1652,7 +1652,8 @@ public class DonorController {
       canDonate.getItems().remove(toDonate);
       memento.setNewObject(currentUser.clone());
       currentUser.getUndoStack().push(memento);
-      undoButton.setDisable(currentUser.getUndoStack().isEmpty());
+      currentUser.getRedoStack().clear();
+      updateUndoRedoButtons();
     }
     currentlyDonating.refresh();
     currentlyReceivingListView.refresh();
@@ -1681,7 +1682,8 @@ public class DonorController {
       application.update(currentUser);
       memento.setNewObject(currentUser.clone());
       currentUser.getUndoStack().push(memento);
-      undoButton.setDisable(currentUser.getUndoStack().isEmpty());
+      currentUser.getRedoStack().clear();
+      updateUndoRedoButtons();
     }
 
     currentlyDonating.refresh();
@@ -1782,8 +1784,6 @@ public class DonorController {
   public void diseaseRefresh(boolean isSortedByName, boolean isReverseSorted) {
     Disease disease = new Disease("", false, false, LocalDate.now());
     Collections.sort(currentUser.getCurrentDiseases(), disease.diseaseNameComparator);
-    Collections.sort(currentUser.getCurrentDiseases(), disease.diseaseDateComparator);
-    Collections.sort(currentUser.getPastDiseases(), disease.diseaseNameComparator);
     Collections.sort(currentUser.getPastDiseases(), disease.diseaseDateComparator);
 
     if (isSortedByName) {
