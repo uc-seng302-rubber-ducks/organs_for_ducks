@@ -213,7 +213,7 @@ public class LoginController {
                 stage.setScene(new Scene(root));
                 AdministratorViewController administratorController = administratorLoader.getController();
                 AppController.getInstance().setAdministratorViewController(administratorController);
-                administratorController.init(stage, appController, administrator);
+                administratorController.init(administrator, appController, stage);
             }
   }
 
