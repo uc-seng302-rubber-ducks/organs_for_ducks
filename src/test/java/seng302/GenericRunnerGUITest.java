@@ -18,6 +18,6 @@ plugin = {
         snippets = SnippetType.CAMELCASE,
         glue = "seng302/steps"
 )
-public class GenericRunnerTest {
+public class GenericRunnerGUITest {
 
 }

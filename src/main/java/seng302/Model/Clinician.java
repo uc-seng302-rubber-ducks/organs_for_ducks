@@ -2,6 +2,8 @@ package seng302.Model;
 
 
 import com.google.gson.annotations.Expose;
+import seng302.Service.PasswordManager;
+
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -22,7 +24,7 @@ public class Clinician extends Undoable<Clinician> {
     @Expose
     private String region;
     @Expose
-    private String password;
+    private byte[] password;
     @Expose
     private LocalDateTime dateCreated;
     @Expose
@@ -34,6 +36,8 @@ public class Clinician extends Undoable<Clinician> {
     private String middleName;
     @Expose
     private String lastName;
+    @Expose
+    private byte[] salt;
 
     public Clinician() {
         dateCreated = LocalDateTime.now();
@@ -52,7 +56,7 @@ public class Clinician extends Undoable<Clinician> {
      */
     public Clinician(String staffId, String password, String firstName, String middleName, String lastName, String workAddress, String region) {
         this.staffId = staffId;
-        this.password = password;
+        setPassword(password);
         this.firstName = firstName;
         this.middleName = middleName;
         this.lastName = lastName;
@@ -72,16 +76,37 @@ public class Clinician extends Undoable<Clinician> {
      * @param workAddress clinician work address
      * @param region clinician region
      * @param password clinician password
+     * @param dateCreated clinician date created
+     * @param dateLastModified clinician date last modified
+     */
+    public Clinician(String name, String staffId, String workAddress, String region, String password, LocalDateTime dateCreated, LocalDateTime dateLastModified) {
+        this.name = name;
+        this.staffId = staffId;
+        this.workAddress = workAddress;
+        this.region = region;
+        setPassword(password);
+        this.dateCreated = dateCreated;
+        this.dateLastModified = dateLastModified;
+
+    }
+
+    /**
+     * Constructor for Clinician
+     * @param name clinician name
+     * @param staffId clinician staff id
+     * @param workAddress clinician work address
+     * @param region clinician region
+     * @param password clinician password
      */
     public Clinician(String name, String staffId, String workAddress, String region, String password) {
         this.name = name;
         this.staffId = staffId;
         this.workAddress = workAddress;
         this.region = region;
-        this.password = password;
         this.firstName = name;
         this.middleName = "";
         this.lastName = "";
+        setPassword(password);
         dateCreated = LocalDateTime.now();
         dateLastModified = LocalDateTime.now();
     }
@@ -203,16 +228,45 @@ public class Clinician extends Undoable<Clinician> {
       getUndoStack().push(memento);
     }
 
-    public String getPassword() {
+    /**
+     * Private setter as no one should be able to retrieve password outside of the class
+     * @return hash of the password
+     */
+    private byte[] getPassword() {
         return password;
     }
 
+
+    /**
+     * updates the password by hashing it and storing the new salt
+     * @param password plaintext password to be hashed
+     */
     public void setPassword(String password) {
         Memento<Clinician> memento = new Memento<>();
         memento.setOldObject(this.clone());
-        this.password = password;
+        this.salt = PasswordManager.getNextSalt();
+        this.password = PasswordManager.hash(password, salt);
         memento.setNewObject(this.clone());
       getUndoStack().push(memento);
+    }
+
+
+    public byte[] getSalt() {
+        return salt;
+    }
+
+    public void setSalt(byte[] salt) {
+        this.salt = salt;
+    }
+
+
+    /**
+     * A function to check the supplied password against the stored hash.
+     * @param password Password to be checked
+     * @return correctness of the password
+     */
+    public boolean isPasswordCorrect(String password){
+        return PasswordManager.isExpectedPassword(password, salt, getPassword());
     }
 
     @Override

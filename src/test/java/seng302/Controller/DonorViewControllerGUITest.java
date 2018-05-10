@@ -1,5 +1,6 @@
 package seng302.Controller;
 
+import java.util.concurrent.TimeoutException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -7,9 +8,7 @@ import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 import seng302.App;
 
-import java.util.concurrent.TimeoutException;
-
-public class DonorViewControllerTest extends ApplicationTest {
+public class DonorViewControllerGUITest extends ApplicationTest {
     @Before
     public void setUpCreateScene() throws TimeoutException {
         FxToolkit.registerPrimaryStage();
