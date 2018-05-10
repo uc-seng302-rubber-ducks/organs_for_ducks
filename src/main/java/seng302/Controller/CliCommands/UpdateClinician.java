@@ -8,7 +8,7 @@ import seng302.Model.JsonHandler;
 
 import java.io.IOException;
 
-@CommandLine.Command(name = "clinician", description = "TODO better description")
+@CommandLine.Command(name = "clinician", description = "Allows the details for a clinician to be updated")
 public class UpdateClinician implements Runnable {
 
     AppController controller = AppController.getInstance();

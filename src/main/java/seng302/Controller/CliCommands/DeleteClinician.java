@@ -7,7 +7,7 @@ import seng302.Model.Clinician;
 import java.io.InputStream;
 import java.util.Scanner;
 
-@CommandLine.Command(name = "clinician")
+@CommandLine.Command(name = "clinician", description = "Allows a clinician to be deleted ")
 public class DeleteClinician implements Runnable{
 
     private InputStream inputStream = System.in;
@@ -30,7 +30,7 @@ public class DeleteClinician implements Runnable{
             return;
         }
 
-        System.out.println("This will delete the following donor: " + toDelete.toString());
+        System.out.println("This will delete the following clinician: " + toDelete.toString());
         System.out.println("Please enter Y/n to confirm deletion");
 
         while (true) {

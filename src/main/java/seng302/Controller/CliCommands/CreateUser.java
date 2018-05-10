@@ -69,35 +69,35 @@ public class CreateUser implements Runnable {
           + "maybe a user with that NHI already exists?");
       return;
     }
-    User donor = controller.getUser(NHI);
-    if (donor == null) {
+    User user = controller.getUser(NHI);
+    if (user == null) {
       System.out.println("User with this NHI already exists");
       return;
     }
     if (dodString != null) {
-      donor.setDateOfDeath(IoHelper.readDate(dodString));
+      user.setDateOfDeath(IoHelper.readDate(dodString));
     }
     if (weight != -1) {
-      donor.setWeight(weight);
+      user.setWeight(weight);
     }
     if (height != -1) {
-      donor.setHeight(height);
+      user.setHeight(height);
     }
     if (gender != null) {
-      donor.setGender(gender);
+      user.setGender(gender);
     }
     if (bloodType != null) {
-      donor.setBloodType(bloodType);
+      user.setBloodType(bloodType);
     }
     if (currentAddress != null) {
-      donor.setCurrentAddress(currentAddress);
+      user.setCurrentAddress(currentAddress);
     }
     if (region != null) {
-      donor.setRegion(region);
+      user.setRegion(region);
     }
 
-    System.out.println("Donor " + donor.toString() + " has been registered with ID number");
-    System.out.println(donor.hashCode());
+    System.out.println("User " + user.toString() + " has been registered with ID number");
+    System.out.println(user.hashCode());
     try {
       JsonHandler.saveUsers(controller.getUsers());
     } catch (IOException ex) {

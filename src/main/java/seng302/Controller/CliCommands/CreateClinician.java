@@ -6,7 +6,7 @@ import seng302.Controller.AppController;
 import seng302.Controller.ClinicianController;
 import seng302.Model.Clinician;
 
-@CommandLine.Command(name = "clinician", description = "TODO describe this")
+@CommandLine.Command(name = "clinician", description = "Allows the creation of a clinician. ot update use update clinician")
 public class CreateClinician implements Runnable{
 
     AppController controller = AppController.getInstance();

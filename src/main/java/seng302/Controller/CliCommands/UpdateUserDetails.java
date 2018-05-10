@@ -11,7 +11,7 @@ import seng302.Model.JsonWriter;
 import seng302.Model.User;
 import seng302.View.IoHelper;
 
-@Command(name = "details", description = "Use -id to identify the the donor. All other tags will update values")
+@Command(name = "details", description = "Use -id to identify the the user. All other tags will update values")
 public class UpdateUserDetails implements Runnable {
 
 
