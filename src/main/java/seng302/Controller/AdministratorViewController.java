@@ -209,9 +209,4 @@ public class AdministratorViewController {
 
     }
 
-    public void init(Stage stage, AppController controller, Administrator administrator) {
-        this.stage = stage;
-        application = controller;
-    }
-
 }
