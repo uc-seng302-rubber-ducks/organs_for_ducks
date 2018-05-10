@@ -132,7 +132,7 @@ public final class JsonHandler {
      * @param admins list of administrators to be saved
      * @throws IOException thrown when file does not exist, can be ignored as file will be created
      */
-    public static void saveAdmins(ArrayList<Administrator> admins) throws IOException {
+    public static void saveAdmins(Collection<Administrator> admins) throws IOException {
         Files.createDirectories(Paths.get(Directory.JSON.directory()));
         File outFile = new File(Directory.JSON.directory() + "/administrators.json");
 

@@ -62,6 +62,24 @@ public class AppController {
     }
     String[] empty = {""};
     historyOfCommands.add(empty);//putting an empty string into the string array to be displayed if history pointer is 0
+
+    boolean defaultAdminSeen = false;
+    for (Administrator a : admins) {
+        if (a.getUserName().equals("default")) {
+            defaultAdminSeen = true;
+            break;
+        }
+    }
+    if (!defaultAdminSeen) {
+        admins.add(new Administrator());
+
+        try {
+            JsonHandler.saveAdmins(admins);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     boolean defaultSeen = false;
     for(Clinician c : clinicians){
       if(c.getStaffId().equals("0")){
