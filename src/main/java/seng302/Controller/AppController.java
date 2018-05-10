@@ -10,12 +10,25 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 
+import seng302.Model.Change;
+import seng302.Model.Clinician;
+import seng302.Model.JsonHandler;
+import seng302.Model.TransplantDetails;
+import seng302.Model.User;
+import seng302.Exception.UserAlreadyExistsException;
+import seng302.Exception.UserNotFoundException;
+import seng302.Model.Change;
+import seng302.Model.Clinician;
+import seng302.Model.JsonHandler;
+import seng302.Model.User;
+
 
 /**
  * Class for the functionality of the main app
  */
 public class AppController {
 
+  private Collection<Administrator> admins = new ArrayList<>();
   private ArrayList<User> users = new ArrayList<>();
   private ArrayList<TransplantDetails> transplantList = new ArrayList<>();
   private ArrayList<Clinician> clinicians = new ArrayList<>();
@@ -323,6 +336,10 @@ public class AppController {
     return clinicians;
   }
 
+  public Collection<Administrator> getAdmins() {
+      return admins;
+  }
+
     /**
      *
      * @param id The staff id (unique identifier) of the clinician
@@ -353,6 +370,8 @@ public class AppController {
        e.printStackTrace();
      }
    }
+
+
 
   public DonorController getDonorController() {
     return donorController;
