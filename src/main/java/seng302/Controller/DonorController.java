@@ -64,12 +64,14 @@ import seng302.Model.OrganDeregisterReason;
 import seng302.Model.Organs;
 import seng302.Model.UndoRedoStacks;
 import seng302.Model.User;
+import seng302.Service.Log;
 
 /**
  * Class for the functionality of the User view of the application
  */
 public class DonorController {
 
+  Log log = new Log(this.getClass());
     //the Home page attributes
     @FXML
     private Button backButton;
@@ -349,7 +351,7 @@ public class DonorController {
      * @param fromClinician boolean value indication if from clinician view
      */
   public void init(AppController controller, User user, Stage stage, boolean fromClinician) {
-
+    log.info("starting donorController");
         this.stage = stage;
         application = controller;
         //ageValue.setText("");
