@@ -1,19 +1,20 @@
 package seng302.steps;
 
-import static org.testfx.api.FxAssert.verifyThat;
-import static seng302.Utils.TableViewsMethod.getCell;
-
 import cucumber.api.PendingException;
 import cucumber.api.java.After;
 import cucumber.api.java.en.Given;
-import java.util.ArrayList;
-import java.util.concurrent.TimeoutException;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.matcher.control.LabeledMatchers;
 import seng302.App;
 import seng302.Controller.AppController;
 import seng302.Model.User;
+
+import java.util.ArrayList;
+import java.util.concurrent.TimeoutException;
+
+import static org.testfx.api.FxAssert.verifyThat;
+import static seng302.Utils.TableViewsMethod.getCell;
 
 public class GivenSteps extends ApplicationTest{
     private AppController controller;
@@ -79,12 +80,12 @@ public class GivenSteps extends ApplicationTest{
     @Given("^The Create New Disease screen is loaded$")
     public void theCreateNewDiseaseScreenIsLoaded() throws Throwable {
         //Use default clinician
-        clickOn("#changeLogin");
-        clickOn("#userIDTextField");
+        clickOn("#clinicianTab");
+        clickOn("#staffIdTextField");
         write("0");
-        clickOn("#passwordField");
+        clickOn("#staffPasswordField");
         write("admin");
-        clickOn("#loginButton");
+        clickOn("#loginCButton");
         verifyThat("#staffIdLabel", LabeledMatchers.hasText("0"));
         clickOn("#searchTab");
         doubleClickOn(getCell("#searchTableView", 0, 0));

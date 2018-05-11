@@ -16,7 +16,7 @@ import seng302.App;
 import seng302.Model.EmergencyContact;
 import seng302.Model.User;
 
-public class UndoUserUpdateFormTest extends ApplicationTest{
+public class UndoUserUpdateFormGUITest extends ApplicationTest {
 
   @Before
   public void setUp() throws TimeoutException{
@@ -32,7 +32,7 @@ public class UndoUserUpdateFormTest extends ApplicationTest{
     AppController.getInstance().getUsers().add(user);
     clickOn("#userIDTextField");
     write("ABC1234", 0);
-    clickOn("#loginButton");
+    clickOn("#loginUButton");
   }
 
   @After

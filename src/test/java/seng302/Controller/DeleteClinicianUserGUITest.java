@@ -2,10 +2,6 @@ package seng302.Controller;
 
 
 
-import static org.testfx.api.FxAssert.verifyThat;
-
-import java.time.LocalDate;
-import java.util.concurrent.TimeoutException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -30,12 +26,12 @@ public class DeleteClinicianUserGUITest extends ApplicationTest{
     AppController.getInstance().getUsers().clear();
     AppController.getInstance().getUsers().add(new User("A", LocalDate.now(), "ABC1234"));
     AppController.getInstance().getUsers().add(new User("Aa", LocalDate.now(), "ABC1244"));
-    clickOn("#changeLogin");
-    clickOn("#userIDTextField");
+    clickOn("#clinicianTab");
+    clickOn("#staffIdTextField");
     write("0");
-    clickOn("#passwordField");
+    clickOn("#staffPasswordField");
     write("admin");
-    clickOn("#loginButton");
+    clickOn("#loginCButton");
     clickOn("#searchTab");
     doubleClickOn(TableViewsMethod.getCell("#searchTableView", 0, 0));
   }

@@ -1,19 +1,6 @@
 package seng302.Controller;
 
 
-import java.io.IOException;
-import java.text.DecimalFormat;
-import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -22,20 +9,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
-import javafx.scene.control.SelectionMode;
-import javafx.scene.control.TableCell;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldListCell;
 import javafx.scene.input.MouseButton;
@@ -46,24 +20,13 @@ import javafx.stage.Stage;
 import javafx.util.StringConverter;
 import okhttp3.OkHttpClient;
 import org.controlsfx.control.textfield.TextFields;
-import seng302.Model.Change;
-import seng302.Model.Disease;
-import seng302.Model.EmergencyContact;
-import seng302.Model.HttpRequester;
-import seng302.Model.MedicalProcedure;
-import seng302.Model.Memento;
-import seng302.Model.OrganDeregisterReason;
-import seng302.Model.Organs;
-import seng302.Model.User;
-import seng302.Model.Change;
-import seng302.Model.Disease;
-import seng302.Model.EmergencyContact;
-import seng302.Model.HttpRequester;
-import seng302.Model.MedicalProcedure;
-import seng302.Model.OrganDeregisterReason;
-import seng302.Model.Organs;
-import seng302.Model.UndoRedoStacks;
-import seng302.Model.User;
+import seng302.Model.*;
+
+import java.io.IOException;
+import java.text.DecimalFormat;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+import java.util.*;
 
 /**
  * Class for the functionality of the User view of the application
@@ -349,36 +312,35 @@ public class DonorController {
      * @param fromClinician boolean value indication if from clinician view
      */
   public void init(AppController controller, User user, Stage stage, boolean fromClinician) {
-
-        this.stage = stage;
-        application = controller;
-        //ageValue.setText("");
-        //This is the place to set visable and invisable controls for Clinician vs User
+    this.stage = stage;
+    application = controller;
+    //ageValue.setText("");
+    // This is the place to set visable and invisable controls for Clinician vs User
     if (fromClinician) {
       Clinician = true;
       logOutButton.setVisible(false);
-    addDiseaseButton.setVisible(true);
+      addDiseaseButton.setVisible(true);
       updateDiseaseButton.setVisible(true);
       deleteDiseaseButton.setVisible(true);
-    }else {
+    } else {
       Clinician = false;
-            procedureDateSelector.setEditable(false);
-            procedureTextField.setEditable(false);
-            descriptionTextArea.setEditable(false);
-            addProcedureButton.setVisible(false);
-            removeProcedureButton.setVisible(false);
-            updateProceduresButton.setVisible(false);
-            modifyOrgansProcedureButton.setVisible(false);
-        deleteButton.setVisible(false);
-        addMedicationButton.setVisible(false);
-        medicationTextField.setVisible(false);
-        backButton.setVisible(false);
+      procedureDateSelector.setEditable(false);
+      procedureTextField.setEditable(false);
+      descriptionTextArea.setEditable(false);
+      addProcedureButton.setVisible(false);
+      removeProcedureButton.setVisible(false);
+      updateProceduresButton.setVisible(false);
+      modifyOrgansProcedureButton.setVisible(false);
+      deleteButton.setVisible(false);
+      addMedicationButton.setVisible(false);
+      medicationTextField.setVisible(false);
+      backButton.setVisible(false);
 
-        organLabel.setVisible(false);
-        organsComboBox.setVisible(false);
-        registerButton.setVisible(false);
-        reRegisterButton.setVisible(false);
-        deRegisterButton.setVisible(false);
+      organLabel.setVisible(false);
+      organsComboBox.setVisible(false);
+      registerButton.setVisible(false);
+      reRegisterButton.setVisible(false);
+      deRegisterButton.setVisible(false);
       takeMedicationButton.setVisible(false);
       untakeMedicationButton.setVisible(false);
     }
@@ -409,9 +371,9 @@ public class DonorController {
     redoButton.setDisable(currentUser.getRedoStack().isEmpty());
     currentMeds = FXCollections.observableArrayList();
 
-        previousMeds = FXCollections.observableArrayList();
-        currentMedicationListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-        previousMedicationListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+    previousMeds = FXCollections.observableArrayList();
+    currentMedicationListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+    previousMedicationListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 
     //listeners to move meds from current <--> previous
     previousMeds.addListener((ListChangeListener.Change<? extends String> change) -> {
@@ -423,20 +385,20 @@ public class DonorController {
       application.update(currentUser);
     });
 
-        //lambdas for drug interactions
-        currentMedicationListView.getSelectionModel().selectedItemProperty()
-                .addListener((observable, oldValue, newValue) -> {
-                    ObservableList<String> selected = currentMedicationListView.getSelectionModel()
+    //lambdas for drug interactions
+      currentMedicationListView.getSelectionModel().selectedItemProperty()
+            .addListener((observable, oldValue, newValue) -> {
+              ObservableList<String> selected = currentMedicationListView.getSelectionModel()
                             .getSelectedItems();
                     displayDetails(selected, drugDetailsLabel, drugDetailsTextArea);
                 });
-        previousMedicationListView.getSelectionModel().selectedItemProperty()
+      previousMedicationListView.getSelectionModel().selectedItemProperty()
                 .addListener(((observable, oldValue, newValue) -> {
                     ObservableList<String> selected = previousMedicationListView.getSelectionModel()
                             .getSelectedItems();
                     displayDetails(selected, drugDetailsLabel, drugDetailsTextArea);
                 }));
-        currentMedicationListView.setOnMouseClicked(event -> {
+      currentMedicationListView.setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
                 String med = currentMedicationListView.getSelectionModel().getSelectedItem();
                 launchMedicationView(med);
@@ -483,18 +445,17 @@ public class DonorController {
     TableColumn pendingDateColumn = new TableColumn("Date");
     TableColumn previousProcedureColumn = new TableColumn("Procedure");
     TableColumn previousDateColumn = new TableColumn("Date");
-    pendingProcedureColumn
-        .setCellValueFactory(new PropertyValueFactory<MedicalProcedure, String>("summary"));
-    previousProcedureColumn
-        .setCellValueFactory(new PropertyValueFactory<MedicalProcedure, String>("summary"));
-    pendingDateColumn
-        .setCellValueFactory(new PropertyValueFactory<Change, String>("procedureDate"));
-    previousDateColumn
-        .setCellValueFactory(new PropertyValueFactory<Change, String>("procedureDate"));
+
+    pendingProcedureColumn.setCellValueFactory(new PropertyValueFactory<MedicalProcedure, String>("summary"));
+    previousProcedureColumn.setCellValueFactory(new PropertyValueFactory<MedicalProcedure, String>("summary"));
+    pendingDateColumn.setCellValueFactory(new PropertyValueFactory<Change, String>("procedureDate"));
+    previousDateColumn.setCellValueFactory(new PropertyValueFactory<Change, String>("procedureDate"));
+
     previousProcedureTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
     pendingProcedureTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
     previousProcedureTableView.getColumns().addAll(previousProcedureColumn, previousDateColumn);
     pendingProcedureTableView.getColumns().addAll(pendingProcedureColumn, pendingDateColumn);
+
     organsAffectedByProcedureListView.setCellFactory(oabp -> {
       TextFieldListCell<Organs> cell = new TextFieldListCell<>();
       cell.setConverter(new StringConverter<Organs>() {
@@ -833,6 +794,7 @@ public class DonorController {
             root = updateLoader.load();
             UpdateUserController updateUserController = updateLoader.getController();
             Stage stage = new Stage();
+            stage.initModality(Modality.APPLICATION_MODAL);
             stage.setScene(new Scene(root));
             updateUserController.init(currentUser, application, stage);
             stage.show();

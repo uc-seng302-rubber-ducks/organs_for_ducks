@@ -1,7 +1,10 @@
 package seng302.Model;
 
 import com.google.gson.annotations.Expose;
+import javafx.scene.Scene;
+import seng302.Service.PasswordManager;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -32,11 +35,6 @@ public class Administrator {
      * Constructor to create a default Administrator
      */
     public Administrator(){
-        userName = "default";
-        this.firstName = null;
-        this.middleName = null;
-        this.lastName = null;
-        password = setPassword("admin");
         dateCreated = LocalDateTime.now();
         dateLastModified = LocalDateTime.now();
     }
@@ -49,12 +47,12 @@ public class Administrator {
      * @param lastName Administrator last name
      * @param password Administrator password
      */
-    public Administrator(String userName, String firstName, String middleName, String lastName, byte[] password){
+    public Administrator(String userName, String firstName, String middleName, String lastName, String password){
         this.userName = userName;
         this.firstName = firstName;
         this.middleName = middleName;
         this.lastName = lastName;
-        this.password = password;
+        setPassword(password);
         dateCreated = LocalDateTime.now();
         dateLastModified = LocalDateTime.now();
     }
@@ -128,18 +126,19 @@ public class Administrator {
     }
 
     public void setPassword(String password) {
-
-        this.salt = PasswordManager.getNextSalt;
+        salt = PasswordManager.getNextSalt();
         this.password = PasswordManager.hash(password, salt);
     }
 
-    public void setSalt(byte[] salt) {
-        this.salt = salt;
+    /**
+     * Takes an attempt as a password and then checks it against the actual password
+     * @param passwordAttempt password guess
+     * @return correctness of the guess
+     */
+    public boolean isPasswordCorrect(String passwordAttempt){
+        return PasswordManager.isExpectedPassword(passwordAttempt, salt, getPassword());
     }
 
-    public void isExpectedPassword(String testPassword){
-        return PasswordManager.isExpectedPassword(testPassword, this.salt, getPassword());
-    }
 
     @Override
     public boolean equals(Object o) {

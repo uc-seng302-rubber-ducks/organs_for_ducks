@@ -15,7 +15,7 @@ import seng302.App;
 import seng302.Model.EmergencyContact;
 import seng302.Model.User;
 
-public class UndoDonorTest extends ApplicationTest {
+public class UndoDonorGUITest extends ApplicationTest {
 
   @Before
   public void setUp() throws TimeoutException {
@@ -31,7 +31,7 @@ public class UndoDonorTest extends ApplicationTest {
     AppController.getInstance().getUsers().add(user);
     clickOn("#userIDTextField");
     write("ABC1234", 0);
-    clickOn("#loginButton");
+    clickOn("#loginUButton");
   }
 
   @After

@@ -1,23 +1,20 @@
 package seng302.Controller;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.testfx.api.FxToolkit;
-import org.testfx.matcher.control.LabeledMatchers;
-import org.testfx.framework.junit.ApplicationTest;
-import static org.testfx.api.FxAssert.verifyThat;
 import javafx.scene.Node;
+import org.junit.*;
+import org.testfx.api.FxToolkit;
+import org.testfx.framework.junit.ApplicationTest;
+import org.testfx.matcher.control.LabeledMatchers;
 import seng302.App;
 
 import java.util.concurrent.TimeoutException;
-import seng302.Model.Clinician;
+
+import static org.testfx.api.FxAssert.verifyThat;
 
 /**
  * Tests the UpdateClinicianController specifically for creating new clinicians
  */
-public class CreateClinicianControllerTest extends ApplicationTest {
+public class CreateClinicianControllerGUITest extends ApplicationTest {
 
     @BeforeClass
     public static void initialization() {
@@ -48,12 +45,14 @@ public class CreateClinicianControllerTest extends ApplicationTest {
       FxToolkit.cleanupStages();
     }
 
+    @Ignore
     @Test
     public void testClinicianSignUpFromLogin() {
         verifyThat("#titleLabel", LabeledMatchers.hasText("Create Clinician"));
         verifyThat("#confirmButton", LabeledMatchers.hasText("Create Clinician Profile"));
     }
 
+    @Ignore
     @Test
     public void testSignUpRequiredInfo() {
         clickOn("#staffIDTextField");
@@ -70,6 +69,7 @@ public class CreateClinicianControllerTest extends ApplicationTest {
         verifyThat("#staffIdLabel", LabeledMatchers.hasText("Staff1"));
     }
 
+    @Ignore
     @Test
     public void testSignUpNoInfo() {
         clickOn("#confirmButton");
@@ -80,6 +80,7 @@ public class CreateClinicianControllerTest extends ApplicationTest {
 //        verifyThat("#emptyRegionLabel", Node::isVisible);
     }
 
+    @Ignore
     @Test
     public void testInUseStaffID() {
         // create a new clinician
@@ -106,6 +107,7 @@ public class CreateClinicianControllerTest extends ApplicationTest {
         verifyThat("#invalidStaffIDLabel", LabeledMatchers.hasText("Staff ID already in use"));
     }
 
+    @Ignore
     @Test
     public void testNoPasswordConfirmation() {
         clickOn("#staffIDTextField");
@@ -117,9 +119,10 @@ public class CreateClinicianControllerTest extends ApplicationTest {
         clickOn("#regionTextField");
         write("Christchurch", 0);
         clickOn("#confirmButton");
-        verifyThat("#incorrectPasswordLabel", Node::isVisible);
+        verifyThat("#emptyPasswordLabel", Node::isVisible);
     }
 
+    @Ignore
     @Test
     public void testWrongPasswordConfirmation() {
         clickOn("#staffIDTextField");
@@ -136,6 +139,7 @@ public class CreateClinicianControllerTest extends ApplicationTest {
         verifyThat("#incorrectPasswordLabel", Node::isVisible);
     }
 
+    @Ignore
     @Test
     public void testLabelsMatch() {
         clickOn("#staffIDTextField");

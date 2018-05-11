@@ -6,6 +6,7 @@ import static javafx.scene.input.KeyCode.SHORTCUT;
 import static org.testfx.api.FxAssert.verifyThat;
 
 import java.time.LocalDate;
+import java.util.concurrent.TimeoutException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -14,11 +15,9 @@ import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.matcher.control.LabeledMatchers;
 import seng302.App;
-
-import java.util.concurrent.TimeoutException;
 import seng302.Model.User;
 
-public class UpdateDonorControllerTest extends ApplicationTest {
+public class UpdateDonorControllerGUITest extends ApplicationTest {
     @Before
     public void setUpCreateScene() throws TimeoutException {
         FxToolkit.registerPrimaryStage();
@@ -27,7 +26,7 @@ public class UpdateDonorControllerTest extends ApplicationTest {
         AppController.getInstance().getUsers().add(new User("A", LocalDate.now().minusDays(1000), "ABC1234"));
         clickOn("#userIDTextField");
         write("ABC1234");
-        clickOn("#loginButton");
+        clickOn("#loginUButton");
         clickOn("#editDetailsButton");
     }
 
