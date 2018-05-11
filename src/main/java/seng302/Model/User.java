@@ -4,12 +4,8 @@ import com.google.gson.annotations.Expose;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
+
 import javafx.collections.FXCollections;
 
 /**
@@ -1102,10 +1098,8 @@ this.changes = FXCollections.observableArrayList();
     }
 
     newUser.changes = this.changes;
-    newUser.getUndoStack().clear();
-    newUser.getUndoStack().addAll(this.getUndoStack());
-    newUser.getRedoStack().clear();
-    newUser.getRedoStack().addAll(this.getRedoStack());
+    newUser.setUndoStack((Stack<Memento<User>>) this.getUndoStack().clone());
+    newUser.setRedoStack((Stack<Memento<User>>) this.getRedoStack().clone());
     return newUser;
   }
 
@@ -1134,6 +1128,7 @@ this.changes = FXCollections.observableArrayList();
     this.cellPhone = other.cellPhone;
     this.email = other.email;
     this.contact = other.contact;
+    this.contact.setAttachedUser(this);
 
     this.name = other.name;
     this.firstName = other.firstName;
@@ -1149,7 +1144,9 @@ this.changes = FXCollections.observableArrayList();
     this.currentMedicationTimes = other.currentMedicationTimes;
     this.previousMedicationTimes = other.previousMedicationTimes;
     this.donorDetails = other.donorDetails;
+    this.donorDetails.setAttachedUser(this);
     this.receiverDetails = other.receiverDetails;
+    this.receiverDetails.setAttachedUser(this);
 
     this.currentDiseases = other.currentDiseases;
     this.pastDiseases = other.pastDiseases;

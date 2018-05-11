@@ -61,11 +61,12 @@ public class ReceiverDetails {
    * @param organ
    */
   public void startWaitingForOrgan(Organs organ) {
-    Memento<User> memento = new Memento<>();
-    memento.setOldObject(attachedUser.clone());
+
     if (isCurrentlyWaitingFor(organ)) {
       return;
     }
+    Memento<User> memento = new Memento<>();
+    memento.setOldObject(attachedUser.clone());
     //existing entry
     if (organs.containsKey(organ)) {
       organs.get(organ).add(LocalDate.now());
