@@ -1,27 +1,15 @@
 package seng302.Controller;
 
+import seng302.Directory;
+import seng302.Exception.UserAlreadyExistsException;
+import seng302.Exception.UserNotFoundException;
 import seng302.Model.*;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import seng302.Model.Change;
-import seng302.Model.Clinician;
-import seng302.Model.JsonHandler;
-import seng302.Model.TransplantDetails;
-import seng302.Model.User;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.Stack;
-import seng302.Exception.UserAlreadyExistsException;
-import seng302.Exception.UserNotFoundException;
-import seng302.Model.Change;
-import seng302.Model.Clinician;
-import seng302.Model.JsonHandler;
-import seng302.Model.User;
+import java.util.*;
 
 
 /**
@@ -41,8 +29,8 @@ public class AppController {
   private Set<User> deletedUserStack = new HashSet<>();
   private Stack<User> redoStack = new Stack<>();
 
-  private String usersFile = "/donors.json";
-  private String clinicianFile = "/clinicians.json";
+  private String usersFile = Directory.JSON.directory() + "/donors.json";
+  private String clinicianFile = Directory.JSON.directory() + "/clinicians.json";
   private ClinicianController clinicianControllerInstance;
 
   /**
@@ -51,13 +39,13 @@ public class AppController {
   private AppController() {
     try {
       users = JsonHandler.loadUsers(usersFile);
-      System.out.println(users.size() + " donors were successfully loaded");
+      System.out.println(users.size() + " users were successfully loaded");
     } catch (FileNotFoundException e) {
       System.out.println("Donor file was not found");
     }
 
     try {
-      clinicians = JsonHandler.loadClinicians();
+      clinicians = JsonHandler.loadClinicians(clinicianFile);
       System.out.println(clinicians.size() + " clinicians were successfully loaded");
     } catch (FileNotFoundException e) {
       System.out.println("Clinician file was not found");

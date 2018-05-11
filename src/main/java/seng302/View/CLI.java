@@ -10,6 +10,7 @@ import org.jline.utils.InfoCmp.Capability;
 import picocli.CommandLine;
 import seng302.Controller.AppController;
 import seng302.Controller.CliCommands.CliRoot;
+import seng302.Directory;
 import seng302.Model.JsonHandler;
 import seng302.Model.JsonWriter;
 
@@ -56,7 +57,7 @@ public class CLI {
 
     AppController controller = AppController.getInstance();
     try {
-      controller.setUsers(JsonHandler.loadUsers("/donors.json"));
+      controller.setUsers(JsonHandler.loadUsers(Directory.JSON.directory() + "/donors.json"));
     } catch (FileNotFoundException e) {
       System.out.println("No users file exists. Creating blank session");
       controller.setUsers(new ArrayList<>());

@@ -56,7 +56,7 @@ public final class JsonHandler {
 
     public static ArrayList<User> loadUsers(String filename) throws FileNotFoundException {
         ArrayList<User> results = new ArrayList<>();
-        File inFile = new File(Directory.JSON.directory() + filename);
+        File inFile = new File(filename);
         Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss")
                 .create();
         Reader reader =new FileReader(inFile);
@@ -109,7 +109,7 @@ public final class JsonHandler {
      */
     public static ArrayList<Clinician> loadClinicians(String filename) throws FileNotFoundException {
         ArrayList<Clinician> results = new ArrayList<>();
-        File inFile = new File(Directory.JSON.directory() + filename);
+        File inFile = new File(filename);
         Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss")
                 .create();
         Reader reader =new FileReader(inFile);
