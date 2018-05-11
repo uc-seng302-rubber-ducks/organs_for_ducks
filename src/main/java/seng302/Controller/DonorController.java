@@ -445,18 +445,17 @@ public class DonorController {
     TableColumn pendingDateColumn = new TableColumn("Date");
     TableColumn previousProcedureColumn = new TableColumn("Procedure");
     TableColumn previousDateColumn = new TableColumn("Date");
-    pendingProcedureColumn
-        .setCellValueFactory(new PropertyValueFactory<MedicalProcedure, String>("summary"));
-    previousProcedureColumn
-        .setCellValueFactory(new PropertyValueFactory<MedicalProcedure, String>("summary"));
-    pendingDateColumn
-        .setCellValueFactory(new PropertyValueFactory<Change, String>("procedureDate"));
-    previousDateColumn
-        .setCellValueFactory(new PropertyValueFactory<Change, String>("procedureDate"));
+
+    pendingProcedureColumn.setCellValueFactory(new PropertyValueFactory<MedicalProcedure, String>("summary"));
+    previousProcedureColumn.setCellValueFactory(new PropertyValueFactory<MedicalProcedure, String>("summary"));
+    pendingDateColumn.setCellValueFactory(new PropertyValueFactory<Change, String>("procedureDate"));
+    previousDateColumn.setCellValueFactory(new PropertyValueFactory<Change, String>("procedureDate"));
+
     previousProcedureTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
     pendingProcedureTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
     previousProcedureTableView.getColumns().addAll(previousProcedureColumn, previousDateColumn);
     pendingProcedureTableView.getColumns().addAll(pendingProcedureColumn, pendingDateColumn);
+
     organsAffectedByProcedureListView.setCellFactory(oabp -> {
       TextFieldListCell<Organs> cell = new TextFieldListCell<>();
       cell.setConverter(new StringConverter<Organs>() {

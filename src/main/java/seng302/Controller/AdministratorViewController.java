@@ -1,21 +1,20 @@
 package seng302.Controller;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.Pagination;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
-import javafx.scene.control.Tooltip;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import seng302.Controller.CliCommands.Update;
 import seng302.Model.Administrator;
+import seng302.Model.Undoable;
+import seng302.Model.User;
 
 import java.io.IOException;
 
@@ -149,7 +148,58 @@ public class AdministratorViewController {
         if (administrator.getUserName().equals("default")) {
             deleteAdminButton.setDisable(true);
         }
+
+        addListeners();
     }
+
+    /**
+     * Utility method to add listeners to required fields
+     */
+    private void addListeners() {
+        adminAdminCheckbox.selectedProperty().addListener((observable) ->{
+                adminClinicianChecknbox.setSelected(false);
+                adminUserCheckbox.setSelected(false);
+                displayAdminTable();
+                }
+        );
+
+        adminUserCheckbox.selectedProperty().addListener((observable -> {
+            adminUserCheckbox.setSelected(false);
+            adminAdminCheckbox.setSelected(false);
+            displayUserTable();
+        }));
+
+        adminClinicianChecknbox.selectedProperty().addListener((observable -> {
+            adminAdminCheckbox.setSelected(false);
+            adminUserCheckbox.setSelected(false);
+            displayClinicanTable();
+        }));
+
+    }
+
+    private void displayClinicanTable() {
+    }
+
+    private void displayUserTable() {
+        ObservableList<User> users = FXCollections.observableArrayList(appController.getUsers());
+
+        TableColumn<User, String> firstNameColumn = new TableColumn<>("First Name");
+        firstNameColumn.setCellValueFactory(new PropertyValueFactory<>("firstName"));
+
+        TableColumn<User, String> lastNameColumn = new TableColumn<>("Last Name");
+        lastNameColumn.setCellValueFactory(new PropertyValueFactory<>("lastName"));
+
+        TableColumn<User, String> nhiColumn = new TableColumn<>("NHI");
+        nhiColumn.setCellValueFactory(new PropertyValueFactory<>("nhi"));
+
+        /*searchTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        searchTableView.getColumns().addAll(nhiColumn, firstNameColumn, lastNameColumn);
+        searchTableView.setItems(users);*/
+    }
+
+    private void displayAdminTable() {
+    }
+
 
     @FXML
     void save(ActionEvent event) {
