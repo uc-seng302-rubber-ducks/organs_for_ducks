@@ -10,6 +10,7 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
@@ -38,20 +39,28 @@ public class App extends Application {
   @Override
   public void start(Stage primaryStage) throws Exception {
 
-    Logger x = Logger.getLogger("ODMS");
+    //<editor-fold desc="logging setup">
+    Logger logger = Logger.getLogger("ODMS");
     Handler handler;
-
     try {
+      //creates file/path if it doesn't already exist
       Files.createDirectories(Paths.get(Directory.LOGS.directory()));
       handler = new FileHandler(Directory.LOGS
           .directory() + bootTime + ".log", true);
-      x.addHandler(handler);
+
+      SimpleFormatter formatter = new SimpleFormatter();
+      handler.setFormatter(formatter);
+      logger.addHandler(handler);
+
+      //disables logging to console
+      logger.setUseParentHandlers(false);
 
     } catch (IOException ex) {
-      x.log(Level.WARNING, "failed to set up logging to file", ex);
+      logger.log(Level.WARNING, "failed to set up logging to file", ex);
     } catch (SecurityException ex) {
-      x.log(Level.SEVERE, "failed to set up logging to file", ex);
+      logger.log(Level.SEVERE, "failed to set up logging to file", ex);
     }
+    //</editor-fold>
 
     FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML/loginView.fxml"));
     Parent root = null;
@@ -68,9 +77,9 @@ public class App extends Application {
       public void handle(WindowEvent event) {
         try {
           JsonHandler.saveUsers(controller.getUsers());
-          x.info("Successfully saved users on exit");
+          logger.info("Successfully saved users on exit");
         } catch (IOException ex) {
-          x.warning("failed to save users on exit");
+          logger.warning("failed to save users on exit");
         }
         Platform.exit();
         System.exit(0);
