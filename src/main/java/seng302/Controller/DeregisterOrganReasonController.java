@@ -14,6 +14,7 @@ import seng302.Model.Disease;
 import seng302.Model.OrganDeregisterReason;
 import seng302.Model.Organs;
 import seng302.Model.User;
+import seng302.Service.AttributeValidation;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -170,7 +171,7 @@ public class DeregisterOrganReasonController {
 
         } else if(receiverDiedRadioButton.isSelected()){
             LocalDate dOD = dODDatePicker.getValue();
-            if(dOD == null){
+            if(!AttributeValidation.validateDates(currentUser.getDateOfBirth(), dOD)){
                 isValid = false;
                 invalidDateErrorMessage.setVisible(true);
             } else {

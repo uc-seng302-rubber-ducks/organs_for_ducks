@@ -92,7 +92,7 @@ public class AttributeValidation {
      * is before the current date, false otherwise.
      */
     public static boolean validateDates(LocalDate birth, LocalDate death) {
-        return death == null || (birth.isBefore(death) && death.isBefore(LocalDate.now().plusDays(1)));
+        return death == null || (birth.isBefore(death.plusDays(1)) && death.isBefore(LocalDate.now().plusDays(1)));
     }
 
 

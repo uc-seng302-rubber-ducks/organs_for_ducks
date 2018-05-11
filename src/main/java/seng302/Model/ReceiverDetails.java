@@ -91,6 +91,16 @@ public class ReceiverDetails {
     }
   }
 
+  /**
+   * Stop waiting for all organs for a receiver.
+   */
+  public void stopWaitingForAllOrgans(){
+    Map<Organs, ArrayList<LocalDate>> organsCopy = new EnumMap<>(organs);
+    for(Organs organ: organsCopy.keySet()){
+      stopWaitingForOrgan(organ);
+    }
+  }
+
   public User getAttachedUser() {
     return attachedUser;
   }

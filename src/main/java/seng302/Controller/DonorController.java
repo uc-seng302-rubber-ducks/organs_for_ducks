@@ -567,6 +567,12 @@ public class DonorController {
         AppController.getInstance().getClinicianController().refreshTables();
       }
     });
+
+    //if user already died, user cannot receive organs
+    if(currentUser.getDeceased()){//TODO add listener so that if user is updated to not be diseased, these buttons will activate
+      registerButton.setDisable(true);
+      reRegisterButton.setDisable(true);
+    }
   }
 
   private void moveSelectedProcedureTo(TableView<MedicalProcedure> from,
@@ -1595,12 +1601,25 @@ public class DonorController {
               currentUser.getChanges().add(new Change("Initial registering of the organ " + toDeRegister.organName + " was an error for receiver " + currentUser.getFullName()));
 
             } else if (organDeregisterationReason == OrganDeregisterReason.DISEASE_CURED){
-              //refresh table view
+              //refresh diseases table
               this.diseaseRefresh(this.getIsSortedByName(), this.getIsRevereSorted());
+
+            } else if(organDeregisterationReason == OrganDeregisterReason.RECEIVER_DIED){
+              List<Organs> currentlyReceiving = new ArrayList<>(currentlyReceivingListView.getItems());
+              for(Organs organ : currentlyReceiving){
+                notReceivingListView.getItems().add(organ);
+                currentlyReceivingListView.getItems().remove(organ);
+              }
+              currentUser.getReceiverDetails().stopWaitingForAllOrgans();
+              registerButton.setDisable(true);
+              reRegisterButton.setDisable(true);
             }
 
-            notReceivingListView.getItems().add(toDeRegister);
-            currentlyReceivingListView.getItems().remove(toDeRegister);
+            if(organDeregisterationReason != OrganDeregisterReason.RECEIVER_DIED) {
+              notReceivingListView.getItems().add(toDeRegister);
+              currentlyReceivingListView.getItems().remove(toDeRegister);
+            }
+
             if (currentUser.getCommonOrgans().contains(toDeRegister)) {
                 currentUser.getCommonOrgans().remove(toDeRegister);
             }
@@ -1617,11 +1636,12 @@ public class DonorController {
           launchReceiverOrganDateView(currentlyReceivingOrgan);
         }
       });
-            application.update(currentUser);
 
-      currentlyDonating.refresh();
-      currentlyReceivingListView.refresh();
-    }
+            application.update(currentUser);
+          currentlyDonating.refresh();
+          currentlyReceivingListView.refresh();
+          AppController.getInstance().getClinicianController().refreshTables();
+        }
   }
 
   /**
