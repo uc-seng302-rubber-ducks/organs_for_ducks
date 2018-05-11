@@ -213,9 +213,7 @@ public class UpdateUserController {
   private void update() {
     updateUndos();
 
-    if (undoUpdateButton.isDisabled()) {
-      stage.setTitle(stage.getTitle().substring(0, stage.getTitle().length() - 1));
-    } else if (!stage.getTitle().endsWith("*")) {
+    if (!undoUpdateButton.isDisabled() && !stage.getTitle().endsWith("*")) {
       stage.setTitle(stage.getTitle() + "*");
     }
 
@@ -261,7 +259,7 @@ public class UpdateUserController {
    */
   private void textFieldListener(TextField field) {
     field.textProperty().addListener((observable, oldValue, newValue) -> {
-      if (listen) { // todo check what this if statement is for
+      if (listen) {
         update();
       }
     });
@@ -960,8 +958,12 @@ public class UpdateUserController {
   @FXML
     void undo () {
       currentUser.undo();
-    undoUpdateButton.setDisable(currentUser.getUndoStack().size() <= undoMarker);
+      undoUpdateButton.setDisable(currentUser.getUndoStack().size() <= undoMarker);
       setUserDetails(currentUser);
+
+      if (undoUpdateButton.isDisabled()) {
+        stage.setTitle(stage.getTitle().substring(0, stage.getTitle().length() - 1));
+      }
     }
 
   /**
