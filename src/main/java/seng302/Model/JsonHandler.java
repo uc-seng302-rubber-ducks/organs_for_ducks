@@ -184,7 +184,7 @@ public final class JsonHandler {
 
 
         if (outFile.exists()){
-            changes.addAll(importHistoryFromFile(name)); //dont worry about the position in the array JSON is not parsed in order anyway
+            changes.addAll(importHistoryFromFile(name)); //don't worry about the position in the array JSON is not parsed in order anyway
         }
 
         outFile.createNewFile(); //creates new file if donors does not exist
