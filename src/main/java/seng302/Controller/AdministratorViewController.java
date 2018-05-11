@@ -142,7 +142,7 @@ public class AdministratorViewController {
         this.stage = stage;
         this.appController = appController;
         this.administrator = administrator;
-        //displayDetails();
+        displayDetails();
 
 
         if (administrator.getUserName().equals("default")) {
@@ -289,13 +289,17 @@ public class AdministratorViewController {
      * load the labels on the admin view with the current admins details
      */
     void displayDetails(){
-        adminUsernameLable.setText(administrator.getUserName());
-        adminFirstnameLabel.setText(administrator.getFirstName());
-        if (!administrator.getMiddleName().isEmpty()){
-            adminMiddleNameLabel.setText(administrator.getMiddleName());
-        }
-        if (!administrator.getLastName().isEmpty()){
-            adminLastNameLabel.setText(administrator.getLastName());
+        if (!administrator.getUserName().isEmpty()) {
+            adminUsernameLable.setText(administrator.getUserName());
+            if (!administrator.getUserName().equals("default")) {
+                adminFirstnameLabel.setText(administrator.getFirstName());
+                if (!administrator.getMiddleName().isEmpty()) {
+                    adminMiddleNameLabel.setText(administrator.getMiddleName());
+                }
+                if (!administrator.getLastName().isEmpty()) {
+                    adminLastNameLabel.setText(administrator.getLastName());
+                }
+            }
         }
     }
 

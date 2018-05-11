@@ -120,6 +120,7 @@ public class UpdateAdminController {
   @FXML
   private void confirmUpdate(){
     updateAdmin();
+    stage.close();
   }
 
 
@@ -129,19 +130,23 @@ public class UpdateAdminController {
    */
  @FXML
   private void cancelUpdate(){
-   if (stage.getTitle().equals("Update Administrator: " + admin.getFirstName() + " *")){
-     Alert alert = new Alert(AlertType.WARNING,"You have unsaved changes, are you sure you want to cancel?",
-         ButtonType.YES,ButtonType.NO);
-     Button yesButton = (Button) alert.getDialogPane().lookupButton(ButtonType.YES);
-     yesButton.setId("yesButton");
+   stage.close();
+//   if (stage.getTitle().equals("Update Administrator: " + admin.getFirstName() + " *")){
+//     Alert alert = new Alert(AlertType.WARNING,"You have unsaved changes, are you sure you want to cancel?",
+//         ButtonType.YES,ButtonType.NO);
+//     Button yesButton = (Button) alert.getDialogPane().lookupButton(ButtonType.YES);
+//     yesButton.setId("yesButton");
+//
+//     Optional<ButtonType> result = alert.showAndWait();
+//     if (result.get() == ButtonType.YES) {
+//       AppController appController = AppController.getInstance();
+//     }
+//
+//
+//   }
 
-     Optional<ButtonType> result = alert.showAndWait();
-     if (result.get() == ButtonType.YES) {
-       AppController appController = AppController.getInstance();
-     }
 
 
-   }
 
  }
 

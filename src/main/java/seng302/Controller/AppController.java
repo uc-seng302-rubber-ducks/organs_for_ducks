@@ -80,7 +80,7 @@ public class AppController {
         }
     }
     if (!defaultAdminSeen) {
-        admins.add(new Administrator("default", null, null, null, "admin"));
+        admins.add(new Administrator("default", "", "", "", "admin"));
 
         try {
             JsonHandler.saveAdmins(admins);
