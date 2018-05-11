@@ -13,6 +13,7 @@ import javafx.scene.control.Pagination;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import seng302.Model.Administrator;
 
@@ -202,7 +203,19 @@ public class AdministratorViewController {
 
     @FXML
     void addAdmin(ActionEvent event) {
-
+        FXMLLoader adminLoader =  new FXMLLoader(getClass().getResource("/FXML/updateAdmin.fxml"));
+        Parent root = null;
+        try{
+            root = adminLoader.load();
+        } catch (IOException e){
+            e.printStackTrace();
+        }
+        Stage newStage = new Stage();
+        newStage.initModality(Modality.APPLICATION_MODAL);
+        newStage.setScene(new Scene(root));
+        newStage.show();
+        UpdateAdminController updateAdminController = adminLoader.getController();
+        updateAdminController.init(new Administrator(), appController, newStage);
     }
 
     @FXML
