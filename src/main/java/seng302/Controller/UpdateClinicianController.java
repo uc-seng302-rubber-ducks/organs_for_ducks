@@ -343,11 +343,13 @@ public class UpdateClinicianController {
                 Optional<ButtonType> result = alert.showAndWait();
                 if (result.get() == ButtonType.YES) {
                     removeFormChanges(0);
+                    currentClinician.getRedoStack().clear();
                     controller.updateClinicians(oldClinician);
                     loadOverview(oldClinician);
                     stage.close();
                 }
             } else { // has no changes
+                currentClinician.getRedoStack().clear();
                 stage.close();
             }
 
@@ -485,6 +487,7 @@ public class UpdateClinicianController {
 
             currentClinician.setDateLastModified(LocalDateTime.now()); // updates the modified date
             sumAllChanged();
+            currentClinician.getRedoStack().clear();
             controller.updateClinicians(currentClinician); // saves the clinician
             stage.close(); // returns to the clinician overview window
 

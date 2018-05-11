@@ -416,6 +416,7 @@ public class UpdateUserController {
       AppController appController = AppController.getInstance();
       DonorController donorController = appController.getDonorController();
       try {
+        currentUser.getRedoStack().clear();
         donorController.showUser(currentUser);
       } catch (NullPointerException ex) {
         //TODO causes npe if donor is new in this session
@@ -998,6 +999,7 @@ public class UpdateUserController {
           AppController appController = AppController.getInstance();
           DonorController donorController = appController.getDonorController();
           try {
+            currentUser.getRedoStack().clear();
             donorController.showUser(oldUser);
           } catch (NullPointerException ex) {
             //TODO causes npe if donor is new in this session
@@ -1009,6 +1011,7 @@ public class UpdateUserController {
         AppController appController = AppController.getInstance();
         DonorController donorController = appController.getDonorController();
         try {
+          currentUser.getRedoStack().clear();
           donorController.showUser(oldUser);
         } catch (NullPointerException ex) {
           //TODO causes npe if donor is new in this session
