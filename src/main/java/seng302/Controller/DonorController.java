@@ -272,10 +272,12 @@ public class DonorController {
     private Label organLabel;
 
     @FXML
-    private ListView<Organs> currentlyReceivingListView;
+    public ListView<Organs> currentlyReceivingListView;
 
     @FXML
-    private ListView<Organs> notReceivingListView;
+    public ListView<Organs> notReceivingListView;
+
+    public ReceiverOrganDateController organDate;
 
     @FXML
     private Label currentlyReceivingLabel;

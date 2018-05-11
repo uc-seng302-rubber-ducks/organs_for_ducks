@@ -33,7 +33,7 @@ public class ReceiverDetails {
     this.attachedUser = attachedUser;
     this.organs = organs;
   }
-//TODO model from DonorDetails (get/set/add/remove/isEmpty etc)
+//TODO model from DonorDetails (get/set/add/remove/isEmpty etc) <-["What is this" James]
 
 
   /**
@@ -53,7 +53,6 @@ public class ReceiverDetails {
   }
 
   /**
-   * !!NOTICE!! CURRENTLY GETS THE LATEST TWO DATES ONLY
    * Gets the dates (start and stop) of an organ
    * @param organ organ to get the dates for
    * @return collection of LocalDates
@@ -62,15 +61,19 @@ public class ReceiverDetails {
     //int size = organs.get(organ).size();
     Collection<LocalDate> list = new ArrayList<LocalDate>();
     if (!organs.get(organ).empty()) {
-      ReasonAndDateHolderForReceiverDetails holder = organs.get(organ).peek();
-      list.add(holder.getStartDate());
-      list.add(holder.getStopDate());
+      Stack<ReasonAndDateHolderForReceiverDetails> tempStack;
+      tempStack = organs.get(organ);
+      while (!tempStack.empty()) {
+        ReasonAndDateHolderForReceiverDetails holder = organs.get(organ).pop();
+        list.add(holder.getStartDate());
+        list.add(holder.getStopDate());
+      }
     }
     return list;
   }
 
   /**
-   * Retursn true if the receiver (user) is curently waiting for the particualr organ passed in.
+   * Returns true if the receiver (user) is currently waiting for the particular organ passed in.
    * Checks this by seeing if the start date is not null (receiving has activated) and the stop
    * date is null (has not been stopped)
    * @param organ organ to check receiving status for
@@ -79,7 +82,7 @@ public class ReceiverDetails {
   public boolean isCurrentlyWaitingFor(Organs organ) {
     boolean result = false;
 
-    if (organs.containsKey(organ)) { //if the specified organ has a key in the map (has been registered before)
+    if (organs.containsKey(organ) && !organs.get(organ).empty()) { //if the specified organ has a key in the map (has been registered before)
       ReasonAndDateHolderForReceiverDetails holder = organs.get(organ).peek();
       if ((holder.getStartDate() != null) && (holder.getStopDate() == null)) {
         result = true; //If at least one of them is started but not stopped
