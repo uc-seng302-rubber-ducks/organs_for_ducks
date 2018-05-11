@@ -2,7 +2,6 @@ package seng302.Controller;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -18,7 +17,6 @@ import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 import seng302.Model.Clinician;
 import seng302.Model.User;
-import seng302.Service.Log;
 import seng302.View.CLI;
 
 /**
@@ -26,8 +24,7 @@ import seng302.View.CLI;
  */
 public class LoginController {
 
-  private final Log log = new Log(this.getClass());
-
+  private static final Logger logger = Logger.getLogger("ODMS");
   @FXML
     private Button changeLogin;
 
@@ -67,7 +64,7 @@ public class LoginController {
     * @param stage The applications stage.
     */
   public void init(AppController appController, Stage stage){
-    log.info("started loginController");
+    logger.info("starting loginController");
     warningLabel.setText("");
     this.appController = appController;
     users = appController.getUsers();
@@ -112,7 +109,6 @@ public class LoginController {
      * @param event An action event.
      */@FXML
     void login(ActionEvent event) {
-      log.info("attempting login");
         if(isUser) {
             warningLabel.setText("");
             String wantedDonor = userIDTextField.getText();

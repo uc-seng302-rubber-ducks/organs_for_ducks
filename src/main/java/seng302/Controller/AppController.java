@@ -1,7 +1,5 @@
 package seng302.Controller;
 
-import seng302.Model.*;
-
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.time.LocalDate;
@@ -18,19 +16,12 @@ import java.util.Set;
 import java.util.Stack;
 import seng302.Exception.UserAlreadyExistsException;
 import seng302.Exception.UserNotFoundException;
-import seng302.Model.Change;
-import seng302.Model.Clinician;
-import seng302.Model.JsonHandler;
-import seng302.Model.User;
-import seng302.Service.Log;
 
 
 /**
  * Class for the functionality of the main app
  */
 public class AppController {
-
-  private Log log = new Log(this.getClass());
   private ArrayList<User> users = new ArrayList<>();
   private ArrayList<TransplantDetails> transplantList = new ArrayList<>();
   private ArrayList<Clinician> clinicians = new ArrayList<>();
@@ -53,7 +44,6 @@ public class AppController {
       users = JsonHandler.loadUsers();
       System.out.println(users.size() + " donors were successfully loaded");
     } catch (FileNotFoundException e) {
-      log.warn("could not load donor file", e);
       System.out.println("Donor file was not found");
     }
 
