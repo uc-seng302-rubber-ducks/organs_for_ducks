@@ -51,13 +51,44 @@ public class AppController {
     try {
       users = JsonHandler.loadUsers();
       System.out.println(users.size() + " donors were successfully loaded");
+    } catch (FileNotFoundException e) {
+      System.out.println("Donor file was not found");
+    }
+
+    try {
       clinicians = JsonHandler.loadClinicians();
       System.out.println(clinicians.size() + " clinicians were successfully loaded");
     } catch (FileNotFoundException e) {
-      System.out.println("File was not found");
+      System.out.println("Clinician file was not found");
     }
+
+    try {
+        admins = JsonHandler.loadAdmins();
+        System.out.println(admins.size() + " administrators were successfully loaded");
+    } catch (FileNotFoundException e) {
+        System.out.println("Administrator file was not found");
+    }
+
     String[] empty = {""};
     historyOfCommands.add(empty);//putting an empty string into the string array to be displayed if history pointer is 0
+
+    boolean defaultAdminSeen = false;
+    for (Administrator a : admins) {
+        if (a.getUserName().equals("default")) {
+            defaultAdminSeen = true;
+            break;
+        }
+    }
+    if (!defaultAdminSeen) {
+        admins.add(new Administrator("default", null, null, null, "admin"));
+
+        try {
+            JsonHandler.saveAdmins(admins);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     boolean defaultSeen = false;
     for(Clinician c : clinicians){
       if(c.getStaffId().equals("0")){
@@ -275,6 +306,8 @@ public class AppController {
     }
 
   }
+
+
 
   public ArrayList<User> getUsers() {
     return users;
