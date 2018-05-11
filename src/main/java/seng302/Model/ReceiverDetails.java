@@ -1,9 +1,6 @@
 package seng302.Model;
 
 import com.google.gson.annotations.Expose;
-import com.sun.org.apache.xpath.internal.operations.Or;
-
-import java.util.HashSet;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.EnumMap;
@@ -64,6 +61,8 @@ public class ReceiverDetails {
    * @param organ
    */
   public void startWaitingForOrgan(Organs organ) {
+    Memento<User> memento = new Memento<>();
+    memento.setOldObject(attachedUser.clone());
     if (isCurrentlyWaitingFor(organ)) {
       return;
     }
@@ -76,6 +75,9 @@ public class ReceiverDetails {
       list.add(LocalDate.now());
       organs.put(Organs.values()[organ.ordinal()], list);
     }
+    memento.setNewObject(attachedUser.clone());
+    attachedUser.getUndoStack().push(memento);
+    attachedUser.getRedoStack().clear();
   }
 
   /**
@@ -84,11 +86,16 @@ public class ReceiverDetails {
    * @param organ organ to stop waiting for
    */
   public void stopWaitingForOrgan(Organs organ) {
+    Memento<User> memento = new Memento<>();
+    memento.setOldObject(attachedUser.clone());
     if (isCurrentlyWaitingFor(organ)) {
       ArrayList<LocalDate> dates = organs.get(organ);
       dates.add(LocalDate.now());
       organs.put(Organs.values()[organ.ordinal()], dates);
     }
+    memento.setNewObject(attachedUser.clone());
+    attachedUser.getUndoStack().push(memento);
+    attachedUser.getRedoStack().clear();
   }
 
   public User getAttachedUser() {

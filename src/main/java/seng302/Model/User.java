@@ -42,7 +42,7 @@ public class User extends Undoable<User> {
     @Expose
     private LocalDateTime timeCreated;
     @Expose
-    private Boolean isDeceased;
+    private Boolean isDeceased = false;
     @Expose
     private String firstName;
     @Expose
@@ -1083,9 +1083,10 @@ this.changes = FXCollections.observableArrayList();
       newUser.donorDetails.getOrgans().add(o);
     }
     newUser.receiverDetails = new ReceiverDetails(newUser);
-    newUser.receiverDetails.setOrgans(this.receiverDetails.getOrgans());
     for (Organs o : this.receiverDetails.getOrgans().keySet()) {
-      newUser.receiverDetails.getOrgans().put(o, this.receiverDetails.getOrgans().get(o));
+      ArrayList<LocalDate> dates = new ArrayList<>();
+      dates.addAll(this.receiverDetails.getOrgans().get(o));
+      newUser.receiverDetails.getOrgans().put(o, dates);
     }
 
     newUser.currentDiseases = new ArrayList<>(this.currentDiseases);
