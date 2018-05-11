@@ -198,7 +198,7 @@ public class LoginController {
             Administrator administrator = appController.getAdministrator(wantedAdmin);
             if (administrator == null) {
                 adminWarningLabel.setText("The administrator does not exist.");
-            } else if (!adminPassword.equals(administrator.getPassword())) {
+            } else if (!administrator.isPasswordCorrect(adminPassword)) {
                 adminWarningLabel.setText("Your password is incorrect. Please try again.");
                 return;
             } else {

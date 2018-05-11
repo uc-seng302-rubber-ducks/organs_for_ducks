@@ -145,6 +145,7 @@ public class AdministratorViewController {
         this.administrator = administrator;
         //displayDetails();
 
+
         if (administrator.getUserName().equals("default")) {
             deleteAdminButton.setDisable(true);
         }
