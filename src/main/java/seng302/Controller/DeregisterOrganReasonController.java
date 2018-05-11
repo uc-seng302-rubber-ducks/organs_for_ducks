@@ -2,17 +2,21 @@ package seng302.Controller;
 
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.stage.Stage;
+import seng302.Model.Disease;
 import seng302.Model.OrganDeregisterReason;
 import seng302.Model.Organs;
 import seng302.Model.User;
 
 import java.time.LocalDate;
+import java.util.List;
 
 /**
  * Controller class for  for clinicians to
@@ -45,6 +49,14 @@ public class DeregisterOrganReasonController {
     @FXML
     private Label invalidDateErrorMessage;
 
+    @FXML
+    private Label noDiseaseSelectedErrorMessage;
+
+    @FXML
+    private ComboBox<Disease> diseaseNameComboBox;
+
+    private List<Disease> diseases;
+
     AppController controller;
     Stage stage;
     private User currentUser;
@@ -69,11 +81,32 @@ public class DeregisterOrganReasonController {
         dODDatePicker.setValue(LocalDate.now());
         dODDatePicker.setDisable(true);
 
+        diseases = currentUser.getCurrentDiseases();
+        if(diseases.size() == 0){ //if there are no current diseases, the diseaseCuredRadioButton will be disabled
+            diseaseCuredRadioButton.setDisable(true);
+        }
+        diseaseNameComboBox.setItems(FXCollections.observableList(diseases));
+
+
+        //diseaseNameComboBox.set;
+
 //        if (user.getDeceased() == null || !user.getDeceased()){
 //            receiverDiedRadioButton.setDisable(true);
 //        }
         //stage.setMinWidth(620);
         //stage.setMaxWidth(620);
+
+        //if diseaseCuredRadioButton is selected, the disease name combo box will be enabled, otherwise it sets to disabled
+        diseaseCuredRadioButton.selectedProperty().addListener(new ChangeListener<Boolean>() {
+            @Override
+            public void changed(ObservableValue<? extends Boolean> obs, Boolean wasPreviouslySelected, Boolean isNowSelected) {
+                if (isNowSelected) {
+                    diseaseNameComboBox.setDisable(false);
+                } else {
+                    diseaseNameComboBox.setDisable(true);
+                }
+            }
+        });
 
         //if receiverDiedRadioButton is selected, the DOD date picker will be enabled, otherwise it sets to disabled
         receiverDiedRadioButton.selectedProperty().addListener(new ChangeListener<Boolean>() {
@@ -123,6 +156,17 @@ public class DeregisterOrganReasonController {
 
         } else if (diseaseCuredRadioButton.isSelected()){
             donorController.setOrganDeregisterationReason(OrganDeregisterReason.DISEASE_CURED);
+            Disease selectedDisease = diseaseNameComboBox.getSelectionModel().getSelectedItem();
+
+            if(selectedDisease == null){ //if non of the disease is selected
+                noDiseaseSelectedErrorMessage.setVisible(true);
+                isValid = false;
+
+            } else {
+                currentUser.getCurrentDiseases().remove(selectedDisease);
+                selectedDisease.setIsCured(true);
+                currentUser.getPastDiseases().add(selectedDisease);
+            }
 
         } else if(receiverDiedRadioButton.isSelected()){
             LocalDate dOD = dODDatePicker.getValue();

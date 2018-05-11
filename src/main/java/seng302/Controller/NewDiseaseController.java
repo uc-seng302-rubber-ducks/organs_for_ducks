@@ -37,9 +37,6 @@ public class NewDiseaseController {
     @FXML
     public RadioButton curedRadioButton;
 
-    @FXML
-    public ComboBox<String> diseaseNameComboBox;
-
     AppController controller;
     Stage stage;
     List<String> diseaseNameList = new ArrayList<>();
@@ -70,29 +67,6 @@ public class NewDiseaseController {
         curedRadioButton.setSelected(isCured);
         chronicRadioButton.setSelected(isChronic);
         
-        //showCurrentDate();
-        //stage.setMinWidth(620); //*Commented out by Aaron*
-        //stage.setMaxWidth(620);
-    }
-
-    public void init(User user, AppController controller, Stage stage, DonorController donorController) {
-        this.controller = controller;
-        this.stage = stage;
-        this.donorController = donorController;
-        currentUser = user;
-
-        diseaseNameInput.setVisible(false);
-        diseaseNameComboBox.setVisible(true);
-
-        List<Disease> dieases = user.getCurrentDiseases();
-
-        for (Disease disease : dieases){
-            diseaseNameList.add(disease.getName());
-        }
-        diseaseNameComboBox.setItems(FXCollections.observableList(diseaseNameList));
-
-
-
         //showCurrentDate();
         //stage.setMinWidth(620); //*Commented out by Aaron*
         //stage.setMaxWidth(620);
