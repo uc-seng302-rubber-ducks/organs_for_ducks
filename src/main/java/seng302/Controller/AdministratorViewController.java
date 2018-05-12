@@ -9,6 +9,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.MouseButton;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import seng302.Model.Administrator;
@@ -193,6 +194,23 @@ public class AdministratorViewController {
 
         }));
 
+        userTableView.setOnMouseClicked(event -> {
+            if(event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
+                launchDonor(userTableView.getSelectionModel().getSelectedItem());
+            }
+        });
+
+        clinicianTableView.setOnMouseClicked(event -> {
+            if(event.getClickCount() ==2 && event.getButton() == MouseButton.PRIMARY){
+                launchClinician(clinicianTableView.getSelectionModel().getSelectedItem());
+            }
+        });
+
+         adminTableView.setOnMouseClicked(event -> {
+            if(event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
+                launchAdmin(adminTableView.getSelectionModel().getSelectedItem());
+            }
+        });
 
 
     }
@@ -282,6 +300,61 @@ public class AdministratorViewController {
         newStage.show();
         NewUserController donorController = donorLoader.getController();
         donorController.init(AppController.getInstance(), stage, newStage);
+    }
+
+    /**
+     * @param user the selected user.
+     */
+    private void launchDonor(User user) {
+        FXMLLoader donorLoader = new FXMLLoader(getClass().getResource("/FXML/userView.fxml"));
+        Parent root = null;
+        try {
+            root = donorLoader.load();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Stage newStage = new Stage();
+        newStage.setScene(new Scene(root));
+        DonorController donorController = donorLoader.getController();
+        AppController.getInstance().setDonorController(donorController);
+        donorController.init(AppController.getInstance(), user, newStage, true);
+        newStage.show();
+    }
+
+    /**
+     * @param clinician the selected clinician.
+     */
+    private void launchClinician(Clinician clinician) {
+        FXMLLoader clinicianLoader = new FXMLLoader(getClass().getResource("/FXML/clinicianView.fxml"));
+        Parent root = null;
+        try {
+            root = clinicianLoader.load();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Stage newStage = new Stage();
+        newStage.setScene(new Scene(root));
+        ClinicianController clinicianController = clinicianLoader.getController();
+        clinicianController.init(newStage, AppController.getInstance(), clinician);
+        newStage.show();
+    }
+
+    /**
+     * @param administrator the selected administrator
+     */
+    private void launchAdmin(Administrator administrator) {
+        FXMLLoader adminLoader = new FXMLLoader(getClass().getResource("/FXML/adminView.fxml"));
+        Parent root = null;
+        try {
+            root = adminLoader.load();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Stage newStage = new Stage();
+        newStage.setScene(new Scene(root));
+        AdministratorViewController adminLoaderController = adminLoader.getController();
+        adminLoaderController.init(administrator, AppController.getInstance(), newStage);
+        newStage.show();
     }
 
     @FXML

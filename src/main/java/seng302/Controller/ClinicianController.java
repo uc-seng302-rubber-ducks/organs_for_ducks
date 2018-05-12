@@ -420,14 +420,11 @@ public class ClinicianController {
             transplantWaitListTableView.setItems(sTransplantList);
 
             //set on-click behaviour
-            transplantWaitListTableView.setOnMouseClicked(new EventHandler<MouseEvent>() {
-                @Override
-                public void handle(MouseEvent event) {
-                    if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
-                        TransplantDetails transplantDetails = transplantWaitListTableView.getSelectionModel().getSelectedItem();
-                        User wantedUser = appController.findUser(transplantDetails.getNhi());
-                        launchDonor(wantedUser);
-                    }
+            transplantWaitListTableView.setOnMouseClicked(event -> {
+                if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
+                    TransplantDetails transplantDetails = transplantWaitListTableView.getSelectionModel().getSelectedItem();
+                    User wantedUser = appController.findUser(transplantDetails.getNhi());
+                    launchDonor(wantedUser);
                 }
             });
 
