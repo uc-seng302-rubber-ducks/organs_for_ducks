@@ -1602,7 +1602,8 @@ public class DonorController {
 
             } else if (organDeregisterationReason == OrganDeregisterReason.DISEASE_CURED){
               //refresh diseases table
-              this.diseaseRefresh(this.getIsSortedByName(), this.getIsRevereSorted());
+                currentUser.getReceiverDetails().stopWaitingForOrgan(toDeRegister);
+                this.diseaseRefresh(this.getIsSortedByName(), this.getIsRevereSorted());
 
             } else if(organDeregisterationReason == OrganDeregisterReason.RECEIVER_DIED){
               List<Organs> currentlyReceiving = new ArrayList<>(currentlyReceivingListView.getItems());

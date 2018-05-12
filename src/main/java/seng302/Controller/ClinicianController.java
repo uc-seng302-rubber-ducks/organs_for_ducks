@@ -379,7 +379,7 @@ public class ClinicianController {
   //set up lists
   //table contents are SortedList of a FilteredList of an ObservableList of an ArrayList
   appController.getTransplantList().clear();
-  for (User user : users) {
+    for (User user : users) {
     if (user.isReceiver()&& !user.getDeceased()) {
       organs = user.getReceiverDetails().getOrgans().keySet();
       for (Organs organ : organs) {
@@ -416,6 +416,8 @@ public class ClinicianController {
     });
 
   } else {
+      transplantWaitListTableView.setOnMouseClicked(null);
+      transplantWaitListTableView.setItems(null);
     transplantWaitListTableView.setPlaceholder(new Label("No Receivers currently registered"));
   }
 }
