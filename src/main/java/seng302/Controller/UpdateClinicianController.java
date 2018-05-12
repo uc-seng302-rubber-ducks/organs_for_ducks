@@ -503,9 +503,9 @@ public class UpdateClinicianController {
                 incorrectPasswordLabel.setVisible(true);
             }
         } else {
-            /*if ((passwordField.getText().isEmpty() || (confirmPasswordField.getText().isEmpty()))) {
+            if ((passwordField.getText().isEmpty() || (confirmPasswordField.getText().isEmpty()))) {
                 //this stops the rest of the if statement executing if the passwords are blank avoiding NPE
-            } else*/
+            } else
                 if (!(confirmPasswordField.getText()).equals(passwordField.getText()) || currentClinician.isPasswordCorrect(passwordField.getText())){
                 incorrectPasswordLabel.setVisible(true);
                 valid = false;
