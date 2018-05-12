@@ -1742,4 +1742,8 @@ public class DonorController {
         application.update(currentUser);stage.close();
     }
 
+    public void diableLogout(){
+        logOutButton.setVisible(false);
+        backButton.setVisible(true);
+    }
 }

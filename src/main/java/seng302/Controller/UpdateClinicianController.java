@@ -382,6 +382,7 @@ public class UpdateClinicianController {
                     ClinicianController clinicianController = loader.getController();
                     Stage clinicianStage = new Stage();
                     clinicianController.init(clinicianStage, AppController.getInstance(), clinician);
+                    clinicianController.disableLogout();
                     clinicianStage.setScene(new Scene(root));
                     clinicianStage.show();
                     ownStage.close();

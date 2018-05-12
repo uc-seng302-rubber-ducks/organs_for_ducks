@@ -87,11 +87,7 @@
                           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="617.0">
                               <children>
                                   <Pagination fx:id="searchTablePagination" layoutX="271.0" layoutY="5.0" maxPageIndicatorCount="1" prefHeight="368.0" prefWidth="593.0" AnchorPane.bottomAnchor="2.0" AnchorPane.leftAnchor="4.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="2.0" />
-                                  <TableView fx:id="searchTableView" layoutY="32.0" prefHeight="240.0" prefWidth="592.0" AnchorPane.bottomAnchor="48.0" AnchorPane.leftAnchor="4.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="32.0">
-                                      <columns>
-                                          <TableColumn prefWidth="75.0" text="C1" />
-                                          <TableColumn prefWidth="75.0" text="C2" />
-                                      </columns>
+                                  <TableView fx:id="adminTableView" layoutY="32.0" prefHeight="240.0" prefWidth="592.0" AnchorPane.bottomAnchor="48.0" AnchorPane.leftAnchor="4.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="32.0">
                                       <tooltip>
                                           <Tooltip fx:id="searchToolTip" text="Empty Tooltip" />
                                       </tooltip>
@@ -102,6 +98,16 @@
                               <CheckBox fx:id="adminUserCheckbox" layoutX="356.0" layoutY="8.0" mnemonicParsing="false" text="User" />
                               <CheckBox fx:id="adminAdminCheckbox" layoutX="520.0" layoutY="8.0" mnemonicParsing="false" text="Admin" />
                               <CheckBox fx:id="adminClinicianChecknbox" layoutX="424.0" layoutY="8.0" mnemonicParsing="false" text="Clinician" />
+                              <TableView fx:id="clinicianTableView" prefHeight="240.0" prefWidth="592.0" AnchorPane.bottomAnchor="48.0" AnchorPane.leftAnchor="4.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="32.0">
+                                 <tooltip>
+                                    <Tooltip fx:id="searchToolTip1" text="Empty Tooltip" />
+                                 </tooltip>
+                              </TableView>
+                              <TableView fx:id="userTableView" prefHeight="240.0" prefWidth="592.0" AnchorPane.bottomAnchor="48.0" AnchorPane.leftAnchor="4.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="32.0">
+                                 <tooltip>
+                                    <Tooltip fx:id="searchToolTip2" text="Empty Tooltip" />
+                                 </tooltip>
+                              </TableView>
                               </children>
                           </AnchorPane>
                       </items>

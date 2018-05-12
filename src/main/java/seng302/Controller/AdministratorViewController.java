@@ -11,9 +11,8 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import seng302.Controller.CliCommands.Update;
 import seng302.Model.Administrator;
-import seng302.Model.Undoable;
+import seng302.Model.Clinician;
 import seng302.Model.User;
 
 import java.io.IOException;
@@ -45,7 +44,13 @@ public class AdministratorViewController {
     private Label adminLastNameLabel;
 
     @FXML
-    private TableView<?> searchTableView;
+    private TableView<Administrator> adminTableView;
+
+    @FXML
+    private TableView<Clinician> clinicianTableView;
+
+    @FXML
+    private TableView<User> userTableView;
 
     @FXML
     private Pagination searchTablePagination;
@@ -138,7 +143,7 @@ public class AdministratorViewController {
     private AppController appController;
     private Administrator administrator;
 
-    public void init(Administrator administrator, AppController appController, Stage stage){
+    public void init(Administrator administrator, AppController appController, Stage stage) {
         this.stage = stage;
         this.appController = appController;
         this.administrator = administrator;
@@ -150,34 +155,63 @@ public class AdministratorViewController {
         }
 
         addListeners();
+        displayClinicanTable();
+        displayAdminTable();
+        displayUserTable();
+        clinicianTableView.setVisible(false);
+        adminTableView.setVisible(false);
     }
 
     /**
      * Utility method to add listeners to required fields
      */
     private void addListeners() {
-        adminAdminCheckbox.selectedProperty().addListener((observable) ->{
-                adminClinicianChecknbox.setSelected(false);
-                adminUserCheckbox.setSelected(false);
-                displayAdminTable();
-                }
-        );
+        adminAdminCheckbox.selectedProperty().addListener((observable -> {
+            adminClinicianChecknbox.setSelected(false);
+            adminUserCheckbox.setSelected(false);
+            clinicianTableView.setVisible(false);
+            adminTableView.setVisible(true);
+            userTableView.setVisible(false);
+
+        }));
 
         adminUserCheckbox.selectedProperty().addListener((observable -> {
-            adminUserCheckbox.setSelected(false);
+            adminClinicianChecknbox.setSelected(false);
             adminAdminCheckbox.setSelected(false);
-            displayUserTable();
+            clinicianTableView.setVisible(false);
+            adminTableView.setVisible(false);
+            userTableView.setVisible(true);
+
         }));
 
         adminClinicianChecknbox.selectedProperty().addListener((observable -> {
             adminAdminCheckbox.setSelected(false);
             adminUserCheckbox.setSelected(false);
-            displayClinicanTable();
+            clinicianTableView.setVisible(true);
+            adminTableView.setVisible(false);
+            userTableView.setVisible(false);
+
         }));
+
+
 
     }
 
     private void displayClinicanTable() {
+        ObservableList<Clinician> clinicians = FXCollections.observableArrayList(appController.getClinicians());
+
+        TableColumn<Clinician, String> firstNameColumn = new TableColumn<>("First Name");
+        firstNameColumn.setCellValueFactory(new PropertyValueFactory<>("firstName"));
+
+        TableColumn<Clinician, String> lastNameColumn = new TableColumn<>("Last Name");
+        lastNameColumn.setCellValueFactory(new PropertyValueFactory<>("lastName"));
+
+        TableColumn<Clinician, String> nhiColumn = new TableColumn<>("Staff Id");
+        nhiColumn.setCellValueFactory(new PropertyValueFactory<>("staffId"));
+
+        clinicianTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        clinicianTableView.getColumns().addAll(nhiColumn, firstNameColumn, lastNameColumn);
+        clinicianTableView.setItems(clinicians);
     }
 
     private void displayUserTable() {
@@ -192,12 +226,27 @@ public class AdministratorViewController {
         TableColumn<User, String> nhiColumn = new TableColumn<>("NHI");
         nhiColumn.setCellValueFactory(new PropertyValueFactory<>("nhi"));
 
-        /*searchTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-        searchTableView.getColumns().addAll(nhiColumn, firstNameColumn, lastNameColumn);
-        searchTableView.setItems(users);*/
+        userTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        userTableView.getColumns().addAll(nhiColumn, firstNameColumn, lastNameColumn);
+        userTableView.setItems(users);
     }
 
     private void displayAdminTable() {
+        ObservableList<Administrator> admins = FXCollections.observableArrayList(appController.getAdmins());
+
+        TableColumn<Administrator, String> firstNameColumn = new TableColumn<>("First Name");
+        firstNameColumn.setCellValueFactory(new PropertyValueFactory<>("firstName"));
+
+        TableColumn<Administrator, String> lastNameColumn = new TableColumn<>("Last Name");
+        lastNameColumn.setCellValueFactory(new PropertyValueFactory<>("lastName"));
+
+        TableColumn<Administrator, String> nhiColumn = new TableColumn<>("User Name");
+        nhiColumn.setCellValueFactory(new PropertyValueFactory<>("username"));
+
+        adminTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        adminTableView.getColumns().addAll(nhiColumn, firstNameColumn, lastNameColumn);
+        adminTableView.setItems(admins);
+
     }
 
 
@@ -224,14 +273,15 @@ public class AdministratorViewController {
         try {
             root = donorLoader.load();
         } catch (IOException e) {
-            e.printStackTrace();}
+            e.printStackTrace();
+        }
 
         Stage newStage = new Stage();
         newStage.setScene(new Scene(root));
         newStage.setTitle("Create New User Profile");
         newStage.show();
-        NewUserController donorController =  donorLoader.getController();
-        donorController.init(AppController.getInstance(),  stage, newStage);
+        NewUserController donorController = donorLoader.getController();
+        donorController.init(AppController.getInstance(), stage, newStage);
     }
 
     @FXML
@@ -254,11 +304,11 @@ public class AdministratorViewController {
 
     @FXML
     void addAdmin(ActionEvent event) {
-        FXMLLoader adminLoader =  new FXMLLoader(getClass().getResource("/FXML/updateAdmin.fxml"));
+        FXMLLoader adminLoader = new FXMLLoader(getClass().getResource("/FXML/updateAdmin.fxml"));
         Parent root = null;
-        try{
+        try {
             root = adminLoader.load();
-        } catch (IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
         }
         Stage newStage = new Stage();
@@ -288,7 +338,7 @@ public class AdministratorViewController {
     /**
      * load the labels on the admin view with the current admins details
      */
-    void displayDetails(){
+    void displayDetails() {
         if (!administrator.getUserName().isEmpty()) {
             adminUsernameLable.setText(administrator.getUserName());
             if (!administrator.getUserName().equals("default")) {
@@ -303,23 +353,23 @@ public class AdministratorViewController {
         }
     }
 
-  /**
-   * go to a form to update the admin
-   */
-  @FXML
-    void updateAdmin(){
-      FXMLLoader adminLoader = new FXMLLoader(getClass().getResource("/FXML/updateAdmin.fxml"));
-      Parent root = null;
-      try {
-        root = adminLoader.load();
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
-      Stage newStage = new Stage();
-      newStage.setScene(new Scene(root));
-      newStage.show();
-      UpdateAdminController updateAdminController = adminLoader.getController();
-      updateAdminController.init(administrator,appController,newStage);
+    /**
+     * go to a form to update the admin
+     */
+    @FXML
+    void updateAdmin() {
+        FXMLLoader adminLoader = new FXMLLoader(getClass().getResource("/FXML/updateAdmin.fxml"));
+        Parent root = null;
+        try {
+            root = adminLoader.load();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Stage newStage = new Stage();
+        newStage.setScene(new Scene(root));
+        newStage.show();
+        UpdateAdminController updateAdminController = adminLoader.getController();
+        updateAdminController.init(administrator, appController, newStage);
 
     }
 
