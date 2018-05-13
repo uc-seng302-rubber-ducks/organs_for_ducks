@@ -65,19 +65,7 @@
                </children>
             </GridPane>
             <Label text="Date of Death: " GridPane.rowIndex="6" />
-            <GridPane GridPane.columnIndex="1" GridPane.rowIndex="4">
-              <columnConstraints>
-                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-              </columnConstraints>
-              <rowConstraints>
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-              </rowConstraints>
-               <children>
-                  <ComboBox fx:id="diseaseNameComboBox" disable="true" prefWidth="150.0" promptText="Select Disease" />
-                  <Label fx:id="noDiseaseSelectedErrorMessage" text="No Disease Selected" textFill="#f20303" visible="false" GridPane.columnIndex="1" />
-               </children>
-            </GridPane>
+            <ComboBox fx:id="diseaseNameComboBox" disable="true" prefWidth="150.0" promptText="Select Disease" GridPane.columnIndex="1" GridPane.rowIndex="4" />
          </children>
       </GridPane>
    </children>
