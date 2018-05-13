@@ -1,22 +1,21 @@
 package seng302.Controller;
 
 import javafx.event.ActionEvent;
+import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.Pagination;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
-import javafx.scene.control.Tooltip;
+import javafx.scene.control.*;
+import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 import seng302.Model.Administrator;
+import seng302.View.CLI;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.PrintStream;
+import java.util.ArrayList;
 
 public class AdministratorViewController {
 
@@ -128,14 +127,61 @@ public class AdministratorViewController {
     @FXML
     private CheckBox liverCheckBox;
 
+    @FXML
+    private TextArea adminCliTextArea;
+
+    @FXML
+    private TextField cliInputTextField;
+
     private Stage stage;
     private AppController appController;
     private Administrator administrator;
+    private ArrayList<String> pastCommands = new ArrayList<>();
+    private int pastCommandIndex = -1;
 
     public void init(Stage stage, AppController appController, Administrator administrator){
         this.stage = stage;
         this.appController = appController;
         this.administrator = administrator;
+
+        adminCliTextArea.setEditable(false);
+        cliInputTextField.setOnKeyPressed(e -> {
+            if (e.getCode() == KeyCode.ENTER) {
+                sendInputToCLI();
+                cliInputTextField.setText("");
+            } else if (e.getCode() == KeyCode.UP) {
+                if (pastCommandIndex >= 0) {
+                    pastCommandIndex = pastCommandIndex == 0 ? 0 : pastCommandIndex-1; // makes sure pastCommandIndex is never < 0
+                    cliInputTextField.setText(pastCommands.get(pastCommandIndex));
+                }
+            } else if (e.getCode() == KeyCode.DOWN) {
+                if (pastCommandIndex < pastCommands.size()-1) {
+                    pastCommandIndex++;
+                    cliInputTextField.setText(pastCommands.get(pastCommandIndex));
+                } else if (pastCommandIndex == pastCommands.size()-1) {
+                    pastCommandIndex++;
+                    cliInputTextField.setText("");
+                }
+            }
+        });
+    }
+
+    /**
+     * Sends the input to CLI and redirects the output stream to a new ByteArrayOutputStream
+     * and sends the results to the textArea
+     */
+    private void sendInputToCLI() {
+        PrintStream stdOut = System.out;
+        PrintStream stdErr = System.err;
+        ByteArrayOutputStream areaOut = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(areaOut));
+        System.setErr(new PrintStream(areaOut));
+        pastCommands.add(cliInputTextField.getText());
+        pastCommandIndex = pastCommands.size();
+        CLI.parseInput(cliInputTextField.getText(), appController);
+        adminCliTextArea.setText(adminCliTextArea.getText() + "\n" + areaOut.toString());
+        System.setOut(stdOut);
+        System.setErr(stdErr);
     }
 
     @FXML
