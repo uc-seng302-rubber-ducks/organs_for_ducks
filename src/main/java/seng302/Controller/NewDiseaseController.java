@@ -1,11 +1,9 @@
 package seng302.Controller;
 
+import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.Label;
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
 import seng302.App;
 import seng302.Model.Disease;
@@ -13,6 +11,8 @@ import seng302.Model.User;
 import seng302.Service.AttributeValidation;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Controller class for creating new disease.
@@ -39,6 +39,7 @@ public class NewDiseaseController {
 
     AppController controller;
     Stage stage;
+    List<String> diseaseNameList = new ArrayList<>();
     DonorController donorController;
     private User currentUser;
     private Disease editableDisease;

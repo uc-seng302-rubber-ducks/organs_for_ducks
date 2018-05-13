@@ -318,7 +318,7 @@ public class DonorController {
   private List<String> possibleGenders = Arrays.asList("M", "F", "U");
 
   private List<String> possibleBloodTypes = Arrays
-      .asList("A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-", "U");
+          .asList("A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-", "U");
 
   private User currentUser;
   private Stage stage;
@@ -335,9 +335,9 @@ public class DonorController {
    * Gives the donor view the application controller and hides all label and buttons that are not
    * needed on opening
    *
-   * @param controller the application controller
-   * @param user the current user
-   * @param stage the application stage
+   * @param controller    the application controller
+   * @param user          the current user
+   * @param stage         the application stage
    * @param fromClinician boolean value indication if from clinician view
    */
   public void init(AppController controller, User user, Stage stage, boolean fromClinician) {
@@ -403,17 +403,17 @@ public class DonorController {
 
     //lambdas for drug interactions
     currentMedicationListView.getSelectionModel().selectedItemProperty()
-        .addListener((observable, oldValue, newValue) -> {
-          ObservableList<String> selected = currentMedicationListView.getSelectionModel()
-              .getSelectedItems();
-          displayDetails(selected, drugDetailsLabel, drugDetailsTextArea);
-        });
+            .addListener((observable, oldValue, newValue) -> {
+              ObservableList<String> selected = currentMedicationListView.getSelectionModel()
+                      .getSelectedItems();
+              displayDetails(selected, drugDetailsLabel, drugDetailsTextArea);
+            });
     previousMedicationListView.getSelectionModel().selectedItemProperty()
-        .addListener(((observable, oldValue, newValue) -> {
-          ObservableList<String> selected = previousMedicationListView.getSelectionModel()
-              .getSelectedItems();
-          displayDetails(selected, drugDetailsLabel, drugDetailsTextArea);
-        }));
+            .addListener(((observable, oldValue, newValue) -> {
+              ObservableList<String> selected = previousMedicationListView.getSelectionModel()
+                      .getSelectedItems();
+              displayDetails(selected, drugDetailsLabel, drugDetailsTextArea);
+            }));
     currentMedicationListView.setOnMouseClicked(event -> {
       if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
         String med = currentMedicationListView.getSelectionModel().getSelectedItem();
@@ -428,9 +428,9 @@ public class DonorController {
     });
 
     medicationTextField.focusedProperty().addListener(
-        (observable, oldValue, newValue) -> new Thread(() -> getDrugSuggestions()).start());
+            (observable, oldValue, newValue) -> new Thread(() -> getDrugSuggestions()).start());
     medicationTextField.textProperty()
-        .addListener((observable) -> new Thread(() -> getDrugSuggestions()).start());
+            .addListener((observable) -> new Thread(() -> getDrugSuggestions()).start());
     procedureWarningLabel.setText("");
     procedureDateSelector.setValue(LocalDate.now());
     previousProcedures = FXCollections.observableArrayList();
@@ -446,13 +446,13 @@ public class DonorController {
     TableColumn previousProcedureColumn = new TableColumn("Procedure");
     TableColumn previousDateColumn = new TableColumn("Date");
     pendingProcedureColumn
-        .setCellValueFactory(new PropertyValueFactory<MedicalProcedure, String>("summary"));
+            .setCellValueFactory(new PropertyValueFactory<MedicalProcedure, String>("summary"));
     previousProcedureColumn
-        .setCellValueFactory(new PropertyValueFactory<MedicalProcedure, String>("summary"));
+            .setCellValueFactory(new PropertyValueFactory<MedicalProcedure, String>("summary"));
     pendingDateColumn
-        .setCellValueFactory(new PropertyValueFactory<Change, String>("procedureDate"));
+            .setCellValueFactory(new PropertyValueFactory<Change, String>("procedureDate"));
     previousDateColumn
-        .setCellValueFactory(new PropertyValueFactory<Change, String>("procedureDate"));
+            .setCellValueFactory(new PropertyValueFactory<Change, String>("procedureDate"));
     previousProcedureTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
     pendingProcedureTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
     previousProcedureTableView.getColumns().addAll(previousProcedureColumn, previousDateColumn);
@@ -474,7 +474,7 @@ public class DonorController {
     });
     if (user.getNhi() != null) {
       showUser(
-          currentUser); // Assumes a donor with no name is a new sign up and does not pull values from a template
+              currentUser); // Assumes a donor with no name is a new sign up and does not pull values from a template
       List<Change> changes = currentUser.getChanges();
       if (changes != null) {
         changelog = FXCollections.observableList(changes);
@@ -486,10 +486,10 @@ public class DonorController {
     }
     showDonorHistory();
     changelog.addListener((ListChangeListener.Change<? extends Change> change) -> historyTableView
-        .setItems(changelog));
+            .setItems(changelog));
     medicationTextField.setOnMouseClicked(event -> new Thread(this::getDrugSuggestions));
     medicationTextField.textProperty()
-        .addListener((observable) -> new Thread(this::getDrugSuggestions));
+            .addListener((observable) -> new Thread(this::getDrugSuggestions));
 
     showDonorDiseases(currentUser, true);
     modifyOrgansProcedureButton.setVisible(false);
@@ -498,9 +498,9 @@ public class DonorController {
     pastDiseaseTableView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
 
     currentDiseaseTableView.getSelectionModel().selectedItemProperty()
-        .addListener(ListChangeListener -> pastDiseaseTableView.getSelectionModel().select(null));
+            .addListener(ListChangeListener -> pastDiseaseTableView.getSelectionModel().select(null));
     pastDiseaseTableView.getSelectionModel().selectedItemProperty().addListener(
-        ListChangeListener -> currentDiseaseTableView.getSelectionModel().select(null));
+            ListChangeListener -> currentDiseaseTableView.getSelectionModel().select(null));
 
     //init receiver organs combo box
 
@@ -563,6 +563,21 @@ public class DonorController {
     }
   }
 
+    stage.onCloseRequestProperty().setValue(event -> {
+    if (fromClinician) {
+      AppController.getInstance().getClinicianController().refreshTables();
+    }
+  });
+
+  //if user already died, user cannot receive organs
+    if(currentUser.getDeceased())
+
+  {//TODO add listener so that if user is updated to not be diseased, these buttons will activate
+    registerButton.setDisable(true);
+    reRegisterButton.setDisable(true);
+  }
+
+}
   /**
    * Popoulates the organ lists of the user
    *
@@ -1518,18 +1533,17 @@ public class DonorController {
   /*Receiver*/
 
   /**
-   * register an organ for receiver
+   * register an organ* for receiver
    */
   @FXML
   public void registerOrgan() {
     if (organsComboBox.getSelectionModel().getSelectedItem() != null) {
-
-      Organs toRegister = organsComboBox.getSelectionModel().getSelectedItem();
+      Organs toRegister = organsComboBox.getSelectionModel().getSelectedItem();AppController.getInstance().getClinicianController().refreshTables();
       if (!currentlyReceivingListView.getItems().contains(toRegister)) {
         currentUser.getReceiverDetails().startWaitingForOrgan(toRegister);
         currentlyRecieving.add(toRegister);
         organsComboBox.getItems().remove(toRegister);
-        organsComboBox.setValue(null); // reset the combobox
+        organsComboBox.setValue(null);// reset the combobox
         application.update(currentUser);
         if (currentUser.getDonorDetails().getOrgans().contains(toRegister)) {
           currentUser.getCommonOrgans().add(toRegister);
@@ -1551,21 +1565,21 @@ public class DonorController {
     }
   }
 
-  /**
-   * re-register an organ for receiver
-   */
-  @FXML
-  public void reRegisterOrgan() {
-    Organs toReRegister = notReceivingListView.getSelectionModel().getSelectedItem();
-    if (toReRegister != null) {
-      currentlyReceivingListView.getItems().add(toReRegister);
-      currentUser.getReceiverDetails().startWaitingForOrgan(toReRegister);
-      notReceivingListView.getItems().remove(toReRegister);
-      application.getClinicianControllerInstance().populateWaitListTable();
-
-      if (currentUser.getReceiverDetails().isDonatingThisOrgan(toReRegister)) {
-        currentUser.getCommonOrgans().add(toReRegister);
-      }
+    /**
+     * re-register an organ
+     * for receiver
+     */
+    @FXML
+    public void reRegisterOrgan () {
+        Organs toReRegister = notReceivingListView.getSelectionModel().getSelectedItem();
+        if (toReRegister != null) {
+            currentlyReceivingListView.getItems().add(toReRegister);
+            currentUser.getReceiverDetails().startWaitingForOrgan(toReRegister);
+            notReceivingListView.getItems().remove(toReRegister);
+            AppController.getInstance().getClinicianController().refreshTables();
+            if (currentUser.getReceiverDetails().isDonatingThisOrgan(toReRegister)) {
+                currentUser.getCommonOrgans().add(toReRegister);
+            }
 
       //if notReceiving list view is empty, disable mouse click to prevent null pointer exception
       if (notReceivingListView.getItems().isEmpty()) {
@@ -1611,19 +1625,45 @@ public class DonorController {
     }
   }
 
-  /**
-   * de-register an organ for receiver
-   *
-   * @param toDeRegister the organ to be removed from the
-   */
-  public void deRegisterOrgan(Organs toDeRegister) {
-    if (toDeRegister != null) {
-      notReceivingListView.getItems().add(toDeRegister);
-      currentUser.getReceiverDetails().stopWaitingForOrgan(toDeRegister);
-      currentlyReceivingListView.getItems().remove(toDeRegister);
-      if (currentUser.getCommonOrgans().contains(toDeRegister)) {
-        currentUser.getCommonOrgans().remove(toDeRegister);
-      }
+    /**
+     * de-register an organ
+     * for receiver
+     * @param toDeRegister the organ to be removed from the
+     */
+    public void deRegisterOrgan (Organs toDeRegister) {
+        if (toDeRegister != null) {
+
+            if(organDeregisterationReason == OrganDeregisterReason.TRANSPLANT_RECEIVED){
+                currentUser.getReceiverDetails().stopWaitingForOrgan(toDeRegister);
+
+            } else if(organDeregisterationReason == OrganDeregisterReason.REGISTRATION_ERROR){
+              currentUser.getReceiverDetails().stopWaitingForOrgan(toDeRegister);
+              currentUser.getChanges().add(new Change("Initial registering of the organ " + toDeRegister.organName + " was an error for receiver " + currentUser.getFullName()));
+
+            } else if (organDeregisterationReason == OrganDeregisterReason.DISEASE_CURED){
+              //refresh diseases table
+                currentUser.getReceiverDetails().stopWaitingForOrgan(toDeRegister);
+                this.diseaseRefresh(this.getIsSortedByName(), this.getIsRevereSorted());
+
+            } else if(organDeregisterationReason == OrganDeregisterReason.RECEIVER_DIED){
+              List<Organs> currentlyReceiving = new ArrayList<>(currentlyReceivingListView.getItems());
+              for(Organs organ : currentlyReceiving){
+                notReceivingListView.getItems().add(organ);
+                currentlyReceivingListView.getItems().remove(organ);
+              }
+              currentUser.getReceiverDetails().stopWaitingForAllOrgans();
+              registerButton.setDisable(true);
+              reRegisterButton.setDisable(true);
+            }
+
+            if(organDeregisterationReason != OrganDeregisterReason.RECEIVER_DIED) {
+              notReceivingListView.getItems().add(toDeRegister);
+              currentlyReceivingListView.getItems().remove(toDeRegister);
+            }
+
+            if (currentUser.getCommonOrgans().contains(toDeRegister)) {
+                currentUser.getCommonOrgans().remove(toDeRegister);
+            }
 
       //if currentlyReceivingListView is empty, disable mouse click to prevent null pointer exception
       if (currentlyReceivingListView.getItems().isEmpty()) {
@@ -1637,10 +1677,12 @@ public class DonorController {
           launchReceiverOrganDateView(currentlyReceivingOrgan);
         }
       });
-      updateUndoRedoButtons();
-      currentlyDonating.refresh();
-      currentlyReceivingListView.refresh();
-    }
+          updateUndoRedoButtons();
+            application.update(currentUser);
+          currentlyDonating.refresh();
+          currentlyReceivingListView.refresh();
+          AppController.getInstance().getClinicianController().refreshTables();
+        }
   }
 
   /**

@@ -202,7 +202,6 @@ public class ClinicianController {
      * @param clinician The current clinician.
      */
   public void init(Stage stage, AppController appController, Clinician clinician) {
-    appController.setClinicianControllerInstance(this);
     this.stage = stage;
     this.appController = appController;
     this.clinician = clinician.clone();
@@ -380,8 +379,8 @@ public class ClinicianController {
   //set up lists
   //table contents are SortedList of a FilteredList of an ObservableList of an ArrayList
   appController.getTransplantList().clear();
-  for (User user : users) {
-    if (user.isReceiver() && (user.getDeceased() != null || !user.getDeceased())) {
+    for (User user : users) {
+    if (user.isReceiver()&& (user.getDeceased() != null || !user.getDeceased())) {
       organs = user.getReceiverDetails().getOrgans().keySet();
       for (Organs organ : organs) {
         if (isReceiverNeedingFilteredOrgan(user.getNhi(), organs).contains(organ)) {
@@ -417,6 +416,8 @@ public class ClinicianController {
     });
 
   } else {
+      transplantWaitListTableView.setOnMouseClicked(null);
+      transplantWaitListTableView.setItems(null);
     transplantWaitListTableView.setPlaceholder(new Label("No Receivers currently registered"));
   }
 }
@@ -749,7 +750,7 @@ public class ClinicianController {
   }
 
   public void refreshTables() {
-    transplantWaitListTableView.refresh();
+    populateWaitListTable();
     searchTableView.refresh();
   }
 

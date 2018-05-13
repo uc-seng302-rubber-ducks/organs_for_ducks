@@ -1,11 +1,11 @@
 package seng302.Model;
 
 import com.google.gson.annotations.Expose;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
-
 import javafx.collections.FXCollections;
 
 /**
@@ -25,10 +25,10 @@ public class User extends Undoable<User> {
     private String gender;
     @Expose
     private double height;
-  private transient String heightText;
-  @Expose
-  private double weight;
-  private transient String weightText;
+    private transient String heightText;
+    @Expose
+    private double weight;
+    private transient String weightText;
     @Expose
     private String bloodType;
     @Expose
@@ -38,7 +38,7 @@ public class User extends Undoable<User> {
     @Expose
     private LocalDateTime timeCreated;
     @Expose
-    private Boolean isDeceased = false;
+    private boolean isDeceased = false;
     @Expose
     private String firstName;
     @Expose
@@ -64,39 +64,39 @@ public class User extends Undoable<User> {
     @Expose
     private EmergencyContact contact;
 
-  @Expose
-  private LocalDateTime lastModified;
-  @Expose
-  private ArrayList<String> miscAttributes;
-  @Expose
-  private HashMap<String, String> updateHistory;
-  @Expose
-  private ArrayList<String> previousMedication;
-  @Expose
-  private ArrayList<String> currentMedication;
-  @Expose
-  private HashMap<String, ArrayList<LocalDateTime>> previousMedicationTimes;
-  @Expose
-  private HashMap<String, ArrayList<LocalDateTime>> currentMedicationTimes;
+    @Expose
+    private LocalDateTime lastModified;
+    @Expose
+    private ArrayList<String> miscAttributes;
+    @Expose
+    private HashMap<String, String> updateHistory;
+    @Expose
+    private ArrayList<String> previousMedication;
+    @Expose
+    private ArrayList<String> currentMedication;
+    @Expose
+    private HashMap<String, ArrayList<LocalDateTime>> previousMedicationTimes;
+    @Expose
+    private HashMap<String, ArrayList<LocalDateTime>> currentMedicationTimes;
 
-  private transient List<Change> changes;//
-  @Expose
-  private  ArrayList<MedicalProcedure> medicalProcedures;
+    private transient List<Change> changes;//
+    @Expose
+    private ArrayList<MedicalProcedure> medicalProcedures;
 
-  //flags and extra details for if the person is a donor or a receiver
-  @Expose
-  private DonorDetails donorDetails;
-  @Expose
-  private ReceiverDetails receiverDetails;
+    //flags and extra details for if the person is a donor or a receiver
+    @Expose
+    private DonorDetails donorDetails;
+    @Expose
+    private ReceiverDetails receiverDetails;
 
-  @Expose
-  private Collection<Organs> commonOrgans;
+    @Expose
+    private Collection<Organs> commonOrgans;
 
-  @Expose
-  private ArrayList<Disease> pastDiseases;
+    @Expose
+    private ArrayList<Disease> pastDiseases;
 
-  @Expose
-  private ArrayList<Disease> currentDiseases;
+    @Expose
+    private ArrayList<Disease> currentDiseases;
 
 //  public User(java.time.LocalDate dateOfBirth, java.time.LocalDate dateOfDeath, String gender, double height, double weight,
 //              String bloodType,
@@ -106,35 +106,36 @@ public class User extends Undoable<User> {
 
     // updated constructor that works with the creation page
 
-  /**
-   * Constructor for a User
-   * @param nhi National Health Index for user
-   * @param dateOfBirth users date of birth
-   * @param dateOfDeath users date of death
-   * @param birthGender users birth gender
-   * @param genderIdentity users gender identity
-   * @param height users height
-   * @param weight users weight
-   * @param bloodType users blood type
-   * @param alcoholConsumption users alcohol consumption
-   * @param smoker if user is a smoker
-   * @param currentAddress users current address
-   * @param region users region
-   * @param homePhone users home phone number
-   * @param cellPhone users cell phone number
-   * @param email users email
-   * @param contact users emergency contact
-   * @param name users name
-   * @param firstName users first name
-   * @param preferredFirstName users preferred name
-   * @param middleName users middle name
-   * @param lastName users last name
-   */
+    /**
+     * Constructor for a User
+     *
+     * @param nhi                National Health Index for user
+     * @param dateOfBirth        users date of birth
+     * @param dateOfDeath        users date of death
+     * @param birthGender        users birth gender
+     * @param genderIdentity     users gender identity
+     * @param height             users height
+     * @param weight             users weight
+     * @param bloodType          users blood type
+     * @param alcoholConsumption users alcohol consumption
+     * @param smoker             if user is a smoker
+     * @param currentAddress     users current address
+     * @param region             users region
+     * @param homePhone          users home phone number
+     * @param cellPhone          users cell phone number
+     * @param email              users email
+     * @param contact            users emergency contact
+     * @param name               users name
+     * @param firstName          users first name
+     * @param preferredFirstName users preferred name
+     * @param middleName         users middle name
+     * @param lastName           users last name
+     */
     public User(String nhi, LocalDate dateOfBirth, LocalDate dateOfDeath, String birthGender, String genderIdentity,
-                double height, double weight, String bloodType, String alcoholConsumption,boolean smoker,
+                double height, double weight, String bloodType, String alcoholConsumption, boolean smoker,
                 String currentAddress, String region, String homePhone, String cellPhone, String email,
                 EmergencyContact contact, String name, String firstName, String preferredFirstName, String middleName,
-                String lastName){
+                String lastName) {
 
         this.nhi = nhi;
         this.dateOfBirth = dateOfBirth;
@@ -144,8 +145,8 @@ public class User extends Undoable<User> {
         this.genderIdentity = genderIdentity;
         this.height = height;
         this.weight = weight;
-      this.heightText = Double.toString(height);
-      this.weightText = Double.toString(weight);
+        this.heightText = Double.toString(height);
+        this.weightText = Double.toString(weight);
 
         this.bloodType = bloodType;
         this.alcoholConsumption = alcoholConsumption;
@@ -175,10 +176,10 @@ public class User extends Undoable<User> {
         this.receiverDetails = new ReceiverDetails(this);
         this.commonOrgans = new HashSet<>();
 
-      this.currentDiseases = new ArrayList<>();
-      this.pastDiseases = new ArrayList<>();
-      this.medicalProcedures  = new ArrayList<>();
-this.changes = FXCollections.observableArrayList();
+        this.currentDiseases = new ArrayList<>();
+        this.pastDiseases = new ArrayList<>();
+        this.medicalProcedures = new ArrayList<>();
+        this.changes = FXCollections.observableArrayList();
       /*try {
         changes = JsonHandler.importHistoryFromFile(name);
       } catch (FileNotFoundException e) {
@@ -187,55 +188,57 @@ this.changes = FXCollections.observableArrayList();
 
     }
 
-  /**
-   * Constructor for a User
-   * @param name users name
-   * @param dateOfBirth users date of birth
-   * @param nhi users national health index
-   */
-  public User(String name, java.time.LocalDate dateOfBirth, String nhi) {
-    this.dateOfBirth = dateOfBirth;
-    this.name = name;
-    this.donorDetails = new DonorDetails(this);
-    this.firstName = name;
-    this.receiverDetails = new ReceiverDetails(this);
-    this.nhi = nhi;
-    timeCreated = LocalDateTime.now();
-    lastModified = LocalDateTime.now();
-    this.preferredFirstName = name;
-    this.gender = "U";
-    this.bloodType = "U";
-    this.alcoholConsumption = "None";
-    updateHistory = new HashMap<>();
-    this.contact = new EmergencyContact(null,null, this);
-    updateHistory.put(dateToString(getTimeCreated()), "Profile created.");
-    this.miscAttributes = new ArrayList<>();
-    this.currentMedication = new ArrayList<>();
-    this.previousMedication = new ArrayList<>();
-    this.currentMedicationTimes = new HashMap<String, ArrayList<LocalDateTime>>();
-    this.previousMedicationTimes = new HashMap<String, ArrayList<LocalDateTime>>();
-    this.heightText = "";
-    this.weightText = "";
+    /**
+     * Constructor for a User
+     *
+     * @param name        users name
+     * @param dateOfBirth users date of birth
+     * @param nhi         users national health index
+     */
+    public User(String name, java.time.LocalDate dateOfBirth, String nhi) {
+        this.dateOfBirth = dateOfBirth;
+        this.name = name;
+        this.donorDetails = new DonorDetails(this);
+        this.firstName = name;
+        this.receiverDetails = new ReceiverDetails(this);
+        this.nhi = nhi;
+        timeCreated = LocalDateTime.now();
+        lastModified = LocalDateTime.now();
+        this.preferredFirstName = name;
+        this.gender = "U";
+        this.bloodType = "U";
+        this.alcoholConsumption = "None";
+        updateHistory = new HashMap<>();
+        this.contact = new EmergencyContact(null, null, this);
+        updateHistory.put(dateToString(getTimeCreated()), "Profile created.");
+        this.miscAttributes = new ArrayList<>();
+        this.currentMedication = new ArrayList<>();
+        this.previousMedication = new ArrayList<>();
+        this.currentMedicationTimes = new HashMap<String, ArrayList<LocalDateTime>>();
+        this.previousMedicationTimes = new HashMap<String, ArrayList<LocalDateTime>>();
+        this.heightText = "";
+        this.weightText = "";
     /*try {
       changes = JsonHandler.importHistoryFromFile(name);
     } catch (FileNotFoundException e) {
       e.printStackTrace();
     }
 */
-    this.currentDiseases = new ArrayList<>();
-    this.pastDiseases = new ArrayList<>();
-    this.commonOrgans = new HashSet<>();
+        this.currentDiseases = new ArrayList<>();
+        this.pastDiseases = new ArrayList<>();
+        this.commonOrgans = new HashSet<>();
 
-    this.donorDetails = new DonorDetails(this);
-    this.receiverDetails = new ReceiverDetails(this);
-    this.commonOrgans = new HashSet<>();this.medicalProcedures =  new ArrayList<>();
-    this.changes = FXCollections.observableArrayList();
+        this.donorDetails = new DonorDetails(this);
+        this.receiverDetails = new ReceiverDetails(this);
+        this.commonOrgans = new HashSet<>();
+        this.medicalProcedures = new ArrayList<>();
+        this.changes = FXCollections.observableArrayList();
     /*try {
       changes = JsonHandler.importHistoryFromFile(name);
     } catch (FileNotFoundException e) {
       e.printStackTrace();
     }*/
-  }
+    }
 
 
     /**
@@ -267,63 +270,72 @@ this.changes = FXCollections.observableArrayList();
         return donorDetails;
     }
 
-  public void setDonorDetails(DonorDetails donorDetails) {
-    Memento<User> mem = new Memento<>();
-    mem.setOldObject(this.clone());updateLastModified();
-    this.donorDetails = donorDetails;
-  mem.setNewObject(this.clone());
-    getUndoStack().push(mem);}
+    public void setDonorDetails(DonorDetails donorDetails) {
+        Memento<User> mem = new Memento<>();
+        mem.setOldObject(this.clone());
+        updateLastModified();
+        this.donorDetails = donorDetails;
+        mem.setNewObject(this.clone());
+        getUndoStack().push(mem);
+    }
 
     public ReceiverDetails getReceiverDetails() {
         return receiverDetails;
     }
 
-  public Collection<Organs> getCommonOrgans() {
+    public Collection<Organs> getCommonOrgans() {
         return commonOrgans;
     }
 
     public void setReceiverDetails(ReceiverDetails receiverDetails) {
-    Memento<User> mem = new Memento<>();
-    mem.setOldObject(this.clone());updateLastModified();
-    this.receiverDetails = receiverDetails;
-  mem.setNewObject(this.clone());
-    getUndoStack().push(mem);}
-
-  //TODO details object is set at initialization. will always return true
-/**
-   * Checks to see if user is a donor
-   * @return true if donor
-   */  public boolean isDonor() {
-    if (this.donorDetails == null) {
-      return false;
-    }
-    return !this.donorDetails.isEmpty();
-
+        Memento<User> mem = new Memento<>();
+        mem.setOldObject(this.clone());
+        updateLastModified();
+        this.receiverDetails = receiverDetails;
+        mem.setNewObject(this.clone());
+        getUndoStack().push(mem);
     }
 
-  /**
-   * Checks to see if user is a receiver
-   * @return true if receiver
-   */public boolean isReceiver() {
-    if (this.receiverDetails == null) {
-      return false;
+    //TODO details object is set at initialization. will always return true
+
+    /**
+     * Checks to see if user is a donor
+     *
+     * @return true if donor
+     */
+    public boolean isDonor() {
+        if (this.donorDetails == null) {
+            return false;
+        }
+        return !this.donorDetails.isEmpty();
+
     }
-    return !this.receiverDetails.isEmpty();
-  }
+
+    /**
+     * Checks to see if user is a receiver
+     *
+     * @return true if receiver
+     */
+    public boolean isReceiver() {
+        if (this.receiverDetails == null) {
+            return false;
+        }
+        return !this.receiverDetails.isEmpty();
+    }
 
     public String getNhi() {
         return nhi;
     }
 
-  public void setNhi(String nhi) {
-    Memento<User> mem = new Memento<>();
-    mem.setOldObject(this.clone());
-    updateLastModified();
-    this.nhi = nhi;
-    changes.add(new Change("Updated NHI to " + nhi));
-  mem.setNewObject(this.clone());
-    getUndoStack().push(mem);
-   }
+    public void setNhi(String nhi) {
+        Memento<User> mem = new Memento<>();
+        mem.setOldObject(this.clone());
+        updateLastModified();
+        this.nhi = nhi;
+        changes.add(new Change("Updated NHI to " + nhi));
+        mem.setNewObject(this.clone());
+        getUndoStack().push(mem);
+    }
 
     /**
      * Utility function to update the last modified timestamp when a change is made to a donor. Can be
@@ -338,22 +350,23 @@ this.changes = FXCollections.observableArrayList();
     }
 
 
-  public void setLastModified(LocalDateTime lastModified) {
-    this.lastModified = lastModified;
-  }
+    public void setLastModified(LocalDateTime lastModified) {
+        this.lastModified = lastModified;
+    }
 
     public String getName() {
         return name;
     }
 
-  public void setName(String name) {
-    Memento<User> mem = new Memento<>();
-    mem.setOldObject(this.clone());
-    updateLastModified();
-    this.name = name;
-    changes.add(new Change("Changed name to " + name));
-  mem.setNewObject(this.clone());
-    getUndoStack().push(mem);}
+    public void setName(String name) {
+        Memento<User> mem = new Memento<>();
+        mem.setOldObject(this.clone());
+        updateLastModified();
+        this.name = name;
+        changes.add(new Change("Changed name to " + name));
+        mem.setNewObject(this.clone());
+        getUndoStack().push(mem);
+    }
 
 
     public String getFirstName() {
@@ -361,17 +374,17 @@ this.changes = FXCollections.observableArrayList();
     }
 
     public void setFirstName(String name) {
-      Memento<User> mem = new Memento<>();
-      mem.setOldObject(this.clone());
-      updateLastModified();
-      // Changes the default case where the preferred name is the same as the first name
-      if (preferredFirstName == null || preferredFirstName.equals(firstName)) {
-        preferredFirstName = name;
-      }
-      this.firstName = name;
-      changes.add(new Change("Changed first name to " + name));
-      mem.setNewObject(this.clone());
-      getUndoStack().push(mem);
+        Memento<User> mem = new Memento<>();
+        mem.setOldObject(this.clone());
+        updateLastModified();
+        // Changes the default case where the preferred name is the same as the first name
+        if (preferredFirstName == null || preferredFirstName.equals(firstName)) {
+            preferredFirstName = name;
+        }
+        this.firstName = name;
+        changes.add(new Change("Changed first name to " + name));
+        mem.setNewObject(this.clone());
+        getUndoStack().push(mem);
 
     }
 
@@ -381,13 +394,13 @@ this.changes = FXCollections.observableArrayList();
     }
 
     public void setMiddleName(String name) {
-      Memento<User> mem = new Memento<>();
-      mem.setOldObject(this.clone());
-      updateLastModified();
-      this.middleName = name;
-      changes.add(new Change("Changed middle name to " + middleName));
-      mem.setNewObject(this.clone());
-      getUndoStack().push(mem);
+        Memento<User> mem = new Memento<>();
+        mem.setOldObject(this.clone());
+        updateLastModified();
+        this.middleName = name;
+        changes.add(new Change("Changed middle name to " + middleName));
+        mem.setNewObject(this.clone());
+        getUndoStack().push(mem);
     }
 
     public String getLastName() {
@@ -395,20 +408,20 @@ this.changes = FXCollections.observableArrayList();
     }
 
     public void setLastName(String name) {
-      Memento<User> mem = new Memento<>();
-      mem.setOldObject(this.clone());
-      updateLastModified();
-      this.lastName = name;
-      changes.add(new Change("Changed last name to " + lastName));
-      mem.setNewObject(this.clone());
-      getUndoStack().push(mem);
+        Memento<User> mem = new Memento<>();
+        mem.setOldObject(this.clone());
+        updateLastModified();
+        this.lastName = name;
+        changes.add(new Change("Changed last name to " + lastName));
+        mem.setNewObject(this.clone());
+        getUndoStack().push(mem);
     }
 
     public String getFullName() {
         String fullName;
 
         if (middleName != null && lastName != null) {
-            fullName = firstName + " " + middleName  + " " + lastName;
+            fullName = firstName + " " + middleName + " " + lastName;
 
         } else if (middleName != null) {
             fullName = firstName + " " + middleName;
@@ -427,147 +440,157 @@ this.changes = FXCollections.observableArrayList();
         return dateOfBirth;
     }
 
-  public void setDateOfBirth(java.time.LocalDate dateOfBirth) {
-    Memento<User> mem = new Memento<>();
-    mem.setOldObject(this.clone());
-    updateLastModified();
-    this.dateOfBirth = dateOfBirth;
-    changes.add(new Change("Changed date of birth to "+ dateOfBirth.toString()));
-  mem.setNewObject(this.clone());
-    getUndoStack().push(mem);}
+    public void setDateOfBirth(java.time.LocalDate dateOfBirth) {
+        Memento<User> mem = new Memento<>();
+        mem.setOldObject(this.clone());
+        updateLastModified();
+        this.dateOfBirth = dateOfBirth;
+        changes.add(new Change("Changed date of birth to " + dateOfBirth.toString()));
+        mem.setNewObject(this.clone());
+        getUndoStack().push(mem);
+    }
 
     public java.time.LocalDate getDateOfDeath() {
         return dateOfDeath;
     }
 
-  public void setDateOfDeath(java.time.LocalDate dateOfDeath) {
-    Memento<User> mem = new Memento<>();
-    mem.setOldObject(this.clone());
-    updateLastModified();
-    this.dateOfDeath = dateOfDeath;
-    this.isDeceased = dateOfDeath != null;
-    changes.add(new Change(isDeceased ? ("Changed date of death to " + dateOfDeath.toString())
-        : "Removed date of death"));
-  mem.setNewObject(this.clone());
-    getUndoStack().push(mem);}
+    public void setDateOfDeath(java.time.LocalDate dateOfDeath) {
+        Memento<User> mem = new Memento<>();
+        mem.setOldObject(this.clone());
+        updateLastModified();
+        this.dateOfDeath = dateOfDeath;
+        this.isDeceased = dateOfDeath != null;
+        changes.add(new Change(isDeceased ? ("Changed date of death to " + dateOfDeath.toString())
+                : "Removed date of death"));
+        mem.setNewObject(this.clone());
+        getUndoStack().push(mem);
+    }
 
     public String getGender() {
         return gender;
     }
 
-  public void setGender(String gender) {
-    Memento<User> mem = new Memento<>();
-    mem.setOldObject(this.clone());
-    updateLastModified();
-    this.gender = gender;
-    changes.add(new Change("Changed gender to " + gender));
-  mem.setNewObject(this.clone());
-    getUndoStack().push(mem);}
+    public void setGender(String gender) {
+        Memento<User> mem = new Memento<>();
+        mem.setOldObject(this.clone());
+        updateLastModified();
+        this.gender = gender;
+        changes.add(new Change("Changed gender to " + gender));
+        mem.setNewObject(this.clone());
+        getUndoStack().push(mem);
+    }
 
     public double getHeight() {
         return height;
     }
 
-  public void setHeight(double height) {
-    Memento<User> mem = new Memento<>();
-    mem.setOldObject(this.clone());
-    updateLastModified();
-    this.height = height;
-    changes.add(new Change("Changed height to " + height));
-  mem.setNewObject(this.clone());
-    getUndoStack().push(mem);}
+    public void setHeight(double height) {
+        Memento<User> mem = new Memento<>();
+        mem.setOldObject(this.clone());
+        updateLastModified();
+        this.height = height;
+        changes.add(new Change("Changed height to " + height));
+        mem.setNewObject(this.clone());
+        getUndoStack().push(mem);
+    }
 
     public double getWeight() {
         return weight;
     }
 
-  public void setWeight(double weight) {
-    Memento<User> mem = new Memento<>();
-    mem.setOldObject(this.clone());
-    updateLastModified();
-    this.weight = weight;
-    changes.add(new Change("Changed weight to " + weight));
-  mem.setNewObject(this.clone());
-    getUndoStack().push(mem);}
+    public void setWeight(double weight) {
+        Memento<User> mem = new Memento<>();
+        mem.setOldObject(this.clone());
+        updateLastModified();
+        this.weight = weight;
+        changes.add(new Change("Changed weight to " + weight));
+        mem.setNewObject(this.clone());
+        getUndoStack().push(mem);
+    }
 
-  public String getHeightText() {
-    return heightText;
-  }
+    public String getHeightText() {
+        return heightText;
+    }
 
-  public void setHeightText(String height) {
-    Memento<User> mem = new Memento<>();
-    mem.setOldObject(this.clone());
-    updateLastModified();
-    this.heightText = height;
-    mem.setNewObject(this.clone());
-    getUndoStack().push(mem);}
+    public void setHeightText(String height) {
+        Memento<User> mem = new Memento<>();
+        mem.setOldObject(this.clone());
+        updateLastModified();
+        this.heightText = height;
+        mem.setNewObject(this.clone());
+        getUndoStack().push(mem);
+    }
 
-  public String getWeightText() {
-    return weightText;
-  }
+    public String getWeightText() {
+        return weightText;
+    }
 
-  public void setWeightText(String weight) {
-    Memento<User> mem = new Memento<>();
-    mem.setOldObject(this.clone());
-    updateLastModified();
-    this.weightText = weight;
-    mem.setNewObject(this.clone());
-    getUndoStack().push(mem);
-  }
+    public void setWeightText(String weight) {
+        Memento<User> mem = new Memento<>();
+        mem.setOldObject(this.clone());
+        updateLastModified();
+        this.weightText = weight;
+        mem.setNewObject(this.clone());
+        getUndoStack().push(mem);
+    }
 
     public String getBloodType() {
         return bloodType;
     }
 
-  public void setBloodType(String bloodType) {
-    Memento<User> mem = new Memento<>();
-    mem.setOldObject(this.clone());
-    String validType = groupBloodType(bloodType);
-    updateLastModified();
-    this.bloodType = validType;
-    changes.add(new Change("Changed blood type to " + bloodType));
-  mem.setNewObject(this.clone());
-    getUndoStack().push(mem);}
+    public void setBloodType(String bloodType) {
+        Memento<User> mem = new Memento<>();
+        mem.setOldObject(this.clone());
+        String validType = groupBloodType(bloodType);
+        updateLastModified();
+        this.bloodType = validType;
+        changes.add(new Change("Changed blood type to " + bloodType));
+        mem.setNewObject(this.clone());
+        getUndoStack().push(mem);
+    }
 
     public String getCurrentAddress() {
         return currentAddress;
     }
 
-  public void setCurrentAddress(String currentAddress) {
-    Memento<User> mem = new Memento<>();
-    mem.setOldObject(this.clone());
-    updateLastModified();
-    this.currentAddress = currentAddress;
-  if (currentAddress != null && !currentAddress.equals("")){
-      changes.add(new Change("Changed current address  to " + currentAddress));
+    public void setCurrentAddress(String currentAddress) {
+        Memento<User> mem = new Memento<>();
+        mem.setOldObject(this.clone());
+        updateLastModified();
+        this.currentAddress = currentAddress;
+        if (currentAddress != null && !currentAddress.equals("")) {
+            changes.add(new Change("Changed current address  to " + currentAddress));
+        }
+        mem.setNewObject(this.clone());
+        getUndoStack().push(mem);
     }
-  mem.setNewObject(this.clone());
-    getUndoStack().push(mem);}
 
     public String getRegion() {
         return region;
     }
 
-  public void setRegion(String region) {
-    Memento<User> mem = new Memento<>();
-    mem.setOldObject(this.clone());
-    updateLastModified();
-    this.region = region;
-  if(currentAddress != null && !currentAddress.equals("")) {
-      changes.add(new Change("Changed region to " + region));
+    public void setRegion(String region) {
+        Memento<User> mem = new Memento<>();
+        mem.setOldObject(this.clone());
+        updateLastModified();
+        this.region = region;
+        if (currentAddress != null && !currentAddress.equals("")) {
+            changes.add(new Change("Changed region to " + region));
+        }
+        mem.setNewObject(this.clone());
+        getUndoStack().push(mem);
     }
-  mem.setNewObject(this.clone());
-    getUndoStack().push(mem);}
 
     public LocalDateTime getTimeCreated() {
         return timeCreated;
     }
 
-  //For UndoRedoStacks
-  public void setTimeCreated(LocalDateTime timeCreated) {
-    updateLastModified();
-    this.timeCreated = timeCreated;
-  changes.add(new Change("Changed time created to " + timeCreated.toString()));}
+    //For UndoRedoStacks
+    public void setTimeCreated(LocalDateTime timeCreated) {
+        updateLastModified();
+        this.timeCreated = timeCreated;
+        changes.add(new Change("Changed time created to " + timeCreated.toString()));
+    }
 
     public String getStringAge() {
         if (dateOfDeath != null) {
@@ -589,145 +612,159 @@ this.changes = FXCollections.observableArrayList();
         return isDeceased;
     }
 
-  public void setDeceased(Boolean deceased) {
-    Memento<User> mem = new Memento<>();
-    mem.setOldObject(this.clone());
-    updateLastModified();
-    isDeceased = deceased;
-    changes.add(new Change("Changed users corporal status"));
-  mem.setNewObject(this.clone());
-    getUndoStack().push(mem);}
+    public void setDeceased(Boolean deceased) {
+        Memento<User> mem = new Memento<>();
+        mem.setOldObject(this.clone());
+        updateLastModified();
+        isDeceased = deceased;
+        changes.add(new Change("Changed users corporal status"));
+        mem.setNewObject(this.clone());
+        getUndoStack().push(mem);
+    }
 
     public ArrayList<Disease> getCurrentDiseases() {
         return currentDiseases;
     }
 
-  public void addCurrentDisease(Disease currentDisease) {
-    currentDiseases.add(currentDisease);
-  changes.add(new Change("Added current disease " + currentDisease.toString()));}
+    public void addCurrentDisease(Disease currentDisease) {
+        currentDiseases.add(currentDisease);
+        changes.add(new Change("Added current disease " + currentDisease.toString()));
+    }
 
     public ArrayList<Disease> getPastDiseases() {
         return pastDiseases;
     }
 
-  public void addPastDisease(Disease pastDisease) {
-    changes.add(new Change("Added past disease " + pastDisease.toString()));this.pastDiseases.add(pastDisease);
-  }
-
-  public String getPreferredFirstName() {
-    return preferredFirstName;
-  }
-
-  public void setPreferredFirstName(String preferredFirstName) {
-    Memento<User> mem = new Memento<>();
-    mem.setOldObject(this.clone());
-    updateLastModified();
-    this.preferredFirstName = preferredFirstName;
-    changes.add(new Change("Changed preferred first name to " + preferredFirstName));
-    mem.setNewObject(this.clone());
-    getUndoStack().push(mem);
-  }public String getBirthGender() {
-    return birthGender;
-  }
-
-  public void setBirthGender(String birthGender) {
-    Memento<User> mem = new Memento<>();
-    mem.setOldObject(this.clone());
-    updateLastModified();
-    // Changes the default case where the gender identity is the same as the birth gender
-    if (genderIdentity == null || genderIdentity.equals(this.birthGender)) {
-      genderIdentity = this.birthGender;
+    public void addPastDisease(Disease pastDisease) {
+        changes.add(new Change("Added past disease " + pastDisease.toString()));
+        this.pastDiseases.add(pastDisease);
     }
-    this.birthGender = birthGender;
-    changes.add(new Change("Changed birth gender to " + birthGender));
-  mem.setNewObject(this.clone());
-    getUndoStack().push(mem);}
+
+    public String getPreferredFirstName() {
+        return preferredFirstName;
+    }
+
+    public void setPreferredFirstName(String preferredFirstName) {
+        Memento<User> mem = new Memento<>();
+        mem.setOldObject(this.clone());
+        updateLastModified();
+        this.preferredFirstName = preferredFirstName;
+        changes.add(new Change("Changed preferred first name to " + preferredFirstName));
+        mem.setNewObject(this.clone());
+        getUndoStack().push(mem);
+    }
+
+    public String getBirthGender() {
+        return birthGender;
+    }
+
+    public void setBirthGender(String birthGender) {
+        Memento<User> mem = new Memento<>();
+        mem.setOldObject(this.clone());
+        updateLastModified();
+        // Changes the default case where the gender identity is the same as the birth gender
+        if (genderIdentity == null || genderIdentity.equals(this.birthGender)) {
+            genderIdentity = this.birthGender;
+        }
+        this.birthGender = birthGender;
+        changes.add(new Change("Changed birth gender to " + birthGender));
+        mem.setNewObject(this.clone());
+        getUndoStack().push(mem);
+    }
 
     public String getGenderIdentity() {
         return genderIdentity;
     }
 
-  public void setGenderIdentity(String genderIdentity) {
+    public void setGenderIdentity(String genderIdentity) {
 
-    Memento<User> mem = new Memento<>();
-    mem.setOldObject(this.clone());
-    updateLastModified();
-    this.genderIdentity = genderIdentity;
-    changes.add(new Change("Changed birth Identity to " + genderIdentity));
-  mem.setNewObject(this.clone());
-    getUndoStack().push(mem);}
+        Memento<User> mem = new Memento<>();
+        mem.setOldObject(this.clone());
+        updateLastModified();
+        this.genderIdentity = genderIdentity;
+        changes.add(new Change("Changed birth Identity to " + genderIdentity));
+        mem.setNewObject(this.clone());
+        getUndoStack().push(mem);
+    }
 
     public String getAlcoholConsumption() {
         return alcoholConsumption;
     }
 
-  public void setAlcoholConsumption(String alcoholConsumption) {
-    Memento<User> mem = new Memento<>();
-    mem.setOldObject(this.clone());
-    updateLastModified();
-    this.alcoholConsumption = alcoholConsumption;
-    changes.add(new Change("Changed alcohol consumption to " + alcoholConsumption));
-  mem.setNewObject(this.clone());
-    getUndoStack().push(mem);}
+    public void setAlcoholConsumption(String alcoholConsumption) {
+        Memento<User> mem = new Memento<>();
+        mem.setOldObject(this.clone());
+        updateLastModified();
+        this.alcoholConsumption = alcoholConsumption;
+        changes.add(new Change("Changed alcohol consumption to " + alcoholConsumption));
+        mem.setNewObject(this.clone());
+        getUndoStack().push(mem);
+    }
 
     public boolean isSmoker() {
         return smoker;
     }
 
-  public void setSmoker(boolean smoker) {
-    Memento<User> mem = new Memento<>();
-    mem.setOldObject(this.clone());
-    updateLastModified();
-    this.smoker = smoker;
-    changes.add(new Change("Changed smoker status to " + smoker));
-  mem.setNewObject(this.clone());
-    getUndoStack().push(mem);}
+    public void setSmoker(boolean smoker) {
+        Memento<User> mem = new Memento<>();
+        mem.setOldObject(this.clone());
+        updateLastModified();
+        this.smoker = smoker;
+        changes.add(new Change("Changed smoker status to " + smoker));
+        mem.setNewObject(this.clone());
+        getUndoStack().push(mem);
+    }
 
     public String getHomePhone() {
         return homePhone;
     }
 
-  public void setHomePhone(String homePhone) {
-    Memento<User> mem = new Memento<>();
-    mem.setOldObject(this.clone());
-    updateLastModified();
-    this.homePhone = homePhone;
-    changes.add(new Change("Changed Home phone to " + homePhone));
-  mem.setNewObject(this.clone());
-    getUndoStack().push(mem);}
+    public void setHomePhone(String homePhone) {
+        Memento<User> mem = new Memento<>();
+        mem.setOldObject(this.clone());
+        updateLastModified();
+        this.homePhone = homePhone;
+        changes.add(new Change("Changed Home phone to " + homePhone));
+        mem.setNewObject(this.clone());
+        getUndoStack().push(mem);
+    }
 
     public String getCellPhone() {
         return cellPhone;
     }
 
-  public void setCellPhone(String cellPhone) {
-    Memento<User> mem = new Memento<>();
-    mem.setOldObject(this.clone());
-    updateLastModified();
-    this.cellPhone = cellPhone;
-    changes.add(new Change("Changed cell Phone to " + cellPhone));
-  mem.setNewObject(this.clone());
-    getUndoStack().push(mem);}
+    public void setCellPhone(String cellPhone) {
+        Memento<User> mem = new Memento<>();
+        mem.setOldObject(this.clone());
+        updateLastModified();
+        this.cellPhone = cellPhone;
+        changes.add(new Change("Changed cell Phone to " + cellPhone));
+        mem.setNewObject(this.clone());
+        getUndoStack().push(mem);
+    }
 
     public String getEmail() {
         return email;
     }
 
-  public void setEmail(String email) {
-    Memento<User> mem = new Memento<>();
-    mem.setOldObject(this.clone());
-    updateLastModified();
-    this.email = email;
-    changes.add(new Change("Changed email to " + email));
-  mem.setNewObject(this.clone());
-    getUndoStack().push(mem);}
+    public void setEmail(String email) {
+        Memento<User> mem = new Memento<>();
+        mem.setOldObject(this.clone());
+        updateLastModified();
+        this.email = email;
+        changes.add(new Change("Changed email to " + email));
+        mem.setNewObject(this.clone());
+        getUndoStack().push(mem);
+    }
 
-  public void setContact(EmergencyContact contact) {
-    Memento<User> mem = new Memento<>();
-    mem.setOldObject(this.clone());
-    updateLastModified();this.contact = contact;
-  mem.setNewObject(this.clone());
-    getUndoStack().push(mem);}
+    public void setContact(EmergencyContact contact) {
+        Memento<User> mem = new Memento<>();
+        mem.setOldObject(this.clone());
+        updateLastModified();
+        this.contact = contact;
+        mem.setNewObject(this.clone());
+        getUndoStack().push(mem);
+    }
 
 
     /**
@@ -768,13 +805,14 @@ this.changes = FXCollections.observableArrayList();
         return miscAttributes;
     }
 
-  public void setMiscAttributes(ArrayList<String> miscAttributes) {
-    Memento<User> mem = new Memento<>();
-    mem.setOldObject(this.clone());
-    updateLastModified();
-    this.miscAttributes = miscAttributes;
-  mem.setNewObject(this.clone());
-    getUndoStack().push(mem);}
+    public void setMiscAttributes(ArrayList<String> miscAttributes) {
+        Memento<User> mem = new Memento<>();
+        mem.setOldObject(this.clone());
+        updateLastModified();
+        this.miscAttributes = miscAttributes;
+        mem.setNewObject(this.clone());
+        getUndoStack().push(mem);
+    }
 
     // @TODO: find all instances of potential updates and add to the Hashmap
 
@@ -799,10 +837,11 @@ this.changes = FXCollections.observableArrayList();
         miscAttributes.remove(attribute);
     }
 
-  public void addAttribute(String attribute) {
-    updateLastModified();
-    miscAttributes.add(attribute);
-  changes.add(new Change("added attribute " + attribute));}
+    public void addAttribute(String attribute) {
+        updateLastModified();
+        miscAttributes.add(attribute);
+        changes.add(new Change("added attribute " + attribute));
+    }
 
     public ArrayList<String> getPreviousMedication() {
         return previousMedication;
@@ -816,46 +855,52 @@ this.changes = FXCollections.observableArrayList();
         return currentMedication;
     }
 
-  public void setCurrentMedication(ArrayList<String> currentMedication) {
-    this.currentMedication = currentMedication;
-  }
+    public void setCurrentMedication(ArrayList<String> currentMedication) {
+        this.currentMedication = currentMedication;
+    }
 
-  public void addCurrentMedication(String medication) {
-    Memento<User> memento = new Memento<>();
-    memento.setOldObject(this.clone());
-    updateLastModified();
-    currentMedication.add(medication);
-    addMedicationTimes(medication, currentMedicationTimes);
-    changes.add(new Change("Added current medication" + medication));
-  memento.setNewObject(this.clone());
-    getUndoStack().push(memento);}
+    public void addCurrentMedication(String medication) {
+        Memento<User> memento = new Memento<>();
+        memento.setOldObject(this.clone());
+        updateLastModified();
+        currentMedication.add(medication);
+        addMedicationTimes(medication, currentMedicationTimes);
+        changes.add(new Change("Added current medication" + medication));
+        memento.setNewObject(this.clone());
+        getUndoStack().push(memento);
+    }
 
-  public void addPreviousMedication(String medication) {
-    updateLastModified();
-    previousMedication.add(medication);
-    addMedicationTimes(medication, previousMedicationTimes);
-  changes.add(new Change("Added previous medication" + medication));}
+    public void addPreviousMedication(String medication) {
+        updateLastModified();
+        previousMedication.add(medication);
+        addMedicationTimes(medication, previousMedicationTimes);
+        changes.add(new Change("Added previous medication" + medication));
+    }
 
-  public void addCurrentMedicationSetup(String medication) {
-    updateLastModified();
-    currentMedication.add(medication);
-  changes.add(new Change("Added current medication" + medication));}
+    public void addCurrentMedicationSetup(String medication) {
+        updateLastModified();
+        currentMedication.add(medication);
+        changes.add(new Change("Added current medication" + medication));
+    }
 
-  public void addPreviousMedicationSetUp(String medication) {
-    updateLastModified();
-    previousMedication.add(medication);
-  changes.add(new Change("Added previous medication" + medication));}
+    public void addPreviousMedicationSetUp(String medication) {
+        updateLastModified();
+        previousMedication.add(medication);
+        changes.add(new Change("Added previous medication" + medication));
+    }
 
 
-  public void removeCurrentMedication(String medication) {
-    updateLastModified();
-    currentMedication.remove(medication);
-  changes.add(new Change("Removed current medication" + medication));}
+    public void removeCurrentMedication(String medication) {
+        updateLastModified();
+        currentMedication.remove(medication);
+        changes.add(new Change("Removed current medication" + medication));
+    }
 
-  public void removePreviousMedication(String medication) {
-    updateLastModified();
-    previousMedication.remove(medication);
-  changes.add(new Change("Removed previous medication" + medication));}
+    public void removePreviousMedication(String medication) {
+        updateLastModified();
+        previousMedication.remove(medication);
+        changes.add(new Change("Removed previous medication" + medication));
+    }
 
     public HashMap<String, ArrayList<LocalDateTime>> getPreviousMedicationTimes() {
         return previousMedicationTimes;
@@ -881,7 +926,7 @@ this.changes = FXCollections.observableArrayList();
     /**
      * Use this one when adding a new medication from the donor interface
      *
-     * @param medication medication to be added
+     * @param medication      medication to be added
      * @param medicationTimes hashmap to be appended to
      */
     public void addMedicationTimes(String medication,
@@ -905,7 +950,7 @@ this.changes = FXCollections.observableArrayList();
      * Use this one when creating the user from the json object
      *
      * @param medication medication string key
-     * @param stamps list of timestamps
+     * @param stamps     list of timestamps
      */
     public void addCurrentMedicationTimes(String medication, ArrayList<LocalDateTime> stamps) {
 
@@ -918,7 +963,7 @@ this.changes = FXCollections.observableArrayList();
      * Use this one when creating the user from the json object
      *
      * @param medication medication string key
-     * @param stamps list of timestamps
+     * @param stamps     list of timestamps
      */
     public void addPreviousMedicationTimes(String medication, ArrayList<LocalDateTime> stamps) {
         previousMedicationTimes.put(medication, stamps);
@@ -947,34 +992,36 @@ this.changes = FXCollections.observableArrayList();
         this.medicalProcedures = medicalProcedures;
     }
 
-  public void addMedicalProcedure(MedicalProcedure medicalProcedure){
-    updateLastModified();
-    medicalProcedures.add(medicalProcedure);
-  changes.add(new Change("Added Medical Procedure" + medicalProcedure));}
-
-  public void removeMedicalProcedure(MedicalProcedure medicalProcedure){
-    updateLastModified();
-    medicalProcedures.remove(medicalProcedure);
-  changes.add(new Change("Removed Medical Procedure" + medicalProcedure));}
-
-  public String getTooltip() {
-    //TODO fix this to show full info where possible
-    if (this.donorDetails.getOrgans() == null) {
-      return name;
+    public void addMedicalProcedure(MedicalProcedure medicalProcedure) {
+        updateLastModified();
+        medicalProcedures.add(medicalProcedure);
+        changes.add(new Change("Added Medical Procedure" + medicalProcedure));
     }
-    if (!this.getDonorDetails().getOrgans().isEmpty()) {
-      StringBuilder toReturn = new StringBuilder(name + ". Donor: ");
-      for (Organs o : this.donorDetails.getOrgans()) {
-        toReturn.append(o.toString()).append(" ");
-      }
-      return toReturn.toString();
-    } else {
-      return name;
-    }
-  }
 
-  @Override
-  public boolean equals(Object o) {
+    public void removeMedicalProcedure(MedicalProcedure medicalProcedure) {
+        updateLastModified();
+        medicalProcedures.remove(medicalProcedure);
+        changes.add(new Change("Removed Medical Procedure" + medicalProcedure));
+    }
+
+    public String getTooltip() {
+        //TODO fix this to show full info where possible
+        if (this.donorDetails.getOrgans() == null) {
+            return name;
+        }
+        if (!this.getDonorDetails().getOrgans().isEmpty()) {
+            StringBuilder toReturn = new StringBuilder(name + ". Donor: ");
+            for (Organs o : this.donorDetails.getOrgans()) {
+                toReturn.append(o.toString()).append(" ");
+            }
+            return toReturn.toString();
+        } else {
+            return name;
+        }
+    }
+
+    @Override
+    public boolean equals(Object o) {
 
         if (this == o) {
             return true;
@@ -1006,66 +1053,66 @@ this.changes = FXCollections.observableArrayList();
                 "\nblood Type: '" + bloodType + '\'' +
                 "\ncurrent Address: '" + currentAddress + '\'' +
                 "\nregion: '" + region + '\'' +
-                "\norgans: " + (isDonor() ?  donorDetails.getOrgans() : (name + " is not a donor")) +
+                "\norgans: " + (isDonor() ? donorDetails.getOrgans() : (name + " is not a donor")) +
                 "\ntime Created: " + timeCreated +
                 "\nlast modified: " + lastModified;
     }
 
-  @Override
-  public void undo() {
-    if (getUndoStack().isEmpty()) {
-      return;
-    }
-    Memento<User> memento = getUndoStack().pop();
-    this.changeInto(memento.getOldObject());
-    getRedoStack().push(memento);
-  }
-
-  @Override
-  public void redo() {
-    if (getRedoStack().isEmpty()) {
-      return;
-    }
-    Memento<User> memento = getRedoStack().pop();
-    this.changeInto(memento.getNewObject());
-    getUndoStack().push(memento);
-  }
-
-  @Override
-  public User clone() {
-    User newUser = new User();
-    newUser.nhi = this.nhi;
-    newUser.dateOfBirth = this.dateOfBirth;
-    newUser.dateOfDeath = this.dateOfDeath;
-
-    newUser.birthGender = this.birthGender;
-    newUser.genderIdentity = this.genderIdentity;
-    newUser.height = this.height;
-    newUser.weight = this.weight;
-    newUser.heightText = this.heightText;
-    newUser.weightText = this.weightText;
-    newUser.bloodType = this.bloodType;
-    newUser.alcoholConsumption = this.alcoholConsumption;
-    newUser.smoker = this.smoker;
-
-    newUser.currentAddress = this.currentAddress;
-    newUser.region = this.region;
-    newUser.homePhone = this.homePhone;
-    newUser.cellPhone = this.cellPhone;
-    newUser.email = this.email;
-    if (this.contact != null) {
-      newUser.contact = new EmergencyContact(this.contact.getName(), this.contact.getCellPhoneNumber(),
-              this.contact.getHomePhoneNumber(), this.contact.getRegion(), this.contact.getAddress(),
-              this.contact.getEmail(), this.contact.getRelationship(), newUser);
-    } else {
-      newUser.contact = null;
+    @Override
+    public void undo() {
+        if (getUndoStack().isEmpty()) {
+            return;
+        }
+        Memento<User> memento = getUndoStack().pop();
+        this.changeInto(memento.getOldObject());
+        getRedoStack().push(memento);
     }
 
-    newUser.name = this.name;
-    newUser.firstName = this.firstName;
-    newUser.preferredFirstName = this.preferredFirstName;
-    newUser.middleName = this.middleName;
-    newUser.lastName = this.lastName;
+    @Override
+    public void redo() {
+        if (getRedoStack().isEmpty()) {
+            return;
+        }
+        Memento<User> memento = getRedoStack().pop();
+        this.changeInto(memento.getNewObject());
+        getUndoStack().push(memento);
+    }
+
+    @Override
+    public User clone() {
+        User newUser = new User();
+        newUser.nhi = this.nhi;
+        newUser.dateOfBirth = this.dateOfBirth;
+        newUser.dateOfDeath = this.dateOfDeath;
+
+        newUser.birthGender = this.birthGender;
+        newUser.genderIdentity = this.genderIdentity;
+        newUser.height = this.height;
+        newUser.weight = this.weight;
+        newUser.heightText = this.heightText;
+        newUser.weightText = this.weightText;
+        newUser.bloodType = this.bloodType;
+        newUser.alcoholConsumption = this.alcoholConsumption;
+        newUser.smoker = this.smoker;
+
+        newUser.currentAddress = this.currentAddress;
+        newUser.region = this.region;
+        newUser.homePhone = this.homePhone;
+        newUser.cellPhone = this.cellPhone;
+        newUser.email = this.email;
+        if (this.contact != null) {
+            newUser.contact = new EmergencyContact(this.contact.getName(), this.contact.getCellPhoneNumber(),
+                    this.contact.getHomePhoneNumber(), this.contact.getRegion(), this.contact.getAddress(),
+                    this.contact.getEmail(), this.contact.getRelationship(), newUser);
+        } else {
+            newUser.contact = null;
+        }
+
+        newUser.name = this.name;
+        newUser.firstName = this.firstName;
+        newUser.preferredFirstName = this.preferredFirstName;
+        newUser.middleName = this.middleName;
+        newUser.lastName = this.lastName;
 
     newUser.timeCreated = this.timeCreated;
     newUser.updateHistory = new HashMap<>(this.updateHistory);
@@ -1085,17 +1132,17 @@ this.changes = FXCollections.observableArrayList();
       newUser.receiverDetails.getOrgans().put(o, dates);
     }
 
-    newUser.currentDiseases = new ArrayList<>(this.currentDiseases);
-    newUser.pastDiseases = new ArrayList<>(this.pastDiseases);
-    newUser.medicalProcedures = new ArrayList<>();
-    for (MedicalProcedure m : this.medicalProcedures) {
-      MedicalProcedure newMed = new MedicalProcedure();
-      newMed.setSummary(m.getSummary());
-      newMed.setDescription(m.getDescription());
-      newMed.setProcedureDate(m.getProcedureDate());
-      newMed.setOrgansAffected(new ArrayList<>(m.getOrgansAffected()));
-      newUser.medicalProcedures.add(newMed);
-    }
+        newUser.currentDiseases = new ArrayList<>(this.currentDiseases);
+        newUser.pastDiseases = new ArrayList<>(this.pastDiseases);
+        newUser.medicalProcedures = new ArrayList<>();
+        for (MedicalProcedure m : this.medicalProcedures) {
+            MedicalProcedure newMed = new MedicalProcedure();
+            newMed.setSummary(m.getSummary());
+            newMed.setDescription(m.getDescription());
+            newMed.setProcedureDate(m.getProcedureDate());
+            newMed.setOrgansAffected(new ArrayList<>(m.getOrgansAffected()));
+            newUser.medicalProcedures.add(newMed);
+        }
 
     newUser.changes = this.changes;
     newUser.setUndoStack((Stack<Memento<User>>) this.getUndoStack().clone());
@@ -1103,24 +1150,25 @@ this.changes = FXCollections.observableArrayList();
     return newUser;
   }
 
-  /**
-   * Changes this instance of a user to become another user
-   * @param other other User object to convert this instance into.
-   */
-  public void changeInto(User other) {
-    this.nhi = other.nhi;
-    this.dateOfBirth = other.dateOfBirth;
-    this.dateOfDeath = other.dateOfDeath;
+    /**
+     * Changes this instance of a user to become another user
+     *
+     * @param other other User object to convert this instance into.
+     */
+    public void changeInto(User other) {
+        this.nhi = other.nhi;
+        this.dateOfBirth = other.dateOfBirth;
+        this.dateOfDeath = other.dateOfDeath;
 
-    this.birthGender = other.birthGender;
-    this.genderIdentity = other.genderIdentity;
-    this.height = other.height;
-    this.weight = other.weight;
-    this.heightText = other.heightText;
-    this.weightText = other.weightText;
-    this.bloodType = other.bloodType;
-    this.alcoholConsumption = other.alcoholConsumption;
-    this.smoker = other.smoker;
+        this.birthGender = other.birthGender;
+        this.genderIdentity = other.genderIdentity;
+        this.height = other.height;
+        this.weight = other.weight;
+        this.heightText = other.heightText;
+        this.weightText = other.weightText;
+        this.bloodType = other.bloodType;
+        this.alcoholConsumption = other.alcoholConsumption;
+        this.smoker = other.smoker;
 
     this.currentAddress = other.currentAddress;
     this.region = other.region;
@@ -1130,11 +1178,11 @@ this.changes = FXCollections.observableArrayList();
     this.contact = other.contact;
     this.contact.setAttachedUser(this);
 
-    this.name = other.name;
-    this.firstName = other.firstName;
-    this.preferredFirstName = other.preferredFirstName;
-    this.middleName = other.middleName;
-    this.lastName = other.lastName;
+        this.name = other.name;
+        this.firstName = other.firstName;
+        this.preferredFirstName = other.preferredFirstName;
+        this.middleName = other.middleName;
+        this.lastName = other.lastName;
 
     this.timeCreated = other.timeCreated;
     updateHistory = other.updateHistory;
@@ -1148,10 +1196,10 @@ this.changes = FXCollections.observableArrayList();
     this.receiverDetails = other.receiverDetails;
     this.receiverDetails.setAttachedUser(this);
 
-    this.currentDiseases = other.currentDiseases;
-    this.pastDiseases = other.pastDiseases;
-    this.medicalProcedures = other.medicalProcedures;
+        this.currentDiseases = other.currentDiseases;
+        this.pastDiseases = other.pastDiseases;
+        this.medicalProcedures = other.medicalProcedures;
 
-    this.changes = other.changes;
-  }
+        this.changes = other.changes;
+    }
 }
