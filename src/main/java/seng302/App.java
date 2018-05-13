@@ -24,6 +24,7 @@ import seng302.Controller.LoginController;
 import seng302.Model.JsonHandler;
 
 import java.io.IOException;
+import seng302.Service.Log;
 
 /**
  * The main class of the application
@@ -77,9 +78,9 @@ public class App extends Application {
       public void handle(WindowEvent event) {
         try {
           JsonHandler.saveUsers(controller.getUsers());
-          logger.info("Successfully saved users on exit");
+          Log.info("Successfully saved users on exit");
         } catch (IOException ex) {
-          logger.warning("failed to save users on exit");
+          Log.warning("failed to save users on exit");
         }
         Platform.exit();
         System.exit(0);

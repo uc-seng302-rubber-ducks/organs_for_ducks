@@ -17,6 +17,7 @@ import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 import seng302.Model.Clinician;
 import seng302.Model.User;
+import seng302.Service.Log;
 import seng302.View.CLI;
 
 /**
@@ -24,7 +25,7 @@ import seng302.View.CLI;
  */
 public class LoginController {
 
-  private static final Logger logger = Logger.getLogger("ODMS");
+
   @FXML
     private Button changeLogin;
 
@@ -64,7 +65,7 @@ public class LoginController {
     * @param stage The applications stage.
     */
   public void init(AppController appController, Stage stage){
-    logger.info("starting loginController");
+    Log.info("starting loginController");
     warningLabel.setText("");
     this.appController = appController;
     users = appController.getUsers();
