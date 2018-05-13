@@ -25,7 +25,7 @@ import static org.junit.Assert.assertEquals;
 import static seng302.Utils.TableViewsMethod.getCell;
 import static seng302.Utils.TableViewsMethod.getCellValue;
 
-public class DeregisterOrganReasonControllerTest extends ApplicationTest {
+public class DeregisterOrganReasonControllerGUITest extends ApplicationTest {
 
     DateTimeFormatter sdf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
@@ -139,5 +139,33 @@ public class DeregisterOrganReasonControllerTest extends ApplicationTest {
         assertTrue(testPass);
     }
 
+    @Test
+    public void deregisterOrganReasonTransplantReceivedRegistrationErrorSystemLog (){
+        boolean testPass = true;
+        clickOn("#registerationErrorRadioButton");
+        clickOn("#okButton");
+        clickOn("#historyTab");
+        try{
+            assertEquals("Initial registering of the organ Heart was an error for receiver Aa", getCellValue("#historyTableView", 1, 0));
+        } catch (NullPointerException e) {
+            testPass = false;
+        }
+        assertTrue(testPass);
+    }
 
+    @Test
+    public void deregisterOrganReasonTransplantReceivedDiseaseCuredDiseaseTable (){
+        boolean testPass = true;
+        clickOn("#diseaseCuredRadioButton");
+        clickOn("#diseaseNameComboBox");
+        clickOn("A0");
+        clickOn("#okButton");
+        clickOn("#diseaseTab");
+        try{
+            assertEquals("A0", getCellValue("#pastDiseaseTableView", 1, 0));
+        } catch (NullPointerException e) {
+            testPass = false;
+        }
+        assertTrue(testPass);
+    }
 }

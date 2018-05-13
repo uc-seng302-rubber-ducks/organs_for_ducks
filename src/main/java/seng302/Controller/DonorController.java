@@ -1603,7 +1603,8 @@ public class DonorController {
             } else if (organDeregisterationReason == OrganDeregisterReason.DISEASE_CURED){
               //refresh diseases table
                 currentUser.getReceiverDetails().stopWaitingForOrgan(toDeRegister);
-                this.diseaseRefresh(this.getIsSortedByName(), this.getIsRevereSorted());
+                diseaseRefresh(this.getIsSortedByName(), this.getIsRevereSorted());
+
 
             } else if(organDeregisterationReason == OrganDeregisterReason.RECEIVER_DIED){
               List<Organs> currentlyReceiving = new ArrayList<>(currentlyReceivingListView.getItems());
@@ -1832,8 +1833,10 @@ public class DonorController {
       Collections.sort(currentUser.getPastDiseases(), disease.diseaseNameComparator);
     }
     Collections.sort(currentUser.getCurrentDiseases(), disease.diseaseChronicComparator);
-    getCurrentDiseaseTableView().refresh();
-    getPastDiseaseTableView().refresh();
+
+//    getCurrentDiseaseTableView().refresh();
+//    getPastDiseaseTableView().refresh();
+    showDonorDiseases(currentUser, false);
   }
 
   /**

@@ -164,8 +164,8 @@ public class DeregisterOrganReasonController {
                 isValid = false;
 
             } else {
-                currentUser.getCurrentDiseases().remove(selectedDisease);
                 selectedDisease.setIsCured(true);
+                currentUser.getCurrentDiseases().remove(selectedDisease);
                 currentUser.getPastDiseases().add(selectedDisease);
             }
 
