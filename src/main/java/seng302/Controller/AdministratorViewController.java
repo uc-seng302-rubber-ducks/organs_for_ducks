@@ -1,21 +1,27 @@
 package seng302.Controller;
 
-import javafx.event.ActionEvent;
-import javafx.event.EventType;
-import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.*;
-import javafx.scene.input.KeyCode;
-import javafx.stage.Stage;
-import seng302.Model.Administrator;
-import seng302.View.CLI;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.Pagination;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
+import javafx.scene.input.KeyCode;
+import javafx.stage.Stage;
+import seng302.Model.Administrator;
+import seng302.View.CLI;
 
 public class AdministratorViewController {
 
@@ -145,6 +151,7 @@ public class AdministratorViewController {
         this.administrator = administrator;
 
         adminCliTextArea.setEditable(false);
+      adminCliTextArea.setFocusTraversable(false);
         cliInputTextField.setOnKeyPressed(e -> {
             if (e.getCode() == KeyCode.ENTER) {
                 sendInputToCLI();
@@ -179,7 +186,7 @@ public class AdministratorViewController {
         pastCommands.add(cliInputTextField.getText());
         pastCommandIndex = pastCommands.size();
         CLI.parseInput(cliInputTextField.getText(), appController);
-        adminCliTextArea.setText(adminCliTextArea.getText() + "\n" + areaOut.toString());
+      adminCliTextArea.appendText("\n" + areaOut.toString());
         System.setOut(stdOut);
         System.setErr(stdErr);
     }
