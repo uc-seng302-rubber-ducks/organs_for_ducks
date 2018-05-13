@@ -1,30 +1,43 @@
 package seng302.GUITests;
 
+import static org.junit.Assert.assertEquals;
+import static org.testfx.api.FxAssert.verifyThat;
+import static seng302.Utils.TableViewsMethod.getCell;
+import static seng302.Utils.TableViewsMethod.getNumberOfRows;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.concurrent.TimeoutException;
+import javafx.scene.Node;
+import javafx.scene.input.KeyCode;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
+import org.testfx.matcher.control.LabeledMatchers;
 import seng302.App;
 import seng302.Controller.AppController;
 import seng302.Model.Disease;
 import seng302.Model.Organs;
 import seng302.Model.User;
 
-import static org.junit.Assert.assertTrue;
-
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.concurrent.TimeoutException;
-
-import static org.junit.Assert.assertEquals;
-import static seng302.Utils.TableViewsMethod.getCell;
-import static seng302.Utils.TableViewsMethod.getCellValue;
-
 public class DeregisterOrganReasonControllerGUITest extends ApplicationTest {
 
     DateTimeFormatter sdf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+  @BeforeClass
+  public static void initialization() {
+    if (Boolean.getBoolean("headless")) {
+      System.setProperty("testfx.robot", "glass");
+      System.setProperty("testfx.headless", "true");
+      System.setProperty("prism.order", "sw");
+      System.setProperty("prism.text", "t2k");
+      System.setProperty("java.awt.headless", "true");
+      System.setProperty("headless.geometry", "1920x1080-32");
+    }
+  }
 
     @Before
     public void setUpCreateScene()  throws TimeoutException {
@@ -60,39 +73,26 @@ public class DeregisterOrganReasonControllerGUITest extends ApplicationTest {
 
     @Test
     public void deregisterOrganReasonTransplantReceivedTransplantWaitListEmpty (){
-        boolean testPass = false;
         clickOn("#transplantReceivedRadioButton");
         clickOn("#okButton");
         clickOn("#userProfileTab");
         clickOn("#backButton");
         clickOn("#transplantWaitListTab");
-        try{
-            getCellValue("#transplantWaitListTableView", 0, 0);
-        } catch (NullPointerException e) {
-            testPass = true;
-        }
-        assertTrue(testPass);
+      assertEquals(0, getNumberOfRows("#transplantWaitListTableView"));
     }
 
     @Test
     public void deregisterOrganReasonTransplantReceivedRegistrationErrorTransplantWaitListEmpty (){
-        boolean testPass = false;
         clickOn("#registerationErrorRadioButton");
         clickOn("#okButton");
         clickOn("#userProfileTab");
         clickOn("#backButton");
         clickOn("#transplantWaitListTab");
-        try{
-            getCellValue("#transplantWaitListTableView", 0, 0);
-        } catch (NullPointerException e) {
-            testPass = true;
-        }
-        assertTrue(testPass);
+      assertEquals(0, getNumberOfRows("#transplantWaitListTableView"));
     }
 
     @Test
     public void deregisterOrganReasonTransplantReceivedDiseaseCuredTransplantWaitListEmpty (){
-        boolean testPass = false;
         clickOn("#diseaseCuredRadioButton");
         clickOn("#diseaseNameComboBox");
         clickOn("A0");
@@ -100,29 +100,56 @@ public class DeregisterOrganReasonControllerGUITest extends ApplicationTest {
         clickOn("#userProfileTab");
         clickOn("#backButton");
         clickOn("#transplantWaitListTab");
-        try{
-            getCellValue("#transplantWaitListTableView", 0, 0);
-        } catch (NullPointerException e) {
-            testPass = true;
-        }
-        assertTrue(testPass);
+      assertEquals(0, getNumberOfRows("#transplantWaitListTableView"));
     }
 
     @Test
     public void deregisterOrganReasonTransplantReceivedReceiverDiedTransplantWaitListEmpty (){
-        boolean testPass = false;
         clickOn("#receiverDiedRadioButton");
         clickOn("#okButton");
         clickOn("#userProfileTab");
         clickOn("#backButton");
         clickOn("#transplantWaitListTab");
-        try{
-            getCellValue("#transplantWaitListTableView", 0, 0);
-        } catch (NullPointerException e) {
-            testPass = true;
-        }
-        assertTrue(testPass);
+      assertEquals(0, getNumberOfRows("#transplantWaitListTableView"));
     }
 
+  @Test
+  public void deregisterOrganReasonTransplantReceivedRegistrationErrorSystemLog() {
+    clickOn("#registerationErrorRadioButton");
+    clickOn("#okButton");
+    clickOn("#historyTab");
+    assertEquals(1, getNumberOfRows("#historyTableView"));
+    }
 
+  @Test
+  public void deregisterOrganReasonTransplantReceivedDiseaseCuredDiseaseTable() {
+    boolean testPass = true;
+    clickOn("#diseaseCuredRadioButton");
+    clickOn("#diseaseNameComboBox");
+    clickOn("A0");
+    clickOn("#okButton");
+    clickOn("#diseaseTab");
+    assertEquals(0, getNumberOfRows("#currentDiseaseTableView"));
+    assertEquals(1, getNumberOfRows("#pastDiseaseTableView"));
+  }
+
+  @Test
+  public void deregisterOrganReasonTransplantReceivedReceiverDiedDOD() {
+    clickOn("#receiverDiedRadioButton");
+    clickOn("#okButton");
+    clickOn("#userProfileTab");
+    verifyThat("#DODValue", LabeledMatchers.hasText(LocalDate.now().toString()));
+  }
+
+  @Test
+  public void deregisterOrganReasonTransplantReceivedReceiverDiedInvalidDOD() {
+    clickOn("#receiverDiedRadioButton");
+    clickOn("#dODDatePicker");
+    push(KeyCode.BACK_SPACE);
+    push(KeyCode.BACK_SPACE);
+    write("40");
+    clickOn("#okButton");
+    clickOn("#userProfileTab");
+    verifyThat("#invalidDateErrorMessage", Node::isVisible);
+  }
 }
