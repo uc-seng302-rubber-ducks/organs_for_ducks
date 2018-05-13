@@ -1,21 +1,18 @@
-package seng302.Controller;
+package seng302.GUITests;
 
-import javafx.scene.input.KeyCode;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.testfx.api.FxRobotException;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 import seng302.App;
+import seng302.Controller.AppController;
 import seng302.Model.Disease;
 import seng302.Model.Organs;
 import seng302.Model.User;
-import seng302.Utils.TableViewsMethod;
 
 import static org.junit.Assert.assertTrue;
-import static seng302.Utils.TableViewsMethod.*;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -25,21 +22,9 @@ import static org.junit.Assert.assertEquals;
 import static seng302.Utils.TableViewsMethod.getCell;
 import static seng302.Utils.TableViewsMethod.getCellValue;
 
-public class DeregisterOrganReasonControllerTest extends ApplicationTest {
+public class DeregisterOrganReasonControllerGUITest extends ApplicationTest {
 
     DateTimeFormatter sdf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-
-    @BeforeClass
-    public static void initialization() {
-        if (Boolean.getBoolean("headless")) {
-            System.setProperty("testfx.robot", "glass");
-            System.setProperty("testfx.headless", "true");
-            System.setProperty("prism.order", "sw");
-            System.setProperty("prism.text", "t2k");
-            System.setProperty("java.awt.headless", "true");
-            System.setProperty("headless.geometry", "1920x1080-32");
-        }
-    }
 
     @Before
     public void setUpCreateScene()  throws TimeoutException {

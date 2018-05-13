@@ -515,7 +515,7 @@ public class DonorController {
 
     stage.onCloseRequestProperty().setValue(event -> {
       if (fromClinician) {
-        application.getClinicianControllerInstance().refreshTables();
+        application.getClinicianController().refreshTables();
       }
     });
   }
@@ -561,23 +561,21 @@ public class DonorController {
     if (!currentlyReceivingListView.getItems().isEmpty()) {
       openOrganFromDoubleClick(currentlyReceivingListView);
     }
-  }
 
     stage.onCloseRequestProperty().setValue(event -> {
-    if (fromClinician) {
-      AppController.getInstance().getClinicianController().refreshTables();
+      if (Clinician) {
+        AppController.getInstance().getClinicianController().refreshTables();
+      }
+    });
+
+    //if user already died, user cannot receive organs
+    if (currentUser.getDeceased())
+
+    {//TODO add listener so that if user is updated to not be diseased, these buttons will activate
+      registerButton.setDisable(true);
+      reRegisterButton.setDisable(true);
     }
-  });
-
-  //if user already died, user cannot receive organs
-    if(currentUser.getDeceased())
-
-  {//TODO add listener so that if user is updated to not be diseased, these buttons will activate
-    registerButton.setDisable(true);
-    reRegisterButton.setDisable(true);
   }
-
-}
   /**
    * Popoulates the organ lists of the user
    *
@@ -860,9 +858,9 @@ public class DonorController {
    * @throws InterruptedException to make sure there is no interruption
    */
   @FXML
-  private void updateDetails(ActionEvent actionEvent) throws IOException, InterruptedException {
+  private void updateDetails(ActionEvent actionEvent) {
     FXMLLoader updateLoader = new FXMLLoader(getClass().getResource("/FXML/updateUser.fxml"));
-    Parent root = null;
+    Parent root;
     try {
       root = updateLoader.load();
       UpdateUserController updateUserController = updateLoader.getController();
