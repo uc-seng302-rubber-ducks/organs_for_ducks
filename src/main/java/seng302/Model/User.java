@@ -5,13 +5,7 @@ import com.google.gson.annotations.Expose;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-
+import java.util.*;
 import javafx.collections.FXCollections;
 
 /**
@@ -1120,17 +1114,23 @@ public class User extends Undoable<User> {
         newUser.middleName = this.middleName;
         newUser.lastName = this.lastName;
 
-        newUser.timeCreated = this.timeCreated;
-        newUser.updateHistory = new HashMap<>(this.updateHistory);
-        newUser.miscAttributes = new ArrayList<>(this.miscAttributes);
-        newUser.currentMedication = new ArrayList<>(this.currentMedication);
-        newUser.previousMedication = new ArrayList<>(this.previousMedication);
-        newUser.currentMedicationTimes = new HashMap<>(this.currentMedicationTimes);
-        newUser.previousMedicationTimes = new HashMap<>(this.previousMedicationTimes);
-        newUser.donorDetails = new DonorDetails(newUser);
-        newUser.donorDetails.setOrgans(this.donorDetails.getOrgans());
-        newUser.receiverDetails = new ReceiverDetails(newUser);
-        newUser.receiverDetails.setOrgans(this.receiverDetails.getOrgans());
+    newUser.timeCreated = this.timeCreated;
+    newUser.updateHistory = new HashMap<>(this.updateHistory);
+    newUser.miscAttributes = new ArrayList<>(this.miscAttributes);
+    newUser.currentMedication = new ArrayList<>(this.currentMedication);
+    newUser.previousMedication = new ArrayList<>(this.previousMedication);
+    newUser.currentMedicationTimes = new HashMap<>(this.currentMedicationTimes);
+    newUser.previousMedicationTimes = new HashMap<>(this.previousMedicationTimes);
+    newUser.donorDetails = new DonorDetails(newUser);
+    for (Organs o : this.donorDetails.getOrgans()) {
+      newUser.donorDetails.getOrgans().add(o);
+    }
+    newUser.receiverDetails = new ReceiverDetails(newUser);
+    for (Organs o : this.receiverDetails.getOrgans().keySet()) {
+      ArrayList<LocalDate> dates = new ArrayList<>();
+      dates.addAll(this.receiverDetails.getOrgans().get(o));
+      newUser.receiverDetails.getOrgans().put(o, dates);
+    }
 
         newUser.currentDiseases = new ArrayList<>(this.currentDiseases);
         newUser.pastDiseases = new ArrayList<>(this.pastDiseases);
@@ -1144,13 +1144,11 @@ public class User extends Undoable<User> {
             newUser.medicalProcedures.add(newMed);
         }
 
-        newUser.changes = this.changes;
-        newUser.getUndoStack().clear();
-        newUser.getUndoStack().addAll(this.getUndoStack());
-        newUser.getRedoStack().clear();
-        newUser.getRedoStack().addAll(this.getRedoStack());
-        return newUser;
-    }
+    newUser.changes = this.changes;
+    newUser.setUndoStack((Stack<Memento<User>>) this.getUndoStack().clone());
+    newUser.setRedoStack((Stack<Memento<User>>) this.getRedoStack().clone());
+    return newUser;
+  }
 
     /**
      * Changes this instance of a user to become another user
@@ -1172,12 +1170,13 @@ public class User extends Undoable<User> {
         this.alcoholConsumption = other.alcoholConsumption;
         this.smoker = other.smoker;
 
-        this.currentAddress = other.currentAddress;
-        this.region = other.region;
-        this.homePhone = other.homePhone;
-        this.cellPhone = other.cellPhone;
-        this.email = other.email;
-        this.contact = other.contact;
+    this.currentAddress = other.currentAddress;
+    this.region = other.region;
+    this.homePhone = other.homePhone;
+    this.cellPhone = other.cellPhone;
+    this.email = other.email;
+    this.contact = other.contact;
+    this.contact.setAttachedUser(this);
 
         this.name = other.name;
         this.firstName = other.firstName;
@@ -1185,15 +1184,17 @@ public class User extends Undoable<User> {
         this.middleName = other.middleName;
         this.lastName = other.lastName;
 
-        this.timeCreated = other.timeCreated;
-        updateHistory = other.updateHistory;
-        this.miscAttributes = other.miscAttributes;
-        this.currentMedication = other.currentMedication;
-        this.previousMedication = other.previousMedication;
-        this.currentMedicationTimes = other.currentMedicationTimes;
-        this.previousMedicationTimes = other.previousMedicationTimes;
-        this.donorDetails = other.donorDetails;
-        this.receiverDetails = other.receiverDetails;
+    this.timeCreated = other.timeCreated;
+    updateHistory = other.updateHistory;
+    this.miscAttributes = other.miscAttributes;
+    this.currentMedication = other.currentMedication;
+    this.previousMedication = other.previousMedication;
+    this.currentMedicationTimes = other.currentMedicationTimes;
+    this.previousMedicationTimes = other.previousMedicationTimes;
+    this.donorDetails = other.donorDetails;
+    this.donorDetails.setAttachedUser(this);
+    this.receiverDetails = other.receiverDetails;
+    this.receiverDetails.setAttachedUser(this);
 
         this.currentDiseases = other.currentDiseases;
         this.pastDiseases = other.pastDiseases;
