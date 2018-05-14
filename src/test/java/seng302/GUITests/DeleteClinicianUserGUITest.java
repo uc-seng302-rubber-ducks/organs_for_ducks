@@ -1,5 +1,11 @@
-package seng302.Controller;
+package seng302.GUITests;
 
+
+
+import static org.testfx.api.FxAssert.verifyThat;
+
+import java.time.LocalDate;
+import java.util.concurrent.TimeoutException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -8,23 +14,31 @@ import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.matcher.control.LabeledMatchers;
 import seng302.App;
+import seng302.Controller.AppController;
 import seng302.Model.User;
+import seng302.Utils.TableViewsMethod;
 
 import java.time.LocalDate;
 import java.util.concurrent.TimeoutException;
 
 import static org.testfx.api.FxAssert.verifyThat;
 @Ignore
-public class DeleteUserGUITest extends ApplicationTest{
+public class DeleteClinicianUserGUITest extends ApplicationTest{
   @Before
   public void setUpCreateScene() throws TimeoutException {
     FxToolkit.registerPrimaryStage();
     FxToolkit.setupApplication(App.class);
     AppController.getInstance().getUsers().clear();
     AppController.getInstance().getUsers().add(new User("A", LocalDate.now(), "ABC1234"));
+    AppController.getInstance().getUsers().add(new User("Aa", LocalDate.now(), "ABC1244"));
+    clickOn("#changeLogin");
     clickOn("#userIDTextField");
-    write("ABC1234");
+    write("0");
+    clickOn("#passwordField");
+    write("admin");
     clickOn("#loginButton");
+    clickOn("#searchTab");
+    doubleClickOn(TableViewsMethod.getCell("#searchTableView", 0, 0));
   }
 
   @After
@@ -34,21 +48,20 @@ public class DeleteUserGUITest extends ApplicationTest{
   }
 
   @Test
-  public void deletedUser(){
+  public void deleteUser(){
     clickOn("#deleteUser");
     clickOn("OK");
-    clickOn("#userIDTextField");
-    write("ABC1234");
-    clickOn("#loginButton");
-    verifyThat("#warningLabel", LabeledMatchers.hasText("Donor was not found. \nTo register a new donor please click sign up."));
+    verifyThat("#fNameLabel", LabeledMatchers.hasText("Default"));
+
   }
 
   @Test
-  public void canceledDeletedUser(){
+  public void canceledDeleteUser(){
     clickOn("#deleteUser");
     clickOn("Cancel");
-    verifyThat("#NHIValue", LabeledMatchers.hasText("ABC1234"));
-  }
+    clickOn("#backButton");
+    verifyThat("#fNameLabel", LabeledMatchers.hasText("Default"));
 
+  }
 
 }

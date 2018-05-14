@@ -41,8 +41,6 @@ public class AppController {
   private Set<User> deletedUserStack = new HashSet<>();
   private Stack<User> redoStack = new Stack<>();
 
-  private ClinicianController clinicianControllerInstance;
-
   /**
    * Creates new instance of AppController
    */
@@ -93,15 +91,6 @@ public class AppController {
     }
     return controller;
   }
-
-  public void setClinicianControllerInstance(ClinicianController clinicianController){
-    clinicianControllerInstance = clinicianController;
-  }
-
-  public ClinicianController getClinicianControllerInstance() {
-    return clinicianControllerInstance;
-  }
-
 
     /**
      * appends a single Donor to the list of users stored in the Controller
