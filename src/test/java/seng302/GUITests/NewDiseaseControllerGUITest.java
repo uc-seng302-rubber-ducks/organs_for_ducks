@@ -1,4 +1,4 @@
-package seng302.Controller;
+package seng302.GUITests;
 
 import static org.junit.Assert.assertEquals;
 import static seng302.Utils.TableViewsMethod.getCell;
@@ -16,6 +16,7 @@ import org.testfx.api.FxRobotException;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 import seng302.App;
+import seng302.Controller.AppController;
 import seng302.Model.Disease;
 import seng302.Model.User;
 

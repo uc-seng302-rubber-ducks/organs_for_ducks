@@ -92,7 +92,7 @@ public class AttributeValidation {
      * is before the current date, false otherwise.
      */
     public static boolean validateDates(LocalDate birth, LocalDate death) {
-        return death == null || (birth.isBefore(death) && death.isBefore(LocalDate.now().plusDays(1)));
+        return death == null || (birth.isBefore(death.plusDays(1)) && death.isBefore(LocalDate.now().plusDays(1)));
     }
 
 
@@ -226,11 +226,11 @@ public class AttributeValidation {
             return true;
         }
         if (text1 == null) {
-            return text2.equals("");
+            return text2.startsWith("");
         }
         if (text2 == null) {
-            return text1.equals("");
+            return text1.startsWith("");
         }
-        return text1.toLowerCase().startsWith(text2.toLowerCase());
+        return text2.toLowerCase().startsWith(text1.toLowerCase());
     }
 }
