@@ -116,6 +116,8 @@ public class UpdateClinicianController {
 
             // checks if there was a change in any of the user input fields
             changesListener(staffIDTextField);
+            changesListener(passwordField);
+            changesListener(confirmPasswordField);
             changesListener(firstNameTextField);
             changesListener(middleNameTextField);
             changesListener(lastNameTextField);
@@ -202,9 +204,12 @@ public class UpdateClinicianController {
         });
     }
 
+    /**
+     * Updates the title bar depending on changes made to the user fields.
+     */
     private void update() {
         updateUndos();
-        if (undoClinicianFormButton.isDisabled()) {
+        if (undoClinicianFormButton.isDisabled() && passwordField.getText().isEmpty() && confirmPasswordField.getText().isEmpty()) {
             stage.setTitle("Update Clinician: " + currentClinician.getFirstName());
         } else if (!stage.getTitle().endsWith("*")) {
             stage.setTitle(stage.getTitle() + " *");
