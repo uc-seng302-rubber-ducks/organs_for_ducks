@@ -5,12 +5,14 @@ package seng302.Controller;
 import static org.junit.Assert.assertEquals;
 import static seng302.Utils.TableViewsMethod.getCell;
 import static seng302.Utils.TableViewsMethod.getCellValue;
+import static seng302.Utils.ListViewsMethod.*;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.concurrent.TimeoutException;
 
 import cucumber.api.java.cs.A;
+import javafx.scene.control.ListView;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.SelectionModel;
 import javafx.scene.input.KeyCode;
@@ -77,8 +79,7 @@ public class OrganReceiverTest extends ApplicationTest{
         clickOn("#organsComboBox");
         clickOn("Kidney");
         clickOn("#registerButton");
-        AppController.getInstance().getDonorController().currentlyReceivingListView.getSelectionModel().select(0);
-        assertEquals("Kidney", AppController.getInstance().getDonorController().currentlyReceivingListView.getSelectionModel().getSelectedItem().toString());
+        assertEquals("Kidney", getRowValue("#currentlyReceivingListView", 0).toString());
     }
 
     @Test
