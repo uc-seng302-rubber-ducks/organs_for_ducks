@@ -9,6 +9,11 @@ import org.testfx.matcher.control.LabeledMatchers;
 import seng302.App;
 import seng302.Controller.AppController;
 import seng302.Model.User;
+import static seng302.Utils.TableViewsMethod.*;
+import java.util.ArrayList;
+import java.util.concurrent.TimeoutException;
+
+import static org.testfx.api.FxAssert.verifyThat;
 
 
 public class GivenSteps extends ApplicationTest{
