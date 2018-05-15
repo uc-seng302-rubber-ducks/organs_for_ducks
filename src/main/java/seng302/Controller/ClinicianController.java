@@ -207,7 +207,6 @@ public class ClinicianController {
      * @param clinician     The current clinician.
      */
     public void init(Stage stage, AppController appController, Clinician clinician) {
-        appController.setClinicianControllerInstance(this);
         this.stage = stage;
         this.appController = appController;
         this.clinician = clinician.clone();
