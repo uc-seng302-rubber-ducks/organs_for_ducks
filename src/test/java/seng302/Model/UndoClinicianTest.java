@@ -1,4 +1,4 @@
-package seng302.Controller;
+package seng302.Model;
 
 import static org.junit.Assert.fail;
 
