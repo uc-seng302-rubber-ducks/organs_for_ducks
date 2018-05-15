@@ -13,6 +13,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import seng302.Model.User;
 
@@ -222,6 +223,7 @@ public class DonorOverviewController {
       root = updateLoader.load();
       UpdateUserController updateUserController = updateLoader.getController();
       Stage stage = new Stage();
+      stage.initModality(Modality.APPLICATION_MODAL);
       stage.setScene(new Scene(root));
       updateUserController.init(currentUser, application, stage);
       stage.show();
@@ -282,5 +284,13 @@ public class DonorOverviewController {
     stage.hide();
     stage.show();
 
+  }
+
+  /**
+   * Disables logout buttons
+   */
+  public void disableLogout() {
+    logOutButton.setVisible(false);
+    backButton.setVisible(true);
   }
 }

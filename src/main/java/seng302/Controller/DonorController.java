@@ -1,14 +1,19 @@
 package seng302.Controller;
 
 
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import seng302.Model.Change;
@@ -16,13 +21,6 @@ import seng302.Model.EmergencyContact;
 import seng302.Model.OrganDeregisterReason;
 import seng302.Model.Organs;
 import seng302.Model.User;
-import seng302.Model.*;
-
-import java.io.IOException;
-import java.text.DecimalFormat;
-import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
-import java.util.*;
 
 /**
  * Class for the functionality of the User view of the application
@@ -263,32 +261,6 @@ public class DonorController {
 
   }
 
-    /**
-     * Opens the update user details window
-     *
-     * @param actionEvent An action event.
-     * @throws IOException to make sure I/O is correct
-     * @throws InterruptedException to make sure there is no interruption
-     */
-    @FXML
-    private void updateDetails(ActionEvent actionEvent) throws IOException, InterruptedException {
-        FXMLLoader updateLoader = new FXMLLoader(getClass().getResource("/FXML/updateUser.fxml"));
-        Parent root = null;
-        try {
-            root = updateLoader.load();
-            UpdateUserController updateUserController = updateLoader.getController();
-            Stage stage = new Stage();
-            //TODO: This line
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.setScene(new Scene(root));
-            updateUserController.init(currentUser, application, stage);
-            stage.show();
-
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-  }
-
   /**
    * fires when the Undo button is clicked
    */
@@ -396,7 +368,6 @@ public class DonorController {
   }
 
     public void diableLogout(){
-        logOutButton.setVisible(false);
-        backButton.setVisible(true);
+      userProfileTabPageController.disableLogout();
     }
 }
