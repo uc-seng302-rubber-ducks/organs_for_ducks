@@ -33,11 +33,11 @@ public class LoginController {
   @FXML
   private Button loginUButton;
 
-    @FXML
-    private Button signUpButton;
+  @FXML
+  private Button signUpButton;
 
-    @FXML
-    private TextField userIDTextField;
+  @FXML
+  private TextField userIDTextField;
 
   @FXML
   private Label userWarningLabel;
@@ -61,6 +61,12 @@ public class LoginController {
   private TextField adminPasswordField;
 
   @FXML
+  private Label idLabel;
+
+  @FXML
+  private Label passwordLabel;
+
+  @FXML
   private Button loginAButton;
 
   @FXML
@@ -74,16 +80,18 @@ public class LoginController {
   private Button openCLIButton;
 
   private Stage helpStage = null;
+  private boolean isUser = true;
   private AppController appController;
   private ArrayList<User> users;
   private Stage stage;
 
   /**
-    * Initializes the Login controller.
-    * @param appController The applications controller.
-    * @param stage The applications stage.
-    */
-  public void init(AppController appController, Stage stage){
+   * Initializes the Login controller.
+   *
+   * @param appController The applications controller.
+   * @param stage The applications stage.
+   */
+  public void init(AppController appController, Stage stage) {
     Log.info("starting loginController");
     userWarningLabel.setText("");
     clinicianWarningLabel.setText("");
@@ -114,33 +122,34 @@ public class LoginController {
      * @param event An action event.
      */@FXML
     void loginUser(ActionEvent event) {
+        userWarningLabel.setText("");
+        String wantedDonor = userIDTextField.getText();
+        User donor = null;
 
-            userWarningLabel.setText("");
-            String wantedDonor = userIDTextField.getText();
-            User donor = null;
+        if (wantedDonor.isEmpty()) {
+            userWarningLabel.setText("Please enter an NHI.");
+            return;
+        } else {
+            donor = appController.findUser(wantedDonor);
+        }
+        if (donor == null) {
+            userWarningLabel.setText("Donor was not found. \nTo register a new donor please click sign up.");
+            return;
+        }
 
-            if (wantedDonor.isEmpty()) {
-                userWarningLabel.setText("Please enter an NHI.");
-                return;
-            } else {
-                donor = appController.findUser(wantedDonor);
-            }
-            if (donor == null) {
-                userWarningLabel.setText("Donor was not found. \nTo register a new donor please click sign up.");
-                return;
-            }
-
-            FXMLLoader donorLoader = new FXMLLoader(getClass().getResource("/FXML/userView.fxml"));
-            Parent root = null;
-            try {
-                root = donorLoader.load();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            stage.setScene(new Scene(root));
-            DonorController donorController = donorLoader.getController();
-            AppController.getInstance().setDonorController(donorController);
-            donorController.init(AppController.getInstance(), donor, stage, false);
+        FXMLLoader donorLoader = new FXMLLoader(getClass().getResource("/FXML/userView.fxml"));
+        Parent root = null;
+        try {
+            root = donorLoader.load();
+        } catch (IOException e) {
+            Log.severe("failed to load user window", e);
+            e.printStackTrace();
+        }
+        stage.setScene(new Scene(root));
+        DonorController donorController = donorLoader.getController();
+        AppController.getInstance().setDonorController(donorController);
+        Log.info("Logging in as a user");
+        donorController.init(AppController.getInstance(), donor, stage, false);
     }
 
     /**
@@ -172,12 +181,14 @@ public class LoginController {
                 try {
                     root = clinicianLoader.load();
                 } catch (IOException e) {
+                    Log.severe("failed to load clinician window", e);
                     e.printStackTrace();
                 }
 
                 stage.setScene(new Scene(root));
                 ClinicianController clinicianController = clinicianLoader.getController();
                 AppController.getInstance().setClinicianController(clinicianController);
+                Log.info("Logging in as a clinician");
                 clinicianController.init(stage, appController, clinician);
             }
     }
@@ -210,6 +221,7 @@ public class LoginController {
                 try {
                     root = administratorLoader.load();
                 } catch (IOException e) {
+                    Log.severe("failed to load administrator window", e);
                     e.printStackTrace();
                 }
 
@@ -217,6 +229,7 @@ public class LoginController {
                 stage.setTitle("Administrator");
                 AdministratorViewController administratorController = administratorLoader.getController();
                 AppController.getInstance().setAdministratorViewController(administratorController);
+                Log.info("Logging in as an administrator");
                 administratorController.init(administrator, appController, stage);
             }
   }
@@ -238,6 +251,7 @@ public class LoginController {
         try {
             root = donorLoader.load();
         } catch (IOException e) {
+            Log.severe("failed to load new user window", e);
             e.printStackTrace();}
         Stage newStage  = new Stage();
         newStage.initModality(Modality.APPLICATION_MODAL);
@@ -245,33 +259,35 @@ public class LoginController {
         newStage.setTitle("Create New User Profile");
         newStage.show();
         NewUserController donorController =  donorLoader.getController();
+        Log.info("Opening new user window");
         donorController.init(AppController.getInstance(),  stage, newStage);
 
     }
 
 
-    /**
-     * Displays a pop up window with instructions to help the user on the login page.
-     */
-    @FXML
-    private void helpButton() {
+  /**
+   * Displays a pop up window with instructions to help the user on the login page.
+   */
+  @FXML
+  private void helpButton() {
 
-        if (helpStage == null) {
-            try {
-                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/FXML/loginHelp.fxml"));
-                Parent root = fxmlLoader.load();
-                helpStage = new Stage();
-                helpStage.setTitle("Login Help");
-                helpStage.setScene(new Scene(root));
-                helpStage.setResizable(false);
-                helpStage.setOnCloseRequest(event -> helpStage = null);
-                helpStage.show();
+    if (helpStage == null) {
+      try {
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/FXML/loginHelp.fxml"));
+        Parent root = fxmlLoader.load();
+        helpStage = new Stage();
+        helpStage.setTitle("Login Help");
+        helpStage.setScene(new Scene(root));
+        helpStage.setResizable(false);
+        helpStage.setOnCloseRequest(event -> helpStage = null);
+        helpStage.show();
 
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
+      } catch (Exception e) {
+        Log.severe("could not load help window", e);
+        e.printStackTrace();
+      }
     }
+  }
 
 
     /**
