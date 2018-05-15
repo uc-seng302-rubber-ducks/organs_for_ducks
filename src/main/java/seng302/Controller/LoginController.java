@@ -26,9 +26,9 @@ public class LoginController {
 
 
   @FXML
-    private Button changeLogin;
+  private Button changeLogin;
 
-    @FXML
+  @FXML
   private Button loginButton;
 
   @FXML
@@ -47,23 +47,24 @@ public class LoginController {
   private Label warningLabel;
 
   @FXML
-    private Label idLabel;
+  private Label idLabel;
 
-    @FXML
+  @FXML
   private Label passwordLabel;
 
-    private Stage helpStage = null;
-    private boolean isUser = true;
-    private AppController appController;
-    private ArrayList<User> users;
-    private Stage stage;
+  private Stage helpStage = null;
+  private boolean isUser = true;
+  private AppController appController;
+  private ArrayList<User> users;
+  private Stage stage;
 
   /**
-    * Initializes the Login controller.
-    * @param appController The applications controller.
-    * @param stage The applications stage.
-    */
-  public void init(AppController appController, Stage stage){
+   * Initializes the Login controller.
+   *
+   * @param appController The applications controller.
+   * @param stage The applications stage.
+   */
+  public void init(AppController appController, Stage stage) {
     Log.info("starting loginController");
     warningLabel.setText("");
     this.appController = appController;
@@ -72,165 +73,185 @@ public class LoginController {
     stage.setTitle("Login");
     Scene scene = stage.getScene();
     scene.setOnKeyPressed(e -> {
-    if (e.getCode() == KeyCode.ENTER) {
-            login(new ActionEvent());
-        }
+      if (e.getCode() == KeyCode.ENTER) {
+        login(new ActionEvent());
+      }
     });
   }
 
-    /**
-     * Changes the login window view between Clinician login and User login
-     */
-    @FXML
-    void changeUserButtonClicked() {
-        if (isUser) {
-            warningLabel.setText("");
-            idLabel.setText("Staff ID:");
-            userIDTextField.setText("");
-            passwordField.setVisible(true);
-            passwordLabel.setVisible(true);
-            isUser = false;
-            changeLogin.setText("Login as a Public User");
+  /**
+   * Changes the login window view between Clinician login and User login
+   */
+  @FXML
+  void changeUserButtonClicked() {
+    if (isUser) {
+      warningLabel.setText("");
+      idLabel.setText("Staff ID:");
+      userIDTextField.setText("");
+      passwordField.setVisible(true);
+      passwordLabel.setVisible(true);
+      isUser = false;
+      changeLogin.setText("Login as a Public User");
 
-        } else {
-            warningLabel.setText("");
-            idLabel.setText("NHI:");
-            userIDTextField.setText("");
-            passwordLabel.setVisible(false);
-            passwordField.setVisible(false);
-            isUser = true;
-            changeLogin.setText("Login as a Clinician");
-        }
+    } else {
+      warningLabel.setText("");
+      idLabel.setText("NHI:");
+      userIDTextField.setText("");
+      passwordLabel.setVisible(false);
+      passwordField.setVisible(false);
+      isUser = true;
+      changeLogin.setText("Login as a Clinician");
+    }
 
   }
 
-    /**
-     * Logs in the person based on if they are a user or Clinician
-     * @param event An action event.
-     */@FXML
-    void login(ActionEvent event) {
-        if(isUser) {
-            warningLabel.setText("");
-            String wantedDonor = userIDTextField.getText();
-            User donor = null;
+  /**
+   * Logs in the person based on if they are a user or Clinician
+   *
+   * @param event An action event.
+   */
+  @FXML
+  void login(ActionEvent event) {
+    if (isUser) {
+      warningLabel.setText("");
+      String wantedDonor = userIDTextField.getText();
+      User donor = null;
 
-            if (wantedDonor.isEmpty()) {
-                warningLabel.setText("Please enter an NHI.");
-                return;
-            } else {
-                donor = appController.findUser(wantedDonor);}
-            if (donor == null) {
-                warningLabel.setText("Donor was not found. \nTo register a new donor please click sign up.");
-                return;}
+      if (wantedDonor.isEmpty()) {
+        warningLabel.setText("Please enter an NHI.");
+        return;
+      } else {
+        donor = appController.findUser(wantedDonor);
+      }
+      if (donor == null) {
+        warningLabel
+            .setText("Donor was not found. \nTo register a new donor please click sign up.");
+        return;
+      }
 
-            FXMLLoader donorLoader = new FXMLLoader(getClass().getResource("/FXML/userView.fxml"));
-            Parent root = null;
-            try {
-                root = donorLoader.load();
-              stage.setScene(new Scene(root));
-              DonorController donorController = donorLoader.getController();
-              AppController.getInstance().setDonorController(donorController);
-              donorController.init(AppController.getInstance(), donor, stage, false);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        } else  {
-            warningLabel.setText("");
-            String wantedClinician ;if (userIDTextField.getText().isEmpty()) {
-                warningLabel.setText("Please enter your staff id number");
-                return;
-            } else {
-            wantedClinician  = userIDTextField.getText();}
-            String password = passwordField.getText();
-            Clinician clinician = appController.getClinician(wantedClinician);
-            if (clinician== null){
-                warningLabel.setText("The Clinician does not exist");
-            } else if (!clinician.isPasswordCorrect(password)){
-                warningLabel.setText("Your password is incorrect please try again");
-                return;
-            }else {
-            FXMLLoader clinicianLoader = new FXMLLoader(getClass().getResource("/FXML/clinicianView.fxml"));
-            Parent root = null;
-            try {
-                root = clinicianLoader.load();
-            } catch (IOException e) {
-                e.printStackTrace();}
-
-            stage.setScene(new Scene(root));
-            ClinicianController clinicianController = clinicianLoader.getController();
-              AppController.getInstance().setClinicianController(clinicianController);
-            clinicianController.init(stage,appController,clinician);
-}
-        }
-}
-
-
-
-
-    /**
-     * Creates either a new user or clinician based on the login window
-     * Opens the sign up view based on the login view
-     * @param event An action event
-     */@FXML
-    void signUp(ActionEvent event) {
-
-
-    if(isUser) {    FXMLLoader donorLoader = new FXMLLoader(getClass().getResource("/FXML/createNewUser.fxml"));
+      FXMLLoader donorLoader = new FXMLLoader(getClass().getResource("/FXML/userView.fxml"));
+      Parent root = null;
+      try {
+        root = donorLoader.load();
+        Log.info("Logging in as a user");
+      } catch (IOException e) {
+        Log.severe("failed to load user window", e);
+        e.printStackTrace();
+      }
+      stage.setScene(new Scene(root));
+      DonorController donorController = donorLoader.getController();
+      AppController.getInstance().setDonorController(donorController);
+      donorController.init(AppController.getInstance(), donor, stage, false);
+    } else {
+      warningLabel.setText("");
+      String wantedClinician;
+      if (userIDTextField.getText().isEmpty()) {
+        warningLabel.setText("Please enter your staff id number");
+        return;
+      } else {
+        wantedClinician = userIDTextField.getText();
+      }
+      String password = passwordField.getText();
+      Clinician clinician = appController.getClinician(wantedClinician);
+      if (clinician == null) {
+        warningLabel.setText("The Clinician does not exist");
+      } else if (!clinician.isPasswordCorrect(password)) {
+        warningLabel.setText("Your password is incorrect please try again");
+        return;
+      } else {
+        FXMLLoader clinicianLoader = new FXMLLoader(
+            getClass().getResource("/FXML/clinicianView.fxml"));
         Parent root = null;
         try {
-            root = donorLoader.load();
+          root = clinicianLoader.load();
         } catch (IOException e) {
-            e.printStackTrace();}
+          Log.severe("failed to load clinician window", e);
+          e.printStackTrace();
+        }
 
         stage.setScene(new Scene(root));
-        stage.setTitle("Create New User Profile");
-        NewUserController donorController =  donorLoader.getController();
-        donorController.init(AppController.getInstance(),  stage);
+        ClinicianController clinicianController = clinicianLoader.getController();
+        AppController.getInstance().setClinicianController(clinicianController);
+        Log.info("Logging in as a clinician");
+        clinicianController.init(stage, appController, clinician);
 
-        } else {
-            FXMLLoader clinicianLoader = new FXMLLoader(getClass().getResource("/FXML/updateClinician.fxml"));
-            Parent root = null;
-
-    try {
-                root = clinicianLoader.load();
-            } catch (IOException e) {
-                e.printStackTrace();}
-
-            stage.setScene(new Scene(root));
-            UpdateClinicianController newClinician = clinicianLoader.getController();
-            newClinician.init(null, appController, stage, true);
-        }
+      }
     }
+  }
 
 
-    /**
-     * Displays a pop up window with instructions to help the user on the login page.
-     */
-    @FXML
-    private void helpButton() {
+  /**
+   * Creates either a new user or clinician based on the login window Opens the sign up view based
+   * on the login view
+   *
+   * @param event An action event
+   */
+  @FXML
+  void signUp(ActionEvent event) {
 
-        if (helpStage == null) {
-            try {
-                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/FXML/loginHelp.fxml"));
-                Parent root = fxmlLoader.load();
-                helpStage = new Stage();
-                helpStage.setTitle("Login Help");
-                helpStage.setScene(new Scene(root));
-                helpStage.setResizable(false);
-                helpStage.setOnCloseRequest(event -> helpStage = null);
-                helpStage.show();
+    if (isUser) {
+      FXMLLoader donorLoader = new FXMLLoader(getClass().getResource("/FXML/createNewUser.fxml"));
+      Parent root = null;
+      try {
+        root = donorLoader.load();
+      } catch (IOException e) {
+        Log.severe("failed to load new user window", e);
+        e.printStackTrace();
+      }
 
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
+      stage.setScene(new Scene(root));
+      stage.setTitle("Create New User Profile");
+      NewUserController donorController = donorLoader.getController();
+      Log.info("Opening new user window");
+      donorController.init(AppController.getInstance(), stage);
+
+    } else {
+      FXMLLoader clinicianLoader = new FXMLLoader(
+          getClass().getResource("/FXML/updateClinician.fxml"));
+      Parent root = null;
+
+      try {
+        root = clinicianLoader.load();
+      } catch (IOException e) {
+        Log.severe("failed to load new clinician window", e);
+        e.printStackTrace();
+      }
+
+      stage.setScene(new Scene(root));
+      UpdateClinicianController newClinician = clinicianLoader.getController();
+      newClinician.init(null, appController, stage, true);
     }
+  }
 
 
-    /**
-     * Opens the Command Line version of the application
-     * @param event
-     */
+  /**
+   * Displays a pop up window with instructions to help the user on the login page.
+   */
+  @FXML
+  private void helpButton() {
+
+    if (helpStage == null) {
+      try {
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/FXML/loginHelp.fxml"));
+        Parent root = fxmlLoader.load();
+        helpStage = new Stage();
+        helpStage.setTitle("Login Help");
+        helpStage.setScene(new Scene(root));
+        helpStage.setResizable(false);
+        helpStage.setOnCloseRequest(event -> helpStage = null);
+        helpStage.show();
+
+      } catch (Exception e) {
+        Log.severe("could not load help window", e);
+        e.printStackTrace();
+      }
+    }
+  }
+
+
+  /**
+   * Opens the Command Line version of the application
+   */
   @FXML
   void openCLI(ActionEvent event) {
     stage.hide();
