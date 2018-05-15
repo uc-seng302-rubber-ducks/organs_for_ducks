@@ -4,17 +4,17 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializer;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.Reader;
+import org.joda.time.DateTime;
+import org.joda.time.format.ISODateTimeFormat;
+import seng302.Directory;
+
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
 import seng302.Directory;
@@ -64,14 +64,14 @@ public final class JsonHandler {
    * @throws FileNotFoundException when the file cannot be located.
    */
 
-  public static ArrayList<User> loadUsers() throws FileNotFoundException {
-    ArrayList<User> results = new ArrayList<>();
-    File inFile = new File(Directory.JSON.directory() + "/donors.json");
-    Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss")
-        .create();
-    Reader reader = new FileReader(inFile);
-    User[] donors = gson.fromJson(reader, User[].class);
-    results.addAll(Arrays.asList(donors));
+    public static ArrayList<User> loadUsers(String filename) throws FileNotFoundException {
+        ArrayList<User> results = new ArrayList<>();
+        File inFile = new File(filename);
+        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss")
+                .create();
+        Reader reader =new FileReader(inFile);
+        User[] donors = gson.fromJson(reader, User[].class);
+        results.addAll(Arrays.asList(donors));
 
     for (User result : results) {
       result.getReceiverDetails().setAttachedUser(result);
@@ -100,7 +100,7 @@ public final class JsonHandler {
       outFile.delete(); //purge old data before writing new data in
     }
 
-    outFile.createNewFile(); //creates new file if donors does not exist
+    outFile.createNewFile(); //creates new file
     Gson gson = new GsonBuilder().registerTypeAdapter(DateTime.class, (JsonSerializer<DateTime>)
         (json, typeOfSrc, context) -> new JsonPrimitive(ISODateTimeFormat.dateTime().print(json)))
         .excludeFieldsWithoutExposeAnnotation()
@@ -113,39 +113,83 @@ public final class JsonHandler {
   }
 
 
-  /**
-   * Loads the list of registered clinicians for the application
-   *
-   * @return List of registered clinicians
-   * @throws FileNotFoundException thrown if no clinicians exist
-   */
-  public static ArrayList<Clinician> loadClinicians() throws FileNotFoundException {
-    ArrayList<Clinician> results = new ArrayList<>();
-    File inFile = new File(Directory.JSON.directory() + "/clinicians.json");
-    Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss")
-        .create();
-    Reader reader = new FileReader(inFile);
-    Clinician[] clinicians = gson.fromJson(reader, Clinician[].class);
-    results.addAll(Arrays.asList(clinicians));
-    Log.info("successfully loaded clinicians from file");
-    return results;
-  }
-
-  /**
-   * Saves a personal changelog for each donor
-   *
-   * @param changes list of changes to be added top the change log
-   * @param name User name to be changed must be passed in format firstname[_middlename(s)]_lastname
-   * @throws IOException thrown if no file exists can be ignored as file is created
-   */
-  public static void saveChangelog(ArrayList<Change> changes, String name) throws IOException {
-    Files.createDirectories(Paths.get(Directory.JSON.directory()));
-    File outFile = new File(Directory.JSON.directory() + "/" + name + "changelog.json");
-
-    if (outFile.exists()) {
-      changes.addAll(importHistoryFromFile(
-          name)); //dont worry about the position in the array JSON is not parsed in order anyway
+    /**
+     * Loads the list of registered clinicians for the application
+     * @return List of registered clinicians
+     * @throws FileNotFoundException thrown if no clinicians exist
+     */
+    public static ArrayList<Clinician> loadClinicians(String filename) throws FileNotFoundException {
+        ArrayList<Clinician> results = new ArrayList<>();
+        File inFile = new File(filename);
+        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss")
+                .create();
+        Reader reader =new FileReader(inFile);
+        Clinician[] clinicians = gson.fromJson(reader, Clinician[].class);
+        results.addAll(Arrays.asList(clinicians));
+        return results;
     }
+
+
+    /**
+     * Saves the current list of administrators to a JSON file
+     *
+     * @param admins list of administrators to be saved
+     * @throws IOException thrown when file does not exist, can be ignored as file will be created
+     */
+    public static void saveAdmins(Collection<Administrator> admins) throws IOException {
+        Files.createDirectories(Paths.get(Directory.JSON.directory()));
+        File outFile = new File(Directory.JSON.directory() + "/administrators.json");
+
+        if (outFile.exists()) {
+            outFile.delete(); // purge old data to get a clean file to write new data to
+        }
+
+        outFile.createNewFile(); // creates new file
+        Gson gson = new GsonBuilder().registerTypeAdapter(DateTime.class, (JsonSerializer<DateTime>)
+                (json, typeOfSrc, context) -> new JsonPrimitive(ISODateTimeFormat.dateTime().print(json)))
+                .excludeFieldsWithoutExposeAnnotation()
+                .create();
+
+        FileWriter writer = new FileWriter(outFile);
+        String adminsString = gson.toJson(admins);
+        writer.write(adminsString);
+        writer.close();
+    }
+
+    /**
+     * Loads a list of administrators from a JSON file into the current session
+     *
+     * @return List of administrator accounts
+     * @throws FileNotFoundException thrown if the JSON file of administrators does not exist
+     */
+    public static Collection<Administrator> loadAdmins() throws FileNotFoundException {
+        Collection<Administrator> admins = new ArrayList<>();
+
+        File inFile = new File(Directory.JSON.directory() + "/administrators.json");
+        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss")
+                .create();
+
+        Reader reader = new FileReader(inFile);
+        Administrator[] administrators = gson.fromJson(reader, Administrator[].class);
+        admins.addAll(Arrays.asList(administrators));
+        return admins;
+    }
+
+    /**
+     * Saves a personal changelog for each donor
+     *
+     * @param changes list of changes to be added top the change log
+     * @param name User name to be changed must be passed in format firstname[_middlename(s)]_lastname
+     * @throws IOException thrown if no file exists can be ignored as file is created
+     */
+    public static void saveChangelog(ArrayList<Change> changes, String name) throws IOException {
+        Files.createDirectories(Paths.get(Directory.JSON.directory()));
+        File outFile = new File(Directory.JSON.directory()+"/"+name+"changelog.json");
+
+
+        if (outFile.exists()){
+            changes.addAll(importHistoryFromFile(name)); //don't worry about the position in the array JSON is not parsed in order anyway
+        }
 
     outFile.createNewFile(); //creates new file if donors does not exist
     Gson gson = new GsonBuilder().registerTypeAdapter(DateTime.class, (JsonSerializer<DateTime>)

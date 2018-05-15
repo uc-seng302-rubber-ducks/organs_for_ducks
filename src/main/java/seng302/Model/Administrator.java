@@ -1,7 +1,10 @@
 package seng302.Model;
 
 import com.google.gson.annotations.Expose;
+import javafx.scene.Scene;
+import seng302.Service.PasswordManager;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -20,7 +23,9 @@ public class Administrator {
     @Expose
     private String lastName;
     @Expose
-    private String password;
+    private byte[] password;
+    @Expose
+    private byte[] salt;
     @Expose
     private LocalDateTime dateCreated;
     @Expose
@@ -30,11 +35,6 @@ public class Administrator {
      * Constructor to create a default Administrator
      */
     public Administrator(){
-        userName = "default";
-        this.firstName = null;
-        this.middleName = null;
-        this.lastName = null;
-        password = "admin";
         dateCreated = LocalDateTime.now();
         dateLastModified = LocalDateTime.now();
     }
@@ -52,7 +52,7 @@ public class Administrator {
         this.firstName = firstName;
         this.middleName = middleName;
         this.lastName = lastName;
-        this.password = password;
+        setPassword(password);
         dateCreated = LocalDateTime.now();
         dateLastModified = LocalDateTime.now();
     }
@@ -121,13 +121,24 @@ public class Administrator {
         return fullName;
     }
 
-    public String getPassword() {
+    private byte[] getPassword() {
         return password;
     }
 
     public void setPassword(String password) {
-        this.password = password;
+        salt = PasswordManager.getNextSalt();
+        this.password = PasswordManager.hash(password, salt);
     }
+
+    /**
+     * Takes an attempt as a password and then checks it against the actual password
+     * @param passwordAttempt password guess
+     * @return correctness of the guess
+     */
+    public boolean isPasswordCorrect(String passwordAttempt){
+        return PasswordManager.isExpectedPassword(passwordAttempt, salt, getPassword());
+    }
+
 
     @Override
     public boolean equals(Object o) {

@@ -218,6 +218,7 @@ public class UpdateUserController {
     }
 
   }
+
   /**
    * Changes the title bar to add/remove an asterisk when a change was detected on the date picker.
    *

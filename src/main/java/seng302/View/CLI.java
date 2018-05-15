@@ -10,6 +10,7 @@ import org.jline.utils.InfoCmp.Capability;
 import picocli.CommandLine;
 import seng302.Controller.AppController;
 import seng302.Controller.CliCommands.CliRoot;
+import seng302.Directory;
 import seng302.Model.JsonHandler;
 import seng302.Model.JsonWriter;
 
@@ -56,7 +57,7 @@ public class CLI {
 
     AppController controller = AppController.getInstance();
     try {
-      controller.setUsers(JsonHandler.loadUsers());
+      controller.setUsers(JsonHandler.loadUsers(Directory.JSON.directory() + "/donors.json"));
     } catch (FileNotFoundException e) {
       System.out.println("No users file exists. Creating blank session");
       controller.setUsers(new ArrayList<>());
@@ -68,17 +69,25 @@ public class CLI {
 
     input = lineReader.readLine(">> ");
     while (!input.trim().equals("quit")) {
-      arguments = input.split(" ");
-      JsonWriter.changeLog(arguments);
-      controller.addToHistoryOfCommands(arguments);
-      new CommandLine(new CliRoot())
-          .parseWithHandler(new CommandLine.RunLast(), System.err, arguments);
-      //System.out.println(lineReader.getHistory().last());
+      parseInput(input, controller);
       input = lineReader.readLine(">> ");
     }
     System.out.println("CLI exited.");
     if (args != null && args[0].equals("gui")) {
       System.out.println("return to GUI");
     }
+  }
+
+  /**
+   * Parses the user input and executes the command
+   * @param input Whole String command to execute
+   * @param controller Instance of the AppController
+   */
+  public static void parseInput(String input, AppController controller) {
+    String[] arguments = input.split(" ");
+    JsonWriter.changeLog(arguments);
+    controller.addToHistoryOfCommands(arguments);
+    new CommandLine(new CliRoot())
+            .parseWithHandler(new CommandLine.RunLast(), System.err, arguments);
   }
 }

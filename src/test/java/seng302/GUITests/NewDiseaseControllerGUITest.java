@@ -47,12 +47,12 @@ public class NewDiseaseControllerGUITest extends ApplicationTest {
         AppController.getInstance().getUsers().get(0).getPastDiseases().add(new Disease("B0", false, true, LocalDate.now()));
 
         //Use default clinician
-        clickOn("#changeLogin");
-        clickOn("#userIDTextField");
+        clickOn("#clinicianTab");
+        clickOn("#staffIdTextField");
         write("0", 0);
-        clickOn("#passwordField");
+        clickOn("#staffPasswordField");
         write("admin", 0);
-        clickOn("#loginButton");
+        clickOn("#loginCButton");
         //verifyThat("#staffIdLabel", LabeledMatchers.hasText("0"));
         clickOn("#searchTab");
         doubleClickOn(getCell("#searchTableView", 0, 0));
