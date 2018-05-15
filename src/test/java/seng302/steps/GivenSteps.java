@@ -16,7 +16,8 @@ import seng302.Controller.AppController;
 import seng302.Model.User;
 
 public class GivenSteps extends ApplicationTest{
-    private AppController controller;
+
+  private AppController controller = AppController.getInstance();
 
   @After
   public void tearDown() throws TimeoutException {
