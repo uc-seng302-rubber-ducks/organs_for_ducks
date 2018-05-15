@@ -84,15 +84,6 @@ public class AppController {
     return controller;
   }
 
-  public void setClinicianControllerInstance(ClinicianController clinicianController){
-    clinicianControllerInstance = clinicianController;
-  }
-
-  public ClinicianController getClinicianControllerInstance() {
-    return clinicianControllerInstance;
-  }
-
-
     /**
      * appends a single Donor to the list of users stored in the Controller
      * @param name The name of the donor.

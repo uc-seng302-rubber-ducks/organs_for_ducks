@@ -195,9 +195,7 @@ public class UpdateUserController {
 
     scene.addEventFilter(KeyEvent.KEY_RELEASED, e -> {
       if (shortcutZ.match(e)) {
-        if (checkChanges()) { // checks if reverting a textfield change restores all fields to their original state
-          stage.setTitle("Update User: " + user.getFirstName());
-        }
+        undo();
       }
     });
 
@@ -207,13 +205,18 @@ public class UpdateUserController {
     });
   }
 
+  /**
+   * Calls a method to update the undo stack and changes the stage title appropriately.
+   * Adds an asterisk to the stage title when the undo button is clickable.
+   * Removes an asterisk from the stage title when the undo button is disabled.
+   */
   private void update() {
-    if (checkChanges()) {
-      stage.setTitle("Update User: " + currentUser.getFirstName());
-    } else {
-      stage.setTitle("Update User: " + currentUser.getFirstName() + " *");
-    }
     updateUndos();
+
+    if (!undoUpdateButton.isDisabled() && !stage.getTitle().endsWith("*")) {
+      stage.setTitle(stage.getTitle() + "*");
+    }
+
   }
 
   /**
@@ -227,8 +230,13 @@ public class UpdateUserController {
     });
   }
 
-  private void addCheckBoxListener(CheckBox dp) {
-    dp.selectedProperty().addListener((observable, oldValue, newValue) -> {
+  /**
+   * Listens for changes on the given checkbox and calls for updates.
+   *
+   * @param checkBox The given CheckBox.
+   */
+  private void addCheckBoxListener(CheckBox checkBox) {
+    checkBox.selectedProperty().addListener((observable, oldValue, newValue) -> {
       update();
     });
   }
@@ -258,247 +266,15 @@ public class UpdateUserController {
     });
   }
 
-  private boolean checkChanges() {
-    return checkChanges(currentUser);
-  }
-  /**
-   * Checks if all fields are in their original state (i.e. no change has been made / all changes
-   * have been undone).
-   *
-   * @return true if all fields are in their original state, false if at least one field is
-   * different.
-   */
-  private boolean checkChanges(User user) {
-    boolean noChange = true;
-
-    // user details
-    if (!(user.getNhi()).equals(nhiInput.getText())) {
-      noChange = false;
-    }
-
-    if (!(user.getFirstName()).equals(fNameInput.getText())) {
-      noChange = false;
-    }
-
-    if (!user.getPreferredFirstName().equals(preferredFNameTextField.getText())) {
-      noChange = false;
-    }
-
-    if (user.getMiddleName() != null) {
-      if (!(user.getMiddleName()).equals(mNameInput.getText())) {
-        noChange = false;
-      }
-    } else if (!mNameInput.getText().isEmpty()) {
-      noChange = false;
-    }
-
-    if (user.getLastName() != null) {
-      if (!(user.getLastName()).equals(lNameInput.getText())) {
-        noChange = false;
-      }
-    } else if (!lNameInput.getText().isEmpty()) {
-      noChange = false;
-    }
-
-    if (dobInput.getValue() != null) {
-      if (!user.getDateOfBirth().isEqual(dobInput.getValue())) {
-        noChange = false;
-      }
-    } else {
-      noChange = false;
-    }
-
-    LocalDate deathDate = user.getDateOfDeath();
-    LocalDate dod = dodInput.getValue();
-    if (deathDate != null && dod != null) {
-      if (!deathDate.isEqual(dod)) {
-        noChange = false;
-      }
-    } else if ((deathDate == null && dod != null) || deathDate != null) {
-      noChange = false;
-    }
-
-    // health details
-    if (user.getBirthGender() != null && birthGenderComboBox.getValue() != null) {
-      if (!(user.getBirthGender()).equals(birthGenderComboBox.getValue().toString())) {
-        noChange = false;
-      }
-    } else if (birthGenderComboBox.getValue() != null && !birthGenderComboBox.getValue().toString()
-        .equals("")) {
-      noChange = false;
-    }
-
-    if (user.getGenderIdentity() != null && genderIdComboBox.getValue() != null) {
-      if (!(user.getGenderIdentity()).equals(genderIdComboBox.getValue().toString())) {
-        noChange = false;
-      }
-    } else if (genderIdComboBox.getValue() != null && !genderIdComboBox.getValue().toString()
-        .equals("")) {
-      noChange = false;
-    }
-    if (user.getBloodType() != null && bloodComboBox.getValue() != null) {
-      if (!(user.getBloodType()).equals(bloodComboBox.getValue().toString())) {
-        noChange = false;
-      }
-    } else if (bloodComboBox.getValue() != null) {
-      noChange = false;
-    }
-
-    if (user.getAlcoholConsumption() != null && alcoholComboBox.getValue() != null) {
-      if (!(user.getAlcoholConsumption()).equals(alcoholComboBox.getValue().toString())) {
-        noChange = false;
-      }
-    } else if (alcoholComboBox.getValue() != null) {
-      noChange = false;
-    }
-    if (weightInput.getText() != null) {
-      if (user.getWeight() > 0) {
-        try {
-          double weight = Double.parseDouble(weightInput.getText());
-          if (user.getWeight() != weight) {
-            noChange = false;
-          }
-        } catch (NumberFormatException e) {
-          noChange = false;
-        }
-      } else if (!weightInput.getText().isEmpty()) {
-        noChange = false;
-      }
-    }
-
-    if (heightInput != null) {
-      if (user.getHeight() > 0) {
-        try {
-          double height = Double.parseDouble(heightInput.getText());
-          if (user.getHeight() != height) {
-            noChange = false;
-          }
-        } catch (NumberFormatException e) {
-          noChange = false;
-        }
-      } else if (!heightInput.getText().isEmpty()) {
-        noChange = false;
-      }
-    }
-
-    // contact details
-    if (user.getHomePhone() != null) {
-      if (!(user.getHomePhone()).equals(phoneInput.getText())) {
-        noChange = false;
-      }
-    } else if (!phoneInput.getText().isEmpty()) {
-      noChange = false;
-    }
-
-    if (user.getCellPhone() != null) {
-      if (!(user.getCellPhone()).equals(cellInput.getText())) {
-        noChange = false;
-      }
-    } else if (!cellInput.getText().isEmpty()) {
-      noChange = false;
-    }
-
-    if (user.getCurrentAddress() != null) {
-      if (!(user.getCurrentAddress()).equals(addressInput.getText())) {
-        noChange = false;
-      }
-    } else if (!addressInput.getText().isEmpty()) {
-      noChange = false;
-    }
-
-    if (user.getRegion() != null) {
-      if (!(user.getRegion()).equals(regionInput.getText())) {
-        noChange = false;
-      }
-    } else if (!regionInput.getText().isEmpty()) {
-      noChange = false;
-    }
-
-    if (user.getEmail() != null) {
-      if (!(user.getEmail()).equals(emailInput.getText())) {
-        noChange = false;
-      }
-    } else if (!emailInput.getText().isEmpty()) {
-      noChange = false;
-    }
-
-    // emergency contact details
-    EmergencyContact contact = user.getContact();
-
-    if (contact.getName() != null) {
-      if (!(contact.getName()).equals(ecNameInput.getText())) {
-        noChange = false;
-      }
-    } else if (!ecNameInput.getText().isEmpty()) {
-      noChange = false;
-    }
-
-    if (contact.getHomePhoneNumber() != null) {
-      if (!(contact.getHomePhoneNumber()).equals(ecPhoneInput.getText())) {
-        noChange = false;
-      }
-    } else if (!ecPhoneInput.getText().isEmpty()) {
-      noChange = false;
-    }
-
-    if (contact.getCellPhoneNumber() != null) {
-      if (!(contact.getCellPhoneNumber()).equals(ecCellInput.getText())) {
-        noChange = false;
-      }
-    } else if (!ecCellInput.getText().isEmpty()) {
-      noChange = false;
-    }
-
-    if (contact.getAddress() != null) {
-      if (!(contact.getAddress()).equals(ecAddressInput.getText())) {
-        noChange = false;
-      }
-    } else if (!ecAddressInput.getText().isEmpty()) {
-      noChange = false;
-    }
-
-    if (contact.getRegion() != null) {
-      if (!(contact.getRegion()).equals(ecRegionInput.getText())) {
-        noChange = false;
-      }
-    } else if (!ecRegionInput.getText().isEmpty()) {
-      noChange = false;
-    }
-
-    if (contact.getEmail() != null) {
-      if (!(contact.getEmail()).equals(ecEmailInput.getText())) {
-        noChange = false;
-      }
-    } else if (!ecEmailInput.getText().isEmpty()) {
-      noChange = false;
-    }
-
-    if (contact.getRelationship() != null) {
-      if (!(contact.getRelationship()).equals(ecRelationshipInput.getText())) {
-        noChange = false;
-      }
-    } else if (!ecRelationshipInput.getText().isEmpty()) {
-      noChange = false;
-    }
-
-    return noChange;
-  }
-
   /**
    * Sets the details for the current user
-   * @param user the current user
+   * @param user the current user.
    */
   @FXML
-  private void setUserDetails(User user) {
+  public void setUserDetails(User user) {
     //personal
     listen = false;
     fNameInput.setText(user.getFirstName());
-
-    if (checkChanges(oldUser)) {
-      stage.setTitle("Update User: " + currentUser.getFirstName());
-    } else {
-      stage.setTitle("Update User: " + currentUser.getFirstName() + " *");
-    }
 
     nhiInput.setText(user.getNhi());
     if (user.getLastName() != null) {
@@ -641,6 +417,7 @@ public class UpdateUserController {
       AppController appController = AppController.getInstance();
       DonorController donorController = appController.getDonorController();
       try {
+        currentUser.getRedoStack().clear();
         donorController.showUser(currentUser);
       } catch (NullPointerException ex) {
         //TODO causes npe if donor is new in this session
@@ -673,14 +450,6 @@ public class UpdateUserController {
       currentUser.getUndoStack().pop();
     }
   }
-    /**
-     * Activates when the user clicks the save changes button.
-     * Calls a method to check if all field are valid and then updates the changes.
-     * Also resets error labels.
-     *
-     * @param actionEvent The user clicks on the save changes button.
-     * @throws IOException input/output exception.
-     */
 
     /**
      * Checks if all fields that require validation are valid.
@@ -1191,8 +960,12 @@ public class UpdateUserController {
   @FXML
     void undo () {
       currentUser.undo();
-    undoUpdateButton.setDisable(currentUser.getUndoStack().size() <= undoMarker);
+      undoUpdateButton.setDisable(currentUser.getUndoStack().size() <= undoMarker);
       setUserDetails(currentUser);
+
+      if (undoUpdateButton.isDisabled()) {
+        stage.setTitle(stage.getTitle().substring(0, stage.getTitle().length() - 1));
+      }
     }
 
   /**
@@ -1213,8 +986,7 @@ public class UpdateUserController {
      */
     @FXML
     void goBack (ActionEvent event){
-      if (stage.getTitle()
-          .equals("Update User: " + currentUser.getFirstName() + " *")) { // has changes
+      if (!undoUpdateButton.isDisabled()) { // has changes
         Alert alert = new Alert(Alert.AlertType.WARNING,
             "You have unsaved changes, are you sure you want to cancel?",
             ButtonType.YES, ButtonType.NO);
@@ -1228,6 +1000,7 @@ public class UpdateUserController {
           AppController appController = AppController.getInstance();
           DonorController donorController = appController.getDonorController();
           try {
+            currentUser.getRedoStack().clear();
             donorController.showUser(oldUser);
           } catch (NullPointerException ex) {
             //TODO causes npe if donor is new in this session
@@ -1239,6 +1012,7 @@ public class UpdateUserController {
         AppController appController = AppController.getInstance();
         DonorController donorController = appController.getDonorController();
         try {
+          currentUser.getRedoStack().clear();
           donorController.showUser(oldUser);
         } catch (NullPointerException ex) {
           //TODO causes npe if donor is new in this session

@@ -118,6 +118,8 @@ public class UpdateClinicianController {
 
             // checks if there was a change in any of the user input fields
             changesListener(staffIDTextField);
+            changesListener(passwordField);
+            changesListener(confirmPasswordField);
             changesListener(firstNameTextField);
             changesListener(middleNameTextField);
             changesListener(lastNameTextField);
@@ -197,66 +199,6 @@ public class UpdateClinicianController {
 
 
     /**
-     * Checks if all text fields are equal to their original pre-filled inputs.
-     * The pre-filled inputs are the same as the clinicians attributes.
-     *
-     * @return true if they are all equal, false if at least one is different.
-     */
-    private boolean checkChanges() {
-        boolean noChange = true;
-
-        if (!(currentClinician.getStaffId()).equals(oldClinician.getStaffId())) {
-            noChange = false;
-        }
-
-/*        if (!(currentClinician.getPassword()).equals(oldClinician.getPassword())) {
-            noChange = false;
-        }*/ //We shouldn't need this now for secure passwords
-
-        if (!(currentClinician.getFirstName()).equals(oldClinician.getFirstName())) {
-            noChange = false;
-        }
-
-        if (currentClinician.getMiddleName() != null) {
-            if (!(currentClinician.getMiddleName()).equals(oldClinician.getMiddleName())) {
-                noChange = false;
-            }
-        } else if (!middleNameTextField.getText().isEmpty()) {
-            noChange = false;
-        }
-
-        if (currentClinician.getLastName() != null) {
-            if (!(currentClinician.getLastName()).equals(oldClinician.getLastName())) {
-                noChange = false;
-            }
-        } else if (!lastNameTextField.getText().isEmpty()) {
-            noChange = false;
-        }
-
-        if (currentClinician.getWorkAddress() != null) {
-            if (!(currentClinician.getWorkAddress()).equals(oldClinician.getWorkAddress())) {
-                noChange = false;
-            }
-        } else if (!addressTextField.getText().isEmpty()) {
-            noChange = false;
-        }
-
-        if (currentClinician.getRegion() != null) {
-            if (!(currentClinician.getRegion()).equals(oldClinician.getRegion())) {
-                noChange = false;
-            }
-        } else if (!regionTextField.getText().isEmpty()) {
-            noChange = false;
-        }
-
-        if (passwordField.getText().isEmpty()) {
-            noChange = false;
-        }
-
-        return noChange;
-    }
-
-    /**
      * Changes the title bar to contain an asterisk if a change was detected.
      *
      * @param field The current textfield/password field element.
@@ -267,12 +209,15 @@ public class UpdateClinicianController {
         });
     }
 
+    /**
+     * Updates the title bar depending on changes made to the user fields.
+     */
     private void update() {
         updateUndos();
-        if (checkChanges()) { // checks if reverting a textfield change restores all fields to their original state
+        if (undoClinicianFormButton.isDisabled() && passwordField.getText().isEmpty() && confirmPasswordField.getText().isEmpty()) {
             stage.setTitle("Update Clinician: " + currentClinician.getFirstName());
-        } else {
-            stage.setTitle("Update Clinician: " + currentClinician.getFirstName() + " *");
+        } else if (!stage.getTitle().endsWith("*")) {
+            stage.setTitle(stage.getTitle() + " *");
         }
     }
 
@@ -417,7 +362,7 @@ public class UpdateClinicianController {
     private void cancelUpdate(ActionEvent event) {
 
         if (!newClinician) {
-            if (stage.getTitle().equals("Update Clinician: " + currentClinician.getFirstName() + " *")) { // has changes
+            if (!undoClinicianFormButton.isDisabled()) {
                 Alert alert = new Alert(Alert.AlertType.WARNING,
                         "You have unsaved changes, are you sure you want to cancel?",
                         ButtonType.YES, ButtonType.NO);
@@ -428,11 +373,13 @@ public class UpdateClinicianController {
                 Optional<ButtonType> result = alert.showAndWait();
                 if (result.get() == ButtonType.YES) {
                     removeFormChanges(0);
+                    currentClinician.getRedoStack().clear();
                     controller.updateClinicians(oldClinician);
                     loadOverview(oldClinician);
                     ownStage.close();
                 }
             } else { // has no changes
+                currentClinician.getRedoStack().clear();
                 ownStage.close();
             }
 
@@ -571,6 +518,7 @@ public class UpdateClinicianController {
 
             currentClinician.setDateLastModified(LocalDateTime.now()); // updates the modified date
             sumAllChanged();
+            currentClinician.getRedoStack().clear();
             controller.updateClinicians(currentClinician); // saves the clinician
             ownStage.close(); // returns to the clinician overview window
 

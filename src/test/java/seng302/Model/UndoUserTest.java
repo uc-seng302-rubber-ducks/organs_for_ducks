@@ -121,7 +121,7 @@ public class UndoUserTest {
 
     testUser.undo();
 
-    Assert.assertTrue(testUser.getDonorDetails().getOrgans().contains(Organs.BONE));
+    Assert.assertTrue(!testUser.getDonorDetails().getOrgans().contains(Organs.BONE_MARROW));
   }
 
   @Test

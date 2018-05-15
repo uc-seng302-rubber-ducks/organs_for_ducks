@@ -1,4 +1,4 @@
-package seng302.Controller;
+package seng302.GUITests;
 
 import static org.testfx.api.FxAssert.verifyThat;
 
@@ -13,6 +13,7 @@ import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.matcher.control.LabeledMatchers;
 import seng302.App;
+import seng302.Controller.AppController;
 import seng302.Model.EmergencyContact;
 import seng302.Model.User;
 
