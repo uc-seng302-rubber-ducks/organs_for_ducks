@@ -55,7 +55,6 @@ public class MedicationTabController {
   private Label drugDetailsLabel;
   private Stage stage;
   private AppController application;
-  private boolean Clinician;
   private ObservableList<String> currentMeds;
   private ObservableList<String> previousMeds;
   private User currentUser;
@@ -76,10 +75,7 @@ public class MedicationTabController {
     currentUser = user;
     //ageValue.setText("");
     //This is the place to set visable and invisable controls for Clinician vs User
-    if (fromClinician) {
-      Clinician = true;
-    } else {
-      Clinician = false;
+    if (!fromClinician) {
       addMedicationButton.setVisible(false);
       medicationTextField.setVisible(false);
       deleteMedicationButton.setVisible(false);
