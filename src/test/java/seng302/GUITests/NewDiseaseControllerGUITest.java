@@ -83,7 +83,7 @@ public class NewDiseaseControllerGUITest extends ApplicationTest {
         write("A1", 0);
         clickOn("#curedRadioButton");
         clickOn("#createButton");
-        assertEquals("A1", getCellValue("#pastDiseaseTableView", 1, 0).toString());
+      assertEquals("A1", getCellValue("#pastDiseaseTableView", 1, 1).toString());
     }
 
     @Test
@@ -130,7 +130,7 @@ public class NewDiseaseControllerGUITest extends ApplicationTest {
         clickOn("#updateDiseaseButton");
         clickOn("#curedRadioButton");
         clickOn("#createButton");
-        assertEquals("A0", getCellValue("#pastDiseaseTableView", 1, 0).toString());
+      assertEquals("A0", getCellValue("#pastDiseaseTableView", 1, 1).toString());
     }
 
     @Test
