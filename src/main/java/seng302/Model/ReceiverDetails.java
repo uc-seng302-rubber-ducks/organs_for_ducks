@@ -1,9 +1,6 @@
 package seng302.Model;
 
 import com.google.gson.annotations.Expose;
-import com.sun.org.apache.xpath.internal.operations.Or;
-
-import java.util.HashSet;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.EnumMap;
@@ -68,6 +65,8 @@ public class ReceiverDetails {
     if (isCurrentlyWaitingFor(organ)) {
       return false;
     }
+    Memento<User> memento = new Memento<>();
+    memento.setOldObject(attachedUser.clone());
     //existing entry
     if (organs.containsKey(organ)) {
       organs.get(organ).add(LocalDate.now());
@@ -77,6 +76,9 @@ public class ReceiverDetails {
       list.add(LocalDate.now());
       organs.put(Organs.values()[organ.ordinal()], list);
     }
+    memento.setNewObject(attachedUser.clone());
+    attachedUser.getUndoStack().push(memento);
+    attachedUser.getRedoStack().clear();
     return true;
   }
 
@@ -87,13 +89,28 @@ public class ReceiverDetails {
    * @return true if the collection was modified.
    */
   public boolean stopWaitingForOrgan(Organs organ) {
+    Memento<User> memento = new Memento<>();
+    memento.setOldObject(attachedUser.clone());
     if (isCurrentlyWaitingFor(organ)) {
       ArrayList<LocalDate> dates = organs.get(organ);
       dates.add(LocalDate.now());
       organs.put(Organs.values()[organ.ordinal()], dates);
       return true;
     }
+    memento.setNewObject(attachedUser.clone());
+    attachedUser.getUndoStack().push(memento);
+    attachedUser.getRedoStack().clear();
     return false;
+  }
+
+  /**
+   * Stop waiting for all organs for a receiver.
+   */
+  public void stopWaitingForAllOrgans(){
+    Map<Organs, ArrayList<LocalDate>> organsCopy = new EnumMap<>(organs);
+    for(Organs organ: organsCopy.keySet()){
+      stopWaitingForOrgan(organ);
+    }
   }
 
   public User getAttachedUser() {

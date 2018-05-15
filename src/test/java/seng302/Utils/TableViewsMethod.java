@@ -52,4 +52,18 @@ public class TableViewsMethod extends TableViews{
      }
     return (TableView<?>) node;
     }
+
+    /**
+     * gets number of rows of a table view
+     * @param tableName table name
+     * @return number of rows, 0 if none.
+     */
+    public static int getNumberOfRows(String tableName)
+    {
+        try {
+            return numberOfRowsIn(tableName);
+        } catch (NullPointerException e){ //NPE only gets triggered when LoadUI tries to count number of rows of empty table.
+            return 0;
+        }
+    }
 }

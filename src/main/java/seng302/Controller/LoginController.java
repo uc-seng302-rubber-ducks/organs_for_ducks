@@ -2,6 +2,7 @@ package seng302.Controller;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.logging.Logger;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -16,12 +17,14 @@ import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 import seng302.Model.Clinician;
 import seng302.Model.User;
+import seng302.Service.Log;
 import seng302.View.CLI;
 
 /**
  * Class for the login functionality of the application
  */
 public class LoginController {
+
 
   @FXML
     private Button changeLogin;
@@ -62,6 +65,7 @@ public class LoginController {
     * @param stage The applications stage.
     */
   public void init(AppController appController, Stage stage){
+    Log.info("starting loginController");
     warningLabel.setText("");
     this.appController = appController;
     users = appController.getUsers();

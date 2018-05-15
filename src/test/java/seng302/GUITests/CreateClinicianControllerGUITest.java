@@ -1,4 +1,4 @@
-package seng302.Controller;
+package seng302.GUITests;
 
 import static org.testfx.api.FxAssert.verifyThat;
 
@@ -12,6 +12,7 @@ import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.matcher.control.LabeledMatchers;
 import seng302.App;
+import seng302.Controller.AppController;
 
 /**
  * Tests the UpdateClinicianController specifically for creating new clinicians

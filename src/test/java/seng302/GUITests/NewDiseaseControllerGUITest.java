@@ -1,4 +1,4 @@
-package seng302.Controller;
+package seng302.GUITests;
 
 import static org.junit.Assert.assertEquals;
 import static seng302.Utils.TableViewsMethod.getCell;
@@ -16,6 +16,7 @@ import org.testfx.api.FxRobotException;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 import seng302.App;
+import seng302.Controller.AppController;
 import seng302.Model.Disease;
 import seng302.Model.User;
 
@@ -82,7 +83,7 @@ public class NewDiseaseControllerGUITest extends ApplicationTest {
         write("A1", 0);
         clickOn("#curedRadioButton");
         clickOn("#createButton");
-        assertEquals("A1", getCellValue("#pastDiseaseTableView", 1, 0).toString());
+      assertEquals("A1", getCellValue("#pastDiseaseTableView", 1, 1).toString());
     }
 
     @Test
@@ -129,7 +130,7 @@ public class NewDiseaseControllerGUITest extends ApplicationTest {
         clickOn("#updateDiseaseButton");
         clickOn("#curedRadioButton");
         clickOn("#createButton");
-        assertEquals("A0", getCellValue("#pastDiseaseTableView", 1, 0).toString());
+      assertEquals("A0", getCellValue("#pastDiseaseTableView", 1, 1).toString());
     }
 
     @Test

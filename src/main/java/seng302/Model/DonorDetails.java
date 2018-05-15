@@ -62,6 +62,7 @@ public class DonorDetails {
     if (changed) {
       memento.setNewObject(attachedUser.clone());
       attachedUser.getUndoStack().push(memento);
+      attachedUser.getRedoStack().clear();
     }
   }
 
