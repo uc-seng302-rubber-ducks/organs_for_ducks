@@ -103,6 +103,9 @@ public class Clinician extends Undoable<Clinician> {
         this.staffId = staffId;
         this.workAddress = workAddress;
         this.region = region;
+        this.firstName = name;
+        this.middleName = "";
+        this.lastName = "";
         setPassword(password);
         dateCreated = LocalDateTime.now();
         dateLastModified = LocalDateTime.now();
