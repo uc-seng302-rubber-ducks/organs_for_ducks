@@ -12,13 +12,20 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
 import javafx.stage.Modality;
 import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 import seng302.Model.Administrator;
+import seng302.Model.Clinician;
+import seng302.Model.JsonHandler;
+import seng302.Model.User;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.ArrayList;
 import seng302.Model.Clinician;
 import seng302.Model.User;
 import seng302.View.CLI;
@@ -327,14 +334,40 @@ public class AdministratorViewController {
     }
 
     @FXML
-    void importData(ActionEvent event) {
+    void importAdmins(ActionEvent event) throws FileNotFoundException {
+        String filename;
+        filename = FileSelectorController.getFileSelector(stage);
+        if (filename != null) {
+            //JsonHandler.loadAdmins(filename);
+        }
+    }
 
+    @FXML
+    void importClinicians(ActionEvent event) throws FileNotFoundException {
+        String filename;
+        filename = FileSelectorController.getFileSelector(stage);
+        if (filename != null) {
+            ArrayList<Clinician> clinicians = JsonHandler.loadClinicians(filename);
+            System.out.println(clinicians.size() + " clinicians were successfully loaded");
+        }
+
+    }
+
+    @FXML
+    void importUsers(ActionEvent event) throws FileNotFoundException {
+        String filename;
+        filename = FileSelectorController.getFileSelector(stage);
+        if (filename != null) {
+            ArrayList<User> users = JsonHandler.loadUsers(filename);
+            System.out.println(users.size() + " donors were successfully loaded");
+        }
     }
 
     @FXML
     void close(ActionEvent event) {
 
     }
+
 
     @FXML
     void addUser(ActionEvent event) {

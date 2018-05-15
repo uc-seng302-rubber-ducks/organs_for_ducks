@@ -13,8 +13,14 @@
           <Menu mnemonicParsing="false" text="File">
             <items>
                   <MenuItem fx:id="adminSaveMenu" mnemonicParsing="false" onAction="#save" text="Save" />
-                  <MenuItem fx:id="adminImportMenu" mnemonicParsing="false" onAction="#importData" text="Import" />
               <MenuItem mnemonicParsing="false" onAction="#close" text="Close" />
+                  <Menu mnemonicParsing="false" text="Import">
+                    <items>
+                        <MenuItem fx:id="importAdminsMenuItem" mnemonicParsing="false" onAction="#importAdmins" text="Import Admins" />
+                      <MenuItem fx:id="importCliniciansMenuItem" mnemonicParsing="false" onAction="#importClinicians" text="Import Clinicians" />
+                        <MenuItem fx:id="importUsersMenuItem" mnemonicParsing="false" onAction="#importUsers" text="Import Users" />
+                    </items>
+                  </Menu>
             </items>
           </Menu>
         </menus>

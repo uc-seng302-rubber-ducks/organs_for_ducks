@@ -829,25 +829,25 @@ public class DonorController {
 
   }
 
-  /**
-   * Opens the update user details window
-   *
-   * @param actionEvent An action event.
-   * @throws IOException to make sure I/O is correct
-   * @throws InterruptedException to make sure there is no interruption
-   */
-  @FXML
-  private void updateDetails(ActionEvent actionEvent) {
-    FXMLLoader updateLoader = new FXMLLoader(getClass().getResource("/FXML/updateUser.fxml"));
-    Parent root;
-    try {
-      root = updateLoader.load();
-      UpdateUserController updateUserController = updateLoader.getController();
-      Stage stage = new Stage();
-      stage.initModality(Modality.APPLICATION_MODAL);
-      stage.setScene(new Scene(root));
-      updateUserController.init(currentUser, application, stage);
-      stage.show();
+    /**
+     * Opens the update user details window
+     *
+     * @param actionEvent An action event.
+     * @throws IOException to make sure I/O is correct
+     * @throws InterruptedException to make sure there is no interruption
+     */
+    @FXML
+    private void updateDetails(ActionEvent actionEvent) throws IOException, InterruptedException {
+        FXMLLoader updateLoader = new FXMLLoader(getClass().getResource("/FXML/updateUser.fxml"));
+        Parent root = null;
+        try {
+            root = updateLoader.load();
+            UpdateUserController updateUserController = updateLoader.getController();
+            Stage stage = new Stage();
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setScene(new Scene(root));
+            updateUserController.init(currentUser, application, stage);
+            stage.show();
 
     } catch (IOException e) {
       e.printStackTrace();

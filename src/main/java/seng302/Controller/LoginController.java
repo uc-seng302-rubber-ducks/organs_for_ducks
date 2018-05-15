@@ -43,6 +43,9 @@ public class LoginController {
   private Label userWarningLabel;
 
   @FXML
+  private Button loginButton;
+
+  @FXML
   private TextField staffIdTextField;
 
   @FXML
@@ -293,23 +296,25 @@ private void helpButton(){
     }
     }
 
-/**
- * Opens the Command Line version of the application
- *
- * @param event
- */
-@FXML
-    void openCLI(ActionEvent event){
-/*    stage.hide();
-      CLI.main(new String[]{"gui"});
-      stage.show();*/
-      FXMLLoader adminLoader=new FXMLLoader(getClass().getResource("/FXML/adminView.fxml"));
-      Parent root=null;
-      try{
-      root=adminLoader.load();
-      }catch(IOException e){
-      e.printStackTrace();
-      }
+
+
+    /**
+     * Opens the Command Line version of the application
+
+     */
+    @FXML
+    void openCLI(ActionEvent event) {
+    stage.hide();
+
+    CLI.main(new String[]{"gui"});
+    stage.show();
+        FXMLLoader adminLoader = new FXMLLoader(getClass().getResource("/FXML/adminView.fxml"));
+        Parent root = null;
+        try {
+            root = adminLoader.load();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
       stage.setScene(new Scene(root));
       stage.setTitle("Administrator");

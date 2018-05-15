@@ -271,7 +271,7 @@ public class UpdateUserController {
    * @param user The current user.
    */
   @FXML
-  private void setUserDetails(User user) {
+  public void setUserDetails(User user) {
     //personal
     listen = false;
     fNameInput.setText(user.getFirstName());

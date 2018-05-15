@@ -1,5 +1,10 @@
 package seng302.Controller;
 
+import seng302.Directory;
+import seng302.Exception.UserAlreadyExistsException;
+import seng302.Exception.UserNotFoundException;
+import seng302.Model.*;
+
 import seng302.Exception.UserAlreadyExistsException;
 import seng302.Exception.UserNotFoundException;
 import seng302.Model.*;
@@ -18,6 +23,7 @@ import seng302.Model.User;
 import seng302.Exception.UserAlreadyExistsException;
 import seng302.Exception.UserNotFoundException;
 import seng302.Service.Log;
+import java.util.*;
 
 
 /**
@@ -40,19 +46,23 @@ public class AppController {
   private Set<User> deletedUserStack = new HashSet<>();
   private Stack<User> redoStack = new Stack<>();
 
+  private String usersFile = Directory.JSON.directory() + "/donors.json";
+  private String clinicianFile = Directory.JSON.directory() + "/clinicians.json";
+  private ClinicianController clinicianControllerInstance;
+
   /**
    * Creates new instance of AppController
    */
   private AppController() {
     try {
-      users = JsonHandler.loadUsers();
+      users = JsonHandler.loadUsers(usersFile);
       Log.info(users.size() + " donors were successfully loaded");
     } catch (FileNotFoundException e) {
       Log.warning("Donor file was not found", e);
     }
 
     try {
-      clinicians = JsonHandler.loadClinicians();
+      clinicians = JsonHandler.loadClinicians(clinicianFile);
       Log.info(clinicians.size() + " clinicians were successfully loaded");
     } catch (FileNotFoundException e) {
       Log.warning("Clinician file was not found", e);

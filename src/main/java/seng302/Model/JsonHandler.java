@@ -4,13 +4,11 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializer;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.Reader;
+import org.joda.time.DateTime;
+import org.joda.time.format.ISODateTimeFormat;
+import seng302.Directory;
+
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -66,14 +64,14 @@ public final class JsonHandler {
    * @throws FileNotFoundException when the file cannot be located.
    */
 
-  public static ArrayList<User> loadUsers() throws FileNotFoundException {
-    ArrayList<User> results = new ArrayList<>();
-    File inFile = new File(Directory.JSON.directory() + "/donors.json");
-    Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss")
-        .create();
-    Reader reader = new FileReader(inFile);
-    User[] donors = gson.fromJson(reader, User[].class);
-    results.addAll(Arrays.asList(donors));
+    public static ArrayList<User> loadUsers(String filename) throws FileNotFoundException {
+        ArrayList<User> results = new ArrayList<>();
+        File inFile = new File(filename);
+        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss")
+                .create();
+        Reader reader =new FileReader(inFile);
+        User[] donors = gson.fromJson(reader, User[].class);
+        results.addAll(Arrays.asList(donors));
 
     for (User result : results) {
       result.getReceiverDetails().setAttachedUser(result);
@@ -115,23 +113,21 @@ public final class JsonHandler {
   }
 
 
-  /**
-   * Loads the list of registered clinicians for the application
-   *
-   * @return List of registered clinicians
-   * @throws FileNotFoundException thrown if no clinicians exist
-   */
-  public static ArrayList<Clinician> loadClinicians() throws FileNotFoundException {
-    ArrayList<Clinician> results = new ArrayList<>();
-    File inFile = new File(Directory.JSON.directory() + "/clinicians.json");
-    Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss")
-        .create();
-    Reader reader = new FileReader(inFile);
-    Clinician[] clinicians = gson.fromJson(reader, Clinician[].class);
-    results.addAll(Arrays.asList(clinicians));
-    Log.info("successfully loaded clinicians from file");
-    return results;
-  }
+    /**
+     * Loads the list of registered clinicians for the application
+     * @return List of registered clinicians
+     * @throws FileNotFoundException thrown if no clinicians exist
+     */
+    public static ArrayList<Clinician> loadClinicians(String filename) throws FileNotFoundException {
+        ArrayList<Clinician> results = new ArrayList<>();
+        File inFile = new File(filename);
+        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss")
+                .create();
+        Reader reader =new FileReader(inFile);
+        Clinician[] clinicians = gson.fromJson(reader, Clinician[].class);
+        results.addAll(Arrays.asList(clinicians));
+        return results;
+    }
 
 
     /**
