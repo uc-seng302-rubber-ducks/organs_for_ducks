@@ -69,17 +69,25 @@ public class CLI {
 
     input = lineReader.readLine(">> ");
     while (!input.trim().equals("quit")) {
-      arguments = input.split(" ");
-      JsonWriter.changeLog(arguments);
-      controller.addToHistoryOfCommands(arguments);
-      new CommandLine(new CliRoot())
-          .parseWithHandler(new CommandLine.RunLast(), System.err, arguments);
-      //System.out.println(lineReader.getHistory().last());
+      parseInput(input, controller);
       input = lineReader.readLine(">> ");
     }
     System.out.println("CLI exited.");
     if (args != null && args[0].equals("gui")) {
       System.out.println("return to GUI");
     }
+  }
+
+  /**
+   * Parses the user input and executes the command
+   * @param input Whole String command to execute
+   * @param controller Instance of the AppController
+   */
+  public static void parseInput(String input, AppController controller) {
+    String[] arguments = input.split(" ");
+    JsonWriter.changeLog(arguments);
+    controller.addToHistoryOfCommands(arguments);
+    new CommandLine(new CliRoot())
+            .parseWithHandler(new CommandLine.RunLast(), System.err, arguments);
   }
 }

@@ -5,20 +5,21 @@ import seng302.Exception.UserAlreadyExistsException;
 import seng302.Exception.UserNotFoundException;
 import seng302.Model.*;
 
+import seng302.Exception.UserAlreadyExistsException;
+import seng302.Exception.UserNotFoundException;
+import seng302.Model.*;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
+import java.util.*;
+
 import seng302.Model.Change;
 import seng302.Model.Clinician;
 import seng302.Model.JsonHandler;
 import seng302.Model.TransplantDetails;
 import seng302.Model.User;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.Stack;
 import seng302.Exception.UserAlreadyExistsException;
 import seng302.Exception.UserNotFoundException;
 import seng302.Service.Log;
@@ -30,6 +31,8 @@ import java.util.*;
  */
 public class AppController {
 
+
+  private Collection<Administrator> admins = new ArrayList<>();
   private ArrayList<User> users = new ArrayList<>();
   private ArrayList<TransplantDetails> transplantList = new ArrayList<>();
   private ArrayList<Clinician> clinicians = new ArrayList<>();
@@ -39,6 +42,7 @@ public class AppController {
 
   private DonorController donorController = new DonorController();
   private ClinicianController clinicianController = new ClinicianController();
+  private AdministratorViewController administratorViewController = new AdministratorViewController();
   private Set<User> deletedUserStack = new HashSet<>();
   private Stack<User> redoStack = new Stack<>();
 
@@ -64,9 +68,33 @@ public class AppController {
       Log.warning("Clinician file was not found", e);
     }
 
+    try {
+        admins = JsonHandler.loadAdmins();
+        System.out.println(admins.size() + " administrators were successfully loaded");
+    } catch (FileNotFoundException e) {
+        System.out.println("Administrator file was not found");
+    }
+
     String[] empty = {""};
-    historyOfCommands.add(
-        empty);//putting an empty string into the string array to be displayed if history pointer is 0
+    historyOfCommands.add(empty);//putting an empty string into the string array to be displayed if history pointer is 0
+
+    boolean defaultAdminSeen = false;
+    for (Administrator a : admins) {
+        if (a.getUserName().equals("default")) {
+            defaultAdminSeen = true;
+            break;
+        }
+    }
+    if (!defaultAdminSeen) {
+        admins.add(new Administrator("default", "", "", "", "admin"));
+
+        try {
+            JsonHandler.saveAdmins(admins);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     boolean defaultSeen = false;
     for (Clinician c : clinicians) {
       if (c.getStaffId().equals("0")) {
@@ -276,6 +304,8 @@ public class AppController {
 
   }
 
+
+
   public ArrayList<User> getUsers() {
     return users;
   }
@@ -335,18 +365,23 @@ public class AppController {
     return clinicians;
   }
 
-  /**
-   * @param id The staff id (unique identifier) of the clinician
-   * @return The clinician that matches the given staff id, or null if no clinician matches.
-   */
-  public Clinician getClinician(String id) {
-    for (Clinician c : clinicians) {
-      if (c.getStaffId().equals(id)) {
-        return c;
-      }
-    }
-    return null;
+  public Collection<Administrator> getAdmins() {
+      return admins;
   }
+
+    /**
+     *
+     * @param id The staff id (unique identifier) of the clinician
+     * @return The clinician that matches the given staff id, or null if no clinician matches.
+     */
+  public Clinician getClinician(String id){
+   for (Clinician c : clinicians){
+     if (c.getStaffId().equals(id)) {
+       return c;
+     }
+   }
+      return null;
+   }
 
   /**
    * @param clinician The current clinician.
@@ -363,6 +398,19 @@ public class AppController {
       Log.warning("Failed to update clinicians", e);
     }
   }
+
+    /**
+     * Removes the given admin from the list of administrators unless the given admin is the default admin.
+     *
+     * @param admin The given admin
+     */
+    public void deleteAdmin(Administrator admin) {
+        admins.remove(admin);
+        // todo: will probably need undo/redo for this similar to how the deleteDonor one has it
+        // auto save is on another branch..
+    }
+
+
 
   public DonorController getDonorController() {
     return donorController;
@@ -381,6 +429,20 @@ public class AppController {
 
   public void setClinicianController(ClinicianController clinicianController) {
     this.clinicianController = clinicianController;
+  }
+
+  public void setAdministratorViewController(AdministratorViewController administratorViewController) { this.administratorViewController = administratorViewController;}
+
+  public AdministratorViewController getAdministratorViewControlloer() { return administratorViewController; }
+
+
+  public Administrator getAdministrator(String username){
+    for (Administrator a : admins){
+      if (a.getUserName().equals(username)) {
+        return a;
+      }
+    }
+    return null;
   }
 
   /**

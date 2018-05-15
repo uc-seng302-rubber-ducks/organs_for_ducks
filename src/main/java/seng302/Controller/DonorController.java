@@ -1,19 +1,6 @@
 package seng302.Controller;
 
 
-import java.io.IOException;
-import java.text.DecimalFormat;
-import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -22,20 +9,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
-import javafx.scene.control.SelectionMode;
-import javafx.scene.control.TableCell;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldListCell;
 import javafx.scene.input.MouseButton;
@@ -55,6 +29,13 @@ import seng302.Model.Memento;
 import seng302.Model.OrganDeregisterReason;
 import seng302.Model.Organs;
 import seng302.Model.User;
+import seng302.Model.*;
+
+import java.io.IOException;
+import java.text.DecimalFormat;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+import java.util.*;
 
 /**
  * Class for the functionality of the User view of the application
@@ -341,11 +322,10 @@ public class DonorController {
    * @param fromClinician boolean value indication if from clinician view
    */
   public void init(AppController controller, User user, Stage stage, boolean fromClinician) {
-
     this.stage = stage;
     application = controller;
     //ageValue.setText("");
-    //This is the place to set visable and invisable controls for Clinician vs User
+    // This is the place to set visible and invisible controls for Clinician vs User
     if (fromClinician) {
       Clinician = true;
       logOutButton.setVisible(false);
@@ -445,18 +425,17 @@ public class DonorController {
     TableColumn pendingDateColumn = new TableColumn("Date");
     TableColumn previousProcedureColumn = new TableColumn("Procedure");
     TableColumn previousDateColumn = new TableColumn("Date");
-    pendingProcedureColumn
-            .setCellValueFactory(new PropertyValueFactory<MedicalProcedure, String>("summary"));
-    previousProcedureColumn
-            .setCellValueFactory(new PropertyValueFactory<MedicalProcedure, String>("summary"));
-    pendingDateColumn
-            .setCellValueFactory(new PropertyValueFactory<Change, String>("procedureDate"));
-    previousDateColumn
-            .setCellValueFactory(new PropertyValueFactory<Change, String>("procedureDate"));
+
+    pendingProcedureColumn.setCellValueFactory(new PropertyValueFactory<MedicalProcedure, String>("summary"));
+    previousProcedureColumn.setCellValueFactory(new PropertyValueFactory<MedicalProcedure, String>("summary"));
+    pendingDateColumn.setCellValueFactory(new PropertyValueFactory<Change, String>("procedureDate"));
+    previousDateColumn.setCellValueFactory(new PropertyValueFactory<Change, String>("procedureDate"));
+
     previousProcedureTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
     pendingProcedureTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
     previousProcedureTableView.getColumns().addAll(previousProcedureColumn, previousDateColumn);
     pendingProcedureTableView.getColumns().addAll(pendingProcedureColumn, pendingDateColumn);
+
     organsAffectedByProcedureListView.setCellFactory(oabp -> {
       TextFieldListCell<Organs> cell = new TextFieldListCell<>();
       cell.setConverter(new StringConverter<Organs>() {
@@ -1885,4 +1864,8 @@ public class DonorController {
     stage.close();
   }
 
+    public void diableLogout(){
+        logOutButton.setVisible(false);
+        backButton.setVisible(true);
+    }
 }

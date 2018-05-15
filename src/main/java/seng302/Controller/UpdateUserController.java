@@ -268,7 +268,7 @@ public class UpdateUserController {
 
   /**
    * Sets the details for the current user
-   * @param user the current user.
+   * @param user The current user.
    */
   @FXML
   public void setUserDetails(User user) {

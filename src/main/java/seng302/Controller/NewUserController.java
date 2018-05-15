@@ -279,8 +279,10 @@ public class NewUserController {
                     userStage.setScene(new Scene(root));
                     userStage.show();
                     DonorController donorController = donorLoader.getController();
-                    AppController.getInstance().setDonorController(donorController);
+                    //AppController.getInstance().setDonorController(donorController); This doesnt need to be here. Its setting the controller
+                    //to the controller returned by the object
                     donorController.init(AppController.getInstance(), newUser, userStage, false);
+                    donorController.diableLogout();
 
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -292,8 +294,9 @@ public class NewUserController {
                 try {
                     root = donorLoader.load();
                     stage.setScene(new Scene(root));
+                    ownStage.close();
                     DonorController donorController = donorLoader.getController();
-                    AppController.getInstance().setDonorController(donorController);
+                    //AppController.getInstance().setDonorController(donorController); see above note
                     donorController.init(AppController.getInstance(), newUser, stage, false);
 
                 } catch (IOException e) {
