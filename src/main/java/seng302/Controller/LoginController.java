@@ -208,7 +208,7 @@ public class LoginController {
         newStage.show();
       NewUserController donorController = donorLoader.getController();
       Log.info("Opening new user window");
-      donorController.init(AppController.getInstance(), stage);
+      donorController.init(AppController.getInstance(), stage, newStage);
 
     } else {
       FXMLLoader clinicianLoader = new FXMLLoader(
@@ -263,7 +263,7 @@ public class LoginController {
   void openCLI(ActionEvent event) {
     stage.hide();
     CLI.main(new String[]{"gui"});
-    stage.show();*/
+    stage.show();
         FXMLLoader adminLoader = new FXMLLoader(getClass().getResource("/FXML/adminView.fxml"));
         Parent root = null;
         try {
