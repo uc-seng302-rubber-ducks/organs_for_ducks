@@ -59,6 +59,8 @@ public class LoginController {
 
   @FXML
   private Label idLabel;
+
+  @FXML
   private TextField adminPasswordField;
 
   @FXML

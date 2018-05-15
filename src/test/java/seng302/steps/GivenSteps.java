@@ -17,7 +17,7 @@ import static org.testfx.api.FxAssert.verifyThat;
 import static seng302.Utils.TableViewsMethod.getCell;
 
 public class GivenSteps extends ApplicationTest{
-    private AppController controller;
+    private AppController controller = AppController.getInstance();
 
   @After
   public void tearDown() throws TimeoutException {
