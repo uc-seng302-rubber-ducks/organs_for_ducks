@@ -19,6 +19,7 @@ public class DonorDetails {
 
   /**
    * Constructor for organs for current user
+   *
    * @param attachedUser current user
    */
   public DonorDetails(User attachedUser) {
@@ -39,26 +40,30 @@ public class DonorDetails {
   }
 
   /**
-   * Adds an organ to the user profile.
-   * @param organ the enum of organs.
+   * Adds an organ to the user profile. If the added organ is not already in the set, this will be
+   * counted as an action performed by the attachedUser
+   *
+   * @param organ the organ to be added (from Organs enum)
    */
   public void addOrgan(Organs organ) {
     Memento<User> memento = new Memento<>();
     memento.setOldObject(attachedUser.clone());
-    if (attachedUser != null){
+    if (attachedUser != null) {
       attachedUser.updateLastModified();
       attachedUser.addChange(new Change("Added organ " + organ.toString()));
     }
     if (organs == null) {
       organs = new HashSet<>();
     }
-    this.organs.add(organ);
+    boolean changed = this.organs.add(organ);
+
     attachedUser.updateLastModified();
-    //TODO attachedUser is always null
     attachedUser.updateLastModified();
-    memento.setNewObject(attachedUser.clone());
-    attachedUser.getUndoStack().push(memento);
-    attachedUser.getRedoStack().clear();
+    if (changed) {
+      memento.setNewObject(attachedUser.clone());
+      attachedUser.getUndoStack().push(memento);
+      attachedUser.getRedoStack().clear();
+    }
   }
 
   /**
@@ -82,6 +87,7 @@ public class DonorDetails {
   private boolean isCurrentlyWaitingFor(Organs organ) {
     return attachedUser.getReceiverDetails().isCurrentlyWaitingFor(organ);
   }
+
   /**
    * TODO update if/when more details are added
    *

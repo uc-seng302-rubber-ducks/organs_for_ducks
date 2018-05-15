@@ -2,36 +2,32 @@ package seng302.Controller.CliCommands;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.Date;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
+import picocli.CommandLine.Parameters;
 import seng302.Controller.AppController;
 import seng302.Model.JsonHandler;
-import seng302.Model.JsonWriter;
 import seng302.Model.User;
 import seng302.View.IoHelper;
 
-@Command(name = "details", description = "Use -id to identify the the donor. All other tags will update values")
-public class UpdateDetails implements Runnable {
 
-
-  @Option(names = {"-id", "-nhi", "-NHI"}, required = true)
-  private String NHI;
+@Command(name = "user", description = "first name, last name, and dob are required. all other are optional and must be tagged")
+public class CreateUser implements Runnable {
 
   @Option(names = {"-h",
       "help"}, required = false, usageHelp = true, description = "display a help message")
   private Boolean helpRequested = false;
 
-  @Option(names = {"-f", "-fname"})
+  @Parameters(index = "0")
   private String firstName;
 
-  @Option(names = {"-l", "-lname"})
+  @Parameters(index = "1")
   private String lastName;
 
-  @Option(names = {"-newNHI", "-newnhi"})
-  private String newNHI;
+  @Parameters(index = "2", description = "NHI 'ABC1234'")
+  private String NHI;
 
-  @Option(names = {"-dob"}, description = "format 'yyyy-mm-dd'")
+  @Parameters(index = "3", description = "format 'yyyy-mm-dd'")
   private String dobString;
 
   @Option(names = {"-dod"}, description = "Date of death. same formatting as dob")
@@ -56,76 +52,57 @@ public class UpdateDetails implements Runnable {
   @Option(names = {"-r", "-region"}, description = "Region (Address line 2)")
   private String region;
 
-  @Override
   public void run() {
-    Boolean changed;
+    AppController controller = AppController.getInstance();
     if (helpRequested) {
       System.out.println("help goes here");
       return;
     }
-    AppController controller = AppController.getInstance();
-    User user = controller.getUser(NHI);
-    if (user == null) {
-      System.err.println("Donor could not be found");
+
+    LocalDate dob = IoHelper.readDate(dobString);
+    if (dob == null) {
       return;
     }
-    changed = IoHelper.updateName(user, firstName, lastName);
-
-    if (dobString != null) {
-      LocalDate newDate = IoHelper.readDate(dobString);
-      if (newDate != null) {
-        user.setDateOfBirth(newDate);
-        changed = true;
-      }
+    boolean success = controller.Register(firstName + " " + lastName, dob, NHI);
+    if (!success) {
+      System.out.println("An error occurred when creating registering the new user\n"
+          + "maybe a user with that NHI already exists?");
+      return;
     }
-
+    User user = controller.getUser(NHI);
+    if (user == null) {
+      System.out.println("User with this NHI already exists");
+      return;
+    }
     if (dodString != null) {
-      LocalDate newDate = IoHelper.readDate(dobString);
-      if (newDate != null) {
-        user.setDateOfDeath(newDate);
-        changed = true;
-      }
+      user.setDateOfDeath(IoHelper.readDate(dodString));
     }
     if (weight != -1) {
       user.setWeight(weight);
-      changed = true;
     }
     if (height != -1) {
       user.setHeight(height);
-      changed = true;
     }
     if (gender != null) {
       user.setGender(gender);
-      changed = true;
     }
     if (bloodType != null) {
       user.setBloodType(bloodType);
-      changed = true;
     }
     if (currentAddress != null) {
       user.setCurrentAddress(currentAddress);
-      changed = true;
     }
     if (region != null) {
       user.setRegion(region);
-      changed = true;
     }
-    if (newNHI != null) {
-      User exists = controller.getUser(newNHI);
-      if (exists != null) {
-        System.out.println("User with this NHI already exists");
-        return;
-      }
-      user.setNhi(newNHI);
-      changed = true;
-    }
-    if (changed) {
-      try {
-        JsonHandler.saveUsers(controller.getUsers());
-        //JsonWriter.saveCurrentDonorState(controller.getUsers());
-      } catch (IOException ex) {
-        System.err.println("Could not update details on file");
-      }
+
+    System.out.println("User " + user.toString() + " has been registered with ID number");
+    System.out.println(user.hashCode());
+    try {
+      JsonHandler.saveUsers(controller.getUsers());
+    } catch (IOException ex) {
+      System.err.println("Error saving data to file\n" + ex.getMessage());
     }
   }
+
 }

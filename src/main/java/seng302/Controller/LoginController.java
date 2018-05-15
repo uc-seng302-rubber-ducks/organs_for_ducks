@@ -58,8 +58,11 @@ public class LoginController {
   private TextField adminUsernameTextField;
 
   @FXML
+  private Label idLabel;
   private TextField adminPasswordField;
 
+  @FXML
+  private Label passwordLabel;
   @FXML
   private Button loginAButton;
 
@@ -74,16 +77,18 @@ public class LoginController {
   private Button openCLIButton;
 
   private Stage helpStage = null;
+  private boolean isUser = true;
   private AppController appController;
   private ArrayList<User> users;
   private Stage stage;
 
   /**
-    * Initializes the Login controller.
-    * @param appController The applications controller.
-    * @param stage The applications stage.
-    */
-  public void init(AppController appController, Stage stage){
+   * Initializes the Login controller.
+   *
+   * @param appController The applications controller.
+   * @param stage The applications stage.
+   */
+  public void init(AppController appController, Stage stage) {
     Log.info("starting loginController");
     userWarningLabel.setText("");
     clinicianWarningLabel.setText("");
@@ -134,7 +139,9 @@ public class LoginController {
             Parent root = null;
             try {
                 root = donorLoader.load();
+              Log.info("Logging in as a user");
             } catch (IOException e) {
+              Log.severe("failed to load user window", e);
                 e.printStackTrace();
             }
             stage.setScene(new Scene(root));
@@ -250,28 +257,29 @@ public class LoginController {
     }
 
 
-    /**
-     * Displays a pop up window with instructions to help the user on the login page.
-     */
-    @FXML
-    private void helpButton() {
+  /**
+   * Displays a pop up window with instructions to help the user on the login page.
+   */
+  @FXML
+  private void helpButton() {
 
-        if (helpStage == null) {
-            try {
-                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/FXML/loginHelp.fxml"));
-                Parent root = fxmlLoader.load();
-                helpStage = new Stage();
-                helpStage.setTitle("Login Help");
-                helpStage.setScene(new Scene(root));
-                helpStage.setResizable(false);
-                helpStage.setOnCloseRequest(event -> helpStage = null);
-                helpStage.show();
+    if (helpStage == null) {
+      try {
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/FXML/loginHelp.fxml"));
+        Parent root = fxmlLoader.load();
+        helpStage = new Stage();
+        helpStage.setTitle("Login Help");
+        helpStage.setScene(new Scene(root));
+        helpStage.setResizable(false);
+        helpStage.setOnCloseRequest(event -> helpStage = null);
+        helpStage.show();
 
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
+      } catch (Exception e) {
+        Log.severe("could not load help window", e);
+        e.printStackTrace();
+      }
     }
+  }
 
 
     /**
