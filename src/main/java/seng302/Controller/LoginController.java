@@ -2,7 +2,6 @@ package seng302.Controller;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.logging.Logger;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -128,13 +127,13 @@ public class LoginController {
             Parent root = null;
             try {
                 root = donorLoader.load();
+              stage.setScene(new Scene(root));
+              DonorController donorController = donorLoader.getController();
+              AppController.getInstance().setDonorController(donorController);
+              donorController.init(AppController.getInstance(), donor, stage, false);
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            stage.setScene(new Scene(root));
-            DonorController donorController = donorLoader.getController();
-            AppController.getInstance().setDonorController(donorController);
-            donorController.init(AppController.getInstance(), donor, stage,false);
         } else  {
             warningLabel.setText("");
             String wantedClinician ;if (userIDTextField.getText().isEmpty()) {

@@ -7,72 +7,19 @@
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.Tab?>
-<?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.text.Font?>
-
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="675.0" prefWidth="894.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.Controller.DonorController">
    <children>
      <TabPane layoutY="-4.0" prefHeight="681.0" prefWidth="894.0" rotateGraphic="true" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="45">
         <tabs>
           <Tab fx:id="userProfileTab" text="User Profile">
             <content>
-              <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="643.0" prefWidth="776.0">
-                     <children>
-                       <HBox alignment="CENTER" layoutX="9.0" layoutY="562.0" prefHeight="25.0" prefWidth="876.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0">
-                         <children>
-                           <Button fx:id="deleteUser" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#delete" text="Delete User" />
-                         </children>
-                       </HBox>
-                        <Label layoutX="15.0" layoutY="45.0" text="First Name:" />
-                        <Label layoutX="15.0" layoutY="145.0" text="Date of Birth:" />
-                        <Label layoutX="15.0" layoutY="245.0" text="Birth Gender:" />
-                        <Label layoutX="420.0" layoutY="20.0" text="Blood Type:" />
-                        <Label layoutX="420.0" layoutY="45.0" text="Height(m):" />
-                        <Label layoutX="420.0" layoutY="70.0" text="Weight(Kgs):" />
-                        <Label fx:id="dodLabel" layoutX="15.0" layoutY="195.0" text="Date of Death:" />
-                        <Label layoutX="15.0" layoutY="170.0" prefHeight="16.0" prefWidth="36.0" text="Age:" />
-                        <Label layoutX="19.0" layoutY="204.0" />
-                       <Separator layoutX="-13.0" layoutY="331.0" prefHeight="12.0" prefWidth="903.0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" />
-                       <Button fx:id="logOutButton" layoutX="14.0" layoutY="570.0" mnemonicParsing="false" onAction="#logout" text="Log Out" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" />
-                       <Button fx:id="editDetailsButton" layoutX="789.0" layoutY="573.0" mnemonicParsing="false" onAction="#updateDetails" text="Edit Details" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="10.0" />
-                        <Label layoutX="420.0" layoutY="145.0" text="BMI:" />
-                        <Label layoutX="15.0" layoutY="95.0" text="MIddle Name:" />
-                        <Label layoutX="15.0" layoutY="120.0" text="Last Name:" />
-                        <Label fx:id="mNameValue" layoutX="110.0" layoutY="95.0" />
-                        <Label fx:id="lNameValue" layoutX="96.0" layoutY="120.0" />
-                        <Label fx:id="fNameValue" layoutX="95.0" layoutY="45.0" />
-                        <Label fx:id="ageValue" layoutX="47.0" layoutY="172.0" />
-                        <Label fx:id="DOBValue" layoutX="106.0" layoutY="145.0" />
-                        <Label fx:id="DODValue" layoutX="113.0" layoutY="195.0" />
-                        <Label fx:id="birthGenderValue" layoutX="110.0" layoutY="245.0" />
-                        <Label fx:id="bmiValue" layoutX="458.0" layoutY="145.0" />
-                        <Label fx:id="bloodTypeValue" layoutX="508.0" layoutY="20.0" />
-                        <Label fx:id="heightValue" layoutX="508.0" layoutY="45.0" />
-                        <Label fx:id="weightValue" layoutX="508.0" layoutY="70.0" />
-                        <Label layoutX="420.0" layoutY="95.0" text="Smoker:" />
-                        <Label layoutX="420.0" layoutY="120.0" text="Alcohol consumption:" />
-                        <Label layoutX="15.0" layoutY="70.0" text="Preferred Name:" />
-                        <Label fx:id="pNameValue" layoutX="125.0" layoutY="70.0" />
-                        <Label fx:id="smokerValue" layoutX="479.0" layoutY="95.0" />
-                        <Label fx:id="alcoholValue" layoutX="567.0" layoutY="120.0" />
-                        <Label layoutX="15.0" layoutY="297.0" text="User Last Modified:" />
-                        <Label layoutX="15.0" layoutY="317.0" text="User Created:" />
-                        <Label fx:id="lastModifiedValue" layoutX="145.0" layoutY="297.0" />
-                        <Label fx:id="createdValue" layoutX="112.0" layoutY="317.0" />
-                        <Label layoutX="15.0" layoutY="20.0" text="NHI:" />
-                        <Label fx:id="NHIValue" layoutX="46.0" layoutY="20.0" />
-                        <Label layoutX="15.0" layoutY="220.0" text="Age at Death:" />
-                        <Label fx:id="ageDeathValue" layoutX="110.0" layoutY="220.0" />
-                        <Label layoutX="15.0" layoutY="270.0" text="Gender Identity:" />
-                        <Label fx:id="genderIdentityValue" layoutX="130.0" layoutY="273.0" />
-                       <Button fx:id="backButton" layoutX="14.0" layoutY="570.0" mnemonicParsing="false" onAction="#closeWindow" text="Back" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" />
-                     </children>
-                  </AnchorPane>
+              <fx:include fx:id="userProfileTabPage" source="donorProfileView.fxml"/>
             </content>
           </Tab>
             <Tab fx:id="receiverTab" text="Receiver">
@@ -141,22 +88,7 @@
           </Tab>
             <Tab text="Medication">
               <content>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                     <children>
-                        <ListView fx:id="currentMedicationListView" layoutX="431.0" layoutY="104.0" onMouseClicked="#clearPreviousMedSelection" prefHeight="287.0" prefWidth="227.0" />
-                        <ListView fx:id="previousMedicationListView" layoutX="22.0" layoutY="102.0" onMouseClicked="#clearCurrentMedSelection" prefHeight="285.0" prefWidth="221.0" />
-                        <Button fx:id="untakeMedicationButton" layoutX="315.0" layoutY="200.0" mnemonicParsing="false" onAction="#untakeMedication" text="&lt;&lt;" />
-                        <Button fx:id="takeMedicationButton" layoutX="314.0" layoutY="262.0" mnemonicParsing="false" onAction="#takeMedication" text="&gt;&gt;" />
-                        <Button fx:id="deleteButton" layoutX="70.0" layoutY="448.0" mnemonicParsing="false" onAction="#deleteMedication" text="Delete" />
-                        <TextField fx:id="medicationTextField" layoutX="425.0" layoutY="55.0" />
-                        <Button fx:id="addMedicationButton" layoutX="621.0" layoutY="55.0" mnemonicParsing="false" onAction="#addMedication" text="add" />
-                        <Label layoutX="31.0" layoutY="401.0" text="Previous Medications" />
-                        <Label layoutX="489.0" layoutY="401.0" text="Current Medications" />
-                        <Label layoutX="345.0" layoutY="60.0" text="Medication" />
-                         <Label fx:id="drugDetailsLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="671.0" layoutY="104.0" prefHeight="17.0" prefWidth="198.0" text="Drug Details" textAlignment="CENTER" />
-                         <TextArea fx:id="drugDetailsTextArea" editable="false" layoutX="670.0" layoutY="125.0" prefHeight="200.0" prefWidth="200.0" wrapText="true" />
-                       </children>
-                  </AnchorPane>
+                <fx:include source="medicationTabView.fxml" fx:id="medicationTabPage"/>
               </content>
             </Tab>
             <Tab text="Procedures">
