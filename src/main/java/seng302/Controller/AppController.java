@@ -36,8 +36,6 @@ public class AppController {
   private Set<User> deletedUserStack = new HashSet<>();
   private Stack<User> redoStack = new Stack<>();
 
-  private ClinicianController clinicianControllerInstance;
-
   /**
    * Creates new instance of AppController
    */
@@ -90,33 +88,22 @@ public class AppController {
     return controller;
   }
 
-  public void setClinicianControllerInstance(ClinicianController clinicianController) {
-    clinicianControllerInstance = clinicianController;
-  }
-
-  public ClinicianController getClinicianControllerInstance() {
-    return clinicianControllerInstance;
-  }
-
-
-  /**
-   * appends a single Donor to the list of users stored in the Controller
-   *
-   * @param name The name of the donor.
-   * @param dateOfBirth The date the donor was born.
-   * @param dateOfDeath The date the donor died.
-   * @param gender The gender of the donor.
-   * @param height The height of the donor.
-   * @param weight The weight of the donor.
-   * @param bloodType The blood type of the donor.
-   * @param currentAddress The address of the donor.
-   * @param region The region the donor lives in.
-   * @param NHI The unique identifier of the donor (national health index)
-   * @return hashCode of the new donor or -1 on error
-   */
-  public int Register(String name, LocalDate dateOfBirth, LocalDate dateOfDeath, String gender,
-      double height,
-      double weight,
+    /**
+     * appends a single Donor to the list of users stored in the Controller
+     * @param name The name of the donor.
+     * @param dateOfBirth The date the donor was born.
+     * @param dateOfDeath The date the donor died.
+     * @param gender The gender of the donor.
+     * @param height The height of the donor.
+     * @param weight The weight of the donor.
+     * @param bloodType The blood type of the donor.
+     * @param currentAddress The address of the donor.
+     * @param region The region the donor lives in.
+     * @param NHI The unique identifier of the donor (national health index)
+     * @return hashCode of the new donor or -1 on error
+     */
+  public int Register(String name, LocalDate dateOfBirth, LocalDate dateOfDeath, String gender, double height,
+                      double weight,
       String bloodType, String currentAddress, String region, String NHI) {
     try {
       User newDonor = new User(name, dateOfBirth, NHI);

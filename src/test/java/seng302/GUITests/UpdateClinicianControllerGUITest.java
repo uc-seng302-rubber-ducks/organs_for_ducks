@@ -1,4 +1,4 @@
-package seng302.Controller;
+package seng302.GUITests;
 
 import static javafx.scene.input.KeyCode.A;
 import static javafx.scene.input.KeyCode.BACK_SPACE;
@@ -15,6 +15,7 @@ import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.matcher.control.LabeledMatchers;
 import org.testfx.matcher.control.TextInputControlMatchers;
 import seng302.App;
+import seng302.Controller.AppController;
 import seng302.Model.Clinician;
 
 /**
