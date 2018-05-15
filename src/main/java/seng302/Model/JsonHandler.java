@@ -102,7 +102,7 @@ public final class JsonHandler {
       outFile.delete(); //purge old data before writing new data in
     }
 
-    outFile.createNewFile(); //creates new file if donors does not exist
+    outFile.createNewFile(); //creates new file
     Gson gson = new GsonBuilder().registerTypeAdapter(DateTime.class, (JsonSerializer<DateTime>)
         (json, typeOfSrc, context) -> new JsonPrimitive(ISODateTimeFormat.dateTime().print(json)))
         .excludeFieldsWithoutExposeAnnotation()
