@@ -1,11 +1,5 @@
 package seng302.GUITests;
 
-import static javafx.scene.input.KeyCode.A;
-import static javafx.scene.input.KeyCode.BACK_SPACE;
-import static javafx.scene.input.KeyCode.SHORTCUT;
-import static org.testfx.api.FxAssert.verifyThat;
-
-import java.util.concurrent.TimeoutException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -17,6 +11,11 @@ import org.testfx.matcher.control.TextInputControlMatchers;
 import seng302.App;
 import seng302.Controller.AppController;
 import seng302.Model.Clinician;
+
+import java.util.concurrent.TimeoutException;
+
+import static javafx.scene.input.KeyCode.*;
+import static org.testfx.api.FxAssert.verifyThat;
 
 /**
  * Tests the UpdateClinicianController specifically for updating existing clinicians
@@ -42,13 +41,13 @@ public class UpdateClinicianControllerGUITest extends ApplicationTest {
         AppController.getInstance().getUsers().clear();
         AppController.getInstance().getClinicians().remove(AppController.getInstance().getClinician("Staff1"));
         AppController.getInstance().getClinicians().add(new Clinician("Staff1", "secure", "Affie", "Ali", "Al", "20 Kirkwood Ave", "Christchurch"));
-        clickOn("#changeLogin");
+        clickOn("#clinicianTab");
 
-        clickOn("#userIDTextField");
+        clickOn("#staffIdTextField");
         write("Staff1");
-        clickOn("#passwordField");
+        clickOn("#staffPasswordField");
         write("secure");
-        clickOn("#loginButton");
+        clickOn("#loginCButton");
         clickOn("#editButton");
     }
 

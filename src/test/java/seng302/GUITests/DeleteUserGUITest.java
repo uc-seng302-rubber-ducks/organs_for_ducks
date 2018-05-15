@@ -25,7 +25,7 @@ public class DeleteUserGUITest extends ApplicationTest{
     AppController.getInstance().getUsers().add(new User("A", LocalDate.now(), "ABC1234"));
     clickOn("#userIDTextField");
     write("ABC1234");
-    clickOn("#loginButton");
+    clickOn("#loginUButton");
   }
 
   @After
@@ -40,7 +40,7 @@ public class DeleteUserGUITest extends ApplicationTest{
     clickOn("OK");
     clickOn("#userIDTextField");
     write("ABC1234");
-    clickOn("#loginButton");
+    clickOn("#loginUButton");
     verifyThat("#warningLabel", LabeledMatchers.hasText("Donor was not found. \nTo register a new donor please click sign up."));
   }
 

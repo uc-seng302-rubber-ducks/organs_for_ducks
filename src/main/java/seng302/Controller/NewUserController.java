@@ -6,6 +6,7 @@ import static seng302.Model.JsonHandler.saveUsers;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -24,138 +25,106 @@ import seng302.Service.AttributeValidation;
 
 /**
  * Controller class for creating a new donor profile.
+ *
  * @author acb116, are66, eli26, jha236
  */
 public class NewUserController {
 
-    @FXML
-    private Label errorLabel;
-
-    @FXML
-    private Label existingNHI;
-
-    @FXML
-    private Label invalidNHI;
-
-    @FXML
-    private Label invalidFirstName;
-
-    @FXML
-    private Label invalidDOB;
-
-    @FXML
-    private Label invalidDOD;
-
-    @FXML
-    private TextField nhiInput;
-
-    @FXML
-    private TextField fNameInput;
-
-    @FXML
-    private TextField preferredFNameTextField;
-
-    @FXML
-    private TextField mNameInput;
-
-    @FXML
-    private TextField lNameInput;
-
-    @FXML
-    private TextField heightInput;
-
-    @FXML
-    private TextField weightInput;
-
-    @FXML
-    private TextField phoneInput;
-
-    @FXML
-    private TextField cellInput;
-
-    @FXML
-    private TextField addressInput;
-
-    @FXML
-    private TextField regionInput;
-
-    @FXML
-    private TextField emailInput;
-
-    @FXML
-    private TextField ecNameInput;
-
-    @FXML
-    private TextField ecPhoneInput;
-
-    @FXML
-    private TextField ecCellInput;
-
-    @FXML
-    private TextField ecAddressInput;
-
-    @FXML
-    private TextField ecRegionInput;
-
-    @FXML
-    private TextField ecEmailInput;
-
-    @FXML
-    private TextField ecRelationshipInput;
-
-    @FXML
-    private ComboBox birthGenderComboBox;
-
-    @FXML
-    private ComboBox genderIdComboBox;
-
-    @FXML
-    private ComboBox bloodComboBox;
-
-    @FXML
-    private CheckBox smokerCheckBox;
-
-    @FXML
-    private ComboBox alcoholComboBox;
-
-    @FXML
-    private DatePicker dobInput;
-
-    @FXML
-    private DatePicker dodInput;
-
-    @FXML
-    private Button cancelButton;
-
-    @FXML
-    private Button confirmButton;
-
-    @FXML
-    private Label headerLabel;
-
     AppController controller;
     Stage stage;
-
-
-    /**
-     * Initializes the NewUserController
-     * @param controller The applications controller.
-     * @param stage The applications stage.
-     */
-    public void init(AppController controller, Stage stage) {
-        this.controller = controller;
-        this.stage = stage;
-        //stage.setMinWidth(620);
-        //stage.setMaxWidth(620);
-    }
+    @FXML
+    private Label errorLabel;
+    @FXML
+    private Label existingNHI;
+    @FXML
+    private Label invalidNHI;
+    @FXML
+    private Label invalidFirstName;
+    @FXML
+    private Label invalidDOB;
+    @FXML
+    private Label invalidDOD;
+    @FXML
+    private TextField nhiInput;
+    @FXML
+    private TextField fNameInput;
+    @FXML
+    private TextField preferredFNameTextField;
+    @FXML
+    private TextField mNameInput;
+    @FXML
+    private TextField lNameInput;
+    @FXML
+    private TextField heightInput;
+    @FXML
+    private TextField weightInput;
+    @FXML
+    private TextField phoneInput;
+    @FXML
+    private TextField cellInput;
+    @FXML
+    private TextField addressInput;
+    @FXML
+    private TextField regionInput;
+    @FXML
+    private TextField emailInput;
+    @FXML
+    private TextField ecNameInput;
+    @FXML
+    private TextField ecPhoneInput;
+    @FXML
+    private TextField ecCellInput;
+    @FXML
+    private TextField ecAddressInput;
+    @FXML
+    private TextField ecRegionInput;
+    @FXML
+    private TextField ecEmailInput;
+    @FXML
+    private TextField ecRelationshipInput;
+    @FXML
+    private ComboBox birthGenderComboBox;
+    @FXML
+    private ComboBox genderIdComboBox;
+    @FXML
+    private ComboBox bloodComboBox;
+    @FXML
+    private CheckBox smokerCheckBox;
+    @FXML
+    private ComboBox alcoholComboBox;
+    @FXML
+    private DatePicker dobInput;
+    @FXML
+    private DatePicker dodInput;
+    @FXML
+    private Button cancelButton;
+    @FXML
+    private Button confirmButton;
+    @FXML
+    private Label headerLabel;
+    private Stage ownStage;
 
 
     public NewUserController() throws IOException {
     }
 
+    /**
+     * Initializes the NewUserController
+     *
+     * @param controller The applications controller.
+     * @param stage      The applications stage.
+     */
+    public void init(AppController controller, Stage stage, Stage ownStage) {
+        this.controller = controller;
+        this.stage = stage;
+        this.ownStage = ownStage;
+        //stage.setMinWidth(620);
+        //stage.setMaxWidth(620);
+    }
 
     /**
      * Returns the user to the login window.
+     *
      * @throws IOException Throws an exception if the fxml cannot be located.
      */
     @FXML
@@ -164,29 +133,31 @@ public class NewUserController {
 //        Parent root = FXMLLoader.load(getClass().getResource("/FXML/login.fxml"));
 //        primaryStage.setScene(new Scene(root));
 
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML/loginView.fxml"));
+      /*  FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML/loginView.fxml"));
         Parent root = null;
         try {
             root = loader.load();
         } catch (IOException e) {
             e.printStackTrace();
         }
+
         stage.setScene(new Scene(root));
         LoginController loginController = loader.getController();
         loginController.init(AppController.getInstance(), stage);
         stage.show();
         stage.hide();
-        stage.show();
+        stage.show();*/
+        ownStage.close();
     }
-
 
 
     /**
      * Creates the new user with at least the required attributes.
-     * @param nhi The national health index.
+     *
+     * @param nhi   The national health index.
      * @param fName First Name.
-     * @param dob Date of birth.
-     * @param dod Date of death.
+     * @param dob   Date of birth.
+     * @param dod   Date of death.
      * @throws IOException
      */
     private void createUser(String nhi, String fName, LocalDate dob, LocalDate dod) throws IOException {
@@ -194,21 +165,21 @@ public class NewUserController {
 
         // User attributes
         String preferredFirstName;
-        if (preferredFNameTextField.getText().isEmpty()){
+        if (preferredFNameTextField.getText().isEmpty()) {
             preferredFirstName = fName;
         } else {
             preferredFirstName = preferredFNameTextField.getText();
         }
 
-      String middleName = AttributeValidation.checkString(mNameInput.getText()) == null ? ""
-          : AttributeValidation.checkString(
-              mNameInput.getText()); // checkString returns null if the textfield is empty
-      String lastName = AttributeValidation.checkString(lNameInput.getText()) == null ? ""
-          : AttributeValidation.checkString(lNameInput.getText());
+        String middleName = AttributeValidation.checkString(mNameInput.getText()) == null ? ""
+                : AttributeValidation.checkString(
+                mNameInput.getText()); // checkString returns null if the textfield is empty
+        String lastName = AttributeValidation.checkString(lNameInput.getText()) == null ? ""
+                : AttributeValidation.checkString(lNameInput.getText());
 
         String birthGender = AttributeValidation.validateGender(birthGenderComboBox);
         String genderIdentity;
-        if (birthGender != null && AttributeValidation.validateGender(genderIdComboBox) == null){
+        if (birthGender != null && AttributeValidation.validateGender(genderIdComboBox) == null) {
             genderIdentity = birthGender;
         } else {
             genderIdentity = AttributeValidation.validateGender(genderIdComboBox);
@@ -231,13 +202,13 @@ public class NewUserController {
         }
 
         // contact details
-      String currentAddress = AttributeValidation.checkString(addressInput.getText()) == null ? ""
-          : AttributeValidation.checkString(addressInput.getText());
-      String region = AttributeValidation.checkString(regionInput.getText()) == null ? ""
-          : AttributeValidation.checkString(regionInput.getText());
-      String homePhone = AttributeValidation.validatePhoneNumber(phoneInput.getText());
-      String cellPhone = AttributeValidation.validateCellNumber(cellInput.getText());
-      String email = AttributeValidation.validateEmail(emailInput.getText());
+        String currentAddress = AttributeValidation.checkString(addressInput.getText()) == null ? ""
+                : AttributeValidation.checkString(addressInput.getText());
+        String region = AttributeValidation.checkString(regionInput.getText()) == null ? ""
+                : AttributeValidation.checkString(regionInput.getText());
+        String homePhone = AttributeValidation.validatePhoneNumber(phoneInput.getText());
+        String cellPhone = AttributeValidation.validateCellNumber(cellInput.getText());
+        String email = AttributeValidation.validateEmail(emailInput.getText());
 
         // validate email and phone numbers
         valid = emailCheck(email, valid);
@@ -246,11 +217,11 @@ public class NewUserController {
 
         // Emergency Contact attributes
         String eName = AttributeValidation.checkString(ecNameInput.getText());
-      String eCellPhone = AttributeValidation.validateCellNumber(ecCellInput.getText());
-      String eHomePhone = AttributeValidation.validatePhoneNumber(ecPhoneInput.getText());
+        String eCellPhone = AttributeValidation.validateCellNumber(ecCellInput.getText());
+        String eHomePhone = AttributeValidation.validatePhoneNumber(ecPhoneInput.getText());
         String eAddress = AttributeValidation.checkString(ecAddressInput.getText());
         String eRegion = AttributeValidation.checkString(ecRegionInput.getText());
-      String eEmail = AttributeValidation.validateEmail(ecEmailInput.getText());
+        String eEmail = AttributeValidation.validateEmail(ecEmailInput.getText());
         String eRelationship = AttributeValidation.checkString(ecRelationshipInput.getText());
 
         // validate emergency contact email and phone numbers
@@ -268,28 +239,28 @@ public class NewUserController {
         }
 
         if (valid) {
-          // create the new user
-          User newUser = new User(nhi, dob, dod, birthGender, genderIdentity, height, weight,
-              bloodType,
-              alcoholConsumption, smoker, currentAddress, region, homePhone, cellPhone, email, null,
-              fName, fName, preferredFirstName, middleName, lastName);
+            // create the new user
+            User newUser = new User(nhi, dob, dod, birthGender, genderIdentity, height, weight,
+                    bloodType,
+                    alcoholConsumption, smoker, currentAddress, region, homePhone, cellPhone, email, null,
+                    fName, fName, preferredFirstName, middleName, lastName); //todo: ewww gross can we please change this
 
-          EmergencyContact contact = new EmergencyContact("", "", newUser);
+            EmergencyContact contact = new EmergencyContact("", "", newUser);
 
             if (eName != null && eCellPhone != null) {
                 // create the emergency contact
-              contact = new EmergencyContact(eName, eCellPhone, newUser);
+                contact = new EmergencyContact(eName, eCellPhone, newUser);
 
-              contact.setHomePhoneNumber(eHomePhone == null ? "" : eHomePhone);
-              contact.setAddress(eAddress == null ? "" : eAddress);
-              contact.setRegion(eRegion == null ? "" : eRegion);
-              contact.setEmail(eEmail == null ? "" : eEmail);
-              contact.setRelationship(eRelationship == null ? "" : eRelationship);
+                contact.setHomePhoneNumber(eHomePhone == null ? "" : eHomePhone);
+                contact.setAddress(eAddress == null ? "" : eAddress);
+                contact.setRegion(eRegion == null ? "" : eRegion);
+                contact.setEmail(eEmail == null ? "" : eEmail);
+                contact.setRelationship(eRelationship == null ? "" : eRelationship);
             }
 
-          newUser.setContact(contact);
+            newUser.setContact(contact);
 
-          newUser.getUndoStack().clear();
+            newUser.getUndoStack().clear();
 
             // add the new user to the list of users and save them
             ArrayList<User> users = controller.getUsers();
@@ -297,20 +268,43 @@ public class NewUserController {
             saveUsers(users);
 
             // load to the overview page
-            FXMLLoader donorLoader = new FXMLLoader(getClass().getResource("/FXML/userView.fxml"));
-            Parent root = null;
+            if (stage.getTitle().matches("Administrator*")) {
+                ownStage.close();
+                FXMLLoader donorLoader = new FXMLLoader(getClass().getResource("/FXML/userView.fxml"));
+                Parent root = null;
 
-            try {
-                root = donorLoader.load();
-                stage.setScene(new Scene(root));
-                DonorController donorController = donorLoader.getController();
-                AppController.getInstance().setDonorController(donorController);
-                donorController.init(AppController.getInstance(), newUser, stage,false);
+                try {
+                    root = donorLoader.load();
+                    Stage userStage = new Stage();
+                    userStage.setScene(new Scene(root));
+                    userStage.show();
+                    DonorController donorController = donorLoader.getController();
+                    //AppController.getInstance().setDonorController(donorController); This doesnt need to be here. Its setting the controller
+                    //to the controller returned by the object
+                    donorController.init(AppController.getInstance(), newUser, userStage, false);
+                    donorController.diableLogout();
 
-            } catch (IOException e) {
-                e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                FXMLLoader donorLoader = new FXMLLoader(getClass().getResource("/FXML/userView.fxml"));
+                Parent root = null;
+
+                try {
+                    root = donorLoader.load();
+                    stage.setScene(new Scene(root));
+                    ownStage.close();
+                    DonorController donorController = donorLoader.getController();
+                    //AppController.getInstance().setDonorController(donorController); see above note
+                    donorController.init(AppController.getInstance(), newUser, stage, false);
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
+
     }
 
 
@@ -339,7 +333,7 @@ public class NewUserController {
      * Checks that if the given home phone number is not null, then it must be in the correct format.
      *
      * @param homeNum The home phone number to be validated.
-     * @param valid A boolean indicating if there is an invalid user input.
+     * @param valid   A boolean indicating if there is an invalid user input.
      * @return false if the home phone number is not valid, otherwise the original value of the boolean.
      */
     private boolean homePhoneCheck(String homeNum, boolean valid) {
@@ -360,7 +354,7 @@ public class NewUserController {
      * Checks that if the given cell phone number is not null, then it must be in the correct format.
      *
      * @param cellNum The cell phone number to be validated.
-     * @param valid A boolean indicating if there is an invalid user input.
+     * @param valid   A boolean indicating if there is an invalid user input.
      * @return false if the cell phone number is not valid, otherwise the original value of the boolean.
      */
     private boolean cellPhoneCheck(String cellNum, boolean valid) {
@@ -380,6 +374,7 @@ public class NewUserController {
     /**
      * Sends the user to the user overview window.
      * Validates the required attributes and sends messages if they are not valid.
+     *
      * @throws IOException Throws an exception if the fxml cannot be located.
      */
     @FXML
@@ -423,7 +418,7 @@ public class NewUserController {
 
         User user = controller.findUser(nhi); // checks if the nhi already exists within the system
 
-        if (valid && user == null){
+        if (valid && user == null) {
             createUser(nhi, fName, dob, dod);
         } else if (user != null) {
             existingNHI.setVisible(true);

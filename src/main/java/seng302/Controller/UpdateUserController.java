@@ -218,6 +218,7 @@ public class UpdateUserController {
     }
 
   }
+
   /**
    * Changes the title bar to add/remove an asterisk when a change was detected on the date picker.
    *
@@ -270,7 +271,7 @@ public class UpdateUserController {
    * @param user The current user.
    */
   @FXML
-  public void setUserDetails(User user) {
+  private void setUserDetails(User user) {
     //personal
     listen = false;
     fNameInput.setText(user.getFirstName());
