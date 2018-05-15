@@ -17,7 +17,8 @@ import static org.testfx.api.FxAssert.verifyThat;
 
 
 public class GivenSteps extends ApplicationTest{
-    private AppController controller = AppController.getInstance();
+
+  private AppController controller = AppController.getInstance();
 
   @After
   public void tearDown() throws TimeoutException {
@@ -39,9 +40,9 @@ public class GivenSteps extends ApplicationTest{
 
     @Given("^a user with the NHI \"([^\"]*)\" exists$")
     public void aUserWithTheNHIExists(String NHI) throws Throwable {
-        ArrayList<User> userList = controller.findUsers("NHI");
+      ArrayList<User> userList = controller.findUsers(NHI);
         if (userList.isEmpty()) {
-            //controller.getUsers().add(new User(NHI, new Date()));
+          //controller.getUsers().add(new User(NHI, LocalDate.now()));
         }
     }
 
