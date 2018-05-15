@@ -38,9 +38,9 @@ public class GivenSteps extends ApplicationTest{
 
     @Given("^a user with the NHI \"([^\"]*)\" exists$")
     public void aUserWithTheNHIExists(String NHI) throws Throwable {
-        ArrayList<User> userList = controller.findUsers("NHI");
+      ArrayList<User> userList = controller.findUsers(NHI);
         if (userList.isEmpty()) {
-            //controller.getUsers().add(new User(NHI, new Date()));
+          //controller.getUsers().add(new User(NHI, LocalDate.now()));
         }
     }
 
