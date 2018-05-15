@@ -10,11 +10,6 @@ import seng302.App;
 import seng302.Controller.AppController;
 import seng302.Model.User;
 
-import java.util.ArrayList;
-import java.util.concurrent.TimeoutException;
-
-import static org.testfx.api.FxAssert.verifyThat;
-import static seng302.Utils.TableViewsMethod.getCell;
 
 public class GivenSteps extends ApplicationTest{
     private AppController controller = AppController.getInstance();
