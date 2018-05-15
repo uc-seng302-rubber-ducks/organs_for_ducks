@@ -134,9 +134,6 @@ public class UpdateClinicianController {
             scene.addEventFilter(KeyEvent.KEY_RELEASED, e -> {
                 if (shortcutZ.match(e)) {
                     undo(new ActionEvent());
-                    if (checkChanges()) { // checks if reverting a textfield change restores all fields to their original state
-                        ownStage.setTitle("Update Clinician: " + currentClinician.getFirstName());
-                    }
                 }
             });
 
