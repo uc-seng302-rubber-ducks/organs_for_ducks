@@ -1,4 +1,4 @@
-package seng302.Controller;
+package seng302.GUITests;
 
 import javafx.scene.Node;
 import org.junit.After;
@@ -7,6 +7,7 @@ import org.junit.Test;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 import seng302.App;
+import seng302.Controller.AppController;
 import seng302.Model.Administrator;
 import java.util.concurrent.TimeoutException;
 import static org.testfx.api.FxAssert.verifyThat;
@@ -18,7 +19,7 @@ public class DeleteAdminGUITest extends ApplicationTest {
         FxToolkit.registerPrimaryStage();
         FxToolkit.setupApplication(App.class);
         AppController.getInstance().getAdmins().clear();
-        AppController.getInstance().getAdmins().add(new Administrator());
+        AppController.getInstance().getAdmins().add(new Administrator("default", null, null, null, "admin"));
         System.out.println(AppController.getInstance().getAdmins());
 
         clickOn("#administratorTab");
