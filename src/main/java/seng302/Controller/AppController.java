@@ -17,10 +17,6 @@ import seng302.Model.TransplantDetails;
 import seng302.Model.User;
 import seng302.Exception.UserAlreadyExistsException;
 import seng302.Exception.UserNotFoundException;
-import seng302.Model.Change;
-import seng302.Model.Clinician;
-import seng302.Model.JsonHandler;
-import seng302.Model.User;
 
 
 /**
@@ -32,7 +28,6 @@ public class AppController {
   private ArrayList<User> users = new ArrayList<>();
   private ArrayList<TransplantDetails> transplantList = new ArrayList<>();
   private ArrayList<Clinician> clinicians = new ArrayList<>();
-  private ArrayList<Administrator> administrators = new ArrayList<>();
   private static AppController controller;
   private ArrayList<String[]> historyOfCommands = new ArrayList<>();
   private int historyPointer = 0;
@@ -42,8 +37,6 @@ public class AppController {
   private AdministratorViewController administratorViewController = new AdministratorViewController();
   private Set<User> deletedUserStack = new HashSet<>();
   private Stack<User> redoStack = new Stack<>();
-
-  private ClinicianController clinicianControllerInstance;
 
   /**
    * Creates new instance of AppController
@@ -63,8 +56,33 @@ public class AppController {
       System.out.println("Clinician file was not found");
     }
 
+    try {
+        admins = JsonHandler.loadAdmins();
+        System.out.println(admins.size() + " administrators were successfully loaded");
+    } catch (FileNotFoundException e) {
+        System.out.println("Administrator file was not found");
+    }
+
     String[] empty = {""};
     historyOfCommands.add(empty);//putting an empty string into the string array to be displayed if history pointer is 0
+
+    boolean defaultAdminSeen = false;
+    for (Administrator a : admins) {
+        if (a.getUserName().equals("default")) {
+            defaultAdminSeen = true;
+            break;
+        }
+    }
+    if (!defaultAdminSeen) {
+        admins.add(new Administrator("default", "", "", "", "admin"));
+
+        try {
+            JsonHandler.saveAdmins(admins);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     boolean defaultSeen = false;
     for(Clinician c : clinicians){
       if(c.getStaffId().equals("0")){
@@ -95,15 +113,6 @@ public class AppController {
     }
     return controller;
   }
-
-  public void setClinicianControllerInstance(ClinicianController clinicianController){
-    clinicianControllerInstance = clinicianController;
-  }
-
-  public ClinicianController getClinicianControllerInstance() {
-    return clinicianControllerInstance;
-  }
-
 
     /**
      * appends a single Donor to the list of users stored in the Controller
@@ -283,6 +292,8 @@ public class AppController {
 
   }
 
+
+
   public ArrayList<User> getUsers() {
     return users;
   }
@@ -377,6 +388,17 @@ public class AppController {
      }
    }
 
+    /**
+     * Removes the given admin from the list of administrators unless the given admin is the default admin.
+     *
+     * @param admin The given admin
+     */
+    public void deleteAdmin(Administrator admin) {
+        admins.remove(admin);
+        // todo: will probably need undo/redo for this similar to how the deleteDonor one has it
+        // auto save is on another branch..
+    }
+
 
 
   public DonorController getDonorController() {
@@ -405,7 +427,7 @@ public class AppController {
 
 
   public Administrator getAdministrator(String username){
-    for (Administrator a : administrators){
+    for (Administrator a : admins){
       if (a.getUserName().equals(username)) {
         return a;
       }

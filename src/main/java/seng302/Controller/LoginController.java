@@ -2,7 +2,7 @@ package seng302.Controller;
 
 import java.io.IOException;
 import java.util.ArrayList;
-
+import java.util.logging.Logger;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -18,6 +18,8 @@ import javafx.stage.Stage;
 import seng302.Model.Administrator;
 import seng302.Model.Clinician;
 import seng302.Model.User;
+import seng302.Service.Log;
+import seng302.View.CLI;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -26,6 +28,7 @@ import java.util.ArrayList;
  * Class for the login functionality of the application
  */
 public class LoginController {
+
 
   @FXML
   private Button loginUButton;
@@ -81,7 +84,7 @@ public class LoginController {
     * @param stage The applications stage.
     */
   public void init(AppController appController, Stage stage){
-    //openCLIButton.setVisible(false);
+    Log.info("starting loginController");
     userWarningLabel.setText("");
     clinicianWarningLabel.setText("");
     adminWarningLabel.setText("");
@@ -198,11 +201,11 @@ public class LoginController {
             Administrator administrator = appController.getAdministrator(wantedAdmin);
             if (administrator == null) {
                 adminWarningLabel.setText("The administrator does not exist.");
-            } else if (!adminPassword.equals(administrator.getPassword())) {
+            } else if (!administrator.isPasswordCorrect(adminPassword)) {
                 adminWarningLabel.setText("Your password is incorrect. Please try again.");
                 return;
             } else {
-                FXMLLoader administratorLoader = new FXMLLoader(getClass().getResource("/FXML/administratorView.fxml"));
+                FXMLLoader administratorLoader = new FXMLLoader(getClass().getResource("/FXML/adminView.fxml"));
                 Parent root = null;
                 try {
                     root = administratorLoader.load();
@@ -211,9 +214,10 @@ public class LoginController {
                 }
 
                 stage.setScene(new Scene(root));
+                stage.setTitle("Administrator");
                 AdministratorViewController administratorController = administratorLoader.getController();
                 AppController.getInstance().setAdministratorViewController(administratorController);
-                administratorController.init(stage, appController, administrator);
+                administratorController.init(administrator, appController, stage);
             }
   }
 
@@ -291,7 +295,7 @@ public class LoginController {
         stage.setScene(new Scene(root));
         stage.setTitle("Administrator");
         AdministratorViewController administratorViewController = adminLoader.getController();
-        administratorViewController.init(stage, appController, new Administrator());
+        administratorViewController.init(new Administrator(),appController,stage);
     }
 }
 

@@ -1,4 +1,4 @@
-package seng302.Controller;
+package seng302.GUITests;
 
 import org.junit.After;
 import org.junit.Before;
@@ -9,6 +9,7 @@ import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.matcher.control.LabeledMatchers;
 import org.testfx.matcher.control.TextInputControlMatchers;
 import seng302.App;
+import seng302.Controller.AppController;
 import seng302.Model.Clinician;
 
 import java.util.concurrent.TimeoutException;

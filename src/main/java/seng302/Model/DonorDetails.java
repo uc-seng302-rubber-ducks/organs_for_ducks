@@ -58,6 +58,7 @@ public class DonorDetails {
     attachedUser.updateLastModified();
     memento.setNewObject(attachedUser.clone());
     attachedUser.getUndoStack().push(memento);
+    attachedUser.getRedoStack().clear();
   }
 
   /**
