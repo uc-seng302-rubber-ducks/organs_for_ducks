@@ -7,29 +7,25 @@
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.Tab?>
-<?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.text.Font?>
+
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="675.0" prefWidth="894.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.Controller.DonorController">
    <children>
-     <TabPane layoutY="-4.0" prefHeight="681.0" prefWidth="894.0" rotateGraphic="true"
-       tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0"
-       AnchorPane.rightAnchor="0" AnchorPane.topAnchor="45">
+     <TabPane layoutY="-4.0" prefHeight="681.0" prefWidth="894.0" rotateGraphic="true" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="45">
         <tabs>
           <Tab fx:id="userProfileTab" text="User Profile">
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="643.0" prefWidth="776.0">
                      <children>
-                       <HBox alignment="CENTER" layoutX="9.0" layoutY="562.0" prefHeight="25.0"
-                         prefWidth="876.0" AnchorPane.bottomAnchor="10.0"
-                         AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0">
+                       <HBox alignment="CENTER" layoutX="9.0" layoutY="562.0" prefHeight="25.0" prefWidth="876.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0">
                          <children>
-                           <Button fx:id="deleteUser" alignment="CENTER" contentDisplay="CENTER"
-                             mnemonicParsing="false" onAction="#delete" text="Delete User"/>
+                           <Button fx:id="deleteUser" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#delete" text="Delete User" />
                          </children>
                        </HBox>
                         <Label layoutX="15.0" layoutY="45.0" text="First Name:" />
@@ -41,14 +37,9 @@
                         <Label fx:id="dodLabel" layoutX="15.0" layoutY="195.0" text="Date of Death:" />
                         <Label layoutX="15.0" layoutY="170.0" prefHeight="16.0" prefWidth="36.0" text="Age:" />
                         <Label layoutX="19.0" layoutY="204.0" />
-                       <Separator layoutX="-13.0" layoutY="331.0" prefHeight="12.0"
-                         prefWidth="903.0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0"/>
-                       <Button fx:id="logOutButton" layoutX="14.0" layoutY="570.0"
-                         mnemonicParsing="false" onAction="#logout" text="Log Out"
-                         AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0"/>
-                       <Button fx:id="editDetailsButton" layoutX="789.0" layoutY="573.0"
-                         mnemonicParsing="false" onAction="#updateDetails" text="Edit Details"
-                         AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="10.0"/>
+                       <Separator layoutX="-13.0" layoutY="331.0" prefHeight="12.0" prefWidth="903.0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" />
+                       <Button fx:id="logOutButton" layoutX="14.0" layoutY="570.0" mnemonicParsing="false" onAction="#logout" text="Log Out" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" />
+                       <Button fx:id="editDetailsButton" layoutX="789.0" layoutY="573.0" mnemonicParsing="false" onAction="#updateDetails" text="Edit Details" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="10.0" />
                         <Label layoutX="420.0" layoutY="145.0" text="BMI:" />
                         <Label layoutX="15.0" layoutY="95.0" text="MIddle Name:" />
                         <Label layoutX="15.0" layoutY="120.0" text="Last Name:" />
@@ -79,14 +70,12 @@
                         <Label fx:id="ageDeathValue" layoutX="110.0" layoutY="220.0" />
                         <Label layoutX="15.0" layoutY="270.0" text="Gender Identity:" />
                         <Label fx:id="genderIdentityValue" layoutX="130.0" layoutY="273.0" />
-                       <Button fx:id="backButton" layoutX="14.0" layoutY="570.0"
-                         mnemonicParsing="false" onAction="#closeWindow" text="Back"
-                         AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0"/>
+                       <Button fx:id="backButton" layoutX="14.0" layoutY="570.0" mnemonicParsing="false" onAction="#closeWindow" text="Back" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" />
                      </children>
                   </AnchorPane>
             </content>
           </Tab>
-            <Tab text="Receiver">
+            <Tab fx:id="receiverTab" text="Receiver">
               <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
@@ -141,7 +130,7 @@
                   </AnchorPane>
               </content>
             </Tab>
-          <Tab text="History">
+          <Tab fx:id="historyTab" text="History">
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
@@ -232,9 +221,7 @@
             <Font size="29.0" />
          </font>
       </Label>
-     <Button fx:id="undoButton" layoutX="757.0" layoutY="9.0" mnemonicParsing="false"
-       onAction="#undo" text="Undo" AnchorPane.rightAnchor="84.0" AnchorPane.topAnchor="9.0"/>
-     <Button fx:id="redoButton" layoutX="828.0" layoutY="9.0" mnemonicParsing="false"
-       onAction="#redo" text="Redo" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="9.0"/>
+     <Button fx:id="undoButton" layoutX="757.0" layoutY="9.0" mnemonicParsing="false" onAction="#undo" text="Undo" AnchorPane.rightAnchor="84.0" AnchorPane.topAnchor="9.0" />
+     <Button fx:id="redoButton" layoutX="828.0" layoutY="9.0" mnemonicParsing="false" onAction="#redo" text="Redo" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="9.0" />
    </children>
 </AnchorPane>

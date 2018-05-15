@@ -13,20 +13,6 @@ import static seng302.Model.Organs.MIDDLE_EAR;
 import static seng302.Model.Organs.PANCREAS;
 import static seng302.Model.Organs.SKIN;
 
-import static seng302.Model.Organs.BONE;
-import static seng302.Model.Organs.BONE_MARROW;
-import static seng302.Model.Organs.CONNECTIVE_TISSUE;
-import static seng302.Model.Organs.CORNEA;
-import static seng302.Model.Organs.HEART;
-import static seng302.Model.Organs.INTESTINE;
-import static seng302.Model.Organs.KIDNEY;
-import static seng302.Model.Organs.LIVER;
-import static seng302.Model.Organs.LUNG;
-import static seng302.Model.Organs.MIDDLE_EAR;
-import static seng302.Model.Organs.PANCREAS;
-import static seng302.Model.Organs.SKIN;
-
-import java.io.IOException;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -40,7 +26,6 @@ import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -252,20 +237,23 @@ public class ClinicianController {
         //searchPagination = new Pagination((users.size() / ROWS_PER_PAGE + 1), 0);
     }
 
-    private void groupCheckBoxes() {
-        filterCheckBoxList.add(boneCheckBox);
-        filterCheckBoxList.add(boneMarrowCheckBox);
-        filterCheckBoxList.add(corneaCheckBox);
-        filterCheckBoxList.add(connectiveTissueCheckBox);
-        filterCheckBoxList.add(heartCheckBox);
-        filterCheckBoxList.add(kidneyCheckBox);
-        filterCheckBoxList.add(lungCheckBox);
-        filterCheckBoxList.add(liverCheckBox);
-        filterCheckBoxList.add(middleEarCheckBox);
-        filterCheckBoxList.add(intestineCheckBox);
-        filterCheckBoxList.add(skinCheckBox);
-        filterCheckBoxList.add(pancreasCheckBox);
-    }
+  /**
+   * Adds the filtering checkboxes to a list to later iterate through them
+   */
+  private void groupCheckBoxes() {
+    filterCheckBoxList.add(boneCheckBox);
+    filterCheckBoxList.add(boneMarrowCheckBox);
+    filterCheckBoxList.add(corneaCheckBox);
+    filterCheckBoxList.add(connectiveTissueCheckBox);
+    filterCheckBoxList.add(heartCheckBox);
+    filterCheckBoxList.add(kidneyCheckBox);
+    filterCheckBoxList.add(lungCheckBox);
+    filterCheckBoxList.add(liverCheckBox);
+    filterCheckBoxList.add(middleEarCheckBox);
+    filterCheckBoxList.add(intestineCheckBox);
+    filterCheckBoxList.add(skinCheckBox);
+    filterCheckBoxList.add(pancreasCheckBox);
+  }
 
     private void setDefaultFilters() {
         allCheckBox.setSelected(true);
@@ -389,19 +377,19 @@ public class ClinicianController {
         populateWaitListTable();
     }
 
-    /**
-     * populates and add double click functionality to the Wait List Table.
-     */
-    public void populateWaitListTable() {
-        //transplantWaitListTableView.getItems().clear();
-        //set up lists
-        //table contents are SortedList of a FilteredList of an ObservableList of an ArrayList
-        appController.getTransplantList().clear();
-        for (User user : users) {
-            if (user.isReceiver()) {
-                organs = user.getReceiverDetails().getOrgans().keySet();
-                for (Organs organ : organs) {
-                    if (isReceiverNeedingFilteredOrgan(user.getNhi(), organs).contains(organ)) {
+  /**
+   * populates and add double click functionality to the Wait List Table.
+   */
+  public void populateWaitListTable(){
+    //transplantWaitListTableView.getItems().clear();
+  //set up lists
+  //table contents are SortedList of a FilteredList of an ObservableList of an ArrayList
+  appController.getTransplantList().clear();
+    for (User user : users) {
+    if (user.isReceiver()&& (user.getDeceased() != null || !user.getDeceased())) {
+      organs = user.getReceiverDetails().getOrgans().keySet();
+      for (Organs organ : organs) {
+        if (isReceiverNeedingFilteredOrgan(user.getNhi(), organs).contains(organ)) {
 
                         appController.addTransplant(
                                 new TransplantDetails(user.getNhi(), user.getName(), organ, LocalDate.now(),
@@ -411,10 +399,11 @@ public class ClinicianController {
             }
         }
 
-        observableTransplantList = FXCollections.observableList(appController.getTransplantList());
-        fTransplantList = new FilteredList<>(observableTransplantList);
-        fTransplantList = filterTransplantDetails(fTransplantList);
-        SortedList<TransplantDetails> sTransplantList = new SortedList<>(fTransplantList);
+  observableTransplantList = FXCollections.observableList(appController.getTransplantList());
+    fTransplantList = new FilteredList<>(observableTransplantList);
+    fTransplantList = filterTransplantDetails(fTransplantList);
+    SortedList<TransplantDetails> sTransplantList = new SortedList<>(fTransplantList);
+    sTransplantList.comparatorProperty().bind(transplantWaitListTableView.comparatorProperty());
 
         if (appController.getTransplantList().size() != 0) {
             transplantWaitListTableView.setItems(sTransplantList);
@@ -428,10 +417,12 @@ public class ClinicianController {
                 }
             });
 
-        } else {
-            transplantWaitListTableView.setPlaceholder(new Label("No Receivers currently registered"));
-        }
-    }
+  } else {
+      transplantWaitListTableView.setOnMouseClicked(null);
+      transplantWaitListTableView.setItems(null);
+      transplantWaitListTableView.setPlaceholder(new Label("No Receivers currently registered"));
+  }
+}
 
     /**
      * @param arrayList An array list of users.
@@ -604,33 +595,39 @@ public class ClinicianController {
 
     }
 
-    /**
-     * Sets the predicate on the filteredList for Transplant details
-     * Cannot be overloaded as the the argument types are the same but have different erasures
-     *
-     * @param fList filteredList of TransplantDetails objects
-     */
-    private void setTransplantListPredicate(FilteredList<TransplantDetails> fList) {
-        fList.predicateProperty().bind(Bindings.createObjectBinding(() -> transplantDetails -> {
-            return (AttributeValidation
-                    .checkRegionMatches(waitingRegionTextfield.getText(), transplantDetails) &&
-                    (isReceiverNeedingFilteredOrgan(transplantDetails.getNhi(),
-                            new HashSet<>(getAllFilteredOrgans())).contains(transplantDetails.getOrgan())
-                            || !checkAnyTransplantFilterCheckBoxSelected()));
-        }));
-    }
+  /**
+   * Sets the predicate on the filteredList for Transplant details
+   * Cannot be overloaded as the the argument types are the same but have different erasures
+   * @param fList filteredList of TransplantDetails objects
+   */
+  private void setTransplantListPredicate(FilteredList<TransplantDetails> fList) {
+    fList.predicateProperty().bind(Bindings.createObjectBinding(() -> transplantDetails ->
+        (AttributeValidation.checkRegionMatches(waitingRegionTextfield.getText(), transplantDetails)
+            &&
+          (isReceiverNeedingFilteredOrgan(transplantDetails.getNhi(),
+              new HashSet<>(getAllFilteredOrgans())).contains(transplantDetails.getOrgan())
+              || !checkAnyTransplantFilterCheckBoxSelected()))
+    ));
+  }
 
-    private ArrayList<Organs> isReceiverNeedingFilteredOrgan(String nhi,
-                                                             Set<Organs> organs) {
-        ArrayList<Organs> result = new ArrayList<>();
-        for (Organs o : organs) {
-            if (appController.findUser(nhi).getReceiverDetails()
-                    .isCurrentlyWaitingFor(o)) {
-                result.add(o);
-            }
-        }
-        return result;
+  /**
+   * Takes an user with an existing nhi and the set of organs
+   *
+   * @param nhi NHI of a user that exists within the system
+   * @param organs A set of organs for which the checkboxes are ticked
+   * @return An arraylist of Organs enums which the user with the NHI is receiving
+   */
+  private ArrayList<Organs> isReceiverNeedingFilteredOrgan(String nhi,
+      Set<Organs> organs) {
+    ArrayList<Organs> result = new ArrayList<>();
+    for (Organs o : organs) {
+      if (appController.findUser(nhi).getReceiverDetails()
+          .isCurrentlyWaitingFor(o)) {
+        result.add(o);
+      }
     }
+    return result;
+  }
 
     /**
      * @return true if any of the transplant filter check boxes are checked
@@ -679,43 +676,50 @@ public class ClinicianController {
         return organs;
     }
 
-    @FXML
-    private void undo(ActionEvent event) {
-        clinician.undo();
-        undoButton.setDisable(clinician.getUndoStack().empty());
-        showClinician(clinician);
-    }
+  /**
+   * Undoes the last action and redisplays the clinician.
+   * @param event Action event generated from the button click
+   */
+  @FXML
+  private void undo(ActionEvent event) {
+    clinician.undo();
+    undoButton.setDisable(clinician.getUndoStack().empty());
+    showClinician(clinician);
+  }
 
-    @FXML
-    public void redo(ActionEvent event) {
-        clinician.redo();
-        redoButton.setDisable(clinician.getRedoStack().empty());
-        showClinician(clinician);
-    }
+  /**
+   * Redoes the last action and redisplays the clinician.
+   * @param event Action event object generated from the button click
+   */
+  @FXML
+  public void redo(ActionEvent event) {
+    clinician.redo();
+    redoButton.setDisable(clinician.getRedoStack().empty());
+    showClinician(clinician);
+  }
 
-    /**
-     * Returns the user to the login screen
-     *
-     * @param event An action event
-     */
-    @FXML
-    void logout(ActionEvent event) {
-        //confirm(new ActionEvent());
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML/loginView.fxml"));
-        Parent root = null;
-        try {
-            root = loader.load();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        stage.setScene(new Scene(root));
-        LoginController loginController = loader.getController();
-        loginController.init(AppController.getInstance(), stage);
-        stage.hide();
-        stage.show();
-        stage.hide();
-        stage.show();
+  /**
+   * Returns the user to the login screen
+   * @param event An action event
+   */
+  @FXML
+  void logout(ActionEvent event) {
+    //confirm(new ActionEvent());
+    FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML/loginView.fxml"));
+    Parent root = null;
+    try {
+      root = loader.load();
+      stage.setScene(new Scene(root));
+      LoginController loginController = loader.getController();
+      loginController.init(AppController.getInstance(), stage);
+      stage.hide();
+      stage.show();
+      stage.hide();
+      stage.show();
+    } catch (IOException e) {
+      e.printStackTrace();
     }
+  }
 
     /**
      * Opens an edit window for the clinicians personal details
@@ -753,49 +757,33 @@ public class ClinicianController {
         expandButton.setText(filterVisible ? "▲" : "▼");
     }
 
-    public void refreshTables(Event event) {
-        transplantWaitListTableView.refresh();
-        searchTableView.refresh();
-    }
-//
-//  @FXML
-//  void goToNextPage() {
-//    if(currentIndex + ROWS_PER_PAGE >= users.size()) {
-//      initSearchTable(currentIndex);
-//    } else {
-//      initSearchTable(currentIndex + ROWS_PER_PAGE);
-//      currentIndex += ROWS_PER_PAGE;
-//    }
-//  }
-//
-//  @FXML
-//  void goToPrevPage() {
-//    if(currentIndex - ROWS_PER_PAGE < 0) {
-//      initSearchTable(0);
-//    } else {
-//      initSearchTable(currentIndex - ROWS_PER_PAGE);
-//      currentIndex -= ROWS_PER_PAGE;
-//    }
-//
-//  }
+  public void refreshTables() {
+    populateWaitListTable();
+    searchTableView.refresh();
+  }
 
-    @FXML
-    public void loadRecentlyDeleted(ActionEvent actionEvent) {
-        FXMLLoader deletedUserLoader = new FXMLLoader(
-                getClass().getResource("/FXML/deletedUsersView.fxml"));
-        Parent root = null;
-        try {
-            root = deletedUserLoader.load();
-            DeletedUserController deletedUserController = deletedUserLoader.getController();
-            Stage stage = new Stage();
-            stage.setScene(new Scene(root));
-            deletedUserController.init();
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.showAndWait();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+  /**
+   * Loads the recently deleted users window
+   *
+   * @param actionEvent ActionEvent event generated by the button click.
+   */
+  @FXML
+  public void loadRecentlyDeleted(ActionEvent actionEvent) {
+      FXMLLoader deletedUserLoader = new FXMLLoader(
+              getClass().getResource("/FXML/deletedUsersView.fxml"));
+      Parent root = null;
+      try {
+          root = deletedUserLoader.load();
+          DeletedUserController deletedUserController = deletedUserLoader.getController();
+          Stage stage = new Stage();
+          stage.setScene(new Scene(root));
+          deletedUserController.init();
+          stage.initModality(Modality.APPLICATION_MODAL);
+          stage.showAndWait();
+      } catch (IOException e) {
+          e.printStackTrace();
+      }
+  }
 
     public void disableLogout() {
         logoutButton.setVisible(false);

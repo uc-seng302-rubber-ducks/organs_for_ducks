@@ -2,7 +2,7 @@ package seng302.Controller;
 
 import java.io.IOException;
 import java.util.ArrayList;
-
+import java.util.logging.Logger;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -18,6 +18,8 @@ import javafx.stage.Stage;
 import seng302.Model.Administrator;
 import seng302.Model.Clinician;
 import seng302.Model.User;
+import seng302.Service.Log;
+import seng302.View.CLI;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -26,6 +28,7 @@ import java.util.ArrayList;
  * Class for the login functionality of the application
  */
 public class LoginController {
+
 
   @FXML
   private Button loginUButton;
@@ -81,7 +84,7 @@ public class LoginController {
     * @param stage The applications stage.
     */
   public void init(AppController appController, Stage stage){
-    //openCLIButton.setVisible(false);
+    Log.info("starting loginController");
     userWarningLabel.setText("");
     clinicianWarningLabel.setText("");
     adminWarningLabel.setText("");

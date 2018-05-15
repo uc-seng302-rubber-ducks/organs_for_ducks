@@ -17,10 +17,6 @@ import seng302.Model.TransplantDetails;
 import seng302.Model.User;
 import seng302.Exception.UserAlreadyExistsException;
 import seng302.Exception.UserNotFoundException;
-import seng302.Model.Change;
-import seng302.Model.Clinician;
-import seng302.Model.JsonHandler;
-import seng302.Model.User;
 
 
 /**
@@ -41,8 +37,6 @@ public class AppController {
   private AdministratorViewController administratorViewController = new AdministratorViewController();
   private Set<User> deletedUserStack = new HashSet<>();
   private Stack<User> redoStack = new Stack<>();
-
-  private ClinicianController clinicianControllerInstance;
 
   /**
    * Creates new instance of AppController
@@ -119,15 +113,6 @@ public class AppController {
     }
     return controller;
   }
-
-  public void setClinicianControllerInstance(ClinicianController clinicianController){
-    clinicianControllerInstance = clinicianController;
-  }
-
-  public ClinicianController getClinicianControllerInstance() {
-    return clinicianControllerInstance;
-  }
-
 
     /**
      * appends a single Donor to the list of users stored in the Controller
