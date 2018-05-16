@@ -107,4 +107,14 @@ public class UpdateAdminControllerGUITest extends ApplicationTest {
     verifyThat("#errorLabel", LabeledMatchers.hasText("your password don't match"));
   }
 
+  @Test
+  public void cancel(){
+    clickOn("#firstNameTextField").push(SHORTCUT, A).push(BACK_SPACE);
+    clickOn("#firstNameTextField");
+    write("Annah");
+    clickOn("#cancelButton");
+    verifyThat("#adminFirstnameLabel", LabeledMatchers.hasText("Anna"));
+
+  }
+
 }
