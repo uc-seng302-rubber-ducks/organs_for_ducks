@@ -49,7 +49,7 @@ public class UpdateAdminController {
   private Administrator admin;
   private Stage stage;
   private AppController appController;
-  private boolean valid = true;
+  private boolean valid;
 
 
 
