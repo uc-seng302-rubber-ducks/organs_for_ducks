@@ -120,6 +120,14 @@ public class UpdateAdminController {
   @FXML
   private void confirmUpdate(){
     updateAdmin();
+    AppController appController = AppController.getInstance();
+    AdministratorViewController administratorViewController = appController.getAdministratorViewControlloer();
+    try {
+      administratorViewController.displayDetails();
+    } catch (NullPointerException ex) {
+      //TODO causes npe if donor is new in this session
+      //the text fields etc. are all null
+    }
     stage.close();
   }
 

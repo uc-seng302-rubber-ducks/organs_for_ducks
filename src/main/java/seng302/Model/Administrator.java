@@ -114,7 +114,9 @@ public class Administrator {
         } else if (lastName != null) {
             fullName = firstName + " " + lastName;
 
-        } else {
+        } else if (firstName.isEmpty()) {
+            fullName = "";
+        }else {
             fullName = firstName;
         }
 
@@ -156,11 +158,11 @@ public class Administrator {
     @Override
     public String toString() {
         return "Administrator{" +
-                "userName='" + userName + '\'' +
-                ", name='" + getFullName() + '\'' +
-                ", password='" + password + '\'' +
-                ", dateCreated=" + dateCreated +
-                ", dateLastModified=" + dateLastModified +
+                "userName = '" + userName + '\'' +
+                "Name = '" + firstName + '\'' +
+                ", password = " + password + '\'' +
+                ", dateCreated = " + dateCreated +
+                ", dateLastModified = " + dateLastModified +
                 '}';
     }
 

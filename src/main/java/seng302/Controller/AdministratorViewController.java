@@ -500,16 +500,20 @@ public class AdministratorViewController {
     void displayDetails() {
         if (!administrator.getUserName().isEmpty()) {
             adminUsernameLable.setText(administrator.getUserName());
-            if (!administrator.getUserName().equals("default")) {
-                adminFirstnameLabel.setText(administrator.getFirstName());
-                if (!administrator.getMiddleName().isEmpty()) {
-                    adminMiddleNameLabel.setText(administrator.getMiddleName());
-                }
-                if (!administrator.getLastName().isEmpty()) {
-                    adminLastNameLabel.setText(administrator.getLastName());
-                }
+            adminFirstnameLabel.setText(administrator.getFirstName());
+            if (!administrator.getMiddleName().isEmpty()) {
+                adminMiddleNameLabel.setText(administrator.getMiddleName());
+            } else {
+                adminMiddleNameLabel.setText("");
+
+            }
+            if (!administrator.getLastName().isEmpty()) {
+                adminLastNameLabel.setText(administrator.getLastName());
+            } else {
+                adminLastNameLabel.setText("");
             }
         }
+
     }
 
     /**
