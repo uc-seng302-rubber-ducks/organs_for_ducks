@@ -49,6 +49,7 @@ public class UpdateAdminController {
   private Administrator admin;
   private Stage stage;
   private AppController appController;
+  private boolean valid = true;
 
 
 
@@ -65,6 +66,10 @@ public class UpdateAdminController {
     this.appController = controller;
     prefillFields();
     Scene scene = stage.getScene();
+    errorLabel.setText("");
+    invalidUsername.setText("");
+    invaildFName.setText("");
+
 
   }
 
@@ -89,6 +94,8 @@ public class UpdateAdminController {
    *
    */
   private void updateAdmin(){
+    valid = true;
+    // waiting for the string validation to be finished
     if (!usernameTextField.getText().isEmpty() && !usernameTextField.getText().equals(admin.getUserName())){
       admin.setUserName(usernameTextField.getText());
     }
@@ -108,6 +115,7 @@ public class UpdateAdminController {
         admin.setPassword(passwordTextField.getText());
       } else {
         errorLabel.setText("your password don't match");
+        valid = false;
       }
     }
 
@@ -120,6 +128,7 @@ public class UpdateAdminController {
   @FXML
   private void confirmUpdate(){
     updateAdmin();
+    if (valid){
     AppController appController = AppController.getInstance();
     AdministratorViewController administratorViewController = appController.getAdministratorViewControlloer();
     try {
@@ -129,6 +138,7 @@ public class UpdateAdminController {
       //the text fields etc. are all null
     }
     stage.close();
+    }
   }
 
 
