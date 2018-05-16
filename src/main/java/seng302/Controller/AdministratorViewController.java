@@ -480,7 +480,23 @@ public class AdministratorViewController {
 
     @FXML
     void logout(ActionEvent event) {
-
+        //check about saving
+        appController.updateAdmin(administrator);
+        FXMLLoader loginLoader = new FXMLLoader(getClass().getResource("/FXML/loginView.fxml"));
+        Parent root = null;
+        try {
+            root = loginLoader.load();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Stage newStage = new Stage();
+        newStage.setScene(new Scene(root));
+        newStage.show();
+        stage.close();
+        LoginController loginController = loginLoader.getController();
+        loginController.init(appController,newStage);
+        //UpdateClinicianController newClinician = loginLoader.getController();
+        //newClinician.init(null, appController, stage, true, newStage);
     }
 
     @FXML

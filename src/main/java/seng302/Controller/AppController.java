@@ -445,6 +445,23 @@ public class AppController {
     return null;
   }
 
+
+  /**
+   *
+   * @param administrator the current administrator
+   */
+  public void updateAdmin(Administrator administrator) {
+    if (!admins.contains(administrator)){
+      admins.add(administrator);
+    }
+
+    try {
+      JsonHandler.saveAdmins(admins);
+    } catch (IOException e){
+      Log.warning("Failed to update Administrators", e);
+    }
+  }
+
   /**
    * @param oldUser The user before they were updated.
    * @param newUser The user after they were updated.
