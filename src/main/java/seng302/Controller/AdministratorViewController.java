@@ -16,6 +16,7 @@ import seng302.Model.Administrator;
 import seng302.Model.Clinician;
 import seng302.Model.JsonHandler;
 import seng302.Model.User;
+import seng302.Service.Log;
 import seng302.View.CLI;
 
 import java.io.ByteArrayOutputStream;
@@ -24,6 +25,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 public class AdministratorViewController {
 
@@ -378,7 +380,7 @@ public class AdministratorViewController {
     @FXML
     void importUsers() throws FileNotFoundException {
         boolean updated = false;
-        ArrayList<User> existingUsers = appController.getUsers();
+        List<User> existingUsers = appController.getUsers();
         String filename;
         filename = FileSelectorController.getFileSelector(stage);
         if (filename != null) {
