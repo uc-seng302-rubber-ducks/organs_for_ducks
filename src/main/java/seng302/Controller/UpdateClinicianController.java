@@ -21,6 +21,8 @@ import javafx.stage.Stage;
 import seng302.Model.Clinician;
 import seng302.Model.Memento;
 
+import static seng302.Service.UndoHelpers.removeFormChanges;
+
 /**
  * Controller for updating clinicians
  */
@@ -345,7 +347,6 @@ public class UpdateClinicianController {
      */
     @FXML
     private void cancelUpdate() {
-
         if (!newClinician) {
             if (!undoClinicianFormButton.isDisabled()) {
                 Alert alert = new Alert(Alert.AlertType.WARNING,
@@ -357,7 +358,7 @@ public class UpdateClinicianController {
 
                 Optional<ButtonType> result = alert.showAndWait();
                 if (result.get() == ButtonType.YES) {
-                    removeFormChanges(0);
+                    removeFormChanges(0, currentClinician, undoMarker);
                     currentClinician.getRedoStack().clear();
                     controller.updateClinicians(oldClinician);
                     loadOverview(oldClinician);
@@ -378,23 +379,12 @@ public class UpdateClinicianController {
      */
     private void sumAllChanged() {
         Memento<Clinician> sumChanges = new Memento<>();
-        removeFormChanges(1);
+        removeFormChanges(1, currentClinician, undoMarker);
         if (!currentClinician.getUndoStack().isEmpty()) {
             sumChanges.setOldObject(currentClinician.getUndoStack().peek().getOldObject().clone());
             currentClinician.getUndoStack().pop();
             sumChanges.setNewObject(currentClinician.clone());
             currentClinician.getUndoStack().push(sumChanges);
-        }
-    }
-
-    /**
-     * Pops all but the specified number of changes off the stack.
-     *
-     * @param offset an denotes how many changes to leave in the stack.
-     */
-    private void removeFormChanges(int offset) {
-        while (currentClinician.getUndoStack().size() > undoMarker + offset) {
-            currentClinician.getUndoStack().pop();
         }
     }
 

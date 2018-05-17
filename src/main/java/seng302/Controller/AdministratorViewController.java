@@ -145,7 +145,7 @@ public class AdministratorViewController {
         this.stage = stage;
         this.appController = appController;
         this.administrator = administrator;
-        displayDetails();
+        displayDetails(administrator);
 
         if (administrator.getUserName().equals("default")) {
             deleteAdminButton.setDisable(true);
@@ -536,18 +536,18 @@ public class AdministratorViewController {
     /**
      * load the labels on the admin view with the current admins details
      */
-    public void displayDetails() {
-        if (!administrator.getUserName().isEmpty()) {
-            adminUsernameLable.setText(administrator.getUserName());
-            adminFirstnameLabel.setText(administrator.getFirstName());
-            if (!administrator.getMiddleName().isEmpty()) {
-                adminMiddleNameLabel.setText(administrator.getMiddleName());
+    public void displayDetails(Administrator admin) {
+        if (!admin.getUserName().isEmpty()) {
+            adminUsernameLable.setText(admin.getUserName());
+            adminFirstnameLabel.setText(admin.getFirstName());
+            if (!admin.getMiddleName().isEmpty()) {
+                adminMiddleNameLabel.setText(admin.getMiddleName());
             } else {
                 adminMiddleNameLabel.setText("");
 
             }
-            if (!administrator.getLastName().isEmpty()) {
-                adminLastNameLabel.setText(administrator.getLastName());
+            if (!admin.getLastName().isEmpty()) {
+                adminLastNameLabel.setText(admin.getLastName());
             } else {
                 adminLastNameLabel.setText("");
             }

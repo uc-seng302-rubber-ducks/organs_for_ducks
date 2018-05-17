@@ -1,12 +1,14 @@
 package seng302.Controller;
 
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
 import seng302.Model.Administrator;
 import seng302.Service.Log;
+
+import java.util.Optional;
+
+import static seng302.Service.UndoHelpers.removeFormChanges;
 
 public class UpdateAdminController {
   @FXML
@@ -42,6 +44,8 @@ public class UpdateAdminController {
   private boolean newAdmin;
   private Administrator oldAdmin;
   private int undoMarker;
+  private AppController appController;
+  private  AdministratorViewController adminViewController;
 
 
 
@@ -55,6 +59,9 @@ public class UpdateAdminController {
     this.admin = administrator;
     this.newAdmin = newAdmin;
     this.stage = stage;
+
+    appController = AppController.getInstance();
+    adminViewController = appController.getAdministratorViewController();
 
     stage.getScene();
     errorLabel.setText("");
@@ -101,7 +108,7 @@ public class UpdateAdminController {
 
     if (changed) {
       prefillFields();
-      admin.getRedoStack().clear();
+//      admin.getRedoStack().clear();
     }
 
     undoAdminUpdateButton.setDisable(admin.getUndoStack().size() <= undoMarker);
@@ -154,8 +161,6 @@ public class UpdateAdminController {
   }
 
 
-
-
     /**
      * Prefills all the text fields as the attribute values.
      * If the attributes are null, then the fields are set as empty strings.
@@ -163,8 +168,14 @@ public class UpdateAdminController {
   private void prefillFields(){
     usernameTextField.setText(admin.getUserName());
     firstNameTextField.setText(admin.getFirstName());
-    middleNameTextField.setText(admin.getMiddleName());
-    lastNameTextField.setText(admin.getLastName());
+
+    if (admin.getMiddleName() != null) {
+      middleNameTextField.setText(admin.getMiddleName());
+    }
+
+    if (admin.getLastName() != null) {
+      lastNameTextField.setText(admin.getLastName());
+    }
   }
 
   /**
@@ -173,21 +184,21 @@ public class UpdateAdminController {
   private void updateAdmin(){
     valid = true;
     // waiting for the string validation to be finished
-    if (!usernameTextField.getText().isEmpty() && !usernameTextField.getText().equals(admin.getUserName())){
+    if (!usernameTextField.getText().isEmpty() && !usernameTextField.getText().equals(admin.getUserName())) {
       admin.setUserName(usernameTextField.getText());
     }
-    if (!firstNameTextField.getText().isEmpty() && !firstNameTextField.getText().equals(admin.getFirstName())){
+    if (!firstNameTextField.getText().isEmpty() && !firstNameTextField.getText().equals(admin.getFirstName())) {
       admin.setFirstName(firstNameTextField.getText());
     }
-    if (!middleNameTextField.getText().isEmpty() && !middleNameTextField.getText().equals(admin.getMiddleName())){
+    if (!middleNameTextField.getText().isEmpty() && !middleNameTextField.getText().equals(admin.getMiddleName())) {
       admin.setMiddleName(middleNameTextField.getText());
     }
 
-    if (!lastNameTextField.getText().isEmpty() && !lastNameTextField.getText().equals(admin.getLastName())){
+    if (!lastNameTextField.getText().isEmpty() && !lastNameTextField.getText().equals(admin.getLastName())) {
       admin.setLastName(lastNameTextField.getText());
     }
 
-    if (!passwordTextField.getText().isEmpty() && !cPasswordTextField.getText().isEmpty()){
+    if (!passwordTextField.getText().isEmpty() && !cPasswordTextField.getText().isEmpty()) {
       if (passwordTextField.getText().equals(cPasswordTextField.getText())) {
         admin.setPassword(passwordTextField.getText());
       } else {
@@ -206,13 +217,10 @@ public class UpdateAdminController {
   private void confirmUpdate(){
     updateAdmin();
     if (valid) {
-    AppController appController = AppController.getInstance();
-    AdministratorViewController administratorViewController = appController.getAdministratorViewController();
     try {
-      administratorViewController.displayDetails();
+      adminViewController.displayDetails(admin);
     } catch (NullPointerException ex) {
       Log.warning(ex.getMessage(), ex);
-      //TODO causes npe if donor is new in this session
       //the text fields etc. are all null
     }
     stage.close();
@@ -235,13 +243,35 @@ public class UpdateAdminController {
   }
 
 
+
+
   /**
    *If changes are present, a pop up alert is displayed.
    * Closes the window without making any changes.
    */
  @FXML
  private void cancelUpdate() {
-   stage.close();
+   Alert alert = new Alert(Alert.AlertType.WARNING,
+           "You have unsaved changes, are you sure you want to cancel?",
+           ButtonType.YES, ButtonType.NO);
+
+   Button yesButton = (Button) alert.getDialogPane().lookupButton(ButtonType.YES);
+   yesButton.setId("yesButton");
+
+   Optional<ButtonType> result = alert.showAndWait();
+   if (result.get() == ButtonType.YES) {
+
+
+     removeFormChanges(0, admin, undoMarker);
+     admin.getRedoStack().clear();
+
+
+     appController.updateAdmin(oldAdmin);
+     adminViewController.displayDetails(oldAdmin);
+     stage.close();
+   }
+
+
  }
 
 
