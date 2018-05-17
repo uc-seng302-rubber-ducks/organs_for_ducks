@@ -1,7 +1,7 @@
 package seng302.Controller;
 
 import java.io.IOException;
-import java.util.ArrayList;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -20,8 +20,7 @@ import seng302.Model.User;
 import seng302.Service.Log;
 import seng302.View.CLI;
 
-import java.io.IOException;
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Class for the login functionality of the application
@@ -84,7 +83,7 @@ public class LoginController {
   private Stage helpStage = null;
   private boolean isUser = true;
   private AppController appController;
-  private ArrayList<User> users;
+  private List<User> users;
   private Stage stage;
 
   /**

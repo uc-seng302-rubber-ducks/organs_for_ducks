@@ -18,17 +18,11 @@ public class ReceiverDetails {
   @Expose
   private Map<Organs, ArrayList<LocalDate>> organs; // contains the organ start and stop dates
 
-  public ReceiverDetails(User attachedUser) {
+  ReceiverDetails(User attachedUser) {
     this.attachedUser = attachedUser;
     this.organs = new EnumMap<>(Organs.class);
 
   }
-
-  public ReceiverDetails(User attachedUser, EnumMap<Organs, ArrayList<LocalDate>> organs) {
-    this.attachedUser = attachedUser;
-    this.organs = organs;
-  }
-//TODO model from DonorDetails (get/set/add/remove/isEmpty etc)
 
 
   public Map<Organs, ArrayList<LocalDate>> getOrgans() {
@@ -58,7 +52,7 @@ public class ReceiverDetails {
   /**
    * appends one organ to the list of organs this user is waiting for. If the user is already
    * waiting for this organ, no change will be made.
-   * @param organ
+   * @param organ organ to be waiting for
    * @return true if the collection was modified
    */
   public boolean startWaitingForOrgan(Organs organ) {
@@ -113,9 +107,6 @@ public class ReceiverDetails {
     }
   }
 
-  public User getAttachedUser() {
-    return attachedUser;
-  }
 
   /**
    * USE SPARINGLY. this can easily create consistency issues. Only sensible use case is
@@ -138,7 +129,7 @@ public class ReceiverDetails {
   }
 
   /**
-   * check if underlying organs list is empty TODO extend this to new functionality when added
+   * check if underlying organs list is empty
    *
    * @return true if organ list is empty
    */

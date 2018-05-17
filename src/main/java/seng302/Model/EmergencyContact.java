@@ -1,5 +1,7 @@
 package seng302.Model;
 
+import java.util.Objects;
+
 /**
  * Class for the Emergency Contact details for a user
  */
@@ -11,33 +13,34 @@ public class EmergencyContact {
     private String cellPhoneNumber;
     private String address;
     private String region;
-    private String Email;
-    private String Relationship;
+    private String email;
+    private String relationship;
     private transient User attachedUser;
 
     /**
      * Constructor for emergency contact
-     * @param Ename Emergency contact name
-     * @param ECellPhone Emergency contact phone number
+     * @param ename Emergency contact name
+     * @param eCellPhone Emergency contact phone number
      */
-    public EmergencyContact(String Ename, String ECellPhone, User attachedUser) {
-        name = Ename;
+    public EmergencyContact(String ename, String eCellPhone, User attachedUser) {
+        name = ename;
         homePhoneNumber = null;
-        cellPhoneNumber = ECellPhone;
+        cellPhoneNumber = eCellPhone;
         address = null;
         region = null;
-        Email = null;
-        Relationship = null;
+        email = null;
+        relationship = null;
         this.attachedUser = attachedUser;
     }
 
-    public EmergencyContact(String Ename, String ECellPhone, String homePhoneNumber, String region, String address, String email, String relationship, User attachedUser) {
-        name = Ename;
+    //TODO: Simplify constructor to take less arguments 17/05/18
+    public EmergencyContact(String ename, String eCellPhone, String homePhoneNumber, String region, String address, String email, String relationship, User attachedUser) {
+        name = ename;
         this.homePhoneNumber = homePhoneNumber;
-        this.cellPhoneNumber = ECellPhone;
+        this.cellPhoneNumber = eCellPhone;
         this.address = address;
-        this.Email = email;
-        this.Relationship = relationship;
+        this.email = email;
+        this.relationship = relationship;
         this.region = region;
         this.attachedUser = attachedUser;
     }
@@ -124,7 +127,7 @@ public class EmergencyContact {
     }
 
     public String getEmail() {
-        return Email;
+        return email;
     }
 
     public void setEmail(String email) {
@@ -132,16 +135,15 @@ public class EmergencyContact {
         User clone = attachedUser.clone();
         clone.setContact(copy(this));
         memento.setOldObject(clone);
-        Email = email;
+        this.email = email;
         clone = attachedUser.clone();
         clone.setContact(copy(this));
         memento.setNewObject(clone);
         attachedUser.getUndoStack().push(memento);
-        ;
-    }
+        }
 
     public String getRelationship() {
-        return Relationship;
+        return relationship;
     }
 
     public void setRelationship(String relationship) {
@@ -149,7 +151,7 @@ public class EmergencyContact {
         User clone = attachedUser.clone();
         clone.setContact(copy(this));
         memento.setOldObject(clone);
-        Relationship = relationship;
+        this.relationship = relationship;
         clone = attachedUser.clone();
         clone.setContact(copy(this));
         memento.setNewObject(clone);
@@ -172,25 +174,23 @@ public class EmergencyContact {
                 "Address: %s\n" +
                 "Region: %s\n" +
                 "Email: %s\n" +
-                "Relationship: %s\n", name, homePhoneNumber, cellPhoneNumber, address, region, Email, Relationship);
+                "Relationship: %s\n", name, homePhoneNumber, cellPhoneNumber, address, region, email, relationship);
     }
 
-    /**
-     * Checks for equality between two contacts
-     * @param other other contact object
-     * @return true if they are equal
-     */
-    @Override
-    public boolean equals(Object other) {
-        EmergencyContact otherContact = (EmergencyContact) other;
+    public static EmergencyContact copy(EmergencyContact contact) {
+        if (contact == null) {
+            return null;
+        }
 
-         return checkStrings(name, otherContact.name) &&
-                 checkStrings(homePhoneNumber, otherContact.homePhoneNumber) &&
-                 checkStrings(cellPhoneNumber, otherContact.cellPhoneNumber)
-                 && checkStrings(Email, otherContact.Email) &&
-                 checkStrings(address, otherContact.address) &&
-                 checkStrings(region, otherContact.region) &&
-                 checkStrings(Relationship, otherContact.Relationship);
+        EmergencyContact newContact = new EmergencyContact(contact.name, contact.cellPhoneNumber,
+                contact.attachedUser);
+        newContact.address = contact.address;
+        newContact.region = contact.region;
+        newContact.homePhoneNumber = contact.homePhoneNumber;
+        newContact.email = contact.email;
+        newContact.relationship = contact.relationship;
+
+        return newContact;
     }
 
     /**
@@ -200,27 +200,32 @@ public class EmergencyContact {
      * @return a boolean.
      */
     private boolean checkStrings(String string1, String string2) {
-        if (string1 == null || string2 == null) {
-             return (string1 == string2);
-        } else {
-            return string1.toLowerCase().equals(string2.toLowerCase());
-        }
+        return string1 != null && string2 != null && string1.toLowerCase().equals(string2.toLowerCase());
     }
 
-    public static EmergencyContact copy(EmergencyContact contact) {
-        if (contact == null) {
-            return null;
-        }
+    /**
+     * Checks for equality between two contacts
+     * @param other other contact object
+     * @return true if they are equal
+     */
+    @Override
+    public boolean equals(Object other) {
 
-        EmergencyContact newContact = new EmergencyContact(contact.name, contact.cellPhoneNumber,
-            contact.attachedUser);
-        newContact.address = contact.address;
-        newContact.region = contact.region;
-        newContact.homePhoneNumber = contact.homePhoneNumber;
-        newContact.Email = contact.Email;
-        newContact.Relationship = contact.Relationship;
+        if(this == other) return true;
+        if (other == null || getClass() != other.getClass()) return false;
+        EmergencyContact otherContact = (EmergencyContact) other;
+        return checkStrings(name, otherContact.name) &&
+                 checkStrings(homePhoneNumber, otherContact.homePhoneNumber) &&
+                 checkStrings(cellPhoneNumber, otherContact.cellPhoneNumber)
+                 && checkStrings(email, otherContact.email) &&
+                 checkStrings(address, otherContact.address) &&
+                 checkStrings(region, otherContact.region) &&
+                 checkStrings(relationship, otherContact.relationship);
+    }
 
-        return newContact;
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, homePhoneNumber, cellPhoneNumber, address, region, email, relationship);
     }
 
 }
