@@ -37,7 +37,7 @@ public class OrganController {
     public void init(User user, AppController controller) {
         this.appController = controller;
         currentUser = user;
-        donorNameLabel.setText(user.getName());
+        donorNameLabel.setText(user.getFullName());
         ArrayList<Organs> donating;
         try {
             donating= new ArrayList<>(user.getDonorDetails().getOrgans());

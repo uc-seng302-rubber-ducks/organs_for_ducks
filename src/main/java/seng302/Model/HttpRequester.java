@@ -13,34 +13,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.concurrent.Callable;
 
 /**
  * Class deals with using APIs for functionality within the application
  */
 public class HttpRequester {
 
-  private static class httpCallable implements Callable<String> {
-
-    private Request req;
-    private OkHttpClient client;
-    @Override
-    public String call() throws Exception {
-      Response response = client.newCall(req).execute();
-      Response res = client.newCall(req).execute();
-      String results = res.body().toString();
-      response.close();
-      return results;
-    }
-
-    public void setReq(Request req) {
-      this.req = req;
-    }
-
-    public void setClient(OkHttpClient client) {
-      this.client = client;
-    }
-  }
   /**
    * uses ehealthme api to get interactions between two drugs
    *
@@ -74,10 +52,9 @@ public class HttpRequester {
    * @param age integer age of the user
    * @param client http client to be used. use `new OkHttpClient()` if you have no preference
    * @return set containing strings of format interaction (duration). e.g. pneumonia (5 - 10 years)
-   * @throws IOException caused by error with server connection
    */
   public static Set<String> getDrugInteractions(String drugOneName, String drugTwoName,
-      String gender, int age, OkHttpClient client) throws IOException {
+      String gender, int age, OkHttpClient client){
 
     //return empty set if drugs are null
     if (drugOneName == null || drugTwoName == null) {
@@ -109,11 +86,6 @@ public class HttpRequester {
     }
     try {
 
-
-//      httpCallable call = new httpCallable();
-//      call.setReq(new Request.Builder().url(url).build());
-//      call.setClient(client);
-//      String rawString = call.call();
       Request request = new Request.Builder().url(url).build();
       Response response = client.newCall(request).execute();
       String rawString = response.body().string();
@@ -180,11 +152,9 @@ public class HttpRequester {
           }
         }
       }
-      //cull duplicate symptoms with different duration entries
-      //from temp
+
       Set<String> finalKeySet = temp.keySet();
       for (String key: finalKeySet) {
-        //TODO currently gets first duration in array, not necessarily the shortest/longest
         String duration = temp.get(key).get(0);
         if (duration.equals("not specified") && temp.get(key).size() > 1) {
           duration = temp.get(key).get(1);
@@ -211,9 +181,9 @@ public class HttpRequester {
     String url = "http://mapi-us.iterar.co/api/autocomplete?query=" + input;
     Request request = new Request.Builder().url(url).build();
     Response response = client.newCall(request).execute();
-    //TODO: find a way to make the responses into a list to be sent back
-    JSONObject suggestions = null;
+    JSONObject suggestions;
     try {
+      assert response.body() != null;
       suggestions = (JSONObject) new JSONParser().parse(response.body().string());
       return suggestions.get("suggestions").toString();
     } catch (ParseException e) {
@@ -235,8 +205,8 @@ public class HttpRequester {
     String url = "http://mapi-us.iterar.co/api/" + drug + "/substances.json";
     Request request = new Request.Builder().url(url).build();
     Response response = client.newCall(request).execute();
+    assert response.body() != null;
     String rawString = response.body().string();
-    JSONParser parser = new JSONParser();
     try {
       String formatted = rawString.substring(1, rawString.length() - 1);
       String[] array = formatted.split(",");

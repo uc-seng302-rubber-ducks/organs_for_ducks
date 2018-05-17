@@ -1,7 +1,7 @@
 package seng302.Controller;
 
-import java.util.ArrayList;
-import java.util.Collections;
+import java.util.*;
+
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.ListView;
@@ -56,7 +56,7 @@ public class OrgansAffectedController {
         this.user = user;
         ArrayList<Organs> allOrgans = new ArrayList<>();
         Collections.addAll(allOrgans, Organs.values());
-      ArrayList<Organs> affectedOrgans;
+        List<Organs> affectedOrgans;
         affectedOrgans = procedure.getOrgansAffected();
         allOrgans.removeAll(affectedOrgans);
         affectedOrgansListView.setItems(FXCollections.observableList(affectedOrgans));

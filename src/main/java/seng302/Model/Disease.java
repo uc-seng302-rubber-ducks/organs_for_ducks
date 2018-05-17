@@ -12,6 +12,7 @@ import java.util.Comparator;
  * @author acb116 - Aaron Bong
  */
 public class Disease {
+
     @Expose
     private String name;
     @Expose
@@ -36,45 +37,25 @@ public class Disease {
         this.diagnosisDate = diagnosisDate;
     }
 
-    public transient Comparator<Disease> diseaseDateComparator = new Comparator<Disease>() {
-        @Override
-        public int compare(Disease o1, Disease o2) {
-            LocalDate diseaseDate1 = o1.getDiagnosisDate();
-            LocalDate diseaseDate2 = o2.getDiagnosisDate();
+    public transient Comparator<Disease> diseaseDateComparator = (o1, o2) -> {
+        LocalDate diseaseDate1 = o1.getDiagnosisDate();
+        LocalDate diseaseDate2 = o2.getDiagnosisDate();
 
-            return diseaseDate1.compareTo(diseaseDate2);
-        }
+        return diseaseDate1.compareTo(diseaseDate2);
     };
 
-    public transient Comparator<Disease> diseaseChronicComparator = new Comparator<Disease>() {
-        @Override
-        public int compare(Disease o1, Disease o2) {
-            boolean diseaseChronic1 = o1.getIsChronic();
-            boolean diseaseChronic2 = o2.getIsChronic();
+    public transient Comparator<Disease> diseaseChronicComparator = (o1, o2) -> {
+        boolean diseaseChronic1 = o1.getIsChronic();
+        boolean diseaseChronic2 = o2.getIsChronic();
 
-            return (diseaseChronic1 != diseaseChronic2) ? (diseaseChronic1) ? -1 : 1 : 0;
-            /*
-            if (b1 != b2){
-                if (b1 == true){
-                    return -1;
-                }
-                if (b1 == false){
-                    return 1;
-                }
-            }
-            return 0;
-             */
-        }
+        return (diseaseChronic1 != diseaseChronic2) ? (diseaseChronic1) ? -1 : 1 : 0;
     };
 
-    public transient Comparator<Disease> diseaseNameComparator = new Comparator<Disease>() {
-        @Override
-        public int compare(Disease o1, Disease o2) {
-            String diseaseName1 = o1.getName();
-            String diseaseName2 = o2.getName();
+    public transient Comparator<Disease> diseaseNameComparator = (o1, o2) -> {
+        String diseaseName1 = o1.getName();
+        String diseaseName2 = o2.getName();
 
-            return diseaseName1.compareTo(diseaseName2);
-        }
+        return diseaseName1.compareTo(diseaseName2);
     };
 
     @Override

@@ -170,7 +170,7 @@ public class ClinicianController {
     private Stage stage;
     private AppController appController;
     private Clinician clinician;
-    private ArrayList<User> users;
+    private List<User> users;
     private ArrayList<Stage> openStages;
     private FilteredList<User> fListDonors;
 
@@ -374,7 +374,7 @@ public class ClinicianController {
         if (isReceiverNeedingFilteredOrgan(user.getNhi(), organs).contains(organ)) {
 
                         appController.addTransplant(
-                                new TransplantDetails(user.getNhi(), user.getName(), organ, LocalDate.now(),
+                                new TransplantDetails(user.getNhi(), user.getFullName(), organ, LocalDate.now(),
                                         user.getRegion()));
                     }
                 }
@@ -412,7 +412,7 @@ public class ClinicianController {
      * @param arrayList An array list of users.
      * @return A list of users.
      */
-    private List<User> getSearchData(ArrayList<User> arrayList) {
+    private List<User> getSearchData(List<User> arrayList) {
         return arrayList.subList(startIndex, endIndex);
     }
 

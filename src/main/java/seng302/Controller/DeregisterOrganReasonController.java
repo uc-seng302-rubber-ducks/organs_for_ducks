@@ -68,7 +68,7 @@ public class DeregisterOrganReasonController {
         this.stage = stage;
         currentUser = user;
         this.userController = userController;
-        receiverName.setText(user.getName());
+        receiverName.setText(user.getFullName());
         organName.setText(organ.organName);
         this.toDeRegister = organ;
         dODDatePicker.setValue(LocalDate.now());

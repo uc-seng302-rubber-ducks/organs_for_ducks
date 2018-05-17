@@ -30,6 +30,9 @@ import seng302.Model.Administrator;
 import seng302.Model.Clinician;
 import seng302.Model.JsonHandler;
 import seng302.Model.User;
+
+import java.util.List;
+
 import seng302.View.CLI;
 
 public class AdministratorViewController {
@@ -339,7 +342,7 @@ public class AdministratorViewController {
         String filename;
         filename = FileSelectorController.getFileSelector(stage);
         if (filename != null) {
-            ArrayList<Clinician> clinicians = JsonHandler.loadClinicians(filename);
+            List<Clinician> clinicians = JsonHandler.loadClinicians(filename);
             System.out.println(clinicians.size() + " clinicians were successfully loaded");
         }
 
@@ -354,7 +357,7 @@ public class AdministratorViewController {
         String filename;
         filename = FileSelectorController.getFileSelector(stage);
         if (filename != null) {
-            ArrayList<User> users = JsonHandler.loadUsers(filename);
+            List<User> users = JsonHandler.loadUsers(filename);
             System.out.println(users.size() + " donors were successfully loaded");
         }
     }

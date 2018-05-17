@@ -29,9 +29,9 @@ public class AppController {
 
 
   private Collection<Administrator> admins = new ArrayList<>();
-  private ArrayList<User> users = new ArrayList<>();
+  private List<User> users = new ArrayList<>();
   private ArrayList<TransplantDetails> transplantList = new ArrayList<>();
-  private ArrayList<Clinician> clinicians = new ArrayList<>();
+  private List<Clinician> clinicians = new ArrayList<>();
   private static AppController controller;
   private ArrayList<String[]> historyOfCommands = new ArrayList<>();
   private int historyPointer = 0;
@@ -65,7 +65,7 @@ public class AppController {
 
     try {
         admins = JsonHandler.loadAdmins();
-        System.out.println(admins.size() + " administrators were successfully loaded");
+        Log.info(admins.size() + " administrators were successfully loaded");
     } catch (FileNotFoundException e) {
         System.out.println("Administrator file was not found");
     }
@@ -230,7 +230,7 @@ public class AppController {
   public User findUser(String name, LocalDate dob) {
     User toReturn = new User();
     for (User user : users) {
-      if (user.getName().equals(name) && user.getDateOfBirth().equals(dob)) {
+      if (user.getFullName().equals(name) && user.getDateOfBirth().equals(dob)) {
         toReturn = user;
       }
     }
@@ -246,7 +246,7 @@ public class AppController {
   public ArrayList<User> findUsers(String name) {
     ArrayList<User> toReturn = new ArrayList<>();
     for (User user : users) {
-      if (user.getName().toLowerCase().contains(name.toLowerCase())) {
+      if (user.getFullName().toLowerCase().contains(name.toLowerCase())) {
         toReturn.add(user);
       }
     }
@@ -276,10 +276,10 @@ public class AppController {
    * @param user user to remove
    */
   public void deleteDonor(User user) {
-    ArrayList<User> sessionList = getUsers();
+    List<User> sessionList = getUsers();
     sessionList.remove(user);
     deletedUserStack.add(user);
-    setUsers(sessionList);
+    setUsers((ArrayList<User>) sessionList);
     try {
       JsonHandler.saveUsers(sessionList);
     } catch (IOException e) {
@@ -290,7 +290,7 @@ public class AppController {
 
 
 
-  public ArrayList<User> getUsers() {
+  public List<User> getUsers() {
     return users;
   }
 
@@ -325,11 +325,11 @@ public class AppController {
       users.add(user);
     } else {
       users.add(user);
-      changelogWrite.add(new Change(LocalDateTime.now(), "Added Donor " + user.getName()));
+      changelogWrite.add(new Change(LocalDateTime.now(), "Added Donor " + user.getFullName()));
     }
     try {
       JsonHandler.saveUsers(users);
-      //JsonHandler.saveChangelog(changelogWrite, user.getName().toLowerCase().replace(" ", "_"));
+      //JsonHandler.saveChangelog(changelogWrite, user.getFullName().toLowerCase().replace(" ", "_"));
 
     } catch (IOException e) {
       Log.warning("failed to update users", e);
@@ -345,7 +345,7 @@ public class AppController {
   }
 
 
-  public ArrayList<Clinician> getClinicians() {
+  public List<Clinician> getClinicians() {
     return clinicians;
   }
 
@@ -439,8 +439,8 @@ public class AppController {
   public ArrayList<Change> differanceInDonors(User oldUser, User newUser) {
     ArrayList<String> diffs = new ArrayList<>();
     try {
-      if (!oldUser.getName().equalsIgnoreCase(newUser.getName())) {
-        diffs.add("Changed Name from " + oldUser.getName() + " to " + newUser.getName());
+      if (!oldUser.getFullName().equalsIgnoreCase(newUser.getFullName())) {
+        diffs.add("Changed Name from " + oldUser.getFullName() + " to " + newUser.getFullName());
       }
       if (oldUser.getDateOfBirth() != newUser.getDateOfBirth()) {
         diffs.add("Changed DOB from  " + oldUser.getDateOfBirth().toString() + " to " + newUser
@@ -523,7 +523,7 @@ public class AppController {
         changes.add(c);
       }
       try {
-        JsonHandler.saveChangelog(changes, newUser.getName().toLowerCase().replace(" ", "_"));
+        JsonHandler.saveChangelog(changes, newUser.getFullName().toLowerCase().replace(" ", "_"));
       } catch (IOException e) {
         Log.warning("failed to save changelog", e);
       }
