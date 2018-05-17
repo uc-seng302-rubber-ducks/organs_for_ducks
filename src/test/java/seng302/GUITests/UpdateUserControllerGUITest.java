@@ -18,7 +18,7 @@ import seng302.App;
 import seng302.Controller.AppController;
 import seng302.Model.User;
 
-public class UpdateDonorControllerGUITest extends ApplicationTest {
+public class UpdateUserControllerGUITest extends ApplicationTest {
     @Before
     public void setUpCreateScene() throws TimeoutException {
         FxToolkit.registerPrimaryStage();

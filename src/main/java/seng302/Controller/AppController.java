@@ -1,29 +1,25 @@
 package seng302.Controller;
 
-import seng302.Directory;
-import seng302.Exception.UserAlreadyExistsException;
-import seng302.Exception.UserNotFoundException;
-import seng302.Model.*;
-
-import seng302.Exception.UserAlreadyExistsException;
-import seng302.Exception.UserNotFoundException;
-import seng302.Model.*;
-
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.*;
-
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.Stack;
+import seng302.Directory;
+import seng302.Exception.UserAlreadyExistsException;
+import seng302.Exception.UserNotFoundException;
+import seng302.Model.Administrator;
 import seng302.Model.Change;
 import seng302.Model.Clinician;
 import seng302.Model.JsonHandler;
 import seng302.Model.TransplantDetails;
 import seng302.Model.User;
-import seng302.Exception.UserAlreadyExistsException;
-import seng302.Exception.UserNotFoundException;
 import seng302.Service.Log;
-import java.util.*;
 
 
 /**
@@ -40,29 +36,28 @@ public class AppController {
   private ArrayList<String[]> historyOfCommands = new ArrayList<>();
   private int historyPointer = 0;
 
-  private DonorController donorController = new DonorController();
+  private UserController userController = new UserController();
   private ClinicianController clinicianController = new ClinicianController();
   private AdministratorViewController administratorViewController = new AdministratorViewController();
   private Set<User> deletedUserStack = new HashSet<>();
   private Stack<User> redoStack = new Stack<>();
 
-  private String usersFile = Directory.JSON.directory() + "/donors.json";
-  private String clinicianFile = Directory.JSON.directory() + "/clinicians.json";
-  private ClinicianController clinicianControllerInstance;
+  private static final String USERS_FILE = Directory.JSON.directory() + "/donors.json";
+  private static final String CLINICIAN_FILE = Directory.JSON.directory() + "/clinicians.json";
 
   /**
    * Creates new instance of AppController
    */
   private AppController() {
     try {
-      users = JsonHandler.loadUsers(usersFile);
+      users = JsonHandler.loadUsers(USERS_FILE);
       Log.info(users.size() + " donors were successfully loaded");
     } catch (FileNotFoundException e) {
       Log.warning("Donor file was not found", e);
     }
 
     try {
-      clinicians = JsonHandler.loadClinicians(clinicianFile);
+      clinicians = JsonHandler.loadClinicians(CLINICIAN_FILE);
       Log.info(clinicians.size() + " clinicians were successfully loaded");
     } catch (FileNotFoundException e) {
       Log.warning("Clinician file was not found", e);
@@ -103,9 +98,7 @@ public class AppController {
       }
     } //all code you wish to execute must be above this point!!!!!!!!
     if (!defaultSeen) {
-      //clinicians.add(new Clinician("Default", "0", "", "", "admin"));
-      String nullRegion = null; // need this otherwise cannot differentiate between constructors
-      clinicians.add(new Clinician("0", "admin", "Default", null, null, null, nullRegion));
+      clinicians.add(new Clinician("0", "admin", "Default", null, null, null, (String) null));
       try {
         JsonHandler.saveClinicians(clinicians);
       } catch (IOException e) {
@@ -140,6 +133,7 @@ public class AppController {
      * @param NHI The unique identifier of the donor (national health index)
      * @return hashCode of the new donor or -1 on error
      */
+    //TODO: remove??
   public int Register(String name, LocalDate dateOfBirth, LocalDate dateOfDeath, String gender, double height,
                       double weight,
       String bloodType, String currentAddress, String region, String NHI) {
@@ -164,12 +158,12 @@ public class AppController {
     }
   }
 
+  /**
+   * Sets the point in history
+   */
   public void setHistoryPointer() {
     this.historyPointer = historyOfCommands.size();
   }
-
-  /*public String[] getCommandHistoryFromCorrectIndex() { ;
-  }*/
 
   /**
    * Adds an executed command to the command history
@@ -232,17 +226,8 @@ public class AppController {
    * @param dob date of birth of the donor
    * @return The user that matches the name and dob, otherwise null if no user was found.
    */
+  //TODO: Make this redundant
   public User findUser(String name, LocalDate dob) {
-//    User check = null;
-//    User testUser = new User(name,
-//            dob); //creates temporary user to check against the user list
-//    ArrayList<User> sessionList = getUsers();
-//    int place = sessionList.indexOf(testUser);
-//    if (place != -1) {
-//      return sessionList.get(place);
-//    } else {
-//      return check;
-//    }
     User toReturn = new User();
     for (User user : users) {
       if (user.getName().equals(name) && user.getDateOfBirth().equals(dob)) {
@@ -297,7 +282,6 @@ public class AppController {
     setUsers(sessionList);
     try {
       JsonHandler.saveUsers(sessionList);
-      //JsonWriter.saveCurrentDonorState(sessionList);
     } catch (IOException e) {
       Log.warning("failed to delete a user", e);
     }
@@ -411,16 +395,15 @@ public class AppController {
     }
 
 
-
-  public DonorController getDonorController() {
-    return donorController;
+  public UserController getUserController() {
+    return userController;
   }
 
   /**
-   * @param donorController The controller class for the donor overview.
+   * @param userController The controller class for the donor overview.
    */
-  public void setDonorController(DonorController donorController) {
-    this.donorController = donorController;
+  public void setUserController(UserController userController) {
+    this.userController = userController;
   }
 
   public ClinicianController getClinicianController() {
@@ -433,7 +416,9 @@ public class AppController {
 
   public void setAdministratorViewController(AdministratorViewController administratorViewController) { this.administratorViewController = administratorViewController;}
 
-  public AdministratorViewController getAdministratorViewControlloer() { return administratorViewController; }
+  public AdministratorViewController getAdministratorViewController() {
+    return administratorViewController;
+  }
 
 
   public Administrator getAdministrator(String username){

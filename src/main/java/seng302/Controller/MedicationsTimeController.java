@@ -1,10 +1,11 @@
 package seng302.Controller;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Comparator;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -12,10 +13,6 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import seng302.Model.MedicationDurations;
 import seng302.Model.User;
-
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Comparator;
 
 /**
  * Class for the functionality of the medication view
@@ -28,25 +25,17 @@ public class MedicationsTimeController {
     @FXML
     private TableView<?> medicationTimeTable;
 
-    @FXML
-    private Button backButton;
-
-    private AppController appController;
-    private User user;
     private Stage stage;
     private ObservableList medicationDurations;
 
     /**
      * Initializes the view and passes important settings into the controller
      *
-     * @param appController application state itself
      * @param user current user for this view
      * @param stage stage that the scene is shown on
      * @param medicine medication this is having its history shown
      */
-    public void init(AppController appController, User user, Stage stage, String medicine){
-        this.appController = appController;
-        this.user = user;
+    public void init(User user, Stage stage, String medicine) {
         this.stage = stage;
         medicineNameLabel.setText(medicine);
         ArrayList<LocalDateTime> currentTimeStamps = user.getCurrentMedicationTimes().get(medicine);
@@ -109,10 +98,9 @@ public class MedicationsTimeController {
 
     /**
      * Closes the stage on back button being pressed
-     * @param event passed in automatically by the gui
      */
     @FXML
-    void back(ActionEvent event) {
+    void back() {
         stage.close();
 
     }

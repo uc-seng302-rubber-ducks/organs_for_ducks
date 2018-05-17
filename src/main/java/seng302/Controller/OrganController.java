@@ -1,19 +1,14 @@
 package seng302.Controller;
 
 
-import javafx.collections.FXCollections;
-import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
-import javafx.stage.Stage;
-import seng302.Model.Organs;
-import seng302.Model.UndoRedoStacks;
-import seng302.Model.User;
-
 import java.util.ArrayList;
 import java.util.Collections;
+import javafx.collections.FXCollections;
+import javafx.fxml.FXML;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
+import seng302.Model.Organs;
+import seng302.Model.User;
 
 /**
  * class for the Organs view
@@ -29,29 +24,17 @@ public class OrganController {
     private ListView<Organs> canDonate;
 
     @FXML
-    private Button donateButton;
-
-    @FXML
-    private Button undonateButton;
-
-    @FXML
     private Label donorNameLabel;
-
-    @FXML
-    private Button backButton;
 
     private AppController appController;
     private User currentUser;
-    private Stage stage;
 
     /**
      *
      * @param user The current user.
      * @param controller An instance of AppController.
-     * @param stage The applications stage.
      */
-    public void init(User user, AppController controller, Stage stage){
-        this.stage = stage;
+    public void init(User user, AppController controller) {
         this.appController = controller;
         currentUser = user;
         donorNameLabel.setText(user.getName());
@@ -69,7 +52,7 @@ public class OrganController {
                 currentlyDonating.getSelectionModel().select(index);
             }
         }
-        ArrayList<Organs> leftOverOrgans = new ArrayList<Organs>();
+      ArrayList<Organs> leftOverOrgans = new ArrayList<>();
         Collections.addAll(leftOverOrgans, Organs.values());
         for (Organs o : donating){
             leftOverOrgans.remove(o);
@@ -80,10 +63,9 @@ public class OrganController {
 
     /**
      * Adds the selected organ to currently donating for the current user
-     * @param event passed in automatically by the gui
      */
     @FXML
-    void donate(ActionEvent event) {
+    void donate() {
         Organs toDonate = canDonate.getSelectionModel().getSelectedItem();
         if(toDonate != null) {
             if (currentUser.getReceiverDetails().isCurrentlyWaitingFor(toDonate)) {
@@ -100,10 +82,9 @@ public class OrganController {
 
     /**
      * Removes the selected organ from currently donating for the current user
-     * @param event passed in automatically by the gui
      */
     @FXML
-    void undonate(ActionEvent event) {
+    void undonate() {
         if (!currentlyDonating.getSelectionModel().isEmpty()) {
             Organs toUndonate = currentlyDonating.getSelectionModel().getSelectedItem();
         if(toUndonate != null) {
@@ -117,24 +98,6 @@ public class OrganController {
             }
         }
     }
-
-
-//    /**
-//     * @param event passed in automatically by the gui
-//     */
-//    @FXML
-//    void goBack(ActionEvent event) {
-//        AppController appController = AppController.getInstance();
-//        DonorController donorController = appController.getDonorController();
-//        try {
-//            donorController.showUser(currentUser);
-//        }
-//        catch (NullPointerException ex) {
-//            //TODO causes npe if donor is new in this session
-//            //the text fields etc. are all null
-//        }
-//        stage.close();
-//    }
 
 }
 
