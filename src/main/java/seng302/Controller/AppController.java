@@ -389,7 +389,7 @@ public class AppController {
      * @param clinician The clinician to be deleted
      */
     public void deleteClinician(Clinician clinician) {
-      ArrayList<Clinician> clinicianSessionList = getClinicians();
+      List<Clinician> clinicianSessionList = getClinicians();
       clinicianSessionList.remove(clinician);
 //      deletedClinicianStack.add(clinician);
       this.clinicians = clinicianSessionList;
