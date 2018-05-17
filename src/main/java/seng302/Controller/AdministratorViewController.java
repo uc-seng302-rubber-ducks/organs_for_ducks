@@ -540,13 +540,13 @@ public class AdministratorViewController {
         if (!administrator.getUserName().isEmpty()) {
             adminUsernameLable.setText(administrator.getUserName());
             adminFirstnameLabel.setText(administrator.getFirstName());
-            if (!administrator.getMiddleName().isEmpty()) {
+            if ((administrator.getMiddleName() != null) && !administrator.getMiddleName().isEmpty()) {
                 adminMiddleNameLabel.setText(administrator.getMiddleName());
             } else {
                 adminMiddleNameLabel.setText("");
 
             }
-            if (!administrator.getLastName().isEmpty()) {
+            if ((administrator.getLastName() != null) && !administrator.getLastName().isEmpty()) {
                 adminLastNameLabel.setText(administrator.getLastName());
             } else {
                 adminLastNameLabel.setText("");
