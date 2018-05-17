@@ -159,6 +159,7 @@ public class AdministratorViewController {
     private Administrator administrator;
     private ArrayList<String> pastCommands = new ArrayList<>();
     private int pastCommandIndex = -1;
+    private ArrayList<User> existingUsers;
 
     public void init(Administrator administrator, AppController appController, Stage stage) {
         this.stage = stage;
@@ -352,11 +353,27 @@ public class AdministratorViewController {
 
     @FXML
     void importUsers(ActionEvent event) throws FileNotFoundException {
+        boolean updated = false;
+        existingUsers = appController.getUsers();
         String filename;
         filename = FileSelectorController.getFileSelector(stage);
         if (filename != null) {
             Collection<User> users = JsonHandler.loadUsers(filename);
             System.out.println(users.size() + " donors were successfully loaded.");
+            for (User user: users) {
+                for (User existingUser: existingUsers) {
+                    if (user.getNhi().equals(existingUser.getNhi())) {
+                        appController.update(user);
+                        updated = true;
+                        break;
+                    }
+                }
+                if (updated == false) {
+                    appController.addUser(user);
+                } else {
+                    updated = false;
+                }
+            }
         }
     }
 

@@ -348,6 +348,11 @@ public class AppController {
     this.users = users;
   }
 
+  public void addUser(User user) { users.add(user); }
+
+  public void addClinician(Clinician clinician) { clinicians.add(clinician); }
+
+  public void addAdmin(Administrator administrator) { admins.add(administrator); }
 
   public Collection<Clinician> getClinicians() {
     return clinicians;
