@@ -159,7 +159,6 @@ public class AdministratorViewController {
     private Administrator administrator;
     private ArrayList<String> pastCommands = new ArrayList<>();
     private int pastCommandIndex = -1;
-    private ArrayList<User> existingUsers;
 
     public void init(Administrator administrator, AppController appController, Stage stage) {
         this.stage = stage;
@@ -332,21 +331,53 @@ public class AdministratorViewController {
 
     @FXML
     void importAdmins(ActionEvent event) throws FileNotFoundException {
+        boolean updated = false;
+        Collection<Administrator> existingAdmins = appController.getAdmins();
         String filename;
         filename = FileSelectorController.getFileSelector(stage);
         if (filename != null) {
             Collection<Administrator> administrators = JsonHandler.loadAdmins(filename);
             System.out.println(administrators.size() + " administrators were successfully loaded.");
+            for (Administrator admin: administrators) {
+                for (Administrator existingAdmin: existingAdmins) {
+                    if(admin.getUserName().equals(existingAdmin.getUserName())) {
+                        //appController.updateAdmins(admin);
+                        updated = true;
+                        break;
+                    }
+                }
+                if(updated == false) {
+                    appController.addAdmin(admin);
+                } else {
+                    updated = false;
+                }
+            }
         }
     }
 
     @FXML
     void importClinicians(ActionEvent event) throws FileNotFoundException {
+        boolean updated = false;
+        Collection<Clinician> existingClinicians = appController.getClinicians();
         String filename;
         filename = FileSelectorController.getFileSelector(stage);
         if (filename != null) {
             Collection<Clinician> clinicians = JsonHandler.loadClinicians(filename);
             System.out.println(clinicians.size() + " clinicians were successfully loaded.");
+            for (Clinician clinician: clinicians) {
+                for (Clinician existingClinician: existingClinicians) {
+                    if(clinician.getStaffId().equals(existingClinician.getStaffId())) {
+                        appController.updateClinicians(clinician);
+                        updated = true;
+                        break;
+                    }
+                }
+                if(updated == false) {
+                    appController.addClinician(clinician);
+                } else {
+                    updated = false;
+                }
+            }
         }
 
     }
@@ -354,7 +385,7 @@ public class AdministratorViewController {
     @FXML
     void importUsers(ActionEvent event) throws FileNotFoundException {
         boolean updated = false;
-        existingUsers = appController.getUsers();
+        ArrayList<User> existingUsers = appController.getUsers();
         String filename;
         filename = FileSelectorController.getFileSelector(stage);
         if (filename != null) {
