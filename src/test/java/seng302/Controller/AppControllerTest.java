@@ -6,7 +6,6 @@ import java.time.format.DateTimeFormatter;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import seng302.Model.Donor;
 import seng302.Model.User;
 
 public class AppControllerTest {

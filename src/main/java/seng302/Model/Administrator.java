@@ -1,10 +1,8 @@
 package seng302.Model;
 
 import com.google.gson.annotations.Expose;
-import javafx.scene.Scene;
 import seng302.Service.PasswordManager;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -34,20 +32,21 @@ public class Administrator {
     /**
      * Constructor to create a default Administrator
      */
-    public Administrator(){
+    public Administrator() {
         dateCreated = LocalDateTime.now();
         dateLastModified = LocalDateTime.now();
     }
 
     /**
      * Constructor to create an Administrator with their personal details.
-     * @param userName Administrator user name
-     * @param firstName Administrator first name
+     *
+     * @param userName   Administrator user name
+     * @param firstName  Administrator first name
      * @param middleName Administrator middle name
-     * @param lastName Administrator last name
-     * @param password Administrator password
+     * @param lastName   Administrator last name
+     * @param password   Administrator password
      */
-    public Administrator(String userName, String firstName, String middleName, String lastName, String password){
+    public Administrator(String userName, String firstName, String middleName, String lastName, String password) {
         this.userName = userName;
         this.firstName = firstName;
         this.middleName = middleName;
@@ -106,7 +105,7 @@ public class Administrator {
         String fullName;
 
         if (middleName != null && lastName != null) {
-            fullName = firstName + " " + middleName  + " " + lastName;
+            fullName = firstName + " " + middleName + " " + lastName;
 
         } else if (middleName != null) {
             fullName = firstName + " " + middleName;
@@ -134,10 +133,11 @@ public class Administrator {
 
     /**
      * Takes an attempt as a password and then checks it against the actual password
+     *
      * @param passwordAttempt password guess
      * @return correctness of the guess
      */
-    public boolean isPasswordCorrect(String passwordAttempt){
+    public boolean isPasswordCorrect(String passwordAttempt) {
         return PasswordManager.isExpectedPassword(passwordAttempt, salt, getPassword());
     }
 
@@ -158,11 +158,10 @@ public class Administrator {
     @Override
     public String toString() {
         return "Administrator{" +
-                "userName = '" + userName + '\'' +
-                "Name = '" + firstName + '\'' +
-                ", password = " + password + '\'' +
-                ", dateCreated = " + dateCreated +
-                ", dateLastModified = " + dateLastModified +
+                "userName='" + userName + '\'' +
+                ", name='" + getFullName() + '\'' +
+                ", dateCreated=" + dateCreated +
+                ", dateLastModified=" + dateLastModified +
                 '}';
     }
 

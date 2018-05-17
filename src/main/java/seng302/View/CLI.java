@@ -12,7 +12,7 @@ import seng302.Controller.AppController;
 import seng302.Controller.CliCommands.CliRoot;
 import seng302.Directory;
 import seng302.Model.JsonHandler;
-import seng302.Model.JsonWriter;
+import seng302.Model.User;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -57,7 +57,7 @@ public class CLI {
 
     AppController controller = AppController.getInstance();
     try {
-      controller.setUsers(JsonHandler.loadUsers(Directory.JSON.directory() + "/donors.json"));
+      controller.setUsers((ArrayList<User>) JsonHandler.loadUsers(Directory.JSON.directory() + "/donors.json"));
     } catch (FileNotFoundException e) {
       System.out.println("No users file exists. Creating blank session");
       controller.setUsers(new ArrayList<>());
@@ -85,7 +85,6 @@ public class CLI {
    */
   public static void parseInput(String input, AppController controller) {
     String[] arguments = input.split(" ");
-    JsonWriter.changeLog(arguments);
     controller.addToHistoryOfCommands(arguments);
     new CommandLine(new CliRoot())
             .parseWithHandler(new CommandLine.RunLast(), System.err, arguments);

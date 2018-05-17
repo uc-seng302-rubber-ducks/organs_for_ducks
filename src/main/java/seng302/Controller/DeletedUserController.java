@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -16,8 +15,6 @@ import seng302.Model.User;
 
 public class DeletedUserController {
 
-  @FXML
-  private Button restoreButton;
 
   @FXML
   private TableView<User> deletedUserTableView;
@@ -27,7 +24,7 @@ public class DeletedUserController {
     initTableView();
   }
 
-  public void initTableView() {
+  private void initTableView() {
     ObservableList<User> oListUsers = FXCollections
         .observableList(AppController.getInstance().getDeletedUsers());
 
@@ -58,11 +55,8 @@ public class DeletedUserController {
             organsColumn);
     //searchTableView.setItems(FXCollections.observableList(sListDonors.subList(startIndex, endIndex)));
     deletedUserTableView.setItems(oListUsers);
-    deletedUserTableView.setRowFactory((searchTableView) -> {
-      return new TooltipTableRow<User>((User user) -> {
-        return user.getTooltip();
-      });
-    });
+    deletedUserTableView.setRowFactory(
+        (searchTableView) -> new TooltipTableRow<>((User user) -> user.getTooltip()));
   }
 
   @FXML
@@ -78,6 +72,6 @@ public class DeletedUserController {
   }
 
   public void setErrorLabelText(String text) {
-
+    //TODO: Finish this
   }
 }

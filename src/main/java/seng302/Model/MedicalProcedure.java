@@ -5,6 +5,7 @@ import com.google.gson.annotations.Expose;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Class for instantiating a medical procedure
@@ -19,7 +20,7 @@ public class MedicalProcedure {
     @Expose
     private String description;
     @Expose
-    private ArrayList<Organs> organsAffected;
+    private List<Organs> organsAffected;
 
     /**
      * Constructor for Medical Procedure
@@ -42,20 +43,9 @@ public class MedicalProcedure {
 
     /**
      * Constructor for Medical Procedure
-     * @param procedureDate date of procedure
-     * @param summary summary of procedure
      */
-    public MedicalProcedure(LocalDate procedureDate, String summary) {
-        this.procedureDate = procedureDate;
-        this.summary = summary;
-        organsAffected = new ArrayList<Organs>();
-    }
-
-    /**
-     * Constructor for Medical Procedure
-     */
-    public MedicalProcedure() {
-        organsAffected = new ArrayList<Organs>();
+    MedicalProcedure() {
+        organsAffected = new ArrayList<>();
     }
 
     public LocalDate getProcedureDate() {
@@ -82,7 +72,7 @@ public class MedicalProcedure {
         this.description = description;
     }
 
-    public ArrayList<Organs> getOrgansAffected() {
+    public List<Organs> getOrgansAffected() {
         return organsAffected;
     }
 
