@@ -16,6 +16,7 @@ import seng302.Service.Log;
  *
  * @author Josh Burt
  */
+@Deprecated
 public class OrganController {
 
     @FXML

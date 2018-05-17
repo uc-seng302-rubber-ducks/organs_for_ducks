@@ -14,6 +14,7 @@ import seng302.Model.OrganDeregisterReason;
 import seng302.Model.Organs;
 import seng302.Model.User;
 import seng302.Service.AttributeValidation;
+import seng302.Service.Log;
 
 /**
  * Controller class for  for clinicians to
@@ -111,10 +112,12 @@ public class DeregisterOrganReasonController {
         UserController userController = appController.getUserController();
         try {
             userController.showUser(currentUser);
+            Log.info("Receiver organ de-registration cancelled");
         }
         catch (NullPointerException ex) {
             //TODO causes npe if donor is new in this session
             //the text fields etc. are all null
+            Log.severe("error cancelling Receiver organ de-registration", ex);
         }
         stage.close();
     }
@@ -164,10 +167,12 @@ public class DeregisterOrganReasonController {
             UserController userController = appController.getUserController();
             try {
                 userController.showUser(currentUser);
+                Log.info("Receiver organ de-registration success");
             }
             catch (NullPointerException ex) {
                 //TODO causes npe if donor is new in this session
                 //the text fields etc. are all null
+                Log.severe("Receiver organ de-registration failed", ex);
             }
             stage.close();
         }

@@ -21,6 +21,7 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import seng302.Model.Disease;
 import seng302.Model.User;
+import seng302.Service.Log;
 
 public class DiseasesTabPageController {
 
@@ -183,7 +184,9 @@ public class DiseasesTabPageController {
       newDiseaseController.init(currentUser, application, stage, disease, parent);
       stage.setScene(new Scene(root));
       stage.show();
+      Log.info("successfully launched Diseases pop-up window");
     } catch (IOException e) {
+      Log.severe("failed to load Diseases pop-up window", e);
       e.printStackTrace();
     }
 
@@ -203,9 +206,13 @@ public class DiseasesTabPageController {
       } else {
         return;
       }
+      Log.info("disease deleted");
     } else if (pastDiseaseTableView.getSelectionModel().getSelectedIndex() >= 0) {
       currentUser.getPastDiseases()
           .remove(pastDiseaseTableView.getSelectionModel().getSelectedItem());
+      Log.info("disease deleted");
+    } else{
+      Log.warning("Unable to delete disease, no disease selected");
     }
 
     this.application.update(currentUser);
@@ -255,7 +262,9 @@ public class DiseasesTabPageController {
       newDiseaseController.init(currentUser, application, stage, disease, parent);
       stage.setScene(new Scene(root));
       stage.show();
+      Log.info("successfully launched create new disease pop-up window");
     } catch (IOException e) {
+      Log.severe("failed to load create new disease pop-up window", e);
       e.printStackTrace();
     }
 

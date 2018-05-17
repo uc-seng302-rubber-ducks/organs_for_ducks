@@ -48,6 +48,7 @@ import seng302.Model.Organs;
 import seng302.Model.TransplantDetails;
 import seng302.Model.User;
 import seng302.Service.AttributeValidation;
+import seng302.Service.Log;
 
 /**
  * Class for the functionality of the Clinician view of the application
@@ -456,7 +457,9 @@ public class ClinicianController {
             AppController.getInstance().setUserController(userController);
             userController.init(AppController.getInstance(), user, donorStage, true);
             donorStage.show();
+            Log.info("successfully launched user overview window");
         } catch (IOException e) {
+            Log.severe("Failed to load user overview window", e);
             e.printStackTrace();
         }
     }
@@ -666,6 +669,7 @@ public class ClinicianController {
     clinician.undo();
     undoButton.setDisable(clinician.getUndoStack().empty());
     showClinician(clinician);
+    Log.info("undo executed");
   }
 
   /**
@@ -676,6 +680,7 @@ public class ClinicianController {
     clinician.redo();
     redoButton.setDisable(clinician.getRedoStack().empty());
     showClinician(clinician);
+      Log.info("redo executed");
   }
 
   /**
@@ -694,7 +699,9 @@ public class ClinicianController {
       stage.show();
       stage.hide();
       stage.show();
+      Log.info("successfully launched login window");
     } catch (IOException e) {
+        Log.severe("failed to launch login window", e);
       e.printStackTrace();
     }
   }
@@ -715,8 +722,9 @@ public class ClinicianController {
             newStage.initModality(Modality.APPLICATION_MODAL); // background window is no longer selectable
             newStage.showAndWait();
             showClinician(clinician);
-
+            Log.info("successfully launched update clinician window");
         } catch (IOException e) {
+            Log.severe("failed to launch update clinician window", e);
             e.printStackTrace();
         }
     }
@@ -754,7 +762,9 @@ public class ClinicianController {
           deletedUserController.init();
           stage.initModality(Modality.APPLICATION_MODAL);
           stage.showAndWait();
+          Log.info("successfully launched delete user window");
       } catch (IOException e) {
+          Log.severe("failed to launch delete user window", e);
           e.printStackTrace();
       }
   }
