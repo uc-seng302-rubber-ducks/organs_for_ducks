@@ -9,6 +9,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import seng302.Model.Organs;
 import seng302.Model.User;
+import seng302.Service.Log;
 
 /**
  * class for the Organs view
@@ -77,6 +78,9 @@ public class OrganController {
             currentUser.getDonorDetails().addOrgan(toDonate);
             appController.update(currentUser);
             canDonate.getItems().remove(toDonate);
+            Log.info("Donate organ successful");
+        } else {
+            Log.warning("Donate organs failed, no organs selected.");
         }
     }
 
@@ -95,7 +99,10 @@ public class OrganController {
             canDonate.getItems().add(toUndonate);
             currentUser.getDonorDetails().removeOrgan(toUndonate);
             appController.update(currentUser);
+            Log.info("Un-donate organ successful");
             }
+        } else {
+            Log.warning("Un-donate organs failed, no organs selected.");
         }
     }
 
