@@ -487,7 +487,7 @@ public class AdministratorViewController {
             newStage.setScene(new Scene(root));
             newStage.show();
             UpdateAdminController updateAdminController = adminLoader.getController();
-            updateAdminController.init(new Administrator(), newStage);
+            updateAdminController.init(new Administrator(), newStage, true);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -568,7 +568,7 @@ public class AdministratorViewController {
             newStage.setScene(new Scene(root));
             newStage.show();
             UpdateAdminController updateAdminController = adminLoader.getController();
-            updateAdminController.init(administrator, newStage);
+            updateAdminController.init(administrator, newStage, false);
         } catch (IOException e) {
             e.printStackTrace();
         }

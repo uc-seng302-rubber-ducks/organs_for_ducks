@@ -1,6 +1,7 @@
 package seng302.Controller;
 
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
@@ -27,11 +28,20 @@ public class UpdateAdminController {
   private TextField cPasswordTextField;
 
   @FXML
+  private Button redoAdminUpdateButton;
+
+  @FXML
+  private Button undoAdminUpdateButton;
+
+  @FXML
   private Label errorLabel;
 
   private Administrator admin;
   private Stage stage;
   private boolean valid;
+  private boolean newAdmin;
+  private Administrator oldAdmin;
+  private int undoMarker;
 
 
 
@@ -41,14 +51,106 @@ public class UpdateAdminController {
    * @param administrator .
    * @param stage .
    */
-  public void init(Administrator administrator, Stage stage) {
-    admin = administrator;
+  public void init(Administrator administrator, Stage stage, boolean newAdmin) {
+    this.admin = administrator;
+    this.newAdmin = newAdmin;
     this.stage = stage;
-    prefillFields();
+
     stage.getScene();
     errorLabel.setText("");
 
+    if (!newAdmin) {
+      oldAdmin = admin.clone();
+      undoMarker = admin.getUndoStack().size();
+
+      undoAdminUpdateButton.setDisable(true);
+      redoAdminUpdateButton.setDisable(true);
+
+      prefillFields();
+
+      changesListener(usernameTextField);
+      changesListener(firstNameTextField);
+      changesListener(middleNameTextField);
+      changesListener(lastNameTextField);
+      changesListener(passwordTextField);
+      changesListener(cPasswordTextField);
+
+    } else {
+      undoAdminUpdateButton.setVisible(false);
+      redoAdminUpdateButton.setVisible(false);
+    }
   }
+
+  /**
+   * Listens for changes on all of the text fields.
+   *
+   * @param field The current textfield/password field
+   */
+  private void changesListener(TextField field) {
+    field.textProperty().addListener((observable, oldValue, newValue) -> updateAdminUndos());
+  }
+
+  /**
+   * updates the undo stack
+   */
+  private void updateAdminUndos() {
+    boolean changed;
+
+    changed = updateAdminDetails(usernameTextField.getText(), firstNameTextField.getText(),
+            middleNameTextField.getText(), lastNameTextField.getText());
+
+    if (changed) {
+      prefillFields();
+      admin.getRedoStack().clear();
+    }
+
+    undoAdminUpdateButton.setDisable(admin.getUndoStack().size() <= undoMarker);
+    redoAdminUpdateButton.setDisable(admin.getRedoStack().isEmpty());
+  }
+
+
+  /**
+   * Updates details of an admin that have been changed
+   * @param username new username
+   * @param firstName new first name
+   * @param middleName new middle name
+   * @param lastName new last name
+   * @return true if any fields were changed
+   */
+  private boolean updateAdminDetails(String username, String firstName, String middleName, String lastName) {
+    boolean changed = false;
+
+    if (!admin.getUserName().equals(username)) {
+      admin.setUserName(username);
+      changed = true;
+    }
+
+    if (!admin.getFirstName().equals(firstName)) {
+      admin.setFirstName(firstName);
+      changed = true;
+    }
+
+    if (admin.getMiddleName() != null && !admin.getMiddleName().equals(middleName)) {
+        admin.setMiddleName(middleName);
+        changed = true;
+    } else if (admin.getMiddleName() == null && !middleName.isEmpty()) {
+      admin.setMiddleName(middleName);
+      changed = true;
+    }
+
+    if (admin.getLastName() != null && !admin.getLastName().equals(username)) {
+      admin.setLastName(lastName);
+      changed = true;
+    } else if (admin.getLastName() == null && !lastName.isEmpty()) {
+      admin.setLastName(lastName);
+      changed = true;
+    }
+
+    return changed;
+  }
+
+
+
 
     /**
      * Prefills all the text fields as the attribute values.
@@ -117,6 +219,21 @@ public class UpdateAdminController {
     }
     stage.close();
     }
+  }
+
+  @FXML
+  public void redoAdminUpdate() {
+    admin.redo();
+    redoAdminUpdateButton.setDisable(admin.getRedoStack().isEmpty());
+    prefillFields();
+
+  }
+
+  @FXML
+  public void undoAdminUpdate() {
+    admin.undo();
+    undoAdminUpdateButton.setDisable(admin.getUndoStack().isEmpty());
+    prefillFields();
   }
 
 
