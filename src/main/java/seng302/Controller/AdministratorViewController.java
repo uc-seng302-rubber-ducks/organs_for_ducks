@@ -536,7 +536,7 @@ public class AdministratorViewController {
     /**
      * load the labels on the admin view with the current admins details
      */
-    private void displayDetails() {
+    public void displayDetails() {
         if (!administrator.getUserName().isEmpty()) {
             adminUsernameLable.setText(administrator.getUserName());
             adminFirstnameLabel.setText(administrator.getFirstName());

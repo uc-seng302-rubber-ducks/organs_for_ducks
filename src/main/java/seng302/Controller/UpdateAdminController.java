@@ -106,7 +106,7 @@ public class UpdateAdminController {
     updateAdmin();
     if (valid){
     AppController appController = AppController.getInstance();
-    AdministratorViewController administratorViewController = appController.getAdministratorViewControlloer();
+    AdministratorViewController administratorViewController = appController.getAdministratorViewController();
     try {
       administratorViewController.displayDetails();
     } catch (NullPointerException ex) {
