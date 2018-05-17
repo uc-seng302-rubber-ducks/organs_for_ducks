@@ -1,21 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import javafx.geometry.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.RadioButton?>
 <?import javafx.scene.control.Separator?>
-<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleGroup?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
-
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="467.0" prefWidth="479.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.Controller.DeregisterOrganReasonController">
    <children>
       <Label fx:id="receiverName" layoutX="194.0" layoutY="14.0" text="receiverName" />
@@ -47,7 +43,10 @@
                   <ToggleGroup fx:id="deregisterReason" />
                </toggleGroup>
             </RadioButton>
-            <RadioButton fx:id="registerationErrorRadioButton" mnemonicParsing="false" text="the initial registering of the organ was an error" toggleGroup="$deregisterReason" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+           <RadioButton fx:id="registrationErrorRadioButton" mnemonicParsing="false"
+             text="the initial registering of the organ was an error"
+             toggleGroup="$deregisterReason" wrapText="true" GridPane.columnIndex="1"
+             GridPane.rowIndex="2"/>
             <RadioButton fx:id="receiverDiedRadioButton" mnemonicParsing="false" text="the receiver has died" toggleGroup="$deregisterReason" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="5" />
             <Label text="Reason:" GridPane.rowIndex="1" />
             <RadioButton fx:id="transplantReceivedRadioButton" mnemonicParsing="false" text="the receiver has received an organ transplant" toggleGroup="$deregisterReason" wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="1" />

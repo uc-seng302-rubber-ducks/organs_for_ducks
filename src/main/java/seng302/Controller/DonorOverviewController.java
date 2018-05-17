@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.text.DecimalFormat;
 import java.time.temporal.ChronoUnit;
 import java.util.Optional;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -20,6 +19,7 @@ import seng302.Model.User;
 public class DonorOverviewController {
 
   //the Home page attributes
+  //<editor-fold desc="FMXL declarations">
   @FXML
   private Button backButton;
 
@@ -84,13 +84,8 @@ public class DonorOverviewController {
   private Button deleteUser;
 
   @FXML
-  private Label dodLabel;
-
-  @FXML
-  private Label warningLabel;
-
-  @FXML
   private Button logOutButton;
+  //</editor-fold>
 
   private AppController application;
   private User currentUser;
@@ -210,13 +205,9 @@ public class DonorOverviewController {
 
   /**
    * Opens the update user details window
-   *
-   * @param actionEvent An action event.
-   * @throws IOException to make sure I/O is correct
-   * @throws InterruptedException to make sure there is no interruption
    */
   @FXML
-  private void updateDetails(ActionEvent actionEvent) {
+  private void updateDetails() {
     FXMLLoader updateLoader = new FXMLLoader(getClass().getResource("/FXML/updateUser.fxml"));
     Parent root;
     try {
@@ -244,12 +235,9 @@ public class DonorOverviewController {
 
   /**
    * Creates a alert pop up to confirm that the user wants to delete the profile
-   *
-   * @param actionEvent given from the GUI
-   * @throws IOException to make sure current I/O is used
    */
   @FXML
-  public void delete(ActionEvent actionEvent) throws IOException {
+  public void delete() {
     Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
     alert.setContentText("Are you sure you want to delete this user?");
     Optional<ButtonType> result = alert.showAndWait();
@@ -269,20 +257,19 @@ public class DonorOverviewController {
   @FXML
   private void logout() {
     currentUser.getUndoStack().clear();
-    //updateDonor();
     FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML/loginView.fxml"));
-    Parent root = null;
+    Parent root;
     try {
       root = loader.load();
+      LoginController loginController = loader.getController();
+      loginController.init(AppController.getInstance(), stage);
+      stage.setScene(new Scene(root));
+      stage.hide();
+      stage.show();
     } catch (IOException e) {
       e.printStackTrace();
     }
-    LoginController loginController = loader.getController();
-    loginController.init(AppController.getInstance(), stage);
-    stage.setScene(new Scene(root));
-    stage.show();
-    stage.hide();
-    stage.show();
+
 
   }
 

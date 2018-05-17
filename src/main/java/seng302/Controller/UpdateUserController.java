@@ -1,10 +1,8 @@
 package seng302.Controller;
 
 
-import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Optional;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
@@ -107,31 +105,25 @@ public class UpdateUserController {
   private TextField ecRelationshipInput;
 
   @FXML
-  private ComboBox birthGenderComboBox;
+  private ComboBox<String> birthGenderComboBox;
 
   @FXML
-  private ComboBox genderIdComboBox;
+  private ComboBox<String> genderIdComboBox;
 
   @FXML
-  private ComboBox bloodComboBox;
+  private ComboBox<String> bloodComboBox;
 
   @FXML
   private CheckBox smokerCheckBox;
 
   @FXML
-  private ComboBox alcoholComboBox;
+  private ComboBox<String> alcoholComboBox;
 
   @FXML
   private DatePicker dobInput;
 
   @FXML
   private DatePicker dodInput;
-
-  @FXML
-  private Button cancelButton;
-
-  @FXML
-  private Button confirmButton;
 
   @FXML
   private Button undoUpdateButton;
@@ -202,7 +194,7 @@ public class UpdateUserController {
 
     stage.setOnCloseRequest(event -> {
       event.consume();
-      goBack(new ActionEvent());
+      goBack();
     });
   }
 
@@ -226,9 +218,7 @@ public class UpdateUserController {
    * @param dp The current date picker.
    */
   private void datePickerListener(DatePicker dp) {
-    dp.valueProperty().addListener((observable, oldValue, newValue) -> {
-      update();
-    });
+    dp.valueProperty().addListener((observable, oldValue, newValue) -> update());
   }
 
   /**
@@ -237,9 +227,7 @@ public class UpdateUserController {
    * @param checkBox The given CheckBox.
    */
   private void addCheckBoxListener(CheckBox checkBox) {
-    checkBox.selectedProperty().addListener((observable, oldValue, newValue) -> {
-      update();
-    });
+    checkBox.selectedProperty().addListener((observable, oldValue, newValue) -> update());
   }
 
   /**
@@ -248,10 +236,7 @@ public class UpdateUserController {
    * @param cb The current ComboBox.
    */
   private void comboBoxListener(ComboBox cb) {
-    cb.valueProperty().addListener((observable, oldValue, newValue) -> {
-      update();
-    });
-
+    cb.valueProperty().addListener((observable, oldValue, newValue) -> update());
   }
 
   /**
@@ -272,7 +257,7 @@ public class UpdateUserController {
    * @param user The current user.
    */
   @FXML
-  public void setUserDetails(User user) {
+  private void setUserDetails(User user) {
     //personal
     listen = false;
     fNameInput.setText(user.getFirstName());
@@ -398,12 +383,10 @@ public class UpdateUserController {
   }
 
   /**
-   * @param actionEvent an action event.
-   * @throws IOException doesn't look like this even throws..
+   *
    */
   @FXML
-  public void confirmUpdate(ActionEvent actionEvent) throws IOException {
-    boolean changed = false;
+  public void confirmUpdate() {
 
     hideErrorMessages();
     errorLabel.setText("Please make sure your details are correct.");
@@ -413,13 +396,11 @@ public class UpdateUserController {
 
     if (valid) {
       sumAllChanged();
-      //ArrayList<Change> diffs = appController.differanceInDonors(oldUser, currentUser);
-      //changelog.addAll(diffs);
       AppController appController = AppController.getInstance();
-      DonorController donorController = appController.getDonorController();
+      UserController userController = appController.getUserController();
       try {
         currentUser.getRedoStack().clear();
-        donorController.showUser(currentUser);
+        userController.showUser(currentUser);
         Log.info("Update User Successful");
       } catch (NullPointerException ex) {
         //TODO causes npe if donor is new in this session
@@ -435,7 +416,7 @@ public class UpdateUserController {
    */
   private void sumAllChanged() {
     Memento<User> sumChanges = new Memento<>();
-    removeFormChanges(1);
+    removeFormChanges();
     if (!currentUser.getUndoStack().isEmpty()) {
       sumChanges.setOldObject(currentUser.getUndoStack().peek().getOldObject().clone());
       currentUser.getUndoStack().pop();
@@ -446,10 +427,9 @@ public class UpdateUserController {
 
   /**
    * Pops all but the specified number of changes off the stack.
-   * @param offset an denotes how many changes to leave in the stack.
    */
-  private void removeFormChanges(int offset) {
-    while (currentUser.getUndoStack().size() > undoMarker + offset) {
+  private void removeFormChanges() {
+    while (currentUser.getUndoStack().size() > undoMarker + 1) {
       currentUser.getUndoStack().pop();
     }
   }
@@ -460,8 +440,6 @@ public class UpdateUserController {
      * Calls methods to update the changes if all fields are valid.
      */
     private boolean validateFields () {
-      boolean changed = false;
-
       boolean valid = true;
       String nhi = AttributeValidation.validateNHI(nhiInput.getText());
       LocalDate dob = dobInput.getValue();
@@ -514,7 +492,7 @@ public class UpdateUserController {
       }
 
       // validate contact info
-      String email = null;
+      String email;
       if (!emailInput.getText().isEmpty()) {
         email = AttributeValidation.validateEmail(emailInput.getText());
 
@@ -524,7 +502,7 @@ public class UpdateUserController {
         }
       }
 
-      String homePhone = null;
+      String homePhone;
       if (!phoneInput.getText().isEmpty()) {
         homePhone = AttributeValidation.validatePhoneNumber(phoneInput.getText());
 
@@ -534,7 +512,7 @@ public class UpdateUserController {
         }
       }
 
-      String cellPhone = null;
+      String cellPhone;
       if (!cellInput.getText().isEmpty()) {
         cellPhone = AttributeValidation.validateCellNumber(cellInput.getText());
 
@@ -599,7 +577,7 @@ public class UpdateUserController {
    * Updates the undo stacks of the form.
    */
   private void updateUndos() {
-    boolean changed = false;
+    boolean changed;
     changed = updatePersonalDetails(nhiInput.getText(), fNameInput.getText(), dobInput.getValue(),
         dodInput.getValue());
 
@@ -618,14 +596,6 @@ public class UpdateUserController {
     redoUpdateButton.setDisable(currentUser.getRedoStack().isEmpty());
   }
 
-  private double getDoubleFromTextField(TextField textField) {
-    try {
-      return Double
-          .parseDouble(textField.getText().isEmpty() ? "0" : textField.getText());
-    } catch (NumberFormatException e) {
-      return 0;
-    }
-  }
 
     /**
      * Updates all personal details that have changed.
@@ -763,7 +733,7 @@ public class UpdateUserController {
         changed = true;
       }
 
-      String alcohol = alcoholComboBox.getValue().toString();
+      String alcohol = alcoholComboBox.getValue();
       if (!currentUser.getAlcoholConsumption().equals(alcohol)) {
         currentUser.setAlcoholConsumption(alcohol);
         changed = true;
@@ -987,10 +957,9 @@ public class UpdateUserController {
      * Prompts the user with a warning alert if there are unsaved changes, otherwise cancels
      * immediately.
      *
-     * @param event An ActionEvent object usually automatically passed by the GUI.
      */
     @FXML
-    void goBack (ActionEvent event){
+    void goBack() {
       if (!undoUpdateButton.isDisabled()) { // has changes
         Alert alert = new Alert(Alert.AlertType.WARNING,
             "You have unsaved changes, are you sure you want to cancel?",
@@ -1003,10 +972,10 @@ public class UpdateUserController {
         if (result.get() == ButtonType.YES) {
           //currentUser.changeInto(oldUser);
           AppController appController = AppController.getInstance();
-          DonorController donorController = appController.getDonorController();
+          UserController userController = appController.getUserController();
           try {
             currentUser.getRedoStack().clear();
-            donorController.showUser(oldUser);
+            userController.showUser(oldUser);
             Log.info("User update Cancelled");
           } catch (NullPointerException ex) {
             //TODO causes npe if donor is new in this session
@@ -1017,10 +986,10 @@ public class UpdateUserController {
         }
       } else { // has no changes
         AppController appController = AppController.getInstance();
-        DonorController donorController = appController.getDonorController();
+        UserController userController = appController.getUserController();
         try {
           currentUser.getRedoStack().clear();
-          donorController.showUser(oldUser);
+          userController.showUser(oldUser);
           Log.info("User update Cancelled");
         } catch (NullPointerException ex) {
           //TODO causes npe if donor is new in this session

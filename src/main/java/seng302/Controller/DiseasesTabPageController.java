@@ -1,8 +1,9 @@
 package seng302.Controller;
 
+import static java.util.Collections.reverseOrder;
+
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.Collections;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -40,11 +41,7 @@ public class DiseasesTabPageController {
 
   private User currentUser;
   private AppController application;
-  private DonorController parent;
-  private boolean Clinician;
-
-  private ObservableList<Disease> currentDisease;
-  private ObservableList<Disease> pastDisease;
+  private UserController parent;
 
   /**
    * Gives the donor view the application controller and hides all label and buttons that are not
@@ -52,15 +49,14 @@ public class DiseasesTabPageController {
    *
    * @param controller the application controller
    * @param user the current user
-   * @param parent the DonorController class this belongs to
+   * @param parent the UserController class this belongs to
    */
   public void init(AppController controller, User user, boolean fromClinician,
-      DonorController parent) {
+      UserController parent) {
     application = controller;
     currentUser = user;
     this.parent = parent;
     if (fromClinician) {
-      Clinician = true;
       addDiseaseButton.setVisible(true);
       updateDiseaseButton.setVisible(true);
       deleteDiseaseButton.setVisible(true);
@@ -85,7 +81,8 @@ public class DiseasesTabPageController {
    */
   public void showDonorDiseases(User user, boolean init) {
     if (user.getCurrentDiseases().size() != 0) {
-      currentDisease = FXCollections.observableList(user.getCurrentDiseases());
+      ObservableList<Disease> currentDisease = FXCollections
+          .observableList(user.getCurrentDiseases());
       currentDiseaseTableView.setItems(currentDisease);
 
     } else {
@@ -93,7 +90,7 @@ public class DiseasesTabPageController {
     }
 
     if (user.getPastDiseases().size() != 0) {
-      pastDisease = FXCollections.observableList(user.getPastDiseases());
+      ObservableList<Disease> pastDisease = FXCollections.observableList(user.getPastDiseases());
       pastDiseaseTableView.setItems(pastDisease);
 
     } else {
@@ -176,21 +173,21 @@ public class DiseasesTabPageController {
   private void launchDiseasesGui(Disease disease) {
     FXMLLoader addDiseaseLoader = new FXMLLoader(
         getClass().getResource("/FXML/createNewDisease.fxml"));
-    Parent root = null;
+    Parent root;
     try {
       root = addDiseaseLoader.load();
       root.requestFocus(); //Currently the below code thinks that focus = selected so will always take the focused
       // thing in currentDiseases over the selected thing in pastDiseases. Trying to fix
+      NewDiseaseController newDiseaseController = addDiseaseLoader.getController();
+      Stage stage = new Stage();
+      newDiseaseController.init(currentUser, application, stage, disease, parent);
+      stage.setScene(new Scene(root));
+      stage.show();
     } catch (IOException e) {
       e.printStackTrace();
     }
 
-    NewDiseaseController newDiseaseController = addDiseaseLoader.getController();
-    Stage stage = new Stage();
-    //Disease disease = currentUser.getD
-    newDiseaseController.init(currentUser, application, stage, disease, parent);
-    stage.setScene(new Scene(root));
-    stage.show();
+
   }
 
 
@@ -215,15 +212,6 @@ public class DiseasesTabPageController {
     showDonorDiseases(currentUser, false); //Reload the scene?
   }
 
-  //Yuck
-  public TableView<Disease> getPastDiseaseTableView() {
-    return pastDiseaseTableView;
-  }
-
-  public TableView<Disease> getCurrentDiseaseTableView() {
-    return currentDiseaseTableView;
-  }
-
   /**
    * Refreshes the donor's diseases
    *
@@ -232,22 +220,20 @@ public class DiseasesTabPageController {
    */
   public void diseaseRefresh(boolean isSortedByName, boolean isReverseSorted) {
     Disease disease = new Disease("", false, false, LocalDate.now());
-    Collections.sort(currentUser.getCurrentDiseases(), disease.diseaseNameComparator);
-    Collections.sort(currentUser.getPastDiseases(), disease.diseaseDateComparator);
+    currentUser.getCurrentDiseases().sort(disease.diseaseNameComparator);
+    currentUser.getPastDiseases().sort(disease.diseaseDateComparator);
 
     if (isSortedByName) {
-      Collections.sort(currentUser.getCurrentDiseases(), disease.diseaseNameComparator);
-      Collections.sort(currentUser.getPastDiseases(), disease.diseaseNameComparator);
+      currentUser.getCurrentDiseases().sort(disease.diseaseNameComparator);
+      currentUser.getPastDiseases().sort(disease.diseaseNameComparator);
 
     }
     if (isReverseSorted) {
-      Collections.sort(currentUser.getCurrentDiseases(), Collections.reverseOrder());
-      Collections.sort(currentUser.getPastDiseases(), disease.diseaseNameComparator);
+      currentUser.getCurrentDiseases().sort(reverseOrder());
+      currentUser.getPastDiseases().sort(disease.diseaseNameComparator);
     }
-    Collections.sort(currentUser.getCurrentDiseases(), disease.diseaseChronicComparator);
+    currentUser.getCurrentDiseases().sort(disease.diseaseChronicComparator);
 
-//    getCurrentDiseaseTableView().refresh();
-//    getPastDiseaseTableView().refresh();
     showDonorDiseases(currentUser, false);
   }
 
@@ -259,19 +245,19 @@ public class DiseasesTabPageController {
 
     FXMLLoader addDiseaseLoader = new FXMLLoader(
         getClass().getResource("/FXML/createNewDisease.fxml"));
-    Parent root = null;
+    Parent root;
     try {
       root = addDiseaseLoader.load();
+      NewDiseaseController newDiseaseController = addDiseaseLoader.getController();
+      Stage stage = new Stage();
+      Disease disease = new Disease("", false, false, LocalDate.now());
+      currentUser.addCurrentDisease(disease);
+      newDiseaseController.init(currentUser, application, stage, disease, parent);
+      stage.setScene(new Scene(root));
+      stage.show();
     } catch (IOException e) {
       e.printStackTrace();
     }
-    NewDiseaseController newDiseaseController = addDiseaseLoader.getController();
-    Stage stage = new Stage();
-    Disease disease = new Disease("", false, false, LocalDate.now());
-    currentUser.addCurrentDisease(disease);
-    newDiseaseController.init(currentUser, application, stage, disease, parent);
-    stage.setScene(new Scene(root));
-    stage.show();
 
 
   }

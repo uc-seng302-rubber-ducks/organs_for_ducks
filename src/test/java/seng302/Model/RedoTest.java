@@ -24,20 +24,20 @@ public class RedoTest {
 
   @Test
   public void testSingleChangeSingleRedo() {
-    testUser.setName("Geoff");
+    testUser.setName("Geoff","","");
     testUser.undo();
     testUser.redo();
-    assertEquals("Geoff", testUser.getName());
+    assertEquals("Geoff", testUser.getFullName());
   }
 
   @Test
   public void testSingleChangeMultipleRedo() {
-    testUser.setName("Geoff");
+    testUser.setName("Geoff","","");
     testUser.undo();
     testUser.redo();
     testUser.redo();
     testUser.redo();
-    assertEquals("Geoff", testUser.getName());
+    assertEquals("Geoff", testUser.getFullName());
   }
 
   @Test
@@ -73,7 +73,7 @@ public class RedoTest {
 
   @Test
   public void singleChangeMementoShouldContainTwoStates() {
-    testUser.setName("Harold");
+    testUser.setName("Harold","","");
     testUser.undo();
     Memento<User> mem = testUser.getRedoStack().peek();
     assert (mem.getOldObject() != null && mem.getNewObject() != null);
@@ -81,11 +81,11 @@ public class RedoTest {
 
   @Test
   public void singleChangeMementoShouldContainCorrectStates() {
-    testUser.setName("Harold");
+    testUser.setName("Harold","","");
     testUser.undo();
     Memento<User> mem = testUser.getRedoStack().peek();
-    String oldName = mem.getOldObject().getName();
-    String newName = mem.getNewObject().getName();
+    String oldName = mem.getOldObject().getFullName();
+    String newName = mem.getNewObject().getFullName();
     assertEquals("Frank", oldName);
     assertEquals("Harold", newName);
 
