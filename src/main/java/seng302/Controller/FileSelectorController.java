@@ -1,10 +1,8 @@
 package seng302.Controller;
 
+import java.io.File;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-
-import java.awt.*;
-import java.io.File;
 
 /**
  * Class information found from
@@ -13,9 +11,12 @@ import java.io.File;
 
 public final class FileSelectorController {
 
-    private Desktop desktop = Desktop.getDesktop();
-
-
+  /**
+   * Opens a file selector
+   *
+   * @param stage stage to open file selector on
+   * @return the file path of the file
+   */
     public static String getFileSelector(final Stage stage) {
         stage.setTitle("File Selector");
 
@@ -23,24 +24,28 @@ public final class FileSelectorController {
         configureFileChooser(fileChooser);
         File file = fileChooser.showOpenDialog(stage);
         if(file != null) {
-            String filename = file.getAbsolutePath().toString();
-            return filename;
+          return file.getAbsolutePath();
         } else {
             return null;
         }
 
     }
 
-    private static void configureFileChooser(
-            final FileChooser fileChooser) {
-        fileChooser.setTitle("File Selector");
-        fileChooser.setInitialDirectory(
-                new File(System.getProperty("user.home"))
-        );
-        fileChooser.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("JSON", "*.json")
-        );
-    }
+  /**
+   * Customizes configuration of a file chooser
+   *
+   * @param fileChooser fileChooser to configure
+   */
+  private static void configureFileChooser(
+      final FileChooser fileChooser) {
+    fileChooser.setTitle("File Selector");
+    fileChooser.setInitialDirectory(
+        new File(System.getProperty("user.home"))
+    );
+    fileChooser.getExtensionFilters().addAll(
+        new FileChooser.ExtensionFilter("JSON", "*.json")
+    );
+  }
 
 
 }

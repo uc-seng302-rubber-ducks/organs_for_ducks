@@ -2,6 +2,7 @@ package seng302.Model;
 
 import com.google.gson.annotations.Expose;
 import java.util.HashSet;
+import java.util.Set;
 
 
 /**
@@ -10,19 +11,15 @@ import java.util.HashSet;
 public class DonorDetails {
 
   @Expose
-  private HashSet<Organs> organs = new HashSet<>();
+  private Set<Organs> organs;
   private transient User attachedUser;
-
-  public HashSet<Organs> getOrgans() {
-    return organs;
-  }
 
   /**
    * Constructor for organs for current user
    *
    * @param attachedUser current user
    */
-  public DonorDetails(User attachedUser) {
+  DonorDetails(User attachedUser) {
     this.attachedUser = attachedUser;
     this.organs = new HashSet<>();
   }
@@ -37,6 +34,10 @@ public class DonorDetails {
   public void setOrgans(HashSet<Organs> organs) {
     attachedUser.updateLastModified();
     this.organs = organs;
+  }
+
+  public Set<Organs> getOrgans() {
+    return organs;
   }
 
   /**
@@ -76,7 +77,6 @@ public class DonorDetails {
     memento.setOldObject(attachedUser.clone());
     if (organs.contains(organ)) {
       organs.remove(organ);
-      //TODO attachedUser is always null
       attachedUser.updateLastModified();
       attachedUser.addChange(new Change("Removed organ " + organ.organName));
     }
@@ -84,20 +84,12 @@ public class DonorDetails {
     attachedUser.getUndoStack().push(memento);
   }
 
-  private boolean isCurrentlyWaitingFor(Organs organ) {
-    return attachedUser.getReceiverDetails().isCurrentlyWaitingFor(organ);
-  }
 
   /**
-   * TODO update if/when more details are added
-   *
    * @return true if underlying organs list is empty
    */
   public boolean isEmpty() {
-    if (organs != null) {
-      return organs.isEmpty();
-    }
-    return true;
+    return organs == null || organs.isEmpty();
   }
 
   /**

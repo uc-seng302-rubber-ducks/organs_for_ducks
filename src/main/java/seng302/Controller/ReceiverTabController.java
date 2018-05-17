@@ -62,13 +62,10 @@ public class ReceiverTabController {
   private AppController application;
   private boolean Clinician;
   private Stage stage;
-  private DonorController parent;
+  private UserController parent;
 
   private ObservableList<Organs> currentlyRecieving;
-  private ObservableList<Organs> noLongerReceiving;
   private OrganDeregisterReason organDeregisterationReason;
-  private boolean isSortedByName = false;
-  private boolean isReverseSorted = false;
 
   /**
    * Gives the donor view the application controller and hides all label and buttons that are not
@@ -77,10 +74,10 @@ public class ReceiverTabController {
    * @param controller the application controller
    * @param user the current user
    * @param fromClinician boolean value indication if from clinician view
-   * @param parent the DonorController class this belongs to
+   * @param parent the UserController class this belongs to
    */
   public void init(AppController controller, Stage stage, User user, boolean fromClinician,
-      DonorController parent) {
+      UserController parent) {
     application = controller;
     currentUser = user;
     this.stage = stage;
@@ -95,6 +92,12 @@ public class ReceiverTabController {
       registerButton.setVisible(false);
       reRegisterButton.setVisible(false);
       deRegisterButton.setVisible(false);
+
+      currentlyReceivingLabel.setVisible(false);
+      notReceivingLabel.setVisible(false);
+      currentlyReceivingListView.setVisible(false);
+      notReceivingListView.setVisible(false);
+      notReceiverLabel.setVisible(true);
     }
 
     //display registered and deregistered receiver organs if any
@@ -184,18 +187,18 @@ public class ReceiverTabController {
     if (toDeRegister != null) {
       FXMLLoader deregisterOrganReasonLoader = new FXMLLoader(
           getClass().getResource("/FXML/deregisterOrganReasonView.fxml"));
-      Parent root = null;
+      Parent root;
       try {
         root = deregisterOrganReasonLoader.load();
+        DeregisterOrganReasonController deregisterOrganReasonController = deregisterOrganReasonLoader
+            .getController();
+        Stage stage = new Stage();
+        deregisterOrganReasonController.init(toDeRegister, parent, currentUser, application, stage);
+        stage.setScene(new Scene(root));
+        stage.show();
       } catch (IOException e) {
         e.printStackTrace();
       }
-      DeregisterOrganReasonController deregisterOrganReasonController = deregisterOrganReasonLoader
-          .getController();
-      Stage stage = new Stage();
-      deregisterOrganReasonController.init(toDeRegister, parent, currentUser, application, stage);
-      stage.setScene(new Scene(root));
-      stage.show();
     }
   }
 
@@ -210,7 +213,7 @@ public class ReceiverTabController {
       receiverOrgans = new EnumMap<>(Organs.class);
     }
     currentlyRecieving = FXCollections.observableArrayList();
-    noLongerReceiving = FXCollections.observableArrayList();
+    ObservableList<Organs> noLongerReceiving = FXCollections.observableArrayList();
     if (!receiverOrgans.isEmpty()) {
       for (Organs organ : receiverOrgans.keySet()) {
         if (user.getReceiverDetails().isCurrentlyWaitingFor(organ)) {
@@ -221,12 +224,6 @@ public class ReceiverTabController {
           noLongerReceiving.add(organ);
         }
       }
-    } else if (!Clinician) { //if user is not a receiver and not login as clinician
-      currentlyReceivingLabel.setVisible(false);
-      notReceivingLabel.setVisible(false);
-      currentlyReceivingListView.setVisible(false);
-      notReceivingListView.setVisible(false);
-      notReceiverLabel.setVisible(true);
     }
 
     currentlyReceivingListView.setItems(currentlyRecieving);
@@ -248,9 +245,7 @@ public class ReceiverTabController {
     });
 
     //if user already died, user cannot receive organs
-    if (currentUser.getDeceased())
-
-    {//TODO add listener so that if user is updated to not be diseased, these buttons will activate
+    if (currentUser.getDeceased()) {
       registerButton.setDisable(true);
       reRegisterButton.setDisable(true);
     }
@@ -270,6 +265,9 @@ public class ReceiverTabController {
     });
   }
 
+  /**
+   * Refreshes the currently Receiving List
+   */
   public void refreshCurrentlyReceiving() {
     currentlyReceivingListView.refresh();
   }
@@ -281,23 +279,23 @@ public class ReceiverTabController {
   /**
    * Launch the time table which shows the register and deregister date of a particular organ
    *
-   * @param organs enum
+   * @param organs Organ to show extra details for
    */
   private void launchReceiverOrganDateView(Organs organs) {
     FXMLLoader receiverOrganDateViewLoader = new FXMLLoader(
         getClass().getResource("/FXML/receiverOrganDateView.fxml"));
-    Parent root = null;
+    Parent root;
     try {
       root = receiverOrganDateViewLoader.load();
+      Stage stage = new Stage();
+      stage.setScene(new Scene(root));
+      ReceiverOrganDateController receiverOrganDateController = receiverOrganDateViewLoader
+          .getController();
+      receiverOrganDateController.init(currentUser, stage, organs);
+      stage.show();
     } catch (IOException e) {
       e.printStackTrace();
     }
-    Stage stage = new Stage();
-    stage.setScene(new Scene(root));
-    ReceiverOrganDateController receiverOrganDateController = receiverOrganDateViewLoader
-        .getController();
-    receiverOrganDateController.init(application, currentUser, stage, organs);
-    stage.show();
   }
 
   /**
@@ -320,7 +318,7 @@ public class ReceiverTabController {
       } else if (organDeregisterationReason == OrganDeregisterReason.DISEASE_CURED) {
         //refresh diseases table
         currentUser.getReceiverDetails().stopWaitingForOrgan(toDeRegister);
-        parent.refreshDiseases(this.getIsSortedByName(), this.getIsRevereSorted());
+        parent.refreshDiseases();
 
       } else if (organDeregisterationReason == OrganDeregisterReason.RECEIVER_DIED) {
         List<Organs> currentlyReceiving = new ArrayList<>(currentlyReceivingListView.getItems());
@@ -365,17 +363,17 @@ public class ReceiverTabController {
   /**
    * Sets the reason for organ deregistration
    *
-   * @param organDeregisterationReason OrganDeregisterReason enum
+   * @param organDeregistrationReason OrganDeregisterReason enum
    */
-  public void setOrganDeregisterationReason(OrganDeregisterReason organDeregisterationReason) {
-    this.organDeregisterationReason = organDeregisterationReason;
+  public void setOrganDeregistrationReason(OrganDeregisterReason organDeregistrationReason) {
+    this.organDeregisterationReason = organDeregistrationReason;
   }
 
   public boolean getIsRevereSorted() {
-    return isReverseSorted;
+    return false;
   }
 
   public boolean getIsSortedByName() {
-    return isSortedByName;
+    return false;
   }
 }

@@ -22,7 +22,7 @@ public class MedicationDurations {
      * @param start start date/time
      * @param stop stop date/time
      */
-    public MedicationDurations(java.time.LocalDateTime start, java.time.LocalDateTime stop) {
+    public MedicationDurations(LocalDateTime start, LocalDateTime stop) {
         this.start = start;
         this.stop = stop;
         duration = (int) ChronoUnit.DAYS.between(start, stop);

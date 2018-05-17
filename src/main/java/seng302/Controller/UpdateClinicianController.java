@@ -3,8 +3,6 @@ package seng302.Controller;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Optional;
-
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -22,7 +20,6 @@ import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import seng302.Model.Clinician;
 import seng302.Model.Memento;
-import seng302.Service.PasswordManager;
 
 /**
  * Controller for updating clinicians
@@ -131,7 +128,7 @@ public class UpdateClinicianController {
 
             scene.addEventFilter(KeyEvent.KEY_RELEASED, e -> {
                 if (shortcutZ.match(e)) {
-                    undo(new ActionEvent());
+                  undo();
                 }
             });
 
@@ -141,9 +138,7 @@ public class UpdateClinicianController {
             confirmButton.setText("Create Clinician Profile");
         }
 
-        ownStage.setOnCloseRequest(event -> {
-            cancelUpdate(new ActionEvent());
-        });
+      ownStage.setOnCloseRequest(event -> cancelUpdate());
     }
 
     /**
@@ -199,9 +194,7 @@ public class UpdateClinicianController {
      * @param field The current textfield/password field element.
      */
     private void changesListener(TextField field) {
-        field.textProperty().addListener((observable, oldValue, newValue) -> {
-            update();
-        });
+      field.textProperty().addListener((observable, oldValue, newValue) -> update());
     }
 
     /**
@@ -310,9 +303,7 @@ public class UpdateClinicianController {
                     .getClinicianController();
             clinicianController.showClinician(oldClinician);
             ownStage.close();
-
         } else {
-            System.out.println(stage.getTitle());
             if (stage.getTitle().matches("Administrator*")) {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML/clinicianView.fxml"));
                 Parent root;
@@ -332,7 +323,7 @@ public class UpdateClinicianController {
 
             } else {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML/clinicianView.fxml"));
-                Parent root = null;
+              Parent root;
 
                 try {
                     root = loader.load();
@@ -351,11 +342,9 @@ public class UpdateClinicianController {
     /**
      * If changes are present, a pop up alert is displayed.
      * Closes the window without making any changes.
-     *
-     * @param event an action event.
      */
     @FXML
-    private void cancelUpdate(ActionEvent event) {
+    private void cancelUpdate() {
 
         if (!newClinician) {
             if (!undoClinicianFormButton.isDisabled()) {
@@ -380,20 +369,6 @@ public class UpdateClinicianController {
             }
 
         } else {
-            /*FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML/loginView.fxml"));
-            Parent root = null;
-
-            try {
-                root = loader.load();
-                LoginController loginController = loader.getController();
-                loginController.init(AppController.getInstance(), stage);
-                stage.setScene(new Scene(root));
-                stage.show();
-                stage.hide();
-                stage.show();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }*/
             ownStage.close();
         }
     }
@@ -581,18 +556,24 @@ public class UpdateClinicianController {
         emptyRegionLabel.setVisible(false);
     }
 
-    @FXML
-    public void redo(ActionEvent actionEvent) {
-        currentClinician.redo();
-        redoClinicianFormButton.setDisable(currentClinician.getRedoStack().isEmpty());
-        prefillFields(currentClinician);
-    }
+  /**
+   * Redoes the previous undone action
+   */
+  @FXML
+  public void redo() {
+    currentClinician.redo();
+    redoClinicianFormButton.setDisable(currentClinician.getRedoStack().isEmpty());
+    prefillFields(currentClinician);
+  }
 
 
-    @FXML
-    public void undo(ActionEvent actionEvent) {
-        currentClinician.undo();
-        undoClinicianFormButton.setDisable(currentClinician.getUndoStack().size() <= undoMarker);
-        prefillFields(currentClinician);
-    }
+  /**
+   * Undoes the previous action
+   */
+  @FXML
+  public void undo() {
+    currentClinician.undo();
+    undoClinicianFormButton.setDisable(currentClinician.getUndoStack().size() <= undoMarker);
+    prefillFields(currentClinician);
+  }
 }
