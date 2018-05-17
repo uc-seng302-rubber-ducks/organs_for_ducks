@@ -34,6 +34,7 @@ public class UpdateUserDetailsTest {
       NHI = "ABC1234";
       User user = controller.findUsers("test dummy").get(0);
       user.setWeight(65.3);
+      System.out.println("Users size: " + controller.getUsers().size());
     }
     catch (Exception ex) {
       fail("Exception thrown setting up tests");
@@ -141,15 +142,16 @@ public class UpdateUserDetailsTest {
   @Test
   public void ShouldUpdateLastModifiedTimestamp() throws InterruptedException{
     User user = controller.getUser(NHI);
-    Thread.sleep(100);
     LocalDateTime oldTime = user.getLastModified();
-
+    Thread.sleep(100);
+    System.out.println(oldTime);
     String[] args = {"-NHI=" + NHI, "-f=fred"};
 
     new CommandLine(new UpdateUserDetails())
         .parseWithHandler(new CommandLine.RunLast(), System.err, args);
 
     LocalDateTime newTime = user.getLastModified();
+    System.out.println(LocalDateTime.now());
     System.out.println(oldTime);
     System.out.println(newTime); // test needs delay removing these lines will cause the test to fail
     assert(newTime.isAfter(oldTime));

@@ -16,8 +16,6 @@ import java.util.Objects;
 public class Clinician extends Undoable<Clinician> {
 
     @Expose
-    private String name;
-    @Expose
     private String staffId;
     @Expose
     private String workAddress;
@@ -65,7 +63,6 @@ public class Clinician extends Undoable<Clinician> {
         dateCreated = LocalDateTime.now();
         dateLastModified = LocalDateTime.now();
 
-        this.name = firstName; // todo: remove 'name'
     }
 
 
@@ -80,7 +77,7 @@ public class Clinician extends Undoable<Clinician> {
      * @param dateLastModified clinician date last modified
      */
     public Clinician(String name, String staffId, String workAddress, String region, String password, LocalDateTime dateCreated, LocalDateTime dateLastModified) {
-        this.name = name;
+        this.firstName = name;
         this.staffId = staffId;
         this.workAddress = workAddress;
         this.region = region;
@@ -99,7 +96,6 @@ public class Clinician extends Undoable<Clinician> {
      * @param password clinician password
      */
     public Clinician(String name, String staffId, String workAddress, String region, String password) {
-        this.name = name;
         this.staffId = staffId;
         this.workAddress = workAddress;
         this.region = region;
@@ -121,18 +117,6 @@ public class Clinician extends Undoable<Clinician> {
 
     public void setDateLastModified(LocalDateTime dateLastModified) {
         this.dateLastModified = dateLastModified;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        Memento<Clinician> memento = new Memento<>();
-        memento.setOldObject(this.clone());
-        this.name = name;
-        memento.setNewObject(this.clone());
-      getUndoStack().push(memento);
     }
 
     public String getFirstName() {
@@ -255,9 +239,6 @@ public class Clinician extends Undoable<Clinician> {
         return salt;
     }
 
-    public void setSalt(byte[] salt) {
-        this.salt = salt;
-    }
 
 
     /**
@@ -274,7 +255,7 @@ public class Clinician extends Undoable<Clinician> {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Clinician clinician = (Clinician) o;
-        return staffId == clinician.staffId;
+        return staffId.equals(clinician.staffId);
     }
 
     @Override
@@ -286,11 +267,10 @@ public class Clinician extends Undoable<Clinician> {
     @Override
     public String toString() {
         return "Clinician{" +
-                "name='" + name + '\'' +
+                "name='" + getFullName() + '\'' +
                 ", staffId='" + staffId + '\'' +
                 ", workAddress='" + workAddress + '\'' +
                 ", region='" + region + '\'' +
-                ", password='" + password + '\'' +
                 ", dateCreated=" + dateCreated +
                 ", dateLastModified=" + dateLastModified +
                 '}';

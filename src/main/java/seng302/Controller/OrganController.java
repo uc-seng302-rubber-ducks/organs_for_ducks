@@ -9,7 +9,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.stage.Stage;
 import seng302.Model.Organs;
-import seng302.Model.UndoRedoStacks;
 import seng302.Model.User;
 
 import java.util.ArrayList;
@@ -54,7 +53,7 @@ public class OrganController {
         this.stage = stage;
         this.appController = controller;
         currentUser = user;
-        donorNameLabel.setText(user.getName());
+        donorNameLabel.setText(user.getFullName());
         ArrayList<Organs> donating;
         try {
             donating= new ArrayList<>(user.getDonorDetails().getOrgans());

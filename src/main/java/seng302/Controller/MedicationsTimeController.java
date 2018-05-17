@@ -16,6 +16,7 @@ import seng302.Model.User;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
 
 /**
  * Class for the functionality of the medication view
@@ -49,8 +50,8 @@ public class MedicationsTimeController {
         this.user = user;
         this.stage = stage;
         medicineNameLabel.setText(medicine);
-        ArrayList<LocalDateTime> currentTimeStamps = user.getCurrentMedicationTimes().get(medicine);
-        ArrayList<LocalDateTime> previousTimeStamps = user.getPreviousMedicationTimes().get(medicine);
+        List<LocalDateTime> currentTimeStamps = user.getCurrentMedicationTimes().get(medicine);
+        List<LocalDateTime> previousTimeStamps = user.getPreviousMedicationTimes().get(medicine);
         medicationDurations = FXCollections.observableArrayList(new ArrayList<>());
         setUpTable(currentTimeStamps,previousTimeStamps);
 
@@ -62,7 +63,7 @@ public class MedicationsTimeController {
      * @param current list of currently taken medication timestamps
      * @param previous list of previously taken medication timetamps
      */
-    private void setUpTable(ArrayList<LocalDateTime> current, ArrayList<LocalDateTime> previous){
+    private void setUpTable(List<LocalDateTime> current, List<LocalDateTime> previous){
         if(current != null) {
             current.sort(Comparator.naturalOrder());
         } else {

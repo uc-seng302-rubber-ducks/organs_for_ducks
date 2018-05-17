@@ -11,14 +11,14 @@ public class TransplantDetails {
     private String nhi;
     private String name;
     private Organs organ;
-    private LocalDate oRD; //Organ Registration Date
+    private LocalDate ord; //Organ Registration Date
     private String region;
 
-    public TransplantDetails(String nhi, String name, Organs organ, LocalDate ORD, String region){
+    public TransplantDetails(String nhi, String name, Organs organ, LocalDate ord, String region){
         this.nhi = nhi;
         this.name = name;
         this.organ = organ;
-        this.oRD = ORD;
+        this.ord = ord;
         this.region = region;
     }
 
@@ -37,7 +37,7 @@ public class TransplantDetails {
 
 
     public LocalDate getORD() {
-        return oRD;
+        return ord;
     }
 
 

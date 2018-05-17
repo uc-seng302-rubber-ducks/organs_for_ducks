@@ -5,7 +5,7 @@ import static seng302.Model.JsonHandler.saveUsers;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.ArrayList;
+import java.util.List;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -263,7 +263,7 @@ public class NewUserController {
             newUser.getUndoStack().clear();
 
             // add the new user to the list of users and save them
-            ArrayList<User> users = controller.getUsers();
+            List<User> users = controller.getUsers();
             users.add(newUser);
             saveUsers(users);
 

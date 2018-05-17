@@ -1,13 +1,10 @@
 package seng302.Controller.CliCommands;
 
-import java.io.IOException;
 import java.time.LocalDate;
-import java.util.Date;
+
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import seng302.Controller.AppController;
-import seng302.Model.JsonHandler;
-import seng302.Model.JsonWriter;
 import seng302.Model.User;
 import seng302.View.IoHelper;
 
