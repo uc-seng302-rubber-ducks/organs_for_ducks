@@ -195,7 +195,7 @@ public class LoginController {
       ClinicianController clinicianController = clinicianLoader.getController();
       AppController.getInstance().setClinicianController(clinicianController);
                 Log.info("Logging in as a clinician");
-      clinicianController.init(stage, appController, clinician);
+      clinicianController.init(stage, appController, clinician, false);
     }
   }
 
@@ -238,7 +238,7 @@ public class LoginController {
       AdministratorViewController administratorController = administratorLoader.getController();
       AppController.getInstance().setAdministratorViewController(administratorController);
                 Log.info("Logging in as an administrator");
-      administratorController.init(administrator, appController, stage);
+      administratorController.init(administrator, appController, stage, true);
     }
   }
 
@@ -318,7 +318,7 @@ private void helpButton(){
       stage.setScene(new Scene(root));
       stage.setTitle("Administrator");
       AdministratorViewController administratorViewController=adminLoader.getController();
-      administratorViewController.init(new Administrator(),appController,stage);
+      administratorViewController.init(new Administrator(),appController,stage, true);
       }
       }
 

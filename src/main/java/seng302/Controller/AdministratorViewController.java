@@ -26,6 +26,8 @@ import seng302.Model.User;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Optional;
+
 import seng302.Model.Clinician;
 import seng302.Model.User;
 import seng302.View.CLI;
@@ -163,11 +165,13 @@ public class AdministratorViewController {
     private Administrator administrator;
     private ArrayList<String> pastCommands = new ArrayList<>();
     private int pastCommandIndex = -1;
+    private boolean owner;
 
-    public void init(Administrator administrator, AppController appController, Stage stage) {
+    public void init(Administrator administrator, AppController appController, Stage stage, boolean owner) {
         this.stage = stage;
         this.appController = appController;
         this.administrator = administrator;
+        this.owner = owner;
         displayDetails();
 
 
@@ -421,7 +425,7 @@ public class AdministratorViewController {
         Stage newStage = new Stage();
         newStage.setScene(new Scene(root));
         ClinicianController clinicianController = clinicianLoader.getController();
-        clinicianController.init(newStage, AppController.getInstance(), clinician);
+        clinicianController.init(newStage, AppController.getInstance(), clinician, true);
         newStage.show();
     }
 
@@ -439,7 +443,7 @@ public class AdministratorViewController {
         Stage newStage = new Stage();
         newStage.setScene(new Scene(root));
         AdministratorViewController adminLoaderController = adminLoader.getController();
-        adminLoaderController.init(administrator, AppController.getInstance(), newStage);
+        adminLoaderController.init(administrator, AppController.getInstance(), newStage, false);
         newStage.show();
     }
 
@@ -479,7 +483,7 @@ public class AdministratorViewController {
     }
 
     @FXML
-    void logout(ActionEvent event) {
+    void logout() {
 
     }
 
@@ -534,7 +538,18 @@ public class AdministratorViewController {
 
     @FXML
     void deleteAdminAccount() {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setContentText("Are you sure you want to delete this administrator?");
+        Optional<ButtonType> result = alert.showAndWait();
 
+        if (result.get() == ButtonType.OK) {
+            appController.deleteAdmin(administrator);
+            if (owner) {
+                logout();
+            } else {
+                stage.close();
+            }
+        }
     }
 
 }

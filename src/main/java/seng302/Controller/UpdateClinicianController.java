@@ -321,7 +321,7 @@ public class UpdateClinicianController {
                     root = loader.load();
                     ClinicianController clinicianController = loader.getController();
                     Stage clinicianStage = new Stage();
-                    clinicianController.init(clinicianStage, AppController.getInstance(), clinician);
+                    clinicianController.init(clinicianStage, AppController.getInstance(), clinician, false);
                     clinicianController.disableLogout();
                     clinicianStage.setScene(new Scene(root));
                     clinicianStage.show();
@@ -337,7 +337,7 @@ public class UpdateClinicianController {
                 try {
                     root = loader.load();
                     ClinicianController clinicianController = loader.getController();
-                    clinicianController.init(stage, AppController.getInstance(), clinician);
+                    clinicianController.init(stage, AppController.getInstance(), clinician, false);
                     stage.setScene(new Scene(root));
                     stage.show();
                     ownStage.close();

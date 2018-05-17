@@ -107,7 +107,7 @@ public class DonorOverviewController {
       logOutButton.setVisible(false);
     } else {
       Clinician = false;
-      deleteUser.setVisible(false);
+//      deleteUser.setVisible(false);
       backButton.setVisible(false);
     }
   }
@@ -258,6 +258,8 @@ public class DonorOverviewController {
       application.deleteDonor(currentUser);
       if (!Clinician) {
         logout();
+      } else {
+        stage.close();
       }
     }
   }

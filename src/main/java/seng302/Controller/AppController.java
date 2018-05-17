@@ -400,11 +400,42 @@ public class AppController {
   }
 
     /**
+     * Takes a passed clinician and removes them from the maintained list of clinicians
+     *
+     * @param clinician The clinician to be deleted
+     */
+    public void deleteClinician(Clinician clinician) {
+      ArrayList<Clinician> clinicianSessionList = getClinicians();
+      clinicianSessionList.remove(clinician);
+//      deletedClinicianStack.add(clinician);
+      this.clinicians = clinicianSessionList;
+
+      try {
+          JsonHandler.saveClinicians(clinicianSessionList);
+      } catch (IOException e) {
+          Log.warning("failed to delete a clinician", e);
+      }
+    }
+
+    /**
      * Removes the given admin from the list of administrators unless the given admin is the default admin.
      *
      * @param admin The given admin
      */
     public void deleteAdmin(Administrator admin) {
+        Collection<Administrator> adminSessionList = getAdmins();
+        adminSessionList.remove(admin);
+//      deletedAdminStack.add(clinician);
+        this.admins = adminSessionList;
+
+        try {
+            JsonHandler.saveAdmins(adminSessionList);
+        } catch (IOException e) {
+            Log.warning("failed to delete an administrator", e);
+        }
+
+
+
         admins.remove(admin);
         // todo: will probably need undo/redo for this similar to how the deleteDonor one has it
         // auto save is on another branch..
