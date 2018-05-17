@@ -130,12 +130,16 @@ public class UpdateAdminController {
       changed = true;
     }
 
-    if (admin.getMiddleName() != null && !admin.getMiddleName().equals(middleName)) {
+    if (admin.getMiddleName() != null ) {
+      if (!admin.getMiddleName().equals(middleName)) {
         admin.setMiddleName(middleName);
         changed = true;
-    } else if (admin.getMiddleName() == null && !middleName.isEmpty()) {
-      admin.setMiddleName(middleName);
-      changed = true;
+      }
+    } else {
+      if (!middleName.isEmpty()) {
+        admin.setMiddleName(middleName);
+        changed = true;
+      }
     }
 
     if (admin.getLastName() != null && !admin.getLastName().equals(username)) {
@@ -159,14 +163,8 @@ public class UpdateAdminController {
   private void prefillFields(){
     usernameTextField.setText(admin.getUserName());
     firstNameTextField.setText(admin.getFirstName());
-    if (!admin.getMiddleName().isEmpty()){
-      middleNameTextField.setText(admin.getMiddleName());
-    }
-    if (!admin.getLastName().isEmpty()) {
-      lastNameTextField.setText(admin.getLastName());
-    }
-    passwordTextField.clear();
-    cPasswordTextField.clear();
+    middleNameTextField.setText(admin.getMiddleName());
+    lastNameTextField.setText(admin.getLastName());
   }
 
   /**
