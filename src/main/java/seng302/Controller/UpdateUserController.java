@@ -24,6 +24,7 @@ import seng302.Model.EmergencyContact;
 import seng302.Model.Memento;
 import seng302.Model.User;
 import seng302.Service.AttributeValidation;
+import seng302.Service.Log;
 
 /**
  * Class for updating the user
@@ -419,9 +420,11 @@ public class UpdateUserController {
       try {
         currentUser.getRedoStack().clear();
         donorController.showUser(currentUser);
+        Log.info("Update User Successful");
       } catch (NullPointerException ex) {
         //TODO causes npe if donor is new in this session
         //the text fields etc. are all null
+        Log.severe("Update user failed", ex);
       }
       stage.close();
     }
@@ -966,6 +969,7 @@ public class UpdateUserController {
       if (undoUpdateButton.isDisabled()) {
         stage.setTitle(stage.getTitle().substring(0, stage.getTitle().length() - 1));
       }
+      Log.info("Undo executed.");
     }
 
   /**
@@ -976,6 +980,7 @@ public class UpdateUserController {
       currentUser.redo();
       redoUpdateButton.setDisable(currentUser.getRedoStack().isEmpty());
       setUserDetails(currentUser);
+    Log.info("Redo executed.");
     }
 
     /**
@@ -1002,9 +1007,11 @@ public class UpdateUserController {
           try {
             currentUser.getRedoStack().clear();
             donorController.showUser(oldUser);
+            Log.info("User update Cancelled");
           } catch (NullPointerException ex) {
             //TODO causes npe if donor is new in this session
             //the text fields etc. are all null
+            Log.severe("Error cancelling user update", ex);
           }
           stage.close();
         }
@@ -1014,9 +1021,11 @@ public class UpdateUserController {
         try {
           currentUser.getRedoStack().clear();
           donorController.showUser(oldUser);
+          Log.info("User update Cancelled");
         } catch (NullPointerException ex) {
           //TODO causes npe if donor is new in this session
           //the text fields etc. are all null
+          Log.severe("Error cancelling user update", ex);
         }
         stage.close();
       }

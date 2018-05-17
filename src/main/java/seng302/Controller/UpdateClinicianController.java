@@ -22,6 +22,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import seng302.Model.Clinician;
 import seng302.Model.Memento;
+import seng302.Service.Log;
 import seng302.Service.PasswordManager;
 
 /**
@@ -326,7 +327,9 @@ public class UpdateClinicianController {
                     clinicianStage.setScene(new Scene(root));
                     clinicianStage.show();
                     ownStage.close();
+                    Log.info("successfully launched clinician overview window");
                 } catch (IOException e) {
+                    Log.severe("failed to load clinician overview window", e);
                     e.printStackTrace();
                 }
 
@@ -341,7 +344,9 @@ public class UpdateClinicianController {
                     stage.setScene(new Scene(root));
                     stage.show();
                     ownStage.close();
+                    Log.info("successfully launched clinician overview window");
                 } catch (IOException e) {
+                    Log.severe("failed to load clinician overview window", e);
                     e.printStackTrace();
                 }
             }
@@ -368,6 +373,7 @@ public class UpdateClinicianController {
 
                 Optional<ButtonType> result = alert.showAndWait();
                 if (result.get() == ButtonType.YES) {
+                    Log.info("user update cancelled");
                     removeFormChanges(0);
                     currentClinician.getRedoStack().clear();
                     controller.updateClinicians(oldClinician);
@@ -377,6 +383,7 @@ public class UpdateClinicianController {
             } else { // has no changes
                 currentClinician.getRedoStack().clear();
                 ownStage.close();
+                Log.info("user update has no changes");
             }
 
         } else {
@@ -391,7 +398,9 @@ public class UpdateClinicianController {
                 stage.show();
                 stage.hide();
                 stage.show();
+                Log.info("successfully launched login window");
             } catch (IOException e) {
+                Log.severe("failed to load login window", e);
                 e.printStackTrace();
             }*/
             ownStage.close();
@@ -515,11 +524,15 @@ public class UpdateClinicianController {
             currentClinician.getRedoStack().clear();
             controller.updateClinicians(currentClinician); // saves the clinician
             ownStage.close(); // returns to the clinician overview window
+            Log.info("Clinician updated.");
 
         } else if (valid && newClinician) { // creates a new clinician
             Clinician clinician = new Clinician(staffID, password, fName, mName, lName, address, region);
             controller.updateClinicians(clinician);
             loadOverview(clinician);
+
+        } else {
+            Log.warning("Clinician not updated.");
         }
     }
 
@@ -586,6 +599,7 @@ public class UpdateClinicianController {
         currentClinician.redo();
         redoClinicianFormButton.setDisable(currentClinician.getRedoStack().isEmpty());
         prefillFields(currentClinician);
+        Log.info("Redo executed.");
     }
 
 
@@ -594,5 +608,6 @@ public class UpdateClinicianController {
         currentClinician.undo();
         undoClinicianFormButton.setDisable(currentClinician.getUndoStack().size() <= undoMarker);
         prefillFields(currentClinician);
+        Log.info("Undo executed.");
     }
 }
