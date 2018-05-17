@@ -1,29 +1,25 @@
 package seng302.Controller;
 
-import seng302.Directory;
-import seng302.Exception.UserAlreadyExistsException;
-import seng302.Exception.UserNotFoundException;
-import seng302.Model.*;
-
-import seng302.Exception.UserAlreadyExistsException;
-import seng302.Exception.UserNotFoundException;
-import seng302.Model.*;
-
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.*;
-
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.Stack;
+import seng302.Directory;
+import seng302.Exception.UserAlreadyExistsException;
+import seng302.Exception.UserNotFoundException;
+import seng302.Model.Administrator;
 import seng302.Model.Change;
 import seng302.Model.Clinician;
 import seng302.Model.JsonHandler;
 import seng302.Model.TransplantDetails;
 import seng302.Model.User;
-import seng302.Exception.UserAlreadyExistsException;
-import seng302.Exception.UserNotFoundException;
 import seng302.Service.Log;
-import java.util.*;
 
 
 /**
@@ -33,36 +29,35 @@ public class AppController {
 
 
   private Collection<Administrator> admins = new ArrayList<>();
-  private ArrayList<User> users = new ArrayList<>();
+  private List<User> users = new ArrayList<>();
   private ArrayList<TransplantDetails> transplantList = new ArrayList<>();
-  private ArrayList<Clinician> clinicians = new ArrayList<>();
+  private List<Clinician> clinicians = new ArrayList<>();
   private static AppController controller;
   private ArrayList<String[]> historyOfCommands = new ArrayList<>();
   private int historyPointer = 0;
 
-  private DonorController donorController = new DonorController();
+  private UserController userController = new UserController();
   private ClinicianController clinicianController = new ClinicianController();
   private AdministratorViewController administratorViewController = new AdministratorViewController();
   private Set<User> deletedUserStack = new HashSet<>();
   private Stack<User> redoStack = new Stack<>();
 
-  private String usersFile = Directory.JSON.directory() + "/donors.json";
-  private String clinicianFile = Directory.JSON.directory() + "/clinicians.json";
-  private ClinicianController clinicianControllerInstance;
+  private static final String USERS_FILE = Directory.JSON.directory() + "/donors.json";
+  private static final String CLINICIAN_FILE = Directory.JSON.directory() + "/clinicians.json";
 
   /**
    * Creates new instance of AppController
    */
   private AppController() {
     try {
-      users = JsonHandler.loadUsers(usersFile);
+      users = JsonHandler.loadUsers(USERS_FILE);
       Log.info(users.size() + " donors were successfully loaded");
     } catch (FileNotFoundException e) {
       Log.warning("Donor file was not found", e);
     }
 
     try {
-      clinicians = JsonHandler.loadClinicians(clinicianFile);
+      clinicians = JsonHandler.loadClinicians(CLINICIAN_FILE);
       Log.info(clinicians.size() + " clinicians were successfully loaded");
     } catch (FileNotFoundException e) {
       Log.warning("Clinician file was not found", e);
@@ -70,7 +65,7 @@ public class AppController {
 
     try {
         admins = JsonHandler.loadAdmins();
-        System.out.println(admins.size() + " administrators were successfully loaded");
+        Log.info(admins.size() + " administrators were successfully loaded");
     } catch (FileNotFoundException e) {
         System.out.println("Administrator file was not found");
     }
@@ -103,9 +98,7 @@ public class AppController {
       }
     } //all code you wish to execute must be above this point!!!!!!!!
     if (!defaultSeen) {
-      //clinicians.add(new Clinician("Default", "0", "", "", "admin"));
-      String nullRegion = null; // need this otherwise cannot differentiate between constructors
-      clinicians.add(new Clinician("0", "admin", "Default", null, null, null, nullRegion));
+      clinicians.add(new Clinician("0", "admin", "Default", null, null, null, (String) null));
       try {
         JsonHandler.saveClinicians(clinicians);
       } catch (IOException e) {
@@ -140,6 +133,7 @@ public class AppController {
      * @param NHI The unique identifier of the donor (national health index)
      * @return hashCode of the new donor or -1 on error
      */
+    //TODO: remove??
   public int Register(String name, LocalDate dateOfBirth, LocalDate dateOfDeath, String gender, double height,
                       double weight,
       String bloodType, String currentAddress, String region, String NHI) {
@@ -164,12 +158,12 @@ public class AppController {
     }
   }
 
+  /**
+   * Sets the point in history
+   */
   public void setHistoryPointer() {
     this.historyPointer = historyOfCommands.size();
   }
-
-  /*public String[] getCommandHistoryFromCorrectIndex() { ;
-  }*/
 
   /**
    * Adds an executed command to the command history
@@ -232,20 +226,11 @@ public class AppController {
    * @param dob date of birth of the donor
    * @return The user that matches the name and dob, otherwise null if no user was found.
    */
+  //TODO: Make this redundant
   public User findUser(String name, LocalDate dob) {
-//    User check = null;
-//    User testUser = new User(name,
-//            dob); //creates temporary user to check against the user list
-//    ArrayList<User> sessionList = getUsers();
-//    int place = sessionList.indexOf(testUser);
-//    if (place != -1) {
-//      return sessionList.get(place);
-//    } else {
-//      return check;
-//    }
     User toReturn = new User();
     for (User user : users) {
-      if (user.getName().equals(name) && user.getDateOfBirth().equals(dob)) {
+      if (user.getFullName().equals(name) && user.getDateOfBirth().equals(dob)) {
         toReturn = user;
       }
     }
@@ -261,7 +246,7 @@ public class AppController {
   public ArrayList<User> findUsers(String name) {
     ArrayList<User> toReturn = new ArrayList<>();
     for (User user : users) {
-      if (user.getName().toLowerCase().contains(name.toLowerCase())) {
+      if (user.getFullName().toLowerCase().contains(name.toLowerCase())) {
         toReturn.add(user);
       }
     }
@@ -291,13 +276,12 @@ public class AppController {
    * @param user user to remove
    */
   public void deleteDonor(User user) {
-    ArrayList<User> sessionList = getUsers();
+    List<User> sessionList = getUsers();
     sessionList.remove(user);
     deletedUserStack.add(user);
-    setUsers(sessionList);
+    setUsers((ArrayList<User>) sessionList);
     try {
       JsonHandler.saveUsers(sessionList);
-      //JsonWriter.saveCurrentDonorState(sessionList);
     } catch (IOException e) {
       Log.warning("failed to delete a user", e);
     }
@@ -306,7 +290,7 @@ public class AppController {
 
 
 
-  public ArrayList<User> getUsers() {
+  public List<User> getUsers() {
     return users;
   }
 
@@ -341,11 +325,11 @@ public class AppController {
       users.add(user);
     } else {
       users.add(user);
-      changelogWrite.add(new Change(LocalDateTime.now(), "Added Donor " + user.getName()));
+      changelogWrite.add(new Change(LocalDateTime.now(), "Added Donor " + user.getFullName()));
     }
     try {
       JsonHandler.saveUsers(users);
-      //JsonHandler.saveChangelog(changelogWrite, user.getName().toLowerCase().replace(" ", "_"));
+      //JsonHandler.saveChangelog(changelogWrite, user.getFullName().toLowerCase().replace(" ", "_"));
 
     } catch (IOException e) {
       Log.warning("failed to update users", e);
@@ -361,7 +345,7 @@ public class AppController {
   }
 
 
-  public ArrayList<Clinician> getClinicians() {
+  public List<Clinician> getClinicians() {
     return clinicians;
   }
 
@@ -442,16 +426,15 @@ public class AppController {
     }
 
 
-
-  public DonorController getDonorController() {
-    return donorController;
+  public UserController getUserController() {
+    return userController;
   }
 
   /**
-   * @param donorController The controller class for the donor overview.
+   * @param userController The controller class for the donor overview.
    */
-  public void setDonorController(DonorController donorController) {
-    this.donorController = donorController;
+  public void setUserController(UserController userController) {
+    this.userController = userController;
   }
 
   public ClinicianController getClinicianController() {
@@ -464,7 +447,9 @@ public class AppController {
 
   public void setAdministratorViewController(AdministratorViewController administratorViewController) { this.administratorViewController = administratorViewController;}
 
-  public AdministratorViewController getAdministratorViewControlloer() { return administratorViewController; }
+  public AdministratorViewController getAdministratorViewController() {
+    return administratorViewController;
+  }
 
 
   public Administrator getAdministrator(String username){
@@ -476,6 +461,23 @@ public class AppController {
     return null;
   }
 
+
+  /**
+   *
+   * @param administrator the current administrator
+   */
+  public void updateAdmin(Administrator administrator) {
+    if (!admins.contains(administrator)){
+      admins.add(administrator);
+    }
+
+    try {
+      JsonHandler.saveAdmins(admins);
+    } catch (IOException e){
+      Log.warning("Failed to update Administrators", e);
+    }
+  }
+
   /**
    * @param oldUser The user before they were updated.
    * @param newUser The user after they were updated.
@@ -485,8 +487,8 @@ public class AppController {
   public ArrayList<Change> differanceInDonors(User oldUser, User newUser) {
     ArrayList<String> diffs = new ArrayList<>();
     try {
-      if (!oldUser.getName().equalsIgnoreCase(newUser.getName())) {
-        diffs.add("Changed Name from " + oldUser.getName() + " to " + newUser.getName());
+      if (!oldUser.getFullName().equalsIgnoreCase(newUser.getFullName())) {
+        diffs.add("Changed Name from " + oldUser.getFullName() + " to " + newUser.getFullName());
       }
       if (oldUser.getDateOfBirth() != newUser.getDateOfBirth()) {
         diffs.add("Changed DOB from  " + oldUser.getDateOfBirth().toString() + " to " + newUser
@@ -569,7 +571,7 @@ public class AppController {
         changes.add(c);
       }
       try {
-        JsonHandler.saveChangelog(changes, newUser.getName().toLowerCase().replace(" ", "_"));
+        JsonHandler.saveChangelog(changes, newUser.getFullName().toLowerCase().replace(" ", "_"));
       } catch (IOException e) {
         Log.warning("failed to save changelog", e);
       }

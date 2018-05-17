@@ -8,7 +8,6 @@ import org.junit.Before;
 import org.junit.Test;
 import picocli.CommandLine;
 import seng302.Controller.AppController;
-import seng302.Controller.CliCommands.CreateUser;
 import seng302.Model.User;
 
 public class CreateUserTest {

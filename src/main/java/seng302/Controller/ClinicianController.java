@@ -16,14 +16,11 @@ import static seng302.Model.Organs.SKIN;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.*;
-
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -32,11 +29,9 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 import seng302.Model.Clinician;
 import seng302.Model.Organs;
 import seng302.Model.TransplantDetails;
@@ -52,6 +47,7 @@ public class ClinicianController {
     private int startIndex = 0;
     private int endIndex;
 
+    //<editor-fold desc="FXML declarations">
     @FXML
     private Button undoButton;
 
@@ -163,28 +159,18 @@ public class ClinicianController {
     @FXML
     private Button deleteClinicianButton;
 
+    //</editor-fold>
     private Stage stage;
     private AppController appController;
     private Clinician clinician;
-    private ArrayList<User> users;
+    private List<User> users;
     private ArrayList<Stage> openStages;
     private FilteredList<User> fListDonors;
-    private FilteredList<TransplantDetails> fTransplantList;
 
-
-    private Set<Organs> organs;
-    private ObservableList<TransplantDetails> observableTransplantList;
     private ArrayList<CheckBox> filterCheckBoxList = new ArrayList<>();
 
-    private static int currentIndex = 0;
     //Initiliase table columns as class level so it is accessible for sorting in pagination methods
-    private TableColumn<User, String> fNameColumn;
     private TableColumn<User, String> lNameColumn;
-    private TableColumn<User, String> dobColumn;
-    private TableColumn<User, String> dodColumn;
-    private TableColumn<User, String> ageColumn;
-    private TableColumn<User, HashSet<Organs>> organsColumn;
-    private TableColumn<User, String> regionColumn;
 
 
     private static int searchCount = 0;
@@ -218,19 +204,16 @@ public class ClinicianController {
         setDefaultFilters();
         searchCountLabel.setText("Showing results " + (searchCount == 0 ? startIndex : startIndex + 1) + " - " + (endIndex) + " of " + searchCount);
         openStages = new ArrayList<>();
-        stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-            public void handle(WindowEvent we) {
-                if (!openStages.isEmpty()) {
-                    for (Stage s : openStages) {
-                        s.close();
-                    }
+        stage.setOnCloseRequest(e -> {
+            if (!openStages.isEmpty()) {
+                for (Stage s : openStages) {
+                    s.close();
                 }
             }
         });
         int pageCount = searchCount / ROWS_PER_PAGE;
         searchTablePagination.setPageCount(pageCount > 0 ? pageCount + 1 : 1);
         searchTablePagination.currentPageIndexProperty().addListener(((observable, oldValue, newValue) -> changePage(newValue.intValue())));
-        //searchPagination = new Pagination((users.size() / ROWS_PER_PAGE + 1), 0);
     }
 
   /**
@@ -281,8 +264,15 @@ public class ClinicianController {
      * initialises the search table, abstracted from main init function for clarity
      */
     private void initSearchTable() {
+        TableColumn<User, String> fNameColumn;
+        TableColumn<User, String> dobColumn;
+        TableColumn<User, String> dodColumn;
+        TableColumn<User, String> ageColumn;
+        TableColumn<User, HashSet<Organs>> organsColumn;
+        TableColumn<User, String> regionColumn;
+
         endIndex = Math.min(startIndex + ROWS_PER_PAGE, users.size());
-        if (users == null || users.isEmpty()) {
+        if (users.isEmpty()) {
             return;
         }
 
@@ -313,7 +303,8 @@ public class ClinicianController {
         organsColumn = new TableColumn<>("Organs");
         organsColumn.setCellValueFactory(new PropertyValueFactory<>("organs"));
 
-        //TODO add more columns as wanted/needed
+        //add more columns as wanted/needed
+
         fListDonors = new FilteredList<>(oListDonors);
         fListDonors = filter(fListDonors);
         FilteredList<User> squished = new FilteredList<>(fListDonors);
@@ -321,28 +312,21 @@ public class ClinicianController {
         SortedList<User> sListDonors = new SortedList<>(squished);
         sListDonors.comparatorProperty().bind(searchTableView.comparatorProperty());
 
-        //TODO predicate on this list not working properly
+        //predicate on this list not working properly
         //should limit the number of items shown to ROWS_PER_PAGE
         //squished = limit(fListDonors, sListDonors);
         //set table columns and contents
         searchTableView.getColumns().setAll(fNameColumn, lNameColumn, dobColumn, dodColumn, ageColumn, regionColumn, organsColumn);
         //searchTableView.setItems(FXCollections.observableList(sListDonors.subList(startIndex, endIndex)));
         searchTableView.setItems(sListDonors);
-        searchTableView.setRowFactory((searchTableView) -> {
-            return new TooltipTableRow<User>((User user) -> {
-                return user.getTooltip();
-            });
-        });
+        searchTableView.setRowFactory((searchTableView) -> new TooltipTableRow<>(User::getTooltip));
 
 
         //set on-click behaviour
-        searchTableView.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
-                    User user = searchTableView.getSelectionModel().getSelectedItem();
-                    launchDonor(user);
-                }
+        searchTableView.setOnMouseClicked(event -> {
+            if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
+                User user = searchTableView.getSelectionModel().getSelectedItem();
+                launchDonor(user);
             }
         });
     }
@@ -383,20 +367,22 @@ public class ClinicianController {
   appController.getTransplantList().clear();
     for (User user : users) {
     if (user.isReceiver()&& (user.getDeceased() != null || !user.getDeceased())) {
-      organs = user.getReceiverDetails().getOrgans().keySet();
+        Set<Organs> organs = user.getReceiverDetails().getOrgans().keySet();
       for (Organs organ : organs) {
         if (isReceiverNeedingFilteredOrgan(user.getNhi(), organs).contains(organ)) {
 
                         appController.addTransplant(
-                                new TransplantDetails(user.getNhi(), user.getName(), organ, LocalDate.now(),
+                                new TransplantDetails(user.getNhi(), user.getFullName(), organ, LocalDate.now(),
                                         user.getRegion()));
                     }
                 }
             }
         }
 
-  observableTransplantList = FXCollections.observableList(appController.getTransplantList());
-    fTransplantList = new FilteredList<>(observableTransplantList);
+      ObservableList<TransplantDetails> observableTransplantList = FXCollections
+          .observableList(appController.getTransplantList());
+      FilteredList<TransplantDetails> fTransplantList = new FilteredList<>(
+          observableTransplantList);
     fTransplantList = filterTransplantDetails(fTransplantList);
     SortedList<TransplantDetails> sTransplantList = new SortedList<>(fTransplantList);
     sTransplantList.comparatorProperty().bind(transplantWaitListTableView.comparatorProperty());
@@ -424,7 +410,7 @@ public class ClinicianController {
      * @param arrayList An array list of users.
      * @return A list of users.
      */
-    private List<User> getSearchData(ArrayList<User> arrayList) {
+    private List<User> getSearchData(List<User> arrayList) {
         return arrayList.subList(startIndex, endIndex);
     }
 
@@ -458,19 +444,19 @@ public class ClinicianController {
      */
     private void launchDonor(User user) {
         FXMLLoader donorLoader = new FXMLLoader(getClass().getResource("/FXML/userView.fxml"));
-        Parent root = null;
+        Parent root;
         try {
             root = donorLoader.load();
+            Stage donorStage = new Stage();
+            donorStage.setScene(new Scene(root));
+            openStages.add(donorStage);
+            UserController userController = donorLoader.getController();
+            AppController.getInstance().setUserController(userController);
+            userController.init(AppController.getInstance(), user, donorStage, true);
+            donorStage.show();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        Stage donorStage = new Stage();
-        donorStage.setScene(new Scene(root));
-        openStages.add(donorStage);
-        DonorController donorController = donorLoader.getController();
-        AppController.getInstance().setDonorController(donorController);
-        donorController.init(AppController.getInstance(), user, donorStage, true);
-        donorStage.show();
     }
 
     /**
@@ -485,9 +471,8 @@ public class ClinicianController {
         setCheckBoxListener(donorFilterCheckBox, fListUsers);
         setCheckBoxListener(receiverFilterCheckBox, fListUsers);
         setCheckBoxListener(allCheckBox, fListUsers);
-        genderComboBox.valueProperty().addListener((observable -> {
-            setFilteredListPredicate(fListUsers);
-        }));
+        genderComboBox.valueProperty()
+            .addListener((observable -> setFilteredListPredicate(fListUsers)));
 
         searchTablePagination.setPageCount(searchCount / ROWS_PER_PAGE);
         return fListUsers;
@@ -500,9 +485,8 @@ public class ClinicianController {
      * @param fListUsers     filteredList object of users to set predicate property of
      */
     private void setTextFieldListener(TextField inputTextField, FilteredList<User> fListUsers) {
-        inputTextField.textProperty().addListener((observable) -> {
-            setFilteredListPredicate(fListUsers);
-        });
+        inputTextField.textProperty()
+            .addListener((observable) -> setFilteredListPredicate(fListUsers));
     }
 
     /**
@@ -512,9 +496,8 @@ public class ClinicianController {
      * @param fListUsers filteredList object of users to set predicate property of
      */
     private void setCheckBoxListener(CheckBox checkBox, FilteredList<User> fListUsers) {
-        checkBox.selectedProperty().addListener(((observable) -> {
-            setFilteredListPredicate(fListUsers);
-        }));
+        checkBox.selectedProperty()
+            .addListener(((observable) -> setFilteredListPredicate(fListUsers)));
     }
 
     /**
@@ -572,21 +555,22 @@ public class ClinicianController {
      * Updates the filters label to allow the user to easily see the filters that have been applied
      */
     private void updateFiltersLabel() {
-        String labelText = "Showing all receivers";
+        StringBuilder labelText = new StringBuilder("Showing all receivers");
         if (!waitingRegionTextfield.getText().isEmpty()) {
-            labelText += " from a place starting with " + waitingRegionTextfield.getText();
+            labelText.append(" from a place starting with ")
+                .append(waitingRegionTextfield.getText());
         }
         if (!getAllFilteredOrgans().isEmpty()) {
-            labelText += " who need a ";
+            labelText.append(" who need a ");
         }
         for (Organs organ : getAllFilteredOrgans()) {
-            labelText += organ.toString() + " or ";
+            labelText.append(organ.toString()).append(" or ");
         }
         if (!getAllFilteredOrgans().isEmpty()) {
-            labelText = labelText.substring(0, labelText.length() - 4);
+            labelText = new StringBuilder(labelText.substring(0, labelText.length() - 4));
         }
 
-        filtersLabel.setText(labelText);
+        filtersLabel.setText(labelText.toString());
 
 
     }
@@ -674,10 +658,9 @@ public class ClinicianController {
 
   /**
    * Undoes the last action and redisplays the clinician.
-   * @param event Action event generated from the button click
    */
   @FXML
-  private void undo(ActionEvent event) {
+  private void undo() {
     clinician.undo();
     undoButton.setDisable(clinician.getUndoStack().empty());
     showClinician(clinician);
@@ -685,10 +668,9 @@ public class ClinicianController {
 
   /**
    * Redoes the last action and redisplays the clinician.
-   * @param event Action event object generated from the button click
    */
   @FXML
-  public void redo(ActionEvent event) {
+  public void redo() {
     clinician.redo();
     redoButton.setDisable(clinician.getRedoStack().empty());
     showClinician(clinician);
@@ -699,9 +681,8 @@ public class ClinicianController {
    */
   @FXML
   void logout() {
-    //confirm(new ActionEvent());
     FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML/loginView.fxml"));
-    Parent root = null;
+      Parent root;
     try {
       root = loader.load();
       stage.setScene(new Scene(root));
@@ -718,13 +699,11 @@ public class ClinicianController {
 
     /**
      * Opens an edit window for the clinicians personal details
-     *
-     * @param event An action event
      */
     @FXML
-    void edit(ActionEvent event) {
+    void edit() {
         FXMLLoader updateLoader = new FXMLLoader(getClass().getResource("/FXML/updateClinician.fxml"));
-        Parent root = null;
+        Parent root;
         try {
             root = updateLoader.load();
             UpdateClinicianController updateClinicianController = updateLoader.getController();
@@ -759,14 +738,12 @@ public class ClinicianController {
 
   /**
    * Loads the recently deleted users window
-   *
-   * @param actionEvent ActionEvent event generated by the button click.
    */
   @FXML
-  public void loadRecentlyDeleted(ActionEvent actionEvent) {
+  public void loadRecentlyDeleted() {
       FXMLLoader deletedUserLoader = new FXMLLoader(
               getClass().getResource("/FXML/deletedUsersView.fxml"));
-      Parent root = null;
+      Parent root;
       try {
           root = deletedUserLoader.load();
           DeletedUserController deletedUserController = deletedUserLoader.getController();

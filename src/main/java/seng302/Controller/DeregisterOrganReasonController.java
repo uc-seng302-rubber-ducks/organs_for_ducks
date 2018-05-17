@@ -1,9 +1,8 @@
 package seng302.Controller;
 
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
+import java.time.LocalDate;
+import java.util.List;
 import javafx.collections.FXCollections;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
@@ -16,9 +15,6 @@ import seng302.Model.Organs;
 import seng302.Model.User;
 import seng302.Service.AttributeValidation;
 
-import java.time.LocalDate;
-import java.util.List;
-
 /**
  * Controller class for  for clinicians to
  * enter reasons for de-registering a receiver's organ.
@@ -30,7 +26,7 @@ public class DeregisterOrganReasonController {
     private RadioButton transplantReceivedRadioButton;
 
     @FXML
-    private RadioButton registerationErrorRadioButton;
+    private RadioButton registrationErrorRadioButton;
 
     @FXML
     private RadioButton diseaseCuredRadioButton;
@@ -51,88 +47,70 @@ public class DeregisterOrganReasonController {
     private Label invalidDateErrorMessage;
 
     @FXML
-    private Label noDiseaseSelectedErrorMessage;
-
-    @FXML
     private ComboBox<Disease> diseaseNameComboBox;
-
-    private List<Disease> diseases;
 
     AppController controller;
     Stage stage;
     private User currentUser;
-    private DonorController donorController;
+    private UserController userController;
     private Organs toDeRegister;
 
     /**
      * Initializes the NewDiseaseController
      * @param organ name of receiver organ to be de-registered
-     * @param donorController class
+     * @param userController class
      * @param controller The applications controller.
      * @param stage The applications stage.
      */
-    public void init(Organs organ, DonorController donorController, User user, AppController controller, Stage stage) {
+    public void init(Organs organ, UserController userController, User user,
+        AppController controller, Stage stage) {
         this.controller = controller;
         this.stage = stage;
         currentUser = user;
-        this.donorController = donorController;
-        receiverName.setText(user.getName());
+        this.userController = userController;
+        receiverName.setText(user.getFullName());
         organName.setText(organ.organName);
         this.toDeRegister = organ;
         dODDatePicker.setValue(LocalDate.now());
         dODDatePicker.setDisable(true);
 
-        diseases = currentUser.getCurrentDiseases();
+        List<Disease> diseases = currentUser.getCurrentDiseases();
         if(diseases.size() == 0){ //if there are no current diseases, the diseaseCuredRadioButton will be disabled
             diseaseCuredRadioButton.setDisable(true);
         }
         diseaseNameComboBox.setItems(FXCollections.observableList(diseases));
 
-
-        //diseaseNameComboBox.set;
-
-//        if (user.getDeceased() == null || !user.getDeceased()){
-//            receiverDiedRadioButton.setDisable(true);
-//        }
-        //stage.setMinWidth(620);
-        //stage.setMaxWidth(620);
-
         //if diseaseCuredRadioButton is selected, the disease name combo box will be enabled, otherwise it sets to disabled
-        diseaseCuredRadioButton.selectedProperty().addListener(new ChangeListener<Boolean>() {
-            @Override
-            public void changed(ObservableValue<? extends Boolean> obs, Boolean wasPreviouslySelected, Boolean isNowSelected) {
+        diseaseCuredRadioButton.selectedProperty().addListener(
+            (obs, wasPreviouslySelected, isNowSelected) -> {
                 if (isNowSelected) {
                     diseaseNameComboBox.setDisable(false);
                 } else {
                     diseaseNameComboBox.setDisable(true);
                 }
-            }
-        });
+            });
 
         //if receiverDiedRadioButton is selected, the DOD date picker will be enabled, otherwise it sets to disabled
-        receiverDiedRadioButton.selectedProperty().addListener(new ChangeListener<Boolean>() {
-            @Override
-            public void changed(ObservableValue<? extends Boolean> obs, Boolean wasPreviouslySelected, Boolean isNowSelected) {
+        receiverDiedRadioButton.selectedProperty().addListener(
+            (obs, wasPreviouslySelected, isNowSelected) -> {
                 if (isNowSelected) {
                     dODDatePicker.setDisable(false);
                 } else {
                     dODDatePicker.setDisable(true);
                 }
-            }
-        });
+            });
     }
 
     /**
      * Cancels the de-registration process
      * and closes this window
-     * @param event passed in automatically by the gui
      */
     @FXML
-    void cancelDeregistration(ActionEvent event) {
+    void cancelDeregistration() {
         AppController appController = AppController.getInstance();
-        DonorController donorController = appController.getDonorController();
+        UserController userController = appController.getUserController();
         try {
-            donorController.showUser(currentUser);
+            userController.showUser(currentUser);
         }
         catch (NullPointerException ex) {
             //TODO causes npe if donor is new in this session
@@ -144,23 +122,21 @@ public class DeregisterOrganReasonController {
     /**
      * accepts the de-registration reason
      * and closes this window
-     * @param event passed in automatically by the gui
      */
     @FXML
-    void acceptDeregistration(ActionEvent event) {
+    void acceptDeregistration() {
         boolean isValid = true;
         if(transplantReceivedRadioButton.isSelected()){
-            donorController.setOrganDeregisterationReason(OrganDeregisterReason.TRANSPLANT_RECEIVED);
+            userController.setOrganDeregisterationReason(OrganDeregisterReason.TRANSPLANT_RECEIVED);
 
-        } else if(registerationErrorRadioButton.isSelected()){
-            donorController.setOrganDeregisterationReason(OrganDeregisterReason.REGISTRATION_ERROR);
+        } else if (registrationErrorRadioButton.isSelected()) {
+            userController.setOrganDeregisterationReason(OrganDeregisterReason.REGISTRATION_ERROR);
 
         } else if (diseaseCuredRadioButton.isSelected()){
-            donorController.setOrganDeregisterationReason(OrganDeregisterReason.DISEASE_CURED);
+            userController.setOrganDeregisterationReason(OrganDeregisterReason.DISEASE_CURED);
             Disease selectedDisease = diseaseNameComboBox.getSelectionModel().getSelectedItem();
 
             if(selectedDisease == null){ //if non of the disease is selected
-                noDiseaseSelectedErrorMessage.setVisible(true);
                 isValid = false;
 
             } else {
@@ -177,17 +153,17 @@ public class DeregisterOrganReasonController {
             } else {
                 currentUser.setDateOfDeath(dOD);
                 //currentUser.setDeceased(true);
-                donorController.setOrganDeregisterationReason(OrganDeregisterReason.RECEIVER_DIED);
+                userController.setOrganDeregisterationReason(OrganDeregisterReason.RECEIVER_DIED);
             }
         }
 
         if(isValid){
-            donorController.deRegisterOrgan(toDeRegister);
+            this.userController.deRegisterOrgan(toDeRegister);
 
             AppController appController = AppController.getInstance();
-            DonorController donorController = appController.getDonorController();
+            UserController userController = appController.getUserController();
             try {
-                donorController.showUser(currentUser);
+                userController.showUser(currentUser);
             }
             catch (NullPointerException ex) {
                 //TODO causes npe if donor is new in this session
