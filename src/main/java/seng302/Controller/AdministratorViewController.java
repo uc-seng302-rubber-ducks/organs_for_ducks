@@ -334,7 +334,8 @@ public class AdministratorViewController {
         String filename;
         filename = FileSelectorController.getFileSelector(stage);
         if (filename != null) {
-            //JsonHandler.loadAdmins(filename);
+            Collection<Administrator> administrators = JsonHandler.loadAdmins(filename);
+            System.out.println(administrators.size() + " administrators were successfully loaded.");
         }
     }
 
@@ -344,7 +345,7 @@ public class AdministratorViewController {
         filename = FileSelectorController.getFileSelector(stage);
         if (filename != null) {
             Collection<Clinician> clinicians = JsonHandler.loadClinicians(filename);
-            System.out.println(clinicians.size() + " clinicians were successfully loaded");
+            System.out.println(clinicians.size() + " clinicians were successfully loaded.");
         }
 
     }
@@ -355,7 +356,7 @@ public class AdministratorViewController {
         filename = FileSelectorController.getFileSelector(stage);
         if (filename != null) {
             Collection<User> users = JsonHandler.loadUsers(filename);
-            System.out.println(users.size() + " donors were successfully loaded");
+            System.out.println(users.size() + " donors were successfully loaded.");
         }
     }
 
