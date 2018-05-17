@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.collections.FXCollections?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="400.0" minWidth="600.0" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.Controller.AdministratorViewController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="400.0" minWidth="600.0" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.Controller.AdministratorViewController">
    <children>
       <MenuBar prefHeight="50.0" prefWidth="600.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <menus>
@@ -77,6 +77,7 @@
                                              <Button fx:id="deleteAdminButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#deleteAdminAccount" text="Delete Account" />
                                          </children>
                                      </GridPane>
+                                    <Label fx:id="fileNotFoundLabel" layoutX="56.0" layoutY="14.0" text="Import Failed, file not found!" textFill="#ee0404" visible="false" />
                                  </children>
                               </AnchorPane>
                            </children>

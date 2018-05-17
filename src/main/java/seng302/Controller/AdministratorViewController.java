@@ -28,6 +28,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import seng302.Model.Clinician;
 import seng302.Model.User;
+import seng302.Service.Log;
 import seng302.View.CLI;
 
 public class AdministratorViewController {
@@ -158,6 +159,9 @@ public class AdministratorViewController {
     @FXML
     private Button deleteAdminButton;
 
+    @FXML
+    private Label fileNotFoundLabel;
+
     private Stage stage;
     private AppController appController;
     private Administrator administrator;
@@ -271,8 +275,6 @@ public class AdministratorViewController {
                 launchAdmin(adminTableView.getSelectionModel().getSelectedItem());
             }
         });
-
-
     }
 
     private void displayClinicanTable() {
@@ -334,32 +336,66 @@ public class AdministratorViewController {
     }
 
     @FXML
-    void importAdmins(ActionEvent event) throws FileNotFoundException {
+    void importAdmins(ActionEvent event) throws FileNotFoundException{
+        Log.info("Importing Administrator profiles");
         String filename;
         filename = FileSelectorController.getFileSelector(stage);
         if (filename != null) {
-            //JsonHandler.loadAdmins(filename);
+            fileNotFoundLabel.setVisible(false);
+//            try {
+//                JsonHandler.loadAdmins(filename);
+//                Log.info("successfully imported " + AdminProfileCount + " Administrator profiles"); //TODO: include number of Administrator profiles loaded in log info message.
+//            } catch (FileNotFoundException e){
+//                Log.severe("File not found", e);
+//                throw e;
+//            }
+        } else {
+            Log.warning("File name not found");
+            fileNotFoundLabel.setVisible(true);
         }
     }
 
     @FXML
-    void importClinicians(ActionEvent event) throws FileNotFoundException {
+    void importClinicians(ActionEvent event) throws FileNotFoundException{
+        Log.info("Importing Clinician profiles");
         String filename;
         filename = FileSelectorController.getFileSelector(stage);
         if (filename != null) {
-            ArrayList<Clinician> clinicians = JsonHandler.loadClinicians(filename);
-            System.out.println(clinicians.size() + " clinicians were successfully loaded");
+            fileNotFoundLabel.setVisible(false);
+            try {
+                ArrayList<Clinician> clinicians = JsonHandler.loadClinicians(filename);
+                Log.info("successfully imported " + clinicians.size() +" Clinician profiles");
+                //System.out.println(clinicians.size() + " clinicians were successfully loaded");
+            } catch (FileNotFoundException e){
+                Log.severe("File not found", e);
+                throw e;
+            }
+
+        } else {
+            Log.warning("File name not found");
+            fileNotFoundLabel.setVisible(true);
         }
 
     }
 
     @FXML
     void importUsers(ActionEvent event) throws FileNotFoundException {
+        Log.info("Importing User profiles");
         String filename;
         filename = FileSelectorController.getFileSelector(stage);
         if (filename != null) {
-            ArrayList<User> users = JsonHandler.loadUsers(filename);
-            System.out.println(users.size() + " donors were successfully loaded");
+            try {
+                ArrayList<User> users = JsonHandler.loadUsers(filename);
+                Log.info("successfully imported " + users.size() + " Users profiles");
+                //System.out.println(users.size() + " donors were successfully loaded");
+            } catch (FileNotFoundException e){
+                Log.severe("File not found", e);
+                throw e;
+            }
+
+        } else {
+            Log.warning("File name not found");
+            fileNotFoundLabel.setVisible(true);
         }
     }
 
@@ -376,7 +412,9 @@ public class AdministratorViewController {
         Parent root = null;
         try {
             root = donorLoader.load();
+            Log.info("successfully launched create new user window");
         } catch (IOException e) {
+            Log.severe("failed to load create new user window", e);
             e.printStackTrace();
         }
 
@@ -396,7 +434,9 @@ public class AdministratorViewController {
         Parent root = null;
         try {
             root = donorLoader.load();
+            Log.info("successfully launched main user window");
         } catch (IOException e) {
+            Log.severe("failed to load main user window", e);
             e.printStackTrace();
         }
         Stage newStage = new Stage();
@@ -415,7 +455,9 @@ public class AdministratorViewController {
         Parent root = null;
         try {
             root = clinicianLoader.load();
+            Log.info("successfully launched main clinician window");
         } catch (IOException e) {
+            Log.severe("failed to load main clinician window", e);
             e.printStackTrace();
         }
         Stage newStage = new Stage();
@@ -433,7 +475,9 @@ public class AdministratorViewController {
         Parent root = null;
         try {
             root = adminLoader.load();
+            Log.info("successfully launched main administrator window");
         } catch (IOException e) {
+            Log.severe("failed to load main administrator window", e);
             e.printStackTrace();
         }
         Stage newStage = new Stage();
@@ -450,7 +494,9 @@ public class AdministratorViewController {
         Parent root = null;
         try {
             root = clinicianLoader.load();
+            Log.info("successfully launched create new clinician window");
         } catch (IOException e) {
+            Log.severe("failed to load create new clinician window", e);
             e.printStackTrace();
         }
         Stage newStage = new Stage();
@@ -467,7 +513,9 @@ public class AdministratorViewController {
         Parent root = null;
         try {
             root = adminLoader.load();
+            Log.info("successfully launched create new administrator window");
         } catch (IOException e) {
+            Log.severe("failed to load create new administrator window", e);
             e.printStackTrace();
         }
         Stage newStage = new Stage();
@@ -521,7 +569,9 @@ public class AdministratorViewController {
         Parent root = null;
         try {
             root = adminLoader.load();
+            Log.info("successfully launched update administrator window");
         } catch (IOException e) {
+            Log.severe("failed to load update administrator window", e);
             e.printStackTrace();
         }
         Stage newStage = new Stage();
