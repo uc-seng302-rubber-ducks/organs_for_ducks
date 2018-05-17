@@ -372,7 +372,6 @@ public class ClinicianController {
         Set<Organs> organs = user.getReceiverDetails().getOrgans().keySet();
       for (Organs organ : organs) {
         if (isReceiverNeedingFilteredOrgan(user.getNhi(), organs).contains(organ)) {
-
                         appController.addTransplant(
                                 new TransplantDetails(user.getNhi(), user.getFullName(), organ, LocalDate.now(),
                                         user.getRegion()));

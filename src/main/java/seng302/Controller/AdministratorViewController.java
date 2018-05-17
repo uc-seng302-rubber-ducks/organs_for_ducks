@@ -5,89 +5,103 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
+
+import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.Pagination;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
-import javafx.scene.control.Tooltip;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import seng302.Model.Administrator;
-import seng302.Model.Clinician;
-import seng302.Model.JsonHandler;
-import seng302.Model.User;
+import seng302.Model.*;
 
+import java.util.HashSet;
 import java.util.List;
 
+import seng302.Service.AttributeValidation;
 import seng302.View.CLI;
 
 public class AdministratorViewController {
 
     //<editor-fold desc="FXML stuff">
     @FXML
+    private TableView<User> userTableView;
+
+    @FXML
     private TableView<?> transplantWaitListTableView;
 
     @FXML
-    private Label succesFailLabel;
+    private CheckBox middleEarCheckBox;
+
+    @FXML
+    private CheckBox pancreasCheckBox;
+
+    @FXML
+    private TextField waitingRegionTextfield;
+
+    @FXML
+    private MenuItem importUsersMenuItem;
 
     @FXML
     private Label adminLastNameLabel;
 
     @FXML
-    private TableView<Administrator> adminTableView;
+    private Button addAdminButton;
+
+    @FXML
+    private CheckBox allCheckBox;
 
     @FXML
     private TableView<Clinician> clinicianTableView;
 
     @FXML
-    private TableView<User> userTableView;
-
-    @FXML
-    private Pagination searchTablePagination;
-
-    @FXML
-    private Button addAdminButton;
-
-    @FXML
-    private MenuItem adminSaveMenu;
-
-    @FXML
     private Tooltip searchToolTip;
 
     @FXML
-    private Label adminFirstnameLabel;
+    private TextField cliInputTextField;
 
     @FXML
-    private Button adminLogoutButton;
+    private Tooltip searchToolTip1;
+
+    @FXML
+    private Tooltip searchToolTip2;
+
+    @FXML
+    private CheckBox skinCheckBox;
 
     @FXML
     private Button addClinicianButton;
 
     @FXML
+    private TableView<Administrator> adminTableView;
+
+    @FXML
+    private TextArea adminCliTextArea;
+
+    @FXML
+    private CheckBox boneCheckBox;
+
+    @FXML
     private CheckBox adminAdminCheckbox;
 
     @FXML
-    private Button adminUndoButton;
+    private CheckBox heartCheckBox;
 
     @FXML
-    private CheckBox adminClinicianCheckbox;
+    private AnchorPane filterAnchorPane;
 
     @FXML
-    private Label searchCountLabel;
+    private Button recentlyDeletedButton;
 
     @FXML
     private Label filtersLabel;
@@ -99,32 +113,91 @@ public class AdministratorViewController {
     private Button adminRedoButton;
 
     @FXML
-    private Button addUserButton;
-
-    @FXML
-    private Button updateButton;
-
-    @FXML
-    private Label adminMiddleNameLabel;
-
-    @FXML
     private Label adminUsernameLable;
 
     @FXML
-    private MenuItem adminImportMenu;
+    private Button expandButton;
+
+    @FXML
+    private CheckBox kidneyCheckBox;
 
     @FXML
     private TextField adminSearchField;
 
     @FXML
-    private TextArea adminCliTextArea;
+    private CheckBox liverCheckBox;
 
     @FXML
-    private TextField cliInputTextField;
+    private Label succesFailLabel;
+
+    @FXML
+    private CheckBox lungCheckBox;
+
+    @FXML
+    private CheckBox boneMarrowCheckBox;
+
+    @FXML
+    private TextField searchTextField;
+
+    @FXML
+    private Pagination searchTablePagination;
 
     @FXML
     private Button deleteAdminButton;
 
+    @FXML
+    private MenuItem adminSaveMenu;
+
+    @FXML
+    private CheckBox corneaCheckBox;
+
+    @FXML
+    private ComboBox<?> genderComboBox;
+
+    @FXML
+    private CheckBox connectiveTissueCheckBox;
+
+    @FXML
+    private Button updateButton;
+
+    @FXML
+    private Label adminFirstnameLabel;
+
+    @FXML
+    private CheckBox adminClinicianCheckbox;
+
+    @FXML
+    private CheckBox donorFilterCheckBox;
+
+    @FXML
+    private MenuItem importCliniciansMenuItem;
+
+    @FXML
+    private Button adminLogoutButton;
+
+    @FXML
+    private MenuItem importAdminsMenuItem;
+
+    @FXML
+    private Button adminUndoButton;
+
+    @FXML
+    private Label searchCountLabel;
+
+    @FXML
+    private Button addUserButton;
+
+    @FXML
+    private Label adminMiddleNameLabel;
+
+    @FXML
+    private CheckBox receiverFilterCheckBox;
+
+    @FXML
+    private CheckBox intestineCheckBox;
+
+    @FXML
+    private TextField regionSearchTextField;
     //</editor-fold>
 
     private Stage stage;
@@ -132,6 +205,15 @@ public class AdministratorViewController {
     private Administrator administrator;
     private ArrayList<String> pastCommands = new ArrayList<>();
     private int pastCommandIndex = -1;
+    private final int ROWS_PER_PAGE = 30;
+    private int startIndex = 0;
+    private int endIndex;
+    private FilteredList<User> fListDonors;
+    private TableColumn<User, String> lNameColumn;
+    private static int searchCount = 0;
+    private boolean filterVisible = false;
+    private TableView<?> activeTableView;
+
 
     /**
      * Initialises scene for the administrator view
@@ -176,6 +258,7 @@ public class AdministratorViewController {
         displayClinicanTable();
         displayAdminTable();
         displayUserTable();
+        initUserSearchTable();
         clinicianTableView.setVisible(false);
         adminTableView.setVisible(false);
     }
@@ -208,6 +291,7 @@ public class AdministratorViewController {
             clinicianTableView.setVisible(false);
             adminTableView.setVisible(true);
             userTableView.setVisible(false);
+            activeTableView = adminTableView;
 
         }));
 
@@ -217,6 +301,7 @@ public class AdministratorViewController {
             clinicianTableView.setVisible(false);
             adminTableView.setVisible(false);
             userTableView.setVisible(true);
+            activeTableView = userTableView;
 
         }));
 
@@ -226,6 +311,7 @@ public class AdministratorViewController {
             clinicianTableView.setVisible(true);
             adminTableView.setVisible(false);
             userTableView.setVisible(false);
+            activeTableView = clinicianTableView;
 
         }));
 
@@ -311,6 +397,179 @@ public class AdministratorViewController {
 
     }
 
+    /**
+     * initialises the search table, abstracted from main init function for clarity
+     */
+    private void initUserSearchTable() {
+        TableColumn<User, String> fNameColumn;
+        TableColumn<User, String> dobColumn;
+        TableColumn<User, String> dodColumn;
+        TableColumn<User, String> ageColumn;
+        TableColumn<User, HashSet<Organs>> organsColumn;
+        TableColumn<User, String> regionColumn;
+        List<User> users = appController.getUsers();
+
+        endIndex = Math.min(startIndex + ROWS_PER_PAGE, users.size());
+        if (users.isEmpty()) {
+            return;
+        }
+
+        List<User> usersSublist = getSearchData(users);
+        //set up lists
+        //table contents are SortedList of a FilteredList of an ObservableList of an ArrayList
+        ObservableList<User> oListDonors = FXCollections.observableList(users);
+
+        fNameColumn = new TableColumn<>("First name");
+        fNameColumn.setCellValueFactory(new PropertyValueFactory<>("firstName"));
+
+        lNameColumn = new TableColumn<>("Last name");
+        lNameColumn.setCellValueFactory(new PropertyValueFactory<>("lastName"));
+        lNameColumn.setSortType(TableColumn.SortType.ASCENDING);
+
+        dobColumn = new TableColumn<>("Date of Birth");
+        dobColumn.setCellValueFactory(new PropertyValueFactory<>("dateOfBirth"));
+
+        dodColumn = new TableColumn<>("Date of Death");
+        dodColumn.setCellValueFactory(new PropertyValueFactory<>("dateOfDeath"));
+
+        ageColumn = new TableColumn<>("Age");
+        ageColumn.setCellValueFactory(new PropertyValueFactory<>("age"));
+
+        regionColumn = new TableColumn<>("Region");
+        regionColumn.setCellValueFactory(new PropertyValueFactory<>("region"));
+
+        organsColumn = new TableColumn<>("Organs");
+        organsColumn.setCellValueFactory(new PropertyValueFactory<>("organs"));
+
+        //add more columns as wanted/needed
+
+        fListDonors = new FilteredList<>(oListDonors);
+        fListDonors = filter(fListDonors);
+        FilteredList<User> squished = new FilteredList<>(fListDonors);
+
+        SortedList<User> sListDonors = new SortedList<>(squished);
+        sListDonors.comparatorProperty().bind(userTableView.comparatorProperty());
+
+        //predicate on this list not working properly
+        //should limit the number of items shown to ROWS_PER_PAGE
+        //squished = limit(fListDonors, sListDonors);
+        //set table columns and contents
+        userTableView.getColumns().setAll(fNameColumn, lNameColumn, dobColumn, dodColumn, ageColumn, regionColumn, organsColumn);
+        //searchTableView.setItems(FXCollections.observableList(sListDonors.subList(startIndex, endIndex)));
+        userTableView.setItems(sListDonors);
+        userTableView.setRowFactory((searchTableView) -> new TooltipTableRow<>(User::getTooltip));
+
+
+        //set on-click behaviour
+        userTableView.setOnMouseClicked(event -> {
+            if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
+                User user = userTableView.getSelectionModel().getSelectedItem();
+                launchDonor(user);
+            }
+        });
+    }
+
+    /**
+     * @param arrayList An array list of users.
+     * @return A list of users.
+     */
+    private List<User> getSearchData(List<User> arrayList) {
+        return arrayList.subList(startIndex, endIndex);
+    }
+
+
+    /**
+     * applies a change listener to the input text box and filters a filtered list accordingly
+     *
+     * @param fListUsers list to be filtered
+     * @return filtered list with filter applied
+     */
+    private FilteredList<User> filter(FilteredList<User> fListUsers) {
+        setTextFieldListener(searchTextField, fListUsers);
+        setTextFieldListener(regionSearchTextField, fListUsers);
+        setCheckBoxListener(donorFilterCheckBox, fListUsers);
+        setCheckBoxListener(receiverFilterCheckBox, fListUsers);
+        setCheckBoxListener(allCheckBox, fListUsers);
+        genderComboBox.valueProperty()
+                .addListener((observable -> setFilteredListPredicate(fListUsers)));
+
+        searchTablePagination.setPageCount(searchCount / ROWS_PER_PAGE);
+        return fListUsers;
+    }
+
+    /**
+     * Method to add the predicate trough the listener
+     *
+     * @param inputTextField textfield to add the listener to
+     * @param fListUsers     filteredList object of users to set predicate property of
+     */
+    private void setTextFieldListener(TextField inputTextField, FilteredList<User> fListUsers) {
+        inputTextField.textProperty()
+                .addListener((observable) -> setFilteredListPredicate(fListUsers));
+    }
+
+    /**
+     * Method to add the predicate trough the listener
+     *
+     * @param checkBox   checkBox object to add the listener to
+     * @param fListUsers filteredList object of users to set predicate property of
+     */
+    private void setCheckBoxListener(CheckBox checkBox, FilteredList<User> fListUsers) {
+        checkBox.selectedProperty()
+                .addListener(((observable) -> setFilteredListPredicate(fListUsers)));
+    }
+
+    /**
+     * Sets the predicate property of filteredList to filter by specific properties
+     *
+     * @param fList filteredList object to modify the predicate property of
+     */
+    private void setFilteredListPredicate(FilteredList<User> fList) {
+        searchCount = 0; //refresh the searchCount every time so it recalculates it each search
+        fList.predicateProperty().bind(Bindings.createObjectBinding(() -> user -> {
+            String lowerCaseFilterText = adminSearchField.getText().toLowerCase();
+            boolean regionMatch = AttributeValidation.checkRegionMatches(regionSearchTextField.getText(), user);
+            boolean genderMatch = AttributeValidation.checkGenderMatches(genderComboBox.getValue().toString(), user);
+
+            //System.out.println(user);
+            if (AttributeValidation.checkTextMatches(lowerCaseFilterText, user.getFirstName()) ||
+                    AttributeValidation.checkTextMatches(lowerCaseFilterText, user.getLastName()) &&
+                            (regionMatch) && (genderMatch) &&
+                            (((user.isDonor() == donorFilterCheckBox.isSelected()) &&
+                                    (user.isReceiver() == receiverFilterCheckBox.isSelected())) || allCheckBox.isSelected())) {
+                searchCount++;
+                return true;
+            }
+
+            //if (other test case) return true
+            return false;
+        }));
+        changePage(searchTablePagination.getCurrentPageIndex());
+    }
+
+    /**
+     * @param pageIndex the current page.
+     * @return the search table view node.
+     */
+    private Node changePage(int pageIndex) {
+        startIndex = pageIndex * ROWS_PER_PAGE;
+        endIndex = Math.min(startIndex + ROWS_PER_PAGE, appController.getUsers().size());
+
+        int minIndex = Math.min(endIndex, fListDonors.size());
+
+        SortedList<User> sListDonors = new SortedList<>(FXCollections.observableArrayList(fListDonors.subList(Math.min(startIndex, minIndex), minIndex)));
+        sListDonors.comparatorProperty().bind(userTableView.comparatorProperty());
+
+        lNameColumn.setSortType(TableColumn.SortType.ASCENDING);
+        userTableView.setItems(sListDonors);
+
+
+        int pageCount = searchCount / ROWS_PER_PAGE;
+        searchTablePagination.setPageCount(pageCount > 0 ? pageCount + 1 : 1);
+        searchCountLabel.setText("Showing results " + (searchCount == 0 ? startIndex : startIndex + 1) + " - " + (minIndex) + " of " + searchCount);
+
+        return userTableView;
+    }
 
     /**
      * Saves the data to the current file
@@ -318,6 +577,40 @@ public class AdministratorViewController {
     @FXML
     void save() {
 
+    }
+
+
+    /**
+     * Callback method to change the divider position to show advanced filtering options in the GUI
+     */
+    @FXML
+    private void expandFilter() {
+        double dividerPos = filterVisible ? 44 : 150;
+        filterAnchorPane.setMinHeight(dividerPos);
+        filterAnchorPane.setMaxHeight(dividerPos);
+        filterVisible = !filterVisible;
+        expandButton.setText(filterVisible ? "▲" : "▼");
+    }
+
+    /**
+     * Loads the recently deleted users window
+     */
+    @FXML
+    public void loadRecentlyDeleted() {
+        FXMLLoader deletedUserLoader = new FXMLLoader(
+                getClass().getResource("/FXML/deletedUsersView.fxml"));
+        Parent root;
+        try {
+            root = deletedUserLoader.load();
+            DeletedUserController deletedUserController = deletedUserLoader.getController();
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+            deletedUserController.init();
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.showAndWait();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
