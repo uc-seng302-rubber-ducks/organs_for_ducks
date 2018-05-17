@@ -49,13 +49,13 @@ public class IoHelper {
     //TODO review logic for edge cases
     String[] names = user.getFullName().split(" ");
     if (firstName != null && lastName != null) {
-      user.setName(firstName , "" , lastName);
+      user.setName(firstName , null , lastName);
     }
     else if (lastName == null && names.length > 1) {
-      user.setName(firstName , "" , names[1]);
+      user.setName(firstName , null , names[1]);
     }
     else if (firstName == null) {
-      user.setName(names[0] ,"", lastName);
+      user.setName(names[0] ,null , lastName);
     }
     return true;
   }

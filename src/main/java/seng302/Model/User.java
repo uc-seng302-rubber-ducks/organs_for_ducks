@@ -335,9 +335,16 @@ public class User extends Undoable<User> {
     }
 
     public void setName(String fName, String mName, String lName){
+        Memento<User> mem = new Memento<>();
+        mem.setOldObject(this.clone());
         this.firstName = fName;
         this.middleName = mName;
         this.lastName = lName;
+        updateLastModified();
+        mem.setNewObject(this.clone());
+        if(!mem.getNewObject().getFullName().equals(mem.getOldObject().getFullName())){
+            getUndoStack().push(mem);
+        }
     }
 
     public String getFirstName() {
@@ -403,7 +410,7 @@ public class User extends Undoable<User> {
             fullName = firstName;
         }
 
-        return fullName;
+        return fullName.trim();
     }
 
     public LocalDate getDateOfBirth() {
