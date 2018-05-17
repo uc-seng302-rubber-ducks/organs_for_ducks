@@ -2,10 +2,9 @@ package seng302.Model;
 
 
 import com.google.gson.annotations.Expose;
-import seng302.Service.PasswordManager;
-
 import java.time.LocalDateTime;
 import java.util.Objects;
+import seng302.Service.PasswordManager;
 
 /**
  * Class to model the data structure for a clinician

@@ -83,7 +83,7 @@ public class DeregisterOrganReasonControllerGUITest extends ApplicationTest {
 
     @Test
     public void deregisterOrganReasonTransplantReceivedRegistrationErrorTransplantWaitListEmpty (){
-        clickOn("#registerationErrorRadioButton");
+      clickOn("#registrationErrorRadioButton");
         clickOn("#okButton");
         clickOn("#userProfileTab");
         clickOn("#backButton");
@@ -115,7 +115,7 @@ public class DeregisterOrganReasonControllerGUITest extends ApplicationTest {
 
   @Test
   public void deregisterOrganReasonTransplantReceivedRegistrationErrorSystemLog() {
-    clickOn("#registerationErrorRadioButton");
+    clickOn("#registrationErrorRadioButton");
     clickOn("#okButton");
     clickOn("#historyTab");
     assertEquals(1, getNumberOfRows("#historyTableView"));
