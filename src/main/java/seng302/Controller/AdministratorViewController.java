@@ -33,6 +33,7 @@ import seng302.Model.User;
 
 import java.util.List;
 
+import seng302.Service.Log;
 import seng302.View.CLI;
 
 public class AdministratorViewController {
@@ -500,20 +501,19 @@ public class AdministratorViewController {
         //check about saving
         appController.updateAdmin(administrator);
         FXMLLoader loginLoader = new FXMLLoader(getClass().getResource("/FXML/loginView.fxml"));
-        Parent root = null;
+        Parent root;
         try {
             root = loginLoader.load();
+            Stage newStage = new Stage();
+            newStage.setScene(new Scene(root));
+            newStage.show();
+            stage.close();
+            LoginController loginController = loginLoader.getController();
+            loginController.init(appController,newStage);
+
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.warning(e.getMessage(), e);
         }
-        Stage newStage = new Stage();
-        newStage.setScene(new Scene(root));
-        newStage.show();
-        stage.close();
-        LoginController loginController = loginLoader.getController();
-        loginController.init(appController,newStage);
-        //UpdateClinicianController newClinician = loginLoader.getController();
-        //newClinician.init(null, appController, stage, true, newStage);
     }
 
     /**

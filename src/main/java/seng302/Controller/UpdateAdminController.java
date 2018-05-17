@@ -5,6 +5,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import seng302.Model.Administrator;
+import seng302.Service.Log;
 
 public class UpdateAdminController {
   @FXML
@@ -104,12 +105,13 @@ public class UpdateAdminController {
   @FXML
   private void confirmUpdate(){
     updateAdmin();
-    if (valid){
+    if (valid) {
     AppController appController = AppController.getInstance();
     AdministratorViewController administratorViewController = appController.getAdministratorViewController();
     try {
       administratorViewController.displayDetails();
     } catch (NullPointerException ex) {
+      Log.warning(ex.getMessage(), ex);
       //TODO causes npe if donor is new in this session
       //the text fields etc. are all null
     }
