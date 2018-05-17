@@ -2,6 +2,7 @@ package seng302.Model;
 
 import com.google.gson.annotations.Expose;
 import javafx.collections.FXCollections;
+import seng302.Controller.ReceiverOrganDetailsHolder;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -1077,7 +1078,7 @@ public class User extends Undoable<User> {
         }
         newUser.receiverDetails = new ReceiverDetails(newUser);
         for (Organs o : this.receiverDetails.getOrgans().keySet()) {
-            ArrayList<LocalDate> dates = new ArrayList<>(this.receiverDetails.getOrgans().get(o));
+            ArrayList<ReceiverOrganDetailsHolder> dates = new ArrayList<>(this.receiverDetails.getOrgans().get(o));
             newUser.receiverDetails.getOrgans().put(o, dates);
         }
 

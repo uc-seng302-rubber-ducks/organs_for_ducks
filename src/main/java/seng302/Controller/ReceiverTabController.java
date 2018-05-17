@@ -208,7 +208,7 @@ public class ReceiverTabController {
   public void populateReceiverLists(User user) {
     ArrayList<Organs> organs = new ArrayList<>();
     Collections.addAll(organs, Organs.values());
-    Map<Organs, ArrayList<LocalDate>> receiverOrgans = user.getReceiverDetails().getOrgans();
+    Map<Organs, ArrayList<ReceiverOrganDetailsHolder>> receiverOrgans = user.getReceiverDetails().getOrgans();
     if (receiverOrgans == null) {
       receiverOrgans = new EnumMap<>(Organs.class);
     }
@@ -307,17 +307,19 @@ public class ReceiverTabController {
     if (toDeRegister != null) {
 
       if (organDeregisterationReason == OrganDeregisterReason.TRANSPLANT_RECEIVED) {
-        currentUser.getReceiverDetails().stopWaitingForOrgan(toDeRegister);
+        currentUser.getReceiverDetails().stopWaitingForOrgan(toDeRegister, OrganDeregisterReason.TRANSPLANT_RECEIVED);
 
       } else if (organDeregisterationReason == OrganDeregisterReason.REGISTRATION_ERROR) {
-        currentUser.getReceiverDetails().stopWaitingForOrgan(toDeRegister);
+        currentUser.getReceiverDetails().stopWaitingForOrgan(toDeRegister, OrganDeregisterReason.REGISTRATION_ERROR);
+        System.out.println("ReceiverTabController:Line314");
+        System.out.println(currentUser.getReceiverDetails().getOrgans().get(toDeRegister).get(0).toString());
         currentUser.getChanges().add(new Change(
             "Initial registering of the organ " + toDeRegister.organName
                 + " was an error for receiver " + currentUser.getFullName()));
 
       } else if (organDeregisterationReason == OrganDeregisterReason.DISEASE_CURED) {
         //refresh diseases table
-        currentUser.getReceiverDetails().stopWaitingForOrgan(toDeRegister);
+        currentUser.getReceiverDetails().stopWaitingForOrgan(toDeRegister, OrganDeregisterReason.DISEASE_CURED);
         parent.refreshDiseases();
 
       } else if (organDeregisterationReason == OrganDeregisterReason.RECEIVER_DIED) {

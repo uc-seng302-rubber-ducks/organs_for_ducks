@@ -121,6 +121,7 @@ public class ReceiverDetails {
      * @return true if the collection was modified.
      */
     public boolean stopWaitingForOrgan(Organs organ, OrganDeregisterReason reason) {
+        System.out.println("stopWaitingForOrgansBefore");
         Memento<User> memento = new Memento<>();
         memento.setOldObject(attachedUser.clone());
 
@@ -129,10 +130,12 @@ public class ReceiverDetails {
             organs.get(organ).get(organs.get(organ).size() - 1).setOrganDeregisterReason(reason);
         }
 
+        System.out.println("stopWaitingForOrgansAfter:\n" + organs.get(organ).get(organs.get(organ).size() - 1).toString());
+
         memento.setNewObject(attachedUser.clone());
         attachedUser.getUndoStack().push(memento);
         attachedUser.getRedoStack().clear();
-        return false;
+        return true;
     }
 
     /**

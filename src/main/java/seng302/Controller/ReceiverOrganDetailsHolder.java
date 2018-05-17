@@ -30,7 +30,7 @@ public class ReceiverOrganDetailsHolder {
     }
 
     public void setStartDate(LocalDate date) {
-        this.startDate = date;
+        startDate = date;
     }
 
     public LocalDate getStopDate() {
@@ -38,15 +38,17 @@ public class ReceiverOrganDetailsHolder {
     }
 
     public void setStopDate(LocalDate date) {
-        this.stopDate = date;
+        stopDate = date;
+        System.out.println("stopDate is: " + stopDate);
     }
 
     public OrganDeregisterReason getOrganDeregisterReason() {
         return reason;
     }
 
-    public void setOrganDeregisterReason(OrganDeregisterReason reason) {
-        this.reason = reason;
+    public void setOrganDeregisterReason(OrganDeregisterReason why) {
+        reason = why;
+        System.out.println("reason is: " + reason);
     }
 
     /**
@@ -59,7 +61,7 @@ public class ReceiverOrganDetailsHolder {
         String stop = "    End Date: " + stopDate.toString() + "\n";
         String stringReason = "    Reason: ";
         if (reason != null) {
-            stringReason += reason.toString() + "\n";
+            stringReason += reason.toString() + "\n}";
         } else {
             stringReason += "N/A\n}";
         }
