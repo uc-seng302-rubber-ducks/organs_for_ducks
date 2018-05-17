@@ -7,6 +7,7 @@ import com.google.gson.JsonSerializer;
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
 import seng302.Directory;
+import seng302.Service.Log;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -14,11 +15,6 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-
-import org.joda.time.DateTime;
-import org.joda.time.format.ISODateTimeFormat;
-import seng302.Directory;
-import seng302.Service.Log;
 
 /**
  * Json Handler to import and save data
@@ -92,7 +88,7 @@ public final class JsonHandler {
    * @param clinicians list of clinicians to save
    * @throws IOException thrown when file does not exist, can be ignored as file will be created
    */
-  public static void saveClinicians(ArrayList<Clinician> clinicians) throws IOException {
+  public static void saveClinicians(Collection<Clinician> clinicians) throws IOException {
     Files.createDirectories(Paths.get(Directory.JSON.directory()));
     File outFile = new File(Directory.JSON.directory() + "/clinicians.json");
 
@@ -118,8 +114,8 @@ public final class JsonHandler {
      * @return List of registered clinicians
      * @throws FileNotFoundException thrown if no clinicians exist
      */
-    public static ArrayList<Clinician> loadClinicians(String filename) throws FileNotFoundException {
-        ArrayList<Clinician> results = new ArrayList<>();
+    public static Collection<Clinician> loadClinicians(String filename) throws FileNotFoundException {
+        Collection<Clinician> results = new ArrayList<>();
         File inFile = new File(filename);
         Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss")
                 .create();
@@ -162,10 +158,10 @@ public final class JsonHandler {
      * @return List of administrator accounts
      * @throws FileNotFoundException thrown if the JSON file of administrators does not exist
      */
-    public static Collection<Administrator> loadAdmins() throws FileNotFoundException {
+    public static Collection<Administrator> loadAdmins(String filename) throws FileNotFoundException {
         Collection<Administrator> admins = new ArrayList<>();
 
-        File inFile = new File(Directory.JSON.directory() + "/administrators.json");
+        File inFile = new File(filename);
         Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss")
                 .create();
 

@@ -1,26 +1,21 @@
 package seng302.Controller;
 
 
-import static seng302.Model.JsonHandler.saveUsers;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.stage.Stage;
+import seng302.Model.EmergencyContact;
+import seng302.Model.User;
+import seng302.Service.AttributeValidation;
 
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
-import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
-import javafx.stage.Stage;
-import seng302.Model.EmergencyContact;
-import seng302.Model.User;
-import seng302.Service.AttributeValidation;
+import static seng302.Model.JsonHandler.saveUsers;
 
 
 /**

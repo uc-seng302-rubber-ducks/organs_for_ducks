@@ -2,33 +2,29 @@ package seng302.Controller;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.PrintStream;
-import java.util.ArrayList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
 import javafx.stage.Modality;
-import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 import seng302.Model.Administrator;
 import seng302.Model.Clinician;
 import seng302.Model.JsonHandler;
 import seng302.Model.User;
+import seng302.View.CLI;
 
+import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.util.ArrayList;
-import seng302.Model.Clinician;
-import seng302.Model.User;
-import seng302.View.CLI;
+import java.util.Collection;
 
 public class AdministratorViewController {
 
@@ -347,7 +343,7 @@ public class AdministratorViewController {
         String filename;
         filename = FileSelectorController.getFileSelector(stage);
         if (filename != null) {
-            ArrayList<Clinician> clinicians = JsonHandler.loadClinicians(filename);
+            Collection<Clinician> clinicians = JsonHandler.loadClinicians(filename);
             System.out.println(clinicians.size() + " clinicians were successfully loaded");
         }
 
@@ -358,7 +354,7 @@ public class AdministratorViewController {
         String filename;
         filename = FileSelectorController.getFileSelector(stage);
         if (filename != null) {
-            ArrayList<User> users = JsonHandler.loadUsers(filename);
+            Collection<User> users = JsonHandler.loadUsers(filename);
             System.out.println(users.size() + " donors were successfully loaded");
         }
     }

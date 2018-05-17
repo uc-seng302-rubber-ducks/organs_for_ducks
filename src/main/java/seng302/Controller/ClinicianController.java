@@ -1,25 +1,5 @@
 package seng302.Controller;
 
-import static seng302.Model.Organs.BONE;
-import static seng302.Model.Organs.BONE_MARROW;
-import static seng302.Model.Organs.CONNECTIVE_TISSUE;
-import static seng302.Model.Organs.CORNEA;
-import static seng302.Model.Organs.HEART;
-import static seng302.Model.Organs.INTESTINE;
-import static seng302.Model.Organs.KIDNEY;
-import static seng302.Model.Organs.LIVER;
-import static seng302.Model.Organs.LUNG;
-import static seng302.Model.Organs.MIDDLE_EAR;
-import static seng302.Model.Organs.PANCREAS;
-import static seng302.Model.Organs.SKIN;
-
-import java.io.IOException;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -32,15 +12,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.Pagination;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
-import javafx.scene.control.Tooltip;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -53,6 +25,12 @@ import seng302.Model.Organs;
 import seng302.Model.TransplantDetails;
 import seng302.Model.User;
 import seng302.Service.AttributeValidation;
+
+import java.io.IOException;
+import java.time.LocalDate;
+import java.util.*;
+
+import static seng302.Model.Organs.*;
 
 /**
  * Class for the functionality of the Clinician view of the application
@@ -174,7 +152,7 @@ public class ClinicianController {
     private Stage stage;
     private AppController appController;
     private Clinician clinician;
-    private ArrayList<User> users;
+    private ArrayList<User> users = new ArrayList<>();
     private ArrayList<Stage> openStages;
     private FilteredList<User> fListDonors;
     private FilteredList<TransplantDetails> fTransplantList;

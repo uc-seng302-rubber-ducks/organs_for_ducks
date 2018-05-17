@@ -23,6 +23,8 @@ import java.util.ArrayList;
  */
 public class CLI {
 
+  private static String loadUsersfile = Directory.JSON.directory() + "/donors.json";
+
   /**
    *
    * @return A line reader.
@@ -57,7 +59,7 @@ public class CLI {
 
     AppController controller = AppController.getInstance();
     try {
-      controller.setUsers(JsonHandler.loadUsers(Directory.JSON.directory() + "/donors.json"));
+      controller.setUsers(JsonHandler.loadUsers(loadUsersfile));
     } catch (FileNotFoundException e) {
       System.out.println("No users file exists. Creating blank session");
       controller.setUsers(new ArrayList<>());

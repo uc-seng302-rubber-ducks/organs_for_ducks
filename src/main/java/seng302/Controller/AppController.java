@@ -4,25 +4,12 @@ import seng302.Directory;
 import seng302.Exception.UserAlreadyExistsException;
 import seng302.Exception.UserNotFoundException;
 import seng302.Model.*;
-
-import seng302.Exception.UserAlreadyExistsException;
-import seng302.Exception.UserNotFoundException;
-import seng302.Model.*;
+import seng302.Service.Log;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.*;
-
-import seng302.Model.Change;
-import seng302.Model.Clinician;
-import seng302.Model.JsonHandler;
-import seng302.Model.TransplantDetails;
-import seng302.Model.User;
-import seng302.Exception.UserAlreadyExistsException;
-import seng302.Exception.UserNotFoundException;
-import seng302.Service.Log;
 import java.util.*;
 
 
@@ -35,7 +22,7 @@ public class AppController {
   private Collection<Administrator> admins = new ArrayList<>();
   private ArrayList<User> users = new ArrayList<>();
   private ArrayList<TransplantDetails> transplantList = new ArrayList<>();
-  private ArrayList<Clinician> clinicians = new ArrayList<>();
+  private Collection<Clinician> clinicians = new ArrayList<>();
   private static AppController controller;
   private ArrayList<String[]> historyOfCommands = new ArrayList<>();
   private int historyPointer = 0;
@@ -48,6 +35,7 @@ public class AppController {
 
   private String usersFile = Directory.JSON.directory() + "/donors.json";
   private String clinicianFile = Directory.JSON.directory() + "/clinicians.json";
+  private String adminFile = Directory.JSON.directory() + "/administrators.json";
   private ClinicianController clinicianControllerInstance;
 
   /**
@@ -69,7 +57,7 @@ public class AppController {
     }
 
     try {
-        admins = JsonHandler.loadAdmins();
+        admins = JsonHandler.loadAdmins(adminFile);
         System.out.println(admins.size() + " administrators were successfully loaded");
     } catch (FileNotFoundException e) {
         System.out.println("Administrator file was not found");
@@ -361,7 +349,7 @@ public class AppController {
   }
 
 
-  public ArrayList<Clinician> getClinicians() {
+  public Collection<Clinician> getClinicians() {
     return clinicians;
   }
 
@@ -572,7 +560,7 @@ public class AppController {
     return new ArrayList<>(deletedUserStack);
   }
 
-  public java.util.ArrayList<TransplantDetails> getTransplantList() {
+  public ArrayList<TransplantDetails> getTransplantList() {
     return transplantList;
   }
 
