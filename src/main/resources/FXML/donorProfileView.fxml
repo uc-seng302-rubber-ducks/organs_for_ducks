@@ -1,71 +1,62 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
-<AnchorPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0"
-  xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
-  fx:controller="seng302.Controller.DonorOverviewController">
+<?import org.controlsfx.control.StatusBar?>
+
+<AnchorPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.Controller.DonorOverviewController">
   <children>
-    <HBox alignment="CENTER" layoutX="9.0" layoutY="562.0" prefHeight="25.0" prefWidth="876.0"
-      AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0">
+    <HBox alignment="CENTER" layoutX="9.0" layoutY="562.0" prefHeight="25.0" prefWidth="876.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0">
       <children>
-        <Button fx:id="deleteUser" alignment="CENTER" contentDisplay="CENTER"
-          mnemonicParsing="false" onAction="#delete" text="Delete User"/>
+        <Button fx:id="deleteUser" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#delete" text="Delete User" />
       </children>
     </HBox>
-    <Label layoutX="15.0" layoutY="45.0" text="First Name:"/>
-    <Label layoutX="15.0" layoutY="145.0" text="Date of Birth:"/>
-    <Label layoutX="15.0" layoutY="245.0" text="Birth Gender:"/>
-    <Label layoutX="420.0" layoutY="20.0" text="Blood Type:"/>
-    <Label layoutX="420.0" layoutY="45.0" text="Height(m):"/>
-    <Label layoutX="420.0" layoutY="70.0" text="Weight(Kgs):"/>
-    <Label fx:id="dodLabel" layoutX="15.0" layoutY="195.0" text="Date of Death:"/>
-    <Label layoutX="15.0" layoutY="170.0" prefHeight="16.0" prefWidth="36.0" text="Age:"/>
-    <Label layoutX="19.0" layoutY="204.0"/>
-    <Separator layoutX="-13.0" layoutY="331.0" prefHeight="12.0" prefWidth="903.0"
-      AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0"/>
-    <Button fx:id="logOutButton" layoutX="14.0" layoutY="570.0" mnemonicParsing="false"
-      onAction="#logout" text="Log Out" AnchorPane.bottomAnchor="10.0"
-      AnchorPane.leftAnchor="10.0"/>
-    <Button fx:id="editDetailsButton" layoutX="789.0" layoutY="573.0" mnemonicParsing="false"
-      onAction="#updateDetails" text="Edit Details" AnchorPane.bottomAnchor="10.0"
-      AnchorPane.rightAnchor="10.0"/>
-    <Label layoutX="420.0" layoutY="145.0" text="BMI:"/>
-    <Label layoutX="15.0" layoutY="95.0" text="Middle Name:"/>
-    <Label layoutX="15.0" layoutY="120.0" text="Last Name:"/>
-    <Label fx:id="mNameValue" layoutX="110.0" layoutY="95.0"/>
-    <Label fx:id="lNameValue" layoutX="96.0" layoutY="120.0"/>
-    <Label fx:id="fNameValue" layoutX="95.0" layoutY="45.0"/>
-    <Label fx:id="ageValue" layoutX="47.0" layoutY="172.0"/>
-    <Label fx:id="DOBValue" layoutX="106.0" layoutY="145.0"/>
-    <Label fx:id="DODValue" layoutX="113.0" layoutY="195.0"/>
-    <Label fx:id="birthGenderValue" layoutX="110.0" layoutY="245.0"/>
-    <Label fx:id="bmiValue" layoutX="458.0" layoutY="145.0"/>
-    <Label fx:id="bloodTypeValue" layoutX="508.0" layoutY="20.0"/>
-    <Label fx:id="heightValue" layoutX="508.0" layoutY="45.0"/>
-    <Label fx:id="weightValue" layoutX="508.0" layoutY="70.0"/>
-    <Label layoutX="420.0" layoutY="95.0" text="Smoker:"/>
-    <Label layoutX="420.0" layoutY="120.0" text="Alcohol consumption:"/>
-    <Label layoutX="15.0" layoutY="70.0" text="Preferred Name:"/>
-    <Label fx:id="pNameValue" layoutX="125.0" layoutY="70.0"/>
-    <Label fx:id="smokerValue" layoutX="479.0" layoutY="95.0"/>
-    <Label fx:id="alcoholValue" layoutX="567.0" layoutY="120.0"/>
-    <Label layoutX="15.0" layoutY="297.0" text="User Last Modified:"/>
-    <Label layoutX="15.0" layoutY="317.0" text="User Created:"/>
-    <Label fx:id="lastModifiedValue" layoutX="145.0" layoutY="297.0"/>
-    <Label fx:id="createdValue" layoutX="112.0" layoutY="317.0"/>
-    <Label layoutX="15.0" layoutY="20.0" text="NHI:"/>
-    <Label fx:id="NHIValue" layoutX="46.0" layoutY="20.0"/>
-    <Label layoutX="15.0" layoutY="220.0" text="Age at Death:"/>
-    <Label fx:id="ageDeathValue" layoutX="110.0" layoutY="220.0"/>
-    <Label layoutX="15.0" layoutY="270.0" text="Gender Identity:"/>
-    <Label fx:id="genderIdentityValue" layoutX="130.0" layoutY="273.0"/>
-    <Button fx:id="backButton" layoutX="14.0" layoutY="570.0" mnemonicParsing="false"
-      onAction="#closeWindow" text="Back" AnchorPane.bottomAnchor="10.0"
-      AnchorPane.leftAnchor="10.0"/>
+    <Label layoutX="15.0" layoutY="45.0" text="First Name:" />
+    <Label layoutX="15.0" layoutY="145.0" text="Date of Birth:" />
+    <Label layoutX="15.0" layoutY="245.0" text="Birth Gender:" />
+    <Label layoutX="420.0" layoutY="20.0" text="Blood Type:" />
+    <Label layoutX="420.0" layoutY="45.0" text="Height(m):" />
+    <Label layoutX="420.0" layoutY="70.0" text="Weight(Kgs):" />
+    <Label fx:id="dodLabel" layoutX="15.0" layoutY="195.0" text="Date of Death:" />
+    <Label layoutX="15.0" layoutY="170.0" prefHeight="16.0" prefWidth="36.0" text="Age:" />
+    <Label layoutX="19.0" layoutY="204.0" />
+    <Separator layoutX="-13.0" layoutY="331.0" prefHeight="12.0" prefWidth="903.0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" />
+    <Button fx:id="logOutButton" layoutX="14.0" layoutY="570.0" mnemonicParsing="false" onAction="#logout" text="Log Out" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" />
+    <Button fx:id="editDetailsButton" layoutX="789.0" layoutY="573.0" mnemonicParsing="false" onAction="#updateDetails" text="Edit Details" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="10.0" />
+    <Label layoutX="420.0" layoutY="145.0" text="BMI:" />
+    <Label layoutX="15.0" layoutY="95.0" text="Middle Name:" />
+    <Label layoutX="15.0" layoutY="120.0" text="Last Name:" />
+    <Label fx:id="mNameValue" layoutX="110.0" layoutY="95.0" />
+    <Label fx:id="lNameValue" layoutX="96.0" layoutY="120.0" />
+    <Label fx:id="fNameValue" layoutX="95.0" layoutY="45.0" />
+    <Label fx:id="ageValue" layoutX="47.0" layoutY="172.0" />
+    <Label fx:id="DOBValue" layoutX="106.0" layoutY="145.0" />
+    <Label fx:id="DODValue" layoutX="113.0" layoutY="195.0" />
+    <Label fx:id="birthGenderValue" layoutX="110.0" layoutY="245.0" />
+    <Label fx:id="bmiValue" layoutX="458.0" layoutY="145.0" />
+    <Label fx:id="bloodTypeValue" layoutX="508.0" layoutY="20.0" />
+    <Label fx:id="heightValue" layoutX="508.0" layoutY="45.0" />
+    <Label fx:id="weightValue" layoutX="508.0" layoutY="70.0" />
+    <Label layoutX="420.0" layoutY="95.0" text="Smoker:" />
+    <Label layoutX="420.0" layoutY="120.0" text="Alcohol consumption:" />
+    <Label layoutX="15.0" layoutY="70.0" text="Preferred Name:" />
+    <Label fx:id="pNameValue" layoutX="125.0" layoutY="70.0" />
+    <Label fx:id="smokerValue" layoutX="479.0" layoutY="95.0" />
+    <Label fx:id="alcoholValue" layoutX="567.0" layoutY="120.0" />
+    <Label layoutX="15.0" layoutY="297.0" text="User Last Modified:" />
+    <Label layoutX="15.0" layoutY="317.0" text="User Created:" />
+    <Label fx:id="lastModifiedValue" layoutX="145.0" layoutY="297.0" />
+    <Label fx:id="createdValue" layoutX="112.0" layoutY="317.0" />
+    <Label layoutX="15.0" layoutY="20.0" text="NHI:" />
+    <Label fx:id="NHIValue" layoutX="46.0" layoutY="20.0" />
+    <Label layoutX="15.0" layoutY="220.0" text="Age at Death:" />
+    <Label fx:id="ageDeathValue" layoutX="110.0" layoutY="220.0" />
+    <Label layoutX="15.0" layoutY="270.0" text="Gender Identity:" />
+    <Label fx:id="genderIdentityValue" layoutX="130.0" layoutY="273.0" />
+    <Button fx:id="backButton" layoutX="14.0" layoutY="570.0" mnemonicParsing="false" onAction="#closeWindow" text="Back" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" />
+    <StatusBar fx:id="steve" layoutY="400.0" maxWidth="2000.0" prefWidth="607.0" text="please kill me" AnchorPane.bottomAnchor="-30.0" />
   </children>
 </AnchorPane>
