@@ -1,5 +1,6 @@
 package seng302.Controller;
 
+import com.sun.javafx.stage.StageHelper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -25,6 +26,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 public class AdministratorViewController {
 
@@ -165,7 +167,6 @@ public class AdministratorViewController {
         this.appController = appController;
         this.administrator = administrator;
         displayDetails();
-
 
         if (administrator.getUserName().equals("default")) {
             deleteAdminButton.setDisable(true);
@@ -331,33 +332,53 @@ public class AdministratorViewController {
 
     @FXML
     void importAdmins(ActionEvent event) throws FileNotFoundException {
-        String filename;
-        filename = FileSelectorController.getFileSelector(stage);
-        if (filename != null) {
-            Collection<Administrator> administrators = JsonHandler.loadAdmins(filename);
-            System.out.println(administrators.size() + " administrators were successfully loaded.");
+        if(allWindowsClosed()) {
+            String filename;
+            filename = FileSelectorController.getFileSelector(stage);
+            if (filename != null) {
+                Collection<Administrator> administrators = JsonHandler.loadAdmins(filename);
+                System.out.println(administrators.size() + " administrators were successfully loaded.");
+            }
+        } else {
+            System.out.println("multiple window opened!");
         }
     }
 
     @FXML
     void importClinicians(ActionEvent event) throws FileNotFoundException {
-        String filename;
-        filename = FileSelectorController.getFileSelector(stage);
-        if (filename != null) {
-            Collection<Clinician> clinicians = JsonHandler.loadClinicians(filename);
-            System.out.println(clinicians.size() + " clinicians were successfully loaded.");
+        if(allWindowsClosed()) {
+            String filename;
+            filename = FileSelectorController.getFileSelector(stage);
+            if (filename != null) {
+                Collection<Clinician> clinicians = JsonHandler.loadClinicians(filename);
+                System.out.println(clinicians.size() + " clinicians were successfully loaded.");
+            }
+        } else {
+            System.out.println("multiple window opened!");
         }
-
     }
 
     @FXML
     void importUsers(ActionEvent event) throws FileNotFoundException {
-        String filename;
-        filename = FileSelectorController.getFileSelector(stage);
-        if (filename != null) {
-            Collection<User> users = JsonHandler.loadUsers(filename);
-            System.out.println(users.size() + " donors were successfully loaded.");
+        if(allWindowsClosed()) {
+            String filename;
+            filename = FileSelectorController.getFileSelector(stage);
+            if (filename != null) {
+                Collection<User> users = JsonHandler.loadUsers(filename);
+                System.out.println(users.size() + " donors were successfully loaded.");
+            }
+        } else {
+            System.out.println("multiple window opened!");
         }
+    }
+
+    /**
+     * checks if other windows are opened apart from admin overview
+     * @return true only if the admin overview is opened, false otherwise
+     */
+    private boolean allWindowsClosed(){
+        List<Stage> windows = StageHelper.getStages();
+        return windows.size() == 1;
     }
 
     @FXML
