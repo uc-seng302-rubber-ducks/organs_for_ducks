@@ -316,7 +316,7 @@ public class AdministratorViewController {
      */
     @FXML
     void importAdmins() throws FileNotFoundException {
-        if(allWindowsClosed()) {
+        if(isAllWindowsClosed()) {
             boolean updated = false;
             Collection<Administrator> existingAdmins = appController.getAdmins();
             String filename;
@@ -351,7 +351,7 @@ public class AdministratorViewController {
      */
     @FXML
     void importClinicians() throws FileNotFoundException {
-        if(allWindowsClosed()) {
+        if(isAllWindowsClosed()) {
             boolean updated = false;
             Collection<Clinician> existingClinicians = appController.getClinicians();
             String filename;
@@ -385,7 +385,7 @@ public class AdministratorViewController {
      */
     @FXML
     void importUsers() throws FileNotFoundException {
-        if(allWindowsClosed()) {
+        if(isAllWindowsClosed()) {
             boolean updated = false;
             List<User> existingUsers = appController.getUsers();
             String filename;
@@ -417,9 +417,22 @@ public class AdministratorViewController {
      * checks if other windows are opened apart from admin overview
      * @return true only if the admin overview is opened, false otherwise
      */
-    private boolean allWindowsClosed(){
+    private boolean isAllWindowsClosed(){
         List<Stage> windows = StageHelper.getStages();
         return windows.size() == 1;
+    }
+
+    /**
+     * closes all windows apart from admin overview.
+     */
+    public void CloseAllWindows(){
+        List<Stage> windows = StageHelper.getStages();
+        int numWindows = windows.size();
+
+        //skips the first stage, which is the admin overview
+        for(int i=1; i < numWindows; i++){
+            windows.get(1).close(); //when close, the stage is removed from list
+        }
     }
 
     /**
@@ -436,7 +449,7 @@ public class AdministratorViewController {
             // thing in currentDiseases over the selected thing in pastDiseases. Trying to fix
             AlertUnclosedWindowsController alertUnclosedWindowsController = AlertUnclosedWindowsLoader.getController();
             Stage stage = new Stage();
-            alertUnclosedWindowsController.init(stage);
+            alertUnclosedWindowsController.init(stage, this);
             stage.setScene(new Scene(root));
             stage.show();
         } catch (IOException e) {
