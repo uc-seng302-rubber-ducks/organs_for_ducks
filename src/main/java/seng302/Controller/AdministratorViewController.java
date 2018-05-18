@@ -13,10 +13,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import seng302.Model.Administrator;
-import seng302.Model.Clinician;
-import seng302.Model.JsonHandler;
-import seng302.Model.User;
+import seng302.Model.*;
 import seng302.Service.Log;
 import seng302.View.CLI;
 
@@ -344,7 +341,7 @@ public class AdministratorViewController {
 
             }
         } else {
-            System.out.println("multiple window opened!");
+            launchAlertUnclosedWindowsGUI();
         }
     }
 
@@ -378,7 +375,7 @@ public class AdministratorViewController {
                 }
             }
         } else {
-            System.out.println("multiple window opened!");
+            launchAlertUnclosedWindowsGUI();
         }
     }
 
@@ -412,7 +409,7 @@ public class AdministratorViewController {
                 }
             }
         } else {
-            System.out.println("multiple window opened!");
+            launchAlertUnclosedWindowsGUI();
         }
     }
 
@@ -423,6 +420,28 @@ public class AdministratorViewController {
     private boolean allWindowsClosed(){
         List<Stage> windows = StageHelper.getStages();
         return windows.size() == 1;
+    }
+
+    /**
+     * Launches a popup gui that warns user if there
+     * are multiple windows opened.
+     */
+    private void launchAlertUnclosedWindowsGUI() {
+        FXMLLoader AlertUnclosedWindowsLoader = new FXMLLoader(
+                getClass().getResource("/FXML/AlertUnclosedWindows.fxml"));
+        Parent root;
+        try {
+            root = AlertUnclosedWindowsLoader.load();
+            root.requestFocus(); //Currently the below code thinks that focus = selected so will always take the focused
+            // thing in currentDiseases over the selected thing in pastDiseases. Trying to fix
+            AlertUnclosedWindowsController alertUnclosedWindowsController = AlertUnclosedWindowsLoader.getController();
+            Stage stage = new Stage();
+            alertUnclosedWindowsController.init(stage);
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
