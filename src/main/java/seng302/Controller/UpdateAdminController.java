@@ -1,16 +1,11 @@
 package seng302.Controller;
 
-import java.util.Optional;
-import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
+import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.fxml.FXML;
 import javafx.stage.Stage;
 import seng302.Model.Administrator;
+import seng302.Service.Log;
 
 public class UpdateAdminController {
   @FXML
@@ -32,23 +27,11 @@ public class UpdateAdminController {
   private TextField cPasswordTextField;
 
   @FXML
-  private Button cancelButton;
-
-  @FXML
-  private Button confirmButton;
-
-  @FXML
-  private Label invalidUsername;
-
-  @FXML
-  private  Label invaildFName;
-
-  @FXML
   private Label errorLabel;
 
   private Administrator admin;
   private Stage stage;
-  private AppController appController;
+  private boolean valid;
 
 
 
@@ -56,15 +39,14 @@ public class UpdateAdminController {
   /**
    *
    * @param administrator .
-   * @param controller .
    * @param stage .
    */
-  public void init(Administrator administrator, AppController controller, Stage stage) {
+  public void init(Administrator administrator, Stage stage) {
     admin = administrator;
     this.stage = stage;
-    this.appController = controller;
     prefillFields();
-    Scene scene = stage.getScene();
+    stage.getScene();
+    errorLabel.setText("");
 
   }
 
@@ -89,6 +71,8 @@ public class UpdateAdminController {
    *
    */
   private void updateAdmin(){
+    valid = true;
+    // waiting for the string validation to be finished
     if (!usernameTextField.getText().isEmpty() && !usernameTextField.getText().equals(admin.getUserName())){
       admin.setUserName(usernameTextField.getText());
     }
@@ -108,6 +92,7 @@ public class UpdateAdminController {
         admin.setPassword(passwordTextField.getText());
       } else {
         errorLabel.setText("your password don't match");
+        valid = false;
       }
     }
 
@@ -120,7 +105,18 @@ public class UpdateAdminController {
   @FXML
   private void confirmUpdate(){
     updateAdmin();
+    if (valid) {
+    AppController appController = AppController.getInstance();
+    AdministratorViewController administratorViewController = appController.getAdministratorViewController();
+    try {
+      administratorViewController.displayDetails();
+    } catch (NullPointerException ex) {
+      Log.warning(ex.getMessage(), ex);
+      //TODO causes npe if donor is new in this session
+      //the text fields etc. are all null
+    }
     stage.close();
+    }
   }
 
 
@@ -129,25 +125,8 @@ public class UpdateAdminController {
    * Closes the window without making any changes.
    */
  @FXML
-  private void cancelUpdate(){
+ private void cancelUpdate() {
    stage.close();
-//   if (stage.getTitle().equals("Update Administrator: " + admin.getFirstName() + " *")){
-//     Alert alert = new Alert(AlertType.WARNING,"You have unsaved changes, are you sure you want to cancel?",
-//         ButtonType.YES,ButtonType.NO);
-//     Button yesButton = (Button) alert.getDialogPane().lookupButton(ButtonType.YES);
-//     yesButton.setId("yesButton");
-//
-//     Optional<ButtonType> result = alert.showAndWait();
-//     if (result.get() == ButtonType.YES) {
-//       AppController appController = AppController.getInstance();
-//     }
-//
-//
-//   }
-
-
-
-
  }
 
 

@@ -1,5 +1,8 @@
 package seng302.Model;
 
+
+import java.util.Objects;
+
 public class Memento<T> {
 
   private T oldObject;
@@ -34,15 +37,12 @@ public class Memento<T> {
     if (!(obj instanceof Memento)) {
       return false;
     }
-    return (this.oldObject == ((Memento) obj).oldObject
-        && this.newObject == ((Memento) obj).newObject);
+    return (this.oldObject.equals(((Memento) obj).oldObject)
+        && this.newObject.equals(((Memento) obj).newObject));
   }
 
   @Override
   public int hashCode() {
-    int result = 17;
-    result = 31 * result + oldObject.hashCode();
-    result = 31 * result + newObject.hashCode();
-    return result;
+    return Objects.hash(oldObject, newObject);
   }
 }

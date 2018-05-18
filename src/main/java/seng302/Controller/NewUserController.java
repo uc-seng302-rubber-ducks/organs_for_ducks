@@ -1,21 +1,24 @@
 package seng302.Controller;
 
 
+import static seng302.Model.JsonHandler.saveUsers;
+
+import java.io.IOException;
+import java.time.LocalDate;
+import java.util.List;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.DatePicker;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import seng302.Model.EmergencyContact;
 import seng302.Model.User;
 import seng302.Service.AttributeValidation;
-
-import java.io.IOException;
-import java.time.LocalDate;
-import java.util.ArrayList;
-
-import static seng302.Model.JsonHandler.saveUsers;
 
 
 /**
@@ -27,6 +30,7 @@ public class NewUserController {
 
     AppController controller;
     Stage stage;
+    //<editor-fold desc="FXML declarations">
     @FXML
     private Label errorLabel;
     @FXML
@@ -91,17 +95,8 @@ public class NewUserController {
     private DatePicker dobInput;
     @FXML
     private DatePicker dodInput;
-    @FXML
-    private Button cancelButton;
-    @FXML
-    private Button confirmButton;
-    @FXML
-    private Label headerLabel;
+    //</editor-fold>
     private Stage ownStage;
-
-
-    public NewUserController() throws IOException {
-    }
 
     /**
      * Initializes the NewUserController
@@ -113,35 +108,13 @@ public class NewUserController {
         this.controller = controller;
         this.stage = stage;
         this.ownStage = ownStage;
-        //stage.setMinWidth(620);
-        //stage.setMaxWidth(620);
     }
 
     /**
      * Returns the user to the login window.
-     *
-     * @throws IOException Throws an exception if the fxml cannot be located.
      */
     @FXML
-    private void cancelCreation() throws IOException {
-//        Stage primaryStage = (Stage) cancelButton.getScene().getWindow();
-//        Parent root = FXMLLoader.load(getClass().getResource("/FXML/login.fxml"));
-//        primaryStage.setScene(new Scene(root));
-
-      /*  FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML/loginView.fxml"));
-        Parent root = null;
-        try {
-            root = loader.load();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        stage.setScene(new Scene(root));
-        LoginController loginController = loader.getController();
-        loginController.init(AppController.getInstance(), stage);
-        stage.show();
-        stage.hide();
-        stage.show();*/
+    private void cancelCreation() {
         ownStage.close();
     }
 
@@ -153,8 +126,9 @@ public class NewUserController {
      * @param fName First Name.
      * @param dob   Date of birth.
      * @param dod   Date of death.
-     * @throws IOException
+     * @throws IOException if fxml cannot is read.
      */
+    //TODO: Find a way to clean this up
     private void createUser(String nhi, String fName, LocalDate dob, LocalDate dod) throws IOException {
         boolean valid = true; // prevents the account being created if false
 
@@ -258,7 +232,7 @@ public class NewUserController {
             newUser.getUndoStack().clear();
 
             // add the new user to the list of users and save them
-            ArrayList<User> users = controller.getUsers();
+            List<User> users = controller.getUsers();
             users.add(newUser);
             saveUsers(users);
 
@@ -266,33 +240,30 @@ public class NewUserController {
             if (stage.getTitle().matches("Administrator*")) {
                 ownStage.close();
                 FXMLLoader donorLoader = new FXMLLoader(getClass().getResource("/FXML/userView.fxml"));
-                Parent root = null;
+                Parent root;
 
                 try {
                     root = donorLoader.load();
                     Stage userStage = new Stage();
                     userStage.setScene(new Scene(root));
                     userStage.show();
-                    DonorController donorController = donorLoader.getController();
-                    //AppController.getInstance().setDonorController(donorController); This doesnt need to be here. Its setting the controller
-                    //to the controller returned by the object
-                    donorController.init(AppController.getInstance(), newUser, userStage, false);
-                    donorController.diableLogout();
+                    UserController userController = donorLoader.getController();
+                    userController.init(AppController.getInstance(), newUser, userStage, false);
+                    userController.diableLogout();
 
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             } else {
                 FXMLLoader donorLoader = new FXMLLoader(getClass().getResource("/FXML/userView.fxml"));
-                Parent root = null;
+                Parent root;
 
                 try {
                     root = donorLoader.load();
                     stage.setScene(new Scene(root));
                     ownStage.close();
-                    DonorController donorController = donorLoader.getController();
-                    //AppController.getInstance().setDonorController(donorController); see above note
-                    donorController.init(AppController.getInstance(), newUser, stage, false);
+                    UserController userController = donorLoader.getController();
+                    userController.init(AppController.getInstance(), newUser, stage, false);
 
                 } catch (IOException e) {
                     e.printStackTrace();

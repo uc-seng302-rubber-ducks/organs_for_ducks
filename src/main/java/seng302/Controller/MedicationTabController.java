@@ -5,7 +5,6 @@ import java.util.Set;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -17,7 +16,6 @@ import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 import okhttp3.OkHttpClient;
 import org.controlsfx.control.textfield.TextFields;
@@ -53,7 +51,6 @@ public class MedicationTabController {
 
   @FXML
   private Label drugDetailsLabel;
-  private Stage stage;
   private AppController application;
   private ObservableList<String> currentMeds;
   private ObservableList<String> previousMeds;
@@ -66,11 +63,9 @@ public class MedicationTabController {
    *
    * @param controller the application controller
    * @param user the current user
-   * @param stage the application stage
    * @param fromClinician boolean value indication if from clinician view
    */
-  public void init(AppController controller, User user, Stage stage, boolean fromClinician) {
-    this.stage = stage;
+  public void init(AppController controller, User user, boolean fromClinician) {
     application = controller;
     currentUser = user;
     //ageValue.setText("");
@@ -79,7 +74,6 @@ public class MedicationTabController {
       addMedicationButton.setVisible(false);
       medicationTextField.setVisible(false);
       deleteMedicationButton.setVisible(false);
-
       takeMedicationButton.setVisible(false);
       untakeMedicationButton.setVisible(false);
     }
@@ -184,11 +178,9 @@ public class MedicationTabController {
 
   /**
    * Adds a medication to the current users profile that they are taking
-   *
-   * @param event An action event
    */
   @FXML
-  void addMedication(ActionEvent event) {
+  void addMedication() {
     String medication = medicationTextField.getText();
     if (medication.isEmpty()) {
       return;
@@ -206,11 +198,9 @@ public class MedicationTabController {
 
   /**
    * Deletes a currently taking medication from the current users profile
-   *
-   * @param event An action event
    */
   @FXML
-  void deleteMedication(ActionEvent event) {
+  void deleteMedication() {
     String medCurrent = currentMedicationListView.getSelectionModel().getSelectedItem();
     String medPrevious = previousMedicationListView.getSelectionModel().getSelectedItem();
 
@@ -226,11 +216,9 @@ public class MedicationTabController {
 
   /**
    * fires when a medication is moved from previous to current medications
-   *
-   * @param event An action event
    */
   @FXML
-  void takeMedication(ActionEvent event) {
+  void takeMedication() {
     Memento<User> memento = new Memento<>();
     memento.setOldObject(currentUser.clone());
     String med = previousMedicationListView.getSelectionModel().getSelectedItem();
@@ -253,11 +241,9 @@ public class MedicationTabController {
 
   /**
    * fires when a medication is moved from current to previous
-   *
-   * @param event An action event
    */
   @FXML
-  void untakeMedication(ActionEvent event) {
+  void untakeMedication() {
     Memento<User> memento = new Memento<>();
     memento.setOldObject(currentUser.clone());
     String med = currentMedicationListView.getSelectionModel().getSelectedItem();
@@ -279,21 +265,17 @@ public class MedicationTabController {
 
   /**
    * Removes the highlight of the currently selected medication
-   *
-   * @param event A mouse event
    */
   @FXML
-  void clearCurrentMedSelection(MouseEvent event) {
+  void clearCurrentMedSelection() {
     currentMedicationListView.getSelectionModel().clearSelection();
   }
 
   /**
    * Removes the highlight of the previously selected medication
-   *
-   * @param event A mouse event
    */
   @FXML
-  void clearPreviousMedSelection(MouseEvent event) {
+  void clearPreviousMedSelection() {
     previousMedicationListView.getSelectionModel().clearSelection();
   }
 
@@ -305,14 +287,14 @@ public class MedicationTabController {
   private void launchMedicationView(String med) {
     FXMLLoader medicationTimeViewLoader = new FXMLLoader(
         getClass().getResource("/FXML/medicationsTimeView.fxml"));
-    Parent root = null;
+    Parent root;
     try {
       root = medicationTimeViewLoader.load();
       Stage stage = new Stage();
       stage.setScene(new Scene(root));
       MedicationsTimeController medicationsTimeController = medicationTimeViewLoader
           .getController();
-      medicationsTimeController.init(application, currentUser, stage, med);
+      medicationsTimeController.init(currentUser, stage, med);
       stage.show();
     } catch (IOException e) {
       e.printStackTrace();
