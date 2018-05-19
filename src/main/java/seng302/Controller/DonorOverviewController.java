@@ -15,6 +15,7 @@ import javafx.scene.control.Label;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import seng302.Model.User;
+import seng302.Service.Log;
 
 public class DonorOverviewController {
 
@@ -218,8 +219,10 @@ public class DonorOverviewController {
       stage.setScene(new Scene(root));
       updateUserController.init(currentUser, application, stage);
       stage.show();
+      Log.info("Successfully launched update user window");
 
     } catch (IOException e) {
+      Log.severe("Failed to load update user window", e);
       e.printStackTrace();
     }
   }
@@ -231,6 +234,7 @@ public class DonorOverviewController {
   private void closeWindow() {
     application.update(currentUser);
     stage.close();
+    Log.info("Successfully closed update user window");
   }
 
   /**
@@ -244,6 +248,7 @@ public class DonorOverviewController {
 
     if (result.get() == ButtonType.OK) {
       application.deleteDonor(currentUser);
+      Log.info("Successfully deleted user profile");
       if (!Clinician) {
         logout();
       }
@@ -266,7 +271,10 @@ public class DonorOverviewController {
       stage.setScene(new Scene(root));
       stage.hide();
       stage.show();
+      Log.info("user Successfully logged out");
+      Log.info("successfully launched login window");
     } catch (IOException e) {
+      Log.severe("failed to launch login window", e);
       e.printStackTrace();
     }
 

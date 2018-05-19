@@ -8,6 +8,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.SelectionMode;
 import seng302.Model.Organs;
 import seng302.Model.User;
+import seng302.Service.Log;
 import seng302.Service.OrganListCellFactory;
 
 public class DonationTabPageController {
@@ -81,6 +82,9 @@ public class DonationTabPageController {
       application.update(currentUser);
       canDonate.getItems().remove(toDonate);
       parent.updateUndoRedoButtons();
+      Log.info("Donate organ successful");
+    } else {
+      Log.warning("Donate organs failed, no organs selected.");
     }
     currentlyDonating.refresh();
     parent.refreshCurrentlyReceivingList();
@@ -104,6 +108,9 @@ public class DonationTabPageController {
       currentlyDonating.refresh();
       application.update(currentUser);
       parent.updateUndoRedoButtons();
+      Log.info("Un-donate organ successful");
+    } else {
+      Log.warning("Un-donate organs failed, no organs selected.");
     }
 
     currentlyDonating.refresh();
