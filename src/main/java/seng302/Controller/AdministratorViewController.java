@@ -544,7 +544,22 @@ public class AdministratorViewController {
      */
     @FXML
     void logout() {
+        //check about saving
+        appController.updateAdmin(administrator);
+        FXMLLoader loginLoader = new FXMLLoader(getClass().getResource("/FXML/loginView.fxml"));
+        Parent root;
+        try {
+            root = loginLoader.load();
+            Stage newStage = new Stage();
+            newStage.setScene(new Scene(root));
+            newStage.show();
+            stage.close();
+            LoginController loginController = loginLoader.getController();
+            loginController.init(appController,newStage);
 
+        } catch (IOException e) {
+            Log.warning(e.getMessage(), e);
+        }
     }
 
     /**
@@ -567,19 +582,23 @@ public class AdministratorViewController {
     /**
      * load the labels on the admin view with the current admins details
      */
-    private void displayDetails() {
+    public void displayDetails() {
         if (!administrator.getUserName().isEmpty()) {
             adminUsernameLable.setText(administrator.getUserName());
-            if (!administrator.getUserName().equals("default")) {
-                adminFirstnameLabel.setText(administrator.getFirstName());
-                if (!administrator.getMiddleName().isEmpty()) {
-                    adminMiddleNameLabel.setText(administrator.getMiddleName());
-                }
-                if (!administrator.getLastName().isEmpty()) {
-                    adminLastNameLabel.setText(administrator.getLastName());
-                }
+            adminFirstnameLabel.setText(administrator.getFirstName());
+            if ((administrator.getMiddleName() != null) && !administrator.getMiddleName().isEmpty()) {
+                adminMiddleNameLabel.setText(administrator.getMiddleName());
+            } else {
+                adminMiddleNameLabel.setText("");
+
+            }
+            if ((administrator.getLastName() != null) && !administrator.getLastName().isEmpty()) {
+                adminLastNameLabel.setText(administrator.getLastName());
+            } else {
+                adminLastNameLabel.setText("");
             }
         }
+
     }
 
     /**
