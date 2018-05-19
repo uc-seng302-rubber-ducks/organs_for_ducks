@@ -28,6 +28,7 @@ import seng302.Model.MedicalProcedure;
 import seng302.Model.Memento;
 import seng302.Model.Organs;
 import seng302.Model.User;
+import seng302.Service.Log;
 
 public class ProcedureTabController {
   //procedures
@@ -190,13 +191,17 @@ public class ProcedureTabController {
     if (pendingProceduresTableSelected) {
       try {
         pendingProcedureTableView.getSelectionModel().select(index);
+        Log.info("Successfully updated pending procedure table");
       } catch (IndexOutOfBoundsException e) {
+        Log.severe("Unable to update pending procedure table", e);
         previousProcedureTableView.getSelectionModel().select(previousProcedures.size() - 1);
       }
     } else {
       try {
         previousProcedureTableView.getSelectionModel().select(index);
+        Log.info("Successfully updated previous procedure table");
       } catch (IndexOutOfBoundsException e) {
+        Log.severe("Unable to update previous procedure table", e);
         pendingProcedureTableView.getSelectionModel().select(pendingProcedures.size() - 1);
       }
     }
@@ -213,15 +218,18 @@ public class ProcedureTabController {
     memento.setOldObject(currentUser.clone());
     String procedureName = procedureTextField.getText();
     if (procedureName.isEmpty()) {
+      Log.warning("Failed to add procedure as user input is invalid ");
       procedureWarningLabel.setText("A name must be entered for a procedure");
       return;
     }
     LocalDate procedureDate = procedureDateSelector.getValue();
     if (procedureDate == null) {
+      Log.warning("Failed to add procedure as user input is invalid ");
       procedureWarningLabel.setText("A valid date must be entered for a procedure");
       return;
     }
     if (procedureDate.isBefore(currentUser.getDateOfBirth())) {
+      Log.warning("Failed to add procedure as user input is invalid ");
       procedureWarningLabel.setText("Procedures may not occur before a patient has been born");
       return;
     }
@@ -237,6 +245,7 @@ public class ProcedureTabController {
     application.update(currentUser);
     memento.setNewObject(currentUser.clone());
     currentUser.getUndoStack().push(memento);
+    Log.info("Successfully added procedure");
   }
 
   /**
@@ -251,14 +260,17 @@ public class ProcedureTabController {
     LocalDate newDate = procedureDateSelector.getValue();
     String newDescription = descriptionTextArea.getText();
     if (newName.isEmpty()) {
+      Log.warning("Failed to update procedure as user input is invalid");
       procedureWarningLabel.setText("A name must be entered for a procedure");
       return;
     }
     if (newDate == null) {
+      Log.warning("Failed to update procedure as user input is invalid");
       procedureWarningLabel.setText("A valid date must be entered for a procedure");
       return;
     }
     if (newDate.isBefore(currentUser.getDateOfBirth())) {
+      Log.warning("Failed to update procedure as user input is invalid");
       procedureWarningLabel.setText("Procedures may not occur before a patient has been born");
       return;
     }
@@ -273,6 +285,7 @@ public class ProcedureTabController {
     }
     memento.setNewObject(currentUser.clone());
     currentUser.getUndoStack().push(memento);
+    Log.info("Successfully updated procedure");
   }
 
   /**
@@ -337,6 +350,7 @@ public class ProcedureTabController {
     organsAffectedByProcedureListView.setItems(FXCollections.observableList(new ArrayList<>()));
     modifyOrgansProcedureButton.setVisible(false);
     currentProcedureList = null;
+    Log.info("Successfully cleared procedure");
   }
 
   /**
@@ -356,10 +370,13 @@ public class ProcedureTabController {
       currentUser
           .removeMedicalProcedure(pendingProcedureTableView.getSelectionModel().getSelectedItem());
       pendingProcedures.remove(pendingProcedureTableView.getSelectionModel().getSelectedItem());
+    } else {
+      Log.warning("Failed to remove procedure as no procedure is selected");
     }
     application.update(currentUser);
     memento.setNewObject(currentUser.clone());
     currentUser.getUndoStack().push(memento);
+    Log.info("Successfully removed procedure");
   }
 
   /**
@@ -384,7 +401,9 @@ public class ProcedureTabController {
       memento.setNewObject(currentUser.clone());
       currentUser.getUndoStack().push(memento);
       showProcedure(procedure);
+      Log.info("Successfully launched Modify Procedure Organs window");
     } catch (IOException e) {
+      Log.severe("unable to launch Modify Procedure Organs window", e);
       e.printStackTrace();
     }
   }
