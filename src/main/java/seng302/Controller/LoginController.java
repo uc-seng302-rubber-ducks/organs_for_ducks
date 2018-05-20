@@ -240,7 +240,7 @@ public class LoginController {
         helpStage.setResizable(false);
         helpStage.setOnCloseRequest(event -> helpStage = null);
         helpStage.show();
-
+        Log.info("Successfully launched help window");
       } catch (Exception e) {
         Log.severe("could not load help window", e);
         e.printStackTrace();
@@ -267,7 +267,9 @@ public class LoginController {
         stage.setTitle("Administrator");
         AdministratorViewController administratorViewController = adminLoader.getController();
         administratorViewController.init(new Administrator(), appController, stage);
+        Log.info("Successfully launched CLI");
       } catch (IOException e) {
+        Log.severe("could not load CLI", e);
         e.printStackTrace();
       }
     }

@@ -219,10 +219,10 @@ public class DonorOverviewController {
       stage.setScene(new Scene(root));
       updateUserController.init(currentUser, application, stage);
       stage.show();
-      Log.info("Successfully launched update user window");
+      Log.info("Successfully launched update user window for User NHI: "+currentUser.getNhi());
 
     } catch (IOException e) {
-      Log.severe("Failed to load update user window", e);
+      Log.severe("Failed to load update user window for User NHI: "+currentUser.getNhi(), e);
       e.printStackTrace();
     }
   }
@@ -234,7 +234,7 @@ public class DonorOverviewController {
   private void closeWindow() {
     application.update(currentUser);
     stage.close();
-    Log.info("Successfully closed update user window");
+    Log.info("Successfully closed update user window for User NHI: "+currentUser.getNhi());
   }
 
   /**
@@ -248,7 +248,7 @@ public class DonorOverviewController {
 
     if (result.get() == ButtonType.OK) {
       application.deleteDonor(currentUser);
-      Log.info("Successfully deleted user profile");
+      Log.info("Successfully deleted user profile for User NHI: "+currentUser.getNhi());
       if (!Clinician) {
         logout();
       }
@@ -271,10 +271,9 @@ public class DonorOverviewController {
       stage.setScene(new Scene(root));
       stage.hide();
       stage.show();
-      Log.info("user Successfully logged out");
-      Log.info("successfully launched login window");
+      Log.info("successfully launched login window after logged out for User NHI: "+currentUser.getNhi());
     } catch (IOException e) {
-      Log.severe("failed to launch login window", e);
+      Log.severe("failed to launch login window after logged out for User NHI: "+currentUser.getNhi(), e);
       e.printStackTrace();
     }
 
