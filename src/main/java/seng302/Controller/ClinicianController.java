@@ -457,9 +457,9 @@ public class ClinicianController {
             AppController.getInstance().setUserController(userController);
             userController.init(AppController.getInstance(), user, donorStage, true);
             donorStage.show();
-            Log.info("successfully launched user overview window");
+            Log.info("Clinician "+clinician.getStaffId()+" successfully launched user overview window");
         } catch (IOException e) {
-            Log.severe("Failed to load user overview window", e);
+            Log.severe("Clinician "+clinician.getStaffId()+" Failed to load user overview window", e);
             e.printStackTrace();
         }
     }
@@ -669,7 +669,7 @@ public class ClinicianController {
     clinician.undo();
     undoButton.setDisable(clinician.getUndoStack().empty());
     showClinician(clinician);
-    Log.info("undo executed");
+    Log.info("Clinician "+clinician.getStaffId()+" executed undo clinician");
   }
 
   /**
@@ -680,7 +680,7 @@ public class ClinicianController {
     clinician.redo();
     redoButton.setDisable(clinician.getRedoStack().empty());
     showClinician(clinician);
-      Log.info("redo executed");
+      Log.info("Clinician "+clinician.getStaffId()+" executed redo clinician");
   }
 
   /**
@@ -699,9 +699,9 @@ public class ClinicianController {
       stage.show();
       stage.hide();
       stage.show();
-      Log.info("successfully launched login window");
+      Log.info("Clinician "+clinician.getStaffId()+" successfully launched login window after logout");
     } catch (IOException e) {
-        Log.severe("failed to launch login window", e);
+        Log.severe("Clinician "+clinician.getStaffId()+" failed to launch login window after logout", e);
       e.printStackTrace();
     }
   }
@@ -722,9 +722,9 @@ public class ClinicianController {
             newStage.initModality(Modality.APPLICATION_MODAL); // background window is no longer selectable
             newStage.showAndWait();
             showClinician(clinician);
-            Log.info("successfully launched update clinician window");
+            Log.info("Clinician "+clinician.getStaffId()+" successfully launched update clinician window");
         } catch (IOException e) {
-            Log.severe("failed to launch update clinician window", e);
+            Log.severe("Clinician "+clinician.getStaffId()+" failed to launch update clinician window", e);
             e.printStackTrace();
         }
     }
@@ -762,9 +762,9 @@ public class ClinicianController {
           deletedUserController.init();
           stage.initModality(Modality.APPLICATION_MODAL);
           stage.showAndWait();
-          Log.info("successfully launched delete user window");
+          Log.info("Clinician "+clinician.getStaffId()+" successfully launched delete user window");
       } catch (IOException e) {
-          Log.severe("failed to launch delete user window", e);
+          Log.severe("Clinician "+clinician.getStaffId()+" failed to launch delete user window", e);
           e.printStackTrace();
       }
   }
