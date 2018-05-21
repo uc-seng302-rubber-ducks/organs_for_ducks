@@ -197,6 +197,9 @@ public class AdministratorViewController {
     private CheckBox intestineCheckBox;
 
     @FXML
+    private Label donorStatusLabel;
+
+    @FXML
     private TextField regionSearchTextField;
     //</editor-fold>
 
@@ -292,6 +295,10 @@ public class AdministratorViewController {
             adminTableView.setVisible(true);
             userTableView.setVisible(false);
             activeTableView = adminTableView;
+            donorStatusLabel.setVisible(false);
+            donorFilterCheckBox.setVisible(false);
+            receiverFilterCheckBox.setVisible(false);
+            allCheckBox.setVisible(false);
 
         }));
 
@@ -302,6 +309,10 @@ public class AdministratorViewController {
             adminTableView.setVisible(false);
             userTableView.setVisible(true);
             activeTableView = userTableView;
+            donorStatusLabel.setVisible(true);
+            donorFilterCheckBox.setVisible(true);
+            receiverFilterCheckBox.setVisible(true);
+            allCheckBox.setVisible(true);
 
         }));
 
@@ -312,6 +323,10 @@ public class AdministratorViewController {
             adminTableView.setVisible(false);
             userTableView.setVisible(false);
             activeTableView = clinicianTableView;
+            donorStatusLabel.setVisible(false);
+            donorFilterCheckBox.setVisible(false);
+            receiverFilterCheckBox.setVisible(false);
+            allCheckBox.setVisible(false);
 
         }));
 
@@ -485,7 +500,7 @@ public class AdministratorViewController {
      * @return filtered list with filter applied
      */
     private FilteredList<User> filter(FilteredList<User> fListUsers) {
-        setTextFieldListener(searchTextField, fListUsers);
+        setTextFieldListener(adminSearchField, fListUsers);
         setTextFieldListener(regionSearchTextField, fListUsers);
         setCheckBoxListener(donorFilterCheckBox, fListUsers);
         setCheckBoxListener(receiverFilterCheckBox, fListUsers);
@@ -531,7 +546,6 @@ public class AdministratorViewController {
             boolean regionMatch = AttributeValidation.checkRegionMatches(regionSearchTextField.getText(), user);
             boolean genderMatch = AttributeValidation.checkGenderMatches(genderComboBox.getValue().toString(), user);
 
-            //System.out.println(user);
             if (AttributeValidation.checkTextMatches(lowerCaseFilterText, user.getFirstName()) ||
                     AttributeValidation.checkTextMatches(lowerCaseFilterText, user.getLastName()) &&
                             (regionMatch) && (genderMatch) &&
