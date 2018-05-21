@@ -274,7 +274,7 @@ public class NewUserController {
         valid &= (AttributeValidation.checkString(ecRelationshipInput.getText()));
 
         // the name and cell number are required if any other attributes are filled out
-        if (!(eName.isEmpty() || eCellPhone.isEmpty()) && valid) {
+        if ((eName.isEmpty() != eCellPhone.isEmpty()) && valid) {
             throw new InvalidFieldsException(); // Throws invalid field exception if inputs are found to be invalid
         } else {
             EmergencyContact contact = new EmergencyContact("", "", user);

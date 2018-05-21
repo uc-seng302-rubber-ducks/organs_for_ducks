@@ -67,7 +67,7 @@ public class AttributeValidation {
      */
     public static boolean checkString(String attribute) {
         assert attribute != null;
-        return (attribute.matches("[a-zA-Z '\\-]*"));
+        return (attribute.matches("[a-zA-Z '\\-0-9]*"));
     }
 
     /**
@@ -77,7 +77,7 @@ public class AttributeValidation {
      */
     public static boolean checkRequiredString(String attribute) {
         assert attribute != null;
-        return (attribute.matches("[a-zA-Z '\\-]+"));
+        return (attribute.matches("[a-zA-Z '\\-0-9]+"));
     }
 
     /**

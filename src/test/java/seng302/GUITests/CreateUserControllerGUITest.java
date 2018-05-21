@@ -23,11 +23,6 @@ public class CreateUserControllerGUITest extends ApplicationTest {
     CommonTestMethods.runHeadless();
   }
 
-//  @Before
-//  public void setup() throws Exception {
-//    ApplicationTest.launch(App.class);
-//  }
-
   @Before
   public void setUpCreateScene() throws TimeoutException {
     FxToolkit.registerPrimaryStage();
@@ -164,7 +159,7 @@ public class CreateUserControllerGUITest extends ApplicationTest {
     clickOn("#phoneInput");
     write("asdf",  0);
     clickOn("#confirmButton");
-    //TODO: Check that an invalid label is shown
+    verifyThat("#errorLabel", Node::isVisible);
   }
 
   @Test @Ignore
@@ -178,7 +173,7 @@ public class CreateUserControllerGUITest extends ApplicationTest {
     clickOn("#emailInput");
     write("asdf",  0);
     clickOn("#confirmButton");
-    //TODO: Check that an invalid label is shown
+    verifyThat("#errorLabel", Node::isVisible);
   }
 
   @Test @Ignore
@@ -192,7 +187,7 @@ public class CreateUserControllerGUITest extends ApplicationTest {
     clickOn("#cellInput");
     write("asdf",  0);
     clickOn("#confirmButton");
-    //TODO: Check that an invalid label is shown
+    verifyThat("#errorLabel", Node::isVisible);
   }
 
   @Test

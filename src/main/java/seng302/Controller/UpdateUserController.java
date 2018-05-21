@@ -554,7 +554,7 @@ public class UpdateUserController {
       valid &= AttributeValidation.checkString(eRelationship);
 
       // the name and cell number are required if any other attributes are filled out
-      if (!(eName.isEmpty() || emergencyCell.isEmpty()) && !valid) {
+      if ((eName.isEmpty() != emergencyCell.isEmpty()) && !valid) {
         errorLabel.setText("Name and cell phone number are required for an emergency contact.");
         errorLabel.setVisible(true);
         throw new InvalidFieldsException();

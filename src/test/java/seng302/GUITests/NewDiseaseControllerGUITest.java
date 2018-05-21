@@ -68,6 +68,7 @@ public class NewDiseaseControllerGUITest extends ApplicationTest {
         //Use default date
         clickOn("#createButton");
         assertEquals("A1", getCellValue("#currentDiseaseTableView", 1, 1).toString());
+
     }
 
     @Test
