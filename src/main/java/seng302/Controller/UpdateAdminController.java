@@ -42,7 +42,7 @@ public class UpdateAdminController {
   private Stage stage;
   private boolean valid;
   private boolean newAdmin;
-  private Administrator oldAdmin;
+  private Administrator adminClone;
   private int undoMarker;
   private AppController appController;
   private  AdministratorViewController adminViewController;
@@ -67,8 +67,8 @@ public class UpdateAdminController {
     errorLabel.setText("");
 
     if (!newAdmin) {
-      oldAdmin = admin.clone();
-      undoMarker = admin.getUndoStack().size();
+      adminClone = admin.clone();
+      undoMarker = adminClone.getUndoStack().size();
 
       undoAdminUpdateButton.setDisable(true);
       redoAdminUpdateButton.setDisable(true);
@@ -111,8 +111,8 @@ public class UpdateAdminController {
 //      admin.getRedoStack().clear();
     }
 
-    undoAdminUpdateButton.setDisable(admin.getUndoStack().size() <= undoMarker);
-    redoAdminUpdateButton.setDisable(admin.getRedoStack().isEmpty());
+    undoAdminUpdateButton.setDisable(adminClone.getUndoStack().size() <= undoMarker);
+    redoAdminUpdateButton.setDisable(adminClone.getRedoStack().isEmpty());
   }
 
 
@@ -127,33 +127,33 @@ public class UpdateAdminController {
   private boolean updateAdminDetails(String username, String firstName, String middleName, String lastName) {
     boolean changed = false;
 
-    if (!admin.getUserName().equals(username)) {
-      admin.setUserName(username);
+    if (!adminClone.getUserName().equals(username)) {
+      adminClone.setUserName(username);
       changed = true;
     }
 
-    if (!admin.getFirstName().equals(firstName)) {
-      admin.setFirstName(firstName);
+    if (!adminClone.getFirstName().equals(firstName)) {
+      adminClone.setFirstName(firstName);
       changed = true;
     }
 
-    if (admin.getMiddleName() != null ) {
-      if (!admin.getMiddleName().equals(middleName)) {
-        admin.setMiddleName(middleName);
+    if (adminClone.getMiddleName() != null ) {
+      if (!adminClone.getMiddleName().equals(middleName)) {
+        adminClone.setMiddleName(middleName);
         changed = true;
       }
     } else {
       if (!middleName.isEmpty()) {
-        admin.setMiddleName(middleName);
+        adminClone.setMiddleName(middleName);
         changed = true;
       }
     }
 
-    if (admin.getLastName() != null && !admin.getLastName().equals(username)) {
-      admin.setLastName(lastName);
+    if (adminClone.getLastName() != null && !adminClone.getLastName().equals(username)) {
+        adminClone.setLastName(lastName);
       changed = true;
-    } else if (admin.getLastName() == null && !lastName.isEmpty()) {
-      admin.setLastName(lastName);
+    } else if (adminClone.getLastName() == null && !lastName.isEmpty()) {
+      adminClone.setLastName(lastName);
       changed = true;
     }
 
@@ -166,15 +166,19 @@ public class UpdateAdminController {
      * If the attributes are null, then the fields are set as empty strings.
      */
   private void prefillFields(){
-    usernameTextField.setText(admin.getUserName());
-    firstNameTextField.setText(admin.getFirstName());
+    usernameTextField.setText(adminClone.getUserName());
+    firstNameTextField.setText(adminClone.getFirstName());
 
-    if (admin.getMiddleName() != null) {
-      middleNameTextField.setText(admin.getMiddleName());
+    if (adminClone.getMiddleName() != null) {
+      middleNameTextField.setText(adminClone.getMiddleName());
+    } else {
+      middleNameTextField.setText("");
     }
 
-    if (admin.getLastName() != null) {
-      lastNameTextField.setText(admin.getLastName());
+    if (adminClone.getLastName() != null) {
+      lastNameTextField.setText(adminClone.getLastName());
+    } else {
+      lastNameTextField.setText("");
     }
   }
 
@@ -214,11 +218,11 @@ public class UpdateAdminController {
    *checks that all input is valid then updates the Admin
    */
   @FXML
-  private void confirmUpdate(){
+  private void confirmUpdate() {
     updateAdmin();
     if (valid) {
     try {
-      adminViewController.displayDetails(admin);
+      adminViewController.displayDetails(adminClone);
     } catch (NullPointerException ex) {
       Log.warning(ex.getMessage(), ex);
       //the text fields etc. are all null
@@ -229,16 +233,16 @@ public class UpdateAdminController {
 
   @FXML
   public void redoAdminUpdate() {
-    admin.redo();
-    redoAdminUpdateButton.setDisable(admin.getRedoStack().isEmpty());
+    adminClone.redo();
+    redoAdminUpdateButton.setDisable(adminClone.getRedoStack().isEmpty());
     prefillFields();
 
   }
 
   @FXML
   public void undoAdminUpdate() {
-    admin.undo();
-    undoAdminUpdateButton.setDisable(admin.getUndoStack().isEmpty());
+    adminClone.undo();
+    undoAdminUpdateButton.setDisable(adminClone.getUndoStack().isEmpty());
     prefillFields();
   }
 
@@ -251,6 +255,7 @@ public class UpdateAdminController {
    */
  @FXML
  private void cancelUpdate() {
+
    Alert alert = new Alert(Alert.AlertType.WARNING,
            "You have unsaved changes, are you sure you want to cancel?",
            ButtonType.YES, ButtonType.NO);
@@ -262,12 +267,10 @@ public class UpdateAdminController {
    if (result.get() == ButtonType.YES) {
 
 
-     removeFormChanges(0, admin, undoMarker);
-     admin.getRedoStack().clear();
+     removeFormChanges(0, adminClone, undoMarker);
+     adminClone.getRedoStack().clear();
 
-
-     appController.updateAdmin(oldAdmin);
-     adminViewController.displayDetails(oldAdmin);
+     adminViewController.displayDetails(admin);
      stage.close();
    }
 
