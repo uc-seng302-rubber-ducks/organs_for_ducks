@@ -8,4 +8,4 @@ Feature: Dead users should be deleted from the transplant waiting list
   Scenario: A deceased user should not be in the transplant waiting list
     Given The user is alive
     When The user is updated to have died on "2/10/2003"
-    Then the donor should not be contained within the transplant waiting list
+    Then the user should not be contained within the transplant waiting list

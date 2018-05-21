@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.List;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -30,9 +31,6 @@ import seng302.Model.Administrator;
 import seng302.Model.Clinician;
 import seng302.Model.JsonHandler;
 import seng302.Model.User;
-
-import java.util.List;
-
 import seng302.Service.Log;
 import seng302.View.CLI;
 
@@ -232,7 +230,7 @@ public class AdministratorViewController {
 
         userTableView.setOnMouseClicked(event -> {
             if(event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
-                launchDonor(userTableView.getSelectionModel().getSelectedItem());
+                launchUser(userTableView.getSelectionModel().getSelectedItem());
             }
         });
 
@@ -359,7 +357,7 @@ public class AdministratorViewController {
         filename = FileSelectorController.getFileSelector(stage);
         if (filename != null) {
             List<User> users = JsonHandler.loadUsers(filename);
-            System.out.println(users.size() + " donors were successfully loaded");
+            System.out.println(users.size() + " users were successfully loaded");
         }
     }
 
@@ -378,33 +376,33 @@ public class AdministratorViewController {
     @FXML
     void addUser() {
 
-        FXMLLoader donorLoader = new FXMLLoader(getClass().getResource("/FXML/createNewUser.fxml"));
+        FXMLLoader userLoader = new FXMLLoader(getClass().getResource("/FXML/createNewUser.fxml"));
         Parent root;
         try {
-            root = donorLoader.load();
+            root = userLoader.load();
             Stage newStage = new Stage();
             newStage.setScene(new Scene(root));
             newStage.setTitle("Create New User Profile");
             newStage.show();
-            NewUserController donorController = donorLoader.getController();
-            donorController.init(AppController.getInstance(), stage, newStage);
+            NewUserController userController = userLoader.getController();
+            userController.init(AppController.getInstance(), stage, newStage);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     /**
-     * Launches the donor overview screen for a selected user
+     * Launches the user overview screen for a selected user
      * @param user the selected user.
      */
-    private void launchDonor(User user) {
-        FXMLLoader donorLoader = new FXMLLoader(getClass().getResource("/FXML/userView.fxml"));
+    private void launchUser(User user) {
+        FXMLLoader userLoader = new FXMLLoader(getClass().getResource("/FXML/userView.fxml"));
         Parent root;
         try {
-            root = donorLoader.load();
+            root = userLoader.load();
             Stage newStage = new Stage();
             newStage.setScene(new Scene(root));
-            UserController userController = donorLoader.getController();
+            UserController userController = userLoader.getController();
             AppController.getInstance().setUserController(userController);
             userController.init(AppController.getInstance(), user, newStage, true);
             newStage.show();
@@ -540,13 +538,13 @@ public class AdministratorViewController {
         if (!administrator.getUserName().isEmpty()) {
             adminUsernameLable.setText(administrator.getUserName());
             adminFirstnameLabel.setText(administrator.getFirstName());
-            if (!administrator.getMiddleName().isEmpty()) {
+            if ((administrator.getMiddleName() != null) && !administrator.getMiddleName().isEmpty()) {
                 adminMiddleNameLabel.setText(administrator.getMiddleName());
             } else {
                 adminMiddleNameLabel.setText("");
 
             }
-            if (!administrator.getLastName().isEmpty()) {
+            if ((administrator.getLastName() != null) && !administrator.getLastName().isEmpty()) {
                 adminLastNameLabel.setText(administrator.getLastName());
             } else {
                 adminLastNameLabel.setText("");
