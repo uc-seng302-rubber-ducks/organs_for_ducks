@@ -1,10 +1,9 @@
 package seng302.Model;
 
 import com.google.gson.annotations.Expose;
-import seng302.Service.PasswordManager;
-
 import java.time.LocalDateTime;
 import java.util.Objects;
+import seng302.Service.PasswordManager;
 
 /**
  * class to model data structure for an Administrator.
@@ -33,8 +32,8 @@ public class Administrator extends Undoable<Administrator> {
      * Constructor to create a default Administrator
      */
     public Administrator() {
-        dateCreated = LocalDateTime.now();
-        dateLastModified = LocalDateTime.now();
+        this.dateCreated = LocalDateTime.now();
+        this.dateLastModified = LocalDateTime.now();
     }
 
     /**
@@ -52,8 +51,8 @@ public class Administrator extends Undoable<Administrator> {
         this.middleName = middleName;
         this.lastName = lastName;
         setPassword(password);
-        dateCreated = LocalDateTime.now();
-        dateLastModified = LocalDateTime.now();
+        this.dateCreated = LocalDateTime.now();
+        this.dateLastModified = LocalDateTime.now();
     }
 
     public LocalDateTime getDateCreated() {
@@ -187,8 +186,8 @@ public class Administrator extends Undoable<Administrator> {
         return "Administrator{" +
                 "userName='" + userName + '\'' +
                 ", name='" + getFullName() + '\'' +
-                ", dateCreated=" + dateCreated +
-                ", dateLastModified=" + dateLastModified +
+            ", dateCreated=" + dateCreated.toString() +
+            ", dateLastModified=" + dateLastModified.toString() +
                 '}';
     }
 
