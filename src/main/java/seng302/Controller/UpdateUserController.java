@@ -18,6 +18,7 @@ import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
+import seng302.Exception.InvalidFieldsException;
 import seng302.Model.EmergencyContact;
 import seng302.Model.Memento;
 import seng302.Model.User;
@@ -438,45 +439,40 @@ public class UpdateUserController {
      * Sets error messages visible if fields are invalid.
      * Calls methods to update the changes if all fields are valid.
      */
-    private boolean validateFields () {
-      boolean valid = true;
-      String nhi = AttributeValidation.validateNHI(nhiInput.getText()) ? nhiInput.getText() : "";
-      LocalDate dob = dobInput.getValue();
-      LocalDate dod = dodInput.getValue();
-
-      if (nhi == null) {
+    private boolean validateFields() {
+      boolean valid;
+      String nhi = nhiInput.getText();
+      valid = AttributeValidation.validateNHI(nhi);
+      if (!valid) {
         invalidNHI.setVisible(true);
-        valid = false;
       } else {
         User user = appController.findUser(nhi);
         if (user != null && !user.getNhi()
-            .equals(nhi)) { // if a user was found, but it is not the current user
+                .equals(nhi)) { // if a user was found, but it is not the current user
           existingNHI.setVisible(true);
           valid = false;
         }
       }
 
+      LocalDate dob = dobInput.getValue();
+      LocalDate dod = dodInput.getValue();
+
       String fName = fNameInput.getText();
-      if (fName.isEmpty()) {
+      valid &= AttributeValidation.checkRequiredString(fName);
+      if (!valid) {
         invalidFirstName.setVisible(true);
-        valid = false;
       }
 
-      if (dob == null) {
+      valid &= AttributeValidation.validateDateOfBirth(dob);
+      if (!valid) {
         invalidDOB.setVisible(true);
-        valid = false;
-      } else if (!dob.isBefore(
-          LocalDate.now().plusDays(1))) { // checks that the date of birth is before tomorrow's date
-        invalidDOB.setVisible(true);
-        valid = false;
       }
 
-      if (dod != null) {
-        boolean datesValid = AttributeValidation.validateDateOfDeath(dob,
+      if (dob != null) {
+        valid &= AttributeValidation.validateDateOfDeath(dob,
             dod); // checks if the dod is before tomorrow's date and that the dob is before the dod
-        if (!datesValid) {
+        if (!valid) {
           invalidDOD.setVisible(true);
-          valid = false;
         }
       }
 
@@ -491,101 +487,78 @@ public class UpdateUserController {
       }
 
       // validate contact info
-      String email;
-      if (!emailInput.getText().isEmpty()) {
-        email = AttributeValidation.validateEmail(emailInput.getText()) ? emailInput.getText() : "";
-
-        if (email == null) {
-          errorLabel.setVisible(true);
-          valid = false;
-        }
-      }
-
-      String homePhone;
-      if (!phoneInput.getText().isEmpty()) {
-        homePhone =
-            AttributeValidation.validatePhoneNumber(phoneInput.getText()) ? phoneInput.getText()
-                : "";
-
-        if (homePhone == null) {
-          errorLabel.setVisible(true);
-          valid = false;
-        }
-      }
-
-      String cellPhone;
-      if (!cellInput.getText().isEmpty()) {
-        cellPhone =
-            AttributeValidation.validateCellNumber(cellInput.getText()) ? cellInput.getText() : "";
-
-        if (cellPhone == null) {
-          errorLabel.setVisible(true);
-          valid = false;
-        }
-      }
-
-      // validate emergency contact info
-      String emergencyEmail =
-          AttributeValidation.checkString(ecEmailInput.getText()) ? ecEmailInput.getText() : "";
-      if (emergencyEmail != null) {
-        emergencyEmail =
-            AttributeValidation.validateEmail(ecEmailInput.getText()) ? ecEmailInput.getText() : "";
-
-        if (emergencyEmail == null) {
-          errorLabel.setVisible(true);
-          valid = false;
-        }
-      }
-
-      String emergencyPhone =
-          AttributeValidation.checkString(ecPhoneInput.getText()) ? ecPhoneInput.getText() : "";
-      if (emergencyPhone != null) {
-        emergencyPhone =
-            AttributeValidation.validatePhoneNumber(ecPhoneInput.getText()) ? ecPhoneInput.getText()
-                : "";
-
-        if (emergencyPhone == null) {
-          errorLabel.setVisible(true);
-          valid = false;
-        }
-      }
-
-      String emergencyCell =
-          AttributeValidation.checkString(ecCellInput.getText()) ? ecCellInput.getText() : "";
-      if (emergencyCell != null) {
-        emergencyCell =
-            AttributeValidation.validateCellNumber(ecCellInput.getText()) ? ecCellInput.getText()
-                : "";
-
-        if (emergencyCell == null) {
-          errorLabel.setVisible(true);
-          valid = false;
-        }
-      }
-
-      String eName =
-          AttributeValidation.checkString(ecNameInput.getText()) ? ecNameInput.getText() : "";
-      String eAddress =
-          AttributeValidation.checkString(ecAddressInput.getText()) ? ecAddressInput.getText() : "";
-      String eRegion =
-          AttributeValidation.checkString(ecRegionInput.getText()) ? ecRegionInput.getText() : "";
-      String eRelationship =
-          AttributeValidation.checkString(ecRelationshipInput.getText()) ? ecRelationshipInput
-              .getText() : "";
-
-      // the name and cell number are required if any other attributes are filled out
-      if ((eName == null || emergencyCell == null) && (emergencyPhone != null || eAddress != null
-          || eRegion != null ||
-          emergencyEmail != null || eRelationship != null || eName != null
-          || emergencyCell != null)) {
-        valid = false;
-        errorLabel.setText("Name and cell phone number are required for an emergency contact.");
+      String email = emailInput.getText();
+      valid &= AttributeValidation.validateEmail(email);
+      if (!valid) {
         errorLabel.setVisible(true);
       }
+
+      String homePhone = phoneInput.getText();
+      valid &= AttributeValidation.validatePhoneNumber(homePhone);
+      if (!valid) {
+        errorLabel.setVisible(true);
+      }
+
+      String cellPhone = cellInput.getText();
+      valid &= AttributeValidation.validateCellNumber(cellPhone);
+      if (!valid) {
+        errorLabel.setVisible(true);
+      }
+
+      try {
+        validateEmergencyContactDetails();
+      } catch (InvalidFieldsException e) {
+        valid = false;
+      }
+
       if (valid) { // only updates if everything is valid
         appController.update(currentUser);
       }
       return valid;
+    }
+
+  /**
+   * Validates the Emergency Contact Details section of the form.
+   */
+  private void validateEmergencyContactDetails() throws InvalidFieldsException {
+      boolean valid;
+      // validate emergency contact info
+      String emergencyEmail = ecEmailInput.getText();
+      valid = AttributeValidation.validateEmail(emergencyEmail);
+      if (!valid) {
+        errorLabel.setVisible(true);
+      }
+
+      String emergencyPhone = ecPhoneInput.getText();
+      valid &= AttributeValidation.validatePhoneNumber(emergencyPhone);
+      if (!valid) {
+        errorLabel.setVisible(true);
+      }
+
+      String emergencyCell = ecCellInput.getText();
+      valid &= AttributeValidation.validateCellNumber(emergencyCell);
+      if (!valid) {
+        errorLabel.setVisible(true);
+      }
+
+      String eName = ecNameInput.getText();
+      valid &= AttributeValidation.checkString(eName);
+
+      String eAddress = ecAddressInput.getText();
+      valid &= AttributeValidation.checkString(eAddress);
+
+      String eRegion = ecRegionInput.getText();
+      valid &= AttributeValidation.checkString(eRegion);
+
+      String eRelationship = ecRelationshipInput.getText();
+      valid &= AttributeValidation.checkString(eRelationship);
+
+      // the name and cell number are required if any other attributes are filled out
+      if (!(eName.isEmpty() || emergencyCell.isEmpty()) && !valid) {
+        errorLabel.setText("Name and cell phone number are required for an emergency contact.");
+        errorLabel.setVisible(true);
+        throw new InvalidFieldsException();
+      }
     }
 
   /**

@@ -45,7 +45,7 @@ public class AttributeValidation {
      * @return True if the phone number is valid, false otherwise
      */
     public static boolean validatePhoneNumber(String phoneNum) {
-        return (phoneNum.matches("^[0][34679] |-?[2-9][0-9]{2} |-?[0-9]{4}$")) || phoneNum.isEmpty();
+        return (phoneNum.matches("^[0][34679][ \\-]?[2-9][0-9]{2}[ \\-]?[0-9]{4}$")) || phoneNum.isEmpty();
     }
 
 
