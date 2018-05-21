@@ -75,7 +75,7 @@ public class ProcedureTabController {
   private UserController parent;
 
   /**
-   * Gives the donor view the application controller and hides all label and buttons that are not
+   * Gives the user view the application controller and hides all label and buttons that are not
    * needed on opening
    *
    * @param controller the application controller

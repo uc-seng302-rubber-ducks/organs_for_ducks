@@ -22,9 +22,9 @@ import seng302.Service.AttributeValidation;
 
 
 /**
- * Controller class for creating a new donor profile.
+ * Controller class for creating a new user profile.
  *
- * @author acb116, are66, eli26, jha236
+ *
  */
 public class NewUserController {
 
@@ -239,15 +239,16 @@ public class NewUserController {
             // load to the overview page
             if (stage.getTitle().matches("Administrator*")) {
                 ownStage.close();
-                FXMLLoader donorLoader = new FXMLLoader(getClass().getResource("/FXML/userView.fxml"));
+                FXMLLoader userLoader = new FXMLLoader(
+                    getClass().getResource("/FXML/userView.fxml"));
                 Parent root;
 
                 try {
-                    root = donorLoader.load();
+                    root = userLoader.load();
                     Stage userStage = new Stage();
                     userStage.setScene(new Scene(root));
                     userStage.show();
-                    UserController userController = donorLoader.getController();
+                    UserController userController = userLoader.getController();
                     userController.init(AppController.getInstance(), newUser, userStage, false);
                     userController.diableLogout();
 
@@ -255,14 +256,15 @@ public class NewUserController {
                     e.printStackTrace();
                 }
             } else {
-                FXMLLoader donorLoader = new FXMLLoader(getClass().getResource("/FXML/userView.fxml"));
+                FXMLLoader userLoader = new FXMLLoader(
+                    getClass().getResource("/FXML/userView.fxml"));
                 Parent root;
 
                 try {
-                    root = donorLoader.load();
+                    root = userLoader.load();
                     stage.setScene(new Scene(root));
                     ownStage.close();
-                    UserController userController = donorLoader.getController();
+                    UserController userController = userLoader.getController();
                     userController.init(AppController.getInstance(), newUser, stage, false);
 
                 } catch (IOException e) {
