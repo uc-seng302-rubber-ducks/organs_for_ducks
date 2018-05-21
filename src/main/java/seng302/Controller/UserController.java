@@ -65,7 +65,7 @@ public class UserController {
   private AppController application;
 
   @FXML
-  private DonorOverviewController userProfileTabPageController;
+  private UserOverviewController userProfileTabPageController;
 
   @FXML
   private MedicationTabController medicationTabPageController;
