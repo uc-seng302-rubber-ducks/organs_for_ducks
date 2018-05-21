@@ -1,12 +1,18 @@
 package seng302.Model;
 
 import com.google.gson.annotations.Expose;
-import javafx.collections.FXCollections;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Stack;
+import javafx.collections.FXCollections;
 
 /**
  * Class for handling calls to user
@@ -220,7 +226,7 @@ public class User extends Undoable<User> {
 
 
     /**
-     * empty constructor to allow an empty donor to be created for the gui
+     * empty constructor to allow an empty user to be created for the gui
      */
     public User() {
         timeCreated = LocalDateTime.now();
@@ -319,7 +325,7 @@ public class User extends Undoable<User> {
     }
 
     /**
-     * Utility function to update the last modified timestamp when a change is made to a donor. Can be
+     * Utility function to update the last modified timestamp when a change is made to a user. Can be
      * changed later to allow writing to the JSON change log later
      */
     public void updateLastModified() {
