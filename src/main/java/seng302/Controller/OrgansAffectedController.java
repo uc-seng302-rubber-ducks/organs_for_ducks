@@ -74,9 +74,9 @@ public class OrgansAffectedController {
             currentProcedure.addOrgan(toAffect);
             affectedOrgansListView.setItems(FXCollections.observableList(currentProcedure.getOrgansAffected()));
             organsListView.getItems().remove(toAffect);
-            Log.info("Successfully added the selected organ to the affected list for the current medical procedure");
+            Log.info("Successfully added the selected organ: "+toAffect+" to the affected list at current medical procedure for User NHI: "+user.getNhi());
         } else {
-            Log.warning("Unable to add the organ to the affected list as there is no organ selected");
+            Log.warning("Unable to add the organ: null to the affected list for User NHI: "+user.getNhi());
         }
     }
 
@@ -90,9 +90,9 @@ public class OrgansAffectedController {
             currentProcedure.removeOrgan(toAffect);
             affectedOrgansListView.setItems(FXCollections.observableList(currentProcedure.getOrgansAffected()));
             organsListView.getItems().add(toAffect);
-            Log.info("Successfully removed the selected organ from the affected list for the current medical procedure");
+            Log.info("Successfully removed the selected organ: "+toAffect+"  from the affected list for the current medical procedure for User NHI: "+user.getNhi());
         } else {
-            Log.warning("Unable to remove the organ from the affected list as there is no organ selected");
+            Log.warning("Unable to remove the organ: null from the affected list");
         }
     }
 

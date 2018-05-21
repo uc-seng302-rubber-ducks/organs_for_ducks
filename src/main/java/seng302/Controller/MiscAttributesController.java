@@ -6,6 +6,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import seng302.Model.User;
+import seng302.Service.Log;
 
 /**
  * Class for controlling the miscellaneous attributes view
@@ -46,11 +47,13 @@ public class MiscAttributesController {
     String toAdd = attributeTextFeild.getText();
     attributeTextFeild.setText("");
     if (toAdd == null) {
+      Log.warning("Unable to add miscellaneous attribute for User NHI: " +currentUser.getNhi() +"as attribute string is empty");
       return;
     }
     currentUser.addAttribute(toAdd);
     attributesList.setItems(FXCollections.observableList(currentUser.getMiscAttributes()));
     appController.update(currentUser);
+    Log.info("Successfully to added miscellaneous attribute for User NHI: " +currentUser.getNhi());
   }
 
   /**
@@ -62,6 +65,7 @@ public class MiscAttributesController {
     attributesList.getItems().remove(selected);
     currentUser.removeMiscAttribute(selected);
     appController.update(currentUser);
+    Log.info("Successfully to removed miscellaneous attribute for User NHI: " +currentUser.getNhi());
   }
 
   /**
@@ -73,10 +77,12 @@ public class MiscAttributesController {
     UserController userController = appController.getUserController();
     try {
       userController.showUser(currentUser);
+      Log.info("Successfully to closed MiscAttributes window for User NHI: " +currentUser.getNhi());
     }
     catch (NullPointerException ex) {
       //TODO causes npe if donor is new in this session
       //the text fields etc. are all null
+      Log.severe("unable to display user profile for User NHI: " +currentUser.getNhi()+" when closing MiscAttributes window", ex);
     }
     stage.close();
   }

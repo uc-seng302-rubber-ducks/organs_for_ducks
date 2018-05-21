@@ -137,15 +137,15 @@ public class ReceiverTabController {
           }
         });
         parent.updateUndoRedoButtons();
-        Log.info("Successfully registered organ for receiver");
+        Log.info("Successfully registered organ:"+ toRegister.organName +" for receiver NHI: "+currentUser.getNhi());
       } else {
-        Log.warning("Unable to register organ for receiver as organ "+ toRegister.organName +" has already been registered");
+        Log.warning("Unable to register organ for receiver as organ: "+ toRegister.organName +" has already been registered for receiver NHI: "+currentUser.getNhi());
       }
 
       parent.refreshCurrentlyDonating();
       currentlyReceivingListView.refresh();
     } else {
-      Log.warning("Unable to register organ for receiver as no organ selected");
+      Log.warning("Unable to register organ: null for receiver NHI: "+currentUser.getNhi());
     }
   }
 
@@ -160,7 +160,7 @@ public class ReceiverTabController {
       currentUser.getReceiverDetails().startWaitingForOrgan(toReRegister);
       notReceivingListView.getItems().remove(toReRegister);
       AppController.getInstance().getClinicianController().refreshTables();
-      Log.info("Successfully re-registered organ for receiver");
+      Log.info("Successfully re-registered organ:"+ toReRegister.organName +" for receiver NHI: "+currentUser.getNhi());
       if (currentUser.getReceiverDetails().isDonatingThisOrgan(toReRegister)) {
         currentUser.getCommonOrgans().add(toReRegister);
       }
@@ -179,7 +179,7 @@ public class ReceiverTabController {
       });
       parent.updateUndoRedoButtons();
     } else {
-      Log.warning("Unable to re-register organ for receiver as no organ selected");
+      Log.warning("Unable to re-register organ: null for receiver as no organ selected for receiver NHI: "+currentUser.getNhi());
     }
 
     parent.refreshCurrentlyDonating();
@@ -205,9 +205,9 @@ public class ReceiverTabController {
         deregisterOrganReasonController.init(toDeRegister, parent, currentUser, application, stage);
         stage.setScene(new Scene(root));
         stage.show();
-        Log.info("Successfully launched deregister organ reason window");
+        Log.info("Successfully launched deregister organ reason window for receiver NHI: "+currentUser.getNhi());
       } catch (IOException e) {
-        Log.severe("unable to launch deregister organ reason window", e);
+        Log.severe("unable to launch deregister organ reason window for receiver NHI: "+currentUser.getNhi(), e);
         e.printStackTrace();
       }
     }
@@ -304,9 +304,9 @@ public class ReceiverTabController {
           .getController();
       receiverOrganDateController.init(currentUser, stage, organs);
       stage.show();
-      Log.info("Successfully launched register and deregister time table window");
+      Log.info("Successfully launched register and deregister time table window for receiver NHI: "+currentUser.getNhi());
     } catch (IOException e) {
-      Log.severe("unable to launch register and deregister time table window", e);
+      Log.severe("unable to launch register and deregister time table window for receiver NHI: "+currentUser.getNhi(), e);
       e.printStackTrace();
     }
   }
@@ -321,11 +321,11 @@ public class ReceiverTabController {
 
       if (organDeregisterationReason == OrganDeregisterReason.TRANSPLANT_RECEIVED) {
         currentUser.getReceiverDetails().stopWaitingForOrgan(toDeRegister);
-        Log.info("Successfully de-registered organ for receiver");
+        Log.info("Successfully de-registered organ:"+ toDeRegister.organName +" for receiver NHI: "+currentUser.getNhi());
 
       } else if (organDeregisterationReason == OrganDeregisterReason.REGISTRATION_ERROR) {
         currentUser.getReceiverDetails().stopWaitingForOrgan(toDeRegister);
-        Log.info("Successfully de-registered organ for receiver");
+        Log.info("Successfully de-registered organ:"+ toDeRegister.organName +" for receiver NHI: "+currentUser.getNhi());
         currentUser.getChanges().add(new Change(
             "Initial registering of the organ " + toDeRegister.organName
                 + " was an error for receiver " + currentUser.getFullName()));
@@ -333,7 +333,7 @@ public class ReceiverTabController {
       } else if (organDeregisterationReason == OrganDeregisterReason.DISEASE_CURED) {
         //refresh diseases table
         currentUser.getReceiverDetails().stopWaitingForOrgan(toDeRegister);
-        Log.info("Successfully de-registered organ for receiver");
+        Log.info("Successfully de-registered organ:"+ toDeRegister.organName +" for receiver NHI: "+currentUser.getNhi());
         parent.refreshDiseases();
 
       } else if (organDeregisterationReason == OrganDeregisterReason.RECEIVER_DIED) {
@@ -374,7 +374,7 @@ public class ReceiverTabController {
       currentlyReceivingListView.refresh();
       AppController.getInstance().getClinicianController().refreshTables();
     } else {
-      Log.warning("Unable to de-register organ for receiver as no organ selected");
+      Log.warning("Unable to de-register organ: null for receiver NHI: "+currentUser.getNhi());
     }
   }
 

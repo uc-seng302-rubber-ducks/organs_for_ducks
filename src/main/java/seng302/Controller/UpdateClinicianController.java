@@ -319,9 +319,9 @@ public class UpdateClinicianController {
                     clinicianStage.setScene(new Scene(root));
                     clinicianStage.show();
                     ownStage.close();
-                    Log.info("successfully launched clinician overview window");
+                    Log.info("successfully launched clinician overview window for Clinician Staff Id: "+clinician.getStaffId());
                 } catch (IOException e) {
-                    Log.severe("failed to load clinician overview window", e);
+                    Log.severe("failed to load clinician overview window for Clinician Staff Id: "+clinician.getStaffId(), e);
                     e.printStackTrace();
                 }
 
@@ -336,9 +336,9 @@ public class UpdateClinicianController {
                     stage.setScene(new Scene(root));
                     stage.show();
                     ownStage.close();
-                    Log.info("successfully launched clinician overview window");
+                    Log.info("successfully launched clinician overview window for Clinician Staff Id: "+clinician.getStaffId());
                 } catch (IOException e) {
-                    Log.severe("failed to load clinician overview window", e);
+                    Log.severe("failed to load clinician overview window for Clinician Staff Id: "+clinician.getStaffId(), e);
                     e.printStackTrace();
                 }
             }
@@ -363,7 +363,7 @@ public class UpdateClinicianController {
 
                 Optional<ButtonType> result = alert.showAndWait();
                 if (result.get() == ButtonType.YES) {
-                    Log.info("user update cancelled");
+                    Log.info("Clinician update cancelled for Clinician Staff Id: "+currentClinician.getStaffId());
                     removeFormChanges(0);
                     currentClinician.getRedoStack().clear();
                     controller.updateClinicians(oldClinician);
@@ -373,7 +373,7 @@ public class UpdateClinicianController {
             } else { // has no changes
                 currentClinician.getRedoStack().clear();
                 ownStage.close();
-                Log.info("user update has no changes");
+                Log.info("no changes made to Clinician Staff Id: "+currentClinician.getStaffId());
             }
 
         } else {
@@ -498,7 +498,7 @@ public class UpdateClinicianController {
             currentClinician.getRedoStack().clear();
             controller.updateClinicians(currentClinician); // saves the clinician
             ownStage.close(); // returns to the clinician overview window
-            Log.info("Clinician updated.");
+            Log.info("Clinician updated for Clinician Staff Id: "+staffID);
 
         } else if (valid && newClinician) { // creates a new clinician
             Clinician clinician = new Clinician(staffID, password, fName, mName, lName, address, region);
@@ -506,7 +506,7 @@ public class UpdateClinicianController {
             loadOverview(clinician);
 
         } else {
-            Log.warning("Clinician not updated.");
+            Log.warning("Clinician not updated for Clinician Staff Id: "+staffID);
         }
     }
 
@@ -576,7 +576,7 @@ public class UpdateClinicianController {
     currentClinician.redo();
     redoClinicianFormButton.setDisable(currentClinician.getRedoStack().isEmpty());
     prefillFields(currentClinician);
-    Log.info("Redo executed.");
+    Log.info("Redo executed for Clinician Staff Id: "+currentClinician.getStaffId());
   }
 
 
@@ -588,6 +588,6 @@ public class UpdateClinicianController {
     currentClinician.undo();
     undoClinicianFormButton.setDisable(currentClinician.getUndoStack().size() <= undoMarker);
     prefillFields(currentClinician);
-    Log.info("Undo executed.");
+    Log.info("Undo executed for Clinician Staff Id: "+currentClinician.getStaffId());
   }
 }

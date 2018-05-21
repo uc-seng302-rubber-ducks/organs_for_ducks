@@ -112,12 +112,12 @@ public class DeregisterOrganReasonController {
         UserController userController = appController.getUserController();
         try {
             userController.showUser(currentUser);
-            Log.info("cancelled organ de-registration for Receiver with NHI: "+currentUser.getNhi());
+            Log.info("cancelled organ: "+toDeRegister.organName+" de-registration for Receiver with NHI: "+currentUser.getNhi());
         }
         catch (NullPointerException ex) {
             //TODO causes npe if donor is new in this session
             //the text fields etc. are all null
-            Log.severe("unable to cancel organ de-registration for Receiver with NHI: "+currentUser.getNhi(), ex);
+            Log.severe("unable to cancel organ: "+toDeRegister.organName+"  de-registration for Receiver with NHI: "+currentUser.getNhi(), ex);
         }
         stage.close();
     }
@@ -129,7 +129,7 @@ public class DeregisterOrganReasonController {
     @FXML
     void acceptDeregistration() {
         boolean isValid = true;
-        String logMessage="Organ de-registration reason for Receiver with NHI: "+currentUser.getNhi()+" is ";
+        String logMessage="Organ: "+toDeRegister.organName+"  de-registration reason for Receiver with NHI: "+currentUser.getNhi()+" is ";
         if(transplantReceivedRadioButton.isSelected()){
             userController.setOrganDeregisterationReason(OrganDeregisterReason.TRANSPLANT_RECEIVED);
             Log.info(logMessage+OrganDeregisterReason.TRANSPLANT_RECEIVED);

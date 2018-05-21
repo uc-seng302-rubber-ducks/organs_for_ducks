@@ -82,7 +82,7 @@ public class DonationTabPageController {
       application.update(currentUser);
       canDonate.getItems().remove(toDonate);
       parent.updateUndoRedoButtons();
-      Log.info("Donated organ: "+toDonate+ "for User NHI: "+ currentUser.getNhi());
+      Log.info("Donated organ: "+toDonate.organName+ "for User NHI: "+ currentUser.getNhi());
     } else {
       Log.warning("Donate organs failed for User NHI: "+ currentUser.getNhi()+", no organs selected.");
     }
@@ -108,7 +108,7 @@ public class DonationTabPageController {
       currentlyDonating.refresh();
       application.update(currentUser);
       parent.updateUndoRedoButtons();
-      Log.info("un-donated organ: "+toUndonate+ "for User NHI: "+ currentUser.getNhi());
+      Log.info("un-donated organ: "+toUndonate.organName+ "for User NHI: "+ currentUser.getNhi());
     } else {
       Log.warning("un-donate organs failed for User NHI: "+ currentUser.getNhi()+", no organs selected.");
     }

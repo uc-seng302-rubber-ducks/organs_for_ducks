@@ -76,10 +76,10 @@ public class NewDiseaseController {
       UserController userController = appController.getUserController();
         try {
           userController.showUser(currentUser);
-            Log.info("successfully cancelled creation of new disease");
+            Log.info("successfully cancelled creation of new disease for User NHI: " +currentUser.getNhi());
         }
         catch (NullPointerException ex) {
-            Log.severe("Failed to cancel creation of new disease", ex);
+            Log.severe("Failed to cancel creation of new disease for User NHI: " +currentUser.getNhi(), ex);
             //TODO causes npe if donor is new in this session
             //the text fields etc. are all null
         }
@@ -97,10 +97,10 @@ public class NewDiseaseController {
         try {
           userController.showUser(currentUser);
           userController.showDonorDiseases(currentUser, false);
-            Log.info("successfully closed New Disease Window");
+            Log.info("successfully closed New Disease Window for User NHI: " +currentUser.getNhi());
         }
         catch (NullPointerException ex) {
-            Log.severe("Failed to close New Disease Window", ex);
+            Log.severe("Failed to close New Disease Window for User NHI: " +currentUser.getNhi(), ex);
             //TODO causes npe if donor is new in this session
             //the text fields etc. are all null
         }
@@ -187,9 +187,9 @@ public class NewDiseaseController {
             //Refresh the view
           userController.refreshDiseases();
             closeNewDiseaseWindow();
-            Log.info("Successfully added new disease");
+            Log.info("Successfully added new disease: "+diseaseName+" for User NHI: " +currentUser.getNhi());
         } else {
-            Log.warning("Unable to add new disease as there are invalid user input");
+            Log.warning("Unable to add new disease: "+diseaseName+" for User NHI: " +currentUser.getNhi()+" as there are invalid user input");
         }
     }
 }
