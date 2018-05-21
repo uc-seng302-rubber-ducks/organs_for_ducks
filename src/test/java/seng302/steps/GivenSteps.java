@@ -5,6 +5,7 @@ import static seng302.Utils.TableViewsMethod.getCell;
 
 import cucumber.api.PendingException;
 import cucumber.api.java.After;
+import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import java.util.ArrayList;
 import java.util.concurrent.TimeoutException;
@@ -93,4 +94,16 @@ public class GivenSteps extends ApplicationTest{
         clickOn("#diseaseTab");
         clickOn("#addDiseaseButton");
     }
+
+  @And("^they are registered to receive a \"([^\"]*)\"$")
+  public void theyAreRegisteredToReceiveA(String arg0) throws Throwable {
+    // Write code here that turns the phrase above into concrete actions
+    throw new PendingException();
+  }
+
+  @Given("^The user is alive$")
+  public void theUserIsAlive() throws Throwable {
+    // Write code here that turns the phrase above into concrete actions
+    throw new PendingException();
+  }
 }

@@ -1,13 +1,13 @@
 package seng302.steps;
 
-import cucumber.api.PendingException;
-import cucumber.api.java.en.Then;
-import org.testfx.matcher.control.LabeledMatchers;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.testfx.api.FxAssert.verifyThat;
-import static seng302.Utils.TableViewsMethod.*;
+import static seng302.Utils.TableViewsMethod.getCellValue;
+
+import cucumber.api.PendingException;
+import cucumber.api.java.en.Then;
+import org.testfx.matcher.control.LabeledMatchers;
 
 public class ThenSteps {
     @Then("^There are two profiles with first name \"([^\"]*)\" and last name \"([^\"]*)\"$")
@@ -107,5 +107,17 @@ public class ThenSteps {
         assertEquals(diseaseName, getCellValue("#currentDiseaseTableView", 1, 0).toString());
         assertTrue((boolean) getCellValue("#currentDiseaseTableView", 2, 0));
 
+    }
+
+    @Then("^the donor should not be contained within the transplant waiting list$")
+    public void theDonorShouldNotBeContainedWithinTheTransplantWaitingList() throws Throwable {
+        // Write code here that turns the phrase above into concrete actions
+        throw new PendingException();
+    }
+
+    @Then("^I should see error message \"([^\"]*)\"$")
+    public void iShouldSeeErrorMessage(String arg0) throws Throwable {
+        // Write code here that turns the phrase above into concrete actions
+        throw new PendingException();
     }
 }

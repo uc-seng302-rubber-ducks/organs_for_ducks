@@ -127,4 +127,9 @@ public class WhenSteps extends ApplicationTest {
         write(diagnosisDate);
     }
 
+    @When("^The user is updated to have died on \"([^\"]*)\"$")
+    public void theUserIsUpdatedToHaveDiedOn(String arg0) throws Throwable {
+        // Write code here that turns the phrase above into concrete actions
+    throw new PendingException();
+    }
 }
