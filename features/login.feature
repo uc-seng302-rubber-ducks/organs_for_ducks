@@ -7,12 +7,12 @@ Feature: As an user, I want to login to the system, either as a User or Clinicia
   Scenario: I login as user with valid NHI
     When I entered NHI "ABC1234"
     And clicked on user Login button
-    Then I should see my NHI "ABC1234" along with my other details at the donor view screen
+    Then I should see my NHI "ABC1234" along with my other details at the user view screen
 
   Scenario: I login as user with invalid NHI
     When I entered NHI "AD"
     And clicked on user Login button
-    Then I should see error message "User was not found.\nTo register a new donor please click sign up."
+    Then I should see error message "User was not found.\nTo register a new user please click sign up."
 
   Scenario: I login as Clinician with valid credentials
     When I clicked on Login As Clinician Button

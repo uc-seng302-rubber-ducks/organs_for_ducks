@@ -15,5 +15,5 @@ Feature: Register an organ
   Scenario: I can print all the organs that a particular user wishes to donate
     Given I have started the CLI
 
-  Scenario: I attempt to print the organs of an unregistered donor
+  Scenario: I attempt to print the organs of an unregistered user
     Given I have started the CLI
