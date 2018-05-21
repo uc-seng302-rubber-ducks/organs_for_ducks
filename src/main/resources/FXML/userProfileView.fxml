@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.HBox?>
 <AnchorPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0"
   xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
-  fx:controller="seng302.Controller.DonorOverviewController">
+  fx:controller="seng302.Controller.UserOverviewController">
   <children>
     <HBox alignment="CENTER" layoutX="9.0" layoutY="562.0" prefHeight="25.0" prefWidth="876.0"
       AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0">

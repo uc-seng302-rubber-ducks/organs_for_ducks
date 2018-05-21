@@ -16,7 +16,7 @@
         <tabs>
           <Tab fx:id="userProfileTab" text="User Profile">
             <content>
-              <fx:include fx:id="userProfileTabPage" source="donorProfileView.fxml"/>
+              <fx:include fx:id="userProfileTabPage" source="userProfileView.fxml"/>
             </content>
           </Tab>
             <Tab fx:id="receiverTab" text="Receiver">
