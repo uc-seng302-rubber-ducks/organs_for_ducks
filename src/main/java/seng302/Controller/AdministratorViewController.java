@@ -484,7 +484,7 @@ public class AdministratorViewController {
         userTableView.setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
                 User user = userTableView.getSelectionModel().getSelectedItem();
-                launchDonor(user);
+                launchUser(user);
             }
         });
     }

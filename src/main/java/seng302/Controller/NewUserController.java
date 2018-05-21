@@ -216,7 +216,7 @@ public class NewUserController {
                     userStage.setScene(new Scene(root));
                     userStage.show();
                     UserController userController = userLoader.getController();
-                    userController.init(AppController.getInstance(), newUser, userStage, false);
+                    userController.init(AppController.getInstance(), newUser, userStage, true);
                     userController.diableLogout();
 
                 } catch (IOException e) {
