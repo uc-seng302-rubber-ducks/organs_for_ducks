@@ -5,7 +5,6 @@
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.media.MediaView?>
-
 <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.Controller.OrganController">
    <children>
       <MediaView fitHeight="200.0" fitWidth="200.0" layoutX="40.0" layoutY="98.0" />
@@ -15,7 +14,9 @@
       <Button fx:id="undonateButton" layoutX="283.0" layoutY="231.0" mnemonicParsing="false" onAction="#undonate" text="&lt;&lt;" />
       <Label layoutX="104.0" layoutY="51.0" text="Donatable" />
       <Label layoutX="399.0" layoutY="51.0" text="Currently Donating" />
-      <Label fx:id="donorNameLabel" alignment="TOP_CENTER" layoutX="282.0" layoutY="26.0" text="Label" textAlignment="CENTER" />
+      <Label fx:id="userNameLabel" alignment="TOP_CENTER" layoutX="282.0" layoutY="26.0"
+        text="Label"
+        textAlignment="CENTER"/>
       <Button fx:id="backButton" layoutX="278.0" layoutY="344.0" mnemonicParsing="false" onAction="#goBack" text="Back" />
    </children>
 </Pane>

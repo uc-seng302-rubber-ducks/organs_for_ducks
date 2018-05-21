@@ -1,6 +1,6 @@
-Feature: As an clinician, I want to create (add) new disease to Donor's profile.
+Feature: As an clinician, I want to create (add) new disease to User's profile.
 
-  Background: clinician creates new disease to Donor's profile
+  Background: clinician creates new disease to User's profile
     Given I have started the GUI
     Given The Create New Disease screen is loaded
 

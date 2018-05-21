@@ -243,7 +243,7 @@ public class UserOverviewController {
     Optional<ButtonType> result = alert.showAndWait();
 
     if (result.get() == ButtonType.OK) {
-      application.deleteDonor(currentUser);
+      application.deleteUser(currentUser);
       if (!Clinician) {
         logout();
       }

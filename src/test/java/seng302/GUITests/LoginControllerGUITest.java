@@ -40,7 +40,7 @@ public class LoginControllerGUITest extends ApplicationTest {
     clickOn("#userIDTextField");
     write("AD");
     clickOn("#loginUButton");
-    verifyThat("#userWarningLabel", LabeledMatchers.hasText("Donor was not found. \nTo register a new donor please click sign up."));
+    verifyThat("#userWarningLabel", LabeledMatchers.hasText("User was not found. \nTo register a new user, please click sign up."));
   }
 
   @Test
