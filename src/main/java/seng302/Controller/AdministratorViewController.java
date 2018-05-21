@@ -232,7 +232,7 @@ public class AdministratorViewController {
 
         userTableView.setOnMouseClicked(event -> {
             if(event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
-                launchDonor(userTableView.getSelectionModel().getSelectedItem());
+                launchUser(userTableView.getSelectionModel().getSelectedItem());
             }
         });
 
@@ -378,16 +378,16 @@ public class AdministratorViewController {
     @FXML
     void addUser() {
 
-        FXMLLoader donorLoader = new FXMLLoader(getClass().getResource("/FXML/createNewUser.fxml"));
+        FXMLLoader userLoader = new FXMLLoader(getClass().getResource("/FXML/createNewUser.fxml"));
         Parent root;
         try {
-            root = donorLoader.load();
+            root = userLoader.load();
             Stage newStage = new Stage();
             newStage.setScene(new Scene(root));
             newStage.setTitle("Create New User Profile");
             newStage.show();
-            NewUserController donorController = donorLoader.getController();
-            donorController.init(AppController.getInstance(), stage, newStage);
+            NewUserController userController = userLoader.getController();
+            userController.init(AppController.getInstance(), stage, newStage);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -397,14 +397,14 @@ public class AdministratorViewController {
      * Launches the donor overview screen for a selected user
      * @param user the selected user.
      */
-    private void launchDonor(User user) {
-        FXMLLoader donorLoader = new FXMLLoader(getClass().getResource("/FXML/userView.fxml"));
+    private void launchUser(User user) {
+        FXMLLoader userLoader = new FXMLLoader(getClass().getResource("/FXML/userView.fxml"));
         Parent root;
         try {
-            root = donorLoader.load();
+            root = userLoader.load();
             Stage newStage = new Stage();
             newStage.setScene(new Scene(root));
-            UserController userController = donorLoader.getController();
+            UserController userController = userLoader.getController();
             AppController.getInstance().setUserController(userController);
             userController.init(AppController.getInstance(), user, newStage, true);
             newStage.show();

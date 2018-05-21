@@ -42,7 +42,7 @@ public class AppController {
   private Set<User> deletedUserStack = new HashSet<>();
   private Stack<User> redoStack = new Stack<>();
 
-  private static final String USERS_FILE = Directory.JSON.directory() + "/donors.json";
+  private static final String USERS_FILE = Directory.JSON.directory() + "/users.json";
   private static final String CLINICIAN_FILE = Directory.JSON.directory() + "/clinicians.json";
 
   /**
@@ -138,20 +138,20 @@ public class AppController {
                       double weight,
       String bloodType, String currentAddress, String region, String NHI) {
     try {
-      User newDonor = new User(name, dateOfBirth, NHI);
-      newDonor.setDateOfDeath(dateOfDeath);
-      newDonor.setGender(gender);
-      newDonor.setHeight(height);
-      newDonor.setWeight(weight);
-      newDonor.setBloodType(bloodType);
-      newDonor.setCurrentAddress(currentAddress);
-      newDonor.setRegion(region);
+      User newUser = new User(name, dateOfBirth, NHI);
+      newUser.setDateOfDeath(dateOfDeath);
+      newUser.setGender(gender);
+      newUser.setHeight(height);
+      newUser.setWeight(weight);
+      newUser.setBloodType(bloodType);
+      newUser.setCurrentAddress(currentAddress);
+      newUser.setRegion(region);
 
-      if (users.contains(newDonor)) {
+      if (users.contains(newUser)) {
         return -1;
       }
-      users.add(newDonor);
-      return newDonor.hashCode();
+      users.add(newUser);
+      return newUser.hashCode();
     } catch (Exception e) {
       Log.warning("failed to register new user", e);
       return -1;
@@ -275,7 +275,7 @@ public class AppController {
    *
    * @param user user to remove
    */
-  public void deleteDonor(User user) {
+  public void deleteUser(User user) {
     List<User> sessionList = getUsers();
     sessionList.remove(user);
     deletedUserStack.add(user);
@@ -390,7 +390,7 @@ public class AppController {
      */
     public void deleteAdmin(Administrator admin) {
         admins.remove(admin);
-        // todo: will probably need undo/redo for this similar to how the deleteDonor one has it
+      // todo: will probably need undo/redo for this similar to how the deleteUser one has it
         // auto save is on another branch..
     }
 
@@ -453,7 +453,7 @@ public class AppController {
    * @return An array list of changes between the old and new user.
    * @deprecated
    */
-  public ArrayList<Change> differanceInDonors(User oldUser, User newUser) {
+  public ArrayList<Change> differenceInUsers(User oldUser, User newUser) {
     ArrayList<String> diffs = new ArrayList<>();
     try {
       if (!oldUser.getFullName().equalsIgnoreCase(newUser.getFullName())) {

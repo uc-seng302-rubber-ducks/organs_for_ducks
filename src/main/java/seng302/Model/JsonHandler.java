@@ -35,13 +35,13 @@ public final class JsonHandler {
     public static void saveUsers(Collection<User> users) throws IOException {
 
         Files.createDirectories(Paths.get(Directory.JSON.directory()));
-        File outFile = new File(Directory.JSON.directory() + "/donors.json");
+        File outFile = new File(Directory.JSON.directory() + "/users.json");
 
         if (outFile.exists()) {
             outFile.delete(); //purge old data before writing new data in
         }
 
-        outFile.createNewFile(); //creates new file if donors does not exist
+        outFile.createNewFile(); //creates new file if users does not exist
         Gson gson = new GsonBuilder().registerTypeAdapter(DateTime.class, (JsonSerializer<DateTime>)
                 (json, typeOfSrc, context) -> new JsonPrimitive(ISODateTimeFormat.dateTime().print(json)))
                 .setPrettyPrinting().create();
@@ -55,7 +55,7 @@ public final class JsonHandler {
     /**
      * loads the users from a file and returns an list
      *
-     * @return list of donors present
+     * @return list of users present
      * @throws FileNotFoundException when the file cannot be located.
      */
 
@@ -64,8 +64,8 @@ public final class JsonHandler {
         Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss")
                 .create();
         Reader reader = new FileReader(inFile);
-        User[] donors = gson.fromJson(reader, User[].class);
-        List<User> results = new ArrayList<>(Arrays.asList(donors));
+        User[] users = gson.fromJson(reader, User[].class);
+        List<User> results = new ArrayList<>(Arrays.asList(users));
 
         for (User result : results) {
             result.getReceiverDetails().setAttachedUser(result);

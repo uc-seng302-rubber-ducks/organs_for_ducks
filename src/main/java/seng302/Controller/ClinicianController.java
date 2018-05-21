@@ -172,7 +172,7 @@ public class ClinicianController {
     private Clinician clinician;
     private List<User> users;
     private ArrayList<Stage> openStages;
-    private FilteredList<User> fListDonors;
+    private FilteredList<User> fListUsers;
 
     private ArrayList<CheckBox> filterCheckBoxList = new ArrayList<>();
 
@@ -281,7 +281,7 @@ public class ClinicianController {
         List<User> usersSublist = getSearchData(users);
         //set up lists
         //table contents are SortedList of a FilteredList of an ObservableList of an ArrayList
-        ObservableList<User> oListDonors = FXCollections.observableList(users);
+        ObservableList<User> oListUsers = FXCollections.observableList(users);
 
         fNameColumn = new TableColumn<>("First name");
         fNameColumn.setCellValueFactory(new PropertyValueFactory<>("firstName"));
@@ -307,20 +307,20 @@ public class ClinicianController {
 
         //add more columns as wanted/needed
 
-        fListDonors = new FilteredList<>(oListDonors);
-        fListDonors = filter(fListDonors);
-        FilteredList<User> squished = new FilteredList<>(fListDonors);
+        fListUsers = new FilteredList<>(oListUsers);
+        fListUsers = filter(fListUsers);
+        FilteredList<User> squished = new FilteredList<>(fListUsers);
 
-        SortedList<User> sListDonors = new SortedList<>(squished);
-        sListDonors.comparatorProperty().bind(searchTableView.comparatorProperty());
+        SortedList<User> sListUsers = new SortedList<>(squished);
+        sListUsers.comparatorProperty().bind(searchTableView.comparatorProperty());
 
         //predicate on this list not working properly
         //should limit the number of items shown to ROWS_PER_PAGE
-        //squished = limit(fListDonors, sListDonors);
+        //squished = limit(fListUsers, sListUsers);
         //set table columns and contents
         searchTableView.getColumns().setAll(fNameColumn, lNameColumn, dobColumn, dodColumn, ageColumn, regionColumn, organsColumn);
-        //searchTableView.setItems(FXCollections.observableList(sListDonors.subList(startIndex, endIndex)));
-        searchTableView.setItems(sListDonors);
+        //searchTableView.setItems(FXCollections.observableList(sListUsers.subList(startIndex, endIndex)));
+        searchTableView.setItems(sListUsers);
         searchTableView.setRowFactory((searchTableView) -> new TooltipTableRow<>(User::getTooltip));
 
 
@@ -328,7 +328,7 @@ public class ClinicianController {
         searchTableView.setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
                 User user = searchTableView.getSelectionModel().getSelectedItem();
-                launchDonor(user);
+                launchUser(user);
             }
         });
     }
@@ -397,7 +397,7 @@ public class ClinicianController {
                 if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
                     TransplantDetails transplantDetails = transplantWaitListTableView.getSelectionModel().getSelectedItem();
                     User wantedUser = appController.findUser(transplantDetails.getNhi());
-                    launchDonor(wantedUser);
+                    launchUser(wantedUser);
                 }
             });
 
@@ -425,13 +425,14 @@ public class ClinicianController {
         startIndex = pageIndex * ROWS_PER_PAGE;
         endIndex = Math.min(startIndex + ROWS_PER_PAGE, users.size());
 
-        int minIndex = Math.min(endIndex, fListDonors.size());
+        int minIndex = Math.min(endIndex, fListUsers.size());
 
-        SortedList<User> sListDonors = new SortedList<>(FXCollections.observableArrayList(fListDonors.subList(Math.min(startIndex, minIndex), minIndex)));
-        sListDonors.comparatorProperty().bind(searchTableView.comparatorProperty());
+        SortedList<User> sListUsers = new SortedList<>(FXCollections.observableArrayList(
+            fListUsers.subList(Math.min(startIndex, minIndex), minIndex)));
+        sListUsers.comparatorProperty().bind(searchTableView.comparatorProperty());
 
         lNameColumn.setSortType(TableColumn.SortType.ASCENDING);
-        searchTableView.setItems(sListDonors);
+        searchTableView.setItems(sListUsers);
 
 
         int pageCount = searchCount / ROWS_PER_PAGE;
@@ -444,7 +445,7 @@ public class ClinicianController {
     /**
      * @param user the selected user.
      */
-    private void launchDonor(User user) {
+    private void launchUser(User user) {
         FXMLLoader donorLoader = new FXMLLoader(getClass().getResource("/FXML/userView.fxml"));
         Parent root;
         try {

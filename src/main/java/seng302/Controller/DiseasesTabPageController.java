@@ -63,7 +63,7 @@ public class DiseasesTabPageController {
     }
 
     setSelectionModels();
-    showDonorDiseases(currentUser, true);
+    showUserDiseases(currentUser, true);
   }
 
   private void setSelectionModels() {
@@ -79,7 +79,7 @@ public class DiseasesTabPageController {
   /**
    * show the current and past diseases of the donor.
    */
-  public void showDonorDiseases(User user, boolean init) {
+  public void showUserDiseases(User user, boolean init) {
     if (user.getCurrentDiseases().size() != 0) {
       ObservableList<Disease> currentDisease = FXCollections
           .observableList(user.getCurrentDiseases());
@@ -209,7 +209,7 @@ public class DiseasesTabPageController {
     }
 
     this.application.update(currentUser);
-    showDonorDiseases(currentUser, false); //Reload the scene?
+    showUserDiseases(currentUser, false); //Reload the scene?
   }
 
   /**
@@ -234,7 +234,7 @@ public class DiseasesTabPageController {
     }
     currentUser.getCurrentDiseases().sort(disease.diseaseChronicComparator);
 
-    showDonorDiseases(currentUser, false);
+    showUserDiseases(currentUser, false);
   }
 
   /**

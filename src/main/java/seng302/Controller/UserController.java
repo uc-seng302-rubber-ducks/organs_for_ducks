@@ -339,7 +339,7 @@ public class UserController {
   }
 
   public void showDonorDiseases(User user, boolean init) {
-    diseasesTabPageController.showDonorDiseases(user, init);
+    diseasesTabPageController.showUserDiseases(user, init);
   }
 
   private boolean getIsRevereSorted() {

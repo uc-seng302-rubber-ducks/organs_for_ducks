@@ -43,7 +43,7 @@ public class DeleteUser implements Runnable {
     while (true) {
       String confirmString = sc.next();
       if (confirmString.equalsIgnoreCase("y")) {
-        controller.deleteDonor(toDelete);
+        controller.deleteUser(toDelete);
         System.out.println("Donor successfully deleted");
         break;
       } else if (confirmString.equalsIgnoreCase("n")) {

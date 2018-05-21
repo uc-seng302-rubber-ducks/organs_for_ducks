@@ -1,5 +1,6 @@
 Feature: Create a profile
-  Scenario: I can create a one or more donors, each with a name and date of birth
+
+  Scenario: I can create a one or more users, each with a name and date of birth
     Given I have started the CLI
     When I register a donor with the NHI "CHU8716", first name "Gary", last name "Oak" and date of birth "1997-05-24"
     Then The donor should be stored within the application

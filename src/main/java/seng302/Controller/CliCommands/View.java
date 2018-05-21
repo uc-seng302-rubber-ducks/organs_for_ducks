@@ -37,7 +37,7 @@ public class View implements Runnable {
 
     AppController controller = AppController.getInstance();
     if (viewAll) {
-      System.out.println(IoHelper.prettyStringDonors(controller.getUsers()));
+      System.out.println(IoHelper.prettyStringUsers(controller.getUsers()));
       return;
     }
     if (!NHI.equals("")) {
@@ -64,7 +64,7 @@ public class View implements Runnable {
         }
       } else {
         System.out.println(IoHelper
-            .prettyStringDonors(controller.findUsers(name)));
+            .prettyStringUsers(controller.findUsers(name)));
       }
     }
   }
