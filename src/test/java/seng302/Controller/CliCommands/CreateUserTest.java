@@ -19,8 +19,8 @@ public class CreateUserTest {
 
   @Before
   public void setup() {
-    controller = AppController.getInstance();
-    controller.setUsers(new ArrayList<>()); //reset donor list between tests
+    controller = AppController.getInstance(); //TODO use mocks instead of actual instance  21/6
+    controller.setUsers(new ArrayList<>()); //reset users list between tests
 
     minInfo = new User("John Doe", LocalDate.parse("1961-02-12", format), "ABC1234");
     maxInfo = new User("Gus Johnson", LocalDate.parse("1990-04-03", format), "BCD2345");
@@ -69,7 +69,7 @@ public class CreateUserTest {
   @Test
   public void ShouldNotRegisterWhenMalformedParameters() {
     String[] args = {"Frank", "Sinatra", "1967"}; //invalid date
-    //TODO seems to accept garbage dates as long as they are in some-dashed-format
+    //TODO seems to accept garbage dates as long as they are in some-dashed-format - to resolve 21/5
     new CommandLine(new CreateUser()).parseWithHandler(new CommandLine.RunLast(), System.err, args);
     assert (controller.getUsers().size() == 0);
   }

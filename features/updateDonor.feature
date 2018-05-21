@@ -1,33 +1,34 @@
 Feature: Update a profile
-  Scenario: I can update a donor's full name
+
+  Scenario: I can update a user's full name
     Given I have started the CLI
 
-  Scenario: I can update a donor's date of birth
+  Scenario: I can update a user's date of birth
     Given I have started the CLI
 
-  Scenario: I can update a donor's date of death
+  Scenario: I can update a user's date of death
     Given I have started the CLI
 
-  Scenario: I can update a donor's address
+  Scenario: I can update a user's address
     Given I have started the CLI
 
-  Scenario: I can update a donor's region
+  Scenario: I can update a user's region
     Given I have started the CLI
 
-  Scenario: I can update a donor's blood type
+  Scenario: I can update a user's blood type
     Given I have started the CLI
 
-  Scenario: I can update a donor's gender
+  Scenario: I can update a user's gender
     Given I have started the CLI
 
-  Scenario: I can add organs the donor wishes to donate
+  Scenario: I can add organs the user wishes to donate
     Given I have started the CLI
 
-  Scenario: I can remove organs the donor wishes to donate
+  Scenario: I can remove organs the user wishes to donate
     Given I have started the CLI
 
-  Scenario: I attempt to add an organ that the donor already donates
+  Scenario: I attempt to add an organ that the user already donates
     Given I have started the CLI
 
-  Scenario: I attempt to remove an organ that the donor is not donating
+  Scenario: I attempt to remove an organ that the user is not donating
     Given I have started the CLI

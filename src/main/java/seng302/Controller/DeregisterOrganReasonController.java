@@ -147,7 +147,7 @@ public class DeregisterOrganReasonController {
 
         } else if(receiverDiedRadioButton.isSelected()){
             LocalDate dOD = dODDatePicker.getValue();
-            if(!AttributeValidation.validateDates(currentUser.getDateOfBirth(), dOD)){
+            if(!AttributeValidation.validateDateOfDeath(currentUser.getDateOfBirth(), dOD)){
                 isValid = false;
                 invalidDateErrorMessage.setVisible(true);
             } else {

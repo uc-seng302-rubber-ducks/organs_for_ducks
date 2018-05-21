@@ -113,7 +113,9 @@ public class Administrator {
         } else if (lastName != null) {
             fullName = firstName + " " + lastName;
 
-        } else {
+        } else if (firstName.isEmpty()) {
+            fullName = "";
+        }else {
             fullName = firstName;
         }
 

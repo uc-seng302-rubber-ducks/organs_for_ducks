@@ -5,6 +5,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import seng302.Model.Administrator;
+import seng302.Service.Log;
 
 public class UpdateAdminController {
   @FXML
@@ -30,6 +31,9 @@ public class UpdateAdminController {
 
   private Administrator admin;
   private Stage stage;
+  private boolean valid;
+
+
 
 
   /**
@@ -42,6 +46,7 @@ public class UpdateAdminController {
     this.stage = stage;
     prefillFields();
     stage.getScene();
+    errorLabel.setText("");
 
   }
 
@@ -66,6 +71,8 @@ public class UpdateAdminController {
    *
    */
   private void updateAdmin(){
+    valid = true;
+    // waiting for the string validation to be finished
     if (!usernameTextField.getText().isEmpty() && !usernameTextField.getText().equals(admin.getUserName())){
       admin.setUserName(usernameTextField.getText());
     }
@@ -85,6 +92,7 @@ public class UpdateAdminController {
         admin.setPassword(passwordTextField.getText());
       } else {
         errorLabel.setText("your password don't match");
+        valid = false;
       }
     }
 
@@ -97,7 +105,18 @@ public class UpdateAdminController {
   @FXML
   private void confirmUpdate(){
     updateAdmin();
+    if (valid) {
+    AppController appController = AppController.getInstance();
+    AdministratorViewController administratorViewController = appController.getAdministratorViewController();
+    try {
+      administratorViewController.displayDetails();
+    } catch (NullPointerException ex) {
+      Log.warning(ex.getMessage(), ex);
+      //TODO causes npe if donor is new in this session
+      //the text fields etc. are all null
+    }
     stage.close();
+    }
   }
 
 

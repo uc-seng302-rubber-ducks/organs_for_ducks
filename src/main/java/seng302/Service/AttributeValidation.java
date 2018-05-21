@@ -2,11 +2,9 @@ package seng302.Service;
 
 import java.time.LocalDate;
 import java.time.Period;
-import javafx.scene.control.ComboBox;
 import seng302.Model.BloodTypes;
-
-import seng302.Model.User;
 import seng302.Model.TransplantDetails;
+import seng302.Model.User;
 
 
 /**
@@ -19,13 +17,10 @@ public class AttributeValidation {
     /**
      * Checks that the NHI matches the correct format.
      * @param nhi The national health index.
-     * @return The NHI as a string if it matches the correct format, null otherwise.
+     * @return True if NHI matches format, false otherwise
      */
-    public static String validateNHI(String nhi) {
-        if (nhi.matches("[A-Za-z]{3}[0-9]{4}")) {
-            return nhi;
-        }
-        return null;
+    public static boolean validateNHI(String nhi) {
+        return nhi.matches("[A-Za-z]{3}[0-9]{4}");
     }
 
 
@@ -35,12 +30,10 @@ public class AttributeValidation {
      * domain name is longer than one character.
      *
      * @param email The user input of an email address to be validated.
-     * @return The given email if it is in the correct format, null otherwise.
+     * @return True if the email is valid, false otherwise
      */
-    public static String validateEmail(String email) {
-        if (email.matches("^[a-zA-Z0-9][a-zA-Z0-9._%+-]*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,}$")) {
-            return email;
-        } else return null;
+    public static boolean validateEmail(String email) {
+        return email.matches("^[a-zA-Z0-9][a-zA-Z0-9._\\-]*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,}$") || email.isEmpty();
     }
 
 
@@ -49,12 +42,10 @@ public class AttributeValidation {
      * The number must be 9 digits long, including a leading zero, a one-digit area code and a seven-digit phone number.
      *
      * @param phoneNum The user input of a NZ landline number to be validated.
-     * @return The given phone number if it is in the correct format, null otherwise.
+     * @return True if the phone number is valid, false otherwise
      */
-    public static String validatePhoneNumber(String phoneNum) {
-        if (phoneNum.matches("^[0][3|4|6|7|9]( |-)?[2-9][0-9]{2}( |-)?[0-9]{4}$")) {
-            return phoneNum;
-        } else return null;
+    public static boolean validatePhoneNumber(String phoneNum) {
+        return (phoneNum.matches("^[0][34679][ \\-]?[2-9][0-9]{2}[ \\-]?[0-9]{4}$")) || phoneNum.isEmpty();
     }
 
 
@@ -63,77 +54,66 @@ public class AttributeValidation {
      * Checks that the number has a minimum length of 9 digits or a max of 11 digits (including the leading '02').
      *
      * @param cellNum The user input of a cell phone number to be validated.
-     * @return The given cell phone number if it is in the correct format, null otherwise.
+     * @return true if the cell number is valid, false otherwise
      */
-    public static String validateCellNumber(String cellNum) {
-        if (cellNum.matches("^[0-9]{7,13}$")) {
-            return cellNum;
-        } else return null;
+    public static boolean validateCellNumber(String cellNum) {
+        return (cellNum.matches("^[0-9]{7,13}$")) || cellNum.isEmpty();
     }
 
     /**
-     * Checks if the given attribute is empty.
+     * Checks if the given non-null attribute only contains a-z, A-Z, spaces, apostrophes and hyphens
      * @param attribute The attribute to be checked.
-     * @return The attribute as a string if it is not empty, null otherwise.
+     * @return true if the attribute meets the specified criteria, false otherwise
      */
-    public static String checkString(String attribute) {
-        if (attribute.isEmpty()) {
-            return null;
-        }
-        return attribute;
+    public static boolean checkString(String attribute) {
+        assert attribute != null;
+        return (attribute.matches("[a-zA-Z '\\-0-9]*"));
+    }
+
+    /**
+     * Checks if the given non-null attribute is non-empty and only contains a-z, A-Z, spaces, apostrophes and hyphens.
+     * @param attribute The attribute to be checked.
+     * @return true if the attribute meets the specified criteria, false otherwise
+     */
+    public static boolean checkRequiredString(String attribute) {
+        assert attribute != null;
+        return (attribute.matches("[a-zA-Z '\\-0-9]+"));
     }
 
     /**
      * Checks that the date of birth is before the date of death and the date of death is before tomorrow's date if the
      * date of death is not null.
-     * @param birth The date of birth.
+     * @param birth The non null date of birth.
      * @param death The date of death.
      * @return true if the date of death is null or the date of birth is before the date of death and the date of death
      * is before the current date, false otherwise.
      */
-    public static boolean validateDates(LocalDate birth, LocalDate death) {
+    public static boolean validateDateOfDeath(LocalDate birth, LocalDate death) {
         return death == null || (birth.isBefore(death.plusDays(1)) && death.isBefore(LocalDate.now().plusDays(1)));
     }
 
-
-    /**
-     * Calculates the age of the user by comparing the date of birth with the date of death.
-     * @param birth The date of birth.
-     * @param death The date of death.
-     * @return The age of the user.
-     */
-    public static int calculateAge(LocalDate birth, LocalDate death) {
-        int age;
-
-        if (death != null) {
-            age = Period.between(birth, death).getYears();
-        } else {
-            age = Period.between(birth, LocalDate.now()).getYears();
-        }
-
-        return age;
+    public static boolean validateDateOfBirth(LocalDate birth) {
+        return birth != null && birth.isBefore(LocalDate.now().plusDays(1));
     }
-
 
 
     /**
      * Gets the enum value of BloodTypes by iterating through the string literals
      * and matching them to the given blood type.
-     * @param bloodBox the combobox containing blood types.
-     * @return The enum of the given blood type if found, null otherwise.
+     * @param blood the value of blood type.
+     * @return True if the provided object is valid
      */
-    public static String validateBlood(ComboBox bloodBox) {
-
-        if (bloodBox.getValue() != null) {
-            String blood = bloodBox.getValue().toString();
+    public static boolean validateBlood(String blood) {
+        if (blood != null) {
             for (BloodTypes type : BloodTypes.values()) {
                 if ((type.toString()).equals(blood)) {
-                    return blood;
+                    return true;
                 }
             }
+            return false;
         }
 
-        return null;
+        return true;
     }
 
 
@@ -163,17 +143,17 @@ public class AttributeValidation {
 
     /**
      * Gets the first character of the given gender.
-     * @param genderBox The combobox containing gender types.
+     * @param gender The string to be passed as a gender
      * @return The gender value.
      */
-    public static String validateGender(ComboBox genderBox) {
-        String gender = "";
-
-        if (genderBox.getValue() != null && !genderBox.getValue().toString().equals("")) {
-            gender = genderBox.getValue().toString();
+    public static boolean validateGender(String gender) {
+        String[] valids = {"", "male", "female", "non binary"};
+        for (String valid : valids) {
+            if (gender.toLowerCase().equals(valid)) {
+                return true;
+            }
         }
-
-        return gender;
+        return false;
     }
 
     /**

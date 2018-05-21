@@ -7,7 +7,7 @@ import seng302.Controller.AppController;
 import seng302.Model.User;
 import seng302.View.IoHelper;
 
-@Command(name = "view", description = "View all currently registered donors based on set parameters.")
+@Command(name = "view", description = "View all currently registered users based on set parameters.")
 public class View implements Runnable {
 
   @Option(names = {"-h", "help",
@@ -37,7 +37,7 @@ public class View implements Runnable {
 
     AppController controller = AppController.getInstance();
     if (viewAll) {
-      System.out.println(IoHelper.prettyStringDonors(controller.getUsers()));
+      System.out.println(IoHelper.prettyStringUsers(controller.getUsers()));
       return;
     }
     if (!NHI.equals("")) {
@@ -64,7 +64,7 @@ public class View implements Runnable {
         }
       } else {
         System.out.println(IoHelper
-            .prettyStringDonors(controller.findUsers(name)));
+            .prettyStringUsers(controller.findUsers(name)));
       }
     }
   }
