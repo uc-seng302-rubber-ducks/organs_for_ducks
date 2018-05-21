@@ -19,8 +19,8 @@ public class CreateUserTest {
 
   @Before
   public void setup() {
-    controller = AppController.getInstance();
-    controller.setUsers(new ArrayList<>()); //reset donor list between tests
+    controller = AppController.getInstance(); //TODO use mocks instead of actual instance  21/6
+    controller.setUsers(new ArrayList<>()); //reset users list between tests
 
     minInfo = new User("John Doe", LocalDate.parse("1961-02-12", format), "ABC1234");
     maxInfo = new User("Gus Johnson", LocalDate.parse("1990-04-03", format), "BCD2345");

@@ -6,7 +6,7 @@ import java.util.Set;
 
 
 /**
- * Class to track details for a donor
+ * Class to track details for a user
  */
 public class DonorDetails {
 

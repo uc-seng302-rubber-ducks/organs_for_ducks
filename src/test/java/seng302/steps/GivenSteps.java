@@ -46,30 +46,31 @@ public class GivenSteps extends ApplicationTest{
         }
     }
 
-    @Given("^There are no donors in the system$")
-    public void thereAreNoDonorsInTheSystem() {
+  @Given("^There are no users in the system$")
+  public void thereAreNoUsersInTheSystem() {
         AppController.getInstance().getUsers().clear();
     }
 
-    @Given("^There exists a donor with the NHI \"([^\"]*)\", first name \"([^\"]*)\", last name \"([^\"]*)\" and date of birth \"([^\"]*)\"$")
-    public void thereExistsADonorWithTheNHIFirstNameLastNameAndDateOfBirth(String NHI, String firstName, String lastName, String dateOfBirth) throws Throwable {
+  @Given("^There exists a user with the NHI \"([^\"]*)\", first name \"([^\"]*)\", last name \"([^\"]*)\" and date of birth \"([^\"]*)\"$")
+  public void thereExistsAUserWithTheNHIFirstNameLastNameAndDateOfBirth(String NHI,
+      String firstName, String lastName, String dateOfBirth) {
         // Write code here that turns the phrase above into concrete actions
         throw new PendingException();
     }
 
-    @Given("^There exists a donor with \"([^\"]*)\"$")
-    public void thereExistsADonorWith(String NHI) {
+  @Given("^There exists a user with \"([^\"]*)\"$")
+  public void thereExistsAUserWith(String NHI) {
         // Write code here that turns the phrase above into concrete actions
         throw new PendingException();
     }
 
-    @Given("^a donor with the NHI \"([^\"]*)\" does not exist$")
-    public void aDonorWithTheNHIDoesNotExist(String NHI) {
+  @Given("^a user with the NHI \"([^\"]*)\" does not exist$")
+  public void aUserWithTheNHIDoesNotExist(String NHI) {
         AppController.getInstance().getUsers().remove(AppController.getInstance().findUser(NHI));
     }
 
-    @Given("^The donor sign up screen is loaded$")
-    public void theSignUpScreenIsLoaded() {
+  @Given("^The user sign up screen is loaded$")
+  public void theSignUpScreenIsLoaded() {
         clickOn("#signUpButton");
     }
 

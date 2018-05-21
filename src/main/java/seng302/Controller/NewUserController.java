@@ -203,34 +203,36 @@ public class NewUserController {
                 users.add(newUser);
                 saveUsers(users);
 
-                // load to the overview page
-                if (stage.getTitle().matches("Administrator*")) {
+            // load to the overview page
+            if (stage.getTitle().matches("Administrator*")) {
+                ownStage.close();
+                FXMLLoader userLoader = new FXMLLoader(
+                    getClass().getResource("/FXML/userView.fxml"));
+                Parent root;
+
+                try {
+                    root = userLoader.load();
+                    Stage userStage = new Stage();
+                    userStage.setScene(new Scene(root));
+                    userStage.show();
+                    UserController userController = userLoader.getController();
+                    userController.init(AppController.getInstance(), newUser, userStage, false);
+                    userController.diableLogout();
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                FXMLLoader userLoader = new FXMLLoader(
+                    getClass().getResource("/FXML/userView.fxml"));
+                Parent root;
+
+                try {
+                    root = userLoader.load();
+                    stage.setScene(new Scene(root));
                     ownStage.close();
-                    FXMLLoader donorLoader = new FXMLLoader(getClass().getResource("/FXML/userView.fxml"));
-                    Parent root;
-
-                    try {
-                        root = donorLoader.load();
-                        Stage userStage = new Stage();
-                        userStage.setScene(new Scene(root));
-                        userStage.show();
-                        UserController userController = donorLoader.getController();
-                        userController.init(AppController.getInstance(), newUser, userStage, false);
-                        userController.diableLogout();
-
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                } else {
-                    FXMLLoader donorLoader = new FXMLLoader(getClass().getResource("/FXML/userView.fxml"));
-                    Parent root;
-
-                    try {
-                        root = donorLoader.load();
-                        stage.setScene(new Scene(root));
-                        ownStage.close();
-                        UserController userController = donorLoader.getController();
-                        userController.init(AppController.getInstance(), newUser, stage, false);
+                    UserController userController = userLoader.getController();
+                    userController.init(AppController.getInstance(), newUser, stage, false);
 
                     } catch (IOException e) {
                         e.printStackTrace();
