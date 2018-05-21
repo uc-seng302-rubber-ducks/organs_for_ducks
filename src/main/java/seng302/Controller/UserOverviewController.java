@@ -17,7 +17,7 @@ import javafx.stage.Stage;
 import seng302.Model.User;
 import seng302.Service.Log;
 
-public class DonorOverviewController {
+public class UserOverviewController {
 
   //the Home page attributes
   //<editor-fold desc="FMXL declarations">
