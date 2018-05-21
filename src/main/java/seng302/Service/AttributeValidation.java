@@ -33,7 +33,7 @@ public class AttributeValidation {
      * @return True if the email is valid, false otherwise
      */
     public static boolean validateEmail(String email) {
-        return email.matches("^[a-zA-Z0-9][a-zA-Z0-9._\\-]*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,}$");
+        return email.matches("^[a-zA-Z0-9][a-zA-Z0-9._\\-]*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,}$") || email.isEmpty();
     }
 
 
@@ -45,7 +45,7 @@ public class AttributeValidation {
      * @return True if the phone number is valid, false otherwise
      */
     public static boolean validatePhoneNumber(String phoneNum) {
-        return (phoneNum.matches("^[0][34679] |-?[2-9][0-9]{2} |-?[0-9]{4}$"));
+        return (phoneNum.matches("^[0][34679] |-?[2-9][0-9]{2} |-?[0-9]{4}$")) || phoneNum.isEmpty();
     }
 
 
@@ -57,69 +57,63 @@ public class AttributeValidation {
      * @return true if the cell number is valid, false otherwise
      */
     public static boolean validateCellNumber(String cellNum) {
-        return (cellNum.matches("^[0-9]{7,13}$"));
+        return (cellNum.matches("^[0-9]{7,13}$")) || cellNum.isEmpty();
     }
 
     /**
-     * Checks if the given non-null attribute is empty.
+     * Checks if the given non-null attribute only contains a-z, A-Z, spaces, apostrophes and hyphens
      * @param attribute The attribute to be checked.
-     * @return true if the attribute is non empty, false otherwise
+     * @return true if the attribute meets the specified criteria, false otherwise
      */
     public static boolean checkString(String attribute) {
         assert attribute != null;
-        return (!attribute.isEmpty());
+        return (attribute.matches("[a-zA-Z '\\-]*"));
+    }
+
+    /**
+     * Checks if the given non-null attribute is non-empty and only contains a-z, A-Z, spaces, apostrophes and hyphens.
+     * @param attribute The attribute to be checked.
+     * @return true if the attribute meets the specified criteria, false otherwise
+     */
+    public static boolean checkRequiredString(String attribute) {
+        assert attribute != null;
+        return (attribute.matches("[a-zA-Z '\\-]+"));
     }
 
     /**
      * Checks that the date of birth is before the date of death and the date of death is before tomorrow's date if the
      * date of death is not null.
-     * @param birth The date of birth.
+     * @param birth The non null date of birth.
      * @param death The date of death.
      * @return true if the date of death is null or the date of birth is before the date of death and the date of death
      * is before the current date, false otherwise.
      */
-    public static boolean validateDates(LocalDate birth, LocalDate death) {
+    public static boolean validateDateOfDeath(LocalDate birth, LocalDate death) {
         return death == null || (birth.isBefore(death.plusDays(1)) && death.isBefore(LocalDate.now().plusDays(1)));
     }
 
-
-    /**
-     * Calculates the age of the user by comparing the date of birth with the date of death.
-     * @param birth The date of birth.
-     * @param death The date of death.
-     * @return The age of the user.
-     */
-    public static int calculateAge(LocalDate birth, LocalDate death) {
-        int age;
-
-        if (death != null) {
-            age = Period.between(birth, death).getYears();
-        } else {
-            age = Period.between(birth, LocalDate.now()).getYears();
-        }
-
-        return age;
+    public static boolean validateDateOfBirth(LocalDate birth) {
+        return birth != null && birth.isBefore(LocalDate.now().plusDays(1));
     }
-
 
 
     /**
      * Gets the enum value of BloodTypes by iterating through the string literals
      * and matching them to the given blood type.
-     * @param bloodBox the combobox containing blood types.
+     * @param blood the value of blood type.
      * @return True if the provided object is valid
      */
-    public static boolean validateBlood(Object bloodBox) {
-        if (bloodBox != null) {
-            String blood = bloodBox.toString();
+    public static boolean validateBlood(String blood) {
+        if (blood != null) {
             for (BloodTypes type : BloodTypes.values()) {
                 if ((type.toString()).equals(blood)) {
                     return true;
                 }
             }
+            return false;
         }
 
-        return false;
+        return true;
     }
 
 
@@ -149,17 +143,17 @@ public class AttributeValidation {
 
     /**
      * Gets the first character of the given gender.
-     * @param genderBox The combobox containing gender types.
+     * @param gender The string to be passed as a gender
      * @return The gender value.
      */
-    public static boolean validateGender(Object genderBox) {
-        boolean valid = false;
-
-        if (genderBox != null && !genderBox.toString().equals("")) {
-            valid = true;
+    public static boolean validateGender(String gender) {
+        String[] valids = {"", "male", "female", "non binary"};
+        for (String valid : valids) {
+            if (gender.toLowerCase().equals(valid)) {
+                return true;
+            }
         }
-
-        return valid;
+        return false;
     }
 
     /**

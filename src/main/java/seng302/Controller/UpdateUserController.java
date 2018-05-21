@@ -472,7 +472,7 @@ public class UpdateUserController {
       }
 
       if (dod != null) {
-        boolean datesValid = AttributeValidation.validateDates(dob,
+        boolean datesValid = AttributeValidation.validateDateOfDeath(dob,
             dod); // checks if the dod is before tomorrow's date and that the dob is before the dod
         if (!datesValid) {
           invalidDOD.setVisible(true);
@@ -714,8 +714,8 @@ public class UpdateUserController {
 
       String birthGender = currentUser.getBirthGender();
       String bGender =
-          AttributeValidation.validateGender(birthGenderComboBox) ? birthGenderComboBox.getValue()
-              .toString() : "";
+          AttributeValidation.validateGender(birthGenderComboBox.getValue()) ? birthGenderComboBox.getValue()
+               : "";
 
       if (birthGender != null && !birthGender.equals(bGender)) {
         currentUser.setBirthGender(bGender);
@@ -727,8 +727,7 @@ public class UpdateUserController {
 
       String genderIdentity = currentUser.getGenderIdentity();
       String genderID =
-          AttributeValidation.validateGender(genderIdComboBox) ? genderIdComboBox.getValue()
-              .toString() : "";
+          AttributeValidation.validateGender(genderIdComboBox.getValue()) ? genderIdComboBox.getValue() : "";
       if (genderIdentity != null && !genderIdentity.equals(genderID)) {
         if (genderID == null) {
           currentUser.setGenderIdentity(birthGender);
@@ -744,7 +743,7 @@ public class UpdateUserController {
 
       String bloodType = currentUser.getBloodType();
       String blood =
-          AttributeValidation.validateBlood(bloodComboBox) ? bloodComboBox.getValue().toString()
+          AttributeValidation.validateBlood(bloodComboBox.getValue()) ? bloodComboBox.getValue()
               : "";
       if (bloodType != null && !bloodType.equals(blood)) {
         currentUser.setBloodType(blood);
