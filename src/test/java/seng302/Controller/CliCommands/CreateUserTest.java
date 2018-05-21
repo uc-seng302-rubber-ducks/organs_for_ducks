@@ -8,7 +8,6 @@ import org.junit.Before;
 import org.junit.Test;
 import picocli.CommandLine;
 import seng302.Controller.AppController;
-import seng302.Controller.CliCommands.CreateUser;
 import seng302.Model.User;
 
 public class CreateUserTest {
@@ -70,7 +69,7 @@ public class CreateUserTest {
   @Test
   public void ShouldNotRegisterWhenMalformedParameters() {
     String[] args = {"Frank", "Sinatra", "1967"}; //invalid date
-    //TODO seems to accept garbage dates as long as they are in some-dashed-format
+    //TODO seems to accept garbage dates as long as they are in some-dashed-format - to resolve 21/5
     new CommandLine(new CreateUser()).parseWithHandler(new CommandLine.RunLast(), System.err, args);
     assert (controller.getUsers().size() == 0);
   }

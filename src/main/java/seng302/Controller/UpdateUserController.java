@@ -460,7 +460,7 @@ public class UpdateUserController {
       boolean changed = false;
 
       boolean valid = true;
-      String nhi = AttributeValidation.validateNHI(nhiInput.getText());
+      String nhi = AttributeValidation.validateNHI(nhiInput.getText()) ? nhiInput.getText() : "";
       LocalDate dob = dobInput.getValue();
       LocalDate dod = dodInput.getValue();
 
@@ -513,7 +513,7 @@ public class UpdateUserController {
       // validate contact info
       String email = null;
       if (!emailInput.getText().isEmpty()) {
-        email = AttributeValidation.validateEmail(emailInput.getText());
+        email = AttributeValidation.validateEmail(emailInput.getText()) ? emailInput.getText() : "";
 
         if (email == null) {
           errorLabel.setVisible(true);
@@ -523,7 +523,9 @@ public class UpdateUserController {
 
       String homePhone = null;
       if (!phoneInput.getText().isEmpty()) {
-        homePhone = AttributeValidation.validatePhoneNumber(phoneInput.getText());
+        homePhone =
+            AttributeValidation.validatePhoneNumber(phoneInput.getText()) ? phoneInput.getText()
+                : "";
 
         if (homePhone == null) {
           errorLabel.setVisible(true);
@@ -533,7 +535,8 @@ public class UpdateUserController {
 
       String cellPhone = null;
       if (!cellInput.getText().isEmpty()) {
-        cellPhone = AttributeValidation.validateCellNumber(cellInput.getText());
+        cellPhone =
+            AttributeValidation.validateCellNumber(cellInput.getText()) ? cellInput.getText() : "";
 
         if (cellPhone == null) {
           errorLabel.setVisible(true);
@@ -542,9 +545,11 @@ public class UpdateUserController {
       }
 
       // validate emergency contact info
-      String emergencyEmail = AttributeValidation.checkString(ecEmailInput.getText());
+      String emergencyEmail =
+          AttributeValidation.checkString(ecEmailInput.getText()) ? ecEmailInput.getText() : "";
       if (emergencyEmail != null) {
-        emergencyEmail = AttributeValidation.validateEmail(ecEmailInput.getText());
+        emergencyEmail =
+            AttributeValidation.validateEmail(ecEmailInput.getText()) ? ecEmailInput.getText() : "";
 
         if (emergencyEmail == null) {
           errorLabel.setVisible(true);
@@ -552,9 +557,12 @@ public class UpdateUserController {
         }
       }
 
-      String emergencyPhone = AttributeValidation.checkString(ecPhoneInput.getText());
+      String emergencyPhone =
+          AttributeValidation.checkString(ecPhoneInput.getText()) ? ecPhoneInput.getText() : "";
       if (emergencyPhone != null) {
-        emergencyPhone = AttributeValidation.validatePhoneNumber(ecPhoneInput.getText());
+        emergencyPhone =
+            AttributeValidation.validatePhoneNumber(ecPhoneInput.getText()) ? ecPhoneInput.getText()
+                : "";
 
         if (emergencyPhone == null) {
           errorLabel.setVisible(true);
@@ -562,9 +570,12 @@ public class UpdateUserController {
         }
       }
 
-      String emergencyCell = AttributeValidation.checkString(ecCellInput.getText());
+      String emergencyCell =
+          AttributeValidation.checkString(ecCellInput.getText()) ? ecCellInput.getText() : "";
       if (emergencyCell != null) {
-        emergencyCell = AttributeValidation.validateCellNumber(ecCellInput.getText());
+        emergencyCell =
+            AttributeValidation.validateCellNumber(ecCellInput.getText()) ? ecCellInput.getText()
+                : "";
 
         if (emergencyCell == null) {
           errorLabel.setVisible(true);
@@ -572,10 +583,15 @@ public class UpdateUserController {
         }
       }
 
-      String eName = AttributeValidation.checkString(ecNameInput.getText());
-      String eAddress = AttributeValidation.checkString(ecAddressInput.getText());
-      String eRegion = AttributeValidation.checkString(ecRegionInput.getText());
-      String eRelationship = AttributeValidation.checkString(ecRelationshipInput.getText());
+      String eName =
+          AttributeValidation.checkString(ecNameInput.getText()) ? ecNameInput.getText() : "";
+      String eAddress =
+          AttributeValidation.checkString(ecAddressInput.getText()) ? ecAddressInput.getText() : "";
+      String eRegion =
+          AttributeValidation.checkString(ecRegionInput.getText()) ? ecRegionInput.getText() : "";
+      String eRelationship =
+          AttributeValidation.checkString(ecRelationshipInput.getText()) ? ecRelationshipInput
+              .getText() : "";
 
       // the name and cell number are required if any other attributes are filled out
       if ((eName == null || emergencyCell == null) && (emergencyPhone != null || eAddress != null
@@ -596,7 +612,7 @@ public class UpdateUserController {
    * Updates the undo stacks of the form.
    */
   private void updateUndos() {
-    boolean changed = false;
+    boolean changed;
     changed = updatePersonalDetails(nhiInput.getText(), fNameInput.getText(), dobInput.getValue(),
         dodInput.getValue());
 
@@ -725,7 +741,9 @@ public class UpdateUserController {
       }
 
       String birthGender = currentUser.getBirthGender();
-      String bGender = AttributeValidation.validateGender(birthGenderComboBox);
+      String bGender =
+          AttributeValidation.validateGender(birthGenderComboBox) ? birthGenderComboBox.getValue()
+              .toString() : "";
 
       if (birthGender != null && !birthGender.equals(bGender)) {
         currentUser.setBirthGender(bGender);
@@ -736,7 +754,9 @@ public class UpdateUserController {
       }
 
       String genderIdentity = currentUser.getGenderIdentity();
-      String genderID = AttributeValidation.validateGender(genderIdComboBox);
+      String genderID =
+          AttributeValidation.validateGender(genderIdComboBox) ? genderIdComboBox.getValue()
+              .toString() : "";
       if (genderIdentity != null && !genderIdentity.equals(genderID)) {
         if (genderID == null) {
           currentUser.setGenderIdentity(birthGender);
@@ -751,7 +771,9 @@ public class UpdateUserController {
       }
 
       String bloodType = currentUser.getBloodType();
-      String blood = AttributeValidation.validateBlood(bloodComboBox);
+      String blood =
+          AttributeValidation.validateBlood(bloodComboBox) ? bloodComboBox.getValue().toString()
+              : "";
       if (bloodType != null && !bloodType.equals(blood)) {
         currentUser.setBloodType(blood);
         changed = true;
@@ -996,7 +1018,6 @@ public class UpdateUserController {
 
         Optional<ButtonType> result = alert.showAndWait();
         if (result.get() == ButtonType.YES) {
-          //currentUser.changeInto(oldUser);
           AppController appController = AppController.getInstance();
           DonorController donorController = appController.getDonorController();
           try {
