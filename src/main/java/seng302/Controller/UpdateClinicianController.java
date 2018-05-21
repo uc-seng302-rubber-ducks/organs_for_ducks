@@ -348,7 +348,7 @@ public class UpdateClinicianController {
     @FXML
     private void cancelUpdate() {
         if (!newClinician) {
-            if (!undoClinicianFormButton.isDisabled()) {
+            if (!undoClinicianFormButton.isDisabled() || !passwordField.getText().isEmpty() || !confirmPasswordField.getText().isEmpty()) {
                 Alert alert = new Alert(Alert.AlertType.WARNING,
                         "You have unsaved changes, are you sure you want to cancel?",
                         ButtonType.YES, ButtonType.NO);

@@ -48,7 +48,7 @@ public class UpdateAdminController {
   private Administrator adminClone;
   private int undoMarker;
   private AppController appController;
-  private  AdministratorViewController adminViewController;
+  private AdministratorViewController adminViewController;
 
 
 
@@ -76,6 +76,7 @@ public class UpdateAdminController {
       undoAdminUpdateButton.setDisable(true);
       redoAdminUpdateButton.setDisable(true);
 
+      stage.setTitle("Update Administrator: " + admin.getFirstName());
       prefillFields();
 
       changesListener(usernameTextField);
@@ -97,7 +98,20 @@ public class UpdateAdminController {
    * @param field The current textfield/password field
    */
   private void changesListener(TextField field) {
-    field.textProperty().addListener((observable, oldValue, newValue) -> updateAdminUndos());
+    field.textProperty().addListener((observable, oldValue, newValue) -> detectChanges());
+  }
+
+  /**
+   * Called by the textfield listeners to update the title bar depending on changes made to the undo stack.
+   */
+  private void detectChanges() {
+    updateAdminUndos();
+
+    if (undoAdminUpdateButton.isDisabled() && passwordTextField.getText().isEmpty() && cPasswordTextField.getText().isEmpty()) {
+      stage.setTitle("Update Administrator: " + admin.getFirstName());
+    } else if (!stage.getTitle().endsWith("*")) {
+      stage.setTitle(stage.getTitle() + " *");
+    }
   }
 
   /**
@@ -119,7 +133,7 @@ public class UpdateAdminController {
 
 
   /**
-   * Updates details of an admin that have been changed
+   * Updates all attributes that have been changed for the cloned admin.
    * @param username new username
    * @param firstName new first name
    * @param middleName new middle name
@@ -164,7 +178,7 @@ public class UpdateAdminController {
 
 
     /**
-     * Prefills all the text fields as the attribute values.
+     * Pre-fills all the text fields as the attribute values.
      * If the attributes are null, then the fields are set as empty strings.
      */
   private void prefillFields(){
@@ -185,7 +199,8 @@ public class UpdateAdminController {
   }
 
   /**
-   * updates the original administrator. This is run on-exit when the confirm button is clicked
+   * Updates the original administrator.
+   * This is run on-exit when the confirm button is clicked.
    */
   private void updateAdmin(){
     valid = true;
@@ -250,34 +265,36 @@ public class UpdateAdminController {
     prefillFields();
   }
 
-
-
-
   /**
-   *If changes are present, a pop up alert is displayed.
+   * If changes are present, a pop up alert is displayed.
    * Closes the window without making any changes.
    */
  @FXML
  private void cancelUpdate() {
+   if (!newAdmin) {
+     if (!undoAdminUpdateButton.isDisabled() || !passwordTextField.getText().isEmpty() || !cPasswordTextField.getText().isEmpty()) {
+       Alert alert = new Alert(Alert.AlertType.WARNING,
+               "You have unsaved changes, are you sure you want to cancel?",
+               ButtonType.YES, ButtonType.NO);
 
-   Alert alert = new Alert(Alert.AlertType.WARNING,
-           "You have unsaved changes, are you sure you want to cancel?",
-           ButtonType.YES, ButtonType.NO);
+       Button yesButton = (Button) alert.getDialogPane().lookupButton(ButtonType.YES);
+       yesButton.setId("yesButton");
 
-   Button yesButton = (Button) alert.getDialogPane().lookupButton(ButtonType.YES);
-   yesButton.setId("yesButton");
+       Optional<ButtonType> result = alert.showAndWait();
+       if (result.get() == ButtonType.YES) {
+         removeFormChanges(0, adminClone, undoMarker);
+         adminClone.getRedoStack().clear();
+         adminViewController.displayDetails(admin);
+         stage.close();
+       }
 
-   Optional<ButtonType> result = alert.showAndWait();
-   if (result.get() == ButtonType.YES) {
-
-
-     removeFormChanges(0, adminClone, undoMarker);
-     adminClone.getRedoStack().clear();
-     adminViewController.displayDetails(admin);
+     } else {
+       admin.getRedoStack().clear();
+       stage.close();
+     }
+   } else {
      stage.close();
    }
-
-
  }
 
 
