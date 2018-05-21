@@ -4,18 +4,22 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializer;
-import org.joda.time.DateTime;
-import org.joda.time.format.ISODateTimeFormat;
-import seng302.Directory;
-import seng302.Service.Log;
-
-import java.io.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import org.joda.time.DateTime;
+import org.joda.time.format.ISODateTimeFormat;
+import seng302.Directory;
+import seng302.Service.Log;
 
 /**
  * Json Handler to import and save data
@@ -167,7 +171,7 @@ public final class JsonHandler {
     }
 
     /**
-     * Saves a personal changelog for each donor
+     * Saves a personal changelog for each user
      *
      * @param changes list of changes to be added top the change log
      * @param name    User name to be changed must be passed in format firstname[_middlename(s)]_lastname
@@ -182,7 +186,7 @@ public final class JsonHandler {
             changes.addAll(importHistoryFromFile(name)); //don't worry about the position in the array JSON is not parsed in order anyway
         }
 
-        outFile.createNewFile(); //creates new file if donors does not exist
+        outFile.createNewFile(); //creates new file if users does not exist
         Gson gson = new GsonBuilder().registerTypeAdapter(DateTime.class, (JsonSerializer<DateTime>)
                 (json, typeOfSrc, context) -> new JsonPrimitive(ISODateTimeFormat.dateTime().print(json)))
                 .create();

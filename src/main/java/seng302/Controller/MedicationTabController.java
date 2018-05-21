@@ -58,7 +58,7 @@ public class MedicationTabController {
   private OkHttpClient client = new OkHttpClient();
 
   /**
-   * Gives the donor view the application controller and hides all label and buttons that are not
+   * Gives the user view the application controller and hides all label and buttons that are not
    * needed on opening
    *
    * @param controller the application controller

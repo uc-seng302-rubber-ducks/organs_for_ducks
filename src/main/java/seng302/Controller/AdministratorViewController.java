@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.List;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -30,9 +31,6 @@ import seng302.Model.Administrator;
 import seng302.Model.Clinician;
 import seng302.Model.JsonHandler;
 import seng302.Model.User;
-
-import java.util.List;
-
 import seng302.Service.Log;
 import seng302.View.CLI;
 
@@ -359,7 +357,7 @@ public class AdministratorViewController {
         filename = FileSelectorController.getFileSelector(stage);
         if (filename != null) {
             List<User> users = JsonHandler.loadUsers(filename);
-            System.out.println(users.size() + " donors were successfully loaded");
+            System.out.println(users.size() + " users were successfully loaded");
         }
     }
 
@@ -394,7 +392,7 @@ public class AdministratorViewController {
     }
 
     /**
-     * Launches the donor overview screen for a selected user
+     * Launches the user overview screen for a selected user
      * @param user the selected user.
      */
     private void launchUser(User user) {

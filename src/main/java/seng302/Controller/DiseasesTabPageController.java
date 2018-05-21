@@ -44,7 +44,7 @@ public class DiseasesTabPageController {
   private UserController parent;
 
   /**
-   * Gives the donor view the application controller and hides all label and buttons that are not
+   * Gives the user view the application controller and hides all label and buttons that are not
    * needed on opening
    *
    * @param controller the application controller
@@ -77,7 +77,7 @@ public class DiseasesTabPageController {
   }
 
   /**
-   * show the current and past diseases of the donor.
+   * show the current and past diseases of the user.
    */
   public void showUserDiseases(User user, boolean init) {
     if (user.getCurrentDiseases().size() != 0) {
@@ -213,7 +213,7 @@ public class DiseasesTabPageController {
   }
 
   /**
-   * Refreshes the donor's diseases
+   * Refreshes the user's diseases
    *
    * @param isSortedByName Checks if the table is currently sorted by name
    * @param isReverseSorted checks if the table is sorted in descending order

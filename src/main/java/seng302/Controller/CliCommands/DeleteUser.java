@@ -1,15 +1,14 @@
 package seng302.Controller.CliCommands;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Scanner;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
 import seng302.Controller.AppController;
 import seng302.Model.JsonHandler;
 import seng302.Model.User;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Scanner;
 
 @Command(name = "user", description = "first name, lastname, DOB. Required will locate user and prompt for deletion")
 public class DeleteUser implements Runnable {
@@ -37,7 +36,7 @@ public class DeleteUser implements Runnable {
       System.out.println("No Donor with those details was found");
       return;
     }
-    System.out.println("This will delete the following donor: " + toDelete.toString());
+    System.out.println("This will delete the following user: " + toDelete.toString());
     System.out.println("Please enter Y/n to confirm deletion");
 
     while (true) {

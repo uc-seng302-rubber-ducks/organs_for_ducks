@@ -446,17 +446,17 @@ public class ClinicianController {
      * @param user the selected user.
      */
     private void launchUser(User user) {
-        FXMLLoader donorLoader = new FXMLLoader(getClass().getResource("/FXML/userView.fxml"));
+        FXMLLoader userLoader = new FXMLLoader(getClass().getResource("/FXML/userView.fxml"));
         Parent root;
         try {
-            root = donorLoader.load();
-            Stage donorStage = new Stage();
-            donorStage.setScene(new Scene(root));
-            openStages.add(donorStage);
-            UserController userController = donorLoader.getController();
+            root = userLoader.load();
+            Stage userStage = new Stage();
+            userStage.setScene(new Scene(root));
+            openStages.add(userStage);
+            UserController userController = userLoader.getController();
             AppController.getInstance().setUserController(userController);
-            userController.init(AppController.getInstance(), user, donorStage, true);
-            donorStage.show();
+            userController.init(AppController.getInstance(), user, userStage, true);
+            userStage.show();
         } catch (IOException e) {
             e.printStackTrace();
         }
