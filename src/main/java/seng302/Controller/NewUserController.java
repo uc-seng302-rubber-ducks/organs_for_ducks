@@ -140,20 +140,43 @@ public class NewUserController {
             preferredFirstName = preferredFNameTextField.getText();
         }
 
-        String middleName = AttributeValidation.checkString(mNameInput.getText()) == null ? ""
-                : AttributeValidation.checkString(
-                mNameInput.getText()); // checkString returns null if the textfield is empty
-        String lastName = AttributeValidation.checkString(lNameInput.getText()) == null ? ""
-                : AttributeValidation.checkString(lNameInput.getText());
-
-        String birthGender = AttributeValidation.validateGender(birthGenderComboBox);
-        String genderIdentity;
-        if (birthGender != null && AttributeValidation.validateGender(genderIdComboBox) == null) {
-            genderIdentity = birthGender;
+        String middleName;
+        if (AttributeValidation.checkString(mNameInput.getText())) {
+            middleName = mNameInput.getText();
         } else {
-            genderIdentity = AttributeValidation.validateGender(genderIdComboBox);
+            valid = false;
         }
-        String bloodType = AttributeValidation.validateBlood(bloodComboBox);
+
+        String lastName;
+
+        if (AttributeValidation.checkString(lNameInput.getText())) {
+            lastName = lNameInput.getText();
+        } else {
+            valid = false;
+        }
+
+        String birthGender = null;
+        if (AttributeValidation.validateGender(birthGenderComboBox.getValue())) {
+            birthGender = birthGenderComboBox.getValue().toString();
+        } else {
+            valid = false;
+        }
+
+        String genderIdentity;
+        if (birthGender != null && AttributeValidation.validateGender(genderIdComboBox)) {
+            genderIdentity = birthGender;
+        } else if (AttributeValidation.validateGender(genderIdComboBox)) {
+            genderIdentity = genderIdComboBox.getValue().toString();
+        } else {
+            valid = false;
+        }
+
+        String bloodType;
+        if (AttributeValidation.validateBlood(bloodComboBox)) {
+            bloodType = bloodComboBox.getValue().toString();
+        } else {
+            valid = false;
+        }
 
         boolean smoker = smokerCheckBox.isSelected();
 
@@ -171,32 +194,77 @@ public class NewUserController {
         }
 
         // contact details
-        String currentAddress = AttributeValidation.checkString(addressInput.getText()) == null ? ""
-                : AttributeValidation.checkString(addressInput.getText());
-        String region = AttributeValidation.checkString(regionInput.getText()) == null ? ""
-                : AttributeValidation.checkString(regionInput.getText());
-        String homePhone = AttributeValidation.validatePhoneNumber(phoneInput.getText());
-        String cellPhone = AttributeValidation.validateCellNumber(cellInput.getText());
-        String email = AttributeValidation.validateEmail(emailInput.getText());
+        String currentAddress;
+        if (AttributeValidation.checkString(addressInput.getText())) {
+            currentAddress = addressInput.getText();
+        }
+
+        String region;
+        if (AttributeValidation.checkString(regionInput.getText())) {
+            region = regionInput.getText();
+        }
+
+        String homePhone;
+        if (AttributeValidation.validatePhoneNumber(phoneInput.getText())) {
+            homePhone = phoneInput.getText();
+            valid = homePhoneCheck(homePhone, valid);
+        }
+
+        String cellPhone;
+        if (AttributeValidation.validateCellNumber(cellInput.getText())) {
+            cellPhone = cellInput.getText();
+            valid = cellPhoneCheck(cellPhone, valid);
+        }
+
+        String email;
+        if (AttributeValidation.validateEmail(emailInput.getText())) {
+            email = emailInput.getText();
+            valid = emailCheck(email, valid);
+        }
 
         // validate email and phone numbers
-        valid = emailCheck(email, valid);
-        valid = homePhoneCheck(homePhone, valid);
-        valid = cellPhoneCheck(cellPhone, valid);
 
+        // ------------------------------------------_ABSTRACT_-------------------------------------
         // Emergency Contact attributes
-        String eName = AttributeValidation.checkString(ecNameInput.getText());
-        String eCellPhone = AttributeValidation.validateCellNumber(ecCellInput.getText());
-        String eHomePhone = AttributeValidation.validatePhoneNumber(ecPhoneInput.getText());
-        String eAddress = AttributeValidation.checkString(ecAddressInput.getText());
-        String eRegion = AttributeValidation.checkString(ecRegionInput.getText());
-        String eEmail = AttributeValidation.validateEmail(ecEmailInput.getText());
-        String eRelationship = AttributeValidation.checkString(ecRelationshipInput.getText());
+        String eName;
+        if (AttributeValidation.checkString(ecNameInput.getText())) {
+            eName = ecNameInput.getText();
+        }
+
+        String eCellPhone;
+        if (AttributeValidation.validateCellNumber(ecCellInput.getText())) {
+            eCellPhone = ecCellInput.getText();
+            valid = cellPhoneCheck(eCellPhone, valid);
+        }
+
+        String eHomePhone;
+        if (AttributeValidation.validatePhoneNumber(ecPhoneInput.getText())) {
+            eHomePhone = ecPhoneInput.getText();
+            valid = homePhoneCheck(eHomePhone, valid);
+        }
+
+        String eAddress;
+        if (AttributeValidation.checkString(ecAddressInput.getText())) {
+            eAddress = ecAddressInput.getText();
+        }
+
+        String eRegion;
+        if (AttributeValidation.checkString(ecRegionInput.getText())) {
+            eRegion = ecRegionInput.getText();
+        }
+
+        String eEmail;
+        if (AttributeValidation.validateEmail(ecEmailInput.getText())) {
+            eEmail = ecEmailInput.getText();
+            valid = emailCheck(eEmail, valid);
+        }
+
+        String eRelationship;
+        if (AttributeValidation.checkString(ecRelationshipInput.getText())) {
+            eRelationship = ecRelationshipInput.getText();
+        }
 
         // validate emergency contact email and phone numbers
-        valid = emailCheck(eEmail, valid);
-        valid = homePhoneCheck(eHomePhone, valid);
-        valid = cellPhoneCheck(eCellPhone, valid);
 
 
         // the name and cell number are required if any other attributes are filled out
@@ -207,12 +275,15 @@ public class NewUserController {
             errorLabel.setVisible(true);
         }
 
+        //KILLLLLLLLLLLLLLLLLL MEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
+
         if (valid) {
             // create the new user
             User newUser = new User(nhi, dob, dod, birthGender, genderIdentity, height, weight,
                     bloodType,
                     alcoholConsumption, smoker, currentAddress, region, homePhone, cellPhone, email, null,
-                    fName, fName, preferredFirstName, middleName, lastName); //todo: ewww gross can we please change this
+                fName, fName, preferredFirstName, middleName,
+                lastName); //todo: ewww gross can we please change this DELET THIS PLS
 
             EmergencyContact contact = new EmergencyContact("", "", newUser);
 
@@ -283,9 +354,7 @@ public class NewUserController {
      */
     private boolean emailCheck(String email, boolean valid) {
         if (email != null) {
-            email = AttributeValidation.validateEmail(email);
-
-            if (email == null) {
+            if (AttributeValidation.validateEmail(email)) {
                 valid = false;
                 errorLabel.setVisible(true);
             }
@@ -304,9 +373,7 @@ public class NewUserController {
      */
     private boolean homePhoneCheck(String homeNum, boolean valid) {
         if (homeNum != null) {
-            homeNum = AttributeValidation.validatePhoneNumber(homeNum);
-
-            if (homeNum == null) {
+            if (AttributeValidation.validatePhoneNumber(homeNum)) {
                 valid = false;
                 errorLabel.setVisible(true);
             }
@@ -325,9 +392,7 @@ public class NewUserController {
      */
     private boolean cellPhoneCheck(String cellNum, boolean valid) {
         if (cellNum != null) {
-            cellNum = AttributeValidation.validateCellNumber(cellNum);
-
-            if (cellNum == null) {
+            if (AttributeValidation.validateCellNumber(cellNum)) {
                 valid = false;
                 errorLabel.setVisible(true);
             }
@@ -350,21 +415,24 @@ public class NewUserController {
                 "Please make sure your details are correct.");
         boolean valid = true;
 
-        String nhi = AttributeValidation.validateNHI(nhiInput.getText());
-        String fName = AttributeValidation.checkString(fNameInput.getText());
-
-        LocalDate dob = dobInput.getValue();
-        LocalDate dod = dodInput.getValue();
-
-        if (nhi == null) {
+        String nhi = "";
+        if (AttributeValidation.validateNHI(nhiInput.getText())) {
+            nhi = nhiInput.getText();
+        } else {
             invalidNHI.setVisible(true);
             valid = false;
         }
 
-        if (fName == null) {
+        String fName = "";
+        if (AttributeValidation.checkString(fNameInput.getText())) {
+            fName = fNameInput.getText();
+        } else {
             invalidFirstName.setVisible(true);
             valid = false;
         }
+
+        LocalDate dob = dobInput.getValue();
+        LocalDate dod = dodInput.getValue();
 
         if (dob == null) {
             invalidDOB.setVisible(true);

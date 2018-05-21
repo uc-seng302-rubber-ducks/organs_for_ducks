@@ -2,7 +2,6 @@ package seng302.Service;
 
 import java.time.LocalDate;
 import java.time.Period;
-import javafx.scene.control.ComboBox;
 import seng302.Model.BloodTypes;
 import seng302.Model.TransplantDetails;
 import seng302.Model.User;
@@ -108,12 +107,11 @@ public class AttributeValidation {
      * Gets the enum value of BloodTypes by iterating through the string literals
      * and matching them to the given blood type.
      * @param bloodBox the combobox containing blood types.
-     * @return The enum of the given blood type if found, null otherwise.
+     * @return True if the provided object is valid
      */
-    public static boolean validateBlood(ComboBox bloodBox) {
-
-        if (bloodBox.getValue() != null) {
-            String blood = bloodBox.getValue().toString();
+    public static boolean validateBlood(Object bloodBox) {
+        if (bloodBox != null) {
+            String blood = bloodBox.toString();
             for (BloodTypes type : BloodTypes.values()) {
                 if ((type.toString()).equals(blood)) {
                     return true;
@@ -154,10 +152,10 @@ public class AttributeValidation {
      * @param genderBox The combobox containing gender types.
      * @return The gender value.
      */
-    public static boolean validateGender(ComboBox genderBox) {
+    public static boolean validateGender(Object genderBox) {
         boolean valid = false;
 
-        if (genderBox.getValue() != null && !genderBox.getValue().toString().equals("")) {
+        if (genderBox != null && !genderBox.toString().equals("")) {
             valid = true;
         }
 
