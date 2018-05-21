@@ -5,7 +5,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -73,7 +72,7 @@ public class ProcedureTabController {
 
   private User currentUser;
   private AppController application;
-  private DonorController parent;
+  private UserController parent;
 
   /**
    * Gives the donor view the application controller and hides all label and buttons that are not
@@ -82,10 +81,10 @@ public class ProcedureTabController {
    * @param controller the application controller
    * @param user the current user
    * @param fromClinician boolean value indication if from clinician view
-   * @param parent the DonorController class this belongs to
+   * @param parent the UserController class this belongs to
    */
   public void init(AppController controller, User user, boolean fromClinician,
-      DonorController parent) {
+      UserController parent) {
     application = controller;
     currentUser = user;
     this.parent = parent;
@@ -207,11 +206,9 @@ public class ProcedureTabController {
 
   /**
    * Adds a procedure to the current user when a procedure name is entered
-   *
-   * @param event An action event.
    */
   @FXML
-  void addProcedure(ActionEvent event) {
+  void addProcedure() {
     Memento<User> memento = new Memento<>();
     memento.setOldObject(currentUser.clone());
     String procedureName = procedureTextField.getText();
@@ -229,7 +226,7 @@ public class ProcedureTabController {
       return;
     }
     MedicalProcedure procedure = new MedicalProcedure(procedureDate, procedureName,
-        descriptionTextArea.getText(), new ArrayList<Organs>());
+        descriptionTextArea.getText(), new ArrayList<>());
     medicalProcedures.add(procedure);
     if (procedure.getProcedureDate().isBefore(LocalDate.now())) {
       previousProcedures.add(procedure);
@@ -293,9 +290,7 @@ public class ProcedureTabController {
     procedure.setSummary(newName);
     procedure.setDescription(newDescription);
     LocalDate oldDate = procedure.getProcedureDate();
-    if (newDate == null) {
-
-    } else {
+    if (newDate != null) {
       procedure.setProcedureDate(newDate);
     }
     if (procedure.getProcedureDate().isBefore(LocalDate.now()) && !oldDate
@@ -346,11 +341,9 @@ public class ProcedureTabController {
 
   /**
    * Removes a procedure from the curernt users profile
-   *
-   * @param event passed in automatically by the gui
    */
   @FXML
-  void removeProcedure(ActionEvent event) {
+  void removeProcedure() {
     Memento<User> memento = new Memento<>();
     memento.setOldObject(currentUser.clone());
     if (previousProcedureTableView.getSelectionModel().getSelectedItem() != null) {
@@ -379,21 +372,20 @@ public class ProcedureTabController {
     MedicalProcedure procedure = currentProcedureList.getSelectionModel().getSelectedItem();
     FXMLLoader affectedOrganLoader = new FXMLLoader(
         getClass().getResource("/FXML/organsAffectedView.fxml"));
-    Parent root = null;
+    Parent root;
     try {
       root = affectedOrganLoader.load();
+      Stage s = new Stage();
+      s.setScene(new Scene(root));
+      s.initModality(Modality.APPLICATION_MODAL);
+      OrgansAffectedController organsAffectedController = affectedOrganLoader.getController();
+      organsAffectedController.init(application, s, procedure, currentUser);
+      s.showAndWait();
+      memento.setNewObject(currentUser.clone());
+      currentUser.getUndoStack().push(memento);
+      showProcedure(procedure);
     } catch (IOException e) {
       e.printStackTrace();
     }
-
-    Stage s = new Stage();
-    s.setScene(new Scene(root));
-    s.initModality(Modality.APPLICATION_MODAL);
-    OrgansAffectedController organsAffectedController = affectedOrganLoader.getController();
-    organsAffectedController.init(application, s, procedure, currentUser);
-    s.showAndWait();
-    memento.setNewObject(currentUser.clone());
-    currentUser.getUndoStack().push(memento);
-    showProcedure(procedure);
   }
 }

@@ -20,7 +20,6 @@ public class DeleteAdminGUITest extends ApplicationTest {
         FxToolkit.setupApplication(App.class);
         AppController.getInstance().getAdmins().clear();
         AppController.getInstance().getAdmins().add(new Administrator("default", null, null, null, "admin"));
-        System.out.println(AppController.getInstance().getAdmins());
 
         clickOn("#administratorTab");
         clickOn("#adminUsernameTextField");

@@ -1,10 +1,7 @@
 package seng302.Controller;
 
 
-import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
@@ -25,11 +22,12 @@ import seng302.Model.User;
 /**
  * Class for the functionality of the User view of the application
  */
-public class DonorController {
+public class UserController {
 
 // the contact page attributes
 
   //declaring all variables for the contacts page
+  //<editor-fold desc="FXML declarations">
   @FXML
   private Label pCellPhone;
   @FXML
@@ -55,17 +53,11 @@ public class DonorController {
   @FXML
   private Label eName;
 
-  //@FXML
-  //private ListView<Organs> organsDonatingListView;
-
   @FXML
   private Button undoButton;
 
   @FXML
   private Button redoButton;
-
-  //@FXML
-  //private ListView<String> miscAttributeslistView;
 
   @FXML
   private TableView<Change> historyTableView;
@@ -73,7 +65,7 @@ public class DonorController {
   private AppController application;
 
   @FXML
-  private DonorOverviewController userProfileTabPageController;
+  private UserOverviewController userProfileTabPageController;
 
   @FXML
   private MedicationTabController medicationTabPageController;
@@ -89,21 +81,12 @@ public class DonorController {
 
   @FXML
   private ReceiverTabController receiverTabPageController;
-
-
-  private HashMap<Organs, ArrayList<LocalDate>> receiverOrgans = new HashMap<>();
-
-  private List<String> possibleGenders = Arrays.asList("M", "F", "U");
-
-  private List<String> possibleBloodTypes = Arrays
-          .asList("A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-", "U");
+  //</editor-fold>
 
   private User currentUser;
   private Stage stage;
   private EmergencyContact contact = null;
   private ObservableList<Change> changelog;
-
-  private Boolean Clinician;
 
   /**
    * Gives the donor view the application controller and hides all label and buttons that are not
@@ -119,7 +102,7 @@ public class DonorController {
     application = controller;
     //ageValue.setText("");
     // This is the place to set visible and invisible controls for Clinician vs User
-    medicationTabPageController.init(controller, user, stage, fromClinician);
+    medicationTabPageController.init(controller, user, fromClinician);
     procedureTabPageController.init(controller, user, fromClinician, this);
     donationTabPageController.init(controller, user, this);
     diseasesTabPageController.init(controller, user, fromClinician, this);
@@ -167,7 +150,7 @@ public class DonorController {
     userProfileTabPageController.init(controller, user, this.stage, fromClinician);
   }
 
-  public void refreshDiseases(boolean isSortedByName, boolean isReverseSorted) {
+  public void refreshDiseases() {
     diseasesTabPageController.diseaseRefresh(this.getIsSortedByName(), this.getIsRevereSorted());
   }
 
@@ -176,7 +159,7 @@ public class DonorController {
    * @param organDeregisterationReason OrganDeregisterReason enum
    */
   public void setOrganDeregisterationReason(OrganDeregisterReason organDeregisterationReason) {
-    receiverTabPageController.setOrganDeregisterationReason(organDeregisterationReason);
+    receiverTabPageController.setOrganDeregistrationReason(organDeregisterationReason);
   }
 
   /**
@@ -313,9 +296,9 @@ public class DonorController {
    */
   private void showDonorHistory() {
     TableColumn<Change, String> timeColumn = new TableColumn<>("Time");
-    TableColumn<Change, String> changeColumn = new TableColumn<Change, String>("Change");
-    timeColumn.setCellValueFactory(new PropertyValueFactory<Change, String>("time"));
-    changeColumn.setCellValueFactory(new PropertyValueFactory<Change, String>("change"));
+    TableColumn<Change, String> changeColumn = new TableColumn<>("Change");
+    timeColumn.setCellValueFactory(new PropertyValueFactory<>("time"));
+    changeColumn.setCellValueFactory(new PropertyValueFactory<>("change"));
     historyTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
     historyTableView.setItems(changelog);
     historyTableView.getColumns().addAll(timeColumn, changeColumn);
@@ -359,11 +342,11 @@ public class DonorController {
     diseasesTabPageController.showDonorDiseases(user, init);
   }
 
-  public boolean getIsRevereSorted() {
+  private boolean getIsRevereSorted() {
     return receiverTabPageController.getIsRevereSorted();
   }
 
-  public boolean getIsSortedByName() {
+  private boolean getIsSortedByName() {
     return receiverTabPageController.getIsSortedByName();
   }
 

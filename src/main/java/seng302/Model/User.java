@@ -1,12 +1,12 @@
 package seng302.Model;
 
 import com.google.gson.annotations.Expose;
+import javafx.collections.FXCollections;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
-import javafx.collections.FXCollections;
 
 /**
  * Class for handling calls to user
@@ -67,21 +67,21 @@ public class User extends Undoable<User> {
     @Expose
     private LocalDateTime lastModified;
     @Expose
-    private ArrayList<String> miscAttributes;
+    private List<String> miscAttributes;
     @Expose
-    private HashMap<String, String> updateHistory;
+    private Map<String, String> updateHistory;
     @Expose
-    private ArrayList<String> previousMedication;
+    private List<String> previousMedication;
     @Expose
-    private ArrayList<String> currentMedication;
+    private List<String> currentMedication;
     @Expose
-    private HashMap<String, ArrayList<LocalDateTime>> previousMedicationTimes;
+    private Map<String, List<LocalDateTime>> previousMedicationTimes;
     @Expose
-    private HashMap<String, ArrayList<LocalDateTime>> currentMedicationTimes;
+    private Map<String, List<LocalDateTime>> currentMedicationTimes;
 
     private transient List<Change> changes;//
     @Expose
-    private ArrayList<MedicalProcedure> medicalProcedures;
+    private List<MedicalProcedure> medicalProcedures;
 
     //flags and extra details for if the person is a donor or a receiver
     @Expose
@@ -93,21 +93,14 @@ public class User extends Undoable<User> {
     private Collection<Organs> commonOrgans;
 
     @Expose
-    private ArrayList<Disease> pastDiseases;
+    private List<Disease> pastDiseases;
 
     @Expose
-    private ArrayList<Disease> currentDiseases;
-
-//  public User(java.time.LocalDate dateOfBirth, java.time.LocalDate dateOfDeath, String gender, double height, double weight,
-//              String bloodType,
-//              String currentAddress, String region, LocalDateTime timeCreated, String name,
-//              LocalDateTime lastModified,
-//              boolean isDeceased) {
-
-    // updated constructor that works with the creation page
+    private List<Disease> currentDiseases;
 
     /**
      * Constructor for a User
+     * TODO: Remove this monolithic hunk of junk 17/05
      *
      * @param nhi                National Health Index for user
      * @param dateOfBirth        users date of birth
@@ -180,12 +173,6 @@ public class User extends Undoable<User> {
         this.pastDiseases = new ArrayList<>();
         this.medicalProcedures = new ArrayList<>();
         this.changes = FXCollections.observableArrayList();
-      /*try {
-        changes = JsonHandler.importHistoryFromFile(name);
-      } catch (FileNotFoundException e) {
-        e.printStackTrace();
-      }*/
-
     }
 
     /**
@@ -214,16 +201,11 @@ public class User extends Undoable<User> {
         this.miscAttributes = new ArrayList<>();
         this.currentMedication = new ArrayList<>();
         this.previousMedication = new ArrayList<>();
-        this.currentMedicationTimes = new HashMap<String, ArrayList<LocalDateTime>>();
-        this.previousMedicationTimes = new HashMap<String, ArrayList<LocalDateTime>>();
+        this.currentMedicationTimes = new HashMap<>();
+        this.previousMedicationTimes = new HashMap<>();
         this.heightText = "";
         this.weightText = "";
-    /*try {
-      changes = JsonHandler.importHistoryFromFile(name);
-    } catch (FileNotFoundException e) {
-      e.printStackTrace();
-    }
-*/
+
         this.currentDiseases = new ArrayList<>();
         this.pastDiseases = new ArrayList<>();
         this.commonOrgans = new HashSet<>();
@@ -233,11 +215,7 @@ public class User extends Undoable<User> {
         this.commonOrgans = new HashSet<>();
         this.medicalProcedures = new ArrayList<>();
         this.changes = FXCollections.observableArrayList();
-    /*try {
-      changes = JsonHandler.importHistoryFromFile(name);
-    } catch (FileNotFoundException e) {
-      e.printStackTrace();
-    }*/
+
     }
 
 
@@ -246,15 +224,15 @@ public class User extends Undoable<User> {
      */
     public User() {
         timeCreated = LocalDateTime.now();
-        miscAttributes = new ArrayList<String>();
+        miscAttributes = new ArrayList<>();
         this.currentMedication = new ArrayList<>();
         this.previousMedication = new ArrayList<>();
 
         this.currentDiseases = new ArrayList<>();
         this.pastDiseases = new ArrayList<>();
 
-        this.currentMedicationTimes = new HashMap<String, ArrayList<LocalDateTime>>();
-        this.previousMedicationTimes = new HashMap<String, ArrayList<LocalDateTime>>();
+        this.currentMedicationTimes = new HashMap<>();
+        this.previousMedicationTimes = new HashMap<>();
         this.medicalProcedures = new ArrayList<>();
         this.donorDetails = new DonorDetails(this);
         this.receiverDetails = new ReceiverDetails(this);
@@ -264,6 +242,15 @@ public class User extends Undoable<User> {
 
     public EmergencyContact getContact() {
         return contact;
+    }
+
+    public void setContact(EmergencyContact contact) {
+        Memento<User> mem = new Memento<>();
+        mem.setOldObject(this.clone());
+        updateLastModified();
+        this.contact = contact;
+        mem.setNewObject(this.clone());
+        getUndoStack().push(mem);
     }
 
     public DonorDetails getDonorDetails() {
@@ -283,10 +270,6 @@ public class User extends Undoable<User> {
         return receiverDetails;
     }
 
-    public Collection<Organs> getCommonOrgans() {
-        return commonOrgans;
-    }
-
     public void setReceiverDetails(ReceiverDetails receiverDetails) {
         Memento<User> mem = new Memento<>();
         mem.setOldObject(this.clone());
@@ -296,7 +279,11 @@ public class User extends Undoable<User> {
         getUndoStack().push(mem);
     }
 
-    //TODO details object is set at initialization. will always return true
+    //TODO details object is set at initialization. will always return true 17/05
+
+    public Collection<Organs> getCommonOrgans() {
+        return commonOrgans;
+    }
 
     /**
      * Checks to see if user is a donor
@@ -304,10 +291,7 @@ public class User extends Undoable<User> {
      * @return true if donor
      */
     public boolean isDonor() {
-        if (this.donorDetails == null) {
-            return false;
-        }
-        return !this.donorDetails.isEmpty();
+        return this.donorDetails != null && !this.donorDetails.isEmpty();
 
     }
 
@@ -317,10 +301,7 @@ public class User extends Undoable<User> {
      * @return true if receiver
      */
     public boolean isReceiver() {
-        if (this.receiverDetails == null) {
-            return false;
-        }
-        return !this.receiverDetails.isEmpty();
+        return this.receiverDetails != null && !this.receiverDetails.isEmpty();
     }
 
     public String getNhi() {
@@ -339,7 +320,7 @@ public class User extends Undoable<User> {
 
     /**
      * Utility function to update the last modified timestamp when a change is made to a donor. Can be
-     * changed later to allow writing to the JSON change log latter
+     * changed later to allow writing to the JSON change log later
      */
     public void updateLastModified() {
         lastModified = LocalDateTime.now();
@@ -349,25 +330,22 @@ public class User extends Undoable<User> {
         return lastModified;
     }
 
-
     public void setLastModified(LocalDateTime lastModified) {
         this.lastModified = lastModified;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
+    public void setName(String fName, String mName, String lName){
         Memento<User> mem = new Memento<>();
         mem.setOldObject(this.clone());
+        this.firstName = fName;
+        this.middleName = mName;
+        this.lastName = lName;
         updateLastModified();
-        this.name = name;
-        changes.add(new Change("Changed name to " + name));
         mem.setNewObject(this.clone());
-        getUndoStack().push(mem);
+        if(!mem.getNewObject().getFullName().equals(mem.getOldObject().getFullName())){
+            getUndoStack().push(mem);
+        }
     }
-
 
     public String getFirstName() {
         return firstName;
@@ -387,7 +365,6 @@ public class User extends Undoable<User> {
         getUndoStack().push(mem);
 
     }
-
 
     public String getMiddleName() {
         return middleName;
@@ -433,14 +410,14 @@ public class User extends Undoable<User> {
             fullName = firstName;
         }
 
-        return fullName;
+        return fullName.trim();
     }
 
-    public java.time.LocalDate getDateOfBirth() {
+    public LocalDate getDateOfBirth() {
         return dateOfBirth;
     }
 
-    public void setDateOfBirth(java.time.LocalDate dateOfBirth) {
+    public void setDateOfBirth(LocalDate dateOfBirth) {
         Memento<User> mem = new Memento<>();
         mem.setOldObject(this.clone());
         updateLastModified();
@@ -450,11 +427,11 @@ public class User extends Undoable<User> {
         getUndoStack().push(mem);
     }
 
-    public java.time.LocalDate getDateOfDeath() {
+    public LocalDate getDateOfDeath() {
         return dateOfDeath;
     }
 
-    public void setDateOfDeath(java.time.LocalDate dateOfDeath) {
+    public void setDateOfDeath(LocalDate dateOfDeath) {
         Memento<User> mem = new Memento<>();
         mem.setOldObject(this.clone());
         updateLastModified();
@@ -585,19 +562,12 @@ public class User extends Undoable<User> {
         return timeCreated;
     }
 
-    //For UndoRedoStacks
-    public void setTimeCreated(LocalDateTime timeCreated) {
-        updateLastModified();
-        this.timeCreated = timeCreated;
-        changes.add(new Change("Changed time created to " + timeCreated.toString()));
-    }
-
     public String getStringAge() {
         if (dateOfDeath != null) {
 
             return Long.toString(ChronoUnit.YEARS.between(dateOfBirth, dateOfDeath));
         }
-        return Long.toString(ChronoUnit.YEARS.between(dateOfBirth, java.time.LocalDate.now()));
+        return Long.toString(ChronoUnit.YEARS.between(dateOfBirth, LocalDate.now()));
     }
 
     public int getAge() {
@@ -608,21 +578,12 @@ public class User extends Undoable<User> {
         return Math.toIntExact(ChronoUnit.YEARS.between(dateOfBirth, java.time.LocalDate.now()));
     }
 
+    //TODO: refactor code to calculate off date od death and remove this variable 17/05
     public Boolean getDeceased() {
         return isDeceased;
     }
 
-    public void setDeceased(Boolean deceased) {
-        Memento<User> mem = new Memento<>();
-        mem.setOldObject(this.clone());
-        updateLastModified();
-        isDeceased = deceased;
-        changes.add(new Change("Changed users corporal status"));
-        mem.setNewObject(this.clone());
-        getUndoStack().push(mem);
-    }
-
-    public ArrayList<Disease> getCurrentDiseases() {
+    public List<Disease> getCurrentDiseases() {
         return currentDiseases;
     }
 
@@ -631,7 +592,7 @@ public class User extends Undoable<User> {
         changes.add(new Change("Added current disease " + currentDisease.toString()));
     }
 
-    public ArrayList<Disease> getPastDiseases() {
+    public List<Disease> getPastDiseases() {
         return pastDiseases;
     }
 
@@ -663,7 +624,7 @@ public class User extends Undoable<User> {
         mem.setOldObject(this.clone());
         updateLastModified();
         // Changes the default case where the gender identity is the same as the birth gender
-        if (genderIdentity == null || genderIdentity.equals(this.birthGender)) {
+        if (genderIdentity == null) {
             genderIdentity = this.birthGender;
         }
         this.birthGender = birthGender;
@@ -757,16 +718,6 @@ public class User extends Undoable<User> {
         getUndoStack().push(mem);
     }
 
-    public void setContact(EmergencyContact contact) {
-        Memento<User> mem = new Memento<>();
-        mem.setOldObject(this.clone());
-        updateLastModified();
-        this.contact = contact;
-        mem.setNewObject(this.clone());
-        getUndoStack().push(mem);
-    }
-
-
     /**
      * Method to ensure that all blood types are valid blood types returns U if not a valid blood
      * type
@@ -774,7 +725,7 @@ public class User extends Undoable<User> {
      * @param possibleType type to test
      * @return correct blood type
      */
-    public String groupBloodType(String possibleType) {
+    private String groupBloodType(String possibleType) {
 
         if (possibleType == null) {
             return "U";
@@ -801,11 +752,11 @@ public class User extends Undoable<User> {
     }
 
 
-    public ArrayList<String> getMiscAttributes() {
+    public List<String> getMiscAttributes() {
         return miscAttributes;
     }
 
-    public void setMiscAttributes(ArrayList<String> miscAttributes) {
+    public void setMiscAttributes(List<String> miscAttributes) {
         Memento<User> mem = new Memento<>();
         mem.setOldObject(this.clone());
         updateLastModified();
@@ -816,11 +767,11 @@ public class User extends Undoable<User> {
 
     // @TODO: find all instances of potential updates and add to the Hashmap
 
-    public HashMap<String, String> getUpdateHistory() {
+    public Map<String, String> getUpdateHistory() {
         return updateHistory;
     }
 
-    public void setUpdateHistory(HashMap<String, String> updateHistory) {
+    public void setUpdateHistory(Map<String, String> updateHistory) {
         this.updateHistory = updateHistory;
     }
 
@@ -843,19 +794,19 @@ public class User extends Undoable<User> {
         changes.add(new Change("added attribute " + attribute));
     }
 
-    public ArrayList<String> getPreviousMedication() {
+    public List<String> getPreviousMedication() {
         return previousMedication;
     }
 
-    public void setPreviousMedication(ArrayList<String> previousMedication) {
+    public void setPreviousMedication(List<String> previousMedication) {
         this.previousMedication = previousMedication;
     }
 
-    public ArrayList<String> getCurrentMedication() {
+    public List<String> getCurrentMedication() {
         return currentMedication;
     }
 
-    public void setCurrentMedication(ArrayList<String> currentMedication) {
+    public void setCurrentMedication(List<String> currentMedication) {
         this.currentMedication = currentMedication;
     }
 
@@ -902,23 +853,23 @@ public class User extends Undoable<User> {
         changes.add(new Change("Removed previous medication" + medication));
     }
 
-    public HashMap<String, ArrayList<LocalDateTime>> getPreviousMedicationTimes() {
+    public Map<String, List<LocalDateTime>> getPreviousMedicationTimes() {
         return previousMedicationTimes;
     }
 
     public void setPreviousMedicationTimes(
-            HashMap<String, ArrayList<LocalDateTime>> previousMedicationTimes) {
+            Map<String, List<LocalDateTime>> previousMedicationTimes) {
         updateLastModified();
         this.previousMedicationTimes = previousMedicationTimes;
     }
 
-    public HashMap<String, ArrayList<LocalDateTime>> getCurrentMedicationTimes() {
+    public Map<String, List<LocalDateTime>> getCurrentMedicationTimes() {
         return currentMedicationTimes;
     }
 
 
     public void setCurrentMedicationTimes(
-            HashMap<String, ArrayList<LocalDateTime>> currentMedicationTimes) {
+            Map<String, List<LocalDateTime>> currentMedicationTimes) {
         updateLastModified();
         this.currentMedicationTimes = currentMedicationTimes;
     }
@@ -929,11 +880,11 @@ public class User extends Undoable<User> {
      * @param medication      medication to be added
      * @param medicationTimes hashmap to be appended to
      */
-    public void addMedicationTimes(String medication,
-                                   HashMap<String, ArrayList<LocalDateTime>> medicationTimes) {
+    private void addMedicationTimes(String medication,
+                                    Map<String, List<LocalDateTime>> medicationTimes) {
         LocalDateTime time = LocalDateTime.now();
         updateLastModified();
-        ArrayList<LocalDateTime> previouslyExists;
+        List<LocalDateTime> previouslyExists;
         try {
             previouslyExists = medicationTimes.get(medication);
             previouslyExists.add(time);
@@ -952,7 +903,7 @@ public class User extends Undoable<User> {
      * @param medication medication string key
      * @param stamps     list of timestamps
      */
-    public void addCurrentMedicationTimes(String medication, ArrayList<LocalDateTime> stamps) {
+    public void addCurrentMedicationTimes(String medication, List<LocalDateTime> stamps) {
 
         currentMedicationTimes.put(medication, stamps);
         updateLastModified();
@@ -965,7 +916,7 @@ public class User extends Undoable<User> {
      * @param medication medication string key
      * @param stamps     list of timestamps
      */
-    public void addPreviousMedicationTimes(String medication, ArrayList<LocalDateTime> stamps) {
+    public void addPreviousMedicationTimes(String medication, List<LocalDateTime> stamps) {
         previousMedicationTimes.put(medication, stamps);
         updateLastModified();
     }
@@ -983,11 +934,11 @@ public class User extends Undoable<User> {
         changes.add(change);
     }
 
-    public ArrayList<MedicalProcedure> getMedicalProcedures() {
+    public List<MedicalProcedure> getMedicalProcedures() {
         return medicalProcedures;
     }
 
-    public void setMedicalProcedures(ArrayList<MedicalProcedure> medicalProcedures) {
+    public void setMedicalProcedures(List<MedicalProcedure> medicalProcedures) {
         updateLastModified();
         this.medicalProcedures = medicalProcedures;
     }
@@ -1005,7 +956,7 @@ public class User extends Undoable<User> {
     }
 
     public String getTooltip() {
-        //TODO fix this to show full info where possible
+        //TODO fix this to show full info where possible 05/17
         if (this.donorDetails.getOrgans() == null) {
             return name;
         }
@@ -1031,7 +982,6 @@ public class User extends Undoable<User> {
         }
         User other = (User) o;
         return this.nhi.equals(other.getNhi());
-        //return Objects.equals(dateOfBirth, other.dateOfBirth) && name.equalsIgnoreCase(other.name);
     }
 
     @Override
@@ -1114,23 +1064,22 @@ public class User extends Undoable<User> {
         newUser.middleName = this.middleName;
         newUser.lastName = this.lastName;
 
-    newUser.timeCreated = this.timeCreated;
-    newUser.updateHistory = new HashMap<>(this.updateHistory);
-    newUser.miscAttributes = new ArrayList<>(this.miscAttributes);
-    newUser.currentMedication = new ArrayList<>(this.currentMedication);
-    newUser.previousMedication = new ArrayList<>(this.previousMedication);
-    newUser.currentMedicationTimes = new HashMap<>(this.currentMedicationTimes);
-    newUser.previousMedicationTimes = new HashMap<>(this.previousMedicationTimes);
-    newUser.donorDetails = new DonorDetails(newUser);
-    for (Organs o : this.donorDetails.getOrgans()) {
-      newUser.donorDetails.getOrgans().add(o);
-    }
-    newUser.receiverDetails = new ReceiverDetails(newUser);
-    for (Organs o : this.receiverDetails.getOrgans().keySet()) {
-      ArrayList<LocalDate> dates = new ArrayList<>();
-      dates.addAll(this.receiverDetails.getOrgans().get(o));
-      newUser.receiverDetails.getOrgans().put(o, dates);
-    }
+        newUser.timeCreated = this.timeCreated;
+        newUser.updateHistory = new HashMap<>(this.updateHistory);
+        newUser.miscAttributes = new ArrayList<>(this.miscAttributes);
+        newUser.currentMedication = new ArrayList<>(this.currentMedication);
+        newUser.previousMedication = new ArrayList<>(this.previousMedication);
+        newUser.currentMedicationTimes = new HashMap<>(this.currentMedicationTimes);
+        newUser.previousMedicationTimes = new HashMap<>(this.previousMedicationTimes);
+        newUser.donorDetails = new DonorDetails(newUser);
+        for (Organs o : this.donorDetails.getOrgans()) {
+            newUser.donorDetails.getOrgans().add(o);
+        }
+        newUser.receiverDetails = new ReceiverDetails(newUser);
+        for (Organs o : this.receiverDetails.getOrgans().keySet()) {
+            ArrayList<LocalDate> dates = new ArrayList<>(this.receiverDetails.getOrgans().get(o));
+            newUser.receiverDetails.getOrgans().put(o, dates);
+        }
 
         newUser.currentDiseases = new ArrayList<>(this.currentDiseases);
         newUser.pastDiseases = new ArrayList<>(this.pastDiseases);
@@ -1144,18 +1093,18 @@ public class User extends Undoable<User> {
             newUser.medicalProcedures.add(newMed);
         }
 
-    newUser.changes = this.changes;
-    newUser.setUndoStack((Stack<Memento<User>>) this.getUndoStack().clone());
-    newUser.setRedoStack((Stack<Memento<User>>) this.getRedoStack().clone());
-    return newUser;
-  }
+        newUser.changes = this.changes;
+        newUser.setUndoStack((Stack<Memento<User>>) this.getUndoStack().clone());
+        newUser.setRedoStack((Stack<Memento<User>>) this.getRedoStack().clone());
+        return newUser;
+    }
 
     /**
      * Changes this instance of a user to become another user
      *
      * @param other other User object to convert this instance into.
      */
-    public void changeInto(User other) {
+    private void changeInto(User other) {
         this.nhi = other.nhi;
         this.dateOfBirth = other.dateOfBirth;
         this.dateOfDeath = other.dateOfDeath;
@@ -1170,13 +1119,13 @@ public class User extends Undoable<User> {
         this.alcoholConsumption = other.alcoholConsumption;
         this.smoker = other.smoker;
 
-    this.currentAddress = other.currentAddress;
-    this.region = other.region;
-    this.homePhone = other.homePhone;
-    this.cellPhone = other.cellPhone;
-    this.email = other.email;
-    this.contact = other.contact;
-    this.contact.setAttachedUser(this);
+        this.currentAddress = other.currentAddress;
+        this.region = other.region;
+        this.homePhone = other.homePhone;
+        this.cellPhone = other.cellPhone;
+        this.email = other.email;
+        this.contact = other.contact;
+        this.contact.setAttachedUser(this);
 
         this.name = other.name;
         this.firstName = other.firstName;
@@ -1184,17 +1133,17 @@ public class User extends Undoable<User> {
         this.middleName = other.middleName;
         this.lastName = other.lastName;
 
-    this.timeCreated = other.timeCreated;
-    updateHistory = other.updateHistory;
-    this.miscAttributes = other.miscAttributes;
-    this.currentMedication = other.currentMedication;
-    this.previousMedication = other.previousMedication;
-    this.currentMedicationTimes = other.currentMedicationTimes;
-    this.previousMedicationTimes = other.previousMedicationTimes;
-    this.donorDetails = other.donorDetails;
-    this.donorDetails.setAttachedUser(this);
-    this.receiverDetails = other.receiverDetails;
-    this.receiverDetails.setAttachedUser(this);
+        this.timeCreated = other.timeCreated;
+        updateHistory = other.updateHistory;
+        this.miscAttributes = other.miscAttributes;
+        this.currentMedication = other.currentMedication;
+        this.previousMedication = other.previousMedication;
+        this.currentMedicationTimes = other.currentMedicationTimes;
+        this.previousMedicationTimes = other.previousMedicationTimes;
+        this.donorDetails = other.donorDetails;
+        this.donorDetails.setAttachedUser(this);
+        this.receiverDetails = other.receiverDetails;
+        this.receiverDetails.setAttachedUser(this);
 
         this.currentDiseases = other.currentDiseases;
         this.pastDiseases = other.pastDiseases;

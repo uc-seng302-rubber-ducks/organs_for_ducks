@@ -3,10 +3,7 @@ package seng302.Controller;
 import java.util.ArrayList;
 import java.util.Collections;
 import javafx.collections.FXCollections;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.SelectionMode;
 import seng302.Model.Organs;
@@ -21,18 +18,9 @@ public class DonationTabPageController {
   @FXML
   private ListView<Organs> canDonate;
 
-  @FXML
-  private Button donateButton;
-
-  @FXML
-  private Button undonateButton;
-
-  @FXML
-  private Label donorNameLabel;
-
   private User currentUser;
   private AppController application;
-  private DonorController parent;
+  private UserController parent;
 
   /**
    * Gives the donor view the application controller and hides all label and buttons that are not
@@ -40,9 +28,9 @@ public class DonationTabPageController {
    *
    * @param controller the application controller
    * @param user the current user
-   * @param parent the DonorController class this belongs to
+   * @param parent the UserController class this belongs to
    */
-  public void init(AppController controller, User user, DonorController parent) {
+  public void init(AppController controller, User user, UserController parent) {
     application = controller;
     currentUser = user;
     this.parent = parent;
@@ -65,7 +53,7 @@ public class DonationTabPageController {
       donating = new ArrayList<>();
     }
     currentlyDonating.setItems(FXCollections.observableList(donating));
-    ArrayList<Organs> leftOverOrgans = new ArrayList<Organs>();
+    ArrayList<Organs> leftOverOrgans = new ArrayList<>();
     Collections.addAll(leftOverOrgans, Organs.values());
     for (Organs o : donating) {
       leftOverOrgans.remove(o);
@@ -79,11 +67,9 @@ public class DonationTabPageController {
 
   /**
    * Moves selected organ from donatable to currently donating
-   *
-   * @param event passed in automatically by the gui
    */
   @FXML
-  void donate(ActionEvent event) {
+  void donate() {
 
     if (!canDonate.getSelectionModel().isEmpty()) {
       Organs toDonate = canDonate.getSelectionModel().getSelectedItem();
@@ -102,11 +88,9 @@ public class DonationTabPageController {
 
   /**
    * Moves selected organ from currently donating to donatable
-   *
-   * @param event passed in automatically by the gui
    */
   @FXML
-  void undonate(ActionEvent event) {
+  void undonate() {
     if (!currentlyDonating.getSelectionModel().isEmpty()) {
       Organs toUndonate = currentlyDonating.getSelectionModel().getSelectedItem();
       currentlyDonating.getItems().remove(toUndonate);

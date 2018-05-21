@@ -1,9 +1,6 @@
 package seng302.Controller;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
@@ -39,8 +36,7 @@ public class NewDiseaseController {
 
     AppController controller;
     Stage stage;
-    List<String> diseaseNameList = new ArrayList<>();
-    DonorController donorController;
+  UserController userController;
     private User currentUser;
     private Disease editableDisease;
 
@@ -50,10 +46,11 @@ public class NewDiseaseController {
      * @param controller The applications controller.
      * @param stage The applications stage.
      */
-    public void init(User user, AppController controller, Stage stage, Disease disease, DonorController donorController) {
+    public void init(User user, AppController controller, Stage stage, Disease disease,
+        UserController userController) {
         this.controller = controller;
         this.stage = stage;
-        this.donorController = donorController;
+      this.userController = userController;
         currentUser = user;
         editableDisease = disease;
 
@@ -66,23 +63,18 @@ public class NewDiseaseController {
         diagnosisDateInput.setValue(date);
         curedRadioButton.setSelected(isCured);
         chronicRadioButton.setSelected(isChronic);
-        
-        //showCurrentDate();
-        //stage.setMinWidth(620); //*Commented out by Aaron*
-        //stage.setMaxWidth(620);
     }
 
     /**
      * Cancels the creation of
      * new disease.
-     * @param event passed in automatically by the gui
      */
     @FXML
-    void cancelCreation(ActionEvent event) {
+    void cancelCreation() {
         AppController appController = AppController.getInstance();
-        DonorController donorController = appController.getDonorController();
+      UserController userController = appController.getUserController();
         try {
-            donorController.showUser(currentUser);
+          userController.showUser(currentUser);
         }
         catch (NullPointerException ex) {
             //TODO causes npe if donor is new in this session
@@ -98,10 +90,10 @@ public class NewDiseaseController {
      */
     private void closeNewDiseaseWindow() {
         AppController appController = AppController.getInstance();
-        DonorController donorController = appController.getDonorController();
+      UserController userController = appController.getUserController();
         try {
-            donorController.showUser(currentUser);
-            donorController.showDonorDiseases(currentUser, false);
+          userController.showUser(currentUser);
+          userController.showDonorDiseases(currentUser, false);
         }
         catch (NullPointerException ex) {
             //TODO causes npe if donor is new in this session
@@ -109,13 +101,6 @@ public class NewDiseaseController {
         }
         this.controller.update(currentUser);
         stage.close();
-    }
-
-    /**
-     * set date picker to display current date
-     */
-    private void showCurrentDate() {
-        diagnosisDateInput.setValue(LocalDate.now());
     }
 
     /**
@@ -134,7 +119,7 @@ public class NewDiseaseController {
      * is invalid.
      */
     @FXML
-    private void CreateDisease() {
+    private void createDisease() {
         boolean isValid = true;
 
         String diseaseName = AttributeValidation.checkString(diseaseNameInput.getText());
@@ -173,7 +158,8 @@ public class NewDiseaseController {
 
                 editableDisease.setName(diseaseName);
                 editableDisease.setDiagnosisDate(diagnosisDate);
-                editableDisease.setIsCured(isCured);
+              editableDisease.setIsCured(
+                  isCured); // noted as always true, but we feel this is clearer for others
                 editableDisease.setIsChronic(isChronic);
 
             } else if (!isCured && editableDisease.getIsCured()) { //if it WAS cured, but now isn't, move to current
@@ -194,8 +180,7 @@ public class NewDiseaseController {
             }
 
             //Refresh the view
-          donorController.refreshDiseases(donorController.getIsSortedByName(),
-              donorController.getIsRevereSorted());
+          userController.refreshDiseases();
             closeNewDiseaseWindow();
 
         }

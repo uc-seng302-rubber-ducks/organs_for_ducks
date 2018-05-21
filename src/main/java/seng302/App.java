@@ -76,18 +76,15 @@ public class App extends Application {
       primaryStage.setMinHeight(420);
       primaryStage.setMinWidth(600);
     AppController controller = AppController.getInstance();
-    primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-      @Override
-      public void handle(WindowEvent event) {
-        try {
-          JsonHandler.saveUsers(controller.getUsers());
-          Log.info("Successfully saved users on exit");
-        } catch (IOException ex) {
-          Log.warning("failed to save users on exit");
-        }
-        Platform.exit();
-        System.exit(0);
+    primaryStage.setOnCloseRequest(event -> {
+      try {
+        JsonHandler.saveUsers(controller.getUsers());
+        Log.info("Successfully saved users on exit");
+      } catch (IOException ex) {
+        Log.warning("failed to save users on exit");
       }
+      Platform.exit();
+      System.exit(0);
     });
     loginController.init(controller, primaryStage);
     primaryStage.show();
