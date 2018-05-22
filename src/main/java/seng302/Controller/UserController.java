@@ -155,6 +155,9 @@ public class UserController {
     changelog.addListener((ListChangeListener.Change<? extends Change> change) -> historyTableView
             .setItems(changelog));
 
+    changelog.addListener((ListChangeListener.Change<? extends Change> change) -> statusBarPageController
+        .updateStatus(changelog.get(changelog.size()-1).toString()));
+
 
 
 
