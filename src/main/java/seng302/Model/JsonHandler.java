@@ -4,22 +4,20 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializer;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.Reader;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
+import org.joda.time.DateTime;
+import org.joda.time.format.ISODateTimeFormat;
+import seng302.Directory;
+import seng302.Service.Log;
+
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import org.joda.time.DateTime;
-import org.joda.time.format.ISODateTimeFormat;
-import seng302.Directory;
-import seng302.Service.Log;
 
 /**
  * Json Handler to import and save data
@@ -28,6 +26,8 @@ import seng302.Service.Log;
  */
 public final class JsonHandler {
 
+
+    private static Alert errorAlert = new Alert(Alert.AlertType.ERROR);
 
     /**
      * save the current users in the system to the filename given Based on:
@@ -64,23 +64,44 @@ public final class JsonHandler {
      */
 
     public static List<User> loadUsers(String filename) throws FileNotFoundException {
-        File inFile = new File(filename);
-        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss")
-                .create();
-        Reader reader = new FileReader(inFile);
-        User[] users = gson.fromJson(reader, User[].class);
-        List<User> results = new ArrayList<>(Arrays.asList(users));
+        try {
+            File inFile = new File(filename);
+            Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss")
+                    .create();
+            Reader reader = new FileReader(inFile);
+            User[] users = gson.fromJson(reader, User[].class);
+            List<User> results = new ArrayList<>(Arrays.asList(users));
 
-        for (User result : results) {
-            result.getReceiverDetails().setAttachedUser(result);
-            result.getDonorDetails().setAttachedUser(result);
-            if (result.getContact() != null) {
-                result.getContact().setAttachedUser(result);
+            for (User result : results) {
+                result.getReceiverDetails().setAttachedUser(result);
+                result.getDonorDetails().setAttachedUser(result);
+                if (result.getContact() != null) {
+                    result.getContact().setAttachedUser(result);
+                }
             }
+            Log.info("successfully loaded user from file");
+            return results;
         }
-        Log.info("successfully loaded user from file");
-        return results;
-
+        catch (FileNotFoundException e){
+            errorAlert.setHeaderText("ERROR!");
+            errorAlert.setContentText("File could not be found.");
+            errorAlert.showAndWait().ifPresent(rs -> {
+                if (rs == ButtonType.OK) {
+                    System.out.println("Pressed OK");
+                }
+            });
+            throw e;
+        }
+        catch (RuntimeException e) {
+            errorAlert.setHeaderText("ERROR!");
+            errorAlert.setContentText("File contained malformed data.");
+            errorAlert.showAndWait().ifPresent(rs -> {
+                if (rs == ButtonType.OK) {
+                    System.out.println("Pressed OK");
+                }
+            });
+            throw e;
+        }
     }
 
 

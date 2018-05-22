@@ -128,6 +128,8 @@ public class AdministratorViewController {
     private Administrator administrator;
     private ArrayList<String> pastCommands = new ArrayList<>();
     private int pastCommandIndex = -1;
+    private Alert confirmAlert = new Alert(Alert.AlertType.CONFIRMATION);
+    private Alert errorAlert = new Alert(Alert.AlertType.ERROR);
 
     /**
      * Initialises scene for the administrator view
@@ -141,6 +143,12 @@ public class AdministratorViewController {
         this.appController = appController;
         this.administrator = administrator;
         displayDetails();
+
+        errorAlert.setHeaderText("Error!");
+        errorAlert.setContentText("Invalid file loaded.");
+
+        confirmAlert.setHeaderText("Load Confirmation");
+        confirmAlert.setContentText("File successfully loaded.");
 
         if (administrator.getUserName().equals("default")) {
             deleteAdminButton.setDisable(true);
@@ -330,26 +338,26 @@ public class AdministratorViewController {
                 fileNotFoundLabel.setVisible(false);
                 try {
                     Collection<Administrator> administrators = JsonHandler.loadAdmins(filename);
-                    Log.info("Successfully imported " + AdminProfileCount + " Administrator profiles")
+                    //Log.info("Successfully imported " + AdminProfileCount + " Administrator profiles")
+                    System.out.println(administrators.size() + " administrators were successfully loaded.");
+                    for (Administrator admin : administrators) {
+                        for (Administrator existingAdmin : existingAdmins) {
+                            if (admin.getUserName().equals(existingAdmin.getUserName())) {
+                                //appController.updateAdmins(admin);
+                                updated = true;
+                                break;
+                            }
+                        }
+                        if (!updated) {
+                            appController.addAdmin(admin);
+                        } else {
+                            updated = false;
+                        }
+                    }
                 }
                 catch (FileNotFoundException e) {
                     Log.severe("File not found", e);
                     throw e;
-                }
-                System.out.println(administrators.size() + " administrators were successfully loaded.");
-                for (Administrator admin : administrators) {
-                    for (Administrator existingAdmin : existingAdmins) {
-                        if (admin.getUserName().equals(existingAdmin.getUserName())) {
-                            //appController.updateAdmins(admin);
-                            updated = true;
-                            break;
-                        }
-                    }
-                    if (updated == false) {
-                        appController.addAdmin(admin);
-                    } else {
-                        updated = false;
-                    }
                 }
             }
         } else {
@@ -411,31 +419,53 @@ public class AdministratorViewController {
         Log.info("Admin "+administrator.getUserName()+" Importing User profiles");
         if(isAllWindowsClosed()) {
             boolean updated = false;
+            boolean invalidFile = false;
+            int loadedUsersAmount;
             List<User> existingUsers = appController.getUsers();
             String filename;
             filename = FileSelectorController.getFileSelector(stage);
             if (filename != null) {
             try {
                 Collection<User> users = JsonHandler.loadUsers(filename);
-                System.out.println(users.size() + " users were successfully loaded.");
                 for (User user : users) {
-                    for (User existingUser : existingUsers) {
-                        if (user.getNhi().equals(existingUser.getNhi())) {
-                            appController.update(user);
-                            updated = true;
-                            break;
+                    if (user.getNhi() == null) {
+                        invalidFile = true;
+                        break;
+                    } else {
+                        for (User existingUser : existingUsers) {
+                            if (user.getNhi().equals(existingUser.getNhi())) {
+                                appController.update(user);
+                                updated = true;
+                                break;
+                            }
                         }
                     }
-                    if (updated == false) {
+                    if (!updated) {
                         appController.addUser(user);
                     } else {
                         updated = false;
                     }
                 }
-                Log.info("successfully imported " + users.size() + " Users profiles");
+                loadedUsersAmount = users.size();
             } catch (FileNotFoundException e){
                 Log.severe("File not found", e);
                 throw e;
+            }
+            if (invalidFile) {
+                errorAlert.showAndWait().ifPresent(rs -> {
+                    if (rs == ButtonType.OK) {
+                        System.out.println("Pressed OK");
+                    }
+                });
+                Log.warning("Incorrect file loaded - leads to NullPointerException.");
+            } else {
+                confirmAlert.showAndWait().ifPresent(rs -> {
+                    if (rs == ButtonType.OK) {
+                        System.out.println("Pressed OK");
+                    }
+                });
+                Log.info("successfully imported " + loadedUsersAmount + " Users profiles");
+                System.out.println(loadedUsersAmount + " users were successfully loaded.");
             }
 
         } else {
