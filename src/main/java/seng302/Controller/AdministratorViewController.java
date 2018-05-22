@@ -123,7 +123,7 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
     private AppController appController;
     private Administrator administrator;
     private ArrayList<String> pastCommands = new ArrayList<>();
-    private int pastCommandIndex = -1;
+    private int pastCommandIndex = -2;
     private boolean owner;
 
     /**
@@ -157,7 +157,7 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
                     cliInputTextField.setText(pastCommands.get(pastCommandIndex));
                 }
             } else if (e.getCode() == KeyCode.DOWN) {
-                if (pastCommandIndex < pastCommands.size()-1) {
+                if (pastCommandIndex < pastCommands.size()-1 && pastCommandIndex >= 0) {
                     pastCommandIndex++;
                     cliInputTextField.setText(pastCommands.get(pastCommandIndex));
                 } else if (pastCommandIndex == pastCommands.size()-1) {
@@ -660,6 +660,7 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
      * updates tables in the admin window with current version of underlying model
      */
     public void refreshTables() {
+        transplantWaitListTabPageController.populateWaitListTable();
         adminTableView.refresh();
         clinicianTableView.refresh();
         userTableView.refresh();

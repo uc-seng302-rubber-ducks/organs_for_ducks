@@ -137,7 +137,7 @@ public class TransplantWaitListController {
         //table contents are SortedList of a FilteredList of an ObservableList of an ArrayList
         appController.getTransplantList().clear();
         for (User user : users) {
-            if (user.isReceiver()&& (user.getDeceased() != null || !user.getDeceased())) {
+            if (user.isReceiver()&& (user.getDeceased() != null && !user.getDeceased())) {
                 Set<Organs> organs = user.getReceiverDetails().getOrgans().keySet();
                 for (Organs organ : organs) {
                     if (isReceiverNeedingFilteredOrgan(user.getNhi(), organs).contains(organ)) {

@@ -158,7 +158,7 @@ public class ReceiverTabController {
       currentlyReceivingListView.getItems().add(toReRegister);
       currentUser.getReceiverDetails().startWaitingForOrgan(toReRegister);
       notReceivingListView.getItems().remove(toReRegister);
-      AppController.getInstance().getClinicianController().refreshTables();
+      //AppController.getInstance().getClinicianController().refreshTables();
       Log.info("Successfully re-registered organ:"+ toReRegister.organName +" for receiver NHI: "+currentUser.getNhi());
       if (currentUser.getReceiverDetails().isDonatingThisOrgan(toReRegister)) {
         currentUser.getCommonOrgans().add(toReRegister);
@@ -250,7 +250,7 @@ public class ReceiverTabController {
 
     stage.onCloseRequestProperty().setValue(event -> {
       if (Clinician) {
-        AppController.getInstance().getClinicianController().refreshTables();
+        //AppController.getInstance().getClinicianController().refreshTables();
       }
     });
 
