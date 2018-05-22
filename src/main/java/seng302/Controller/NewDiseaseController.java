@@ -119,15 +119,16 @@ public class NewDiseaseController {
     }
 
     /**
-     * creates new disease and adds to donor
+     * creates new disease and adds to user
      * profile. shows error messages if input
      * is invalid.
      */
     @FXML
     private void createDisease() {
-        boolean isValid = true;
+        boolean isValid;
 
-        String diseaseName = AttributeValidation.checkString(diseaseNameInput.getText());
+        String diseaseName = diseaseNameInput.getText();
+        isValid = AttributeValidation.checkString(diseaseName);
         LocalDate diagnosisDate = diagnosisDateInput.getValue();
         boolean isCured = curedRadioButton.isSelected();
         boolean isChronic = chronicRadioButton.isSelected();
@@ -136,10 +137,9 @@ public class NewDiseaseController {
             isValid = false;
         }
 
-        if (diseaseName == null) {
+        if (diseaseName.isEmpty()) {
             diseaseNameInputErrorMessage.setVisible(true);
             isValid = false;
-
         } else {
             diseaseNameInputErrorMessage.setVisible(false);
         }

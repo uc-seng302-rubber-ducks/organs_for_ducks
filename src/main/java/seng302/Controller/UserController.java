@@ -89,7 +89,7 @@ public class UserController {
   private ObservableList<Change> changelog;
 
   /**
-   * Gives the donor view the application controller and hides all label and buttons that are not
+   * Gives the user view the application controller and hides all label and buttons that are not
    * needed on opening
    *
    * @param controller    the application controller
@@ -251,7 +251,7 @@ public class UserController {
   private void undo() {
     currentUser.undo();
     updateUndoRedoButtons();
-    showUser(currentUser); //Error with showing donors
+    showUser(currentUser);
 
   }
 
@@ -339,7 +339,7 @@ public class UserController {
   }
 
   public void showDonorDiseases(User user, boolean init) {
-    diseasesTabPageController.showDonorDiseases(user, init);
+    diseasesTabPageController.showUserDiseases(user, init);
   }
 
   private boolean getIsRevereSorted() {

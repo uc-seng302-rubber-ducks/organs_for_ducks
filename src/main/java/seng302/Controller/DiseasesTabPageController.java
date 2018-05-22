@@ -45,7 +45,7 @@ public class DiseasesTabPageController {
   private UserController parent;
 
   /**
-   * Gives the donor view the application controller and hides all label and buttons that are not
+   * Gives the user view the application controller and hides all label and buttons that are not
    * needed on opening
    *
    * @param controller the application controller
@@ -64,7 +64,7 @@ public class DiseasesTabPageController {
     }
 
     setSelectionModels();
-    showDonorDiseases(currentUser, true);
+    showUserDiseases(currentUser, true);
   }
 
   private void setSelectionModels() {
@@ -78,9 +78,9 @@ public class DiseasesTabPageController {
   }
 
   /**
-   * show the current and past diseases of the donor.
+   * show the current and past diseases of the user.
    */
-  public void showDonorDiseases(User user, boolean init) {
+  public void showUserDiseases(User user, boolean init) {
     if (user.getCurrentDiseases().size() != 0) {
       ObservableList<Disease> currentDisease = FXCollections
           .observableList(user.getCurrentDiseases());
@@ -217,11 +217,11 @@ public class DiseasesTabPageController {
     }
 
     this.application.update(currentUser);
-    showDonorDiseases(currentUser, false); //Reload the scene?
+    showUserDiseases(currentUser, false); //Reload the scene?
   }
 
   /**
-   * Refreshes the donor's diseases
+   * Refreshes the user's diseases
    *
    * @param isSortedByName Checks if the table is currently sorted by name
    * @param isReverseSorted checks if the table is sorted in descending order
@@ -242,7 +242,7 @@ public class DiseasesTabPageController {
     }
     currentUser.getCurrentDiseases().sort(disease.diseaseChronicComparator);
 
-    showDonorDiseases(currentUser, false);
+    showUserDiseases(currentUser, false);
   }
 
   /**

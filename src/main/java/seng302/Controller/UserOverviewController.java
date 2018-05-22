@@ -247,7 +247,7 @@ public class UserOverviewController {
     Optional<ButtonType> result = alert.showAndWait();
 
     if (result.get() == ButtonType.OK) {
-      application.deleteDonor(currentUser);
+      application.deleteUser(currentUser);
       Log.info("Successfully deleted user profile for User NHI: "+currentUser.getNhi());
       if (!Clinician) {
         logout();

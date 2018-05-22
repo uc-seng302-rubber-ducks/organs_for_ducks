@@ -6,32 +6,35 @@ import javafx.scene.input.KeyCode;
 import org.testfx.framework.junit.ApplicationTest;
 
 public class WhenSteps extends ApplicationTest {
-        @When("^I view the previously created donor$")
-    public void iViewThePreviouslyCreatedDonor() throws Throwable {
+
+    @When("^I view the previously created user")
+    public void iViewThePreviouslyCreatedUser() throws Throwable {
         // Write code here that turns the phrase above into concrete actions
         throw new PendingException();
     }
 
-    @When("^I use the view command to view all donors$")
-    public void iUseTheViewCommandToViewAllDonors() throws Throwable {
+    @When("^I use the view command to view all users")
+    public void iUseTheViewCommandToViewAllUsers() throws Throwable {
         // Write code here that turns the phrase above into concrete actions
         throw new PendingException();
     }
 
-    @When("^I delete the donor with the above NHI$")
-    public void iDeleteTheDonorWithTheAboveNHI() throws Throwable {
+    @When("^I delete the user with the above NHI$")
+    public void iDeleteTheUserWithTheAboveNHI() throws Throwable {
         // Write code here that turns the phrase above into concrete actions
         throw new PendingException();
     }
 
-    @When("^I register a donor with the NHI \"([^\"]*)\", first name \"([^\"]*)\", last name \"([^\"]*)\" and date of birth \"([^\"]*)\"$")
-    public void iRegisterADonorWithTheNHIFirstNameLastNameAndDateOfBirth(String arg1, String arg2, String arg3, String arg4) throws Throwable {
+    @When("^I register a user with the NHI \"([^\"]*)\", first name \"([^\"]*)\", last name \"([^\"]*)\" and date of birth \"([^\"]*)\"$")
+    public void iRegisterAUserWithTheNHIFirstNameLastNameAndDateOfBirth(String arg1, String arg2,
+        String arg3, String arg4) throws Throwable {
         // Write code here that turns the phrase above into concrete actions
         throw new PendingException();
     }
 
-    @When("^I register a donor using the GUI with the NHI \"([^\"]*)\", first name \"([^\"]*)\" and date of birth \"([^\"]*)\"$")
-    public void iRegisterADonorUsingTheGUIWithTheNHIFirstNameAndDateOfBirth(String nhi, String fName, String dob) throws Throwable {
+    @When("^I register a user using the GUI with the NHI \"([^\"]*)\", first name \"([^\"]*)\" and date of birth \"([^\"]*)\"$")
+    public void iRegisterAUserUsingTheGUIWithTheNHIFirstNameAndDateOfBirth(String nhi, String fName,
+        String dob) throws Throwable {
         clickOn("#nhiInput");
         write(nhi);
         clickOn("#fNameInput");
@@ -45,8 +48,9 @@ public class WhenSteps extends ApplicationTest {
         clickOn("#confirmButton");
     }
 
-    @When("^I register a donor using the GUI with the NHI \"([^\"]*)\", first name \"([^\"]*)\", date of birth \"([^\"]*)\" and date of death \"([^\"]*)\"$")
-    public void iRegisterADonorUsingTheGUIWithTheNHIFirstNameDateOfBirthAndDateOfDeath(String nhi, String fName, String dob, String dod) throws Throwable {
+    @When("^I register a user using the GUI with the NHI \"([^\"]*)\", first name \"([^\"]*)\", date of birth \"([^\"]*)\" and date of death \"([^\"]*)\"$")
+    public void iRegisterAUserUsingTheGUIWithTheNHIFirstNameDateOfBirthAndDateOfDeath(String nhi,
+        String fName, String dob, String dod) throws Throwable {
         clickOn("#nhiInput");
         write(nhi);
         clickOn("#fNameInput");

@@ -7,18 +7,23 @@ import static org.testfx.api.FxAssert.verifyThat;
 
 import java.time.LocalDate;
 import java.util.concurrent.TimeoutException;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+
+import org.junit.*;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.matcher.control.LabeledMatchers;
 import seng302.App;
 import seng302.Controller.AppController;
 import seng302.Model.User;
+import seng302.Utils.CommonTestMethods;
 
 public class UpdateUserControllerGUITest extends ApplicationTest {
+
+    @BeforeClass
+    public static void initialization() {
+        CommonTestMethods.runHeadless();
+    }
+
     @Before
     public void setUpCreateScene() throws TimeoutException {
         FxToolkit.registerPrimaryStage();
@@ -91,10 +96,10 @@ public class UpdateUserControllerGUITest extends ApplicationTest {
     @Test
     public void testUpdateHomePhone() {
         clickOn("#phoneInput");
-        write("035659768",  0);
+        write("033572996",  0);
         clickOn("#confirmButton");
         clickOn("#detailsTab");
-        verifyThat("#pHomePhone", LabeledMatchers.hasText("035659768"));
+        verifyThat("#pHomePhone", LabeledMatchers.hasText("033572996"));
     }
 
     @Test

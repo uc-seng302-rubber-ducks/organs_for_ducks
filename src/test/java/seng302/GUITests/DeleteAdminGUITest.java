@@ -3,16 +3,24 @@ package seng302.GUITests;
 import javafx.scene.Node;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 import seng302.App;
 import seng302.Controller.AppController;
 import seng302.Model.Administrator;
+import seng302.Utils.CommonTestMethods;
+
 import java.util.concurrent.TimeoutException;
 import static org.testfx.api.FxAssert.verifyThat;
 
 public class DeleteAdminGUITest extends ApplicationTest {
+
+    @BeforeClass
+    public static void initialization() {
+        CommonTestMethods.runHeadless();
+    }
 
     @Before
     public void setUpCreateScene() throws TimeoutException {
