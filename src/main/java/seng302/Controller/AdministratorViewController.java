@@ -634,14 +634,24 @@ public class AdministratorViewController implements PropertyChangeListener {
         Log.info("Admin "+administrator.getUserName()+" Successfully deleted Admin account: "); //TODO: include username of deleted admin account in log.
     }
 
+    /**
+     * updates tables in the admin window with current version of underlying model
+     */
+    public void refreshTables() {
+        adminTableView.refresh();
+        clinicianTableView.refresh();
+        userTableView.refresh();
+    }
+
   @Override
   public void propertyChange(PropertyChangeEvent evt) {
     //watches users and clinicians
     //refresh view on change
+      //if/else not strictly necessary at this stage
       if (evt.getPropertyName().equals(EventTypes.USER_UPDATE.name())) {
-          System.out.println("user update");
+          refreshTables();
       } else if (evt.getPropertyName().equals(EventTypes.CLINICIAN_UPDATE.name())) {
-          System.out.println("clinician update");
+          refreshTables();
       }
   }
 }
