@@ -38,11 +38,9 @@ import seng302.Model.User;
 import seng302.Service.Log;
 import seng302.View.CLI;
 
-public class AdministratorViewController {
+public class AdministratorViewController implements TransplantWaitListViewer {
 
     //<editor-fold desc="FXML stuff">
-    @FXML
-    private TableView<?> transplantWaitListTableView;
 
     @FXML
     private Label succesFailLabel;
@@ -93,9 +91,6 @@ public class AdministratorViewController {
     private Label searchCountLabel;
 
     @FXML
-    private Label filtersLabel;
-
-    @FXML
     private CheckBox adminUserCheckbox;
 
     @FXML
@@ -131,6 +126,8 @@ public class AdministratorViewController {
     @FXML
     private Label fileNotFoundLabel;
 
+    @FXML
+    private TransplantWaitListController transplantWaitListTabPageController;
     //</editor-fold>
 
     private Stage stage;
@@ -153,6 +150,7 @@ public class AdministratorViewController {
         this.administrator = administrator;
         this.owner = owner;
         displayDetails();
+        transplantWaitListTabPageController.init(appController, this);
 
         if (administrator.getUserName().equals("default")) {
             deleteAdminButton.setDisable(true);
@@ -438,7 +436,8 @@ public class AdministratorViewController {
      * Launches the user overview screen for a selected user
      * @param user the selected user.
      */
-    private void launchUser(User user) {
+    @Override
+    public void launchUser(User user) {
         FXMLLoader userLoader = new FXMLLoader(getClass().getResource("/FXML/userView.fxml"));
         Parent root;
         try {
