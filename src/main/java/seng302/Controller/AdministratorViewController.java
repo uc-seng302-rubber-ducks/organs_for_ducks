@@ -435,7 +435,9 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
             newStage.setScene(new Scene(root));
             UserController userController = userLoader.getController();
             AppController.getInstance().setUserController(userController);
-          userController.init(AppController.getInstance(), user, newStage, true, null);
+            Collection<PropertyChangeListener> listeners = new ArrayList<>();
+            listeners.add(this);
+            userController.init(AppController.getInstance(), user, newStage, true, listeners);
             newStage.show();
             Log.info("Admin "+administrator.getUserName()+" successfully launched user overview window for User NHI: "+user.getNhi());
         } catch (IOException e) {
