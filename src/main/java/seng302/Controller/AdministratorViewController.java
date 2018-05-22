@@ -344,6 +344,8 @@ public class AdministratorViewController {
     @FXML
     void importAdmins() throws FileNotFoundException {
         Log.info("Admin "+administrator.getUserName()+" Importing Administrator profiles");
+        boolean invalidFile = false;
+        int loadedAdminsAmount;
         if(isAllWindowsClosed()) {
             boolean updated = false;
             Collection<Administrator> existingAdmins = appController.getAdmins();
@@ -353,9 +355,11 @@ public class AdministratorViewController {
                 fileNotFoundLabel.setVisible(false);
                 try {
                     Collection<Administrator> administrators = JsonHandler.loadAdmins(filename);
-                    //Log.info("Successfully imported " + AdminProfileCount + " Administrator profiles")
-                    System.out.println(administrators.size() + " administrators were successfully loaded.");
                     for (Administrator admin : administrators) {
+                        if (admin.getUserName() == null) {
+                            invalidFile = true;
+                            break;
+                        }
                         for (Administrator existingAdmin : existingAdmins) {
                             if (admin.getUserName().equals(existingAdmin.getUserName())) {
                                 //appController.updateAdmins(admin);
@@ -369,10 +373,27 @@ public class AdministratorViewController {
                             updated = false;
                         }
                     }
+                    loadedAdminsAmount = administrators.size();
                 }
                 catch (FileNotFoundException e) {
                     Log.severe("File not found", e);
                     throw e;
+                }
+                if (invalidFile) {
+                    errorAlert.showAndWait().ifPresent(rs -> {
+                        if (rs == ButtonType.OK) {
+                            System.out.println("Pressed OK");
+                        }
+                    });
+                    Log.warning("Incorrect file loaded - leads to NullPointerException.");
+                } else {
+                    confirmAlert.showAndWait().ifPresent(rs -> {
+                        if (rs == ButtonType.OK) {
+                            System.out.println("Pressed OK");
+                        }
+                    });
+                    Log.info("successfully imported " + loadedAdminsAmount + " Admin profiles");
+                    System.out.println(loadedAdminsAmount + " admins were successfully loaded.");
                 }
             }
         } else {
@@ -389,6 +410,8 @@ public class AdministratorViewController {
     @FXML
     void importClinicians() throws FileNotFoundException {
         Log.info("Admin " + administrator.getUserName() + " Importing Clinician profiles");
+        boolean invalidFile = false;
+        int loadedCliniciansAmount;
         if (isAllWindowsClosed()) {
             boolean updated = false;
             Collection<Clinician> existingClinicians = appController.getClinicians();
@@ -398,8 +421,11 @@ public class AdministratorViewController {
                 fileNotFoundLabel.setVisible(false);
                 try {
                     Collection<Clinician> clinicians = JsonHandler.loadClinicians(filename);
-                    System.out.println(clinicians.size() + " clinicians were successfully loaded.");
                     for (Clinician clinician : clinicians) {
+                        if (clinician.getStaffId() == null) {
+                            invalidFile = true;
+                            break;
+                        }
                         for (Clinician existingClinician : existingClinicians) {
                             if (clinician.getStaffId().equals(existingClinician.getStaffId())) {
                                 appController.updateClinicians(clinician);
@@ -407,17 +433,33 @@ public class AdministratorViewController {
                                 break;
                             }
                         }
-                        if (updated == false) {
+                        if (!updated) {
                             appController.addClinician(clinician);
                         } else {
                             updated = false;
                         }
                     }
+                    loadedCliniciansAmount = clinicians.size();
                 } catch (FileNotFoundException e) {
                     Log.severe("File not found", e);
                     throw e;
                 }
-
+                if (invalidFile) {
+                    errorAlert.showAndWait().ifPresent(rs -> {
+                        if (rs == ButtonType.OK) {
+                            System.out.println("Pressed OK");
+                        }
+                    });
+                    Log.warning("Incorrect file loaded - leads to NullPointerException.");
+                } else {
+                    confirmAlert.showAndWait().ifPresent(rs -> {
+                        if (rs == ButtonType.OK) {
+                            System.out.println("Pressed OK");
+                        }
+                    });
+                    Log.info("successfully imported " + loadedCliniciansAmount + " Clinician profiles");
+                    System.out.println(loadedCliniciansAmount + " clinicians were successfully loaded.");
+                }
             } else {
                 Log.warning("File name not found");
                 fileNotFoundLabel.setVisible(true);
