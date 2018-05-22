@@ -1,5 +1,7 @@
 package seng302.Controller;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -34,7 +36,7 @@ import seng302.Model.User;
 import seng302.Service.Log;
 import seng302.View.CLI;
 
-public class AdministratorViewController {
+public class AdministratorViewController implements PropertyChangeListener {
 
     //<editor-fold desc="FXML stuff">
     @FXML
@@ -404,7 +406,7 @@ public class AdministratorViewController {
             newStage.setScene(new Scene(root));
             UserController userController = userLoader.getController();
             AppController.getInstance().setUserController(userController);
-            userController.init(AppController.getInstance(), user, newStage, true);
+          userController.init(AppController.getInstance(), user, newStage, true, null);
             newStage.show();
         } catch (IOException e) {
             e.printStackTrace();
@@ -581,4 +583,9 @@ public class AdministratorViewController {
 
     }
 
+  @Override
+  public void propertyChange(PropertyChangeEvent evt) {
+    //watches users and clinicians
+    //refresh view on change
+  }
 }

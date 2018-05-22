@@ -2,7 +2,11 @@ package seng302.Model;
 
 
 import com.google.gson.annotations.Expose;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 import seng302.Service.PasswordManager;
 
@@ -12,7 +16,7 @@ import seng302.Service.PasswordManager;
  * @author Josh Burt
  *
  */
-public class Clinician extends Undoable<Clinician> {
+public class Clinician extends Undoable<Clinician> implements Listenable {
 
     @Expose
     private String staffId;
@@ -35,6 +39,10 @@ public class Clinician extends Undoable<Clinician> {
     private String lastName;
     @Expose
     private byte[] salt;
+    private transient PropertyChangeSupport pcs;
+
+    //TODO make all updates to the clinician add to this 22/6
+    private transient List<Change> changes;
 
     public Clinician() {
         dateCreated = LocalDateTime.now();
@@ -61,6 +69,7 @@ public class Clinician extends Undoable<Clinician> {
         this.region = region;
         dateCreated = LocalDateTime.now();
         dateLastModified = LocalDateTime.now();
+        this.pcs = new PropertyChangeSupport(this);
 
     }
 
@@ -83,6 +92,7 @@ public class Clinician extends Undoable<Clinician> {
         setPassword(password);
         this.dateCreated = dateCreated;
         this.dateLastModified = dateLastModified;
+        this.pcs = new PropertyChangeSupport(this);
 
     }
 
@@ -104,6 +114,7 @@ public class Clinician extends Undoable<Clinician> {
         setPassword(password);
         dateCreated = LocalDateTime.now();
         dateLastModified = LocalDateTime.now();
+        this.pcs = new PropertyChangeSupport(this);
     }
 
     public LocalDateTime getDateCreated() {
@@ -249,6 +260,20 @@ public class Clinician extends Undoable<Clinician> {
         return PasswordManager.isExpectedPassword(password, salt, getPassword());
     }
 
+    public List<Change> getChanges() {
+        return changes;
+    }
+
+    public void setChanges(List<Change> changes) {
+        this.changes = changes;
+    }
+
+    public void addChange(Change change) {
+        changes.add(change);
+        this.fire(new PropertyChangeEvent(this, EventTypes.USER_UPDATE.name(), new Object(),
+            new Object()));
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -326,5 +351,20 @@ public class Clinician extends Undoable<Clinician> {
         this.region = clinician.region;
         this.dateCreated = clinician.dateCreated;
         this.dateLastModified = clinician.dateLastModified;
+    }
+
+    @Override
+    public void addPropertyChangeListener(PropertyChangeListener listener) {
+        this.pcs.addPropertyChangeListener(listener);
+    }
+
+    @Override
+    public void removePropertyChangeListener(PropertyChangeListener listener) {
+        this.pcs.removePropertyChangeListener(listener);
+    }
+
+    @Override
+    public void fire(PropertyChangeEvent event) {
+        this.pcs.firePropertyChange(event);
     }
 }

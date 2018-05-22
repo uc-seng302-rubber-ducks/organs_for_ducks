@@ -1,6 +1,9 @@
 package seng302.Model;
 
 import com.google.gson.annotations.Expose;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -17,8 +20,9 @@ import javafx.collections.FXCollections;
 /**
  * Class for handling calls to user
  */
-public class User extends Undoable<User> {
+public class User extends Undoable<User> implements Listenable {
 
+    //<editor-fold desc="properties">
     @Expose
     private String nhi;
     @Expose
@@ -31,6 +35,7 @@ public class User extends Undoable<User> {
     private String gender;
     @Expose
     private double height;
+
     private transient String heightText;
     @Expose
     private double weight;
@@ -103,6 +108,9 @@ public class User extends Undoable<User> {
 
     @Expose
     private List<Disease> currentDiseases;
+
+    private transient PropertyChangeSupport pcs;
+    //</editor-fold>
 
     /**
      * Constructor for a User
@@ -179,6 +187,7 @@ public class User extends Undoable<User> {
         this.pastDiseases = new ArrayList<>();
         this.medicalProcedures = new ArrayList<>();
         this.changes = FXCollections.observableArrayList();
+        this.pcs = new PropertyChangeSupport(this);
     }
 
     /**
@@ -221,7 +230,7 @@ public class User extends Undoable<User> {
         this.commonOrgans = new HashSet<>();
         this.medicalProcedures = new ArrayList<>();
         this.changes = FXCollections.observableArrayList();
-
+        this.pcs = new PropertyChangeSupport(this);
     }
 
 
@@ -244,6 +253,7 @@ public class User extends Undoable<User> {
         this.receiverDetails = new ReceiverDetails(this);
         this.commonOrgans = new HashSet<>();
         changes = FXCollections.observableArrayList();
+        this.pcs = new PropertyChangeSupport(this);
     }
 
     public EmergencyContact getContact() {
@@ -347,6 +357,7 @@ public class User extends Undoable<User> {
         this.middleName = mName;
         this.lastName = lName;
         updateLastModified();
+      addChange(new Change("set full name to " + fName + " " + mName + " " + lName));
         mem.setNewObject(this.clone());
         if(!mem.getNewObject().getFullName().equals(mem.getOldObject().getFullName())){
             getUndoStack().push(mem);
@@ -938,6 +949,8 @@ public class User extends Undoable<User> {
 
     public void addChange(Change change) {
         changes.add(change);
+      this.fire(
+          new PropertyChangeEvent(this, EventTypes.USER_UPDATE.name(), new Object(), new Object()));
     }
 
     public List<MedicalProcedure> getMedicalProcedures() {
@@ -1157,4 +1170,20 @@ public class User extends Undoable<User> {
 
         this.changes = other.changes;
     }
+
+    @Override
+    public void addPropertyChangeListener(PropertyChangeListener listener) {
+        this.pcs.addPropertyChangeListener(listener);
+    }
+
+    @Override
+    public void removePropertyChangeListener(PropertyChangeListener listener) {
+        this.pcs.removePropertyChangeListener(listener);
+    }
+
+    @Override
+    public void fire(PropertyChangeEvent event) {
+        this.pcs.firePropertyChange(event);
+    }
+
 }

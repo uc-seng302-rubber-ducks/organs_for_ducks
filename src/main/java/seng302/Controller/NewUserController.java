@@ -215,8 +215,10 @@ public class NewUserController {
                     Stage userStage = new Stage();
                     userStage.setScene(new Scene(root));
                     userStage.show();
-                    UserController userController = userLoader.getController();
-                    userController.init(AppController.getInstance(), newUser, userStage, false);
+                    UserController userController = donorLoader.getController();
+                    //TODO pass listeners from any preceding controllers 22/6
+                    userController
+                        .init(AppController.getInstance(), newUser, userStage, false, null);
                     userController.diableLogout();
 
                 } catch (IOException e) {
@@ -231,8 +233,9 @@ public class NewUserController {
                     root = userLoader.load();
                     stage.setScene(new Scene(root));
                     ownStage.close();
-                    UserController userController = userLoader.getController();
-                    userController.init(AppController.getInstance(), newUser, stage, false);
+                    UserController userController = donorLoader.getController();
+                    //TODO pass listeners from any preceding controllers 22/6
+                    userController.init(AppController.getInstance(), newUser, stage, false, null);
 
                     } catch (IOException e) {
                         e.printStackTrace();

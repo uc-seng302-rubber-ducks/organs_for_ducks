@@ -311,7 +311,7 @@ public class ReceiverTabController {
 
       } else if (organDeregisterationReason == OrganDeregisterReason.REGISTRATION_ERROR) {
         currentUser.getReceiverDetails().stopWaitingForOrgan(toDeRegister);
-        currentUser.getChanges().add(new Change(
+        currentUser.addChange(new Change(
             "Initial registering of the organ " + toDeRegister.organName
                 + " was an error for receiver " + currentUser.getFullName()));
 

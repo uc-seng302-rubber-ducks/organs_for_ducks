@@ -13,6 +13,8 @@ import static seng302.Model.Organs.MIDDLE_EAR;
 import static seng302.Model.Organs.PANCREAS;
 import static seng302.Model.Organs.SKIN;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -44,6 +46,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import seng302.Model.Clinician;
+import seng302.Model.EventTypes;
 import seng302.Model.Organs;
 import seng302.Model.TransplantDetails;
 import seng302.Model.User;
@@ -52,7 +55,7 @@ import seng302.Service.AttributeValidation;
 /**
  * Class for the functionality of the Clinician view of the application
  */
-public class ClinicianController {
+public class ClinicianController implements PropertyChangeListener {
 
     private final int ROWS_PER_PAGE = 30;
     private int startIndex = 0;
@@ -167,6 +170,7 @@ public class ClinicianController {
     @FXML
     private Button logoutButton;
     //</editor-fold>
+
     private Stage stage;
     private AppController appController;
     private Clinician clinician;
@@ -455,7 +459,9 @@ public class ClinicianController {
             openStages.add(userStage);
             UserController userController = userLoader.getController();
             AppController.getInstance().setUserController(userController);
-            userController.init(AppController.getInstance(), user, userStage, true);
+            ArrayList<PropertyChangeListener> listeners = new ArrayList<>();
+            listeners.add(this);
+            userController.init(AppController.getInstance(), user, donorStage, true, listeners);
             userStage.show();
         } catch (IOException e) {
             e.printStackTrace();
@@ -762,5 +768,15 @@ public class ClinicianController {
 
     public void disableLogout() {
         logoutButton.setVisible(false);
+    }
+
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        System.out.println("listener called");
+        //clinician controller watches user controller
+        //refresh view/tables etc. on change
+        if (evt.getPropertyName().equals(EventTypes.USER_UPDATE.name())) {
+            // do stuff
+        }
     }
 }
