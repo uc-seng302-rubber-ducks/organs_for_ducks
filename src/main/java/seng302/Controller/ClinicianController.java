@@ -48,6 +48,7 @@ import seng302.Model.Organs;
 import seng302.Model.TransplantDetails;
 import seng302.Model.User;
 import seng302.Service.AttributeValidation;
+import seng302.Service.Log;
 
 /**
  * Class for the functionality of the Clinician view of the application
@@ -457,7 +458,9 @@ public class ClinicianController {
             AppController.getInstance().setUserController(userController);
             userController.init(AppController.getInstance(), user, userStage, true);
             userStage.show();
+            Log.info("Clinician "+clinician.getStaffId()+" successfully launched user overview window");
         } catch (IOException e) {
+            Log.severe("Clinician "+clinician.getStaffId()+" Failed to load user overview window", e);
             e.printStackTrace();
         }
     }
@@ -667,6 +670,7 @@ public class ClinicianController {
     clinician.undo();
     undoButton.setDisable(clinician.getUndoStack().empty());
     showClinician(clinician);
+    Log.info("Clinician "+clinician.getStaffId()+" executed undo clinician");
   }
 
   /**
@@ -677,6 +681,7 @@ public class ClinicianController {
     clinician.redo();
     redoButton.setDisable(clinician.getRedoStack().empty());
     showClinician(clinician);
+      Log.info("Clinician "+clinician.getStaffId()+" executed redo clinician");
   }
 
   /**
@@ -695,7 +700,9 @@ public class ClinicianController {
       stage.show();
       stage.hide();
       stage.show();
+      Log.info("Clinician "+clinician.getStaffId()+" successfully launched login window after logout");
     } catch (IOException e) {
+        Log.severe("Clinician "+clinician.getStaffId()+" failed to launch login window after logout", e);
       e.printStackTrace();
     }
   }
@@ -716,8 +723,9 @@ public class ClinicianController {
             newStage.initModality(Modality.APPLICATION_MODAL); // background window is no longer selectable
             newStage.showAndWait();
             showClinician(clinician);
-
+            Log.info("Clinician "+clinician.getStaffId()+" successfully launched update clinician window");
         } catch (IOException e) {
+            Log.severe("Clinician "+clinician.getStaffId()+" failed to launch update clinician window", e);
             e.printStackTrace();
         }
     }
@@ -755,7 +763,9 @@ public class ClinicianController {
           deletedUserController.init();
           stage.initModality(Modality.APPLICATION_MODAL);
           stage.showAndWait();
+          Log.info("Clinician "+clinician.getStaffId()+" successfully launched delete user window");
       } catch (IOException e) {
+          Log.severe("Clinician "+clinician.getStaffId()+" failed to launch delete user window", e);
           e.printStackTrace();
       }
   }

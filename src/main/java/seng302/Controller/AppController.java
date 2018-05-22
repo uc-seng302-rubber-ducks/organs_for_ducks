@@ -102,6 +102,7 @@ public class AppController {
       clinicians.add(new Clinician("0", "admin", "Default", null, null, null, (String) null));
       try {
         JsonHandler.saveClinicians(clinicians);
+        Log.info("Successfully saved clinicians to file");
       } catch (IOException e) {
         Log.warning("Could not save clinicians to file", e);
       }
@@ -152,9 +153,10 @@ public class AppController {
         return -1;
       }
       users.add(newUser);
+      Log.info("Successfully registered new user with NHI: "+NHI);
       return newUser.hashCode();
     } catch (Exception e) {
-      Log.warning("failed to register new user", e);
+      Log.warning("failed to register new user with NHI: "+NHI, e);
       return -1;
     }
   }
@@ -213,9 +215,10 @@ public class AppController {
         return false;
       }
       users.add(newUser);
+      Log.info("Successfully registered new user with NHI: "+NHI);
       return true;
     } catch (Exception e) {
-      Log.warning("Failed to register new user", e);
+      Log.warning("Failed to register new user with NHI: "+NHI, e);
       return false;
     }
   }
@@ -282,8 +285,9 @@ public class AppController {
     setUsers((ArrayList<User>) sessionList);
     try {
       JsonHandler.saveUsers(sessionList);
+
     } catch (IOException e) {
-      Log.warning("failed to delete a user", e);
+      Log.warning("failed to delete a user with NHI: "+user.getNhi(), e);
     }
 
   }
@@ -332,7 +336,7 @@ public class AppController {
       //JsonHandler.saveChangelog(changelogWrite, user.getFullName().toLowerCase().replace(" ", "_"));
 
     } catch (IOException e) {
-      Log.warning("failed to update users", e);
+      Log.warning("failed to update users with NHI: "+user.getNhi(), e);
     }
   }
 
@@ -383,8 +387,9 @@ public class AppController {
 
     try {
       JsonHandler.saveClinicians(clinicians);
+      Log.info("Successfully updated clinician with Staff ID: "+clinician.getStaffId());
     } catch (IOException e) {
-      Log.warning("Failed to update clinicians", e);
+      Log.warning("Failed to update clinician with Staff ID: "+clinician.getStaffId(), e);
     }
   }
 
@@ -397,6 +402,7 @@ public class AppController {
         admins.remove(admin);
       // todo: will probably need undo/redo for this similar to how the deleteUser one has it
         // auto save is on another branch..
+      Log.info("Successfully updated admin with user name: "+admin.getUserName());
     }
 
 
@@ -447,8 +453,9 @@ public class AppController {
 
     try {
       JsonHandler.saveAdmins(admins);
+      Log.info("successfully updated the Administrator profile with user name: "+administrator.getUserName());
     } catch (IOException e){
-      Log.warning("Failed to update Administrators", e);
+      Log.warning("Failed to update Administrator profiles with user name: "+administrator.getUserName(), e);
     }
   }
 
@@ -546,6 +553,7 @@ public class AppController {
       }
       try {
         JsonHandler.saveChangelog(changes, newUser.getFullName().toLowerCase().replace(" ", "_"));
+        Log.info("Successfully saved changelog");
       } catch (IOException e) {
         Log.warning("failed to save changelog", e);
       }
