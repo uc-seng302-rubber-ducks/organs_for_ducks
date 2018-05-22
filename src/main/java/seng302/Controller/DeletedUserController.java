@@ -15,6 +15,7 @@ import seng302.Model.Administrator;
 import seng302.Model.Clinician;
 import seng302.Model.Organs;
 import seng302.Model.User;
+import seng302.Service.Log;
 
 public class DeletedUserController {
 
@@ -210,9 +211,11 @@ public class DeletedUserController {
       }
 
       displayMessage("Profile successfully restored!");
+      Log.info("Successfully restored profile");
 
     } catch (ProfileAlreadyExistsException | ProfileNotFoundException e) {
       displayMessage(e.getMessage());
+      Log.severe("Unable to restore deleted profile", e);
     }
   }
 
