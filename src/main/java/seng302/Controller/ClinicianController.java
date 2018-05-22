@@ -13,6 +13,8 @@ import static seng302.Model.Organs.MIDDLE_EAR;
 import static seng302.Model.Organs.PANCREAS;
 import static seng302.Model.Organs.SKIN;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.*;
@@ -33,6 +35,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import seng302.Model.Clinician;
+import seng302.Model.EventTypes;
 import seng302.Model.Organs;
 import seng302.Model.TransplantDetails;
 import seng302.Model.User;
@@ -42,7 +45,7 @@ import seng302.Service.Log;
 /**
  * Class for the functionality of the Clinician view of the application
  */
-public class ClinicianController {
+public class ClinicianController implements PropertyChangeListener {
 
     private final int ROWS_PER_PAGE = 30;
     private int startIndex = 0;
@@ -161,6 +164,7 @@ public class ClinicianController {
     private Button deleteClinicianButton;
 
     //</editor-fold>
+
     private Stage stage;
     private AppController appController;
     private Clinician clinician;
@@ -176,6 +180,9 @@ public class ClinicianController {
 
     private static int searchCount = 0;
     private boolean filterVisible = false;
+
+  private Collection<PropertyChangeListener> parentListeners;
+
     private boolean admin = false;
 
     /**
@@ -185,7 +192,17 @@ public class ClinicianController {
      * @param appController the applications controller.
      * @param clinician     The current clinician.
      */
-    public void init(Stage stage, AppController appController, Clinician clinician, boolean fromAdmin) {
+    public void init(Stage stage, AppController appController, Clinician clinician, boolean fromAdmin,
+        Collection<PropertyChangeListener> parentListeners) {
+
+      //add change listeners of parent controllers to the current clinician
+      this.parentListeners = new ArrayList<>();
+      if (parentListeners != null && !parentListeners.isEmpty()) {
+        for (PropertyChangeListener listener : parentListeners) {
+          clinician.addPropertyChangeListener(listener);
+        }
+        this.parentListeners.addAll(parentListeners);
+      }
         this.stage = stage;
         this.appController = appController;
         this.clinician = clinician.clone();
@@ -365,9 +382,9 @@ public class ClinicianController {
     //transplantWaitListTableView.getItems().clear();
   //set up lists
   //table contents are SortedList of a FilteredList of an ObservableList of an ArrayList
-  appController.getTransplantList().clear();
+    appController.getTransplantList().clear();
     for (User user : users) {
-    if (user.isReceiver()&& (user.getDeceased() != null || !user.getDeceased())) {
+      if (user.isReceiver() && (user.getDeceased() != null && !user.getDeceased())) {
         Set<Organs> organs = user.getReceiverDetails().getOrgans().keySet();
       for (Organs organ : organs) {
         if (isReceiverNeedingFilteredOrgan(user.getNhi(), organs).contains(organ)) {
@@ -454,9 +471,13 @@ public class ClinicianController {
             openStages.add(userStage);
             UserController userController = userLoader.getController();
             AppController.getInstance().setUserController(userController);
-            userController.init(AppController.getInstance(), user, userStage, true);
+          //Ostrich
+          parentListeners.add(this);
+          userController.init(AppController.getInstance(), user, userStage, true, parentListeners);
             userStage.show();
-            Log.info("Clinician "+clinician.getStaffId()+" successfully launched user overview window");
+          Log.info("Clinician " + clinician.getStaffId()
+              + " successfully launched user overview window");
+
         } catch (IOException e) {
             Log.severe("Clinician "+clinician.getStaffId()+" Failed to load user overview window", e);
             e.printStackTrace();
@@ -790,5 +811,15 @@ public class ClinicianController {
 
     public void disableLogout() {
         logoutButton.setVisible(false);
+    }
+
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+
+      //clinician controller watches user model
+        //refresh view/tables etc. on change
+        if (evt.getPropertyName().equals(EventTypes.USER_UPDATE.name())) {
+          refreshTables();
+        }
     }
 }

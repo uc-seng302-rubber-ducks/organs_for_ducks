@@ -217,7 +217,7 @@ public class NewUserController {
                     userStage.setScene(new Scene(root));
                     userStage.show();
                     UserController userController = userLoader.getController();
-                    userController.init(AppController.getInstance(), newUser, userStage, false);
+                    userController.init(AppController.getInstance(), newUser, userStage, false, null);
                     userController.diableLogout();
                     Log.info("Successfully launched User Overview for User NHI: "+nhi);
                 } catch (IOException e) {
@@ -234,7 +234,7 @@ public class NewUserController {
                     stage.setScene(new Scene(root));
                     ownStage.close();
                     UserController userController = userLoader.getController();
-                    userController.init(AppController.getInstance(), newUser, stage, false);
+                    userController.init(AppController.getInstance(), newUser, stage, false, null);
                     Log.info("Successfully launched User Overview for User NHI: "+nhi);
                     } catch (IOException e) {
                         Log.severe("Failed to load User Overview for User NHI: "+nhi, e);

@@ -113,7 +113,8 @@ public class LoginController {
               stage.setScene(new Scene(root));
               UserController userController = userLoader.getController();
               AppController.getInstance().setUserController(userController);
-              userController.init(AppController.getInstance(), user, stage, false);
+              //TODO pass listeners from any preceding controllers 22/6
+              userController.init(AppController.getInstance(), user, stage, false, null);
             } catch (IOException e) {
               Log.severe("failed to load user window", e);
                 e.printStackTrace();
@@ -151,7 +152,7 @@ public class LoginController {
         ClinicianController clinicianController = clinicianLoader.getController();
         AppController.getInstance().setClinicianController(clinicianController);
         Log.info("Logging in as a clinician");
-        clinicianController.init(stage, appController, clinician, false);
+        clinicianController.init(stage, appController, clinician, false, null);
       } catch (IOException e) {
         Log.severe("failed to load clinician window", e);
         e.printStackTrace();

@@ -232,6 +232,7 @@ public class ProcedureTabController {
     MedicalProcedure procedure = new MedicalProcedure(procedureDate, procedureName,
         descriptionTextArea.getText(), new ArrayList<>());
     medicalProcedures.add(procedure);
+    currentUser.addMedicalProcedure(procedure);
     if (procedure.getProcedureDate().isBefore(LocalDate.now())) {
       previousProcedures.add(procedure);
     } else {
