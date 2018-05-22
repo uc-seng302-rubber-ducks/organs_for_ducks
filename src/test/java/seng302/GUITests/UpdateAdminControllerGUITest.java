@@ -19,9 +19,15 @@ import seng302.Controller.AppController;
 import seng302.Model.Administrator;
 import java.util.concurrent.TimeoutException;
 import seng302.Model.User;
+import seng302.Utils.CommonTestMethods;
 
 
 public class UpdateAdminControllerGUITest extends ApplicationTest {
+
+  @BeforeClass
+  public static void initialization() {
+    CommonTestMethods.runHeadless();
+  }
 
   @Before
   public void setUpCreateScene() throws TimeoutException {

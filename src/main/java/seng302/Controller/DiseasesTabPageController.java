@@ -21,6 +21,7 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import seng302.Model.Disease;
 import seng302.Model.User;
+import seng302.Service.Log;
 
 public class DiseasesTabPageController {
 
@@ -44,7 +45,7 @@ public class DiseasesTabPageController {
   private UserController parent;
 
   /**
-   * Gives the donor view the application controller and hides all label and buttons that are not
+   * Gives the user view the application controller and hides all label and buttons that are not
    * needed on opening
    *
    * @param controller the application controller
@@ -63,7 +64,7 @@ public class DiseasesTabPageController {
     }
 
     setSelectionModels();
-    showDonorDiseases(currentUser, true);
+    showUserDiseases(currentUser, true);
   }
 
   private void setSelectionModels() {
@@ -77,9 +78,9 @@ public class DiseasesTabPageController {
   }
 
   /**
-   * show the current and past diseases of the donor.
+   * show the current and past diseases of the user.
    */
-  public void showDonorDiseases(User user, boolean init) {
+  public void showUserDiseases(User user, boolean init) {
     if (user.getCurrentDiseases().size() != 0) {
       ObservableList<Disease> currentDisease = FXCollections
           .observableList(user.getCurrentDiseases());
@@ -183,7 +184,9 @@ public class DiseasesTabPageController {
       newDiseaseController.init(currentUser, application, stage, disease, parent);
       stage.setScene(new Scene(root));
       stage.show();
+      Log.info("successfully launched add/update Diseases pop-up window for User NHI: "+currentUser.getNhi());
     } catch (IOException e) {
+      Log.severe("failed to load add/update Diseases pop-up window for User NHI: "+currentUser.getNhi(), e);
       e.printStackTrace();
     }
 
@@ -201,19 +204,24 @@ public class DiseasesTabPageController {
         currentUser.getCurrentDiseases()
             .remove(currentDiseaseTableView.getSelectionModel().getSelectedItem());
       } else {
+        Log.warning("Unable to delete current disease for User NHI: "+currentUser.getNhi()+", no disease selected");
         return;
       }
+      Log.info("current disease: "+currentDiseaseTableView.getSelectionModel().getSelectedItem()+" deleted for User NHI: "+currentUser.getNhi());
     } else if (pastDiseaseTableView.getSelectionModel().getSelectedIndex() >= 0) {
       currentUser.getPastDiseases()
           .remove(pastDiseaseTableView.getSelectionModel().getSelectedItem());
+      Log.info("past disease: "+pastDiseaseTableView.getSelectionModel().getSelectedItem()+" deleted for User NHI: "+currentUser.getNhi());
+    } else{
+      Log.warning("Unable to delete past disease for User NHI: "+currentUser.getNhi()+", no disease selected");
     }
 
     this.application.update(currentUser);
-    showDonorDiseases(currentUser, false); //Reload the scene?
+    showUserDiseases(currentUser, false); //Reload the scene?
   }
 
   /**
-   * Refreshes the donor's diseases
+   * Refreshes the user's diseases
    *
    * @param isSortedByName Checks if the table is currently sorted by name
    * @param isReverseSorted checks if the table is sorted in descending order
@@ -234,7 +242,7 @@ public class DiseasesTabPageController {
     }
     currentUser.getCurrentDiseases().sort(disease.diseaseChronicComparator);
 
-    showDonorDiseases(currentUser, false);
+    showUserDiseases(currentUser, false);
   }
 
   /**
@@ -255,7 +263,9 @@ public class DiseasesTabPageController {
       newDiseaseController.init(currentUser, application, stage, disease, parent);
       stage.setScene(new Scene(root));
       stage.show();
+      Log.info("successfully launched add Diseases pop-up window for User NHI: "+currentUser.getNhi());
     } catch (IOException e) {
+      Log.severe("failed to load add Diseases pop-up window for User NHI: "+currentUser.getNhi(), e);
       e.printStackTrace();
     }
 

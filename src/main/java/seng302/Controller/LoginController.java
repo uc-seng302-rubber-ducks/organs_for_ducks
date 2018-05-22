@@ -91,29 +91,30 @@ public class LoginController {
   void loginUser() {
         userWarningLabel.setText("");
         String wantedDonor = userIDTextField.getText();
-    User donor;
+    User user;
 
         if (wantedDonor.isEmpty()) {
             userWarningLabel.setText("Please enter an NHI.");
             return;
         } else {
-            donor = appController.findUser(wantedDonor);
+          user = appController.findUser(wantedDonor);
         }
-        if (donor == null) {
-            userWarningLabel.setText("Donor was not found. \nTo register a new donor please click sign up.");
+    if (user == null) {
+      userWarningLabel
+          .setText("User was not found. \nTo register a new user, please click sign up.");
             return;
         }
 
-            FXMLLoader donorLoader = new FXMLLoader(getClass().getResource("/FXML/userView.fxml"));
+    FXMLLoader userLoader = new FXMLLoader(getClass().getResource("/FXML/userView.fxml"));
     Parent root;
             try {
-                root = donorLoader.load();
+              root = userLoader.load();
               Log.info("Logging in as a user");
               stage.setScene(new Scene(root));
-              UserController userController = donorLoader.getController();
+              UserController userController = userLoader.getController();
               AppController.getInstance().setUserController(userController);
               //TODO pass listeners from any preceding controllers 22/6
-              userController.init(AppController.getInstance(), donor, stage, false, null);
+              userController.init(AppController.getInstance(), user, stage, false, null);
             } catch (IOException e) {
               Log.severe("failed to load user window", e);
                 e.printStackTrace();
@@ -206,18 +207,18 @@ public class LoginController {
   @FXML
   void signUp() {
 
-    FXMLLoader donorLoader = new FXMLLoader(getClass().getResource("/FXML/createNewUser.fxml"));
+    FXMLLoader userLoader = new FXMLLoader(getClass().getResource("/FXML/createNewUser.fxml"));
     Parent root;
         try {
-            root = donorLoader.load();
+          root = userLoader.load();
           Stage newStage = new Stage();
           newStage.initModality(Modality.APPLICATION_MODAL);
           newStage.setScene(new Scene(root));
           newStage.setTitle("Create New User Profile");
           newStage.show();
-          NewUserController donorController = donorLoader.getController();
+          NewUserController userController = userLoader.getController();
           Log.info("Opening new user window");
-          donorController.init(AppController.getInstance(), stage, newStage);
+          userController.init(AppController.getInstance(), stage, newStage);
         } catch (IOException e) {
           Log.severe("failed to load new user window", e);
           e.printStackTrace();
@@ -241,7 +242,7 @@ public class LoginController {
         helpStage.setResizable(false);
         helpStage.setOnCloseRequest(event -> helpStage = null);
         helpStage.show();
-
+        Log.info("Successfully launched help window");
       } catch (Exception e) {
         Log.severe("could not load help window", e);
         e.printStackTrace();
@@ -268,7 +269,9 @@ public class LoginController {
         stage.setTitle("Administrator");
         AdministratorViewController administratorViewController = adminLoader.getController();
         administratorViewController.init(new Administrator(), appController, stage);
+        Log.info("Successfully launched CLI");
       } catch (IOException e) {
+        Log.severe("could not load CLI", e);
         e.printStackTrace();
       }
     }

@@ -42,7 +42,7 @@ public class AppController {
   private Set<User> deletedUserStack = new HashSet<>();
   private Stack<User> redoStack = new Stack<>();
 
-  private static final String USERS_FILE = Directory.JSON.directory() + "/donors.json";
+  private static final String USERS_FILE = Directory.JSON.directory() + "/users.json";
   private static final String CLINICIAN_FILE = Directory.JSON.directory() + "/clinicians.json";
 
   /**
@@ -51,9 +51,9 @@ public class AppController {
   private AppController() {
     try {
       users = JsonHandler.loadUsers(USERS_FILE);
-      Log.info(users.size() + " donors were successfully loaded");
+      Log.info(users.size() + " users were successfully loaded");
     } catch (FileNotFoundException e) {
-      Log.warning("Donor file was not found", e);
+      Log.warning("User file was not found", e);
     }
 
     try {
@@ -101,6 +101,7 @@ public class AppController {
       clinicians.add(new Clinician("0", "admin", "Default", null, null, null, (String) null));
       try {
         JsonHandler.saveClinicians(clinicians);
+        Log.info("Successfully saved clinicians to file");
       } catch (IOException e) {
         Log.warning("Could not save clinicians to file", e);
       }
@@ -120,40 +121,41 @@ public class AppController {
   }
 
     /**
-     * appends a single Donor to the list of users stored in the Controller
-     * @param name The name of the donor.
-     * @param dateOfBirth The date the donor was born.
-     * @param dateOfDeath The date the donor died.
-     * @param gender The gender of the donor.
-     * @param height The height of the donor.
-     * @param weight The weight of the donor.
-     * @param bloodType The blood type of the donor.
-     * @param currentAddress The address of the donor.
-     * @param region The region the donor lives in.
-     * @param NHI The unique identifier of the donor (national health index)
-     * @return hashCode of the new donor or -1 on error
+     * appends a single user to the list of users stored in the Controller
+     * @param name The name of the user.
+     * @param dateOfBirth The date the user was born.
+     * @param dateOfDeath The date the user died.
+     * @param gender The gender of the user.
+     * @param height The height of the user.
+     * @param weight The weight of the user.
+     * @param bloodType The blood type of the user.
+     * @param currentAddress The address of the user.
+     * @param region The region the user lives in.
+     * @param NHI The unique identifier of the user (national health index)
+     * @return hashCode of the new user or -1 on error
      */
     //TODO: remove??
   public int Register(String name, LocalDate dateOfBirth, LocalDate dateOfDeath, String gender, double height,
                       double weight,
       String bloodType, String currentAddress, String region, String NHI) {
     try {
-      User newDonor = new User(name, dateOfBirth, NHI);
-      newDonor.setDateOfDeath(dateOfDeath);
-      newDonor.setGender(gender);
-      newDonor.setHeight(height);
-      newDonor.setWeight(weight);
-      newDonor.setBloodType(bloodType);
-      newDonor.setCurrentAddress(currentAddress);
-      newDonor.setRegion(region);
+      User newUser = new User(name, dateOfBirth, NHI);
+      newUser.setDateOfDeath(dateOfDeath);
+      newUser.setGender(gender);
+      newUser.setHeight(height);
+      newUser.setWeight(weight);
+      newUser.setBloodType(bloodType);
+      newUser.setCurrentAddress(currentAddress);
+      newUser.setRegion(region);
 
-      if (users.contains(newDonor)) {
+      if (users.contains(newUser)) {
         return -1;
       }
-      users.add(newDonor);
-      return newDonor.hashCode();
+      users.add(newUser);
+      Log.info("Successfully registered new user with NHI: "+NHI);
+      return newUser.hashCode();
     } catch (Exception e) {
-      Log.warning("failed to register new user", e);
+      Log.warning("failed to register new user with NHI: "+NHI, e);
       return -1;
     }
   }
@@ -212,18 +214,19 @@ public class AppController {
         return false;
       }
       users.add(newUser);
+      Log.info("Successfully registered new user with NHI: "+NHI);
       return true;
     } catch (Exception e) {
-      Log.warning("Failed to register new user", e);
+      Log.warning("Failed to register new user with NHI: "+NHI, e);
       return false;
     }
   }
 
   /**
-   * Takes a users name and dob, finds the donor in the session list and returns them.
+   * Takes a users name and dob, finds the user in the session list and returns them.
    *
-   * @param name Name of the donor
-   * @param dob date of birth of the donor
+   * @param name Name of the user
+   * @param dob date of birth of the user
    * @return The user that matches the name and dob, otherwise null if no user was found.
    */
   //TODO: Make this redundant
@@ -254,8 +257,7 @@ public class AppController {
   }
 
   /**
-   * Finds donor by nhi only. This method will need to be migrated to unique username in later
-   * builds returns null if donor is not found
+   * Finds a single user by nhi
    *
    * @param nhi The unique identifier of a user (national health index)
    * @return The user with the matching nhi, or null if no user matches.
@@ -271,19 +273,20 @@ public class AppController {
 
 
   /**
-   * takes a passed donor and removes them from the maintained list of users
+   * takes a passed user and removes them from the maintained list of users
    *
    * @param user user to remove
    */
-  public void deleteDonor(User user) {
+  public void deleteUser(User user) {
     List<User> sessionList = getUsers();
     sessionList.remove(user);
     deletedUserStack.add(user);
     setUsers((ArrayList<User>) sessionList);
     try {
       JsonHandler.saveUsers(sessionList);
+
     } catch (IOException e) {
-      Log.warning("failed to delete a user", e);
+      Log.warning("failed to delete a user with NHI: "+user.getNhi(), e);
     }
 
   }
@@ -298,7 +301,7 @@ public class AppController {
    * finds a user by their NHI
    *
    * @param NHI the unique id of a user
-   * @return Donor corresponding with the NHI given or null if dne
+   * @return user corresponding with the NHI given or null if dne
    */
   public User getUser(String NHI) {
     for (User user : users) {
@@ -325,14 +328,14 @@ public class AppController {
       users.add(user);
     } else {
       users.add(user);
-      changelogWrite.add(new Change(LocalDateTime.now(), "Added Donor " + user.getFullName()));
+      changelogWrite.add(new Change(LocalDateTime.now(), "Added user " + user.getFullName()));
     }
     try {
       JsonHandler.saveUsers(users);
       //JsonHandler.saveChangelog(changelogWrite, user.getFullName().toLowerCase().replace(" ", "_"));
 
     } catch (IOException e) {
-      Log.warning("failed to update users", e);
+      Log.warning("failed to update users with NHI: "+user.getNhi(), e);
     }
   }
 
@@ -378,8 +381,9 @@ public class AppController {
 
     try {
       JsonHandler.saveClinicians(clinicians);
+      Log.info("Successfully updated clinician with Staff ID: "+clinician.getStaffId());
     } catch (IOException e) {
-      Log.warning("Failed to update clinicians", e);
+      Log.warning("Failed to update clinician with Staff ID: "+clinician.getStaffId(), e);
     }
   }
 
@@ -390,8 +394,9 @@ public class AppController {
      */
     public void deleteAdmin(Administrator admin) {
         admins.remove(admin);
-        // todo: will probably need undo/redo for this similar to how the deleteDonor one has it
+      // todo: will probably need undo/redo for this similar to how the deleteUser one has it
         // auto save is on another branch..
+      Log.info("Successfully updated admin with user name: "+admin.getUserName());
     }
 
 
@@ -400,7 +405,7 @@ public class AppController {
   }
 
   /**
-   * @param userController The controller class for the donor overview.
+   * @param userController The controller class for the user overview.
    */
   public void setUserController(UserController userController) {
     this.userController = userController;
@@ -442,8 +447,9 @@ public class AppController {
 
     try {
       JsonHandler.saveAdmins(admins);
+      Log.info("successfully updated the Administrator profile with user name: "+administrator.getUserName());
     } catch (IOException e){
-      Log.warning("Failed to update Administrators", e);
+      Log.warning("Failed to update Administrator profiles with user name: "+administrator.getUserName(), e);
     }
   }
 
@@ -453,7 +459,7 @@ public class AppController {
    * @return An array list of changes between the old and new user.
    * @deprecated
    */
-  public ArrayList<Change> differanceInDonors(User oldUser, User newUser) {
+  public ArrayList<Change> differenceInUsers(User oldUser, User newUser) {
     ArrayList<String> diffs = new ArrayList<>();
     try {
       if (!oldUser.getFullName().equalsIgnoreCase(newUser.getFullName())) {
@@ -541,6 +547,7 @@ public class AppController {
       }
       try {
         JsonHandler.saveChangelog(changes, newUser.getFullName().toLowerCase().replace(" ", "_"));
+        Log.info("Successfully saved changelog");
       } catch (IOException e) {
         Log.warning("failed to save changelog", e);
       }

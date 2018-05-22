@@ -51,6 +51,7 @@ import seng302.Model.Organs;
 import seng302.Model.TransplantDetails;
 import seng302.Model.User;
 import seng302.Service.AttributeValidation;
+import seng302.Service.Log;
 
 /**
  * Class for the functionality of the Clinician view of the application
@@ -176,7 +177,7 @@ public class ClinicianController implements PropertyChangeListener {
     private Clinician clinician;
     private List<User> users;
     private ArrayList<Stage> openStages;
-    private FilteredList<User> fListDonors;
+    private FilteredList<User> fListUsers;
 
     private ArrayList<CheckBox> filterCheckBoxList = new ArrayList<>();
 
@@ -285,7 +286,7 @@ public class ClinicianController implements PropertyChangeListener {
         List<User> usersSublist = getSearchData(users);
         //set up lists
         //table contents are SortedList of a FilteredList of an ObservableList of an ArrayList
-        ObservableList<User> oListDonors = FXCollections.observableList(users);
+        ObservableList<User> oListUsers = FXCollections.observableList(users);
 
         fNameColumn = new TableColumn<>("First name");
         fNameColumn.setCellValueFactory(new PropertyValueFactory<>("firstName"));
@@ -311,20 +312,20 @@ public class ClinicianController implements PropertyChangeListener {
 
         //add more columns as wanted/needed
 
-        fListDonors = new FilteredList<>(oListDonors);
-        fListDonors = filter(fListDonors);
-        FilteredList<User> squished = new FilteredList<>(fListDonors);
+        fListUsers = new FilteredList<>(oListUsers);
+        fListUsers = filter(fListUsers);
+        FilteredList<User> squished = new FilteredList<>(fListUsers);
 
-        SortedList<User> sListDonors = new SortedList<>(squished);
-        sListDonors.comparatorProperty().bind(searchTableView.comparatorProperty());
+        SortedList<User> sListUsers = new SortedList<>(squished);
+        sListUsers.comparatorProperty().bind(searchTableView.comparatorProperty());
 
         //predicate on this list not working properly
         //should limit the number of items shown to ROWS_PER_PAGE
-        //squished = limit(fListDonors, sListDonors);
+        //squished = limit(fListUsers, sListUsers);
         //set table columns and contents
         searchTableView.getColumns().setAll(fNameColumn, lNameColumn, dobColumn, dodColumn, ageColumn, regionColumn, organsColumn);
-        //searchTableView.setItems(FXCollections.observableList(sListDonors.subList(startIndex, endIndex)));
-        searchTableView.setItems(sListDonors);
+        //searchTableView.setItems(FXCollections.observableList(sListUsers.subList(startIndex, endIndex)));
+        searchTableView.setItems(sListUsers);
         searchTableView.setRowFactory((searchTableView) -> new TooltipTableRow<>(User::getTooltip));
 
 
@@ -332,7 +333,7 @@ public class ClinicianController implements PropertyChangeListener {
         searchTableView.setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
                 User user = searchTableView.getSelectionModel().getSelectedItem();
-                launchDonor(user);
+                launchUser(user);
             }
         });
     }
@@ -401,7 +402,7 @@ public class ClinicianController implements PropertyChangeListener {
                 if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
                     TransplantDetails transplantDetails = transplantWaitListTableView.getSelectionModel().getSelectedItem();
                     User wantedUser = appController.findUser(transplantDetails.getNhi());
-                    launchDonor(wantedUser);
+                    launchUser(wantedUser);
                 }
             });
 
@@ -429,13 +430,14 @@ public class ClinicianController implements PropertyChangeListener {
         startIndex = pageIndex * ROWS_PER_PAGE;
         endIndex = Math.min(startIndex + ROWS_PER_PAGE, users.size());
 
-        int minIndex = Math.min(endIndex, fListDonors.size());
+        int minIndex = Math.min(endIndex, fListUsers.size());
 
-        SortedList<User> sListDonors = new SortedList<>(FXCollections.observableArrayList(fListDonors.subList(Math.min(startIndex, minIndex), minIndex)));
-        sListDonors.comparatorProperty().bind(searchTableView.comparatorProperty());
+        SortedList<User> sListUsers = new SortedList<>(FXCollections.observableArrayList(
+            fListUsers.subList(Math.min(startIndex, minIndex), minIndex)));
+        sListUsers.comparatorProperty().bind(searchTableView.comparatorProperty());
 
         lNameColumn.setSortType(TableColumn.SortType.ASCENDING);
-        searchTableView.setItems(sListDonors);
+        searchTableView.setItems(sListUsers);
 
 
         int pageCount = searchCount / ROWS_PER_PAGE;
@@ -448,21 +450,23 @@ public class ClinicianController implements PropertyChangeListener {
     /**
      * @param user the selected user.
      */
-    private void launchDonor(User user) {
-        FXMLLoader donorLoader = new FXMLLoader(getClass().getResource("/FXML/userView.fxml"));
+    private void launchUser(User user) {
+        FXMLLoader userLoader = new FXMLLoader(getClass().getResource("/FXML/userView.fxml"));
         Parent root;
         try {
-            root = donorLoader.load();
-            Stage donorStage = new Stage();
-            donorStage.setScene(new Scene(root));
-            openStages.add(donorStage);
-            UserController userController = donorLoader.getController();
+            root = userLoader.load();
+            Stage userStage = new Stage();
+            userStage.setScene(new Scene(root));
+            openStages.add(userStage);
+            UserController userController = userLoader.getController();
             AppController.getInstance().setUserController(userController);
             ArrayList<PropertyChangeListener> listeners = new ArrayList<>();
             listeners.add(this);
-            userController.init(AppController.getInstance(), user, donorStage, true, listeners);
-            donorStage.show();
+            userController.init(AppController.getInstance(), user, userStage, true, listeners);
+            userStage.show();
+            Log.info("Clinician "+clinician.getStaffId()+" successfully launched user overview window");
         } catch (IOException e) {
+            Log.severe("Clinician "+clinician.getStaffId()+" Failed to load user overview window", e);
             e.printStackTrace();
         }
     }
@@ -672,6 +676,7 @@ public class ClinicianController implements PropertyChangeListener {
     clinician.undo();
     undoButton.setDisable(clinician.getUndoStack().empty());
     showClinician(clinician);
+    Log.info("Clinician "+clinician.getStaffId()+" executed undo clinician");
   }
 
   /**
@@ -682,6 +687,7 @@ public class ClinicianController implements PropertyChangeListener {
     clinician.redo();
     redoButton.setDisable(clinician.getRedoStack().empty());
     showClinician(clinician);
+      Log.info("Clinician "+clinician.getStaffId()+" executed redo clinician");
   }
 
   /**
@@ -700,7 +706,9 @@ public class ClinicianController implements PropertyChangeListener {
       stage.show();
       stage.hide();
       stage.show();
+      Log.info("Clinician "+clinician.getStaffId()+" successfully launched login window after logout");
     } catch (IOException e) {
+        Log.severe("Clinician "+clinician.getStaffId()+" failed to launch login window after logout", e);
       e.printStackTrace();
     }
   }
@@ -721,8 +729,9 @@ public class ClinicianController implements PropertyChangeListener {
             newStage.initModality(Modality.APPLICATION_MODAL); // background window is no longer selectable
             newStage.showAndWait();
             showClinician(clinician);
-
+            Log.info("Clinician "+clinician.getStaffId()+" successfully launched update clinician window");
         } catch (IOException e) {
+            Log.severe("Clinician "+clinician.getStaffId()+" failed to launch update clinician window", e);
             e.printStackTrace();
         }
     }
@@ -760,7 +769,9 @@ public class ClinicianController implements PropertyChangeListener {
           deletedUserController.init();
           stage.initModality(Modality.APPLICATION_MODAL);
           stage.showAndWait();
+          Log.info("Clinician "+clinician.getStaffId()+" successfully launched delete user window");
       } catch (IOException e) {
+          Log.severe("Clinician "+clinician.getStaffId()+" failed to launch delete user window", e);
           e.printStackTrace();
       }
   }

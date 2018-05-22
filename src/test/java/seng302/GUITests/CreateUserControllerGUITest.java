@@ -14,23 +14,14 @@ import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.matcher.control.LabeledMatchers;
 import seng302.App;
 import seng302.Controller.AppController;
+import seng302.Utils.CommonTestMethods;
 
 public class CreateUserControllerGUITest extends ApplicationTest {
 
   @BeforeClass
   public static void initialization() {
-      System.setProperty("Dtestfx.robot", "glass");
-      System.setProperty("Dtestfx.headless", "true");
-      System.setProperty("Dprism.order", "sw");
-      System.setProperty("Dprism.text", "t2k");
-      System.setProperty("Djava.awt.headless", "true");
-      System.setProperty("Dheadless.geometry", "1920x1080-32");
+    CommonTestMethods.runHeadless();
   }
-
-//  @Before
-//  public void setup() throws Exception {
-//    ApplicationTest.launch(App.class);
-//  }
 
   @Before
   public void setUpCreateScene() throws TimeoutException {
@@ -168,7 +159,7 @@ public class CreateUserControllerGUITest extends ApplicationTest {
     clickOn("#phoneInput");
     write("asdf",  0);
     clickOn("#confirmButton");
-    //TODO: Check that an invalid label is shown
+    verifyThat("#errorLabel", Node::isVisible);
   }
 
   @Test @Ignore
@@ -182,7 +173,7 @@ public class CreateUserControllerGUITest extends ApplicationTest {
     clickOn("#emailInput");
     write("asdf",  0);
     clickOn("#confirmButton");
-    //TODO: Check that an invalid label is shown
+    verifyThat("#errorLabel", Node::isVisible);
   }
 
   @Test @Ignore
@@ -196,7 +187,7 @@ public class CreateUserControllerGUITest extends ApplicationTest {
     clickOn("#cellInput");
     write("asdf",  0);
     clickOn("#confirmButton");
-    //TODO: Check that an invalid label is shown
+    verifyThat("#errorLabel", Node::isVisible);
   }
 
   @Test

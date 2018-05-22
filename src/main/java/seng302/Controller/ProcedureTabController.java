@@ -28,6 +28,7 @@ import seng302.Model.MedicalProcedure;
 import seng302.Model.Memento;
 import seng302.Model.Organs;
 import seng302.Model.User;
+import seng302.Service.Log;
 
 public class ProcedureTabController {
   //procedures
@@ -75,7 +76,7 @@ public class ProcedureTabController {
   private UserController parent;
 
   /**
-   * Gives the donor view the application controller and hides all label and buttons that are not
+   * Gives the user view the application controller and hides all label and buttons that are not
    * needed on opening
    *
    * @param controller the application controller
@@ -213,15 +214,18 @@ public class ProcedureTabController {
     memento.setOldObject(currentUser.clone());
     String procedureName = procedureTextField.getText();
     if (procedureName.isEmpty()) {
+      Log.warning("Failed to add procedure: "+procedureName+" for User NHI: "+currentUser.getNhi()+" as user input is invalid");
       procedureWarningLabel.setText("A name must be entered for a procedure");
       return;
     }
     LocalDate procedureDate = procedureDateSelector.getValue();
     if (procedureDate == null) {
+      Log.warning("Failed to add procedure: "+procedureName+" for User NHI: "+currentUser.getNhi()+" as user input is invalid");
       procedureWarningLabel.setText("A valid date must be entered for a procedure");
       return;
     }
     if (procedureDate.isBefore(currentUser.getDateOfBirth())) {
+      Log.warning("Failed to add procedure: "+procedureName+" for User NHI: "+currentUser.getNhi()+" as user input is invalid");
       procedureWarningLabel.setText("Procedures may not occur before a patient has been born");
       return;
     }
@@ -238,6 +242,7 @@ public class ProcedureTabController {
     application.update(currentUser);
     memento.setNewObject(currentUser.clone());
     currentUser.getUndoStack().push(memento);
+    Log.info("Successfully added procedure: "+procedureName+" for User NHI: "+currentUser.getNhi());
   }
 
   /**
@@ -252,14 +257,17 @@ public class ProcedureTabController {
     LocalDate newDate = procedureDateSelector.getValue();
     String newDescription = descriptionTextArea.getText();
     if (newName.isEmpty()) {
+      Log.warning("Failed to update procedure: "+newName+" for User NHI: "+currentUser.getNhi()+" as user input is invalid");
       procedureWarningLabel.setText("A name must be entered for a procedure");
       return;
     }
     if (newDate == null) {
+      Log.warning("Failed to update procedure: "+newName+" for User NHI: "+currentUser.getNhi()+" as user input is invalid");
       procedureWarningLabel.setText("A valid date must be entered for a procedure");
       return;
     }
     if (newDate.isBefore(currentUser.getDateOfBirth())) {
+      Log.warning("Failed to update procedure: "+newName+" for User NHI: "+currentUser.getNhi()+" as user input is invalid");
       procedureWarningLabel.setText("Procedures may not occur before a patient has been born");
       return;
     }
@@ -274,6 +282,7 @@ public class ProcedureTabController {
     }
     memento.setNewObject(currentUser.clone());
     currentUser.getUndoStack().push(memento);
+    Log.info("Successfully updated procedure: "+newName+" for User NHI: "+currentUser.getNhi());
   }
 
   /**
@@ -338,6 +347,7 @@ public class ProcedureTabController {
     organsAffectedByProcedureListView.setItems(FXCollections.observableList(new ArrayList<>()));
     modifyOrgansProcedureButton.setVisible(false);
     currentProcedureList = null;
+    Log.info("Successfully cleared procedure for User NHI: "+currentUser.getNhi());
   }
 
   /**
@@ -352,11 +362,15 @@ public class ProcedureTabController {
       currentUser
           .removeMedicalProcedure(previousProcedureTableView.getSelectionModel().getSelectedItem());
       previousProcedures.remove(previousProcedureTableView.getSelectionModel().getSelectedItem());
+      Log.info("Successfully removed procedure: "+previousProcedureTableView.getSelectionModel().getSelectedItem().toString()+" for User NHI: "+currentUser.getNhi());
     } else if (pendingProcedureTableView.getSelectionModel().getSelectedItem() != null) {
       medicalProcedures.remove(pendingProcedureTableView.getSelectionModel().getSelectedItem());
       currentUser
           .removeMedicalProcedure(pendingProcedureTableView.getSelectionModel().getSelectedItem());
       pendingProcedures.remove(pendingProcedureTableView.getSelectionModel().getSelectedItem());
+      Log.info("Successfully removed procedure: "+pendingProcedureTableView.getSelectionModel().getSelectedItem().toString()+" for User NHI: "+currentUser.getNhi());
+    } else {
+      Log.warning("Failed to remove procedure for User NHI: "+currentUser.getNhi()+" as no procedure is selected");
     }
     application.update(currentUser);
     memento.setNewObject(currentUser.clone());
@@ -385,7 +399,9 @@ public class ProcedureTabController {
       memento.setNewObject(currentUser.clone());
       currentUser.getUndoStack().push(memento);
       showProcedure(procedure);
+      Log.info("Successfully launched Modify Procedure Organs window for User NHI: "+currentUser.getNhi());
     } catch (IOException e) {
+      Log.severe("unable to launch Modify Procedure Organs window for User NHI: "+currentUser.getNhi(), e);
       e.printStackTrace();
     }
   }

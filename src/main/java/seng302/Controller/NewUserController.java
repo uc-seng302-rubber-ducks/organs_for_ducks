@@ -16,15 +16,15 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import seng302.Exception.InvalidFieldsException;
 import seng302.Model.EmergencyContact;
 import seng302.Model.User;
 import seng302.Service.AttributeValidation;
+import seng302.Service.Log;
 
 
 /**
  * Controller class for creating a new donor profile.
- *
- * @author acb116, are66, eli26, jha236
  */
 public class NewUserController {
 
@@ -82,15 +82,15 @@ public class NewUserController {
     @FXML
     private TextField ecRelationshipInput;
     @FXML
-    private ComboBox birthGenderComboBox;
+    private ComboBox<String> birthGenderComboBox;
     @FXML
-    private ComboBox genderIdComboBox;
+    private ComboBox<String> genderIdComboBox;
     @FXML
-    private ComboBox bloodComboBox;
+    private ComboBox<String> bloodComboBox;
     @FXML
     private CheckBox smokerCheckBox;
     @FXML
-    private ComboBox alcoholComboBox;
+    private ComboBox<String> alcoholComboBox;
     @FXML
     private DatePicker dobInput;
     @FXML
@@ -130,37 +130,36 @@ public class NewUserController {
      */
     //TODO: Find a way to clean this up
     private void createUser(String nhi, String fName, LocalDate dob, LocalDate dod) throws IOException {
-        boolean valid = true; // prevents the account being created if false
+        boolean valid; // prevents the account being created if false
 
         // User attributes
-        String preferredFirstName;
-        if (preferredFNameTextField.getText().isEmpty()) {
+        String preferredFirstName = preferredFNameTextField.getText();
+        valid = AttributeValidation.checkString(preferredFirstName);
+        if (preferredFirstName.isEmpty()) {
             preferredFirstName = fName;
-        } else {
-            preferredFirstName = preferredFNameTextField.getText();
         }
 
-        String middleName = AttributeValidation.checkString(mNameInput.getText()) == null ? ""
-                : AttributeValidation.checkString(
-                mNameInput.getText()); // checkString returns null if the textfield is empty
-        String lastName = AttributeValidation.checkString(lNameInput.getText()) == null ? ""
-                : AttributeValidation.checkString(lNameInput.getText());
+        String middleName = mNameInput.getText();
+        valid &= AttributeValidation.checkString(middleName);
 
-        String birthGender = AttributeValidation.validateGender(birthGenderComboBox);
-        String genderIdentity;
-        if (birthGender != null && AttributeValidation.validateGender(genderIdComboBox) == null) {
+        String lastName = lNameInput.getText();
+        valid &= AttributeValidation.checkString(lastName);
+
+        String birthGender = birthGenderComboBox.getValue();
+        valid &= AttributeValidation.validateGender(birthGender);
+
+        String genderIdentity = genderIdComboBox.getValue();
+        valid &= AttributeValidation.validateGender(genderIdentity);
+        if (genderIdentity.isEmpty() && !birthGender.isEmpty()) {
             genderIdentity = birthGender;
-        } else {
-            genderIdentity = AttributeValidation.validateGender(genderIdComboBox);
         }
-        String bloodType = AttributeValidation.validateBlood(bloodComboBox);
+
+        String bloodType = bloodComboBox.getValue();
+        valid &= (AttributeValidation.validateBlood(bloodComboBox.getValue()));
 
         boolean smoker = smokerCheckBox.isSelected();
 
-        String alcoholConsumption = null;
-        if (alcoholComboBox.getValue() != null) {
-            alcoholConsumption = alcoholComboBox.getValue().toString();
-        }
+        String alcoholConsumption = alcoholComboBox.getValue();
 
         // validate doubles return -1 if the value is 0 or below, and 0 if the textfield is empty
         double height = AttributeValidation.validateDouble(heightInput.getText());
@@ -171,172 +170,132 @@ public class NewUserController {
         }
 
         // contact details
-        String currentAddress = AttributeValidation.checkString(addressInput.getText()) == null ? ""
-                : AttributeValidation.checkString(addressInput.getText());
-        String region = AttributeValidation.checkString(regionInput.getText()) == null ? ""
-                : AttributeValidation.checkString(regionInput.getText());
-        String homePhone = AttributeValidation.validatePhoneNumber(phoneInput.getText());
-        String cellPhone = AttributeValidation.validateCellNumber(cellInput.getText());
-        String email = AttributeValidation.validateEmail(emailInput.getText());
+        String currentAddress = addressInput.getText();
+        valid &= (AttributeValidation.checkString(addressInput.getText()));
 
-        // validate email and phone numbers
-        valid = emailCheck(email, valid);
-        valid = homePhoneCheck(homePhone, valid);
-        valid = cellPhoneCheck(cellPhone, valid);
+        String region = regionInput.getText();
+        valid &= (AttributeValidation.checkString(regionInput.getText()));
 
-        // Emergency Contact attributes
-        String eName = AttributeValidation.checkString(ecNameInput.getText());
-        String eCellPhone = AttributeValidation.validateCellNumber(ecCellInput.getText());
-        String eHomePhone = AttributeValidation.validatePhoneNumber(ecPhoneInput.getText());
-        String eAddress = AttributeValidation.checkString(ecAddressInput.getText());
-        String eRegion = AttributeValidation.checkString(ecRegionInput.getText());
-        String eEmail = AttributeValidation.validateEmail(ecEmailInput.getText());
-        String eRelationship = AttributeValidation.checkString(ecRelationshipInput.getText());
+        String homePhone = phoneInput.getText();
+        valid &= (AttributeValidation.validatePhoneNumber(phoneInput.getText()));
 
-        // validate emergency contact email and phone numbers
-        valid = emailCheck(eEmail, valid);
-        valid = homePhoneCheck(eHomePhone, valid);
-        valid = cellPhoneCheck(eCellPhone, valid);
+        String cellPhone = cellInput.getText();
+        valid &= (AttributeValidation.validateCellNumber(cellInput.getText()));
 
-
-        // the name and cell number are required if any other attributes are filled out
-        if ((eName == null || eCellPhone == null) && (eHomePhone != null || eAddress != null || eRegion != null ||
-                eEmail != null || eRelationship != null || eName != null || eCellPhone != null)) {
-            valid = false;
-            errorLabel.setText("Name and cell phone number are required for an emergency contact.");
-            errorLabel.setVisible(true);
-        }
+        String email = emailInput.getText();
+        valid &= (AttributeValidation.validateEmail(emailInput.getText()));
 
         if (valid) {
             // create the new user
             User newUser = new User(nhi, dob, dod, birthGender, genderIdentity, height, weight,
                     bloodType,
                     alcoholConsumption, smoker, currentAddress, region, homePhone, cellPhone, email, null,
-                    fName, fName, preferredFirstName, middleName, lastName); //todo: ewww gross can we please change this
+                fName, fName, preferredFirstName, middleName,
+                lastName); //todo: ewww gross can we please change this DELET THIS PLS
 
-            EmergencyContact contact = new EmergencyContact("", "", newUser);
+            try {
+                EmergencyContact contact = collectEmergencyContact(newUser);
+                newUser.setContact(contact);
 
-            if (eName != null && eCellPhone != null) {
-                // create the emergency contact
-                contact = new EmergencyContact(eName, eCellPhone, newUser);
+                newUser.getUndoStack().clear();
 
-                contact.setHomePhoneNumber(eHomePhone == null ? "" : eHomePhone);
-                contact.setAddress(eAddress == null ? "" : eAddress);
-                contact.setRegion(eRegion == null ? "" : eRegion);
-                contact.setEmail(eEmail == null ? "" : eEmail);
-                contact.setRelationship(eRelationship == null ? "" : eRelationship);
-            }
-
-            newUser.setContact(contact);
-
-            newUser.getUndoStack().clear();
-
-            // add the new user to the list of users and save them
-            List<User> users = controller.getUsers();
-            users.add(newUser);
-            saveUsers(users);
+                // add the new user to the list of users and save them
+                List<User> users = controller.getUsers();
+                users.add(newUser);
+                saveUsers(users);
 
             // load to the overview page
             if (stage.getTitle().matches("Administrator*")) {
                 ownStage.close();
-                FXMLLoader donorLoader = new FXMLLoader(getClass().getResource("/FXML/userView.fxml"));
+                FXMLLoader userLoader = new FXMLLoader(
+                    getClass().getResource("/FXML/userView.fxml"));
                 Parent root;
 
                 try {
-                    root = donorLoader.load();
+                    root = userLoader.load();
                     Stage userStage = new Stage();
                     userStage.setScene(new Scene(root));
                     userStage.show();
-                    UserController userController = donorLoader.getController();
-                    //TODO pass listeners from any preceding controllers 22/6
-                    userController
-                        .init(AppController.getInstance(), newUser, userStage, false, null);
+                    UserController userController = userLoader.getController();
+                    userController.init(AppController.getInstance(), newUser, userStage, false, null);
                     userController.diableLogout();
-
+                    Log.info("Successfully launched User Overview for User NHI: "+nhi);
                 } catch (IOException e) {
+                    Log.severe("Failed to load User Overview for User NHI: "+nhi, e);
                     e.printStackTrace();
                 }
             } else {
-                FXMLLoader donorLoader = new FXMLLoader(getClass().getResource("/FXML/userView.fxml"));
+                FXMLLoader userLoader = new FXMLLoader(
+                    getClass().getResource("/FXML/userView.fxml"));
                 Parent root;
 
                 try {
-                    root = donorLoader.load();
+                    root = userLoader.load();
                     stage.setScene(new Scene(root));
                     ownStage.close();
-                    UserController userController = donorLoader.getController();
-                    //TODO pass listeners from any preceding controllers 22/6
+                    UserController userController = userLoader.getController();
                     userController.init(AppController.getInstance(), newUser, stage, false, null);
-
-                } catch (IOException e) {
-                    e.printStackTrace();
+                    Log.info("Successfully launched User Overview for User NHI: "+nhi);
+                    } catch (IOException e) {
+                        Log.severe("Failed to load User Overview for User NHI: "+nhi, e);
+                        e.printStackTrace();
+                    }
                 }
+            } catch (InvalidFieldsException e) {
+                errorLabel.setText("Name and cell phone number are required for an emergency contact.");
+                errorLabel.setVisible(true);
             }
+        } else {
+            errorLabel.setVisible(true);
         }
 
     }
 
-
     /**
-     * Checks that if the given email is not null, then it must be in the correct format.
-     *
-     * @param email The email address to be validated.
-     * @param valid A boolean indicating if there is an invalid user input.
-     * @return false if the email is not valid, otherwise the original value of the boolean.
+     * Collects and returns an EmergencyContact based off the details entered
      */
-    private boolean emailCheck(String email, boolean valid) {
-        if (email != null) {
-            email = AttributeValidation.validateEmail(email);
+    private EmergencyContact collectEmergencyContact(User user) throws InvalidFieldsException {
+        boolean valid;
+        // Emergency Contact attributes
+        String eName = ecNameInput.getText();
+        valid = (AttributeValidation.checkString(ecNameInput.getText()));
 
-            if (email == null) {
-                valid = false;
-                errorLabel.setVisible(true);
+        String eCellPhone = ecCellInput.getText();
+        valid &= (AttributeValidation.validateCellNumber(ecCellInput.getText()));
+
+        String eHomePhone = ecPhoneInput.getText();
+        valid &= (AttributeValidation.validatePhoneNumber(ecPhoneInput.getText()));
+
+        String eAddress = ecAddressInput.getText();
+        valid &= (AttributeValidation.checkString(ecAddressInput.getText()));
+
+        String eRegion = ecRegionInput.getText();
+        valid &= (AttributeValidation.checkString(ecRegionInput.getText()));
+
+        String eEmail = ecEmailInput.getText();
+        valid &= (AttributeValidation.validateEmail(ecEmailInput.getText()));
+
+        String eRelationship = ecRelationshipInput.getText();
+        valid &= (AttributeValidation.checkString(ecRelationshipInput.getText()));
+
+        // the name and cell number are required if any other attributes are filled out
+        if ((eName.isEmpty() != eCellPhone.isEmpty()) && valid) {
+            throw new InvalidFieldsException(); // Throws invalid field exception if inputs are found to be invalid
+        } else {
+            EmergencyContact contact = new EmergencyContact("", "", user);
+
+            if (!eName.isEmpty() && !eCellPhone.isEmpty()) {
+                // create the emergency contact
+                contact = new EmergencyContact(eName, eCellPhone, user);
+
+                contact.setHomePhoneNumber(eHomePhone);
+                contact.setAddress(eAddress);
+                contact.setRegion(eRegion);
+                contact.setEmail(eEmail);
+                contact.setRelationship(eRelationship);
             }
+            return contact;
         }
-
-        return valid;
-    }
-
-
-    /**
-     * Checks that if the given home phone number is not null, then it must be in the correct format.
-     *
-     * @param homeNum The home phone number to be validated.
-     * @param valid   A boolean indicating if there is an invalid user input.
-     * @return false if the home phone number is not valid, otherwise the original value of the boolean.
-     */
-    private boolean homePhoneCheck(String homeNum, boolean valid) {
-        if (homeNum != null) {
-            homeNum = AttributeValidation.validatePhoneNumber(homeNum);
-
-            if (homeNum == null) {
-                valid = false;
-                errorLabel.setVisible(true);
-            }
-        }
-
-        return valid;
-    }
-
-
-    /**
-     * Checks that if the given cell phone number is not null, then it must be in the correct format.
-     *
-     * @param cellNum The cell phone number to be validated.
-     * @param valid   A boolean indicating if there is an invalid user input.
-     * @return false if the cell phone number is not valid, otherwise the original value of the boolean.
-     */
-    private boolean cellPhoneCheck(String cellNum, boolean valid) {
-        if (cellNum != null) {
-            cellNum = AttributeValidation.validateCellNumber(cellNum);
-
-            if (cellNum == null) {
-                valid = false;
-                errorLabel.setVisible(true);
-            }
-        }
-
-        return valid;
     }
 
 
@@ -351,35 +310,31 @@ public class NewUserController {
         hideErrorMessages();
         errorLabel.setText("Error in creating profile.\n" +
                 "Please make sure your details are correct.");
-        boolean valid = true;
+        boolean valid;
 
-        String nhi = AttributeValidation.validateNHI(nhiInput.getText());
-        String fName = AttributeValidation.checkString(fNameInput.getText());
+        String nhi = nhiInput.getText();
+        valid = (AttributeValidation.validateNHI(nhiInput.getText()));
+        if (!valid) {
+            invalidNHI.setVisible(true);
+        }
+
+        String fName = fNameInput.getText();
+        valid = (AttributeValidation.checkRequiredString(fNameInput.getText()));
+        if (!valid) {
+            invalidFirstName.setVisible(true);
+        }
 
         LocalDate dob = dobInput.getValue();
         LocalDate dod = dodInput.getValue();
 
-        if (nhi == null) {
-            invalidNHI.setVisible(true);
-            valid = false;
-        }
-
-        if (fName == null) {
-            invalidFirstName.setVisible(true);
-            valid = false;
-        }
-
-        if (dob == null) {
+        valid &= AttributeValidation.validateDateOfBirth(dob);
+        if (!valid) {
             invalidDOB.setVisible(true);
-            valid = false;
-        } else if (!dob.isBefore(LocalDate.now().plusDays(1))) { // checks that the date of birth is before tomorrow's date
-            invalidDOB.setVisible(true);
-            valid = false;
         }
 
-        if (dob != null && dod != null) {
-            boolean datesValid = AttributeValidation.validateDates(dob, dod); // checks if the dod is before tomorrow's date and that the dob is before the dod
-            if (!datesValid) {
+        if (dob != null) {
+            valid &= AttributeValidation.validateDateOfDeath(dob, dod); // checks if the dod is before tomorrow's date and that the dob is before the dod
+            if (!valid) {
                 invalidDOD.setVisible(true);
                 valid = false;
             }

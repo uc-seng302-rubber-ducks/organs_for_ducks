@@ -12,6 +12,7 @@ import seng302.Exception.UserAlreadyExistsException;
 import seng302.Exception.UserNotFoundException;
 import seng302.Model.Organs;
 import seng302.Model.User;
+import seng302.Service.Log;
 
 public class DeletedUserController {
 
@@ -64,10 +65,13 @@ public class DeletedUserController {
     try {
       AppController.getInstance()
           .undoDeletion(deletedUserTableView.selectionModelProperty().getValue().getSelectedItem());
+      Log.info("Successfully undo deleted user");
     } catch (UserAlreadyExistsException e) {
       //TODO: Set error label text
+      Log.severe("Unable to undo deleted user", e);
     } catch (UserNotFoundException e) {
       //TODO: Set error label text
+      Log.severe("Unable to undo deleted user", e);
     }
   }
 

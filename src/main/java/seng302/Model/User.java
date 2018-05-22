@@ -235,7 +235,7 @@ public class User extends Undoable<User> implements Listenable {
 
 
     /**
-     * empty constructor to allow an empty donor to be created for the gui
+     * empty constructor to allow an empty user to be created for the gui
      */
     public User() {
         timeCreated = LocalDateTime.now();
@@ -335,7 +335,7 @@ public class User extends Undoable<User> implements Listenable {
     }
 
     /**
-     * Utility function to update the last modified timestamp when a change is made to a donor. Can be
+     * Utility function to update the last modified timestamp when a change is made to a user. Can be
      * changed later to allow writing to the JSON change log later
      */
     public void updateLastModified() {

@@ -10,6 +10,7 @@ import javafx.stage.Stage;
 import seng302.Model.Disease;
 import seng302.Model.User;
 import seng302.Service.AttributeValidation;
+import seng302.Service.Log;
 
 /**
  * Controller class for creating new disease.
@@ -75,8 +76,10 @@ public class NewDiseaseController {
       UserController userController = appController.getUserController();
         try {
           userController.showUser(currentUser);
+            Log.info("successfully cancelled creation of new disease for User NHI: " +currentUser.getNhi());
         }
         catch (NullPointerException ex) {
+            Log.severe("Failed to cancel creation of new disease for User NHI: " +currentUser.getNhi(), ex);
             //TODO causes npe if donor is new in this session
             //the text fields etc. are all null
         }
@@ -94,8 +97,10 @@ public class NewDiseaseController {
         try {
           userController.showUser(currentUser);
           userController.showDonorDiseases(currentUser, false);
+            Log.info("successfully closed New Disease Window for User NHI: " +currentUser.getNhi());
         }
         catch (NullPointerException ex) {
+            Log.severe("Failed to close New Disease Window for User NHI: " +currentUser.getNhi(), ex);
             //TODO causes npe if donor is new in this session
             //the text fields etc. are all null
         }
@@ -114,15 +119,16 @@ public class NewDiseaseController {
     }
 
     /**
-     * creates new disease and adds to donor
+     * creates new disease and adds to user
      * profile. shows error messages if input
      * is invalid.
      */
     @FXML
     private void createDisease() {
-        boolean isValid = true;
+        boolean isValid;
 
-        String diseaseName = AttributeValidation.checkString(diseaseNameInput.getText());
+        String diseaseName = diseaseNameInput.getText();
+        isValid = AttributeValidation.checkString(diseaseName);
         LocalDate diagnosisDate = diagnosisDateInput.getValue();
         boolean isCured = curedRadioButton.isSelected();
         boolean isChronic = chronicRadioButton.isSelected();
@@ -131,10 +137,9 @@ public class NewDiseaseController {
             isValid = false;
         }
 
-        if (diseaseName == null) {
+        if (diseaseName.isEmpty()) {
             diseaseNameInputErrorMessage.setVisible(true);
             isValid = false;
-
         } else {
             diseaseNameInputErrorMessage.setVisible(false);
         }
@@ -182,7 +187,9 @@ public class NewDiseaseController {
             //Refresh the view
           userController.refreshDiseases();
             closeNewDiseaseWindow();
-
+            Log.info("Successfully added new disease: "+diseaseName+" for User NHI: " +currentUser.getNhi());
+        } else {
+            Log.warning("Unable to add new disease: "+diseaseName+" for User NHI: " +currentUser.getNhi()+" as there are invalid user input");
         }
     }
 }
