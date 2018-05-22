@@ -420,7 +420,7 @@ public class AdministratorViewController {
             newStage.setScene(new Scene(root));
             newStage.setTitle("Create New User Profile");
             newStage.show();
-            NewUserController donorController = donorLoader.getController();
+            NewUserController donorController = userLoader.getController();
             donorController.init(AppController.getInstance(), stage, newStage);
             Log.info("Admin "+administrator.getUserName()+" successfully launched create new user window");
         } catch (IOException e) {
@@ -444,9 +444,9 @@ public class AdministratorViewController {
             AppController.getInstance().setUserController(userController);
             userController.init(AppController.getInstance(), user, newStage, true);
             newStage.show();
-            Log.info("Admin "+administrator.getUserName()+" successfully launched user overview window");
+            Log.info("Admin "+administrator.getUserName()+" successfully launched user overview window for User NHI: "+user.getNhi());
         } catch (IOException e) {
-            Log.severe("Admin "+administrator.getUserName()+ " failed to load user overview window", e);
+            Log.severe("Admin "+administrator.getUserName()+ " failed to load user overview window for User NHI: "+user.getNhi(), e);
             e.printStackTrace();
         }
     }
@@ -465,9 +465,9 @@ public class AdministratorViewController {
             ClinicianController clinicianController = clinicianLoader.getController();
             clinicianController.init(newStage, AppController.getInstance(), clinician);
             newStage.show();
-            Log.info("Admin "+administrator.getUserName()+ " successfully launched clinician overview window");
+            Log.info("Admin "+administrator.getUserName()+ " successfully launched clinician overview window for Clinician Staff ID:" +clinician.getStaffId());
         } catch (IOException e) {
-            Log.severe("Admin "+administrator.getUserName()+ " failed to load clinician overview window", e);
+            Log.severe("Admin "+administrator.getUserName()+ " failed to load clinician overview window for Clinician Staff ID:" +clinician.getStaffId(), e);
             e.printStackTrace();
         }
     }
@@ -488,7 +488,7 @@ public class AdministratorViewController {
             newStage.show();
             Log.info("Admin "+administrator.getUserName()+ " successfully launched administrator overview window");
         } catch (IOException e) {
-            Log.severe("failed to load administrator overview window", e);
+            Log.severe("Admin "+administrator.getUserName()+" failed to load administrator overview window", e);
             e.printStackTrace();
         }
     }
