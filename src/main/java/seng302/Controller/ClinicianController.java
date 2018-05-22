@@ -15,10 +15,7 @@ import static seng302.Model.Organs.SKIN;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -29,15 +26,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.Pagination;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
-import javafx.scene.control.Tooltip;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.AnchorPane;
@@ -167,6 +156,10 @@ public class ClinicianController {
 
     @FXML
     private Button logoutButton;
+
+    @FXML
+    private Button deleteClinicianButton;
+
     //</editor-fold>
     private Stage stage;
     private AppController appController;
@@ -183,7 +176,7 @@ public class ClinicianController {
 
     private static int searchCount = 0;
     private boolean filterVisible = false;
-
+    private boolean admin = false;
 
     /**
      * Initializes the controller class for the clinician overview.
@@ -192,10 +185,11 @@ public class ClinicianController {
      * @param appController the applications controller.
      * @param clinician     The current clinician.
      */
-    public void init(Stage stage, AppController appController, Clinician clinician) {
+    public void init(Stage stage, AppController appController, Clinician clinician, boolean fromAdmin) {
         this.stage = stage;
         this.appController = appController;
         this.clinician = clinician.clone();
+        this.admin = fromAdmin;
         stage.setResizable(true);
         showClinician(clinician);
         users = appController.getUsers();
@@ -203,6 +197,10 @@ public class ClinicianController {
         initSearchTable();
         groupCheckBoxes();
         initWaitListTable();
+
+        if (clinician.getStaffId().equals("0")) {
+            deleteClinicianButton.setDisable(true);
+        }
 
         setDefaultFilters();
         searchCountLabel.setText("Showing results " + (searchCount == 0 ? startIndex : startIndex + 1) + " - " + (endIndex) + " of " + searchCount);
@@ -760,13 +758,33 @@ public class ClinicianController {
           DeletedUserController deletedUserController = deletedUserLoader.getController();
           Stage stage = new Stage();
           stage.setScene(new Scene(root));
-          deletedUserController.init();
+          deletedUserController.init(false);
           stage.initModality(Modality.APPLICATION_MODAL);
           stage.showAndWait();
           Log.info("Clinician "+clinician.getStaffId()+" successfully launched delete user window");
       } catch (IOException e) {
           Log.severe("Clinician "+clinician.getStaffId()+" failed to launch delete user window", e);
           e.printStackTrace();
+      }
+  }
+
+    /**
+     * Deletes the clinician profile after confirmation.
+     *
+     */
+  @FXML
+  private void deleteClinician() {
+      Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+      alert.setContentText("Are you sure you want to delete this clinician?");
+      Optional<ButtonType> result = alert.showAndWait();
+
+      if (result.get() == ButtonType.OK) {
+          appController.deleteClinician(clinician);
+          if (!admin) {
+              logout();
+          } else {
+              stage.close();
+          }
       }
   }
 

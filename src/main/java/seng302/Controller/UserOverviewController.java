@@ -103,7 +103,7 @@ public class UserOverviewController {
       logOutButton.setVisible(false);
     } else {
       Clinician = false;
-      deleteUser.setVisible(false);
+//      deleteUser.setVisible(false);
       backButton.setVisible(false);
     }
   }
@@ -251,6 +251,8 @@ public class UserOverviewController {
       Log.info("Successfully deleted user profile for User NHI: "+currentUser.getNhi());
       if (!Clinician) {
         logout();
+      } else {
+        stage.close();
       }
     }
   }
