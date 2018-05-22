@@ -1,5 +1,15 @@
 package seng302.Controller;
 
+import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Optional;
+import java.util.List;
+
 import com.sun.javafx.stage.StageHelper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -7,7 +17,18 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.Pagination;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
@@ -19,14 +40,6 @@ import seng302.Model.JsonHandler;
 import seng302.Model.User;
 import seng302.Service.Log;
 import seng302.View.CLI;
-
-import java.io.ByteArrayOutputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 
 public class AdministratorViewController {
 
@@ -128,6 +141,7 @@ public class AdministratorViewController {
     private Administrator administrator;
     private ArrayList<String> pastCommands = new ArrayList<>();
     private int pastCommandIndex = -1;
+    private boolean owner;
     private Alert confirmAlert = new Alert(Alert.AlertType.CONFIRMATION);
     private Alert errorAlert = new Alert(Alert.AlertType.ERROR);
 
@@ -138,10 +152,11 @@ public class AdministratorViewController {
      * @param appController appController instance to get data from
      * @param stage stage to display on
      */
-    public void init(Administrator administrator, AppController appController, Stage stage) {
+    public void init(Administrator administrator, AppController appController, Stage stage, boolean owner) {
         this.stage = stage;
         this.appController = appController;
         this.administrator = administrator;
+        this.owner = owner;
         displayDetails();
 
         errorAlert.setHeaderText("Error!");
@@ -177,7 +192,7 @@ public class AdministratorViewController {
         });
 
         addListeners();
-        displayClinicanTable();
+        displayClinicianTable();
         displayAdminTable();
         displayUserTable();
         clinicianTableView.setVisible(false);
@@ -255,7 +270,7 @@ public class AdministratorViewController {
     /**
      * Initialises table for the clinician table
      */
-    private void displayClinicanTable() {
+    private void displayClinicianTable() {
         ObservableList<Clinician> clinicians = FXCollections.observableArrayList(appController.getClinicians());
 
         TableColumn<Clinician, String> firstNameColumn = new TableColumn<>("First Name");
@@ -361,6 +376,8 @@ public class AdministratorViewController {
                 }
             }
         } else {
+            Log.warning("File name not found");
+            fileNotFoundLabel.setVisible(true);
             launchAlertUnclosedWindowsGUI();
         }
     }
@@ -588,7 +605,7 @@ public class AdministratorViewController {
             Stage newStage = new Stage();
             newStage.setScene(new Scene(root));
             ClinicianController clinicianController = clinicianLoader.getController();
-            clinicianController.init(newStage, AppController.getInstance(), clinician);
+            clinicianController.init(newStage, AppController.getInstance(), clinician, true);
             newStage.show();
             Log.info("Admin "+administrator.getUserName()+ " successfully launched clinician overview window for Clinician Staff ID:" +clinician.getStaffId());
         } catch (IOException e) {
@@ -609,7 +626,7 @@ public class AdministratorViewController {
             Stage newStage = new Stage();
             newStage.setScene(new Scene(root));
             AdministratorViewController adminLoaderController = adminLoader.getController();
-            adminLoaderController.init(administrator, AppController.getInstance(), newStage);
+            adminLoaderController.init(administrator, AppController.getInstance(), newStage, false);
             newStage.show();
             Log.info("Admin "+administrator.getUserName()+ " successfully launched administrator overview window");
         } catch (IOException e) {
@@ -685,6 +702,7 @@ public class AdministratorViewController {
         }
     }
 
+
     /**
      * Undoes the previous action that changed the admin
      */
@@ -750,7 +768,37 @@ public class AdministratorViewController {
      */
     @FXML
     void deleteAdminAccount() {
-        Log.info("Admin "+administrator.getUserName()+" Successfully deleted Admin account: "); //TODO: include username of deleted admin account in log.
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setContentText("Are you sure you want to delete this administrator?");
+        Optional<ButtonType> result = alert.showAndWait();
+
+        if (result.get() == ButtonType.OK) {
+            appController.deleteAdmin(administrator);
+            Log.info("Admin " + administrator.getUserName() + " Successfully deleted Admin account: "); //TODO: include username of deleted admin account in log.
+            if (owner) {
+                logout();
+            } else {
+                stage.close();
+            }
+        }
+    }
+
+    @FXML
+    private void openDeletedProfiles() {
+        FXMLLoader deletedUserLoader = new FXMLLoader(
+                getClass().getResource("/FXML/deletedUsersView.fxml"));
+        Parent root;
+        try {
+            root = deletedUserLoader.load();
+            DeletedUserController deletedUserController = deletedUserLoader.getController();
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+            deletedUserController.init(true);
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.showAndWait();
+        } catch (IOException e) {
+            Log.warning(e.getMessage());
+        }
     }
 
 }
