@@ -2,6 +2,7 @@ package seng302.Controller;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
@@ -124,6 +125,9 @@ public class AdministratorViewController {
     @FXML
     private Button deleteAdminButton;
 
+    @FXML
+    private Label fileNotFoundLabel;
+
     //</editor-fold>
 
     private Stage stage;
@@ -245,8 +249,6 @@ public class AdministratorViewController {
                 launchAdmin(adminTableView.getSelectionModel().getSelectedItem());
             }
         });
-
-
     }
 
     /**
@@ -325,10 +327,21 @@ public class AdministratorViewController {
      */
     @FXML
     void importAdmins() throws FileNotFoundException {
+        Log.info("Admin "+administrator.getUserName()+" Importing Administrator profiles");
         String filename;
         filename = FileSelectorController.getFileSelector(stage);
         if (filename != null) {
-            //JsonHandler.loadAdmins(filename);
+            fileNotFoundLabel.setVisible(false);
+//            try {
+//                JsonHandler.loadAdmins(filename);
+//                Log.info("successfully imported " + AdminProfileCount + " Administrator profiles"); //TODO: include number of Administrator profiles loaded in log info message.
+//            } catch (FileNotFoundException e){
+//                Log.severe("File not found", e);
+//                throw e;
+//            }
+        } else {
+            Log.warning("File name not found");
+            fileNotFoundLabel.setVisible(true);
         }
     }
 
@@ -337,12 +350,24 @@ public class AdministratorViewController {
      * @throws FileNotFoundException if the specified file is not found
      */
     @FXML
-    void importClinicians() throws FileNotFoundException {
+    void importClinicians() throws FileNotFoundException{
+        Log.info("Admin "+administrator.getUserName()+" Importing Clinician profiles");
         String filename;
         filename = FileSelectorController.getFileSelector(stage);
         if (filename != null) {
-            List<Clinician> clinicians = JsonHandler.loadClinicians(filename);
-            System.out.println(clinicians.size() + " clinicians were successfully loaded");
+            fileNotFoundLabel.setVisible(false);
+            try {
+                List<Clinician> clinicians = JsonHandler.loadClinicians(filename);
+                Log.info("successfully imported " + clinicians.size() +" Clinician profiles");
+                //System.out.println(clinicians.size() + " clinicians were successfully loaded");
+            } catch (FileNotFoundException e){
+                Log.severe("File not found", e);
+                throw e;
+            }
+
+        } else {
+            Log.warning("File name not found");
+            fileNotFoundLabel.setVisible(true);
         }
 
     }
@@ -353,11 +378,22 @@ public class AdministratorViewController {
      */
     @FXML
     void importUsers() throws FileNotFoundException {
+        Log.info("Admin "+administrator.getUserName()+" Importing User profiles");
         String filename;
         filename = FileSelectorController.getFileSelector(stage);
         if (filename != null) {
-            List<User> users = JsonHandler.loadUsers(filename);
-            System.out.println(users.size() + " users were successfully loaded");
+            try {
+                List<User> users = JsonHandler.loadUsers(filename);
+                Log.info("successfully imported " + users.size() + " Users profiles");
+                //System.out.println(users.size() + " donors were successfully loaded");
+            } catch (FileNotFoundException e){
+                Log.severe("File not found", e);
+                throw e;
+            }
+
+        } else {
+            Log.warning("File name not found");
+            fileNotFoundLabel.setVisible(true);
         }
     }
 
@@ -384,9 +420,11 @@ public class AdministratorViewController {
             newStage.setScene(new Scene(root));
             newStage.setTitle("Create New User Profile");
             newStage.show();
-            NewUserController userController = userLoader.getController();
-            userController.init(AppController.getInstance(), stage, newStage);
+            NewUserController donorController = userLoader.getController();
+            donorController.init(AppController.getInstance(), stage, newStage);
+            Log.info("Admin "+administrator.getUserName()+" successfully launched create new user window");
         } catch (IOException e) {
+            Log.severe("Admin "+administrator.getUserName()+" failed to load create new user window", e);
             e.printStackTrace();
         }
     }
@@ -406,7 +444,9 @@ public class AdministratorViewController {
             AppController.getInstance().setUserController(userController);
             userController.init(AppController.getInstance(), user, newStage, true);
             newStage.show();
+            Log.info("Admin "+administrator.getUserName()+" successfully launched user overview window for User NHI: "+user.getNhi());
         } catch (IOException e) {
+            Log.severe("Admin "+administrator.getUserName()+ " failed to load user overview window for User NHI: "+user.getNhi(), e);
             e.printStackTrace();
         }
     }
@@ -425,7 +465,9 @@ public class AdministratorViewController {
             ClinicianController clinicianController = clinicianLoader.getController();
             clinicianController.init(newStage, AppController.getInstance(), clinician);
             newStage.show();
+            Log.info("Admin "+administrator.getUserName()+ " successfully launched clinician overview window for Clinician Staff ID:" +clinician.getStaffId());
         } catch (IOException e) {
+            Log.severe("Admin "+administrator.getUserName()+ " failed to load clinician overview window for Clinician Staff ID:" +clinician.getStaffId(), e);
             e.printStackTrace();
         }
     }
@@ -444,10 +486,11 @@ public class AdministratorViewController {
             AdministratorViewController adminLoaderController = adminLoader.getController();
             adminLoaderController.init(administrator, AppController.getInstance(), newStage);
             newStage.show();
+            Log.info("Admin "+administrator.getUserName()+ " successfully launched administrator overview window");
         } catch (IOException e) {
+            Log.severe("Admin "+administrator.getUserName()+" failed to load administrator overview window", e);
             e.printStackTrace();
         }
-
     }
 
     /**
@@ -465,8 +508,9 @@ public class AdministratorViewController {
             newStage.show();
             UpdateClinicianController newClinician = clinicianLoader.getController();
             newClinician.init(null, appController, stage, true, newStage);
-
+            Log.info("Admin "+administrator.getUserName()+" successfully launched create new clinician window");
         } catch (IOException e) {
+            Log.severe("Admin "+administrator.getUserName()+" failed to load create new clinician window", e);
             e.printStackTrace();
         }
     }
@@ -486,7 +530,9 @@ public class AdministratorViewController {
             newStage.show();
             UpdateAdminController updateAdminController = adminLoader.getController();
             updateAdminController.init(new Administrator(), newStage);
+            Log.info("Admin "+administrator.getUserName()+" successfully launched create new administrator window");
         } catch (IOException e) {
+            Log.severe("Admin "+administrator.getUserName()+" failed to load create new administrator window", e);
             e.printStackTrace();
         }
     }
@@ -508,9 +554,9 @@ public class AdministratorViewController {
             stage.close();
             LoginController loginController = loginLoader.getController();
             loginController.init(appController,newStage);
-
+            Log.info("Admin "+administrator.getUserName()+" Successfully launched Login window after logout");
         } catch (IOException e) {
-            Log.warning(e.getMessage(), e);
+            Log.severe("Admin "+administrator.getUserName()+" Failed to load Login window after logout", e);
         }
     }
 
@@ -519,7 +565,7 @@ public class AdministratorViewController {
      */
     @FXML
     void undo() {
-
+        Log.info("Admin "+administrator.getUserName()+"executed Undo Administrator");
     }
 
     /**
@@ -527,7 +573,7 @@ public class AdministratorViewController {
      */
     @FXML
     void redo() {
-
+        Log.info("Admin "+administrator.getUserName()+"executed Redo Administrator");
     }
 
 
@@ -567,10 +613,11 @@ public class AdministratorViewController {
             newStage.show();
             UpdateAdminController updateAdminController = adminLoader.getController();
             updateAdminController.init(administrator, newStage);
+            Log.info("Admin "+administrator.getUserName()+" successfully launched update administrator window");
         } catch (IOException e) {
+            Log.severe("Admin "+administrator.getUserName()+" failed to load update administrator window", e);
             e.printStackTrace();
         }
-
     }
 
     /**
@@ -578,7 +625,7 @@ public class AdministratorViewController {
      */
     @FXML
     void deleteAdminAccount() {
-
+        Log.info("Admin "+administrator.getUserName()+" Successfully deleted Admin account: "); //TODO: include username of deleted admin account in log.
     }
 
 }
