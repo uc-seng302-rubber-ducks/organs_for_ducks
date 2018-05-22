@@ -13,6 +13,8 @@ import static seng302.Model.Organs.MIDDLE_EAR;
 import static seng302.Model.Organs.PANCREAS;
 import static seng302.Model.Organs.SKIN;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -52,7 +54,7 @@ import seng302.Service.AttributeValidation;
 /**
  * Class for the functionality of the Clinician view of the application
  */
-public class ClinicianController {
+public class ClinicianController implements PropertyChangeListener {
 
     private final int ROWS_PER_PAGE = 30;
     private int startIndex = 0;
@@ -761,5 +763,11 @@ public class ClinicianController {
 
     public void disableLogout() {
         logoutButton.setVisible(false);
+    }
+
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        //clinician controller watches user controller
+        //refresh view/tables etc. on change
     }
 }

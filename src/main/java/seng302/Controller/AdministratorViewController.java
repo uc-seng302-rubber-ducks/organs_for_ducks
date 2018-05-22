@@ -1,10 +1,13 @@
 package seng302.Controller;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.List;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -30,13 +33,10 @@ import seng302.Model.Administrator;
 import seng302.Model.Clinician;
 import seng302.Model.JsonHandler;
 import seng302.Model.User;
-
-import java.util.List;
-
 import seng302.Service.Log;
 import seng302.View.CLI;
 
-public class AdministratorViewController {
+public class AdministratorViewController implements PropertyChangeListener {
 
     //<editor-fold desc="FXML stuff">
     @FXML
@@ -583,4 +583,9 @@ public class AdministratorViewController {
 
     }
 
+  @Override
+  public void propertyChange(PropertyChangeEvent evt) {
+    //watches users and clinicians
+    //refresh view on change
+  }
 }

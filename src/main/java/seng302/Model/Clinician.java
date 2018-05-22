@@ -2,8 +2,12 @@ package seng302.Model;
 
 
 import com.google.gson.annotations.Expose;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.time.LocalDateTime;
 import java.util.Objects;
+import seng302.Controller.Listenable;
 import seng302.Service.PasswordManager;
 
 /**
@@ -12,7 +16,7 @@ import seng302.Service.PasswordManager;
  * @author Josh Burt
  *
  */
-public class Clinician extends Undoable<Clinician> {
+public class Clinician extends Undoable<Clinician> implements Listenable {
 
     @Expose
     private String staffId;
@@ -35,6 +39,7 @@ public class Clinician extends Undoable<Clinician> {
     private String lastName;
     @Expose
     private byte[] salt;
+    private transient PropertyChangeSupport pcs;
 
     public Clinician() {
         dateCreated = LocalDateTime.now();
@@ -61,6 +66,7 @@ public class Clinician extends Undoable<Clinician> {
         this.region = region;
         dateCreated = LocalDateTime.now();
         dateLastModified = LocalDateTime.now();
+        this.pcs = new PropertyChangeSupport(this);
 
     }
 
@@ -83,6 +89,7 @@ public class Clinician extends Undoable<Clinician> {
         setPassword(password);
         this.dateCreated = dateCreated;
         this.dateLastModified = dateLastModified;
+        this.pcs = new PropertyChangeSupport(this);
 
     }
 
@@ -104,6 +111,7 @@ public class Clinician extends Undoable<Clinician> {
         setPassword(password);
         dateCreated = LocalDateTime.now();
         dateLastModified = LocalDateTime.now();
+        this.pcs = new PropertyChangeSupport(this);
     }
 
     public LocalDateTime getDateCreated() {
@@ -326,5 +334,20 @@ public class Clinician extends Undoable<Clinician> {
         this.region = clinician.region;
         this.dateCreated = clinician.dateCreated;
         this.dateLastModified = clinician.dateLastModified;
+    }
+
+    @Override
+    public void addPropertyChangeListener(PropertyChangeListener listener) {
+        this.pcs.addPropertyChangeListener(listener);
+    }
+
+    @Override
+    public void removePropertyChangeListener(PropertyChangeListener listener) {
+        this.removePropertyChangeListener(listener);
+    }
+
+    @Override
+    public void fire(PropertyChangeEvent event) {
+        this.pcs.firePropertyChange(event);
     }
 }

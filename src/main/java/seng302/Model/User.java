@@ -1,18 +1,29 @@
 package seng302.Model;
 
 import com.google.gson.annotations.Expose;
-import javafx.collections.FXCollections;
-
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Stack;
+import javafx.collections.FXCollections;
+import seng302.Controller.Listenable;
 
 /**
  * Class for handling calls to user
  */
-public class User extends Undoable<User> {
+public class User extends Undoable<User> implements Listenable {
 
+    //<editor-fold desc="properties">
     @Expose
     private String nhi;
     @Expose
@@ -25,6 +36,7 @@ public class User extends Undoable<User> {
     private String gender;
     @Expose
     private double height;
+
     private transient String heightText;
     @Expose
     private double weight;
@@ -97,6 +109,9 @@ public class User extends Undoable<User> {
 
     @Expose
     private List<Disease> currentDiseases;
+
+    private transient PropertyChangeSupport pcs;
+    //</editor-fold>
 
     /**
      * Constructor for a User
@@ -173,6 +188,7 @@ public class User extends Undoable<User> {
         this.pastDiseases = new ArrayList<>();
         this.medicalProcedures = new ArrayList<>();
         this.changes = FXCollections.observableArrayList();
+        this.pcs = new PropertyChangeSupport(this);
     }
 
     /**
@@ -215,7 +231,7 @@ public class User extends Undoable<User> {
         this.commonOrgans = new HashSet<>();
         this.medicalProcedures = new ArrayList<>();
         this.changes = FXCollections.observableArrayList();
-
+        this.pcs = new PropertyChangeSupport(this);
     }
 
 
@@ -238,6 +254,7 @@ public class User extends Undoable<User> {
         this.receiverDetails = new ReceiverDetails(this);
         this.commonOrgans = new HashSet<>();
         changes = FXCollections.observableArrayList();
+        this.pcs = new PropertyChangeSupport(this);
     }
 
     public EmergencyContact getContact() {
@@ -1151,4 +1168,20 @@ public class User extends Undoable<User> {
 
         this.changes = other.changes;
     }
+
+    @Override
+    public void addPropertyChangeListener(PropertyChangeListener listener) {
+        this.pcs.addPropertyChangeListener(listener);
+    }
+
+    @Override
+    public void removePropertyChangeListener(PropertyChangeListener listener) {
+        this.pcs.removePropertyChangeListener(listener);
+    }
+
+    @Override
+    public void fire(PropertyChangeEvent event) {
+        this.pcs.firePropertyChange(event);
+    }
+
 }
