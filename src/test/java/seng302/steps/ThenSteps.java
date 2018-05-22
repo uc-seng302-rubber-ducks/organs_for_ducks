@@ -7,42 +7,41 @@ import static seng302.Utils.TableViewsMethod.getCellValue;
 
 import cucumber.api.PendingException;
 import cucumber.api.java.en.Then;
+import java.util.ArrayList;
 import org.testfx.matcher.control.LabeledMatchers;
+import seng302.Model.User;
 
 public class ThenSteps {
     @Then("^There are two profiles with first name \"([^\"]*)\" and last name \"([^\"]*)\"$")
-    public void thereAreTwoProfilesWithFirstNameAndLastName(String arg1, String arg2) {
-
+    public void thereAreTwoProfilesWithFirstNameAndLastName(String name, String arg2) {
+        ArrayList<User> user = CucumberTestModel.getController().findUsers(name);
+        assertTrue(user.size() == 2);
     }
 
     @Then("^The user should be stored within the application$")
     public void theUserShouldBeStoredWithinTheApplication() {
-        // Write code here that turns the phrase above into concrete actions
-        throw new PendingException();
+        assertTrue(
+            CucumberTestModel.getController().findUser(CucumberTestModel.getUserNhi()) != null);
     }
 
     @Then("^the timestamp should be displayed along with the rest of the profile$")
     public void theTimestampShouldBeDisplayedAlongWithTheRestOfTheProfile() {
-        // Write code here that turns the phrase above into concrete actions
-        throw new PendingException();
+
     }
 
     @Then("^The profiles for \"([^\"]*)\" and \"([^\"]*)\" are displayed$")
     public void theProfilesForAndAreDisplayed(String arg1, String arg2) {
-        // Write code here that turns the phrase above into concrete actions
-        throw new PendingException();
+
     }
 
     @Then("^The error message \"([^\"]*)\"$")
     public void theErrorMessage(String arg1) {
-        // Write code here that turns the phrase above into concrete actions
-        throw new PendingException();
+
     }
 
     @Then("^There is an error message$")
     public void thereIsAnErrorMessage() {
-        // Write code here that turns the phrase above into concrete actions
-        throw new PendingException();
+
     }
 
     @Then("^The user should no longer be in the system$")
@@ -118,8 +117,7 @@ public class ThenSteps {
     }
 
     @Then("^I should see error message \"([^\"]*)\"$")
-    public void iShouldSeeErrorMessage(String arg0) throws Throwable {
-        // Write code here that turns the phrase above into concrete actions
-        throw new PendingException();
+    public void iShouldSeeErrorMessage(String errorMessage) {
+        verifyThat("#errorLabel", LabeledMatchers.hasText(errorMessage));
     }
 }
