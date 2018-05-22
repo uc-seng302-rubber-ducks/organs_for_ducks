@@ -154,7 +154,9 @@ public class UserController {
 
     stage.onCloseRequestProperty().setValue(event -> {
       if (fromClinician) {
-        application.getClinicianController().refreshTables();
+        if (application.getClinicianController() != null) {
+          application.getClinicianController().refreshTables();
+        }
       }
     });
     userProfileTabPageController.init(controller, user, this.stage, fromClinician);

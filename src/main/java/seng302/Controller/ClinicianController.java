@@ -18,6 +18,7 @@ import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -188,6 +189,8 @@ public class ClinicianController implements PropertyChangeListener {
     private static int searchCount = 0;
     private boolean filterVisible = false;
 
+  private Collection<PropertyChangeListener> parentListeners;
+
 
     /**
      * Initializes the controller class for the clinician overview.
@@ -196,7 +199,17 @@ public class ClinicianController implements PropertyChangeListener {
      * @param appController the applications controller.
      * @param clinician     The current clinician.
      */
-    public void init(Stage stage, AppController appController, Clinician clinician) {
+    public void init(Stage stage, AppController appController, Clinician clinician,
+        Collection<PropertyChangeListener> parentListeners) {
+
+      //add change listeners of parent controllers to the current clinician
+      this.parentListeners = new ArrayList<>();
+      if (parentListeners != null && !parentListeners.isEmpty()) {
+        for (PropertyChangeListener listener : parentListeners) {
+          clinician.addPropertyChangeListener(listener);
+        }
+        this.parentListeners.addAll(parentListeners);
+      }
         this.stage = stage;
         this.appController = appController;
         this.clinician = clinician.clone();
@@ -371,9 +384,11 @@ public class ClinicianController implements PropertyChangeListener {
     //transplantWaitListTableView.getItems().clear();
   //set up lists
   //table contents are SortedList of a FilteredList of an ObservableList of an ArrayList
-  appController.getTransplantList().clear();
+    appController
+        .getTransplantList()
+        .clear();
     for (User user : users) {
-    if (user.isReceiver()&& (user.getDeceased() != null || !user.getDeceased())) {
+      if (user.isReceiver() && (user.getDeceased() != null && !user.getDeceased())) {
         Set<Organs> organs = user.getReceiverDetails().getOrgans().keySet();
       for (Organs organ : organs) {
         if (isReceiverNeedingFilteredOrgan(user.getNhi(), organs).contains(organ)) {
@@ -460,11 +475,13 @@ public class ClinicianController implements PropertyChangeListener {
             openStages.add(userStage);
             UserController userController = userLoader.getController();
             AppController.getInstance().setUserController(userController);
-            ArrayList<PropertyChangeListener> listeners = new ArrayList<>();
-            listeners.add(this);
-            userController.init(AppController.getInstance(), user, userStage, true, listeners);
+          //Ostrich
+          parentListeners.add(this);
+          userController.init(AppController.getInstance(), user, userStage, true, parentListeners);
             userStage.show();
-            Log.info("Clinician "+clinician.getStaffId()+" successfully launched user overview window");
+          Log.info("Clinician " + clinician.getStaffId()
+              + " successfully launched user overview window");
+
         } catch (IOException e) {
             Log.severe("Clinician "+clinician.getStaffId()+" Failed to load user overview window", e);
             e.printStackTrace();

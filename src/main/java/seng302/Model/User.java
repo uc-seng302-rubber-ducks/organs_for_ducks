@@ -90,7 +90,6 @@ public class User extends Undoable<User> implements Listenable {
     @Expose
     private Map<String, List<LocalDateTime>> currentMedicationTimes;
 
-    private transient List<Change> changes;//
     @Expose
     private List<MedicalProcedure> medicalProcedures;
 
@@ -109,6 +108,7 @@ public class User extends Undoable<User> implements Listenable {
     @Expose
     private List<Disease> currentDiseases;
 
+    private transient List<Change> changes;//
     private transient PropertyChangeSupport pcs;
     //</editor-fold>
 

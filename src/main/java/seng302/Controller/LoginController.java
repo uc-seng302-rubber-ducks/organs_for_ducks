@@ -152,7 +152,7 @@ public class LoginController {
         ClinicianController clinicianController = clinicianLoader.getController();
         AppController.getInstance().setClinicianController(clinicianController);
         Log.info("Logging in as a clinician");
-        clinicianController.init(stage, appController, clinician);
+        clinicianController.init(stage, appController, clinician, null);
       } catch (IOException e) {
         Log.severe("failed to load clinician window", e);
         e.printStackTrace();

@@ -117,7 +117,6 @@ public class ReceiverTabController {
   public void registerOrgan() {
     if (organsComboBox.getSelectionModel().getSelectedItem() != null) {
       Organs toRegister = organsComboBox.getSelectionModel().getSelectedItem();
-      AppController.getInstance().getClinicianController().refreshTables();
       if (!currentlyReceivingListView.getItems().contains(toRegister)) {
         currentUser.getReceiverDetails().startWaitingForOrgan(toRegister);
         currentlyRecieving.add(toRegister);

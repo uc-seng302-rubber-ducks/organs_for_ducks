@@ -355,6 +355,9 @@ public class Clinician extends Undoable<Clinician> implements Listenable {
 
     @Override
     public void addPropertyChangeListener(PropertyChangeListener listener) {
+        if (this.pcs == null) {
+            this.pcs = new PropertyChangeSupport(this);
+        }
         this.pcs.addPropertyChangeListener(listener);
     }
 

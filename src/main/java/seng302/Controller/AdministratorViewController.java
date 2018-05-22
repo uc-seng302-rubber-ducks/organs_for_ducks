@@ -4,10 +4,10 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -32,6 +32,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import seng302.Model.Administrator;
 import seng302.Model.Clinician;
+import seng302.Model.EventTypes;
 import seng302.Model.JsonHandler;
 import seng302.Model.User;
 import seng302.Service.Log;
@@ -465,7 +466,10 @@ public class AdministratorViewController implements PropertyChangeListener {
             Stage newStage = new Stage();
             newStage.setScene(new Scene(root));
             ClinicianController clinicianController = clinicianLoader.getController();
-            clinicianController.init(newStage, AppController.getInstance(), clinician);
+            //TODO change parent listeners to an actual list
+            Collection<PropertyChangeListener> listeners = new ArrayList<>();
+            listeners.add(this);
+            clinicianController.init(newStage, AppController.getInstance(), clinician, listeners);
             newStage.show();
             Log.info("Admin "+administrator.getUserName()+ " successfully launched clinician overview window for Clinician Staff ID:" +clinician.getStaffId());
         } catch (IOException e) {
@@ -634,5 +638,10 @@ public class AdministratorViewController implements PropertyChangeListener {
   public void propertyChange(PropertyChangeEvent evt) {
     //watches users and clinicians
     //refresh view on change
+      if (evt.getPropertyName().equals(EventTypes.USER_UPDATE.name())) {
+          System.out.println("user update");
+      } else if (evt.getPropertyName().equals(EventTypes.CLINICIAN_UPDATE.name())) {
+          System.out.println("clinician update");
+      }
   }
 }
