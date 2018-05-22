@@ -461,7 +461,7 @@ public class ClinicianController implements PropertyChangeListener {
             AppController.getInstance().setUserController(userController);
             ArrayList<PropertyChangeListener> listeners = new ArrayList<>();
             listeners.add(this);
-            userController.init(AppController.getInstance(), user, donorStage, true, listeners);
+            userController.init(AppController.getInstance(), user, userStage, true, listeners);
             userStage.show();
         } catch (IOException e) {
             e.printStackTrace();

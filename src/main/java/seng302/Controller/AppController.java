@@ -39,6 +39,7 @@ public class AppController {
   private UserController userController = new UserController();
   private ClinicianController clinicianController = new ClinicianController();
   private AdministratorViewController administratorViewController = new AdministratorViewController();
+  private statusBarController statusBarController = new statusBarController();
   private Set<User> deletedUserStack = new HashSet<>();
   private Stack<User> redoStack = new Stack<>();
 
@@ -342,6 +343,24 @@ public class AppController {
   public void setUsers(ArrayList<User> users) {
     this.users = users;
   }
+
+
+  /**
+   *
+   * @return
+   */
+  public seng302.Controller.statusBarController getStatusBarController() {
+    return statusBarController;
+  }
+
+  /**
+   *
+   * @param statusBarController
+   */
+  public void setStatusBarController(seng302.Controller.statusBarController statusBarController) {
+    this.statusBarController = statusBarController;
+  }
+
 
 
   public List<Clinician> getClinicians() {

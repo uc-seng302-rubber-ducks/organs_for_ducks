@@ -6,6 +6,7 @@
 <?import javafx.scene.text.*?>
 <?import javafx.scene.control.Button?>
 
+<?import com.sun.javafx.scene.control.skin.SplitPaneSkin.Content?>
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="675.0" prefWidth="894.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.Controller.UserController">
    <children>
      <TabPane layoutY="-4.0" prefHeight="681.0" prefWidth="894.0" rotateGraphic="true" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="45">
@@ -68,22 +69,22 @@
           </Tab>
             <Tab text="Medication">
               <content>
-                <fx:include  fx:id="medicationTabPage"source="medicationTabView.fxml"/>
+                <fx:include  fx:id="medicationTabPage" source="medicationTabView.fxml"/>
               </content>
             </Tab>
             <Tab text="Procedures">
               <content>
-                <fx:include  fx:id="procedureTabPage"source="procedureTabView.fxml"/>
+                <fx:include  fx:id="procedureTabPage" source="procedureTabView.fxml"/>
               </content>
             </Tab>
             <Tab fx:id="diseaseTab" text="Disease">
               <content>
-                <fx:include  fx:id="diseasesTabPage"source="diseasesTabView.fxml"/>
+                <fx:include  fx:id="diseasesTabPage" source="diseasesTabView.fxml"/>
               </content>
             </Tab>
             <Tab fx:id="organsTab" text="Donation">
               <content>
-                <fx:include  fx:id="donationTabPage"source="donationTabView.fxml"/>
+                <fx:include  fx:id="donationTabPage" source="donationTabView.fxml"/>
               </content>
             </Tab>
         </tabs>
@@ -95,8 +96,8 @@
       </Label>
      <Button fx:id="undoButton" layoutX="757.0" layoutY="9.0" mnemonicParsing="false" onAction="#undo" text="Undo" AnchorPane.rightAnchor="84.0" AnchorPane.topAnchor="9.0" />
      <Button fx:id="redoButton" layoutX="828.0" layoutY="9.0" mnemonicParsing="false" onAction="#redo" text="Redo" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="9.0" />
-     <AnchorPane fx:id="StatusBar" AnchorPane.bottomAnchor="0.0">
-         <fx:include fx:id="Status" source="statusBar.fxml" />
+     <AnchorPane fx:id="StatusBar" AnchorPane.bottomAnchor="-5.0">
+         <fx:include fx:id="statusBarPage" source="statusBar.fxml" />
      </AnchorPane>
    </children>
 </AnchorPane>

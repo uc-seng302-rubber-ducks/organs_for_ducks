@@ -215,7 +215,7 @@ public class NewUserController {
                     Stage userStage = new Stage();
                     userStage.setScene(new Scene(root));
                     userStage.show();
-                    UserController userController = donorLoader.getController();
+                    UserController userController = userLoader.getController();
                     //TODO pass listeners from any preceding controllers 22/6
                     userController
                         .init(AppController.getInstance(), newUser, userStage, false, null);
@@ -233,7 +233,7 @@ public class NewUserController {
                     root = userLoader.load();
                     stage.setScene(new Scene(root));
                     ownStage.close();
-                    UserController userController = donorLoader.getController();
+                    UserController userController = userLoader.getController();
                     //TODO pass listeners from any preceding controllers 22/6
                     userController.init(AppController.getInstance(), newUser, stage, false, null);
 

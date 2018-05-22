@@ -14,6 +14,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 import seng302.Model.Change;
 import seng302.Model.EmergencyContact;
@@ -29,7 +30,8 @@ public class UserController {
 // the contact page attributes
 
   //declaring all variables for the contacts page
-  //<editor-fold desc="FXML declarations">
+  //<editor-fold desc="FXML declarations">.
+
   @FXML
   private Label pCellPhone;
   @FXML
@@ -83,7 +85,12 @@ public class UserController {
 
   @FXML
   private ReceiverTabController receiverTabPageController;
+
+  @FXML
+  private statusBarController statusBarPageController;
+
   //</editor-fold>
+
 
   private User currentUser;
   private Stage stage;
@@ -101,7 +108,6 @@ public class UserController {
    */
   public void init(AppController controller, User user, Stage stage, boolean fromClinician,
       Collection<PropertyChangeListener> parentListeners) {
-
     //add change listeners of parent controllers to the current user
     if (parentListeners != null && !parentListeners.isEmpty()) {
       for (PropertyChangeListener listener : parentListeners) {
@@ -110,26 +116,25 @@ public class UserController {
     }
     this.stage = stage;
     application = controller;
-    //ageValue.setText("");
+
     // This is the place to set visible and invisible controls for Clinician vs User
     medicationTabPageController.init(controller, user, fromClinician);
     procedureTabPageController.init(controller, user, fromClinician, this);
     donationTabPageController.init(controller, user, this);
     diseasesTabPageController.init(controller, user, fromClinician, this);
     receiverTabPageController.init(controller, this.stage, user, fromClinician, this);
-
+    statusBarPageController.init(controller,this);
     //arbitrary default values
-    //changeDeceasedStatus();
     undoButton.setVisible(true);
     redoButton.setVisible(true);
     //warningLabel.setVisible(false);
     changeCurrentUser(user);
-
     // Sets the button to be disabled
     updateUndoRedoButtons();
 
 
     //showUser(currentUser);
+
 
 
     if (user.getNhi() != null) {
@@ -144,9 +149,12 @@ public class UserController {
     } else {
       changelog = FXCollections.observableArrayList(new ArrayList<Change>());
     }
+
+
     showDonorHistory();
     changelog.addListener((ListChangeListener.Change<? extends Change> change) -> historyTableView
             .setItems(changelog));
+
 
 
 
@@ -292,6 +300,9 @@ public class UserController {
 
     }
     updateUndoRedoButtons();
+    if (changelog.size() > 0){
+      statusBarPageController.updateStatus(user.getNhi() +" " + changelog.get(0).getChange());
+    }
   }
 
   /**
@@ -312,7 +323,6 @@ public class UserController {
     historyTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
     historyTableView.setItems(changelog);
     historyTableView.getColumns().addAll(timeColumn, changeColumn);
-
   }
 
   /**
