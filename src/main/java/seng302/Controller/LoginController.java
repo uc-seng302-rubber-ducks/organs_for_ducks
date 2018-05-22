@@ -112,7 +112,8 @@ public class LoginController {
               stage.setScene(new Scene(root));
               UserController userController = donorLoader.getController();
               AppController.getInstance().setUserController(userController);
-              userController.init(AppController.getInstance(), donor, stage, false);
+              //TODO pass listeners from any preceding controllers 22/6
+              userController.init(AppController.getInstance(), donor, stage, false, null);
             } catch (IOException e) {
               Log.severe("failed to load user window", e);
                 e.printStackTrace();

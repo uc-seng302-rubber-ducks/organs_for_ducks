@@ -46,6 +46,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import seng302.Model.Clinician;
+import seng302.Model.EventTypes;
 import seng302.Model.Organs;
 import seng302.Model.TransplantDetails;
 import seng302.Model.User;
@@ -169,6 +170,7 @@ public class ClinicianController implements PropertyChangeListener {
     @FXML
     private Button logoutButton;
     //</editor-fold>
+
     private Stage stage;
     private AppController appController;
     private Clinician clinician;
@@ -456,7 +458,9 @@ public class ClinicianController implements PropertyChangeListener {
             openStages.add(donorStage);
             UserController userController = donorLoader.getController();
             AppController.getInstance().setUserController(userController);
-            userController.init(AppController.getInstance(), user, donorStage, true);
+            ArrayList<PropertyChangeListener> listeners = new ArrayList<>();
+            listeners.add(this);
+            userController.init(AppController.getInstance(), user, donorStage, true, listeners);
             donorStage.show();
         } catch (IOException e) {
             e.printStackTrace();
@@ -767,7 +771,11 @@ public class ClinicianController implements PropertyChangeListener {
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
+        System.out.println("listener called");
         //clinician controller watches user controller
         //refresh view/tables etc. on change
+        if (evt.getPropertyName().equals(EventTypes.USER_UPDATE.name())) {
+            // do stuff
+        }
     }
 }

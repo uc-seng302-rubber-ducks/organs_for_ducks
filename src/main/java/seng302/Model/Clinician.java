@@ -6,8 +6,8 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
-import seng302.Controller.Listenable;
 import seng302.Service.PasswordManager;
 
 /**
@@ -40,6 +40,9 @@ public class Clinician extends Undoable<Clinician> implements Listenable {
     @Expose
     private byte[] salt;
     private transient PropertyChangeSupport pcs;
+
+    //TODO make all updates to the clinician add to this 22/6
+    private transient List<Change> changes;
 
     public Clinician() {
         dateCreated = LocalDateTime.now();
@@ -257,6 +260,20 @@ public class Clinician extends Undoable<Clinician> implements Listenable {
         return PasswordManager.isExpectedPassword(password, salt, getPassword());
     }
 
+    public List<Change> getChanges() {
+        return changes;
+    }
+
+    public void setChanges(List<Change> changes) {
+        this.changes = changes;
+    }
+
+    public void addChange(Change change) {
+        changes.add(change);
+        this.fire(new PropertyChangeEvent(this, EventTypes.USER_UPDATE.name(), new Object(),
+            new Object()));
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -343,7 +360,7 @@ public class Clinician extends Undoable<Clinician> implements Listenable {
 
     @Override
     public void removePropertyChangeListener(PropertyChangeListener listener) {
-        this.removePropertyChangeListener(listener);
+        this.pcs.removePropertyChangeListener(listener);
     }
 
     @Override

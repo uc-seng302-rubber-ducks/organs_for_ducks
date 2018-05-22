@@ -16,7 +16,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Stack;
 import javafx.collections.FXCollections;
-import seng302.Controller.Listenable;
 
 /**
  * Class for handling calls to user
@@ -358,6 +357,7 @@ public class User extends Undoable<User> implements Listenable {
         this.middleName = mName;
         this.lastName = lName;
         updateLastModified();
+      addChange(new Change("set full name to " + fName + " " + mName + " " + lName));
         mem.setNewObject(this.clone());
         if(!mem.getNewObject().getFullName().equals(mem.getOldObject().getFullName())){
             getUndoStack().push(mem);
@@ -949,6 +949,8 @@ public class User extends Undoable<User> implements Listenable {
 
     public void addChange(Change change) {
         changes.add(change);
+      this.fire(
+          new PropertyChangeEvent(this, EventTypes.USER_UPDATE.name(), new Object(), new Object()));
     }
 
     public List<MedicalProcedure> getMedicalProcedures() {

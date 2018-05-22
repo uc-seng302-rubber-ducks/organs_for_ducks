@@ -406,7 +406,7 @@ public class AdministratorViewController implements PropertyChangeListener {
             newStage.setScene(new Scene(root));
             UserController userController = donorLoader.getController();
             AppController.getInstance().setUserController(userController);
-            userController.init(AppController.getInstance(), user, newStage, true);
+          userController.init(AppController.getInstance(), user, newStage, true, null);
             newStage.show();
         } catch (IOException e) {
             e.printStackTrace();
