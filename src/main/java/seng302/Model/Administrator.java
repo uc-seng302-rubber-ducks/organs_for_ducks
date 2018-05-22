@@ -142,6 +142,16 @@ public class Administrator {
     }
 
 
+    /**
+     * EWWWW gross but please forgive me. dont want the search to break just yet. the generic search requires a region
+     * so here we are
+     *
+     * @return does the needful
+     */
+    public String getRegion(){
+        return "";
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

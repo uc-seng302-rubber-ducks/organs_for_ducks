@@ -113,7 +113,7 @@
                         <AnchorPane fx:id="filterAnchorPane" maxHeight="45.0" minHeight="45" prefHeight="-Infinity" prefWidth="756.0">
                            <children>
                               <Button fx:id="expandButton" layoutX="576.0" layoutY="14.0" mnemonicParsing="false" onMouseClicked="#expandFilter" text="▼" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="10.0" />
-                              <Label layoutX="14.0" layoutY="50.0" text="Birth Gender: " AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="49.5" />
+                              <Label fx:id="birthGenderLabel" layoutX="14.0" layoutY="50.0" text="Birth Gender: " AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="49.5" />
                               <Label layoutX="14.0" layoutY="85.0" text="Region:" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="85.0" />
                               <Label fx:id="donorStatusLabel" layoutX="14.0" layoutY="118.0" text="Donor status: " AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="120.5" />
                               <ComboBox fx:id="genderComboBox" layoutX="115.0" layoutY="46.0" prefWidth="150.0" value="All" AnchorPane.leftAnchor="115.0" AnchorPane.topAnchor="46.0">

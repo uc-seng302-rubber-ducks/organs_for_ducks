@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 
 import javafx.beans.binding.Bindings;
@@ -205,6 +206,9 @@ public class AdministratorViewController {
     private Label donorStatusLabel;
 
     @FXML
+    private Label birthGenderLabel;
+
+    @FXML
     private TextField regionSearchTextField;
     //</editor-fold>
 
@@ -216,7 +220,9 @@ public class AdministratorViewController {
     private final int ROWS_PER_PAGE = 30;
     private int startIndex = 0;
     private int endIndex;
-    private FilteredList<User> fListDonors;
+    private FilteredList<User> fListUsers;
+    private FilteredList<Clinician> fListClinicians;
+    private FilteredList<Administrator> fListAdmins;
     private TableColumn<User, String> lNameColumn;
     private static int searchCount = 0;
     private boolean filterVisible = false;
@@ -263,9 +269,8 @@ public class AdministratorViewController {
         });
 
         addListeners();
-        displayClinicanTable();
-        displayAdminTable();
-        displayUserTable();
+        initClinicianSearchTable();
+        initAdminSearchTable();
         initUserSearchTable();
         clinicianTableView.setVisible(false);
         adminTableView.setVisible(false);
@@ -300,10 +305,7 @@ public class AdministratorViewController {
             adminTableView.setVisible(true);
             userTableView.setVisible(false);
             activeTableView = adminTableView;
-            donorStatusLabel.setVisible(false);
-            donorFilterCheckBox.setVisible(false);
-            receiverFilterCheckBox.setVisible(false);
-            allCheckBox.setVisible(false);
+            userSpecificFilters(false);
 
         }));
 
@@ -314,10 +316,7 @@ public class AdministratorViewController {
             adminTableView.setVisible(false);
             userTableView.setVisible(true);
             activeTableView = userTableView;
-            donorStatusLabel.setVisible(true);
-            donorFilterCheckBox.setVisible(true);
-            receiverFilterCheckBox.setVisible(true);
-            allCheckBox.setVisible(true);
+            userSpecificFilters(true);
 
         }));
 
@@ -327,12 +326,7 @@ public class AdministratorViewController {
             clinicianTableView.setVisible(true);
             adminTableView.setVisible(false);
             userTableView.setVisible(false);
-            activeTableView = clinicianTableView;
-            donorStatusLabel.setVisible(false);
-            donorFilterCheckBox.setVisible(false);
-            receiverFilterCheckBox.setVisible(false);
-            allCheckBox.setVisible(false);
-
+            userSpecificFilters(false);
         }));
 
         userTableView.setOnMouseClicked(event -> {
@@ -356,10 +350,26 @@ public class AdministratorViewController {
 
     }
 
+
+    /**
+     * Takes a boolean on weather specific fields should be visable and then set them according to the boolean
+     *
+     * @param shouldSee if the fields should be visible or not
+     */
+    private void userSpecificFilters(boolean shouldSee){
+        donorStatusLabel.setVisible(shouldSee);
+        donorFilterCheckBox.setVisible(shouldSee);
+        receiverFilterCheckBox.setVisible(shouldSee);
+        allCheckBox.setVisible(shouldSee);
+        birthGenderLabel.setVisible(shouldSee);
+        genderComboBox.setVisible(shouldSee);
+    }
+
+
     /**
      * Initialises table for the clinician table
      */
-    private void displayClinicanTable() {
+    private void initClinicianSearchTable() {
         ObservableList<Clinician> clinicians = FXCollections.observableArrayList(appController.getClinicians());
 
         TableColumn<Clinician, String> firstNameColumn = new TableColumn<>("First Name");
@@ -371,36 +381,31 @@ public class AdministratorViewController {
         TableColumn<Clinician, String> nhiColumn = new TableColumn<>("Staff Id");
         nhiColumn.setCellValueFactory(new PropertyValueFactory<>("staffId"));
 
+        lastNameColumn.setSortType(TableColumn.SortType.ASCENDING);
+
+        fListClinicians = new FilteredList<>(clinicians);
+        fListClinicians = filter(fListClinicians);
+        FilteredList<Clinician> squished = new FilteredList<>(fListClinicians);
+
+        SortedList<Clinician> clinicianSortedList = new SortedList<>(squished);
+        clinicianSortedList.comparatorProperty().bind(clinicianTableView.comparatorProperty());
+
         clinicianTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         clinicianTableView.getColumns().addAll(nhiColumn, firstNameColumn, lastNameColumn);
-        clinicianTableView.setItems(clinicians);
-    }
+        clinicianTableView.setItems(clinicianSortedList);
 
-    /**
-     * Initialises table for the user table
-     */
-    private void displayUserTable() {
-        ObservableList<User> users = FXCollections.observableArrayList(appController.getUsers());
-
-        TableColumn<User, String> firstNameColumn = new TableColumn<>("First Name");
-        firstNameColumn.setCellValueFactory(new PropertyValueFactory<>("firstName"));
-
-        TableColumn<User, String> lastNameColumn = new TableColumn<>("Last Name");
-        lastNameColumn.setCellValueFactory(new PropertyValueFactory<>("lastName"));
-
-        TableColumn<User, String> nhiColumn = new TableColumn<>("NHI");
-        nhiColumn.setCellValueFactory(new PropertyValueFactory<>("nhi"));
-
-        userTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-        userTableView.getColumns().addAll(nhiColumn, firstNameColumn, lastNameColumn);
-        userTableView.setItems(users);
     }
 
     /**
      * Initialises the columns for the admin table
      */
-    private void displayAdminTable() {
+    private void initAdminSearchTable() {
         ObservableList<Administrator> admins = FXCollections.observableArrayList(appController.getAdmins());
+
+        endIndex = Math.min(startIndex + ROWS_PER_PAGE, admins.size());
+        if (admins.isEmpty()) {
+            return;
+        }
 
         TableColumn<Administrator, String> firstNameColumn = new TableColumn<>("First Name");
         firstNameColumn.setCellValueFactory(new PropertyValueFactory<>("firstName"));
@@ -411,9 +416,21 @@ public class AdministratorViewController {
         TableColumn<Administrator, String> nhiColumn = new TableColumn<>("User Name");
         nhiColumn.setCellValueFactory(new PropertyValueFactory<>("username"));
 
+        TableColumn<Administrator, String> regionColumn = new TableColumn<>("Region");
+        nhiColumn.setCellValueFactory(new PropertyValueFactory<>("region"));
+
+        lastNameColumn.setSortType(TableColumn.SortType.ASCENDING);
+
+        fListAdmins = new FilteredList<>(admins);
+        fListAdmins = filter(fListAdmins);
+        FilteredList<Administrator> squished = new FilteredList<>(fListAdmins);
+
+        SortedList<Administrator> administratorSortedList = new SortedList<>(squished);
+        administratorSortedList.comparatorProperty().bind(adminTableView.comparatorProperty());
+        
         adminTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         adminTableView.getColumns().addAll(nhiColumn, firstNameColumn, lastNameColumn);
-        adminTableView.setItems(admins);
+        adminTableView.setItems(administratorSortedList);
 
     }
 
@@ -463,12 +480,12 @@ public class AdministratorViewController {
 
         //add more columns as wanted/needed
 
-        fListDonors = new FilteredList<>(oListDonors);
-        fListDonors = filter(fListDonors);
-        FilteredList<User> squished = new FilteredList<>(fListDonors);
+        fListUsers = new FilteredList<>(oListDonors);
+        fListUsers = filter(fListUsers);
+        FilteredList<User> squished = new FilteredList<>(fListUsers);
 
-        SortedList<User> sListDonors = new SortedList<>(squished);
-        sListDonors.comparatorProperty().bind(userTableView.comparatorProperty());
+        SortedList<User> sListUsers = new SortedList<>(squished);
+        sListUsers.comparatorProperty().bind(userTableView.comparatorProperty());
 
         //predicate on this list not working properly
         //should limit the number of items shown to ROWS_PER_PAGE
@@ -476,67 +493,64 @@ public class AdministratorViewController {
         //set table columns and contents
         userTableView.getColumns().setAll(fNameColumn, lNameColumn, dobColumn, dodColumn, ageColumn, regionColumn, organsColumn);
         //searchTableView.setItems(FXCollections.observableList(sListDonors.subList(startIndex, endIndex)));
-        userTableView.setItems(sListDonors);
+        userTableView.setItems(sListUsers);
         userTableView.setRowFactory((searchTableView) -> new TooltipTableRow<>(User::getTooltip));
 
-
-        //set on-click behaviour
-        userTableView.setOnMouseClicked(event -> {
-            if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
-                User user = userTableView.getSelectionModel().getSelectedItem();
-                launchUser(user);
-            }
-        });
     }
 
     /**
-     * @param arrayList An array list of users.
-     * @return A list of users.
+     * Takes a list and returns a sub section of it.
+     *
+     * Works for all types
+     *
+     * @param list A list of any Type.
+     * @return A list of supplied type.
      */
-    private List<User> getSearchData(List<User> arrayList) {
-        return arrayList.subList(startIndex, endIndex);
+    private <T> List<T> getSearchData(List<T> list) {
+        return list.subList(startIndex, endIndex);
     }
 
 
     /**
      * applies a change listener to the input text box and filters a filtered list accordingly
      *
-     * @param fListUsers list to be filtered
+     * @param toFilter list to be filtered
      * @return filtered list with filter applied
      */
-    private FilteredList<User> filter(FilteredList<User> fListUsers) {
-        setTextFieldListener(adminSearchField, fListUsers);
-        setTextFieldListener(regionSearchTextField, fListUsers);
-        setCheckBoxListener(donorFilterCheckBox, fListUsers);
-        setCheckBoxListener(receiverFilterCheckBox, fListUsers);
-        setCheckBoxListener(allCheckBox, fListUsers);
+
+    private <T> FilteredList<T> filter(FilteredList<T> toFilter) {
+        setTextFieldListener(adminSearchField, toFilter);
+        setTextFieldListener(regionSearchTextField, toFilter);
+        setCheckBoxListener(donorFilterCheckBox, toFilter);
+        setCheckBoxListener(receiverFilterCheckBox, toFilter);
+        setCheckBoxListener(allCheckBox, toFilter);
         genderComboBox.valueProperty()
-                .addListener((observable -> setFilteredListPredicate(fListUsers)));
+                .addListener((observable -> setFilteredListPredicate(toFilter)));
 
         searchTablePagination.setPageCount(searchCount / ROWS_PER_PAGE);
-        return fListUsers;
+        return toFilter;
     }
 
     /**
      * Method to add the predicate trough the listener
      *
      * @param inputTextField textfield to add the listener to
-     * @param fListUsers     filteredList object of users to set predicate property of
+     * @param filteredList     filteredList  of objects to set predicate property of
      */
-    private void setTextFieldListener(TextField inputTextField, FilteredList<User> fListUsers) {
+    private <T> void setTextFieldListener(TextField inputTextField, FilteredList<T> filteredList) {
         inputTextField.textProperty()
-                .addListener((observable) -> setFilteredListPredicate(fListUsers));
+                .addListener((observable) -> setFilteredListPredicate(filteredList));
     }
 
     /**
      * Method to add the predicate trough the listener
      *
      * @param checkBox   checkBox object to add the listener to
-     * @param fListUsers filteredList object of users to set predicate property of
+     * @param filteredList filteredList of object T to set predicate property of
      */
-    private void setCheckBoxListener(CheckBox checkBox, FilteredList<User> fListUsers) {
+    private <T> void setCheckBoxListener(CheckBox checkBox, FilteredList<T> filteredList) {
         checkBox.selectedProperty()
-                .addListener(((observable) -> setFilteredListPredicate(fListUsers)));
+                .addListener(((observable) -> setFilteredListPredicate(filteredList)));
     }
 
     /**
@@ -544,22 +558,30 @@ public class AdministratorViewController {
      *
      * @param fList filteredList object to modify the predicate property of
      */
-    private void setFilteredListPredicate(FilteredList<User> fList) {
+    private <T> void setFilteredListPredicate(FilteredList<T> fList) {
         searchCount = 0; //refresh the searchCount every time so it recalculates it each search
-        fList.predicateProperty().bind(Bindings.createObjectBinding(() -> user -> {
+        fList.predicateProperty().bind(Bindings.createObjectBinding(() -> objectToFilter -> {
             String lowerCaseFilterText = adminSearchField.getText().toLowerCase();
-            boolean regionMatch = AttributeValidation.checkRegionMatches(regionSearchTextField.getText(), user);
-            boolean genderMatch = AttributeValidation.checkGenderMatches(genderComboBox.getValue().toString(), user);
+            boolean regionMatch = AttributeValidation.checkRegionMatches(regionSearchTextField.getText(), objectToFilter);
+            //boolean genderMatch = AttributeValidation.checkGenderMatches(genderComboBox.getValue().toString(), objectToFilter);
 
-            if (AttributeValidation.checkTextMatches(lowerCaseFilterText, user.getFirstName()) ||
-                    AttributeValidation.checkTextMatches(lowerCaseFilterText, user.getLastName()) &&
-                            (regionMatch) && (genderMatch) &&
-                            (((user.isDonor() == donorFilterCheckBox.isSelected()) &&
-                                    (user.isReceiver() == receiverFilterCheckBox.isSelected())) || allCheckBox.isSelected())) {
+            String fName = null;
+            String lName = null;
+            try {
+                fName = (String) objectToFilter.getClass().getMethod("getFirstName").invoke(objectToFilter); //if this breaks just ignore it,
+                lName = (String) objectToFilter.getClass().getMethod("getLastName").invoke(objectToFilter); // it will fix itself and not cause problems
+            } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+                e.printStackTrace();
+            }
+            if ((AttributeValidation.checkTextMatches(lowerCaseFilterText, fName) ||
+                    AttributeValidation.checkTextMatches(lowerCaseFilterText, lName)) &&
+                            (regionMatch)){// && (genderMatch)) {
                 searchCount++;
                 return true;
-            }
-
+            }/* TODO: reimplement and remove this
+             &&
+            (((user.isDonor() == donorFilterCheckBox.isSelected()) &&
+                    (user.isReceiver() == receiverFilterCheckBox.isSelected())) || allCheckBox.isSelected()))*/
             //if (other test case) return true
             return false;
         }));
@@ -574,9 +596,9 @@ public class AdministratorViewController {
         startIndex = pageIndex * ROWS_PER_PAGE;
         endIndex = Math.min(startIndex + ROWS_PER_PAGE, appController.getUsers().size());
 
-        int minIndex = Math.min(endIndex, fListDonors.size());
+        int minIndex = Math.min(endIndex, fListUsers.size());
 
-        SortedList<User> sListDonors = new SortedList<>(FXCollections.observableArrayList(fListDonors.subList(Math.min(startIndex, minIndex), minIndex)));
+        SortedList<User> sListDonors = new SortedList<>(FXCollections.observableArrayList(fListUsers.subList(Math.min(startIndex, minIndex), minIndex)));
         sListDonors.comparatorProperty().bind(userTableView.comparatorProperty());
 
         lNameColumn.setSortType(TableColumn.SortType.ASCENDING);

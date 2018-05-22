@@ -91,7 +91,7 @@ public class UpdateAdminController {
       if (passwordTextField.getText().equals(cPasswordTextField.getText())) {
         admin.setPassword(passwordTextField.getText());
       } else {
-        errorLabel.setText("your password don't match");
+        errorLabel.setText("your passwords don't match");
         valid = false;
       }
     }

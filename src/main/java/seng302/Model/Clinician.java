@@ -22,6 +22,7 @@ public class Clinician extends Undoable<Clinician> {
     private String region;
     @Expose
     private byte[] password;
+
     @Expose
     private LocalDateTime dateCreated;
     @Expose
