@@ -21,6 +21,7 @@ import javafx.stage.Stage;
 import seng302.Model.Clinician;
 import seng302.Model.Memento;
 import seng302.Service.Log;
+import seng302.Service.PasswordManager;
 
 /**
  * Controller for updating clinicians
@@ -313,8 +314,7 @@ public class UpdateClinicianController {
                     root = loader.load();
                     ClinicianController clinicianController = loader.getController();
                     Stage clinicianStage = new Stage();
-                    clinicianController
-                        .init(clinicianStage, AppController.getInstance(), clinician, null);
+                    clinicianController.init(clinicianStage, AppController.getInstance(), clinician, false, null);
                     clinicianController.disableLogout();
                     clinicianStage.setScene(new Scene(root));
                     clinicianStage.show();
@@ -332,7 +332,7 @@ public class UpdateClinicianController {
                 try {
                     root = loader.load();
                     ClinicianController clinicianController = loader.getController();
-                    clinicianController.init(stage, AppController.getInstance(), clinician, null);
+                    clinicianController.init(stage, AppController.getInstance(), clinician, false, null);
                     stage.setScene(new Scene(root));
                     stage.show();
                     ownStage.close();
