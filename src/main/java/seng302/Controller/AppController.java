@@ -646,16 +646,16 @@ public class AppController {
     }
   }
 
-  public List<User> getDeletedUsers() {
-    return new ArrayList<>(deletedUserStack);
+  public Set<User> getDeletedUsers() {
+    return deletedUserStack;
   }
 
-  public List<Clinician> getDeletedClinicians() {
-    return new ArrayList<>(deletedClinicianSet);
+  public Set<Clinician> getDeletedClinicians() {
+    return deletedClinicianSet;
   }
 
-  public List<Administrator> getDeletedAdmins() {
-    return new ArrayList<>(deletedAdminSet);
+  public Set<Administrator> getDeletedAdmins() {
+    return deletedAdminSet;
   }
 
   public java.util.ArrayList<TransplantDetails> getTransplantList() {

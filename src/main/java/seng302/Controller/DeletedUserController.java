@@ -85,7 +85,7 @@ public class DeletedUserController {
    */
   private void initUserTableView() {
     oListUsers = FXCollections
-        .observableList(AppController.getInstance().getDeletedUsers());
+        .observableList(new ArrayList<>(AppController.getInstance().getDeletedUsers()));
 
     TableColumn<User, String> fNameColumn = new TableColumn<>("First name");
     fNameColumn.setCellValueFactory(new PropertyValueFactory<>("firstName"));
@@ -130,7 +130,7 @@ public class DeletedUserController {
    * Populates the table view with clinicians that have been deleted in the current session.
    */
   private void initClinicianTableView() {
-    oListClinicians = FXCollections.observableList(AppController.getInstance().getDeletedClinicians());
+    oListClinicians = FXCollections.observableList(new ArrayList<>(AppController.getInstance().getDeletedClinicians()));
 
     TableColumn<Clinician, String> staffIDColumn = new TableColumn<>("Staff ID");
     staffIDColumn.setCellValueFactory(new PropertyValueFactory<>("staffId"));
@@ -159,7 +159,7 @@ public class DeletedUserController {
    * Populates the table view with administrators that have been deleted in the current session.
    */
   private void initAdminTableView() {
-    oListAdmins = FXCollections.observableList(AppController.getInstance().getDeletedAdmins());
+    oListAdmins = FXCollections.observableList(new ArrayList<>(AppController.getInstance().getDeletedAdmins()));
 
     TableColumn<Administrator, String> usernameColumn = new TableColumn<>("Username");
     usernameColumn.setCellValueFactory(new PropertyValueFactory<>("userName"));
