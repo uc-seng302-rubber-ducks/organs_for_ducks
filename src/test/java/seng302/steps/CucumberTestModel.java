@@ -4,7 +4,7 @@ import seng302.Controller.AppController;
 
 public class CucumberTestModel {
 
-  private static AppController controller;
+  private static AppController controller = AppController.getInstance();
   private static String userNhi;
 
   public static AppController getController() {

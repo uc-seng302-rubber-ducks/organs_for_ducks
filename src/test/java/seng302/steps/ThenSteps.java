@@ -10,6 +10,7 @@ import cucumber.api.java.en.Then;
 import java.util.ArrayList;
 import org.testfx.matcher.control.LabeledMatchers;
 import seng302.Model.User;
+import seng302.Utils.TableViewsMethod;
 
 public class ThenSteps {
     @Then("^There are two profiles with first name \"([^\"]*)\" and last name \"([^\"]*)\"$")
@@ -46,8 +47,8 @@ public class ThenSteps {
 
     @Then("^The user should no longer be in the system$")
     public void theUserShouldNoLongerBeInTheSystem() {
-        // Write code here that turns the phrase above into concrete actions
-        throw new PendingException();
+        assertTrue(
+            CucumberTestModel.getController().getUser(CucumberTestModel.getUserNhi()) == null);
     }
 
     @Then("^I should see my NHI \"([^\"]*)\" along with my other details at the user view screen")
@@ -68,17 +69,15 @@ public class ThenSteps {
     }
 
     @Then("^I should see my NHI \"([^\"]*)\" first name \"([^\"]*)\", Smoker is marked as \"([^\"]*)\", alcohol \"([^\"]*)\" and date of death \"([^\"]*)\"$")
-    public void theIShouldSeeMyNHIFirstNameSmokerIsMarkedAsAlcoholAndDateOfDeath(String arg1,
-        String arg2, String arg3, String arg4, String arg5) {
-        // Write code here that turns the phrase above into concrete actions
-        throw new PendingException();
+    public void theIShouldSeeMyNHIFirstNameSmokerIsMarkedAsAlcoholAndDateOfDeath(String nhi,
+        String fName, String smoker, String alcohol, String dod) {
+
     }
 
     @Then("^I should see my preferred name \"([^\"]*)\" along with my other details at the user view screen")
     public void theIShouldSeeMyPreferredNameAlongWithMyOtherDetailsAtTheUserViewScreen(
-        String arg1) {
-        // Write code here that turns the phrase above into concrete actions
-        throw new PendingException();
+        String pName) {
+        verifyThat("#pNameValue", LabeledMatchers.hasText(pName));
     }
 
     @Then("^I should see error message for disease name \"([^\"]*)\"$")
@@ -92,9 +91,9 @@ public class ThenSteps {
     }
 
     @Then("^I should see my Staff ID \"([^\"]*)\" along with my other details at the clinician view screen$")
-    public void theIShouldSeeMyStaffIDAlongWithMyOtherDetailsAtTheClinicianViewScreen(String arg1) {
-        // Write code here that turns the phrase above into concrete actions
-        throw new PendingException();
+    public void theIShouldSeeMyStaffIDAlongWithMyOtherDetailsAtTheClinicianViewScreen(
+        String staffId) {
+        verifyThat("#staffIdLabel", LabeledMatchers.hasText(staffId));
     }
 
     @Then("^I should see the Disease Name \"([^\"]*)\" at the Current Diseases Table$")
@@ -110,10 +109,9 @@ public class ThenSteps {
 
     }
 
-    @Then("^the donor should not be contained within the transplant waiting list$")
-    public void theDonorShouldNotBeContainedWithinTheTransplantWaitingList() throws Throwable {
-        // Write code here that turns the phrase above into concrete actions
-        throw new PendingException();
+    @Then("^the user should not be contained within the transplant waiting list$")
+    public void theDonorShouldNotBeContainedWithinTheTransplantWaitingList() {
+        assertTrue(TableViewsMethod.getNumberOfRows("#transplantWaitingTableView") == 0);
     }
 
     @Then("^I should see error message \"([^\"]*)\"$")

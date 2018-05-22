@@ -5,6 +5,7 @@ Feature: As an user, I want to login to the system, either as a User or Clinicia
     Given The login screen is loaded
 
   Scenario: I login as user with valid NHI
+    Given a user with the NHI "ABC1234" exists
     When I entered NHI "ABC1234"
     And clicked on user Login button
     Then I should see my NHI "ABC1234" along with my other details at the user view screen

@@ -45,11 +45,11 @@ public class GivenSteps extends ApplicationTest{
 
   @Given("^a user with the NHI \"([^\"]*)\" exists$")
   public void aUserWithTheNHIExists(String NHI) {
-    userNhi = NHI;
-    if (controller.getUser(NHI) == null) {
-      controller.getUsers().add(new User("", LocalDate.now(), NHI));
+    CucumberTestModel.setUserNhi(NHI);
+    if (CucumberTestModel.getController().getUser(NHI) == null) {
+      CucumberTestModel.getController().getUsers().add(new User("", LocalDate.now(), NHI));
     }
-    assertTrue(controller.findUser(NHI) != null);
+    assertTrue(CucumberTestModel.getController().findUser(NHI) != null);
   }
 
   @Given("^There are no users in the system$")
@@ -103,9 +103,15 @@ public class GivenSteps extends ApplicationTest{
 
   @Given("^they are registered to receive a \"([^\"]*)\"$")
   public void theyAreRegisteredToReceiveA(String organ) {
+    Organs organToReceive = null;
+    for (Organs value : Organs.values()) {
+      if (organ.equalsIgnoreCase(value.toString())) {
+        organToReceive = value;
+      }
+    }
     if (!controller.getUser(userNhi).getReceiverDetails()
-        .isCurrentlyWaitingFor(Organs.valueOf(organ))) {
-      controller.getUser(userNhi).getReceiverDetails().startWaitingForOrgan(Organs.valueOf(organ));
+        .isCurrentlyWaitingFor(organToReceive)) {
+      controller.getUser(userNhi).getReceiverDetails().startWaitingForOrgan(organToReceive);
     }
   }
 
