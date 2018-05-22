@@ -20,6 +20,7 @@ import seng302.Exception.InvalidFieldsException;
 import seng302.Model.EmergencyContact;
 import seng302.Model.User;
 import seng302.Service.AttributeValidation;
+import seng302.Service.Log;
 
 
 /**
@@ -216,10 +217,11 @@ public class NewUserController {
                     userStage.setScene(new Scene(root));
                     userStage.show();
                     UserController userController = userLoader.getController();
-                    userController.init(AppController.getInstance(), newUser, userStage, false);
+                    userController.init(AppController.getInstance(), newUser, userStage, false, null);
                     userController.diableLogout();
-
+                    Log.info("Successfully launched User Overview for User NHI: "+nhi);
                 } catch (IOException e) {
+                    Log.severe("Failed to load User Overview for User NHI: "+nhi, e);
                     e.printStackTrace();
                 }
             } else {
@@ -232,9 +234,10 @@ public class NewUserController {
                     stage.setScene(new Scene(root));
                     ownStage.close();
                     UserController userController = userLoader.getController();
-                    userController.init(AppController.getInstance(), newUser, stage, false);
-
+                    userController.init(AppController.getInstance(), newUser, stage, false, null);
+                    Log.info("Successfully launched User Overview for User NHI: "+nhi);
                     } catch (IOException e) {
+                        Log.severe("Failed to load User Overview for User NHI: "+nhi, e);
                         e.printStackTrace();
                     }
                 }

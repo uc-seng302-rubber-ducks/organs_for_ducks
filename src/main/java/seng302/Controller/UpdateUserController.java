@@ -402,10 +402,11 @@ public class UpdateUserController {
       try {
         currentUser.getRedoStack().clear();
         userController.showUser(currentUser);
+        Log.info("Update User Successful for User NHI: "+currentUser.getNhi());
       } catch (NullPointerException ex) {
         //TODO causes npe if donor is new in this session
         //the text fields etc. are all null
-        Log.warning(ex.getMessage(), ex);
+        Log.severe("Update user failed for User NHI: "+currentUser.getNhi(), ex);
       }
       stage.close();
     }
@@ -932,6 +933,7 @@ public class UpdateUserController {
       if (undoUpdateButton.isDisabled()) {
         stage.setTitle(stage.getTitle().substring(0, stage.getTitle().length() - 1));
       }
+      Log.info("Undo executed for User NHI: "+currentUser.getNhi());
     }
 
   /**
@@ -942,6 +944,7 @@ public class UpdateUserController {
       currentUser.redo();
       redoUpdateButton.setDisable(currentUser.getRedoStack().isEmpty());
       setUserDetails(currentUser);
+    Log.info("Redo executed for User NHI: "+currentUser.getNhi());
     }
 
     /**
@@ -966,9 +969,11 @@ public class UpdateUserController {
           try {
             currentUser.getRedoStack().clear();
             userController.showUser(oldUser);
+            Log.info("User update Cancelled for User NHI: "+currentUser.getNhi());
           } catch (NullPointerException ex) {
             //TODO causes npe if donor is new in this session
             //the text fields etc. are all null
+            Log.severe("Error cancelling user update for User NHI: "+currentUser.getNhi(), ex);
           }
           stage.close();
         }
@@ -978,9 +983,11 @@ public class UpdateUserController {
         try {
           currentUser.getRedoStack().clear();
           userController.showUser(oldUser);
+          Log.info("User update Cancelled for User NHI: "+currentUser.getNhi());
         } catch (NullPointerException ex) {
           //TODO causes npe if donor is new in this session
           //the text fields etc. are all null
+          Log.severe("Error cancelling user update for User NHI: "+currentUser.getNhi(), ex);
         }
         stage.close();
       }

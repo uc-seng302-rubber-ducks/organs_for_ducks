@@ -10,6 +10,7 @@ import javafx.stage.Stage;
 import seng302.Model.MedicalProcedure;
 import seng302.Model.Organs;
 import seng302.Model.User;
+import seng302.Service.Log;
 
 /**
  * Class for the Organs Affected view for Medical Procedures
@@ -73,6 +74,9 @@ public class OrgansAffectedController {
             currentProcedure.addOrgan(toAffect);
             affectedOrgansListView.setItems(FXCollections.observableList(currentProcedure.getOrgansAffected()));
             organsListView.getItems().remove(toAffect);
+            Log.info("Successfully added the selected organ: "+toAffect+" to the affected list at current medical procedure for User NHI: "+user.getNhi());
+        } else {
+            Log.warning("Unable to add the organ: null to the affected list for User NHI: "+user.getNhi());
         }
     }
 
@@ -86,6 +90,9 @@ public class OrgansAffectedController {
             currentProcedure.removeOrgan(toAffect);
             affectedOrgansListView.setItems(FXCollections.observableList(currentProcedure.getOrgansAffected()));
             organsListView.getItems().add(toAffect);
+            Log.info("Successfully removed the selected organ: "+toAffect+"  from the affected list for the current medical procedure for User NHI: "+user.getNhi());
+        } else {
+            Log.warning("Unable to remove the organ: null from the affected list");
         }
     }
 
@@ -96,6 +103,7 @@ public class OrgansAffectedController {
     void back() {
         appController.update(user);
         stage.close();
+        Log.info("Back button pressed");
     }
 
 }

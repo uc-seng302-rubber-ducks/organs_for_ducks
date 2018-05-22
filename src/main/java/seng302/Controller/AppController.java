@@ -11,8 +11,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.Stack;
 import seng302.Directory;
-import seng302.Exception.UserAlreadyExistsException;
-import seng302.Exception.UserNotFoundException;
+import seng302.Exception.ProfileAlreadyExistsException;
+import seng302.Exception.ProfileNotFoundException;
+
 import seng302.Model.Administrator;
 import seng302.Model.Change;
 import seng302.Model.Clinician;
@@ -40,6 +41,8 @@ public class AppController {
   private ClinicianController clinicianController = new ClinicianController();
   private AdministratorViewController administratorViewController = new AdministratorViewController();
   private Set<User> deletedUserStack = new HashSet<>();
+  private Set<Clinician> deletedClinicianSet = new HashSet<>();
+  private Set<Administrator> deletedAdminSet = new HashSet<>();
   private Stack<User> redoStack = new Stack<>();
 
   private static final String USERS_FILE = Directory.JSON.directory() + "/users.json";
@@ -101,6 +104,7 @@ public class AppController {
       clinicians.add(new Clinician("0", "admin", "Default", null, null, null, (String) null));
       try {
         JsonHandler.saveClinicians(clinicians);
+        Log.info("Successfully saved clinicians to file");
       } catch (IOException e) {
         Log.warning("Could not save clinicians to file", e);
       }
@@ -151,9 +155,10 @@ public class AppController {
         return -1;
       }
       users.add(newUser);
+      Log.info("Successfully registered new user with NHI: "+NHI);
       return newUser.hashCode();
     } catch (Exception e) {
-      Log.warning("failed to register new user", e);
+      Log.warning("failed to register new user with NHI: "+NHI, e);
       return -1;
     }
   }
@@ -212,9 +217,10 @@ public class AppController {
         return false;
       }
       users.add(newUser);
+      Log.info("Successfully registered new user with NHI: "+NHI);
       return true;
     } catch (Exception e) {
-      Log.warning("Failed to register new user", e);
+      Log.warning("Failed to register new user with NHI: "+NHI, e);
       return false;
     }
   }
@@ -281,8 +287,9 @@ public class AppController {
     setUsers((ArrayList<User>) sessionList);
     try {
       JsonHandler.saveUsers(sessionList);
+
     } catch (IOException e) {
-      Log.warning("failed to delete a user", e);
+      Log.warning("failed to delete a user with NHI: "+user.getNhi(), e);
     }
 
   }
@@ -331,7 +338,7 @@ public class AppController {
       //JsonHandler.saveChangelog(changelogWrite, user.getFullName().toLowerCase().replace(" ", "_"));
 
     } catch (IOException e) {
-      Log.warning("failed to update users", e);
+      Log.warning("failed to update users with NHI: "+user.getNhi(), e);
     }
   }
 
@@ -357,7 +364,7 @@ public class AppController {
      * @param id The staff id (unique identifier) of the clinician
      * @return The clinician that matches the given staff id, or null if no clinician matches.
      */
-  public Clinician getClinician(String id){
+  public Clinician getClinician(String id) {
    for (Clinician c : clinicians){
      if (c.getStaffId().equals(id)) {
        return c;
@@ -377,10 +384,29 @@ public class AppController {
 
     try {
       JsonHandler.saveClinicians(clinicians);
+      Log.info("Successfully updated clinician with Staff ID: "+clinician.getStaffId());
     } catch (IOException e) {
-      Log.warning("Failed to update clinicians", e);
+      Log.warning("Failed to update clinician with Staff ID: "+clinician.getStaffId(), e);
     }
   }
+
+    /**
+     * Takes a passed clinician and removes them from the maintained list of clinicians
+     *
+     * @param clinician The clinician to be deleted
+     */
+    public void deleteClinician(Clinician clinician) {
+      List<Clinician> clinicianSessionList = getClinicians();
+      clinicianSessionList.remove(clinician);
+      deletedClinicianSet.add(clinician);
+      this.clinicians = clinicianSessionList;
+
+      try {
+          JsonHandler.saveClinicians(clinicianSessionList);
+      } catch (IOException e) {
+          Log.warning("failed to delete a clinician", e);
+      }
+    }
 
     /**
      * Removes the given admin from the list of administrators unless the given admin is the default admin.
@@ -388,9 +414,23 @@ public class AppController {
      * @param admin The given admin
      */
     public void deleteAdmin(Administrator admin) {
+        Collection<Administrator> adminSessionList = getAdmins();
+        adminSessionList.remove(admin);
+        deletedAdminSet.add(admin);
+        this.admins = adminSessionList;
+
+        try {
+            JsonHandler.saveAdmins(adminSessionList);
+        } catch (IOException e) {
+            Log.warning("failed to delete an administrator", e);
+        }
+
+
+
         admins.remove(admin);
       // todo: will probably need undo/redo for this similar to how the deleteUser one has it
         // auto save is on another branch..
+      Log.info("Successfully updated admin with user name: "+admin.getUserName());
     }
 
 
@@ -441,8 +481,9 @@ public class AppController {
 
     try {
       JsonHandler.saveAdmins(admins);
+      Log.info("successfully updated the Administrator profile with user name: "+administrator.getUserName());
     } catch (IOException e){
-      Log.warning("Failed to update Administrators", e);
+      Log.warning("Failed to update Administrator profiles with user name: "+administrator.getUserName(), e);
     }
   }
 
@@ -540,6 +581,7 @@ public class AppController {
       }
       try {
         JsonHandler.saveChangelog(changes, newUser.getFullName().toLowerCase().replace(" ", "_"));
+        Log.info("Successfully saved changelog");
       } catch (IOException e) {
         Log.warning("failed to save changelog", e);
       }
@@ -552,25 +594,76 @@ public class AppController {
    * of users
    *
    * @param user user object to undo deletion of
-   * @throws UserNotFoundException if the user is not in the deletedUserSet
-   * @throws UserAlreadyExistsException if a user with the same NHI is in the users list
+   * @throws ProfileNotFoundException if the user is not in the deletedUserSet
+   * @throws ProfileAlreadyExistsException if a user with the same NHI is in the users list
    */
-  public void undoDeletion(User user) throws UserNotFoundException, UserAlreadyExistsException {
+  public void undoDeletion(User user) throws ProfileNotFoundException, ProfileAlreadyExistsException {
     if (deletedUserStack.contains(user)) {
       if (findUser(user.getNhi()) == null) {
         deletedUserStack.remove(user);
         users.add(user);
         redoStack.push(user);
       } else {
-        throw new UserAlreadyExistsException();
+        throw new ProfileAlreadyExistsException();
       }
     } else {
-      throw new UserNotFoundException();
+      throw new ProfileNotFoundException();
     }
   }
 
-  public List<User> getDeletedUsers() {
-    return new ArrayList<>(deletedUserStack);
+
+  /**
+   * Restores the specified clinician object by adding it to the list of active clinicians and removing it from the
+   * set of deleted clinicians.
+   *
+   * @param clinician The specified clinician object to be restored
+   * @throws ProfileNotFoundException if the clinician is not within the set of deleted clinicians
+   * @throws ProfileAlreadyExistsException if a clinician with the same Staff ID is in the clinician list
+   */
+  public void undoClinicianDeletion(Clinician clinician) throws ProfileNotFoundException, ProfileAlreadyExistsException {
+      if (deletedClinicianSet.contains(clinician)) {
+          if (getClinician(clinician.getStaffId()) == null) {
+              deletedClinicianSet.remove(clinician);
+              clinicians.add(clinician);
+          } else {
+              throw new ProfileAlreadyExistsException();
+          }
+      } else {
+        throw new ProfileNotFoundException();
+      }
+  }
+
+  /**
+   * Restores the specified administrator object by adding it to the list of active admins and removing it from the
+   * set of deleted admins.
+   *
+   * @param admin the specified administrator to be restored
+   * @throws ProfileNotFoundException if the admin is not within the set of deleted administrators
+   * @throws ProfileAlreadyExistsException if an administrator with the same username is in the administrator list
+   */
+  public void undoAdminDeletion(Administrator admin) throws ProfileNotFoundException, ProfileAlreadyExistsException {
+    if (deletedAdminSet.contains(admin)) {
+      if (getAdministrator(admin.getUserName()) == null) {
+        deletedAdminSet.remove(admin);
+        admins.add(admin);
+      } else {
+        throw new ProfileAlreadyExistsException();
+      }
+    } else {
+      throw new ProfileNotFoundException();
+    }
+  }
+
+  public Set<User> getDeletedUsers() {
+    return deletedUserStack;
+  }
+
+  public Set<Clinician> getDeletedClinicians() {
+    return deletedClinicianSet;
+  }
+
+  public Set<Administrator> getDeletedAdmins() {
+    return deletedAdminSet;
   }
 
   public java.util.ArrayList<TransplantDetails> getTransplantList() {

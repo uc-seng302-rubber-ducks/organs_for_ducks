@@ -21,6 +21,7 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import seng302.Model.Disease;
 import seng302.Model.User;
+import seng302.Service.Log;
 
 public class DiseasesTabPageController {
 
@@ -183,7 +184,9 @@ public class DiseasesTabPageController {
       newDiseaseController.init(currentUser, application, stage, disease, parent);
       stage.setScene(new Scene(root));
       stage.show();
+      Log.info("successfully launched add/update Diseases pop-up window for User NHI: "+currentUser.getNhi());
     } catch (IOException e) {
+      Log.severe("failed to load add/update Diseases pop-up window for User NHI: "+currentUser.getNhi(), e);
       e.printStackTrace();
     }
 
@@ -201,11 +204,16 @@ public class DiseasesTabPageController {
         currentUser.getCurrentDiseases()
             .remove(currentDiseaseTableView.getSelectionModel().getSelectedItem());
       } else {
+        Log.warning("Unable to delete current disease for User NHI: "+currentUser.getNhi()+", no disease selected");
         return;
       }
+      Log.info("current disease: "+currentDiseaseTableView.getSelectionModel().getSelectedItem()+" deleted for User NHI: "+currentUser.getNhi());
     } else if (pastDiseaseTableView.getSelectionModel().getSelectedIndex() >= 0) {
       currentUser.getPastDiseases()
           .remove(pastDiseaseTableView.getSelectionModel().getSelectedItem());
+      Log.info("past disease: "+pastDiseaseTableView.getSelectionModel().getSelectedItem()+" deleted for User NHI: "+currentUser.getNhi());
+    } else{
+      Log.warning("Unable to delete past disease for User NHI: "+currentUser.getNhi()+", no disease selected");
     }
 
     this.application.update(currentUser);
@@ -255,7 +263,9 @@ public class DiseasesTabPageController {
       newDiseaseController.init(currentUser, application, stage, disease, parent);
       stage.setScene(new Scene(root));
       stage.show();
+      Log.info("successfully launched add Diseases pop-up window for User NHI: "+currentUser.getNhi());
     } catch (IOException e) {
+      Log.severe("failed to load add Diseases pop-up window for User NHI: "+currentUser.getNhi(), e);
       e.printStackTrace();
     }
 
