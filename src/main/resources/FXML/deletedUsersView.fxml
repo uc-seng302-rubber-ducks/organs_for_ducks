@@ -13,7 +13,7 @@
         <Font size="29.0" />
       </font>
     </Label>
-    <Button fx:id="restoreButton" layoutX="560.0" layoutY="19.0" mnemonicParsing="false" onAction="#undoDeletedUser" text="Restore" />
+    <Button fx:id="restoreButton" layoutX="560.0" layoutY="19.0" mnemonicParsing="false" onAction="#undoDeletedProfile" text="Restore" />
       <RadioButton fx:id="userRadioButton" layoutX="14.0" layoutY="71.0" mnemonicParsing="false" selected="true" text="Public Users" visible="false">
          <toggleGroup>
             <ToggleGroup fx:id="deletedProfileRadioButtons" />

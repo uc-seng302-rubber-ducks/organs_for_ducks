@@ -2,11 +2,13 @@ package seng302.Controller;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Optional;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.Region;
 import seng302.Exception.ProfileAlreadyExistsException;
 import seng302.Exception.ProfileNotFoundException;
 import seng302.Model.Administrator;
@@ -44,8 +46,9 @@ public class DeletedUserController {
     initUserTableView();
 
     if (fromAdmin) {
-      deletedProfileRadioButtons.getToggles().forEach(radio -> ((RadioButton) radio).setVisible(true));
+      deletedProfileRadioButtons.getToggles().forEach(radio -> ((RadioButton) radio).setVisible(true)); // hides radio buttons if not an admin
 
+      // listeners for each radio button which hides/shows the table views
       deletedProfileRadioButtons.getToggles().forEach(radio -> (radio).selectedProperty().addListener(((observable, oldValue, newValue) -> {
         deletedClinicianTableView.setVisible(false);
         deletedAdminTableView.setVisible(false);
@@ -177,8 +180,12 @@ public class DeletedUserController {
   }
 
 
+  /**
+   * Attempts to restore either a user, clinician or administrator depending on which radio button is currently selected.
+   * Displays a message with the result of the attempt.   *
+   */
   @FXML
-  public void undoDeletedUser() {
+  private void undoDeletedProfile() {
     try {
       if (userRadioButton.isSelected()) {
         AppController.getInstance()
@@ -193,16 +200,22 @@ public class DeletedUserController {
                 .undoAdminDeletion(deletedAdminTableView.selectionModelProperty().getValue().getSelectedItem());
       }
 
-    } catch (ProfileAlreadyExistsException e) {
-        //TODO: Set error label text
-    } catch (ProfileNotFoundException e) {
-        //TODO: Set error label text
+      displayMessage("Profile successfully restored!");
+
+    } catch (ProfileAlreadyExistsException | ProfileNotFoundException e) {
+      displayMessage(e.getMessage());
     }
-
-
   }
 
-  public void setErrorLabelText(String text) {
-    //TODO: Finish this
+  /**
+   * Displays an alert message to the user.
+   *
+   * @param message the message to be displayed
+   */
+  private void displayMessage(String message) {
+    Alert alert = new Alert(Alert.AlertType.INFORMATION, message, ButtonType.OK);
+    alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
+
+    Optional<ButtonType> result = alert.showAndWait();
   }
 }
