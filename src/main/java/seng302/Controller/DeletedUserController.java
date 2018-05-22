@@ -41,6 +41,12 @@ public class DeletedUserController {
   @FXML
   private RadioButton adminRadioButton;
 
+  private ObservableList<User> oListUsers;
+
+  private ObservableList<Clinician> oListClinicians;
+
+  private ObservableList<Administrator> oListAdmins;
+
   @FXML
   public void init(boolean fromAdmin) {
     initUserTableView();
@@ -78,7 +84,7 @@ public class DeletedUserController {
    * Populates the table view with public users that have been deleted in the current session.
    */
   private void initUserTableView() {
-    ObservableList<User> oListUsers = FXCollections
+    oListUsers = FXCollections
         .observableList(AppController.getInstance().getDeletedUsers());
 
     TableColumn<User, String> fNameColumn = new TableColumn<>("First name");
@@ -124,7 +130,7 @@ public class DeletedUserController {
    * Populates the table view with clinicians that have been deleted in the current session.
    */
   private void initClinicianTableView() {
-    ObservableList<Clinician> oListClinicians = FXCollections.observableList(AppController.getInstance().getDeletedClinicians());
+    oListClinicians = FXCollections.observableList(AppController.getInstance().getDeletedClinicians());
 
     TableColumn<Clinician, String> staffIDColumn = new TableColumn<>("Staff ID");
     staffIDColumn.setCellValueFactory(new PropertyValueFactory<>("staffId"));
@@ -153,7 +159,7 @@ public class DeletedUserController {
    * Populates the table view with administrators that have been deleted in the current session.
    */
   private void initAdminTableView() {
-    ObservableList<Administrator> oListAdmins = FXCollections.observableList(AppController.getInstance().getDeletedAdmins());
+    oListAdmins = FXCollections.observableList(AppController.getInstance().getDeletedAdmins());
 
     TableColumn<Administrator, String> usernameColumn = new TableColumn<>("Username");
     usernameColumn.setCellValueFactory(new PropertyValueFactory<>("userName"));
@@ -190,14 +196,17 @@ public class DeletedUserController {
       if (userRadioButton.isSelected()) {
         AppController.getInstance()
                 .undoDeletion(deletedUserTableView.selectionModelProperty().getValue().getSelectedItem());
+        oListUsers.remove(deletedUserTableView.selectionModelProperty().getValue().getSelectedItem());
 
       } else if (clinicianRadioButton.isSelected()) {
         AppController.getInstance()
                 .undoClinicianDeletion(deletedClinicianTableView.selectionModelProperty().getValue().getSelectedItem());
+        oListClinicians.remove(deletedClinicianTableView.selectionModelProperty().getValue().getSelectedItem());
 
       } else if (adminRadioButton.isSelected()) {
         AppController.getInstance()
                 .undoAdminDeletion(deletedAdminTableView.selectionModelProperty().getValue().getSelectedItem());
+        oListAdmins.remove(deletedAdminTableView.selectionModelProperty().getValue().getSelectedItem());
       }
 
       displayMessage("Profile successfully restored!");
