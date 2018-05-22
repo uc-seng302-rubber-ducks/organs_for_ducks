@@ -40,6 +40,8 @@ public class AppController {
   private ClinicianController clinicianController = new ClinicianController();
   private AdministratorViewController administratorViewController = new AdministratorViewController();
   private Set<User> deletedUserStack = new HashSet<>();
+  private Set<Clinician> deletedClinicianStack = new HashSet<>();
+  private Set<Administrator> deletedAdminStack = new HashSet<>();
   private Stack<User> redoStack = new Stack<>();
 
   private static final String USERS_FILE = Directory.JSON.directory() + "/users.json";
@@ -390,7 +392,7 @@ public class AppController {
     public void deleteClinician(Clinician clinician) {
       List<Clinician> clinicianSessionList = getClinicians();
       clinicianSessionList.remove(clinician);
-//      deletedClinicianStack.add(clinician);
+      deletedClinicianStack.add(clinician);
       this.clinicians = clinicianSessionList;
 
       try {
@@ -408,7 +410,7 @@ public class AppController {
     public void deleteAdmin(Administrator admin) {
         Collection<Administrator> adminSessionList = getAdmins();
         adminSessionList.remove(admin);
-//      deletedAdminStack.add(clinician);
+        deletedAdminStack.add(admin);
         this.admins = adminSessionList;
 
         try {
@@ -602,6 +604,14 @@ public class AppController {
 
   public List<User> getDeletedUsers() {
     return new ArrayList<>(deletedUserStack);
+  }
+
+  public List<Clinician> getDeletedClinicians() {
+    return new ArrayList<>(deletedClinicianStack);
+  }
+
+  public List<Administrator> getDeletedAdmins() {
+    return new ArrayList<>(deletedAdminStack);
   }
 
   public java.util.ArrayList<TransplantDetails> getTransplantList() {

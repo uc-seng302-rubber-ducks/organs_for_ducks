@@ -597,4 +597,22 @@ public class AdministratorViewController {
         }
     }
 
+    @FXML
+    private void openDeletedProfiles() {
+        FXMLLoader deletedUserLoader = new FXMLLoader(
+                getClass().getResource("/FXML/deletedUsersView.fxml"));
+        Parent root;
+        try {
+            root = deletedUserLoader.load();
+            DeletedUserController deletedUserController = deletedUserLoader.getController();
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+            deletedUserController.init(true);
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.showAndWait();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 }
