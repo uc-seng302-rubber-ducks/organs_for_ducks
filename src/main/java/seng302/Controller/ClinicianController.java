@@ -771,11 +771,11 @@ public class ClinicianController implements PropertyChangeListener {
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-        System.out.println("listener called");
-        //clinician controller watches user controller
+
+      //clinician controller watches user model
         //refresh view/tables etc. on change
         if (evt.getPropertyName().equals(EventTypes.USER_UPDATE.name())) {
-            // do stuff
+          refreshTables();
         }
     }
 }

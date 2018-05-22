@@ -73,6 +73,8 @@ public class ReceiverDetails {
     memento.setNewObject(attachedUser.clone());
     attachedUser.getUndoStack().push(memento);
     attachedUser.getRedoStack().clear();
+
+    attachedUser.addChange(new Change("Joined the waiting list for a " + organ.organName));
     return true;
   }
 
@@ -89,11 +91,12 @@ public class ReceiverDetails {
       ArrayList<LocalDate> dates = organs.get(organ);
       dates.add(LocalDate.now());
       organs.put(Organs.values()[organ.ordinal()], dates);
+      attachedUser.addChange(new Change("Left the waiting list for a " + organ.organName));
+      memento.setNewObject(attachedUser.clone());
+      attachedUser.getUndoStack().push(memento);
+      attachedUser.getRedoStack().clear();
       return true;
     }
-    memento.setNewObject(attachedUser.clone());
-    attachedUser.getUndoStack().push(memento);
-    attachedUser.getRedoStack().clear();
     return false;
   }
 

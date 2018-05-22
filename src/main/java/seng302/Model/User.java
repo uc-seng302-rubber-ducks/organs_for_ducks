@@ -329,7 +329,7 @@ public class User extends Undoable<User> implements Listenable {
         mem.setOldObject(this.clone());
         updateLastModified();
         this.nhi = nhi;
-        changes.add(new Change("Updated NHI to " + nhi));
+      addChange(new Change("Updated NHI to " + nhi));
         mem.setNewObject(this.clone());
         getUndoStack().push(mem);
     }
@@ -377,7 +377,7 @@ public class User extends Undoable<User> implements Listenable {
             preferredFirstName = name;
         }
         this.firstName = name;
-        changes.add(new Change("Changed first name to " + name));
+      addChange(new Change("Changed first name to " + name));
         mem.setNewObject(this.clone());
         getUndoStack().push(mem);
 
@@ -392,7 +392,7 @@ public class User extends Undoable<User> implements Listenable {
         mem.setOldObject(this.clone());
         updateLastModified();
         this.middleName = name;
-        changes.add(new Change("Changed middle name to " + middleName));
+      addChange(new Change("Changed middle name to " + middleName));
         mem.setNewObject(this.clone());
         getUndoStack().push(mem);
     }
@@ -406,7 +406,7 @@ public class User extends Undoable<User> implements Listenable {
         mem.setOldObject(this.clone());
         updateLastModified();
         this.lastName = name;
-        changes.add(new Change("Changed last name to " + lastName));
+      addChange(new Change("Changed last name to " + lastName));
         mem.setNewObject(this.clone());
         getUndoStack().push(mem);
     }
@@ -439,7 +439,7 @@ public class User extends Undoable<User> implements Listenable {
         mem.setOldObject(this.clone());
         updateLastModified();
         this.dateOfBirth = dateOfBirth;
-        changes.add(new Change("Changed date of birth to " + dateOfBirth.toString()));
+      addChange(new Change("Changed date of birth to " + dateOfBirth.toString()));
         mem.setNewObject(this.clone());
         getUndoStack().push(mem);
     }
@@ -454,7 +454,7 @@ public class User extends Undoable<User> implements Listenable {
         updateLastModified();
         this.dateOfDeath = dateOfDeath;
         this.isDeceased = dateOfDeath != null;
-        changes.add(new Change(isDeceased ? ("Changed date of death to " + dateOfDeath.toString())
+      addChange(new Change(isDeceased ? ("Changed date of death to " + dateOfDeath.toString())
                 : "Removed date of death"));
         mem.setNewObject(this.clone());
         getUndoStack().push(mem);
@@ -469,7 +469,7 @@ public class User extends Undoable<User> implements Listenable {
         mem.setOldObject(this.clone());
         updateLastModified();
         this.gender = gender;
-        changes.add(new Change("Changed gender to " + gender));
+      addChange(new Change("Changed gender to " + gender));
         mem.setNewObject(this.clone());
         getUndoStack().push(mem);
     }
@@ -483,7 +483,7 @@ public class User extends Undoable<User> implements Listenable {
         mem.setOldObject(this.clone());
         updateLastModified();
         this.height = height;
-        changes.add(new Change("Changed height to " + height));
+      addChange(new Change("Changed height to " + height));
         mem.setNewObject(this.clone());
         getUndoStack().push(mem);
     }
@@ -497,7 +497,7 @@ public class User extends Undoable<User> implements Listenable {
         mem.setOldObject(this.clone());
         updateLastModified();
         this.weight = weight;
-        changes.add(new Change("Changed weight to " + weight));
+      addChange(new Change("Changed weight to " + weight));
         mem.setNewObject(this.clone());
         getUndoStack().push(mem);
     }
@@ -538,7 +538,7 @@ public class User extends Undoable<User> implements Listenable {
         String validType = groupBloodType(bloodType);
         updateLastModified();
         this.bloodType = validType;
-        changes.add(new Change("Changed blood type to " + bloodType));
+      addChange(new Change("Changed blood type to " + bloodType));
         mem.setNewObject(this.clone());
         getUndoStack().push(mem);
     }
@@ -553,7 +553,7 @@ public class User extends Undoable<User> implements Listenable {
         updateLastModified();
         this.currentAddress = currentAddress;
         if (currentAddress != null && !currentAddress.equals("")) {
-            changes.add(new Change("Changed current address  to " + currentAddress));
+          addChange(new Change("Changed current address  to " + currentAddress));
         }
         mem.setNewObject(this.clone());
         getUndoStack().push(mem);
@@ -569,7 +569,7 @@ public class User extends Undoable<User> implements Listenable {
         updateLastModified();
         this.region = region;
         if (currentAddress != null && !currentAddress.equals("")) {
-            changes.add(new Change("Changed region to " + region));
+          addChange(new Change("Changed region to " + region));
         }
         mem.setNewObject(this.clone());
         getUndoStack().push(mem);
@@ -606,7 +606,7 @@ public class User extends Undoable<User> implements Listenable {
 
     public void addCurrentDisease(Disease currentDisease) {
         currentDiseases.add(currentDisease);
-        changes.add(new Change("Added current disease " + currentDisease.toString()));
+      addChange(new Change("Added current disease " + currentDisease.toString()));
     }
 
     public List<Disease> getPastDiseases() {
@@ -614,7 +614,7 @@ public class User extends Undoable<User> implements Listenable {
     }
 
     public void addPastDisease(Disease pastDisease) {
-        changes.add(new Change("Added past disease " + pastDisease.toString()));
+      addChange(new Change("Added past disease " + pastDisease.toString()));
         this.pastDiseases.add(pastDisease);
     }
 
@@ -627,7 +627,7 @@ public class User extends Undoable<User> implements Listenable {
         mem.setOldObject(this.clone());
         updateLastModified();
         this.preferredFirstName = preferredFirstName;
-        changes.add(new Change("Changed preferred first name to " + preferredFirstName));
+      addChange(new Change("Changed preferred first name to " + preferredFirstName));
         mem.setNewObject(this.clone());
         getUndoStack().push(mem);
     }
@@ -645,7 +645,7 @@ public class User extends Undoable<User> implements Listenable {
             genderIdentity = this.birthGender;
         }
         this.birthGender = birthGender;
-        changes.add(new Change("Changed birth gender to " + birthGender));
+      addChange(new Change("Changed birth gender to " + birthGender));
         mem.setNewObject(this.clone());
         getUndoStack().push(mem);
     }
@@ -660,7 +660,7 @@ public class User extends Undoable<User> implements Listenable {
         mem.setOldObject(this.clone());
         updateLastModified();
         this.genderIdentity = genderIdentity;
-        changes.add(new Change("Changed birth Identity to " + genderIdentity));
+      addChange(new Change("Changed birth Identity to " + genderIdentity));
         mem.setNewObject(this.clone());
         getUndoStack().push(mem);
     }
@@ -674,7 +674,7 @@ public class User extends Undoable<User> implements Listenable {
         mem.setOldObject(this.clone());
         updateLastModified();
         this.alcoholConsumption = alcoholConsumption;
-        changes.add(new Change("Changed alcohol consumption to " + alcoholConsumption));
+      addChange(new Change("Changed alcohol consumption to " + alcoholConsumption));
         mem.setNewObject(this.clone());
         getUndoStack().push(mem);
     }
@@ -688,7 +688,7 @@ public class User extends Undoable<User> implements Listenable {
         mem.setOldObject(this.clone());
         updateLastModified();
         this.smoker = smoker;
-        changes.add(new Change("Changed smoker status to " + smoker));
+      addChange(new Change("Changed smoker status to " + smoker));
         mem.setNewObject(this.clone());
         getUndoStack().push(mem);
     }
@@ -702,7 +702,7 @@ public class User extends Undoable<User> implements Listenable {
         mem.setOldObject(this.clone());
         updateLastModified();
         this.homePhone = homePhone;
-        changes.add(new Change("Changed Home phone to " + homePhone));
+      addChange(new Change("Changed Home phone to " + homePhone));
         mem.setNewObject(this.clone());
         getUndoStack().push(mem);
     }
@@ -716,7 +716,7 @@ public class User extends Undoable<User> implements Listenable {
         mem.setOldObject(this.clone());
         updateLastModified();
         this.cellPhone = cellPhone;
-        changes.add(new Change("Changed cell Phone to " + cellPhone));
+      addChange(new Change("Changed cell Phone to " + cellPhone));
         mem.setNewObject(this.clone());
         getUndoStack().push(mem);
     }
@@ -730,7 +730,7 @@ public class User extends Undoable<User> implements Listenable {
         mem.setOldObject(this.clone());
         updateLastModified();
         this.email = email;
-        changes.add(new Change("Changed email to " + email));
+      addChange(new Change("Changed email to " + email));
         mem.setNewObject(this.clone());
         getUndoStack().push(mem);
     }
@@ -808,7 +808,7 @@ public class User extends Undoable<User> implements Listenable {
     public void addAttribute(String attribute) {
         updateLastModified();
         miscAttributes.add(attribute);
-        changes.add(new Change("added attribute " + attribute));
+      addChange(new Change("added attribute " + attribute));
     }
 
     public List<String> getPreviousMedication() {
@@ -833,7 +833,7 @@ public class User extends Undoable<User> implements Listenable {
         updateLastModified();
         currentMedication.add(medication);
         addMedicationTimes(medication, currentMedicationTimes);
-        changes.add(new Change("Added current medication" + medication));
+      addChange(new Change("Added current medication" + medication));
         memento.setNewObject(this.clone());
         getUndoStack().push(memento);
     }
@@ -842,32 +842,32 @@ public class User extends Undoable<User> implements Listenable {
         updateLastModified();
         previousMedication.add(medication);
         addMedicationTimes(medication, previousMedicationTimes);
-        changes.add(new Change("Added previous medication" + medication));
+      addChange(new Change("Added previous medication" + medication));
     }
 
     public void addCurrentMedicationSetup(String medication) {
         updateLastModified();
         currentMedication.add(medication);
-        changes.add(new Change("Added current medication" + medication));
+      addChange(new Change("Added current medication" + medication));
     }
 
     public void addPreviousMedicationSetUp(String medication) {
         updateLastModified();
         previousMedication.add(medication);
-        changes.add(new Change("Added previous medication" + medication));
+      addChange(new Change("Added previous medication" + medication));
     }
 
 
     public void removeCurrentMedication(String medication) {
         updateLastModified();
         currentMedication.remove(medication);
-        changes.add(new Change("Removed current medication" + medication));
+      addChange(new Change("Removed current medication" + medication));
     }
 
     public void removePreviousMedication(String medication) {
         updateLastModified();
         previousMedication.remove(medication);
-        changes.add(new Change("Removed previous medication" + medication));
+      addChange(new Change("Removed previous medication" + medication));
     }
 
     public Map<String, List<LocalDateTime>> getPreviousMedicationTimes() {
@@ -965,13 +965,13 @@ public class User extends Undoable<User> implements Listenable {
     public void addMedicalProcedure(MedicalProcedure medicalProcedure) {
         updateLastModified();
         medicalProcedures.add(medicalProcedure);
-        changes.add(new Change("Added Medical Procedure" + medicalProcedure));
+      addChange(new Change("Added Medical Procedure" + medicalProcedure));
     }
 
     public void removeMedicalProcedure(MedicalProcedure medicalProcedure) {
         updateLastModified();
         medicalProcedures.remove(medicalProcedure);
-        changes.add(new Change("Removed Medical Procedure" + medicalProcedure));
+      addChange(new Change("Removed Medical Procedure" + medicalProcedure));
     }
 
     public String getTooltip() {
@@ -1035,6 +1035,9 @@ public class User extends Undoable<User> implements Listenable {
         Memento<User> memento = getUndoStack().pop();
         this.changeInto(memento.getOldObject());
         getRedoStack().push(memento);
+      this.fire(
+          new PropertyChangeEvent(this, EventTypes.USER_UPDATE.name(), new Object(), new Object()));
+
     }
 
     @Override
@@ -1045,6 +1048,9 @@ public class User extends Undoable<User> implements Listenable {
         Memento<User> memento = getRedoStack().pop();
         this.changeInto(memento.getNewObject());
         getUndoStack().push(memento);
+      this.fire(
+          new PropertyChangeEvent(this, EventTypes.USER_UPDATE.name(), new Object(), new Object()));
+
     }
 
     @Override
