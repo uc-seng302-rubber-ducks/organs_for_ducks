@@ -1,14 +1,14 @@
 package seng302.Controller.CliCommands;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Scanner;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
 import seng302.Controller.AppController;
-import seng302.Model.JsonHandler;
 import seng302.Model.User;
+import seng302.Service.Log;
+
+import java.io.InputStream;
+import java.util.Scanner;
 
 @Command(name = "user", description = "first name, lastname, DOB. Required will locate user and prompt for deletion")
 public class DeleteUser implements Runnable {
@@ -36,28 +36,12 @@ public class DeleteUser implements Runnable {
       System.out.println("No Donor with those details was found");
       return;
     }
-    System.out.println("This will delete the following user: " + toDelete.toString());
-    System.out.println("Please enter Y/n to confirm deletion");
-
-    while (true) {
-      String confirmString = sc.next();
-      if (confirmString.equalsIgnoreCase("y")) {
-        controller.deleteUser(toDelete);
-        System.out.println("Donor successfully deleted");
-        break;
-      } else if (confirmString.equalsIgnoreCase("n")) {
-        System.out.println("Donor has not been deleted");
-        break;
-      } else {
-        System.out.println("Input was not understood please try again");
-      }
-    }
-    //sc.close();
     try {
-      JsonHandler.saveUsers(controller.getUsers());
-      //JsonWriter.saveCurrentDonorState(controller.getUsers());
-    } catch (IOException e) {
-      e.printStackTrace();
+      controller.deleteUser(toDelete);
+      System.out.println("User successfully deleted");
+    } catch (Exception e) {
+      System.out.println("Failed to delete user");
+      Log.warning("failed to delete user " + NHI, e);
     }
   }
 
