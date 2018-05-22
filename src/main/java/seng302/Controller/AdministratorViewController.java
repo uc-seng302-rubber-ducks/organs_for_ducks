@@ -177,7 +177,7 @@ public class AdministratorViewController {
         });
 
         addListeners();
-        displayClinicanTable();
+        displayClinicianTable();
         displayAdminTable();
         displayUserTable();
         clinicianTableView.setVisible(false);
@@ -257,7 +257,7 @@ public class AdministratorViewController {
     /**
      * Initialises table for the clinician table
      */
-    private void displayClinicanTable() {
+    private void displayClinicianTable() {
         ObservableList<Clinician> clinicians = FXCollections.observableArrayList(appController.getClinicians());
 
         TableColumn<Clinician, String> firstNameColumn = new TableColumn<>("First Name");
