@@ -12,8 +12,7 @@ import org.testfx.matcher.control.LabeledMatchers;
 public class ThenSteps {
     @Then("^There are two profiles with first name \"([^\"]*)\" and last name \"([^\"]*)\"$")
     public void thereAreTwoProfilesWithFirstNameAndLastName(String arg1, String arg2) {
-        // Write code here that turns the phrase above into concrete actions
-        throw new PendingException();
+
     }
 
     @Then("^The user should be stored within the application$")
