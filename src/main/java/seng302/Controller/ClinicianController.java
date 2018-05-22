@@ -17,10 +17,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -31,15 +28,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.Pagination;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
-import javafx.scene.control.Tooltip;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.AnchorPane;
@@ -51,6 +40,7 @@ import seng302.Model.Organs;
 import seng302.Model.TransplantDetails;
 import seng302.Model.User;
 import seng302.Service.AttributeValidation;
+import seng302.Service.Log;
 
 /**
  * Class for the functionality of the Clinician view of the application
@@ -169,6 +159,10 @@ public class ClinicianController implements PropertyChangeListener {
 
     @FXML
     private Button logoutButton;
+
+    @FXML
+    private Button deleteClinicianButton;
+
     //</editor-fold>
 
     private Stage stage;
@@ -187,6 +181,9 @@ public class ClinicianController implements PropertyChangeListener {
     private static int searchCount = 0;
     private boolean filterVisible = false;
 
+  private Collection<PropertyChangeListener> parentListeners;
+
+    private boolean admin = false;
 
     /**
      * Initializes the controller class for the clinician overview.
@@ -195,10 +192,21 @@ public class ClinicianController implements PropertyChangeListener {
      * @param appController the applications controller.
      * @param clinician     The current clinician.
      */
-    public void init(Stage stage, AppController appController, Clinician clinician) {
+    public void init(Stage stage, AppController appController, Clinician clinician, boolean fromAdmin,
+        Collection<PropertyChangeListener> parentListeners) {
+
+      //add change listeners of parent controllers to the current clinician
+      this.parentListeners = new ArrayList<>();
+      if (parentListeners != null && !parentListeners.isEmpty()) {
+        for (PropertyChangeListener listener : parentListeners) {
+          clinician.addPropertyChangeListener(listener);
+        }
+        this.parentListeners.addAll(parentListeners);
+      }
         this.stage = stage;
         this.appController = appController;
         this.clinician = clinician.clone();
+        this.admin = fromAdmin;
         stage.setResizable(true);
         showClinician(clinician);
         users = appController.getUsers();
@@ -206,6 +214,10 @@ public class ClinicianController implements PropertyChangeListener {
         initSearchTable();
         groupCheckBoxes();
         initWaitListTable();
+
+        if (clinician.getStaffId().equals("0")) {
+            deleteClinicianButton.setDisable(true);
+        }
 
         setDefaultFilters();
         searchCountLabel.setText("Showing results " + (searchCount == 0 ? startIndex : startIndex + 1) + " - " + (endIndex) + " of " + searchCount);
@@ -370,9 +382,9 @@ public class ClinicianController implements PropertyChangeListener {
     //transplantWaitListTableView.getItems().clear();
   //set up lists
   //table contents are SortedList of a FilteredList of an ObservableList of an ArrayList
-  appController.getTransplantList().clear();
+    appController.getTransplantList().clear();
     for (User user : users) {
-    if (user.isReceiver()&& (user.getDeceased() != null || !user.getDeceased())) {
+      if (user.isReceiver() && (user.getDeceased() != null && !user.getDeceased())) {
         Set<Organs> organs = user.getReceiverDetails().getOrgans().keySet();
       for (Organs organ : organs) {
         if (isReceiverNeedingFilteredOrgan(user.getNhi(), organs).contains(organ)) {
@@ -459,11 +471,19 @@ public class ClinicianController implements PropertyChangeListener {
             openStages.add(userStage);
             UserController userController = userLoader.getController();
             AppController.getInstance().setUserController(userController);
+          //Ostrich
+          parentListeners.add(this);
+          userController.init(AppController.getInstance(), user, userStage, true, parentListeners);
+            userStage.show();
+          Log.info("Clinician " + clinician.getStaffId()
+              + " successfully launched user overview window");
+
             ArrayList<PropertyChangeListener> listeners = new ArrayList<>();
             listeners.add(this);
             userController.init(AppController.getInstance(), user, userStage, true, listeners);
             userStage.show();
         } catch (IOException e) {
+            Log.severe("Clinician "+clinician.getStaffId()+" Failed to load user overview window", e);
             e.printStackTrace();
         }
     }
@@ -673,6 +693,7 @@ public class ClinicianController implements PropertyChangeListener {
     clinician.undo();
     undoButton.setDisable(clinician.getUndoStack().empty());
     showClinician(clinician);
+    Log.info("Clinician "+clinician.getStaffId()+" executed undo clinician");
   }
 
   /**
@@ -683,6 +704,7 @@ public class ClinicianController implements PropertyChangeListener {
     clinician.redo();
     redoButton.setDisable(clinician.getRedoStack().empty());
     showClinician(clinician);
+      Log.info("Clinician "+clinician.getStaffId()+" executed redo clinician");
   }
 
   /**
@@ -701,7 +723,9 @@ public class ClinicianController implements PropertyChangeListener {
       stage.show();
       stage.hide();
       stage.show();
+      Log.info("Clinician "+clinician.getStaffId()+" successfully launched login window after logout");
     } catch (IOException e) {
+        Log.severe("Clinician "+clinician.getStaffId()+" failed to launch login window after logout", e);
       e.printStackTrace();
     }
   }
@@ -722,8 +746,9 @@ public class ClinicianController implements PropertyChangeListener {
             newStage.initModality(Modality.APPLICATION_MODAL); // background window is no longer selectable
             newStage.showAndWait();
             showClinician(clinician);
-
+            Log.info("Clinician "+clinician.getStaffId()+" successfully launched update clinician window");
         } catch (IOException e) {
+            Log.severe("Clinician "+clinician.getStaffId()+" failed to launch update clinician window", e);
             e.printStackTrace();
         }
     }
@@ -758,11 +783,33 @@ public class ClinicianController implements PropertyChangeListener {
           DeletedUserController deletedUserController = deletedUserLoader.getController();
           Stage stage = new Stage();
           stage.setScene(new Scene(root));
-          deletedUserController.init();
+          deletedUserController.init(false);
           stage.initModality(Modality.APPLICATION_MODAL);
           stage.showAndWait();
+          Log.info("Clinician "+clinician.getStaffId()+" successfully launched delete user window");
       } catch (IOException e) {
+          Log.severe("Clinician "+clinician.getStaffId()+" failed to launch delete user window", e);
           e.printStackTrace();
+      }
+  }
+
+    /**
+     * Deletes the clinician profile after confirmation.
+     *
+     */
+  @FXML
+  private void deleteClinician() {
+      Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+      alert.setContentText("Are you sure you want to delete this clinician?");
+      Optional<ButtonType> result = alert.showAndWait();
+
+      if (result.get() == ButtonType.OK) {
+          appController.deleteClinician(clinician);
+          if (!admin) {
+              logout();
+          } else {
+              stage.close();
+          }
       }
   }
 
@@ -772,11 +819,11 @@ public class ClinicianController implements PropertyChangeListener {
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-        System.out.println("listener called");
-        //clinician controller watches user controller
+
+      //clinician controller watches user model
         //refresh view/tables etc. on change
         if (evt.getPropertyName().equals(EventTypes.USER_UPDATE.name())) {
-            // do stuff
+          refreshTables();
         }
     }
 }

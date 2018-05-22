@@ -6,6 +6,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import seng302.Service.PasswordManager;
@@ -47,6 +48,8 @@ public class Clinician extends Undoable<Clinician> implements Listenable {
     public Clinician() {
         dateCreated = LocalDateTime.now();
         dateLastModified = LocalDateTime.now();
+        changes = new ArrayList<>();
+        this.pcs = new PropertyChangeSupport(this);
     }
 
     /**
@@ -69,6 +72,7 @@ public class Clinician extends Undoable<Clinician> implements Listenable {
         this.region = region;
         dateCreated = LocalDateTime.now();
         dateLastModified = LocalDateTime.now();
+        changes = new ArrayList<>();
         this.pcs = new PropertyChangeSupport(this);
 
     }
@@ -92,6 +96,7 @@ public class Clinician extends Undoable<Clinician> implements Listenable {
         setPassword(password);
         this.dateCreated = dateCreated;
         this.dateLastModified = dateLastModified;
+        changes = new ArrayList<>();
         this.pcs = new PropertyChangeSupport(this);
 
     }
@@ -114,6 +119,7 @@ public class Clinician extends Undoable<Clinician> implements Listenable {
         setPassword(password);
         dateCreated = LocalDateTime.now();
         dateLastModified = LocalDateTime.now();
+        changes = new ArrayList<>();
         this.pcs = new PropertyChangeSupport(this);
     }
 
@@ -137,6 +143,7 @@ public class Clinician extends Undoable<Clinician> implements Listenable {
         Memento<Clinician> memento = new Memento<>();
         memento.setOldObject(this.clone());
         this.firstName = name;
+        addChange(new Change("set first name to " + name));
         memento.setNewObject(this.clone());
       getUndoStack().push(memento);
     }
@@ -149,6 +156,7 @@ public class Clinician extends Undoable<Clinician> implements Listenable {
         Memento<Clinician> memento = new Memento<>();
         memento.setOldObject(this.clone());
         this.middleName = name;
+        addChange(new Change("set middle name to " + name));
         memento.setNewObject(this.clone());
       getUndoStack().push(memento);
     }
@@ -161,6 +169,7 @@ public class Clinician extends Undoable<Clinician> implements Listenable {
         Memento<Clinician> memento = new Memento<>();
         memento.setOldObject(this.clone());
         this.lastName = name;
+        addChange(new Change("set last name to " + lastName));
         memento.setNewObject(this.clone());
       getUndoStack().push(memento);
     }
@@ -193,6 +202,7 @@ public class Clinician extends Undoable<Clinician> implements Listenable {
         Memento<Clinician> memento = new Memento<>();
         memento.setOldObject(this.clone());
         this.staffId = staffId;
+        addChange(new Change("set staff id to " + staffId));
         memento.setNewObject(this.clone());
       getUndoStack().push(memento);
     }
@@ -206,6 +216,7 @@ public class Clinician extends Undoable<Clinician> implements Listenable {
         Memento<Clinician> memento = new Memento<>();
         memento.setOldObject(this.clone());
         this.workAddress = workAddress;
+        addChange(new Change("set work address to " + workAddress));
         memento.setNewObject(this.clone());
       getUndoStack().push(memento);
     }
@@ -218,8 +229,9 @@ public class Clinician extends Undoable<Clinician> implements Listenable {
         Memento<Clinician> memento = new Memento<>();
         memento.setOldObject(this.clone());
         this.region = region;
+        addChange(new Change("set region to " + region));
         memento.setNewObject(this.clone());
-      getUndoStack().push(memento);
+        getUndoStack().push(memento);
     }
 
     /**
@@ -236,12 +248,8 @@ public class Clinician extends Undoable<Clinician> implements Listenable {
      * @param password plaintext password to be hashed
      */
     public void setPassword(String password) {
-        Memento<Clinician> memento = new Memento<>();
-        memento.setOldObject(this.clone());
         this.salt = PasswordManager.getNextSalt();
         this.password = PasswordManager.hash(password, salt);
-        memento.setNewObject(this.clone());
-      getUndoStack().push(memento);
     }
 
 
@@ -270,7 +278,7 @@ public class Clinician extends Undoable<Clinician> implements Listenable {
 
     public void addChange(Change change) {
         changes.add(change);
-        this.fire(new PropertyChangeEvent(this, EventTypes.USER_UPDATE.name(), new Object(),
+        this.fire(new PropertyChangeEvent(this, EventTypes.CLINICIAN_UPDATE.name(), new Object(),
             new Object()));
     }
 
@@ -308,6 +316,7 @@ public class Clinician extends Undoable<Clinician> implements Listenable {
       Memento<Clinician> memento = getUndoStack().pop();
         this.changeInto(memento.getOldObject());
       getRedoStack().push(memento);
+        addChange(new Change("undo"));
     }
 
     @Override
@@ -318,6 +327,7 @@ public class Clinician extends Undoable<Clinician> implements Listenable {
       Memento<Clinician> memento = getRedoStack().pop();
         this.changeInto(memento.getNewObject());
       getUndoStack().push(memento);
+        addChange(new Change("redo"));
     }
 
     @Override
@@ -355,6 +365,9 @@ public class Clinician extends Undoable<Clinician> implements Listenable {
 
     @Override
     public void addPropertyChangeListener(PropertyChangeListener listener) {
+        if (this.pcs == null) {
+            this.pcs = new PropertyChangeSupport(this);
+        }
         this.pcs.addPropertyChangeListener(listener);
     }
 
