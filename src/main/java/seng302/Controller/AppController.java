@@ -11,8 +11,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.Stack;
 import seng302.Directory;
-import seng302.Exception.UserAlreadyExistsException;
-import seng302.Exception.UserNotFoundException;
+import seng302.Exception.ProfileAlreadyExistsException;
+import seng302.Exception.ProfileNotFoundException;
+
 import seng302.Model.Administrator;
 import seng302.Model.Change;
 import seng302.Model.Clinician;
@@ -40,8 +41,8 @@ public class AppController {
   private ClinicianController clinicianController = new ClinicianController();
   private AdministratorViewController administratorViewController = new AdministratorViewController();
   private Set<User> deletedUserStack = new HashSet<>();
-  private Set<Clinician> deletedClinicianStack = new HashSet<>();
-  private Set<Administrator> deletedAdminStack = new HashSet<>();
+  private Set<Clinician> deletedClinicianSet = new HashSet<>();
+  private Set<Administrator> deletedAdminSet = new HashSet<>();
   private Stack<User> redoStack = new Stack<>();
 
   private static final String USERS_FILE = Directory.JSON.directory() + "/users.json";
@@ -359,7 +360,7 @@ public class AppController {
      * @param id The staff id (unique identifier) of the clinician
      * @return The clinician that matches the given staff id, or null if no clinician matches.
      */
-  public Clinician getClinician(String id){
+  public Clinician getClinician(String id) {
    for (Clinician c : clinicians){
      if (c.getStaffId().equals(id)) {
        return c;
@@ -392,7 +393,7 @@ public class AppController {
     public void deleteClinician(Clinician clinician) {
       List<Clinician> clinicianSessionList = getClinicians();
       clinicianSessionList.remove(clinician);
-      deletedClinicianStack.add(clinician);
+      deletedClinicianSet.add(clinician);
       this.clinicians = clinicianSessionList;
 
       try {
@@ -410,7 +411,7 @@ public class AppController {
     public void deleteAdmin(Administrator admin) {
         Collection<Administrator> adminSessionList = getAdmins();
         adminSessionList.remove(admin);
-        deletedAdminStack.add(admin);
+        deletedAdminSet.add(admin);
         this.admins = adminSessionList;
 
         try {
@@ -585,20 +586,63 @@ public class AppController {
    * of users
    *
    * @param user user object to undo deletion of
-   * @throws UserNotFoundException if the user is not in the deletedUserSet
-   * @throws UserAlreadyExistsException if a user with the same NHI is in the users list
+   * @throws ProfileNotFoundException if the user is not in the deletedUserSet
+   * @throws ProfileAlreadyExistsException if a user with the same NHI is in the users list
    */
-  public void undoDeletion(User user) throws UserNotFoundException, UserAlreadyExistsException {
+  public void undoDeletion(User user) throws ProfileNotFoundException, ProfileAlreadyExistsException {
     if (deletedUserStack.contains(user)) {
       if (findUser(user.getNhi()) == null) {
         deletedUserStack.remove(user);
         users.add(user);
         redoStack.push(user);
       } else {
-        throw new UserAlreadyExistsException();
+        throw new ProfileAlreadyExistsException();
       }
     } else {
-      throw new UserNotFoundException();
+      throw new ProfileNotFoundException();
+    }
+  }
+
+
+  /**
+   * Restores the specified clinician object by adding it to the list of active clinicians and removing it from the
+   * set of deleted clinicians.
+   *
+   * @param clinician The specified clinician object to be restored
+   * @throws ProfileNotFoundException if the clinician is not within the set of deleted clinicians
+   * @throws ProfileAlreadyExistsException if a clinician with the same Staff ID is in the clinician list
+   */
+  public void undoClinicianDeletion(Clinician clinician) throws ProfileNotFoundException, ProfileAlreadyExistsException {
+      if (deletedClinicianSet.contains(clinician)) {
+          if (getClinician(clinician.getStaffId()) == null) {
+              deletedClinicianSet.remove(clinician);
+              clinicians.add(clinician);
+          } else {
+              throw new ProfileAlreadyExistsException();
+          }
+      } else {
+        throw new ProfileNotFoundException();
+      }
+  }
+
+  /**
+   * Restores the specified administrator object by adding it to the list of active admins and removing it from the
+   * set of deleted admins.
+   *
+   * @param admin the specified administrator to be restored
+   * @throws ProfileNotFoundException if the admin is not within the set of deleted administrators
+   * @throws ProfileAlreadyExistsException if an administrator with the same username is in the administrator list
+   */
+  public void undoAdminDeletion(Administrator admin) throws ProfileNotFoundException, ProfileAlreadyExistsException {
+    if (deletedAdminSet.contains(admin)) {
+      if (getAdministrator(admin.getUserName()) == null) {
+        deletedAdminSet.remove(admin);
+        admins.add(admin);
+      } else {
+        throw new ProfileAlreadyExistsException();
+      }
+    } else {
+      throw new ProfileNotFoundException();
     }
   }
 
@@ -607,11 +651,11 @@ public class AppController {
   }
 
   public List<Clinician> getDeletedClinicians() {
-    return new ArrayList<>(deletedClinicianStack);
+    return new ArrayList<>(deletedClinicianSet);
   }
 
   public List<Administrator> getDeletedAdmins() {
-    return new ArrayList<>(deletedAdminStack);
+    return new ArrayList<>(deletedAdminSet);
   }
 
   public java.util.ArrayList<TransplantDetails> getTransplantList() {

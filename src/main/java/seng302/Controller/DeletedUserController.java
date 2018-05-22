@@ -7,8 +7,8 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import seng302.Exception.UserAlreadyExistsException;
-import seng302.Exception.UserNotFoundException;
+import seng302.Exception.ProfileAlreadyExistsException;
+import seng302.Exception.ProfileNotFoundException;
 import seng302.Model.Administrator;
 import seng302.Model.Clinician;
 import seng302.Model.Organs;
@@ -179,16 +179,27 @@ public class DeletedUserController {
 
   @FXML
   public void undoDeletedUser() {
-
-
     try {
-      AppController.getInstance()
-          .undoDeletion(deletedUserTableView.selectionModelProperty().getValue().getSelectedItem());
-    } catch (UserAlreadyExistsException e) {
-      //TODO: Set error label text
-    } catch (UserNotFoundException e) {
-      //TODO: Set error label text
+      if (userRadioButton.isSelected()) {
+        AppController.getInstance()
+                .undoDeletion(deletedUserTableView.selectionModelProperty().getValue().getSelectedItem());
+
+      } else if (clinicianRadioButton.isSelected()) {
+        AppController.getInstance()
+                .undoClinicianDeletion(deletedClinicianTableView.selectionModelProperty().getValue().getSelectedItem());
+
+      } else if (adminRadioButton.isSelected()) {
+        AppController.getInstance()
+                .undoAdminDeletion(deletedAdminTableView.selectionModelProperty().getValue().getSelectedItem());
+      }
+
+    } catch (ProfileAlreadyExistsException e) {
+        //TODO: Set error label text
+    } catch (ProfileNotFoundException e) {
+        //TODO: Set error label text
     }
+
+
   }
 
   public void setErrorLabelText(String text) {
