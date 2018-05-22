@@ -117,7 +117,6 @@ public class ReceiverTabController {
   public void registerOrgan() {
     if (organsComboBox.getSelectionModel().getSelectedItem() != null) {
       Organs toRegister = organsComboBox.getSelectionModel().getSelectedItem();
-      AppController.getInstance().getClinicianController().refreshTables();
       if (!currentlyReceivingListView.getItems().contains(toRegister)) {
         currentUser.getReceiverDetails().startWaitingForOrgan(toRegister);
         currentlyRecieving.add(toRegister);
@@ -326,7 +325,7 @@ public class ReceiverTabController {
       } else if (organDeregisterationReason == OrganDeregisterReason.REGISTRATION_ERROR) {
         currentUser.getReceiverDetails().stopWaitingForOrgan(toDeRegister);
         Log.info("Successfully de-registered organ:"+ toDeRegister.organName +" for receiver NHI: "+currentUser.getNhi());
-        currentUser.getChanges().add(new Change(
+        currentUser.addChange(new Change(
             "Initial registering of the organ " + toDeRegister.organName
                 + " was an error for receiver " + currentUser.getFullName()));
 
