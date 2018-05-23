@@ -121,21 +121,15 @@ public class ReceiverDetails {
      * @return true if the collection was modified.
      */
     public boolean stopWaitingForOrgan(Organs organ, OrganDeregisterReason reason) {
-        //System.out.println("stopWaitingForOrgansBefore");
         Memento<User> memento = new Memento<>();
         memento.setOldObject(attachedUser.clone());
-        //System.out.println("BEFORE UPDATE\n" + memento.getOldObject().getReceiverDetails().organs);
 
         if (isCurrentlyWaitingFor(organ)) {
             organs.get(organ).get(organs.get(organ).size() - 1).setStopDate(LocalDate.now()); //If you are waiting for something it should be at the back of the list.
             organs.get(organ).get(organs.get(organ).size() - 1).setOrganDeregisterReason(reason);
         }
 
-        //System.out.println("stopWaitingForOrgansAfter:\n" + organs.get(organ).get(organs.get(organ).size() - 1).toString());
-
-        //System.out.println("AFTER UPDATE, BEFORE CLONE\n" + memento.getOldObject().getReceiverDetails().organs);
         memento.setNewObject(attachedUser.clone());
-        //System.out.println("AFTER UPDATE, AFTER CLONE\n" + memento.getOldObject().getReceiverDetails().organs);
         attachedUser.getUndoStack().push(memento);
         attachedUser.getRedoStack().clear();
         attachedUser.addChange(new Change("Stopped waiting for a " + organ));

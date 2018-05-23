@@ -45,12 +45,12 @@ public class ReasonAndDateHolderForReceiverDetails { //Don't @ my naming convent
     }
 
     public OrganDeregisterReason getOrganDeregisterReason() {
-        OrganDeregisterReason why = reason;
-        return why;
+        OrganDeregisterReason reasonCopy = reason;
+        return reasonCopy;
     }
 
-    public void setOrganDeregisterReason(OrganDeregisterReason why) {
-        reason = why;
+    public void setOrganDeregisterReason(OrganDeregisterReason reasonCopy) {
+        reason = reasonCopy;
     }
 
     @Override
