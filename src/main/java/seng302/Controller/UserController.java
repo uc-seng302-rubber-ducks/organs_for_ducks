@@ -1,7 +1,9 @@
 package seng302.Controller;
 
 
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
@@ -65,7 +67,7 @@ public class UserController {
   private AppController application;
 
   @FXML
-  private DonorOverviewController userProfileTabPageController;
+  private UserOverviewController userProfileTabPageController;
 
   @FXML
   private MedicationTabController medicationTabPageController;
@@ -89,7 +91,7 @@ public class UserController {
   private ObservableList<Change> changelog;
 
   /**
-   * Gives the donor view the application controller and hides all label and buttons that are not
+   * Gives the user view the application controller and hides all label and buttons that are not
    * needed on opening
    *
    * @param controller    the application controller
@@ -97,7 +99,15 @@ public class UserController {
    * @param stage         the application stage
    * @param fromClinician boolean value indication if from clinician view
    */
-  public void init(AppController controller, User user, Stage stage, boolean fromClinician) {
+  public void init(AppController controller, User user, Stage stage, boolean fromClinician,
+      Collection<PropertyChangeListener> parentListeners) {
+
+    //add change listeners of parent controllers to the current user
+    if (parentListeners != null && !parentListeners.isEmpty()) {
+      for (PropertyChangeListener listener : parentListeners) {
+        user.addPropertyChangeListener(listener);
+      }
+    }
     this.stage = stage;
     application = controller;
     //ageValue.setText("");
@@ -144,7 +154,9 @@ public class UserController {
 
     stage.onCloseRequestProperty().setValue(event -> {
       if (fromClinician) {
-        application.getClinicianController().refreshTables();
+        if (application.getClinicianController() != null) {
+          application.getClinicianController().refreshTables();
+        }
       }
     });
     userProfileTabPageController.init(controller, user, this.stage, fromClinician);
@@ -251,7 +263,7 @@ public class UserController {
   private void undo() {
     currentUser.undo();
     updateUndoRedoButtons();
-    showUser(currentUser); //Error with showing donors
+    showUser(currentUser);
 
   }
 
@@ -339,7 +351,7 @@ public class UserController {
   }
 
   public void showDonorDiseases(User user, boolean init) {
-    diseasesTabPageController.showDonorDiseases(user, init);
+    diseasesTabPageController.showUserDiseases(user, init);
   }
 
   private boolean getIsRevereSorted() {

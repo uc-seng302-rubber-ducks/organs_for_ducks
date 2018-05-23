@@ -15,8 +15,9 @@ import javafx.scene.control.Label;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import seng302.Model.User;
+import seng302.Service.Log;
 
-public class DonorOverviewController {
+public class UserOverviewController {
 
   //the Home page attributes
   //<editor-fold desc="FMXL declarations">
@@ -102,7 +103,7 @@ public class DonorOverviewController {
       logOutButton.setVisible(false);
     } else {
       Clinician = false;
-      deleteUser.setVisible(false);
+//      deleteUser.setVisible(false);
       backButton.setVisible(false);
     }
   }
@@ -218,8 +219,10 @@ public class DonorOverviewController {
       stage.setScene(new Scene(root));
       updateUserController.init(currentUser, application, stage);
       stage.show();
+      Log.info("Successfully launched update user window for User NHI: "+currentUser.getNhi());
 
     } catch (IOException e) {
+      Log.severe("Failed to load update user window for User NHI: "+currentUser.getNhi(), e);
       e.printStackTrace();
     }
   }
@@ -231,6 +234,7 @@ public class DonorOverviewController {
   private void closeWindow() {
     application.update(currentUser);
     stage.close();
+    Log.info("Successfully closed update user window for User NHI: "+currentUser.getNhi());
   }
 
   /**
@@ -243,9 +247,12 @@ public class DonorOverviewController {
     Optional<ButtonType> result = alert.showAndWait();
 
     if (result.get() == ButtonType.OK) {
-      application.deleteDonor(currentUser);
+      application.deleteUser(currentUser);
+      Log.info("Successfully deleted user profile for User NHI: "+currentUser.getNhi());
       if (!Clinician) {
         logout();
+      } else {
+        stage.close();
       }
     }
   }
@@ -266,7 +273,9 @@ public class DonorOverviewController {
       stage.setScene(new Scene(root));
       stage.hide();
       stage.show();
+      Log.info("successfully launched login window after logged out for User NHI: "+currentUser.getNhi());
     } catch (IOException e) {
+      Log.severe("failed to launch login window after logged out for User NHI: "+currentUser.getNhi(), e);
       e.printStackTrace();
     }
 

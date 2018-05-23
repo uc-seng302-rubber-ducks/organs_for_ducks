@@ -8,6 +8,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.SelectionMode;
 import seng302.Model.Organs;
 import seng302.Model.User;
+import seng302.Service.Log;
 import seng302.Service.OrganListCellFactory;
 
 public class DonationTabPageController {
@@ -23,7 +24,7 @@ public class DonationTabPageController {
   private UserController parent;
 
   /**
-   * Gives the donor view the application controller and hides all label and buttons that are not
+   * Gives the user view the application controller and hides all label and buttons that are not
    * needed on opening
    *
    * @param controller the application controller
@@ -81,6 +82,9 @@ public class DonationTabPageController {
       application.update(currentUser);
       canDonate.getItems().remove(toDonate);
       parent.updateUndoRedoButtons();
+      Log.info("Donated organ: "+toDonate.organName+ "for User NHI: "+ currentUser.getNhi());
+    } else {
+      Log.warning("Donate organs failed for User NHI: "+ currentUser.getNhi()+", no organs selected.");
     }
     currentlyDonating.refresh();
     parent.refreshCurrentlyReceivingList();
@@ -104,6 +108,9 @@ public class DonationTabPageController {
       currentlyDonating.refresh();
       application.update(currentUser);
       parent.updateUndoRedoButtons();
+      Log.info("un-donated organ: "+toUndonate.organName+ "for User NHI: "+ currentUser.getNhi());
+    } else {
+      Log.warning("un-donate organs failed for User NHI: "+ currentUser.getNhi()+", no organs selected.");
     }
 
     currentlyDonating.refresh();

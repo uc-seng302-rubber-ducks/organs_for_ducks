@@ -1,15 +1,13 @@
 package seng302.Model;
 
 import com.google.gson.annotations.Expose;
-
 import java.time.LocalDate;
 import java.util.Comparator;
 
 /**
  * Class to hold information
- * of donor's diseases
+ * of user's diseases
  *
- * @author acb116 - Aaron Bong
  */
 public class Disease {
 

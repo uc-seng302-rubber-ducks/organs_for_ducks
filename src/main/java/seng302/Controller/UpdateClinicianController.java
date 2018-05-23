@@ -20,6 +20,8 @@ import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import seng302.Model.Clinician;
 import seng302.Model.Memento;
+import seng302.Service.Log;
+import seng302.Service.PasswordManager;
 
 import static seng302.Service.UndoHelpers.removeFormChanges;
 
@@ -314,12 +316,14 @@ public class UpdateClinicianController {
                     root = loader.load();
                     ClinicianController clinicianController = loader.getController();
                     Stage clinicianStage = new Stage();
-                    clinicianController.init(clinicianStage, AppController.getInstance(), clinician);
+                    clinicianController.init(clinicianStage, AppController.getInstance(), clinician, false, null);
                     clinicianController.disableLogout();
                     clinicianStage.setScene(new Scene(root));
                     clinicianStage.show();
                     ownStage.close();
+                    Log.info("successfully launched clinician overview window for Clinician Staff Id: "+clinician.getStaffId());
                 } catch (IOException e) {
+                    Log.severe("failed to load clinician overview window for Clinician Staff Id: "+clinician.getStaffId(), e);
                     e.printStackTrace();
                 }
 
@@ -330,11 +334,13 @@ public class UpdateClinicianController {
                 try {
                     root = loader.load();
                     ClinicianController clinicianController = loader.getController();
-                    clinicianController.init(stage, AppController.getInstance(), clinician);
+                    clinicianController.init(stage, AppController.getInstance(), clinician, false, null);
                     stage.setScene(new Scene(root));
                     stage.show();
                     ownStage.close();
+                    Log.info("successfully launched clinician overview window for Clinician Staff Id: "+clinician.getStaffId());
                 } catch (IOException e) {
+                    Log.severe("failed to load clinician overview window for Clinician Staff Id: "+clinician.getStaffId(), e);
                     e.printStackTrace();
                 }
             }
@@ -347,6 +353,7 @@ public class UpdateClinicianController {
      */
     @FXML
     private void cancelUpdate() {
+
         if (!newClinician) {
             if (!undoClinicianFormButton.isDisabled() || !passwordField.getText().isEmpty() || !confirmPasswordField.getText().isEmpty()) {
                 Alert alert = new Alert(Alert.AlertType.WARNING,
@@ -358,6 +365,7 @@ public class UpdateClinicianController {
 
                 Optional<ButtonType> result = alert.showAndWait();
                 if (result.get() == ButtonType.YES) {
+                    Log.info("Clinician update cancelled for Clinician Staff Id: "+currentClinician.getStaffId());
                     removeFormChanges(0, currentClinician, undoMarker);
                     currentClinician.getRedoStack().clear();
                     controller.updateClinicians(oldClinician);
@@ -367,6 +375,7 @@ public class UpdateClinicianController {
             } else { // has no changes
                 currentClinician.getRedoStack().clear();
                 ownStage.close();
+                Log.info("no changes made to Clinician Staff Id: "+currentClinician.getStaffId());
             }
 
         } else {
@@ -480,11 +489,15 @@ public class UpdateClinicianController {
             currentClinician.getRedoStack().clear();
             controller.updateClinicians(currentClinician); // saves the clinician
             ownStage.close(); // returns to the clinician overview window
+            Log.info("Clinician updated for Clinician Staff Id: "+staffID);
 
         } else if (valid && newClinician) { // creates a new clinician
             Clinician clinician = new Clinician(staffID, password, fName, mName, lName, address, region);
             controller.updateClinicians(clinician);
             loadOverview(clinician);
+
+        } else {
+            Log.warning("Clinician not updated for Clinician Staff Id: "+staffID);
         }
     }
 
@@ -554,6 +567,7 @@ public class UpdateClinicianController {
     currentClinician.redo();
     redoClinicianFormButton.setDisable(currentClinician.getRedoStack().isEmpty());
     prefillFields(currentClinician);
+    Log.info("Redo executed for Clinician Staff Id: "+currentClinician.getStaffId());
   }
 
 
@@ -565,5 +579,6 @@ public class UpdateClinicianController {
     currentClinician.undo();
     undoClinicianFormButton.setDisable(currentClinician.getUndoStack().size() <= undoMarker);
     prefillFields(currentClinician);
+    Log.info("Undo executed for Clinician Staff Id: "+currentClinician.getStaffId());
   }
 }

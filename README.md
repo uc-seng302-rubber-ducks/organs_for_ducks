@@ -1,4 +1,4 @@
-#Creating a runnable JAR
+# Creating a runnable JAR
 
 This project is scaffolded by Maven and uses its directory stucture.
 The file POM.xml contains the build instructions for Maven.
@@ -20,7 +20,7 @@ The program will create a hidden directory structure to hold the data files
 in the home directory of the user.
 
 
-#Installing Maven
+# Installing Maven
 
 On Linux: run the command `sudo apt-get install maven`
 
@@ -32,7 +32,7 @@ Using Windows System Properties, configure the path for maven to point to the
 unzipped folder.
 
 
-#Importing the project into Intellij
+# Importing the project into Intellij
 
 To import the source code, clone the git repository
 with the command `git clone git@eng-git.canterbury.ac.nz:seng302-2018/team-24.git`
@@ -155,3 +155,20 @@ first name, lastname, DOB. Required will locate donor and prompt for deletion
 - quit
 
     quit will exit the application and save the current state.
+
+# Storage
+All files used by the program will be stored in the .organs folder of your home directory, and under C:/Users/<Your User>/ for Windows. This contains 3 key items:
+1. users.json
+2. clinicians.json
+3. admin.json
+
+These files store data for each corresponding role 
+
+# Usage
+The login for the clinicians are:
+Staff ID: 0
+Password: admin
+
+The default login for the default admin is:
+Username: default
+Password: admin

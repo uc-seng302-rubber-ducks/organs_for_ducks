@@ -33,7 +33,7 @@ public class DeleteUserTest {
     command.setScanner(mockScanner);
     command.setController(mockController);
     new CommandLine(command).parseWithHandler(new CommandLine.RunLast(), System.err, args);
-    verify(mockController).deleteDonor(testUser);
+    verify(mockController).deleteUser(testUser);
   }
 
   @Test
@@ -45,6 +45,6 @@ public class DeleteUserTest {
     command.setScanner(mockScanner);
     command.setController(mockController);
     new CommandLine(command).parseWithHandler(new CommandLine.RunLast(), System.err, args);
-    verify(mockController, times(0)).deleteDonor(testUser);
+    verify(mockController, times(0)).deleteUser(testUser);
   }
 }

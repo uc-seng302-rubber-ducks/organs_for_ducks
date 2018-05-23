@@ -6,27 +6,20 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.Pagination;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
-import javafx.scene.control.Tooltip;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import seng302.Model.*;
 import seng302.Model.Administrator;
 import seng302.Model.Clinician;
 import seng302.Model.JsonHandler;
@@ -34,116 +27,132 @@ import seng302.Model.User;
 import seng302.Service.Log;
 import seng302.View.CLI;
 
-public class AdministratorViewController {
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
 
-  //<editor-fold desc="FXML stuff">
-  @FXML
-  private TableView<?> transplantWaitListTableView;
+public class AdministratorViewController implements PropertyChangeListener {
 
-  @FXML
-  private Label succesFailLabel;
+    //<editor-fold desc="FXML stuff">
+    @FXML
+    private TableView<?> transplantWaitListTableView;
 
-  @FXML
-  private Label adminLastNameLabel;
+    @FXML
+    private Label succesFailLabel;
 
-  @FXML
-  private TableView<Administrator> adminTableView;
+    @FXML
+    private Label adminLastNameLabel;
 
-  @FXML
-  private TableView<Clinician> clinicianTableView;
+    @FXML
+    private TableView<Administrator> adminTableView;
 
-  @FXML
-  private TableView<User> userTableView;
+    @FXML
+    private TableView<Clinician> clinicianTableView;
 
-  @FXML
-  private Pagination searchTablePagination;
+    @FXML
+    private TableView<User> userTableView;
 
-  @FXML
-  private Button addAdminButton;
+    @FXML
+    private Pagination searchTablePagination;
 
-  @FXML
-  private MenuItem adminSaveMenu;
+    @FXML
+    private Button addAdminButton;
 
-  @FXML
-  private Tooltip searchToolTip;
+    @FXML
+    private MenuItem adminSaveMenu;
 
-  @FXML
-  private Label adminFirstnameLabel;
+    @FXML
+    private Tooltip searchToolTip;
 
-  @FXML
-  private Button adminLogoutButton;
+    @FXML
+    private Label adminFirstnameLabel;
 
-  @FXML
-  private Button addClinicianButton;
+    @FXML
+    private Button adminLogoutButton;
 
-  @FXML
-  private CheckBox adminAdminCheckbox;
+    @FXML
+    private Button addClinicianButton;
 
-  @FXML
-  private Button adminUndoButton;
+    @FXML
+    private CheckBox adminAdminCheckbox;
 
-  @FXML
-  private CheckBox adminClinicianCheckbox;
+    @FXML
+    private Button adminUndoButton;
 
-  @FXML
-  private Label searchCountLabel;
+    @FXML
+    private CheckBox adminClinicianCheckbox;
 
-  @FXML
-  private Label filtersLabel;
+    @FXML
+    private Label searchCountLabel;
 
-  @FXML
-  private CheckBox adminUserCheckbox;
+    @FXML
+    private Label filtersLabel;
 
-  @FXML
-  private Button adminRedoButton;
+    @FXML
+    private CheckBox adminUserCheckbox;
 
-  @FXML
-  private Button addUserButton;
+    @FXML
+    private Button adminRedoButton;
 
-  @FXML
-  private Button updateButton;
+    @FXML
+    private Button addUserButton;
 
-  @FXML
-  private Label adminMiddleNameLabel;
+    @FXML
+    private Button updateButton;
 
-  @FXML
-  private Label adminUsernameLable;
+    @FXML
+    private Label adminMiddleNameLabel;
 
-  @FXML
-  private MenuItem adminImportMenu;
+    @FXML
+    private Label adminUsernameLable;
 
-  @FXML
-  private TextField adminSearchField;
+    @FXML
+    private MenuItem adminImportMenu;
 
-  @FXML
-  private TextArea adminCliTextArea;
+    @FXML
+    private TextField adminSearchField;
 
-  @FXML
-  private TextField cliInputTextField;
+    @FXML
+    private TextArea adminCliTextArea;
 
-  @FXML
-  private Button deleteAdminButton;
+    @FXML
+    private TextField cliInputTextField;
 
-  //</editor-fold>
+    @FXML
+    private Button deleteAdminButton;
 
-  private Stage stage;
-  private AppController appController;
-  private Administrator administrator;
-  private ArrayList<String> pastCommands = new ArrayList<>();
-  private int pastCommandIndex = -1;
+    @FXML
+    private Label fileNotFoundLabel;
 
-  /**
-   * Initialises scene for the administrator view
-   *
-   * @param administrator administrator to view
-   * @param appController appController instance to get data from
-   * @param stage stage to display on
-   */
-  public void init(Administrator administrator, AppController appController, Stage stage) {
-    this.stage = stage;
-    this.appController = appController;
-    this.administrator = administrator;
-    displayDetails(administrator);
+    //</editor-fold>
+
+    private Stage stage;
+    private AppController appController;
+    private Administrator administrator;
+    private ArrayList<String> pastCommands = new ArrayList<>();
+    private int pastCommandIndex = -1;
+    private boolean owner;
+
+    /**
+     * Initialises scene for the administrator view
+     *
+     * @param administrator administrator to view
+     * @param appController appController instance to get data from
+     * @param stage stage to display on
+     */
+    public void init(Administrator administrator, AppController appController, Stage stage, boolean owner) {
+        this.stage = stage;
+        this.appController = appController;
+        this.administrator = administrator;
+        this.owner = owner;
+        displayDetails();
 
     adminUndoButton.setDisable(true);
     adminRedoButton.setDisable(true);
@@ -174,13 +183,13 @@ public class AdministratorViewController {
       }
     });
 
-    addListeners();
-    displayClinicanTable();
-    displayAdminTable();
-    displayUserTable();
-    clinicianTableView.setVisible(false);
-    adminTableView.setVisible(false);
-  }
+        addListeners();
+        displayClinicianTable();
+        displayAdminTable();
+        displayUserTable();
+        clinicianTableView.setVisible(false);
+        adminTableView.setVisible(false);
+    }
 
   /**
    * Sends the input to CLI and redirects the output stream to a new ByteArrayOutputStream and sends
@@ -231,11 +240,11 @@ public class AdministratorViewController {
 
     }));
 
-    userTableView.setOnMouseClicked(event -> {
-      if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
-        launchDonor(userTableView.getSelectionModel().getSelectedItem());
-      }
-    });
+        userTableView.setOnMouseClicked(event -> {
+            if(event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
+                launchUser(userTableView.getSelectionModel().getSelectedItem());
+            }
+        });
 
     clinicianTableView.setOnMouseClicked(event -> {
       if (event.getClickCount() == 2 && event.getButton() == MouseButton.PRIMARY) {
@@ -243,21 +252,18 @@ public class AdministratorViewController {
       }
     });
 
-    adminTableView.setOnMouseClicked(event -> {
-      if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
-        launchAdmin(adminTableView.getSelectionModel().getSelectedItem());
-      }
-    });
+         adminTableView.setOnMouseClicked(event -> {
+            if(event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
+                launchAdmin(adminTableView.getSelectionModel().getSelectedItem());
+            }
+        });
+    }
 
-
-  }
-
-  /**
-   * Initialises table for the clinician table
-   */
-  private void displayClinicanTable() {
-    ObservableList<Clinician> clinicians = FXCollections
-        .observableArrayList(appController.getClinicians());
+    /**
+     * Initialises table for the clinician table
+     */
+    private void displayClinicianTable() {
+        ObservableList<Clinician> clinicians = FXCollections.observableArrayList(appController.getClinicians());
 
     TableColumn<Clinician, String> firstNameColumn = new TableColumn<>("First Name");
     firstNameColumn.setCellValueFactory(new PropertyValueFactory<>("firstName"));
@@ -324,50 +330,81 @@ public class AdministratorViewController {
 
   }
 
-  /**
-   * Imports admins from a file chosen from a fileselector
-   *
-   * @throws FileNotFoundException if the specified file is not found
-   */
-  @FXML
-  void importAdmins() throws FileNotFoundException {
-    String filename;
-    filename = FileSelectorController.getFileSelector(stage);
-    if (filename != null) {
-      //JsonHandler.loadAdmins(filename);
-    }
-  }
-
-  /**
-   * Imports clinicians from a file chosen from a fileselector
-   *
-   * @throws FileNotFoundException if the specified file is not found
-   */
-  @FXML
-  void importClinicians() throws FileNotFoundException {
-    String filename;
-    filename = FileSelectorController.getFileSelector(stage);
-    if (filename != null) {
-      List<Clinician> clinicians = JsonHandler.loadClinicians(filename);
-      System.out.println(clinicians.size() + " clinicians were successfully loaded");
+    /**
+     * Imports admins from a file chosen from a fileselector
+     * @throws FileNotFoundException if the specified file is not found
+     */
+    @FXML
+    void importAdmins() throws FileNotFoundException {
+        Log.info("Admin "+administrator.getUserName()+" Importing Administrator profiles");
+        String filename;
+        filename = FileSelectorController.getFileSelector(stage);
+        if (filename != null) {
+            fileNotFoundLabel.setVisible(false);
+//            try {
+//                JsonHandler.loadAdmins(filename);
+//                Log.info("successfully imported " + AdminProfileCount + " Administrator profiles"); //TODO: include number of Administrator profiles loaded in log info message.
+//            } catch (FileNotFoundException e){
+//                Log.severe("File not found", e);
+//                throw e;
+//            }
+        } else {
+            Log.warning("File name not found");
+            fileNotFoundLabel.setVisible(true);
+        }
     }
 
+    /**
+     * Imports clinicians from a file chosen from a fileselector
+     * @throws FileNotFoundException if the specified file is not found
+     */
+    @FXML
+    void importClinicians() throws FileNotFoundException{
+        Log.info("Admin "+administrator.getUserName()+" Importing Clinician profiles");
+        String filename;
+        filename = FileSelectorController.getFileSelector(stage);
+        if (filename != null) {
+            fileNotFoundLabel.setVisible(false);
+            try {
+                List<Clinician> clinicians = JsonHandler.loadClinicians(filename);
+                Log.info("successfully imported " + clinicians.size() +" Clinician profiles");
+                //System.out.println(clinicians.size() + " clinicians were successfully loaded");
+            } catch (FileNotFoundException e){
+                Log.severe("File not found", e);
+                throw e;
+            }
+
+        } else {
+            Log.warning("File name not found");
+            fileNotFoundLabel.setVisible(true);
+        }
+
   }
 
-  /**
-   * Imports Users from a file chosen from a fileselector
-   *
-   * @throws FileNotFoundException if the specified file is not found
-   */
-  @FXML
-  void importUsers() throws FileNotFoundException {
-    String filename;
-    filename = FileSelectorController.getFileSelector(stage);
-    if (filename != null) {
-      List<User> users = JsonHandler.loadUsers(filename);
-      System.out.println(users.size() + " donors were successfully loaded");
+    /**
+     * Imports Users from a file chosen from a fileselector
+     * @throws FileNotFoundException if the specified file is not found
+     */
+    @FXML
+    void importUsers() throws FileNotFoundException {
+        Log.info("Admin "+administrator.getUserName()+" Importing User profiles");
+        String filename;
+        filename = FileSelectorController.getFileSelector(stage);
+        if (filename != null) {
+            try {
+                List<User> users = JsonHandler.loadUsers(filename);
+                Log.info("successfully imported " + users.size() + " Users profiles");
+                //System.out.println(users.size() + " donors were successfully loaded");
+            } catch (FileNotFoundException e){
+                Log.severe("File not found", e);
+                throw e;
+            }
+
+        } else {
+            Log.warning("File name not found");
+            fileNotFoundLabel.setVisible(true);
+        }
     }
-  }
 
   /**
    * Close the tab
@@ -384,82 +421,90 @@ public class AdministratorViewController {
   @FXML
   void addUser() {
 
-    FXMLLoader donorLoader = new FXMLLoader(getClass().getResource("/FXML/createNewUser.fxml"));
-    Parent root;
-    try {
-      root = donorLoader.load();
-      Stage newStage = new Stage();
-      newStage.setScene(new Scene(root));
-      newStage.setTitle("Create New User Profile");
-      newStage.show();
-      NewUserController donorController = donorLoader.getController();
-      donorController.init(AppController.getInstance(), stage, newStage);
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-  }
-
-  /**
-   * Launches the donor overview screen for a selected user
-   *
-   * @param user the selected user.
-   */
-  private void launchDonor(User user) {
-    FXMLLoader donorLoader = new FXMLLoader(getClass().getResource("/FXML/userView.fxml"));
-    Parent root;
-    try {
-      root = donorLoader.load();
-      Stage newStage = new Stage();
-      newStage.setScene(new Scene(root));
-      UserController userController = donorLoader.getController();
-      AppController.getInstance().setUserController(userController);
-      userController.init(AppController.getInstance(), user, newStage, true);
-      newStage.show();
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-  }
-
-  /**
-   * Launches the clinician overview screen for a selected clinician
-   *
-   * @param clinician the selected clinician.
-   */
-  private void launchClinician(Clinician clinician) {
-    FXMLLoader clinicianLoader = new FXMLLoader(getClass().getResource("/FXML/clinicianView.fxml"));
-    Parent root;
-    try {
-      root = clinicianLoader.load();
-      Stage newStage = new Stage();
-      newStage.setScene(new Scene(root));
-      ClinicianController clinicianController = clinicianLoader.getController();
-      clinicianController.init(newStage, AppController.getInstance(), clinician);
-      newStage.show();
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-  }
-
-  /**
-   * Launches the admin overview screen for a selected admin
-   *
-   * @param administrator the selected administrator
-   */
-  private void launchAdmin(Administrator administrator) {
-    FXMLLoader adminLoader = new FXMLLoader(getClass().getResource("/FXML/adminView.fxml"));
-    Parent root;
-    try {
-      root = adminLoader.load();
-      Stage newStage = new Stage();
-      newStage.setScene(new Scene(root));
-      AdministratorViewController adminLoaderController = adminLoader.getController();
-      adminLoaderController.init(administrator, AppController.getInstance(), newStage);
-      newStage.show();
-    } catch (IOException e) {
-      e.printStackTrace();
+        FXMLLoader userLoader = new FXMLLoader(getClass().getResource("/FXML/createNewUser.fxml"));
+        Parent root;
+        try {
+            root = userLoader.load();
+            Stage newStage = new Stage();
+            newStage.setScene(new Scene(root));
+            newStage.setTitle("Create New User Profile");
+            newStage.show();
+            NewUserController donorController = userLoader.getController();
+            donorController.init(AppController.getInstance(), stage, newStage);
+            Log.info("Admin "+administrator.getUserName()+" successfully launched create new user window");
+        } catch (IOException e) {
+            Log.severe("Admin "+administrator.getUserName()+" failed to load create new user window", e);
+            e.printStackTrace();
+        }
     }
 
-  }
+    /**
+     * Launches the user overview screen for a selected user
+     * @param user the selected user.
+     */
+    private void launchUser(User user) {
+        FXMLLoader userLoader = new FXMLLoader(getClass().getResource("/FXML/userView.fxml"));
+        Parent root;
+        try {
+            root = userLoader.load();
+            Stage newStage = new Stage();
+            newStage.setScene(new Scene(root));
+            UserController userController = userLoader.getController();
+            AppController.getInstance().setUserController(userController);
+          userController.init(AppController.getInstance(), user, newStage, true, null);
+            newStage.show();
+            Log.info("Admin "+administrator.getUserName()+" successfully launched user overview window for User NHI: "+user.getNhi());
+        } catch (IOException e) {
+            Log.severe("Admin "+administrator.getUserName()+ " failed to load user overview window for User NHI: "+user.getNhi(), e);
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Launches the clinician overview screen for a selected clinician
+     * @param clinician the selected clinician.
+     */
+    private void launchClinician(Clinician clinician) {
+        FXMLLoader clinicianLoader = new FXMLLoader(getClass().getResource("/FXML/clinicianView.fxml"));
+        Parent root;
+        try {
+            root = clinicianLoader.load();
+            Stage newStage = new Stage();
+            newStage.setScene(new Scene(root));
+            ClinicianController clinicianController = clinicianLoader.getController();
+            Collection<PropertyChangeListener> listeners = new ArrayList<>();
+            listeners.add(this);
+            clinicianController.init(newStage, AppController.getInstance(), clinician, owner, listeners);
+            //TODO
+            //clinicianController.init(newStage, AppController.getInstance(), clinician, true);
+            newStage.show();
+            Log.info("Admin "+administrator.getUserName()+ " successfully launched clinician overview window for Clinician Staff ID:" +clinician.getStaffId());
+        } catch (IOException e) {
+            Log.severe("Admin "+administrator.getUserName()+ " failed to load clinician overview window for Clinician Staff ID:" +clinician.getStaffId(), e);
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Launches the admin overview screen for a selected admin
+     * @param administrator the selected administrator
+     */
+    private void launchAdmin(Administrator administrator) {
+        FXMLLoader adminLoader = new FXMLLoader(getClass().getResource("/FXML/adminView.fxml"));
+        Parent root;
+        try {
+            root = adminLoader.load();
+            Stage newStage = new Stage();
+            newStage.setScene(new Scene(root));
+            AdministratorViewController adminLoaderController = adminLoader.getController();
+            adminLoaderController.init(administrator, AppController.getInstance(), newStage, false);
+            newStage.show();
+            Log.info("Admin "+administrator.getUserName()+ " successfully launched administrator overview window");
+        } catch (IOException e) {
+            Log.severe("Admin "+administrator.getUserName()+" failed to load administrator overview window", e);
+            e.printStackTrace();
+        }
+    }
 
   /**
    * Launches the clinician creation screen
@@ -467,135 +512,192 @@ public class AdministratorViewController {
   @FXML
   void addClinician() {
 
-    FXMLLoader clinicianLoader = new FXMLLoader(
-        getClass().getResource("/FXML/updateClinician.fxml"));
-    Parent root;
-    try {
-      root = clinicianLoader.load();
-      Stage newStage = new Stage();
-      newStage.setScene(new Scene(root));
-      newStage.show();
-      UpdateClinicianController newClinician = clinicianLoader.getController();
-      newClinician.init(null, appController, stage, true, newStage);
-
-    } catch (IOException e) {
-      e.printStackTrace();
+        FXMLLoader clinicianLoader = new FXMLLoader(getClass().getResource("/FXML/updateClinician.fxml"));
+        Parent root;
+        try {
+            root = clinicianLoader.load();
+            Stage newStage = new Stage();
+            newStage.setScene(new Scene(root));
+            newStage.show();
+            UpdateClinicianController newClinician = clinicianLoader.getController();
+            newClinician.init(null, appController, stage, true, newStage);
+            Log.info("Admin "+administrator.getUserName()+" successfully launched create new clinician window");
+        } catch (IOException e) {
+            Log.severe("Admin "+administrator.getUserName()+" failed to load create new clinician window", e);
+            e.printStackTrace();
+        }
     }
-  }
 
-  /**
-   * Launches admin creation screen
-   */
-  @FXML
-  void addAdmin() {
-    FXMLLoader adminLoader = new FXMLLoader(getClass().getResource("/FXML/updateAdmin.fxml"));
-    Parent root;
-    try {
-      root = adminLoader.load();
-      Stage newStage = new Stage();
-      newStage.initModality(Modality.APPLICATION_MODAL);
-      newStage.setScene(new Scene(root));
-      newStage.show();
-      UpdateAdminController updateAdminController = adminLoader.getController();
-      updateAdminController.init(new Administrator(), newStage, true);
-    } catch (IOException e) {
-      e.printStackTrace();
+    /**
+     * Launches admin creation screen
+     */
+    @FXML
+    void addAdmin() {
+        FXMLLoader adminLoader = new FXMLLoader(getClass().getResource("/FXML/updateAdmin.fxml"));
+        Parent root;
+        try {
+            root = adminLoader.load();
+            Stage newStage = new Stage();
+            newStage.initModality(Modality.APPLICATION_MODAL);
+            newStage.setScene(new Scene(root));
+            newStage.show();
+            UpdateAdminController updateAdminController = adminLoader.getController();
+            updateAdminController.init(new Administrator(), newStage);
+            Log.info("Admin "+administrator.getUserName()+" successfully launched create new administrator window");
+        } catch (IOException e) {
+            Log.severe("Admin "+administrator.getUserName()+" failed to load create new administrator window", e);
+            e.printStackTrace();
+        }
     }
-  }
 
-  /**
-   * Logs out and saves the admin
-   */
-  @FXML
-  void logout() {
-    //check about saving
-    appController.updateAdmin(administrator);
-    FXMLLoader loginLoader = new FXMLLoader(getClass().getResource("/FXML/loginView.fxml"));
-    Parent root;
-    try {
-      root = loginLoader.load();
-      Stage newStage = new Stage();
-      newStage.setScene(new Scene(root));
-      newStage.show();
-      stage.close();
-      LoginController loginController = loginLoader.getController();
-      loginController.init(appController, newStage);
-
-    } catch (IOException e) {
-      Log.warning(e.getMessage(), e);
+    /**
+     * Logs out and saves the admin
+     */
+    @FXML
+    void logout() {
+        //check about saving
+        appController.updateAdmin(administrator);
+        FXMLLoader loginLoader = new FXMLLoader(getClass().getResource("/FXML/loginView.fxml"));
+        Parent root;
+        try {
+            root = loginLoader.load();
+            Stage newStage = new Stage();
+            newStage.setScene(new Scene(root));
+            newStage.show();
+            stage.close();
+            LoginController loginController = loginLoader.getController();
+            loginController.init(appController,newStage);
+            Log.info("Admin "+administrator.getUserName()+" Successfully launched Login window after logout");
+        } catch (IOException e) {
+            Log.severe("Admin "+administrator.getUserName()+" Failed to load Login window after logout", e);
+        }
     }
-  }
-
-  /**
-   * Undoes the previous action that changed the admin
-   */
-  @FXML
-  void undo() {
-    administrator.undo();
-    adminUndoButton.setDisable(administrator.getUndoStack().isEmpty());
-    displayDetails(administrator);
-  }
-
-  /**
-   * Redoes the previous action that changed the admin
-   */
-  @FXML
-  void redo() {
-    administrator.redo();
-    adminRedoButton.setDisable(administrator.getRedoStack().isEmpty());
-    displayDetails(administrator);
-  }
 
 
-  /**
-   * load the labels on the admin view with the current admins details
-   */
-  public void displayDetails(Administrator admin) {
-    if (!admin.getUserName().isEmpty()) {
-      adminUsernameLable.setText(admin.getUserName());
-      adminFirstnameLabel.setText(admin.getFirstName());
-      if (!admin.getMiddleName().isEmpty()) {
-        adminMiddleNameLabel.setText(admin.getMiddleName());
-      } else {
-        adminMiddleNameLabel.setText("");
+    /**
+     * Undoes the previous action that changed the admin
+     */
+    @FXML
+    void undo() {
+        administrator.undo();
+        adminUndoButton.setDisable(administrator.getUndoStack().isEmpty());
+        displayDetails(administrator);
+        Log.info("Admin "+administrator.getUserName()+"executed Undo Administrator");
+    }
 
+    /**
+     * Redoes the previous action that changed the admin
+     */
+    @FXML
+    void redo() {
+        administrator.redo();
+        adminRedoButton.setDisable(administrator.getRedoStack().isEmpty());
+        displayDetails(administrator);
+        Log.info("Admin "+administrator.getUserName()+"executed Redo Administrator");
+
+    }
+
+
+    /**
+     * load the labels on the admin view with the current admins details
+     */
+    public void displayDetails() {
+        if (!administrator.getUserName().isEmpty()) {
+            adminUsernameLable.setText(administrator.getUserName());
+            adminFirstnameLabel.setText(administrator.getFirstName());
+            if ((administrator.getMiddleName() != null) && !administrator.getMiddleName().isEmpty()) {
+                adminMiddleNameLabel.setText(administrator.getMiddleName());
+            } else {
+                adminMiddleNameLabel.setText("");
+
+            }
+            if ((administrator.getLastName() != null) && !administrator.getLastName().isEmpty()) {
+                adminLastNameLabel.setText(administrator.getLastName());
+            } else {
+                adminLastNameLabel.setText("");
+            }
+        }
+        adminUndoButton.setDisable(administrator.getUndoStack().isEmpty());
+        adminRedoButton.setDisable(administrator.getRedoStack().isEmpty());
+    }
+
+    /**
+     * go to a form to update the admin
+     */
+    @FXML
+    void updateAdmin() {
+        FXMLLoader adminLoader = new FXMLLoader(getClass().getResource("/FXML/updateAdmin.fxml"));
+        Parent root;
+        try {
+            root = adminLoader.load();
+            Stage newStage = new Stage();
+            newStage.setScene(new Scene(root));
+            newStage.show();
+            UpdateAdminController updateAdminController = adminLoader.getController();
+            updateAdminController.init(administrator, newStage);
+            Log.info("Admin "+administrator.getUserName()+" successfully launched update administrator window");
+        } catch (IOException e) {
+            Log.severe("Admin "+administrator.getUserName()+" failed to load update administrator window", e);
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Deletes the admin account with a confirmation message
+     */
+    @FXML
+    void deleteAdminAccount() {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setContentText("Are you sure you want to delete this administrator?");
+        Optional<ButtonType> result = alert.showAndWait();
+
+        if (result.get() == ButtonType.OK) {
+            appController.deleteAdmin(administrator);
+            Log.info("Admin " + administrator.getUserName() + " Successfully deleted Admin account: "); //TODO: include username of deleted admin account in log.
+            if (owner) {
+                logout();
+            } else {
+                stage.close();
+            }
+        }
+    }
+
+    @FXML
+    private void openDeletedProfiles() {
+        FXMLLoader deletedUserLoader = new FXMLLoader(
+                getClass().getResource("/FXML/deletedUsersView.fxml"));
+        Parent root;
+        try {
+            root = deletedUserLoader.load();
+            DeletedUserController deletedUserController = deletedUserLoader.getController();
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+            deletedUserController.init(true);
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.showAndWait();
+        } catch (IOException e) {
+            Log.warning(e.getMessage());
+        }
+    }
+
+    /**
+     * updates tables in the admin window with current version of underlying model
+     */
+    public void refreshTables() {
+        adminTableView.refresh();
+        clinicianTableView.refresh();
+        userTableView.refresh();
+    }
+
+  @Override
+  public void propertyChange(PropertyChangeEvent evt) {
+    //watches users and clinicians
+    //refresh view on change
+      //if/else not strictly necessary at this stage
+      if (evt.getPropertyName().equals(EventTypes.USER_UPDATE.name())) {
+          refreshTables();
+      } else if (evt.getPropertyName().equals(EventTypes.CLINICIAN_UPDATE.name())) {
+          refreshTables();
       }
-      if (!admin.getLastName().isEmpty()) {
-        adminLastNameLabel.setText(admin.getLastName());
-      } else {
-        adminLastNameLabel.setText("");
-      }
-    }
-    adminUndoButton.setDisable(administrator.getUndoStack().isEmpty());
-    adminRedoButton.setDisable(administrator.getRedoStack().isEmpty());
   }
-
-  /**
-   * go to a form to update the admin
-   */
-  @FXML
-  void updateAdmin() {
-    FXMLLoader adminLoader = new FXMLLoader(getClass().getResource("/FXML/updateAdmin.fxml"));
-    Parent root;
-    try {
-      root = adminLoader.load();
-      Stage newStage = new Stage();
-      newStage.setScene(new Scene(root));
-      newStage.show();
-      UpdateAdminController updateAdminController = adminLoader.getController();
-      updateAdminController.init(administrator, newStage, false);
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-
-  }
-
-  /**
-   * Deletes the admin account with a confirmation message
-   */
-  @FXML
-  void deleteAdminAccount() {
-
-  }
-
 }

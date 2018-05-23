@@ -65,7 +65,7 @@ public class IoHelper {
    * @param users An array list of users.
    * @return A String of all users separated by a new line.
    */
-  public static String prettyStringDonors(List<User> users) {
+  public static String prettyStringUsers(List<User> users) {
     StringBuilder sb = new StringBuilder();
     if(users.size() > 0) {
       for (User u : users) {
