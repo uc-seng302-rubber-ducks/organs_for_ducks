@@ -1,6 +1,5 @@
 package seng302.Controller;
 
-import java.io.IOException;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -16,6 +15,8 @@ import seng302.Model.Clinician;
 import seng302.Model.User;
 import seng302.Service.Log;
 import seng302.View.CLI;
+
+import java.io.IOException;
 
 /**
  * Class for the login functionality of the application
@@ -191,7 +192,7 @@ public class LoginController {
         AdministratorViewController administratorController = administratorLoader.getController();
         AppController.getInstance().setAdministratorViewController(administratorController);
         Log.info("Logging in as an administrator");
-        administratorController.init(administrator, appController, stage, true);
+        administratorController.init(administrator, appController, stage, true, null);
       } catch (IOException e) {
         Log.severe("failed to load administrator window", e);
         e.printStackTrace();
@@ -268,7 +269,7 @@ public class LoginController {
         stage.setScene(new Scene(root));
         stage.setTitle("Administrator");
         AdministratorViewController administratorViewController = adminLoader.getController();
-        administratorViewController.init(new Administrator(), appController, stage, true);
+        administratorViewController.init(new Administrator(), appController, stage, true, null);
         Log.info("Successfully launched CLI");
       } catch (IOException e) {
         Log.severe("could not load CLI", e);
