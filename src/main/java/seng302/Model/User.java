@@ -1,7 +1,6 @@
 package seng302.Model;
 
 import com.google.gson.annotations.Expose;
-
 import javafx.collections.FXCollections;
 
 import java.beans.PropertyChangeEvent;
@@ -102,7 +101,7 @@ public class User extends Undoable<User> implements Listenable {
     @Expose
     private List<Disease> currentDiseases;
 
-    private transient List<Change> changes;//
+    private transient List<Change> changes;
     private transient PropertyChangeSupport pcs;
     //</editor-fold>
 

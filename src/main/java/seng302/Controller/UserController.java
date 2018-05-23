@@ -52,7 +52,6 @@ public class UserController {
   private Label relationship;
   @FXML
   private Label eName;
-
   @FXML
   private Button undoButton;
 

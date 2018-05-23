@@ -120,6 +120,9 @@ public class AdministratorViewController implements PropertyChangeListener {
     @FXML
     private Label fileNotFoundLabel;
 
+    @FXML
+    private statusBarController statusBarPageController;
+
     //</editor-fold>
 
     private Stage stage;
@@ -136,12 +139,21 @@ public class AdministratorViewController implements PropertyChangeListener {
      * @param appController appController instance to get data from
      * @param stage stage to display on
      */
-    public void init(Administrator administrator, AppController appController, Stage stage, boolean owner) {
+    public void init(Administrator administrator, AppController appController, Stage stage, boolean owner, Collection<PropertyChangeListener> parentListeners) {
         this.stage = stage;
         this.appController = appController;
         this.administrator = administrator;
         this.owner = owner;
+        statusBarPageController.init(appController);
         displayDetails();
+
+
+        //add change listeners of parent controllers to the current user
+        if (parentListeners != null && !parentListeners.isEmpty()) {
+            for (PropertyChangeListener listener : parentListeners) {
+                administrator.addPropertyChangeListener(listener);
+            }
+        }
 
     adminUndoButton.setDisable(true);
     adminRedoButton.setDisable(true);
@@ -486,7 +498,7 @@ public class AdministratorViewController implements PropertyChangeListener {
             Stage newStage = new Stage();
             newStage.setScene(new Scene(root));
             AdministratorViewController adminLoaderController = adminLoader.getController();
-            adminLoaderController.init(administrator, AppController.getInstance(), newStage, false);
+            adminLoaderController.init(administrator, AppController.getInstance(), newStage, false, null);
             newStage.show();
             Log.info("Admin "+administrator.getUserName()+ " successfully launched administrator overview window");
         } catch (IOException e) {
@@ -608,6 +620,9 @@ public class AdministratorViewController implements PropertyChangeListener {
         }
         adminUndoButton.setDisable(administrator.getUndoStack().isEmpty());
         adminRedoButton.setDisable(administrator.getRedoStack().isEmpty());
+        if (administrator.getChanges().size() > 0) {
+            statusBarPageController.updateStatus(administrator.getUserName() + " " + administrator.getChanges().get(administrator.getChanges().size() - 1).getChange());
+        }
     }
 
     /**
