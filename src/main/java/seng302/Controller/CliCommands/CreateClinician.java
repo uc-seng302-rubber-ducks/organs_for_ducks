@@ -3,8 +3,8 @@ package seng302.Controller.CliCommands;
 
 import picocli.CommandLine;
 import seng302.Controller.AppController;
-import seng302.Controller.ClinicianController;
 import seng302.Model.Clinician;
+import seng302.Service.AttributeValidation;
 
 @CommandLine.Command(name = "clinician", description = "Allows the creation of a clinician. ot update use update clinician")
 public class CreateClinician implements Runnable{
@@ -34,11 +34,19 @@ public class CreateClinician implements Runnable{
             return;
         }
 
-        Clinician clinician = new Clinician(firstName, id, null, region, password);
-        controller.updateClinicians(clinician);
-        //TODO set first name
-        System.out.println(controller.getClinician(id).toString());
-        System.out.println("Created new clinician with id " + id);
+        boolean valid = AttributeValidation.checkRequiredString(id);
+        valid &= AttributeValidation.checkRequiredString(firstName);
+        valid &= AttributeValidation.checkRequiredString(password);
+        valid &= AttributeValidation.checkRequiredString(region);
+
+        if (valid) {
+            Clinician clinician = new Clinician(firstName, id, null, region, password);
+            controller.updateClinicians(clinician);
+            System.out.println(controller.getClinician(id).toString());
+            System.out.println("Created new clinician with id " + id);
+        } else {
+            System.out.println("Invalid fields entered");
+        }
     }
 
     /**

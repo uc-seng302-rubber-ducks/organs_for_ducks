@@ -50,7 +50,7 @@ public class UpdateUserReceive implements Runnable {
           changed = user.getReceiverDetails().startWaitingForOrgan(organ);
           break;
         case "/":
-          changed = user.getReceiverDetails().stopWaitingForOrgan(organ, OrganDeregisterReason.TRANSPLANT_RECEIVED); //TODO Change this so a reason can be specified. TRANSPLANT_RECEIVED used as default in mean-time
+          changed = user.getReceiverDetails().stopWaitingForOrgan(organ, OrganDeregisterReason.TRANSPLANT_RECEIVED); //TODO Change this so a reason can be specified. TRANSPLANT_RECEIVED used as default in mean-time - noted 24/5
           break;
         default:
           System.out.println("could not recognise argument" + rawOrgan);

@@ -393,8 +393,7 @@ public class AppController {
    * @param clinician The current clinician.
    */
   public void updateClinicians(Clinician clinician) {
-    if (clinicians.contains(clinician)) {
-    } else {
+      if (!clinicians.contains(clinician)) {
       clinicians.add(clinician);
     }
 
