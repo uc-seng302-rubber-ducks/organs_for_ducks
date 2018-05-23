@@ -103,22 +103,21 @@ public class ReceiverTabController {
 
     }
 
-    /**
-     * register an organ* for receiver
-     */
-    @FXML
-    public void registerOrgan() {
-        if (organsComboBox.getSelectionModel().getSelectedItem() != null) {
-            Organs toRegister = organsComboBox.getSelectionModel().getSelectedItem();
-            if (!currentlyReceivingListView.getItems().contains(toRegister)) {
-                currentUser.getReceiverDetails().startWaitingForOrgan(toRegister);
-                currentlyRecieving.add(toRegister);
-                organsComboBox.getItems().remove(toRegister);
-                organsComboBox.setValue(null);// reset the combobox
-                application.update(currentUser);
-                if (currentUser.getDonorDetails().getOrgans().contains(toRegister)) {
-                    currentUser.getCommonOrgans().add(toRegister);
-                }
+  /**
+   * register an organ* for receiver
+   */
+  @FXML
+  public void registerOrgan() {
+    if (organsComboBox.getSelectionModel().getSelectedItem() != null) {
+      Organs toRegister = organsComboBox.getSelectionModel().getSelectedItem();
+        currentUser.getReceiverDetails().startWaitingForOrgan(toRegister);
+        currentlyRecieving.add(toRegister);
+        organsComboBox.getItems().remove(toRegister);
+        organsComboBox.setValue(null);// reset the combobox
+        application.update(currentUser);
+        if (currentUser.getDonorDetails().getOrgans().contains(toRegister)) {
+          currentUser.getCommonOrgans().add(toRegister);
+        }
 
                 //set mouse click for currentlyReceivingListView
                 currentlyReceivingListView.setOnMouseClicked(event -> {
@@ -211,7 +210,7 @@ public class ReceiverTabController {
     public void populateReceiverLists(User user) {
         ArrayList<Organs> organs = new ArrayList<>();
         Collections.addAll(organs, Organs.values());
-        Map<Organs, ArrayList<LocalDate>> receiverOrgans = user.getReceiverDetails().getOrgans();
+        Map<Organs, ArrayList<ReceiverOrganDetailsHolder>> receiverOrgans = user.getReceiverDetails().getOrgans();
         if (receiverOrgans == null) {
             receiverOrgans = new EnumMap<>(Organs.class);
         }
@@ -307,19 +306,19 @@ public class ReceiverTabController {
         if (toDeRegister != null) {
 
             if (organDeregisterationReason == OrganDeregisterReason.TRANSPLANT_RECEIVED) {
-                currentUser.getReceiverDetails().stopWaitingForOrgan(toDeRegister);
+                currentUser.getReceiverDetails().stopWaitingForOrgan(toDeRegister, OrganDeregisterReason.TRANSPLANT_RECEIVED);
                 Log.info("Successfully de-registered organ:" + toDeRegister.organName + " for receiver NHI: " + currentUser.getNhi());
 
             } else if (organDeregisterationReason == OrganDeregisterReason.REGISTRATION_ERROR) {
-                currentUser.getReceiverDetails().stopWaitingForOrgan(toDeRegister);
+                currentUser.getReceiverDetails().stopWaitingForOrgan(toDeRegister, OrganDeregisterReason.REGISTRATION_ERROR);
                 Log.info("Successfully de-registered organ:" + toDeRegister.organName + " for receiver NHI: " + currentUser.getNhi());
-                currentUser.addChange(new Change(
+                currentUser.getChanges().add(new Change(
                         "Initial registering of the organ " + toDeRegister.organName
                                 + " was an error for receiver " + currentUser.getFullName()));
 
             } else if (organDeregisterationReason == OrganDeregisterReason.DISEASE_CURED) {
                 //refresh diseases table
-                currentUser.getReceiverDetails().stopWaitingForOrgan(toDeRegister);
+                currentUser.getReceiverDetails().stopWaitingForOrgan(toDeRegister, OrganDeregisterReason.DISEASE_CURED);
                 Log.info("Successfully de-registered organ:" + toDeRegister.organName + " for receiver NHI: " + currentUser.getNhi());
                 parent.refreshDiseases();
 
@@ -343,26 +342,27 @@ public class ReceiverTabController {
                 currentUser.getCommonOrgans().remove(toDeRegister);
             }
 
-            //if currentlyReceivingListView is empty, disable mouse click to prevent null pointer exception
-            if (currentlyReceivingListView.getItems().isEmpty()) {
-                currentlyReceivingListView.setOnMouseClicked(null);
-            }
-            //set mouse click for notReceivingListView
-            notReceivingListView.setOnMouseClicked(event -> {
-                if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
-                    Organs currentlyReceivingOrgan = notReceivingListView.getSelectionModel()
-                            .getSelectedItem();
-                    launchReceiverOrganDateView(currentlyReceivingOrgan);
-                }
-            });
-            parent.updateUndoRedoButtons();
-            application.update(currentUser);
-            parent.refreshCurrentlyDonating();
-            currentlyReceivingListView.refresh();
-        } else {
-            Log.warning("Unable to de-register organ: null for receiver NHI: " + currentUser.getNhi());
+      //if currentlyReceivingListView is empty, disable mouse click to prevent null pointer exception
+      if (currentlyReceivingListView.getItems().isEmpty()) {
+        currentlyReceivingListView.setOnMouseClicked(null);
+      }
+      //set mouse click for notReceivingListView
+      notReceivingListView.setOnMouseClicked(event -> {
+        if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
+          Organs currentlyReceivingOrgan = notReceivingListView.getSelectionModel()
+              .getSelectedItem();
+          launchReceiverOrganDateView(currentlyReceivingOrgan);
         }
+      });
+      parent.updateUndoRedoButtons();
+      application.update(currentUser);
+      parent.refreshCurrentlyDonating();
+      currentlyReceivingListView.refresh();
+
+    } else {
+      Log.warning("Unable to de-register organ: null for receiver NHI: "+currentUser.getNhi());
     }
+  }
 
     /**
      * Sets the reason for organ deregistration

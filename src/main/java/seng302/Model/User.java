@@ -2,6 +2,7 @@ package seng302.Model;
 
 import com.google.gson.annotations.Expose;
 import javafx.collections.FXCollections;
+import seng302.Controller.ReceiverOrganDetailsHolder;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -1093,9 +1094,19 @@ public class User extends Undoable<User> implements Listenable {
             newUser.donorDetails.getOrgans().add(o);
         }
         newUser.receiverDetails = new ReceiverDetails(newUser);
+        //Map<Organs, ArrayList<ReceiverOrganDetailsHolder>> organs = new EnumMap<Organs, ArrayList<ReceiverOrganDetailsHolder>>(this.receiverDetails.getOrgans());
+        //newUser.receiverDetails.setOrgans(organs);
         for (Organs o : this.receiverDetails.getOrgans().keySet()) {
-            ArrayList<LocalDate> dates = new ArrayList<>(this.receiverDetails.getOrgans().get(o));
-            newUser.receiverDetails.getOrgans().put(o, dates);
+            ArrayList<ReceiverOrganDetailsHolder> detailHolders = new ArrayList<>(this.receiverDetails.getOrgans().get(o));
+            for (int i = 0; i < this.receiverDetails.getOrgans().get(o).size(); i++) {
+                ReceiverOrganDetailsHolder newHolder = new ReceiverOrganDetailsHolder(null, null, null);// = newUser.receiverDetails.getOrgans().get(o).get(i);
+                ReceiverOrganDetailsHolder oldHolder = this.receiverDetails.getOrgans().get(o).get(i);
+                newHolder.setStartDate(oldHolder.getStartDate());
+                newHolder.setStopDate(oldHolder.getStopDate());
+                newHolder.setOrganDeregisterReason(oldHolder.getOrganDeregisterReason());
+                detailHolders.add(newHolder);
+            }
+            newUser.receiverDetails.getOrgans().put(o, detailHolders);
         }
 
         newUser.currentDiseases = new ArrayList<>(this.currentDiseases);

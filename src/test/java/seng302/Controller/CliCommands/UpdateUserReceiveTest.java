@@ -13,10 +13,7 @@ import picocli.CommandLine;
 import seng302.Controller.AppController;
 import seng302.Controller.CliCommands.UpdateUserDonate;
 import seng302.Controller.CliCommands.UpdateUserReceive;
-import seng302.Model.DonorDetails;
-import seng302.Model.Organs;
-import seng302.Model.ReceiverDetails;
-import seng302.Model.User;
+import seng302.Model.*;
 
 public class UpdateUserReceiveTest {
 
@@ -83,7 +80,7 @@ public class UpdateUserReceiveTest {
         .parseWithHandler(new CommandLine.RunLast(), System.err, args);
     verify(details, times(1)).startWaitingForOrgan(Organs.LIVER);
     verify(details, times(1)).startWaitingForOrgan(Organs.KIDNEY);
-    verify(details, times(1)).stopWaitingForOrgan(Organs.LUNG);
+    verify(details, times(1)).stopWaitingForOrgan(Organs.LUNG, OrganDeregisterReason.TRANSPLANT_RECEIVED);
   }
 
   @Test
