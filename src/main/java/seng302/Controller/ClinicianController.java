@@ -184,7 +184,11 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
         if (fromAdmin) {
             logoutButton.setVisible(false);
             backButton.setVisible(true);
+        } else {
+            logoutButton.setVisible(true);
+            backButton.setVisible(false);
         }
+
     }
 
     @FXML
@@ -220,6 +224,7 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
         redoButton.setDisable(clinician.getRedoStack().empty());
         if (clinician.getChanges().size() > 0) {
             statusBarPageController.updateStatus(clinician.getStaffId() + " " + clinician.getChanges().get(clinician.getChanges().size() - 1).getChange());
+
         }
     }
 
@@ -402,7 +407,6 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
             boolean regionMatch = AttributeValidation.checkRegionMatches(regionSearchTextField.getText(), user);
             boolean genderMatch = AttributeValidation.checkGenderMatches(genderComboBox.getValue().toString(), user);
 
-            //System.out.println(user);
             if (AttributeValidation.checkTextMatches(lowerCaseFilterText, user.getFirstName()) ||
                     AttributeValidation.checkTextMatches(lowerCaseFilterText, user.getLastName()) &&
                             (regionMatch) && (genderMatch) &&
