@@ -7,8 +7,11 @@ import static org.testfx.api.FxAssert.verifyThat;
 
 import java.time.LocalDate;
 import java.util.concurrent.TimeoutException;
-
-import org.junit.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Ignore;
+import org.junit.Test;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.matcher.control.LabeledMatchers;
@@ -162,7 +165,6 @@ public class UpdateUserControllerGUITest extends ApplicationTest {
     }
 
     @Test
-    @Ignore
     public void testUpdateWeight() {
         doubleClickOn("#weightInput");
         write("65",  0);
@@ -171,7 +173,6 @@ public class UpdateUserControllerGUITest extends ApplicationTest {
     }
 
     @Test
-    @Ignore
     public void updateBMIAfterUpdate() {
         clickOn("#heightInput");
         write("1.75",  0);

@@ -1,9 +1,14 @@
 package seng302.Model;
 
 import com.google.gson.annotations.Expose;
+import javafx.collections.FXCollections;
 import seng302.Service.PasswordManager;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -11,7 +16,7 @@ import java.util.Objects;
  *
  * @author acb116
  */
-public class Administrator {
+public class Administrator extends Undoable<Administrator> implements Listenable {
     @Expose
     private String userName;
     @Expose
@@ -28,13 +33,18 @@ public class Administrator {
     private LocalDateTime dateCreated;
     @Expose
     private LocalDateTime dateLastModified;
+    private transient List<Change> changes;
+    private transient PropertyChangeSupport pcs;
+
 
     /**
      * Constructor to create a default Administrator
      */
     public Administrator() {
-        dateCreated = LocalDateTime.now();
-        dateLastModified = LocalDateTime.now();
+        this.dateCreated = LocalDateTime.now();
+        this.dateLastModified = LocalDateTime.now();
+        this.changes = FXCollections.observableArrayList();
+        this.pcs = new PropertyChangeSupport(this);
     }
 
     /**
@@ -47,13 +57,31 @@ public class Administrator {
      * @param password   Administrator password
      */
     public Administrator(String userName, String firstName, String middleName, String lastName, String password) {
+        this.changes = FXCollections.observableArrayList();
+        this.pcs = new PropertyChangeSupport(this);
         this.userName = userName;
         this.firstName = firstName;
         this.middleName = middleName;
         this.lastName = lastName;
         setPassword(password);
-        dateCreated = LocalDateTime.now();
-        dateLastModified = LocalDateTime.now();
+        this.dateCreated = LocalDateTime.now();
+        this.dateLastModified = LocalDateTime.now();
+    }
+
+
+    @Override
+    public void addPropertyChangeListener(PropertyChangeListener listener) {
+        this.pcs.addPropertyChangeListener(listener);
+    }
+
+    @Override
+    public void removePropertyChangeListener(PropertyChangeListener listener) {
+        this.pcs.removePropertyChangeListener(listener);
+    }
+
+    @Override
+    public void fire(PropertyChangeEvent event) {
+        this.pcs.firePropertyChange(event);
     }
 
     public LocalDateTime getDateCreated() {
@@ -73,8 +101,15 @@ public class Administrator {
     }
 
     public void setUserName(String userName) {
-        this.userName = userName;
-
+        Memento<Administrator> mem = new Memento<>();
+        mem.setOldObject(this.clone());
+        if (!userName.equals(this.userName)) {
+            this.userName = userName;
+            addChange(new Change("Updated username to " + userName));
+            setDateLastModified(LocalDateTime.now());
+            mem.setNewObject(this.clone());
+            getUndoStack().push(mem);
+        }
     }
 
     public String getFirstName() {
@@ -82,7 +117,15 @@ public class Administrator {
     }
 
     public void setFirstName(String firstName) {
-        this.firstName = firstName;
+        Memento<Administrator> mem = new Memento<>();
+        mem.setOldObject(this.clone());
+        if (!firstName.equals(this.firstName)) {
+            this.firstName = firstName;
+            addChange(new Change("Updated first name to " + firstName));
+            setDateLastModified(LocalDateTime.now());
+            mem.setNewObject(this.clone());
+            getUndoStack().push(mem);
+        }
     }
 
     public String getMiddleName() {
@@ -90,7 +133,15 @@ public class Administrator {
     }
 
     public void setMiddleName(String middleName) {
-        this.middleName = middleName;
+        Memento<Administrator> mem = new Memento<>();
+        mem.setOldObject(this.clone());
+        if (!middleName.equals(this.middleName)) {
+            this.middleName = middleName;
+            addChange(new Change("Updated middle name to " + middleName));
+            setDateLastModified(LocalDateTime.now());
+            mem.setNewObject(this.clone());
+            getUndoStack().push(mem);
+        }
     }
 
     public String getLastName() {
@@ -98,7 +149,15 @@ public class Administrator {
     }
 
     public void setLastName(String lastName) {
-        this.lastName = lastName;
+        Memento<Administrator> mem = new Memento<>();
+        mem.setOldObject(this.clone());
+        if (!lastName.equals(this.lastName)) {
+            this.lastName = lastName;
+            addChange(new Change("Updated last name to " + lastName));
+            setDateLastModified(LocalDateTime.now());
+            mem.setNewObject(this.clone());
+            getUndoStack().push(mem);
+        }
     }
 
     public String getFullName() {
@@ -115,7 +174,7 @@ public class Administrator {
 
         } else if (firstName.isEmpty()) {
             fullName = "";
-        }else {
+        } else {
             fullName = firstName;
         }
 
@@ -129,6 +188,30 @@ public class Administrator {
     public void setPassword(String password) {
         salt = PasswordManager.getNextSalt();
         this.password = PasswordManager.hash(password, salt);
+        addChange(new Change("Update password"));
+
+    }
+
+    public List<Change> getChanges() {
+        return changes;
+    }
+
+    public void setChanges(List<Change> changes) {
+        this.changes = changes;
+    }
+
+    public void addChange(Change change) {
+        changes.add(change);
+        this.fire(
+                new PropertyChangeEvent(this, EventTypes.USER_UPDATE.name(), new Object(), new Object()));
+    }
+
+    public PropertyChangeSupport getPcs() {
+        return pcs;
+    }
+
+    public void setPcs(PropertyChangeSupport pcs) {
+        this.pcs = pcs;
     }
 
     /**
@@ -170,9 +253,62 @@ public class Administrator {
         return "Administrator{" +
                 "userName='" + userName + '\'' +
                 ", name='" + getFullName() + '\'' +
-                ", dateCreated=" + dateCreated +
-                ", dateLastModified=" + dateLastModified +
+                ", dateCreated=" + dateCreated.toString() +
+                ", dateLastModified=" + dateLastModified.toString() +
                 '}';
     }
 
-}
+    @Override
+    public void undo() {
+        if (getUndoStack().isEmpty()) {
+            return;
+        }
+        Memento<Administrator> memento = getUndoStack().pop();
+        this.changeInto(memento.getOldObject());
+        getRedoStack().push(memento);
+
+    }
+
+    @Override
+    public void redo() {
+        if (getRedoStack().isEmpty()) {
+            return;
+        }
+        Memento<Administrator> memento = getRedoStack().pop();
+        this.changeInto(memento.getNewObject());
+        getUndoStack().push(memento);
+    }
+
+    @Override
+    public Administrator clone() {
+        Administrator newAdmin = new Administrator();
+        newAdmin.userName = this.userName;
+        newAdmin.firstName = this.firstName;
+        newAdmin.middleName = this.middleName;
+        newAdmin.lastName = this.lastName;
+        newAdmin.password = this.password;
+        newAdmin.salt = this.salt;
+        newAdmin.dateCreated = this.dateCreated;
+        newAdmin.dateLastModified = this.dateLastModified;
+
+        return newAdmin;
+    }
+
+    /**
+     * Changes the administrators attributes into that of another administrator.
+     *
+     * @param admin The administrator to turn into
+     */
+    private void changeInto(Administrator admin) {
+        this.userName = admin.userName;
+        this.firstName = admin.firstName;
+        this.middleName = admin.middleName;
+        this.lastName = admin.lastName;
+        this.password = admin.password;
+        this.salt = admin.salt;
+        this.dateCreated = admin.dateCreated;
+        this.dateLastModified = admin.dateLastModified;
+    }
+    }
+
+

@@ -1,6 +1,5 @@
 package seng302.Controller;
 
-import java.io.IOException;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -16,6 +15,8 @@ import seng302.Model.Clinician;
 import seng302.Model.User;
 import seng302.Service.Log;
 import seng302.View.CLI;
+
+import java.io.IOException;
 
 /**
  * Class for the login functionality of the application
@@ -113,7 +114,8 @@ public class LoginController {
               stage.setScene(new Scene(root));
               UserController userController = userLoader.getController();
               AppController.getInstance().setUserController(userController);
-              userController.init(AppController.getInstance(), user, stage, false);
+              //TODO pass listeners from any preceding controllers 22/6
+              userController.init(AppController.getInstance(), user, stage, false, null);
             } catch (IOException e) {
               Log.severe("failed to load user window", e);
                 e.printStackTrace();
@@ -151,7 +153,7 @@ public class LoginController {
         ClinicianController clinicianController = clinicianLoader.getController();
         AppController.getInstance().setClinicianController(clinicianController);
         Log.info("Logging in as a clinician");
-        clinicianController.init(stage, appController, clinician);
+        clinicianController.init(stage, appController, clinician, false, null);
       } catch (IOException e) {
         Log.severe("failed to load clinician window", e);
         e.printStackTrace();
@@ -192,7 +194,7 @@ public class LoginController {
         AdministratorViewController administratorController = administratorLoader.getController();
         AppController.getInstance().setAdministratorViewController(administratorController);
         Log.info("Logging in as an administrator");
-        administratorController.init(administrator, appController, stage);
+        administratorController.init(administrator, appController, stage, true, null);
       } catch (IOException e) {
         Log.severe("failed to load administrator window", e);
         e.printStackTrace();
@@ -243,7 +245,7 @@ public class LoginController {
         helpStage.setResizable(false);
         helpStage.setOnCloseRequest(event -> helpStage = null);
         helpStage.show();
-
+        Log.info("Successfully launched help window");
       } catch (Exception e) {
         Log.severe("could not load help window", e);
         e.printStackTrace();
@@ -271,8 +273,10 @@ public class LoginController {
         stage.setMinWidth(800);
         stage.setMinHeight(600);
         AdministratorViewController administratorViewController = adminLoader.getController();
-        administratorViewController.init(new Administrator(), appController, stage);
+        administratorViewController.init(new Administrator(), appController, stage, true, null);
+        Log.info("Successfully launched CLI");
       } catch (IOException e) {
+        Log.severe("could not load CLI", e);
         e.printStackTrace();
       }
     }

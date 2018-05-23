@@ -1,7 +1,10 @@
 package seng302.GUITests;
 
 import javafx.scene.Node;
-import org.junit.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.matcher.control.LabeledMatchers;
@@ -29,8 +32,13 @@ public class CreateClinicianControllerGUITest extends ApplicationTest {
         FxToolkit.setupApplication(App.class);
         AppController.getInstance().getUsers().clear();
         AppController.getInstance().getClinicians().remove(AppController.getInstance().getClinician("Staff1"));
-        clickOn("#changeLogin");
-        clickOn("#signUpButton");
+        clickOn("#administratorTab");
+        clickOn("#adminUsernameTextField");
+        write("default");
+        clickOn("#adminPasswordField");
+        write("admin");
+        clickOn("#loginAButton");
+        clickOn("#addClinicianButton");
     }
 
     @After
@@ -40,14 +48,14 @@ public class CreateClinicianControllerGUITest extends ApplicationTest {
       FxToolkit.cleanupStages();
     }
 
-    @Ignore
+
     @Test
     public void testClinicianSignUpFromLogin() {
         verifyThat("#titleLabel", LabeledMatchers.hasText("Create Clinician"));
         verifyThat("#confirmButton", LabeledMatchers.hasText("Create Clinician Profile"));
     }
 
-    @Ignore
+
     @Test
     public void testSignUpRequiredInfo() {
         clickOn("#staffIDTextField");
@@ -64,18 +72,17 @@ public class CreateClinicianControllerGUITest extends ApplicationTest {
         verifyThat("#staffIdLabel", LabeledMatchers.hasText("Staff1"));
     }
 
-    @Ignore
+
     @Test
     public void testSignUpNoInfo() {
         clickOn("#confirmButton");
-//        verifyThat("#invalidStaffIDLabel", Node::isVisible);
-//        verifyThat("#invalidStaffIDLabel", LabeledMatchers.hasText("Staff ID cannot be empty"));
-//        verifyThat("#emptyPasswordLabel", Node::isVisible);
-//        verifyThat("#emptyFNameLabel", Node::isVisible);
-//        verifyThat("#emptyRegionLabel", Node::isVisible);
+        verifyThat("#invalidStaffIDLabel", Node::isVisible);
+        verifyThat("#invalidStaffIDLabel", LabeledMatchers.hasText("Staff ID cannot be empty"));
+        verifyThat("#emptyPasswordLabel", Node::isVisible);
+        verifyThat("#emptyFNameLabel", Node::isVisible);
+        verifyThat("#emptyRegionLabel", Node::isVisible);
     }
 
-    @Ignore
     @Test
     public void testInUseStaffID() {
         // create a new clinician
@@ -91,9 +98,8 @@ public class CreateClinicianControllerGUITest extends ApplicationTest {
         write("Christchurch", 0);
         clickOn("#confirmButton");
         // return to the creation screen
-        clickOn("#logoutButton");
-        clickOn("#changeLogin");
-        clickOn("#signUpButton");
+        clickOn("#backButton");
+        clickOn("#addClinicianButton");
         // create a new clinician with the same staff ID
         clickOn("#staffIDTextField");
         write("Staff1", 0);
@@ -102,7 +108,7 @@ public class CreateClinicianControllerGUITest extends ApplicationTest {
         verifyThat("#invalidStaffIDLabel", LabeledMatchers.hasText("Staff ID already in use"));
     }
 
-    @Ignore
+
     @Test
     public void testNoPasswordConfirmation() {
         clickOn("#staffIDTextField");
@@ -117,7 +123,7 @@ public class CreateClinicianControllerGUITest extends ApplicationTest {
         verifyThat("#emptyPasswordLabel", Node::isVisible);
     }
 
-    @Ignore
+
     @Test
     public void testWrongPasswordConfirmation() {
         clickOn("#staffIDTextField");
@@ -134,7 +140,7 @@ public class CreateClinicianControllerGUITest extends ApplicationTest {
         verifyThat("#incorrectPasswordLabel", Node::isVisible);
     }
 
-    @Ignore
+
     @Test
     public void testLabelsMatch() {
         clickOn("#staffIDTextField");

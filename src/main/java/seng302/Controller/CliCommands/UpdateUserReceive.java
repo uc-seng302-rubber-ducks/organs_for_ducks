@@ -4,6 +4,7 @@ package seng302.Controller.CliCommands;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Parameters;
 import seng302.Controller.AppController;
+import seng302.Model.OrganDeregisterReason;
 import seng302.Model.Organs;
 import seng302.Model.User;
 
@@ -49,7 +50,7 @@ public class UpdateUserReceive implements Runnable {
           changed = user.getReceiverDetails().startWaitingForOrgan(organ);
           break;
         case "/":
-          changed = user.getReceiverDetails().stopWaitingForOrgan(organ);
+          changed = user.getReceiverDetails().stopWaitingForOrgan(organ, OrganDeregisterReason.TRANSPLANT_RECEIVED); //TODO Change this so a reason can be specified. TRANSPLANT_RECEIVED used as default in mean-time
           break;
         default:
           System.out.println("could not recognise argument" + rawOrgan);

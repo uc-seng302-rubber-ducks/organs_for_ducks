@@ -16,11 +16,17 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import seng302.Model.Clinician;
-import seng302.Model.Organs;
-import seng302.Model.TransplantDetails;
-import seng302.Model.User;
+import seng302.Model.*;
 import seng302.Service.AttributeValidation;
+import seng302.Service.Log;
+
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.io.IOException;
+import java.time.LocalDate;
+import java.util.*;
+
+import static seng302.Model.Organs.*;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -34,7 +40,7 @@ import static seng302.Model.Organs.*;
 /**
  * Class for the functionality of the Clinician view of the application
  */
-public class ClinicianController {
+public class ClinicianController implements PropertyChangeListener, TransplantWaitListViewer {
 
     private static int searchCount = 0;
     private final int ROWS_PER_PAGE = 30;
@@ -43,6 +49,10 @@ public class ClinicianController {
     //<editor-fold desc="FXML declarations">
     @FXML
     private Button undoButton;
+
+    @FXML
+    private Button backButton;
+
     @FXML
     private Label staffIdLabel;
     @FXML
@@ -57,16 +67,16 @@ public class ClinicianController {
     private Label regionLabel;
     @FXML
     private TextField searchTextField;
-    @FXML
-    private TextField waitingRegionTextfield;
+
+
     @FXML
     private Tooltip searchToolTip;
     @FXML
     private TableView<User> searchTableView;
     @FXML
     private Pagination searchTablePagination;
-    @FXML
-    private TableView<TransplantDetails> transplantWaitListTableView;
+
+
     @FXML
     private Label searchCountLabel;
     @FXML
@@ -84,47 +94,35 @@ public class ClinicianController {
     @FXML
     private Button expandButton;
     @FXML
-    private CheckBox boneCheckBox;
-    @FXML
-    private CheckBox boneMarrowCheckBox;
-    @FXML
-    private CheckBox corneaCheckBox;
-    @FXML
-    private CheckBox connectiveTissueCheckBox;
-    @FXML
-    private CheckBox heartCheckBox;
-    @FXML
-    private CheckBox middleEarCheckBox;
-    @FXML
-    private CheckBox intestineCheckBox;
-    @FXML
-    private CheckBox pancreasCheckBox;
-    @FXML
-    private CheckBox lungCheckBox;
-    @FXML
-    private CheckBox kidneyCheckBox;
-    @FXML
-    private CheckBox liverCheckBox;
-    @FXML
-    private CheckBox skinCheckBox;
-    @FXML
-    private Label filtersLabel;
+    private TransplantWaitListController transplantWaitListTabPageController;
     @FXML
     private Button redoButton;
     @FXML
     private Button logoutButton;
+
+    @FXML
+    private Button deleteClinicianButton;
+
+    @FXML
+    private statusBarController statusBarPageController;
+
     //</editor-fold>
+
     private Stage stage;
     private AppController appController;
     private Clinician clinician;
     private List<User> users;
     private ArrayList<Stage> openStages;
     private FilteredList<User> fListUsers;
-    private ArrayList<CheckBox> filterCheckBoxList = new ArrayList<>();
+
+
     //Initiliase table columns as class level so it is accessible for sorting in pagination methods
     private TableColumn<User, String> lNameColumn;
     private boolean filterVisible = false;
 
+  private Collection<PropertyChangeListener> parentListeners;
+
+    private boolean admin = false;
 
     /**
      * Initializes the controller class for the clinician overview.
@@ -133,17 +131,32 @@ public class ClinicianController {
      * @param appController the applications controller.
      * @param clinician     The current clinician.
      */
-    public void init(Stage stage, AppController appController, Clinician clinician) {
+    public void init(Stage stage, AppController appController, Clinician clinician, boolean fromAdmin,
+        Collection<PropertyChangeListener> parentListeners) {
+
+      //add change listeners of parent controllers to the current clinician
+      this.parentListeners = new ArrayList<>();
+      if (parentListeners != null && !parentListeners.isEmpty()) {
+        for (PropertyChangeListener listener : parentListeners) {
+          clinician.addPropertyChangeListener(listener);
+        }
+        this.parentListeners.addAll(parentListeners);
+      }
         this.stage = stage;
         this.appController = appController;
         this.clinician = clinician.clone();
+        this.admin = fromAdmin;
         stage.setResizable(true);
         showClinician(clinician);
         users = appController.getUsers();
         searchCount = users.size();
         initSearchTable();
-        groupCheckBoxes();
-        initWaitListTable();
+        transplantWaitListTabPageController.init(appController, this);
+        statusBarPageController.init(appController);
+
+        if (clinician.getStaffId().equals("0")) {
+            deleteClinicianButton.setDisable(true);
+        }
 
         setDefaultFilters();
         searchCountLabel.setText("Showing results " + (searchCount == 0 ? startIndex : startIndex + 1) + " - " + (endIndex) + " of " + searchCount);
@@ -158,25 +171,23 @@ public class ClinicianController {
         int pageCount = searchCount / ROWS_PER_PAGE;
         searchTablePagination.setPageCount(pageCount > 0 ? pageCount + 1 : 1);
         searchTablePagination.currentPageIndexProperty().addListener(((observable, oldValue, newValue) -> changePage(newValue.intValue())));
-    }
 
-    /**
-     * Adds the filtering checkboxes to a list to later iterate through them
-     */
-    private void groupCheckBoxes() {
-        filterCheckBoxList.add(boneCheckBox);
-        filterCheckBoxList.add(boneMarrowCheckBox);
-        filterCheckBoxList.add(corneaCheckBox);
-        filterCheckBoxList.add(connectiveTissueCheckBox);
-        filterCheckBoxList.add(heartCheckBox);
-        filterCheckBoxList.add(kidneyCheckBox);
-        filterCheckBoxList.add(lungCheckBox);
-        filterCheckBoxList.add(liverCheckBox);
-        filterCheckBoxList.add(middleEarCheckBox);
-        filterCheckBoxList.add(intestineCheckBox);
-        filterCheckBoxList.add(skinCheckBox);
-        filterCheckBoxList.add(pancreasCheckBox);
-    }
+        if (fromAdmin) {
+            logoutButton.setVisible(false);
+            backButton.setVisible(true);
+        } else {
+            logoutButton.setVisible(true);
+            backButton.setVisible(false);
+        }
+
+  }
+
+   @FXML
+  private void goBack() {
+    appController.updateClinicians(clinician);
+    stage.close();
+    Log.info("Successfully closed update user window for Clinician StaffID: " + clinician.getStaffId());
+  }
 
     private void setDefaultFilters() {
         allCheckBox.setSelected(true);
@@ -202,6 +213,10 @@ public class ClinicianController {
         }
         undoButton.setDisable(clinician.getUndoStack().empty());
         redoButton.setDisable(clinician.getRedoStack().empty());
+        if (clinician.getChanges().size() > 0) {
+            statusBarPageController.updateStatus(clinician.getStaffId() + " " + clinician.getChanges().get(clinician.getChanges().size() - 1).getChange());
+
+        }
     }
 
     /**
@@ -220,7 +235,6 @@ public class ClinicianController {
             return;
         }
 
-        List<User> usersSublist = getSearchData(users);
         //set up lists
         //table contents are SortedList of a FilteredList of an ObservableList of an ArrayList
         ObservableList<User> oListUsers = FXCollections.observableList(users);
@@ -386,7 +400,7 @@ public class ClinicianController {
     /**
      * @param user the selected user.
      */
-    private void launchUser(User user) {
+    public void launchUser(User user) {
         FXMLLoader userLoader = new FXMLLoader(getClass().getResource("/FXML/userView.fxml"));
         Parent root;
         try {
@@ -396,9 +410,19 @@ public class ClinicianController {
             openStages.add(userStage);
             UserController userController = userLoader.getController();
             AppController.getInstance().setUserController(userController);
-            userController.init(AppController.getInstance(), user, userStage, true);
+          //Ostrich
+          parentListeners.add(this);
+          userController.init(AppController.getInstance(), user, userStage, true, parentListeners);
+            userStage.show();
+          Log.info("Clinician " + clinician.getStaffId()
+              + " successfully launched user overview window");
+
+            ArrayList<PropertyChangeListener> listeners = new ArrayList<>();
+            listeners.add(this);
+            userController.init(AppController.getInstance(), user, userStage, true, listeners);
             userStage.show();
         } catch (IOException e) {
+            Log.severe("Clinician "+clinician.getStaffId()+" Failed to load user overview window", e);
             e.printStackTrace();
         }
     }
@@ -456,7 +480,6 @@ public class ClinicianController {
             boolean regionMatch = AttributeValidation.checkRegionMatches(regionSearchTextField.getText(), user);
             boolean genderMatch = AttributeValidation.checkGenderMatches(genderComboBox.getValue().toString(), user);
 
-            //System.out.println(user);
             if (AttributeValidation.checkTextMatches(lowerCaseFilterText, user.getFirstName()) ||
                     AttributeValidation.checkTextMatches(lowerCaseFilterText, user.getLastName()) &&
                             (regionMatch) && (genderMatch) &&
@@ -610,37 +633,48 @@ public class ClinicianController {
         undoButton.setDisable(clinician.getUndoStack().empty());
         showClinician(clinician);
     }
+  /**
+   * Undoes the last action and redisplays the clinician.
+   */
+  @FXML
+  private void undo() {
+    clinician.undo();
+    undoButton.setDisable(clinician.getUndoStack().empty());
+    showClinician(clinician);
+    Log.info("Clinician "+clinician.getStaffId()+" executed undo clinician");
+  }
 
-    /**
-     * Redoes the last action and redisplays the clinician.
-     */
-    @FXML
-    public void redo() {
-        clinician.redo();
-        redoButton.setDisable(clinician.getRedoStack().empty());
-        showClinician(clinician);
-    }
+  /**
+   * Redoes the last action and redisplays the clinician.
+   */
+  @FXML
+  public void redo() {
+    clinician.redo();
+    redoButton.setDisable(clinician.getRedoStack().empty());
+    showClinician(clinician);
+  Log.info("Clinician "+clinician.getStaffId()+" executed redo clinician");}
 
-    /**
-     * Returns the user to the login screen
-     */
-    @FXML
-    void logout() {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML/loginView.fxml"));
-        Parent root;
-        try {
-            root = loader.load();
-            stage.setScene(new Scene(root));
-            LoginController loginController = loader.getController();
-            loginController.init(AppController.getInstance(), stage);
-            stage.hide();
-            stage.show();
-            stage.hide();
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+  /**
+   * Returns the user to the login screen
+   */
+  @FXML
+  void logout() {
+    FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML/loginView.fxml"));
+      Parent root;
+    try {
+      root = loader.load();
+      stage.setScene(new Scene(root));
+      LoginController loginController = loader.getController();
+      loginController.init(AppController.getInstance(), stage);
+      stage.hide();
+      stage.show();
+      stage.hide();
+      stage.show();
+    Log.info("Clinician "+clinician.getStaffId()+" successfully launched login window after logout");} catch (IOException e) {
+        Log.severe("Clinician "+clinician.getStaffId()+" failed to launch login window after logout",e) ;
+      e.printStackTrace();
     }
+  }
 
     /**
      * Opens an edit window for the clinicians personal details
@@ -658,8 +692,9 @@ public class ClinicianController {
             newStage.initModality(Modality.APPLICATION_MODAL); // background window is no longer selectable
             newStage.showAndWait();
             showClinician(clinician);
-
+            Log.info("Clinician "+clinician.getStaffId()+" successfully launched update clinician window");
         } catch (IOException e) {
+            Log.severe("Clinician "+clinician.getStaffId()+" failed to launch update clinician window", e);
             e.printStackTrace();
         }
     }
@@ -676,33 +711,67 @@ public class ClinicianController {
         expandButton.setText(filterVisible ? "▲" : "▼");
     }
 
-    public void refreshTables() {
-        populateWaitListTable();
-        searchTableView.refresh();
-    }
+  /**
+     * Callback method to refresh the tables in the view
+     */
+    @FXMLpublic void refreshTables() {
+    transplantWaitListTabPageController.populateWaitListTable();
+    searchTableView.refresh();
+  }
+
+  /**
+   * Loads the recently deleted users window
+   */
+  @FXML
+  public void loadRecentlyDeleted() {
+      FXMLLoader deletedUserLoader = new FXMLLoader(
+              getClass().getResource("/FXML/deletedUsersView.fxml"));
+      Parent root;
+      try {
+          root = deletedUserLoader.load();
+          DeletedUserController deletedUserController = deletedUserLoader.getController();
+          Stage stage = new Stage();
+          stage.setScene(new Scene(root));
+          deletedUserController.init(false);
+          stage.initModality(Modality.APPLICATION_MODAL);
+          stage.showAndWait();
+      Log.info("Clinician "+clinician.getStaffId()+" successfully launched delete user window");} catch (IOException e) {
+          Log.severe("Clinician "+clinician.getStaffId()+" failed to launch delete user window",e) ;
+          e.printStackTrace();
+      }
+  }
 
     /**
-     * Loads the recently deleted users window
+     * Deletes the clinician profile after confirmation.
+     *
      */
-    @FXML
-    public void loadRecentlyDeleted() {
-        FXMLLoader deletedUserLoader = new FXMLLoader(
-                getClass().getResource("/FXML/deletedUsersView.fxml"));
-        Parent root;
-        try {
-            root = deletedUserLoader.load();
-            DeletedUserController deletedUserController = deletedUserLoader.getController();
-            Stage stage = new Stage();
-            stage.setScene(new Scene(root));
-            deletedUserController.init();
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.showAndWait();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+  @FXML
+  private void deleteClinician() {
+      Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+      alert.setContentText("Are you sure you want to delete this clinician?");
+      Optional<ButtonType> result = alert.showAndWait();
+
+      if (result.get() == ButtonType.OK) {
+          appController.deleteClinician(clinician);
+          if (!admin) {
+              logout();
+          } else {
+              stage.close();
+          }
+      }
+  }
 
     public void disableLogout() {
         logoutButton.setVisible(false);
+    }
+
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+
+      //clinician controller watches user model
+        //refresh view/tables etc. on change
+        if (evt.getPropertyName().equals(EventTypes.USER_UPDATE.name())) {
+          refreshTables();
+        }
     }
 }
