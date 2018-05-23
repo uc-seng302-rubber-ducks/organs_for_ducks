@@ -366,6 +366,11 @@ public class AdministratorViewController implements PropertyChangeListener {
                 }
                 catch (FileNotFoundException e) {
                     Log.severe("File not found", e);
+                    errorAlert.showAndWait().ifPresent(rs -> {
+                        if (rs == ButtonType.OK) {
+                            System.out.println("Pressed OK");
+                        }
+                    });
                     throw e;
                 }
                 if (invalidFile) {
@@ -437,6 +442,11 @@ public class AdministratorViewController implements PropertyChangeListener {
                     loadedCliniciansAmount = clinicians.size();
                 } catch (FileNotFoundException e) {
                     Log.severe("File not found", e);
+                    errorAlert.showAndWait().ifPresent(rs -> {
+                        if (rs == ButtonType.OK) {
+                            System.out.println("Pressed OK");
+                        }
+                    });
                     throw e;
                 }
                 if (invalidFile) {
@@ -509,6 +519,11 @@ public class AdministratorViewController implements PropertyChangeListener {
                 loadedUsersAmount = users.size();
             } catch (FileNotFoundException e){
                 Log.severe("File not found", e);
+                errorAlert.showAndWait().ifPresent(rs -> {
+                    if (rs == ButtonType.OK) {
+                        System.out.println("Pressed OK");
+                    }
+                });
                 throw e;
             }
             if (invalidFile) {

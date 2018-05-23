@@ -80,11 +80,10 @@ public final class JsonHandler {
             return results;
         }
         catch (FileNotFoundException e){
-            errorMessageAlert(e);
             throw e;
         }
         catch (RuntimeException e) {
-            errorMessageAlert(e);
+            errorMessageAlert();
             throw e;
         }
     }
@@ -133,11 +132,10 @@ public final class JsonHandler {
             return new ArrayList<>(Arrays.asList(clinicians));
         }
         catch (FileNotFoundException e){
-            errorMessageAlert(e);
             throw e;
         }
         catch (RuntimeException e) {
-            errorMessageAlert(e);
+            errorMessageAlert();
             throw e;
         }
     }
@@ -186,35 +184,23 @@ public final class JsonHandler {
             return new ArrayList<>(Arrays.asList(administrators));
         }
         catch (FileNotFoundException e){
-            errorMessageAlert(e);
             throw e;
         }
         catch (RuntimeException e) {
-            errorMessageAlert(e);
+            errorMessageAlert();
             throw e;
         }
     }
 
-    private static void errorMessageAlert(Exception e) {
-        if (e.equals("FileNotFoundException")) {
-            Alert errorAlert = new Alert(Alert.AlertType.ERROR);
-            errorAlert.setHeaderText("ERROR!");
-            errorAlert.setContentText("File could not be found.");
-            errorAlert.showAndWait().ifPresent(rs -> {
-                if (rs == ButtonType.OK) {
-                    System.out.println("Pressed OK");
-                }
-            });
-        } else {
-            Alert errorAlert = new Alert(Alert.AlertType.ERROR);
-            errorAlert.setHeaderText("ERROR!");
-            errorAlert.setContentText("File contained malformed data.");
-            errorAlert.showAndWait().ifPresent(rs -> {
-                if (rs == ButtonType.OK) {
-                    System.out.println("Pressed OK");
-                }
-            });
-        }
+    private static void errorMessageAlert() {
+        Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+        errorAlert.setHeaderText("ERROR!");
+        errorAlert.setContentText("File contained malformed data.");
+        errorAlert.showAndWait().ifPresent(rs -> {
+            if (rs == ButtonType.OK) {
+                System.out.println("Pressed OK");
+            }
+        });
     }
 
     /**
