@@ -15,6 +15,7 @@ import javafx.scene.control.Label;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import seng302.Model.User;
+import seng302.Service.Log;
 
 public class UserOverviewController {
 
@@ -102,7 +103,7 @@ public class UserOverviewController {
       logOutButton.setVisible(false);
     } else {
       Clinician = false;
-      deleteUser.setVisible(false);
+//      deleteUser.setVisible(false);
       backButton.setVisible(false);
     }
   }
@@ -218,8 +219,10 @@ public class UserOverviewController {
       stage.setScene(new Scene(root));
       updateUserController.init(currentUser, application, stage);
       stage.show();
+      Log.info("Successfully launched update user window for User NHI: "+currentUser.getNhi());
 
     } catch (IOException e) {
+      Log.severe("Failed to load update user window for User NHI: "+currentUser.getNhi(), e);
       e.printStackTrace();
     }
   }
@@ -231,6 +234,7 @@ public class UserOverviewController {
   private void closeWindow() {
     application.update(currentUser);
     stage.close();
+    Log.info("Successfully closed update user window for User NHI: "+currentUser.getNhi());
   }
 
   /**
@@ -243,9 +247,12 @@ public class UserOverviewController {
     Optional<ButtonType> result = alert.showAndWait();
 
     if (result.get() == ButtonType.OK) {
-      application.deleteDonor(currentUser);
+      application.deleteUser(currentUser);
+      Log.info("Successfully deleted user profile for User NHI: "+currentUser.getNhi());
       if (!Clinician) {
         logout();
+      } else {
+        stage.close();
       }
     }
   }
@@ -266,7 +273,9 @@ public class UserOverviewController {
       stage.setScene(new Scene(root));
       stage.hide();
       stage.show();
+      Log.info("successfully launched login window after logged out for User NHI: "+currentUser.getNhi());
     } catch (IOException e) {
+      Log.severe("failed to launch login window after logged out for User NHI: "+currentUser.getNhi(), e);
       e.printStackTrace();
     }
 

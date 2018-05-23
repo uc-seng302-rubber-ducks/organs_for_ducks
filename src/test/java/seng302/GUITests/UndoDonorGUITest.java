@@ -7,6 +7,7 @@ import java.util.concurrent.TimeoutException;
 import javafx.scene.Node;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
@@ -15,8 +16,14 @@ import seng302.App;
 import seng302.Controller.AppController;
 import seng302.Model.EmergencyContact;
 import seng302.Model.User;
+import seng302.Utils.CommonTestMethods;
 
 public class UndoDonorGUITest extends ApplicationTest {
+
+  @BeforeClass
+  public static void initialization() {
+    CommonTestMethods.runHeadless();
+  }
 
   @Before
   public void setUp() throws TimeoutException {

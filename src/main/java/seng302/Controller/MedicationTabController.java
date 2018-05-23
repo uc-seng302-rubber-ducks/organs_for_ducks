@@ -22,6 +22,7 @@ import org.controlsfx.control.textfield.TextFields;
 import seng302.Model.HttpRequester;
 import seng302.Model.Memento;
 import seng302.Model.User;
+import seng302.Service.Log;
 
 public class MedicationTabController {
 
@@ -58,7 +59,7 @@ public class MedicationTabController {
   private OkHttpClient client = new OkHttpClient();
 
   /**
-   * Gives the donor view the application controller and hides all label and buttons that are not
+   * Gives the user view the application controller and hides all label and buttons that are not
    * needed on opening
    *
    * @param controller the application controller
@@ -153,7 +154,9 @@ public class MedicationTabController {
           values[i] = values[i].replace('"', ' ').trim();
         }
         TextFields.bindAutoCompletion(medicationTextField, values);
+        Log.info("Successfully loaded suggested medication names with user Input: "+newValue+" for User NHI: "+currentUser.getNhi());
       } catch (IOException e) {
+        Log.severe("Failed to load suggested medication names with user Input: "+newValue+" for User NHI: "+currentUser.getNhi(), e);
         e.printStackTrace();
       }
 
@@ -183,16 +186,18 @@ public class MedicationTabController {
   void addMedication() {
     String medication = medicationTextField.getText();
     if (medication.isEmpty()) {
+      Log.warning("Unable to add medication: "+medication+" for User NHI: "+currentUser.getNhi()+" as it is empty");
       return;
     }
     if (currentMeds.contains(medication) || previousMeds.contains(medication)) {
       medicationTextField.setText("");
+      Log.info("Medication: "+medication+" already exist, updated GUI instead of adding new medication for User NHI: "+currentUser.getNhi());
       return;
     }
     medicationTextField.setText("");
     currentMeds.add(medication);
     currentUser.addCurrentMedication(medication);
-
+    Log.info("Successfully added medication: "+medication+" for User NHI: "+currentUser.getNhi());
 
   }
 
@@ -207,10 +212,17 @@ public class MedicationTabController {
     if (medCurrent != null) {
       currentMeds.remove(medCurrent);
       currentUser.removeCurrentMedication(medCurrent);
+      Log.info("Successfully deleted current medication: "+medCurrent+" for User NHI: "+currentUser.getNhi());
+    } else {
+      Log.warning("Unable to delete current medication : "+medCurrent+" for User NHI: "+currentUser.getNhi()+" because it is empty");
     }
+
     if (medPrevious != null) {
       previousMeds.remove(medPrevious);
       currentUser.removePreviousMedication(medPrevious);
+      Log.info("Successfully deleted previous medication: "+previousMeds+" for User NHI: "+currentUser.getNhi());
+    } else {
+      Log.warning("Unable to delete previous medication: "+previousMeds+" for User NHI: "+currentUser.getNhi()+" because it is empty");
     }
   }
 
@@ -223,11 +235,13 @@ public class MedicationTabController {
     memento.setOldObject(currentUser.clone());
     String med = previousMedicationListView.getSelectionModel().getSelectedItem();
     if (med == null) {
+      Log.warning("Unable to take medication for User NHI: "+currentUser.getNhi()+" as it is empty");
       return;
     }
     if (currentMeds.contains(med)) {
       currentUser.removePreviousMedication(med);
       previousMeds.remove(med);
+      Log.info("Successfully removed previous medication: "+med+" for User NHI: "+currentUser.getNhi());
       return;
     }
     currentMeds.add(med);
@@ -236,7 +250,7 @@ public class MedicationTabController {
     currentUser.removePreviousMedication(med);
     memento.setNewObject(currentUser.clone());
     currentUser.getUndoStack().push(memento);
-
+    Log.info("Successfully moved medication: "+med+" from previous to current medication for User NHI: "+currentUser.getNhi());
   }
 
   /**
@@ -248,11 +262,13 @@ public class MedicationTabController {
     memento.setOldObject(currentUser.clone());
     String med = currentMedicationListView.getSelectionModel().getSelectedItem();
     if (med == null) {
+      Log.warning("Unable to un-take medication for User NHI: "+currentUser.getNhi()+" as it is empty");
       return;
     }
     if (previousMeds.contains(med)) {
       currentUser.removeCurrentMedication(med);
       currentMeds.remove(med);
+      Log.info("Successfully un-take previous medication: "+med+" for User NHI: "+currentUser.getNhi());
       return;
     }
     currentUser.removeCurrentMedication(med);
@@ -261,6 +277,7 @@ public class MedicationTabController {
     currentUser.addPreviousMedication(med);
     memento.setNewObject(currentUser.clone());
     currentUser.getUndoStack().push(memento);
+    Log.info("Successfully moved medication: "+med+" from current to previous medication for User NHI: "+currentUser.getNhi());
   }
 
   /**
@@ -296,7 +313,9 @@ public class MedicationTabController {
           .getController();
       medicationsTimeController.init(currentUser, stage, med);
       stage.show();
+      Log.info("successfully launched Medications Time View window for User NHI: "+currentUser.getNhi());
     } catch (IOException e) {
+      Log.severe("Failed to launch Medications Time View window for User NHI: "+currentUser.getNhi(), e);
       e.printStackTrace();
     }
 
@@ -352,8 +371,10 @@ public class MedicationTabController {
         }
         drugDetailsTextArea.setText(sb.toString());
       }
+      Log.info("Successfully loaded medication names from API call for User NHI: "+currentUser.getNhi());
     } catch (IOException ex) {
       //TODO display connectivity error message
+      Log.severe("Failed to load medication names from API call for User NHI: "+currentUser.getNhi(), ex);
       System.out.println("oof");
     }
 

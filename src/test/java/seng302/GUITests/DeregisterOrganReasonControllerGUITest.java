@@ -1,13 +1,5 @@
 package seng302.GUITests;
 
-import static org.junit.Assert.assertEquals;
-import static org.testfx.api.FxAssert.verifyThat;
-import static seng302.Utils.TableViewsMethod.getCell;
-import static seng302.Utils.TableViewsMethod.getNumberOfRows;
-
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.concurrent.TimeoutException;
 import javafx.scene.Node;
 import javafx.scene.input.KeyCode;
 import org.junit.After;
@@ -22,6 +14,16 @@ import seng302.Controller.AppController;
 import seng302.Model.Disease;
 import seng302.Model.Organs;
 import seng302.Model.User;
+import seng302.Utils.CommonTestMethods;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.concurrent.TimeoutException;
+
+import static org.junit.Assert.assertEquals;
+import static org.testfx.api.FxAssert.verifyThat;
+import static seng302.Utils.TableViewsMethod.getCell;
+import static seng302.Utils.TableViewsMethod.getNumberOfRows;
 
 public class DeregisterOrganReasonControllerGUITest extends ApplicationTest {
 
@@ -29,14 +31,7 @@ public class DeregisterOrganReasonControllerGUITest extends ApplicationTest {
 
   @BeforeClass
   public static void initialization() {
-    if (Boolean.getBoolean("headless")) {
-      System.setProperty("testfx.robot", "glass");
-      System.setProperty("testfx.headless", "true");
-      System.setProperty("prism.order", "sw");
-      System.setProperty("prism.text", "t2k");
-      System.setProperty("java.awt.headless", "true");
-      System.setProperty("headless.geometry", "1920x1080-32");
-    }
+      CommonTestMethods.runHeadless();
   }
 
     @Before
@@ -118,7 +113,7 @@ public class DeregisterOrganReasonControllerGUITest extends ApplicationTest {
     clickOn("#registrationErrorRadioButton");
     clickOn("#okButton");
     clickOn("#historyTab");
-    assertEquals(1, getNumberOfRows("#historyTableView"));
+      assertEquals(3, getNumberOfRows("#historyTableView"));
     }
 
   @Test

@@ -21,7 +21,7 @@
           </Tab>
             <Tab fx:id="receiverTab" text="Receiver">
               <content>
-                <fx:include source="receiverTabView.fxml" fx:id="receiverTabPage"/>
+                <fx:include fx:id="receiverTabPage" source="receiverTabView.fxml"/>
             </content>
           </Tab>
             <Tab fx:id="detailsTab" text="Contact Details">
@@ -72,27 +72,27 @@
           </Tab>
             <Tab text="Medication">
               <content>
-                <fx:include source="medicationTabView.fxml" fx:id="medicationTabPage"/>
+                <fx:include fx:id="medicationTabPage" source="medicationTabView.fxml"/>
               </content>
             </Tab>
             <Tab text="Procedures">
               <content>
-                <fx:include source="procedureTabView.fxml" fx:id="procedureTabPage"/>
+                <fx:include fx:id="procedureTabPage" source="procedureTabView.fxml"/>
               </content>
             </Tab>
             <Tab fx:id="diseaseTab" text="Disease">
               <content>
-                <fx:include source="diseasesTabView.fxml" fx:id="diseasesTabPage"/>
+                <fx:include fx:id="diseasesTabPage" source="diseasesTabView.fxml"/>
               </content>
             </Tab>
             <Tab fx:id="organsTab" text="Donation">
               <content>
-                <fx:include source="donationTabView.fxml" fx:id="donationTabPage"/>
+                <fx:include fx:id="donationTabPage" source="donationTabView.fxml"/>
               </content>
             </Tab>
         </tabs>
       </TabPane>
-      <Label layoutX="256.0" layoutY="3.0" text="Donor">
+     <Label layoutX="256.0" layoutY="3.0" text="User">
          <font>
             <Font size="29.0" />
          </font>

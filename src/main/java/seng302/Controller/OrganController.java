@@ -9,12 +9,14 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import seng302.Model.Organs;
 import seng302.Model.User;
+import seng302.Service.Log;
 
 /**
  * class for the Organs view
  *
  * @author Josh Burt
  */
+@Deprecated
 public class OrganController {
 
     @FXML
@@ -24,7 +26,7 @@ public class OrganController {
     private ListView<Organs> canDonate;
 
     @FXML
-    private Label donorNameLabel;
+    private Label userNameLabel;
 
     private AppController appController;
     private User currentUser;
@@ -37,7 +39,7 @@ public class OrganController {
     public void init(User user, AppController controller) {
         this.appController = controller;
         currentUser = user;
-        donorNameLabel.setText(user.getFullName());
+      userNameLabel.setText(user.getFullName());
         ArrayList<Organs> donating;
         try {
             donating= new ArrayList<>(user.getDonorDetails().getOrgans());
@@ -77,6 +79,9 @@ public class OrganController {
             currentUser.getDonorDetails().addOrgan(toDonate);
             appController.update(currentUser);
             canDonate.getItems().remove(toDonate);
+            Log.info("Donate organ successful");
+        } else {
+            Log.warning("Donate organs failed, no organs selected.");
         }
     }
 
@@ -95,7 +100,10 @@ public class OrganController {
             canDonate.getItems().add(toUndonate);
             currentUser.getDonorDetails().removeOrgan(toUndonate);
             appController.update(currentUser);
+            Log.info("Un-donate organ successful");
             }
+        } else {
+            Log.warning("Un-donate organs failed, no organs selected.");
         }
     }
 

@@ -13,12 +13,11 @@ import static seng302.Model.Organs.MIDDLE_EAR;
 import static seng302.Model.Organs.PANCREAS;
 import static seng302.Model.Organs.SKIN;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -29,30 +28,24 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.Pagination;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
-import javafx.scene.control.Tooltip;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import seng302.Model.Clinician;
+import seng302.Model.EventTypes;
 import seng302.Model.Organs;
 import seng302.Model.TransplantDetails;
 import seng302.Model.User;
 import seng302.Service.AttributeValidation;
+import seng302.Service.Log;
 
 /**
  * Class for the functionality of the Clinician view of the application
  */
-public class ClinicianController {
+public class ClinicianController implements PropertyChangeListener {
 
     private final int ROWS_PER_PAGE = 30;
     private int startIndex = 0;
@@ -166,13 +159,18 @@ public class ClinicianController {
 
     @FXML
     private Button logoutButton;
+
+    @FXML
+    private Button deleteClinicianButton;
+
     //</editor-fold>
+
     private Stage stage;
     private AppController appController;
     private Clinician clinician;
     private List<User> users;
     private ArrayList<Stage> openStages;
-    private FilteredList<User> fListDonors;
+    private FilteredList<User> fListUsers;
 
     private ArrayList<CheckBox> filterCheckBoxList = new ArrayList<>();
 
@@ -183,6 +181,9 @@ public class ClinicianController {
     private static int searchCount = 0;
     private boolean filterVisible = false;
 
+  private Collection<PropertyChangeListener> parentListeners;
+
+    private boolean admin = false;
 
     /**
      * Initializes the controller class for the clinician overview.
@@ -191,10 +192,21 @@ public class ClinicianController {
      * @param appController the applications controller.
      * @param clinician     The current clinician.
      */
-    public void init(Stage stage, AppController appController, Clinician clinician) {
+    public void init(Stage stage, AppController appController, Clinician clinician, boolean fromAdmin,
+        Collection<PropertyChangeListener> parentListeners) {
+
+      //add change listeners of parent controllers to the current clinician
+      this.parentListeners = new ArrayList<>();
+      if (parentListeners != null && !parentListeners.isEmpty()) {
+        for (PropertyChangeListener listener : parentListeners) {
+          clinician.addPropertyChangeListener(listener);
+        }
+        this.parentListeners.addAll(parentListeners);
+      }
         this.stage = stage;
         this.appController = appController;
         this.clinician = clinician.clone();
+        this.admin = fromAdmin;
         stage.setResizable(true);
         showClinician(clinician);
         users = appController.getUsers();
@@ -202,6 +214,10 @@ public class ClinicianController {
         initSearchTable();
         groupCheckBoxes();
         initWaitListTable();
+
+        if (clinician.getStaffId().equals("0")) {
+            deleteClinicianButton.setDisable(true);
+        }
 
         setDefaultFilters();
         searchCountLabel.setText("Showing results " + (searchCount == 0 ? startIndex : startIndex + 1) + " - " + (endIndex) + " of " + searchCount);
@@ -281,7 +297,7 @@ public class ClinicianController {
         List<User> usersSublist = getSearchData(users);
         //set up lists
         //table contents are SortedList of a FilteredList of an ObservableList of an ArrayList
-        ObservableList<User> oListDonors = FXCollections.observableList(users);
+        ObservableList<User> oListUsers = FXCollections.observableList(users);
 
         fNameColumn = new TableColumn<>("First name");
         fNameColumn.setCellValueFactory(new PropertyValueFactory<>("firstName"));
@@ -307,20 +323,20 @@ public class ClinicianController {
 
         //add more columns as wanted/needed
 
-        fListDonors = new FilteredList<>(oListDonors);
-        fListDonors = filter(fListDonors);
-        FilteredList<User> squished = new FilteredList<>(fListDonors);
+        fListUsers = new FilteredList<>(oListUsers);
+        fListUsers = filter(fListUsers);
+        FilteredList<User> squished = new FilteredList<>(fListUsers);
 
-        SortedList<User> sListDonors = new SortedList<>(squished);
-        sListDonors.comparatorProperty().bind(searchTableView.comparatorProperty());
+        SortedList<User> sListUsers = new SortedList<>(squished);
+        sListUsers.comparatorProperty().bind(searchTableView.comparatorProperty());
 
         //predicate on this list not working properly
         //should limit the number of items shown to ROWS_PER_PAGE
-        //squished = limit(fListDonors, sListDonors);
+        //squished = limit(fListUsers, sListUsers);
         //set table columns and contents
         searchTableView.getColumns().setAll(fNameColumn, lNameColumn, dobColumn, dodColumn, ageColumn, regionColumn, organsColumn);
-        //searchTableView.setItems(FXCollections.observableList(sListDonors.subList(startIndex, endIndex)));
-        searchTableView.setItems(sListDonors);
+        //searchTableView.setItems(FXCollections.observableList(sListUsers.subList(startIndex, endIndex)));
+        searchTableView.setItems(sListUsers);
         searchTableView.setRowFactory((searchTableView) -> new TooltipTableRow<>(User::getTooltip));
 
 
@@ -328,7 +344,7 @@ public class ClinicianController {
         searchTableView.setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
                 User user = searchTableView.getSelectionModel().getSelectedItem();
-                launchDonor(user);
+                launchUser(user);
             }
         });
     }
@@ -366,9 +382,9 @@ public class ClinicianController {
     //transplantWaitListTableView.getItems().clear();
   //set up lists
   //table contents are SortedList of a FilteredList of an ObservableList of an ArrayList
-  appController.getTransplantList().clear();
+    appController.getTransplantList().clear();
     for (User user : users) {
-    if (user.isReceiver()&& (user.getDeceased() != null || !user.getDeceased())) {
+      if (user.isReceiver() && (user.getDeceased() != null && !user.getDeceased())) {
         Set<Organs> organs = user.getReceiverDetails().getOrgans().keySet();
       for (Organs organ : organs) {
         if (isReceiverNeedingFilteredOrgan(user.getNhi(), organs).contains(organ)) {
@@ -397,7 +413,7 @@ public class ClinicianController {
                 if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
                     TransplantDetails transplantDetails = transplantWaitListTableView.getSelectionModel().getSelectedItem();
                     User wantedUser = appController.findUser(transplantDetails.getNhi());
-                    launchDonor(wantedUser);
+                    launchUser(wantedUser);
                 }
             });
 
@@ -425,13 +441,14 @@ public class ClinicianController {
         startIndex = pageIndex * ROWS_PER_PAGE;
         endIndex = Math.min(startIndex + ROWS_PER_PAGE, users.size());
 
-        int minIndex = Math.min(endIndex, fListDonors.size());
+        int minIndex = Math.min(endIndex, fListUsers.size());
 
-        SortedList<User> sListDonors = new SortedList<>(FXCollections.observableArrayList(fListDonors.subList(Math.min(startIndex, minIndex), minIndex)));
-        sListDonors.comparatorProperty().bind(searchTableView.comparatorProperty());
+        SortedList<User> sListUsers = new SortedList<>(FXCollections.observableArrayList(
+            fListUsers.subList(Math.min(startIndex, minIndex), minIndex)));
+        sListUsers.comparatorProperty().bind(searchTableView.comparatorProperty());
 
         lNameColumn.setSortType(TableColumn.SortType.ASCENDING);
-        searchTableView.setItems(sListDonors);
+        searchTableView.setItems(sListUsers);
 
 
         int pageCount = searchCount / ROWS_PER_PAGE;
@@ -444,19 +461,25 @@ public class ClinicianController {
     /**
      * @param user the selected user.
      */
-    private void launchDonor(User user) {
-        FXMLLoader donorLoader = new FXMLLoader(getClass().getResource("/FXML/userView.fxml"));
+    private void launchUser(User user) {
+        FXMLLoader userLoader = new FXMLLoader(getClass().getResource("/FXML/userView.fxml"));
         Parent root;
         try {
-            root = donorLoader.load();
-            Stage donorStage = new Stage();
-            donorStage.setScene(new Scene(root));
-            openStages.add(donorStage);
-            UserController userController = donorLoader.getController();
+            root = userLoader.load();
+            Stage userStage = new Stage();
+            userStage.setScene(new Scene(root));
+            openStages.add(userStage);
+            UserController userController = userLoader.getController();
             AppController.getInstance().setUserController(userController);
-            userController.init(AppController.getInstance(), user, donorStage, true);
-            donorStage.show();
+          //Ostrich
+          parentListeners.add(this);
+          userController.init(AppController.getInstance(), user, userStage, true, parentListeners);
+            userStage.show();
+          Log.info("Clinician " + clinician.getStaffId()
+              + " successfully launched user overview window");
+
         } catch (IOException e) {
+            Log.severe("Clinician "+clinician.getStaffId()+" Failed to load user overview window", e);
             e.printStackTrace();
         }
     }
@@ -666,6 +689,7 @@ public class ClinicianController {
     clinician.undo();
     undoButton.setDisable(clinician.getUndoStack().empty());
     showClinician(clinician);
+    Log.info("Clinician "+clinician.getStaffId()+" executed undo clinician");
   }
 
   /**
@@ -676,6 +700,7 @@ public class ClinicianController {
     clinician.redo();
     redoButton.setDisable(clinician.getRedoStack().empty());
     showClinician(clinician);
+      Log.info("Clinician "+clinician.getStaffId()+" executed redo clinician");
   }
 
   /**
@@ -694,7 +719,9 @@ public class ClinicianController {
       stage.show();
       stage.hide();
       stage.show();
+      Log.info("Clinician "+clinician.getStaffId()+" successfully launched login window after logout");
     } catch (IOException e) {
+        Log.severe("Clinician "+clinician.getStaffId()+" failed to launch login window after logout", e);
       e.printStackTrace();
     }
   }
@@ -715,8 +742,9 @@ public class ClinicianController {
             newStage.initModality(Modality.APPLICATION_MODAL); // background window is no longer selectable
             newStage.showAndWait();
             showClinician(clinician);
-
+            Log.info("Clinician "+clinician.getStaffId()+" successfully launched update clinician window");
         } catch (IOException e) {
+            Log.severe("Clinician "+clinician.getStaffId()+" failed to launch update clinician window", e);
             e.printStackTrace();
         }
     }
@@ -751,15 +779,47 @@ public class ClinicianController {
           DeletedUserController deletedUserController = deletedUserLoader.getController();
           Stage stage = new Stage();
           stage.setScene(new Scene(root));
-          deletedUserController.init();
+          deletedUserController.init(false);
           stage.initModality(Modality.APPLICATION_MODAL);
           stage.showAndWait();
+          Log.info("Clinician "+clinician.getStaffId()+" successfully launched delete user window");
       } catch (IOException e) {
+          Log.severe("Clinician "+clinician.getStaffId()+" failed to launch delete user window", e);
           e.printStackTrace();
+      }
+  }
+
+    /**
+     * Deletes the clinician profile after confirmation.
+     *
+     */
+  @FXML
+  private void deleteClinician() {
+      Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+      alert.setContentText("Are you sure you want to delete this clinician?");
+      Optional<ButtonType> result = alert.showAndWait();
+
+      if (result.get() == ButtonType.OK) {
+          appController.deleteClinician(clinician);
+          if (!admin) {
+              logout();
+          } else {
+              stage.close();
+          }
       }
   }
 
     public void disableLogout() {
         logoutButton.setVisible(false);
+    }
+
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+
+      //clinician controller watches user model
+        //refresh view/tables etc. on change
+        if (evt.getPropertyName().equals(EventTypes.USER_UPDATE.name())) {
+          refreshTables();
+        }
     }
 }

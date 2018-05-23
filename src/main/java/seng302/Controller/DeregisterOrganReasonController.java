@@ -14,6 +14,7 @@ import seng302.Model.OrganDeregisterReason;
 import seng302.Model.Organs;
 import seng302.Model.User;
 import seng302.Service.AttributeValidation;
+import seng302.Service.Log;
 
 /**
  * Controller class for  for clinicians to
@@ -111,10 +112,12 @@ public class DeregisterOrganReasonController {
         UserController userController = appController.getUserController();
         try {
             userController.showUser(currentUser);
+            Log.info("cancelled organ: "+toDeRegister.organName+" de-registration for Receiver with NHI: "+currentUser.getNhi());
         }
         catch (NullPointerException ex) {
             //TODO causes npe if donor is new in this session
             //the text fields etc. are all null
+            Log.severe("unable to cancel organ: "+toDeRegister.organName+"  de-registration for Receiver with NHI: "+currentUser.getNhi(), ex);
         }
         stage.close();
     }
@@ -126,15 +129,19 @@ public class DeregisterOrganReasonController {
     @FXML
     void acceptDeregistration() {
         boolean isValid = true;
+        String logMessage="Organ: "+toDeRegister.organName+"  de-registration reason for Receiver with NHI: "+currentUser.getNhi()+" is ";
         if(transplantReceivedRadioButton.isSelected()){
             userController.setOrganDeregisterationReason(OrganDeregisterReason.TRANSPLANT_RECEIVED);
+            Log.info(logMessage+OrganDeregisterReason.TRANSPLANT_RECEIVED);
 
         } else if (registrationErrorRadioButton.isSelected()) {
             userController.setOrganDeregisterationReason(OrganDeregisterReason.REGISTRATION_ERROR);
+            Log.info(logMessage+OrganDeregisterReason.REGISTRATION_ERROR);
 
         } else if (diseaseCuredRadioButton.isSelected()){
             userController.setOrganDeregisterationReason(OrganDeregisterReason.DISEASE_CURED);
             Disease selectedDisease = diseaseNameComboBox.getSelectionModel().getSelectedItem();
+            Log.info(logMessage+OrganDeregisterReason.DISEASE_CURED);
 
             if(selectedDisease == null){ //if non of the disease is selected
                 isValid = false;
@@ -147,13 +154,14 @@ public class DeregisterOrganReasonController {
 
         } else if(receiverDiedRadioButton.isSelected()){
             LocalDate dOD = dODDatePicker.getValue();
-            if(!AttributeValidation.validateDates(currentUser.getDateOfBirth(), dOD)){
+            if(!AttributeValidation.validateDateOfDeath(currentUser.getDateOfBirth(), dOD)){
                 isValid = false;
                 invalidDateErrorMessage.setVisible(true);
             } else {
                 currentUser.setDateOfDeath(dOD);
                 //currentUser.setDeceased(true);
                 userController.setOrganDeregisterationReason(OrganDeregisterReason.RECEIVER_DIED);
+                Log.info(logMessage+OrganDeregisterReason.RECEIVER_DIED);
             }
         }
 
@@ -168,8 +176,11 @@ public class DeregisterOrganReasonController {
             catch (NullPointerException ex) {
                 //TODO causes npe if donor is new in this session
                 //the text fields etc. are all null
+                Log.severe("Unable to load Receiver with NHI: "+currentUser.getNhi()+" when exiting Deregister Organ Reason window", ex);
             }
             stage.close();
+        } else {
+            Log.warning("There are invalid user input at Deregister Organ Reason window.");
         }
     }
 

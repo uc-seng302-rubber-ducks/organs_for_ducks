@@ -1,42 +1,33 @@
 package seng302.Controller;
 
-import java.io.ByteArrayOutputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.PrintStream;
-import java.util.ArrayList;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.Pagination;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
-import javafx.scene.control.Tooltip;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import seng302.Model.Administrator;
-import seng302.Model.Clinician;
-import seng302.Model.JsonHandler;
-import seng302.Model.User;
-
-import java.util.List;
-
+import seng302.Model.*;
 import seng302.Service.Log;
 import seng302.View.CLI;
 
-public class AdministratorViewController {
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
+
+public class AdministratorViewController implements PropertyChangeListener {
 
     //<editor-fold desc="FXML stuff">
     @FXML
@@ -126,6 +117,9 @@ public class AdministratorViewController {
     @FXML
     private Button deleteAdminButton;
 
+    @FXML
+    private Label fileNotFoundLabel;
+
     //</editor-fold>
 
     private Stage stage;
@@ -133,6 +127,7 @@ public class AdministratorViewController {
     private Administrator administrator;
     private ArrayList<String> pastCommands = new ArrayList<>();
     private int pastCommandIndex = -1;
+    private boolean owner;
 
     /**
      * Initialises scene for the administrator view
@@ -141,10 +136,11 @@ public class AdministratorViewController {
      * @param appController appController instance to get data from
      * @param stage stage to display on
      */
-    public void init(Administrator administrator, AppController appController, Stage stage) {
+    public void init(Administrator administrator, AppController appController, Stage stage, boolean owner) {
         this.stage = stage;
         this.appController = appController;
         this.administrator = administrator;
+        this.owner = owner;
         displayDetails();
 
         if (administrator.getUserName().equals("default")) {
@@ -174,7 +170,7 @@ public class AdministratorViewController {
         });
 
         addListeners();
-        displayClinicanTable();
+        displayClinicianTable();
         displayAdminTable();
         displayUserTable();
         clinicianTableView.setVisible(false);
@@ -232,7 +228,7 @@ public class AdministratorViewController {
 
         userTableView.setOnMouseClicked(event -> {
             if(event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
-                launchDonor(userTableView.getSelectionModel().getSelectedItem());
+                launchUser(userTableView.getSelectionModel().getSelectedItem());
             }
         });
 
@@ -247,14 +243,12 @@ public class AdministratorViewController {
                 launchAdmin(adminTableView.getSelectionModel().getSelectedItem());
             }
         });
-
-
     }
 
     /**
      * Initialises table for the clinician table
      */
-    private void displayClinicanTable() {
+    private void displayClinicianTable() {
         ObservableList<Clinician> clinicians = FXCollections.observableArrayList(appController.getClinicians());
 
         TableColumn<Clinician, String> firstNameColumn = new TableColumn<>("First Name");
@@ -327,10 +321,21 @@ public class AdministratorViewController {
      */
     @FXML
     void importAdmins() throws FileNotFoundException {
+        Log.info("Admin "+administrator.getUserName()+" Importing Administrator profiles");
         String filename;
         filename = FileSelectorController.getFileSelector(stage);
         if (filename != null) {
-            //JsonHandler.loadAdmins(filename);
+            fileNotFoundLabel.setVisible(false);
+//            try {
+//                JsonHandler.loadAdmins(filename);
+//                Log.info("successfully imported " + AdminProfileCount + " Administrator profiles"); //TODO: include number of Administrator profiles loaded in log info message.
+//            } catch (FileNotFoundException e){
+//                Log.severe("File not found", e);
+//                throw e;
+//            }
+        } else {
+            Log.warning("File name not found");
+            fileNotFoundLabel.setVisible(true);
         }
     }
 
@@ -339,12 +344,24 @@ public class AdministratorViewController {
      * @throws FileNotFoundException if the specified file is not found
      */
     @FXML
-    void importClinicians() throws FileNotFoundException {
+    void importClinicians() throws FileNotFoundException{
+        Log.info("Admin "+administrator.getUserName()+" Importing Clinician profiles");
         String filename;
         filename = FileSelectorController.getFileSelector(stage);
         if (filename != null) {
-            List<Clinician> clinicians = JsonHandler.loadClinicians(filename);
-            System.out.println(clinicians.size() + " clinicians were successfully loaded");
+            fileNotFoundLabel.setVisible(false);
+            try {
+                List<Clinician> clinicians = JsonHandler.loadClinicians(filename);
+                Log.info("successfully imported " + clinicians.size() +" Clinician profiles");
+                //System.out.println(clinicians.size() + " clinicians were successfully loaded");
+            } catch (FileNotFoundException e){
+                Log.severe("File not found", e);
+                throw e;
+            }
+
+        } else {
+            Log.warning("File name not found");
+            fileNotFoundLabel.setVisible(true);
         }
 
     }
@@ -355,11 +372,22 @@ public class AdministratorViewController {
      */
     @FXML
     void importUsers() throws FileNotFoundException {
+        Log.info("Admin "+administrator.getUserName()+" Importing User profiles");
         String filename;
         filename = FileSelectorController.getFileSelector(stage);
         if (filename != null) {
-            List<User> users = JsonHandler.loadUsers(filename);
-            System.out.println(users.size() + " donors were successfully loaded");
+            try {
+                List<User> users = JsonHandler.loadUsers(filename);
+                Log.info("successfully imported " + users.size() + " Users profiles");
+                //System.out.println(users.size() + " donors were successfully loaded");
+            } catch (FileNotFoundException e){
+                Log.severe("File not found", e);
+                throw e;
+            }
+
+        } else {
+            Log.warning("File name not found");
+            fileNotFoundLabel.setVisible(true);
         }
     }
 
@@ -378,37 +406,41 @@ public class AdministratorViewController {
     @FXML
     void addUser() {
 
-        FXMLLoader donorLoader = new FXMLLoader(getClass().getResource("/FXML/createNewUser.fxml"));
+        FXMLLoader userLoader = new FXMLLoader(getClass().getResource("/FXML/createNewUser.fxml"));
         Parent root;
         try {
-            root = donorLoader.load();
+            root = userLoader.load();
             Stage newStage = new Stage();
             newStage.setScene(new Scene(root));
             newStage.setTitle("Create New User Profile");
             newStage.show();
-            NewUserController donorController = donorLoader.getController();
+            NewUserController donorController = userLoader.getController();
             donorController.init(AppController.getInstance(), stage, newStage);
+            Log.info("Admin "+administrator.getUserName()+" successfully launched create new user window");
         } catch (IOException e) {
+            Log.severe("Admin "+administrator.getUserName()+" failed to load create new user window", e);
             e.printStackTrace();
         }
     }
 
     /**
-     * Launches the donor overview screen for a selected user
+     * Launches the user overview screen for a selected user
      * @param user the selected user.
      */
-    private void launchDonor(User user) {
-        FXMLLoader donorLoader = new FXMLLoader(getClass().getResource("/FXML/userView.fxml"));
+    private void launchUser(User user) {
+        FXMLLoader userLoader = new FXMLLoader(getClass().getResource("/FXML/userView.fxml"));
         Parent root;
         try {
-            root = donorLoader.load();
+            root = userLoader.load();
             Stage newStage = new Stage();
             newStage.setScene(new Scene(root));
-            UserController userController = donorLoader.getController();
+            UserController userController = userLoader.getController();
             AppController.getInstance().setUserController(userController);
-            userController.init(AppController.getInstance(), user, newStage, true);
+          userController.init(AppController.getInstance(), user, newStage, true, null);
             newStage.show();
+            Log.info("Admin "+administrator.getUserName()+" successfully launched user overview window for User NHI: "+user.getNhi());
         } catch (IOException e) {
+            Log.severe("Admin "+administrator.getUserName()+ " failed to load user overview window for User NHI: "+user.getNhi(), e);
             e.printStackTrace();
         }
     }
@@ -425,9 +457,15 @@ public class AdministratorViewController {
             Stage newStage = new Stage();
             newStage.setScene(new Scene(root));
             ClinicianController clinicianController = clinicianLoader.getController();
-            clinicianController.init(newStage, AppController.getInstance(), clinician);
+            Collection<PropertyChangeListener> listeners = new ArrayList<>();
+            listeners.add(this);
+            clinicianController.init(newStage, AppController.getInstance(), clinician, owner, listeners);
+            //TODO
+            //clinicianController.init(newStage, AppController.getInstance(), clinician, true);
             newStage.show();
+            Log.info("Admin "+administrator.getUserName()+ " successfully launched clinician overview window for Clinician Staff ID:" +clinician.getStaffId());
         } catch (IOException e) {
+            Log.severe("Admin "+administrator.getUserName()+ " failed to load clinician overview window for Clinician Staff ID:" +clinician.getStaffId(), e);
             e.printStackTrace();
         }
     }
@@ -444,12 +482,13 @@ public class AdministratorViewController {
             Stage newStage = new Stage();
             newStage.setScene(new Scene(root));
             AdministratorViewController adminLoaderController = adminLoader.getController();
-            adminLoaderController.init(administrator, AppController.getInstance(), newStage);
+            adminLoaderController.init(administrator, AppController.getInstance(), newStage, false);
             newStage.show();
+            Log.info("Admin "+administrator.getUserName()+ " successfully launched administrator overview window");
         } catch (IOException e) {
+            Log.severe("Admin "+administrator.getUserName()+" failed to load administrator overview window", e);
             e.printStackTrace();
         }
-
     }
 
     /**
@@ -467,8 +506,9 @@ public class AdministratorViewController {
             newStage.show();
             UpdateClinicianController newClinician = clinicianLoader.getController();
             newClinician.init(null, appController, stage, true, newStage);
-
+            Log.info("Admin "+administrator.getUserName()+" successfully launched create new clinician window");
         } catch (IOException e) {
+            Log.severe("Admin "+administrator.getUserName()+" failed to load create new clinician window", e);
             e.printStackTrace();
         }
     }
@@ -488,7 +528,9 @@ public class AdministratorViewController {
             newStage.show();
             UpdateAdminController updateAdminController = adminLoader.getController();
             updateAdminController.init(new Administrator(), newStage);
+            Log.info("Admin "+administrator.getUserName()+" successfully launched create new administrator window");
         } catch (IOException e) {
+            Log.severe("Admin "+administrator.getUserName()+" failed to load create new administrator window", e);
             e.printStackTrace();
         }
     }
@@ -510,18 +552,19 @@ public class AdministratorViewController {
             stage.close();
             LoginController loginController = loginLoader.getController();
             loginController.init(appController,newStage);
-
+            Log.info("Admin "+administrator.getUserName()+" Successfully launched Login window after logout");
         } catch (IOException e) {
-            Log.warning(e.getMessage(), e);
+            Log.severe("Admin "+administrator.getUserName()+" Failed to load Login window after logout", e);
         }
     }
+
 
     /**
      * Undoes the previous action that changed the admin
      */
     @FXML
     void undo() {
-
+        Log.info("Admin "+administrator.getUserName()+"executed Undo Administrator");
     }
 
     /**
@@ -529,7 +572,7 @@ public class AdministratorViewController {
      */
     @FXML
     void redo() {
-
+        Log.info("Admin "+administrator.getUserName()+"executed Redo Administrator");
     }
 
 
@@ -569,10 +612,11 @@ public class AdministratorViewController {
             newStage.show();
             UpdateAdminController updateAdminController = adminLoader.getController();
             updateAdminController.init(administrator, newStage);
+            Log.info("Admin "+administrator.getUserName()+" successfully launched update administrator window");
         } catch (IOException e) {
+            Log.severe("Admin "+administrator.getUserName()+" failed to load update administrator window", e);
             e.printStackTrace();
         }
-
     }
 
     /**
@@ -580,7 +624,57 @@ public class AdministratorViewController {
      */
     @FXML
     void deleteAdminAccount() {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setContentText("Are you sure you want to delete this administrator?");
+        Optional<ButtonType> result = alert.showAndWait();
 
+        if (result.get() == ButtonType.OK) {
+            appController.deleteAdmin(administrator);
+            Log.info("Admin " + administrator.getUserName() + " Successfully deleted Admin account: "); //TODO: include username of deleted admin account in log.
+            if (owner) {
+                logout();
+            } else {
+                stage.close();
+            }
+        }
     }
 
+    @FXML
+    private void openDeletedProfiles() {
+        FXMLLoader deletedUserLoader = new FXMLLoader(
+                getClass().getResource("/FXML/deletedUsersView.fxml"));
+        Parent root;
+        try {
+            root = deletedUserLoader.load();
+            DeletedUserController deletedUserController = deletedUserLoader.getController();
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+            deletedUserController.init(true);
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.showAndWait();
+        } catch (IOException e) {
+            Log.warning(e.getMessage());
+        }
+    }
+
+    /**
+     * updates tables in the admin window with current version of underlying model
+     */
+    public void refreshTables() {
+        adminTableView.refresh();
+        clinicianTableView.refresh();
+        userTableView.refresh();
+    }
+
+  @Override
+  public void propertyChange(PropertyChangeEvent evt) {
+    //watches users and clinicians
+    //refresh view on change
+      //if/else not strictly necessary at this stage
+      if (evt.getPropertyName().equals(EventTypes.USER_UPDATE.name())) {
+          refreshTables();
+      } else if (evt.getPropertyName().equals(EventTypes.CLINICIAN_UPDATE.name())) {
+          refreshTables();
+      }
+  }
 }
