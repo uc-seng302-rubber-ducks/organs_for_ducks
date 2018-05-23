@@ -42,6 +42,9 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
     private Button undoButton;
 
     @FXML
+    private Button backButton;
+
+    @FXML
     private Label staffIdLabel;
 
     @FXML
@@ -177,6 +180,18 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
         int pageCount = searchCount / ROWS_PER_PAGE;
         searchTablePagination.setPageCount(pageCount > 0 ? pageCount + 1 : 1);
         searchTablePagination.currentPageIndexProperty().addListener(((observable, oldValue, newValue) -> changePage(newValue.intValue())));
+
+        if (fromAdmin) {
+            logoutButton.setVisible(false);
+            backButton.setVisible(true);
+        }
+    }
+
+    @FXML
+    private void goBack() {
+        appController.updateClinicians(clinician);
+        stage.close();
+        Log.info("Successfully closed update user window for Clinician StaffID: " + clinician.getStaffId());
     }
 
     private void setDefaultFilters() {
