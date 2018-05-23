@@ -494,7 +494,7 @@ public class AppController {
    * @param administrator the current administrator
    */
   public void updateAdmin(Administrator administrator) {
-    if (!admins.contains(administrator)){
+    if (!admins.contains(administrator)) {
       admins.add(administrator);
     }
 
