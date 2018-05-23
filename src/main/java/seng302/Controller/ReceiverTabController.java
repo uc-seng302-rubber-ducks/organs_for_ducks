@@ -1,23 +1,12 @@
 package seng302.Controller;
 
-import java.io.IOException;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Map;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
-import javafx.scene.control.SelectionMode;
+import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
 import javafx.stage.Stage;
 import seng302.Model.Change;
@@ -26,6 +15,10 @@ import seng302.Model.Organs;
 import seng302.Model.User;
 import seng302.Service.Log;
 import seng302.Service.OrganListCellFactory;
+
+import java.io.IOException;
+import java.time.LocalDate;
+import java.util.*;
 
 public class ReceiverTabController {
 
@@ -248,11 +241,6 @@ public class ReceiverTabController {
       openOrganFromDoubleClick(currentlyReceivingListView);
     }
 
-    stage.onCloseRequestProperty().setValue(event -> {
-      if (Clinician) {
-        AppController.getInstance().getClinicianController().refreshTables();
-      }
-    });
 
     //if user already died, user cannot receive organs
     if (currentUser.getDeceased()) {

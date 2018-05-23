@@ -33,9 +33,9 @@ public class DeleteRestoreProfileTest {
         activeClinicians = appC.getClinicians();
         activeUsers = appC.getUsers();
 
-        activeAdmins.clear();
-        activeClinicians.clear();
-        activeUsers.clear();
+        activeAdmins.remove(testAdmin);
+        activeClinicians.remove(testClinician);
+        activeUsers.remove(testUser);
     }
 
     @Before
@@ -47,9 +47,9 @@ public class DeleteRestoreProfileTest {
 
     @After
     public void tearDown() {
-        activeAdmins.clear();
-        activeClinicians.clear();
-        activeUsers.clear();
+        activeAdmins.remove(testAdmin);
+        activeClinicians.remove(testClinician);
+        activeUsers.remove(testUser);
 
 
 
