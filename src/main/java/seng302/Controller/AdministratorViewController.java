@@ -27,11 +27,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
-public class AdministratorViewController implements PropertyChangeListener {
+public class AdministratorViewController implements PropertyChangeListener, TransplantWaitListViewer {
 
     //<editor-fold desc="FXML stuff">
-    @FXML
-    private TableView<?> transplantWaitListTableView;
 
     @FXML
     private Label succesFailLabel;
@@ -82,9 +80,6 @@ public class AdministratorViewController implements PropertyChangeListener {
     private Label searchCountLabel;
 
     @FXML
-    private Label filtersLabel;
-
-    @FXML
     private CheckBox adminUserCheckbox;
 
     @FXML
@@ -121,6 +116,8 @@ public class AdministratorViewController implements PropertyChangeListener {
     private Label fileNotFoundLabel;
 
     @FXML
+    private TransplantWaitListController transplantWaitListTabPageController;
+    @FXML
     private statusBarController statusBarPageController;
 
     //</editor-fold>
@@ -129,7 +126,7 @@ public class AdministratorViewController implements PropertyChangeListener {
     private AppController appController;
     private Administrator administrator;
     private ArrayList<String> pastCommands = new ArrayList<>();
-    private int pastCommandIndex = -1;
+    private int pastCommandIndex = -2;
     private boolean owner;
 
     /**
@@ -146,6 +143,7 @@ public class AdministratorViewController implements PropertyChangeListener {
         this.owner = owner;
         statusBarPageController.init(appController);
         displayDetails();
+        transplantWaitListTabPageController.init(appController, this);
 
 
         //add change listeners of parent controllers to the current user
@@ -174,7 +172,7 @@ public class AdministratorViewController implements PropertyChangeListener {
           cliInputTextField.setText(pastCommands.get(pastCommandIndex));
         }
       } else if (e.getCode() == KeyCode.DOWN) {
-        if (pastCommandIndex < pastCommands.size() - 1) {
+        if (pastCommandIndex < pastCommands.size() - 1 && pastCommandIndex >= 0) {
           pastCommandIndex++;
           cliInputTextField.setText(pastCommands.get(pastCommandIndex));
         } else if (pastCommandIndex == pastCommands.size() - 1) {
@@ -443,7 +441,8 @@ public class AdministratorViewController implements PropertyChangeListener {
      * Launches the user overview screen for a selected user
      * @param user the selected user.
      */
-    private void launchUser(User user) {
+    @Override
+    public void launchUser(User user) {
         FXMLLoader userLoader = new FXMLLoader(getClass().getResource("/FXML/userView.fxml"));
         Parent root;
         try {
@@ -688,6 +687,7 @@ public class AdministratorViewController implements PropertyChangeListener {
      * updates tables in the admin window with current version of underlying model
      */
     public void refreshTables() {
+        transplantWaitListTabPageController.populateWaitListTable();
         adminTableView.refresh();
         clinicianTableView.refresh();
         userTableView.refresh();

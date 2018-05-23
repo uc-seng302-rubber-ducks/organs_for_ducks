@@ -1,7 +1,14 @@
 package seng302.GUITests;
 
+import static org.testfx.api.FxAssert.verifyThat;
+
+import java.time.LocalDate;
+import java.util.concurrent.TimeoutException;
 import javafx.scene.Node;
-import org.junit.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.matcher.control.LabeledMatchers;
@@ -10,11 +17,6 @@ import seng302.Controller.AppController;
 import seng302.Model.EmergencyContact;
 import seng302.Model.User;
 import seng302.Utils.CommonTestMethods;
-
-import java.time.LocalDate;
-import java.util.concurrent.TimeoutException;
-
-import static org.testfx.api.FxAssert.verifyThat;
 
 public class RedoUserGUITest extends ApplicationTest {
 
@@ -64,7 +66,6 @@ public class RedoUserGUITest extends ApplicationTest {
   }
 
   @Test
-  @Ignore
   public void testRedoEqualUndos() {
     clickOn("#editDetailsButton");
     clickOn("#lNameInput");
@@ -85,7 +86,7 @@ public class RedoUserGUITest extends ApplicationTest {
     clickOn("#redoButton");
     clickOn("#redoButton");
 
-    verifyThat("#pCellValue", LabeledMatchers.hasText("011899992"));
+    verifyThat("#pCellPhone", LabeledMatchers.hasText("011899992"));
     verifyThat("#alcoholValue", LabeledMatchers.hasText("Low"));
     verifyThat("#lNameValue", LabeledMatchers.hasText("Jefferson"));
   }

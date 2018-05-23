@@ -186,20 +186,20 @@ public class User extends Undoable<User> implements Listenable {
     /**
      * Constructor for a User
      *
-     * @param name        users name
+     * @param firstName   users first name
      * @param dateOfBirth users date of birth
      * @param nhi         users national health index
      */
-    public User(String name, java.time.LocalDate dateOfBirth, String nhi) {
+    public User(String firstName, java.time.LocalDate dateOfBirth, String nhi) {
         this.dateOfBirth = dateOfBirth;
-        this.name = name;
+        this.name = firstName;
         this.donorDetails = new DonorDetails(this);
-        this.firstName = name;
+        this.firstName = firstName;
         this.receiverDetails = new ReceiverDetails(this);
         this.nhi = nhi;
         timeCreated = LocalDateTime.now();
         lastModified = LocalDateTime.now();
-        this.preferredFirstName = name;
+        this.preferredFirstName = firstName;
         this.gender = "U";
         this.bloodType = "U";
         this.alcoholConsumption = "None";
