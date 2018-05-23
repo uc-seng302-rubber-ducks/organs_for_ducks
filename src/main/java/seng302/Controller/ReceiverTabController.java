@@ -17,7 +17,6 @@ import seng302.Service.Log;
 import seng302.Service.OrganListCellFactory;
 
 import java.io.IOException;
-import java.time.LocalDate;
 import java.util.*;
 
 public class ReceiverTabController {
@@ -117,16 +116,15 @@ public class ReceiverTabController {
         application.update(currentUser);
         if (currentUser.getDonorDetails().getOrgans().contains(toRegister)) {
           currentUser.getCommonOrgans().add(toRegister);
-        }
 
-                //set mouse click for currentlyReceivingListView
-                currentlyReceivingListView.setOnMouseClicked(event -> {
-                    if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
-                        Organs currentlyReceivingOrgan = currentlyReceivingListView.getSelectionModel()
-                                .getSelectedItem();
-                        launchReceiverOrganDateView(currentlyReceivingOrgan);
-                    }
-                });
+            //set mouse click for currentlyReceivingListView
+            currentlyReceivingListView.setOnMouseClicked(event -> {
+                if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
+                    Organs currentlyReceivingOrgan = currentlyReceivingListView.getSelectionModel()
+                            .getSelectedItem();
+                    launchReceiverOrganDateView(currentlyReceivingOrgan);
+                }
+            });
                 parent.updateUndoRedoButtons();
                 Log.info("Successfully registered organ:" + toRegister.organName + " for receiver NHI: " + currentUser.getNhi());
             } else {
