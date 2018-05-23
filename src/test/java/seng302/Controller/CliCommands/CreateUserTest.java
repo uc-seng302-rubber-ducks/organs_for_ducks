@@ -1,14 +1,17 @@
 package seng302.Controller.CliCommands;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import picocli.CommandLine;
 import seng302.Controller.AppController;
 import seng302.Model.User;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+
+import static org.junit.Assert.assertTrue;
 
 public class CreateUserTest {
 
@@ -19,7 +22,7 @@ public class CreateUserTest {
 
   @Before
   public void setup() {
-    controller = AppController.getInstance(); //TODO use mocks instead of actual instance  21/6
+    controller = AppController.getInstance(); //TODO use mocks instead of actual instance  noted: 24/6,
     controller.setUsers(new ArrayList<>()); //reset users list between tests
 
     minInfo = new User("John Doe", LocalDate.parse("1961-02-12", format), "ABC1234");
@@ -38,7 +41,7 @@ public class CreateUserTest {
     String[] args = {"John", "Doe", "ABC1234", "1961-02-12"};
     new CommandLine(new CreateUser()).parseWithHandler(new CommandLine.RunLast(), System.err, args);
 
-    Assert.assertTrue(controller.getUsers().contains(minInfo));
+    assertTrue(controller.getUsers().contains(minInfo));
   }
 
   @Test
@@ -51,8 +54,8 @@ public class CreateUserTest {
     registered = controller.findUser("Gus Johnson", LocalDate.parse("1990-04-03", format));
     Assert.assertEquals(maxInfo, registered); //checks name and dob
     Assert.assertEquals(maxInfo.getDateOfDeath(), registered.getDateOfDeath());
-    assert (maxInfo.getHeight() == registered.getHeight());
-    assert (maxInfo.getWeight() == registered.getWeight());
+    assertTrue(maxInfo.getHeight() == registered.getHeight());
+    assertTrue(maxInfo.getWeight() == registered.getWeight());
     Assert.assertEquals(maxInfo.getGender(), registered.getGender());
     Assert.assertEquals(maxInfo.getCurrentAddress(), registered.getCurrentAddress());
     Assert.assertEquals(maxInfo.getRegion(), registered.getRegion());
@@ -63,28 +66,27 @@ public class CreateUserTest {
     String[] args = {"Robert"};
 
     new CommandLine(new CreateUser()).parseWithHandler(new CommandLine.RunLast(), System.err, args);
-    assert (controller.getUsers().size() == 0);
+    assertTrue(controller.getUsers().size() == 0);
   }
 
   @Test
   public void ShouldNotRegisterWhenMalformedParameters() {
-    String[] args = {"Frank", "Sinatra", "1967"}; //invalid date
-    //TODO seems to accept garbage dates as long as they are in some-dashed-format - to resolve 21/5
+    String[] args = {"Frank", "Sinatra", "abcd-as-sa"}; //invalid date
     new CommandLine(new CreateUser()).parseWithHandler(new CommandLine.RunLast(), System.err, args);
-    assert (controller.getUsers().size() == 0);
+    assertTrue(controller.getUsers().size() == 0);
   }
 
   @Test
   public void ShouldNotRegisterWhenMalformedOptions() {
     String[] args = {"Ryan", "Clark", "1967-21-03", "-he=myheight"};
     new CommandLine(new CreateUser()).parseWithHandler(new CommandLine.RunLast(), System.err, args);
-    assert (controller.getUsers().size() == 0);
+    assertTrue(controller.getUsers().size() == 0);
   }
 
   @Test
   public void ShouldCancelRegistrationWhenHelpFlagPresent() {
     String[] args = {"Les", "Claypool", "1967-21-03", "-h"};
     new CommandLine(new CreateUser()).parseWithHandler(new CommandLine.RunLast(), System.err, args);
-    assert (controller.getUsers().size() == 0);
+    assertTrue(controller.getUsers().size() == 0);
   }
 }

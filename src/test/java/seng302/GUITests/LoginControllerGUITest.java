@@ -122,10 +122,8 @@ public class LoginControllerGUITest extends ApplicationTest {
     verifyThat("#adminWarningLabel", LabeledMatchers.hasText("The administrator does not exist."));
   }
 
-  @Ignore
   @Test
   public void wrongAdminPassword() {
-    //TODO finish once JSON handler is working with login
     clickOn("#administratorTab");
     clickOn("#adminUsernameTextField");
     write("default");

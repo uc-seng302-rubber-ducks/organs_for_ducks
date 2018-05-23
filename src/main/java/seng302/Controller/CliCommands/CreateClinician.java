@@ -42,7 +42,7 @@ public class CreateClinician implements Runnable{
         if (valid) {
             Clinician clinician = new Clinician(firstName, id, null, region, password);
             controller.updateClinicians(clinician);
-            System.out.println(controller.getClinician(id).toString());
+            System.out.println(clinician.toString());
             System.out.println("Created new clinician with id " + id);
         } else {
             System.out.println("Invalid fields entered");

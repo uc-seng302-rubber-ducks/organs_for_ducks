@@ -130,7 +130,7 @@ public class AppController {
      * @param NHI The unique identifier of the user (national health index)
      * @return hashCode of the new user or -1 on error
      */
-    //TODO: remove??
+    //TODO: Remove this
   public int Register(String name, LocalDate dateOfBirth, LocalDate dateOfDeath, String gender, double height,
                       double weight,
       String bloodType, String currentAddress, String region, String NHI) {
