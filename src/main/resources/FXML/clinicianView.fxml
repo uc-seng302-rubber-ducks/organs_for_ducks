@@ -1,37 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import javafx.collections.*?>
+<?import javafx.collections.FXCollections?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 <?import java.lang.String?>
 <?import javafx.collections.FXCollections?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.CheckBox?>
-<?import javafx.scene.control.ComboBox?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.Pagination?>
-<?import javafx.scene.control.SplitPane?>
-<?import javafx.scene.control.Tab?>
-<?import javafx.scene.control.TabPane?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.control.Tooltip?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.RowConstraints?>
-<?import javafx.scene.text.Font?>
-
-<TabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="408.0" prefWidth="617.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.Controller.ClinicianController">
+<?import java.lang.String?>
+<AnchorPane prefHeight="474.0" prefWidth="656.0"  xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.Controller.ClinicianController"><children>
+        <TabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+                 prefHeight="408.0" prefWidth="617.0" tabClosingPolicy="UNAVAILABLE">
   <tabs>
     <Tab fx:id="detailsTab" text="Details">
       <content>
         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="368.0" prefWidth="617.0">
                <children>
-                  <Label layoutX="264.0" layoutY="21.0" text="Clinician">
+                   <Label layoutX="264.0" layoutY="21.0" text="Clinician">
                      <font>
                         <Font size="20.0" />
                      </font>
@@ -69,7 +53,9 @@
                             </children>
                         </GridPane>
                   <Button fx:id="deleteClinicianButton" layoutX="243.0" layoutY="332.0" mnemonicParsing="false" onAction="#deleteClinician" text="Delete Profile" />
-               </children></AnchorPane>
+               <Button fx:id="backButton" layoutX="15.0" layoutY="332.0" mnemonicParsing="false"
+                                        onAction="#goBack" text="Back"/>
+                            </children></AnchorPane>
       </content>
     </Tab>
     <Tab fx:id="searchTab" text="Search">
@@ -123,38 +109,16 @@
             </SplitPane>
          </content>
     </Tab>
-    <Tab fx:id="transplantWaitListTab" onSelectionChanged="#populateWaitListTable" text="Transplant Wait List">
+    <Tab fx:id="transplantWaitListTab" onSelectionChanged="#refreshTables" text="Transplant Wait List">
         <content>
-            <SplitPane dividerPositions="0.5" orientation="VERTICAL">
-               <items>
-                  <AnchorPane maxHeight="115.0" minHeight="115.0" prefHeight="200.0" prefWidth="200.0">
-                     <children>
-                        <Label layoutX="21.0" layoutY="23.0" text="Region: " AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="18.0" />
-                        <Label layoutX="14.0" layoutY="43.0" text="Organ:" />
-                        <CheckBox fx:id="boneCheckBox" layoutX="68.0" layoutY="42.0" mnemonicParsing="false" text="Bone" AnchorPane.leftAnchor="68.0" AnchorPane.topAnchor="42.0" />
-                        <CheckBox fx:id="boneMarrowCheckBox" layoutX="148.0" layoutY="42.0" mnemonicParsing="false" text="Bone Marrow" AnchorPane.leftAnchor="148.0" AnchorPane.topAnchor="42.0" />
-                        <CheckBox fx:id="corneaCheckBox" layoutX="277.0" layoutY="42.0" mnemonicParsing="false" text="Cornea" AnchorPane.leftAnchor="277.0" AnchorPane.topAnchor="42.0" />
-                        <CheckBox fx:id="connectiveTissueCheckBox" layoutX="365.0" layoutY="42.0" mnemonicParsing="false" text="Connective Tissue" AnchorPane.leftAnchor="365.0" AnchorPane.topAnchor="42.0" />
-                        <CheckBox fx:id="heartCheckBox" layoutX="68.0" layoutY="69.0" mnemonicParsing="false" text="Heart" AnchorPane.leftAnchor="68.0" AnchorPane.topAnchor="69.0" />
-                        <CheckBox fx:id="middleEarCheckBox" layoutX="148.0" layoutY="69.0" mnemonicParsing="false" text="Middle Ear" AnchorPane.leftAnchor="148.0" AnchorPane.topAnchor="69.0" />
-                        <CheckBox fx:id="intestineCheckBox" layoutX="277.0" layoutY="69.0" mnemonicParsing="false" text="Intestine" AnchorPane.leftAnchor="277.0" AnchorPane.topAnchor="69.0" />
-                        <CheckBox fx:id="pancreasCheckBox" layoutX="365.0" layoutY="69.0" mnemonicParsing="false" text="Pancreas" AnchorPane.leftAnchor="365.0" AnchorPane.topAnchor="69.0" />
-                        <CheckBox fx:id="lungCheckBox" layoutX="68.0" layoutY="92.0" mnemonicParsing="false" text="Lung" AnchorPane.leftAnchor="68.0" AnchorPane.topAnchor="92.0" />
-                        <CheckBox fx:id="kidneyCheckBox" layoutX="148.0" layoutY="92.0" mnemonicParsing="false" text="Kidney" AnchorPane.leftAnchor="148.0" AnchorPane.topAnchor="92.0" />
-                        <CheckBox fx:id="liverCheckBox" layoutX="277.0" layoutY="92.0" mnemonicParsing="false" text="Liver" AnchorPane.leftAnchor="277.0" AnchorPane.topAnchor="92.0" />
-                        <CheckBox fx:id="skinCheckBox" layoutX="365.0" layoutY="92.0" mnemonicParsing="false" text="Skin" AnchorPane.leftAnchor="365.0" AnchorPane.topAnchor="92.0" />
-                        <TextField fx:id="waitingRegionTextfield" layoutX="68.0" layoutY="13.0" prefHeight="25.0" prefWidth="442.0" AnchorPane.leftAnchor="68.0" AnchorPane.rightAnchor="107.0" AnchorPane.topAnchor="13.0" />
-                     </children>
-                  </AnchorPane>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
-                     <children>
-                        <TableView fx:id="transplantWaitListTableView" prefHeight="330.0" prefWidth="617.0" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                        <Label fx:id="filtersLabel" layoutX="14.0" layoutY="222.0" maxWidth="Infinity" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="14.0" />
-                     </children>
-                  </AnchorPane>
-               </items>
-            </SplitPane>
+            <fx:include source="transplantWaitListView.fxml" fx:id="transplantWaitListTabPage" />
         </content>
       </Tab>
   </tabs>
-</TabPane>
+</TabPane><AnchorPane fx:id="StatusBar" AnchorPane.bottomAnchor="-5.0">
+            <children>
+                <fx:include fx:id="statusBarPage" source="statusBar.fxml"/>
+            </children>
+        </AnchorPane>
+    </children>
+</AnchorPane>

@@ -1,12 +1,5 @@
 package seng302.GUITests;
 
-import static org.junit.Assert.assertEquals;
-import static seng302.Utils.TableViewsMethod.getCell;
-import static seng302.Utils.TableViewsMethod.getCellValue;
-
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.concurrent.TimeoutException;
 import javafx.scene.input.KeyCode;
 import org.junit.After;
 import org.junit.Before;
@@ -20,6 +13,14 @@ import seng302.Controller.AppController;
 import seng302.Model.Disease;
 import seng302.Model.User;
 import seng302.Utils.CommonTestMethods;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.concurrent.TimeoutException;
+
+import static org.junit.Assert.assertEquals;
+import static seng302.Utils.TableViewsMethod.getCell;
+import static seng302.Utils.TableViewsMethod.getCellValue;
 
 public class NewDiseaseControllerGUITest extends ApplicationTest {
 
@@ -171,6 +172,7 @@ public class NewDiseaseControllerGUITest extends ApplicationTest {
         clickOn("#backButton");
         clickOn("#detailsTab");
         clickOn("#logoutButton");
+        clickOn("#userIDTextField");
         write("ABC1244", 0);
         clickOn("#loginButton");
         clickOn("#diseaseTab");
