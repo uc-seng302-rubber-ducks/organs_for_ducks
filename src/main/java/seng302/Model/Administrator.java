@@ -1,16 +1,22 @@
 package seng302.Model;
 
 import com.google.gson.annotations.Expose;
-import java.time.LocalDateTime;
-import java.util.Objects;
+import javafx.collections.FXCollections;
 import seng302.Service.PasswordManager;
+
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * class to model data structure for an Administrator.
  *
  * @author acb116
  */
-public class Administrator extends Undoable<Administrator> {
+public class Administrator extends Undoable<Administrator> implements Listenable {
     @Expose
     private String userName;
     @Expose
@@ -27,6 +33,9 @@ public class Administrator extends Undoable<Administrator> {
     private LocalDateTime dateCreated;
     @Expose
     private LocalDateTime dateLastModified;
+    private transient List<Change> changes;
+    private transient PropertyChangeSupport pcs;
+
 
     /**
      * Constructor to create a default Administrator
@@ -34,6 +43,8 @@ public class Administrator extends Undoable<Administrator> {
     public Administrator() {
         this.dateCreated = LocalDateTime.now();
         this.dateLastModified = LocalDateTime.now();
+        this.changes = FXCollections.observableArrayList();
+        this.pcs = new PropertyChangeSupport(this);
     }
 
     /**
@@ -46,6 +57,8 @@ public class Administrator extends Undoable<Administrator> {
      * @param password   Administrator password
      */
     public Administrator(String userName, String firstName, String middleName, String lastName, String password) {
+        this.changes = FXCollections.observableArrayList();
+        this.pcs = new PropertyChangeSupport(this);
         this.userName = userName;
         this.firstName = firstName;
         this.middleName = middleName;
@@ -53,6 +66,22 @@ public class Administrator extends Undoable<Administrator> {
         setPassword(password);
         this.dateCreated = LocalDateTime.now();
         this.dateLastModified = LocalDateTime.now();
+    }
+
+
+    @Override
+    public void addPropertyChangeListener(PropertyChangeListener listener) {
+        this.pcs.addPropertyChangeListener(listener);
+    }
+
+    @Override
+    public void removePropertyChangeListener(PropertyChangeListener listener) {
+        this.pcs.removePropertyChangeListener(listener);
+    }
+
+    @Override
+    public void fire(PropertyChangeEvent event) {
+        this.pcs.firePropertyChange(event);
     }
 
     public LocalDateTime getDateCreated() {
@@ -76,6 +105,7 @@ public class Administrator extends Undoable<Administrator> {
         mem.setOldObject(this.clone());
         if (!userName.equals(this.userName)) {
             this.userName = userName;
+            addChange(new Change("Updated username to " + userName));
             setDateLastModified(LocalDateTime.now());
             mem.setNewObject(this.clone());
             getUndoStack().push(mem);
@@ -91,6 +121,7 @@ public class Administrator extends Undoable<Administrator> {
         mem.setOldObject(this.clone());
         if (!firstName.equals(this.firstName)) {
             this.firstName = firstName;
+            addChange(new Change("Updated first name to " + firstName));
             setDateLastModified(LocalDateTime.now());
             mem.setNewObject(this.clone());
             getUndoStack().push(mem);
@@ -106,6 +137,7 @@ public class Administrator extends Undoable<Administrator> {
         mem.setOldObject(this.clone());
         if (!middleName.equals(this.middleName)) {
             this.middleName = middleName;
+            addChange(new Change("Updated middle name to " + middleName));
             setDateLastModified(LocalDateTime.now());
             mem.setNewObject(this.clone());
             getUndoStack().push(mem);
@@ -121,6 +153,7 @@ public class Administrator extends Undoable<Administrator> {
         mem.setOldObject(this.clone());
         if (!lastName.equals(this.lastName)) {
             this.lastName = lastName;
+            addChange(new Change("Updated last name to " + lastName));
             setDateLastModified(LocalDateTime.now());
             mem.setNewObject(this.clone());
             getUndoStack().push(mem);
@@ -141,7 +174,7 @@ public class Administrator extends Undoable<Administrator> {
 
         } else if (firstName.isEmpty()) {
             fullName = "";
-        }else {
+        } else {
             fullName = firstName;
         }
 
@@ -155,6 +188,30 @@ public class Administrator extends Undoable<Administrator> {
     public void setPassword(String password) {
         salt = PasswordManager.getNextSalt();
         this.password = PasswordManager.hash(password, salt);
+        addChange(new Change("Update password"));
+
+    }
+
+    public List<Change> getChanges() {
+        return changes;
+    }
+
+    public void setChanges(List<Change> changes) {
+        this.changes = changes;
+    }
+
+    public void addChange(Change change) {
+        changes.add(change);
+        this.fire(
+                new PropertyChangeEvent(this, EventTypes.USER_UPDATE.name(), new Object(), new Object()));
+    }
+
+    public PropertyChangeSupport getPcs() {
+        return pcs;
+    }
+
+    public void setPcs(PropertyChangeSupport pcs) {
+        this.pcs = pcs;
     }
 
     /**
@@ -186,8 +243,8 @@ public class Administrator extends Undoable<Administrator> {
         return "Administrator{" +
                 "userName='" + userName + '\'' +
                 ", name='" + getFullName() + '\'' +
-            ", dateCreated=" + dateCreated.toString() +
-            ", dateLastModified=" + dateLastModified.toString() +
+                ", dateCreated=" + dateCreated.toString() +
+                ", dateLastModified=" + dateLastModified.toString() +
                 '}';
     }
 
@@ -242,4 +299,6 @@ public class Administrator extends Undoable<Administrator> {
         this.dateCreated = admin.dateCreated;
         this.dateLastModified = admin.dateLastModified;
     }
-}
+    }
+
+
