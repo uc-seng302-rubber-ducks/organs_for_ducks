@@ -1,26 +1,16 @@
 package seng302.Controller;
 
+import seng302.Directory;
+import seng302.Exception.ProfileAlreadyExistsException;
+import seng302.Exception.ProfileNotFoundException;
+import seng302.Model.*;
+import seng302.Service.Log;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.Stack;
-import seng302.Directory;
-import seng302.Exception.ProfileAlreadyExistsException;
-import seng302.Exception.ProfileNotFoundException;
-
-import seng302.Model.Administrator;
-import seng302.Model.Change;
-import seng302.Model.Clinician;
-import seng302.Model.JsonHandler;
-import seng302.Model.TransplantDetails;
-import seng302.Model.User;
-import seng302.Service.Log;
+import java.util.*;
 
 
 /**
@@ -48,6 +38,7 @@ public class AppController {
 
   private static final String USERS_FILE = Directory.JSON.directory() + "/users.json";
   private static final String CLINICIAN_FILE = Directory.JSON.directory() + "/clinicians.json";
+  private static final String ADMIN_FILE = Directory.JSON.directory() + "/administrators.json";
 
   /**
    * Creates new instance of AppController
@@ -58,6 +49,7 @@ public class AppController {
       Log.info(users.size() + " users were successfully loaded");
     } catch (FileNotFoundException e) {
       Log.warning("User file was not found", e);
+
     }
 
     try {
@@ -68,7 +60,7 @@ public class AppController {
     }
 
     try {
-        admins = JsonHandler.loadAdmins();
+        admins = JsonHandler.loadAdmins(ADMIN_FILE);
         Log.info(admins.size() + " administrators were successfully loaded");
     } catch (FileNotFoundException e) {
         System.out.println("Administrator file was not found");
@@ -351,6 +343,11 @@ public class AppController {
     this.users = users;
   }
 
+  public void addUser(User user) { users.add(user); }
+
+  public void addClinician(Clinician clinician) { clinicians.add(clinician); }
+
+  public void addAdmin(Administrator administrator) { admins.add(administrator); }
 
   /**
    *
@@ -685,7 +682,7 @@ public class AppController {
     return deletedAdminSet;
   }
 
-  public java.util.ArrayList<TransplantDetails> getTransplantList() {
+  public ArrayList<TransplantDetails> getTransplantList() {
     return transplantList;
   }
 
