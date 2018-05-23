@@ -3,17 +3,15 @@ package seng302.Controller.CliCommands;
 import picocli.CommandLine;
 import seng302.Controller.AppController;
 import seng302.Model.Clinician;
-
-import java.io.InputStream;
-import java.util.Scanner;
+import seng302.Service.Log;
+import seng302.View.CLI;
 
 @CommandLine.Command(name = "clinician", description = "Allows a clinician to be deleted ")
-public class DeleteClinician implements Runnable{
-
-    private InputStream inputStream = System.in;
-    private Scanner sc = new Scanner(inputStream);
+public class DeleteClinician implements Runnable, Blockable {
 
     private AppController controller = AppController.getInstance();
+    private Clinician toDelete;
+
     @CommandLine.Option(names = {"-h",
             "help"}, required = false, usageHelp = true, description = "display a help message")
     private Boolean helpRequested = false;
@@ -24,27 +22,44 @@ public class DeleteClinician implements Runnable{
 
     @Override
     public void run() {
-        Clinician toDelete = controller.getClinician(id);
+        toDelete = controller.getClinician(id);
         if (toDelete == null) {
             System.out.println("Clinician with that ID not found");
             return;
         }
+        System.out.println("This will delete the following clinician:");
+        System.out.println(toDelete);
+        System.out.println("Are you sure? y/n");
+        CLI.setBlockage(this);
+    }
 
-        System.out.println("This will delete the following clinician: " + toDelete.toString());
-        System.out.println("Please enter Y/n to confirm deletion");
+    /**
+     * this is set to AppController.getInstance by default. this setter exists for the purpose of mocking only.
+     *
+     * @param controller AppController instance to be used
+     */
+    public void setController(AppController controller) {
+        this.controller = controller;
+    }
 
-        while (true) {
-            String confirmString = sc.next();
-            if (confirmString.equalsIgnoreCase("y")) {
-                //controller.deleteClinician(id); //TODO implement this when functionality exists
+    @Override
+    public void confirm(String input) {
+        if (input.equalsIgnoreCase("y")) {
+            try {
+                //old approach of using a scanner doesn't work in the new CLI
+                controller.deleteClinician(toDelete);
+                //TODO force listeners (Admin window) to update on deletion 22/6
                 System.out.println("Clinician successfully deleted");
-                break;
-            } else if (confirmString.equalsIgnoreCase("n")) {
-                System.out.println("Clinician has not been deleted");
-                break;
-            } else {
-                System.out.println("Input was not understood please try again");
+                CLI.clearBlockage();
+            } catch (Exception e) {
+                System.out.println("Could not delete clinician");
+                Log.warning("failed to delete clinician " + id + "via cli", e);
             }
+        } else if (input.equalsIgnoreCase("n")) {
+            System.out.println("Cancelled");
+            CLI.clearBlockage();
+        } else {
+            System.out.println("Invalid option, please enter y/n to confirm or cancel");
         }
     }
 }
