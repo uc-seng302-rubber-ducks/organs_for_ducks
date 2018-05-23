@@ -38,6 +38,7 @@ public class AppController {
 
   private static final String USERS_FILE = Directory.JSON.directory() + "/users.json";
   private static final String CLINICIAN_FILE = Directory.JSON.directory() + "/clinicians.json";
+  private static final String ADMIN_FILE = Directory.JSON.directory() + "/administrators.json";
 
   /**
    * Creates new instance of AppController
@@ -48,6 +49,7 @@ public class AppController {
       Log.info(users.size() + " users were successfully loaded");
     } catch (FileNotFoundException e) {
       Log.warning("User file was not found", e);
+
     }
 
     try {
@@ -58,7 +60,7 @@ public class AppController {
     }
 
     try {
-        admins = JsonHandler.loadAdmins();
+        admins = JsonHandler.loadAdmins(ADMIN_FILE);
         Log.info(admins.size() + " administrators were successfully loaded");
     } catch (FileNotFoundException e) {
         System.out.println("Administrator file was not found");
@@ -341,6 +343,11 @@ public class AppController {
     this.users = users;
   }
 
+  public void addUser(User user) { users.add(user); }
+
+  public void addClinician(Clinician clinician) { clinicians.add(clinician); }
+
+  public void addAdmin(Administrator administrator) { admins.add(administrator); }
 
   /**
    *
@@ -675,7 +682,7 @@ public class AppController {
     return deletedAdminSet;
   }
 
-  public java.util.ArrayList<TransplantDetails> getTransplantList() {
+  public ArrayList<TransplantDetails> getTransplantList() {
     return transplantList;
   }
 
