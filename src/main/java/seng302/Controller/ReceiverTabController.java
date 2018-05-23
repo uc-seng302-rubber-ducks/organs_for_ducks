@@ -241,11 +241,6 @@ public class ReceiverTabController {
             openOrganFromDoubleClick(currentlyReceivingListView);
         }
 
-        stage.onCloseRequestProperty().setValue(event -> {
-            if (Clinician) {
-                //AppController.getInstance().getClinicianController().refreshTables();
-            }
-        });
 
         //if user already died, user cannot receive organs
         if (currentUser.getDeceased()) {
