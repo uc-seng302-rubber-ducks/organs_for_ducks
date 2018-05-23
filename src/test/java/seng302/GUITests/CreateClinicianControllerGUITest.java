@@ -1,6 +1,7 @@
 package seng302.GUITests;
 
 import javafx.scene.Node;
+import javafx.scene.control.TextField;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -58,16 +59,11 @@ public class CreateClinicianControllerGUITest extends ApplicationTest {
 
     @Test
     public void testSignUpRequiredInfo() {
-        clickOn("#staffIDTextField");
-        write("Staff1", 0);
-        clickOn("#passwordField");
-        write("secure", 0);
-        clickOn("#confirmPasswordField");
-        write("secure",0);
-        clickOn("#firstNameTextField");
-        write("Affie", 0);
-        clickOn("#regionTextField");
-        write("Christchurch", 0);
+        lookup("#staffIDTextField").queryAs(TextField.class).setText("Staff1");
+        lookup("#passwordField").queryAs(TextField.class).setText("secure");
+        lookup("#confirmPasswordField").queryAs(TextField.class).setText("secure");
+        lookup("#firstNameTextField").queryAs(TextField.class).setText("Affie");
+        lookup("#regionTextField").queryAs(TextField.class).setText("Christchurch");
         clickOn("#confirmButton");
         verifyThat("#staffIdLabel", LabeledMatchers.hasText("Staff1"));
     }
@@ -86,23 +82,17 @@ public class CreateClinicianControllerGUITest extends ApplicationTest {
     @Test
     public void testInUseStaffID() {
         // create a new clinician
-        clickOn("#staffIDTextField");
-        write("Staff1", 0);
-        clickOn("#passwordField");
-        write("secure", 0);
-        clickOn("#confirmPasswordField");
-        write("secure", 0);
-        clickOn("#firstNameTextField");
-        write("Affie", 0);
-        clickOn("#regionTextField");
-        write("Christchurch", 0);
+        lookup("#staffIDTextField").queryAs(TextField.class).setText("Staff1");
+        lookup("#passwordField").queryAs(TextField.class).setText("secure");
+        lookup("#confirmPasswordField").queryAs(TextField.class).setText("secure");
+        lookup("#firstNameTextField").queryAs(TextField.class).setText("Affie");
+        lookup("#regionTextField").queryAs(TextField.class).setText("Christchurch");
         clickOn("#confirmButton");
         // return to the creation screen
         clickOn("#backButton");
         clickOn("#addClinicianButton");
         // create a new clinician with the same staff ID
-        clickOn("#staffIDTextField");
-        write("Staff1", 0);
+        lookup("#staffIDTextField").queryAs(TextField.class).setText("Staff1");
         clickOn("#confirmButton");
         verifyThat("#invalidStaffIDLabel", Node::isVisible);
         verifyThat("#invalidStaffIDLabel", LabeledMatchers.hasText("Staff ID already in use"));
@@ -111,14 +101,10 @@ public class CreateClinicianControllerGUITest extends ApplicationTest {
 
     @Test
     public void testNoPasswordConfirmation() {
-        clickOn("#staffIDTextField");
-        write("Staff1", 0);
-        clickOn("#passwordField");
-        write("secure", 0);
-        clickOn("#firstNameTextField");
-        write("Affie", 0);
-        clickOn("#regionTextField");
-        write("Christchurch", 0);
+        lookup("#staffIDTextField").queryAs(TextField.class).setText("Staff1");
+        lookup("#passwordField").queryAs(TextField.class).setText("secure");
+        lookup("#firstNameTextField").queryAs(TextField.class).setText("Affie");
+        lookup("#regionTextField").queryAs(TextField.class).setText("Christchurch");
         clickOn("#confirmButton");
         verifyThat("#emptyPasswordLabel", Node::isVisible);
     }
@@ -126,16 +112,11 @@ public class CreateClinicianControllerGUITest extends ApplicationTest {
 
     @Test
     public void testWrongPasswordConfirmation() {
-        clickOn("#staffIDTextField");
-        write("Staff1", 0);
-        clickOn("#passwordField");
-        write("secure", 0);
-        clickOn("#confirmPasswordField");
-        write("not secure", 0);
-        clickOn("#firstNameTextField");
-        write("Affie", 0);
-        clickOn("#regionTextField");
-        write("Christchurch", 0);
+        lookup("#staffIDTextField").queryAs(TextField.class).setText("Staff1");
+        lookup("#passwordField").queryAs(TextField.class).setText("secure");
+        lookup("#confirmPasswordField").queryAs(TextField.class).setText("not secure");
+        lookup("#firstNameTextField").queryAs(TextField.class).setText("Affie");
+        lookup("#regionTextField").queryAs(TextField.class).setText("Christchurch");
         clickOn("#confirmButton");
         verifyThat("#incorrectPasswordLabel", Node::isVisible);
     }
@@ -143,22 +124,14 @@ public class CreateClinicianControllerGUITest extends ApplicationTest {
 
     @Test
     public void testLabelsMatch() {
-        clickOn("#staffIDTextField");
-        write("Staff1",  0);
-        clickOn("#passwordField");
-        write("secure",  0);
-        clickOn("#confirmPasswordField");
-        write("secure",  0);
-        clickOn("#firstNameTextField");
-        write("Affie",  0);
-        clickOn("#middleNameTextField");
-        write("Ali",  0);
-        clickOn("#lastNameTextField");
-        write("Al",  0);
-        clickOn("#addressTextField");
-        write("Our house, in the middle of our street",  0);
-        clickOn("#regionTextField");
-        write("Christchurch",  0);
+        lookup("#staffIDTextField").queryAs(TextField.class).setText("Staff1");
+        lookup("#passwordField").queryAs(TextField.class).setText("secure");
+        lookup("#confirmPasswordField").queryAs(TextField.class).setText("secure");
+        lookup("#firstNameTextField").queryAs(TextField.class).setText("Affie");
+        lookup("#middleNameTextField").queryAs(TextField.class).setText("Ali");
+        lookup("#lastNameTextField").queryAs(TextField.class).setText("Al");
+        lookup("#addressTextField").queryAs(TextField.class).setText("Our house, in the middle of our street");
+        lookup("#regionTextField").queryAs(TextField.class).setText("Christchurch");
         clickOn("#confirmButton");
         verifyThat("#staffIdLabel", LabeledMatchers.hasText("Staff1"));
         verifyThat("#fNameLabel", LabeledMatchers.hasText("Affie"));

@@ -1,5 +1,6 @@
 package seng302.Controller;
 
+import com.sun.javafx.stage.StageHelper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -150,42 +151,39 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
         displayDetails();
         transplantWaitListTabPageController.init(appController, this);
 
-
-        //add change listeners of parent controllers to the current user
+//add change listeners of parent controllers to the current user
         if (parentListeners != null && !parentListeners.isEmpty()) {
             for (PropertyChangeListener listener : parentListeners) {
                 administrator.addPropertyChangeListener(listener);
             }
-        }
-
-    adminUndoButton.setDisable(true);
+        }    adminUndoButton.setDisable(true);
     adminRedoButton.setDisable(true);
     if (administrator.getUserName().equals("default")) {
       deleteAdminButton.setDisable(true);
     }
 
-    adminCliTextArea.setEditable(false);
-    adminCliTextArea.setFocusTraversable(false);
-    cliInputTextField.setOnKeyPressed(e -> {
-      if (e.getCode() == KeyCode.ENTER) {
-        sendInputToCLI();
-        cliInputTextField.setText("");
-      } else if (e.getCode() == KeyCode.UP) {
-        if (pastCommandIndex >= 0) {
-          pastCommandIndex = pastCommandIndex == 0 ? 0
-              : pastCommandIndex - 1; // makes sure pastCommandIndex is never < 0
-          cliInputTextField.setText(pastCommands.get(pastCommandIndex));
-        }
-      } else if (e.getCode() == KeyCode.DOWN) {
-        if (pastCommandIndex < pastCommands.size() - 1 && pastCommandIndex >= 0) {
-          pastCommandIndex++;
-          cliInputTextField.setText(pastCommands.get(pastCommandIndex));
-        } else if (pastCommandIndex == pastCommands.size() - 1) {
-          pastCommandIndex++;
-          cliInputTextField.setText("");
-        }
-      }
-    });
+        adminCliTextArea.setEditable(false);
+        adminCliTextArea.setFocusTraversable(false);
+        cliInputTextField.setOnKeyPressed(e -> {
+            if (e.getCode() == KeyCode.ENTER) {
+                sendInputToCLI();
+                cliInputTextField.setText("");
+            } else if (e.getCode() == KeyCode.UP) {
+                if (pastCommandIndex >= 0) {
+                    pastCommandIndex = pastCommandIndex == 0 ? 0
+                        : pastCommandIndex - 1; // makes sure pastCommandIndex is never < 0
+                    cliInputTextField.setText(pastCommands.get(pastCommandIndex));
+                }
+            } else if (e.getCode() == KeyCode.DOWN) {
+                if (pastCommandIndex < pastCommands.size() - 1) {
+                    pastCommandIndex++;
+                    cliInputTextField.setText(pastCommands.get(pastCommandIndex));
+                } else if (pastCommandIndex == pastCommands.size() - 1) {
+                    pastCommandIndex++;
+                    cliInputTextField.setText("");
+                }
+            }
+        });
 
         addListeners();
         displayClinicianTable();
@@ -269,19 +267,19 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
     private void displayClinicianTable() {
         ObservableList<Clinician> clinicians = FXCollections.observableArrayList(appController.getClinicians());
 
-    TableColumn<Clinician, String> firstNameColumn = new TableColumn<>("First Name");
-    firstNameColumn.setCellValueFactory(new PropertyValueFactory<>("firstName"));
+        TableColumn<Clinician, String> firstNameColumn = new TableColumn<>("First Name");
+        firstNameColumn.setCellValueFactory(new PropertyValueFactory<>("firstName"));
 
-    TableColumn<Clinician, String> lastNameColumn = new TableColumn<>("Last Name");
-    lastNameColumn.setCellValueFactory(new PropertyValueFactory<>("lastName"));
+        TableColumn<Clinician, String> lastNameColumn = new TableColumn<>("Last Name");
+        lastNameColumn.setCellValueFactory(new PropertyValueFactory<>("lastName"));
 
-    TableColumn<Clinician, String> nhiColumn = new TableColumn<>("Staff Id");
-    nhiColumn.setCellValueFactory(new PropertyValueFactory<>("staffId"));
+        TableColumn<Clinician, String> nhiColumn = new TableColumn<>("Staff Id");
+        nhiColumn.setCellValueFactory(new PropertyValueFactory<>("staffId"));
 
-    clinicianTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-    clinicianTableView.getColumns().addAll(nhiColumn, firstNameColumn, lastNameColumn);
-    clinicianTableView.setItems(clinicians);
-  }
+        clinicianTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        clinicianTableView.getColumns().addAll(nhiColumn, firstNameColumn, lastNameColumn);
+        clinicianTableView.setItems(clinicians);
+    }
 
   /**
    * Initialises table for the user table
@@ -341,20 +339,74 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
     @FXML
     void importAdmins() throws FileNotFoundException {
         Log.info("Admin "+administrator.getUserName()+" Importing Administrator profiles");
-        String filename;
-        filename = FileSelectorController.getFileSelector(stage);
-        if (filename != null) {
-            fileNotFoundLabel.setVisible(false);
-//            try {
-//                JsonHandler.loadAdmins(filename);
-//                Log.info("successfully imported " + AdminProfileCount + " Administrator profiles"); //TODO: include number of Administrator profiles loaded in log info message.
-//            } catch (FileNotFoundException e){
-//                Log.severe("File not found", e);
-//                throw e;
-//            }
+        Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+        errorAlert.setHeaderText("Error!");
+        errorAlert.setContentText("Invalid file loaded.");
+        Alert confirmAlert = new Alert(Alert.AlertType.CONFIRMATION);
+        confirmAlert.setHeaderText("Load Confirmation");
+        confirmAlert.setContentText("File successfully loaded.");
+        boolean invalidFile = false;
+        int loadedAdminsAmount;
+        if(isAllWindowsClosed()) {
+            boolean updated = false;
+            Collection<Administrator> existingAdmins = appController.getAdmins();
+            String filename;
+            filename = FileSelectorController.getFileSelector(stage);
+            if (filename != null) {
+                fileNotFoundLabel.setVisible(false);
+                try {
+                    Collection<Administrator> administrators = JsonHandler.loadAdmins(filename);
+                    for (Administrator admin : administrators) {
+                        if (admin.getUserName() == null) {
+                            invalidFile = true;
+                            break;
+                        }
+                        for (Administrator existingAdmin : existingAdmins) {
+                            if (admin.getUserName().equals(existingAdmin.getUserName())) {
+                                //appController.updateAdmins(admin);
+                                updated = true;
+                                break;
+                            }
+                        }
+                        if (!updated) {
+                            appController.addAdmin(admin);
+                        } else {
+                            updated = false;
+                        }
+                    }
+                    loadedAdminsAmount = administrators.size();
+                }
+                catch (FileNotFoundException e) {
+                    Log.severe("File not found", e);
+                    errorAlert.showAndWait().ifPresent(rs -> {
+                        if (rs == ButtonType.OK) {
+                            System.out.println("Pressed OK");
+                        }
+                    });
+                    throw e;
+                }
+                if (invalidFile) {
+                    errorAlert.showAndWait().ifPresent(rs -> {
+                        if (rs == ButtonType.OK) {
+                            System.out.println("Pressed OK");
+                        }
+                    });
+                    Log.warning("Incorrect file loaded - leads to NullPointerException.");
+                } else {
+                    confirmAlert.showAndWait().ifPresent(rs -> {
+                        if (rs == ButtonType.OK) {
+                            System.out.println("Pressed OK");
+                        }
+                    });
+                    Log.info("successfully imported " + loadedAdminsAmount + " Admin profiles");
+                    System.out.println(loadedAdminsAmount + " admins were successfully loaded.");
+                }
+            } else {
+                Log.warning("File name not found");
+                fileNotFoundLabel.setVisible(true);
+            }
         } else {
-            Log.warning("File name not found");
-            fileNotFoundLabel.setVisible(true);
+            launchAlertUnclosedWindowsGUI();
         }
     }
 
@@ -363,26 +415,76 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
      * @throws FileNotFoundException if the specified file is not found
      */
     @FXML
-    void importClinicians() throws FileNotFoundException{
-        Log.info("Admin "+administrator.getUserName()+" Importing Clinician profiles");
-        String filename;
-        filename = FileSelectorController.getFileSelector(stage);
-        if (filename != null) {
-            fileNotFoundLabel.setVisible(false);
-            try {
-                List<Clinician> clinicians = JsonHandler.loadClinicians(filename);
-                Log.info("successfully imported " + clinicians.size() +" Clinician profiles");
-                //System.out.println(clinicians.size() + " clinicians were successfully loaded");
-            } catch (FileNotFoundException e){
-                Log.severe("File not found", e);
-                throw e;
+    void importClinicians() throws FileNotFoundException {
+        Log.info("Admin " + administrator.getUserName() + " Importing Clinician profiles");
+        boolean invalidFile = false;
+        Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+        errorAlert.setHeaderText("Error!");
+        errorAlert.setContentText("Invalid file loaded.");
+        Alert confirmAlert = new Alert(Alert.AlertType.CONFIRMATION);
+        confirmAlert.setHeaderText("Load Confirmation");
+        confirmAlert.setContentText("File successfully loaded.");
+        int loadedCliniciansAmount;
+        if (isAllWindowsClosed()) {
+            boolean updated = false;
+            Collection<Clinician> existingClinicians = appController.getClinicians();
+            String filename;
+            filename = FileSelectorController.getFileSelector(stage);
+            if (filename != null) {
+                fileNotFoundLabel.setVisible(false);
+                try {
+                    Collection<Clinician> clinicians = JsonHandler.loadClinicians(filename);
+                    for (Clinician clinician : clinicians) {
+                        if (clinician.getStaffId() == null) {
+                            invalidFile = true;
+                            break;
+                        }
+                        for (Clinician existingClinician : existingClinicians) {
+                            if (clinician.getStaffId().equals(existingClinician.getStaffId())) {
+                                appController.updateClinicians(clinician);
+                                updated = true;
+                                break;
+                            }
+                        }
+                        if (!updated) {
+                            appController.addClinician(clinician);
+                        } else {
+                            updated = false;
+                        }
+                    }
+                    loadedCliniciansAmount = clinicians.size();
+                } catch (FileNotFoundException e) {
+                    Log.severe("File not found", e);
+                    errorAlert.showAndWait().ifPresent(rs -> {
+                        if (rs == ButtonType.OK) {
+                            System.out.println("Pressed OK");
+                        }
+                    });
+                    throw e;
+                }
+                if (invalidFile) {
+                    errorAlert.showAndWait().ifPresent(rs -> {
+                        if (rs == ButtonType.OK) {
+                            System.out.println("Pressed OK");
+                        }
+                    });
+                    Log.warning("Incorrect file loaded - leads to NullPointerException.");
+                } else {
+                    confirmAlert.showAndWait().ifPresent(rs -> {
+                        if (rs == ButtonType.OK) {
+                            System.out.println("Pressed OK");
+                        }
+                    });
+                    Log.info("successfully imported " + loadedCliniciansAmount + " Clinician profiles");
+                    System.out.println(loadedCliniciansAmount + " clinicians were successfully loaded.");
+                }
+            } else {
+                Log.warning("File name not found");
+                fileNotFoundLabel.setVisible(true);
             }
-
         } else {
-            Log.warning("File name not found");
-            fileNotFoundLabel.setVisible(true);
+            launchAlertUnclosedWindowsGUI();
         }
-
   }
 
     /**
@@ -392,21 +494,118 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
     @FXML
     void importUsers() throws FileNotFoundException {
         Log.info("Admin "+administrator.getUserName()+" Importing User profiles");
-        String filename;
-        filename = FileSelectorController.getFileSelector(stage);
-        if (filename != null) {
+        Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+        errorAlert.setHeaderText("Error!");
+        errorAlert.setContentText("Invalid file loaded.");
+        Alert confirmAlert = new Alert(Alert.AlertType.CONFIRMATION);
+        confirmAlert.setHeaderText("Load Confirmation");
+        confirmAlert.setContentText("File successfully loaded.");
+        if(isAllWindowsClosed()) {
+            boolean updated = false;
+            boolean invalidFile = false;
+            int loadedUsersAmount;
+            List<User> existingUsers = appController.getUsers();
+            String filename;
+            filename = FileSelectorController.getFileSelector(stage);
+            if (filename != null) {
             try {
-                List<User> users = JsonHandler.loadUsers(filename);
-                Log.info("successfully imported " + users.size() + " Users profiles");
-                //System.out.println(users.size() + " donors were successfully loaded");
+                Collection<User> users = JsonHandler.loadUsers(filename);
+                for (User user : users) {
+                    if (user.getNhi() == null) {
+                        invalidFile = true;
+                        break;
+                    } else {
+                        for (User existingUser : existingUsers) {
+                            if (user.getNhi().equals(existingUser.getNhi())) {
+                                appController.update(user);
+                                updated = true;
+                                break;
+                            }
+                        }
+                    }
+                    if (!updated) {
+                        appController.addUser(user);
+                    } else {
+                        updated = false;
+                    }
+                }
+                loadedUsersAmount = users.size();
             } catch (FileNotFoundException e){
                 Log.severe("File not found", e);
+                errorAlert.showAndWait().ifPresent(rs -> {
+                    if (rs == ButtonType.OK) {
+                        System.out.println("Pressed OK");
+                    }
+                });
                 throw e;
             }
-
-        } else {
+            if (invalidFile) {
+                errorAlert.showAndWait().ifPresent(rs -> {
+                    if (rs == ButtonType.OK) {
+                        System.out.println("Pressed OK");
+                    }
+                });
+                Log.warning("Incorrect file loaded - leads to NullPointerException.");
+            } else {
+                confirmAlert.showAndWait().ifPresent(rs -> {
+                    if (rs == ButtonType.OK) {
+                        System.out.println("Pressed OK");
+                    }
+                });
+                Log.info("successfully imported " + loadedUsersAmount + " Users profiles");
+                System.out.println(loadedUsersAmount + " users were successfully loaded.");
+            }
+            } else {
             Log.warning("File name not found");
             fileNotFoundLabel.setVisible(true);
+            }
+        } else {
+            launchAlertUnclosedWindowsGUI();
+        }
+
+    }
+
+    /**
+     * checks if other windows are opened apart from admin overview
+     * @return true only if the admin overview is opened, false otherwise
+     */
+    private boolean isAllWindowsClosed(){
+        List<Stage> windows = StageHelper.getStages();
+        return windows.size() == 1;
+    }
+
+    /**
+     * closes all windows apart from admin overview.
+     */
+    public void CloseAllWindows(){
+        List<Stage> windows = StageHelper.getStages();
+        int numWindows = windows.size();
+
+        //skips the first stage, which is the admin overview
+        for(int i=1; i < numWindows; i++){
+            windows.get(1).close(); //when close, the stage is removed from list
+        }
+    }
+
+    /**
+     * Launches a popup gui that warns user if there
+     * are multiple windows opened.
+     */
+    private void launchAlertUnclosedWindowsGUI() {
+        FXMLLoader AlertUnclosedWindowsLoader = new FXMLLoader(
+                getClass().getResource("/FXML/AlertUnclosedWindows.fxml"));
+        Parent root;
+        try {
+            root = AlertUnclosedWindowsLoader.load();
+            root.requestFocus(); //Currently the below code thinks that focus = selected so will always take the focused
+            // thing in currentDiseases over the selected thing in pastDiseases. Trying to fix
+            AlertUnclosedWindowsController alertUnclosedWindowsController = AlertUnclosedWindowsLoader.getController();
+            Stage stage = new Stage();
+            alertUnclosedWindowsController.init(stage, this);
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -601,7 +800,6 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
         adminRedoButton.setDisable(administrator.getRedoStack().isEmpty());
         displayDetails();
         Log.info("Admin "+administrator.getUserName()+"executed Redo Administrator");
-
     }
 
 
