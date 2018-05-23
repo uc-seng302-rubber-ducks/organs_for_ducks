@@ -29,7 +29,9 @@ import java.util.Optional;
 
 public class AdministratorViewController implements PropertyChangeListener, TransplantWaitListViewer {
 
-    //<editor-fold desc="FXML stuff">
+    //<editor-fold desc="FXML items">
+    @FXML
+    private TableView<?> transplantWaitListTableView;
 
     @FXML
     private Label succesFailLabel;
@@ -78,6 +80,9 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
 
     @FXML
     private Label searchCountLabel;
+
+    @FXML
+    private Label filtersLabel;
 
     @FXML
     private CheckBox adminUserCheckbox;
