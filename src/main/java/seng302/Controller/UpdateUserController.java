@@ -148,6 +148,7 @@ public class UpdateUserController {
   public void init(User user, AppController controller, Stage stage) {
     this.stage = stage;
     currentUser = user;
+    System.out.println(user.toString());
     oldUser = currentUser.clone();
     this.appController = controller;
     setUserDetails(currentUser);
@@ -369,12 +370,12 @@ public class UpdateUserController {
     if (user.getWeightText() != null) {
       weightInput.setText(user.getWeightText());
     } else {
-      weightInput.setText("");
+      weightInput.setText(Double.toString(user.getWeight()));
     }
     if (user.getHeightText() != null) {
       heightInput.setText(user.getHeightText());
     } else {
-      heightInput.setText("");
+      heightInput.setText(Double.toString(user.getHeight()));
     }
     listen = true;
 

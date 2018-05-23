@@ -67,6 +67,7 @@ public class MedicationTabController {
    * @param fromClinician boolean value indication if from clinician view
    */
   public void init(AppController controller, User user, boolean fromClinician) {
+
     application = controller;
     currentUser = user;
     //ageValue.setText("");
@@ -79,7 +80,7 @@ public class MedicationTabController {
       untakeMedicationButton.setVisible(false);
     }
 
-    currentMeds = FXCollections.observableArrayList();
+        currentMeds = FXCollections.observableArrayList();
 
     previousMeds = FXCollections.observableArrayList();
 

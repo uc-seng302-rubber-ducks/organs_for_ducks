@@ -27,7 +27,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
-public class AdministratorViewController implements PropertyChangeListener {
+public class AdministratorViewController implements PropertyChangeListener, TransplantWaitListViewer {
 
     //<editor-fold desc="FXML items">
     @FXML
@@ -120,13 +120,15 @@ public class AdministratorViewController implements PropertyChangeListener {
     @FXML
     private Label fileNotFoundLabel;
 
+    @FXML
+    private TransplantWaitListController transplantWaitListTabPageController;
     //</editor-fold>
 
     private Stage stage;
     private AppController appController;
     private Administrator administrator;
     private ArrayList<String> pastCommands = new ArrayList<>();
-    private int pastCommandIndex = -1;
+    private int pastCommandIndex = -2;
     private boolean owner;
 
     /**
@@ -142,6 +144,7 @@ public class AdministratorViewController implements PropertyChangeListener {
         this.administrator = administrator;
         this.owner = owner;
         displayDetails();
+        transplantWaitListTabPageController.init(appController, this);
 
     adminUndoButton.setDisable(true);
     adminRedoButton.setDisable(true);
@@ -162,7 +165,7 @@ public class AdministratorViewController implements PropertyChangeListener {
           cliInputTextField.setText(pastCommands.get(pastCommandIndex));
         }
       } else if (e.getCode() == KeyCode.DOWN) {
-        if (pastCommandIndex < pastCommands.size() - 1) {
+        if (pastCommandIndex < pastCommands.size() - 1 && pastCommandIndex >= 0) {
           pastCommandIndex++;
           cliInputTextField.setText(pastCommands.get(pastCommandIndex));
         } else if (pastCommandIndex == pastCommands.size() - 1) {
@@ -431,7 +434,8 @@ public class AdministratorViewController implements PropertyChangeListener {
      * Launches the user overview screen for a selected user
      * @param user the selected user.
      */
-    private void launchUser(User user) {
+    @Override
+    public void launchUser(User user) {
         FXMLLoader userLoader = new FXMLLoader(getClass().getResource("/FXML/userView.fxml"));
         Parent root;
         try {
@@ -440,7 +444,9 @@ public class AdministratorViewController implements PropertyChangeListener {
             newStage.setScene(new Scene(root));
             UserController userController = userLoader.getController();
             AppController.getInstance().setUserController(userController);
-          userController.init(AppController.getInstance(), user, newStage, true, null);
+            Collection<PropertyChangeListener> listeners = new ArrayList<>();
+            listeners.add(this);
+            userController.init(AppController.getInstance(), user, newStage, true, listeners);
             newStage.show();
             Log.info("Admin "+administrator.getUserName()+" successfully launched user overview window for User NHI: "+user.getNhi());
         } catch (IOException e) {
@@ -673,6 +679,7 @@ public class AdministratorViewController implements PropertyChangeListener {
      * updates tables in the admin window with current version of underlying model
      */
     public void refreshTables() {
+        transplantWaitListTabPageController.populateWaitListTable();
         adminTableView.refresh();
         clinicianTableView.refresh();
         userTableView.refresh();

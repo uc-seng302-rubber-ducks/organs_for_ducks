@@ -1,23 +1,26 @@
 package seng302.GUITests;
 
-import org.junit.*;
+import static org.testfx.api.FxAssert.verifyThat;
+
+import java.time.LocalDate;
+import java.util.concurrent.TimeoutException;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.matcher.control.LabeledMatchers;
 import seng302.App;
 import seng302.Controller.AppController;
 import seng302.Model.User;
+import seng302.Utils.CommonTestMethods;
 
-import java.time.LocalDate;
-import java.util.concurrent.TimeoutException;
-
-import static org.testfx.api.FxAssert.verifyThat;
-@Ignore
 public class DeleteUserGUITest extends ApplicationTest{
 
   @BeforeClass
   public static void initialization() {
-    //CommonTestMethods.runHeadless();
+    CommonTestMethods.runHeadless();
   }
 
   @Before
@@ -44,7 +47,8 @@ public class DeleteUserGUITest extends ApplicationTest{
     clickOn("#userIDTextField");
     write("ABC1234");
     clickOn("#loginUButton");
-    verifyThat("#userWarningLabel", LabeledMatchers.hasText("User was not found. \nTo register a new user, please click sign up."));
+    verifyThat("#userWarningLabel", LabeledMatchers
+        .hasText("User was not found. \nTo register a new user, please click sign up."));
   }
 
   @Test
