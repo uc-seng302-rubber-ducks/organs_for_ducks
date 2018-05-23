@@ -2,8 +2,6 @@ package seng302.Controller;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
-import javafx.stage.Stage;
-import seng302.Model.User;
 
 public class statusBarController {
 
@@ -15,9 +13,8 @@ public class statusBarController {
   private UserController parent;
 
   @FXML
-  public void init(AppController controller, UserController userController) {
+  public void init(AppController controller) {
     application = controller;
-    parent = userController;
     updateStatus("");
   }
 

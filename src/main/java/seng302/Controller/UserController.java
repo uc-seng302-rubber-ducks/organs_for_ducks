@@ -1,10 +1,6 @@
 package seng302.Controller;
 
 
-import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -14,13 +10,13 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
-import seng302.Model.Change;
-import seng302.Model.EmergencyContact;
-import seng302.Model.OrganDeregisterReason;
-import seng302.Model.Organs;
-import seng302.Model.User;
+import seng302.Model.*;
+
+import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * Class for the functionality of the User view of the application
@@ -123,7 +119,7 @@ public class UserController {
     donationTabPageController.init(controller, user, this);
     diseasesTabPageController.init(controller, user, fromClinician, this);
     receiverTabPageController.init(controller, this.stage, user, fromClinician, this);
-    statusBarPageController.init(controller,this);
+    statusBarPageController.init(controller);
     //arbitrary default values
     undoButton.setVisible(true);
     redoButton.setVisible(true);
