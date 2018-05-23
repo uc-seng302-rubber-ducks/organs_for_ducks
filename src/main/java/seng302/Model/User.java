@@ -1,6 +1,7 @@
 package seng302.Model;
 
 import com.google.gson.annotations.Expose;
+
 import javafx.collections.FXCollections;
 import seng302.Controller.ReceiverOrganDetailsHolder;
 
@@ -30,7 +31,6 @@ public class User extends Undoable<User> implements Listenable {
     private String gender;
     @Expose
     private double height;
-
     private transient String heightText;
     @Expose
     private double weight;
@@ -188,20 +188,20 @@ public class User extends Undoable<User> implements Listenable {
     /**
      * Constructor for a User
      *
-     * @param name        users name
+     * @param firstName   users first name
      * @param dateOfBirth users date of birth
      * @param nhi         users national health index
      */
-    public User(String name, java.time.LocalDate dateOfBirth, String nhi) {
+    public User(String firstName, java.time.LocalDate dateOfBirth, String nhi) {
         this.dateOfBirth = dateOfBirth;
-        this.name = name;
+        this.name = firstName;
         this.donorDetails = new DonorDetails(this);
-        this.firstName = name;
+        this.firstName = firstName;
         this.receiverDetails = new ReceiverDetails(this);
         this.nhi = nhi;
         timeCreated = LocalDateTime.now();
         lastModified = LocalDateTime.now();
-        this.preferredFirstName = name;
+        this.preferredFirstName = firstName;
         this.gender = "U";
         this.bloodType = "U";
         this.alcoholConsumption = "None";
@@ -477,10 +477,12 @@ public class User extends Undoable<User> implements Listenable {
         Memento<User> mem = new Memento<>();
         mem.setOldObject(this.clone());
         updateLastModified();
+        if (this.height != height) {
         this.height = height;
         addChange(new Change("Changed height to " + height));
         mem.setNewObject(this.clone());
         getUndoStack().push(mem);
+        }
     }
 
     public double getWeight() {
@@ -491,10 +493,12 @@ public class User extends Undoable<User> implements Listenable {
         Memento<User> mem = new Memento<>();
         mem.setOldObject(this.clone());
         updateLastModified();
+        if (weight != this.weight){
         this.weight = weight;
         addChange(new Change("Changed weight to " + weight));
         mem.setNewObject(this.clone());
         getUndoStack().push(mem);
+        }
     }
 
     public String getHeightText() {
@@ -534,10 +538,12 @@ public class User extends Undoable<User> implements Listenable {
         mem.setOldObject(this.clone());
         String validType = groupBloodType(bloodType);
         updateLastModified();
-        this.bloodType = validType;
-        addChange(new Change("Changed blood type to " + bloodType));
-        mem.setNewObject(this.clone());
-        getUndoStack().push(mem);
+        if (this.bloodType != validType) {
+            this.bloodType = validType;
+            addChange(new Change("Changed blood type to " + bloodType));
+            mem.setNewObject(this.clone());
+            getUndoStack().push(mem);
+        }
     }
 
     public String getCurrentAddress() {

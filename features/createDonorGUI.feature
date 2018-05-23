@@ -23,9 +23,9 @@ Feature: As a client, I want to create a user account on the system.
 
   Scenario: I create a user profile with basic info and health info
     When I register a user using the GUI with the NHI "ADE1987", first name "Dwayne" and date of birth "3/1/2017"
-    And with health info, which consist of birth gender "Male", height 1.75, weight 65, blood type "B+", alcohol consumption "None", and unticked on the smoker checkbox
+    And with health info, which consist of birth gender "Male", height "1.75", weight "65", blood type "B+", alcohol consumption "None", and unticked on the smoker checkbox
     And Clicked on the Create Profile button
-    Then I should see my NHI "ADE1987" first name "Dwayne", Smoker is marked as "No", alcohol "None" and date of death "2017-03-01"
+    Then I should see my NHI "ADE1987" first name "Dwayne", Smoker is marked as "No", alcohol "None" and date of birth "2017-01-03"
 
   Scenario: I create a user profile with basic info and preferred name
     When I register a user using the GUI with the NHI "ADE1987", first name "Dwayne" and date of birth "3/1/2017"
