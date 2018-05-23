@@ -414,7 +414,7 @@ public class AdministratorViewController {
         lastNameColumn.setCellValueFactory(new PropertyValueFactory<>("lastName"));
 
         TableColumn<Administrator, String> nhiColumn = new TableColumn<>("User Name");
-        nhiColumn.setCellValueFactory(new PropertyValueFactory<>("username"));
+        nhiColumn.setCellValueFactory(new PropertyValueFactory<>("userName"));
 
         TableColumn<Administrator, String> regionColumn = new TableColumn<>("Region");
         nhiColumn.setCellValueFactory(new PropertyValueFactory<>("region"));
