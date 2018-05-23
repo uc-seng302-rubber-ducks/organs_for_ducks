@@ -229,6 +229,9 @@ public class ClinicianController implements PropertyChangeListener {
         if (fromAdmin) {
             logoutButton.setVisible(false);
             backButton.setVisible(true);
+        } else {
+            logoutButton.setVisible(true);
+            backButton.setVisible(false);
         }
     }
 
