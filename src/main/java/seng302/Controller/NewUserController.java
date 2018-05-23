@@ -192,7 +192,6 @@ public class NewUserController {
                     alcoholConsumption, smoker, currentAddress, region, homePhone, cellPhone, email, null,
                 fName, fName, preferredFirstName, middleName,
                 lastName); //todo: ewww gross can we please change this DELET THIS PLS
-
             try {
                 EmergencyContact contact = collectEmergencyContact(newUser);
                 newUser.setContact(contact);

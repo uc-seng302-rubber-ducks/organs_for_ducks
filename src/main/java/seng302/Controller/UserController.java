@@ -306,7 +306,7 @@ public class UserController {
     }
     updateUndoRedoButtons();
     if (changelog.size() > 0){
-      statusBarPageController.updateStatus(user.getNhi() +" " + changelog.get(0).getChange());
+      statusBarPageController.updateStatus(user.getNhi() +" " + changelog.get(changelog.size()-1).getChange());
     }
   }
 
