@@ -14,12 +14,13 @@ import org.testfx.matcher.control.LabeledMatchers;
 import seng302.App;
 import seng302.Controller.AppController;
 import seng302.Model.User;
+import seng302.Utils.CommonTestMethods;
 
 public class DeleteUserGUITest extends ApplicationTest{
 
   @BeforeClass
   public static void initialization() {
-    //CommonTestMethods.runHeadless();
+    CommonTestMethods.runHeadless();
   }
 
   @Before
