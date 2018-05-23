@@ -1,5 +1,6 @@
 package seng302.Controller;
 
+import com.sun.javafx.stage.StageHelper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -128,8 +129,6 @@ public class AdministratorViewController implements PropertyChangeListener {
     private ArrayList<String> pastCommands = new ArrayList<>();
     private int pastCommandIndex = -1;
     private boolean owner;
-    private Alert confirmAlert = new Alert(Alert.AlertType.CONFIRMATION);
-    private Alert errorAlert = new Alert(Alert.AlertType.ERROR);
 
     /**
      * Initialises scene for the administrator view
@@ -150,12 +149,6 @@ public class AdministratorViewController implements PropertyChangeListener {
         if (administrator.getUserName().equals("default")) {
             deleteAdminButton.setDisable(true);
         }
-        errorAlert.setHeaderText("Error!");
-        errorAlert.setContentText("Invalid file loaded.");
-
-        confirmAlert.setHeaderText("Load Confirmation");
-        confirmAlert.setContentText("File successfully loaded.");
-
 
         adminCliTextArea.setEditable(false);
         adminCliTextArea.setFocusTraversable(false);
@@ -334,6 +327,12 @@ public class AdministratorViewController implements PropertyChangeListener {
     @FXML
     void importAdmins() throws FileNotFoundException {
         Log.info("Admin "+administrator.getUserName()+" Importing Administrator profiles");
+        Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+        errorAlert.setHeaderText("Error!");
+        errorAlert.setContentText("Invalid file loaded.");
+        Alert confirmAlert = new Alert(Alert.AlertType.CONFIRMATION);
+        confirmAlert.setHeaderText("Load Confirmation");
+        confirmAlert.setContentText("File successfully loaded.");
         boolean invalidFile = false;
         int loadedAdminsAmount;
         if(isAllWindowsClosed()) {
@@ -401,6 +400,12 @@ public class AdministratorViewController implements PropertyChangeListener {
     void importClinicians() throws FileNotFoundException {
         Log.info("Admin " + administrator.getUserName() + " Importing Clinician profiles");
         boolean invalidFile = false;
+        Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+        errorAlert.setHeaderText("Error!");
+        errorAlert.setContentText("Invalid file loaded.");
+        Alert confirmAlert = new Alert(Alert.AlertType.CONFIRMATION);
+        confirmAlert.setHeaderText("Load Confirmation");
+        confirmAlert.setContentText("File successfully loaded.");
         int loadedCliniciansAmount;
         if (isAllWindowsClosed()) {
             boolean updated = false;
@@ -457,7 +462,6 @@ public class AdministratorViewController implements PropertyChangeListener {
         } else {
             launchAlertUnclosedWindowsGUI();
         }
-
   }
 
     /**
@@ -467,6 +471,12 @@ public class AdministratorViewController implements PropertyChangeListener {
     @FXML
     void importUsers() throws FileNotFoundException {
         Log.info("Admin "+administrator.getUserName()+" Importing User profiles");
+        Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+        errorAlert.setHeaderText("Error!");
+        errorAlert.setContentText("Invalid file loaded.");
+        Alert confirmAlert = new Alert(Alert.AlertType.CONFIRMATION);
+        confirmAlert.setHeaderText("Load Confirmation");
+        confirmAlert.setContentText("File successfully loaded.");
         if(isAllWindowsClosed()) {
             boolean updated = false;
             boolean invalidFile = false;

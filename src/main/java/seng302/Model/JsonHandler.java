@@ -26,9 +26,6 @@ import java.util.List;
  */
 public final class JsonHandler {
 
-
-    private static Alert errorAlert = new Alert(Alert.AlertType.ERROR);
-
     /**
      * save the current users in the system to the filename given Based on:
      * https://stackoverflow.com/questions/14996663/is-there-a-standard-implementation-for-a-gson-joda-time-serialiser
@@ -83,23 +80,11 @@ public final class JsonHandler {
             return results;
         }
         catch (FileNotFoundException e){
-            errorAlert.setHeaderText("ERROR!");
-            errorAlert.setContentText("File could not be found.");
-            errorAlert.showAndWait().ifPresent(rs -> {
-                if (rs == ButtonType.OK) {
-                    System.out.println("Pressed OK");
-                }
-            });
+            errorMessageAlert(e);
             throw e;
         }
         catch (RuntimeException e) {
-            errorAlert.setHeaderText("ERROR!");
-            errorAlert.setContentText("File contained malformed data.");
-            errorAlert.showAndWait().ifPresent(rs -> {
-                if (rs == ButtonType.OK) {
-                    System.out.println("Pressed OK");
-                }
-            });
+            errorMessageAlert(e);
             throw e;
         }
     }
@@ -139,12 +124,22 @@ public final class JsonHandler {
      * @throws FileNotFoundException thrown if no clinicians exist
      */
     public static List<Clinician> loadClinicians(String filename) throws FileNotFoundException {
-        File inFile = new File(filename);
-        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss")
-                .create();
-        Reader reader = new FileReader(inFile);
-        Clinician[] clinicians = gson.fromJson(reader, Clinician[].class);
-        return new ArrayList<>(Arrays.asList(clinicians));
+        try {
+            File inFile = new File(filename);
+            Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss")
+                    .create();
+            Reader reader = new FileReader(inFile);
+            Clinician[] clinicians = gson.fromJson(reader, Clinician[].class);
+            return new ArrayList<>(Arrays.asList(clinicians));
+        }
+        catch (FileNotFoundException e){
+            errorMessageAlert(e);
+            throw e;
+        }
+        catch (RuntimeException e) {
+            errorMessageAlert(e);
+            throw e;
+        }
     }
 
 
@@ -181,14 +176,45 @@ public final class JsonHandler {
      * @throws FileNotFoundException thrown if the JSON file of administrators does not exist
      */
     public static Collection<Administrator> loadAdmins(String filename) throws FileNotFoundException {
+        try {
+            File inFile = new File(filename);
+            Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss")
+                    .create();
 
-        File inFile = new File(filename);
-        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss")
-                .create();
+            Reader reader = new FileReader(inFile);
+            Administrator[] administrators = gson.fromJson(reader, Administrator[].class);
+            return new ArrayList<>(Arrays.asList(administrators));
+        }
+        catch (FileNotFoundException e){
+            errorMessageAlert(e);
+            throw e;
+        }
+        catch (RuntimeException e) {
+            errorMessageAlert(e);
+            throw e;
+        }
+    }
 
-        Reader reader = new FileReader(inFile);
-        Administrator[] administrators = gson.fromJson(reader, Administrator[].class);
-        return new ArrayList<>(Arrays.asList(administrators));
+    private static void errorMessageAlert(Exception e) {
+        if (e.equals("FileNotFoundException")) {
+            Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+            errorAlert.setHeaderText("ERROR!");
+            errorAlert.setContentText("File could not be found.");
+            errorAlert.showAndWait().ifPresent(rs -> {
+                if (rs == ButtonType.OK) {
+                    System.out.println("Pressed OK");
+                }
+            });
+        } else {
+            Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+            errorAlert.setHeaderText("ERROR!");
+            errorAlert.setContentText("File contained malformed data.");
+            errorAlert.showAndWait().ifPresent(rs -> {
+                if (rs == ButtonType.OK) {
+                    System.out.println("Pressed OK");
+                }
+            });
+        }
     }
 
     /**
