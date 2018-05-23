@@ -5,6 +5,7 @@ import org.junit.Test;
 import picocli.CommandLine;
 import seng302.Controller.AppController;
 import seng302.Model.User;
+import seng302.View.CLI;
 
 import java.time.LocalDate;
 
@@ -26,6 +27,7 @@ public class DeleteUserTest {
     when(mockController.findUser("ABC1234")).thenReturn(testUser);
     command.setController(mockController);
     new CommandLine(command).parseWithHandler(new CommandLine.RunLast(), System.err, args);
+    CLI.parseInput("y", mockController);
     verify(mockController).deleteUser(testUser);
   }
 
@@ -36,6 +38,7 @@ public class DeleteUserTest {
     when(mockController.findUser("ABC1234")).thenReturn(null);
     command.setController(mockController);
     new CommandLine(command).parseWithHandler(new CommandLine.RunLast(), System.err, args);
+    CLI.parseInput("y", mockController);
     verify(mockController, times(0)).deleteUser(testUser);
   }
 }

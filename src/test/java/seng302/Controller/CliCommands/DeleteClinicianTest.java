@@ -5,6 +5,7 @@ import org.junit.Test;
 import picocli.CommandLine;
 import seng302.Controller.AppController;
 import seng302.Model.Clinician;
+import seng302.View.CLI;
 
 import static org.mockito.Mockito.*;
 
@@ -25,6 +26,7 @@ public class DeleteClinicianTest {
         when(mockController.getClinician("3")).thenReturn(testClinician);
         command.setController(mockController);
         new CommandLine(command).parseWithHandler(new CommandLine.RunLast(), System.err, args);
+        CLI.parseInput("y", mockController);
         verify(mockController).deleteClinician(testClinician);
     }
 
@@ -35,6 +37,7 @@ public class DeleteClinicianTest {
         when(mockController.findUser("3")).thenReturn(null);
         command.setController(mockController);
         new CommandLine(command).parseWithHandler(new CommandLine.RunLast(), System.err, args);
+        CLI.parseInput("y", mockController);
         verify(mockController, times(0)).deleteClinician(testClinician);
     }
 }
