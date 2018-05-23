@@ -7,7 +7,6 @@ import javafx.scene.Node;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
@@ -148,7 +147,7 @@ public class CreateUserControllerGUITest extends ApplicationTest {
     verifyThat("#pHomePhone", LabeledMatchers.hasText("033552847"));
   }
 
-  @Test @Ignore
+  @Test
   public void testInvalidHomePhone() {
     clickOn("#nhiInput");
     write("ADE1987",  0);
@@ -162,7 +161,7 @@ public class CreateUserControllerGUITest extends ApplicationTest {
     verifyThat("#errorLabel", Node::isVisible);
   }
 
-  @Test @Ignore
+  @Test
   public void testInvalidEmail() {
     clickOn("#nhiInput");
     write("ADE1987",  0);
@@ -176,7 +175,7 @@ public class CreateUserControllerGUITest extends ApplicationTest {
     verifyThat("#errorLabel", Node::isVisible);
   }
 
-  @Test @Ignore
+  @Test
   public void testInvalidMobilePhone() {
     clickOn("#nhiInput");
     write("ADE1987",  0);

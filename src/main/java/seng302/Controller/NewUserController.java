@@ -192,7 +192,6 @@ public class NewUserController {
                     alcoholConsumption, smoker, currentAddress, region, homePhone, cellPhone, email, null,
                 fName, fName, preferredFirstName, middleName,
                 lastName); //todo: ewww gross can we please change this DELET THIS PLS
-
             try {
                 EmergencyContact contact = collectEmergencyContact(newUser);
                 newUser.setContact(contact);
@@ -217,6 +216,9 @@ public class NewUserController {
                     userStage.setScene(new Scene(root));
                     userStage.show();
                     UserController userController = userLoader.getController();
+                    //TODO pass listeners from any preceding controllers 22/6
+                    userController
+                        .init(AppController.getInstance(), newUser, userStage, false, null);
                     userController.init(AppController.getInstance(), newUser, userStage, false, null);
                     userController.diableLogout();
                     Log.info("Successfully launched User Overview for User NHI: "+nhi);
@@ -234,7 +236,9 @@ public class NewUserController {
                     stage.setScene(new Scene(root));
                     ownStage.close();
                     UserController userController = userLoader.getController();
+                    //TODO pass listeners from any preceding controllers 22/6
                     userController.init(AppController.getInstance(), newUser, stage, false, null);
+
                     Log.info("Successfully launched User Overview for User NHI: "+nhi);
                     } catch (IOException e) {
                         Log.severe("Failed to load User Overview for User NHI: "+nhi, e);

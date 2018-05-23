@@ -1,12 +1,10 @@
 package seng302.Model;
 
-import static org.junit.Assert.fail;
+import static junit.framework.TestCase.assertEquals;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.testfx.framework.junit.ApplicationTest;
-import seng302.Model.Clinician;
 
 public class UndoClinicianTest extends ApplicationTest {
 
@@ -20,55 +18,41 @@ public class UndoClinicianTest extends ApplicationTest {
 
   @Test
   public void testSingleChangeSingleUndo() {
-    clickOn();
+    testUser.setFirstName("Jonathan");
+    testUser.undo();
+    assertEquals(testUser.getFirstName(), "John");
   }
 
   @Test
   public void testSingleChangeMultipleUndo() {
+    testUser.setWorkAddress("112 Example St");
+    testUser.undo();
+    testUser.undo();
 
+    assertEquals(testUser.getWorkAddress(), "20 Kirkwood Ave");
   }
 
   @Test
   public void testMultipleChangeMultipleUndo() {
+    testUser.setFirstName("Thomas");
+    testUser.setLastName("Tank Engine");
+    testUser.setStaffId("BiggieSmalls");
+
+    testUser.undo();
+    testUser.undo();
+    testUser.undo();
+    assertEquals(testUser.getFirstName(), "John");
+    assertEquals(testUser.getLastName(), "McGurkinshaw");
+    assertEquals(testUser.getStaffId(), "Staff1");
   }
 
   @Test
   public void testMultipleChangesSingleUndo() {
-  }
+    testUser.setFirstName("Alexander");
+    testUser.setRegion("Hawkes Bay");
 
-  @Test
-  public void singleChangeMementoShouldContainTwoStates() {
-  }
-
-  @Test
-  public void singleChangeMementoShouldContainCorrectStates() {
-
-  }
-
-  @Test
-  public void multipleChangesConsecutiveMementosShouldShareState() {
-
-  }
-
-  @Test
-  public void DonorAttributesAttachedUserIsCorrectWhenStored() {
-
-  }
-
-  @Test
-  @Ignore
-  public void ReceiverAttributesAttachedUserIsCorrectWhenStored() {
-    fail("TODO implement when receiver branch merged");
-//    assert(testUser.getReceiverDetails().getAttachedUser().equals(testUser));
-//    testUser.setNhi("QWE1234");
-//    assert(testUser.getReceiverDetails().getAttachedUser().equals(testUser));
-//
-//    Memento<User> mem = testUser.getUndoStack().peek();
-//    User newUser = mem.getNewObject();
-//    User oldUser = mem.getOldObject();
-//
-//    assertNotEquals(newUser, oldUser);
-//    assert(oldUser.getReceiverDetails().getAttachedUser().equals(oldUser));
-//    assert(newUser.getReceiverDetails().getAttachedUser().equals(newUser));
+    testUser.undo();
+    assertEquals(testUser.getRegion(), "Canterbury");
+    assertEquals(testUser.getFirstName(), "Alexander");
   }
 }
