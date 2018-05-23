@@ -30,6 +30,7 @@ public class AppController {
   private UserController userController = new UserController();
   private ClinicianController clinicianController = new ClinicianController();
   private AdministratorViewController administratorViewController = new AdministratorViewController();
+  private statusBarController statusBarController = new statusBarController();
   private Set<User> deletedUserStack = new HashSet<>();
   private Set<Clinician> deletedClinicianSet = new HashSet<>();
   private Set<Administrator> deletedAdminSet = new HashSet<>();
@@ -347,6 +348,24 @@ public class AppController {
   public void addClinician(Clinician clinician) { clinicians.add(clinician); }
 
   public void addAdmin(Administrator administrator) { admins.add(administrator); }
+
+  /**
+   *
+   * @return
+   */
+  public seng302.Controller.statusBarController getStatusBarController() {
+    return statusBarController;
+  }
+
+  /**
+   *
+   * @param statusBarController
+   */
+  public void setStatusBarController(seng302.Controller.statusBarController statusBarController) {
+    this.statusBarController = statusBarController;
+  }
+
+
 
   public List<Clinician> getClinicians() {
     return clinicians;

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefHeight="25.0" prefWidth="894.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.Controller.statusBarController">
+   <children>
+      <Label fx:id="statusBar" layoutX="8.0" layoutY="5.0" prefHeight="15.0" prefWidth="880.0" text="User: Hello" />
+   </children>
+</AnchorPane>

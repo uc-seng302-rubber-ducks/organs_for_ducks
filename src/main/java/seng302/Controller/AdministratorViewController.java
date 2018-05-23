@@ -28,11 +28,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
-public class AdministratorViewController implements PropertyChangeListener {
+public class AdministratorViewController implements PropertyChangeListener, TransplantWaitListViewer {
 
     //<editor-fold desc="FXML stuff">
-    @FXML
-    private TableView<?> transplantWaitListTableView;
 
     @FXML
     private Label succesFailLabel;
@@ -83,9 +81,6 @@ public class AdministratorViewController implements PropertyChangeListener {
     private Label searchCountLabel;
 
     @FXML
-    private Label filtersLabel;
-
-    @FXML
     private CheckBox adminUserCheckbox;
 
     @FXML
@@ -121,13 +116,15 @@ public class AdministratorViewController implements PropertyChangeListener {
     @FXML
     private Label fileNotFoundLabel;
 
+    @FXML
+    private TransplantWaitListController transplantWaitListTabPageController;
     //</editor-fold>
 
     private Stage stage;
     private AppController appController;
     private Administrator administrator;
     private ArrayList<String> pastCommands = new ArrayList<>();
-    private int pastCommandIndex = -1;
+    private int pastCommandIndex = -2;
     private boolean owner;
 
     /**
@@ -143,6 +140,7 @@ public class AdministratorViewController implements PropertyChangeListener {
         this.administrator = administrator;
         this.owner = owner;
         displayDetails();
+        transplantWaitListTabPageController.init(appController, this);
 
         adminUndoButton.setDisable(true);
         adminRedoButton.setDisable(true);
@@ -633,7 +631,8 @@ public class AdministratorViewController implements PropertyChangeListener {
      * Launches the user overview screen for a selected user
      * @param user the selected user.
      */
-    private void launchUser(User user) {
+    @Override
+    public void launchUser(User user) {
         FXMLLoader userLoader = new FXMLLoader(getClass().getResource("/FXML/userView.fxml"));
         Parent root;
         try {
@@ -874,6 +873,7 @@ public class AdministratorViewController implements PropertyChangeListener {
      * updates tables in the admin window with current version of underlying model
      */
     public void refreshTables() {
+        transplantWaitListTabPageController.populateWaitListTable();
         adminTableView.refresh();
         clinicianTableView.refresh();
         userTableView.refresh();
