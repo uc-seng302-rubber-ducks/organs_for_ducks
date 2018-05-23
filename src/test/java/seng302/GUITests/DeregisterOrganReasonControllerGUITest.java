@@ -27,7 +27,7 @@ import static seng302.Utils.TableViewsMethod.getNumberOfRows;
 
 public class DeregisterOrganReasonControllerGUITest extends ApplicationTest {
 
-    DateTimeFormatter sdf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    private DateTimeFormatter sdf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
   @BeforeClass
   public static void initialization() {
@@ -113,7 +113,7 @@ public class DeregisterOrganReasonControllerGUITest extends ApplicationTest {
     clickOn("#registrationErrorRadioButton");
     clickOn("#okButton");
     clickOn("#historyTab");
-      assertEquals(3, getNumberOfRows("#historyTableView"));
+      assertEquals(3, getNumberOfRows("#historyTableView")); //TODO It should be 2 i think, but it was 1 in the past and is 3 now?. 23/7
     }
 
   @Test

@@ -291,7 +291,8 @@ public class UserController {
     updateUndoRedoButtons();
   if (changelog.size() > 0){
       statusBarPageController.updateStatus(user.getNhi() +" " + changelog.get(changelog.size()-1).getChange());
-    }}
+    }
+    }
 
     /**
      * Public method to refresh the history table
