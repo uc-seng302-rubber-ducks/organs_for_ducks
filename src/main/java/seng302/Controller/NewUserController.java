@@ -216,6 +216,7 @@ public class NewUserController {
                     userStage.setScene(new Scene(root));
                     userStage.show();
                     UserController userController = userLoader.getController();
+                    AppController.getInstance().setUserController(userController);
                     //TODO pass listeners from any preceding controllers 22/6
                     userController
                         .init(AppController.getInstance(), newUser, userStage, false, null);
