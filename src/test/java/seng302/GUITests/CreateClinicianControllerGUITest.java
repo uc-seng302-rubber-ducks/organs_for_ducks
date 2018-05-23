@@ -98,9 +98,8 @@ public class CreateClinicianControllerGUITest extends ApplicationTest {
         write("Christchurch", 0);
         clickOn("#confirmButton");
         // return to the creation screen
-        clickOn("#logoutButton");
-        clickOn("#changeLogin");
-        clickOn("#signUpButton");
+        clickOn("#backButton");
+        clickOn("#addClinicianButton");
         // create a new clinician with the same staff ID
         clickOn("#staffIDTextField");
         write("Staff1", 0);
