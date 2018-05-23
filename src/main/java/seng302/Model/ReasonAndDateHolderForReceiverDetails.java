@@ -5,7 +5,7 @@ import org.json.simple.JSONObject;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-
+@Deprecated
 public class ReasonAndDateHolderForReceiverDetails { //Don't @ my naming conventions.
     //More seriously, we are starting to rack up classes and the naming for them needs to be more specific.
     // This might be over-doing it but wanted to start a discussion

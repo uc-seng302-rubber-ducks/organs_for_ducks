@@ -39,7 +39,6 @@ public class ReceiverOrganDetailsHolder {
 
     public void setStopDate(LocalDate date) {
         stopDate = date;
-        System.out.println("stopDate is: " + stopDate);
     }
 
     public OrganDeregisterReason getOrganDeregisterReason() {
@@ -48,17 +47,22 @@ public class ReceiverOrganDetailsHolder {
 
     public void setOrganDeregisterReason(OrganDeregisterReason why) {
         reason = why;
-        System.out.println("reason is: " + reason);
     }
 
     /**
-     * Thought I needed this when I wrote it, but I don't. Useful for debugging, otherwise delete
+     * Thought I needed this when I wrote it, but I don't. Useful for debugging though
      * @return string to print
      */
     @Override
     public String toString() {
         String start = "{\n    Start date: " + startDate.toString() + "\n";
-        String stop = "    End Date: " + stopDate.toString() + "\n";
+        String stringStop = "    End Date: ";
+        if (stopDate != null) {
+            stringStop += stopDate.toString() + "\n";
+        } else {
+            stringStop += "N/A\n";
+        }
+
         String stringReason = "    Reason: ";
         if (reason != null) {
             stringReason += reason.toString() + "\n}";
@@ -66,7 +70,7 @@ public class ReceiverOrganDetailsHolder {
             stringReason += "N/A\n}";
         }
 
-        return (start + stop + stringReason);
+        return (start + stringStop + stringReason);
     }
 
 }

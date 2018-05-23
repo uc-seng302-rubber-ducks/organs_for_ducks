@@ -306,13 +306,15 @@ public class ReceiverTabController {
   public void deRegisterOrgan(Organs toDeRegister) {
     if (toDeRegister != null) {
 
+
+
       if (organDeregisterationReason == OrganDeregisterReason.TRANSPLANT_RECEIVED) {
         currentUser.getReceiverDetails().stopWaitingForOrgan(toDeRegister, OrganDeregisterReason.TRANSPLANT_RECEIVED);
 
       } else if (organDeregisterationReason == OrganDeregisterReason.REGISTRATION_ERROR) {
         currentUser.getReceiverDetails().stopWaitingForOrgan(toDeRegister, OrganDeregisterReason.REGISTRATION_ERROR);
-        System.out.println("ReceiverTabController:Line314");
-        System.out.println(currentUser.getReceiverDetails().getOrgans().get(toDeRegister).get(0).toString());
+        //System.out.println("ReceiverTabController:Line314");
+        //System.out.println(currentUser.getReceiverDetails().getOrgans().get(toDeRegister).get(0).toString());
         currentUser.getChanges().add(new Change(
             "Initial registering of the organ " + toDeRegister.organName
                 + " was an error for receiver " + currentUser.getFullName()));
@@ -354,6 +356,7 @@ public class ReceiverTabController {
           launchReceiverOrganDateView(currentlyReceivingOrgan);
         }
       });
+
       parent.updateUndoRedoButtons();
       application.update(currentUser);
       parent.refreshCurrentlyDonating();
