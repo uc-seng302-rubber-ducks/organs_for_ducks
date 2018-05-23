@@ -57,6 +57,8 @@ public class Administrator extends Undoable<Administrator> implements Listenable
      * @param password   Administrator password
      */
     public Administrator(String userName, String firstName, String middleName, String lastName, String password) {
+        this.changes = FXCollections.observableArrayList();
+        this.pcs = new PropertyChangeSupport(this);
         this.userName = userName;
         this.firstName = firstName;
         this.middleName = middleName;
@@ -64,8 +66,6 @@ public class Administrator extends Undoable<Administrator> implements Listenable
         setPassword(password);
         this.dateCreated = LocalDateTime.now();
         this.dateLastModified = LocalDateTime.now();
-        this.changes = FXCollections.observableArrayList();
-        this.pcs = new PropertyChangeSupport(this);
     }
 
 
