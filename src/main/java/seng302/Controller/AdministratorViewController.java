@@ -6,7 +6,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
+import java.util.*;
 
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
@@ -26,6 +26,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import seng302.Model.*;
+import seng302.Service.AttributeValidation;
 import seng302.Service.Log;
 import seng302.View.CLI;
 
@@ -36,9 +37,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
 
 public class AdministratorViewController implements PropertyChangeListener, TransplantWaitListViewer {
 
