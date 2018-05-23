@@ -119,6 +119,7 @@ public class UpdateAdminControllerGUITest extends ApplicationTest {
     clickOn("#firstNameTextField");
     write("Annah");
     clickOn("#cancelButton");
+    clickOn("#yesButton");
     verifyThat("#adminFirstnameLabel", LabeledMatchers.hasText("Anna"));
 
   }

@@ -143,31 +143,34 @@ public class AdministratorViewController implements PropertyChangeListener {
         this.owner = owner;
         displayDetails();
 
-        if (administrator.getUserName().equals("default")) {
-            deleteAdminButton.setDisable(true);
-        }
+    adminUndoButton.setDisable(true);
+    adminRedoButton.setDisable(true);
+    if (administrator.getUserName().equals("default")) {
+      deleteAdminButton.setDisable(true);
+    }
 
-        adminCliTextArea.setEditable(false);
-        adminCliTextArea.setFocusTraversable(false);
-        cliInputTextField.setOnKeyPressed(e -> {
-            if (e.getCode() == KeyCode.ENTER) {
-                sendInputToCLI();
-                cliInputTextField.setText("");
-            } else if (e.getCode() == KeyCode.UP) {
-                if (pastCommandIndex >= 0) {
-                    pastCommandIndex = pastCommandIndex == 0 ? 0 : pastCommandIndex-1; // makes sure pastCommandIndex is never < 0
-                    cliInputTextField.setText(pastCommands.get(pastCommandIndex));
-                }
-            } else if (e.getCode() == KeyCode.DOWN) {
-                if (pastCommandIndex < pastCommands.size()-1) {
-                    pastCommandIndex++;
-                    cliInputTextField.setText(pastCommands.get(pastCommandIndex));
-                } else if (pastCommandIndex == pastCommands.size()-1) {
-                    pastCommandIndex++;
-                    cliInputTextField.setText("");
-                }
-            }
-        });
+    adminCliTextArea.setEditable(false);
+    adminCliTextArea.setFocusTraversable(false);
+    cliInputTextField.setOnKeyPressed(e -> {
+      if (e.getCode() == KeyCode.ENTER) {
+        sendInputToCLI();
+        cliInputTextField.setText("");
+      } else if (e.getCode() == KeyCode.UP) {
+        if (pastCommandIndex >= 0) {
+          pastCommandIndex = pastCommandIndex == 0 ? 0
+              : pastCommandIndex - 1; // makes sure pastCommandIndex is never < 0
+          cliInputTextField.setText(pastCommands.get(pastCommandIndex));
+        }
+      } else if (e.getCode() == KeyCode.DOWN) {
+        if (pastCommandIndex < pastCommands.size() - 1) {
+          pastCommandIndex++;
+          cliInputTextField.setText(pastCommands.get(pastCommandIndex));
+        } else if (pastCommandIndex == pastCommands.size() - 1) {
+          pastCommandIndex++;
+          cliInputTextField.setText("");
+        }
+      }
+    });
 
         addListeners();
         displayClinicianTable();
@@ -177,54 +180,54 @@ public class AdministratorViewController implements PropertyChangeListener {
         adminTableView.setVisible(false);
     }
 
-    /**
-     * Sends the input to CLI and redirects the output stream to a new ByteArrayOutputStream
-     * and sends the results to the textArea
-     */
-    private void sendInputToCLI() {
-        PrintStream stdOut = System.out;
-        PrintStream stdErr = System.err;
-        ByteArrayOutputStream areaOut = new ByteArrayOutputStream();
-        System.setOut(new PrintStream(areaOut));
-        System.setErr(new PrintStream(areaOut));
-        pastCommands.add(cliInputTextField.getText());
-        pastCommandIndex = pastCommands.size();
-        CLI.parseInput(cliInputTextField.getText(), appController);
-        adminCliTextArea.appendText("\n" + areaOut.toString());
-        System.setOut(stdOut);
-        System.setErr(stdErr);
-    }
+  /**
+   * Sends the input to CLI and redirects the output stream to a new ByteArrayOutputStream and sends
+   * the results to the textArea
+   */
+  private void sendInputToCLI() {
+    PrintStream stdOut = System.out;
+    PrintStream stdErr = System.err;
+    ByteArrayOutputStream areaOut = new ByteArrayOutputStream();
+    System.setOut(new PrintStream(areaOut));
+    System.setErr(new PrintStream(areaOut));
+    pastCommands.add(cliInputTextField.getText());
+    pastCommandIndex = pastCommands.size();
+    CLI.parseInput(cliInputTextField.getText(), appController);
+    adminCliTextArea.appendText("\n" + areaOut.toString());
+    System.setOut(stdOut);
+    System.setErr(stdErr);
+  }
 
-    /**
-     * Utility method to add listeners to required fields
-     */
-    private void addListeners() {
-        adminAdminCheckbox.selectedProperty().addListener((observable -> {
-            adminClinicianCheckbox.setSelected(false);
-            adminUserCheckbox.setSelected(false);
-            clinicianTableView.setVisible(false);
-            adminTableView.setVisible(true);
-            userTableView.setVisible(false);
+  /**
+   * Utility method to add listeners to required fields
+   */
+  private void addListeners() {
+    adminAdminCheckbox.selectedProperty().addListener((observable -> {
+      adminClinicianCheckbox.setSelected(false);
+      adminUserCheckbox.setSelected(false);
+      clinicianTableView.setVisible(false);
+      adminTableView.setVisible(true);
+      userTableView.setVisible(false);
 
-        }));
+    }));
 
-        adminUserCheckbox.selectedProperty().addListener((observable -> {
-            adminClinicianCheckbox.setSelected(false);
-            adminAdminCheckbox.setSelected(false);
-            clinicianTableView.setVisible(false);
-            adminTableView.setVisible(false);
-            userTableView.setVisible(true);
+    adminUserCheckbox.selectedProperty().addListener((observable -> {
+      adminClinicianCheckbox.setSelected(false);
+      adminAdminCheckbox.setSelected(false);
+      clinicianTableView.setVisible(false);
+      adminTableView.setVisible(false);
+      userTableView.setVisible(true);
 
-        }));
+    }));
 
-        adminClinicianCheckbox.selectedProperty().addListener((observable -> {
-            adminAdminCheckbox.setSelected(false);
-            adminUserCheckbox.setSelected(false);
-            clinicianTableView.setVisible(true);
-            adminTableView.setVisible(false);
-            userTableView.setVisible(false);
+    adminClinicianCheckbox.selectedProperty().addListener((observable -> {
+      adminAdminCheckbox.setSelected(false);
+      adminUserCheckbox.setSelected(false);
+      clinicianTableView.setVisible(true);
+      adminTableView.setVisible(false);
+      userTableView.setVisible(false);
 
-        }));
+    }));
 
         userTableView.setOnMouseClicked(event -> {
             if(event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
@@ -232,11 +235,11 @@ public class AdministratorViewController implements PropertyChangeListener {
             }
         });
 
-        clinicianTableView.setOnMouseClicked(event -> {
-            if(event.getClickCount() ==2 && event.getButton() == MouseButton.PRIMARY){
-                launchClinician(clinicianTableView.getSelectionModel().getSelectedItem());
-            }
-        });
+    clinicianTableView.setOnMouseClicked(event -> {
+      if (event.getClickCount() == 2 && event.getButton() == MouseButton.PRIMARY) {
+        launchClinician(clinicianTableView.getSelectionModel().getSelectedItem());
+      }
+    });
 
          adminTableView.setOnMouseClicked(event -> {
             if(event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
@@ -251,69 +254,70 @@ public class AdministratorViewController implements PropertyChangeListener {
     private void displayClinicianTable() {
         ObservableList<Clinician> clinicians = FXCollections.observableArrayList(appController.getClinicians());
 
-        TableColumn<Clinician, String> firstNameColumn = new TableColumn<>("First Name");
-        firstNameColumn.setCellValueFactory(new PropertyValueFactory<>("firstName"));
+    TableColumn<Clinician, String> firstNameColumn = new TableColumn<>("First Name");
+    firstNameColumn.setCellValueFactory(new PropertyValueFactory<>("firstName"));
 
-        TableColumn<Clinician, String> lastNameColumn = new TableColumn<>("Last Name");
-        lastNameColumn.setCellValueFactory(new PropertyValueFactory<>("lastName"));
+    TableColumn<Clinician, String> lastNameColumn = new TableColumn<>("Last Name");
+    lastNameColumn.setCellValueFactory(new PropertyValueFactory<>("lastName"));
 
-        TableColumn<Clinician, String> nhiColumn = new TableColumn<>("Staff Id");
-        nhiColumn.setCellValueFactory(new PropertyValueFactory<>("staffId"));
+    TableColumn<Clinician, String> nhiColumn = new TableColumn<>("Staff Id");
+    nhiColumn.setCellValueFactory(new PropertyValueFactory<>("staffId"));
 
-        clinicianTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-        clinicianTableView.getColumns().addAll(nhiColumn, firstNameColumn, lastNameColumn);
-        clinicianTableView.setItems(clinicians);
-    }
+    clinicianTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+    clinicianTableView.getColumns().addAll(nhiColumn, firstNameColumn, lastNameColumn);
+    clinicianTableView.setItems(clinicians);
+  }
 
-    /**
-     * Initialises table for the user table
-     */
-    private void displayUserTable() {
-        ObservableList<User> users = FXCollections.observableArrayList(appController.getUsers());
+  /**
+   * Initialises table for the user table
+   */
+  private void displayUserTable() {
+    ObservableList<User> users = FXCollections.observableArrayList(appController.getUsers());
 
-        TableColumn<User, String> firstNameColumn = new TableColumn<>("First Name");
-        firstNameColumn.setCellValueFactory(new PropertyValueFactory<>("firstName"));
+    TableColumn<User, String> firstNameColumn = new TableColumn<>("First Name");
+    firstNameColumn.setCellValueFactory(new PropertyValueFactory<>("firstName"));
 
-        TableColumn<User, String> lastNameColumn = new TableColumn<>("Last Name");
-        lastNameColumn.setCellValueFactory(new PropertyValueFactory<>("lastName"));
+    TableColumn<User, String> lastNameColumn = new TableColumn<>("Last Name");
+    lastNameColumn.setCellValueFactory(new PropertyValueFactory<>("lastName"));
 
-        TableColumn<User, String> nhiColumn = new TableColumn<>("NHI");
-        nhiColumn.setCellValueFactory(new PropertyValueFactory<>("nhi"));
+    TableColumn<User, String> nhiColumn = new TableColumn<>("NHI");
+    nhiColumn.setCellValueFactory(new PropertyValueFactory<>("nhi"));
 
-        userTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-        userTableView.getColumns().addAll(nhiColumn, firstNameColumn, lastNameColumn);
-        userTableView.setItems(users);
-    }
+    userTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+    userTableView.getColumns().addAll(nhiColumn, firstNameColumn, lastNameColumn);
+    userTableView.setItems(users);
+  }
 
-    /**
-     * Initialises the columns for the admin table
-     */
-    private void displayAdminTable() {
-        ObservableList<Administrator> admins = FXCollections.observableArrayList(appController.getAdmins());
+  /**
+   * Initialises the columns for the admin table
+   */
+  private void displayAdminTable() {
+    ObservableList<Administrator> admins = FXCollections
+        .observableArrayList(appController.getAdmins());
 
-        TableColumn<Administrator, String> firstNameColumn = new TableColumn<>("First Name");
-        firstNameColumn.setCellValueFactory(new PropertyValueFactory<>("firstName"));
+    TableColumn<Administrator, String> firstNameColumn = new TableColumn<>("First Name");
+    firstNameColumn.setCellValueFactory(new PropertyValueFactory<>("firstName"));
 
-        TableColumn<Administrator, String> lastNameColumn = new TableColumn<>("Last Name");
-        lastNameColumn.setCellValueFactory(new PropertyValueFactory<>("lastName"));
+    TableColumn<Administrator, String> lastNameColumn = new TableColumn<>("Last Name");
+    lastNameColumn.setCellValueFactory(new PropertyValueFactory<>("lastName"));
 
-        TableColumn<Administrator, String> nhiColumn = new TableColumn<>("User Name");
-        nhiColumn.setCellValueFactory(new PropertyValueFactory<>("username"));
+    TableColumn<Administrator, String> nhiColumn = new TableColumn<>("User Name");
+    nhiColumn.setCellValueFactory(new PropertyValueFactory<>("username"));
 
-        adminTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-        adminTableView.getColumns().addAll(nhiColumn, firstNameColumn, lastNameColumn);
-        adminTableView.setItems(admins);
+    adminTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+    adminTableView.getColumns().addAll(nhiColumn, firstNameColumn, lastNameColumn);
+    adminTableView.setItems(admins);
 
-    }
+  }
 
 
-    /**
-     * Saves the data to the current file
-     */
-    @FXML
-    void save() {
+  /**
+   * Saves the data to the current file
+   */
+  @FXML
+  void save() {
 
-    }
+  }
 
     /**
      * Imports admins from a file chosen from a fileselector
@@ -364,7 +368,7 @@ public class AdministratorViewController implements PropertyChangeListener {
             fileNotFoundLabel.setVisible(true);
         }
 
-    }
+  }
 
     /**
      * Imports Users from a file chosen from a fileselector
@@ -391,20 +395,20 @@ public class AdministratorViewController implements PropertyChangeListener {
         }
     }
 
-    /**
-     * Close the tab
-     */
-    @FXML
-    void close() {
+  /**
+   * Close the tab
+   */
+  @FXML
+  void close() {
 
-    }
+  }
 
 
-    /**
-     * Opens the create user screen
-     */
-    @FXML
-    void addUser() {
+  /**
+   * Opens the create user screen
+   */
+  @FXML
+  void addUser() {
 
         FXMLLoader userLoader = new FXMLLoader(getClass().getResource("/FXML/createNewUser.fxml"));
         Parent root;
@@ -491,11 +495,11 @@ public class AdministratorViewController implements PropertyChangeListener {
         }
     }
 
-    /**
-     * Launches the clinician creation screen
-     */
-    @FXML
-    void addClinician() {
+  /**
+   * Launches the clinician creation screen
+   */
+  @FXML
+  void addClinician() {
 
         FXMLLoader clinicianLoader = new FXMLLoader(getClass().getResource("/FXML/updateClinician.fxml"));
         Parent root;
@@ -527,7 +531,7 @@ public class AdministratorViewController implements PropertyChangeListener {
             newStage.setScene(new Scene(root));
             newStage.show();
             UpdateAdminController updateAdminController = adminLoader.getController();
-            updateAdminController.init(new Administrator(), newStage);
+            updateAdminController.init(new Administrator(), newStage, true);
             Log.info("Admin "+administrator.getUserName()+" successfully launched create new administrator window");
         } catch (IOException e) {
             Log.severe("Admin "+administrator.getUserName()+" failed to load create new administrator window", e);
@@ -564,6 +568,9 @@ public class AdministratorViewController implements PropertyChangeListener {
      */
     @FXML
     void undo() {
+        administrator.undo();
+        adminUndoButton.setDisable(administrator.getUndoStack().isEmpty());
+        displayDetails();
         Log.info("Admin "+administrator.getUserName()+"executed Undo Administrator");
     }
 
@@ -572,7 +579,11 @@ public class AdministratorViewController implements PropertyChangeListener {
      */
     @FXML
     void redo() {
+        administrator.redo();
+        adminRedoButton.setDisable(administrator.getRedoStack().isEmpty());
+        displayDetails();
         Log.info("Admin "+administrator.getUserName()+"executed Redo Administrator");
+
     }
 
 
@@ -595,7 +606,8 @@ public class AdministratorViewController implements PropertyChangeListener {
                 adminLastNameLabel.setText("");
             }
         }
-
+        adminUndoButton.setDisable(administrator.getUndoStack().isEmpty());
+        adminRedoButton.setDisable(administrator.getRedoStack().isEmpty());
     }
 
     /**
@@ -611,7 +623,7 @@ public class AdministratorViewController implements PropertyChangeListener {
             newStage.setScene(new Scene(root));
             newStage.show();
             UpdateAdminController updateAdminController = adminLoader.getController();
-            updateAdminController.init(administrator, newStage);
+            updateAdminController.init(administrator, newStage, false);
             Log.info("Admin "+administrator.getUserName()+" successfully launched update administrator window");
         } catch (IOException e) {
             Log.severe("Admin "+administrator.getUserName()+" failed to load update administrator window", e);

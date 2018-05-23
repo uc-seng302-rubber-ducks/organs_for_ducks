@@ -1,17 +1,16 @@
 package seng302.Model;
 
 import com.google.gson.annotations.Expose;
-import seng302.Service.PasswordManager;
-
 import java.time.LocalDateTime;
 import java.util.Objects;
+import seng302.Service.PasswordManager;
 
 /**
  * class to model data structure for an Administrator.
  *
  * @author acb116
  */
-public class Administrator {
+public class Administrator extends Undoable<Administrator> {
     @Expose
     private String userName;
     @Expose
@@ -33,8 +32,8 @@ public class Administrator {
      * Constructor to create a default Administrator
      */
     public Administrator() {
-        dateCreated = LocalDateTime.now();
-        dateLastModified = LocalDateTime.now();
+        this.dateCreated = LocalDateTime.now();
+        this.dateLastModified = LocalDateTime.now();
     }
 
     /**
@@ -52,8 +51,8 @@ public class Administrator {
         this.middleName = middleName;
         this.lastName = lastName;
         setPassword(password);
-        dateCreated = LocalDateTime.now();
-        dateLastModified = LocalDateTime.now();
+        this.dateCreated = LocalDateTime.now();
+        this.dateLastModified = LocalDateTime.now();
     }
 
     public LocalDateTime getDateCreated() {
@@ -73,8 +72,14 @@ public class Administrator {
     }
 
     public void setUserName(String userName) {
-        this.userName = userName;
-
+        Memento<Administrator> mem = new Memento<>();
+        mem.setOldObject(this.clone());
+        if (!userName.equals(this.userName)) {
+            this.userName = userName;
+            setDateLastModified(LocalDateTime.now());
+            mem.setNewObject(this.clone());
+            getUndoStack().push(mem);
+        }
     }
 
     public String getFirstName() {
@@ -82,7 +87,14 @@ public class Administrator {
     }
 
     public void setFirstName(String firstName) {
-        this.firstName = firstName;
+        Memento<Administrator> mem = new Memento<>();
+        mem.setOldObject(this.clone());
+        if (!firstName.equals(this.firstName)) {
+            this.firstName = firstName;
+            setDateLastModified(LocalDateTime.now());
+            mem.setNewObject(this.clone());
+            getUndoStack().push(mem);
+        }
     }
 
     public String getMiddleName() {
@@ -90,7 +102,14 @@ public class Administrator {
     }
 
     public void setMiddleName(String middleName) {
-        this.middleName = middleName;
+        Memento<Administrator> mem = new Memento<>();
+        mem.setOldObject(this.clone());
+        if (!middleName.equals(this.middleName)) {
+            this.middleName = middleName;
+            setDateLastModified(LocalDateTime.now());
+            mem.setNewObject(this.clone());
+            getUndoStack().push(mem);
+        }
     }
 
     public String getLastName() {
@@ -98,7 +117,14 @@ public class Administrator {
     }
 
     public void setLastName(String lastName) {
-        this.lastName = lastName;
+        Memento<Administrator> mem = new Memento<>();
+        mem.setOldObject(this.clone());
+        if (!lastName.equals(this.lastName)) {
+            this.lastName = lastName;
+            setDateLastModified(LocalDateTime.now());
+            mem.setNewObject(this.clone());
+            getUndoStack().push(mem);
+        }
     }
 
     public String getFullName() {
@@ -160,9 +186,60 @@ public class Administrator {
         return "Administrator{" +
                 "userName='" + userName + '\'' +
                 ", name='" + getFullName() + '\'' +
-                ", dateCreated=" + dateCreated +
-                ", dateLastModified=" + dateLastModified +
+            ", dateCreated=" + dateCreated.toString() +
+            ", dateLastModified=" + dateLastModified.toString() +
                 '}';
     }
 
+    @Override
+    public void undo() {
+        if (getUndoStack().isEmpty()) {
+            return;
+        }
+        Memento<Administrator> memento = getUndoStack().pop();
+        this.changeInto(memento.getOldObject());
+        getRedoStack().push(memento);
+
+    }
+
+    @Override
+    public void redo() {
+        if (getRedoStack().isEmpty()) {
+            return;
+        }
+        Memento<Administrator> memento = getRedoStack().pop();
+        this.changeInto(memento.getNewObject());
+        getUndoStack().push(memento);
+    }
+
+    @Override
+    public Administrator clone() {
+        Administrator newAdmin = new Administrator();
+        newAdmin.userName = this.userName;
+        newAdmin.firstName = this.firstName;
+        newAdmin.middleName = this.middleName;
+        newAdmin.lastName = this.lastName;
+        newAdmin.password = this.password;
+        newAdmin.salt = this.salt;
+        newAdmin.dateCreated = this.dateCreated;
+        newAdmin.dateLastModified = this.dateLastModified;
+
+        return newAdmin;
+    }
+
+    /**
+     * Changes the administrators attributes into that of another administrator.
+     *
+     * @param admin The administrator to turn into
+     */
+    private void changeInto(Administrator admin) {
+        this.userName = admin.userName;
+        this.firstName = admin.firstName;
+        this.middleName = admin.middleName;
+        this.lastName = admin.lastName;
+        this.password = admin.password;
+        this.salt = admin.salt;
+        this.dateCreated = admin.dateCreated;
+        this.dateLastModified = admin.dateLastModified;
+    }
 }
