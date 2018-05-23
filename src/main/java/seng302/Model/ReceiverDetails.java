@@ -110,7 +110,7 @@ public class ReceiverDetails {
         memento.setNewObject(attachedUser.clone());
         attachedUser.getUndoStack().push(memento);
         attachedUser.getRedoStack().clear();
-
+        attachedUser.addChange(new Change("Started waiting for a " + organ));
         return true;
     }
 
@@ -124,7 +124,7 @@ public class ReceiverDetails {
         //System.out.println("stopWaitingForOrgansBefore");
         Memento<User> memento = new Memento<>();
         memento.setOldObject(attachedUser.clone());
-        System.out.println("BEFORE UPDATE\n" + memento.getOldObject().getReceiverDetails().organs);
+        //System.out.println("BEFORE UPDATE\n" + memento.getOldObject().getReceiverDetails().organs);
 
         if (isCurrentlyWaitingFor(organ)) {
             organs.get(organ).get(organs.get(organ).size() - 1).setStopDate(LocalDate.now()); //If you are waiting for something it should be at the back of the list.
@@ -133,12 +133,27 @@ public class ReceiverDetails {
 
         //System.out.println("stopWaitingForOrgansAfter:\n" + organs.get(organ).get(organs.get(organ).size() - 1).toString());
 
-        System.out.println("AFTER UPDATE, BEFORE CLONE\n" + memento.getOldObject().getReceiverDetails().organs);
+        //System.out.println("AFTER UPDATE, BEFORE CLONE\n" + memento.getOldObject().getReceiverDetails().organs);
         memento.setNewObject(attachedUser.clone());
-        System.out.println("AFTER UPDATE, AFTER CLONE\n" + memento.getOldObject().getReceiverDetails().organs);
+        //System.out.println("AFTER UPDATE, AFTER CLONE\n" + memento.getOldObject().getReceiverDetails().organs);
         attachedUser.getUndoStack().push(memento);
         attachedUser.getRedoStack().clear();
+        attachedUser.addChange(new Change("Stopped waiting for a " + organ));
         return true;
+    }
+
+    /**
+     * if the user is currently waiting for an organ, adds a timestamp and reason to the list
+     * No memento actions so that multiple copies aren't created when mass removing upon receiver death
+     *
+     * @param organ  organ to stop waiting for
+     * @param reason true if the collection was modified.
+     */
+    private void stopWaitingForOrganNoMemento(Organs organ, OrganDeregisterReason reason) {
+        if (isCurrentlyWaitingFor(organ)) {
+            organs.get(organ).get(organs.get(organ).size() - 1).setStopDate(LocalDate.now()); //If you are waiting for something it should be at the back of the list.
+            organs.get(organ).get(organs.get(organ).size() - 1).setOrganDeregisterReason(reason);
+        }
     }
 
     /**
@@ -146,12 +161,13 @@ public class ReceiverDetails {
      */
     public void stopWaitingForAllOrgans() {
         Memento<User> memento = new Memento<>();
-        memento.setOldObject(attachedUser.clone());
+        memento.setOldObject(attachedUser.getUndoStack().pop().getOldObject());
 
         Map<Organs, ArrayList<ReceiverOrganDetailsHolder>> organsCopy = new EnumMap<>(organs);
         for (Organs organ : organsCopy.keySet()) {
-            stopWaitingForOrgan(organ, OrganDeregisterReason.RECEIVER_DIED);
+            stopWaitingForOrganNoMemento(organ, OrganDeregisterReason.RECEIVER_DIED);
         }
+
 
         memento.setNewObject(attachedUser.clone());
         attachedUser.getUndoStack().push(memento);
