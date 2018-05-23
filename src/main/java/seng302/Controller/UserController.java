@@ -147,11 +147,6 @@ public class UserController {
     changelog.addListener((ListChangeListener.Change<? extends Change> change) -> historyTableView
             .setItems(changelog));
 
-    changelog.addListener((ListChangeListener.Change<? extends Change> change) -> statusBarPageController
-        .updateStatus(changelog.get(changelog.size()-1).toString()));
-
-
-
         userProfileTabPageController.init(controller, user, this.stage, fromClinician);
     }
 
@@ -291,7 +286,8 @@ public class UserController {
     updateUndoRedoButtons();
   if (changelog.size() > 0){
       statusBarPageController.updateStatus(user.getNhi() +" " + changelog.get(changelog.size()-1).getChange());
-    }}
+  }
+    }
 
     /**
      * Public method to refresh the history table
