@@ -387,10 +387,11 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
                     Log.info("successfully imported " + loadedAdminsAmount + " Admin profiles");
                     System.out.println(loadedAdminsAmount + " admins were successfully loaded.");
                 }
+            } else {
+                Log.warning("File name not found");
+                fileNotFoundLabel.setVisible(true);
             }
         } else {
-            Log.warning("File name not found");
-            fileNotFoundLabel.setVisible(true);
             launchAlertUnclosedWindowsGUI();
         }
     }
@@ -540,11 +541,10 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
                 Log.info("successfully imported " + loadedUsersAmount + " Users profiles");
                 System.out.println(loadedUsersAmount + " users were successfully loaded.");
             }
-
-        } else {
+            } else {
             Log.warning("File name not found");
             fileNotFoundLabel.setVisible(true);
-        }
+            }
         } else {
             launchAlertUnclosedWindowsGUI();
         }
