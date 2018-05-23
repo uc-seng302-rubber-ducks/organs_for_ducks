@@ -1,6 +1,7 @@
 package seng302;
 
 
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
@@ -8,22 +9,17 @@ import java.time.ZoneOffset;
 import java.util.logging.FileHandler;
 import java.util.logging.Handler;
 import java.util.logging.Level;
-import java.util.logging.LogManager;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 import seng302.Controller.AppController;
 import seng302.Controller.LoginController;
 import seng302.Model.JsonHandler;
-
-import java.io.IOException;
 import seng302.Service.Log;
 
 /**
@@ -79,9 +75,11 @@ public class App extends Application {
     primaryStage.setOnCloseRequest(event -> {
       try {
         JsonHandler.saveUsers(controller.getUsers());
-        Log.info("Successfully saved users on exit");
+        JsonHandler.saveClinicians(controller.getClinicians());
+        JsonHandler.saveAdmins(controller.getAdmins());
+        Log.info("Successfully saved all user types on exit");
       } catch (IOException ex) {
-        Log.warning("failed to save users on exit");
+        Log.warning("failed to save users on exit", ex);
       }
       Platform.exit();
       System.exit(0);

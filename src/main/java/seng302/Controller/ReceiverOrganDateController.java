@@ -21,7 +21,7 @@ public class ReceiverOrganDateController {
     private Label organNameLabel;
 
     @FXML
-    private TableView<ReceiverOrganDetails> organTimeTable;
+    public TableView<ReceiverOrganDetails> organTimeTable;
 
     private User user;
     private Stage stage;

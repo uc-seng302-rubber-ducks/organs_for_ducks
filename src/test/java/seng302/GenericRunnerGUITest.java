@@ -3,7 +3,9 @@ package seng302;
 import cucumber.api.CucumberOptions;
 import cucumber.api.SnippetType;
 import cucumber.api.junit.Cucumber;
+import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
+import seng302.Utils.CommonTestMethods;
 
 /**
  * Class for running Cucumber tests
@@ -19,5 +21,10 @@ plugin = {
         glue = "seng302/steps"
 )
 public class GenericRunnerGUITest {
+    @BeforeClass
+    public static void initialization() {
+        CommonTestMethods.runHeadless();
+    }
+
 
 }

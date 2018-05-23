@@ -1,8 +1,6 @@
 package seng302.Controller;
 
 
-import java.util.ArrayList;
-import java.util.List;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -13,11 +11,12 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
-import seng302.Model.Change;
-import seng302.Model.EmergencyContact;
-import seng302.Model.OrganDeregisterReason;
-import seng302.Model.Organs;
-import seng302.Model.User;
+import seng302.Model.*;
+
+import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * Class for the functionality of the User view of the application
@@ -53,35 +52,36 @@ public class UserController {
   @FXML
   private Label eName;
 
-  @FXML
-  private Button undoButton;
+    @FXML
+    private Button undoButton;
 
-  @FXML
-  private Button redoButton;
+    @FXML
+    private Button redoButton;
 
-  @FXML
-  private TableView<Change> historyTableView;
+    @FXML
+    private TableView<Change> historyTableView;
 
-  private AppController application;
+    private AppController application;
 
-  @FXML
-  private UserOverviewController userProfileTabPageController;
+    @FXML
+    private UserOverviewController userProfileTabPageController;
 
-  @FXML
-  private MedicationTabController medicationTabPageController;
+    @FXML
+    private MedicationTabController medicationTabPageController;
 
-  @FXML
-  private ProcedureTabController procedureTabPageController;
+    @FXML
+    private ProcedureTabController procedureTabPageController;
 
-  @FXML
-  private DonationTabPageController donationTabPageController;
+    @FXML
+    private DonationTabPageController donationTabPageController;
 
-  @FXML
-  private DiseasesTabPageController diseasesTabPageController;
+    @FXML
+    private DiseasesTabPageController diseasesTabPageController;
 
   @FXML
   private ReceiverTabController receiverTabPageController;
-  //</editor-fold>
+@FXML
+  private statusBarController statusBarPageController;  //</editor-fold>
 
   private User currentUser;
   private Stage stage;
@@ -97,19 +97,27 @@ public class UserController {
    * @param stage         the application stage
    * @param fromClinician boolean value indication if from clinician view
    */
-  public void init(AppController controller, User user, Stage stage, boolean fromClinician) {
+  public void init(AppController controller, User user, Stage stage, boolean fromClinician,
+      Collection<PropertyChangeListener> parentListeners) {
+
+    //add change listeners of parent controllers to the current user
+    if (parentListeners != null && !parentListeners.isEmpty()) {
+      for (PropertyChangeListener listener : parentListeners) {
+        user.addPropertyChangeListener(listener);
+      }
+    }
     this.stage = stage;
     application = controller;
-    //ageValue.setText("");
+
     // This is the place to set visible and invisible controls for Clinician vs User
     medicationTabPageController.init(controller, user, fromClinician);
     procedureTabPageController.init(controller, user, fromClinician, this);
     donationTabPageController.init(controller, user, this);
     diseasesTabPageController.init(controller, user, fromClinician, this);
     receiverTabPageController.init(controller, this.stage, user, fromClinician, this);
-
+    statusBarPageController.init(controller);
     //arbitrary default values
-    //changeDeceasedStatus();
+
     undoButton.setVisible(true);
     redoButton.setVisible(true);
     //warningLabel.setVisible(false);
@@ -119,7 +127,7 @@ public class UserController {
     updateUndoRedoButtons();
 
 
-    //showUser(currentUser);
+        //showUser(currentUser);
 
 
     if (user.getNhi() != null) {
@@ -134,162 +142,164 @@ public class UserController {
     } else {
       changelog = FXCollections.observableArrayList(new ArrayList<Change>());
     }
+
     showDonorHistory();
     changelog.addListener((ListChangeListener.Change<? extends Change> change) -> historyTableView
             .setItems(changelog));
 
+    changelog.addListener((ListChangeListener.Change<? extends Change> change) -> statusBarPageController
+        .updateStatus(changelog.get(changelog.size()-1).toString()));
 
 
-    //init receiver organs combo box
 
-    stage.onCloseRequestProperty().setValue(event -> {
-      if (fromClinician) {
-        application.getClinicianController().refreshTables();
-      }
-    });
-    userProfileTabPageController.init(controller, user, this.stage, fromClinician);
-  }
-
-  public void refreshDiseases() {
-    diseasesTabPageController.diseaseRefresh(this.getIsSortedByName(), this.getIsRevereSorted());
-  }
-
-  /**
-   * Sets the reason for organ deregistration
-   * @param organDeregisterationReason OrganDeregisterReason enum
-   */
-  public void setOrganDeregisterationReason(OrganDeregisterReason organDeregisterationReason) {
-    receiverTabPageController.setOrganDeregistrationReason(organDeregisterationReason);
-  }
-
-  /**
-   * Changes the currentUser to the provided user
-   * @param user user to change currentUser to
-   */
-  private void changeCurrentUser(User user) {
-    currentUser = user;
-    contact = user.getContact();
-    if (user.getChanges() != null) {
-      changelog = FXCollections.observableArrayList(user.getChanges());
-    } else {
-      changelog = FXCollections.observableArrayList(new ArrayList<Change>());
+        userProfileTabPageController.init(controller, user, this.stage, fromClinician);
     }
-  }
 
-
-  /**
-   * Sets the users contact information on the contact tab of the user profile
-   */
-  @FXML
-  private void setContactPage() {
-    if (contact != null) {
-      eName.setText(contact.getName());
-      eCellPhone.setText(contact.getCellPhoneNumber());
-      if (contact.getAddress() != null) {
-        eAddress.setText(contact.getAddress());
-      } else {
-        eAddress.setText("");
-      }
-
-      if (contact.getEmail() != null) {
-        eEmail.setText(contact.getEmail());
-      } else {
-        eEmail.setText("");
-      }
-
-      if (contact.getHomePhoneNumber() != null) {
-        eHomePhone.setText(contact.getHomePhoneNumber());
-      } else {
-        eHomePhone.setText("");
-      }
-
-      if (contact.getRegion() != null) {
-        eRegion.setText(contact.getRegion());
-      } else {
-        eRegion.setText("");
-      }
-
-      if (contact.getRelationship() != null) {
-        relationship.setText(contact.getRelationship());
-      } else {
-        relationship.setText("");
-      }
+    public void refreshDiseases() {
+        diseasesTabPageController.diseaseRefresh(this.getIsSortedByName(), this.getIsRevereSorted());
     }
-    if (currentUser.getCurrentAddress() != null) {
-      pAddress.setText(currentUser.getCurrentAddress());
-    } else {
-      pAddress.setText("");
+
+    /**
+     * Sets the reason for organ deregistration
+     *
+     * @param organDeregisterationReason OrganDeregisterReason enum
+     */
+    public void setOrganDeregisterationReason(OrganDeregisterReason organDeregisterationReason) {
+        receiverTabPageController.setOrganDeregistrationReason(organDeregisterationReason);
     }
-    if (currentUser.getRegion() != null) {
-      pRegion.setText(currentUser.getRegion());
-    } else {
-      pRegion.setText("");
-    }
-    if (currentUser.getEmail() != null) {
-      pEmail.setText(currentUser.getEmail());
-    } else {
-      pEmail.setText("");
-    }
-    if (currentUser.getHomePhone() != null) {
-      pHomePhone.setText(currentUser.getHomePhone());
-    } else {
-      pHomePhone.setText("");
-    }
-    if (currentUser.getCellPhone() != null) {
-      pCellPhone.setText(currentUser.getCellPhone());
-    } else {
-      pCellPhone.setText("");
+
+    /**
+     * Changes the currentUser to the provided user
+     *
+     * @param user user to change currentUser to
+     */
+    private void changeCurrentUser(User user) {
+        currentUser = user;
+        contact = user.getContact();
+        if (user.getChanges() != null) {
+            changelog = FXCollections.observableArrayList(user.getChanges());
+        } else {
+            changelog = FXCollections.observableArrayList(new ArrayList<Change>());
+        }
     }
 
 
-  }
+    /**
+     * Sets the users contact information on the contact tab of the user profile
+     */
+    @FXML
+    private void setContactPage() {
+        if (contact != null) {
+            eName.setText(contact.getName());
+            eCellPhone.setText(contact.getCellPhoneNumber());
+            if (contact.getAddress() != null) {
+                eAddress.setText(contact.getAddress());
+            } else {
+                eAddress.setText("");
+            }
 
-  /**
-   * fires when the Undo button is clicked
-   */
-  @FXML
-  private void undo() {
-    currentUser.undo();
-    updateUndoRedoButtons();
-    showUser(currentUser);
+            if (contact.getEmail() != null) {
+                eEmail.setText(contact.getEmail());
+            } else {
+                eEmail.setText("");
+            }
 
-  }
+            if (contact.getHomePhoneNumber() != null) {
+                eHomePhone.setText(contact.getHomePhoneNumber());
+            } else {
+                eHomePhone.setText("");
+            }
+
+            if (contact.getRegion() != null) {
+                eRegion.setText(contact.getRegion());
+            } else {
+                eRegion.setText("");
+            }
+
+            if (contact.getRelationship() != null) {
+                relationship.setText(contact.getRelationship());
+            } else {
+                relationship.setText("");
+            }
+        }
+        if (currentUser.getCurrentAddress() != null) {
+            pAddress.setText(currentUser.getCurrentAddress());
+        } else {
+            pAddress.setText("");
+        }
+        if (currentUser.getRegion() != null) {
+            pRegion.setText(currentUser.getRegion());
+        } else {
+            pRegion.setText("");
+        }
+        if (currentUser.getEmail() != null) {
+            pEmail.setText(currentUser.getEmail());
+        } else {
+            pEmail.setText("");
+        }
+        if (currentUser.getHomePhone() != null) {
+            pHomePhone.setText(currentUser.getHomePhone());
+        } else {
+            pHomePhone.setText("");
+        }
+        if (currentUser.getCellPhone() != null) {
+            pCellPhone.setText(currentUser.getCellPhone());
+        } else {
+            pCellPhone.setText("");
+        }
 
 
-  /**
-   * fires when the Redo button is clicked
-   */
-  @FXML
-  private void redo() {
-    currentUser.redo();
-    updateUndoRedoButtons();
-    showUser(currentUser);
-  }
+    }
 
-  public void showUser(User user) {
-    changeCurrentUser(user);
-    userProfileTabPageController.showUser(user);
-    setContactPage();
-    medicationTabPageController.refreshLists(user);
-    donationTabPageController.populateOrganLists(user);
-    receiverTabPageController.populateReceiverLists(user);
+    /**
+     * fires when the Undo button is clicked
+     */
+    @FXML
+    private void undo() {
+        currentUser.undo();
+        updateUndoRedoButtons();
+        showUser(currentUser);
 
-    procedureTabPageController.updateProcedureTables(user);
-    if (user.getLastName() != null) {
-      stage.setTitle("User Profile: " + user.getFirstName() + " " + user.getLastName());
-    } else {
-      stage.setTitle("User Profile: " + user.getFirstName());
+    }
+
+
+    /**
+     * fires when the Redo button is clicked
+     */
+    @FXML
+    private void redo() {
+        currentUser.redo();
+        updateUndoRedoButtons();
+        showUser(currentUser);
+    }
+
+    public void showUser(User user) {
+        changeCurrentUser(user);
+        userProfileTabPageController.showUser(user);
+        setContactPage();
+        medicationTabPageController.refreshLists(user);
+        donationTabPageController.populateOrganLists(user);
+        receiverTabPageController.populateReceiverLists(user);
+
+        procedureTabPageController.updateProcedureTables(user);
+        if (user.getLastName() != null) {
+            stage.setTitle("User Profile: " + user.getFirstName() + " " + user.getLastName());
+        } else {
+            stage.setTitle("User Profile: " + user.getFirstName());
 
     }
     updateUndoRedoButtons();
-  }
+  if (changelog.size() > 0){
+      statusBarPageController.updateStatus(user.getNhi() +" " + changelog.get(changelog.size()-1).getChange());
+    }
+    }
 
-  /**
-   * Public method to refresh the history table
-   */
-  public void refreshHistoryTable() {
-    historyTableView.refresh();
-  }
+    /**
+     * Public method to refresh the history table
+     */
+    public void refreshHistoryTable() {
+        historyTableView.refresh();
+    }
 
   /**
    * Shows the history of the Users profile such as added and removed information
@@ -305,52 +315,52 @@ public class UserController {
 
   }
 
-  /**
-   * Public method to clear medications in the medication tab
-   */
-  public void clearMeds() {
-    medicationTabPageController.clearPreviousMeds();
-  }
+    /**
+     * Public method to clear medications in the medication tab
+     */
+    public void clearMeds() {
+        medicationTabPageController.clearPreviousMeds();
+    }
 
 
-  public void refreshCurrentlyDonating() {
-    donationTabPageController.refreshCurrentlyDonating();
-  }
+    public void refreshCurrentlyDonating() {
+        donationTabPageController.refreshCurrentlyDonating();
+    }
 
-  /*Receiver*/
-  public void deRegisterOrgan(Organs todeRegister) {
-    receiverTabPageController.deRegisterOrgan(todeRegister);
-  }
+    /*Receiver*/
+    public void deRegisterOrgan(Organs todeRegister) {
+        receiverTabPageController.deRegisterOrgan(todeRegister);
+    }
 
-  public boolean currentlyReceivingContains(Organs toDonate) {
-    return receiverTabPageController.currentlyReceivingContains(toDonate);
-  }
+    public boolean currentlyReceivingContains(Organs toDonate) {
+        return receiverTabPageController.currentlyReceivingContains(toDonate);
+    }
 
-  public void refreshCurrentlyReceivingList() {
-    receiverTabPageController.refreshCurrentlyReceiving();
-  }
+    public void refreshCurrentlyReceivingList() {
+        receiverTabPageController.refreshCurrentlyReceiving();
+    }
 
-  /**
-   * Updates the disabled property of the undo/redo buttons
-   */
-  public void updateUndoRedoButtons() {
-    undoButton.setDisable(currentUser.getUndoStack().isEmpty());
-    redoButton.setDisable(currentUser.getRedoStack().isEmpty());
-  }
+    /**
+     * Updates the disabled property of the undo/redo buttons
+     */
+    public void updateUndoRedoButtons() {
+        undoButton.setDisable(currentUser.getUndoStack().isEmpty());
+        redoButton.setDisable(currentUser.getRedoStack().isEmpty());
+    }
 
-  public void showDonorDiseases(User user, boolean init) {
-    diseasesTabPageController.showUserDiseases(user, init);
-  }
+    public void showDonorDiseases(User user, boolean init) {
+        diseasesTabPageController.showUserDiseases(user, init);
+    }
 
-  private boolean getIsRevereSorted() {
-    return receiverTabPageController.getIsRevereSorted();
-  }
+    private boolean getIsRevereSorted() {
+        return receiverTabPageController.getIsRevereSorted();
+    }
 
-  private boolean getIsSortedByName() {
-    return receiverTabPageController.getIsSortedByName();
-  }
+    private boolean getIsSortedByName() {
+        return receiverTabPageController.getIsSortedByName();
+    }
 
-    public void diableLogout(){
-      userProfileTabPageController.disableLogout();
+    public void diableLogout() {
+        userProfileTabPageController.disableLogout();
     }
 }
