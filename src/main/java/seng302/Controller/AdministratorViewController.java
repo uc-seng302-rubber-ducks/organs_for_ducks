@@ -1,47 +1,33 @@
 package seng302.Controller;
 
-import java.io.ByteArrayOutputStream;
-import java.io.FileNotFoundException;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Optional;
-import java.util.List;
-
-import com.sun.javafx.stage.StageHelper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.Pagination;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
-import javafx.scene.control.Tooltip;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import seng302.Model.Administrator;
-import seng302.Model.Clinician;
-import seng302.Model.JsonHandler;
-import seng302.Model.User;
+import seng302.Model.*;
 import seng302.Service.Log;
 import seng302.View.CLI;
 
-public class AdministratorViewController {
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
+
+public class AdministratorViewController implements PropertyChangeListener {
 
     //<editor-fold desc="FXML stuff">
     @FXML
@@ -159,15 +145,17 @@ public class AdministratorViewController {
         this.owner = owner;
         displayDetails();
 
+        adminUndoButton.setDisable(true);
+        adminRedoButton.setDisable(true);
+        if (administrator.getUserName().equals("default")) {
+            deleteAdminButton.setDisable(true);
+        }
         errorAlert.setHeaderText("Error!");
         errorAlert.setContentText("Invalid file loaded.");
 
         confirmAlert.setHeaderText("Load Confirmation");
         confirmAlert.setContentText("File successfully loaded.");
 
-        if (administrator.getUserName().equals("default")) {
-            deleteAdminButton.setDisable(true);
-        }
 
         adminCliTextArea.setEditable(false);
         adminCliTextArea.setFocusTraversable(false);
@@ -177,14 +165,15 @@ public class AdministratorViewController {
                 cliInputTextField.setText("");
             } else if (e.getCode() == KeyCode.UP) {
                 if (pastCommandIndex >= 0) {
-                    pastCommandIndex = pastCommandIndex == 0 ? 0 : pastCommandIndex-1; // makes sure pastCommandIndex is never < 0
+                    pastCommandIndex = pastCommandIndex == 0 ? 0
+                        : pastCommandIndex - 1; // makes sure pastCommandIndex is never < 0
                     cliInputTextField.setText(pastCommands.get(pastCommandIndex));
                 }
             } else if (e.getCode() == KeyCode.DOWN) {
-                if (pastCommandIndex < pastCommands.size()-1) {
+                if (pastCommandIndex < pastCommands.size() - 1) {
                     pastCommandIndex++;
                     cliInputTextField.setText(pastCommands.get(pastCommandIndex));
-                } else if (pastCommandIndex == pastCommands.size()-1) {
+                } else if (pastCommandIndex == pastCommands.size() - 1) {
                     pastCommandIndex++;
                     cliInputTextField.setText("");
                 }
@@ -199,54 +188,54 @@ public class AdministratorViewController {
         adminTableView.setVisible(false);
     }
 
-    /**
-     * Sends the input to CLI and redirects the output stream to a new ByteArrayOutputStream
-     * and sends the results to the textArea
-     */
-    private void sendInputToCLI() {
-        PrintStream stdOut = System.out;
-        PrintStream stdErr = System.err;
-        ByteArrayOutputStream areaOut = new ByteArrayOutputStream();
-        System.setOut(new PrintStream(areaOut));
-        System.setErr(new PrintStream(areaOut));
-        pastCommands.add(cliInputTextField.getText());
-        pastCommandIndex = pastCommands.size();
-        CLI.parseInput(cliInputTextField.getText(), appController);
-        adminCliTextArea.appendText("\n" + areaOut.toString());
-        System.setOut(stdOut);
-        System.setErr(stdErr);
-    }
+  /**
+   * Sends the input to CLI and redirects the output stream to a new ByteArrayOutputStream and sends
+   * the results to the textArea
+   */
+  private void sendInputToCLI() {
+    PrintStream stdOut = System.out;
+    PrintStream stdErr = System.err;
+    ByteArrayOutputStream areaOut = new ByteArrayOutputStream();
+    System.setOut(new PrintStream(areaOut));
+    System.setErr(new PrintStream(areaOut));
+    pastCommands.add(cliInputTextField.getText());
+    pastCommandIndex = pastCommands.size();
+    CLI.parseInput(cliInputTextField.getText(), appController);
+    adminCliTextArea.appendText("\n" + areaOut.toString());
+    System.setOut(stdOut);
+    System.setErr(stdErr);
+  }
 
-    /**
-     * Utility method to add listeners to required fields
-     */
-    private void addListeners() {
-        adminAdminCheckbox.selectedProperty().addListener((observable -> {
-            adminClinicianCheckbox.setSelected(false);
-            adminUserCheckbox.setSelected(false);
-            clinicianTableView.setVisible(false);
-            adminTableView.setVisible(true);
-            userTableView.setVisible(false);
+  /**
+   * Utility method to add listeners to required fields
+   */
+  private void addListeners() {
+    adminAdminCheckbox.selectedProperty().addListener((observable -> {
+      adminClinicianCheckbox.setSelected(false);
+      adminUserCheckbox.setSelected(false);
+      clinicianTableView.setVisible(false);
+      adminTableView.setVisible(true);
+      userTableView.setVisible(false);
 
-        }));
+    }));
 
-        adminUserCheckbox.selectedProperty().addListener((observable -> {
-            adminClinicianCheckbox.setSelected(false);
-            adminAdminCheckbox.setSelected(false);
-            clinicianTableView.setVisible(false);
-            adminTableView.setVisible(false);
-            userTableView.setVisible(true);
+    adminUserCheckbox.selectedProperty().addListener((observable -> {
+      adminClinicianCheckbox.setSelected(false);
+      adminAdminCheckbox.setSelected(false);
+      clinicianTableView.setVisible(false);
+      adminTableView.setVisible(false);
+      userTableView.setVisible(true);
 
-        }));
+    }));
 
-        adminClinicianCheckbox.selectedProperty().addListener((observable -> {
-            adminAdminCheckbox.setSelected(false);
-            adminUserCheckbox.setSelected(false);
-            clinicianTableView.setVisible(true);
-            adminTableView.setVisible(false);
-            userTableView.setVisible(false);
+    adminClinicianCheckbox.selectedProperty().addListener((observable -> {
+      adminAdminCheckbox.setSelected(false);
+      adminUserCheckbox.setSelected(false);
+      clinicianTableView.setVisible(true);
+      adminTableView.setVisible(false);
+      userTableView.setVisible(false);
 
-        }));
+    }));
 
         userTableView.setOnMouseClicked(event -> {
             if(event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
@@ -254,11 +243,11 @@ public class AdministratorViewController {
             }
         });
 
-        clinicianTableView.setOnMouseClicked(event -> {
-            if(event.getClickCount() ==2 && event.getButton() == MouseButton.PRIMARY){
-                launchClinician(clinicianTableView.getSelectionModel().getSelectedItem());
-            }
-        });
+    clinicianTableView.setOnMouseClicked(event -> {
+      if (event.getClickCount() == 2 && event.getButton() == MouseButton.PRIMARY) {
+        launchClinician(clinicianTableView.getSelectionModel().getSelectedItem());
+      }
+    });
 
          adminTableView.setOnMouseClicked(event -> {
             if(event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
@@ -287,55 +276,56 @@ public class AdministratorViewController {
         clinicianTableView.setItems(clinicians);
     }
 
-    /**
-     * Initialises table for the user table
-     */
-    private void displayUserTable() {
-        ObservableList<User> users = FXCollections.observableArrayList(appController.getUsers());
+  /**
+   * Initialises table for the user table
+   */
+  private void displayUserTable() {
+    ObservableList<User> users = FXCollections.observableArrayList(appController.getUsers());
 
-        TableColumn<User, String> firstNameColumn = new TableColumn<>("First Name");
-        firstNameColumn.setCellValueFactory(new PropertyValueFactory<>("firstName"));
+    TableColumn<User, String> firstNameColumn = new TableColumn<>("First Name");
+    firstNameColumn.setCellValueFactory(new PropertyValueFactory<>("firstName"));
 
-        TableColumn<User, String> lastNameColumn = new TableColumn<>("Last Name");
-        lastNameColumn.setCellValueFactory(new PropertyValueFactory<>("lastName"));
+    TableColumn<User, String> lastNameColumn = new TableColumn<>("Last Name");
+    lastNameColumn.setCellValueFactory(new PropertyValueFactory<>("lastName"));
 
-        TableColumn<User, String> nhiColumn = new TableColumn<>("NHI");
-        nhiColumn.setCellValueFactory(new PropertyValueFactory<>("nhi"));
+    TableColumn<User, String> nhiColumn = new TableColumn<>("NHI");
+    nhiColumn.setCellValueFactory(new PropertyValueFactory<>("nhi"));
 
-        userTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-        userTableView.getColumns().addAll(nhiColumn, firstNameColumn, lastNameColumn);
-        userTableView.setItems(users);
-    }
+    userTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+    userTableView.getColumns().addAll(nhiColumn, firstNameColumn, lastNameColumn);
+    userTableView.setItems(users);
+  }
 
-    /**
-     * Initialises the columns for the admin table
-     */
-    private void displayAdminTable() {
-        ObservableList<Administrator> admins = FXCollections.observableArrayList(appController.getAdmins());
+  /**
+   * Initialises the columns for the admin table
+   */
+  private void displayAdminTable() {
+    ObservableList<Administrator> admins = FXCollections
+        .observableArrayList(appController.getAdmins());
 
-        TableColumn<Administrator, String> firstNameColumn = new TableColumn<>("First Name");
-        firstNameColumn.setCellValueFactory(new PropertyValueFactory<>("firstName"));
+    TableColumn<Administrator, String> firstNameColumn = new TableColumn<>("First Name");
+    firstNameColumn.setCellValueFactory(new PropertyValueFactory<>("firstName"));
 
-        TableColumn<Administrator, String> lastNameColumn = new TableColumn<>("Last Name");
-        lastNameColumn.setCellValueFactory(new PropertyValueFactory<>("lastName"));
+    TableColumn<Administrator, String> lastNameColumn = new TableColumn<>("Last Name");
+    lastNameColumn.setCellValueFactory(new PropertyValueFactory<>("lastName"));
 
-        TableColumn<Administrator, String> nhiColumn = new TableColumn<>("User Name");
-        nhiColumn.setCellValueFactory(new PropertyValueFactory<>("username"));
+    TableColumn<Administrator, String> nhiColumn = new TableColumn<>("User Name");
+    nhiColumn.setCellValueFactory(new PropertyValueFactory<>("username"));
 
-        adminTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-        adminTableView.getColumns().addAll(nhiColumn, firstNameColumn, lastNameColumn);
-        adminTableView.setItems(admins);
+    adminTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+    adminTableView.getColumns().addAll(nhiColumn, firstNameColumn, lastNameColumn);
+    adminTableView.setItems(admins);
 
-    }
+  }
 
 
-    /**
-     * Saves the data to the current file
-     */
-    @FXML
-    void save() {
+  /**
+   * Saves the data to the current file
+   */
+  @FXML
+  void save() {
 
-    }
+  }
 
     /**
      * Imports admins from a file chosen from a fileselector
@@ -467,7 +457,8 @@ public class AdministratorViewController {
         } else {
             launchAlertUnclosedWindowsGUI();
         }
-    }
+
+  }
 
     /**
      * Imports Users from a file chosen from a fileselector
@@ -581,20 +572,20 @@ public class AdministratorViewController {
         }
     }
 
-    /**
-     * Close the tab
-     */
-    @FXML
-    void close() {
+  /**
+   * Close the tab
+   */
+  @FXML
+  void close() {
 
-    }
+  }
 
 
-    /**
-     * Opens the create user screen
-     */
-    @FXML
-    void addUser() {
+  /**
+   * Opens the create user screen
+   */
+  @FXML
+  void addUser() {
 
         FXMLLoader userLoader = new FXMLLoader(getClass().getResource("/FXML/createNewUser.fxml"));
         Parent root;
@@ -626,7 +617,7 @@ public class AdministratorViewController {
             newStage.setScene(new Scene(root));
             UserController userController = userLoader.getController();
             AppController.getInstance().setUserController(userController);
-            userController.init(AppController.getInstance(), user, newStage, true);
+          userController.init(AppController.getInstance(), user, newStage, true, null);
             newStage.show();
             Log.info("Admin "+administrator.getUserName()+" successfully launched user overview window for User NHI: "+user.getNhi());
         } catch (IOException e) {
@@ -647,7 +638,11 @@ public class AdministratorViewController {
             Stage newStage = new Stage();
             newStage.setScene(new Scene(root));
             ClinicianController clinicianController = clinicianLoader.getController();
-            clinicianController.init(newStage, AppController.getInstance(), clinician, true);
+            Collection<PropertyChangeListener> listeners = new ArrayList<>();
+            listeners.add(this);
+            clinicianController.init(newStage, AppController.getInstance(), clinician, owner, listeners);
+            //TODO
+            //clinicianController.init(newStage, AppController.getInstance(), clinician, true);
             newStage.show();
             Log.info("Admin "+administrator.getUserName()+ " successfully launched clinician overview window for Clinician Staff ID:" +clinician.getStaffId());
         } catch (IOException e) {
@@ -677,11 +672,11 @@ public class AdministratorViewController {
         }
     }
 
-    /**
-     * Launches the clinician creation screen
-     */
-    @FXML
-    void addClinician() {
+  /**
+   * Launches the clinician creation screen
+   */
+  @FXML
+  void addClinician() {
 
         FXMLLoader clinicianLoader = new FXMLLoader(getClass().getResource("/FXML/updateClinician.fxml"));
         Parent root;
@@ -713,7 +708,7 @@ public class AdministratorViewController {
             newStage.setScene(new Scene(root));
             newStage.show();
             UpdateAdminController updateAdminController = adminLoader.getController();
-            updateAdminController.init(new Administrator(), newStage);
+            updateAdminController.init(new Administrator(), newStage, true);
             Log.info("Admin "+administrator.getUserName()+" successfully launched create new administrator window");
         } catch (IOException e) {
             Log.severe("Admin "+administrator.getUserName()+" failed to load create new administrator window", e);
@@ -750,6 +745,9 @@ public class AdministratorViewController {
      */
     @FXML
     void undo() {
+        administrator.undo();
+        adminUndoButton.setDisable(administrator.getUndoStack().isEmpty());
+        displayDetails();
         Log.info("Admin "+administrator.getUserName()+"executed Undo Administrator");
     }
 
@@ -758,6 +756,9 @@ public class AdministratorViewController {
      */
     @FXML
     void redo() {
+        administrator.redo();
+        adminRedoButton.setDisable(administrator.getRedoStack().isEmpty());
+        displayDetails();
         Log.info("Admin "+administrator.getUserName()+"executed Redo Administrator");
     }
 
@@ -781,7 +782,8 @@ public class AdministratorViewController {
                 adminLastNameLabel.setText("");
             }
         }
-
+        adminUndoButton.setDisable(administrator.getUndoStack().isEmpty());
+        adminRedoButton.setDisable(administrator.getRedoStack().isEmpty());
     }
 
     /**
@@ -797,7 +799,7 @@ public class AdministratorViewController {
             newStage.setScene(new Scene(root));
             newStage.show();
             UpdateAdminController updateAdminController = adminLoader.getController();
-            updateAdminController.init(administrator, newStage);
+            updateAdminController.init(administrator, newStage, false);
             Log.info("Admin "+administrator.getUserName()+" successfully launched update administrator window");
         } catch (IOException e) {
             Log.severe("Admin "+administrator.getUserName()+" failed to load update administrator window", e);
@@ -843,4 +845,24 @@ public class AdministratorViewController {
         }
     }
 
+    /**
+     * updates tables in the admin window with current version of underlying model
+     */
+    public void refreshTables() {
+        adminTableView.refresh();
+        clinicianTableView.refresh();
+        userTableView.refresh();
+    }
+
+  @Override
+  public void propertyChange(PropertyChangeEvent evt) {
+    //watches users and clinicians
+    //refresh view on change
+      //if/else not strictly necessary at this stage
+      if (evt.getPropertyName().equals(EventTypes.USER_UPDATE.name())) {
+          refreshTables();
+      } else if (evt.getPropertyName().equals(EventTypes.CLINICIAN_UPDATE.name())) {
+          refreshTables();
+      }
+  }
 }
