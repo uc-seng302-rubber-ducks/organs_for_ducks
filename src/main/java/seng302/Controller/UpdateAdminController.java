@@ -1,17 +1,14 @@
 package seng302.Controller;
 
-import static seng302.Service.UndoHelpers.removeFormChanges;
-
-import java.util.Optional;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
 import seng302.Model.Administrator;
 import seng302.Service.Log;
+
+import java.util.Optional;
+
+import static seng302.Service.UndoHelpers.removeFormChanges;
 
 public class UpdateAdminController {
   @FXML
@@ -240,7 +237,7 @@ public class UpdateAdminController {
     if (valid) {
     try {
       adminClone.getRedoStack().clear();
-      adminViewController.displayDetails(adminClone);
+      adminViewController.displayDetails();
     } catch (NullPointerException ex) {
       Log.warning(ex.getMessage(), ex);
       //the text fields etc. are all null
@@ -284,7 +281,7 @@ public class UpdateAdminController {
        if (result.get() == ButtonType.YES) {
          removeFormChanges(0, adminClone, undoMarker);
          adminClone.getRedoStack().clear();
-         adminViewController.displayDetails(admin);
+         adminViewController.displayDetails();
          stage.close();
        }
 

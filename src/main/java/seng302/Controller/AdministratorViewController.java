@@ -1,12 +1,5 @@
 package seng302.Controller;
 
-import java.io.ByteArrayOutputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.List;
-
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -20,10 +13,6 @@ import javafx.scene.input.MouseButton;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import seng302.Model.*;
-import seng302.Model.Administrator;
-import seng302.Model.Clinician;
-import seng302.Model.JsonHandler;
-import seng302.Model.User;
 import seng302.Service.Log;
 import seng302.View.CLI;
 
@@ -542,7 +531,7 @@ public class AdministratorViewController implements PropertyChangeListener {
             newStage.setScene(new Scene(root));
             newStage.show();
             UpdateAdminController updateAdminController = adminLoader.getController();
-            updateAdminController.init(new Administrator(), newStage);
+            updateAdminController.init(new Administrator(), newStage, true);
             Log.info("Admin "+administrator.getUserName()+" successfully launched create new administrator window");
         } catch (IOException e) {
             Log.severe("Admin "+administrator.getUserName()+" failed to load create new administrator window", e);
@@ -581,7 +570,7 @@ public class AdministratorViewController implements PropertyChangeListener {
     void undo() {
         administrator.undo();
         adminUndoButton.setDisable(administrator.getUndoStack().isEmpty());
-        displayDetails(administrator);
+        displayDetails();
         Log.info("Admin "+administrator.getUserName()+"executed Undo Administrator");
     }
 
@@ -592,7 +581,7 @@ public class AdministratorViewController implements PropertyChangeListener {
     void redo() {
         administrator.redo();
         adminRedoButton.setDisable(administrator.getRedoStack().isEmpty());
-        displayDetails(administrator);
+        displayDetails();
         Log.info("Admin "+administrator.getUserName()+"executed Redo Administrator");
 
     }
@@ -634,7 +623,7 @@ public class AdministratorViewController implements PropertyChangeListener {
             newStage.setScene(new Scene(root));
             newStage.show();
             UpdateAdminController updateAdminController = adminLoader.getController();
-            updateAdminController.init(administrator, newStage);
+            updateAdminController.init(administrator, newStage, false);
             Log.info("Admin "+administrator.getUserName()+" successfully launched update administrator window");
         } catch (IOException e) {
             Log.severe("Admin "+administrator.getUserName()+" failed to load update administrator window", e);
