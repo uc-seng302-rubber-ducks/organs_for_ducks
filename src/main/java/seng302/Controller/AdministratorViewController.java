@@ -49,6 +49,9 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
 
     //<editor-fold desc="FXML stuff">
     @FXML
+    private TableView<?> transplantWaitListTableView;
+
+    @FXML
     private TableView<User> userTableView;
 
     @FXML
@@ -116,6 +119,9 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
 
     @FXML
     private Button recentlyDeletedButton;
+
+    @FXML
+    private Label filtersLabel;
 
     @FXML
     private CheckBox adminUserCheckbox;
@@ -353,6 +359,7 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
       clinicianTableView.setVisible(true);
       adminTableView.setVisible(false);
       userTableView.setVisible(false);
+      activeTableView = clinicianTableView;
             userSpecificFilters(false);
     }));
 
