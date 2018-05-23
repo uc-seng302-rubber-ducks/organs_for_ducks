@@ -24,7 +24,7 @@ public class CreateClinicianControllerGUITest extends ApplicationTest {
 
     @BeforeClass
     public static void initialization() {
-        //CommonTestMethods.runHeadless();
+        CommonTestMethods.runHeadless();
     }
 
     @Before
