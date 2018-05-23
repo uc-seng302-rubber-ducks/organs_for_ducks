@@ -48,8 +48,6 @@ import java.util.Optional;
 public class AdministratorViewController implements PropertyChangeListener, TransplantWaitListViewer {
 
     //<editor-fold desc="FXML stuff">
-    @FXML
-    private TableView<?> transplantWaitListTableView;
 
     @FXML
     private TableView<User> userTableView;
