@@ -233,6 +233,7 @@ public class ClinicianController implements PropertyChangeListener {
             logoutButton.setVisible(true);
             backButton.setVisible(false);
         }
+
     }
 
   /**
@@ -286,6 +287,7 @@ public class ClinicianController implements PropertyChangeListener {
         redoButton.setDisable(clinician.getRedoStack().empty());
         if (clinician.getChanges().size() > 0) {
             statusBarPageController.updateStatus(clinician.getStaffId() + " " + clinician.getChanges().get(clinician.getChanges().size() - 1).getChange());
+
         }
     }
 
@@ -552,7 +554,6 @@ public class ClinicianController implements PropertyChangeListener {
             boolean regionMatch = AttributeValidation.checkRegionMatches(regionSearchTextField.getText(), user);
             boolean genderMatch = AttributeValidation.checkGenderMatches(genderComboBox.getValue().toString(), user);
 
-            //System.out.println(user);
             if (AttributeValidation.checkTextMatches(lowerCaseFilterText, user.getFirstName()) ||
                     AttributeValidation.checkTextMatches(lowerCaseFilterText, user.getLastName()) &&
                             (regionMatch) && (genderMatch) &&
