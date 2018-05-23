@@ -1,5 +1,6 @@
 package seng302.Controller;
 
+import com.sun.javafx.stage.StageHelper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;

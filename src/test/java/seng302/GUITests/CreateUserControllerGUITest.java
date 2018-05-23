@@ -2,8 +2,12 @@ package seng302.GUITests;
 
 import static org.testfx.api.FxAssert.verifyThat;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.concurrent.TimeoutException;
 import javafx.scene.Node;
+import javafx.scene.control.DatePicker;
+import javafx.scene.control.TextField;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -43,12 +47,9 @@ public class CreateUserControllerGUITest extends ApplicationTest {
 
   @Test
   public void testSignUpBasicInfo() {
-    clickOn("#nhiInput");
-    write("ADE1987",  0);
-    clickOn("#fNameInput");
-    write("Dwayne",  0);
-    clickOn("#dobInput");
-    write("3/1/2017",  0);
+    lookup("#nhiInput").queryAs(TextField.class).setText("ADE1987");
+    lookup("#fNameInput").queryAs(TextField.class).setText("Dwayne");
+    lookup("#dobInput").queryAs(DatePicker.class).setValue(LocalDate.parse("3/1/2017", DateTimeFormatter.ofPattern("d/M/yyyy")));
     clickOn("#confirmButton");
     verifyThat("#NHIValue", LabeledMatchers.hasText("ADE1987"));
   }
@@ -63,44 +64,32 @@ public class CreateUserControllerGUITest extends ApplicationTest {
 
   @Test
   public void testFutureDob() {
-    clickOn("#nhiInput");
-    write("ADE1987",  0);
-    clickOn("#fNameInput");
-    write("Dwayne",  0);
-    clickOn("#dobInput");
-    write("3/1/2500",  0);
+    lookup("#nhiInput").queryAs(TextField.class).setText("ADE1987");
+    lookup("#fNameInput").queryAs(TextField.class).setText("Dwayne");
+    lookup("#dobInput").queryAs(DatePicker.class).setValue(LocalDate.now().plusYears(10));
     clickOn("#confirmButton");
     verifyThat("#invalidDOB", Node::isVisible);
   }
 
   @Test
   public void testFutureDOD() {
-    clickOn("#nhiInput");
-    write("ADE1987",  0);
-    clickOn("#fNameInput");
-    write("Dwayne",  0);
-    clickOn("#dobInput");
-    write("3/1/2017",  0);
-    clickOn("#dodInput");
-    write("2/5/2500",  0);
+    lookup("#nhiInput").queryAs(TextField.class).setText("ADE1987");
+    lookup("#fNameInput").queryAs(TextField.class).setText("Dwayne");
+    lookup("#dobInput").queryAs(DatePicker.class).setValue(LocalDate.parse("3/1/2017", DateTimeFormatter.ofPattern("d/M/yyyy")));
+    lookup("#dodInput").queryAs(DatePicker.class).setValue(LocalDate.now().plusYears(10));
     clickOn("#confirmButton");
     verifyThat("#invalidDOD", Node::isVisible);
   }
 
   @Test
   public void testHealthDetails() {
-    clickOn("#nhiInput");
-    write("ADE1987",  0);
-    clickOn("#fNameInput");
-    write("Dwayne",  0);
-    clickOn("#dobInput");
-    write("3/1/2017",  0);
+    lookup("#nhiInput").queryAs(TextField.class).setText("ADE1987");
+    lookup("#fNameInput").queryAs(TextField.class).setText("Dwayne");
+    lookup("#dobInput").queryAs(DatePicker.class).setValue(LocalDate.parse("3/1/2017", DateTimeFormatter.ofPattern("d/M/yyyy")));
     clickOn("#birthGenderComboBox");
     clickOn("Male");
-    clickOn("#heightInput");
-    write("1.75",  0);
-    clickOn("#weightInput");
-    write("65",  0);
+    lookup("#heightInput").queryAs(TextField.class).setText("1.75");
+    lookup("#weightInput").queryAs(TextField.class).setText("65");
     clickOn("#bloodComboBox");
     clickOn("B+");
     clickOn("#alcoholComboBox");
@@ -120,28 +109,20 @@ public class CreateUserControllerGUITest extends ApplicationTest {
 
   @Test
   public void testPreferredName() {
-    clickOn("#nhiInput");
-    write("ADE1987",  0);
-    clickOn("#fNameInput");
-    write("Dwayne",  0);
-    clickOn("#dobInput");
-    write("3/1/2017",  0);
-    clickOn("#preferredFNameTextField");
-    write("The Rock",  0);
+    lookup("#nhiInput").queryAs(TextField.class).setText("ADE1987");
+    lookup("#fNameInput").queryAs(TextField.class).setText("Dwayne");
+    lookup("#dobInput").queryAs(DatePicker.class).setValue(LocalDate.parse("3/1/2017", DateTimeFormatter.ofPattern("d/M/yyyy")));
+    lookup("#preferredFNameTextField").queryAs(TextField.class).setText("The Rock");
     clickOn("#confirmButton");
     verifyThat("#pNameValue", LabeledMatchers.hasText("The Rock"));
   }
 
   @Test
   public void testHomePhoneInput() {
-    clickOn("#nhiInput");
-    write("ADE1987",  0);
-    clickOn("#fNameInput");
-    write("Dwayne",  0);
-    clickOn("#dobInput");
-    write("3/1/2017",  0);
-    clickOn("#phoneInput");
-    write("033552847",  0);
+    lookup("#nhiInput").queryAs(TextField.class).setText("ADE1987");
+    lookup("#fNameInput").queryAs(TextField.class).setText("Dwayne");
+    lookup("#dobInput").queryAs(DatePicker.class).setValue(LocalDate.parse("3/1/2017", DateTimeFormatter.ofPattern("d/M/yyyy")));
+    lookup("#phoneInput").queryAs(TextField.class).setText("033552847");
     clickOn("#confirmButton");
     clickOn("#detailsTab");
     verifyThat("#pHomePhone", LabeledMatchers.hasText("033552847"));
@@ -149,56 +130,40 @@ public class CreateUserControllerGUITest extends ApplicationTest {
 
   @Test
   public void testInvalidHomePhone() {
-    clickOn("#nhiInput");
-    write("ADE1987",  0);
-    clickOn("#fNameInput");
-    write("Dwayne",  0);
-    clickOn("#dobInput");
-    write("3/1/2017",  0);
-    clickOn("#phoneInput");
-    write("asdf",  0);
+    lookup("#nhiInput").queryAs(TextField.class).setText("ADE1987");
+    lookup("#fNameInput").queryAs(TextField.class).setText("Dwayne");
+    lookup("#dobInput").queryAs(DatePicker.class).setValue(LocalDate.parse("3/1/2017", DateTimeFormatter.ofPattern("d/M/yyyy")));
+    lookup("#phoneInput").queryAs(TextField.class).setText("asdf");
     clickOn("#confirmButton");
     verifyThat("#errorLabel", Node::isVisible);
   }
 
   @Test
   public void testInvalidEmail() {
-    clickOn("#nhiInput");
-    write("ADE1987",  0);
-    clickOn("#fNameInput");
-    write("Dwayne",  0);
-    clickOn("#dobInput");
-    write("3/1/2017",  0);
-    clickOn("#emailInput");
-    write("asdf",  0);
+    lookup("#nhiInput").queryAs(TextField.class).setText("ADE1987");
+    lookup("#fNameInput").queryAs(TextField.class).setText("Dwayne");
+    lookup("#dobInput").queryAs(DatePicker.class).setValue(LocalDate.parse("3/1/2017", DateTimeFormatter.ofPattern("d/M/yyyy")));
+    lookup("#emailInput").queryAs(TextField.class).setText("asdf");
     clickOn("#confirmButton");
     verifyThat("#errorLabel", Node::isVisible);
   }
 
   @Test
   public void testInvalidMobilePhone() {
-    clickOn("#nhiInput");
-    write("ADE1987",  0);
-    clickOn("#fNameInput");
-    write("Dwayne",  0);
-    clickOn("#dobInput");
-    write("3/1/2017",  0);
-    clickOn("#cellInput");
-    write("asdf",  0);
+    lookup("#nhiInput").queryAs(TextField.class).setText("ADE1987");
+    lookup("#fNameInput").queryAs(TextField.class).setText("Dwayne");
+    lookup("#dobInput").queryAs(DatePicker.class).setValue(LocalDate.parse("3/1/2017", DateTimeFormatter.ofPattern("d/M/yyyy")));
+    lookup("#cellInput").queryAs(TextField.class).setText("asdf");
     clickOn("#confirmButton");
     verifyThat("#errorLabel", Node::isVisible);
   }
 
   @Test
   public void testValidMobilePhone() {
-    clickOn("#nhiInput");
-    write("ADE1987",  0);
-    clickOn("#fNameInput");
-    write("Dwayne",  0);
-    clickOn("#dobInput");
-    write("3/1/2017",  0);
-    clickOn("#cellInput");
-    write("0224973642",  0);
+    lookup("#nhiInput").queryAs(TextField.class).setText("ADE1987");
+    lookup("#fNameInput").queryAs(TextField.class).setText("Dwayne");
+    lookup("#dobInput").queryAs(DatePicker.class).setValue(LocalDate.parse("3/1/2017", DateTimeFormatter.ofPattern("d/M/yyyy")));
+    lookup("#cellInput").queryAs(TextField.class).setText("0224973642");
     clickOn("#confirmButton");
     clickOn("#detailsTab");
     verifyThat("#pCellPhone", LabeledMatchers.hasText("0224973642"));
@@ -206,14 +171,10 @@ public class CreateUserControllerGUITest extends ApplicationTest {
 
   @Test
   public void testValidEmail() {
-    clickOn("#nhiInput");
-    write("ADE1987",  0);
-    clickOn("#fNameInput");
-    write("Dwayne",  0);
-    clickOn("#dobInput");
-    write("3/1/2017",  0);
-    clickOn("#emailInput");
-    write("dwayneRock@gmail.com",  0);
+    lookup("#nhiInput").queryAs(TextField.class).setText("ADE1987");
+    lookup("#fNameInput").queryAs(TextField.class).setText("Dwayne");
+    lookup("#dobInput").queryAs(DatePicker.class).setValue(LocalDate.parse("3/1/2017", DateTimeFormatter.ofPattern("d/M/yyyy")));
+    lookup("#emailInput").queryAs(TextField.class).setText("dwayneRock@gmail.com");
     clickOn("#confirmButton");
     clickOn("#detailsTab");
     verifyThat("#pEmail", LabeledMatchers.hasText("dwayneRock@gmail.com"));
@@ -221,29 +182,20 @@ public class CreateUserControllerGUITest extends ApplicationTest {
 
   @Test
   public void testValidAddress() {
-    clickOn("#nhiInput");
-    write("ADE1987",  0);
-    clickOn("#fNameInput");
-    write("Dwayne",  0);
-    clickOn("#dobInput");
-    write("3/1/2017",  0);
-    clickOn("#emailInput");
-    write("dwayneRock@gmail.com",  0);
+    lookup("#nhiInput").queryAs(TextField.class).setText("ADE1987");
+    lookup("#fNameInput").queryAs(TextField.class).setText("Dwayne");
+    lookup("#dobInput").queryAs(DatePicker.class).setValue(LocalDate.parse("3/1/2017", DateTimeFormatter.ofPattern("d/M/yyyy")));
+    lookup("#emailInput").queryAs(TextField.class).setText("dwayneRock@gmail.com");
     clickOn("#confirmButton");
   }
 
   @Test
   public void testValidEmergencyContact() {
-    clickOn("#nhiInput");
-    write("ADE1987",  0);
-    clickOn("#fNameInput");
-    write("Dwayne",  0);
-    clickOn("#dobInput");
-    write("3/1/2017",  0);
-    clickOn("#ecNameInput");
-    write("John Cena",  0);
-    clickOn("#ecCellInput");
-    write("0214583341",  0);
+    lookup("#nhiInput").queryAs(TextField.class).setText("ADE1987");
+    lookup("#fNameInput").queryAs(TextField.class).setText("Dwayne");
+    lookup("#dobInput").queryAs(DatePicker.class).setValue(LocalDate.parse("3/1/2017", DateTimeFormatter.ofPattern("d/M/yyyy")));
+    lookup("#ecNameInput").queryAs(TextField.class).setText("John Cena");
+    lookup("#ecCellInput").queryAs(TextField.class).setText("0214583341");
     clickOn("#confirmButton");
     clickOn("#detailsTab");
     verifyThat("#eName", LabeledMatchers.hasText("John Cena"));
@@ -252,54 +204,36 @@ public class CreateUserControllerGUITest extends ApplicationTest {
 
   @Test
   public void testInvalidEmergencyContactName() {
-    clickOn("#nhiInput");
-    write("ADE1987",  0);
-    clickOn("#fNameInput");
-    write("Dwayne",  0);
-    clickOn("#dobInput");
-    write("3/1/2017",  0);
-    clickOn("#ecCellInput");
-    write("0214583341",  0);
+    lookup("#nhiInput").queryAs(TextField.class).setText("ADE1987");
+    lookup("#fNameInput").queryAs(TextField.class).setText("Dwayne");
+    lookup("#dobInput").queryAs(DatePicker.class).setValue(LocalDate.parse("3/1/2017", DateTimeFormatter.ofPattern("d/M/yyyy")));
+    lookup("#ecCellInput").queryAs(TextField.class).setText("0214583341");
     clickOn("#confirmButton");
     verifyThat("#errorLabel", LabeledMatchers.hasText("Name and cell phone number are required for an emergency contact."));
   }
 
   @Test
   public void testInvalidEmergencyPhone() {
-    clickOn("#nhiInput");
-    write("ADE1987",  0);
-    clickOn("#fNameInput");
-    write("Dwayne",  0);
-    clickOn("#dobInput");
-    write("3/1/2017",  0);
-    clickOn("#ecNameInput");
-    write("John Cena",  0);
+    lookup("#nhiInput").queryAs(TextField.class).setText("ADE1987");
+    lookup("#fNameInput").queryAs(TextField.class).setText("Dwayne");
+    lookup("#dobInput").queryAs(DatePicker.class).setValue(LocalDate.parse("3/1/2017", DateTimeFormatter.ofPattern("d/M/yyyy")));
+    lookup("#ecNameInput").queryAs(TextField.class).setText("John Cena");
     clickOn("#confirmButton");
     verifyThat("#errorLabel", LabeledMatchers.hasText("Name and cell phone number are required for an emergency contact."));
   }
 
   @Test
   public void testAllEmergencyDetails() {
-    clickOn("#nhiInput");
-    write("ADE1987",  0);
-    clickOn("#fNameInput");
-    write("Dwayne",  0);
-    clickOn("#dobInput");
-    write("3/1/2017",  0);
-    clickOn("#ecNameInput");
-    write("John Cena",  0);
-    clickOn("#ecPhoneInput");
-    write("033594573",  0);
-    clickOn("#ecCellInput");
-    write("0221557621",  0);
-    clickOn("#ecAddressInput");
-    write("123 Example St",  0);
-    clickOn("#ecRegionInput");
-    write("Canterbury",  0);
-    clickOn("#ecEmailInput");
-    write("johnCena@gmail.com",  0);
-    clickOn("#ecRelationshipInput");
-    write("Leader",  0);
+    lookup("#nhiInput").queryAs(TextField.class).setText("ADE1987");
+    lookup("#fNameInput").queryAs(TextField.class).setText("Dwayne");
+    lookup("#dobInput").queryAs(DatePicker.class).setValue(LocalDate.parse("3/1/2017", DateTimeFormatter.ofPattern("d/M/yyyy")));
+    lookup("#ecNameInput").queryAs(TextField.class).setText("John Cena");
+    lookup("#ecPhoneInput").queryAs(TextField.class).setText("033594573");
+    lookup("#ecCellInput").queryAs(TextField.class).setText("0221557621");
+    lookup("#ecAddressInput").queryAs(TextField.class).setText("123 Example St");
+    lookup("#ecRegionInput").queryAs(TextField.class).setText("Canterbury");
+    lookup("#ecEmailInput").queryAs(TextField.class).setText("johnCena@gmail.com");
+    lookup("#ecRelationshipInput").queryAs(TextField.class).setText("Leader");
     clickOn("#confirmButton");
     clickOn("#detailsTab");
     verifyThat("#eName", LabeledMatchers.hasText("John Cena"));

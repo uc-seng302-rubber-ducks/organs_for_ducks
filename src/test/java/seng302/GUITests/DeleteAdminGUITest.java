@@ -1,6 +1,7 @@
 package seng302.GUITests;
 
 import javafx.scene.Node;
+import javafx.scene.control.TextField;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -42,8 +43,7 @@ public class DeleteAdminGUITest extends ApplicationTest {
     @Test
     public void testCannotDeleteDefaultAdmin(){
         write("default", 0);
-        clickOn("#adminPasswordField");
-        write("admin", 0);
+        lookup("#adminPasswordField").queryAs(TextField.class).setText("admin");
         clickOn("#loginAButton");
         verifyThat("#deleteAdminButton", Node::isDisabled);
     }
