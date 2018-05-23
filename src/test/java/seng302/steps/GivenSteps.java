@@ -1,16 +1,7 @@
 package seng302.steps;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.testfx.api.FxAssert.verifyThat;
-import static seng302.Utils.TableViewsMethod.getCell;
-
 import cucumber.api.java.After;
 import cucumber.api.java.en.Given;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.concurrent.TimeoutException;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.matcher.control.LabeledMatchers;
@@ -18,6 +9,16 @@ import seng302.App;
 import seng302.Controller.AppController;
 import seng302.Model.Organs;
 import seng302.Model.User;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.concurrent.TimeoutException;
+
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.testfx.api.FxAssert.verifyThat;
+import static seng302.Utils.TableViewsMethod.getCell;
 
 
 public class GivenSteps extends ApplicationTest{
@@ -47,23 +48,23 @@ public class GivenSteps extends ApplicationTest{
   public void aUserWithTheNHIExists(String NHI) {
     CucumberTestModel.setUserNhi(NHI);
     if (CucumberTestModel.getController().getUser(NHI) == null) {
-      CucumberTestModel.getController().getUsers().add(new User("", LocalDate.now(), NHI));
+      CucumberTestModel.getController().getUsers().add(new User("A", LocalDate.now().minusYears(20), NHI));
     }
     assertTrue(CucumberTestModel.getController().findUser(NHI) != null);
   }
 
   @Given("^There are no users in the system$")
   public void thereAreNoUsersInTheSystem() {
-    controller.getUsers().clear();
-    assertTrue(controller.getUsers().isEmpty());
+    CucumberTestModel.getController().getUsers().clear();
+    assertTrue(CucumberTestModel.getController().getUsers().isEmpty());
   }
 
   @Given("^There exists a user with the NHI \"([^\"]*)\", first name \"([^\"]*)\", last name \"([^\"]*)\" and date of birth \"([^\"]*)\"$")
   public void thereExistsAUserWithTheNHIFirstNameLastNameAndDateOfBirth(String NHI,
       String firstName, String lastName, String dateOfBirth) {
-    userNhi = NHI;
-    if (controller.getUser(NHI) == null) {
-      controller.getUsers().add(
+    CucumberTestModel.setUserNhi(NHI);
+    if (CucumberTestModel.getController().getUser(CucumberTestModel.getUserNhi()) == null) {
+      CucumberTestModel.getController().getUsers().add(
           new User(firstName, LocalDate.parse(dateOfBirth, DateTimeFormatter.ISO_LOCAL_DATE), NHI));
     }
   }
@@ -71,8 +72,8 @@ public class GivenSteps extends ApplicationTest{
 
   @Given("^a user with the NHI \"([^\"]*)\" does not exist$")
   public void aUserWithTheNHIDoesNotExist(String NHI) {
-    userNhi = NHI;
-    AppController.getInstance().getUsers().remove(AppController.getInstance().findUser(NHI));
+    CucumberTestModel.setUserNhi(NHI);
+    CucumberTestModel.getController().getUsers().remove(AppController.getInstance().findUser(CucumberTestModel.getUserNhi()));
   }
 
   @Given("^The user sign up screen is loaded$")
@@ -109,14 +110,17 @@ public class GivenSteps extends ApplicationTest{
         organToReceive = value;
       }
     }
-    if (!controller.getUser(userNhi).getReceiverDetails()
+    if (!CucumberTestModel.getController().getUser(CucumberTestModel.getUserNhi()).getReceiverDetails()
         .isCurrentlyWaitingFor(organToReceive)) {
-      controller.getUser(userNhi).getReceiverDetails().startWaitingForOrgan(organToReceive);
+      CucumberTestModel.getController().getUser(CucumberTestModel.getUserNhi()).getReceiverDetails().startWaitingForOrgan(organToReceive);
     }
   }
 
   @Given("^The user is alive$")
   public void theUserIsAlive() {
-    assertFalse(controller.getUser(userNhi).getDeceased());
+    if (CucumberTestModel.getController().getUser(CucumberTestModel.getUserNhi()).getDeceased()) {
+      CucumberTestModel.getController().getUser(CucumberTestModel.getUserNhi()).setDateOfDeath(null);
+    }
+    assertFalse(CucumberTestModel.getController().getUser(CucumberTestModel.getUserNhi()).getDeceased());
   }
 }
