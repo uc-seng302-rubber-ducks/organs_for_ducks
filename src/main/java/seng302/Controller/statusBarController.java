@@ -20,10 +20,15 @@ public class statusBarController {
     updateStatus("");
   }
 
-  public void updateStatus(String update){
-    statusBar.setText(update);
-    PauseTransition statusBarWaiter = new PauseTransition(Duration.seconds(5));
-    statusBarWaiter.setOnFinished(event -> statusBar.setText(""));
-    statusBarWaiter.play();
-  }
+    /**
+     * when a change is made the status bar is set and is cleared after 5 sec
+     *
+     * @param update the string that the label is to be changed to
+     */
+    public void updateStatus(String update){
+        statusBar.setText(update);
+        PauseTransition statusBarWaiter = new PauseTransition(Duration.seconds(5));
+        statusBarWaiter.setOnFinished(event -> statusBar.setText(""));
+        statusBarWaiter.play();
+    }
 }
