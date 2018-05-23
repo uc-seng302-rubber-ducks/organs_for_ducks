@@ -188,7 +188,7 @@ public class Administrator extends Undoable<Administrator> implements Listenable
     public void setPassword(String password) {
         salt = PasswordManager.getNextSalt();
         this.password = PasswordManager.hash(password, salt);
-        //addChange(new Change("Update password"));
+        addChange(new Change("Update password"));
 
     }
 
