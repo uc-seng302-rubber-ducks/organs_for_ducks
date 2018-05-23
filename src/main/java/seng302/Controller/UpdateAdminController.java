@@ -8,6 +8,7 @@ import seng302.Service.Log;
 
 import java.util.Optional;
 
+import static seng302.Service.AttributeValidation.checkRequiredStringName;
 import static seng302.Service.UndoHelpers.removeFormChanges;
 
 public class UpdateAdminController {
@@ -213,10 +214,24 @@ public class UpdateAdminController {
         valid = true;
         // waiting for the string validation to be finished
         if (!usernameTextField.getText().isEmpty() && !usernameTextField.getText().equals(admin.getUserName())) {
-            admin.setUserName(usernameTextField.getText());
+            Administrator foundAdministrator = appController.getAdministrator(usernameTextField.getText());
+
+            if (!(foundAdministrator == null || (!newAdmin && usernameTextField.getText().equals(admin.getUserName())))) { // no clinician exists with the updated staff ID
+                invalidUsername.setText("Staff username already in use");
+                invalidUsername.setVisible(true);
+                valid = false;
+            } else {
+                admin.setUserName(usernameTextField.getText());
+            }
         }
-        if (!firstNameTextField.getText().isEmpty() && !firstNameTextField.getText().equals(admin.getFirstName())) {
-            admin.setFirstName(firstNameTextField.getText());
+        if (!firstNameTextField.getText().equals(admin.getFirstName())) {
+            if (checkRequiredStringName(firstNameTextField.getText())) {
+                admin.setFirstName(firstNameTextField.getText());
+            } else {
+                invalidFName.setText("That is not a valid first name");
+                invalidFName.setVisible(true);
+                valid = false;
+            }
         }
         if (!middleNameTextField.getText().isEmpty() && !middleNameTextField.getText().equals(admin.getMiddleName())) {
             admin.setMiddleName(middleNameTextField.getText());
