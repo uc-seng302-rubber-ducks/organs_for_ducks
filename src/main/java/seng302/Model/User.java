@@ -1,6 +1,7 @@
 package seng302.Model;
 
 import com.google.gson.annotations.Expose;
+
 import javafx.collections.FXCollections;
 
 import java.beans.PropertyChangeEvent;
@@ -29,7 +30,6 @@ public class User extends Undoable<User> implements Listenable {
     private String gender;
     @Expose
     private double height;
-
     private transient String heightText;
     @Expose
     private double weight;
@@ -476,10 +476,12 @@ public class User extends Undoable<User> implements Listenable {
         Memento<User> mem = new Memento<>();
         mem.setOldObject(this.clone());
         updateLastModified();
+        if (this.height != height) {
         this.height = height;
         addChange(new Change("Changed height to " + height));
         mem.setNewObject(this.clone());
         getUndoStack().push(mem);
+        }
     }
 
     public double getWeight() {
@@ -490,10 +492,12 @@ public class User extends Undoable<User> implements Listenable {
         Memento<User> mem = new Memento<>();
         mem.setOldObject(this.clone());
         updateLastModified();
+        if (weight != this.weight){
         this.weight = weight;
         addChange(new Change("Changed weight to " + weight));
         mem.setNewObject(this.clone());
         getUndoStack().push(mem);
+        }
     }
 
     public String getHeightText() {
@@ -533,10 +537,12 @@ public class User extends Undoable<User> implements Listenable {
         mem.setOldObject(this.clone());
         String validType = groupBloodType(bloodType);
         updateLastModified();
-        this.bloodType = validType;
-        addChange(new Change("Changed blood type to " + bloodType));
-        mem.setNewObject(this.clone());
-        getUndoStack().push(mem);
+        if (this.bloodType != validType) {
+            this.bloodType = validType;
+            addChange(new Change("Changed blood type to " + bloodType));
+            mem.setNewObject(this.clone());
+            getUndoStack().push(mem);
+        }
     }
 
     public String getCurrentAddress() {

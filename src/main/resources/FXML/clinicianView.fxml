@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import javafx.collections.*?>
+<?import javafx.collections.FXCollections?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
@@ -24,12 +23,17 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
+<?import java.lang.String?>
+
 <TabPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="408.0" prefWidth="617.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.Controller.ClinicianController">
   <tabs>
     <Tab fx:id="detailsTab" text="Details">
       <content>
         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="368.0" prefWidth="617.0">
                <children>
+                   <AnchorPane fx:id="StatusBar" AnchorPane.bottomAnchor="-5.0">
+                       <fx:include fx:id="statusBarPage" source="statusBar.fxml"/>
+                   </AnchorPane>
                   <Label layoutX="264.0" layoutY="21.0" text="Clinician">
                      <font>
                         <Font size="20.0" />

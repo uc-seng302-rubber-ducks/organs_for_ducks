@@ -1,23 +1,5 @@
 package seng302.Controller;
 
-import static seng302.Model.Organs.BONE;
-import static seng302.Model.Organs.BONE_MARROW;
-import static seng302.Model.Organs.CONNECTIVE_TISSUE;
-import static seng302.Model.Organs.CORNEA;
-import static seng302.Model.Organs.HEART;
-import static seng302.Model.Organs.INTESTINE;
-import static seng302.Model.Organs.KIDNEY;
-import static seng302.Model.Organs.LIVER;
-import static seng302.Model.Organs.LUNG;
-import static seng302.Model.Organs.MIDDLE_EAR;
-import static seng302.Model.Organs.PANCREAS;
-import static seng302.Model.Organs.SKIN;
-
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.io.IOException;
-import java.time.LocalDate;
-import java.util.*;
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -34,13 +16,17 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import seng302.Model.Clinician;
-import seng302.Model.EventTypes;
-import seng302.Model.Organs;
-import seng302.Model.TransplantDetails;
-import seng302.Model.User;
+import seng302.Model.*;
 import seng302.Service.AttributeValidation;
 import seng302.Service.Log;
+
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.io.IOException;
+import java.time.LocalDate;
+import java.util.*;
+
+import static seng302.Model.Organs.*;
 
 /**
  * Class for the functionality of the Clinician view of the application
@@ -121,6 +107,9 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
     @FXML
     private Button deleteClinicianButton;
 
+    @FXML
+    private statusBarController statusBarPageController;
+
     //</editor-fold>
 
     private Stage stage;
@@ -169,6 +158,7 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
         searchCount = users.size();
         initSearchTable();
         transplantWaitListTabPageController.init(appController, this);
+        statusBarPageController.init(appController);
 
         if (clinician.getStaffId().equals("0")) {
             deleteClinicianButton.setDisable(true);
@@ -213,6 +203,9 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
         }
         undoButton.setDisable(clinician.getUndoStack().empty());
         redoButton.setDisable(clinician.getRedoStack().empty());
+        if (clinician.getChanges().size() > 0) {
+            statusBarPageController.updateStatus(clinician.getStaffId() + " " + clinician.getChanges().get(clinician.getChanges().size() - 1).getChange());
+        }
     }
 
     /**
@@ -331,6 +324,10 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
           Log.info("Clinician " + clinician.getStaffId()
               + " successfully launched user overview window");
 
+            ArrayList<PropertyChangeListener> listeners = new ArrayList<>();
+            listeners.add(this);
+            userController.init(AppController.getInstance(), user, userStage, true, listeners);
+            userStage.show();
         } catch (IOException e) {
             Log.severe("Clinician "+clinician.getStaffId()+" Failed to load user overview window", e);
             e.printStackTrace();
