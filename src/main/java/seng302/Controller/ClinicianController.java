@@ -16,33 +16,23 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import seng302.Model.*;
+import seng302.Model.Clinician;
+import seng302.Model.EventTypes;
+import seng302.Model.Organs;
+import seng302.Model.User;
 import seng302.Service.AttributeValidation;
 import seng302.Service.Log;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
-import java.time.LocalDate;
 import java.util.*;
-
-import static seng302.Model.Organs.*;
-
-import java.io.IOException;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import static seng302.Model.Organs.*;
 
 /**
  * Class for the functionality of the Clinician view of the application
  */
 public class ClinicianController implements PropertyChangeListener, TransplantWaitListViewer {
 
-    private static int searchCount = 0;
     private final int ROWS_PER_PAGE = 30;
     private int startIndex = 0;
     private int endIndex;
@@ -119,8 +109,9 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
     //Initiliase table columns as class level so it is accessible for sorting in pagination methods
     private TableColumn<User, String> lNameColumn;
     private boolean filterVisible = false;
+    private int searchCount;
 
-  private Collection<PropertyChangeListener> parentListeners;
+    private Collection<PropertyChangeListener> parentListeners;
 
     private boolean admin = false;
 
@@ -132,16 +123,16 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
      * @param clinician     The current clinician.
      */
     public void init(Stage stage, AppController appController, Clinician clinician, boolean fromAdmin,
-        Collection<PropertyChangeListener> parentListeners) {
+                     Collection<PropertyChangeListener> parentListeners) {
 
-      //add change listeners of parent controllers to the current clinician
-      this.parentListeners = new ArrayList<>();
-      if (parentListeners != null && !parentListeners.isEmpty()) {
-        for (PropertyChangeListener listener : parentListeners) {
-          clinician.addPropertyChangeListener(listener);
+        //add change listeners of parent controllers to the current clinician
+        this.parentListeners = new ArrayList<>();
+        if (parentListeners != null && !parentListeners.isEmpty()) {
+            for (PropertyChangeListener listener : parentListeners) {
+                clinician.addPropertyChangeListener(listener);
+            }
+            this.parentListeners.addAll(parentListeners);
         }
-        this.parentListeners.addAll(parentListeners);
-      }
         this.stage = stage;
         this.appController = appController;
         this.clinician = clinician.clone();
@@ -180,14 +171,14 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
             backButton.setVisible(false);
         }
 
-  }
+    }
 
-   @FXML
-  private void goBack() {
-    appController.updateClinicians(clinician);
-    stage.close();
-    Log.info("Successfully closed update user window for Clinician StaffID: " + clinician.getStaffId());
-  }
+    @FXML
+    private void goBack() {
+        appController.updateClinicians(clinician);
+        stage.close();
+        Log.info("Successfully closed update user window for Clinician StaffID: " + clinician.getStaffId());
+    }
 
     private void setDefaultFilters() {
         allCheckBox.setSelected(true);
@@ -289,88 +280,6 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
         });
     }
 
-    /**
-     * initialises the Wait List table, abstracted from main init function for clarity
-     */
-    private void initWaitListTable() {
-
-        TableColumn<TransplantDetails, String> recipientNameColumn = new TableColumn<>("Name");
-        recipientNameColumn.setMinWidth(220);
-        recipientNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
-
-        TableColumn<TransplantDetails, String> organNameColumn = new TableColumn<>("Organ");
-        organNameColumn.setMinWidth(150);
-        organNameColumn.setCellValueFactory(new PropertyValueFactory<>("organ"));
-
-        TableColumn<TransplantDetails, Integer> organRegistrationDateColumn = new TableColumn<>("ORD");
-        organRegistrationDateColumn.setMinWidth(100);
-        organRegistrationDateColumn.setCellValueFactory(new PropertyValueFactory<>("oRD"));
-
-        TableColumn<TransplantDetails, String> recipientRegionColumn = new TableColumn<>("Region");
-        recipientRegionColumn.setMinWidth(140);
-        recipientRegionColumn.setCellValueFactory(new PropertyValueFactory<>("region"));
-
-        transplantWaitListTableView.getColumns().setAll(recipientNameColumn, organNameColumn, organRegistrationDateColumn, recipientRegionColumn);
-        updateFiltersLabel();
-        populateWaitListTable();
-    }
-
-    /**
-     * populates and add double click functionality to the Wait List Table.
-     */
-    public void populateWaitListTable() {
-        //transplantWaitListTableView.getItems().clear();
-        //set up lists
-        //table contents are SortedList of a FilteredList of an ObservableList of an ArrayList
-        appController.getTransplantList().clear();
-        for (User user : users) {
-            if (user.isReceiver() && (user.getDeceased() != null || !user.getDeceased())) {
-                Set<Organs> organs = user.getReceiverDetails().getOrgans().keySet();
-                for (Organs organ : organs) {
-                    if (isReceiverNeedingFilteredOrgan(user.getNhi(), organs).contains(organ)) {
-                        appController.addTransplant(
-                                new TransplantDetails(user.getNhi(), user.getFullName(), organ, LocalDate.now(),
-                                        user.getRegion()));
-                    }
-                }
-            }
-        }
-
-        ObservableList<TransplantDetails> observableTransplantList = FXCollections
-                .observableList(appController.getTransplantList());
-        FilteredList<TransplantDetails> fTransplantList = new FilteredList<>(
-                observableTransplantList);
-        fTransplantList = filterTransplantDetails(fTransplantList);
-        SortedList<TransplantDetails> sTransplantList = new SortedList<>(fTransplantList);
-        sTransplantList.comparatorProperty().bind(transplantWaitListTableView.comparatorProperty());
-
-        if (appController.getTransplantList().size() != 0) {
-            transplantWaitListTableView.setItems(sTransplantList);
-
-            //set on-click behaviour
-            transplantWaitListTableView.setOnMouseClicked(event -> {
-                if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
-                    TransplantDetails transplantDetails = transplantWaitListTableView.getSelectionModel().getSelectedItem();
-                    User wantedUser = appController.findUser(transplantDetails.getNhi());
-                    launchUser(wantedUser);
-                }
-            });
-
-        } else {
-            transplantWaitListTableView.setOnMouseClicked(null);
-            transplantWaitListTableView.setItems(null);
-            transplantWaitListTableView.setPlaceholder(new Label("No Receivers currently registered"));
-        }
-    }
-
-    /**
-     * @param arrayList An array list of users.
-     * @return A list of users.
-     */
-    private List<User> getSearchData(List<User> arrayList) {
-        return arrayList.subList(startIndex, endIndex);
-    }
-
 
     /**
      * @param pageIndex the current page.
@@ -383,7 +292,7 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
         int minIndex = Math.min(endIndex, fListUsers.size());
 
         SortedList<User> sListUsers = new SortedList<>(FXCollections.observableArrayList(
-            fListUsers.subList(Math.min(startIndex, minIndex), minIndex)));
+                fListUsers.subList(Math.min(startIndex, minIndex), minIndex)));
         sListUsers.comparatorProperty().bind(searchTableView.comparatorProperty());
 
         lNameColumn.setSortType(TableColumn.SortType.ASCENDING);
@@ -410,19 +319,19 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
             openStages.add(userStage);
             UserController userController = userLoader.getController();
             AppController.getInstance().setUserController(userController);
-          //Ostrich
-          parentListeners.add(this);
-          userController.init(AppController.getInstance(), user, userStage, true, parentListeners);
+            //Ostrich
+            parentListeners.add(this);
+            userController.init(AppController.getInstance(), user, userStage, true, parentListeners);
             userStage.show();
-          Log.info("Clinician " + clinician.getStaffId()
-              + " successfully launched user overview window");
+            Log.info("Clinician " + clinician.getStaffId()
+                    + " successfully launched user overview window");
 
             ArrayList<PropertyChangeListener> listeners = new ArrayList<>();
             listeners.add(this);
             userController.init(AppController.getInstance(), user, userStage, true, listeners);
             userStage.show();
         } catch (IOException e) {
-            Log.severe("Clinician "+clinician.getStaffId()+" Failed to load user overview window", e);
+            Log.severe("Clinician " + clinician.getStaffId() + " Failed to load user overview window", e);
             e.printStackTrace();
         }
     }
@@ -496,135 +405,6 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
     }
 
     /**
-     * Sets listeners for the transplant waiting list
-     *
-     * @param fListTransplantDetails filtered list to add listener to.
-     * @return the filtered list.
-     */
-    private FilteredList<TransplantDetails> filterTransplantDetails(FilteredList<TransplantDetails> fListTransplantDetails) {
-        waitingRegionTextfield.textProperty().addListener((observable, oldValue, newValue) -> {
-            setTransplantListPredicate(fListTransplantDetails);
-            updateFiltersLabel();
-            transplantWaitListTableView.refresh();
-        });
-        for (CheckBox checkBox : filterCheckBoxList) {
-            checkBox.selectedProperty().addListener((observable -> {
-                setTransplantListPredicate(fListTransplantDetails);
-                updateFiltersLabel();
-                transplantWaitListTableView.refresh();
-            }));
-        }
-
-        return fListTransplantDetails;
-    }
-
-    /**
-     * Updates the filters label to allow the user to easily see the filters that have been applied
-     */
-    private void updateFiltersLabel() {
-        StringBuilder labelText = new StringBuilder("Showing all receivers");
-        if (!waitingRegionTextfield.getText().isEmpty()) {
-            labelText.append(" from a place starting with ")
-                    .append(waitingRegionTextfield.getText());
-        }
-        if (!getAllFilteredOrgans().isEmpty()) {
-            labelText.append(" who need a ");
-        }
-        for (Organs organ : getAllFilteredOrgans()) {
-            labelText.append(organ.toString()).append(" or ");
-        }
-        if (!getAllFilteredOrgans().isEmpty()) {
-            labelText = new StringBuilder(labelText.substring(0, labelText.length() - 4));
-        }
-
-        filtersLabel.setText(labelText.toString());
-
-
-    }
-
-    /**
-     * Sets the predicate on the filteredList for Transplant details
-     * Cannot be overloaded as the the argument types are the same but have different erasures
-     *
-     * @param fList filteredList of TransplantDetails objects
-     */
-    private void setTransplantListPredicate(FilteredList<TransplantDetails> fList) {
-        fList.predicateProperty().bind(Bindings.createObjectBinding(() -> transplantDetails ->
-                (AttributeValidation.checkRegionMatches(waitingRegionTextfield.getText(), transplantDetails)
-                        &&
-                        (isReceiverNeedingFilteredOrgan(transplantDetails.getNhi(),
-                                new HashSet<>(getAllFilteredOrgans())).contains(transplantDetails.getOrgan())
-                                || !checkAnyTransplantFilterCheckBoxSelected()))
-        ));
-    }
-
-    /**
-     * Takes an user with an existing nhi and the set of organs
-     *
-     * @param nhi    NHI of a user that exists within the system
-     * @param organs A set of organs for which the checkboxes are ticked
-     * @return An arraylist of Organs enums which the user with the NHI is receiving
-     */
-    private ArrayList<Organs> isReceiverNeedingFilteredOrgan(String nhi,
-                                                             Set<Organs> organs) {
-        ArrayList<Organs> result = new ArrayList<>();
-        for (Organs o : organs) {
-            if (appController.findUser(nhi).getReceiverDetails()
-                    .isCurrentlyWaitingFor(o)) {
-                result.add(o);
-            }
-        }
-        return result;
-    }
-
-    /**
-     * @return true if any of the transplant filter check boxes are checked
-     */
-    private boolean checkAnyTransplantFilterCheckBoxSelected() {
-        for (CheckBox checkBox : filterCheckBoxList) {
-            if (checkBox.isSelected()) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * Gets a list of organs that the user wants to filter by
-     *
-     * @return the relevant organs to filter by
-     */
-    private ArrayList<Organs> getAllFilteredOrgans() {
-        ArrayList<Organs> organs = new ArrayList<>();
-        if (boneCheckBox.isSelected())
-            organs.add(BONE);
-        if (boneMarrowCheckBox.isSelected())
-            organs.add(BONE_MARROW);
-        if (corneaCheckBox.isSelected())
-            organs.add(CORNEA);
-        if (connectiveTissueCheckBox.isSelected())
-            organs.add(CONNECTIVE_TISSUE);
-        if (heartCheckBox.isSelected())
-            organs.add(HEART);
-        if (middleEarCheckBox.isSelected())
-            organs.add(MIDDLE_EAR);
-        if (intestineCheckBox.isSelected())
-            organs.add(INTESTINE);
-        if (pancreasCheckBox.isSelected())
-            organs.add(PANCREAS);
-        if (lungCheckBox.isSelected())
-            organs.add(LUNG);
-        if (kidneyCheckBox.isSelected())
-            organs.add(KIDNEY);
-        if (liverCheckBox.isSelected())
-            organs.add(LIVER);
-        if (skinCheckBox.isSelected())
-            organs.add(SKIN);
-        return organs;
-    }
-
-    /**
      * Undoes the last action and redisplays the clinician.
      */
     @FXML
@@ -632,49 +412,42 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
         clinician.undo();
         undoButton.setDisable(clinician.getUndoStack().empty());
         showClinician(clinician);
+        Log.info("Clinician " + clinician.getStaffId() + " executed undo clinician");
     }
-  /**
-   * Undoes the last action and redisplays the clinician.
-   */
-  @FXML
-  private void undo() {
-    clinician.undo();
-    undoButton.setDisable(clinician.getUndoStack().empty());
-    showClinician(clinician);
-    Log.info("Clinician "+clinician.getStaffId()+" executed undo clinician");
-  }
 
-  /**
-   * Redoes the last action and redisplays the clinician.
-   */
-  @FXML
-  public void redo() {
-    clinician.redo();
-    redoButton.setDisable(clinician.getRedoStack().empty());
-    showClinician(clinician);
-  Log.info("Clinician "+clinician.getStaffId()+" executed redo clinician");}
-
-  /**
-   * Returns the user to the login screen
-   */
-  @FXML
-  void logout() {
-    FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML/loginView.fxml"));
-      Parent root;
-    try {
-      root = loader.load();
-      stage.setScene(new Scene(root));
-      LoginController loginController = loader.getController();
-      loginController.init(AppController.getInstance(), stage);
-      stage.hide();
-      stage.show();
-      stage.hide();
-      stage.show();
-    Log.info("Clinician "+clinician.getStaffId()+" successfully launched login window after logout");} catch (IOException e) {
-        Log.severe("Clinician "+clinician.getStaffId()+" failed to launch login window after logout",e) ;
-      e.printStackTrace();
+    /**
+     * Redoes the last action and redisplays the clinician.
+     */
+    @FXML
+    public void redo() {
+        clinician.redo();
+        redoButton.setDisable(clinician.getRedoStack().empty());
+        showClinician(clinician);
+        Log.info("Clinician " + clinician.getStaffId() + " executed redo clinician");
     }
-  }
+
+    /**
+     * Returns the user to the login screen
+     */
+    @FXML
+    void logout() {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML/loginView.fxml"));
+        Parent root;
+        try {
+            root = loader.load();
+            stage.setScene(new Scene(root));
+            LoginController loginController = loader.getController();
+            loginController.init(AppController.getInstance(), stage);
+            stage.hide();
+            stage.show();
+            stage.hide();
+            stage.show();
+            Log.info("Clinician " + clinician.getStaffId() + " successfully launched login window after logout");
+        } catch (IOException e) {
+            Log.severe("Clinician " + clinician.getStaffId() + " failed to launch login window after logout", e);
+            e.printStackTrace();
+        }
+    }
 
     /**
      * Opens an edit window for the clinicians personal details
@@ -692,9 +465,9 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
             newStage.initModality(Modality.APPLICATION_MODAL); // background window is no longer selectable
             newStage.showAndWait();
             showClinician(clinician);
-            Log.info("Clinician "+clinician.getStaffId()+" successfully launched update clinician window");
+            Log.info("Clinician " + clinician.getStaffId() + " successfully launched update clinician window");
         } catch (IOException e) {
-            Log.severe("Clinician "+clinician.getStaffId()+" failed to launch update clinician window", e);
+            Log.severe("Clinician " + clinician.getStaffId() + " failed to launch update clinician window", e);
             e.printStackTrace();
         }
     }
@@ -711,55 +484,56 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
         expandButton.setText(filterVisible ? "▲" : "▼");
     }
 
-  /**
+    /**
      * Callback method to refresh the tables in the view
      */
-    @FXMLpublic void refreshTables() {
-    transplantWaitListTabPageController.populateWaitListTable();
-    searchTableView.refresh();
-  }
+    @FXML
+    public void refreshTables() {
+        transplantWaitListTabPageController.populateWaitListTable();
+        searchTableView.refresh();
+    }
 
-  /**
-   * Loads the recently deleted users window
-   */
-  @FXML
-  public void loadRecentlyDeleted() {
-      FXMLLoader deletedUserLoader = new FXMLLoader(
-              getClass().getResource("/FXML/deletedUsersView.fxml"));
-      Parent root;
-      try {
-          root = deletedUserLoader.load();
-          DeletedUserController deletedUserController = deletedUserLoader.getController();
-          Stage stage = new Stage();
-          stage.setScene(new Scene(root));
-          deletedUserController.init(false);
-          stage.initModality(Modality.APPLICATION_MODAL);
-          stage.showAndWait();
-      Log.info("Clinician "+clinician.getStaffId()+" successfully launched delete user window");} catch (IOException e) {
-          Log.severe("Clinician "+clinician.getStaffId()+" failed to launch delete user window",e) ;
-          e.printStackTrace();
-      }
-  }
+    /**
+     * Loads the recently deleted users window
+     */
+    @FXML
+    public void loadRecentlyDeleted() {
+        FXMLLoader deletedUserLoader = new FXMLLoader(
+                getClass().getResource("/FXML/deletedUsersView.fxml"));
+        Parent root;
+        try {
+            root = deletedUserLoader.load();
+            DeletedUserController deletedUserController = deletedUserLoader.getController();
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+            deletedUserController.init(false);
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.showAndWait();
+            Log.info("Clinician " + clinician.getStaffId() + " successfully launched delete user window");
+        } catch (IOException e) {
+            Log.severe("Clinician " + clinician.getStaffId() + " failed to launch delete user window", e);
+            e.printStackTrace();
+        }
+    }
 
     /**
      * Deletes the clinician profile after confirmation.
-     *
      */
-  @FXML
-  private void deleteClinician() {
-      Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-      alert.setContentText("Are you sure you want to delete this clinician?");
-      Optional<ButtonType> result = alert.showAndWait();
+    @FXML
+    private void deleteClinician() {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setContentText("Are you sure you want to delete this clinician?");
+        Optional<ButtonType> result = alert.showAndWait();
 
-      if (result.get() == ButtonType.OK) {
-          appController.deleteClinician(clinician);
-          if (!admin) {
-              logout();
-          } else {
-              stage.close();
-          }
-      }
-  }
+        if (result.get() == ButtonType.OK) {
+            appController.deleteClinician(clinician);
+            if (!admin) {
+                logout();
+            } else {
+                stage.close();
+            }
+        }
+    }
 
     public void disableLogout() {
         logoutButton.setVisible(false);
@@ -768,10 +542,10 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
 
-      //clinician controller watches user model
+        //clinician controller watches user model
         //refresh view/tables etc. on change
         if (evt.getPropertyName().equals(EventTypes.USER_UPDATE.name())) {
-          refreshTables();
+            refreshTables();
         }
     }
 }
