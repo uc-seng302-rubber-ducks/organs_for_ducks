@@ -105,7 +105,7 @@ public class Administrator extends Undoable<Administrator> implements Listenable
         mem.setOldObject(this.clone());
         if (!userName.equals(this.userName)) {
             this.userName = userName;
-            addChange(new Change("Update username to " + userName));
+            addChange(new Change("Updated username to " + userName));
             setDateLastModified(LocalDateTime.now());
             mem.setNewObject(this.clone());
             getUndoStack().push(mem);
@@ -121,7 +121,7 @@ public class Administrator extends Undoable<Administrator> implements Listenable
         mem.setOldObject(this.clone());
         if (!firstName.equals(this.firstName)) {
             this.firstName = firstName;
-            addChange(new Change("Update first name to " + firstName));
+            addChange(new Change("Updated first name to " + firstName));
             setDateLastModified(LocalDateTime.now());
             mem.setNewObject(this.clone());
             getUndoStack().push(mem);
@@ -137,7 +137,7 @@ public class Administrator extends Undoable<Administrator> implements Listenable
         mem.setOldObject(this.clone());
         if (!middleName.equals(this.middleName)) {
             this.middleName = middleName;
-            addChange(new Change("Update middle name to " + middleName));
+            addChange(new Change("Updated middle name to " + middleName));
             setDateLastModified(LocalDateTime.now());
             mem.setNewObject(this.clone());
             getUndoStack().push(mem);
@@ -153,7 +153,7 @@ public class Administrator extends Undoable<Administrator> implements Listenable
         mem.setOldObject(this.clone());
         if (!lastName.equals(this.lastName)) {
             this.lastName = lastName;
-            addChange(new Change("Update last name to " + lastName));
+            addChange(new Change("Updated last name to " + lastName));
             setDateLastModified(LocalDateTime.now());
             mem.setNewObject(this.clone());
             getUndoStack().push(mem);
