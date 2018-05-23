@@ -1,26 +1,16 @@
 package seng302.Controller;
 
+import seng302.Directory;
+import seng302.Exception.ProfileAlreadyExistsException;
+import seng302.Exception.ProfileNotFoundException;
+import seng302.Model.*;
+import seng302.Service.Log;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.Stack;
-import seng302.Directory;
-import seng302.Exception.ProfileAlreadyExistsException;
-import seng302.Exception.ProfileNotFoundException;
-
-import seng302.Model.Administrator;
-import seng302.Model.Change;
-import seng302.Model.Clinician;
-import seng302.Model.JsonHandler;
-import seng302.Model.TransplantDetails;
-import seng302.Model.User;
-import seng302.Service.Log;
+import java.util.*;
 
 
 /**
