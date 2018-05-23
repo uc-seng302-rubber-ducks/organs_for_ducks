@@ -29,7 +29,7 @@ import java.util.Optional;
 
 public class AdministratorViewController implements PropertyChangeListener {
 
-    //<editor-fold desc="FXML stuff">
+    //<editor-fold desc="FXML items">
     @FXML
     private TableView<?> transplantWaitListTableView;
 
