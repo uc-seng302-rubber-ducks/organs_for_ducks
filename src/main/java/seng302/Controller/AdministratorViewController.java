@@ -77,8 +77,6 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
     @FXML
     private CheckBox boneCheckBox;
     @FXML
-    private CheckBox adminAdminCheckbox;
-    @FXML
     private CheckBox heartCheckBox;
     @FXML
     private AnchorPane filterAnchorPane;
@@ -86,8 +84,6 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
     private Button recentlyDeletedButton;
     @FXML
     private Label filtersLabel;
-    @FXML
-    private CheckBox adminUserCheckbox;
     @FXML
     private Button adminRedoButton;
     @FXML
@@ -125,8 +121,6 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
     @FXML
     private Label adminFirstnameLabel;
     @FXML
-    private CheckBox adminClinicianCheckbox;
-    @FXML
     private CheckBox donorFilterCheckBox;
     @FXML
     private MenuItem importCliniciansMenuItem;
@@ -154,6 +148,14 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
     private TextField regionSearchTextField;
     @FXML
     private Label fileNotFoundLabel;
+    @FXML
+    private RadioButton adminUserRadioButton;
+    @FXML
+    private RadioButton adminClinicianRadioButton;
+    @FXML
+    private RadioButton adminAdminRadioButton;
+    @FXML
+    private ToggleGroup adminSearchRadios;
 
     //</editor-fold>
     @FXML
@@ -256,37 +258,22 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
      * Utility method to add listeners to required fields
      */
     private void addListeners() {
-        adminAdminCheckbox.selectedProperty().addListener((observable -> {
-            adminClinicianCheckbox.setSelected(false);
-            adminUserCheckbox.setSelected(false);
-            clinicianTableView.setVisible(false);
-            adminTableView.setVisible(true);
-            userTableView.setVisible(false);
-            activeTableView = adminTableView;
-            userSpecificFilters(false);
 
-        }));
-
-        adminUserCheckbox.selectedProperty().addListener((observable -> {
-            adminClinicianCheckbox.setSelected(false);
-            adminAdminCheckbox.setSelected(false);
-            clinicianTableView.setVisible(false);
+        // listeners for each radio button which hides/shows the table views
+        adminSearchRadios.getToggles().forEach(radio -> (radio).selectedProperty().addListener(((observable, oldValue, newValue) -> {
             adminTableView.setVisible(false);
-            userTableView.setVisible(true);
-            activeTableView = userTableView;
-            userSpecificFilters(false);
-
-        }));
-
-        adminClinicianCheckbox.selectedProperty().addListener((observable -> {
-            adminAdminCheckbox.setSelected(false);
-            adminUserCheckbox.setSelected(false);
-            clinicianTableView.setVisible(true);
-            adminTableView.setVisible(false);
+            clinicianTableView.setVisible(false);
             userTableView.setVisible(false);
-            activeTableView = clinicianTableView;
-            userSpecificFilters(false);
-        }));
+
+            if (adminUserRadioButton.isSelected()) {
+                userTableView.setVisible(true);
+            } else if (adminClinicianRadioButton.isSelected()) {
+                clinicianTableView.setVisible(true);
+            } else if (adminAdminRadioButton.isSelected()) {
+                adminTableView.setVisible(true);
+            }
+
+        })));
 
         userTableView.setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
@@ -565,14 +552,6 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
         return userTableView;
     }
 
-    /**
-     * Saves the data to the current file
-     */
-    @FXML
-    void save() {
-
-    }
-
 
     /**
      * Callback method to change the divider position to show advanced filtering options in the GUI
@@ -584,27 +563,6 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
         filterAnchorPane.setMaxHeight(dividerPos);
         filterVisible = !filterVisible;
         expandButton.setText(filterVisible ? "▲" : "▼");
-    }
-
-    /**
-     * Loads the recently deleted users window
-     */
-    @FXML
-    public void loadRecentlyDeleted() {
-        FXMLLoader deletedUserLoader = new FXMLLoader(
-                getClass().getResource("/FXML/deletedUsersView.fxml"));
-        Parent root;
-        try {
-            root = deletedUserLoader.load();
-            DeletedUserController deletedUserController = deletedUserLoader.getController();
-            Stage stage = new Stage();
-            stage.setScene(new Scene(root));
-            deletedUserController.init(true);
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.showAndWait();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     /**
@@ -885,14 +843,6 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    /**
-     * Close the tab
-     */
-    @FXML
-    void close() {
-
     }
 
 
