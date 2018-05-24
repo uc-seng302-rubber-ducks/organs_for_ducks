@@ -16,16 +16,16 @@ testFX-1:
   script:
     - rm -rf ~/.organs
     - mvn -B clean test -Pgui-tests -Djava.awt.headless=true -Dtestfx.robot=glass -Dtestfx.headless=true -Dprism.order=sw -Dprism.text=t2k -Dheadless.geometry=1920x1080-32 -Pgui-tests
-  only:
-    - schedules
+#  only:
+#    - schedules
 
 testFX-2:
   stage: test
   script:
     - rm -rf ~/.organs
     - mvn -B clean test -Pgui-tests2 -Djava.awt.headless=true -Dtestfx.robot=glass -Dtestfx.headless=true -Dprism.order=sw -Dprism.text=t2k -Dheadless.geometry=1920x1080-32 -Pgui-tests2
-  only:
-    - schedules
+#  only:
+#    - schedules
 
 recent-artifacts:
   stage: deploy
