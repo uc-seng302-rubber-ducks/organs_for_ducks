@@ -11,19 +11,25 @@ from collections import OrderedDict
 genders = ["m", "f", "u"]
 birthGenders = ['Male', 'Female']
 bloodTypes = ["AB+", "AB-", "A+", "A-", "B+", "B-", "O+", "O-", "U"] 
+alcohol = ["", "Normal", ""]
+true = True
+false = False
+bool = [true, false]
 
-donors = []
+users = []
 def generate(num):
     num = int(num)
-    outputFile = open("donors.json", "w")
+    outputFile = open("users.json", "w")
     for i in range(0, num):
-        donor = OrderedDict ({
+        user = OrderedDict ({
             "nhi": "ZXC"+''.join(random.sample("0123456789", 4)),
             "firstName": "Donor",
+            "preferredFirstName": "Don",
+            "middleName": "or",
             "lastName": "#"+str(i),
             "dateOfBirth": {"year":1977+i%10, "month": i%12, "day": i%20},
             "dateOfDeath": {"year":2015+i%10, "month": i%12, "day": i%20},
-            "gender": random.choice(genders),
+            "genderIdentity": random.choice(genders),
             "birthGender": random.choice(birthGenders),
             "height": round(random.uniform(1,2), 2),
             "weight": round(random.uniform(50, 120), 2),
@@ -34,22 +40,42 @@ def generate(num):
             #copied from example donor, can't be bothered randomising this stuff
             "timeCreated":{"date":{"year":2018,"month":4,"day":10},
   "time":{"hour":16,"minute":3,"second":17,"nano":608000000}},
+            "isDeceased": random.choice(bool),
+            "alcoholConsumtpion": random.choice(alcohol),
+            "smoker": random.choice(bool),
+            "homePhone": random.sample("0123456789", 9),
+            "cellPhone": random.sample("0123456789", 10),
+            "email": "email@gmail.com",
+            "contact": {
+              "name": "Mother",
+                "homePhoneNumber": random.sample("0123456789", 9),
+                "cellPhoneNumber": random.sample("0123456789", 10),
+                "address": "123 Home Road",
+                "region": "Canterbury",
+                "email": "mother@gmail.com",
+                "relationship": "Mother"
+            },
             "lastModified":{"date":{"year":2018,"month":4,"day":10},
               "time":{"hour":16,"minute":3,"second":17,"nano":609000000}},
-              "miscAttributes":[],"updateHistory":{"2018-04-10T16:03:17.608":"Profile created."},
+              "miscAttributes":[],
+            "updateHistory":{"2018-04-10T16:03:17.608":"Profile created."},
               "previousMedication":[],
               "currentMedication":[],
               "previousMedicationTimes":{},
               "currentMedicationTimes":{},
+            "medicalProcedures": [],
               "changes":[],
               "donorDetails":{},
-              "receiverDetails":{}  
+              "receiverDetails":{},
+            "commonOrgans": [],
+            "pastDiseases": [],
+            "currentDiseases": []
               })
         
-        donors.append(donor)
+        users.append(user)
     
-    json_donors = json.dumps(donors)
-    outputFile.write(json_donors)
+    json_users = json.dumps(users)
+    outputFile.write(json_users)
     outputFile.close()
     
-generate(input("num of donors to generate?: "))
+generate(input("num of users to generate?: "))
