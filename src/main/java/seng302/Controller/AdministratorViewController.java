@@ -193,7 +193,7 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
         displayDetails();
         transplantWaitListTabPageController.init(appController, this);
 
-//add change listeners of parent controllers to the current user
+        //add change listeners of parent controllers to the current user
         if (parentListeners != null && !parentListeners.isEmpty()) {
             for (PropertyChangeListener listener : parentListeners) {
                 administrator.addPropertyChangeListener(listener);
@@ -337,7 +337,6 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
         clinicianTableView.getColumns().addAll(nhiColumn, firstNameColumn, lastNameColumn);
         clinicianTableView.setItems(clinicianSortedList);
 
-
     }
 
     /**
@@ -457,7 +456,6 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
      * @param toFilter list to be filtered
      * @return filtered list with filter applied
      */
-
     private <T> FilteredList<T> filter(FilteredList<T> toFilter) {
         setTextFieldListener(adminSearchField, toFilter);
         setTextFieldListener(regionSearchTextField, toFilter);
@@ -1101,6 +1099,9 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
         }
     }
 
+    /**
+     * Opens a window to restore recently deleted profiles.
+     */
     @FXML
     private void openDeletedProfiles() {
         FXMLLoader deletedUserLoader = new FXMLLoader(
@@ -1129,6 +1130,11 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
         userTableView.refresh();
     }
 
+    /**
+     * event handler that fires when a property change event is emitted by any objects the controller is listening to
+     *
+     * @param evt event emitted
+     */
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         //watches users and clinicians
