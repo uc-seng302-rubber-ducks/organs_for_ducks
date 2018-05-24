@@ -274,7 +274,7 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
             adminTableView.setVisible(false);
             userTableView.setVisible(true);
             activeTableView = userTableView;
-            userSpecificFilters(true);
+            userSpecificFilters(false);
 
         }));
 
