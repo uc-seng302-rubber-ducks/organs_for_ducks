@@ -1,17 +1,6 @@
-package seng302.GUITests;
+package seng302.GUITest2;
 
-import static javafx.scene.input.KeyCode.A;
-import static javafx.scene.input.KeyCode.BACK_SPACE;
-import static javafx.scene.input.KeyCode.SHORTCUT;
-import static org.testfx.api.FxAssert.verifyThat;
-
-import java.time.LocalDate;
-import java.util.concurrent.TimeoutException;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.*;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.matcher.control.LabeledMatchers;
@@ -19,6 +8,12 @@ import seng302.App;
 import seng302.Controller.AppController;
 import seng302.Model.User;
 import seng302.Utils.CommonTestMethods;
+
+import java.time.LocalDate;
+import java.util.concurrent.TimeoutException;
+
+import static javafx.scene.input.KeyCode.*;
+import static org.testfx.api.FxAssert.verifyThat;
 
 public class UpdateUserControllerGUITest extends ApplicationTest {
 
@@ -58,7 +53,7 @@ public class UpdateUserControllerGUITest extends ApplicationTest {
     @Test
     public void testCancel() {
         clickOn("#fNameInput");
-        write("Kate",0);
+        write("Kate", 0);
         clickOn("#cancelButton");
         clickOn("#yesButton");
         verifyThat("#fNameValue", LabeledMatchers.hasText("A"));
@@ -74,7 +69,7 @@ public class UpdateUserControllerGUITest extends ApplicationTest {
     public void testUpdateDoB() {
         clickOn("#dobInput").push(SHORTCUT, A).push(BACK_SPACE);
         clickOn("#dobInput");
-        write("03/05/2018",  0);
+        write("03/05/2018", 0);
         clickOn("#confirmButton");
         verifyThat("#DOBValue", LabeledMatchers.hasText("2018-05-03"));
     }
@@ -82,7 +77,7 @@ public class UpdateUserControllerGUITest extends ApplicationTest {
     @Test
     public void testUpdateDoD() {
         clickOn("#dodInput");
-        write("03/05/2018",  0);
+        write("03/05/2018", 0);
         clickOn("#confirmButton");
         verifyThat("#DODValue", LabeledMatchers.hasText("2018-05-03"));
     }
@@ -90,7 +85,7 @@ public class UpdateUserControllerGUITest extends ApplicationTest {
     @Test
     public void testUpdateAddress() {
         clickOn("#addressInput");
-        write("dkgfdjhb",  0);
+        write("dkgfdjhb", 0);
         clickOn("#confirmButton");
         clickOn("#detailsTab");
         verifyThat("#pAddress", LabeledMatchers.hasText("dkgfdjhb"));
@@ -99,7 +94,7 @@ public class UpdateUserControllerGUITest extends ApplicationTest {
     @Test
     public void testUpdateHomePhone() {
         clickOn("#phoneInput");
-        write("033572996",  0);
+        write("033572996", 0);
         clickOn("#confirmButton");
         clickOn("#detailsTab");
         verifyThat("#pHomePhone", LabeledMatchers.hasText("033572996"));
@@ -108,7 +103,7 @@ public class UpdateUserControllerGUITest extends ApplicationTest {
     @Test
     public void testUpdateCellPhone() {
         clickOn("#cellInput");
-        write("0224567895",  0);
+        write("0224567895", 0);
         clickOn("#confirmButton");
         clickOn("#detailsTab");
         verifyThat("#pCellPhone", LabeledMatchers.hasText("0224567895"));
@@ -117,7 +112,7 @@ public class UpdateUserControllerGUITest extends ApplicationTest {
     @Test
     public void testUpdateEmail() {
         clickOn("#addressInput");
-        write("catface@gmail.com",  0);
+        write("catface@gmail.com", 0);
         clickOn("#confirmButton");
         clickOn("#detailsTab");
         verifyThat("#pAddress", LabeledMatchers.hasText("catface@gmail.com"));
@@ -126,7 +121,7 @@ public class UpdateUserControllerGUITest extends ApplicationTest {
     @Test
     public void testUpdateRegion() {
         clickOn("#regionInput");
-        write("catface@gmail.com",  0);
+        write("catface@gmail.com", 0);
         clickOn("#confirmButton");
         clickOn("#detailsTab");
         verifyThat("#pRegion", LabeledMatchers.hasText("catface@gmail.com"));
@@ -159,7 +154,7 @@ public class UpdateUserControllerGUITest extends ApplicationTest {
     @Ignore
     public void testUpdateHeight() {
         doubleClickOn("#heightInput");
-        write("1.75",  10);
+        write("1.75", 10);
         clickOn("#confirmButton");
         verifyThat("#heightValue", LabeledMatchers.hasText("1.75"));
     }
@@ -167,7 +162,7 @@ public class UpdateUserControllerGUITest extends ApplicationTest {
     @Test
     public void testUpdateWeight() {
         doubleClickOn("#weightInput");
-        write("65",  0);
+        write("65", 0);
         clickOn("#confirmButton");
         verifyThat("#weightValue", LabeledMatchers.hasText("65.0"));
     }
@@ -175,9 +170,9 @@ public class UpdateUserControllerGUITest extends ApplicationTest {
     @Test
     public void updateBMIAfterUpdate() {
         clickOn("#heightInput");
-        write("1.75",  0);
+        write("1.75", 0);
         clickOn("#weightInput");
-        write("65",  0);
+        write("65", 0);
         clickOn("#confirmButton");
         verifyThat("#bmiValue", LabeledMatchers.hasText("21.22"));
     }

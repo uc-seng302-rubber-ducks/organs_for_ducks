@@ -1,4 +1,4 @@
-package seng302.GUITests;
+package seng302.GUITest1;
 
 import javafx.scene.Node;
 import javafx.scene.control.TextField;
@@ -46,7 +46,7 @@ public class CreateClinicianControllerGUITest extends ApplicationTest {
     public void tearDown() throws TimeoutException {
         AppController.getInstance().getUsers().clear();
         AppController.getInstance().getClinicians().remove(AppController.getInstance().getClinician("Staff1"));
-      FxToolkit.cleanupStages();
+        FxToolkit.cleanupStages();
     }
 
 
