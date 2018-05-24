@@ -74,13 +74,24 @@ public class AttributeValidation {
     }
 
     /**
-     * Checks if the given non-null attribute is non-empty and only contains a-z, A-Z, spaces, apostrophes and hyphens.
+     * Checks if the given non-null attribute is non-empty and only contains a-z, A-Z, spaces, apostrophes, hyphens and numbers
      * @param attribute The attribute to be checked.
      * @return true if the attribute meets the specified criteria, false otherwise
      */
     public static boolean checkRequiredString(String attribute) {
         assert attribute != null;
         return (attribute.matches("[a-zA-Z '\\-0-9]+"));
+    }
+
+    /**
+     * Checks if the given non-null attribute is non-empty and only contains a-z, A-Z, spaces, apostrophes and hyphens.
+     *
+     * @param attribute The attribute to be checked.
+     * @return true if the attribute meets the specified criteria, false otherwise
+     */
+    public static boolean checkRequiredStringName(String attribute) {
+        assert attribute != null;
+        return (attribute.matches("[a-zA-Z '\\-]+"));
     }
 
     /**
