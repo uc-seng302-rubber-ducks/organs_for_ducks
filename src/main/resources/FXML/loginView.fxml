@@ -78,7 +78,7 @@
                                  <TextField fx:id="adminUsernameTextField" GridPane.columnIndex="1"/>
                                  <Label text="Username:"/>
                                  <Label text="Password:" GridPane.rowIndex="1"/>
-                                 <Label fx:id="clinicianWarningLabel1" prefHeight="73.0" prefWidth="177.0" text="Label"
+                                 <Label fx:id="adminWarningLabel" prefHeight="73.0" prefWidth="177.0" text="Label"
                                         wrapText="true" GridPane.columnIndex="2" GridPane.rowIndex="2"/>
                                  <PasswordField fx:id="adminPasswordField" GridPane.columnIndex="1"
                                                 GridPane.rowIndex="1"/>

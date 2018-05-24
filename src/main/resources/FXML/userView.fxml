@@ -9,12 +9,7 @@
         <tabs>
           <Tab fx:id="userProfileTab" text="User Profile">
             <content>
-              <fx:include fx:id="userProfileTabPage" source="userProfileView.fxml"/>
-            </content>
-          </Tab>
-            <Tab fx:id="receiverTab" text="Receiver">
-              <content>
-                <fx:include fx:id="receiverTabPage" source="receiverTabView.fxml"/>
+                <fx:include fx:id="userProfileTabPage" source="userProfileView.fxml"/>
             </content>
           </Tab>
             <Tab fx:id="detailsTab" text="Contact Details">
@@ -63,24 +58,29 @@
                   </AnchorPane>
             </content>
           </Tab>
-            <Tab text="Medication">
+            <Tab fx:id="organsTab" text="Donation">
               <content>
-                <fx:include  fx:id="medicationTabPage" source="medicationTabView.fxml"/>
+                  <fx:include fx:id="donationTabPage" source="donationTabView.fxml"/>
               </content>
             </Tab>
-            <Tab text="Procedures">
+            <Tab fx:id="receiverTab" text="Receiver">
               <content>
-                <fx:include  fx:id="procedureTabPage" source="procedureTabView.fxml"/>
+                  <fx:include fx:id="receiverTabPage" source="receiverTabView.fxml"/>
               </content>
             </Tab>
             <Tab fx:id="diseaseTab" text="Disease">
               <content>
-                <fx:include  fx:id="diseasesTabPage" source="diseasesTabView.fxml"/>
+                  <fx:include fx:id="diseasesTabPage" source="diseasesTabView.fxml"/>
               </content>
             </Tab>
-            <Tab fx:id="organsTab" text="Donation">
+            <Tab text="Medication">
               <content>
-                <fx:include  fx:id="donationTabPage" source="donationTabView.fxml"/>
+                  <fx:include fx:id="medicationTabPage" source="medicationTabView.fxml"/>
+              </content>
+            </Tab>
+            <Tab text="Procedures">
+                <content>
+                    <fx:include fx:id="procedureTabPage" source="procedureTabView.fxml"/>
               </content>
             </Tab>
         </tabs>
@@ -93,7 +93,9 @@
      <Button fx:id="undoButton" layoutX="757.0" layoutY="9.0" mnemonicParsing="false" onAction="#undo" text="Undo" AnchorPane.rightAnchor="84.0" AnchorPane.topAnchor="9.0" />
      <Button fx:id="redoButton" layoutX="828.0" layoutY="9.0" mnemonicParsing="false" onAction="#redo" text="Redo" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="9.0" />
      <AnchorPane fx:id="StatusBar" AnchorPane.bottomAnchor="-5.0">
-         <fx:include fx:id="statusBarPage" source="statusBar.fxml" />
+         <children>
+             <fx:include fx:id="statusBarPage" source="statusBar.fxml"/>
+         </children>
      </AnchorPane>
    </children>
 </AnchorPane>
