@@ -1,6 +1,5 @@
-package seng302.GUITests;
+package seng302.GUITest2;
 
-import java.util.concurrent.TimeoutException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -10,6 +9,8 @@ import org.testfx.framework.junit.ApplicationTest;
 import seng302.App;
 import seng302.Controller.AppController;
 import seng302.Utils.CommonTestMethods;
+
+import java.util.concurrent.TimeoutException;
 
 public class DonorViewControllerGUITest extends ApplicationTest {
 

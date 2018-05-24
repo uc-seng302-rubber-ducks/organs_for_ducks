@@ -1,17 +1,5 @@
-package seng302.GUITests;
+package seng302.GUITest2;
 
-
-
-import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
-import static seng302.Utils.TableViewsMethod.getCell;
-import static seng302.Utils.ListViewsMethod.*;
-
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Stack;
-import java.util.concurrent.TimeoutException;
 
 import javafx.application.Platform;
 import org.junit.*;
@@ -21,10 +9,22 @@ import seng302.App;
 import seng302.Controller.AppController;
 import seng302.Controller.ReceiverOrganDetailsHolder;
 import seng302.Controller.UserController;
-import seng302.Model.*;
-import seng302.Utils.ListViewsMethod;
+import seng302.Model.OrganDeregisterReason;
+import seng302.Model.Organs;
+import seng302.Model.User;
 
-public class OrganReceiverGUITest extends ApplicationTest{
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.concurrent.TimeoutException;
+
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+import static seng302.Utils.ListViewsMethod.getListView;
+import static seng302.Utils.ListViewsMethod.getRowValue;
+import static seng302.Utils.TableViewsMethod.getCell;
+
+public class OrganReceiverGUITest extends ApplicationTest {
 
     private DateTimeFormatter sdf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     private AppController mockAppController = mock(AppController.class);
@@ -45,7 +45,7 @@ public class OrganReceiverGUITest extends ApplicationTest{
     }
 
     @Before
-    public void setUpCreateScene()  throws TimeoutException {
+    public void setUpCreateScene() throws TimeoutException {
         FxToolkit.registerPrimaryStage();
         FxToolkit.setupApplication(App.class);
         AppController.getInstance().getUsers().clear();
@@ -57,11 +57,6 @@ public class OrganReceiverGUITest extends ApplicationTest{
         write("0", 0);
         clickOn("#staffPasswordField");
         write("admin", 0);
-//        clickOn("#changeLogin");
-//        clickOn("#userIDTextField");
-//        write("0", 0);
-//        clickOn("#passwordField");
-//        write("admin", 0);
         clickOn("#loginCButton");
         //verifyThat("#staffIdLabel", LabeledMatchers.hasText("0"));
         clickOn("#searchTab");
@@ -77,7 +72,7 @@ public class OrganReceiverGUITest extends ApplicationTest{
     }
 
     @Test
-    public void clinicianShouldBeAbleToStartADonorReceivingAnOrgan(){
+    public void clinicianShouldBeAbleToStartADonorReceivingAnOrgan() {
         clickOn("#organsComboBox");
         clickOn("Kidney");
         clickOn("#registerButton");
@@ -85,6 +80,7 @@ public class OrganReceiverGUITest extends ApplicationTest{
     }
 
     @Test
+    @Ignore
     public void organShouldMoveCorrectlyBetweenTablesWhenMoveButtonsClicked() {
         //Setup
         clickOn("#organsComboBox");

@@ -1,4 +1,4 @@
-package seng302.GUITests;
+package seng302.GUITest1;
 
 import javafx.scene.Node;
 import javafx.scene.input.KeyCode;
@@ -29,13 +29,13 @@ public class DeregisterOrganReasonControllerGUITest extends ApplicationTest {
 
     private DateTimeFormatter sdf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-  @BeforeClass
-  public static void initialization() {
-      CommonTestMethods.runHeadless();
-  }
+    @BeforeClass
+    public static void initialization() {
+        CommonTestMethods.runHeadless();
+    }
 
     @Before
-    public void setUpCreateScene()  throws TimeoutException {
+    public void setUpCreateScene() throws TimeoutException {
         FxToolkit.registerPrimaryStage();
         FxToolkit.setupApplication(App.class);
         AppController.getInstance().getUsers().clear();
@@ -67,27 +67,27 @@ public class DeregisterOrganReasonControllerGUITest extends ApplicationTest {
     }
 
     @Test
-    public void deregisterOrganReasonTransplantReceivedTransplantWaitListEmpty (){
+    public void deregisterOrganReasonTransplantReceivedTransplantWaitListEmpty() {
         clickOn("#transplantReceivedRadioButton");
         clickOn("#okButton");
         clickOn("#userProfileTab");
         clickOn("#backButton");
         clickOn("#transplantWaitListTab");
-      assertEquals(0, getNumberOfRows("#transplantWaitListTableView"));
+        assertEquals(0, getNumberOfRows("#transplantWaitListTableView"));
     }
 
     @Test
-    public void deregisterOrganReasonTransplantReceivedRegistrationErrorTransplantWaitListEmpty (){
-      clickOn("#registrationErrorRadioButton");
+    public void deregisterOrganReasonTransplantReceivedRegistrationErrorTransplantWaitListEmpty() {
+        clickOn("#registrationErrorRadioButton");
         clickOn("#okButton");
         clickOn("#userProfileTab");
         clickOn("#backButton");
         clickOn("#transplantWaitListTab");
-      assertEquals(0, getNumberOfRows("#transplantWaitListTableView"));
+        assertEquals(0, getNumberOfRows("#transplantWaitListTableView"));
     }
 
     @Test
-    public void deregisterOrganReasonTransplantReceivedDiseaseCuredTransplantWaitListEmpty (){
+    public void deregisterOrganReasonTransplantReceivedDiseaseCuredTransplantWaitListEmpty() {
         clickOn("#diseaseCuredRadioButton");
         clickOn("#diseaseNameComboBox");
         clickOn("A0");
@@ -95,56 +95,56 @@ public class DeregisterOrganReasonControllerGUITest extends ApplicationTest {
         clickOn("#userProfileTab");
         clickOn("#backButton");
         clickOn("#transplantWaitListTab");
-      assertEquals(0, getNumberOfRows("#transplantWaitListTableView"));
+        assertEquals(0, getNumberOfRows("#transplantWaitListTableView"));
     }
 
     @Test
-    public void deregisterOrganReasonTransplantReceivedReceiverDiedTransplantWaitListEmpty (){
+    public void deregisterOrganReasonTransplantReceivedReceiverDiedTransplantWaitListEmpty() {
         clickOn("#receiverDiedRadioButton");
         clickOn("#okButton");
         clickOn("#userProfileTab");
         clickOn("#backButton");
         clickOn("#transplantWaitListTab");
-      assertEquals(0, getNumberOfRows("#transplantWaitListTableView"));
+        assertEquals(0, getNumberOfRows("#transplantWaitListTableView"));
     }
 
-  @Test
-  public void deregisterOrganReasonTransplantReceivedRegistrationErrorSystemLog() {
-    clickOn("#registrationErrorRadioButton");
-    clickOn("#okButton");
-    clickOn("#historyTab");
-      assertEquals(3, getNumberOfRows("#historyTableView")); //TODO It should be 2 i think, but it was 1 in the past and is 3 now?. 23/7
+    @Test
+    public void deregisterOrganReasonTransplantReceivedRegistrationErrorSystemLog() {
+        clickOn("#registrationErrorRadioButton");
+        clickOn("#okButton");
+        clickOn("#historyTab");
+        assertEquals(3, getNumberOfRows("#historyTableView")); //TODO It should be 2 i think, but it was 1 in the past and is 3 now?. 23/7
     }
 
-  @Test
-  public void deregisterOrganReasonTransplantReceivedDiseaseCuredDiseaseTable() {
-    boolean testPass = true;
-    clickOn("#diseaseCuredRadioButton");
-    clickOn("#diseaseNameComboBox");
-    clickOn("A0");
-    clickOn("#okButton");
-    clickOn("#diseaseTab");
-    assertEquals(0, getNumberOfRows("#currentDiseaseTableView"));
-    assertEquals(1, getNumberOfRows("#pastDiseaseTableView"));
-  }
+    @Test
+    public void deregisterOrganReasonTransplantReceivedDiseaseCuredDiseaseTable() {
+        boolean testPass = true;
+        clickOn("#diseaseCuredRadioButton");
+        clickOn("#diseaseNameComboBox");
+        clickOn("A0");
+        clickOn("#okButton");
+        clickOn("#diseaseTab");
+        assertEquals(0, getNumberOfRows("#currentDiseaseTableView"));
+        assertEquals(1, getNumberOfRows("#pastDiseaseTableView"));
+    }
 
-  @Test
-  public void deregisterOrganReasonTransplantReceivedReceiverDiedDOD() {
-    clickOn("#receiverDiedRadioButton");
-    clickOn("#okButton");
-    clickOn("#userProfileTab");
-    verifyThat("#DODValue", LabeledMatchers.hasText(LocalDate.now().toString()));
-  }
+    @Test
+    public void deregisterOrganReasonTransplantReceivedReceiverDiedDOD() {
+        clickOn("#receiverDiedRadioButton");
+        clickOn("#okButton");
+        clickOn("#userProfileTab");
+        verifyThat("#DODValue", LabeledMatchers.hasText(LocalDate.now().toString()));
+    }
 
-  @Test
-  public void deregisterOrganReasonTransplantReceivedReceiverDiedInvalidDOD() {
-    clickOn("#receiverDiedRadioButton");
-    clickOn("#dODDatePicker");
-    push(KeyCode.BACK_SPACE);
-    push(KeyCode.BACK_SPACE);
-    write("40");
-    clickOn("#okButton");
-    clickOn("#userProfileTab");
-    verifyThat("#invalidDateErrorMessage", Node::isVisible);
-  }
+    @Test
+    public void deregisterOrganReasonTransplantReceivedReceiverDiedInvalidDOD() {
+        clickOn("#receiverDiedRadioButton");
+        clickOn("#dODDatePicker");
+        push(KeyCode.BACK_SPACE);
+        push(KeyCode.BACK_SPACE);
+        write("40");
+        clickOn("#okButton");
+        clickOn("#userProfileTab");
+        verifyThat("#invalidDateErrorMessage", Node::isVisible);
+    }
 }

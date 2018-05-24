@@ -4,9 +4,7 @@ import picocli.CommandLine;
 import picocli.CommandLine.Option;
 import seng302.Controller.AppController;
 import seng302.Model.Clinician;
-import seng302.Model.JsonHandler;
-
-import java.io.IOException;
+import seng302.Service.AttributeValidation;
 
 @CommandLine.Command(name = "clinician", description = "Allows the details for a clinician to be updated")
 public class UpdateClinician implements Runnable {
@@ -40,6 +38,7 @@ public class UpdateClinician implements Runnable {
 
     @Override
     public void run() {
+        boolean valid = true;
         Clinician clinician = controller.getClinician(originalId);
         if (clinician == null) {
             System.out.println("That clinician id does not exist");
@@ -49,20 +48,24 @@ public class UpdateClinician implements Runnable {
         if (newId != null) {
             if(controller.getClinician(newId) == null) {
                 clinician.setStaffId(newId);
+                valid = AttributeValidation.checkRequiredString(newId);
             }
         }
         if (firstName != null) {
             clinician.setFirstName(firstName);
+            valid &= AttributeValidation.checkRequiredString(firstName);
             changed = true;
         }
 
         if (middleName != null) {
             clinician.setMiddleName(middleName);
+            valid &= AttributeValidation.checkString(middleName);
             changed = true;
         }
 
         if (lastName != null) {
-            clinician.setLastName(middleName);
+            clinician.setLastName(lastName);
+            valid &= AttributeValidation.checkString(lastName);
             changed = true;
         }
 
@@ -73,15 +76,15 @@ public class UpdateClinician implements Runnable {
 
         if (address != null) {
             clinician.setWorkAddress(address);
+            valid &= AttributeValidation.checkString(address);
             changed = true;
         }
 
         if (region != null) {
             clinician.setRegion(region);
+            valid &= AttributeValidation.checkString(region);
             changed = true;
         }
-
-        //TODO input validators go here
 
         if (changed) {
             controller.updateClinicians(clinician);

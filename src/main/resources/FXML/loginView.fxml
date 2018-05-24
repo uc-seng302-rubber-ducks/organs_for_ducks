@@ -72,7 +72,7 @@
                      <children>
                          <GridPane layoutX="121.0" layoutY="81.0" prefHeight="195.0" prefWidth="412.0">
                              <children>
-                                 <Button fx:id="loginAButton" mnemonicParsing="false" onAction="#loginClinician"
+                                 <Button fx:id="loginAButton" mnemonicParsing="false" onAction="#loginAdmin"
                                          prefHeight="25.0" prefWidth="146.0" text="Login" GridPane.columnIndex="1"
                                          GridPane.rowIndex="2"/>
                                  <TextField fx:id="adminUsernameTextField" GridPane.columnIndex="1"/>
