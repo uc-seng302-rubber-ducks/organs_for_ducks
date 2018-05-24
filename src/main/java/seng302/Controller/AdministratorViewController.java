@@ -41,49 +41,19 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
     @FXML
     private TableView<User> userTableView;
     @FXML
-    private TableView<?> transplantWaitListTableView;
-    @FXML
-    private CheckBox middleEarCheckBox;
-    @FXML
-    private CheckBox pancreasCheckBox;
-    @FXML
-    private TextField waitingRegionTextfield;
-    @FXML
-    private MenuItem importUsersMenuItem;
-    @FXML
     private Label adminLastNameLabel;
-    @FXML
-    private Button addAdminButton;
     @FXML
     private CheckBox allCheckBox;
     @FXML
     private TableView<Clinician> clinicianTableView;
     @FXML
-    private Tooltip searchToolTip;
-    @FXML
     private TextField cliInputTextField;
-    @FXML
-    private Tooltip searchToolTip1;
-    @FXML
-    private Tooltip searchToolTip2;
-    @FXML
-    private CheckBox skinCheckBox;
-    @FXML
-    private Button addClinicianButton;
     @FXML
     private TableView<Administrator> adminTableView;
     @FXML
     private TextArea adminCliTextArea;
     @FXML
-    private CheckBox boneCheckBox;
-    @FXML
-    private CheckBox heartCheckBox;
-    @FXML
     private AnchorPane filterAnchorPane;
-    @FXML
-    private Button recentlyDeletedButton;
-    @FXML
-    private Label filtersLabel;
     @FXML
     private Button adminRedoButton;
     @FXML
@@ -91,55 +61,25 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
     @FXML
     private Button expandButton;
     @FXML
-    private CheckBox kidneyCheckBox;
-    @FXML
     private TextField adminSearchField;
-    @FXML
-    private CheckBox liverCheckBox;
-    @FXML
-    private Label succesFailLabel;
-    @FXML
-    private CheckBox lungCheckBox;
-    @FXML
-    private CheckBox boneMarrowCheckBox;
-    @FXML
-    private TextField searchTextField;
     @FXML
     private Pagination searchTablePagination;
     @FXML
     private Button deleteAdminButton;
     @FXML
-    private MenuItem adminSaveMenu;
-    @FXML
-    private CheckBox corneaCheckBox;
-    @FXML
     private ComboBox<?> genderComboBox;
-    @FXML
-    private CheckBox connectiveTissueCheckBox;
-    @FXML
-    private Button updateButton;
     @FXML
     private Label adminFirstnameLabel;
     @FXML
     private CheckBox donorFilterCheckBox;
     @FXML
-    private MenuItem importCliniciansMenuItem;
-    @FXML
-    private Button adminLogoutButton;
-    @FXML
-    private MenuItem importAdminsMenuItem;
-    @FXML
     private Button adminUndoButton;
     @FXML
     private Label searchCountLabel;
     @FXML
-    private Button addUserButton;
-    @FXML
     private Label adminMiddleNameLabel;
     @FXML
     private CheckBox receiverFilterCheckBox;
-    @FXML
-    private CheckBox intestineCheckBox;
     @FXML
     private Label donorStatusLabel;
     @FXML
