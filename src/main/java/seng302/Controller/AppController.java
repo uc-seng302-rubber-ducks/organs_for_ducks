@@ -310,7 +310,7 @@ public class AppController {
 
   /**
    * Method to update the user of any changes passed in by the gui. Removes the old entry of the
-   * user form the list and then adds the updated entry If the user is not already in the list it is
+   * user from the list and then adds the updated entry If the user is not already in the list it is
    * added
    *
    * TODO: each user may need to be assigned a unique id for this part
