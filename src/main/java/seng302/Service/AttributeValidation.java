@@ -1,7 +1,10 @@
 package seng302.Service;
 
+import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.Objects;
+
 import seng302.Model.BloodTypes;
 import seng302.Model.TransplantDetails;
 import seng302.Model.User;
@@ -168,52 +171,56 @@ public class AttributeValidation {
     }
 
     /**
-     * Check the entry of the string provided to see if the user's region matches the text
-     * @param regionString String object to check against the user's region
-     * @param user a User object
-     * @return true if the user's regions starts with the provided string
-     */
-    public static boolean checkRegionMatches(String regionString, User user) {
-        if (user.getRegion() == null) {
-            return regionString.equals("");
-        } else {
-            return user.getRegion().toLowerCase().startsWith(regionString.toLowerCase());
-        }
-    }
-
-    /**
-     * Check the entry of the string provided to see if the user's region matches the text
+     * Check the entry of the string provided to see if the supplied objects region matches the text.
      *
-     * @param regionString String object to check against the user's region
-     * @param transplantDetails a User object
-     * @return true if the user's regions starts with the provided string
+     * Will catch a NoSuchMethod Exception print a stacktrace and return false if the object has no region object to get
+     *
+     * @param regionString String object to check against the object's region
+     * @param toMatch an object containing a region
+     * @return true if the object's regions starts with the provided string
      */
-    public static boolean checkRegionMatches(String regionString,
-        TransplantDetails transplantDetails) {
-        if (transplantDetails.getRegion() == null) {
-            return regionString.equals("");
-        } else {
-            return transplantDetails.getRegion().toLowerCase()
-                .startsWith(regionString.toLowerCase());
+    public static <T> boolean checkRegionMatches(String regionString, T toMatch) {
+        try {
+            if (toMatch.getClass().getMethod("getRegion").invoke(toMatch) == null) {
+                return regionString.equals("");
+            } else {
+                String region = (String) toMatch.getClass().getMethod("getRegion").invoke(toMatch);
+                return region.toLowerCase().startsWith(regionString.toLowerCase());
+            }
+        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            e.printStackTrace();
+            return false;
         }
     }
 
     /**
-     * Check the entry of the string provided to see if the users gender matches the text
-     * @param genderValue String object to check against the users gender
-     * @param user a User object
-     * @return true if the users gender starts with the provided string
+     * Takes an object with a birth gender and then invokes the method.
+     * This is then tested against the supplied gender to check for a match
+     *
+     * If the object provided contains no getBirthGender method a NoSuchMethod exception will be caught,
+     * the stack trace printed and false returned
+     *
+     * @param genderValue String object to check against the object's gender
+     * @param toMatch an object with a gender
+     * @return true if the objects gender starts with the provided string
      */
-    public static boolean checkGenderMatches(String genderValue, User user) {
-        if (user.getBirthGender() == null) {
-            return genderValue.equals("All");
+    public static <T> boolean checkGenderMatches(String genderValue, T toMatch) {
+        try {
+            if (toMatch.getClass().getMethod("getBirthGender").invoke(toMatch) == null) {
+                return genderValue.equals("All");
+            }
+            String gender = (String) toMatch.getClass().getMethod("getBirthGender").invoke(toMatch);
+            return (gender.equalsIgnoreCase(genderValue) ||
+                    genderValue.equalsIgnoreCase("All"));
+        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            e.printStackTrace();
+            return false;
         }
-        return (user.getBirthGender().equalsIgnoreCase(genderValue) ||
-            genderValue.equalsIgnoreCase("All"));
+
     }
 
     public static boolean checkTextMatches(String text1, String text2) {
-        if (text1 == text2) {
+        if (Objects.equals(text1, text2)) {
             return true;
         }
         if (text1 == null) {

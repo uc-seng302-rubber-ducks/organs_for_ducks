@@ -1,9 +1,5 @@
 package seng302.Controller;
 
-import java.io.IOException;
-import java.text.DecimalFormat;
-import java.time.temporal.ChronoUnit;
-import java.util.Optional;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -16,6 +12,11 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import seng302.Model.User;
 import seng302.Service.Log;
+
+import java.io.IOException;
+import java.text.DecimalFormat;
+import java.time.temporal.ChronoUnit;
+import java.util.Optional;
 
 public class UserOverviewController {
 
@@ -157,6 +158,7 @@ public class UserOverviewController {
           ChronoUnit.YEARS.between(user.getDateOfBirth(), user.getDateOfDeath())) + " Years");
     } else {
       DODValue.setText("");
+      ageDeathValue.setText("");
     }
     if (user.getBloodType() != null) {
       bloodTypeValue.setText(user.getBloodType());

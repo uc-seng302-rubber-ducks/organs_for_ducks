@@ -21,8 +21,6 @@ import java.util.List;
 
 /**
  * Json Handler to import and save data
- *
- * @author Josh Burt
  */
 public final class JsonHandler {
 

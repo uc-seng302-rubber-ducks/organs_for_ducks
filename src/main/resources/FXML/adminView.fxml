@@ -1,9 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.collections.*?>
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="400.0" minWidth="600.0" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.Controller.AdministratorViewController">
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="400.0" minWidth="600.0" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="seng302.Controller.AdministratorViewController">
    <children>
       <MenuBar prefHeight="50.0" prefWidth="600.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <menus>
@@ -86,28 +92,50 @@
           </Tab>
           <Tab text="Search">
               <content>
-                  <SplitPane minHeight="-Infinity" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0"> <!---->
+                  <SplitPane dividerPositions="0.5" minHeight="-Infinity" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0"> <!---->
                       <items>
+                        <AnchorPane fx:id="filterAnchorPane" maxHeight="45.0" minHeight="45" prefHeight="-Infinity" prefWidth="756.0">
+                           <children>
+                              <Button fx:id="expandButton" layoutX="576.0" layoutY="14.0" mnemonicParsing="false" onMouseClicked="#expandFilter" text="▼" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="10.0" />
+                              <Label fx:id="birthGenderLabel" layoutX="14.0" layoutY="50.0" text="Birth Gender: " AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="49.5" />
+                              <Label layoutX="14.0" layoutY="85.0" text="Region:" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="85.0" />
+                              <Label fx:id="donorStatusLabel" layoutX="14.0" layoutY="118.0" text="Donor status: " AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="120.5" />
+                              <ComboBox fx:id="genderComboBox" layoutX="115.0" layoutY="46.0" prefWidth="150.0" value="All" AnchorPane.leftAnchor="115.0" AnchorPane.topAnchor="46.0">
+                                 <items>
+                                    <FXCollections fx:factory="observableArrayList">
+                                       <String fx:value="Male" />
+                                       <String fx:value="Female" />
+                                       <String fx:value="All" />
+                                    </FXCollections>
+                                 </items>
+                              </ComboBox>
+                              <TextField fx:id="regionSearchTextField" layoutX="59.0" layoutY="81.0" prefHeight="25.0" prefWidth="200.0" AnchorPane.leftAnchor="115.0" AnchorPane.rightAnchor="329.0" AnchorPane.topAnchor="81.0" />
+                              <CheckBox fx:id="donorFilterCheckBox" layoutX="115.0" layoutY="121.0" mnemonicParsing="false" text="Donor" AnchorPane.leftAnchor="115.0" AnchorPane.topAnchor="121.0" />
+                              <CheckBox fx:id="receiverFilterCheckBox" layoutX="199.0" layoutY="121.0" mnemonicParsing="false" text="Receiver" AnchorPane.leftAnchor="199.0" AnchorPane.topAnchor="121.0" />
+                              <CheckBox fx:id="allCheckBox" layoutX="290.0" layoutY="121.0" mnemonicParsing="false" text="All" AnchorPane.leftAnchor="290.0" AnchorPane.topAnchor="121.0" />
+                              <Button fx:id="recentlyDeletedButton" layoutX="393.0" layoutY="118.0" mnemonicParsing="false" onAction="#loadRecentlyDeleted" text="Show Recently Deleted Users" />
+                              <Label layoutX="30.0" layoutY="16.0" text="Search" />
+                              <TextField fx:id="adminSearchField" layoutX="93.0" layoutY="10.0" prefHeight="25.0" prefWidth="240.0" />
+                              <CheckBox fx:id="adminUserCheckbox" layoutX="345.0" layoutY="13.0" mnemonicParsing="false" text="User" />
+                                <CheckBox fx:id="adminClinicianCheckbox" layoutX="407.0" layoutY="13.0" mnemonicParsing="false" text="Clinician" />
+                              <CheckBox fx:id="adminAdminCheckbox" layoutX="487.0" layoutY="13.0" mnemonicParsing="false" text="Admin" />
+                           </children>
+                        </AnchorPane>
                           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="617.0">
                               <children>
                                   <Pagination fx:id="searchTablePagination" layoutX="271.0" layoutY="5.0" maxPageIndicatorCount="1" prefHeight="368.0" prefWidth="593.0" AnchorPane.bottomAnchor="2.0" AnchorPane.leftAnchor="4.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="2.0" />
-                                  <TableView fx:id="adminTableView" layoutY="32.0" prefHeight="240.0" prefWidth="592.0" AnchorPane.bottomAnchor="48.0" AnchorPane.leftAnchor="4.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="32.0">
+                                  <TableView fx:id="adminTableView" layoutY="32.0" prefHeight="240.0" prefWidth="592.0" AnchorPane.bottomAnchor="48.0" AnchorPane.leftAnchor="4.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="0.0">
                                       <tooltip>
                                           <Tooltip fx:id="searchToolTip" text="Empty Tooltip" />
                                       </tooltip>
                                   </TableView>
                                   <Label fx:id="searchCountLabel" layoutX="14.0" layoutY="336.0" text="" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="14.0" />
-                              <TextField fx:id="adminSearchField" layoutX="67.0" layoutY="2.0" prefHeight="25.0" prefWidth="258.0" />
-                              <Label layoutX="14.0" layoutY="7.0" text="Search" />
-                              <CheckBox fx:id="adminUserCheckbox" layoutX="356.0" layoutY="8.0" mnemonicParsing="false" text="User" />
-                              <CheckBox fx:id="adminAdminCheckbox" layoutX="520.0" layoutY="8.0" mnemonicParsing="false" text="Admin" />
-                                <CheckBox fx:id="adminClinicianCheckbox" layoutX="424.0" layoutY="8.0" mnemonicParsing="false" text="Clinician" />
-                              <TableView fx:id="clinicianTableView" prefHeight="240.0" prefWidth="592.0" AnchorPane.bottomAnchor="48.0" AnchorPane.leftAnchor="4.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="32.0">
+                              <TableView fx:id="clinicianTableView" prefHeight="240.0" prefWidth="592.0" AnchorPane.bottomAnchor="48.0" AnchorPane.leftAnchor="4.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="0.0">
                                  <tooltip>
                                     <Tooltip fx:id="searchToolTip1" text="Empty Tooltip" />
                                  </tooltip>
                               </TableView>
-                              <TableView fx:id="userTableView" prefHeight="240.0" prefWidth="592.0" AnchorPane.bottomAnchor="48.0" AnchorPane.leftAnchor="4.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="32.0">
+                              <TableView fx:id="userTableView" prefHeight="214.0" prefWidth="595.0" AnchorPane.bottomAnchor="48.0" AnchorPane.leftAnchor="4.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="0.0">
                                  <tooltip>
                                     <Tooltip fx:id="searchToolTip2" text="Empty Tooltip" />
                                  </tooltip>

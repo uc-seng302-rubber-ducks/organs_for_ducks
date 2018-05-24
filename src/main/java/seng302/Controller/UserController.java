@@ -355,7 +355,7 @@ public class UserController {
         return receiverTabPageController.getIsSortedByName();
     }
 
-    public void diableLogout() {
+    public void disableLogout() {
         userProfileTabPageController.disableLogout();
     }
 }
