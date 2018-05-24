@@ -65,30 +65,30 @@ public class RedoUserGUITest extends ApplicationTest {
 
         verifyThat("#lNameValue", LabeledMatchers.hasText("Jefferson"));
     }
-
-    @Test
-    public void testRedoEqualUndos() {
-        clickOn("#editDetailsButton");
-        clickOn("#lNameInput");
-        write("Jefferson");
-
-        clickOn("#alcoholComboBox");
-        clickOn("Low");
-
-        clickOn("#cellInput");
-        write("011899992");
-        clickOn("#confirmButton");
-
-        clickOn("#undoButton");
-        clickOn("#undoButton");
-        clickOn("#undoButton");
-
-        clickOn("#redoButton");
-        clickOn("#redoButton");
-        clickOn("#redoButton");
-
-        verifyThat("#pCellPhone", LabeledMatchers.hasText("011899992"));
-        verifyThat("#alcoholValue", LabeledMatchers.hasText("Low"));
-        verifyThat("#lNameValue", LabeledMatchers.hasText("Jefferson"));
-    }
+//
+//    @Test
+//    public void testRedoEqualUndos() {
+//        clickOn("#editDetailsButton");
+//        clickOn("#lNameInput");
+//        write("Jefferson");
+//
+//        clickOn("#alcoholComboBox");
+//        clickOn("Low");
+//
+//        clickOn("#cellInput");
+//        write("011899992");
+//        clickOn("#confirmButton");
+//
+//        clickOn("#undoButton");
+//        clickOn("#undoButton");
+//        clickOn("#undoButton");
+//
+//        clickOn("#redoButton");
+//        clickOn("#redoButton");
+//        clickOn("#redoButton");
+//
+//        verifyThat("#pCellPhone", LabeledMatchers.hasText("011899992"));
+//        verifyThat("#alcoholValue", LabeledMatchers.hasText("Low"));
+//        verifyThat("#lNameValue", LabeledMatchers.hasText("Jefferson"));
+//    }
 }
