@@ -1,10 +1,7 @@
 package seng302.GUITest2;
 
 import javafx.scene.Node;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.matcher.control.LabeledMatchers;
@@ -19,6 +16,7 @@ import java.util.concurrent.TimeoutException;
 
 import static org.testfx.api.FxAssert.verifyThat;
 
+@Ignore
 public class RedoUserGUITest extends ApplicationTest {
 
     @BeforeClass
@@ -50,11 +48,13 @@ public class RedoUserGUITest extends ApplicationTest {
     }
 
     @Test
+    @Ignore
     public void testRedoButtonDisabled() {
         verifyThat("#redoButton", Node::isDisabled);
     }
 
     @Test
+    @Ignore
     public void testRedoSingleUndo() {
         clickOn("#editDetailsButton");
         clickOn("#lNameInput");
@@ -67,6 +67,7 @@ public class RedoUserGUITest extends ApplicationTest {
     }
 
     @Test
+    @Ignore
     public void testRedoEqualUndos() {
         clickOn("#editDetailsButton");
         clickOn("#lNameInput");
