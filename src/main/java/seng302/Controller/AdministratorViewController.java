@@ -849,7 +849,6 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
             Collection<PropertyChangeListener> listeners = new ArrayList<>();
             listeners.add(this);
             clinicianController.init(newStage, AppController.getInstance(), clinician, owner, listeners);
-            //TODO
             //clinicianController.init(newStage, AppController.getInstance(), clinician, true);
             newStage.show();
             Log.info("Admin " + administrator.getUserName() + " successfully launched clinician overview window for Clinician Staff ID:" + clinician.getStaffId());
@@ -1030,7 +1029,7 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
 
         if (result.get() == ButtonType.OK) {
             appController.deleteAdmin(administrator);
-            Log.info("Admin " + administrator.getUserName() + " Successfully deleted Admin account: "); //TODO: include username of deleted admin account in log.
+            Log.info("Admin " + administrator.getUserName() + " Successfully deleted Admin account: ");
             if (owner) {
                 logout();
             } else {

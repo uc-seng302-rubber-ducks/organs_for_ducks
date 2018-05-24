@@ -11,11 +11,7 @@ import seng302.Controller.CliCommands.CreateUser;
 import seng302.Controller.CliCommands.DeleteUser;
 import seng302.Controller.CliCommands.View;
 import seng302.Utils.TableViewsMethod;
-
-import java.util.Scanner;
-
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import seng302.View.CLI;
 
 public class WhenSteps extends ApplicationTest {
 
@@ -35,13 +31,10 @@ public class WhenSteps extends ApplicationTest {
 
     @When("^I delete the user with the above NHI$")
     public void iDeleteTheUserWithTheAboveNHI() {
-        Scanner mockScn = mock(Scanner.class);
-        when(mockScn.next()).thenReturn("y");
         String[] args = {CucumberTestModel.getUserNhi()};
         DeleteUser command = new DeleteUser();
-        command.setController(CucumberTestModel.getController());
-        command.setScanner(mockScn);
         new CommandLine(command).parseWithHandler(new CommandLine.RunLast(), System.err, args);
+        CLI.parseInput("y", CucumberTestModel.getController());
     }
 
     @When("^I register a user with the NHI \"([^\"]*)\", first name \"([^\"]*)\", last name \"([^\"]*)\" and date of birth \"([^\"]*)\"$")

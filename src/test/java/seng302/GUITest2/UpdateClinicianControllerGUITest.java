@@ -1,4 +1,4 @@
-package seng302.GUITests;
+package seng302.GUITest2;
 
 import org.junit.After;
 import org.junit.Before;

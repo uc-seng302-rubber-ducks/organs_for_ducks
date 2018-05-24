@@ -1,4 +1,4 @@
-package seng302.GUITests;
+package seng302.GUITest1;
 
 import javafx.scene.Node;
 import javafx.scene.control.TextField;
@@ -11,7 +11,6 @@ import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.matcher.control.LabeledMatchers;
 import seng302.App;
 import seng302.Controller.AppController;
-import seng302.Utils.CommonTestMethods;
 
 import java.util.concurrent.TimeoutException;
 
@@ -24,7 +23,7 @@ public class CreateClinicianControllerGUITest extends ApplicationTest {
 
     @BeforeClass
     public static void initialization() {
-        CommonTestMethods.runHeadless();
+        //CommonTestMethods.runHeadless();
     }
 
     @Before
@@ -46,7 +45,7 @@ public class CreateClinicianControllerGUITest extends ApplicationTest {
     public void tearDown() throws TimeoutException {
         AppController.getInstance().getUsers().clear();
         AppController.getInstance().getClinicians().remove(AppController.getInstance().getClinician("Staff1"));
-      FxToolkit.cleanupStages();
+        FxToolkit.cleanupStages();
     }
 
 

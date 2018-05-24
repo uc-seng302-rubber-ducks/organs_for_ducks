@@ -1,4 +1,4 @@
-package seng302.GUITests;
+package seng302.GUITest2;
 
 import javafx.scene.input.KeyCode;
 import org.junit.After;
@@ -32,7 +32,7 @@ public class NewDiseaseControllerGUITest extends ApplicationTest {
     }
 
     @Before
-    public void setUpCreateScene()  throws TimeoutException {
+    public void setUpCreateScene() throws TimeoutException {
         FxToolkit.registerPrimaryStage();
         FxToolkit.setupApplication(App.class);
         AppController.getInstance().getUsers().clear();
@@ -62,7 +62,7 @@ public class NewDiseaseControllerGUITest extends ApplicationTest {
     }
 
     @Test
-    public void createdDiseaseShouldBeInCurrentDiseaseTable(){
+    public void createdDiseaseShouldBeInCurrentDiseaseTable() {
         clickOn("#addDiseaseButton");
         clickOn("#diseaseNameInput");
         write("A1", 0);
@@ -73,17 +73,17 @@ public class NewDiseaseControllerGUITest extends ApplicationTest {
     }
 
     @Test
-    public void createdCuredDiseaseShouldBeInPastDiseaseTable(){
+    public void createdCuredDiseaseShouldBeInPastDiseaseTable() {
         clickOn("#addDiseaseButton");
         clickOn("#diseaseNameInput");
         write("A1", 0);
         clickOn("#curedRadioButton");
         clickOn("#createButton");
-      assertEquals("A1", getCellValue("#pastDiseaseTableView", 1, 1).toString());
+        assertEquals("A1", getCellValue("#pastDiseaseTableView", 1, 1).toString());
     }
 
     @Test
-    public void updatedDiseaseNameShouldBeDisplayedCorrectly(){
+    public void updatedDiseaseNameShouldBeDisplayedCorrectly() {
         clickOn(getCell("#currentDiseaseTableView", 0, 0));
         clickOn("#updateDiseaseButton");
         clickOn("#diseaseNameInput");
@@ -105,14 +105,14 @@ public class NewDiseaseControllerGUITest extends ApplicationTest {
     }
 
     @Test
-    public void updatedDiseaseDateShouldBeDisplayedCorrectly(){
+    public void updatedDiseaseDateShouldBeDisplayedCorrectly() {
         clickOn(getCell("#currentDiseaseTableView", 0, 0));
         clickOn("#updateDiseaseButton");
         clickOn("#diagnosisDateInput");
-        for(int i = 0; i < 10; i++) {
+        for (int i = 0; i < 10; i++) {
             push(KeyCode.RIGHT);
         }
-        for(int i = 0; i < 15; i++) {
+        for (int i = 0; i < 15; i++) {
             push(KeyCode.BACK_SPACE);
         }
         write("12/01/2007", 0);
@@ -121,12 +121,12 @@ public class NewDiseaseControllerGUITest extends ApplicationTest {
     }
 
     @Test
-    public void diseaseShouldMoveToPastDiseaseTableWhenSetToCured(){
+    public void diseaseShouldMoveToPastDiseaseTableWhenSetToCured() {
         clickOn(getCell("#currentDiseaseTableView", 0, 0));
         clickOn("#updateDiseaseButton");
         clickOn("#curedRadioButton");
         clickOn("#createButton");
-      assertEquals("A0", getCellValue("#pastDiseaseTableView", 1, 1).toString());
+        assertEquals("A0", getCellValue("#pastDiseaseTableView", 1, 1).toString());
     }
 
     @Test
@@ -138,14 +138,14 @@ public class NewDiseaseControllerGUITest extends ApplicationTest {
         assertEquals("B0", getCellValue("#currentDiseaseTableView", 1, 1).toString());
     }
 
-    @Test (expected = NullPointerException.class)
+    @Test(expected = NullPointerException.class)
     public void deletedPastDiseaseShouldBeRemovedFromPastDiseases() {
         clickOn(getCell("#pastDiseaseTableView", 0, 0));
         clickOn("#deleteDiseaseButton");
         getCellValue("#pastDiseaseTableView", 0, 0);
     }
 
-    @Test (expected = NullPointerException.class)
+    @Test(expected = NullPointerException.class)
     public void deletedCurrentDiseaseShouldBeRemovedFromCurrentDisease() throws NullPointerException {
         clickOn(getCell("#currentDiseaseTableView", 0, 0));
         clickOn("#deleteDiseaseButton");
@@ -165,7 +165,7 @@ public class NewDiseaseControllerGUITest extends ApplicationTest {
 
     }
 
-    @Test (expected = FxRobotException.class)
+    @Test(expected = FxRobotException.class)
     public void generalUserShouldNotBeAbleToEditDiseases() {
         clickOn("#userProfileTab");
         //clickOn("#logOutButton");

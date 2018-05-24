@@ -1,4 +1,4 @@
-package seng302.GUITests;
+package seng302.GUITest1;
 
 import javafx.scene.Node;
 import javafx.scene.control.TextField;
@@ -14,6 +14,7 @@ import seng302.Model.Administrator;
 import seng302.Utils.CommonTestMethods;
 
 import java.util.concurrent.TimeoutException;
+
 import static org.testfx.api.FxAssert.verifyThat;
 
 public class DeleteAdminGUITest extends ApplicationTest {
@@ -41,7 +42,7 @@ public class DeleteAdminGUITest extends ApplicationTest {
     }
 
     @Test
-    public void testCannotDeleteDefaultAdmin(){
+    public void testCannotDeleteDefaultAdmin() {
         write("default", 0);
         lookup("#adminPasswordField").queryAs(TextField.class).setText("admin");
         clickOn("#loginAButton");

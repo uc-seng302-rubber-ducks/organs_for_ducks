@@ -130,7 +130,7 @@ public class AppController {
      * @param NHI The unique identifier of the user (national health index)
      * @return hashCode of the new user or -1 on error
      */
-    //TODO: remove??
+    //TODO: Remove this
   public int Register(String name, LocalDate dateOfBirth, LocalDate dateOfDeath, String gender, double height,
                       double weight,
       String bloodType, String currentAddress, String region, String NHI) {
@@ -393,8 +393,7 @@ public class AppController {
    * @param clinician The current clinician.
    */
   public void updateClinicians(Clinician clinician) {
-    if (clinicians.contains(clinician)) {
-    } else {
+      if (!clinicians.contains(clinician)) {
       clinicians.add(clinician);
     }
 

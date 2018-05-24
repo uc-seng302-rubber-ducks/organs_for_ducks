@@ -1,14 +1,14 @@
 package seng302.Model;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.fail;
-
-import java.time.LocalDate;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+
+import java.time.LocalDate;
+
+import static junit.framework.TestCase.assertTrue;
+import static org.junit.Assert.*;
 
 /**
  * These tests are done on Users but are more focused on testing the undo stacks/memento system
@@ -76,7 +76,7 @@ public class RedoTest {
     testUser.setName("Harold","","");
     testUser.undo();
     Memento<User> mem = testUser.getRedoStack().peek();
-    assert (mem.getOldObject() != null && mem.getNewObject() != null);
+    assertTrue(mem.getOldObject() != null && mem.getNewObject() != null);
   }
 
   @Test
@@ -90,15 +90,15 @@ public class RedoTest {
     assertEquals("Harold", newName);
 
     //two states of the same user
-    assert (mem.getNewObject().equals(mem.getOldObject()));
+    assertTrue(mem.getNewObject().equals(mem.getOldObject()));
   }
 
   @Test
   public void DonorAttributesAttachedUserIsCorrectWhenStored() {
 
-    assert (testUser.getDonorDetails().getAttachedUser().equals(testUser));
+    assertTrue(testUser.getDonorDetails().getAttachedUser().equals(testUser));
     testUser.setNhi("QWE1234");
-    assert (testUser.getDonorDetails().getAttachedUser().equals(testUser));
+    assertTrue(testUser.getDonorDetails().getAttachedUser().equals(testUser));
 
     testUser.undo();
     Memento<User> mem = testUser.getRedoStack().peek();
@@ -106,9 +106,9 @@ public class RedoTest {
     User oldUser = mem.getOldObject();
 
     assertNotEquals(newUser, oldUser);
-    assert (oldUser.getDonorDetails().getAttachedUser().equals(oldUser));
+    assertTrue(oldUser.getDonorDetails().getAttachedUser().equals(oldUser));
     User test = newUser.getDonorDetails().getAttachedUser();
-    assert (newUser.getDonorDetails().getAttachedUser().equals(newUser));
+    assertTrue(newUser.getDonorDetails().getAttachedUser().equals(newUser));
   }
 
   @Test
