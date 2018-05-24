@@ -57,11 +57,6 @@ public class OrganReceiverGUITest extends ApplicationTest {
         write("0", 0);
         clickOn("#staffPasswordField");
         write("admin", 0);
-//        clickOn("#changeLogin");
-//        clickOn("#userIDTextField");
-//        write("0", 0);
-//        clickOn("#passwordField");
-//        write("admin", 0);
         clickOn("#loginCButton");
         //verifyThat("#staffIdLabel", LabeledMatchers.hasText("0"));
         clickOn("#searchTab");
@@ -85,6 +80,7 @@ public class OrganReceiverGUITest extends ApplicationTest {
     }
 
     @Test
+    @Ignore
     public void organShouldMoveCorrectlyBetweenTablesWhenMoveButtonsClicked() {
         //Setup
         clickOn("#organsComboBox");
