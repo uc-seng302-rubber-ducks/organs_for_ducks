@@ -13,7 +13,6 @@
             <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="368.0" prefWidth="600.0">
                      <children>
-                       <Button fx:id="openCLIButton" layoutX="258.0" layoutY="328.0" mnemonicParsing="false" onAction="#openCLI" text="Open CLI" />
                         <Button fx:id="signUpButton" layoutX="465.0" layoutY="327.0" mnemonicParsing="false" onAction="#signUp" prefHeight="25.0" prefWidth="131.0" text="Sign up" />
                          <GridPane layoutX="121.0" layoutY="81.0" prefHeight="195.0" prefWidth="412.0">
                            <children>
@@ -107,6 +106,5 @@
             <Font size="22.0" />
          </font>
       </Label>
-      <Hyperlink fx:id="help" layoutX="539.0" layoutY="11.0" onAction="#helpButton" text="Help?" />
    </children>
 </AnchorPane>
