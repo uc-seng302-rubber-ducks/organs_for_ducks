@@ -189,6 +189,8 @@ public class LoginController {
         root = administratorLoader.load();
         stage.setScene(new Scene(root));
         stage.setTitle("Administrator");
+        stage.setMinWidth(800);
+        stage.setMinHeight(600);
         AdministratorViewController administratorController = administratorLoader.getController();
         AppController.getInstance().setAdministratorViewController(administratorController);
         Log.info("Logging in as an administrator");
@@ -268,6 +270,8 @@ public class LoginController {
         root = adminLoader.load();
         stage.setScene(new Scene(root));
         stage.setTitle("Administrator");
+        stage.setMinWidth(800);
+        stage.setMinHeight(600);
         AdministratorViewController administratorViewController = adminLoader.getController();
         administratorViewController.init(new Administrator(), appController, stage, true, null);
         Log.info("Successfully launched CLI");

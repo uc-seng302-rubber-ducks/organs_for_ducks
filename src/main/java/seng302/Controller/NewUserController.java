@@ -1,26 +1,23 @@
 package seng302.Controller;
 
 
-import static seng302.Model.JsonHandler.saveUsers;
-
-import java.io.IOException;
-import java.time.LocalDate;
-import java.util.List;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
 import seng302.Exception.InvalidFieldsException;
 import seng302.Model.EmergencyContact;
 import seng302.Model.User;
 import seng302.Service.AttributeValidation;
 import seng302.Service.Log;
+
+import java.io.IOException;
+import java.time.LocalDate;
+import java.util.List;
+
+import static seng302.Model.JsonHandler.saveUsers;
 
 
 /**
@@ -221,7 +218,7 @@ public class NewUserController {
                     userController
                         .init(AppController.getInstance(), newUser, userStage, false, null);
                     userController.init(AppController.getInstance(), newUser, userStage, false, null);
-                    userController.diableLogout();
+                    userController.disableLogout();
                     Log.info("Successfully launched User Overview for User NHI: "+nhi);
                 } catch (IOException e) {
                     Log.severe("Failed to load User Overview for User NHI: "+nhi, e);

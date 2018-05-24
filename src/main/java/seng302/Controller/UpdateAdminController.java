@@ -36,7 +36,16 @@ public class UpdateAdminController {
     private Button undoAdminUpdateButton;
 
     @FXML
+    private Label invalidUsername;
+
+    @FXML
+    private Label invalidFName;
+
+    @FXML
     private Label errorLabel;
+
+    @FXML
+    private Label adminDetailInputTitle;
 
     private Administrator admin;
     private Stage stage;
@@ -61,6 +70,8 @@ public class UpdateAdminController {
         adminViewController = appController.getAdministratorViewController();
 
         stage.getScene();
+        invalidUsername.setText("");
+        invalidFName.setText("");
         errorLabel.setText("");
 
         if (!newAdmin) {
@@ -81,6 +92,7 @@ public class UpdateAdminController {
             changesListener(cPasswordTextField);
 
         } else {
+            adminDetailInputTitle.setText("Create Admin");
             undoAdminUpdateButton.setVisible(false);
             redoAdminUpdateButton.setVisible(false);
         }
@@ -218,7 +230,7 @@ public class UpdateAdminController {
             if (passwordTextField.getText().equals(cPasswordTextField.getText())) {
                 admin.setPassword(passwordTextField.getText());
             } else {
-                errorLabel.setText("your password don't match");
+                errorLabel.setText("your passwords don't match");
                 valid = false;
             }
         }

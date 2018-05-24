@@ -1,19 +1,25 @@
 package seng302.Controller;
 
 import com.sun.javafx.stage.StageHelper;
+import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import seng302.Model.*;
+import seng302.Service.AttributeValidation;
 import seng302.Service.Log;
 import seng302.View.CLI;
 
@@ -23,124 +29,158 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
+import java.lang.reflect.InvocationTargetException;
+import java.util.*;
 
 public class AdministratorViewController implements PropertyChangeListener, TransplantWaitListViewer {
 
-    //<editor-fold desc="FXML items">
-    @FXML
-    private TableView<?> transplantWaitListTableView;
+    //<editor-fold desc="FXML stuff">
 
-    @FXML
-    private Label succesFailLabel;
-
-    @FXML
-    private Label adminLastNameLabel;
-
-    @FXML
-    private TableView<Administrator> adminTableView;
-
-    @FXML
-    private TableView<Clinician> clinicianTableView;
-
+    private static int searchCount = 0;
+    private final int ROWS_PER_PAGE = 30;
     @FXML
     private TableView<User> userTableView;
-
     @FXML
-    private Pagination searchTablePagination;
-
+    private TableView<?> transplantWaitListTableView;
+    @FXML
+    private CheckBox middleEarCheckBox;
+    @FXML
+    private CheckBox pancreasCheckBox;
+    @FXML
+    private TextField waitingRegionTextfield;
+    @FXML
+    private MenuItem importUsersMenuItem;
+    @FXML
+    private Label adminLastNameLabel;
     @FXML
     private Button addAdminButton;
-
     @FXML
-    private MenuItem adminSaveMenu;
-
+    private CheckBox allCheckBox;
+    @FXML
+    private TableView<Clinician> clinicianTableView;
     @FXML
     private Tooltip searchToolTip;
-
-    @FXML
-    private Label adminFirstnameLabel;
-
-    @FXML
-    private Button adminLogoutButton;
-
-    @FXML
-    private Button addClinicianButton;
-
-    @FXML
-    private CheckBox adminAdminCheckbox;
-
-    @FXML
-    private Button adminUndoButton;
-
-    @FXML
-    private CheckBox adminClinicianCheckbox;
-
-    @FXML
-    private Label searchCountLabel;
-
-    @FXML
-    private Label filtersLabel;
-
-    @FXML
-    private CheckBox adminUserCheckbox;
-
-    @FXML
-    private Button adminRedoButton;
-
-    @FXML
-    private Button addUserButton;
-
-    @FXML
-    private Button updateButton;
-
-    @FXML
-    private Label adminMiddleNameLabel;
-
-    @FXML
-    private Label adminUsernameLable;
-
-    @FXML
-    private MenuItem adminImportMenu;
-
-    @FXML
-    private TextField adminSearchField;
-
-    @FXML
-    private TextArea adminCliTextArea;
-
     @FXML
     private TextField cliInputTextField;
-
+    @FXML
+    private Tooltip searchToolTip1;
+    @FXML
+    private Tooltip searchToolTip2;
+    @FXML
+    private CheckBox skinCheckBox;
+    @FXML
+    private Button addClinicianButton;
+    @FXML
+    private TableView<Administrator> adminTableView;
+    @FXML
+    private TextArea adminCliTextArea;
+    @FXML
+    private CheckBox boneCheckBox;
+    @FXML
+    private CheckBox adminAdminCheckbox;
+    @FXML
+    private CheckBox heartCheckBox;
+    @FXML
+    private AnchorPane filterAnchorPane;
+    @FXML
+    private Button recentlyDeletedButton;
+    @FXML
+    private Label filtersLabel;
+    @FXML
+    private CheckBox adminUserCheckbox;
+    @FXML
+    private Button adminRedoButton;
+    @FXML
+    private Label adminUsernameLable;
+    @FXML
+    private Button expandButton;
+    @FXML
+    private CheckBox kidneyCheckBox;
+    @FXML
+    private TextField adminSearchField;
+    @FXML
+    private CheckBox liverCheckBox;
+    @FXML
+    private Label succesFailLabel;
+    @FXML
+    private CheckBox lungCheckBox;
+    @FXML
+    private CheckBox boneMarrowCheckBox;
+    @FXML
+    private TextField searchTextField;
+    @FXML
+    private Pagination searchTablePagination;
     @FXML
     private Button deleteAdminButton;
-
+    @FXML
+    private MenuItem adminSaveMenu;
+    @FXML
+    private CheckBox corneaCheckBox;
+    @FXML
+    private ComboBox<?> genderComboBox;
+    @FXML
+    private CheckBox connectiveTissueCheckBox;
+    @FXML
+    private Button updateButton;
+    @FXML
+    private Label adminFirstnameLabel;
+    @FXML
+    private CheckBox adminClinicianCheckbox;
+    @FXML
+    private CheckBox donorFilterCheckBox;
+    @FXML
+    private MenuItem importCliniciansMenuItem;
+    @FXML
+    private Button adminLogoutButton;
+    @FXML
+    private MenuItem importAdminsMenuItem;
+    @FXML
+    private Button adminUndoButton;
+    @FXML
+    private Label searchCountLabel;
+    @FXML
+    private Button addUserButton;
+    @FXML
+    private Label adminMiddleNameLabel;
+    @FXML
+    private CheckBox receiverFilterCheckBox;
+    @FXML
+    private CheckBox intestineCheckBox;
+    @FXML
+    private Label donorStatusLabel;
+    @FXML
+    private Label birthGenderLabel;
+    @FXML
+    private TextField regionSearchTextField;
     @FXML
     private Label fileNotFoundLabel;
 
+    //</editor-fold>
     @FXML
     private TransplantWaitListController transplantWaitListTabPageController;
     @FXML
     private statusBarController statusBarPageController;
-
-    //</editor-fold>
-
     private Stage stage;
     private AppController appController;
     private Administrator administrator;
     private ArrayList<String> pastCommands = new ArrayList<>();
     private int pastCommandIndex = -2;
     private boolean owner;
+    private int startIndex = 0;
+    private int endIndex;
+    private FilteredList<User> fListUsers;
+    private FilteredList<Clinician> fListClinicians;
+    private FilteredList<Administrator> fListAdmins;
+    private TableColumn<User, String> lNameColumn;
+    private boolean filterVisible = false;
+    private TableView<?> activeTableView;
 
     /**
      * Initialises scene for the administrator view
      *
      * @param administrator administrator to view
      * @param appController appController instance to get data from
-     * @param stage stage to display on
+     * @param stage         stage to display on
      */
     public void init(Administrator administrator, AppController appController, Stage stage, boolean owner, Collection<PropertyChangeListener> parentListeners) {
         this.stage = stage;
@@ -156,11 +196,12 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
             for (PropertyChangeListener listener : parentListeners) {
                 administrator.addPropertyChangeListener(listener);
             }
-        }    adminUndoButton.setDisable(true);
-    adminRedoButton.setDisable(true);
-    if (administrator.getUserName().equals("default")) {
-      deleteAdminButton.setDisable(true);
-    }
+        }
+        adminUndoButton.setDisable(true);
+        adminRedoButton.setDisable(true);
+        if (administrator.getUserName().equals("default")) {
+            deleteAdminButton.setDisable(true);
+        }
 
         adminCliTextArea.setEditable(false);
         adminCliTextArea.setFocusTraversable(false);
@@ -171,7 +212,7 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
             } else if (e.getCode() == KeyCode.UP) {
                 if (pastCommandIndex >= 0) {
                     pastCommandIndex = pastCommandIndex == 0 ? 0
-                        : pastCommandIndex - 1; // makes sure pastCommandIndex is never < 0
+                            : pastCommandIndex - 1; // makes sure pastCommandIndex is never < 0
                     cliInputTextField.setText(pastCommands.get(pastCommandIndex));
                 }
             } else if (e.getCode() == KeyCode.DOWN) {
@@ -186,85 +227,106 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
         });
 
         addListeners();
-        displayClinicianTable();
-        displayAdminTable();
-        displayUserTable();
+        initClinicianSearchTable();
+        initAdminSearchTable();
+        initUserSearchTable();
         clinicianTableView.setVisible(false);
         adminTableView.setVisible(false);
     }
 
-  /**
-   * Sends the input to CLI and redirects the output stream to a new ByteArrayOutputStream and sends
-   * the results to the textArea
-   */
-  private void sendInputToCLI() {
-    PrintStream stdOut = System.out;
-    PrintStream stdErr = System.err;
-    ByteArrayOutputStream areaOut = new ByteArrayOutputStream();
-    System.setOut(new PrintStream(areaOut));
-    System.setErr(new PrintStream(areaOut));
-    pastCommands.add(cliInputTextField.getText());
-    pastCommandIndex = pastCommands.size();
-    CLI.parseInput(cliInputTextField.getText(), appController);
-    adminCliTextArea.appendText("\n" + areaOut.toString());
-    System.setOut(stdOut);
-    System.setErr(stdErr);
-  }
+    /**
+     * Sends the input to CLI and redirects the output stream to a new ByteArrayOutputStream and sends
+     * the results to the textArea
+     */
+    private void sendInputToCLI() {
+        PrintStream stdOut = System.out;
+        PrintStream stdErr = System.err;
+        ByteArrayOutputStream areaOut = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(areaOut));
+        System.setErr(new PrintStream(areaOut));
+        pastCommands.add(cliInputTextField.getText());
+        pastCommandIndex = pastCommands.size();
+        CLI.parseInput(cliInputTextField.getText(), appController);
+        adminCliTextArea.appendText("\n" + areaOut.toString());
+        System.setOut(stdOut);
+        System.setErr(stdErr);
+    }
 
-  /**
-   * Utility method to add listeners to required fields
-   */
-  private void addListeners() {
-    adminAdminCheckbox.selectedProperty().addListener((observable -> {
-      adminClinicianCheckbox.setSelected(false);
-      adminUserCheckbox.setSelected(false);
-      clinicianTableView.setVisible(false);
-      adminTableView.setVisible(true);
-      userTableView.setVisible(false);
+    /**
+     * Utility method to add listeners to required fields
+     */
+    private void addListeners() {
+        adminAdminCheckbox.selectedProperty().addListener((observable -> {
+            adminClinicianCheckbox.setSelected(false);
+            adminUserCheckbox.setSelected(false);
+            clinicianTableView.setVisible(false);
+            adminTableView.setVisible(true);
+            userTableView.setVisible(false);
+            activeTableView = adminTableView;
+            userSpecificFilters(false);
 
-    }));
+        }));
 
-    adminUserCheckbox.selectedProperty().addListener((observable -> {
-      adminClinicianCheckbox.setSelected(false);
-      adminAdminCheckbox.setSelected(false);
-      clinicianTableView.setVisible(false);
-      adminTableView.setVisible(false);
-      userTableView.setVisible(true);
+        adminUserCheckbox.selectedProperty().addListener((observable -> {
+            adminClinicianCheckbox.setSelected(false);
+            adminAdminCheckbox.setSelected(false);
+            clinicianTableView.setVisible(false);
+            adminTableView.setVisible(false);
+            userTableView.setVisible(true);
+            activeTableView = userTableView;
+            userSpecificFilters(false);
 
-    }));
+        }));
 
-    adminClinicianCheckbox.selectedProperty().addListener((observable -> {
-      adminAdminCheckbox.setSelected(false);
-      adminUserCheckbox.setSelected(false);
-      clinicianTableView.setVisible(true);
-      adminTableView.setVisible(false);
-      userTableView.setVisible(false);
-
-    }));
+        adminClinicianCheckbox.selectedProperty().addListener((observable -> {
+            adminAdminCheckbox.setSelected(false);
+            adminUserCheckbox.setSelected(false);
+            clinicianTableView.setVisible(true);
+            adminTableView.setVisible(false);
+            userTableView.setVisible(false);
+            activeTableView = clinicianTableView;
+            userSpecificFilters(false);
+        }));
 
         userTableView.setOnMouseClicked(event -> {
-            if(event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
+            if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
                 launchUser(userTableView.getSelectionModel().getSelectedItem());
             }
         });
 
-    clinicianTableView.setOnMouseClicked(event -> {
-      if (event.getClickCount() == 2 && event.getButton() == MouseButton.PRIMARY) {
-        launchClinician(clinicianTableView.getSelectionModel().getSelectedItem());
-      }
-    });
+        clinicianTableView.setOnMouseClicked(event -> {
+            if (event.getClickCount() == 2 && event.getButton() == MouseButton.PRIMARY) {
+                launchClinician(clinicianTableView.getSelectionModel().getSelectedItem());
+            }
+        });
 
-         adminTableView.setOnMouseClicked(event -> {
-            if(event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
+        adminTableView.setOnMouseClicked(event -> {
+            if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
                 launchAdmin(adminTableView.getSelectionModel().getSelectedItem());
             }
         });
     }
 
+
+    /**
+     * Takes a boolean on weather specific fields should be visable and then set them according to the boolean
+     *
+     * @param shouldSee if the fields should be visible or not
+     */
+    private void userSpecificFilters(boolean shouldSee) {
+        donorStatusLabel.setVisible(shouldSee);
+        donorFilterCheckBox.setVisible(shouldSee);
+        receiverFilterCheckBox.setVisible(shouldSee);
+        allCheckBox.setVisible(shouldSee);
+        birthGenderLabel.setVisible(shouldSee);
+        genderComboBox.setVisible(shouldSee);
+    }
+
+
     /**
      * Initialises table for the clinician table
      */
-    private void displayClinicianTable() {
+    private void initClinicianSearchTable() {
         ObservableList<Clinician> clinicians = FXCollections.observableArrayList(appController.getClinicians());
 
         TableColumn<Clinician, String> firstNameColumn = new TableColumn<>("First Name");
@@ -276,69 +338,283 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
         TableColumn<Clinician, String> nhiColumn = new TableColumn<>("Staff Id");
         nhiColumn.setCellValueFactory(new PropertyValueFactory<>("staffId"));
 
+        lastNameColumn.setSortType(TableColumn.SortType.ASCENDING);
+
+        fListClinicians = new FilteredList<>(clinicians);
+        fListClinicians = filter(fListClinicians);
+        FilteredList<Clinician> squished = new FilteredList<>(fListClinicians);
+
+        SortedList<Clinician> clinicianSortedList = new SortedList<>(squished);
+        clinicianSortedList.comparatorProperty().bind(clinicianTableView.comparatorProperty());
         clinicianTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         clinicianTableView.getColumns().addAll(nhiColumn, firstNameColumn, lastNameColumn);
-        clinicianTableView.setItems(clinicians);
+        clinicianTableView.setItems(clinicianSortedList);
+
+
     }
 
-  /**
-   * Initialises table for the user table
-   */
-  private void displayUserTable() {
-    ObservableList<User> users = FXCollections.observableArrayList(appController.getUsers());
+    /**
+     * Initialises the columns for the admin table
+     */
+    private void initAdminSearchTable() {
+        ObservableList<Administrator> admins = FXCollections
+                .observableArrayList(appController.getAdmins());
 
-    TableColumn<User, String> firstNameColumn = new TableColumn<>("First Name");
-    firstNameColumn.setCellValueFactory(new PropertyValueFactory<>("firstName"));
+        endIndex = Math.min(startIndex + ROWS_PER_PAGE, admins.size());
+        if (admins.isEmpty()) {
+            return;
+        }
+        TableColumn<Administrator, String> firstNameColumn = new TableColumn<>("First Name");
+        firstNameColumn.setCellValueFactory(new PropertyValueFactory<>("firstName"));
 
-    TableColumn<User, String> lastNameColumn = new TableColumn<>("Last Name");
-    lastNameColumn.setCellValueFactory(new PropertyValueFactory<>("lastName"));
+        TableColumn<Administrator, String> lastNameColumn = new TableColumn<>("Last Name");
+        lastNameColumn.setCellValueFactory(new PropertyValueFactory<>("lastName"));
 
-    TableColumn<User, String> nhiColumn = new TableColumn<>("NHI");
-    nhiColumn.setCellValueFactory(new PropertyValueFactory<>("nhi"));
+        TableColumn<Administrator, String> userNameColumn = new TableColumn<>("User Name");
+        userNameColumn.setCellValueFactory(new PropertyValueFactory<>("userName"));
 
-    userTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-    userTableView.getColumns().addAll(nhiColumn, firstNameColumn, lastNameColumn);
-    userTableView.setItems(users);
-  }
+        lastNameColumn.setSortType(TableColumn.SortType.ASCENDING);
 
-  /**
-   * Initialises the columns for the admin table
-   */
-  private void displayAdminTable() {
-    ObservableList<Administrator> admins = FXCollections
-        .observableArrayList(appController.getAdmins());
+        fListAdmins = new FilteredList<>(admins);
+        fListAdmins = filter(fListAdmins);
+        FilteredList<Administrator> squished = new FilteredList<>(fListAdmins);
 
-    TableColumn<Administrator, String> firstNameColumn = new TableColumn<>("First Name");
-    firstNameColumn.setCellValueFactory(new PropertyValueFactory<>("firstName"));
+        SortedList<Administrator> administratorSortedList = new SortedList<>(squished);
+        administratorSortedList.comparatorProperty().bind(adminTableView.comparatorProperty());
+        adminTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        adminTableView.getColumns().addAll(userNameColumn, firstNameColumn, lastNameColumn);
+        adminTableView.setItems(administratorSortedList);
 
-    TableColumn<Administrator, String> lastNameColumn = new TableColumn<>("Last Name");
-    lastNameColumn.setCellValueFactory(new PropertyValueFactory<>("lastName"));
+    }
 
-    TableColumn<Administrator, String> nhiColumn = new TableColumn<>("User Name");
-    nhiColumn.setCellValueFactory(new PropertyValueFactory<>("username"));
+    /**
+     * initialises the search table, abstracted from main init function for clarity
+     */
+    private void initUserSearchTable() {
+        TableColumn<User, String> fNameColumn;
+        TableColumn<User, String> dobColumn;
+        TableColumn<User, String> dodColumn;
+        TableColumn<User, String> ageColumn;
+        TableColumn<User, HashSet<Organs>> organsColumn;
+        TableColumn<User, String> regionColumn;
+        List<User> users = appController.getUsers();
 
-    adminTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-    adminTableView.getColumns().addAll(nhiColumn, firstNameColumn, lastNameColumn);
-    adminTableView.setItems(admins);
+        endIndex = Math.min(startIndex + ROWS_PER_PAGE, users.size());
+        if (users.isEmpty()) {
+            return;
+        }
 
-  }
+        List<User> usersSublist = getSearchData(users);
+        //set up lists
+        //table contents are SortedList of a FilteredList of an ObservableList of an ArrayList
+        ObservableList<User> oListDonors = FXCollections.observableList(users);
+
+        fNameColumn = new TableColumn<>("First name");
+        fNameColumn.setCellValueFactory(new PropertyValueFactory<>("firstName"));
+
+        lNameColumn = new TableColumn<>("Last name");
+        lNameColumn.setCellValueFactory(new PropertyValueFactory<>("lastName"));
+        lNameColumn.setSortType(TableColumn.SortType.ASCENDING);
+
+        dobColumn = new TableColumn<>("Date of Birth");
+        dobColumn.setCellValueFactory(new PropertyValueFactory<>("dateOfBirth"));
+
+        dodColumn = new TableColumn<>("Date of Death");
+        dodColumn.setCellValueFactory(new PropertyValueFactory<>("dateOfDeath"));
+
+        ageColumn = new TableColumn<>("Age");
+        ageColumn.setCellValueFactory(new PropertyValueFactory<>("age"));
+
+        regionColumn = new TableColumn<>("Region");
+        regionColumn.setCellValueFactory(new PropertyValueFactory<>("region"));
+
+        organsColumn = new TableColumn<>("Organs");
+        organsColumn.setCellValueFactory(new PropertyValueFactory<>("organs"));
+
+        //add more columns as wanted/needed
+
+        fListUsers = new FilteredList<>(oListDonors);
+        fListUsers = filter(fListUsers);
+        FilteredList<User> squished = new FilteredList<>(fListUsers);
+
+        SortedList<User> sListUsers = new SortedList<>(squished);
+        sListUsers.comparatorProperty().bind(userTableView.comparatorProperty());
+
+        //predicate on this list not working properly
+        //should limit the number of items shown to ROWS_PER_PAGE
+        //squished = limit(fListDonors, sListDonors);
+        //set table columns and contents
+        userTableView.getColumns().setAll(fNameColumn, lNameColumn, dobColumn, dodColumn, ageColumn, regionColumn, organsColumn);
+        //searchTableView.setItems(FXCollections.observableList(sListDonors.subList(startIndex, endIndex)));
+        userTableView.setItems(sListUsers);
+        userTableView.setRowFactory((searchTableView) -> new TooltipTableRow<>(User::getTooltip));
+
+    }
+
+    /**
+     * Takes a list and returns a sub section of it.
+     * <p>
+     * Works for all types
+     *
+     * @param list A list of any Type.
+     * @return A list of supplied type.
+     */
+    private <T> List<T> getSearchData(List<T> list) {
+        return list.subList(startIndex, endIndex);
+    }
 
 
-  /**
-   * Saves the data to the current file
-   */
-  @FXML
-  void save() {
+    /**
+     * applies a change listener to the input text box and filters a filtered list accordingly
+     *
+     * @param toFilter list to be filtered
+     * @return filtered list with filter applied
+     */
 
-  }
+    private <T> FilteredList<T> filter(FilteredList<T> toFilter) {
+        setTextFieldListener(adminSearchField, toFilter);
+        setTextFieldListener(regionSearchTextField, toFilter);
+        setCheckBoxListener(donorFilterCheckBox, toFilter);
+        setCheckBoxListener(receiverFilterCheckBox, toFilter);
+        setCheckBoxListener(allCheckBox, toFilter);
+        genderComboBox.valueProperty()
+                .addListener((observable -> setFilteredListPredicate(toFilter)));
+
+        searchTablePagination.setPageCount(searchCount / ROWS_PER_PAGE);
+        return toFilter;
+    }
+
+    /**
+     * Method to add the predicate trough the listener
+     *
+     * @param inputTextField textfield to add the listener to
+     * @param filteredList   filteredList  of objects to set predicate property of
+     */
+    private <T> void setTextFieldListener(TextField inputTextField, FilteredList<T> filteredList) {
+        inputTextField.textProperty()
+                .addListener((observable) -> setFilteredListPredicate(filteredList));
+    }
+
+    /**
+     * Method to add the predicate trough the listener
+     *
+     * @param checkBox     checkBox object to add the listener to
+     * @param filteredList filteredList of object T to set predicate property of
+     */
+    private <T> void setCheckBoxListener(CheckBox checkBox, FilteredList<T> filteredList) {
+        checkBox.selectedProperty()
+                .addListener(((observable) -> setFilteredListPredicate(filteredList)));
+    }
+
+    /**
+     * Sets the predicate property of filteredList to filter by specific properties
+     *
+     * @param fList filteredList object to modify the predicate property of
+     */
+    private <T> void setFilteredListPredicate(FilteredList<T> fList) {
+        searchCount = 0; //refresh the searchCount every time so it recalculates it each search
+        fList.predicateProperty().bind(Bindings.createObjectBinding(() -> objectToFilter -> {
+            String lowerCaseFilterText = adminSearchField.getText().toLowerCase();
+            boolean regionMatch = AttributeValidation.checkRegionMatches(regionSearchTextField.getText(), objectToFilter);
+            //boolean genderMatch = AttributeValidation.checkGenderMatches(genderComboBox.getValue().toString(), objectToFilter);
+
+            String fName = null;
+            String lName = null;
+            try {
+                fName = (String) objectToFilter.getClass().getMethod("getFirstName").invoke(objectToFilter); //if this breaks just ignore it,
+                lName = (String) objectToFilter.getClass().getMethod("getLastName").invoke(objectToFilter); // it will fix itself and not cause problems
+            } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+                e.printStackTrace();
+            }
+            if ((AttributeValidation.checkTextMatches(lowerCaseFilterText, fName) ||
+                    AttributeValidation.checkTextMatches(lowerCaseFilterText, lName)) &&
+                    (regionMatch)) {// && (genderMatch)) {
+                searchCount++;
+                return true;
+            }/* TODO: reimplement and remove this
+             &&
+            (((user.isDonor() == donorFilterCheckBox.isSelected()) &&
+                    (user.isReceiver() == receiverFilterCheckBox.isSelected())) || allCheckBox.isSelected()))*/
+            //if (other test case) return true
+            return false;
+        }));
+        changePage(searchTablePagination.getCurrentPageIndex());
+    }
+
+    /**
+     * @param pageIndex the current page.
+     * @return the search table view node.
+     */
+    private Node changePage(int pageIndex) {
+        startIndex = pageIndex * ROWS_PER_PAGE;
+        endIndex = Math.min(startIndex + ROWS_PER_PAGE, appController.getUsers().size());
+
+        int minIndex = Math.min(endIndex, fListUsers.size());
+
+        SortedList<User> sListDonors = new SortedList<>(FXCollections.observableArrayList(fListUsers.subList(Math.min(startIndex, minIndex), minIndex)));
+        sListDonors.comparatorProperty().bind(userTableView.comparatorProperty());
+
+        lNameColumn.setSortType(TableColumn.SortType.ASCENDING);
+        userTableView.setItems(sListDonors);
+
+
+        int pageCount = searchCount / ROWS_PER_PAGE;
+        searchTablePagination.setPageCount(pageCount > 0 ? pageCount + 1 : 1);
+        searchCountLabel.setText("Showing results " + (searchCount == 0 ? startIndex : startIndex + 1) + " - " + (minIndex) + " of " + searchCount);
+
+        return userTableView;
+    }
+
+    /**
+     * Saves the data to the current file
+     */
+    @FXML
+    void save() {
+
+    }
+
+
+    /**
+     * Callback method to change the divider position to show advanced filtering options in the GUI
+     */
+    @FXML
+    private void expandFilter() {
+        double dividerPos = filterVisible ? 44 : 150;
+        filterAnchorPane.setMinHeight(dividerPos);
+        filterAnchorPane.setMaxHeight(dividerPos);
+        filterVisible = !filterVisible;
+        expandButton.setText(filterVisible ? "▲" : "▼");
+    }
+
+    /**
+     * Loads the recently deleted users window
+     */
+    @FXML
+    public void loadRecentlyDeleted() {
+        FXMLLoader deletedUserLoader = new FXMLLoader(
+                getClass().getResource("/FXML/deletedUsersView.fxml"));
+        Parent root;
+        try {
+            root = deletedUserLoader.load();
+            DeletedUserController deletedUserController = deletedUserLoader.getController();
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+            deletedUserController.init(true);
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.showAndWait();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     /**
      * Imports admins from a file chosen from a fileselector
+     *
      * @throws FileNotFoundException if the specified file is not found
      */
     @FXML
     void importAdmins() throws FileNotFoundException {
-        Log.info("Admin "+administrator.getUserName()+" Importing Administrator profiles");
+        Log.info("Admin " + administrator.getUserName() + " Importing Administrator profiles");
         Alert errorAlert = new Alert(Alert.AlertType.ERROR);
         errorAlert.setHeaderText("Error!");
         errorAlert.setContentText("Invalid file loaded.");
@@ -347,7 +623,7 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
         confirmAlert.setContentText("File successfully loaded.");
         boolean invalidFile = false;
         int loadedAdminsAmount;
-        if(isAllWindowsClosed()) {
+        if (isAllWindowsClosed()) {
             boolean updated = false;
             Collection<Administrator> existingAdmins = appController.getAdmins();
             String filename;
@@ -375,8 +651,7 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
                         }
                     }
                     loadedAdminsAmount = administrators.size();
-                }
-                catch (FileNotFoundException e) {
+                } catch (FileNotFoundException e) {
                     Log.severe("File not found", e);
                     errorAlert.showAndWait().ifPresent(rs -> {
                         if (rs == ButtonType.OK) {
@@ -412,6 +687,7 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
 
     /**
      * Imports clinicians from a file chosen from a fileselector
+     *
      * @throws FileNotFoundException if the specified file is not found
      */
     @FXML
@@ -485,22 +761,23 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
         } else {
             launchAlertUnclosedWindowsGUI();
         }
-  }
+    }
 
     /**
      * Imports Users from a file chosen from a fileselector
+     *
      * @throws FileNotFoundException if the specified file is not found
      */
     @FXML
     void importUsers() throws FileNotFoundException {
-        Log.info("Admin "+administrator.getUserName()+" Importing User profiles");
+        Log.info("Admin " + administrator.getUserName() + " Importing User profiles");
         Alert errorAlert = new Alert(Alert.AlertType.ERROR);
         errorAlert.setHeaderText("Error!");
         errorAlert.setContentText("Invalid file loaded.");
         Alert confirmAlert = new Alert(Alert.AlertType.CONFIRMATION);
         confirmAlert.setHeaderText("Load Confirmation");
         confirmAlert.setContentText("File successfully loaded.");
-        if(isAllWindowsClosed()) {
+        if (isAllWindowsClosed()) {
             boolean updated = false;
             boolean invalidFile = false;
             int loadedUsersAmount;
@@ -508,56 +785,56 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
             String filename;
             filename = FileSelectorController.getFileSelector(stage);
             if (filename != null) {
-            try {
-                Collection<User> users = JsonHandler.loadUsers(filename);
-                for (User user : users) {
-                    if (user.getNhi() == null) {
-                        invalidFile = true;
-                        break;
-                    } else {
-                        for (User existingUser : existingUsers) {
-                            if (user.getNhi().equals(existingUser.getNhi())) {
-                                appController.update(user);
-                                updated = true;
-                                break;
+                try {
+                    Collection<User> users = JsonHandler.loadUsers(filename);
+                    for (User user : users) {
+                        if (user.getNhi() == null) {
+                            invalidFile = true;
+                            break;
+                        } else {
+                            for (User existingUser : existingUsers) {
+                                if (user.getNhi().equals(existingUser.getNhi())) {
+                                    appController.update(user);
+                                    updated = true;
+                                    break;
+                                }
                             }
                         }
+                        if (!updated) {
+                            appController.addUser(user);
+                        } else {
+                            updated = false;
+                        }
                     }
-                    if (!updated) {
-                        appController.addUser(user);
-                    } else {
-                        updated = false;
-                    }
+                    loadedUsersAmount = users.size();
+                } catch (FileNotFoundException e) {
+                    Log.severe("File not found", e);
+                    errorAlert.showAndWait().ifPresent(rs -> {
+                        if (rs == ButtonType.OK) {
+                            System.out.println("Pressed OK");
+                        }
+                    });
+                    throw e;
                 }
-                loadedUsersAmount = users.size();
-            } catch (FileNotFoundException e){
-                Log.severe("File not found", e);
-                errorAlert.showAndWait().ifPresent(rs -> {
-                    if (rs == ButtonType.OK) {
-                        System.out.println("Pressed OK");
-                    }
-                });
-                throw e;
-            }
-            if (invalidFile) {
-                errorAlert.showAndWait().ifPresent(rs -> {
-                    if (rs == ButtonType.OK) {
-                        System.out.println("Pressed OK");
-                    }
-                });
-                Log.warning("Incorrect file loaded - leads to NullPointerException.");
+                if (invalidFile) {
+                    errorAlert.showAndWait().ifPresent(rs -> {
+                        if (rs == ButtonType.OK) {
+                            System.out.println("Pressed OK");
+                        }
+                    });
+                    Log.warning("Incorrect file loaded - leads to NullPointerException.");
+                } else {
+                    confirmAlert.showAndWait().ifPresent(rs -> {
+                        if (rs == ButtonType.OK) {
+                            System.out.println("Pressed OK");
+                        }
+                    });
+                    Log.info("successfully imported " + loadedUsersAmount + " Users profiles");
+                    System.out.println(loadedUsersAmount + " users were successfully loaded.");
+                }
             } else {
-                confirmAlert.showAndWait().ifPresent(rs -> {
-                    if (rs == ButtonType.OK) {
-                        System.out.println("Pressed OK");
-                    }
-                });
-                Log.info("successfully imported " + loadedUsersAmount + " Users profiles");
-                System.out.println(loadedUsersAmount + " users were successfully loaded.");
-            }
-            } else {
-            Log.warning("File name not found");
-            fileNotFoundLabel.setVisible(true);
+                Log.warning("File name not found");
+                fileNotFoundLabel.setVisible(true);
             }
         } else {
             launchAlertUnclosedWindowsGUI();
@@ -567,9 +844,10 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
 
     /**
      * checks if other windows are opened apart from admin overview
+     *
      * @return true only if the admin overview is opened, false otherwise
      */
-    private boolean isAllWindowsClosed(){
+    private boolean isAllWindowsClosed() {
         List<Stage> windows = StageHelper.getStages();
         return windows.size() == 1;
     }
@@ -577,12 +855,12 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
     /**
      * closes all windows apart from admin overview.
      */
-    public void CloseAllWindows(){
+    public void CloseAllWindows() {
         List<Stage> windows = StageHelper.getStages();
         int numWindows = windows.size();
 
         //skips the first stage, which is the admin overview
-        for(int i=1; i < numWindows; i++){
+        for (int i = 1; i < numWindows; i++) {
             windows.get(1).close(); //when close, the stage is removed from list
         }
     }
@@ -609,20 +887,20 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
         }
     }
 
-  /**
-   * Close the tab
-   */
-  @FXML
-  void close() {
+    /**
+     * Close the tab
+     */
+    @FXML
+    void close() {
 
-  }
+    }
 
 
-  /**
-   * Opens the create user screen
-   */
-  @FXML
-  void addUser() {
+    /**
+     * Opens the create user screen
+     */
+    @FXML
+    void addUser() {
 
         FXMLLoader userLoader = new FXMLLoader(getClass().getResource("/FXML/createNewUser.fxml"));
         Parent root;
@@ -634,15 +912,16 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
             newStage.show();
             NewUserController donorController = userLoader.getController();
             donorController.init(AppController.getInstance(), stage, newStage);
-            Log.info("Admin "+administrator.getUserName()+" successfully launched create new user window");
+            Log.info("Admin " + administrator.getUserName() + " successfully launched create new user window");
         } catch (IOException e) {
-            Log.severe("Admin "+administrator.getUserName()+" failed to load create new user window", e);
+            Log.severe("Admin " + administrator.getUserName() + " failed to load create new user window", e);
             e.printStackTrace();
         }
     }
 
     /**
      * Launches the user overview screen for a selected user
+     *
      * @param user the selected user.
      */
     @Override
@@ -659,15 +938,16 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
             listeners.add(this);
             userController.init(AppController.getInstance(), user, newStage, true, listeners);
             newStage.show();
-            Log.info("Admin "+administrator.getUserName()+" successfully launched user overview window for User NHI: "+user.getNhi());
+            Log.info("Admin " + administrator.getUserName() + " successfully launched user overview window for User NHI: " + user.getNhi());
         } catch (IOException e) {
-            Log.severe("Admin "+administrator.getUserName()+ " failed to load user overview window for User NHI: "+user.getNhi(), e);
+            Log.severe("Admin " + administrator.getUserName() + " failed to load user overview window for User NHI: " + user.getNhi(), e);
             e.printStackTrace();
         }
     }
 
     /**
      * Launches the clinician overview screen for a selected clinician
+     *
      * @param clinician the selected clinician.
      */
     private void launchClinician(Clinician clinician) {
@@ -683,15 +963,16 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
             clinicianController.init(newStage, AppController.getInstance(), clinician, owner, listeners);
             //clinicianController.init(newStage, AppController.getInstance(), clinician, true);
             newStage.show();
-            Log.info("Admin "+administrator.getUserName()+ " successfully launched clinician overview window for Clinician Staff ID:" +clinician.getStaffId());
+            Log.info("Admin " + administrator.getUserName() + " successfully launched clinician overview window for Clinician Staff ID:" + clinician.getStaffId());
         } catch (IOException e) {
-            Log.severe("Admin "+administrator.getUserName()+ " failed to load clinician overview window for Clinician Staff ID:" +clinician.getStaffId(), e);
+            Log.severe("Admin " + administrator.getUserName() + " failed to load clinician overview window for Clinician Staff ID:" + clinician.getStaffId(), e);
             e.printStackTrace();
         }
     }
 
     /**
      * Launches the admin overview screen for a selected admin
+     *
      * @param administrator the selected administrator
      */
     private void launchAdmin(Administrator administrator) {
@@ -704,18 +985,18 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
             AdministratorViewController adminLoaderController = adminLoader.getController();
             adminLoaderController.init(administrator, AppController.getInstance(), newStage, false, null);
             newStage.show();
-            Log.info("Admin "+administrator.getUserName()+ " successfully launched administrator overview window");
+            Log.info("Admin " + administrator.getUserName() + " successfully launched administrator overview window");
         } catch (IOException e) {
-            Log.severe("Admin "+administrator.getUserName()+" failed to load administrator overview window", e);
+            Log.severe("Admin " + administrator.getUserName() + " failed to load administrator overview window", e);
             e.printStackTrace();
         }
     }
 
-  /**
-   * Launches the clinician creation screen
-   */
-  @FXML
-  void addClinician() {
+    /**
+     * Launches the clinician creation screen
+     */
+    @FXML
+    void addClinician() {
 
         FXMLLoader clinicianLoader = new FXMLLoader(getClass().getResource("/FXML/updateClinician.fxml"));
         Parent root;
@@ -726,9 +1007,9 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
             newStage.show();
             UpdateClinicianController newClinician = clinicianLoader.getController();
             newClinician.init(null, appController, stage, true, newStage);
-            Log.info("Admin "+administrator.getUserName()+" successfully launched create new clinician window");
+            Log.info("Admin " + administrator.getUserName() + " successfully launched create new clinician window");
         } catch (IOException e) {
-            Log.severe("Admin "+administrator.getUserName()+" failed to load create new clinician window", e);
+            Log.severe("Admin " + administrator.getUserName() + " failed to load create new clinician window", e);
             e.printStackTrace();
         }
     }
@@ -748,9 +1029,9 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
             newStage.show();
             UpdateAdminController updateAdminController = adminLoader.getController();
             updateAdminController.init(new Administrator(), newStage, true);
-            Log.info("Admin "+administrator.getUserName()+" successfully launched create new administrator window");
+            Log.info("Admin " + administrator.getUserName() + " successfully launched create new administrator window");
         } catch (IOException e) {
-            Log.severe("Admin "+administrator.getUserName()+" failed to load create new administrator window", e);
+            Log.severe("Admin " + administrator.getUserName() + " failed to load create new administrator window", e);
             e.printStackTrace();
         }
     }
@@ -771,10 +1052,10 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
             newStage.show();
             stage.close();
             LoginController loginController = loginLoader.getController();
-            loginController.init(appController,newStage);
-            Log.info("Admin "+administrator.getUserName()+" Successfully launched Login window after logout");
+            loginController.init(appController, newStage);
+            Log.info("Admin " + administrator.getUserName() + " Successfully launched Login window after logout");
         } catch (IOException e) {
-            Log.severe("Admin "+administrator.getUserName()+" Failed to load Login window after logout", e);
+            Log.severe("Admin " + administrator.getUserName() + " Failed to load Login window after logout", e);
         }
     }
 
@@ -787,7 +1068,7 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
         administrator.undo();
         adminUndoButton.setDisable(administrator.getUndoStack().isEmpty());
         displayDetails();
-        Log.info("Admin "+administrator.getUserName()+"executed Undo Administrator");
+        Log.info("Admin " + administrator.getUserName() + "executed Undo Administrator");
     }
 
     /**
@@ -798,7 +1079,7 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
         administrator.redo();
         adminRedoButton.setDisable(administrator.getRedoStack().isEmpty());
         displayDetails();
-        Log.info("Admin "+administrator.getUserName()+"executed Redo Administrator");
+        Log.info("Admin " + administrator.getUserName() + "executed Redo Administrator");
     }
 
 
@@ -842,9 +1123,9 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
             newStage.show();
             UpdateAdminController updateAdminController = adminLoader.getController();
             updateAdminController.init(administrator, newStage, false);
-            Log.info("Admin "+administrator.getUserName()+" successfully launched update administrator window");
+            Log.info("Admin " + administrator.getUserName() + " successfully launched update administrator window");
         } catch (IOException e) {
-            Log.severe("Admin "+administrator.getUserName()+" failed to load update administrator window", e);
+            Log.severe("Admin " + administrator.getUserName() + " failed to load update administrator window", e);
             e.printStackTrace();
         }
     }
@@ -897,15 +1178,15 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
         userTableView.refresh();
     }
 
-  @Override
-  public void propertyChange(PropertyChangeEvent evt) {
-    //watches users and clinicians
-    //refresh view on change
-      //if/else not strictly necessary at this stage
-      if (evt.getPropertyName().equals(EventTypes.USER_UPDATE.name())) {
-          refreshTables();
-      } else if (evt.getPropertyName().equals(EventTypes.CLINICIAN_UPDATE.name())) {
-          refreshTables();
-      }
-  }
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        //watches users and clinicians
+        //refresh view on change
+        //if/else not strictly necessary at this stage
+        if (evt.getPropertyName().equals(EventTypes.USER_UPDATE.name())) {
+            refreshTables();
+        } else if (evt.getPropertyName().equals(EventTypes.CLINICIAN_UPDATE.name())) {
+            refreshTables();
+        }
+    }
 }
