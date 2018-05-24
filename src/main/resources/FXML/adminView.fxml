@@ -149,7 +149,7 @@
           </Tab>
             <Tab text="Transplant Waiting List" onSelectionChanged="#refreshTables">
               <content>
-                  < fx:include source="transplantWaitListView.fxml" fx:id="transplantWaitListTabPage"/>
+                  <fx:include source="transplantWaitListView.fxml" fx:id="transplantWaitListTabPage"/>
               </content>
             </Tab>
             <Tab text="CLI">
