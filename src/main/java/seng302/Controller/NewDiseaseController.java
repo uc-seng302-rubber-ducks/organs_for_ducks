@@ -1,18 +1,16 @@
 package seng302.Controller;
 
-import javafx.event.ActionEvent;
+import java.time.LocalDate;
 import javafx.fxml.FXML;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-import seng302.App;
 import seng302.Model.Disease;
 import seng302.Model.User;
 import seng302.Service.AttributeValidation;
-
-import java.time.LocalDate;
+import seng302.Service.Log;
 
 /**
  * Controller class for creating new disease.
@@ -39,7 +37,7 @@ public class NewDiseaseController {
 
     AppController controller;
     Stage stage;
-    DonorController donorController;
+  UserController userController;
     private User currentUser;
     private Disease editableDisease;
 
@@ -49,10 +47,11 @@ public class NewDiseaseController {
      * @param controller The applications controller.
      * @param stage The applications stage.
      */
-    public void init(User user, AppController controller, Stage stage, Disease disease, DonorController donorController) {
+    public void init(User user, AppController controller, Stage stage, Disease disease,
+        UserController userController) {
         this.controller = controller;
         this.stage = stage;
-        this.donorController = donorController;
+      this.userController = userController;
         currentUser = user;
         editableDisease = disease;
 
@@ -65,25 +64,22 @@ public class NewDiseaseController {
         diagnosisDateInput.setValue(date);
         curedRadioButton.setSelected(isCured);
         chronicRadioButton.setSelected(isChronic);
-        
-        //showCurrentDate();
-        //stage.setMinWidth(620); //*Commented out by Aaron*
-        //stage.setMaxWidth(620);
     }
 
     /**
      * Cancels the creation of
      * new disease.
-     * @param event passed in automatically by the gui
      */
     @FXML
-    void cancelCreation(ActionEvent event) {
+    void cancelCreation() {
         AppController appController = AppController.getInstance();
-        DonorController donorController = appController.getDonorController();
+      UserController userController = appController.getUserController();
         try {
-            donorController.showUser(currentUser);
+          userController.showUser(currentUser);
+            Log.info("successfully cancelled creation of new disease for User NHI: " +currentUser.getNhi());
         }
         catch (NullPointerException ex) {
+            Log.severe("Failed to cancel creation of new disease for User NHI: " +currentUser.getNhi(), ex);
             //TODO causes npe if donor is new in this session
             //the text fields etc. are all null
         }
@@ -97,24 +93,19 @@ public class NewDiseaseController {
      */
     private void closeNewDiseaseWindow() {
         AppController appController = AppController.getInstance();
-        DonorController donorController = appController.getDonorController();
+      UserController userController = appController.getUserController();
         try {
-            donorController.showUser(currentUser);
-            donorController.showDonorDiseases(currentUser, false);
+          userController.showUser(currentUser);
+          userController.showDonorDiseases(currentUser, false);
+            Log.info("successfully closed New Disease Window for User NHI: " +currentUser.getNhi());
         }
         catch (NullPointerException ex) {
+            Log.severe("Failed to close New Disease Window for User NHI: " +currentUser.getNhi(), ex);
             //TODO causes npe if donor is new in this session
             //the text fields etc. are all null
         }
         this.controller.update(currentUser);
         stage.close();
-    }
-
-    /**
-     * set date picker to display current date
-     */
-    private void showCurrentDate() {
-        diagnosisDateInput.setValue(LocalDate.now());
     }
 
     /**
@@ -128,15 +119,16 @@ public class NewDiseaseController {
     }
 
     /**
-     * creates new disease and adds to donor
+     * creates new disease and adds to user
      * profile. shows error messages if input
      * is invalid.
      */
     @FXML
-    private void CreateDisease() {
-        boolean isValid = true;
+    private void createDisease() {
+        boolean isValid;
 
-        String diseaseName = AttributeValidation.checkString(diseaseNameInput.getText());
+        String diseaseName = diseaseNameInput.getText();
+        isValid = AttributeValidation.checkString(diseaseName);
         LocalDate diagnosisDate = diagnosisDateInput.getValue();
         boolean isCured = curedRadioButton.isSelected();
         boolean isChronic = chronicRadioButton.isSelected();
@@ -145,10 +137,9 @@ public class NewDiseaseController {
             isValid = false;
         }
 
-        if (diseaseName == null) {
+        if (diseaseName.isEmpty()) {
             diseaseNameInputErrorMessage.setVisible(true);
             isValid = false;
-
         } else {
             diseaseNameInputErrorMessage.setVisible(false);
         }
@@ -172,7 +163,8 @@ public class NewDiseaseController {
 
                 editableDisease.setName(diseaseName);
                 editableDisease.setDiagnosisDate(diagnosisDate);
-                editableDisease.setIsCured(isCured);
+              editableDisease.setIsCured(
+                  isCured); // noted as always true, but we feel this is clearer for others
                 editableDisease.setIsChronic(isChronic);
 
             } else if (!isCured && editableDisease.getIsCured()) { //if it WAS cured, but now isn't, move to current
@@ -193,9 +185,11 @@ public class NewDiseaseController {
             }
 
             //Refresh the view
-            donorController.diseaseRefresh(donorController.getIsSortedByName(), donorController.getIsRevereSorted());
+          userController.refreshDiseases();
             closeNewDiseaseWindow();
-
+            Log.info("Successfully added new disease: "+diseaseName+" for User NHI: " +currentUser.getNhi());
+        } else {
+            Log.warning("Unable to add new disease: "+diseaseName+" for User NHI: " +currentUser.getNhi()+" as there are invalid user input");
         }
     }
 }

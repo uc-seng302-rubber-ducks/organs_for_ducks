@@ -1,15 +1,12 @@
 package seng302.Controller;
 
 import javafx.collections.FXCollections;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-import seng302.Model.UndoRedoStacks;
 import seng302.Model.User;
+import seng302.Service.Log;
 
 /**
  * Class for controlling the miscellaneous attributes view
@@ -19,22 +16,10 @@ import seng302.Model.User;
 public class MiscAttributesController {
 
   @FXML
-  private Label nameLabel;
-
-  @FXML
   private ListView<String> attributesList;
 
   @FXML
-  private Button addAttributeButton;
-
-  @FXML
-  private Button removeButton;
-
-  @FXML
   private TextField attributeTextFeild;
-
-  @FXML
-  private Button backButton;
 
   private User currentUser;
   private AppController appController;
@@ -56,45 +41,48 @@ public class MiscAttributesController {
 
   /**
    * Adds miscellaneous attribute to the current user profile
-   * @param event passed in automatically by the gui
    */
   @FXML
-  void addAttribute(ActionEvent event) {
+  void addAttribute() {
     String toAdd = attributeTextFeild.getText();
     attributeTextFeild.setText("");
     if (toAdd == null) {
+      Log.warning("Unable to add miscellaneous attribute for User NHI: " +currentUser.getNhi() +"as attribute string is empty");
       return;
     }
     currentUser.addAttribute(toAdd);
     attributesList.setItems(FXCollections.observableList(currentUser.getMiscAttributes()));
     appController.update(currentUser);
+    Log.info("Successfully to added miscellaneous attribute for User NHI: " +currentUser.getNhi());
   }
 
   /**
    * Removes selected item from the user profile
-   * @param event passed in automatically by the gui
    */
   @FXML
-  void removeAttribute(ActionEvent event) {
+  void removeAttribute() {
     String selected = attributesList.getSelectionModel().getSelectedItem();
     attributesList.getItems().remove(selected);
     currentUser.removeMiscAttribute(selected);
     appController.update(currentUser);
+    Log.info("Successfully to removed miscellaneous attribute for User NHI: " +currentUser.getNhi());
   }
 
   /**
-   * @param event passed in automatically by the gui
+   * Closes the currentStage and shows the user on the previous controller.
    */
   @FXML
-  void goBack(ActionEvent event) {
+  void goBack() {
     AppController appController = AppController.getInstance();
-    DonorController donorController = appController.getDonorController();
+    UserController userController = appController.getUserController();
     try {
-      donorController.showUser(currentUser);
+      userController.showUser(currentUser);
+      Log.info("Successfully to closed MiscAttributes window for User NHI: " +currentUser.getNhi());
     }
     catch (NullPointerException ex) {
       //TODO causes npe if donor is new in this session
       //the text fields etc. are all null
+      Log.severe("unable to display user profile for User NHI: " +currentUser.getNhi()+" when closing MiscAttributes window", ex);
     }
     stage.close();
   }

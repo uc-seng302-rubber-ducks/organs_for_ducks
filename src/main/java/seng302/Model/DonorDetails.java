@@ -2,26 +2,24 @@ package seng302.Model;
 
 import com.google.gson.annotations.Expose;
 import java.util.HashSet;
+import java.util.Set;
 
 
 /**
- * Class to track details for a donor
+ * Class to track details for a user
  */
 public class DonorDetails {
 
   @Expose
-  private HashSet<Organs> organs = new HashSet<>();
+  private Set<Organs> organs;
   private transient User attachedUser;
-
-  public HashSet<Organs> getOrgans() {
-    return organs;
-  }
 
   /**
    * Constructor for organs for current user
+   *
    * @param attachedUser current user
    */
-  public DonorDetails(User attachedUser) {
+  DonorDetails(User attachedUser) {
     this.attachedUser = attachedUser;
     this.organs = new HashSet<>();
   }
@@ -38,26 +36,35 @@ public class DonorDetails {
     this.organs = organs;
   }
 
+  public Set<Organs> getOrgans() {
+    return organs;
+  }
+
   /**
-   * Adds an organ to the user profile.
-   * @param organ the enum of organs.
+   * Adds an organ to the user profile. If the added organ is not already in the set, this will be
+   * counted as an action performed by the attachedUser
+   *
+   * @param organ the organ to be added (from Organs enum)
    */
   public void addOrgan(Organs organ) {
     Memento<User> memento = new Memento<>();
     memento.setOldObject(attachedUser.clone());
-    if (attachedUser != null){
+    if (attachedUser != null) {
       attachedUser.updateLastModified();
       attachedUser.addChange(new Change("Added organ " + organ.toString()));
     }
     if (organs == null) {
       organs = new HashSet<>();
     }
-    this.organs.add(organ);
+    boolean changed = this.organs.add(organ);
+
     attachedUser.updateLastModified();
-    //TODO attachedUser is always null
     attachedUser.updateLastModified();
-    memento.setNewObject(attachedUser.clone());
-    attachedUser.getUndoStack().push(memento);
+    if (changed) {
+      memento.setNewObject(attachedUser.clone());
+      attachedUser.getUndoStack().push(memento);
+      attachedUser.getRedoStack().clear();
+    }
   }
 
   /**
@@ -70,7 +77,6 @@ public class DonorDetails {
     memento.setOldObject(attachedUser.clone());
     if (organs.contains(organ)) {
       organs.remove(organ);
-      //TODO attachedUser is always null
       attachedUser.updateLastModified();
       attachedUser.addChange(new Change("Removed organ " + organ.organName));
     }
@@ -78,19 +84,12 @@ public class DonorDetails {
     attachedUser.getUndoStack().push(memento);
   }
 
-  private boolean isCurrentlyWaitingFor(Organs organ) {
-    return attachedUser.getReceiverDetails().isCurrentlyWaitingFor(organ);
-  }
+
   /**
-   * TODO update if/when more details are added
-   *
    * @return true if underlying organs list is empty
    */
   public boolean isEmpty() {
-    if (organs != null) {
-      return organs.isEmpty();
-    }
-    return true;
+    return organs == null || organs.isEmpty();
   }
 
   /**

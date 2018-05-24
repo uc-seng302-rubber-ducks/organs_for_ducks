@@ -6,7 +6,6 @@ import java.time.format.DateTimeFormatter;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import seng302.Model.Donor;
 import seng302.Model.User;
 
 public class AppControllerTest {
@@ -17,7 +16,7 @@ public class AppControllerTest {
     controller = AppController.getInstance();
   }
   @Test
-  public void ShouldAddDonorToListWhenUserRegistered() {
+  public void ShouldAddUserToListWhenUserRegistered() {
     //Arrange
     User user = new User("Frank", LocalDate.parse("1 2 3", (DateTimeFormatter.ofPattern("y M d"))),
         "ABC1234");
@@ -29,7 +28,7 @@ public class AppControllerTest {
   }
 
   @Test
-  public void ShouldAddDonorToListWhenUserRegisteredFullDetail() {
+  public void ShouldAddUserToListWhenUserRegisteredFullDetail() {
     //Arrange
     User user = new User("Geoff", LocalDate.parse("1 2 3", (DateTimeFormatter.ofPattern("y M d"))),
         "ASD3214");

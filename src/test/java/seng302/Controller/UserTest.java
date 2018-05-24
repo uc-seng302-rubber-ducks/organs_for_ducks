@@ -5,9 +5,7 @@ import static org.junit.Assert.fail;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.*;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -85,7 +83,7 @@ public class UserTest {
     Thread.sleep(10);
     LocalDateTime first = LocalDateTime.now();
     Thread.sleep(10);
-    testUser.setName("Jeff");
+    testUser.setName("Jeff","","");
     Thread.sleep(10);
     LocalDateTime second = LocalDateTime.now();
 
@@ -120,7 +118,7 @@ public class UserTest {
   @Test
   public void AddingCurrentMedicationsAppendsToCurrentMedicationTimes() {
     testUser.addCurrentMedication("test medication");
-    HashMap<String, ArrayList<LocalDateTime>> currentMedicationTimes = testUser
+    Map<String, List<LocalDateTime>> currentMedicationTimes = testUser
         .getCurrentMedicationTimes();
     Assert.assertTrue(currentMedicationTimes.containsKey("test medication"));
     Assert.assertEquals(1, currentMedicationTimes.get("test medication").size());
@@ -129,7 +127,7 @@ public class UserTest {
   @Test
   public void AddingPreviousMedicationsAppendsToPreviousMedicationTimes() {
     testUser.addPreviousMedication("test medication");
-    HashMap<String, ArrayList<LocalDateTime>> previousMedicationTimes = testUser
+    Map<String, List<LocalDateTime>> previousMedicationTimes = testUser
         .getPreviousMedicationTimes();
     Assert.assertTrue(previousMedicationTimes.containsKey("test medication"));
     Assert.assertEquals(1, previousMedicationTimes.get("test medication").size());
@@ -140,7 +138,7 @@ public class UserTest {
     //both current and previous medications use same method for this, only testing one
     testUser.addCurrentMedication("panadol");
     testUser.addCurrentMedication("panadol");
-    HashMap<String, ArrayList<LocalDateTime>> currentMedicationTimes = testUser
+    Map<String, List<LocalDateTime>> currentMedicationTimes = testUser
         .getCurrentMedicationTimes();
 
     //one entry with key "panadol"
@@ -155,14 +153,14 @@ public class UserTest {
   public void NonDonorToolTipShouldReturnName() {
     Assert.assertFalse(testUser.isDonor());
     String tooltip = testUser.getTooltip();
-    Assert.assertEquals(testUser.getName(), tooltip);
+    Assert.assertEquals(testUser.getFullName(), tooltip);
   }
 
   @Test
   public void DonorToolTipShouldReturnNameAndOrgans() throws Exception {
     testUser.getDonorDetails().addOrgan(Organs.HEART);
     String tooltip = testUser.getTooltip();
-    String name = testUser.getName();
+    String name = testUser.getFullName();
     Assert.assertEquals(name + ". Donor: Heart ", tooltip);
   }
 

@@ -1,13 +1,20 @@
 package seng302.Controller;
 
-import javafx.event.ActionEvent;
+import java.time.LocalDate;
+import java.util.List;
+import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.stage.Stage;
+import seng302.Model.Disease;
 import seng302.Model.OrganDeregisterReason;
 import seng302.Model.Organs;
 import seng302.Model.User;
+import seng302.Service.AttributeValidation;
+import seng302.Service.Log;
 
 /**
  * Controller class for  for clinicians to
@@ -17,7 +24,10 @@ import seng302.Model.User;
 public class DeregisterOrganReasonController {
 
     @FXML
-    private RadioButton registerationErrorRadioButton;
+    private RadioButton transplantReceivedRadioButton;
+
+    @FXML
+    private RadioButton registrationErrorRadioButton;
 
     @FXML
     private RadioButton diseaseCuredRadioButton;
@@ -26,54 +36,88 @@ public class DeregisterOrganReasonController {
     private RadioButton receiverDiedRadioButton;
 
     @FXML
+    private DatePicker dODDatePicker;
+
+    @FXML
     private Label receiverName;
 
     @FXML
     private Label organName;
 
+    @FXML
+    private Label invalidDateErrorMessage;
+
+    @FXML
+    private ComboBox<Disease> diseaseNameComboBox;
+
     AppController controller;
     Stage stage;
     private User currentUser;
-    private DonorController donorController;
+    private UserController userController;
     private Organs toDeRegister;
 
     /**
      * Initializes the NewDiseaseController
      * @param organ name of receiver organ to be de-registered
-     * @param donorController class
+     * @param userController class
      * @param controller The applications controller.
      * @param stage The applications stage.
      */
-    public void init(Organs organ, DonorController donorController, User user, AppController controller, Stage stage) {
+    public void init(Organs organ, UserController userController, User user,
+        AppController controller, Stage stage) {
         this.controller = controller;
         this.stage = stage;
         currentUser = user;
-        this.donorController = donorController;
-        receiverName.setText(user.getName());
+        this.userController = userController;
+        receiverName.setText(user.getFullName());
         organName.setText(organ.organName);
         this.toDeRegister = organ;
-        if (user.getDeceased() == null || !user.getDeceased()){
-            receiverDiedRadioButton.setDisable(true);
+        dODDatePicker.setValue(LocalDate.now());
+        dODDatePicker.setDisable(true);
+
+        List<Disease> diseases = currentUser.getCurrentDiseases();
+        if(diseases.size() == 0){ //if there are no current diseases, the diseaseCuredRadioButton will be disabled
+            diseaseCuredRadioButton.setDisable(true);
         }
-        //stage.setMinWidth(620);
-        //stage.setMaxWidth(620);
+        diseaseNameComboBox.setItems(FXCollections.observableList(diseases));
+
+        //if diseaseCuredRadioButton is selected, the disease name combo box will be enabled, otherwise it sets to disabled
+        diseaseCuredRadioButton.selectedProperty().addListener(
+            (obs, wasPreviouslySelected, isNowSelected) -> {
+                if (isNowSelected) {
+                    diseaseNameComboBox.setDisable(false);
+                } else {
+                    diseaseNameComboBox.setDisable(true);
+                }
+            });
+
+        //if receiverDiedRadioButton is selected, the DOD date picker will be enabled, otherwise it sets to disabled
+        receiverDiedRadioButton.selectedProperty().addListener(
+            (obs, wasPreviouslySelected, isNowSelected) -> {
+                if (isNowSelected) {
+                    dODDatePicker.setDisable(false);
+                } else {
+                    dODDatePicker.setDisable(true);
+                }
+            });
     }
 
     /**
      * Cancels the de-registration process
      * and closes this window
-     * @param event passed in automatically by the gui
      */
     @FXML
-    void cancelDeregistration(ActionEvent event) {
+    void cancelDeregistration() {
         AppController appController = AppController.getInstance();
-        DonorController donorController = appController.getDonorController();
+        UserController userController = appController.getUserController();
         try {
-            donorController.showUser(currentUser);
+            userController.showUser(currentUser);
+            Log.info("cancelled organ: "+toDeRegister.organName+" de-registration for Receiver with NHI: "+currentUser.getNhi());
         }
         catch (NullPointerException ex) {
             //TODO causes npe if donor is new in this session
             //the text fields etc. are all null
+            Log.severe("unable to cancel organ: "+toDeRegister.organName+"  de-registration for Receiver with NHI: "+currentUser.getNhi(), ex);
         }
         stage.close();
     }
@@ -81,32 +125,63 @@ public class DeregisterOrganReasonController {
     /**
      * accepts the de-registration reason
      * and closes this window
-     * @param event passed in automatically by the gui
      */
     @FXML
-    void acceptDeregistration(ActionEvent event) {
+    void acceptDeregistration() {
+        boolean isValid = true;
+        String logMessage="Organ: "+toDeRegister.organName+"  de-registration reason for Receiver with NHI: "+currentUser.getNhi()+" is ";
+        if(transplantReceivedRadioButton.isSelected()){
+            userController.setOrganDeregisterationReason(OrganDeregisterReason.TRANSPLANT_RECEIVED);
+            Log.info(logMessage+OrganDeregisterReason.TRANSPLANT_RECEIVED);
 
-        if(registerationErrorRadioButton.isSelected()){
-            donorController.setOrganDeregisterationReason(OrganDeregisterReason.REGISTRATION_ERROR);
+        } else if (registrationErrorRadioButton.isSelected()) {
+            userController.setOrganDeregisterationReason(OrganDeregisterReason.REGISTRATION_ERROR);
+            Log.info(logMessage+OrganDeregisterReason.REGISTRATION_ERROR);
 
         } else if (diseaseCuredRadioButton.isSelected()){
-            donorController.setOrganDeregisterationReason(OrganDeregisterReason.DISEASE_CURED);
+            userController.setOrganDeregisterationReason(OrganDeregisterReason.DISEASE_CURED);
+            Disease selectedDisease = diseaseNameComboBox.getSelectionModel().getSelectedItem();
+            Log.info(logMessage+OrganDeregisterReason.DISEASE_CURED);
+
+            if(selectedDisease == null){ //if non of the disease is selected
+                isValid = false;
+
+            } else {
+                selectedDisease.setIsCured(true);
+                currentUser.getCurrentDiseases().remove(selectedDisease);
+                currentUser.getPastDiseases().add(selectedDisease);
+            }
 
         } else if(receiverDiedRadioButton.isSelected()){
-            donorController.setOrganDeregisterationReason(OrganDeregisterReason.RECEIVER_DIED);
+            LocalDate dOD = dODDatePicker.getValue();
+            if(!AttributeValidation.validateDateOfDeath(currentUser.getDateOfBirth(), dOD)){
+                isValid = false;
+                invalidDateErrorMessage.setVisible(true);
+            } else {
+                currentUser.setDateOfDeath(dOD);
+                //currentUser.setDeceased(true);
+                userController.setOrganDeregisterationReason(OrganDeregisterReason.RECEIVER_DIED);
+                Log.info(logMessage+OrganDeregisterReason.RECEIVER_DIED);
+            }
         }
 
-        donorController.deRegisterOrgan(toDeRegister);
+        if(isValid){
+            this.userController.deRegisterOrgan(toDeRegister);
 
-        AppController appController = AppController.getInstance();
-        DonorController donorController = appController.getDonorController();
-        try {
-            donorController.showUser(currentUser);
+            AppController appController = AppController.getInstance();
+            UserController userController = appController.getUserController();
+            try {
+                userController.showUser(currentUser);
+            }
+            catch (NullPointerException ex) {
+                //TODO causes npe if donor is new in this session
+                //the text fields etc. are all null
+                Log.severe("Unable to load Receiver with NHI: "+currentUser.getNhi()+" when exiting Deregister Organ Reason window", ex);
+            }
+            stage.close();
+        } else {
+            Log.warning("There are invalid user input at Deregister Organ Reason window.");
         }
-        catch (NullPointerException ex) {
-            //TODO causes npe if donor is new in this session
-            //the text fields etc. are all null
-        }
-        stage.close();
     }
+
 }

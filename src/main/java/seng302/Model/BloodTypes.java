@@ -15,7 +15,7 @@ public enum BloodTypes {
 
     private final String name;
 
-    private BloodTypes(String s) {
+    BloodTypes(String s) {
         name = s;
     }
 

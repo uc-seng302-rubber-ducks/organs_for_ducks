@@ -1,12 +1,13 @@
 package seng302.Service;
 
+import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDate;
 import java.time.Period;
-import javafx.scene.control.ComboBox;
-import seng302.Model.BloodTypes;
+import java.util.Objects;
 
-import seng302.Model.User;
+import seng302.Model.BloodTypes;
 import seng302.Model.TransplantDetails;
+import seng302.Model.User;
 
 
 /**
@@ -19,13 +20,10 @@ public class AttributeValidation {
     /**
      * Checks that the NHI matches the correct format.
      * @param nhi The national health index.
-     * @return The NHI as a string if it matches the correct format, null otherwise.
+     * @return True if NHI matches format, false otherwise
      */
-    public static String validateNHI(String nhi) {
-        if (nhi.matches("[A-Za-z]{3}[0-9]{4}")) {
-            return nhi;
-        }
-        return null;
+    public static boolean validateNHI(String nhi) {
+        return nhi.matches("[A-Za-z]{3}[0-9]{4}");
     }
 
 
@@ -35,12 +33,10 @@ public class AttributeValidation {
      * domain name is longer than one character.
      *
      * @param email The user input of an email address to be validated.
-     * @return The given email if it is in the correct format, null otherwise.
+     * @return True if the email is valid, false otherwise
      */
-    public static String validateEmail(String email) {
-        if (email.matches("^[a-zA-Z0-9][a-zA-Z0-9._%+-]*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,}$")) {
-            return email;
-        } else return null;
+    public static boolean validateEmail(String email) {
+        return email.matches("^[a-zA-Z0-9][a-zA-Z0-9._\\-]*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,}$") || email.isEmpty();
     }
 
 
@@ -49,12 +45,10 @@ public class AttributeValidation {
      * The number must be 9 digits long, including a leading zero, a one-digit area code and a seven-digit phone number.
      *
      * @param phoneNum The user input of a NZ landline number to be validated.
-     * @return The given phone number if it is in the correct format, null otherwise.
+     * @return True if the phone number is valid, false otherwise
      */
-    public static String validatePhoneNumber(String phoneNum) {
-        if (phoneNum.matches("^[0][3|4|6|7|9]( |-)?[2-9][0-9]{2}( |-)?[0-9]{4}$")) {
-            return phoneNum;
-        } else return null;
+    public static boolean validatePhoneNumber(String phoneNum) {
+        return (phoneNum.matches("^[0][34679][ \\-]?[2-9][0-9]{2}[ \\-]?[0-9]{4}$")) || phoneNum.isEmpty();
     }
 
 
@@ -63,77 +57,77 @@ public class AttributeValidation {
      * Checks that the number has a minimum length of 9 digits or a max of 11 digits (including the leading '02').
      *
      * @param cellNum The user input of a cell phone number to be validated.
-     * @return The given cell phone number if it is in the correct format, null otherwise.
+     * @return true if the cell number is valid, false otherwise
      */
-    public static String validateCellNumber(String cellNum) {
-        if (cellNum.matches("^[0-9]{7,13}$")) {
-            return cellNum;
-        } else return null;
+    public static boolean validateCellNumber(String cellNum) {
+        return (cellNum.matches("^[0-9]{7,13}$")) || cellNum.isEmpty();
     }
 
     /**
-     * Checks if the given attribute is empty.
+     * Checks if the given non-null attribute only contains a-z, A-Z, spaces, apostrophes and hyphens
      * @param attribute The attribute to be checked.
-     * @return The attribute as a string if it is not empty, null otherwise.
+     * @return true if the attribute meets the specified criteria, false otherwise
      */
-    public static String checkString(String attribute) {
-        if (attribute.isEmpty()) {
-            return null;
-        }
-        return attribute;
+    public static boolean checkString(String attribute) {
+        assert attribute != null;
+        return (attribute.matches("[a-zA-Z '\\-0-9]*"));
+    }
+
+    /**
+     * Checks if the given non-null attribute is non-empty and only contains a-z, A-Z, spaces, apostrophes, hyphens and numbers
+     * @param attribute The attribute to be checked.
+     * @return true if the attribute meets the specified criteria, false otherwise
+     */
+    public static boolean checkRequiredString(String attribute) {
+        assert attribute != null;
+        return (attribute.matches("[a-zA-Z '\\-0-9]+"));
+    }
+
+    /**
+     * Checks if the given non-null attribute is non-empty and only contains a-z, A-Z, spaces, apostrophes and hyphens.
+     *
+     * @param attribute The attribute to be checked.
+     * @return true if the attribute meets the specified criteria, false otherwise
+     */
+    public static boolean checkRequiredStringName(String attribute) {
+        assert attribute != null;
+        return (attribute.matches("[a-zA-Z '\\-]+"));
     }
 
     /**
      * Checks that the date of birth is before the date of death and the date of death is before tomorrow's date if the
      * date of death is not null.
-     * @param birth The date of birth.
+     * @param birth The non null date of birth.
      * @param death The date of death.
      * @return true if the date of death is null or the date of birth is before the date of death and the date of death
      * is before the current date, false otherwise.
      */
-    public static boolean validateDates(LocalDate birth, LocalDate death) {
-        return death == null || (birth.isBefore(death) && death.isBefore(LocalDate.now().plusDays(1)));
+    public static boolean validateDateOfDeath(LocalDate birth, LocalDate death) {
+        return death == null || (birth.isBefore(death.plusDays(1)) && death.isBefore(LocalDate.now().plusDays(1)));
     }
 
-
-    /**
-     * Calculates the age of the user by comparing the date of birth with the date of death.
-     * @param birth The date of birth.
-     * @param death The date of death.
-     * @return The age of the user.
-     */
-    public static int calculateAge(LocalDate birth, LocalDate death) {
-        int age;
-
-        if (death != null) {
-            age = Period.between(birth, death).getYears();
-        } else {
-            age = Period.between(birth, LocalDate.now()).getYears();
-        }
-
-        return age;
+    public static boolean validateDateOfBirth(LocalDate birth) {
+        return birth != null && birth.isBefore(LocalDate.now().plusDays(1));
     }
-
 
 
     /**
      * Gets the enum value of BloodTypes by iterating through the string literals
      * and matching them to the given blood type.
-     * @param bloodBox the combobox containing blood types.
-     * @return The enum of the given blood type if found, null otherwise.
+     * @param blood the value of blood type.
+     * @return True if the provided object is valid
      */
-    public static String validateBlood(ComboBox bloodBox) {
-
-        if (bloodBox.getValue() != null) {
-            String blood = bloodBox.getValue().toString();
+    public static boolean validateBlood(String blood) {
+        if (blood != null) {
             for (BloodTypes type : BloodTypes.values()) {
                 if ((type.toString()).equals(blood)) {
-                    return blood;
+                    return true;
                 }
             }
+            return false;
         }
 
-        return null;
+        return true;
     }
 
 
@@ -148,7 +142,7 @@ public class AttributeValidation {
         if (!stringValue.isEmpty()) {
             try {
                 doubleValue = Double.parseDouble(stringValue);
-                if (doubleValue <= 0) {
+                if (doubleValue < 0) {
                     doubleValue = -1;
                 }
             } catch (NumberFormatException e) {
@@ -163,74 +157,78 @@ public class AttributeValidation {
 
     /**
      * Gets the first character of the given gender.
-     * @param genderBox The combobox containing gender types.
+     * @param gender The string to be passed as a gender
      * @return The gender value.
      */
-    public static String validateGender(ComboBox genderBox) {
-        String gender = "";
-
-        if (genderBox.getValue() != null && !genderBox.getValue().toString().equals("")) {
-            gender = genderBox.getValue().toString();
+    public static boolean validateGender(String gender) {
+        String[] valids = {"", "male", "female", "non binary"};
+        for (String valid : valids) {
+            if (gender.toLowerCase().equals(valid)) {
+                return true;
+            }
         }
-
-        return gender;
+        return false;
     }
 
     /**
-     * Check the entry of the string provided to see if the user's region matches the text
-     * @param regionString String object to check against the user's region
-     * @param user a User object
-     * @return true if the user's regions starts with the provided string
-     */
-    public static boolean checkRegionMatches(String regionString, User user) {
-        if (user.getRegion() == null) {
-            return regionString.equals("");
-        } else {
-            return user.getRegion().toLowerCase().startsWith(regionString.toLowerCase());
-        }
-    }
-
-    /**
-     * Check the entry of the string provided to see if the user's region matches the text
+     * Check the entry of the string provided to see if the supplied objects region matches the text.
      *
-     * @param regionString String object to check against the user's region
-     * @param transplantDetails a User object
-     * @return true if the user's regions starts with the provided string
+     * Will catch a NoSuchMethod Exception print a stacktrace and return false if the object has no region object to get
+     *
+     * @param regionString String object to check against the object's region
+     * @param toMatch an object containing a region
+     * @return true if the object's regions starts with the provided string
      */
-    public static boolean checkRegionMatches(String regionString,
-        TransplantDetails transplantDetails) {
-        if (transplantDetails.getRegion() == null) {
-            return regionString.equals("");
-        } else {
-            return transplantDetails.getRegion().toLowerCase()
-                .startsWith(regionString.toLowerCase());
+    public static <T> boolean checkRegionMatches(String regionString, T toMatch) {
+        try {
+            if (toMatch.getClass().getMethod("getRegion").invoke(toMatch) == null) {
+                return regionString.equals("");
+            } else {
+                String region = (String) toMatch.getClass().getMethod("getRegion").invoke(toMatch);
+                return region.toLowerCase().startsWith(regionString.toLowerCase());
+            }
+        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            e.printStackTrace();
+            return false;
         }
     }
 
     /**
-     * Check the entry of the string provided to see if the users gender matches the text
-     * @param genderValue String object to check against the users gender
-     * @param user a User object
-     * @return true if the users gender starts with the provided string
+     * Takes an object with a birth gender and then invokes the method.
+     * This is then tested against the supplied gender to check for a match
+     *
+     * If the object provided contains no getBirthGender method a NoSuchMethod exception will be caught,
+     * the stack trace printed and false returned
+     *
+     * @param genderValue String object to check against the object's gender
+     * @param toMatch an object with a gender
+     * @return true if the objects gender starts with the provided string
      */
-    public static boolean checkGenderMatches(String genderValue, User user) {
-        if (user.getBirthGender() == null) {
-            return genderValue.equals("All");
+    public static <T> boolean checkGenderMatches(String genderValue, T toMatch) {
+        try {
+            if (toMatch.getClass().getMethod("getBirthGender").invoke(toMatch) == null) {
+                return genderValue.equals("All");
+            }
+            String gender = (String) toMatch.getClass().getMethod("getBirthGender").invoke(toMatch);
+            return (gender.equalsIgnoreCase(genderValue) ||
+                    genderValue.equalsIgnoreCase("All"));
+        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            e.printStackTrace();
+            return false;
         }
-        return (user.getBirthGender().equalsIgnoreCase(genderValue) ||
-            genderValue.equalsIgnoreCase("All"));
+
     }
 
     public static boolean checkTextMatches(String text1, String text2) {
-        if (text1 == text2) {
+        if (Objects.equals(text1, text2)) {
             return true;
         }
         if (text1 == null) {
-            return text2.equals("");
+            return text2.startsWith("");
         }
         if (text2 == null) {
-            return text1.equals("");
+            return text1.startsWith("");
         }
-        return text1.toLowerCase().startsWith(text2.toLowerCase());
+        return text2.toLowerCase().startsWith(text1.toLowerCase());
     }
 }

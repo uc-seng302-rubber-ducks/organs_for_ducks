@@ -25,18 +25,18 @@ public class UndoUserTest {
 
   @Test
   public void testSingleChangeSingleUndo() {
-    testUser.setName("Geoff");
+    testUser.setName("Geoff","","");
     testUser.undo();
-    assertEquals("Frank", testUser.getName());
+    assertEquals("Frank", testUser.getFullName());
   }
 
   @Test
   public void testSingleChangeMultipleUndo() {
-    testUser.setName("Geoff");
+    testUser.setName("Geoff","","");
     testUser.undo();
     testUser.undo();
     testUser.undo();
-    assertEquals("Frank", testUser.getName());
+    assertEquals("Frank", testUser.getFullName());
   }
 
   @Test
@@ -68,17 +68,17 @@ public class UndoUserTest {
 
   @Test
   public void singleChangeMementoShouldContainTwoStates() {
-    testUser.setName("Harold");
+    testUser.setName("Harold","","");
     Memento<User> mem = testUser.getUndoStack().peek();
     assert (mem.getOldObject() != null && mem.getNewObject() != null);
   }
 
   @Test
   public void singleChangeMementoShouldContainCorrectStates() {
-    testUser.setName("Harold");
+    testUser.setName("Harold","","");
     Memento<User> mem = testUser.getUndoStack().peek();
-    String oldName = mem.getOldObject().getName();
-    String newName = mem.getNewObject().getName();
+    String oldName = mem.getOldObject().getFullName();
+    String newName = mem.getNewObject().getFullName();
     assertEquals("Frank", oldName);
     assertEquals("Harold", newName);
 
@@ -89,10 +89,10 @@ public class UndoUserTest {
   @Test
   public void multipleChangesConsecutiveMementosShouldShareState() {
     //state after one change should be the state before the next change
-    testUser.setName("Geoff");
+    testUser.setName("Geoff","","");
     Memento<User> firstMem = testUser.getUndoStack().peek();
 
-    testUser.setName("Harold");
+    testUser.setName("Harold","","");
     Memento<User> secondMem = testUser.getUndoStack().peek();
 
     assert (firstMem.getNewObject().equals(secondMem.getOldObject()));
@@ -121,7 +121,7 @@ public class UndoUserTest {
 
     testUser.undo();
 
-    Assert.assertTrue(testUser.getDonorDetails().getOrgans().contains(Organs.BONE));
+    Assert.assertTrue(!testUser.getDonorDetails().getOrgans().contains(Organs.BONE_MARROW));
   }
 
   @Test

@@ -25,7 +25,7 @@ public class DiseasesTest {
     ArrayList<Disease> orderedChronic = new ArrayList<Disease>(8);
 
     @Before
-    public void resetDonors() {
+    public void resetUsers() {
         DateTimeFormatter sdf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         controller = AppController.getInstance();
         controller.setUsers(new ArrayList<>());

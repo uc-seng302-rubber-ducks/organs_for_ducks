@@ -2,8 +2,14 @@ package seng302.Model;
 
 
 import com.google.gson.annotations.Expose;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
+import seng302.Service.PasswordManager;
 
 /**
  * Class to model the data structure for a clinician
@@ -11,10 +17,8 @@ import java.util.Objects;
  * @author Josh Burt
  *
  */
-public class Clinician extends Undoable<Clinician> {
+public class Clinician extends Undoable<Clinician> implements Listenable {
 
-    @Expose
-    private String name;
     @Expose
     private String staffId;
     @Expose
@@ -22,7 +26,8 @@ public class Clinician extends Undoable<Clinician> {
     @Expose
     private String region;
     @Expose
-    private String password;
+    private byte[] password;
+
     @Expose
     private LocalDateTime dateCreated;
     @Expose
@@ -34,10 +39,18 @@ public class Clinician extends Undoable<Clinician> {
     private String middleName;
     @Expose
     private String lastName;
+    @Expose
+    private byte[] salt;
+    private transient PropertyChangeSupport pcs;
+
+    //TODO make all updates to the clinician add to this 22/6
+    private transient List<Change> changes;
 
     public Clinician() {
         dateCreated = LocalDateTime.now();
         dateLastModified = LocalDateTime.now();
+        changes = new ArrayList<>();
+        this.pcs = new PropertyChangeSupport(this);
     }
 
     /**
@@ -52,7 +65,7 @@ public class Clinician extends Undoable<Clinician> {
      */
     public Clinician(String staffId, String password, String firstName, String middleName, String lastName, String workAddress, String region) {
         this.staffId = staffId;
-        this.password = password;
+        setPassword(password);
         this.firstName = firstName;
         this.middleName = middleName;
         this.lastName = lastName;
@@ -60,8 +73,9 @@ public class Clinician extends Undoable<Clinician> {
         this.region = region;
         dateCreated = LocalDateTime.now();
         dateLastModified = LocalDateTime.now();
+        changes = new ArrayList<>();
+        this.pcs = new PropertyChangeSupport(this);
 
-        this.name = firstName; // todo: remove 'name'
     }
 
 
@@ -76,13 +90,15 @@ public class Clinician extends Undoable<Clinician> {
      * @param dateLastModified clinician date last modified
      */
     public Clinician(String name, String staffId, String workAddress, String region, String password, LocalDateTime dateCreated, LocalDateTime dateLastModified) {
-        this.name = name;
+        this.firstName = name;
         this.staffId = staffId;
         this.workAddress = workAddress;
         this.region = region;
-        this.password = password;
+        setPassword(password);
         this.dateCreated = dateCreated;
         this.dateLastModified = dateLastModified;
+        changes = new ArrayList<>();
+        this.pcs = new PropertyChangeSupport(this);
 
     }
 
@@ -95,13 +111,17 @@ public class Clinician extends Undoable<Clinician> {
      * @param password clinician password
      */
     public Clinician(String name, String staffId, String workAddress, String region, String password) {
-        this.name = name;
         this.staffId = staffId;
         this.workAddress = workAddress;
         this.region = region;
-        this.password = password;
+        this.firstName = name;
+        this.middleName = "";
+        this.lastName = "";
+        setPassword(password);
         dateCreated = LocalDateTime.now();
         dateLastModified = LocalDateTime.now();
+        changes = new ArrayList<>();
+        this.pcs = new PropertyChangeSupport(this);
     }
 
     public LocalDateTime getDateCreated() {
@@ -116,18 +136,6 @@ public class Clinician extends Undoable<Clinician> {
         this.dateLastModified = dateLastModified;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        Memento<Clinician> memento = new Memento<>();
-        memento.setOldObject(this.clone());
-        this.name = name;
-        memento.setNewObject(this.clone());
-      getUndoStack().push(memento);
-    }
-
     public String getFirstName() {
         return firstName;
     }
@@ -136,6 +144,7 @@ public class Clinician extends Undoable<Clinician> {
         Memento<Clinician> memento = new Memento<>();
         memento.setOldObject(this.clone());
         this.firstName = name;
+        addChange(new Change("set first name to " + name));
         memento.setNewObject(this.clone());
       getUndoStack().push(memento);
     }
@@ -148,6 +157,7 @@ public class Clinician extends Undoable<Clinician> {
         Memento<Clinician> memento = new Memento<>();
         memento.setOldObject(this.clone());
         this.middleName = name;
+        addChange(new Change("set middle name to " + name));
         memento.setNewObject(this.clone());
       getUndoStack().push(memento);
     }
@@ -160,6 +170,7 @@ public class Clinician extends Undoable<Clinician> {
         Memento<Clinician> memento = new Memento<>();
         memento.setOldObject(this.clone());
         this.lastName = name;
+        addChange(new Change("set last name to " + lastName));
         memento.setNewObject(this.clone());
       getUndoStack().push(memento);
     }
@@ -192,6 +203,7 @@ public class Clinician extends Undoable<Clinician> {
         Memento<Clinician> memento = new Memento<>();
         memento.setOldObject(this.clone());
         this.staffId = staffId;
+        addChange(new Change("set staff id to " + staffId));
         memento.setNewObject(this.clone());
       getUndoStack().push(memento);
     }
@@ -205,6 +217,7 @@ public class Clinician extends Undoable<Clinician> {
         Memento<Clinician> memento = new Memento<>();
         memento.setOldObject(this.clone());
         this.workAddress = workAddress;
+        addChange(new Change("set work address to " + workAddress));
         memento.setNewObject(this.clone());
       getUndoStack().push(memento);
     }
@@ -217,20 +230,57 @@ public class Clinician extends Undoable<Clinician> {
         Memento<Clinician> memento = new Memento<>();
         memento.setOldObject(this.clone());
         this.region = region;
+        addChange(new Change("set region to " + region));
         memento.setNewObject(this.clone());
-      getUndoStack().push(memento);
+        getUndoStack().push(memento);
     }
 
-    public String getPassword() {
+    /**
+     * Private setter as no one should be able to retrieve password outside of the class
+     * @return hash of the password
+     */
+    private byte[] getPassword() {
         return password;
     }
 
+
+    /**
+     * updates the password by hashing it and storing the new salt
+     * @param password plaintext password to be hashed
+     */
     public void setPassword(String password) {
-        Memento<Clinician> memento = new Memento<>();
-        memento.setOldObject(this.clone());
-        this.password = password;
-        memento.setNewObject(this.clone());
-      getUndoStack().push(memento);
+        this.salt = PasswordManager.getNextSalt();
+        this.password = PasswordManager.hash(password, salt);
+    }
+
+
+    public byte[] getSalt() {
+        return salt;
+    }
+
+
+
+    /**
+     * A function to check the supplied password against the stored hash.
+     * @param password Password to be checked
+     * @return correctness of the password
+     */
+    public boolean isPasswordCorrect(String password){
+        return PasswordManager.isExpectedPassword(password, salt, getPassword());
+    }
+
+    public List<Change> getChanges() {
+        return changes;
+    }
+
+    public void setChanges(List<Change> changes) {
+        this.changes = changes;
+    }
+
+    public void addChange(Change change) {
+        changes.add(change);
+        this.fire(new PropertyChangeEvent(this, EventTypes.CLINICIAN_UPDATE.name(), new Object(),
+            new Object()));
     }
 
     @Override
@@ -238,7 +288,7 @@ public class Clinician extends Undoable<Clinician> {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Clinician clinician = (Clinician) o;
-        return staffId == clinician.staffId;
+        return staffId.equals(clinician.staffId);
     }
 
     @Override
@@ -250,11 +300,10 @@ public class Clinician extends Undoable<Clinician> {
     @Override
     public String toString() {
         return "Clinician{" +
-                "name='" + name + '\'' +
+                "name='" + getFullName() + '\'' +
                 ", staffId='" + staffId + '\'' +
                 ", workAddress='" + workAddress + '\'' +
                 ", region='" + region + '\'' +
-                ", password='" + password + '\'' +
                 ", dateCreated=" + dateCreated +
                 ", dateLastModified=" + dateLastModified +
                 '}';
@@ -268,6 +317,7 @@ public class Clinician extends Undoable<Clinician> {
       Memento<Clinician> memento = getUndoStack().pop();
         this.changeInto(memento.getOldObject());
       getRedoStack().push(memento);
+        addChange(new Change("undo"));
     }
 
     @Override
@@ -278,6 +328,7 @@ public class Clinician extends Undoable<Clinician> {
       Memento<Clinician> memento = getRedoStack().pop();
         this.changeInto(memento.getNewObject());
       getUndoStack().push(memento);
+        addChange(new Change("redo"));
     }
 
     @Override
@@ -311,5 +362,23 @@ public class Clinician extends Undoable<Clinician> {
         this.region = clinician.region;
         this.dateCreated = clinician.dateCreated;
         this.dateLastModified = clinician.dateLastModified;
+    }
+
+    @Override
+    public void addPropertyChangeListener(PropertyChangeListener listener) {
+        if (this.pcs == null) {
+            this.pcs = new PropertyChangeSupport(this);
+        }
+        this.pcs.addPropertyChangeListener(listener);
+    }
+
+    @Override
+    public void removePropertyChangeListener(PropertyChangeListener listener) {
+        this.pcs.removePropertyChangeListener(listener);
+    }
+
+    @Override
+    public void fire(PropertyChangeEvent event) {
+        this.pcs.firePropertyChange(event);
     }
 }

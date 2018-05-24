@@ -1,33 +1,21 @@
 package seng302.Controller;
 
-import java.util.ArrayList;
-import java.util.Collections;
+import java.util.*;
+
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.control.SelectionMode;
 import javafx.stage.Stage;
 import seng302.Model.MedicalProcedure;
 import seng302.Model.Organs;
 import seng302.Model.User;
-
-import java.util.ArrayList;
-import java.util.Collections;
+import seng302.Service.Log;
 
 /**
  * Class for the Organs Affected view for Medical Procedures
  */
 public class OrgansAffectedController {
-
-    @FXML
-    private Button addOrganButton;
-
-    @FXML
-    private Button removeOrganButton;
-
-    @FXML
-    private Button backButton;
 
     @FXML
     private ListView<Organs> organsListView;
@@ -69,7 +57,7 @@ public class OrgansAffectedController {
         this.user = user;
         ArrayList<Organs> allOrgans = new ArrayList<>();
         Collections.addAll(allOrgans, Organs.values());
-        ArrayList affectedOrgans;
+        List<Organs> affectedOrgans;
         affectedOrgans = procedure.getOrgansAffected();
         allOrgans.removeAll(affectedOrgans);
         affectedOrgansListView.setItems(FXCollections.observableList(affectedOrgans));
@@ -86,6 +74,9 @@ public class OrgansAffectedController {
             currentProcedure.addOrgan(toAffect);
             affectedOrgansListView.setItems(FXCollections.observableList(currentProcedure.getOrgansAffected()));
             organsListView.getItems().remove(toAffect);
+            Log.info("Successfully added the selected organ: "+toAffect+" to the affected list at current medical procedure for User NHI: "+user.getNhi());
+        } else {
+            Log.warning("Unable to add the organ: null to the affected list for User NHI: "+user.getNhi());
         }
     }
 
@@ -99,6 +90,9 @@ public class OrgansAffectedController {
             currentProcedure.removeOrgan(toAffect);
             affectedOrgansListView.setItems(FXCollections.observableList(currentProcedure.getOrgansAffected()));
             organsListView.getItems().add(toAffect);
+            Log.info("Successfully removed the selected organ: "+toAffect+"  from the affected list for the current medical procedure for User NHI: "+user.getNhi());
+        } else {
+            Log.warning("Unable to remove the organ: null from the affected list");
         }
     }
 
@@ -109,6 +103,7 @@ public class OrgansAffectedController {
     void back() {
         appController.update(user);
         stage.close();
+        Log.info("Back button pressed");
     }
 
 }

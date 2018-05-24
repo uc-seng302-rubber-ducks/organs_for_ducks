@@ -9,9 +9,11 @@ import org.jline.terminal.TerminalBuilder;
 import org.jline.utils.InfoCmp.Capability;
 import picocli.CommandLine;
 import seng302.Controller.AppController;
+import seng302.Controller.CliCommands.Blockable;
 import seng302.Controller.CliCommands.CliRoot;
+import seng302.Directory;
 import seng302.Model.JsonHandler;
-import seng302.Model.JsonWriter;
+import seng302.Model.User;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -21,6 +23,10 @@ import java.util.ArrayList;
  * Class to run the command line version of the application
  */
 public class CLI {
+
+  private static Blockable blockage = null;
+
+  private static String loadUsersfile = Directory.JSON.directory() + "/donors.json";
 
   /**
    *
@@ -56,7 +62,7 @@ public class CLI {
 
     AppController controller = AppController.getInstance();
     try {
-      controller.setUsers(JsonHandler.loadUsers());
+      controller.setUsers((ArrayList<User>) JsonHandler.loadUsers(loadUsersfile));
     } catch (FileNotFoundException e) {
       System.out.println("No users file exists. Creating blank session");
       controller.setUsers(new ArrayList<>());
@@ -68,17 +74,36 @@ public class CLI {
 
     input = lineReader.readLine(">> ");
     while (!input.trim().equals("quit")) {
-      arguments = input.split(" ");
-      JsonWriter.changeLog(arguments);
-      controller.addToHistoryOfCommands(arguments);
-      new CommandLine(new CliRoot())
-          .parseWithHandler(new CommandLine.RunLast(), System.err, arguments);
-      //System.out.println(lineReader.getHistory().last());
+      parseInput(input, controller);
       input = lineReader.readLine(">> ");
     }
     System.out.println("CLI exited.");
     if (args != null && args[0].equals("gui")) {
       System.out.println("return to GUI");
     }
+  }
+
+  /**
+   * Parses the user input and executes the command
+   * @param input Whole String command to execute
+   * @param controller Instance of the AppController
+   */
+  public static void parseInput(String input, AppController controller) {
+    if (blockage == null) {
+      String[] arguments = input.split(" ");
+      controller.addToHistoryOfCommands(arguments);
+      new CommandLine(new CliRoot())
+              .parseWithHandler(new CommandLine.RunLast(), System.err, arguments);
+    } else {
+      blockage.confirm(input);
+    }
+  }
+
+  public static void clearBlockage() {
+    blockage = null;
+  }
+
+  public static void setBlockage(Blockable blockable) {
+    blockage = blockable;
   }
 }

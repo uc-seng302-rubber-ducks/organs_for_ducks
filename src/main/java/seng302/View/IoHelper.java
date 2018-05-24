@@ -5,7 +5,7 @@ import seng302.Model.User;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Class to handle input and output
@@ -47,15 +47,15 @@ public class IoHelper {
     }
 
     //TODO review logic for edge cases
-    String[] names = user.getName().split(" ");
+    String[] names = user.getFullName().split(" ");
     if (firstName != null && lastName != null) {
-      user.setName(firstName + " " + lastName);
+      user.setName(firstName , null , lastName);
     }
     else if (lastName == null && names.length > 1) {
-      user.setName(firstName + " " + names[1]);
+      user.setName(firstName , null , names[1]);
     }
     else if (firstName == null) {
-      user.setName(names[0] +" "+ lastName);
+      user.setName(names[0] ,null , lastName);
     }
     return true;
   }
@@ -65,7 +65,7 @@ public class IoHelper {
    * @param users An array list of users.
    * @return A String of all users separated by a new line.
    */
-  public static String prettyStringDonors(ArrayList<User> users) {
+  public static String prettyStringUsers(List<User> users) {
     StringBuilder sb = new StringBuilder();
     if(users.size() > 0) {
       for (User u : users) {
