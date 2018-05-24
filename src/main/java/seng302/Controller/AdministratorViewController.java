@@ -41,53 +41,19 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
     @FXML
     private TableView<User> userTableView;
     @FXML
-    private TableView<?> transplantWaitListTableView;
-    @FXML
-    private CheckBox middleEarCheckBox;
-    @FXML
-    private CheckBox pancreasCheckBox;
-    @FXML
-    private TextField waitingRegionTextfield;
-    @FXML
-    private MenuItem importUsersMenuItem;
-    @FXML
     private Label adminLastNameLabel;
-    @FXML
-    private Button addAdminButton;
     @FXML
     private CheckBox allCheckBox;
     @FXML
     private TableView<Clinician> clinicianTableView;
     @FXML
-    private Tooltip searchToolTip;
-    @FXML
     private TextField cliInputTextField;
-    @FXML
-    private Tooltip searchToolTip1;
-    @FXML
-    private Tooltip searchToolTip2;
-    @FXML
-    private CheckBox skinCheckBox;
-    @FXML
-    private Button addClinicianButton;
     @FXML
     private TableView<Administrator> adminTableView;
     @FXML
     private TextArea adminCliTextArea;
     @FXML
-    private CheckBox boneCheckBox;
-    @FXML
-    private CheckBox adminAdminCheckbox;
-    @FXML
-    private CheckBox heartCheckBox;
-    @FXML
     private AnchorPane filterAnchorPane;
-    @FXML
-    private Button recentlyDeletedButton;
-    @FXML
-    private Label filtersLabel;
-    @FXML
-    private CheckBox adminUserCheckbox;
     @FXML
     private Button adminRedoButton;
     @FXML
@@ -95,57 +61,25 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
     @FXML
     private Button expandButton;
     @FXML
-    private CheckBox kidneyCheckBox;
-    @FXML
     private TextField adminSearchField;
-    @FXML
-    private CheckBox liverCheckBox;
-    @FXML
-    private Label succesFailLabel;
-    @FXML
-    private CheckBox lungCheckBox;
-    @FXML
-    private CheckBox boneMarrowCheckBox;
-    @FXML
-    private TextField searchTextField;
     @FXML
     private Pagination searchTablePagination;
     @FXML
     private Button deleteAdminButton;
     @FXML
-    private MenuItem adminSaveMenu;
-    @FXML
-    private CheckBox corneaCheckBox;
-    @FXML
     private ComboBox<?> genderComboBox;
-    @FXML
-    private CheckBox connectiveTissueCheckBox;
-    @FXML
-    private Button updateButton;
     @FXML
     private Label adminFirstnameLabel;
     @FXML
-    private CheckBox adminClinicianCheckbox;
-    @FXML
     private CheckBox donorFilterCheckBox;
-    @FXML
-    private MenuItem importCliniciansMenuItem;
-    @FXML
-    private Button adminLogoutButton;
-    @FXML
-    private MenuItem importAdminsMenuItem;
     @FXML
     private Button adminUndoButton;
     @FXML
     private Label searchCountLabel;
     @FXML
-    private Button addUserButton;
-    @FXML
     private Label adminMiddleNameLabel;
     @FXML
     private CheckBox receiverFilterCheckBox;
-    @FXML
-    private CheckBox intestineCheckBox;
     @FXML
     private Label donorStatusLabel;
     @FXML
@@ -154,6 +88,14 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
     private TextField regionSearchTextField;
     @FXML
     private Label fileNotFoundLabel;
+    @FXML
+    private RadioButton adminUserRadioButton;
+    @FXML
+    private RadioButton adminClinicianRadioButton;
+    @FXML
+    private RadioButton adminAdminRadioButton;
+    @FXML
+    private ToggleGroup adminSearchRadios;
 
     //</editor-fold>
     @FXML
@@ -191,7 +133,7 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
         displayDetails();
         transplantWaitListTabPageController.init(appController, this);
 
-//add change listeners of parent controllers to the current user
+        //add change listeners of parent controllers to the current user
         if (parentListeners != null && !parentListeners.isEmpty()) {
             for (PropertyChangeListener listener : parentListeners) {
                 administrator.addPropertyChangeListener(listener);
@@ -256,37 +198,22 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
      * Utility method to add listeners to required fields
      */
     private void addListeners() {
-        adminAdminCheckbox.selectedProperty().addListener((observable -> {
-            adminClinicianCheckbox.setSelected(false);
-            adminUserCheckbox.setSelected(false);
-            clinicianTableView.setVisible(false);
-            adminTableView.setVisible(true);
-            userTableView.setVisible(false);
-            activeTableView = adminTableView;
-            userSpecificFilters(false);
 
-        }));
-
-        adminUserCheckbox.selectedProperty().addListener((observable -> {
-            adminClinicianCheckbox.setSelected(false);
-            adminAdminCheckbox.setSelected(false);
-            clinicianTableView.setVisible(false);
+        // listeners for each radio button which hides/shows the table views
+        adminSearchRadios.getToggles().forEach(radio -> (radio).selectedProperty().addListener(((observable, oldValue, newValue) -> {
             adminTableView.setVisible(false);
-            userTableView.setVisible(true);
-            activeTableView = userTableView;
-            userSpecificFilters(false);
-
-        }));
-
-        adminClinicianCheckbox.selectedProperty().addListener((observable -> {
-            adminAdminCheckbox.setSelected(false);
-            adminUserCheckbox.setSelected(false);
-            clinicianTableView.setVisible(true);
-            adminTableView.setVisible(false);
+            clinicianTableView.setVisible(false);
             userTableView.setVisible(false);
-            activeTableView = clinicianTableView;
-            userSpecificFilters(false);
-        }));
+
+            if (adminUserRadioButton.isSelected()) {
+                userTableView.setVisible(true);
+            } else if (adminClinicianRadioButton.isSelected()) {
+                clinicianTableView.setVisible(true);
+            } else if (adminAdminRadioButton.isSelected()) {
+                adminTableView.setVisible(true);
+            }
+
+        })));
 
         userTableView.setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
@@ -349,7 +276,6 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
         clinicianTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         clinicianTableView.getColumns().addAll(nhiColumn, firstNameColumn, lastNameColumn);
         clinicianTableView.setItems(clinicianSortedList);
-
 
     }
 
@@ -470,7 +396,6 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
      * @param toFilter list to be filtered
      * @return filtered list with filter applied
      */
-
     private <T> FilteredList<T> filter(FilteredList<T> toFilter) {
         setTextFieldListener(adminSearchField, toFilter);
         setTextFieldListener(regionSearchTextField, toFilter);
@@ -565,14 +490,6 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
         return userTableView;
     }
 
-    /**
-     * Saves the data to the current file
-     */
-    @FXML
-    void save() {
-
-    }
-
 
     /**
      * Callback method to change the divider position to show advanced filtering options in the GUI
@@ -584,27 +501,6 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
         filterAnchorPane.setMaxHeight(dividerPos);
         filterVisible = !filterVisible;
         expandButton.setText(filterVisible ? "▲" : "▼");
-    }
-
-    /**
-     * Loads the recently deleted users window
-     */
-    @FXML
-    public void loadRecentlyDeleted() {
-        FXMLLoader deletedUserLoader = new FXMLLoader(
-                getClass().getResource("/FXML/deletedUsersView.fxml"));
-        Parent root;
-        try {
-            root = deletedUserLoader.load();
-            DeletedUserController deletedUserController = deletedUserLoader.getController();
-            Stage stage = new Stage();
-            stage.setScene(new Scene(root));
-            deletedUserController.init(true);
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.showAndWait();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     /**
@@ -887,14 +783,6 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
         }
     }
 
-    /**
-     * Close the tab
-     */
-    @FXML
-    void close() {
-
-    }
-
 
     /**
      * Opens the create user screen
@@ -1151,6 +1039,9 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
         }
     }
 
+    /**
+     * Opens a window to restore recently deleted profiles.
+     */
     @FXML
     private void openDeletedProfiles() {
         FXMLLoader deletedUserLoader = new FXMLLoader(
@@ -1179,6 +1070,11 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
         userTableView.refresh();
     }
 
+    /**
+     * event handler that fires when a property change event is emitted by any objects the controller is listening to
+     *
+     * @param evt event emitted
+     */
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         //watches users and clinicians
