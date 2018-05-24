@@ -212,6 +212,9 @@ public class UpdateAdminController {
      */
     private void updateAdmin() {
         valid = true;
+        invalidUsername.setVisible(false);
+        invalidFName.setVisible(false);
+        errorLabel.setVisible(false);
         // waiting for the string validation to be finished
         if (!usernameTextField.getText().isEmpty() && !usernameTextField.getText().equals(admin.getUserName())) {
             Administrator foundAdministrator = appController.getAdministrator(usernameTextField.getText());
@@ -245,7 +248,8 @@ public class UpdateAdminController {
             if (passwordTextField.getText().equals(cPasswordTextField.getText())) {
                 admin.setPassword(passwordTextField.getText());
             } else {
-                errorLabel.setText("your password don't match");
+                errorLabel.setText("Your passwords don't match");
+                errorLabel.setVisible(true);
                 valid = false;
             }
         }
