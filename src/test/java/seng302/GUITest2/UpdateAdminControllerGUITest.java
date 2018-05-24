@@ -21,6 +21,7 @@ import static org.testfx.api.FxAssert.verifyThat;
 
 public class UpdateAdminControllerGUITest extends ApplicationTest {
 
+    private Administrator testAdmin;
     @BeforeClass
     public static void initialization() {
         CommonTestMethods.runHeadless();
@@ -30,8 +31,9 @@ public class UpdateAdminControllerGUITest extends ApplicationTest {
     public void setUpCreateScene() throws TimeoutException {
         FxToolkit.registerPrimaryStage();
         FxToolkit.setupApplication(App.class);
-        AppController.getInstance().getAdmins().clear();
-        AppController.getInstance().getAdmins().add(new Administrator("admin1", "Anna", "Kate", "Robertson", "face"));
+        testAdmin = new Administrator("admin1", "Anna", "Kate", "Robertson", "face");
+        AppController.getInstance().getAdmins().remove(testAdmin);
+        AppController.getInstance().getAdmins().add(testAdmin);
         clickOn("#administratorTab");
         clickOn("#adminUsernameTextField");
         write("admin1");
@@ -43,7 +45,7 @@ public class UpdateAdminControllerGUITest extends ApplicationTest {
 
     @After
     public void tearDown() throws TimeoutException {
-        AppController.getInstance().getAdmins().clear();
+        AppController.getInstance().getAdmins().remove(testAdmin);
         FxToolkit.cleanupStages();
     }
 
