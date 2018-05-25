@@ -68,6 +68,7 @@ Entering the command and then `help` or `-h` will provide more details regarding
 
 # Command Details
 - view 
+
  ```
     Usage: view [-a] [] [-dob=<dobString>] [-f=<firstName>] [-l=<lastName>]
             [-NHI=<NHI>]
@@ -82,6 +83,7 @@ View all currently registered users based on set parameters.
   ```
          
  - create
+
  ```
  Usage: create user [-h] [-a=<currentAddress>] [-b=<bloodType>] [-dod=<dodString>]
             [-g=<gender>] [-he=<height>] [-r=<region>] [-w=<weight>]
@@ -102,6 +104,7 @@ tagged
   -r, -region=<region>        Region (Address line 2)
   -w, -weight=<weight>        weight in kg e.g. 87.3
   ```
+  
   ```
   Usage: clinician [-h] <id> <firstName> <password> <region>
 Allows the creation of a clinician. ot update use update clinician
@@ -112,6 +115,7 @@ Allows the creation of a clinician. ot update use update clinician
   -h, help                    display a help message
   ```
  - update
+
  ```
  update user details [-h] [-a=<currentAddress>] [-b=<bloodType>] [-dob=<dobString>]
                [-dod=<dodString>] [-f=<firstName>] [-g=<gender>] [-he=<height>]
@@ -135,6 +139,7 @@ Use -id to identify the the user. All other tags will update values
   -w, -weight=<weight>        weight in kg e.g. 87.3
 
 ```
+
 ```
 Usage: update user donate [-h] <nhi> [<rawOrgans>]...
 Updates a user's organs to donate.
@@ -145,6 +150,7 @@ Updates a user's organs to donate.
                                 remove bone marrow
   -h, help
 ```
+
 ```
 Usage: update user receive [-h] <nhi> [<rawOrgans>]...
 Updates a user's organs to donate.
@@ -154,6 +160,7 @@ Updates a user's organs to donate.
                               e.g. +liver /bone_marrow would add liver and
                                 remove bone marrow
 ```
+
 ```
 Usage: update clinician [-a=<address>] [-f=<firstName>] [-id=<newId>] [-l=<lastName>]
                  [-m=<middleName>] [-p=<password>] [-r=<region>] <originalId>
@@ -170,6 +177,7 @@ Allows the details for a clinician to be updated
 
 
 - delete
+
 ```
 Usage: delete
  Command used to start the deletion process. Is required to reach the deletion
