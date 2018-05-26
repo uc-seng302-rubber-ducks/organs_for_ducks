@@ -7,8 +7,8 @@ import picocli.CommandLine;
         subcommands = {CreateUser.class, CreateClinician.class})
 public class Create implements Runnable {
 
-  @Override
-  public void run() {
-    CommandLine.usage(this, System.err);
-  }
+    @Override
+    public void run() {
+        CommandLine.usage(this, System.err);
+    }
 }

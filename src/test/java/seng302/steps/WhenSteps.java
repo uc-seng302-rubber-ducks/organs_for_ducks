@@ -39,7 +39,7 @@ public class WhenSteps extends ApplicationTest {
 
     @When("^I register a user with the NHI \"([^\"]*)\", first name \"([^\"]*)\", last name \"([^\"]*)\" and date of birth \"([^\"]*)\"$")
     public void iRegisterAUserWithTheNHIFirstNameLastNameAndDateOfBirth(String nhi, String fName,
-        String lName, String dob) {
+                                                                        String lName, String dob) {
         CucumberTestModel.setUserNhi(nhi);
         String[] args = {fName, lName, nhi, dob};
         CreateUser command = new CreateUser();
@@ -48,7 +48,7 @@ public class WhenSteps extends ApplicationTest {
 
     @When("^I register a user using the GUI with the NHI \"([^\"]*)\", first name \"([^\"]*)\" and date of birth \"([^\"]*)\"$")
     public void iRegisterAUserUsingTheGUIWithTheNHIFirstNameAndDateOfBirth(String nhi, String fName,
-        String dob) {
+                                                                           String dob) {
         clickOn("#nhiInput");
         write(nhi);
         clickOn("#fNameInput");
@@ -65,7 +65,7 @@ public class WhenSteps extends ApplicationTest {
 
     @When("^I register a user using the GUI with the NHI \"([^\"]*)\", first name \"([^\"]*)\", date of birth \"([^\"]*)\" and date of death \"([^\"]*)\"$")
     public void iRegisterAUserUsingTheGUIWithTheNHIFirstNameDateOfBirthAndDateOfDeath(String nhi,
-        String fName, String dob, String dod) {
+                                                                                      String fName, String dob, String dod) {
         clickOn("#nhiInput");
         write(nhi);
         clickOn("#fNameInput");
@@ -129,7 +129,6 @@ public class WhenSteps extends ApplicationTest {
     public void clickedOnStatusChronic() {
         clickOn("#chronicRadioButton");
     }
-
 
 
     @When("^I entered Disease Name \"([^\"]*)\" and Diagnosis Date \"([^\"]*)\"$")

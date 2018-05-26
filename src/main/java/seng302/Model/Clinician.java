@@ -2,6 +2,8 @@ package seng302.Model;
 
 
 import com.google.gson.annotations.Expose;
+import seng302.Service.PasswordManager;
+
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -9,13 +11,11 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import seng302.Service.PasswordManager;
 
 /**
  * Class to model the data structure for a clinician
  *
  * @author Josh Burt
- *
  */
 public class Clinician extends Undoable<Clinician> implements Listenable {
 
@@ -55,13 +55,14 @@ public class Clinician extends Undoable<Clinician> implements Listenable {
 
     /**
      * Constructor for Clinician
-     * @param staffId clinician staff id
-     * @param password clinician password
-     * @param firstName clinician first name
-     * @param middleName clinician middle name
-     * @param lastName clinician last name
+     *
+     * @param staffId     clinician staff id
+     * @param password    clinician password
+     * @param firstName   clinician first name
+     * @param middleName  clinician middle name
+     * @param lastName    clinician last name
      * @param workAddress clinician work address
-     * @param region clinician region
+     * @param region      clinician region
      */
     public Clinician(String staffId, String password, String firstName, String middleName, String lastName, String workAddress, String region) {
         this.staffId = staffId;
@@ -81,12 +82,13 @@ public class Clinician extends Undoable<Clinician> implements Listenable {
 
     /**
      * Constructor for Clinician
-     * @param name clinician name
-     * @param staffId clinician staff id
-     * @param workAddress clinician work address
-     * @param region clinician region
-     * @param password clinician password
-     * @param dateCreated clinician date created
+     *
+     * @param name             clinician name
+     * @param staffId          clinician staff id
+     * @param workAddress      clinician work address
+     * @param region           clinician region
+     * @param password         clinician password
+     * @param dateCreated      clinician date created
      * @param dateLastModified clinician date last modified
      */
     public Clinician(String name, String staffId, String workAddress, String region, String password, LocalDateTime dateCreated, LocalDateTime dateLastModified) {
@@ -104,11 +106,12 @@ public class Clinician extends Undoable<Clinician> implements Listenable {
 
     /**
      * Constructor for Clinician
-     * @param name clinician name
-     * @param staffId clinician staff id
+     *
+     * @param name        clinician name
+     * @param staffId     clinician staff id
      * @param workAddress clinician work address
-     * @param region clinician region
-     * @param password clinician password
+     * @param region      clinician region
+     * @param password    clinician password
      */
     public Clinician(String name, String staffId, String workAddress, String region, String password) {
         this.staffId = staffId;
@@ -146,7 +149,7 @@ public class Clinician extends Undoable<Clinician> implements Listenable {
         this.firstName = name;
         addChange(new Change("set first name to " + name));
         memento.setNewObject(this.clone());
-      getUndoStack().push(memento);
+        getUndoStack().push(memento);
     }
 
     public String getMiddleName() {
@@ -159,7 +162,7 @@ public class Clinician extends Undoable<Clinician> implements Listenable {
         this.middleName = name;
         addChange(new Change("set middle name to " + name));
         memento.setNewObject(this.clone());
-      getUndoStack().push(memento);
+        getUndoStack().push(memento);
     }
 
     public String getLastName() {
@@ -172,7 +175,7 @@ public class Clinician extends Undoable<Clinician> implements Listenable {
         this.lastName = name;
         addChange(new Change("set last name to " + lastName));
         memento.setNewObject(this.clone());
-      getUndoStack().push(memento);
+        getUndoStack().push(memento);
     }
 
 
@@ -180,7 +183,7 @@ public class Clinician extends Undoable<Clinician> implements Listenable {
         String fullName;
 
         if (middleName != null && lastName != null) {
-            fullName = firstName + " " + middleName  + " " + lastName;
+            fullName = firstName + " " + middleName + " " + lastName;
 
         } else if (middleName != null) {
             fullName = firstName + " " + middleName;
@@ -205,7 +208,7 @@ public class Clinician extends Undoable<Clinician> implements Listenable {
         this.staffId = staffId;
         addChange(new Change("set staff id to " + staffId));
         memento.setNewObject(this.clone());
-      getUndoStack().push(memento);
+        getUndoStack().push(memento);
     }
 
 
@@ -219,7 +222,7 @@ public class Clinician extends Undoable<Clinician> implements Listenable {
         this.workAddress = workAddress;
         addChange(new Change("set work address to " + workAddress));
         memento.setNewObject(this.clone());
-      getUndoStack().push(memento);
+        getUndoStack().push(memento);
     }
 
     public String getRegion() {
@@ -237,6 +240,7 @@ public class Clinician extends Undoable<Clinician> implements Listenable {
 
     /**
      * Private setter as no one should be able to retrieve password outside of the class
+     *
      * @return hash of the password
      */
     private byte[] getPassword() {
@@ -246,6 +250,7 @@ public class Clinician extends Undoable<Clinician> implements Listenable {
 
     /**
      * updates the password by hashing it and storing the new salt
+     *
      * @param password plaintext password to be hashed
      */
     public void setPassword(String password) {
@@ -259,13 +264,13 @@ public class Clinician extends Undoable<Clinician> implements Listenable {
     }
 
 
-
     /**
      * A function to check the supplied password against the stored hash.
+     *
      * @param password Password to be checked
      * @return correctness of the password
      */
-    public boolean isPasswordCorrect(String password){
+    public boolean isPasswordCorrect(String password) {
         return PasswordManager.isExpectedPassword(password, salt, getPassword());
     }
 
@@ -280,7 +285,7 @@ public class Clinician extends Undoable<Clinician> implements Listenable {
     public void addChange(Change change) {
         changes.add(change);
         this.fire(new PropertyChangeEvent(this, EventTypes.CLINICIAN_UPDATE.name(), new Object(),
-            new Object()));
+                new Object()));
     }
 
     @Override
@@ -311,23 +316,23 @@ public class Clinician extends Undoable<Clinician> implements Listenable {
 
     @Override
     public void undo() {
-      if (getUndoStack().isEmpty()) {
+        if (getUndoStack().isEmpty()) {
             return;
         }
-      Memento<Clinician> memento = getUndoStack().pop();
+        Memento<Clinician> memento = getUndoStack().pop();
         this.changeInto(memento.getOldObject());
-      getRedoStack().push(memento);
+        getRedoStack().push(memento);
         addChange(new Change("undo"));
     }
 
     @Override
     public void redo() {
-      if (getRedoStack().isEmpty()) {
+        if (getRedoStack().isEmpty()) {
             return;
         }
-      Memento<Clinician> memento = getRedoStack().pop();
+        Memento<Clinician> memento = getRedoStack().pop();
         this.changeInto(memento.getNewObject());
-      getUndoStack().push(memento);
+        getUndoStack().push(memento);
         addChange(new Change("redo"));
     }
 

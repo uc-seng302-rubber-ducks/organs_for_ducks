@@ -231,7 +231,7 @@ public class Administrator extends Undoable<Administrator> implements Listenable
      *
      * @return does the needful
      */
-    public String getRegion(){
+    public String getRegion() {
         return "";
     }
 
@@ -309,6 +309,6 @@ public class Administrator extends Undoable<Administrator> implements Listenable
         this.dateCreated = admin.dateCreated;
         this.dateLastModified = admin.dateLastModified;
     }
-    }
+}
 
 

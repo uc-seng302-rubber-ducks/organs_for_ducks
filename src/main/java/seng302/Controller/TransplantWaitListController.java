@@ -21,8 +21,6 @@ import java.util.List;
 import java.util.Set;
 
 import static seng302.Model.Organs.*;
-import static seng302.Model.Organs.LIVER;
-import static seng302.Model.Organs.SKIN;
 
 public class TransplantWaitListController {
     @FXML
@@ -131,13 +129,13 @@ public class TransplantWaitListController {
     /**
      * populates and add double click functionality to the Wait List Table.
      */
-    public void populateWaitListTable(){
+    public void populateWaitListTable() {
         //transplantWaitListTableView.getItems().clear();
         //set up lists
         //table contents are SortedList of a FilteredList of an ObservableList of an ArrayList
         appController.getTransplantList().clear();
         for (User user : users) {
-            if (user.isReceiver()&& (user.getDeceased() != null && !user.getDeceased())) {
+            if (user.isReceiver() && (user.getDeceased() != null && !user.getDeceased())) {
                 Set<Organs> organs = user.getReceiverDetails().getOrgans().keySet();
                 for (Organs organ : organs) {
                     if (isReceiverNeedingFilteredOrgan(user.getNhi(), organs).contains(organ)) {
@@ -227,6 +225,7 @@ public class TransplantWaitListController {
     /**
      * Sets the predicate on the filteredList for Transplant details
      * Cannot be overloaded as the the argument types are the same but have different erasures
+     *
      * @param fList filteredList of TransplantDetails objects
      */
     private void setTransplantListPredicate(FilteredList<TransplantDetails> fList) {
@@ -242,7 +241,7 @@ public class TransplantWaitListController {
     /**
      * Takes an user with an existing nhi and the set of organs
      *
-     * @param nhi NHI of a user that exists within the system
+     * @param nhi    NHI of a user that exists within the system
      * @param organs A set of organs for which the checkboxes are ticked
      * @return An arraylist of Organs enums which the user with the NHI is receiving
      */
@@ -304,7 +303,6 @@ public class TransplantWaitListController {
             organs.add(SKIN);
         return organs;
     }
-
 
 
 }

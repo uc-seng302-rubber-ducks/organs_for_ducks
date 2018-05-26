@@ -25,35 +25,35 @@ public class UserController {
 
 // the contact page attributes
 
-  //declaring all variables for the contacts page
-  //<editor-fold desc="FXML declarations">
-  @FXML
-  private Label pCellPhone;
-  @FXML
-  private Label pHomePhone;
-  @FXML
-  private Label pAddress;
-  @FXML
-  private Label pRegion;
-  @FXML
-  private Label pEmail;
-  @FXML
-  private Label eCellPhone;
-  @FXML
-  private Label eHomePhone;
-  @FXML
-  private Label eAddress;
-  @FXML
-  private Label eRegion;
-  @FXML
-  private Label eEmail;
-  @FXML
-  private Label relationship;
-  @FXML
-  private Label eName;
+    //declaring all variables for the contacts page
+    //<editor-fold desc="FXML declarations">
+    @FXML
+    private Label pCellPhone;
+    @FXML
+    private Label pHomePhone;
+    @FXML
+    private Label pAddress;
+    @FXML
+    private Label pRegion;
+    @FXML
+    private Label pEmail;
+    @FXML
+    private Label eCellPhone;
+    @FXML
+    private Label eHomePhone;
+    @FXML
+    private Label eAddress;
+    @FXML
+    private Label eRegion;
+    @FXML
+    private Label eEmail;
+    @FXML
+    private Label relationship;
+    @FXML
+    private Label eName;
 
-  @FXML
-  private Button undoButton;
+    @FXML
+    private Button undoButton;
 
     @FXML
     private Button redoButton;
@@ -78,74 +78,74 @@ public class UserController {
     @FXML
     private DiseasesTabPageController diseasesTabPageController;
 
-  @FXML
-  private ReceiverTabController receiverTabPageController;
-@FXML
-  private statusBarController statusBarPageController;  //</editor-fold>
+    @FXML
+    private ReceiverTabController receiverTabPageController;
+    @FXML
+    private statusBarController statusBarPageController;  //</editor-fold>
 
-  private User currentUser;
-  private Stage stage;
-  private EmergencyContact contact = null;
-  private ObservableList<Change> changelog;
+    private User currentUser;
+    private Stage stage;
+    private EmergencyContact contact = null;
+    private ObservableList<Change> changelog;
 
-  /**
-   * Gives the user view the application controller and hides all label and buttons that are not
-   * needed on opening
-   *
-   * @param controller    the application controller
-   * @param user          the current user
-   * @param stage         the application stage
-   * @param fromClinician boolean value indication if from clinician view
-   */
-  public void init(AppController controller, User user, Stage stage, boolean fromClinician,
-      Collection<PropertyChangeListener> parentListeners) {
+    /**
+     * Gives the user view the application controller and hides all label and buttons that are not
+     * needed on opening
+     *
+     * @param controller    the application controller
+     * @param user          the current user
+     * @param stage         the application stage
+     * @param fromClinician boolean value indication if from clinician view
+     */
+    public void init(AppController controller, User user, Stage stage, boolean fromClinician,
+                     Collection<PropertyChangeListener> parentListeners) {
 
-    //add change listeners of parent controllers to the current user
-    if (parentListeners != null && !parentListeners.isEmpty()) {
-      for (PropertyChangeListener listener : parentListeners) {
-        user.addPropertyChangeListener(listener);
-      }
-    }
-    this.stage = stage;
-    application = controller;
+        //add change listeners of parent controllers to the current user
+        if (parentListeners != null && !parentListeners.isEmpty()) {
+            for (PropertyChangeListener listener : parentListeners) {
+                user.addPropertyChangeListener(listener);
+            }
+        }
+        this.stage = stage;
+        application = controller;
 
-    // This is the place to set visible and invisible controls for Clinician vs User
-    medicationTabPageController.init(controller, user, fromClinician);
-    procedureTabPageController.init(controller, user, fromClinician, this);
-    donationTabPageController.init(controller, user, this);
-    diseasesTabPageController.init(controller, user, fromClinician, this);
-    receiverTabPageController.init(controller, this.stage, user, fromClinician, this);
-    statusBarPageController.init(controller);
-    //arbitrary default values
+        // This is the place to set visible and invisible controls for Clinician vs User
+        medicationTabPageController.init(controller, user, fromClinician);
+        procedureTabPageController.init(controller, user, fromClinician, this);
+        donationTabPageController.init(controller, user, this);
+        diseasesTabPageController.init(controller, user, fromClinician, this);
+        receiverTabPageController.init(controller, this.stage, user, fromClinician, this);
+        statusBarPageController.init(controller);
+        //arbitrary default values
 
-    undoButton.setVisible(true);
-    redoButton.setVisible(true);
-    //warningLabel.setVisible(false);
-    changeCurrentUser(user);
+        undoButton.setVisible(true);
+        redoButton.setVisible(true);
+        //warningLabel.setVisible(false);
+        changeCurrentUser(user);
 
-    // Sets the button to be disabled
-    updateUndoRedoButtons();
+        // Sets the button to be disabled
+        updateUndoRedoButtons();
 
 
         //showUser(currentUser);
 
 
-    if (user.getNhi() != null) {
-      showUser(
-              currentUser); // Assumes a donor with no name is a new sign up and does not pull values from a template
-      List<Change> changes = currentUser.getChanges();
-      if (changes != null) {
-        changelog = FXCollections.observableList(changes);
-      } else {
-        changelog = FXCollections.observableArrayList(new ArrayList<Change>());
-      }
-    } else {
-      changelog = FXCollections.observableArrayList(new ArrayList<Change>());
-    }
+        if (user.getNhi() != null) {
+            showUser(
+                    currentUser); // Assumes a donor with no name is a new sign up and does not pull values from a template
+            List<Change> changes = currentUser.getChanges();
+            if (changes != null) {
+                changelog = FXCollections.observableList(changes);
+            } else {
+                changelog = FXCollections.observableArrayList(new ArrayList<Change>());
+            }
+        } else {
+            changelog = FXCollections.observableArrayList(new ArrayList<Change>());
+        }
 
-    showDonorHistory();
-    changelog.addListener((ListChangeListener.Change<? extends Change> change) -> historyTableView
-            .setItems(changelog));
+        showDonorHistory();
+        changelog.addListener((ListChangeListener.Change<? extends Change> change) -> historyTableView
+                .setItems(changelog));
 
         userProfileTabPageController.init(controller, user, this.stage, fromClinician);
     }
@@ -282,11 +282,11 @@ public class UserController {
         } else {
             stage.setTitle("User Profile: " + user.getFirstName());
 
-    }
-    updateUndoRedoButtons();
-  if (changelog.size() > 0){
-      statusBarPageController.updateStatus(user.getNhi() +" " + changelog.get(changelog.size()-1).getChange());
-  }
+        }
+        updateUndoRedoButtons();
+        if (changelog.size() > 0) {
+            statusBarPageController.updateStatus(user.getNhi() + " " + changelog.get(changelog.size() - 1).getChange());
+        }
     }
 
     /**
@@ -296,19 +296,19 @@ public class UserController {
         historyTableView.refresh();
     }
 
-  /**
-   * Shows the history of the Users profile such as added and removed information
-   */
-  private void showDonorHistory() {
-    TableColumn<Change, String> timeColumn = new TableColumn<>("Time");
-    TableColumn<Change, String> changeColumn = new TableColumn<>("Change");
-    timeColumn.setCellValueFactory(new PropertyValueFactory<>("time"));
-    changeColumn.setCellValueFactory(new PropertyValueFactory<>("change"));
-    historyTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-    historyTableView.setItems(changelog);
-    historyTableView.getColumns().addAll(timeColumn, changeColumn);
+    /**
+     * Shows the history of the Users profile such as added and removed information
+     */
+    private void showDonorHistory() {
+        TableColumn<Change, String> timeColumn = new TableColumn<>("Time");
+        TableColumn<Change, String> changeColumn = new TableColumn<>("Change");
+        timeColumn.setCellValueFactory(new PropertyValueFactory<>("time"));
+        changeColumn.setCellValueFactory(new PropertyValueFactory<>("change"));
+        historyTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        historyTableView.setItems(changelog);
+        historyTableView.getColumns().addAll(timeColumn, changeColumn);
 
-  }
+    }
 
     /**
      * Public method to clear medications in the medication tab

@@ -19,8 +19,9 @@ public class MedicationDurations {
 
     /**
      * Constructor for Medication Durations
+     *
      * @param start start date/time
-     * @param stop stop date/time
+     * @param stop  stop date/time
      */
     public MedicationDurations(LocalDateTime start, LocalDateTime stop) {
         this.start = start;
@@ -30,6 +31,7 @@ public class MedicationDurations {
 
     /**
      * Constructor for Medication Durations
+     *
      * @param start start date/time
      */
     public MedicationDurations(LocalDateTime start) {
@@ -43,8 +45,8 @@ public class MedicationDurations {
 
     public void setStart(LocalDateTime start) {
         this.start = start;
-        if(stop != null){
-            duration = (int) ChronoUnit.DAYS.between(start,stop);
+        if (stop != null) {
+            duration = (int) ChronoUnit.DAYS.between(start, stop);
         } else {
             duration = 0;
         }
@@ -56,7 +58,7 @@ public class MedicationDurations {
 
     public void setStop(LocalDateTime stop) {
         this.stop = stop;
-        duration = (int) ChronoUnit.DAYS.between(start,stop);
+        duration = (int) ChronoUnit.DAYS.between(start, stop);
     }
 
     public int getDuration() {

@@ -1,11 +1,8 @@
 package seng302.Controller;
 
-import com.sun.org.apache.xpath.internal.operations.Or;
-import org.json.simple.JSONObject;
 import seng302.Model.OrganDeregisterReason;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 
 public class ReceiverOrganDetailsHolder {
 
@@ -15,9 +12,10 @@ public class ReceiverOrganDetailsHolder {
 
     /**
      * Constructor
+     *
      * @param startDate LocalDate date of starting needing to receive
-     * @param stopDate LocalDate date of stopping needing to receive
-     * @param reason OrganDeregisterReason (enum) of stopping needing to receive
+     * @param stopDate  LocalDate date of stopping needing to receive
+     * @param reason    OrganDeregisterReason (enum) of stopping needing to receive
      */
     public ReceiverOrganDetailsHolder(LocalDate startDate, LocalDate stopDate, OrganDeregisterReason reason) {
         this.startDate = startDate;
@@ -51,6 +49,7 @@ public class ReceiverOrganDetailsHolder {
 
     /**
      * Thought I needed this when I wrote it, but I don't. Useful for debugging though
+     *
      * @return string to print
      */
     @Override

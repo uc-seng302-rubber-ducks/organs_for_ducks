@@ -19,7 +19,7 @@ public class Change {
         this.change = change;
     }
 
-    public Change(String change){
+    public Change(String change) {
         this.change = change;
         this.time = LocalDateTime.now();
     }

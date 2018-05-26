@@ -5,8 +5,6 @@ import org.junit.Ignore;
 import org.junit.Test;
 import picocli.CommandLine;
 import seng302.Controller.AppController;
-import seng302.Controller.CliCommands.UpdateClinician;
-import seng302.Controller.CliCommands.UpdateUserDetails;
 import seng302.Model.Clinician;
 
 import static org.mockito.ArgumentMatchers.anyString;

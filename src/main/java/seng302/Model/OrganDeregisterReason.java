@@ -15,12 +15,12 @@ public enum OrganDeregisterReason {
 
     public String deregisterReason;
 
-    OrganDeregisterReason(String deregisterReason){
+    OrganDeregisterReason(String deregisterReason) {
         this.deregisterReason = deregisterReason;
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         return deregisterReason;
     }
 }

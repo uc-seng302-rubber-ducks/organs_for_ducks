@@ -1,17 +1,13 @@
 package seng302.Controller;
 
-import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import seng302.Model.Disease;
-import seng302.Model.Organs;
 import seng302.Model.User;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 
 import static org.junit.Assert.fail;
@@ -43,8 +39,14 @@ public class DiseasesTest {
             Disease diseasec1 = new Disease("c1", true, false, LocalDate.parse("2000-01-03", sdf));
 
             //ArrayList<Disease> baseOrder = new ArrayList<Disease>(8); // ????? I had the left side as a collection but then i couldnt use baseOrder.get???
-            baseOrder.add(diseaseA1); baseOrder.add(diseaseA2); baseOrder.add(diseaseA3); baseOrder.add(diseaseB1);
-            baseOrder.add(diseaseC1); baseOrder.add(diseaseD1); baseOrder.add(diseaseb1); baseOrder.add(diseasec1);
+            baseOrder.add(diseaseA1);
+            baseOrder.add(diseaseA2);
+            baseOrder.add(diseaseA3);
+            baseOrder.add(diseaseB1);
+            baseOrder.add(diseaseC1);
+            baseOrder.add(diseaseD1);
+            baseOrder.add(diseaseb1);
+            baseOrder.add(diseasec1);
 
             //Collection<Disease> orderedDate = new ArrayList<Disease>(8);
             orderedDate.add(diseaseB1);
@@ -77,7 +79,7 @@ public class DiseasesTest {
             orderedChronic.add(diseaseb1);
 
             //Populate user.currentDiseases
-            for(int i = 0; i < 8; i++) {
+            for (int i = 0; i < 8; i++) {
                 user.getCurrentDiseases().add(baseOrder.get(i));
             }
 

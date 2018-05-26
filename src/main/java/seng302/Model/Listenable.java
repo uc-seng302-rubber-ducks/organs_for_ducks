@@ -9,24 +9,24 @@ import java.beans.PropertyChangeListener;
  */
 public interface Listenable {
 
-  /**
-   * wrapper of java.beans.PropertyChangeSupport.addPropertyChangeListener
-   *
-   * @param listener listener to be added
-   */
-  void addPropertyChangeListener(PropertyChangeListener listener);
+    /**
+     * wrapper of java.beans.PropertyChangeSupport.addPropertyChangeListener
+     *
+     * @param listener listener to be added
+     */
+    void addPropertyChangeListener(PropertyChangeListener listener);
 
-  /**
-   * wrapper of java.beans.PropertyChangeSupport.removePropertyChangeListener
-   *
-   * @param listener listener to be removed
-   */
-  void removePropertyChangeListener(PropertyChangeListener listener);
+    /**
+     * wrapper of java.beans.PropertyChangeSupport.removePropertyChangeListener
+     *
+     * @param listener listener to be removed
+     */
+    void removePropertyChangeListener(PropertyChangeListener listener);
 
-  /**
-   * wrapper of java.beans.PropertyChangeSupport.fire
-   *
-   * @param event PropertyChangeEvent to be fired
-   */
-  void fire(PropertyChangeEvent event);
+    /**
+     * wrapper of java.beans.PropertyChangeSupport.fire
+     *
+     * @param event PropertyChangeEvent to be fired
+     */
+    void fire(PropertyChangeEvent event);
 }

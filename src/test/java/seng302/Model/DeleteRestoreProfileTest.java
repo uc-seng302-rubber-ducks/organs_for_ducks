@@ -26,7 +26,7 @@ public class DeleteRestoreProfileTest {
     public static void setUpClass() {
         testUser = new User("Stan", LocalDate.of(2000, 3, 5), "ABC4321");
         testClinician = new Clinician("Bob", "id", "living space", "chch", "1234");
-        testAdmin = new Administrator("nameuser","first","middle","last","1234");
+        testAdmin = new Administrator("nameuser", "first", "middle", "last", "1234");
 
         appC = AppController.getInstance();
         activeAdmins = appC.getAdmins();
@@ -50,7 +50,6 @@ public class DeleteRestoreProfileTest {
         activeAdmins.remove(testAdmin);
         activeClinicians.remove(testClinician);
         activeUsers.remove(testUser);
-
 
 
         appC.getDeletedUsers().clear();
@@ -201,7 +200,7 @@ public class DeleteRestoreProfileTest {
     @Test
     public void testRestoreAdminExistsException() {
         appC.deleteAdmin(testAdmin);
-        Administrator newAdmin = new Administrator("nameuser","Notfirst","middle","last","1234");
+        Administrator newAdmin = new Administrator("nameuser", "Notfirst", "middle", "last", "1234");
         activeAdmins.add(newAdmin);
 
         try {

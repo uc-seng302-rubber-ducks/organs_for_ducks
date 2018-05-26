@@ -6,7 +6,7 @@ import seng302.Service.PasswordManager;
 public class PasswordManagerTest {
 
     @Test
-    public void testIsExpectedPasswordTrue(){
+    public void testIsExpectedPasswordTrue() {
         byte[] salt = PasswordManager.getNextSalt();
         byte[] hash = PasswordManager.hash("password", salt);
 
@@ -14,7 +14,7 @@ public class PasswordManagerTest {
     }
 
     @Test
-    public void testIsExpectedPasswordFalse(){
+    public void testIsExpectedPasswordFalse() {
         byte[] salt = PasswordManager.getNextSalt();
         byte[] hash = PasswordManager.hash("password", salt);
 
@@ -22,13 +22,12 @@ public class PasswordManagerTest {
     }
 
     @Test
-    public void testIsExpectedPasswordWrongSalt(){
+    public void testIsExpectedPasswordWrongSalt() {
         byte[] salt = PasswordManager.getNextSalt();
         byte[] hash = PasswordManager.hash("password", salt);
 
         assert (!PasswordManager.isExpectedPassword("Password", PasswordManager.getNextSalt(), hash));
     }
-
 
 
 }

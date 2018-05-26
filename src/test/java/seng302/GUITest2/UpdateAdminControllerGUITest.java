@@ -22,6 +22,7 @@ import static org.testfx.api.FxAssert.verifyThat;
 public class UpdateAdminControllerGUITest extends ApplicationTest {
 
     private Administrator testAdmin;
+
     @BeforeClass
     public static void initialization() {
         CommonTestMethods.runHeadless();

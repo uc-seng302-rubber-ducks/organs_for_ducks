@@ -1,17 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.text.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
 
-
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8">
-   <children>
-      <Label alignment="CENTER" layoutX="-9.0" layoutY="21.0" prefHeight="21.0" prefWidth="616.0" text="Welcome to Organs for Ducks">
-         <font>
-            <Font size="18.0" />
-         </font>
-      </Label>
-      <Label alignment="TOP_LEFT" layoutX="79.0" layoutY="105.0" prefHeight="255.0" prefWidth="423.0" text="New User: &#10;1. Click the create button&#10;2. Enter your user details into the sign up form&#10;3. Click confirm once you have finished entering your details&#10;&#10;Now you have a donor profile!!&#10;&#10;&#10;Existing User:&#10;1. Enter your NHI number as your userID&#10;3. Click login&#10;&#10;You are now logged in!!" wrapText="true" />
-   </children>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0"
+            prefWidth="600.0" xmlns="http://javafx.com/javafx/8">
+    <children>
+        <Label alignment="CENTER" layoutX="-9.0" layoutY="21.0" prefHeight="21.0" prefWidth="616.0"
+               text="Welcome to Organs for Ducks">
+            <font>
+                <Font size="18.0"/>
+            </font>
+        </Label>
+        <Label alignment="TOP_LEFT" layoutX="79.0" layoutY="105.0" prefHeight="255.0" prefWidth="423.0"
+               text="New User: &#10;1. Click the create button&#10;2. Enter your user details into the sign up form&#10;3. Click confirm once you have finished entering your details&#10;&#10;Now you have a donor profile!!&#10;&#10;&#10;Existing User:&#10;1. Enter your NHI number as your userID&#10;3. Click login&#10;&#10;You are now logged in!!"
+               wrapText="true"/>
+    </children>
 </AnchorPane>

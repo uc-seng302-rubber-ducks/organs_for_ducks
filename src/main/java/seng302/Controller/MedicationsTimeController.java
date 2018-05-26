@@ -1,8 +1,5 @@
 package seng302.Controller;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Comparator;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -14,6 +11,9 @@ import javafx.stage.Stage;
 import seng302.Model.MedicationDurations;
 import seng302.Model.User;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -33,8 +33,8 @@ public class MedicationsTimeController {
     /**
      * Initializes the view and passes important settings into the controller
      *
-     * @param user current user for this view
-     * @param stage stage that the scene is shown on
+     * @param user     current user for this view
+     * @param stage    stage that the scene is shown on
      * @param medicine medication this is having its history shown
      */
     public void init(User user, Stage stage, String medicine) {
@@ -43,31 +43,31 @@ public class MedicationsTimeController {
         List<LocalDateTime> currentTimeStamps = user.getCurrentMedicationTimes().get(medicine);
         List<LocalDateTime> previousTimeStamps = user.getPreviousMedicationTimes().get(medicine);
         medicationDurations = FXCollections.observableArrayList(new ArrayList<>());
-        setUpTable(currentTimeStamps,previousTimeStamps);
+        setUpTable(currentTimeStamps, previousTimeStamps);
 
     }
 
     /**
      * Sets up the tableview for the medicaitons
      *
-     * @param current list of currently taken medication timestamps
+     * @param current  list of currently taken medication timestamps
      * @param previous list of previously taken medication timetamps
      */
-    private void setUpTable(List<LocalDateTime> current, List<LocalDateTime> previous){
-        if(current != null) {
+    private void setUpTable(List<LocalDateTime> current, List<LocalDateTime> previous) {
+        if (current != null) {
             current.sort(Comparator.naturalOrder());
         } else {
             current = new ArrayList<>();
         }
-        if(previous != null) {
+        if (previous != null) {
             previous.sort(Comparator.naturalOrder());
         } else {
             previous = new ArrayList<>();
         }
-        if (current.size() > 1){
+        if (current.size() > 1) {
             System.out.println("Somehow the medicine wasn't stopped before starting again");// TODO: fix this properly
         }
-        if(previous.size() > current.size()){
+        if (previous.size() > current.size()) {
             System.out.println("Somehow we have stopped taking this medicine more times than we took it"); //TODO: fix this properly
         }
         if (previous.size() == current.size()) {
@@ -76,7 +76,7 @@ public class MedicationsTimeController {
             }
         } else {
             int i;
-            for ( i = 0 ; i < previous.size(); i++) {
+            for (i = 0; i < previous.size(); i++) {
                 medicationDurations.add(new MedicationDurations(current.get(i), previous.get(i)));
             }
             medicationDurations.add(new MedicationDurations(current.get(i)));
@@ -86,13 +86,11 @@ public class MedicationsTimeController {
         TableColumn startDateColumn = new TableColumn("Start Date");
         TableColumn endDateColumn = new TableColumn("End Date");
         TableColumn durationColumn = new TableColumn("Duration (Days)");
-        startDateColumn.setCellValueFactory( new PropertyValueFactory<MedicationDurations, String>("start"));
+        startDateColumn.setCellValueFactory(new PropertyValueFactory<MedicationDurations, String>("start"));
         endDateColumn.setCellValueFactory(new PropertyValueFactory<MedicationDurations, String>("stop"));
         durationColumn.setCellValueFactory(new PropertyValueFactory<MedicationDurations, String>("duration"));
         medicationTimeTable.setItems(medicationDurations);
-        medicationTimeTable.getColumns().addAll(startDateColumn,endDateColumn,durationColumn);
-
-
+        medicationTimeTable.getColumns().addAll(startDateColumn, endDateColumn, durationColumn);
 
 
     }

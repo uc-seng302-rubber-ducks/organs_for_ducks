@@ -11,45 +11,45 @@ import java.util.logging.Level;
  */
 public class Log {
 
-  private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger("ODMS");
+    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger("ODMS");
 
-  /**
-   * Creates a log entry at the INFO level. If there is an exception to be logged, please escalate
-   * to warning
-   *
-   * @param message String message to be logged
-   */
-  public static void info(String message) {
-    logger.log(Level.INFO, message);
-  }
+    /**
+     * Creates a log entry at the INFO level. If there is an exception to be logged, please escalate
+     * to warning
+     *
+     * @param message String message to be logged
+     */
+    public static void info(String message) {
+        logger.log(Level.INFO, message);
+    }
 
 
-  /**
-   * Creates a log entry at the WARNING level.
-   *
-   * @param message String message to be logged
-   */
-  public static void warning(String message) {
-    logger.log(Level.WARNING, message);
-  }
+    /**
+     * Creates a log entry at the WARNING level.
+     *
+     * @param message String message to be logged
+     */
+    public static void warning(String message) {
+        logger.log(Level.WARNING, message);
+    }
 
-  /**
-   * Creates a log entry at the WARNING level.
-   *
-   * @param message String message to be logged
-   * @param ex Throwable/Exception that has been caught
-   */
-  public static void warning(String message, Throwable ex) {
-    logger.log(Level.WARNING, message, ex);
-  }
+    /**
+     * Creates a log entry at the WARNING level.
+     *
+     * @param message String message to be logged
+     * @param ex      Throwable/Exception that has been caught
+     */
+    public static void warning(String message, Throwable ex) {
+        logger.log(Level.WARNING, message, ex);
+    }
 
-  /**
-   * Creates a log entry at the SEVERE level. This should only be used for app-crashing errors
-   *
-   * @param message String message to be logged
-   * @param ex Throwable/Exception that has been caught
-   */
-  public static void severe(String message, Throwable ex) {
-    logger.log(Level.SEVERE, message, ex);
-  }
+    /**
+     * Creates a log entry at the SEVERE level. This should only be used for app-crashing errors
+     *
+     * @param message String message to be logged
+     * @param ex      Throwable/Exception that has been caught
+     */
+    public static void severe(String message, Throwable ex) {
+        logger.log(Level.SEVERE, message, ex);
+    }
 }

@@ -10,9 +10,10 @@ public class AlertUnclosedWindowsController {
 
     /**
      * Initializes the AlertUnclosedWindowsController
+     *
      * @param stage The applications stage.
      */
-    public void init(Stage stage, AdministratorViewController controller){
+    public void init(Stage stage, AdministratorViewController controller) {
         this.stage = stage;
         this.controller = controller;
         //disable all other stages when this window is opened.
@@ -32,7 +33,7 @@ public class AlertUnclosedWindowsController {
      * administrator overview.
      */
     @FXML
-    private void closeAllWindows(){
+    private void closeAllWindows() {
         controller.CloseAllWindows();
         stage.close();
     }

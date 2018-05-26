@@ -21,6 +21,7 @@ public class ReceiverDetails {
 
     /**
      * Constructor without EnumMap; an empty one is generated
+     *
      * @param attachedUser user to create the details for
      */
     ReceiverDetails(User attachedUser) {
@@ -41,6 +42,7 @@ public class ReceiverDetails {
 
     /**
      * Sets the organ EnumMap to a provided EnumMap
+     *
      * @param organs a provided organs EnumMap
      */
     public void setOrgans(Map<Organs, ArrayList<ReceiverOrganDetailsHolder>> organs) {

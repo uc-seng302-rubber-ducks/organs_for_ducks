@@ -7,7 +7,7 @@ import seng302.Model.Clinician;
 import seng302.Service.AttributeValidation;
 
 @CommandLine.Command(name = "clinician", description = "Allows the creation of a clinician. ot update use update clinician")
-public class CreateClinician implements Runnable{
+public class CreateClinician implements Runnable {
 
     AppController controller = AppController.getInstance();
 
@@ -52,6 +52,7 @@ public class CreateClinician implements Runnable{
     /**
      * sets the instance of app controller to use for testing
      * default .getInstance is used otherwise
+     *
      * @param controller AppController (or mock) to be used
      */
     public void setController(AppController controller) {

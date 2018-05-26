@@ -1,17 +1,15 @@
 package seng302.Service;
 
+import seng302.Model.BloodTypes;
+
 import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDate;
-import java.time.Period;
 import java.util.Objects;
-
-import seng302.Model.BloodTypes;
-import seng302.Model.TransplantDetails;
-import seng302.Model.User;
 
 
 /**
  * Contains methods for validating user/clinician attributes when updating/creating in the GUI application.
+ *
  * @author acb116, are66, eli26, jha236
  */
 public class AttributeValidation {
@@ -19,6 +17,7 @@ public class AttributeValidation {
 
     /**
      * Checks that the NHI matches the correct format.
+     *
      * @param nhi The national health index.
      * @return True if NHI matches format, false otherwise
      */
@@ -65,6 +64,7 @@ public class AttributeValidation {
 
     /**
      * Checks if the given non-null attribute only contains a-z, A-Z, spaces, apostrophes and hyphens
+     *
      * @param attribute The attribute to be checked.
      * @return true if the attribute meets the specified criteria, false otherwise
      */
@@ -75,6 +75,7 @@ public class AttributeValidation {
 
     /**
      * Checks if the given non-null attribute is non-empty and only contains a-z, A-Z, spaces, apostrophes, hyphens and numbers
+     *
      * @param attribute The attribute to be checked.
      * @return true if the attribute meets the specified criteria, false otherwise
      */
@@ -97,6 +98,7 @@ public class AttributeValidation {
     /**
      * Checks that the date of birth is before the date of death and the date of death is before tomorrow's date if the
      * date of death is not null.
+     *
      * @param birth The non null date of birth.
      * @param death The date of death.
      * @return true if the date of death is null or the date of birth is before the date of death and the date of death
@@ -114,6 +116,7 @@ public class AttributeValidation {
     /**
      * Gets the enum value of BloodTypes by iterating through the string literals
      * and matching them to the given blood type.
+     *
      * @param blood the value of blood type.
      * @return True if the provided object is valid
      */
@@ -133,6 +136,7 @@ public class AttributeValidation {
 
     /**
      * Checks that the given value can be parsed as a double.
+     *
      * @param stringValue Either the height or weight to be parsed as a double.
      * @return The value as a double, -1 if the value was less than or equal to 0 or there was an exception, otherwise 0 if the value was empty.
      */
@@ -157,6 +161,7 @@ public class AttributeValidation {
 
     /**
      * Gets the first character of the given gender.
+     *
      * @param gender The string to be passed as a gender
      * @return The gender value.
      */
@@ -172,11 +177,11 @@ public class AttributeValidation {
 
     /**
      * Check the entry of the string provided to see if the supplied objects region matches the text.
-     *
+     * <p>
      * Will catch a NoSuchMethod Exception print a stacktrace and return false if the object has no region object to get
      *
      * @param regionString String object to check against the object's region
-     * @param toMatch an object containing a region
+     * @param toMatch      an object containing a region
      * @return true if the object's regions starts with the provided string
      */
     public static <T> boolean checkRegionMatches(String regionString, T toMatch) {
@@ -196,12 +201,12 @@ public class AttributeValidation {
     /**
      * Takes an object with a birth gender and then invokes the method.
      * This is then tested against the supplied gender to check for a match
-     *
+     * <p>
      * If the object provided contains no getBirthGender method a NoSuchMethod exception will be caught,
      * the stack trace printed and false returned
      *
      * @param genderValue String object to check against the object's gender
-     * @param toMatch an object with a gender
+     * @param toMatch     an object with a gender
      * @return true if the objects gender starts with the provided string
      */
     public static <T> boolean checkGenderMatches(String genderValue, T toMatch) {

@@ -1,7 +1,5 @@
 package seng302.Controller;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -14,6 +12,9 @@ import seng302.Model.Organs;
 import seng302.Model.ReceiverOrganDetails;
 import seng302.Model.User;
 import seng302.Service.Log;
+
+import java.time.LocalDate;
+import java.util.ArrayList;
 
 public class ReceiverOrganDateController {
 
@@ -29,7 +30,7 @@ public class ReceiverOrganDateController {
     /**
      * Initializes the receiverOrganDateView and passes important settings into the controller
      *
-     * @param user current user for this view
+     * @param user  current user for this view
      * @param stage stage that the scene is shown on
      * @param organ having its history shown
      */
@@ -51,21 +52,21 @@ public class ReceiverOrganDateController {
     /**
      * show organs for receiver.
      */
-    private void showTimeTable(Organs organ){
+    private void showTimeTable(Organs organ) {
         ArrayList<LocalDate> organDates = (ArrayList<LocalDate>) user.getReceiverDetails().getOrganDates(organ);
-      ArrayList<ReceiverOrganDetails> receiverOrganDetailsList = new ArrayList<>();
+        ArrayList<ReceiverOrganDetails> receiverOrganDetailsList = new ArrayList<>();
 
-        if(organDates != null && !organDates.isEmpty()) {
+        if (organDates != null && !organDates.isEmpty()) {
             for (int i = 0; i < organDates.size(); i += 1) {
                 ReceiverOrganDetails receiverOrganDetails = new ReceiverOrganDetails();
                 receiverOrganDetails.setRegisterDate(organDates.get(i));
-                i +=1;
+                i += 1;
                 try {
                     receiverOrganDetails.setDeRegisterDate(organDates.get(i));
-                } catch (IndexOutOfBoundsException e){
-                  Log.warning(e.getMessage(), e);
+                } catch (IndexOutOfBoundsException e) {
+                    Log.warning(e.getMessage(), e);
                 }
-              receiverOrganDetailsList.add(receiverOrganDetails);
+                receiverOrganDetailsList.add(receiverOrganDetails);
             }
         }
 
@@ -77,8 +78,8 @@ public class ReceiverOrganDateController {
         deRegistrationDate.setMinWidth(285);
         deRegistrationDate.setCellValueFactory(new PropertyValueFactory<>("deRegisterDate"));
 
-      ObservableList<ReceiverOrganDetails> items = FXCollections.observableList(
-          receiverOrganDetailsList);
+        ObservableList<ReceiverOrganDetails> items = FXCollections.observableList(
+                receiverOrganDetailsList);
 
         organTimeTable.setItems(items);
         organTimeTable.getColumns().addAll(registrationDate, deRegistrationDate);

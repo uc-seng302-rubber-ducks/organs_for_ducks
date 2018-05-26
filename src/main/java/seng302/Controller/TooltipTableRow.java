@@ -1,4 +1,5 @@
 package seng302.Controller;
+
 import javafx.scene.control.TableRow;
 import javafx.scene.control.Tooltip;
 
@@ -6,6 +7,7 @@ import java.util.function.Function;
 
 /**
  * Class for the Tooltip Table Row
+ *
  * @param <T> table row
  */
 public class TooltipTableRow<T> extends TableRow<T> {
@@ -13,7 +15,6 @@ public class TooltipTableRow<T> extends TableRow<T> {
     private Function<T, String> toolTipStringFunction;
 
     /**
-     *
      * @param toolTipStringFunction A tooltip function.
      */
     public TooltipTableRow(Function<T, String> toolTipStringFunction) {
@@ -21,14 +22,13 @@ public class TooltipTableRow<T> extends TableRow<T> {
     }
 
     /**
-     *
-     * @param item T item.
+     * @param item  T item.
      * @param empty boolean if empty or not.
      */
     @Override
     protected void updateItem(T item, boolean empty) {
         super.updateItem(item, empty);
-        if(item == null) {
+        if (item == null) {
             setTooltip(null);
         } else {
             Tooltip tooltip = new Tooltip(toolTipStringFunction.apply(item));

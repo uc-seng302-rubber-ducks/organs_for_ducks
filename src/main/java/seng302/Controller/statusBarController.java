@@ -8,24 +8,24 @@ import javafx.util.Duration;
 public class statusBarController {
 
 
-  @FXML
-  private Label statusBar;
+    @FXML
+    private Label statusBar;
 
-  private AppController application;
-  private UserController parent;
+    private AppController application;
+    private UserController parent;
 
-  @FXML
-  public void init(AppController controller) {
-    application = controller;
-    updateStatus("");
-  }
+    @FXML
+    public void init(AppController controller) {
+        application = controller;
+        updateStatus("");
+    }
 
     /**
      * when a change is made the status bar is set and is cleared after 5 sec
      *
      * @param update the string that the label is to be changed to
      */
-    public void updateStatus(String update){
+    public void updateStatus(String update) {
         statusBar.setText(update);
         PauseTransition statusBarWaiter = new PauseTransition(Duration.seconds(5));
         statusBarWaiter.setOnFinished(event -> statusBar.setText(""));

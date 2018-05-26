@@ -7,18 +7,18 @@ package seng302;
  */
 public enum Directory {
 
-  ROOT(System.getProperty("user.home") + "/.organs/"),
-  JSON(ROOT.directory() + "JSON/"),
-  LOGS(ROOT.directory() + "LOGS/");
+    ROOT(System.getProperty("user.home") + "/.organs/"),
+    JSON(ROOT.directory() + "JSON/"),
+    LOGS(ROOT.directory() + "LOGS/");
 
-  private String directory;
+    private String directory;
 
-  Directory(String directory) {
-    this.directory = directory;
-  }
+    Directory(String directory) {
+        this.directory = directory;
+    }
 
-  public String directory() {
-    return directory;
-  }
+    public String directory() {
+        return directory;
+    }
 
 }

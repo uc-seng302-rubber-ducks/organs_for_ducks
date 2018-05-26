@@ -1,7 +1,5 @@
 package seng302.Controller;
 
-import java.util.*;
-
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.ListView;
@@ -11,6 +9,10 @@ import seng302.Model.MedicalProcedure;
 import seng302.Model.Organs;
 import seng302.Model.User;
 import seng302.Service.Log;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Class for the Organs Affected view for Medical Procedures
@@ -33,20 +35,21 @@ public class OrgansAffectedController {
 
     /**
      * initialises the organs affected window for medical procedure
+     *
      * @param appController given app controller
-     * @param stage given stage
-     * @param procedure current procedure
-     * @param user current user
+     * @param stage         given stage
+     * @param procedure     current procedure
+     * @param user          current user
      */
     public void init(AppController appController, Stage stage, MedicalProcedure procedure, User user) {
         organsListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         affectedOrgansListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-        organsListView.getSelectionModel().selectedItemProperty().addListener(ListChangeListener->{
-            if(organsListView.getSelectionModel().getSelectedItem() != null)
-            affectedOrgansListView.getSelectionModel().clearSelection();
+        organsListView.getSelectionModel().selectedItemProperty().addListener(ListChangeListener -> {
+            if (organsListView.getSelectionModel().getSelectedItem() != null)
+                affectedOrgansListView.getSelectionModel().clearSelection();
         });
-        affectedOrgansListView.getSelectionModel().selectedItemProperty().addListener(ListChangeListener ->{
-                    if(affectedOrgansListView.getSelectionModel().getSelectedItem() != null){
+        affectedOrgansListView.getSelectionModel().selectedItemProperty().addListener(ListChangeListener -> {
+            if (affectedOrgansListView.getSelectionModel().getSelectedItem() != null) {
                         organsListView.getSelectionModel().clearSelection();
                     }
                 }
@@ -70,13 +73,13 @@ public class OrgansAffectedController {
     @FXML
     void addOrgan() {
         Organs toAffect = organsListView.getSelectionModel().getSelectedItem();
-        if(toAffect != null) {
+        if (toAffect != null) {
             currentProcedure.addOrgan(toAffect);
             affectedOrgansListView.setItems(FXCollections.observableList(currentProcedure.getOrgansAffected()));
             organsListView.getItems().remove(toAffect);
-            Log.info("Successfully added the selected organ: "+toAffect+" to the affected list at current medical procedure for User NHI: "+user.getNhi());
+            Log.info("Successfully added the selected organ: " + toAffect + " to the affected list at current medical procedure for User NHI: " + user.getNhi());
         } else {
-            Log.warning("Unable to add the organ: null to the affected list for User NHI: "+user.getNhi());
+            Log.warning("Unable to add the organ: null to the affected list for User NHI: " + user.getNhi());
         }
     }
 
@@ -86,11 +89,11 @@ public class OrgansAffectedController {
     @FXML
     void removeOrgan() {
         Organs toAffect = affectedOrgansListView.getSelectionModel().getSelectedItem();
-        if(toAffect != null) {
+        if (toAffect != null) {
             currentProcedure.removeOrgan(toAffect);
             affectedOrgansListView.setItems(FXCollections.observableList(currentProcedure.getOrgansAffected()));
             organsListView.getItems().add(toAffect);
-            Log.info("Successfully removed the selected organ: "+toAffect+"  from the affected list for the current medical procedure for User NHI: "+user.getNhi());
+            Log.info("Successfully removed the selected organ: " + toAffect + "  from the affected list for the current medical procedure for User NHI: " + user.getNhi());
         } else {
             Log.warning("Unable to remove the organ: null from the affected list");
         }

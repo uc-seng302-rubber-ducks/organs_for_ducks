@@ -46,7 +46,7 @@ public class UpdateClinician implements Runnable {
         }
 
         if (newId != null) {
-            if(controller.getClinician(newId) == null) {
+            if (controller.getClinician(newId) == null) {
                 clinician.setStaffId(newId);
                 valid = AttributeValidation.checkRequiredString(newId);
             }
@@ -94,6 +94,7 @@ public class UpdateClinician implements Runnable {
 
     /**
      * For testing, do not use otherwise
+     *
      * @param controller controller to use for tests
      */
     public void setController(AppController controller) {

@@ -477,10 +477,10 @@ public class User extends Undoable<User> implements Listenable {
         mem.setOldObject(this.clone());
         updateLastModified();
         if (this.height != height) {
-        this.height = height;
-        addChange(new Change("Changed height to " + height));
-        mem.setNewObject(this.clone());
-        getUndoStack().push(mem);
+            this.height = height;
+            addChange(new Change("Changed height to " + height));
+            mem.setNewObject(this.clone());
+            getUndoStack().push(mem);
         }
     }
 
@@ -492,11 +492,11 @@ public class User extends Undoable<User> implements Listenable {
         Memento<User> mem = new Memento<>();
         mem.setOldObject(this.clone());
         updateLastModified();
-        if (weight != this.weight){
-        this.weight = weight;
-        addChange(new Change("Changed weight to " + weight));
-        mem.setNewObject(this.clone());
-        getUndoStack().push(mem);
+        if (weight != this.weight) {
+            this.weight = weight;
+            addChange(new Change("Changed weight to " + weight));
+            mem.setNewObject(this.clone());
+            getUndoStack().push(mem);
         }
     }
 

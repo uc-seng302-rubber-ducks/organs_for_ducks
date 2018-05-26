@@ -4,14 +4,14 @@ package seng302.Model;
  * Enum constructor for Blood Types
  */
 public enum BloodTypes {
-    AMINUS ("A-"),
-    APLUS ("A+"),
-    BPLUS ("B+"),
-    BMINUS ("B-"),
-    OMINUS ("O-"),
-    OPLUS ("O+"),
-    ABMINUS ("AB+"),
-    ABPLUS ("AB-");
+    AMINUS("A-"),
+    APLUS("A+"),
+    BPLUS("B+"),
+    BMINUS("B-"),
+    OMINUS("O-"),
+    OPLUS("O+"),
+    ABMINUS("AB+"),
+    ABPLUS("AB-");
 
     private final String name;
 

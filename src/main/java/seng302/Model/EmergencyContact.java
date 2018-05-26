@@ -19,7 +19,8 @@ public class EmergencyContact {
 
     /**
      * Constructor for emergency contact
-     * @param ename Emergency contact name
+     *
+     * @param ename      Emergency contact name
      * @param eCellPhone Emergency contact phone number
      */
     public EmergencyContact(String ename, String eCellPhone, User attachedUser) {
@@ -140,7 +141,7 @@ public class EmergencyContact {
         clone.setContact(copy(this));
         memento.setNewObject(clone);
         attachedUser.getUndoStack().push(memento);
-        }
+    }
 
     public String getRelationship() {
         return relationship;
@@ -195,6 +196,7 @@ public class EmergencyContact {
 
     /**
      * Compares strings
+     *
      * @param string1 The first string.
      * @param string2 the second string.
      * @return a boolean.
@@ -205,22 +207,23 @@ public class EmergencyContact {
 
     /**
      * Checks for equality between two contacts
+     *
      * @param other other contact object
      * @return true if they are equal
      */
     @Override
     public boolean equals(Object other) {
 
-        if(this == other) return true;
+        if (this == other) return true;
         if (other == null || getClass() != other.getClass()) return false;
         EmergencyContact otherContact = (EmergencyContact) other;
         return checkStrings(name, otherContact.name) &&
-                 checkStrings(homePhoneNumber, otherContact.homePhoneNumber) &&
-                 checkStrings(cellPhoneNumber, otherContact.cellPhoneNumber)
-                 && checkStrings(email, otherContact.email) &&
-                 checkStrings(address, otherContact.address) &&
-                 checkStrings(region, otherContact.region) &&
-                 checkStrings(relationship, otherContact.relationship);
+                checkStrings(homePhoneNumber, otherContact.homePhoneNumber) &&
+                checkStrings(cellPhoneNumber, otherContact.cellPhoneNumber)
+                && checkStrings(email, otherContact.email) &&
+                checkStrings(address, otherContact.address) &&
+                checkStrings(region, otherContact.region) &&
+                checkStrings(relationship, otherContact.relationship);
     }
 
     @Override

@@ -12,7 +12,6 @@ import java.util.Random;
 /**
  * Takes the password and securely hashes, salts and stores them.
  * Based on the thread https://stackoverflow.com/questions/18142745/how-do-i-generate-a-salt-in-java-for-salted-hash
- *
  */
 
 public final class PasswordManager {

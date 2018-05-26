@@ -5,6 +5,7 @@ import java.time.LocalDate;
 /**
  * a class that holds all
  * details related to transplant.
+ *
  * @author acb116
  */
 public class TransplantDetails {
@@ -14,7 +15,7 @@ public class TransplantDetails {
     private LocalDate ord; //Organ Registration Date
     private String region;
 
-    public TransplantDetails(String nhi, String name, Organs organ, LocalDate ord, String region){
+    public TransplantDetails(String nhi, String name, Organs organ, LocalDate ord, String region) {
         this.nhi = nhi;
         this.name = name;
         this.organ = organ;

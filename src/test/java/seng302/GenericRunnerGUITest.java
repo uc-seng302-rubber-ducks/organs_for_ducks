@@ -13,10 +13,10 @@ import seng302.Utils.CommonTestMethods;
 
 @RunWith(Cucumber.class)
 @CucumberOptions(features = "features",
-plugin = {
-        "pretty",
-        "html:target/site/cucumber-pretty",
-        "json:target/cucumber.json"},
+        plugin = {
+                "pretty",
+                "html:target/site/cucumber-pretty",
+                "json:target/cucumber.json"},
         snippets = SnippetType.CAMELCASE,
         glue = "seng302/steps"
 )

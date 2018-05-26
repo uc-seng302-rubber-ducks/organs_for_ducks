@@ -102,29 +102,29 @@ public class ReceiverTabController {
 
     }
 
-  /**
-   * register an organ* for receiver
-   */
-  @FXML
-  public void registerOrgan() {
-    if (organsComboBox.getSelectionModel().getSelectedItem() != null) {
-      Organs toRegister = organsComboBox.getSelectionModel().getSelectedItem();
-        currentUser.getReceiverDetails().startWaitingForOrgan(toRegister);
-        currentlyRecieving.add(toRegister);
-        organsComboBox.getItems().remove(toRegister);
-        organsComboBox.setValue(null);// reset the combobox
-        application.update(currentUser);
-        if (currentUser.getDonorDetails().getOrgans().contains(toRegister)) {
-          currentUser.getCommonOrgans().add(toRegister);
+    /**
+     * register an organ* for receiver
+     */
+    @FXML
+    public void registerOrgan() {
+        if (organsComboBox.getSelectionModel().getSelectedItem() != null) {
+            Organs toRegister = organsComboBox.getSelectionModel().getSelectedItem();
+            currentUser.getReceiverDetails().startWaitingForOrgan(toRegister);
+            currentlyRecieving.add(toRegister);
+            organsComboBox.getItems().remove(toRegister);
+            organsComboBox.setValue(null);// reset the combobox
+            application.update(currentUser);
+            if (currentUser.getDonorDetails().getOrgans().contains(toRegister)) {
+                currentUser.getCommonOrgans().add(toRegister);
 
-            //set mouse click for currentlyReceivingListView
-            currentlyReceivingListView.setOnMouseClicked(event -> {
-                if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
-                    Organs currentlyReceivingOrgan = currentlyReceivingListView.getSelectionModel()
-                            .getSelectedItem();
-                    launchReceiverOrganDateView(currentlyReceivingOrgan);
-                }
-            });
+                //set mouse click for currentlyReceivingListView
+                currentlyReceivingListView.setOnMouseClicked(event -> {
+                    if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
+                        Organs currentlyReceivingOrgan = currentlyReceivingListView.getSelectionModel()
+                                .getSelectedItem();
+                        launchReceiverOrganDateView(currentlyReceivingOrgan);
+                    }
+                });
                 parent.updateUndoRedoButtons();
                 Log.info("Successfully registered organ:" + toRegister.organName + " for receiver NHI: " + currentUser.getNhi());
             } else {
@@ -340,27 +340,27 @@ public class ReceiverTabController {
                 currentUser.getCommonOrgans().remove(toDeRegister);
             }
 
-      //if currentlyReceivingListView is empty, disable mouse click to prevent null pointer exception
-      if (currentlyReceivingListView.getItems().isEmpty()) {
-        currentlyReceivingListView.setOnMouseClicked(null);
-      }
-      //set mouse click for notReceivingListView
-      notReceivingListView.setOnMouseClicked(event -> {
-        if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
-          Organs currentlyReceivingOrgan = notReceivingListView.getSelectionModel()
-              .getSelectedItem();
-          launchReceiverOrganDateView(currentlyReceivingOrgan);
-        }
-      });
-      parent.updateUndoRedoButtons();
-      application.update(currentUser);
-      parent.refreshCurrentlyDonating();
-      currentlyReceivingListView.refresh();
+            //if currentlyReceivingListView is empty, disable mouse click to prevent null pointer exception
+            if (currentlyReceivingListView.getItems().isEmpty()) {
+                currentlyReceivingListView.setOnMouseClicked(null);
+            }
+            //set mouse click for notReceivingListView
+            notReceivingListView.setOnMouseClicked(event -> {
+                if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
+                    Organs currentlyReceivingOrgan = notReceivingListView.getSelectionModel()
+                            .getSelectedItem();
+                    launchReceiverOrganDateView(currentlyReceivingOrgan);
+                }
+            });
+            parent.updateUndoRedoButtons();
+            application.update(currentUser);
+            parent.refreshCurrentlyDonating();
+            currentlyReceivingListView.refresh();
 
-    } else {
-      Log.warning("Unable to de-register organ: null for receiver NHI: "+currentUser.getNhi());
+        } else {
+            Log.warning("Unable to de-register organ: null for receiver NHI: " + currentUser.getNhi());
+        }
     }
-  }
 
     /**
      * Sets the reason for organ deregistration

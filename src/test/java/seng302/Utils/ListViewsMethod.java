@@ -13,12 +13,13 @@ import static org.loadui.testfx.GuiTest.find;
  *
  * @author acb116 jre103
  */
-public class ListViewsMethod extends TableViews{
+public class ListViewsMethod extends TableViews {
     /**
      * gets content of a cell
      * from desired ListView
+     *
      * @param listViewName of desired ListView
-     * @param row number
+     * @param row          number
      * @return the content of a row
      */
     public static Object getRowValue(String listViewName, int row) {
@@ -30,14 +31,15 @@ public class ListViewsMethod extends TableViews{
     /**
      * gets ListView object based on
      * ListView name
+     *
      * @param ListName of desired ListView
      * @return tableView object
      */
     public static ListView<?> getListView(String ListName) {
-     Node node = find(ListName);
-     if (!(node instanceof ListView)) {
-         throw new NoNodesFoundException(ListName + " selected " + node + " which is not a ListView!");
-     }
-    return (ListView<?>) node;
+        Node node = find(ListName);
+        if (!(node instanceof ListView)) {
+            throw new NoNodesFoundException(ListName + " selected " + node + " which is not a ListView!");
+        }
+        return (ListView<?>) node;
     }
 }

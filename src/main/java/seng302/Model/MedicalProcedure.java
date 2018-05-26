@@ -9,6 +9,7 @@ import java.util.List;
 
 /**
  * Class for instantiating a medical procedure
+ *
  * @author Josh Burt
  */
 public class MedicalProcedure {
@@ -24,9 +25,10 @@ public class MedicalProcedure {
 
     /**
      * Constructor for Medical Procedure
-     * @param procedureDate date of procedure
-     * @param summary summary of procedure
-     * @param description description of procedure
+     *
+     * @param procedureDate  date of procedure
+     * @param summary        summary of procedure
+     * @param description    description of procedure
      * @param organsAffected affected organs
      */
     public MedicalProcedure(LocalDate procedureDate, String summary, String description, ArrayList<Organs> organsAffected) {
@@ -34,7 +36,7 @@ public class MedicalProcedure {
         this.procedureDate = procedureDate;
         this.summary = summary;
         this.description = description;
-        if (organsAffected == null){
+        if (organsAffected == null) {
             this.organsAffected = new ArrayList<>();
         } else {
             this.organsAffected = organsAffected;
@@ -80,11 +82,11 @@ public class MedicalProcedure {
         this.organsAffected = organsAffected;
     }
 
-    public void addOrgan(Organs organ){
+    public void addOrgan(Organs organ) {
         organsAffected.add(organ);
     }
 
-    public void removeOrgan(Organs organ){
+    public void removeOrgan(Organs organ) {
         organsAffected.remove(organ);
     }
 

@@ -1,18 +1,10 @@
 package seng302.Controller;
 
-import java.io.IOException;
-import java.time.LocalDateTime;
-import java.util.Optional;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
@@ -21,7 +13,10 @@ import javafx.stage.Stage;
 import seng302.Model.Clinician;
 import seng302.Model.Memento;
 import seng302.Service.Log;
-import seng302.Service.PasswordManager;
+
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.Optional;
 
 import static seng302.Service.UndoHelpers.removeFormChanges;
 
@@ -132,7 +127,7 @@ public class UpdateClinicianController {
 
             scene.addEventFilter(KeyEvent.KEY_RELEASED, e -> {
                 if (shortcutZ.match(e)) {
-                  undo();
+                    undo();
                 }
             });
 
@@ -142,7 +137,7 @@ public class UpdateClinicianController {
             confirmButton.setText("Create Clinician Profile");
         }
 
-      ownStage.setOnCloseRequest(event -> cancelUpdate());
+        ownStage.setOnCloseRequest(event -> cancelUpdate());
     }
 
     /**
@@ -198,7 +193,7 @@ public class UpdateClinicianController {
      * @param field The current textfield/password field element.
      */
     private void changesListener(TextField field) {
-      field.textProperty().addListener((observable, oldValue, newValue) -> update());
+        field.textProperty().addListener((observable, oldValue, newValue) -> update());
     }
 
     /**
@@ -321,15 +316,15 @@ public class UpdateClinicianController {
                     clinicianStage.setScene(new Scene(root));
                     clinicianStage.show();
                     ownStage.close();
-                    Log.info("successfully launched clinician overview window for Clinician Staff Id: "+clinician.getStaffId());
+                    Log.info("successfully launched clinician overview window for Clinician Staff Id: " + clinician.getStaffId());
                 } catch (IOException e) {
-                    Log.severe("failed to load clinician overview window for Clinician Staff Id: "+clinician.getStaffId(), e);
+                    Log.severe("failed to load clinician overview window for Clinician Staff Id: " + clinician.getStaffId(), e);
                     e.printStackTrace();
                 }
 
             } else {
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML/clinicianView.fxml"));
-              Parent root;
+                Parent root;
 
                 try {
                     root = loader.load();
@@ -338,9 +333,9 @@ public class UpdateClinicianController {
                     stage.setScene(new Scene(root));
                     stage.show();
                     ownStage.close();
-                    Log.info("successfully launched clinician overview window for Clinician Staff Id: "+clinician.getStaffId());
+                    Log.info("successfully launched clinician overview window for Clinician Staff Id: " + clinician.getStaffId());
                 } catch (IOException e) {
-                    Log.severe("failed to load clinician overview window for Clinician Staff Id: "+clinician.getStaffId(), e);
+                    Log.severe("failed to load clinician overview window for Clinician Staff Id: " + clinician.getStaffId(), e);
                     e.printStackTrace();
                 }
             }
@@ -365,7 +360,7 @@ public class UpdateClinicianController {
 
                 Optional<ButtonType> result = alert.showAndWait();
                 if (result.get() == ButtonType.YES) {
-                    Log.info("Clinician update cancelled for Clinician Staff Id: "+currentClinician.getStaffId());
+                    Log.info("Clinician update cancelled for Clinician Staff Id: " + currentClinician.getStaffId());
                     removeFormChanges(0, currentClinician, undoMarker);
                     currentClinician.getRedoStack().clear();
                     controller.updateClinicians(oldClinician);
@@ -375,7 +370,7 @@ public class UpdateClinicianController {
             } else { // has no changes
                 currentClinician.getRedoStack().clear();
                 ownStage.close();
-                Log.info("no changes made to Clinician Staff Id: "+currentClinician.getStaffId());
+                Log.info("no changes made to Clinician Staff Id: " + currentClinician.getStaffId());
             }
 
         } else {
@@ -434,7 +429,7 @@ public class UpdateClinicianController {
             if (passwordField.getText().isEmpty() || confirmPasswordField.getText().isEmpty()) {
                 valid = false;
                 emptyPasswordLabel.setVisible(true);
-            }else if(passwordField.getText().equals(confirmPasswordField.getText())) {
+            } else if (passwordField.getText().equals(confirmPasswordField.getText())) {
                 password = passwordField.getText();
             } else {
                 valid = false;
@@ -443,8 +438,7 @@ public class UpdateClinicianController {
         } else {
             if ((passwordField.getText().isEmpty() || (confirmPasswordField.getText().isEmpty()))) {
                 //this stops the rest of the if statement executing if the passwords are blank avoiding NPE
-            } else
-                if (!(confirmPasswordField.getText()).equals(passwordField.getText()) || currentClinician.isPasswordCorrect(passwordField.getText())){
+            } else if (!(confirmPasswordField.getText()).equals(passwordField.getText()) || currentClinician.isPasswordCorrect(passwordField.getText())) {
                 incorrectPasswordLabel.setVisible(true);
                 valid = false;
             } else {
@@ -489,7 +483,7 @@ public class UpdateClinicianController {
             currentClinician.getRedoStack().clear();
             controller.updateClinicians(currentClinician); // saves the clinician
             ownStage.close(); // returns to the clinician overview window
-            Log.info("Clinician updated for Clinician Staff Id: "+staffID);
+            Log.info("Clinician updated for Clinician Staff Id: " + staffID);
 
         } else if (valid && newClinician) { // creates a new clinician
             Clinician clinician = new Clinician(staffID, password, fName, mName, lName, address, region);
@@ -497,7 +491,7 @@ public class UpdateClinicianController {
             loadOverview(clinician);
 
         } else {
-            Log.warning("Clinician not updated for Clinician Staff Id: "+staffID);
+            Log.warning("Clinician not updated for Clinician Staff Id: " + staffID);
         }
     }
 
@@ -559,26 +553,26 @@ public class UpdateClinicianController {
         emptyRegionLabel.setVisible(false);
     }
 
-  /**
-   * Redoes the previous undone action
-   */
-  @FXML
-  public void redo() {
-    currentClinician.redo();
-    redoClinicianFormButton.setDisable(currentClinician.getRedoStack().isEmpty());
-    prefillFields(currentClinician);
-    Log.info("Redo executed for Clinician Staff Id: "+currentClinician.getStaffId());
-  }
+    /**
+     * Redoes the previous undone action
+     */
+    @FXML
+    public void redo() {
+        currentClinician.redo();
+        redoClinicianFormButton.setDisable(currentClinician.getRedoStack().isEmpty());
+        prefillFields(currentClinician);
+        Log.info("Redo executed for Clinician Staff Id: " + currentClinician.getStaffId());
+    }
 
 
-  /**
-   * Undoes the previous action
-   */
-  @FXML
-  public void undo() {
-    currentClinician.undo();
-    undoClinicianFormButton.setDisable(currentClinician.getUndoStack().size() <= undoMarker);
-    prefillFields(currentClinician);
-    Log.info("Undo executed for Clinician Staff Id: "+currentClinician.getStaffId());
-  }
+    /**
+     * Undoes the previous action
+     */
+    @FXML
+    public void undo() {
+        currentClinician.undo();
+        undoClinicianFormButton.setDisable(currentClinician.getUndoStack().size() <= undoMarker);
+        prefillFields(currentClinician);
+        Log.info("Undo executed for Clinician Staff Id: " + currentClinician.getStaffId());
+    }
 }

@@ -76,11 +76,9 @@ public final class JsonHandler {
             }
             Log.info("successfully loaded user from file");
             return results;
-        }
-        catch (FileNotFoundException e){
+        } catch (FileNotFoundException e) {
             throw e;
-        }
-        catch (RuntimeException e) {
+        } catch (RuntimeException e) {
             errorMessageAlert();
             throw e;
         }
@@ -128,11 +126,9 @@ public final class JsonHandler {
             Reader reader = new FileReader(inFile);
             Clinician[] clinicians = gson.fromJson(reader, Clinician[].class);
             return new ArrayList<>(Arrays.asList(clinicians));
-        }
-        catch (FileNotFoundException e){
+        } catch (FileNotFoundException e) {
             throw e;
-        }
-        catch (RuntimeException e) {
+        } catch (RuntimeException e) {
             errorMessageAlert();
             throw e;
         }
@@ -180,11 +176,9 @@ public final class JsonHandler {
             Reader reader = new FileReader(inFile);
             Administrator[] administrators = gson.fromJson(reader, Administrator[].class);
             return new ArrayList<>(Arrays.asList(administrators));
-        }
-        catch (FileNotFoundException e){
+        } catch (FileNotFoundException e) {
             throw e;
-        }
-        catch (RuntimeException e) {
+        } catch (RuntimeException e) {
             errorMessageAlert();
             throw e;
         }

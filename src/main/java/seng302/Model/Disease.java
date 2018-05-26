@@ -1,13 +1,13 @@
 package seng302.Model;
 
 import com.google.gson.annotations.Expose;
+
 import java.time.LocalDate;
 import java.util.Comparator;
 
 /**
  * Class to hold information
  * of user's diseases
- *
  */
 public class Disease {
 
@@ -23,12 +23,13 @@ public class Disease {
     /**
      * Disease constructor that exposes
      * all attributes of Disease class
-     * @param name of disease
-     * @param isChronic true if disease is chronic, false otherwise
-     * @param isCured true if disease is cured, false otherwise
+     *
+     * @param name          of disease
+     * @param isChronic     true if disease is chronic, false otherwise
+     * @param isCured       true if disease is cured, false otherwise
      * @param diagnosisDate date of diagnosis done
      */
-    public Disease(String name, boolean isChronic, boolean isCured, LocalDate diagnosisDate){
+    public Disease(String name, boolean isChronic, boolean isCured, LocalDate diagnosisDate) {
         this.name = name;
         this.isChronic = isChronic;
         this.isCured = isCured;
@@ -57,7 +58,7 @@ public class Disease {
     };
 
     @Override
-    public String toString(){
+    public String toString() {
         return name;
     }
 
@@ -70,7 +71,7 @@ public class Disease {
         this.name = diseaseName;
     }
 
-    public  Boolean getIsChronic() {
+    public Boolean getIsChronic() {
         return isChronic;
     }
 
@@ -78,7 +79,7 @@ public class Disease {
         this.isChronic = isChronic;
     }
 
-    public  Boolean getIsCured() {
+    public Boolean getIsCured() {
         return isCured;
     }
 

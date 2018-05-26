@@ -12,7 +12,7 @@ public class ReceiverOrganDetails {
 
     private LocalDate deRegisterDate;
 
-    public ReceiverOrganDetails(){
+    public ReceiverOrganDetails() {
 
     }
 

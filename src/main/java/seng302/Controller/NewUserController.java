@@ -187,8 +187,8 @@ public class NewUserController {
             User newUser = new User(nhi, dob, dod, birthGender, genderIdentity, height, weight,
                     bloodType,
                     alcoholConsumption, smoker, currentAddress, region, homePhone, cellPhone, email, null,
-                fName, fName, preferredFirstName, middleName,
-                lastName); //todo: ewww gross can we please change this DELET THIS PLS
+                    fName, fName, preferredFirstName, middleName,
+                    lastName); //todo: ewww gross can we please change this DELET THIS PLS
             try {
                 EmergencyContact contact = collectEmergencyContact(newUser);
                 newUser.setContact(contact);
@@ -200,46 +200,46 @@ public class NewUserController {
                 users.add(newUser);
                 saveUsers(users);
 
-            // load to the overview page
-            if (stage.getTitle().matches("Administrator*")) {
-                ownStage.close();
-                FXMLLoader userLoader = new FXMLLoader(
-                    getClass().getResource("/FXML/userView.fxml"));
-                Parent root;
-
-                try {
-                    root = userLoader.load();
-                    Stage userStage = new Stage();
-                    userStage.setScene(new Scene(root));
-                    userStage.show();
-                    UserController userController = userLoader.getController();
-                    AppController.getInstance().setUserController(userController);
-                    //TODO pass listeners from any preceding controllers 22/6
-                    userController
-                        .init(AppController.getInstance(), newUser, userStage, false, null);
-                    userController.init(AppController.getInstance(), newUser, userStage, false, null);
-                    userController.disableLogout();
-                    Log.info("Successfully launched User Overview for User NHI: "+nhi);
-                } catch (IOException e) {
-                    Log.severe("Failed to load User Overview for User NHI: "+nhi, e);
-                    e.printStackTrace();
-                }
-            } else {
-                FXMLLoader userLoader = new FXMLLoader(
-                    getClass().getResource("/FXML/userView.fxml"));
-                Parent root;
-
-                try {
-                    root = userLoader.load();
-                    stage.setScene(new Scene(root));
+                // load to the overview page
+                if (stage.getTitle().matches("Administrator*")) {
                     ownStage.close();
-                    UserController userController = userLoader.getController();
-                    //TODO pass listeners from any preceding controllers 22/6
-                    userController.init(AppController.getInstance(), newUser, stage, false, null);
+                    FXMLLoader userLoader = new FXMLLoader(
+                            getClass().getResource("/FXML/userView.fxml"));
+                    Parent root;
 
-                    Log.info("Successfully launched User Overview for User NHI: "+nhi);
+                    try {
+                        root = userLoader.load();
+                        Stage userStage = new Stage();
+                        userStage.setScene(new Scene(root));
+                        userStage.show();
+                        UserController userController = userLoader.getController();
+                        AppController.getInstance().setUserController(userController);
+                        //TODO pass listeners from any preceding controllers 22/6
+                        userController
+                                .init(AppController.getInstance(), newUser, userStage, false, null);
+                        userController.init(AppController.getInstance(), newUser, userStage, false, null);
+                        userController.disableLogout();
+                        Log.info("Successfully launched User Overview for User NHI: " + nhi);
                     } catch (IOException e) {
-                        Log.severe("Failed to load User Overview for User NHI: "+nhi, e);
+                        Log.severe("Failed to load User Overview for User NHI: " + nhi, e);
+                        e.printStackTrace();
+                    }
+                } else {
+                    FXMLLoader userLoader = new FXMLLoader(
+                            getClass().getResource("/FXML/userView.fxml"));
+                    Parent root;
+
+                    try {
+                        root = userLoader.load();
+                        stage.setScene(new Scene(root));
+                        ownStage.close();
+                        UserController userController = userLoader.getController();
+                        //TODO pass listeners from any preceding controllers 22/6
+                        userController.init(AppController.getInstance(), newUser, stage, false, null);
+
+                        Log.info("Successfully launched User Overview for User NHI: " + nhi);
+                    } catch (IOException e) {
+                        Log.severe("Failed to load User Overview for User NHI: " + nhi, e);
                         e.printStackTrace();
                     }
                 }

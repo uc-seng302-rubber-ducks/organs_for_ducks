@@ -1,6 +1,5 @@
 package seng302.Controller;
 
-import java.time.LocalDate;
 import javafx.fxml.FXML;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
@@ -12,8 +11,11 @@ import seng302.Model.User;
 import seng302.Service.AttributeValidation;
 import seng302.Service.Log;
 
+import java.time.LocalDate;
+
 /**
  * Controller class for creating new disease.
+ *
  * @author acb116
  */
 public class NewDiseaseController {
@@ -21,7 +23,7 @@ public class NewDiseaseController {
     public TextField diseaseNameInput;
 
     @FXML
-    public DatePicker  diagnosisDateInput;
+    public DatePicker diagnosisDateInput;
 
     @FXML
     public Label diseaseNameInputErrorMessage;
@@ -37,21 +39,22 @@ public class NewDiseaseController {
 
     AppController controller;
     Stage stage;
-  UserController userController;
+    UserController userController;
     private User currentUser;
     private Disease editableDisease;
 
     /**
      * Initializes the NewDiseaseController
-     * @param user the current user.
+     *
+     * @param user       the current user.
      * @param controller The applications controller.
-     * @param stage The applications stage.
+     * @param stage      The applications stage.
      */
     public void init(User user, AppController controller, Stage stage, Disease disease,
-        UserController userController) {
+                     UserController userController) {
         this.controller = controller;
         this.stage = stage;
-      this.userController = userController;
+        this.userController = userController;
         currentUser = user;
         editableDisease = disease;
 
@@ -73,13 +76,12 @@ public class NewDiseaseController {
     @FXML
     void cancelCreation() {
         AppController appController = AppController.getInstance();
-      UserController userController = appController.getUserController();
+        UserController userController = appController.getUserController();
         try {
-          userController.showUser(currentUser);
-            Log.info("successfully cancelled creation of new disease for User NHI: " +currentUser.getNhi());
-        }
-        catch (NullPointerException ex) {
-            Log.severe("Failed to cancel creation of new disease for User NHI: " +currentUser.getNhi(), ex);
+            userController.showUser(currentUser);
+            Log.info("successfully cancelled creation of new disease for User NHI: " + currentUser.getNhi());
+        } catch (NullPointerException ex) {
+            Log.severe("Failed to cancel creation of new disease for User NHI: " + currentUser.getNhi(), ex);
             //TODO causes npe if donor is new in this session
             //the text fields etc. are all null
         }
@@ -93,14 +95,13 @@ public class NewDiseaseController {
      */
     private void closeNewDiseaseWindow() {
         AppController appController = AppController.getInstance();
-      UserController userController = appController.getUserController();
+        UserController userController = appController.getUserController();
         try {
-          userController.showUser(currentUser);
-          userController.showDonorDiseases(currentUser, false);
-            Log.info("successfully closed New Disease Window for User NHI: " +currentUser.getNhi());
-        }
-        catch (NullPointerException ex) {
-            Log.severe("Failed to close New Disease Window for User NHI: " +currentUser.getNhi(), ex);
+            userController.showUser(currentUser);
+            userController.showDonorDiseases(currentUser, false);
+            Log.info("successfully closed New Disease Window for User NHI: " + currentUser.getNhi());
+        } catch (NullPointerException ex) {
+            Log.severe("Failed to close New Disease Window for User NHI: " + currentUser.getNhi(), ex);
             //TODO causes npe if donor is new in this session
             //the text fields etc. are all null
         }
@@ -133,7 +134,7 @@ public class NewDiseaseController {
         boolean isCured = curedRadioButton.isSelected();
         boolean isChronic = chronicRadioButton.isSelected();
 
-        if (isChronic && isCured){
+        if (isChronic && isCured) {
             isValid = false;
         }
 
@@ -163,8 +164,8 @@ public class NewDiseaseController {
 
                 editableDisease.setName(diseaseName);
                 editableDisease.setDiagnosisDate(diagnosisDate);
-              editableDisease.setIsCured(
-                  isCured); // noted as always true, but we feel this is clearer for others
+                editableDisease.setIsCured(
+                        isCured); // noted as always true, but we feel this is clearer for others
                 editableDisease.setIsChronic(isChronic);
 
             } else if (!isCured && editableDisease.getIsCured()) { //if it WAS cured, but now isn't, move to current
@@ -185,11 +186,11 @@ public class NewDiseaseController {
             }
 
             //Refresh the view
-          userController.refreshDiseases();
+            userController.refreshDiseases();
             closeNewDiseaseWindow();
-            Log.info("Successfully added new disease: "+diseaseName+" for User NHI: " +currentUser.getNhi());
+            Log.info("Successfully added new disease: " + diseaseName + " for User NHI: " + currentUser.getNhi());
         } else {
-            Log.warning("Unable to add new disease: "+diseaseName+" for User NHI: " +currentUser.getNhi()+" as there are invalid user input");
+            Log.warning("Unable to add new disease: " + diseaseName + " for User NHI: " + currentUser.getNhi() + " as there are invalid user input");
         }
     }
 }
