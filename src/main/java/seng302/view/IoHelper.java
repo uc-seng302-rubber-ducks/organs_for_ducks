@@ -1,6 +1,6 @@
-package seng302.View;
+package seng302.view;
 
-import seng302.Model.User;
+import seng302.model.User;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;

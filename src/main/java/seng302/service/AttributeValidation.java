@@ -1,6 +1,6 @@
-package seng302.Service;
+package seng302.service;
 
-import seng302.Model.BloodTypes;
+import seng302.model.BloodTypes;
 
 import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDate;
@@ -178,7 +178,7 @@ public class AttributeValidation {
     /**
      * Check the entry of the string provided to see if the supplied objects region matches the text.
      * <p>
-     * Will catch a NoSuchMethod Exception print a stacktrace and return false if the object has no region object to get
+     * Will catch a NoSuchMethod exception print a stacktrace and return false if the object has no region object to get
      *
      * @param regionString String object to check against the object's region
      * @param toMatch      an object containing a region

@@ -1,4 +1,4 @@
-package seng302.Service;
+package seng302.service;
 
 import java.util.logging.Level;
 
@@ -37,7 +37,7 @@ public class Log {
      * Creates a log entry at the WARNING level.
      *
      * @param message String message to be logged
-     * @param ex      Throwable/Exception that has been caught
+     * @param ex      Throwable/exception that has been caught
      */
     public static void warning(String message, Throwable ex) {
         logger.log(Level.WARNING, message, ex);
@@ -47,7 +47,7 @@ public class Log {
      * Creates a log entry at the SEVERE level. This should only be used for app-crashing errors
      *
      * @param message String message to be logged
-     * @param ex      Throwable/Exception that has been caught
+     * @param ex      Throwable/exception that has been caught
      */
     public static void severe(String message, Throwable ex) {
         logger.log(Level.SEVERE, message, ex);

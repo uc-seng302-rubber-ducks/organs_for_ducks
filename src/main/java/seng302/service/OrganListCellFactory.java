@@ -1,9 +1,9 @@
-package seng302.Service;
+package seng302.service;
 
 import javafx.scene.control.ListCell;
 import javafx.scene.paint.Color;
-import seng302.Model.Organs;
-import seng302.Model.User;
+import seng302.model.Organs;
+import seng302.model.User;
 
 public class OrganListCellFactory {
 

@@ -1,4 +1,4 @@
-package seng302.Model;
+package seng302.model;
 
 import okhttp3.*;
 import org.json.simple.JSONObject;
