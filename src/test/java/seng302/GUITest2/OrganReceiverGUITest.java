@@ -6,12 +6,12 @@ import org.junit.*;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 import seng302.App;
-import seng302.Controller.AppController;
-import seng302.Controller.ReceiverOrganDetailsHolder;
-import seng302.Controller.UserController;
-import seng302.Model.OrganDeregisterReason;
-import seng302.Model.Organs;
-import seng302.Model.User;
+import seng302.controller.AppController;
+import seng302.controller.ReceiverOrganDetailsHolder;
+import seng302.controller.UserController;
+import seng302.model.OrganDeregisterReason;
+import seng302.model.Organs;
+import seng302.model.User;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;

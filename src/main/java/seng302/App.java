@@ -7,10 +7,10 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import seng302.Controller.AppController;
-import seng302.Controller.LoginController;
-import seng302.Model.JsonHandler;
-import seng302.Service.Log;
+import seng302.controller.AppController;
+import seng302.controller.LoginController;
+import seng302.model.JsonHandler;
+import seng302.service.Log;
 
 import java.io.IOException;
 import java.nio.file.Files;

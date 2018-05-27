@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.*?>
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="467.0"
             prefWidth="479.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="seng302.Controller.DeregisterOrganReasonController">
+            fx:controller="seng302.controller.DeregisterOrganReasonController">
     <children>
         <Label fx:id="receiverName" layoutX="194.0" layoutY="14.0" text="receiverName"/>
         <Separator layoutX="7.0" layoutY="34.0" prefHeight="11.0" prefWidth="479.0"/>
