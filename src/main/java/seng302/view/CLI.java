@@ -12,7 +12,7 @@ import seng302.model._enum.Directory;
 import seng302.model._abstract.Blockable;
 import seng302.commands.CliRoot;
 import seng302.controller.AppController;
-import seng302.model.JsonHandler;
+import seng302.utils.JsonHandler;
 import seng302.model.User;
 
 import java.io.FileNotFoundException;

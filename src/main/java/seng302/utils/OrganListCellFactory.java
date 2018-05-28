@@ -1,4 +1,4 @@
-package seng302.service;
+package seng302.utils;
 
 import javafx.scene.control.ListCell;
 import javafx.scene.paint.Color;

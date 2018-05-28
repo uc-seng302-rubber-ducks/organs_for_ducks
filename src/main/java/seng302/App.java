@@ -9,9 +9,9 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import seng302.controller.AppController;
 import seng302.controller.gui.window.LoginController;
-import seng302.model.JsonHandler;
+import seng302.utils.JsonHandler;
 import seng302.model._enum.Directory;
-import seng302.service.Log;
+import seng302.utils.Log;
 
 import java.io.IOException;
 import java.nio.file.Files;

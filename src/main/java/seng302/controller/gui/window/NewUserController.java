@@ -8,18 +8,17 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 import seng302.controller.AppController;
-import seng302.controller.gui.window.UserController;
 import seng302.exception.InvalidFieldsException;
 import seng302.model.EmergencyContact;
 import seng302.model.User;
-import seng302.service.AttributeValidation;
-import seng302.service.Log;
+import seng302.utils.AttributeValidation;
+import seng302.utils.Log;
 
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 
-import static seng302.model.JsonHandler.saveUsers;
+import static seng302.utils.JsonHandler.saveUsers;
 
 
 /**

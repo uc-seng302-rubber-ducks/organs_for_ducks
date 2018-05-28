@@ -1,4 +1,4 @@
-package seng302.model;
+package seng302.utils;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -8,8 +8,12 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
+import seng302.model.Administrator;
+import seng302.model.Change;
+import seng302.model.Clinician;
+import seng302.model.User;
 import seng302.model._enum.Directory;
-import seng302.service.Log;
+import seng302.utils.Log;
 
 import java.io.*;
 import java.nio.file.Files;

@@ -1,4 +1,4 @@
-package seng302.service;
+package seng302.utils;
 
 import java.util.logging.Level;
 

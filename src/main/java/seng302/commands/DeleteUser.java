@@ -6,7 +6,7 @@ import picocli.CommandLine.Parameters;
 import seng302.controller.AppController;
 import seng302.model.User;
 import seng302.model._abstract.Blockable;
-import seng302.service.Log;
+import seng302.utils.Log;
 import seng302.view.CLI;
 
 import java.io.InputStream;

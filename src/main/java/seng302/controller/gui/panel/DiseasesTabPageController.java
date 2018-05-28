@@ -15,7 +15,7 @@ import seng302.controller.gui.popup.NewDiseaseController;
 import seng302.controller.gui.window.UserController;
 import seng302.model.Disease;
 import seng302.model.User;
-import seng302.service.Log;
+import seng302.utils.Log;
 
 import java.io.IOException;
 import java.time.LocalDate;

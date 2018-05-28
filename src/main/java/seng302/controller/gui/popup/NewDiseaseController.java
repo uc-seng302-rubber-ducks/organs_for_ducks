@@ -10,8 +10,8 @@ import seng302.controller.AppController;
 import seng302.controller.gui.window.UserController;
 import seng302.model.Disease;
 import seng302.model.User;
-import seng302.service.AttributeValidation;
-import seng302.service.Log;
+import seng302.utils.AttributeValidation;
+import seng302.utils.Log;
 
 import java.time.LocalDate;
 

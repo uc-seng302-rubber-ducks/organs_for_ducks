@@ -8,7 +8,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
-import seng302.model.MedicationDurations;
+import seng302.model.datamodel.MedicationDurations;
 import seng302.model.User;
 
 import java.time.LocalDateTime;

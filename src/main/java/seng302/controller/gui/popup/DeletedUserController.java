@@ -14,7 +14,7 @@ import seng302.model.Administrator;
 import seng302.model.Clinician;
 import seng302.model._enum.Organs;
 import seng302.model.User;
-import seng302.service.Log;
+import seng302.utils.Log;
 
 import java.time.LocalDate;
 import java.util.ArrayList;

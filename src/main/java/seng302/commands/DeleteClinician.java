@@ -4,7 +4,7 @@ import picocli.CommandLine;
 import seng302.controller.AppController;
 import seng302.model.Clinician;
 import seng302.model._abstract.Blockable;
-import seng302.service.Log;
+import seng302.utils.Log;
 import seng302.view.CLI;
 
 @CommandLine.Command(name = "clinician", description = "Allows a clinician to be deleted ")

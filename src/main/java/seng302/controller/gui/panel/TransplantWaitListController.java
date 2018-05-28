@@ -12,9 +12,9 @@ import javafx.scene.input.MouseButton;
 import seng302.controller.AppController;
 import seng302.model._abstract.TransplantWaitListViewer;
 import seng302.model._enum.Organs;
-import seng302.model.TransplantDetails;
+import seng302.model.datamodel.TransplantDetails;
 import seng302.model.User;
-import seng302.service.AttributeValidation;
+import seng302.utils.AttributeValidation;
 
 import java.time.LocalDate;
 import java.util.ArrayList;

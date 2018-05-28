@@ -4,14 +4,13 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 import seng302.controller.AppController;
-import seng302.controller.gui.window.AdministratorViewController;
 import seng302.model.Administrator;
-import seng302.service.Log;
+import seng302.utils.Log;
 
 import java.util.Optional;
 
-import static seng302.service.AttributeValidation.checkRequiredStringName;
-import static seng302.service.UndoHelpers.removeFormChanges;
+import static seng302.utils.AttributeValidation.checkRequiredStringName;
+import static seng302.utils.UndoHelpers.removeFormChanges;
 
 public class UpdateAdminController {
     @FXML

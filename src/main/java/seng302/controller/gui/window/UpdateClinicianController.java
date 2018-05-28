@@ -11,16 +11,15 @@ import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import seng302.controller.AppController;
-import seng302.controller.gui.window.ClinicianController;
 import seng302.model.Clinician;
 import seng302.model.Memento;
-import seng302.service.Log;
+import seng302.utils.Log;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-import static seng302.service.UndoHelpers.removeFormChanges;
+import static seng302.utils.UndoHelpers.removeFormChanges;
 
 /**
  * controller for updating clinicians

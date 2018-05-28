@@ -14,7 +14,7 @@ import seng302.controller.AppController;
 import seng302.controller.gui.window.UpdateUserController;
 import seng302.controller.gui.window.LoginController;
 import seng302.model.User;
-import seng302.service.Log;
+import seng302.utils.Log;
 
 import java.io.IOException;
 import java.text.DecimalFormat;

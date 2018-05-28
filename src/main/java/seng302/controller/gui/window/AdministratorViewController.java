@@ -28,8 +28,9 @@ import seng302.model.*;
 import seng302.model._abstract.TransplantWaitListViewer;
 import seng302.model._enum.EventTypes;
 import seng302.model._enum.Organs;
-import seng302.service.AttributeValidation;
-import seng302.service.Log;
+import seng302.utils.AttributeValidation;
+import seng302.utils.JsonHandler;
+import seng302.utils.Log;
 import seng302.view.CLI;
 
 import java.beans.PropertyChangeEvent;

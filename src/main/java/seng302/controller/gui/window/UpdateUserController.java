@@ -10,13 +10,12 @@ import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import seng302.controller.AppController;
-import seng302.controller.gui.window.UserController;
 import seng302.exception.InvalidFieldsException;
 import seng302.model.EmergencyContact;
 import seng302.model.Memento;
 import seng302.model.User;
-import seng302.service.AttributeValidation;
-import seng302.service.Log;
+import seng302.utils.AttributeValidation;
+import seng302.utils.Log;
 
 import java.time.LocalDate;
 import java.util.Optional;

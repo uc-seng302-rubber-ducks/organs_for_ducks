@@ -8,7 +8,9 @@ import seng302.model._enum.Directory;
 import seng302.exception.ProfileAlreadyExistsException;
 import seng302.exception.ProfileNotFoundException;
 import seng302.model.*;
-import seng302.service.Log;
+import seng302.model.datamodel.TransplantDetails;
+import seng302.utils.JsonHandler;
+import seng302.utils.Log;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;

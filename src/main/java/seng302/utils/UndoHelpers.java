@@ -1,4 +1,4 @@
-package seng302.service;
+package seng302.utils;
 
 import seng302.model._abstract.Undoable;
 

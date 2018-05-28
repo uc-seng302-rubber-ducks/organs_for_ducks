@@ -9,7 +9,7 @@ import seng302.controller.AppController;
 import seng302.model.MedicalProcedure;
 import seng302.model._enum.Organs;
 import seng302.model.User;
-import seng302.service.Log;
+import seng302.utils.Log;
 
 import java.util.ArrayList;
 import java.util.Collections;

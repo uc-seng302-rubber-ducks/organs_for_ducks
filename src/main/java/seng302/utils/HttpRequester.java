@@ -1,4 +1,4 @@
-package seng302.model;
+package seng302.utils;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;

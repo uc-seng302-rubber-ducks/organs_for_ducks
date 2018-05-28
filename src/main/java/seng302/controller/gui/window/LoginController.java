@@ -14,7 +14,7 @@ import seng302.controller.AppController;
 import seng302.model.Administrator;
 import seng302.model.Clinician;
 import seng302.model.User;
-import seng302.service.Log;
+import seng302.utils.Log;
 import seng302.view.CLI;
 
 import java.io.IOException;

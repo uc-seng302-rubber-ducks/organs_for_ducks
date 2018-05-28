@@ -8,8 +8,8 @@ import seng302.controller.AppController;
 import seng302.controller.gui.window.UserController;
 import seng302.model._enum.Organs;
 import seng302.model.User;
-import seng302.service.Log;
-import seng302.service.OrganListCellFactory;
+import seng302.utils.Log;
+import seng302.utils.OrganListCellFactory;
 
 import java.util.ArrayList;
 import java.util.Collections;

@@ -2,7 +2,7 @@ package seng302.model;
 
 import org.junit.Before;
 import org.junit.Test;
-import seng302.service.PasswordManager;
+import seng302.utils.PasswordManager;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;

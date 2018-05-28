@@ -17,7 +17,7 @@ import seng302.controller.gui.popup.OrgansAffectedController;
 import seng302.controller.gui.window.UserController;
 import seng302.model.*;
 import seng302.model._enum.Organs;
-import seng302.service.Log;
+import seng302.utils.Log;
 
 import java.io.IOException;
 import java.time.LocalDate;

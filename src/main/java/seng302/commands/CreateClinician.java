@@ -4,7 +4,7 @@ package seng302.commands;
 import picocli.CommandLine;
 import seng302.controller.AppController;
 import seng302.model.Clinician;
-import seng302.service.AttributeValidation;
+import seng302.utils.AttributeValidation;
 
 @CommandLine.Command(name = "clinician", description = "Allows the creation of a clinician. ot update use update clinician")
 public class CreateClinician implements Runnable {

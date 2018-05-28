@@ -1,4 +1,4 @@
-package seng302.model;
+package seng302.model.datamodel;
 
 import java.time.LocalDate;
 
