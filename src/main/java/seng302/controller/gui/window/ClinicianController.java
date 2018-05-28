@@ -1,4 +1,4 @@
-package seng302.controller;
+package seng302.controller.gui.window;
 
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
@@ -16,6 +16,7 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import seng302.controller.*;
 import seng302.model.Clinician;
 import seng302.model._abstract.TransplantWaitListViewer;
 import seng302.model._enum.EventTypes;

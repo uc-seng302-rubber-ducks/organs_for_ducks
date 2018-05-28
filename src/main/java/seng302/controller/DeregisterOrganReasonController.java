@@ -7,6 +7,7 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.stage.Stage;
+import seng302.controller.gui.window.UserController;
 import seng302.model.Disease;
 import seng302.model._enum.OrganDeregisterReason;
 import seng302.model._enum.Organs;

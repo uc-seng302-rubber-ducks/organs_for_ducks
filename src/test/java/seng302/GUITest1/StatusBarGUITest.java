@@ -10,7 +10,7 @@ import org.testfx.matcher.control.LabeledMatchers;
 import seng302.App;
 import seng302.Utils.CommonTestMethods;
 import seng302.controller.AppController;
-import seng302.controller.UserController;
+import seng302.controller.gui.window.UserController;
 import seng302.model.User;
 
 import java.time.LocalDate;

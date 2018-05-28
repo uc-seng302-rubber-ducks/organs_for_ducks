@@ -1,4 +1,4 @@
-package seng302.controller;
+package seng302.controller.gui.panel;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -10,6 +10,9 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import seng302.controller.AppController;
+import seng302.controller.NewDiseaseController;
+import seng302.controller.gui.window.UserController;
 import seng302.model.Disease;
 import seng302.model.User;
 import seng302.service.Log;

@@ -1,4 +1,4 @@
-package seng302.controller;
+package seng302.controller.gui.window;
 
 
 import javafx.collections.FXCollections;
@@ -11,6 +11,10 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
+import seng302.controller.AppController;
+import seng302.controller.UserOverviewController;
+import seng302.controller.gui.panel.*;
+import seng302.controller.statusBarController;
 import seng302.model.*;
 import seng302.model._enum.OrganDeregisterReason;
 import seng302.model._enum.Organs;

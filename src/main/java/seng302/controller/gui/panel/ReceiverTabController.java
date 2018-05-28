@@ -1,4 +1,4 @@
-package seng302.controller;
+package seng302.controller.gui.panel;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -9,6 +9,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
 import javafx.stage.Stage;
+import seng302.controller.*;
+import seng302.controller.gui.window.UserController;
 import seng302.model.Change;
 import seng302.model._enum.OrganDeregisterReason;
 import seng302.model._enum.Organs;

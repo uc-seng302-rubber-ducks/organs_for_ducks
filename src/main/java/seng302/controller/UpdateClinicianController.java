@@ -10,6 +10,7 @@ import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
+import seng302.controller.gui.window.ClinicianController;
 import seng302.model.Clinician;
 import seng302.model.Memento;
 import seng302.service.Log;

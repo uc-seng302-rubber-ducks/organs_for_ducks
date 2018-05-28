@@ -3,6 +3,7 @@ package seng302.controller;
 import javafx.fxml.FXML;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import seng302.controller.gui.window.AdministratorViewController;
 
 public class AlertUnclosedWindowsController {
     Stage stage;

@@ -1,4 +1,4 @@
-package seng302.controller;
+package seng302.controller.gui.panel;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
@@ -12,6 +12,8 @@ import javafx.scene.input.MouseButton;
 import javafx.stage.Stage;
 import okhttp3.OkHttpClient;
 import org.controlsfx.control.textfield.TextFields;
+import seng302.controller.AppController;
+import seng302.controller.MedicationsTimeController;
 import seng302.model.HttpRequester;
 import seng302.model.Memento;
 import seng302.model.User;

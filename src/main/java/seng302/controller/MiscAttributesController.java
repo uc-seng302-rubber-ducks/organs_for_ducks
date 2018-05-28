@@ -5,6 +5,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import seng302.controller.gui.window.UserController;
 import seng302.model.User;
 import seng302.service.Log;
 

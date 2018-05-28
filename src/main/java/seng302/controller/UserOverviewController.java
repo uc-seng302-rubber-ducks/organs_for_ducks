@@ -10,6 +10,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import seng302.controller.gui.window.LoginController;
 import seng302.model.User;
 import seng302.service.Log;
 

@@ -9,6 +9,7 @@ import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
+import seng302.controller.gui.window.UserController;
 import seng302.exception.InvalidFieldsException;
 import seng302.model.EmergencyContact;
 import seng302.model.Memento;

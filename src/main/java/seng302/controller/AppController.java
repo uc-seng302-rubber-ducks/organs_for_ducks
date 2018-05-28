@@ -1,5 +1,8 @@
 package seng302.controller;
 
+import seng302.controller.gui.window.AdministratorViewController;
+import seng302.controller.gui.window.ClinicianController;
+import seng302.controller.gui.window.UserController;
 import seng302.model._enum.Directory;
 import seng302.exception.ProfileAlreadyExistsException;
 import seng302.exception.ProfileNotFoundException;
