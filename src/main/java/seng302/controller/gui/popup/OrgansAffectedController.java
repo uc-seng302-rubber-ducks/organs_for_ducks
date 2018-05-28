@@ -1,10 +1,11 @@
-package seng302.controller;
+package seng302.controller.gui.popup;
 
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.ListView;
 import javafx.scene.control.SelectionMode;
 import javafx.stage.Stage;
+import seng302.controller.AppController;
 import seng302.model.MedicalProcedure;
 import seng302.model._enum.Organs;
 import seng302.model.User;

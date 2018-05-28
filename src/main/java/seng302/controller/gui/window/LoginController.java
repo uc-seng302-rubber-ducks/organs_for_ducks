@@ -11,7 +11,6 @@ import javafx.scene.input.KeyCode;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import seng302.controller.AppController;
-import seng302.controller.NewUserController;
 import seng302.model.Administrator;
 import seng302.model.Clinician;
 import seng302.model.User;

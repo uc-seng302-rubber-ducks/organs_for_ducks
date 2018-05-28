@@ -1,4 +1,4 @@
-package seng302.controller;
+package seng302.controller.gui.window;
 
 
 import javafx.fxml.FXML;
@@ -7,6 +7,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
+import seng302.controller.AppController;
 import seng302.controller.gui.window.UserController;
 import seng302.exception.InvalidFieldsException;
 import seng302.model.EmergencyContact;

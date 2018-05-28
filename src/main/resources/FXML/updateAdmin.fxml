@@ -6,7 +6,7 @@
 <?import javafx.scene.text.Font?>
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="430.0"
             prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="seng302.controller.UpdateAdminController">
+            fx:controller="seng302.controller.gui.window.UpdateAdminController">
     <children>
         <Label fx:id="adminDetailInputTitle" layoutX="29.0" layoutY="23.0" text="Update Administrator">
             <font>

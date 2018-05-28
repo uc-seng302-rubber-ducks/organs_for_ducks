@@ -1,4 +1,4 @@
-package seng302.controller;
+package seng302.controller.gui.panel;
 
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
@@ -9,6 +9,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
+import seng302.controller.AppController;
 import seng302.model._abstract.TransplantWaitListViewer;
 import seng302.model._enum.Organs;
 import seng302.model.TransplantDetails;

@@ -13,7 +13,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
 import seng302.controller.AppController;
-import seng302.controller.OrgansAffectedController;
+import seng302.controller.gui.popup.OrgansAffectedController;
 import seng302.controller.gui.window.UserController;
 import seng302.model.*;
 import seng302.model._enum.Organs;

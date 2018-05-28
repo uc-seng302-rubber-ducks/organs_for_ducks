@@ -1,4 +1,4 @@
-package seng302.controller;
+package seng302.controller.gui.panel;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -10,6 +10,8 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import seng302.controller.AppController;
+import seng302.controller.gui.window.UpdateUserController;
 import seng302.controller.gui.window.LoginController;
 import seng302.model.User;
 import seng302.service.Log;

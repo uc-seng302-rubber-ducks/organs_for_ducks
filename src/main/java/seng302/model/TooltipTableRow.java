@@ -1,4 +1,4 @@
-package seng302.controller;
+package seng302.model;
 
 import javafx.scene.control.TableRow;
 import javafx.scene.control.Tooltip;

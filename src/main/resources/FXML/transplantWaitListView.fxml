@@ -4,7 +4,7 @@
 <?import javafx.scene.layout.*?>
 <SplitPane xmlns="http://javafx.com/javafx"
            xmlns:fx="http://javafx.com/fxml"
-           fx:controller="seng302.controller.TransplantWaitListController"
+           fx:controller="seng302.controller.gui.panel.TransplantWaitListController"
            prefHeight="400.0" prefWidth="600.0" orientation="VERTICAL" dividerPositions="0.5">
     <items>
         <AnchorPane maxHeight="115.0" minHeight="115.0" prefHeight="200.0" prefWidth="200.0">

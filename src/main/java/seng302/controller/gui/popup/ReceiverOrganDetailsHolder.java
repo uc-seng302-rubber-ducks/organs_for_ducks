@@ -1,4 +1,4 @@
-package seng302.controller;
+package seng302.controller.gui.popup;
 
 import seng302.model._enum.OrganDeregisterReason;
 

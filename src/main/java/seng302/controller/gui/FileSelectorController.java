@@ -1,4 +1,4 @@
-package seng302.controller;
+package seng302.controller.gui;
 
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;

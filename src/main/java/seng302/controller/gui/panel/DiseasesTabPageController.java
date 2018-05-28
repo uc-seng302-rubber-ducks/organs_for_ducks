@@ -11,7 +11,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import seng302.controller.AppController;
-import seng302.controller.NewDiseaseController;
+import seng302.controller.gui.popup.NewDiseaseController;
 import seng302.controller.gui.window.UserController;
 import seng302.model.Disease;
 import seng302.model.User;

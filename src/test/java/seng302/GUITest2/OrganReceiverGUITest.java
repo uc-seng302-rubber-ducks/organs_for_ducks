@@ -7,7 +7,7 @@ import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 import seng302.App;
 import seng302.controller.AppController;
-import seng302.controller.ReceiverOrganDetailsHolder;
+import seng302.controller.gui.popup.ReceiverOrganDetailsHolder;
 import seng302.controller.gui.window.UserController;
 import seng302.model._enum.OrganDeregisterReason;
 import seng302.model._enum.Organs;

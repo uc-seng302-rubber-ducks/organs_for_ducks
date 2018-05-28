@@ -13,7 +13,7 @@ import javafx.stage.Stage;
 import okhttp3.OkHttpClient;
 import org.controlsfx.control.textfield.TextFields;
 import seng302.controller.AppController;
-import seng302.controller.MedicationsTimeController;
+import seng302.controller.gui.popup.MedicationsTimeController;
 import seng302.model.HttpRequester;
 import seng302.model.Memento;
 import seng302.model.User;

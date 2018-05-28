@@ -1,9 +1,10 @@
-package seng302.controller;
+package seng302.controller.gui;
 
 import javafx.animation.PauseTransition;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.util.Duration;
+import seng302.controller.AppController;
 import seng302.controller.gui.window.UserController;
 
 public class statusBarController {

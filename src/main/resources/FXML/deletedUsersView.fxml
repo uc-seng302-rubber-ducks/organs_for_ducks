@@ -5,7 +5,7 @@
 <?import javafx.scene.text.Font?>
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="526.0"
             prefWidth="716.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="seng302.controller.DeletedUserController">
+            fx:controller="seng302.controller.gui.popup.DeletedUserController">
     <children>
         <TableView fx:id="deletedUserTableView" layoutX="6.0" layoutY="56.0" prefHeight="412.0" prefWidth="698.0"
                    AnchorPane.bottomAnchor="9.0" AnchorPane.leftAnchor="9.0" AnchorPane.rightAnchor="9.0"

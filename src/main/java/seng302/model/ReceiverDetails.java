@@ -1,7 +1,7 @@
 package seng302.model;
 
 import com.google.gson.annotations.Expose;
-import seng302.controller.ReceiverOrganDetailsHolder;
+import seng302.controller.gui.popup.ReceiverOrganDetailsHolder;
 import seng302.model._enum.OrganDeregisterReason;
 import seng302.model._enum.Organs;
 

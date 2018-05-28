@@ -1,4 +1,4 @@
-package seng302.controller;
+package seng302.controller.gui.popup;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -6,6 +6,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.Region;
+import seng302.controller.AppController;
+import seng302.model.TooltipTableRow;
 import seng302.exception.ProfileAlreadyExistsException;
 import seng302.exception.ProfileNotFoundException;
 import seng302.model.Administrator;

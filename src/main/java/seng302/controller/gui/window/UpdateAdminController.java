@@ -1,8 +1,9 @@
-package seng302.controller;
+package seng302.controller.gui.window;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
+import seng302.controller.AppController;
 import seng302.controller.gui.window.AdministratorViewController;
 import seng302.model.Administrator;
 import seng302.service.Log;
