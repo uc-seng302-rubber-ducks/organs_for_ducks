@@ -6,7 +6,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.SelectionMode;
 import javafx.stage.Stage;
 import seng302.model.MedicalProcedure;
-import seng302.model.Organs;
+import seng302.model._enum.Organs;
 import seng302.model.User;
 import seng302.service.Log;
 

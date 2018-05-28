@@ -1,6 +1,7 @@
 package seng302.model;
 
 import com.google.gson.annotations.Expose;
+import seng302.model._enum.Organs;
 
 import java.util.HashSet;
 import java.util.Set;

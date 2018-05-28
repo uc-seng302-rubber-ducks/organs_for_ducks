@@ -1,4 +1,4 @@
-package seng302;
+package seng302.model._enum;
 
 /**
  * Declares directories and file setup information in one place so it can be referred to later

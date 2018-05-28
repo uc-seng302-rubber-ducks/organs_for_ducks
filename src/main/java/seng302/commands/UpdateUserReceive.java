@@ -4,8 +4,8 @@ package seng302.commands;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Parameters;
 import seng302.controller.AppController;
-import seng302.model.OrganDeregisterReason;
-import seng302.model.Organs;
+import seng302.model._enum.OrganDeregisterReason;
+import seng302.model._enum.Organs;
 import seng302.model.User;
 
 @Command(name = "receive", description = "updates a user's organs to be received")

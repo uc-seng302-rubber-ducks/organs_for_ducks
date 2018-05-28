@@ -8,7 +8,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
-import seng302.Directory;
+import seng302.model._enum.Directory;
 import seng302.service.Log;
 
 import java.io.*;

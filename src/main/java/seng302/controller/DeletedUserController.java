@@ -10,7 +10,7 @@ import seng302.exception.ProfileAlreadyExistsException;
 import seng302.exception.ProfileNotFoundException;
 import seng302.model.Administrator;
 import seng302.model.Clinician;
-import seng302.model.Organs;
+import seng302.model._enum.Organs;
 import seng302.model.User;
 import seng302.service.Log;
 

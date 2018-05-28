@@ -2,6 +2,7 @@ package seng302.model;
 
 
 import com.google.gson.annotations.Expose;
+import seng302.model._enum.Organs;
 
 import java.time.LocalDate;
 import java.util.ArrayList;

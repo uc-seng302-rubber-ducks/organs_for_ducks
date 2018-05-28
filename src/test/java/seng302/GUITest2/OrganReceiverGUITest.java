@@ -9,8 +9,8 @@ import seng302.App;
 import seng302.controller.AppController;
 import seng302.controller.ReceiverOrganDetailsHolder;
 import seng302.controller.UserController;
-import seng302.model.OrganDeregisterReason;
-import seng302.model.Organs;
+import seng302.model._enum.OrganDeregisterReason;
+import seng302.model._enum.Organs;
 import seng302.model.User;
 
 import java.time.LocalDate;

@@ -4,7 +4,7 @@ import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
 import seng302.controller.AppController;
-import seng302.model.Organs;
+import seng302.model._enum.Organs;
 import seng302.model.User;
 
 @Command(name = "donate", description = "Updates a user's organs to donate.")

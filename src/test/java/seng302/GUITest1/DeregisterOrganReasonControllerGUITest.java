@@ -13,7 +13,7 @@ import seng302.App;
 import seng302.Utils.CommonTestMethods;
 import seng302.controller.AppController;
 import seng302.model.Disease;
-import seng302.model.Organs;
+import seng302.model._enum.Organs;
 import seng302.model.User;
 
 import java.time.LocalDate;

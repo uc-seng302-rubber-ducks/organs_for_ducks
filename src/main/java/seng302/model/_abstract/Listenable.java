@@ -1,4 +1,4 @@
-package seng302.model;
+package seng302.model._abstract;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;

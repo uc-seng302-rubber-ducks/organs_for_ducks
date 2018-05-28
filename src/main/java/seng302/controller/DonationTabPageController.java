@@ -4,7 +4,7 @@ import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.ListView;
 import javafx.scene.control.SelectionMode;
-import seng302.model.Organs;
+import seng302.model._enum.Organs;
 import seng302.model.User;
 import seng302.service.Log;
 import seng302.service.OrganListCellFactory;

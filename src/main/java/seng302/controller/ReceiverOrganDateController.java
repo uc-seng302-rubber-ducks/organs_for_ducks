@@ -8,7 +8,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
-import seng302.model.Organs;
+import seng302.model._enum.Organs;
 import seng302.model.ReceiverOrganDetails;
 import seng302.model.User;
 import seng302.service.Log;

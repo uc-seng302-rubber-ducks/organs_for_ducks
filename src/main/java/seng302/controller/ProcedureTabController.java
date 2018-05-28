@@ -13,6 +13,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
 import seng302.model.*;
+import seng302.model._enum.Organs;
 import seng302.service.Log;
 
 import java.io.IOException;

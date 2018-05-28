@@ -1,6 +1,6 @@
 package seng302.service;
 
-import seng302.model.Undoable;
+import seng302.model._abstract.Undoable;
 
 public class UndoHelpers {
 

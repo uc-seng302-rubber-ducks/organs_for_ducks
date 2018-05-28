@@ -2,6 +2,9 @@ package seng302.model;
 
 import com.google.gson.annotations.Expose;
 import javafx.collections.FXCollections;
+import seng302.model._abstract.Listenable;
+import seng302.model._abstract.Undoable;
+import seng302.model._enum.EventTypes;
 import seng302.service.PasswordManager;
 
 import java.beans.PropertyChangeEvent;

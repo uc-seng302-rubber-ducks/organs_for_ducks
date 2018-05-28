@@ -12,6 +12,8 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import seng302.model.*;
+import seng302.model._enum.OrganDeregisterReason;
+import seng302.model._enum.Organs;
 
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;

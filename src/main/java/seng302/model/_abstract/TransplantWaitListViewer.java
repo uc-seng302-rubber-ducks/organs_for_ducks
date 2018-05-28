@@ -1,4 +1,4 @@
-package seng302.controller;
+package seng302.model._abstract;
 
 import seng302.model.User;
 

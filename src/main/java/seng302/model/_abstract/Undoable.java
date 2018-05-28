@@ -1,4 +1,6 @@
-package seng302.model;
+package seng302.model._abstract;
+
+import seng302.model.Memento;
 
 import java.util.Stack;
 

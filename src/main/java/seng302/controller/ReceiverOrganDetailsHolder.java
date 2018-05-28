@@ -1,6 +1,6 @@
 package seng302.controller;
 
-import seng302.model.OrganDeregisterReason;
+import seng302.model._enum.OrganDeregisterReason;
 
 import java.time.LocalDate;
 

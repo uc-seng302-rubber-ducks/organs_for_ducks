@@ -1,6 +1,6 @@
 package seng302.service;
 
-import seng302.model.BloodTypes;
+import seng302.model._enum.BloodTypes;
 
 import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDate;

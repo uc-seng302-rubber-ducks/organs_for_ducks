@@ -9,7 +9,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
-import seng302.model.Organs;
+import seng302.model._abstract.TransplantWaitListViewer;
+import seng302.model._enum.Organs;
 import seng302.model.TransplantDetails;
 import seng302.model.User;
 import seng302.service.AttributeValidation;
@@ -20,7 +21,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static seng302.model.Organs.*;
+import static seng302.model._enum.Organs.*;
 
 public class TransplantWaitListController {
     @FXML

@@ -1,6 +1,6 @@
 package seng302.controller;
 
-import seng302.Directory;
+import seng302.model._enum.Directory;
 import seng302.exception.ProfileAlreadyExistsException;
 import seng302.exception.ProfileNotFoundException;
 import seng302.model.*;

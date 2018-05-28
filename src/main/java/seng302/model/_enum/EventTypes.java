@@ -1,4 +1,4 @@
-package seng302.model;
+package seng302.model._enum;
 
 public enum EventTypes {
     USER_UPDATE("USER"),

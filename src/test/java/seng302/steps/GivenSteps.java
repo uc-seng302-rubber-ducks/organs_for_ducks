@@ -7,7 +7,7 @@ import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.matcher.control.LabeledMatchers;
 import seng302.App;
 import seng302.controller.AppController;
-import seng302.model.Organs;
+import seng302.model._enum.Organs;
 import seng302.model.User;
 
 import java.time.LocalDate;

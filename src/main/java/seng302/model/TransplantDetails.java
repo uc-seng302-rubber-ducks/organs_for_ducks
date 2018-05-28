@@ -1,5 +1,7 @@
 package seng302.model;
 
+import seng302.model._enum.Organs;
+
 import java.time.LocalDate;
 
 /**

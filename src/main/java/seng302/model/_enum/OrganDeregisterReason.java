@@ -1,4 +1,4 @@
-package seng302.model;
+package seng302.model._enum;
 
 
 import com.google.gson.annotations.SerializedName;
