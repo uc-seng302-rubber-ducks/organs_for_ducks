@@ -1,7 +1,7 @@
 package seng302.Utils;
 
 import org.junit.Test;
-import seng302.Service.PasswordManager;
+import seng302.utils.PasswordManager;
 
 public class PasswordManagerTest {
 

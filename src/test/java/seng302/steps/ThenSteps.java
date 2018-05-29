@@ -4,8 +4,8 @@ import cucumber.api.java.en.Then;
 import javafx.scene.Node;
 import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.matcher.control.LabeledMatchers;
-import seng302.Model.User;
 import seng302.Utils.TableViewsMethod;
+import seng302.model.User;
 
 import java.util.ArrayList;
 

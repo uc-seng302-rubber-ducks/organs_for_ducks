@@ -4,7 +4,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0"
             xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
-            fx:controller="seng302.Controller.DonationTabPageController">
+            fx:controller="seng302.controller.gui.panel.DonationTabPageController">
     <children>
         <ListView fx:id="canDonate" layoutX="101.0" layoutY="86.0" prefHeight="424.0"
                   prefWidth="200.0"/>

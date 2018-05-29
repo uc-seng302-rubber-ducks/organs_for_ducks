@@ -7,11 +7,11 @@ import javafx.scene.input.KeyCode;
 import org.testfx.framework.junit.ApplicationTest;
 import picocli.CommandLine;
 import picocli.CommandLine.RunLast;
-import seng302.Controller.CliCommands.CreateUser;
-import seng302.Controller.CliCommands.DeleteUser;
-import seng302.Controller.CliCommands.View;
 import seng302.Utils.TableViewsMethod;
-import seng302.View.CLI;
+import seng302.commands.CreateUser;
+import seng302.commands.DeleteUser;
+import seng302.commands.View;
+import seng302.view.CLI;
 
 public class WhenSteps extends ApplicationTest {
 

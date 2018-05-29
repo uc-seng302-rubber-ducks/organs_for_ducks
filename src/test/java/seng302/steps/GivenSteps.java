@@ -6,9 +6,9 @@ import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.matcher.control.LabeledMatchers;
 import seng302.App;
-import seng302.Controller.AppController;
-import seng302.Model.Organs;
-import seng302.Model.User;
+import seng302.controller.AppController;
+import seng302.model._enum.Organs;
+import seng302.model.User;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;

@@ -4,7 +4,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0"
             xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
-            fx:controller="seng302.Controller.DiseasesTabPageController">
+            fx:controller="seng302.controller.gui.panel.DiseasesTabPageController">
     <children>
         <TableView fx:id="currentDiseaseTableView" layoutX="466.0" layoutY="57.0" prefHeight="470.0"
                    prefWidth="415.0"/>
