@@ -17,8 +17,8 @@ import java.util.List;
 
 
 public class CSVHandlerTest {
-    CSVHandler csvHandler;
-    User shouldEqual;
+    private CSVHandler csvHandler;
+    private User shouldEqual;
 
 
     @Before
@@ -27,8 +27,8 @@ public class CSVHandlerTest {
         shouldEqual.setNhi("ADB8724");
         shouldEqual.setFirstName("Marga");
         shouldEqual.setLastName("Gindghill");
-        shouldEqual.setDateOfBirth(LocalDate.parse("7/07/1943", DateTimeFormatter.ofPattern("MM/dd/YYYY")));
-        shouldEqual.setDateOfDeath(LocalDate.parse("7/07/1949", DateTimeFormatter.ofPattern("MM/dd/YYYY")));
+        shouldEqual.setDateOfBirth(LocalDate.parse("7/07/1943", DateTimeFormatter.ofPattern("M/d/yyyy")));
+        shouldEqual.setDateOfDeath(LocalDate.parse("7/07/1949", DateTimeFormatter.ofPattern("M/d/yyyy")));
         shouldEqual.setBirthGender("Female");
         shouldEqual.setGenderIdentity("Male");
         shouldEqual.setBloodType("Male");
@@ -63,13 +63,14 @@ public class CSVHandlerTest {
     }
 
     @Test
-    public void testDecodeValidCsv() throws IOException {
+    public void testDecodeValidCsvWithInvalidData() throws IOException {
         File inFile = new File("src/test/resources/csvData/csvTestData.csv");
         List<CSVRecord> records = csvHandler.parseCSV(inFile);
         Collection<User> users = csvHandler.decodeUsersFromCSV(records);
         List<User> usersList = new ArrayList<>(users);
-        User toTest = usersList.get(4);
-        assert (toTest.equals(shouldEqual));
+        User toTest = usersList.get(0);
+        System.out.println(toTest);
+        assert (toTest.getNhi().equals(shouldEqual.getNhi()));
         assert (toTest.getFirstName().equals(shouldEqual.getFirstName()));
         assert (toTest.getLastName().equals(shouldEqual.getLastName()));
         assert (toTest.getDateOfBirth().equals(shouldEqual.getDateOfBirth()));

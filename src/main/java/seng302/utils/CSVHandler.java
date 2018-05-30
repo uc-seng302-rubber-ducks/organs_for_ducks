@@ -53,7 +53,7 @@ public class CSVHandler {
         int count = 0;
         int malformed = 0;
         int correct = 0;
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("MM/dd/YYYY");
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("M/d/yyyy");
 
         for (CSVRecord record : records){
             count++;
