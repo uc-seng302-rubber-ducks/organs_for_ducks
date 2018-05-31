@@ -202,7 +202,7 @@ public class EmergencyContact {
      * @return a boolean.
      */
     private boolean checkStrings(String string1, String string2) {
-        return string1 != null && string2 != null && string1.toLowerCase().equals(string2.toLowerCase());
+        return string1 != null && string2 != null && string1.equalsIgnoreCase(string2);
     }
 
     /**

@@ -11,8 +11,8 @@ import javafx.scene.control.Label;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import seng302.controller.AppController;
-import seng302.controller.gui.window.UpdateUserController;
 import seng302.controller.gui.window.LoginController;
+import seng302.controller.gui.window.UpdateUserController;
 import seng302.model.User;
 import seng302.utils.Log;
 
@@ -228,7 +228,6 @@ public class UserOverviewController {
 
         } catch (IOException e) {
             Log.severe("Failed to load update user window for User NHI: " + currentUser.getNhi(), e);
-            e.printStackTrace();
         }
     }
 
@@ -281,7 +280,6 @@ public class UserOverviewController {
             Log.info("successfully launched login window after logged out for User NHI: " + currentUser.getNhi());
         } catch (IOException e) {
             Log.severe("failed to launch login window after logged out for User NHI: " + currentUser.getNhi(), e);
-            e.printStackTrace();
         }
 
 

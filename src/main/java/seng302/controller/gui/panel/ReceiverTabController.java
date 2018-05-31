@@ -9,15 +9,15 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
 import javafx.stage.Stage;
-import seng302.controller.*;
+import seng302.controller.AppController;
 import seng302.controller.gui.popup.DeregisterOrganReasonController;
 import seng302.controller.gui.popup.ReceiverOrganDateController;
 import seng302.controller.gui.popup.ReceiverOrganDetailsHolder;
 import seng302.controller.gui.window.UserController;
 import seng302.model.Change;
+import seng302.model.User;
 import seng302.model._enum.OrganDeregisterReason;
 import seng302.model._enum.Organs;
-import seng302.model.User;
 import seng302.utils.Log;
 import seng302.utils.OrganListCellFactory;
 
@@ -202,7 +202,6 @@ public class ReceiverTabController {
                 Log.info("Successfully launched deregister organ reason window for receiver NHI: " + currentUser.getNhi());
             } catch (IOException e) {
                 Log.severe("unable to launch deregister organ reason window for receiver NHI: " + currentUser.getNhi(), e);
-                e.printStackTrace();
             }
         }
     }
@@ -296,7 +295,6 @@ public class ReceiverTabController {
             Log.info("Successfully launched register and deregister time table window for receiver NHI: " + currentUser.getNhi());
         } catch (IOException e) {
             Log.severe("unable to launch register and deregister time table window for receiver NHI: " + currentUser.getNhi(), e);
-            e.printStackTrace();
         }
     }
 

@@ -570,8 +570,7 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
                     Log.warning("Incorrect file loaded - leads to NullPointerException.");
                 } else {
                     messageBoxPopup("confirm");
-                    Log.info("successfully imported " + loadedAdminsAmount + " Admin profiles");
-                    System.out.println(loadedAdminsAmount + " admins were successfully loaded.");
+                    Log.info("successfully imported " + loadedAdminsAmount + " Admin profiles");\
                 }
             } else {
                 Log.warning("File name not found");
@@ -636,7 +635,6 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
                 } else {
                     messageBoxPopup("confirm");
                     Log.info("successfully imported " + loadedCliniciansAmount + " Clinician profiles");
-                    System.out.println(loadedCliniciansAmount + " clinicians were successfully loaded.");
                 }
             } else {
                 Log.warning("File name not found");
@@ -700,7 +698,6 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
             } else {
                 messageBoxPopup("confirm");
                 Log.info("successfully imported " + loadedUsersAmount + " Users profiles");
-                System.out.println(loadedUsersAmount + " users were successfully loaded.");
             }
         } else {
             launchAlertUnclosedWindowsGUI();
@@ -708,12 +705,6 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
 
     }
 
-//    /**
-//     *
-//     */
-//    private void saveImport(Collection<> importedData) {
-//
-//    }
 
     /**
      * Shows a message box popup with either a load confirmation message, or error message based on string passed in
@@ -731,13 +722,13 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
         if (messageType.equals("error")) {
             errorAlert.showAndWait().ifPresent(rs -> {
                 if (rs == ButtonType.OK) {
-                    System.out.println("Pressed OK");
+                    errorAlert.close();
                 }
             });
         } else {
             confirmAlert.showAndWait().ifPresent(rs -> {
                 if (rs == ButtonType.OK) {
-                    System.out.println("Pressed OK");
+                    confirmAlert.close();
                 }
             });
         }
@@ -756,7 +747,7 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
     /**
      * closes all windows apart from admin overview.
      */
-    public void CloseAllWindows() {
+    public void closeAllWindows() {
         List<Stage> windows = StageHelper.getStages();
         int numWindows = windows.size();
 

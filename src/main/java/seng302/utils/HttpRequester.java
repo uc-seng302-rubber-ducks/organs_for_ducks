@@ -186,7 +186,7 @@ public class HttpRequester {
             suggestions = (JSONObject) new JSONParser().parse(response.body().string());
             return suggestions.get("suggestions").toString();
         } catch (ParseException e) {
-            System.out.println(e.getMessage());
+            Log.severe("HttpRequester parseexception in getSuggestedDrugs", e);
             return "";
         }
     }
