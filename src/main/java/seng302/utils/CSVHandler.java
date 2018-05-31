@@ -4,15 +4,15 @@ package seng302.utils;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
+import seng302.model.Administrator;
+import seng302.model.Clinician;
 import seng302.model.User;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.Reader;
+import java.io.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -20,7 +20,7 @@ import java.util.List;
 /**
  * Class to handle the importing and redirection of the CSV data.
  */
-public class CSVHandler {
+public class CSVHandler extends DataHandler{
 
 
     /**
@@ -47,7 +47,7 @@ public class CSVHandler {
      * @return Collection of Users from file
      */
     public Collection<User> decodeUsersFromCSV(List<CSVRecord> records){
-        Collection<User> users = new HashSet<>();
+        Collection<User> users = new ArrayList<>();
         int count = 0;
         int malformed = 0;
         int correct = 0;
@@ -101,4 +101,73 @@ public class CSVHandler {
         return users;
     }
 
+    /**
+     * Abstract method that may or may not save the collection of users to the default location
+     *
+     * @param users Collection of users to attempt to save
+     * @return true if the operation succeeded, false otherwise
+     */
+    @Override
+    public boolean saveUsers(Collection<User> users) throws IOException {
+        return false;
+    }
+
+    /**
+     * Abstract method that loads the Users from a specified location into memory.
+     *
+     * @param location Location of where to load the data from
+     */
+    @Override
+    public List<User> loadUsers(String location) throws FileNotFoundException {
+        File userCSV = new File(location);
+        try {
+            return (List<User>) decodeUsersFromCSV(parseCSV(userCSV));
+        } catch (IOException e) {
+            return new ArrayList<>();
+        }
+    }
+
+    /**
+     * Abstract method that may or may not save the collection of users to the default location
+     *
+     * @param clinicians Collection of clinicians to attempt to save
+     * @return true if the operation succeeded, false otherwise
+     */
+    @Override
+    public boolean saveClinicians(Collection<Clinician> clinicians) throws IOException {
+        return false;
+    }
+
+    /**
+     * Abstract method that may or may not load the clinicians from a specified location in memory.
+     *
+     * @param location Location of where to load the clinicians
+     * @return true if the operation succeeded, false otherwise
+     */
+    @Override
+    public List<Clinician> loadClinicians(String location) throws FileNotFoundException {
+        return null;
+    }
+
+    /**
+     * Abstract method that may or may not save the collection of administrators to the default location
+     *
+     * @param administrators Collection of administrators to attempt to save
+     * @return true if the operation succeeded, false otherwise
+     */
+    @Override
+    public boolean saveAdmins(Collection<Administrator> administrators) throws IOException {
+        return false;
+    }
+
+    /**
+     * Abstract method that may or may not load the clinicians from a specified location in memory.
+     *
+     * @param location Location to load the administrators from
+     * @return true if the operation succeeded, false otherwise
+     */
+    @Override
+    public Collection<Administrator> loadAdmins(String location) throws FileNotFoundException {
+        return null;
+    }
 }

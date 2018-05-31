@@ -7,6 +7,7 @@ import seng302.model.User;
 import seng302.utils.CSVHandler;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -68,7 +69,27 @@ public class CSVHandlerTest {
         List<CSVRecord> records = csvHandler.parseCSV(inFile);
         Collection<User> users = csvHandler.decodeUsersFromCSV(records);
         List<User> usersList = new ArrayList<>(users);
-        User toTest = usersList.get(0);
+        User toTest = usersList.get(2);
+        assert (toTest.getNhi().equals(shouldEqual.getNhi()));
+        assert (toTest.getFirstName().equals(shouldEqual.getFirstName()));
+        assert (toTest.getLastName().equals(shouldEqual.getLastName()));
+        assert (toTest.getDateOfBirth().equals(shouldEqual.getDateOfBirth()));
+        assert (toTest.getDateOfDeath().equals(shouldEqual.getDateOfDeath()));
+        assert (toTest.getBirthGender().equals(shouldEqual.getBirthGender()));
+        assert (toTest.getGenderIdentity().equals(shouldEqual.getGenderIdentity()));
+        assert (toTest.getHeight() == shouldEqual.getHeight());
+        assert (toTest.getWeight() == shouldEqual.getWeight());
+        assert (toTest.getRegion().equals(shouldEqual.getRegion()));
+        assert (toTest.getHomePhone().equals(shouldEqual.getHomePhone()));
+
+    }
+
+    @Test
+    public void testValidCsvReturnsRightDataInLoadUsers() throws FileNotFoundException {
+
+        CSVHandler csvHandler = new CSVHandler();
+        ArrayList<User> users = (ArrayList<User>) csvHandler.loadUsers("src/test/resources/csvData/csvTestData.csv");
+        User toTest = users.get(2);
         System.out.println(toTest);
         assert (toTest.getNhi().equals(shouldEqual.getNhi()));
         assert (toTest.getFirstName().equals(shouldEqual.getFirstName()));
@@ -82,6 +103,13 @@ public class CSVHandlerTest {
         assert (toTest.getRegion().equals(shouldEqual.getRegion()));
         assert (toTest.getHomePhone().equals(shouldEqual.getHomePhone()));
 
+    }
+
+    @Test
+    public void testInvalidCsvReturnsNoDataInLoadUsers() throws FileNotFoundException {
+        CSVHandler csvHandler = new CSVHandler();
+        ArrayList<User> users = (ArrayList<User>) csvHandler.loadUsers("src/test/resources/csvData/invalidCSV.csv");
+        assert (users.size() == 0);
     }
 
 }
