@@ -524,6 +524,7 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
     void importAdmins() {
        Log.info("Importing Admins");
        importRole(Administrator.class);
+
     }
 
     /**
@@ -555,7 +556,7 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
      * @param role class to be imported. e.g. Administrator.class
      * @param <T> Type T (not used?)
      */
-    private <T> void importRole(Class<T> role) {
+    private <T> void importRole( Class<T> role) {
         if (!isAllWindowsClosed()) {
             launchAlertUnclosedWindowsGUI();
             return;
@@ -569,7 +570,7 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
         }
         try {
 
-            if (role.getClass().isInstance(Administrator.class)) {
+            if (role.getSimpleName().equals(Administrator.class.getSimpleName())) {
                 //<editor-fold desc="admin handler">
                 Collection<Administrator> existingAdmins = appController.getAdmins();
                 Collection<Administrator> newAdmins = JsonHandler.loadAdmins(filename);
@@ -597,7 +598,7 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
                 }
                 //</editor-fold>
 
-            } else if (role.getClass().isInstance(Clinician.class)) {
+            } else if (role.getSimpleName().equals(Clinician.class.getSimpleName())) {
                 //<editor-fold desc="clinician handler">
                 Collection<Clinician> existingClinicians = appController.getClinicians();
                 Collection<Clinician> newClinicians = JsonHandler.loadClinicians(filename);
@@ -625,7 +626,7 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
                 }
                 //</editor-fold>
 
-            } else if (role.getClass().isInstance(User.class)) {
+            } else if (role.getSimpleName().equals(User.class.getSimpleName())) {
                 //<editor-fold desc="user handler">
                 Collection<User> existingUsers = appController.getUsers();
                 Collection<User> newUsers = JsonHandler.loadUsers(filename);
@@ -650,6 +651,7 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
                     Log.info("successfully imported " + newUsers.size() + " User profiles");
                 } catch (IOException e) {
                     Log.warning("failed to save newly loaded users", e);
+                    messageBoxPopup("error");
                 }
                 //</editor-fold>
             }
@@ -662,9 +664,7 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
             Log.warning("File " + filename + " is invalid", e);
             messageBoxPopup("error");
         }
-
-
-
+        refreshTables();
     }
 
     /**
