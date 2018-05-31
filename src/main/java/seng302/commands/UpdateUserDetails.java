@@ -84,19 +84,19 @@ public class UpdateUserDetails implements Runnable {
             }
         }
         if (weight != -1) {
-            user.setWeight(weight);
+            user.getHealthDetails().setWeight(weight);
             changed = true;
         }
         if (height != -1) {
-            user.setHeight(height);
+            user.getHealthDetails().setHeight(height);
             changed = true;
         }
         if (gender != null) {
-            user.setGender(gender);
+            user.getHealthDetails().setBirthGender(gender);
             changed = true;
         }
         if (bloodType != null) {
-            user.setBloodType(bloodType);
+            user.getHealthDetails().setBloodType(bloodType);
             changed = true;
         }
         if (currentAddress != null) {

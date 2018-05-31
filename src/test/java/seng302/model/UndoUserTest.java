@@ -40,7 +40,7 @@ public class UndoUserTest {
 
     @Test
     public void testMultipleChangeMultipleUndo() {
-        testUser.setBloodType("B+");
+        testUser.getHealthDetails().setBloodType("B+");
         testUser.setCurrentAddress("42 wallaby way");
         testUser.setRegion("Sydney");
 
@@ -51,12 +51,12 @@ public class UndoUserTest {
         assertNull(testUser.getCurrentAddress());
 
         testUser.undo();
-        assertEquals("U", testUser.getBloodType());
+        assertEquals("U", testUser.getHealthDetails().getBloodType());
     }
 
     @Test
     public void testMultipleChangesSingleUndo() {
-        testUser.setBloodType("B+");
+        testUser.getHealthDetails().setBloodType("B+");
         testUser.setLastName("Jefferson");
         testUser.setLastName("Doe");
 

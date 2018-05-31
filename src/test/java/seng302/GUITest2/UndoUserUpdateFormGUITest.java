@@ -32,8 +32,7 @@ public class UndoUserUpdateFormGUITest extends ApplicationTest {
         FxToolkit.registerPrimaryStage();
         FxToolkit.setupApplication(App.class);
         AppController.getInstance().getUsers().clear();
-        User user = new User("ABC1234", LocalDate.now().minusDays(2), LocalDate.now(), "", "Non Binary", 0, 0,
-                "B-", "None", false, "", "", "", "", "",
+        User user = new User("ABC1234", LocalDate.now().minusDays(2), LocalDate.now(), "", "", "", "", "",
                 null,
                 "Frank", "Frank", "Frank", "", "");
         user.setContact(new EmergencyContact("", "", user));

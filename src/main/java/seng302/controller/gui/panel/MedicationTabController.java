@@ -356,7 +356,7 @@ public class MedicationTabController {
 
             } else /*interactions*/ {
                 Set<String> res = HttpRequester
-                        .getDrugInteractions(selected.get(0), selected.get(1), currentUser.getGender(),
+                        .getDrugInteractions(selected.get(0), selected.get(1), currentUser.getHealthDetails().getBirthGender(),
                                 currentUser.getAge(), client);
                 StringBuilder sb = new StringBuilder();
                 for (String symptom : res) {

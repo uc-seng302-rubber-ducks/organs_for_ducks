@@ -30,16 +30,16 @@ public class User extends Undoable<User> implements Listenable {
     private LocalDate dateOfBirth;
     @Expose
     private LocalDate dateOfDeath;
-    @Expose
-    private String gender;
-    @Expose
-    private double height;
-    private transient String heightText;
-    @Expose
-    private double weight;
-    private transient String weightText;
-    @Expose
-    private String bloodType;
+//    @Expose
+//    private String gender;
+//    @Expose
+//    private double height;
+//    private transient String heightText;
+//    @Expose
+//    private double weight;
+//    private transient String weightText;
+//    @Expose
+//    private String bloodType;
     @Expose
     private String currentAddress;
     @Expose
@@ -56,14 +56,14 @@ public class User extends Undoable<User> implements Listenable {
     private String middleName;
     @Expose
     private String lastName;
-    @Expose
-    private String birthGender;
-    @Expose
-    private String genderIdentity;
-    @Expose
-    private String alcoholConsumption;
-    @Expose
-    private boolean smoker;
+//    @Expose
+//    private String birthGender;
+//    @Expose
+//    private String genderIdentity;
+//    @Expose
+//    private String alcoholConsumption;
+//    @Expose
+//    private boolean smoker;
     @Expose
     private String homePhone;
     @Expose
@@ -72,6 +72,9 @@ public class User extends Undoable<User> implements Listenable {
     private String email;
     @Expose
     private EmergencyContact contact;
+
+    @Expose
+    private HealthDetails healthDetails;
 
     @Expose
     private LocalDateTime lastModified;
@@ -117,13 +120,6 @@ public class User extends Undoable<User> implements Listenable {
      * @param nhi                National Health Index for user
      * @param dateOfBirth        users date of birth
      * @param dateOfDeath        users date of death
-     * @param birthGender        users birth gender
-     * @param genderIdentity     users gender identity
-     * @param height             users height
-     * @param weight             users weight
-     * @param bloodType          users blood type
-     * @param alcoholConsumption users alcohol consumption
-     * @param smoker             if user is a smoker
      * @param currentAddress     users current address
      * @param region             users region
      * @param homePhone          users home phone number
@@ -136,26 +132,13 @@ public class User extends Undoable<User> implements Listenable {
      * @param middleName         users middle name
      * @param lastName           users last name
      */
-    public User(String nhi, LocalDate dateOfBirth, LocalDate dateOfDeath, String birthGender, String genderIdentity,
-                double height, double weight, String bloodType, String alcoholConsumption, boolean smoker,
-                String currentAddress, String region, String homePhone, String cellPhone, String email,
-                EmergencyContact contact, String name, String firstName, String preferredFirstName, String middleName,
-                String lastName) {
+    public User(String nhi, LocalDate dateOfBirth, LocalDate dateOfDeath, String currentAddress, String region,
+                String homePhone, String cellPhone, String email, EmergencyContact contact,
+                String name, String firstName, String preferredFirstName, String middleName, String lastName) {
 
         this.nhi = nhi;
         this.dateOfBirth = dateOfBirth;
         this.dateOfDeath = dateOfDeath;
-
-        this.birthGender = birthGender;
-        this.genderIdentity = genderIdentity;
-        this.height = height;
-        this.weight = weight;
-        this.heightText = Double.toString(height);
-        this.weightText = Double.toString(weight);
-
-        this.bloodType = bloodType;
-        this.alcoholConsumption = alcoholConsumption;
-        this.smoker = smoker;
 
         this.currentAddress = currentAddress;
         this.region = region;
@@ -205,9 +188,6 @@ public class User extends Undoable<User> implements Listenable {
         timeCreated = LocalDateTime.now();
         lastModified = LocalDateTime.now();
         this.preferredFirstName = firstName;
-        this.gender = "U";
-        this.bloodType = "U";
-        this.alcoholConsumption = "None";
         updateHistory = new HashMap<>();
         this.contact = new EmergencyContact(null, null, this);
         updateHistory.put(dateToString(getTimeCreated()), "Profile created.");
@@ -216,8 +196,6 @@ public class User extends Undoable<User> implements Listenable {
         this.previousMedication = new ArrayList<>();
         this.currentMedicationTimes = new HashMap<>();
         this.previousMedicationTimes = new HashMap<>();
-        this.heightText = "";
-        this.weightText = "";
 
         this.currentDiseases = new ArrayList<>();
         this.pastDiseases = new ArrayList<>();
@@ -263,6 +241,19 @@ public class User extends Undoable<User> implements Listenable {
         mem.setOldObject(this.clone());
         updateLastModified();
         this.contact = contact;
+        mem.setNewObject(this.clone());
+        getUndoStack().push(mem);
+    }
+
+    public HealthDetails getHealthDetails() {
+        return healthDetails;
+    }
+
+    public void setHealthDetails(HealthDetails healthDetails) {
+        Memento<User> mem = new Memento<>();
+        mem.setOldObject(this.clone());
+        updateLastModified();
+        this.healthDetails = healthDetails;
         mem.setNewObject(this.clone());
         getUndoStack().push(mem);
     }
@@ -458,97 +449,6 @@ public class User extends Undoable<User> implements Listenable {
         getUndoStack().push(mem);
     }
 
-    public String getGender() {
-        return gender;
-    }
-
-    public void setGender(String gender) {
-        Memento<User> mem = new Memento<>();
-        mem.setOldObject(this.clone());
-        updateLastModified();
-        this.gender = gender;
-        addChange(new Change("Changed gender to " + gender));
-        mem.setNewObject(this.clone());
-        getUndoStack().push(mem);
-    }
-
-    public double getHeight() {
-        return height;
-    }
-
-    public void setHeight(double height) {
-        Memento<User> mem = new Memento<>();
-        mem.setOldObject(this.clone());
-        updateLastModified();
-        if (this.height != height) {
-            this.height = height;
-            addChange(new Change("Changed height to " + height));
-            mem.setNewObject(this.clone());
-            getUndoStack().push(mem);
-        }
-    }
-
-    public double getWeight() {
-        return weight;
-    }
-
-    public void setWeight(double weight) {
-        Memento<User> mem = new Memento<>();
-        mem.setOldObject(this.clone());
-        updateLastModified();
-        if (weight != this.weight) {
-            this.weight = weight;
-            addChange(new Change("Changed weight to " + weight));
-            mem.setNewObject(this.clone());
-            getUndoStack().push(mem);
-        }
-    }
-
-    public String getHeightText() {
-        return heightText;
-    }
-
-    public void setHeightText(String height) {
-        Memento<User> mem = new Memento<>();
-        mem.setOldObject(this.clone());
-        updateLastModified();
-        this.heightText = height;
-        addChange(new Change("set height to " + height));
-        mem.setNewObject(this.clone());
-        getUndoStack().push(mem);
-    }
-
-    public String getWeightText() {
-        return weightText;
-    }
-
-    public void setWeightText(String weight) {
-        Memento<User> mem = new Memento<>();
-        mem.setOldObject(this.clone());
-        updateLastModified();
-        this.weightText = weight;
-        addChange(new Change("set weight to " + weight));
-        mem.setNewObject(this.clone());
-        getUndoStack().push(mem);
-    }
-
-    public String getBloodType() {
-        return bloodType;
-    }
-
-    public void setBloodType(String bloodType) {
-        Memento<User> mem = new Memento<>();
-        mem.setOldObject(this.clone());
-        String validType = groupBloodType(bloodType);
-        updateLastModified();
-        if (this.bloodType != validType) {
-            this.bloodType = validType;
-            addChange(new Change("Changed blood type to " + bloodType));
-            mem.setNewObject(this.clone());
-            getUndoStack().push(mem);
-        }
-    }
-
     public String getCurrentAddress() {
         return currentAddress;
     }
@@ -638,67 +538,6 @@ public class User extends Undoable<User> implements Listenable {
         getUndoStack().push(mem);
     }
 
-    public String getBirthGender() {
-        return birthGender;
-    }
-
-    public void setBirthGender(String birthGender) {
-        Memento<User> mem = new Memento<>();
-        mem.setOldObject(this.clone());
-        updateLastModified();
-        // Changes the default case where the gender identity is the same as the birth gender
-        if (genderIdentity == null) {
-            genderIdentity = this.birthGender;
-        }
-        this.birthGender = birthGender;
-        addChange(new Change("Changed birth gender to " + birthGender));
-        mem.setNewObject(this.clone());
-        getUndoStack().push(mem);
-    }
-
-    public String getGenderIdentity() {
-        return genderIdentity;
-    }
-
-    public void setGenderIdentity(String genderIdentity) {
-
-        Memento<User> mem = new Memento<>();
-        mem.setOldObject(this.clone());
-        updateLastModified();
-        this.genderIdentity = genderIdentity;
-        addChange(new Change("Changed birth Identity to " + genderIdentity));
-        mem.setNewObject(this.clone());
-        getUndoStack().push(mem);
-    }
-
-    public String getAlcoholConsumption() {
-        return alcoholConsumption;
-    }
-
-    public void setAlcoholConsumption(String alcoholConsumption) {
-        Memento<User> mem = new Memento<>();
-        mem.setOldObject(this.clone());
-        updateLastModified();
-        this.alcoholConsumption = alcoholConsumption;
-        addChange(new Change("Changed alcohol consumption to " + alcoholConsumption));
-        mem.setNewObject(this.clone());
-        getUndoStack().push(mem);
-    }
-
-    public boolean isSmoker() {
-        return smoker;
-    }
-
-    public void setSmoker(boolean smoker) {
-        Memento<User> mem = new Memento<>();
-        mem.setOldObject(this.clone());
-        updateLastModified();
-        this.smoker = smoker;
-        addChange(new Change("Changed smoker status to " + smoker));
-        mem.setNewObject(this.clone());
-        getUndoStack().push(mem);
-    }
-
     public String getHomePhone() {
         return homePhone;
     }
@@ -740,40 +579,6 @@ public class User extends Undoable<User> implements Listenable {
         mem.setNewObject(this.clone());
         getUndoStack().push(mem);
     }
-
-    /**
-     * Method to ensure that all blood types are valid blood types returns U if not a valid blood
-     * type
-     *
-     * @param possibleType type to test
-     * @return correct blood type
-     */
-    private String groupBloodType(String possibleType) {
-
-        if (possibleType == null) {
-            return "U";
-        }
-        if (possibleType.equalsIgnoreCase("AB+")) {
-            return "AB+";
-        } else if (possibleType.equalsIgnoreCase("AB-")) {
-            return "AB-";
-        } else if (possibleType.equalsIgnoreCase("A+")) {
-            return "A+";
-        } else if (possibleType.equalsIgnoreCase("A-")) {
-            return "A-";
-        } else if (possibleType.equalsIgnoreCase("B+")) {
-            return "B+";
-        } else if (possibleType.equalsIgnoreCase("B-")) {
-            return "B-";
-        } else if (possibleType.equalsIgnoreCase("O+")) {
-            return "O+";
-        } else if (possibleType.equalsIgnoreCase("O-")) {
-            return "O-";
-        } else {
-            return "U";
-        }
-    }
-
 
     public List<String> getMiscAttributes() {
         return miscAttributes;
@@ -1021,11 +826,6 @@ public class User extends Undoable<User> implements Listenable {
                 "\nnhi: " + nhi +
                 "\ndate Of Birth: " + dateOfBirth +
                 "\ndate Of Death :" + dateOfDeath +
-                "\nbirth gender: " + birthGender +
-                "\npreferred gender: " + genderIdentity +
-                "\nheight: " + height +
-                "\nweight: " + weight +
-                "\nblood Type: '" + bloodType + '\'' +
                 "\ncurrent Address: '" + currentAddress + '\'' +
                 "\nregion: '" + region + '\'' +
                 "\norgans: " + (isDonor() ? donorDetails.getOrgans() : (name + " is not a donor")) +
@@ -1062,16 +862,6 @@ public class User extends Undoable<User> implements Listenable {
         newUser.dateOfBirth = this.dateOfBirth;
         newUser.dateOfDeath = this.dateOfDeath;
 
-        newUser.birthGender = this.birthGender;
-        newUser.genderIdentity = this.genderIdentity;
-        newUser.height = this.height;
-        newUser.weight = this.weight;
-        newUser.heightText = this.heightText;
-        newUser.weightText = this.weightText;
-        newUser.bloodType = this.bloodType;
-        newUser.alcoholConsumption = this.alcoholConsumption;
-        newUser.smoker = this.smoker;
-
         newUser.currentAddress = this.currentAddress;
         newUser.region = this.region;
         newUser.homePhone = this.homePhone;
@@ -1084,6 +874,8 @@ public class User extends Undoable<User> implements Listenable {
         } else {
             newUser.contact = null;
         }
+
+        newUser.healthDetails = new HealthDetails(newUser); // TODO: need to do something more with this..
 
         newUser.name = this.name;
         newUser.firstName = this.firstName;
@@ -1146,15 +938,15 @@ public class User extends Undoable<User> implements Listenable {
         this.dateOfBirth = other.dateOfBirth;
         this.dateOfDeath = other.dateOfDeath;
 
-        this.birthGender = other.birthGender;
-        this.genderIdentity = other.genderIdentity;
-        this.height = other.height;
-        this.weight = other.weight;
-        this.heightText = other.heightText;
-        this.weightText = other.weightText;
-        this.bloodType = other.bloodType;
-        this.alcoholConsumption = other.alcoholConsumption;
-        this.smoker = other.smoker;
+//        this.birthGender = other.birthGender;
+//        this.genderIdentity = other.genderIdentity;
+//        this.height = other.height;
+//        this.weight = other.weight;
+//        this.heightText = other.heightText;
+//        this.weightText = other.weightText;
+//        this.bloodType = other.bloodType;
+//        this.alcoholConsumption = other.alcoholConsumption;
+//        this.smoker = other.smoker;
 
         this.currentAddress = other.currentAddress;
         this.region = other.region;

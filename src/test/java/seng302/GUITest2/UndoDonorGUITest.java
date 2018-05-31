@@ -31,8 +31,7 @@ public class UndoDonorGUITest extends ApplicationTest {
         FxToolkit.registerPrimaryStage();
         FxToolkit.setupApplication(App.class);
         AppController.getInstance().getUsers().clear();
-        User user = new User("ABC1234", LocalDate.now().minusDays(2), LocalDate.now(), "", "", 0, 0,
-                "B+", "None", false, "", "", "", "", "",
+        User user = new User("ABC1234", LocalDate.now().minusDays(2), LocalDate.now(), "", "", "", "", "",
                 null,
                 "Adam", "Adam", "Adam", "", "");
         user.setContact(new EmergencyContact("", "", user));

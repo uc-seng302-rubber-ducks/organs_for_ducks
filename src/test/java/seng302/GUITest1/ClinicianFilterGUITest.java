@@ -31,7 +31,7 @@ public class ClinicianFilterGUITest extends ApplicationTest {
         FxToolkit.registerPrimaryStage();
         FxToolkit.setupApplication(App.class);
         AppController.getInstance().getUsers().clear();
-        User adam = new User("ABC1234", LocalDate.now(), null, "Male", "Female", 1.75, 78, "A+", "None", true,
+        User adam = new User("ABC1234", LocalDate.now(), null,
                 "2 Sherbet Drive", "Fairyland", "033567721", "02044436727", "sherberto@gmail.com",
                 null, "Adam John Fairie", "Adam", "Abathur - Destroyer of worlds", "John",
                 "Fairie");

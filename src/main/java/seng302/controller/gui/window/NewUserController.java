@@ -10,6 +10,7 @@ import javafx.stage.Stage;
 import seng302.controller.AppController;
 import seng302.exception.InvalidFieldsException;
 import seng302.model.EmergencyContact;
+import seng302.model.HealthDetails;
 import seng302.model.User;
 import seng302.utils.AttributeValidation;
 import seng302.utils.Log;
@@ -185,12 +186,14 @@ public class NewUserController {
 
         if (valid) {
             // create the new user
-            User newUser = new User(nhi, dob, dod, birthGender, genderIdentity, height, weight,
-                    bloodType,
-                    alcoholConsumption, smoker, currentAddress, region, homePhone, cellPhone, email, null,
+            User newUser = new User(nhi, dob, dod, currentAddress, region, homePhone, cellPhone, email, null,
                     fName, fName, preferredFirstName, middleName,
                     lastName); //todo: ewww gross can we please change this DELET THIS PLS
+
             try {
+                HealthDetails healthDetails = collectHealthDetails(newUser, birthGender, genderIdentity, height, weight, bloodType, alcoholConsumption, smoker);
+                newUser.setHealthDetails(healthDetails);
+
                 EmergencyContact contact = collectEmergencyContact(newUser);
                 newUser.setContact(contact);
 
@@ -252,6 +255,33 @@ public class NewUserController {
             errorLabel.setVisible(true);
         }
 
+    }
+
+    /**
+     * Sets all health detail variables based off the details entered
+     * @param user the new user being created
+     * @param birthGender the birth gender entered by the user
+     * @param genderIdentity the gender identity entered by the user
+     * @param height the height entered by the user
+     * @param weight the weight entered by the user
+     * @param bloodType the blood type entered by the user
+     * @param alcoholConsumption the alcohol consumption entered by the user
+     * @param smoker the status of the user being a smoker or not
+     * @return the collated health details of the user
+     */
+    private HealthDetails collectHealthDetails(User user, String birthGender, String genderIdentity, double height, double weight,
+                                               String bloodType, String alcoholConsumption, boolean smoker) {
+        HealthDetails healthDetails = new HealthDetails(user);
+
+        healthDetails.setBirthGender(birthGender);
+        healthDetails.setGenderIdentity(genderIdentity);
+        healthDetails.setHeight(height);
+        healthDetails.setWeight(weight);
+        healthDetails.setBloodType(bloodType);
+        healthDetails.setAlcoholConsumption(alcoholConsumption);
+        healthDetails.setSmoker(smoker);
+
+        return healthDetails;
     }
 
     /**

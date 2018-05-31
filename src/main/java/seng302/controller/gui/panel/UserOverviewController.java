@@ -13,6 +13,7 @@ import javafx.stage.Stage;
 import seng302.controller.AppController;
 import seng302.controller.gui.window.UpdateUserController;
 import seng302.controller.gui.window.LoginController;
+import seng302.model.HealthDetails;
 import seng302.model.User;
 import seng302.utils.Log;
 
@@ -118,9 +119,12 @@ public class UserOverviewController {
      * @param user The current user.
      */
     public void showUser(User user) {
+        HealthDetails healthDetails = user.getHealthDetails();
+
         NHIValue.setText(user.getNhi());
         fNameValue.setText(user.getFirstName());
         DOBValue.setText(user.getDateOfBirth().toString());
+
         if (user.getMiddleName() != null) {
             mNameValue.setText(user.getMiddleName());
         } else {
@@ -139,16 +143,16 @@ public class UserOverviewController {
             lNameValue.setText("");
         }
 
-        if (user.getGenderIdentity() != null) {
-            genderIdentityValue.setText(user.getGenderIdentity());
+        if (healthDetails.getGenderIdentity() != null) {
+            genderIdentityValue.setText(healthDetails.getGenderIdentity());
         } else {
             genderIdentityValue.setText("");
         }
-        if (user.getBirthGender() != null) {
-            birthGenderValue.setText(user.getBirthGender());
-            if (user.getGenderIdentity() == null || user.getGenderIdentity()
-                    .equals(user.getBirthGender())) {
-                genderIdentityValue.setText(user.getBirthGender());
+        if (healthDetails.getBirthGender() != null) {
+            birthGenderValue.setText(healthDetails.getBirthGender());
+            if (healthDetails.getGenderIdentity() == null || healthDetails.getGenderIdentity()
+                    .equals(healthDetails.getBirthGender())) {
+                genderIdentityValue.setText(healthDetails.getBirthGender());
             }
         } else {
             birthGenderValue.setText("");
@@ -163,38 +167,38 @@ public class UserOverviewController {
             DODValue.setText("");
             ageDeathValue.setText("");
         }
-        if (user.getBloodType() != null) {
-            bloodTypeValue.setText(user.getBloodType());
+        if (healthDetails.getBloodType() != null) {
+            bloodTypeValue.setText(healthDetails.getBloodType());
         } else {
             bloodTypeValue.setText("");
         }
 
-        if (user.isSmoker()) {
+        if (healthDetails.isSmoker()) {
             smokerValue.setText("Yes");
         } else {
             smokerValue.setText("No");
         }
 
         String weight;
-        if (user.getWeight() > 0) {
-            weight = java.lang.Double.toString(user.getWeight());
+        if (healthDetails.getWeight() > 0) {
+            weight = java.lang.Double.toString(healthDetails.getWeight());
             weightValue.setText(weight);
         } else {
             weightValue.setText("");
         }
 
         String height;
-        if (user.getHeight() > 0) {
-            height = java.lang.Double.toString(user.getHeight());
+        if (healthDetails.getHeight() > 0) {
+            height = java.lang.Double.toString(healthDetails.getHeight());
             heightValue.setText(height);
         } else {
             heightValue.setText("");
         }
 
-        if (user.getHeight() > 0 && user.getWeight() > 0) {
+        if (healthDetails.getHeight() > 0 && healthDetails.getWeight() > 0) {
             //TODO fix BMI kg/m^
             DecimalFormat df = new DecimalFormat("#.00");
-            double bmi = user.getWeight() / (user.getHeight() * user.getHeight());
+            double bmi = healthDetails.getWeight() / (healthDetails.getHeight() * healthDetails.getHeight());
             String formattedBmi = df.format(bmi);
             bmiValue.setText(formattedBmi);
         } else {
@@ -205,7 +209,7 @@ public class UserOverviewController {
             lastModifiedValue.setText(user.getLastModified().toString());
         }
         createdValue.setText(user.getTimeCreated().toString());
-        alcoholValue.setText(user.getAlcoholConsumption());
+        alcoholValue.setText(healthDetails.getAlcoholConsumption());
 
     }
 

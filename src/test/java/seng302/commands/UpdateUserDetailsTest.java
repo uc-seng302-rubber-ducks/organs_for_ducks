@@ -32,7 +32,7 @@ public class UpdateUserDetailsTest {
             controller.Register("test dummy", LocalDate.parse("1111-11-11", sdf), "ABC1234");
             NHI = "ABC1234";
             User user = controller.findUsers("test dummy").get(0);
-            user.setWeight(65.3);
+            user.getHealthDetails().setWeight(65.3);
             System.out.println("Users size: " + controller.getUsers().size());
         } catch (Exception ex) {
             fail("exception thrown setting up tests");
@@ -87,7 +87,7 @@ public class UpdateUserDetailsTest {
                 .parseWithHandler(new CommandLine.RunLast(), System.err, args);
 
         User test = controller.findUsers("test dummy").get(0);
-        assert (test.getWeight() == 100);
+        assert (test.getHealthDetails().getWeight() == 100);
     }
 
     @Test
@@ -98,7 +98,7 @@ public class UpdateUserDetailsTest {
                 .parseWithHandler(new CommandLine.RunLast(), System.err, args);
 
         User test = controller.findUsers("test dummy").get(0);
-        assert (test.getWeight() == 65.3);
+        assert (test.getHealthDetails().getWeight() == 65.3);
     }
 
     @Test
