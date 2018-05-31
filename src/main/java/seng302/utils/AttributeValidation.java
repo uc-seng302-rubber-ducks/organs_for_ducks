@@ -69,8 +69,11 @@ public class AttributeValidation {
      * @return true if the attribute meets the specified criteria, false otherwise
      */
     public static boolean checkString(String attribute) {
-        assert attribute != null;
-        return (attribute.matches("[a-zA-Z '\\-0-9]*"));
+        if (attribute != null) {
+            return (attribute.matches("[a-zA-Z '\\-0-9]*"));
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -80,8 +83,11 @@ public class AttributeValidation {
      * @return true if the attribute meets the specified criteria, false otherwise
      */
     public static boolean checkRequiredString(String attribute) {
-        assert attribute != null;
-        return (attribute.matches("[a-zA-Z '\\-0-9]+"));
+        if (attribute != null) {
+            return (attribute.matches("[a-zA-Z '\\-0-9]+"));
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -91,8 +97,11 @@ public class AttributeValidation {
      * @return true if the attribute meets the specified criteria, false otherwise
      */
     public static boolean checkRequiredStringName(String attribute) {
-        assert attribute != null;
-        return (attribute.matches("[a-zA-Z '\\-]+"));
+        if (attribute != null) {
+            return (attribute.matches("[a-zA-Z '\\-]+"));
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -168,7 +177,7 @@ public class AttributeValidation {
     public static boolean validateGender(String gender) {
         String[] valids = {"", "male", "female", "non binary"};
         for (String valid : valids) {
-            if (gender.toLowerCase().equals(valid)) {
+            if (gender.equalsIgnoreCase(valid)) {
                 return true;
             }
         }
@@ -193,7 +202,7 @@ public class AttributeValidation {
                 return region.toLowerCase().startsWith(regionString.toLowerCase());
             }
         } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-            e.printStackTrace();
+            Log.severe("Attribute validation Error checking region", e);
             return false;
         }
     }
@@ -218,7 +227,7 @@ public class AttributeValidation {
             return (gender.equalsIgnoreCase(genderValue) ||
                     genderValue.equalsIgnoreCase("All"));
         } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-            e.printStackTrace();
+            Log.severe("Attribute validation error checking gender matches", e);
             return false;
         }
 

@@ -119,7 +119,6 @@ public class LoginController {
             userController.init(AppController.getInstance(), user, stage, false, null);
         } catch (IOException e) {
             Log.severe("failed to load user window", e);
-            e.printStackTrace();
         }
     }
 
@@ -128,8 +127,6 @@ public class LoginController {
      */
     @FXML
     void loginClinician() {
-        //Checks if the Clinician login button is clicked and runs the clinician login code
-        System.out.println("button clicked");
         clinicianWarningLabel.setText("");
         String wantedClinician;
         if (staffIdTextField.getText().isEmpty()) {
@@ -157,7 +154,6 @@ public class LoginController {
                 clinicianController.init(stage, appController, clinician, false, null);
             } catch (IOException e) {
                 Log.severe("failed to load clinician window", e);
-                e.printStackTrace();
             }
         }
     }
@@ -198,7 +194,6 @@ public class LoginController {
                 administratorController.init(administrator, appController, stage, true, null);
             } catch (IOException e) {
                 Log.severe("failed to load administrator window", e);
-                e.printStackTrace();
             }
         }
     }
@@ -225,7 +220,6 @@ public class LoginController {
             userController.init(AppController.getInstance(), stage, newStage);
         } catch (IOException e) {
             Log.severe("failed to load new user window", e);
-            e.printStackTrace();
         }
 
     }
@@ -249,7 +243,6 @@ public class LoginController {
                 Log.info("Successfully launched help window");
             } catch (Exception e) {
                 Log.severe("could not load help window", e);
-                e.printStackTrace();
             }
         }
     }
@@ -277,7 +270,6 @@ public class LoginController {
             Log.info("Successfully launched CLI");
         } catch (IOException e) {
             Log.severe("could not load CLI", e);
-            e.printStackTrace();
         }
     }
 }

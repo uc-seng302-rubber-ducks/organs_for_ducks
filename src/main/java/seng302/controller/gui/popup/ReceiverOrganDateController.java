@@ -8,9 +8,9 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
+import seng302.model.User;
 import seng302.model._enum.Organs;
 import seng302.model.datamodel.ReceiverOrganDetails;
-import seng302.model.User;
 import seng302.utils.Log;
 
 import java.time.LocalDate;
@@ -57,12 +57,12 @@ public class ReceiverOrganDateController {
         ArrayList<ReceiverOrganDetails> receiverOrganDetailsList = new ArrayList<>();
 
         if (organDates != null && !organDates.isEmpty()) {
-            for (int i = 0; i < organDates.size(); i += 1) {
+            for (int i = 0; i < organDates.size(); i += 2) {
                 ReceiverOrganDetails receiverOrganDetails = new ReceiverOrganDetails();
                 receiverOrganDetails.setRegisterDate(organDates.get(i));
-                i += 1;
+
                 try {
-                    receiverOrganDetails.setDeRegisterDate(organDates.get(i));
+                    receiverOrganDetails.setDeRegisterDate(organDates.get(i + 1));
                 } catch (IndexOutOfBoundsException e) {
                     Log.warning(e.getMessage(), e);
                 }

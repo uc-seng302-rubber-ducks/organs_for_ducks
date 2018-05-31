@@ -4,8 +4,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializer;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
 import seng302.model.Administrator;
@@ -13,7 +11,6 @@ import seng302.model.Change;
 import seng302.model.Clinician;
 import seng302.model.User;
 import seng302.model._enum.Directory;
-import seng302.utils.Log;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -81,9 +78,10 @@ public final class JsonHandler {
             Log.info("successfully loaded user from file");
             return results;
         } catch (FileNotFoundException e) {
+            Log.severe("JsonHandler loadUsers file not found", e);
             throw e;
         } catch (RuntimeException e) {
-            errorMessageAlert();
+            Log.severe("JsonHandler loadUsers runtime error", e);
             throw e;
         }
     }
@@ -131,9 +129,10 @@ public final class JsonHandler {
             Clinician[] clinicians = gson.fromJson(reader, Clinician[].class);
             return new ArrayList<>(Arrays.asList(clinicians));
         } catch (FileNotFoundException e) {
+            Log.severe("JsonHandler loadClinicians file not found", e);
             throw e;
         } catch (RuntimeException e) {
-            errorMessageAlert();
+            Log.severe("JsonHandler loadClinicians runtime error", e);
             throw e;
         }
     }
@@ -181,23 +180,14 @@ public final class JsonHandler {
             Administrator[] administrators = gson.fromJson(reader, Administrator[].class);
             return new ArrayList<>(Arrays.asList(administrators));
         } catch (FileNotFoundException e) {
+            Log.severe("JsonHandler Administrator loaded file not found", e);
             throw e;
         } catch (RuntimeException e) {
-            errorMessageAlert();
+            Log.severe("JsonHandler loadAdmins runtime error", e);
             throw e;
         }
     }
 
-    private static void errorMessageAlert() {
-        Alert errorAlert = new Alert(Alert.AlertType.ERROR);
-        errorAlert.setHeaderText("ERROR!");
-        errorAlert.setContentText("File contained malformed data.");
-        errorAlert.showAndWait().ifPresent(rs -> {
-            if (rs == ButtonType.OK) {
-                System.out.println("Pressed OK");
-            }
-        });
-    }
 
     /**
      * Saves a personal changelog for each user
