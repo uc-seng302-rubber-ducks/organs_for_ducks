@@ -4,10 +4,13 @@ import seng302.controller.gui.statusBarController;
 import seng302.controller.gui.window.AdministratorViewController;
 import seng302.controller.gui.window.ClinicianController;
 import seng302.controller.gui.window.UserController;
-import seng302.model._enum.Directory;
 import seng302.exception.ProfileAlreadyExistsException;
 import seng302.exception.ProfileNotFoundException;
-import seng302.model.*;
+import seng302.model.Administrator;
+import seng302.model.Change;
+import seng302.model.Clinician;
+import seng302.model.User;
+import seng302.model._enum.Directory;
 import seng302.model.datamodel.TransplantDetails;
 import seng302.utils.JsonHandler;
 import seng302.utils.Log;
@@ -69,7 +72,7 @@ public class AppController {
             admins = JsonHandler.loadAdmins(ADMIN_FILE);
             Log.info(admins.size() + " administrators were successfully loaded");
         } catch (FileNotFoundException e) {
-            System.out.println("Administrator file was not found");
+            Log.severe("Administrator file was not found", e);
         }
 
         String[] empty = {""};

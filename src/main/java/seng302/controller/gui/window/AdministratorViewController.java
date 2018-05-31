@@ -18,13 +18,16 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import seng302.controller.*;
+import seng302.controller.AppController;
 import seng302.controller.gui.FileSelectorController;
 import seng302.controller.gui.panel.TransplantWaitListController;
 import seng302.controller.gui.popup.AlertUnclosedWindowsController;
 import seng302.controller.gui.popup.DeletedUserController;
 import seng302.controller.gui.statusBarController;
-import seng302.model.*;
+import seng302.model.Administrator;
+import seng302.model.Clinician;
+import seng302.model.TooltipTableRow;
+import seng302.model.User;
 import seng302.model._abstract.TransplantWaitListViewer;
 import seng302.model._enum.EventTypes;
 import seng302.model._enum.Organs;
@@ -47,7 +50,7 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
     //<editor-fold desc="FXML stuff">
 
     private static int searchCount = 0;
-    private final int ROWS_PER_PAGE = 30;
+    private static final int ROWS_PER_PAGE = 30;
     @FXML
     private TableView<User> userTableView;
     @FXML
@@ -126,6 +129,7 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
     private TableColumn<User, String> lNameColumn;
     private boolean filterVisible = false;
     private TableView<?> activeTableView;
+    private String messageAdmin = "Admin ";
 
     /**
      * Initialises scene for the administrator view
@@ -383,7 +387,7 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
         userTableView.getColumns().setAll(fNameColumn, lNameColumn, dobColumn, dodColumn, ageColumn, regionColumn, organsColumn);
         //searchTableView.setItems(FXCollections.observableList(sListDonors.subList(startIndex, endIndex)));
         userTableView.setItems(sListUsers);
-        userTableView.setRowFactory((searchTableView) -> new TooltipTableRow<>(User::getTooltip));
+        userTableView.setRowFactory(searchTableView -> new TooltipTableRow<>(User::getTooltip));
 
     }
 
@@ -427,7 +431,7 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
      */
     private <T> void setTextFieldListener(TextField inputTextField, FilteredList<T> filteredList) {
         inputTextField.textProperty()
-                .addListener((observable) -> setFilteredListPredicate(filteredList));
+                .addListener(observable -> setFilteredListPredicate(filteredList));
     }
 
     /**
@@ -438,7 +442,7 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
      */
     private <T> void setCheckBoxListener(CheckBox checkBox, FilteredList<T> filteredList) {
         checkBox.selectedProperty()
-                .addListener(((observable) -> setFilteredListPredicate(filteredList)));
+                .addListener((observable -> setFilteredListPredicate(filteredList)));
     }
 
     /**
@@ -520,7 +524,7 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
      */
     @FXML
     void importAdmins() throws FileNotFoundException {
-        Log.info("Admin " + administrator.getUserName() + " Importing Administrator profiles");
+        Log.info(messageAdmin + administrator.getUserName() + " Importing Administrator profiles");
         Alert errorAlert = new Alert(Alert.AlertType.ERROR);
         errorAlert.setHeaderText("Error!");
         errorAlert.setContentText("Invalid file loaded.");
@@ -545,7 +549,7 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
                         }
                         for (Administrator existingAdmin : existingAdmins) {
                             if (admin.getUserName().equals(existingAdmin.getUserName())) {
-                                //appController.updateAdmins(admin);
+                                appController.updateAdmin(admin);
                                 updated = true;
                                 break;
                             }
@@ -557,28 +561,21 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
                         }
                     }
                     loadedAdminsAmount = administrators.size();
+                    try {
+                        JsonHandler.saveAdmins(administrators);
+                    } catch (IOException e) {
+                        Log.severe("Saving loaded Administrators error", e);
+                    }
                 } catch (FileNotFoundException e) {
                     Log.severe("File not found", e);
-                    errorAlert.showAndWait().ifPresent(rs -> {
-                        if (rs == ButtonType.OK) {
-                            System.out.println("Pressed OK");
-                        }
-                    });
+                    messageBoxPopup("error");
                     throw e;
                 }
                 if (invalidFile) {
-                    errorAlert.showAndWait().ifPresent(rs -> {
-                        if (rs == ButtonType.OK) {
-                            System.out.println("Pressed OK");
-                        }
-                    });
+                    messageBoxPopup("error");
                     Log.warning("Incorrect file loaded - leads to NullPointerException.");
                 } else {
-                    confirmAlert.showAndWait().ifPresent(rs -> {
-                        if (rs == ButtonType.OK) {
-                            System.out.println("Pressed OK");
-                        }
-                    });
+                    messageBoxPopup("confirm");
                     Log.info("successfully imported " + loadedAdminsAmount + " Admin profiles");
                     System.out.println(loadedAdminsAmount + " admins were successfully loaded.");
                 }
@@ -598,14 +595,8 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
      */
     @FXML
     void importClinicians() throws FileNotFoundException {
-        Log.info("Admin " + administrator.getUserName() + " Importing Clinician profiles");
+        Log.info(messageAdmin + administrator.getUserName() + " Importing Clinician profiles");
         boolean invalidFile = false;
-        Alert errorAlert = new Alert(Alert.AlertType.ERROR);
-        errorAlert.setHeaderText("Error!");
-        errorAlert.setContentText("Invalid file loaded.");
-        Alert confirmAlert = new Alert(Alert.AlertType.CONFIRMATION);
-        confirmAlert.setHeaderText("Load Confirmation");
-        confirmAlert.setContentText("File successfully loaded.");
         int loadedCliniciansAmount;
         if (isAllWindowsClosed()) {
             boolean updated = false;
@@ -637,26 +628,14 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
                     loadedCliniciansAmount = clinicians.size();
                 } catch (FileNotFoundException e) {
                     Log.severe("File not found", e);
-                    errorAlert.showAndWait().ifPresent(rs -> {
-                        if (rs == ButtonType.OK) {
-                            System.out.println("Pressed OK");
-                        }
-                    });
+                    messageBoxPopup("error");
                     throw e;
                 }
                 if (invalidFile) {
-                    errorAlert.showAndWait().ifPresent(rs -> {
-                        if (rs == ButtonType.OK) {
-                            System.out.println("Pressed OK");
-                        }
-                    });
+                    messageBoxPopup("error");
                     Log.warning("Incorrect file loaded - leads to NullPointerException.");
                 } else {
-                    confirmAlert.showAndWait().ifPresent(rs -> {
-                        if (rs == ButtonType.OK) {
-                            System.out.println("Pressed OK");
-                        }
-                    });
+                    messageBoxPopup("confirm");
                     Log.info("successfully imported " + loadedCliniciansAmount + " Clinician profiles");
                     System.out.println(loadedCliniciansAmount + " clinicians were successfully loaded.");
                 }
@@ -676,13 +655,7 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
      */
     @FXML
     void importUsers() throws FileNotFoundException {
-        Log.info("Admin " + administrator.getUserName() + " Importing User profiles");
-        Alert errorAlert = new Alert(Alert.AlertType.ERROR);
-        errorAlert.setHeaderText("Error!");
-        errorAlert.setContentText("Invalid file loaded.");
-        Alert confirmAlert = new Alert(Alert.AlertType.CONFIRMATION);
-        confirmAlert.setHeaderText("Load Confirmation");
-        confirmAlert.setContentText("File successfully loaded.");
+        Log.info(messageAdmin + administrator.getUserName() + " Importing User profiles");
         if (isAllWindowsClosed()) {
             boolean updated = false;
             boolean invalidFile = false;
@@ -690,62 +663,80 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
             List<User> existingUsers = appController.getUsers();
             String filename;
             filename = FileSelectorController.getFileSelector(stage);
-            if (filename != null) {
-                try {
-                    Collection<User> users = JsonHandler.loadUsers(filename);
-                    for (User user : users) {
-                        if (user.getNhi() == null) {
-                            invalidFile = true;
-                            break;
-                        } else {
-                            for (User existingUser : existingUsers) {
-                                if (user.getNhi().equals(existingUser.getNhi())) {
-                                    appController.update(user);
-                                    updated = true;
-                                    break;
-                                }
+            try {
+                Collection<User> users = JsonHandler.loadUsers(filename);
+                for (User user : users) {
+                    if (user.getNhi() == null) {
+                        invalidFile = true;
+                        break;
+                    } else {
+                        for (User existingUser : existingUsers) {
+                            if (user.getNhi().equals(existingUser.getNhi())) {
+                                appController.update(user);
+                                updated = true;
+                                break;
                             }
                         }
-                        if (!updated) {
-                            appController.addUser(user);
-                        } else {
-                            updated = false;
-                        }
                     }
-                    loadedUsersAmount = users.size();
-                } catch (FileNotFoundException e) {
-                    Log.severe("File not found", e);
-                    errorAlert.showAndWait().ifPresent(rs -> {
-                        if (rs == ButtonType.OK) {
-                            System.out.println("Pressed OK");
-                        }
-                    });
-                    throw e;
+                    if (!updated) {
+                        appController.addUser(user);
+                    } else {
+                        updated = false;
+                    }
                 }
-                if (invalidFile) {
-                    errorAlert.showAndWait().ifPresent(rs -> {
-                        if (rs == ButtonType.OK) {
-                            System.out.println("Pressed OK");
-                        }
-                    });
-                    Log.warning("Incorrect file loaded - leads to NullPointerException.");
-                } else {
-                    confirmAlert.showAndWait().ifPresent(rs -> {
-                        if (rs == ButtonType.OK) {
-                            System.out.println("Pressed OK");
-                        }
-                    });
-                    Log.info("successfully imported " + loadedUsersAmount + " Users profiles");
-                    System.out.println(loadedUsersAmount + " users were successfully loaded.");
-                }
+                loadedUsersAmount = users.size();
+            } catch (FileNotFoundException e) {
+                Log.severe("File not found", e);
+                messageBoxPopup("error");
+                throw e;
+            }
+            if (invalidFile) {
+                messageBoxPopup("error");
+                Log.warning("Incorrect file loaded - leads to NullPointerException.");
             } else {
-                Log.warning("File name not found");
-                fileNotFoundLabel.setVisible(true);
+                messageBoxPopup("confirm");
+                Log.info("successfully imported " + loadedUsersAmount + " Users profiles");
+                System.out.println(loadedUsersAmount + " users were successfully loaded.");
             }
         } else {
             launchAlertUnclosedWindowsGUI();
         }
 
+    }
+
+//    /**
+//     *
+//     */
+//    private void saveImport(Collection<> importedData) {
+//
+//    }
+
+    /**
+     * Shows a message box popup with either a load confirmation message, or error message based on string passed in
+     *
+     * @param messageType a String to indicate the message type needing to be shown
+     */
+    private void messageBoxPopup(String messageType) {
+        Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+        errorAlert.setHeaderText("Error!");
+        errorAlert.setContentText("Invalid file loaded.");
+        Alert confirmAlert = new Alert(Alert.AlertType.CONFIRMATION);
+        confirmAlert.setHeaderText("Load Confirmation");
+        confirmAlert.setContentText("File successfully loaded.");
+
+        if (messageType.equals("error")) {
+            errorAlert.showAndWait().ifPresent(rs -> {
+                if (rs == ButtonType.OK) {
+                    System.out.println("Pressed OK");
+                }
+            });
+        } else {
+            confirmAlert.showAndWait().ifPresent(rs -> {
+                if (rs == ButtonType.OK) {
+                    System.out.println("Pressed OK");
+                }
+            });
+        }
     }
 
     /**
@@ -776,20 +767,20 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
      * are multiple windows opened.
      */
     private void launchAlertUnclosedWindowsGUI() {
-        FXMLLoader AlertUnclosedWindowsLoader = new FXMLLoader(
+        FXMLLoader alertUnclosedWindowsLoader = new FXMLLoader(
                 getClass().getResource("/FXML/AlertUnclosedWindows.fxml"));
         Parent root;
         try {
-            root = AlertUnclosedWindowsLoader.load();
+            root = alertUnclosedWindowsLoader.load();
             root.requestFocus(); //Currently the below code thinks that focus = selected so will always take the focused
             // thing in currentDiseases over the selected thing in pastDiseases. Trying to fix
-            AlertUnclosedWindowsController alertUnclosedWindowsController = AlertUnclosedWindowsLoader.getController();
+            AlertUnclosedWindowsController alertUnclosedWindowsController = alertUnclosedWindowsLoader.getController();
             Stage stage = new Stage();
             alertUnclosedWindowsController.init(stage, this);
             stage.setScene(new Scene(root));
             stage.show();
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.severe("IOException encountered", e);
         }
     }
 
@@ -810,10 +801,9 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
             newStage.show();
             NewUserController donorController = userLoader.getController();
             donorController.init(AppController.getInstance(), stage, newStage);
-            Log.info("Admin " + administrator.getUserName() + " successfully launched create new user window");
+            Log.info(messageAdmin + administrator.getUserName() + " successfully launched create new user window");
         } catch (IOException e) {
-            Log.severe("Admin " + administrator.getUserName() + " failed to load create new user window", e);
-            e.printStackTrace();
+            Log.severe(messageAdmin + administrator.getUserName() + " failed to load create new user window", e);
         }
     }
 
@@ -836,10 +826,9 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
             listeners.add(this);
             userController.init(AppController.getInstance(), user, newStage, true, listeners);
             newStage.show();
-            Log.info("Admin " + administrator.getUserName() + " successfully launched user overview window for User NHI: " + user.getNhi());
+            Log.info(messageAdmin + administrator.getUserName() + " successfully launched user overview window for User NHI: " + user.getNhi());
         } catch (IOException e) {
-            Log.severe("Admin " + administrator.getUserName() + " failed to load user overview window for User NHI: " + user.getNhi(), e);
-            e.printStackTrace();
+            Log.severe(messageAdmin + administrator.getUserName() + " failed to load user overview window for User NHI: " + user.getNhi(), e);
         }
     }
 
@@ -859,12 +848,10 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
             Collection<PropertyChangeListener> listeners = new ArrayList<>();
             listeners.add(this);
             clinicianController.init(newStage, AppController.getInstance(), clinician, owner, listeners);
-            //clinicianController.init(newStage, AppController.getInstance(), clinician, true);
             newStage.show();
-            Log.info("Admin " + administrator.getUserName() + " successfully launched clinician overview window for Clinician Staff ID:" + clinician.getStaffId());
+            Log.info(messageAdmin + administrator.getUserName() + " successfully launched clinician overview window for Clinician Staff ID:" + clinician.getStaffId());
         } catch (IOException e) {
-            Log.severe("Admin " + administrator.getUserName() + " failed to load clinician overview window for Clinician Staff ID:" + clinician.getStaffId(), e);
-            e.printStackTrace();
+            Log.severe(messageAdmin + administrator.getUserName() + " failed to load clinician overview window for Clinician Staff ID:" + clinician.getStaffId(), e);
         }
     }
 
@@ -883,10 +870,9 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
             AdministratorViewController adminLoaderController = adminLoader.getController();
             adminLoaderController.init(administrator, AppController.getInstance(), newStage, false, null);
             newStage.show();
-            Log.info("Admin " + administrator.getUserName() + " successfully launched administrator overview window");
+            Log.info(messageAdmin + administrator.getUserName() + " successfully launched administrator overview window");
         } catch (IOException e) {
-            Log.severe("Admin " + administrator.getUserName() + " failed to load administrator overview window", e);
-            e.printStackTrace();
+            Log.severe(messageAdmin + administrator.getUserName() + " failed to load administrator overview window", e);
         }
     }
 
@@ -905,10 +891,9 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
             newStage.show();
             UpdateClinicianController newClinician = clinicianLoader.getController();
             newClinician.init(null, appController, stage, true, newStage);
-            Log.info("Admin " + administrator.getUserName() + " successfully launched create new clinician window");
+            Log.info(messageAdmin + administrator.getUserName() + " successfully launched create new clinician window");
         } catch (IOException e) {
-            Log.severe("Admin " + administrator.getUserName() + " failed to load create new clinician window", e);
-            e.printStackTrace();
+            Log.severe(messageAdmin + administrator.getUserName() + " failed to load create new clinician window", e);
         }
     }
 
@@ -927,10 +912,9 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
             newStage.show();
             UpdateAdminController updateAdminController = adminLoader.getController();
             updateAdminController.init(new Administrator(), newStage, true);
-            Log.info("Admin " + administrator.getUserName() + " successfully launched create new administrator window");
+            Log.info(messageAdmin + administrator.getUserName() + " successfully launched create new administrator window");
         } catch (IOException e) {
-            Log.severe("Admin " + administrator.getUserName() + " failed to load create new administrator window", e);
-            e.printStackTrace();
+            Log.severe(messageAdmin + administrator.getUserName() + " failed to load create new administrator window", e);
         }
     }
 
@@ -951,9 +935,9 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
             stage.close();
             LoginController loginController = loginLoader.getController();
             loginController.init(appController, newStage);
-            Log.info("Admin " + administrator.getUserName() + " Successfully launched Login window after logout");
+            Log.info(messageAdmin + administrator.getUserName() + " Successfully launched Login window after logout");
         } catch (IOException e) {
-            Log.severe("Admin " + administrator.getUserName() + " Failed to load Login window after logout", e);
+            Log.severe(messageAdmin + administrator.getUserName() + " Failed to load Login window after logout", e);
         }
     }
 
@@ -966,7 +950,7 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
         administrator.undo();
         adminUndoButton.setDisable(administrator.getUndoStack().isEmpty());
         displayDetails();
-        Log.info("Admin " + administrator.getUserName() + "executed Undo Administrator");
+        Log.info(messageAdmin + administrator.getUserName() + "executed Undo Administrator");
     }
 
     /**
@@ -977,7 +961,7 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
         administrator.redo();
         adminRedoButton.setDisable(administrator.getRedoStack().isEmpty());
         displayDetails();
-        Log.info("Admin " + administrator.getUserName() + "executed Redo Administrator");
+        Log.info(messageAdmin + administrator.getUserName() + "executed Redo Administrator");
     }
 
 
@@ -1021,10 +1005,9 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
             newStage.show();
             UpdateAdminController updateAdminController = adminLoader.getController();
             updateAdminController.init(administrator, newStage, false);
-            Log.info("Admin " + administrator.getUserName() + " successfully launched update administrator window");
+            Log.info(messageAdmin + administrator.getUserName() + " successfully launched update administrator window");
         } catch (IOException e) {
-            Log.severe("Admin " + administrator.getUserName() + " failed to load update administrator window", e);
-            e.printStackTrace();
+            Log.severe(messageAdmin + administrator.getUserName() + " failed to load update administrator window", e);
         }
     }
 
@@ -1039,7 +1022,7 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
 
         if (result.get() == ButtonType.OK) {
             appController.deleteAdmin(administrator);
-            Log.info("Admin " + administrator.getUserName() + " Successfully deleted Admin account: ");
+            Log.info(messageAdmin + administrator.getUserName() + " Successfully deleted Admin account: ");
             if (owner) {
                 logout();
             } else {
