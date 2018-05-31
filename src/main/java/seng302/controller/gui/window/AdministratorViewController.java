@@ -18,13 +18,16 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import seng302.controller.*;
+import seng302.controller.AppController;
 import seng302.controller.gui.FileSelectorController;
 import seng302.controller.gui.panel.TransplantWaitListController;
 import seng302.controller.gui.popup.AlertUnclosedWindowsController;
 import seng302.controller.gui.popup.DeletedUserController;
 import seng302.controller.gui.statusBarController;
-import seng302.model.*;
+import seng302.model.Administrator;
+import seng302.model.Clinician;
+import seng302.model.TooltipTableRow;
+import seng302.model.User;
 import seng302.model._abstract.TransplantWaitListViewer;
 import seng302.model._enum.EventTypes;
 import seng302.model._enum.Organs;
@@ -39,7 +42,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 public class AdministratorViewController implements PropertyChangeListener, TransplantWaitListViewer {
@@ -182,6 +184,10 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
         initClinicianSearchTable();
         initAdminSearchTable();
         initUserSearchTable();
+        filterClinicianTable();
+        filterAdmintable();
+        filterUserTable();
+
         clinicianTableView.setVisible(false);
         adminTableView.setVisible(false);
     }
@@ -217,6 +223,7 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
 
             if (adminUserRadioButton.isSelected()) {
                 userTableView.setVisible(true);
+                filterUserTable();
             } else if (adminClinicianRadioButton.isSelected()) {
                 clinicianTableView.setVisible(true);
             } else if (adminAdminRadioButton.isSelected()) {
@@ -264,7 +271,6 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
      * Initialises table for the clinician table
      */
     private void initClinicianSearchTable() {
-        ObservableList<Clinician> clinicians = FXCollections.observableArrayList(appController.getClinicians());
 
         TableColumn<Clinician, String> firstNameColumn = new TableColumn<>("First Name");
         firstNameColumn.setCellValueFactory(new PropertyValueFactory<>("firstName"));
@@ -276,7 +282,13 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
         nhiColumn.setCellValueFactory(new PropertyValueFactory<>("staffId"));
 
         lastNameColumn.setSortType(TableColumn.SortType.ASCENDING);
+        clinicianTableView.getColumns().addAll(nhiColumn, firstNameColumn, lastNameColumn);
 
+
+    }
+
+    private void filterClinicianTable(){
+        ObservableList<Clinician> clinicians = FXCollections.observableArrayList(appController.getClinicians());
         fListClinicians = new FilteredList<>(clinicians);
         fListClinicians = filter(fListClinicians);
         FilteredList<Clinician> squished = new FilteredList<>(fListClinicians);
@@ -284,7 +296,6 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
         SortedList<Clinician> clinicianSortedList = new SortedList<>(squished);
         clinicianSortedList.comparatorProperty().bind(clinicianTableView.comparatorProperty());
         clinicianTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-        clinicianTableView.getColumns().addAll(nhiColumn, firstNameColumn, lastNameColumn);
         clinicianTableView.setItems(clinicianSortedList);
 
     }
@@ -293,13 +304,7 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
      * Initialises the columns for the admin table
      */
     private void initAdminSearchTable() {
-        ObservableList<Administrator> admins = FXCollections
-                .observableArrayList(appController.getAdmins());
 
-        endIndex = Math.min(startIndex + ROWS_PER_PAGE, admins.size());
-        if (admins.isEmpty()) {
-            return;
-        }
         TableColumn<Administrator, String> firstNameColumn = new TableColumn<>("First Name");
         firstNameColumn.setCellValueFactory(new PropertyValueFactory<>("firstName"));
 
@@ -310,6 +315,19 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
         userNameColumn.setCellValueFactory(new PropertyValueFactory<>("userName"));
 
         lastNameColumn.setSortType(TableColumn.SortType.ASCENDING);
+        adminTableView.getColumns().addAll(userNameColumn, firstNameColumn, lastNameColumn);
+
+    }
+
+    private void filterAdmintable(){
+        ObservableList<Administrator> admins = FXCollections
+                .observableArrayList(appController.getAdmins());
+
+        endIndex = Math.min(startIndex + ROWS_PER_PAGE, admins.size());
+        if (admins.isEmpty()) {
+            return;
+        }
+
 
         fListAdmins = new FilteredList<>(admins);
         fListAdmins = filter(fListAdmins);
@@ -318,7 +336,6 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
         SortedList<Administrator> administratorSortedList = new SortedList<>(squished);
         administratorSortedList.comparatorProperty().bind(adminTableView.comparatorProperty());
         adminTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-        adminTableView.getColumns().addAll(userNameColumn, firstNameColumn, lastNameColumn);
         adminTableView.setItems(administratorSortedList);
 
     }
@@ -333,17 +350,8 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
         TableColumn<User, String> ageColumn;
         TableColumn<User, HashSet<Organs>> organsColumn;
         TableColumn<User, String> regionColumn;
-        List<User> users = appController.getUsers();
 
-        endIndex = Math.min(startIndex + ROWS_PER_PAGE, users.size());
-        if (users.isEmpty()) {
-            return;
-        }
 
-        List<User> usersSublist = getSearchData(users);
-        //set up lists
-        //table contents are SortedList of a FilteredList of an ObservableList of an ArrayList
-        ObservableList<User> oListDonors = FXCollections.observableList(users);
 
         fNameColumn = new TableColumn<>("First name");
         fNameColumn.setCellValueFactory(new PropertyValueFactory<>("firstName"));
@@ -368,7 +376,22 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
         organsColumn.setCellValueFactory(new PropertyValueFactory<>("organs"));
 
         //add more columns as wanted/needed
+        userTableView.getColumns().setAll(fNameColumn, lNameColumn, dobColumn, dodColumn, ageColumn, regionColumn, organsColumn);
+        //searchTableView.setItems(FXCollections.observableList(sListDonors.subList(startIndex, endIndex)))
+    }
 
+    private void filterUserTable(){
+
+        List<User> users = appController.getUsers();
+        endIndex = Math.min(startIndex + ROWS_PER_PAGE, users.size());
+        if (users.isEmpty()) {
+            return;
+        }
+
+        List<User> usersSublist = getSearchData(users);
+        //set up lists
+        //table contents are SortedList of a FilteredList of an ObservableList of an ArrayList
+        ObservableList<User> oListDonors = FXCollections.observableList(users);
         fListUsers = new FilteredList<>(oListDonors);
         fListUsers = filter(fListUsers);
         FilteredList<User> squished = new FilteredList<>(fListUsers);
@@ -379,9 +402,7 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
         //predicate on this list not working properly
         //should limit the number of items shown to ROWS_PER_PAGE
         //squished = limit(fListDonors, sListDonors);
-        //set table columns and contents
-        userTableView.getColumns().setAll(fNameColumn, lNameColumn, dobColumn, dodColumn, ageColumn, regionColumn, organsColumn);
-        //searchTableView.setItems(FXCollections.observableList(sListDonors.subList(startIndex, endIndex)));
+        //set table columns and contents;
         userTableView.setItems(sListUsers);
         userTableView.setRowFactory((searchTableView) -> new TooltipTableRow<>(User::getTooltip));
 
@@ -420,7 +441,7 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
     }
 
     /**
-     * Method to add the predicate trough the listener
+     * Method to add the predicate through the listener
      *
      * @param inputTextField textfield to add the listener to
      * @param filteredList   filteredList  of objects to set predicate property of
@@ -431,7 +452,7 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
     }
 
     /**
-     * Method to add the predicate trough the listener
+     * Method to add the predicate through the listener
      *
      * @param checkBox     checkBox object to add the listener to
      * @param filteredList filteredList of object T to set predicate property of
@@ -444,33 +465,81 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
     /**
      * Sets the predicate property of filteredList to filter by specific properties
      *
+     * Takes a generic List and applies the appropriate strategy
+     *
      * @param fList filteredList object to modify the predicate property of
      */
     private <T> void setFilteredListPredicate(FilteredList<T> fList) {
+
+        if (fList.get(0) instanceof User) {
+            setFilteredListPredicateUser((FilteredList<User>) fList);
+        } else if(fList.get(0) instanceof Clinician){
+            setFilteredListPredicateClinician((FilteredList<Clinician>) fList);
+        } else if(fList.get(0) instanceof Administrator){
+            setFilteredListPredicateAdmin((FilteredList<Administrator>) fList);
+        }
+    }
+
+    /**
+     * Sets the predicate property of filteredList to filter by specific properties
+     *
+     * @param fList filteredList object to modify the predicate property of
+     */
+    private void setFilteredListPredicateUser(FilteredList<User> fList) {
         searchCount = 0; //refresh the searchCount every time so it recalculates it each search
         fList.predicateProperty().bind(Bindings.createObjectBinding(() -> objectToFilter -> {
-            String lowerCaseFilterText = adminSearchField.getText().toLowerCase();
-            boolean regionMatch = AttributeValidation.checkRegionMatches(regionSearchTextField.getText(), objectToFilter);
-            //boolean genderMatch = AttributeValidation.checkGenderMatches(genderComboBox.getValue().toString(), objectToFilter);
 
-            String fName = null;
-            String lName = null;
-            try {
-                fName = (String) objectToFilter.getClass().getMethod("getFirstName").invoke(objectToFilter); //if this breaks just ignore it,
-                lName = (String) objectToFilter.getClass().getMethod("getLastName").invoke(objectToFilter); // it will fix itself and not cause problems
-            } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-                e.printStackTrace();
-            }
-            if ((AttributeValidation.checkTextMatches(lowerCaseFilterText, fName) ||
-                    AttributeValidation.checkTextMatches(lowerCaseFilterText, lName)) &&
-                    (regionMatch)) {// && (genderMatch)) {
+            //Sorry this is unreadable but sonarlint had huge whinge when I made it easier to understand
+            if ((AttributeValidation.checkTextMatches(adminSearchField.getText().toLowerCase(),  objectToFilter.getFirstName()) ||
+                    AttributeValidation.checkTextMatches(adminSearchField.getText().toLowerCase(), objectToFilter.getLastName())) &&
+                    (AttributeValidation.checkRegionMatches(regionSearchTextField.getText(), objectToFilter)) &&
+                    (AttributeValidation.checkGenderMatches(genderComboBox.getValue().toString(), objectToFilter)) &&
+                    (((objectToFilter.isDonor() == donorFilterCheckBox.isSelected()) &&
+                            (objectToFilter.isReceiver() == receiverFilterCheckBox.isSelected())) || allCheckBox.isSelected())) {
                 searchCount++;
                 return true;
-            }/* TODO: reimplement and remove this
-             &&
-            (((user.isDonor() == donorFilterCheckBox.isSelected()) &&
-                    (user.isReceiver() == receiverFilterCheckBox.isSelected())) || allCheckBox.isSelected()))*/
-            //if (other test case) return true
+            }
+            return false;
+        }));
+        changePage(searchTablePagination.getCurrentPageIndex());
+    }
+
+    /**
+     * Sets the predicate property of filteredList to filter by specific properties
+     *
+     * @param fList filteredList object to modify the predicate property of
+     */
+    private void setFilteredListPredicateClinician(FilteredList<Clinician> fList) {
+        searchCount = 0; //refresh the searchCount every time so it recalculates it each search
+        fList.predicateProperty().bind(Bindings.createObjectBinding(() -> objectToFilter -> {
+
+            //Sorry this is unreadable but sonarlint had huge whinge when I made it easier to understand
+            if ((AttributeValidation.checkTextMatches(adminSearchField.getText().toLowerCase(),  objectToFilter.getFirstName()) ||
+                    AttributeValidation.checkTextMatches(adminSearchField.getText().toLowerCase(), objectToFilter.getLastName())) &&
+                    (AttributeValidation.checkRegionMatches(regionSearchTextField.getText(), objectToFilter))) {
+                searchCount++;
+                return true;
+            }
+            return false;
+        }));
+        changePage(searchTablePagination.getCurrentPageIndex());
+    }
+
+    /**
+     * Sets the predicate property of filteredList to filter by specific properties
+     *
+     * @param fList filteredList object to modify the predicate property of
+     */
+    private void setFilteredListPredicateAdmin(FilteredList<Administrator> fList) {
+        searchCount = 0; //refresh the searchCount every time so it recalculates it each search
+        fList.predicateProperty().bind(Bindings.createObjectBinding(() -> objectToFilter -> {
+
+            //Sorry this is unreadable but sonarlint had huge whinge when I made it easier to understand
+            if ((AttributeValidation.checkTextMatches(adminSearchField.getText().toLowerCase(),  objectToFilter.getFirstName()) ||
+                    AttributeValidation.checkTextMatches(adminSearchField.getText().toLowerCase(), objectToFilter.getLastName()))) {
+                searchCount++;
+                return true;
+            }
             return false;
         }));
         changePage(searchTablePagination.getCurrentPageIndex());

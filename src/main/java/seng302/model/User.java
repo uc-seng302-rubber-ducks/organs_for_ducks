@@ -996,6 +996,7 @@ public class User extends Undoable<User> implements Listenable {
         }
     }
 
+
     @Override
     public boolean equals(Object o) {
 
