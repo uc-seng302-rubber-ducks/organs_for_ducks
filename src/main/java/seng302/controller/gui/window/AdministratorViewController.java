@@ -525,12 +525,6 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
     @FXML
     void importAdmins() throws FileNotFoundException {
         Log.info(messageAdmin + administrator.getUserName() + " Importing Administrator profiles");
-        Alert errorAlert = new Alert(Alert.AlertType.ERROR);
-        errorAlert.setHeaderText("Error!");
-        errorAlert.setContentText("Invalid file loaded.");
-        Alert confirmAlert = new Alert(Alert.AlertType.CONFIRMATION);
-        confirmAlert.setHeaderText("Load Confirmation");
-        confirmAlert.setContentText("File successfully loaded.");
         boolean invalidFile = false;
         int loadedAdminsAmount;
         if (isAllWindowsClosed()) {
@@ -626,6 +620,11 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
                         }
                     }
                     loadedCliniciansAmount = clinicians.size();
+                    try {
+                        JsonHandler.saveClinicians(clinicians);
+                    } catch (IOException e) {
+                        Log.severe("Saving loaded Clinicians error", e);
+                    }
                 } catch (FileNotFoundException e) {
                     Log.severe("File not found", e);
                     messageBoxPopup("error");
@@ -685,6 +684,11 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
                     }
                 }
                 loadedUsersAmount = users.size();
+                try {
+                    JsonHandler.saveUsers(users);
+                } catch (IOException e) {
+                    Log.severe("Saving loaded users error", e);
+                }
             } catch (FileNotFoundException e) {
                 Log.severe("File not found", e);
                 messageBoxPopup("error");
