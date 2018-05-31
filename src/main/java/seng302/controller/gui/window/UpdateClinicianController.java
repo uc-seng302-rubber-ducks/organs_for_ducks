@@ -320,7 +320,6 @@ public class UpdateClinicianController {
                     Log.info("successfully launched clinician overview window for Clinician Staff Id: " + clinician.getStaffId());
                 } catch (IOException e) {
                     Log.severe("failed to load clinician overview window for Clinician Staff Id: " + clinician.getStaffId(), e);
-                    e.printStackTrace();
                 }
 
             } else {
@@ -337,7 +336,6 @@ public class UpdateClinicianController {
                     Log.info("successfully launched clinician overview window for Clinician Staff Id: " + clinician.getStaffId());
                 } catch (IOException e) {
                     Log.severe("failed to load clinician overview window for Clinician Staff Id: " + clinician.getStaffId(), e);
-                    e.printStackTrace();
                 }
             }
         }

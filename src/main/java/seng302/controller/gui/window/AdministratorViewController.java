@@ -24,6 +24,7 @@ import seng302.controller.gui.panel.TransplantWaitListController;
 import seng302.controller.gui.popup.AlertUnclosedWindowsController;
 import seng302.controller.gui.popup.DeletedUserController;
 import seng302.controller.gui.statusBarController;
+import seng302.exception.InvalidFileException;
 import seng302.model.Administrator;
 import seng302.model.Clinician;
 import seng302.model.TooltipTableRow;
@@ -38,10 +39,7 @@ import seng302.view.CLI;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.io.ByteArrayOutputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.PrintStream;
+import java.io.*;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
@@ -520,196 +518,154 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
     /**
      * Imports admins from a file chosen from a fileselector
      *
-     * @throws FileNotFoundException if the specified file is not found
+     *
      */
     @FXML
-    void importAdmins() throws FileNotFoundException {
-        Log.info(messageAdmin + administrator.getUserName() + " Importing Administrator profiles");
-        Alert errorAlert = new Alert(Alert.AlertType.ERROR);
-        errorAlert.setHeaderText("Error!");
-        errorAlert.setContentText("Invalid file loaded.");
-        Alert confirmAlert = new Alert(Alert.AlertType.CONFIRMATION);
-        confirmAlert.setHeaderText("Load Confirmation");
-        confirmAlert.setContentText("File successfully loaded.");
-        boolean invalidFile = false;
-        int loadedAdminsAmount;
-        if (isAllWindowsClosed()) {
-            boolean updated = false;
-            Collection<Administrator> existingAdmins = appController.getAdmins();
-            String filename;
-            filename = FileSelectorController.getFileSelector(stage);
-            if (filename != null) {
-                fileNotFoundLabel.setVisible(false);
-                try {
-                    Collection<Administrator> administrators = JsonHandler.loadAdmins(filename);
-                    for (Administrator admin : administrators) {
-                        if (admin.getUserName() == null) {
-                            invalidFile = true;
-                            break;
-                        }
-                        for (Administrator existingAdmin : existingAdmins) {
-                            if (admin.getUserName().equals(existingAdmin.getUserName())) {
-                                appController.updateAdmin(admin);
-                                updated = true;
-                                break;
-                            }
-                        }
-                        if (!updated) {
-                            appController.addAdmin(admin);
-                        } else {
-                            updated = false;
-                        }
-                    }
-                    loadedAdminsAmount = administrators.size();
-                    try {
-                        JsonHandler.saveAdmins(administrators);
-                    } catch (IOException e) {
-                        Log.severe("Saving loaded Administrators error", e);
-                    }
-                } catch (FileNotFoundException e) {
-                    Log.severe("File not found", e);
-                    messageBoxPopup("error");
-                    throw e;
-                }
-                if (invalidFile) {
-                    messageBoxPopup("error");
-                    Log.warning("Incorrect file loaded - leads to NullPointerException.");
-                } else {
-                    messageBoxPopup("confirm");
-                    Log.info("successfully imported " + loadedAdminsAmount + " Admin profiles");
-                    System.out.println(loadedAdminsAmount + " admins were successfully loaded.");
-                }
-            } else {
-                Log.warning("File name not found");
-                fileNotFoundLabel.setVisible(true);
-            }
-        } else {
-            launchAlertUnclosedWindowsGUI();
-        }
+    void importAdmins() {
+       Log.info("Importing Admins");
+       importRole(Administrator.class);
     }
 
     /**
      * Imports clinicians from a file chosen from a fileselector
      *
-     * @throws FileNotFoundException if the specified file is not found
+     *
      */
     @FXML
-    void importClinicians() throws FileNotFoundException {
+    void importClinicians() {
         Log.info(messageAdmin + administrator.getUserName() + " Importing Clinician profiles");
-        boolean invalidFile = false;
-        int loadedCliniciansAmount;
-        if (isAllWindowsClosed()) {
-            boolean updated = false;
-            Collection<Clinician> existingClinicians = appController.getClinicians();
-            String filename;
-            filename = FileSelectorController.getFileSelector(stage);
-            if (filename != null) {
-                fileNotFoundLabel.setVisible(false);
-                try {
-                    Collection<Clinician> clinicians = JsonHandler.loadClinicians(filename);
-                    for (Clinician clinician : clinicians) {
-                        if (clinician.getStaffId() == null) {
-                            invalidFile = true;
-                            break;
-                        }
-                        for (Clinician existingClinician : existingClinicians) {
-                            if (clinician.getStaffId().equals(existingClinician.getStaffId())) {
-                                appController.updateClinicians(clinician);
-                                updated = true;
-                                break;
-                            }
-                        }
-                        if (!updated) {
-                            appController.addClinician(clinician);
-                        } else {
-                            updated = false;
-                        }
-                    }
-                    loadedCliniciansAmount = clinicians.size();
-                } catch (FileNotFoundException e) {
-                    Log.severe("File not found", e);
-                    messageBoxPopup("error");
-                    throw e;
-                }
-                if (invalidFile) {
-                    messageBoxPopup("error");
-                    Log.warning("Incorrect file loaded - leads to NullPointerException.");
-                } else {
-                    messageBoxPopup("confirm");
-                    Log.info("successfully imported " + loadedCliniciansAmount + " Clinician profiles");
-                    System.out.println(loadedCliniciansAmount + " clinicians were successfully loaded.");
-                }
-            } else {
-                Log.warning("File name not found");
-                fileNotFoundLabel.setVisible(true);
-            }
-        } else {
-            launchAlertUnclosedWindowsGUI();
-        }
+        importRole(Clinician.class);
     }
 
     /**
      * Imports Users from a file chosen from a fileselector
      *
-     * @throws FileNotFoundException if the specified file is not found
+     *
      */
     @FXML
-    void importUsers() throws FileNotFoundException {
+    void importUsers() {
         Log.info(messageAdmin + administrator.getUserName() + " Importing User profiles");
-        if (isAllWindowsClosed()) {
-            boolean updated = false;
-            boolean invalidFile = false;
-            int loadedUsersAmount;
-            List<User> existingUsers = appController.getUsers();
-            String filename;
-            filename = FileSelectorController.getFileSelector(stage);
-            try {
-                Collection<User> users = JsonHandler.loadUsers(filename);
-                for (User user : users) {
-                    if (user.getNhi() == null) {
-                        invalidFile = true;
-                        break;
-                    } else {
-                        for (User existingUser : existingUsers) {
-                            if (user.getNhi().equals(existingUser.getNhi())) {
-                                appController.update(user);
-                                updated = true;
-                                break;
-                            }
-                        }
-                    }
-                    if (!updated) {
-                        appController.addUser(user);
-                    } else {
-                        updated = false;
-                    }
-                }
-                loadedUsersAmount = users.size();
-            } catch (FileNotFoundException e) {
-                Log.severe("File not found", e);
-                messageBoxPopup("error");
-                throw e;
-            }
-            if (invalidFile) {
-                messageBoxPopup("error");
-                Log.warning("Incorrect file loaded - leads to NullPointerException.");
-            } else {
-                messageBoxPopup("confirm");
-                Log.info("successfully imported " + loadedUsersAmount + " Users profiles");
-                System.out.println(loadedUsersAmount + " users were successfully loaded.");
-            }
-        } else {
-            launchAlertUnclosedWindowsGUI();
-        }
+        importRole(User.class);
 
     }
 
-//    /**
-//     *
-//     */
-//    private void saveImport(Collection<> importedData) {
-//
-//    }
+    /**
+     * attempts to import the given role from a file, and save it to the default file.
+     * Currently contains handlers for administrator, clinician, and user
+     * @param role class to be imported. e.g. Administrator.class
+     * @param <T> Type T (not used?)
+     */
+    private <T> void importRole(Class<T> role) {
+        if (!isAllWindowsClosed()) {
+            launchAlertUnclosedWindowsGUI();
+            return;
+        }
+        String filename;
+        filename = FileSelectorController.getFileSelector(stage);
+        if (filename == null) {
+            Log.warning("File name not found");
+            fileNotFoundLabel.setVisible(true);
+            return;
+        }
+        try {
+
+            if (role.getClass().isInstance(Administrator.class)) {
+                //<editor-fold desc="admin handler">
+                Collection<Administrator> existingAdmins = appController.getAdmins();
+                Collection<Administrator> newAdmins = JsonHandler.loadAdmins(filename);
+
+                //if imported contains any bad data, throw it out
+                for (Administrator admin : newAdmins) {
+                    if (admin.getUserName() == null) {
+                        throw new InvalidFileException();
+                    }
+                }
+
+                for (Administrator newAdmin : newAdmins) {
+                    if (existingAdmins.contains(newAdmin)) {
+                        appController.updateAdmin(newAdmin);
+                    } else {
+                        appController.addAdmin(newAdmin);
+                    }
+                }
+                messageBoxPopup("confirm");
+                try {
+                    JsonHandler.saveAdmins(appController.getAdmins());
+                    Log.info("successfully imported " + newAdmins.size() + " Admin profiles");
+                } catch (IOException e) {
+                    Log.warning("failed to save newly loaded admins", e);
+                }
+                //</editor-fold>
+
+            } else if (role.getClass().isInstance(Clinician.class)) {
+                //<editor-fold desc="clinician handler">
+                Collection<Clinician> existingClinicians = appController.getClinicians();
+                Collection<Clinician> newClinicians = JsonHandler.loadClinicians(filename);
+
+                //if imported contains any bad data, throw it out
+                for (Clinician clinician : newClinicians) {
+                    if (clinician.getStaffId() == null) {
+                        throw new InvalidFileException();
+                    }
+                }
+
+                for (Clinician newClinician : newClinicians) {
+                    if (existingClinicians.contains(newClinician)) {
+                        appController.updateClinicians(newClinician);
+                    } else {
+                        appController.addClinician(newClinician);
+                    }
+                }
+                messageBoxPopup("confirm");
+                try {
+                    JsonHandler.saveClinicians(appController.getClinicians());
+                    Log.info("successfully imported " + newClinicians.size() + " Clinician profiles");
+                } catch (IOException e) {
+                    Log.warning("failed to save newly loaded clinicians", e);
+                }
+                //</editor-fold>
+
+            } else if (role.getClass().isInstance(User.class)) {
+                //<editor-fold desc="user handler">
+                Collection<User> existingUsers = appController.getUsers();
+                Collection<User> newUsers = JsonHandler.loadUsers(filename);
+
+                //if imported contains any bad data, throw it out
+                for (User user : newUsers) {
+                    if (user.getNhi() == null) {
+                        throw new InvalidFileException();
+                    }
+                }
+
+                for (User newUser : newUsers) {
+                    if (existingUsers.contains(newUser)) {
+                        appController.update(newUser);
+                    } else {
+                        appController.addUser(newUser);
+                    }
+                }
+                messageBoxPopup("confirm");
+                try {
+                    JsonHandler.saveUsers(appController.getUsers());
+                    Log.info("successfully imported " + newUsers.size() + " User profiles");
+                } catch (IOException e) {
+                    Log.warning("failed to save newly loaded users", e);
+                }
+                //</editor-fold>
+            }
+
+        } catch (FileNotFoundException e) {
+            Log.warning("Failed to load file " + filename, e);
+            messageBoxPopup("error");
+
+        } catch (InvalidFileException e) {
+            Log.warning("File " + filename + " is invalid", e);
+            messageBoxPopup("error");
+        }
+
+
+
+    }
 
     /**
      * Shows a message box popup with either a load confirmation message, or error message based on string passed in
@@ -727,13 +683,13 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
         if (messageType.equals("error")) {
             errorAlert.showAndWait().ifPresent(rs -> {
                 if (rs == ButtonType.OK) {
-                    System.out.println("Pressed OK");
+                    errorAlert.close();
                 }
             });
         } else {
             confirmAlert.showAndWait().ifPresent(rs -> {
                 if (rs == ButtonType.OK) {
-                    System.out.println("Pressed OK");
+                    confirmAlert.close();
                 }
             });
         }
@@ -752,7 +708,7 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
     /**
      * closes all windows apart from admin overview.
      */
-    public void CloseAllWindows() {
+    public void closeAllWindows() {
         List<Stage> windows = StageHelper.getStages();
         int numWindows = windows.size();
 
