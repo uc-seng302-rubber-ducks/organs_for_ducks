@@ -15,7 +15,10 @@ import javafx.util.StringConverter;
 import seng302.controller.AppController;
 import seng302.controller.gui.popup.OrgansAffectedController;
 import seng302.controller.gui.window.UserController;
-import seng302.model.*;
+import seng302.model.Change;
+import seng302.model.MedicalProcedure;
+import seng302.model.Memento;
+import seng302.model.User;
 import seng302.model._enum.Organs;
 import seng302.utils.Log;
 
@@ -395,7 +398,6 @@ public class ProcedureTabController {
             Log.info("Successfully launched Modify Procedure Organs window for User NHI: " + currentUser.getNhi());
         } catch (IOException e) {
             Log.severe("unable to launch Modify Procedure Organs window for User NHI: " + currentUser.getNhi(), e);
-            e.printStackTrace();
         }
     }
 }

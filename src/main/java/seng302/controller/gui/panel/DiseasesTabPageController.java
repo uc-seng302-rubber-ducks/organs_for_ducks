@@ -71,9 +71,9 @@ public class DiseasesTabPageController {
         pastDiseaseTableView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
 
         currentDiseaseTableView.getSelectionModel().selectedItemProperty()
-                .addListener(ListChangeListener -> pastDiseaseTableView.getSelectionModel().select(null));
+                .addListener(listChangeListener -> pastDiseaseTableView.getSelectionModel().select(null));
         pastDiseaseTableView.getSelectionModel().selectedItemProperty().addListener(
-                ListChangeListener -> currentDiseaseTableView.getSelectionModel().select(null));
+                listChangeListener -> currentDiseaseTableView.getSelectionModel().select(null));
     }
 
     /**
@@ -186,7 +186,6 @@ public class DiseasesTabPageController {
             Log.info("successfully launched add/update Diseases pop-up window for User NHI: " + currentUser.getNhi());
         } catch (IOException e) {
             Log.severe("failed to load add/update Diseases pop-up window for User NHI: " + currentUser.getNhi(), e);
-            e.printStackTrace();
         }
 
 
@@ -265,7 +264,6 @@ public class DiseasesTabPageController {
             Log.info("successfully launched add Diseases pop-up window for User NHI: " + currentUser.getNhi());
         } catch (IOException e) {
             Log.severe("failed to load add Diseases pop-up window for User NHI: " + currentUser.getNhi(), e);
-            e.printStackTrace();
         }
 
 

@@ -9,8 +9,8 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import seng302.controller.AppController;
 import seng302.controller.gui.window.LoginController;
-import seng302.utils.JsonHandler;
 import seng302.model._enum.Directory;
+import seng302.utils.JsonHandler;
 import seng302.utils.Log;
 
 import java.io.IOException;
@@ -63,7 +63,6 @@ public class App extends Application {
             root = loader.load();
         } catch (IOException e) {
             Log.severe("failed to load login window FXML", e);
-            e.printStackTrace();
         }
         LoginController loginController = loader.getController();
         primaryStage.setScene(new Scene(root));
