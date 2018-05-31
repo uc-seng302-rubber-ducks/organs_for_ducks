@@ -19,8 +19,6 @@ import java.util.List;
 
 /**
  * Class to handle the importing and redirection of the CSV data.
- *
- * TODO: Extend FileHandler when file handler is written
  */
 public class CSVHandler {
 

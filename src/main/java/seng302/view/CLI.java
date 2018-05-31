@@ -8,12 +8,13 @@ import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
 import org.jline.utils.InfoCmp.Capability;
 import picocli.CommandLine;
-import seng302.model._enum.Directory;
-import seng302.model._abstract.Blockable;
 import seng302.commands.CliRoot;
 import seng302.controller.AppController;
-import seng302.utils.JsonHandler;
 import seng302.model.User;
+import seng302.model._abstract.Blockable;
+import seng302.model._enum.Directory;
+import seng302.utils.DataHandler;
+import seng302.utils.JsonHandler;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -27,6 +28,8 @@ public class CLI {
     private static Blockable blockage = null;
 
     private static String loadUsersfile = Directory.JSON.directory() + "/donors.json";
+
+    private static DataHandler dataHandler = new JsonHandler();
 
     /**
      * @return A line reader.
@@ -61,7 +64,7 @@ public class CLI {
 
         AppController controller = AppController.getInstance();
         try {
-            controller.setUsers((ArrayList<User>) JsonHandler.loadUsers(loadUsersfile));
+            controller.setUsers((ArrayList<User>) dataHandler.loadUsers(loadUsersfile));
         } catch (FileNotFoundException e) {
             System.out.println("No users file exists. Creating blank session");
             controller.setUsers(new ArrayList<>());

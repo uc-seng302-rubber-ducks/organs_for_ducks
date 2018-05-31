@@ -12,13 +12,13 @@ import seng302.exception.InvalidFieldsException;
 import seng302.model.EmergencyContact;
 import seng302.model.User;
 import seng302.utils.AttributeValidation;
+import seng302.utils.DataHandler;
+import seng302.utils.JsonHandler;
 import seng302.utils.Log;
 
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
-
-import static seng302.utils.JsonHandler.saveUsers;
 
 
 /**
@@ -95,6 +95,7 @@ public class NewUserController {
     private DatePicker dodInput;
     //</editor-fold>
     private Stage ownStage;
+    private DataHandler dataHandler = new JsonHandler();
 
     /**
      * Initializes the NewUserController
@@ -199,7 +200,7 @@ public class NewUserController {
                 // add the new user to the list of users and save them
                 List<User> users = controller.getUsers();
                 users.add(newUser);
-                saveUsers(users);
+                dataHandler.saveUsers(users);
 
                 // load to the overview page
                 if (stage.getTitle().matches("Administrator*")) {

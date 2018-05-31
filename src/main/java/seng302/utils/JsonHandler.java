@@ -13,7 +13,6 @@ import seng302.model.Change;
 import seng302.model.Clinician;
 import seng302.model.User;
 import seng302.model._enum.Directory;
-import seng302.utils.Log;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -26,7 +25,7 @@ import java.util.List;
 /**
  * Json Handler to import and save data
  */
-public final class JsonHandler {
+public final class JsonHandler extends DataHandler {
 
     /**
      * save the current users in the system to the filename given Based on:
@@ -35,7 +34,7 @@ public final class JsonHandler {
      * @param users List of users to save
      * @throws IOException when there is an error writing to the file.
      */
-    public static void saveUsers(Collection<User> users) throws IOException {
+    public boolean saveUsers(Collection<User> users) throws IOException {
 
         Files.createDirectories(Paths.get(Directory.JSON.directory()));
         File outFile = new File(Directory.JSON.directory() + "/users.json");
@@ -53,6 +52,7 @@ public final class JsonHandler {
         writer.write(usersString);
         writer.close();
         Log.info("Handler: successfully wrote user to file");
+        return true;
     }
 
     /**
@@ -62,7 +62,7 @@ public final class JsonHandler {
      * @throws FileNotFoundException when the file cannot be located.
      */
 
-    public static List<User> loadUsers(String filename) throws FileNotFoundException {
+    public List<User> loadUsers(String filename) throws FileNotFoundException {
         try {
             File inFile = new File(filename);
             Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss")
@@ -95,7 +95,7 @@ public final class JsonHandler {
      * @param clinicians list of clinicians to save
      * @throws IOException thrown when file does not exist, can be ignored as file will be created
      */
-    public static void saveClinicians(Collection<Clinician> clinicians) throws IOException {
+    public boolean saveClinicians(Collection<Clinician> clinicians) throws IOException {
         Files.createDirectories(Paths.get(Directory.JSON.directory()));
         File outFile = new File(Directory.JSON.directory() + "/clinicians.json");
 
@@ -113,6 +113,7 @@ public final class JsonHandler {
         writer.write(usersString);
         writer.close();
         Log.info("successfully wrote clinicians to file");
+        return true;
     }
 
 
@@ -122,7 +123,7 @@ public final class JsonHandler {
      * @return List of registered clinicians
      * @throws FileNotFoundException thrown if no clinicians exist
      */
-    public static List<Clinician> loadClinicians(String filename) throws FileNotFoundException {
+    public List<Clinician> loadClinicians(String filename) throws FileNotFoundException {
         try {
             File inFile = new File(filename);
             Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss")
@@ -145,7 +146,7 @@ public final class JsonHandler {
      * @param admins list of administrators to be saved
      * @throws IOException thrown when file does not exist, can be ignored as file will be created
      */
-    public static void saveAdmins(Collection<Administrator> admins) throws IOException {
+    public boolean saveAdmins(Collection<Administrator> admins) throws IOException {
         Files.createDirectories(Paths.get(Directory.JSON.directory()));
         File outFile = new File(Directory.JSON.directory() + "/administrators.json");
 
@@ -163,6 +164,7 @@ public final class JsonHandler {
         String adminsString = gson.toJson(admins);
         writer.write(adminsString);
         writer.close();
+        return true;
     }
 
     /**
@@ -171,7 +173,7 @@ public final class JsonHandler {
      * @return List of administrator accounts
      * @throws FileNotFoundException thrown if the JSON file of administrators does not exist
      */
-    public static Collection<Administrator> loadAdmins(String filename) throws FileNotFoundException {
+    public Collection<Administrator> loadAdmins(String filename) throws FileNotFoundException {
         try {
             File inFile = new File(filename);
             Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss")

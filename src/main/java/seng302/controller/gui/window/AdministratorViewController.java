@@ -18,17 +18,21 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import seng302.controller.*;
+import seng302.controller.AppController;
 import seng302.controller.gui.FileSelectorController;
 import seng302.controller.gui.panel.TransplantWaitListController;
 import seng302.controller.gui.popup.AlertUnclosedWindowsController;
 import seng302.controller.gui.popup.DeletedUserController;
 import seng302.controller.gui.statusBarController;
-import seng302.model.*;
+import seng302.model.Administrator;
+import seng302.model.Clinician;
+import seng302.model.TooltipTableRow;
+import seng302.model.User;
 import seng302.model._abstract.TransplantWaitListViewer;
 import seng302.model._enum.EventTypes;
 import seng302.model._enum.Organs;
 import seng302.utils.AttributeValidation;
+import seng302.utils.DataHandler;
 import seng302.utils.JsonHandler;
 import seng302.utils.Log;
 import seng302.view.CLI;
@@ -126,6 +130,7 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
     private TableColumn<User, String> lNameColumn;
     private boolean filterVisible = false;
     private TableView<?> activeTableView;
+    private DataHandler dataHandler = new JsonHandler();
 
     /**
      * Initialises scene for the administrator view
@@ -537,7 +542,7 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
             if (filename != null) {
                 fileNotFoundLabel.setVisible(false);
                 try {
-                    Collection<Administrator> administrators = JsonHandler.loadAdmins(filename);
+                    Collection<Administrator> administrators = dataHandler.loadAdmins(filename);
                     for (Administrator admin : administrators) {
                         if (admin.getUserName() == null) {
                             invalidFile = true;
@@ -615,7 +620,7 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
             if (filename != null) {
                 fileNotFoundLabel.setVisible(false);
                 try {
-                    Collection<Clinician> clinicians = JsonHandler.loadClinicians(filename);
+                    Collection<Clinician> clinicians = dataHandler.loadClinicians(filename);
                     for (Clinician clinician : clinicians) {
                         if (clinician.getStaffId() == null) {
                             invalidFile = true;
@@ -692,7 +697,7 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
             filename = FileSelectorController.getFileSelector(stage);
             if (filename != null) {
                 try {
-                    Collection<User> users = JsonHandler.loadUsers(filename);
+                    Collection<User> users = dataHandler.loadUsers(filename);
                     for (User user : users) {
                         if (user.getNhi() == null) {
                             invalidFile = true;
