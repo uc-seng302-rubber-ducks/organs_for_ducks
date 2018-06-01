@@ -44,7 +44,7 @@ public class RedoTest {
 
     @Test
     public void testMultipleChangeMultipleRedo() {
-        testUser.getHealthDetails().setBloodType("B+");
+        testUser.setBloodType("B+");
         testUser.setCurrentAddress("42 wallaby way");
         testUser.setRegion("Sydney");
 
@@ -56,14 +56,14 @@ public class RedoTest {
         testUser.redo();
         testUser.redo();
 
-        assertEquals(testUser.getHealthDetails().getBloodType(), BloodTypes.BPLUS.toString());
+        assertEquals(testUser.getBloodType(), BloodTypes.BPLUS.toString());
         assertEquals(testUser.getCurrentAddress(), "42 wallaby way");
         assertEquals(testUser.getRegion(), "Sydney");
     }
 
     @Test
     public void testMultipleChangesSingleRedo() {
-        testUser.getHealthDetails().setBloodType("B+");
+        testUser.setBloodType("B+");
         testUser.setLastName("Jefferson");
         testUser.setLastName("Doe");
 

@@ -1,6 +1,5 @@
 package seng302.model;
 
-import seng302.model._enum.BloodTypes;
 
 /**
  * Class for health details for a user
@@ -16,9 +15,8 @@ public class HealthDetails {
     private double weight;
     private transient String weightText;
     private String bloodType;
-    private transient User attachedUser;
 
-    public HealthDetails(User attachedUser) {
+    public HealthDetails() {
         this.birthGender = "";
         this.genderIdentity = "";
         this.alcoholConsumption = "None";
@@ -28,32 +26,6 @@ public class HealthDetails {
         this.heightText = "";
         this.weightText = "";
         this.bloodType = null;
-        this.attachedUser = attachedUser;
-    }
-
-
-    /**
-     * Creates a copy of the current health details
-     * @param healthDetails the original health details
-     * @return a copy of the current health details
-     */
-    private HealthDetails copyHealthDetails(HealthDetails healthDetails) {
-        if (healthDetails == null) {
-            return null;
-        }
-
-        HealthDetails newHealthDetails = new HealthDetails(healthDetails.attachedUser);
-        newHealthDetails.birthGender = healthDetails.birthGender;
-        newHealthDetails.genderIdentity = healthDetails.genderIdentity;
-        newHealthDetails.alcoholConsumption = healthDetails.alcoholConsumption;
-        newHealthDetails.smoker = healthDetails.smoker;
-        newHealthDetails.height = healthDetails.height;
-        newHealthDetails.weight = healthDetails.weight;
-        newHealthDetails.heightText = healthDetails.heightText;
-        newHealthDetails.weightText = healthDetails.weightText;
-        newHealthDetails.bloodType = healthDetails.bloodType;
-
-        return newHealthDetails;
     }
 
 
@@ -61,26 +33,8 @@ public class HealthDetails {
         return height;
     }
 
-    /**
-     * Updates the height value and pushes the change onto the undo stack
-     * @param height the new height
-     */
     public void setHeight(double height) {
-        Memento<User> mem = new Memento<>();
-        User clone = attachedUser.clone();
-        clone.setHealthDetails(copyHealthDetails(this));
-        mem.setOldObject(clone);
-
-        attachedUser.updateLastModified();
-        if (this.height != height) {
-            this.height = height;
-            clone = attachedUser.clone();
-            clone.setHealthDetails(copyHealthDetails(this));
-            attachedUser.addChange(new Change("Changed height to " + height));
-            mem.setNewObject(clone);
-            attachedUser.getUndoStack().push(mem);
-
-        }
+        this.height = height;
     }
 
     public double getWeight() {
@@ -89,17 +43,7 @@ public class HealthDetails {
 
 
     public void setWeight(double weight) {
-        Memento<User> mem = new Memento<>();
-        User clone = attachedUser.clone();
-        mem.setOldObject(clone);
-
-        attachedUser.updateLastModified();
-        if (weight != this.weight) {
-            this.weight = weight;
-            attachedUser.addChange(new Change("Changed weight to " + weight));
-            mem.setNewObject(clone);
-            attachedUser.getUndoStack().push(mem);
-        }
+        this.weight = weight;
     }
 
     public String getHeightText() {
@@ -107,15 +51,7 @@ public class HealthDetails {
     }
 
     public void setHeightText(String height) {
-        Memento<User> mem = new Memento<>();
-        User clone = attachedUser.clone();
-        mem.setOldObject(clone);
-
-        attachedUser.updateLastModified();
         this.heightText = height;
-        attachedUser.addChange(new Change("set height to " + height));
-        mem.setNewObject(clone);
-        attachedUser.getUndoStack().push(mem);
     }
 
     public String getWeightText() {
@@ -123,15 +59,7 @@ public class HealthDetails {
     }
 
     public void setWeightText(String weight) {
-        Memento<User> mem = new Memento<>();
-        User clone = attachedUser.clone();
-        mem.setOldObject(clone);
-
-        attachedUser.updateLastModified();
         this.weightText = weight;
-        attachedUser.addChange(new Change("set weight to " + weight));
-        mem.setNewObject(clone);
-        attachedUser.getUndoStack().push(mem);
     }
 
     public String getBloodType() {
@@ -139,19 +67,7 @@ public class HealthDetails {
     }
 
     public void setBloodType(String bloodType) {
-        Memento<User> mem = new Memento<>();
-        User clone = attachedUser.clone();
-        mem.setOldObject(clone);
-
-        attachedUser.updateLastModified();
-
-
-        if (this.bloodType != bloodType) {
-            this.bloodType = bloodType;
-            attachedUser.addChange(new Change("Changed blood type to " + bloodType));
-            mem.setNewObject(clone);
-            attachedUser.getUndoStack().push(mem);
-        }
+        this.bloodType = bloodType;
     }
 
     public String getBirthGender() {
@@ -159,19 +75,10 @@ public class HealthDetails {
     }
 
     public void setBirthGender(String birthGender) {
-        Memento<User> mem = new Memento<>();
-        User clone = attachedUser.clone();
-        mem.setOldObject(clone);
-
-        attachedUser.updateLastModified();
-        // Changes the default case where the gender identity is the same as the birth gender
         if (genderIdentity == null) {
             genderIdentity = this.birthGender;
         }
         this.birthGender = birthGender;
-        attachedUser.addChange(new Change("Changed birth gender to " + birthGender));
-        mem.setNewObject(clone);
-        attachedUser.getUndoStack().push(mem);
     }
 
     public String getGenderIdentity() {
@@ -179,15 +86,7 @@ public class HealthDetails {
     }
 
     public void setGenderIdentity(String genderIdentity) {
-        Memento<User> mem = new Memento<>();
-        User clone = attachedUser.clone();
-        mem.setOldObject(clone);
-
-        attachedUser.updateLastModified();
         this.genderIdentity = genderIdentity;
-        attachedUser.addChange(new Change("Changed birth Identity to " + genderIdentity));
-        mem.setNewObject(clone);
-        attachedUser.getUndoStack().push(mem);
     }
 
     public String getAlcoholConsumption() {
@@ -195,14 +94,7 @@ public class HealthDetails {
     }
 
     public void setAlcoholConsumption(String alcoholConsumption) {
-        Memento<User> mem = new Memento<>();
-        User clone = attachedUser.clone();
-        mem.setOldObject(clone);
-        attachedUser.updateLastModified();
         this.alcoholConsumption = alcoholConsumption;
-        attachedUser.addChange(new Change("Changed alcohol consumption to " + alcoholConsumption));
-        mem.setNewObject(clone);
-        attachedUser.getUndoStack().push(mem);
     }
 
     public boolean isSmoker() {
@@ -210,13 +102,6 @@ public class HealthDetails {
     }
 
     public void setSmoker(boolean smoker) {
-        Memento<User> mem = new Memento<>();
-        User clone = attachedUser.clone();
-        mem.setOldObject(clone);
-        attachedUser.updateLastModified();
         this.smoker = smoker;
-        attachedUser.addChange(new Change("Changed smoker status to " + smoker));
-        mem.setNewObject(clone);
-        attachedUser.getUndoStack().push(mem);
     }
 }

@@ -144,10 +144,10 @@ public class AppController {
         try {
             User newUser = new User(name, dateOfBirth, NHI);
             newUser.setDateOfDeath(dateOfDeath);
-            newUser.getHealthDetails().setBirthGender(gender);
-            newUser.getHealthDetails().setHeight(height);
-            newUser.getHealthDetails().setWeight(weight);
-            newUser.getHealthDetails().setBloodType(bloodType);
+            newUser.setBirthGender(gender);
+            newUser.setHeight(height);
+            newUser.setWeight(weight);
+            newUser.setBloodType(bloodType);
             newUser.setCurrentAddress(currentAddress);
             newUser.setRegion(region);
 
@@ -531,21 +531,21 @@ public class AppController {
                         "Changed DOD from " + oldUser.getDateOfDeath() + " to " + newUser.getDateOfDeath());
             }
 
-            HealthDetails oldHealthDetails = oldUser.getHealthDetails();
-            HealthDetails newHealthDetails = newUser.getHealthDetails();
+            //HealthDetails oldHealthDetails = oldUser.getHealthDetails();
+            //HealthDetails newHealthDetails = newUser.getHealthDetails();
 
-            if (!(oldHealthDetails.getBirthGender().equalsIgnoreCase(newHealthDetails.getBirthGender()))) {
-                diffs.add("Changed Gender from " + oldHealthDetails.getBirthGender() + " to " + newHealthDetails.getBirthGender());
+            if (!(oldUser.getBirthGender().equalsIgnoreCase(newUser.getBirthGender()))) {
+                diffs.add("Changed Gender from " + oldUser.getBirthGender() + " to " + newUser.getBirthGender());
             }
-            if (oldHealthDetails.getHeight() != newHealthDetails.getHeight()) {
-                diffs.add("Changed Height from " + oldHealthDetails.getHeight() + " to " + newHealthDetails.getHeight());
+            if (oldUser.getHeight() != newUser.getHeight()) {
+                diffs.add("Changed Height from " + oldUser.getHeight() + " to " + newUser.getHeight());
             }
-            if (oldHealthDetails.getWeight() != newHealthDetails.getWeight()) {
-                diffs.add("Changed Weight from " + oldHealthDetails.getWeight() + " to " + newHealthDetails.getWeight());
+            if (oldUser.getWeight() != newUser.getWeight()) {
+                diffs.add("Changed Weight from " + oldUser.getWeight() + " to " + newUser.getWeight());
             }
-            if (!oldHealthDetails.getBloodType().equalsIgnoreCase(newHealthDetails.getBloodType())) {
+            if (!oldUser.getBloodType().equalsIgnoreCase(newUser.getBloodType())) {
                 diffs.add(
-                        "Changed Blood Type from " + oldHealthDetails.getBloodType() + " to " + newHealthDetails.getBloodType());
+                        "Changed Blood Type from " + oldUser.getBloodType() + " to " + newUser.getBloodType());
             }
             if (!oldUser.getCurrentAddress().equalsIgnoreCase(newUser.getCurrentAddress())) {
                 diffs.add("Changed Address from " + oldUser.getCurrentAddress() + " to " + newUser

@@ -449,6 +449,180 @@ public class User extends Undoable<User> implements Listenable {
         getUndoStack().push(mem);
     }
 
+    public double getHeight() {
+        return healthDetails.getHeight();
+    }
+
+    public void setHeight(double height) {
+        Memento<User> mem = new Memento<>();
+        mem.setOldObject(this.clone());
+        updateLastModified();
+        if (healthDetails.getHeight() != height) {
+            healthDetails.setHeight(height);
+            addChange(new Change("Changed height to " + height));
+            mem.setNewObject(this.clone());
+            getUndoStack().push(mem);
+        }
+    }
+
+    public double getWeight() {
+        return healthDetails.getWeight();
+    }
+
+    public void setWeight(double weight) {
+        Memento<User> mem = new Memento<>();
+        mem.setOldObject(this.clone());
+        updateLastModified();
+        if (weight != healthDetails.getWeight()) {
+            healthDetails.setWeight(weight);
+            addChange(new Change("Changed weight to " + weight));
+            mem.setNewObject(this.clone());
+            getUndoStack().push(mem);
+        }
+    }
+
+    public String getHeightText() {
+        return healthDetails.getHeightText();
+    }
+
+    public void setHeightText(String height) {
+        Memento<User> mem = new Memento<>();
+        mem.setOldObject(this.clone());
+        updateLastModified();
+        healthDetails.setHeightText(height);
+        addChange(new Change("set height to " + height));
+        mem.setNewObject(this.clone());
+        getUndoStack().push(mem);
+    }
+
+    public String getWeightText() {
+        return healthDetails.getWeightText();
+    }
+
+    public void setWeightText(String weight) {
+        Memento<User> mem = new Memento<>();
+        mem.setOldObject(this.clone());
+        updateLastModified();
+        healthDetails.setWeightText(weight);
+        addChange(new Change("set weight to " + weight));
+        mem.setNewObject(this.clone());
+        getUndoStack().push(mem);
+    }
+
+    public String getBloodType() {
+        return healthDetails.getBloodType();
+    }
+
+    public void setBloodType(String bloodType) {
+        Memento<User> mem = new Memento<>();
+        mem.setOldObject(this.clone());
+        String validType = groupBloodType(bloodType);
+        updateLastModified();
+        if (healthDetails.getBloodType() != validType) {
+            healthDetails.setBloodType(validType);
+            addChange(new Change("Changed blood type to " + bloodType));
+            mem.setNewObject(this.clone());
+            getUndoStack().push(mem);
+        }
+    }
+
+    public String getBirthGender() {
+        return healthDetails.getBirthGender();
+    }
+
+    public void setBirthGender(String birthGender) {
+        Memento<User> mem = new Memento<>();
+        mem.setOldObject(this.clone());
+        updateLastModified();
+        // Changes the default case where the gender identity is the same as the birth gender
+        if (healthDetails.getGenderIdentity() == null) {
+            healthDetails.setGenderIdentity(healthDetails.getBirthGender());
+        }
+        healthDetails.setBirthGender(birthGender);
+        addChange(new Change("Changed birth gender to " + birthGender));
+        mem.setNewObject(this.clone());
+        getUndoStack().push(mem);
+    }
+
+    public String getGenderIdentity() {
+        return healthDetails.getGenderIdentity();
+    }
+
+    public void setGenderIdentity(String genderIdentity) {
+
+        Memento<User> mem = new Memento<>();
+        mem.setOldObject(this.clone());
+        updateLastModified();
+        healthDetails.setGenderIdentity(genderIdentity);
+        addChange(new Change("Changed birth Identity to " + genderIdentity));
+        mem.setNewObject(this.clone());
+        getUndoStack().push(mem);
+    }
+
+    public String getAlcoholConsumption() {
+        return healthDetails.getAlcoholConsumption();
+    }
+
+    public void setAlcoholConsumption(String alcoholConsumption) {
+        Memento<User> mem = new Memento<>();
+        mem.setOldObject(this.clone());
+        updateLastModified();
+        healthDetails.setAlcoholConsumption(alcoholConsumption);
+        addChange(new Change("Changed alcohol consumption to " + alcoholConsumption));
+        mem.setNewObject(this.clone());
+        getUndoStack().push(mem);
+    }
+
+    public boolean isSmoker() {
+        return healthDetails.isSmoker();
+    }
+
+    public void setSmoker(boolean smoker) {
+        Memento<User> mem = new Memento<>();
+        mem.setOldObject(this.clone());
+        updateLastModified();
+        healthDetails.setSmoker(smoker);
+        addChange(new Change("Changed smoker status to " + smoker));
+        mem.setNewObject(this.clone());
+        getUndoStack().push(mem);
+    }
+
+    /**
+     * Method to ensure that all blood types are valid blood types returns U if not a valid blood
+     * type
+     *
+     * @param possibleType type to test
+     * @return correct blood type
+     */
+    private String groupBloodType(String possibleType) {
+
+        if (possibleType == null) {
+            return "U";
+        }
+        if (possibleType.equalsIgnoreCase("AB+")) {
+            return "AB+";
+        } else if (possibleType.equalsIgnoreCase("AB-")) {
+            return "AB-";
+        } else if (possibleType.equalsIgnoreCase("A+")) {
+            return "A+";
+        } else if (possibleType.equalsIgnoreCase("A-")) {
+            return "A-";
+        } else if (possibleType.equalsIgnoreCase("B+")) {
+            return "B+";
+        } else if (possibleType.equalsIgnoreCase("B-")) {
+            return "B-";
+        } else if (possibleType.equalsIgnoreCase("O+")) {
+            return "O+";
+        } else if (possibleType.equalsIgnoreCase("O-")) {
+            return "O-";
+        } else {
+            return "U";
+        }
+    }
+
+
+
+
     public String getCurrentAddress() {
         return currentAddress;
     }
@@ -875,7 +1049,7 @@ public class User extends Undoable<User> implements Listenable {
             newUser.contact = null;
         }
 
-        newUser.healthDetails = new HealthDetails(newUser); // TODO: need to do something more with this..
+        newUser.healthDetails = this.healthDetails;
 
         newUser.name = this.name;
         newUser.firstName = this.firstName;
@@ -937,16 +1111,7 @@ public class User extends Undoable<User> implements Listenable {
         this.nhi = other.nhi;
         this.dateOfBirth = other.dateOfBirth;
         this.dateOfDeath = other.dateOfDeath;
-
-//        this.birthGender = other.birthGender;
-//        this.genderIdentity = other.genderIdentity;
-//        this.height = other.height;
-//        this.weight = other.weight;
-//        this.heightText = other.heightText;
-//        this.weightText = other.weightText;
-//        this.bloodType = other.bloodType;
-//        this.alcoholConsumption = other.alcoholConsumption;
-//        this.smoker = other.smoker;
+        this.healthDetails = other.healthDetails;
 
         this.currentAddress = other.currentAddress;
         this.region = other.region;

@@ -79,16 +79,16 @@ public class CreateUser implements Runnable {
             user.setDateOfDeath(IoHelper.readDate(dodString));
         }
         if (weight != -1) {
-            user.getHealthDetails().setWeight(weight);
+            user.setWeight(weight);
         }
         if (height != -1) {
-            user.getHealthDetails().setHeight(height);
+            user.setHeight(height);
         }
         if (gender != null) {
-            user.getHealthDetails().setBirthGender(gender);
+            user.setBirthGender(gender);
         }
         if (bloodType != null) {
-            user.getHealthDetails().setBloodType(bloodType);
+            user.setBloodType(bloodType);
         }
         if (currentAddress != null) {
             user.setCurrentAddress(currentAddress);

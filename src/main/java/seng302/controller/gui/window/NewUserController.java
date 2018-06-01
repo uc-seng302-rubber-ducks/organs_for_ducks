@@ -269,7 +269,7 @@ public class NewUserController {
      */
     private HealthDetails collectHealthDetails(User user, String birthGender, String genderIdentity, double height, double weight,
                                                String bloodType, String alcoholConsumption, boolean smoker) {
-        HealthDetails healthDetails = new HealthDetails(user);
+        HealthDetails healthDetails = new HealthDetails();
 
         healthDetails.setBirthGender(birthGender);
         healthDetails.setGenderIdentity(genderIdentity);

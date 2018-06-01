@@ -28,9 +28,9 @@ public class CreateUserTest {
         minInfo = new User("John Doe", LocalDate.parse("1961-02-12", format), "ABC1234");
         maxInfo = new User("Gus Johnson", LocalDate.parse("1990-04-03", format), "BCD2345");
         maxInfo.setDateOfDeath(LocalDate.parse("2010-05-16", format));
-        maxInfo.getHealthDetails().setHeight(1.85);
-        maxInfo.getHealthDetails().setWeight(86.3);
-        maxInfo.getHealthDetails().setBirthGender("m");
+        maxInfo.setHeight(1.85);
+        maxInfo.setWeight(86.3);
+        maxInfo.setBirthGender("m");
         maxInfo.setRegion("Sydney");
         maxInfo.setCurrentAddress("42-wallaby-way");
     }
@@ -54,9 +54,9 @@ public class CreateUserTest {
         registered = controller.findUser("Gus Johnson", LocalDate.parse("1990-04-03", format));
         Assert.assertEquals(maxInfo, registered); //checks name and dob
         Assert.assertEquals(maxInfo.getDateOfDeath(), registered.getDateOfDeath());
-        assertTrue(maxInfo.getHealthDetails().getHeight() == registered.getHealthDetails().getHeight());
-        assertTrue(maxInfo.getHealthDetails().getWeight() == registered.getHealthDetails().getWeight());
-        Assert.assertEquals(maxInfo.getHealthDetails().getBirthGender(), registered.getHealthDetails().getBirthGender());
+        assertTrue(maxInfo.getHeight() == registered.getHeight());
+        assertTrue(maxInfo.getWeight() == registered.getWeight());
+        Assert.assertEquals(maxInfo.getBirthGender(), registered.getBirthGender());
         Assert.assertEquals(maxInfo.getCurrentAddress(), registered.getCurrentAddress());
         Assert.assertEquals(maxInfo.getRegion(), registered.getRegion());
     }

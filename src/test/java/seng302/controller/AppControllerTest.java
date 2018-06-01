@@ -3,7 +3,6 @@ package seng302.controller;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import seng302.model.HealthDetails;
 import seng302.model.User;
 
 import java.time.LocalDate;
@@ -35,12 +34,11 @@ public class AppControllerTest {
         //Arrange
         User user = new User("Geoff", LocalDate.parse("1 2 3", (DateTimeFormatter.ofPattern("y M d"))),
                 "ASD3214");
-        HealthDetails healthDetails = user.getHealthDetails();
-        healthDetails.setBirthGender("m");
-        healthDetails.setHeight(1.85);
-        healthDetails.setWeight(90);
+        user.setBirthGender("m");
+        user.setHeight(1.85);
+        user.setWeight(90);
         user.setDateOfDeath(LocalDate.parse("2 3 4", (DateTimeFormatter.ofPattern("y M d"))));
-        healthDetails.setBloodType("O-");
+        user.setBloodType("O-");
         user.setCurrentAddress("42 wallaby way");
         user.setRegion("Sydney");
         //Act

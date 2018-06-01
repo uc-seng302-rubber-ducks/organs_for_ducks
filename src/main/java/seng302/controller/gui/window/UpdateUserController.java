@@ -12,7 +12,6 @@ import javafx.stage.Stage;
 import seng302.controller.AppController;
 import seng302.exception.InvalidFieldsException;
 import seng302.model.EmergencyContact;
-import seng302.model.HealthDetails;
 import seng302.model.Memento;
 import seng302.model.User;
 import seng302.utils.AttributeValidation;
@@ -350,32 +349,29 @@ public class UpdateUserController {
             }
         }
         // health details
-        HealthDetails healthDetails = user.getHealthDetails();
-
-
         alcoholComboBox
-                .setValue(healthDetails.getAlcoholConsumption() == null ? "None" : healthDetails.getAlcoholConsumption());
-        if (healthDetails.isSmoker()) {
+                .setValue(user.getAlcoholConsumption() == null ? "None" : user.getAlcoholConsumption());
+        if (user.isSmoker()) {
             smokerCheckBox.setSelected(true);
         } else {
             smokerCheckBox.setSelected(false);
         }
 
-        bloodComboBox.setValue(healthDetails.getBloodType() == null ? "" : healthDetails.getBloodType());
+        bloodComboBox.setValue(user.getBloodType() == null ? "" : user.getBloodType());
 
-        birthGenderComboBox.setValue(healthDetails.getBirthGender() == null ? "" : healthDetails.getBirthGender());
+        birthGenderComboBox.setValue(user.getBirthGender() == null ? "" : user.getBirthGender());
 
-        genderIdComboBox.setValue(healthDetails.getGenderIdentity() == null ? "" : healthDetails.getGenderIdentity());
+        genderIdComboBox.setValue(user.getGenderIdentity() == null ? "" : user.getGenderIdentity());
 
-        if (healthDetails.getWeightText() != null) {
-            weightInput.setText(healthDetails.getWeightText());
+        if (user.getWeightText() != null) {
+            weightInput.setText(user.getWeightText());
         } else {
-            weightInput.setText(Double.toString(healthDetails.getWeight()));
+            weightInput.setText(Double.toString(user.getWeight()));
         }
-        if (healthDetails.getHeightText() != null) {
-            heightInput.setText(healthDetails.getHeightText());
+        if (user.getHeightText() != null) {
+            heightInput.setText(user.getHeightText());
         } else {
-            heightInput.setText(Double.toString(healthDetails.getHeight()));
+            heightInput.setText(Double.toString(user.getHeight()));
         }
         listen = true;
 
@@ -484,8 +480,8 @@ public class UpdateUserController {
             errorLabel.setVisible(true);
             valid = false;
         } else {
-            currentUser.getHealthDetails().setHeight(height);
-            currentUser.getHealthDetails().setWeight(weight);
+            currentUser.setHeight(height);
+            currentUser.setWeight(weight);
         }
 
         // validate contact info
@@ -671,76 +667,75 @@ public class UpdateUserController {
      */
     private boolean updateHealthDetails(String height, String weight) {
         boolean changed = false;
-        HealthDetails healthDetails = currentUser.getHealthDetails();
 
-        if (height.isEmpty() && (healthDetails.getHeightText() != null && !healthDetails.getHeightText()
+        if (height.isEmpty() && (currentUser.getHeightText() != null && !currentUser.getHeightText()
                 .isEmpty())) {
-            healthDetails.setHeightText(null);
+            currentUser.setHeightText(null);
             changed = true;
-        } else if (!height.isEmpty() && !height.equals(healthDetails.getHeightText())) {
-            healthDetails.setHeightText(height);
+        } else if (!height.isEmpty() && !height.equals(currentUser.getHeightText())) {
+            currentUser.setHeightText(height);
             changed = true;
         }
 
-        if (weight.isEmpty() && (healthDetails.getWeightText() != null && !healthDetails.getWeightText()
+        if (weight.isEmpty() && (currentUser.getWeightText() != null && !currentUser.getWeightText()
                 .isEmpty())) {
-            healthDetails.setHeightText(null);
+            currentUser.setHeightText(null);
             changed = true;
-        } else if (!weight.isEmpty() && !weight.equals(healthDetails.getWeightText())) {
-            healthDetails.setWeightText(weight);
+        } else if (!weight.isEmpty() && !weight.equals(currentUser.getWeightText())) {
+            currentUser.setWeightText(weight);
             changed = true;
         }
 
-        String birthGender = healthDetails.getBirthGender();
+        String birthGender = currentUser.getBirthGender();
         String bGender =
                 AttributeValidation.validateGender(birthGenderComboBox.getValue()) ? birthGenderComboBox.getValue()
                         : "";
 
         if (birthGender != null && !birthGender.equals(bGender)) {
-            healthDetails.setBirthGender(bGender);
+            currentUser.setBirthGender(bGender);
             changed = true;
         } else if (birthGender == null && bGender != null) {
-            healthDetails.setBirthGender(bGender);
+            currentUser.setBirthGender(bGender);
             changed = true;
         }
 
-        String genderIdentity = healthDetails.getGenderIdentity();
+        String genderIdentity = currentUser.getGenderIdentity();
         String genderID =
                 AttributeValidation.validateGender(genderIdComboBox.getValue()) ? genderIdComboBox.getValue() : "";
         if (genderIdentity != null && !genderIdentity.equals(genderID)) {
             if (genderID == null) {
-                healthDetails.setGenderIdentity(birthGender);
+                currentUser.setGenderIdentity(birthGender);
                 changed = true;
             } else {
-                healthDetails.setGenderIdentity(genderID);
+                currentUser.setGenderIdentity(genderID);
                 changed = true;
             }
         } else if (genderIdentity == null && genderID != null) {
-            healthDetails.setGenderIdentity(genderID);
+            currentUser.setGenderIdentity(genderID);
             changed = true;
         }
 
-        String bloodType = healthDetails.getBloodType();
+        String bloodType = currentUser.getBloodType();
         String blood =
                 AttributeValidation.validateBlood(bloodComboBox.getValue()) ? bloodComboBox.getValue()
                         : "";
         if (bloodType != null && !bloodType.equals(blood)) {
-            healthDetails.setBloodType(blood);
+            currentUser.setBloodType(blood);
             changed = true;
         } else if (bloodType == null && blood != null) {
-            healthDetails.setBloodType(blood);
+            currentUser.setBloodType(blood);
             changed = true;
         }
 
         String alcohol = alcoholComboBox.getValue();
-        if (!healthDetails.getAlcoholConsumption().equals(alcohol)) {
-            healthDetails.setAlcoholConsumption(alcohol);
+        if (!currentUser.getAlcoholConsumption().equals(alcohol)) {
+            currentUser.setAlcoholConsumption(alcohol);
             changed = true;
         }
 
         boolean smoker = smokerCheckBox.isSelected();
-        if (healthDetails.isSmoker() != smoker) {
-            healthDetails.setSmoker(smoker);
+        if (currentUser.isSmoker() != smoker) {
+            currentUser.setSmoker(smoker);
             changed = true;
         }
 

@@ -111,8 +111,8 @@ public class UserTest {
 
     @Test
     public void BloodTypeCannotBeInvalid() {
-        testUser.getHealthDetails().setBloodType("Q");
-        Assert.assertEquals("U", testUser.getHealthDetails().getBloodType());
+        testUser.setBloodType("Q");
+        Assert.assertEquals("U", testUser.getBloodType());
     }
 
     @Test
