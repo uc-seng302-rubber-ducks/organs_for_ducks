@@ -30,16 +30,6 @@ public class User extends Undoable<User> implements Listenable {
     private LocalDate dateOfBirth;
     @Expose
     private LocalDate dateOfDeath;
-//    @Expose
-//    private String gender;
-//    @Expose
-//    private double height;
-//    private transient String heightText;
-//    @Expose
-//    private double weight;
-//    private transient String weightText;
-//    @Expose
-//    private String bloodType;
     @Expose
     private String currentAddress;
     @Expose
@@ -56,14 +46,6 @@ public class User extends Undoable<User> implements Listenable {
     private String middleName;
     @Expose
     private String lastName;
-//    @Expose
-//    private String birthGender;
-//    @Expose
-//    private String genderIdentity;
-//    @Expose
-//    private String alcoholConsumption;
-//    @Expose
-//    private boolean smoker;
     @Expose
     private String homePhone;
     @Expose
@@ -545,6 +527,7 @@ public class User extends Undoable<User> implements Listenable {
     }
 
     public String getGenderIdentity() {
+        System.out.println("h: " + healthDetails.getGenderIdentity());
         return healthDetails.getGenderIdentity();
     }
 
@@ -996,15 +979,40 @@ public class User extends Undoable<User> implements Listenable {
 
     @Override
     public String toString() {
-        return "name:'" + name + "\'" +
-                "\nnhi: " + nhi +
-                "\ndate Of Birth: " + dateOfBirth +
-                "\ndate Of Death :" + dateOfDeath +
-                "\ncurrent Address: '" + currentAddress + '\'' +
-                "\nregion: '" + region + '\'' +
-                "\norgans: " + (isDonor() ? donorDetails.getOrgans() : (name + " is not a donor")) +
-                "\ntime Created: " + timeCreated +
-                "\nlast modified: " + lastModified;
+        return "User{" +
+                "nhi='" + nhi + '\'' +
+                ", name='" + name + '\'' +
+                ", dateOfBirth=" + dateOfBirth +
+                ", dateOfDeath=" + dateOfDeath +
+                ", currentAddress='" + currentAddress + '\'' +
+                ", region='" + region + '\'' +
+                ", timeCreated=" + timeCreated +
+                ", isDeceased=" + isDeceased +
+                ", firstName='" + firstName + '\'' +
+                ", preferredFirstName='" + preferredFirstName + '\'' +
+                ", middleName='" + middleName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", homePhone='" + homePhone + '\'' +
+                ", cellPhone='" + cellPhone + '\'' +
+                ", email='" + email + '\'' +
+                ", contact=" + contact +
+                ", healthDetails=" + healthDetails +
+                ", lastModified=" + lastModified +
+                ", miscAttributes=" + miscAttributes +
+                ", updateHistory=" + updateHistory +
+                ", previousMedication=" + previousMedication +
+                ", currentMedication=" + currentMedication +
+                ", previousMedicationTimes=" + previousMedicationTimes +
+                ", currentMedicationTimes=" + currentMedicationTimes +
+                ", medicalProcedures=" + medicalProcedures +
+                ", donorDetails=" + donorDetails +
+                ", receiverDetails=" + receiverDetails +
+                ", commonOrgans=" + commonOrgans +
+                ", pastDiseases=" + pastDiseases +
+                ", currentDiseases=" + currentDiseases +
+                ", changes=" + changes +
+                ", pcs=" + pcs +
+                '}';
     }
 
     @Override

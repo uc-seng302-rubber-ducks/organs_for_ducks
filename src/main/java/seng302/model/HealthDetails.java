@@ -41,7 +41,6 @@ public class HealthDetails {
         return weight;
     }
 
-
     public void setWeight(double weight) {
         this.weight = weight;
     }
@@ -52,6 +51,7 @@ public class HealthDetails {
 
     public void setHeightText(String height) {
         this.heightText = height;
+
     }
 
     public String getWeightText() {
@@ -103,5 +103,20 @@ public class HealthDetails {
 
     public void setSmoker(boolean smoker) {
         this.smoker = smoker;
+    }
+
+    @Override
+    public String toString() {
+        return "HealthDetails{" +
+                "birthGender='" + birthGender + '\'' +
+                ", genderIdentity='" + genderIdentity + '\'' +
+                ", alcoholConsumption='" + alcoholConsumption + '\'' +
+                ", smoker=" + smoker +
+                ", height=" + height +
+                ", heightText='" + heightText + '\'' +
+                ", weight=" + weight +
+                ", weightText='" + weightText + '\'' +
+                ", bloodType='" + bloodType + '\'' +
+                '}';
     }
 }

@@ -679,7 +679,7 @@ public class UpdateUserController {
 
         if (weight.isEmpty() && (currentUser.getWeightText() != null && !currentUser.getWeightText()
                 .isEmpty())) {
-            currentUser.setHeightText(null);
+            currentUser.setWeightText(null);
             changed = true;
         } else if (!weight.isEmpty() && !weight.equals(currentUser.getWeightText())) {
             currentUser.setWeightText(weight);
