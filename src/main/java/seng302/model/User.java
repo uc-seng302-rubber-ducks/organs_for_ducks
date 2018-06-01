@@ -259,12 +259,10 @@ public class User extends Undoable<User> implements Listenable {
     }
 
     public void setContact(EmergencyContact contact) {
-        Memento<User> mem = new Memento<>();
-        mem.setOldObject(this.clone());
+        this.saveStateforUndo();
         updateLastModified();
         this.contact = contact;
-        mem.setNewObject(this.clone());
-        getUndoStack().push(mem);
+
     }
 
     public DonorDetails getDonorDetails() {
@@ -272,12 +270,9 @@ public class User extends Undoable<User> implements Listenable {
     }
 
     public void setDonorDetails(DonorDetails donorDetails) {
-        Memento<User> mem = new Memento<>();
-        mem.setOldObject(this.clone());
+        this.saveStateforUndo();
         updateLastModified();
         this.donorDetails = donorDetails;
-        mem.setNewObject(this.clone());
-        getUndoStack().push(mem);
     }
 
     public ReceiverDetails getReceiverDetails() {
@@ -323,13 +318,10 @@ public class User extends Undoable<User> implements Listenable {
     }
 
     public void setNhi(String nhi) {
-        Memento<User> mem = new Memento<>();
-        mem.setOldObject(this.clone());
+        this.saveStateforUndo();
         updateLastModified();
         this.nhi = nhi;
         addChange(new Change("Updated NHI to " + nhi));
-        mem.setNewObject(this.clone());
-        getUndoStack().push(mem);
     }
 
     /**
@@ -349,17 +341,12 @@ public class User extends Undoable<User> implements Listenable {
     }
 
     public void setName(String fName, String mName, String lName) {
-        Memento<User> mem = new Memento<>();
-        mem.setOldObject(this.clone());
+        this.saveStateforUndo();
         this.firstName = fName;
         this.middleName = mName;
         this.lastName = lName;
         updateLastModified();
         addChange(new Change("set full name to " + fName + " " + mName + " " + lName));
-        mem.setNewObject(this.clone());
-        if (!mem.getNewObject().getFullName().equals(mem.getOldObject().getFullName())) {
-            getUndoStack().push(mem);
-        }
     }
 
     public String getFirstName() {
@@ -367,8 +354,7 @@ public class User extends Undoable<User> implements Listenable {
     }
 
     public void setFirstName(String name) {
-        Memento<User> mem = new Memento<>();
-        mem.setOldObject(this.clone());
+        this.saveStateforUndo();
         updateLastModified();
         // Changes the default case where the preferred name is the same as the first name
         if (preferredFirstName == null || preferredFirstName.equals(firstName)) {
@@ -376,8 +362,7 @@ public class User extends Undoable<User> implements Listenable {
         }
         this.firstName = name;
         addChange(new Change("Changed first name to " + name));
-        mem.setNewObject(this.clone());
-        getUndoStack().push(mem);
+;
 
     }
 
@@ -386,13 +371,11 @@ public class User extends Undoable<User> implements Listenable {
     }
 
     public void setMiddleName(String name) {
-        Memento<User> mem = new Memento<>();
-        mem.setOldObject(this.clone());
+        this.saveStateforUndo();
         updateLastModified();
         this.middleName = name;
         addChange(new Change("Changed middle name to " + middleName));
-        mem.setNewObject(this.clone());
-        getUndoStack().push(mem);
+
     }
 
     public String getLastName() {
@@ -400,13 +383,10 @@ public class User extends Undoable<User> implements Listenable {
     }
 
     public void setLastName(String name) {
-        Memento<User> mem = new Memento<>();
-        mem.setOldObject(this.clone());
+        this.saveStateforUndo();
         updateLastModified();
         this.lastName = name;
         addChange(new Change("Changed last name to " + lastName));
-        mem.setNewObject(this.clone());
-        getUndoStack().push(mem);
     }
 
     public String getFullName() {
@@ -433,13 +413,10 @@ public class User extends Undoable<User> implements Listenable {
     }
 
     public void setDateOfBirth(LocalDate dateOfBirth) {
-        Memento<User> mem = new Memento<>();
-        mem.setOldObject(this.clone());
+        this.saveStateforUndo();
         updateLastModified();
         this.dateOfBirth = dateOfBirth;
         addChange(new Change("Changed date of birth to " + dateOfBirth.toString()));
-        mem.setNewObject(this.clone());
-        getUndoStack().push(mem);
     }
 
     public LocalDate getDateOfDeath() {
@@ -447,15 +424,12 @@ public class User extends Undoable<User> implements Listenable {
     }
 
     public void setDateOfDeath(LocalDate dateOfDeath) {
-        Memento<User> mem = new Memento<>();
-        mem.setOldObject(this.clone());
+        this.saveStateforUndo();
         updateLastModified();
         this.dateOfDeath = dateOfDeath;
         this.isDeceased = dateOfDeath != null;
         addChange(new Change(isDeceased ? ("Changed date of death to " + dateOfDeath.toString())
                 : "Removed date of death"));
-        mem.setNewObject(this.clone());
-        getUndoStack().push(mem);
     }
 
     public String getGender() {
@@ -463,13 +437,10 @@ public class User extends Undoable<User> implements Listenable {
     }
 
     public void setGender(String gender) {
-        Memento<User> mem = new Memento<>();
-        mem.setOldObject(this.clone());
+        this.saveStateforUndo();
         updateLastModified();
         this.gender = gender;
         addChange(new Change("Changed gender to " + gender));
-        mem.setNewObject(this.clone());
-        getUndoStack().push(mem);
     }
 
     public double getHeight() {
@@ -477,14 +448,11 @@ public class User extends Undoable<User> implements Listenable {
     }
 
     public void setHeight(double height) {
-        Memento<User> mem = new Memento<>();
-        mem.setOldObject(this.clone());
         updateLastModified();
         if (this.height != height) {
+            this.saveStateforUndo();
             this.height = height;
             addChange(new Change("Changed height to " + height));
-            mem.setNewObject(this.clone());
-            getUndoStack().push(mem);
         }
     }
 
@@ -493,14 +461,11 @@ public class User extends Undoable<User> implements Listenable {
     }
 
     public void setWeight(double weight) {
-        Memento<User> mem = new Memento<>();
-        mem.setOldObject(this.clone());
         updateLastModified();
         if (weight != this.weight) {
+            this.saveStateforUndo();
             this.weight = weight;
             addChange(new Change("Changed weight to " + weight));
-            mem.setNewObject(this.clone());
-            getUndoStack().push(mem);
         }
     }
 
@@ -509,13 +474,10 @@ public class User extends Undoable<User> implements Listenable {
     }
 
     public void setHeightText(String height) {
-        Memento<User> mem = new Memento<>();
-        mem.setOldObject(this.clone());
+        this.saveStateforUndo();
         updateLastModified();
         this.heightText = height;
         addChange(new Change("set height to " + height));
-        mem.setNewObject(this.clone());
-        getUndoStack().push(mem);
     }
 
     public String getWeightText() {
@@ -523,13 +485,10 @@ public class User extends Undoable<User> implements Listenable {
     }
 
     public void setWeightText(String weight) {
-        Memento<User> mem = new Memento<>();
-        mem.setOldObject(this.clone());
+        this.saveStateforUndo();
         updateLastModified();
         this.weightText = weight;
         addChange(new Change("set weight to " + weight));
-        mem.setNewObject(this.clone());
-        getUndoStack().push(mem);
     }
 
     public String getBloodType() {
@@ -537,15 +496,12 @@ public class User extends Undoable<User> implements Listenable {
     }
 
     public void setBloodType(String bloodType) {
-        Memento<User> mem = new Memento<>();
-        mem.setOldObject(this.clone());
         String validType = groupBloodType(bloodType);
         updateLastModified();
         if (this.bloodType != validType) {
+            this.saveStateforUndo();
             this.bloodType = validType;
             addChange(new Change("Changed blood type to " + bloodType));
-            mem.setNewObject(this.clone());
-            getUndoStack().push(mem);
         }
     }
 
@@ -554,15 +510,12 @@ public class User extends Undoable<User> implements Listenable {
     }
 
     public void setCurrentAddress(String currentAddress) {
-        Memento<User> mem = new Memento<>();
-        mem.setOldObject(this.clone());
+        this.saveStateforUndo();
         updateLastModified();
         this.currentAddress = currentAddress;
         if (currentAddress != null && !currentAddress.equals("")) {
             addChange(new Change("Changed current address  to " + currentAddress));
         }
-        mem.setNewObject(this.clone());
-        getUndoStack().push(mem);
     }
 
     public String getRegion() {
@@ -570,15 +523,12 @@ public class User extends Undoable<User> implements Listenable {
     }
 
     public void setRegion(String region) {
-        Memento<User> mem = new Memento<>();
-        mem.setOldObject(this.clone());
+        this.saveStateforUndo();
         updateLastModified();
         this.region = region;
         if (currentAddress != null && !currentAddress.equals("")) {
             addChange(new Change("Changed region to " + region));
         }
-        mem.setNewObject(this.clone());
-        getUndoStack().push(mem);
     }
 
     public LocalDateTime getTimeCreated() {
@@ -994,6 +944,11 @@ public class User extends Undoable<User> implements Listenable {
         } else {
             return name;
         }
+    }
+
+    private void saveStateforUndo() { //New
+        Memento<User> memento = new Memento<>(this.clone());
+        getUndoStack().push(memento);
     }
 
     @Override

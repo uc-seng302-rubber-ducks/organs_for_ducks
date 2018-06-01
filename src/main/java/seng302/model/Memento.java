@@ -7,21 +7,32 @@ public class Memento<T> {
 
     private T oldObject;
     private T newObject;
+    private T state; //New
 
-    public T getOldObject() {
-        return oldObject;
+    public Memento() {} //New
+
+    public Memento(T savedState) { //New
+        this.state = savedState;
     }
 
-    public void setOldObject(T oldObject) {
-        this.oldObject = oldObject;
+    public T getState() { //New
+        return state;
+    }
+
+    public T getOldObject() {
+        return state;
+    } //Changed
+
+    public void setOldObject(T state) {
+        this.state = state;
     }
 
     public T getNewObject() {
-        return newObject;
-    }
+        return state;
+    } //Changed
 
-    public void setNewObject(T newObject) {
-        this.newObject = newObject;
+    public void setNewObject(T state) {
+        this.state = state;
     }
 
     @Override

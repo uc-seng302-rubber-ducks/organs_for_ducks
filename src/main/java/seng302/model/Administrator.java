@@ -104,14 +104,12 @@ public class Administrator extends Undoable<Administrator> implements Listenable
     }
 
     public void setUserName(String userName) {
-        Memento<Administrator> mem = new Memento<>();
-        mem.setOldObject(this.clone());
+
         if (!userName.equals(this.userName)) {
+            this.saveStateforUndo();
             this.userName = userName;
             addChange(new Change("Updated username to " + userName));
             setDateLastModified(LocalDateTime.now());
-            mem.setNewObject(this.clone());
-            getUndoStack().push(mem);
         }
     }
 
@@ -120,14 +118,12 @@ public class Administrator extends Undoable<Administrator> implements Listenable
     }
 
     public void setFirstName(String firstName) {
-        Memento<Administrator> mem = new Memento<>();
-        mem.setOldObject(this.clone());
+
         if (!firstName.equals(this.firstName)) {
+            this.saveStateforUndo();
             this.firstName = firstName;
             addChange(new Change("Updated first name to " + firstName));
             setDateLastModified(LocalDateTime.now());
-            mem.setNewObject(this.clone());
-            getUndoStack().push(mem);
         }
     }
 
@@ -136,14 +132,11 @@ public class Administrator extends Undoable<Administrator> implements Listenable
     }
 
     public void setMiddleName(String middleName) {
-        Memento<Administrator> mem = new Memento<>();
-        mem.setOldObject(this.clone());
+        this.saveStateforUndo();
         if (!middleName.equals(this.middleName)) {
             this.middleName = middleName;
             addChange(new Change("Updated middle name to " + middleName));
             setDateLastModified(LocalDateTime.now());
-            mem.setNewObject(this.clone());
-            getUndoStack().push(mem);
         }
     }
 
@@ -152,14 +145,11 @@ public class Administrator extends Undoable<Administrator> implements Listenable
     }
 
     public void setLastName(String lastName) {
-        Memento<Administrator> mem = new Memento<>();
-        mem.setOldObject(this.clone());
         if (!lastName.equals(this.lastName)) {
+            this.saveStateforUndo();
             this.lastName = lastName;
             addChange(new Change("Updated last name to " + lastName));
             setDateLastModified(LocalDateTime.now());
-            mem.setNewObject(this.clone());
-            getUndoStack().push(mem);
         }
     }
 
@@ -238,6 +228,11 @@ public class Administrator extends Undoable<Administrator> implements Listenable
         return "";
     }
 
+    private void saveStateforUndo() { //New
+        Memento<Administrator> memento = new Memento<>(this.clone());
+        getUndoStack().push(memento);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -282,18 +277,17 @@ public class Administrator extends Undoable<Administrator> implements Listenable
         getUndoStack().push(memento);
     }
 
-    @Override
-    public Administrator clone() {
-        Administrator newAdmin = new Administrator();
-        newAdmin.userName = this.userName;
-        newAdmin.firstName = this.firstName;
-        newAdmin.middleName = this.middleName;
-        newAdmin.lastName = this.lastName;
-        newAdmin.password = this.password;
-        newAdmin.salt = this.salt;
-        newAdmin.dateCreated = this.dateCreated;
-        newAdmin.dateLastModified = this.dateLastModified;
 
+    public static Administrator clone(Administrator admin) {
+        Administrator newAdmin = new Administrator();
+        newAdmin.userName = admin.userName;
+        newAdmin.firstName = admin.firstName;
+        newAdmin.middleName = admin.middleName;
+        newAdmin.lastName = admin.lastName;
+        newAdmin.password = admin.password;
+        newAdmin.salt = admin.salt;
+        newAdmin.dateCreated = admin.dateCreated;
+        newAdmin.dateLastModified = admin.dateLastModified;
         return newAdmin;
     }
 
