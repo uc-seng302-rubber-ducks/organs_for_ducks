@@ -1,49 +1,37 @@
 package seng302.model;
 
+import seng302.model.datamodel.Address;
+import seng302.model.datamodel.ContactDetails;
+
 import java.util.Objects;
 
 /**
  * Class for the Emergency Contact details for a user
  */
-public class EmergencyContact {
+public class EmergencyContact extends ContactDetails {
 
     //declaring attributes
     private String name;
-    private String homePhoneNumber;
-    private String cellPhoneNumber;
-    private String address;
-    private String region;
-    private String email;
     private String relationship;
-    private transient User attachedUser;
+
 
     /**
      * Constructor for emergency contact
-     *
-     * @param ename      Emergency contact name
-     * @param eCellPhone Emergency contact phone number
      */
-    public EmergencyContact(String ename, String eCellPhone, User attachedUser) {
-        name = ename;
-        homePhoneNumber = null;
-        cellPhoneNumber = eCellPhone;
-        address = null;
-        region = null;
-        email = null;
-        relationship = null;
-        this.attachedUser = attachedUser;
+    public EmergencyContact(String name, String relationship, String cell) {
+        super(null, cell, null, null);
+        this.name = name;
+        this.relationship = relationship;
     }
 
+
     //TODO: Simplify constructor to take less arguments 17/05/18
-    public EmergencyContact(String ename, String eCellPhone, String homePhoneNumber, String region, String address, String email, String relationship, User attachedUser) {
+    public EmergencyContact(String ename, String eCellPhone, String homePhoneNumber, Address address, String email, String relationship) {
         name = ename;
         this.homePhoneNumber = homePhoneNumber;
         this.cellPhoneNumber = eCellPhone;
-        this.address = address;
         this.email = email;
         this.relationship = relationship;
-        this.region = region;
-        this.attachedUser = attachedUser;
     }
 
 
@@ -95,32 +83,16 @@ public class EmergencyContact {
         attachedUser.getUndoStack().push(memento);
     }
 
-    public String getAddress() {
+    public Address getAddress() {
         return address;
     }
 
-    public void setAddress(String address) {
+    public void setAddress(Address address) {
         Memento<User> memento = new Memento<>();
         User clone = attachedUser.clone();
         clone.setContact(copy(this));
         memento.setOldObject(clone);
         this.address = address;
-        clone = attachedUser.clone();
-        clone.setContact(copy(this));
-        memento.setNewObject(clone);
-        attachedUser.getUndoStack().push(memento);
-    }
-
-    public String getRegion() {
-        return region;
-    }
-
-    public void setRegion(String region) {
-        Memento<User> memento = new Memento<>();
-        User clone = attachedUser.clone();
-        clone.setContact(copy(this));
-        memento.setOldObject(clone);
-        this.region = region;
         clone = attachedUser.clone();
         clone.setContact(copy(this));
         memento.setNewObject(clone);
@@ -175,7 +147,7 @@ public class EmergencyContact {
                 "Address: %s\n" +
                 "Region: %s\n" +
                 "Email: %s\n" +
-                "Relationship: %s\n", name, homePhoneNumber, cellPhoneNumber, address, region, email, relationship);
+                "Relationship: %s\n", name, homePhoneNumber, cellPhoneNumber, address, email, relationship);
     }
 
     public static EmergencyContact copy(EmergencyContact contact) {
@@ -183,10 +155,8 @@ public class EmergencyContact {
             return null;
         }
 
-        EmergencyContact newContact = new EmergencyContact(contact.name, contact.cellPhoneNumber,
-                contact.attachedUser);
+        EmergencyContact newContact = new EmergencyContact(contact.getName(), contact.getRelationship(), contact.getCellPhoneNumber());
         newContact.address = contact.address;
-        newContact.region = contact.region;
         newContact.homePhoneNumber = contact.homePhoneNumber;
         newContact.email = contact.email;
         newContact.relationship = contact.relationship;
@@ -221,14 +191,13 @@ public class EmergencyContact {
                 checkStrings(homePhoneNumber, otherContact.homePhoneNumber) &&
                 checkStrings(cellPhoneNumber, otherContact.cellPhoneNumber)
                 && checkStrings(email, otherContact.email) &&
-                checkStrings(address, otherContact.address) &&
-                checkStrings(region, otherContact.region) &&
+                //checkStrings(address, otherContact.address) &&
                 checkStrings(relationship, otherContact.relationship);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, homePhoneNumber, cellPhoneNumber, address, region, email, relationship);
+        return Objects.hash(name, homePhoneNumber, cellPhoneNumber, address, email, relationship);
     }
 
 }

@@ -284,11 +284,11 @@ public class UpdateUserController {
         dodInput.setValue(user.getDateOfDeath());
 
         //contact
-        if (user.getCurrentAddress() != null) {
-            addressInput.setText(user.getCurrentAddress());
-        } else {
-            addressInput.setText("");
-        }
+//        if (user.getCurrentAddress() != null) {
+//            addressInput.setText(user.getCurrentAddress());
+//        } else {
+//            addressInput.setText("");
+//        }
         if (user.getRegion() != null) {
             regionInput.setText(user.getRegion());
         } else {
@@ -337,11 +337,11 @@ public class UpdateUserController {
                 ecEmailInput.setText("");
             }
 
-            if (user.getContact().getAddress() != null) {
-                ecAddressInput.setText(user.getContact().getAddress());
-            } else {
-                ecAddressInput.setText("");
-            }
+//            if (user.getContact().getAddress() != null) {
+//                ecAddressInput.setText(user.getContact().getAddress());
+//            } else {
+//                ecAddressInput.setText("");
+//            }
             if (user.getContact().getCellPhoneNumber() != null) {
                 ecCellInput.setText(user.getContact().getCellPhoneNumber());
             } else {
@@ -780,15 +780,15 @@ public class UpdateUserController {
             changed = true;
         }
 
-        String address = addressInput.getText();
-        if (!address.isEmpty() && !address.equals(currentUser.getCurrentAddress())) {
-            currentUser.setCurrentAddress(address);
-            changed = true;
-        } else if (address.isEmpty() && (currentUser.getCurrentAddress() != null && !currentUser
-                .getCurrentAddress().isEmpty())) {
-            currentUser.setCurrentAddress(null);
-            changed = true;
-        }
+//        String address = addressInput.getText();
+//        if (!address.isEmpty() && !address.equals(currentUser.getCurrentAddress())) {
+//            currentUser.setCurrentAddress(address);
+//            changed = true;
+//        } else if (address.isEmpty() && (currentUser.getCurrentAddress() != null && !currentUser
+//                .getCurrentAddress().isEmpty())) {
+//            currentUser.setCurrentAddress(null);
+//            changed = true;
+//        }
 
         String region = regionInput.getText();
         if (!region.isEmpty() && !region.equals(currentUser.getRegion())) {
@@ -864,19 +864,19 @@ public class UpdateUserController {
             changed = true;
         }
 
-        String address = contact.getAddress();
-        if (address != null) {
-            if (!address.isEmpty() && !address.equals(eAddress)) {
-                contact.setAddress(eAddress);
-                changed = true;
-            } else if (address.isEmpty() && (eAddress != null && !eAddress.isEmpty())) {
-                contact.setAddress(eAddress);
-                changed = true;
-            }
-        } else if (!eAddress.isEmpty()) {
-            contact.setAddress(eAddress);
-            changed = true;
-        }
+//        String address = contact.getAddress();
+//        if (address != null) {
+//            if (!address.isEmpty() && !address.equals(eAddress)) {
+//                contact.setAddress(eAddress);
+//                changed = true;
+//            } else if (address.isEmpty() && (eAddress != null && !eAddress.isEmpty())) {
+//                contact.setAddress(eAddress);
+//                changed = true;
+//            }
+//        } else if (!eAddress.isEmpty()) {
+//            contact.setAddress(eAddress);
+//            changed = true;
+//        }
 
         String region = contact.getRegion();
         if (region != null) {

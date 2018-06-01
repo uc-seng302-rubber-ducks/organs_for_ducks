@@ -4,8 +4,8 @@ import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
 import seng302.controller.AppController;
-import seng302.utils.JsonHandler;
 import seng302.model.User;
+import seng302.utils.JsonHandler;
 import seng302.view.IoHelper;
 
 import java.io.IOException;
@@ -90,9 +90,9 @@ public class CreateUser implements Runnable {
         if (bloodType != null) {
             user.setBloodType(bloodType);
         }
-        if (currentAddress != null) {
-            user.setCurrentAddress(currentAddress);
-        }
+//        if (currentAddress != null) {
+//            user.setCurrentAddress(currentAddress);
+//        }
         if (region != null) {
             user.setRegion(region);
         }

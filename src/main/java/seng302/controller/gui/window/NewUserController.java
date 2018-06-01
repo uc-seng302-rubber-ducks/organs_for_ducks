@@ -12,6 +12,7 @@ import seng302.exception.InvalidFieldsException;
 import seng302.model.EmergencyContact;
 import seng302.model.HealthDetails;
 import seng302.model.User;
+import seng302.model.datamodel.Address;
 import seng302.utils.AttributeValidation;
 import seng302.utils.Log;
 
@@ -313,15 +314,15 @@ public class NewUserController {
         if ((eName.isEmpty() != eCellPhone.isEmpty()) && valid) {
             throw new InvalidFieldsException(); // Throws invalid field exception if inputs are found to be invalid
         } else {
-            EmergencyContact contact = new EmergencyContact("", "", user);
+            EmergencyContact contact = new EmergencyContact(null, null, null);
 
             if (!eName.isEmpty() && !eCellPhone.isEmpty()) {
                 // create the emergency contact
-                contact = new EmergencyContact(eName, eCellPhone, user);
+                contact = new EmergencyContact(eName, null, eCellPhone);
 
                 contact.setHomePhoneNumber(eHomePhone);
-                contact.setAddress(eAddress);
-                contact.setRegion(eRegion);
+                Address address = new Address(0, eAddress, null, null, eRegion, 0, null);
+                contact.setAddress(address);
                 contact.setEmail(eEmail);
                 contact.setRelationship(eRelationship);
             }

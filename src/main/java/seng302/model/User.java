@@ -7,6 +7,7 @@ import seng302.model._abstract.Listenable;
 import seng302.model._abstract.Undoable;
 import seng302.model._enum.EventTypes;
 import seng302.model._enum.Organs;
+import seng302.model.datamodel.Address;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -31,9 +32,7 @@ public class User extends Undoable<User> implements Listenable {
     @Expose
     private LocalDate dateOfDeath;
     @Expose
-    private String currentAddress;
-    @Expose
-    private String region;
+    private Address currentAddress;
     @Expose
     private LocalDateTime timeCreated;
     @Expose
@@ -122,8 +121,7 @@ public class User extends Undoable<User> implements Listenable {
         this.dateOfBirth = dateOfBirth;
         this.dateOfDeath = dateOfDeath;
 
-        this.currentAddress = currentAddress;
-        this.region = region;
+        this.currentAddress = new Address(0, currentAddress, null, null, region, 0, null);
         this.homePhone = homePhone;
         this.cellPhone = cellPhone;
         this.email = email;
@@ -171,7 +169,7 @@ public class User extends Undoable<User> implements Listenable {
         lastModified = LocalDateTime.now();
         this.preferredFirstName = firstName;
         updateHistory = new HashMap<>();
-        this.contact = new EmergencyContact(null, null, this);
+        this.contact = new EmergencyContact(null, null, null);
         updateHistory.put(dateToString(getTimeCreated()), "Profile created.");
         this.miscAttributes = new ArrayList<>();
         this.currentMedication = new ArrayList<>();
@@ -500,7 +498,7 @@ public class User extends Undoable<User> implements Listenable {
         mem.setOldObject(this.clone());
         String validType = groupBloodType(bloodType);
         updateLastModified();
-        if (healthDetails.getBloodType() != validType) {
+        if (!healthDetails.getBloodType().equals(validType)) {
             healthDetails.setBloodType(validType);
             addChange(new Change("Changed blood type to " + bloodType));
             mem.setNewObject(this.clone());
@@ -604,13 +602,11 @@ public class User extends Undoable<User> implements Listenable {
     }
 
 
-
-
-    public String getCurrentAddress() {
+    public Address getCurrentAddress() {
         return currentAddress;
     }
 
-    public void setCurrentAddress(String currentAddress) {
+    public void setCurrentAddress(Address currentAddress) {
         Memento<User> mem = new Memento<>();
         mem.setOldObject(this.clone());
         updateLastModified();
@@ -623,14 +619,14 @@ public class User extends Undoable<User> implements Listenable {
     }
 
     public String getRegion() {
-        return region;
+        return currentAddress.getRegion();
     }
 
     public void setRegion(String region) {
         Memento<User> mem = new Memento<>();
         mem.setOldObject(this.clone());
         updateLastModified();
-        this.region = region;
+        currentAddress.setRegion(region);
         if (currentAddress != null && !currentAddress.equals("")) {
             addChange(new Change("Changed region to " + region));
         }
@@ -985,7 +981,6 @@ public class User extends Undoable<User> implements Listenable {
                 ", dateOfBirth=" + dateOfBirth +
                 ", dateOfDeath=" + dateOfDeath +
                 ", currentAddress='" + currentAddress + '\'' +
-                ", region='" + region + '\'' +
                 ", timeCreated=" + timeCreated +
                 ", isDeceased=" + isDeceased +
                 ", firstName='" + firstName + '\'' +
@@ -1045,14 +1040,13 @@ public class User extends Undoable<User> implements Listenable {
         newUser.dateOfDeath = this.dateOfDeath;
 
         newUser.currentAddress = this.currentAddress;
-        newUser.region = this.region;
         newUser.homePhone = this.homePhone;
         newUser.cellPhone = this.cellPhone;
         newUser.email = this.email;
         if (this.contact != null) {
             newUser.contact = new EmergencyContact(this.contact.getName(), this.contact.getCellPhoneNumber(),
-                    this.contact.getHomePhoneNumber(), this.contact.getRegion(), this.contact.getAddress(),
-                    this.contact.getEmail(), this.contact.getRelationship(), newUser);
+                    this.contact.getHomePhoneNumber(), this.contact.getAddress(),
+                    this.contact.getEmail(), this.contact.getRelationship());
         } else {
             newUser.contact = null;
         }
@@ -1122,7 +1116,6 @@ public class User extends Undoable<User> implements Listenable {
         this.healthDetails = other.healthDetails;
 
         this.currentAddress = other.currentAddress;
-        this.region = other.region;
         this.homePhone = other.homePhone;
         this.cellPhone = other.cellPhone;
         this.email = other.email;

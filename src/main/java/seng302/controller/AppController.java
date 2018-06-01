@@ -6,7 +6,10 @@ import seng302.controller.gui.window.ClinicianController;
 import seng302.controller.gui.window.UserController;
 import seng302.exception.ProfileAlreadyExistsException;
 import seng302.exception.ProfileNotFoundException;
-import seng302.model.*;
+import seng302.model.Administrator;
+import seng302.model.Change;
+import seng302.model.Clinician;
+import seng302.model.User;
 import seng302.model._enum.Directory;
 import seng302.model.datamodel.TransplantDetails;
 import seng302.utils.JsonHandler;
@@ -122,46 +125,6 @@ public class AppController {
         return controller;
     }
 
-    /**
-     * appends a single user to the list of users stored in the controller
-     *
-     * @param name           The name of the user.
-     * @param dateOfBirth    The date the user was born.
-     * @param dateOfDeath    The date the user died.
-     * @param gender         The gender of the user.
-     * @param height         The height of the user.
-     * @param weight         The weight of the user.
-     * @param bloodType      The blood type of the user.
-     * @param currentAddress The address of the user.
-     * @param region         The region the user lives in.
-     * @param NHI            The unique identifier of the user (national health index)
-     * @return hashCode of the new user or -1 on error
-     */
-    //TODO: Remove this
-    public int Register(String name, LocalDate dateOfBirth, LocalDate dateOfDeath, String gender, double height,
-                        double weight,
-                        String bloodType, String currentAddress, String region, String NHI) {
-        try {
-            User newUser = new User(name, dateOfBirth, NHI);
-            newUser.setDateOfDeath(dateOfDeath);
-            newUser.setBirthGender(gender);
-            newUser.setHeight(height);
-            newUser.setWeight(weight);
-            newUser.setBloodType(bloodType);
-            newUser.setCurrentAddress(currentAddress);
-            newUser.setRegion(region);
-
-            if (users.contains(newUser)) {
-                return -1;
-            }
-            users.add(newUser);
-            Log.info("Successfully registered new user with NHI: " + NHI);
-            return newUser.hashCode();
-        } catch (Exception e) {
-            Log.warning("failed to register new user with NHI: " + NHI, e);
-            return -1;
-        }
-    }
 
     /**
      * Sets the point in history
@@ -547,10 +510,10 @@ public class AppController {
                 diffs.add(
                         "Changed Blood Type from " + oldUser.getBloodType() + " to " + newUser.getBloodType());
             }
-            if (!oldUser.getCurrentAddress().equalsIgnoreCase(newUser.getCurrentAddress())) {
-                diffs.add("Changed Address from " + oldUser.getCurrentAddress() + " to " + newUser
-                        .getCurrentAddress());
-            }
+//            if (!oldUser.getCurrentAddress().equalsIgnoreCase(newUser.getCurrentAddress())) {
+//                diffs.add("Changed Address from " + oldUser.getCurrentAddress() + " to " + newUser
+//                        .getCurrentAddress());
+//            }
             if (!oldUser.getRegion().equalsIgnoreCase(newUser.getRegion())) {
                 diffs.add("Changes Region from " + oldUser.getRegion() + " to " + newUser.getRegion());
             }

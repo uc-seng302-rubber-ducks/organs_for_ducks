@@ -99,10 +99,10 @@ public class UpdateUserDetails implements Runnable {
             user.setBloodType(bloodType);
             changed = true;
         }
-        if (currentAddress != null) {
-            user.setCurrentAddress(currentAddress);
-            changed = true;
-        }
+//        if (currentAddress != null) {
+//            user.setCurrentAddress(currentAddress);
+//            changed = true;
+//        }
         if (region != null) {
             user.setRegion(region);
             changed = true;

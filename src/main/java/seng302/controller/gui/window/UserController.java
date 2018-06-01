@@ -12,10 +12,11 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import seng302.controller.AppController;
-import seng302.controller.gui.panel.UserOverviewController;
 import seng302.controller.gui.panel.*;
 import seng302.controller.gui.statusBarController;
-import seng302.model.*;
+import seng302.model.Change;
+import seng302.model.EmergencyContact;
+import seng302.model.User;
 import seng302.model._enum.OrganDeregisterReason;
 import seng302.model._enum.Organs;
 
@@ -193,11 +194,11 @@ public class UserController {
         if (contact != null) {
             eName.setText(contact.getName());
             eCellPhone.setText(contact.getCellPhoneNumber());
-            if (contact.getAddress() != null) {
-                eAddress.setText(contact.getAddress());
-            } else {
-                eAddress.setText("");
-            }
+//            if (contact.getAddress() != null) {
+//                eAddress.setText(contact.getAddress());
+//            } else {
+//                eAddress.setText("");
+//            }
 
             if (contact.getEmail() != null) {
                 eEmail.setText(contact.getEmail());
@@ -223,11 +224,11 @@ public class UserController {
                 relationship.setText("");
             }
         }
-        if (currentUser.getCurrentAddress() != null) {
-            pAddress.setText(currentUser.getCurrentAddress());
-        } else {
-            pAddress.setText("");
-        }
+//        if (currentUser.getCurrentAddress() != null) {
+//            pAddress.setText(currentUser.getCurrentAddress());
+//        } else {
+//            pAddress.setText("");
+//        }
         if (currentUser.getRegion() != null) {
             pRegion.setText(currentUser.getRegion());
         } else {
