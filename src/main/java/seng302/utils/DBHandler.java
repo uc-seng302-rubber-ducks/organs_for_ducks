@@ -38,8 +38,7 @@ public class DBHandler {
      * @return a Collection of Users
      */
     public Collection<User> getAllUsers() {
-        executeQuery(null);
-        return null;
+        return executeQuery(null);
     }
 
     /**
@@ -63,8 +62,7 @@ public class DBHandler {
      * @return the Collection of clinicians
      */
     public Collection<Clinician> loadClinicians() {
-        executeQuery(null);
-        return null;
+        return executeQuery(null);
     }
 
     /**
@@ -88,8 +86,7 @@ public class DBHandler {
      * @return the Collection of administrators
      */
     public Collection<Administrator> loadAdmins() {
-        executeQuery(null);
-        return null;
+        return executeQuery(null);
     }
 
     /**
