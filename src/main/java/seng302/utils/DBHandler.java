@@ -1,5 +1,6 @@
 package seng302.utils;
 
+import com.mysql.jdbc.PreparedStatement;
 import seng302.model.Administrator;
 import seng302.model.Clinician;
 import seng302.model.User;
@@ -37,7 +38,7 @@ public class DBHandler {
      * @return a Collection of Users
      */
     public Collection<User> getAllUsers() {
-        executeQuery();
+        executeQuery(null);
         return null;
     }
 
@@ -62,7 +63,7 @@ public class DBHandler {
      * @return the Collection of clinicians
      */
     public Collection<Clinician> loadClinicians() {
-        executeQuery();
+        executeQuery(null);
         return null;
     }
 
@@ -87,7 +88,7 @@ public class DBHandler {
      * @return the Collection of administrators
      */
     public Collection<Administrator> loadAdmins() {
-
+        executeQuery(null);
         return null;
     }
 
@@ -106,7 +107,13 @@ public class DBHandler {
         }
     }
 
-    private <T> Collection<T> executeQuery() {
+    /**
+     * Executes a PreparedStatement provided for the database
+     *
+     * @param <T> The type of Collection to return.
+     * @return A collection of type T.
+     */
+    private <T> Collection<T> executeQuery(PreparedStatement statement) {
         try {
             connect();
             //TODO: Call the select statement to get all the clinician and their information here
