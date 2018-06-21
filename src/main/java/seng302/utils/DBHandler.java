@@ -1,14 +1,14 @@
 package seng302.utils;
 
-import com.mysql.jdbc.PreparedStatement;
+//import com.mysql.jdbc.PreparedStatement;
+import java.sql.*;
+
 import seng302.model.Administrator;
 import seng302.model.Clinician;
 import seng302.model.User;
 
 import java.io.InvalidClassException;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
@@ -37,8 +37,12 @@ public class DBHandler {
      *
      * @return a Collection of Users
      */
-    public Collection<User> getAllUsers() {
-        return executeQuery(null);
+    public Collection<User> getAllUsers() throws SQLException {
+        String sql = "SELECT * FROM User u LEFT JOIN PreviousDisease pd ON pd.fkUserNhi = u.nhi " +
+                "LEFT JOIN CurrentDisease cd ON cd.fkUserNhi = u.nhi " +
+                "LEFT JOIN Medication m ON m.fkUserNhi = u.nhi";
+        PreparedStatement statement = connection.prepareStatement(sql);
+        return executeQuery(statement);
     }
 
     /**
@@ -61,8 +65,10 @@ public class DBHandler {
      *
      * @return the Collection of clinicians
      */
-    public Collection<Clinician> loadClinicians() {
-        return executeQuery(null);
+    public Collection<Clinician> loadClinicians() throws SQLException {
+        String sql = "SELECT * FROM Clinician";
+        PreparedStatement statement = connection.prepareStatement(sql);
+        return executeQuery(statement);
     }
 
     /**
@@ -85,8 +91,10 @@ public class DBHandler {
      *
      * @return the Collection of administrators
      */
-    public Collection<Administrator> loadAdmins() {
-        return executeQuery(null);
+    public Collection<Administrator> loadAdmins() throws SQLException {
+        String sql = "SELECT * FROM Administrator";
+        PreparedStatement statement = connection.prepareStatement(sql);
+        return executeQuery(statement);
     }
 
     /**
@@ -113,7 +121,13 @@ public class DBHandler {
     private <T> Collection<T> executeQuery(PreparedStatement statement) {
         try {
             connect();
-            //TODO: Call the select statement to get all the clinician and their information here
+            ResultSet resultSet = statement.executeQuery();
+            Collection<T> queryResult = new ArrayList<>();
+            while (resultSet.next()){
+//                User user = new User(); //TODO: How do you generify this?
+//                user.setName(resultSet.getString(2), resultSet.getString(3), resultSet.getString(4));
+                //queryResult.add(user);
+            }
             connection.close();
         } catch (SQLException sqlEx) {
             Log.warning("Error in connection to database", sqlEx);
@@ -150,5 +164,12 @@ public class DBHandler {
             Log.warning("Error in connection to database", sqlEx);
             System.out.println("Error connecting to database");
         }
+    }
+
+    //TODO: Remove this main once the DB handler is fully developed
+    public static void main(String[] args) throws SQLException{
+        DBHandler dbHandler = new DBHandler();
+        dbHandler.connect();
+
     }
 }
