@@ -1,4 +1,22 @@
-CREATE TABLE  IF NOT EXISTS User(
+--Remove all existing tables
+DROP TABLE IF EXISTS PasswordDetails;
+DROP TABLE IF EXISTS Address;
+DROP TABLE IF EXISTS EmergencyContactDetails;
+DROP TABLE IF EXISTS ContactDetails;
+DROP TABLE IF EXISTS MedicalProcedure;
+DROP TABLE IF EXISTS HealthDetails;
+DROP TABLE IF EXISTS MedicationDates;
+DROP TABLE IF EXISTS Medication;
+DROP TABLE IF EXISTS CurrentDisease;
+DROP TABLE IF EXISTS PreviousDisease;
+DROP TABLE IF EXISTS BloodType;
+DROP TABLE IF EXISTS Organ;
+DROP TABLE IF EXISTS Administrator;
+DROP TABLE IF EXISTS Clinician;
+DROP TABLE IF EXISTS User;
+
+--create all tables needed by the ODMS
+CREATE TABLE User(
   nhi varchar(7) PRIMARY KEY,
   firstName VARCHAR(255),
   middleName VARCHAR(255),
@@ -10,7 +28,7 @@ CREATE TABLE  IF NOT EXISTS User(
 
 );
 
-CREATE TABLE  IF NOT EXISTS Clinician(
+CREATE TABLE Clinician(
   staffId INT PRIMARY KEY,
   firstName VARCHAR(255),
   middleName VARCHAR(255),
@@ -19,7 +37,7 @@ CREATE TABLE  IF NOT EXISTS Clinician(
   lastModified DATETIME
 );
 
-CREATE TABLE  IF NOT EXISTS Administrator(
+CREATE TABLE Administrator(
   userName VARCHAR(255) PRIMARY KEY,
   firstName VARCHAR(255),
   middleName VARCHAR(255),
@@ -28,15 +46,15 @@ CREATE TABLE  IF NOT EXISTS Administrator(
   lastModified DATETIME
 );
 
-CREATE TABLE IF NOT EXISTS Organ(
+CREATE TABLE Organ(
   organName varchar(255) PRIMARY KEY
 );
 
-CREATE TABLE IF NOT EXISTS BloodType(
+CREATE TABLE BloodType(
   bloodType VARCHAR(10) PRIMARY KEY
 );
 
-CREATE TABLE  IF NOT EXISTS PreviousDisease(
+CREATE TABLE  PreviousDisease(
   diseaseName VARCHAR(255) NOT NULL,
   diagnosisDate DATETIME not NULL,
   fkUserNhi VARCHAR(7) NOT NULL,
@@ -45,7 +63,7 @@ CREATE TABLE  IF NOT EXISTS PreviousDisease(
   FOREIGN KEY (fkUserNhi) REFERENCES User(nhi) ON DELETE CASCADE
 );
 
-CREATE TABLE  IF NOT EXISTS CurrentDisease(
+CREATE TABLE  CurrentDisease(
   diseaseName VARCHAR(255) NOT NULL,
   diagnosisDate DATETIME not NULL,
   fkUserNhi VARCHAR(7) NOT NULL,
@@ -54,7 +72,7 @@ CREATE TABLE  IF NOT EXISTS CurrentDisease(
   FOREIGN KEY (fkUserNhi) REFERENCES User(nhi) ON DELETE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS Medication(
+CREATE TABLE Medication(
   medicationName VARCHAR(255) NOT NULL,
   fkUserNhi VARCHAR(7) NOT NULL,
   medicationInstanceId int UNIQUE AUTO_INCREMENT,
@@ -62,7 +80,7 @@ CREATE TABLE IF NOT EXISTS Medication(
   FOREIGN KEY (fkUserNhi) REFERENCES User(nhi) ON DELETE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS MedicationDates(
+CREATE TABLE MedicationDates(
   keyValue INT AUTO_INCREMENT PRIMARY KEY,
   fkMedicationInstanceId int NOT NULL ,
   dateStartedTaking DATETIME NOT NULL,
@@ -70,7 +88,7 @@ CREATE TABLE IF NOT EXISTS MedicationDates(
   FOREIGN KEY (fkMedicationInstanceId) REFERENCES Medication(medicationInstanceId) ON DELETE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS HealthDetails(
+CREATE TABLE HealthDetails(
   fkUserNhi VARCHAR(7) NOT NULL PRIMARY KEY,
   gender VARCHAR(15),
   birthGender VARCHAR(15),
@@ -79,20 +97,20 @@ CREATE TABLE IF NOT EXISTS HealthDetails(
   height DOUBLE,
   weight DOUBLE,
   FOREIGN KEY (fkUserNhi) REFERENCES User(nhi) ON DELETE CASCADE
-  #needs reference to organ added
+  --needs reference to organ added
 );
 
-CREATE TABLE IF NOT EXISTS MedicalProcedure(
+CREATE TABLE MedicalProcedure(
   procedureName VARCHAR(255) NOT NULL,
   procedureDate DATE NOT NULL,
   fkUserNhi VARCHAR(7) NOT NULL,
   procedureDescription VARCHAR(65000),
-  #Needs reference to organs added
+  --Needs reference to organs added
   PRIMARY KEY (procedureDate,procedureName,fkUserNhi),
   FOREIGN KEY (fkUserNhi) REFERENCES User(nhi) ON DELETE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS ContactDetails(
+CREATE TABLE ContactDetails(
   contactId INT AUTO_INCREMENT PRIMARY KEY,
   fkUserNhi VARCHAR(7) UNIQUE,
   fkStaffId INT UNIQUE ,
@@ -103,14 +121,14 @@ CREATE TABLE IF NOT EXISTS ContactDetails(
   FOREIGN KEY (fkStaffId) REFERENCES Clinician(staffId) ON DELETE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS EmergencyContactDetails(
+CREATE TABLE EmergencyContactDetails(
   fkContactId INT NOT NULL PRIMARY KEY,
   contactName VARCHAR(255) NOT NULL ,
   contactRelationship VARCHAR(255) NOT NULL,
   FOREIGN KEY (fkContactId) REFERENCES ContactDetails(contactId) ON DELETE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS Address(
+CREATE TABLE Address(
   fkContactId INT PRIMARY KEY,
   streetNumber INT,
   streetName VARCHAR(255),
@@ -125,7 +143,7 @@ CREATE TABLE IF NOT EXISTS Address(
   FOREIGN KEY (fkContactId) REFERENCES ContactDetails(contactId) ON DELETE CASCADE
 );
 
-CREATE TABLE IF NOT EXISTS PasswordDetails(
+CREATE TABLE PasswordDetails(
   password_id INT AUTO_INCREMENT PRIMARY KEY,
   fkAdminUserName VARCHAR(255) UNIQUE,
   fkStaffId INT UNIQUE,
