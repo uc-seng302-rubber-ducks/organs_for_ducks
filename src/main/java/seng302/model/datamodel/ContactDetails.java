@@ -60,15 +60,6 @@ public class ContactDetails {
         this.address = address;
     }
 
-    public String getRegion() {
-        return getAddress().getRegion();
-    }
-
-    public void setRegion(String region) {
-        getAddress().setRegion(region);
-
-    }
-
     public String getEmail() {
         return email;
     }
@@ -76,6 +67,64 @@ public class ContactDetails {
     public void setEmail(String email) {
         this.email = email;
     }
+
+    public String getStreetNumber() {
+        return address.getStreetNumber();
+    }
+
+    public void setStreetNumber(String streetNumber) {
+        address.setStreetNumber(streetNumber);
+    }
+
+    public String getStreetName() {
+        return address.getStreetName();
+    }
+
+    public void setStreetName(String streetName) {
+        address.setStreetName(streetName);
+    }
+
+    public String getNeighborhood() {
+        return address.getNeighborhood();
+    }
+
+    public void setNeighborhood(String neighborhood) {
+        address.setNeighborhood(neighborhood);
+    }
+
+    public String getCity() {
+        return address.getCity();
+    }
+
+    public void setCity(String city) {
+        address.setCity(city);
+    }
+
+    public String getRegion() {
+        return address.getRegion();
+    }
+
+    public void setRegion(String region) {
+        address.setRegion(region);
+    }
+
+    public String getZipCode() {
+        return address.getZipCode();
+    }
+
+    public void setZipCode(String zipCode) {
+        address.setZipCode(zipCode);
+    }
+
+    public String getCountry() {
+        return address.getCountry();
+    }
+
+    public void setCountry(String country) {
+        address.setCountry(country);
+    }
+
+
 
     @Override
     public String toString() {

@@ -12,7 +12,6 @@ import seng302.exception.InvalidFieldsException;
 import seng302.model.EmergencyContact;
 import seng302.model.HealthDetails;
 import seng302.model.User;
-import seng302.model.datamodel.Address;
 import seng302.utils.AttributeValidation;
 import seng302.utils.Log;
 
@@ -128,6 +127,8 @@ public class NewUserController {
         this.controller = controller;
         this.stage = stage;
         this.ownStage = ownStage;
+        region.getSelectionModel().selectFirst();
+        ecRegion.getSelectionModel().selectFirst();
     }
 
     /**
@@ -189,34 +190,60 @@ public class NewUserController {
         }
 
         // contact details
-        String currentAddress = street.getText();
-        valid &= (AttributeValidation.checkString(street.getText()));
+        String Street = street.getText();
+        valid &= (AttributeValidation.checkString(Street));
 
         String region = this.region.getSelectionModel().getSelectedItem();
-        valid &= (AttributeValidation.checkString(this.region.getSelectionModel().getSelectedItem()));
+        valid &= (AttributeValidation.checkString(region));
 
         String homePhone = phone.getText();
-        valid &= (AttributeValidation.validatePhoneNumber(phone.getText()));
+        valid &= (AttributeValidation.validatePhoneNumber(homePhone));
 
         String cellPhone = cell.getText();
-        valid &= (AttributeValidation.validateCellNumber(cell.getText()));
+        valid &= (AttributeValidation.validateCellNumber(cellPhone));
 
         String email = this.email.getText();
-        valid &= (AttributeValidation.validateEmail(this.email.getText()));
+        valid &= (AttributeValidation.validateEmail(email));
+
+
+        String neighborhood = this.neighborhood.getText();
+        valid &= (AttributeValidation.checkString(neighborhood));
+
+        String city = this.city.getText();
+        valid &= (AttributeValidation.checkString(city));
+
+        String country = this.country.getText();
+        valid &= (AttributeValidation.checkString(country));
+
+        String streetnum = this.streetNumber.getText();
+        valid &= (AttributeValidation.checkString(streetnum));
+
+        String zipcode = this.zipCode.getText();
+        valid &= (AttributeValidation.checkString(zipcode));
+
+
+
+
+
+
+
 
         if (valid) {
             // create the new user
             User newUser = new User(fName, dob, nhi);
-            //User newUser = new User(nhi, dob, dod, currentAddress, region, homePhone, cellPhone, email, null,
-            //      fName, fName, preferredFirstName, middleName,
-//                    lastName); //todo: ewww gross can we please change this DELET THIS PLS
 
             try {
                 newUser.setRegion(region);
                 newUser.setHomePhone(homePhone);
                 newUser.setCellPhone(cellPhone);
                 newUser.setEmail(email);
-                // newUser.setCurrentAddress();
+                newUser.setRegion(region);
+                newUser.setNeighborhood(neighborhood);
+                newUser.setCity(city);
+                newUser.setCountry(country);
+                newUser.setStreetNumber(streetnum);
+                newUser.setStreetName(Street);
+                newUser.setZipCode(zipcode);
                 HealthDetails healthDetails = collectHealthDetails(birthGender, genderIdentity, height, weight, bloodType, alcoholConsumption, smoker);
                 newUser.setHealthDetails(healthDetails);
 
@@ -281,12 +308,6 @@ public class NewUserController {
 
     }
 
-    private Address collectAddress(String number, String street, String neighborhood, String city, String region, String zipcode, String country) {
-        Address address = new Address(number, street, neighborhood, city, region, zipcode, country);
-
-        return address;
-
-    }
 
     /**
      * Sets all health detail variables based off the details entered
@@ -329,7 +350,7 @@ public class NewUserController {
         String eHomePhone = ecPhone.getText();
         valid &= (AttributeValidation.validatePhoneNumber(ecPhone.getText()));
 
-        String eAddress = ecStreet.getText();
+        String eStreet = ecStreet.getText();
         valid &= (AttributeValidation.checkString(ecStreet.getText()));
 
         String eRegion = ecRegion.getSelectionModel().getSelectedItem();
@@ -341,19 +362,41 @@ public class NewUserController {
         String eRelationship = ecRelationship.getText();
         valid &= (AttributeValidation.checkString(ecRelationship.getText()));
 
+
+        String eneighborhood = ecNeighborhood.getText();
+        valid &= (AttributeValidation.checkString(eneighborhood));
+
+        String ecity = ecCity.getText();
+        valid &= (AttributeValidation.checkString(ecity));
+
+        String ecountry = ecCounrty.getText();
+        valid &= (AttributeValidation.checkString(ecountry));
+
+        String estreetnum = ecStreetNumber.getText();
+        valid &= (AttributeValidation.checkString(estreetnum));
+
+        String ezipcode = ecZipCode.getText();
+        valid &= (AttributeValidation.checkString(ezipcode));
+
         // the name and cell number are required if any other attributes are filled out
         if ((eName.isEmpty() != eCellPhone.isEmpty()) && valid) {
             throw new InvalidFieldsException(); // Throws invalid field exception if inputs are found to be invalid
         } else {
-            EmergencyContact contact = new EmergencyContact(null, null, null);
+            EmergencyContact contact = new EmergencyContact("", "", "");
+            //need this until we update undo/redo
+            contact.setAttachedUser(user);
 
             if (!eName.isEmpty() && !eCellPhone.isEmpty()) {
                 // create the emergency contact
-                contact = new EmergencyContact(eName, null, eCellPhone);
-
+                contact.setName(eName);
+                contact.setCellPhoneNumber(eCellPhone);
                 contact.setHomePhoneNumber(eHomePhone);
-                Address address = new Address(null, eAddress, null, null, eRegion, null, null);
-                contact.setAddress(address);
+                contact.setStreetNumber(estreetnum);
+                contact.setStreetName(eStreet);
+                contact.setCity(ecity);
+                contact.setCountry(ecountry);
+                contact.setZipCode(ezipcode);
+                contact.setNeighborhood(eneighborhood);
                 contact.setEmail(eEmail);
                 contact.setRelationship(eRelationship);
             }

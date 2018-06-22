@@ -19,7 +19,7 @@ public class EmergencyContact extends ContactDetails {
      * Constructor for emergency contact
      */
     public EmergencyContact(String name, String relationship, String cell) {
-        super(null, cell, null, null);
+        super(null, cell, new Address("", "", "", "", "", "", ""), null);
         this.name = name;
         this.relationship = relationship;
     }
@@ -147,7 +147,7 @@ public class EmergencyContact extends ContactDetails {
                 "Address: %s\n" +
                 "Region: %s\n" +
                 "Email: %s\n" +
-                "Relationship: %s\n", name, homePhoneNumber, cellPhoneNumber, address, email, relationship);
+                "Relationship: %s\n", name, homePhoneNumber, cellPhoneNumber, address, getRegion(), email, relationship);
     }
 
     public static EmergencyContact copy(EmergencyContact contact) {

@@ -567,6 +567,55 @@ public class User extends Undoable<User> implements Listenable {
         getUndoStack().push(mem);
     }
 
+
+    public String getStreetNumber() {
+        return currentAddress.getStreetNumber();
+    }
+
+    public void setStreetNumber(String streetNumber) {
+        currentAddress.setStreetNumber(streetNumber);
+    }
+
+    public String getStreetName() {
+        return currentAddress.getStreetName();
+    }
+
+    public void setStreetName(String streetName) {
+        currentAddress.setStreetName(streetName);
+    }
+
+    public String getNeighborhood() {
+        return currentAddress.getNeighborhood();
+    }
+
+    public void setNeighborhood(String neighborhood) {
+        currentAddress.setNeighborhood(neighborhood);
+    }
+
+    public String getCity() {
+        return currentAddress.getCity();
+    }
+
+    public void setCity(String city) {
+        currentAddress.setCity(city);
+    }
+
+    public String getZipCode() {
+        return currentAddress.getZipCode();
+    }
+
+    public void setZipCode(String zipCode) {
+        currentAddress.setZipCode(zipCode);
+    }
+
+    public String getCountry() {
+        return currentAddress.getCountry();
+    }
+
+    public void setCountry(String country) {
+        currentAddress.setCountry(country);
+    }
+
     /**
      * Method to ensure that all blood types are valid blood types returns U if not a valid blood
      * type

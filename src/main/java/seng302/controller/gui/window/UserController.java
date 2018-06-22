@@ -193,12 +193,13 @@ public class UserController {
     private void setContactPage() {
         if (contact != null) {
             eName.setText(contact.getName());
+            System.out.println(currentUser.getContact());
             eCellPhone.setText(contact.getCellPhoneNumber());
-//            if (contact.getAddress() != null) {
-//                eAddress.setText(contact.getAddress());
-//            } else {
-//                eAddress.setText("");
-//            }
+            if (contact.getAddress() != null) {
+                eAddress.setText(contact.getAddress().toString());
+            } else {
+                eAddress.setText("");
+            }
 
             if (contact.getEmail() != null) {
                 eEmail.setText(contact.getEmail());
@@ -224,11 +225,11 @@ public class UserController {
                 relationship.setText("");
             }
         }
-//        if (currentUser.getCurrentAddress() != null) {
-//            pAddress.setText(currentUser.getCurrentAddress());
-//        } else {
-//            pAddress.setText("");
-//        }
+        if (currentUser.getCurrentAddress() != null) {
+            pAddress.setText(currentUser.getCurrentAddress().toString());
+        } else {
+            pAddress.setText("");
+        }
         if (currentUser.getRegion() != null) {
             pRegion.setText(currentUser.getRegion());
         } else {
