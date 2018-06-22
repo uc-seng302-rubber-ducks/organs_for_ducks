@@ -11,15 +11,29 @@ INSERT INTO Administrator(userName, firstName, middleName, lastName, timeCreated
   ('ruth265','Remi','Fabinus','Rulie','1983-10-04 20:12:43','1984-01-05 01:14:32'),
   ('fts23','Alex','King','Stone','1988-10-04 15:12:43','1988-12-05 14:14:32');
 
-INSERT INTO Organ(organName) VALUES
-  ('Liver'),
-  ('Lung'),
-  ('Kidney');
+INSERT INTO Organ(organId, organName) VALUES
+  (1,'Liver'),
+  (2, 'Kidney'),
+  (3, 'Pancreas'),
+  (4,"Heart"),
+  (5,"Lung"),
+  (6,"Intestine"),
+  (7,"Cornea"),
+  (8,"Middle Ear"),
+  (9,"Skin"),
+  (10,"Bone Marrow"),
+  (11,"Bone"),
+  (12,"Connective Tissue");
 
-INSERT INTO BloodType(bloodType) VALUES
-  ('A-'),
-  ('O+'),
-  ('AB+');
+INSERT INTO BloodType(bloodTypeId, bloodType) VALUES
+  (1,'A-'),
+  (2,'A+'),
+  (3,'B+'),
+  (4,'B-'),
+  (5,'0-'),
+  (6,'0+'),
+  (7,'AB+'),
+  (8,'AB-');
 
 INSERT INTO PreviousDisease(diseaseName, diagnosisDate, fkUserNhi, remissionDate) VALUES
   ('Chicken Pox', '2015-10-04 19:12:43', 'ABC1234', '2016-01-04 20:55:43'),

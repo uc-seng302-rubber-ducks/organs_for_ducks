@@ -47,11 +47,13 @@ CREATE TABLE Administrator(
 );
 
 CREATE TABLE Organ(
-  organName varchar(255) PRIMARY KEY
+  organId SMALLINT PRIMARY KEY,
+  organName varchar(255)
 );
 
 CREATE TABLE BloodType(
-  bloodType VARCHAR(10) PRIMARY KEY
+  bloodTypeId SMALLINT PRIMARY KEY,
+  bloodType VARCHAR(10)
 );
 
 CREATE TABLE  PreviousDisease(
@@ -97,7 +99,7 @@ CREATE TABLE HealthDetails(
   height DOUBLE,
   weight DOUBLE,
   FOREIGN KEY (fkUserNhi) REFERENCES User(nhi) ON DELETE CASCADE
-  --needs reference to organ added
+  --needs reference to organ added (Maybe using an intermediate table to store many-to-many relationship (many-to-many idiom) ?
 );
 
 CREATE TABLE MedicalProcedure(
