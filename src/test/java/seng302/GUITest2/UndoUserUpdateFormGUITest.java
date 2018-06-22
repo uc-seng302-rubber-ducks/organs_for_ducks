@@ -35,7 +35,7 @@ public class UndoUserUpdateFormGUITest extends ApplicationTest {
         User user = new User("ABC1234", LocalDate.now().minusDays(2), LocalDate.now(), "", "", "", "", "",
                 null,
                 "Frank", "Frank", "Frank", "", "");
-        user.setContact(new EmergencyContact("", "", user));
+        user.setContact(new EmergencyContact("", "", "0187878"));
         user.getUndoStack().clear();
         AppController.getInstance().getUsers().add(user);
         clickOn("#userIDTextField");

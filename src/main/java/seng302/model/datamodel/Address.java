@@ -2,15 +2,15 @@ package seng302.model.datamodel;
 
 public class Address {
 
-    private int streetNumber;
+    private String streetNumber;
     private String streetName;
     private String neighborhood;
     private String city;
     private String region;
-    private int zipCode;
+    private String zipCode;
     private String country;
 
-    public Address(int streetNumber, String streetName, String neighborhood, String city, String region, int zipCode, String country) {
+    public Address(String streetNumber, String streetName, String neighborhood, String city, String region, String zipCode, String country) {
         this.streetNumber = streetNumber;
         this.streetName = streetName;
         this.neighborhood = neighborhood;
@@ -20,11 +20,11 @@ public class Address {
         this.country = country;
     }
 
-    public int getStreetNumber() {
+    public String getStreetNumber() {
         return streetNumber;
     }
 
-    public void setStreetNumber(int streetNumber) {
+    public void setStreetNumber(String streetNumber) {
         this.streetNumber = streetNumber;
     }
 
@@ -60,11 +60,11 @@ public class Address {
         this.region = region;
     }
 
-    public int getZipCode() {
+    public String getZipCode() {
         return zipCode;
     }
 
-    public void setZipCode(int zipCode) {
+    public void setZipCode(String zipCode) {
         this.zipCode = zipCode;
     }
 

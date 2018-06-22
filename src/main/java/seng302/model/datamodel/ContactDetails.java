@@ -15,7 +15,7 @@ public class ContactDetails {
     public ContactDetails() {
         this.homePhoneNumber = null;
         this.cellPhoneNumber = null;
-        this.address = null;
+        this.address = new Address("", "", "", "", "", "", "");
         this.email = null;
     }
 

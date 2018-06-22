@@ -58,29 +58,49 @@ public class NewUserController {
     @FXML
     private TextField weightInput;
     @FXML
-    private TextField phoneInput;
+    private TextField phone;
     @FXML
-    private TextField cellInput;
+    private TextField cell;
     @FXML
-    private TextField addressInput;
+    private TextField streetNumber;
     @FXML
-    private TextField regionInput;
+    private TextField street;
     @FXML
-    private TextField emailInput;
+    private TextField neighborhood;
     @FXML
-    private TextField ecNameInput;
+    private TextField city;
     @FXML
-    private TextField ecPhoneInput;
+    private ComboBox<String> region;
     @FXML
-    private TextField ecCellInput;
+    private TextField zipCode;
     @FXML
-    private TextField ecAddressInput;
+    private TextField country;
     @FXML
-    private TextField ecRegionInput;
+    private TextField email;
     @FXML
-    private TextField ecEmailInput;
+    private TextField ecName;
     @FXML
-    private TextField ecRelationshipInput;
+    private TextField ecPhone;
+    @FXML
+    private TextField ecCell;
+    @FXML
+    private TextField ecStreetNumber;
+    @FXML
+    private TextField ecStreet;
+    @FXML
+    private TextField ecNeighborhood;
+    @FXML
+    private TextField ecCity;
+    @FXML
+    private ComboBox<String> ecRegion;
+    @FXML
+    private TextField ecZipCode;
+    @FXML
+    private TextField ecCounrty;
+    @FXML
+    private TextField ecEmail;
+    @FXML
+    private TextField ecRelationship;
     @FXML
     private ComboBox<String> birthGenderComboBox;
     @FXML
@@ -125,11 +145,10 @@ public class NewUserController {
      * @param nhi   The national health index.
      * @param fName First Name.
      * @param dob   Date of birth.
-     * @param dod   Date of death.
      * @throws IOException if fxml cannot is read.
      */
     //TODO: Find a way to clean this up
-    private void createUser(String nhi, String fName, LocalDate dob, LocalDate dod) throws IOException {
+    private void createUser(String nhi, String fName, LocalDate dob) throws IOException {
         boolean valid; // prevents the account being created if false
 
         // User attributes
@@ -170,29 +189,35 @@ public class NewUserController {
         }
 
         // contact details
-        String currentAddress = addressInput.getText();
-        valid &= (AttributeValidation.checkString(addressInput.getText()));
+        String currentAddress = street.getText();
+        valid &= (AttributeValidation.checkString(street.getText()));
 
-        String region = regionInput.getText();
-        valid &= (AttributeValidation.checkString(regionInput.getText()));
+        String region = this.region.getSelectionModel().getSelectedItem();
+        valid &= (AttributeValidation.checkString(this.region.getSelectionModel().getSelectedItem()));
 
-        String homePhone = phoneInput.getText();
-        valid &= (AttributeValidation.validatePhoneNumber(phoneInput.getText()));
+        String homePhone = phone.getText();
+        valid &= (AttributeValidation.validatePhoneNumber(phone.getText()));
 
-        String cellPhone = cellInput.getText();
-        valid &= (AttributeValidation.validateCellNumber(cellInput.getText()));
+        String cellPhone = cell.getText();
+        valid &= (AttributeValidation.validateCellNumber(cell.getText()));
 
-        String email = emailInput.getText();
-        valid &= (AttributeValidation.validateEmail(emailInput.getText()));
+        String email = this.email.getText();
+        valid &= (AttributeValidation.validateEmail(this.email.getText()));
 
         if (valid) {
             // create the new user
-            User newUser = new User(nhi, dob, dod, currentAddress, region, homePhone, cellPhone, email, null,
-                    fName, fName, preferredFirstName, middleName,
-                    lastName); //todo: ewww gross can we please change this DELET THIS PLS
+            User newUser = new User(fName, dob, nhi);
+            //User newUser = new User(nhi, dob, dod, currentAddress, region, homePhone, cellPhone, email, null,
+            //      fName, fName, preferredFirstName, middleName,
+//                    lastName); //todo: ewww gross can we please change this DELET THIS PLS
 
             try {
-                HealthDetails healthDetails = collectHealthDetails(newUser, birthGender, genderIdentity, height, weight, bloodType, alcoholConsumption, smoker);
+                newUser.setRegion(region);
+                newUser.setHomePhone(homePhone);
+                newUser.setCellPhone(cellPhone);
+                newUser.setEmail(email);
+                // newUser.setCurrentAddress();
+                HealthDetails healthDetails = collectHealthDetails(birthGender, genderIdentity, height, weight, bloodType, alcoholConsumption, smoker);
                 newUser.setHealthDetails(healthDetails);
 
                 EmergencyContact contact = collectEmergencyContact(newUser);
@@ -256,9 +281,15 @@ public class NewUserController {
 
     }
 
+    private Address collectAddress(String number, String street, String neighborhood, String city, String region, String zipcode, String country) {
+        Address address = new Address(number, street, neighborhood, city, region, zipcode, country);
+
+        return address;
+
+    }
+
     /**
      * Sets all health detail variables based off the details entered
-     * @param user the new user being created
      * @param birthGender the birth gender entered by the user
      * @param genderIdentity the gender identity entered by the user
      * @param height the height entered by the user
@@ -268,7 +299,7 @@ public class NewUserController {
      * @param smoker the status of the user being a smoker or not
      * @return the collated health details of the user
      */
-    private HealthDetails collectHealthDetails(User user, String birthGender, String genderIdentity, double height, double weight,
+    private HealthDetails collectHealthDetails(String birthGender, String genderIdentity, double height, double weight,
                                                String bloodType, String alcoholConsumption, boolean smoker) {
         HealthDetails healthDetails = new HealthDetails();
 
@@ -289,26 +320,26 @@ public class NewUserController {
     private EmergencyContact collectEmergencyContact(User user) throws InvalidFieldsException {
         boolean valid;
         // Emergency Contact attributes
-        String eName = ecNameInput.getText();
-        valid = (AttributeValidation.checkString(ecNameInput.getText()));
+        String eName = ecName.getText();
+        valid = (AttributeValidation.checkString(ecName.getText()));
 
-        String eCellPhone = ecCellInput.getText();
-        valid &= (AttributeValidation.validateCellNumber(ecCellInput.getText()));
+        String eCellPhone = ecCell.getText();
+        valid &= (AttributeValidation.validateCellNumber(ecCell.getText()));
 
-        String eHomePhone = ecPhoneInput.getText();
-        valid &= (AttributeValidation.validatePhoneNumber(ecPhoneInput.getText()));
+        String eHomePhone = ecPhone.getText();
+        valid &= (AttributeValidation.validatePhoneNumber(ecPhone.getText()));
 
-        String eAddress = ecAddressInput.getText();
-        valid &= (AttributeValidation.checkString(ecAddressInput.getText()));
+        String eAddress = ecStreet.getText();
+        valid &= (AttributeValidation.checkString(ecStreet.getText()));
 
-        String eRegion = ecRegionInput.getText();
-        valid &= (AttributeValidation.checkString(ecRegionInput.getText()));
+        String eRegion = ecRegion.getSelectionModel().getSelectedItem();
+        valid &= (AttributeValidation.checkString(ecRegion.getSelectionModel().getSelectedItem()));
 
-        String eEmail = ecEmailInput.getText();
-        valid &= (AttributeValidation.validateEmail(ecEmailInput.getText()));
+        String eEmail = ecEmail.getText();
+        valid &= (AttributeValidation.validateEmail(ecEmail.getText()));
 
-        String eRelationship = ecRelationshipInput.getText();
-        valid &= (AttributeValidation.checkString(ecRelationshipInput.getText()));
+        String eRelationship = ecRelationship.getText();
+        valid &= (AttributeValidation.checkString(ecRelationship.getText()));
 
         // the name and cell number are required if any other attributes are filled out
         if ((eName.isEmpty() != eCellPhone.isEmpty()) && valid) {
@@ -321,7 +352,7 @@ public class NewUserController {
                 contact = new EmergencyContact(eName, null, eCellPhone);
 
                 contact.setHomePhoneNumber(eHomePhone);
-                Address address = new Address(0, eAddress, null, null, eRegion, 0, null);
+                Address address = new Address(null, eAddress, null, null, eRegion, null, null);
                 contact.setAddress(address);
                 contact.setEmail(eEmail);
                 contact.setRelationship(eRelationship);
@@ -375,7 +406,7 @@ public class NewUserController {
         User user = controller.findUser(nhi); // checks if the nhi already exists within the system
 
         if (valid && user == null) {
-            createUser(nhi, fName, dob, dod);
+            createUser(nhi, fName, dob);
         } else if (user != null) {
             existingNHI.setVisible(true);
         }

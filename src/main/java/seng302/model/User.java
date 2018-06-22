@@ -121,7 +121,7 @@ public class User extends Undoable<User> implements Listenable {
         this.dateOfBirth = dateOfBirth;
         this.dateOfDeath = dateOfDeath;
 
-        this.currentAddress = new Address(0, currentAddress, null, null, region, 0, null);
+        this.currentAddress = new Address("", currentAddress, "", "", region, "", "");
         this.homePhone = homePhone;
         this.cellPhone = cellPhone;
         this.email = email;
@@ -169,18 +169,17 @@ public class User extends Undoable<User> implements Listenable {
         lastModified = LocalDateTime.now();
         this.preferredFirstName = firstName;
         updateHistory = new HashMap<>();
-        this.contact = new EmergencyContact(null, null, null);
+        this.contact = new EmergencyContact("", "", "");
         updateHistory.put(dateToString(getTimeCreated()), "Profile created.");
         this.miscAttributes = new ArrayList<>();
         this.currentMedication = new ArrayList<>();
         this.previousMedication = new ArrayList<>();
         this.currentMedicationTimes = new HashMap<>();
         this.previousMedicationTimes = new HashMap<>();
-
         this.currentDiseases = new ArrayList<>();
         this.pastDiseases = new ArrayList<>();
         this.commonOrgans = new HashSet<>();
-
+        this.currentAddress = new Address("", "", "", "", "", "", "");
         this.donorDetails = new DonorDetails(this);
         this.receiverDetails = new ReceiverDetails(this);
         this.commonOrgans = new HashSet<>();

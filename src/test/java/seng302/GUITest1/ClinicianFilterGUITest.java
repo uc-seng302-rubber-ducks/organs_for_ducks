@@ -35,7 +35,7 @@ public class ClinicianFilterGUITest extends ApplicationTest {
                 "2 Sherbet Drive", "Fairyland", "033567721", "02044436727", "sherberto@gmail.com",
                 null, "Adam John Fairie", "Adam", "Abathur - Destroyer of worlds", "John",
                 "Fairie");
-        adam.setContact(new EmergencyContact("Letifa", "0118999124", adam));
+        adam.setContact(new EmergencyContact("Letifa", "0118999124", "1456789"));
         adam.getUndoStack().clear();
         AppController.getInstance().getUsers().add(adam);
         clickOn("#clinicianTab");

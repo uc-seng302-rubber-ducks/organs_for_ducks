@@ -34,7 +34,7 @@ public class UndoDonorGUITest extends ApplicationTest {
         User user = new User("ABC1234", LocalDate.now().minusDays(2), LocalDate.now(), "", "", "", "", "",
                 null,
                 "Adam", "Adam", "Adam", "", "");
-        user.setContact(new EmergencyContact("", "", user));
+        user.setContact(new EmergencyContact("", "", "01556677"));
         user.getUndoStack().clear();
         AppController.getInstance().getUsers().add(user);
         clickOn("#userIDTextField");
