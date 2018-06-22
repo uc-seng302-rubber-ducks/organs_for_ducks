@@ -8,7 +8,10 @@ import seng302.model.Clinician;
 import seng302.model.User;
 
 import java.io.InvalidClassException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Iterator;
 
@@ -33,16 +36,42 @@ public class DBHandler {
     }
 
     /**
+     * Helper function to convert date string from database
+     * to LocalDateTime object.
+     * @param date date string from database
+     * @return LocalDateTime object
+     */
+    private LocalDateTime dateToLocalDateTime(String date){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S");
+        return LocalDateTime.parse(date, formatter);
+    }
+
+    /**
      * Method to obtain all the users from the database. Opens and closes it's own connection to the database
      *
      * @return a Collection of Users
      */
     public Collection<User> getAllUsers() throws SQLException {
-        String sql = "SELECT * FROM User u LEFT JOIN PreviousDisease pd ON pd.fkUserNhi = u.nhi " +
-                "LEFT JOIN CurrentDisease cd ON cd.fkUserNhi = u.nhi " +
-                "LEFT JOIN Medication m ON m.fkUserNhi = u.nhi";
+        Collection<User> users = new ArrayList<>();
+        String sql = "SELECT * FROM User";
+        connect();
+
         PreparedStatement statement = connection.prepareStatement(sql);
-        return executeQuery(statement);
+        ResultSet resultSet = executeQuery(statement);
+
+        while (resultSet.next()){
+            System.out.println(resultSet.getString(6));
+            User user = new User();
+            user.setNhi(resultSet.getString(1)); //todo: issue with cloning user object for memento
+            user.setName(resultSet.getString(2), resultSet.getString(3), resultSet.getString(4));
+            user.setPreferredFirstName(resultSet.getString(5));
+            user.setTimeCreated(dateToLocalDateTime(resultSet.getString(6)));
+            user.setLastModified(dateToLocalDateTime(resultSet.getString(7)));
+            users.add(user);
+        }
+
+        connection.close();
+        return users;
     }
 
     /**
@@ -66,9 +95,29 @@ public class DBHandler {
      * @return the Collection of clinicians
      */
     public Collection<Clinician> loadClinicians() throws SQLException {
-        String sql = "SELECT * FROM Clinician";
+        Collection<Clinician> clinicians = new ArrayList<>();
+        String sql = "SELECT * FROM Clinician cl " +
+                "LEFT JOIN PasswordDetails pd " +
+                "ON cl.staffId = pd.fkStaffId";
+        connect();
+
         PreparedStatement statement = connection.prepareStatement(sql);
-        return executeQuery(statement);
+        ResultSet resultSet = executeQuery(statement);
+
+        while (resultSet.next()) {
+            Clinician clinician = new Clinician();
+            clinician.setStaffId(resultSet.getString(1));
+            clinician.setFirstName(resultSet.getString(2));
+            clinician.setMiddleName(resultSet.getString(3));
+            clinician.setLastName(resultSet.getString(4));
+            clinician.setDateCreated(dateToLocalDateTime(resultSet.getString(5)));
+            clinician.setDateLastModified(dateToLocalDateTime(resultSet.getString(6)));
+            //clinician.setPassword(resultSet.getString(10)); //TODO since the database stores the hash and salt, do we store those directly without having to use setPassword?
+            clinicians.add(clinician);
+        }
+
+        connection.close();
+        return clinicians;
     }
 
     /**
@@ -92,9 +141,29 @@ public class DBHandler {
      * @return the Collection of administrators
      */
     public Collection<Administrator> loadAdmins() throws SQLException {
-        String sql = "SELECT * FROM Administrator";
+        Collection<Administrator> administrators = new ArrayList<>();
+        String sql = "SELECT * FROM Administrator ad " +
+                "LEFT JOIN PasswordDetails pd " +
+                "ON ad.userName = pd.fkAdminUserName";
+        connect();
+
         PreparedStatement statement = connection.prepareStatement(sql);
-        return executeQuery(statement);
+        ResultSet resultSet = executeQuery(statement);
+
+        while (resultSet.next()) {
+            Administrator administrator = new Administrator();
+            administrator.setUserName(resultSet.getString(1));
+            administrator.setFirstName(resultSet.getString(2));
+            administrator.setMiddleName(resultSet.getString(3));
+            administrator.setLastName(resultSet.getString(4));
+            administrator.setDateCreated(dateToLocalDateTime(resultSet.getString(5)));
+            administrator.setDateLastModified(dateToLocalDateTime(resultSet.getString(6)));
+            //administrator.setPassword(resultSet.getString(10)); //TODO since the database stores the hash and salt, do we store those directly without having to use setPassword?
+            administrators.add(administrator);
+        }
+
+        connection.close();
+        return administrators;
     }
 
     /**
@@ -115,20 +184,13 @@ public class DBHandler {
     /**
      * Executes a PreparedStatement provided for the database
      *
-     * @param <T> The type of Collection to return.
-     * @return A collection of type T.
+     * @param statement a PreparedStatement
+     * @return A result set
      */
-    private <T> Collection<T> executeQuery(PreparedStatement statement) {
+    private ResultSet executeQuery(PreparedStatement statement) {
         try {
-            connect();
-            ResultSet resultSet = statement.executeQuery();
-            Collection<T> queryResult = new ArrayList<>();
-            while (resultSet.next()){
-//                User user = new User(); //TODO: How do you generify this?
-//                user.setName(resultSet.getString(2), resultSet.getString(3), resultSet.getString(4));
-                //queryResult.add(user);
-            }
-            connection.close();
+            return statement.executeQuery();
+
         } catch (SQLException sqlEx) {
             Log.warning("Error in connection to database", sqlEx);
             System.out.println("Error connecting to database");
@@ -169,7 +231,5 @@ public class DBHandler {
     //TODO: Remove this main once the DB handler is fully developed
     public static void main(String[] args) throws SQLException{
         DBHandler dbHandler = new DBHandler();
-        dbHandler.connect();
-
     }
 }

@@ -134,6 +134,10 @@ public class Clinician extends Undoable<Clinician> implements Listenable {
         return dateCreated;
     }
 
+    public void setDateCreated(LocalDateTime dateCreated) {
+        this.dateCreated = dateCreated;
+    }
+
     public LocalDateTime getDateLastModified() {
         return dateLastModified;
     }

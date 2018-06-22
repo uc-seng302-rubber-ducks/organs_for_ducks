@@ -585,6 +585,10 @@ public class User extends Undoable<User> implements Listenable {
         return timeCreated;
     }
 
+    public void setTimeCreated(LocalDateTime timeCreated) {
+        this.timeCreated = timeCreated;
+    }
+
     public String getStringAge() {
         if (dateOfDeath != null) {
 

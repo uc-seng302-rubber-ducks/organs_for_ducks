@@ -9,7 +9,7 @@ INSERT INTO Clinician(staffId, firstName, middleName, lastName, timeCreated, las
 
 INSERT INTO Administrator(userName, firstName, middleName, lastName, timeCreated, lastModified) VALUES
   ('ruth265','Remi','Fabinus','Rulie','1983-10-04 20:12:43','1984-01-05 01:14:32'),
-  ('23','Alex','King','Stone','1988-10-04 15:12:43','1988-12-05 14:14:32');
+  ('fts23','Alex','King','Stone','1988-10-04 15:12:43','1988-12-05 14:14:32');
 
 INSERT INTO Organ(organName) VALUES
   ('Liver'),

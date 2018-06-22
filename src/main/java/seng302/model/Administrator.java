@@ -91,6 +91,10 @@ public class Administrator extends Undoable<Administrator> implements Listenable
         return dateCreated;
     }
 
+    public void setDateCreated(LocalDateTime dateCreated) {
+        this.dateCreated = dateCreated;
+    }
+
     public LocalDateTime getDateLastModified() {
         return dateLastModified;
     }
