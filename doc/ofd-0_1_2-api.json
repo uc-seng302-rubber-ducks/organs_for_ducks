@@ -115,6 +115,9 @@
                   {
                     "type": "object",
                     "properties": {
+                      "health": {
+                        "$ref": "#/components/schemas/healthDetails"
+                      },
                       "contact": {
                         "$ref": "#/components/schemas/contactInfo"
                       },
@@ -1837,6 +1840,14 @@
           "bloodType": {
             "type": "string",
             "pattern": "^(A|B|O|AB)(\\+|-)$"
+          },
+          "gender": {
+            "type": "string",
+            "pattern": "^M|F|U$"
+          },
+          "birthGender": {
+            "type": "string",
+            "pattern": "^M|F$"
           }
         }
       },
