@@ -1,17 +1,16 @@
 package seng302.utils;
 
 //import com.mysql.jdbc.PreparedStatement;
-import java.sql.*;
 
 import seng302.model.Administrator;
 import seng302.model.Clinician;
 import seng302.model.User;
 
 import java.io.InvalidClassException;
+import java.sql.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.Iterator;
 
@@ -33,11 +32,11 @@ public class DBHandler {
     /**
      * SQL commands for executing creates
      */
-    private static final String CREATE_USER_STMT = "INSERT INTO User (nhi, first_name, middle_name, last_name, preferred_name, dob, dod VALUES (?, ?, ?, ?, ?, ?, ?)";
+    private static final String CREATE_USER_STMT = "INSERT INTO User (nhi, firstName, middleName, lastName, preferredName, dob, dod) VALUES (?, ?, ?, ?, ?, ?, ?)";
     private static final String CREATE_USER_CONTACT_STMT = "INSERT INTO ContactDetails (fkUserNhi, homePhone, email, cellPhone) VALUES (?, ?, ?, ?)";
     private static final String CREATE_STAFF_CONTACT_STMT = "INSERT INTO ContactDetails (fkStaffId, homePhone, email, cellPhone) VALUES (?, ?, ?, ?)";
     private static final String CREATE_ADDRESS_STMT = "INSERT INTO Address (fkContactId, streetNumber, streetName, neighbourhood, city, region, country) VALUES (?, ?, ?, ?, ?, ?, ?)";
-    private static final String CREATE_HEALTH_DETAILS = "INSERT INTO HealthDetails (fkUserNhi, gender, birthGender, smoker, alcoholConsumption, height, weight) VALUES (?, ?, ?, ?, ?, ?, ?)";
+    private static final String CREATE_HEALTH_DETAILS = "INSERT INTO HealthDetails (fkUserNhi, gender, birthGender, smoker, alcoholConsumption, height, weight) VALUES (?, ?, ?, ?, ?, ?, ?)"; // TODO: Include blood type 24/6 - Eiran
     private static final String CREATE_EMERGENCY_STMT = "INSERT INTO EmergencyContactDetails (fkContactId, contactName, contactRelationship) VALUES (?, ?, ?)";
 
     /**
@@ -227,7 +226,6 @@ public class DBHandler {
 
                 } else if (iter.next() instanceof Clinician) {
 
-
                 } else if (iter.next() instanceof User) {
 
                 } else {
@@ -239,6 +237,95 @@ public class DBHandler {
             Log.warning("Error in connection to database", sqlEx);
             System.out.println("Error connecting to database");
         }
+    }
+
+    /**
+     * Executes an update for each of items in the collection. The Collection must be of a type User, Clinician or Administrator
+     *
+     * @param collection collection of objects to update the database with
+     * @param <T>        User, Clinician or Administrator
+     * @throws InvalidClassException if the collection does not hold Users, Clinicians or Administrators
+     */
+    private <T> void executeCreation(Collection<T> collection) throws InvalidClassException {
+        try {
+            connect();
+            Iterator iter = collection.iterator();
+            while (iter.hasNext()) {
+                Object object = iter.next();
+                if (object instanceof Administrator) {
+
+                } else if (object instanceof Clinician) {
+
+                } else if (object instanceof User) {
+                    User user = (User) object;
+                    createUser(user);
+                    createContact(user.getNhi(), user);
+                    createHealthDetails(user.getNhi(), user);
+                } else {
+                    throw new InvalidClassException("Collection not a collection of Users, Clinicians or Administrators");
+                }
+            }
+            connection.close();
+        } catch (SQLException sqlEx) {
+            Log.warning("Error in connection to database", sqlEx);
+            System.out.println("Error connecting to database");
+        }
+    }
+
+    /**
+     * Creates an user entry in the tables.
+     *
+     * @param user user object to place into the entry
+     * @throws SQLException if there is an issue with the execution of the of the statement.
+     */
+    private void createUser(User user) throws SQLException {
+        PreparedStatement stmt = connection.prepareStatement(CREATE_USER_STMT);
+        stmt.setString(1, user.getNhi());
+        stmt.setString(2, user.getFirstName());
+        stmt.setString(3, user.getMiddleName());
+        stmt.setString(4, user.getLastName());
+        stmt.setString(5, user.getPreferredFirstName());
+        stmt.setDate(6, Date.valueOf(user.getDateOfBirth()));
+        stmt.setDate(7, Date.valueOf(user.getDateOfDeath()));
+
+        stmt.executeUpdate();
+    }
+
+    /**
+     * Creates a contact object with for the given user using the CREATE_USER_CONTACT_STMT.
+     *
+     * @param userNhi nhi of the user to associate the contact object with.
+     * @param user    user to create the associated contact for
+     * @throws SQLException if there is a problem with creating the contact
+     */
+    private void createContact(String userNhi, User user) throws SQLException {
+        PreparedStatement stmt = connection.prepareStatement(CREATE_USER_CONTACT_STMT);
+        stmt.setString(1, userNhi);
+        stmt.setString(2, user.getHomePhone());
+        stmt.setString(3, user.getEmail());
+        stmt.setString(4, user.getCellPhone());
+
+        stmt.executeUpdate();
+    }
+
+    /**
+     * Creates a health details entry in the database with the associated user
+     *
+     * @param userNhi NHI of the user to associate the health details with.
+     * @param user    user to create the associated contact for
+     * @throws SQLException if there is a problem when creating the health details
+     */
+    private void createHealthDetails(String userNhi, User user) throws SQLException {
+        PreparedStatement stmt = connection.prepareStatement(CREATE_HEALTH_DETAILS);
+        stmt.setString(1, userNhi);
+        stmt.setString(2, user.getGenderIdentity());
+        stmt.setString(3, user.getBirthGender());
+        stmt.setBoolean(4, user.isSmoker());
+        stmt.setString(5, user.getAlcoholConsumption());
+        stmt.setDouble(6, user.getHeight());
+        stmt.setDouble(7, user.getWeight());
+
+        stmt.executeUpdate();
     }
 
     //TODO: Remove this main once the DB handler is fully developed
