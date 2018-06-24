@@ -8,7 +8,9 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.stage.Modality;
+import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import seng302.controller.AppController;
 import seng302.controller.gui.window.LoginController;
@@ -16,10 +18,12 @@ import seng302.controller.gui.window.UpdateUserController;
 import seng302.model.User;
 import seng302.utils.Log;
 
+import java.io.File;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.time.temporal.ChronoUnit;
 import java.util.Optional;
+import seng302.controller.gui.FileSelectorController;
 
 public class UserOverviewController {
 
@@ -90,6 +94,9 @@ public class UserOverviewController {
 
     @FXML
     private Button logOutButton;
+
+    @FXML
+    private ImageView profilePicture;
     //</editor-fold>
 
     private AppController application;
@@ -207,6 +214,28 @@ public class UserOverviewController {
         createdValue.setText(user.getTimeCreated().toString());
         alcoholValue.setText(user.getAlcoholConsumption());
 
+    }
+
+    /**
+     * uploads an image using file picker. includes validation.
+     */
+    @FXML
+    private void uploadImage(){
+        boolean isValid = true;
+        String filename;
+        filename = FileSelectorController.getImageFileSelector(stage);
+        File inFile = new File(filename);
+
+        if(inFile.length() > 2000000){ //if more than 2MB
+            System.out.println("image exceeded 2MB!"); //TODO: Replace with javafx label
+            isValid = false;
+        }
+
+
+        if(isValid){
+            Image image = new Image("file:"+inFile.getPath());
+            profilePicture.setImage(image);
+        }
     }
 
     /**
