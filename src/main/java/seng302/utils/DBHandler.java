@@ -30,9 +30,22 @@ public class DBHandler {
     private static final String TEST_DB = "/seng302-2018-team100-test";
     private static final String PROD_DB = "/seng302-2018-team100-prod";
 
+    /**
+     * SQL commands for executing creates
+     */
+    private static final String CREATE_USER_STMT = "INSERT INTO User (nhi, first_name, middle_name, last_name, preferred_name, dob, dod VALUES (?, ?, ?, ?, ?, ?, ?)";
+    private static final String CREATE_USER_CONTACT_STMT = "INSERT INTO ContactDetails (fkUserNhi, homePhone, email, cellPhone) VALUES (?, ?, ?, ?)";
+    private static final String CREATE_STAFF_CONTACT_STMT = "INSERT INTO ContactDetails (fkStaffId, homePhone, email, cellPhone) VALUES (?, ?, ?, ?)";
+    private static final String CREATE_ADDRESS_STMT = "INSERT INTO Address (fkContactId, streetNumber, streetName, neighbourhood, city, region, country) VALUES (?, ?, ?, ?, ?, ?, ?)";
+    private static final String CREATE_HEALTH_DETAILS = "INSERT INTO HealthDetails (fkUserNhi, gender, birthGender, smoker, alcoholConsumption, height, weight) VALUES (?, ?, ?, ?, ?, ?, ?)";
+    private static final String CREATE_EMERGENCY_STMT = "INSERT INTO EmergencyContactDetails (fkContactId, contactName, contactRelationship) VALUES (?, ?, ?)";
+
+    /**
+     * Establishes a connection to the database
+     * @throws SQLException if there is an error in connecting to the database
+     */
     private void connect() throws SQLException {
         connection = DriverManager.getConnection("jdbc:mysql:" + URL + TEST_DB, USER, PASSWORD);
-        System.out.println(connection);
     }
 
     /**
