@@ -7,13 +7,13 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.Region;
 import seng302.controller.AppController;
-import seng302.model.TooltipTableRow;
 import seng302.exception.ProfileAlreadyExistsException;
 import seng302.exception.ProfileNotFoundException;
 import seng302.model.Administrator;
 import seng302.model.Clinician;
-import seng302.model._enum.Organs;
+import seng302.model.TooltipTableRow;
 import seng302.model.User;
+import seng302.model._enum.Organs;
 import seng302.utils.Log;
 
 import java.time.LocalDate;
@@ -126,7 +126,7 @@ public class DeletedUserController {
         //searchTableView.setItems(FXCollections.observableList(sListDonors.subList(startIndex, endIndex)));
         deletedUserTableView.setItems(oListUsers);
         deletedUserTableView.setRowFactory(
-                (searchTableView) -> new TooltipTableRow<>((User user) -> user.getTooltip()));
+                searchTableView -> new TooltipTableRow<>((User user) -> user.getTooltip()));
     }
 
 

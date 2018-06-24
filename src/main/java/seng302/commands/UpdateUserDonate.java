@@ -11,7 +11,7 @@ import seng302.model.User;
 public class UpdateUserDonate implements Runnable {
 
     private AppController controller = AppController.getInstance();
-    ;
+
     @Parameters(index = "0", description = "The NHI of the user to be updated")
     private String nhi;
 
