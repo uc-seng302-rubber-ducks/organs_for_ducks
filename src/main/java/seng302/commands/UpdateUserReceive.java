@@ -1,7 +1,7 @@
 package seng302.commands;
 
-
 import picocli.CommandLine.Command;
+import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
 import seng302.controller.AppController;
 import seng302.model._enum.OrganDeregisterReason;
@@ -12,7 +12,7 @@ import seng302.model.User;
 public class UpdateUserReceive implements Runnable {
 
     private AppController controller = AppController.getInstance();
-    ;
+
     @Parameters(index = "0", description = "The NHI of the user to be updated")
     private String nhi;
 
@@ -20,6 +20,9 @@ public class UpdateUserReceive implements Runnable {
             "A list of the organs to be updated separated by spaces prefixed by + or / \n"
                     + "e.g. +liver /bone_marrow would add a liver and remove bone marrow")
     private String[] rawOrgans;
+
+    @Option(names = {"-h", "help"}, usageHelp = true)
+    boolean helpRequested;
 
     @Override
     public void run() {

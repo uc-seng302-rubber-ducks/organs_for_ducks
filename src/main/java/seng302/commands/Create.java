@@ -7,6 +7,9 @@ import picocli.CommandLine;
         subcommands = {CreateUser.class, CreateClinician.class})
 public class Create implements Runnable {
 
+    @CommandLine.Option(names = {"-h", "help"}, usageHelp = true)
+    boolean helpRequested;
+
     @Override
     public void run() {
         CommandLine.usage(this, System.err);
