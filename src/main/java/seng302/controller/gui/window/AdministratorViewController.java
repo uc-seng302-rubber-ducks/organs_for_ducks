@@ -562,7 +562,7 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
             return;
         }
         String filename;
-        filename = FileSelectorController.getFileSelector(stage);
+        filename = FileSelectorController.getJsonFileSelector(stage);
         if (filename == null) {
             Log.warning("File name not found");
             fileNotFoundLabel.setVisible(true);
