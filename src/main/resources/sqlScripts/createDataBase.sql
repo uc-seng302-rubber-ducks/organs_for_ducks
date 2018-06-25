@@ -1,4 +1,3 @@
---Remove all existing tables
 DROP TABLE IF EXISTS PasswordDetails;
 DROP TABLE IF EXISTS Address;
 DROP TABLE IF EXISTS EmergencyContactDetails;
@@ -15,7 +14,6 @@ DROP TABLE IF EXISTS Administrator;
 DROP TABLE IF EXISTS Clinician;
 DROP TABLE IF EXISTS User;
 
---create all tables needed by the ODMS
 CREATE TABLE User(
   nhi varchar(7) PRIMARY KEY,
   firstName VARCHAR(255),
@@ -90,6 +88,22 @@ CREATE TABLE MedicationDates(
   FOREIGN KEY (fkMedicationInstanceId) REFERENCES Medication(medicationInstanceId) ON DELETE CASCADE
 );
 
+CREATE TABLE heathOrganReceive(
+  organsId SMALLINT,
+  fkUserNhi VARCHAR(7),
+  PRIMARY KEY (organsId, fkUserNhi),
+  FOREIGN KEY (fkUserNhi) REFERENCES User(nhi) ON DELETE CASCADE,
+  FOREIGN KEY (organsId) REFERENCES Organ(organId) ON DELETE CASCADE
+);
+
+CREATE TABLE heathOrganDonate(
+  organsId SMALLINT,
+  fkUserNhi VARCHAR(7),
+  PRIMARY KEY (organsId, fkUserNhi),
+  FOREIGN KEY (fkUserNhi) REFERENCES User(nhi) ON DELETE CASCADE,
+  FOREIGN KEY (organsId) REFERENCES Organ(organId) ON DELETE CASCADE
+);
+
 CREATE TABLE HealthDetails(
   fkUserNhi VARCHAR(7) NOT NULL PRIMARY KEY,
   gender VARCHAR(15),
@@ -99,7 +113,14 @@ CREATE TABLE HealthDetails(
   height DOUBLE,
   weight DOUBLE,
   FOREIGN KEY (fkUserNhi) REFERENCES User(nhi) ON DELETE CASCADE
-  --needs reference to organ added (Maybe using an intermediate table to store many-to-many relationship (many-to-many idiom) ?
+);
+
+CREATE TABLE MedicalProcedureOrgan(
+  organsId SMALLINT,
+  fkUserNhi VARCHAR(7),
+  PRIMARY KEY (organsId, fkUserNhi),
+  FOREIGN KEY (fkUserNhi) REFERENCES User(nhi) ON DELETE CASCADE,
+  FOREIGN KEY (organsId) REFERENCES Organ(organId) ON DELETE CASCADE
 );
 
 CREATE TABLE MedicalProcedure(
@@ -107,7 +128,6 @@ CREATE TABLE MedicalProcedure(
   procedureDate DATE NOT NULL,
   fkUserNhi VARCHAR(7) NOT NULL,
   procedureDescription VARCHAR(65000),
-  --Needs reference to organs added
   PRIMARY KEY (procedureDate,procedureName,fkUserNhi),
   FOREIGN KEY (fkUserNhi) REFERENCES User(nhi) ON DELETE CASCADE
 );
