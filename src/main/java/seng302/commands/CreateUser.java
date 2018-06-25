@@ -78,7 +78,7 @@ public class CreateUser implements Runnable {
         if (dob == null) {
             return;
         }
-        boolean success = controller.Register(firstName + " " + lastName, dob, NHI);
+        boolean success = controller.addUser(new User(firstName + " " + lastName, dob, NHI));
         if (!success) {
             System.out.println("An error occurred when creating registering the new user\n"
                     + "maybe a user with that NHI already exists?");

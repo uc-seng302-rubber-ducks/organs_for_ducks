@@ -6,17 +6,18 @@ import seng302.model.User;
 public class ContactDetails {
 
 
-    public String homePhoneNumber;
-    public String cellPhoneNumber;
-    public Address address;
-    public String email;
-    public transient User attachedUser;
+    private String homePhoneNumber;
+    private String cellPhoneNumber;
+    private Address address;
+    private String email;
+    private transient User attachedUser;
 
     public ContactDetails() {
-        this.homePhoneNumber = null;
-        this.cellPhoneNumber = null;
+        this.homePhoneNumber = "";
+        this.cellPhoneNumber = "";
         this.address = new Address("", "", "", "", "", "", "");
-        this.email = null;
+        this.email = "";
+        this.attachedUser = null;
     }
 
     public ContactDetails(String homePhoneNumber, String cellPhoneNumber, Address address, String email) {

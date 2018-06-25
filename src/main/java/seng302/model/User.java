@@ -7,7 +7,7 @@ import seng302.model._abstract.Listenable;
 import seng302.model._abstract.Undoable;
 import seng302.model._enum.EventTypes;
 import seng302.model._enum.Organs;
-import seng302.model.datamodel.Address;
+import seng302.model.datamodel.ContactDetails;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -32,8 +32,6 @@ public class User extends Undoable<User> implements Listenable {
     @Expose
     private LocalDate dateOfDeath;
     @Expose
-    private Address currentAddress;
-    @Expose
     private LocalDateTime timeCreated;
     @Expose
     private boolean isDeceased = false;
@@ -45,14 +43,12 @@ public class User extends Undoable<User> implements Listenable {
     private String middleName;
     @Expose
     private String lastName;
-    @Expose
-    private String homePhone;
-    @Expose
-    private String cellPhone;
-    @Expose
-    private String email;
+
     @Expose
     private EmergencyContact contact;
+
+    @Expose
+    private ContactDetails contactDetails;
 
     @Expose
     private HealthDetails healthDetails;
@@ -109,6 +105,10 @@ public class User extends Undoable<User> implements Listenable {
         this.firstName = firstName;
         this.receiverDetails = new ReceiverDetails(this);
         this.nhi = nhi;
+        this.middleName = "";
+        this.lastName = "";
+        this.dateOfDeath = null;
+        this.preferredFirstName = firstName;
         timeCreated = LocalDateTime.now();
         lastModified = LocalDateTime.now();
         this.preferredFirstName = firstName;
@@ -123,7 +123,7 @@ public class User extends Undoable<User> implements Listenable {
         this.currentDiseases = new ArrayList<>();
         this.pastDiseases = new ArrayList<>();
         this.commonOrgans = new HashSet<>();
-        this.currentAddress = new Address("", "", "", "", "", "", "");
+        this.contactDetails = new ContactDetails();
         this.donorDetails = new DonorDetails(this);
         this.receiverDetails = new ReceiverDetails(this);
         this.commonOrgans = new HashSet<>();
@@ -131,6 +131,8 @@ public class User extends Undoable<User> implements Listenable {
         this.changes = FXCollections.observableArrayList();
         this.pcs = new PropertyChangeSupport(this);
         this.healthDetails = new HealthDetails();
+        contactDetails.setAttachedUser(this);
+        contact.setAttachedUser(this);
     }
 
 
@@ -145,7 +147,7 @@ public class User extends Undoable<User> implements Listenable {
 
         this.currentDiseases = new ArrayList<>();
         this.pastDiseases = new ArrayList<>();
-
+        this.contactDetails = new ContactDetails();
         this.currentMedicationTimes = new HashMap<>();
         this.previousMedicationTimes = new HashMap<>();
         this.medicalProcedures = new ArrayList<>();
@@ -155,7 +157,17 @@ public class User extends Undoable<User> implements Listenable {
         changes = FXCollections.observableArrayList();
         this.pcs = new PropertyChangeSupport(this);
         this.healthDetails = new HealthDetails();
+        contactDetails.setAttachedUser(this);
 
+    }
+
+
+    public ContactDetails getContactDetails() {
+        return contactDetails;
+    }
+
+    public void setContactDetails(ContactDetails contactDetails) {
+        this.contactDetails = contactDetails;
     }
 
     public EmergencyContact getContact() {
@@ -515,51 +527,51 @@ public class User extends Undoable<User> implements Listenable {
 
 
     public String getStreetNumber() {
-        return currentAddress.getStreetNumber();
+        return contactDetails.getAddress().getStreetNumber();
     }
 
     public void setStreetNumber(String streetNumber) {
-        currentAddress.setStreetNumber(streetNumber);
+        contactDetails.getAddress().setStreetNumber(streetNumber);
     }
 
     public String getStreetName() {
-        return currentAddress.getStreetName();
+        return contactDetails.getAddress().getStreetName();
     }
 
     public void setStreetName(String streetName) {
-        currentAddress.setStreetName(streetName);
+        contactDetails.getAddress().setStreetName(streetName);
     }
 
     public String getNeighborhood() {
-        return currentAddress.getNeighborhood();
+        return contactDetails.getAddress().getNeighborhood();
     }
 
     public void setNeighborhood(String neighborhood) {
-        currentAddress.setNeighborhood(neighborhood);
+        contactDetails.getAddress().setNeighborhood(neighborhood);
     }
 
     public String getCity() {
-        return currentAddress.getCity();
+        return contactDetails.getAddress().getCity();
     }
 
     public void setCity(String city) {
-        currentAddress.setCity(city);
+        contactDetails.getAddress().setCity(city);
     }
 
     public String getZipCode() {
-        return currentAddress.getZipCode();
+        return contactDetails.getAddress().getZipCode();
     }
 
     public void setZipCode(String zipCode) {
-        currentAddress.setZipCode(zipCode);
+        contactDetails.getAddress().setZipCode(zipCode);
     }
 
     public String getCountry() {
-        return currentAddress.getCountry();
+        return contactDetails.getAddress().getCountry();
     }
 
     public void setCountry(String country) {
-        currentAddress.setCountry(country);
+        contactDetails.getAddress().setCountry(country);
     }
 
     /**
@@ -596,32 +608,16 @@ public class User extends Undoable<User> implements Listenable {
     }
 
 
-    public Address getCurrentAddress() {
-        return currentAddress;
-    }
-
-    public void setCurrentAddress(Address currentAddress) {
-        Memento<User> mem = new Memento<>();
-        mem.setOldObject(this.clone());
-        updateLastModified();
-        this.currentAddress = currentAddress;
-        if (currentAddress != null && !currentAddress.equals("")) {
-            addChange(new Change("Changed current address  to " + currentAddress));
-        }
-        mem.setNewObject(this.clone());
-        getUndoStack().push(mem);
-    }
-
     public String getRegion() {
-        return currentAddress.getRegion();
+        return contactDetails.getAddress().getRegion();
     }
 
     public void setRegion(String region) {
         Memento<User> mem = new Memento<>();
         mem.setOldObject(this.clone());
         updateLastModified();
-        currentAddress.setRegion(region);
-        if (currentAddress != null && !currentAddress.equals("")) {
+        contactDetails.getAddress().setRegion(region);
+        if (contactDetails.getAddress() != null && !contactDetails.getAddress().equals("")) {
             addChange(new Change("Changed region to " + region));
         }
         mem.setNewObject(this.clone());
@@ -686,56 +682,43 @@ public class User extends Undoable<User> implements Listenable {
     }
 
     public String getHomePhone() {
-        return homePhone;
+        return contactDetails.getHomePhoneNumber();
     }
 
     public void setHomePhone(String homePhone) {
         Memento<User> mem = new Memento<>();
         mem.setOldObject(this.clone());
         updateLastModified();
-        this.homePhone = homePhone;
+        contactDetails.setHomePhoneNumber(homePhone);
         addChange(new Change("Changed Home phone to " + homePhone));
         mem.setNewObject(this.clone());
         getUndoStack().push(mem);
     }
 
     public String getCellPhone() {
-        return cellPhone;
+        return contactDetails.getCellPhoneNumber();
     }
 
     public void setCellPhone(String cellPhone) {
         Memento<User> mem = new Memento<>();
         mem.setOldObject(this.clone());
         updateLastModified();
-        this.cellPhone = cellPhone;
+        contactDetails.setCellPhoneNumber(cellPhone);
         addChange(new Change("Changed cell Phone to " + cellPhone));
         mem.setNewObject(this.clone());
         getUndoStack().push(mem);
     }
 
     public String getEmail() {
-        return email;
+        return contactDetails.getEmail();
     }
 
     public void setEmail(String email) {
         Memento<User> mem = new Memento<>();
         mem.setOldObject(this.clone());
         updateLastModified();
-        this.email = email;
+        contactDetails.setEmail(email);
         addChange(new Change("Changed email to " + email));
-        mem.setNewObject(this.clone());
-        getUndoStack().push(mem);
-    }
-
-    public List<String> getMiscAttributes() {
-        return miscAttributes;
-    }
-
-    public void setMiscAttributes(List<String> miscAttributes) {
-        Memento<User> mem = new Memento<>();
-        mem.setOldObject(this.clone());
-        updateLastModified();
-        this.miscAttributes = miscAttributes;
         mem.setNewObject(this.clone());
         getUndoStack().push(mem);
     }
@@ -759,15 +742,6 @@ public class User extends Undoable<User> implements Listenable {
         updateHistory.put(timeStamp, action);
     }
 
-    public void removeMiscAttribute(String attribute) {
-        miscAttributes.remove(attribute);
-    }
-
-    public void addAttribute(String attribute) {
-        updateLastModified();
-        miscAttributes.add(attribute);
-        addChange(new Change("added attribute " + attribute));
-    }
 
     public List<String> getPreviousMedication() {
         return previousMedication;
@@ -974,16 +948,12 @@ public class User extends Undoable<User> implements Listenable {
                 ", name='" + name + '\'' +
                 ", dateOfBirth=" + dateOfBirth +
                 ", dateOfDeath=" + dateOfDeath +
-                ", currentAddress='" + currentAddress + '\'' +
                 ", timeCreated=" + timeCreated +
                 ", isDeceased=" + isDeceased +
                 ", firstName='" + firstName + '\'' +
                 ", preferredFirstName='" + preferredFirstName + '\'' +
                 ", middleName='" + middleName + '\'' +
                 ", lastName='" + lastName + '\'' +
-                ", homePhone='" + homePhone + '\'' +
-                ", cellPhone='" + cellPhone + '\'' +
-                ", email='" + email + '\'' +
                 ", contact=" + contact +
                 ", healthDetails=" + healthDetails +
                 ", lastModified=" + lastModified +
@@ -1033,10 +1003,7 @@ public class User extends Undoable<User> implements Listenable {
         newUser.dateOfBirth = this.dateOfBirth;
         newUser.dateOfDeath = this.dateOfDeath;
 
-        newUser.currentAddress = this.currentAddress;
-        newUser.homePhone = this.homePhone;
-        newUser.cellPhone = this.cellPhone;
-        newUser.email = this.email;
+        newUser.contactDetails = this.contactDetails;
         if (this.contact != null) {
             newUser.contact = new EmergencyContact(this.contact.getName(), this.contact.getCellPhoneNumber(),
                     this.contact.getHomePhoneNumber(), this.contact.getAddress(),
@@ -1109,10 +1076,8 @@ public class User extends Undoable<User> implements Listenable {
         this.dateOfDeath = other.dateOfDeath;
         this.healthDetails = other.healthDetails;
 
-        this.currentAddress = other.currentAddress;
-        this.homePhone = other.homePhone;
-        this.cellPhone = other.cellPhone;
-        this.email = other.email;
+
+        this.contactDetails = other.contactDetails;
         this.contact = other.contact;
         this.contact.setAttachedUser(this);
 

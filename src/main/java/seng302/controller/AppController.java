@@ -167,26 +167,6 @@ public class AppController {
         return historyOfCommands.get(historyPointer);
     }
 
-    /**
-     * @param name        name of new user
-     * @param dateOfBirth dob of new user
-     * @param NHI         NHI of new user
-     * @return true if the user was created, false if there was an error or user already exists
-     */
-    public boolean Register(String name, LocalDate dateOfBirth, String NHI) {
-        try {
-            User newUser = new User(name, dateOfBirth, NHI);
-            if (users.contains(newUser)) {
-                return false;
-            }
-            users.add(newUser);
-            Log.info("Successfully registered new user with NHI: " + NHI);
-            return true;
-        } catch (Exception e) {
-            Log.warning("Failed to register new user with NHI: " + NHI, e);
-            return false;
-        }
-    }
 
     /**
      * Takes a users name and dob, finds the user in the session list and returns them.
@@ -282,7 +262,6 @@ public class AppController {
      * user from the list and then adds the updated entry If the user is not already in the list it is
      * added
      * <p>
-     * TODO: each user may need to be assigned a unique id for this part
      *
      * @param user user to be updated/added
      */
@@ -312,8 +291,8 @@ public class AppController {
         this.users = users;
     }
 
-    public void addUser(User user) {
-        users.add(user);
+    public boolean addUser(User user) {
+        return users.add(user);
     }
 
     public void addClinician(Clinician clinician) {
@@ -494,9 +473,6 @@ public class AppController {
                         "Changed DOD from " + oldUser.getDateOfDeath() + " to " + newUser.getDateOfDeath());
             }
 
-            //HealthDetails oldHealthDetails = oldUser.getHealthDetails();
-            //HealthDetails newHealthDetails = newUser.getHealthDetails();
-
             if (!(oldUser.getBirthGender().equalsIgnoreCase(newUser.getBirthGender()))) {
                 diffs.add("Changed Gender from " + oldUser.getBirthGender() + " to " + newUser.getBirthGender());
             }
@@ -510,10 +486,6 @@ public class AppController {
                 diffs.add(
                         "Changed Blood Type from " + oldUser.getBloodType() + " to " + newUser.getBloodType());
             }
-//            if (!oldUser.getCurrentAddress().equalsIgnoreCase(newUser.getCurrentAddress())) {
-//                diffs.add("Changed Address from " + oldUser.getCurrentAddress() + " to " + newUser
-//                        .getCurrentAddress());
-//            }
             if (!oldUser.getRegion().equalsIgnoreCase(newUser.getRegion())) {
                 diffs.add("Changes Region from " + oldUser.getRegion() + " to " + newUser.getRegion());
             }
@@ -525,16 +497,6 @@ public class AppController {
                 diffs.add("Changed From Organs Donating = " + oldUser.getDonorDetails().getOrgans() + " to "
                         + newUser
                         .getDonorDetails().getOrgans());
-            }
-            for (String atty : oldUser.getMiscAttributes()) {
-                if (!newUser.getMiscAttributes().contains(atty)) {
-                    diffs.add("Removed misc Atttribute " + atty);
-                }
-            }
-            for (String atty : newUser.getMiscAttributes()) {
-                if (!oldUser.getMiscAttributes().contains(atty)) {
-                    diffs.add("Added misc Attribute " + atty);
-                }
             }
 
             for (String med : oldUser.getPreviousMedication()) {

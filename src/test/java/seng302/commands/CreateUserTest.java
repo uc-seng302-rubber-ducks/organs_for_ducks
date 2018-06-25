@@ -32,7 +32,7 @@ public class CreateUserTest {
         maxInfo.setHeight(1.85);
         maxInfo.setWeight(86.3);
         maxInfo.setBirthGender("m");
-        maxInfo.setCurrentAddress(new Address("42", "wallaby-way", "", "", "Sydney", "", ""));
+        maxInfo.getContactDetails().setAddress(new Address("42", "wallaby-way", "", "", "Sydney", "", ""));
     }
 
     //<editor-fold>
@@ -57,7 +57,7 @@ public class CreateUserTest {
         assertTrue(maxInfo.getHeight() == registered.getHeight());
         assertTrue(maxInfo.getWeight() == registered.getWeight());
         Assert.assertEquals(maxInfo.getBirthGender(), registered.getBirthGender());
-        Assert.assertEquals(maxInfo.getCurrentAddress().toString(), registered.getCurrentAddress().toString());
+        Assert.assertEquals(maxInfo.getContactDetails().getAddress().toString(), registered.getContactDetails().getAddress().toString());
         Assert.assertEquals(maxInfo.getRegion(), registered.getRegion());
     }
 

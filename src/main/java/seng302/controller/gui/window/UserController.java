@@ -224,11 +224,6 @@ public class UserController {
                 relationship.setText("");
             }
         }
-        if (currentUser.getCurrentAddress() != null) {
-            pAddress.setText(currentUser.getCurrentAddress().toString());
-        } else {
-            pAddress.setText("");
-        }
         if (currentUser.getRegion() != null) {
             pRegion.setText(currentUser.getRegion());
         } else {
