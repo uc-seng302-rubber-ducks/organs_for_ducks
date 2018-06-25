@@ -191,8 +191,8 @@ public class NewUserController {
         }
 
         // contact details
-        String Street = street.getText();
-        valid &= (AttributeValidation.checkString(Street));
+        String streetName = street.getText();
+        valid &= (AttributeValidation.checkString(streetName));
 
         String region = this.region.getSelectionModel().getSelectedItem();
         valid &= (AttributeValidation.checkString(region));
@@ -223,12 +223,6 @@ public class NewUserController {
         valid &= (AttributeValidation.checkString(zipcode));
 
 
-
-
-
-
-
-
         if (valid) {
             // create the new user
             User newUser = new User(fName, dob, nhi);
@@ -247,7 +241,7 @@ public class NewUserController {
                 newUser.setCity(city);
                 newUser.setCountry(country);
                 newUser.setStreetNumber(streetnum);
-                newUser.setStreetName(Street);
+                newUser.setStreetName(streetName);
                 newUser.setZipCode(zipcode);
 
                 HealthDetails healthDetails = collectHealthDetails(birthGender, genderIdentity, height, weight, bloodType, alcoholConsumption, smoker);

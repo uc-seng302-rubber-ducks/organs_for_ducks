@@ -349,6 +349,13 @@ public class UpdateUserController {
         } else {
             region.getSelectionModel().selectFirst();
         }
+
+        if (user.getZipCode() != null) {
+            zipCode.setText(user.getZipCode());
+        } else {
+            zipCode.setText("");
+        }
+
         if (user.getCellPhone() != null) {
             cell.setText(user.getCellPhone());
         } else {
@@ -392,33 +399,39 @@ public class UpdateUserController {
                 ecEmail.setText("");
             }
 
-            if (user.getStreetNumber() != null) {
+            if (user.getContact().getStreetNumber() != null) {
                 ecStreetNumber.setText(user.getContact().getStreetNumber());
             } else {
                 ecStreetNumber.setText("");
             }
 
-            if (user.getStreetName() != null) {
+            if (user.getContact().getStreetName() != null) {
                 ecStreet.setText(user.getContact().getStreetName());
             } else {
                 ecStreet.setText("");
             }
-            if (user.getCity() != null) {
+            if (user.getContact().getCity() != null) {
                 ecCity.setText(user.getContact().getCity());
             } else {
                 ecCity.setText("");
             }
 
-            if (user.getCountry() != null) {
+            if (user.getContact().getCountry() != null) {
                 ecCountry.setText(user.getContact().getCountry());
             } else {
                 ecCountry.setText("");
             }
 
-            if (user.getNeighborhood() != null) {
+            if (user.getContact().getNeighborhood() != null) {
                 ecNeighborhood.setText(user.getContact().getNeighborhood());
             } else {
                 ecNeighborhood.setText("");
+            }
+
+            if (user.getContact().getZipCode() != null) {
+                ecZipCode.setText(user.getContact().getZipCode());
+            } else {
+                ecZipCode.setText("");
             }
 
             if (user.getContact().getCellPhoneNumber() != null) {
@@ -442,16 +455,22 @@ public class UpdateUserController {
 
         genderIdComboBox.setValue(user.getGenderIdentity() == null ? "" : user.getGenderIdentity());
 
-        if (user.getWeightText() != null) {
+        if (!user.getWeightText().equals("")) {
             weightInput.setText(user.getWeightText());
-        } else {
+        } else if (user.getWeight() > 0) {
             weightInput.setText(Double.toString(user.getWeight()));
-        }
-        if (user.getHeightText() != null) {
-            heightInput.setText(user.getHeightText());
         } else {
-            heightInput.setText(Double.toString(user.getHeight()));
+            weightInput.setText("");
         }
+
+        if (!user.getHeightText().equals("")) {
+            heightInput.setText(user.getHeightText());
+        } else if (user.getHeight() > 0) {
+            heightInput.setText(Double.toString(user.getHeight()));
+        } else {
+            heightInput.setText("");
+        }
+
         listen = true;
 
         undoUpdateButton.setDisable(currentUser.getUndoStack().size() <= undoMarker);
@@ -560,6 +579,8 @@ public class UpdateUserController {
         } else {
             currentUser.setHeight(height);
             currentUser.setWeight(weight);
+            currentUser.setHeightText("");
+            currentUser.setWeightText("");
         }
 
         // validate contact info
@@ -749,6 +770,7 @@ public class UpdateUserController {
             changed = true;
         }
 
+
         if (weight.isEmpty() && (currentUser.getWeightText() != null && !currentUser.getWeightText()
                 .isEmpty())) {
             currentUser.setWeightText(null);
@@ -867,7 +889,7 @@ public class UpdateUserController {
         }
 
         if (checkChangedProperty(zipCode.getText(), currentUser.getZipCode())) {
-            currentUser.setZipCode(zipCode.getAccessibleHelp());
+            currentUser.setZipCode(zipCode.getText());
             changed = true;
 
         }
