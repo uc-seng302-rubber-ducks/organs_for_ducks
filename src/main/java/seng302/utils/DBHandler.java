@@ -32,12 +32,15 @@ public class DBHandler {
     /**
      * SQL commands for executing creates
      */
-    private static final String CREATE_USER_STMT = "INSERT INTO User (nhi, firstName, middleName, lastName, preferredName, dob, dod) VALUES (?, ?, ?, ?, ?, ?, ?)";
+    private static final String CREATE_USER_STMT = "INSERT INTO User (nhi, firstName, middleName, lastName, preferedName, dob, dod) VALUES (?, ?, ?, ?, ?, ?, ?)";
     private static final String CREATE_USER_CONTACT_STMT = "INSERT INTO ContactDetails (fkUserNhi, homePhone, email, cellPhone) VALUES (?, ?, ?, ?)";
     private static final String CREATE_STAFF_CONTACT_STMT = "INSERT INTO ContactDetails (fkStaffId, homePhone, email, cellPhone) VALUES (?, ?, ?, ?)";
+    private static final String CREATE_CLINICIAN_STMT = "INSERT INTO Clinician (staffId, firstName, middleName, lastName) VALUES (?, ?, ?, ?)";
+    private static final String CREATE_ADMIN_STMT = "INSERT INTO Administrator (username, firstName, middleName, lastName) VALUES (?, ?, ?, ?)";
     private static final String CREATE_ADDRESS_STMT = "INSERT INTO Address (fkContactId, streetNumber, streetName, neighbourhood, city, region, country) VALUES (?, ?, ?, ?, ?, ?, ?)";
     private static final String CREATE_HEALTH_DETAILS = "INSERT INTO HealthDetails (fkUserNhi, gender, birthGender, smoker, alcoholConsumption, height, weight) VALUES (?, ?, ?, ?, ?, ?, ?)"; // TODO: Include blood type 24/6 - Eiran
     private static final String CREATE_EMERGENCY_STMT = "INSERT INTO EmergencyContactDetails (fkContactId, contactName, contactRelationship) VALUES (?, ?, ?)";
+    private static final String GET_LATEST_CONTACT_ENTRY = "SELECT MAX(contactId) AS contactId FROM ContactDetails WHERE fkUserNhi=?";
 
     /**
      * Establishes a connection to the database
@@ -71,7 +74,7 @@ public class DBHandler {
         PreparedStatement statement = connection.prepareStatement(sql);
         ResultSet resultSet = executeQuery(statement);
 
-        while (resultSet.next()){
+        while (resultSet != null && resultSet.next()) {
             System.out.println(resultSet.getString(6));
             User user = new User();
             user.setNhi(resultSet.getString(1)); //todo: issue with cloning user object for memento
@@ -116,7 +119,7 @@ public class DBHandler {
         PreparedStatement statement = connection.prepareStatement(sql);
         ResultSet resultSet = executeQuery(statement);
 
-        while (resultSet.next()) {
+        while (resultSet != null && resultSet.next()) {
             Clinician clinician = new Clinician();
             clinician.setStaffId(resultSet.getString(1));
             clinician.setFirstName(resultSet.getString(2));
@@ -162,7 +165,7 @@ public class DBHandler {
         PreparedStatement statement = connection.prepareStatement(sql);
         ResultSet resultSet = executeQuery(statement);
 
-        while (resultSet.next()) {
+        while (resultSet != null && resultSet.next()) {
             Administrator administrator = new Administrator();
             administrator.setUserName(resultSet.getString(1));
             administrator.setFirstName(resultSet.getString(2));
@@ -202,7 +205,6 @@ public class DBHandler {
     private ResultSet executeQuery(PreparedStatement statement) {
         try {
             return statement.executeQuery();
-
         } catch (SQLException sqlEx) {
             Log.warning("Error in connection to database", sqlEx);
             System.out.println("Error connecting to database");
@@ -240,31 +242,40 @@ public class DBHandler {
     }
 
     /**
-     * Executes an update for each of items in the collection. The Collection must be of a type User, Clinician or Administrator
+     * Executes an update for each of items in the collection.
+     * Precondition: The Collection must be of a type User, Clinician or Administrator
      *
-     * @param collection collection of objects to update the database with
+     * @param object collection of objects to update the database with
      * @param <T>        User, Clinician or Administrator
-     * @throws InvalidClassException if the collection does not hold Users, Clinicians or Administrators
+     * @throws InvalidClassException if the object is not User, Clinicians or Administrators
      */
-    private <T> void executeCreation(Collection<T> collection) throws InvalidClassException {
+    public <T> void executeCreation(T object) throws InvalidClassException {
         try {
             connect();
-            Iterator iter = collection.iterator();
-            while (iter.hasNext()) {
-                Object object = iter.next();
+            connection.prepareStatement("START TRANSACTION").execute();
+            try {
                 if (object instanceof Administrator) {
-
+                    Administrator admin = (Administrator) object;
+                    createAdmin(admin);
+                    createPassword(admin);
                 } else if (object instanceof Clinician) {
-
+                    Clinician clinician = (Clinician) object;
+                    createClinician(clinician);
+                    // TODO: Create the clinician contact stuff once the abstractions are completed 25/6 - Eiran
                 } else if (object instanceof User) {
                     User user = (User) object;
                     createUser(user);
+                    createEmergencyContact(user.getNhi(), user);
                     createContact(user.getNhi(), user);
                     createHealthDetails(user.getNhi(), user);
                 } else {
-                    throw new InvalidClassException("Collection not a collection of Users, Clinicians or Administrators");
+                    throw new InvalidClassException("Provided role is not of type Users, Clinicians or Administrators");
                 }
+            } catch (SQLException sqlEx) {
+                connection.prepareStatement("ROLLBACK").execute();
+                System.out.println("An error occured"); //TODO: Make this a popup
             }
+            connection.prepareStatement("COMMIT");
             connection.close();
         } catch (SQLException sqlEx) {
             Log.warning("Error in connection to database", sqlEx);
@@ -273,7 +284,69 @@ public class DBHandler {
     }
 
     /**
+     * Saves the hashed password to the PasswordDetails table in the database
+     * Precondition: The role provided is an Administrator or Clinician
+     * The connection is active using connect()
+     * Postcondition: The hashed password and salt is stored in the database.
+     *
+     * @param role Object to store the password of
+     * @param <T>  Administrator or Clinician
+     * @throws InvalidClassException if the role is not an instance of Administrator or Clinician
+     * @throws SQLException          If there is an error in storing it into the database or the connection is invalid
+     */
+    private <T> void createPassword(T role) throws InvalidClassException, SQLException {
+        if (role instanceof Administrator) {
+            Administrator admin = (Administrator) role;
+            PreparedStatement statement = connection.prepareStatement("INSERT INTO PasswordDetails (fkAdminUserName, hash, salt) VALUES (?, ?, ?)");
+            statement.setString(1, admin.getUserName());
+            //TODO: Figure out how to send the password hash and salt 25/6 - Eiran
+        } else if (role instanceof Clinician) {
+
+        } else {
+            throw new InvalidClassException("Not a Administrator or Clinician");
+        }
+    }
+
+    /**
+     * Creates an admin entry in the database tables using CREATE_ADMIN_STMT
+     * Preconditions: Must have an active connection to the database
+     * Post-conditions: The given admin is created in the database
+     *
+     * @param admin administrator object to create
+     * @throws SQLException If there isn't an active connection to the database or there is an error creating the administrator
+     */
+    private void createAdmin(Administrator admin) throws SQLException {
+        PreparedStatement statement = connection.prepareStatement(CREATE_ADMIN_STMT);
+
+        statement.setString(1, admin.getUserName());
+        statement.setString(2, admin.getFirstName());
+        statement.setString(3, admin.getMiddleName());
+        statement.setString(4, admin.getLastName());
+
+        statement.executeUpdate();
+    }
+
+    /**
+     * Creates a clinician entry in the tables
+     * Preconditions: Must have an active connection to the database
+     * Postconditions: The given clinician is created in the database
+     *
+     * @param clinician The clinician object to create
+     * @throws SQLException If there isn't an active connection to the database or there is an error in creating the clinician
+     */
+    private void createClinician(Clinician clinician) throws SQLException {
+        PreparedStatement statement = connection.prepareStatement(CREATE_CLINICIAN_STMT);
+        statement.setString(1, clinician.getStaffId());
+        statement.setString(2, clinician.getFirstName());
+        statement.setString(3, clinician.getMiddleName());
+        statement.setString(4, clinician.getLastName());
+
+        statement.executeUpdate();
+    }
+
+    /**
      * Creates an user entry in the tables.
+     * Must have an active connection to the database (created through connect())
      *
      * @param user user object to place into the entry
      * @throws SQLException if there is an issue with the execution of the of the statement.
@@ -293,6 +366,7 @@ public class DBHandler {
 
     /**
      * Creates a contact object with for the given user using the CREATE_USER_CONTACT_STMT.
+     * Must have an active connection to the database (created through connect())
      *
      * @param userNhi nhi of the user to associate the contact object with.
      * @param user    user to create the associated contact for
@@ -304,12 +378,37 @@ public class DBHandler {
         stmt.setString(2, user.getHomePhone());
         stmt.setString(3, user.getEmail());
         stmt.setString(4, user.getCellPhone());
-
         stmt.executeUpdate();
+
+        String contactId = getContactId(userNhi);
+
+        PreparedStatement createAddrStatement = connection.prepareStatement(CREATE_ADDRESS_STMT);
+        createAddrStatement.setString(1, contactId);
+    }
+
+    /**
+     * Gets the most recently created contact object for a given userNhi.
+     * Preconditions: A contact object for the user exists.
+     * There is an active connection to the database created via connect()
+     * Postconditions: The contactId is returned
+     *
+     * @param userNhi NHI of the user to get the latest contact info for
+     * @return The contact id of the latest contact entry for the specified user
+     * @throws SQLException if a latest entry doesn't exist or the connection is null.
+     */
+    private String getContactId(String userNhi) throws SQLException {
+        PreparedStatement getContactId = connection.prepareStatement(GET_LATEST_CONTACT_ENTRY);
+        getContactId.setString(1, userNhi);
+        ResultSet results = executeQuery(getContactId);
+        if (results == null) {
+            throw new SQLException("Required Contact Entry was not found");
+        }
+        return results.getString("contactId");
     }
 
     /**
      * Creates a health details entry in the database with the associated user
+     * Must have an active connection to the database (created through connect())
      *
      * @param userNhi NHI of the user to associate the health details with.
      * @param user    user to create the associated contact for
@@ -328,8 +427,24 @@ public class DBHandler {
         stmt.executeUpdate();
     }
 
-    //TODO: Remove this main once the DB handler is fully developed
-    public static void main(String[] args) throws SQLException{
-        DBHandler dbHandler = new DBHandler();
+    /**
+     * Creates and links the emergency contact details to the user.
+     * Must have an active connection to the database (created through connect())
+     * Must be called before createContact, otherwise it may link to the wrong contact object.
+     *
+     * @param userNhi The NHI of the user to link the contact details for
+     * @param user    The user for which the emergency contact is to be created.
+     * @throws SQLException If there is an error in creating the emergency contact.
+     */
+    private void createEmergencyContact(String userNhi, User user) throws SQLException {
+        //TODO: Make the create contact method take in a contact object and make call to create emergency contact here. 25/6 - Eiran
+        String contactId = getContactId(userNhi);
+
+        PreparedStatement stmt = connection.prepareStatement(CREATE_EMERGENCY_STMT);
+        stmt.setString(1, contactId);
+        stmt.setString(2, user.getContact().getName());
+        stmt.setString(3, user.getContact().getRelationship());
+
+        stmt.executeUpdate();
     }
 }
