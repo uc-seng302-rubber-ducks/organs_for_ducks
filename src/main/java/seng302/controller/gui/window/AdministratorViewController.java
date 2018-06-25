@@ -39,7 +39,10 @@ import seng302.view.CLI;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.PrintStream;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
@@ -47,8 +50,8 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
 
     //<editor-fold desc="FXML stuff">
 
-    private static int searchCount = 0;
     private static final int ROWS_PER_PAGE = 30;
+    private static int searchCount = 0;
     @FXML
     private TableView<User> userTableView;
     @FXML
@@ -517,56 +520,74 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
 
     /**
      * Imports admins from a file chosen from a fileselector
-     *
-     *
      */
     @FXML
     void importAdmins() {
-       Log.info("Importing Admins");
-       importRole(Administrator.class);
+        Log.info("Importing Admins");
+        List<String> extensions = new ArrayList<>();
+        extensions.add("*.json");
+        String filename = FileSelectorController.getFileSelector(stage, extensions);
+        if (filename == null) {
+            Log.warning("File name not found");
+            fileNotFoundLabel.setVisible(true);
+            return;
+        }
+        importRoleJson(Administrator.class, filename);
 
 
     }
 
     /**
      * Imports clinicians from a file chosen from a fileselector
-     *
-     *
      */
     @FXML
     void importClinicians() {
+        List<String> extensions = new ArrayList<>();
+        extensions.add("*.json");
+        String filename = FileSelectorController.getFileSelector(stage, extensions);
+        if (filename == null) {
+            Log.warning("File name not found");
+            fileNotFoundLabel.setVisible(true);
+            return;
+        }
         Log.info(messageAdmin + administrator.getUserName() + " Importing Clinician profiles");
-        importRole(Clinician.class);
+        importRoleJson(Clinician.class, filename);
     }
 
     /**
      * Imports Users from a file chosen from a fileselector
-     *
-     *
      */
     @FXML
     void importUsers() {
+        List<String> extensions = new ArrayList<>();
+        extensions.add("*.json");
+        extensions.add("*.csv");
+        String filename = FileSelectorController.getFileSelector(stage, extensions);
+        if (filename == null) {
+            Log.warning("File name not found");
+            fileNotFoundLabel.setVisible(true);
+            return;
+        }
         Log.info(messageAdmin + administrator.getUserName() + " Importing User profiles");
-        importRole(User.class);
-
+        if (filename.contains(".json")) {
+            importRoleJson(User.class, filename);
+        }
+        else {
+            importRoleCsv(User.class, filename);
+        }
     }
 
     /**
      * attempts to import the given role from a file, and save it to the default file.
      * Currently contains handlers for administrator, clinician, and user
-     * @param role class to be imported. e.g. Administrator.class
-     * @param <T> Type T (not used?)
+     *
+     * @param role     class to be imported. e.g. Administrator.class
+     * @param <T>      Type T (not used?)
+     * @param filename name of file to be imported including path
      */
-    private <T> void importRole( Class<T> role) {
+    private <T> void importRoleJson(Class<T> role, String filename) {
         if (!isAllWindowsClosed()) {
             launchAlertUnclosedWindowsGUI();
-            return;
-        }
-        String filename;
-        filename = FileSelectorController.getFileSelector(stage);
-        if (filename == null) {
-            Log.warning("File name not found");
-            fileNotFoundLabel.setVisible(true);
             return;
         }
         try {
@@ -665,6 +686,27 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
             messageBoxPopup("error");
         }
         refreshTables();
+    }
+
+    private <T> void importRoleCsv(Class<T> role, String filename) {
+        if (!isAllWindowsClosed()) {
+            launchAlertUnclosedWindowsGUI();
+            return;
+        }
+        if (role.isAssignableFrom(User.class)) {
+//        try {
+//            //TODO complete this when csv handler merged on dev 25/6
+//            Collection<User> existingUsers = appController.getUsers();
+//            Collection<User> newUsers = CSVHandler.getUsers(filename);
+//        } catch (FileNotFoundException e) {
+//            Log.warning("Failed to load file " + filename, e);
+//            messageBoxPopup("error");
+//
+//        } catch (InvalidFileException e) {
+//            Log.warning("File " + filename + " is invalid", e);
+//            messageBoxPopup("error");
+//        }
+        }
     }
 
     /**
