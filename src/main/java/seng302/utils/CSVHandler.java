@@ -14,7 +14,6 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -84,7 +83,7 @@ public class CSVHandler extends DataHandler{
             String city = record.get(13);
             String zipCode = record.get(15);
             //TODO: change this to new address format
-            u.setCurrentAddress(streetNumber+ " " + streetName + " " + neighbourhood + " " + city + " " + zipCode);
+            //u.setCurrentAddress(streetNumber+ " " + streetName + " " + neighbourhood + " " + city + " " + zipCode);
             u.setRegion(record.get(14));
             //String country = record.get(16);
             //String birthCountry = record.get(17);
