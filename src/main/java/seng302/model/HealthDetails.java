@@ -25,7 +25,7 @@ public class HealthDetails {
         this.weight = 0.0;
         this.heightText = "";
         this.weightText = "";
-        this.bloodType = null;
+        this.bloodType = "";
     }
 
 

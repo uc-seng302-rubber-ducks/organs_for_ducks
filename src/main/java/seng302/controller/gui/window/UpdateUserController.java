@@ -173,7 +173,6 @@ public class UpdateUserController {
     public void init(User user, AppController controller, Stage stage) {
         this.stage = stage;
         currentUser = user;
-        System.out.println(user.toString());
         oldUser = currentUser.clone();
         this.appController = controller;
         setUserDetails(currentUser);

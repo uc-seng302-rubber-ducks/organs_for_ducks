@@ -94,62 +94,6 @@ public class User extends Undoable<User> implements Listenable {
     private transient PropertyChangeSupport pcs;
     //</editor-fold>
 
-    /**
-     * Constructor for a User
-     * TODO: Remove this monolithic hunk of junk 17/05
-     *
-     * @param nhi                National Health Index for user
-     * @param dateOfBirth        users date of birth
-     * @param dateOfDeath        users date of death
-     * @param currentAddress     users current address
-     * @param region             users region
-     * @param homePhone          users home phone number
-     * @param cellPhone          users cell phone number
-     * @param email              users email
-     * @param contact            users emergency contact
-     * @param name               users name
-     * @param firstName          users first name
-     * @param preferredFirstName users preferred name
-     * @param middleName         users middle name
-     * @param lastName           users last name
-     */
-    public User(String nhi, LocalDate dateOfBirth, LocalDate dateOfDeath, String currentAddress, String region,
-                String homePhone, String cellPhone, String email, EmergencyContact contact,
-                String name, String firstName, String preferredFirstName, String middleName, String lastName) {
-
-        this.nhi = nhi;
-        this.dateOfBirth = dateOfBirth;
-        this.dateOfDeath = dateOfDeath;
-
-        this.currentAddress = new Address("", currentAddress, "", "", region, "", "");
-        this.homePhone = homePhone;
-        this.cellPhone = cellPhone;
-        this.email = email;
-        this.contact = contact;
-
-        this.name = name;
-        this.firstName = firstName;
-        this.preferredFirstName = preferredFirstName;
-        this.middleName = middleName;
-        this.lastName = lastName;
-
-        this.timeCreated = LocalDateTime.now();
-        updateHistory = new HashMap<>();
-        this.miscAttributes = new ArrayList<>();
-        this.currentMedication = new ArrayList<>();
-        this.previousMedication = new ArrayList<>();
-        this.currentMedicationTimes = new HashMap<>();
-        this.previousMedicationTimes = new HashMap<>();
-        this.donorDetails = new DonorDetails(this);
-        this.receiverDetails = new ReceiverDetails(this);
-        this.commonOrgans = new HashSet<>();
-
-        this.currentDiseases = new ArrayList<>();
-        this.pastDiseases = new ArrayList<>();
-        this.medicalProcedures = new ArrayList<>();
-        this.changes = FXCollections.observableArrayList();
-        this.pcs = new PropertyChangeSupport(this);
-    }
 
     /**
      * Constructor for a User
@@ -210,6 +154,8 @@ public class User extends Undoable<User> implements Listenable {
         this.commonOrgans = new HashSet<>();
         changes = FXCollections.observableArrayList();
         this.pcs = new PropertyChangeSupport(this);
+        this.healthDetails = new HealthDetails();
+
     }
 
     public EmergencyContact getContact() {
@@ -525,7 +471,6 @@ public class User extends Undoable<User> implements Listenable {
     }
 
     public String getGenderIdentity() {
-        System.out.println("h: " + healthDetails.getGenderIdentity());
         return healthDetails.getGenderIdentity();
     }
 
