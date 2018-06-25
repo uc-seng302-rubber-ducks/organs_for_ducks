@@ -23,8 +23,8 @@ public class AppControllerTest {
         User user = new User("Frank", LocalDate.parse("1 2 3", (DateTimeFormatter.ofPattern("y M d"))),
                 "ABC1234");
         //Act
-        //controller.Register("Frank", LocalDate.parse("1 2 3", (DateTimeFormatter.ofPattern("y M d"))),
-        //"ABC1234");
+        controller.addUser(new User("Frank", LocalDate.parse("1 2 3", (DateTimeFormatter.ofPattern("y M d"))),
+                "ABC1234"));
         //Assert
         Assert.assertTrue(controller.getUsers().contains(user));
     }
