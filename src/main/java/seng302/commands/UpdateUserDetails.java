@@ -46,9 +46,23 @@ public class UpdateUserDetails implements Runnable {
     @Option(names = {"-b", "-bloodType"}, description = "blood type")
     private String bloodType;
 
-    @Option(names = {"-a", "-addr",
-            "-currentAddress"}, description = "Current address (Address line 1)")
-    private String currentAddress;
+    @Option(names = {"-c", "-city"}, description = "Current address city")
+    private String city;
+
+    @Option(names = {"-n", "-number"}, description = "Current address number")
+    private String number;
+
+    @Option(names = {"-s", "-streetName"}, description = "Current address street name")
+    private String streetName;
+
+    @Option(names = {"-z", "-zipCode"}, description = "Current address zipCode")
+    private String zipCode;
+
+    @Option(names = {"-co", "-country"}, description = "Current address country")
+    private String country;
+
+    @Option(names = {"-ne", "-neighborhood"}, description = "Current address neighborhood")
+    private String neighborhood;
 
     @Option(names = {"-r", "-region"}, description = "Region (Address line 2)")
     private String region;
@@ -99,10 +113,27 @@ public class UpdateUserDetails implements Runnable {
             user.setBloodType(bloodType);
             changed = true;
         }
-//        if (currentAddress != null) {
-//            user.setCurrentAddress(currentAddress);
-//            changed = true;
-//        }
+        if (city != null) {
+            user.setCity(city);
+            changed = true;
+        }
+        if (country != null) {
+            user.setCountry(country);
+            changed = true;
+        }
+        if (streetName != null) {
+            user.setStreetName(streetName);
+            changed = true;
+        }
+        if (number != null) {
+            user.setStreetNumber(number);
+            changed = true;
+        }
+        if (neighborhood != null) {
+            user.setNeighborhood(neighborhood);
+            changed = true;
+        }
+
         if (region != null) {
             user.setRegion(region);
             changed = true;

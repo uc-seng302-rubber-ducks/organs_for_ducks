@@ -32,8 +32,7 @@ public class CreateUserTest {
         maxInfo.setHeight(1.85);
         maxInfo.setWeight(86.3);
         maxInfo.setBirthGender("m");
-        //maxInfo.setRegion("Sydney");
-        maxInfo.setCurrentAddress(new Address("42", "wallaby-way", null, null, "Sydney", null, null));
+        maxInfo.setCurrentAddress(new Address("42", "wallaby-way", "", "", "Sydney", "", ""));
     }
 
     //<editor-fold>
@@ -49,7 +48,7 @@ public class CreateUserTest {
     public void ShouldRegisterDonorWithMaximumInfo() {
         String[] args = {"Gus", "Johnson", "BCD2345", "1990-04-03", "-dod=2010-05-16", "-he=1.85",
                 "-w=86.3",
-                "-g=m", "-addr=42-wallaby-way", "-r=Sydney"};
+                "-g=m", "-n=42", "-s=wallaby-way", "-r=Sydney"};
         new CommandLine(new CreateUser()).parseWithHandler(new CommandLine.RunLast(), System.err, args);
         User registered = null;
         registered = controller.findUser("Gus Johnson", LocalDate.parse("1990-04-03", format));
@@ -58,7 +57,7 @@ public class CreateUserTest {
         assertTrue(maxInfo.getHeight() == registered.getHeight());
         assertTrue(maxInfo.getWeight() == registered.getWeight());
         Assert.assertEquals(maxInfo.getBirthGender(), registered.getBirthGender());
-        Assert.assertEquals(maxInfo.getCurrentAddress(), registered.getCurrentAddress());
+        Assert.assertEquals(maxInfo.getCurrentAddress().toString(), registered.getCurrentAddress().toString());
         Assert.assertEquals(maxInfo.getRegion(), registered.getRegion());
     }
 

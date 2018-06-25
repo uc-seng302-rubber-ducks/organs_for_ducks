@@ -46,9 +46,23 @@ public class CreateUser implements Runnable {
     @Option(names = {"-b", "-bloodType"}, description = "blood type")
     private String bloodType;
 
-    @Option(names = {"-a", "-addr",
-            "-currentAddress"}, description = "Current address (Address line 1)")
-    private String currentAddress;
+    @Option(names = {"-c", "-city"}, description = "Current address city")
+    private String city;
+
+    @Option(names = {"-n", "-number"}, description = "Current address number")
+    private String number;
+
+    @Option(names = {"-s", "-streetName"}, description = "Current address street name")
+    private String streetName;
+
+    @Option(names = {"-z", "-zipCode"}, description = "Current address zipCode")
+    private String zipCode;
+
+    @Option(names = {"-co", "-country"}, description = "Current address country")
+    private String country;
+
+    @Option(names = {"-ne", "-neighborhood"}, description = "Current address neighborhood")
+    private String neighborhood;
 
     @Option(names = {"-r", "-region"}, description = "Region (Address line 2)")
     private String region;
@@ -90,9 +104,21 @@ public class CreateUser implements Runnable {
         if (bloodType != null) {
             user.setBloodType(bloodType);
         }
-//        if (currentAddress != null) {
-//            user.setCurrentAddress(currentAddress);
-//        }
+        if (city != null) {
+            user.setCity(city);
+        }
+        if (country != null) {
+            user.setCountry(country);
+        }
+        if (streetName != null) {
+            user.setStreetName(streetName);
+        }
+        if (number != null) {
+            user.setStreetNumber(number);
+        }
+        if (neighborhood != null) {
+            user.setNeighborhood(neighborhood);
+        }
         if (region != null) {
             user.setRegion(region);
         }

@@ -186,6 +186,7 @@ public class User extends Undoable<User> implements Listenable {
         this.medicalProcedures = new ArrayList<>();
         this.changes = FXCollections.observableArrayList();
         this.pcs = new PropertyChangeSupport(this);
+        this.healthDetails = new HealthDetails();
     }
 
 
