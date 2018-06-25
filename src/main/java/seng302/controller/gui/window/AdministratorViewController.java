@@ -24,14 +24,15 @@ import seng302.controller.gui.panel.TransplantWaitListController;
 import seng302.controller.gui.popup.AlertUnclosedWindowsController;
 import seng302.controller.gui.popup.DeletedUserController;
 import seng302.controller.gui.statusBarController;
-import seng302.model.*;
+import seng302.exception.InvalidFileException;
+import seng302.model.Administrator;
+import seng302.model.Clinician;
+import seng302.model.TooltipTableRow;
+import seng302.model.User;
 import seng302.model._abstract.TransplantWaitListViewer;
 import seng302.model._enum.EventTypes;
 import seng302.model._enum.Organs;
-import seng302.utils.AttributeValidation;
-import seng302.utils.DataHandler;
-import seng302.utils.JsonHandler;
-import seng302.utils.Log;
+import seng302.utils.*;
 import seng302.view.CLI;
 
 import java.beans.PropertyChangeEvent;
@@ -316,7 +317,6 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
 
         fListAdmins = new FilteredList<>(admins);
         fListAdmins = filter(fListAdmins);
-        //FilteredList<Administrator> squished = new FilteredList<>(fListAdmins);
 
         SortedList<Administrator> administratorSortedList = new SortedList<>(fListAdmins);
         administratorSortedList.comparatorProperty().bind(adminTableView.comparatorProperty());
@@ -569,8 +569,7 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
         Log.info(messageAdmin + administrator.getUserName() + " Importing User profiles");
         if (filename.contains(".json")) {
             importRoleJson(User.class, filename);
-        }
-        else {
+        } else {
             importRoleCsv(User.class, filename);
         }
     }
@@ -592,7 +591,7 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
             if (role.isAssignableFrom(Administrator.class)) {
                 //<editor-fold desc="admin handler">
                 Collection<Administrator> existingAdmins = appController.getAdmins();
-                Collection<Administrator> newAdmins = JsonHandler.loadAdmins(filename);
+                Collection<Administrator> newAdmins = dataHandler.loadAdmins(filename);
 
                 //if imported contains any bad data, throw it out
                 for (Administrator admin : newAdmins) {
@@ -610,7 +609,7 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
                 }
                 messageBoxPopup("confirm");
                 try {
-                    JsonHandler.saveAdmins(appController.getAdmins());
+                    dataHandler.saveAdmins(appController.getAdmins());
                     Log.info("successfully imported " + newAdmins.size() + " Admin profiles");
                 } catch (IOException e) {
                     Log.warning("failed to save newly loaded admins", e);
@@ -620,7 +619,7 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
             } else if (role.isAssignableFrom(Clinician.class)) {
                 //<editor-fold desc="clinician handler">
                 Collection<Clinician> existingClinicians = appController.getClinicians();
-                Collection<Clinician> newClinicians = JsonHandler.loadClinicians(filename);
+                Collection<Clinician> newClinicians = dataHandler.loadClinicians(filename);
 
                 //if imported contains any bad data, throw it out
                 for (Clinician clinician : newClinicians) {
@@ -638,7 +637,7 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
                 }
                 messageBoxPopup("confirm");
                 try {
-                    JsonHandler.saveClinicians(appController.getClinicians());
+                    dataHandler.saveClinicians(appController.getClinicians());
                     Log.info("successfully imported " + newClinicians.size() + " Clinician profiles");
                 } catch (IOException e) {
                     Log.warning("failed to save newly loaded clinicians", e);
@@ -648,7 +647,7 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
             } else if (role.isAssignableFrom(User.class)) {
                 //<editor-fold desc="user handler">
                 Collection<User> existingUsers = appController.getUsers();
-                Collection<User> newUsers = JsonHandler.loadUsers(filename);
+                Collection<User> newUsers = dataHandler.loadUsers(filename);
 
                 //if imported contains any bad data, throw it out
                 for (User user : newUsers) {
@@ -666,7 +665,7 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
                 }
                 messageBoxPopup("confirm");
                 try {
-                    JsonHandler.saveUsers(appController.getUsers());
+                    dataHandler.saveUsers(appController.getUsers());
                     Log.info("successfully imported " + newUsers.size() + " User profiles");
                 } catch (IOException e) {
                     Log.warning("failed to save newly loaded users", e);
@@ -692,18 +691,34 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
             return;
         }
         if (role.isAssignableFrom(User.class)) {
-//        try {
-//            //TODO complete this when csv handler merged on dev 25/6
-//            Collection<User> existingUsers = appController.getUsers();
-//            Collection<User> newUsers = CSVHandler.getUsers(filename);
-//        } catch (FileNotFoundException e) {
-//            Log.warning("Failed to load file " + filename, e);
-//            messageBoxPopup("error");
-//
-//        } catch (InvalidFileException e) {
-//            Log.warning("File " + filename + " is invalid", e);
-//            messageBoxPopup("error");
-//        }
+            try {
+                Collection<User> existingUsers = appController.getUsers();
+                DataHandler csvHandler = new CSVHandler();
+                Collection<User> newUsers = csvHandler.loadUsers(filename);
+
+                //if imported contains any bad data, throw it out
+                for (User user : newUsers) {
+                    if (user.getNhi() == null) {
+                        throw new InvalidFileException();
+                    }
+                }
+
+                for (User user : newUsers) {
+                    if (existingUsers.contains(user)) {
+                        appController.update(user);
+                    } else {
+                        appController.addUser(user);
+                    }
+                }
+            } catch (FileNotFoundException e) {
+                Log.warning("Failed to load file " + filename, e);
+                messageBoxPopup("error");
+
+            } catch (InvalidFileException e) {
+                Log.warning(filename + "contained bad data", e);
+                messageBoxPopup("error");
+            }
+            refreshTables();
         }
     }
 
