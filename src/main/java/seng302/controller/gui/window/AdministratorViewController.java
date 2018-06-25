@@ -130,6 +130,7 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
     private TableView<?> activeTableView;
     private DataHandler dataHandler = new JsonHandler();
     private String messageAdmin = "Admin ";
+    private JsonHandler jsonHandler = new JsonHandler();
 
     /**
      * Initialises scene for the administrator view
@@ -593,7 +594,8 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
                 }
                 messageBoxPopup("confirm");
                 try {
-                    JsonHandler.saveAdmins(appController.getAdmins());
+
+                    jsonHandler.saveAdmins(appController.getAdmins());
                     Log.info("successfully imported " + newAdmins.size() + " Admin profiles");
                 } catch (IOException e) {
                     Log.warning("failed to save newly loaded admins", e);
@@ -621,7 +623,7 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
                 }
                 messageBoxPopup("confirm");
                 try {
-                    JsonHandler.saveClinicians(appController.getClinicians());
+                    jsonHandler.saveClinicians(appController.getClinicians());
                     Log.info("successfully imported " + newClinicians.size() + " Clinician profiles");
                 } catch (IOException e) {
                     Log.warning("failed to save newly loaded clinicians", e);
@@ -631,7 +633,7 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
             } else if (role.getSimpleName().equals(User.class.getSimpleName())) {
                 //<editor-fold desc="user handler">
                 Collection<User> existingUsers = appController.getUsers();
-                Collection<User> newUsers = JsonHandler.loadUsers(filename);
+                Collection<User> newUsers = jsonHandler.loadUsers(filename);
 
                 //if imported contains any bad data, throw it out
                 for (User user : newUsers) {
@@ -649,7 +651,7 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
                 }
                 messageBoxPopup("confirm");
                 try {
-                    JsonHandler.saveUsers(appController.getUsers());
+                    jsonHandler.saveUsers(appController.getUsers());
                     Log.info("successfully imported " + newUsers.size() + " User profiles");
                 } catch (IOException e) {
                     Log.warning("failed to save newly loaded users", e);
@@ -674,7 +676,7 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
      *
      * @param messageType a String to indicate the message type needing to be shown
      */
-    private void messageBoxPopup(String messageType) throws FileNotFoundException {
+    private void messageBoxPopup(String messageType) {
         Alert errorAlert = new Alert(Alert.AlertType.ERROR);
         errorAlert.setHeaderText("Error!");
         errorAlert.setContentText("Invalid file loaded.");
@@ -685,7 +687,7 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
         if (isAllWindowsClosed()) {
             boolean updated = false;
             boolean invalidFile = false;
-            int loadedUsersAmount;
+            int loadedUsersAmount = 0;
             List<User> existingUsers = appController.getUsers();
             String filename;
             filename = FileSelectorController.getFileSelector(stage);
@@ -719,7 +721,6 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
                             System.out.println("Pressed OK");
                         }
                     });
-                    throw e;
                 }
                 if (invalidFile) {
                     errorAlert.showAndWait().ifPresent(rs -> {
@@ -756,8 +757,8 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
                     confirmAlert.close();
                 }
             });
+        }
     }
-
     /**
      * checks if other windows are opened apart from admin overview
      *

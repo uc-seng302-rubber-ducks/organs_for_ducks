@@ -86,8 +86,8 @@ public class CSVHandler extends DataHandler{
             //TODO: change this to new address format
             u.setCurrentAddress(streetNumber+ " " + streetName + " " + neighbourhood + " " + city + " " + zipCode);
             u.setRegion(record.get(14));
-            //String country = record.get(16);
-            //String birthCountry = record.get(17);
+            String country = record.get(16);
+            String birthCountry = record.get(17);
             u.setHomePhone(record.get(18));
             u.setCellPhone(record.get(19));
             u.setEmail(record.get(20));
