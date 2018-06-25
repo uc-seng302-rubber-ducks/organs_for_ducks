@@ -24,15 +24,12 @@ import seng302.controller.gui.panel.TransplantWaitListController;
 import seng302.controller.gui.popup.AlertUnclosedWindowsController;
 import seng302.controller.gui.popup.DeletedUserController;
 import seng302.controller.gui.statusBarController;
-import seng302.exception.InvalidFileException;
-import seng302.model.Administrator;
-import seng302.model.Clinician;
-import seng302.model.TooltipTableRow;
-import seng302.model.User;
+import seng302.model.*;
 import seng302.model._abstract.TransplantWaitListViewer;
 import seng302.model._enum.EventTypes;
 import seng302.model._enum.Organs;
 import seng302.utils.AttributeValidation;
+import seng302.utils.DataHandler;
 import seng302.utils.JsonHandler;
 import seng302.utils.Log;
 import seng302.view.CLI;
@@ -131,6 +128,7 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
     private boolean filterVisible = false;
     private TableView<?> activeTableView;
     private String messageAdmin = "Admin ";
+    private DataHandler dataHandler = new JsonHandler();
 
     /**
      * Initialises scene for the administrator view
