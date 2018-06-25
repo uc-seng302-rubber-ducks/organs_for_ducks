@@ -1,0 +1,2156 @@
+{
+  "openapi": "3.0.0",
+  "servers": [
+    {
+      "url": "/odms/v1"
+    }
+  ],
+  "info": {
+    "description": "API for the SENG302 ODMS Web-Client architecture, story 41 for team 100",
+    "version": "0.0.1",
+    "title": "ODMS API for SENG302"
+  },
+  "tags": [
+    {
+      "name": "Users",
+      "description": "All user-related endpoints"
+    },
+    {
+      "name": "Clinicians",
+      "description": "All clinician-related endpoints"
+    },
+    {
+      "name": "Admin",
+      "description": "All admin-related endpoints"
+    },
+    {
+      "name": "Transplant Waiting List",
+      "description": "All transplant waiting list endpoints"
+    },
+    {
+      "name": "Stats",
+      "description": "All statistical endpoints"
+    }
+  ],
+  "paths": {
+    "/users": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Get the basic details for all the users",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "startIndex",
+            "description": "Number of users to skip before returning result",
+            "schema": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          {
+            "in": "query",
+            "name": "count",
+            "description": "Number of users to return",
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          {
+            "in": "query",
+            "name": "q",
+            "description": "Search string for user names",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "region",
+            "description": "Search string for user regions",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/usersOverview"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request."
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Create user",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "required": [
+                  "firstName",
+                  "dob",
+                  "nhi"
+                ],
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/usersOverview"
+                  }
+                ]
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/nhi"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request."
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/users/{nhi}": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "View user details",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "nhi",
+            "description": "user nhi",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/userDetails"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request."
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Change some selected information for a user",
+        "description": "Only those properties included in the requestBody are to be changed.",
+        "security": [
+          {
+            "User": []
+          },
+          {
+            "Clinician": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "nhi",
+            "description": "NHI of the user to update",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "anyOf": [
+                  {
+                    "$ref": "#/components/schemas/userDetails"
+                  }
+                ]
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad request."
+          },
+          "401": {
+            "description": "Unauthorized."
+          },
+          "403": {
+            "description": "Forbidden - bidding has begun on the auction."
+          },
+          "404": {
+            "description": "Not found."
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Delete a selected user",
+        "description": "Deletes a user from the server",
+        "security": [
+          {
+            "User": []
+          },
+          {
+            "Clinician": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "nhi",
+            "description": "NHI of the user to delete",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/users/{nhi}/procedures": {
+      "post": {
+        "parameters": [
+          {
+            "in": "path",
+            "name": "nhi",
+            "description": "user nhi",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "tags": [
+          "Users"
+        ],
+        "summary": "Make procedure for a user",
+        "security": [
+          {
+            "Clinician": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/procedures"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad request."
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal server error."
+          }
+        }
+      },
+      "patch": {
+        "parameters": [
+          {
+            "in": "path",
+            "name": "nhi",
+            "description": "user nhi",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "tags": [
+          "Users"
+        ],
+        "summary": "Make procedure for a user",
+        "security": [
+          {
+            "Clinician": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "anyOf": [
+                  {
+                    "$ref": "#/components/schemas/procedures"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad request."
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal server error."
+          }
+        }
+      },
+      "delete": {
+        "parameters": [
+          {
+            "in": "path",
+            "name": "nhi",
+            "description": "user nhi",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "tags": [
+          "Users"
+        ],
+        "summary": "delete user procedures",
+        "security": [
+          {
+            "Clinician": []
+          },
+          {
+            "Admin": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad request."
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal server error."
+          }
+        }
+      }
+    },
+    "/users/{nhi}/medications": {
+      "post": {
+        "parameters": [
+          {
+            "in": "path",
+            "name": "nhi",
+            "description": "user nhi",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "tags": [
+          "Users"
+        ],
+        "summary": "Make medication for the user",
+        "security": [
+          {
+            "Clinician": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/medications"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+      "patch": {
+        "parameters": [
+          {
+            "in": "path",
+            "name": "nhi",
+            "description": "user nhi",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "tags": [
+          "Users"
+        ],
+        "summary": "Modify medication for the user",
+        "security": [
+          {
+            "Clinician": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "anyOf": [
+                  {
+                    "$ref": "#/components/schemas/medications"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+      "delete": {
+        "parameters": [
+          {
+            "in": "path",
+            "name": "nhi",
+            "description": "user nhi",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "tags": [
+          "Users"
+        ],
+        "summary": "Delete medication for the user",
+        "security": [
+          {
+            "Clinician": []
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/users/{nhi}/diseases": {
+      "post": {
+        "parameters": [
+          {
+            "in": "path",
+            "name": "nhi",
+            "description": "User's nhi",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "tags": [
+          "Users"
+        ],
+        "summary": "Give the user a disease",
+        "security": [
+          {
+            "Clinician": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/diseases"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+      "patch": {
+        "parameters": [
+          {
+            "in": "path",
+            "name": "nhi",
+            "description": "user nhi",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "tags": [
+          "Users"
+        ],
+        "summary": "Modify disease for the user",
+        "security": [
+          {
+            "Clinician": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "anyOf": [
+                  {
+                    "$ref": "#/components/schemas/diseases"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+      "delete": {
+        "parameters": [
+          {
+            "in": "path",
+            "name": "nhi",
+            "description": "user nhi",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "tags": [
+          "Users"
+        ],
+        "summary": "Delete disease for the user",
+        "security": [
+          {
+            "Clinician": []
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/users/{nhi}/receiving": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Add an organ to the list of organs the user is receiving",
+        "security": [
+          {
+            "Clinician": []
+          },
+          {
+            "Admin": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "nhi",
+            "description": "NHI of the user",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "organs",
+            "description": "organs to register the user for receiving.",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Remove an entry from the transplant waiting list",
+        "security": [
+          {
+            "Clinician": []
+          },
+          {
+            "Admin": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "nhi",
+            "description": "NHI of the user",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "reason",
+            "description": "Reason for the deletion of the entry",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 4
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/users/{nhi}/donating": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Add an organ to the list of organs the user is receiving",
+        "security": [
+          {
+            "User": []
+          },
+          {
+            "Clinician": []
+          },
+          {
+            "Admin": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "nhi",
+            "description": "NHI of the user",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "organs",
+            "description": "organs to register the user for receiving.",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Remove an entry from the transplant waiting list",
+        "security": [
+          {
+            "User": []
+          },
+          {
+            "Clinician": []
+          },
+          {
+            "Admin": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "nhi",
+            "description": "NHI of the user",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "reason",
+            "description": "Reason for the deletion of the entry",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 4
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/login": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Log in",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/login"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/logInResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid username/email/password supplied"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/logout": {
+      "post": {
+        "tags": [
+          "Authentication"
+        ],
+        "summary": "Logs out user session given by auth token in header",
+        "security": [
+          {
+            "User": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/clinicians": {
+      "get": {
+        "parameters": [
+          {
+            "in": "query",
+            "name": "startIndex",
+            "description": "Number of clinicians to skip before returning result",
+            "schema": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          {
+            "in": "query",
+            "name": "count",
+            "description": "Number of clinicians to return",
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          {
+            "in": "query",
+            "name": "q",
+            "description": "Search string for clinicians names",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "region",
+            "description": "Search string for clinicians regions",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "tags": [
+          "Clinicians"
+        ],
+        "summary": "Gets all the clinicians",
+        "security": [
+          {
+            "Admin": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/cliniciansOverview"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Clinicians"
+        ],
+        "summary": "Creates a new clinician",
+        "security": [
+          {
+            "Admin": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/clinicianOverview"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/clinicians/{staffId}": {
+      "get": {
+        "parameters": [
+          {
+            "in": "path",
+            "name": "staffId",
+            "description": "clinician staff id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "tags": [
+          "Clinicians"
+        ],
+        "summary": "Gets a specific clinician",
+        "security": [
+          {
+            "Admin": []
+          },
+          {
+            "Clinician": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/clinicianDetails"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+      "patch": {
+        "parameters": [
+          {
+            "in": "path",
+            "name": "staffId",
+            "description": "clinician staff id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "tags": [
+          "Clinicians"
+        ],
+        "summary": "Edits a specific clinician",
+        "security": [
+          {
+            "Admin": []
+          },
+          {
+            "Clinician": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/clinicianOverview"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+      "delete": {
+        "parameters": [
+          {
+            "in": "path",
+            "name": "staffId",
+            "description": "clinician staff id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "tags": [
+          "Clinicians"
+        ],
+        "summary": "Delete a clinician",
+        "security": [
+          {
+            "Admin": []
+          },
+          {
+            "Clinician": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/admins": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Gets all the administrators",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "startIndex",
+            "description": "Number of admins to skip before returning result",
+            "schema": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          {
+            "in": "query",
+            "name": "count",
+            "description": "Number of admins to return",
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          {
+            "in": "query",
+            "name": "q",
+            "description": "Search string for admin names",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "Admin": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/adminsOverview"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Creates a new admin",
+        "security": [
+          {
+            "Admin": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/adminOverview"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/admins/{username}": {
+      "get": {
+        "parameters": [
+          {
+            "in": "path",
+            "name": "username",
+            "description": "Username of the admin",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Gets the administrator matching the username",
+        "security": [
+          {
+            "Admin": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/adminDetails"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+      "patch": {
+        "parameters": [
+          {
+            "in": "path",
+            "name": "username",
+            "description": "Username of the admin",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Edits the administrator matching the username",
+        "security": [
+          {
+            "Admin": []
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/adminOverview"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+      "delete": {
+        "parameters": [
+          {
+            "in": "path",
+            "name": "username",
+            "description": "Username of the admin",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "tags": [
+          "Admin"
+        ],
+        "summary": "Deletes the administrator matching the username",
+        "security": [
+          {
+            "Admin": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/transplantList": {
+      "get": {
+        "tags": [
+          "Transplant Waiting List"
+        ],
+        "security": [
+          {
+            "Admin": []
+          },
+          {
+            "Clinician": []
+          }
+        ],
+        "summary": "Gets a list of receivers who are waiting for an organ",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "startIndex",
+            "description": "amount to entries to skip before starting",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          {
+            "in": "query",
+            "name": "count",
+            "description": "Amount of entries to return",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 50
+            }
+          },
+          {
+            "in": "query",
+            "name": "name",
+            "description": "Only entries whose name (any) start with the provided value will be returned.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "region",
+            "description": "Only entries who reside in the provided region will be returned.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "organs",
+            "description": "Only entries who need any one of the provided organs will be returned.",
+            "required": false,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/transplantListOverview"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "transplantListOverview": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "description": "Data required for the user to see the transplant waiting list.",
+          "allOf": [
+            {
+              "$ref": "#/components/schemas/nhi"
+            },
+            {
+              "$ref": "#/components/schemas/name"
+            },
+            {
+              "properties": {
+                "organ": {
+                  "type": "string"
+                },
+                "registrationDate": {
+                  "$ref": "#/components/schemas/date"
+                }
+              }
+            }
+          ]
+        }
+      },
+      "usersOverview": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "required": [
+            "nhi",
+            "firstName",
+            "dob"
+          ],
+          "description": "summary data for an user",
+          "allOf": [
+            {
+              "$ref": "#/components/schemas/nhi"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "dob": {
+                  "$ref": "#/components/schemas/date"
+                }
+              }
+            },
+            {
+              "type": "object",
+              "properties": {
+                "dod": {
+                  "$ref": "#/components/schemas/date"
+                }
+              }
+            },
+            {
+              "$ref": "#/components/schemas/name"
+            },
+            {
+              "$ref": "#/components/schemas/region"
+            },
+            {
+              "$ref": "#/components/schemas/donatingOrgans"
+            },
+            {
+              "$ref": "#/components/schemas/receivingOrgans"
+            }
+          ]
+        }
+      },
+      "date": {
+        "type": "object",
+        "description": "date object",
+        "properties": {
+          "year": {
+            "type": "integer",
+            "maximum": 9999,
+            "minimum": 0
+          },
+          "month": {
+            "type": "integer",
+            "maximum": 12,
+            "minimum": 1
+          },
+          "day": {
+            "type": "integer",
+            "maximum": 31,
+            "minimum": 1
+          }
+        }
+      },
+      "name": {
+        "type": "object",
+        "description": "Name of the role",
+        "properties": {
+          "firstName": {
+            "type": "string"
+          },
+          "middleNames": {
+            "type": "string"
+          },
+          "lastName": {
+            "type": "string"
+          }
+        }
+      },
+      "region": {
+        "type": "object",
+        "description": "Region of the role",
+        "properties": {
+          "region": {
+            "type": "string"
+          }
+        }
+      },
+      "donatingOrgans": {
+        "type": "object",
+        "description": "array of organs that the user is donating",
+        "allOf": [
+          {
+            "type": "object"
+          },
+          {
+            "properties": {
+              "donating": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "receivingOrgans": {
+        "type": "object",
+        "description": "array of organs that the user is donating",
+        "allOf": [
+          {
+            "type": "object"
+          },
+          {
+            "properties": {
+              "receiving": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ]
+      },
+      "nhi": {
+        "type": "object",
+        "properties": {
+          "nhi": {
+            "type": "string",
+            "pattern": "^([A-Za-z]{3}[0-9]{4})$"
+          }
+        }
+      },
+      "userDetails": {
+        "type": "object",
+        "description": "detailed user object",
+        "required": [
+          "nhi"
+        ],
+        "allOf": [
+          {
+            "type": "object",
+            "properties": {
+              "summary": {
+                "$ref": "#/components/schemas/usersOverview"
+              },
+              "contact": {
+                "$ref": "#/components/schemas/contactInfo"
+              },
+              "healthDetails": {
+                "$ref": "#/components/schemas/healthDetails"
+              },
+              "emergencyContact": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "relationship": {
+                    "type": "string"
+                  },
+                  "contact": {
+                    "$ref": "#/components/schemas/contactInfo"
+                  }
+                }
+              },
+              "procedures": {
+                "$ref": "#/components/schemas/procedures"
+              },
+              "medications": {
+                "$ref": "#/components/schemas/medications"
+              },
+              "diseases": {
+                "$ref": "#/components/schemas/diseases"
+              },
+              "lastModified": {
+                "$ref": "#/components/schemas/datetime"
+              },
+              "created": {
+                "$ref": "#/components/schemas/datetime"
+              }
+            }
+          }
+        ]
+      },
+      "contactInfo": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/cellPhone"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "address": {
+                "$ref": "#/components/schemas/address"
+              }
+            }
+          },
+          {
+            "$ref": "#/components/schemas/homePhone"
+          },
+          {
+            "$ref": "#/components/schemas/email"
+          }
+        ]
+      },
+      "healthDetails": {
+        "type": "object",
+        "properties": {
+          "height": {
+            "type": "number",
+            "minimum": 0
+          },
+          "weight": {
+            "type": "number",
+            "minimum": 0
+          },
+          "smoker": {
+            "type": "boolean"
+          },
+          "alcoholConsumption": {
+            "type": "string"
+          },
+          "bloodType": {
+            "type": "string",
+            "pattern": "^(A|B|O|AB)(\\+|-)$"
+          }
+        }
+      },
+      "cellPhone": {
+        "type": "object",
+        "properties": {
+          "cellPhone": {
+            "type": "string",
+            "pattern": "^[0][34679](-)?[2-9][0-9]{2}(-)?[0-9]{4}$"
+          }
+        }
+      },
+      "address": {
+        "type": "object",
+        "allOf": [
+          {
+            "type": "object",
+            "properties": {
+              "streetNo": {
+                "type": "integer"
+              },
+              "streetName": {
+                "type": "string"
+              },
+              "city": {
+                "type": "string"
+              },
+              "neighbourhood": {
+                "type": "string"
+              },
+              "zip": {
+                "type": "string"
+              }
+            }
+          },
+          {
+            "$ref": "#/components/schemas/region"
+          }
+        ]
+      },
+      "homePhone": {
+        "type": "object",
+        "properties": {
+          "homePhone": {
+            "type": "string",
+            "pattern": "^[0-9]{7,13}$"
+          }
+        }
+      },
+      "logInResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "the id of the logged in user"
+          },
+          "token": {
+            "type": "string",
+            "description": "a token to be used for future calls"
+          }
+        }
+      },
+      "procedures": {
+        "type": "array",
+        "description": "Users procedures",
+        "items": {
+          "type": "object",
+          "required": [
+            "name",
+            "date"
+          ],
+          "allOf": [
+            {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "affectedOrgans": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "description": {
+                  "type": "string"
+                },
+                "date": {
+                  "$ref": "#/components/schemas/date"
+                }
+              }
+            }
+          ]
+        }
+      },
+      "medications": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "required": [
+            "name",
+            "date"
+          ],
+          "allOf": [
+            {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "startDates": {
+                  "$ref": "#/components/schemas/dates"
+                },
+                "endDates": {
+                  "$ref": "#/components/schemas/dates"
+                }
+              }
+            }
+          ]
+        }
+      },
+      "diseases": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "required": [
+            "name",
+            "date"
+          ],
+          "allOf": [
+            {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "cured": {
+                  "type": "boolean"
+                },
+                "chronic": {
+                  "type": "boolean"
+                },
+                "diagnosisDates": {
+                  "$ref": "#/components/schemas/dates"
+                }
+              }
+            }
+          ]
+        }
+      },
+      "dates": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "allOf": [
+            {
+              "$ref": "#/components/schemas/date"
+            }
+          ]
+        }
+      },
+      "email": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email"
+          }
+        }
+      },
+      "password": {
+        "type": "object",
+        "properties": {
+          "password": {
+            "type": "string",
+            "format": "password"
+          }
+        }
+      },
+      "clinicianOverview": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/name"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "staffId": {
+                "$ref": "#/components/schemas/username"
+              },
+              "address": {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/address"
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      },
+      "clinicianDetails": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/clinicianOverview"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "lastModified": {
+                "$ref": "#/components/schemas/datetime"
+              },
+              "created": {
+                "$ref": "#/components/schemas/datetime"
+              }
+            }
+          }
+        ]
+      },
+      "cliniciansOverview": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "allOf": [
+            {
+              "$ref": "#/components/schemas/clinicianOverview"
+            }
+          ]
+        }
+      },
+      "adminsOverview": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "allOf": [
+            {
+              "$ref": "#/components/schemas/adminOverview"
+            }
+          ]
+        }
+      },
+      "adminOverview": {
+        "type": "object",
+        "allOf": [
+          {
+            "type": "object",
+            "properties": {
+              "username": {
+                "$ref": "#/components/schemas/username"
+              },
+              "name": {
+                "$ref": "#/components/schemas/name"
+              }
+            }
+          }
+        ]
+      },
+      "adminDetails": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/adminOverview"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "lastModified": {
+                "$ref": "#/components/schemas/datetime"
+              },
+              "created": {
+                "$ref": "#/components/schemas/datetime"
+              }
+            }
+          }
+        ]
+      },
+      "datetime": {
+        "type": "object",
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/date"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "hour": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 23
+              },
+              "minute": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 59
+              },
+              "second": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 59
+              }
+            }
+          }
+        ]
+      },
+      "username": {
+        "type": "string"
+      },
+      "login": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "password": {
+            "description": "Blank for users",
+            "type": "string"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "User": {
+        "type": "apiKey",
+        "name": "X-Authorization",
+        "in": "header"
+      },
+      "Clinician": {
+        "type": "apiKey",
+        "name": "X-Authorization",
+        "in": "header"
+      },
+      "Admin": {
+        "type": "apiKey",
+        "name": "X-Authorization",
+        "in": "header"
+      }
+    }
+  }
+}
