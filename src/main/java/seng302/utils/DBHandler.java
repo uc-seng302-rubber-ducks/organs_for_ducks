@@ -12,7 +12,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 
 public class DBHandler {
     /**
@@ -32,7 +31,8 @@ public class DBHandler {
     /**
      * SQL commands for executing creates
      */
-    private static final String CREATE_USER_STMT = "INSERT INTO User (nhi, firstName, middleName, lastName, preferedName, dob, dod) VALUES (?, ?, ?, ?, ?, ?, ?)";
+    //<editor-fold desc="INSERT Queries">
+    private static final String CREATE_USER_STMT = "INSERT INTO User (nhi, firstName, middleName, lastName, preferedName, dob, dod, timeCreated, lastModified) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
     private static final String CREATE_USER_CONTACT_STMT = "INSERT INTO ContactDetails (fkUserNhi, homePhone, email, cellPhone) VALUES (?, ?, ?, ?)";
     private static final String CREATE_STAFF_CONTACT_STMT = "INSERT INTO ContactDetails (fkStaffId, homePhone, email, cellPhone) VALUES (?, ?, ?, ?)";
     private static final String CREATE_CLINICIAN_STMT = "INSERT INTO Clinician (staffId, firstName, middleName, lastName) VALUES (?, ?, ?, ?)";
@@ -41,6 +41,28 @@ public class DBHandler {
     private static final String CREATE_HEALTH_DETAILS = "INSERT INTO HealthDetails (fkUserNhi, gender, birthGender, smoker, alcoholConsumption, height, weight) VALUES (?, ?, ?, ?, ?, ?, ?)"; // TODO: Include blood type 24/6 - Eiran
     private static final String CREATE_EMERGENCY_STMT = "INSERT INTO EmergencyContactDetails (fkContactId, contactName, contactRelationship) VALUES (?, ?, ?)";
     private static final String GET_LATEST_CONTACT_ENTRY = "SELECT MAX(contactId) AS contactId FROM ContactDetails WHERE fkUserNhi=?";
+    private static final String CREATE_NEW_MEDICATION = "INSERT INTO Medication (fkUserNhi, medicationName) VALUES (?, ?)";
+    private static final String CREATE_NEW_PROCEDURE = "INSERT INTO Procedure (fkUserNhi, procedureName, procedureDescription, procedureDate) VALUES (?, ?, ?)";
+    //</editor-fold>
+
+    /**
+     * SQL Queries for updates
+     */
+    private static final String UPDATE_USER_STMT = "";
+    private static final String UPDATE_USER_CONTACT_STMT = "";
+    private static final String UPDATE_USER_HEALTH_STMT = "";
+    private static final String UPDATE_MEDICATION_STMT = "";
+
+    /**
+     * SQL Queries for deletes
+     */
+    private static final String DELETE_USER_STMT = "DELETE FROM User WHERE nhi = ?";
+    private static final String DELETE_PROCEDURE_STMT = "DELETE FROM MedicalProcedure WHERE procedureDate = ? AND procedureName = ? AND fkUserNhi = ?";
+    private static final String DELETE_CLINICIAN_STMT = "DELETE FROM Clinician WHERE staffId = ?";
+    private static final String DELETE_ADMIN_STMT = "DELETE FROM Administrators WHERE username = ?";
+    private static final String DELETE_USER_DISEASE_STMT = "DELETE FROM CurrentDisease WHERE diseaseName = ? AND diagnosisDate = ? AND fkUserNhi = ?";
+    private static final String DELETE_PAST_DISEASE_STMT = "DELETE FROM PreviousDisease WHERE diseaseName = ? AND diagnosisDate = ? AND fkUserNhi = ?";
+    private static final String DELETE_MEDICATION_STMT = "DELETE FROM Medication WHERE medicationName = ? AND fkUserNhi = ?";
 
     /**
      * Establishes a connection to the database
@@ -96,7 +118,7 @@ public class DBHandler {
      */
     public void saveUsers(Collection<User> users) {
         try {
-            executeUpdate(users);
+            updateDatabase(users);
         } catch (InvalidClassException invalidEx) {
             //Should never happen, but if it does, system failure
             invalidEx.printStackTrace();
@@ -142,7 +164,7 @@ public class DBHandler {
      */
     public void saveClinicians(Collection<Clinician> clinicians) {
         try {
-            executeUpdate(clinicians);
+            updateDatabase(clinicians);
         } catch (InvalidClassException invalidEx) {
             //Should never happen, but if it does, system failure
             invalidEx.printStackTrace();
@@ -188,7 +210,7 @@ public class DBHandler {
      */
     public void saveAdministrators(Collection<Administrator> administrators) {
         try {
-            executeUpdate(administrators);
+            updateDatabase(administrators);
         } catch (InvalidClassException invalidEx) {
             //Should never happen, but if it does, system failure
             invalidEx.printStackTrace();
@@ -202,14 +224,8 @@ public class DBHandler {
      * @param statement a PreparedStatement
      * @return A result set
      */
-    private ResultSet executeQuery(PreparedStatement statement) {
-        try {
-            return statement.executeQuery();
-        } catch (SQLException sqlEx) {
-            Log.warning("Error in connection to database", sqlEx);
-            System.out.println("Error connecting to database");
-        }
-        return null;
+    private ResultSet executeQuery(PreparedStatement statement) throws SQLException {
+        return statement.executeQuery();
     }
 
     /**
@@ -219,19 +235,52 @@ public class DBHandler {
      * @param <T>        User, Clinician or Administrator
      * @throws InvalidClassException if the collection does not hold Users, Clinicians or Administrators
      */
-    private <T> void executeUpdate(Collection<T> collection) throws InvalidClassException {
+    private <T> void updateDatabase(Collection<T> collection) throws InvalidClassException {
+        String identifier;
+        String identifierName;
+        String table;
         try {
             connect();
-            Iterator iter = collection.iterator();
-            while (iter.hasNext()) {
-                if (iter.next() instanceof Administrator) {
+            for (T object : collection) {
 
-                } else if (iter.next() instanceof Clinician) {
-
-                } else if (iter.next() instanceof User) {
-
+                if (object instanceof Administrator) {
+                    Administrator admin = (Administrator) object;
+                    if (admin.getChanges().size() <= 0) {
+                        continue;
+                    }
+                    table = "Administrator";
+                    identifierName = "userName";
+                    identifier = admin.getUserName();
+                } else if (object instanceof Clinician) {
+                    Clinician clinician = (Clinician) object;
+                    if (clinician.getChanges().size() <= 0) {
+                        continue;
+                    }
+                    table = "Clinician";
+                    identifierName = "staffId";
+                    identifier = clinician.getStaffId();
+                } else if (object instanceof User) {
+                    User user = (User) object;
+                    if (user.getChanges().size() <= 0) {
+                        continue;
+                    }
+                    table = "User";
+                    identifierName = "nhi";
+                    identifier = user.getNhi();
                 } else {
                     throw new InvalidClassException("Collection not a collection of Users, Clinicians or Administrators");
+                }
+
+                PreparedStatement stmt = connection.prepareStatement("SELECT ? FROM ? WHERE ? = ?");
+                stmt.setString(1, identifierName);
+                stmt.setString(2, table);
+                stmt.setString(3, identifierName);
+                stmt.setString(4, identifier);
+                ResultSet queryResults = executeQuery(stmt);
+                if (!queryResults.next()) {
+                    executeCreation(object);
+                } else {
+                    executeUpdate(object);
                 }
             }
             connection.close();
@@ -242,14 +291,26 @@ public class DBHandler {
     }
 
     /**
+     * Executes an update for an entry associated with the provided object.
+     * Pre-condition: The object must be of type User, Clinician or Admin
+     * Post-condition: The entry in the database reflects the entry
+     *
+     * @param object The object associated with the entry in the database
+     * @param <T>    Admin, Clinician or User
+     */
+    private <T> void executeUpdate(T object) {
+    }
+
+    /**
      * Executes an update for each of items in the collection.
-     * Precondition: The Collection must be of a type User, Clinician or Administrator
+     * Precondition: The object must be of a type User, Clinician or Administrator
+     * Post-conditions: An entry that represents the object is created and stored in the database.
      *
      * @param object collection of objects to update the database with
      * @param <T>        User, Clinician or Administrator
      * @throws InvalidClassException if the object is not User, Clinicians or Administrators
      */
-    public <T> void executeCreation(T object) throws InvalidClassException {
+    private <T> void executeCreation(T object) throws InvalidClassException {
         try {
             connect();
             connection.prepareStatement("START TRANSACTION").execute();
@@ -283,6 +344,7 @@ public class DBHandler {
         }
     }
 
+    //<editor-fold desc="Create helper functions">
     /**
      * Saves the hashed password to the PasswordDetails table in the database
      * Precondition: The role provided is an Administrator or Clinician
@@ -360,6 +422,8 @@ public class DBHandler {
         stmt.setString(5, user.getPreferredFirstName());
         stmt.setDate(6, Date.valueOf(user.getDateOfBirth()));
         stmt.setDate(7, Date.valueOf(user.getDateOfDeath()));
+        stmt.setTimestamp(8, Timestamp.valueOf(user.getTimeCreated()));
+        stmt.setTimestamp(9, Timestamp.valueOf(user.getLastModified()));
 
         stmt.executeUpdate();
     }
@@ -447,4 +511,57 @@ public class DBHandler {
 
         stmt.executeUpdate();
     }
+    //</editor-fold>
+
+    /**
+     * Deletes a role entry from the database that is associated with the given object
+     * Preconditions: The object provided is of type User, Clinician, Admin
+     * Postcondition: The entry associated with the object will be deleted.
+     *
+     * @param object The object associated with the entry to be deleted
+     * @param <T>    User, Clinician or Administrator
+     * @throws InvalidClassException if the provided object is not of type User, Clinician or Admin
+     */
+    public <T> void deleteRole(T object) throws InvalidClassException {
+        String identifier;
+        String sql;
+        try {
+            connect();
+            connection.prepareStatement("START TRANSACTION").execute();
+            try {
+                if (object instanceof Administrator) {
+                    Administrator admin = (Administrator) object;
+                    identifier = admin.getUserName();
+                    sql = DELETE_ADMIN_STMT;
+                } else if (object instanceof Clinician) {
+                    Clinician clinician = (Clinician) object;
+                    identifier = clinician.getStaffId();
+                    sql = DELETE_CLINICIAN_STMT;
+                    // TODO: Create the clinician contact stuff once the abstractions are completed 25/6 - Eiran
+                } else if (object instanceof User) {
+                    User user = (User) object;
+                    identifier = user.getNhi();
+                    sql = DELETE_USER_STMT;
+                } else {
+                    throw new InvalidClassException("Provided role is not of type Users, Clinicians or Administrators");
+                }
+                PreparedStatement stmt = connection.prepareStatement(sql);
+                stmt.setString(1, identifier);
+
+                stmt.executeUpdate();
+            } catch (SQLException sqlEx) {
+                Log.severe("A fatal error in deletion, cancelling operation", sqlEx);
+                connection.prepareStatement("ROLLBACK").execute();
+                System.out.println("An error occured"); //TODO: Make this a popup
+            }
+
+            connection.prepareStatement("COMMIT");
+            connection.close();
+        } catch (SQLException sqlEx) {
+            Log.warning("Error in connection to database", sqlEx);
+            System.out.println("Error connecting to database");
+        }
+    }
+
+
 }
