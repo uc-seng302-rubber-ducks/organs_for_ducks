@@ -4,8 +4,9 @@ import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
 import seng302.controller.AppController;
-import seng302.utils.JsonHandler;
 import seng302.model.User;
+import seng302.utils.DataHandler;
+import seng302.utils.JsonHandler;
 import seng302.view.IoHelper;
 
 import java.io.IOException;
@@ -52,6 +53,8 @@ public class CreateUser implements Runnable {
 
     @Option(names = {"-r", "-region"}, description = "Region (Address line 2)")
     private String region;
+
+    private DataHandler dataHandler = new JsonHandler();
 
     public void run() {
         AppController controller = AppController.getInstance();
@@ -100,7 +103,7 @@ public class CreateUser implements Runnable {
         System.out.println("User " + user.toString() + " has been registered with ID number");
         System.out.println(user.hashCode());
         try {
-            JsonHandler.saveUsers(controller.getUsers());
+            dataHandler.saveUsers(controller.getUsers());
         } catch (IOException ex) {
             System.err.println("Error saving data to file\n" + ex.getMessage());
         }
