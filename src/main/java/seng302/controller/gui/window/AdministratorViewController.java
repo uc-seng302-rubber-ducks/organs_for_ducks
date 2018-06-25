@@ -281,11 +281,11 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
 
         fListClinicians = new FilteredList<>(clinicians);
         fListClinicians = filter(fListClinicians);
-        FilteredList<Clinician> squished = new FilteredList<>(fListClinicians);
 
-        SortedList<Clinician> clinicianSortedList = new SortedList<>(squished);
+        SortedList<Clinician> clinicianSortedList = new SortedList<>(fListClinicians);
         clinicianSortedList.comparatorProperty().bind(clinicianTableView.comparatorProperty());
         clinicianTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        clinicianTableView.getColumns().clear();
         clinicianTableView.getColumns().addAll(nhiColumn, firstNameColumn, lastNameColumn);
         clinicianTableView.setItems(clinicianSortedList);
 
@@ -315,11 +315,12 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
 
         fListAdmins = new FilteredList<>(admins);
         fListAdmins = filter(fListAdmins);
-        FilteredList<Administrator> squished = new FilteredList<>(fListAdmins);
+        //FilteredList<Administrator> squished = new FilteredList<>(fListAdmins);
 
-        SortedList<Administrator> administratorSortedList = new SortedList<>(squished);
+        SortedList<Administrator> administratorSortedList = new SortedList<>(fListAdmins);
         administratorSortedList.comparatorProperty().bind(adminTableView.comparatorProperty());
         adminTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        adminTableView.getColumns().clear();
         adminTableView.getColumns().addAll(userNameColumn, firstNameColumn, lastNameColumn);
         adminTableView.setItems(administratorSortedList);
 
@@ -373,15 +374,14 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
 
         fListUsers = new FilteredList<>(oListDonors);
         fListUsers = filter(fListUsers);
-        FilteredList<User> squished = new FilteredList<>(fListUsers);
 
-        SortedList<User> sListUsers = new SortedList<>(squished);
+        SortedList<User> sListUsers = new SortedList<>(fListUsers);
         sListUsers.comparatorProperty().bind(userTableView.comparatorProperty());
 
         //predicate on this list not working properly
         //should limit the number of items shown to ROWS_PER_PAGE
-        //squished = limit(fListDonors, sListDonors);
         //set table columns and contents
+        userTableView.getColumns().clear();
         userTableView.getColumns().setAll(fNameColumn, lNameColumn, dobColumn, dodColumn, ageColumn, regionColumn, organsColumn);
         //searchTableView.setItems(FXCollections.observableList(sListDonors.subList(startIndex, endIndex)));
         userTableView.setItems(sListUsers);
@@ -465,7 +465,7 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
             }
             if ((AttributeValidation.checkTextMatches(lowerCaseFilterText, fName) ||
                     AttributeValidation.checkTextMatches(lowerCaseFilterText, lName)) &&
-                    (regionMatch)) {// && (genderMatch)) {
+                    (regionMatch)) {
                 searchCount++;
                 return true;
             }/* TODO: reimplement and remove this
@@ -525,6 +525,7 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
        Log.info("Importing Admins");
        importRole(Administrator.class);
 
+
     }
 
     /**
@@ -569,8 +570,7 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
             return;
         }
         try {
-
-            if (role.getSimpleName().equals(Administrator.class.getSimpleName())) {
+            if (role.isAssignableFrom(Administrator.class)) {
                 //<editor-fold desc="admin handler">
                 Collection<Administrator> existingAdmins = appController.getAdmins();
                 Collection<Administrator> newAdmins = JsonHandler.loadAdmins(filename);
@@ -598,7 +598,7 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
                 }
                 //</editor-fold>
 
-            } else if (role.getSimpleName().equals(Clinician.class.getSimpleName())) {
+            } else if (role.isAssignableFrom(Clinician.class)) {
                 //<editor-fold desc="clinician handler">
                 Collection<Clinician> existingClinicians = appController.getClinicians();
                 Collection<Clinician> newClinicians = JsonHandler.loadClinicians(filename);
@@ -626,7 +626,7 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
                 }
                 //</editor-fold>
 
-            } else if (role.getSimpleName().equals(User.class.getSimpleName())) {
+            } else if (role.isAssignableFrom(User.class)) {
                 //<editor-fold desc="user handler">
                 Collection<User> existingUsers = appController.getUsers();
                 Collection<User> newUsers = JsonHandler.loadUsers(filename);
@@ -1008,14 +1008,15 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
         }
     }
 
+
     /**
      * updates tables in the admin window with current version of underlying model
      */
     public void refreshTables() {
         transplantWaitListTabPageController.populateWaitListTable();
-        adminTableView.refresh();
-        clinicianTableView.refresh();
-        userTableView.refresh();
+        initAdminSearchTable();
+        initClinicianSearchTable();
+        initUserSearchTable();
     }
 
     /**
