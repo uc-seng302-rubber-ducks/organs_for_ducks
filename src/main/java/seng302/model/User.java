@@ -150,6 +150,7 @@ public class User extends Undoable<User> implements Listenable {
         this.contactDetails = new ContactDetails();
         this.currentMedicationTimes = new HashMap<>();
         this.previousMedicationTimes = new HashMap<>();
+        this.updateHistory = new HashMap<>();
         this.medicalProcedures = new ArrayList<>();
         this.donorDetails = new DonorDetails(this);
         this.receiverDetails = new ReceiverDetails(this);
@@ -921,6 +922,7 @@ public class User extends Undoable<User> implements Listenable {
             return name;
         }
     }
+
 
     @Override
     public boolean equals(Object o) {

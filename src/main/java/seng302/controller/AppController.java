@@ -12,6 +12,7 @@ import seng302.model.Clinician;
 import seng302.model.User;
 import seng302.model._enum.Directory;
 import seng302.model.datamodel.TransplantDetails;
+import seng302.utils.DataHandler;
 import seng302.utils.JsonHandler;
 import seng302.utils.Log;
 
@@ -35,6 +36,7 @@ public class AppController {
     private static AppController controller;
     private ArrayList<String[]> historyOfCommands = new ArrayList<>();
     private int historyPointer = 0;
+    private DataHandler dataHandler = new JsonHandler();
 
     private UserController userController = new UserController();
     private ClinicianController clinicianController = new ClinicianController();
@@ -54,7 +56,7 @@ public class AppController {
      */
     private AppController() {
         try {
-            users = JsonHandler.loadUsers(USERS_FILE);
+            users = dataHandler.loadUsers(USERS_FILE);
             Log.info(users.size() + " users were successfully loaded");
         } catch (FileNotFoundException e) {
             Log.warning("User file was not found", e);
@@ -62,14 +64,14 @@ public class AppController {
         }
 
         try {
-            clinicians = JsonHandler.loadClinicians(CLINICIAN_FILE);
+            clinicians = dataHandler.loadClinicians(CLINICIAN_FILE);
             Log.info(clinicians.size() + " clinicians were successfully loaded");
         } catch (FileNotFoundException e) {
             Log.warning("Clinician file was not found", e);
         }
 
         try {
-            admins = JsonHandler.loadAdmins(ADMIN_FILE);
+            admins = dataHandler.loadAdmins(ADMIN_FILE);
             Log.info(admins.size() + " administrators were successfully loaded");
         } catch (FileNotFoundException e) {
             Log.severe("Administrator file was not found", e);
@@ -89,7 +91,7 @@ public class AppController {
             admins.add(new Administrator("default", "", "", "", "admin"));
 
             try {
-                JsonHandler.saveAdmins(admins);
+                dataHandler.saveAdmins(admins);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -105,7 +107,7 @@ public class AppController {
         if (!defaultSeen) {
             clinicians.add(new Clinician("0", "admin", "Default", null, null, null, (String) null));
             try {
-                JsonHandler.saveClinicians(clinicians);
+                dataHandler.saveClinicians(clinicians);
                 Log.info("Successfully saved clinicians to file");
             } catch (IOException e) {
                 Log.warning("Could not save clinicians to file", e);
@@ -229,7 +231,7 @@ public class AppController {
         deletedUserStack.add(user);
         setUsers((ArrayList<User>) sessionList);
         try {
-            JsonHandler.saveUsers(sessionList);
+            dataHandler.saveUsers(sessionList);
 
         } catch (IOException e) {
             Log.warning("failed to delete a user with NHI: " + user.getNhi(), e);
@@ -275,7 +277,7 @@ public class AppController {
             changelogWrite.add(new Change(LocalDateTime.now(), "Added user " + user.getFullName()));
         }
         try {
-            JsonHandler.saveUsers(users);
+            dataHandler.saveUsers(users);
             //JsonHandler.saveChangelog(changelogWrite, user.getFullName().toLowerCase().replace(" ", "_"));
 
         } catch (IOException e) {
@@ -348,7 +350,7 @@ public class AppController {
         }
 
         try {
-            JsonHandler.saveClinicians(clinicians);
+            dataHandler.saveClinicians(clinicians);
             Log.info("Successfully updated clinician with Staff ID: " + clinician.getStaffId());
         } catch (IOException e) {
             Log.warning("Failed to update clinician with Staff ID: " + clinician.getStaffId(), e);
@@ -367,7 +369,7 @@ public class AppController {
         this.clinicians = clinicianSessionList;
 
         try {
-            JsonHandler.saveClinicians(clinicianSessionList);
+            dataHandler.saveClinicians(clinicianSessionList);
         } catch (IOException e) {
             Log.warning("failed to delete a clinician", e);
         }
@@ -385,7 +387,7 @@ public class AppController {
         this.admins = adminSessionList;
 
         try {
-            JsonHandler.saveAdmins(adminSessionList);
+            dataHandler.saveAdmins(adminSessionList);
         } catch (IOException e) {
             Log.warning("failed to delete an administrator", e);
         }
@@ -445,7 +447,7 @@ public class AppController {
         }
 
         try {
-            JsonHandler.saveAdmins(admins);
+            dataHandler.saveAdmins(admins);
             Log.info("successfully updated the Administrator profile with user name: " + administrator.getUserName());
         } catch (IOException e) {
             Log.warning("Failed to update Administrator profiles with user name: " + administrator.getUserName(), e);
