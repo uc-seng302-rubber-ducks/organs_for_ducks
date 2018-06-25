@@ -233,6 +233,10 @@ public class NewUserController {
             User newUser = new User(fName, dob, nhi);
 
             try {
+                newUser.setMiddleName(middleName);
+                newUser.setLastName(lastName);
+                newUser.setDateOfDeath(dodInput.getValue());
+                newUser.setPreferredFirstName(preferredFirstName);
                 newUser.setRegion(region);
                 newUser.setHomePhone(homePhone);
                 newUser.setCellPhone(cellPhone);
@@ -244,6 +248,7 @@ public class NewUserController {
                 newUser.setStreetNumber(streetnum);
                 newUser.setStreetName(Street);
                 newUser.setZipCode(zipcode);
+
                 HealthDetails healthDetails = collectHealthDetails(birthGender, genderIdentity, height, weight, bloodType, alcoholConsumption, smoker);
                 newUser.setHealthDetails(healthDetails);
 

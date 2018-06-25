@@ -193,7 +193,6 @@ public class UserController {
     private void setContactPage() {
         if (contact != null) {
             eName.setText(contact.getName());
-            System.out.println(currentUser.getContact());
             eCellPhone.setText(contact.getCellPhoneNumber());
             if (contact.getAddress() != null) {
                 eAddress.setText(contact.getAddress().toString());

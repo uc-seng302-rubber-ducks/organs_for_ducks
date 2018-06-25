@@ -80,8 +80,7 @@ public class Address {
     @Override
     public String toString() {
         return
-                streetNumber + " "
-                        +
+                streetNumber + " " +
                         streetName + " \n" +
                         neighborhood + "\n" +
                         city + " " +
