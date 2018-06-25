@@ -663,14 +663,7 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
                         appController.addUser(newUser);
                     }
                 }
-                messageBoxPopup("confirm");
-                try {
-                    dataHandler.saveUsers(appController.getUsers());
-                    Log.info("successfully imported " + newUsers.size() + " User profiles");
-                } catch (IOException e) {
-                    Log.warning("failed to save newly loaded users", e);
-                    messageBoxPopup("error");
-                }
+                importSaveUsers(newUsers.size());
                 //</editor-fold>
             }
 
@@ -710,14 +703,7 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
                         appController.addUser(user);
                     }
                 }
-                messageBoxPopup("confirm");
-                try {
-                    dataHandler.saveUsers(appController.getUsers());
-                    Log.info("successfully imported " + newUsers.size() + " User profiles");
-                } catch (IOException e) {
-                    Log.warning("failed to save newly loaded users", e);
-                    messageBoxPopup("error");
-                }
+               importSaveUsers(newUsers.size());
             } catch (FileNotFoundException e) {
                 Log.warning("Failed to load file " + filename, e);
                 messageBoxPopup("error");
@@ -727,6 +713,17 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
                 messageBoxPopup("error");
             }
             refreshTables();
+        }
+    }
+
+    private void importSaveUsers(int numNewUsers) {
+        messageBoxPopup("confirm");
+        try {
+            dataHandler.saveUsers(appController.getUsers());
+            Log.info("successfully imported " + numNewUsers + " User profiles");
+        } catch (IOException e) {
+            Log.warning("failed to save newly loaded users", e);
+            messageBoxPopup("error");
         }
     }
 
