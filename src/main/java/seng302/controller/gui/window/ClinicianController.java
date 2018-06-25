@@ -16,16 +16,16 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import seng302.controller.*;
+import seng302.controller.AppController;
 import seng302.controller.gui.panel.TransplantWaitListController;
 import seng302.controller.gui.popup.DeletedUserController;
 import seng302.controller.gui.statusBarController;
 import seng302.model.Clinician;
 import seng302.model.TooltipTableRow;
+import seng302.model.User;
 import seng302.model._abstract.TransplantWaitListViewer;
 import seng302.model._enum.EventTypes;
 import seng302.model._enum.Organs;
-import seng302.model.User;
 import seng302.utils.AttributeValidation;
 import seng302.utils.Log;
 
@@ -39,7 +39,7 @@ import java.util.*;
  */
 public class ClinicianController implements PropertyChangeListener, TransplantWaitListViewer {
 
-    private final int ROWS_PER_PAGE = 30;
+    private static final int ROWS_PER_PAGE = 30;
     private int startIndex = 0;
     private int endIndex;
     //<editor-fold desc="FXML declarations">
@@ -338,7 +338,6 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
             userStage.show();
         } catch (IOException e) {
             Log.severe("Clinician " + clinician.getStaffId() + " Failed to load user overview window", e);
-            e.printStackTrace();
         }
     }
 
@@ -451,7 +450,6 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
             Log.info("Clinician " + clinician.getStaffId() + " successfully launched login window after logout");
         } catch (IOException e) {
             Log.severe("Clinician " + clinician.getStaffId() + " failed to launch login window after logout", e);
-            e.printStackTrace();
         }
     }
 
@@ -474,7 +472,6 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
             Log.info("Clinician " + clinician.getStaffId() + " successfully launched update clinician window");
         } catch (IOException e) {
             Log.severe("Clinician " + clinician.getStaffId() + " failed to launch update clinician window", e);
-            e.printStackTrace();
         }
     }
 
@@ -518,7 +515,6 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
             Log.info("Clinician " + clinician.getStaffId() + " successfully launched delete user window");
         } catch (IOException e) {
             Log.severe("Clinician " + clinician.getStaffId() + " failed to launch delete user window", e);
-            e.printStackTrace();
         }
     }
 

@@ -74,7 +74,7 @@ public class AppController {
             admins = dataHandler.loadAdmins(ADMIN_FILE);
             Log.info(admins.size() + " administrators were successfully loaded");
         } catch (FileNotFoundException e) {
-            System.out.println("Administrator file was not found");
+            Log.severe("Administrator file was not found", e);
         }
 
         String[] empty = {""};

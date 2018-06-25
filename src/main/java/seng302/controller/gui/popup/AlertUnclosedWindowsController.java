@@ -35,7 +35,7 @@ public class AlertUnclosedWindowsController {
      */
     @FXML
     private void closeAllWindows() {
-        controller.CloseAllWindows();
+        controller.closeAllWindows();
         stage.close();
     }
 }

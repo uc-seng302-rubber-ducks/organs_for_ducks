@@ -224,7 +224,6 @@ public class NewUserController {
                         Log.info("Successfully launched User Overview for User NHI: " + nhi);
                     } catch (IOException e) {
                         Log.severe("Failed to load User Overview for User NHI: " + nhi, e);
-                        e.printStackTrace();
                     }
                 } else {
                     FXMLLoader userLoader = new FXMLLoader(
@@ -242,7 +241,6 @@ public class NewUserController {
                         Log.info("Successfully launched User Overview for User NHI: " + nhi);
                     } catch (IOException e) {
                         Log.severe("Failed to load User Overview for User NHI: " + nhi, e);
-                        e.printStackTrace();
                     }
                 }
             } catch (InvalidFieldsException e) {
