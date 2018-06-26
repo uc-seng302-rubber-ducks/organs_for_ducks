@@ -396,6 +396,7 @@ public class NewUserController {
                 contact.setCity(ecity);
                 contact.setCountry(ecountry);
                 contact.setZipCode(ezipcode);
+                contact.setRegion(eRegion);
                 contact.setNeighborhood(eneighborhood);
                 contact.setEmail(eEmail);
                 contact.setRelationship(eRelationship);

@@ -41,6 +41,12 @@ public class UserController {
     @FXML
     private Label pAddress;
     @FXML
+    private Label city;
+    @FXML
+    private Label zipCode;
+    @FXML
+    private Label country;
+    @FXML
     private Label pRegion;
     @FXML
     private Label pEmail;
@@ -50,6 +56,12 @@ public class UserController {
     private Label eHomePhone;
     @FXML
     private Label eAddress;
+    @FXML
+    private Label ecCity;
+    @FXML
+    private Label ecZipCode;
+    @FXML
+    private Label ecCountry;
     @FXML
     private Label eRegion;
     @FXML
@@ -212,11 +224,15 @@ public class UserController {
                 eHomePhone.setText("");
             }
 
-            if (contact.getRegion() != null) {
-                eRegion.setText(contact.getRegion());
-            } else {
-                eRegion.setText("");
-            }
+            eAddress.setText(contact.getAddress().getStringAddress());
+
+            ecCity.setText(contact.getCity());
+
+            ecCountry.setText(contact.getCountry());
+
+            eRegion.setText(contact.getRegion());
+
+            ecZipCode.setText(contact.getZipCode());
 
             if (contact.getRelationship() != null) {
                 relationship.setText(contact.getRelationship());
@@ -224,11 +240,12 @@ public class UserController {
                 relationship.setText("");
             }
         }
-        if (currentUser.getRegion() != null) {
             pRegion.setText(currentUser.getRegion());
-        } else {
-            pRegion.setText("");
-        }
+        pAddress.setText(currentUser.getContactDetails().getAddress().getStringAddress());
+        city.setText(currentUser.getCity());
+        country.setText(currentUser.getCountry());
+        zipCode.setText(currentUser.getZipCode());
+
         if (currentUser.getEmail() != null) {
             pEmail.setText(currentUser.getEmail());
         } else {

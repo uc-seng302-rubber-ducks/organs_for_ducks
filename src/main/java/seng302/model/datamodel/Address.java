@@ -76,6 +76,10 @@ public class Address {
         this.country = country;
     }
 
+    public String getStringAddress() {
+        return streetNumber + " " + streetName + "\n" + neighborhood;
+    }
+
 
     @Override
     public String toString() {
