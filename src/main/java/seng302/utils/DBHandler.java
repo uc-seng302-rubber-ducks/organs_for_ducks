@@ -2,9 +2,12 @@ package seng302.utils;
 
 //import com.mysql.jdbc.PreparedStatement;
 
+import seng302.controller.AppController;
 import seng302.model.Administrator;
 import seng302.model.Clinician;
+import seng302.model.MedicalProcedure;
 import seng302.model.User;
+import seng302.model.datamodel.ProcedureKey;
 
 import java.io.InvalidClassException;
 import java.sql.*;
@@ -12,6 +15,8 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 public class DBHandler {
     /**
@@ -119,6 +124,7 @@ public class DBHandler {
     public void saveUsers(Collection<User> users) {
         try {
             updateDatabase(users);
+            updateDatabase(AppController.getInstance().getDeletedUsers());
         } catch (InvalidClassException invalidEx) {
             //Should never happen, but if it does, system failure
             invalidEx.printStackTrace();
@@ -165,6 +171,7 @@ public class DBHandler {
     public void saveClinicians(Collection<Clinician> clinicians) {
         try {
             updateDatabase(clinicians);
+            updateDatabase(AppController.getInstance().getDeletedClinicians());
         } catch (InvalidClassException invalidEx) {
             //Should never happen, but if it does, system failure
             invalidEx.printStackTrace();
@@ -211,6 +218,7 @@ public class DBHandler {
     public void saveAdministrators(Collection<Administrator> administrators) {
         try {
             updateDatabase(administrators);
+            updateDatabase(AppController.getInstance().getDeletedAdmins());
         } catch (InvalidClassException invalidEx) {
             //Should never happen, but if it does, system failure
             invalidEx.printStackTrace();
@@ -239,6 +247,7 @@ public class DBHandler {
         String identifier;
         String identifierName;
         String table;
+        boolean toDelete; // Flag that marks whether the current role is to be deleted.
         try {
             connect();
             for (T object : collection) {
@@ -251,6 +260,7 @@ public class DBHandler {
                     table = "Administrator";
                     identifierName = "userName";
                     identifier = admin.getUserName();
+                    toDelete = AppController.getInstance().getDeletedAdmins().contains(admin);
                 } else if (object instanceof Clinician) {
                     Clinician clinician = (Clinician) object;
                     if (clinician.getChanges().size() <= 0) {
@@ -259,6 +269,7 @@ public class DBHandler {
                     table = "Clinician";
                     identifierName = "staffId";
                     identifier = clinician.getStaffId();
+                    toDelete = AppController.getInstance().getDeletedClinicians().contains(clinician);
                 } else if (object instanceof User) {
                     User user = (User) object;
                     if (user.getChanges().size() <= 0) {
@@ -267,18 +278,18 @@ public class DBHandler {
                     table = "User";
                     identifierName = "nhi";
                     identifier = user.getNhi();
+                    toDelete = AppController.getInstance().getDeletedUsers().contains(user);
                 } else {
-                    throw new InvalidClassException("Collection not a collection of Users, Clinicians or Administrators");
+                    throw new InvalidClassException("Object is not of type Users, Clinicians or Administrators");
                 }
 
-                PreparedStatement stmt = connection.prepareStatement("SELECT ? FROM ? WHERE ? = ?");
-                stmt.setString(1, identifierName);
-                stmt.setString(2, table);
-                stmt.setString(3, identifierName);
+                PreparedStatement stmt = connection.prepareStatement(String.format("SELECT %s FROM %s WHERE %s = ?", identifierName, table, identifierName));
                 stmt.setString(4, identifier);
                 ResultSet queryResults = executeQuery(stmt);
                 if (!queryResults.next()) {
                     executeCreation(object);
+                } else if (toDelete) {
+                    deleteRole(object);
                 } else {
                     executeUpdate(object);
                 }
@@ -299,6 +310,7 @@ public class DBHandler {
      * @param <T>    Admin, Clinician or User
      */
     private <T> void executeUpdate(T object) {
+
     }
 
     /**
@@ -522,7 +534,7 @@ public class DBHandler {
      * @param <T>    User, Clinician or Administrator
      * @throws InvalidClassException if the provided object is not of type User, Clinician or Admin
      */
-    public <T> void deleteRole(T object) throws InvalidClassException {
+    private <T> void deleteRole(T object) throws InvalidClassException {
         String identifier;
         String sql;
         try {
@@ -537,7 +549,6 @@ public class DBHandler {
                     Clinician clinician = (Clinician) object;
                     identifier = clinician.getStaffId();
                     sql = DELETE_CLINICIAN_STMT;
-                    // TODO: Create the clinician contact stuff once the abstractions are completed 25/6 - Eiran
                 } else if (object instanceof User) {
                     User user = (User) object;
                     identifier = user.getNhi();
@@ -560,6 +571,61 @@ public class DBHandler {
         } catch (SQLException sqlEx) {
             Log.warning("Error in connection to database", sqlEx);
             System.out.println("Error connecting to database");
+        }
+    }
+
+    /**
+     * Deletes finer user details such as medications, procedures and diseases
+     * Preconditions: There is an active connection to the database
+     * Post-conditions: The changes made locally are reflected on the database
+     *
+     * @param user user to delete the details of
+     * @throws SQLException If there is an error deleting the details.
+     */
+    private void deleteUsersDetails(User user) throws SQLException {
+        deleteUserProcedures(user);
+        deleteUserMedications(user);
+        deleteUserCurrentDiseases(user);
+        deleteUserPreviousDiseases(user);
+    }
+
+    private void deleteUserPreviousDiseases(User user) {
+    }
+
+    private void deleteUserCurrentDiseases(User user) {
+    }
+
+    private void deleteUserMedications(User user) {
+    }
+
+    /**
+     * Delete procedures that are present in the database but not in the local user storage
+     *
+     * @param user User to check and delete procedures for
+     * @throws SQLException if the connection to the database is invalid
+     */
+    private void deleteUserProcedures(User user) throws SQLException {
+        PreparedStatement getProcedureStmt = connection.prepareStatement("SELECT procedureName, procedureDate FROM MedicalProcedure WHERE fkUserNhi = ?");
+        getProcedureStmt.setString(1, user.getNhi());
+        ResultSet dbProcedures = executeQuery(getProcedureStmt);
+
+        // Convert the list into a mapping of procedure keys and procedures 26/6 - Eiran
+        Map<ProcedureKey, MedicalProcedure> procedureMap = new HashMap<>();
+        for (MedicalProcedure p : user.getMedicalProcedures()) {
+            procedureMap.put(p.getKey(), p);
+        }
+
+        // Loops through each entry in the results and deletes it if it is not present in the local list. 26/6 - Eiran
+        while (dbProcedures.next()) {
+            ProcedureKey key = new ProcedureKey(dbProcedures.getString(1), dbProcedures.getDate(2).toLocalDate());
+            if (!procedureMap.containsKey(key)) {
+                PreparedStatement deleteProcedure = connection.prepareStatement(DELETE_PROCEDURE_STMT);
+                deleteProcedure.setString(1, key.getName());
+                deleteProcedure.setDate(2, Date.valueOf(key.getDate()));
+                deleteProcedure.setString(3, user.getNhi());
+
+                deleteProcedure.executeUpdate();
+            }
         }
     }
 
