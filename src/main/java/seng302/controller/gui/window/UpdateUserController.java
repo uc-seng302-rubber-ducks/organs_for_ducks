@@ -65,40 +65,70 @@ public class UpdateUserController {
     private TextField weightInput;
 
     @FXML
-    private TextField phoneInput;
+    private TextField phone;
 
     @FXML
-    private TextField cellInput;
+    private TextField cell;
 
     @FXML
-    private TextField addressInput;
+    private TextField streetNumber;
 
     @FXML
-    private TextField regionInput;
+    private TextField street;
 
     @FXML
-    private TextField emailInput;
+    private TextField neighborhood;
 
     @FXML
-    private TextField ecNameInput;
+    private TextField city;
 
     @FXML
-    private TextField ecPhoneInput;
+    private ComboBox<String> region;
 
     @FXML
-    private TextField ecCellInput;
+    private TextField zipCode;
 
     @FXML
-    private TextField ecAddressInput;
+    private TextField country;
 
     @FXML
-    private TextField ecRegionInput;
+    private TextField email;
 
     @FXML
-    private TextField ecEmailInput;
+    private TextField ecName;
 
     @FXML
-    private TextField ecRelationshipInput;
+    private TextField ecPhone;
+
+    @FXML
+    private TextField ecCell;
+
+    @FXML
+    private TextField ecStreetNumber;
+
+    @FXML
+    private TextField ecStreet;
+
+    @FXML
+    private TextField ecNeighborhood;
+
+    @FXML
+    private TextField ecCity;
+
+    @FXML
+    private ComboBox<String> ecRegion;
+
+    @FXML
+    private TextField ecZipCode;
+
+    @FXML
+    private TextField ecCountry;
+
+    @FXML
+    private TextField ecEmail;
+
+    @FXML
+    private TextField ecRelationship;
 
     @FXML
     private ComboBox<String> birthGenderComboBox;
@@ -143,7 +173,6 @@ public class UpdateUserController {
     public void init(User user, AppController controller, Stage stage) {
         this.stage = stage;
         currentUser = user;
-        System.out.println(user.toString());
         oldUser = currentUser.clone();
         this.appController = controller;
         setUserDetails(currentUser);
@@ -161,9 +190,9 @@ public class UpdateUserController {
 
         final TextField[] allTextFields = {nhiInput, fNameInput, preferredFNameTextField, mNameInput,
                 lNameInput,
-                heightInput, weightInput, phoneInput, cellInput, addressInput, regionInput, emailInput,
-                ecNameInput, ecPhoneInput, ecCellInput, ecAddressInput, ecRegionInput, ecEmailInput,
-                ecRelationshipInput};
+                heightInput, weightInput, phone, cell, street, streetNumber, city, neighborhood, country, zipCode, email,
+                ecName, ecPhone, ecCell, ecEmail, ecStreet, ecStreetNumber, ecCity, ecNeighborhood, ecCountry, ecZipCode,
+                ecRelationship};
 
         // creates a listener for each text field
         for (TextField tf : allTextFields) {
@@ -174,6 +203,8 @@ public class UpdateUserController {
         comboBoxListener(genderIdComboBox);
         comboBoxListener(bloodComboBox);
         comboBoxListener(alcoholComboBox);
+        comboBoxListener(region);
+        comboBoxListener(ecRegion);
 
         datePickerListener(dobInput);
         datePickerListener(dodInput);
@@ -283,72 +314,133 @@ public class UpdateUserController {
         dobInput.setValue(user.getDateOfBirth());
         dodInput.setValue(user.getDateOfDeath());
 
-        //contact
-        if (user.getCurrentAddress() != null) {
-            addressInput.setText(user.getCurrentAddress());
+
+        if (user.getStreetNumber() != null) {
+            streetNumber.setText(user.getStreetNumber());
         } else {
-            addressInput.setText("");
+            streetNumber.setText("");
         }
+
+        if (user.getStreetName() != null) {
+            street.setText(user.getStreetName());
+        } else {
+            street.setText("");
+        }
+        if (user.getCity() != null) {
+            city.setText(user.getCity());
+        } else {
+            city.setText("");
+        }
+
+        if (user.getCountry() != null) {
+            country.setText(user.getCountry());
+        } else {
+            country.setText("");
+        }
+
+        if (user.getNeighborhood() != null) {
+            neighborhood.setText(user.getNeighborhood());
+        } else {
+            neighborhood.setText("");
+        }
+
         if (user.getRegion() != null) {
-            regionInput.setText(user.getRegion());
+            region.getSelectionModel().select(user.getRegion());
         } else {
-            regionInput.setText("");
+            region.getSelectionModel().selectFirst();
         }
-        if (user.getCellPhone() != null) {
-            cellInput.setText(user.getCellPhone());
+
+        if (user.getZipCode() != null) {
+            zipCode.setText(user.getZipCode());
         } else {
-            cellInput.setText("");
+            zipCode.setText("");
+        }
+
+        if (user.getCellPhone() != null) {
+            cell.setText(user.getCellPhone());
+        } else {
+            cell.setText("");
         }
         if (user.getHomePhone() != null) {
-            phoneInput.setText(user.getHomePhone());
+            phone.setText(user.getHomePhone());
         } else {
-            phoneInput.setText("");
+            phone.setText("");
         }
         if (user.getEmail() != null) {
-            emailInput.setText(user.getEmail());
+            email.setText(user.getEmail());
         } else {
-            emailInput.setText("");
+            email.setText("");
         }
         //ec
         if (user.getContact() != null) {
             if (user.getContact().getName() != null) {
-                ecNameInput.setText(user.getContact().getName());
+                ecName.setText(user.getContact().getName());
             } else {
-                ecNameInput.setText("");
+                ecName.setText("");
             }
             if (user.getContact().getRelationship() != null) {
-                ecRelationshipInput.setText(user.getContact().getRelationship());
+                ecRelationship.setText(user.getContact().getRelationship());
             } else {
-                ecRelationshipInput.setText("");
+                ecRelationship.setText("");
             }
             if (user.getContact().getRegion() != null) {
-                ecRegionInput.setText(user.getContact().getRegion());
+                ecRegion.getSelectionModel().select(user.getContact().getRegion());
             } else {
-                ecRegionInput.setText("");
+                ecRegion.getSelectionModel().selectFirst();
             }
             if (user.getContact().getHomePhoneNumber() != null) {
-                ecPhoneInput.setText(user.getContact().getHomePhoneNumber());
+                ecPhone.setText(user.getContact().getHomePhoneNumber());
             } else {
-                ecPhoneInput.setText("");
+                ecPhone.setText("");
             }
             if (user.getContact().getEmail() != null) {
-                ecEmailInput.setText(user.getContact().getEmail());
+                ecEmail.setText(user.getContact().getEmail());
             } else {
-                ecEmailInput.setText("");
+                ecEmail.setText("");
             }
 
-            if (user.getContact().getAddress() != null) {
-                ecAddressInput.setText(user.getContact().getAddress());
+            if (user.getContact().getStreetNumber() != null) {
+                ecStreetNumber.setText(user.getContact().getStreetNumber());
             } else {
-                ecAddressInput.setText("");
+                ecStreetNumber.setText("");
             }
-            if (user.getContact().getCellPhoneNumber() != null) {
-                ecCellInput.setText(user.getContact().getCellPhoneNumber());
+
+            if (user.getContact().getStreetName() != null) {
+                ecStreet.setText(user.getContact().getStreetName());
             } else {
-                ecCellInput.setText("");
+                ecStreet.setText("");
+            }
+            if (user.getContact().getCity() != null) {
+                ecCity.setText(user.getContact().getCity());
+            } else {
+                ecCity.setText("");
+            }
+
+            if (user.getContact().getCountry() != null) {
+                ecCountry.setText(user.getContact().getCountry());
+            } else {
+                ecCountry.setText("");
+            }
+
+            if (user.getContact().getNeighborhood() != null) {
+                ecNeighborhood.setText(user.getContact().getNeighborhood());
+            } else {
+                ecNeighborhood.setText("");
+            }
+
+            if (user.getContact().getZipCode() != null) {
+                ecZipCode.setText(user.getContact().getZipCode());
+            } else {
+                ecZipCode.setText("");
+            }
+
+            if (user.getContact().getCellPhoneNumber() != null) {
+                ecCell.setText(user.getContact().getCellPhoneNumber());
+            } else {
+                ecCell.setText("");
             }
         }
-        //h
+        // health details
         alcoholComboBox
                 .setValue(user.getAlcoholConsumption() == null ? "None" : user.getAlcoholConsumption());
         if (user.isSmoker()) {
@@ -363,16 +455,22 @@ public class UpdateUserController {
 
         genderIdComboBox.setValue(user.getGenderIdentity() == null ? "" : user.getGenderIdentity());
 
-        if (user.getWeightText() != null) {
+        if (!user.getWeightText().equals("")) {
             weightInput.setText(user.getWeightText());
-        } else {
+        } else if (user.getWeight() > 0) {
             weightInput.setText(Double.toString(user.getWeight()));
-        }
-        if (user.getHeightText() != null) {
-            heightInput.setText(user.getHeightText());
         } else {
-            heightInput.setText(Double.toString(user.getHeight()));
+            weightInput.setText("");
         }
+
+        if (!user.getHeightText().equals("")) {
+            heightInput.setText(user.getHeightText());
+        } else if (user.getHeight() > 0) {
+            heightInput.setText(Double.toString(user.getHeight()));
+        } else {
+            heightInput.setText("");
+        }
+
         listen = true;
 
         undoUpdateButton.setDisable(currentUser.getUndoStack().size() <= undoMarker);
@@ -390,7 +488,6 @@ public class UpdateUserController {
         errorLabel.setText("Please make sure your details are correct.");
         boolean valid = validateFields();
 
-        //TODO change to be different
 
         if (valid) {
             sumAllChanged();
@@ -482,22 +579,24 @@ public class UpdateUserController {
         } else {
             currentUser.setHeight(height);
             currentUser.setWeight(weight);
+            currentUser.setHeightText("");
+            currentUser.setWeightText("");
         }
 
         // validate contact info
-        String email = emailInput.getText();
+        String email = this.email.getText();
         valid &= AttributeValidation.validateEmail(email);
         if (!valid) {
             errorLabel.setVisible(true);
         }
 
-        String homePhone = phoneInput.getText();
+        String homePhone = phone.getText();
         valid &= AttributeValidation.validatePhoneNumber(homePhone);
         if (!valid) {
             errorLabel.setVisible(true);
         }
 
-        String cellPhone = cellInput.getText();
+        String cellPhone = cell.getText();
         valid &= AttributeValidation.validateCellNumber(cellPhone);
         if (!valid) {
             errorLabel.setVisible(true);
@@ -515,40 +614,47 @@ public class UpdateUserController {
         return valid;
     }
 
+    private boolean checkChangedProperty(String newString, String oldString) {
+        return ((newString.isEmpty() && !oldString.isEmpty()) ||
+                (!newString.isEmpty() && !newString.equals(oldString)));
+    }
+
     /**
      * Validates the Emergency Contact Details section of the form.
      */
     private void validateEmergencyContactDetails() throws InvalidFieldsException {
         boolean valid;
         // validate emergency contact info
-        String emergencyEmail = ecEmailInput.getText();
+        String emergencyEmail = ecEmail.getText();
         valid = AttributeValidation.validateEmail(emergencyEmail);
         if (!valid) {
             errorLabel.setVisible(true);
         }
 
-        String emergencyPhone = ecPhoneInput.getText();
+        String emergencyPhone = ecPhone.getText();
         valid &= AttributeValidation.validatePhoneNumber(emergencyPhone);
         if (!valid) {
             errorLabel.setVisible(true);
         }
 
-        String emergencyCell = ecCellInput.getText();
+        String emergencyCell = ecCell.getText();
         valid &= AttributeValidation.validateCellNumber(emergencyCell);
         if (!valid) {
             errorLabel.setVisible(true);
         }
 
-        String eName = ecNameInput.getText();
+        String eName = ecName.getText();
         valid &= AttributeValidation.checkString(eName);
 
-        String eAddress = ecAddressInput.getText();
-        valid &= AttributeValidation.checkString(eAddress);
+        String eStreetNumber = ecStreetNumber.getText();
+        valid &= AttributeValidation.checkString(eStreetNumber);
+        //String eAddress = ecAddress.getText();
+        //valid &= AttributeValidation.checkString(eAddress);
 
-        String eRegion = ecRegionInput.getText();
+        String eRegion = ecRegion.getSelectionModel().getSelectedItem();
         valid &= AttributeValidation.checkString(eRegion);
 
-        String eRelationship = ecRelationshipInput.getText();
+        String eRelationship = ecRelationship.getText();
         valid &= AttributeValidation.checkString(eRelationship);
 
         // the name and cell number are required if any other attributes are filled out
@@ -566,16 +672,11 @@ public class UpdateUserController {
         boolean changed;
         changed = updatePersonalDetails(nhiInput.getText(), fNameInput.getText(), dobInput.getValue(),
                 dodInput.getValue());
-
         changed |= updateHealthDetails(heightInput.getText(), weightInput.getText());
-        changed |= updateContactDetails(phoneInput.getText(), cellInput.getText(),
-                emailInput.getText());
-        changed |= updateEmergencyContact(ecNameInput.getText(), ecPhoneInput.getText(),
-                ecCellInput.getText(), ecAddressInput.getText(), ecRegionInput.getText(),
-                ecEmailInput.getText(), ecRelationshipInput.getText());
+        changed |= updateContactDetails();
+        changed |= updateEmergencyContact();
         if (changed) {
             appController.update(currentUser);
-            setUserDetails(currentUser);
             currentUser.getRedoStack().clear();
         }
         undoUpdateButton.setDisable(currentUser.getUndoStack().size() <= undoMarker);
@@ -593,20 +694,22 @@ public class UpdateUserController {
      */
     private boolean updatePersonalDetails(String nhi, String fName, LocalDate dob, LocalDate dod) {
         boolean changed = false;
+
         if (!currentUser.getNhi().equals(nhi)) {
             currentUser.setNhi(nhi);
             changed = true;
         }
 
-        if (!currentUser.getFirstName().equals(fName)) {
-            currentUser.setFirstName(fName);
+
+        if (checkChangedProperty(fNameInput.getText(), currentUser.getFirstName())) {
+            currentUser.setFirstName(fNameInput.getText());
+            changed = true;
             if (currentUser.getPreferredFirstName().equals(currentUser.getFirstName())
                     || preferredFNameTextField.getText().isEmpty()) {
                 listen = false;
                 preferredFNameTextField.setText(currentUser.getFirstName());
                 listen = true;
             }
-            changed = true;
         }
 
         String prefName = preferredFNameTextField.getText();
@@ -620,23 +723,13 @@ public class UpdateUserController {
             }
         }
 
-        String mName = mNameInput.getText();
-        if (!mName.isEmpty() && !mName.equals(currentUser.getMiddleName())) {
-            currentUser.setMiddleName(mName);
-            changed = true;
-        } else if (mName.isEmpty() && (currentUser.getMiddleName() != null && !currentUser
-                .getMiddleName().isEmpty())) {
-            currentUser.setMiddleName(null);
+        if (checkChangedProperty(mNameInput.getText(), currentUser.getMiddleName())) {
+            currentUser.setMiddleName(mNameInput.getText());
             changed = true;
         }
 
-        String lName = lNameInput.getText();
-        if (!lName.isEmpty() && !lName.equals(currentUser.getLastName())) {
-            currentUser.setLastName(lName);
-            changed = true;
-        } else if (lName.isEmpty() && (currentUser.getLastName() != null && !currentUser
-                .getLastName().isEmpty())) {
-            currentUser.setLastName(null);
+        if (checkChangedProperty(lNameInput.getText(), currentUser.getLastName())) {
+            currentUser.setLastName(lNameInput.getText());
             changed = true;
         }
 
@@ -667,6 +760,7 @@ public class UpdateUserController {
      */
     private boolean updateHealthDetails(String height, String weight) {
         boolean changed = false;
+
         if (height.isEmpty() && (currentUser.getHeightText() != null && !currentUser.getHeightText()
                 .isEmpty())) {
             currentUser.setHeightText(null);
@@ -676,9 +770,10 @@ public class UpdateUserController {
             changed = true;
         }
 
+
         if (weight.isEmpty() && (currentUser.getWeightText() != null && !currentUser.getWeightText()
                 .isEmpty())) {
-            currentUser.setHeightText(null);
+            currentUser.setWeightText(null);
             changed = true;
         } else if (!weight.isEmpty() && !weight.equals(currentUser.getWeightText())) {
             currentUser.setWeightText(weight);
@@ -741,182 +836,145 @@ public class UpdateUserController {
         return changed;
     }
 
+
     /**
      * Updates all contact details that have changed.
-     *
-     * @param homePhone The home phone number to be checked for changes and possibly updated.
-     * @param cellPhone The cell phone number to be checked for changes and possibly updated.
-     * @param email     The email address to be checked for changes and possibly updated.
      */
-    private boolean updateContactDetails(String homePhone, String cellPhone, String email) {
-
-        boolean changed = false;
-
-        if (homePhone.isEmpty() && (currentUser.getHomePhone() != null && !currentUser.getHomePhone()
-                .isEmpty())) {
-            currentUser.setHomePhone(null);
-            changed = true;
-        } else if (!homePhone.isEmpty() && !homePhone.equals(currentUser.getHomePhone())) {
-            currentUser.setHomePhone(homePhone);
+    private Boolean updateContactDetails() {
+        Boolean changed = false;
+        if (checkChangedProperty(phone.getText(), currentUser.getHomePhone())) {
+            currentUser.setHomePhone(phone.getText());
             changed = true;
         }
 
-        if (!cellPhone.isEmpty() && !cellPhone.equals(currentUser.getCellPhone())) {
-            currentUser.setCellPhone(cellPhone);
+        if (checkChangedProperty(cell.getText(), currentUser.getCellPhone())) {
+            currentUser.setCellPhone(cell.getText());
             changed = true;
-        } else if (cellPhone.isEmpty() && (currentUser.getCellPhone() != null && !currentUser
-                .getCellPhone().isEmpty())) {
-            currentUser.setCellPhone(null);
-            changed = true;
+
         }
 
-        if (!email.isEmpty() && !email.equals(currentUser.getEmail())) {
-            currentUser.setEmail(email);
+        if (checkChangedProperty(email.getText(), currentUser.getEmail())) {
+            currentUser.setEmail(email.getText());
             changed = true;
-        } else if (email.isEmpty() && (currentUser.getEmail() != null && !currentUser.getEmail()
-                .isEmpty())) {
-            currentUser.setEmail(null);
-            changed = true;
+
         }
 
-        String address = addressInput.getText();
-        if (!address.isEmpty() && !address.equals(currentUser.getCurrentAddress())) {
-            currentUser.setCurrentAddress(address);
+        if (checkChangedProperty(streetNumber.getText(), currentUser.getStreetNumber())) {
+            currentUser.setStreetNumber(streetNumber.getText());
             changed = true;
-        } else if (address.isEmpty() && (currentUser.getCurrentAddress() != null && !currentUser
-                .getCurrentAddress().isEmpty())) {
-            currentUser.setCurrentAddress(null);
-            changed = true;
+
         }
 
-        String region = regionInput.getText();
-        if (!region.isEmpty() && !region.equals(currentUser.getRegion())) {
-            currentUser.setRegion(region);
+        if (checkChangedProperty(street.getText(), currentUser.getStreetName())) {
+            currentUser.setStreetName(street.getText());
             changed = true;
-        } else if (region.isEmpty() && (currentUser.getRegion() != null && !currentUser.getRegion()
-                .isEmpty())) {
-            currentUser.setRegion(null);
+
+        }
+        if (checkChangedProperty(neighborhood.getText(), currentUser.getNeighborhood())) {
+            currentUser.setNeighborhood(neighborhood.getText());
             changed = true;
+
         }
 
+        if (checkChangedProperty(city.getText(), currentUser.getCity())) {
+            currentUser.setCity(city.getText());
+            changed = true;
+
+        }
+
+        if (checkChangedProperty(country.getText(), currentUser.getCountry())) {
+            currentUser.setCountry(country.getText());
+            changed = true;
+
+        }
+
+        if (checkChangedProperty(zipCode.getText(), currentUser.getZipCode())) {
+            currentUser.setZipCode(zipCode.getText());
+            changed = true;
+
+        }
+
+        if (checkChangedProperty(region.getSelectionModel().getSelectedItem(), currentUser.getRegion())) {
+            currentUser.setRegion(region.getSelectionModel().getSelectedItem());
+            changed = true;
+
+        }
         return changed;
     }
 
+
     /**
      * Updates all emergency contact details that have changed.
-     *
-     * @param eName          The emergency contact name to be checked for changes and possibly updated.
-     * @param emergencyPhone The emergency contact phone number to be checked for changes and possibly updated.
-     * @param emergencyCell  The emergency contact cell phone number to be checked for changes and possibly updated.
-     * @param eAddress       The emergency contact address to be checked for changes and possibly updated.
-     * @param eRegion        The emergency contact region to be checked for changes and possibly updated.
-     * @param emergencyEmail The emergency contact email address to be checked for changes and possibly updated.
-     * @param eRelationship  The relationship between the emergency contact and user to be checked for changes and possibly updated.
      */
-    private boolean updateEmergencyContact(String eName, String emergencyPhone, String
-            emergencyCell, String eAddress,
-                                           String eRegion, String emergencyEmail, String eRelationship) {
+    private boolean updateEmergencyContact() {
         boolean changed = false;
         EmergencyContact contact = currentUser.getContact();
 
-        String name = contact.getName();
-        if (name != null) {
-            if (!name.isEmpty() && !name.equals(eName)) {
-                contact.setName(eName);
-                changed = true;
-            } else if (name.isEmpty() && (eName != null && !eName.isEmpty())) {
-                contact.setName(eName);
-                changed = true;
-            }
-        } else {
-            if (!eName.isEmpty()) {
-                contact.setName(eName);
-                changed = true;
-            }
+
+        if (checkChangedProperty(ecName.getText(), contact.getName())) {
+            changed = true;
+            contact.setName(ecName.getText());
         }
 
-        String ePhone = contact.getHomePhoneNumber();
-        if (ePhone != null) {
-            if (!ePhone.isEmpty() && !ePhone.equals(emergencyPhone)) {
-                contact.setHomePhoneNumber(emergencyPhone);
-                changed = true;
-            } else if (ePhone.isEmpty() && (emergencyPhone != null && !emergencyPhone.isEmpty())) {
-                contact.setHomePhoneNumber(emergencyPhone);
-                changed = true;
-            }
-        } else if (!emergencyPhone.isEmpty()) {
-            contact.setHomePhoneNumber(emergencyPhone);
+        if (checkChangedProperty(ecPhone.getText(), contact.getHomePhoneNumber())) {
+            contact.setHomePhoneNumber(ecPhone.getText());
             changed = true;
         }
 
-        String eCell = contact.getCellPhoneNumber();
-        if (eCell != null) {
-            if (!eCell.isEmpty() && !eCell.equals(emergencyCell)) {
-                contact.setCellPhoneNumber(emergencyCell);
-                changed = true;
-            } else if (eCell.isEmpty() && (emergencyCell != null && !emergencyCell.isEmpty())) {
-                contact.setCellPhoneNumber(emergencyCell);
-                changed = true;
-            }
-        } else if (!emergencyCell.isEmpty()) {
-            contact.setCellPhoneNumber(emergencyCell);
-            changed = true;
+        if (checkChangedProperty(ecCell.getText(), contact.getCellPhoneNumber())) {
+            contact.setCellPhoneNumber(ecCell.getText());
         }
 
-        String address = contact.getAddress();
-        if (address != null) {
-            if (!address.isEmpty() && !address.equals(eAddress)) {
-                contact.setAddress(eAddress);
-                changed = true;
-            } else if (address.isEmpty() && (eAddress != null && !eAddress.isEmpty())) {
-                contact.setAddress(eAddress);
-                changed = true;
-            }
-        } else if (!eAddress.isEmpty()) {
-            contact.setAddress(eAddress);
+        if (checkChangedProperty(ecStreetNumber.getText(), contact.getStreetNumber())) {
+            contact.setStreetNumber(ecStreetNumber.getText());
             changed = true;
+
         }
 
-        String region = contact.getRegion();
-        if (region != null) {
-            if (!region.isEmpty() && !region.equals(eRegion)) {
-                contact.setRegion(eRegion);
-                changed = true;
-            } else if (region.isEmpty() && (eRegion != null && eRegion.isEmpty())) {
-                contact.setRegion(eRegion);
-                changed = true;
-            }
-        } else if (!eRegion.isEmpty()) {
-            contact.setRegion(eRegion);
+        if (checkChangedProperty(ecStreet.getText(), contact.getStreetName())) {
+            contact.setStreetName(ecStreet.getText());
             changed = true;
+
+        }
+        if (checkChangedProperty(ecNeighborhood.getText(), contact.getNeighborhood())) {
+            contact.setNeighborhood(ecNeighborhood.getText());
+            changed = true;
+
         }
 
-        String eEmail = contact.getEmail();
-        if (eEmail != null) {
-            if (!eEmail.isEmpty() && !eEmail.equals(emergencyEmail)) {
-                contact.setEmail(emergencyEmail);
-                changed = true;
-            } else if (eEmail.isEmpty() && (emergencyEmail != null && !emergencyEmail.isEmpty())) {
-                contact.setEmail(emergencyEmail);
-                changed = true;
-            }
-        } else if (!emergencyEmail.isEmpty()) {
-            contact.setEmail(emergencyEmail);
+        if (checkChangedProperty(ecCity.getText(), contact.getCity())) {
+            contact.setCity(ecCity.getText());
             changed = true;
+
         }
 
-        String relation = contact.getRelationship();
-        if (relation != null) {
-            if (!relation.isEmpty() && !relation.equals(eRelationship)) {
-                contact.setRelationship(eRelationship);
-                changed = true;
-            } else if (relation.isEmpty() && (eRelationship != null && !eRelationship.isEmpty())) {
-                contact.setRelationship(eRelationship);
-                changed = true;
-            }
-        } else if (!eRelationship.isEmpty()) {
-            contact.setRelationship(eRelationship);
+        if (checkChangedProperty(ecCountry.getText(), contact.getCountry())) {
+            contact.setCountry(ecCountry.getText());
             changed = true;
+
+        }
+
+        if (checkChangedProperty(ecZipCode.getText(), contact.getZipCode())) {
+            contact.setZipCode(ecZipCode.getAccessibleHelp());
+            changed = true;
+
+        }
+
+        if (checkChangedProperty(ecRegion.getSelectionModel().getSelectedItem(), contact.getRegion())) {
+            contact.setRegion(ecRegion.getSelectionModel().getSelectedItem());
+            changed = true;
+
+        }
+
+        if (checkChangedProperty(ecEmail.getText(), currentUser.getContact().getEmail())) {
+            contact.setEmail(ecEmail.getText());
+            changed = true;
+
+        }
+
+        if (checkChangedProperty(ecRelationship.getText(), contact.getRelationship())) {
+            changed = true;
+            contact.setRelationship(ecRelationship.getText());
         }
 
         return changed;
