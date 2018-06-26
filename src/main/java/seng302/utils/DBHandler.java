@@ -589,17 +589,35 @@ public class DBHandler {
         deleteUserPreviousDiseases(user);
     }
 
-    private void deleteUserPreviousDiseases(User user) {
+    /**
+     * Deletes previous diseases that the user has had on the database to reflect the data on the application.
+     * Pre-conditions: There is an active connection to the database
+     * Post-conditions: The data on the database reflects the data locally.
+     *
+     * @param user The user for which the previous disease belonged to.
+     */
+    private void deleteUserPreviousDiseases(User user) throws SQLException {
+        PreparedStatement deleteDisease = connection.prepareStatement(DELETE_PAST_DISEASE_STMT);
     }
 
+    /**
+     * @param user
+     */
     private void deleteUserCurrentDiseases(User user) {
     }
 
+    /**
+     *
+     * @param user
+     */
     private void deleteUserMedications(User user) {
+
     }
 
     /**
      * Delete procedures that are present in the database but not in the local user storage
+     * Pre-conditions: There is an active connection to the database
+     * Post-condition: The procedures that have been deleted locally are deleted in the database
      *
      * @param user User to check and delete procedures for
      * @throws SQLException if the connection to the database is invalid
