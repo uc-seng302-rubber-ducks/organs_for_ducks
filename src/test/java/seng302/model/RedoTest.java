@@ -4,6 +4,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import seng302.model._enum.BloodTypes;
 import seng302.model._enum.Organs;
 
 import java.time.LocalDate;
@@ -41,24 +42,28 @@ public class RedoTest {
         assertEquals("Geoff", testUser.getFullName());
     }
 
-//    @Test
-//    public void testMultipleChangeMultipleRedo() {
-//        testUser.setBloodType("B+");
-//        testUser.setCurrentAddress("42 wallaby way");
-//        testUser.setRegion("Sydney");
-//
-//        testUser.undo();
-//        testUser.undo();
-//        testUser.undo();
-//
-//        testUser.redo();
-//        testUser.redo();
-//        testUser.redo();
-//
-//        assertEquals(testUser.getBloodType(), BloodTypes.BPLUS.toString());
-//        assertEquals(testUser.getCurrentAddress(), "42 wallaby way");
-//        assertEquals(testUser.getRegion(), "Sydney");
-//    }
+    @Test
+    @Ignore
+    public void testMultipleChangeMultipleRedo() {
+        testUser.setBloodType("B+");
+        testUser.setStreetName("wallaby way");
+        testUser.setStreetNumber("42");
+        testUser.setRegion("Sydney");
+
+        testUser.undo();
+        testUser.undo();
+        testUser.undo();
+
+        testUser.redo();
+        testUser.redo();
+        testUser.redo();
+
+        assertEquals(testUser.getBloodType(), BloodTypes.BPLUS.toString());
+        assertEquals(testUser.getAddress(), "42 wallaby way \n" +
+                "\n" +
+                " Sydney");
+        assertEquals(testUser.getRegion(), "Sydney");
+    }
 
     @Test
     public void testMultipleChangesSingleRedo() {
@@ -128,16 +133,16 @@ public class RedoTest {
     @Ignore
     public void ReceiverAttributesAttachedUserIsCorrectWhenStored() {
         fail("TODO implement when receiver branch merged");
-//    assert(testUser.getReceiverDetails().getAttachedUser().equals(testUser));
-//    testUser.setNhi("QWE1234");
-//    assert(testUser.getReceiverDetails().getAttachedUser().equals(testUser));
-//
-//    Memento<User> mem = testUser.getUndoStack().peek();
-//    User newUser = mem.getNewObject();
-//    User oldUser = mem.getOldObject();
-//
-//    assertNotEquals(newUser, oldUser);
-//    assert(oldUser.getReceiverDetails().getAttachedUser().equals(oldUser));
-//    assert(newUser.getReceiverDetails().getAttachedUser().equals(newUser));
+        //assert(testUser.getReceiverDetails().getAttachedUser().equals(testUser));
+        testUser.setNhi("QWE1234");
+        //assert(testUser.getReceiverDetails().getAttachedUser().equals(testUser));
+
+        Memento<User> mem = testUser.getUndoStack().peek();
+        User newUser = mem.getNewObject();
+        User oldUser = mem.getOldObject();
+
+        assertNotEquals(newUser, oldUser);
+        //assert(oldUser.getReceiverDetails().getAttachedUser().equals(oldUser));
+        //assert(newUser.getReceiverDetails().getAttachedUser().equals(newUser));
     }
 }

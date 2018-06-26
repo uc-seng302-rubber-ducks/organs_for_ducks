@@ -512,6 +512,10 @@ public class User extends Undoable<User> implements Listenable {
         getUndoStack().push(mem);
     }
 
+    public String getAddress() {
+        return contactDetails.getAddress().toString();
+    }
+
     public boolean isSmoker() {
         return healthDetails.isSmoker();
     }

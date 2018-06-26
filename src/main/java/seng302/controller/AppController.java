@@ -293,14 +293,28 @@ public class AppController {
         this.users = users;
     }
 
+    /**
+     * adds a user to the users list
+     *
+     * @param user user to be added
+     * @return if the user was added
+     */
     public boolean addUser(User user) {
         return users.add(user);
     }
 
+    /**
+     * adds a clinician to the clinicians
+     * @param clinician clinician to be added
+     */
     public void addClinician(Clinician clinician) {
         clinicians.add(clinician);
     }
 
+    /**
+     * adds a administrator ti the administrators
+     * @param administrator administrator to be added
+     */
     public void addAdmin(Administrator administrator) {
         admins.add(administrator);
     }
@@ -474,6 +488,11 @@ public class AppController {
                 diffs.add(
                         "Changed DOD from " + oldUser.getDateOfDeath() + " to " + newUser.getDateOfDeath());
             }
+            if (!oldUser.getAddress().equalsIgnoreCase(newUser.getAddress())) {
+                diffs.add("Changed Address from " + oldUser.getAddress() + " to " + newUser
+                        .getAddress());
+            }
+
 
             if (!(oldUser.getBirthGender().equalsIgnoreCase(newUser.getBirthGender()))) {
                 diffs.add("Changed Gender from " + oldUser.getBirthGender() + " to " + newUser.getBirthGender());
