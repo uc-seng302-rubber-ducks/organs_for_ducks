@@ -19,6 +19,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import seng302.controller.*;
+import seng302.controller.AppController;
 import seng302.controller.gui.FileSelectorController;
 import seng302.controller.gui.panel.TransplantWaitListController;
 import seng302.controller.gui.popup.AlertUnclosedWindowsController;

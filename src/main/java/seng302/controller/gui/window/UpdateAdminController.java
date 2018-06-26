@@ -56,7 +56,7 @@ public class UpdateAdminController {
     private Administrator adminClone;
     private int undoMarker;
     private AppController appController;
-    private AdministratorViewController adminViewController;
+    private seng302.controller.gui.window.AdministratorViewController adminViewController;
 
 
     /**
@@ -77,7 +77,7 @@ public class UpdateAdminController {
         errorLabel.setText("");
 
         if (!newAdmin) {
-            adminClone = admin.clone();
+            adminClone = Administrator.clone(admin);
             undoMarker = adminClone.getUndoStack().size();
 
             undoAdminUpdateButton.setDisable(true);

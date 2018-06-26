@@ -229,7 +229,7 @@ public class Administrator extends Undoable<Administrator> implements Listenable
     }
 
     private void saveStateforUndo() { //New
-        Memento<Administrator> memento = new Memento<>(this.clone());
+        Memento<Administrator> memento = new Memento<>(Administrator.clone(this));
         getUndoStack().push(memento);
     }
 
@@ -258,12 +258,12 @@ public class Administrator extends Undoable<Administrator> implements Listenable
 
     @Override
     public void undo() {
-        if (getUndoStack().isEmpty()) {
+        if (getUndoStack().isEmpty()) { //DO nothing if stack is empty
             return;
         }
-        Memento<Administrator> memento = getUndoStack().pop();
-        this.changeInto(memento.getOldObject());
-        getRedoStack().push(memento);
+        getRedoStack().push(new Memento<>(clone(this))); // put current state onto redo stack
+        Memento<Administrator> memento = getUndoStack().pop(); //Get the top of the undo stack
+        this.changeInto(memento.getState()); //Change current state to be top undo state
 
     }
 
@@ -272,12 +272,15 @@ public class Administrator extends Undoable<Administrator> implements Listenable
         if (getRedoStack().isEmpty()) {
             return;
         }
+        getUndoStack().push(new Memento<>(clone(this)));
         Memento<Administrator> memento = getRedoStack().pop();
-        this.changeInto(memento.getNewObject());
-        getUndoStack().push(memento);
+        this.changeInto(memento.getState());
     }
 
 
+    /**
+     * Could this and changeInto be combined somehow?
+     */
     public static Administrator clone(Administrator admin) {
         Administrator newAdmin = new Administrator();
         newAdmin.userName = admin.userName;
