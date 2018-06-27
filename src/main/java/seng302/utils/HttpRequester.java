@@ -11,8 +11,7 @@ import org.json.simple.parser.ParseException;
 import seng302.model.datamodel.MedicationInteractionsResponse;
 
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Class deals with using APIs for functionality within the application
@@ -115,8 +114,43 @@ public class HttpRequester {
             interactions.addAll(response.getGenderInteractions().get("male"));
             interactions.addAll(response.getGenderInteractions().get("female"));
         }
+        //durations map of duration: [affliction]
+        Map<String, List<String>> durations = response.getDurationInteractions();
 
-        return interactions;
+        //temporary map of affliction: [duration]
+        Map<String, List<String>> temp = new HashMap<>();
+        for (String duration : durations.keySet()) {
+            for (String affliction : durations.get(duration)) {
+                //if affliction is relevant to this person
+                if (interactions.contains(affliction)) {
+                    if (temp.containsKey(affliction)) {
+                        temp.get(affliction).add(duration);
+                    } else {
+                        List<String> newDurations = new ArrayList<>();
+                        newDurations.add(duration);
+                        temp.put(affliction, newDurations);
+                    }
+                }
+
+            }
+        }
+        //create new set and give durations to the previous interactions set
+        Set<String> finalInteractions = new HashSet<>();
+
+        for (String interaction : interactions) {
+            if (temp.get(interaction) != null) {
+                String duration = temp.get(interaction).get(0);
+                if (duration.equals("not specified") && temp.get(interaction).size() > 1) {
+                    duration = temp.get(interaction).get(1);
+                }
+                finalInteractions.add(interaction + " (" + duration + ")");
+            } else {
+                finalInteractions.add(interaction);
+            }
+
+        }
+
+        return finalInteractions;
     }
 
     /**
