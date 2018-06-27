@@ -38,7 +38,7 @@ public interface Cache<K, V> {
     /**
      * imports cache from a file
      *
-     * @param filename file name and path to load the cache from
+     * @param filename file name within the /CACHE folder to load from
      * @throws IOException if there was an error reading the file
      */
     void load(String filename) throws IOException;
@@ -46,7 +46,7 @@ public interface Cache<K, V> {
     /**
      * saves cache to a file
      *
-     * @param filename file name and path to save the cache to
+     * @param filename file name within the /CACHE/ folder to save to
      * @throws IOException if there was an error writing to the file
      */
     void save(String filename) throws IOException;
@@ -63,6 +63,11 @@ public interface Cache<K, V> {
      * @return true if key is in the cache, false otherwise
      */
     boolean containsKey(K key);
+
+    /**
+     * @return true if the cache contains no entries
+     */
+    boolean isEmpty();
 
 
 }

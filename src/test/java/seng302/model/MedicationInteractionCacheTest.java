@@ -5,6 +5,9 @@ import org.junit.Before;
 import org.junit.Test;
 import seng302.model.datamodel.TimedCacheValue;
 
+import java.io.IOException;
+import java.time.LocalDateTime;
+
 public class MedicationInteractionCacheTest {
 
     private MedicationInteractionCache cache;
@@ -26,55 +29,63 @@ public class MedicationInteractionCacheTest {
 
     @Test
     public void shouldAddEntryByDrugNames() {
-        Assert.fail("not yet implemented");
+        String drugA = "first";
+        String drugB = "second";
+        String result = "death, or worse";
+        cache.add(drugA, drugB, result);
+
+        Assert.assertTrue(cache.containsKey("first-second"));
     }
 
     @Test
-    public void shouldNotDuplcateABandBA() {
+    public void shouldNotDuplicateABandBA() {
         //entries of medications a-b and b-a should not both exist
-        Assert.fail("not yet implemented");
+        String drugA = "first";
+        String drugB = "second";
+        String result = "death, or worse";
+
+        cache.add(drugB, drugA, result);
+        cache.add(drugA, drugB, result);
+
+        Assert.assertTrue(cache.containsKey("first-second"));
+        Assert.assertFalse(cache.containsKey("second-first"));
     }
 
     @Test
     public void shouldGetSingleEntry() {
-        Assert.fail("not yet implemented");
+        TimedCacheValue<String> expected = new TimedCacheValue<>("value");
+        cache.add("key", expected);
+        TimedCacheValue actual = cache.get("key");
+
+        Assert.assertEquals(expected, actual);
     }
 
     @Test
     public void shouldGetNullForNonExistentEntry() {
-        Assert.fail("not yet implemented");
+        Assert.assertNull(cache.get("something"));
     }
 
     @Test
     public void shouldEvictOldEntries() {
-        Assert.fail("not yet implemented");
+        TimedCacheValue<String> oldValue = new TimedCacheValue<>("value");
+        oldValue.setDateTime(LocalDateTime.of(2018, 6, 11, 0, 0));
+        //leave time as default "now" for new value
+        TimedCacheValue<String> newValue = new TimedCacheValue<>("value2");
+
+        cache.add("oldKey", oldValue);
+        cache.add("newKey", newValue);
+
+        cache.removeOlderThan(LocalDateTime.of(2018, 6, 12, 0, 0));
+        Assert.assertFalse(cache.containsKey("oldKey"));
     }
 
     @Test
-    public void shouldClearAllEntries() {
-        Assert.fail("not yet implemented");
+    public void shouldClearAllEntries() throws IOException {
+        cache.add("key1", new TimedCacheValue<>("val1"));
+        cache.add("key2", new TimedCacheValue<>("val2"));
+        cache.add("key3", new TimedCacheValue<>("val3"));
+        cache.save("test.json");
+        cache.clear();
+        Assert.assertTrue(cache.isEmpty());
     }
-
-    @Test
-    public void shouldLoadSuccessfully() {
-        Assert.fail("not yet implemented");
-    }
-
-
-    @Test
-    public void shouldThrowXOnBadLoad() {
-        Assert.fail("not yet implemented");
-    }
-
-    @Test
-    public void shouldThrowYOnBadLoad() {
-        Assert.fail("not yet implemented");
-    }
-
-    @Test
-    public void shouldRemoveOldData() {
-        Assert.fail("not yet implemented");
-    }
-
-
 }

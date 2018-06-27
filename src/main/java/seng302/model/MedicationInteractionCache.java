@@ -31,6 +31,18 @@ public class MedicationInteractionCache implements TimedEntryCache<String, Timed
         cache.put(key, value);
     }
 
+    public void add(String drugA, String drugB, String value) {
+        String key;
+        //sort drugs alphabetically to avoid B-A and A-B both being in the cache
+        if (drugA.compareToIgnoreCase(drugB) < 0) {
+            key = drugA + "-" + drugB;
+        } else {
+            key = drugB + "-" + drugA;
+        }
+
+        cache.put(key, new TimedCacheValue<>(value));
+    }
+
     @Override
     public TimedCacheValue<String> get(String key) {
         if (cache != null) {
@@ -61,6 +73,9 @@ public class MedicationInteractionCache implements TimedEntryCache<String, Timed
             throw e;
         } catch (RuntimeException e) {
             Log.severe("runtime error when reading cache from file", e);
+            throw e;
+        } catch (IOException e) {
+            Log.severe("failed to set up file reader", e);
             throw e;
         }
     }
@@ -100,5 +115,10 @@ public class MedicationInteractionCache implements TimedEntryCache<String, Timed
     @Override
     public boolean containsKey(String key) {
         return cache.containsKey(key);
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return cache.isEmpty();
     }
 }
