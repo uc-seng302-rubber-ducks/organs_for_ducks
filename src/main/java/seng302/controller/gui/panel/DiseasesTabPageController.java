@@ -83,7 +83,7 @@ public class DiseasesTabPageController {
         if (user.getCurrentDiseases().size() != 0) {
             ObservableList<Disease> currentDisease = FXCollections
                     .observableList(user.getCurrentDiseases());
-            currentDiseaseTableView.setItems(currentDisease);
+            currentDiseaseTableView.setItems(currentDisease.filtered(p -> !p.isDeleted()));
 
         } else {
             currentDiseaseTableView.setPlaceholder(new Label("No Current Diseases"));
@@ -91,7 +91,7 @@ public class DiseasesTabPageController {
 
         if (user.getPastDiseases().size() != 0) {
             ObservableList<Disease> pastDisease = FXCollections.observableList(user.getPastDiseases());
-            pastDiseaseTableView.setItems(pastDisease);
+            pastDiseaseTableView.setItems(pastDisease.filtered(p -> !p.isDeleted()));
 
         } else {
             pastDiseaseTableView.setPlaceholder(new Label("No Past Diseases"));
@@ -199,16 +199,14 @@ public class DiseasesTabPageController {
     private void deleteDisease() {
         if (currentDiseaseTableView.getSelectionModel().getSelectedIndex() >= 0) {
             if (!currentDiseaseTableView.getSelectionModel().getSelectedItem().getIsChronic()) {
-                currentUser.getCurrentDiseases()
-                        .remove(currentDiseaseTableView.getSelectionModel().getSelectedItem());
+                currentDiseaseTableView.getSelectionModel().getSelectedItem().setDeleted(true);
             } else {
                 Log.warning("Unable to delete current disease for User NHI: " + currentUser.getNhi() + ", no disease selected");
                 return;
             }
             Log.info("current disease: " + currentDiseaseTableView.getSelectionModel().getSelectedItem() + " deleted for User NHI: " + currentUser.getNhi());
         } else if (pastDiseaseTableView.getSelectionModel().getSelectedIndex() >= 0) {
-            currentUser.getPastDiseases()
-                    .remove(pastDiseaseTableView.getSelectionModel().getSelectedItem());
+            pastDiseaseTableView.getSelectionModel().getSelectedItem().setDeleted(true);
             Log.info("past disease: " + pastDiseaseTableView.getSelectionModel().getSelectedItem() + " deleted for User NHI: " + currentUser.getNhi());
         } else {
             Log.warning("Unable to delete past disease for User NHI: " + currentUser.getNhi() + ", no disease selected");

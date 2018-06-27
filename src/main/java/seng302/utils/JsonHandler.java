@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Json Handler to import and save data
@@ -33,7 +34,8 @@ public final class JsonHandler extends DataHandler {
      * @throws IOException when there is an error writing to the file.
      */
     public boolean saveUsers(Collection<User> users) throws IOException {
-
+        // filters the users collection to one where it doesn't contain deleted users
+        users = users.stream().filter(user -> !user.isDeleted()).collect(Collectors.toList());
         Files.createDirectories(Paths.get(Directory.JSON.directory()));
         File outFile = new File(Directory.JSON.directory() + "/users.json");
 
@@ -95,6 +97,7 @@ public final class JsonHandler extends DataHandler {
      * @throws IOException thrown when file does not exist, can be ignored as file will be created
      */
     public boolean saveClinicians(Collection<Clinician> clinicians) throws IOException {
+        clinicians = clinicians.stream().filter(clinician -> !clinician.isDeleted()).collect(Collectors.toList());
         Files.createDirectories(Paths.get(Directory.JSON.directory()));
         File outFile = new File(Directory.JSON.directory() + "/clinicians.json");
 
@@ -147,6 +150,7 @@ public final class JsonHandler extends DataHandler {
      * @throws IOException thrown when file does not exist, can be ignored as file will be created
      */
     public boolean saveAdmins(Collection<Administrator> admins) throws IOException {
+        admins = admins.stream().filter(administrator -> !administrator.isDeleted()).collect(Collectors.toList());
         Files.createDirectories(Paths.get(Directory.JSON.directory()));
         File outFile = new File(Directory.JSON.directory() + "/administrators.json");
 

@@ -232,10 +232,6 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
             return;
         }
 
-        //set up lists
-        //table contents are SortedList of a FilteredList of an ObservableList of an ArrayList
-        ObservableList<User> oListUsers = FXCollections.observableList(users);
-
         fNameColumn = new TableColumn<>("First name");
         fNameColumn.setCellValueFactory(new PropertyValueFactory<>("firstName"));
 
@@ -260,23 +256,14 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
 
         //add more columns as wanted/needed
 
-        fListUsers = new FilteredList<>(oListUsers);
-        fListUsers = filter(fListUsers);
-        FilteredList<User> squished = new FilteredList<>(fListUsers);
-
-        SortedList<User> sListUsers = new SortedList<>(squished);
-        sListUsers.comparatorProperty().bind(searchTableView.comparatorProperty());
-
         //predicate on this list not working properly
         //should limit the number of items shown to ROWS_PER_PAGE
         //squished = limit(fListUsers, sListUsers);
         //set table columns and contents
         searchTableView.getColumns().setAll(fNameColumn, lNameColumn, dobColumn, dodColumn, ageColumn, regionColumn, organsColumn);
         //searchTableView.setItems(FXCollections.observableList(sListUsers.subList(startIndex, endIndex)));
-        searchTableView.setItems(sListUsers);
-        searchTableView.setRowFactory((searchTableView) -> new TooltipTableRow<>(User::getTooltip));
 
-
+        displaySearchTable();
         //set on-click behaviour
         searchTableView.setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
@@ -284,6 +271,22 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
                 launchUser(user);
             }
         });
+    }
+
+    private void displaySearchTable() {
+        //set up lists
+        //table contents are SortedList of a FilteredList of an ObservableList of an ArrayList
+        ObservableList<User> oListUsers = FXCollections.observableList(users);
+
+        fListUsers = new FilteredList<>(oListUsers);
+        fListUsers = filter(fListUsers);
+        FilteredList<User> squished = new FilteredList<>(fListUsers);
+
+        SortedList<User> sListUsers = new SortedList<>(squished.filtered(user -> !user.isDeleted()));
+        sListUsers.comparatorProperty().bind(searchTableView.comparatorProperty());
+
+        searchTableView.setItems(sListUsers);
+        searchTableView.setRowFactory((searchTableView) -> new TooltipTableRow<>(User::getTooltip));
     }
 
 
@@ -493,7 +496,7 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
     @FXML
     public void refreshTables() {
         transplantWaitListTabPageController.populateWaitListTable();
-        searchTableView.refresh();
+        displaySearchTable();
     }
 
     /**

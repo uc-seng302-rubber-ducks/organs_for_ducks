@@ -355,14 +355,12 @@ public class ProcedureTabController {
         memento.setOldObject(currentUser.clone());
         if (previousProcedureTableView.getSelectionModel().getSelectedItem() != null) {
             medicalProcedures.remove(previousProcedureTableView.getSelectionModel().getSelectedItem());
-            currentUser
-                    .removeMedicalProcedure(previousProcedureTableView.getSelectionModel().getSelectedItem());
+            previousProcedureTableView.getSelectionModel().getSelectedItem().setDeleted(true);
             previousProcedures.remove(previousProcedureTableView.getSelectionModel().getSelectedItem());
             Log.info("Successfully removed procedure: " + previousProcedureTableView.getSelectionModel().getSelectedItem().toString() + " for User NHI: " + currentUser.getNhi());
         } else if (pendingProcedureTableView.getSelectionModel().getSelectedItem() != null) {
             medicalProcedures.remove(pendingProcedureTableView.getSelectionModel().getSelectedItem());
-            currentUser
-                    .removeMedicalProcedure(pendingProcedureTableView.getSelectionModel().getSelectedItem());
+            pendingProcedureTableView.getSelectionModel().getSelectedItem().setDeleted(true);
             pendingProcedures.remove(pendingProcedureTableView.getSelectionModel().getSelectedItem());
             Log.info("Successfully removed procedure: " + pendingProcedureTableView.getSelectionModel().getSelectedItem().toString() + " for User NHI: " + currentUser.getNhi());
         } else {

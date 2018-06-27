@@ -236,7 +236,17 @@ public class AppController {
         } catch (IOException e) {
             Log.warning("failed to delete a user with NHI: " + user.getNhi(), e);
         }
+    }
 
+    /**
+     * Public method to force a save for the users
+     */
+    public void saveUsers() {
+        try {
+            dataHandler.saveUsers(getUsers());
+        } catch (IOException ex) {
+            Log.warning("Failed to save users");
+        }
     }
 
 

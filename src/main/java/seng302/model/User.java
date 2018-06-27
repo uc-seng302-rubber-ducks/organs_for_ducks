@@ -915,6 +915,12 @@ public class User extends Undoable<User> implements Listenable {
         addChange(new Change("Removed Medical Procedure" + medicalProcedure));
     }
 
+    @Override
+    public void setDeleted(boolean deleted) {
+        super.setDeleted(deleted);
+        addChange(new Change("Deleted user"));
+    }
+
     public String getTooltip() {
         //TODO fix this to show full info where possible 05/17
         if (this.donorDetails.getOrgans() == null) {
