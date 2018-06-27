@@ -77,6 +77,20 @@ public class DBHandler {
         connection = DriverManager.getConnection("jdbc:mysql:" + URL + TEST_DB, USER, PASSWORD);
     }
 
+
+    /**
+     * Takes a generic, valid SQL statement as an argument and executes it and returns the result
+     *
+     * @param statement Statement to run
+     * @return Result of execution
+     * @throws SQLException Thrown on bad statement
+     */
+    public ResultSet executeStatement(String statement) throws SQLException {
+        connect();
+        PreparedStatement preparedStatement = connection.prepareStatement(statement);
+        return executeQuery(preparedStatement);
+    }
+
     /**
      * Helper function to convert date string from database
      * to LocalDateTime object.
