@@ -43,17 +43,16 @@ public class MedicationInteractionCacheFileTest {
     }
 
     @Test
-    public void shouldNotLoadEmptyJsonObject() throws IOException {
+    public void shouldLoadEmptyJsonObject() throws IOException {
         cache.add("key0", new TimedCacheValue<>("value0"));
         copyFile("empty.json");
 
         cache.load(filename);
-        Assert.assertTrue(cache.containsKey("key0"));
-
+        Assert.assertTrue(cache.isEmpty());
     }
 
-    @Test
-    public void shouldNotLoadEmptyFile() throws IOException {
+    @Test(expected = NullPointerException.class)
+    public void shouldThrowExceptionOnLoadEmptyFile() throws IOException {
         cache.add("key0", new TimedCacheValue<>("value0"));
         copyFile("null.json");
 
@@ -62,7 +61,7 @@ public class MedicationInteractionCacheFileTest {
 
     }
 
-    @Test(expected = IOException.class)
+    @Test(expected = NullPointerException.class)
     public void shouldThrowExceptionNotLoadWrongFileType() throws IOException {
         copyFile("oops.md");
         cache.load(filename);
@@ -79,7 +78,6 @@ public class MedicationInteractionCacheFileTest {
      * copies one of the test files to dir and renames it to {filename}
      *
      * @param name name of test file to copy
-     * @throws IOException if it borks
      */
     private void copyFile(String name) {
         try {

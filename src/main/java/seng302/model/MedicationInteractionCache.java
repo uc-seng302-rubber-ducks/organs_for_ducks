@@ -65,8 +65,13 @@ public class MedicationInteractionCache implements TimedEntryCache<String, Timed
             Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss")
                     .create();
             try (Reader reader = new FileReader(inFile)) {
-                cache = gson.fromJson(reader, new TypeToken<ConcurrentMap<String, TimedCacheValue<String>>>() {
+                ConcurrentMap<String, TimedCacheValue<String>> result = gson.fromJson(reader, new TypeToken<ConcurrentMap<String, TimedCacheValue<String>>>() {
                 }.getType());
+                if (result == null) {
+                    Log.warning("cache file was empty. existing cache is unchanged.");
+                    throw new NullPointerException("loaded cache file is empty (Existing cache unchanged");
+                }
+                cache = result;
             }
         } catch (FileNotFoundException e) {
             Log.severe("Cache file not found", e);
