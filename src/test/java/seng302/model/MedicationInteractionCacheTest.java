@@ -5,7 +5,6 @@ import org.junit.Before;
 import org.junit.Test;
 import seng302.model.datamodel.TimedCacheValue;
 
-import java.io.IOException;
 import java.time.LocalDateTime;
 
 public class MedicationInteractionCacheTest {
@@ -80,11 +79,10 @@ public class MedicationInteractionCacheTest {
     }
 
     @Test
-    public void shouldClearAllEntries() throws IOException {
+    public void shouldClearAllEntries() {
         cache.add("key1", new TimedCacheValue<>("val1"));
         cache.add("key2", new TimedCacheValue<>("val2"));
         cache.add("key3", new TimedCacheValue<>("val3"));
-        cache.save("test.json");
         cache.clear();
         Assert.assertTrue(cache.isEmpty());
     }

@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 
 public class MedicationInteractionCacheFileTest {
@@ -19,7 +20,6 @@ public class MedicationInteractionCacheFileTest {
 
     @Before
     public void setUp() {
-
         cache = new MedicationInteractionCache();
     }
 
@@ -81,6 +81,8 @@ public class MedicationInteractionCacheFileTest {
      */
     private void copyFile(String name) {
         try {
+            Files.createDirectories(Paths.get(Directory.CACHE.directory()));
+
             File file = new File("src/test/resources/medicationInteractionCacheFiles/" + name);
             Files.copy(file.toPath(),
                     new File(Directory.CACHE.directory() + filename).toPath(),
