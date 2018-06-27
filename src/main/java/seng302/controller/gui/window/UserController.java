@@ -12,10 +12,11 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import seng302.controller.AppController;
-import seng302.controller.gui.panel.UserOverviewController;
 import seng302.controller.gui.panel.*;
 import seng302.controller.gui.statusBarController;
-import seng302.model.*;
+import seng302.model.Change;
+import seng302.model.EmergencyContact;
+import seng302.model.User;
 import seng302.model._enum.OrganDeregisterReason;
 import seng302.model._enum.Organs;
 
@@ -40,6 +41,12 @@ public class UserController {
     @FXML
     private Label pAddress;
     @FXML
+    private Label city;
+    @FXML
+    private Label zipCode;
+    @FXML
+    private Label country;
+    @FXML
     private Label pRegion;
     @FXML
     private Label pEmail;
@@ -49,6 +56,12 @@ public class UserController {
     private Label eHomePhone;
     @FXML
     private Label eAddress;
+    @FXML
+    private Label ecCity;
+    @FXML
+    private Label ecZipCode;
+    @FXML
+    private Label ecCountry;
     @FXML
     private Label eRegion;
     @FXML
@@ -194,7 +207,7 @@ public class UserController {
             eName.setText(contact.getName());
             eCellPhone.setText(contact.getCellPhoneNumber());
             if (contact.getAddress() != null) {
-                eAddress.setText(contact.getAddress());
+                eAddress.setText(contact.getAddress().toString());
             } else {
                 eAddress.setText("");
             }
@@ -211,11 +224,15 @@ public class UserController {
                 eHomePhone.setText("");
             }
 
-            if (contact.getRegion() != null) {
-                eRegion.setText(contact.getRegion());
-            } else {
-                eRegion.setText("");
-            }
+            eAddress.setText(contact.getAddress().getStringAddress());
+
+            ecCity.setText(contact.getCity());
+
+            ecCountry.setText(contact.getCountry());
+
+            eRegion.setText(contact.getRegion());
+
+            ecZipCode.setText(contact.getZipCode());
 
             if (contact.getRelationship() != null) {
                 relationship.setText(contact.getRelationship());
@@ -223,16 +240,12 @@ public class UserController {
                 relationship.setText("");
             }
         }
-        if (currentUser.getCurrentAddress() != null) {
-            pAddress.setText(currentUser.getCurrentAddress());
-        } else {
-            pAddress.setText("");
-        }
-        if (currentUser.getRegion() != null) {
             pRegion.setText(currentUser.getRegion());
-        } else {
-            pRegion.setText("");
-        }
+        pAddress.setText(currentUser.getContactDetails().getAddress().getStringAddress());
+        city.setText(currentUser.getCity());
+        country.setText(currentUser.getCountry());
+        zipCode.setText(currentUser.getZipCode());
+
         if (currentUser.getEmail() != null) {
             pEmail.setText(currentUser.getEmail());
         } else {

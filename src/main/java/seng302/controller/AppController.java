@@ -12,6 +12,7 @@ import seng302.model.Clinician;
 import seng302.model.User;
 import seng302.model._enum.Directory;
 import seng302.model.datamodel.TransplantDetails;
+import seng302.utils.DataHandler;
 import seng302.utils.JsonHandler;
 import seng302.utils.Log;
 
@@ -35,6 +36,7 @@ public class AppController {
     private static AppController controller;
     private ArrayList<String[]> historyOfCommands = new ArrayList<>();
     private int historyPointer = 0;
+    private DataHandler dataHandler = new JsonHandler();
 
     private UserController userController = new UserController();
     private ClinicianController clinicianController = new ClinicianController();
@@ -54,7 +56,7 @@ public class AppController {
      */
     private AppController() {
         try {
-            users = JsonHandler.loadUsers(USERS_FILE);
+            users = dataHandler.loadUsers(USERS_FILE);
             Log.info(users.size() + " users were successfully loaded");
         } catch (FileNotFoundException e) {
             Log.warning("User file was not found", e);
@@ -62,14 +64,14 @@ public class AppController {
         }
 
         try {
-            clinicians = JsonHandler.loadClinicians(CLINICIAN_FILE);
+            clinicians = dataHandler.loadClinicians(CLINICIAN_FILE);
             Log.info(clinicians.size() + " clinicians were successfully loaded");
         } catch (FileNotFoundException e) {
             Log.warning("Clinician file was not found", e);
         }
 
         try {
-            admins = JsonHandler.loadAdmins(ADMIN_FILE);
+            admins = dataHandler.loadAdmins(ADMIN_FILE);
             Log.info(admins.size() + " administrators were successfully loaded");
         } catch (FileNotFoundException e) {
             Log.severe("Administrator file was not found", e);
@@ -89,7 +91,7 @@ public class AppController {
             admins.add(new Administrator("default", "", "", "", "admin"));
 
             try {
-                JsonHandler.saveAdmins(admins);
+                dataHandler.saveAdmins(admins);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -105,7 +107,7 @@ public class AppController {
         if (!defaultSeen) {
             clinicians.add(new Clinician("0", "admin", "Default", null, null, null, (String) null));
             try {
-                JsonHandler.saveClinicians(clinicians);
+                dataHandler.saveClinicians(clinicians);
                 Log.info("Successfully saved clinicians to file");
             } catch (IOException e) {
                 Log.warning("Could not save clinicians to file", e);
@@ -125,46 +127,6 @@ public class AppController {
         return controller;
     }
 
-    /**
-     * appends a single user to the list of users stored in the controller
-     *
-     * @param name           The name of the user.
-     * @param dateOfBirth    The date the user was born.
-     * @param dateOfDeath    The date the user died.
-     * @param gender         The gender of the user.
-     * @param height         The height of the user.
-     * @param weight         The weight of the user.
-     * @param bloodType      The blood type of the user.
-     * @param currentAddress The address of the user.
-     * @param region         The region the user lives in.
-     * @param NHI            The unique identifier of the user (national health index)
-     * @return hashCode of the new user or -1 on error
-     */
-    //TODO: Remove this
-    public int Register(String name, LocalDate dateOfBirth, LocalDate dateOfDeath, String gender, double height,
-                        double weight,
-                        String bloodType, String currentAddress, String region, String NHI) {
-        try {
-            User newUser = new User(name, dateOfBirth, NHI);
-            newUser.setDateOfDeath(dateOfDeath);
-            newUser.setGender(gender);
-            newUser.setHeight(height);
-            newUser.setWeight(weight);
-            newUser.setBloodType(bloodType);
-            newUser.setCurrentAddress(currentAddress);
-            newUser.setRegion(region);
-
-            if (users.contains(newUser)) {
-                return -1;
-            }
-            users.add(newUser);
-            Log.info("Successfully registered new user with NHI: " + NHI);
-            return newUser.hashCode();
-        } catch (Exception e) {
-            Log.warning("failed to register new user with NHI: " + NHI, e);
-            return -1;
-        }
-    }
 
     /**
      * Sets the point in history
@@ -207,26 +169,6 @@ public class AppController {
         return historyOfCommands.get(historyPointer);
     }
 
-    /**
-     * @param name        name of new user
-     * @param dateOfBirth dob of new user
-     * @param NHI         NHI of new user
-     * @return true if the user was created, false if there was an error or user already exists
-     */
-    public boolean Register(String name, LocalDate dateOfBirth, String NHI) {
-        try {
-            User newUser = new User(name, dateOfBirth, NHI);
-            if (users.contains(newUser)) {
-                return false;
-            }
-            users.add(newUser);
-            Log.info("Successfully registered new user with NHI: " + NHI);
-            return true;
-        } catch (Exception e) {
-            Log.warning("Failed to register new user with NHI: " + NHI, e);
-            return false;
-        }
-    }
 
     /**
      * Takes a users name and dob, finds the user in the session list and returns them.
@@ -289,7 +231,7 @@ public class AppController {
         deletedUserStack.add(user);
         setUsers((ArrayList<User>) sessionList);
         try {
-            JsonHandler.saveUsers(sessionList);
+            dataHandler.saveUsers(sessionList);
 
         } catch (IOException e) {
             Log.warning("failed to delete a user with NHI: " + user.getNhi(), e);
@@ -322,7 +264,6 @@ public class AppController {
      * user from the list and then adds the updated entry If the user is not already in the list it is
      * added
      * <p>
-     * TODO: each user may need to be assigned a unique id for this part
      *
      * @param user user to be updated/added
      */
@@ -336,7 +277,7 @@ public class AppController {
             changelogWrite.add(new Change(LocalDateTime.now(), "Added user " + user.getFullName()));
         }
         try {
-            JsonHandler.saveUsers(users);
+            dataHandler.saveUsers(users);
             //JsonHandler.saveChangelog(changelogWrite, user.getFullName().toLowerCase().replace(" ", "_"));
 
         } catch (IOException e) {
@@ -352,14 +293,28 @@ public class AppController {
         this.users = users;
     }
 
-    public void addUser(User user) {
-        users.add(user);
+    /**
+     * adds a user to the users list
+     *
+     * @param user user to be added
+     * @return if the user was added
+     */
+    public boolean addUser(User user) {
+        return users.add(user);
     }
 
+    /**
+     * adds a clinician to the clinicians
+     * @param clinician clinician to be added
+     */
     public void addClinician(Clinician clinician) {
         clinicians.add(clinician);
     }
 
+    /**
+     * adds a administrator ti the administrators
+     * @param administrator administrator to be added
+     */
     public void addAdmin(Administrator administrator) {
         admins.add(administrator);
     }
@@ -409,7 +364,7 @@ public class AppController {
         }
 
         try {
-            JsonHandler.saveClinicians(clinicians);
+            dataHandler.saveClinicians(clinicians);
             Log.info("Successfully updated clinician with Staff ID: " + clinician.getStaffId());
         } catch (IOException e) {
             Log.warning("Failed to update clinician with Staff ID: " + clinician.getStaffId(), e);
@@ -428,7 +383,7 @@ public class AppController {
         this.clinicians = clinicianSessionList;
 
         try {
-            JsonHandler.saveClinicians(clinicianSessionList);
+            dataHandler.saveClinicians(clinicianSessionList);
         } catch (IOException e) {
             Log.warning("failed to delete a clinician", e);
         }
@@ -446,7 +401,7 @@ public class AppController {
         this.admins = adminSessionList;
 
         try {
-            JsonHandler.saveAdmins(adminSessionList);
+            dataHandler.saveAdmins(adminSessionList);
         } catch (IOException e) {
             Log.warning("failed to delete an administrator", e);
         }
@@ -506,7 +461,7 @@ public class AppController {
         }
 
         try {
-            JsonHandler.saveAdmins(admins);
+            dataHandler.saveAdmins(admins);
             Log.info("successfully updated the Administrator profile with user name: " + administrator.getUserName());
         } catch (IOException e) {
             Log.warning("Failed to update Administrator profiles with user name: " + administrator.getUserName(), e);
@@ -533,8 +488,14 @@ public class AppController {
                 diffs.add(
                         "Changed DOD from " + oldUser.getDateOfDeath() + " to " + newUser.getDateOfDeath());
             }
-            if (!(oldUser.getGender().equalsIgnoreCase(newUser.getGender()))) {
-                diffs.add("Changed Gender from " + oldUser.getGender() + " to " + newUser.getGender());
+            if (!oldUser.getAddress().equalsIgnoreCase(newUser.getAddress())) {
+                diffs.add("Changed Address from " + oldUser.getAddress() + " to " + newUser
+                        .getAddress());
+            }
+
+
+            if (!(oldUser.getBirthGender().equalsIgnoreCase(newUser.getBirthGender()))) {
+                diffs.add("Changed Gender from " + oldUser.getBirthGender() + " to " + newUser.getBirthGender());
             }
             if (oldUser.getHeight() != newUser.getHeight()) {
                 diffs.add("Changed Height from " + oldUser.getHeight() + " to " + newUser.getHeight());
@@ -545,10 +506,6 @@ public class AppController {
             if (!oldUser.getBloodType().equalsIgnoreCase(newUser.getBloodType())) {
                 diffs.add(
                         "Changed Blood Type from " + oldUser.getBloodType() + " to " + newUser.getBloodType());
-            }
-            if (!oldUser.getCurrentAddress().equalsIgnoreCase(newUser.getCurrentAddress())) {
-                diffs.add("Changed Address from " + oldUser.getCurrentAddress() + " to " + newUser
-                        .getCurrentAddress());
             }
             if (!oldUser.getRegion().equalsIgnoreCase(newUser.getRegion())) {
                 diffs.add("Changes Region from " + oldUser.getRegion() + " to " + newUser.getRegion());
@@ -561,16 +518,6 @@ public class AppController {
                 diffs.add("Changed From Organs Donating = " + oldUser.getDonorDetails().getOrgans() + " to "
                         + newUser
                         .getDonorDetails().getOrgans());
-            }
-            for (String atty : oldUser.getMiscAttributes()) {
-                if (!newUser.getMiscAttributes().contains(atty)) {
-                    diffs.add("Removed misc Atttribute " + atty);
-                }
-            }
-            for (String atty : newUser.getMiscAttributes()) {
-                if (!oldUser.getMiscAttributes().contains(atty)) {
-                    diffs.add("Added misc Attribute " + atty);
-                }
             }
 
             for (String med : oldUser.getPreviousMedication()) {

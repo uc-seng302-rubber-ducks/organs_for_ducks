@@ -29,7 +29,7 @@ public class UpdateUserDetailsTest {
         controller.setUsers(new ArrayList<>());
 
         try {
-            controller.Register("test dummy", LocalDate.parse("1111-11-11", sdf), "ABC1234");
+            controller.addUser(new User("test dummy", LocalDate.parse("1111-11-11", sdf), "ABC1234"));
             NHI = "ABC1234";
             User user = controller.findUsers("test dummy").get(0);
             user.setWeight(65.3);
@@ -157,7 +157,7 @@ public class UpdateUserDetailsTest {
     public void ShouldNotUpdateNHItoDuplicateOfExistingUser() {
         //one user cannot have the NHI changed to that of another user
         User user = controller.getUser(NHI);
-        controller.Register("Frank", LocalDate.of(1990, 3, 3), "CDE1234");
+        controller.addUser(new User("Frank", LocalDate.of(1990, 3, 3), "CDE1234"));
         User other = controller.getUser("CDE1234");
 
         String[] args = {"-NHI=ABC1234", "-newNHI=CDE1234"};

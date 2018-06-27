@@ -4,8 +4,10 @@ import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
 import seng302.controller.AppController;
-import seng302.utils.JsonHandler;
 import seng302.model.User;
+import seng302.utils.DataHandler;
+import seng302.utils.JsonHandler;
+import seng302.utils.JsonHandler;
 import seng302.view.IoHelper;
 
 import java.io.IOException;
@@ -46,12 +48,28 @@ public class CreateUser implements Runnable {
     @Option(names = {"-b", "-bloodType"}, description = "blood type")
     private String bloodType;
 
-    @Option(names = {"-a", "-addr",
-            "-currentAddress"}, description = "Current address (Address line 1)")
-    private String currentAddress;
+    @Option(names = {"-c", "-city"}, description = "Current address city")
+    private String city;
+
+    @Option(names = {"-n", "-number"}, description = "Current address number")
+    private String number;
+
+    @Option(names = {"-s", "-streetName"}, description = "Current address street name")
+    private String streetName;
+
+    @Option(names = {"-z", "-zipCode"}, description = "Current address zipCode")
+    private String zipCode;
+
+    @Option(names = {"-co", "-country"}, description = "Current address country")
+    private String country;
+
+    @Option(names = {"-ne", "-neighborhood"}, description = "Current address neighborhood")
+    private String neighborhood;
 
     @Option(names = {"-r", "-region"}, description = "Region (Address line 2)")
     private String region;
+
+    private DataHandler dataHandler = new JsonHandler();
 
     public void run() {
         AppController controller = AppController.getInstance();
@@ -64,7 +82,7 @@ public class CreateUser implements Runnable {
         if (dob == null) {
             return;
         }
-        boolean success = controller.Register(firstName + " " + lastName, dob, NHI);
+        boolean success = controller.addUser(new User(firstName + " " + lastName, dob, NHI));
         if (!success) {
             System.out.println("An error occurred when creating registering the new user\n"
                     + "maybe a user with that NHI already exists?");
@@ -85,13 +103,25 @@ public class CreateUser implements Runnable {
             user.setHeight(height);
         }
         if (gender != null) {
-            user.setGender(gender);
+            user.setBirthGender(gender);
         }
         if (bloodType != null) {
             user.setBloodType(bloodType);
         }
-        if (currentAddress != null) {
-            user.setCurrentAddress(currentAddress);
+        if (city != null) {
+            user.setCity(city);
+        }
+        if (country != null) {
+            user.setCountry(country);
+        }
+        if (streetName != null) {
+            user.setStreetName(streetName);
+        }
+        if (number != null) {
+            user.setStreetNumber(number);
+        }
+        if (neighborhood != null) {
+            user.setNeighborhood(neighborhood);
         }
         if (region != null) {
             user.setRegion(region);
@@ -100,7 +130,7 @@ public class CreateUser implements Runnable {
         System.out.println("User " + user.toString() + " has been registered with ID number");
         System.out.println(user.hashCode());
         try {
-            JsonHandler.saveUsers(controller.getUsers());
+            dataHandler.saveUsers(controller.getUsers());
         } catch (IOException ex) {
             System.err.println("Error saving data to file\n" + ex.getMessage());
         }
