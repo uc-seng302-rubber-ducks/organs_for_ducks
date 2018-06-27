@@ -10,15 +10,16 @@ import javafx.stage.Stage;
 import seng302.controller.AppController;
 import seng302.exception.InvalidFieldsException;
 import seng302.model.EmergencyContact;
+import seng302.model.HealthDetails;
 import seng302.model.User;
 import seng302.utils.AttributeValidation;
+import seng302.utils.DataHandler;
+import seng302.utils.JsonHandler;
 import seng302.utils.Log;
 
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
-
-import static seng302.utils.JsonHandler.saveUsers;
 
 
 /**
@@ -56,29 +57,49 @@ public class NewUserController {
     @FXML
     private TextField weightInput;
     @FXML
-    private TextField phoneInput;
+    private TextField phone;
     @FXML
-    private TextField cellInput;
+    private TextField cell;
     @FXML
-    private TextField addressInput;
+    private TextField streetNumber;
     @FXML
-    private TextField regionInput;
+    private TextField street;
     @FXML
-    private TextField emailInput;
+    private TextField neighborhood;
     @FXML
-    private TextField ecNameInput;
+    private TextField city;
     @FXML
-    private TextField ecPhoneInput;
+    private ComboBox<String> region;
     @FXML
-    private TextField ecCellInput;
+    private TextField zipCode;
     @FXML
-    private TextField ecAddressInput;
+    private TextField country;
     @FXML
-    private TextField ecRegionInput;
+    private TextField email;
     @FXML
-    private TextField ecEmailInput;
+    private TextField ecName;
     @FXML
-    private TextField ecRelationshipInput;
+    private TextField ecPhone;
+    @FXML
+    private TextField ecCell;
+    @FXML
+    private TextField ecStreetNumber;
+    @FXML
+    private TextField ecStreet;
+    @FXML
+    private TextField ecNeighborhood;
+    @FXML
+    private TextField ecCity;
+    @FXML
+    private ComboBox<String> ecRegion;
+    @FXML
+    private TextField ecZipCode;
+    @FXML
+    private TextField ecCounrty;
+    @FXML
+    private TextField ecEmail;
+    @FXML
+    private TextField ecRelationship;
     @FXML
     private ComboBox<String> birthGenderComboBox;
     @FXML
@@ -95,6 +116,7 @@ public class NewUserController {
     private DatePicker dodInput;
     //</editor-fold>
     private Stage ownStage;
+    private DataHandler dataHandler = new JsonHandler();
 
     /**
      * Initializes the NewUserController
@@ -106,6 +128,8 @@ public class NewUserController {
         this.controller = controller;
         this.stage = stage;
         this.ownStage = ownStage;
+        region.getSelectionModel().selectFirst();
+        ecRegion.getSelectionModel().selectFirst();
     }
 
     /**
@@ -123,11 +147,10 @@ public class NewUserController {
      * @param nhi   The national health index.
      * @param fName First Name.
      * @param dob   Date of birth.
-     * @param dod   Date of death.
      * @throws IOException if fxml cannot is read.
      */
     //TODO: Find a way to clean this up
-    private void createUser(String nhi, String fName, LocalDate dob, LocalDate dod) throws IOException {
+    private void createUser(String nhi, String fName, LocalDate dob) throws IOException {
         boolean valid; // prevents the account being created if false
 
         // User attributes
@@ -168,29 +191,62 @@ public class NewUserController {
         }
 
         // contact details
-        String currentAddress = addressInput.getText();
-        valid &= (AttributeValidation.checkString(addressInput.getText()));
+        String streetName = street.getText();
+        valid &= (AttributeValidation.checkString(streetName));
 
-        String region = regionInput.getText();
-        valid &= (AttributeValidation.checkString(regionInput.getText()));
+        String region = this.region.getSelectionModel().getSelectedItem();
+        valid &= (AttributeValidation.checkString(region));
 
-        String homePhone = phoneInput.getText();
-        valid &= (AttributeValidation.validatePhoneNumber(phoneInput.getText()));
+        String homePhone = phone.getText();
+        valid &= (AttributeValidation.validatePhoneNumber(homePhone));
 
-        String cellPhone = cellInput.getText();
-        valid &= (AttributeValidation.validateCellNumber(cellInput.getText()));
+        String cellPhone = cell.getText();
+        valid &= (AttributeValidation.validateCellNumber(cellPhone));
 
-        String email = emailInput.getText();
-        valid &= (AttributeValidation.validateEmail(emailInput.getText()));
+        String email = this.email.getText();
+        valid &= (AttributeValidation.validateEmail(email));
+
+
+        String neighborhood = this.neighborhood.getText();
+        valid &= (AttributeValidation.checkString(neighborhood));
+
+        String city = this.city.getText();
+        valid &= (AttributeValidation.checkString(city));
+
+        String country = this.country.getText();
+        valid &= (AttributeValidation.checkString(country));
+
+        String streetnum = this.streetNumber.getText();
+        valid &= (AttributeValidation.checkString(streetnum));
+
+        String zipcode = this.zipCode.getText();
+        valid &= (AttributeValidation.checkString(zipcode));
+
 
         if (valid) {
             // create the new user
-            User newUser = new User(nhi, dob, dod, birthGender, genderIdentity, height, weight,
-                    bloodType,
-                    alcoholConsumption, smoker, currentAddress, region, homePhone, cellPhone, email, null,
-                    fName, fName, preferredFirstName, middleName,
-                    lastName); //todo: ewww gross can we please change this DELET THIS PLS
+            User newUser = new User(fName, dob, nhi);
+
             try {
+                newUser.setMiddleName(middleName);
+                newUser.setLastName(lastName);
+                newUser.setDateOfDeath(dodInput.getValue());
+                newUser.setPreferredFirstName(preferredFirstName);
+                newUser.setRegion(region);
+                newUser.setHomePhone(homePhone);
+                newUser.setCellPhone(cellPhone);
+                newUser.setEmail(email);
+                newUser.setRegion(region);
+                newUser.setNeighborhood(neighborhood);
+                newUser.setCity(city);
+                newUser.setCountry(country);
+                newUser.setStreetNumber(streetnum);
+                newUser.setStreetName(streetName);
+                newUser.setZipCode(zipcode);
+
+                HealthDetails healthDetails = collectHealthDetails(birthGender, genderIdentity, height, weight, bloodType, alcoholConsumption, smoker);
+                newUser.setHealthDetails(healthDetails);
+
                 EmergencyContact contact = collectEmergencyContact(newUser);
                 newUser.setContact(contact);
 
@@ -199,7 +255,7 @@ public class NewUserController {
                 // add the new user to the list of users and save them
                 List<User> users = controller.getUsers();
                 users.add(newUser);
-                saveUsers(users);
+                dataHandler.saveUsers(users);
 
                 // load to the overview page
                 if (stage.getTitle().matches("Administrator*")) {
@@ -223,7 +279,6 @@ public class NewUserController {
                         Log.info("Successfully launched User Overview for User NHI: " + nhi);
                     } catch (IOException e) {
                         Log.severe("Failed to load User Overview for User NHI: " + nhi, e);
-                        e.printStackTrace();
                     }
                 } else {
                     FXMLLoader userLoader = new FXMLLoader(
@@ -241,7 +296,6 @@ public class NewUserController {
                         Log.info("Successfully launched User Overview for User NHI: " + nhi);
                     } catch (IOException e) {
                         Log.severe("Failed to load User Overview for User NHI: " + nhi, e);
-                        e.printStackTrace();
                     }
                 }
             } catch (InvalidFieldsException e) {
@@ -254,46 +308,96 @@ public class NewUserController {
 
     }
 
+
+    /**
+     * Sets all health detail variables based off the details entered
+     * @param birthGender the birth gender entered by the user
+     * @param genderIdentity the gender identity entered by the user
+     * @param height the height entered by the user
+     * @param weight the weight entered by the user
+     * @param bloodType the blood type entered by the user
+     * @param alcoholConsumption the alcohol consumption entered by the user
+     * @param smoker the status of the user being a smoker or not
+     * @return the collated health details of the user
+     */
+    private HealthDetails collectHealthDetails(String birthGender, String genderIdentity, double height, double weight,
+                                               String bloodType, String alcoholConsumption, boolean smoker) {
+        HealthDetails healthDetails = new HealthDetails();
+
+        healthDetails.setBirthGender(birthGender);
+        healthDetails.setGenderIdentity(genderIdentity);
+        healthDetails.setHeight(height);
+        healthDetails.setWeight(weight);
+        healthDetails.setBloodType(bloodType);
+        healthDetails.setAlcoholConsumption(alcoholConsumption);
+        healthDetails.setSmoker(smoker);
+
+        return healthDetails;
+    }
+
     /**
      * Collects and returns an EmergencyContact based off the details entered
      */
     private EmergencyContact collectEmergencyContact(User user) throws InvalidFieldsException {
         boolean valid;
         // Emergency Contact attributes
-        String eName = ecNameInput.getText();
-        valid = (AttributeValidation.checkString(ecNameInput.getText()));
+        String eName = ecName.getText();
+        valid = (AttributeValidation.checkString(ecName.getText()));
 
-        String eCellPhone = ecCellInput.getText();
-        valid &= (AttributeValidation.validateCellNumber(ecCellInput.getText()));
+        String eCellPhone = ecCell.getText();
+        valid &= (AttributeValidation.validateCellNumber(ecCell.getText()));
 
-        String eHomePhone = ecPhoneInput.getText();
-        valid &= (AttributeValidation.validatePhoneNumber(ecPhoneInput.getText()));
+        String eHomePhone = ecPhone.getText();
+        valid &= (AttributeValidation.validatePhoneNumber(ecPhone.getText()));
 
-        String eAddress = ecAddressInput.getText();
-        valid &= (AttributeValidation.checkString(ecAddressInput.getText()));
+        String eStreet = ecStreet.getText();
+        valid &= (AttributeValidation.checkString(ecStreet.getText()));
 
-        String eRegion = ecRegionInput.getText();
-        valid &= (AttributeValidation.checkString(ecRegionInput.getText()));
+        String eRegion = ecRegion.getSelectionModel().getSelectedItem();
+        valid &= (AttributeValidation.checkString(ecRegion.getSelectionModel().getSelectedItem()));
 
-        String eEmail = ecEmailInput.getText();
-        valid &= (AttributeValidation.validateEmail(ecEmailInput.getText()));
+        String eEmail = ecEmail.getText();
+        valid &= (AttributeValidation.validateEmail(ecEmail.getText()));
 
-        String eRelationship = ecRelationshipInput.getText();
-        valid &= (AttributeValidation.checkString(ecRelationshipInput.getText()));
+        String eRelationship = ecRelationship.getText();
+        valid &= (AttributeValidation.checkString(ecRelationship.getText()));
+
+
+        String eneighborhood = ecNeighborhood.getText();
+        valid &= (AttributeValidation.checkString(eneighborhood));
+
+        String ecity = ecCity.getText();
+        valid &= (AttributeValidation.checkString(ecity));
+
+        String ecountry = ecCounrty.getText();
+        valid &= (AttributeValidation.checkString(ecountry));
+
+        String estreetnum = ecStreetNumber.getText();
+        valid &= (AttributeValidation.checkString(estreetnum));
+
+        String ezipcode = ecZipCode.getText();
+        valid &= (AttributeValidation.checkString(ezipcode));
 
         // the name and cell number are required if any other attributes are filled out
         if ((eName.isEmpty() != eCellPhone.isEmpty()) && valid) {
             throw new InvalidFieldsException(); // Throws invalid field exception if inputs are found to be invalid
         } else {
-            EmergencyContact contact = new EmergencyContact("", "", user);
+            EmergencyContact contact = new EmergencyContact("", "", "");
+            //need this until we update undo/redo
+            contact.setAttachedUser(user);
 
             if (!eName.isEmpty() && !eCellPhone.isEmpty()) {
                 // create the emergency contact
-                contact = new EmergencyContact(eName, eCellPhone, user);
-
+                contact.setName(eName);
+                contact.setCellPhoneNumber(eCellPhone);
                 contact.setHomePhoneNumber(eHomePhone);
-                contact.setAddress(eAddress);
+                contact.setStreetNumber(estreetnum);
+                contact.setStreetName(eStreet);
+                contact.setCity(ecity);
+                contact.setCountry(ecountry);
+                contact.setZipCode(ezipcode);
                 contact.setRegion(eRegion);
+                contact.setNeighborhood(eneighborhood);
                 contact.setEmail(eEmail);
                 contact.setRelationship(eRelationship);
             }
@@ -346,7 +450,7 @@ public class NewUserController {
         User user = controller.findUser(nhi); // checks if the nhi already exists within the system
 
         if (valid && user == null) {
-            createUser(nhi, fName, dob, dod);
+            createUser(nhi, fName, dob);
         } else if (user != null) {
             existingNHI.setVisible(true);
         }

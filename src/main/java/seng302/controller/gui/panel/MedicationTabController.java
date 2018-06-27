@@ -14,9 +14,9 @@ import okhttp3.OkHttpClient;
 import org.controlsfx.control.textfield.TextFields;
 import seng302.controller.AppController;
 import seng302.controller.gui.popup.MedicationsTimeController;
-import seng302.utils.HttpRequester;
 import seng302.model.Memento;
 import seng302.model.User;
+import seng302.utils.HttpRequester;
 import seng302.utils.Log;
 
 import java.io.IOException;
@@ -120,11 +120,11 @@ public class MedicationTabController {
         medicationTextField.focusedProperty().addListener(
                 (observable, oldValue, newValue) -> new Thread(this::getDrugSuggestions).start());
         medicationTextField.textProperty()
-                .addListener((observable) -> new Thread(this::getDrugSuggestions).start());
+                .addListener(observable -> new Thread(this::getDrugSuggestions).start());
 
         medicationTextField.setOnMouseClicked(event -> new Thread(this::getDrugSuggestions));
         medicationTextField.textProperty()
-                .addListener((observable) -> new Thread(this::getDrugSuggestions));
+                .addListener(observable -> new Thread(this::getDrugSuggestions));
     }
 
     private void setListeners() {
@@ -156,7 +156,6 @@ public class MedicationTabController {
                 Log.info("Successfully loaded suggested medication names with user Input: " + newValue + " for User NHI: " + currentUser.getNhi());
             } catch (IOException e) {
                 Log.severe("Failed to load suggested medication names with user Input: " + newValue + " for User NHI: " + currentUser.getNhi(), e);
-                e.printStackTrace();
             }
 
         }
@@ -315,7 +314,6 @@ public class MedicationTabController {
             Log.info("successfully launched Medications Time view window for User NHI: " + currentUser.getNhi());
         } catch (IOException e) {
             Log.severe("Failed to launch Medications Time view window for User NHI: " + currentUser.getNhi(), e);
-            e.printStackTrace();
         }
 
 
@@ -356,7 +354,7 @@ public class MedicationTabController {
 
             } else /*interactions*/ {
                 Set<String> res = HttpRequester
-                        .getDrugInteractions(selected.get(0), selected.get(1), currentUser.getGender(),
+                        .getDrugInteractions(selected.get(0), selected.get(1), currentUser.getBirthGender(),
                                 currentUser.getAge(), client);
                 StringBuilder sb = new StringBuilder();
                 for (String symptom : res) {
@@ -374,7 +372,6 @@ public class MedicationTabController {
         } catch (IOException ex) {
             //TODO display connectivity error message
             Log.severe("Failed to load medication names from API call for User NHI: " + currentUser.getNhi(), ex);
-            System.out.println("oof");
         }
 
     }

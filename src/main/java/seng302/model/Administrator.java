@@ -104,7 +104,6 @@ public class Administrator extends Undoable<Administrator> implements Listenable
     }
 
     public void setUserName(String userName) {
-
         if (!userName.equals(this.userName)) {
             this.saveStateforUndo();
             this.userName = userName;
@@ -118,7 +117,6 @@ public class Administrator extends Undoable<Administrator> implements Listenable
     }
 
     public void setFirstName(String firstName) {
-
         if (!firstName.equals(this.firstName)) {
             this.saveStateforUndo();
             this.firstName = firstName;
@@ -132,8 +130,8 @@ public class Administrator extends Undoable<Administrator> implements Listenable
     }
 
     public void setMiddleName(String middleName) {
-        this.saveStateforUndo();
         if (!middleName.equals(this.middleName)) {
+            this.saveStateforUndo();
             this.middleName = middleName;
             addChange(new Change("Updated middle name to " + middleName));
             setDateLastModified(LocalDateTime.now());

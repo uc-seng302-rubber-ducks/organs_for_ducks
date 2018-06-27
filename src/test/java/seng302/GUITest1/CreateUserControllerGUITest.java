@@ -123,7 +123,7 @@ public class CreateUserControllerGUITest extends ApplicationTest {
         lookup("#nhiInput").queryAs(TextField.class).setText("ADE1987");
         lookup("#fNameInput").queryAs(TextField.class).setText("Dwayne");
         lookup("#dobInput").queryAs(DatePicker.class).setValue(LocalDate.parse("3/1/2017", DateTimeFormatter.ofPattern("d/M/yyyy")));
-        lookup("#phoneInput").queryAs(TextField.class).setText("033552847");
+        lookup("#phone").queryAs(TextField.class).setText("033552847");
         clickOn("#confirmButton");
         clickOn("#detailsTab");
         verifyThat("#pHomePhone", LabeledMatchers.hasText("033552847"));
@@ -134,7 +134,7 @@ public class CreateUserControllerGUITest extends ApplicationTest {
         lookup("#nhiInput").queryAs(TextField.class).setText("ADE1987");
         lookup("#fNameInput").queryAs(TextField.class).setText("Dwayne");
         lookup("#dobInput").queryAs(DatePicker.class).setValue(LocalDate.parse("3/1/2017", DateTimeFormatter.ofPattern("d/M/yyyy")));
-        lookup("#phoneInput").queryAs(TextField.class).setText("asdf");
+        lookup("#phone").queryAs(TextField.class).setText("asdf");
         clickOn("#confirmButton");
         verifyThat("#errorLabel", Node::isVisible);
     }
@@ -144,7 +144,7 @@ public class CreateUserControllerGUITest extends ApplicationTest {
         lookup("#nhiInput").queryAs(TextField.class).setText("ADE1987");
         lookup("#fNameInput").queryAs(TextField.class).setText("Dwayne");
         lookup("#dobInput").queryAs(DatePicker.class).setValue(LocalDate.parse("3/1/2017", DateTimeFormatter.ofPattern("d/M/yyyy")));
-        lookup("#emailInput").queryAs(TextField.class).setText("asdf");
+        lookup("#email").queryAs(TextField.class).setText("asdf");
         clickOn("#confirmButton");
         verifyThat("#errorLabel", Node::isVisible);
     }
@@ -154,7 +154,7 @@ public class CreateUserControllerGUITest extends ApplicationTest {
         lookup("#nhiInput").queryAs(TextField.class).setText("ADE1987");
         lookup("#fNameInput").queryAs(TextField.class).setText("Dwayne");
         lookup("#dobInput").queryAs(DatePicker.class).setValue(LocalDate.parse("3/1/2017", DateTimeFormatter.ofPattern("d/M/yyyy")));
-        lookup("#cellInput").queryAs(TextField.class).setText("asdf");
+        lookup("#cell").queryAs(TextField.class).setText("asdf");
         clickOn("#confirmButton");
         verifyThat("#errorLabel", Node::isVisible);
     }
@@ -164,7 +164,7 @@ public class CreateUserControllerGUITest extends ApplicationTest {
         lookup("#nhiInput").queryAs(TextField.class).setText("ADE1987");
         lookup("#fNameInput").queryAs(TextField.class).setText("Dwayne");
         lookup("#dobInput").queryAs(DatePicker.class).setValue(LocalDate.parse("3/1/2017", DateTimeFormatter.ofPattern("d/M/yyyy")));
-        lookup("#cellInput").queryAs(TextField.class).setText("0224973642");
+        lookup("#cell").queryAs(TextField.class).setText("0224973642");
         clickOn("#confirmButton");
         clickOn("#detailsTab");
         verifyThat("#pCellPhone", LabeledMatchers.hasText("0224973642"));
@@ -175,7 +175,7 @@ public class CreateUserControllerGUITest extends ApplicationTest {
         lookup("#nhiInput").queryAs(TextField.class).setText("ADE1987");
         lookup("#fNameInput").queryAs(TextField.class).setText("Dwayne");
         lookup("#dobInput").queryAs(DatePicker.class).setValue(LocalDate.parse("3/1/2017", DateTimeFormatter.ofPattern("d/M/yyyy")));
-        lookup("#emailInput").queryAs(TextField.class).setText("dwayneRock@gmail.com");
+        lookup("#email").queryAs(TextField.class).setText("dwayneRock@gmail.com");
         clickOn("#confirmButton");
         clickOn("#detailsTab");
         verifyThat("#pEmail", LabeledMatchers.hasText("dwayneRock@gmail.com"));
@@ -186,7 +186,7 @@ public class CreateUserControllerGUITest extends ApplicationTest {
         lookup("#nhiInput").queryAs(TextField.class).setText("ADE1987");
         lookup("#fNameInput").queryAs(TextField.class).setText("Dwayne");
         lookup("#dobInput").queryAs(DatePicker.class).setValue(LocalDate.parse("3/1/2017", DateTimeFormatter.ofPattern("d/M/yyyy")));
-        lookup("#emailInput").queryAs(TextField.class).setText("dwayneRock@gmail.com");
+        lookup("#email").queryAs(TextField.class).setText("dwayneRock@gmail.com");
         clickOn("#confirmButton");
     }
 
@@ -195,8 +195,8 @@ public class CreateUserControllerGUITest extends ApplicationTest {
         lookup("#nhiInput").queryAs(TextField.class).setText("ADE1987");
         lookup("#fNameInput").queryAs(TextField.class).setText("Dwayne");
         lookup("#dobInput").queryAs(DatePicker.class).setValue(LocalDate.parse("3/1/2017", DateTimeFormatter.ofPattern("d/M/yyyy")));
-        lookup("#ecNameInput").queryAs(TextField.class).setText("John Cena");
-        lookup("#ecCellInput").queryAs(TextField.class).setText("0214583341");
+        lookup("#ecName").queryAs(TextField.class).setText("John Cena");
+        lookup("#ecCell").queryAs(TextField.class).setText("0214583341");
         clickOn("#confirmButton");
         clickOn("#detailsTab");
         verifyThat("#eName", LabeledMatchers.hasText("John Cena"));
@@ -208,7 +208,7 @@ public class CreateUserControllerGUITest extends ApplicationTest {
         lookup("#nhiInput").queryAs(TextField.class).setText("ADE1987");
         lookup("#fNameInput").queryAs(TextField.class).setText("Dwayne");
         lookup("#dobInput").queryAs(DatePicker.class).setValue(LocalDate.parse("3/1/2017", DateTimeFormatter.ofPattern("d/M/yyyy")));
-        lookup("#ecCellInput").queryAs(TextField.class).setText("0214583341");
+        lookup("#ecCell").queryAs(TextField.class).setText("0214583341");
         clickOn("#confirmButton");
         verifyThat("#errorLabel", LabeledMatchers.hasText("Name and cell phone number are required for an emergency contact."));
     }
@@ -218,7 +218,7 @@ public class CreateUserControllerGUITest extends ApplicationTest {
         lookup("#nhiInput").queryAs(TextField.class).setText("ADE1987");
         lookup("#fNameInput").queryAs(TextField.class).setText("Dwayne");
         lookup("#dobInput").queryAs(DatePicker.class).setValue(LocalDate.parse("3/1/2017", DateTimeFormatter.ofPattern("d/M/yyyy")));
-        lookup("#ecNameInput").queryAs(TextField.class).setText("John Cena");
+        lookup("#ecName").queryAs(TextField.class).setText("John Cena");
         clickOn("#confirmButton");
         verifyThat("#errorLabel", LabeledMatchers.hasText("Name and cell phone number are required for an emergency contact."));
     }
@@ -228,13 +228,12 @@ public class CreateUserControllerGUITest extends ApplicationTest {
         lookup("#nhiInput").queryAs(TextField.class).setText("ADE1987");
         lookup("#fNameInput").queryAs(TextField.class).setText("Dwayne");
         lookup("#dobInput").queryAs(DatePicker.class).setValue(LocalDate.parse("3/1/2017", DateTimeFormatter.ofPattern("d/M/yyyy")));
-        lookup("#ecNameInput").queryAs(TextField.class).setText("John Cena");
-        lookup("#ecPhoneInput").queryAs(TextField.class).setText("033594573");
-        lookup("#ecCellInput").queryAs(TextField.class).setText("0221557621");
-        lookup("#ecAddressInput").queryAs(TextField.class).setText("123 Example St");
-        lookup("#ecRegionInput").queryAs(TextField.class).setText("Canterbury");
-        lookup("#ecEmailInput").queryAs(TextField.class).setText("johnCena@gmail.com");
-        lookup("#ecRelationshipInput").queryAs(TextField.class).setText("Leader");
+        lookup("#ecName").queryAs(TextField.class).setText("John Cena");
+        lookup("#ecPhone").queryAs(TextField.class).setText("033594573");
+        lookup("#ecCell").queryAs(TextField.class).setText("0221557621");
+        //lookup("#ecRegion").queryAs(TextField.class).setText("Canterbury");
+        lookup("#ecEmail").queryAs(TextField.class).setText("johnCena@gmail.com");
+        lookup("#ecRelationship").queryAs(TextField.class).setText("Leader");
         clickOn("#confirmButton");
         clickOn("#detailsTab");
         verifyThat("#eName", LabeledMatchers.hasText("John Cena"));
