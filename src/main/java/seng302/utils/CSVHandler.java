@@ -77,16 +77,14 @@ public class CSVHandler extends DataHandler{
             u.setBirthGender(record.get(5));
             u.setGenderIdentity(record.get(6));
             u.setBloodType(record.get(7));
-            String streetNumber = record.get(10);
-            String streetName = record.get(11);
-            String neighbourhood = record.get(12);
-            String city = record.get(13);
-            String zipCode = record.get(15);
-            //TODO: change this to new address format
-            //u.setCurrentAddress(streetNumber+ " " + streetName + " " + neighbourhood + " " + city + " " + zipCode);
+            u.setStreetNumber(record.get(10));
+            u.setStreetName(record.get(11));
+            u.setNeighbourhood(record.get(12));
+            u.setCity(record.get(13));
+            u.setZipCode(record.get(15));
             u.setRegion(record.get(14));
-            String country = record.get(16);
-            String birthCountry = record.get(17);
+            u.setCountry(record.get(16));
+            u.setBirthCountry(record.get(17));
             u.setHomePhone(record.get(18));
             u.setCellPhone(record.get(19));
             u.setEmail(record.get(20));

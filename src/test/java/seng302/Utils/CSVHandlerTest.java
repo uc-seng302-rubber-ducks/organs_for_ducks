@@ -35,14 +35,11 @@ public class CSVHandlerTest {
         shouldEqual.setBloodType("Male");
         shouldEqual.setHeight(1.94);
         shouldEqual.setWeight(105);
-        /* todo: change these to work when user is re-engineered
-        shouldEqual.setStreetNumber(2158);
+        shouldEqual.setStreetNumber("2158");
         shouldEqual.setStreetName("Melody");
-        shouldEqual.setSetNeighbourhood("Bình Thủy");
-        shouldEqual.setCity("Hamilton")
-
-        shouldEqual.setZipCode(5813);
-        */
+        shouldEqual.setNeighbourhood("Bình Thủy");
+        shouldEqual.setCity("Hamilton");
+        shouldEqual.setZipCode("5813");
         shouldEqual.setRegion("Waikato");
         shouldEqual.setHomePhone("07 743 4657");
         shouldEqual.setCellPhone("020 483 1284");
@@ -81,6 +78,10 @@ public class CSVHandlerTest {
         assert (toTest.getWeight() == shouldEqual.getWeight());
         assert (toTest.getRegion().equals(shouldEqual.getRegion()));
         assert (toTest.getHomePhone().equals(shouldEqual.getHomePhone()));
+        assert (toTest.getStreetNumber().equals(shouldEqual.getStreetNumber()));
+        assert (toTest.getStreetName().equals(shouldEqual.getStreetName()));
+        assert (toTest.getNeighbourhood().equals(shouldEqual.getNeighbourhood()));
+        assert (toTest.getCity().equals(shouldEqual.getCity()));
 
     }
 
@@ -90,7 +91,6 @@ public class CSVHandlerTest {
         CSVHandler csvHandler = new CSVHandler();
         ArrayList<User> users = (ArrayList<User>) csvHandler.loadUsers("src/test/resources/csvData/csvTestData.csv");
         User toTest = users.get(2);
-        System.out.println(toTest);
         assert (toTest.getNhi().equals(shouldEqual.getNhi()));
         assert (toTest.getFirstName().equals(shouldEqual.getFirstName()));
         assert (toTest.getLastName().equals(shouldEqual.getLastName()));
@@ -102,6 +102,10 @@ public class CSVHandlerTest {
         assert (toTest.getWeight() == shouldEqual.getWeight());
         assert (toTest.getRegion().equals(shouldEqual.getRegion()));
         assert (toTest.getHomePhone().equals(shouldEqual.getHomePhone()));
+        assert (toTest.getStreetNumber().equals(shouldEqual.getStreetNumber()));
+        assert (toTest.getStreetName().equals(shouldEqual.getStreetName()));
+        assert (toTest.getNeighbourhood().equals(shouldEqual.getNeighbourhood()));
+        assert (toTest.getCity().equals(shouldEqual.getCity()));
 
     }
 

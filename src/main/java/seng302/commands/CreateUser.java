@@ -121,7 +121,7 @@ public class CreateUser implements Runnable {
             user.setStreetNumber(number);
         }
         if (neighborhood != null) {
-            user.setNeighborhood(neighborhood);
+            user.setNeighbourhood(neighborhood);
         }
         if (region != null) {
             user.setRegion(region);

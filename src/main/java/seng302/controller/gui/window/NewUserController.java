@@ -237,7 +237,7 @@ public class NewUserController {
                 newUser.setCellPhone(cellPhone);
                 newUser.setEmail(email);
                 newUser.setRegion(region);
-                newUser.setNeighborhood(neighborhood);
+                newUser.setNeighbourhood(neighborhood);
                 newUser.setCity(city);
                 newUser.setCountry(country);
                 newUser.setStreetNumber(streetnum);
