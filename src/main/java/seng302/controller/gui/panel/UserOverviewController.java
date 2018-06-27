@@ -121,6 +121,7 @@ public class UserOverviewController {
         NHIValue.setText(user.getNhi());
         fNameValue.setText(user.getFirstName());
         DOBValue.setText(user.getDateOfBirth().toString());
+
         if (user.getMiddleName() != null) {
             mNameValue.setText(user.getMiddleName());
         } else {

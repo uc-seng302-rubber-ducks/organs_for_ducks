@@ -130,7 +130,7 @@ public class AttributeValidation {
      * @return True if the provided object is valid
      */
     public static boolean validateBlood(String blood) {
-        if (blood != null) {
+        if (!blood.equals("")) {
             for (BloodTypes type : BloodTypes.values()) {
                 if ((type.toString()).equals(blood)) {
                     return true;
