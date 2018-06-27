@@ -8,7 +8,6 @@ import seng302.model._abstract.TimedEntryCache;
 import seng302.model._enum.Directory;
 import seng302.model.datamodel.TimedCacheValue;
 import seng302.utils.Log;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -59,7 +58,7 @@ public class MedicationInteractionCache implements TimedEntryCache<String, Timed
             }
         } catch (FileNotFoundException e) {
             Log.severe("Cache file not found", e);
-            //throw e;
+            throw e;
         } catch (RuntimeException e) {
             Log.severe("runtime error when reading cache from file", e);
             throw e;
@@ -96,6 +95,10 @@ public class MedicationInteractionCache implements TimedEntryCache<String, Timed
                 cache.remove(entry.getKey());
             }
         }
-        throw new NotImplementedException();
+    }
+
+    @Override
+    public boolean containsKey(String key) {
+        return cache.containsKey(key);
     }
 }

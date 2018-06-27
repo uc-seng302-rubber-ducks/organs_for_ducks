@@ -56,4 +56,13 @@ public interface Cache<K, V> {
      */
     void clear();
 
+    /**
+     * checks if the cache contains a given key
+     *
+     * @param key object to search for
+     * @return true if key is in the cache, false otherwise
+     */
+    boolean containsKey(K key);
+
+
 }
