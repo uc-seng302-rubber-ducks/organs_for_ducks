@@ -1,16 +1,16 @@
 package seng302.utils;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import seng302.model.datamodel.MedicationInteractionsResponse;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -66,105 +66,57 @@ public class HttpRequester {
             gender = "unknown";
         }
 
-        Set<String> results = new HashSet<>();
-        Set<String> ageResults = new HashSet<>();
-        Set<String> genderResults = new HashSet<>();
-        Set<String> finalResults = new HashSet<>();
-        String url =
-                "https://www.ehealthme.com/api/v1/drug-interaction/" + drugOneName + "/" + drugTwoName
-                        + "/";
-
-
         String ageRange;
         if (age > 59) {
             ageRange = "60+";
         } else if (age < 10) {
+            Set<String> results = new HashSet<>();
             results.add("Too young");
             return results;
         } else {
             ageRange = Integer.toString((age / 10) * 10) + "-" + Integer.toString((age / 10) * 10 + 9);
         }
+
+        String rawResponse = null;
         try {
+            rawResponse = getDrugInteractions(drugOneName, drugTwoName, client);
 
-            Request request = new Request.Builder().url(url).build();
-            Response response = client.newCall(request).execute();
-            String rawString = response.body().string();
-
-            if (rawString == null) {
-                return new HashSet<>();
-            }
-            JSONParser parser = new JSONParser();
-            JSONObject json = (JSONObject) parser.parse(rawString);
-            JSONObject ageInteractions = (JSONObject) json.get("age_interaction");
-            JSONObject genderInteractions = (JSONObject) json.get("gender_interaction");
-            JSONObject durationInteractions = (JSONObject) json.get("duration_interaction");
-
-            JSONArray ageProblems = new JSONArray();
-            //get age interactions
-            if (ageInteractions.get(ageRange) != null) {
-                //try to get exact 10 year range (20-29)
-                ageProblems = (JSONArray) ageInteractions.get(ageRange);
-            } else {
-                //try to get any range containing 20 or 29
-                for (Object keyObj : ageInteractions.keySet()) {
-                    String key = keyObj.toString();
-                    if (key.contains(Integer.toString((age / 10) * 10)) || key
-                            .contains(Integer.toString((age / 10) * 10 + 9))) {
-                        ageProblems = (JSONArray) ageInteractions.get(key);
-                    }
-                }
-            }
-            //otherwise there are no age interactions, only gender
-            ageResults.addAll(ageProblems);
-
-            if (gender.startsWith("m") || gender.startsWith("M")) {
-                JSONArray genderedInteractions = (JSONArray) genderInteractions.get("male");
-                genderResults.addAll(genderedInteractions);
-            } else if (gender.startsWith("f") || gender.startsWith("F")) {
-                JSONArray genderedInteractions = (JSONArray) genderInteractions.get("female");
-                genderResults.addAll(genderedInteractions);
-            } else {
-                JSONArray genderedInteractions1 = (JSONArray) genderInteractions.get("female");
-                genderResults.addAll(genderedInteractions1);
-                JSONArray genderedInteractions = (JSONArray) genderInteractions.get("male");
-                genderResults.addAll(genderedInteractions);
-            }
-            ageResults.retainAll(genderResults);
-            //cross current result set with durations to get symptom (duration) strings
-            Set<String> durationKeySet = durationInteractions.keySet();
-            HashMap<String, ArrayList<String>> temp = new HashMap<>();
-            for (String duration : durationKeySet) {
-                JSONArray afflictions = (JSONArray) durationInteractions.get(duration);
-                for (Object affliction : afflictions) {
-                    String symptom = (String) affliction;
-                    if (ageResults.contains(symptom)) {
-                        //put into map
-                        if (temp.containsKey(symptom)) {
-                            ArrayList<String> newDurations = temp.get(symptom);
-                            newDurations.add(duration);
-                            temp.put(symptom, newDurations);
-                        } else {
-                            ArrayList<String> newDurations = new ArrayList<>();
-                            newDurations.add(duration);
-                            temp.put(symptom, newDurations);
-                        }
-                    }
-                }
-            }
-
-            Set<String> finalKeySet = temp.keySet();
-            for (String key : finalKeySet) {
-                String duration = temp.get(key).get(0);
-                if (duration.equals("not specified") && temp.get(key).size() > 1) {
-                    duration = temp.get(key).get(1);
-                }
-                finalResults.add(key + " (" + duration + ")");
-            }
-
-            return finalResults;
-        } catch (Exception ex) {
+        } catch (IOException e) {
+            Log.warning("failed to get interactions", e);
+        }
+        Gson gson = new GsonBuilder().create();
+        MedicationInteractionsResponse responseObject = gson.fromJson(rawResponse, MedicationInteractionsResponse.class);
+        if (responseObject == null) {
             return new HashSet<>();
         }
+
+        return interpretInteractions(responseObject, ageRange, gender);
+    }
+
+    /**
+     * takes result object extracts information relevant to the age range and gender
+     *
+     * @param ageRange string of format "x0-x9", "nan", or "60+" where x is any integer less than 6
+     * @param gender   strings starting with m will be interpreted as male, f is female. anything else will return results for both
+     * @return set of relevant effects caused by drugs interacting
+     */
+    private static Set<String> interpretInteractions(MedicationInteractionsResponse response, String ageRange, String gender) {
+        //init and age interactions
+        Set<String> interactions = new HashSet<>(response.getAgeInteractions().get(ageRange));
+
+        if (gender.toLowerCase().startsWith("m")) {
+            //male interactions
+            interactions.addAll(response.getGenderInteractions().get("male"));
+        } else if (gender.toLowerCase().startsWith("f")) {
+            //female interactions
+            interactions.addAll(response.getGenderInteractions().get("female"));
+        } else {
+            //all the interactions
+            interactions.addAll(response.getGenderInteractions().get("male"));
+            interactions.addAll(response.getGenderInteractions().get("female"));
+        }
+
+        return interactions;
     }
 
     /**
@@ -189,6 +141,7 @@ public class HttpRequester {
             Log.severe("HttpRequester parseexception in getSuggestedDrugs", e);
             return "";
         }
+
     }
 
     /**
@@ -216,5 +169,9 @@ public class HttpRequester {
         } catch (Exception ex) {
             return new String[]{};
         }
+    }
+
+    public static void main(String[] args) {
+        getDrugInteractions("coumadin", "acetaminophen", "m", 30, new OkHttpClient());
     }
 }
