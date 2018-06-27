@@ -145,7 +145,7 @@ public class HttpRequester {
                 }
                 finalInteractions.add(interaction + " (" + duration + ")");
             } else {
-                finalInteractions.add(interaction);
+                finalInteractions.add(interaction + " (not specified)");
             }
 
         }

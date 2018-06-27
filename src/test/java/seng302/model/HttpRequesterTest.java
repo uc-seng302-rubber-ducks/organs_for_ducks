@@ -76,11 +76,22 @@ public class HttpRequesterTest {
         when(mockResponseBody.string()).thenReturn(responseBody.toString());
         when(mockResponse.body()).thenReturn(mockResponseBody);
         Set<String> expected = new HashSet<>();
+        expected.add("convulsion (not specified)");
+        expected.add("dizziness (not specified)");
+        expected.add("fatigue (not specified)");
+        expected.add("muscle spasms (not specified)");
+        expected.add("injury (not specified)");
+        expected.add("nausea (not specified)");
+        expected.add("pain in extremity (not specified)");
+        expected.add("dyspnoea (not specified)");
+        expected.add("hypotension (6 - 12 months)");
+        expected.add("catheter site inflammation (not specified)");
+        expected.add("oedema peripheral (< 1 month)");
         expected.add("anxiety (< 1 month)");
         expected.add("anaemia (1 - 6 months)");
         expected.add("pneumonia (5 - 10 years)");
-        expected.add("injury (not specified)");
-        expected.add("nausea (not specified)");
+        expected.add("international normalised ratio increased (10+ years)");
+
 
         Set<String> results = HttpRequester.getDrugInteractions("coumadin", "acetaminophen", "m", 36, mockClient);
 
