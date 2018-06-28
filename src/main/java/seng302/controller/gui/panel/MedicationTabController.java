@@ -54,7 +54,7 @@ public class MedicationTabController {
     private ObservableList<String> currentMeds;
     private ObservableList<String> previousMeds;
     private User currentUser;
-    private OkHttpClient client = new OkHttpClient();
+    private HttpRequester httpRequester = new HttpRequester(new OkHttpClient());
 
     /**
      * Gives the user view the application controller and hides all label and buttons that are not
@@ -146,7 +146,7 @@ public class MedicationTabController {
         String newValue = medicationTextField.getText();
         if (newValue.length() > 1) {
             try {
-                String autocompleteRaw = HttpRequester.getSuggestedDrugs(newValue, new OkHttpClient());
+                String autocompleteRaw = httpRequester.getSuggestedDrugs(newValue);
                 String[] values = autocompleteRaw.replaceAll("^\"", "").replaceAll("\\[", "")
                         .replaceAll("]", "").split("\"?(,|$)(?=(([^\"]*\"){2})*[^\"]*$) *\"?");
                 for (int i = 0; i < values.length; i++) {
@@ -339,7 +339,7 @@ public class MedicationTabController {
         try {
             //active ingredients
             if (selected.size() == 1) {
-                String[] res = HttpRequester.getActiveIngredients(selected.get(0), client);
+                String[] res = httpRequester.getActiveIngredients(selected.get(0));
                 StringBuilder sb = new StringBuilder();
                 for (String ingredient : res) {
                     sb.append(ingredient);
@@ -353,9 +353,9 @@ public class MedicationTabController {
                 drugDetailsTextArea.setText(sb.toString());
 
             } else /*interactions*/ {
-                Set<String> res = HttpRequester
+                Set<String> res = httpRequester
                         .getDrugInteractions(selected.get(0), selected.get(1), currentUser.getGender(),
-                                currentUser.getAge(), client);
+                                currentUser.getAge());
                 StringBuilder sb = new StringBuilder();
                 for (String symptom : res) {
                     sb.append(symptom);

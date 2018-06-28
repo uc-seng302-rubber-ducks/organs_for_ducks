@@ -18,17 +18,21 @@ import java.util.*;
  */
 public class HttpRequester {
 
+    private OkHttpClient client;
+
+    public HttpRequester(OkHttpClient client) {
+        this.client = client;
+    }
+
     /**
      * uses ehealthme api to get interactions between two drugs
      *
      * @param drugOneName string name of first drug
      * @param drugTwoName string name of second drug
-     * @param client      http client to be used. use `new OkHttpClient()` if you have no preference
      * @return json formatted string containing the interactions between the two drugs
      * @throws IOException caused by error with server connection
      */
-    public static String getDrugInteractions(String drugOneName, String drugTwoName,
-                                             OkHttpClient client) throws IOException {
+    public String getDrugInteractions(String drugOneName, String drugTwoName) throws IOException {
 
         String url =
                 "https://www.ehealthme.com/api/v1/drug-interaction/" + drugOneName + "/" + drugTwoName
@@ -50,11 +54,10 @@ public class HttpRequester {
      * @param drugTwoName name of the second drug
      * @param gender      gender of the user (anything starting with m or f will be taken as male or female)
      * @param age         integer age of the user
-     * @param client      http client to be used. use `new OkHttpClient()` if you have no preference
      * @return set containing strings of format interaction (duration). e.g. pneumonia (5 - 10 years)
      */
-    public static Set<String> getDrugInteractions(String drugOneName, String drugTwoName,
-                                                  String gender, int age, OkHttpClient client) {
+    public Set<String> getDrugInteractions(String drugOneName, String drugTwoName,
+                                           String gender, int age) {
 
         //return empty set if drugs are null
         if (drugOneName == null || drugTwoName == null) {
@@ -78,7 +81,7 @@ public class HttpRequester {
 
         String rawResponse = null;
         try {
-            rawResponse = getDrugInteractions(drugOneName, drugTwoName, client);
+            rawResponse = getDrugInteractions(drugOneName, drugTwoName);
 
         } catch (IOException e) {
             Log.warning("failed to get interactions", e);
@@ -99,8 +102,11 @@ public class HttpRequester {
      * @param gender   strings starting with m will be interpreted as male, f is female. anything else will return results for both
      * @return set of relevant effects caused by drugs interacting
      */
-    private static Set<String> interpretInteractions(MedicationInteractionsResponse response, String ageRange, String gender) {
+    private Set<String> interpretInteractions(MedicationInteractionsResponse response, String ageRange, String gender) {
         //init and age interactions
+        if (response == null || response.getAgeInteractions() == null) {
+            return new HashSet<>();
+        }
         Set<String> interactions = new HashSet<>(response.getAgeInteractions().get(ageRange));
 
         if (gender.toLowerCase().startsWith("m")) {
@@ -157,11 +163,10 @@ public class HttpRequester {
      * Takes a string argument and provides auto completed results
      *
      * @param input  string to be auto completed
-     * @param client client to make the request on
      * @return String containing the results
      * @throws IOException thrown when IO fails
      */
-    public static String getSuggestedDrugs(String input, OkHttpClient client) throws IOException {
+    public String getSuggestedDrugs(String input) throws IOException {
 
         String url = "http://mapi-us.iterar.co/api/autocomplete?query=" + input;
         Request request = new Request.Builder().url(url).build();
@@ -183,11 +188,10 @@ public class HttpRequester {
      * ingredients in a given drug
      *
      * @param drug   the drug to be checked e.g. xanax, reserpine, etc.
-     * @param client http client to be used. use new OkHttpClient() if you have no preference
      * @return string array of each active ingredient
      * @throws IOException thrown when IO fails
      */
-    public static String[] getActiveIngredients(String drug, OkHttpClient client) throws IOException {
+    public String[] getActiveIngredients(String drug) throws IOException {
         String url = "http://mapi-us.iterar.co/api/" + drug + "/substances.json";
         Request request = new Request.Builder().url(url).build();
         Response response = client.newCall(request).execute();
@@ -203,9 +207,5 @@ public class HttpRequester {
         } catch (Exception ex) {
             return new String[]{};
         }
-    }
-
-    public static void main(String[] args) {
-        getDrugInteractions("coumadin", "acetaminophen", "m", 30, new OkHttpClient());
     }
 }
