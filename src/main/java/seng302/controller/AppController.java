@@ -305,6 +305,7 @@ public class AppController {
 
     /**
      * adds a clinician to the clinicians
+     *
      * @param clinician clinician to be added
      */
     public void addClinician(Clinician clinician) {
@@ -313,6 +314,7 @@ public class AppController {
 
     /**
      * adds a administrator ti the administrators
+     *
      * @param administrator administrator to be added
      */
     public void addAdmin(Administrator administrator) {

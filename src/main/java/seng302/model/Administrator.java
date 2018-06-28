@@ -262,7 +262,7 @@ public class Administrator extends Undoable<Administrator> implements Listenable
         getRedoStack().push(new Memento<>(clone(this))); // put current state onto redo stack
         Memento<Administrator> memento = getUndoStack().pop(); //Get the top of the undo stack
         this.changeInto(memento.getState()); //Change current state to be top undo state
-
+        //addChange(new Change("undo")); //I think this should be here because it exists in clinician?
     }
 
     @Override

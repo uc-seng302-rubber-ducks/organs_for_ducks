@@ -133,6 +133,7 @@ public class UpdateAdminController {
 
         if (changed) {
             prefillFields();
+            //adminClone.getRedoStack().clear(); //TODO
         }
 
         undoAdminUpdateButton.setDisable(adminClone.getUndoStack().size() <= undoMarker);

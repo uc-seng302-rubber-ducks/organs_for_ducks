@@ -20,19 +20,19 @@ public class Memento<T> {
     }
 
     public T getOldObject() {
-        return state;
+        return oldObject;
     } //Changed
 
     public void setOldObject(T state) {
-        this.state = state;
+        this.oldObject = state;
     }
 
     public T getNewObject() {
-        return state;
+        return newObject;
     } //Changed
 
     public void setNewObject(T state) {
-        this.state = state;
+        this.newObject = state;
     }
 
     @Override
