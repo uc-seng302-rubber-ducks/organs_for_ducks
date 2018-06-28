@@ -1,30 +1,37 @@
 package seng302.commands;
 
 
-import picocli.CommandLine;
+import picocli.CommandLine.*;
 import seng302.utils.DBHandler;
 import seng302.utils.Log;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-@CommandLine.Command(name="sql", description = " Command used to enter sql select statements")
+@Command(name="sql", description = " Command used to enter sql select statements")
 public class Sql implements Runnable {
 
-    @CommandLine.Option(names = {"-h", "help"}, usageHelp = true, description = "TODO: Put help here")
+    @Option(names = {"-h", "help"}, usageHelp = true, description = "TODO: Put help here")
     boolean helpRequested = false;
 
-    @CommandLine.Parameters()
-    private String statement = "";
+    @Parameters()
+    private String[] statementArray;
 
     @Override
     public void run() {
         DBHandler dbHandler = new DBHandler();
+        StringBuilder sb = new StringBuilder();
+        String statement;
+        for( String s : statementArray){
+            sb.append(s );
+            sb.append(" ");
+        }
+        statement = sb.toString();
         statement = statement.toUpperCase();
         if(statement.startsWith("SELECT")){
             ResultSet resultSet = null;
             try {
-                resultSet = dbHandler.executeStatement(statement);
+                resultSet = dbHandler.executeStatement(statement, dbHandler.getConnection());
             } catch (SQLException e) {
                 System.out.println("A database error has occurred, please try again or contact your administrator if the " +
                         "problem persists");

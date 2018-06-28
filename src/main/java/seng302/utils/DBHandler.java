@@ -77,19 +77,30 @@ public class DBHandler {
         connection = DriverManager.getConnection("jdbc:mysql:" + URL + TEST_DB, USER, PASSWORD);
     }
 
+    /**
+     * Gives the connection to the database
+     *
+     * TODO: move this and the connection part into another class and re-engineer class to take a connection as an argument for mocking
+     * @return Connection to the database
+     * @throws SQLException
+     */
+    public Connection getConnection() throws SQLException {
+        return DriverManager.getConnection("jdbc:mysql:" + URL + TEST_DB, USER, PASSWORD);
+    }
 
     /**
-     * Takes a generic, valid SQL statement as an argument and executes it and returns the result
+     * Takes a generic, valid SQL String as an argument and executes it and returns the result
      *
      * @param statement Statement to run
+     * @param conn connection to process it on
      * @return Result of execution
      * @throws SQLException Thrown on bad statement
      */
-    public ResultSet executeStatement(String statement) throws SQLException {
-        connect();
-        PreparedStatement preparedStatement = connection.prepareStatement(statement);
+    public ResultSet executeStatement(String statement, Connection conn) throws SQLException {
+        PreparedStatement preparedStatement = conn.prepareStatement(statement);
         return executeQuery(preparedStatement);
     }
+
 
     /**
      * Helper function to convert date string from database
