@@ -43,6 +43,8 @@ public class User extends Undoable<User> implements Listenable {
     private String middleName;
     @Expose
     private String lastName;
+    @Expose
+    private String birthCountry;
 
     @Expose
     private EmergencyContact contact;
@@ -52,6 +54,7 @@ public class User extends Undoable<User> implements Listenable {
 
     @Expose
     private HealthDetails healthDetails;
+
 
     @Expose
     private LocalDateTime lastModified;
@@ -577,6 +580,14 @@ public class User extends Undoable<User> implements Listenable {
 
     public void setCountry(String country) {
         contactDetails.getAddress().setCountry(country);
+    }
+
+    public String getBirthCountry() {
+        return birthCountry;
+    }
+
+    public void setBirthCountry(String birthCountry) {
+        this.birthCountry = birthCountry;
     }
 
     /**

@@ -7,7 +7,6 @@ import seng302.controller.AppController;
 import seng302.model.User;
 import seng302.utils.DataHandler;
 import seng302.utils.JsonHandler;
-import seng302.utils.JsonHandler;
 import seng302.view.IoHelper;
 
 import java.io.IOException;
