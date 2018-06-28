@@ -2,13 +2,17 @@ package seng302.utils;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonSyntaxException;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import seng302.model.CacheManager;
+import seng302.model.MedicationInteractionCache;
 import seng302.model.datamodel.MedicationInteractionsResponse;
+import seng302.model.datamodel.TimedCacheValue;
 
 import java.io.IOException;
 import java.util.*;
@@ -19,9 +23,12 @@ import java.util.*;
 public class HttpRequester {
 
     private OkHttpClient client;
+    private MedicationInteractionCache interactionCache;
 
     public HttpRequester(OkHttpClient client) {
         this.client = client;
+        CacheManager cacheManager = CacheManager.getInstance();
+        this.interactionCache = cacheManager.getInteractionCache();
     }
 
     /**
@@ -34,6 +41,10 @@ public class HttpRequester {
      */
     public String getDrugInteractions(String drugOneName, String drugTwoName) throws IOException {
 
+        TimedCacheValue<String> cached = interactionCache.get(drugOneName, drugTwoName);
+        if (cached != null) {
+            return cached.getValue();
+        }
         String url =
                 "https://www.ehealthme.com/api/v1/drug-interaction/" + drugOneName + "/" + drugTwoName
                         + "/";
@@ -41,6 +52,7 @@ public class HttpRequester {
         Response response = client.newCall(request).execute();
         String result = response.body().string();
         if (result != null) {
+            interactionCache.add(drugOneName, drugTwoName, result);
             return result;
         }
         return "";
@@ -87,7 +99,12 @@ public class HttpRequester {
             Log.warning("failed to get interactions", e);
         }
         Gson gson = new GsonBuilder().create();
-        MedicationInteractionsResponse responseObject = gson.fromJson(rawResponse, MedicationInteractionsResponse.class);
+        MedicationInteractionsResponse responseObject = null;
+        try {
+            responseObject = gson.fromJson(rawResponse, MedicationInteractionsResponse.class);
+        } catch (JsonSyntaxException ex) {
+            Log.warning("could not interpret API response:\n" + rawResponse, ex);
+        }
         if (responseObject == null) {
             return new HashSet<>();
         }

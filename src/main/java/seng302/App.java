@@ -9,6 +9,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import seng302.controller.AppController;
 import seng302.controller.gui.window.LoginController;
+import seng302.model.CacheManager;
 import seng302.model._enum.Directory;
 import seng302.utils.JsonHandler;
 import seng302.utils.Log;
@@ -75,6 +76,7 @@ public class App extends Application {
                 JsonHandler.saveClinicians(controller.getClinicians());
                 JsonHandler.saveAdmins(controller.getAdmins());
                 Log.info("Successfully saved all user types on exit");
+                CacheManager.getInstance().saveAll();
             } catch (IOException ex) {
                 Log.warning("failed to save users on exit", ex);
             }

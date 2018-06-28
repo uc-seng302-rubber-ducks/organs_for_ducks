@@ -51,6 +51,18 @@ public class MedicationInteractionCache implements TimedEntryCache<String, Timed
         return null;
     }
 
+    public TimedCacheValue<String> get(String drugA, String drugB) {
+        String key;
+        //sort drugs alphabetically to avoid B-A and A-B both being in the cache
+        if (drugA.compareToIgnoreCase(drugB) < 0) {
+            key = drugA + "-" + drugB;
+        } else {
+            key = drugB + "-" + drugA;
+        }
+
+        return cache.get(key);
+    }
+
     @Override
     public boolean evict(String key) {
         //cache.remove returns the old value associated with key
