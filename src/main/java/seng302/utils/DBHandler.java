@@ -233,6 +233,7 @@ public class DBHandler {
      * @return A result set
      */
     private ResultSet executeQuery(PreparedStatement statement) throws SQLException {
+        //TODO: WHy is this here? Its literally a function to execute a function. just call this instead statement.executeQuery()
         return statement.executeQuery();
     }
 
