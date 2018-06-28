@@ -338,8 +338,8 @@ public class UpdateUserController {
             country.setText("");
         }
 
-        if (user.getNeighbourhood() != null) {
-            neighborhood.setText(user.getNeighbourhood());
+        if (user.getNeighborhood() != null) {
+            neighborhood.setText(user.getNeighborhood());
         } else {
             neighborhood.setText("");
         }
@@ -870,8 +870,8 @@ public class UpdateUserController {
             changed = true;
 
         }
-        if (checkChangedProperty(neighborhood.getText(), currentUser.getNeighbourhood())) {
-            currentUser.setNeighbourhood(neighborhood.getText());
+        if (checkChangedProperty(neighborhood.getText(), currentUser.getNeighborhood())) {
+            currentUser.setNeighborhood(neighborhood.getText());
             changed = true;
 
         }

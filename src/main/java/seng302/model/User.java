@@ -550,12 +550,12 @@ public class User extends Undoable<User> implements Listenable {
         contactDetails.getAddress().setStreetName(streetName);
     }
 
-    public String getNeighbourhood() {
-        return contactDetails.getAddress().getNeighbourhood();
+    public String getNeighborhood() {
+        return contactDetails.getAddress().getNeighborhood();
     }
 
-    public void setNeighbourhood(String neighbourhood) {
-        contactDetails.getAddress().setNeighbourhood(neighbourhood);
+    public void setNeighborhood(String neighborhood) {
+        contactDetails.getAddress().setNeighborhood(neighborhood);
     }
 
     public String getCity() {

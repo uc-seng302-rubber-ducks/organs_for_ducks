@@ -86,11 +86,11 @@ public class ContactDetails {
     }
 
     public String getNeighborhood() {
-        return address.getNeighbourhood();
+        return address.getNeighborhood();
     }
 
     public void setNeighborhood(String neighborhood) {
-        address.setNeighbourhood(neighborhood);
+        address.setNeighborhood(neighborhood);
     }
 
     public String getCity() {

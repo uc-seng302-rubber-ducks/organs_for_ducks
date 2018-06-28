@@ -79,7 +79,7 @@ public class CSVHandler extends DataHandler{
             u.setBloodType(record.get(7));
             u.setStreetNumber(record.get(10));
             u.setStreetName(record.get(11));
-            u.setNeighbourhood(record.get(12));
+            u.setNeighborhood(record.get(12));
             u.setCity(record.get(13));
             u.setZipCode(record.get(15));
             u.setRegion(record.get(14));

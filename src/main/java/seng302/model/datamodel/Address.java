@@ -4,16 +4,16 @@ public class Address {
 
     private String streetNumber;
     private String streetName;
-    private String neighbourhood;
+    private String neighborhood;
     private String city;
     private String region;
     private String zipCode;
     private String country;
 
-    public Address(String streetNumber, String streetName, String neighbourhood, String city, String region, String zipCode, String country) {
+    public Address(String streetNumber, String streetName, String neighborhood, String city, String region, String zipCode, String country) {
         this.streetNumber = streetNumber;
         this.streetName = streetName;
-        this.neighbourhood = neighbourhood;
+        this.neighborhood = neighborhood;
         this.city = city;
         this.region = region;
         this.zipCode = zipCode;
@@ -36,12 +36,12 @@ public class Address {
         this.streetName = streetName;
     }
 
-    public String getNeighbourhood() {
-        return neighbourhood;
+    public String getNeighborhood() {
+        return neighborhood;
     }
 
-    public void setNeighbourhood(String neighbourhood) {
-        this.neighbourhood = neighbourhood;
+    public void setNeighborhood(String neighborhood) {
+        this.neighborhood = neighborhood;
     }
 
     public String getCity() {
@@ -77,7 +77,7 @@ public class Address {
     }
 
     public String getStringAddress() {
-        return streetNumber + " " + streetName + "\n" + neighbourhood;
+        return streetNumber + " " + streetName + "\n" + neighborhood;
     }
 
 
@@ -86,7 +86,7 @@ public class Address {
         return
                 streetNumber + " " +
                         streetName + " \n" +
-                        neighbourhood + "\n" +
+                        neighborhood + "\n" +
                         city + " " +
                         region + ' ' +
                         zipCode + "\n" +

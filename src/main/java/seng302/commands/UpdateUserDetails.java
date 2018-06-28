@@ -130,7 +130,7 @@ public class UpdateUserDetails implements Runnable {
             changed = true;
         }
         if (neighborhood != null) {
-            user.setNeighbourhood(neighborhood);
+            user.setNeighborhood(neighborhood);
             changed = true;
         }
 
