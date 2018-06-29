@@ -1036,7 +1036,6 @@ public class User extends Undoable<User> implements Listenable {
         newUser.preferredFirstName = this.preferredFirstName;
         newUser.middleName = this.middleName;
         newUser.lastName = this.lastName;
-
         newUser.timeCreated = this.timeCreated;
         newUser.updateHistory = new HashMap<>(this.updateHistory);
         newUser.miscAttributes = new ArrayList<>(this.miscAttributes);
@@ -1050,7 +1049,6 @@ public class User extends Undoable<User> implements Listenable {
         }
         newUser.receiverDetails = new ReceiverDetails(newUser);
         //Map<Organs, ArrayList<ReceiverOrganDetailsHolder>> organs = new EnumMap<Organs, ArrayList<ReceiverOrganDetailsHolder>>(this.receiverDetails.getOrgans());
-        //newUser.receiverDetails.setOrgans(organs);
         for (Organs o : this.receiverDetails.getOrgans().keySet()) {
             ArrayList<ReceiverOrganDetailsHolder> detailHolders = new ArrayList<>(this.receiverDetails.getOrgans().get(o));
             for (int i = 0; i < this.receiverDetails.getOrgans().get(o).size(); i++) {
