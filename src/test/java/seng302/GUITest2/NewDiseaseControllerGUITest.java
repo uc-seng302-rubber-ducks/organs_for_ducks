@@ -19,6 +19,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.concurrent.TimeoutException;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static seng302.Utils.TableViewsMethod.getCell;
 import static seng302.Utils.TableViewsMethod.getCellValue;
 
@@ -117,7 +118,7 @@ public class NewDiseaseControllerGUITest extends ApplicationTest {
         }
         write("12/01/2007", 0);
         clickOn("#createButton");
-        assertEquals(LocalDate.parse("2007-01-12", sdf), getCellValue("#currentDiseaseTableView", 0, 0));
+        assertEquals(LocalDate.parse("2007-01-12", sdf), ((LocalDate) (getCellValue("#currentDiseaseTableView", 0, 0))));
     }
 
     @Test

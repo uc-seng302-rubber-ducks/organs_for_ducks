@@ -67,26 +67,25 @@ public class UndoUserTest {
         assertEquals("Jefferson", testUser.getLastName());
     }
 
-    @Test
+    @Test //CHANGED
     public void singleChangeMementoShouldContainTwoStates() {
         testUser.setName("Harold", "", "");
         Memento<User> mem = testUser.getUndoStack().peek();
-        assert (mem.getOldObject() != null && mem.getNewObject() != null);
+        assert (mem.getState() != null);
     }
 
-    @Test
+    @Test //CHANGED
     public void singleChangeMementoShouldContainCorrectStates() {
         testUser.setName("Harold", "", "");
         Memento<User> mem = testUser.getUndoStack().peek();
-        String oldName = mem.getOldObject().getFullName();
-        String newName = mem.getNewObject().getFullName();
+        String oldName = mem.getState().getFullName();
         assertEquals("Frank", oldName);
-        assertEquals("Harold", newName);
 
-        //two states of the same user
-        assert (mem.getNewObject().equals(mem.getOldObject()));
+        //two states of the same user //(James) dunno what this line was supposed to be
+        //assert (mem.getNewObject().equals(mem.getOldObject()));
     }
 
+    @Ignore //I think this test is out of date now
     @Test
     public void multipleChangesConsecutiveMementosShouldShareState() {
         //state after one change should be the state before the next change
@@ -99,7 +98,7 @@ public class UndoUserTest {
         assert (firstMem.getNewObject().equals(secondMem.getOldObject()));
     }
 
-    @Test
+    @Test //CHANGED
     public void DonorAttributesAttachedUserIsCorrectWhenStored() {
 
         assert (testUser.getDonorDetails().getAttachedUser().equals(testUser));
@@ -107,12 +106,9 @@ public class UndoUserTest {
         assert (testUser.getDonorDetails().getAttachedUser().equals(testUser));
 
         Memento<User> mem = testUser.getUndoStack().peek();
-        User newUser = mem.getNewObject();
-        User oldUser = mem.getOldObject();
+        User oldUser = mem.getState();
 
-        assertNotEquals(newUser, oldUser);
         assert (oldUser.getDonorDetails().getAttachedUser().equals(oldUser));
-        assert (newUser.getDonorDetails().getAttachedUser().equals(newUser));
     }
 
     @Test

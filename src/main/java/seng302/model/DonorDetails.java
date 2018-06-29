@@ -33,7 +33,7 @@ public class DonorDetails {
         organs = new HashSet<>();
     }
 
-    public void setOrgans(HashSet<Organs> organs) {
+    public void setOrgans(Set<Organs> organs) { //CHANGED THIS TO SET HOPE NO BreAKY
         attachedUser.updateLastModified();
         this.organs = organs;
     }
@@ -48,25 +48,26 @@ public class DonorDetails {
      *
      * @param organ the organ to be added (from Organs enum)
      */
-    public void addOrgan(Organs organ) {
-        Memento<User> memento = new Memento<>();
-        memento.setOldObject(attachedUser.clone());
-        if (attachedUser != null) {
-            attachedUser.updateLastModified();
-            attachedUser.addChange(new Change("Added organ " + organ.toString()));
-        }
+    public void addOrgan(Organs organ) { //The previous logic on this seemed like it had had an initial goal but had
+        // been edited multiple times and never looked at as a whole
         if (organs == null) {
             organs = new HashSet<>();
         }
-        boolean changed = this.organs.add(organ);
 
-        attachedUser.updateLastModified();
-        attachedUser.updateLastModified();
-        if (changed) {
-            memento.setNewObject(attachedUser.clone());
-            attachedUser.getUndoStack().push(memento);
-            attachedUser.getRedoStack().clear();
+        if (attachedUser != null) {
+            attachedUser.saveStateforUndo();
+            attachedUser.updateLastModified();
+            attachedUser.addChange(new Change("Added organ " + organ.toString()));
+
+            boolean changed = this.organs.add(organ);
+
+            if (changed) {
+                attachedUser.getRedoStack().clear();
+            } else {
+                attachedUser.getUndoStack().pop();
+            }
         }
+
     }
 
     /**
@@ -75,15 +76,12 @@ public class DonorDetails {
      * @param organ the enum of organs.
      */
     public void removeOrgan(Organs organ) {
-        Memento<User> memento = new Memento<>();
-        memento.setOldObject(attachedUser.clone());
         if (organs.contains(organ)) {
+            attachedUser.saveStateforUndo();
             organs.remove(organ);
             attachedUser.updateLastModified();
             attachedUser.addChange(new Change("Removed organ " + organ.organName));
         }
-        memento.setNewObject(attachedUser.clone());
-        attachedUser.getUndoStack().push(memento);
     }
 
 

@@ -173,7 +173,7 @@ public class UpdateUserController {
     public void init(User user, AppController controller, Stage stage) {
         this.stage = stage;
         currentUser = user;
-        oldUser = currentUser.clone();
+        oldUser = User.clone(currentUser);
         this.appController = controller;
         setUserDetails(currentUser);
         undoUpdateButton.setDisable(true);
@@ -510,14 +510,15 @@ public class UpdateUserController {
      * Turns all form changes into one memento on the stack
      */
     private void sumAllChanged() {
-        Memento<User> sumChanges = new Memento<>();
+//        Memento<User> sumChanges = new Memento<>();
+//        removeFormChanges();
+//        if (!currentUser.getUndoStack().isEmpty()) {
+//            sumChanges.setOldObject(currentUser.getUndoStack().peek().getOldObject().clone());
+//            currentUser.getUndoStack().pop();
+//            sumChanges.setNewObject(User.clone(currentUser));
+//            currentUser.getUndoStack().push(sumChanges);
+//        }
         removeFormChanges();
-        if (!currentUser.getUndoStack().isEmpty()) {
-            sumChanges.setOldObject(currentUser.getUndoStack().peek().getOldObject().clone());
-            currentUser.getUndoStack().pop();
-            sumChanges.setNewObject(currentUser.clone());
-            currentUser.getUndoStack().push(sumChanges);
-        }
     }
 
     /**

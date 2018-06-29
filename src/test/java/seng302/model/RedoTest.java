@@ -77,29 +77,27 @@ public class RedoTest {
         assertEquals("Doe", testUser.getLastName());
     }
 
-    @Test
+    @Test //CHANGED
     public void singleChangeMementoShouldContainTwoStates() {
         testUser.setName("Harold", "", "");
         testUser.undo();
         Memento<User> mem = testUser.getRedoStack().peek();
-        assertTrue(mem.getOldObject() != null && mem.getNewObject() != null);
+        assertTrue(mem.getState() != null);
     }
 
-    @Test
+    @Test //CHANGED
     public void singleChangeMementoShouldContainCorrectStates() {
         testUser.setName("Harold", "", "");
         testUser.undo();
         Memento<User> mem = testUser.getRedoStack().peek();
-        String oldName = mem.getOldObject().getFullName();
-        String newName = mem.getNewObject().getFullName();
-        assertEquals("Frank", oldName);
+        String newName = mem.getState().getFullName();
         assertEquals("Harold", newName);
 
         //two states of the same user
-        assertTrue(mem.getNewObject().equals(mem.getOldObject()));
+        //assertTrue(mem.getNewObject().equals(mem.getOldObject()));
     }
 
-    @Test
+    @Test //CHANGED
     public void DonorAttributesAttachedUserIsCorrectWhenStored() {
 
         assertTrue(testUser.getDonorDetails().getAttachedUser().equals(testUser));
@@ -108,11 +106,8 @@ public class RedoTest {
 
         testUser.undo();
         Memento<User> mem = testUser.getRedoStack().peek();
-        User newUser = mem.getNewObject();
-        User oldUser = mem.getOldObject();
+        User newUser = mem.getState();
 
-        assertNotEquals(newUser, oldUser);
-        assertTrue(oldUser.getDonorDetails().getAttachedUser().equals(oldUser));
         User test = newUser.getDonorDetails().getAttachedUser();
         assertTrue(newUser.getDonorDetails().getAttachedUser().equals(newUser));
     }
