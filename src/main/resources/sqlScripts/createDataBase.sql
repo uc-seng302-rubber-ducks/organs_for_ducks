@@ -108,7 +108,7 @@ CREATE TABLE HealthDetails(
   fkUserNhi VARCHAR(7) NOT NULL PRIMARY KEY,
   gender VARCHAR(15),
   birthGender VARCHAR(15),
-  smoker VARCHAR(255),
+  smoker BOOLEAN,
   alcoholConsumption VARCHAR(255),
   height DOUBLE,
   weight DOUBLE,
