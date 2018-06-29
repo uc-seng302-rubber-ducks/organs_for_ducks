@@ -431,10 +431,12 @@ public class User extends Undoable<User> implements Listenable {
         Memento<User> mem = new Memento<>();
         mem.setOldObject(this.clone());
         updateLastModified();
-        healthDetails.setHeightText(height);
-        addChange(new Change("set height to " + height));
-        mem.setNewObject(this.clone());
-        getUndoStack().push(mem);
+        if (healthDetails.getHeightText() != height) {
+            healthDetails.setHeightText(height);
+            addChange(new Change("set height to " + height));
+            mem.setNewObject(this.clone());
+            getUndoStack().push(mem);
+        }
     }
 
     public String getWeightText() {
@@ -445,10 +447,12 @@ public class User extends Undoable<User> implements Listenable {
         Memento<User> mem = new Memento<>();
         mem.setOldObject(this.clone());
         updateLastModified();
-        healthDetails.setWeightText(weight);
-        addChange(new Change("set weight to " + weight));
-        mem.setNewObject(this.clone());
-        getUndoStack().push(mem);
+        if (healthDetails.getWeightText() != weight) {
+            healthDetails.setWeightText(weight);
+            addChange(new Change("set weight to " + weight));
+            mem.setNewObject(this.clone());
+            getUndoStack().push(mem);
+        }
     }
 
     public String getBloodType() {

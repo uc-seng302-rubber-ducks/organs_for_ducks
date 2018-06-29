@@ -150,8 +150,7 @@ public class UserController {
 
 
         if (user.getNhi() != null) {
-            showUser(
-                    currentUser); // Assumes a donor with no name is a new sign up and does not pull values from a template
+            showUser(currentUser); // Assumes a donor with no name is a new sign up and does not pull values from a template
             List<Change> changes = currentUser.getChanges();
             if (changes != null) {
                 changelog = FXCollections.observableList(changes);
