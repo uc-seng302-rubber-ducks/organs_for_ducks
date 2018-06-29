@@ -58,6 +58,7 @@ public class App extends Application {
         }
         //</editor-fold>
 
+
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML/loginView.fxml"));
         Parent root = null;
         try {
@@ -71,6 +72,7 @@ public class App extends Application {
         primaryStage.setMinWidth(600);
         AppController controller = AppController.getInstance();
         primaryStage.setOnCloseRequest(event -> {
+            System.out.println("1456789");
             try {
                 JsonHandler.saveUsers(controller.getUsers());
                 JsonHandler.saveClinicians(controller.getClinicians());
