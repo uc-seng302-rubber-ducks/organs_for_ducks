@@ -1,7 +1,10 @@
 package seng302.GUITest2;
 
 import javafx.scene.Node;
-import org.junit.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.matcher.control.LabeledMatchers;
@@ -16,7 +19,6 @@ import java.util.concurrent.TimeoutException;
 
 import static org.testfx.api.FxAssert.verifyThat;
 
-@Ignore
 public class RedoUserGUITest extends ApplicationTest {
 
     @BeforeClass
@@ -29,11 +31,8 @@ public class RedoUserGUITest extends ApplicationTest {
         FxToolkit.registerPrimaryStage();
         FxToolkit.setupApplication(App.class);
         AppController.getInstance().getUsers().clear();
-        User user = new User("ABC1234", LocalDate.now().minusDays(2), LocalDate.now(), "M", "", 0, 0,
-                "B+", "None", false, "", "", "", "", "",
-                null,
-                "Adam", "Adam", "Adam", "", "");
-        user.setContact(new EmergencyContact("", "", user));
+        User user = new User("Frank", LocalDate.now().minusDays(2), "ABC1234");
+        user.setContact(new EmergencyContact("", "", "1456788"));
         user.getUndoStack().clear();
         AppController.getInstance().getUsers().add(user);
         clickOn("#userIDTextField");
@@ -48,13 +47,11 @@ public class RedoUserGUITest extends ApplicationTest {
     }
 
     @Test
-    @Ignore
     public void testRedoButtonDisabled() {
         verifyThat("#redoButton", Node::isDisabled);
     }
 
     @Test
-    @Ignore
     public void testRedoSingleUndo() {
         clickOn("#editDetailsButton");
         clickOn("#lNameInput");
@@ -67,7 +64,6 @@ public class RedoUserGUITest extends ApplicationTest {
     }
 
     @Test
-    @Ignore
     public void testRedoEqualUndos() {
         clickOn("#editDetailsButton");
         clickOn("#lNameInput");
@@ -76,7 +72,7 @@ public class RedoUserGUITest extends ApplicationTest {
         clickOn("#alcoholComboBox");
         clickOn("Low");
 
-        clickOn("#cellInput");
+        clickOn("#cell");
         write("011899992");
         clickOn("#confirmButton");
 

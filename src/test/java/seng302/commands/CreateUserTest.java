@@ -6,6 +6,7 @@ import org.junit.Test;
 import picocli.CommandLine;
 import seng302.controller.AppController;
 import seng302.model.User;
+import seng302.model.datamodel.Address;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -30,9 +31,8 @@ public class CreateUserTest {
         maxInfo.setDateOfDeath(LocalDate.parse("2010-05-16", format));
         maxInfo.setHeight(1.85);
         maxInfo.setWeight(86.3);
-        maxInfo.setGender("m");
-        maxInfo.setRegion("Sydney");
-        maxInfo.setCurrentAddress("42-wallaby-way");
+        maxInfo.setBirthGender("m");
+        maxInfo.getContactDetails().setAddress(new Address("42", "wallaby-way", "", "", "Sydney", "", ""));
     }
 
     //<editor-fold>
@@ -48,7 +48,7 @@ public class CreateUserTest {
     public void ShouldRegisterDonorWithMaximumInfo() {
         String[] args = {"Gus", "Johnson", "BCD2345", "1990-04-03", "-dod=2010-05-16", "-he=1.85",
                 "-w=86.3",
-                "-g=m", "-addr=42-wallaby-way", "-r=Sydney"};
+                "-g=m", "-n=42", "-s=wallaby-way", "-r=Sydney"};
         new CommandLine(new CreateUser()).parseWithHandler(new CommandLine.RunLast(), System.err, args);
         User registered = null;
         registered = controller.findUser("Gus Johnson", LocalDate.parse("1990-04-03", format));
@@ -56,8 +56,8 @@ public class CreateUserTest {
         Assert.assertEquals(maxInfo.getDateOfDeath(), registered.getDateOfDeath());
         assertTrue(maxInfo.getHeight() == registered.getHeight());
         assertTrue(maxInfo.getWeight() == registered.getWeight());
-        Assert.assertEquals(maxInfo.getGender(), registered.getGender());
-        Assert.assertEquals(maxInfo.getCurrentAddress(), registered.getCurrentAddress());
+        Assert.assertEquals(maxInfo.getBirthGender(), registered.getBirthGender());
+        Assert.assertEquals(maxInfo.getContactDetails().getAddress().toString(), registered.getContactDetails().getAddress().toString());
         Assert.assertEquals(maxInfo.getRegion(), registered.getRegion());
     }
 
