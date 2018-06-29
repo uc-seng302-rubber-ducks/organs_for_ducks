@@ -34,6 +34,8 @@ recent-artifacts:
   artifacts:
     paths:
       - target/*.jar
+      - client/target/*.jar
+      - server/target/*.jar
     expire_in: 1 week
   except:
     - tags

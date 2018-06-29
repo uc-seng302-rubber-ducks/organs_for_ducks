@@ -6,9 +6,37 @@
     <version>0.0</version>
     <name>team-100-Rubber-Duckies-Server</name>
     <url>https://eng-git.canterbury.ac.nz/SENG302-2016/team-100</url>
+
+    <!--requires spring-boot-starter-parent, which is the grandparent of this pom-->
     <parent>
         <groupId>seng302</groupId>
         <artifactId>team-100-Rubber-Duckies</artifactId>
         <version>0.0</version>
     </parent>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+
 </project>
