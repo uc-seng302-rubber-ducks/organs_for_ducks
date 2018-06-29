@@ -40,6 +40,15 @@ public class DBHandler {
     //</editor-fold>
 
     /**
+     * SQL commands for select
+     */
+    private static final String SELECT_USER_NON_REPEATING_INFO_STMT = "SELECT * FROM User u LEFT JOIN HealthDetails hd ON u.nhi = hd.fkUserNhi LEFT JOIN ContactDetails cde ON u.nhi = cde.fkUserNhi LEFT JOIN Address a ON u.nhi = a.fkUserNhi";
+    private static final String SELECT_USER__PREVIOUS_DISEASE_STMT = "SELECT * FROM PreviousDisease WHERE fkUserNhi = ?";
+    private static final String SELECT_USER__CURRENT_DISEASE_STMT = "SELECT * FROM CurrentDisease WHERE fkUserNhi = ?";
+    private static final String SELECT_USER_MEDIVATION_STMT = "SELECT * FROM Medication WHERE fkUserNhi = ?";
+    private static final String SELECT_USER_MEDICAL_PROCEDURE_STMT = "SELECT * FROM MedicalProcedure WHERE fkUserNhi = ?";
+
+    /**
      * SQL Queries for updates
      */
     private static final String UPDATE_USER_STMT = "";
@@ -81,10 +90,9 @@ public class DBHandler {
         String sql = "SELECT * FROM User";
 
         PreparedStatement statement = connection.prepareStatement(sql);
-        ResultSet resultSet = executeQuery(statement);
+        ResultSet resultSet = statement.executeQuery();
 
         while (resultSet != null && resultSet.next()) {
-            System.out.println(resultSet.getString(6));
             User user = new User();
             user.setNhi(resultSet.getString(1)); //todo: issue with cloning user object for memento
             user.setName(resultSet.getString(2), resultSet.getString(3), resultSet.getString(4));
@@ -128,7 +136,7 @@ public class DBHandler {
                 "ON cl.staffId = pd.fkStaffId";
 
         PreparedStatement statement = connection.prepareStatement(sql);
-        ResultSet resultSet = executeQuery(statement);
+        ResultSet resultSet = statement.executeQuery();
 
         while (resultSet != null && resultSet.next()) {
             Clinician clinician = new Clinician();
@@ -176,7 +184,7 @@ public class DBHandler {
                 "ON ad.userName = pd.fkAdminUserName";
 
         PreparedStatement statement = connection.prepareStatement(sql);
-        ResultSet resultSet = executeQuery(statement);
+        ResultSet resultSet = statement.executeQuery();
 
         while (resultSet != null && resultSet.next()) {
             Administrator administrator = new Administrator();
@@ -209,17 +217,6 @@ public class DBHandler {
             invalidEx.printStackTrace();
             System.exit(-1);
         }
-    }
-
-    /**
-     * Executes a PreparedStatement provided for the database
-     *
-     * @param statement a PreparedStatement
-     * @return A result set
-     */
-    private ResultSet executeQuery(PreparedStatement statement) throws SQLException {
-        //TODO: WHy is this here? Its literally a function to execute a function. just call this instead statement.executeQuery()
-        return statement.executeQuery();
     }
 
     /**
@@ -271,7 +268,7 @@ public class DBHandler {
 
                 PreparedStatement stmt = connection.prepareStatement(String.format("SELECT %s FROM %s WHERE %s = ?", identifierName, table, identifierName));
                 stmt.setString(4, identifier);
-                ResultSet queryResults = executeQuery(stmt);
+                ResultSet queryResults = stmt.executeQuery();
                 if (!queryResults.next()) {
                     executeCreation(object, connection);
                 } else if (toDelete) {
@@ -467,7 +464,7 @@ public class DBHandler {
     private String getContactId(String userNhi, Connection connection) throws SQLException {
         PreparedStatement getContactId = connection.prepareStatement(GET_LATEST_CONTACT_ENTRY);
         getContactId.setString(1, userNhi);
-        ResultSet results = executeQuery(getContactId);
+        ResultSet results = getContactId.executeQuery();
         if (results == null) {
             throw new SQLException("Required Contact Entry was not found");
         }
@@ -624,7 +621,7 @@ public class DBHandler {
     private void deleteUserProcedures(User user, Connection connection) throws SQLException {
         PreparedStatement getProcedureStmt = connection.prepareStatement("SELECT procedureName, procedureDate FROM MedicalProcedure WHERE fkUserNhi = ?");
         getProcedureStmt.setString(1, user.getNhi());
-        ResultSet dbProcedures = executeQuery(getProcedureStmt);
+        ResultSet dbProcedures = getProcedureStmt.executeQuery();
 
         // Convert the list into a mapping of procedure keys and procedures 26/6 - Eiran
         Map<ProcedureKey, MedicalProcedure> procedureMap = new HashMap<>();
@@ -646,5 +643,10 @@ public class DBHandler {
         }
     }
 
-
+    //TODO: Please dont remove this main until db handler is fully developed
+//    public static void main(String [ ] args) throws SQLException{
+//    DBHandler dbHandler = new DBHandler();
+//    JDBCDriver jdbcDriver = new JDBCDriver();
+//    dbHandler.getAllUsers(jdbcDriver.getTestConnection());
+//    }
 }
