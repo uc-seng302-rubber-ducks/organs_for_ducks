@@ -20,7 +20,10 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Stack;
 
 
 /**
@@ -42,9 +45,6 @@ public class AppController {
     private ClinicianController clinicianController = new ClinicianController();
     private AdministratorViewController administratorViewController = new AdministratorViewController();
     private statusBarController statusBarController = new statusBarController();
-    private Set<User> deletedUserStack = new HashSet<>();
-    private Set<Clinician> deletedClinicianSet = new HashSet<>();
-    private Set<Administrator> deletedAdminSet = new HashSet<>();
     private Stack<User> redoStack = new Stack<>();
 
     private static final String USERS_FILE = Directory.JSON.directory() + "/users.json";
@@ -599,18 +599,6 @@ public class AppController {
         } else {
             throw new ProfileNotFoundException();
         }
-    }
-
-    public Set<User> getDeletedUsers() {
-        return deletedUserStack;
-    }
-
-    public Set<Clinician> getDeletedClinicians() {
-        return deletedClinicianSet;
-    }
-
-    public Set<Administrator> getDeletedAdmins() {
-        return deletedAdminSet;
     }
 
     public ArrayList<TransplantDetails> getTransplantList() {
