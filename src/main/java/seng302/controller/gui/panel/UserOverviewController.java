@@ -255,7 +255,7 @@ public class UserOverviewController {
             currentUser.setDeleted(true);
             Log.info("Successfully deleted user profile for User NHI: " + currentUser.getNhi());
             if (!Clinician) {
-                application.saveUsers();
+                application.deleteUser(currentUser);
                 logout();
             } else {
                 stage.close();

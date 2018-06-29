@@ -7,7 +7,6 @@ import seng302.controller.AppController;
 import seng302.model.User;
 import seng302.utils.DataHandler;
 import seng302.utils.JsonHandler;
-import seng302.utils.JsonHandler;
 import seng302.view.IoHelper;
 
 import java.io.IOException;
@@ -88,7 +87,7 @@ public class CreateUser implements Runnable {
                     + "maybe a user with that NHI already exists?");
             return;
         }
-        User user = controller.getUser(NHI);
+        User user = controller.findUser(NHI);
         if (user == null) {
             System.out.println("User with this NHI already exists");
             return;

@@ -531,8 +531,9 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
         Optional<ButtonType> result = alert.showAndWait();
 
         if (result.get() == ButtonType.OK) {
-            appController.deleteClinician(clinician);
+            clinician.setDeleted(true);
             if (!admin) {
+                appController.deleteClinician(clinician);
                 logout();
             } else {
                 stage.close();
