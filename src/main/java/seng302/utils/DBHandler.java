@@ -51,10 +51,12 @@ public class DBHandler {
     /**
      * SQL Queries for updates
      */
-    private static final String UPDATE_USER_STMT = "";
-    private static final String UPDATE_USER_CONTACT_STMT = "";
-    private static final String UPDATE_USER_HEALTH_STMT = "";
+    private static final String UPDATE_USER_STMT = "UPDATE User firstName = ?, middleName = ?, lastName = ?, preferredName = ?, dob = ?, dod = ?, timeCreated = ?, lastModified = ? WHERE nhi = ?";
+    private static final String UPDATE_USER_ADDRESS = "";
+    private static final String UPDATE_USER_CONTACT_STMT = "UPDATE ContactDetails homePhone = ?, email = ?, cellPhone = ? WHERE fkUserNhi = ?";
+    private static final String UPDATE_USER_HEALTH_STMT = "UPDATE HealthDetails SET gender = ?, birthGender = ?, smoker = ?, alcoholConsumption = ?, height = ?, weight = ? WHERE fkUserNhi = ?";
     private static final String UPDATE_MEDICATION_STMT = "";
+    private static final String UPDATE_PROCEDURE_STMT = "";
 
     /**
      * SQL Queries for deletes
