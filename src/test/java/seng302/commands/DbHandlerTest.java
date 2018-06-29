@@ -1,10 +1,12 @@
-/*package seng302.commands;
+package seng302.commands;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import picocli.CommandLine;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -12,19 +14,17 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-public class SqlTest {
+public class DbHandlerTest {
 
-    @Mock
-    Connection mockConnection;
+    Connection mockConnection = mock(Connection.class);
 
-    @Mock
     DataSource mockDatasource;
 
-    @Mock
-    ResultSet mockResultSet;
+    ResultSet mockResultSet = mock(ResultSet.class);
 
     @Before
     public void setUp() throws SQLException {
@@ -33,8 +33,4 @@ public class SqlTest {
         when(mockResultSet.next()).thenReturn(Boolean.TRUE, Boolean.FALSE);
     }
 
-    @Test(expected = SQLException.class)
-    public void
-    commented to commit
-
-}*/
+}
