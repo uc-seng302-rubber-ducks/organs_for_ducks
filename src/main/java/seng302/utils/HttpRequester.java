@@ -6,12 +6,10 @@ import com.google.gson.JsonSyntaxException;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 import seng302.model.CacheManager;
 import seng302.model.MedicationInteractionCache;
 import seng302.model.datamodel.MedicationInteractionsResponse;
+import seng302.model.datamodel.SuggestedDrugsResponse;
 import seng302.model.datamodel.TimedCacheValue;
 
 import java.io.IOException;
@@ -179,32 +177,28 @@ public class HttpRequester {
     /**
      * Takes a string argument and provides auto completed results
      *
-     * @param input  string to be auto completed
+     * @param input string to be auto completed
      * @return String containing the results
      * @throws IOException thrown when IO fails
      */
+
+
     public String getSuggestedDrugs(String input) throws IOException {
 
         String url = "http://mapi-us.iterar.co/api/autocomplete?query=" + input;
         Request request = new Request.Builder().url(url).build();
         Response response = client.newCall(request).execute();
-        JSONObject suggestions;
-        try {
-            assert response.body() != null;
-            suggestions = (JSONObject) new JSONParser().parse(response.body().string());
-            return suggestions.get("suggestions").toString();
-        } catch (ParseException e) {
-            Log.severe("HttpRequester parseexception in getSuggestedDrugs", e);
-            return "";
-        }
-
+        Gson gson = new Gson();
+        assert response.body() != null;
+        SuggestedDrugsResponse suggestions = gson.fromJson(response.body().string(), SuggestedDrugsResponse.class);
+        return suggestions.toString();
     }
 
     /**
      * sends a request to http://mapi-us.iterar.co/api/ to get a json file containing active
      * ingredients in a given drug
      *
-     * @param drug   the drug to be checked e.g. xanax, reserpine, etc.
+     * @param drug the drug to be checked e.g. xanax, reserpine, etc.
      * @return string array of each active ingredient
      * @throws IOException thrown when IO fails
      */

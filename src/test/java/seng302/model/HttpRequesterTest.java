@@ -1,5 +1,6 @@
 package seng302.model;
 
+import com.sun.deploy.util.StringUtils;
 import okhttp3.*;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -195,11 +196,16 @@ public class HttpRequesterTest {
         when(mockCall.execute()).thenReturn(mockResponse);
         when(mockResponseBody.string()).thenReturn(responseBody.toString());
         when(mockResponse.body()).thenReturn(mockResponseBody);
-        String expected = "[\"Reserpine\",\"Resectisol\",\"Resectisol in plastic container\",\"Restoril\",\"Rescriptor\",\"Restasis\",\"Rescula\",\"Reserpine and hydrochlorothiazide\",\"Reserpine, hydralazine hydrochloride and hydrochlorothiazide\",\"Reserpine, hydrochlorothiazide, and hydralazine hydrochloride\",\"Reserpine and hydrochlorothiazide-50\",\"Reserpine and hydroflumethiazide\",\"Resporal\"]";
+        String expected = "Reserpine," +
+                "Resectisol,Resectisol in plastic container,Restoril,Rescriptor,Restasis,Rescula," +
+                "Reserpine and hydrochlorothiazide,Reserpine, hydralazine hydrochloride and hydrochlorothiazide" +
+                ",Reserpine, hydrochlorothiazide, and hydralazine hydrochloride,Reserpine and hydrochlorothiazide-50," +
+                "Reserpine and hydroflumethiazide,Resporal,";
 
         String result = requester.getSuggestedDrugs("res");
+        System.out.println();
         verify(mockCall, times(1)).execute();
-        assert (result.equals(expected));
+        Assert.assertTrue(result.equals(expected));
     }
 
 
@@ -229,6 +235,6 @@ public class HttpRequesterTest {
         String result = requester.getSuggestedDrugs("aaa");
         verify(mockCall, times(1)).execute();
         System.out.println(result);
-        assert (result.equals("[]"));
+        Assert.assertTrue(result.equals(""));
     }
 }
