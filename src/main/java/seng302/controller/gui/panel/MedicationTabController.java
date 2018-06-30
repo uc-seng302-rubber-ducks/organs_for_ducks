@@ -162,6 +162,7 @@ public class MedicationTabController {
     }
 
     public void refreshLists(User user) {
+        currentUser = user;
         if (user.getCurrentMedication() != null) {
             currentMeds.clear();
             currentMedicationListView.getItems().clear();
