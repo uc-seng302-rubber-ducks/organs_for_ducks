@@ -3,20 +3,15 @@ package seng302.utils;
 //import com.mysql.jdbc.PreparedStatement;
 
 import seng302.controller.AppController;
-import seng302.model.Administrator;
-import seng302.model.Clinician;
-import seng302.model.MedicalProcedure;
-import seng302.model.User;
+import seng302.model.*;
 import seng302.model.datamodel.ProcedureKey;
 
 import java.io.InvalidClassException;
 import java.sql.*;
+import java.sql.Date;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class DBHandler {
 
@@ -42,11 +37,17 @@ public class DBHandler {
     /**
      * SQL commands for select
      */
-    private static final String SELECT_USER_NON_REPEATING_INFO_STMT = "SELECT * FROM User u LEFT JOIN HealthDetails hd ON u.nhi = hd.fkUserNhi LEFT JOIN ContactDetails cde ON u.nhi = cde.fkUserNhi LEFT JOIN Address a ON u.nhi = a.fkUserNhi";
-    private static final String SELECT_USER__PREVIOUS_DISEASE_STMT = "SELECT * FROM PreviousDisease WHERE fkUserNhi = ?";
-    private static final String SELECT_USER__CURRENT_DISEASE_STMT = "SELECT * FROM CurrentDisease WHERE fkUserNhi = ?";
-    private static final String SELECT_USER_MEDIVATION_STMT = "SELECT * FROM Medication WHERE fkUserNhi = ?";
-    private static final String SELECT_USER_MEDICAL_PROCEDURE_STMT = "SELECT * FROM MedicalProcedure WHERE fkUserNhi = ?";
+    private static final String SELECT_USER_NON_REPEATING_INFO_STMT = "SELECT nhi, firstName, middleName, LastName, preferedName, timeCreated, lastModified, profilePicture, gender, birthGender, " +
+            "smoker, alcoholConsumption, height, weight, homePhone, cellPhone, email, streetNumber, streetName, neighbourhood, city, region, country " +
+            "FROM User u " +
+            "LEFT JOIN HealthDetails hd ON u.nhi = hd.fkUserNhi " +
+            "LEFT JOIN ContactDetails cde ON u.nhi = cde.fkUserNhi " +
+            "LEFT JOIN Address a ON u.nhi = a.fkUserNhi";
+
+    private static final String SELECT_USER__PREVIOUS_DISEASE_STMT = "SELECT diseaseName, diagnosisDate, remissionDate FROM PreviousDisease WHERE fkUserNhi = ?";
+    private static final String SELECT_USER__CURRENT_DISEASE_STMT = "SELECT diseaseName, diagnosisDate, isChronic FROM CurrentDisease WHERE fkUserNhi = ?";
+    private static final String SELECT_USER_MEDICATION_STMT = "SELECT medicationName FROM Medication WHERE fkUserNhi = ?";
+    private static final String SELECT_USER_MEDICAL_PROCEDURE_STMT = "SELECT procedureName, procedureDate, procedureDescription FROM MedicalProcedure WHERE fkUserNhi = ?";
 
     /**
      * SQL Queries for updates
@@ -89,9 +90,8 @@ public class DBHandler {
      */
     public Collection<User> getAllUsers(Connection connection) throws SQLException {
         Collection<User> users = new ArrayList<>();
-        String sql = "SELECT * FROM User";
 
-        PreparedStatement statement = connection.prepareStatement(sql);
+        PreparedStatement statement = connection.prepareStatement(SELECT_USER_NON_REPEATING_INFO_STMT);
         ResultSet resultSet = statement.executeQuery();
 
         while (resultSet != null && resultSet.next()) {
@@ -101,11 +101,52 @@ public class DBHandler {
             user.setPreferredFirstName(resultSet.getString(5));
             user.setTimeCreated(dateToLocalDateTime(resultSet.getString(6)));
             user.setLastModified(dateToLocalDateTime(resultSet.getString(7)));
+            //TODO: set user's profile picture here
+            user.setGenderIdentity(resultSet.getString(9));
+            user.setBirthGender(resultSet.getString(10));
+            user.setSmoker(1==resultSet.getInt(11));
+            user.setAlcoholConsumption(resultSet.getString(12));
+            user.setHeight(resultSet.getDouble(13));
+            user.setWeight(resultSet.getDouble(14));
+            user.setHomePhone(resultSet.getString(15));
+            user.setCellPhone(resultSet.getString(16));
+            user.setEmail(resultSet.getString(17));
+            user.setStreetNumber(resultSet.getString(resultSet.getString(18))); //todo: change db address table's streetnumber column to varchar type
+            user.setStreetName(resultSet.getString(19));
+            user.setNeighborhood(resultSet.getString(20));
+            user.setCity(resultSet.getString(21));
+            user.setRegion(resultSet.getString(22));
+            user.setCountry(resultSet.getString(23));
+            //user.setZipCode(resultSet.getString()); //todo: db address table needs to have zip table
+
+            getUserPastDisease(user,connection);
+
             users.add(user);
+
+//            for (Disease d : user.getPastDiseases()) {
+//                System.out.println(user.getNhi() + " " + d.getName() + " " + d.getDiagnosisDate());
+//            }
         }
 
         connection.close();
         return users;
+    }
+
+    /**
+     * gets all past diseases of a user
+     * @param user desired user
+     * @param connection opened connection to database
+     * @throws SQLException when there are any SQL errors
+     */
+    private void getUserPastDisease(User user, Connection connection) throws SQLException {
+        PreparedStatement stmt = connection.prepareStatement(SELECT_USER__PREVIOUS_DISEASE_STMT);
+        stmt.setString(1, user.getNhi());
+        ResultSet resultSet = stmt.executeQuery();
+        while (resultSet != null && resultSet.next()) {
+            Disease pastDisease = new Disease(resultSet.getString(1), false, true, dateToLocalDateTime(resultSet.getString(2)).toLocalDate());
+            user.getPastDiseases().add(pastDisease);
+        }
+
     }
 
     /**
@@ -647,8 +688,9 @@ public class DBHandler {
 
     //TODO: Please dont remove this main until db handler is fully developed
 //    public static void main(String [ ] args) throws SQLException{
-//    DBHandler dbHandler = new DBHandler();
-//    JDBCDriver jdbcDriver = new JDBCDriver();
-//    dbHandler.getAllUsers(jdbcDriver.getTestConnection());
+//        DBHandler dbHandler = new DBHandler();
+//        JDBCDriver jdbcDriver = new JDBCDriver();
+//        dbHandler.getAllUsers(jdbcDriver.getTestConnection());
+//        System.out.println("done");
 //    }
 }

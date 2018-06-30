@@ -38,7 +38,7 @@ INSERT INTO BloodType(bloodTypeId, bloodType) VALUES
 INSERT INTO PreviousDisease(diseaseName, diagnosisDate, fkUserNhi, remissionDate) VALUES
   ('Chicken Pox', '2015-10-04 19:12:43', 'ABC1234', '2016-01-04 20:55:43'),
   ('Fever', '2017-11-04 15:12:43', 'ABC1234', '2018-01-04 21:12:43'),
-  ('Malaria', '2014-09-23 28:12:21', 'DEF231', '2014-11-26 14:16:51');
+  ('Malaria', '2014-09-23 18:12:21', 'DEF231', '2014-11-26 14:16:51');
 
 INSERT INTO CurrentDisease(diseaseName, diagnosisDate, fkUserNhi, isChronic) VALUES
   ('Lung Cancer', '2018-03-09 18:23:12', 'XYZ1234', TRUE),
