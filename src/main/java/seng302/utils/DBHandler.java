@@ -4,6 +4,7 @@ package seng302.utils;
 
 import seng302.controller.AppController;
 import seng302.model.*;
+import seng302.model._enum.Organs;
 import seng302.model.datamodel.ProcedureKey;
 
 import java.io.InvalidClassException;
@@ -36,6 +37,8 @@ public class DBHandler {
 
     /**
      * SQL commands for select
+     * SELECT_USER_NON_REPEATING_INFO_STMT is for getting all info that follows one-to-one relationship. eg: 1 user can only have 1 address.
+     * the other SELECT statements are for getting all info that follows one-to-many relationships. eg: 1 user can have many diseases.
      */
     private static final String SELECT_USER_NON_REPEATING_INFO_STMT = "SELECT nhi, firstName, middleName, LastName, preferedName, timeCreated, lastModified, profilePicture, gender, birthGender, " +
             "smoker, alcoholConsumption, height, weight, homePhone, cellPhone, email, streetNumber, streetName, neighbourhood, city, region, country " +
@@ -46,8 +49,14 @@ public class DBHandler {
 
     private static final String SELECT_USER__PREVIOUS_DISEASE_STMT = "SELECT diseaseName, diagnosisDate, remissionDate FROM PreviousDisease WHERE fkUserNhi = ?";
     private static final String SELECT_USER__CURRENT_DISEASE_STMT = "SELECT diseaseName, diagnosisDate, isChronic FROM CurrentDisease WHERE fkUserNhi = ?";
-    private static final String SELECT_USER_MEDICATION_STMT = "SELECT medicationName FROM Medication WHERE fkUserNhi = ?";
-    private static final String SELECT_USER_MEDICAL_PROCEDURE_STMT = "SELECT procedureName, procedureDate, procedureDescription FROM MedicalProcedure WHERE fkUserNhi = ?";
+    private static final String SELECT_USER_MEDICATION_STMT = "SELECT medicationName, dateStartedTaking, dateStoppedTaking FROM Medication m " +
+            "LEFT JOIN MedicationDates md ON m.medicationInstanceId = md.fkMedicationInstanceId " +
+            "WHERE m.fkUserNhi = ?";
+
+    private static final String SELECT_USER_MEDICAL_PROCEDURE_STMT = "SELECT procedureName, procedureDate, procedureDescription, organName, mp.fkUserNhi FROM MedicalProcedure mp " +
+            "LEFT JOIN MedicalProcedureOrgan mpo ON mpo.fkUserNhi = mp.fkUserNhi " +
+            "LEFT JOIN Organ o on o.organId = mpo.organsId " +
+            "WHERE mp.fkUserNhi = ?";
 
     /**
      * SQL Queries for updates
@@ -87,7 +96,8 @@ public class DBHandler {
     }
 
     /**
-     * Method to obtain all the users from the database. Opens and closes it's own connection to the database
+     * Method to obtain all the users information from the database. Opens and closes it's own connection to the database
+     * User objects are instantiated and its attributes are set based on the de-serialised information.
      *
      * @param connection A valid connection to the database
      * @return a Collection of Users
@@ -100,8 +110,10 @@ public class DBHandler {
 
         while (resultSet != null && resultSet.next()) {
             User user = new User();
-            user.setNhi(resultSet.getString(1)); //todo: issue with cloning user object for memento
-            user.setName(resultSet.getString(2), resultSet.getString(3), resultSet.getString(4));
+            user.setNhi(resultSet.getString(1));
+            user.setFirstName(resultSet.getString(2));
+            user.setMiddleName(resultSet.getString(3));
+            user.setLastName(resultSet.getString(4));
             user.setPreferredFirstName(resultSet.getString(5));
             user.setTimeCreated(dateToLocalDateTime(resultSet.getString(6)));
             user.setLastModified(dateToLocalDateTime(resultSet.getString(7)));
@@ -115,21 +127,25 @@ public class DBHandler {
             user.setHomePhone(resultSet.getString(15));
             user.setCellPhone(resultSet.getString(16));
             user.setEmail(resultSet.getString(17));
-            user.setStreetNumber(resultSet.getString(resultSet.getString(18))); //todo: change db address table's streetnumber column to varchar type
+//            user.setStreetNumber(resultSet.getString(resultSet.getString(18))); //todo: change db address table's streetnumber column to varchar type
             user.setStreetName(resultSet.getString(19));
             user.setNeighborhood(resultSet.getString(20));
             user.setCity(resultSet.getString(21));
             user.setRegion(resultSet.getString(22));
             user.setCountry(resultSet.getString(23));
-            //user.setZipCode(resultSet.getString()); //todo: db address table needs to have zip table
+//            user.setZipCode(resultSet.getString()); //todo: db address table needs to have zip table
 
-            getUserPastDisease(user,connection);
-
-            users.add(user);
-
-//            for (Disease d : user.getPastDiseases()) {
-//                System.out.println(user.getNhi() + " " + d.getName() + " " + d.getDiagnosisDate());
-//            }
+            try {
+                getUserPastDisease(user, connection);
+                getUserCurrentDisease(user, connection);
+                //getUserMedication(user, connection);
+                getUserMedicalProcedure(user, connection);
+                users.add(user);
+            }
+            catch (SQLException e) {
+                Log.warning("Unable to create instance of user with nhi "+user.getNhi(), e);
+                System.err.println("Unable to create instance of user with nhi "+user.getNhi()+" due to SQL Error: "+e);
+            }
         }
 
         connection.close();
@@ -137,7 +153,9 @@ public class DBHandler {
     }
 
     /**
-     * gets all past diseases of a user
+     * gets all info of past diseases of a user.
+     * Then, Disease objects are instantiated and its attributes are set based on the de-serialised information.
+     * Finally, the Disease objects are added to User object.
      * @param user desired user
      * @param connection opened connection to database
      * @throws SQLException when there are any SQL errors
@@ -146,11 +164,75 @@ public class DBHandler {
         PreparedStatement stmt = connection.prepareStatement(SELECT_USER__PREVIOUS_DISEASE_STMT);
         stmt.setString(1, user.getNhi());
         ResultSet resultSet = stmt.executeQuery();
-        while (resultSet != null && resultSet.next()) {
+        while (resultSet != null && resultSet.next()) { //TODO: how do we de-serialise remission date?
             Disease pastDisease = new Disease(resultSet.getString(1), false, true, dateToLocalDateTime(resultSet.getString(2)).toLocalDate());
             user.getPastDiseases().add(pastDisease);
         }
+    }
 
+    /**
+     * gets all info of current diseases of a user.
+     * Then, Disease objects are instantiated and its attributes are set based on the de-serialised information.
+     * Finally, the Disease objects are added to User object.
+     * @param user desired user
+     * @param connection opened connection to database
+     * @throws SQLException when there are any SQL errors
+     */
+    private void getUserCurrentDisease(User user, Connection connection) throws SQLException {
+        PreparedStatement stmt = connection.prepareStatement(SELECT_USER__CURRENT_DISEASE_STMT);
+        stmt.setString(1, user.getNhi());
+        ResultSet resultSet = stmt.executeQuery();
+        while (resultSet != null && resultSet.next()) {
+            Disease currentDisease = new Disease(resultSet.getString(1), 1==resultSet.getInt(3), false, dateToLocalDateTime(resultSet.getString(2)).toLocalDate());
+            user.getCurrentDiseases().add(currentDisease);
+        }
+    }
+
+    /**
+     * gets all info of Medication of a user
+     *
+     * TODO: update javadoc once method is completed
+     * @param user desired user
+     * @param connection opened connection to database
+     * @throws SQLException when there are any SQL errors
+     */
+    private void getUserMedication(User user, Connection connection) throws SQLException {
+        PreparedStatement stmt = connection.prepareStatement(SELECT_USER_MEDICATION_STMT);
+        stmt.setString(1, user.getNhi());
+        ResultSet resultSet = stmt.executeQuery();
+        while (resultSet != null && resultSet.next()) {
+            if(resultSet.getString(3) == null){ // dateStoppedTaking is null
+                //TODO: create method or medication class to deserealise name and date of current medication
+
+            } else {
+                //TODO: create method or medication class to deserealise name and date of previous medication
+            }
+        }
+    }
+
+    /**
+     * gets all info of Medical procedure of a user
+     * Then, MedicalProcedure objects are instantiated and its attributes are set based on the de-serialised information.
+     * Finally, the MedicalProcedure objects are added to User object.
+     * @param user desired user
+     * @param connection opened connection to database
+     * @throws SQLException when there are any SQL errors
+     */
+    private void getUserMedicalProcedure(User user, Connection connection) throws SQLException {
+        PreparedStatement stmt = connection.prepareStatement(SELECT_USER_MEDICAL_PROCEDURE_STMT);
+        stmt.setString(1, user.getNhi());
+        ResultSet resultSet = stmt.executeQuery();
+        MedicalProcedure medicalProcedure = null;
+        while (resultSet != null && resultSet.next()) {
+            if (medicalProcedure != null && resultSet.getString(5).equals(user.getNhi())){ //if the data of next result set belongs to the same user, that means multiple organs is affected.
+                medicalProcedure.addOrgan(Organs.valueOf(resultSet.getString(4)));
+
+            } else {
+                medicalProcedure = new MedicalProcedure(resultSet.getDate(2).toLocalDate(), resultSet.getString(1), resultSet.getString(3), null);
+                medicalProcedure.addOrgan(Organs.valueOf(resultSet.getString(4)));
+                user.getMedicalProcedures().add(medicalProcedure);
+            }
+        }
     }
 
     /**

@@ -12,18 +12,18 @@ INSERT INTO Administrator(userName, firstName, middleName, lastName, timeCreated
   ('fts34','Alex','King','Stone','1988-10-04 15:12:43','1988-12-05 14:14:32');
 
 INSERT INTO Organ(organId, organName) VALUES
-  (1,'Liver'),
-  (2, 'Kidney'),
-  (3, 'Pancreas'),
-  (4,'Heart'),
-  (5,'Lung'),
-  (6,'Intestine'),
-  (7,'Cornea'),
-  (8,'Middle Ear'),
-  (9,'Skin'),
-  (10,'Bone Marrow'),
-  (11,'Bone'),
-  (12,'Connective Tissue');
+  (1,'LIVER'),
+  (2, 'KIDNEY'),
+  (3, 'PANCREAS'),
+  (4,'HEART'),
+  (5,'LUNG'),
+  (6,'INTESTINE'),
+  (7,'CORNEA'),
+  (8,'MIDDLE_EAR'),
+  (9,'SKIN'),
+  (10,'BONE_MARROW'),
+  (11,'BONE'),
+  (12,'CONNECTIVE_TISSUE');
 
 INSERT INTO BloodType(bloodTypeId, bloodType) VALUES
   (1,'A-'),
@@ -72,10 +72,11 @@ INSERT INTO HealthDetails(fkUserNhi, gender, birthGender, smoker, alcoholConsump
 
 INSERT INTO MedicalProcedureOrgan(organsId, fkUserNhi) VALUES
   (3, 'ABC1234'),
+  (8, 'ABC1234'),
   (3, 'DEF231');
 
 INSERT INTO MedicalProcedure(procedureName, procedureDate, fkUserNhi, procedureDescription) VALUES
-  ('Extract Pancreas', '2018-09-01', 'ABC1234', 'Get Pancreas from Donor ABC234'),
+  ('Extract Pancreas and Middle Ear', '2018-09-01', 'ABC1234', 'Get Pancreas and Middle Ear from Donor ABC234'),
   ('Implant Pancreas', '2018-10-03', 'DEF231', 'Implant Pancreas to Receiver DEF231');
 
   INSERT INTO ContactDetails(fkUserNhi, fkStaffId, homePhone, cellPhone, email) VALUES
