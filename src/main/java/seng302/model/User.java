@@ -114,7 +114,6 @@ public class User extends Undoable<User> implements Listenable {
         this.preferredFirstName = firstName;
         timeCreated = LocalDateTime.now();
         lastModified = LocalDateTime.now();
-        this.preferredFirstName = firstName;
         updateHistory = new HashMap<>();
         this.contact = new EmergencyContact("", "", "");
         updateHistory.put(dateToString(getTimeCreated()), "Profile created.");
@@ -431,7 +430,7 @@ public class User extends Undoable<User> implements Listenable {
         Memento<User> mem = new Memento<>();
         mem.setOldObject(this.clone());
         updateLastModified();
-        if (healthDetails.getHeightText() != height) {
+        if (!(healthDetails.getHeightText().equals(height))) {
             healthDetails.setHeightText(height);
             addChange(new Change("set height to " + height));
             mem.setNewObject(this.clone());
@@ -447,7 +446,7 @@ public class User extends Undoable<User> implements Listenable {
         Memento<User> mem = new Memento<>();
         mem.setOldObject(this.clone());
         updateLastModified();
-        if (healthDetails.getWeightText() != weight) {
+        if (!(healthDetails.getWeightText().equals(weight))) {
             healthDetails.setWeightText(weight);
             addChange(new Change("set weight to " + weight));
             mem.setNewObject(this.clone());
