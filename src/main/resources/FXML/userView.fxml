@@ -3,8 +3,8 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="675.0"
-            prefWidth="894.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
+            minWidth="-Infinity" prefHeight="675.0" prefWidth="894.0" xmlns="http://javafx.com/javafx/8"
             fx:controller="seng302.controller.gui.window.UserController">
     <children>
         <TabPane layoutY="-4.0" prefHeight="681.0" prefWidth="894.0" rotateGraphic="true" tabClosingPolicy="UNAVAILABLE"
@@ -39,28 +39,28 @@
                                 <Separator layoutY="257.0" prefHeight="17.0" prefWidth="894.0"/>
                                 <Label fx:id="pHomePhone" layoutX="120.0" layoutY="50.0"/>
                                 <Label fx:id="pCellPhone" layoutX="120.0" layoutY="80.0"/>
-                                <Label fx:id="pAddress" layoutX="120.0" layoutY="110.0" text="hhh"/>
-                                <Label fx:id="pRegion" layoutX="260.0" layoutY="161.0" text="reggg"/>
-                                <Label fx:id="pEmail" layoutX="120.0" layoutY="246.0" text="vv"/>
-                                <Label fx:id="eName" layoutX="120.0" layoutY="309.0" text="name"/>
-                                <Label fx:id="eHomePhone" layoutX="120.0" layoutY="343.0" text="hphone"/>
-                                <Label fx:id="eCellPhone" layoutX="120.0" layoutY="371.0" text="cphone"/>
-                                <Label fx:id="eAddress" layoutX="120.0" layoutY="402.0" text="addd"/>
-                                <Label fx:id="eRegion" layoutX="260.0" layoutY="450.0" text="reg"/>
-                                <Label fx:id="eEmail" layoutX="120.0" layoutY="521.0" text="email"/>
-                                <Label fx:id="relationship" layoutX="120.0" layoutY="550.0" text="rel"/>
+                                <Label fx:id="pAddress" layoutX="120.0" layoutY="110.0"/>
+                                <Label fx:id="pRegion" layoutX="260.0" layoutY="161.0"/>
+                                <Label fx:id="pEmail" layoutX="120.0" layoutY="246.0"/>
+                                <Label fx:id="eName" layoutX="120.0" layoutY="309.0"/>
+                                <Label fx:id="eHomePhone" layoutX="120.0" layoutY="343.0"/>
+                                <Label fx:id="eCellPhone" layoutX="120.0" layoutY="371.0"/>
+                                <Label fx:id="eAddress" layoutX="120.0" layoutY="402.0"/>
+                                <Label fx:id="eRegion" layoutX="260.0" layoutY="450.0"/>
+                                <Label fx:id="eEmail" layoutX="120.0" layoutY="521.0"/>
+                                <Label fx:id="relationship" layoutX="120.0" layoutY="550.0"/>
                                 <Label layoutX="14.0" layoutY="161.0" text="City:"/>
                                 <Label layoutX="14.0" layoutY="195.0" text="Zip Code:"/>
                                 <Label layoutX="192.0" layoutY="195.0" text="Country:"/>
                                 <Label layoutX="17.0" layoutY="450.0" text="City:"/>
                                 <Label layoutX="192.0" layoutY="480.0" text="Country:"/>
                                 <Label layoutX="17.0" layoutY="480.0" text="Zip Code:"/>
-                                <Label fx:id="ecCity" layoutX="120.0" layoutY="450.0" text="Label"/>
-                                <Label fx:id="ecZipCode" layoutX="120.0" layoutY="480.0" text="Label"/>
-                                <Label fx:id="ecCountry" layoutX="260.0" layoutY="480.0" text="Label"/>
-                                <Label fx:id="city" layoutX="120.0" layoutY="161.0" text="Label"/>
-                                <Label fx:id="zipCode" layoutX="120.0" layoutY="195.0" text="Label"/>
-                                <Label fx:id="country" layoutX="260.0" layoutY="195.0" text="Label"/>
+                                <Label fx:id="ecCity" layoutX="120.0" layoutY="450.0"/>
+                                <Label fx:id="ecZipCode" layoutX="120.0" layoutY="480.0"/>
+                                <Label fx:id="ecCountry" layoutX="260.0" layoutY="480.0"/>
+                                <Label fx:id="city" layoutX="120.0" layoutY="161.0"/>
+                                <Label fx:id="zipCode" layoutX="120.0" layoutY="195.0"/>
+                                <Label fx:id="country" layoutX="260.0" layoutY="195.0"/>
                             </children>
                         </AnchorPane>
                     </content>

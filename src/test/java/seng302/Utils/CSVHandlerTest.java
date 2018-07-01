@@ -1,6 +1,7 @@
 package seng302.Utils;
 
 import org.apache.commons.csv.CSVRecord;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import seng302.model.User;
@@ -19,34 +20,31 @@ import java.util.List;
 
 public class CSVHandlerTest {
     private CSVHandler csvHandler;
-    private User shouldEqual;
+    private User expected;
 
 
     @Before
     public void beforeTests() {
-        shouldEqual = new User();
-        shouldEqual.setNhi("ADB8724");
-        shouldEqual.setFirstName("Marga");
-        shouldEqual.setLastName("Gindghill");
-        shouldEqual.setDateOfBirth(LocalDate.parse("7/07/1943", DateTimeFormatter.ofPattern("M/d/yyyy")));
-        shouldEqual.setDateOfDeath(LocalDate.parse("7/07/1949", DateTimeFormatter.ofPattern("M/d/yyyy")));
-        shouldEqual.setBirthGender("Female");
-        shouldEqual.setGenderIdentity("Male");
-        shouldEqual.setBloodType("Male");
-        shouldEqual.setHeight(1.94);
-        shouldEqual.setWeight(105);
-        /* todo: change these to work when user is re-engineered
-        shouldEqual.setStreetNumber(2158);
-        shouldEqual.setStreetName("Melody");
-        shouldEqual.setSetNeighbourhood("Bình Thủy");
-        shouldEqual.setCity("Hamilton")
-
-        shouldEqual.setZipCode(5813);
-        */
-        shouldEqual.setRegion("Waikato");
-        shouldEqual.setHomePhone("07 743 4657");
-        shouldEqual.setCellPhone("020 483 1284");
-        shouldEqual.setEmail("mgindghill2@furl.net");
+        expected = new User();
+        expected.setNhi("ADB8724");
+        expected.setFirstName("Marga");
+        expected.setLastName("Gindghill");
+        expected.setDateOfBirth(LocalDate.parse("7/07/1943", DateTimeFormatter.ofPattern("M/d/yyyy")));
+        expected.setDateOfDeath(LocalDate.parse("7/07/1949", DateTimeFormatter.ofPattern("M/d/yyyy")));
+        expected.setBirthGender("Female");
+        expected.setGenderIdentity("Male");
+        expected.setBloodType("Male");
+        expected.setHeight(1.94);
+        expected.setWeight(105);
+        expected.setStreetNumber("2158");
+        expected.setStreetName("Melody");
+        expected.setNeighborhood("Bình Thủy");
+        expected.setCity("Hamilton");
+        expected.setZipCode("5813");
+        expected.setRegion("Waikato");
+        expected.setHomePhone("07 743 4657");
+        expected.setCellPhone("020 483 1284");
+        expected.setEmail("mgindghill2@furl.net");
 
         csvHandler = new CSVHandler();
 
@@ -60,7 +58,7 @@ public class CSVHandlerTest {
         CSVHandler csvHandler = new CSVHandler();
         List<CSVRecord> records = csvHandler.parseCSV(inFile);
 
-        assert (records.size() == 4);
+        Assert.assertTrue (records.size() == 4);
     }
 
     @Test
@@ -69,18 +67,22 @@ public class CSVHandlerTest {
         List<CSVRecord> records = csvHandler.parseCSV(inFile);
         Collection<User> users = csvHandler.decodeUsersFromCSV(records);
         List<User> usersList = new ArrayList<>(users);
-        User toTest = usersList.get(2);
-        assert (toTest.getNhi().equals(shouldEqual.getNhi()));
-        assert (toTest.getFirstName().equals(shouldEqual.getFirstName()));
-        assert (toTest.getLastName().equals(shouldEqual.getLastName()));
-        assert (toTest.getDateOfBirth().equals(shouldEqual.getDateOfBirth()));
-        assert (toTest.getDateOfDeath().equals(shouldEqual.getDateOfDeath()));
-        assert (toTest.getBirthGender().equals(shouldEqual.getBirthGender()));
-        assert (toTest.getGenderIdentity().equals(shouldEqual.getGenderIdentity()));
-        assert (toTest.getHeight() == shouldEqual.getHeight());
-        assert (toTest.getWeight() == shouldEqual.getWeight());
-        assert (toTest.getRegion().equals(shouldEqual.getRegion()));
-        assert (toTest.getHomePhone().equals(shouldEqual.getHomePhone()));
+        User actual = usersList.get(2);
+        Assert.assertTrue (actual.getNhi().equals(expected.getNhi()));
+        Assert.assertTrue (actual.getFirstName().equals(expected.getFirstName()));
+        Assert.assertTrue (actual.getLastName().equals(expected.getLastName()));
+        Assert.assertTrue (actual.getDateOfBirth().equals(expected.getDateOfBirth()));
+        Assert.assertTrue (actual.getDateOfDeath().equals(expected.getDateOfDeath()));
+        Assert.assertTrue (actual.getBirthGender().equals(expected.getBirthGender()));
+        Assert.assertTrue (actual.getGenderIdentity().equals(expected.getGenderIdentity()));
+        Assert.assertTrue (actual.getHeight() == expected.getHeight());
+        Assert.assertTrue (actual.getWeight() == expected.getWeight());
+        Assert.assertTrue (actual.getRegion().equals(expected.getRegion()));
+        Assert.assertTrue (actual.getHomePhone().equals(expected.getHomePhone()));
+        Assert.assertTrue (actual.getStreetNumber().equals(expected.getStreetNumber()));
+        Assert.assertTrue (actual.getStreetName().equals(expected.getStreetName()));
+        Assert.assertTrue (actual.getNeighborhood().equals(expected.getNeighborhood()));
+        Assert.assertTrue (actual.getCity().equals(expected.getCity()));
 
     }
 
@@ -90,18 +92,21 @@ public class CSVHandlerTest {
         CSVHandler csvHandler = new CSVHandler();
         ArrayList<User> users = (ArrayList<User>) csvHandler.loadUsers("src/test/resources/csvData/csvTestData.csv");
         User toTest = users.get(2);
-        System.out.println(toTest);
-        assert (toTest.getNhi().equals(shouldEqual.getNhi()));
-        assert (toTest.getFirstName().equals(shouldEqual.getFirstName()));
-        assert (toTest.getLastName().equals(shouldEqual.getLastName()));
-        assert (toTest.getDateOfBirth().equals(shouldEqual.getDateOfBirth()));
-        assert (toTest.getDateOfDeath().equals(shouldEqual.getDateOfDeath()));
-        assert (toTest.getBirthGender().equals(shouldEqual.getBirthGender()));
-        assert (toTest.getGenderIdentity().equals(shouldEqual.getGenderIdentity()));
-        assert (toTest.getHeight() == shouldEqual.getHeight());
-        assert (toTest.getWeight() == shouldEqual.getWeight());
-        assert (toTest.getRegion().equals(shouldEqual.getRegion()));
-        assert (toTest.getHomePhone().equals(shouldEqual.getHomePhone()));
+        Assert.assertTrue (toTest.getNhi().equals(expected.getNhi()));
+        Assert.assertTrue (toTest.getFirstName().equals(expected.getFirstName()));
+        Assert.assertTrue (toTest.getLastName().equals(expected.getLastName()));
+        Assert.assertTrue (toTest.getDateOfBirth().equals(expected.getDateOfBirth()));
+        Assert.assertTrue (toTest.getDateOfDeath().equals(expected.getDateOfDeath()));
+        Assert.assertTrue (toTest.getBirthGender().equals(expected.getBirthGender()));
+        Assert.assertTrue (toTest.getGenderIdentity().equals(expected.getGenderIdentity()));
+        Assert.assertTrue (toTest.getHeight() == expected.getHeight());
+        Assert.assertTrue (toTest.getWeight() == expected.getWeight());
+        Assert.assertTrue (toTest.getRegion().equals(expected.getRegion()));
+        Assert.assertTrue (toTest.getHomePhone().equals(expected.getHomePhone()));
+        Assert.assertTrue (toTest.getStreetNumber().equals(expected.getStreetNumber()));
+        Assert.assertTrue (toTest.getStreetName().equals(expected.getStreetName()));
+        Assert.assertTrue (toTest.getNeighborhood().equals(expected.getNeighborhood()));
+        Assert.assertTrue (toTest.getCity().equals(expected.getCity()));
 
     }
 
@@ -109,7 +114,7 @@ public class CSVHandlerTest {
     public void testInvalidCsvReturnsNoDataInLoadUsers() throws FileNotFoundException {
         CSVHandler csvHandler = new CSVHandler();
         ArrayList<User> users = (ArrayList<User>) csvHandler.loadUsers("src/test/resources/csvData/invalidCSV.csv");
-        assert (users.size() == 0);
+        Assert.assertTrue (users.size() == 0);
     }
 
 }

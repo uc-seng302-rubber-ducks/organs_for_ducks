@@ -2,20 +2,16 @@ package seng302.utils;
 
 //import com.mysql.jdbc.PreparedStatement;
 
-import seng302.model.Administrator;
-import seng302.model.Clinician;
-import seng302.model.MedicalProcedure;
-import seng302.model.User;
+import seng302.model.*;
+import seng302.model._enum.Organs;
 import seng302.model.datamodel.ProcedureKey;
 
 import java.io.InvalidClassException;
 import java.sql.*;
+import java.sql.Date;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class DBHandler {
 
@@ -40,20 +36,40 @@ public class DBHandler {
 
     /**
      * SQL commands for select
+     * SELECT_USER_NON_REPEATING_INFO_STMT is for getting all info that follows one-to-one relationship. eg: 1 user can only have 1 address.
+     * the other SELECT statements are for getting all info that follows one-to-many relationships. eg: 1 user can have many diseases.
      */
-    private static final String SELECT_USER_NON_REPEATING_INFO_STMT = "SELECT * FROM User u LEFT JOIN HealthDetails hd ON u.nhi = hd.fkUserNhi LEFT JOIN ContactDetails cde ON u.nhi = cde.fkUserNhi LEFT JOIN Address a ON u.nhi = a.fkUserNhi";
-    private static final String SELECT_USER__PREVIOUS_DISEASE_STMT = "SELECT * FROM PreviousDisease WHERE fkUserNhi = ?";
-    private static final String SELECT_USER__CURRENT_DISEASE_STMT = "SELECT * FROM CurrentDisease WHERE fkUserNhi = ?";
-    private static final String SELECT_USER_MEDIVATION_STMT = "SELECT * FROM Medication WHERE fkUserNhi = ?";
-    private static final String SELECT_USER_MEDICAL_PROCEDURE_STMT = "SELECT * FROM MedicalProcedure WHERE fkUserNhi = ?";
+    private static final String SELECT_USER_NON_REPEATING_INFO_STMT = "SELECT nhi, firstName, middleName, LastName, preferedName, timeCreated, lastModified, profilePicture, gender, birthGender, " +
+            "smoker, alcoholConsumption, height, weight, homePhone, cellPhone, email, streetNumber, streetName, neighbourhood, city, region, country " +
+            "FROM User u " +
+            "LEFT JOIN HealthDetails hd ON u.nhi = hd.fkUserNhi " +
+            "LEFT JOIN ContactDetails cde ON u.nhi = cde.fkUserNhi " +
+            "LEFT JOIN Address a ON u.nhi = a.fkUserNhi";
+
+    private static final String SELECT_USER__PREVIOUS_DISEASE_STMT = "SELECT diseaseName, diagnosisDate, remissionDate FROM PreviousDisease WHERE fkUserNhi = ?";
+    private static final String SELECT_USER__CURRENT_DISEASE_STMT = "SELECT diseaseName, diagnosisDate, isChronic FROM CurrentDisease WHERE fkUserNhi = ?";
+    private static final String SELECT_USER_MEDICATION_STMT = "SELECT medicationName, dateStartedTaking, dateStoppedTaking FROM Medication m " +
+            "LEFT JOIN MedicationDates md ON m.medicationInstanceId = md.fkMedicationInstanceId " +
+            "WHERE m.fkUserNhi = ?";
+
+    private static final String SELECT_USER_MEDICAL_PROCEDURE_STMT = "SELECT procedureName, procedureDate, procedureDescription, organName, mp.fkUserNhi FROM MedicalProcedure mp " +
+            "LEFT JOIN MedicalProcedureOrgan mpo ON mpo.fkUserNhi = mp.fkUserNhi " +
+            "LEFT JOIN Organ o on o.organId = mpo.organsId " +
+            "WHERE mp.fkUserNhi = ?";
 
     /**
      * SQL Queries for updates
      */
-    private static final String UPDATE_USER_STMT = "";
-    private static final String UPDATE_USER_CONTACT_STMT = "";
-    private static final String UPDATE_USER_HEALTH_STMT = "";
-    private static final String UPDATE_MEDICATION_STMT = "";
+    private static final String UPDATE_USER_STMT = "UPDATE User SET nhi = ?, firstName = ?, middleName = ?, lastName = ?, preferredName = ?, dob = ?, dod = ?, lastModified = ? WHERE nhi = ?";
+    private static final String UPDATE_ADDRESS = "UPDATE Address SET streetNumber = ?, streetName = ?, neighbourhood = ?, city = ?, region = ?, country = ? WHERE fkContactId = ? AND fkUserNhi = ? AND fkStaffId = ?";
+    private static final String UPDATE_USER_CONTACT_STMT = "UPDATE ContactDetails SET homePhone = ?, email = ?, cellPhone = ? WHERE fkUserNhi = ? AND contactId = ?"; // make this more generic?
+    private static final String UPDATE_EC_STMT = "UPDATE EmergencyContactDetails SET contactName = ?, contactRelationship = ? WHERE fkContactId = ?";
+    private static final String UPDATE_USER_HEALTH_STMT = "UPDATE HealthDetails SET gender = ?, birthGender = ?, smoker = ?, alcoholConsumption = ?, height = ?, weight = ? WHERE fkUserNhi = ?";
+    private static final String UPDATE_MEDICATION_DATE_STMT = "UPDATE MedicationDates SET dateStartedTaking = ?, dateStoppedTaking = ? WHERE fkMedicationInstanceId = ?";
+    private static final String UPDATE_PROCEDURE_STMT = "UPDATE MedicalProcedure SET procedureName = ?, procedureDate = ?, procedureDescription = ? WHERE fkUserNhi = ?"; // needs an id
+    private static final String UPDATE_CLINICIAN_STMT = "UPDATE Clinician SET staffId = ?, firstName = ?, middleName = ?, lastName = ?, lastModified = ? WHERE staffId = ?"; // make generic to work for both admin and clinician?
+    private static final String UPDATE_ADMIN_STMT = "UPDATE Admin SET username = ?, firstName = ?, middleName = ?, lastName = ?, lastModified = ? WHERE username = ?";
+    private static final String UPDATE_PASSWORD = ""; // make generic?
 
     /**
      * SQL Queries for deletes
@@ -79,30 +95,143 @@ public class DBHandler {
     }
 
     /**
-     * Method to obtain all the users from the database. Opens and closes it's own connection to the database
+     * Method to obtain all the users information from the database. Opens and closes it's own connection to the database
+     * User objects are instantiated and its attributes are set based on the de-serialised information.
      *
      * @param connection A valid connection to the database
      * @return a Collection of Users
      */
     public Collection<User> getAllUsers(Connection connection) throws SQLException {
         Collection<User> users = new ArrayList<>();
-        String sql = "SELECT * FROM User";
 
-        PreparedStatement statement = connection.prepareStatement(sql);
+        PreparedStatement statement = connection.prepareStatement(SELECT_USER_NON_REPEATING_INFO_STMT);
         ResultSet resultSet = statement.executeQuery();
 
         while (resultSet != null && resultSet.next()) {
             User user = new User();
-            user.setNhi(resultSet.getString(1)); //todo: issue with cloning user object for memento
-            user.setName(resultSet.getString(2), resultSet.getString(3), resultSet.getString(4));
+            user.setNhi(resultSet.getString(1));
+            user.setFirstName(resultSet.getString(2));
+            user.setMiddleName(resultSet.getString(3));
+            user.setLastName(resultSet.getString(4));
             user.setPreferredFirstName(resultSet.getString(5));
             user.setTimeCreated(dateToLocalDateTime(resultSet.getString(6)));
             user.setLastModified(dateToLocalDateTime(resultSet.getString(7)));
-            users.add(user);
+            //TODO: set user's profile picture here
+            user.setGenderIdentity(resultSet.getString(9));
+            user.setBirthGender(resultSet.getString(10));
+            user.setSmoker(1==resultSet.getInt(11));
+            user.setAlcoholConsumption(resultSet.getString(12));
+            user.setHeight(resultSet.getDouble(13));
+            user.setWeight(resultSet.getDouble(14));
+            user.setHomePhone(resultSet.getString(15));
+            user.setCellPhone(resultSet.getString(16));
+            user.setEmail(resultSet.getString(17));
+//            user.setStreetNumber(resultSet.getString(resultSet.getString(18))); //todo: change db address table's streetnumber column to varchar type
+            user.setStreetName(resultSet.getString(19));
+            user.setNeighborhood(resultSet.getString(20));
+            user.setCity(resultSet.getString(21));
+            user.setRegion(resultSet.getString(22));
+            user.setCountry(resultSet.getString(23));
+//            user.setZipCode(resultSet.getString()); //todo: db address table needs to have zip table
+
+            try {
+                getUserPastDisease(user, connection);
+                getUserCurrentDisease(user, connection);
+                //getUserMedication(user, connection);
+                getUserMedicalProcedure(user, connection);
+                users.add(user);
+            }
+            catch (SQLException e) {
+                Log.warning("Unable to create instance of user with nhi "+user.getNhi(), e);
+                System.err.println("Unable to create instance of user with nhi "+user.getNhi()+" due to SQL Error: "+e);
+            }
         }
 
         connection.close();
         return users;
+    }
+
+    /**
+     * gets all info of past diseases of a user.
+     * Then, Disease objects are instantiated and its attributes are set based on the de-serialised information.
+     * Finally, the Disease objects are added to User object.
+     * @param user desired user
+     * @param connection opened connection to database
+     * @throws SQLException when there are any SQL errors
+     */
+    private void getUserPastDisease(User user, Connection connection) throws SQLException {
+        PreparedStatement stmt = connection.prepareStatement(SELECT_USER__PREVIOUS_DISEASE_STMT);
+        stmt.setString(1, user.getNhi());
+        ResultSet resultSet = stmt.executeQuery();
+        while (resultSet != null && resultSet.next()) { //TODO: how do we de-serialise remission date?
+            Disease pastDisease = new Disease(resultSet.getString(1), false, true, dateToLocalDateTime(resultSet.getString(2)).toLocalDate());
+            user.getPastDiseases().add(pastDisease);
+        }
+    }
+
+    /**
+     * gets all info of current diseases of a user.
+     * Then, Disease objects are instantiated and its attributes are set based on the de-serialised information.
+     * Finally, the Disease objects are added to User object.
+     * @param user desired user
+     * @param connection opened connection to database
+     * @throws SQLException when there are any SQL errors
+     */
+    private void getUserCurrentDisease(User user, Connection connection) throws SQLException {
+        PreparedStatement stmt = connection.prepareStatement(SELECT_USER__CURRENT_DISEASE_STMT);
+        stmt.setString(1, user.getNhi());
+        ResultSet resultSet = stmt.executeQuery();
+        while (resultSet != null && resultSet.next()) {
+            Disease currentDisease = new Disease(resultSet.getString(1), 1==resultSet.getInt(3), false, dateToLocalDateTime(resultSet.getString(2)).toLocalDate());
+            user.getCurrentDiseases().add(currentDisease);
+        }
+    }
+
+    /**
+     * gets all info of Medication of a user
+     *
+     * TODO: update javadoc once method is completed
+     * @param user desired user
+     * @param connection opened connection to database
+     * @throws SQLException when there are any SQL errors
+     */
+    private void getUserMedication(User user, Connection connection) throws SQLException {
+        PreparedStatement stmt = connection.prepareStatement(SELECT_USER_MEDICATION_STMT);
+        stmt.setString(1, user.getNhi());
+        ResultSet resultSet = stmt.executeQuery();
+        while (resultSet != null && resultSet.next()) {
+            if(resultSet.getString(3) == null){ // dateStoppedTaking is null
+                //TODO: create method or medication class to deserealise name and date of current medication
+
+            } else {
+                //TODO: create method or medication class to deserealise name and date of previous medication
+            }
+        }
+    }
+
+    /**
+     * gets all info of Medical procedure of a user
+     * Then, MedicalProcedure objects are instantiated and its attributes are set based on the de-serialised information.
+     * Finally, the MedicalProcedure objects are added to User object.
+     * @param user desired user
+     * @param connection opened connection to database
+     * @throws SQLException when there are any SQL errors
+     */
+    private void getUserMedicalProcedure(User user, Connection connection) throws SQLException {
+        PreparedStatement stmt = connection.prepareStatement(SELECT_USER_MEDICAL_PROCEDURE_STMT);
+        stmt.setString(1, user.getNhi());
+        ResultSet resultSet = stmt.executeQuery();
+        MedicalProcedure medicalProcedure = null;
+        while (resultSet != null && resultSet.next()) {
+            if (medicalProcedure != null && resultSet.getString(5).equals(user.getNhi())){ //if the data of next result set belongs to the same user, that means multiple organs is affected.
+                medicalProcedure.addOrgan(Organs.valueOf(resultSet.getString(4)));
+
+            } else {
+                medicalProcedure = new MedicalProcedure(resultSet.getDate(2).toLocalDate(), resultSet.getString(1), resultSet.getString(3), null);
+                medicalProcedure.addOrgan(Organs.valueOf(resultSet.getString(4)));
+                user.getMedicalProcedures().add(medicalProcedure);
+            }
+        }
     }
 
     /**
@@ -289,8 +418,228 @@ public class DBHandler {
      * @param connection Connection ot the target database
      * @param <T>    Admin, Clinician or User
      */
-    private <T> void executeUpdate(T object, Connection connection) {
+    private <T> void executeUpdate(T object, Connection connection) throws InvalidClassException {
 
+
+        try {
+            connection.prepareStatement("START TRANSACTION").execute();
+            try {
+                if (object instanceof Administrator) {
+                    Administrator admin = (Administrator) object;
+                    updateAdminDetails(admin, connection);
+
+                } else if (object instanceof Clinician) {
+                    Clinician clinician = (Clinician) object;
+                    updateClinicianDetails(clinician, connection);
+                    updateClinicianAddress(clinician, connection);
+
+                } else if (object instanceof User) {
+                    User user = (User) object;
+                    updateUserDetails(user, connection);
+                    updateUserAddress(user, connection);
+                    updateUserContactDetails(user, connection);
+                    updateEmergencyContact(user, connection);
+                    updateUserHealthDetails(user, connection);
+                    updateUserMedicalProcedures(user, connection);
+
+                } else {
+                    throw new InvalidClassException("Provided role is not of type Users, Clinicians or Administrators");
+                }
+            } catch (SQLException sqlEx) {
+                connection.prepareStatement("ROLLBACK").execute();
+            }
+
+            connection.prepareStatement("COMMIT");
+            connection.close();
+        } catch (SQLException sqlEx) {
+            Log.warning("Error in connection to database", sqlEx);
+            System.out.println("Error connecting to database");
+        }
+
+    }
+
+
+    /**
+     * Updates the contact details of the given user in the database
+     *
+     * @param user User object with details to be updated
+     * @param connection Connection to the target database
+     * @throws SQLException If there is an issue updating the users contact details
+     */
+    private void updateUserContactDetails(User user, Connection connection) throws SQLException {
+        PreparedStatement statement = connection.prepareStatement(UPDATE_USER_CONTACT_STMT);
+
+        statement.setString(1, user.getHomePhone());
+        statement.setString(2, user.getCellPhone());
+        statement.setString(3, user.getEmail());
+        statement.setString(4, user.getNhi());
+        // todo: get contact id
+
+        statement.executeUpdate();
+    }
+
+    /**
+     * Updates the emergency contact of the given user in the database
+     *
+     * @param user User object
+     * @param connection Connection to the target database
+     * @throws SQLException If there is an issue updating the emergency contact details
+     */
+    private void updateEmergencyContact(User user, Connection connection) throws SQLException {
+        PreparedStatement statement = connection.prepareStatement(UPDATE_EC_STMT);
+
+        statement.setString(1, user.getContact().getName());
+        statement.setString(2, user.getContact().getRelationship());
+        // todo: get contact id
+
+        statement.executeUpdate();
+    }
+
+
+    /**
+     * Updates the given users address details in the database
+     *
+     * @param user User object with details to be updated
+     * @param connection Connection to the target database
+     * @throws SQLException If there is an issue updating the user address
+     */
+    private void updateUserAddress(User user, Connection connection) throws SQLException {
+        PreparedStatement statement = connection.prepareStatement(UPDATE_ADDRESS);
+
+        statement.setString(1, user.getStreetNumber()); // todo: update the Address table to take street number as a string instead of an integer - jen 30/6
+        statement.setString(2, user.getStreetName());
+        statement.setString(3, user.getNeighborhood());
+        statement.setString(4, user.getCity());
+        statement.setString(5, user.getRegion());
+        statement.setString(6, user.getCountry());
+        //statement.setString(7, ); // todo: get contact id
+        statement.setString(8, user.getNhi());
+        statement.setString(9, null);
+
+        statement.executeUpdate();
+    }
+
+    /**
+     * Updates the given users health details in the database
+     * Precondition: Must have an active connection to the database
+     * Postcondition: The health details of the given user are updated
+     *
+     * @param user User object with details to be updated
+     * @param connection Connection to the target database
+     * @throws SQLException If there is an issue updating the users health details
+     */
+    private void updateUserHealthDetails(User user, Connection connection) throws SQLException {
+        PreparedStatement statement = connection.prepareStatement(UPDATE_USER_HEALTH_STMT);
+
+        statement.setString(1, user.getBirthGender());
+        statement.setString(2, user.getGenderIdentity());
+        statement.setBoolean(3, user.isSmoker());
+        statement.setString(4, user.getAlcoholConsumption());
+        statement.setDouble(5, user.getHeight());
+        statement.setDouble(6, user.getWeight());
+        statement.setString(7, user.getNhi());
+        // todo: add a blood type/reference to the table - Jen 30/6
+
+        statement.executeUpdate();
+    }
+
+    /**
+     * Updates the given users medical procedures in the database
+     *
+     *
+     * @param user User object to be updated
+     * @param connection Connection to the target database
+     * @throws SQLException If there is an issue updating the users medical procedures
+     */
+    private void updateUserMedicalProcedures(User user, Connection connection) throws SQLException {
+
+        // loop through the users procedures and update each of them
+
+    }
+
+    /**
+     * Updates the given user in the database using UPDATE_USER_STMT
+     * Precondition: Must have an active connection to the database
+     * Postcondition: The given user is updated in the database
+     *
+     * @param user User object to be updated
+     * @param connection Connection to the target database
+     * @throws SQLException If there is an issue updating the user details
+     */
+    private void updateUserDetails(User user, Connection connection) throws SQLException {
+        PreparedStatement statement = connection.prepareStatement(UPDATE_USER_STMT);
+
+        statement.setString(1, user.getNhi());
+        statement.setString(2, user.getFirstName());
+        statement.setString(3, user.getMiddleName());
+        statement.setString(4, user.getLastName());
+        statement.setString(5, user.getPreferredFirstName());
+        statement.setDate(6, Date.valueOf(user.getDateOfBirth()));
+        statement.setDate(7, Date.valueOf(user.getDateOfDeath()));
+        statement.setTimestamp(8, Timestamp.valueOf(user.getLastModified()));
+        statement.setString(9, user.getNhi());
+
+        statement.executeUpdate();
+    }
+
+
+    /**
+     * Updates the given clinicians address in the database using UPDATE_ADDRESS
+     * Precondition: Must have an active connection to the database
+     * Postcondition: The address of the given clinician is updated in the database
+     *
+     * @param clinician Clinician object to be updated
+     * @param connection Connection to the target database
+     * @throws SQLException If there is an issue updating the clinicians address details
+     */
+    private void updateClinicianAddress(Clinician clinician, Connection connection) throws SQLException {
+        PreparedStatement statement = connection.prepareStatement(UPDATE_ADDRESS);
+
+        // todo: update clinician to have an Address object - jen 30/6
+    }
+
+    /**
+     * Updates the given clinician in the database using UPDATE_CLINICIAN_STMT
+     * Precondition: Must have an active connection to the database
+     * Postcondition: The given clinician is updated in the database
+     *
+     * @param clinician Clinician object to be updated
+     * @param connection Connection to the target database
+     * @throws SQLException If there is an issue updating the clinician details
+     */
+    private void updateClinicianDetails(Clinician clinician, Connection connection) throws SQLException {
+        PreparedStatement statement = connection.prepareStatement(UPDATE_CLINICIAN_STMT);
+
+        statement.setString(1, clinician.getStaffId());
+        statement.setString(2, clinician.getFirstName());
+        statement.setString(3, clinician.getMiddleName());
+        statement.setString(4, clinician.getLastName());
+        statement.setTimestamp(5, Timestamp.valueOf(clinician.getDateLastModified()));
+        statement.setString(6, clinician.getStaffId());
+
+        statement.executeUpdate();
+    }
+
+    /**
+     * Updates the given administrator in the database
+     * Precondition: Must have an active connection to the database
+     * Postcondition: The given admin is updated in the database
+     *
+     * @param admin Administrator object to be updated
+     * @param connection Connection to the target database
+     * @throws SQLException If there is an issue updating the admin details
+     */
+    private void updateAdminDetails(Administrator admin, Connection connection) throws SQLException {
+        PreparedStatement statement = connection.prepareStatement(UPDATE_ADMIN_STMT);
+
+        statement.setString(1, admin.getUserName());
+        statement.setString(2, admin.getFirstName());
+        statement.setString(3, admin.getMiddleName());
+        statement.setString(4, admin.getLastName());
+        statement.setTimestamp(5, Timestamp.valueOf(admin.getDateLastModified()));
+        statement.setString(6, admin.getUserName());
+
+        statement.executeUpdate();
     }
 
     /**
@@ -641,8 +990,9 @@ public class DBHandler {
 
     //TODO: Please dont remove this main until db handler is fully developed
 //    public static void main(String [ ] args) throws SQLException{
-//    DBHandler dbHandler = new DBHandler();
-//    JDBCDriver jdbcDriver = new JDBCDriver();
-//    dbHandler.getAllUsers(jdbcDriver.getTestConnection());
+//        DBHandler dbHandler = new DBHandler();
+//        JDBCDriver jdbcDriver = new JDBCDriver();
+//        dbHandler.getAllUsers(jdbcDriver.getTestConnection());
+//        System.out.println("done");
 //    }
 }
