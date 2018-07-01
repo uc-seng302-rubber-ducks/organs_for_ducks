@@ -296,6 +296,12 @@ public class Clinician extends Undoable<Clinician> implements Listenable {
     }
 
     @Override
+    public void setDeleted(boolean deleted) {
+        super.setDeleted(deleted);
+        addChange(new Change("Deleted clinician"));
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;

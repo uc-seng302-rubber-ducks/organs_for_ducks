@@ -19,6 +19,7 @@ import seng302.utils.Log;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.stream.Collectors;
 
 import static java.util.Collections.reverseOrder;
 
@@ -80,22 +81,18 @@ public class DiseasesTabPageController {
      * show the current and past diseases of the user.
      */
     public void showUserDiseases(User user, boolean init) {
-        if (user.getCurrentDiseases().size() != 0) {
-            ObservableList<Disease> currentDisease = FXCollections
-                    .observableList(user.getCurrentDiseases());
-            currentDiseaseTableView.setItems(currentDisease);
-
-        } else {
+        if (user.getCurrentDiseases().size() == 0) {
             currentDiseaseTableView.setPlaceholder(new Label("No Current Diseases"));
         }
+        ObservableList<Disease> currentDisease = FXCollections
+                .observableList(user.getCurrentDiseases().stream().filter(d -> !d.isDeleted()).collect(Collectors.toList()));
+        currentDiseaseTableView.setItems(currentDisease);
 
-        if (user.getPastDiseases().size() != 0) {
-            ObservableList<Disease> pastDisease = FXCollections.observableList(user.getPastDiseases());
-            pastDiseaseTableView.setItems(pastDisease);
-
-        } else {
+        if (user.getPastDiseases().size() == 0) {
             pastDiseaseTableView.setPlaceholder(new Label("No Past Diseases"));
         }
+        ObservableList<Disease> pastDisease = FXCollections.observableList(user.getPastDiseases().stream().filter(d -> !d.isDeleted()).collect(Collectors.toList()));
+        pastDiseaseTableView.setItems(pastDisease);
 
         if (init) {
             TableColumn<Disease, LocalDate> diagnosisDateColumn = new TableColumn<>("Diagnosis Date");
@@ -146,6 +143,9 @@ public class DiseasesTabPageController {
             nameColumn2.setCellValueFactory(new PropertyValueFactory<>("name"));
 
             pastDiseaseTableView.getColumns().addAll(diagnosisDateColumn2, nameColumn2);
+
+            currentDiseaseTableView.refresh();
+            pastDiseaseTableView.refresh();
 
         }
     }
@@ -199,16 +199,14 @@ public class DiseasesTabPageController {
     private void deleteDisease() {
         if (currentDiseaseTableView.getSelectionModel().getSelectedIndex() >= 0) {
             if (!currentDiseaseTableView.getSelectionModel().getSelectedItem().getIsChronic()) {
-                currentUser.getCurrentDiseases()
-                        .remove(currentDiseaseTableView.getSelectionModel().getSelectedItem());
+                currentDiseaseTableView.getSelectionModel().getSelectedItem().setDeleted(true);
             } else {
                 Log.warning("Unable to delete current disease for User NHI: " + currentUser.getNhi() + ", no disease selected");
                 return;
             }
             Log.info("current disease: " + currentDiseaseTableView.getSelectionModel().getSelectedItem() + " deleted for User NHI: " + currentUser.getNhi());
         } else if (pastDiseaseTableView.getSelectionModel().getSelectedIndex() >= 0) {
-            currentUser.getPastDiseases()
-                    .remove(pastDiseaseTableView.getSelectionModel().getSelectedItem());
+            pastDiseaseTableView.getSelectionModel().getSelectedItem().setDeleted(true);
             Log.info("past disease: " + pastDiseaseTableView.getSelectionModel().getSelectedItem() + " deleted for User NHI: " + currentUser.getNhi());
         } else {
             Log.warning("Unable to delete past disease for User NHI: " + currentUser.getNhi() + ", no disease selected");

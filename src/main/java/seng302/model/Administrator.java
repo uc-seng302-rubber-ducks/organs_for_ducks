@@ -221,6 +221,12 @@ public class Administrator extends Undoable<Administrator> implements Listenable
         this.pcs = pcs;
     }
 
+    @Override
+    public void setDeleted(boolean deleted) {
+        super.setDeleted(deleted);
+        addChange(new Change("Deleted administrator"));
+    }
+
     /**
      * Takes an attempt as a password and then checks it against the actual password
      *
