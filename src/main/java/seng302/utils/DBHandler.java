@@ -2,7 +2,6 @@ package seng302.utils;
 
 //import com.mysql.jdbc.PreparedStatement;
 
-import seng302.controller.AppController;
 import seng302.model.*;
 import seng302.model._enum.Organs;
 import seng302.model.datamodel.ProcedureKey;
@@ -244,7 +243,6 @@ public class DBHandler {
     public void saveUsers(Collection<User> users, Connection connection) {
         try {
             updateDatabase(users, connection);
-            updateDatabase(AppController.getInstance().getDeletedUsers(), connection);
         } catch (InvalidClassException invalidEx) {
             //Should never happen, but if it does, system failure
             invalidEx.printStackTrace();
@@ -292,7 +290,6 @@ public class DBHandler {
     public void saveClinicians(Collection<Clinician> clinicians, Connection connection) {
         try {
             updateDatabase(clinicians, connection);
-            updateDatabase(AppController.getInstance().getDeletedClinicians(), connection);
         } catch (InvalidClassException invalidEx) {
             //Should never happen, but if it does, system failure
             invalidEx.printStackTrace();
@@ -340,7 +337,6 @@ public class DBHandler {
     public void saveAdministrators(Collection<Administrator> administrators, Connection connection) {
         try {
             updateDatabase(administrators, connection);
-            updateDatabase(AppController.getInstance().getDeletedAdmins(), connection);
         } catch (InvalidClassException invalidEx) {
             //Should never happen, but if it does, system failure
             invalidEx.printStackTrace();
@@ -372,7 +368,7 @@ public class DBHandler {
                     table = "Administrator";
                     identifierName = "userName";
                     identifier = admin.getUserName();
-                    toDelete = AppController.getInstance().getDeletedAdmins().contains(admin);
+                    toDelete = admin.isDeleted();
                 } else if (object instanceof Clinician) {
                     Clinician clinician = (Clinician) object;
                     if (clinician.getChanges().size() <= 0) {
@@ -381,7 +377,7 @@ public class DBHandler {
                     table = "Clinician";
                     identifierName = "staffId";
                     identifier = clinician.getStaffId();
-                    toDelete = AppController.getInstance().getDeletedClinicians().contains(clinician);
+                    toDelete = clinician.isDeleted();
                 } else if (object instanceof User) {
                     User user = (User) object;
                     if (user.getChanges().size() <= 0) {
@@ -390,7 +386,7 @@ public class DBHandler {
                     table = "User";
                     identifierName = "nhi";
                     identifier = user.getNhi();
-                    toDelete = AppController.getInstance().getDeletedUsers().contains(user);
+                    toDelete = user.isDeleted();
                 } else {
                     throw new InvalidClassException("Object is not of type Users, Clinicians or Administrators");
                 }

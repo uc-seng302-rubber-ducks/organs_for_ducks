@@ -25,6 +25,7 @@ import seng302.utils.Log;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 public class ProcedureTabController {
     //procedures
@@ -172,7 +173,7 @@ public class ProcedureTabController {
                 .getSelectedIndex() : previousProcedureTableView.getSelectionModel().getSelectedIndex();
         parent.clearMeds();
         pendingProcedures.clear();
-        medicalProcedures = FXCollections.observableList(user.getMedicalProcedures());
+        medicalProcedures = FXCollections.observableList(user.getMedicalProcedures().stream().filter(p -> !p.isDeleted()).collect(Collectors.toList()));
         for (MedicalProcedure procedure : medicalProcedures) {
             if (procedure.getProcedureDate().isBefore(LocalDate.now())) {
                 previousProcedures.add(procedure);
@@ -354,17 +355,15 @@ public class ProcedureTabController {
         Memento<User> memento = new Memento<>();
         memento.setOldObject(currentUser.clone());
         if (previousProcedureTableView.getSelectionModel().getSelectedItem() != null) {
-            medicalProcedures.remove(previousProcedureTableView.getSelectionModel().getSelectedItem());
-            currentUser
-                    .removeMedicalProcedure(previousProcedureTableView.getSelectionModel().getSelectedItem());
-            previousProcedures.remove(previousProcedureTableView.getSelectionModel().getSelectedItem());
+            //medicalProcedures.remove(previousProcedureTableView.getSelectionModel().getSelectedItem());
+            previousProcedureTableView.getSelectionModel().getSelectedItem().setDeleted(true);
             Log.info("Successfully removed procedure: " + previousProcedureTableView.getSelectionModel().getSelectedItem().toString() + " for User NHI: " + currentUser.getNhi());
+            previousProcedures.remove(previousProcedureTableView.getSelectionModel().getSelectedItem());
         } else if (pendingProcedureTableView.getSelectionModel().getSelectedItem() != null) {
-            medicalProcedures.remove(pendingProcedureTableView.getSelectionModel().getSelectedItem());
-            currentUser
-                    .removeMedicalProcedure(pendingProcedureTableView.getSelectionModel().getSelectedItem());
-            pendingProcedures.remove(pendingProcedureTableView.getSelectionModel().getSelectedItem());
+            //medicalProcedures.remove(pendingProcedureTableView.getSelectionModel().getSelectedItem());
+            pendingProcedureTableView.getSelectionModel().getSelectedItem().setDeleted(true);
             Log.info("Successfully removed procedure: " + pendingProcedureTableView.getSelectionModel().getSelectedItem().toString() + " for User NHI: " + currentUser.getNhi());
+            pendingProcedures.remove(pendingProcedureTableView.getSelectionModel().getSelectedItem());
         } else {
             Log.warning("Failed to remove procedure for User NHI: " + currentUser.getNhi() + " as no procedure is selected");
         }

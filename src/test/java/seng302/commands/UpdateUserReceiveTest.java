@@ -4,10 +4,10 @@ import org.junit.Before;
 import org.junit.Test;
 import picocli.CommandLine;
 import seng302.controller.AppController;
-import seng302.model._enum.OrganDeregisterReason;
-import seng302.model._enum.Organs;
 import seng302.model.ReceiverDetails;
 import seng302.model.User;
+import seng302.model._enum.OrganDeregisterReason;
+import seng302.model._enum.Organs;
 
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
@@ -29,7 +29,7 @@ public class UpdateUserReceiveTest {
     @Test
     public void testNoParams() {
         String[] args = {};
-        when(controller.getUser(anyString())).thenReturn(user);
+        when(controller.findUser(anyString())).thenReturn(user);
         command.setController(controller);
         new CommandLine(command)
                 .parseWithHandler(new CommandLine.RunLast(), System.err, args);
@@ -40,7 +40,7 @@ public class UpdateUserReceiveTest {
     @Test
     public void testNoOrgans() {
         String[] args = {"ABC1234"};
-        when(controller.getUser(anyString())).thenReturn(user);
+        when(controller.findUser(anyString())).thenReturn(user);
         command.setController(controller);
         new CommandLine(command)
                 .parseWithHandler(new CommandLine.RunLast(), System.err, args);
@@ -50,7 +50,7 @@ public class UpdateUserReceiveTest {
     @Test
     public void testInvalidOrganName() {
         String[] args = {"ABC1234", "+squid"};
-        when(controller.getUser(anyString())).thenReturn(user);
+        when(controller.findUser(anyString())).thenReturn(user);
         command.setController(controller);
         new CommandLine(command)
                 .parseWithHandler(new CommandLine.RunLast(), System.err, args);
@@ -60,7 +60,7 @@ public class UpdateUserReceiveTest {
     @Test
     public void testInvalidSymbol() {
         String[] args = {"ABC1234", "~liver"};
-        when(controller.getUser(anyString())).thenReturn(user);
+        when(controller.findUser(anyString())).thenReturn(user);
         command.setController(controller);
         new CommandLine(command)
                 .parseWithHandler(new CommandLine.RunLast(), System.err, args);
@@ -72,7 +72,7 @@ public class UpdateUserReceiveTest {
         String[] args = {"ABC1234", "+liver", "+kidney", "/lung"};
         ReceiverDetails details = mock(ReceiverDetails.class);
         when(user.getReceiverDetails()).thenReturn(details);
-        when(controller.getUser(anyString())).thenReturn(user);
+        when(controller.findUser(anyString())).thenReturn(user);
         command.setController(controller);
         new CommandLine(command)
                 .parseWithHandler(new CommandLine.RunLast(), System.err, args);
@@ -88,7 +88,7 @@ public class UpdateUserReceiveTest {
         String[] args = {"ABC1234", "+lung", "+squid", "+liver"};
         ReceiverDetails details = mock(ReceiverDetails.class);
         when(user.getReceiverDetails()).thenReturn(details);
-        when(controller.getUser(anyString())).thenReturn(user);
+        when(controller.findUser(anyString())).thenReturn(user);
         command.setController(controller);
         new CommandLine(command)
                 .parseWithHandler(new CommandLine.RunLast(), System.err, args);

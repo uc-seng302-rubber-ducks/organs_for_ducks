@@ -1,6 +1,7 @@
 package seng302.model;
 
 import com.google.gson.annotations.Expose;
+import seng302.model._abstract.Deletable;
 
 import java.time.LocalDate;
 import java.util.Comparator;
@@ -9,7 +10,7 @@ import java.util.Comparator;
  * Class to hold information
  * of user's diseases
  */
-public class Disease {
+public class Disease extends Deletable {
 
     @Expose
     private String name;

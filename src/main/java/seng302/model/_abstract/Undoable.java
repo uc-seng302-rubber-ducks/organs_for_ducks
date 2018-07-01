@@ -4,7 +4,7 @@ import seng302.model.Memento;
 
 import java.util.Stack;
 
-public abstract class Undoable<T> {
+public abstract class Undoable<T> extends Deletable {
 
     private transient Stack<Memento<T>> undoStack = new Stack<>();
     private transient Stack<Memento<T>> redoStack = new Stack<>();
