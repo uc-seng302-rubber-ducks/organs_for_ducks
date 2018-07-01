@@ -88,16 +88,16 @@ CREATE TABLE MedicationDates(
   FOREIGN KEY (fkMedicationInstanceId) REFERENCES Medication(medicationInstanceId) ON DELETE CASCADE
 );
 
-CREATE TABLE heathOrganReceive(
-  organsId SMALLINT,
+CREATE TABLE HealthOrganReceive(
+  fkOrgansId SMALLINT,
   fkUserNhi VARCHAR(7),
   PRIMARY KEY (organsId, fkUserNhi),
   FOREIGN KEY (fkUserNhi) REFERENCES User(nhi) ON DELETE CASCADE,
   FOREIGN KEY (organsId) REFERENCES Organ(organId) ON DELETE CASCADE
 );
 
-CREATE TABLE heathOrganDonate(
-  organsId SMALLINT,
+CREATE TABLE HealthOrganDonate(
+  fkOrgansId SMALLINT,
   fkUserNhi VARCHAR(7),
   PRIMARY KEY (organsId, fkUserNhi),
   FOREIGN KEY (fkUserNhi) REFERENCES User(nhi) ON DELETE CASCADE,

@@ -37,10 +37,10 @@ public class DBHandler {
 
     /**
      * SQL commands for select
-     * SELECT_USER_NON_REPEATING_INFO_STMT is for getting all info that follows one-to-one relationship. eg: 1 user can only have 1 address.
-     * the other SELECT statements are for getting all info that follows one-to-many relationships. eg: 1 user can have many diseases.
+     * SELECT_USER_ONE_TO_ONE_INFO_STMT is for getting all info that follows one-to-one relationship. eg: 1 user can only have 1 address.
+     * the other SELECT_USER statements are for getting all info that follows one-to-many relationships. eg: 1 user can have many diseases.
      */
-    private static final String SELECT_USER_NON_REPEATING_INFO_STMT = "SELECT nhi, firstName, middleName, LastName, preferedName, timeCreated, lastModified, profilePicture, gender, birthGender, " +
+    private static final String SELECT_USER_ONE_TO_ONE_INFO_STMT = "SELECT nhi, firstName, middleName, LastName, preferedName, timeCreated, lastModified, profilePicture, gender, birthGender, " +
             "smoker, alcoholConsumption, height, weight, homePhone, cellPhone, email, streetNumber, streetName, neighbourhood, city, region, country " +
             "FROM User u " +
             "LEFT JOIN HealthDetails hd ON u.nhi = hd.fkUserNhi " +
@@ -57,6 +57,17 @@ public class DBHandler {
             "LEFT JOIN MedicalProcedureOrgan mpo ON mpo.fkUserNhi = mp.fkUserNhi " +
             "LEFT JOIN Organ o on o.organId = mpo.organsId " +
             "WHERE mp.fkUserNhi = ?";
+
+    private static final String SELECT_USER_ORGAN_DONATION = "SELECT organName FROM HealthOrganDonate LEFT JOIN Organ ON fkOrgansId = organId WHERE fkUserNhi = ?";
+    private static final String SELECT_USER_ORGAN_RECEIVING = "SELECT organName FROM HealthOrganReceive LEFT JOIN Organ ON fkOrgansId = organId WHERE fkUserNhi = ?";
+
+
+    private static final String SELECT_CLINICIAN_ONE_TO_ONE_INFO_STMT = "SELECT staffId, firstName, middleName, lastName, timeCreated, lastModified, " +
+            "streetNumber, streetName, neighbourhood, city, region, country " +
+            "FROM Clinician cl " +
+            "LEFT JOIN Address a ON cl.staffId = a.fkStaffId ";
+
+    private static final String SELECT_ADMIN_ONE_TO_ONE_INFO_STMT = "SELECT userName, firstName, middleName, lastName, timeCreated, lastModified  FROM Administrator";
 
     /**
      * SQL Queries for updates
@@ -105,7 +116,7 @@ public class DBHandler {
     public Collection<User> getAllUsers(Connection connection) throws SQLException {
         Collection<User> users = new ArrayList<>();
 
-        PreparedStatement statement = connection.prepareStatement(SELECT_USER_NON_REPEATING_INFO_STMT);
+        PreparedStatement statement = connection.prepareStatement(SELECT_USER_ONE_TO_ONE_INFO_STMT);
         ResultSet resultSet = statement.executeQuery();
 
         while (resultSet != null && resultSet.next()) {
@@ -127,6 +138,15 @@ public class DBHandler {
             user.setHomePhone(resultSet.getString(15));
             user.setCellPhone(resultSet.getString(16));
             user.setEmail(resultSet.getString(17));
+
+            //TODO: need to get an understanding of how the sample data for  Address, ContactDetails and EmergencyContactDetails db tables before i can de-serialise emergency contact details (Aaron)
+//            user.getContact().setEmail();
+//            user.getContact().setHomePhoneNumber();
+//            user.getContact().setCellPhoneNumber();
+//            user.getContact().setName();
+//            user.getContact().setAddress();
+//            user.getContact().setRelationship();
+
 //            user.setStreetNumber(resultSet.getString(resultSet.getString(18))); //todo: change db address table's streetnumber column to varchar type
             user.setStreetName(resultSet.getString(19));
             user.setNeighborhood(resultSet.getString(20));
@@ -134,12 +154,15 @@ public class DBHandler {
             user.setRegion(resultSet.getString(22));
             user.setCountry(resultSet.getString(23));
 //            user.setZipCode(resultSet.getString()); //todo: db address table needs to have zip table
+            user.getReceiverDetails();
 
             try {
                 getUserPastDisease(user, connection);
                 getUserCurrentDisease(user, connection);
                 //getUserMedication(user, connection);
                 getUserMedicalProcedure(user, connection);
+                getUserOrganDonateDetail(user, connection);
+                //getUserOrganReceiveDetail(user, connection);
                 users.add(user);
             }
             catch (SQLException e) {
@@ -147,7 +170,6 @@ public class DBHandler {
                 System.err.println("Unable to create instance of user with nhi "+user.getNhi()+" due to SQL Error: "+e);
             }
         }
-
         connection.close();
         return users;
     }
@@ -185,6 +207,38 @@ public class DBHandler {
         while (resultSet != null && resultSet.next()) {
             Disease currentDisease = new Disease(resultSet.getString(1), 1==resultSet.getInt(3), false, dateToLocalDateTime(resultSet.getString(2)).toLocalDate());
             user.getCurrentDiseases().add(currentDisease);
+        }
+    }
+
+    /**
+     * gets all info of organs the user is donating.
+     * Then, the organ data de-serialised and added to User object.
+     * @param user desired user
+     * @param connection opened connection to database
+     * @throws SQLException when there are any SQL errors
+     */
+    private void getUserOrganDonateDetail(User user, Connection connection) throws SQLException {
+        PreparedStatement stmt = connection.prepareStatement(SELECT_USER_ORGAN_DONATION);
+        stmt.setString(1, user.getNhi());
+        ResultSet resultSet = stmt.executeQuery();
+        while (resultSet != null && resultSet.next()) {
+            user.getDonorDetails().addOrgan(Organs.valueOf(resultSet.getString(1)));
+        }
+    }
+
+    /**
+     * gets all info of organs the user is receiving.
+     * Then, the organ data de-serialised and added to User object.
+     * @param user desired user
+     * @param connection opened connection to database
+     * @throws SQLException when there are any SQL errors
+     */
+    private void getUserOrganReceiveDetail(User user, Connection connection) throws SQLException {
+        PreparedStatement stmt = connection.prepareStatement(SELECT_USER_ORGAN_RECEIVING);
+        stmt.setString(1, user.getNhi());
+        ResultSet resultSet = stmt.executeQuery();
+        while (resultSet != null && resultSet.next()) {
+            //user.getReceiverDetails().setOrgans(Organs.valueOf(resultSet.getString(1))); //TODO: db is not storing any info of ReceiverOrganDetailsHolder class atm.
         }
     }
 
@@ -260,11 +314,7 @@ public class DBHandler {
      */
     public Collection<Clinician> loadClinicians(Connection connection) throws SQLException {
         Collection<Clinician> clinicians = new ArrayList<>();
-        String sql = "SELECT * FROM Clinician cl " +
-                "LEFT JOIN PasswordDetails pd " +
-                "ON cl.staffId = pd.fkStaffId";
-
-        PreparedStatement statement = connection.prepareStatement(sql);
+        PreparedStatement statement = connection.prepareStatement(SELECT_CLINICIAN_ONE_TO_ONE_INFO_STMT);
         ResultSet resultSet = statement.executeQuery();
 
         while (resultSet != null && resultSet.next()) {
@@ -275,6 +325,7 @@ public class DBHandler {
             clinician.setLastName(resultSet.getString(4));
             clinician.setDateCreated(dateToLocalDateTime(resultSet.getString(5)));
             clinician.setDateLastModified(dateToLocalDateTime(resultSet.getString(6)));
+            //TODO: for de-serialising address data, should we refactor clinician to use Address class or use workAddress class attribute.
             //clinician.setPassword(resultSet.getString(10)); //TODO since the database stores the hash and salt, do we store those directly without having to use setPassword?
             clinicians.add(clinician);
         }
@@ -308,11 +359,8 @@ public class DBHandler {
      */
     public Collection<Administrator> loadAdmins(Connection connection) throws SQLException {
         Collection<Administrator> administrators = new ArrayList<>();
-        String sql = "SELECT * FROM Administrator ad " +
-                "LEFT JOIN PasswordDetails pd " +
-                "ON ad.userName = pd.fkAdminUserName";
 
-        PreparedStatement statement = connection.prepareStatement(sql);
+        PreparedStatement statement = connection.prepareStatement(SELECT_ADMIN_ONE_TO_ONE_INFO_STMT);
         ResultSet resultSet = statement.executeQuery();
 
         while (resultSet != null && resultSet.next()) {
@@ -997,6 +1045,8 @@ public class DBHandler {
 //        DBHandler dbHandler = new DBHandler();
 //        JDBCDriver jdbcDriver = new JDBCDriver();
 //        dbHandler.getAllUsers(jdbcDriver.getTestConnection());
+//        dbHandler.loadClinicians(jdbcDriver.getTestConnection());
+//        dbHandler.loadAdmins(jdbcDriver.getTestConnection());
 //        System.out.println("done");
 //    }
 }
