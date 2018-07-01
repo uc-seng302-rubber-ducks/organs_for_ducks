@@ -1080,7 +1080,7 @@ public class User extends Undoable<User> implements Listenable {
             newUser.medicalProcedures.add(newMed);
         }
 
-        newUser.changes = this.changes;
+        newUser.changes = new ArrayList<>(this.changes);
         newUser.setUndoStack((Stack<Memento<User>>) this.getUndoStack().clone());
         newUser.setRedoStack((Stack<Memento<User>>) this.getRedoStack().clone());
         return newUser;
