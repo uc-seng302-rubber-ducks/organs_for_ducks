@@ -56,12 +56,12 @@ INSERT INTO MedicationDates (keyValue, fkMedicationInstanceId, dateStartedTaking
   (3, 20, '2018-05-06 00:01:01', NULL),
   (4, 78, '2016-02-01 00:01:01', '2016-03-17 00:01:01');
 
-INSERT INTO heathOrganReceive(organsId, fkUserNhi) VALUES
+INSERT INTO HealthOrganReceive(fkOrgansId, fkUserNhi) VALUES
   (3, 'DEF231'),
   (8, 'DEF231'),
   (8, 'XYZ1234');
 
-INSERT INTO heathOrganDonate(organsId, fkUserNhi) VALUES
+INSERT INTO HealthOrganDonate(fkOrgansId, fkUserNhi) VALUES
   (3, 'ABC1234'),
   (8, 'ABC1234');
 
@@ -70,7 +70,7 @@ INSERT INTO HealthDetails(fkUserNhi, gender, birthGender, smoker, alcoholConsump
   ('DEF231', 'Male', 'Male', TRUE , 'None', 173.0, 78.8),
   ('XYZ1234', 'Female', 'Female', FALSE, 'Low', 165.4, 54.3);
 
-INSERT INTO MedicalProcedureOrgan(organsId, fkUserNhi) VALUES
+INSERT INTO MedicalProcedureOrgan(fkOrgansId, fkUserNhi) VALUES
   (3, 'ABC1234'),
   (8, 'ABC1234'),
   (3, 'DEF231');
@@ -79,7 +79,7 @@ INSERT INTO MedicalProcedure(procedureName, procedureDate, fkUserNhi, procedureD
   ('Extract Pancreas and Middle Ear', '2018-09-01', 'ABC1234', 'Get Pancreas and Middle Ear from Donor ABC234'),
   ('Implant Pancreas', '2018-10-03', 'DEF231', 'Implant Pancreas to Receiver DEF231');
 
-  INSERT INTO ContactDetails(fkUserNhi, fkStaffId, homePhone, cellPhone, email) VALUES
+INSERT INTO ContactDetails(fkUserNhi, fkStaffId, homePhone, cellPhone, email) VALUES
   ('ABC1234', 16, NULL,'0221453566', 'aaronB@gmail.com'),
   ('DEF231', NULL, '094385522','0221453566', 'darwin@yahoo.com'),
   (NULL, 23, '043841212','0221453566', 'lily.rose@hotmail.com');

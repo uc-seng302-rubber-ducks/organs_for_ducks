@@ -3,7 +3,10 @@ DROP TABLE IF EXISTS Address;
 DROP TABLE IF EXISTS EmergencyContactDetails;
 DROP TABLE IF EXISTS ContactDetails;
 DROP TABLE IF EXISTS MedicalProcedure;
+DROP TABLE IF EXISTS MedicalProcedureOrgan;
 DROP TABLE IF EXISTS HealthDetails;
+DROP TABLE IF EXISTS HealthOrganDonate;
+DROP TABLE IF EXISTS HealthOrganReceive;
 DROP TABLE IF EXISTS MedicationDates;
 DROP TABLE IF EXISTS Medication;
 DROP TABLE IF EXISTS CurrentDisease;
@@ -23,7 +26,6 @@ CREATE TABLE User(
   timeCreated DATETIME,
   lastModified DATETIME,
   profilePicture BLOB
-
 );
 
 CREATE TABLE Clinician(
@@ -91,17 +93,17 @@ CREATE TABLE MedicationDates(
 CREATE TABLE HealthOrganReceive(
   fkOrgansId SMALLINT,
   fkUserNhi VARCHAR(7),
-  PRIMARY KEY (organsId, fkUserNhi),
+  PRIMARY KEY (fkOrgansId, fkUserNhi),
   FOREIGN KEY (fkUserNhi) REFERENCES User(nhi) ON DELETE CASCADE,
-  FOREIGN KEY (organsId) REFERENCES Organ(organId) ON DELETE CASCADE
+  FOREIGN KEY (fkOrgansId) REFERENCES Organ(organId) ON DELETE CASCADE
 );
 
 CREATE TABLE HealthOrganDonate(
   fkOrgansId SMALLINT,
   fkUserNhi VARCHAR(7),
-  PRIMARY KEY (organsId, fkUserNhi),
+  PRIMARY KEY (fkOrgansId, fkUserNhi),
   FOREIGN KEY (fkUserNhi) REFERENCES User(nhi) ON DELETE CASCADE,
-  FOREIGN KEY (organsId) REFERENCES Organ(organId) ON DELETE CASCADE
+  FOREIGN KEY (fkOrgansId) REFERENCES Organ(organId) ON DELETE CASCADE
 );
 
 CREATE TABLE HealthDetails(
@@ -116,18 +118,18 @@ CREATE TABLE HealthDetails(
 );
 
 CREATE TABLE MedicalProcedureOrgan(
-  organsId SMALLINT,
+  fkOrgansId SMALLINT,
   fkUserNhi VARCHAR(7),
-  PRIMARY KEY (organsId, fkUserNhi),
+  PRIMARY KEY (fkOrgansId, fkUserNhi),
   FOREIGN KEY (fkUserNhi) REFERENCES User(nhi) ON DELETE CASCADE,
-  FOREIGN KEY (organsId) REFERENCES Organ(organId) ON DELETE CASCADE
+  FOREIGN KEY (fkOrgansId) REFERENCES Organ(organId) ON DELETE CASCADE
 );
 
 CREATE TABLE MedicalProcedure(
   procedureName VARCHAR(255) NOT NULL,
   procedureDate DATE NOT NULL,
   fkUserNhi VARCHAR(7) NOT NULL,
-  procedureDescription VARCHAR(65000),
+  procedureDescription TEXT,
   PRIMARY KEY (procedureDate,procedureName,fkUserNhi),
   FOREIGN KEY (fkUserNhi) REFERENCES User(nhi) ON DELETE CASCADE
 );
