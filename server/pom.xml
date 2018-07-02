@@ -7,13 +7,19 @@
     <name>team-100-Rubber-Duckies-Server</name>
     <url>https://eng-git.canterbury.ac.nz/SENG302-2016/team-100</url>
 
-    <!--requires spring-boot-starter-parent, which is the grandparent of this pom-->
     <parent>
         <groupId>seng302</groupId>
         <artifactId>team-100-Rubber-Duckies</artifactId>
         <version>0.0</version>
     </parent>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <start-class>seng302.Server</start-class>
+    </properties>
 
+    <!--this replaces spring-boot-starter-parent as we have our own parent pom-->
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -52,31 +58,10 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <version>2.4.3</version>
-                <configuration>
-                    <transformers>
-                        <transformer
-                                implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                            <manifestEntries>
-                                <Main-Class>seng302.Server</Main-Class>
-                                <X-Compile-Source-JDK>${maven.compiler.source}
-                                </X-Compile-Source-JDK>
-                                <X-Compile-Target-JDK>${maven.compiler.target}
-                                </X-Compile-Target-JDK>
-                            </manifestEntries>
-                        </transformer>
-                    </transformers>
-                </configuration>
                 <executions>
                     <execution>
-                        <phase>package</phase>
                         <goals>
-                            <goal>shade</goal>
+                            <goal>repackage</goal>
                         </goals>
                     </execution>
                 </executions>
