@@ -5,6 +5,8 @@ import com.google.gson.annotations.Expose;
 import seng302.model._abstract.Listenable;
 import seng302.model._abstract.Undoable;
 import seng302.model._enum.EventTypes;
+import seng302.model.datamodel.Address;
+import seng302.model.datamodel.ContactDetails;
 import seng302.utils.PasswordManager;
 
 import java.beans.PropertyChangeEvent;
@@ -25,9 +27,7 @@ public class Clinician extends Undoable<Clinician> implements Listenable {
     @Expose
     private String staffId;
     @Expose
-    private String workAddress;
-    @Expose
-    private String region;
+    private ContactDetails workContactDetails;
     @Expose
     private byte[] password;
 
@@ -64,17 +64,14 @@ public class Clinician extends Undoable<Clinician> implements Listenable {
      * @param firstName   clinician first name
      * @param middleName  clinician middle name
      * @param lastName    clinician last name
-     * @param workAddress clinician work address
-     * @param region      clinician region
      */
-    public Clinician(String staffId, String password, String firstName, String middleName, String lastName, String workAddress, String region) {
+    public Clinician(String staffId, String password, String firstName, String middleName, String lastName) {
         this.staffId = staffId;
         setPassword(password);
         this.firstName = firstName;
         this.middleName = middleName;
         this.lastName = lastName;
-        this.workAddress = workAddress;
-        this.region = region;
+        this.workContactDetails = new ContactDetails();
         dateCreated = LocalDateTime.now();
         dateLastModified = LocalDateTime.now();
         changes = new ArrayList<>();
@@ -88,17 +85,14 @@ public class Clinician extends Undoable<Clinician> implements Listenable {
      *
      * @param name             clinician name
      * @param staffId          clinician staff id
-     * @param workAddress      clinician work address
-     * @param region           clinician region
      * @param password         clinician password
      * @param dateCreated      clinician date created
      * @param dateLastModified clinician date last modified
      */
-    public Clinician(String name, String staffId, String workAddress, String region, String password, LocalDateTime dateCreated, LocalDateTime dateLastModified) {
+    public Clinician(String name, String staffId, String password, LocalDateTime dateCreated, LocalDateTime dateLastModified) {
         this.firstName = name;
         this.staffId = staffId;
-        this.workAddress = workAddress;
-        this.region = region;
+        this.workContactDetails = new ContactDetails();
         setPassword(password);
         this.dateCreated = dateCreated;
         this.dateLastModified = dateLastModified;
@@ -112,14 +106,11 @@ public class Clinician extends Undoable<Clinician> implements Listenable {
      *
      * @param name        clinician name
      * @param staffId     clinician staff id
-     * @param workAddress clinician work address
-     * @param region      clinician region
      * @param password    clinician password
      */
-    public Clinician(String name, String staffId, String workAddress, String region, String password) {
+    public Clinician(String name, String staffId, String password) {
         this.staffId = staffId;
-        this.workAddress = workAddress;
-        this.region = region;
+        this.workContactDetails = new ContactDetails();
         this.firstName = name;
         this.middleName = "";
         this.lastName = "";
@@ -214,28 +205,100 @@ public class Clinician extends Undoable<Clinician> implements Listenable {
         getUndoStack().push(memento);
     }
 
-
-    public String getWorkAddress() {
-        return workAddress;
+    public ContactDetails getWorkContactDetails() {
+        return workContactDetails;
     }
 
-    public void setWorkAddress(String workAddress) {
+    public void setWorkContactDetails(ContactDetails workContactDetails) {
+        this.workContactDetails = workContactDetails;
+    }
+
+    public String getStreetNumber() {
+        return workContactDetails.getStreetNumber();
+    }
+
+    public void setStreetNumber(String streetNumber) {
         Memento<Clinician> memento = new Memento<>();
         memento.setOldObject(this.clone());
-        this.workAddress = workAddress;
-        addChange(new Change("set work address to " + workAddress));
+        workContactDetails.setStreetNumber(streetNumber);
+        addChange(new Change("set street number to " + streetNumber));
+        memento.setNewObject(this.clone());
+        getUndoStack().push(memento);
+    }
+
+    public String getStreetName() {
+        return workContactDetails.getStreetName();
+    }
+
+    public void setStreetName(String streetName) {
+        Memento<Clinician> memento = new Memento<>();
+        memento.setOldObject(this.clone());
+        workContactDetails.setStreetName(streetName);
+        addChange(new Change("set street name to " + streetName));
+        memento.setNewObject(this.clone());
+        getUndoStack().push(memento);
+    }
+
+    public String getNeighborhood() {
+        return workContactDetails.getNeighborhood();
+    }
+
+    public void setNeighborhood(String neighborhood) {
+        Memento<Clinician> memento = new Memento<>();
+        memento.setOldObject(this.clone());
+        workContactDetails.setNeighborhood(neighborhood);
+        addChange(new Change("set neighborhood to " + neighborhood));
+        memento.setNewObject(this.clone());
+        getUndoStack().push(memento);
+    }
+
+    public String getCity() {
+        return workContactDetails.getCity();
+    }
+
+    public void setCity(String city) {
+        Memento<Clinician> memento = new Memento<>();
+        memento.setOldObject(this.clone());
+        workContactDetails.setCity(city);
+        addChange(new Change("set city to " + city));
+        memento.setNewObject(this.clone());
+        getUndoStack().push(memento);
+    }
+
+    public String getZipCode() {
+        return workContactDetails.getZipCode();
+    }
+
+    public void setZipCode(String zipCode) {
+        Memento<Clinician> memento = new Memento<>();
+        memento.setOldObject(this.clone());
+        workContactDetails.setZipCode(zipCode);
+        addChange(new Change("set zip code to " + zipCode));
+        memento.setNewObject(this.clone());
+        getUndoStack().push(memento);
+    }
+
+    public String getCountry() {
+        return workContactDetails.getCountry();
+    }
+
+    public void setCountry(String country) {
+        Memento<Clinician> memento = new Memento<>();
+        memento.setOldObject(this.clone());
+        workContactDetails.setCountry(country);
+        addChange(new Change("set country to " + country));
         memento.setNewObject(this.clone());
         getUndoStack().push(memento);
     }
 
     public String getRegion() {
-        return region;
+        return workContactDetails.getRegion();
     }
 
     public void setRegion(String region) {
         Memento<Clinician> memento = new Memento<>();
         memento.setOldObject(this.clone());
-        this.region = region;
+        workContactDetails.setRegion(region);
         addChange(new Change("set region to " + region));
         memento.setNewObject(this.clone());
         getUndoStack().push(memento);
@@ -310,8 +373,7 @@ public class Clinician extends Undoable<Clinician> implements Listenable {
         return "Clinician{" +
                 "name='" + getFullName() + '\'' +
                 ", staffId='" + staffId + '\'' +
-                ", workAddress='" + workAddress + '\'' +
-                ", region='" + region + '\'' +
+                ", workContactDetails=" + workContactDetails + '\'' +
                 ", dateCreated=" + dateCreated +
                 ", dateLastModified=" + dateLastModified +
                 '}';
@@ -347,8 +409,11 @@ public class Clinician extends Undoable<Clinician> implements Listenable {
         newClinician.firstName = this.firstName;
         newClinician.middleName = this.middleName;
         newClinician.lastName = this.lastName;
-        newClinician.workAddress = this.workAddress;
-        newClinician.region = this.region;
+
+        Address workAddress = new Address(getStreetNumber(), getStreetName(), getNeighborhood(), getCity(), getRegion(), getZipCode(), getCountry());
+        ContactDetails contactDetails = new ContactDetails("", "", workAddress, "");
+        newClinician.workContactDetails = contactDetails;
+
         newClinician.dateCreated = this.dateCreated;
         newClinician.dateLastModified = this.dateLastModified;
 
@@ -366,8 +431,7 @@ public class Clinician extends Undoable<Clinician> implements Listenable {
         this.firstName = clinician.firstName;
         this.middleName = clinician.middleName;
         this.lastName = clinician.lastName;
-        this.workAddress = clinician.workAddress;
-        this.region = clinician.region;
+        this.workContactDetails = clinician.workContactDetails;
         this.dateCreated = clinician.dateCreated;
         this.dateLastModified = clinician.dateLastModified;
     }

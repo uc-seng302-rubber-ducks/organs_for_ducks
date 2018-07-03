@@ -30,11 +30,26 @@ public class UpdateClinician implements Runnable {
     @Option(names = {"-p", "-password"})
     private String password;
 
-    @Option(names = {"-a", "-address"})
-    private String address;
+    @Option(names = {"-n", "-streetNumber"})
+    private String streetNumber;
+
+    @Option(names = {"-s", "-streetName"})
+    private String streetName;
+
+    @Option(names = {"-ne", "-neighborhood"})
+    private String neighborhood;
+
+    @Option(names = {"-c", "-city"})
+    private String city;
 
     @Option(names = {"-r", "-region"})
     private String region;
+
+    @Option(names = {"-z", "-zipCode"})
+    private String zipCode;
+
+    @Option(names = {"-co", "-country"})
+    private String country;
 
     @Override
     public void run() {
@@ -74,15 +89,38 @@ public class UpdateClinician implements Runnable {
             changed = true;
         }
 
-        if (address != null) {
-            clinician.setWorkAddress(address);
-            valid &= AttributeValidation.checkString(address);
+        if (streetNumber != null) {
+            clinician.setStreetNumber(streetNumber);
+            changed = true;
+        }
+
+        if (streetName != null) {
+            clinician.setStreetName(streetName);
+            changed = true;
+        }
+
+        if (neighborhood != null) {
+            clinician.setNeighborhood(neighborhood);
+            changed = true;
+        }
+
+        if (city != null) {
+            clinician.setCity(city);
             changed = true;
         }
 
         if (region != null) {
             clinician.setRegion(region);
-            valid &= AttributeValidation.checkString(region);
+            changed = true;
+        }
+
+        if (zipCode != null) {
+            clinician.setZipCode(zipCode);
+            changed = true;
+        }
+
+        if (country != null) {
+            clinician.setCountry(country);
             changed = true;
         }
 

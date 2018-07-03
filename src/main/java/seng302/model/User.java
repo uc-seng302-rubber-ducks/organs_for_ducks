@@ -134,7 +134,6 @@ public class User extends Undoable<User> implements Listenable {
         this.changes = FXCollections.observableArrayList();
         this.pcs = new PropertyChangeSupport(this);
         this.healthDetails = new HealthDetails();
-        contactDetails.setAttachedUser(this);
         contact.setAttachedUser(this);
     }
 
@@ -161,8 +160,6 @@ public class User extends Undoable<User> implements Listenable {
         changes = FXCollections.observableArrayList();
         this.pcs = new PropertyChangeSupport(this);
         this.healthDetails = new HealthDetails();
-        contactDetails.setAttachedUser(this);
-
     }
 
 

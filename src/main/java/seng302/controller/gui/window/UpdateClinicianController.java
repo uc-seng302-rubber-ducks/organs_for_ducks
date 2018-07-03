@@ -13,6 +13,8 @@ import javafx.stage.Stage;
 import seng302.controller.AppController;
 import seng302.model.Clinician;
 import seng302.model.Memento;
+import seng302.model.datamodel.Address;
+import seng302.model.datamodel.ContactDetails;
 import seng302.utils.Log;
 
 import java.io.IOException;
@@ -153,7 +155,7 @@ public class UpdateClinicianController {
         String fName = clinician.getFirstName();
         String mName = clinician.getMiddleName();
         String lName = clinician.getLastName();
-        String address = clinician.getWorkAddress();
+        String address = clinician.getStreetName();
         String region = clinician.getRegion();
 
         if (fName != null) {
@@ -215,10 +217,12 @@ public class UpdateClinicianController {
     private void updateUndos() {
         boolean changed;
         changed = updateDetails(staffIDTextField.getText(), firstNameTextField.getText(),
-                lastNameTextField.getText(),
-                regionTextField.getText(), addressTextField.getText(), middleNameTextField.getText());
+                lastNameTextField.getText(), middleNameTextField.getText());
 
-        if (changed) {
+        boolean addressChanged;
+        addressChanged = updateAddress(addressTextField.getText(), regionTextField.getText());
+
+        if (changed || addressChanged) {
             prefillFields(currentClinician);
             currentClinician.getRedoStack().clear();
         }
@@ -226,9 +230,18 @@ public class UpdateClinicianController {
         redoClinicianFormButton.setDisable(currentClinician.getRedoStack().isEmpty());
     }
 
-    private boolean updateDetails(String staffId, String fName, String lName, String region,
-                                  String address,
-                                  String mName) {
+
+
+    /**
+     * Updates personal details of the current clinician to match the given values
+     *
+     * @param staffId StaffID that may have been changed
+     * @param fName First name that may have been changed
+     * @param lName Last name that may have been changed
+     * @param mName Middle name that may have been changed
+     * @return true if any of the clinicians personal details has changed, false otherwise
+     */
+    private boolean updateDetails(String staffId, String fName, String lName, String mName) {
         boolean changed = false;
         if (!currentClinician.getStaffId().equals(staffId)) {
             currentClinician.setStaffId(staffId);
@@ -265,6 +278,34 @@ public class UpdateClinicianController {
             }
         }
 
+        return changed;
+    }
+
+    /**
+     * Updates the work address of the current clinician to match the given values
+     *
+     * @param streetName Street name that may have been changed
+     * @param region Region that may have been changed
+     * // todo: add in the other address values when the gui is updated - jen 3/7
+     * @return true if there has been a change and any of the address values, false otherwise
+     */
+    private boolean updateAddress(String streetName, String region) {
+        boolean changed = false;
+
+        // todo: street number, neighborhood, city, zipCode, country
+
+        if (currentClinician.getStreetName() != null) {
+            if (!currentClinician.getStreetName().equals(streetName)) {
+                currentClinician.setStreetName(streetName);
+                changed = true;
+            }
+        } else {
+            if (!streetName.isEmpty()) {
+                currentClinician.setStreetName(streetName);
+                changed = true;
+            }
+        }
+
         if (currentClinician.getRegion() != null) {
             if (!currentClinician.getRegion().equals(region)) {
                 currentClinician.setRegion(region);
@@ -273,18 +314,6 @@ public class UpdateClinicianController {
         } else {
             if (!region.isEmpty()) {
                 currentClinician.setRegion(region);
-                changed = true;
-            }
-        }
-
-        if (currentClinician.getWorkAddress() != null) {
-            if (!currentClinician.getWorkAddress().equals(address)) {
-                currentClinician.setWorkAddress(address);
-                changed = true;
-            }
-        } else {
-            if (!address.isEmpty()) {
-                currentClinician.setWorkAddress(address);
                 changed = true;
             }
         }
@@ -485,7 +514,9 @@ public class UpdateClinicianController {
             Log.info("Clinician updated for Clinician Staff Id: " + staffID);
 
         } else if (valid && newClinician) { // creates a new clinician
-            Clinician clinician = new Clinician(staffID, password, fName, mName, lName, address, region);
+            Clinician clinician = new Clinician(staffID, password, fName, mName, lName);
+            Address workAddress = new Address("", address, "", "", region, "", "");
+            clinician.setWorkContactDetails(new ContactDetails("", "", workAddress, ""));
             controller.updateClinicians(clinician);
             loadOverview(clinician);
 
@@ -525,12 +556,14 @@ public class UpdateClinicianController {
             currentClinician.setLastName(lName);
         }
 
-        String add = currentClinician.getWorkAddress();
+        String add = currentClinician.getStreetName();
         if (add != null && !add.equals(address)) {
-            currentClinician.setWorkAddress(address);
+            currentClinician.setStreetName(address);
         } else if (add == null && address != null) {
-            currentClinician.setWorkAddress(address);
+            currentClinician.setStreetName(address);
         }
+
+        // todo: add in the rest of the address variables - jen
 
         String reg = currentClinician.getRegion();
         if (reg != null && !reg.equals(region)) {

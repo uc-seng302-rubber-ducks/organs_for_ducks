@@ -199,7 +199,7 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
         fNameLabel.setText(clinician.getFirstName());
         mNameLabel.setText(clinician.getMiddleName());
         lNameLabel.setText(clinician.getLastName());
-        addressLabel.setText(clinician.getWorkAddress());
+        addressLabel.setText(clinician.getStreetName());
         regionLabel.setText(clinician.getRegion());
         if (clinician.getFirstName() == null) {
             stage.setTitle("Clinician: Admin");

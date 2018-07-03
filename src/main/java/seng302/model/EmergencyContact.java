@@ -13,6 +13,7 @@ public class EmergencyContact extends ContactDetails {
     //declaring attributes
     private String name;
     private String relationship;
+    private transient User attachedUser;
 
 
     /**
@@ -134,11 +135,11 @@ public class EmergencyContact extends ContactDetails {
     }
 
     public User getAttachedUser() {
-        return super.getAttachedUser();
+        return attachedUser;
     }
 
     public void setAttachedUser(User attachedUser) {
-        super.setAttachedUser(attachedUser);
+        this.attachedUser = attachedUser;
     }
 
     public String toString() {

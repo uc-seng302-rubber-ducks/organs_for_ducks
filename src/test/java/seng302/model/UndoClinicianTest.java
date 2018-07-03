@@ -3,6 +3,8 @@ package seng302.model;
 import org.junit.Before;
 import org.junit.Test;
 import org.testfx.framework.junit.ApplicationTest;
+import seng302.model.datamodel.Address;
+import seng302.model.datamodel.ContactDetails;
 
 import static junit.framework.TestCase.assertEquals;
 
@@ -12,8 +14,9 @@ public class UndoClinicianTest extends ApplicationTest {
 
     @Before
     public void setUp() {
-        testUser = new Clinician("Staff1", "password", "John", "Angus", "McGurkinshaw",
-                "20 Kirkwood Ave", "Canterbury");
+        testUser = new Clinician("Staff1", "password", "John", "Angus", "McGurkinshaw");
+        Address workAddress =  new Address("20", "Kirkwood Ave", "", "", "Canterbury", "", "");
+        testUser.setWorkContactDetails(new ContactDetails("", "", workAddress, ""));
     }
 
     @Test
@@ -25,11 +28,11 @@ public class UndoClinicianTest extends ApplicationTest {
 
     @Test
     public void testSingleChangeMultipleUndo() {
-        testUser.setWorkAddress("112 Example St");
+        testUser.setStreetName("Example St");
         testUser.undo();
         testUser.undo();
 
-        assertEquals(testUser.getWorkAddress(), "20 Kirkwood Ave");
+        assertEquals(testUser.getStreetName(), "Kirkwood Ave");
     }
 
     @Test

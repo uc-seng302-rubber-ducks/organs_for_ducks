@@ -105,7 +105,7 @@ public class AppController {
             }
         } //all code you wish to execute must be above this point!!!!!!!!
         if (!defaultSeen) {
-            clinicians.add(new Clinician("0", "admin", "Default", null, null, null, (String) null));
+            clinicians.add(new Clinician("0", "admin", "Default", "", ""));
             try {
                 dataHandler.saveClinicians(clinicians);
                 Log.info("Successfully saved clinicians to file");

@@ -12,6 +12,8 @@ import seng302.App;
 import seng302.Utils.CommonTestMethods;
 import seng302.controller.AppController;
 import seng302.model.Clinician;
+import seng302.model.datamodel.Address;
+import seng302.model.datamodel.ContactDetails;
 
 import java.util.concurrent.TimeoutException;
 
@@ -34,7 +36,10 @@ public class UpdateClinicianControllerGUITest extends ApplicationTest {
         FxToolkit.setupApplication(App.class);
         AppController.getInstance().getUsers().clear();
         AppController.getInstance().getClinicians().remove(AppController.getInstance().getClinician("Staff1"));
-        AppController.getInstance().getClinicians().add(new Clinician("Staff1", "secure", "Affie", "Ali", "Al", "20 Kirkwood Ave", "Christchurch"));
+        Clinician c = new Clinician("Staff1", "secure", "Affie", "Ali", "Al");
+        Address workAddress = new Address("20", "Kirkwood Ave", "", "Christchurch", "Canterbury", "", "");
+        c.setWorkContactDetails(new ContactDetails("", "", workAddress, ""));
+        AppController.getInstance().getClinicians().add(c);
         clickOn("#clinicianTab");
 
         clickOn("#staffIdTextField");
@@ -66,8 +71,8 @@ public class UpdateClinicianControllerGUITest extends ApplicationTest {
         verifyThat("#firstNameTextField", TextInputControlMatchers.hasText("Affie"));
         verifyThat("#middleNameTextField", TextInputControlMatchers.hasText("Ali"));
         verifyThat("#lastNameTextField", TextInputControlMatchers.hasText("Al"));
-        verifyThat("#addressTextField", TextInputControlMatchers.hasText("20 Kirkwood Ave"));
-        verifyThat("#regionTextField", TextInputControlMatchers.hasText("Christchurch"));
+        verifyThat("#addressTextField", TextInputControlMatchers.hasText("Kirkwood Ave"));
+        verifyThat("#regionTextField", TextInputControlMatchers.hasText("Canterbury"));
         clickOn("#cancelButton");
     }
 

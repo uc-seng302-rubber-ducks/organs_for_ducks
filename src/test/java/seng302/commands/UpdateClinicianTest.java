@@ -41,13 +41,13 @@ public class UpdateClinicianTest {
 
     @Test
     public void shouldUpdateMultipleAttributes() {
-        String[] args = {"0", "-f=Buster", "-r=Canterbury", "-a=There"};
+        String[] args = {"0", "-f=Buster", "-r=Canterbury", "-s=There"};
         new CommandLine(command)
                 .parseWithHandler(new CommandLine.RunLast(), System.err, args);
 
         verify(testClinician, times(1)).setFirstName("Buster");
         verify(testClinician, times(1)).setRegion("Canterbury");
-        verify(testClinician, times(1)).setWorkAddress("There");
+        verify(testClinician, times(1)).setStreetName("There");
     }
 
     @Ignore
