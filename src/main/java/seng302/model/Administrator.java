@@ -105,7 +105,7 @@ public class Administrator extends Undoable<Administrator> implements Listenable
 
     public void setUserName(String userName) {
         if (!userName.equals(this.userName)) {
-            this.saveStateforUndo();
+            this.saveStateForUndo();
             this.userName = userName;
             addChange(new Change("Updated username to " + userName));
             setDateLastModified(LocalDateTime.now());
@@ -118,7 +118,7 @@ public class Administrator extends Undoable<Administrator> implements Listenable
 
     public void setFirstName(String firstName) {
         if (!firstName.equals(this.firstName)) {
-            this.saveStateforUndo();
+            this.saveStateForUndo();
             this.firstName = firstName;
             addChange(new Change("Updated first name to " + firstName));
             setDateLastModified(LocalDateTime.now());
@@ -131,7 +131,7 @@ public class Administrator extends Undoable<Administrator> implements Listenable
 
     public void setMiddleName(String middleName) {
         if (!middleName.equals(this.middleName)) {
-            this.saveStateforUndo();
+            this.saveStateForUndo();
             this.middleName = middleName;
             addChange(new Change("Updated middle name to " + middleName));
             setDateLastModified(LocalDateTime.now());
@@ -144,7 +144,7 @@ public class Administrator extends Undoable<Administrator> implements Listenable
 
     public void setLastName(String lastName) {
         if (!lastName.equals(this.lastName)) {
-            this.saveStateforUndo();
+            this.saveStateForUndo();
             this.lastName = lastName;
             addChange(new Change("Updated last name to " + lastName));
             setDateLastModified(LocalDateTime.now());
@@ -226,7 +226,7 @@ public class Administrator extends Undoable<Administrator> implements Listenable
         return "";
     }
 
-    private void saveStateforUndo() { //New
+    private void saveStateForUndo() {
         Memento<Administrator> memento = new Memento<>(Administrator.clone(this));
         getUndoStack().push(memento);
     }

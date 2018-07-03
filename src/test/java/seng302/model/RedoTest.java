@@ -10,7 +10,7 @@ import seng302.model._enum.Organs;
 import java.time.LocalDate;
 
 import static junit.framework.TestCase.assertTrue;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 /**
  * These tests are done on Users but are more focused on testing the undo stacks/memento system
@@ -122,22 +122,5 @@ public class RedoTest {
 
         Assert.assertTrue(testUser.getDonorDetails().getOrgans().contains(Organs.BONE));
         Assert.assertTrue(testUser.getDonorDetails().getOrgans().contains(Organs.BONE_MARROW));
-    }
-
-    @Test
-    @Ignore
-    public void ReceiverAttributesAttachedUserIsCorrectWhenStored() {
-        fail("TODO implement when receiver branch merged");
-        //assert(testUser.getReceiverDetails().getAttachedUser().equals(testUser));
-        testUser.setNhi("QWE1234");
-        //assert(testUser.getReceiverDetails().getAttachedUser().equals(testUser));
-
-        Memento<User> mem = testUser.getUndoStack().peek();
-        User newUser = mem.getNewObject();
-        User oldUser = mem.getOldObject();
-
-        assertNotEquals(newUser, oldUser);
-        //assert(oldUser.getReceiverDetails().getAttachedUser().equals(oldUser));
-        //assert(newUser.getReceiverDetails().getAttachedUser().equals(newUser));
     }
 }

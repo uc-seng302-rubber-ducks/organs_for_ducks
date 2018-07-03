@@ -55,7 +55,7 @@ public class DonorDetails {
         }
 
         if (attachedUser != null) {
-            attachedUser.saveStateforUndo();
+            attachedUser.saveStateForUndo();
             attachedUser.updateLastModified();
             attachedUser.addChange(new Change("Added organ " + organ.toString()));
 
@@ -77,7 +77,7 @@ public class DonorDetails {
      */
     public void removeOrgan(Organs organ) {
         if (organs.contains(organ)) {
-            attachedUser.saveStateforUndo();
+            attachedUser.saveStateForUndo();
             organs.remove(organ);
             attachedUser.updateLastModified();
             attachedUser.addChange(new Change("Removed organ " + organ.organName));

@@ -168,6 +168,8 @@ public class User extends Undoable<User> implements Listenable {
     }
 
     public void setContactDetails(ContactDetails contactDetails) {
+        this.saveStateForUndo();
+        updateLastModified();
         this.contactDetails = contactDetails;
     }
 
@@ -176,12 +178,9 @@ public class User extends Undoable<User> implements Listenable {
     }
 
     public void setContact(EmergencyContact contact) {
-        Memento<User> mem = new Memento<>();
-        mem.setOldObject(User.clone(this));
+        this.saveStateForUndo();
         updateLastModified();
         this.contact = contact;
-        mem.setNewObject(User.clone(this));
-        getUndoStack().push(mem);
     }
 
     public HealthDetails getHealthDetails() {
@@ -189,7 +188,7 @@ public class User extends Undoable<User> implements Listenable {
     }
 
     public void setHealthDetails(HealthDetails healthDetails) {
-        this.saveStateforUndo();
+        this.saveStateForUndo();
         updateLastModified();
         this.healthDetails = healthDetails;
     }
@@ -199,7 +198,7 @@ public class User extends Undoable<User> implements Listenable {
     }
 
     public void setDonorDetails(DonorDetails donorDetails) {
-        this.saveStateforUndo();
+        this.saveStateForUndo();
         updateLastModified();
         this.donorDetails = donorDetails;
     }
@@ -209,7 +208,7 @@ public class User extends Undoable<User> implements Listenable {
     }
 
     public void setReceiverDetails(ReceiverDetails receiverDetails) {
-        this.saveStateforUndo();
+        this.saveStateForUndo();
         updateLastModified();
         this.receiverDetails = receiverDetails;
     }
@@ -244,7 +243,7 @@ public class User extends Undoable<User> implements Listenable {
     }
 
     public void setNhi(String nhi) {
-        this.saveStateforUndo();
+        this.saveStateForUndo();
         updateLastModified();
         this.nhi = nhi;
         addChange(new Change("Updated NHI to " + nhi));
@@ -262,21 +261,13 @@ public class User extends Undoable<User> implements Listenable {
         return lastModified;
     }
 
-    public void setLastModified(LocalDateTime lastModified) {
-        this.lastModified = lastModified;
-    }
-
     public void setName(String fName, String mName, String lName) {
-        this.saveStateforUndo();
+        this.saveStateForUndo();
         this.firstName = fName;
         this.middleName = mName;
         this.lastName = lName;
         updateLastModified();
         addChange(new Change("set full name to " + fName + " " + mName + " " + lName));
-//        mem.setNewObject(this.clone());
-//        if (!mem.getNewObject().getFullName().equals(mem.getOldObject().getFullName())) {
-//            getUndoStack().push(mem);
-//        }
     }
 
     public String getFirstName() {
@@ -284,7 +275,7 @@ public class User extends Undoable<User> implements Listenable {
     }
 
     public void setFirstName(String name) {
-        this.saveStateforUndo();
+        this.saveStateForUndo();
         updateLastModified();
         // Changes the default case where the preferred name is the same as the first name
         if (preferredFirstName == null || preferredFirstName.equals(firstName)) {
@@ -300,7 +291,7 @@ public class User extends Undoable<User> implements Listenable {
     }
 
     public void setMiddleName(String name) {
-        this.saveStateforUndo();
+        this.saveStateForUndo();
         updateLastModified();
         this.middleName = name;
         addChange(new Change("Changed middle name to " + middleName));
@@ -311,7 +302,7 @@ public class User extends Undoable<User> implements Listenable {
     }
 
     public void setLastName(String name) {
-        this.saveStateforUndo();
+        this.saveStateForUndo();
         updateLastModified();
         this.lastName = name;
         addChange(new Change("Changed last name to " + lastName));
@@ -341,7 +332,7 @@ public class User extends Undoable<User> implements Listenable {
     }
 
     public void setDateOfBirth(LocalDate dateOfBirth) {
-        this.saveStateforUndo();
+        this.saveStateForUndo();
         updateLastModified();
         this.dateOfBirth = dateOfBirth;
         addChange(new Change("Changed date of birth to " + dateOfBirth.toString()));
@@ -352,7 +343,7 @@ public class User extends Undoable<User> implements Listenable {
     }
 
     public void setDateOfDeath(LocalDate dateOfDeath) {
-        this.saveStateforUndo();
+        this.saveStateForUndo();
         updateLastModified();
         this.dateOfDeath = dateOfDeath;
         this.isDeceased = dateOfDeath != null;
@@ -366,7 +357,7 @@ public class User extends Undoable<User> implements Listenable {
 
     public void setHeight(double height) {
         if (healthDetails.getHeight() != height) {
-            this.saveStateforUndo();
+            this.saveStateForUndo();
             updateLastModified();
             healthDetails.setHeight(height);
             addChange(new Change("Changed height to " + height));
@@ -379,7 +370,7 @@ public class User extends Undoable<User> implements Listenable {
 
     public void setWeight(double weight) {
         if (weight != healthDetails.getWeight()) {
-            this.saveStateforUndo();
+            this.saveStateForUndo();
             updateLastModified();
             healthDetails.setWeight(weight);
             addChange(new Change("Changed weight to " + weight));
@@ -391,7 +382,7 @@ public class User extends Undoable<User> implements Listenable {
     }
 
     public void setHeightText(String height) {
-        this.saveStateforUndo();
+        this.saveStateForUndo();
         updateLastModified();
         healthDetails.setHeightText(height);
         addChange(new Change("set height to " + height));
@@ -402,7 +393,7 @@ public class User extends Undoable<User> implements Listenable {
     }
 
     public void setWeightText(String weight) {
-        this.saveStateforUndo();
+        this.saveStateForUndo();
         updateLastModified();
         healthDetails.setWeightText(weight);
         addChange(new Change("set weight to " + weight));
@@ -415,7 +406,7 @@ public class User extends Undoable<User> implements Listenable {
     public void setBloodType(String bloodType) {
         String validType = groupBloodType(bloodType);
         if (!healthDetails.getBloodType().equals(validType)) {
-            this.saveStateforUndo();
+            this.saveStateForUndo();
             updateLastModified();
             healthDetails.setBloodType(validType);
             addChange(new Change("Changed blood type to " + bloodType));
@@ -427,7 +418,7 @@ public class User extends Undoable<User> implements Listenable {
     }
 
     public void setBirthGender(String birthGender) {
-        this.saveStateforUndo();
+        this.saveStateForUndo();
         updateLastModified();
         // Changes the default case where the gender identity is the same as the birth gender
         if (healthDetails.getGenderIdentity() == null) {
@@ -442,7 +433,7 @@ public class User extends Undoable<User> implements Listenable {
     }
 
     public void setGenderIdentity(String genderIdentity) {
-        this.saveStateforUndo();
+        this.saveStateForUndo();
         updateLastModified();
         healthDetails.setGenderIdentity(genderIdentity);
         addChange(new Change("Changed birth Identity to " + genderIdentity));
@@ -453,7 +444,7 @@ public class User extends Undoable<User> implements Listenable {
     }
 
     public void setAlcoholConsumption(String alcoholConsumption) {
-        this.saveStateforUndo();
+        this.saveStateForUndo();
         updateLastModified();
         healthDetails.setAlcoholConsumption(alcoholConsumption);
         addChange(new Change("Changed alcohol consumption to " + alcoholConsumption));
@@ -468,7 +459,7 @@ public class User extends Undoable<User> implements Listenable {
     }
 
     public void setSmoker(boolean smoker) {
-        this.saveStateforUndo();
+        this.saveStateForUndo();
         updateLastModified();
         healthDetails.setSmoker(smoker);
         addChange(new Change("Changed smoker status to " + smoker));
@@ -562,7 +553,7 @@ public class User extends Undoable<User> implements Listenable {
     }
 
     public void setRegion(String region) {
-        this.saveStateforUndo();
+        this.saveStateForUndo();
         updateLastModified();
         contactDetails.getAddress().setRegion(region);
         if (contactDetails.getAddress() != null && !contactDetails.getAddress().equals("")) {
@@ -618,7 +609,7 @@ public class User extends Undoable<User> implements Listenable {
     }
 
     public void setPreferredFirstName(String preferredFirstName) {
-        this.saveStateforUndo();
+        this.saveStateForUndo();
         updateLastModified();
         this.preferredFirstName = preferredFirstName;
         addChange(new Change("Changed preferred first name to " + preferredFirstName));
@@ -629,7 +620,7 @@ public class User extends Undoable<User> implements Listenable {
     }
 
     public void setHomePhone(String homePhone) {
-        this.saveStateforUndo();
+        this.saveStateForUndo();
         updateLastModified();
         contactDetails.setHomePhoneNumber(homePhone);
         addChange(new Change("Changed Home phone to " + homePhone));
@@ -640,7 +631,7 @@ public class User extends Undoable<User> implements Listenable {
     }
 
     public void setCellPhone(String cellPhone) {
-        this.saveStateforUndo();
+        this.saveStateForUndo();
         updateLastModified();
         contactDetails.setCellPhoneNumber(cellPhone);
         addChange(new Change("Changed cell Phone to " + cellPhone));
@@ -651,7 +642,7 @@ public class User extends Undoable<User> implements Listenable {
     }
 
     public void setEmail(String email) {
-        this.saveStateforUndo();
+        this.saveStateForUndo();
         updateLastModified();
         contactDetails.setEmail(email);
         addChange(new Change("Changed email to " + email));
@@ -694,7 +685,7 @@ public class User extends Undoable<User> implements Listenable {
     }
 
     public void addCurrentMedication(String medication) {
-        this.saveStateforUndo();
+        this.saveStateForUndo();
         updateLastModified();
         currentMedication.add(medication);
         addMedicationTimes(medication, currentMedicationTimes);
@@ -853,7 +844,7 @@ public class User extends Undoable<User> implements Listenable {
         }
     }
 
-    public void saveStateforUndo() { //New
+    public void saveStateForUndo() {
         Memento<User> memento = new Memento<>(User.clone(this));
         getUndoStack().push(memento);
     }

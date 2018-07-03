@@ -28,8 +28,4 @@ public abstract class Undoable<T> {
     public abstract void undo();
 
     public abstract void redo();
-
-    //public static abstract . T clone();
-
-    //CurrentAdministrator.clone() -> Administrator.clone(CurrentAdministrator)
 }

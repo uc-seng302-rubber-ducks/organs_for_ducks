@@ -2,7 +2,6 @@ package seng302.model;
 
 
 import com.google.gson.annotations.Expose;
-import seng302.controller.gui.window.ClinicianController;
 import seng302.model._abstract.Listenable;
 import seng302.model._abstract.Undoable;
 import seng302.model._enum.EventTypes;
@@ -280,7 +279,7 @@ public class Clinician extends Undoable<Clinician> implements Listenable {
                 new Object()));
     }
 
-    private void saveStateforUndo() { //New
+    private void saveStateforUndo() {
         Memento<Clinician> memento = new Memento<>(Clinician.clone(this));
         getUndoStack().push(memento);
     }

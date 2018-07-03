@@ -96,7 +96,7 @@ public class ReceiverDetails {
         if (isCurrentlyWaitingFor(organ)) {
             return false;
         }
-        attachedUser.saveStateforUndo();
+        attachedUser.saveStateForUndo();
         //existing entry
 
         ReceiverOrganDetailsHolder holder = new ReceiverOrganDetailsHolder(LocalDate.now(), null, null); //create a new holder for dates and reason
@@ -122,7 +122,7 @@ public class ReceiverDetails {
      * @return true if the collection was modified.
      */
     public boolean stopWaitingForOrgan(Organs organ, OrganDeregisterReason reason) {
-        attachedUser.saveStateforUndo();
+        attachedUser.saveStateForUndo();
 
         if (isCurrentlyWaitingFor(organ)) {
             organs.get(organ).get(organs.get(organ).size() - 1).setStopDate(LocalDate.now()); //If you are waiting for something it should be at the back of the list.
@@ -152,7 +152,7 @@ public class ReceiverDetails {
      * Stop waiting for all organs for a receiver.
      */
     public void stopWaitingForAllOrgans() {
-        attachedUser.saveStateforUndo();
+        attachedUser.saveStateForUndo();
 
         Map<Organs, ArrayList<ReceiverOrganDetailsHolder>> organsCopy = new EnumMap<>(organs);
         for (Organs organ : organsCopy.keySet()) {

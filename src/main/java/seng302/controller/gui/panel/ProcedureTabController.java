@@ -17,7 +17,6 @@ import seng302.controller.gui.popup.OrgansAffectedController;
 import seng302.controller.gui.window.UserController;
 import seng302.model.Change;
 import seng302.model.MedicalProcedure;
-import seng302.model.Memento;
 import seng302.model.User;
 import seng302.model._enum.Organs;
 import seng302.utils.Log;
@@ -206,7 +205,7 @@ public class ProcedureTabController {
      */
     @FXML
     void addProcedure() {
-        currentUser.saveStateforUndo();
+        currentUser.saveStateForUndo();
         String procedureName = procedureTextField.getText();
         if (procedureName.isEmpty()) {
             Log.warning("Failed to add procedure: " + procedureName + " for User NHI: " + currentUser.getNhi() + " as user input is invalid");
@@ -243,7 +242,7 @@ public class ProcedureTabController {
      */
     @FXML
     void updateProcedures() {
-        currentUser.saveStateforUndo();
+        currentUser.saveStateForUndo();
         procedureWarningLabel.setText("");
         String newName = procedureTextField.getText();
         LocalDate newDate = procedureDateSelector.getValue();
@@ -285,7 +284,7 @@ public class ProcedureTabController {
      */
     private void updateProcedure(MedicalProcedure procedure, String newName, LocalDate newDate,
                                  String newDescription) {
-        currentUser.saveStateforUndo();
+        currentUser.saveStateForUndo();
         procedure.setSummary(newName);
         procedure.setDescription(newDescription);
         LocalDate oldDate = procedure.getProcedureDate();
@@ -342,7 +341,7 @@ public class ProcedureTabController {
      */
     @FXML
     void removeProcedure() {
-        currentUser.saveStateforUndo();
+        currentUser.saveStateForUndo();
         if (previousProcedureTableView.getSelectionModel().getSelectedItem() != null) {
             medicalProcedures.remove(previousProcedureTableView.getSelectionModel().getSelectedItem());
             currentUser
@@ -366,7 +365,7 @@ public class ProcedureTabController {
      */
     @FXML
     void modifyProcedureOrgans() {
-        currentUser.saveStateforUndo();
+        currentUser.saveStateForUndo();
         MedicalProcedure procedure = currentProcedureList.getSelectionModel().getSelectedItem();
         FXMLLoader affectedOrganLoader = new FXMLLoader(
                 getClass().getResource("/FXML/organsAffectedView.fxml"));
