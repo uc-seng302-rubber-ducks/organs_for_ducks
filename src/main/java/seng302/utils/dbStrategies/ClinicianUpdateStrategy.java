@@ -12,9 +12,9 @@ public class ClinicianUpdateStrategy extends AbstractUpdateStrategy {
     private static final String CREATE_STAFF_CONTACT_STMT = "INSERT INTO ContactDetails (fkStaffId, homePhone, email, cellPhone) VALUES (?, ?, ?, ?)";
     private static final String CREATE_ADDRESS_STMT = "INSERT INTO Address (fkContactId, streetNumber, streetName, neighbourhood, city, region, country) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
-    private static final String UPDATE_ADDRESS = "UPDATE Address SET streetNumber = ?, streetName = ?, neighbourhood = ?, city = ?, region = ?, country = ? WHERE fkContactId = ? AND fkUserNhi = ? AND fkStaffId = ?";
-    private static final String UPDATE_CLINICIAN_STMT = "UPDATE Clinician SET staffId = ?, firstName = ?, middleName = ?, lastName = ?, lastModified = ? WHERE staffId = ?"; // make generic to work for both admin and clinician?
-    private static final String UPDATE_PASSWORD = ""; // make generic?
+    private static final String UPDATE_CLINICIAN_STMT = "UPDATE Clinician SET staffId = ?, firstName = ?, middleName = ?, lastName = ?, lastModified = ? WHERE staffId = ?";
+    private static final String UPDATE_CLINICIAN_ADDRESS = "UPDATE ContactDetails JOIN Address ON contactId = fkContactId SET streetNumber = ?, streetName = ?, neighbourhood = ?, city = ?, region = ?, country = ? WHERE ContactDetails.fkStaffId = ?";
+    private static final String UPDATE_CLINICIAN_PASSWORD = "UPDATE PasswordDetails SET hash = ?, salt = ? WHERE fkStaffId = ?";
 
     private static final String DELETE_CLINICIAN_STMT = "DELETE FROM Clinician WHERE staffId = ?";
 
@@ -133,7 +133,9 @@ public class ClinicianUpdateStrategy extends AbstractUpdateStrategy {
             try {
                 updateClinicianDetails(clinician, connection);
                 updateClinicianAddress(clinician, connection);
+                updateClinicianPassword(clinician, connection);
             } catch (SQLException sqlEx) {
+                Log.severe("A fatal error in updating, cancelling operation", sqlEx);
                 connection.prepareStatement("ROLLBACK").execute();
             }
 
@@ -147,6 +149,32 @@ public class ClinicianUpdateStrategy extends AbstractUpdateStrategy {
     }
 
     /**
+     * Updates the clinicians hashed and salted passwords within the database
+     * Preconditions: Must have an active connection to the database
+     * Post-conditions: The clinicians hashed and salted password is updated within the database
+     *
+     * @param clinician Clinician object with an updated password
+     * @param connection Connection to the target database
+     * @throws SQLException If there is an error updating the password, or the database connection is invalid
+     */
+    private void updateClinicianPassword(Clinician clinician, Connection connection) throws SQLException {
+        try (PreparedStatement statement = connection.prepareStatement(UPDATE_CLINICIAN_PASSWORD)) {
+
+            Blob passwordBlob = connection.createBlob();
+            //passwordBlob.setBytes(1, clinician.getPassword()); // todo: check if it's alright to make the password getter public, or would it be a security issue?
+
+            Blob saltBlob = connection.createBlob();
+            saltBlob.setBytes(1, clinician.getSalt());
+
+            statement.setBlob(1, passwordBlob);
+            statement.setBlob(2, saltBlob);
+            statement.setString(3, clinician.getStaffId());
+
+            statement.executeUpdate();
+        }
+    }
+
+    /**
      * Updates the given clinicians address in the database using UPDATE_ADDRESS
      * Precondition: Must have an active connection to the database
      * Postcondition: The address of the given clinician is updated in the database
@@ -156,7 +184,18 @@ public class ClinicianUpdateStrategy extends AbstractUpdateStrategy {
      * @throws SQLException If there is an issue updating the clinicians address details
      */
     private void updateClinicianAddress(Clinician clinician, Connection connection) throws SQLException {
-        PreparedStatement statement = connection.prepareStatement(UPDATE_ADDRESS);
+        try (PreparedStatement statement = connection.prepareStatement(UPDATE_CLINICIAN_ADDRESS)) {
+
+//            statement.setString(1, clinician.getStreetNumber); // todo: change the table creation to have string instead of int for street number
+//            statement.setString(2, clinician.setStreetName);
+//            statement.setString(3, clinician.setNeighborhood());
+//            statement.setString(4, clinician.getCity());
+            statement.setString(5, clinician.getRegion());
+            //statement.setString(6, clinician.getCountry());
+            statement.setString(7, clinician.getStaffId());
+
+            statement.executeUpdate();
+        }
 
         // todo: update clinician to have an Address object - jen 30/6
     }
@@ -171,15 +210,16 @@ public class ClinicianUpdateStrategy extends AbstractUpdateStrategy {
      * @throws SQLException If there is an issue updating the clinician details
      */
     private void updateClinicianDetails(Clinician clinician, Connection connection) throws SQLException {
-        PreparedStatement statement = connection.prepareStatement(UPDATE_CLINICIAN_STMT);
+        try (PreparedStatement statement = connection.prepareStatement(UPDATE_CLINICIAN_STMT)) {
 
-        statement.setString(1, clinician.getStaffId());
-        statement.setString(2, clinician.getFirstName());
-        statement.setString(3, clinician.getMiddleName());
-        statement.setString(4, clinician.getLastName());
-        statement.setTimestamp(5, Timestamp.valueOf(clinician.getDateLastModified()));
-        statement.setString(6, clinician.getStaffId());
+            statement.setString(1, clinician.getStaffId());
+            statement.setString(2, clinician.getFirstName());
+            statement.setString(3, clinician.getMiddleName());
+            statement.setString(4, clinician.getLastName());
+            statement.setTimestamp(5, Timestamp.valueOf(clinician.getDateLastModified()));
+            statement.setString(6, clinician.getStaffId());
 
-        statement.executeUpdate();
+            statement.executeUpdate();
+        }
     }
 }

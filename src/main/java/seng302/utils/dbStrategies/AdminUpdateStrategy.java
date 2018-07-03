@@ -11,7 +11,7 @@ public class AdminUpdateStrategy extends AbstractUpdateStrategy {
     private static final String CREATE_ADMIN_STMT = "INSERT INTO Administrator (username, firstName, middleName, lastName) VALUES (?, ?, ?, ?)";
 
     private static final String UPDATE_ADMIN_STMT = "UPDATE Admin SET username = ?, firstName = ?, middleName = ?, lastName = ?, lastModified = ? WHERE username = ?";
-    private static final String UPDATE_PASSWORD = ""; // make generic?
+    private static final String UPDATE_ADMIN_PASSWORD = "UPDATE PasswordDetails SET hash = ?, salt = ? WHERE fkAdminUserName = ?";
 
     private static final String DELETE_ADMIN_STMT = "DELETE FROM Administrators WHERE username = ?";
 
@@ -48,6 +48,7 @@ public class AdminUpdateStrategy extends AbstractUpdateStrategy {
             connection.prepareStatement("START TRANSACTION").execute();
             try {
                 updateAdminDetails(admin, connection);
+                updateAdminPassword(admin, connection);
             } catch (SQLException sqlEx) {
                 connection.prepareStatement("ROLLBACK").execute();
             }
@@ -107,7 +108,7 @@ public class AdminUpdateStrategy extends AbstractUpdateStrategy {
      * Post-conditions: The given admin is created in the database
      *
      * @param admin      administrator object to create.
-     * @param connection Conncetion to the target database
+     * @param connection Connection to the target database
      * @throws SQLException If there isn't an active connection to the database or there is an error creating the administrator
      */
     private void createAdmin(Administrator admin, Connection connection) throws SQLException {
@@ -124,23 +125,50 @@ public class AdminUpdateStrategy extends AbstractUpdateStrategy {
     /**
      * Updates the given administrator in the database
      * Precondition: Must have an active connection to the database
-     * Postcondition: The given admin is updated in the database
+     * Post-condition: The given admin is updated in the database
      *
      * @param admin      Administrator object to be updated
      * @param connection Connection to the target database
      * @throws SQLException If there is an issue updating the admin details
      */
     private void updateAdminDetails(Administrator admin, Connection connection) throws SQLException {
-        PreparedStatement statement = connection.prepareStatement(UPDATE_ADMIN_STMT);
+        try (PreparedStatement statement = connection.prepareStatement(UPDATE_ADMIN_STMT)) {
 
-        statement.setString(1, admin.getUserName());
-        statement.setString(2, admin.getFirstName());
-        statement.setString(3, admin.getMiddleName());
-        statement.setString(4, admin.getLastName());
-        statement.setTimestamp(5, Timestamp.valueOf(admin.getDateLastModified()));
-        statement.setString(6, admin.getUserName());
+            statement.setString(1, admin.getUserName());
+            statement.setString(2, admin.getFirstName());
+            statement.setString(3, admin.getMiddleName());
+            statement.setString(4, admin.getLastName());
+            statement.setTimestamp(5, Timestamp.valueOf(admin.getDateLastModified()));
+            statement.setString(6, admin.getUserName());
 
-        statement.executeUpdate();
+            statement.executeUpdate();
+        }
+    }
+
+    /**
+     * Updates the admins hashed and salted passwords within the database
+     * Preconditions: Must have an active connection to the database
+     * Post-conditions: The admins hashed and salted password is updated within the database
+     *
+     * @param admin Administrator object with an updated password
+     * @param connection Connection to the target database
+     * @throws SQLException If there is an error updating the password, or the database connection is invalid
+     */
+    private void updateAdminPassword(Administrator admin, Connection connection) throws SQLException {
+        try (PreparedStatement statement = connection.prepareStatement(UPDATE_ADMIN_PASSWORD)) {
+
+            Blob passwordBlob = connection.createBlob();
+            //passwordBlob.setBytes(1, admin.getPassword()); // todo: need to be able to access the admins hashed password, is having the password getter public okay? - jen
+
+            Blob saltBlob = connection.createBlob();
+            saltBlob.setBytes(1, admin.getSalt());
+
+            statement.setBlob(1, passwordBlob);
+            statement.setBlob(2, saltBlob);
+            statement.setString(3, admin.getUserName());
+
+            statement.executeUpdate();
+        }
     }
 
     /**
