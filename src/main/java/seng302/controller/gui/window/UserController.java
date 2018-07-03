@@ -150,8 +150,7 @@ public class UserController {
 
 
         if (user.getNhi() != null) {
-            showUser(
-                    currentUser); // Assumes a donor with no name is a new sign up and does not pull values from a template
+            showUser(currentUser); // Assumes a donor with no name is a new sign up and does not pull values from a template
             List<Change> changes = currentUser.getChanges();
             if (changes != null) {
                 changelog = FXCollections.observableList(changes);
@@ -303,6 +302,8 @@ public class UserController {
 
         }
         updateUndoRedoButtons();
+        changelog = FXCollections.observableList(user.getChanges());
+        showDonorHistory();
         if (changelog.size() > 0) {
             statusBarPageController.updateStatus(user.getNhi() + " " + changelog.get(changelog.size() - 1).getChange());
         }
@@ -319,6 +320,7 @@ public class UserController {
      * Shows the history of the Users profile such as added and removed information
      */
     private void showDonorHistory() {
+        historyTableView.getColumns().clear();
         TableColumn<Change, String> timeColumn = new TableColumn<>("Time");
         TableColumn<Change, String> changeColumn = new TableColumn<>("Change");
         timeColumn.setCellValueFactory(new PropertyValueFactory<>("time"));

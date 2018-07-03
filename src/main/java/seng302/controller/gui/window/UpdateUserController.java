@@ -172,8 +172,8 @@ public class UpdateUserController {
      */
     public void init(User user, AppController controller, Stage stage) {
         this.stage = stage;
-        currentUser = user;
-        oldUser = User.clone(currentUser);
+        oldUser = user;
+        currentUser = User.clone(oldUser);
         this.appController = controller;
         setUserDetails(currentUser);
         undoUpdateButton.setDisable(true);
@@ -677,7 +677,7 @@ public class UpdateUserController {
         changed |= updateContactDetails();
         changed |= updateEmergencyContact();
         if (changed) {
-            appController.update(currentUser);
+            //appController.update(currentUser);
             currentUser.getRedoStack().clear();
         }
         undoUpdateButton.setDisable(currentUser.getUndoStack().size() <= undoMarker);

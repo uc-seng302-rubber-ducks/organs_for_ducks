@@ -6,8 +6,8 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.SelectionMode;
 import seng302.controller.AppController;
 import seng302.controller.gui.window.UserController;
-import seng302.model._enum.Organs;
 import seng302.model.User;
+import seng302.model._enum.Organs;
 import seng302.utils.Log;
 import seng302.utils.OrganListCellFactory;
 
@@ -50,6 +50,7 @@ public class DonationTabPageController {
      * @param user user to use to populate
      */
     public void populateOrganLists(User user) {
+        currentUser = user;
         ArrayList<Organs> donating;
         try {
             donating = new ArrayList<>(user.getDonorDetails().getOrgans());

@@ -146,6 +146,7 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
         statusBarPageController.init(appController);
         displayDetails();
         transplantWaitListTabPageController.init(appController, this);
+        stage.setTitle("Administrator");
 
         //add change listeners of parent controllers to the current user
         if (parentListeners != null && !parentListeners.isEmpty()) {
@@ -1005,6 +1006,8 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
         if (administrator.getChanges().size() > 0) {
             statusBarPageController.updateStatus(administrator.getUserName() + " " + administrator.getChanges().get(administrator.getChanges().size() - 1).getChange());
         }
+        stage.setTitle("Administrator");
+
     }
 
     /**

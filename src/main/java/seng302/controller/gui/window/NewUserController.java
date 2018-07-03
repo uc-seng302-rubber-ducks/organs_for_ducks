@@ -272,8 +272,6 @@ public class NewUserController {
                         UserController userController = userLoader.getController();
                         AppController.getInstance().setUserController(userController);
                         //TODO pass listeners from any preceding controllers 22/6
-                        userController
-                                .init(AppController.getInstance(), newUser, userStage, false, null);
                         userController.init(AppController.getInstance(), newUser, userStage, false, null);
                         userController.disableLogout();
                         Log.info("Successfully launched User Overview for User NHI: " + nhi);
@@ -290,6 +288,7 @@ public class NewUserController {
                         stage.setScene(new Scene(root));
                         ownStage.close();
                         UserController userController = userLoader.getController();
+                        AppController.getInstance().setUserController(userController);
                         //TODO pass listeners from any preceding controllers 22/6
                         userController.init(AppController.getInstance(), newUser, stage, false, null);
 

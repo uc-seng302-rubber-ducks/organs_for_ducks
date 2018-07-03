@@ -43,6 +43,8 @@ public class User extends Undoable<User> implements Listenable {
     private String middleName;
     @Expose
     private String lastName;
+    @Expose
+    private String birthCountry;
 
     @Expose
     private EmergencyContact contact;
@@ -52,6 +54,7 @@ public class User extends Undoable<User> implements Listenable {
 
     @Expose
     private HealthDetails healthDetails;
+
 
     @Expose
     private LocalDateTime lastModified;
@@ -384,8 +387,10 @@ public class User extends Undoable<User> implements Listenable {
     public void setHeightText(String height) {
         this.saveStateForUndo();
         updateLastModified();
-        healthDetails.setHeightText(height);
-        addChange(new Change("set height to " + height));
+        if (healthDetails.getHeightText() != height) {
+            healthDetails.setHeightText(height);
+            addChange(new Change("set height to " + height));
+        }
     }
 
     public String getWeightText() {
@@ -395,8 +400,10 @@ public class User extends Undoable<User> implements Listenable {
     public void setWeightText(String weight) {
         this.saveStateForUndo();
         updateLastModified();
-        healthDetails.setWeightText(weight);
-        addChange(new Change("set weight to " + weight));
+        if (healthDetails.getWeightText() != weight) {
+            healthDetails.setWeightText(weight);
+            addChange(new Change("set weight to " + weight));
+        }
     }
 
     public String getBloodType() {
@@ -512,6 +519,14 @@ public class User extends Undoable<User> implements Listenable {
 
     public void setCountry(String country) {
         contactDetails.getAddress().setCountry(country);
+    }
+
+    public String getBirthCountry() {
+        return birthCountry;
+    }
+
+    public void setBirthCountry(String birthCountry) {
+        this.birthCountry = birthCountry;
     }
 
     /**
@@ -990,7 +1005,7 @@ public class User extends Undoable<User> implements Listenable {
             newUser.medicalProcedures.add(newMed);
         }
 
-        newUser.changes = user.changes;
+        newUser.changes = new ArrayList<>(user.changes);
         newUser.setUndoStack((Stack<Memento<User>>) user.getUndoStack().clone());
         newUser.setRedoStack((Stack<Memento<User>>) user.getRedoStack().clone());
         return newUser;

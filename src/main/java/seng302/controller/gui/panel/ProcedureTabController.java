@@ -165,6 +165,7 @@ public class ProcedureTabController {
      * Updates the procedure tables and ensure that the selected item is not changed.
      */
     public void updateProcedureTables(User user) {
+        currentUser = user;
         boolean pendingProceduresTableSelected = (
                 pendingProcedureTableView.getSelectionModel().getSelectedItem() != null);
         int index = pendingProceduresTableSelected ? pendingProcedureTableView.getSelectionModel()

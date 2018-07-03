@@ -210,6 +210,7 @@ public class ReceiverTabController {
      * Populates the receiver list of the user
      */
     public void populateReceiverLists(User user) {
+        currentUser = user;
         ArrayList<Organs> organs = new ArrayList<>();
         Collections.addAll(organs, Organs.values());
         Map<Organs, ArrayList<ReceiverOrganDetailsHolder>> receiverOrgans = user.getReceiverDetails().getOrgans();
