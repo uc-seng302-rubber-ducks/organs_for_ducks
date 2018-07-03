@@ -15,7 +15,7 @@ public class ClinicianTest {
     @Before
     public void setup() {
 
-        testClinician = new Clinician("", "0", "", "", "password");
+        testClinician = new Clinician("", "0",  "password");
     }
 
 
