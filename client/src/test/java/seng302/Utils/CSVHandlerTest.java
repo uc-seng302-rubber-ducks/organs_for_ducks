@@ -4,8 +4,8 @@ import org.apache.commons.csv.CSVRecord;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import seng302.model.User;
-import seng302.utils.CSVHandler;
+import odms.model.User;
+import odms.utils.CSVHandler;
 
 import java.io.File;
 import java.io.FileNotFoundException;

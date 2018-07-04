@@ -5,7 +5,7 @@
 <?import javafx.scene.text.Font?>
 <AnchorPane xmlns:fx="http://javafx.com/fxml/1" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
             minWidth="-Infinity" prefHeight="675.0" prefWidth="894.0" xmlns="http://javafx.com/javafx/8"
-            fx:controller="seng302.controller.gui.window.UserController">
+            fx:controller="odms.controller.gui.window.UserController">
     <children>
         <TabPane layoutY="-4.0" prefHeight="681.0" prefWidth="894.0" rotateGraphic="true" tabClosingPolicy="UNAVAILABLE"
                  AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0"

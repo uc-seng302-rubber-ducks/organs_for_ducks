@@ -1,12 +1,13 @@
 package seng302.commands;
 
+import odms.commands.CreateUser;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import picocli.CommandLine;
-import seng302.controller.AppController;
-import seng302.model.User;
-import seng302.model.datamodel.Address;
+import odms.controller.AppController;
+import odms.model.User;
+import odms.model.datamodel.Address;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;

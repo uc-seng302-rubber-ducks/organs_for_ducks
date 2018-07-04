@@ -1,11 +1,12 @@
 package seng302.commands;
 
+import odms.commands.DeleteUser;
 import org.junit.Before;
 import org.junit.Test;
 import picocli.CommandLine;
-import seng302.controller.AppController;
-import seng302.model.User;
-import seng302.view.CLI;
+import odms.controller.AppController;
+import odms.model.User;
+import odms.view.CLI;
 
 import java.time.LocalDate;
 

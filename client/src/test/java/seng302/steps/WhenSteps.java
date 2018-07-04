@@ -9,10 +9,10 @@ import org.testfx.framework.junit.ApplicationTest;
 import picocli.CommandLine;
 import picocli.CommandLine.RunLast;
 import seng302.Utils.TableViewsMethod;
-import seng302.commands.CreateUser;
-import seng302.commands.DeleteUser;
-import seng302.commands.View;
-import seng302.view.CLI;
+import odms.commands.CreateUser;
+import odms.commands.DeleteUser;
+import odms.commands.View;
+import odms.view.CLI;
 
 public class WhenSteps extends ApplicationTest {
 

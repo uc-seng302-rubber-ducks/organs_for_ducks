@@ -7,12 +7,12 @@ import org.junit.Test;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.matcher.control.LabeledMatchers;
-import seng302.App;
+import odms.App;
 import seng302.Utils.CommonTestMethods;
 import seng302.Utils.TableViewsMethod;
-import seng302.controller.AppController;
-import seng302.model.EmergencyContact;
-import seng302.model.User;
+import odms.controller.AppController;
+import odms.model.EmergencyContact;
+import odms.model.User;
 
 import java.time.LocalDate;
 import java.util.concurrent.TimeoutException;

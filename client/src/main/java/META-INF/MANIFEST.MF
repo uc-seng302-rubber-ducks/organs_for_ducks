@@ -1,2 +1,2 @@
 Manifest-Version: 1.0
-Main-Class: seng302.App
+Main-Class: odms.App

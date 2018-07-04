@@ -1,6 +1,6 @@
 package seng302.steps;
 
-import seng302.controller.AppController;
+import odms.controller.AppController;
 
 /**
  * This class is used as a data storage/state storage class so that the same instances of items can be propagated through to the GivenSteps, WhenSteps

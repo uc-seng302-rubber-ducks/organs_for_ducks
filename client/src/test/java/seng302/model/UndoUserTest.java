@@ -1,10 +1,12 @@
 package seng302.model;
 
+import odms.model.Memento;
+import odms.model.User;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import seng302.model._enum.Organs;
+import odms.model._enum.Organs;
 
 import java.time.LocalDate;
 

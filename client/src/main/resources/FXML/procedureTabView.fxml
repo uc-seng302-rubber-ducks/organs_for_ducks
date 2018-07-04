@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0"
             xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
-            fx:controller="seng302.controller.gui.panel.ProcedureTabController">
+            fx:controller="odms.controller.gui.panel.ProcedureTabController">
     <children>
         <TableView fx:id="previousProcedureTableView" layoutX="42.0" layoutY="312.0" prefHeight="200.0"
                    prefWidth="281.0"/>

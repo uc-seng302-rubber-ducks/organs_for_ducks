@@ -1,5 +1,6 @@
 package seng302.model;
 
+import odms.model.Administrator;
 import org.junit.Before;
 import org.junit.Test;
 

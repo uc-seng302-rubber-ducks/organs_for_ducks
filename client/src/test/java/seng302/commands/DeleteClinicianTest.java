@@ -1,11 +1,12 @@
 package seng302.commands;
 
+import odms.commands.DeleteClinician;
 import org.junit.Before;
 import org.junit.Test;
 import picocli.CommandLine;
-import seng302.controller.AppController;
-import seng302.model.Clinician;
-import seng302.view.CLI;
+import odms.controller.AppController;
+import odms.model.Clinician;
+import odms.view.CLI;
 
 import static org.mockito.Mockito.*;
 

@@ -7,7 +7,7 @@ import org.json.simple.parser.ParseException;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import seng302.utils.HttpRequester;
+import odms.utils.HttpRequester;
 
 import java.io.FileReader;
 import java.io.IOException;

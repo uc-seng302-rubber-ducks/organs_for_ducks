@@ -5,7 +5,7 @@
 <?import javafx.scene.text.Font?>
 <AnchorPane maxHeight="400.0" maxWidth="600.0" minHeight="391.0" minWidth="600.0" prefHeight="391.0" prefWidth="600.0"
             xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="seng302.controller.gui.window.LoginController">
+            fx:controller="odms.controller.gui.window.LoginController">
     <children>
         <TabPane fx:id="loginTabPane" prefHeight="400.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE">
             <tabs>

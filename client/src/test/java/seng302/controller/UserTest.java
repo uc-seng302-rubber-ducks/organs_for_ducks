@@ -3,8 +3,8 @@ package seng302.controller;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import seng302.model._enum.Organs;
-import seng302.model.User;
+import odms.model._enum.Organs;
+import odms.model.User;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
