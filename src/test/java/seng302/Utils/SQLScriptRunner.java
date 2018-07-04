@@ -13,9 +13,13 @@ import java.sql.SQLException;
  */
 public class SQLScriptRunner {
 
+    private static String RESET_DATABASE_SCRIPT_FILEPATH = "src/main/resources/sqlScripts/createDataBase.sql";
+    private static String RESAMPLE_DATABASE_SCRIPT_FILEPATH = "src/main/resources/sqlScripts/sampleDatabaseData.sql";
+
     /**
      * Opens a file based on filePath given, reads the file and execute the
      * SQL strings contained in the file.
+     * Close the database connection when done.
      *
      * @param filePath location of the SQL script
      * @throws SQLException if any SQL error occurs
@@ -60,8 +64,8 @@ public class SQLScriptRunner {
      */
     public static void run(){
         try {
-            RunSqlScript("src/main/resources/sqlScripts/createDataBase.sql");
-            RunSqlScript("src/main/resources/sqlScripts/sampleDatabaseData.sql");
+            RunSqlScript(RESET_DATABASE_SCRIPT_FILEPATH);
+            RunSqlScript(RESAMPLE_DATABASE_SCRIPT_FILEPATH);
 
             Log.info("Database reset and resample is successful");
 
