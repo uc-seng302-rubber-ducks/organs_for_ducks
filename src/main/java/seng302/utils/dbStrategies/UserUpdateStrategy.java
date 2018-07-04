@@ -20,12 +20,15 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
     private static final String CREATE_NEW_PROCEDURE = "INSERT INTO Procedure (fkUserNhi, procedureName, procedureDescription, procedureDate) VALUES (?, ?, ?)";
 
     private static final String UPDATE_USER_STMT = "UPDATE User SET nhi = ?, firstName = ?, middleName = ?, lastName = ?, preferredName = ?, dob = ?, dod = ?, lastModified = ? WHERE nhi = ?";
-    private static final String UPDATE_ADDRESS = "UPDATE Address SET streetNumber = ?, streetName = ?, neighbourhood = ?, city = ?, region = ?, country = ? WHERE fkContactId = ? AND fkUserNhi = ? AND fkStaffId = ?";
-    private static final String UPDATE_USER_CONTACT_STMT = "UPDATE ContactDetails SET homePhone = ?, email = ?, cellPhone = ? WHERE fkUserNhi = ? AND contactId = ?"; // make this more generic?
-    private static final String UPDATE_EC_STMT = "UPDATE EmergencyContactDetails SET contactName = ?, contactRelationship = ? WHERE fkContactId = ?";
     private static final String UPDATE_USER_HEALTH_STMT = "UPDATE HealthDetails SET gender = ?, birthGender = ?, smoker = ?, alcoholConsumption = ?, height = ?, weight = ? WHERE fkUserNhi = ?";
     private static final String UPDATE_MEDICATION_DATE_STMT = "UPDATE MedicationDates SET dateStartedTaking = ?, dateStoppedTaking = ? WHERE fkMedicationInstanceId = ?";
     private static final String UPDATE_PROCEDURE_STMT = "UPDATE MedicalProcedure SET procedureName = ?, procedureDate = ?, procedureDescription = ? WHERE fkUserNhi = ?"; // needs an id
+    private static final String UPDATE_USER_CONTACT_STMT = "UPDATE ContactDetails JOIN Address ON contactId = fkContactId " +
+            "SET streetNumber = ?, streetName = ?, neighbourhood = ?, city = ?, region = ?, country = ?, homePhone = ?, cellPhone = ?, email = ? " +
+            "WHERE ContactDetails.fkUserNhi = ? AND contactId = ?";
+    private static final String UPDATE_EC_STMT =  "UPDATE ContactDetails JOIN Address ON contactId = Address.fkContactId JOIN EmergencyContactDetails ON contactId = EmergencyContactDetails.fkContactId " +
+            "SET homePhone = ?, cellPhone = ?, email = ?, contactName = ?, contactRelationship = ?, streetNumber = ?, streetName = ?, neighbourhood = ?, city = ?, region = ?, country = ? " +
+            "WHERE ContactDetails.fkUserNhi = ? AND contactId = ?";
 
     private static final String DELETE_USER_STMT = "DELETE FROM User WHERE nhi = ?";
     private static final String DELETE_PROCEDURE_STMT = "DELETE FROM MedicalProcedure WHERE procedureDate = ? AND procedureName = ? AND fkUserNhi = ?";
@@ -235,7 +238,6 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
             connection.prepareStatement("START TRANSACTION").execute();
             try {
                 updateUserDetails(user, connection);
-                updateUserAddress(user, connection);
                 updateUserContactDetails(user, connection);
                 updateEmergencyContact(user, connection);
                 updateUserHealthDetails(user, connection);
@@ -254,22 +256,29 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
     }
 
     /**
-     * Updates the contact details of the given user in the database
+     * Updates the contact details and address of the given user in the database
      *
      * @param user       User object with details to be updated
      * @param connection Connection to the target database
      * @throws SQLException If there is an issue updating the users contact details
      */
     private void updateUserContactDetails(User user, Connection connection) throws SQLException {
-        PreparedStatement statement = connection.prepareStatement(UPDATE_USER_CONTACT_STMT);
+        try (PreparedStatement statement = connection.prepareStatement(UPDATE_USER_CONTACT_STMT)) {
 
-        statement.setString(1, user.getHomePhone());
-        statement.setString(2, user.getCellPhone());
-        statement.setString(3, user.getEmail());
-        statement.setString(4, user.getNhi());
-        // todo: get contact id
+            statement.setString(1, user.getStreetNumber()); // todo: update the Address table to take street number as a string instead of an integer - jen 30/6
+            statement.setString(2, user.getStreetName());
+            statement.setString(3, user.getNeighborhood());
+            statement.setString(4, user.getCity());
+            statement.setString(5, user.getRegion());
+            statement.setString(6, user.getCountry());
+            statement.setString(7, user.getHomePhone());
+            statement.setString(8, user.getCellPhone());
+            statement.setString(9, user.getEmail());
+            statement.setString(10, user.getNhi());
+            //statement.setString(11, contactId);      // todo: get contact id
 
-        statement.executeUpdate();
+            statement.executeUpdate();
+        }
     }
 
     /**
@@ -280,37 +289,24 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
      * @throws SQLException If there is an issue updating the emergency contact details
      */
     private void updateEmergencyContact(User user, Connection connection) throws SQLException {
-        PreparedStatement statement = connection.prepareStatement(UPDATE_EC_STMT);
+        try (PreparedStatement statement = connection.prepareStatement(UPDATE_EC_STMT)) {
 
-        statement.setString(1, user.getContact().getName());
-        statement.setString(2, user.getContact().getRelationship());
-        // todo: get contact id
+            statement.setString(1, user.getHomePhone());
+            statement.setString(2, user.getCellPhone());
+            statement.setString(3, user.getEmail());
+            statement.setString(4, user.getContact().getName());
+            statement.setString(5, user.getContact().getRelationship());
+            statement.setString(6, user.getStreetNumber());
+            statement.setString(7, user.getStreetName());
+            statement.setString(8, user.getNeighborhood());
+            statement.setString(9, user.getCity());
+            statement.setString(10, user.getRegion());
+            statement.setString(11, user.getCountry());
+            statement.setString(12, user.getNhi());
+            //statement.setString(13, contactId);           // todo: get contact id
 
-        statement.executeUpdate();
-    }
-
-
-    /**
-     * Updates the given users address details in the database
-     *
-     * @param user       User object with details to be updated
-     * @param connection Connection to the target database
-     * @throws SQLException If there is an issue updating the user address
-     */
-    private void updateUserAddress(User user, Connection connection) throws SQLException {
-        PreparedStatement statement = connection.prepareStatement(UPDATE_ADDRESS);
-
-        statement.setString(1, user.getStreetNumber()); // todo: update the Address table to take street number as a string instead of an integer - jen 30/6
-        statement.setString(2, user.getStreetName());
-        statement.setString(3, user.getNeighborhood());
-        statement.setString(4, user.getCity());
-        statement.setString(5, user.getRegion());
-        statement.setString(6, user.getCountry());
-        //statement.setString(7, ); // todo: get contact id
-        statement.setString(8, user.getNhi());
-        statement.setString(9, null);
-
-        statement.executeUpdate();
+            statement.executeUpdate();
+        }
     }
 
     /**
@@ -323,18 +319,19 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
      * @throws SQLException If there is an issue updating the users health details
      */
     private void updateUserHealthDetails(User user, Connection connection) throws SQLException {
-        PreparedStatement statement = connection.prepareStatement(UPDATE_USER_HEALTH_STMT);
+        try (PreparedStatement statement = connection.prepareStatement(UPDATE_USER_HEALTH_STMT)) {
 
-        statement.setString(1, user.getBirthGender());
-        statement.setString(2, user.getGenderIdentity());
-        statement.setBoolean(3, user.isSmoker());
-        statement.setString(4, user.getAlcoholConsumption());
-        statement.setDouble(5, user.getHeight());
-        statement.setDouble(6, user.getWeight());
-        statement.setString(7, user.getNhi());
-        // todo: add a blood type/reference to the table - Jen 30/6
+            statement.setString(1, user.getBirthGender());
+            statement.setString(2, user.getGenderIdentity());
+            statement.setBoolean(3, user.isSmoker());
+            statement.setString(4, user.getAlcoholConsumption());
+            statement.setDouble(5, user.getHeight());
+            statement.setDouble(6, user.getWeight());
+            statement.setString(7, user.getNhi());
+            // todo: add a blood type/reference to the table - Jen 30/6
 
-        statement.executeUpdate();
+            statement.executeUpdate();
+        }
     }
 
     /**
@@ -360,19 +357,20 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
      * @throws SQLException If there is an issue updating the user details
      */
     private void updateUserDetails(User user, Connection connection) throws SQLException {
-        PreparedStatement statement = connection.prepareStatement(UPDATE_USER_STMT);
+        try (PreparedStatement statement = connection.prepareStatement(UPDATE_USER_STMT)) {
 
-        statement.setString(1, user.getNhi());
-        statement.setString(2, user.getFirstName());
-        statement.setString(3, user.getMiddleName());
-        statement.setString(4, user.getLastName());
-        statement.setString(5, user.getPreferredFirstName());
-        statement.setDate(6, Date.valueOf(user.getDateOfBirth()));
-        statement.setDate(7, Date.valueOf(user.getDateOfDeath()));
-        statement.setTimestamp(8, Timestamp.valueOf(user.getLastModified()));
-        statement.setString(9, user.getNhi());
+            statement.setString(1, user.getNhi());
+            statement.setString(2, user.getFirstName());
+            statement.setString(3, user.getMiddleName());
+            statement.setString(4, user.getLastName());
+            statement.setString(5, user.getPreferredFirstName());
+            statement.setDate(6, Date.valueOf(user.getDateOfBirth()));
+            statement.setDate(7, Date.valueOf(user.getDateOfDeath()));
+            statement.setTimestamp(8, Timestamp.valueOf(user.getLastModified()));
+            statement.setString(9, user.getNhi());
 
-        statement.executeUpdate();
+            statement.executeUpdate();
+        }
     }
 
     /**
