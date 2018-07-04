@@ -133,7 +133,6 @@ public final class JsonHandler extends DataHandler {
         outFile.createNewFile(); //creates new file
         Gson gson = new GsonBuilder().registerTypeAdapter(DateTime.class, (JsonSerializer<DateTime>)
                 (json, typeOfSrc, context) -> new JsonPrimitive(ISODateTimeFormat.dateTime().print(json)))
-                .excludeFieldsWithoutExposeAnnotation()
                 .create();
         FileWriter writer = new FileWriter(outFile);
         String usersString = gson.toJson(clinicians);

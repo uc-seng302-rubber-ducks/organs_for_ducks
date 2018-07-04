@@ -19,8 +19,6 @@ import java.util.Objects;
 
 /**
  * Class to model the data structure for a clinician
- *
- * @author Josh Burt
  */
 public class Clinician extends Undoable<Clinician> implements Listenable {
 
