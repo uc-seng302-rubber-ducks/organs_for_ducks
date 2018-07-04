@@ -5,6 +5,7 @@ import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
 import seng302.utils.DBHandler;
+import seng302.utils.JDBCDriver;
 import seng302.utils.Log;
 
 import java.sql.Connection;
@@ -42,7 +43,8 @@ public class Sql implements Runnable {
         Connection conn = null;
         try {
             System.out.println(statement);
-            conn = dbHandler.getConnection();
+            JDBCDriver jdbcDriver = new JDBCDriver();
+            conn = jdbcDriver.getConnection();
             conn.prepareStatement(statement);
         } catch (SQLException e) {
             System.out.println("Failed to establish connection to the database. please try again or contact your " +
