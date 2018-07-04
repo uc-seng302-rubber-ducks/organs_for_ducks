@@ -7,6 +7,7 @@ import seng302.model._abstract.Listenable;
 import seng302.model._abstract.Undoable;
 import seng302.model._enum.EventTypes;
 import seng302.model._enum.Organs;
+import seng302.model.datamodel.Address;
 import seng302.model.datamodel.ContactDetails;
 
 import java.beans.PropertyChangeEvent;
@@ -54,7 +55,6 @@ public class User extends Undoable<User> implements Listenable {
 
     @Expose
     private HealthDetails healthDetails;
-
 
     @Expose
     private LocalDateTime lastModified;
@@ -167,16 +167,30 @@ public class User extends Undoable<User> implements Listenable {
         newUser.dateOfBirth = user.dateOfBirth;
         newUser.dateOfDeath = user.dateOfDeath;
 
-        newUser.contactDetails = user.contactDetails;
+        Address address = new Address(user.getStreetNumber(), user.getStreetName(), user.getNeighborhood(),
+                user.getCity(), user.getRegion(), user.getZipCode(), user.getCountry());
+        newUser.contactDetails = new ContactDetails(user.getHomePhone(), user.getCellPhone(), address, user.getEmail());
+
         if (user.contact != null) {
+            Address ecAddress = new Address(user.contact.getStreetNumber(), user.contact.getStreetName(), user.contact.getNeighborhood(),
+                    user.contact.getCity(), user.contact.getRegion(), user.contact.getZipCode(), user.contact.getCountry());
+
             newUser.contact = new EmergencyContact(user.contact.getName(), user.contact.getCellPhoneNumber(),
-                    user.contact.getHomePhoneNumber(), user.contact.getAddress(),
+                    user.contact.getHomePhoneNumber(), ecAddress,
                     user.contact.getEmail(), user.contact.getRelationship());
         } else {
             newUser.contact = null;
         }
 
-        newUser.healthDetails = user.healthDetails;
+        HealthDetails healthDetails = new HealthDetails();
+        healthDetails.setBirthGender(user.getBirthGender());
+        healthDetails.setGenderIdentity(user.getGenderIdentity());
+        healthDetails.setAlcoholConsumption(user.getAlcoholConsumption());
+        healthDetails.setSmoker(user.isSmoker());
+        healthDetails.setHeight(user.getHeight());
+        healthDetails.setWeight(user.getWeight());
+        healthDetails.setBloodType(user.getBloodType());
+        newUser.healthDetails = healthDetails;
 
         newUser.name = user.name;
         newUser.firstName = user.firstName;
@@ -251,6 +265,90 @@ public class User extends Undoable<User> implements Listenable {
         this.saveStateForUndo();
         updateLastModified();
         this.contact = contact;
+    }
+
+    public void setECName(String ecName) {
+        this.saveStateForUndo();
+        updateLastModified();
+        contact.setName(ecName);
+        addChange(new Change("Changed emergency contact name to " + ecName));
+    }
+
+    public void setECHomePhone(String ecHomePhone) {
+        this.saveStateForUndo();
+        updateLastModified();
+        contact.setHomePhoneNumber(ecHomePhone);
+        addChange(new Change("Changed emergency contact home phone number to " + ecHomePhone));
+    }
+
+    public void setECCellPhone(String ecCellPhone) {
+        this.saveStateForUndo();
+        updateLastModified();
+        contact.setCellPhoneNumber(ecCellPhone);
+        addChange(new Change("Changed emergency contact cell phone number to " + ecCellPhone));
+    }
+
+    public void setECStreetNumber(String ecStreetNumber) {
+        this.saveStateForUndo();
+        updateLastModified();
+        contact.setStreetNumber(ecStreetNumber);
+        addChange(new Change("Changed emergency contact street number to " + ecStreetNumber));
+    }
+
+    public void setECStreeName(String ecStreeName) {
+        this.saveStateForUndo();
+        updateLastModified();
+        contact.setStreetName(ecStreeName);
+        addChange(new Change("Changed emergency contact street name to " + ecStreeName));
+    }
+
+    public void setECNeighborhood(String ecNeighborhood) {
+        this.saveStateForUndo();
+        updateLastModified();
+        contact.setNeighborhood(ecNeighborhood);
+        addChange(new Change("Changed emergency contact neighborhood to " + ecNeighborhood));
+    }
+
+    public void setECCity(String ecCity) {
+        this.saveStateForUndo();
+        updateLastModified();
+        contact.setCity(ecCity);
+        addChange(new Change("Changed emergency contact city to " + ecCity));
+    }
+
+    public void setECRegion(String ecRegion) {
+        this.saveStateForUndo();
+        updateLastModified();
+        contact.setRegion(ecRegion);
+        addChange(new Change("Changed emergency contact region to " + ecRegion));
+    }
+
+    public void setECZipCode(String ecZipCode) {
+        this.saveStateForUndo();
+        updateLastModified();
+        contact.setZipCode(ecZipCode);
+        addChange(new Change("Changed emergency contact zip code to " + ecZipCode));
+    }
+
+    public void setECCountry(String ecCountry) {
+        this.saveStateForUndo();
+        updateLastModified();
+        contact.setCountry(ecCountry);
+        addChange(new Change("Changed emergency contact country to " + ecCountry));
+    }
+
+    public void setECEmail(String ecEmail) {
+        this.saveStateForUndo();
+        updateLastModified();
+        contact.setEmail(ecEmail);
+        addChange(new Change("Changed emergency contact email to " + ecEmail));
+    }
+
+    public void setECRelationship(String ecRelationship) {
+        this.saveStateForUndo();
+        updateLastModified();
+        contact.setRelationship(ecRelationship);
+        addChange(new Change("Changed emergency contact relationship to " + ecRelationship));
     }
 
     public HealthDetails getHealthDetails() {
@@ -548,7 +646,10 @@ public class User extends Undoable<User> implements Listenable {
     }
 
     public void setStreetNumber(String streetNumber) {
+        this.saveStateForUndo();
+        updateLastModified();
         contactDetails.getAddress().setStreetNumber(streetNumber);
+        addChange(new Change("Changed street number to " + streetNumber));
     }
 
     public String getStreetName() {
@@ -556,7 +657,10 @@ public class User extends Undoable<User> implements Listenable {
     }
 
     public void setStreetName(String streetName) {
+        this.saveStateForUndo();
+        updateLastModified();
         contactDetails.getAddress().setStreetName(streetName);
+        addChange(new Change("Changed street name to " + streetName));
     }
 
     public String getNeighborhood() {
@@ -564,7 +668,10 @@ public class User extends Undoable<User> implements Listenable {
     }
 
     public void setNeighborhood(String neighborhood) {
+        this.saveStateForUndo();
+        updateLastModified();
         contactDetails.getAddress().setNeighborhood(neighborhood);
+        addChange(new Change("Changed neighborhood to " + neighborhood));
     }
 
     public String getCity() {
@@ -572,7 +679,10 @@ public class User extends Undoable<User> implements Listenable {
     }
 
     public void setCity(String city) {
+        this.saveStateForUndo();
+        updateLastModified();
         contactDetails.getAddress().setCity(city);
+        addChange(new Change("Changed city to " + city));
     }
 
     public String getZipCode() {
@@ -580,7 +690,10 @@ public class User extends Undoable<User> implements Listenable {
     }
 
     public void setZipCode(String zipCode) {
+        this.saveStateForUndo();
+        updateLastModified();
         contactDetails.getAddress().setZipCode(zipCode);
+        addChange(new Change("Changed zip code to " + zipCode));
     }
 
     public String getCountry() {
@@ -588,7 +701,10 @@ public class User extends Undoable<User> implements Listenable {
     }
 
     public void setCountry(String country) {
+        this.saveStateForUndo();
+        updateLastModified();
         contactDetails.getAddress().setCountry(country);
+        addChange(new Change("Changed country to " + country));
     }
 
     public String getBirthCountry() {
@@ -596,7 +712,10 @@ public class User extends Undoable<User> implements Listenable {
     }
 
     public void setBirthCountry(String birthCountry) {
+        this.saveStateForUndo();
+        updateLastModified();
         this.birthCountry = birthCountry;
+        addChange(new Change("Changed birth country to" + birthCountry));
     }
 
     /**
