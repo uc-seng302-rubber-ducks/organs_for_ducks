@@ -13,7 +13,9 @@ public class ClinicianUpdateStrategy extends AbstractUpdateStrategy {
     private static final String CREATE_ADDRESS_STMT = "INSERT INTO Address (fkContactId, streetNumber, streetName, neighbourhood, city, region, country) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
     private static final String UPDATE_CLINICIAN_STMT = "UPDATE Clinician SET staffId = ?, firstName = ?, middleName = ?, lastName = ?, lastModified = ? WHERE staffId = ?";
-    private static final String UPDATE_CLINICIAN_ADDRESS = "UPDATE ContactDetails JOIN Address ON contactId = fkContactId SET streetNumber = ?, streetName = ?, neighbourhood = ?, city = ?, region = ?, country = ? WHERE ContactDetails.fkStaffId = ?";
+    private static final String UPDATE_CLINICIAN_ADDRESS = "UPDATE ContactDetails JOIN Address ON contactId = fkContactId " +
+            "SET streetNumber = ?, streetName = ?, neighbourhood = ?, city = ?, region = ?, zipCode = ?, country = ? " +
+            "WHERE ContactDetails.fkStaffId = ?";
     private static final String UPDATE_CLINICIAN_PASSWORD = "UPDATE PasswordDetails SET hash = ?, salt = ? WHERE fkStaffId = ?";
 
     private static final String DELETE_CLINICIAN_STMT = "DELETE FROM Clinician WHERE staffId = ?";
@@ -186,17 +188,17 @@ public class ClinicianUpdateStrategy extends AbstractUpdateStrategy {
     private void updateClinicianAddress(Clinician clinician, Connection connection) throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement(UPDATE_CLINICIAN_ADDRESS)) {
 
-//            statement.setString(1, clinician.getStreetNumber); // todo: change the table creation to have string instead of int for street number
+//            statement.setString(1, clinician.getStreetNumber);
 //            statement.setString(2, clinician.setStreetName);
 //            statement.setString(3, clinician.setNeighborhood());
 //            statement.setString(4, clinician.getCity());
             statement.setString(5, clinician.getRegion());
-            //statement.setString(6, clinician.getCountry());
-            statement.setString(7, clinician.getStaffId());
+            //statement.setString(6, clinician.getZipCode());
+            //statement.setString(7, clinician.getCountry());
+            statement.setString(8, clinician.getStaffId());
 
             statement.executeUpdate();
         }
-
         // todo: update clinician to have an Address object - jen 30/6
     }
 

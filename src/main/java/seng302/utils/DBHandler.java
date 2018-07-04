@@ -36,7 +36,7 @@ public class DBHandler {
             "WHERE m.fkUserNhi = ?";
     private static final String SELECT_USER_MEDICAL_PROCEDURE_STMT = "SELECT procedureName, procedureDate, procedureDescription, organName, mp.fkUserNhi FROM MedicalProcedure mp " +
             "LEFT JOIN MedicalProcedureOrgan mpo ON mpo.fkUserNhi = mp.fkUserNhi " +
-            "LEFT JOIN Organ o on o.organId = mpo.organsId " +
+            "LEFT JOIN Organ o on o.organId = mpo.fkOrgansId " +
             "WHERE mp.fkUserNhi = ?";
     private static final String SELECT_USER_ORGAN_DONATION = "SELECT organName FROM HealthOrganDonate LEFT JOIN Organ ON fkOrgansId = organId WHERE fkUserNhi = ?";
     private static final String SELECT_USER_ORGAN_RECEIVING = "SELECT organName FROM HealthOrganReceive LEFT JOIN Organ ON fkOrgansId = organId WHERE fkUserNhi = ?";
