@@ -126,7 +126,6 @@ public class ContactDetails {
     }
 
 
-
     @Override
     public String toString() {
         return "ContactDetails{" +

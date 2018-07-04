@@ -95,7 +95,7 @@ public class DiseasesTest {
     @Test
     public void shouldBeOrderedByDateAscending() { //Tests the comparator works correctly
         //Basic Objects
-        User user = controller.getUser("ABC1234");
+        User user = controller.findUser("ABC1234");
         Disease disease = new Disease("", false, false, LocalDate.now());
 
         Collections.sort(user.getCurrentDiseases(), disease.diseaseDateComparator);
@@ -112,7 +112,7 @@ public class DiseasesTest {
 
     @Test
     public void shouldBeOrderByNameAscending() {
-        User user = controller.getUser("ABC1234");
+        User user = controller.findUser("ABC1234");
         Disease disease = new Disease("", false, false, LocalDate.now());
 
         Collections.sort(user.getCurrentDiseases(), disease.diseaseNameComparator);
@@ -130,7 +130,7 @@ public class DiseasesTest {
 
     @Test
     public void shouldBeOrderByChronicAscending() {
-        User user = controller.getUser("ABC1234");
+        User user = controller.findUser("ABC1234");
         Disease disease = new Disease("", false, false, LocalDate.now());
 
         Collections.sort(user.getCurrentDiseases(), disease.diseaseChronicComparator);

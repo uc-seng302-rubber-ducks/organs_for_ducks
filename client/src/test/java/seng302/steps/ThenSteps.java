@@ -1,5 +1,6 @@
 package seng302.steps;
 
+import cucumber.api.PendingException;
 import cucumber.api.java.en.Then;
 import javafx.scene.Node;
 import org.testfx.framework.junit.ApplicationTest;
@@ -30,7 +31,7 @@ public class ThenSteps extends ApplicationTest {
     @Then("^The user should no longer be in the system$")
     public void theUserShouldNoLongerBeInTheSystem() {
         assertTrue(
-                CucumberTestModel.getController().getUser(CucumberTestModel.getUserNhi()) == null);
+                CucumberTestModel.getController().findUser(CucumberTestModel.getUserNhi()) == null);
     }
 
     @Then("^I should see my NHI \"([^\"]*)\" along with my other details at the user view screen")
@@ -108,5 +109,24 @@ public class ThenSteps extends ApplicationTest {
             System.out.println(errorMessage);
             verifyThat("#userWarningLabel", LabeledMatchers.hasText(errorMessage));
         }
+    }
+
+    @Then("^an entry for \"([^\"]*)\" and \"([^\"]*)\" should be in the cache$")
+    public void an_entry_for_and_should_be_in_the_cache(String drugA, String drugB) throws Throwable {
+        // Write code here that turns the phrase above into concrete actions
+        throw new PendingException();
+    }
+
+    @Then("^the cache should not contain an entry with key \"([^\"]*)\"$")
+    public void the_cache_should_not_contain_an_entry_with_key(String arg1) throws Throwable {
+        // Write code here that turns the phrase above into concrete actions
+        throw new PendingException();
+    }
+
+
+    @Then("^the cache should be empty$")
+    public void the_cache_should_be_empty() throws Throwable {
+        // Write code here that turns the phrase above into concrete actions
+        throw new PendingException();
     }
 }

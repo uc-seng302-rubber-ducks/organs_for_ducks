@@ -101,7 +101,7 @@ public class LoginController {
         } else {
             user = appController.findUser(wantedDonor);
         }
-        if (user == null) {
+        if (user == null || user.isDeleted()) {
             userWarningLabel
                     .setText("User was not found. \nTo register a new user, please click sign up.");
             return;
@@ -137,7 +137,7 @@ public class LoginController {
         }
         String clinicianPassword = staffPasswordField.getText();
         Clinician clinician = appController.getClinician(wantedClinician);
-        if (clinician == null) {
+        if (clinician == null || clinician.isDeleted()) {
             clinicianWarningLabel.setText("The Clinician does not exist");
         } else if (!clinician.isPasswordCorrect(clinicianPassword)) {
             clinicianWarningLabel.setText("Your password is incorrect please try again");
@@ -174,7 +174,7 @@ public class LoginController {
         }
         String adminPassword = adminPasswordField.getText();
         Administrator administrator = appController.getAdministrator(wantedAdmin);
-        if (administrator == null) {
+        if (administrator == null || administrator.isDeleted()) {
             adminWarningLabel.setText("The administrator does not exist.");
         } else if (!administrator.isPasswordCorrect(adminPassword)) {
             adminWarningLabel.setText("Your password is incorrect. Please try again.");

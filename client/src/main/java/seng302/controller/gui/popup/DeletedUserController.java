@@ -13,12 +13,14 @@ import seng302.model.Administrator;
 import seng302.model.Clinician;
 import seng302.model.TooltipTableRow;
 import seng302.model.User;
+import seng302.model._abstract.Deletable;
 import seng302.model._enum.Organs;
 import seng302.utils.Log;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class DeletedUserController {
 
@@ -89,7 +91,7 @@ public class DeletedUserController {
      */
     private void initUserTableView() {
         oListUsers = FXCollections
-                .observableList(new ArrayList<>(AppController.getInstance().getDeletedUsers()));
+                .observableList(new ArrayList<>(AppController.getInstance().getUsers().stream().filter(Deletable::isDeleted).collect(Collectors.toList())));
 
         TableColumn<User, String> fNameColumn = new TableColumn<>("First name");
         fNameColumn.setCellValueFactory(new PropertyValueFactory<>("firstName"));
@@ -134,7 +136,8 @@ public class DeletedUserController {
      * Populates the table view with clinicians that have been deleted in the current session.
      */
     private void initClinicianTableView() {
-        oListClinicians = FXCollections.observableList(new ArrayList<>(AppController.getInstance().getDeletedClinicians()));
+        oListClinicians = FXCollections.observableList(new ArrayList<>(AppController.getInstance().getClinicians()
+                .stream().filter(Deletable::isDeleted).collect(Collectors.toList())));
 
         TableColumn<Clinician, String> staffIDColumn = new TableColumn<>("Staff ID");
         staffIDColumn.setCellValueFactory(new PropertyValueFactory<>("staffId"));
@@ -163,7 +166,8 @@ public class DeletedUserController {
      * Populates the table view with administrators that have been deleted in the current session.
      */
     private void initAdminTableView() {
-        oListAdmins = FXCollections.observableList(new ArrayList<>(AppController.getInstance().getDeletedAdmins()));
+        oListAdmins = FXCollections.observableList(new ArrayList<>(AppController.getInstance().getAdmins()
+                .stream().filter(Deletable::isDeleted).collect(Collectors.toList())));
 
         TableColumn<Administrator, String> usernameColumn = new TableColumn<>("Username");
         usernameColumn.setCellValueFactory(new PropertyValueFactory<>("userName"));

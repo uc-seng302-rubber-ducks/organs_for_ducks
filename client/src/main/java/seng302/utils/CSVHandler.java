@@ -19,13 +19,13 @@ import java.util.List;
 /**
  * Class to handle the importing and redirection of the CSV data.
  */
-public class CSVHandler extends DataHandler{
+public class CSVHandler extends DataHandler {
 
 
     /**
-     *Takes a CSV file, opened by the file handler
+     * Takes a CSV file, opened by the file handler
      * and reads the file into a list separated by record
-     *
+     * <p>
      * Throws an IOException if an incorrect file is passed into it.
      *
      * @param csvFile CSV File to be parsed
@@ -41,18 +41,17 @@ public class CSVHandler extends DataHandler{
     /**
      * Decodes the results of a parsed CSV file into a Collection of user classes
      *
-     *
      * @param records List of records to be decoded
      * @return Collection of Users from file
      */
-    public Collection<User> decodeUsersFromCSV(List<CSVRecord> records){
+    public Collection<User> decodeUsersFromCSV(List<CSVRecord> records) {
         Collection<User> users = new ArrayList<>();
         int count = 0;
         int malformed = 0;
         int correct = 0;
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("M/d/yyyy");
 
-        for (CSVRecord record : records){
+        for (CSVRecord record : records) {
             count++;
             // as column name maybe null this needs to be done by index
             User u = new User();
@@ -61,16 +60,16 @@ public class CSVHandler extends DataHandler{
             u.setLastName(record.get(2));
             try {
                 u.setDateOfBirth(LocalDate.parse(record.get(3), dtf));
-                if (!record.get(4).equals("")){
+                if (!record.get(4).equals("")) {
                     //TODO: Make this a LocalDateTime when Time of death is added
                     //here it is assumed that a non-empty DOD column implies a valid DOD should exist
                     u.setDateOfDeath(LocalDate.parse(record.get(4), dtf));
                 }
                 u.setHeight(Double.parseDouble(record.get(8)) / 100);
                 u.setWeight(Double.parseDouble(record.get(9)));
-            } catch (DateTimeParseException | NumberFormatException ex){
+            } catch (DateTimeParseException | NumberFormatException ex) {
                 // catches a format error and then breaks that one malformed statement
-                Log.warning("An invalid  value was detected in record: "+ count, ex);
+                Log.warning("An invalid  value was detected in record: " + count, ex);
                 malformed++;
                 continue;
             }

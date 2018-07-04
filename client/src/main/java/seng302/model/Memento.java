@@ -5,28 +5,20 @@ import java.util.Objects;
 
 public class Memento<T> {
 
-    private T oldObject;
-    private T newObject;
+    private T state;
 
-    public T getOldObject() {
-        return oldObject;
+    public Memento(T savedState) {
+        this.state = savedState;
     }
 
-    public void setOldObject(T oldObject) {
-        this.oldObject = oldObject;
+    public T getState() {
+        return state;
     }
 
-    public T getNewObject() {
-        return newObject;
-    }
-
-    public void setNewObject(T newObject) {
-        this.newObject = newObject;
-    }
 
     @Override
     public String toString() {
-        return "\nNEW OBJECT\n" + newObject.toString() + "\nOLD OBJECT\n" + oldObject.toString();
+        return "Memento containing state:\n" + state.toString();
     }
 
     @Override
@@ -37,12 +29,11 @@ public class Memento<T> {
         if (!(obj instanceof Memento)) {
             return false;
         }
-        return (this.oldObject.equals(((Memento) obj).oldObject)
-                && this.newObject.equals(((Memento) obj).newObject));
+        return (this.state.equals(((Memento) obj).state));
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(oldObject, newObject);
+        return Objects.hash(state);
     }
 }

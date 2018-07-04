@@ -38,7 +38,6 @@ public class StatusBarGUITest extends ApplicationTest {
         clickOn("#editDetailsButton");
         clickOn("#fNameInput").push(SHORTCUT, A).push(BACK_SPACE);
         clickOn("#fNameInput");
-        write("");
         write("Kate");
         clickOn("#confirmButton");
     }

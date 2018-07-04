@@ -89,6 +89,7 @@ nbactions.xml
 .idea/dictionaries
 .idea/vcs.xml
 .idea/jsLibraryMappings.xml
+.idea/sqldialects.xml
 
 # Sensitive or high-churn files:
 .idea/dataSources.ids

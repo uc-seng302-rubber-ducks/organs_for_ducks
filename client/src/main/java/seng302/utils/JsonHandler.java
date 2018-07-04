@@ -6,19 +6,14 @@ import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializer;
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
-import seng302.model.Administrator;
-import seng302.model.Change;
-import seng302.model.Clinician;
-import seng302.model.User;
+import seng302.model.*;
 import seng302.model._enum.Directory;
 
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Json Handler to import and save data
@@ -33,7 +28,9 @@ public final class JsonHandler extends DataHandler {
      * @throws IOException when there is an error writing to the file.
      */
     public boolean saveUsers(Collection<User> users) throws IOException {
-
+        // filters the users collection to one where it doesn't contain deleted users
+        users = users.stream().filter(user -> !user.isDeleted()).collect(Collectors.toList());
+        removeDeletedUserItems(users);
         Files.createDirectories(Paths.get(Directory.JSON.directory()));
         File outFile = new File(Directory.JSON.directory() + "/users.json");
 
@@ -51,6 +48,36 @@ public final class JsonHandler extends DataHandler {
         writer.close();
         Log.info("Handler: successfully wrote user to file");
         return true;
+    }
+
+    /**
+     * Removes all the deleted stuff from each user
+     *
+     * @param users Collection of users from the application
+     */
+    private void removeDeletedUserItems(Collection<User> users) {
+        for (User user : users) {
+            try {
+                for (MedicalProcedure p : user.getMedicalProcedures()) {
+                    if (p.isDeleted()) {
+                        user.getMedicalProcedures().remove(p);
+                    }
+                }
+                for (Disease d : user.getCurrentDiseases()) {
+                    if (d.isDeleted()) {
+                        user.getCurrentDiseases().remove(d);
+                    }
+                }
+                for (Disease d : user.getPastDiseases()) {
+                    if (d.isDeleted()) {
+                        user.getPastDiseases().remove(d);
+                    }
+                }
+            } catch (ConcurrentModificationException ex) {
+                //Catches the CME that arises from removing an item while the list is 'open' in JFX
+                Log.warning("Concurrent modification of user list", ex);
+            }
+        }
     }
 
     /**
@@ -95,6 +122,7 @@ public final class JsonHandler extends DataHandler {
      * @throws IOException thrown when file does not exist, can be ignored as file will be created
      */
     public boolean saveClinicians(Collection<Clinician> clinicians) throws IOException {
+        clinicians = clinicians.stream().filter(clinician -> !clinician.isDeleted()).collect(Collectors.toList());
         Files.createDirectories(Paths.get(Directory.JSON.directory()));
         File outFile = new File(Directory.JSON.directory() + "/clinicians.json");
 
@@ -147,6 +175,7 @@ public final class JsonHandler extends DataHandler {
      * @throws IOException thrown when file does not exist, can be ignored as file will be created
      */
     public boolean saveAdmins(Collection<Administrator> admins) throws IOException {
+        admins = admins.stream().filter(administrator -> !administrator.isDeleted()).collect(Collectors.toList());
         Files.createDirectories(Paths.get(Directory.JSON.directory()));
         File outFile = new File(Directory.JSON.directory() + "/administrators.json");
 

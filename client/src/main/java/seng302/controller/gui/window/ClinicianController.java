@@ -130,6 +130,10 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
      */
     public void init(Stage stage, AppController appController, Clinician clinician, boolean fromAdmin,
                      Collection<PropertyChangeListener> parentListeners) {
+        this.appController = appController;
+        this.stage = stage;
+        this.clinician = clinician;
+        this.admin = fromAdmin;
 
         //add change listeners of parent controllers to the current clinician
         this.parentListeners = new ArrayList<>();
@@ -139,10 +143,6 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
             }
             this.parentListeners.addAll(parentListeners);
         }
-        this.stage = stage;
-        this.appController = appController;
-        this.clinician = clinician.clone();
-        this.admin = fromAdmin;
         stage.setResizable(true);
         showClinician(clinician);
         users = appController.getUsers();
@@ -158,13 +158,8 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
         setDefaultFilters();
         searchCountLabel.setText("Showing results " + (searchCount == 0 ? startIndex : startIndex + 1) + " - " + (endIndex) + " of " + searchCount);
         openStages = new ArrayList<>();
-        stage.setOnCloseRequest(e -> {
-            if (!openStages.isEmpty()) {
-                for (Stage s : openStages) {
-                    s.close();
-                }
-            }
-        });
+
+
         int pageCount = searchCount / ROWS_PER_PAGE;
         searchTablePagination.setPageCount(pageCount > 0 ? pageCount + 1 : 1);
         searchTablePagination.currentPageIndexProperty().addListener(((observable, oldValue, newValue) -> changePage(newValue.intValue())));
@@ -178,6 +173,7 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
         }
 
     }
+
 
     @FXML
     private void goBack() {
@@ -232,10 +228,6 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
             return;
         }
 
-        //set up lists
-        //table contents are SortedList of a FilteredList of an ObservableList of an ArrayList
-        ObservableList<User> oListUsers = FXCollections.observableList(users);
-
         fNameColumn = new TableColumn<>("First name");
         fNameColumn.setCellValueFactory(new PropertyValueFactory<>("firstName"));
 
@@ -260,23 +252,14 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
 
         //add more columns as wanted/needed
 
-        fListUsers = new FilteredList<>(oListUsers);
-        fListUsers = filter(fListUsers);
-        FilteredList<User> squished = new FilteredList<>(fListUsers);
-
-        SortedList<User> sListUsers = new SortedList<>(squished);
-        sListUsers.comparatorProperty().bind(searchTableView.comparatorProperty());
-
         //predicate on this list not working properly
         //should limit the number of items shown to ROWS_PER_PAGE
         //squished = limit(fListUsers, sListUsers);
         //set table columns and contents
         searchTableView.getColumns().setAll(fNameColumn, lNameColumn, dobColumn, dodColumn, ageColumn, regionColumn, organsColumn);
         //searchTableView.setItems(FXCollections.observableList(sListUsers.subList(startIndex, endIndex)));
-        searchTableView.setItems(sListUsers);
-        searchTableView.setRowFactory((searchTableView) -> new TooltipTableRow<>(User::getTooltip));
 
-
+        displaySearchTable();
         //set on-click behaviour
         searchTableView.setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
@@ -284,6 +267,22 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
                 launchUser(user);
             }
         });
+    }
+
+    private void displaySearchTable() {
+        //set up lists
+        //table contents are SortedList of a FilteredList of an ObservableList of an ArrayList
+        ObservableList<User> oListUsers = FXCollections.observableList(users);
+
+        fListUsers = new FilteredList<>(oListUsers);
+        fListUsers = filter(fListUsers);
+        FilteredList<User> squished = new FilteredList<>(fListUsers);
+
+        SortedList<User> sListUsers = new SortedList<>(squished.filtered(user -> !user.isDeleted()));
+        sListUsers.comparatorProperty().bind(searchTableView.comparatorProperty());
+
+        searchTableView.setItems(sListUsers);
+        searchTableView.setRowFactory((searchTableView) -> new TooltipTableRow<>(User::getTooltip));
     }
 
 
@@ -445,8 +444,6 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
             loginController.init(AppController.getInstance(), stage);
             stage.hide();
             stage.show();
-            stage.hide();
-            stage.show();
             Log.info("Clinician " + clinician.getStaffId() + " successfully launched login window after logout");
         } catch (IOException e) {
             Log.severe("Clinician " + clinician.getStaffId() + " failed to launch login window after logout", e);
@@ -493,7 +490,7 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
     @FXML
     public void refreshTables() {
         transplantWaitListTabPageController.populateWaitListTable();
-        searchTableView.refresh();
+        displaySearchTable();
     }
 
     /**
@@ -528,8 +525,9 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
         Optional<ButtonType> result = alert.showAndWait();
 
         if (result.get() == ButtonType.OK) {
-            appController.deleteClinician(clinician);
+            clinician.setDeleted(true);
             if (!admin) {
+                appController.deleteClinician(clinician);
                 logout();
             } else {
                 stage.close();
