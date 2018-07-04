@@ -19,6 +19,14 @@
         <start-class>odms.Server</start-class>
     </properties>
 
+    <distributionManagement>
+        <site>
+            <id>odms-site</id>
+            <name>odms-site</name>
+            <url>site/odms/server/</url>
+        </site>
+    </distributionManagement>
+
     <!--this replaces spring-boot-starter-parent as we have our own parent pom-->
     <dependencyManagement>
         <dependencies>

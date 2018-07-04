@@ -12,7 +12,13 @@
         <module>client</module>
         <module>server</module>
     </modules>
-
+    <distributionManagement>
+        <site>
+            <id>odms-site</id>
+            <name>odms-site</name>
+            <url>site/odms/</url>
+        </site>
+    </distributionManagement>
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
