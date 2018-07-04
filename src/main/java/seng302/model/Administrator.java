@@ -92,6 +92,10 @@ public class Administrator extends Undoable<Administrator> implements Listenable
         return dateCreated;
     }
 
+    public void setDateCreated(LocalDateTime dateCreated) {
+        this.dateCreated = dateCreated;
+    }
+
     public LocalDateTime getDateLastModified() {
         return dateLastModified;
     }
@@ -181,7 +185,10 @@ public class Administrator extends Undoable<Administrator> implements Listenable
         salt = PasswordManager.getNextSalt();
         this.password = PasswordManager.hash(password, salt);
         addChange(new Change("Update password"));
+    }
 
+    public byte[] getSalt() {
+        return salt;
     }
 
     public List<Change> getChanges() {
@@ -204,6 +211,12 @@ public class Administrator extends Undoable<Administrator> implements Listenable
 
     public void setPcs(PropertyChangeSupport pcs) {
         this.pcs = pcs;
+    }
+
+    @Override
+    public void setDeleted(boolean deleted) {
+        super.setDeleted(deleted);
+        addChange(new Change("Deleted administrator"));
     }
 
     /**

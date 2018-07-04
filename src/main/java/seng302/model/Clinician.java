@@ -134,6 +134,10 @@ public class Clinician extends Undoable<Clinician> implements Listenable {
         return dateCreated;
     }
 
+    public void setDateCreated(LocalDateTime dateCreated) {
+        this.dateCreated = dateCreated;
+    }
+
     public LocalDateTime getDateLastModified() {
         return dateLastModified;
     }
@@ -282,6 +286,12 @@ public class Clinician extends Undoable<Clinician> implements Listenable {
     private void saveStateforUndo() {
         Memento<Clinician> memento = new Memento<>(Clinician.clone(this));
         getUndoStack().push(memento);
+    }
+
+    @Override
+    public void setDeleted(boolean deleted) {
+        super.setDeleted(deleted);
+        addChange(new Change("Deleted clinician"));
     }
 
     @Override

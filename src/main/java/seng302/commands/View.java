@@ -42,7 +42,7 @@ public class View implements Runnable {
             return;
         }
         if (!NHI.equals("")) {
-            System.out.println(controller.getUser(NHI));
+            System.out.println(controller.findUser(NHI));
             return;
         }
 

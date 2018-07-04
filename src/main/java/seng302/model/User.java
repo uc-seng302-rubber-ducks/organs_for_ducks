@@ -580,6 +580,10 @@ public class User extends Undoable<User> implements Listenable {
         return timeCreated;
     }
 
+    public void setTimeCreated(LocalDateTime timeCreated) {
+        this.timeCreated = timeCreated;
+    }
+
     public String getStringAge() {
         if (dateOfDeath != null) {
 
@@ -841,6 +845,12 @@ public class User extends Undoable<User> implements Listenable {
         updateLastModified();
         medicalProcedures.remove(medicalProcedure);
         addChange(new Change("Removed Medical Procedure" + medicalProcedure));
+    }
+
+    @Override
+    public void setDeleted(boolean deleted) {
+        super.setDeleted(deleted);
+        addChange(new Change("Deleted user"));
     }
 
     public String getTooltip() {

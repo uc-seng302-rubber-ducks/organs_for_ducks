@@ -2,7 +2,9 @@ package seng302.model;
 
 
 import com.google.gson.annotations.Expose;
+import seng302.model._abstract.Deletable;
 import seng302.model._enum.Organs;
+import seng302.model.datamodel.ProcedureKey;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -13,7 +15,7 @@ import java.util.List;
  *
  * @author Josh Burt
  */
-public class MedicalProcedure {
+public class MedicalProcedure extends Deletable {
 
     @Expose
     private LocalDate procedureDate;
@@ -99,5 +101,14 @@ public class MedicalProcedure {
                 ", description='" + description + '\'' +
                 ", organsAffected=" + organsAffected +
                 '}';
+    }
+
+    /**
+     * Generates a procedure key to easily identify a medical procedure
+     *
+     * @return A ProcedureKey object containing the name and date of the procedure.
+     */
+    public ProcedureKey getKey() {
+        return new ProcedureKey(summary, procedureDate);
     }
 }

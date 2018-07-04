@@ -87,7 +87,7 @@ public class CreateUser implements Runnable {
                     + "maybe a user with that NHI already exists?");
             return;
         }
-        User user = controller.getUser(NHI);
+        User user = controller.findUser(NHI);
         if (user == null) {
             System.out.println("User with this NHI already exists");
             return;
