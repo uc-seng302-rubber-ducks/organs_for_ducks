@@ -31,7 +31,7 @@ public class ThenSteps extends ApplicationTest {
     @Then("^The user should no longer be in the system$")
     public void theUserShouldNoLongerBeInTheSystem() {
         assertTrue(
-                CucumberTestModel.getController().getUser(CucumberTestModel.getUserNhi()) == null);
+                CucumberTestModel.getController().findUser(CucumberTestModel.getUserNhi()) == null);
     }
 
     @Then("^I should see my NHI \"([^\"]*)\" along with my other details at the user view screen")

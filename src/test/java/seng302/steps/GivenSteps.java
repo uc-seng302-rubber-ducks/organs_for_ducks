@@ -48,7 +48,7 @@ public class GivenSteps extends ApplicationTest {
     @Given("^a user with the NHI \"([^\"]*)\" exists$")
     public void aUserWithTheNHIExists(String NHI) {
         CucumberTestModel.setUserNhi(NHI);
-        if (CucumberTestModel.getController().getUser(NHI) == null) {
+        if (CucumberTestModel.getController().findUser(NHI) == null) {
             CucumberTestModel.getController().getUsers().add(new User("A", LocalDate.now().minusYears(20), NHI));
         }
         assertTrue(CucumberTestModel.getController().findUser(NHI) != null);
@@ -64,7 +64,7 @@ public class GivenSteps extends ApplicationTest {
     public void thereExistsAUserWithTheNHIFirstNameLastNameAndDateOfBirth(String NHI,
                                                                           String firstName, String lastName, String dateOfBirth) {
         CucumberTestModel.setUserNhi(NHI);
-        if (CucumberTestModel.getController().getUser(CucumberTestModel.getUserNhi()) == null) {
+        if (CucumberTestModel.getController().findUser(CucumberTestModel.getUserNhi()) == null) {
             CucumberTestModel.getController().getUsers().add(
                     new User(firstName, LocalDate.parse(dateOfBirth, DateTimeFormatter.ISO_LOCAL_DATE), NHI));
         }
@@ -111,18 +111,18 @@ public class GivenSteps extends ApplicationTest {
                 organToReceive = value;
             }
         }
-        if (!CucumberTestModel.getController().getUser(CucumberTestModel.getUserNhi()).getReceiverDetails()
+        if (!CucumberTestModel.getController().findUser(CucumberTestModel.getUserNhi()).getReceiverDetails()
                 .isCurrentlyWaitingFor(organToReceive)) {
-            CucumberTestModel.getController().getUser(CucumberTestModel.getUserNhi()).getReceiverDetails().startWaitingForOrgan(organToReceive);
+            CucumberTestModel.getController().findUser(CucumberTestModel.getUserNhi()).getReceiverDetails().startWaitingForOrgan(organToReceive);
         }
     }
 
     @Given("^The user is alive$")
     public void theUserIsAlive() {
-        if (CucumberTestModel.getController().getUser(CucumberTestModel.getUserNhi()).getDeceased()) {
-            CucumberTestModel.getController().getUser(CucumberTestModel.getUserNhi()).setDateOfDeath(null);
+        if (CucumberTestModel.getController().findUser(CucumberTestModel.getUserNhi()).getDeceased()) {
+            CucumberTestModel.getController().findUser(CucumberTestModel.getUserNhi()).setDateOfDeath(null);
         }
-        assertFalse(CucumberTestModel.getController().getUser(CucumberTestModel.getUserNhi()).getDeceased());
+        assertFalse(CucumberTestModel.getController().findUser(CucumberTestModel.getUserNhi()).getDeceased());
     }
 
     @Given("^the cache is empty$")

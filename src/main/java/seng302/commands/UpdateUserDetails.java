@@ -75,7 +75,7 @@ public class UpdateUserDetails implements Runnable {
             return;
         }
         AppController controller = AppController.getInstance();
-        User user = controller.getUser(NHI);
+        User user = controller.findUser(NHI);
         if (user == null) {
             System.err.println("Donor could not be found");
             return;
@@ -139,7 +139,7 @@ public class UpdateUserDetails implements Runnable {
             changed = true;
         }
         if (newNHI != null) {
-            User exists = controller.getUser(newNHI);
+            User exists = controller.findUser(newNHI);
             if (exists != null) {
                 System.out.println("User with this NHI already exists");
                 return;

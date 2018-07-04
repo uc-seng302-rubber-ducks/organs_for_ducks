@@ -2,7 +2,6 @@ package seng302.model;
 
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import seng302.model._enum.BloodTypes;
 import seng302.model._enum.Organs;
@@ -10,7 +9,7 @@ import seng302.model._enum.Organs;
 import java.time.LocalDate;
 
 import static junit.framework.TestCase.assertTrue;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 /**
  * These tests are done on Users but are more focused on testing the undo stacks/memento system
@@ -43,7 +42,6 @@ public class RedoTest {
     }
 
     @Test
-    @Ignore
     public void testMultipleChangeMultipleRedo() {
         testUser.setBloodType("B+");
         testUser.setStreetName("wallaby way");
@@ -59,7 +57,7 @@ public class RedoTest {
         testUser.redo();
 
         assertEquals(testUser.getBloodType(), BloodTypes.BPLUS.toString());
-        assertEquals(testUser.getAddress(), "42 wallaby way \n" +
+        assertEquals(testUser.getAddress().trim(), "42 wallaby way \n" +
                 "\n" +
                 " Sydney");
         assertEquals(testUser.getRegion(), "Sydney");
@@ -77,12 +75,12 @@ public class RedoTest {
         assertEquals("Doe", testUser.getLastName());
     }
 
-    @Test
+    @Test //CHANGED
     public void singleChangeMementoShouldContainTwoStates() {
         testUser.setName("Harold", "", "");
         testUser.undo();
         Memento<User> mem = testUser.getRedoStack().peek();
-        assertTrue(mem.getOldObject() != null && mem.getNewObject() != null);
+        assertTrue(mem.getState() != null);
     }
 
     @Test
@@ -90,31 +88,22 @@ public class RedoTest {
         testUser.setName("Harold", "", "");
         testUser.undo();
         Memento<User> mem = testUser.getRedoStack().peek();
-        String oldName = mem.getOldObject().getFullName();
-        String newName = mem.getNewObject().getFullName();
-        assertEquals("Frank", oldName);
+        String newName = mem.getState().getFullName();
         assertEquals("Harold", newName);
-
-        //two states of the same user
-        assertTrue(mem.getNewObject().equals(mem.getOldObject()));
     }
 
     @Test
     public void DonorAttributesAttachedUserIsCorrectWhenStored() {
 
-        assertTrue(testUser.getDonorDetails().getAttachedUser().equals(testUser));
+        Assert.assertEquals(testUser.getDonorDetails().getAttachedUser(), testUser);
         testUser.setNhi("QWE1234");
-        assertTrue(testUser.getDonorDetails().getAttachedUser().equals(testUser));
+        Assert.assertEquals(testUser.getDonorDetails().getAttachedUser(), testUser);
 
         testUser.undo();
         Memento<User> mem = testUser.getRedoStack().peek();
-        User newUser = mem.getNewObject();
-        User oldUser = mem.getOldObject();
+        User newUser = mem.getState();
 
-        assertNotEquals(newUser, oldUser);
-        assertTrue(oldUser.getDonorDetails().getAttachedUser().equals(oldUser));
-        User test = newUser.getDonorDetails().getAttachedUser();
-        assertTrue(newUser.getDonorDetails().getAttachedUser().equals(newUser));
+        Assert.assertEquals(newUser.getDonorDetails().getAttachedUser(), newUser);
     }
 
     @Test
@@ -127,22 +116,5 @@ public class RedoTest {
 
         Assert.assertTrue(testUser.getDonorDetails().getOrgans().contains(Organs.BONE));
         Assert.assertTrue(testUser.getDonorDetails().getOrgans().contains(Organs.BONE_MARROW));
-    }
-
-    @Test
-    @Ignore
-    public void ReceiverAttributesAttachedUserIsCorrectWhenStored() {
-        fail("TODO implement when receiver branch merged");
-        //assert(testUser.getReceiverDetails().getAttachedUser().equals(testUser));
-        testUser.setNhi("QWE1234");
-        //assert(testUser.getReceiverDetails().getAttachedUser().equals(testUser));
-
-        Memento<User> mem = testUser.getUndoStack().peek();
-        User newUser = mem.getNewObject();
-        User oldUser = mem.getOldObject();
-
-        assertNotEquals(newUser, oldUser);
-        //assert(oldUser.getReceiverDetails().getAttachedUser().equals(oldUser));
-        //assert(newUser.getReceiverDetails().getAttachedUser().equals(newUser));
     }
 }

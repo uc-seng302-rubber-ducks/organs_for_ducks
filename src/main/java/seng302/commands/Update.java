@@ -26,7 +26,7 @@ public class Update implements Runnable {
                                         AppController controller) {
         User user = null;
         if (!NHI.equals("")) {
-            user = controller.getUser(NHI);
+            user = controller.findUser(NHI);
         } else {
 
             if (fname != null && dobString != null) {
