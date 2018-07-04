@@ -1,6 +1,6 @@
 package odms.view;
 
-import odms.model.User;
+import odms.commons.model.User;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;

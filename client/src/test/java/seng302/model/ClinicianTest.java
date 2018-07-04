@@ -1,7 +1,7 @@
 package seng302.model;
 
-import odms.model.Clinician;
-import odms.utils.PasswordManager;
+import odms.commons.model.Clinician;
+import odms.commons.utils.PasswordManager;
 import org.junit.Before;
 import org.junit.Test;
 

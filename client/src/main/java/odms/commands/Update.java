@@ -1,7 +1,7 @@
 package odms.commands;
 
 import odms.controller.AppController;
-import odms.model.User;
+import odms.commons.model.User;
 import odms.view.IoHelper;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;

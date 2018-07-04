@@ -2,7 +2,7 @@ package seng302.GUITest2;
 
 import odms.App;
 import odms.controller.AppController;
-import odms.model.Clinician;
+import odms.commons.model.Clinician;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;

@@ -3,7 +3,7 @@ package seng302.GUITest1;
 
 import odms.App;
 import odms.controller.AppController;
-import odms.model.User;
+import odms.commons.model.User;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;

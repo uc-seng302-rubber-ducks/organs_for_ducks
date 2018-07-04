@@ -4,7 +4,7 @@ import javafx.scene.Node;
 import javafx.scene.control.TextField;
 import odms.App;
 import odms.controller.AppController;
-import odms.model.Administrator;
+import odms.commons.model.Administrator;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;

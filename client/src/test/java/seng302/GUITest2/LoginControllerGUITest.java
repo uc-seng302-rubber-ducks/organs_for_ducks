@@ -3,7 +3,7 @@ package seng302.GUITest2;
 import javafx.scene.input.KeyCode;
 import odms.App;
 import odms.controller.AppController;
-import odms.model.User;
+import odms.commons.model.User;
 import org.junit.*;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;

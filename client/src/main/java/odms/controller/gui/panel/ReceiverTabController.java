@@ -9,17 +9,18 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
 import javafx.stage.Stage;
+import odms.commons.model.Change;
+import odms.commons.model.User;
+import odms.commons.model._enum.OrganDeregisterReason;
+import odms.commons.model._enum.Organs;
+import odms.commons.utils.Log;
+import odms.commons.utils.OrganListCellFactory;
 import odms.controller.AppController;
 import odms.controller.gui.popup.DeregisterOrganReasonController;
 import odms.controller.gui.popup.ReceiverOrganDateController;
-import odms.controller.gui.popup.ReceiverOrganDetailsHolder;
+import odms.commons.model.datamodel.ReceiverOrganDetailsHolder;
 import odms.controller.gui.window.UserController;
-import odms.model.Change;
-import odms.model.User;
-import odms.model._enum.OrganDeregisterReason;
-import odms.model._enum.Organs;
-import odms.utils.Log;
-import odms.utils.OrganListCellFactory;
+
 
 import java.io.IOException;
 import java.util.*;

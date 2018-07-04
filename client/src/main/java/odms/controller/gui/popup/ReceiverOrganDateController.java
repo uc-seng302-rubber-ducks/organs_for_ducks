@@ -8,10 +8,10 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
-import odms.model.User;
-import odms.model._enum.Organs;
-import odms.model.datamodel.ReceiverOrganDetails;
-import odms.utils.Log;
+import odms.commons.model.User;
+import odms.commons.model._enum.Organs;
+import odms.commons.model.datamodel.ReceiverOrganDetails;
+import odms.commons.utils.Log;
 
 import java.time.LocalDate;
 import java.util.ArrayList;

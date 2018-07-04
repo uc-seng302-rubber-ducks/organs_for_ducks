@@ -14,11 +14,11 @@ import javafx.stage.Stage;
 import odms.controller.AppController;
 import odms.controller.gui.panel.*;
 import odms.controller.gui.statusBarController;
-import odms.model.Change;
-import odms.model.EmergencyContact;
-import odms.model.User;
-import odms.model._enum.OrganDeregisterReason;
-import odms.model._enum.Organs;
+import odms.commons.model.Change;
+import odms.commons.model.EmergencyContact;
+import odms.commons.model.User;
+import odms.commons.model._enum.OrganDeregisterReason;
+import odms.commons.model._enum.Organs;
 
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;

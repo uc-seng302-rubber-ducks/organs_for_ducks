@@ -2,7 +2,7 @@ package seng302.commands;
 
 import odms.commands.UpdateClinician;
 import odms.controller.AppController;
-import odms.model.Clinician;
+import odms.commons.model.Clinician;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;

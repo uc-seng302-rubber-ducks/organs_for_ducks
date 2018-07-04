@@ -10,11 +10,11 @@ import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import odms.controller.AppController;
-import odms.exception.InvalidFieldsException;
-import odms.model.EmergencyContact;
-import odms.model.User;
-import odms.utils.AttributeValidation;
-import odms.utils.Log;
+import odms.commons.exception.InvalidFieldsException;
+import odms.commons.model.EmergencyContact;
+import odms.commons.model.User;
+import odms.commons.utils.AttributeValidation;
+import odms.commons.utils.Log;
 
 import java.time.LocalDate;
 import java.util.Optional;

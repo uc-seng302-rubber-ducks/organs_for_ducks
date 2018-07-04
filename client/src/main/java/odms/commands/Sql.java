@@ -1,9 +1,9 @@
 package odms.commands;
 
 
-import odms.utils.DBHandler;
-import odms.utils.JDBCDriver;
-import odms.utils.Log;
+import odms.commons.utils.DBHandler;
+import odms.commons.utils.JDBCDriver;
+import odms.commons.utils.Log;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;

@@ -1,9 +1,9 @@
 package odms.commands;
 
 import odms.controller.AppController;
-import odms.model.User;
-import odms.utils.DataHandler;
-import odms.utils.JsonHandler;
+import odms.commons.model.User;
+import odms.commons.utils.DataHandler;
+import odms.commons.utils.JsonHandler;
 import odms.view.IoHelper;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;

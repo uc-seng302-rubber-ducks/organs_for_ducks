@@ -123,6 +123,11 @@
             <version>3.1.0</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>odms</groupId>
+            <artifactId>commons</artifactId>
+            <version>0.0</version>
+        </dependency>
 
 
     </dependencies>

@@ -1,8 +1,8 @@
 package seng302.controller;
 
 import odms.controller.AppController;
-import odms.model.Disease;
-import odms.model.User;
+import odms.commons.model.Disease;
+import odms.commons.model.User;
 import org.junit.Before;
 import org.junit.Test;
 

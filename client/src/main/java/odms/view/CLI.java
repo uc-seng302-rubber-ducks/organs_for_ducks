@@ -3,11 +3,11 @@ package odms.view;
 
 import odms.commands.CliRoot;
 import odms.controller.AppController;
-import odms.model.User;
-import odms.model._abstract.Blockable;
-import odms.model._enum.Directory;
-import odms.utils.DataHandler;
-import odms.utils.JsonHandler;
+import odms.commons.model.User;
+import odms.commons.model._abstract.Blockable;
+import odms.commons.model._enum.Directory;
+import odms.commons.utils.DataHandler;
+import odms.commons.utils.JsonHandler;
 import org.jline.keymap.KeyMap;
 import org.jline.reader.*;
 import org.jline.reader.impl.history.DefaultHistory;

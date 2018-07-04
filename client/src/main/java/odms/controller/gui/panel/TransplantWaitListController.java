@@ -10,11 +10,11 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
 import odms.controller.AppController;
-import odms.model.User;
-import odms.model._abstract.TransplantWaitListViewer;
-import odms.model._enum.Organs;
-import odms.model.datamodel.TransplantDetails;
-import odms.utils.AttributeValidation;
+import odms.commons.model.User;
+import odms.commons.model._abstract.TransplantWaitListViewer;
+import odms.commons.model._enum.Organs;
+import odms.commons.model.datamodel.TransplantDetails;
+import odms.commons.utils.AttributeValidation;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -22,7 +22,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static odms.model._enum.Organs.*;
+import static odms.commons.model._enum.Organs.*;
 
 public class TransplantWaitListController {
     @FXML

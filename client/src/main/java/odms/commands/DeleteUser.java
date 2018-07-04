@@ -1,9 +1,9 @@
 package odms.commands;
 
 import odms.controller.AppController;
-import odms.model.User;
-import odms.model._abstract.Blockable;
-import odms.utils.Log;
+import odms.commons.model.User;
+import odms.commons.model._abstract.Blockable;
+import odms.commons.utils.Log;
 import odms.view.CLI;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;

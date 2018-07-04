@@ -13,8 +13,8 @@ import javafx.stage.Stage;
 import odms.controller.AppController;
 import odms.controller.gui.window.LoginController;
 import odms.controller.gui.window.UpdateUserController;
-import odms.model.User;
-import odms.utils.Log;
+import odms.commons.model.User;
+import odms.commons.utils.Log;
 
 import java.io.IOException;
 import java.text.DecimalFormat;

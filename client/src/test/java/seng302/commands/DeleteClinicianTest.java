@@ -2,7 +2,7 @@ package seng302.commands;
 
 import odms.commands.DeleteClinician;
 import odms.controller.AppController;
-import odms.model.Clinician;
+import odms.commons.model.Clinician;
 import odms.view.CLI;
 import org.junit.Before;
 import org.junit.Test;
