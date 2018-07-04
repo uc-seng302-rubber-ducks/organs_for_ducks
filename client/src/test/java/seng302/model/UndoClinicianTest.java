@@ -1,6 +1,6 @@
 package seng302.model;
 
-import odms.model.Clinician;
+import odms.commons.model.Clinician;
 import org.junit.Before;
 import org.junit.Test;
 import org.testfx.framework.junit.ApplicationTest;

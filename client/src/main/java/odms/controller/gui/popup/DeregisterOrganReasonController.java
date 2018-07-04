@@ -9,12 +9,12 @@ import javafx.scene.control.RadioButton;
 import javafx.stage.Stage;
 import odms.controller.AppController;
 import odms.controller.gui.window.UserController;
-import odms.model.Disease;
-import odms.model.User;
-import odms.model._enum.OrganDeregisterReason;
-import odms.model._enum.Organs;
-import odms.utils.AttributeValidation;
-import odms.utils.Log;
+import odms.commons.model.Disease;
+import odms.commons.model.User;
+import odms.commons.model._enum.OrganDeregisterReason;
+import odms.commons.model._enum.Organs;
+import odms.commons.utils.AttributeValidation;
+import odms.commons.utils.Log;
 
 import java.time.LocalDate;
 import java.util.List;

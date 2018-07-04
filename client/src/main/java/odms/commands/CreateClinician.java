@@ -2,8 +2,8 @@ package odms.commands;
 
 
 import odms.controller.AppController;
-import odms.model.Clinician;
-import odms.utils.AttributeValidation;
+import odms.commons.model.Clinician;
+import odms.commons.utils.AttributeValidation;
 import picocli.CommandLine;
 
 @CommandLine.Command(name = "clinician", description = "Allows the creation of a clinician. ot update use update clinician")

@@ -15,11 +15,11 @@ import javafx.util.StringConverter;
 import odms.controller.AppController;
 import odms.controller.gui.popup.OrgansAffectedController;
 import odms.controller.gui.window.UserController;
-import odms.model.Change;
-import odms.model.MedicalProcedure;
-import odms.model.User;
-import odms.model._enum.Organs;
-import odms.utils.Log;
+import odms.commons.model.Change;
+import odms.commons.model.MedicalProcedure;
+import odms.commons.model.User;
+import odms.commons.model._enum.Organs;
+import odms.commons.utils.Log;
 
 import java.io.IOException;
 import java.time.LocalDate;

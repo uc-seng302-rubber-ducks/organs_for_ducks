@@ -1,8 +1,8 @@
 package odms.commands;
 
 import odms.controller.AppController;
-import odms.model.Clinician;
-import odms.utils.AttributeValidation;
+import odms.commons.model.Clinician;
+import odms.commons.utils.AttributeValidation;
 import picocli.CommandLine;
 import picocli.CommandLine.Option;
 

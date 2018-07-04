@@ -1,6 +1,6 @@
 package seng302.Utils;
 
-import odms.utils.PasswordManager;
+import odms.commons.utils.PasswordManager;
 import org.junit.Test;
 
 public class PasswordManagerTest {

@@ -1,9 +1,9 @@
 package odms.commands;
 
 import odms.controller.AppController;
-import odms.model.Clinician;
-import odms.model._abstract.Blockable;
-import odms.utils.Log;
+import odms.commons.model.Clinician;
+import odms.commons.model._abstract.Blockable;
+import odms.commons.utils.Log;
 import odms.view.CLI;
 import picocli.CommandLine;
 

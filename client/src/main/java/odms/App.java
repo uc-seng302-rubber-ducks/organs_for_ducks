@@ -9,11 +9,11 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import odms.controller.AppController;
 import odms.controller.gui.window.LoginController;
-import odms.model.CacheManager;
-import odms.model._enum.Directory;
-import odms.utils.DataHandler;
-import odms.utils.JsonHandler;
-import odms.utils.Log;
+import odms.commons.model.CacheManager;
+import odms.commons.model._enum.Directory;
+import odms.commons.utils.DataHandler;
+import odms.commons.utils.JsonHandler;
+import odms.commons.utils.Log;
 
 import java.io.IOException;
 import java.nio.file.Files;

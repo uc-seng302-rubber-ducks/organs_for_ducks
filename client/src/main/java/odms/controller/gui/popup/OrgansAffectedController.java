@@ -6,10 +6,10 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.SelectionMode;
 import javafx.stage.Stage;
 import odms.controller.AppController;
-import odms.model.MedicalProcedure;
-import odms.model.User;
-import odms.model._enum.Organs;
-import odms.utils.Log;
+import odms.commons.model.MedicalProcedure;
+import odms.commons.model.User;
+import odms.commons.model._enum.Organs;
+import odms.commons.utils.Log;
 
 import java.util.ArrayList;
 import java.util.Collections;

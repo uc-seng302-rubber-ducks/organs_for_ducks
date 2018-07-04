@@ -1,6 +1,6 @@
 package seng302.model;
 
-import odms.utils.HttpRequester;
+import odms.commons.utils.HttpRequester;
 import okhttp3.*;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;

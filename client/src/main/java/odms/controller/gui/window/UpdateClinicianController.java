@@ -11,14 +11,14 @@ import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import odms.controller.AppController;
-import odms.model.Clinician;
-import odms.utils.Log;
+import odms.commons.model.Clinician;
+import odms.commons.utils.Log;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-import static odms.utils.UndoHelpers.removeFormChanges;
+import static odms.commons.utils.UndoHelpers.removeFormChanges;
 
 /**
  * controller for updating clinicians

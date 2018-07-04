@@ -13,9 +13,9 @@ import javafx.stage.Stage;
 import odms.controller.AppController;
 import odms.controller.gui.popup.NewDiseaseController;
 import odms.controller.gui.window.UserController;
-import odms.model.Disease;
-import odms.model.User;
-import odms.utils.Log;
+import odms.commons.model.Disease;
+import odms.commons.model.User;
+import odms.commons.utils.Log;
 
 import java.io.IOException;
 import java.time.LocalDate;

@@ -1,9 +1,9 @@
 package seng302.model;
 
-import odms.model.Memento;
-import odms.model.User;
-import odms.model._enum.BloodTypes;
-import odms.model._enum.Organs;
+import odms.commons.model.Memento;
+import odms.commons.model.User;
+import odms.commons.model._enum.BloodTypes;
+import odms.commons.model._enum.Organs;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

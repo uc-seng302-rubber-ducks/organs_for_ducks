@@ -6,10 +6,10 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.SelectionMode;
 import odms.controller.AppController;
 import odms.controller.gui.window.UserController;
-import odms.model.User;
-import odms.model._enum.Organs;
-import odms.utils.Log;
-import odms.utils.OrganListCellFactory;
+import odms.commons.model.User;
+import odms.commons.model._enum.Organs;
+import odms.commons.utils.Log;
+import odms.commons.utils.OrganListCellFactory;
 
 import java.util.ArrayList;
 import java.util.Collections;

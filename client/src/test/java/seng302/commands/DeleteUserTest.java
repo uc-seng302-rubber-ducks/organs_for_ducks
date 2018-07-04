@@ -2,7 +2,7 @@ package seng302.commands;
 
 import odms.commands.DeleteUser;
 import odms.controller.AppController;
-import odms.model.User;
+import odms.commons.model.User;
 import odms.view.CLI;
 import org.junit.Before;
 import org.junit.Test;

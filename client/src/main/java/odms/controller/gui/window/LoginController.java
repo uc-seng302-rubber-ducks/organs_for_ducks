@@ -11,10 +11,10 @@ import javafx.scene.input.KeyCode;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import odms.controller.AppController;
-import odms.model.Administrator;
-import odms.model.Clinician;
-import odms.model.User;
-import odms.utils.Log;
+import odms.commons.model.Administrator;
+import odms.commons.model.Clinician;
+import odms.commons.model.User;
+import odms.commons.utils.Log;
 import odms.view.CLI;
 
 import java.io.IOException;

@@ -1,9 +1,9 @@
 package odms.commands;
 
 import odms.controller.AppController;
-import odms.model.User;
-import odms.model._enum.OrganDeregisterReason;
-import odms.model._enum.Organs;
+import odms.commons.model.User;
+import odms.commons.model._enum.OrganDeregisterReason;
+import odms.commons.model._enum.Organs;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;

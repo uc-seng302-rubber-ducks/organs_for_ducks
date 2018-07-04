@@ -2,8 +2,8 @@ package seng302.commands;
 
 import odms.commands.CreateUser;
 import odms.controller.AppController;
-import odms.model.User;
-import odms.model.datamodel.Address;
+import odms.commons.model.User;
+import odms.commons.model.datamodel.Address;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;

@@ -1,7 +1,7 @@
 package seng302.Utils;
 
-import odms.model.User;
-import odms.utils.CSVHandler;
+import odms.commons.model.User;
+import odms.commons.utils.CSVHandler;
 import org.apache.commons.csv.CSVRecord;
 import org.junit.Assert;
 import org.junit.Before;

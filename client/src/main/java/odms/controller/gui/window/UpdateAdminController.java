@@ -4,13 +4,13 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 import odms.controller.AppController;
-import odms.model.Administrator;
-import odms.utils.Log;
+import odms.commons.model.Administrator;
+import odms.commons.utils.Log;
 
 import java.util.Optional;
 
-import static odms.utils.AttributeValidation.checkRequiredStringName;
-import static odms.utils.UndoHelpers.removeFormChanges;
+import static odms.commons.utils.AttributeValidation.checkRequiredStringName;
+import static odms.commons.utils.UndoHelpers.removeFormChanges;
 
 public class UpdateAdminController {
     @FXML

@@ -2,7 +2,7 @@ package seng302.commands;
 
 import odms.commands.UpdateUserDetails;
 import odms.controller.AppController;
-import odms.model.User;
+import odms.commons.model.User;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
