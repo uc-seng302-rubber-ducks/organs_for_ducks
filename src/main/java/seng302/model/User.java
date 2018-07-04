@@ -114,7 +114,6 @@ public class User extends Undoable<User> implements Listenable {
         this.preferredFirstName = firstName;
         timeCreated = LocalDateTime.now();
         lastModified = LocalDateTime.now();
-        this.preferredFirstName = firstName;
         updateHistory = new HashMap<>();
         this.contact = new EmergencyContact("", "", "");
         updateHistory.put(dateToString(getTimeCreated()), "Profile created.");
@@ -165,6 +164,77 @@ public class User extends Undoable<User> implements Listenable {
 
     }
 
+    public static User clone(User user) {
+        User newUser = new User();
+        newUser.nhi = user.nhi;
+        newUser.dateOfBirth = user.dateOfBirth;
+        newUser.dateOfDeath = user.dateOfDeath;
+
+        newUser.contactDetails = user.contactDetails;
+        if (user.contact != null) {
+            newUser.contact = new EmergencyContact(user.contact.getName(), user.contact.getCellPhoneNumber(),
+                    user.contact.getHomePhoneNumber(), user.contact.getAddress(),
+                    user.contact.getEmail(), user.contact.getRelationship());
+        } else {
+            newUser.contact = null;
+        }
+
+        newUser.healthDetails = user.healthDetails;
+
+        newUser.name = user.name;
+        newUser.firstName = user.firstName;
+        newUser.preferredFirstName = user.preferredFirstName;
+        newUser.middleName = user.middleName;
+        newUser.lastName = user.lastName;
+
+        newUser.timeCreated = user.timeCreated;
+        if (user.updateHistory != null) {
+            newUser.updateHistory = new HashMap<>(user.updateHistory);
+        } else {
+            newUser.updateHistory = new HashMap<>();
+        }
+        newUser.miscAttributes = new ArrayList<>(user.miscAttributes);
+        newUser.currentMedication = new ArrayList<>(user.currentMedication);
+        newUser.previousMedication = new ArrayList<>(user.previousMedication);
+        newUser.currentMedicationTimes = new HashMap<>(user.currentMedicationTimes);
+        newUser.previousMedicationTimes = new HashMap<>(user.previousMedicationTimes);
+        newUser.donorDetails = new DonorDetails(newUser);
+        for (Organs o : user.donorDetails.getOrgans()) {
+            newUser.donorDetails.getOrgans().add(o);
+        }
+        newUser.receiverDetails = new ReceiverDetails(newUser);
+        //Map<Organs, ArrayList<ReceiverOrganDetailsHolder>> organs = new EnumMap<Organs, ArrayList<ReceiverOrganDetailsHolder>>(this.receiverDetails.getOrgans());
+        //newUser.receiverDetails.setOrgans(organs);
+        for (Organs o : user.receiverDetails.getOrgans().keySet()) {
+            ArrayList<ReceiverOrganDetailsHolder> detailHolders = new ArrayList<>(user.receiverDetails.getOrgans().get(o));
+            for (int i = 0; i < user.receiverDetails.getOrgans().get(o).size(); i++) {
+                ReceiverOrganDetailsHolder newHolder = new ReceiverOrganDetailsHolder(null, null, null);// = newUser.receiverDetails.getOrgans().get(o).get(i);
+                ReceiverOrganDetailsHolder oldHolder = user.receiverDetails.getOrgans().get(o).get(i);
+                newHolder.setStartDate(oldHolder.getStartDate());
+                newHolder.setStopDate(oldHolder.getStopDate());
+                newHolder.setOrganDeregisterReason(oldHolder.getOrganDeregisterReason());
+                detailHolders.add(newHolder);
+            }
+            newUser.receiverDetails.getOrgans().put(o, detailHolders);
+        }
+
+        newUser.currentDiseases = new ArrayList<>(user.currentDiseases);
+        newUser.pastDiseases = new ArrayList<>(user.pastDiseases);
+        newUser.medicalProcedures = new ArrayList<>();
+        for (MedicalProcedure m : user.medicalProcedures) {
+            MedicalProcedure newMed = new MedicalProcedure();
+            newMed.setSummary(m.getSummary());
+            newMed.setDescription(m.getDescription());
+            newMed.setProcedureDate(m.getProcedureDate());
+            newMed.setOrgansAffected(new ArrayList<>(m.getOrgansAffected()));
+            newUser.medicalProcedures.add(newMed);
+        }
+
+        newUser.changes = new ArrayList<>(user.changes);
+        newUser.setUndoStack((Stack<Memento<User>>) user.getUndoStack().clone());
+        newUser.setRedoStack((Stack<Memento<User>>) user.getRedoStack().clone());
+        return newUser;
+    }
 
     public ContactDetails getContactDetails() {
         return contactDetails;
@@ -262,6 +332,10 @@ public class User extends Undoable<User> implements Listenable {
 
     public LocalDateTime getLastModified() {
         return lastModified;
+    }
+
+    public void setLastModified(LocalDateTime lastModified) {
+        this.lastModified = lastModified;
     }
 
     public void setName(String fName, String mName, String lName) {
@@ -387,7 +461,7 @@ public class User extends Undoable<User> implements Listenable {
     public void setHeightText(String height) {
         this.saveStateForUndo();
         updateLastModified();
-        if (healthDetails.getHeightText() != height) {
+        if (!(healthDetails.getHeightText().equals(height))) {
             healthDetails.setHeightText(height);
             addChange(new Change("set height to " + height));
         }
@@ -400,7 +474,7 @@ public class User extends Undoable<User> implements Listenable {
     public void setWeightText(String weight) {
         this.saveStateForUndo();
         updateLastModified();
-        if (healthDetails.getWeightText() != weight) {
+        if (!(healthDetails.getWeightText().equals(weight))) {
             healthDetails.setWeightText(weight);
             addChange(new Change("set weight to " + weight));
         }
@@ -471,7 +545,6 @@ public class User extends Undoable<User> implements Listenable {
         healthDetails.setSmoker(smoker);
         addChange(new Change("Changed smoker status to " + smoker));
     }
-
 
     public String getStreetNumber() {
         return contactDetails.getAddress().getStreetNumber();
@@ -561,7 +634,6 @@ public class User extends Undoable<User> implements Listenable {
             return "U";
         }
     }
-
 
     public String getRegion() {
         return contactDetails.getAddress().getRegion();
@@ -660,14 +732,14 @@ public class User extends Undoable<User> implements Listenable {
         return contactDetails.getEmail();
     }
 
+    // @TODO: find all instances of potential updates and add to the Hashmap
+
     public void setEmail(String email) {
         this.saveStateForUndo();
         updateLastModified();
         contactDetails.setEmail(email);
         addChange(new Change("Changed email to " + email));
     }
-
-    // @TODO: find all instances of potential updates and add to the Hashmap
 
     public Map<String, String> getUpdateHistory() {
         return updateHistory;
@@ -685,7 +757,6 @@ public class User extends Undoable<User> implements Listenable {
         String timeStamp = dateToString(dateTime);
         updateHistory.put(timeStamp, action);
     }
-
 
     public List<String> getPreviousMedication() {
         return previousMedication;
@@ -730,7 +801,6 @@ public class User extends Undoable<User> implements Listenable {
         addChange(new Change("Added previous medication" + medication));
     }
 
-
     public void removeCurrentMedication(String medication) {
         updateLastModified();
         currentMedication.remove(medication);
@@ -756,7 +826,6 @@ public class User extends Undoable<User> implements Listenable {
     public Map<String, List<LocalDateTime>> getCurrentMedicationTimes() {
         return currentMedicationTimes;
     }
-
 
     public void setCurrentMedicationTimes(
             Map<String, List<LocalDateTime>> currentMedicationTimes) {
@@ -799,7 +868,6 @@ public class User extends Undoable<User> implements Listenable {
         updateLastModified();
     }
 
-
     /**
      * Use this one when creating the user from the json object
      *
@@ -810,7 +878,6 @@ public class User extends Undoable<User> implements Listenable {
         previousMedicationTimes.put(medication, stamps);
         updateLastModified();
     }
-
 
     public List<Change> getChanges() {
         return changes;
@@ -946,79 +1013,6 @@ public class User extends Undoable<User> implements Listenable {
         Memento<User> memento = getRedoStack().pop();
         this.changeInto(memento.getState());
         addChange(new Change("redo"));
-    }
-
-
-    public static User clone(User user) {
-        User newUser = new User();
-        newUser.nhi = user.nhi;
-        newUser.dateOfBirth = user.dateOfBirth;
-        newUser.dateOfDeath = user.dateOfDeath;
-
-        newUser.contactDetails = user.contactDetails;
-        if (user.contact != null) {
-            newUser.contact = new EmergencyContact(user.contact.getName(), user.contact.getCellPhoneNumber(),
-                    user.contact.getHomePhoneNumber(), user.contact.getAddress(),
-                    user.contact.getEmail(), user.contact.getRelationship());
-        } else {
-            newUser.contact = null;
-        }
-
-        newUser.healthDetails = user.healthDetails;
-
-        newUser.name = user.name;
-        newUser.firstName = user.firstName;
-        newUser.preferredFirstName = user.preferredFirstName;
-        newUser.middleName = user.middleName;
-        newUser.lastName = user.lastName;
-
-        newUser.timeCreated = user.timeCreated;
-        if (user.updateHistory != null) {
-            newUser.updateHistory = new HashMap<>(user.updateHistory);
-        } else {
-            newUser.updateHistory = new HashMap<>();
-        }
-        newUser.miscAttributes = new ArrayList<>(user.miscAttributes);
-        newUser.currentMedication = new ArrayList<>(user.currentMedication);
-        newUser.previousMedication = new ArrayList<>(user.previousMedication);
-        newUser.currentMedicationTimes = new HashMap<>(user.currentMedicationTimes);
-        newUser.previousMedicationTimes = new HashMap<>(user.previousMedicationTimes);
-        newUser.donorDetails = new DonorDetails(newUser);
-        for (Organs o : user.donorDetails.getOrgans()) {
-            newUser.donorDetails.getOrgans().add(o);
-        }
-        newUser.receiverDetails = new ReceiverDetails(newUser);
-        //Map<Organs, ArrayList<ReceiverOrganDetailsHolder>> organs = new EnumMap<Organs, ArrayList<ReceiverOrganDetailsHolder>>(this.receiverDetails.getOrgans());
-        //newUser.receiverDetails.setOrgans(organs);
-        for (Organs o : user.receiverDetails.getOrgans().keySet()) {
-            ArrayList<ReceiverOrganDetailsHolder> detailHolders = new ArrayList<>(user.receiverDetails.getOrgans().get(o));
-            for (int i = 0; i < user.receiverDetails.getOrgans().get(o).size(); i++) {
-                ReceiverOrganDetailsHolder newHolder = new ReceiverOrganDetailsHolder(null, null, null);// = newUser.receiverDetails.getOrgans().get(o).get(i);
-                ReceiverOrganDetailsHolder oldHolder = user.receiverDetails.getOrgans().get(o).get(i);
-                newHolder.setStartDate(oldHolder.getStartDate());
-                newHolder.setStopDate(oldHolder.getStopDate());
-                newHolder.setOrganDeregisterReason(oldHolder.getOrganDeregisterReason());
-                detailHolders.add(newHolder);
-            }
-            newUser.receiverDetails.getOrgans().put(o, detailHolders);
-        }
-
-        newUser.currentDiseases = new ArrayList<>(user.currentDiseases);
-        newUser.pastDiseases = new ArrayList<>(user.pastDiseases);
-        newUser.medicalProcedures = new ArrayList<>();
-        for (MedicalProcedure m : user.medicalProcedures) {
-            MedicalProcedure newMed = new MedicalProcedure();
-            newMed.setSummary(m.getSummary());
-            newMed.setDescription(m.getDescription());
-            newMed.setProcedureDate(m.getProcedureDate());
-            newMed.setOrgansAffected(new ArrayList<>(m.getOrgansAffected()));
-            newUser.medicalProcedures.add(newMed);
-        }
-
-        newUser.changes = new ArrayList<>(user.changes);
-        newUser.setUndoStack((Stack<Memento<User>>) user.getUndoStack().clone());
-        newUser.setRedoStack((Stack<Memento<User>>) user.getRedoStack().clone());
-        return newUser;
     }
 
     /**

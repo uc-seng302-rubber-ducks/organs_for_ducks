@@ -1,5 +1,6 @@
 package seng302.steps;
 
+import cucumber.api.PendingException;
 import cucumber.api.java.After;
 import cucumber.api.java.en.Given;
 import org.testfx.api.FxToolkit;
@@ -122,5 +123,29 @@ public class GivenSteps extends ApplicationTest {
             CucumberTestModel.getController().findUser(CucumberTestModel.getUserNhi()).setDateOfDeath(null);
         }
         assertFalse(CucumberTestModel.getController().findUser(CucumberTestModel.getUserNhi()).getDeceased());
+    }
+
+    @Given("^the cache is empty$")
+    public void the_cache_is_empty() throws Throwable {
+        // Write code here that turns the phrase above into concrete actions
+        throw new PendingException();
+    }
+
+    @Given("^the cache is pre-populated$")
+    public void the_cache_is_pre_populated() throws Throwable {
+        // Write code here that turns the phrase above into concrete actions
+        throw new PendingException();
+    }
+
+    @Given("^the app is logged in as a \"([^\"]*)\"$")
+    public void the_app_is_logged_in_as_a(String arg1) throws Throwable {
+        // Write code here that turns the phrase above into concrete actions
+        throw new PendingException();
+    }
+
+    @Given("^the \"([^\"]*)\" tab is selected$")
+    public void the_tab_is_selected(String arg1) throws Throwable {
+        // Write code here that turns the phrase above into concrete actions
+        throw new PendingException();
     }
 }

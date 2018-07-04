@@ -130,6 +130,10 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
      */
     public void init(Stage stage, AppController appController, Clinician clinician, boolean fromAdmin,
                      Collection<PropertyChangeListener> parentListeners) {
+        this.appController = appController;
+        this.stage = stage;
+        this.clinician = clinician;
+        this.admin = fromAdmin;
 
         //add change listeners of parent controllers to the current clinician
         this.parentListeners = new ArrayList<>();
@@ -139,10 +143,6 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
             }
             this.parentListeners.addAll(parentListeners);
         }
-        this.stage = stage;
-        this.appController = appController;
-        this.clinician = clinician;
-        this.admin = fromAdmin;
         stage.setResizable(true);
         showClinician(clinician);
         users = appController.getUsers();
@@ -158,13 +158,8 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
         setDefaultFilters();
         searchCountLabel.setText("Showing results " + (searchCount == 0 ? startIndex : startIndex + 1) + " - " + (endIndex) + " of " + searchCount);
         openStages = new ArrayList<>();
-        stage.setOnCloseRequest(e -> {
-            if (!openStages.isEmpty()) {
-                for (Stage s : openStages) {
-                    s.close();
-                }
-            }
-        });
+
+
         int pageCount = searchCount / ROWS_PER_PAGE;
         searchTablePagination.setPageCount(pageCount > 0 ? pageCount + 1 : 1);
         searchTablePagination.currentPageIndexProperty().addListener(((observable, oldValue, newValue) -> changePage(newValue.intValue())));
@@ -178,6 +173,7 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
         }
 
     }
+
 
     @FXML
     private void goBack() {
@@ -446,8 +442,6 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
             stage.setScene(new Scene(root));
             LoginController loginController = loader.getController();
             loginController.init(AppController.getInstance(), stage);
-            stage.hide();
-            stage.show();
             stage.hide();
             stage.show();
             Log.info("Clinician " + clinician.getStaffId() + " successfully launched login window after logout");
