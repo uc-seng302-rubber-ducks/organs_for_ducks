@@ -48,6 +48,9 @@ public class Administrator extends Undoable<Administrator> implements Listenable
         this.dateLastModified = LocalDateTime.now();
         this.changes = FXCollections.observableArrayList();
         this.pcs = new PropertyChangeSupport(this);
+        this.firstName = "";
+        this.middleName = "";
+        this.lastName = "";
     }
 
     /**
