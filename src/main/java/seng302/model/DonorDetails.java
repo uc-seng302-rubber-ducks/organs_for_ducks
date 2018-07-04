@@ -33,7 +33,7 @@ public class DonorDetails {
         organs = new HashSet<>();
     }
 
-    public void setOrgans(Set<Organs> organs) { //CHANGED THIS TO SET HOPE NO BreAKY
+    public void setOrgans(Set<Organs> organs) {
         attachedUser.updateLastModified();
         this.organs = organs;
     }

@@ -16,8 +16,6 @@ import java.util.Objects;
 
 /**
  * class to model data structure for an Administrator.
- *
- * @author acb116
  */
 public class Administrator extends Undoable<Administrator> implements Listenable {
     @Expose

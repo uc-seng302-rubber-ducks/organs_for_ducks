@@ -12,7 +12,6 @@ import javafx.stage.Stage;
 import seng302.controller.AppController;
 import seng302.exception.InvalidFieldsException;
 import seng302.model.EmergencyContact;
-import seng302.model.Memento;
 import seng302.model.User;
 import seng302.utils.AttributeValidation;
 import seng302.utils.Log;
@@ -490,7 +489,7 @@ public class UpdateUserController {
 
 
         if (valid) {
-            sumAllChanged();
+            removeFormChanges();
             AppController appController = AppController.getInstance();
             UserController userController = appController.getUserController();
             try {
@@ -504,21 +503,6 @@ public class UpdateUserController {
             }
             stage.close();
         }
-    }
-
-    /**
-     * Turns all form changes into one memento on the stack
-     */
-    private void sumAllChanged() {
-//        Memento<User> sumChanges = new Memento<>();
-//        removeFormChanges();
-//        if (!currentUser.getUndoStack().isEmpty()) {
-//            sumChanges.setOldObject(currentUser.getUndoStack().peek().getOldObject().clone());
-//            currentUser.getUndoStack().pop();
-//            sumChanges.setNewObject(User.clone(currentUser));
-//            currentUser.getUndoStack().push(sumChanges);
-//        }
-        removeFormChanges();
     }
 
     /**

@@ -141,7 +141,7 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
         }
         this.stage = stage;
         this.appController = appController;
-        this.clinician = clinician; //TODO Check whether this needs to be a clone?. It was here but not in admin
+        this.clinician = clinician;
         this.admin = fromAdmin;
         stage.setResizable(true);
         showClinician(clinician);
