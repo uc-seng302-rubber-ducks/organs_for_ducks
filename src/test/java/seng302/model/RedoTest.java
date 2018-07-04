@@ -2,7 +2,6 @@ package seng302.model;
 
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import seng302.model._enum.BloodTypes;
 import seng302.model._enum.Organs;
@@ -43,7 +42,6 @@ public class RedoTest {
     }
 
     @Test
-    @Ignore
     public void testMultipleChangeMultipleRedo() {
         testUser.setBloodType("B+");
         testUser.setStreetName("wallaby way");
@@ -59,7 +57,7 @@ public class RedoTest {
         testUser.redo();
 
         assertEquals(testUser.getBloodType(), BloodTypes.BPLUS.toString());
-        assertEquals(testUser.getAddress(), "42 wallaby way \n" +
+        assertEquals(testUser.getAddress().trim(), "42 wallaby way \n" +
                 "\n" +
                 " Sydney");
         assertEquals(testUser.getRegion(), "Sydney");
@@ -85,31 +83,27 @@ public class RedoTest {
         assertTrue(mem.getState() != null);
     }
 
-    @Test //CHANGED
+    @Test
     public void singleChangeMementoShouldContainCorrectStates() {
         testUser.setName("Harold", "", "");
         testUser.undo();
         Memento<User> mem = testUser.getRedoStack().peek();
         String newName = mem.getState().getFullName();
         assertEquals("Harold", newName);
-
-        //two states of the same user
-        //assertTrue(mem.getNewObject().equals(mem.getOldObject()));
     }
 
-    @Test //CHANGED
+    @Test
     public void DonorAttributesAttachedUserIsCorrectWhenStored() {
 
-        assertTrue(testUser.getDonorDetails().getAttachedUser().equals(testUser));
+        Assert.assertEquals(testUser.getDonorDetails().getAttachedUser(), testUser);
         testUser.setNhi("QWE1234");
-        assertTrue(testUser.getDonorDetails().getAttachedUser().equals(testUser));
+        Assert.assertEquals(testUser.getDonorDetails().getAttachedUser(), testUser);
 
         testUser.undo();
         Memento<User> mem = testUser.getRedoStack().peek();
         User newUser = mem.getState();
 
-        User test = newUser.getDonorDetails().getAttachedUser();
-        assertTrue(newUser.getDonorDetails().getAttachedUser().equals(newUser));
+        Assert.assertEquals(newUser.getDonorDetails().getAttachedUser(), newUser);
     }
 
     @Test
