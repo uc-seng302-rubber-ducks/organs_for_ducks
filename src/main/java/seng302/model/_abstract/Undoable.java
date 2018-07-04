@@ -17,17 +17,15 @@ public abstract class Undoable<T> {
         return undoStack;
     }
 
-    public Stack<Memento<T>> getRedoStack() {
-        return redoStack;
-    }
-
     public void setRedoStack(Stack<Memento<T>> redoStack) {
         this.redoStack = redoStack;
+    }
+
+    public Stack<Memento<T>> getRedoStack() {
+        return redoStack;
     }
 
     public abstract void undo();
 
     public abstract void redo();
-
-    public abstract T clone();
 }

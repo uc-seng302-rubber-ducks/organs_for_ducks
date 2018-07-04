@@ -704,7 +704,7 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
                         appController.addUser(user);
                     }
                 }
-               importSaveUsers(newUsers.size());
+                importSaveUsers(newUsers.size());
             } catch (FileNotFoundException e) {
                 Log.warning("Failed to load file " + filename, e);
                 messageBoxPopup("error");

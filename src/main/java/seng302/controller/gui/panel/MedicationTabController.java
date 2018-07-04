@@ -14,7 +14,6 @@ import okhttp3.OkHttpClient;
 import org.controlsfx.control.textfield.TextFields;
 import seng302.controller.AppController;
 import seng302.controller.gui.popup.MedicationsTimeController;
-import seng302.model.Memento;
 import seng302.model.User;
 import seng302.utils.HttpRequester;
 import seng302.utils.Log;
@@ -230,8 +229,7 @@ public class MedicationTabController {
      */
     @FXML
     void takeMedication() {
-        Memento<User> memento = new Memento<>();
-        memento.setOldObject(currentUser.clone());
+        currentUser.saveStateForUndo();
         String med = previousMedicationListView.getSelectionModel().getSelectedItem();
         if (med == null) {
             Log.warning("Unable to take medication for User NHI: " + currentUser.getNhi() + " as it is empty");
@@ -247,8 +245,6 @@ public class MedicationTabController {
         currentUser.addCurrentMedication(med);
         previousMeds.remove(med);
         currentUser.removePreviousMedication(med);
-        memento.setNewObject(currentUser.clone());
-        currentUser.getUndoStack().push(memento);
         Log.info("Successfully moved medication: " + med + " from previous to current medication for User NHI: " + currentUser.getNhi());
     }
 
@@ -257,8 +253,7 @@ public class MedicationTabController {
      */
     @FXML
     void untakeMedication() {
-        Memento<User> memento = new Memento<>();
-        memento.setOldObject(currentUser.clone());
+        currentUser.saveStateForUndo();
         String med = currentMedicationListView.getSelectionModel().getSelectedItem();
         if (med == null) {
             Log.warning("Unable to un-take medication for User NHI: " + currentUser.getNhi() + " as it is empty");
@@ -274,8 +269,6 @@ public class MedicationTabController {
         currentMeds.remove(med);
         previousMeds.add(med);
         currentUser.addPreviousMedication(med);
-        memento.setNewObject(currentUser.clone());
-        currentUser.getUndoStack().push(memento);
         Log.info("Successfully moved medication: " + med + " from current to previous medication for User NHI: " + currentUser.getNhi());
     }
 

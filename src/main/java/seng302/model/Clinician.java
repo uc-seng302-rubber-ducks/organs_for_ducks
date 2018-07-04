@@ -147,12 +147,10 @@ public class Clinician extends Undoable<Clinician> implements Listenable {
     }
 
     public void setFirstName(String name) {
-        Memento<Clinician> memento = new Memento<>();
-        memento.setOldObject(this.clone());
+        this.saveStateforUndo();
         this.firstName = name;
         addChange(new Change("set first name to " + name));
-        memento.setNewObject(this.clone());
-        getUndoStack().push(memento);
+        setDateLastModified(LocalDateTime.now());
     }
 
     public String getMiddleName() {
@@ -160,12 +158,10 @@ public class Clinician extends Undoable<Clinician> implements Listenable {
     }
 
     public void setMiddleName(String name) {
-        Memento<Clinician> memento = new Memento<>();
-        memento.setOldObject(this.clone());
+        this.saveStateforUndo();
         this.middleName = name;
         addChange(new Change("set middle name to " + name));
-        memento.setNewObject(this.clone());
-        getUndoStack().push(memento);
+        setDateLastModified(LocalDateTime.now());
     }
 
     public String getLastName() {
@@ -173,12 +169,10 @@ public class Clinician extends Undoable<Clinician> implements Listenable {
     }
 
     public void setLastName(String name) {
-        Memento<Clinician> memento = new Memento<>();
-        memento.setOldObject(this.clone());
+        this.saveStateforUndo();
         this.lastName = name;
         addChange(new Change("set last name to " + lastName));
-        memento.setNewObject(this.clone());
-        getUndoStack().push(memento);
+        setDateLastModified(LocalDateTime.now());
     }
 
 
@@ -206,12 +200,10 @@ public class Clinician extends Undoable<Clinician> implements Listenable {
     }
 
     public void setStaffId(String staffId) {
-        Memento<Clinician> memento = new Memento<>();
-        memento.setOldObject(this.clone());
+        this.saveStateforUndo();
         this.staffId = staffId;
         addChange(new Change("set staff id to " + staffId));
-        memento.setNewObject(this.clone());
-        getUndoStack().push(memento);
+        setDateLastModified(LocalDateTime.now());
     }
 
 
@@ -220,12 +212,10 @@ public class Clinician extends Undoable<Clinician> implements Listenable {
     }
 
     public void setWorkAddress(String workAddress) {
-        Memento<Clinician> memento = new Memento<>();
-        memento.setOldObject(this.clone());
+        this.saveStateforUndo();
         this.workAddress = workAddress;
         addChange(new Change("set work address to " + workAddress));
-        memento.setNewObject(this.clone());
-        getUndoStack().push(memento);
+        setDateLastModified(LocalDateTime.now());
     }
 
     public String getRegion() {
@@ -233,12 +223,10 @@ public class Clinician extends Undoable<Clinician> implements Listenable {
     }
 
     public void setRegion(String region) {
-        Memento<Clinician> memento = new Memento<>();
-        memento.setOldObject(this.clone());
+        this.saveStateforUndo();
         this.region = region;
         addChange(new Change("set region to " + region));
-        memento.setNewObject(this.clone());
-        getUndoStack().push(memento);
+        setDateLastModified(LocalDateTime.now());
     }
 
     /**
@@ -291,6 +279,11 @@ public class Clinician extends Undoable<Clinician> implements Listenable {
                 new Object()));
     }
 
+    private void saveStateforUndo() {
+        Memento<Clinician> memento = new Memento<>(Clinician.clone(this));
+        getUndoStack().push(memento);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -322,9 +315,9 @@ public class Clinician extends Undoable<Clinician> implements Listenable {
         if (getUndoStack().isEmpty()) {
             return;
         }
-        Memento<Clinician> memento = getUndoStack().pop();
-        this.changeInto(memento.getOldObject());
-        getRedoStack().push(memento);
+        getRedoStack().push(new Memento<>(clone(this))); // put current state onto redo stack
+        Memento<Clinician> memento = getUndoStack().pop(); //Get the top of the undo stack
+        this.changeInto(memento.getState()); //Change current state to be top undo state
         addChange(new Change("undo"));
     }
 
@@ -333,24 +326,24 @@ public class Clinician extends Undoable<Clinician> implements Listenable {
         if (getRedoStack().isEmpty()) {
             return;
         }
+        getUndoStack().push(new Memento<>(clone(this)));
         Memento<Clinician> memento = getRedoStack().pop();
-        this.changeInto(memento.getNewObject());
-        getUndoStack().push(memento);
+        this.changeInto(memento.getState());
         addChange(new Change("redo"));
     }
 
-    @Override
-    public Clinician clone() {
+
+    public static Clinician clone(Clinician clinician) {
         Clinician newClinician = new Clinician();
-        newClinician.staffId = this.staffId;
-        newClinician.password = this.password;
-        newClinician.firstName = this.firstName;
-        newClinician.middleName = this.middleName;
-        newClinician.lastName = this.lastName;
-        newClinician.workAddress = this.workAddress;
-        newClinician.region = this.region;
-        newClinician.dateCreated = this.dateCreated;
-        newClinician.dateLastModified = this.dateLastModified;
+        newClinician.staffId = clinician.staffId;
+        newClinician.password = clinician.password;
+        newClinician.firstName = clinician.firstName;
+        newClinician.middleName = clinician.middleName;
+        newClinician.lastName = clinician.lastName;
+        newClinician.workAddress = clinician.workAddress;
+        newClinician.region = clinician.region;
+        newClinician.dateCreated = clinician.dateCreated;
+        newClinician.dateLastModified = clinician.dateLastModified;
 
         return newClinician;
     }

@@ -56,7 +56,7 @@ public class UpdateAdminController {
     private Administrator adminClone;
     private int undoMarker;
     private AppController appController;
-    private AdministratorViewController adminViewController;
+    private seng302.controller.gui.window.AdministratorViewController adminViewController;
 
 
     /**
@@ -77,7 +77,7 @@ public class UpdateAdminController {
         errorLabel.setText("");
 
         if (!newAdmin) {
-            adminClone = admin.clone();
+            adminClone = Administrator.clone(admin);
             undoMarker = adminClone.getUndoStack().size();
 
             undoAdminUpdateButton.setDisable(true);
@@ -133,6 +133,7 @@ public class UpdateAdminController {
 
         if (changed) {
             prefillFields();
+            //adminClone.getRedoStack().clear(); //TODO
         }
 
         undoAdminUpdateButton.setDisable(adminClone.getUndoStack().size() <= undoMarker);
@@ -173,7 +174,7 @@ public class UpdateAdminController {
                 changed = true;
             }
         }
-
+        //Why is this different to the middle name one?
         if (adminClone.getLastName() != null && !adminClone.getLastName().equals(username)) {
             adminClone.setLastName(lastName);
             changed = true;
