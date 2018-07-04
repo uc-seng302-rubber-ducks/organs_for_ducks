@@ -5,6 +5,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import seng302.utils.HttpRequester;
 
@@ -18,8 +19,14 @@ import static org.mockito.Mockito.*;
 
 public class HttpRequesterTest {
 
-    private OkHttpClient mockClient = mock(OkHttpClient.class);
+    private OkHttpClient mockClient;
+    private HttpRequester requester;
 
+    @Before
+    public void setUp() {
+        mockClient = mock(OkHttpClient.class);
+        requester = new HttpRequester(mockClient);
+    }
 
     @Test
     public void DrugInteractionsShouldSendDrugInteractionsRequest() throws IOException {
@@ -33,7 +40,7 @@ public class HttpRequesterTest {
         when(mockCall.execute()).thenReturn(mockResponse);
         when(mockResponse.body()).thenReturn(mockResponseBody);
         when(mockResponseBody.string()).thenReturn("test body");
-        String result = HttpRequester.getDrugInteractions("Panadol", "Tramadol", mockClient);
+        String result = requester.getDrugInteractions("Panadol", "Tramadol");
 
         verify(mockCall, times(1)).execute();
         assert (result.equals("test body"));
@@ -52,7 +59,7 @@ public class HttpRequesterTest {
         when(mockResponseBody.string()).thenReturn(null);
         when(mockResponse.body()).thenReturn(mockResponseBody);
 
-        String result = HttpRequester.getDrugInteractions("water", "milk", mockClient);
+        String result = requester.getDrugInteractions("water", "milk");
 
         verify(mockCall, times(1)).execute();
         assert (result.equals(""));
@@ -76,13 +83,24 @@ public class HttpRequesterTest {
         when(mockResponseBody.string()).thenReturn(responseBody.toString());
         when(mockResponse.body()).thenReturn(mockResponseBody);
         Set<String> expected = new HashSet<>();
+        expected.add("convulsion (not specified)");
+        expected.add("dizziness (not specified)");
+        expected.add("fatigue (not specified)");
+        expected.add("muscle spasms (not specified)");
+        expected.add("injury (not specified)");
+        expected.add("nausea (not specified)");
+        expected.add("pain in extremity (not specified)");
+        expected.add("dyspnoea (not specified)");
+        expected.add("hypotension (6 - 12 months)");
+        expected.add("catheter site inflammation (not specified)");
+        expected.add("oedema peripheral (< 1 month)");
         expected.add("anxiety (< 1 month)");
         expected.add("anaemia (1 - 6 months)");
         expected.add("pneumonia (5 - 10 years)");
-        expected.add("injury (not specified)");
-        expected.add("nausea (not specified)");
+        expected.add("international normalised ratio increased (10+ years)");
 
-        Set<String> results = HttpRequester.getDrugInteractions("coumadin", "acetaminophen", "m", 36, mockClient);
+
+        Set<String> results = requester.getDrugInteractions("coumadin", "acetaminophen", "m", 36);
 
         verify(mockCall, times(1)).execute();
         Assert.assertEquals(expected, results);
@@ -100,7 +118,7 @@ public class HttpRequesterTest {
         when(mockResponseBody.string()).thenReturn(null);
         when(mockResponse.body()).thenReturn(mockResponseBody);
 
-        Set<String> result = HttpRequester.getDrugInteractions("water", "milk", "male", 42, mockClient);
+        Set<String> result = requester.getDrugInteractions("water", "milk", "male", 42);
 
         verify(mockCall, times(1)).execute();
         assert (result.isEmpty());
@@ -119,7 +137,7 @@ public class HttpRequesterTest {
         when(mockResponse.body()).thenReturn(mockResponseBody);
 
         String[] expected = new String[]{"test result 1", "test result 2"};
-        String[] results = HttpRequester.getActiveIngredients("reserpine", mockClient);
+        String[] results = requester.getActiveIngredients("reserpine");
         Assert.assertArrayEquals(expected, results);
     }
 
@@ -136,7 +154,7 @@ public class HttpRequesterTest {
         when(mockResponse.body()).thenReturn(mockResponseBody);
 
         String[] expected = {};
-        String[] results = HttpRequester.getActiveIngredients("reserpine", mockClient);
+        String[] results = requester.getActiveIngredients("reserpine");
         Assert.assertArrayEquals(results, expected);
     }
 
@@ -153,7 +171,7 @@ public class HttpRequesterTest {
         when(mockResponse.body()).thenReturn(mockResponseBody);
 
         String[] expected = {""};
-        String[] results = HttpRequester.getActiveIngredients("reserpine", mockClient);
+        String[] results = requester.getActiveIngredients("reserpine");
         Assert.assertArrayEquals(results, expected);
     }
 
@@ -177,11 +195,16 @@ public class HttpRequesterTest {
         when(mockCall.execute()).thenReturn(mockResponse);
         when(mockResponseBody.string()).thenReturn(responseBody.toString());
         when(mockResponse.body()).thenReturn(mockResponseBody);
-        String expected = "[\"Reserpine\",\"Resectisol\",\"Resectisol in plastic container\",\"Restoril\",\"Rescriptor\",\"Restasis\",\"Rescula\",\"Reserpine and hydrochlorothiazide\",\"Reserpine, hydralazine hydrochloride and hydrochlorothiazide\",\"Reserpine, hydrochlorothiazide, and hydralazine hydrochloride\",\"Reserpine and hydrochlorothiazide-50\",\"Reserpine and hydroflumethiazide\",\"Resporal\"]";
+        String expected = "Reserpine," +
+                "Resectisol,Resectisol in plastic container,Restoril,Rescriptor,Restasis,Rescula," +
+                "Reserpine and hydrochlorothiazide,Reserpine, hydralazine hydrochloride and hydrochlorothiazide" +
+                ",Reserpine, hydrochlorothiazide, and hydralazine hydrochloride,Reserpine and hydrochlorothiazide-50," +
+                "Reserpine and hydroflumethiazide,Resporal,";
 
-        String result = HttpRequester.getSuggestedDrugs("res", mockClient);
+        String result = requester.getSuggestedDrugs("res");
+        System.out.println();
         verify(mockCall, times(1)).execute();
-        assert (result.equals(expected));
+        Assert.assertTrue(result.equals(expected));
     }
 
 
@@ -208,9 +231,9 @@ public class HttpRequesterTest {
         when(mockResponse.body()).thenReturn(mockResponseBody);
 
 
-        String result = HttpRequester.getSuggestedDrugs("aaa", mockClient);
+        String result = requester.getSuggestedDrugs("aaa");
         verify(mockCall, times(1)).execute();
         System.out.println(result);
-        assert (result.equals("[]"));
+        Assert.assertTrue(result.equals(""));
     }
 }

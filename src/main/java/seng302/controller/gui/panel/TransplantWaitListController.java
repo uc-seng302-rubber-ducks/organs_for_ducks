@@ -10,10 +10,10 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
 import seng302.controller.AppController;
+import seng302.model.User;
 import seng302.model._abstract.TransplantWaitListViewer;
 import seng302.model._enum.Organs;
 import seng302.model.datamodel.TransplantDetails;
-import seng302.model.User;
 import seng302.utils.AttributeValidation;
 
 import java.time.LocalDate;
@@ -137,7 +137,7 @@ public class TransplantWaitListController {
         //table contents are SortedList of a FilteredList of an ObservableList of an ArrayList
         appController.getTransplantList().clear();
         for (User user : users) {
-            if (user.isReceiver() && (user.getDeceased() != null && !user.getDeceased())) {
+            if (user.isReceiver() && (user.getDeceased() != null && !user.getDeceased()) && !user.isDeleted()) {
                 Set<Organs> organs = user.getReceiverDetails().getOrgans().keySet();
                 for (Organs organ : organs) {
                     if (isReceiverNeedingFilteredOrgan(user.getNhi(), organs).contains(organ)) {

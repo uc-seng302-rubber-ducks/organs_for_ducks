@@ -4,9 +4,9 @@ import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
 import seng302.controller.AppController;
+import seng302.model.User;
 import seng302.model._enum.OrganDeregisterReason;
 import seng302.model._enum.Organs;
-import seng302.model.User;
 
 @Command(name = "receive", description = "updates a user's organs to be received")
 public class UpdateUserReceive implements Runnable {
@@ -26,7 +26,7 @@ public class UpdateUserReceive implements Runnable {
 
     @Override
     public void run() {
-        User user = controller.getUser(nhi);
+        User user = controller.findUser(nhi);
         if (user == null) {
             System.out.println("No users with this NHI could be found");
             return;

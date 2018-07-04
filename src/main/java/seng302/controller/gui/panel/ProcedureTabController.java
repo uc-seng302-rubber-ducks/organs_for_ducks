@@ -17,7 +17,6 @@ import seng302.controller.gui.popup.OrgansAffectedController;
 import seng302.controller.gui.window.UserController;
 import seng302.model.Change;
 import seng302.model.MedicalProcedure;
-import seng302.model.Memento;
 import seng302.model.User;
 import seng302.model._enum.Organs;
 import seng302.utils.Log;
@@ -25,6 +24,7 @@ import seng302.utils.Log;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 public class ProcedureTabController {
     //procedures
@@ -173,7 +173,7 @@ public class ProcedureTabController {
                 .getSelectedIndex() : previousProcedureTableView.getSelectionModel().getSelectedIndex();
         parent.clearMeds();
         pendingProcedures.clear();
-        medicalProcedures = FXCollections.observableList(user.getMedicalProcedures());
+        medicalProcedures = FXCollections.observableList(user.getMedicalProcedures().stream().filter(p -> !p.isDeleted()).collect(Collectors.toList()));
         for (MedicalProcedure procedure : medicalProcedures) {
             if (procedure.getProcedureDate().isBefore(LocalDate.now())) {
                 previousProcedures.add(procedure);
@@ -207,8 +207,7 @@ public class ProcedureTabController {
      */
     @FXML
     void addProcedure() {
-        Memento<User> memento = new Memento<>();
-        memento.setOldObject(currentUser.clone());
+        currentUser.saveStateForUndo();
         String procedureName = procedureTextField.getText();
         if (procedureName.isEmpty()) {
             Log.warning("Failed to add procedure: " + procedureName + " for User NHI: " + currentUser.getNhi() + " as user input is invalid");
@@ -237,8 +236,6 @@ public class ProcedureTabController {
         }
         clearProcedure();
         application.update(currentUser);
-        memento.setNewObject(currentUser.clone());
-        currentUser.getUndoStack().push(memento);
         Log.info("Successfully added procedure: " + procedureName + " for User NHI: " + currentUser.getNhi());
     }
 
@@ -247,8 +244,7 @@ public class ProcedureTabController {
      */
     @FXML
     void updateProcedures() {
-        Memento<User> memento = new Memento<>();
-        memento.setOldObject(currentUser.clone());
+        currentUser.saveStateForUndo();
         procedureWarningLabel.setText("");
         String newName = procedureTextField.getText();
         LocalDate newDate = procedureDateSelector.getValue();
@@ -277,8 +273,6 @@ public class ProcedureTabController {
 
             updateProcedure(procedure, newName, newDate, newDescription);
         }
-        memento.setNewObject(currentUser.clone());
-        currentUser.getUndoStack().push(memento);
         Log.info("Successfully updated procedure: " + newName + " for User NHI: " + currentUser.getNhi());
     }
 
@@ -292,8 +286,7 @@ public class ProcedureTabController {
      */
     private void updateProcedure(MedicalProcedure procedure, String newName, LocalDate newDate,
                                  String newDescription) {
-        Memento<User> memento = new Memento<>();
-        memento.setOldObject(currentUser.clone());
+        currentUser.saveStateForUndo();
         procedure.setSummary(newName);
         procedure.setDescription(newDescription);
         LocalDate oldDate = procedure.getProcedureDate();
@@ -310,8 +303,6 @@ public class ProcedureTabController {
             pendingProcedures.add(procedure);
         }
         application.update(currentUser);
-        memento.setNewObject(currentUser.clone());
-        currentUser.getUndoStack().push(memento);
     }
 
     /**
@@ -352,26 +343,21 @@ public class ProcedureTabController {
      */
     @FXML
     void removeProcedure() {
-        Memento<User> memento = new Memento<>();
-        memento.setOldObject(currentUser.clone());
+        currentUser.saveStateForUndo();
         if (previousProcedureTableView.getSelectionModel().getSelectedItem() != null) {
-            medicalProcedures.remove(previousProcedureTableView.getSelectionModel().getSelectedItem());
-            currentUser
-                    .removeMedicalProcedure(previousProcedureTableView.getSelectionModel().getSelectedItem());
-            previousProcedures.remove(previousProcedureTableView.getSelectionModel().getSelectedItem());
+            //medicalProcedures.remove(previousProcedureTableView.getSelectionModel().getSelectedItem());
+            previousProcedureTableView.getSelectionModel().getSelectedItem().setDeleted(true);
             Log.info("Successfully removed procedure: " + previousProcedureTableView.getSelectionModel().getSelectedItem().toString() + " for User NHI: " + currentUser.getNhi());
+            previousProcedures.remove(previousProcedureTableView.getSelectionModel().getSelectedItem());
         } else if (pendingProcedureTableView.getSelectionModel().getSelectedItem() != null) {
-            medicalProcedures.remove(pendingProcedureTableView.getSelectionModel().getSelectedItem());
-            currentUser
-                    .removeMedicalProcedure(pendingProcedureTableView.getSelectionModel().getSelectedItem());
-            pendingProcedures.remove(pendingProcedureTableView.getSelectionModel().getSelectedItem());
+            //medicalProcedures.remove(pendingProcedureTableView.getSelectionModel().getSelectedItem());
+            pendingProcedureTableView.getSelectionModel().getSelectedItem().setDeleted(true);
             Log.info("Successfully removed procedure: " + pendingProcedureTableView.getSelectionModel().getSelectedItem().toString() + " for User NHI: " + currentUser.getNhi());
+            pendingProcedures.remove(pendingProcedureTableView.getSelectionModel().getSelectedItem());
         } else {
             Log.warning("Failed to remove procedure for User NHI: " + currentUser.getNhi() + " as no procedure is selected");
         }
         application.update(currentUser);
-        memento.setNewObject(currentUser.clone());
-        currentUser.getUndoStack().push(memento);
     }
 
     /**
@@ -379,8 +365,7 @@ public class ProcedureTabController {
      */
     @FXML
     void modifyProcedureOrgans() {
-        Memento<User> memento = new Memento<>();
-        memento.setOldObject(currentUser.clone());
+        currentUser.saveStateForUndo();
         MedicalProcedure procedure = currentProcedureList.getSelectionModel().getSelectedItem();
         FXMLLoader affectedOrganLoader = new FXMLLoader(
                 getClass().getResource("/FXML/organsAffectedView.fxml"));
@@ -393,8 +378,6 @@ public class ProcedureTabController {
             OrgansAffectedController organsAffectedController = affectedOrganLoader.getController();
             organsAffectedController.init(application, s, procedure, currentUser);
             s.showAndWait();
-            memento.setNewObject(currentUser.clone());
-            currentUser.getUndoStack().push(memento);
             showProcedure(procedure);
             Log.info("Successfully launched Modify Procedure Organs window for User NHI: " + currentUser.getNhi());
         } catch (IOException e) {

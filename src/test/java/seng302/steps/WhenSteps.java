@@ -1,5 +1,6 @@
 package seng302.steps;
 
+import cucumber.api.PendingException;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.When;
 import javafx.scene.control.TextField;
@@ -180,5 +181,27 @@ public class WhenSteps extends ApplicationTest {
     @And("^I open the waiting list tab$")
     public void iOpenTheWaitingListTab() {
         clickOn("#transplantWaitListTab");
+    }
+
+    @When("^the app is closed and reopened$")
+    public void the_app_is_closed_and_reopened() throws Throwable {
+        // Write code here that turns the phrase above into concrete actions
+        throw new PendingException();
+    }
+
+    @When("^the cache is cleared$")
+    public void the_cache_is_cleared() throws Throwable {
+        // Write code here that turns the phrase above into concrete actions
+        throw new PendingException();
+    }
+
+    @When("^all data before \"([^\"]*)\" is removed$")
+    public void all_data_before_is_removed(String date) throws Throwable {    // Write code here that turns the phrase above into concrete actions
+        throw new PendingException();
+    }
+
+    @When("^the interactions between \"([^\"]*)\" and \"([^\"]*)\" are requested$")
+    public void the_interactions_between_and_are_requested(String drugA, String drugB) throws Throwable {    // Write code here that turns the phrase above into concrete actions
+        throw new PendingException();
     }
 }

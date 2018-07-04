@@ -10,6 +10,7 @@ import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
+import org.jline.terminal.impl.jna.osx.CLibrary;
 import seng302.controller.AppController;
 import seng302.model.Clinician;
 import seng302.model.Memento;
@@ -120,7 +121,7 @@ public class UpdateClinicianController {
         redoClinicianFormButton.setDisable(true);
 
         if (!newClinician) {
-            oldClinician = currentClinician.clone();
+            oldClinician = Clinician.clone(clinician);
             undoMarker = currentClinician.getUndoStack().size();
             ownStage.setTitle("Update Clinician: " + clinician.getFirstName());
             titleLabel.setText("Update Clinician");
@@ -461,17 +462,11 @@ public class UpdateClinicianController {
     }
 
     /**
+     * NO LONGER NEEDED I THINK
      * Turns all form changes into one memento on the stack
      */
     private void sumAllChanged() {
-        Memento<Clinician> sumChanges = new Memento<>();
         removeFormChanges(1, currentClinician, undoMarker);
-        if (!currentClinician.getUndoStack().isEmpty()) {
-            sumChanges.setOldObject(currentClinician.getUndoStack().peek().getOldObject().clone());
-            currentClinician.getUndoStack().pop();
-            sumChanges.setNewObject(currentClinician.clone());
-            currentClinician.getUndoStack().push(sumChanges);
-        }
     }
 
     /**

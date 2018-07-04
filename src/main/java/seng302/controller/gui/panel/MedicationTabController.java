@@ -14,7 +14,6 @@ import okhttp3.OkHttpClient;
 import org.controlsfx.control.textfield.TextFields;
 import seng302.controller.AppController;
 import seng302.controller.gui.popup.MedicationsTimeController;
-import seng302.model.Memento;
 import seng302.model.User;
 import seng302.utils.HttpRequester;
 import seng302.utils.Log;
@@ -54,7 +53,7 @@ public class MedicationTabController {
     private ObservableList<String> currentMeds;
     private ObservableList<String> previousMeds;
     private User currentUser;
-    private OkHttpClient client = new OkHttpClient();
+    private HttpRequester httpRequester = new HttpRequester(new OkHttpClient());
 
     /**
      * Gives the user view the application controller and hides all label and buttons that are not
@@ -146,7 +145,7 @@ public class MedicationTabController {
         String newValue = medicationTextField.getText();
         if (newValue.length() > 1) {
             try {
-                String autocompleteRaw = HttpRequester.getSuggestedDrugs(newValue, new OkHttpClient());
+                String autocompleteRaw = httpRequester.getSuggestedDrugs(newValue);
                 String[] values = autocompleteRaw.replaceAll("^\"", "").replaceAll("\\[", "")
                         .replaceAll("]", "").split("\"?(,|$)(?=(([^\"]*\"){2})*[^\"]*$) *\"?");
                 for (int i = 0; i < values.length; i++) {
@@ -230,8 +229,7 @@ public class MedicationTabController {
      */
     @FXML
     void takeMedication() {
-        Memento<User> memento = new Memento<>();
-        memento.setOldObject(currentUser.clone());
+        currentUser.saveStateForUndo();
         String med = previousMedicationListView.getSelectionModel().getSelectedItem();
         if (med == null) {
             Log.warning("Unable to take medication for User NHI: " + currentUser.getNhi() + " as it is empty");
@@ -247,8 +245,6 @@ public class MedicationTabController {
         currentUser.addCurrentMedication(med);
         previousMeds.remove(med);
         currentUser.removePreviousMedication(med);
-        memento.setNewObject(currentUser.clone());
-        currentUser.getUndoStack().push(memento);
         Log.info("Successfully moved medication: " + med + " from previous to current medication for User NHI: " + currentUser.getNhi());
     }
 
@@ -257,8 +253,7 @@ public class MedicationTabController {
      */
     @FXML
     void untakeMedication() {
-        Memento<User> memento = new Memento<>();
-        memento.setOldObject(currentUser.clone());
+        currentUser.saveStateForUndo();
         String med = currentMedicationListView.getSelectionModel().getSelectedItem();
         if (med == null) {
             Log.warning("Unable to un-take medication for User NHI: " + currentUser.getNhi() + " as it is empty");
@@ -274,8 +269,6 @@ public class MedicationTabController {
         currentMeds.remove(med);
         previousMeds.add(med);
         currentUser.addPreviousMedication(med);
-        memento.setNewObject(currentUser.clone());
-        currentUser.getUndoStack().push(memento);
         Log.info("Successfully moved medication: " + med + " from current to previous medication for User NHI: " + currentUser.getNhi());
     }
 
@@ -340,7 +333,7 @@ public class MedicationTabController {
         try {
             //active ingredients
             if (selected.size() == 1) {
-                String[] res = HttpRequester.getActiveIngredients(selected.get(0), client);
+                String[] res = httpRequester.getActiveIngredients(selected.get(0));
                 StringBuilder sb = new StringBuilder();
                 for (String ingredient : res) {
                     sb.append(ingredient);
@@ -354,9 +347,9 @@ public class MedicationTabController {
                 drugDetailsTextArea.setText(sb.toString());
 
             } else /*interactions*/ {
-                Set<String> res = HttpRequester
+                Set<String> res = httpRequester
                         .getDrugInteractions(selected.get(0), selected.get(1), currentUser.getBirthGender(),
-                                currentUser.getAge(), client);
+                                currentUser.getAge());
                 StringBuilder sb = new StringBuilder();
                 for (String symptom : res) {
                     sb.append(symptom);

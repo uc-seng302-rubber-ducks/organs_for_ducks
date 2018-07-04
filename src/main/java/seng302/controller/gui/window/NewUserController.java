@@ -288,7 +288,7 @@ public class NewUserController {
                         stage.setScene(new Scene(root));
                         ownStage.close();
                         UserController userController = userLoader.getController();
-                        AppController.getInstance().setUserController(userController);
+                        controller.setUserController(userController);
                         //TODO pass listeners from any preceding controllers 22/6
                         userController.init(AppController.getInstance(), newUser, stage, false, null);
 
@@ -310,13 +310,14 @@ public class NewUserController {
 
     /**
      * Sets all health detail variables based off the details entered
-     * @param birthGender the birth gender entered by the user
-     * @param genderIdentity the gender identity entered by the user
-     * @param height the height entered by the user
-     * @param weight the weight entered by the user
-     * @param bloodType the blood type entered by the user
+     *
+     * @param birthGender        the birth gender entered by the user
+     * @param genderIdentity     the gender identity entered by the user
+     * @param height             the height entered by the user
+     * @param weight             the weight entered by the user
+     * @param bloodType          the blood type entered by the user
      * @param alcoholConsumption the alcohol consumption entered by the user
-     * @param smoker the status of the user being a smoker or not
+     * @param smoker             the status of the user being a smoker or not
      * @return the collated health details of the user
      */
     private HealthDetails collectHealthDetails(String birthGender, String genderIdentity, double height, double weight,

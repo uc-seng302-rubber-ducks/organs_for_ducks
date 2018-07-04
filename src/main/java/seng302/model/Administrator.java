@@ -16,8 +16,6 @@ import java.util.Objects;
 
 /**
  * class to model data structure for an Administrator.
- *
- * @author acb116
  */
 public class Administrator extends Undoable<Administrator> implements Listenable {
     @Expose
@@ -48,6 +46,9 @@ public class Administrator extends Undoable<Administrator> implements Listenable
         this.dateLastModified = LocalDateTime.now();
         this.changes = FXCollections.observableArrayList();
         this.pcs = new PropertyChangeSupport(this);
+        this.firstName = "";
+        this.middleName = "";
+        this.lastName = "";
     }
 
     /**
@@ -91,6 +92,10 @@ public class Administrator extends Undoable<Administrator> implements Listenable
         return dateCreated;
     }
 
+    public void setDateCreated(LocalDateTime dateCreated) {
+        this.dateCreated = dateCreated;
+    }
+
     public LocalDateTime getDateLastModified() {
         return dateLastModified;
     }
@@ -104,14 +109,11 @@ public class Administrator extends Undoable<Administrator> implements Listenable
     }
 
     public void setUserName(String userName) {
-        Memento<Administrator> mem = new Memento<>();
-        mem.setOldObject(this.clone());
         if (!userName.equals(this.userName)) {
+            this.saveStateForUndo();
             this.userName = userName;
             addChange(new Change("Updated username to " + userName));
             setDateLastModified(LocalDateTime.now());
-            mem.setNewObject(this.clone());
-            getUndoStack().push(mem);
         }
     }
 
@@ -120,14 +122,11 @@ public class Administrator extends Undoable<Administrator> implements Listenable
     }
 
     public void setFirstName(String firstName) {
-        Memento<Administrator> mem = new Memento<>();
-        mem.setOldObject(this.clone());
         if (!firstName.equals(this.firstName)) {
+            this.saveStateForUndo();
             this.firstName = firstName;
             addChange(new Change("Updated first name to " + firstName));
             setDateLastModified(LocalDateTime.now());
-            mem.setNewObject(this.clone());
-            getUndoStack().push(mem);
         }
     }
 
@@ -136,14 +135,11 @@ public class Administrator extends Undoable<Administrator> implements Listenable
     }
 
     public void setMiddleName(String middleName) {
-        Memento<Administrator> mem = new Memento<>();
-        mem.setOldObject(this.clone());
         if (!middleName.equals(this.middleName)) {
+            this.saveStateForUndo();
             this.middleName = middleName;
             addChange(new Change("Updated middle name to " + middleName));
             setDateLastModified(LocalDateTime.now());
-            mem.setNewObject(this.clone());
-            getUndoStack().push(mem);
         }
     }
 
@@ -152,14 +148,11 @@ public class Administrator extends Undoable<Administrator> implements Listenable
     }
 
     public void setLastName(String lastName) {
-        Memento<Administrator> mem = new Memento<>();
-        mem.setOldObject(this.clone());
         if (!lastName.equals(this.lastName)) {
+            this.saveStateForUndo();
             this.lastName = lastName;
             addChange(new Change("Updated last name to " + lastName));
             setDateLastModified(LocalDateTime.now());
-            mem.setNewObject(this.clone());
-            getUndoStack().push(mem);
         }
     }
 
@@ -192,7 +185,10 @@ public class Administrator extends Undoable<Administrator> implements Listenable
         salt = PasswordManager.getNextSalt();
         this.password = PasswordManager.hash(password, salt);
         addChange(new Change("Update password"));
+    }
 
+    public byte[] getSalt() {
+        return salt;
     }
 
     public List<Change> getChanges() {
@@ -217,6 +213,12 @@ public class Administrator extends Undoable<Administrator> implements Listenable
         this.pcs = pcs;
     }
 
+    @Override
+    public void setDeleted(boolean deleted) {
+        super.setDeleted(deleted);
+        addChange(new Change("Deleted administrator"));
+    }
+
     /**
      * Takes an attempt as a password and then checks it against the actual password
      *
@@ -227,6 +229,21 @@ public class Administrator extends Undoable<Administrator> implements Listenable
         return PasswordManager.isExpectedPassword(passwordAttempt, salt, getPassword());
     }
 
+
+    /**
+     * EWWWW gross but please forgive me. dont want the search to break just yet. the generic search requires a region
+     * so here we are
+     *
+     * @return does the needful
+     */
+    public String getRegion() {
+        return "";
+    }
+
+    private void saveStateForUndo() {
+        Memento<Administrator> memento = new Memento<>(Administrator.clone(this));
+        getUndoStack().push(memento);
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -253,13 +270,13 @@ public class Administrator extends Undoable<Administrator> implements Listenable
 
     @Override
     public void undo() {
-        if (getUndoStack().isEmpty()) {
+        if (getUndoStack().isEmpty()) { //DO nothing if stack is empty
             return;
         }
-        Memento<Administrator> memento = getUndoStack().pop();
-        this.changeInto(memento.getOldObject());
-        getRedoStack().push(memento);
-
+        getRedoStack().push(new Memento<>(clone(this))); // put current state onto redo stack
+        Memento<Administrator> memento = getUndoStack().pop(); //Get the top of the undo stack
+        this.changeInto(memento.getState()); //Change current state to be top undo state
+        addChange(new Change("undo")); //I think this should be here because it exists in clinician?
     }
 
     @Override
@@ -267,23 +284,25 @@ public class Administrator extends Undoable<Administrator> implements Listenable
         if (getRedoStack().isEmpty()) {
             return;
         }
+        getUndoStack().push(new Memento<>(clone(this)));
         Memento<Administrator> memento = getRedoStack().pop();
-        this.changeInto(memento.getNewObject());
-        getUndoStack().push(memento);
+        this.changeInto(memento.getState());
     }
 
-    @Override
-    public Administrator clone() {
-        Administrator newAdmin = new Administrator();
-        newAdmin.userName = this.userName;
-        newAdmin.firstName = this.firstName;
-        newAdmin.middleName = this.middleName;
-        newAdmin.lastName = this.lastName;
-        newAdmin.password = this.password;
-        newAdmin.salt = this.salt;
-        newAdmin.dateCreated = this.dateCreated;
-        newAdmin.dateLastModified = this.dateLastModified;
 
+    /**
+     * Could this and changeInto be combined somehow?
+     */
+    public static Administrator clone(Administrator admin) {
+        Administrator newAdmin = new Administrator();
+        newAdmin.userName = admin.userName;
+        newAdmin.firstName = admin.firstName;
+        newAdmin.middleName = admin.middleName;
+        newAdmin.lastName = admin.lastName;
+        newAdmin.password = admin.password;
+        newAdmin.salt = admin.salt;
+        newAdmin.dateCreated = admin.dateCreated;
+        newAdmin.dateLastModified = admin.dateLastModified;
         return newAdmin;
     }
 

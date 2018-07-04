@@ -20,7 +20,10 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Stack;
 
 
 /**
@@ -42,9 +45,6 @@ public class AppController {
     private ClinicianController clinicianController = new ClinicianController();
     private AdministratorViewController administratorViewController = new AdministratorViewController();
     private statusBarController statusBarController = new statusBarController();
-    private Set<User> deletedUserStack = new HashSet<>();
-    private Set<Clinician> deletedClinicianSet = new HashSet<>();
-    private Set<Administrator> deletedAdminSet = new HashSet<>();
     private Stack<User> redoStack = new Stack<>();
 
     private static final String USERS_FILE = Directory.JSON.directory() + "/users.json";
@@ -197,7 +197,7 @@ public class AppController {
     public ArrayList<User> findUsers(String name) {
         ArrayList<User> toReturn = new ArrayList<>();
         for (User user : users) {
-            if (user.getFullName().toLowerCase().contains(name.toLowerCase())) {
+            if (user.getFullName().toLowerCase().contains(name.toLowerCase()) && !user.isDeleted()) {
                 toReturn.add(user);
             }
         }
@@ -212,7 +212,7 @@ public class AppController {
      */
     public User findUser(String nhi) {
         for (User u : users) {
-            if ((u.getNhi()).equalsIgnoreCase(nhi)) {
+            if ((u.getNhi()).equalsIgnoreCase(nhi) && !u.isDeleted()) {
                 return u;
             }
         }
@@ -227,8 +227,7 @@ public class AppController {
      */
     public void deleteUser(User user) {
         List<User> sessionList = getUsers();
-        sessionList.remove(user);
-        deletedUserStack.add(user);
+        user.setDeleted(true);
         setUsers((ArrayList<User>) sessionList);
         try {
             dataHandler.saveUsers(sessionList);
@@ -236,27 +235,11 @@ public class AppController {
         } catch (IOException e) {
             Log.warning("failed to delete a user with NHI: " + user.getNhi(), e);
         }
-
     }
 
 
     public List<User> getUsers() {
         return users;
-    }
-
-    /**
-     * finds a user by their NHI
-     *
-     * @param NHI the unique id of a user
-     * @return user corresponding with the NHI given or null if dne
-     */
-    public User getUser(String NHI) {
-        for (User user : users) {
-            if (user.getNhi().equals(NHI)) {
-                return user;
-            }
-        }
-        return null;
     }
 
     /**
@@ -305,6 +288,7 @@ public class AppController {
 
     /**
      * adds a clinician to the clinicians
+     *
      * @param clinician clinician to be added
      */
     public void addClinician(Clinician clinician) {
@@ -313,6 +297,7 @@ public class AppController {
 
     /**
      * adds a administrator ti the administrators
+     *
      * @param administrator administrator to be added
      */
     public void addAdmin(Administrator administrator) {
@@ -348,7 +333,7 @@ public class AppController {
      */
     public Clinician getClinician(String id) {
         for (Clinician c : clinicians) {
-            if (c.getStaffId().equals(id)) {
+            if (c.getStaffId().equals(id) && !c.isDeleted()) {
                 return c;
             }
         }
@@ -377,13 +362,10 @@ public class AppController {
      * @param clinician The clinician to be deleted
      */
     public void deleteClinician(Clinician clinician) {
-        List<Clinician> clinicianSessionList = getClinicians();
-        clinicianSessionList.remove(clinician);
-        deletedClinicianSet.add(clinician);
-        this.clinicians = clinicianSessionList;
+        clinician.setDeleted(true);
 
         try {
-            dataHandler.saveClinicians(clinicianSessionList);
+            dataHandler.saveClinicians(clinicians);
         } catch (IOException e) {
             Log.warning("failed to delete a clinician", e);
         }
@@ -395,13 +377,10 @@ public class AppController {
      * @param admin The given admin
      */
     public void deleteAdmin(Administrator admin) {
-        Collection<Administrator> adminSessionList = getAdmins();
-        adminSessionList.remove(admin);
-        deletedAdminSet.add(admin);
-        this.admins = adminSessionList;
+        admin.setDeleted(true);
 
         try {
-            dataHandler.saveAdmins(adminSessionList);
+            dataHandler.saveAdmins(admins);
         } catch (IOException e) {
             Log.warning("failed to delete an administrator", e);
         }
@@ -444,7 +423,7 @@ public class AppController {
 
     public Administrator getAdministrator(String username) {
         for (Administrator a : admins) {
-            if (a.getUserName().equals(username)) {
+            if (a.getUserName().equals(username) && !a.isDeleted()) {
                 return a;
             }
         }
@@ -571,10 +550,9 @@ public class AppController {
      * @throws ProfileAlreadyExistsException if a user with the same NHI is in the users list
      */
     public void undoDeletion(User user) throws ProfileNotFoundException, ProfileAlreadyExistsException {
-        if (deletedUserStack.contains(user)) {
+        if (user.isDeleted()) {
             if (findUser(user.getNhi()) == null) {
-                deletedUserStack.remove(user);
-                users.add(user);
+                user.setDeleted(false);
                 redoStack.push(user);
             } else {
                 throw new ProfileAlreadyExistsException();
@@ -594,10 +572,9 @@ public class AppController {
      * @throws ProfileAlreadyExistsException if a clinician with the same Staff ID is in the clinician list
      */
     public void undoClinicianDeletion(Clinician clinician) throws ProfileNotFoundException, ProfileAlreadyExistsException {
-        if (deletedClinicianSet.contains(clinician)) {
+        if (clinician.isDeleted()) {
             if (getClinician(clinician.getStaffId()) == null) {
-                deletedClinicianSet.remove(clinician);
-                clinicians.add(clinician);
+                clinician.setDeleted(false);
             } else {
                 throw new ProfileAlreadyExistsException();
             }
@@ -615,28 +592,15 @@ public class AppController {
      * @throws ProfileAlreadyExistsException if an administrator with the same username is in the administrator list
      */
     public void undoAdminDeletion(Administrator admin) throws ProfileNotFoundException, ProfileAlreadyExistsException {
-        if (deletedAdminSet.contains(admin)) {
+        if (admin.isDeleted()) {
             if (getAdministrator(admin.getUserName()) == null) {
-                deletedAdminSet.remove(admin);
-                admins.add(admin);
+                admin.setDeleted(false);
             } else {
                 throw new ProfileAlreadyExistsException();
             }
         } else {
             throw new ProfileNotFoundException();
         }
-    }
-
-    public Set<User> getDeletedUsers() {
-        return deletedUserStack;
-    }
-
-    public Set<Clinician> getDeletedClinicians() {
-        return deletedClinicianSet;
-    }
-
-    public Set<Administrator> getDeletedAdmins() {
-        return deletedAdminSet;
     }
 
     public ArrayList<TransplantDetails> getTransplantList() {

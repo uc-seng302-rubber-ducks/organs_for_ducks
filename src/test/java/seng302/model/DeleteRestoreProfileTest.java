@@ -52,30 +52,27 @@ public class DeleteRestoreProfileTest {
         activeUsers.remove(testUser);
 
 
-        appC.getDeletedUsers().clear();
-        appC.getDeletedAdmins().clear();
-        appC.getDeletedClinicians().clear();
+        testAdmin.setDeleted(false);
+        testClinician.setDeleted(false);
+        testUser.setDeleted(false);
     }
 
     @Test
     public void testDeleteUser() {
         appC.deleteUser(testUser);
-        Assert.assertTrue(!activeUsers.contains(testUser));
-        Assert.assertTrue(appC.getDeletedUsers().contains(testUser));
+        Assert.assertTrue(testUser.isDeleted());
     }
 
     @Test
     public void testDeleteClinician() {
         appC.deleteClinician(testClinician);
-        Assert.assertTrue(!activeClinicians.contains(testClinician));
-        Assert.assertTrue(appC.getDeletedClinicians().contains(testClinician));
+        Assert.assertTrue(testClinician.isDeleted());
     }
 
     @Test
     public void testDeleteAdmin() {
         appC.deleteAdmin(testAdmin);
-        Assert.assertTrue(!activeAdmins.contains(testAdmin));
-        Assert.assertTrue(appC.getDeletedAdmins().contains(testAdmin));
+        Assert.assertTrue(testAdmin.isDeleted());
     }
 
     @Test
@@ -88,8 +85,7 @@ public class DeleteRestoreProfileTest {
             fail();
         }
 
-        Assert.assertTrue(!appC.getDeletedUsers().contains(testUser));
-        Assert.assertTrue(activeUsers.contains(testUser));
+        Assert.assertFalse(testUser.isDeleted());
     }
 
     @Test
@@ -98,7 +94,7 @@ public class DeleteRestoreProfileTest {
             appC.undoDeletion(testUser);
             fail("ProfileNotFoundException should've been thrown");
         } catch (ProfileNotFoundException e) {
-            Assert.assertTrue(!appC.getDeletedUsers().contains(testUser));
+            Assert.assertFalse(testUser.isDeleted());
             Assert.assertTrue(activeUsers.contains(testUser));
         } catch (ProfileAlreadyExistsException e) {
             fail("ProfileNotFoundException should've been thrown");
@@ -117,7 +113,7 @@ public class DeleteRestoreProfileTest {
         } catch (ProfileNotFoundException e) {
             fail("ProfileAlreadyExistsException should've been thrown");
         } catch (ProfileAlreadyExistsException e) {
-            Assert.assertTrue(appC.getDeletedUsers().contains(testUser));
+            Assert.assertTrue(testUser.isDeleted());
             Assert.assertTrue(activeUsers.contains(newUser));
             Assert.assertTrue(testUser.equals(newUser));
         }
@@ -133,7 +129,7 @@ public class DeleteRestoreProfileTest {
             fail();
         }
 
-        Assert.assertTrue(!appC.getDeletedClinicians().contains(testClinician));
+        Assert.assertFalse(testClinician.isDeleted());
         Assert.assertTrue(activeClinicians.contains(testClinician));
     }
 
@@ -144,7 +140,7 @@ public class DeleteRestoreProfileTest {
             appC.undoClinicianDeletion(testClinician);
             fail("ProfileNotFoundException should've been thrown");
         } catch (ProfileNotFoundException e) {
-            Assert.assertTrue(!appC.getDeletedClinicians().contains(testClinician));
+            Assert.assertFalse(testClinician.isDeleted());
             Assert.assertTrue(activeClinicians.contains(testClinician));
         } catch (ProfileAlreadyExistsException e) {
             fail("ProfileNotFoundException should've been thrown");
@@ -163,7 +159,7 @@ public class DeleteRestoreProfileTest {
         } catch (ProfileNotFoundException e) {
             fail("ProfileAlreadyExistsException should've been thrown");
         } catch (ProfileAlreadyExistsException e) {
-            Assert.assertTrue(appC.getDeletedClinicians().contains(testClinician));
+            Assert.assertTrue(testClinician.isDeleted());
             Assert.assertTrue(activeClinicians.contains(newClinician));
             Assert.assertTrue(testClinician.equals(newClinician));
         }
@@ -180,8 +176,7 @@ public class DeleteRestoreProfileTest {
             fail();
         }
 
-        Assert.assertTrue(!appC.getDeletedAdmins().contains(testAdmin));
-        Assert.assertTrue(activeAdmins.contains(testAdmin));
+        Assert.assertFalse(testAdmin.isDeleted());
     }
 
     @Test
@@ -190,7 +185,7 @@ public class DeleteRestoreProfileTest {
             appC.undoAdminDeletion(testAdmin);
             fail("ProfileNotFoundException should've been thrown");
         } catch (ProfileNotFoundException e) {
-            Assert.assertTrue(!appC.getDeletedAdmins().contains(testAdmin));
+            Assert.assertFalse(testAdmin.isDeleted());
             Assert.assertTrue(activeAdmins.contains(testAdmin));
         } catch (ProfileAlreadyExistsException e) {
             fail("ProfileNotFoundException should've been thrown");
@@ -209,7 +204,7 @@ public class DeleteRestoreProfileTest {
         } catch (ProfileNotFoundException e) {
             fail("ProfileAlreadyExistsException should've been thrown");
         } catch (ProfileAlreadyExistsException e) {
-            Assert.assertTrue(appC.getDeletedAdmins().contains(testAdmin));
+            Assert.assertTrue(testAdmin.isDeleted());
             Assert.assertTrue(activeAdmins.contains(newAdmin));
             Assert.assertTrue(testAdmin.equals(newAdmin));
         }
