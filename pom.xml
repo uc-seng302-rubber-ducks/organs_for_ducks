@@ -15,6 +15,12 @@
         <module>server</module>
     </modules>
 
+    <distributionManagement>
+        <site>
+            <id>${project.artifactId}-site</id>
+            <url>${project.baseUri}</url>
+        </site>
+    </distributionManagement>
     <reporting>
         <plugins>
             <plugin>
