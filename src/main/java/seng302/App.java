@@ -11,6 +11,7 @@ import seng302.controller.AppController;
 import seng302.controller.gui.window.LoginController;
 import seng302.model.CacheManager;
 import seng302.model._enum.Directory;
+import seng302.utils.DataHandler;
 import seng302.utils.JsonHandler;
 import seng302.utils.Log;
 
@@ -27,6 +28,7 @@ import java.util.logging.*;
 public class App extends Application {
 
     private static long bootTime = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC);
+    private DataHandler dataHandler = new JsonHandler();
 
     public static void main(String[] args) {
         launch(args);
@@ -72,9 +74,9 @@ public class App extends Application {
         AppController controller = AppController.getInstance();
         primaryStage.setOnCloseRequest(event -> {
             try {
-                JsonHandler.saveUsers(controller.getUsers());
-                JsonHandler.saveClinicians(controller.getClinicians());
-                JsonHandler.saveAdmins(controller.getAdmins());
+                dataHandler.saveUsers(controller.getUsers());
+                dataHandler.saveClinicians(controller.getClinicians());
+                dataHandler.saveAdmins(controller.getAdmins());
                 Log.info("Successfully saved all user types on exit");
                 CacheManager.getInstance().saveAll();
             } catch (IOException ex) {

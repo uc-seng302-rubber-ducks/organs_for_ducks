@@ -32,14 +32,15 @@ import seng302.model.User;
 import seng302.model._abstract.TransplantWaitListViewer;
 import seng302.model._enum.EventTypes;
 import seng302.model._enum.Organs;
-import seng302.utils.AttributeValidation;
-import seng302.utils.JsonHandler;
-import seng302.utils.Log;
+import seng302.utils.*;
 import seng302.view.CLI;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.PrintStream;
 import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
@@ -47,8 +48,8 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
 
     //<editor-fold desc="FXML stuff">
 
-    private static int searchCount = 0;
     private static final int ROWS_PER_PAGE = 30;
+    private static int searchCount = 0;
     @FXML
     private TableView<User> userTableView;
     @FXML
@@ -128,6 +129,7 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
     private boolean filterVisible = false;
     private TableView<?> activeTableView;
     private String messageAdmin = "Admin ";
+    private DataHandler dataHandler = new JsonHandler();
 
     /**
      * Initialises scene for the administrator view
@@ -144,6 +146,7 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
         statusBarPageController.init(appController);
         displayDetails();
         transplantWaitListTabPageController.init(appController, this);
+        stage.setTitle("Administrator");
 
         //add change listeners of parent controllers to the current user
         if (parentListeners != null && !parentListeners.isEmpty()) {
@@ -281,11 +284,11 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
 
         fListClinicians = new FilteredList<>(clinicians);
         fListClinicians = filter(fListClinicians);
-        FilteredList<Clinician> squished = new FilteredList<>(fListClinicians);
 
-        SortedList<Clinician> clinicianSortedList = new SortedList<>(squished);
+        SortedList<Clinician> clinicianSortedList = new SortedList<>(fListClinicians);
         clinicianSortedList.comparatorProperty().bind(clinicianTableView.comparatorProperty());
         clinicianTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        clinicianTableView.getColumns().clear();
         clinicianTableView.getColumns().addAll(nhiColumn, firstNameColumn, lastNameColumn);
         clinicianTableView.setItems(clinicianSortedList);
 
@@ -315,11 +318,11 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
 
         fListAdmins = new FilteredList<>(admins);
         fListAdmins = filter(fListAdmins);
-        FilteredList<Administrator> squished = new FilteredList<>(fListAdmins);
 
-        SortedList<Administrator> administratorSortedList = new SortedList<>(squished);
+        SortedList<Administrator> administratorSortedList = new SortedList<>(fListAdmins);
         administratorSortedList.comparatorProperty().bind(adminTableView.comparatorProperty());
         adminTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        adminTableView.getColumns().clear();
         adminTableView.getColumns().addAll(userNameColumn, firstNameColumn, lastNameColumn);
         adminTableView.setItems(administratorSortedList);
 
@@ -373,15 +376,14 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
 
         fListUsers = new FilteredList<>(oListDonors);
         fListUsers = filter(fListUsers);
-        FilteredList<User> squished = new FilteredList<>(fListUsers);
 
-        SortedList<User> sListUsers = new SortedList<>(squished);
+        SortedList<User> sListUsers = new SortedList<>(fListUsers);
         sListUsers.comparatorProperty().bind(userTableView.comparatorProperty());
 
         //predicate on this list not working properly
         //should limit the number of items shown to ROWS_PER_PAGE
-        //squished = limit(fListDonors, sListDonors);
         //set table columns and contents
+        userTableView.getColumns().clear();
         userTableView.getColumns().setAll(fNameColumn, lNameColumn, dobColumn, dodColumn, ageColumn, regionColumn, organsColumn);
         //searchTableView.setItems(FXCollections.observableList(sListDonors.subList(startIndex, endIndex)));
         userTableView.setItems(sListUsers);
@@ -465,7 +467,7 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
             }
             if ((AttributeValidation.checkTextMatches(lowerCaseFilterText, fName) ||
                     AttributeValidation.checkTextMatches(lowerCaseFilterText, lName)) &&
-                    (regionMatch)) {// && (genderMatch)) {
+                    (regionMatch)) {
                 searchCount++;
                 return true;
             }/* TODO: reimplement and remove this
@@ -517,63 +519,80 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
 
     /**
      * Imports admins from a file chosen from a fileselector
-     *
-     *
      */
     @FXML
     void importAdmins() {
-       Log.info("Importing Admins");
-       importRole(Administrator.class);
-
-    }
-
-    /**
-     * Imports clinicians from a file chosen from a fileselector
-     *
-     *
-     */
-    @FXML
-    void importClinicians() {
-        Log.info(messageAdmin + administrator.getUserName() + " Importing Clinician profiles");
-        importRole(Clinician.class);
-    }
-
-    /**
-     * Imports Users from a file chosen from a fileselector
-     *
-     *
-     */
-    @FXML
-    void importUsers() {
-        Log.info(messageAdmin + administrator.getUserName() + " Importing User profiles");
-        importRole(User.class);
-
-    }
-
-    /**
-     * attempts to import the given role from a file, and save it to the default file.
-     * Currently contains handlers for administrator, clinician, and user
-     * @param role class to be imported. e.g. Administrator.class
-     * @param <T> Type T (not used?)
-     */
-    private <T> void importRole( Class<T> role) {
-        if (!isAllWindowsClosed()) {
-            launchAlertUnclosedWindowsGUI();
-            return;
-        }
-        String filename;
-        filename = FileSelectorController.getFileSelector(stage);
+        Log.info("Importing Admins");
+        List<String> extensions = new ArrayList<>();
+        extensions.add("*.json");
+        String filename = FileSelectorController.getFileSelector(stage, extensions);
         if (filename == null) {
             Log.warning("File name not found");
             fileNotFoundLabel.setVisible(true);
             return;
         }
-        try {
+        importRoleJson(Administrator.class, filename);
 
-            if (role.getSimpleName().equals(Administrator.class.getSimpleName())) {
+
+    }
+
+    /**
+     * Imports clinicians from a file chosen from a fileselector
+     */
+    @FXML
+    void importClinicians() {
+        List<String> extensions = new ArrayList<>();
+        extensions.add("*.json");
+        String filename = FileSelectorController.getFileSelector(stage, extensions);
+        if (filename == null) {
+            Log.warning("File name not found");
+            fileNotFoundLabel.setVisible(true);
+            return;
+        }
+        Log.info(messageAdmin + administrator.getUserName() + " Importing Clinician profiles");
+        importRoleJson(Clinician.class, filename);
+    }
+
+    /**
+     * Imports Users from a file chosen from a fileselector
+     */
+    @FXML
+    void importUsers() {
+        List<String> extensions = new ArrayList<>();
+        extensions.add("*.json");
+        extensions.add("*.csv");
+        String filename = FileSelectorController.getFileSelector(stage, extensions);
+        if (filename == null) {
+            Log.warning("File name not found");
+            fileNotFoundLabel.setVisible(true);
+            return;
+        }
+        Log.info(messageAdmin + administrator.getUserName() + " Importing User profiles");
+        if (filename.contains(".json")) {
+            importRoleJson(User.class, filename);
+        } else {
+            importRoleCsv(User.class, filename);
+        }
+    }
+
+    /**
+     * attempts to import the given role from a file, and save it to the default file.
+     * Currently contains handlers for administrator, clinician, and user
+     *
+     * @param role     class to be imported. e.g. Administrator.class
+     * @param <T>      Type T (not used?)
+     * @param filename name of file to be imported including path
+     */
+    private <T> void importRoleJson(Class<T> role, String filename) {
+        if (!isAllWindowsClosed()) {
+            launchAlertUnclosedWindowsGUI();
+            return;
+        }
+        try {
+            if (role.isAssignableFrom(Administrator.class)) {
                 //<editor-fold desc="admin handler">
                 Collection<Administrator> existingAdmins = appController.getAdmins();
-                Collection<Administrator> newAdmins = JsonHandler.loadAdmins(filename);
+                Collection<Administrator> newAdmins = dataHandler.loadAdmins(filename);
 
                 //if imported contains any bad data, throw it out
                 for (Administrator admin : newAdmins) {
@@ -591,17 +610,17 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
                 }
                 messageBoxPopup("confirm");
                 try {
-                    JsonHandler.saveAdmins(appController.getAdmins());
+                    dataHandler.saveAdmins(appController.getAdmins());
                     Log.info("successfully imported " + newAdmins.size() + " Admin profiles");
                 } catch (IOException e) {
                     Log.warning("failed to save newly loaded admins", e);
                 }
                 //</editor-fold>
 
-            } else if (role.getSimpleName().equals(Clinician.class.getSimpleName())) {
+            } else if (role.isAssignableFrom(Clinician.class)) {
                 //<editor-fold desc="clinician handler">
                 Collection<Clinician> existingClinicians = appController.getClinicians();
-                Collection<Clinician> newClinicians = JsonHandler.loadClinicians(filename);
+                Collection<Clinician> newClinicians = dataHandler.loadClinicians(filename);
 
                 //if imported contains any bad data, throw it out
                 for (Clinician clinician : newClinicians) {
@@ -619,17 +638,17 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
                 }
                 messageBoxPopup("confirm");
                 try {
-                    JsonHandler.saveClinicians(appController.getClinicians());
+                    dataHandler.saveClinicians(appController.getClinicians());
                     Log.info("successfully imported " + newClinicians.size() + " Clinician profiles");
                 } catch (IOException e) {
                     Log.warning("failed to save newly loaded clinicians", e);
                 }
                 //</editor-fold>
 
-            } else if (role.getSimpleName().equals(User.class.getSimpleName())) {
+            } else if (role.isAssignableFrom(User.class)) {
                 //<editor-fold desc="user handler">
                 Collection<User> existingUsers = appController.getUsers();
-                Collection<User> newUsers = JsonHandler.loadUsers(filename);
+                Collection<User> newUsers = dataHandler.loadUsers(filename);
 
                 //if imported contains any bad data, throw it out
                 for (User user : newUsers) {
@@ -645,14 +664,7 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
                         appController.addUser(newUser);
                     }
                 }
-                messageBoxPopup("confirm");
-                try {
-                    JsonHandler.saveUsers(appController.getUsers());
-                    Log.info("successfully imported " + newUsers.size() + " User profiles");
-                } catch (IOException e) {
-                    Log.warning("failed to save newly loaded users", e);
-                    messageBoxPopup("error");
-                }
+                importSaveUsers(newUsers.size());
                 //</editor-fold>
             }
 
@@ -665,6 +677,55 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
             messageBoxPopup("error");
         }
         refreshTables();
+    }
+
+    private <T> void importRoleCsv(Class<T> role, String filename) {
+        if (!isAllWindowsClosed()) {
+            launchAlertUnclosedWindowsGUI();
+            return;
+        }
+        if (role.isAssignableFrom(User.class)) {
+            try {
+                Collection<User> existingUsers = appController.getUsers();
+                DataHandler csvHandler = new CSVHandler();
+                Collection<User> newUsers = csvHandler.loadUsers(filename);
+
+                //if imported contains any bad data, throw it out
+                for (User user : newUsers) {
+                    if (user.getNhi() == null) {
+                        throw new InvalidFileException();
+                    }
+                }
+
+                for (User user : newUsers) {
+                    if (existingUsers.contains(user)) {
+                        appController.update(user);
+                    } else {
+                        appController.addUser(user);
+                    }
+                }
+               importSaveUsers(newUsers.size());
+            } catch (FileNotFoundException e) {
+                Log.warning("Failed to load file " + filename, e);
+                messageBoxPopup("error");
+
+            } catch (InvalidFileException e) {
+                Log.warning(filename + "contained bad data", e);
+                messageBoxPopup("error");
+            }
+            refreshTables();
+        }
+    }
+
+    private void importSaveUsers(int numNewUsers) {
+        messageBoxPopup("confirm");
+        try {
+            dataHandler.saveUsers(appController.getUsers());
+            Log.info("successfully imported " + numNewUsers + " User profiles");
+        } catch (IOException e) {
+            Log.warning("failed to save newly loaded users", e);
+            messageBoxPopup("error");
+        }
     }
 
     /**
@@ -945,6 +1006,8 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
         if (administrator.getChanges().size() > 0) {
             statusBarPageController.updateStatus(administrator.getUserName() + " " + administrator.getChanges().get(administrator.getChanges().size() - 1).getChange());
         }
+        stage.setTitle("Administrator");
+
     }
 
     /**
@@ -1008,14 +1071,15 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
         }
     }
 
+
     /**
      * updates tables in the admin window with current version of underlying model
      */
     public void refreshTables() {
         transplantWaitListTabPageController.populateWaitListTable();
-        adminTableView.refresh();
-        clinicianTableView.refresh();
-        userTableView.refresh();
+        initAdminSearchTable();
+        initClinicianSearchTable();
+        initUserSearchTable();
     }
 
     /**
