@@ -196,7 +196,10 @@ public class Administrator extends Undoable<Administrator> implements Listenable
         salt = PasswordManager.getNextSalt();
         this.password = PasswordManager.hash(password, salt);
         addChange(new Change("Update password"));
+    }
 
+    public byte[] getSalt() {
+        return salt;
     }
 
     public List<Change> getChanges() {
@@ -221,6 +224,12 @@ public class Administrator extends Undoable<Administrator> implements Listenable
         this.pcs = pcs;
     }
 
+    @Override
+    public void setDeleted(boolean deleted) {
+        super.setDeleted(deleted);
+        addChange(new Change("Deleted administrator"));
+    }
+
     /**
      * Takes an attempt as a password and then checks it against the actual password
      *
@@ -231,16 +240,6 @@ public class Administrator extends Undoable<Administrator> implements Listenable
         return PasswordManager.isExpectedPassword(passwordAttempt, salt, getPassword());
     }
 
-
-    /**
-     * EWWWW gross but please forgive me. dont want the search to break just yet. the generic search requires a region
-     * so here we are
-     *
-     * @return does the needful
-     */
-    public String getRegion() {
-        return "";
-    }
 
     @Override
     public boolean equals(Object o) {

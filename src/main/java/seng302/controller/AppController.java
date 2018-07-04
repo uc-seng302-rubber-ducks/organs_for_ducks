@@ -12,6 +12,7 @@ import seng302.model.Clinician;
 import seng302.model.User;
 import seng302.model._enum.Directory;
 import seng302.model.datamodel.TransplantDetails;
+import seng302.utils.DataHandler;
 import seng302.utils.JsonHandler;
 import seng302.utils.Log;
 
@@ -19,7 +20,10 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Stack;
 
 
 /**
@@ -35,14 +39,12 @@ public class AppController {
     private static AppController controller;
     private ArrayList<String[]> historyOfCommands = new ArrayList<>();
     private int historyPointer = 0;
+    private DataHandler dataHandler = new JsonHandler();
 
     private UserController userController = new UserController();
     private ClinicianController clinicianController = new ClinicianController();
     private AdministratorViewController administratorViewController = new AdministratorViewController();
     private statusBarController statusBarController = new statusBarController();
-    private Set<User> deletedUserStack = new HashSet<>();
-    private Set<Clinician> deletedClinicianSet = new HashSet<>();
-    private Set<Administrator> deletedAdminSet = new HashSet<>();
     private Stack<User> redoStack = new Stack<>();
 
     private static final String USERS_FILE = Directory.JSON.directory() + "/users.json";
@@ -54,7 +56,7 @@ public class AppController {
      */
     private AppController() {
         try {
-            users = JsonHandler.loadUsers(USERS_FILE);
+            users = dataHandler.loadUsers(USERS_FILE);
             Log.info(users.size() + " users were successfully loaded");
         } catch (FileNotFoundException e) {
             Log.warning("User file was not found", e);
@@ -62,14 +64,14 @@ public class AppController {
         }
 
         try {
-            clinicians = JsonHandler.loadClinicians(CLINICIAN_FILE);
+            clinicians = dataHandler.loadClinicians(CLINICIAN_FILE);
             Log.info(clinicians.size() + " clinicians were successfully loaded");
         } catch (FileNotFoundException e) {
             Log.warning("Clinician file was not found", e);
         }
 
         try {
-            admins = JsonHandler.loadAdmins(ADMIN_FILE);
+            admins = dataHandler.loadAdmins(ADMIN_FILE);
             Log.info(admins.size() + " administrators were successfully loaded");
         } catch (FileNotFoundException e) {
             Log.severe("Administrator file was not found", e);
@@ -89,7 +91,7 @@ public class AppController {
             admins.add(new Administrator("default", "", "", "", "admin"));
 
             try {
-                JsonHandler.saveAdmins(admins);
+                dataHandler.saveAdmins(admins);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -105,7 +107,7 @@ public class AppController {
         if (!defaultSeen) {
             clinicians.add(new Clinician("0", "admin", "Default", null, null, null, (String) null));
             try {
-                JsonHandler.saveClinicians(clinicians);
+                dataHandler.saveClinicians(clinicians);
                 Log.info("Successfully saved clinicians to file");
             } catch (IOException e) {
                 Log.warning("Could not save clinicians to file", e);
@@ -125,46 +127,6 @@ public class AppController {
         return controller;
     }
 
-    /**
-     * appends a single user to the list of users stored in the controller
-     *
-     * @param name           The name of the user.
-     * @param dateOfBirth    The date the user was born.
-     * @param dateOfDeath    The date the user died.
-     * @param gender         The gender of the user.
-     * @param height         The height of the user.
-     * @param weight         The weight of the user.
-     * @param bloodType      The blood type of the user.
-     * @param currentAddress The address of the user.
-     * @param region         The region the user lives in.
-     * @param NHI            The unique identifier of the user (national health index)
-     * @return hashCode of the new user or -1 on error
-     */
-    //TODO: Remove this
-    public int Register(String name, LocalDate dateOfBirth, LocalDate dateOfDeath, String gender, double height,
-                        double weight,
-                        String bloodType, String currentAddress, String region, String NHI) {
-        try {
-            User newUser = new User(name, dateOfBirth, NHI);
-            newUser.setDateOfDeath(dateOfDeath);
-            newUser.setGender(gender);
-            newUser.setHeight(height);
-            newUser.setWeight(weight);
-            newUser.setBloodType(bloodType);
-            newUser.setCurrentAddress(currentAddress);
-            newUser.setRegion(region);
-
-            if (users.contains(newUser)) {
-                return -1;
-            }
-            users.add(newUser);
-            Log.info("Successfully registered new user with NHI: " + NHI);
-            return newUser.hashCode();
-        } catch (Exception e) {
-            Log.warning("failed to register new user with NHI: " + NHI, e);
-            return -1;
-        }
-    }
 
     /**
      * Sets the point in history
@@ -207,26 +169,6 @@ public class AppController {
         return historyOfCommands.get(historyPointer);
     }
 
-    /**
-     * @param name        name of new user
-     * @param dateOfBirth dob of new user
-     * @param NHI         NHI of new user
-     * @return true if the user was created, false if there was an error or user already exists
-     */
-    public boolean Register(String name, LocalDate dateOfBirth, String NHI) {
-        try {
-            User newUser = new User(name, dateOfBirth, NHI);
-            if (users.contains(newUser)) {
-                return false;
-            }
-            users.add(newUser);
-            Log.info("Successfully registered new user with NHI: " + NHI);
-            return true;
-        } catch (Exception e) {
-            Log.warning("Failed to register new user with NHI: " + NHI, e);
-            return false;
-        }
-    }
 
     /**
      * Takes a users name and dob, finds the user in the session list and returns them.
@@ -255,7 +197,7 @@ public class AppController {
     public ArrayList<User> findUsers(String name) {
         ArrayList<User> toReturn = new ArrayList<>();
         for (User user : users) {
-            if (user.getFullName().toLowerCase().contains(name.toLowerCase())) {
+            if (user.getFullName().toLowerCase().contains(name.toLowerCase()) && !user.isDeleted()) {
                 toReturn.add(user);
             }
         }
@@ -270,7 +212,7 @@ public class AppController {
      */
     public User findUser(String nhi) {
         for (User u : users) {
-            if ((u.getNhi()).equalsIgnoreCase(nhi)) {
+            if ((u.getNhi()).equalsIgnoreCase(nhi) && !u.isDeleted()) {
                 return u;
             }
         }
@@ -285,16 +227,14 @@ public class AppController {
      */
     public void deleteUser(User user) {
         List<User> sessionList = getUsers();
-        sessionList.remove(user);
-        deletedUserStack.add(user);
+        user.setDeleted(true);
         setUsers((ArrayList<User>) sessionList);
         try {
-            JsonHandler.saveUsers(sessionList);
+            dataHandler.saveUsers(sessionList);
 
         } catch (IOException e) {
             Log.warning("failed to delete a user with NHI: " + user.getNhi(), e);
         }
-
     }
 
 
@@ -303,26 +243,10 @@ public class AppController {
     }
 
     /**
-     * finds a user by their NHI
-     *
-     * @param NHI the unique id of a user
-     * @return user corresponding with the NHI given or null if dne
-     */
-    public User getUser(String NHI) {
-        for (User user : users) {
-            if (user.getNhi().equals(NHI)) {
-                return user;
-            }
-        }
-        return null;
-    }
-
-    /**
      * Method to update the user of any changes passed in by the gui. Removes the old entry of the
      * user from the list and then adds the updated entry If the user is not already in the list it is
      * added
      * <p>
-     * TODO: each user may need to be assigned a unique id for this part
      *
      * @param user user to be updated/added
      */
@@ -336,7 +260,7 @@ public class AppController {
             changelogWrite.add(new Change(LocalDateTime.now(), "Added user " + user.getFullName()));
         }
         try {
-            JsonHandler.saveUsers(users);
+            dataHandler.saveUsers(users);
             //JsonHandler.saveChangelog(changelogWrite, user.getFullName().toLowerCase().replace(" ", "_"));
 
         } catch (IOException e) {
@@ -352,14 +276,28 @@ public class AppController {
         this.users = users;
     }
 
-    public void addUser(User user) {
-        users.add(user);
+    /**
+     * adds a user to the users list
+     *
+     * @param user user to be added
+     * @return if the user was added
+     */
+    public boolean addUser(User user) {
+        return users.add(user);
     }
 
+    /**
+     * adds a clinician to the clinicians
+     * @param clinician clinician to be added
+     */
     public void addClinician(Clinician clinician) {
         clinicians.add(clinician);
     }
 
+    /**
+     * adds a administrator ti the administrators
+     * @param administrator administrator to be added
+     */
     public void addAdmin(Administrator administrator) {
         admins.add(administrator);
     }
@@ -393,7 +331,7 @@ public class AppController {
      */
     public Clinician getClinician(String id) {
         for (Clinician c : clinicians) {
-            if (c.getStaffId().equals(id)) {
+            if (c.getStaffId().equals(id) && !c.isDeleted()) {
                 return c;
             }
         }
@@ -409,7 +347,7 @@ public class AppController {
         }
 
         try {
-            JsonHandler.saveClinicians(clinicians);
+            dataHandler.saveClinicians(clinicians);
             Log.info("Successfully updated clinician with Staff ID: " + clinician.getStaffId());
         } catch (IOException e) {
             Log.warning("Failed to update clinician with Staff ID: " + clinician.getStaffId(), e);
@@ -422,13 +360,10 @@ public class AppController {
      * @param clinician The clinician to be deleted
      */
     public void deleteClinician(Clinician clinician) {
-        List<Clinician> clinicianSessionList = getClinicians();
-        clinicianSessionList.remove(clinician);
-        deletedClinicianSet.add(clinician);
-        this.clinicians = clinicianSessionList;
+        clinician.setDeleted(true);
 
         try {
-            JsonHandler.saveClinicians(clinicianSessionList);
+            dataHandler.saveClinicians(clinicians);
         } catch (IOException e) {
             Log.warning("failed to delete a clinician", e);
         }
@@ -440,13 +375,10 @@ public class AppController {
      * @param admin The given admin
      */
     public void deleteAdmin(Administrator admin) {
-        Collection<Administrator> adminSessionList = getAdmins();
-        adminSessionList.remove(admin);
-        deletedAdminSet.add(admin);
-        this.admins = adminSessionList;
+        admin.setDeleted(true);
 
         try {
-            JsonHandler.saveAdmins(adminSessionList);
+            dataHandler.saveAdmins(admins);
         } catch (IOException e) {
             Log.warning("failed to delete an administrator", e);
         }
@@ -489,7 +421,7 @@ public class AppController {
 
     public Administrator getAdministrator(String username) {
         for (Administrator a : admins) {
-            if (a.getUserName().equals(username)) {
+            if (a.getUserName().equals(username) && !a.isDeleted()) {
                 return a;
             }
         }
@@ -506,7 +438,7 @@ public class AppController {
         }
 
         try {
-            JsonHandler.saveAdmins(admins);
+            dataHandler.saveAdmins(admins);
             Log.info("successfully updated the Administrator profile with user name: " + administrator.getUserName());
         } catch (IOException e) {
             Log.warning("Failed to update Administrator profiles with user name: " + administrator.getUserName(), e);
@@ -533,8 +465,14 @@ public class AppController {
                 diffs.add(
                         "Changed DOD from " + oldUser.getDateOfDeath() + " to " + newUser.getDateOfDeath());
             }
-            if (!(oldUser.getGender().equalsIgnoreCase(newUser.getGender()))) {
-                diffs.add("Changed Gender from " + oldUser.getGender() + " to " + newUser.getGender());
+            if (!oldUser.getAddress().equalsIgnoreCase(newUser.getAddress())) {
+                diffs.add("Changed Address from " + oldUser.getAddress() + " to " + newUser
+                        .getAddress());
+            }
+
+
+            if (!(oldUser.getBirthGender().equalsIgnoreCase(newUser.getBirthGender()))) {
+                diffs.add("Changed Gender from " + oldUser.getBirthGender() + " to " + newUser.getBirthGender());
             }
             if (oldUser.getHeight() != newUser.getHeight()) {
                 diffs.add("Changed Height from " + oldUser.getHeight() + " to " + newUser.getHeight());
@@ -545,10 +483,6 @@ public class AppController {
             if (!oldUser.getBloodType().equalsIgnoreCase(newUser.getBloodType())) {
                 diffs.add(
                         "Changed Blood Type from " + oldUser.getBloodType() + " to " + newUser.getBloodType());
-            }
-            if (!oldUser.getCurrentAddress().equalsIgnoreCase(newUser.getCurrentAddress())) {
-                diffs.add("Changed Address from " + oldUser.getCurrentAddress() + " to " + newUser
-                        .getCurrentAddress());
             }
             if (!oldUser.getRegion().equalsIgnoreCase(newUser.getRegion())) {
                 diffs.add("Changes Region from " + oldUser.getRegion() + " to " + newUser.getRegion());
@@ -561,16 +495,6 @@ public class AppController {
                 diffs.add("Changed From Organs Donating = " + oldUser.getDonorDetails().getOrgans() + " to "
                         + newUser
                         .getDonorDetails().getOrgans());
-            }
-            for (String atty : oldUser.getMiscAttributes()) {
-                if (!newUser.getMiscAttributes().contains(atty)) {
-                    diffs.add("Removed misc Atttribute " + atty);
-                }
-            }
-            for (String atty : newUser.getMiscAttributes()) {
-                if (!oldUser.getMiscAttributes().contains(atty)) {
-                    diffs.add("Added misc Attribute " + atty);
-                }
             }
 
             for (String med : oldUser.getPreviousMedication()) {
@@ -624,10 +548,9 @@ public class AppController {
      * @throws ProfileAlreadyExistsException if a user with the same NHI is in the users list
      */
     public void undoDeletion(User user) throws ProfileNotFoundException, ProfileAlreadyExistsException {
-        if (deletedUserStack.contains(user)) {
+        if (user.isDeleted()) {
             if (findUser(user.getNhi()) == null) {
-                deletedUserStack.remove(user);
-                users.add(user);
+                user.setDeleted(false);
                 redoStack.push(user);
             } else {
                 throw new ProfileAlreadyExistsException();
@@ -647,10 +570,9 @@ public class AppController {
      * @throws ProfileAlreadyExistsException if a clinician with the same Staff ID is in the clinician list
      */
     public void undoClinicianDeletion(Clinician clinician) throws ProfileNotFoundException, ProfileAlreadyExistsException {
-        if (deletedClinicianSet.contains(clinician)) {
+        if (clinician.isDeleted()) {
             if (getClinician(clinician.getStaffId()) == null) {
-                deletedClinicianSet.remove(clinician);
-                clinicians.add(clinician);
+                clinician.setDeleted(false);
             } else {
                 throw new ProfileAlreadyExistsException();
             }
@@ -668,28 +590,15 @@ public class AppController {
      * @throws ProfileAlreadyExistsException if an administrator with the same username is in the administrator list
      */
     public void undoAdminDeletion(Administrator admin) throws ProfileNotFoundException, ProfileAlreadyExistsException {
-        if (deletedAdminSet.contains(admin)) {
+        if (admin.isDeleted()) {
             if (getAdministrator(admin.getUserName()) == null) {
-                deletedAdminSet.remove(admin);
-                admins.add(admin);
+                admin.setDeleted(false);
             } else {
                 throw new ProfileAlreadyExistsException();
             }
         } else {
             throw new ProfileNotFoundException();
         }
-    }
-
-    public Set<User> getDeletedUsers() {
-        return deletedUserStack;
-    }
-
-    public Set<Clinician> getDeletedClinicians() {
-        return deletedClinicianSet;
-    }
-
-    public Set<Administrator> getDeletedAdmins() {
-        return deletedAdminSet;
     }
 
     public ArrayList<TransplantDetails> getTransplantList() {

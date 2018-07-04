@@ -6,24 +6,19 @@ import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializer;
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
-import seng302.model.Administrator;
-import seng302.model.Change;
-import seng302.model.Clinician;
-import seng302.model.User;
+import seng302.model.*;
 import seng302.model._enum.Directory;
 
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Json Handler to import and save data
  */
-public final class JsonHandler {
+public final class JsonHandler extends DataHandler {
 
     /**
      * save the current users in the system to the filename given Based on:
@@ -32,8 +27,10 @@ public final class JsonHandler {
      * @param users List of users to save
      * @throws IOException when there is an error writing to the file.
      */
-    public static void saveUsers(Collection<User> users) throws IOException {
-
+    public boolean saveUsers(Collection<User> users) throws IOException {
+        // filters the users collection to one where it doesn't contain deleted users
+        users = users.stream().filter(user -> !user.isDeleted()).collect(Collectors.toList());
+        removeDeletedUserItems(users);
         Files.createDirectories(Paths.get(Directory.JSON.directory()));
         File outFile = new File(Directory.JSON.directory() + "/users.json");
 
@@ -50,6 +47,37 @@ public final class JsonHandler {
         writer.write(usersString);
         writer.close();
         Log.info("Handler: successfully wrote user to file");
+        return true;
+    }
+
+    /**
+     * Removes all the deleted stuff from each user
+     *
+     * @param users Collection of users from the application
+     */
+    private void removeDeletedUserItems(Collection<User> users) {
+        for (User user : users) {
+            try {
+                for (MedicalProcedure p : user.getMedicalProcedures()) {
+                    if (p.isDeleted()) {
+                        user.getMedicalProcedures().remove(p);
+                    }
+                }
+                for (Disease d : user.getCurrentDiseases()) {
+                    if (d.isDeleted()) {
+                        user.getCurrentDiseases().remove(d);
+                    }
+                }
+                for (Disease d : user.getPastDiseases()) {
+                    if (d.isDeleted()) {
+                        user.getPastDiseases().remove(d);
+                    }
+                }
+            } catch (ConcurrentModificationException ex) {
+                //Catches the CME that arises from removing an item while the list is 'open' in JFX
+                Log.warning("Concurrent modification of user list", ex);
+            }
+        }
     }
 
     /**
@@ -59,7 +87,7 @@ public final class JsonHandler {
      * @throws FileNotFoundException when the file cannot be located.
      */
 
-    public static List<User> loadUsers(String filename) throws FileNotFoundException {
+    public List<User> loadUsers(String filename) throws FileNotFoundException {
         try {
             File inFile = new File(filename);
             Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss")
@@ -93,7 +121,8 @@ public final class JsonHandler {
      * @param clinicians list of clinicians to save
      * @throws IOException thrown when file does not exist, can be ignored as file will be created
      */
-    public static void saveClinicians(Collection<Clinician> clinicians) throws IOException {
+    public boolean saveClinicians(Collection<Clinician> clinicians) throws IOException {
+        clinicians = clinicians.stream().filter(clinician -> !clinician.isDeleted()).collect(Collectors.toList());
         Files.createDirectories(Paths.get(Directory.JSON.directory()));
         File outFile = new File(Directory.JSON.directory() + "/clinicians.json");
 
@@ -111,6 +140,7 @@ public final class JsonHandler {
         writer.write(usersString);
         writer.close();
         Log.info("successfully wrote clinicians to file");
+        return true;
     }
 
 
@@ -120,7 +150,7 @@ public final class JsonHandler {
      * @return List of registered clinicians
      * @throws FileNotFoundException thrown if no clinicians exist
      */
-    public static List<Clinician> loadClinicians(String filename) throws FileNotFoundException {
+    public List<Clinician> loadClinicians(String filename) throws FileNotFoundException {
         try {
             File inFile = new File(filename);
             Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss")
@@ -144,7 +174,8 @@ public final class JsonHandler {
      * @param admins list of administrators to be saved
      * @throws IOException thrown when file does not exist, can be ignored as file will be created
      */
-    public static void saveAdmins(Collection<Administrator> admins) throws IOException {
+    public boolean saveAdmins(Collection<Administrator> admins) throws IOException {
+        admins = admins.stream().filter(administrator -> !administrator.isDeleted()).collect(Collectors.toList());
         Files.createDirectories(Paths.get(Directory.JSON.directory()));
         File outFile = new File(Directory.JSON.directory() + "/administrators.json");
 
@@ -162,6 +193,7 @@ public final class JsonHandler {
         String adminsString = gson.toJson(admins);
         writer.write(adminsString);
         writer.close();
+        return true;
     }
 
     /**
@@ -170,7 +202,7 @@ public final class JsonHandler {
      * @return List of administrator accounts
      * @throws FileNotFoundException thrown if the JSON file of administrators does not exist
      */
-    public static Collection<Administrator> loadAdmins(String filename) throws FileNotFoundException {
+    public Collection<Administrator> loadAdmins(String filename) throws FileNotFoundException {
         try {
             File inFile = new File(filename);
             Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss")

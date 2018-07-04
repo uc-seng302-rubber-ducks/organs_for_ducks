@@ -26,8 +26,8 @@ public class DiseasesTest {
         controller = AppController.getInstance();
         controller.setUsers(new ArrayList<>());
         try {
-            controller.Register("Donor", LocalDate.parse("1978-03-06", sdf), "ABC1234");
-            //controller.Register("One Organ", LocalDate.parse("1997-02-05", sdf), "ASD2345");
+            controller.addUser(new User("Donor", LocalDate.parse("1978-03-06", sdf), "ABC1234"));
+            controller.addUser(new User("One Organ", LocalDate.parse("1997-02-05", sdf), "ASD2345"));
             User user = controller.findUsers("Donor").get(0);
             Disease diseaseA1 = new Disease("A1", true, false, LocalDate.parse("2000-01-06", sdf));
             Disease diseaseA2 = new Disease("A2", false, false, LocalDate.parse("2000-01-05", sdf));
@@ -95,7 +95,7 @@ public class DiseasesTest {
     @Test
     public void shouldBeOrderedByDateAscending() { //Tests the comparator works correctly
         //Basic Objects
-        User user = controller.getUser("ABC1234");
+        User user = controller.findUser("ABC1234");
         Disease disease = new Disease("", false, false, LocalDate.now());
 
         Collections.sort(user.getCurrentDiseases(), disease.diseaseDateComparator);
@@ -112,7 +112,7 @@ public class DiseasesTest {
 
     @Test
     public void shouldBeOrderByNameAscending() {
-        User user = controller.getUser("ABC1234");
+        User user = controller.findUser("ABC1234");
         Disease disease = new Disease("", false, false, LocalDate.now());
 
         Collections.sort(user.getCurrentDiseases(), disease.diseaseNameComparator);
@@ -130,7 +130,7 @@ public class DiseasesTest {
 
     @Test
     public void shouldBeOrderByChronicAscending() {
-        User user = controller.getUser("ABC1234");
+        User user = controller.findUser("ABC1234");
         Disease disease = new Disease("", false, false, LocalDate.now());
 
         Collections.sort(user.getCurrentDiseases(), disease.diseaseChronicComparator);

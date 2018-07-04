@@ -29,7 +29,7 @@ public class UpdateUserDetailsTest {
         controller.setUsers(new ArrayList<>());
 
         try {
-            controller.Register("test dummy", LocalDate.parse("1111-11-11", sdf), "ABC1234");
+            controller.addUser(new User("test dummy", LocalDate.parse("1111-11-11", sdf), "ABC1234"));
             NHI = "ABC1234";
             User user = controller.findUsers("test dummy").get(0);
             user.setWeight(65.3);
@@ -137,7 +137,7 @@ public class UpdateUserDetailsTest {
 
     @Test
     public void ShouldUpdateLastModifiedTimestamp() throws InterruptedException {
-        User user = controller.getUser(NHI);
+        User user = controller.findUser(NHI);
         LocalDateTime oldTime = user.getLastModified();
         Thread.sleep(100);
         System.out.println(oldTime);
@@ -156,15 +156,15 @@ public class UpdateUserDetailsTest {
     @Test
     public void ShouldNotUpdateNHItoDuplicateOfExistingUser() {
         //one user cannot have the NHI changed to that of another user
-        User user = controller.getUser(NHI);
-        controller.Register("Frank", LocalDate.of(1990, 3, 3), "CDE1234");
-        User other = controller.getUser("CDE1234");
+        User user = controller.findUser(NHI);
+        controller.addUser(new User("Frank", LocalDate.of(1990, 3, 3), "CDE1234"));
+        User other = controller.findUser("CDE1234");
 
         String[] args = {"-NHI=ABC1234", "-newNHI=CDE1234"};
         new CommandLine(new UpdateUserDetails())
                 .parseWithHandler(new CommandLine.RunLast(), System.err, args);
 
-        Assert.assertEquals(controller.getUser("CDE1234"), other);
-        Assert.assertEquals(controller.getUser("ABC1234"), user);
+        Assert.assertEquals(controller.findUser("CDE1234"), other);
+        Assert.assertEquals(controller.findUser("ABC1234"), user);
     }
 }

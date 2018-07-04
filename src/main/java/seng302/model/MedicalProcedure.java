@@ -2,6 +2,7 @@ package seng302.model;
 
 
 import com.google.gson.annotations.Expose;
+import seng302.model._abstract.Deletable;
 import seng302.model._enum.Organs;
 import seng302.model.datamodel.ProcedureKey;
 
@@ -14,7 +15,7 @@ import java.util.List;
  *
  * @author Josh Burt
  */
-public class MedicalProcedure {
+public class MedicalProcedure extends Deletable {
 
     @Expose
     private LocalDate procedureDate;
