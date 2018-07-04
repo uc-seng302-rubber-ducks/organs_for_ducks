@@ -26,6 +26,8 @@
             <groupId>odms</groupId>
             <artifactId>commons</artifactId>
             <version>0.0</version>
+            <type>jar</type>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
