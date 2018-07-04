@@ -1,12 +1,12 @@
 package seng302.model;
 
+import odms.controller.AppController;
+import odms.exception.ProfileAlreadyExistsException;
+import odms.exception.ProfileNotFoundException;
 import odms.model.Administrator;
 import odms.model.Clinician;
 import odms.model.User;
 import org.junit.*;
-import odms.controller.AppController;
-import odms.exception.ProfileAlreadyExistsException;
-import odms.exception.ProfileNotFoundException;
 
 import java.time.LocalDate;
 import java.util.Collection;

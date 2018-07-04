@@ -1,11 +1,11 @@
 package odms.commands;
 
+import odms.controller.AppController;
 import odms.model.User;
 import odms.model._enum.Organs;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
-import odms.controller.AppController;
 
 @Command(name = "donate", description = "Updates a user's organs to donate.")
 public class UpdateUserDonate implements Runnable {

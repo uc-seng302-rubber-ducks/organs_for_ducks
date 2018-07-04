@@ -1,6 +1,10 @@
 package seng302.GUITest2;
 
 import javafx.scene.input.KeyCode;
+import odms.App;
+import odms.controller.AppController;
+import odms.model.Disease;
+import odms.model.User;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -8,18 +12,13 @@ import org.junit.Test;
 import org.testfx.api.FxRobotException;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
-import odms.App;
 import seng302.Utils.CommonTestMethods;
-import odms.controller.AppController;
-import odms.model.Disease;
-import odms.model.User;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.concurrent.TimeoutException;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static seng302.Utils.TableViewsMethod.getCell;
 import static seng302.Utils.TableViewsMethod.getCellValue;
 

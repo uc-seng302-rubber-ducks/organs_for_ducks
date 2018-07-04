@@ -1,5 +1,6 @@
 package odms.commands;
 
+import odms.controller.AppController;
 import odms.model.User;
 import odms.model._abstract.Blockable;
 import odms.utils.Log;
@@ -7,7 +8,6 @@ import odms.view.CLI;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
-import odms.controller.AppController;
 
 import java.io.InputStream;
 import java.util.Scanner;

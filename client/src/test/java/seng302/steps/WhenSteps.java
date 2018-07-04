@@ -5,14 +5,14 @@ import cucumber.api.java.en.And;
 import cucumber.api.java.en.When;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
-import org.testfx.framework.junit.ApplicationTest;
-import picocli.CommandLine;
-import picocli.CommandLine.RunLast;
-import seng302.Utils.TableViewsMethod;
 import odms.commands.CreateUser;
 import odms.commands.DeleteUser;
 import odms.commands.View;
 import odms.view.CLI;
+import org.testfx.framework.junit.ApplicationTest;
+import picocli.CommandLine;
+import picocli.CommandLine.RunLast;
+import seng302.Utils.TableViewsMethod;
 
 public class WhenSteps extends ApplicationTest {
 

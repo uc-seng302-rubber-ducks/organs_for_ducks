@@ -1,11 +1,11 @@
 package odms.commands;
 
+import odms.controller.AppController;
 import odms.model.Clinician;
 import odms.model._abstract.Blockable;
 import odms.utils.Log;
 import odms.view.CLI;
 import picocli.CommandLine;
-import odms.controller.AppController;
 
 @CommandLine.Command(name = "clinician", description = "Allows a clinician to be deleted ")
 public class DeleteClinician implements Runnable, Blockable {

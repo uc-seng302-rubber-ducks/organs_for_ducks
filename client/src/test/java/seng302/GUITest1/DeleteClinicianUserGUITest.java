@@ -1,6 +1,9 @@
 package seng302.GUITest1;
 
 
+import odms.App;
+import odms.controller.AppController;
+import odms.model.User;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -8,11 +11,8 @@ import org.junit.Test;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.matcher.control.LabeledMatchers;
-import odms.App;
 import seng302.Utils.CommonTestMethods;
 import seng302.Utils.TableViewsMethod;
-import odms.controller.AppController;
-import odms.model.User;
 
 import java.time.LocalDate;
 import java.util.concurrent.TimeoutException;

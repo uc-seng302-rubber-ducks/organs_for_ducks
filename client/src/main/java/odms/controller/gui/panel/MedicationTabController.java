@@ -10,13 +10,13 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
 import javafx.stage.Stage;
-import okhttp3.OkHttpClient;
-import org.controlsfx.control.textfield.TextFields;
 import odms.controller.AppController;
 import odms.controller.gui.popup.MedicationsTimeController;
 import odms.model.User;
 import odms.utils.HttpRequester;
 import odms.utils.Log;
+import okhttp3.OkHttpClient;
+import org.controlsfx.control.textfield.TextFields;
 
 import java.io.IOException;
 import java.util.Set;

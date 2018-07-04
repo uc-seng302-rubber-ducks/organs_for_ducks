@@ -2,16 +2,16 @@ package seng302.GUITest1;
 
 import javafx.scene.Node;
 import javafx.scene.control.TextField;
+import odms.App;
+import odms.controller.AppController;
+import odms.model.Administrator;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
-import odms.App;
 import seng302.Utils.CommonTestMethods;
-import odms.controller.AppController;
-import odms.model.Administrator;
 
 import java.util.concurrent.TimeoutException;
 

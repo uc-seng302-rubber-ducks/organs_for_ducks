@@ -1,5 +1,6 @@
 package odms.commands;
 
+import odms.controller.AppController;
 import odms.model.User;
 import odms.utils.DataHandler;
 import odms.utils.JsonHandler;
@@ -7,7 +8,6 @@ import odms.view.IoHelper;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
-import odms.controller.AppController;
 
 import java.io.IOException;
 import java.time.LocalDate;

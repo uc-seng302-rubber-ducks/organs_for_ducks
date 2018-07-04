@@ -1,5 +1,6 @@
 package seng302.model;
 
+import odms.utils.HttpRequester;
 import okhttp3.*;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -7,7 +8,6 @@ import org.json.simple.parser.ParseException;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import odms.utils.HttpRequester;
 
 import java.io.FileReader;
 import java.io.IOException;

@@ -1,12 +1,11 @@
 package odms.utils;
 
 import odms.model.*;
+import odms.model._enum.Organs;
 import odms.utils.dbStrategies.AbstractUpdateStrategy;
 import odms.utils.dbStrategies.AdminUpdateStrategy;
 import odms.utils.dbStrategies.ClinicianUpdateStrategy;
 import odms.utils.dbStrategies.UserUpdateStrategy;
-import seng302.model.*;
-import odms.model._enum.Organs;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

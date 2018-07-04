@@ -3,10 +3,10 @@ package seng302.steps;
 import cucumber.api.PendingException;
 import cucumber.api.java.en.Then;
 import javafx.scene.Node;
+import odms.model.User;
 import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.matcher.control.LabeledMatchers;
 import seng302.Utils.TableViewsMethod;
-import odms.model.User;
 
 import java.util.ArrayList;
 

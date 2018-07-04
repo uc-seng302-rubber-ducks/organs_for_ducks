@@ -8,8 +8,8 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
-import odms.model.datamodel.MedicationDurations;
 import odms.model.User;
+import odms.model.datamodel.MedicationDurations;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;

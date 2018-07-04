@@ -1,12 +1,12 @@
 package odms.commands;
 
+import odms.controller.AppController;
 import odms.model.User;
 import odms.model._enum.OrganDeregisterReason;
 import odms.model._enum.Organs;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
-import odms.controller.AppController;
 
 @Command(name = "receive", description = "updates a user's organs to be received")
 public class UpdateUserReceive implements Runnable {

@@ -2,16 +2,16 @@ package seng302.GUITest2;
 
 
 import javafx.application.Platform;
-import org.junit.*;
-import org.testfx.api.FxToolkit;
-import org.testfx.framework.junit.ApplicationTest;
 import odms.App;
 import odms.controller.AppController;
 import odms.controller.gui.popup.ReceiverOrganDetailsHolder;
 import odms.controller.gui.window.UserController;
+import odms.model.User;
 import odms.model._enum.OrganDeregisterReason;
 import odms.model._enum.Organs;
-import odms.model.User;
+import org.junit.*;
+import org.testfx.api.FxToolkit;
+import org.testfx.framework.junit.ApplicationTest;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;

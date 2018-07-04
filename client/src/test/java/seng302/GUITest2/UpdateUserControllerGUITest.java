@@ -1,13 +1,13 @@
 package seng302.GUITest2;
 
+import odms.App;
+import odms.controller.AppController;
+import odms.model.User;
 import org.junit.*;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.matcher.control.LabeledMatchers;
-import odms.App;
 import seng302.Utils.CommonTestMethods;
-import odms.controller.AppController;
-import odms.model.User;
 
 import java.time.LocalDate;
 import java.util.concurrent.TimeoutException;

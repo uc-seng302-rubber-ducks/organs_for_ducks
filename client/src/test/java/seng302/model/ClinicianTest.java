@@ -1,9 +1,9 @@
 package seng302.model;
 
 import odms.model.Clinician;
+import odms.utils.PasswordManager;
 import org.junit.Before;
 import org.junit.Test;
-import odms.utils.PasswordManager;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;

@@ -1,10 +1,10 @@
 package seng302.controller;
 
 import odms.controller.AppController;
+import odms.model.User;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import odms.model.User;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;

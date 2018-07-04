@@ -1,10 +1,10 @@
 package odms.commands;
 
+import odms.controller.AppController;
 import odms.model.User;
 import odms.view.IoHelper;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
-import odms.controller.AppController;
 
 import java.time.LocalDate;
 

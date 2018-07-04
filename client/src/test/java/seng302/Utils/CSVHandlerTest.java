@@ -1,11 +1,11 @@
 package seng302.Utils;
 
+import odms.model.User;
+import odms.utils.CSVHandler;
 import org.apache.commons.csv.CSVRecord;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import odms.model.User;
-import odms.utils.CSVHandler;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -14,7 +14,6 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
-
 import java.util.List;
 
 

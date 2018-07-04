@@ -1,10 +1,10 @@
 package odms.commands;
 
+import odms.controller.AppController;
 import odms.model.Clinician;
 import odms.utils.AttributeValidation;
 import picocli.CommandLine;
 import picocli.CommandLine.Option;
-import odms.controller.AppController;
 
 @CommandLine.Command(name = "clinician", description = "Allows the details for a clinician to be updated")
 public class UpdateClinician implements Runnable {

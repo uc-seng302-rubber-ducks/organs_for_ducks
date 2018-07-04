@@ -1,11 +1,11 @@
 package seng302.commands;
 
 import odms.commands.CreateClinician;
+import odms.controller.AppController;
+import odms.model.Clinician;
 import org.junit.Before;
 import org.junit.Test;
 import picocli.CommandLine;
-import odms.controller.AppController;
-import odms.model.Clinician;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;

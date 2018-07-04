@@ -3,8 +3,8 @@ package odms.model;
 
 import com.google.gson.annotations.Expose;
 import odms.model._abstract.Deletable;
-import odms.model.datamodel.ProcedureKey;
 import odms.model._enum.Organs;
+import odms.model.datamodel.ProcedureKey;
 
 import java.time.LocalDate;
 import java.util.ArrayList;

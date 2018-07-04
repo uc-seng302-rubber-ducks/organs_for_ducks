@@ -7,8 +7,8 @@ import javafx.scene.control.SelectionMode;
 import javafx.stage.Stage;
 import odms.controller.AppController;
 import odms.model.MedicalProcedure;
-import odms.model._enum.Organs;
 import odms.model.User;
+import odms.model._enum.Organs;
 import odms.utils.Log;
 
 import java.util.ArrayList;

@@ -1,13 +1,6 @@
 package odms.view;
 
 
-import org.jline.keymap.KeyMap;
-import org.jline.reader.*;
-import org.jline.reader.impl.history.DefaultHistory;
-import org.jline.terminal.Terminal;
-import org.jline.terminal.TerminalBuilder;
-import org.jline.utils.InfoCmp.Capability;
-import picocli.CommandLine;
 import odms.commands.CliRoot;
 import odms.controller.AppController;
 import odms.model.User;
@@ -15,6 +8,13 @@ import odms.model._abstract.Blockable;
 import odms.model._enum.Directory;
 import odms.utils.DataHandler;
 import odms.utils.JsonHandler;
+import org.jline.keymap.KeyMap;
+import org.jline.reader.*;
+import org.jline.reader.impl.history.DefaultHistory;
+import org.jline.terminal.Terminal;
+import org.jline.terminal.TerminalBuilder;
+import org.jline.utils.InfoCmp.Capability;
+import picocli.CommandLine;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;

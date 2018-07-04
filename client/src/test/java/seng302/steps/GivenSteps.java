@@ -3,13 +3,13 @@ package seng302.steps;
 import cucumber.api.PendingException;
 import cucumber.api.java.After;
 import cucumber.api.java.en.Given;
-import org.testfx.api.FxToolkit;
-import org.testfx.framework.junit.ApplicationTest;
-import org.testfx.matcher.control.LabeledMatchers;
 import odms.App;
 import odms.controller.AppController;
 import odms.model.User;
 import odms.model._enum.Organs;
+import org.testfx.api.FxToolkit;
+import org.testfx.framework.junit.ApplicationTest;
+import org.testfx.matcher.control.LabeledMatchers;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;

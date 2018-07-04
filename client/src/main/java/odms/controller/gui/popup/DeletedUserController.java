@@ -6,7 +6,6 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.Region;
-import odms.model._abstract.Deletable;
 import odms.controller.AppController;
 import odms.exception.ProfileAlreadyExistsException;
 import odms.exception.ProfileNotFoundException;
@@ -14,6 +13,7 @@ import odms.model.Administrator;
 import odms.model.Clinician;
 import odms.model.TooltipTableRow;
 import odms.model.User;
+import odms.model._abstract.Deletable;
 import odms.model._enum.Organs;
 import odms.utils.Log;
 

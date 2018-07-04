@@ -10,9 +10,9 @@ import javafx.stage.Stage;
 import odms.controller.AppController;
 import odms.controller.gui.window.UserController;
 import odms.model.Disease;
+import odms.model.User;
 import odms.model._enum.OrganDeregisterReason;
 import odms.model._enum.Organs;
-import odms.model.User;
 import odms.utils.AttributeValidation;
 import odms.utils.Log;
 
