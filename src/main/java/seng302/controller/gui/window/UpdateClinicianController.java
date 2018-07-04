@@ -47,10 +47,25 @@ public class UpdateClinicianController {
     private TextField lastNameTextField;
 
     @FXML
-    private TextField addressTextField;
+    private TextField streetNoTextField;
+
+    @FXML
+    private TextField streetNameTextField;
+
+    @FXML
+    private TextField neighbourhoodTextField;
+
+    @FXML
+    private TextField cityTextField;
 
     @FXML
     private TextField regionTextField;
+
+    @FXML
+    private TextField zipCodeTextField;
+
+    @FXML
+    private TextField countryTextField;
 
     @FXML
     private Label invalidStaffIDLabel;
@@ -113,15 +128,20 @@ public class UpdateClinicianController {
 
             prefillFields(clinician);
 
-            // checks if there was a change in any of the user input fields
+            // checks if there was a change in any of the clinician input fields
             changesListener(staffIDTextField);
             changesListener(passwordField);
             changesListener(confirmPasswordField);
             changesListener(firstNameTextField);
             changesListener(middleNameTextField);
             changesListener(lastNameTextField);
-            changesListener(addressTextField);
+            changesListener(streetNoTextField);
+            changesListener(streetNameTextField);
+            changesListener(neighbourhoodTextField);
+            changesListener(cityTextField);
             changesListener(regionTextField);
+            changesListener(zipCodeTextField);
+            changesListener(countryTextField);
 
             Scene scene = ownStage.getScene();
 
@@ -155,8 +175,13 @@ public class UpdateClinicianController {
         String fName = clinician.getFirstName();
         String mName = clinician.getMiddleName();
         String lName = clinician.getLastName();
-        String address = clinician.getStreetName();
+        String streetNo = clinician.getStreetNumber();
+        String streetName = clinician.getStreetName();
+        String neighbourhood = clinician.getNeighborhood();
+        String city = clinician.getCity();
         String region = clinician.getRegion();
+        String zipCode = clinician.getZipCode();
+        String country = clinician.getCountry();
 
         if (fName != null) {
             firstNameTextField.setText(fName);
@@ -176,11 +201,12 @@ public class UpdateClinicianController {
             lastNameTextField.setText("");
         }
 
-        if (address != null) {
-            addressTextField.setText(address);
-        } else {
-            addressTextField.setText("");
-        }
+        streetNoTextField.setText(streetNo);
+        streetNameTextField.setText(streetName);
+        neighbourhoodTextField.setText(neighbourhood);
+        cityTextField.setText(city);
+        zipCodeTextField.setText(zipCode);
+        countryTextField.setText(country);
 
         if (region != null) {
             regionTextField.setText(region);
@@ -220,7 +246,8 @@ public class UpdateClinicianController {
                 lastNameTextField.getText(), middleNameTextField.getText());
 
         boolean addressChanged;
-        addressChanged = updateAddress(addressTextField.getText(), regionTextField.getText());
+        addressChanged = updateAddress(streetNoTextField.getText(), streetNameTextField.getText(), neighbourhoodTextField.getText(),
+                cityTextField.getText(), regionTextField.getText(), zipCodeTextField.getText(), countryTextField.getText());
 
         if (changed || addressChanged) {
             prefillFields(currentClinician);
@@ -284,15 +311,22 @@ public class UpdateClinicianController {
     /**
      * Updates the work address of the current clinician to match the given values
      *
+     * @param streetNumber Street number that may have changed
      * @param streetName Street name that may have been changed
+     * @param neighbourhood Neighbourhood that may have changed
+     * @param city City that may have changed
      * @param region Region that may have been changed
-     * // todo: add in the other address values when the gui is updated - jen 3/7
+     * @param zipcode Zip code that may have changed
+     * @param country Country that may have changed
      * @return true if there has been a change and any of the address values, false otherwise
      */
-    private boolean updateAddress(String streetName, String region) {
+    private boolean updateAddress(String streetNumber, String streetName, String neighbourhood, String city, String region, String zipcode, String country) {
         boolean changed = false;
 
-        // todo: street number, neighborhood, city, zipCode, country
+        if (!currentClinician.getStreetNumber().equals(streetNumber)) {
+            currentClinician.setStreetNumber(streetNumber);
+            changed = true;
+        }
 
         if (currentClinician.getStreetName() != null) {
             if (!currentClinician.getStreetName().equals(streetName)) {
@@ -306,6 +340,16 @@ public class UpdateClinicianController {
             }
         }
 
+        if (!currentClinician.getNeighborhood().equals(neighbourhood)) {
+            currentClinician.setNeighborhood(neighbourhood);
+            changed = true;
+        }
+
+        if (!currentClinician.getCity().equals(city)) {
+            currentClinician.setCity(city);
+            changed = true;
+        }
+
         if (currentClinician.getRegion() != null) {
             if (!currentClinician.getRegion().equals(region)) {
                 currentClinician.setRegion(region);
@@ -316,6 +360,16 @@ public class UpdateClinicianController {
                 currentClinician.setRegion(region);
                 changed = true;
             }
+        }
+
+        if (!currentClinician.getZipCode().equals(zipcode)) {
+            currentClinician.setZipCode(zipcode);
+            changed = true;
+        }
+
+        if (!currentClinician.getCountry().equals(country)) {
+            currentClinician.setCountry(country);
+            changed = true;
         }
 
         return changed;
@@ -445,12 +499,17 @@ public class UpdateClinicianController {
             valid = false;
         }
 
-        String password = null;
-        String fName = null;
-        String mName = null;
-        String lName = null;
-        String address = null;
-        String region = null;
+        String password = "";
+        String fName = "";
+        String mName = "";
+        String lName = "";
+        String streetNumber = streetNoTextField.getText();
+        String streetName = "";
+        String neighbourhood = neighbourhoodTextField.getText();
+        String city = cityTextField.getText();
+        String region = "";
+        String zipCode = zipCodeTextField.getText();
+        String country = countryTextField.getText();
         boolean updatePassword = false;
 
         if (newClinician) {
@@ -475,7 +534,6 @@ public class UpdateClinicianController {
             }
         }
 
-
         if ((firstNameTextField.getText()).isEmpty()) {
             emptyFNameLabel.setVisible(true);
         } else {
@@ -490,8 +548,8 @@ public class UpdateClinicianController {
             lName = lastNameTextField.getText();
         }
 
-        if (!(addressTextField.getText()).isEmpty()) {
-            address = addressTextField.getText();
+        if (!(streetNameTextField.getText()).isEmpty()) {
+            streetName = streetNameTextField.getText();
         }
 
         if ((regionTextField.getText()).isEmpty()) {
@@ -503,8 +561,8 @@ public class UpdateClinicianController {
 
         if (valid && !newClinician) { // updates an existing clinician
             // updates the attributes that have changed
-            updateChanges(staffID, fName, mName, lName, address, region, password, updatePassword);
-
+            updateChanges(staffID, fName, mName, lName, password, updatePassword);
+            updateWorkChanges(streetNumber, streetName, neighbourhood, city, region, zipCode, country);
 
             currentClinician.setDateLastModified(LocalDateTime.now()); // updates the modified date
             sumAllChanged();
@@ -515,7 +573,7 @@ public class UpdateClinicianController {
 
         } else if (valid && newClinician) { // creates a new clinician
             Clinician clinician = new Clinician(staffID, password, fName, mName, lName);
-            Address workAddress = new Address("", address, "", "", region, "", "");
+            Address workAddress = new Address(streetNumber, streetName, neighbourhood, city, region, zipCode, country);
             clinician.setWorkContactDetails(new ContactDetails("", "", workAddress, ""));
             controller.updateClinicians(clinician);
             loadOverview(clinician);
@@ -526,10 +584,16 @@ public class UpdateClinicianController {
     }
 
     /**
-     * Only updates the values that have been changed.
+     * Only updates the personal detail values that have been changed.
+     *
+     * @param staffID The clinicians unique staff identifier
+     * @param fName The clinicians first name
+     * @param mName The clinicians middle name
+     * @param lName The clinicians last name
+     * @param password The clinicians account password
+     * @param updatePassword A boolean flag indicating if the password has changed or not
      */
-
-    private void updateChanges(String staffID, String fName, String mName, String lName, String address, String region, String password, boolean updatePassword) {
+    private void updateChanges(String staffID, String fName, String mName, String lName, String password, boolean updatePassword) {
         if (!currentClinician.getStaffId().equals(staffID)) {
             currentClinician.setStaffId(staffID);
         }
@@ -555,21 +619,46 @@ public class UpdateClinicianController {
         } else if (last == null && lName != null) {
             currentClinician.setLastName(lName);
         }
+    }
 
-        String add = currentClinician.getStreetName();
-        if (add != null && !add.equals(address)) {
-            currentClinician.setStreetName(address);
-        } else if (add == null && address != null) {
-            currentClinician.setStreetName(address);
+    /**
+     * Only updates the work address values that have changed
+     *
+     * @param streetNumber Street number of the work address
+     * @param streetName Street name that of the work address
+     * @param neighbourhood Neighbourhood that of the work address
+     * @param city City the clinicians work place is located in
+     * @param region Region the clinicians work place is located in
+     * @param zipCode Zip code of the area the work place is located in
+     * @param country Country that the clinicians work place is located in
+     */
+    private void updateWorkChanges(String streetNumber, String streetName, String neighbourhood, String city, String region, String zipCode, String country) {
+        if (!currentClinician.getStreetNumber().equals(streetNumber)) {
+            currentClinician.setStreetNumber(streetNumber);
         }
 
-        // todo: add in the rest of the address variables - jen
+        if (!currentClinician.getStreetName().equals(streetName)) {
+            currentClinician.setStreetName(streetName);
+        }
 
-        String reg = currentClinician.getRegion();
-        if (reg != null && !reg.equals(region)) {
+        if (!currentClinician.getNeighborhood().equals(neighbourhood)) {
+            currentClinician.setNeighborhood(neighbourhood);
+        }
+
+        if (!currentClinician.getCity().equals(city)) {
+            currentClinician.setCity(city);
+        }
+
+        if (!currentClinician.getRegion().equals(region)) {
             currentClinician.setRegion(region);
-        } else if (reg == null && region != null) {
-            currentClinician.setRegion(region);
+        }
+
+        if (!currentClinician.getZipCode().equals(zipCode)) {
+            currentClinician.setZipCode(zipCode);
+        }
+
+        if (!currentClinician.getCountry().equals(country)) {
+            currentClinician.setCountry(country);
         }
     }
 

@@ -71,7 +71,7 @@ public class UpdateClinicianControllerGUITest extends ApplicationTest {
         verifyThat("#firstNameTextField", TextInputControlMatchers.hasText("Affie"));
         verifyThat("#middleNameTextField", TextInputControlMatchers.hasText("Ali"));
         verifyThat("#lastNameTextField", TextInputControlMatchers.hasText("Al"));
-        verifyThat("#addressTextField", TextInputControlMatchers.hasText("Kirkwood Ave"));
+        verifyThat("#streetNameTextField", TextInputControlMatchers.hasText("Kirkwood Ave"));
         verifyThat("#regionTextField", TextInputControlMatchers.hasText("Canterbury"));
         clickOn("#cancelButton");
     }
