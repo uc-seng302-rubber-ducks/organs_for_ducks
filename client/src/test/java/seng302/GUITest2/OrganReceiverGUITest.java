@@ -20,9 +20,9 @@ import java.util.concurrent.TimeoutException;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
-import static seng302.Utils.ListViewsMethod.getListView;
-import static seng302.Utils.ListViewsMethod.getRowValue;
-import static seng302.Utils.TableViewsMethod.getCell;
+import static seng302.TestUtils.ListViewsMethod.getListView;
+import static seng302.TestUtils.ListViewsMethod.getRowValue;
+import static seng302.TestUtils.TableViewsMethod.getCell;
 
 public class OrganReceiverGUITest extends ApplicationTest {
 

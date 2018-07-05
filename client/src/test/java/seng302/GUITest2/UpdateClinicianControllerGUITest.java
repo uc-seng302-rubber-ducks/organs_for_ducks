@@ -11,7 +11,7 @@ import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.matcher.control.LabeledMatchers;
 import org.testfx.matcher.control.TextInputControlMatchers;
-import seng302.Utils.CommonTestMethods;
+import seng302.TestUtils.CommonTestMethods;
 
 import java.util.concurrent.TimeoutException;
 

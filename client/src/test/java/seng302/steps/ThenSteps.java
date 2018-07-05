@@ -6,14 +6,14 @@ import javafx.scene.Node;
 import odms.commons.model.User;
 import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.matcher.control.LabeledMatchers;
-import seng302.Utils.TableViewsMethod;
+import seng302.TestUtils.TableViewsMethod;
 
 import java.util.ArrayList;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.testfx.api.FxAssert.verifyThat;
-import static seng302.Utils.TableViewsMethod.getCellValue;
+import static seng302.TestUtils.TableViewsMethod.getCellValue;
 
 public class ThenSteps extends ApplicationTest {
     @Then("^There are two profiles with first name \"([^\"]*)\" and last name \"([^\"]*)\"$")

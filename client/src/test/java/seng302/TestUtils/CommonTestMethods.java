@@ -1,4 +1,4 @@
-package seng302.Utils;
+package seng302.TestUtils;
 
 public class CommonTestMethods {
     public static void runHeadless() {

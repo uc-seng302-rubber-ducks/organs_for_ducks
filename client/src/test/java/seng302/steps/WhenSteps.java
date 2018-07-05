@@ -12,7 +12,7 @@ import odms.view.CLI;
 import org.testfx.framework.junit.ApplicationTest;
 import picocli.CommandLine;
 import picocli.CommandLine.RunLast;
-import seng302.Utils.TableViewsMethod;
+import seng302.TestUtils.TableViewsMethod;
 
 public class WhenSteps extends ApplicationTest {
 
