@@ -1,0 +1,50 @@
+{
+  "key1": {
+    "dateTime": {
+      "date": {
+        "year": 2018,
+        "month": 6,
+        "day": 27
+      },
+      "time": {
+        "hour": 15,
+        "minute": 39,
+        "second": 52,
+        "nano": 875000000
+      }
+    },
+    "value": "val1"
+  },
+  "key2": {
+    "dateTime": {
+      "date": {
+        "year": 2018,
+        "month": 6,
+        "day": 27
+      },
+      "time": {
+        "hour": 15,
+        "minute": 39,
+        "second": 52,
+        "nano": 894000000
+      }
+    },
+    "value": "val2"
+  },
+  "key3": {
+    "dateTime": {
+      "date": {
+        "year": 2018,
+        "month": 6,
+        "day": 27
+      },
+      "time": {
+        "hour": 15,
+        "minute": 39,
+        "second": 52,
+        "nano": 894000000
+      }
+    },
+    "value": "val3"
+  }
+}

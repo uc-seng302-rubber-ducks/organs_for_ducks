@@ -1,4 +1,4 @@
-package seng302.Utils;
+package seng302.TestUtils;
 
 import javafx.scene.Node;
 import javafx.scene.control.TableView;

@@ -5,7 +5,7 @@ import cucumber.api.SnippetType;
 import cucumber.api.junit.Cucumber;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
-import seng302.Utils.CommonTestMethods;
+import seng302.TestUtils.CommonTestMethods;
 
 /**
  * Class for running Cucumber tests

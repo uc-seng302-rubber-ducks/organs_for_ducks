@@ -19,7 +19,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.testfx.api.FxAssert.verifyThat;
-import static seng302.Utils.TableViewsMethod.getCell;
+import static seng302.TestUtils.TableViewsMethod.getCell;
 
 
 public class GivenSteps extends ApplicationTest {

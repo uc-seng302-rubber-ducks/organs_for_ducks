@@ -12,15 +12,15 @@ import org.junit.Test;
 import org.testfx.api.FxRobotException;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
-import seng302.Utils.CommonTestMethods;
+import seng302.TestUtils.CommonTestMethods;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.concurrent.TimeoutException;
 
 import static org.junit.Assert.assertEquals;
-import static seng302.Utils.TableViewsMethod.getCell;
-import static seng302.Utils.TableViewsMethod.getCellValue;
+import static seng302.TestUtils.TableViewsMethod.getCell;
+import static seng302.TestUtils.TableViewsMethod.getCellValue;
 
 public class NewDiseaseControllerGUITest extends ApplicationTest {
 

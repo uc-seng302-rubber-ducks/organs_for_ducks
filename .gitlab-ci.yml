@@ -9,13 +9,13 @@ junit:
   stage: test
   script:
     - rm -rf ~/.organs
-    - mvn -B clean test
+    - mvn -B clean test -Punit-tests
 
 testFX-1:
   stage: test
   script:
     - rm -rf ~/.organs
-    - mvn -B clean test
+    - mvn -B clean test -Pgui-tests1
   only:
     - schedules
 
@@ -23,14 +23,14 @@ testFX-2:
   stage: test
   script:
     - rm -rf ~/.organs
-    - mvn -B clean test
+    - mvn -B clean test -Pgui-tests2
   only:
     - schedules
 
 recent-artifacts:
   stage: deploy
   script:
-    - mvn -B clean site package
+    - mvn -B clean site package -Punit-tests
   artifacts:
     paths:
       - target/*.jar
@@ -44,7 +44,7 @@ recent-artifacts:
 release-artifacts:
   stage: deploy
   script:
-    - mvn -B clean site package
+    - mvn -B clean site package -Pall
   artifacts:
     paths:
     - target/*.jar

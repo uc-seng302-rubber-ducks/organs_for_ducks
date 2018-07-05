@@ -3,11 +3,10 @@ package seng302.model;
 import odms.commons.model.Clinician;
 import org.junit.Before;
 import org.junit.Test;
-import org.testfx.framework.junit.ApplicationTest;
 
 import static junit.framework.TestCase.assertEquals;
 
-public class UndoClinicianTest extends ApplicationTest {
+public class UndoClinicianTest {
 
     private Clinician testUser;
 
