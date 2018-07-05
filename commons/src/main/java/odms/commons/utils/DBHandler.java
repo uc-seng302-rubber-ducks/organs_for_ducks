@@ -28,7 +28,9 @@ public class DBHandler {
             "FROM User u " +
             "LEFT JOIN HealthDetails hd ON u.nhi = hd.fkUserNhi " +
             "LEFT JOIN ContactDetails cde ON u.nhi = cde.fkUserNhi " +
-            "LEFT JOIN Address a ON u.nhi = a.fkUserNhi";
+            "LEFT JOIN Address a ON u.nhi = a.fkUserNhi " +
+            "WHERE (firstName LIKE ? OR lastName LIKE ?) AND region LIKE ? " +
+            " LIMIT ?,?";
     private static final String SELECT_USER_PREVIOUS_DISEASE_STMT = "SELECT diseaseName, diagnosisDate, remissionDate FROM PreviousDisease WHERE fkUserNhi = ?";
     private static final String SELECT_USER_CURRENT_DISEASE_STMT = "SELECT diseaseName, diagnosisDate, isChronic FROM CurrentDisease WHERE fkUserNhi = ?";
     private static final String SELECT_USER_MEDICATION_STMT = "SELECT medicationName, dateStartedTaking, dateStoppedTaking FROM Medication m " +
@@ -75,6 +77,10 @@ public class DBHandler {
         return LocalDateTime.parse(date, formatter);
     }
 
+    public Collection<User> getUsers(Connection connection, int count, int startIndex) throws SQLException {
+        return this.getUsers(connection, count, startIndex, "", "");
+    }
+
     /**
      * Method to obtain all the users information from the database. Opens and closes it's own connection to the database
      * User objects are instantiated and its attributes are set based on the de-serialised information.
@@ -82,10 +88,15 @@ public class DBHandler {
      * @param connection A valid connection to the database
      * @return a Collection of Users
      */
-    public Collection<User> getAllUsers(Connection connection) throws SQLException {
+    public Collection<User> getUsers(Connection connection, int count, int startIndex, String name, String region) throws SQLException {
         Collection<User> users = new ArrayList<>();
 
         try (PreparedStatement statement = connection.prepareStatement(SELECT_USER_ONE_TO_ONE_INFO_STMT)) {
+            statement.setString(1, name + "%");
+            statement.setString(2, name + "%");
+            statement.setString(3, region + "%");
+            statement.setInt(4, startIndex);
+            statement.setInt(5, count);
             try (ResultSet resultSet = statement.executeQuery()) {
 
                 while (resultSet != null && resultSet.next()) {

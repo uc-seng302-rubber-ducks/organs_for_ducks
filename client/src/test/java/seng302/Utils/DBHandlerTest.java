@@ -30,7 +30,7 @@ public class DBHandlerTest {
 
     @BeforeClass
     public static void beforeAllTests() {
-        seng302.Utils.SQLScriptRunner.run();
+        seng302.TestUtils.SQLScriptRunner.run();
     }
 
     @Before
@@ -65,18 +65,18 @@ public class DBHandlerTest {
 
     @Test
     public void testUserInstanceCreatedValid() throws SQLException {
-        Collection<User> users = dbHandler.getAllUsers(connection);
+        Collection<User> users = dbHandler.getUsers(connection, 10, 0);
         Assert.assertEquals(3, users.size());
     }
 
     @Test
     public void testDecodeUserInstanceCreatedValid() throws SQLException {
-        Collection<User> users = dbHandler.getAllUsers(connection);
+        Collection<User> users = dbHandler.getUsers(connection, 10, 0);
         User actual = users.iterator().next();
         Assert.assertTrue(actual.getNhi().equals(expected.getNhi()));
-        Assert.assertTrue (actual.getMiddleName().equals(expected.getMiddleName()));
-        Assert.assertTrue (actual.getLastName().equals(expected.getLastName()));
-        Assert.assertTrue (actual.getTimeCreated().equals(expected.getTimeCreated()));
+        Assert.assertTrue(actual.getMiddleName().equals(expected.getMiddleName()));
+        Assert.assertTrue(actual.getLastName().equals(expected.getLastName()));
+        Assert.assertTrue(actual.getTimeCreated().equals(expected.getTimeCreated()));
         //Assert.assertTrue (actual.getLastModified().equals(expected.getLastModified()));
 //        System.out.println(actual.getLastModified());
 //        System.out.println(expected.getLastModified());

@@ -7,11 +7,13 @@
     <name>team-100-Rubber-Duckies</name>
     <url>https://eng-git.canterbury.ac.nz/SENG302-2016/team-100</url>
 
-    <modules>
-        <module>commons</module>
-        <module>client</module>
-        <module>server</module>
-    </modules>
+    <properties>
+        <dir>${basedir}</dir>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
@@ -122,28 +124,11 @@
         </dependency>
     </dependencies>
 
-    <build>
-        <!-- Directory plugin to find parent root directory absolute path -->
-        <plugins>
-            <plugin>
-                <groupId>org.commonjava.maven.plugins</groupId>
-                <artifactId>directory-maven-plugin</artifactId>
-                <version>0.1</version>
-                <executions>
-                    <execution>
-                        <id>directories</id>
-                        <goals>
-                            <goal>highest-basedir</goal>
-                        </goals>
-                        <phase>initialize</phase>
-                        <configuration>
-                            <property>main.basedir</property>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
+    <modules>
+        <module>commons</module>
+        <module>client</module>
+        <module>server</module>
+    </modules>
 
     <reporting>
         <plugins>
@@ -200,12 +185,5 @@
             </plugin>
         </plugins>
     </reporting>
-
-    <properties>
-        <main.basedir>${project.basedir}</main.basedir>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
-    </properties>
 
 </project>

@@ -30,12 +30,13 @@ testFX-2:
 recent-artifacts:
   stage: deploy
   script:
-    - mvn -B clean site package -Punit-tests
+    - mvn -B clean package -Punit-tests
   artifacts:
     paths:
       - target/*.jar
       - client/target/*.jar
       - server/target/*.jar
+      - target/site/jacoco/*
     expire_in: 1 week
   except:
     - tags
@@ -44,10 +45,12 @@ recent-artifacts:
 release-artifacts:
   stage: deploy
   script:
-    - mvn -B clean site package -Pall
+    - mvn -B clean package -Pall
   artifacts:
     paths:
     - target/*.jar
+    - client/target/*.jar
+    - server/target/*.jar
     - target/site/jacoco/*
   only:
     - tags
