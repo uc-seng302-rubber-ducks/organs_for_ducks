@@ -16,11 +16,12 @@
     <repositories>
         <repository>
             <id>odms</id>
-            <url>../commons/</url>
+            <url>file://${main.basedir}/commons/target/</url>
         </repository>
     </repositories>
 
     <properties>
+        <main.basedir>${project.basedir}</main.basedir>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
@@ -35,6 +36,7 @@
             <type>jar</type>
         </dependency>
     </dependencies>
+
     <profiles>
         <profile>
             <id>gui-tests1</id>
