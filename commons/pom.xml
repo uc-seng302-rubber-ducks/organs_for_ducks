@@ -15,13 +15,6 @@
         <groupId>odms</groupId>
         <version>0.0</version>
     </parent>
-    <distributionManagement>
-        <site>
-            <id>odms-site</id>
-            <name>odms-site</name>
-            <url>site/odms/commons/</url>
-        </site>
-    </distributionManagement>
 
     <build>
         <plugins>
