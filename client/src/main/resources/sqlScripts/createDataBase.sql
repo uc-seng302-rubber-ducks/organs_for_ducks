@@ -5,19 +5,16 @@ DROP TABLE IF EXISTS ContactDetails;
 DROP TABLE IF EXISTS MedicalProcedure;
 DROP TABLE IF EXISTS MedicalProcedureOrgan;
 DROP TABLE IF EXISTS HealthDetails;
-DROP TABLE IF EXISTS HealthOrganDonate;
 DROP TABLE IF EXISTS OrganAwaitingDeRegisterDate;
 DROP TABLE IF EXISTS OrganAwaitingRegisterDate;
 DROP TABLE IF EXISTS OrganDonatingDeRegisterDate;
 DROP TABLE IF EXISTS OrganDonatingRegisterDate;
 DROP TABLE IF EXISTS OrganDonating;
 DROP TABLE IF EXISTS OrganAwaiting;
-DROP TABLE IF EXISTS HealthOrganReceive;
 DROP TABLE IF EXISTS MedicationDates;
 DROP TABLE IF EXISTS Medication;
 DROP TABLE IF EXISTS CurrentDisease;
 DROP TABLE IF EXISTS PreviousDisease;
-DROP TABLE IF EXISTS BloodType;
 DROP TABLE IF EXISTS Organ;
 DROP TABLE IF EXISTS Administrator;
 DROP TABLE IF EXISTS Clinician;
@@ -93,15 +90,6 @@ CREATE TABLE MedicationDates(
   FOREIGN KEY (fkMedicationInstanceId) REFERENCES Medication(medicationInstanceId) ON DELETE CASCADE
 );
 
-CREATE TABLE HealthOrganReceive(
-  fkOrgansId SMALLINT,
-  fkUserNhi VARCHAR(7),
-  PRIMARY KEY (fkOrgansId, fkUserNhi),
-  FOREIGN KEY (fkUserNhi) REFERENCES User(nhi) ON DELETE CASCADE,
-  FOREIGN KEY (fkOrgansId) REFERENCES Organ(organId) ON DELETE CASCADE
-);
-
-
 
 CREATE TABLE OrganAwaiting(
   fkOrgansId SMALLINT,
@@ -120,7 +108,6 @@ CREATE TABLE OrganDonating(
   FOREIGN KEY (fkUserNhi) REFERENCES User(nhi) ON DELETE CASCADE,
   FOREIGN KEY (fkOrgansId) REFERENCES Organ(organId) ON DELETE CASCADE
 );
-
 
 CREATE TABLE OrganDonatingRegisterDate(
   dontatingRegisterId INT AUTO_INCREMENT PRIMARY KEY,
@@ -148,14 +135,6 @@ CREATE TABLE OrganAwaitingDeRegisterDate(
   dateDeReg Date,
   fkRecieverId INT,
   FOREIGN KEY (fkRecieverId) REFERENCES OrganAwaiting(awaitingingId) ON DELETE CASCADE
-);
-
-CREATE TABLE HealthOrganDonate(
-  fkOrgansId SMALLINT,
-  fkUserNhi VARCHAR(7),
-  PRIMARY KEY (fkOrgansId, fkUserNhi),
-  FOREIGN KEY (fkUserNhi) REFERENCES User(nhi) ON DELETE CASCADE,
-  FOREIGN KEY (fkOrgansId) REFERENCES Organ(organId) ON DELETE CASCADE
 );
 
 CREATE TABLE HealthDetails(
@@ -190,7 +169,7 @@ CREATE TABLE MedicalProcedure(
 CREATE TABLE ContactDetails(
   contactId INT AUTO_INCREMENT PRIMARY KEY,
   fkUserNhi VARCHAR(7) UNIQUE,
-  fkStaffId INT UNIQUE ,
+  fkStaffId VARCHAR(255) UNIQUE ,
   homePhone VARCHAR(31),
   cellPhone VARCHAR(31),
   email VARCHAR(255),
@@ -210,6 +189,7 @@ CREATE TABLE EmergencyContactDetails(
 );
 
 CREATE TABLE Address(
+  addressID INT AUTO_INCREMENT PRIMARY KEY,
   fkContactId INT,
   fkEmergencyContactId INT,
   streetNumber VARCHAR(15),
@@ -220,8 +200,7 @@ CREATE TABLE Address(
   zipCode VARCHAR(15),
   country VARCHAR(255),
   fkUserNhi VARCHAR(7),
-  fkStaffId INT,
-  PRIMARY KEY (fkContactId, fkEmergencyContactId),
+  fkStaffId VARCHAR(255),
   FOREIGN KEY (fkUserNhi) REFERENCES User(nhi) ON DELETE CASCADE,
   FOREIGN KEY (fkStaffId) REFERENCES Clinician(staffId) ON DELETE CASCADE,
   FOREIGN KEY (fkContactId) REFERENCES ContactDetails(contactId) ON DELETE CASCADE,
@@ -231,7 +210,7 @@ CREATE TABLE Address(
 CREATE TABLE PasswordDetails(
   password_id INT AUTO_INCREMENT PRIMARY KEY,
   fkAdminUserName VARCHAR(255) UNIQUE,
-  fkStaffId INT UNIQUE,
+  fkStaffId VARCHAR(255) UNIQUE,
   hash BLOB,
   salt BLOB,
   FOREIGN KEY (fkAdminUserName) REFERENCES Administrator(userName) ON DELETE CASCADE,
