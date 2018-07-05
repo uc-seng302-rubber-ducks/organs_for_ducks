@@ -5,6 +5,9 @@ import odms.commons.utils.JDBCDriver;
 import odms.utils.DBManager;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * base for following rest controllers to inherit from
+ */
 @RestController
 public abstract class BaseController {
 

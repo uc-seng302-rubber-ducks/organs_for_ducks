@@ -149,6 +149,7 @@ public class DBHandler {
                     } catch (SQLException e) {
                         Log.warning("Unable to create instance of user with nhi " + user.getNhi(), e);
                         System.err.println("Unable to create instance of user with nhi " + user.getNhi() + " due to SQL Error: " + e);
+                        throw e;
                     }
                 }
                 connection.close();
