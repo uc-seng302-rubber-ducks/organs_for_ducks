@@ -1,9 +1,12 @@
-package seng302.Utils;
+package seng302.TestUtils;
 
 import odms.commons.utils.JDBCDriver;
 import odms.commons.utils.Log;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -13,8 +16,8 @@ import java.sql.SQLException;
  */
 public class SQLScriptRunner {
 
-    private static String RESET_DATABASE_SCRIPT_FILEPATH = "client/src/main/resources/sqlScripts/createDataBase.sql";
-    private static String RESAMPLE_DATABASE_SCRIPT_FILEPATH = "client/src/main/resources/sqlScripts/sampleDatabaseData.sql";
+    private static String RESET_DATABASE_SCRIPT_FILEPATH = "src/main/resources/sqlScripts/createDataBase.sql";
+    private static String RESAMPLE_DATABASE_SCRIPT_FILEPATH = "src/main/resources/sqlScripts/sampleDatabaseData.sql";
 
     /**
      * Opens a file based on filePath given, reads the file and execute the
@@ -37,7 +40,7 @@ public class SQLScriptRunner {
         Connection connection;
         try (BufferedReader reader = new BufferedReader(new FileReader(scriptFilePath))) {
 
-            String line = null;
+            String line;
             connection = jdbcDriver.getTestConnection();
 
             // read script line by line
