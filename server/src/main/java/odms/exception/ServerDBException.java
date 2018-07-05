@@ -1,4 +1,4 @@
-package odms.model.exception;
+package odms.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;

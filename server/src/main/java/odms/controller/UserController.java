@@ -4,8 +4,8 @@ import odms.commons.model.User;
 import odms.commons.utils.DBHandler;
 import odms.commons.utils.JDBCDriver;
 import odms.commons.utils.Log;
-import odms.model.exception.ServerDBException;
-import odms.model.response.UserOverview;
+import odms.exception.ServerDBException;
+import odms.commons.model.transfer.UserOverview;
 import odms.utils.DBManager;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +16,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 @OdmsController
 public class UserController extends BaseController {
@@ -40,14 +40,12 @@ public class UserController extends BaseController {
             value = "/users")
     public Collection<UserOverview> getUsers(@RequestParam("startIndex") int startIndex,
                                              @RequestParam("count") int count,
-                                             @RequestParam(value = "name", required = false) Optional<String> name,
-                                             @RequestParam(value = "region", required = false) Optional<String> region) {
+                                             @RequestParam(value = "name", required = false) String name,
+                                             @RequestParam(value = "region", required = false) String region) {
         try (Connection connection = driver.getConnection()) {
-//            TODO unable to implement yet. need handler.getUsersInRange(start, count) 5/6
-//            if(name.isPresent()) {
-//
-//            }
-            return null;
+            Collection<User> rawUsers = handler.getUsers(connection, count, startIndex);
+            //converts each user in the collection to a userOverview and returns it
+            return rawUsers.stream().map(UserOverview::fromUser).collect(Collectors.toList());
         } catch (SQLException ex) {
             Log.warning("cannot load all user data from db", ex);
             throw new ServerDBException(ex);
