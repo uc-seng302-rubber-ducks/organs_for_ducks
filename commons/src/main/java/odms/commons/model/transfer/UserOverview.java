@@ -4,7 +4,6 @@ import odms.commons.model.User;
 import odms.commons.model._enum.Organs;
 import odms.commons.model.datamodel.ReceiverOrganDetailsHolder;
 
-
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Map;
@@ -17,37 +16,14 @@ public class UserOverview {
 
     private String nhi;
     private LocalDate dob;
-    private  LocalDate dod;
+    private LocalDate dod;
     private Name name;
     private Set<Organs> donating;
     private Map<Organs, ArrayList<ReceiverOrganDetailsHolder>> receiving;
 
-    public void setNhi(String nhi) {
-        this.nhi = nhi;
-    }
-
-    public void setDob(LocalDate dob) {
-        this.dob = dob;
-    }
-
-    public void setDod(LocalDate dod) {
-        this.dod = dod;
-    }
-
-    public void setName(Name name) {
-        this.name = name;
-    }
-
-    public void setDonating(Set<Organs> donating) {
-        this.donating = donating;
-    }
-
-    public void setReceiving(Map<Organs, ArrayList<ReceiverOrganDetailsHolder>> receiving) {
-        this.receiving = receiving;
-    }
-
     /**
      * conversion method to take whole user down to overview for smaller packet size
+     *
      * @param user user to convert to overview
      * @return compressed version of the user given
      */
@@ -65,5 +41,43 @@ public class UserOverview {
     public static User toUser(UserOverview overview) {
         //TODO implement me
         throw new NullPointerException();
+    }
+
+    public void setNhi(String nhi) {
+        this.nhi = nhi;
+    }
+
+    public void setDob(LocalDate dob) {
+        this.dob = dob;
+    }
+
+    public void setDod(LocalDate dod) {
+        this.dod = dod;
+    }
+
+    @Override
+    public int hashCode() {
+        return nhi.hashCode();
+    }
+
+    //based on NHI only to keep in line with User
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof UserOverview)) {
+            return false;
+        }
+        return nhi.equals(((UserOverview) obj).nhi);
+    }
+
+    public void setName(Name name) {
+        this.name = name;
+    }
+
+    public void setDonating(Set<Organs> donating) {
+        this.donating = donating;
+    }
+
+    public void setReceiving(Map<Organs, ArrayList<ReceiverOrganDetailsHolder>> receiving) {
+        this.receiving = receiving;
     }
 }
