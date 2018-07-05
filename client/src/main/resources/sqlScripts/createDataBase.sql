@@ -215,4 +215,4 @@ CREATE TABLE PasswordDetails(
   salt BLOB,
   FOREIGN KEY (fkAdminUserName) REFERENCES Administrator(userName) ON DELETE CASCADE,
   FOREIGN KEY (fkStaffId) REFERENCES Clinician(staffId) ON DELETE CASCADE
-)
+);

@@ -13,13 +13,14 @@ import java.sql.SQLException;
  */
 public class SQLScriptRunner {
 
-    private static String RESET_DATABASE_SCRIPT_FILEPATH = "src/main/resources/sqlScripts/createDataBase.sql";
-    private static String RESAMPLE_DATABASE_SCRIPT_FILEPATH = "src/main/resources/sqlScripts/sampleDatabaseData.sql";
+    private static String RESET_DATABASE_SCRIPT_FILEPATH = "client/src/main/resources/sqlScripts/createDataBase.sql";
+    private static String RESAMPLE_DATABASE_SCRIPT_FILEPATH = "client/src/main/resources/sqlScripts/sampleDatabaseData.sql";
 
     /**
      * Opens a file based on filePath given, reads the file and execute the
      * SQL strings contained in the file.
      * Close the database connection when done.
+     * Note: every SQL statement must end with semi-colon (;)
      *
      * @param filePath location of the SQL script
      * @throws SQLException if any SQL error occurs
@@ -33,24 +34,25 @@ public class SQLScriptRunner {
         String scriptFilePath = absolutePath + filePath;
 
         String SQLString = "";
-        BufferedReader reader = null;
+        Connection connection;
+        try (BufferedReader reader = new BufferedReader(new FileReader(scriptFilePath))) {
 
-        reader = new BufferedReader(new FileReader(scriptFilePath));
+            String line = null;
+            connection = jdbcDriver.getTestConnection();
 
-        String line = null;
-        Connection connection = jdbcDriver.getTestConnection();
+            // read script line by line
+            while ((line = reader.readLine()) != null) {
+                // execute query
+                if (line.endsWith(";")) { //every SQL statement must end with semi-colon (;)
+                    SQLString += line;
+                    try(PreparedStatement statement = connection.prepareStatement(SQLString)) {
+                        statement.execute();
+                    }
+                    SQLString = "";
 
-        // read script line by line
-        while ((line = reader.readLine()) != null) {
-            // execute query
-            if(line.endsWith(";")){
-                SQLString += line;
-                PreparedStatement statement = connection.prepareStatement(SQLString);
-                statement.execute();
-                SQLString = "";
-
-            } else if(!line.equals("")) {
-                SQLString += line;
+                } else if (!line.equals("")) { //ignores new line spaces
+                    SQLString += line;
+                }
             }
         }
 
