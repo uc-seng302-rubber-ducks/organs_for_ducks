@@ -36,6 +36,7 @@ recent-artifacts:
       - target/*.jar
       - client/target/*.jar
       - server/target/*.jar
+      - target/site/jacoco/*
     expire_in: 1 week
   except:
     - tags
