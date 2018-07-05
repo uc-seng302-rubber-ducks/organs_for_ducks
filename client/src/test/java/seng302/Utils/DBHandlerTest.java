@@ -66,6 +66,7 @@ public class DBHandlerTest {
     @Test
     public void testUserInstanceCreatedValid() throws SQLException {
         Collection<User> users = dbHandler.getUsers(connection, 10, 0);
+        System.out.println(users);
         Assert.assertEquals(3, users.size());
     }
 

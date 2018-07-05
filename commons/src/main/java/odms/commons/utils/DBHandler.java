@@ -40,12 +40,14 @@ public class DBHandler {
             "LEFT JOIN MedicalProcedureOrgan mpo ON mpo.fkUserNhi = mp.fkUserNhi " +
             "LEFT JOIN Organ o on o.organId = mpo.fkOrgansId " +
             "WHERE mp.fkUserNhi = ?";
-    private static final String SELECT_USER_ORGAN_DONATION = "SELECT organName FROM HealthOrganDonate LEFT JOIN Organ ON fkOrgansId = organId WHERE fkUserNhi = ?";
-    private static final String SELECT_USER_ORGAN_RECEIVING = "SELECT organName FROM HealthOrganReceive LEFT JOIN Organ ON fkOrgansId = organId WHERE fkUserNhi = ?";
+    private static final String SELECT_USER_ORGAN_DONATION = "SELECT organName FROM OrganDonating LEFT JOIN Organ ON fkOrgansId = organId WHERE fkUserNhi = ?";
+    private static final String SELECT_USER_ORGAN_RECEIVING = "SELECT organName FROM OrganAwaiting LEFT JOIN Organ ON fkOrgansId = organId WHERE fkUserNhi = ?";
     private static final String SELECT_CLINICIAN_ONE_TO_ONE_INFO_STMT = "SELECT staffId, firstName, middleName, lastName, timeCreated, lastModified, " +
             "streetNumber, streetName, neighbourhood, city, region, country " +
             "FROM Clinician cl " +
-            "LEFT JOIN Address a ON cl.staffId = a.fkStaffId ";
+            "LEFT JOIN Address a ON cl.staffId = a.fkStaffId " +
+            "WHERE firstName LIKE ? OR lastName LIKE ? AND region LIKE ? " +
+            "LIMIT ?,?";
     private static final String SELECT_ADMIN_ONE_TO_ONE_INFO_STMT = "SELECT userName, firstName, middleName, lastName, timeCreated, lastModified  FROM Administrator";
     private AbstractUpdateStrategy updateStrategy;
 
@@ -250,10 +252,10 @@ public class DBHandler {
             try (ResultSet resultSet = stmt.executeQuery()) {
                 while (resultSet != null && resultSet.next()) {
                     if (resultSet.getString(3) == null) { // dateStoppedTaking is null
-                        //TODO: create method or medication class to deserealise name and date of current medication
+                        //TODO: create method or medication class to deserialize name and date of current medication
 
                     } else {
-                        //TODO: create method or medication class to deserealise name and date of previous medication
+                        //TODO: create method or medication class to deserialize name and date of previous medication
                     }
                 }
             }
@@ -308,6 +310,7 @@ public class DBHandler {
     public Collection<Clinician> loadClinicians(Connection connection) throws SQLException {
         Collection<Clinician> clinicians = new ArrayList<>();
         try (PreparedStatement statement = connection.prepareStatement(SELECT_CLINICIAN_ONE_TO_ONE_INFO_STMT)) {
+
             try (ResultSet resultSet = statement.executeQuery()) {
 
                 while (resultSet != null && resultSet.next()) {
