@@ -31,7 +31,7 @@ public class JDBCDriver {
      * @throws SQLException if there is an error in connecting to the database
      */
     public Connection getConnection() throws SQLException {
-        return DriverManager.getConnection("jdbc:mysql:" + URL + TEST_DB, USER, PASSWORD);
+        return DriverManager.getConnection("jdbc:mysql:" + URL + TEST_DB + "?zeroDateTimeBehavior=convertToNull", USER, PASSWORD );
     }
 
     /**

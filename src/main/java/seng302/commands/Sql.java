@@ -10,6 +10,7 @@ import seng302.utils.Log;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 
 @Command(name = "sql", description = " Command used to enter sql select statements")
@@ -33,7 +34,7 @@ public class Sql implements Runnable {
         statement = sb.toString();
 
         //command should only be select statement
-        if (!statement.toUpperCase().startsWith("SELECT")) {
+        if (!statement.toUpperCase().startsWith("SELECT") || statement.contains("sleep(")) {
             System.out.println("This database is read only in SQL mode and only select statements may be run");
             Log.warning("User attempted to run non-select command: " + statement);
             return;
@@ -42,7 +43,6 @@ public class Sql implements Runnable {
         ResultSet resultSet = null;
         Connection conn = null;
         try {
-            System.out.println(statement);
             JDBCDriver jdbcDriver = new JDBCDriver();
             conn = jdbcDriver.getConnection();
             conn.prepareStatement(statement);
@@ -54,7 +54,6 @@ public class Sql implements Runnable {
         try {
             resultSet = dbHandler.executeStatement(statement, conn);
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
             System.out.println("An Invalid SQL statement was entered. Please ensure your command is in correct MySql syntax");
             Log.warning("invalid SQL statement caught", e);
             return;
@@ -65,11 +64,23 @@ public class Sql implements Runnable {
                     "problem persists");
             return;
         }
+
         try {
-            while (resultSet.next()) {
-                System.out.println(resultSet.toString());
+            if (!resultSet.next()){
+                System.out.println("No results were returned");
+            } else{
+                do {
+                    System.out.println("!--------------------------------------------------------------------------!" );
+                    ResultSetMetaData rsmd = resultSet.getMetaData();
+                   int columns = rsmd.getColumnCount();
+                   for(int i = 1; i <= columns; i++){
+                       String columnName = resultSet.getString(i);
+                       System.out.println( rsmd.getColumnName(i)+ " " + columnName );
+                   }
+                } while (resultSet.next());
             }
         } catch (SQLException e) {
+            System.out.println("SQL had an error retrieving the next result");
             Log.warning("SQL had an error retrieving the next result", e);
         }
     }
