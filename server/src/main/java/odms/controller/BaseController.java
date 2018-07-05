@@ -11,9 +11,10 @@ public abstract class BaseController {
     private JDBCDriver driver;
     private DBHandler handler;
 
+
     public BaseController(DBManager manager) {
         this.handler = manager.getHandler();
-        this.driver = new JDBCDriver();
+        this.driver = manager.getDriver();
     }
 
     public DBHandler getHandler() {

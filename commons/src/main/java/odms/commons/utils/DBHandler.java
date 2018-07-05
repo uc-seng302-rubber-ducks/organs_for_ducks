@@ -14,7 +14,9 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 
 public class DBHandler {
 
@@ -296,6 +298,18 @@ public class DBHandler {
      */
     public void saveUsers(Collection<User> users, Connection connection) {
         updateStrategy = new UserUpdateStrategy();
+        updateDatabase(users, connection);
+    }
+
+    /**
+     * Method to save a single user to the database
+     *
+     * @param connection connection to the database to be accessed
+     * @param user      A non null user to save to the database
+     */
+    public void saveUser(User user, Connection connection) {
+        updateStrategy = new UserUpdateStrategy();
+        Collection<User> users = Collections.singletonList(user);
         updateDatabase(users, connection);
     }
 

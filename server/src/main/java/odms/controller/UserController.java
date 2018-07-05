@@ -57,9 +57,7 @@ public class UserController extends BaseController {
     @RequestMapping(method = RequestMethod.POST, value = "/users")
     public ResponseEntity postUser(@RequestBody User newUser) {
         try (Connection connection = driver.getConnection()) {
-            List<User> users = new ArrayList<>();
-            users.add(newUser);
-            handler.saveUsers(users, connection);
+            handler.saveUser(newUser, connection);
             return new ResponseEntity(HttpStatus.ACCEPTED);
         } catch (SQLException ex) {
             Log.severe("cannot add new user to db", ex);
