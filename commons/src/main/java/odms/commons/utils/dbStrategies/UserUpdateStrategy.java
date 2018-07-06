@@ -3,10 +3,14 @@ package odms.commons.utils.dbStrategies;
 import odms.commons.model.Disease;
 import odms.commons.model.MedicalProcedure;
 import odms.commons.model.User;
+import odms.commons.model.datamodel.ContactDetails;
+import odms.commons.model.datamodel.Medication;
 import odms.commons.utils.Log;
 
 import java.sql.*;
+import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.Iterator;
 
 public class UserUpdateStrategy extends AbstractUpdateStrategy {
 
@@ -17,12 +21,14 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
     private static final String CREATE_EMERGENCY_STMT = "INSERT INTO EmergencyContactDetails (fkContactId, contactName, contactRelationship) VALUES (?, ?, ?)";
     private static final String GET_LATEST_CONTACT_ENTRY = "SELECT MAX(contactId) AS contactId FROM ContactDetails WHERE fkUserNhi=?";
     private static final String CREATE_NEW_MEDICATION = "INSERT INTO Medication (fkUserNhi, medicationName) VALUES (?, ?)";
-    private static final String CREATE_NEW_PROCEDURE = "INSERT INTO Procedure (fkUserNhi, procedureName, procedureDescription, procedureDate) VALUES (?, ?, ?)";
+    private static final String CREATE_NEW_MEDICATION_TIME = "INSERT INTO MedicationDates (fkMedicationInstanceId, dateStartedTaking, dateStoppedTaking) VALUES (?, ?, ?)";
+    private static final String CREATE_NEW_PROCEDURE = "INSERT INTO MedicalProcedure (fkUserNhi, procedureName, procedureDescription, procedureDate) VALUES (?, ?, ?, ?)";
+    private static final String CREATE_CURRENT_DISEASE = "INSERT INTO CurrentDisease (fkUserNhi, diseaseName, diagnosisDate, isChronic) VALUES (?, ?, ?, ?)";
+    private static final String CREATE_PREVIOUS_DISEASE = "INSERT INTO PreviousDisease (fkUserNhi, diseaseName, diagnosisDate, remissionDate) VALUES (?, ?, ?, ?)";
 
-    private static final String UPDATE_USER_STMT = "UPDATE User SET nhi = ?, firstName = ?, middleName = ?, lastName = ?, preferredName = ?, dob = ?, dod = ?, lastModified = ? WHERE nhi = ?";
+    private static final String UPDATE_USER_STMT = "UPDATE User SET nhi = ?, firstName = ?, middleName = ?, lastName = ?, preferedName = ?, dob = ?, dod = ?, lastModified = ? WHERE nhi = ?";
     private static final String UPDATE_USER_HEALTH_STMT = "UPDATE HealthDetails SET gender = ?, birthGender = ?, smoker = ?, alcoholConsumption = ?, height = ?, weight = ?, bloodType = ? WHERE fkUserNhi = ?";
-    private static final String UPDATE_MEDICATION_DATE_STMT = "UPDATE MedicationDates SET dateStartedTaking = ?, dateStoppedTaking = ? WHERE fkMedicationInstanceId = ?";
-    private static final String UPDATE_PROCEDURE_STMT = "UPDATE MedicalProcedure SET procedureName = ?, procedureDate = ?, procedureDescription = ? WHERE fkUserNhi = ?"; // needs an id
+
     private static final String UPDATE_USER_CONTACT_STMT = "UPDATE ContactDetails JOIN Address ON contactId = fkContactId " +
             "SET streetNumber = ?, streetName = ?, neighbourhood = ?, city = ?, region = ?, zipCode = ?, country = ?, homePhone = ?, cellPhone = ?, email = ? " +
             "WHERE ContactDetails.fkUserNhi = ?";
@@ -70,8 +76,9 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
             try {
                 createUser(user, connection);
                 createEmergencyContact(user.getNhi(), user, connection);
-                createContact(user.getNhi(), user, connection);
+                createContact(user.getNhi(), user.getContactDetails(), connection);
                 createHealthDetails(user.getNhi(), user, connection);
+                executeUpdate(user, connection);
             } catch (SQLException sqlEx) {
                 connection.prepareStatement("ROLLBACK").execute();
                 System.out.println("An error occured"); //TODO: Make this a popup
@@ -112,16 +119,16 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
      * Must have an active connection to the database (created through connect())
      *
      * @param userNhi    nhi of the user to associate the contact object with.
-     * @param user       user to create the associated contact for
+     * @param contactDetails       user to create the associated contact for
      * @param connection Connection to the target database
      * @throws SQLException if there is a problem with creating the contact
      */
-    private void createContact(String userNhi, User user, Connection connection) throws SQLException {
+    private void createContact(String userNhi, ContactDetails contactDetails, Connection connection) throws SQLException {
         PreparedStatement stmt = connection.prepareStatement(CREATE_USER_CONTACT_STMT);
         stmt.setString(1, userNhi);
-        stmt.setString(2, user.getHomePhone());
-        stmt.setString(3, user.getEmail());
-        stmt.setString(4, user.getCellPhone());
+        stmt.setString(2, contactDetails.getHomePhoneNumber());
+        stmt.setString(3, contactDetails.getEmail());
+        stmt.setString(4, contactDetails.getCellPhoneNumber());
         stmt.executeUpdate();
 
         String contactId = getContactId(userNhi, connection);
@@ -184,7 +191,7 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
      * @throws SQLException If there is an error in creating the emergency contact.
      */
     private void createEmergencyContact(String userNhi, User user, Connection connection) throws SQLException {
-        //TODO: Make the create contact method take in a contact object and make call to create emergency contact here. 25/6 - Eiran
+        createContact(userNhi, user.getContact(), connection);
         String contactId = getContactId(userNhi, connection);
 
         PreparedStatement stmt = connection.prepareStatement(CREATE_EMERGENCY_STMT);
@@ -242,7 +249,8 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
                 updateEmergencyContact(user, connection);
                 updateUserHealthDetails(user, connection);
                 updateUserMedicalProcedures(user, connection);
-                deleteUsersDetails(user, connection);
+                updateUserDiseases(user, connection);
+                updateMedications(user, connection);
             } catch (SQLException sqlEx) {
                 connection.prepareStatement("ROLLBACK").execute();
             }
@@ -342,9 +350,20 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
      * @throws SQLException If there is an issue updating the users medical procedures
      */
     private void updateUserMedicalProcedures(User user, Connection connection) throws SQLException {
+        deleteFieldsOfUser("MedicalProcedure", user.getNhi(), connection);
+        for (MedicalProcedure procedure : user.getMedicalProcedures()) {
+            createMedicalProcedure(user.getNhi(), procedure, connection);
 
-        // loop through the users procedures and update each of them
+        }
+    }
 
+    private void createMedicalProcedure(String nhi, MedicalProcedure procedure, Connection connection) throws SQLException {
+        PreparedStatement createProcedure = connection.prepareStatement(CREATE_NEW_PROCEDURE);
+        createProcedure.setString(1, nhi);
+        createProcedure.setString(2, procedure.getSummary());
+        createProcedure.setString(3, procedure.getDescription());
+        createProcedure.setDate(4, Date.valueOf(procedure.getProcedureDate()));
+        createProcedure.executeUpdate();
     }
 
     /**
@@ -374,78 +393,151 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
     }
 
     /**
-     * Deletes finer user details such as medications, procedures and diseases
-     * Preconditions: There is an active connection to the database
-     * Post-conditions: The changes made locally are reflected on the database
-     *
-     * @param user       user to delete the details of
-     * @param connection Connection to the target database
-     * @throws SQLException If there is an error deleting the details.
+     * Updates the database with the user's diseases
+     * @param user
+     * @param connection
+     * @throws SQLException
      */
-    private void deleteUsersDetails(User user, Connection connection) throws SQLException {
-        deleteUserProcedures(user, connection);
-        deleteUserMedications(user, connection);
-        deleteUserDiseases(user.getNhi(), user.getPastDiseases(), DELETE_PAST_DISEASE_STMT, connection);
-        deleteUserDiseases(user.getNhi(), user.getCurrentDiseases(), DELETE_USER_DISEASE_STMT, connection);
-    }
+    private void updateUserDiseases(User user, Connection connection) throws SQLException {
+        deleteFieldsOfUser("CurrentDisease", user.getNhi(), connection);
 
-    /**
-     * Deletes diseases that the user has had on the database to reflect the data on the application.
-     * Pre-conditions: There is an active connection to the database, the provided collection is not null
-     * Post-conditions: The data on the database reflects the data locally.
-     *
-     * @param userNhi    Nhi of the user to delete the diseases from
-     * @param diseases   The user for which the previous disease belonged to.
-     * @param statement  The sql delete statement to use. Can either be DELETE_PAST_DISEASE_STMT if the collection is of the user's past diseases
-     *                   Or DELETE_USER_DISEASE_STMT if the collection is of the user's current diseases
-     * @param connection Connection to the target database
-     * @throws SQLException if the deletion fails or the connection is invalid
-     */
-    private void deleteUserDiseases(String userNhi, Collection<Disease> diseases, String statement, Connection connection) throws SQLException {
-        for (Disease d : diseases) {
-            if (d.isDeleted()) {
-                PreparedStatement deleteDisease = connection.prepareStatement(statement);
+        for (Disease disease : user.getCurrentDiseases()) {
+            if (!disease.isDeleted()) {
+                createCurrentDiseases(user.getNhi(), disease, connection);
+            }
+        }
 
-                deleteDisease.setString(1, d.getName());
-                deleteDisease.setDate(2, Date.valueOf(d.getDiagnosisDate()));
-                deleteDisease.setString(3, userNhi);
+        deleteFieldsOfUser("PreviousDisease", user.getNhi(), connection);
 
-                deleteDisease.executeUpdate();
+        for (Disease disease : user.getPastDiseases()) {
+            if (!disease.isDeleted()) {
+                createPreviousDisease(user.getNhi(), disease, connection);
             }
         }
     }
 
     /**
-     * Deletes all medications marked for deletion for a given user
-     * Pre-conditions: The user must not be null and there must be an active connection to the database
-     * Post-condition: All marked medications will be deleted from the database
      *
-     * @param user       User to delete all marked medications for. Cannot be null
-     * @param connection Connection to the target database
+     * @param userNhi
+     * @param disease
+     * @param connection
+     * @throws SQLException
      */
-    private void deleteUserMedications(User user, Connection connection) {
-        //TODO: Medications need to be an object as they cannot be marked for deletion in their current state.
+    private void createCurrentDiseases(String userNhi, Disease disease, Connection connection) throws SQLException {
+        PreparedStatement createDisease = connection.prepareStatement(CREATE_CURRENT_DISEASE);
+        createDisease.setString(1, userNhi);
+        createDisease.setString(2, disease.getName());
+        createDisease.setDate(3, Date.valueOf(disease.getDiagnosisDate()));
+        createDisease.setBoolean(4, disease.getIsChronic());
+
+        createDisease.executeUpdate();
     }
 
     /**
-     * Delete procedures that are present in the database but not in the local user storage
-     * Pre-conditions: There is an active connection to the database
-     * Post-condition: The procedures that have been deleted locally are deleted in the database
      *
-     * @param user       User to check and delete procedures for
-     * @param connection Connection to the target database
-     * @throws SQLException if the connection to the database is invalid
+     * @param userNhi
+     * @param disease
+     * @param connection
+     * @throws SQLException
      */
-    private void deleteUserProcedures(User user, Connection connection) throws SQLException {
-        for (MedicalProcedure p : user.getMedicalProcedures()) {
-            if (p.isDeleted()) {
-                PreparedStatement deleteProcedure = connection.prepareStatement(DELETE_PROCEDURE_STMT);
-                deleteProcedure.setString(1, p.getSummary());
-                deleteProcedure.setDate(2, Date.valueOf(p.getProcedureDate()));
-                deleteProcedure.setString(3, user.getNhi());
+    private void createPreviousDisease(String userNhi, Disease disease, Connection connection) throws SQLException {
+        PreparedStatement createDisease = connection.prepareStatement(CREATE_PREVIOUS_DISEASE);
+        createDisease.setString(1, userNhi);
+        createDisease.setString(2, disease.getName());
+        createDisease.setDate(3, Date.valueOf(disease.getDiagnosisDate()));
+        createDisease.setDate(4, Date.valueOf(disease.getDiagnosisDate()));
 
-                deleteProcedure.executeUpdate();
+        createDisease.executeUpdate();
+
+    }
+
+    /**
+     * @param tableName
+     * @param user
+     * @param connection
+     * @throws SQLException
+     */
+    private void deleteFieldsOfUser(String tableName, String user, Connection connection) throws SQLException {
+        PreparedStatement deleteDiseases = connection.prepareStatement("DELETE FROM ? WHERE fkUserNhi = ?");
+        deleteDiseases.setString(1, tableName);
+        deleteDiseases.setString(2, user);
+        deleteDiseases.executeUpdate();
+    }
+
+    /**
+     *
+     * @param user
+     * @param connection
+     * @throws SQLException
+     */
+    private void updateMedications(User user, Connection connection) throws SQLException {
+        deleteFieldsOfUser("Medication", user.getNhi(), connection);
+
+        for (Medication med : user.getCurrentMedication()) {
+            if (!med.isDeleted()) {
+                createMedication(user.getNhi(), med, connection);
+                int medicationInstanceId = getMedicationInstanceId(user.getNhi(), med, connection);
+                createMedicationTimeRows(medicationInstanceId, med, connection);
             }
         }
+
+        for (Medication med : user.getPreviousMedication()) {
+            if (!med.isDeleted()) {
+                createMedication(user.getNhi(), med, connection);
+                int medicationInstanceId = getMedicationInstanceId(user.getNhi(), med, connection);
+                createMedicationTimeRows(medicationInstanceId, med, connection);
+            }
+        }
+    }
+
+    /**
+     *
+     * @param userNhi
+     * @param med
+     * @param connection
+     * @return
+     * @throws SQLException
+     */
+    private int getMedicationInstanceId(String userNhi, Medication med, Connection connection) throws SQLException {
+        PreparedStatement getMedication = connection.prepareStatement("SELECT medicationInstanceId FROM Medication WHERE fkUserNhi = ? AND medicationName = ?");
+        getMedication.setString(1, userNhi);
+        getMedication.setString(2, med.getMedName());
+
+        return getMedication.executeQuery().getInt("medicationInstanceId");
+    }
+
+    /**
+     * @param medicationInstanceId
+     * @param med
+     * @param connection
+     * @throws SQLException
+     */
+    private void createMedicationTimeRows(int medicationInstanceId, Medication med, Connection connection) throws SQLException {
+        Iterator<LocalDateTime> iter = med.getMedicationTimes().iterator();
+        while (iter.hasNext()) {
+            PreparedStatement addTimeEntry = connection.prepareStatement(CREATE_NEW_MEDICATION_TIME);
+            addTimeEntry.setInt(1, medicationInstanceId);
+            addTimeEntry.setTimestamp(2, Timestamp.valueOf(iter.next()));
+            if (iter.hasNext()) {
+                addTimeEntry.setTimestamp(3, Timestamp.valueOf(iter.next()));
+            } else {
+                addTimeEntry.setNull(3, Types.TIMESTAMP);
+            }
+            addTimeEntry.executeUpdate();
+        }
+    }
+
+    /**
+     * @param userNhi
+     * @param med
+     * @param connection
+     * @throws SQLException
+     */
+    private void createMedication(String userNhi, Medication med, Connection connection) throws SQLException {
+        PreparedStatement createMedication = connection.prepareStatement(CREATE_NEW_MEDICATION);
+        createMedication.setString(1, userNhi);
+        createMedication.setString(2, med.getMedName());
+
+        createMedication.executeUpdate();
     }
 }
