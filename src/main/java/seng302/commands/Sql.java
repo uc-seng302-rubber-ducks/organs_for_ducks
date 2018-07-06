@@ -12,6 +12,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.time.LocalDate;
 
 @Command(name = "sql", description = " Command used to enter sql select statements")
 public class Sql implements Runnable {
@@ -82,6 +83,11 @@ public class Sql implements Runnable {
         } catch (SQLException e) {
             System.out.println("SQL had an error retrieving the next result");
             Log.warning("SQL had an error retrieving the next result", e);
+        }
+        try {
+            conn.close();
+        } catch (SQLException e) {
+            Log.warning("Connection could not be closed", e);
         }
     }
 }
