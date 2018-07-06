@@ -184,14 +184,6 @@ CREATE TABLE EmergencyContactDetails(
   homePhone VARCHAR(31),
   cellPhone VARCHAR(31),
   email VARCHAR(255),
-  fkUserNhi VARCHAR(7) NOT NULL,
-  FOREIGN KEY (fkUserNhi) REFERENCES User(nhi) ON DELETE CASCADE
-);
-
-CREATE TABLE Address(
-  addressID INT AUTO_INCREMENT PRIMARY KEY,
-  fkContactId INT,
-  fkEmergencyContactId INT,
   streetNumber VARCHAR(15),
   streetName VARCHAR(255),
   neighbourhood VARCHAR(255),
@@ -199,12 +191,23 @@ CREATE TABLE Address(
   region VARCHAR(255),
   zipCode VARCHAR(15),
   country VARCHAR(255),
-  fkUserNhi VARCHAR(7),
-  fkStaffId VARCHAR(255),
+  fkUserNhi VARCHAR(7) NOT NULL,
+  FOREIGN KEY (fkUserNhi) REFERENCES User(nhi) ON DELETE CASCADE
+);
+
+CREATE TABLE Address(
+  addressID INT AUTO_INCREMENT PRIMARY KEY,
+  streetNumber VARCHAR(15),
+  streetName VARCHAR(255),
+  neighbourhood VARCHAR(255),
+  city VARCHAR(25),
+  region VARCHAR(255),
+  zipCode VARCHAR(15),
+  country VARCHAR(255),
+  fkUserNhi VARCHAR(7) UNIQUE,
+  fkStaffId VARCHAR(255) UNIQUE,
   FOREIGN KEY (fkUserNhi) REFERENCES User(nhi) ON DELETE CASCADE,
-  FOREIGN KEY (fkStaffId) REFERENCES Clinician(staffId) ON DELETE CASCADE,
-  FOREIGN KEY (fkContactId) REFERENCES ContactDetails(contactId) ON DELETE CASCADE,
-  FOREIGN KEY (fkEmergencyContactId) REFERENCES EmergencyContactDetails(emergencyContactId) ON DELETE CASCADE
+  FOREIGN KEY (fkStaffId) REFERENCES Clinician(staffId) ON DELETE CASCADE
 );
 
 CREATE TABLE PasswordDetails(

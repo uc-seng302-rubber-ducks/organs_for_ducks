@@ -11,6 +11,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -23,14 +24,17 @@ public class DBHandler {
      * SELECT_USER_ONE_TO_ONE_INFO_STMT is for getting all info that follows one-to-one relationship. eg: 1 user can only have 1 address.
      * the other SELECT_USER statements are for getting all info that follows one-to-many relationships. eg: 1 user can have many diseases.
      */
-    private static final String SELECT_USER_ONE_TO_ONE_INFO_STMT = "SELECT nhi, firstName, middleName, LastName, preferedName, timeCreated, lastModified, profilePicture, gender, birthGender, " +
-            "smoker, alcoholConsumption, height, weight, homePhone, cellPhone, email, streetNumber, streetName, neighbourhood, city, region, country " +
+    private static final String SELECT_USER_ONE_TO_ONE_INFO_STMT = "SELECT nhi, firstName, middleName, LastName, preferedName, timeCreated, lastModified, profilePicture, gender, birthGender, smoker, " +
+            "alcoholConsumption, height, weight, cde.homePhone, cde.cellPhone, cde.email, a.streetNumber, a.streetName, a.neighbourhood, a.city, " +
+            "a.region, a.country, a.zipCode , contactName, contactRelationship, ecd.homePhone, ecd.cellPhone, ecd.email, ecd.streetNumber, ecd.streetName, ecd.neighbourhood, ecd.city, ecd.region, ecd.zipCode, ecd.country, " +
+            "dob, dod " +
             "FROM User u " +
             "LEFT JOIN HealthDetails hd ON u.nhi = hd.fkUserNhi " +
             "LEFT JOIN ContactDetails cde ON u.nhi = cde.fkUserNhi " +
             "LEFT JOIN Address a ON u.nhi = a.fkUserNhi " +
-            "WHERE (firstName LIKE ? OR lastName LIKE ?) AND region LIKE ? " +
-            " LIMIT ?,?";
+            "LEFT JOIN EmergencyContactDetails ecd ON u.nhi = ecd.fkUserNhi " +
+            "WHERE (firstName LIKE ? OR lastName LIKE ?) AND a.region LIKE ? " +
+            "LIMIT ? OFFSET ?";
     private static final String SELECT_USER_PREVIOUS_DISEASE_STMT = "SELECT diseaseName, diagnosisDate, remissionDate FROM PreviousDisease WHERE fkUserNhi = ?";
     private static final String SELECT_USER_CURRENT_DISEASE_STMT = "SELECT diseaseName, diagnosisDate, isChronic FROM CurrentDisease WHERE fkUserNhi = ?";
     private static final String SELECT_USER_MEDICATION_STMT = "SELECT medicationName, dateStartedTaking, dateStoppedTaking FROM Medication m " +
@@ -47,7 +51,7 @@ public class DBHandler {
             "FROM Clinician cl " +
             "LEFT JOIN Address a ON cl.staffId = a.fkStaffId " +
             "WHERE firstName LIKE ? OR lastName LIKE ? AND region LIKE ? " +
-            "LIMIT ?,?";
+            "LIMIT ? OFFSET ?";
     private static final String SELECT_ADMIN_ONE_TO_ONE_INFO_STMT = "SELECT userName, firstName, middleName, lastName, timeCreated, lastModified  FROM Administrator";
     private AbstractUpdateStrategy updateStrategy;
 
@@ -68,15 +72,27 @@ public class DBHandler {
 
 
     /**
+     * Helper function to convert datetime string from database
+     * to LocalDateTime object.
+     *
+     * @param dateTime date string from database
+     * @return LocalDateTime object
+     */
+    private LocalDateTime dateTimeToLocalDateTime(String dateTime) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S");
+        return LocalDateTime.parse(dateTime, formatter);
+    }
+
+    /**
      * Helper function to convert date string from database
      * to LocalDateTime object.
      *
      * @param date date string from database
      * @return LocalDateTime object
      */
-    private LocalDateTime dateToLocalDateTime(String date) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S");
-        return LocalDateTime.parse(date, formatter);
+    private LocalDate dateToLocalDateTime(String date) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        return LocalDate.parse(date, formatter);
     }
 
     public Collection<User> getUsers(Connection connection, int count, int startIndex) throws SQLException {
@@ -84,7 +100,7 @@ public class DBHandler {
     }
 
     /**
-     * Method to obtain all the users information from the database. Opens and closes it's own connection to the database
+     * Method to obtain all the users information from the database.
      * User objects are instantiated and its attributes are set based on the de-serialised information.
      *
      * @param connection A valid connection to the database
@@ -97,19 +113,20 @@ public class DBHandler {
             statement.setString(1, name + "%");
             statement.setString(2, name + "%");
             statement.setString(3, region + "%");
-            statement.setInt(4, startIndex);
-            statement.setInt(5, count);
+            statement.setInt(4, count);
+            statement.setInt(5, startIndex);
             try (ResultSet resultSet = statement.executeQuery()) {
 
                 while (resultSet != null && resultSet.next()) {
-                    User user = new User();
-                    user.setNhi(resultSet.getString(1));
-                    user.setFirstName(resultSet.getString(2));
+                    User user = new User(resultSet.getString(2), dateToLocalDateTime(resultSet.getString("dob")), resultSet.getString(1));
+                    if(resultSet.getString("dod") != null){
+                        user.setDateOfDeath(dateToLocalDateTime(resultSet.getString("dod")));
+                    }
                     user.setMiddleName(resultSet.getString(3));
                     user.setLastName(resultSet.getString(4));
                     user.setPreferredFirstName(resultSet.getString(5));
-                    user.setTimeCreated(dateToLocalDateTime(resultSet.getString(6)));
-                    user.setLastModified(dateToLocalDateTime(resultSet.getString(7)));
+                    user.setTimeCreated(dateTimeToLocalDateTime(resultSet.getString(6)));
+                    user.setLastModified(dateTimeToLocalDateTime(resultSet.getString(7)));
                     //TODO: set user's profile picture here
                     user.setGenderIdentity(resultSet.getString(9));
                     user.setBirthGender(resultSet.getString(10));
@@ -120,23 +137,25 @@ public class DBHandler {
                     user.setHomePhone(resultSet.getString(15));
                     user.setCellPhone(resultSet.getString(16));
                     user.setEmail(resultSet.getString(17));
-
-                    //TODO: need to get an understanding of how the sample data for  Address, ContactDetails and EmergencyContactDetails db tables before i can de-serialise emergency contact details (Aaron)
-//            user.getContact().setEmail();
-//            user.getContact().setHomePhoneNumber();
-//            user.getContact().setCellPhoneNumber();
-//            user.getContact().setName();
-//            user.getContact().setAddress();
-//            user.getContact().setRelationship();
-
-//            user.setStreetNumber(resultSet.getString(resultSet.getString(18))); //todo: change db address table's streetnumber column to varchar type
+                    user.setStreetNumber(resultSet.getString(18));
                     user.setStreetName(resultSet.getString(19));
                     user.setNeighborhood(resultSet.getString(20));
                     user.setCity(resultSet.getString(21));
                     user.setRegion(resultSet.getString(22));
                     user.setCountry(resultSet.getString(23));
-//            user.setZipCode(resultSet.getString()); //todo: db address table needs to have zip table
-                    user.getReceiverDetails();
+                    user.setZipCode(resultSet.getString(24));
+                    user.getContact().setName(resultSet.getString(25));
+                    user.getContact().setRelationship(resultSet.getString(26));
+                    user.getContact().setHomePhoneNumber(resultSet.getString(27));
+                    user.getContact().setCellPhoneNumber(resultSet.getString(28));
+                    user.getContact().setEmail(resultSet.getString(29));
+                    user.getContact().setStreetNumber(resultSet.getString(30));
+                    user.getContact().setStreetName(resultSet.getString(31));
+                    user.getContact().setNeighborhood(resultSet.getString(32));
+                    user.getContact().setCity(resultSet.getString(33));
+                    user.getContact().setRegion(resultSet.getString(34));
+                    user.getContact().setZipCode(resultSet.getString(35));
+                    user.getContact().setCountry(resultSet.getString(36));
 
                     try {
                         getUserPastDisease(user, connection);
@@ -151,7 +170,6 @@ public class DBHandler {
                         System.err.println("Unable to create instance of user with nhi " + user.getNhi() + " due to SQL Error: " + e);
                     }
                 }
-                connection.close();
                 return users;
             }
         }
@@ -170,8 +188,8 @@ public class DBHandler {
         try (PreparedStatement stmt = connection.prepareStatement(SELECT_USER_PREVIOUS_DISEASE_STMT)) {
             stmt.setString(1, user.getNhi());
             try (ResultSet resultSet = stmt.executeQuery()) {
-                while (resultSet != null && resultSet.next()) { //TODO: how do we de-serialise remission date?
-                    Disease pastDisease = new Disease(resultSet.getString(1), false, true, dateToLocalDateTime(resultSet.getString(2)).toLocalDate());
+                while (resultSet != null && resultSet.next()) {
+                    Disease pastDisease = new Disease(resultSet.getString(1), false, true, dateTimeToLocalDateTime(resultSet.getString(2)).toLocalDate());
                     user.getPastDiseases().add(pastDisease);
                 }
             }
@@ -192,7 +210,7 @@ public class DBHandler {
             stmt.setString(1, user.getNhi());
             try (ResultSet resultSet = stmt.executeQuery()) {
                 while (resultSet != null && resultSet.next()) {
-                    Disease currentDisease = new Disease(resultSet.getString(1), 1 == resultSet.getInt(3), false, dateToLocalDateTime(resultSet.getString(2)).toLocalDate());
+                    Disease currentDisease = new Disease(resultSet.getString(1), 1 == resultSet.getInt(3), false, dateTimeToLocalDateTime(resultSet.getString(2)).toLocalDate());
                     user.getCurrentDiseases().add(currentDisease);
                 }
             }
@@ -302,7 +320,7 @@ public class DBHandler {
     }
 
     /**
-     * Loads the clinicians from the database. Opens and closes its own connection to the database
+     * Loads the clinicians from the database.
      *
      * @param connection a Connection to the target database
      * @return the Collection of clinicians
@@ -319,10 +337,9 @@ public class DBHandler {
                     clinician.setFirstName(resultSet.getString(2));
                     clinician.setMiddleName(resultSet.getString(3));
                     clinician.setLastName(resultSet.getString(4));
-                    clinician.setDateCreated(dateToLocalDateTime(resultSet.getString(5)));
-                    clinician.setDateLastModified(dateToLocalDateTime(resultSet.getString(6)));
+                    clinician.setDateCreated(dateTimeToLocalDateTime(resultSet.getString(5)));
+                    clinician.setDateLastModified(dateTimeToLocalDateTime(resultSet.getString(6)));
                     //TODO: for de-serialising address data, should we refactor clinician to use Address class or use workAddress class attribute.
-                    //clinician.setPassword(resultSet.getString(10)); //TODO since the database stores the hash and salt, do we store those directly without having to use setPassword?
                     clinicians.add(clinician);
                 }
 
@@ -343,7 +360,7 @@ public class DBHandler {
     }
 
     /**
-     * Loads the administrators from the database. Opens and closes its own connection to the database
+     * Loads the administrators from the database.
      *
      * @param connection Connection to the target database
      * @return the Collection of administrators
@@ -360,9 +377,8 @@ public class DBHandler {
                     administrator.setFirstName(resultSet.getString(2));
                     administrator.setMiddleName(resultSet.getString(3));
                     administrator.setLastName(resultSet.getString(4));
-                    administrator.setDateCreated(dateToLocalDateTime(resultSet.getString(5)));
-                    administrator.setDateLastModified(dateToLocalDateTime(resultSet.getString(6)));
-                    //administrator.setPassword(resultSet.getString(10)); //TODO since the database stores the hash and salt, do we store those directly without having to use setPassword?
+                    administrator.setDateCreated(dateTimeToLocalDateTime(resultSet.getString(5)));
+                    administrator.setDateLastModified(dateTimeToLocalDateTime(resultSet.getString(6)));
                     administrators.add(administrator);
                 }
 
@@ -401,9 +417,9 @@ public class DBHandler {
 //    public static void main(String [ ] args) throws SQLException{
 //        DBHandler dbHandler = new DBHandler();
 //        JDBCDriver jdbcDriver = new JDBCDriver();
-//        dbHandler.getAllUsers(jdbcDriver.getTestConnection());
-//        dbHandler.loadClinicians(jdbcDriver.getTestConnection());
-//        dbHandler.loadAdmins(jdbcDriver.getTestConnection());
+//        dbHandler.getUsers(jdbcDriver.getTestConnection(), 10, 0);
+//        //dbHandler.loadClinicians(jdbcDriver.getTestConnection());
+//        //dbHandler.loadAdmins(jdbcDriver.getTestConnection());
 //        System.out.println("done");
 //    }
 }
