@@ -37,10 +37,6 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
             "WHERE EmergencyContactDetails.fkUserNhi = ?";
 
     private static final String DELETE_USER_STMT = "DELETE FROM User WHERE nhi = ?";
-    private static final String DELETE_PROCEDURE_STMT = "DELETE FROM MedicalProcedure WHERE procedureDate = ? AND procedureName = ? AND fkUserNhi = ?";
-    private static final String DELETE_USER_DISEASE_STMT = "DELETE FROM CurrentDisease WHERE diseaseName = ? AND diagnosisDate = ? AND fkUserNhi = ?";
-    private static final String DELETE_PAST_DISEASE_STMT = "DELETE FROM PreviousDisease WHERE diseaseName = ? AND diagnosisDate = ? AND fkUserNhi = ?";
-    private static final String DELETE_MEDICATION_STMT = "DELETE FROM Medication WHERE medicationName = ? AND fkUserNhi = ?";
 
     @Override
     public <T> void update(Collection<T> roles, Connection connection) throws SQLException {
@@ -357,6 +353,12 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
         }
     }
 
+    /**
+     * @param nhi
+     * @param procedure
+     * @param connection
+     * @throws SQLException
+     */
     private void createMedicalProcedure(String nhi, MedicalProcedure procedure, Connection connection) throws SQLException {
         PreparedStatement createProcedure = connection.prepareStatement(CREATE_NEW_PROCEDURE);
         createProcedure.setString(1, nhi);
