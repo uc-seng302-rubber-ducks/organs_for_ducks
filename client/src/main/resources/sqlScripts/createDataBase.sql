@@ -149,23 +149,24 @@ CREATE TABLE HealthDetails(
   FOREIGN KEY (fkUserNhi) REFERENCES User(nhi) ON DELETE CASCADE
 );
 
-CREATE TABLE MedicalProcedureOrgan(
-  fkOrgansId    SMALLINT,
-  fkProcedureId INT,
-  PRIMARY KEY (fkOrgansId, fkProcedureId),
-  FOREIGN KEY (fkProcedureId) REFERENCES MedicalProcedure (procedureId)
-    ON DELETE CASCADE,
-  FOREIGN KEY (fkOrgansId) REFERENCES Organ(organId) ON DELETE CASCADE
-);
-
 CREATE TABLE MedicalProcedure(
-  procedureId          INT AUTO_INCREMENT,
+  procedureId          INT UNIQUE AUTO_INCREMENT,
   procedureName        VARCHAR(255) NOT NULL,
   procedureDate        DATE NOT NULL,
   fkUserNhi            VARCHAR(7) NOT NULL,
   procedureDescription TEXT,
   PRIMARY KEY (procedureDate,procedureName,fkUserNhi),
   FOREIGN KEY (fkUserNhi) REFERENCES User(nhi) ON DELETE CASCADE
+);
+
+CREATE TABLE MedicalProcedureOrgan (
+  fkOrgansId    SMALLINT,
+  fkProcedureId INT,
+  PRIMARY KEY (fkOrgansId, fkProcedureId),
+  FOREIGN KEY (fkProcedureId) REFERENCES MedicalProcedure (procedureId)
+    ON DELETE CASCADE,
+  FOREIGN KEY (fkOrgansId) REFERENCES Organ (organId)
+    ON DELETE CASCADE
 );
 
 CREATE TABLE ContactDetails(

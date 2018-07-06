@@ -78,14 +78,14 @@ INSERT INTO HealthDetails(fkUserNhi, gender, birthGender, smoker, alcoholConsump
   ('DEF231', 'Male', 'Male', TRUE , 'None', 173.0, 78.8, 'B-'),
   ('XYZ1234', 'Female', 'Female', FALSE, 'Low', 165.4, 54.3, 'AB+');
 
-INSERT INTO MedicalProcedureOrgan(fkOrgansId, fkUserNhi) VALUES
-  (3, 'ABC1234'),
-  (8, 'ABC1234'),
-  (3, 'DEF231');
+INSERT INTO MedicalProcedure (procedureId, procedureName, procedureDate, fkUserNhi, procedureDescription) VALUES
+  (1, 'Extract Pancreas and Middle Ear', '2018-09-01', 'ABC1234', 'Get Pancreas and Middle Ear from Donor ABC234'),
+  (2, 'Implant Pancreas', '2018-10-03', 'DEF231', 'Implant Pancreas to Receiver DEF231');
 
-INSERT INTO MedicalProcedure(procedureName, procedureDate, fkUserNhi, procedureDescription) VALUES
-  ('Extract Pancreas and Middle Ear', '2018-09-01', 'ABC1234', 'Get Pancreas and Middle Ear from Donor ABC234'),
-  ('Implant Pancreas', '2018-10-03', 'DEF231', 'Implant Pancreas to Receiver DEF231');
+INSERT INTO MedicalProcedureOrgan (fkOrgansId, fkProcedureId) VALUES
+  (3, 1),
+  (8, 1),
+  (3, 2);
 
 INSERT INTO ContactDetails(contactId, fkUserNhi, fkStaffId, homePhone, cellPhone, email) VALUES
   (1, 'ABC1234', NULL, NULL,'0221453566', 'aaronB@gmail.com'),
