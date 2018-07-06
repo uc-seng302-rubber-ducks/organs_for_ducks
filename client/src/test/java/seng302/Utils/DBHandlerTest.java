@@ -65,14 +65,14 @@ public class DBHandlerTest {
 /*
     @Test
     public void testUserInstanceCreatedValid() throws SQLException {
-        Collection<User> users = dbHandler.getUsers(connection, 10, 0);
+        Collection<User> users = dbHandler.loadUsers(connection, 10, 0);
         System.out.println(users);
         Assert.assertEquals(3, users.size());
     }
 
     @Test
     public void testDecodeUserInstanceCreatedValid() throws SQLException {
-        Collection<User> users = dbHandler.getUsers(connection, 10, 0);
+        Collection<User> users = dbHandler.loadUsers(connection, 10, 0);
         User actual = users.iterator().next();
         Assert.assertTrue(actual.getNhi().equals(expected.getNhi()));
         Assert.assertTrue(actual.getMiddleName().equals(expected.getMiddleName()));

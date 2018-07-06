@@ -2,6 +2,7 @@ package odms.commons.utils;
 
 import odms.commons.model.*;
 import odms.commons.model._enum.Organs;
+import odms.commons.model.datamodel.Medication;
 import odms.commons.utils.dbStrategies.AbstractUpdateStrategy;
 import odms.commons.utils.dbStrategies.AdminUpdateStrategy;
 import odms.commons.utils.dbStrategies.ClinicianUpdateStrategy;
@@ -24,7 +25,7 @@ public class DBHandler {
      * SELECT_USER_ONE_TO_ONE_INFO_STMT is for getting all info that follows one-to-one relationship. eg: 1 user can only have 1 address.
      * the other SELECT_USER statements are for getting all info that follows one-to-many relationships. eg: 1 user can have many diseases.
      */
-    private static final String SELECT_USER_ONE_TO_ONE_INFO_STMT = "SELECT nhi, firstName, middleName, LastName, preferedName, timeCreated, lastModified, profilePicture, gender, birthGender, smoker, " +
+    private static final String SELECT_USER_ONE_TO_ONE_INFO_STMT_FILTERED = "SELECT nhi, firstName, middleName, LastName, preferedName, timeCreated, lastModified, profilePicture, gender, birthGender, smoker, " +
             "alcoholConsumption, height, weight, cde.homePhone, cde.cellPhone, cde.email, a.streetNumber, a.streetName, a.neighbourhood, a.city, " +
             "a.region, a.country, a.zipCode , contactName, contactRelationship, ecd.homePhone, ecd.cellPhone, ecd.email, ecd.streetNumber, ecd.streetName, ecd.neighbourhood, ecd.city, ecd.region, ecd.zipCode, ecd.country, " +
             "dob, dod " +
@@ -35,6 +36,15 @@ public class DBHandler {
             "LEFT JOIN EmergencyContactDetails ecd ON u.nhi = ecd.fkUserNhi " +
             "WHERE (firstName LIKE ? OR lastName LIKE ?) AND a.region LIKE ? " +
             "LIMIT ? OFFSET ?";
+    private static final String SELECT_USER_ONE_TO_ONE_INFO_STMT = "SELECT nhi, firstName, middleName, LastName, preferedName, timeCreated, lastModified, profilePicture, gender, birthGender, smoker, " +
+            "alcoholConsumption, height, weight, cde.homePhone, cde.cellPhone, cde.email, a.streetNumber, a.streetName, a.neighbourhood, a.city, " +
+            "a.region, a.country, a.zipCode , contactName, contactRelationship, ecd.homePhone, ecd.cellPhone, ecd.email, ecd.streetNumber, ecd.streetName, ecd.neighbourhood, ecd.city, ecd.region, ecd.zipCode, ecd.country, " +
+            "dob, dod " +
+            "FROM User u " +
+            "LEFT JOIN HealthDetails hd ON u.nhi = hd.fkUserNhi " +
+            "LEFT JOIN ContactDetails cde ON u.nhi = cde.fkUserNhi " +
+            "LEFT JOIN Address a ON u.nhi = a.fkUserNhi " +
+            "LEFT JOIN EmergencyContactDetails ecd ON u.nhi = ecd.fkUserNhi";
     private static final String SELECT_USER_PREVIOUS_DISEASE_STMT = "SELECT diseaseName, diagnosisDate, remissionDate FROM PreviousDisease WHERE fkUserNhi = ?";
     private static final String SELECT_USER_CURRENT_DISEASE_STMT = "SELECT diseaseName, diagnosisDate, isChronic FROM CurrentDisease WHERE fkUserNhi = ?";
     private static final String SELECT_USER_MEDICATION_STMT = "SELECT medicationName, dateStartedTaking, dateStoppedTaking FROM Medication m " +
@@ -98,8 +108,44 @@ public class DBHandler {
         return LocalDate.parse(date, formatter);
     }
 
+    /**
+     * Method with less filtering parameters to obtain all the users information from the database based on filtering provided.
+     * User objects are instantiated and its attributes are set based on the de-serialised information.
+     * @param connection A valid connection to the database
+     * @param count number of items returned
+     * @param startIndex number of items to skip
+     * @return a Collection of Users
+     * @throws SQLException if there are any SQL errors
+     */
     public Collection<User> getUsers(Connection connection, int count, int startIndex) throws SQLException {
         return this.getUsers(connection, count, startIndex, "", "");
+    }
+
+    /**
+     * Method to obtain all the users information from the database based on filtering provided.
+     * User objects are instantiated and its attributes are set based on the de-serialised information.
+     * @param connection A valid connection to the database
+     * @param count number of items returned
+     * @param startIndex number of items to skip
+     * @param name name of a user
+     * @param region region of a user
+     * @return a Collection of Users
+     * @throws SQLException if there are any SQL errors
+     */
+    public Collection<User> getUsers(Connection connection, int count, int startIndex, String name, String region) throws SQLException {
+        Collection<User> users = new ArrayList<>();
+
+        try (PreparedStatement statement = connection.prepareStatement(SELECT_USER_ONE_TO_ONE_INFO_STMT_FILTERED)) {
+            statement.setString(1, name + "%");
+            statement.setString(2, name + "%");
+            statement.setString(3, region + "%");
+            statement.setInt(4, count);
+            statement.setInt(5, startIndex);
+            try (ResultSet resultSet = statement.executeQuery()) {
+
+            }
+        }
+        return null; //TODO: implement this
     }
 
     /**
@@ -108,16 +154,12 @@ public class DBHandler {
      *
      * @param connection A valid connection to the database
      * @return a Collection of Users
+     * @throws SQLException if there are any SQL errors
      */
-    public Collection<User> getUsers(Connection connection, int count, int startIndex, String name, String region) throws SQLException {
+    public Collection<User> loadUsers(Connection connection) throws SQLException {
         Collection<User> users = new ArrayList<>();
 
         try (PreparedStatement statement = connection.prepareStatement(SELECT_USER_ONE_TO_ONE_INFO_STMT)) {
-            statement.setString(1, name + "%");
-            statement.setString(2, name + "%");
-            statement.setString(3, region + "%");
-            statement.setInt(4, count);
-            statement.setInt(5, startIndex);
             try (ResultSet resultSet = statement.executeQuery()) {
 
                 while (resultSet != null && resultSet.next()) {
@@ -163,7 +205,7 @@ public class DBHandler {
                     try {
                         getUserPastDisease(user, connection);
                         getUserCurrentDisease(user, connection);
-                        //getUserMedication(user, connection);
+                        getUserMedication(user, connection);
                         getUserMedicalProcedure(user, connection);
                         getUserOrganDonateDetail(user, connection);
                         //getUserOrganReceiveDetail(user, connection);
@@ -259,9 +301,10 @@ public class DBHandler {
     }
 
     /**
-     * gets all info of Medication of a user
-     * <p>
-     * TODO: update javadoc once method is completed
+     * gets all info of Medication of a user.
+     * then Medication objects are instantiated.
+     * Finally, user's currentMedication and previousMedication attributes are populated based
+     * on whether the dateStoppedTaking column from database is null or not.
      *
      * @param user       desired user
      * @param connection opened connection to database
@@ -272,11 +315,24 @@ public class DBHandler {
             stmt.setString(1, user.getNhi());
             try (ResultSet resultSet = stmt.executeQuery()) {
                 while (resultSet != null && resultSet.next()) {
-                    if (resultSet.getString(3) == null) { // dateStoppedTaking is null
-                        //TODO: create method or medication class to deserialize name and date of current medication
+                    Medication medication = new Medication(resultSet.getString("medicationName"));
+                    medication.addMedicationTime(dateTimeToLocalDateTime(resultSet.getString("dateStartedTaking")));
+
+                    if(resultSet.getString("dateStoppedTaking") == null) {
+                        int duplicateIndex = user.getPreviousMedication().indexOf(medication);
+                        if( duplicateIndex != -1){ //if the medication instance already exist in this user's previousMedication attribute. This scenario happens when a user is currently taking a medication that had been taken before.
+                            medication = user.getPreviousMedication().get(duplicateIndex);
+                            medication.addMedicationTime(dateTimeToLocalDateTime(resultSet.getString("dateStartedTaking"))); //updates the medication time array
+                            user.getPreviousMedication().remove(medication);
+                            user.getCurrentMedication().add(medication);
+
+                        } else {
+                            user.getCurrentMedication().add(medication);
+                        }
 
                     } else {
-                        //TODO: create method or medication class to deserialize name and date of previous medication
+                        medication.addMedicationTime(dateTimeToLocalDateTime(resultSet.getString("dateStoppedTaking")));
+                        user.getPreviousMedication().add(medication);
                     }
                 }
             }
@@ -420,7 +476,7 @@ public class DBHandler {
 //    public static void main(String [ ] args) throws SQLException{
 //        DBHandler dbHandler = new DBHandler();
 //        JDBCDriver jdbcDriver = new JDBCDriver();
-//        dbHandler.getUsers(jdbcDriver.getTestConnection(), 10, 0);
+//        dbHandler.loadUsers(jdbcDriver.getTestConnection());
 //        //dbHandler.loadClinicians(jdbcDriver.getTestConnection());
 //        //dbHandler.loadAdmins(jdbcDriver.getTestConnection());
 //        System.out.println("done");

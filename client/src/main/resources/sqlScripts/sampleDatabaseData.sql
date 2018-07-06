@@ -45,7 +45,8 @@ INSERT INTO MedicationDates (keyValue, fkMedicationInstanceId, dateStartedTaking
   (1, 12, '2017-01-01 00:01:01', '2017-06-07 00:01:01'),
   (2, 15, '2018-01-01 00:01:01', NULL),
   (3, 20, '2018-05-06 00:01:01', NULL),
-  (4, 78, '2016-02-01 00:01:01', '2016-03-17 00:01:01');
+  (4, 78, '2016-02-01 00:01:01', '2016-03-17 00:01:01'),
+  (5, 12, '2018-05-05 00:01:01', NULL);
 
 INSERT INTO OrganAwaiting(fkOrgansId, fkUserNhi, awaitingingId) VALUES
   (3, 'DEF2314', 1),
