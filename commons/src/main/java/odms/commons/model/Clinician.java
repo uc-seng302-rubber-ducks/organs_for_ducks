@@ -6,8 +6,8 @@ import odms.commons.model._abstract.Listenable;
 import odms.commons.model._abstract.Undoable;
 import odms.commons.model._enum.EventTypes;
 import odms.commons.utils.PasswordManager;
-import seng302.model.datamodel.Address;
-import seng302.model.datamodel.ContactDetails;
+import odms.commons.model.datamodel.Address;
+import odms.commons.model.datamodel.ContactDetails;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
