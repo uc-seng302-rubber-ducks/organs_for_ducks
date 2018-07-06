@@ -895,71 +895,63 @@ public class UpdateUserController {
         boolean changed = false;
         EmergencyContact contact = currentUser.getContact();
 
-
         if (checkChangedProperty(ecName.getText(), contact.getName())) {
             changed = true;
-            contact.setName(ecName.getText());
+            currentUser.setECName(ecName.getText());
         }
 
         if (checkChangedProperty(ecPhone.getText(), contact.getHomePhoneNumber())) {
-            contact.setHomePhoneNumber(ecPhone.getText());
+            currentUser.setECHomePhone(ecPhone.getText());
             changed = true;
         }
 
         if (checkChangedProperty(ecCell.getText(), contact.getCellPhoneNumber())) {
-            contact.setCellPhoneNumber(ecCell.getText());
+            currentUser.setECCellPhone(ecCell.getText());
         }
 
         if (checkChangedProperty(ecStreetNumber.getText(), contact.getStreetNumber())) {
-            contact.setStreetNumber(ecStreetNumber.getText());
+            currentUser.setECStreetNumber(ecStreetNumber.getText());
             changed = true;
-
         }
 
         if (checkChangedProperty(ecStreet.getText(), contact.getStreetName())) {
-            contact.setStreetName(ecStreet.getText());
+            currentUser.setECStreeName(ecStreet.getText());
             changed = true;
 
         }
         if (checkChangedProperty(ecNeighborhood.getText(), contact.getNeighborhood())) {
-            contact.setNeighborhood(ecNeighborhood.getText());
+            currentUser.setECNeighborhood(ecNeighborhood.getText());
             changed = true;
-
         }
 
         if (checkChangedProperty(ecCity.getText(), contact.getCity())) {
-            contact.setCity(ecCity.getText());
+            currentUser.setECCity(ecCity.getText());
             changed = true;
-
         }
 
         if (checkChangedProperty(ecCountry.getText(), contact.getCountry())) {
-            contact.setCountry(ecCountry.getText());
+            currentUser.setECCountry(ecCountry.getText());
             changed = true;
-
         }
 
         if (checkChangedProperty(ecZipCode.getText(), contact.getZipCode())) {
-            contact.setZipCode(ecZipCode.getAccessibleHelp());
+            currentUser.setECZipCode(ecZipCode.getText());
             changed = true;
-
         }
 
         if (checkChangedProperty(ecRegion.getSelectionModel().getSelectedItem(), contact.getRegion())) {
-            contact.setRegion(ecRegion.getSelectionModel().getSelectedItem());
+            currentUser.setECRegion(ecRegion.getSelectionModel().getSelectedItem());
             changed = true;
-
         }
 
         if (checkChangedProperty(ecEmail.getText(), currentUser.getContact().getEmail())) {
-            contact.setEmail(ecEmail.getText());
+            currentUser.setECEmail(ecEmail.getText());
             changed = true;
-
         }
 
         if (checkChangedProperty(ecRelationship.getText(), contact.getRelationship())) {
+            currentUser.setECRelationship(ecRelationship.getText());
             changed = true;
-            contact.setRelationship(ecRelationship.getText());
         }
 
         return changed;
