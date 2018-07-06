@@ -27,7 +27,7 @@ public class Clinician extends Undoable<Clinician> implements Listenable {
     @Expose
     private String region;
     @Expose
-    private byte[] password;
+    private String password;
 
     @Expose
     private LocalDateTime dateCreated;
@@ -41,7 +41,7 @@ public class Clinician extends Undoable<Clinician> implements Listenable {
     @Expose
     private String lastName;
     @Expose
-    private byte[] salt;
+    private String salt;
     private transient PropertyChangeSupport pcs;
 
     //TODO make all updates to the clinician add to this 22/6
@@ -236,7 +236,7 @@ public class Clinician extends Undoable<Clinician> implements Listenable {
      *
      * @return hash of the password
      */
-    private byte[] getPassword() {
+    public String getPassword() {
         return password;
     }
 
@@ -252,7 +252,7 @@ public class Clinician extends Undoable<Clinician> implements Listenable {
     }
 
 
-    public byte[] getSalt() {
+    public String getSalt() {
         return salt;
     }
 

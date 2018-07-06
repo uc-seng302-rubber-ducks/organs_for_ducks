@@ -161,15 +161,10 @@ public class ClinicianUpdateStrategy extends AbstractUpdateStrategy {
      */
     private void updateClinicianPassword(Clinician clinician, Connection connection) throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement(UPDATE_CLINICIAN_PASSWORD)) {
-
-            Blob passwordBlob = connection.createBlob();
-            //passwordBlob.setBytes(1, clinician.getPassword()); // todo: check if it's alright to make the password getter public, or would it be a security issue?
-
-            Blob saltBlob = connection.createBlob();
-            saltBlob.setBytes(1, clinician.getSalt());
-
-            statement.setBlob(1, passwordBlob);
-            statement.setBlob(2, saltBlob);
+            String password = clinician.getPassword();
+            String salt = clinician.getSalt();
+            statement.setString(1, password);
+            statement.setString(2, salt);
             statement.setString(3, clinician.getStaffId());
 
             statement.executeUpdate();

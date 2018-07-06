@@ -157,14 +157,11 @@ public class AdminUpdateStrategy extends AbstractUpdateStrategy {
     private void updateAdminPassword(Administrator admin, Connection connection) throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement(UPDATE_ADMIN_PASSWORD)) {
 
-            Blob passwordBlob = connection.createBlob();
-            //passwordBlob.setBytes(1, admin.getPassword()); // todo: need to be able to access the admins hashed password, is having the password getter public okay? - jen
+            String password = admin.getPassword();
+            String salt = admin.getSalt();
 
-            Blob saltBlob = connection.createBlob();
-            saltBlob.setBytes(1, admin.getSalt());
-
-            statement.setBlob(1, passwordBlob);
-            statement.setBlob(2, saltBlob);
+            statement.setString(1, password);
+            statement.setString(2, salt);
             statement.setString(3, admin.getUserName());
 
             statement.executeUpdate();

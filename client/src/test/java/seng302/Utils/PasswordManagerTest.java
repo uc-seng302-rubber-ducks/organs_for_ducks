@@ -1,32 +1,34 @@
 package seng302.Utils;
 
+import cucumber.api.java.cs.A;
 import odms.commons.utils.PasswordManager;
+import org.junit.Assert;
 import org.junit.Test;
 
 public class PasswordManagerTest {
 
     @Test
     public void testIsExpectedPasswordTrue() {
-        byte[] salt = PasswordManager.getNextSalt();
-        byte[] hash = PasswordManager.hash("password", salt);
+        String salt = PasswordManager.getNextSalt();
+        String hash = PasswordManager.hash("password", salt);
 
-        assert (PasswordManager.isExpectedPassword("password", salt, hash));
+        Assert.assertTrue(PasswordManager.isExpectedPassword("password", salt, hash));
     }
 
     @Test
     public void testIsExpectedPasswordFalse() {
-        byte[] salt = PasswordManager.getNextSalt();
-        byte[] hash = PasswordManager.hash("password", salt);
+        String salt = PasswordManager.getNextSalt();
+        String hash = PasswordManager.hash("password", salt);
 
-        assert (!PasswordManager.isExpectedPassword("Password", salt, hash));
+        Assert.assertTrue(!PasswordManager.isExpectedPassword("Password", salt, hash));
     }
 
     @Test
     public void testIsExpectedPasswordWrongSalt() {
-        byte[] salt = PasswordManager.getNextSalt();
-        byte[] hash = PasswordManager.hash("password", salt);
+        String salt = PasswordManager.getNextSalt();
+        String hash = PasswordManager.hash("password", salt);
 
-        assert (!PasswordManager.isExpectedPassword("Password", PasswordManager.getNextSalt(), hash));
+        Assert.assertTrue(!PasswordManager.isExpectedPassword("Password", PasswordManager.getNextSalt(), hash));
     }
 
 
