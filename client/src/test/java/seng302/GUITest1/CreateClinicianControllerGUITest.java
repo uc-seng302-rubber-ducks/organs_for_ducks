@@ -129,14 +129,12 @@ public class CreateClinicianControllerGUITest extends ApplicationTest {
         lookup("#firstNameTextField").queryAs(TextField.class).setText("Affie");
         lookup("#middleNameTextField").queryAs(TextField.class).setText("Ali");
         lookup("#lastNameTextField").queryAs(TextField.class).setText("Al");
-        lookup("#streetNameTextField").queryAs(TextField.class).setText("Our house");
         lookup("#regionTextField").queryAs(TextField.class).setText("Canterbury");
         clickOn("#confirmButton");
         verifyThat("#staffIdLabel", LabeledMatchers.hasText("Staff1"));
         verifyThat("#fNameLabel", LabeledMatchers.hasText("Affie"));
         verifyThat("#mNameLabel", LabeledMatchers.hasText("Ali"));
         verifyThat("#lNameLabel", LabeledMatchers.hasText("Al"));
-        verifyThat("#streetNameLabel", LabeledMatchers.hasText("Our house"));
         verifyThat("#regionLabel", LabeledMatchers.hasText("Canterbury"));
     }
 

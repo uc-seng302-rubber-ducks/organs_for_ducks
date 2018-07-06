@@ -58,11 +58,7 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
     @FXML
     private Label lNameLabel;
     @FXML
-    private Label streetNumberLabel;
-    @FXML
-    private Label streetNameLabel;
-    @FXML
-    private Label neighbourhoodLabel;
+    private Label addressLabel;
     @FXML
     private Label cityLabel;
     @FXML
@@ -205,9 +201,7 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
         fNameLabel.setText(clinician.getFirstName());
         mNameLabel.setText(clinician.getMiddleName());
         lNameLabel.setText(clinician.getLastName());
-        streetNumberLabel.setText(clinician.getStreetNumber());
-        streetNameLabel.setText(clinician.getStreetName());
-        neighbourhoodLabel.setText(clinician.getNeighborhood());
+        addressLabel.setText(clinician.getWorkContactDetails().getAddress().getStringAddress());
         cityLabel.setText(clinician.getCity());
         regionLabel.setText(clinician.getRegion());
         zipLabel.setText(clinician.getZipCode());
