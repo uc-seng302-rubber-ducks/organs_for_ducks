@@ -10,15 +10,18 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
 import javafx.stage.Stage;
-import odms.controller.AppController;
-import odms.controller.gui.popup.MedicationsTimeController;
 import odms.commons.model.User;
+import odms.commons.model.datamodel.Medication;
 import odms.commons.utils.HttpRequester;
 import odms.commons.utils.Log;
+import odms.controller.AppController;
+import odms.controller.gui.popup.MedicationsTimeController;
 import okhttp3.OkHttpClient;
 import org.controlsfx.control.textfield.TextFields;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 public class MedicationTabController {
@@ -165,14 +168,24 @@ public class MedicationTabController {
         if (user.getCurrentMedication() != null) {
             currentMeds.clear();
             currentMedicationListView.getItems().clear();
-            currentMeds.addAll(user.getCurrentMedication());
+            List<String> medications = new ArrayList<>();
+            for (Medication meds : user.getCurrentMedication()) {
+                medications.add(meds.getMedName());
+            }
+
+            currentMeds.addAll(medications);
 
             currentMedicationListView.setItems(currentMeds);
         }
 
         if (user.getPreviousMedication() != null) {
             previousMeds.clear();
-            previousMeds.addAll(user.getPreviousMedication());
+            previousMedicationListView.getItems().clear();
+            List<String> medications = new ArrayList<>();
+            for (Medication meds : user.getPreviousMedication()) {
+                medications.add(meds.getMedName());
+            }
+            previousMeds.addAll(medications);
             previousMedicationListView.setItems(previousMeds);
         }
     }

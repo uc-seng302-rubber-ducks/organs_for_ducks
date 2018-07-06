@@ -7,6 +7,8 @@ import odms.commons.model._abstract.Undoable;
 import odms.commons.model._enum.EventTypes;
 import odms.commons.model._enum.Organs;
 import odms.commons.model.datamodel.ContactDetails;
+import odms.commons.model.datamodel.Medication;
+import odms.commons.model.datamodel.Address;
 import odms.commons.model.datamodel.ReceiverOrganDetailsHolder;
 
 import java.beans.PropertyChangeEvent;
@@ -55,7 +57,6 @@ public class User extends Undoable<User> implements Listenable {
     @Expose
     private HealthDetails healthDetails;
 
-
     @Expose
     private LocalDateTime lastModified;
     @Expose
@@ -63,13 +64,9 @@ public class User extends Undoable<User> implements Listenable {
     @Expose
     private Map<String, String> updateHistory;
     @Expose
-    private List<String> previousMedication;
+    private List<Medication> previousMedication;
     @Expose
-    private List<String> currentMedication;
-    @Expose
-    private Map<String, List<LocalDateTime>> previousMedicationTimes;
-    @Expose
-    private Map<String, List<LocalDateTime>> currentMedicationTimes;
+    private List<Medication> currentMedication;
 
     @Expose
     private List<MedicalProcedure> medicalProcedures;
@@ -120,8 +117,6 @@ public class User extends Undoable<User> implements Listenable {
         this.miscAttributes = new ArrayList<>();
         this.currentMedication = new ArrayList<>();
         this.previousMedication = new ArrayList<>();
-        this.currentMedicationTimes = new HashMap<>();
-        this.previousMedicationTimes = new HashMap<>();
         this.currentDiseases = new ArrayList<>();
         this.pastDiseases = new ArrayList<>();
         this.commonOrgans = new HashSet<>();
@@ -133,7 +128,6 @@ public class User extends Undoable<User> implements Listenable {
         this.changes = FXCollections.observableArrayList();
         this.pcs = new PropertyChangeSupport(this);
         this.healthDetails = new HealthDetails();
-        contactDetails.setAttachedUser(this);
         contact.setAttachedUser(this);
     }
 
@@ -150,8 +144,6 @@ public class User extends Undoable<User> implements Listenable {
         this.currentDiseases = new ArrayList<>();
         this.pastDiseases = new ArrayList<>();
         this.contactDetails = new ContactDetails();
-        this.currentMedicationTimes = new HashMap<>();
-        this.previousMedicationTimes = new HashMap<>();
         this.updateHistory = new HashMap<>();
         this.medicalProcedures = new ArrayList<>();
         this.donorDetails = new DonorDetails(this);
@@ -160,8 +152,6 @@ public class User extends Undoable<User> implements Listenable {
         changes = FXCollections.observableArrayList();
         this.pcs = new PropertyChangeSupport(this);
         this.healthDetails = new HealthDetails();
-        contactDetails.setAttachedUser(this);
-
     }
 
     public static User clone(User user) {
@@ -170,16 +160,30 @@ public class User extends Undoable<User> implements Listenable {
         newUser.dateOfBirth = user.dateOfBirth;
         newUser.dateOfDeath = user.dateOfDeath;
 
-        newUser.contactDetails = user.contactDetails;
+        Address address = new Address(user.getStreetNumber(), user.getStreetName(), user.getNeighborhood(),
+                user.getCity(), user.getRegion(), user.getZipCode(), user.getCountry());
+        newUser.contactDetails = new ContactDetails(user.getHomePhone(), user.getCellPhone(), address, user.getEmail());
+
         if (user.contact != null) {
+            Address ecAddress = new Address(user.contact.getStreetNumber(), user.contact.getStreetName(), user.contact.getNeighborhood(),
+                    user.contact.getCity(), user.contact.getRegion(), user.contact.getZipCode(), user.contact.getCountry());
+
             newUser.contact = new EmergencyContact(user.contact.getName(), user.contact.getCellPhoneNumber(),
-                    user.contact.getHomePhoneNumber(), user.contact.getAddress(),
+                    user.contact.getHomePhoneNumber(), ecAddress,
                     user.contact.getEmail(), user.contact.getRelationship());
         } else {
             newUser.contact = null;
         }
 
-        newUser.healthDetails = user.healthDetails;
+        HealthDetails healthDetails = new HealthDetails();
+        healthDetails.setBirthGender(user.getBirthGender());
+        healthDetails.setGenderIdentity(user.getGenderIdentity());
+        healthDetails.setAlcoholConsumption(user.getAlcoholConsumption());
+        healthDetails.setSmoker(user.isSmoker());
+        healthDetails.setHeight(user.getHeight());
+        healthDetails.setWeight(user.getWeight());
+        healthDetails.setBloodType(user.getBloodType());
+        newUser.healthDetails = healthDetails;
 
         newUser.name = user.name;
         newUser.firstName = user.firstName;
@@ -196,8 +200,6 @@ public class User extends Undoable<User> implements Listenable {
         newUser.miscAttributes = new ArrayList<>(user.miscAttributes);
         newUser.currentMedication = new ArrayList<>(user.currentMedication);
         newUser.previousMedication = new ArrayList<>(user.previousMedication);
-        newUser.currentMedicationTimes = new HashMap<>(user.currentMedicationTimes);
-        newUser.previousMedicationTimes = new HashMap<>(user.previousMedicationTimes);
         newUser.donorDetails = new DonorDetails(newUser);
         for (Organs o : user.donorDetails.getOrgans()) {
             newUser.donorDetails.getOrgans().add(o);
@@ -254,6 +256,90 @@ public class User extends Undoable<User> implements Listenable {
         this.saveStateForUndo();
         updateLastModified();
         this.contact = contact;
+    }
+
+    public void setECName(String ecName) {
+        this.saveStateForUndo();
+        updateLastModified();
+        contact.setName(ecName);
+        addChange(new Change("Changed emergency contact name to " + ecName));
+    }
+
+    public void setECHomePhone(String ecHomePhone) {
+        this.saveStateForUndo();
+        updateLastModified();
+        contact.setHomePhoneNumber(ecHomePhone);
+        addChange(new Change("Changed emergency contact home phone number to " + ecHomePhone));
+    }
+
+    public void setECCellPhone(String ecCellPhone) {
+        this.saveStateForUndo();
+        updateLastModified();
+        contact.setCellPhoneNumber(ecCellPhone);
+        addChange(new Change("Changed emergency contact cell phone number to " + ecCellPhone));
+    }
+
+    public void setECStreetNumber(String ecStreetNumber) {
+        this.saveStateForUndo();
+        updateLastModified();
+        contact.setStreetNumber(ecStreetNumber);
+        addChange(new Change("Changed emergency contact street number to " + ecStreetNumber));
+    }
+
+    public void setECStreeName(String ecStreeName) {
+        this.saveStateForUndo();
+        updateLastModified();
+        contact.setStreetName(ecStreeName);
+        addChange(new Change("Changed emergency contact street name to " + ecStreeName));
+    }
+
+    public void setECNeighborhood(String ecNeighborhood) {
+        this.saveStateForUndo();
+        updateLastModified();
+        contact.setNeighborhood(ecNeighborhood);
+        addChange(new Change("Changed emergency contact neighborhood to " + ecNeighborhood));
+    }
+
+    public void setECCity(String ecCity) {
+        this.saveStateForUndo();
+        updateLastModified();
+        contact.setCity(ecCity);
+        addChange(new Change("Changed emergency contact city to " + ecCity));
+    }
+
+    public void setECRegion(String ecRegion) {
+        this.saveStateForUndo();
+        updateLastModified();
+        contact.setRegion(ecRegion);
+        addChange(new Change("Changed emergency contact region to " + ecRegion));
+    }
+
+    public void setECZipCode(String ecZipCode) {
+        this.saveStateForUndo();
+        updateLastModified();
+        contact.setZipCode(ecZipCode);
+        addChange(new Change("Changed emergency contact zip code to " + ecZipCode));
+    }
+
+    public void setECCountry(String ecCountry) {
+        this.saveStateForUndo();
+        updateLastModified();
+        contact.setCountry(ecCountry);
+        addChange(new Change("Changed emergency contact country to " + ecCountry));
+    }
+
+    public void setECEmail(String ecEmail) {
+        this.saveStateForUndo();
+        updateLastModified();
+        contact.setEmail(ecEmail);
+        addChange(new Change("Changed emergency contact email to " + ecEmail));
+    }
+
+    public void setECRelationship(String ecRelationship) {
+        this.saveStateForUndo();
+        updateLastModified();
+        contact.setRelationship(ecRelationship);
+        addChange(new Change("Changed emergency contact relationship to " + ecRelationship));
     }
 
     public HealthDetails getHealthDetails() {
@@ -551,7 +637,10 @@ public class User extends Undoable<User> implements Listenable {
     }
 
     public void setStreetNumber(String streetNumber) {
+        this.saveStateForUndo();
+        updateLastModified();
         contactDetails.getAddress().setStreetNumber(streetNumber);
+        addChange(new Change("Changed street number to " + streetNumber));
     }
 
     public String getStreetName() {
@@ -559,7 +648,10 @@ public class User extends Undoable<User> implements Listenable {
     }
 
     public void setStreetName(String streetName) {
+        this.saveStateForUndo();
+        updateLastModified();
         contactDetails.getAddress().setStreetName(streetName);
+        addChange(new Change("Changed street name to " + streetName));
     }
 
     public String getNeighborhood() {
@@ -567,7 +659,10 @@ public class User extends Undoable<User> implements Listenable {
     }
 
     public void setNeighborhood(String neighborhood) {
+        this.saveStateForUndo();
+        updateLastModified();
         contactDetails.getAddress().setNeighborhood(neighborhood);
+        addChange(new Change("Changed neighborhood to " + neighborhood));
     }
 
     public String getCity() {
@@ -575,7 +670,10 @@ public class User extends Undoable<User> implements Listenable {
     }
 
     public void setCity(String city) {
+        this.saveStateForUndo();
+        updateLastModified();
         contactDetails.getAddress().setCity(city);
+        addChange(new Change("Changed city to " + city));
     }
 
     public String getZipCode() {
@@ -583,7 +681,10 @@ public class User extends Undoable<User> implements Listenable {
     }
 
     public void setZipCode(String zipCode) {
+        this.saveStateForUndo();
+        updateLastModified();
         contactDetails.getAddress().setZipCode(zipCode);
+        addChange(new Change("Changed zip code to " + zipCode));
     }
 
     public String getCountry() {
@@ -591,7 +692,10 @@ public class User extends Undoable<User> implements Listenable {
     }
 
     public void setCountry(String country) {
+        this.saveStateForUndo();
+        updateLastModified();
         contactDetails.getAddress().setCountry(country);
+        addChange(new Change("Changed country to " + country));
     }
 
     public String getBirthCountry() {
@@ -599,7 +703,10 @@ public class User extends Undoable<User> implements Listenable {
     }
 
     public void setBirthCountry(String birthCountry) {
+        this.saveStateForUndo();
+        updateLastModified();
         this.birthCountry = birthCountry;
+        addChange(new Change("Changed birth country to" + birthCountry));
     }
 
     /**
@@ -758,125 +865,107 @@ public class User extends Undoable<User> implements Listenable {
         updateHistory.put(timeStamp, action);
     }
 
-    public List<String> getPreviousMedication() {
+    public List<Medication> getPreviousMedication() {
         return previousMedication;
     }
 
-    public void setPreviousMedication(List<String> previousMedication) {
+    public void setPreviousMedication(List<Medication> previousMedication) {
         this.previousMedication = previousMedication;
     }
 
-    public List<String> getCurrentMedication() {
+    public List<Medication> getCurrentMedication() {
         return currentMedication;
     }
 
-    public void setCurrentMedication(List<String> currentMedication) {
+    public void setCurrentMedication(List<Medication> currentMedication) {
         this.currentMedication = currentMedication;
     }
 
     public void addCurrentMedication(String medication) {
         this.saveStateForUndo();
         updateLastModified();
-        currentMedication.add(medication);
-        addMedicationTimes(medication, currentMedicationTimes);
+        if (!currentMedication.contains(new Medication(medication))) {
+            currentMedication.add(new Medication(medication));
+        }
+        addMedicationTimes(medication, currentMedication);
         addChange(new Change("Added current medication" + medication));
     }
 
     public void addPreviousMedication(String medication) {
         updateLastModified();
-        previousMedication.add(medication);
-        addMedicationTimes(medication, previousMedicationTimes);
+        if (!previousMedication.contains(new Medication(medication))) {
+            previousMedication.add(new Medication(medication));
+        }
+        addMedicationTimes(medication, previousMedication);
         addChange(new Change("Added previous medication" + medication));
     }
 
     public void addCurrentMedicationSetup(String medication) {
         updateLastModified();
-        currentMedication.add(medication);
+        currentMedication.add(new Medication(medication));
         addChange(new Change("Added current medication" + medication));
     }
 
     public void addPreviousMedicationSetUp(String medication) {
         updateLastModified();
-        previousMedication.add(medication);
+        previousMedication.add(new Medication(medication));
         addChange(new Change("Added previous medication" + medication));
     }
 
     public void removeCurrentMedication(String medication) {
         updateLastModified();
-        currentMedication.remove(medication);
+        for (Medication m : currentMedication) {
+            if (m.getMedName().equals(medication)) {
+                m.setDeleted(true);
+            }
+        }
         addChange(new Change("Removed current medication" + medication));
     }
 
     public void removePreviousMedication(String medication) {
         updateLastModified();
-        previousMedication.remove(medication);
+        for (Medication m : previousMedication) {
+            if (m.getMedName().equalsIgnoreCase(medication)) {
+                m.setDeleted(true);
+            }
+        }
         addChange(new Change("Removed previous medication" + medication));
-    }
-
-    public Map<String, List<LocalDateTime>> getPreviousMedicationTimes() {
-        return previousMedicationTimes;
-    }
-
-    public void setPreviousMedicationTimes(
-            Map<String, List<LocalDateTime>> previousMedicationTimes) {
-        updateLastModified();
-        this.previousMedicationTimes = previousMedicationTimes;
-    }
-
-    public Map<String, List<LocalDateTime>> getCurrentMedicationTimes() {
-        return currentMedicationTimes;
-    }
-
-    public void setCurrentMedicationTimes(
-            Map<String, List<LocalDateTime>> currentMedicationTimes) {
-        updateLastModified();
-        this.currentMedicationTimes = currentMedicationTimes;
     }
 
     /**
      * Use this one when adding a new medication from the donor interface
      *
      * @param medication      medication to be added
-     * @param medicationTimes hashmap to be appended to
+     * @param medications hashmap to be appended to
      */
     private void addMedicationTimes(String medication,
-                                    Map<String, List<LocalDateTime>> medicationTimes) {
+                                    List<Medication> medications) {
         LocalDateTime time = LocalDateTime.now();
         updateLastModified();
-        List<LocalDateTime> previouslyExists;
-        try {
-            previouslyExists = medicationTimes.get(medication);
-            previouslyExists.add(time);
-        } catch (NullPointerException e) {
-            previouslyExists = new ArrayList<>();
-            previouslyExists.add(time);
+        for (Medication m : medications) {
+            if (m.getMedName().equalsIgnoreCase(medication)) {
+                m.addMedicationTime(time);
+            }
         }
-
-        medicationTimes.put(medication, previouslyExists);
         updateLastModified();
     }
 
-    /**
-     * Use this one when creating the user from the json object
-     *
-     * @param medication medication string key
-     * @param stamps     list of timestamps
-     */
-    public void addCurrentMedicationTimes(String medication, List<LocalDateTime> stamps) {
-
-        currentMedicationTimes.put(medication, stamps);
-        updateLastModified();
+    public List<LocalDateTime> getCurrentMedicationTimes(String medication) {
+        for (Medication med : currentMedication) {
+            if (med.getMedName().equalsIgnoreCase(medication)) {
+                return med.getMedicationTimes();
+            }
+        }
+        return null;
     }
 
-    /**
-     * Use this one when creating the user from the json object
-     *
-     * @param medication medication string key
-     * @param stamps     list of timestamps
-     */
-    public void addPreviousMedicationTimes(String medication, List<LocalDateTime> stamps) {
-        previousMedicationTimes.put(medication, stamps);
-        updateLastModified();
+    public List<LocalDateTime> getPreviousMedicationTimes(String medication) {
+        for (Medication med : previousMedication) {
+            if (med.getMedName().equalsIgnoreCase(medication)) {
+                return med.getMedicationTimes();
+            }
+        }
+        return null;
     }
 
     public List<Change> getChanges() {
@@ -980,8 +1069,6 @@ public class User extends Undoable<User> implements Listenable {
                 ", updateHistory=" + updateHistory +
                 ", previousMedication=" + previousMedication +
                 ", currentMedication=" + currentMedication +
-                ", previousMedicationTimes=" + previousMedicationTimes +
-                ", currentMedicationTimes=" + currentMedicationTimes +
                 ", medicalProcedures=" + medicalProcedures +
                 ", donorDetails=" + donorDetails +
                 ", receiverDetails=" + receiverDetails +
@@ -1042,8 +1129,6 @@ public class User extends Undoable<User> implements Listenable {
         this.miscAttributes = other.miscAttributes;
         this.currentMedication = other.currentMedication;
         this.previousMedication = other.previousMedication;
-        this.currentMedicationTimes = other.currentMedicationTimes;
-        this.previousMedicationTimes = other.previousMedicationTimes;
         this.donorDetails = other.donorDetails;
         this.donorDetails.setAttachedUser(this);
         this.receiverDetails = other.receiverDetails;

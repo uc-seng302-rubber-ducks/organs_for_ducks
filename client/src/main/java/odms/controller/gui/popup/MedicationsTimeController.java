@@ -40,8 +40,8 @@ public class MedicationsTimeController {
     public void init(User user, Stage stage, String medicine) {
         this.stage = stage;
         medicineNameLabel.setText(medicine);
-        List<LocalDateTime> currentTimeStamps = user.getCurrentMedicationTimes().get(medicine);
-        List<LocalDateTime> previousTimeStamps = user.getPreviousMedicationTimes().get(medicine);
+        List<LocalDateTime> currentTimeStamps = user.getCurrentMedicationTimes(medicine);
+        List<LocalDateTime> previousTimeStamps = user.getPreviousMedicationTimes(medicine);
         medicationDurations = FXCollections.observableArrayList(new ArrayList<>());
         setUpTable(currentTimeStamps, previousTimeStamps);
 

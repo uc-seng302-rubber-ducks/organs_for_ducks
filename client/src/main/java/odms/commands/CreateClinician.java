@@ -21,7 +21,7 @@ public class CreateClinician implements Runnable {
     private String password = "";
 
     @CommandLine.Parameters(index = "3..*")
-    private String region;
+    private String region = "";
 
     @CommandLine.Option(names = {"-h",
             "help"}, required = false, usageHelp = true, description = "display a help message")
@@ -40,7 +40,8 @@ public class CreateClinician implements Runnable {
         valid &= AttributeValidation.checkRequiredString(region);
 
         if (valid) {
-            Clinician clinician = new Clinician(firstName, id, null, region, password);
+            Clinician clinician = new Clinician(id, password, firstName, "", "");
+            clinician.setRegion(region);
             controller.updateClinicians(clinician);
             System.out.println(clinician.toString());
             System.out.println("Created new clinician with id " + id);

@@ -1,23 +1,21 @@
 package odms.commons.model.datamodel;
 
 
-import odms.commons.model.User;
-
+/**
+ * Class to store the personal contact and address information of a user or work details of a clinician
+ */
 public class ContactDetails {
-
 
     private String homePhoneNumber;
     private String cellPhoneNumber;
     private Address address;
     private String email;
-    private transient User attachedUser;
 
     public ContactDetails() {
         this.homePhoneNumber = "";
         this.cellPhoneNumber = "";
         this.address = new Address("", "", "", "", "", "", "");
         this.email = "";
-        this.attachedUser = null;
     }
 
     public ContactDetails(String homePhoneNumber, String cellPhoneNumber, Address address, String email) {
@@ -26,7 +24,6 @@ public class ContactDetails {
         this.address = address;
         this.email = email;
     }
-
 
     public String getHomePhoneNumber() {
         return homePhoneNumber;
@@ -43,15 +40,6 @@ public class ContactDetails {
     public void setCellPhoneNumber(String cellPhoneNumber) {
         this.cellPhoneNumber = cellPhoneNumber;
     }
-
-    public User getAttachedUser() {
-        return attachedUser;
-    }
-
-    public void setAttachedUser(User attachedUser) {
-        this.attachedUser = attachedUser;
-    }
-
 
     public Address getAddress() {
         return address;
@@ -125,7 +113,6 @@ public class ContactDetails {
         address.setCountry(country);
     }
 
-
     @Override
     public String toString() {
         return "ContactDetails{" +
@@ -133,9 +120,7 @@ public class ContactDetails {
                 ", cellPhoneNumber='" + cellPhoneNumber + '\'' +
                 ", address=" + address +
                 ", email='" + email + '\'' +
-                ", attachedUser=" + attachedUser +
                 '}';
     }
-
 
 }

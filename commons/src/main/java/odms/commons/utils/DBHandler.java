@@ -65,8 +65,11 @@ public class DBHandler {
      * @throws SQLException Thrown on bad statement
      */
     public ResultSet executeStatement(String statement, Connection conn) throws SQLException {
-        try(PreparedStatement preparedStatement = conn.prepareStatement(statement)) {
+        try{
+            PreparedStatement preparedStatement = conn.prepareStatement(statement);
             return preparedStatement.executeQuery();
+        } catch (SQLException e){
+            throw e;
         }
     }
 
