@@ -10,15 +10,15 @@ import java.util.Set;
 @Component
 public class TokenStore {
 
-    private Set<Token> knownTokens;
+    private Set<AuthToken> knownAuthTokens;
 
     @Autowired
     public TokenStore() {
-        knownTokens = new HashSet<>();
+        knownAuthTokens = new HashSet<>();
     }
 
-    public Token get(String token) {
-        for(Token t : knownTokens){
+    public AuthToken get(String token) {
+        for (AuthToken t : knownAuthTokens) {
             if (t.getToken().equals(token)){
                 return t;
             }
@@ -26,25 +26,25 @@ public class TokenStore {
         return null;
     }
 
-    public boolean add(Token token) {
-        return knownTokens.add(token);
+    public boolean add(AuthToken authToken) {
+        return knownAuthTokens.add(authToken);
     }
 
-    public boolean contains(Token token) {
-        return knownTokens.contains(token);
+    public boolean contains(AuthToken authToken) {
+        return knownAuthTokens.contains(authToken);
     }
 
     public boolean contains(String tokenStr) {
         return get(tokenStr) != null;
     }
 
-    public boolean remove(Token token) {
-        return knownTokens.remove(token);
+    public boolean remove(AuthToken authToken) {
+        return knownAuthTokens.remove(authToken);
     }
 
     public boolean remove(String tokenStr) {
-        Token t = get(tokenStr);
-        return knownTokens.remove(t);
+        AuthToken t = get(tokenStr);
+        return knownAuthTokens.remove(t);
     }
 
 }

@@ -13,8 +13,8 @@ public class AuthProvider implements AuthenticationProvider {
 
     @Override
     public Authentication authenticate(Authentication auth) throws AuthenticationException {
-        final Token tokenContainer = (Token) auth;
-        final String token = tokenContainer.getToken();
+        final AuthToken authTokenContainer = (AuthToken) auth;
+        final String token = authTokenContainer.getToken();
 
         if (!store.contains(token)) {
             throw new BadCredentialsException("Invalid token: " + token);
@@ -26,7 +26,7 @@ public class AuthProvider implements AuthenticationProvider {
     @Override
     public boolean supports(Class<?> authentication) {
 
-        return Token.class.isAssignableFrom(authentication);
+        return AuthToken.class.isAssignableFrom(authentication);
     }
 
 }

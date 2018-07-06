@@ -9,7 +9,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Collection;
 import java.util.Collections;
 
 public class AuthFilter extends AbstractAuthenticationProcessingFilter {
@@ -30,8 +29,8 @@ public class AuthFilter extends AbstractAuthenticationProcessingFilter {
             return null;
         }
 
-        Token token = new Token(tokenValue);
-        return this.getAuthenticationManager().authenticate(token);
+        AuthToken authToken = new AuthToken(tokenValue);
+        return this.getAuthenticationManager().authenticate(authToken);
     }
 
     private String getTokenValue(HttpServletRequest request) {
