@@ -2,6 +2,7 @@ package seng302.controller;
 
 import odms.commons.model.User;
 import odms.commons.model._enum.Organs;
+import odms.commons.model.datamodel.Medication;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -11,7 +12,7 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
+import java.util.stream.Collectors;
 
 public class UserTest {
 
@@ -118,19 +119,19 @@ public class UserTest {
     @Test
     public void AddingCurrentMedicationsAppendsToCurrentMedicationTimes() {
         testUser.addCurrentMedication("test medication");
-        Map<String, List<LocalDateTime>> currentMedicationTimes = testUser
-                .getCurrentMedicationTimes();
-        Assert.assertTrue(currentMedicationTimes.containsKey("test medication"));
-        Assert.assertEquals(1, currentMedicationTimes.get("test medication").size());
+        List<Medication> currentMedicationTimes = testUser
+                .getCurrentMedication();
+        Assert.assertTrue(currentMedicationTimes.contains(new Medication("test medication")));
+        Assert.assertEquals(1, currentMedicationTimes.size());
     }
 
     @Test
     public void AddingPreviousMedicationsAppendsToPreviousMedicationTimes() {
         testUser.addPreviousMedication("test medication");
-        Map<String, List<LocalDateTime>> previousMedicationTimes = testUser
-                .getPreviousMedicationTimes();
-        Assert.assertTrue(previousMedicationTimes.containsKey("test medication"));
-        Assert.assertEquals(1, previousMedicationTimes.get("test medication").size());
+        List<Medication> previousMedications = testUser.getPreviousMedication();
+        List<LocalDateTime> previousMedicationTimes = testUser.getPreviousMedicationTimes("test medication");
+        Assert.assertTrue(previousMedications.contains(new Medication("test medication")));
+        Assert.assertEquals(1, previousMedicationTimes.size());
     }
 
     @Test
@@ -138,15 +139,16 @@ public class UserTest {
         //both current and previous medications use same method for this, only testing one
         testUser.addCurrentMedication("panadol");
         testUser.addCurrentMedication("panadol");
-        Map<String, List<LocalDateTime>> currentMedicationTimes = testUser
-                .getCurrentMedicationTimes();
+
+        List<Medication> currentMedications = testUser.getCurrentMedication();
+        List<LocalDateTime> currentMedicationTimes = testUser.getCurrentMedicationTimes("panadol");
 
         //one entry with key "panadol"
-        Assert.assertTrue(currentMedicationTimes.containsKey("panadol"));
-        Assert.assertEquals(1, currentMedicationTimes.size());
+        Assert.assertTrue(currentMedications.contains(new Medication("panadol")));
+        Assert.assertEquals(1, currentMedications.stream().filter(m -> m.getMedName().equalsIgnoreCase("panadol")).collect(Collectors.toList()).size());
 
         //panadol entry has two times
-        Assert.assertEquals(2, currentMedicationTimes.get("panadol").size());
+        Assert.assertEquals(2, currentMedicationTimes.size());
     }
 
     @Test
@@ -157,7 +159,7 @@ public class UserTest {
     }
 
     @Test
-    public void DonorToolTipShouldReturnNameAndOrgans() throws Exception {
+    public void DonorToolTipShouldReturnNameAndOrgans() {
         testUser.getDonorDetails().addOrgan(Organs.HEART);
         String tooltip = testUser.getTooltip();
         String name = testUser.getFullName();
