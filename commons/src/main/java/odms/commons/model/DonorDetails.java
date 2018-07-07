@@ -80,7 +80,7 @@ public class DonorDetails {
             attachedUser.saveStateForUndo();
             organs.remove(organ);
             attachedUser.updateLastModified();
-            attachedUser.addChange(new Change("Removed organ " + organ.organName));
+            attachedUser.addChange(new Change("Removed organ " + organ.toString()));
         }
     }
 
