@@ -3,6 +3,8 @@ package seng302.GUITest2;
 import odms.App;
 import odms.controller.AppController;
 import odms.commons.model.Clinician;
+import odms.commons.model.datamodel.Address;
+import odms.commons.model.datamodel.ContactDetails;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -34,7 +36,10 @@ public class UpdateClinicianControllerGUITest extends ApplicationTest {
         FxToolkit.setupApplication(App.class);
         AppController.getInstance().getUsers().clear();
         AppController.getInstance().getClinicians().remove(AppController.getInstance().getClinician("Staff1"));
-        AppController.getInstance().getClinicians().add(new Clinician("Staff1", "secure", "Affie", "Ali", "Al", "20 Kirkwood Ave", "Christchurch"));
+        Clinician c = new Clinician("Staff1", "secure", "Affie", "Ali", "Al");
+        Address workAddress = new Address("20", "Kirkwood Ave", "", "Christchurch", "Canterbury", "", "");
+        c.setWorkContactDetails(new ContactDetails("", "", workAddress, ""));
+        AppController.getInstance().getClinicians().add(c);
         clickOn("#clinicianTab");
 
         clickOn("#staffIdTextField");
@@ -66,8 +71,8 @@ public class UpdateClinicianControllerGUITest extends ApplicationTest {
         verifyThat("#firstNameTextField", TextInputControlMatchers.hasText("Affie"));
         verifyThat("#middleNameTextField", TextInputControlMatchers.hasText("Ali"));
         verifyThat("#lastNameTextField", TextInputControlMatchers.hasText("Al"));
-        verifyThat("#addressTextField", TextInputControlMatchers.hasText("20 Kirkwood Ave"));
-        verifyThat("#regionTextField", TextInputControlMatchers.hasText("Christchurch"));
+        verifyThat("#streetNameTextField", TextInputControlMatchers.hasText("Kirkwood Ave"));
+        verifyThat("#regionTextField", TextInputControlMatchers.hasText("Canterbury"));
         clickOn("#cancelButton");
     }
 

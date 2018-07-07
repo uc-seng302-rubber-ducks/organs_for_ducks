@@ -83,4 +83,5 @@ public class SQLScriptRunner {
             System.err.println("Error when reading SQL Script file: " + e);
         }
     }
+
 }

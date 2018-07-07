@@ -28,7 +28,7 @@ public class DeleteRestoreProfileTest {
     @BeforeClass
     public static void setUpClass() {
         testUser = new User("Stan", LocalDate.of(2000, 3, 5), "ABC4321");
-        testClinician = new Clinician("Bob", "id", "living space", "chch", "1234");
+        testClinician = new Clinician("Bob", "id",  "1234");
         testAdmin = new Administrator("nameuser", "first", "middle", "last", "1234");
 
         appC = AppController.getInstance();
@@ -153,7 +153,7 @@ public class DeleteRestoreProfileTest {
     @Test
     public void testRestoreClinicianExistsException() {
         appC.deleteClinician(testClinician);
-        Clinician newClinician = new Clinician("NotBob", "id", "living space", "chch", "1234");
+        Clinician newClinician = new Clinician("NotBob", "id", "1234");
         activeClinicians.add(newClinician);
 
         try {
