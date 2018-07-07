@@ -90,14 +90,21 @@ CREATE TABLE MedicationDates(
   FOREIGN KEY (fkMedicationInstanceId) REFERENCES Medication(medicationInstanceId) ON DELETE CASCADE
 );
 
-
 CREATE TABLE OrganAwaiting(
   fkOrgansId SMALLINT,
   fkUserNhi VARCHAR(7),
-  awaitingingId INT AUTO_INCREMENT UNIQUE,
+  awaitingId INT AUTO_INCREMENT UNIQUE,
   PRIMARY KEY (fkOrgansId, fkUserNhi),
   FOREIGN KEY (fkUserNhi) REFERENCES User(nhi) ON DELETE CASCADE,
   FOREIGN KEY (fkOrgansId) REFERENCES Organ(organId) ON DELETE CASCADE
+);
+
+CREATE TABLE OrganAwaitingDates(
+  awaitingDateId INT AUTO_INCREMENT PRIMARY KEY,
+  dateRegistered DATE,
+  dateDeregistered DATE,
+  fkAwaitingId INT,
+  FOREIGN KEY (fkAwaitingId) REFERENCES OrganAwaiting(awaitingId) ON DELETE CASCADE
 );
 
 CREATE TABLE OrganDonating(
@@ -109,32 +116,12 @@ CREATE TABLE OrganDonating(
   FOREIGN KEY (fkOrgansId) REFERENCES Organ(organId) ON DELETE CASCADE
 );
 
-CREATE TABLE OrganDonatingRegisterDate(
-  dontatingRegisterId INT AUTO_INCREMENT PRIMARY KEY,
-  dateReg Date,
-  fkDonorId INT,
-  FOREIGN KEY (fkDonorId) REFERENCES OrganDonating(donatingId) ON DELETE CASCADE
-);
-
-CREATE TABLE OrganDonatingDeRegisterDate(
-  dontatingDeRegisterId INT AUTO_INCREMENT PRIMARY KEY,
-  dateDeReg Date,
-  fkDonorId INT,
-  FOREIGN KEY (fkDonorId) REFERENCES OrganDonating(donatingId) ON DELETE CASCADE
-);
-
-CREATE TABLE OrganAwaitingRegisterDate(
-  awaitingRegisterId INT AUTO_INCREMENT PRIMARY KEY,
-  dateReg Date,
-  fkRecieverId INT,
-  FOREIGN KEY (fkRecieverId) REFERENCES OrganAwaiting(awaitingingId) ON DELETE CASCADE
-);
-
-CREATE TABLE OrganAwaitingDeRegisterDate(
-  awaitingDeRegisterId INT AUTO_INCREMENT PRIMARY KEY,
-  dateDeReg Date,
-  fkRecieverId INT,
-  FOREIGN KEY (fkRecieverId) REFERENCES OrganAwaiting(awaitingingId) ON DELETE CASCADE
+CREATE TABLE OrganDonatingDates(
+  donatingDateId INT AUTO_INCREMENT PRIMARY KEY,
+  dateRegistered DATE,
+  dateDeregistered DATE,
+  fkAwaitingId INT,
+  FOREIGN KEY (fkAwaitingId) REFERENCES OrganDonating(donatingId) ON DELETE CASCADE
 );
 
 CREATE TABLE HealthDetails(
