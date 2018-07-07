@@ -13,9 +13,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumMap;
@@ -28,19 +25,15 @@ public class DBHandler {
      * SELECT_USER_ONE_TO_ONE_INFO_STMT is for getting all info that follows one-to-one relationship. eg: 1 user can only have 1 address.
      * the other SELECT_USER statements are for getting all info that follows one-to-many relationships. eg: 1 user can have many diseases.
      */
-    private static final String SELECT_USER_ONE_TO_ONE_INFO_STMT_FILTERED = "SELECT nhi, firstName, middleName, LastName, preferedName, timeCreated, lastModified, profilePicture, gender, birthGender, smoker, " +
-            "alcoholConsumption, height, weight, dob, dod " +
-            "FROM User u " +
-            "LEFT JOIN HealthDetails hd ON u.nhi = hd.fkUserNhi " +
+    private static final String SELECT_USER_ONE_TO_ONE_INFO_STMT_FILTERED = "SELECT nhi FROM `User` a " +
             "WHERE (firstName LIKE ? OR lastName LIKE ?) AND a.region LIKE ? " +
             "LIMIT ? OFFSET ?";
     private static final String SELECT_ONE_USER_INFO_STMT_FILTERED = "SELECT nhi, firstName, middleName, LastName, preferedName, timeCreated, lastModified, profilePicture, gender, birthGender, smoker, " +
             "alcoholConsumption, height, weight, dob, dod, bloodType " +
-            "FROM User u " +
+            "FROM `User` u " +
             "LEFT JOIN HealthDetails hd ON u.nhi = hd.fkUserNhi " +
             "WHERE nhi = ?";
-    private static final String SELECT_USER_ONE_TO_ONE_INFO_STMT = "SELECT nhi, firstName, middleName, LastName, preferedName, timeCreated, lastModified, profilePicture, gender, birthGender, smoker, " +
-            "alcoholConsumption, height, weight, dob, dod, bloodType " +
+    private static final String SELECT_USER_ONE_TO_ONE_INFO_STMT = "SELECT nhi, firstName, middleName, LastName, preferedName, timeCreated, lastModified, profilePicture, gender, birthGender, dob, dod " +
             "FROM User u " +
             "LEFT JOIN HealthDetails hd ON u.nhi = hd.fkUserNhi ";
     private static final String SELECT_USER_PREVIOUS_DISEASE_STMT = "SELECT diseaseName, diagnosisDate FROM PreviousDisease WHERE fkUserNhi = ? " +
@@ -49,7 +42,7 @@ public class DBHandler {
             "ORDER BY diagnosisDate";
     private static final String SELECT_USER_MEDICATION_STMT = "SELECT medicationName, dateStartedTaking, dateStoppedTaking FROM Medication m " +
             "LEFT JOIN MedicationDates md ON m.medicationInstanceId = md.fkMedicationInstanceId " +
-            "WHERE m.fkUserNhi = ?";
+            "WHERE m.fkUserNhi = ? ORDER BY dateStartedTaking";
     private static final String SELECT_USER_MEDICAL_PROCEDURE_STMT = "SELECT procedureName, procedureDate, procedureDescription, organName FROM MedicalProcedure mp " +
             "LEFT JOIN MedicalProcedureOrgan mpo ON mpo.fkProcedureId = mp.procedureId " +
             "LEFT JOIN Organ o on o.organId = mpo.fkOrgansId " +
@@ -97,33 +90,9 @@ public class DBHandler {
                 return preparedStatement.executeQuery();
             }
         } catch (SQLException e){
+            Log.severe("Exception in executing statement " + statement, e);
             throw e;
         }
-    }
-
-
-    /**
-     * Helper function to convert datetime string from database
-     * to LocalDateTime object.
-     *
-     * @param dateTime date string from database
-     * @return LocalDateTime object
-     */
-    private LocalDateTime dateTimeToLocalDateTime(String dateTime) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S");
-        return LocalDateTime.parse(dateTime, formatter);
-    }
-
-    /**
-     * Helper function to convert date string from database
-     * to LocalDateTime object.
-     *
-     * @param date date string from database
-     * @return LocalDateTime object
-     */
-    private LocalDate dateToLocalDateTime(String date) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        return LocalDate.parse(date, formatter);
     }
 
     /**
@@ -160,14 +129,16 @@ public class DBHandler {
             statement.setInt(4, count);
             statement.setInt(5, startIndex);
             try (ResultSet resultSet = statement.executeQuery()) {
-
+                while (resultSet.next()) {
+                    users.add(getOneUser(connection, resultSet.getString("nhi")));
+                }
             }
         }
-        return null; //TODO: implement this
+        return users;
     }
 
     /**
-     * Gets info of a sinle user based on user NHI provided
+     * Gets info of a single user based on user NHI provided
      * @param connection A valid connection to the database
      * @param nhi user's NHI
      * @return a user object, null if such user is not found
@@ -182,14 +153,9 @@ public class DBHandler {
             try (ResultSet resultSet = statement.executeQuery()) {
 
                 while (resultSet != null && resultSet.next()) {
-                    user = new User(resultSet.getString(2), dateToLocalDateTime(resultSet.getString("dob")), resultSet.getString(1));
-                    if(resultSet.getString("dod") != null){
-                        user.setDateOfDeath(dateToLocalDateTime(resultSet.getString("dod")));
-                    }
-                    user.setMiddleName(resultSet.getString(3));
-                    user.setLastName(resultSet.getString(4));
-                    user.setTimeCreated(dateTimeToLocalDateTime(resultSet.getString(6)));
-                    user.setLastModified(dateTimeToLocalDateTime(resultSet.getString(7)));
+                    user = getUserBasicDetails(resultSet);
+                    user.setTimeCreated(resultSet.getTimestamp(6).toLocalDateTime());
+                    user.setLastModified(resultSet.getTimestamp(7).toLocalDateTime());
                     user.setGenderIdentity(resultSet.getString(9));
                     user.setBirthGender(resultSet.getString(10));
                     user.setSmoker(1 == resultSet.getInt(11));
@@ -219,57 +185,43 @@ public class DBHandler {
     }
 
     /**
-     * Method to obtain all the users information from the database.
+     *
+     * @param resultSet result set with the cursor pointing at the desired row
+     * @return A user with a first name, middle name, last name, date of birth and date of death
+     * @throws SQLException if there is an error extracting information from the resultSet
+     */
+    private User getUserBasicDetails(ResultSet resultSet) throws SQLException {
+        User user = new User(resultSet.getString(2), resultSet.getDate("dob").toLocalDate(), resultSet.getString(1));
+        if (resultSet.getString("dod") != null) {
+            user.setDateOfDeath(resultSet.getDate("dod").toLocalDate());
+        }
+        user.setMiddleName(resultSet.getString(3));
+        user.setLastName(resultSet.getString(4));
+        return user;
+    }
+
+    /**
+     * Method to obtain an overview of all the users information from the database.
      * User objects are instantiated and its attributes are set based on the de-serialised information.
      *
      * @param connection A valid connection to the database
      * @return a Collection of Users
      * @throws SQLException if there are any SQL errors
      */
-    public Collection<User> loadUsers(Connection connection) throws SQLException {
+    public Collection<User> getUserOverviews(Connection connection) throws SQLException {
         Collection<User> users = new ArrayList<>();
-
-        try (PreparedStatement statement = connection.prepareStatement(SELECT_USER_ONE_TO_ONE_INFO_STMT)) {
-            try (ResultSet resultSet = statement.executeQuery()) {
-
-                while (resultSet != null && resultSet.next()) {
-                    User user = new User(resultSet.getString(2), dateToLocalDateTime(resultSet.getString("dob")), resultSet.getString(1));
-                    if(resultSet.getString("dod") != null){
-                        user.setDateOfDeath(dateToLocalDateTime(resultSet.getString("dod")));
-                    }
-                    user.setMiddleName(resultSet.getString(3));
-                    user.setLastName(resultSet.getString(4));
-                    user.setPreferredFirstName(resultSet.getString(5));
-                    user.setTimeCreated(dateTimeToLocalDateTime(resultSet.getString(6)));
-                    user.setLastModified(dateTimeToLocalDateTime(resultSet.getString(7)));
-                    //TODO: set user's profile picture here
-                    user.setGenderIdentity(resultSet.getString(9));
-                    user.setBirthGender(resultSet.getString(10));
-                    user.setSmoker(1 == resultSet.getInt(11));
-                    user.setAlcoholConsumption(resultSet.getString(12));
-                    user.setHeight(resultSet.getDouble(13));
-                    user.setWeight(resultSet.getDouble(14));
-                    user.setBloodType(resultSet.getString("bloodType"));
-
-                    try {
-                        getUserContact(user, connection);
-                        getUserEmergencyContact(user, connection);
-                        getUserPastDisease(user, connection);
-                        getUserCurrentDisease(user, connection);
-                        getUserMedication(user, connection);
-                        getUserMedicalProcedure(user, connection);
-                        getUserOrganDonateDetail(user, connection);
-                        getUserOrganReceiveDetail(user, connection);
-
-                        users.add(user);
-                    } catch (SQLException e) {
-                        Log.warning("Unable to create instance of user with nhi " + user.getNhi(), e);
-                        System.err.println("Unable to create instance of user with nhi " + user.getNhi() + " due to SQL Error: " + e);
-                    }
+        try (PreparedStatement fetchUserOverview = connection.prepareStatement(SELECT_USER_ONE_TO_ONE_INFO_STMT)) {
+            try (ResultSet results = fetchUserOverview.executeQuery()) {
+                while (results.next()) {
+                    User user = getUserBasicDetails(results);
+                    getUserOrganDonateDetail(user, connection);
+                    getUserOrganReceiveDetail(user, connection);
+                    users.add(user);
                 }
-                return users;
             }
         }
+
+        return users;
     }
 
     /**
@@ -344,7 +296,7 @@ public class DBHandler {
             stmt.setString(1, user.getNhi());
             try (ResultSet resultSet = stmt.executeQuery()) {
                 while (resultSet != null && resultSet.next()) {
-                    Disease pastDisease = new Disease(resultSet.getString(1), false, true, dateTimeToLocalDateTime(resultSet.getString(2)).toLocalDate());
+                    Disease pastDisease = new Disease(resultSet.getString(1), false, true, resultSet.getDate(2).toLocalDate());
                     user.getPastDiseases().add(pastDisease);
                 }
             }
@@ -365,7 +317,7 @@ public class DBHandler {
             stmt.setString(1, user.getNhi());
             try (ResultSet resultSet = stmt.executeQuery()) {
                 while (resultSet != null && resultSet.next()) {
-                    Disease currentDisease = new Disease(resultSet.getString(1), 1 == resultSet.getInt(3), false, dateTimeToLocalDateTime(resultSet.getString(2)).toLocalDate());
+                    Disease currentDisease = new Disease(resultSet.getString(1), resultSet.getBoolean(3), false, resultSet.getDate(2).toLocalDate());
                     user.getCurrentDiseases().add(currentDisease);
                 }
             }
@@ -403,28 +355,28 @@ public class DBHandler {
     private void getUserOrganReceiveDetail(User user, Connection connection) throws SQLException {
         ArrayList<ReceiverOrganDetailsHolder> receiverOrganDetailsHolders = new ArrayList<>();
         Map<Organs, ArrayList<ReceiverOrganDetailsHolder>> organs = new EnumMap<>(Organs.class);
-        int organId = -1;
 
         try (PreparedStatement stmt = connection.prepareStatement(SELECT_USER_ORGAN_AWAITING_STMT)) {
             stmt.setString(1, user.getNhi());
             try (ResultSet resultSet = stmt.executeQuery()) {
                 while (resultSet != null && resultSet.next()) {
-                    ReceiverOrganDetailsHolder receiverOrganDetailsHolder = new ReceiverOrganDetailsHolder(dateToLocalDateTime(resultSet.getString("dateRegistered")), null, null);
-                    if(resultSet.getString("dateDeregistered") != null){
-                        receiverOrganDetailsHolder.setStopDate(dateToLocalDateTime(resultSet.getString("dateDeregistered")));
+                    ReceiverOrganDetailsHolder receiverOrganDetailsHolder = new ReceiverOrganDetailsHolder(resultSet.getDate("dateRegistered").toLocalDate(), null, null);
+                    if (resultSet.getString("dateDeregistered") != null) {
+                        receiverOrganDetailsHolder.setStopDate(resultSet.getDate("dateDeregistered").toLocalDate());
                     }
 
-                    if(organId == resultSet.getInt("organId")){
-                        receiverOrganDetailsHolders.add(receiverOrganDetailsHolder);
-                    } else {
-                        organs.put(Organs.valueOf(resultSet.getString("organName")), receiverOrganDetailsHolders); //TODO: this logic is currently not correct
-
-                        user.getReceiverDetails().setOrgans(organs);
-                        organId = resultSet.getInt("organId");
-                        organs= new EnumMap<>(Organs.class);
+                    for (Organs organ : Organs.values()) {
+                        if (organ.getDbValue() == resultSet.getInt("organId")) {
+                            if (organs.containsKey(organ)) {
+                                organs.get(organ).add(receiverOrganDetailsHolder);
+                            } else {
+                                receiverOrganDetailsHolders.add(receiverOrganDetailsHolder);
+                                organs.put(organ, receiverOrganDetailsHolders);
+                            }
+                        }
                     }
-
                 }
+                user.getReceiverDetails().setOrgans(organs);
             }
         }
     }
@@ -445,22 +397,21 @@ public class DBHandler {
             try (ResultSet resultSet = stmt.executeQuery()) {
                 while (resultSet != null && resultSet.next()) {
                     Medication medication = new Medication(resultSet.getString("medicationName"));
-                    medication.addMedicationTime(dateTimeToLocalDateTime(resultSet.getString("dateStartedTaking")));
+                    medication.addMedicationTime(resultSet.getTimestamp("dateStartedTaking").toLocalDateTime());
 
-                    if(resultSet.getString("dateStoppedTaking") == null) {
+                    if (resultSet.getTimestamp("dateStoppedTaking").toLocalDateTime() == null) {
                         int medicationInstanceIndex = user.getPreviousMedication().indexOf(medication);
                         if( medicationInstanceIndex != -1){ //if the medication instance already exist in this user's previousMedication attribute. This scenario happens when a user is currently taking a medication that had been taken before.
                             medication = user.getPreviousMedication().get(medicationInstanceIndex);
-                            medication.addMedicationTime(dateTimeToLocalDateTime(resultSet.getString("dateStartedTaking"))); //updates the medication time array
+                            medication.addMedicationTime(resultSet.getTimestamp("dateStartedTaking").toLocalDateTime()); //updates the medication time array
                             user.getPreviousMedication().remove(medication);
                             user.getCurrentMedication().add(medication);
-
                         } else {
                             user.getCurrentMedication().add(medication);
                         }
 
                     } else {
-                        medication.addMedicationTime(dateTimeToLocalDateTime(resultSet.getString("dateStoppedTaking")));
+                        medication.addMedicationTime(resultSet.getTimestamp("dateStoppedTaking").toLocalDateTime());
                         user.getPreviousMedication().add(medication);
                     }
                 }
@@ -525,8 +476,8 @@ public class DBHandler {
                     clinician.setFirstName(resultSet.getString(2));
                     clinician.setMiddleName(resultSet.getString(3));
                     clinician.setLastName(resultSet.getString(4));
-                    clinician.setDateCreated(dateTimeToLocalDateTime(resultSet.getString(5)));
-                    clinician.setDateLastModified(dateTimeToLocalDateTime(resultSet.getString(6)));
+                    clinician.setDateCreated(resultSet.getTimestamp(5).toLocalDateTime());
+                    clinician.setDateLastModified(resultSet.getTimestamp(6).toLocalDateTime());
                     //TODO: implement addressStrategy for clinicians (same functionality as getUserAddress method)
                     clinicians.add(clinician);
                 }
@@ -565,8 +516,8 @@ public class DBHandler {
                     administrator.setFirstName(resultSet.getString(2));
                     administrator.setMiddleName(resultSet.getString(3));
                     administrator.setLastName(resultSet.getString(4));
-                    administrator.setDateCreated(dateTimeToLocalDateTime(resultSet.getString(5)));
-                    administrator.setDateLastModified(dateTimeToLocalDateTime(resultSet.getString(6)));
+                    administrator.setDateCreated(resultSet.getTimestamp(5).toLocalDateTime());
+                    administrator.setDateLastModified(resultSet.getTimestamp(6).toLocalDateTime());
                     administrators.add(administrator);
                 }
 
