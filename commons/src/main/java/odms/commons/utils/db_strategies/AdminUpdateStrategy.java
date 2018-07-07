@@ -92,7 +92,7 @@ public class AdminUpdateStrategy extends AbstractUpdateStrategy {
     /**
      * Saves the hashed password to the PasswordDetails table in the database
      * Precondition: The connection is not null and valid
-     * Postcondition: The hashed password and salt is stored in the database.
+     * Post-condition: The hashed password and salt is stored in the database.
      *
      * @param admin      Administrator to store the password of
      * @param connection Connection to the target database
@@ -103,7 +103,7 @@ public class AdminUpdateStrategy extends AbstractUpdateStrategy {
             statement.setString(1, admin.getUserName());
 
             Blob hashBlob = connection.createBlob();
-            //hashBlob.setBytes(1, admin.getPassword()); // todo: use either tell don't ask or ask Josh
+            hashBlob.setBytes(1, admin.getPassword());
 
             Blob saltBlob = connection.createBlob();
             saltBlob.setBytes(1, admin.getSalt());
@@ -172,7 +172,7 @@ public class AdminUpdateStrategy extends AbstractUpdateStrategy {
         try (PreparedStatement statement = connection.prepareStatement(UPDATE_ADMIN_PSSWRD)) {
 
             Blob passwordBlob = connection.createBlob();
-            //passwordBlob.setBytes(1, admin.getPassword());
+            passwordBlob.setBytes(1, admin.getPassword());
 
             Blob saltBlob = connection.createBlob();
             saltBlob.setBytes(1, admin.getSalt());

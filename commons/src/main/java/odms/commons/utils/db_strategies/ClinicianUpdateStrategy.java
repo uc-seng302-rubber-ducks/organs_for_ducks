@@ -102,7 +102,7 @@ public class ClinicianUpdateStrategy extends AbstractUpdateStrategy {
             statement.setString(1, clinician.getStaffId());
 
             Blob hashBlob = connection.createBlob();
-            //hashBlob.setBytes(1, clinician.getPassword()); // todo: find a way to get the password
+            hashBlob.setBytes(1, clinician.getPassword());
 
             Blob saltBlob = connection.createBlob();
             saltBlob.setBytes(1, clinician.getSalt());
@@ -250,7 +250,7 @@ public class ClinicianUpdateStrategy extends AbstractUpdateStrategy {
         try (PreparedStatement statement = connection.prepareStatement(UPDATE_CLINICIAN_PSSWRD)) {
 
             Blob passwordBlob = connection.createBlob();
-            //passwordBlob.setBytes(1, clinician.getPassword()); // todo: find a way to get the password
+            passwordBlob.setBytes(1, clinician.getPassword());
 
             Blob saltBlob = connection.createBlob();
             saltBlob.setBytes(1, clinician.getSalt());
