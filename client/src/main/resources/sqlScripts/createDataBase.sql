@@ -58,7 +58,6 @@ CREATE TABLE  PreviousDisease(
   diseaseName VARCHAR(255) NOT NULL,
   diagnosisDate DATETIME not NULL,
   fkUserNhi VARCHAR(7) NOT NULL,
-  remissionDate DATETIME,
   PRIMARY KEY (diseaseName, diagnosisDate, fkUserNhi),
   FOREIGN KEY (fkUserNhi) REFERENCES User(nhi) ON DELETE CASCADE
 );
