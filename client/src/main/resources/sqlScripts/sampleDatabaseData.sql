@@ -48,62 +48,62 @@ INSERT INTO MedicationDates (keyValue, fkMedicationInstanceId, dateStartedTaking
   (4, 78, '2016-02-01 00:01:01', '2016-03-17 00:01:01'),
   (5, 12, '2018-05-05 00:01:01', NULL);
 
-INSERT INTO OrganAwaiting(fkOrgansId, fkUserNhi, awaitingingId) VALUES
+INSERT INTO OrganAwaiting(fkOrgansId, fkUserNhi, awaitingId) VALUES
   (3, 'DEF2314', 1),
   (8, 'DEF2314', 2),
   (8, 'XYZ1234', 3);
+
+INSERT INTO OrganAwaitingDates(awaitingDateId, dateRegistered, dateDeregistered, fkAwaitingId) VALUES
+  (1, '2016-11-01', NULL, 1),
+  (2, '2016-11-01', '2017-05-06', 2),
+  (3, '2016-10-09', NULL, 3),
+  (4, '2018-02-01', NULL, 2);
 
 INSERT INTO OrganDonating(fkOrgansId, fkUserNhi, donatingId) VALUES
   (3, 'ABC1234', 1),
   (8, 'ABC1234', 2),
   (5, 'ABC1234', 3);
 
-INSERT INTO OrganDonatingRegisterDate(dontatingRegisterId, dateReg, fkDonorId) VALUES
-  (1, '2017-02-01', 1),
-  (2, '2017-02-01', 2),
-  (3, '2017-02-01', 3);
+INSERT INTO OrganDonatingDates(donatingDateId, dateRegistered, dateDeregistered, fkAwaitingId) VALUES
+  (1, '2017-02-01', NULL, 1),
+  (2, '2017-02-01', NULL, 2),
+  (3, '2017-02-01', '2018-01-01', 3);
 
-INSERT INTO OrganDonatingDeRegisterDate(dontatingDeRegisterId, dateDeReg, fkDonorId) VALUES
-  (1, '2018-01-01', 3);
-
-INSERT INTO OrganAwaitingRegisterDate(awaitingRegisterId, dateReg, fkRecieverId) VALUES
-  (1, '2016-11-01', 1),
-  (2, '2016-11-01', 2),
-  (3, '2016-10-09', 3),
-  (4, '2018-02-01', 2);
-
-INSERT INTO OrganAwaitingDeRegisterDate(awaitingDeRegisterId, dateDeReg, fkRecieverId) VALUES
-  (1, '2017-05-06', 2);
 
 INSERT INTO HealthDetails(fkUserNhi, gender, birthGender, smoker, alcoholConsumption, height, weight, bloodType) VALUES
   ('ABC1234', 'Male', 'Male', TRUE , 'High', 163.7, 65.8, 'A+'),
   ('DEF2314', 'Male', 'Male', TRUE , 'None', 173.0, 78.8, 'B-'),
   ('XYZ1234', 'Female', 'Female', FALSE, 'Low', 165.4, 54.3, 'AB+');
 
-INSERT INTO MedicalProcedureOrgan(fkOrgansId, fkUserNhi) VALUES
-  (3, 'ABC1234'),
-  (8, 'ABC1234'),
-  (3, 'DEF2314');
+INSERT INTO MedicalProcedure (procedureId, procedureName, procedureDate, fkUserNhi, procedureDescription) VALUES
+  (1, 'Extract Pancreas and Middle Ear', '2018-09-01', 'ABC1234', 'Get Pancreas and Middle Ear from Donor ABC234'),
+  (2, 'Implant Pancreas', '2018-10-03', 'DEF2314', 'Implant Pancreas to Receiver DEF2314');
 
-INSERT INTO MedicalProcedure(procedureName, procedureDate, fkUserNhi, procedureDescription) VALUES
-  ('Extract Pancreas and Middle Ear', '2018-09-01', 'ABC1234', 'Get Pancreas and Middle Ear from Donor ABC234'),
-  ('Implant Pancreas', '2018-10-03', 'DEF2314', 'Implant Pancreas to Receiver DEF2314');
+INSERT INTO MedicalProcedureOrgan (fkOrgansId, fkProcedureId) VALUES
+  (3, 1),
+  (8, 1),
+  (3, 2);
 
-INSERT INTO ContactDetails(contactId, fkUserNhi, fkStaffId, homePhone, cellPhone, email) VALUES
-  (1, 'ABC1234', NULL, NULL,'0221453566', 'aaronB@gmail.com'),
-  (2, 'DEF2314', NULL, '094385522','0221453566', 'darwin@yahoo.com'),
-  (3, NULL, '16', '044536474','0234267413', 'remi@hotmail.com'),
-  (4, NULL, '23', '043841212','0221453566', 'lily.rose@hotmail.com');
+INSERT INTO ContactDetails(fkUserNhi, fkStaffId, homePhone, cellPhone, email) VALUES
+  ('ABC1234', NULL, NULL,'0221453566', 'aaronB@gmail.com'),
+  ('DEF2314', NULL, '094385522','0221453566', 'darwin@yahoo.com'),
+  (NULL, '16', '044536474','0234267413', 'remi@hotmail.com'),
+  (NULL, '23', '043841212','0221453566', 'lily.rose@hotmail.com'),
+  ('ABC1234', NULL, '033338061','0225416653', 'email@gmail.com'),
+  ('DEF2314', NULL, '092255834','0226653541', 'email2@yahoo.com');
 
-INSERT INTO EmergencyContactDetails(emergencyContactId, contactName, contactRelationship, homePhone, cellPhone, email, fkUserNhi, streetNumber, streetName, neighbourhood, city, region, zipCode, country) VALUES
-  (1, 'Julius Ranger', 'Father', '045467555', '0237458674', 'julius.ranger@gmail.com', 'ABC1234', '43', 'Josh St', 'Latimer', 'Adelaide', 'South Australia', '4336', 'Australia'),
-  (2, 'Amy Hampson', 'Cousin', '045753546', '0232456245', 'amy@gmail.com', 'DEF2314', 'B2', 'Matariki St', NULL, NULL, 'Canterbury', '8056', 'New Zealand');
+INSERT INTO EmergencyContactDetails(fkContactId, contactName, contactRelationship, fkUserNhi) VALUES
+  (1, 'Julius Ranger', 'Father', 'ABC1234'),
+  (2, 'Amy Hampson', 'Cousin', 'DEF2314');
 
-INSERT INTO Address(addressID, streetNumber, streetName, neighbourhood, city, region, zipCode, country, fkUserNhi, fkStaffId) VALUES
-  (1, '23B', 'Cambridge St', 'Shirley', 'Christchurch', 'Canterbury', '8041', 'New Zealand', 'ABC1234', NULL),
+INSERT INTO Address(fkContactId, streetNumber, streetName, neighbourhood, city, region, zipCode, country, fkUserNhi, fkStaffId) VALUES
+  (1,'23B', 'Cambridge St', 'Shirley', 'Christchurch', 'Canterbury', '8041', 'New Zealand', 'ABC1234', NULL),
+  (5,'43', 'Josh St', 'Latimer', 'Adelaide', 'South Australia', '4336', 'Australia', 'ABC1234', NULL),
   (2, '106A', 'Oxford St', 'Hornby', 'Tauranga', 'Bay of Plenty', '8042', 'New Zealand', 'DEF2314', NULL),
+  (6, 'B2', 'Matariki St', 'Papanui', 'Christchurch', 'Canterbury', '8056', 'New Zealand', 'DEF2314', NULL),
   (3, '45', 'Kirkwood Ave', 'Ilam', 'Christchurch', 'Canterbury', '8061', 'New Zealand', NULL, '16'),
   (4, '34', 'Deans  Ave', 'Haswell', 'Christchurch', 'Canterbury', '8032', 'New Zealand', NULL, '23');
+
 
 INSERT INTO PasswordDetails(password_id, fkAdminUserName, fkStaffId, hash, salt) VALUES
   (1, 'ruth265', NULL, '[-59, 107, 6, -5, -94, -55, -128, -82, -56, 15, -107, 113, 108, 116, -62, 127]', '[-89, 50, 52, 79, 109, 49, -122, 1, -109, -113, -105, -9, 121, 13, -65, 94, 89, 67, 62, -31, 54, -127, 61, -85, 4, 96, -126, 39, 57, -113, -68, 88]'),

@@ -37,14 +37,9 @@ public class DBHandler {
             "WHERE (firstName LIKE ? OR lastName LIKE ?) AND a.region LIKE ? " +
             "LIMIT ? OFFSET ?";
     private static final String SELECT_USER_ONE_TO_ONE_INFO_STMT = "SELECT nhi, firstName, middleName, LastName, preferedName, timeCreated, lastModified, profilePicture, gender, birthGender, smoker, " +
-            "alcoholConsumption, height, weight, cde.homePhone, cde.cellPhone, cde.email, a.streetNumber, a.streetName, a.neighbourhood, a.city, " +
-            "a.region, a.country, a.zipCode , contactName, contactRelationship, ecd.homePhone, ecd.cellPhone, ecd.email, ecd.streetNumber, ecd.streetName, ecd.neighbourhood, ecd.city, ecd.region, ecd.zipCode, ecd.country, " +
-            "dob, dod " +
+            "alcoholConsumption, height, weight, dob, dod " +
             "FROM User u " +
-            "LEFT JOIN HealthDetails hd ON u.nhi = hd.fkUserNhi " +
-            "LEFT JOIN ContactDetails cde ON u.nhi = cde.fkUserNhi " +
-            "LEFT JOIN Address a ON u.nhi = a.fkUserNhi " +
-            "LEFT JOIN EmergencyContactDetails ecd ON u.nhi = ecd.fkUserNhi";
+            "LEFT JOIN HealthDetails hd ON u.nhi = hd.fkUserNhi ";
     private static final String SELECT_USER_PREVIOUS_DISEASE_STMT = "SELECT diseaseName, diagnosisDate, remissionDate FROM PreviousDisease WHERE fkUserNhi = ?";
     private static final String SELECT_USER_CURRENT_DISEASE_STMT = "SELECT diseaseName, diagnosisDate, isChronic FROM CurrentDisease WHERE fkUserNhi = ?";
     private static final String SELECT_USER_MEDICATION_STMT = "SELECT medicationName, dateStartedTaking, dateStoppedTaking FROM Medication m " +
@@ -56,6 +51,12 @@ public class DBHandler {
             "WHERE mp.fkUserNhi = ?";
     private static final String SELECT_USER_ORGAN_DONATION = "SELECT organName FROM OrganDonating LEFT JOIN Organ ON fkOrgansId = organId WHERE fkUserNhi = ?";
     private static final String SELECT_USER_ORGAN_RECEIVING = "SELECT organName FROM OrganAwaiting LEFT JOIN Organ ON fkOrgansId = organId WHERE fkUserNhi = ?";
+    private static final String SELECT_USER_EMERGENCY_CONTACT_DETAILS_ADDRESS_STMT = "SELECT contactName, contactRelationship, homePhone, cellPhone, email, " +
+            "streetNumber, streetName, neighbourhood, city, region, zipCode, country " +
+            "FROM EmergencyContactDetails ecd " +
+            "LEFT JOIN ContactDetails cd ON ecd.fkContactId = cd.contactId " +
+            "LEFT JOIN Address a ON a.fkContactId = cd.contactId " +
+            "WHERE cd.fkUserNhi = ?";
     private static final String SELECT_CLINICIAN_ONE_TO_ONE_INFO_STMT = "SELECT staffId, firstName, middleName, lastName, timeCreated, lastModified, " +
             "streetNumber, streetName, neighbourhood, city, region, country " +
             "FROM Clinician cl " +
@@ -149,6 +150,46 @@ public class DBHandler {
     }
 
     /**
+     * Gets info of a sinle user based on user NHI provided
+     * @param connection A valid connection to the database
+     * @param nhi user's NHI
+     * @return a user object, null if such user is not found
+     * @throws SQLException if there are any SQL errors
+     */
+    public User getOneUser(Connection connection, String nhi) throws SQLException {
+        User user = null;
+
+        try (PreparedStatement statement = connection.prepareStatement(SELECT_USER_ONE_TO_ONE_INFO_STMT_FILTERED)) {
+            statement.setString(1, nhi);
+
+            try (ResultSet resultSet = statement.executeQuery()) {
+
+                while (resultSet != null && resultSet.next()) {
+                    user = new User(resultSet.getString(2), dateToLocalDateTime(resultSet.getString("dob")), resultSet.getString(1));
+                    if(resultSet.getString("dod") != null){
+                        user.setDateOfDeath(dateToLocalDateTime(resultSet.getString("dod")));
+                    }
+                    user.setMiddleName(resultSet.getString(3));
+                    user.setLastName(resultSet.getString(4));
+                    try {
+                        getUserPastDisease(user, connection);
+                        getUserCurrentDisease(user, connection);
+                        getUserMedication(user, connection);
+                        getUserMedicalProcedure(user, connection);
+                        getUserOrganDonateDetail(user, connection);
+                        getUserOrganReceiveDetail(user, connection);
+                    } catch (SQLException e) {
+                        Log.warning("Unable to create instance of user with nhi " + user.getNhi(), e);
+                        System.err.println("Unable to create instance of user with nhi " + user.getNhi() + " due to SQL Error: " + e);
+                    }
+                }
+            }
+        }
+
+        return user;
+    }
+
+    /**
      * Method to obtain all the users information from the database.
      * User objects are instantiated and its attributes are set based on the de-serialised information.
      *
@@ -179,36 +220,25 @@ public class DBHandler {
                     user.setAlcoholConsumption(resultSet.getString(12));
                     user.setHeight(resultSet.getDouble(13));
                     user.setWeight(resultSet.getDouble(14));
-                    user.setHomePhone(resultSet.getString(15));
-                    user.setCellPhone(resultSet.getString(16));
-                    user.setEmail(resultSet.getString(17));
-                    user.setStreetNumber(resultSet.getString(18));
-                    user.setStreetName(resultSet.getString(19));
-                    user.setNeighborhood(resultSet.getString(20));
-                    user.setCity(resultSet.getString(21));
-                    user.setRegion(resultSet.getString(22));
-                    user.setCountry(resultSet.getString(23));
-                    user.setZipCode(resultSet.getString(24));
-                    user.getContact().setName(resultSet.getString(25));
-                    user.getContact().setRelationship(resultSet.getString(26));
-                    user.getContact().setHomePhoneNumber(resultSet.getString(27));
-                    user.getContact().setCellPhoneNumber(resultSet.getString(28));
-                    user.getContact().setEmail(resultSet.getString(29));
-                    user.getContact().setStreetNumber(resultSet.getString(30));
-                    user.getContact().setStreetName(resultSet.getString(31));
-                    user.getContact().setNeighborhood(resultSet.getString(32));
-                    user.getContact().setCity(resultSet.getString(33));
-                    user.getContact().setRegion(resultSet.getString(34));
-                    user.getContact().setZipCode(resultSet.getString(35));
-                    user.getContact().setCountry(resultSet.getString(36));
+//                    user.setHomePhone(resultSet.getString(15));
+//                    user.setCellPhone(resultSet.getString(16));
+//                    user.setEmail(resultSet.getString(17));
+//                    user.setStreetNumber(resultSet.getString(18));
+//                    user.setStreetName(resultSet.getString(19));
+//                    user.setNeighborhood(resultSet.getString(20));
+//                    user.setCity(resultSet.getString(21));
+//                    user.setRegion(resultSet.getString(22));
+//                    user.setCountry(resultSet.getString(23));
+//                    user.setZipCode(resultSet.getString(24));
 
                     try {
+                        getUserEmergencyContact(user, connection);
                         getUserPastDisease(user, connection);
                         getUserCurrentDisease(user, connection);
                         getUserMedication(user, connection);
-                        getUserMedicalProcedure(user, connection);
+//                        getUserMedicalProcedure(user, connection);
                         getUserOrganDonateDetail(user, connection);
-                        //getUserOrganReceiveDetail(user, connection);
+                        getUserOrganReceiveDetail(user, connection);
                         users.add(user);
                     } catch (SQLException e) {
                         Log.warning("Unable to create instance of user with nhi " + user.getNhi(), e);
@@ -216,6 +246,36 @@ public class DBHandler {
                     }
                 }
                 return users;
+            }
+        }
+    }
+
+    /**
+     * gets all info of user's emergency contact details (includes the address).
+     * Then, the data are de-serialised and added to User object.
+     *
+     * @param user       desired user
+     * @param connection opened connection to database
+     * @throws SQLException when there are any SQL errors
+     */
+    private void getUserEmergencyContact(User user, Connection connection) throws SQLException {
+        try (PreparedStatement stmt = connection.prepareStatement(SELECT_USER_EMERGENCY_CONTACT_DETAILS_ADDRESS_STMT)) {
+            stmt.setString(1, user.getNhi());
+            try (ResultSet resultSet = stmt.executeQuery()) {
+                while (resultSet != null && resultSet.next()) {
+                    user.getContact().setName(resultSet.getString("contactName"));
+                    user.getContact().setRelationship(resultSet.getString("contactRelationship"));
+                    user.getContact().setHomePhoneNumber(resultSet.getString("homePhone"));
+                    user.getContact().setCellPhoneNumber(resultSet.getString("cellPhone"));
+                    user.getContact().setEmail(resultSet.getString("email"));
+                    user.getContact().setStreetNumber(resultSet.getString("streetNumber"));
+                    user.getContact().setStreetName(resultSet.getString("streetName"));
+                    user.getContact().setNeighborhood(resultSet.getString("neighbourhood"));
+                    user.getContact().setCity(resultSet.getString("city"));
+                    user.getContact().setRegion(resultSet.getString("region"));
+                    user.getContact().setZipCode(resultSet.getString("zipCode"));
+                    user.getContact().setCountry(resultSet.getString("country"));
+                }
             }
         }
     }
@@ -264,7 +324,7 @@ public class DBHandler {
 
     /**
      * gets all info of organs the user is donating.
-     * Then, the organ data de-serialised and added to User object.
+     * Then, the organ data are de-serialised and added to User object.
      *
      * @param user       desired user
      * @param connection opened connection to database
