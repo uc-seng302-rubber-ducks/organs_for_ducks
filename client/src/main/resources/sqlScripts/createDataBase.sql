@@ -2,8 +2,8 @@ DROP TABLE IF EXISTS PasswordDetails;
 DROP TABLE IF EXISTS Address;
 DROP TABLE IF EXISTS EmergencyContactDetails;
 DROP TABLE IF EXISTS ContactDetails;
-DROP TABLE IF EXISTS MedicalProcedure;
 DROP TABLE IF EXISTS MedicalProcedureOrgan;
+DROP TABLE IF EXISTS MedicalProcedure;
 DROP TABLE IF EXISTS HealthDetails;
 DROP TABLE IF EXISTS OrganAwaitingDeRegisterDate;
 DROP TABLE IF EXISTS OrganAwaitingRegisterDate;
@@ -171,8 +171,8 @@ CREATE TABLE MedicalProcedureOrgan (
 
 CREATE TABLE ContactDetails(
   contactId INT AUTO_INCREMENT PRIMARY KEY,
-  fkUserNhi VARCHAR(7) UNIQUE,
-  fkStaffId VARCHAR(255) UNIQUE ,
+  fkUserNhi VARCHAR(7),
+  fkStaffId VARCHAR(255) UNIQUE,
   homePhone VARCHAR(31),
   cellPhone VARCHAR(31),
   email VARCHAR(255),
@@ -181,20 +181,17 @@ CREATE TABLE ContactDetails(
 );
 
 CREATE TABLE EmergencyContactDetails(
-  emergencyContactId INT AUTO_INCREMENT PRIMARY KEY,
   contactName VARCHAR(255) NOT NULL ,
   contactRelationship VARCHAR(255) NOT NULL,
-  homePhone VARCHAR(31),
-  cellPhone VARCHAR(31),
-  email VARCHAR(255),
-  fkUserNhi VARCHAR(7) NOT NULL,
+  fkContactId INT NOT NULL,
+  fkUserNhi VARCHAR(7) NOT NULL UNIQUE,
+  PRIMARY KEY (fkContactId, fkUserNhi),
+  FOREIGN KEY (fkContactId) REFERENCES  ContactDetails(contactId) ON DELETE CASCADE,
   FOREIGN KEY (fkUserNhi) REFERENCES User(nhi) ON DELETE CASCADE
 );
 
 CREATE TABLE Address(
-  addressID INT AUTO_INCREMENT PRIMARY KEY,
-  fkContactId INT,
-  fkEmergencyContactId INT,
+  fkContactId INT PRIMARY KEY,
   streetNumber VARCHAR(15),
   streetName VARCHAR(255),
   neighbourhood VARCHAR(255),
@@ -203,11 +200,10 @@ CREATE TABLE Address(
   zipCode VARCHAR(15),
   country VARCHAR(255),
   fkUserNhi VARCHAR(7),
-  fkStaffId VARCHAR(255),
+  fkStaffId VARCHAR(255) UNIQUE,
   FOREIGN KEY (fkUserNhi) REFERENCES User(nhi) ON DELETE CASCADE,
   FOREIGN KEY (fkStaffId) REFERENCES Clinician(staffId) ON DELETE CASCADE,
-  FOREIGN KEY (fkContactId) REFERENCES ContactDetails(contactId) ON DELETE CASCADE,
-  FOREIGN KEY (fkEmergencyContactId) REFERENCES EmergencyContactDetails(emergencyContactId) ON DELETE CASCADE
+  FOREIGN KEY (fkContactId) REFERENCES ContactDetails(contactId) ON DELETE CASCADE
 );
 
 CREATE TABLE PasswordDetails(

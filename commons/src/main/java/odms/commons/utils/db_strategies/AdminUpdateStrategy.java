@@ -10,7 +10,7 @@ public class AdminUpdateStrategy extends AbstractUpdateStrategy {
 
     private static final String CREATE_ADMIN_STMT = "INSERT INTO Administrator (username, firstName, middleName, lastName) VALUES (?, ?, ?, ?)";
 
-    private static final String UPDATE_ADMIN_STMT = "UPDATE Administrator SET username = ?, firstName = ?, middleName = ?, lastName = ?, lastModified = ? WHERE username = ?";
+    private static final String UPDATE_ADMIN_STMT = "UPDATE Administrator SET firstName = ?, middleName = ?, lastName = ?, lastModified = ? WHERE username = ?";
     private static final String UPDATE_ADMIN_PASSWORD = "UPDATE PasswordDetails SET hash = ?, salt = ? WHERE fkAdminUserName = ?";
 
     private static final String DELETE_ADMIN_STMT = "DELETE FROM Administrator WHERE username = ?";

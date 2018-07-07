@@ -12,7 +12,7 @@ public class ClinicianUpdateStrategy extends AbstractUpdateStrategy {
     private static final String CREATE_STAFF_CONTACT_STMT = "INSERT INTO ContactDetails (fkStaffId, homePhone, email, cellPhone) VALUES (?, ?, ?, ?)";
     private static final String CREATE_ADDRESS_STMT = "INSERT INTO Address (fkContactId, streetNumber, streetName, neighbourhood, city, region, country) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
-    private static final String UPDATE_CLINICIAN_STMT = "UPDATE Clinician SET staffId = ?, firstName = ?, middleName = ?, lastName = ?, lastModified = ? WHERE staffId = ?";
+    private static final String UPDATE_CLINICIAN_STMT = "UPDATE Clinician SET firstName = ?, middleName = ?, lastName = ?, lastModified = ? WHERE staffId = ?";
     private static final String UPDATE_CLINICIAN_ADDRESS = "UPDATE ContactDetails JOIN Address ON contactId = fkContactId " +
             "SET streetNumber = ?, streetName = ?, neighbourhood = ?, city = ?, region = ?, zipCode = ?, country = ? " +
             "WHERE ContactDetails.fkStaffId = ?";
@@ -179,7 +179,7 @@ public class ClinicianUpdateStrategy extends AbstractUpdateStrategy {
     /**
      * Updates the given clinicians address in the database using UPDATE_ADDRESS
      * Precondition: Must have an active connection to the database
-     * Postcondition: The address of the given clinician is updated in the database
+     * Post-condition: The address of the given clinician is updated in the database
      *
      * @param clinician  Clinician object to be updated
      * @param connection Connection to the target database
