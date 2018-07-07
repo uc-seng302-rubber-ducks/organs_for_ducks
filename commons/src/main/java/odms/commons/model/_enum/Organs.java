@@ -8,38 +8,44 @@ import com.google.gson.annotations.SerializedName;
  */
 public enum Organs {
     @SerializedName("Liver")
-    LIVER("Liver"),
+    LIVER("Liver", 1),
     @SerializedName("Kidney")
-    KIDNEY("Kidney"),
+    KIDNEY("Kidney", 2),
     @SerializedName("Pancreas")
-    PANCREAS("Pancreas"),
+    PANCREAS("Pancreas", 3),
     @SerializedName("Heart")
-    HEART("Heart"),
+    HEART("Heart", 4),
     @SerializedName("Lung")
-    LUNG("Lung"),
+    LUNG("Lung", 5),
     @SerializedName("Intestine")
-    INTESTINE("Intestine"),
+    INTESTINE("Intestine", 6),
     @SerializedName("Cornea")
-    CORNEA("Cornea"),
+    CORNEA("Cornea", 7),
     @SerializedName("Middle Ear")
-    MIDDLE_EAR("Middle Ear"),
+    MIDDLE_EAR("Middle Ear", 8),
     @SerializedName("Skin")
-    SKIN("Skin"),
+    SKIN("Skin", 9),
     @SerializedName("Bone Marrow")
-    BONE_MARROW("Bone Marrow"),
+    BONE_MARROW("Bone Marrow", 10),
     @SerializedName("Bone")
-    BONE("Bone"),
+    BONE("Bone", 11),
     @SerializedName("Connective Tissue")
-    CONNECTIVE_TISSUE("Connective Tissue");
+    CONNECTIVE_TISSUE("Connective Tissue", 12);
 
-    public String organName;
+    private String organName;
+    private int dbValue;
 
-    Organs(String organName) {
+    Organs(String organName, int dbValue) {
         this.organName = organName;
+        this.dbValue = dbValue;
     }
 
     @Override
     public String toString() {
         return organName;
+    }
+
+    public int getDbValue() {
+        return dbValue;
     }
 }
