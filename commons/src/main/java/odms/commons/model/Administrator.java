@@ -177,7 +177,7 @@ public class Administrator extends Undoable<Administrator> implements Listenable
         return fullName;
     }
 
-    private byte[] getPassword() {
+    public byte[] getPassword() {
         return password;
     }
 

@@ -4,10 +4,10 @@ import odms.commons.model.*;
 import odms.commons.model._enum.Organs;
 import odms.commons.model.datamodel.Medication;
 import odms.commons.model.datamodel.ReceiverOrganDetailsHolder;
-import odms.commons.utils.dbStrategies.AbstractUpdateStrategy;
-import odms.commons.utils.dbStrategies.AdminUpdateStrategy;
-import odms.commons.utils.dbStrategies.ClinicianUpdateStrategy;
-import odms.commons.utils.dbStrategies.UserUpdateStrategy;
+import odms.commons.utils.db_strategies.AbstractUpdateStrategy;
+import odms.commons.utils.db_strategies.AdminUpdateStrategy;
+import odms.commons.utils.db_strategies.ClinicianUpdateStrategy;
+import odms.commons.utils.db_strategies.UserUpdateStrategy;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
