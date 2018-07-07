@@ -12,11 +12,11 @@ public class ClinicianUpdateStrategy extends AbstractUpdateStrategy {
     private static final String CREATE_STAFF_CONTACT_STMT = "INSERT INTO ContactDetails (fkStaffId, homePhone, email, cellPhone) VALUES (?, ?, ?, ?)";
     private static final String CREATE_ADDRESS_STMT = "INSERT INTO Address (fkContactId, streetNumber, streetName, neighbourhood, city, region, country) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
-    private static final String UPDATE_CLINICIAN_STMT = "UPDATE Clinician SET staffId = ?, firstName = ?, middleName = ?, lastName = ?, lastModified = ? WHERE staffId = ?";
+    private static final String UPDATE_CLINICIAN_STMT = "UPDATE Clinician SET firstName = ?, middleName = ?, lastName = ?, lastModified = ? WHERE staffId = ?";
     private static final String UPDATE_CLINICIAN_ADDRESS = "UPDATE ContactDetails JOIN Address ON contactId = fkContactId " +
             "SET streetNumber = ?, streetName = ?, neighbourhood = ?, city = ?, region = ?, zipCode = ?, country = ? " +
             "WHERE ContactDetails.fkStaffId = ?";
-    private static final String UPDATE_CLINICIAN_PASSWORD = "UPDATE PasswordDetails SET hash = ?, salt = ? WHERE fkStaffId = ?";
+    private static final String UPDATE_CLINICIAN_PSSWRD = "UPDATE PasswordDetails SET hash = ?, salt = ? WHERE fkStaffId = ?";
 
     private static final String DELETE_CLINICIAN_STMT = "DELETE FROM Clinician WHERE staffId = ?";
 
@@ -53,6 +53,7 @@ public class ClinicianUpdateStrategy extends AbstractUpdateStrategy {
             connection.prepareStatement("START TRANSACTION").execute();
             try {
                 createClinician(clinician, connection);
+                createClinicianPassword(clinician, connection);
                 // TODO: Create the clinician contact stuff once the abstractions are completed 25/6 - Eiran
             } catch (SQLException sqlEx) {
                 connection.prepareStatement("ROLLBACK").execute();
@@ -66,6 +67,7 @@ public class ClinicianUpdateStrategy extends AbstractUpdateStrategy {
         }
     }
 
+
     /**
      * Creates a clinician entry in the tables
      * Preconditions: Must have an active connection to the database
@@ -76,13 +78,40 @@ public class ClinicianUpdateStrategy extends AbstractUpdateStrategy {
      * @throws SQLException If there isn't an active connection to the database or there is an error in creating the clinician
      */
     private void createClinician(Clinician clinician, Connection connection) throws SQLException {
-        PreparedStatement statement = connection.prepareStatement(CREATE_CLINICIAN_STMT);
-        statement.setString(1, clinician.getStaffId());
-        statement.setString(2, clinician.getFirstName());
-        statement.setString(3, clinician.getMiddleName());
-        statement.setString(4, clinician.getLastName());
+        try (PreparedStatement statement = connection.prepareStatement(CREATE_CLINICIAN_STMT)) {
+            statement.setString(1, clinician.getStaffId());
+            statement.setString(2, clinician.getFirstName());
+            statement.setString(3, clinician.getMiddleName());
+            statement.setString(4, clinician.getLastName());
 
-        statement.executeUpdate();
+            statement.executeUpdate();
+        }
+    }
+
+    /**
+     * Saves the hashed password to the PasswordDetails table in the database
+     * Precondition: The connection is not null and valid
+     * Post-condition: The hashed password and salt is stored in the database.
+     *
+     * @param clinician Clinician whose password will be stored
+     * @param connection Connection to the target database
+     * @throws SQLException If there is an error in storing it into the database or the connection is invalid
+     */
+    private void createClinicianPassword(Clinician clinician, Connection connection) throws SQLException {
+        try (PreparedStatement statement = connection.prepareStatement("INSERT INTO PasswordDetails (fkStaffId, hash, salt) VALUES (?, ?, ?)")) {
+            statement.setString(1, clinician.getStaffId());
+
+            Blob hashBlob = connection.createBlob();
+            //hashBlob.setBytes(1, clinician.getPassword()); // todo: find a way to get the password
+
+            Blob saltBlob = connection.createBlob();
+            saltBlob.setBytes(1, clinician.getSalt());
+
+            statement.setBlob(2, hashBlob);
+            statement.setBlob(3, saltBlob);
+
+            statement.executeUpdate();
+        }
     }
 
     /**
@@ -129,7 +158,6 @@ public class ClinicianUpdateStrategy extends AbstractUpdateStrategy {
      */
     private void executeUpdate(Clinician clinician, Connection connection) {
 
-
         try {
             connection.prepareStatement("START TRANSACTION").execute();
             try {
@@ -160,10 +188,10 @@ public class ClinicianUpdateStrategy extends AbstractUpdateStrategy {
      * @throws SQLException If there is an error updating the password, or the database connection is invalid
      */
     private void updateClinicianPassword(Clinician clinician, Connection connection) throws SQLException {
-        try (PreparedStatement statement = connection.prepareStatement(UPDATE_CLINICIAN_PASSWORD)) {
+        try (PreparedStatement statement = connection.prepareStatement(UPDATE_CLINICIAN_PSSWRD)) {
 
             Blob passwordBlob = connection.createBlob();
-            //passwordBlob.setBytes(1, clinician.getPassword()); // todo: check if it's alright to make the password getter public, or would it be a security issue?
+            //passwordBlob.setBytes(1, clinician.getPassword()); // todo: find a way to get the password
 
             Blob saltBlob = connection.createBlob();
             saltBlob.setBytes(1, clinician.getSalt());
@@ -179,7 +207,7 @@ public class ClinicianUpdateStrategy extends AbstractUpdateStrategy {
     /**
      * Updates the given clinicians address in the database using UPDATE_ADDRESS
      * Precondition: Must have an active connection to the database
-     * Postcondition: The address of the given clinician is updated in the database
+     * Post-condition: The address of the given clinician is updated in the database
      *
      * @param clinician  Clinician object to be updated
      * @param connection Connection to the target database

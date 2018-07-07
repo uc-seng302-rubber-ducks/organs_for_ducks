@@ -30,13 +30,14 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
     private static final String CREATE_PREVIOUS_DISEASE = "INSERT INTO PreviousDisease (fkUserNhi, diseaseName, diagnosisDate, remissionDate) VALUES (?, ?, ?, ?)";
     private static final String CREATE_AFFECTED_ORGAN = "INSERT INTO MedicalProcedureOrgan (fkOrgansId, fkProcedureId) VALUES (?, ?)";
 
-    private static final String UPDATE_USER_STMT = "UPDATE User SET nhi = ?, firstName = ?, middleName = ?, lastName = ?, preferedName = ?, dob = ?, dod = ?, lastModified = ? WHERE nhi = ?";
+    private static final String UPDATE_USER_STMT = "UPDATE User SET firstName = ?, middleName = ?, lastName = ?, preferedName = ?, dob = ?, dod = ?, lastModified = ? WHERE nhi = ?";
     private static final String UPDATE_USER_HEALTH_STMT = "UPDATE HealthDetails SET gender = ?, birthGender = ?, smoker = ?, alcoholConsumption = ?, height = ?, weight = ?, bloodType = ? WHERE fkUserNhi = ?";
 
     private static final String UPDATE_USER_CONTACT_STMT = "UPDATE ContactDetails JOIN Address ON contactId = fkContactId " +
             "SET streetNumber = ?, streetName = ?, neighbourhood = ?, city = ?, region = ?, zipCode = ?, country = ?, homePhone = ?, cellPhone = ?, email = ? " +
-            "WHERE ContactDetails.fkUserNhi = ?";
-    private static final String UPDATE_EC_STMT = "UPDATE EmergencyContactDetails JOIN Address ON emergencyContactId = fkEmergencyContactId " +
+            "WHERE ContactDetails.fkUserNhi = ? AND contactId != ?";
+    private static final String UPDATE_EC_STMT = "UPDATE ContactDetails JOIN EmergencyContactDetails ON contactId = EmergencyContactDetails.fkContactId " +
+            "JOIN Address ON contactId = Address.fkContactId " +
             "SET contactName = ?, contactRelationship = ?, homePhone = ?, cellPhone = ?, email = ?, streetNumber = ?, streetName = ?, neighbourhood = ?, city = ?, region = ?, zipCode = ?, country = ? " +
             "WHERE EmergencyContactDetails.fkUserNhi = ?";
 
@@ -262,6 +263,29 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
     }
 
     /**
+     * Retrieves the emergency contact foreign key to the contact details table
+     *
+     * @param user User object to find the specific entry
+     * @param connection Connection to the database
+     * @return The foreign key contact id referencing the ContactDetails table
+     * @throws SQLException If there is an issue retrieving the contact id
+     */
+    private int getEmergencyContactId(User user, Connection connection) throws SQLException {
+        int contactId = -1;
+        try (PreparedStatement statement = connection.prepareStatement("SELECT fkContactId FROM EmergencyContactDetails WHERE fkUserNhi = ?")) {
+
+            statement.setString(1, user.getNhi());
+
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet != null && resultSet.next()) {
+                    contactId = resultSet.getInt(1);
+                }
+            }
+        }
+        return contactId;
+    }
+
+    /**
      * Updates the contact details and address of the given user in the database
      *
      * @param user       User object with details to be updated
@@ -269,6 +293,8 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
      * @throws SQLException If there is an issue updating the users contact details
      */
     private void updateUserContactDetails(User user, Connection connection) throws SQLException {
+        int id = getEmergencyContactId(user, connection);
+
         try (PreparedStatement statement = connection.prepareStatement(UPDATE_USER_CONTACT_STMT)) {
 
             statement.setString(1, user.getStreetNumber());
@@ -282,6 +308,7 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
             statement.setString(9, user.getCellPhone());
             statement.setString(10, user.getEmail());
             statement.setString(11, user.getNhi());
+            statement.setInt(12, id);
 
             statement.executeUpdate();
         }
@@ -423,15 +450,14 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
     private void updateUserDetails(User user, Connection connection) throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement(UPDATE_USER_STMT)) {
 
-            statement.setString(1, user.getNhi());
-            statement.setString(2, user.getFirstName());
-            statement.setString(3, user.getMiddleName());
-            statement.setString(4, user.getLastName());
-            statement.setString(5, user.getPreferredFirstName());
-            statement.setDate(6, Date.valueOf(user.getDateOfBirth()));
-            statement.setDate(7, Date.valueOf(user.getDateOfDeath()));
-            statement.setTimestamp(8, Timestamp.valueOf(user.getLastModified()));
-            statement.setString(9, user.getNhi());
+            statement.setString(1, user.getFirstName());
+            statement.setString(2, user.getMiddleName());
+            statement.setString(3, user.getLastName());
+            statement.setString(4, user.getPreferredFirstName());
+            statement.setDate(5, Date.valueOf(user.getDateOfBirth()));
+            statement.setDate(6, Date.valueOf(user.getDateOfDeath()));
+            statement.setTimestamp(7, Timestamp.valueOf(user.getLastModified()));
+            statement.setString(8, user.getNhi());
 
             statement.executeUpdate();
         }

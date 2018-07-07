@@ -10,8 +10,8 @@ public class AdminUpdateStrategy extends AbstractUpdateStrategy {
 
     private static final String CREATE_ADMIN_STMT = "INSERT INTO Administrator (username, firstName, middleName, lastName) VALUES (?, ?, ?, ?)";
 
-    private static final String UPDATE_ADMIN_STMT = "UPDATE Administrator SET username = ?, firstName = ?, middleName = ?, lastName = ?, lastModified = ? WHERE username = ?";
-    private static final String UPDATE_ADMIN_PASSWORD = "UPDATE PasswordDetails SET hash = ?, salt = ? WHERE fkAdminUserName = ?";
+    private static final String UPDATE_ADMIN_STMT = "UPDATE Administrator SET firstName = ?, middleName = ?, lastName = ?, lastModified = ? WHERE username = ?";
+    private static final String UPDATE_ADMIN_PSSWRD = "UPDATE PasswordDetails SET hash = ?, salt = ? WHERE fkAdminUserName = ?";
 
     private static final String DELETE_ADMIN_STMT = "DELETE FROM Administrator WHERE username = ?";
 
@@ -101,7 +101,17 @@ public class AdminUpdateStrategy extends AbstractUpdateStrategy {
     private void createPassword(Administrator admin, Connection connection) throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement("INSERT INTO PasswordDetails (fkAdminUserName, hash, salt) VALUES (?, ?, ?)")) {
             statement.setString(1, admin.getUserName());
-            //TODO: Figure out how to send the password hash and salt 25/6 - Eiran
+
+            Blob hashBlob = connection.createBlob();
+            //hashBlob.setBytes(1, admin.getPassword()); // todo: use either tell don't ask or ask Josh
+
+            Blob saltBlob = connection.createBlob();
+            saltBlob.setBytes(1, admin.getSalt());
+
+            statement.setBlob(2, hashBlob);
+            statement.setBlob(3, saltBlob);
+
+            statement.executeUpdate();
         }
     }
 
@@ -159,10 +169,10 @@ public class AdminUpdateStrategy extends AbstractUpdateStrategy {
      * @throws SQLException If there is an error updating the password, or the database connection is invalid
      */
     private void updateAdminPassword(Administrator admin, Connection connection) throws SQLException {
-        try (PreparedStatement statement = connection.prepareStatement(UPDATE_ADMIN_PASSWORD)) {
+        try (PreparedStatement statement = connection.prepareStatement(UPDATE_ADMIN_PSSWRD)) {
 
             Blob passwordBlob = connection.createBlob();
-            //passwordBlob.setBytes(1, admin.getPassword()); // todo: need to be able to access the admins hashed password, is having the password getter public okay? - jen
+            //passwordBlob.setBytes(1, admin.getPassword());
 
             Blob saltBlob = connection.createBlob();
             saltBlob.setBytes(1, admin.getSalt());

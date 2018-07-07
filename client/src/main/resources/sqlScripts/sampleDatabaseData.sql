@@ -87,23 +87,25 @@ INSERT INTO MedicalProcedureOrgan (fkOrgansId, fkProcedureId) VALUES
   (8, 1),
   (3, 2);
 
-INSERT INTO ContactDetails(contactId, fkUserNhi, fkStaffId, homePhone, cellPhone, email) VALUES
-  (1, 'ABC1234', NULL, NULL,'0221453566', 'aaronB@gmail.com'),
-  (2, 'DEF231', NULL, '094385522','0221453566', 'darwin@yahoo.com'),
-  (3, NULL, '16', '044536474','0234267413', 'remi@hotmail.com'),
-  (4, NULL, '23', '043841212','0221453566', 'lily.rose@hotmail.com');
+INSERT INTO ContactDetails(fkUserNhi, fkStaffId, homePhone, cellPhone, email) VALUES
+  ('ABC1234', NULL, NULL,'0221453566', 'aaronB@gmail.com'),
+  ('DEF231', NULL, '094385522','0221453566', 'darwin@yahoo.com'),
+  (NULL, '16', '044536474','0234267413', 'remi@hotmail.com'),
+  (NULL, '23', '043841212','0221453566', 'lily.rose@hotmail.com'),
+  ('ABC1234', NULL, '033338061','0225416653', 'email@gmail.com'),
+  ('DEF231', NULL, '092255834','0226653541', 'email2@yahoo.com');
 
-INSERT INTO EmergencyContactDetails(emergencyContactId, contactName, contactRelationship, homePhone, cellPhone, email, fkUserNhi) VALUES
-  (1, 'Julius Ranger', 'Father', '045467555', '0237458674', 'julius.ranger@gmail.com', 'ABC1234'),
-  (2, 'Amy Hampson', 'Cousin', '045753546', '0232456245', 'amy@gmail.com', 'DEF231');
+INSERT INTO EmergencyContactDetails(fkContactId, contactName, contactRelationship, fkUserNhi) VALUES
+  (1, 'Julius Ranger', 'Father', 'ABC1234'),
+  (2, 'Amy Hampson', 'Cousin', 'DEF231');
 
-INSERT INTO Address(fkContactId, fkEmergencyContactId, streetNumber, streetName, neighbourhood, city, region, zipCode, country, fkUserNhi, fkStaffId) VALUES
-  (1, NULL, '23B', 'Cambridge St', 'Shirley', 'Christchurch', 'Canterbury', '8041', 'New Zealand', 'ABC1234', NULL),
-  (NULL, 1, '43', 'Josh St', 'Latimer', 'Adelaide', 'South Australia', '4336', 'Australia', 'ABC1234', NULL),
-  (2, NULL, '106A', 'Oxford St', 'Hornby', 'Tauranga', 'Bay of Plenty', '8042', 'New Zealand', 'DEF231', NULL),
-  (NULL, 2, 'B2', 'Matariki St', 'Papanui', 'Christchurch', 'Canterbury', '8056', 'New Zealand', 'DEF231', NULL),
-  (3, NULL, '45', 'Kirkwood Ave', 'Ilam', 'Christchurch', 'Canterbury', '8061', 'New Zealand', NULL, '16'),
-  (4, NULL, '34', 'Deans  Ave', 'Haswell', 'Christchurch', 'Canterbury', '8032', 'New Zealand', NULL, '23');
+INSERT INTO Address(fkContactId, streetNumber, streetName, neighbourhood, city, region, zipCode, country, fkUserNhi, fkStaffId) VALUES
+  (1,'23B', 'Cambridge St', 'Shirley', 'Christchurch', 'Canterbury', '8041', 'New Zealand', 'ABC1234', NULL),
+  (5,'43', 'Josh St', 'Latimer', 'Adelaide', 'South Australia', '4336', 'Australia', 'ABC1234', NULL),
+  (2, '106A', 'Oxford St', 'Hornby', 'Tauranga', 'Bay of Plenty', '8042', 'New Zealand', 'DEF231', NULL),
+  (6, 'B2', 'Matariki St', 'Papanui', 'Christchurch', 'Canterbury', '8056', 'New Zealand', 'DEF231', NULL),
+  (3, '45', 'Kirkwood Ave', 'Ilam', 'Christchurch', 'Canterbury', '8061', 'New Zealand', NULL, '16'),
+  (4, '34', 'Deans  Ave', 'Haswell', 'Christchurch', 'Canterbury', '8032', 'New Zealand', NULL, '23');
 
 INSERT INTO PasswordDetails(password_id, fkAdminUserName, fkStaffId, hash, salt) VALUES
   (1, 'ruth265', NULL, '[-59, 107, 6, -5, -94, -55, -128, -82, -56, 15, -107, 113, 108, 116, -62, 127]', '[-89, 50, 52, 79, 109, 49, -122, 1, -109, -113, -105, -9, 121, 13, -65, 94, 89, 67, 62, -31, 54, -127, 61, -85, 4, 96, -126, 39, 57, -113, -68, 88]'),
