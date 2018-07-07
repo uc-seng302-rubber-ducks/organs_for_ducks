@@ -6,9 +6,9 @@ import odms.commons.model._abstract.Listenable;
 import odms.commons.model._abstract.Undoable;
 import odms.commons.model._enum.EventTypes;
 import odms.commons.model._enum.Organs;
+import odms.commons.model.datamodel.Address;
 import odms.commons.model.datamodel.ContactDetails;
 import odms.commons.model.datamodel.Medication;
-import odms.commons.model.datamodel.Address;
 import odms.commons.model.datamodel.ReceiverOrganDetailsHolder;
 
 import java.beans.PropertyChangeEvent;
@@ -181,7 +181,9 @@ public class User extends Undoable<User> implements Listenable {
         healthDetails.setAlcoholConsumption(user.getAlcoholConsumption());
         healthDetails.setSmoker(user.isSmoker());
         healthDetails.setHeight(user.getHeight());
+        healthDetails.setHeightText(user.getHeightText());
         healthDetails.setWeight(user.getWeight());
+        healthDetails.setWeightText(user.getWeightText());
         healthDetails.setBloodType(user.getBloodType());
         newUser.healthDetails = healthDetails;
 

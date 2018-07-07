@@ -9,12 +9,12 @@ import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
-import odms.controller.AppController;
 import odms.commons.exception.InvalidFieldsException;
 import odms.commons.model.EmergencyContact;
 import odms.commons.model.User;
 import odms.commons.utils.AttributeValidation;
 import odms.commons.utils.Log;
+import odms.controller.AppController;
 
 import java.time.LocalDate;
 import java.util.Optional;
@@ -24,6 +24,7 @@ import java.util.Optional;
  */
 public class UpdateUserController {
 
+    //<editor-fold desc="fxml stuff">
     @FXML
     private Label errorLabel;
 
@@ -155,6 +156,7 @@ public class UpdateUserController {
 
     @FXML
     private Button redoUpdateButton;
+    //</editor-fold>
 
     private Stage stage;
     private AppController appController;
