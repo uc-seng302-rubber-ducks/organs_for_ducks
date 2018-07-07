@@ -21,7 +21,7 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
     private static final String CREATE_USER_CONTACT_STMT = "INSERT INTO ContactDetails (fkUserNhi, homePhone, email, cellPhone) VALUES (?, ?, ?, ?)";
     private static final String CREATE_ADDRESS_STMT = "INSERT INTO Address (fkContactId, streetNumber, streetName, neighbourhood, city, region, country) VALUES (?, ?, ?, ?, ?, ?, ?)";
     private static final String CREATE_HEALTH_DETAILS = "INSERT INTO HealthDetails (fkUserNhi, gender, birthGender, smoker, alcoholConsumption, height, weight, bloodType) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-    private static final String CREATE_EMERGENCY_STMT = "INSERT INTO EmergencyContactDetails (fkContactId, contactName, contactRelationship) VALUES (?, ?, ?)";
+    private static final String CREATE_EMERGENCY_STMT = "INSERT INTO EmergencyContactDetails (fkContactId, contactName, contactRelationship, fkUserNhi) VALUES (?, ?, ?, ?)";
     private static final String GET_LATEST_CONTACT_ENTRY = "SELECT MAX(contactId) AS contactId FROM ContactDetails WHERE fkUserNhi=?";
     private static final String CREATE_NEW_MEDICATION = "INSERT INTO Medication (fkUserNhi, medicationName) VALUES (?, ?)";
     private static final String CREATE_NEW_MEDICATION_TIME = "INSERT INTO MedicationDates (fkMedicationInstanceId, dateStartedTaking, dateStoppedTaking) VALUES (?, ?, ?)";
@@ -208,6 +208,7 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
             stmt.setInt(1, contactId);
             stmt.setString(2, user.getContact().getName());
             stmt.setString(3, user.getContact().getRelationship());
+            stmt.setString(4, user.getNhi());
 
             stmt.executeUpdate();
         }
