@@ -5,7 +5,10 @@ import odms.App;
 import odms.commons.model.EmergencyContact;
 import odms.commons.model.User;
 import odms.controller.AppController;
-import org.junit.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.matcher.control.LabeledMatchers;
@@ -83,7 +86,6 @@ public class UndoUserUpdateFormGUITest extends ApplicationTest {
     }
 
     @Test
-    @Ignore
     public void MultipleChangesSummedInMainWindow() {
         clickOn("#editDetailsButton");
         clickOn("#mNameInput");
@@ -101,7 +103,6 @@ public class UndoUserUpdateFormGUITest extends ApplicationTest {
     }
 
     @Test
-    @Ignore
     public void MultipleChangesSingleUndo() {
         clickOn("#editDetailsButton");
         clickOn("#ecPhone");
