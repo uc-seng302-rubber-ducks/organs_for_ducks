@@ -7,10 +7,9 @@ import odms.security.dto.AuthDTO;
 import odms.security.dto.LoginResponse;
 import odms.utils.DBManager;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 @OdmsController
 public class LoginController extends BaseController {
@@ -35,5 +34,11 @@ public class LoginController extends BaseController {
                 AuthToken.generateToken());
         store.add(authToken);
         return new LoginResponse(authToken.getToken());
+    }
+
+
+    @RequestMapping(method = RequestMethod.POST, path = "/logout")
+    public ResponseEntity logout(@RequestHeader String token) {
+        return new ResponseEntity(HttpStatus.OK);
     }
 }

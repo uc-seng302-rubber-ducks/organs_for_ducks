@@ -7,7 +7,9 @@ public enum UserRole implements GrantedAuthority {
     @SerializedName("admin")
     ADMIN,
     @SerializedName("clinician")
-    CLINICIAN;
+    CLINICIAN,
+    @SerializedName("user")
+    USER;
 
     @Override
     public String getAuthority() {
