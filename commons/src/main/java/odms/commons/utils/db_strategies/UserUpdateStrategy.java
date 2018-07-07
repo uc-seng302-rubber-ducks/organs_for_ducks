@@ -6,6 +6,7 @@ import odms.commons.model.User;
 import odms.commons.model._enum.Organs;
 import odms.commons.model.datamodel.ContactDetails;
 import odms.commons.model.datamodel.Medication;
+import odms.commons.model.datamodel.ReceiverOrganDetailsHolder;
 import odms.commons.utils.Log;
 
 import java.sql.*;
@@ -29,6 +30,8 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
     private static final String CREATE_CURRENT_DISEASE = "INSERT INTO CurrentDisease (fkUserNhi, diseaseName, diagnosisDate, isChronic) VALUES (?, ?, ?, ?)";
     private static final String CREATE_PREVIOUS_DISEASE = "INSERT INTO PreviousDisease (fkUserNhi, diseaseName, diagnosisDate, remissionDate) VALUES (?, ?, ?, ?)";
     private static final String CREATE_AFFECTED_ORGAN = "INSERT INTO MedicalProcedureOrgan (fkOrgansId, fkProcedureId) VALUES (?, ?)";
+    private static final String CREATE_DONATING_ORGAN = "INSERT INTO OrganDonating (fkUserNhi, fkOrgansId) VALUES (?, ?)";
+    private static final String CREATE_RECEIVING_ORGAN = "INSERT INTO OrganAwaiting (fkUserNhi, fkOrgansId) VALUES (?, ?)";
 
     private static final String UPDATE_USER_STMT = "UPDATE User SET firstName = ?, middleName = ?, lastName = ?, preferedName = ?, dob = ?, dod = ?, lastModified = ? WHERE nhi = ?";
     private static final String UPDATE_USER_HEALTH_STMT = "UPDATE HealthDetails SET gender = ?, birthGender = ?, smoker = ?, alcoholConsumption = ?, height = ?, weight = ?, bloodType = ? WHERE fkUserNhi = ?";
@@ -42,6 +45,8 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
             "WHERE EmergencyContactDetails.fkUserNhi = ?";
 
     private static final String DELETE_USER_STMT = "DELETE FROM User WHERE nhi = ?";
+    private static final String CREATE_RECEIVING_ORGAN_DATE = "INSERT INTO OrganAwaitingDates (fkAwaitingId, dateRegistered, dateDeregistered) VALUES (?, ?, ?)";
+    private static final String GET_RECEIVER_ID = "SELECT awaitingId FROM OrganAwaiting WHERE fkUserNhi = ? AND fkOrgansId = ?";
     //</editor-fold>
 
     @Override
@@ -105,7 +110,11 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
             stmt.setString(4, user.getLastName());
             stmt.setString(5, user.getPreferredFirstName());
             stmt.setDate(6, Date.valueOf(user.getDateOfBirth()));
-            stmt.setDate(7, Date.valueOf(user.getDateOfDeath()));
+            if (user.getDateOfDeath() != null) {
+                stmt.setDate(7, Date.valueOf(user.getDateOfDeath()));
+            } else {
+                stmt.setNull(7, Types.DATE);
+            }
             stmt.setTimestamp(8, Timestamp.valueOf(user.getTimeCreated()));
             stmt.setTimestamp(9, Timestamp.valueOf(user.getLastModified()));
 
@@ -161,6 +170,7 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
         try (PreparedStatement getContactId = connection.prepareStatement(GET_LATEST_CONTACT_ENTRY)) {
             getContactId.setString(1, userNhi);
             try (ResultSet results = getContactId.executeQuery()) {
+                results.next();
                 return results.getInt("contactId");
             }
         }
@@ -252,6 +262,8 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
             updateUserContactDetails(user, connection);
             updateEmergencyContact(user, connection);
             updateUserHealthDetails(user, connection);
+            updateUserDonatingOrgans(user, connection);
+            updateUserReceivingOrgans(user, connection);
             updateUserMedicalProcedures(user, connection);
             updateUserDiseases(user, connection);
             updateMedications(user, connection);
@@ -261,6 +273,87 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
             throw sqlEx;
         }
         connection.prepareStatement("COMMIT").execute();
+    }
+
+    /**
+     * @param user
+     * @param connection
+     */
+    private void updateUserReceivingOrgans(User user, Connection connection) throws SQLException {
+        deleteFieldsOfUser("OrganAwaiting", user.getNhi(), connection);
+        for (Organs organ : user.getReceiverDetails().getOrgans().keySet()) {
+            try (PreparedStatement createReceivingOrgans = connection.prepareStatement(CREATE_RECEIVING_ORGAN)) {
+                createReceivingOrgans.setString(1, user.getNhi());
+                createReceivingOrgans.setInt(2, organ.getDbValue());
+
+                createReceivingOrgans.executeUpdate();
+            }
+            int receiverId = getReceiverId(user.getNhi(), organ, connection);
+            createReceivingOrganDates(receiverId, user.getReceiverDetails().getOrgans().get(organ), connection);
+        }
+    }
+
+    /**
+     * Obtains the stored id of the nhi-organ pair in the database
+     *
+     * @param nhi        the nhi of the nhi-organ pair
+     * @param organ      the organ value of the nhi-organ pair
+     * @param connection A non null and active connection to the database
+     * @return the receiver id of the nhi-organ pair
+     * @throws SQLException if there is an error with the database
+     */
+    private int getReceiverId(String nhi, Organs organ, Connection connection) throws SQLException {
+        try (PreparedStatement getReceiverId = connection.prepareStatement(GET_RECEIVER_ID)) {
+            getReceiverId.setString(1, nhi);
+            getReceiverId.setInt(2, organ.getDbValue());
+            try (ResultSet resultSet = getReceiverId.executeQuery()) {
+                resultSet.next();
+                return resultSet.getInt("awaitingId");
+            }
+        }
+    }
+
+    /**
+     * Populates the user's receiving organs dates into OrganAwaitingDates
+     *
+     * @param receiverId                  the receiverId of obtained from getReceiverId method
+     * @param receiverOrganDetailsHolders A collection of holders for date data
+     * @param connection                  A non null and active connection to the database
+     */
+    private void createReceivingOrganDates(int receiverId, Collection<ReceiverOrganDetailsHolder> receiverOrganDetailsHolders, Connection connection) throws SQLException {
+        for (ReceiverOrganDetailsHolder holder : receiverOrganDetailsHolders) {
+            try (PreparedStatement createReceivingOrganDates = connection.prepareStatement(CREATE_RECEIVING_ORGAN_DATE)) {
+                createReceivingOrganDates.setInt(1, receiverId);
+                createReceivingOrganDates.setDate(2, Date.valueOf(holder.getStartDate()));
+                if (holder.getStopDate() != null) {
+                    createReceivingOrganDates.setDate(3, Date.valueOf(holder.getStopDate()));
+                } else {
+                    createReceivingOrganDates.setNull(3, Types.DATE);
+                }
+
+                createReceivingOrganDates.executeUpdate();
+            }
+        }
+    }
+
+    /**
+     * Updates the organs that the user is donating
+     *
+     * @param user       user to associate the organs with.
+     * @param connection A non null active connection to the database
+     * @throws SQLException if there is an error with the database
+     */
+    private void updateUserDonatingOrgans(User user, Connection connection) throws SQLException {
+        deleteFieldsOfUser("OrganDonating", user.getNhi(), connection);
+        for (Organs organ : user.getDonorDetails().getOrgans()) {
+            try (PreparedStatement createDonatingOrgans = connection.prepareStatement(CREATE_DONATING_ORGAN)) {
+                createDonatingOrgans.setString(1, user.getNhi());
+                createDonatingOrgans.setInt(2, organ.getDbValue());
+
+                createDonatingOrgans.executeUpdate();
+            }
+        }
+
     }
 
     /**
@@ -418,7 +511,10 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
             getProcedureId.setString(2, procedure.getSummary());
             getProcedureId.setDate(3, Date.valueOf(procedure.getProcedureDate()));
 
-            return getProcedureId.executeQuery().getInt("procedureId");
+            try (ResultSet results = getProcedureId.executeQuery()) {
+                results.next();
+                return results.getInt("procedureId");
+            }
         }
     }
 
@@ -456,7 +552,11 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
             statement.setString(3, user.getLastName());
             statement.setString(4, user.getPreferredFirstName());
             statement.setDate(5, Date.valueOf(user.getDateOfBirth()));
-            statement.setDate(6, Date.valueOf(user.getDateOfDeath()));
+            if (user.getDateOfDeath() != null) {
+                statement.setDate(6, Date.valueOf(user.getDateOfDeath()));
+            } else {
+                statement.setNull(6, Types.DATE);
+            }
             statement.setTimestamp(7, Timestamp.valueOf(user.getLastModified()));
             statement.setString(8, user.getNhi());
 
@@ -465,7 +565,7 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
     }
 
     /**
-     * Updates the database with the user's previous and curernt diseases
+     * Updates the database with the user's previous and current diseases
      * @param user user for which to update the diseases in the database for
      * @param connection A non null and active connection to the database
      * @throws SQLException if there is an error with the database
@@ -578,7 +678,10 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
             getMedication.setString(1, userNhi);
             getMedication.setString(2, med.getMedName());
 
-            return getMedication.executeQuery().getInt("medicationInstanceId");
+            try (ResultSet results = getMedication.executeQuery()) {
+                results.next();
+                return results.getInt("medicationInstanceId");
+            }
         }
     }
 
