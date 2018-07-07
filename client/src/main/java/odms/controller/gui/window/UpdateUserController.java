@@ -496,6 +496,7 @@ public class UpdateUserController {
             UserController userController = appController.getUserController();
             try {
                 currentUser.getRedoStack().clear();
+                oldUser.setDeleted(true);
                 userController.showUser(currentUser);
                 Log.info("Update User Successful for User NHI: " + currentUser.getNhi());
             } catch (NullPointerException ex) {
