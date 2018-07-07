@@ -2,10 +2,13 @@ package seng302.GUITest2;
 
 import javafx.scene.Node;
 import odms.App;
-import odms.controller.AppController;
 import odms.commons.model.EmergencyContact;
 import odms.commons.model.User;
-import org.junit.*;
+import odms.controller.AppController;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.matcher.control.LabeledMatchers;
@@ -63,7 +66,6 @@ public class UndoUserUpdateFormGUITest extends ApplicationTest {
     }
 
     @Test
-    @Ignore
     public void ChangesResetWhenCancelButtonClicked() {
         clickOn("#editDetailsButton");
         clickOn("#mNameInput");
@@ -84,7 +86,6 @@ public class UndoUserUpdateFormGUITest extends ApplicationTest {
     }
 
     @Test
-    @Ignore
     public void MultipleChangesSummedInMainWindow() {
         clickOn("#editDetailsButton");
         clickOn("#mNameInput");
@@ -102,7 +103,6 @@ public class UndoUserUpdateFormGUITest extends ApplicationTest {
     }
 
     @Test
-    @Ignore
     public void MultipleChangesSingleUndo() {
         clickOn("#editDetailsButton");
         clickOn("#ecPhone");
@@ -114,13 +114,12 @@ public class UndoUserUpdateFormGUITest extends ApplicationTest {
     }
 
     @Test
-    @Ignore
     public void MultipleChangesEqualUndos() {
         clickOn("#editDetailsButton");
 
 //    unable to check text in combo boxes as it is lazily created/populated
-//    clickOn("#genderIdComboBox");
-//    clickOn("Male");
+        clickOn("#genderIdComboBox");
+        clickOn("Male");
 
         doubleClickOn("#heightInput");
         write("1");
@@ -134,7 +133,7 @@ public class UndoUserUpdateFormGUITest extends ApplicationTest {
 
 
         verifyThat("#lNameInput", TextInputControlMatchers.hasText(""));
-        verifyThat("#heightInput", TextInputControlMatchers.hasText("0.0"));
+        verifyThat("#heightInput", TextInputControlMatchers.hasText(""));
     }
 
     @Test
