@@ -4,6 +4,7 @@ Feature: cache is persisted between app launches
     Given the cache is empty
     And the app is logged in as a "user"
     And the "medication" tab is selected
-    When the interactions between "drugA" and "drugB" are requested
+    And the user is taking "Xanax" and "Codeine"
+    When the interactions between "Xanax" and "Codeine" are requested
     And the app is closed and reopened
-    Then an entry for "drugA" and "drugB" should be in the cache
+    Then an entry for "Xanax" and "Codeine" should be in the cache

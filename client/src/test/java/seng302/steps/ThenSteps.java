@@ -1,6 +1,5 @@
 package seng302.steps;
 
-import cucumber.api.PendingException;
 import cucumber.api.java.en.Then;
 import javafx.scene.Node;
 import odms.commons.model.User;
@@ -10,8 +9,7 @@ import seng302.TestUtils.TableViewsMethod;
 
 import java.util.ArrayList;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.testfx.api.FxAssert.verifyThat;
 import static seng302.TestUtils.TableViewsMethod.getCellValue;
 
@@ -114,19 +112,21 @@ public class ThenSteps extends ApplicationTest {
     @Then("^an entry for \"([^\"]*)\" and \"([^\"]*)\" should be in the cache$")
     public void an_entry_for_and_should_be_in_the_cache(String drugA, String drugB) throws Throwable {
         // Write code here that turns the phrase above into concrete actions
-        throw new PendingException();
+        String key = drugA + "-" + drugB;
+        System.out.println(CucumberTestModel.getMedicationInteractionCache().containsKey(key));
+        assertTrue(CucumberTestModel.getMedicationInteractionCache().containsKey(key));
     }
 
     @Then("^the cache should not contain an entry with key \"([^\"]*)\"$")
-    public void the_cache_should_not_contain_an_entry_with_key(String arg1) throws Throwable {
+    public void the_cache_should_not_contain_an_entry_with_key(String key) throws Throwable {
         // Write code here that turns the phrase above into concrete actions
-        throw new PendingException();
+        assertFalse(CucumberTestModel.getMedicationInteractionCache().containsKey(key));
     }
 
 
     @Then("^the cache should be empty$")
     public void the_cache_should_be_empty() throws Throwable {
         // Write code here that turns the phrase above into concrete actions
-        throw new PendingException();
+        assertTrue(CucumberTestModel.getMedicationInteractionCache().isEmpty());
     }
 }
