@@ -42,6 +42,7 @@ public enum UserRole implements GrantedAuthority {
             roles.add(USER);
         }
 
+        //return null as auth process depends on object existing or not
         if (roles.isEmpty()) {
             return null;
         }

@@ -6,6 +6,12 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 
+/**
+ * provides custom authentication for the server.
+ *
+ * @see AuthFilter
+ * @see TokenStore
+ */
 public class AuthProvider implements AuthenticationProvider {
 
     @Autowired

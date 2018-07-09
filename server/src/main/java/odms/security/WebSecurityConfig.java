@@ -17,10 +17,10 @@ import org.springframework.security.web.util.matcher.NegatedRequestMatcher;
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     /**
-     * This is where all security for the server is set up. all endpoints are protected, unless stated
+     * This is where all security for the server is set up. all endpoints are protected, unless stated.
      *
-     * @param http
-     * @throws Exception
+     * @param http HttpSecurity object to add custom filters to
+     * @throws Exception generic exception thrown during setup
      */
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -31,6 +31,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         AuthFilter filter = new AuthFilter(new NegatedRequestMatcher(
                 new AndRequestMatcher(
                         //list any unprotected endpoints here
+                        //it can end with /** as a wildcard
                         new AntPathRequestMatcher("/login")
                         //, new AntPathRequestMatcher("/myEndpoint")
                 )
