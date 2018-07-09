@@ -5,7 +5,7 @@ import odms.commons.utils.DBHandler;
 import odms.commons.utils.JDBCDriver;
 import odms.commons.utils.Log;
 import odms.exception.ServerDBException;
-import odms.commons.model.transfer.UserOverview;
+import odms.commons.model.dto.UserOverview;
 import odms.security.IsAdmin;
 import odms.utils.DBManager;
 import org.springframework.http.HttpStatus;
@@ -14,9 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.stream.Collectors;
 
 @OdmsController
@@ -64,11 +62,5 @@ public class UserController extends BaseController {
             Log.severe("cannot add new user to db", ex);
             throw new ServerDBException(ex);
         }
-    }
-
-    @IsAdmin
-    @RequestMapping(method = RequestMethod.GET, value = "/test")
-    public ResponseEntity testEndpoint() {
-        return new ResponseEntity(HttpStatus.I_AM_A_TEAPOT);
     }
 }

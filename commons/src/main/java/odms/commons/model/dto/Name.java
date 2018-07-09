@@ -1,4 +1,4 @@
-package odms.commons.model.transfer;
+package odms.commons.model.dto;
 
 /**
  * minimal holder for first, middle, and last names to fit api

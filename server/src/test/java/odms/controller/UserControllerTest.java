@@ -1,7 +1,7 @@
 package odms.controller;
 
 import odms.commons.model.User;
-import odms.commons.model.transfer.UserOverview;
+import odms.commons.model.dto.UserOverview;
 import odms.commons.utils.DBHandler;
 import odms.commons.utils.JDBCDriver;
 import odms.exception.ServerDBException;

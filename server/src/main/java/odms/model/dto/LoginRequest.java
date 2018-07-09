@@ -1,8 +1,12 @@
-package odms.security.dto;
+package odms.model.dto;
 
 import odms.security.UserRole;
 
-public class AuthDTO {
+/**
+ * POJO to contain a login request
+ * needs to be in the server project as it relies on UserRole, a server only enum
+ */
+public class LoginRequest {
     String username;
     UserRole role;
     String password;

@@ -6,7 +6,10 @@ import org.springframework.stereotype.Component;
 import java.util.HashSet;
 import java.util.Set;
 
-
+/**
+ * Spring component to store all the known user tokens in a session. Known tokens are forgotten when the server is restarted.
+ * The database is never aware of these tokens
+ */
 @Component
 public class TokenStore {
 

@@ -18,14 +18,27 @@ public class AuthToken extends AbstractAuthenticationToken {
     private String userType;
 
 
+    /**
+     * valid AuthToken constructed when all details are given. note
+     * setAuthenticated(true)
+     *
+     * @param userId   username/id of the user
+     * @param userType the type/role of the user. The user will be authenticated with the privileges listed here
+     * @param token    the token that has been provided
+     * @see UserRole
+     */
     public AuthToken(String userId, String userType, String token) {
-        super(Collections.singletonList(UserRole.valueOf(userType)));
+        super((UserRole.getHeirarchicalAuth(UserRole.valueOf(userType))));
         this.token = token;
         this.userId = userId;
         this.userType = userType;
         setAuthenticated(true);
     }
 
+    /**
+     * creates a bad token on bad login
+     * @param token bad token passed in
+     */
     public AuthToken(String token) {
         super(null);
         this.token = token;

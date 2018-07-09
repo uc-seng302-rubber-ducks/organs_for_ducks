@@ -1,4 +1,4 @@
-package odms.security.dto;
+package odms.commons.model.dto;
 
 public class LoginResponse {
     String token;

@@ -1,4 +1,4 @@
-package odms.commons.model.transfer;
+package odms.commons.model.dto;
 
 import odms.commons.model.User;
 import odms.commons.model._enum.Organs;
