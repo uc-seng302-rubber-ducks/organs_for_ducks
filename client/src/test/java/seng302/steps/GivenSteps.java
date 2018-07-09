@@ -144,9 +144,9 @@ public class GivenSteps extends ApplicationTest {
     public void the_app_is_logged_in_as_a(String User) throws Throwable {
         // Write code here that turns the phrase above into concrete actions
         iHaveStartedTheGUI();
-        aUserWithTheNHIExists("ABC1234");
+        aUserWithTheNHIExists(User);
         clickOn("#userIDTextField");
-        write(CucumberTestModel.getUserNhi());
+        write(User);
         clickOn("#loginUButton");
     }
 
@@ -159,8 +159,8 @@ public class GivenSteps extends ApplicationTest {
 
 
     @Given("^the \"([^\"]*)\" tab is selected$")
-    public void the_tab_is_selected(String arg1) throws Throwable {
+    public void the_tab_is_selected(String tab) throws Throwable {
         // Write code here that turns the phrase above into concrete actions
-        clickOn("#medicationTab");
+        clickOn("#" + tab);
     }
 }

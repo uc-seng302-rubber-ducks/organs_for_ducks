@@ -113,7 +113,6 @@ public class ThenSteps extends ApplicationTest {
     public void an_entry_for_and_should_be_in_the_cache(String drugA, String drugB) throws Throwable {
         // Write code here that turns the phrase above into concrete actions
         String key = drugA + "-" + drugB;
-        System.out.println(CucumberTestModel.getMedicationInteractionCache().containsKey(key));
         assertTrue(CucumberTestModel.getMedicationInteractionCache().containsKey(key));
     }
 
