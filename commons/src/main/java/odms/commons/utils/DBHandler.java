@@ -2,21 +2,23 @@ package odms.commons.utils;
 
 import odms.commons.model.*;
 import odms.commons.model._enum.Organs;
-import odms.commons.utils.dbStrategies.AbstractUpdateStrategy;
-import odms.commons.utils.dbStrategies.AdminUpdateStrategy;
-import odms.commons.utils.dbStrategies.ClinicianUpdateStrategy;
-import odms.commons.utils.dbStrategies.UserUpdateStrategy;
+import odms.commons.model.datamodel.Medication;
+import odms.commons.model.datamodel.ReceiverOrganDetailsHolder;
+import odms.commons.utils.db_strategies.AbstractUpdateStrategy;
+import odms.commons.utils.db_strategies.AdminUpdateStrategy;
+import odms.commons.utils.db_strategies.ClinicianUpdateStrategy;
+import odms.commons.utils.db_strategies.UserUpdateStrategy;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.EnumMap;
+import java.util.Map;
 
 public class DBHandler {
 
@@ -25,31 +27,53 @@ public class DBHandler {
      * SELECT_USER_ONE_TO_ONE_INFO_STMT is for getting all info that follows one-to-one relationship. eg: 1 user can only have 1 address.
      * the other SELECT_USER statements are for getting all info that follows one-to-many relationships. eg: 1 user can have many diseases.
      */
-    private static final String SELECT_USER_ONE_TO_ONE_INFO_STMT = "SELECT nhi, firstName, middleName, LastName, preferedName, timeCreated, lastModified, profilePicture, gender, birthGender, " +
-            "smoker, alcoholConsumption, height, weight, homePhone, cellPhone, email, streetNumber, streetName, neighbourhood, city, region, country " +
-            "FROM User u " +
+    private static final String SELECT_USER_ONE_TO_ONE_INFO_STMT_FILTERED = "SELECT nhi FROM `User` a " +
+            "WHERE (firstName LIKE ? OR lastName LIKE ?) AND a.region LIKE ? " +
+            "LIMIT ? OFFSET ?";
+    private static final String SELECT_ONE_USER_INFO_STMT_FILTERED = "SELECT nhi, firstName, middleName, LastName, preferedName, timeCreated, lastModified, profilePicture, gender, birthGender, smoker, " +
+            "alcoholConsumption, height, weight, dob, dod, bloodType " +
+            "FROM `User` u " +
             "LEFT JOIN HealthDetails hd ON u.nhi = hd.fkUserNhi " +
-            "LEFT JOIN ContactDetails cde ON u.nhi = cde.fkUserNhi " +
-            "LEFT JOIN Address a ON u.nhi = a.fkUserNhi " +
-            "WHERE (firstName LIKE ? OR lastName LIKE ?) AND region LIKE ? " +
-            " LIMIT ?,?";
-    private static final String SELECT_USER_PREVIOUS_DISEASE_STMT = "SELECT diseaseName, diagnosisDate, remissionDate FROM PreviousDisease WHERE fkUserNhi = ?";
-    private static final String SELECT_USER_CURRENT_DISEASE_STMT = "SELECT diseaseName, diagnosisDate, isChronic FROM CurrentDisease WHERE fkUserNhi = ?";
+            "WHERE nhi = ?";
+    private static final String SELECT_USER_ONE_TO_ONE_INFO_STMT = "SELECT nhi, firstName, middleName, LastName, preferedName, timeCreated, lastModified, profilePicture, gender, birthGender, dob, dod " +
+            "FROM User u " +
+            "LEFT JOIN HealthDetails hd ON u.nhi = hd.fkUserNhi ";
+    private static final String SELECT_USER_PREVIOUS_DISEASE_STMT = "SELECT diseaseName, diagnosisDate FROM PreviousDisease WHERE fkUserNhi = ? " +
+            "ORDER BY diagnosisDate";
+    private static final String SELECT_USER_CURRENT_DISEASE_STMT = "SELECT diseaseName, diagnosisDate, isChronic FROM CurrentDisease WHERE fkUserNhi = ? " +
+            "ORDER BY diagnosisDate";
     private static final String SELECT_USER_MEDICATION_STMT = "SELECT medicationName, dateStartedTaking, dateStoppedTaking FROM Medication m " +
             "LEFT JOIN MedicationDates md ON m.medicationInstanceId = md.fkMedicationInstanceId " +
-            "WHERE m.fkUserNhi = ?";
-    private static final String SELECT_USER_MEDICAL_PROCEDURE_STMT = "SELECT procedureName, procedureDate, procedureDescription, organName, mp.fkUserNhi FROM MedicalProcedure mp " +
-            "LEFT JOIN MedicalProcedureOrgan mpo ON mpo.fkUserNhi = mp.fkUserNhi " +
+            "WHERE m.fkUserNhi = ? ORDER BY dateStartedTaking";
+    private static final String SELECT_USER_MEDICAL_PROCEDURE_STMT = "SELECT procedureName, procedureDate, procedureDescription, organName FROM MedicalProcedure mp " +
+            "LEFT JOIN MedicalProcedureOrgan mpo ON mpo.fkProcedureId = mp.procedureId " +
             "LEFT JOIN Organ o on o.organId = mpo.fkOrgansId " +
-            "WHERE mp.fkUserNhi = ?";
-    private static final String SELECT_USER_ORGAN_DONATION = "SELECT organName FROM OrganDonating LEFT JOIN Organ ON fkOrgansId = organId WHERE fkUserNhi = ?";
-    private static final String SELECT_USER_ORGAN_RECEIVING = "SELECT organName FROM OrganAwaiting LEFT JOIN Organ ON fkOrgansId = organId WHERE fkUserNhi = ?";
+            "WHERE mp.fkUserNhi = ? " +
+            "ORDER BY procedureDate";
+    private static final String SELECT_USER_ORGAN_DONATING_STMT = "SELECT organName FROM OrganDonating LEFT JOIN Organ ON fkOrgansId = organId WHERE fkUserNhi = ?";
+    private static final String SELECT_USER_ORGAN_AWAITING_STMT = "SELECT dateRegistered, dateDeregistered, organId, organName " +
+            "FROM OrganAwaiting " +
+            "LEFT JOIN OrganAwaitingDates ON OrganAwaiting.awaitingId = OrganAwaitingDates.fkAwaitingId " +
+            "LEFT JOIN Organ ON fkOrgansId = organId " +
+            "WHERE fkUserNhi = ? " +
+            "ORDER BY organId, dateRegistered";
+    private static final String SELECT_USER_CONTACT_DETAILS_ADDRESS_STMT = "SELECT homePhone, cellPhone, email, streetNumber, streetName, neighbourhood, city, region, zipCode, country " +
+            "FROM ContactDetails cd " +
+            "LEFT JOIN Address a ON a.fkContactId = cd.contactId " +
+            "WHERE cd.contactId NOT IN(SELECT fkContactId FROM EmergencyContactDetails) " +
+            "AND cd.fkUserNhi = ?";
+    private static final String SELECT_USER_EMERGENCY_CONTACT_DETAILS_ADDRESS_STMT = "SELECT contactName, contactRelationship, homePhone, cellPhone, email, " +
+            "streetNumber, streetName, neighbourhood, city, region, zipCode, country " +
+            "FROM EmergencyContactDetails ecd " +
+            "LEFT JOIN ContactDetails cd ON ecd.fkContactId = cd.contactId " +
+            "LEFT JOIN Address a ON a.fkContactId = cd.contactId " +
+            "WHERE cd.fkUserNhi = ?";
     private static final String SELECT_CLINICIAN_ONE_TO_ONE_INFO_STMT = "SELECT staffId, firstName, middleName, lastName, timeCreated, lastModified, " +
             "streetNumber, streetName, neighbourhood, city, region, country " +
             "FROM Clinician cl " +
             "LEFT JOIN Address a ON cl.staffId = a.fkStaffId " +
             "WHERE firstName LIKE ? OR lastName LIKE ? AND region LIKE ? " +
-            "LIMIT ?,?";
+            "LIMIT ? OFFSET ?";
     private static final String SELECT_ADMIN_ONE_TO_ONE_INFO_STMT = "SELECT userName, firstName, middleName, lastName, timeCreated, lastModified  FROM Administrator";
     private AbstractUpdateStrategy updateStrategy;
 
@@ -64,101 +88,199 @@ public class DBHandler {
      */
     public ResultSet executeStatement(String statement, Connection conn) throws SQLException {
         try{
-            PreparedStatement preparedStatement = conn.prepareStatement(statement);
-            return preparedStatement.executeQuery();
+            try (PreparedStatement preparedStatement = conn.prepareStatement(statement)) {
+                return preparedStatement.executeQuery();
+            }
         } catch (SQLException e){
+            Log.severe("Exception in executing statement " + statement, e);
             throw e;
         }
     }
 
-
     /**
-     * Helper function to convert date string from database
-     * to LocalDateTime object.
-     *
-     * @param date date string from database
-     * @return LocalDateTime object
+     * Method with less filtering parameters to obtain all the users information from the database based on filtering provided.
+     * User objects are instantiated and its attributes are set based on the de-serialised information.
+     * @param connection A valid connection to the database
+     * @param count number of items returned
+     * @param startIndex number of items to skip
+     * @return a Collection of Users
+     * @throws SQLException if there are any SQL errors
      */
-    private LocalDateTime dateToLocalDateTime(String date) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S");
-        return LocalDateTime.parse(date, formatter);
-    }
-
     public Collection<User> getUsers(Connection connection, int count, int startIndex) throws SQLException {
         return this.getUsers(connection, count, startIndex, "", "");
     }
 
     /**
-     * Method to obtain all the users information from the database. Opens and closes it's own connection to the database
+     * Method to obtain all the users information from the database based on filtering provided.
      * User objects are instantiated and its attributes are set based on the de-serialised information.
-     *
      * @param connection A valid connection to the database
+     * @param count number of items returned
+     * @param startIndex number of items to skip
+     * @param name name of a user
+     * @param region region of a user
      * @return a Collection of Users
+     * @throws SQLException if there are any SQL errors
      */
     public Collection<User> getUsers(Connection connection, int count, int startIndex, String name, String region) throws SQLException {
         Collection<User> users = new ArrayList<>();
 
-        try (PreparedStatement statement = connection.prepareStatement(SELECT_USER_ONE_TO_ONE_INFO_STMT)) {
+        try (PreparedStatement statement = connection.prepareStatement(SELECT_USER_ONE_TO_ONE_INFO_STMT_FILTERED)) {
             statement.setString(1, name + "%");
             statement.setString(2, name + "%");
             statement.setString(3, region + "%");
-            statement.setInt(4, startIndex);
-            statement.setInt(5, count);
+            statement.setInt(4, count);
+            statement.setInt(5, startIndex);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    users.add(getOneUser(connection, resultSet.getString("nhi")));
+                }
+            }
+        }
+        return users;
+    }
+
+    /**
+     * Gets info of a single user based on user NHI provided
+     * @param connection A valid connection to the database
+     * @param nhi user's NHI
+     * @return a user object, null if such user is not found
+     * @throws SQLException if there are any SQL errors
+     */
+    public User getOneUser(Connection connection, String nhi) throws SQLException {
+        User user = null;
+
+        try (PreparedStatement statement = connection.prepareStatement(SELECT_ONE_USER_INFO_STMT_FILTERED)) {
+            statement.setString(1, nhi);
+
             try (ResultSet resultSet = statement.executeQuery()) {
 
                 while (resultSet != null && resultSet.next()) {
-                    User user = new User();
-                    user.setNhi(resultSet.getString(1));
-                    user.setFirstName(resultSet.getString(2));
-                    user.setMiddleName(resultSet.getString(3));
-                    user.setLastName(resultSet.getString(4));
-                    user.setPreferredFirstName(resultSet.getString(5));
-                    user.setTimeCreated(dateToLocalDateTime(resultSet.getString(6)));
-                    user.setLastModified(dateToLocalDateTime(resultSet.getString(7)));
-                    //TODO: set user's profile picture here
+                    user = getUserBasicDetails(resultSet);
+                    user.setTimeCreated(resultSet.getTimestamp(6).toLocalDateTime());
+                    user.setLastModified(resultSet.getTimestamp(7).toLocalDateTime());
                     user.setGenderIdentity(resultSet.getString(9));
                     user.setBirthGender(resultSet.getString(10));
                     user.setSmoker(1 == resultSet.getInt(11));
                     user.setAlcoholConsumption(resultSet.getString(12));
                     user.setHeight(resultSet.getDouble(13));
                     user.setWeight(resultSet.getDouble(14));
-                    user.setHomePhone(resultSet.getString(15));
-                    user.setCellPhone(resultSet.getString(16));
-                    user.setEmail(resultSet.getString(17));
-
-                    //TODO: need to get an understanding of how the sample data for  Address, ContactDetails and EmergencyContactDetails db tables before i can de-serialise emergency contact details (Aaron)
-//            user.getContact().setEmail();
-//            user.getContact().setHomePhoneNumber();
-//            user.getContact().setCellPhoneNumber();
-//            user.getContact().setName();
-//            user.getContact().setAddress();
-//            user.getContact().setRelationship();
-
-//            user.setStreetNumber(resultSet.getString(resultSet.getString(18))); //todo: change db address table's streetnumber column to varchar type
-                    user.setStreetName(resultSet.getString(19));
-                    user.setNeighborhood(resultSet.getString(20));
-                    user.setCity(resultSet.getString(21));
-                    user.setRegion(resultSet.getString(22));
-                    user.setCountry(resultSet.getString(23));
-//            user.setZipCode(resultSet.getString()); //todo: db address table needs to have zip table
-                    user.getReceiverDetails();
+                    user.setBloodType(resultSet.getString("bloodType"));
 
                     try {
                         getUserPastDisease(user, connection);
                         getUserCurrentDisease(user, connection);
-                        //getUserMedication(user, connection);
+                        getUserMedication(user, connection);
                         getUserMedicalProcedure(user, connection);
                         getUserOrganDonateDetail(user, connection);
-                        //getUserOrganReceiveDetail(user, connection);
-                        users.add(user);
+                        getUserOrganReceiveDetail(user, connection);
+                        getUserContact(user, connection);
+                        getUserEmergencyContact(user, connection);
                     } catch (SQLException e) {
                         Log.warning("Unable to create instance of user with nhi " + user.getNhi(), e);
                         System.err.println("Unable to create instance of user with nhi " + user.getNhi() + " due to SQL Error: " + e);
                         throw e;
                     }
                 }
-                connection.close();
-                return users;
+            }
+        }
+
+        return user;
+    }
+
+    /**
+     *
+     * @param resultSet result set with the cursor pointing at the desired row
+     * @return A user with a first name, middle name, last name, date of birth and date of death
+     * @throws SQLException if there is an error extracting information from the resultSet
+     */
+    private User getUserBasicDetails(ResultSet resultSet) throws SQLException {
+        User user = new User(resultSet.getString(2), resultSet.getDate("dob").toLocalDate(), resultSet.getString(1));
+        if (resultSet.getString("dod") != null) {
+            user.setDateOfDeath(resultSet.getDate("dod").toLocalDate());
+        }
+        user.setMiddleName(resultSet.getString(3));
+        user.setLastName(resultSet.getString(4));
+        return user;
+    }
+
+    /**
+     * Method to obtain an overview of all the users information from the database.
+     * User objects are instantiated and its attributes are set based on the de-serialised information.
+     *
+     * @param connection A valid connection to the database
+     * @return a Collection of Users
+     * @throws SQLException if there are any SQL errors
+     */
+    public Collection<User> getUserOverviews(Connection connection) throws SQLException {
+        Collection<User> users = new ArrayList<>();
+        try (PreparedStatement fetchUserOverview = connection.prepareStatement(SELECT_USER_ONE_TO_ONE_INFO_STMT)) {
+            try (ResultSet results = fetchUserOverview.executeQuery()) {
+                while (results.next()) {
+                    User user = getUserBasicDetails(results);
+                    getUserOrganDonateDetail(user, connection);
+                    getUserOrganReceiveDetail(user, connection);
+                    users.add(user);
+                }
+            }
+        }
+
+        return users;
+    }
+
+    /**
+     * gets all info of user's contact details (includes the address).
+     * Then, the data are de-serialised and added to User object.
+     *
+     * @param user       desired user
+     * @param connection opened connection to database
+     * @throws SQLException when there are any SQL errors
+     */
+    private void getUserContact(User user, Connection connection) throws SQLException {
+        try (PreparedStatement stmt = connection.prepareStatement(SELECT_USER_CONTACT_DETAILS_ADDRESS_STMT)) {
+            stmt.setString(1, user.getNhi());
+            try (ResultSet resultSet = stmt.executeQuery()) {
+                while (resultSet != null && resultSet.next()) {
+                    user.setHomePhone(resultSet.getString("homePhone"));
+                    user.setCellPhone(resultSet.getString("cellPhone"));
+                    user.setEmail(resultSet.getString("email"));
+                    user.setStreetNumber(resultSet.getString("streetNumber"));
+                    user.setStreetName(resultSet.getString("streetName"));
+                    user.setNeighborhood(resultSet.getString("neighbourhood"));
+                    user.setCity(resultSet.getString("city"));
+                    user.setRegion(resultSet.getString("region"));
+                    user.setCountry(resultSet.getString("country"));
+                    user.setZipCode(resultSet.getString("zipCode"));
+                }
+            }
+        }
+    }
+
+    /**
+     * gets all info of user's emergency contact details (includes the address).
+     * Then, the data are de-serialised and added to User object.
+     *
+     * @param user       desired user
+     * @param connection opened connection to database
+     * @throws SQLException when there are any SQL errors
+     */
+    private void getUserEmergencyContact(User user, Connection connection) throws SQLException {
+        try (PreparedStatement stmt = connection.prepareStatement(SELECT_USER_EMERGENCY_CONTACT_DETAILS_ADDRESS_STMT)) {
+            stmt.setString(1, user.getNhi());
+            try (ResultSet resultSet = stmt.executeQuery()) {
+                while (resultSet != null && resultSet.next()) {
+                    user.getContact().setName(resultSet.getString("contactName"));
+                    user.getContact().setRelationship(resultSet.getString("contactRelationship"));
+                    user.getContact().setHomePhoneNumber(resultSet.getString("homePhone"));
+                    user.getContact().setCellPhoneNumber(resultSet.getString("cellPhone"));
+                    user.getContact().setEmail(resultSet.getString("email"));
+                    user.getContact().setStreetNumber(resultSet.getString("streetNumber"));
+                    user.getContact().setStreetName(resultSet.getString("streetName"));
+                    user.getContact().setNeighborhood(resultSet.getString("neighbourhood"));
+                    user.getContact().setCity(resultSet.getString("city"));
+                    user.getContact().setRegion(resultSet.getString("region"));
+                    user.getContact().setZipCode(resultSet.getString("zipCode"));
+                    user.getContact().setCountry(resultSet.getString("country"));
+                }
             }
         }
     }
@@ -176,8 +298,8 @@ public class DBHandler {
         try (PreparedStatement stmt = connection.prepareStatement(SELECT_USER_PREVIOUS_DISEASE_STMT)) {
             stmt.setString(1, user.getNhi());
             try (ResultSet resultSet = stmt.executeQuery()) {
-                while (resultSet != null && resultSet.next()) { //TODO: how do we de-serialise remission date?
-                    Disease pastDisease = new Disease(resultSet.getString(1), false, true, dateToLocalDateTime(resultSet.getString(2)).toLocalDate());
+                while (resultSet != null && resultSet.next()) {
+                    Disease pastDisease = new Disease(resultSet.getString(1), false, true, resultSet.getDate(2).toLocalDate());
                     user.getPastDiseases().add(pastDisease);
                 }
             }
@@ -198,7 +320,7 @@ public class DBHandler {
             stmt.setString(1, user.getNhi());
             try (ResultSet resultSet = stmt.executeQuery()) {
                 while (resultSet != null && resultSet.next()) {
-                    Disease currentDisease = new Disease(resultSet.getString(1), 1 == resultSet.getInt(3), false, dateToLocalDateTime(resultSet.getString(2)).toLocalDate());
+                    Disease currentDisease = new Disease(resultSet.getString(1), resultSet.getBoolean(3), false, resultSet.getDate(2).toLocalDate());
                     user.getCurrentDiseases().add(currentDisease);
                 }
             }
@@ -207,14 +329,14 @@ public class DBHandler {
 
     /**
      * gets all info of organs the user is donating.
-     * Then, the organ data de-serialised and added to User object.
+     * Then, the organ data are de-serialised and added to User object.
      *
      * @param user       desired user
      * @param connection opened connection to database
      * @throws SQLException when there are any SQL errors
      */
     private void getUserOrganDonateDetail(User user, Connection connection) throws SQLException {
-        try (PreparedStatement stmt = connection.prepareStatement(SELECT_USER_ORGAN_DONATION)) {
+        try (PreparedStatement stmt = connection.prepareStatement(SELECT_USER_ORGAN_DONATING_STMT)) {
             stmt.setString(1, user.getNhi());
             try (ResultSet resultSet = stmt.executeQuery()) {
                 while (resultSet != null && resultSet.next()) {
@@ -227,26 +349,46 @@ public class DBHandler {
     /**
      * gets all info of organs the user is receiving.
      * Then, the organ data de-serialised and added to User object.
+     * Note: Receiving = Awaiting
      *
      * @param user       desired user
      * @param connection opened connection to database
      * @throws SQLException when there are any SQL errors
      */
     private void getUserOrganReceiveDetail(User user, Connection connection) throws SQLException {
-        try (PreparedStatement stmt = connection.prepareStatement(SELECT_USER_ORGAN_RECEIVING)) {
+        ArrayList<ReceiverOrganDetailsHolder> receiverOrganDetailsHolders = new ArrayList<>();
+        Map<Organs, ArrayList<ReceiverOrganDetailsHolder>> organs = new EnumMap<>(Organs.class);
+
+        try (PreparedStatement stmt = connection.prepareStatement(SELECT_USER_ORGAN_AWAITING_STMT)) {
             stmt.setString(1, user.getNhi());
             try (ResultSet resultSet = stmt.executeQuery()) {
                 while (resultSet != null && resultSet.next()) {
-                    //user.getReceiverDetails().setOrgans(Organs.valueOf(resultSet.getString(1))); //TODO: db is not storing any info of ReceiverOrganDetailsHolder class atm.
+                    ReceiverOrganDetailsHolder receiverOrganDetailsHolder = new ReceiverOrganDetailsHolder(resultSet.getDate("dateRegistered").toLocalDate(), null, null);
+                    if (resultSet.getString("dateDeregistered") != null) {
+                        receiverOrganDetailsHolder.setStopDate(resultSet.getDate("dateDeregistered").toLocalDate());
+                    }
+
+                    for (Organs organ : Organs.values()) {
+                        if (organ.getDbValue() == resultSet.getInt("organId")) {
+                            if (organs.containsKey(organ)) {
+                                organs.get(organ).add(receiverOrganDetailsHolder);
+                            } else {
+                                receiverOrganDetailsHolders.add(receiverOrganDetailsHolder);
+                                organs.put(organ, receiverOrganDetailsHolders);
+                            }
+                        }
+                    }
                 }
+                user.getReceiverDetails().setOrgans(organs);
             }
         }
     }
 
     /**
-     * gets all info of Medication of a user
-     * <p>
-     * TODO: update javadoc once method is completed
+     * gets all info of Medication of a user.
+     * then Medication objects are instantiated.
+     * Finally, user's currentMedication and previousMedication attributes are populated based
+     * on whether the dateStoppedTaking column from database is null or not.
      *
      * @param user       desired user
      * @param connection opened connection to database
@@ -257,11 +399,23 @@ public class DBHandler {
             stmt.setString(1, user.getNhi());
             try (ResultSet resultSet = stmt.executeQuery()) {
                 while (resultSet != null && resultSet.next()) {
-                    if (resultSet.getString(3) == null) { // dateStoppedTaking is null
-                        //TODO: create method or medication class to deserialize name and date of current medication
+                    Medication medication = new Medication(resultSet.getString("medicationName"));
+                    medication.addMedicationTime(resultSet.getTimestamp("dateStartedTaking").toLocalDateTime());
+
+                    if (resultSet.getTimestamp("dateStoppedTaking").toLocalDateTime() == null) {
+                        int medicationInstanceIndex = user.getPreviousMedication().indexOf(medication);
+                        if( medicationInstanceIndex != -1){ //if the medication instance already exist in this user's previousMedication attribute. This scenario happens when a user is currently taking a medication that had been taken before.
+                            medication = user.getPreviousMedication().get(medicationInstanceIndex);
+                            medication.addMedicationTime(resultSet.getTimestamp("dateStartedTaking").toLocalDateTime()); //updates the medication time array
+                            user.getPreviousMedication().remove(medication);
+                            user.getCurrentMedication().add(medication);
+                        } else {
+                            user.getCurrentMedication().add(medication);
+                        }
 
                     } else {
-                        //TODO: create method or medication class to deserialize name and date of previous medication
+                        medication.addMedicationTime(resultSet.getTimestamp("dateStoppedTaking").toLocalDateTime());
+                        user.getPreviousMedication().add(medication);
                     }
                 }
             }
@@ -283,7 +437,7 @@ public class DBHandler {
             try (ResultSet resultSet = stmt.executeQuery()) {
                 MedicalProcedure medicalProcedure = null;
                 while (resultSet != null && resultSet.next()) {
-                    if (medicalProcedure != null && resultSet.getString(5).equals(user.getNhi())) { //if the data of next result set belongs to the same user, that means multiple organs is affected.
+                    if (medicalProcedure != null) {
                         medicalProcedure.addOrgan(Organs.valueOf(resultSet.getString(4)));
 
                     } else {
@@ -320,7 +474,7 @@ public class DBHandler {
     }
 
     /**
-     * Loads the clinicians from the database. Opens and closes its own connection to the database
+     * Loads the clinicians from the database.
      *
      * @param connection a Connection to the target database
      * @return the Collection of clinicians
@@ -337,10 +491,9 @@ public class DBHandler {
                     clinician.setFirstName(resultSet.getString(2));
                     clinician.setMiddleName(resultSet.getString(3));
                     clinician.setLastName(resultSet.getString(4));
-                    clinician.setDateCreated(dateToLocalDateTime(resultSet.getString(5)));
-                    clinician.setDateLastModified(dateToLocalDateTime(resultSet.getString(6)));
-                    //TODO: for de-serialising address data, should we refactor clinician to use Address class or use workAddress class attribute.
-                    //clinician.setPassword(resultSet.getString(10)); //TODO since the database stores the hash and salt, do we store those directly without having to use setPassword?
+                    clinician.setDateCreated(resultSet.getTimestamp(5).toLocalDateTime());
+                    clinician.setDateLastModified(resultSet.getTimestamp(6).toLocalDateTime());
+                    //TODO: implement addressStrategy for clinicians (same functionality as getUserAddress method)
                     clinicians.add(clinician);
                 }
 
@@ -361,7 +514,7 @@ public class DBHandler {
     }
 
     /**
-     * Loads the administrators from the database. Opens and closes its own connection to the database
+     * Loads the administrators from the database.
      *
      * @param connection Connection to the target database
      * @return the Collection of administrators
@@ -378,9 +531,8 @@ public class DBHandler {
                     administrator.setFirstName(resultSet.getString(2));
                     administrator.setMiddleName(resultSet.getString(3));
                     administrator.setLastName(resultSet.getString(4));
-                    administrator.setDateCreated(dateToLocalDateTime(resultSet.getString(5)));
-                    administrator.setDateLastModified(dateToLocalDateTime(resultSet.getString(6)));
-                    //administrator.setPassword(resultSet.getString(10)); //TODO since the database stores the hash and salt, do we store those directly without having to use setPassword?
+                    administrator.setDateCreated(resultSet.getTimestamp(5).toLocalDateTime());
+                    administrator.setDateLastModified(resultSet.getTimestamp(6).toLocalDateTime());
                     administrators.add(administrator);
                 }
 
@@ -419,9 +571,20 @@ public class DBHandler {
 //    public static void main(String [ ] args) throws SQLException{
 //        DBHandler dbHandler = new DBHandler();
 //        JDBCDriver jdbcDriver = new JDBCDriver();
-//        dbHandler.getAllUsers(jdbcDriver.getTestConnection());
-//        dbHandler.loadClinicians(jdbcDriver.getTestConnection());
-//        dbHandler.loadAdmins(jdbcDriver.getTestConnection());
-//        System.out.println("done");
+//        User user = dbHandler.getOneUser(jdbcDriver.getTestConnection(), "ABC1234");
+////        Collection<User>users = dbHandler.loadUsers(jdbcDriver.getTestConnection());
+////        System.out.println();
+////        for (User user : users) {
+////            System.out.println(user.getNhi()+" "+ user.getReceiverDetails().getOrgans().size());
+////            if(user.getReceiverDetails().getOrgans().get(Organs.PANCREAS)!= null) {
+////                for (ReceiverOrganDetailsHolder r :
+////                        user.getReceiverDetails().getOrgans().get(Organs.PANCREAS)) {
+////                    System.out.println(r.getStartDate());
+////                }
+////            }
+////        }
+//        //dbHandler.loadClinicians(jdbcDriver.getTestConnection());
+//        //dbHandler.loadAdmins(jdbcDriver.getTestConnection());
+//        System.out.println(user.getMiddleName());
 //    }
 }

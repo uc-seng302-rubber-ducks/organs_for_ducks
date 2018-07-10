@@ -285,7 +285,8 @@ public class Clinician extends Undoable<Clinician> implements Listenable {
     }
 
     /**
-     * Private setter as no one should be able to retrieve password outside of the class
+     * Public so that it can be stored within the database
+     * No one else should be able to retrieve password
      *
      * @return hash of the password
      */

@@ -1,4 +1,4 @@
-package odms.commons.utils.dbStrategies;
+package odms.commons.utils.db_strategies;
 
 import odms.commons.model.Clinician;
 import odms.commons.utils.Log;
@@ -12,11 +12,11 @@ public class ClinicianUpdateStrategy extends AbstractUpdateStrategy {
     private static final String CREATE_STAFF_CONTACT_STMT = "INSERT INTO ContactDetails (fkStaffId, homePhone, email, cellPhone) VALUES (?, ?, ?, ?)";
     private static final String CREATE_ADDRESS_STMT = "INSERT INTO Address (fkContactId, streetNumber, streetName, neighbourhood, city, region, country) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
-    private static final String UPDATE_CLINICIAN_STMT = "UPDATE Clinician SET staffId = ?, firstName = ?, middleName = ?, lastName = ?, lastModified = ? WHERE staffId = ?";
+    private static final String UPDATE_CLINICIAN_STMT = "UPDATE Clinician SET firstName = ?, middleName = ?, lastName = ?, lastModified = ? WHERE staffId = ?";
     private static final String UPDATE_CLINICIAN_ADDRESS = "UPDATE ContactDetails JOIN Address ON contactId = fkContactId " +
             "SET streetNumber = ?, streetName = ?, neighbourhood = ?, city = ?, region = ?, zipCode = ?, country = ? " +
             "WHERE ContactDetails.fkStaffId = ?";
-    private static final String UPDATE_CLINICIAN_PASSWORD = "UPDATE PasswordDetails SET hash = ?, salt = ? WHERE fkStaffId = ?";
+    private static final String UPDATE_CLINICIAN_PSSWRD = "UPDATE PasswordDetails SET hash = ?, salt = ? WHERE fkStaffId = ?";
 
     private static final String DELETE_CLINICIAN_STMT = "DELETE FROM Clinician WHERE staffId = ?";
 
@@ -53,10 +53,11 @@ public class ClinicianUpdateStrategy extends AbstractUpdateStrategy {
             connection.prepareStatement("START TRANSACTION").execute();
             try {
                 createClinician(clinician, connection);
-                // TODO: Create the clinician contact stuff once the abstractions are completed 25/6 - Eiran
+                createClinicianPassword(clinician, connection);
+                createClinicianContact(clinician, connection);
             } catch (SQLException sqlEx) {
                 connection.prepareStatement("ROLLBACK").execute();
-                System.out.println("An error occured"); //TODO: Make this a popup
+                System.out.println("An error occurred"); //TODO: Make this a popup
             }
             connection.prepareStatement("COMMIT");
             connection.close();
@@ -65,6 +66,7 @@ public class ClinicianUpdateStrategy extends AbstractUpdateStrategy {
             System.out.println("Error connecting to database");
         }
     }
+
 
     /**
      * Creates a clinician entry in the tables
@@ -76,14 +78,100 @@ public class ClinicianUpdateStrategy extends AbstractUpdateStrategy {
      * @throws SQLException If there isn't an active connection to the database or there is an error in creating the clinician
      */
     private void createClinician(Clinician clinician, Connection connection) throws SQLException {
-        PreparedStatement statement = connection.prepareStatement(CREATE_CLINICIAN_STMT);
-        statement.setString(1, clinician.getStaffId());
-        statement.setString(2, clinician.getFirstName());
-        statement.setString(3, clinician.getMiddleName());
-        statement.setString(4, clinician.getLastName());
+        try (PreparedStatement statement = connection.prepareStatement(CREATE_CLINICIAN_STMT)) {
+            statement.setString(1, clinician.getStaffId());
+            statement.setString(2, clinician.getFirstName());
+            statement.setString(3, clinician.getMiddleName());
+            statement.setString(4, clinician.getLastName());
 
-        statement.executeUpdate();
+            statement.executeUpdate();
+        }
     }
+
+    /**
+     * Saves the hashed password to the PasswordDetails table in the database
+     * Precondition: The connection is not null and valid
+     * Post-condition: The hashed password and salt is stored in the database.
+     *
+     * @param clinician Clinician whose password will be stored
+     * @param connection Connection to the target database
+     * @throws SQLException If there is an error in storing it into the database or the connection is invalid
+     */
+    private void createClinicianPassword(Clinician clinician, Connection connection) throws SQLException {
+        try (PreparedStatement statement = connection.prepareStatement("INSERT INTO PasswordDetails (fkStaffId, hash, salt) VALUES (?, ?, ?)")) {
+            statement.setString(1, clinician.getStaffId());
+
+            Blob hashBlob = connection.createBlob();
+            hashBlob.setBytes(1, clinician.getPassword());
+
+            Blob saltBlob = connection.createBlob();
+            saltBlob.setBytes(1, clinician.getSalt());
+
+            statement.setBlob(2, hashBlob);
+            statement.setBlob(3, saltBlob);
+
+            statement.executeUpdate();
+        }
+    }
+
+
+    /**
+     * Saves the contact details and work address of the given clinician in the database
+     * Clinicians do not have a home phone, cell phone or email, but do have a work address
+     * Precondition: The connection is valid
+     * Post-condition: The work address of the clinician and its associated ContactDetails entry will be saved to the database
+     *
+     * @param clinician Clinician associated with the work address to be stored
+     * @param connection Connection to the target database
+     * @throws SQLException If there is an error in storing the details into the database or the connection is invalid
+     */
+    private void createClinicianContact(Clinician clinician, Connection connection) throws SQLException {
+        try (PreparedStatement cdStatement = connection.prepareStatement(CREATE_STAFF_CONTACT_STMT)) {
+            cdStatement.setString(1, clinician.getStaffId());
+            cdStatement.setString(2, "");
+            cdStatement.setString(3, "");
+            cdStatement.setString(4, "");
+            cdStatement.executeUpdate();
+
+            int contactId = getContactID(clinician, connection);
+
+            try (PreparedStatement addressStmt = connection.prepareStatement(CREATE_ADDRESS_STMT)) {
+
+                addressStmt.setInt(1, contactId);
+                addressStmt.setString(2, clinician.getStreetNumber());
+                addressStmt.setString(3, clinician.getStreetName());
+                addressStmt.setString(4, clinician.getNeighborhood());
+                addressStmt.setString(5, clinician.getCity());
+                addressStmt.setString(6, clinician.getRegion());
+                addressStmt.setString(7, clinician.getCountry());
+            }
+        }
+    }
+
+    /**
+     * Retrieves the contact ID for the given clinician
+     *
+     * @param clinician Clinician associated with the entry to be found
+     * @param connection Connection to the target database
+     * @return The contact ID of the clinicians ContactDetails entry, otherwise -1 if it does not exist
+     * @throws SQLException If there is an error in retrieving the contact id
+     */
+    private int getContactID(Clinician clinician, Connection connection) throws SQLException {
+        int contactId = -1;
+
+        try (PreparedStatement getContactId = connection.prepareStatement("SELECT contactId FROM ContactDetails WHERE fkStaffID = ?")) {
+            getContactId.setString(1, clinician.getStaffId());
+
+            try (ResultSet results = getContactId.executeQuery()) {
+                if (results != null && results.next()) {
+                    contactId = results.getInt(1);
+                }
+            }
+        }
+
+        return contactId;
+    }
+
 
     /**
      * Deletes a role entry from the database that is associated with the given object
@@ -108,7 +196,7 @@ public class ClinicianUpdateStrategy extends AbstractUpdateStrategy {
             } catch (SQLException sqlEx) {
                 Log.severe("A fatal error in deletion, cancelling operation", sqlEx);
                 connection.prepareStatement("ROLLBACK").execute();
-                System.out.println("An error occured"); //TODO: Make this a popup
+                System.out.println("An error occurred"); //TODO: Make this a popup
             }
 
             connection.prepareStatement("COMMIT");
@@ -128,7 +216,6 @@ public class ClinicianUpdateStrategy extends AbstractUpdateStrategy {
      * @param connection Connection ot the target database
      */
     private void executeUpdate(Clinician clinician, Connection connection) {
-
 
         try {
             connection.prepareStatement("START TRANSACTION").execute();
@@ -174,7 +261,7 @@ public class ClinicianUpdateStrategy extends AbstractUpdateStrategy {
     /**
      * Updates the given clinicians address in the database using UPDATE_ADDRESS
      * Precondition: Must have an active connection to the database
-     * Postcondition: The address of the given clinician is updated in the database
+     * Post-condition: The address of the given clinician is updated in the database
      *
      * @param clinician  Clinician object to be updated
      * @param connection Connection to the target database
@@ -183,18 +270,17 @@ public class ClinicianUpdateStrategy extends AbstractUpdateStrategy {
     private void updateClinicianAddress(Clinician clinician, Connection connection) throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement(UPDATE_CLINICIAN_ADDRESS)) {
 
-//            statement.setString(1, clinician.getStreetNumber);
-//            statement.setString(2, clinician.setStreetName);
-//            statement.setString(3, clinician.setNeighborhood());
-//            statement.setString(4, clinician.getCity());
+            statement.setString(1, clinician.getStreetNumber());
+            statement.setString(2, clinician.getStreetName());
+            statement.setString(3, clinician.getNeighborhood());
+            statement.setString(4, clinician.getCity());
             statement.setString(5, clinician.getRegion());
-            //statement.setString(6, clinician.getZipCode());
-            //statement.setString(7, clinician.getCountry());
+            statement.setString(6, clinician.getZipCode());
+            statement.setString(7, clinician.getCountry());
             statement.setString(8, clinician.getStaffId());
 
             statement.executeUpdate();
         }
-        // todo: update clinician to have an Address object - jen 30/6
     }
 
     /**
