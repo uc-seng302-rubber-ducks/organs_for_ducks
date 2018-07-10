@@ -13,6 +13,7 @@ import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 import picocli.CommandLine;
 import picocli.CommandLine.RunLast;
+import seng302.TestUtils.CommonTestMethods;
 import seng302.TestUtils.TableViewsMethod;
 
 import java.time.LocalDateTime;
@@ -189,11 +190,10 @@ public class WhenSteps extends ApplicationTest {
     @When("^the app is closed and reopened$")
     public void the_app_is_closed_and_reopened() throws Throwable {
         // Write code here that turns the phrase above into concrete actions
-        clickOn("#userProfileTab");
-        clickOn("#logOutButton");
-        closeCurrentWindow();
         FxToolkit.registerPrimaryStage();
         FxToolkit.setupApplication(App.class);
+        clickOn("#userIDTextField");
+        write("ABC1234");
         clickedOnUserLoginButton();
     }
 

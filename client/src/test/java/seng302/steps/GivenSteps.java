@@ -127,7 +127,7 @@ public class GivenSteps extends ApplicationTest {
 
     @Given("^the cache is empty$")
     public void the_cache_is_empty() throws Throwable {
-        CucumberTestModel.getMedicationInteractionCache().removeOlderThan(LocalDateTime.now());
+        CucumberTestModel.getMedicationInteractionCache().clear();
     }
 
     @Given("^the cache is pre-populated$")
