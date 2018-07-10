@@ -102,14 +102,9 @@ public class AdminUpdateStrategy extends AbstractUpdateStrategy {
         try (PreparedStatement statement = connection.prepareStatement("INSERT INTO PasswordDetails (fkAdminUserName, hash, salt) VALUES (?, ?, ?)")) {
             statement.setString(1, admin.getUserName());
 
-            Blob hashBlob = connection.createBlob();
-            hashBlob.setBytes(1, admin.getPassword());
+            statement.setString(2, admin.getPassword());
 
-            Blob saltBlob = connection.createBlob();
-            saltBlob.setBytes(1, admin.getSalt());
-
-            statement.setBlob(2, hashBlob);
-            statement.setBlob(3, saltBlob);
+            statement.setString(3, admin.getSalt());
 
             statement.executeUpdate();
         }

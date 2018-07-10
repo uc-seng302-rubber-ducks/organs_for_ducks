@@ -402,7 +402,7 @@ public class DBHandler {
                     Medication medication = new Medication(resultSet.getString("medicationName"));
                     medication.addMedicationTime(resultSet.getTimestamp("dateStartedTaking").toLocalDateTime());
 
-                    if (resultSet.getTimestamp("dateStoppedTaking").toLocalDateTime() == null) {
+                    if (resultSet.getTimestamp("dateStoppedTaking") == null) {
                         int medicationInstanceIndex = user.getPreviousMedication().indexOf(medication);
                         if( medicationInstanceIndex != -1){ //if the medication instance already exist in this user's previousMedication attribute. This scenario happens when a user is currently taking a medication that had been taken before.
                             medication = user.getPreviousMedication().get(medicationInstanceIndex);
@@ -567,24 +567,36 @@ public class DBHandler {
         }
     }
 
-    //TODO: Please dont remove this main until db handler is fully developed
-//    public static void main(String [ ] args) throws SQLException{
-//        DBHandler dbHandler = new DBHandler();
-//        JDBCDriver jdbcDriver = new JDBCDriver();
-//        User user = dbHandler.getOneUser(jdbcDriver.getTestConnection(), "ABC1234");
-////        Collection<User>users = dbHandler.loadUsers(jdbcDriver.getTestConnection());
-////        System.out.println();
-////        for (User user : users) {
-////            System.out.println(user.getNhi()+" "+ user.getReceiverDetails().getOrgans().size());
-////            if(user.getReceiverDetails().getOrgans().get(Organs.PANCREAS)!= null) {
-////                for (ReceiverOrganDetailsHolder r :
-////                        user.getReceiverDetails().getOrgans().get(Organs.PANCREAS)) {
-////                    System.out.println(r.getStartDate());
-////                }
-////            }
-////        }
-//        //dbHandler.loadClinicians(jdbcDriver.getTestConnection());
-//        //dbHandler.loadAdmins(jdbcDriver.getTestConnection());
-//        System.out.println(user.getMiddleName());
-//    }
+    /**
+     * replaces an existing user with a new version
+     * finds old user by nhi and marks it for deletion, then passes it and the new user to
+     * @see this.saveUsers
+     * @param conn connection to the target database
+     * @param nhi (old) nhi of user
+     * @param user user to be put into database
+     * @throws SQLException exception thrown during the transaction
+     */
+    public void updateUser(Connection conn, String nhi, User user) throws SQLException {
+        User toReplace = getOneUser(conn, nhi);
+        if (toReplace != null) {
+            toReplace.setDeleted(true);
+            user.addChange(new Change("Saved"));
+            Collection<User> users = new ArrayList<>(Arrays.asList(toReplace, user));
+            saveUsers(users, conn);
+        }
+    }
+
+    /**
+     * finds a single user and sets their deleted flag to true, then updates the user on the db
+     * @param conn connection to the target database
+     * @param nhi nhi ofthe user to be deleted
+     * @throws SQLException exception thrown during the transaction
+     */
+    public void deleteUser(Connection conn, String nhi) throws SQLException {
+        User toDelete = getOneUser(conn, nhi);
+        if (toDelete != null) {
+            toDelete.setDeleted(true);
+            saveUsers(Collections.singleton(toDelete), conn);
+        }
+    }
 }

@@ -4,6 +4,7 @@ import odms.commons.model.User;
 import odms.commons.model.dto.UserOverview;
 import odms.commons.utils.DBHandler;
 import odms.commons.utils.JDBCDriver;
+import odms.exception.NotFoundException;
 import odms.exception.ServerDBException;
 import odms.utils.DBManager;
 import org.junit.Assert;
@@ -21,6 +22,7 @@ import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -81,4 +83,48 @@ public class UserControllerTest {
         controller.postUser(testUser);
 
     }
+
+    @Test(expected = ServerDBException.class)
+    public void getUserShouldThrowExceptionWhenNoConnection() throws SQLException{
+        when(driver.getConnection()).thenThrow(new SQLException());
+        controller.getUser("ABC1234");
+    }
+
+    @Test(expected = NotFoundException.class)
+    public void getUserShouldReturnNotFoundWhenNoUserFound() throws SQLException{
+        when(handler.getOneUser(any(Connection.class), anyString())).thenReturn(null);
+        controller.getUser("ABC1234");
+    }
+
+    @Test
+    public void getUserShouldReturnUserIfExists() throws  SQLException{
+        when(handler.getOneUser(any(Connection.class), anyString())).thenReturn(testUser);
+        Assert.assertEquals(testUser, controller.getUser("ABC1234"));
+    }
+
+    @Test(expected = ServerDBException.class)
+    public void putUserShouldThrowExceptionWhenNoConnection() throws SQLException {
+        when(driver.getConnection()).thenThrow(new SQLException());
+        controller.putUser("ABC1234", testUser);
+    }
+
+    @Test
+    public void putUserShouldReturnOK() {
+        ResponseEntity res = controller.putUser("ABC1234", testUser);
+        Assert.assertEquals(HttpStatus.OK, res.getStatusCode());
+    }
+
+    @Test(expected = ServerDBException.class)
+    public void deleteUserShouldThrowExceptionWhenNoConnection() throws SQLException{
+        when(driver.getConnection()).thenThrow(new SQLException());
+        controller.deleteUser("ABC1324");
+    }
+
+    @Test
+    public void deleteUserShouldReturnOK() {
+        ResponseEntity res = controller.deleteUser("ABC1234");
+        Assert.assertEquals(HttpStatus.OK, res.getStatusCode());
+    }
+
+
 }

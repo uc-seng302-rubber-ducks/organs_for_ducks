@@ -4,9 +4,11 @@ import odms.commons.model.User;
 import odms.commons.utils.DBHandler;
 import odms.commons.utils.JDBCDriver;
 import odms.commons.utils.Log;
+import odms.exception.NotFoundException;
 import odms.exception.ServerDBException;
 import odms.commons.model.dto.UserOverview;
 import odms.security.IsAdmin;
+import odms.security.IsUser;
 import odms.utils.DBManager;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -62,5 +64,47 @@ public class UserController extends BaseController {
             Log.severe("cannot add new user to db", ex);
             throw new ServerDBException(ex);
         }
+    }
+
+    @IsUser
+    @RequestMapping(method = RequestMethod.GET, value = "/users/{nhi}")
+    public User getUser(@PathVariable("nhi") String nhi) {
+        try (Connection connection = driver.getConnection()) {
+            User result =  handler.getOneUser(connection, nhi);
+            if(result != null) {
+                return result;
+            }
+            Log.warning("user not found with nhi " + nhi);
+            throw new NotFoundException();
+
+        } catch (SQLException ex) {
+            Log.severe("cannot get user", ex);
+            throw new ServerDBException(ex);
+        }
+    }
+
+
+    @IsUser
+    @RequestMapping(method = RequestMethod.PUT, value = "/users/{nhi}")
+    public ResponseEntity putUser(@PathVariable("nhi") String nhi, @RequestBody User user) {
+        try (Connection connection = driver.getConnection()) {
+            handler.updateUser(connection, nhi, user);
+        } catch (SQLException ex) {
+            Log.severe("cannot put user " + nhi, ex);
+            throw new ServerDBException(ex);
+        }
+        return  new ResponseEntity(HttpStatus.OK);
+    }
+
+    @IsUser
+    @RequestMapping(method = RequestMethod.DELETE, value = "/users/{nhi}")
+    public ResponseEntity deleteUser(@PathVariable("nhi") String nhi) {
+        try (Connection connection = driver.getConnection()) {
+            handler.deleteUser(connection, nhi);
+        } catch (SQLException ex) {
+            Log.severe("cannot delete user " + nhi, ex);
+            throw new ServerDBException(ex);
+        }
+        return new ResponseEntity(HttpStatus.OK);
     }
 }
