@@ -2,15 +2,16 @@ package seng302.steps;
 
 import cucumber.api.java.After;
 import cucumber.api.java.en.Given;
+import odms.App;
+import odms.commons.model.User;
+import odms.commons.model._enum.Organs;
+import odms.controller.AppController;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.matcher.control.LabeledMatchers;
-import seng302.App;
-import seng302.controller.AppController;
-import seng302.model._enum.Organs;
-import seng302.model.User;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.concurrent.TimeoutException;
 
@@ -18,7 +19,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.testfx.api.FxAssert.verifyThat;
-import static seng302.Utils.TableViewsMethod.getCell;
+import static seng302.TestUtils.TableViewsMethod.getCell;
 
 
 public class GivenSteps extends ApplicationTest {
@@ -47,7 +48,7 @@ public class GivenSteps extends ApplicationTest {
     @Given("^a user with the NHI \"([^\"]*)\" exists$")
     public void aUserWithTheNHIExists(String NHI) {
         CucumberTestModel.setUserNhi(NHI);
-        if (CucumberTestModel.getController().getUser(NHI) == null) {
+        if (CucumberTestModel.getController().findUser(NHI) == null) {
             CucumberTestModel.getController().getUsers().add(new User("A", LocalDate.now().minusYears(20), NHI));
         }
         assertTrue(CucumberTestModel.getController().findUser(NHI) != null);
@@ -63,7 +64,7 @@ public class GivenSteps extends ApplicationTest {
     public void thereExistsAUserWithTheNHIFirstNameLastNameAndDateOfBirth(String NHI,
                                                                           String firstName, String lastName, String dateOfBirth) {
         CucumberTestModel.setUserNhi(NHI);
-        if (CucumberTestModel.getController().getUser(CucumberTestModel.getUserNhi()) == null) {
+        if (CucumberTestModel.getController().findUser(CucumberTestModel.getUserNhi()) == null) {
             CucumberTestModel.getController().getUsers().add(
                     new User(firstName, LocalDate.parse(dateOfBirth, DateTimeFormatter.ISO_LOCAL_DATE), NHI));
         }
@@ -110,17 +111,56 @@ public class GivenSteps extends ApplicationTest {
                 organToReceive = value;
             }
         }
-        if (!CucumberTestModel.getController().getUser(CucumberTestModel.getUserNhi()).getReceiverDetails()
+        if (!CucumberTestModel.getController().findUser(CucumberTestModel.getUserNhi()).getReceiverDetails()
                 .isCurrentlyWaitingFor(organToReceive)) {
-            CucumberTestModel.getController().getUser(CucumberTestModel.getUserNhi()).getReceiverDetails().startWaitingForOrgan(organToReceive);
+            CucumberTestModel.getController().findUser(CucumberTestModel.getUserNhi()).getReceiverDetails().startWaitingForOrgan(organToReceive);
         }
     }
 
     @Given("^The user is alive$")
     public void theUserIsAlive() {
-        if (CucumberTestModel.getController().getUser(CucumberTestModel.getUserNhi()).getDeceased()) {
-            CucumberTestModel.getController().getUser(CucumberTestModel.getUserNhi()).setDateOfDeath(null);
+        if (CucumberTestModel.getController().findUser(CucumberTestModel.getUserNhi()).getDeceased()) {
+            CucumberTestModel.getController().findUser(CucumberTestModel.getUserNhi()).setDateOfDeath(null);
         }
-        assertFalse(CucumberTestModel.getController().getUser(CucumberTestModel.getUserNhi()).getDeceased());
+        assertFalse(CucumberTestModel.getController().findUser(CucumberTestModel.getUserNhi()).getDeceased());
+    }
+
+    @Given("^the cache is empty$")
+    public void the_cache_is_empty() throws Throwable {
+        CucumberTestModel.getMedicationInteractionCache().clear();
+    }
+
+    @Given("^the cache is pre-populated$")
+    public void the_cache_is_pre_populated() throws Throwable {
+        // Write code here that turns the phrase above into concrete actions
+        CucumberTestModel.getHttpRequester().getDrugInteractions("Xanax", "Codeine");
+        CucumberTestModel.getHttpRequester().getDrugInteractions("Aceon", "pancreaze");
+        CucumberTestModel.getHttpRequester().getDrugInteractions("Aceon", "Codeine");
+        CucumberTestModel.getHttpRequester().getDrugInteractions("Aceon", "Xanax");
+        CucumberTestModel.getMedicationInteractionCache().get("Aceon", "pancreaze").setDateTime(LocalDateTime.now().minusDays(3));
+    }
+
+    @Given("^the app is logged in as a \"([^\"]*)\"$")
+    public void the_app_is_logged_in_as_a(String User) throws Throwable {
+        // Write code here that turns the phrase above into concrete actions
+        iHaveStartedTheGUI();
+        aUserWithTheNHIExists(User);
+        clickOn("#userIDTextField");
+        write(User);
+        clickOn("#loginUButton");
+    }
+
+    @Given("^the user is taking \"([^\"]*)\" and \"([^\"]*)\"$")
+    public void the_user_is_taking_and(String drugA, String drugB) throws Throwable {
+        // Write code here that turns the phrase above into concrete actions
+        CucumberTestModel.getController().findUser(CucumberTestModel.getUserNhi()).addCurrentMedication(drugA);
+        CucumberTestModel.getController().findUser(CucumberTestModel.getUserNhi()).addCurrentMedication(drugB);
+    }
+
+
+    @Given("^the \"([^\"]*)\" tab is selected$")
+    public void the_tab_is_selected(String tab) throws Throwable {
+        // Write code here that turns the phrase above into concrete actions
+        clickOn("#" + tab);
     }
 }
