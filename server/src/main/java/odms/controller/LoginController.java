@@ -13,6 +13,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.SQLException;
+
 @OdmsController
 public class LoginController extends BaseController {
 
@@ -27,8 +29,17 @@ public class LoginController extends BaseController {
     @RequestMapping(method = RequestMethod.POST, path = "/login")
     @ResponseBody
     public Object login(@RequestBody LoginRequest auth) {
-        //TODO check auth.username is in database
-        //TODO check auth.password against stored one in database
+        boolean validLogin;
+        try {
+            String role = auth.getRole().toString();
+            validLogin = getHandler().isVaildLogIn(
+                    getDriver().getConnection(), auth.getPassword(), auth.getUsername(),role);
+        } catch (SQLException e) {
+            return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        if (!validLogin){
+            return new ResponseEntity(HttpStatus.UNAUTHORIZED);
+        }
         System.out.println((new Gson()).toJson(auth));
         AuthToken authToken = new AuthToken(
                 auth.getUsername(),
@@ -41,6 +52,7 @@ public class LoginController extends BaseController {
 
     @RequestMapping(method = RequestMethod.POST, path = "/logout")
     public ResponseEntity logout(@RequestHeader String token) {
+        store.remove(token);
         return new ResponseEntity(HttpStatus.OK);
     }
 
