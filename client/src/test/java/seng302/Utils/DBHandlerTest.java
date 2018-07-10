@@ -5,19 +5,22 @@ import odms.commons.model.MedicalProcedure;
 import odms.commons.model.User;
 import odms.commons.model._enum.Organs;
 import odms.commons.utils.DBHandler;
-import odms.commons.utils.JDBCDriver;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.*;
+import seng302.TestUtils.DBHandlerMocker;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
+
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.*;
 
 @Ignore
 public class DBHandlerTest {
@@ -38,8 +41,7 @@ public class DBHandlerTest {
     }
 
     @Before
-    public void beforeTest() throws SQLException {
-        seng302.TestUtils.SQLScriptRunner.run();
+    public void beforeTest() {
         expected = new User();
         expected.setNhi("ABC1234");
         expected.setFirstName("Allan");
@@ -60,13 +62,16 @@ public class DBHandlerTest {
         expected.setEmail("aaronB@gmail.com");
 
         dbHandler = new DBHandler();
-        connection = new JDBCDriver().getTestConnection();
+        connection = mock(Connection.class);
+
     }
 
     @After
     public void afterTest() throws SQLException {
         connection.close();
     }
+
+
 /*
     @Test
     public void testUserInstanceCreatedValid() throws SQLException {
@@ -90,16 +95,29 @@ public class DBHandlerTest {
     }*/
 
     @Test
-    public void testAddNewUser() {
+    public void testAddNewUser() throws SQLException {
+        PreparedStatement stmt = mock(PreparedStatement.class);
+        ResultSet resultSet = mock(ResultSet.class);
+        when(resultSet.next()).thenReturn(true);
+        when(connection.prepareStatement(anyString())).thenReturn(stmt);
+        doNothing().when(stmt).setString(anyInt(), anyString());
+        when(stmt.executeQuery()).thenReturn(resultSet);
+        DBHandlerMocker.setUserResultSet(resultSet, testUser);
         testUser.addChange(new Change("Created")); // needs a new change otherwise will not be passed through to the DB
         Collection<User> users = new ArrayList<>();
         users.add(testUser);
 
         dbHandler.saveUsers(users, connection);
+        when(resultSet.next()).thenReturn(true, false);
+        User returned = dbHandler.getOneUser(connection, testUser.getNhi());
+        Assert.assertTrue(returned.getNhi().equals(testUser.getNhi()));
+        Assert.assertTrue(returned.getFirstName().equals(testUser.getFirstName()));
+        Assert.assertTrue(returned.getLastName().equals(testUser.getLastName()));
+        Assert.assertTrue(returned.getDateOfBirth().equals(testUser.getDateOfBirth()));
     }
 
     @Test
-    public void testDeleteUser() {
+    public void testDeleteUser() throws SQLException {
         testAddNewUser();
         testUser.setDeleted(true);
         Collection<User> users = new ArrayList<>();
@@ -109,7 +127,7 @@ public class DBHandlerTest {
     }
 
     @Test
-    public void testUpdateUser() {
+    public void testUpdateUser() throws SQLException {
         testAddNewUser();
         testUser.setHeight(1.89);
         Collection<User> users = new ArrayList<>();
@@ -120,7 +138,7 @@ public class DBHandlerTest {
     }
 
     @Test
-    public void testAddUserDonatingOrgans() {
+    public void testAddUserDonatingOrgans() throws SQLException {
         testAddNewUser();
         testUser.getDonorDetails().addOrgan(Organs.LUNG);
         Collection<User> users = new ArrayList<>();
@@ -130,7 +148,7 @@ public class DBHandlerTest {
     }
 
     @Test
-    public void testAddUserReceivingOrgan() {
+    public void testAddUserReceivingOrgan() throws SQLException {
         testAddNewUser();
         testUser.getReceiverDetails().startWaitingForOrgan(Organs.CONNECTIVE_TISSUE);
         testUser.getReceiverDetails().startWaitingForOrgan(Organs.CORNEA);
@@ -143,7 +161,7 @@ public class DBHandlerTest {
     }
 
     @Test
-    public void testAddProcedureToUser() {
+    public void testAddProcedureToUser() throws SQLException {
         testAddNewUser();
         ArrayList<Organs> organsAffected = new ArrayList<>();
         organsAffected.add(Organs.LUNG);
@@ -155,7 +173,7 @@ public class DBHandlerTest {
     }
 
     @Test
-    public void testAddMedicationsToUser() {
+    public void testAddMedicationsToUser() throws SQLException {
         testAddNewUser();
         testUser.addCurrentMedication("panadol");
         Collection<User> users = new ArrayList<>();
