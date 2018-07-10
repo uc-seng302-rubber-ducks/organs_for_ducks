@@ -90,4 +90,7 @@ public class SQLScriptRunner {
         }
     }
 
+    public static void main(String[] args){
+        run();
+    }
 }

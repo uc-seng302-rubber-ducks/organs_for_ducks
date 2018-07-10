@@ -100,16 +100,8 @@ public class ClinicianUpdateStrategy extends AbstractUpdateStrategy {
     private void createClinicianPassword(Clinician clinician, Connection connection) throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement("INSERT INTO PasswordDetails (fkStaffId, hash, salt) VALUES (?, ?, ?)")) {
             statement.setString(1, clinician.getStaffId());
-
-            Blob hashBlob = connection.createBlob();
-            hashBlob.setBytes(1, clinician.getPassword());
-
-            Blob saltBlob = connection.createBlob();
-            saltBlob.setBytes(1, clinician.getSalt());
-
-            statement.setBlob(2, hashBlob);
-            statement.setBlob(3, saltBlob);
-
+            statement.setString(2, clinician.getPassword());
+            statement.setString(3, clinician.getSalt());
             statement.executeUpdate();
         }
     }
@@ -250,15 +242,10 @@ public class ClinicianUpdateStrategy extends AbstractUpdateStrategy {
      */
     private void updateClinicianPassword(Clinician clinician, Connection connection) throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement(UPDATE_CLINICIAN_PSSWRD)) {
-
-            Blob passwordBlob = connection.createBlob();
-            passwordBlob.setBytes(1, clinician.getPassword());
-
-            Blob saltBlob = connection.createBlob();
-            saltBlob.setBytes(1, clinician.getSalt());
-
-            statement.setBlob(1, passwordBlob);
-            statement.setBlob(2, saltBlob);
+            String password = clinician.getPassword();
+            String salt = clinician.getSalt();
+            statement.setString(1, password);
+            statement.setString(2, salt);
             statement.setString(3, clinician.getStaffId());
 
             statement.executeUpdate();

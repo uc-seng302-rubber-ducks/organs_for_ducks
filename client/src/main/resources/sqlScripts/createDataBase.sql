@@ -196,8 +196,8 @@ CREATE TABLE PasswordDetails(
   password_id INT AUTO_INCREMENT PRIMARY KEY,
   fkAdminUserName VARCHAR(255) UNIQUE,
   fkStaffId VARCHAR(255) UNIQUE,
-  hash BLOB,
-  salt BLOB,
+  hash TEXT,
+  salt TEXT,
   FOREIGN KEY (fkAdminUserName) REFERENCES Administrator(userName) ON DELETE CASCADE,
   FOREIGN KEY (fkStaffId) REFERENCES Clinician(staffId) ON DELETE CASCADE
 );

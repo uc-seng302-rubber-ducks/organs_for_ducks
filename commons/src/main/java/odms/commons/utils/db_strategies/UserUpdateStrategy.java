@@ -28,7 +28,7 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
     private static final String CREATE_NEW_MEDICATION_TIME = "INSERT INTO MedicationDates (fkMedicationInstanceId, dateStartedTaking, dateStoppedTaking) VALUES (?, ?, ?)";
     private static final String CREATE_NEW_PROCEDURE = "INSERT INTO MedicalProcedure (fkUserNhi, procedureName, procedureDescription, procedureDate) VALUES (?, ?, ?, ?)";
     private static final String CREATE_CURRENT_DISEASE = "INSERT INTO CurrentDisease (fkUserNhi, diseaseName, diagnosisDate, isChronic) VALUES (?, ?, ?, ?)";
-    private static final String CREATE_PREVIOUS_DISEASE = "INSERT INTO PreviousDisease (fkUserNhi, diseaseName, diagnosisDate, remissionDate) VALUES (?, ?, ?, ?)";
+    private static final String CREATE_PREVIOUS_DISEASE = "INSERT INTO PreviousDisease (fkUserNhi, diseaseName, diagnosisDate) VALUES (?, ?, ?)";
     private static final String CREATE_AFFECTED_ORGAN = "INSERT INTO MedicalProcedureOrgan (fkOrgansId, fkProcedureId) VALUES (?, ?)";
     private static final String CREATE_DONATING_ORGAN = "INSERT INTO OrganDonating (fkUserNhi, fkOrgansId) VALUES (?, ?)";
     private static final String CREATE_RECEIVING_ORGAN = "INSERT INTO OrganAwaiting (fkUserNhi, fkOrgansId) VALUES (?, ?)";
@@ -618,7 +618,6 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
             createDisease.setString(1, userNhi);
             createDisease.setString(2, disease.getName());
             createDisease.setDate(3, Date.valueOf(disease.getDiagnosisDate()));
-            createDisease.setDate(4, Date.valueOf(disease.getDiagnosisDate()));
 
             createDisease.executeUpdate();
         }

@@ -27,9 +27,9 @@ public class Administrator extends Undoable<Administrator> implements Listenable
     @Expose
     private String lastName;
     @Expose
-    private byte[] password;
+    private String password;
     @Expose
-    private byte[] salt;
+    private String salt;
     @Expose
     private LocalDateTime dateCreated;
     @Expose
@@ -177,7 +177,7 @@ public class Administrator extends Undoable<Administrator> implements Listenable
         return fullName;
     }
 
-    public byte[] getPassword() {
+    public String getPassword() {
         return password;
     }
 
@@ -187,7 +187,7 @@ public class Administrator extends Undoable<Administrator> implements Listenable
         addChange(new Change("Update password"));
     }
 
-    public byte[] getSalt() {
+    public String getSalt() {
         return salt;
     }
 
