@@ -22,8 +22,10 @@ import java.io.File;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
-import seng302.controller.gui.FileSelectorController;
+import odms.controller.gui.FileSelectorController;
 
 public class UserOverviewController {
 
@@ -225,7 +227,10 @@ public class UserOverviewController {
     private void uploadImage(){
         boolean isValid = true;
         String filename;
-        filename = FileSelectorController.getImageFileSelector(stage);
+        List<String> extensions = new ArrayList<>();
+        extensions.add("*.jpg");
+        extensions.add("*.png");
+        filename = FileSelectorController.getFileSelector(stage, extensions);
         File inFile = new File(filename);
 
         if(inFile.length() > 2000000){ //if more than 2MB
