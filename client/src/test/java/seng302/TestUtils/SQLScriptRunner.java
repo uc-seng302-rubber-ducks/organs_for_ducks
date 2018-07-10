@@ -3,6 +3,7 @@ package seng302.TestUtils;
 import odms.commons.utils.JDBCDriver;
 import odms.commons.utils.Log;
 
+import java.beans.PropertyVetoException;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -16,8 +17,8 @@ import java.sql.SQLException;
  */
 public class SQLScriptRunner {
 
-    private static String RESET_DATABASE_SCRIPT_FILEPATH = "client/src/main/resources/sqlScripts/createDataBase.sql";
-    private static String RESAMPLE_DATABASE_SCRIPT_FILEPATH = "client/src/main/resources/sqlScripts/sampleDatabaseData.sql";
+    private static String RESET_DATABASE_SCRIPT_FILEPATH = "src/main/resources/sqlScripts/createDataBase.sql";
+    private static String RESAMPLE_DATABASE_SCRIPT_FILEPATH = "src/main/resources/sqlScripts/sampleDatabaseData.sql";
 
     /**
      * Opens a file based on filePath given, reads the file and execute the
@@ -30,7 +31,12 @@ public class SQLScriptRunner {
      * @throws IOException if any errors with reading the file occurs
      */
     public static void RunSqlScript(String filePath) throws SQLException, IOException{
-        JDBCDriver jdbcDriver = new JDBCDriver();
+        JDBCDriver jdbcDriver = null;
+        try {
+            jdbcDriver = new JDBCDriver();
+        } catch (PropertyVetoException e) {
+            e.printStackTrace();
+        }
 
         String absolutePath = new File("./").getAbsolutePath();
         absolutePath = absolutePath.substring(0, absolutePath.length()-1); //remove the full stop
@@ -41,7 +47,7 @@ public class SQLScriptRunner {
         try (BufferedReader reader = new BufferedReader(new FileReader(scriptFilePath))) {
 
             String line;
-            connection = jdbcDriver.getTestConnection();
+            connection = jdbcDriver.getConnection();
 
             // read script line by line
             while ((line = reader.readLine()) != null) {

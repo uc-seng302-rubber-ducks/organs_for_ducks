@@ -8,6 +8,7 @@ import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
 
+import java.beans.PropertyVetoException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -44,7 +45,12 @@ public class Sql implements Runnable {
         ResultSet resultSet = null;
         Connection conn = null;
         try {
-            JDBCDriver jdbcDriver = new JDBCDriver();
+            JDBCDriver jdbcDriver = null;
+            try {
+                jdbcDriver = new JDBCDriver();
+            } catch (PropertyVetoException e) {
+                e.printStackTrace();
+            }
             conn = jdbcDriver.getConnection();
             conn.prepareStatement(statement);
         } catch (SQLException e) {

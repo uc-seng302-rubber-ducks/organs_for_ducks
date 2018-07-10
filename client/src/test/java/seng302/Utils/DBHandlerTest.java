@@ -11,6 +11,7 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import java.beans.PropertyVetoException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -60,7 +61,11 @@ public class DBHandlerTest {
         expected.setEmail("aaronB@gmail.com");
 
         dbHandler = new DBHandler();
-        connection = new JDBCDriver().getTestConnection();
+        try {
+            connection = new JDBCDriver().getConnection();
+        } catch (PropertyVetoException e) {
+            e.printStackTrace();
+        }
     }
 
     @After
