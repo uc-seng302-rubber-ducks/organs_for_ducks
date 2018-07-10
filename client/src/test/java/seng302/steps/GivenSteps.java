@@ -1,17 +1,17 @@
 package seng302.steps;
 
-import cucumber.api.PendingException;
 import cucumber.api.java.After;
 import cucumber.api.java.en.Given;
 import odms.App;
-import odms.controller.AppController;
 import odms.commons.model.User;
 import odms.commons.model._enum.Organs;
+import odms.controller.AppController;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.matcher.control.LabeledMatchers;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.concurrent.TimeoutException;
 
@@ -127,25 +127,40 @@ public class GivenSteps extends ApplicationTest {
 
     @Given("^the cache is empty$")
     public void the_cache_is_empty() throws Throwable {
-        // Write code here that turns the phrase above into concrete actions
-        throw new PendingException();
+        CucumberTestModel.getMedicationInteractionCache().clear();
     }
 
     @Given("^the cache is pre-populated$")
     public void the_cache_is_pre_populated() throws Throwable {
         // Write code here that turns the phrase above into concrete actions
-        throw new PendingException();
+        CucumberTestModel.getHttpRequester().getDrugInteractions("Xanax", "Codeine");
+        CucumberTestModel.getHttpRequester().getDrugInteractions("Aceon", "pancreaze");
+        CucumberTestModel.getHttpRequester().getDrugInteractions("Aceon", "Codeine");
+        CucumberTestModel.getHttpRequester().getDrugInteractions("Aceon", "Xanax");
+        CucumberTestModel.getMedicationInteractionCache().get("Aceon", "pancreaze").setDateTime(LocalDateTime.now().minusDays(3));
     }
 
     @Given("^the app is logged in as a \"([^\"]*)\"$")
-    public void the_app_is_logged_in_as_a(String arg1) throws Throwable {
+    public void the_app_is_logged_in_as_a(String User) throws Throwable {
         // Write code here that turns the phrase above into concrete actions
-        throw new PendingException();
+        iHaveStartedTheGUI();
+        aUserWithTheNHIExists(User);
+        clickOn("#userIDTextField");
+        write(User);
+        clickOn("#loginUButton");
     }
 
-    @Given("^the \"([^\"]*)\" tab is selected$")
-    public void the_tab_is_selected(String arg1) throws Throwable {
+    @Given("^the user is taking \"([^\"]*)\" and \"([^\"]*)\"$")
+    public void the_user_is_taking_and(String drugA, String drugB) throws Throwable {
         // Write code here that turns the phrase above into concrete actions
-        throw new PendingException();
+        CucumberTestModel.getController().findUser(CucumberTestModel.getUserNhi()).addCurrentMedication(drugA);
+        CucumberTestModel.getController().findUser(CucumberTestModel.getUserNhi()).addCurrentMedication(drugB);
+    }
+
+
+    @Given("^the \"([^\"]*)\" tab is selected$")
+    public void the_tab_is_selected(String tab) throws Throwable {
+        // Write code here that turns the phrase above into concrete actions
+        clickOn("#" + tab);
     }
 }
