@@ -231,17 +231,20 @@ public class UserOverviewController {
         extensions.add("*.jpg");
         extensions.add("*.png");
         filename = FileSelectorController.getFileSelector(stage, extensions);
-        File inFile = new File(filename);
 
-        if(inFile.length() > 2000000){ //if more than 2MB
-            System.out.println("image exceeded 2MB!"); //TODO: Replace with javafx label
-            isValid = false;
-        }
+        if(filename != null) {
+            File inFile = new File(filename);
+
+            if (inFile.length() > 2000000) { //if more than 2MB
+                System.out.println("image exceeded 2MB!"); //TODO: Replace with javafx label
+                isValid = false;
+            }
 
 
-        if(isValid){
-            Image image = new Image("file:"+inFile.getPath());
-            profilePicture.setImage(image);
+            if (isValid) {
+                Image image = new Image("file:" + inFile.getPath(), 200, 200, false, true);
+                profilePicture.setImage(image);
+            }
         }
     }
 
