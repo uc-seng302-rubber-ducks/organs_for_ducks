@@ -1,4 +1,4 @@
-package odms.commons.utils.dbStrategies;
+package odms.commons.utils.db_strategies;
 
 import java.sql.Connection;
 import java.sql.SQLException;

@@ -1,4 +1,4 @@
-package odms.commons.utils.dbStrategies;
+package odms.commons.utils.db_strategies;
 
 import odms.commons.model.Administrator;
 import odms.commons.utils.Log;
@@ -10,27 +10,29 @@ public class AdminUpdateStrategy extends AbstractUpdateStrategy {
 
     private static final String CREATE_ADMIN_STMT = "INSERT INTO Administrator (username, firstName, middleName, lastName) VALUES (?, ?, ?, ?)";
 
-    private static final String UPDATE_ADMIN_STMT = "UPDATE Admin SET username = ?, firstName = ?, middleName = ?, lastName = ?, lastModified = ? WHERE username = ?";
-    private static final String UPDATE_ADMIN_PASSWORD = "UPDATE PasswordDetails SET hash = ?, salt = ? WHERE fkAdminUserName = ?";
+    private static final String UPDATE_ADMIN_STMT = "UPDATE Administrator SET firstName = ?, middleName = ?, lastName = ?, lastModified = ? WHERE username = ?";
+    private static final String UPDATE_ADMIN_PSSWRD = "UPDATE PasswordDetails SET hash = ?, salt = ? WHERE fkAdminUserName = ?";
 
-    private static final String DELETE_ADMIN_STMT = "DELETE FROM Administrators WHERE username = ?";
+    private static final String DELETE_ADMIN_STMT = "DELETE FROM Administrator WHERE username = ?";
 
     @Override
     public <T> void update(Collection<T> roles, Connection connection) throws SQLException {
         Collection<Administrator> admins = (Collection<Administrator>) roles;
         for (Administrator admin : admins) {
-            if (admin.getChanges().size() <= 0) {
+            if (admin.getChanges().isEmpty()) {
                 continue;
             }
-            PreparedStatement stmt = connection.prepareStatement("SELECT username FROM Administrator WHERE username = ?");
-            stmt.setString(1, admin.getUserName());
-            ResultSet queryResults = stmt.executeQuery();
-            if (!queryResults.next() && !admin.isDeleted()) {
-                executeCreation(admin, connection);
-            } else if (admin.isDeleted()) {
-                deleteRole(admin, connection);
-            } else {
-                executeUpdate(admin, connection);
+            try (PreparedStatement stmt = connection.prepareStatement("SELECT username FROM Administrator WHERE username = ?")) {
+                stmt.setString(1, admin.getUserName());
+                try (ResultSet queryResults = stmt.executeQuery()) {
+                    if (!queryResults.next() && !admin.isDeleted()) {
+                        executeCreation(admin, connection);
+                    } else if (admin.isDeleted()) {
+                        deleteRole(admin, connection);
+                    } else {
+                        executeUpdate(admin, connection);
+                    }
+                }
             }
         }
     }
@@ -43,7 +45,7 @@ public class AdminUpdateStrategy extends AbstractUpdateStrategy {
      * @param admin      The admin associated with the entry in the database
      * @param connection Connection ot the target database
      */
-    private void executeUpdate(Administrator admin, Connection connection) {
+    private void executeUpdate(Administrator admin, Connection connection) throws SQLException {
         try {
             connection.prepareStatement("START TRANSACTION").execute();
             try {
@@ -56,7 +58,7 @@ public class AdminUpdateStrategy extends AbstractUpdateStrategy {
             connection.close();
         } catch (SQLException sqlEx) {
             Log.warning("Error in connection to database", sqlEx);
-            System.out.println("Error connecting to database");
+            throw sqlEx;
         }
 
     }
@@ -77,7 +79,7 @@ public class AdminUpdateStrategy extends AbstractUpdateStrategy {
                 createPassword(admin, connection);
             } catch (SQLException sqlEx) {
                 connection.prepareStatement("ROLLBACK").execute();
-                System.out.println("An error occured"); //TODO: Make this a popup
+                throw sqlEx;
             }
             connection.prepareStatement("COMMIT");
             connection.close();
@@ -90,16 +92,22 @@ public class AdminUpdateStrategy extends AbstractUpdateStrategy {
     /**
      * Saves the hashed password to the PasswordDetails table in the database
      * Precondition: The connection is not null and valid
-     * Postcondition: The hashed password and salt is stored in the database.
+     * Post-condition: The hashed password and salt is stored in the database.
      *
      * @param admin      Administrator to store the password of
      * @param connection Connection to the target database
      * @throws SQLException If there is an error in storing it into the database or the connection is invalid
      */
     private void createPassword(Administrator admin, Connection connection) throws SQLException {
-        PreparedStatement statement = connection.prepareStatement("INSERT INTO PasswordDetails (fkAdminUserName, hash, salt) VALUES (?, ?, ?)");
-        statement.setString(1, admin.getUserName());
-        //TODO: Figure out how to send the password hash and salt 25/6 - Eiran
+        try (PreparedStatement statement = connection.prepareStatement("INSERT INTO PasswordDetails (fkAdminUserName, hash, salt) VALUES (?, ?, ?)")) {
+            statement.setString(1, admin.getUserName());
+
+            statement.setString(2, admin.getPassword());
+
+            statement.setString(3, admin.getSalt());
+
+            statement.executeUpdate();
+        }
     }
 
     /**
@@ -112,14 +120,15 @@ public class AdminUpdateStrategy extends AbstractUpdateStrategy {
      * @throws SQLException If there isn't an active connection to the database or there is an error creating the administrator
      */
     private void createAdmin(Administrator admin, Connection connection) throws SQLException {
-        PreparedStatement statement = connection.prepareStatement(CREATE_ADMIN_STMT);
+        try (PreparedStatement statement = connection.prepareStatement(CREATE_ADMIN_STMT)) {
 
-        statement.setString(1, admin.getUserName());
-        statement.setString(2, admin.getFirstName());
-        statement.setString(3, admin.getMiddleName());
-        statement.setString(4, admin.getLastName());
+            statement.setString(1, admin.getUserName());
+            statement.setString(2, admin.getFirstName());
+            statement.setString(3, admin.getMiddleName());
+            statement.setString(4, admin.getLastName());
 
-        statement.executeUpdate();
+            statement.executeUpdate();
+        }
     }
 
     /**
@@ -155,16 +164,13 @@ public class AdminUpdateStrategy extends AbstractUpdateStrategy {
      * @throws SQLException If there is an error updating the password, or the database connection is invalid
      */
     private void updateAdminPassword(Administrator admin, Connection connection) throws SQLException {
-        try (PreparedStatement statement = connection.prepareStatement(UPDATE_ADMIN_PASSWORD)) {
+        try (PreparedStatement statement = connection.prepareStatement(UPDATE_ADMIN_PSSWRD)) {
 
-            Blob passwordBlob = connection.createBlob();
-            //passwordBlob.setBytes(1, admin.getPassword()); // todo: need to be able to access the admins hashed password, is having the password getter public okay? - jen
+            String password = admin.getPassword();
+            String salt = admin.getSalt();
 
-            Blob saltBlob = connection.createBlob();
-            saltBlob.setBytes(1, admin.getSalt());
-
-            statement.setBlob(1, passwordBlob);
-            statement.setBlob(2, saltBlob);
+            statement.setString(1, password);
+            statement.setString(2, salt);
             statement.setString(3, admin.getUserName());
 
             statement.executeUpdate();
