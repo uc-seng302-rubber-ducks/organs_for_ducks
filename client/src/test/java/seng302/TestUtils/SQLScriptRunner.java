@@ -32,7 +32,11 @@ public class SQLScriptRunner {
      */
     public static void runSqlScript(String filePath) throws SQLException, IOException {
         JDBCDriver jdbcDriver = null;
-        jdbcDriver = new JDBCDriver();
+        try {
+            jdbcDriver = new JDBCDriver();
+        } catch (PropertyVetoException ex) {
+            ex.printStackTrace();
+        }
 
         String absolutePath = new File("./").getAbsolutePath();
         absolutePath = absolutePath.substring(0, absolutePath.length()-1); //remove the full stop

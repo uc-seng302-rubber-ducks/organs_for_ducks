@@ -8,14 +8,8 @@ import odms.commons.utils.DBHandler;
 import org.junit.*;
 import seng302.TestUtils.DBHandlerMocker;
 
-import java.beans.PropertyVetoException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -27,44 +21,22 @@ import static org.mockito.Mockito.*;
 public class DBHandlerTest {
     private DBHandler dbHandler;
     private Connection connection;
-    private User expected;
+    private PreparedStatement mockStmt;
+    private ResultSet mockResultSet;
     private User testUser = new User("Eiran", LocalDate.of(2018, 2, 20), "ABC1111");
 
-    /**
-     * Helper function to convert date string
-     * to LocalDateTime object.
-     * @param date date string from database
-     * @return LocalDateTime object
-     */
-    private LocalDateTime dateToLocalDateTime(String date){
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.S");
-        return LocalDateTime.parse(date, formatter);
-    }
-
     @Before
-    public void beforeTest() {
-        expected = new User();
-        expected.setNhi("ABC1234");
-        expected.setFirstName("Allan");
-        expected.setMiddleName("Danny Zurich");
-        expected.setLastName("Levi");
-        expected.setPreferredFirstName("Al");
-        expected.setTimeCreated(dateToLocalDateTime("1997-01-01 00:01:01.0"));
-        expected.setLastModified(dateToLocalDateTime("1997-05-01 13:01:01.0"));
-        //TODO: set expected's profile picture here
-        expected.setGenderIdentity("Male");
-        expected.setBirthGender("Male");
-        expected.setSmoker(true);
-        expected.setAlcoholConsumption("High");
-        expected.setHeight(163.7);
-        expected.setWeight(65.8);
-        expected.setHomePhone(null);
-        expected.setCellPhone("0221453566");
-        expected.setEmail("aaronB@gmail.com");
-
+    public void beforeTest() throws SQLException {
         dbHandler = new DBHandler();
         connection = mock(Connection.class);
 
+        mockStmt = mock(PreparedStatement.class);
+        mockResultSet = mock(ResultSet.class);
+        when(mockResultSet.next()).thenReturn(true);
+        when(connection.prepareStatement(anyString())).thenReturn(mockStmt);
+        doNothing().when(mockStmt).setString(anyInt(), anyString());
+        when(mockStmt.executeQuery()).thenReturn(mockResultSet);
+        DBHandlerMocker.setUserResultSet(mockResultSet, testUser);
     }
 
     @After
@@ -73,43 +45,9 @@ public class DBHandlerTest {
     }
 
 
-/*
-    @Test
-    public void testUserInstanceCreatedValid() throws SQLException {
-        Collection<User> users = dbHandler.loadUsers(connection, 10, 0);
-        System.out.println(users);
-        Assert.assertEquals(3, users.size());
-    }
-
     @Test
     public void testDecodeUserInstanceCreatedValid() throws SQLException {
-        Collection<User> users = dbHandler.loadUsers(connection, 10, 0);
-        User actual = users.iterator().next();
-        Assert.assertTrue(actual.getNhi().equals(expected.getNhi()));
-        Assert.assertTrue(actual.getMiddleName().equals(expected.getMiddleName()));
-        Assert.assertTrue(actual.getLastName().equals(expected.getLastName()));
-        Assert.assertTrue(actual.getTimeCreated().equals(expected.getTimeCreated()));
-        //Assert.assertTrue (actual.getLastModified().equals(expected.getLastModified()));
-//        System.out.println(actual.getLastModified());
-//        System.out.println(expected.getLastModified());
-
-    }*/
-
-    @Test
-    public void testAddNewUser() throws SQLException {
-        PreparedStatement stmt = mock(PreparedStatement.class);
-        ResultSet resultSet = mock(ResultSet.class);
-        when(resultSet.next()).thenReturn(true);
-        when(connection.prepareStatement(anyString())).thenReturn(stmt);
-        doNothing().when(stmt).setString(anyInt(), anyString());
-        when(stmt.executeQuery()).thenReturn(resultSet);
-        DBHandlerMocker.setUserResultSet(resultSet, testUser);
-        testUser.addChange(new Change("Created")); // needs a new change otherwise will not be passed through to the DB
-        Collection<User> users = new ArrayList<>();
-        users.add(testUser);
-
-        dbHandler.saveUsers(users, connection);
-        when(resultSet.next()).thenReturn(true, false);
+        when(mockResultSet.next()).thenReturn(true, false);
         User returned = dbHandler.getOneUser(connection, testUser.getNhi());
         Assert.assertTrue(returned.getNhi().equals(testUser.getNhi()));
         Assert.assertTrue(returned.getFirstName().equals(testUser.getFirstName()));
@@ -118,39 +56,50 @@ public class DBHandlerTest {
     }
 
     @Test
+    public void testAddNewUser() throws SQLException {
+        testUser.addChange(new Change("Created")); // needs a new change otherwise will not be passed through to the DB
+        Collection<User> users = new ArrayList<>();
+        users.add(testUser);
+
+        when(mockResultSet.next()).thenReturn(false).thenReturn(true);
+        dbHandler.saveUsers(users, connection);
+        verify(mockStmt, times(17)).executeUpdate();
+    }
+
+    @Test
     public void testDeleteUser() throws SQLException {
-        testAddNewUser();
         testUser.setDeleted(true);
+        when(mockResultSet.next()).thenReturn(true);
         Collection<User> users = new ArrayList<>();
         users.add(testUser);
 
         dbHandler.saveUsers(users, connection);
+        verify(mockStmt, times(1)).executeUpdate();
     }
 
     @Test
     public void testUpdateUser() throws SQLException {
-        testAddNewUser();
+
         testUser.setHeight(1.89);
         Collection<User> users = new ArrayList<>();
         users.add(testUser);
 
         dbHandler.saveUsers(users, connection);
-        testDeleteUser();
+        verify(mockStmt, times(10)).executeUpdate();
     }
 
     @Test
     public void testAddUserDonatingOrgans() throws SQLException {
-        testAddNewUser();
         testUser.getDonorDetails().addOrgan(Organs.LUNG);
         Collection<User> users = new ArrayList<>();
         users.add(testUser);
 
         dbHandler.saveUsers(users, connection);
+        verify(mockStmt, times(11)).executeUpdate();
     }
 
     @Test
     public void testAddUserReceivingOrgan() throws SQLException {
-        testAddNewUser();
         testUser.getReceiverDetails().startWaitingForOrgan(Organs.CONNECTIVE_TISSUE);
         testUser.getReceiverDetails().startWaitingForOrgan(Organs.CORNEA);
         testUser.getReceiverDetails().stopWaitingForAllOrgans();
@@ -159,27 +108,39 @@ public class DBHandlerTest {
         users.add(testUser);
 
         dbHandler.saveUsers(users, connection);
+        verify(mockStmt, times(14)).executeUpdate();
+        verify(mockStmt, never()).setNull(3, Types.DATE);
+        verify(mockStmt, times(2)).setInt(2, Organs.CONNECTIVE_TISSUE.getDbValue());
+        verify(mockStmt, times(2)).setInt(2, Organs.CORNEA.getDbValue());
     }
 
     @Test
     public void testAddProcedureToUser() throws SQLException {
-        testAddNewUser();
         ArrayList<Organs> organsAffected = new ArrayList<>();
         organsAffected.add(Organs.LUNG);
-        testUser.addMedicalProcedure(new MedicalProcedure(LocalDate.of(2018, 5, 3), "Lung Transplant", "Lung dieded", organsAffected));
+        MedicalProcedure procedure = new MedicalProcedure(LocalDate.of(2018, 5, 3), "Lung Transplant", "Lung dieded", organsAffected);
+        testUser.addMedicalProcedure(procedure);
         Collection<User> users = new ArrayList<>();
         users.add(testUser);
 
         dbHandler.saveUsers(users, connection);
+        verify(mockStmt, times(12)).executeUpdate();
+        verify(mockResultSet, times(1)).getInt("procedureId");
+        verify(mockStmt, times(2)).setString(2, procedure.getSummary());
+        verify(mockStmt, times(1)).setInt(1, Organs.LUNG.getDbValue());
     }
 
     @Test
     public void testAddMedicationsToUser() throws SQLException {
-        testAddNewUser();
         testUser.addCurrentMedication("panadol");
         Collection<User> users = new ArrayList<>();
         users.add(testUser);
 
         dbHandler.saveUsers(users, connection);
+        verify(mockStmt, times(12)).executeUpdate();
+        verify(mockResultSet, times(1)).getInt("medicationInstanceId");
+        verify(mockStmt, times(2)).setString(2, "panadol");
+        verify(mockStmt, times(1)).setNull(3, Types.TIMESTAMP);
+
     }
 }
