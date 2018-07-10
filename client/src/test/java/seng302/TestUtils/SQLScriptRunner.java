@@ -3,6 +3,7 @@ package seng302.TestUtils;
 import odms.commons.utils.JDBCDriver;
 import odms.commons.utils.Log;
 
+import java.beans.PropertyVetoException;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -30,7 +31,8 @@ public class SQLScriptRunner {
      * @throws IOException if any errors with reading the file occurs
      */
     public static void runSqlScript(String filePath) throws SQLException, IOException {
-        JDBCDriver jdbcDriver = new JDBCDriver();
+        JDBCDriver jdbcDriver = null;
+        jdbcDriver = new JDBCDriver();
 
         String absolutePath = new File("./").getAbsolutePath();
         absolutePath = absolutePath.substring(0, absolutePath.length()-1); //remove the full stop
@@ -41,7 +43,7 @@ public class SQLScriptRunner {
         try (BufferedReader reader = new BufferedReader(new FileReader(scriptFilePath))) {
 
             String line;
-            connection = jdbcDriver.getTestConnection();
+            connection = jdbcDriver.getConnection();
 
             // read script line by line
             while ((line = reader.readLine()) != null) {
