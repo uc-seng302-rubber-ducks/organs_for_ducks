@@ -1,8 +1,6 @@
 package seng302.Utils;
 
-import odms.commons.model.Change;
-import odms.commons.model.MedicalProcedure;
-import odms.commons.model.User;
+import odms.commons.model.*;
 import odms.commons.model._enum.Organs;
 import odms.commons.utils.DBHandler;
 import org.junit.*;
@@ -12,18 +10,20 @@ import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
-@Ignore
 public class DBHandlerTest {
     private DBHandler dbHandler;
     private Connection connection;
     private PreparedStatement mockStmt;
     private ResultSet mockResultSet;
     private User testUser = new User("Eiran", LocalDate.of(2018, 2, 20), "ABC1111");
+    private Clinician testClinician = new Clinician("Jon", "16", "password");
+    private Administrator testAdmin = new Administrator("username", "James", "", "", "admin");
 
     @Before
     public void beforeTest() throws SQLException {
@@ -141,6 +141,25 @@ public class DBHandlerTest {
         verify(mockResultSet, times(1)).getInt("medicationInstanceId");
         verify(mockStmt, times(2)).setString(2, "panadol");
         verify(mockStmt, times(1)).setNull(3, Types.TIMESTAMP);
+    }
 
+    @Test
+    @Ignore //TODO: Unignore when changes have been properly made.
+    public void testAddClinician() throws SQLException {
+        testClinician.addChange(new Change("Created clinician"));
+        Collection<Clinician> clinicians = new ArrayList<>(Collections.singleton(testClinician));
+
+        dbHandler.saveClinicians(clinicians, connection);
+        verify(mockStmt, times(4)).executeUpdate();
+    }
+
+    @Test
+    @Ignore //TODO: Unignore when changes have been properly made.
+    public void testAddAdmin() throws SQLException {
+        testAdmin.addChange(new Change("Created administrator"));
+        Collection<Administrator> admins = new ArrayList<>(Collections.singleton(testAdmin));
+
+        dbHandler.saveAdministrators(admins, connection);
+        verify(mockStmt, times(4)).executeUpdate();
     }
 }

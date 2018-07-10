@@ -144,6 +144,8 @@ public class ClinicianUpdateStrategy extends AbstractUpdateStrategy {
                 addressStmt.setString(5, clinician.getCity());
                 addressStmt.setString(6, clinician.getRegion());
                 addressStmt.setString(7, clinician.getCountry());
+
+                addressStmt.executeUpdate();
             }
         }
     }
