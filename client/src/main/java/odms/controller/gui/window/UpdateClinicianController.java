@@ -10,11 +10,11 @@ import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
-import odms.controller.AppController;
 import odms.commons.model.Clinician;
-import odms.commons.utils.Log;
 import odms.commons.model.datamodel.Address;
 import odms.commons.model.datamodel.ContactDetails;
+import odms.commons.utils.Log;
+import odms.controller.AppController;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -27,6 +27,7 @@ import static odms.commons.utils.UndoHelpers.removeFormChanges;
  */
 public class UpdateClinicianController {
 
+    //<editor-fold desc="fxml stuff">
     @FXML
     private TextField staffIDTextField;
 
@@ -92,6 +93,7 @@ public class UpdateClinicianController {
 
     @FXML
     private Button redoClinicianFormButton;
+    //</editor-fold>
 
     private AppController controller;
     private Stage stage;

@@ -2,6 +2,7 @@ package seng302.model;
 
 import odms.commons.model.Clinician;
 import odms.commons.utils.PasswordManager;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -21,29 +22,24 @@ public class ClinicianTest {
 
 
     @Test
-    public void passwordIsCorrectlyHashed() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
-        byte[] hash = PasswordManager.hash("password", testClinician.getSalt());
-        Clinician instance = new Clinician();
-        Class<?> secretClass = instance.getClass();
-
-        Method method = secretClass.getDeclaredMethod("getPassword");
-        method.setAccessible(true);
-        assert (Arrays.equals(hash, (byte[]) method.invoke(testClinician)));
+    public void passwordIsCorrectlyHashed() {
+        String hash = PasswordManager.hash("password", testClinician.getSalt());
+        Assert.assertTrue(hash.equals(testClinician.getPassword()));
     }
 
     @Test
     public void passwordIsCorrectlyAccepted() {
-        assert testClinician.isPasswordCorrect("password");
+        Assert.assertTrue(testClinician.isPasswordCorrect("password"));
     }
 
     @Test
     public void passwordIsNotAccepted() {
-        assert !testClinician.isPasswordCorrect("Password");
+        Assert.assertFalse(testClinician.isPasswordCorrect("Password"));
     }
 
     @Test
     public void passwordIsCorrectlyUpdated() {
         testClinician.setPassword("Password");
-        assert testClinician.isPasswordCorrect("Password");
+        Assert.assertTrue(testClinician.isPasswordCorrect("Password"));
     }
 }

@@ -7,14 +7,14 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.stage.Stage;
-import odms.controller.AppController;
-import odms.controller.gui.window.UserController;
 import odms.commons.model.Disease;
 import odms.commons.model.User;
 import odms.commons.model._enum.OrganDeregisterReason;
 import odms.commons.model._enum.Organs;
 import odms.commons.utils.AttributeValidation;
 import odms.commons.utils.Log;
+import odms.controller.AppController;
+import odms.controller.gui.window.UserController;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -75,7 +75,7 @@ public class DeregisterOrganReasonController {
         currentUser = user;
         this.userController = userController;
         receiverName.setText(user.getFullName());
-        organName.setText(organ.organName);
+        organName.setText(organ.toString());
         this.toDeRegister = organ;
         dODDatePicker.setValue(LocalDate.now());
         dODDatePicker.setDisable(true);
@@ -117,11 +117,11 @@ public class DeregisterOrganReasonController {
         UserController userController = appController.getUserController();
         try {
             userController.showUser(currentUser);
-            Log.info("cancelled organ: " + toDeRegister.organName + " de-registration for Receiver with NHI: " + currentUser.getNhi());
+            Log.info("cancelled organ: " + toDeRegister.toString() + " de-registration for Receiver with NHI: " + currentUser.getNhi());
         } catch (NullPointerException ex) {
             //TODO causes npe if donor is new in this session
             //the text fields etc. are all null
-            Log.severe("unable to cancel organ: " + toDeRegister.organName + "  de-registration for Receiver with NHI: " + currentUser.getNhi(), ex);
+            Log.severe("unable to cancel organ: " + toDeRegister.toString() + "  de-registration for Receiver with NHI: " + currentUser.getNhi(), ex);
         }
         stage.close();
     }
@@ -133,7 +133,7 @@ public class DeregisterOrganReasonController {
     @FXML
     void acceptDeregistration() {
         boolean isValid = true;
-        String logMessage = "Organ: " + toDeRegister.organName + "  de-registration reason for Receiver with NHI: " + currentUser.getNhi() + " is ";
+        String logMessage = "Organ: " + toDeRegister.toString() + "  de-registration reason for Receiver with NHI: " + currentUser.getNhi() + " is ";
         if (transplantReceivedRadioButton.isSelected()) {
             userController.setOrganDeregisterationReason(OrganDeregisterReason.TRANSPLANT_RECEIVED);
             Log.info(logMessage + OrganDeregisterReason.TRANSPLANT_RECEIVED);

@@ -37,7 +37,7 @@ public class ReceiverOrganDateController {
     public void init(User user, Stage stage, Organs organ) {
         this.user = user;
         this.stage = stage;
-        organNameLabel.setText(organ.organName);
+        organNameLabel.setText(organ.toString());
         showTimeTable(organ);
     }
 
