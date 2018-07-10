@@ -13,6 +13,7 @@ public class EmergencyContact extends ContactDetails {
     //declaring attributes
     private String name;
     private String relationship;
+    private transient User attachedUser;
 
 
     /**
@@ -55,15 +56,7 @@ public class EmergencyContact extends ContactDetails {
     }
 
     public void setName(String name) {
-        //Memento<User> memento = new Memento<>();
-        //User clone = super.getAttachedUser().clone();
-        //clone.setContact(copy(this));
-        //memento.setOldObject(clone);
         this.name = name;
-        //clone = super.getAttachedUser().clone();
-        //clone.setContact(copy(this));
-        //memento.setNewObject(clone);
-        //super.getAttachedUser().getUndoStack().push(memento);
     }
 
     public String getHomePhoneNumber() {
@@ -71,15 +64,7 @@ public class EmergencyContact extends ContactDetails {
     }
 
     public void setHomePhoneNumber(String homePhoneNumber) {
-        //Memento<User> memento = new Memento<>();
-        //User clone = super.getAttachedUser().clone();
-        //clone.setContact(copy(this));
-        //memento.setOldObject(clone);
         super.setHomePhoneNumber(homePhoneNumber);
-        //clone = super.getAttachedUser().clone();
-        //clone.setContact(copy(this));
-        //memento.setNewObject(clone);
-        //super.getAttachedUser().getUndoStack().push(memento);
     }
 
     public String getCellPhoneNumber() {
@@ -87,15 +72,7 @@ public class EmergencyContact extends ContactDetails {
     }
 
     public void setCellPhoneNumber(String cellPhoneNumber) {
-        //Memento<User> memento = new Memento<>();
-        //User clone = super.getAttachedUser().clone();
-        //clone.setContact(copy(this));
-        //memento.setOldObject(clone);
         super.setCellPhoneNumber(cellPhoneNumber);
-        //clone = super.getAttachedUser().clone();
-        //clone.setContact(copy(this));
-        //memento.setNewObject(clone);
-        //super.getAttachedUser().getUndoStack().push(memento);
     }
 
     public Address getAddress() {
@@ -103,15 +80,7 @@ public class EmergencyContact extends ContactDetails {
     }
 
     public void setAddress(Address address) {
-        //Memento<User> memento = new Memento<>();
-        //User clone = super.getAttachedUser().clone();
-        //clone.setContact(copy(this));
-        //memento.setOldObject(clone);
         super.setAddress(address);
-        //clone = super.getAttachedUser().clone();
-        //clone.setContact(copy(this));
-        //memento.setNewObject(clone);
-        //super.getAttachedUser().getUndoStack().push(memento);
     }
 
     public String getEmail() {
@@ -119,15 +88,7 @@ public class EmergencyContact extends ContactDetails {
     }
 
     public void setEmail(String email) {
-        //Memento<User> memento = new Memento<>();
-        //User clone = super.getAttachedUser().clone();
-        //clone.setContact(copy(this));
-//        memento.setOldObject(clone);
         super.setEmail(email);
-//        clone = super.getAttachedUser().clone();
-//        clone.setContact(copy(this));
-//        memento.setNewObject(clone);
-//        super.getAttachedUser().getUndoStack().push(memento);
     }
 
     public String getRelationship() {
@@ -135,23 +96,15 @@ public class EmergencyContact extends ContactDetails {
     }
 
     public void setRelationship(String relationship) {
-//        Memento<User> memento = new Memento<>();
-//        User clone = super.getAttachedUser().clone();
-//        clone.setContact(copy(this));
-//        memento.setOldObject(clone);
         this.relationship = relationship;
-//        clone = super.getAttachedUser().clone();
-//        clone.setContact(copy(this));
-//        memento.setNewObject(clone);
-//        super.getAttachedUser().getUndoStack().push(memento);
     }
 
     public User getAttachedUser() {
-        return super.getAttachedUser();
+        return attachedUser;
     }
 
     public void setAttachedUser(User attachedUser) {
-        super.setAttachedUser(attachedUser);
+        this.attachedUser = attachedUser;
     }
 
     public String toString() {

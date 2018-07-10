@@ -60,7 +60,13 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
     @FXML
     private Label addressLabel;
     @FXML
+    private Label cityLabel;
+    @FXML
     private Label regionLabel;
+    @FXML
+    private Label zipLabel;
+    @FXML
+    private Label countryLabel;
     @FXML
     private TextField searchTextField;
 
@@ -195,8 +201,11 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
         fNameLabel.setText(clinician.getFirstName());
         mNameLabel.setText(clinician.getMiddleName());
         lNameLabel.setText(clinician.getLastName());
-        addressLabel.setText(clinician.getWorkAddress());
+        addressLabel.setText(clinician.getWorkContactDetails().getAddress().getStringAddress());
+        cityLabel.setText(clinician.getCity());
         regionLabel.setText(clinician.getRegion());
+        zipLabel.setText(clinician.getZipCode());
+        countryLabel.setText(clinician.getCountry());
         if (clinician.getFirstName() == null) {
             stage.setTitle("Clinician: Admin");
         } else if (clinician.getLastName() == null) {

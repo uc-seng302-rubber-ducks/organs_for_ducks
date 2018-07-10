@@ -62,10 +62,11 @@ public class DBHandlerTest {
     public void afterTest() throws SQLException {
         connection.close();
     }
-
+/*
     @Test
     public void testUserInstanceCreatedValid() throws SQLException {
         Collection<User> users = dbHandler.getUsers(connection, 10, 0);
+        System.out.println(users);
         Assert.assertEquals(3, users.size());
     }
 
@@ -81,5 +82,5 @@ public class DBHandlerTest {
 //        System.out.println(actual.getLastModified());
 //        System.out.println(expected.getLastModified());
 
-    }
+    }*/
 }

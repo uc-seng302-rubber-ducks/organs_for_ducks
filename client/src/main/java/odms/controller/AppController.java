@@ -1,9 +1,5 @@
 package odms.controller;
 
-import odms.controller.gui.statusBarController;
-import odms.controller.gui.window.AdministratorViewController;
-import odms.controller.gui.window.ClinicianController;
-import odms.controller.gui.window.UserController;
 import odms.commons.exception.ProfileAlreadyExistsException;
 import odms.commons.exception.ProfileNotFoundException;
 import odms.commons.model.Administrator;
@@ -11,10 +7,15 @@ import odms.commons.model.Change;
 import odms.commons.model.Clinician;
 import odms.commons.model.User;
 import odms.commons.model._enum.Directory;
+import odms.commons.model.datamodel.Medication;
 import odms.commons.model.datamodel.TransplantDetails;
 import odms.commons.utils.DataHandler;
 import odms.commons.utils.JsonHandler;
 import odms.commons.utils.Log;
+import odms.controller.gui.statusBarController;
+import odms.controller.gui.window.AdministratorViewController;
+import odms.controller.gui.window.ClinicianController;
+import odms.controller.gui.window.UserController;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -105,7 +106,9 @@ public class AppController {
             }
         } //all code you wish to execute must be above this point!!!!!!!!
         if (!defaultSeen) {
-            clinicians.add(new Clinician("0", "admin", "Default", null, null, null, (String) null));
+            Clinician c = new Clinician("0", "admin", "Default", "", "");
+            c.setRegion("region");
+            clinicians.add(c);
             try {
                 dataHandler.saveClinicians(clinicians);
                 Log.info("Successfully saved clinicians to file");
@@ -499,22 +502,22 @@ public class AppController {
                         .getDonorDetails().getOrgans());
             }
 
-            for (String med : oldUser.getPreviousMedication()) {
+            for (Medication med : oldUser.getPreviousMedication()) {
                 if (!newUser.getPreviousMedication().contains(med)) {
                     diffs.add("Started taking " + med + " again");
                 }
             }
-            for (String med : newUser.getPreviousMedication()) {
+            for (Medication med : newUser.getPreviousMedication()) {
                 if (!oldUser.getPreviousMedication().contains(med)) {
                     diffs.add(med + " was removed from the  users records");
                 }
             }
-            for (String med : oldUser.getCurrentMedication()) {
+            for (Medication med : oldUser.getCurrentMedication()) {
                 if (!newUser.getCurrentMedication().contains(med)) {
                     diffs.add("Stopped taking " + med);
                 }
             }
-            for (String med : newUser.getPreviousMedication()) {
+            for (Medication med : newUser.getPreviousMedication()) {
                 if (!oldUser.getPreviousMedication().contains(med)) {
                     diffs.add("Started taking " + med);
                 }
