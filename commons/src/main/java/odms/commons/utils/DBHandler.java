@@ -14,7 +14,6 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -40,7 +39,7 @@ public class DBHandler {
             "WHERE m.fkUserNhi = ?";
     private static final String SELECT_USER_MEDICAL_PROCEDURE_STMT = "SELECT procedureName, procedureDate, procedureDescription, organName, mp.fkUserNhi FROM MedicalProcedure mp " +
             "LEFT JOIN MedicalProcedureOrgan mpo ON mpo.fkUserNhi = mp.fkUserNhi " +
-            "LEFT JOIN Organ o on o.organId = mpo.fkOrgansId " +
+            "LEFT JOIN Organ o ON o.organId = mpo.fkOrgansId " +
             "WHERE mp.fkUserNhi = ?";
     private static final String SELECT_USER_ORGAN_DONATION = "SELECT organName FROM HealthOrganDonate LEFT JOIN Organ ON fkOrgansId = organId WHERE fkUserNhi = ?";
     private static final String SELECT_USER_ORGAN_RECEIVING = "SELECT organName FROM HealthOrganReceive LEFT JOIN Organ ON fkOrgansId = organId WHERE fkUserNhi = ?";
@@ -49,6 +48,7 @@ public class DBHandler {
             "FROM Clinician cl " +
             "LEFT JOIN Address a ON cl.staffId = a.fkStaffId ";
     private static final String SELECT_ADMIN_ONE_TO_ONE_INFO_STMT = "SELECT userName, firstName, middleName, lastName, timeCreated, lastModified  FROM Administrator";
+    private static final String SELECT_PASS_DETAILS = "SELECT hash,salt FROM PasswordDetails WHERE fkAdminUserName = ? OR fkStaffId = ?";
     private AbstractUpdateStrategy updateStrategy;
 
 
@@ -61,7 +61,7 @@ public class DBHandler {
      * @throws SQLException Thrown on bad statement
      */
     public ResultSet executeStatement(String statement, Connection conn) throws SQLException {
-        try(PreparedStatement preparedStatement = conn.prepareStatement(statement)) {
+        try (PreparedStatement preparedStatement = conn.prepareStatement(statement)) {
             return preparedStatement.executeQuery();
         }
     }
@@ -306,7 +306,7 @@ public class DBHandler {
      * Method to save a single user to the database
      *
      * @param connection connection to the database to be accessed
-     * @param user      A non null user to save to the database
+     * @param user       A non null user to save to the database
      */
     public void saveUser(User user, Connection connection) {
         updateStrategy = new UserUpdateStrategy();
@@ -406,6 +406,36 @@ public class DBHandler {
             updateStrategy.update(collection, connection);
         } catch (SQLException sqlEx) {
             Log.warning("Error in connection to database", sqlEx);
+        }
+    }
+
+    /**
+     * Checks to see whether a correct password has been entered
+     * @param connection connection ot the test database
+     * @param guess Guess at the password
+     * @param id ID to check password for
+     * @param loginType type of login ot check for
+     * @return if the password is correct
+     */
+    public boolean isVaildLogIn(Connection connection, String guess, String id, String loginType) {
+        try (PreparedStatement statement = connection.prepareStatement(SELECT_PASS_DETAILS)) {
+            if (loginType.equalsIgnoreCase("admin")) {
+                statement.setString(1, id);
+            } else {
+                statement.setString(2, id);
+            }
+            try (ResultSet rs = statement.executeQuery()) {
+                rs.next();
+                String hash = rs.getString("hash");
+                String salt = rs.getString("salt");
+                return PasswordManager.isExpectedPassword(guess, salt, hash);
+            } catch (SQLException e) {
+                Log.warning("Could not log in", e);
+                return false;
+            }
+        } catch (SQLException e) {
+            Log.warning("Could not log in", e);
+            return false;
         }
     }
 
