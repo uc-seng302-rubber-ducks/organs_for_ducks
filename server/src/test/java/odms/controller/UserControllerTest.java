@@ -147,7 +147,7 @@ public class UserControllerTest {
 
     @Test
     public void putProceduresShouldReturnOK() throws SQLException {
-        when(handler.getOneUser(any(Connection.class), "ABC1234")).thenReturn(testUser);
+        when(handler.getOneUser(any(Connection.class), anyString())).thenReturn(testUser);
         List<MedicalProcedure> procedures = new ArrayList<>(Arrays.asList(new MedicalProcedure(LocalDate.now(), "test procedure", "tester", new ArrayList<>()),
                 new MedicalProcedure(LocalDate.of(2018, 2, 25), "second test", "experimenting", new ArrayList<>())));
         ResponseEntity res = controller.putProcedure("ABC1234", procedures);
@@ -156,7 +156,6 @@ public class UserControllerTest {
 
     @Test
     public void putProceduresShouldReturnNotFoundWhenNoUser() throws SQLException {
-        when(handler.getOneUser(any(Connection.class), "ABC1234")).thenReturn(testUser);
         List<MedicalProcedure> procedures = new ArrayList<>(Arrays.asList(new MedicalProcedure(LocalDate.now(), "test procedure", "tester", new ArrayList<>()),
                 new MedicalProcedure(LocalDate.of(2018, 2, 25), "second test", "experimenting", new ArrayList<>())));
         ResponseEntity res = controller.putProcedure("ABC1111", procedures);
