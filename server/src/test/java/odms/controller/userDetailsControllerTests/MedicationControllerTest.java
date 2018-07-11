@@ -4,7 +4,7 @@ import odms.commons.model.User;
 import odms.commons.model.datamodel.Medication;
 import odms.commons.utils.DBHandler;
 import odms.commons.utils.JDBCDriver;
-import odms.controller.userDetailsControllers.MedicationController;
+import odms.controller.user.details.controllers.MedicationController;
 import odms.exception.ServerDBException;
 import odms.utils.DBManager;
 import org.junit.Assert;
