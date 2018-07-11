@@ -16,8 +16,10 @@ import org.springframework.http.ResponseEntity;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -48,26 +50,26 @@ public class MedicationControllerTest {
     }
 
     @Test
-    public void postProcedureShouldReturnCreated() throws SQLException {
+    public void postMedicationShouldReturnCreated() throws SQLException {
         when(handler.getOneUser(any(Connection.class), anyString())).thenReturn(testUser);
         ResponseEntity res = controller.postMedication("ABC1234", new Medication("panadol"));
         Assert.assertEquals(HttpStatus.CREATED, res.getStatusCode());
     }
 
     @Test
-    public void postProcedureWithNoUserShouldReturnNotFound() {
+    public void postMedicationWithNoUserShouldReturnNotFound() {
         ResponseEntity res = controller.postMedication("ANC1111", new Medication("panadol"));
         Assert.assertEquals(HttpStatus.NOT_FOUND, res.getStatusCode());
     }
 
     @Test(expected = ServerDBException.class)
-    public void postProcedureShouldThrowExceptionWhenNoConnection() throws SQLException {
+    public void postMedicationShouldThrowExceptionWhenNoConnection() throws SQLException {
         when(driver.getConnection()).thenThrow(new SQLException());
         controller.postMedication("ABC1234", new Medication("panadol"));
     }
 
     @Test
-    public void putProceduresShouldReturnOK() throws SQLException {
+    public void putMedicationsShouldReturnOK() throws SQLException {
         when(handler.getOneUser(any(Connection.class), anyString())).thenReturn(testUser);
         List<Medication> medications = new ArrayList<>(Arrays.asList(new Medication("aspirin"),
                 new Medication("panadol")));
@@ -76,7 +78,7 @@ public class MedicationControllerTest {
     }
 
     @Test
-    public void putProceduresShouldReturnNotFoundWhenNoUser() {
+    public void putMedicationsShouldReturnNotFoundWhenNoUser() {
         List<Medication> medications = new ArrayList<>(Arrays.asList(new Medication("aspirin"),
                 new Medication("panadol")));
         ResponseEntity res = controller.putMedications("ABC1111", medications);
@@ -84,10 +86,44 @@ public class MedicationControllerTest {
     }
 
     @Test(expected = ServerDBException.class)
-    public void putProceduresShouldThrowExceptionWhenNoConnection() throws SQLException {
+    public void putMedicationsShouldThrowExceptionWhenNoConnection() throws SQLException {
         when(driver.getConnection()).thenThrow(new SQLException());
         List<Medication> medications = new ArrayList<>(Arrays.asList(new Medication("aspirin"),
                 new Medication("panadol")));
         controller.putMedications("ABC1234", medications);
     }
+
+    @Test
+    public void postCurrentMedicationShouldAddToCorrectList() throws SQLException {
+        when(handler.getOneUser(any(Connection.class), anyString())).thenReturn(testUser);
+        Medication testMed = new Medication("panadol", new ArrayList<>(Collections.singleton(LocalDateTime.of(1980, 3, 12, 10, 6))));
+        controller.postMedication(testUser.getNhi(), testMed);
+        Assert.assertTrue(testUser.getCurrentMedication().contains(testMed));
+    }
+
+    @Test
+    public void postMedicationShouldAddToCorrectList() throws SQLException {
+        when(handler.getOneUser(any(Connection.class), anyString())).thenReturn(testUser);
+        Medication testMed = new Medication("panadol", new ArrayList<>(Arrays.asList(LocalDateTime.of(1980, 3, 12, 10, 6),
+                LocalDateTime.now().minusDays(5))));
+        Medication testMed2 = new Medication("aspirin", new ArrayList<>(Collections.singleton(LocalDateTime.of(1980, 3, 12, 10, 6))));
+        controller.putMedications(testUser.getNhi(), Arrays.asList(testMed, testMed2));
+        Assert.assertTrue(testUser.getPreviousMedication().contains(testMed));
+        Assert.assertTrue(testUser.getPreviousMedication().size() == 1);
+        Assert.assertTrue(testUser.getCurrentMedication().contains(testMed2));
+        Assert.assertTrue(testUser.getCurrentMedication().size() == 1);
+    }
+
+    @Test
+    public void putMedicationsShouldAddToCorrectLists() throws SQLException {
+        when(handler.getOneUser(any(Connection.class), anyString())).thenReturn(testUser);
+        Medication testMed = new Medication("panadol", new ArrayList<>(Arrays.asList(LocalDateTime.of(1980, 3, 12, 10, 6),
+                LocalDateTime.now().minusDays(5))));
+
+        controller.postMedication(testUser.getNhi(), testMed);
+        Assert.assertTrue(testUser.getPreviousMedication().contains(testMed));
+    }
+
+
+
 }
