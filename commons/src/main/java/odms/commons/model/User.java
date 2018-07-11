@@ -991,6 +991,7 @@ public class User extends Undoable<User> implements Listenable {
     public void setMedicalProcedures(List<MedicalProcedure> medicalProcedures) {
         updateLastModified();
         this.medicalProcedures = medicalProcedures;
+        addChange(new Change("Changed medical procedures"));
     }
 
     public void addMedicalProcedure(MedicalProcedure medicalProcedure) {

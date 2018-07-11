@@ -1,5 +1,6 @@
 package odms.controller;
 
+import odms.commons.model.MedicalProcedure;
 import odms.commons.model.User;
 import odms.commons.model.dto.UserOverview;
 import odms.commons.utils.DBHandler;
@@ -17,12 +18,11 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -117,13 +117,58 @@ public class UserControllerTest {
     @Test(expected = ServerDBException.class)
     public void deleteUserShouldThrowExceptionWhenNoConnection() throws SQLException{
         when(driver.getConnection()).thenThrow(new SQLException());
-        controller.deleteUser("ABC1324");
+        controller.deleteUser("ABC1234");
     }
 
     @Test
     public void deleteUserShouldReturnOK() {
         ResponseEntity res = controller.deleteUser("ABC1234");
         Assert.assertEquals(HttpStatus.OK, res.getStatusCode());
+    }
+
+    @Test
+    public void postProcedureShouldReturnCreated() throws SQLException {
+        when(handler.getOneUser(any(Connection.class), anyString())).thenReturn(testUser);
+        ResponseEntity res = controller.postMedicalProcedure("ABC1234", new MedicalProcedure(LocalDate.of(2017, 12, 3), "Lung Transplant", "Transplantation of lung", new ArrayList<>()));
+        Assert.assertEquals(HttpStatus.CREATED, res.getStatusCode());
+    }
+
+    @Test
+    public void postProcedureWithNoUserShouldReturnNotFound() {
+        ResponseEntity res = controller.postMedicalProcedure("ANC1111", new MedicalProcedure(LocalDate.of(2017, 12, 3), "Lung Transplant", "moving of lungs", new ArrayList<>()));
+        Assert.assertEquals(HttpStatus.NOT_FOUND, res.getStatusCode());
+    }
+
+    @Test(expected = ServerDBException.class)
+    public void postProcedureShouldThrowExceptionWhenNoConnection() throws SQLException {
+        when(driver.getConnection()).thenThrow(new SQLException());
+        controller.postMedicalProcedure("ABC1234", new MedicalProcedure(LocalDate.of(2017, 12, 3), "Lung Transplant", "moving of lungs", new ArrayList<>()));
+    }
+
+    @Test
+    public void putProceduresShouldReturnOK() throws SQLException {
+        when(handler.getOneUser(any(Connection.class), "ABC1234")).thenReturn(testUser);
+        List<MedicalProcedure> procedures = new ArrayList<>(Arrays.asList(new MedicalProcedure(LocalDate.now(), "test procedure", "tester", new ArrayList<>()),
+                new MedicalProcedure(LocalDate.of(2018, 2, 25), "second test", "experimenting", new ArrayList<>())));
+        ResponseEntity res = controller.putProcedure("ABC1234", procedures);
+        Assert.assertEquals(HttpStatus.OK, res.getStatusCode());
+    }
+
+    @Test
+    public void putProceduresShouldReturnNotFoundWhenNoUser() throws SQLException {
+        when(handler.getOneUser(any(Connection.class), "ABC1234")).thenReturn(testUser);
+        List<MedicalProcedure> procedures = new ArrayList<>(Arrays.asList(new MedicalProcedure(LocalDate.now(), "test procedure", "tester", new ArrayList<>()),
+                new MedicalProcedure(LocalDate.of(2018, 2, 25), "second test", "experimenting", new ArrayList<>())));
+        ResponseEntity res = controller.putProcedure("ABC1111", procedures);
+        Assert.assertEquals(HttpStatus.NOT_FOUND, res.getStatusCode());
+    }
+
+    @Test(expected = ServerDBException.class)
+    public void putProceduresShouldThrowExceptionWhenNoConnection() throws SQLException {
+        when(driver.getConnection()).thenThrow(new SQLException());
+        List<MedicalProcedure> procedures = new ArrayList<>(Arrays.asList(new MedicalProcedure(LocalDate.now(), "test procedure", "tester", new ArrayList<>()),
+                new MedicalProcedure(LocalDate.of(2018, 2, 25), "second test", "experimenting", new ArrayList<>())));
+        controller.putProcedure("ABC1234", procedures);
     }
 
 
