@@ -136,7 +136,15 @@ public class DBHandler {
     }
 
 
-    public Clinician getOneClinician(Connection connection, String staffId) throws SQLException {
+    /**
+     * Gets info of a single clinician based on clinician staffId provided
+     *
+     * @param connection A valid connection to the database
+     * @param staffId    staffId of the clinician
+     * @return a clinician object, null if such clinician is not found
+     * @throws SQLException if there are any SQL errors
+     */
+    Clinician getOneClinician(Connection connection, String staffId) throws SQLException {
         Clinician clinician = null;
         try (PreparedStatement statement = connection.prepareStatement(SELECT_CLINICIAN_ONE_TO_ONE_INFO_STMT)) {
             statement.setString(1, staffId);
@@ -646,6 +654,16 @@ public class DBHandler {
         }
     }
 
+
+    /**
+     * replaces an existing clinician with a new version
+     * finds old clinician by staffId and marks it for deletion, then passes it and the new clinician to
+     * @see this.saveClinicians
+     * @param connection connection to the target database
+     * @param staffId (old) staffId of clinician
+     * @param clinician clinician to be put into database
+     * @throws SQLException exception thrown during the transaction
+     */
     public void updateClinician(Connection connection, String staffId, Clinician clinician) throws SQLException {
         Clinician toReplace = getOneClinician(connection, staffId);
         if (toReplace != null) {
@@ -656,6 +674,12 @@ public class DBHandler {
         }
     }
 
+    /**
+     * finds a single Clinician and sets their deleted flag to true, then updates the Clinician on the db
+     * @param connection connection to the target database
+     * @param staffId staffId of the clinician to be deleted
+     * @throws SQLException exception thrown during the transaction
+     */
     public void deleteClinician(Connection connection, String staffId) throws SQLException {
         Clinician toDelete = getOneClinician(connection, staffId);
         if (toDelete != null) {
@@ -686,7 +710,7 @@ public class DBHandler {
     /**
      * finds a single user and sets their deleted flag to true, then updates the user on the db
      * @param conn connection to the target database
-     * @param nhi nhi ofthe user to be deleted
+     * @param nhi nhi of the user to be deleted
      * @throws SQLException exception thrown during the transaction
      */
     public void deleteUser(Connection conn, String nhi) throws SQLException {
