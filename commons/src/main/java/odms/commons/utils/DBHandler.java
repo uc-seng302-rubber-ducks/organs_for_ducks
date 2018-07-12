@@ -469,26 +469,36 @@ public class DBHandler {
         updateDatabase(users, connection);
     }
 
+    public Collection<Clinician> loadClinicians(Connection connection, int startIndex, int count) throws SQLException {
+        return loadClinicians(connection, startIndex, count, "", "");
+    }
+
     /**
      * Loads the clinicians from the database.
      *
      * @param connection a Connection to the target database
      * @return the Collection of clinicians
      */
-    public Collection<Clinician> loadClinicians(Connection connection) throws SQLException {
+    public Collection<Clinician> loadClinicians(Connection connection, int startIndex, int count, String name, String region) throws SQLException {
         Collection<Clinician> clinicians = new ArrayList<>();
         try (PreparedStatement statement = connection.prepareStatement(SELECT_CLINICIAN_ONE_TO_ONE_INFO_STMT)) {
+            statement.setString(1, name + "%");
+            statement.setString(2, name + "%");
+            statement.setString(3, region + "%");
+            statement.setInt(4, count);
+            statement.setInt(5, startIndex);
 
             try (ResultSet resultSet = statement.executeQuery()) {
 
                 while (resultSet != null && resultSet.next()) {
                     Clinician clinician = new Clinician();
-                    clinician.setStaffId(resultSet.getString(1));
-                    clinician.setFirstName(resultSet.getString(2));
-                    clinician.setMiddleName(resultSet.getString(3));
-                    clinician.setLastName(resultSet.getString(4));
-                    clinician.setDateCreated(resultSet.getTimestamp(5).toLocalDateTime());
-                    clinician.setDateLastModified(resultSet.getTimestamp(6).toLocalDateTime());
+                    clinician.setStaffId(resultSet.getString("staffId"));
+                    clinician.setFirstName(resultSet.getString("firstName"));
+                    clinician.setMiddleName(resultSet.getString("middleName"));
+                    clinician.setLastName(resultSet.getString("lastName"));
+                    clinician.setDateCreated(resultSet.getTimestamp("timeCreated").toLocalDateTime());
+                    clinician.setDateLastModified(resultSet.getTimestamp("lastModified").toLocalDateTime());
+                    //clinician.getWorkContactDetails().setAddress(getAddressResults(resultSet, clinician.getStaffId()));
                     //TODO: implement addressStrategy for clinicians (same functionality as getUserAddress method)
                     clinicians.add(clinician);
                 }
