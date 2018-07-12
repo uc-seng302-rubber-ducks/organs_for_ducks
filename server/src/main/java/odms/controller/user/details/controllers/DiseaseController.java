@@ -35,7 +35,7 @@ public class DiseaseController extends BaseController {
     }
 
     @IsClinician
-    @RequestMapping(method = RequestMethod.POST, value = "/users/{nhi}/medications")
+    @RequestMapping(method = RequestMethod.POST, value = "/users/{nhi}/diseases")
     public ResponseEntity postDisease(@PathVariable("nhi") String nhi,
                                       @RequestBody Disease disease) {
         try (Connection connection = driver.getConnection()) {
@@ -53,7 +53,7 @@ public class DiseaseController extends BaseController {
     }
 
     @IsClinician
-    @RequestMapping(method = RequestMethod.PUT, value = "/users/{nhi}/medications")
+    @RequestMapping(method = RequestMethod.PUT, value = "/users/{nhi}/diseases")
     public ResponseEntity putDiseases(@PathVariable("nhi") String nhi,
                                       @RequestBody List<Disease> diseases) {
         try (Connection connection = driver.getConnection()) {
