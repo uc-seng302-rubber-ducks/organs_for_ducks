@@ -144,7 +144,7 @@ public class DBHandler {
      * @return a clinician object, null if such clinician is not found
      * @throws SQLException if there are any SQL errors
      */
-    Clinician getOneClinician(Connection connection, String staffId) throws SQLException {
+    public Clinician getOneClinician(Connection connection, String staffId) throws SQLException {
         Clinician clinician = null;
         try (PreparedStatement statement = connection.prepareStatement(SELECT_CLINICIAN_ONE_TO_ONE_INFO_STMT)) {
             statement.setString(1, staffId);
