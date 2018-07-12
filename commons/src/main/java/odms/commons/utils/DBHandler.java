@@ -135,6 +135,33 @@ public class DBHandler {
         return users;
     }
 
+
+    public Clinician getOneClinician(Connection connection, String staffId) throws SQLException {
+        Clinician clinician = null;
+        try (PreparedStatement statement = connection.prepareStatement(SELECT_CLINICIAN_ONE_TO_ONE_INFO_STMT)) {
+            statement.setString(1, staffId);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet != null && resultSet.next()) {
+                    clinician = getClincianBasicDetails(resultSet);
+                    clinician.setMiddleName(resultSet.getString("middleName"));
+                    clinician.setLastName(resultSet.getString("lastName"));
+                    clinician.setDateLastModified(resultSet.getTimestamp("lastModified").toLocalDateTime());
+                    clinician.setDateCreated(resultSet.getTimestamp("timeCreated").toLocalDateTime());
+                    clinician.setStreetNumber(resultSet.getString("streetNumber"));
+                    clinician.setStreetName(resultSet.getString("streetName"));
+                    clinician.setNeighborhood(resultSet.getString("Neighborhood"));
+                    clinician.setCity(resultSet.getString("city"));
+                    clinician.setRegion(resultSet.getString("region"));
+                    clinician.setCountry(resultSet.getString("country"));
+                    clinician.setZipCode(resultSet.getString("zipCode"));
+                }
+            }
+        }
+        return clinician;
+    }
+
+
+
     /**
      * Gets info of a single user based on user NHI provided
      * @param connection A valid connection to the database
@@ -181,6 +208,10 @@ public class DBHandler {
         }
 
         return user;
+    }
+
+    private Clinician getClincianBasicDetails(ResultSet resultSet) throws SQLException {
+        return new Clinician(resultSet.getString("firstName"), resultSet.getString("staffId"), null);
     }
 
     /**
@@ -509,6 +540,18 @@ public class DBHandler {
     }
 
     /**
+     * Method to save a single Clinician to the database
+     *
+     * @param clinician  a non null clinician to save to the database
+     * @param connection a Connection to the target database
+     */
+    public void saveClinician(Clinician clinician, Connection connection) {
+        updateStrategy = new ClinicianUpdateStrategy();
+        Collection<Clinician> clinicians = Collections.singletonList(clinician);
+        updateDatabase(clinicians, connection);
+    }
+
+    /**
      * Updates the clinicians stored in active memory.
      *
      * @param clinicians Collection of clinicians to update.
@@ -600,6 +643,24 @@ public class DBHandler {
         } catch (SQLException e) {
             Log.warning("Could not log in", e);
             return false;
+        }
+    }
+
+    public void updateClinician(Connection connection, String staffId, Clinician clinician) throws SQLException {
+        Clinician toReplace = getOneClinician(connection, staffId);
+        if (toReplace != null) {
+            toReplace.setDeleted(true);
+            clinician.addChange(new Change("Saved"));
+            Collection<Clinician> clinicians = new ArrayList<>(Arrays.asList(toReplace, clinician));
+            saveClinicians(clinicians, connection);
+        }
+    }
+
+    public void deleteClinician(Connection connection, String staffId) throws SQLException {
+        Clinician toDelete = getOneClinician(connection, staffId);
+        if (toDelete != null) {
+            toDelete.setDeleted(true);
+            saveClinicians(Collections.singletonList(toDelete), connection);
         }
     }
 
