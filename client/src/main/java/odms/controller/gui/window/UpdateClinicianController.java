@@ -9,6 +9,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 import odms.commons.model.Clinician;
 import odms.commons.model.datamodel.Address;
@@ -438,6 +439,7 @@ public class UpdateClinicianController {
                         "You have unsaved changes, are you sure you want to cancel?",
                         ButtonType.YES, ButtonType.NO);
 
+                alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
                 Button yesButton = (Button) alert.getDialogPane().lookupButton(ButtonType.YES);
                 yesButton.setId("yesButton");
 
