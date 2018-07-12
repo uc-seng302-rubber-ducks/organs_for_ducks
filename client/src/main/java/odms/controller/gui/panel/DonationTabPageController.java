@@ -4,12 +4,12 @@ import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.ListView;
 import javafx.scene.control.SelectionMode;
-import odms.controller.AppController;
-import odms.controller.gui.window.UserController;
 import odms.commons.model.User;
 import odms.commons.model._enum.Organs;
 import odms.commons.utils.Log;
 import odms.commons.utils.OrganListCellFactory;
+import odms.controller.AppController;
+import odms.controller.gui.window.UserController;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -86,7 +86,7 @@ public class DonationTabPageController {
             application.update(currentUser);
             canDonate.getItems().remove(toDonate);
             parent.updateUndoRedoButtons();
-            Log.info("Donated organ: " + toDonate.organName + "for User NHI: " + currentUser.getNhi());
+            Log.info("Donated organ: " + toDonate.toString() + "for User NHI: " + currentUser.getNhi());
         } else {
             Log.warning("Donate organs failed for User NHI: " + currentUser.getNhi() + ", no organs selected.");
         }
@@ -112,7 +112,7 @@ public class DonationTabPageController {
             currentlyDonating.refresh();
             application.update(currentUser);
             parent.updateUndoRedoButtons();
-            Log.info("un-donated organ: " + toUndonate.organName + "for User NHI: " + currentUser.getNhi());
+            Log.info("un-donated organ: " + toUndonate.toString() + "for User NHI: " + currentUser.getNhi());
         } else {
             Log.warning("un-donate organs failed for User NHI: " + currentUser.getNhi() + ", no organs selected.");
         }
