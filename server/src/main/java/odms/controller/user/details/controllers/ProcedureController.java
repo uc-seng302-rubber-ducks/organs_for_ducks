@@ -1,4 +1,4 @@
-package odms.controller.userDetailsControllers;
+package odms.controller.user.details.controllers;
 
 import odms.commons.model.MedicalProcedure;
 import odms.commons.model.User;

@@ -795,8 +795,16 @@ public class User extends Undoable<User> implements Listenable {
         addChange(new Change("Added current disease " + currentDisease.toString()));
     }
 
+    public void setCurrentDiseases(List<Disease> currentDiseases) {
+        this.currentDiseases = currentDiseases;
+    }
+
     public List<Disease> getPastDiseases() {
         return pastDiseases;
+    }
+
+    public void setPastDiseases(List<Disease> pastDiseases) {
+        this.pastDiseases = pastDiseases;
     }
 
     public void addPastDisease(Disease pastDisease) {
