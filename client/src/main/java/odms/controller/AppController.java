@@ -61,7 +61,6 @@ public class AppController {
             Log.info(users.size() + " users were successfully loaded");
         } catch (FileNotFoundException e) {
             Log.warning("User file was not found", e);
-
         }
 
         try {
@@ -262,6 +261,14 @@ public class AppController {
             users.add(user);
             changelogWrite.add(new Change(LocalDateTime.now(), "Added user " + user.getFullName()));
         }
+    }
+
+    /**
+     * Saves the current list of users to the json
+     *
+     * @param user User to be saved
+     */
+    public void saveUser(User user) {
         try {
             dataHandler.saveUsers(users);
             //JsonHandler.saveChangelog(changelogWrite, user.getFullName().toLowerCase().replace(" ", "_"));

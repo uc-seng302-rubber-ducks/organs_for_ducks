@@ -8,6 +8,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
+import javafx.scene.layout.Region;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import odms.controller.AppController;
@@ -238,7 +239,8 @@ public class UserOverviewController {
      */
     @FXML
     private void closeWindow() {
-        application.update(currentUser);
+        checkSave();
+        currentUser.getUndoStack().clear();
         stage.close();
         Log.info("Successfully closed update user window for User NHI: " + currentUser.getNhi());
     }
@@ -270,6 +272,7 @@ public class UserOverviewController {
      */
     @FXML
     private void logout() {
+        checkSave();
         currentUser.getUndoStack().clear();
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML/loginView.fxml"));
         Parent root;
@@ -284,9 +287,31 @@ public class UserOverviewController {
         } catch (IOException e) {
             Log.severe("failed to launch login window after logged out for User NHI: " + currentUser.getNhi(), e);
         }
-
-
     }
+
+    /**
+     * Popup that prompts the user if they want to save any unsaved changes before logging out or exiting the application
+     */
+    private void checkSave() {
+        //if (stage.getTitle().contains("*")) { // todo: add in when change detection is working - jen 12/7
+            Alert alert = new Alert(Alert.AlertType.WARNING,
+                    "You have unsaved changes, do you want to save first?",
+                    ButtonType.YES, ButtonType.NO);
+
+            alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
+
+            Optional<ButtonType> result = alert.showAndWait();
+            if (result.get() == ButtonType.YES) {
+                application.update(currentUser);
+                application.saveUser(currentUser);
+
+            } else if (result.get() == ButtonType.NO && !currentUser.getUndoStack().isEmpty()) {
+                User revertUser = currentUser.getUndoStack().firstElement().getState();
+                application.update(revertUser);
+            }
+        //}
+    }
+
 
     /**
      * Disables logout buttons

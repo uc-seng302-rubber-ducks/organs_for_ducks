@@ -6,6 +6,9 @@ import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
+import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 import odms.controller.AppController;
 import odms.controller.gui.window.LoginController;
@@ -20,6 +23,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.Optional;
 import java.util.logging.*;
 
 /**
@@ -74,17 +78,33 @@ public class App extends Application {
         primaryStage.setMinWidth(600);
         AppController controller = AppController.getInstance();
         primaryStage.setOnCloseRequest(event -> {
-            try {
-                dataHandler.saveUsers(controller.getUsers());
-                dataHandler.saveClinicians(controller.getClinicians());
-                dataHandler.saveAdmins(controller.getAdmins());
-                Log.info("Successfully saved all user types on exit");
-                CacheManager.getInstance().saveAll();
-            } catch (IOException ex) {
-                Log.warning("failed to save users on exit", ex);
+
+//                try {
+//                    dataHandler.saveUsers(controller.getUsers());
+//                    dataHandler.saveClinicians(controller.getClinicians());
+//                    dataHandler.saveAdmins(controller.getAdmins());
+//                    Log.info("Successfully saved all user types on exit");
+//                    CacheManager.getInstance().saveAll();
+//                } catch (IOException ex) {
+//                    Log.warning("failed to save users on exit", ex);
+//                }
+
+            if (primaryStage.getTitle().contains("*")) {
+                Alert alert = new Alert(Alert.AlertType.WARNING,
+                        "All unsaved changes will be lost, are you sure you want to quit?",
+                        ButtonType.YES, ButtonType.NO);
+
+                alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
+
+                Optional<ButtonType> result = alert.showAndWait();
+                if (result.get() == ButtonType.YES) {
+                    Platform.exit();
+                    System.exit(0);
+                } else {
+                    event.consume();
+                }
             }
-            Platform.exit();
-            System.exit(0);
+
         });
         loginController.init(controller, primaryStage);
         primaryStage.show();

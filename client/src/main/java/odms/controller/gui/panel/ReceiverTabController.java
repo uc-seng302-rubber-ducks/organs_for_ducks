@@ -96,7 +96,15 @@ public class ReceiverTabController {
             notReceivingLabel.setVisible(false);
             currentlyReceivingListView.setVisible(false);
             notReceivingListView.setVisible(false);
-            notReceiverLabel.setVisible(true);
+
+            if (user.getReceiverDetails().getOrgans().isEmpty()) {
+                notReceiverLabel.setVisible(true);
+            } else {
+                currentlyReceivingLabel.setVisible(true);
+                notReceivingLabel.setVisible(true);
+                currentlyReceivingListView.setVisible(true);
+                notReceivingListView.setVisible(true);
+            }
         }
 
         //display registered and deregistered receiver organs if any
