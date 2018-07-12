@@ -22,8 +22,8 @@ public class DBHandler {
      * SELECT_USER_ONE_TO_ONE_INFO_STMT is for getting all info that follows one-to-one relationship. eg: 1 user can only have 1 address.
      * the other SELECT_USER statements are for getting all info that follows one-to-many relationships. eg: 1 user can have many diseases.
      */
-    private static final String SELECT_USER_ONE_TO_ONE_INFO_STMT_FILTERED = "SELECT nhi FROM `User` a " +
-            "WHERE (firstName LIKE ? OR lastName LIKE ?) AND a.region LIKE ? " +
+    private static final String SELECT_USER_ONE_TO_ONE_INFO_STMT_FILTERED = "SELECT nhi FROM `User` users JOIN Address address ON address.fkUserNhi=users.nhi WHERE " +
+            " (firstName LIKE ? OR lastName LIKE ?) AND address.region LIKE ? AND address.fkContactId != (SELECT EmergencyContactDetails.fkContactId FROM EmergencyContactDetails WHERE EmergencyContactDetails.fkUserNhi = users.nhi) " +
             "LIMIT ? OFFSET ?";
     private static final String SELECT_ONE_USER_INFO_STMT_FILTERED = "SELECT nhi, firstName, middleName, LastName, preferedName, timeCreated, lastModified, profilePicture, gender, birthGender, smoker, " +
             "alcoholConsumption, height, weight, dob, dod, bloodType " +
@@ -374,6 +374,7 @@ public class DBHandler {
                             }
                         }
                     }
+                    receiverOrganDetailsHolders = new ArrayList<>();
                 }
                 user.getReceiverDetails().setOrgans(organs);
             }
@@ -575,7 +576,9 @@ public class DBHandler {
         try (PreparedStatement statement = connection.prepareStatement(SELECT_PASS_DETAILS)) {
             if (loginType.equalsIgnoreCase("admin")) {
                 statement.setString(1, id);
+                statement.setString(2, "");
             } else {
+                statement.setString(1, "");
                 statement.setString(2, id);
             }
             try (ResultSet rs = statement.executeQuery()) {
