@@ -118,7 +118,7 @@ public class UserController {
      */
     public void init(AppController controller, User user, Stage stage, boolean fromClinician,
                      Collection<PropertyChangeListener> parentListeners) {
-        if (user != null) { //NULL USERS HEHEHEHEHEEEEEEEEEEEEEEEEEEEEEEE
+        if (user != null) {
             //add change listeners of parent controllers to the current user
             if (parentListeners != null && !parentListeners.isEmpty()) {
                 for (PropertyChangeListener listener : parentListeners) {

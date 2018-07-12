@@ -81,7 +81,7 @@ public class DiseasesTabPageController {
      * show the current and past diseases of the user.
      */
     public void showUserDiseases(User user, boolean init) {
-        if (user.getCurrentDiseases() != null && user.getCurrentDiseases().isEmpty()) {
+        if (user.getCurrentDiseases().isEmpty()) {
             currentDiseaseTableView.setPlaceholder(new Label("No Current Diseases"));
         }
         ObservableList<Disease> currentDisease = FXCollections
