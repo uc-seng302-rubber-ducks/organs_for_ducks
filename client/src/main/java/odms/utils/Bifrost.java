@@ -8,7 +8,6 @@ import odms.controller.AppController;
 import okhttp3.*;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -40,16 +39,22 @@ public class Bifrost {
             @Override
             public void onFailure(Call call, IOException e) {
                 Log.warning("Could not execute call to /users/{nhi}");
+                e.printStackTrace();
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 if (response.isSuccessful()) {
-                    ArrayList<UserOverview> users = new Gson().fromJson(response.body().string(), ArrayList.class);
-                    System.out.println(users);
-                    for (UserOverview user : users) {
-                        System.out.println(user);
+                    try (ResponseBody body = response.body()) {
+                        List<UserOverview> users = new Gson().fromJson(body.string(), List.class);
+                        System.out.println(users);
+                        call.cancel();
+                        for (UserOverview user : users) {
+                            System.out.println(user);
+                        }
                     }
+                } else {
+                    throw new IOException("Unexpected code " + response);
                 }
             }
         });
