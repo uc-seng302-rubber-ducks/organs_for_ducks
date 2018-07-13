@@ -6,6 +6,7 @@ import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializer;
 import odms.commons.model.*;
 import odms.commons.model._enum.Directory;
+import okhttp3.Response;
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
 
@@ -113,6 +114,50 @@ public final class JsonHandler extends DataHandler {
             throw e;
         }
     }
+
+
+    /**
+     * Takes a get user response and then decodes it into a valid user
+     *
+     * The response passed must be a from the /getUsers/{nhi} endpoint
+     * @param response repsonse to be parsed
+     * @return the user contained in the response
+     * @throws IOException Thrown if response body cannot be read
+     */
+    public User decodeUser(Response response) throws IOException {
+        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss")
+                .create();
+        String responseBodyString = null;
+        try {
+            responseBodyString = response.body().string();
+        } catch (NullPointerException e) {
+            Log.severe("No response returned with body", e);
+            return null;
+        }
+        if (responseBodyString != null) {
+            User user = gson.fromJson(responseBodyString, User.class);
+            user.getReceiverDetails().setAttachedUser(user);
+            user.getDonorDetails().setAttachedUser(user);
+            if (user.getContact() != null) {
+                user.getContact().setAttachedUser(user);
+            }
+            return user;
+        }
+        return null;
+    }
+
+    /**
+     * Returns a decoded clinician from the response received from "/clinicians/{staffId}
+     * @param response response to be parsed
+     * @return clinician contained in the Json
+     * @throws IOException If the response body cannot be read
+     */
+    public Clinician decodeClinician(Response response) throws IOException {
+        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss")
+                .create();
+        return gson.fromJson(response.body().string(), Clinician.class);
+    }
+
 
 
     /**

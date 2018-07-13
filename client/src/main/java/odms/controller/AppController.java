@@ -32,25 +32,24 @@ import java.util.Stack;
  */
 public class AppController {
 
-
+    public static final String TOKEN_HEADER = "x-auth-token";
+    private static final String SERVER_URL = "http://odms/v1/";
+    private static final String USERS_FILE = Directory.JSON.directory() + "/users.json";
+    private static final String CLINICIAN_FILE = Directory.JSON.directory() + "/clinicians.json";
+    private static final String ADMIN_FILE = Directory.JSON.directory() + "/administrators.json";
+    private static AppController controller;
     private Collection<Administrator> admins = new ArrayList<>();
     private List<User> users = new ArrayList<>();
     private ArrayList<TransplantDetails> transplantList = new ArrayList<>();
     private List<Clinician> clinicians = new ArrayList<>();
-    private static AppController controller;
     private ArrayList<String[]> historyOfCommands = new ArrayList<>();
     private int historyPointer = 0;
     private DataHandler dataHandler = new JsonHandler();
-
     private UserController userController = new UserController();
     private ClinicianController clinicianController = new ClinicianController();
     private AdministratorViewController administratorViewController = new AdministratorViewController();
     private odms.controller.gui.statusBarController statusBarController = new statusBarController();
     private Stack<User> redoStack = new Stack<>();
-
-    private static final String USERS_FILE = Directory.JSON.directory() + "/users.json";
-    private static final String CLINICIAN_FILE = Directory.JSON.directory() + "/clinicians.json";
-    private static final String ADMIN_FILE = Directory.JSON.directory() + "/administrators.json";
 
     /**
      * Creates new instance of AppController
@@ -162,6 +161,9 @@ public class AppController {
         }
     }
 
+    public String getServerURL(){
+        return SERVER_URL;
+    }
     /**
      * When called queries the history pointer and acquires the command located at the appropriate
      * point
@@ -222,7 +224,6 @@ public class AppController {
         return null;
     }
 
-
     /**
      * takes a passed user and removes them from the maintained list of users
      *
@@ -243,6 +244,13 @@ public class AppController {
 
     public List<User> getUsers() {
         return users;
+    }
+
+    /**
+     * @param users An array list of users.
+     */
+    public void setUsers(ArrayList<User> users) {
+        this.users = users;
     }
 
     /**
@@ -269,14 +277,6 @@ public class AppController {
         } catch (IOException e) {
             Log.warning("failed to update users with NHI: " + user.getNhi(), e);
         }
-    }
-
-
-    /**
-     * @param users An array list of users.
-     */
-    public void setUsers(ArrayList<User> users) {
-        this.users = users;
     }
 
     /**
@@ -415,14 +415,13 @@ public class AppController {
         this.clinicianController = clinicianController;
     }
 
-    public void setAdministratorViewController(AdministratorViewController administratorViewController) {
-        this.administratorViewController = administratorViewController;
-    }
-
     public AdministratorViewController getAdministratorViewController() {
         return administratorViewController;
     }
 
+    public void setAdministratorViewController(AdministratorViewController administratorViewController) {
+        this.administratorViewController = administratorViewController;
+    }
 
     public Administrator getAdministrator(String username) {
         for (Administrator a : admins) {
