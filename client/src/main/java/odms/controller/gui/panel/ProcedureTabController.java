@@ -207,7 +207,6 @@ public class ProcedureTabController {
      */
     @FXML
     void addProcedure() {
-        currentUser.saveStateForUndo();
         String procedureName = procedureTextField.getText();
         if (procedureName.isEmpty()) {
             Log.warning("Failed to add procedure: " + procedureName + " for User NHI: " + currentUser.getNhi() + " as user input is invalid");
@@ -225,6 +224,7 @@ public class ProcedureTabController {
             procedureWarningLabel.setText("Procedures may not occur before a patient has been born");
             return;
         }
+        currentUser.saveStateForUndo();
         MedicalProcedure procedure = new MedicalProcedure(procedureDate, procedureName,
                 descriptionTextArea.getText(), new ArrayList<>());
         medicalProcedures.add(procedure);
@@ -236,6 +236,7 @@ public class ProcedureTabController {
         }
         clearProcedure();
         application.update(currentUser);
+        parent.updateUndoRedoButtons();
         Log.info("Successfully added procedure: " + procedureName + " for User NHI: " + currentUser.getNhi());
     }
 
@@ -244,7 +245,6 @@ public class ProcedureTabController {
      */
     @FXML
     void updateProcedures() {
-        currentUser.saveStateForUndo();
         procedureWarningLabel.setText("");
         String newName = procedureTextField.getText();
         LocalDate newDate = procedureDateSelector.getValue();
@@ -264,6 +264,7 @@ public class ProcedureTabController {
             procedureWarningLabel.setText("Procedures may not occur before a patient has been born");
             return;
         }
+        currentUser.saveStateForUndo();
         if (previousProcedureTableView.getSelectionModel().getSelectedItem() != null) {
             MedicalProcedure procedure = previousProcedureTableView.getSelectionModel().getSelectedItem();
 
@@ -272,7 +273,11 @@ public class ProcedureTabController {
             MedicalProcedure procedure = pendingProcedureTableView.getSelectionModel().getSelectedItem();
 
             updateProcedure(procedure, newName, newDate, newDescription);
+        } else {
+            currentUser.getUndoStack().pop(); // no procedure was selected to be updated so the last undo has no changes
         }
+
+        parent.updateUndoRedoButtons();
         Log.info("Successfully updated procedure: " + newName + " for User NHI: " + currentUser.getNhi());
     }
 
@@ -355,9 +360,11 @@ public class ProcedureTabController {
             Log.info("Successfully removed procedure: " + pendingProcedureTableView.getSelectionModel().getSelectedItem().toString() + " for User NHI: " + currentUser.getNhi());
             pendingProcedures.remove(pendingProcedureTableView.getSelectionModel().getSelectedItem());
         } else {
+            currentUser.getUndoStack().pop();
             Log.warning("Failed to remove procedure for User NHI: " + currentUser.getNhi() + " as no procedure is selected");
         }
         application.update(currentUser);
+        parent.updateUndoRedoButtons();
     }
 
     /**

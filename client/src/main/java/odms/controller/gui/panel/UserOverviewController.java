@@ -294,7 +294,8 @@ public class UserOverviewController {
      * Popup that prompts the user if they want to save any unsaved changes before logging out or exiting the application
      */
     private void checkSave() {
-        //if (stage.getTitle().contains("*")) { // todo: add in when change detection is working - jen 12/7
+        boolean hasChanges = currentUser.getUndoStack().isEmpty();
+        if (!hasChanges) {
             Alert alert = new Alert(Alert.AlertType.WARNING,
                     "You have unsaved changes, do you want to save first?",
                     ButtonType.YES, ButtonType.NO);
@@ -306,11 +307,11 @@ public class UserOverviewController {
                 application.update(currentUser);
                 application.saveUser(currentUser);
 
-            } else if (result.get() == ButtonType.NO && !currentUser.getUndoStack().isEmpty()) {
+            } else {
                 User revertUser = currentUser.getUndoStack().firstElement().getState();
                 application.update(revertUser);
             }
-        //}
+        }
     }
 
 

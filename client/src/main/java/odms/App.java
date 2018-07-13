@@ -78,17 +78,6 @@ public class App extends Application {
         primaryStage.setMinWidth(600);
         AppController controller = AppController.getInstance();
         primaryStage.setOnCloseRequest(event -> {
-
-//                try {
-//                    dataHandler.saveUsers(controller.getUsers());
-//                    dataHandler.saveClinicians(controller.getClinicians());
-//                    dataHandler.saveAdmins(controller.getAdmins());
-//                    Log.info("Successfully saved all user types on exit");
-//                    CacheManager.getInstance().saveAll();
-//                } catch (IOException ex) {
-//                    Log.warning("failed to save users on exit", ex);
-//                }
-
             if (primaryStage.getTitle().contains("*")) {
                 Alert alert = new Alert(Alert.AlertType.WARNING,
                         "All unsaved changes will be lost, are you sure you want to quit?",
@@ -98,11 +87,14 @@ public class App extends Application {
 
                 Optional<ButtonType> result = alert.showAndWait();
                 if (result.get() == ButtonType.YES) {
+                    CacheManager.getInstance().saveAll();
                     Platform.exit();
                     System.exit(0);
                 } else {
                     event.consume();
                 }
+            } else {
+                CacheManager.getInstance().saveAll();
             }
 
         });

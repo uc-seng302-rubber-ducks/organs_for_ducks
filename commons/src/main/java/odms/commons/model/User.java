@@ -791,6 +791,8 @@ public class User extends Undoable<User> implements Listenable {
     }
 
     public void addCurrentDisease(Disease currentDisease) {
+        this.saveStateForUndo();
+        updateLastModified();
         currentDiseases.add(currentDisease);
         addChange(new Change("Added current disease " + currentDisease.toString()));
     }
@@ -884,7 +886,7 @@ public class User extends Undoable<User> implements Listenable {
     }
 
     public void addCurrentMedication(String medication) {
-        this.saveStateForUndo();
+        //this.saveStateForUndo();
         updateLastModified();
         if (!currentMedication.contains(new Medication(medication))) {
             currentMedication.add(new Medication(medication));

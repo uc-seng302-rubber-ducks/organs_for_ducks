@@ -138,12 +138,11 @@ public class ReceiverTabController {
                         launchReceiverOrganDateView(currentlyReceivingOrgan);
                     }
                 });
-                parent.updateUndoRedoButtons();
                 Log.info("Successfully registered organ:" + toRegister.toString() + " for receiver NHI: " + currentUser.getNhi());
             } else {
                 Log.warning("Unable to register organ for receiver as organ: " + toRegister.toString() + " has already been registered for receiver NHI: " + currentUser.getNhi());
             }
-
+            parent.updateUndoRedoButtons();
             parent.refreshCurrentlyDonating();
             currentlyReceivingListView.refresh();
         } else {

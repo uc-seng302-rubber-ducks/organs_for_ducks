@@ -129,7 +129,7 @@ public class UserController {
         application = controller;
 
         // This is the place to set visible and invisible controls for Clinician vs User
-        medicationTabPageController.init(controller, user, fromClinician);
+        medicationTabPageController.init(controller, user, fromClinician, this);
         procedureTabPageController.init(controller, user, fromClinician, this);
         donationTabPageController.init(controller, user, this);
         diseasesTabPageController.init(controller, user, fromClinician, this);
