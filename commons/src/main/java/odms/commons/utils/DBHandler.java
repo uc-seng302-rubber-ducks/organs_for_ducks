@@ -136,6 +136,20 @@ public class DBHandler {
     }
 
 
+    public Administrator getOneAdministrator(Connection connection, String username) throws SQLException {
+        Administrator administrator = null;
+        try (PreparedStatement statement = connection.prepareStatement(SELECT_ADMIN_ONE_TO_ONE_INFO_STMT)) {
+            //statement.setString(1, username);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet != null && resultSet.next()) {
+                    administrator.setUserName(resultSet.getString("userName"));
+                }
+            }
+
+        }
+        return administrator;
+    }
+
     /**
      * Gets info of a single clinician based on clinician staffId provided
      *
@@ -609,6 +623,12 @@ public class DBHandler {
         updateDatabase(administrators, connection);
     }
 
+    public void saveAdministrator(Administrator administrator, Connection connection) {
+        updateStrategy = new AdminUpdateStrategy();
+        Collection<Administrator> administrators = Collections.singletonList(administrator);
+        updateDatabase(administrators, connection);
+    }
+
     /**
      * Executes an update for each of items in the collection. The Collection must be of a type User, Clinician or Administrator
      *
@@ -651,6 +671,26 @@ public class DBHandler {
         } catch (SQLException e) {
             Log.warning("Could not log in", e);
             return false;
+        }
+    }
+
+    /**
+     * replaces an existing clinician with a new version
+     * finds old administrator by username and marks it for deletion, then passes it and the new administrator to
+     *
+     * @param connection    connection to the target database
+     * @param username      (old) username of administrator
+     * @param administrator administrator to be put into database
+     * @throws SQLException exception thrown during the transaction
+     * @see this.saveAdministrator
+     */
+    public void updateAdministrator(Connection connection, String username, Administrator administrator) throws SQLException {
+        Administrator toReplace = getOneAdministrator(connection, username);
+        if (toReplace != null) {
+            toReplace.setDeleted(true);
+            administrator.addChange(new Change("Saved"));
+            Collection<Administrator> administrators = new ArrayList<>(Arrays.asList(toReplace, administrator));
+            saveAdministrators(administrators, connection);
         }
     }
 
