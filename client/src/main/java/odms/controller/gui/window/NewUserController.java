@@ -1,6 +1,7 @@
 package odms.controller.gui.window;
 
 
+import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -72,8 +73,10 @@ public class NewUserController {
     private ComboBox<String> region;
     @FXML
     private TextField zipCode;
+//    @FXML
+//    private TextField country;
     @FXML
-    private TextField country;
+    private ComboBox<String> contactDetailsCountrySelector;
     @FXML
     private TextField email;
     @FXML
@@ -94,8 +97,10 @@ public class NewUserController {
     private ComboBox<String> ecRegion;
     @FXML
     private TextField ecZipCode;
+//    @FXML
+//    private TextField ecCounrty;
     @FXML
-    private TextField ecCounrty;
+    private ComboBox<String> ecContactDetailsCountrySelector;
     @FXML
     private TextField ecEmail;
     @FXML
@@ -130,6 +135,9 @@ public class NewUserController {
         this.ownStage = ownStage;
         region.getSelectionModel().selectFirst();
         ecRegion.getSelectionModel().selectFirst();
+        contactDetailsCountrySelector.setItems(FXCollections.observableList(controller.getAllCountries()));
+        ecContactDetailsCountrySelector.setItems(FXCollections.observableList(controller.getAllCountries()));
+
     }
 
     /**
@@ -213,8 +221,8 @@ public class NewUserController {
         String city = this.city.getText();
         valid &= (AttributeValidation.checkString(city));
 
-        String country = this.country.getText();
-        valid &= (AttributeValidation.checkString(country));
+//        String country = this.country.getText();
+//        valid &= (AttributeValidation.checkString(country));
 
         String streetnum = this.streetNumber.getText();
         valid &= (AttributeValidation.checkString(streetnum));
@@ -239,7 +247,7 @@ public class NewUserController {
                 newUser.setRegion(region);
                 newUser.setNeighborhood(neighborhood);
                 newUser.setCity(city);
-                newUser.setCountry(country);
+//                newUser.setCountry(country);
                 newUser.setStreetNumber(streetnum);
                 newUser.setStreetName(streetName);
                 newUser.setZipCode(zipcode);
@@ -369,8 +377,8 @@ public class NewUserController {
         String ecity = ecCity.getText();
         valid &= (AttributeValidation.checkString(ecity));
 
-        String ecountry = ecCounrty.getText();
-        valid &= (AttributeValidation.checkString(ecountry));
+//        String ecountry = ecCounrty.getText();
+//        valid &= (AttributeValidation.checkString(ecountry));
 
         String estreetnum = ecStreetNumber.getText();
         valid &= (AttributeValidation.checkString(estreetnum));
@@ -394,7 +402,7 @@ public class NewUserController {
                 contact.setStreetNumber(estreetnum);
                 contact.setStreetName(eStreet);
                 contact.setCity(ecity);
-                contact.setCountry(ecountry);
+//                contact.setCountry(ecountry);
                 contact.setZipCode(ezipcode);
                 contact.setRegion(eRegion);
                 contact.setNeighborhood(eneighborhood);

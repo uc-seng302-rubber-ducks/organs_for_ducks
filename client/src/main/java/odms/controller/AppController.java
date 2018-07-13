@@ -21,10 +21,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Stack;
+import java.util.*;
 
 
 /**
@@ -39,6 +36,8 @@ public class AppController {
     private List<Clinician> clinicians = new ArrayList<>();
     private static AppController controller;
     private ArrayList<String[]> historyOfCommands = new ArrayList<>();
+    private List<String> allCountries;
+    private List<String> allowedCountries; //store the countries chosen by admin
     private int historyPointer = 0;
     private DataHandler dataHandler = new JsonHandler();
 
@@ -116,6 +115,7 @@ public class AppController {
                 Log.warning("Could not save clinicians to file", e);
             }
         }
+        generateAllCountries();
     }
 
     /**
@@ -128,6 +128,31 @@ public class AppController {
             controller = new AppController();
         }
         return controller;
+    }
+
+    /**
+     * create a list of all country names.
+     */
+    private void generateAllCountries() {
+        allCountries = new ArrayList<>();
+        String[] locales = Locale.getISOCountries();
+
+        for (String countryCode : locales) {
+            Locale obj = new Locale("", countryCode);
+            allCountries.add(obj.getDisplayCountry());
+        }
+    }
+
+    /**
+     *
+     * @return unmodifiable collection of all country names
+     */
+    public List<String> getAllCountries() {
+        return Collections.unmodifiableList(allCountries);
+    }
+
+    public List<String> getAllowedCountries() {
+        return allowedCountries;
     }
 
 
