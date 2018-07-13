@@ -174,7 +174,7 @@
                         <TextField fx:id="street" prefHeight="7.0" prefWidth="183.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                         <TextField fx:id="neighborhood" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                         <TextField fx:id="city" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-                        <ComboBox fx:id="region" prefHeight="25.0" prefWidth="168.0" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                        <ComboBox fx:id="contactDetailsRegionSelector" prefHeight="25.0" prefWidth="168.0" GridPane.columnIndex="1" GridPane.rowIndex="6" />
                         <TextField fx:id="zipCode" GridPane.columnIndex="1" GridPane.rowIndex="7" />
                         <TextField fx:id="email" GridPane.columnIndex="1" GridPane.rowIndex="9" />
                         <Label text="Street Number:" GridPane.rowIndex="2" />
@@ -182,7 +182,8 @@
                         <Label text="City:" GridPane.rowIndex="5" />
                         <Label text="Zip Code:" GridPane.rowIndex="7" />
                         <Label text="Country:" GridPane.rowIndex="8" />
-                  <ComboBox fx:id="contactDetailsCountrySelector" prefHeight="25.0" prefWidth="167.0" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+                  <ComboBox fx:id="contactDetailsCountrySelector" onAction="#contactDetailsCountrySelectorListener" prefHeight="25.0" prefWidth="167.0" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+                  <TextField fx:id="regionInput" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="6" />
                     </children>
                     <padding>
                         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
@@ -221,7 +222,7 @@
                         <TextField fx:id="ecStreet" prefHeight="15.0" prefWidth="187.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                         <TextField fx:id="ecNeighborhood" GridPane.columnIndex="1" GridPane.rowIndex="5" />
                         <TextField fx:id="ecCity" GridPane.columnIndex="1" GridPane.rowIndex="6" />
-                        <ComboBox fx:id="ecRegion" prefHeight="25.0" prefWidth="184.0" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+                        <ComboBox fx:id="ecContactDetailsRegionSelector" prefHeight="25.0" prefWidth="184.0" GridPane.columnIndex="1" GridPane.rowIndex="7" />
                         <TextField fx:id="ecZipCode" GridPane.columnIndex="1" GridPane.rowIndex="8" />
                         <TextField fx:id="ecEmail" GridPane.columnIndex="1" GridPane.rowIndex="10" />
                         <TextField fx:id="ecRelationship" GridPane.columnIndex="1" GridPane.rowIndex="11" />
@@ -231,7 +232,8 @@
                         <Label text="City:" GridPane.rowIndex="6" />
                         <Label text="Neighborhood:" GridPane.rowIndex="5" />
                         <Label text="Street Number:" GridPane.rowIndex="3" />
-                  <ComboBox fx:id="ecContactDetailsCountrySelector" prefHeight="25.0" prefWidth="172.0" GridPane.columnIndex="1" GridPane.rowIndex="9" />
+                  <ComboBox fx:id="ecContactDetailsCountrySelector" onAction="#ecContactDetailsCountrySelectorListener" prefHeight="25.0" prefWidth="172.0" GridPane.columnIndex="1" GridPane.rowIndex="9" />
+                  <TextField fx:id="ecRegionInput" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="7" />
                     </children>
                     <padding>
                         <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />

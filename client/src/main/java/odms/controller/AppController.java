@@ -38,6 +38,7 @@ public class AppController {
     private ArrayList<String[]> historyOfCommands = new ArrayList<>();
     private List<String> allCountries;
     private List<String> allowedCountries; //store the countries chosen by admin
+    private List<String> allNZRegion;
     private int historyPointer = 0;
     private DataHandler dataHandler = new JsonHandler();
 
@@ -116,6 +117,7 @@ public class AppController {
             }
         }
         generateAllCountries();
+        generateAllNZRegion();
     }
 
     /**
@@ -153,6 +155,27 @@ public class AppController {
 
     public List<String> getAllowedCountries() {
         return allowedCountries;
+    }
+
+    /**
+     * create a list of all New Zealand Region names.
+     */
+    private void generateAllNZRegion(){
+        allNZRegion = new ArrayList<String>() {
+            {
+                add("Canterbury");
+                add("Chatham Islands");
+                add("Otago");
+            }
+        };
+    }
+
+    /**
+     *
+     * @return unmodifiable collection of all New Zealand region names
+     */
+    public List<String> getAllNZRegion() {
+        return Collections.unmodifiableList(allNZRegion);
     }
 
 

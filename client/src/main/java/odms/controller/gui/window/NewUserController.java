@@ -2,6 +2,7 @@ package odms.controller.gui.window;
 
 
 import javafx.collections.FXCollections;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -69,8 +70,12 @@ public class NewUserController {
     private TextField neighborhood;
     @FXML
     private TextField city;
+//    @FXML
+//    private ComboBox<String> region;
     @FXML
-    private ComboBox<String> region;
+    private TextField regionInput;
+    @FXML
+    private ComboBox<String> contactDetailsRegionSelector;
     @FXML
     private TextField zipCode;
 //    @FXML
@@ -93,8 +98,12 @@ public class NewUserController {
     private TextField ecNeighborhood;
     @FXML
     private TextField ecCity;
+//    @FXML
+//    private ComboBox<String> ecRegion;
     @FXML
-    private ComboBox<String> ecRegion;
+    private TextField ecRegionInput;
+    @FXML
+    private ComboBox<String> ecContactDetailsRegionSelector;
     @FXML
     private TextField ecZipCode;
 //    @FXML
@@ -133,16 +142,56 @@ public class NewUserController {
         this.controller = controller;
         this.stage = stage;
         this.ownStage = ownStage;
-        region.getSelectionModel().selectFirst();
-        ecRegion.getSelectionModel().selectFirst();
+
         contactDetailsCountrySelector.setItems(FXCollections.observableList(controller.getAllCountries()));
         ecContactDetailsCountrySelector.setItems(FXCollections.observableList(controller.getAllCountries()));
+        contactDetailsCountrySelector.getSelectionModel().select("New Zealand");
+        ecContactDetailsCountrySelector.getSelectionModel().select("New Zealand");
+
+        contactDetailsRegionSelector.setItems(FXCollections.observableList(controller.getAllNZRegion()));
+        ecContactDetailsRegionSelector.setItems(FXCollections.observableList(controller.getAllNZRegion()));
+        contactDetailsRegionSelector.getSelectionModel().selectFirst();
+        ecContactDetailsRegionSelector.getSelectionModel().selectFirst();
 
     }
 
     /**
-     * Returns the user to the login window.
+     * If New Zealand is selected at the country combo box, the region combo box will appear.
+     * If country other than New Zealand is selected at the country combo box, the region combo box will
+     * be replaced with a text field.
+     * @param event from GUI
      */
+    @FXML
+    private void contactDetailsCountrySelectorListener(ActionEvent event) {
+        if(! contactDetailsCountrySelector.getSelectionModel().getSelectedItem().equals("New Zealand")) {
+            contactDetailsRegionSelector.setVisible(false);
+            regionInput.setVisible(true);
+        } else {
+            contactDetailsRegionSelector.setVisible(true);
+            regionInput.setVisible(false);
+        }
+    }
+
+    /**
+     * If New Zealand is selected at the country combo box, the region combo box will appear.
+     * If country other than New Zealand is selected at the country combo box, the region combo box will
+     * be replaced with a text field.
+     * @param event from GUI
+     */
+    @FXML
+    private void ecContactDetailsCountrySelectorListener(ActionEvent event){
+        if (!ecContactDetailsCountrySelector.getSelectionModel().getSelectedItem().equals("New Zealand")) {
+            ecContactDetailsRegionSelector.setVisible(false);
+            ecRegionInput.setVisible(true);
+        } else {
+            ecContactDetailsRegionSelector.setVisible(true);
+            ecRegionInput.setVisible(false);
+        }
+    }
+
+        /**
+         * Returns the user to the login window.
+         */
     @FXML
     private void cancelCreation() {
         ownStage.close();
@@ -202,7 +251,14 @@ public class NewUserController {
         String streetName = street.getText();
         valid &= (AttributeValidation.checkString(streetName));
 
-        String region = this.region.getSelectionModel().getSelectedItem();
+        String region;
+        if(regionInput.isVisible()){
+            region = regionInput.getText();
+
+        } else {
+            region = this.contactDetailsRegionSelector.getSelectionModel().getSelectedItem();
+        }
+
         valid &= (AttributeValidation.checkString(region));
 
         String homePhone = phone.getText();
@@ -221,8 +277,8 @@ public class NewUserController {
         String city = this.city.getText();
         valid &= (AttributeValidation.checkString(city));
 
-//        String country = this.country.getText();
-//        valid &= (AttributeValidation.checkString(country));
+        String country = this.contactDetailsCountrySelector.getSelectionModel().getSelectedItem();
+        valid &= (AttributeValidation.checkString(country));
 
         String streetnum = this.streetNumber.getText();
         valid &= (AttributeValidation.checkString(streetnum));
@@ -240,14 +296,13 @@ public class NewUserController {
                 newUser.setLastName(lastName);
                 newUser.setDateOfDeath(dodInput.getValue());
                 newUser.setPreferredFirstName(preferredFirstName);
-                newUser.setRegion(region);
                 newUser.setHomePhone(homePhone);
                 newUser.setCellPhone(cellPhone);
                 newUser.setEmail(email);
                 newUser.setRegion(region);
                 newUser.setNeighborhood(neighborhood);
                 newUser.setCity(city);
-//                newUser.setCountry(country);
+                newUser.setCountry(country);
                 newUser.setStreetNumber(streetnum);
                 newUser.setStreetName(streetName);
                 newUser.setZipCode(zipcode);
@@ -361,8 +416,14 @@ public class NewUserController {
         String eStreet = ecStreet.getText();
         valid &= (AttributeValidation.checkString(ecStreet.getText()));
 
-        String eRegion = ecRegion.getSelectionModel().getSelectedItem();
-        valid &= (AttributeValidation.checkString(ecRegion.getSelectionModel().getSelectedItem()));
+        String eRegion;
+        if(ecRegionInput.isVisible()){
+            eRegion = ecRegionInput.getText();
+
+        } else {
+            eRegion = ecContactDetailsRegionSelector.getSelectionModel().getSelectedItem();
+        }
+        valid &= (AttributeValidation.checkString(eRegion));
 
         String eEmail = ecEmail.getText();
         valid &= (AttributeValidation.validateEmail(ecEmail.getText()));
@@ -377,8 +438,8 @@ public class NewUserController {
         String ecity = ecCity.getText();
         valid &= (AttributeValidation.checkString(ecity));
 
-//        String ecountry = ecCounrty.getText();
-//        valid &= (AttributeValidation.checkString(ecountry));
+        String ecountry = ecContactDetailsCountrySelector.getSelectionModel().getSelectedItem();
+        valid &= (AttributeValidation.checkString(ecountry));
 
         String estreetnum = ecStreetNumber.getText();
         valid &= (AttributeValidation.checkString(estreetnum));
@@ -402,7 +463,7 @@ public class NewUserController {
                 contact.setStreetNumber(estreetnum);
                 contact.setStreetName(eStreet);
                 contact.setCity(ecity);
-//                contact.setCountry(ecountry);
+                contact.setCountry(ecountry);
                 contact.setZipCode(ezipcode);
                 contact.setRegion(eRegion);
                 contact.setNeighborhood(eneighborhood);
