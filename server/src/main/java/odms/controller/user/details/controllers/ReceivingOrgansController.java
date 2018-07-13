@@ -10,6 +10,7 @@ import odms.commons.utils.Log;
 import odms.controller.BaseController;
 import odms.controller.OdmsController;
 import odms.exception.ServerDBException;
+import odms.security.IsClinician;
 import odms.utils.DBManager;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,6 +36,7 @@ public class ReceivingOrgansController extends BaseController {
         handler = super.getHandler();
     }
 
+    @IsClinician
     @RequestMapping(method = RequestMethod.POST, value = "/users/{nhi}/receiving")
     public ResponseEntity postOrgansToReceive(@RequestBody Map<Organs, ArrayList<ReceiverOrganDetailsHolder>> receiving,
                                               @PathVariable String nhi) {
@@ -57,6 +59,7 @@ public class ReceivingOrgansController extends BaseController {
         return new ResponseEntity(HttpStatus.CREATED);
     }
 
+    @IsClinician
     @RequestMapping(method = RequestMethod.PUT, value = "/users/{nhi}/receiving")
     public ResponseEntity putOrganToReceive(@RequestBody Map<Organs, ArrayList<ReceiverOrganDetailsHolder>> receiving,
                                             @PathVariable String nhi) {
