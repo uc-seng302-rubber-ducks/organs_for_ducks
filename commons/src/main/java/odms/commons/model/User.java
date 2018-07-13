@@ -231,6 +231,7 @@ public class User extends Undoable<User> implements Listenable {
             newMed.setDescription(m.getDescription());
             newMed.setProcedureDate(m.getProcedureDate());
             newMed.setOrgansAffected(new ArrayList<>(m.getOrgansAffected()));
+            newMed.setDeleted(m.isDeleted());
             newUser.medicalProcedures.add(newMed);
         }
 
