@@ -200,8 +200,19 @@ public class User extends Undoable<User> implements Listenable {
             newUser.updateHistory = new HashMap<>();
         }
         newUser.miscAttributes = new ArrayList<>(user.miscAttributes);
-        newUser.currentMedication = new ArrayList<>(user.currentMedication);
-        newUser.previousMedication = new ArrayList<>(user.previousMedication);
+
+        for (Medication currentMed : user.currentMedication) {
+            Medication newCurrentMed = new Medication(currentMed.getMedName(), currentMed.getMedicationTimes());
+            newCurrentMed.setDeleted(currentMed.isDeleted());
+            newUser.currentMedication.add(newCurrentMed);
+        }
+
+        for (Medication previousMed : user.previousMedication) {
+            Medication oldMed = new Medication(previousMed.getMedName(), previousMed.getMedicationTimes());
+            oldMed.setDeleted(previousMed.isDeleted());
+            newUser.previousMedication.add(oldMed);
+        }
+
         newUser.donorDetails = new DonorDetails(newUser);
         for (Organs o : user.donorDetails.getOrgans()) {
             newUser.donorDetails.getOrgans().add(o);

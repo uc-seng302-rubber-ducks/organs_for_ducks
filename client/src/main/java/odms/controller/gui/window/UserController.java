@@ -331,14 +331,6 @@ public class UserController {
 
     }
 
-    /**
-     * Public method to clear medications in the medication tab
-     */
-    public void clearMeds() {
-        medicationTabPageController.clearPreviousMeds();
-    }
-
-
     public void refreshCurrentlyDonating() {
         donationTabPageController.refreshCurrentlyDonating();
     }

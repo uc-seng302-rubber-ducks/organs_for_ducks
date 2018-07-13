@@ -168,7 +168,7 @@ public class MedicationTabController {
 
     public void refreshLists(User user) {
         currentUser = user;
-        if (user.getCurrentMedication() != null) {
+        if (!user.getCurrentMedication().isEmpty()) {
             currentMeds.clear();
             currentMedicationListView.getItems().clear();
             List<String> medications = new ArrayList<>();
@@ -183,7 +183,7 @@ public class MedicationTabController {
             currentMedicationListView.setItems(currentMeds);
         }
 
-        if (user.getPreviousMedication() != null) {
+        if (!user.getPreviousMedication().isEmpty()) {
             previousMeds.clear();
             previousMedicationListView.getItems().clear();
             List<String> medications = new ArrayList<>();

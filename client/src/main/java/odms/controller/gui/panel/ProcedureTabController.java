@@ -171,7 +171,6 @@ public class ProcedureTabController {
                 pendingProcedureTableView.getSelectionModel().getSelectedItem() != null);
         int index = pendingProceduresTableSelected ? pendingProcedureTableView.getSelectionModel()
                 .getSelectedIndex() : previousProcedureTableView.getSelectionModel().getSelectedIndex();
-        parent.clearMeds();
         pendingProcedures.clear();
         medicalProcedures = FXCollections.observableList(user.getMedicalProcedures().stream().filter(p -> !p.isDeleted()).collect(Collectors.toList()));
         for (MedicalProcedure procedure : medicalProcedures) {
@@ -390,5 +389,6 @@ public class ProcedureTabController {
         } catch (IOException e) {
             Log.severe("unable to launch Modify Procedure Organs window for User NHI: " + currentUser.getNhi(), e);
         }
+        parent.updateUndoRedoButtons();
     }
 }
