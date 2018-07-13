@@ -21,7 +21,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.EnumMap;
 import java.util.Map;
 
 @OdmsController
@@ -37,7 +36,7 @@ public class ReceivingOrgansController extends BaseController {
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/users/{nhi}/receiving")
-    public ResponseEntity postOrgansToReceive(@RequestBody Map<String, ArrayList<ReceiverOrganDetailsHolder>> receiving,
+    public ResponseEntity postOrgansToReceive(@RequestBody Map<Organs, ArrayList<ReceiverOrganDetailsHolder>> receiving,
                                               @PathVariable String nhi) {
         try (Connection connection = driver.getConnection()) {
             User user = handler.getOneUser(connection, nhi);
@@ -45,8 +44,8 @@ public class ReceivingOrgansController extends BaseController {
                 return new ResponseEntity(HttpStatus.NOT_FOUND);
             }
             for (Organs organ : Organs.values()) {
-                if (receiving.containsKey(organ.toString())) {
-                    user.getReceiverDetails().getOrgans().put(organ, receiving.get(organ.toString()));
+                if (receiving.containsKey(organ)) {
+                    user.getReceiverDetails().getOrgans().put(organ, receiving.get(organ));
                 }
             }
             user.addChange(new Change("Add organs to be received"));
@@ -59,22 +58,14 @@ public class ReceivingOrgansController extends BaseController {
     }
 
     @RequestMapping(method = RequestMethod.PUT, value = "/users/{nhi}/receiving")
-    public ResponseEntity putOrganToReceive(@RequestBody Map<String, ArrayList<ReceiverOrganDetailsHolder>> receiving,
+    public ResponseEntity putOrganToReceive(@RequestBody Map<Organs, ArrayList<ReceiverOrganDetailsHolder>> receiving,
                                             @PathVariable String nhi) {
         try (Connection connection = driver.getConnection()) {
             User user = handler.getOneUser(connection, nhi);
             if (user == null) {
                 return new ResponseEntity(HttpStatus.NOT_FOUND);
             }
-            Map<Organs, ArrayList<ReceiverOrganDetailsHolder>> map = new EnumMap<>(Organs.class);
-            for (Map.Entry organSet : receiving.entrySet()) {
-                for (Organs value : Organs.values()) {
-                    if (value.toString().equals(organSet.getKey())) {
-                        map.put(value, receiving.get(organSet.getKey().toString()));
-                    }
-                }
-            }
-            user.getReceiverDetails().setOrgans(map);
+            user.getReceiverDetails().setOrgans(receiving);
             user.addChange(new Change("Add organs to be received"));
             handler.saveUser(user, connection);
         } catch (SQLException ex) {
