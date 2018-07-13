@@ -700,6 +700,21 @@ public class DBHandler {
         }
     }
 
+    /**
+     * finds a single Administrator and sets their deleted flag to true, then updates the Administrator on the db
+     *
+     * @param connection connection to the target database
+     * @param username   username of the Administrator to be deleted
+     * @throws SQLException exception thrown during the transaction
+     */
+    public void deleteAdministrator(Connection connection, String username) throws SQLException {
+        Administrator toDelete = getOneAdministrator(connection, username);
+        if (toDelete != null) {
+            toDelete.setDeleted(true);
+            saveAdministrators(Collections.singletonList(toDelete), connection);
+        }
+    }
+
 
     /**
      * replaces an existing clinician with a new version
