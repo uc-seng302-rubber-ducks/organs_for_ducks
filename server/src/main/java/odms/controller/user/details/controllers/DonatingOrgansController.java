@@ -8,6 +8,7 @@ import odms.commons.utils.Log;
 import odms.controller.BaseController;
 import odms.controller.OdmsController;
 import odms.exception.ServerDBException;
+import odms.security.IsUser;
 import odms.utils.DBManager;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,6 +32,7 @@ public class DonatingOrgansController extends BaseController {
         handler = super.getHandler();
     }
 
+    @IsUser
     @RequestMapping(method = RequestMethod.POST, value = "/users/{nhi}/donating")
     public ResponseEntity postDonatingOrgans(@PathVariable String nhi,
                                              @RequestBody Set<Organs> donating) {
@@ -50,6 +52,7 @@ public class DonatingOrgansController extends BaseController {
         return new ResponseEntity(HttpStatus.CREATED);
     }
 
+    @IsUser
     @RequestMapping(method = RequestMethod.PUT, value = "/users/{nhi}/donating")
     public ResponseEntity putDonatingOrgans(@PathVariable String nhi,
                                             @RequestBody Set<Organs> donating) {
