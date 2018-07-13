@@ -241,6 +241,7 @@ public class UserOverviewController {
     private void closeWindow() {
         checkSave();
         currentUser.getUndoStack().clear();
+        currentUser.getRedoStack().clear();
         stage.close();
         Log.info("Successfully closed update user window for User NHI: " + currentUser.getNhi());
     }
@@ -275,6 +276,7 @@ public class UserOverviewController {
     private void logout() {
         checkSave();
         currentUser.getUndoStack().clear();
+        currentUser.getRedoStack().clear();
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML/loginView.fxml"));
         Parent root;
         try {
