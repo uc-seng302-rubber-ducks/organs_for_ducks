@@ -49,7 +49,8 @@ public class Sql implements Runnable {
             try {
                 jdbcDriver = new JDBCDriver();
             } catch (PropertyVetoException e) {
-                e.printStackTrace();
+                Log.severe("Could not get connection",e);
+                return;
             }
             conn = jdbcDriver.getConnection();
             conn.prepareStatement(statement);
