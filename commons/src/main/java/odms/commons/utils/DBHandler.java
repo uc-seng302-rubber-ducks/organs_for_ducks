@@ -2,6 +2,7 @@ package odms.commons.utils;
 
 import odms.commons.model.*;
 import odms.commons.model._enum.Organs;
+import odms.commons.model.datamodel.ContactDetails;
 import odms.commons.model.datamodel.Medication;
 import odms.commons.model.datamodel.ReceiverOrganDetailsHolder;
 import odms.commons.utils.db_strategies.AbstractUpdateStrategy;
@@ -293,13 +294,7 @@ public class DBHandler {
                     user.setHomePhone(resultSet.getString("homePhone"));
                     user.setCellPhone(resultSet.getString("cellPhone"));
                     user.setEmail(resultSet.getString("email"));
-                    user.setStreetNumber(resultSet.getString("streetNumber"));
-                    user.setStreetName(resultSet.getString("streetName"));
-                    user.setNeighborhood(resultSet.getString("neighbourhood"));
-                    user.setCity(resultSet.getString("city"));
-                    user.setRegion(resultSet.getString("region"));
-                    user.setCountry(resultSet.getString("country"));
-                    user.setZipCode(resultSet.getString("zipCode"));
+                    getAddressResults(user.getContactDetails(), resultSet);
                 }
             }
         }
@@ -323,16 +318,21 @@ public class DBHandler {
                     user.getContact().setHomePhoneNumber(resultSet.getString("homePhone"));
                     user.getContact().setCellPhoneNumber(resultSet.getString("cellPhone"));
                     user.getContact().setEmail(resultSet.getString("email"));
-                    user.getContact().setStreetNumber(resultSet.getString("streetNumber"));
-                    user.getContact().setStreetName(resultSet.getString("streetName"));
-                    user.getContact().setNeighborhood(resultSet.getString("neighbourhood"));
-                    user.getContact().setCity(resultSet.getString("city"));
-                    user.getContact().setRegion(resultSet.getString("region"));
-                    user.getContact().setZipCode(resultSet.getString("zipCode"));
-                    user.getContact().setCountry(resultSet.getString("country"));
+                    getAddressResults(user.getContact(), resultSet);
+
                 }
             }
         }
+    }
+
+    private void getAddressResults(ContactDetails contactDetails, ResultSet resultSet) throws SQLException {
+        contactDetails.setStreetNumber(resultSet.getString("streetNumber"));
+        contactDetails.setStreetName(resultSet.getString("streetName"));
+        contactDetails.setNeighborhood(resultSet.getString("neighbourhood"));
+        contactDetails.setCity(resultSet.getString("city"));
+        contactDetails.setRegion(resultSet.getString("region"));
+        contactDetails.setZipCode(resultSet.getString("zipCode"));
+        contactDetails.setCountry(resultSet.getString("country"));
     }
 
     /**
@@ -552,8 +552,7 @@ public class DBHandler {
                     clinician.setLastName(resultSet.getString("lastName"));
                     clinician.setDateCreated(resultSet.getTimestamp("timeCreated").toLocalDateTime());
                     clinician.setDateLastModified(resultSet.getTimestamp("lastModified").toLocalDateTime());
-                    //clinician.getWorkContactDetails().setAddress(getAddressResults(resultSet, clinician.getStaffId()));
-                    //TODO: implement addressStrategy for clinicians (same functionality as getUserAddress method)
+                    getAddressResults(clinician.getWorkContactDetails(), resultSet);
                     clinicians.add(clinician);
                 }
 
