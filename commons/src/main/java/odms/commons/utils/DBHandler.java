@@ -70,6 +70,7 @@ public class DBHandler {
             "WHERE firstName LIKE ? OR lastName LIKE ? AND region LIKE ? " +
             "LIMIT ? OFFSET ?";
     private static final String SELECT_ADMIN_ONE_TO_ONE_INFO_STMT = "SELECT userName, firstName, middleName, lastName, timeCreated, lastModified  FROM Administrator";
+    private static final String SELECT_SINGLE_ADMIN_ONE_TO_ONE_INFO_STMT = "SELECT userName, firstName, middleName, lastName, timeCreated, lastModified  FROM Administrator WHERE userName = ?";
     private static final String SELECT_PASS_DETAILS = "SELECT hash,salt FROM PasswordDetails WHERE fkAdminUserName = ? OR fkStaffId = ?";
     private AbstractUpdateStrategy updateStrategy;
 
@@ -138,11 +139,11 @@ public class DBHandler {
 
     public Administrator getOneAdministrator(Connection connection, String username) throws SQLException {
         Administrator administrator = null;
-        try (PreparedStatement statement = connection.prepareStatement(SELECT_ADMIN_ONE_TO_ONE_INFO_STMT)) {
-            //statement.setString(1, username);
+        try (PreparedStatement statement = connection.prepareStatement(SELECT_SINGLE_ADMIN_ONE_TO_ONE_INFO_STMT)) {
+            statement.setString(1, username);
             try (ResultSet resultSet = statement.executeQuery()) {
                 while (resultSet != null && resultSet.next()) {
-                    administrator.setUserName(resultSet.getString("userName"));
+                    administrator = createAdmin(resultSet);
                 }
             }
 
@@ -597,19 +598,24 @@ public class DBHandler {
             try (ResultSet resultSet = statement.executeQuery()) {
 
                 while (resultSet != null && resultSet.next()) {
-                    Administrator administrator = new Administrator();
-                    administrator.setUserName(resultSet.getString(1));
-                    administrator.setFirstName(resultSet.getString(2));
-                    administrator.setMiddleName(resultSet.getString(3));
-                    administrator.setLastName(resultSet.getString(4));
-                    administrator.setDateCreated(resultSet.getTimestamp(5).toLocalDateTime());
-                    administrator.setDateLastModified(resultSet.getTimestamp(6).toLocalDateTime());
+                    Administrator administrator = createAdmin(resultSet);
                     administrators.add(administrator);
                 }
 
                 return administrators;
             }
         }
+    }
+
+    private Administrator createAdmin(ResultSet resultSet) throws SQLException {
+        Administrator administrator = new Administrator();
+        administrator.setUserName(resultSet.getString(1));
+        administrator.setFirstName(resultSet.getString(2));
+        administrator.setMiddleName(resultSet.getString(3));
+        administrator.setLastName(resultSet.getString(4));
+        administrator.setDateCreated(resultSet.getTimestamp(5).toLocalDateTime());
+        administrator.setDateLastModified(resultSet.getTimestamp(6).toLocalDateTime());
+        return administrator;
     }
 
     /**
