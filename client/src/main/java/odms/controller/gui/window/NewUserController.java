@@ -70,18 +70,14 @@ public class NewUserController {
     private TextField neighborhood;
     @FXML
     private TextField city;
-//    @FXML
-//    private ComboBox<String> region;
     @FXML
     private TextField regionInput;
     @FXML
-    private ComboBox<String> contactDetailsRegionSelector;
+    private ComboBox<String> regionSelector;
     @FXML
     private TextField zipCode;
-//    @FXML
-//    private TextField country;
     @FXML
-    private ComboBox<String> contactDetailsCountrySelector;
+    private ComboBox<String> countrySelector;
     @FXML
     private TextField email;
     @FXML
@@ -98,18 +94,14 @@ public class NewUserController {
     private TextField ecNeighborhood;
     @FXML
     private TextField ecCity;
-//    @FXML
-//    private ComboBox<String> ecRegion;
     @FXML
     private TextField ecRegionInput;
     @FXML
-    private ComboBox<String> ecContactDetailsRegionSelector;
+    private ComboBox<String> ecRegionSelector;
     @FXML
     private TextField ecZipCode;
-//    @FXML
-//    private TextField ecCounrty;
     @FXML
-    private ComboBox<String> ecContactDetailsCountrySelector;
+    private ComboBox<String> ecCountrySelector;
     @FXML
     private TextField ecEmail;
     @FXML
@@ -131,6 +123,7 @@ public class NewUserController {
     //</editor-fold>
     private Stage ownStage;
     private DataHandler dataHandler = new JsonHandler();
+    private String defaultCountry = "New Zealand";
 
     /**
      * Initializes the NewUserController
@@ -143,15 +136,15 @@ public class NewUserController {
         this.stage = stage;
         this.ownStage = ownStage;
 
-        contactDetailsCountrySelector.setItems(FXCollections.observableList(controller.getAllCountries()));
-        ecContactDetailsCountrySelector.setItems(FXCollections.observableList(controller.getAllCountries()));
-        contactDetailsCountrySelector.getSelectionModel().select("New Zealand");
-        ecContactDetailsCountrySelector.getSelectionModel().select("New Zealand");
+        countrySelector.setItems(FXCollections.observableList(controller.getAllowedCountries()));
+        ecCountrySelector.setItems(FXCollections.observableList(controller.getAllowedCountries()));
+        countrySelector.getSelectionModel().select(defaultCountry);
+        ecCountrySelector.getSelectionModel().select(defaultCountry);
 
-        contactDetailsRegionSelector.setItems(FXCollections.observableList(controller.getAllNZRegion()));
-        ecContactDetailsRegionSelector.setItems(FXCollections.observableList(controller.getAllNZRegion()));
-        contactDetailsRegionSelector.getSelectionModel().selectFirst();
-        ecContactDetailsRegionSelector.getSelectionModel().selectFirst();
+        regionSelector.setItems(FXCollections.observableList(controller.getAllNZRegion()));
+        ecRegionSelector.setItems(FXCollections.observableList(controller.getAllNZRegion()));
+        regionSelector.getSelectionModel().selectFirst();
+        ecRegionSelector.getSelectionModel().selectFirst();
 
     }
 
@@ -162,14 +155,8 @@ public class NewUserController {
      * @param event from GUI
      */
     @FXML
-    private void contactDetailsCountrySelectorListener(ActionEvent event) {
-        if(! contactDetailsCountrySelector.getSelectionModel().getSelectedItem().equals("New Zealand")) {
-            contactDetailsRegionSelector.setVisible(false);
-            regionInput.setVisible(true);
-        } else {
-            contactDetailsRegionSelector.setVisible(true);
-            regionInput.setVisible(false);
-        }
+    private void countrySelectorListener(ActionEvent event) {
+        controller.countrySelectorEventHandler(countrySelector, regionSelector, regionInput);
     }
 
     /**
@@ -179,14 +166,8 @@ public class NewUserController {
      * @param event from GUI
      */
     @FXML
-    private void ecContactDetailsCountrySelectorListener(ActionEvent event){
-        if (!ecContactDetailsCountrySelector.getSelectionModel().getSelectedItem().equals("New Zealand")) {
-            ecContactDetailsRegionSelector.setVisible(false);
-            ecRegionInput.setVisible(true);
-        } else {
-            ecContactDetailsRegionSelector.setVisible(true);
-            ecRegionInput.setVisible(false);
-        }
+    private void ecCountrySelectorListener(ActionEvent event){
+        controller.countrySelectorEventHandler(ecCountrySelector, ecRegionSelector, ecRegionInput);
     }
 
         /**
@@ -256,7 +237,7 @@ public class NewUserController {
             region = regionInput.getText();
 
         } else {
-            region = this.contactDetailsRegionSelector.getSelectionModel().getSelectedItem();
+            region = this.regionSelector.getSelectionModel().getSelectedItem();
         }
 
         valid &= (AttributeValidation.checkString(region));
@@ -277,7 +258,7 @@ public class NewUserController {
         String city = this.city.getText();
         valid &= (AttributeValidation.checkString(city));
 
-        String country = this.contactDetailsCountrySelector.getSelectionModel().getSelectedItem();
+        String country = this.countrySelector.getSelectionModel().getSelectedItem();
         valid &= (AttributeValidation.checkString(country));
 
         String streetnum = this.streetNumber.getText();
@@ -421,7 +402,7 @@ public class NewUserController {
             eRegion = ecRegionInput.getText();
 
         } else {
-            eRegion = ecContactDetailsRegionSelector.getSelectionModel().getSelectedItem();
+            eRegion = ecRegionSelector.getSelectionModel().getSelectedItem();
         }
         valid &= (AttributeValidation.checkString(eRegion));
 
@@ -438,7 +419,7 @@ public class NewUserController {
         String ecity = ecCity.getText();
         valid &= (AttributeValidation.checkString(ecity));
 
-        String ecountry = ecContactDetailsCountrySelector.getSelectionModel().getSelectedItem();
+        String ecountry = ecCountrySelector.getSelectionModel().getSelectedItem();
         valid &= (AttributeValidation.checkString(ecountry));
 
         String estreetnum = ecStreetNumber.getText();

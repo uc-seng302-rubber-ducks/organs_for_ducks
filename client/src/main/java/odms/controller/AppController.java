@@ -1,5 +1,7 @@
 package odms.controller;
 
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.TextField;
 import odms.commons.exception.ProfileAlreadyExistsException;
 import odms.commons.exception.ProfileNotFoundException;
 import odms.commons.model.Administrator;
@@ -118,6 +120,10 @@ public class AppController {
         }
         generateAllCountries();
         generateAllNZRegion();
+
+        allowedCountries = new ArrayList<>(); //TODO: removed this line after the functionality which enable clinician to filter countries is implemented.
+        allowedCountries.addAll(allCountries); //TODO: removed this line after the functionality which enable clinician to filter countries is implemented.
+
     }
 
     /**
@@ -131,6 +137,25 @@ public class AppController {
         }
         return controller;
     }
+
+    /**
+     * If New Zealand is selected at the country combo box, the region combo box will appear.
+     * If country other than New Zealand is selected at the country combo box, the region combo box will
+     * be replaced with a text field.
+     * @param countrySelector Combo Box
+     * @param regionSelector Combo Box
+     * @param regionInput Text Field
+     */
+    public void countrySelectorEventHandler(ComboBox countrySelector, ComboBox regionSelector, TextField regionInput){
+        if(! countrySelector.getSelectionModel().getSelectedItem().equals("New Zealand")) {
+            regionSelector.setVisible(false);
+            regionInput.setVisible(true);
+        } else {
+            regionSelector.setVisible(true);
+            regionInput.setVisible(false);
+        }
+    }
+
 
     /**
      * create a list of all country names.
