@@ -142,6 +142,8 @@ public class AppController {
      * If New Zealand is selected at the country combo box, the region combo box will appear.
      * If country other than New Zealand is selected at the country combo box, the region combo box will
      * be replaced with a text field.
+     * region text field is cleared by default when it appears.
+     * region combo box selects the first item by default when it appears.
      * @param countrySelector Combo Box
      * @param regionSelector Combo Box
      * @param regionInput Text Field
@@ -150,8 +152,12 @@ public class AppController {
         if(! countrySelector.getSelectionModel().getSelectedItem().equals("New Zealand")) {
             regionSelector.setVisible(false);
             regionInput.setVisible(true);
+            //TODO: if the following line is removed, update javadoc of this method and all its callers. -14 july
+            regionInput.clear(); //TODO: redo stack for region is cleared when region input is cleared. try undo redo when selecting nz as country and selecting other countries + selecting/entering region. -14 july
+
         } else {
             regionSelector.setVisible(true);
+            regionSelector.getSelectionModel().selectFirst();
             regionInput.setVisible(false);
         }
     }

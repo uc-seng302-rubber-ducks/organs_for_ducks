@@ -152,6 +152,8 @@ public class NewUserController {
      * If New Zealand is selected at the country combo box, the region combo box will appear.
      * If country other than New Zealand is selected at the country combo box, the region combo box will
      * be replaced with a text field.
+     * region text field is cleared by default when it appears.
+     * region combo box selects the first item by default when it appears.
      * @param event from GUI
      */
     @FXML
@@ -163,6 +165,8 @@ public class NewUserController {
      * If New Zealand is selected at the country combo box, the region combo box will appear.
      * If country other than New Zealand is selected at the country combo box, the region combo box will
      * be replaced with a text field.
+     * region text field is cleared by default when it appears.
+     * region combo box selects the first item by default when it appears.
      * @param event from GUI
      */
     @FXML

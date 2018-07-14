@@ -67,8 +67,6 @@ public class UpdateClinicianController {
     @FXML
     private TextField zipCodeTextField;
 
-//    @FXML
-//    private TextField countryTextField;
     @FXML
     private ComboBox<String> countrySelector;
     @FXML
@@ -186,6 +184,8 @@ public class UpdateClinicianController {
      * If New Zealand is selected at the country combo box, the region combo box will appear.
      * If country other than New Zealand is selected at the country combo box, the region combo box will
      * be replaced with a text field.
+     * region text field is cleared by default when it appears.
+     * region combo box selects the first item by default when it appears.
      * @param event from GUI
      */
     @FXML
@@ -239,7 +239,7 @@ public class UpdateClinicianController {
         zipCodeTextField.setText(zipCode);
         countrySelector.getSelectionModel().select(country);
 
-        if(country != null && !country.equals(defaultCountry)) {
+        if(!country.equals(defaultCountry)) {
             regionTextField.setText(region);
 
         } else {
