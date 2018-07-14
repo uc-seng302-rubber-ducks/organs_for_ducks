@@ -1,5 +1,6 @@
 package odms.controller.gui.panel;
 
+import javafx.beans.InvalidationListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -21,9 +22,8 @@ import okhttp3.OkHttpClient;
 import org.controlsfx.control.textfield.TextFields;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class MedicationTabController {
 
@@ -168,6 +168,7 @@ public class MedicationTabController {
 
     public void refreshLists(User user) {
         currentUser = user;
+
         if (!user.getCurrentMedication().isEmpty()) {
             currentMeds.clear();
             currentMedicationListView.getItems().clear();
@@ -186,15 +187,18 @@ public class MedicationTabController {
         if (!user.getPreviousMedication().isEmpty()) {
             previousMeds.clear();
             previousMedicationListView.getItems().clear();
-            List<String> medications = new ArrayList<>();
+            List<String> medications2 = new ArrayList<>();
             for (Medication meds : user.getPreviousMedication()) {
                 if (!meds.isDeleted()) {
-                    medications.add(meds.getMedName());
+                    medications2.add(meds.getMedName());
                 }
             }
-            previousMeds.addAll(medications);
+            previousMeds.addAll(medications2);
             previousMedicationListView.setItems(previousMeds);
         }
+
+        currentMedicationListView.refresh();
+        previousMedicationListView.refresh();
     }
 
     /**
