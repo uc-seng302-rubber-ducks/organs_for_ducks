@@ -3,6 +3,7 @@ package odms.security;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 
 import java.security.SecureRandom;
+import java.time.LocalDateTime;
 import java.util.Collections;
 
 /**
@@ -12,10 +13,12 @@ public class AuthToken extends AbstractAuthenticationToken {
 
     private static final String AB = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
     private static final int TOKEN_LENGTH = 32;
+    private static final long TOKEN_TTL = 30; // token lifetime in minutes
     private static SecureRandom rand = new SecureRandom();
     private final String token;
     private String userId;
     private String userType;
+    private LocalDateTime expiryTime;
 
 
     /**
@@ -32,6 +35,8 @@ public class AuthToken extends AbstractAuthenticationToken {
         this.token = token;
         this.userId = userId;
         this.userType = userType;
+        LocalDateTime now = LocalDateTime.now();
+        this.expiryTime = now.plusMinutes(TOKEN_TTL);
         setAuthenticated(true);
     }
 
@@ -58,26 +63,42 @@ public class AuthToken extends AbstractAuthenticationToken {
         return sb.toString();
     }
 
+    private void renew(){
+        LocalDateTime now = LocalDateTime.now();
+        this.expiryTime = now.plusMinutes(TOKEN_TTL);
+    }
+
     public String getToken() {
+        renew();
         return token;
     }
 
     public String getUserType() {
+
+        renew();
         return userType;
     }
 
     public String getUserId() {
+        renew();
         return userId;
     }
 
 
+    public boolean isTokenAlive(){
+        return LocalDateTime.now().isBefore(expiryTime);
+    }
+
     @Override
     public Object getCredentials() {
+
+        renew();
         return token;
     }
 
     @Override
     public Object getPrincipal() {
+        renew();
         return userId;
     }
 }
