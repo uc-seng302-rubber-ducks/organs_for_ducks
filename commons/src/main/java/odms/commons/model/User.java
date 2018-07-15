@@ -11,7 +11,6 @@ import odms.commons.model.datamodel.Address;
 import odms.commons.model.datamodel.ContactDetails;
 import odms.commons.model.datamodel.Medication;
 import odms.commons.model.datamodel.ReceiverOrganDetailsHolder;
-import odms.commons.model.dto.UserOverview;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -1037,13 +1036,11 @@ public class User extends Undoable<User> implements Listenable {
             //index 3 = level above that, i.e. whatever uses the setters
             Class callerClass = Class.forName(Thread.currentThread().getStackTrace()[3].getClassName());
             if (callerClass.isAnnotationPresent(IgnoreForUndo.class)) {
-                System.out.println("ignored");
                 return;
             }
         } catch (ClassNotFoundException ex) {
             //oh well, carry on as normal
         }
-        System.out.println("not ignored");
         Memento<User> memento = new Memento<>(User.clone(this));
         getUndoStack().push(memento);
     }
@@ -1134,8 +1131,9 @@ public class User extends Undoable<User> implements Listenable {
 
         this.contactDetails = other.contactDetails;
         this.contact = other.contact;
-        this.contact.setAttachedUser(this);
-
+        if (this.contact != null) {
+            this.contact.setAttachedUser(this);
+        }
         this.name = other.name;
         this.firstName = other.firstName;
         this.preferredFirstName = other.preferredFirstName;
