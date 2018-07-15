@@ -236,11 +236,13 @@ public class User extends Undoable<User> implements Listenable {
         newUser.currentDiseases = new ArrayList<>();
         for (Disease cd : user.currentDiseases) {
             Disease newcd = new Disease(cd.getName(), cd.getIsChronic(), cd.getIsCured(), cd.getDiagnosisDate());
+            newcd.setDeleted(cd.isDeleted());
             newUser.currentDiseases.add(newcd);
         }
         newUser.pastDiseases = new ArrayList<>();
         for (Disease pd : user.pastDiseases) {
             Disease newpd = new Disease(pd.getName(), pd.getIsChronic(), pd.getIsCured(), pd.getDiagnosisDate());
+            newpd.setDeleted(pd.isDeleted());
             newUser.pastDiseases.add(newpd);
         }
 

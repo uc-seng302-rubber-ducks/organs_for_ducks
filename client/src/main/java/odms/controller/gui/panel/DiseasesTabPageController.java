@@ -161,6 +161,8 @@ public class DiseasesTabPageController {
             launchDiseasesGui(currentDiseaseTableView.getSelectionModel().getSelectedItem());
         } else if (pastDiseaseTableView.getSelectionModel().getSelectedItem() != null) {
             launchDiseasesGui(pastDiseaseTableView.getSelectionModel().getSelectedItem());
+        } else {
+            currentUser.getUndoStack().pop();
         }
     }
 
@@ -209,9 +211,11 @@ public class DiseasesTabPageController {
             pastDiseaseTableView.getSelectionModel().getSelectedItem().setDeleted(true);
             Log.info("past disease: " + pastDiseaseTableView.getSelectionModel().getSelectedItem() + " deleted for User NHI: " + currentUser.getNhi());
         } else {
+            currentUser.getUndoStack().pop();
             Log.warning("Unable to delete past disease for User NHI: " + currentUser.getNhi() + ", no disease selected");
         }
 
+        parent.updateUndoRedoButtons();
         this.application.update(currentUser);
         showUserDiseases(currentUser, false); //Reload the scene?
     }
