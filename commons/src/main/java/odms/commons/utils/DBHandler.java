@@ -138,6 +138,14 @@ public class DBHandler {
     }
 
 
+    /**
+     * gets the info of a single administrator
+     *
+     * @param connection A valid connection to the database
+     * @param username   the username of the User
+     * @return an Afministrator
+     * @throws SQLException
+     */
     public Administrator getOneAdministrator(Connection connection, String username) throws SQLException {
         Administrator administrator = null;
         try (PreparedStatement statement = connection.prepareStatement(SELECT_SINGLE_ADMIN_ONE_TO_ONE_INFO_STMT)) {
@@ -234,12 +242,18 @@ public class DBHandler {
         return user;
     }
 
+    /**
+     * get the basic details of a user from a result set
+     * @param resultSet result set with the cursor pointing at the desired row
+     * @return a Clinician
+     * @throws SQLException if there is an error extracting information from the resultSet
+     */
     private Clinician getClincianBasicDetails(ResultSet resultSet) throws SQLException {
         return new Clinician(resultSet.getString("firstName"), resultSet.getString("staffId"), null);
     }
 
     /**
-     *
+     * get the users health details
      * @param resultSet result set with the cursor pointing at the desired row
      * @return A user with a first name, middle name, last name, date of birth and date of death
      * @throws SQLException if there is an error extracting information from the resultSet
@@ -325,6 +339,12 @@ public class DBHandler {
         }
     }
 
+    /**
+     * gets all the info for the address for contact details and sets it
+     * @param contactDetails the contact details
+     * @param resultSet result set with the cursor pointing at the desired row
+     * @throws SQLException exception thrown during the transaction
+     */
     private void getAddressResults(ContactDetails contactDetails, ResultSet resultSet) throws SQLException {
         contactDetails.setStreetNumber(resultSet.getString("streetNumber"));
         contactDetails.setStreetName(resultSet.getString("streetName"));
@@ -606,6 +626,13 @@ public class DBHandler {
         }
     }
 
+    /**
+     * creates a admin from a result set
+     *
+     * @param resultSet result set with the cursor pointing at the desired row
+     * @return A new Administrator
+     * @throws SQLException when there are any SQL errors
+     */
     private Administrator createAdmin(ResultSet resultSet) throws SQLException {
         Administrator administrator = new Administrator();
         administrator.setUserName(resultSet.getString(1));
@@ -628,6 +655,12 @@ public class DBHandler {
         updateDatabase(administrators, connection);
     }
 
+    /**
+     * Updates the administrators stored in active memory.
+     *
+     * @param administrator  Admin to update.
+     * @param connection Connection to the target database
+     */
     public void saveAdministrator(Administrator administrator, Connection connection) {
         updateStrategy = new AdminUpdateStrategy();
         Collection<Administrator> administrators = Collections.singletonList(administrator);
