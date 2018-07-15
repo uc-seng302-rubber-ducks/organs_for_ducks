@@ -60,11 +60,6 @@ public class LoginController {
     private AppController appController;
     private Stage stage;
 
-    {
-        userWarningLabel
-                .setText("User was not found. \nTo register a new user, please click sign up.");
-        return null;
-    }
 
     /**
      * Initializes the Login controller.
@@ -136,7 +131,7 @@ public class LoginController {
         Response response = null;
         try {
             HttpRequester requester = new HttpRequester(new OkHttpClient());
-            Request request = new Request.Builder().url(appController.getServerURL() + "getUsers/" + wantedUser).build();
+            Request request = new Request.Builder().url(appController.getServerURL() + "users/" + wantedUser).build();
             response = requester.makeRequest(request);
         } catch (IOException e) {
             Log.severe(networkError, e);
@@ -188,6 +183,9 @@ public class LoginController {
         }
         String clinicianPassword = staffPasswordField.getText();
         String token = loginClinician(wantedClinician, clinicianPassword);
+        if(token == null){
+            return;
+        }
         Clinician clinician = null;
         try {
             clinician = getClinician(wantedClinician, token);
@@ -219,8 +217,9 @@ public class LoginController {
         String networkError = "A network error occurred. Please try again or contact your IT department.";
         Response response = null;
         JsonObject body = new JsonObject();
-        body.addProperty("id" , wantedClinician);
+        body.addProperty("username" , wantedClinician);
         body.addProperty("password", clinicianPassword);
+        body.addProperty("role", "clinician");
 
         RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), body.toString());
         HttpRequester requester = new HttpRequester(new OkHttpClient());
@@ -253,6 +252,9 @@ public class LoginController {
         String[] stringSplit;
         try {
             stringSplit = response.body().string().split("\"token\":");
+            System.out.println(stringSplit);
+            System.out.println(response.body().string());
+
         } catch (IOException e) {
             Log.severe("Empty response body returned with valid response code", e);
             clinicianWarningLabel.setText(networkError);

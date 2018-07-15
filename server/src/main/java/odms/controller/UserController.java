@@ -7,7 +7,7 @@ import odms.commons.utils.JDBCDriver;
 import odms.commons.utils.Log;
 import odms.exception.NotFoundException;
 import odms.exception.ServerDBException;
-import odms.security.IsUser;
+import odms.security.IsClinician;
 import odms.utils.DBManager;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,6 +35,7 @@ public class UserController extends BaseController {
      *
      * @return list of users
      */
+    @IsClinician
     @RequestMapping(
             method = RequestMethod.GET,
             value = "/users")
@@ -65,7 +66,6 @@ public class UserController extends BaseController {
         }
     }
 
-    @IsUser
     @RequestMapping(method = RequestMethod.GET, value = "/users/{nhi}")
     public User getUser(@PathVariable("nhi") String nhi) {
         try (Connection connection = driver.getConnection()) {
@@ -83,7 +83,6 @@ public class UserController extends BaseController {
     }
 
 
-    @IsUser
     @RequestMapping(method = RequestMethod.PUT, value = "/users/{nhi}")
     public ResponseEntity putUser(@PathVariable("nhi") String nhi, @RequestBody User user) {
         try (Connection connection = driver.getConnection()) {
@@ -95,7 +94,6 @@ public class UserController extends BaseController {
         return  new ResponseEntity(HttpStatus.OK);
     }
 
-    @IsUser
     @RequestMapping(method = RequestMethod.DELETE, value = "/users/{nhi}")
     public ResponseEntity deleteUser(@PathVariable("nhi") String nhi) {
         try (Connection connection = driver.getConnection()) {

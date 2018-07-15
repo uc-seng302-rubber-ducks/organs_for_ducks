@@ -47,6 +47,8 @@ public class AuthToken extends AbstractAuthenticationToken {
     public AuthToken(String token) {
         super(null);
         this.token = token;
+        LocalDateTime now = LocalDateTime.now();
+        this.expiryTime = now.plusMinutes(TOKEN_TTL);
         setAuthenticated(false);
     }
 
@@ -63,24 +65,20 @@ public class AuthToken extends AbstractAuthenticationToken {
         return sb.toString();
     }
 
-    private void renew(){
+    void renew(){
         LocalDateTime now = LocalDateTime.now();
         this.expiryTime = now.plusMinutes(TOKEN_TTL);
     }
 
     public String getToken() {
-        renew();
         return token;
     }
 
     public String getUserType() {
-
-        renew();
         return userType;
     }
 
     public String getUserId() {
-        renew();
         return userId;
     }
 
@@ -91,14 +89,11 @@ public class AuthToken extends AbstractAuthenticationToken {
 
     @Override
     public Object getCredentials() {
-
-        renew();
         return token;
     }
 
     @Override
     public Object getPrincipal() {
-        renew();
         return userId;
     }
 }
