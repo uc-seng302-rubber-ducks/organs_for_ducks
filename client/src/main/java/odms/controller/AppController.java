@@ -9,6 +9,7 @@ import odms.commons.model.User;
 import odms.commons.model._enum.Directory;
 import odms.commons.model.datamodel.Medication;
 import odms.commons.model.datamodel.TransplantDetails;
+import odms.commons.model.dto.UserOverview;
 import odms.commons.utils.DataHandler;
 import odms.commons.utils.JsonHandler;
 import odms.commons.utils.Log;
@@ -21,10 +22,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Stack;
+import java.util.*;
 
 
 /**
@@ -37,6 +35,7 @@ public class AppController {
     private List<User> users = new ArrayList<>();
     private ArrayList<TransplantDetails> transplantList = new ArrayList<>();
     private List<Clinician> clinicians = new ArrayList<>();
+    private Set<UserOverview> overviews = new HashSet<>();
     private static AppController controller;
     private ArrayList<String[]> historyOfCommands = new ArrayList<>();
     private int historyPointer = 0;
@@ -612,5 +611,13 @@ public class AppController {
 
     public void addTransplant(TransplantDetails transplantDetails) {
         transplantList.add(transplantDetails);
+    }
+
+    public void setUserOverviews(Set<UserOverview> users) {
+        overviews = users;
+    }
+
+    public void setClinicians(List<Clinician> clinicians) {
+        this.clinicians = clinicians;
     }
 }
