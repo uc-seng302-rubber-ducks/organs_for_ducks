@@ -59,6 +59,8 @@ public class LoginController {
     private Stage helpStage = null;
     private AppController appController;
     private Stage stage;
+    private HttpRequester requester = new HttpRequester(new OkHttpClient());
+    private JsonHandler jsonHandler = new JsonHandler();
 
 
     /**
@@ -130,14 +132,14 @@ public class LoginController {
         String networkError = "A network error occurred. Please try again or contact your IT department.";
         Response response = null;
         try {
-            HttpRequester requester = new HttpRequester(new OkHttpClient());
+
             Request request = new Request.Builder().url(appController.getServerURL() + "users/" + wantedUser).build();
             response = requester.makeRequest(request);
         } catch (IOException e) {
             Log.severe(networkError, e);
             return null;
         }
-        JsonHandler jsonHandler = new JsonHandler();
+
         if (response == null) {
             Log.warning("A null response was returned to the user");
             userWarningLabel.setText(networkError);
@@ -182,7 +184,7 @@ public class LoginController {
             wantedClinician = staffIdTextField.getText();
         }
         String clinicianPassword = staffPasswordField.getText();
-        String token = loginClinician(wantedClinician, clinicianPassword);
+        String token = loginToServer(wantedClinician, clinicianPassword, "clinician");
         if(token == null){
             return;
         }
@@ -195,7 +197,7 @@ public class LoginController {
             return;
         }
         if (clinician == null || clinician.isDeleted()) {
-            clinicianWarningLabel.setText("The Clinician does not exist");
+            //clinicianWarningLabel.setText("The Clinician does not exist");
         } else {
             FXMLLoader clinicianLoader = new FXMLLoader(
                     getClass().getResource(CLINICIAN_VIEW_URL));
@@ -213,13 +215,15 @@ public class LoginController {
         }
     }
 
-    private String loginClinician(String wantedClinician, String clinicianPassword) {
+    private String loginToServer(String wanted, String password, String role) {
         String networkError = "A network error occurred. Please try again or contact your IT department.";
         Response response = null;
         JsonObject body = new JsonObject();
-        body.addProperty("username" , wantedClinician);
-        body.addProperty("password", clinicianPassword);
-        body.addProperty("role", "clinician");
+        body.addProperty("username" , wanted);
+        body.addProperty("password", password);
+        body.addProperty("role", role);
+        clinicianWarningLabel.setText("");
+        adminWarningLabel.setText("");
 
         RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), body.toString());
         HttpRequester requester = new HttpRequester(new OkHttpClient());
@@ -233,44 +237,38 @@ public class LoginController {
         if (response == null) {
             Log.warning("A null response was returned to the user");
             clinicianWarningLabel.setText(networkError);
+            adminWarningLabel.setText(networkError);
             return null;
         }
         int responseCode = response.code();
         if(responseCode == 404 || responseCode == 401) {
-            clinicianWarningLabel
-                    .setText("Clinician was not found or the username/password was incorrect.\nPlease try again");
+            clinicianWarningLabel.setText("Clinician was not found or the username/password was incorrect.\nPlease try again");
+            adminWarningLabel.setText("Admin was not found or the username/password was incorrect.\nPlease try again");
             return null;
         } else if (responseCode == 500 || responseCode == 400) {
             Log.warning("An Error occurred. code returned: " + responseCode);
             clinicianWarningLabel.setText(networkError);
+            adminWarningLabel.setText(networkError);
             return null;
         } else if (responseCode != 200) {
             Log.warning("A non API response was returned code:" + responseCode);
             clinicianWarningLabel.setText("An unspecified error occurred. Please try again or contact your IT department.");
+            adminWarningLabel.setText("An unspecified error occurred. Please try again or contact your IT department.");
             return null;
         }
-        String[] stringSplit;
-        try {
-            stringSplit = response.body().string().split("\"token\":");
-            System.out.println(stringSplit);
-            System.out.println(response.body().string());
 
-        } catch (IOException e) {
-            Log.severe("Empty response body returned with valid response code", e);
-            clinicianWarningLabel.setText(networkError);
-            return null;
-        }
-        return stringSplit[1].trim();
+        return jsonHandler.decodeLogin(response);
     }
 
     private Clinician getClinician(String wantedClinician, String token) throws IOException {
+        System.out.println(token);
         String networkError = "A network error occurred. Please try again or contact your IT department.";
         Response response = null;
         HttpRequester requester = new HttpRequester(new OkHttpClient());
         try {
             Headers headers = new Headers.Builder().add(appController.TOKEN_HEADER, token).build();
             Request request = new Request.Builder()
-                    .url(appController.getServerURL() + "getClinician/"+ wantedClinician ).headers(headers).build();
+                    .url(appController.getServerURL() + "clinicians/"+ wantedClinician ).headers(headers).build();
             response = requester.makeRequest(request);
         } catch (IOException e) {
             Log.severe(networkError, e);

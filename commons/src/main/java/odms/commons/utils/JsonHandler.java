@@ -6,6 +6,7 @@ import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializer;
 import odms.commons.model.*;
 import odms.commons.model._enum.Directory;
+import odms.commons.model.dto.LoginResponse;
 import okhttp3.Response;
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
@@ -144,6 +145,19 @@ public final class JsonHandler extends DataHandler {
             return user;
         }
         return null;
+    }
+
+    public String decodeLogin(Response response) {
+        Gson gson = new GsonBuilder().create();
+        String responseBodyString;
+        try {
+            responseBodyString = response.body().string();
+        } catch (IOException e) {
+            Log.severe("Invalid HTTP response recieved", e);
+            return null;
+        }
+        LoginResponse loginResponse = gson.fromJson(responseBodyString, LoginResponse.class);
+        return loginResponse.getToken();
     }
 
     /**

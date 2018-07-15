@@ -41,7 +41,6 @@ public class AppController {
     private ArrayList<TransplantDetails> transplantList = new ArrayList<>();
     private List<Clinician> clinicians = new ArrayList<>();
     private Set<UserOverview> overviews = new HashSet<>();
-    private static AppController controller;
     private ArrayList<String[]> historyOfCommands = new ArrayList<>();
     private int historyPointer = 0;
     private DataHandler dataHandler = new JsonHandler();
