@@ -1,12 +1,7 @@
 package odms.security;
 
-import odms.commons.model.CacheManager;
-import odms.commons.model.datamodel.TimedCacheValue;
-import odms.commons.security.TokenCache;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -18,12 +13,10 @@ import java.util.Set;
 public class TokenStore {
 
     private Set<AuthToken> knownAuthTokens;
-    private TokenCache tokenCache;
 
     @Autowired
     public TokenStore() {
         knownAuthTokens = new HashSet<>();
-        tokenCache = CacheManager.getInstance().getTokenCache();
     }
 
     /**
@@ -33,17 +26,15 @@ public class TokenStore {
      * and will be removed from the set of known tokens
      *
      * @param token token to look for
-     * @return
+     * @return Token for the
      */
     AuthToken get(String token) {
-
-        tokenCache.removeOlderThan(LocalDateTime.now());
-        if (tokenCache.get(token) == null){
-            remove(token);
-            return null;
-        }
         for (AuthToken t : knownAuthTokens) {
             if (t.getToken().equals(token)){
+                if(!t.isTokenAlive()){
+                    remove(t.getToken());
+                    return null;
+                }
                 return t;
             }
         }
@@ -51,9 +42,6 @@ public class TokenStore {
     }
 
     public boolean add(AuthToken authToken) {
-        if(!tokenCache.containsKey(authToken.getToken())) {
-            tokenCache.add(authToken.getToken(), new TimedCacheValue<>("Unsure on the implementation of this"));
-        }
         return knownAuthTokens.add(authToken);
     }
 
@@ -66,12 +54,10 @@ public class TokenStore {
     }
 
     public boolean remove(AuthToken authToken) {
-        tokenCache.evict(authToken.getToken());
         return knownAuthTokens.remove(authToken);
     }
 
     public boolean remove(String tokenStr) {
-        tokenCache.evict(tokenStr);
         AuthToken t = get(tokenStr);
         return knownAuthTokens.remove(t);
     }

@@ -1,7 +1,6 @@
 package odms.commons.model;
 
 import odms.commons.utils.Log;
-import odms.commons.security.TokenCache;
 
 import java.io.IOException;
 
@@ -12,14 +11,14 @@ public class CacheManager {
     private static final String DEFAULT_INTERACTIONS_CACHE = "medInteractions.json";
     private static CacheManager manager;
     private MedicationInteractionCache interactionCache;
-    private TokenCache tokenCache;
 
     /**
+     *
      * instantiate and load all the caches on first start-up
      */
     private CacheManager() {
         interactionCache = new MedicationInteractionCache();
-        tokenCache = new TokenCache();
+
         try {
             interactionCache.load(DEFAULT_INTERACTIONS_CACHE);
         } catch (IOException ex) {
@@ -39,9 +38,6 @@ public class CacheManager {
         return interactionCache;
     }
 
-    public TokenCache getTokenCache() {
-        return tokenCache;
-    }
 
     /**
      * group method to save contents of all active caches
