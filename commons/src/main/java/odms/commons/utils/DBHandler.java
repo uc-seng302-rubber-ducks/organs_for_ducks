@@ -10,10 +10,7 @@ import odms.commons.utils.db_strategies.AdminUpdateStrategy;
 import odms.commons.utils.db_strategies.ClinicianUpdateStrategy;
 import odms.commons.utils.db_strategies.UserUpdateStrategy;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.*;
 
 public class DBHandler {
@@ -635,7 +632,9 @@ public class DBHandler {
         try (PreparedStatement statement = connection.prepareStatement(SELECT_PASS_DETAILS)) {
             if (loginType.equalsIgnoreCase("admin")) {
                 statement.setString(1, id);
+                statement.setNull(2, Types.VARCHAR);
             } else {
+                statement.setNull(1, Types.VARCHAR);
                 statement.setString(2, id);
             }
             try (ResultSet rs = statement.executeQuery()) {

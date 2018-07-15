@@ -17,8 +17,8 @@ import java.sql.SQLException;
  */
 public class SQLScriptRunner {
 
-    private static final String RESET_DATABASE_SCRIPT_FILEPATH = "src/main/resources/sqlScripts/createDataBase.sql";
-    private static final String RESAMPLE_DATABASE_SCRIPT_FILEPATH = "src/main/resources/sqlScripts/sampleDatabaseData.sql";
+    private static String RESET_DATABASE_SCRIPT_FILEPATH = "client/src/main/resources/sqlScripts/createDataBase.sql";
+    private static String RESAMPLE_DATABASE_SCRIPT_FILEPATH = "client/src/main/resources/sqlScripts/sampleDatabaseData.sql";
 
     /**
      * Opens a file based on filePath given, reads the file and execute the
@@ -30,7 +30,8 @@ public class SQLScriptRunner {
      * @throws SQLException if any SQL error occurs
      * @throws IOException if any errors with reading the file occurs
      */
-    public static void runSqlScript(String filePath) throws SQLException, IOException {
+    public static void runSqlScript(String filePath) throws SQLException, IOException{
+
         JDBCDriver jdbcDriver = null;
         try {
             jdbcDriver = new JDBCDriver();
