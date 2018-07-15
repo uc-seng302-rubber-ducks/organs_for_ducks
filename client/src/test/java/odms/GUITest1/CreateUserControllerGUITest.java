@@ -18,6 +18,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.concurrent.TimeoutException;
 
+import static odms.TestUtils.FxRobotHelper.*;
 import static org.testfx.api.FxAssert.verifyThat;
 
 public class CreateUserControllerGUITest extends ApplicationTest {
@@ -183,11 +184,25 @@ public class CreateUserControllerGUITest extends ApplicationTest {
 
     @Test
     public void testValidAddress() {
-        lookup("#nhiInput").queryAs(TextField.class).setText("ADE1987");
-        lookup("#fNameInput").queryAs(TextField.class).setText("Dwayne");
-        lookup("#dobInput").queryAs(DatePicker.class).setValue(LocalDate.parse("3/1/2017", DateTimeFormatter.ofPattern("d/M/yyyy")));
-        lookup("#email").queryAs(TextField.class).setText("dwayneRock@gmail.com");
-        clickOn("#confirmButton");
+        interact(() -> {
+            setTextField(this, "#nhiInput", "ADE1987");
+            setTextField(this, "#fNameInput", "Dwayne");
+            setDatePickerValue(this, "#dobInput", "3/1/2017");
+            setTextField(this, "#streetNumber", "76B");
+            setTextField(this, "#street", "Cambridge St");
+            setTextField(this, "#neighborhood", "Kirkwood");
+            setTextField(this, "#city", "Battlefield");
+            setComboBoxValue(this, "#regionSelector", "Otago");
+            setTextField(this, "#zipCode", "8033");
+            setComboBoxValue(this, "#countrySelector", "New Zealand");
+            clickButton(this, "#confirmButton");
+            clickOn("#detailsTab");
+            verifyThat("#pAddress", LabeledMatchers.hasText("76B Cambridge St\nKirkwood"));
+            verifyThat("#pRegion", LabeledMatchers.hasText("Otago"));
+            verifyThat("#pCountry", LabeledMatchers.hasText("New Zealand"));
+            verifyThat("#pZipCode", LabeledMatchers.hasText("8033"));
+            verifyThat("#pCity", LabeledMatchers.hasText("Battlefield"));
+                });
     }
 
     @Test
