@@ -181,6 +181,12 @@ public class UpdateUserController {
      * @param stage      The applications stage.
      */
     public void init(User user, AppController controller, Stage stage) {
+        countrySelector.setItems(FXCollections.observableList(controller.getAllowedCountries()));
+        ecCountrySelector.setItems(FXCollections.observableList(controller.getAllowedCountries()));
+
+        regionSelector.setItems(FXCollections.observableList(controller.getAllNZRegion()));
+        ecRegionSelector.setItems(FXCollections.observableList(controller.getAllNZRegion()));
+
         this.stage = stage;
         oldUser = user;
         currentUser = User.clone(oldUser);
@@ -197,12 +203,6 @@ public class UpdateUserController {
         }
 
         Scene scene = stage.getScene();
-
-        countrySelector.setItems(FXCollections.observableList(controller.getAllowedCountries()));
-        ecCountrySelector.setItems(FXCollections.observableList(controller.getAllowedCountries()));
-
-        regionSelector.setItems(FXCollections.observableList(controller.getAllNZRegion()));
-        ecRegionSelector.setItems(FXCollections.observableList(controller.getAllNZRegion()));
 
         final TextField[] allTextFields = {nhiInput, fNameInput, preferredFNameTextField, mNameInput,
                 lNameInput,
