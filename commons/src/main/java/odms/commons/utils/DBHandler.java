@@ -410,6 +410,7 @@ public class DBHandler {
                             }
                         }
                     }
+                    receiverOrganDetailsHolders = new ArrayList<>(); //WARNING
                 }
                 user.getReceiverDetails().setOrgans(organs);
             }
@@ -632,9 +633,9 @@ public class DBHandler {
         try (PreparedStatement statement = connection.prepareStatement(SELECT_PASS_DETAILS)) {
             if (loginType.equalsIgnoreCase("admin")) {
                 statement.setString(1, id);
-                statement.setNull(2, Types.VARCHAR);
+                statement.setString(2, "");
             } else {
-                statement.setNull(1, Types.VARCHAR);
+                statement.setString(1, "");
                 statement.setString(2, id);
             }
             try (ResultSet rs = statement.executeQuery()) {

@@ -67,7 +67,7 @@ public class DiseaseControllerTest {
     }
 
     @Test
-    public void putMedicationsShouldReturnOK() throws SQLException {
+    public void putDiseasesShouldReturnOK() throws SQLException {
         when(handler.getOneUser(any(Connection.class), anyString())).thenReturn(testUser);
         List<Disease> diseases = new ArrayList<>(Arrays.asList(new Disease("Osteoporosis", true, false, LocalDate.of(2017, 2, 10)),
                 new Disease("Conjunctivitis", false, true, LocalDate.of(2018, 5, 23))));
@@ -76,7 +76,7 @@ public class DiseaseControllerTest {
     }
 
     @Test
-    public void putMedicationsShouldReturnNotFoundWhenNoUser() {
+    public void putDiseasesShouldReturnNotFoundWhenNoUser() {
         List<Disease> diseases = new ArrayList<>(Arrays.asList(new Disease("Osteoporosis", true, false, LocalDate.of(2017, 2, 10)),
                 new Disease("Conjunctivitis", false, true, LocalDate.of(2018, 5, 23))));
         ResponseEntity res = controller.putDiseases("ABC1111", diseases);
@@ -84,7 +84,7 @@ public class DiseaseControllerTest {
     }
 
     @Test(expected = ServerDBException.class)
-    public void putMedicationsShouldThrowExceptionWhenNoConnection() throws SQLException {
+    public void putDiseasesShouldThrowExceptionWhenNoConnection() throws SQLException {
         when(driver.getConnection()).thenThrow(new SQLException());
         List<Disease> diseases = new ArrayList<>(Arrays.asList(new Disease("Osteoporosis", true, false, LocalDate.of(2017, 2, 10)),
                 new Disease("Conjunctivitis", false, true, LocalDate.of(2018, 5, 23))));
@@ -92,7 +92,7 @@ public class DiseaseControllerTest {
     }
 
     @Test
-    public void postCurrentMedicationShouldAddToCorrectList() throws SQLException {
+    public void postCurrentDiseaseShouldAddToCorrectList() throws SQLException {
         when(handler.getOneUser(any(Connection.class), anyString())).thenReturn(testUser);
         Disease testDisease = new Disease("Osteoporosis", true, false, LocalDate.of(2017, 2, 10));
         controller.postDisease(testUser.getNhi(), testDisease);
@@ -100,7 +100,7 @@ public class DiseaseControllerTest {
     }
 
     @Test
-    public void postMedicationShouldAddToCorrectList() throws SQLException {
+    public void postDiseaseShouldAddToCorrectList() throws SQLException {
         when(handler.getOneUser(any(Connection.class), anyString())).thenReturn(testUser);
         Disease testDisease = new Disease("Osteoporosis", true, false, LocalDate.of(2017, 2, 10));
         Disease testDisease2 = new Disease("Conjunctivitis", false, true, LocalDate.of(2017, 2, 10));
@@ -112,13 +112,12 @@ public class DiseaseControllerTest {
     }
 
     @Test
-    public void putMedicationsShouldAddToCorrectLists() throws SQLException {
+    public void putDiseasesShouldAddToCorrectLists() throws SQLException {
         when(handler.getOneUser(any(Connection.class), anyString())).thenReturn(testUser);
         Disease testDisease = new Disease("Osteoporosis", true, false, LocalDate.of(2017, 2, 10));
 
         controller.postDisease(testUser.getNhi(), testDisease);
         Assert.assertTrue(testUser.getCurrentDiseases().contains(testDisease));
     }
-
 
 }
