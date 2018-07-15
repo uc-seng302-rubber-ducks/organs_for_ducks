@@ -73,7 +73,7 @@ public class NewDiseaseControllerGUITest extends ApplicationTest {
     }
 
     @Test
-    public void createdCuredDiseaseShouldBeInPastDiseaseTable() {
+    public void createdCuredDiseaseShouldBeInPastDiseaseTable() { //FAIL
         clickOn("#addDiseaseButton");
         clickOn("#diseaseNameInput");
         write("A1", 0);
@@ -121,7 +121,7 @@ public class NewDiseaseControllerGUITest extends ApplicationTest {
     }
 
     @Test
-    public void diseaseShouldMoveToPastDiseaseTableWhenSetToCured() {
+    public void diseaseShouldMoveToPastDiseaseTableWhenSetToCured() { //FAIL
         clickOn(getCell("#currentDiseaseTableView", 0, 0));
         clickOn("#updateDiseaseButton");
         clickOn("#curedRadioButton");

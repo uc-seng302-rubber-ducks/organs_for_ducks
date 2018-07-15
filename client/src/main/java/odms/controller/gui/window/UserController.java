@@ -290,11 +290,14 @@ public class UserController {
         changeCurrentUser(user);
         userProfileTabPageController.showUser(user);
         setContactPage();
-        medicationTabPageController.refreshLists(user);
+        medicationTabPageController.refreshLists(user); //This should work?
         donationTabPageController.populateOrganLists(user);
         receiverTabPageController.populateReceiverLists(user);
 
-        procedureTabPageController.updateProcedureTables(user);
+        diseasesTabPageController.diseaseRefresh(false, false);
+
+        procedureTabPageController.updateProcedureTables(user); //This should work too
+
         if (user.getLastName() != null) {
             stage.setTitle("User Profile: " + user.getFirstName() + " " + user.getLastName());
         } else {
