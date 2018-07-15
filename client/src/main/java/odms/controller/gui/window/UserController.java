@@ -294,7 +294,7 @@ public class UserController {
         donationTabPageController.populateOrganLists(user);
         receiverTabPageController.populateReceiverLists(user);
 
-        diseasesTabPageController.diseaseRefresh(true, false);
+        diseasesTabPageController.diseaseRefresh(false, false);
 
         procedureTabPageController.updateProcedureTables(user); //This should work too
 

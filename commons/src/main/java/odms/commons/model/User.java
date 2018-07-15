@@ -233,8 +233,17 @@ public class User extends Undoable<User> implements Listenable {
             newUser.receiverDetails.getOrgans().put(o, detailHolders);
         }
 
-        newUser.currentDiseases = new ArrayList<>(user.currentDiseases);
-        newUser.pastDiseases = new ArrayList<>(user.pastDiseases);
+        newUser.currentDiseases = new ArrayList<>();
+        for (Disease cd : user.currentDiseases) {
+            Disease newcd = new Disease(cd.getName(), cd.getIsChronic(), cd.getIsCured(), cd.getDiagnosisDate());
+            newUser.currentDiseases.add(newcd);
+        }
+        newUser.pastDiseases = new ArrayList<>();
+        for (Disease pd : user.pastDiseases) {
+            Disease newpd = new Disease(pd.getName(), pd.getIsChronic(), pd.getIsCured(), pd.getDiagnosisDate());
+            newUser.pastDiseases.add(newpd);
+        }
+
         newUser.medicalProcedures = new ArrayList<>();
         for (MedicalProcedure m : user.medicalProcedures) {
             MedicalProcedure newMed = new MedicalProcedure();
@@ -814,8 +823,10 @@ public class User extends Undoable<User> implements Listenable {
     }
 
     public void addPastDisease(Disease pastDisease) {
-        addChange(new Change("Added past disease " + pastDisease.toString()));
+        this.saveStateForUndo();
+        updateLastModified();
         this.pastDiseases.add(pastDisease);
+        addChange(new Change("Added past disease " + pastDisease.toString()));
     }
 
     public String getPreferredFirstName() {

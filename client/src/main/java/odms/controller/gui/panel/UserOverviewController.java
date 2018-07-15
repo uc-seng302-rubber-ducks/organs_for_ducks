@@ -305,7 +305,7 @@ public class UserOverviewController {
             alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
 
             Optional<ButtonType> result = alert.showAndWait();
-            if (result.get() == ButtonType.YES) {
+            if (result.isPresent() && result.get() == ButtonType.YES) {
                 application.update(currentUser);
                 application.saveUser(currentUser);
 
