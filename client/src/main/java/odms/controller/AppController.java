@@ -351,13 +351,25 @@ public class AppController {
     }
 
     /**
+     * Refreshes the list of clinicians with the updated clone
+     *
      * @param clinician The current clinician.
      */
     public void updateClinicians(Clinician clinician) {
-        if (!clinicians.contains(clinician)) {
+        if (clinicians.contains(clinician)) {
+            clinicians.remove(clinician);
+            clinicians.add(clinician);
+        } else {
             clinicians.add(clinician);
         }
+    }
 
+    /**
+     * Saves the current list of clinicians to the json
+     *
+     * @param clinician Clinician to be saved
+     */
+    public void saveClinician(Clinician clinician) {
         try {
             dataHandler.saveClinicians(clinicians);
             Log.info("Successfully updated clinician with Staff ID: " + clinician.getStaffId());
@@ -365,6 +377,8 @@ public class AppController {
             Log.warning("Failed to update clinician with Staff ID: " + clinician.getStaffId(), e);
         }
     }
+
+
 
     /**
      * Takes a passed clinician and removes them from the maintained list of clinicians

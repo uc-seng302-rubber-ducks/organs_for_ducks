@@ -181,10 +181,15 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
 
     }
 
-
+    /**
+     * Closes the clinician window
+     */
     @FXML
     private void goBack() {
-        appController.updateClinicians(clinician);
+        checkSave();
+        //clinician.getUndoStack().clear();
+        //clinician.getRedoStack().clear();
+        //appController.updateClinicians(clinician);
         stage.close();
         Log.info("Successfully closed update user window for Clinician StaffID: " + clinician.getStaffId());
     }
@@ -445,6 +450,7 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
      */
     @FXML
     void logout() {
+        checkSave();
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML/loginView.fxml"));
         Parent root;
         try {
@@ -458,6 +464,33 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
         } catch (IOException e) {
             Log.severe("Clinician " + clinician.getStaffId() + " failed to launch login window after logout", e);
         }
+    }
+
+    /**
+     * Popup that prompts the clinician to save any unsaved changes before logging out or exiting the application
+     */
+    private void checkSave() {
+        boolean hasChanges = clinician.getUndoStack().isEmpty();
+        if (!hasChanges) {
+            Alert alert = new Alert(Alert.AlertType.WARNING,
+                    "You have unsaved changes, do you want to save first?",
+                    ButtonType.YES, ButtonType.NO);
+
+            alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
+
+            Optional<ButtonType> result = alert.showAndWait();
+            if (result.isPresent() && result.get() == ButtonType.YES) {
+                appController.updateClinicians(clinician);
+                appController.saveClinician(clinician);
+
+            } else {
+                Clinician revertClinician = clinician.getUndoStack().firstElement().getState();
+                appController.updateClinicians(revertClinician);
+            }
+        }
+
+        clinician.getUndoStack().clear();
+        clinician.getRedoStack().clear();
     }
 
     /**
