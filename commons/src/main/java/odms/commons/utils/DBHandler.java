@@ -2,6 +2,7 @@ package odms.commons.utils;
 
 import odms.commons.model.*;
 import odms.commons.model._enum.Organs;
+import odms.commons.model.datamodel.ContactDetails;
 import odms.commons.model.datamodel.Medication;
 import odms.commons.model.datamodel.ReceiverOrganDetailsHolder;
 import odms.commons.utils.db_strategies.AbstractUpdateStrategy;
@@ -22,8 +23,9 @@ public class DBHandler {
      * SELECT_USER_ONE_TO_ONE_INFO_STMT is for getting all info that follows one-to-one relationship. eg: 1 user can only have 1 address.
      * the other SELECT_USER statements are for getting all info that follows one-to-many relationships. eg: 1 user can have many diseases.
      */
-    private static final String SELECT_USER_ONE_TO_ONE_INFO_STMT_FILTERED = "SELECT nhi FROM `User` users JOIN Address address ON address.fkUserNhi=users.nhi WHERE " +
-            " (firstName LIKE ? OR lastName LIKE ?) AND address.region LIKE ? AND address.fkContactId != (SELECT EmergencyContactDetails.fkContactId FROM EmergencyContactDetails WHERE EmergencyContactDetails.fkUserNhi = users.nhi) " +
+    private static final String SELECT_USER_ONE_TO_ONE_INFO_STMT_FILTERED = "SELECT nhi FROM `User` a JOIN Address ON fkUserNhi = nhi " +
+            "WHERE (firstName LIKE ? OR lastName LIKE ?) AND region LIKE ? " +
+            "AND Address.fkContactId != (SELECT ContactDetails.contactId FROM ContactDetails JOIN EmergencyContactDetails E ON ContactDetails.contactId = E.fkContactId WHERE E.fkUserNhi = nhi)" +
             "LIMIT ? OFFSET ?";
     private static final String SELECT_ONE_USER_INFO_STMT_FILTERED = "SELECT nhi, firstName, middleName, LastName, preferedName, timeCreated, lastModified, profilePicture, gender, birthGender, smoker, " +
             "alcoholConsumption, height, weight, dob, dod, bloodType " +
@@ -135,6 +137,41 @@ public class DBHandler {
         return users;
     }
 
+
+    /**
+     * Gets info of a single clinician based on clinician staffId provided
+     *
+     * @param connection A valid connection to the database
+     * @param staffId    staffId of the clinician
+     * @return a clinician object, null if such clinician is not found
+     * @throws SQLException if there are any SQL errors
+     */
+    public Clinician getOneClinician(Connection connection, String staffId) throws SQLException {
+        Clinician clinician = null;
+        try (PreparedStatement statement = connection.prepareStatement(SELECT_CLINICIAN_ONE_TO_ONE_INFO_STMT)) {
+            statement.setString(1, staffId);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet != null && resultSet.next()) {
+                    clinician = getClincianBasicDetails(resultSet);
+                    clinician.setMiddleName(resultSet.getString("middleName"));
+                    clinician.setLastName(resultSet.getString("lastName"));
+                    clinician.setDateLastModified(resultSet.getTimestamp("lastModified").toLocalDateTime());
+                    clinician.setDateCreated(resultSet.getTimestamp("timeCreated").toLocalDateTime());
+                    clinician.setStreetNumber(resultSet.getString("streetNumber"));
+                    clinician.setStreetName(resultSet.getString("streetName"));
+                    clinician.setNeighborhood(resultSet.getString("Neighborhood"));
+                    clinician.setCity(resultSet.getString("city"));
+                    clinician.setRegion(resultSet.getString("region"));
+                    clinician.setCountry(resultSet.getString("country"));
+                    clinician.setZipCode(resultSet.getString("zipCode"));
+                }
+            }
+        }
+        return clinician;
+    }
+
+
+
     /**
      * Gets info of a single user based on user NHI provided
      * @param connection A valid connection to the database
@@ -181,6 +218,10 @@ public class DBHandler {
         }
 
         return user;
+    }
+
+    private Clinician getClincianBasicDetails(ResultSet resultSet) throws SQLException {
+        return new Clinician(resultSet.getString("firstName"), resultSet.getString("staffId"), null);
     }
 
     /**
@@ -239,13 +280,7 @@ public class DBHandler {
                     user.setHomePhone(resultSet.getString("homePhone"));
                     user.setCellPhone(resultSet.getString("cellPhone"));
                     user.setEmail(resultSet.getString("email"));
-                    user.setStreetNumber(resultSet.getString("streetNumber"));
-                    user.setStreetName(resultSet.getString("streetName"));
-                    user.setNeighborhood(resultSet.getString("neighbourhood"));
-                    user.setCity(resultSet.getString("city"));
-                    user.setRegion(resultSet.getString("region"));
-                    user.setCountry(resultSet.getString("country"));
-                    user.setZipCode(resultSet.getString("zipCode"));
+                    getAddressResults(user.getContactDetails(), resultSet);
                 }
             }
         }
@@ -269,16 +304,21 @@ public class DBHandler {
                     user.getContact().setHomePhoneNumber(resultSet.getString("homePhone"));
                     user.getContact().setCellPhoneNumber(resultSet.getString("cellPhone"));
                     user.getContact().setEmail(resultSet.getString("email"));
-                    user.getContact().setStreetNumber(resultSet.getString("streetNumber"));
-                    user.getContact().setStreetName(resultSet.getString("streetName"));
-                    user.getContact().setNeighborhood(resultSet.getString("neighbourhood"));
-                    user.getContact().setCity(resultSet.getString("city"));
-                    user.getContact().setRegion(resultSet.getString("region"));
-                    user.getContact().setZipCode(resultSet.getString("zipCode"));
-                    user.getContact().setCountry(resultSet.getString("country"));
+                    getAddressResults(user.getContact(), resultSet);
+
                 }
             }
         }
+    }
+
+    private void getAddressResults(ContactDetails contactDetails, ResultSet resultSet) throws SQLException {
+        contactDetails.setStreetNumber(resultSet.getString("streetNumber"));
+        contactDetails.setStreetName(resultSet.getString("streetName"));
+        contactDetails.setNeighborhood(resultSet.getString("neighbourhood"));
+        contactDetails.setCity(resultSet.getString("city"));
+        contactDetails.setRegion(resultSet.getString("region"));
+        contactDetails.setZipCode(resultSet.getString("zipCode"));
+        contactDetails.setCountry(resultSet.getString("country"));
     }
 
     /**
@@ -470,33 +510,54 @@ public class DBHandler {
         updateDatabase(users, connection);
     }
 
+    public Collection<Clinician> loadClinicians(Connection connection, int startIndex, int count) throws SQLException {
+        return loadClinicians(connection, startIndex, count, "", "");
+    }
+
     /**
      * Loads the clinicians from the database.
      *
      * @param connection a Connection to the target database
      * @return the Collection of clinicians
      */
-    public Collection<Clinician> loadClinicians(Connection connection) throws SQLException {
+    public Collection<Clinician> loadClinicians(Connection connection, int startIndex, int count, String name, String region) throws SQLException {
         Collection<Clinician> clinicians = new ArrayList<>();
         try (PreparedStatement statement = connection.prepareStatement(SELECT_CLINICIAN_ONE_TO_ONE_INFO_STMT)) {
+            statement.setString(1, name + "%");
+            statement.setString(2, name + "%");
+            statement.setString(3, region + "%");
+            statement.setInt(4, count);
+            statement.setInt(5, startIndex);
 
             try (ResultSet resultSet = statement.executeQuery()) {
 
                 while (resultSet != null && resultSet.next()) {
                     Clinician clinician = new Clinician();
-                    clinician.setStaffId(resultSet.getString(1));
-                    clinician.setFirstName(resultSet.getString(2));
-                    clinician.setMiddleName(resultSet.getString(3));
-                    clinician.setLastName(resultSet.getString(4));
-                    clinician.setDateCreated(resultSet.getTimestamp(5).toLocalDateTime());
-                    clinician.setDateLastModified(resultSet.getTimestamp(6).toLocalDateTime());
-                    //TODO: implement addressStrategy for clinicians (same functionality as getUserAddress method)
+                    clinician.setStaffId(resultSet.getString("staffId"));
+                    clinician.setFirstName(resultSet.getString("firstName"));
+                    clinician.setMiddleName(resultSet.getString("middleName"));
+                    clinician.setLastName(resultSet.getString("lastName"));
+                    clinician.setDateCreated(resultSet.getTimestamp("timeCreated").toLocalDateTime());
+                    clinician.setDateLastModified(resultSet.getTimestamp("lastModified").toLocalDateTime());
+                    getAddressResults(clinician.getWorkContactDetails(), resultSet);
                     clinicians.add(clinician);
                 }
 
                 return clinicians;
             }
         }
+    }
+
+    /**
+     * Method to save a single Clinician to the database
+     *
+     * @param clinician  a non null clinician to save to the database
+     * @param connection a Connection to the target database
+     */
+    public void saveClinician(Clinician clinician, Connection connection) {
+        updateStrategy = new ClinicianUpdateStrategy();
+        Collection<Clinician> clinicians = Collections.singletonList(clinician);
+        updateDatabase(clinicians, connection);
     }
 
     /**
@@ -596,6 +657,40 @@ public class DBHandler {
         }
     }
 
+
+    /**
+     * replaces an existing clinician with a new version
+     * finds old clinician by staffId and marks it for deletion, then passes it and the new clinician to
+     * @see this.saveClinicians
+     * @param connection connection to the target database
+     * @param staffId (old) staffId of clinician
+     * @param clinician clinician to be put into database
+     * @throws SQLException exception thrown during the transaction
+     */
+    public void updateClinician(Connection connection, String staffId, Clinician clinician) throws SQLException {
+        Clinician toReplace = getOneClinician(connection, staffId);
+        if (toReplace != null) {
+            toReplace.setDeleted(true);
+            clinician.addChange(new Change("Saved"));
+            Collection<Clinician> clinicians = new ArrayList<>(Arrays.asList(toReplace, clinician));
+            saveClinicians(clinicians, connection);
+        }
+    }
+
+    /**
+     * finds a single Clinician and sets their deleted flag to true, then updates the Clinician on the db
+     * @param connection connection to the target database
+     * @param staffId staffId of the clinician to be deleted
+     * @throws SQLException exception thrown during the transaction
+     */
+    public void deleteClinician(Connection connection, String staffId) throws SQLException {
+        Clinician toDelete = getOneClinician(connection, staffId);
+        if (toDelete != null) {
+            toDelete.setDeleted(true);
+            saveClinicians(Collections.singletonList(toDelete), connection);
+        }
+    }
+
     /**
      * replaces an existing user with a new version
      * finds old user by nhi and marks it for deletion, then passes it and the new user to
@@ -618,7 +713,7 @@ public class DBHandler {
     /**
      * finds a single user and sets their deleted flag to true, then updates the user on the db
      * @param conn connection to the target database
-     * @param nhi nhi ofthe user to be deleted
+     * @param nhi nhi of the user to be deleted
      * @throws SQLException exception thrown during the transaction
      */
     public void deleteUser(Connection conn, String nhi) throws SQLException {

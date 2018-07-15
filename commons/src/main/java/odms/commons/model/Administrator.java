@@ -49,6 +49,8 @@ public class Administrator extends Undoable<Administrator> implements Listenable
         this.firstName = "";
         this.middleName = "";
         this.lastName = "";
+        setPassword("");
+        this.userName = "";
     }
 
     /**
