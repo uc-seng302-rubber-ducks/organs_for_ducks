@@ -81,19 +81,19 @@ public class DiseasesTabPageController {
      * show the current and past diseases of the user.
      */
     public void showUserDiseases(User user, boolean init) {
-        if (user.getCurrentDiseases().size() == 0) {
+        if (user.getCurrentDiseases().isEmpty()) {
             currentDiseaseTableView.setPlaceholder(new Label("No Current Diseases"));
         }
         ObservableList<Disease> currentDisease = FXCollections
                 .observableList(user.getCurrentDiseases().stream().filter(d -> !d.isDeleted()).collect(Collectors.toList()));
         currentDiseaseTableView.setItems(currentDisease);
 
-        if (user.getPastDiseases().size() == 0) {
+        if (user.getPastDiseases().isEmpty()) {
             pastDiseaseTableView.setPlaceholder(new Label("No Past Diseases"));
         }
+
         ObservableList<Disease> pastDisease = FXCollections.observableList(user.getPastDiseases().stream().filter(d -> !d.isDeleted()).collect(Collectors.toList()));
         pastDiseaseTableView.setItems(pastDisease);
-
         if (init) {
             TableColumn<Disease, LocalDate> diagnosisDateColumn = new TableColumn<>("Diagnosis Date");
             diagnosisDateColumn.setMinWidth(110);
