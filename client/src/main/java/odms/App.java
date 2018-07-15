@@ -1,6 +1,5 @@
 package odms;
 
-
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
@@ -14,8 +13,6 @@ import odms.controller.AppController;
 import odms.controller.gui.window.LoginController;
 import odms.commons.model.CacheManager;
 import odms.commons.model._enum.Directory;
-import odms.commons.utils.DataHandler;
-import odms.commons.utils.JsonHandler;
 import odms.commons.utils.Log;
 
 import java.io.IOException;
@@ -32,7 +29,6 @@ import java.util.logging.*;
 public class App extends Application {
 
     private static long bootTime = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC);
-    private DataHandler dataHandler = new JsonHandler();
 
     public static void main(String[] args) {
         launch(args);
@@ -86,7 +82,7 @@ public class App extends Application {
                 alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
 
                 Optional<ButtonType> result = alert.showAndWait();
-                if (result.get() == ButtonType.YES) {
+                if (result.isPresent() && result.get() == ButtonType.YES) {
                     CacheManager.getInstance().saveAll();
                     Platform.exit();
                     System.exit(0);
