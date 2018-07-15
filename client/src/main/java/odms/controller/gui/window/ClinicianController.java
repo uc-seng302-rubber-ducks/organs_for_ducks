@@ -187,9 +187,6 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
     @FXML
     private void goBack() {
         checkSave();
-        //clinician.getUndoStack().clear();
-        //clinician.getRedoStack().clear();
-        //appController.updateClinicians(clinician);
         stage.close();
         Log.info("Successfully closed update user window for Clinician StaffID: " + clinician.getStaffId());
     }
@@ -470,8 +467,8 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
      * Popup that prompts the clinician to save any unsaved changes before logging out or exiting the application
      */
     private void checkSave() {
-        boolean hasChanges = clinician.getUndoStack().isEmpty();
-        if (!hasChanges) {
+        boolean noChanges = clinician.getUndoStack().isEmpty();
+        if (!noChanges) {
             Alert alert = new Alert(Alert.AlertType.WARNING,
                     "You have unsaved changes, do you want to save first?",
                     ButtonType.YES, ButtonType.NO);

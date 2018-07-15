@@ -296,8 +296,8 @@ public class UserOverviewController {
      * Popup that prompts the user if they want to save any unsaved changes before logging out or exiting the application
      */
     private void checkSave() {
-        boolean hasChanges = currentUser.getUndoStack().isEmpty();
-        if (!hasChanges) {
+        boolean noChanges = currentUser.getUndoStack().isEmpty();
+        if (!noChanges) {
             Alert alert = new Alert(Alert.AlertType.WARNING,
                     "You have unsaved changes, do you want to save first?",
                     ButtonType.YES, ButtonType.NO);

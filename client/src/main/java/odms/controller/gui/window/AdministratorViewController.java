@@ -941,8 +941,8 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
      */
     @FXML
     void logout() {
-        //check about saving
-        appController.updateAdmin(administrator);
+        checkSave();
+        administrator.getUndoStack().clear();
         FXMLLoader loginLoader = new FXMLLoader(getClass().getResource("/FXML/loginView.fxml"));
         Parent root;
         try {
@@ -957,6 +957,31 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
         } catch (IOException e) {
             Log.severe(messageAdmin + administrator.getUserName() + " Failed to load Login window after logout", e);
         }
+    }
+
+    /**
+     * Popup that prompts the clinician to save any unsaved changes before logging out or exiting the application
+     */
+    private void checkSave() {
+        boolean noChanges = administrator.getUndoStack().isEmpty();
+        if (!noChanges) {
+            Alert alert = new Alert(Alert.AlertType.WARNING,
+                    "You have unsaved changes, do you want to save first?",
+                    ButtonType.YES, ButtonType.NO);
+
+            alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
+
+            Optional<ButtonType> result = alert.showAndWait();
+            if (result.isPresent() && result.get() == ButtonType.YES) {
+                appController.updateAdmin(administrator);
+                appController.saveAdmin(administrator);
+
+            } else {
+                Administrator revertAdmin = administrator.getUndoStack().firstElement().getState();
+                appController.updateAdmin(revertAdmin);
+            }
+        }
+
     }
 
 

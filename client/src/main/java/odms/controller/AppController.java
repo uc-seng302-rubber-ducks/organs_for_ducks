@@ -456,13 +456,25 @@ public class AppController {
 
 
     /**
+     * Refreshes the list of administrators with the updated admin
+     *
      * @param administrator the current administrator
      */
     public void updateAdmin(Administrator administrator) {
-        if (!admins.contains(administrator)) {
+        if (admins.contains(administrator)) {
+            admins.remove(administrator);
+            admins.add(administrator);
+        } else {
             admins.add(administrator);
         }
+    }
 
+    /**
+     * Saves the list of administrators
+     *
+     * @param administrator Administrator to be saved
+     */
+    public void saveAdmin(Administrator administrator) {
         try {
             dataHandler.saveAdmins(admins);
             Log.info("successfully updated the Administrator profile with user name: " + administrator.getUserName());
