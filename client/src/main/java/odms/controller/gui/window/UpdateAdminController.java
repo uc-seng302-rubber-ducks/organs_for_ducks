@@ -276,7 +276,7 @@ public class UpdateAdminController {
                 Log.warning(ex.getMessage(), ex);
                 //the text fields etc. are all null
             }
-
+            adminViewController.refreshTables(); //NEW
             stage.close();
         }
     }
@@ -312,7 +312,7 @@ public class UpdateAdminController {
                 yesButton.setId("yesButton");
 
                 Optional<ButtonType> result = alert.showAndWait();
-                if (result.get() == ButtonType.YES) {
+                if (result.isPresent() && result.get() == ButtonType.YES) {
                     removeFormChanges(0, adminClone, undoMarker);
                     adminClone.getRedoStack().clear();
                     adminViewController.displayDetails();
