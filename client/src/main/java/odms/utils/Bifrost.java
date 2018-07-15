@@ -99,13 +99,22 @@ public class Bifrost {
         });
     }
 
-    public void getUser(String nhi) {
+    public User getUser(String nhi) throws IOException {
+        User toReturn;
         String url = ip + "/users/" + nhi;
         Request request = new Request.Builder().url(url).build();
         try {
-            Response response = client.newCall(request).execute();
+            try (Response response = client.newCall(request).execute()) {
+                if (response.isSuccessful()) {
+                    toReturn = new Gson().fromJson(response.body().string(), User.class);
+                } else {
+                    toReturn = null;
+                }
+            }
         } catch (IOException ex) {
-
+            Log.warning("Could not make GET call to /users/" + nhi, ex);
+            throw ex;
         }
+        return toReturn;
     }
 }
