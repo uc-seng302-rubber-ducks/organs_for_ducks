@@ -28,24 +28,6 @@ public class DBHandlerTest {
     @Before
     public void beforeTest() throws SQLException {
         odms.TestUtils.SQLScriptRunner.run();
-        expected = new User();
-        expected.setNhi("ABC1234");
-        expected.setFirstName("Allan");
-        expected.setMiddleName("Danny Zurich");
-        expected.setLastName("Levi");
-        expected.setPreferredFirstName("Al");
-        expected.setTimeCreated(dateToLocalDateTime("1997-01-01 00:01:01.0"));
-        expected.setLastModified(dateToLocalDateTime("1997-05-01 13:01:01.0"));
-        //TODO: set expected's profile picture here
-        expected.setGenderIdentity("Male");
-        expected.setBirthGender("Male");
-        expected.setSmoker(true);
-        expected.setAlcoholConsumption("High");
-        expected.setHeight(163.7);
-        expected.setWeight(65.8);
-        expected.setHomePhone(null);
-        expected.setCellPhone("0221453566");
-        expected.setEmail("aaronB@gmail.com");
 
         dbHandler = new DBHandler();
         connection = mock(Connection.class);
