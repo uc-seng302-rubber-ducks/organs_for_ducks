@@ -12,6 +12,7 @@ import javafx.scene.layout.Region;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import odms.controller.AppController;
+import odms.controller.gui.UnsavedChangesAlert;
 import odms.controller.gui.window.LoginController;
 import odms.controller.gui.window.UpdateUserController;
 import odms.commons.model.User;
@@ -298,13 +299,7 @@ public class UserOverviewController {
     private void checkSave() {
         boolean noChanges = currentUser.getUndoStack().isEmpty();
         if (!noChanges) {
-            Alert alert = new Alert(Alert.AlertType.WARNING,
-                    "You have unsaved changes, do you want to save first?",
-                    ButtonType.YES, ButtonType.NO);
-
-            alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
-
-            Optional<ButtonType> result = alert.showAndWait();
+            Optional<ButtonType> result = UnsavedChangesAlert.getAlertResult();
             if (result.isPresent() && result.get() == ButtonType.YES) {
                 application.update(currentUser);
                 application.saveUser(currentUser);

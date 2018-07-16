@@ -21,6 +21,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import odms.controller.AppController;
 import odms.controller.gui.FileSelectorController;
+import odms.controller.gui.UnsavedChangesAlert;
 import odms.controller.gui.panel.TransplantWaitListController;
 import odms.controller.gui.popup.AlertUnclosedWindowsController;
 import odms.controller.gui.popup.DeletedUserController;
@@ -978,13 +979,7 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
     private void checkSave() {
         boolean noChanges = administrator.getUndoStack().isEmpty();
         if (!noChanges) {
-            Alert alert = new Alert(Alert.AlertType.WARNING,
-                    "You have unsaved changes, do you want to save first?",
-                    ButtonType.YES, ButtonType.NO);
-
-            alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
-
-            Optional<ButtonType> result = alert.showAndWait();
+            Optional<ButtonType> result = UnsavedChangesAlert.getAlertResult();
             if (result.isPresent() && result.get() == ButtonType.YES) {
                 appController.updateAdmin(administrator);
                 appController.saveAdmin(administrator);
@@ -994,7 +989,6 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
                 appController.updateAdmin(revertAdmin);
             }
         }
-
     }
 
 
