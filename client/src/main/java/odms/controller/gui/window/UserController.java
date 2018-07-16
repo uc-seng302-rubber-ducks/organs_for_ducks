@@ -139,15 +139,10 @@ public class UserController {
 
             undoButton.setVisible(true);
             redoButton.setVisible(true);
-            //warningLabel.setVisible(false);
             changeCurrentUser(user);
 
             // Sets the button to be disabled
             updateUndoRedoButtons();
-
-
-            //showUser(currentUser);
-
 
             if (user.getNhi() != null) {
                 showUser(currentUser); // Assumes a donor with no name is a new sign up and does not pull values from a template
@@ -273,7 +268,6 @@ public class UserController {
         currentUser.undo();
         updateUndoRedoButtons();
         showUser(currentUser);
-
     }
 
 
@@ -299,6 +293,11 @@ public class UserController {
         updateUndoRedoButtons();
     }
 
+    /**
+     * Updates all tab pages to display the information of the current user
+     *
+     * @param user Current user to be displayed
+     */
     public void showUser(User user) {
         changeCurrentUser(user);
         userProfileTabPageController.showUser(user);
@@ -343,13 +342,6 @@ public class UserController {
         historyTableView.setItems(changelog);
         historyTableView.getColumns().addAll(timeColumn, changeColumn);
 
-    }
-
-    /**
-     * Public method to clear medications in the medication tab
-     */
-    public void clearMeds() {
-        medicationTabPageController.clearPreviousMeds();
     }
 
 
