@@ -2,6 +2,7 @@ package odms.controller.gui.window;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 import odms.controller.AppController;
 import odms.commons.model.Administrator;
@@ -308,6 +309,7 @@ public class UpdateAdminController {
                         "You have unsaved changes, are you sure you want to cancel?",
                         ButtonType.YES, ButtonType.NO);
 
+                alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
                 Button yesButton = (Button) alert.getDialogPane().lookupButton(ButtonType.YES);
                 yesButton.setId("yesButton");
 
