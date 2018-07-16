@@ -18,6 +18,7 @@ public class UserOverview {
     private LocalDate dob;
     private LocalDate dod;
     private Name name;
+    private String region;
     private Set<Organs> donating;
     private Map<Organs, ArrayList<ReceiverOrganDetailsHolder>> receiving;
 
@@ -35,6 +36,7 @@ public class UserOverview {
         overview.setNhi(user.getNhi());
         overview.setDonating(user.getDonorDetails().getOrgans());
         overview.setReceiving(user.getReceiverDetails().getOrgans());
+        overview.setRegion(user.getRegion());
         return overview;
     }
 
@@ -95,6 +97,14 @@ public class UserOverview {
         this.dod = dod;
     }
 
+    public void setRegion(String region) {
+        this.region = region;
+    }
+
+    public String getRegion() {
+        return region;
+    }
+
     @Override
     public int hashCode() {
         return nhi.hashCode();
@@ -119,5 +129,18 @@ public class UserOverview {
 
     public void setReceiving(Map<Organs, ArrayList<ReceiverOrganDetailsHolder>> receiving) {
         this.receiving = receiving;
+    }
+
+    @Override
+    public String toString() {
+        return "UserOverview{" +
+                "nhi='" + nhi + '\'' +
+                ", dob=" + dob +
+                ", dod=" + dod +
+                ", name=" + name +
+                ", region='" + region + '\'' +
+                ", donating=" + donating +
+                ", receiving=" + receiving +
+                '}';
     }
 }

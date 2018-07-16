@@ -14,7 +14,10 @@ import odms.controller.AppController;
 import okhttp3.*;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 
 public class UserBridge extends Bifrost {
 
@@ -26,30 +29,18 @@ public class UserBridge extends Bifrost {
         super(client);
     }
 
-    public void loadUsersToController(AppController controller, int startIndex, int count, String name, String region) {
+    public Collection<UserOverview> loadUsersToController(AppController controller, int startIndex, int count, String name, String region) throws IOException {
         String url = ip + "/users?startIndex=" + startIndex + "&count=" + count + "&q=" + name + "&region=" + region;
         Request request = new Request.Builder().url(url).build();
-        User toReturn = null;
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                Log.warning("Could not execute call to /users/{nhi}");
-                e.printStackTrace();
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                if (response.isSuccessful()) {
-                    try (ResponseBody body = response.body()) {
-                        Set<UserOverview> users = new Gson().fromJson(body.string(), new TypeToken<HashSet<UserOverview>>() {
-                        }.getType());
-                        controller.setUserOverviews(users);
-                    }
-                } else {
-                    throw new IOException("Unexpected code " + response);
-                }
-            }
-        });
+        Collection<UserOverview> overviews;
+        try (Response response = client.newCall(request).execute()) {
+            overviews = new Gson().fromJson(response.body().string(), new TypeToken<Collection<UserOverview>>() {
+            }.getType());
+        } catch (IOException ex) {
+            Log.warning("Error occurred while executing call to " + url, ex);
+            throw ex;
+        }
+        return overviews;
     }
 
     public void postUser(User user) {

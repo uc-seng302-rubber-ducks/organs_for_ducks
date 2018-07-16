@@ -44,11 +44,14 @@ public class UserController extends BaseController {
                                              @RequestParam(value = "region", required = false) String region) {
         try (Connection connection = driver.getConnection()) {
             Collection<User> rawUsers = handler.getUsers(connection, count, startIndex);
+            Log.info("Getting all user overviews...");
             //converts each user in the collection to a userOverview and returns it
             return rawUsers.stream().map(UserOverview::fromUser).collect(Collectors.toList());
         } catch (SQLException ex) {
             Log.warning("cannot load all user data from db", ex);
             throw new ServerDBException(ex);
+        } finally {
+            Log.info("Finished");
         }
 
     }
