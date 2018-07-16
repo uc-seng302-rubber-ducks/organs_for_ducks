@@ -833,21 +833,23 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
      */
     @Override
     public void launchUser(User user) {
-        FXMLLoader userLoader = new FXMLLoader(getClass().getResource("/FXML/userView.fxml"));
-        Parent root;
-        try {
-            root = userLoader.load();
-            Stage newStage = new Stage();
-            newStage.setScene(new Scene(root));
-            UserController userController = userLoader.getController();
-            AppController.getInstance().setUserController(userController);
-            Collection<PropertyChangeListener> listeners = new ArrayList<>();
-            listeners.add(this);
-            userController.init(AppController.getInstance(), user, newStage, true, listeners);
-            newStage.show();
-            Log.info(messageAdmin + administrator.getUserName() + " successfully launched user overview window for User NHI: " + user.getNhi());
-        } catch (IOException e) {
-            Log.severe(messageAdmin + administrator.getUserName() + " failed to load user overview window for User NHI: " + user.getNhi(), e);
+        if (user != null) {
+            FXMLLoader userLoader = new FXMLLoader(getClass().getResource("/FXML/userView.fxml"));
+            Parent root;
+            try {
+                root = userLoader.load();
+                Stage newStage = new Stage();
+                newStage.setScene(new Scene(root));
+                UserController userController = userLoader.getController();
+                AppController.getInstance().setUserController(userController);
+                Collection<PropertyChangeListener> listeners = new ArrayList<>();
+                listeners.add(this);
+                userController.init(AppController.getInstance(), user, newStage, true, listeners);
+                newStage.show();
+                Log.info(messageAdmin + administrator.getUserName() + " successfully launched user overview window for User NHI: " + user.getNhi());
+            } catch (IOException e) {
+                Log.severe(messageAdmin + administrator.getUserName() + " failed to load user overview window for User NHI: " + user.getNhi(), e);
+            }
         }
     }
 

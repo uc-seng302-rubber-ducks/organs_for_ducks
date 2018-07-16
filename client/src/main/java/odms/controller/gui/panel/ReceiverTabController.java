@@ -221,6 +221,7 @@ public class ReceiverTabController {
         ArrayList<Organs> organs = new ArrayList<>();
         Collections.addAll(organs, Organs.values());
         Map<Organs, ArrayList<ReceiverOrganDetailsHolder>> receiverOrgans = user.getReceiverDetails().getOrgans();
+
         if (receiverOrgans == null) {
             receiverOrgans = new EnumMap<>(Organs.class);
         }

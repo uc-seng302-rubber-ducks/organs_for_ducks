@@ -5,9 +5,9 @@ import com.google.gson.annotations.Expose;
 import odms.commons.model._abstract.Listenable;
 import odms.commons.model._abstract.Undoable;
 import odms.commons.model._enum.EventTypes;
-import odms.commons.utils.PasswordManager;
 import odms.commons.model.datamodel.Address;
 import odms.commons.model.datamodel.ContactDetails;
+import odms.commons.utils.PasswordManager;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -48,6 +48,12 @@ public class Clinician extends Undoable<Clinician> implements Listenable {
     private transient List<Change> changes;
 
     public Clinician() {
+        this.staffId = "";
+        setPassword("");
+        this.firstName = "";
+        this.middleName = "";
+        this.lastName = "";
+        this.workContactDetails = new ContactDetails();
         dateCreated = LocalDateTime.now();
         dateLastModified = LocalDateTime.now();
         changes = new ArrayList<>();

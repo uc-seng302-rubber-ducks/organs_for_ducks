@@ -91,10 +91,11 @@ public class DiseasesTabPageController {
         if (user.getPastDiseases().isEmpty()) {
             pastDiseaseTableView.setPlaceholder(new Label("No Past Diseases"));
         }
+
         ObservableList<Disease> pastDisease = FXCollections.observableList(user.getPastDiseases().stream().filter(d -> !d.isDeleted()).collect(Collectors.toList()));
         pastDiseaseTableView.setItems(pastDisease);
 
-        if (init) { //TODO Move this into the actual init function
+        if (init) {
             TableColumn<Disease, LocalDate> diagnosisDateColumn = new TableColumn<>("Diagnosis Date");
             diagnosisDateColumn.setMinWidth(110);
             diagnosisDateColumn.setMaxWidth(110);
@@ -112,7 +113,7 @@ public class DiseasesTabPageController {
 
             chronicColumn.setCellFactory(column -> new TableCell<Disease, Boolean>() {
                 @Override
-                protected void updateItem(Boolean item, boolean empty) { //MARKER
+                protected void updateItem(Boolean item, boolean empty) {
                     super.updateItem(item, empty);
 
                     setText(empty ? "" : getItem().toString());
@@ -155,7 +156,7 @@ public class DiseasesTabPageController {
      */
     @FXML
     private void updateDisease() {
-        currentUser.saveStateForUndo(); //NEW
+        currentUser.saveStateForUndo();
         if (currentDiseaseTableView.getSelectionModel().getSelectedItem()
                 != null) { //Might error, dunno what it returns if nothing is selected, hopefully -1?
             launchDiseasesGui(currentDiseaseTableView.getSelectionModel().getSelectedItem());
@@ -198,7 +199,7 @@ public class DiseasesTabPageController {
      */
     @FXML
     private void deleteDisease() {
-        currentUser.saveStateForUndo(); //NEW
+        currentUser.saveStateForUndo();
         if (currentDiseaseTableView.getSelectionModel().getSelectedIndex() >= 0) {
             if (!currentDiseaseTableView.getSelectionModel().getSelectedItem().getIsChronic()) {
                 currentDiseaseTableView.getSelectionModel().getSelectedItem().setDeleted(true);
@@ -243,9 +244,6 @@ public class DiseasesTabPageController {
         currentUser.getCurrentDiseases().sort(disease.diseaseChronicComparator);
 
         showUserDiseases(currentUser, false);
-        //currentDiseaseTableView.refresh();
-        //pastDiseaseTableView.refresh();
-
     }
 
     /**
