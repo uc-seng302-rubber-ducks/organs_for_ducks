@@ -36,9 +36,9 @@ public class LoginBridge extends Bifrost{
         body.addProperty("role", role);
 
         RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), body.toString());
-        HttpRequester requester = new HttpRequester(getClient());
+        HttpRequester requester = new HttpRequester(client);
         try {
-            Request request = new Request.Builder().url(getIp() + "/login").post(requestBody).build();
+            Request request = new Request.Builder().url(ip + "/login").post(requestBody).build();
             response = requester.makeRequest(request);
         } catch (IOException e) {
             Log.severe("A network error occurred.", e);
@@ -59,7 +59,7 @@ public class LoginBridge extends Bifrost{
             throw new ApiException(responseCode, "unexpected response code recieved");
         }
 
-        return getHandler().decodeLogin(response);
+        return handler.decodeLogin(response);
     }
 
 }

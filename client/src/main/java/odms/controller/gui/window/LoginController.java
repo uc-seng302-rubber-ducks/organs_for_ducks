@@ -125,7 +125,6 @@ public class LoginController {
                     .setText("User was not found. \nTo register a new user, please click sign up.");
             return;
         }
-        User user = null; //getUser(wantedUser);
         if (user == null) return;
 
         FXMLLoader userLoader = new FXMLLoader(getClass().getResource(USER_VIEW_URL));

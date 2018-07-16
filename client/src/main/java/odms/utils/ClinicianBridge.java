@@ -2,10 +2,8 @@ package odms.utils;
 
 import odms.commons.exception.ApiException;
 import odms.commons.model.Clinician;
-import odms.commons.utils.HttpRequester;
 import odms.commons.utils.JsonHandler;
 import odms.commons.utils.Log;
-import odms.controller.AppController;
 import okhttp3.Headers;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -28,8 +26,8 @@ public class ClinicianBridge extends Bifrost {
         try {
             Headers headers = new Headers.Builder().add(TOKEN_HEADER, token).build();
             Request request = new Request.Builder()
-                    .url(getIp() + "/clinicians/"+ wantedClinician ).headers(headers).build();
-            response = getClient().newCall(request).execute();
+                    .url(ip + "/clinicians/" + wantedClinician).headers(headers).build();
+            response = client.newCall(request).execute();
         } catch (IOException e) {
             Log.severe("failed to make request", e);
             return null;
@@ -39,7 +37,7 @@ public class ClinicianBridge extends Bifrost {
             return null;
         }
         int responseCode = response.code();
-        if(responseCode == 404 || responseCode == 401) {
+        if (responseCode == 404 || responseCode == 401) {
             throw new ApiException(responseCode, "could not get requested clinician");
         } else if (responseCode == 500 || responseCode == 400) {
             Log.warning("An Error occurred. code returned: " + responseCode);
