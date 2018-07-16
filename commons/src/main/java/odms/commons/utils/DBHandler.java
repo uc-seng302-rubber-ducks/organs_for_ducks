@@ -10,10 +10,7 @@ import odms.commons.utils.db_strategies.AdminUpdateStrategy;
 import odms.commons.utils.db_strategies.ClinicianUpdateStrategy;
 import odms.commons.utils.db_strategies.UserUpdateStrategy;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.*;
 
 public class DBHandler {
@@ -23,8 +20,9 @@ public class DBHandler {
      * SELECT_USER_ONE_TO_ONE_INFO_STMT is for getting all info that follows one-to-one relationship. eg: 1 user can only have 1 address.
      * the other SELECT_USER statements are for getting all info that follows one-to-many relationships. eg: 1 user can have many diseases.
      */
-    private static final String SELECT_USER_ONE_TO_ONE_INFO_STMT_FILTERED = "SELECT nhi FROM `User` a " +
-            "WHERE (firstName LIKE ? OR lastName LIKE ?) AND a.region LIKE ? " +
+    private static final String SELECT_USER_ONE_TO_ONE_INFO_STMT_FILTERED = "SELECT nhi FROM `User` a JOIN Address ON fkUserNhi = nhi " +
+            "WHERE (firstName LIKE ? OR lastName LIKE ?) AND region LIKE ? " +
+            "AND Address.fkContactId != (SELECT ContactDetails.contactId FROM ContactDetails JOIN EmergencyContactDetails E ON ContactDetails.contactId = E.fkContactId WHERE E.fkUserNhi = nhi)" +
             "LIMIT ? OFFSET ?";
     private static final String SELECT_ONE_USER_INFO_STMT_FILTERED = "SELECT nhi, firstName, middleName, LastName, preferedName, timeCreated, lastModified, profilePicture, gender, birthGender, smoker, " +
             "alcoholConsumption, height, weight, dob, dod, bloodType " +
@@ -208,17 +206,16 @@ public class DBHandler {
             statement.setString(1, nhi);
 
             try (ResultSet resultSet = statement.executeQuery()) {
-
                 while (resultSet != null && resultSet.next()) {
                     user = getUserBasicDetails(resultSet);
-                    user.setTimeCreated(resultSet.getTimestamp(6).toLocalDateTime());
-                    user.setLastModified(resultSet.getTimestamp(7).toLocalDateTime());
-                    user.setGenderIdentity(resultSet.getString(9));
-                    user.setBirthGender(resultSet.getString(10));
-                    user.setSmoker(1 == resultSet.getInt(11));
-                    user.setAlcoholConsumption(resultSet.getString(12));
-                    user.setHeight(resultSet.getDouble(13));
-                    user.setWeight(resultSet.getDouble(14));
+                    user.setTimeCreated(resultSet.getTimestamp("timeCreated").toLocalDateTime());
+                    user.setLastModified(resultSet.getTimestamp("lastModified").toLocalDateTime());
+                    user.setGenderIdentity(resultSet.getString("gender"));
+                    user.setBirthGender(resultSet.getString("birthGender"));
+                    user.setSmoker(1 == resultSet.getInt("smoker"));
+                    user.setAlcoholConsumption(resultSet.getString("alcoholConsumption"));
+                    user.setHeight(resultSet.getDouble("height"));
+                    user.setWeight(resultSet.getDouble("weight"));
                     user.setBloodType(resultSet.getString("bloodType"));
 
                     try {
@@ -259,12 +256,12 @@ public class DBHandler {
      * @throws SQLException if there is an error extracting information from the resultSet
      */
     private User getUserBasicDetails(ResultSet resultSet) throws SQLException {
-        User user = new User(resultSet.getString(2), resultSet.getDate("dob").toLocalDate(), resultSet.getString(1));
+        User user = new User(resultSet.getString("firstName"), resultSet.getDate("dob").toLocalDate(), resultSet.getString("nhi"));
         if (resultSet.getString("dod") != null) {
             user.setDateOfDeath(resultSet.getDate("dod").toLocalDate());
         }
-        user.setMiddleName(resultSet.getString(3));
-        user.setLastName(resultSet.getString(4));
+        user.setMiddleName(resultSet.getString("middleName"));
+        user.setLastName(resultSet.getString("lastName"));
         return user;
     }
 
@@ -369,7 +366,7 @@ public class DBHandler {
             stmt.setString(1, user.getNhi());
             try (ResultSet resultSet = stmt.executeQuery()) {
                 while (resultSet != null && resultSet.next()) {
-                    Disease pastDisease = new Disease(resultSet.getString(1), false, true, resultSet.getDate(2).toLocalDate());
+                    Disease pastDisease = new Disease(resultSet.getString("diseaseName"), false, true, resultSet.getDate("diagnosisDate").toLocalDate());
                     user.getPastDiseases().add(pastDisease);
                 }
             }
@@ -390,7 +387,7 @@ public class DBHandler {
             stmt.setString(1, user.getNhi());
             try (ResultSet resultSet = stmt.executeQuery()) {
                 while (resultSet != null && resultSet.next()) {
-                    Disease currentDisease = new Disease(resultSet.getString(1), resultSet.getBoolean(3), false, resultSet.getDate(2).toLocalDate());
+                    Disease currentDisease = new Disease(resultSet.getString("diseaseName"), resultSet.getBoolean("isChronic"), false, resultSet.getDate("diagnosisDate").toLocalDate());
                     user.getCurrentDiseases().add(currentDisease);
                 }
             }
@@ -410,7 +407,7 @@ public class DBHandler {
             stmt.setString(1, user.getNhi());
             try (ResultSet resultSet = stmt.executeQuery()) {
                 while (resultSet != null && resultSet.next()) {
-                    user.getDonorDetails().addOrgan(Organs.valueOf(resultSet.getString(1)));
+                    user.getDonorDetails().addOrgan(Organs.valueOf(resultSet.getString("organName")));
                 }
             }
         }
@@ -448,6 +445,7 @@ public class DBHandler {
                             }
                         }
                     }
+                    receiverOrganDetailsHolders = new ArrayList<>(); //WARNING
                 }
                 user.getReceiverDetails().setOrgans(organs);
             }
@@ -694,7 +692,9 @@ public class DBHandler {
         try (PreparedStatement statement = connection.prepareStatement(SELECT_PASS_DETAILS)) {
             if (loginType.equalsIgnoreCase("admin")) {
                 statement.setString(1, id);
+                statement.setString(2, "");
             } else {
+                statement.setString(1, "");
                 statement.setString(2, id);
             }
             try (ResultSet rs = statement.executeQuery()) {
