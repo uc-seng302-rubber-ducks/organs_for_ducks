@@ -14,6 +14,9 @@ import org.testfx.matcher.control.LabeledMatchers;
 
 import java.util.concurrent.TimeoutException;
 
+import static odms.TestUtils.FxRobotHelper.clickButton;
+import static odms.TestUtils.FxRobotHelper.setComboBoxValue;
+import static odms.TestUtils.FxRobotHelper.setTextField;
 import static org.testfx.api.FxAssert.verifyThat;
 
 /**
@@ -76,6 +79,54 @@ public class CreateClinicianControllerGUITest extends ApplicationTest {
         verifyThat("#emptyPasswordLabel", Node::isVisible);
         verifyThat("#emptyFNameLabel", Node::isVisible);
         verifyThat("#emptyRegionLabel", Node::isVisible);
+    }
+
+    @Test
+    public void testSignUpRequiredInfoAddress() {
+        interact(() -> {
+            setTextField(this, "#staffIDTextField", "Staff1");
+            setTextField(this, "#passwordField", "secure");
+            setTextField(this, "#confirmPasswordField", "secure");
+            setTextField(this, "#firstNameTextField", "Affie");
+            setTextField(this, "#streetNoTextField", "76B");
+            setTextField(this, "#streetNameTextField", "Cambridge St");
+            setTextField(this, "#neighbourhoodTextField", "Kirkwood");
+            setTextField(this, "#cityTextField", "Battlefield");
+            setComboBoxValue(this, "#regionSelector", "Otago");
+            setTextField(this, "#zipCodeTextField", "8033");
+            setComboBoxValue(this, "#countrySelector", "New Zealand");
+            verifyThat("#regionSelector", Node::isVisible);
+            clickButton(this, "#confirmButton");
+            verifyThat("#addressLabel", LabeledMatchers.hasText("76B Cambridge St\nKirkwood"));
+            verifyThat("#cityLabel", LabeledMatchers.hasText("Battlefield"));
+            verifyThat("#regionLabel", LabeledMatchers.hasText("Otago"));
+            verifyThat("#countryLabel", LabeledMatchers.hasText("New Zealand"));
+            verifyThat("#zipLabel", LabeledMatchers.hasText("8033"));
+                });
+    }
+
+    @Test
+    public void testSignUpRequiredInfoAddressNotNZ() {
+        interact(() -> {
+            setTextField(this, "#staffIDTextField", "Staff1");
+            setTextField(this, "#passwordField", "secure");
+            setTextField(this, "#confirmPasswordField", "secure");
+            setTextField(this, "#firstNameTextField", "Affie");
+            setTextField(this, "#streetNoTextField", "12");
+            setTextField(this, "#streetNameTextField", "Choc Rd");
+            setTextField(this, "#neighbourhoodTextField", "");
+            setTextField(this, "#cityTextField", "Nice City");
+            setTextField(this, "#zipCodeTextField", "25442232");
+            setComboBoxValue(this, "#countrySelector", "Belgium");
+            setTextField(this, "#regionTextField", "Flanders");
+            verifyThat("#regionTextField", Node::isVisible);
+            clickButton(this, "#confirmButton");
+            verifyThat("#addressLabel", LabeledMatchers.hasText("12 Choc Rd\n"));
+            verifyThat("#cityLabel", LabeledMatchers.hasText("Nice City"));
+            verifyThat("#regionLabel", LabeledMatchers.hasText("Flanders"));
+            verifyThat("#countryLabel", LabeledMatchers.hasText("Belgium"));
+            verifyThat("#zipLabel", LabeledMatchers.hasText("25442232"));
+        });
     }
 
     @Test
