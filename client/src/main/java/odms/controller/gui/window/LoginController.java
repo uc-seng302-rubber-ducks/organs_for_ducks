@@ -14,6 +14,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import odms.commons.exception.ApiException;
 import odms.commons.model.Administrator;
 import odms.commons.model.Clinician;
 import odms.commons.model.User;
@@ -21,6 +22,7 @@ import odms.commons.utils.HttpRequester;
 import odms.commons.utils.JsonHandler;
 import odms.commons.utils.Log;
 import odms.controller.AppController;
+import odms.utils.LoginBridge;
 import odms.view.CLI;
 import okhttp3.*;
 import org.json.simple.JSONObject;
@@ -184,7 +186,15 @@ public class LoginController {
             wantedClinician = staffIdTextField.getText();
         }
         String clinicianPassword = staffPasswordField.getText();
-        String token = loginToServer(wantedClinician, clinicianPassword, "clinician");
+        String token = null;
+        try {
+            token = new LoginBridge(new OkHttpClient()).loginToServer(wantedClinician, clinicianPassword, "clinician");
+        }
+        catch (ApiException ex) {
+            clinicianWarningLabel.setText("An error occurred. Please try again later. response code " + ex.getResponseCode());
+            //TODO popup warning
+        }
+
         if(token == null){
             return;
         }
@@ -213,51 +223,6 @@ public class LoginController {
                 Log.severe("failed to load clinician window", e);
             }
         }
-    }
-
-    private String loginToServer(String wanted, String password, String role) {
-        String networkError = "A network error occurred. Please try again or contact your IT department.";
-        Response response = null;
-        JsonObject body = new JsonObject();
-        body.addProperty("username" , wanted);
-        body.addProperty("password", password);
-        body.addProperty("role", role);
-        clinicianWarningLabel.setText("");
-        adminWarningLabel.setText("");
-
-        RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), body.toString());
-        HttpRequester requester = new HttpRequester(new OkHttpClient());
-        try {
-            Request request = new Request.Builder().url(appController.getServerURL() + "login/" ).post(requestBody).build();
-            response = requester.makeRequest(request);
-        } catch (IOException e) {
-            Log.severe(networkError, e);
-            return null;
-        }
-        if (response == null) {
-            Log.warning("A null response was returned to the user");
-            clinicianWarningLabel.setText(networkError);
-            adminWarningLabel.setText(networkError);
-            return null;
-        }
-        int responseCode = response.code();
-        if(responseCode == 404 || responseCode == 401) {
-            clinicianWarningLabel.setText("Clinician was not found or the username/password was incorrect.\nPlease try again");
-            adminWarningLabel.setText("Admin was not found or the username/password was incorrect.\nPlease try again");
-            return null;
-        } else if (responseCode == 500 || responseCode == 400) {
-            Log.warning("An Error occurred. code returned: " + responseCode);
-            clinicianWarningLabel.setText(networkError);
-            adminWarningLabel.setText(networkError);
-            return null;
-        } else if (responseCode != 200) {
-            Log.warning("A non API response was returned code:" + responseCode);
-            clinicianWarningLabel.setText("An unspecified error occurred. Please try again or contact your IT department.");
-            adminWarningLabel.setText("An unspecified error occurred. Please try again or contact your IT department.");
-            return null;
-        }
-
-        return jsonHandler.decodeLogin(response);
     }
 
     private Clinician getClinician(String wantedClinician, String token) throws IOException {

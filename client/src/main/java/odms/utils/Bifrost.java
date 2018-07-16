@@ -5,6 +5,7 @@ import com.google.gson.reflect.TypeToken;
 import odms.commons.model.Clinician;
 import odms.commons.model.User;
 import odms.commons.model.dto.UserOverview;
+import odms.commons.utils.JsonHandler;
 import odms.commons.utils.Log;
 import odms.controller.AppController;
 import okhttp3.*;
@@ -18,10 +19,10 @@ import java.util.Set;
  * Serves as a link between the client and the server
  */
 public class Bifrost {
-
+    private static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
     private OkHttpClient client;
     private String ip;
-    private MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+    private JsonHandler handler = new JsonHandler();
 
     public Bifrost(OkHttpClient client, String ip) {
         this.client = client;
@@ -30,6 +31,22 @@ public class Bifrost {
 
     public Bifrost(OkHttpClient client) {
         this(client, "http://localhost:4941/odms/v1");
+    }
+
+    public JsonHandler getHandler() {
+        return handler;
+    }
+
+    public OkHttpClient getClient() {
+        return client;
+    }
+
+    public String getIp() {
+        return ip;
+    }
+
+    public MediaType getJSON() {
+        return JSON;
     }
 
     public void getUsers(AppController controller, int startIndex, int count, String name, String region) {
