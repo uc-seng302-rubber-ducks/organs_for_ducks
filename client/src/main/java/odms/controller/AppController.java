@@ -88,13 +88,9 @@ public class AppController {
             }
         }
         if (!defaultAdminSeen) {
-            admins.add(new Administrator("default", "", "", "", "admin"));
-
-            try {
-                dataHandler.saveAdmins(admins);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            Administrator defaultAdmin = new Administrator("default", "", "", "", "admin");
+            admins.add(defaultAdmin);
+            saveAdmin(defaultAdmin);
         }
 
         boolean defaultSeen = false;
@@ -105,15 +101,10 @@ public class AppController {
             }
         } //all code you wish to execute must be above this point!!!!!!!!
         if (!defaultSeen) {
-            Clinician c = new Clinician("0", "admin", "Default", "", "");
-            c.setRegion("region");
-            clinicians.add(c);
-            try {
-                dataHandler.saveClinicians(clinicians);
-                Log.info("Successfully saved clinicians to file");
-            } catch (IOException e) {
-                Log.warning("Could not save clinicians to file", e);
-            }
+            Clinician defaultClinician = new Clinician("0", "admin", "Default", "", "");
+            defaultClinician.setRegion("region");
+            clinicians.add(defaultClinician);
+            saveClinician(defaultClinician);
         }
     }
 
