@@ -129,7 +129,7 @@ public class UserController {
             application = controller;
 
             // This is the place to set visible and invisible controls for Clinician vs User
-            medicationTabPageController.init(controller, user, fromClinician);
+            medicationTabPageController.init(controller, user, fromClinician, this);
             procedureTabPageController.init(controller, user, fromClinician, this);
             donationTabPageController.init(controller, user, this);
             diseasesTabPageController.init(controller, user, fromClinician, this);
@@ -139,15 +139,10 @@ public class UserController {
 
             undoButton.setVisible(true);
             redoButton.setVisible(true);
-            //warningLabel.setVisible(false);
             changeCurrentUser(user);
 
             // Sets the button to be disabled
             updateUndoRedoButtons();
-
-
-            //showUser(currentUser);
-
 
             if (user.getNhi() != null) {
                 showUser(currentUser); // Assumes a donor with no name is a new sign up and does not pull values from a template
@@ -273,7 +268,6 @@ public class UserController {
         currentUser.undo();
         updateUndoRedoButtons();
         showUser(currentUser);
-
     }
 
 
@@ -287,19 +281,35 @@ public class UserController {
         showUser(currentUser);
     }
 
-    public void showUser(User user) {
+    /**
+     * saves the user when the save menu item is clicked
+     */
+    @FXML
+    void save() {
+        application.update(currentUser);
+        application.saveUser(currentUser);
+        currentUser.getRedoStack().clear();
+        currentUser.getUndoStack().clear();
+        updateUndoRedoButtons();
+    }
 
+    /**
+     * Updates all tab pages to display the information of the current user
+     *
+     * @param user Current user to be displayed
+     */
+    public void showUser(User user) {
         changeCurrentUser(user);
         userProfileTabPageController.showUser(user);
         setContactPage();
         medicationTabPageController.refreshLists(user);
         donationTabPageController.populateOrganLists(user);
         receiverTabPageController.populateReceiverLists(user);
-
+        diseasesTabPageController.diseaseRefresh(false, false);
+        procedureTabPageController.updateProcedureTables(user);
         refreshCurrentlyReceivingList();
         refreshCurrentlyDonating();
 
-        procedureTabPageController.updateProcedureTables(user);
         if (user.getLastName() != null) {
             stage.setTitle("User Profile: " + user.getFirstName() + " " + user.getLastName());
         } else {
@@ -334,13 +344,6 @@ public class UserController {
         historyTableView.setItems(changelog);
         historyTableView.getColumns().addAll(timeColumn, changeColumn);
 
-    }
-
-    /**
-     * Public method to clear medications in the medication tab
-     */
-    public void clearMeds() {
-        medicationTabPageController.clearPreviousMeds();
     }
 
 
