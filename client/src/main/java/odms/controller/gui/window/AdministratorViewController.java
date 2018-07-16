@@ -937,6 +937,19 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
     }
 
     /**
+     * Saves all admins when the save menu item is clicked
+     */
+    @FXML
+    void saveClicked() {
+        appController.updateAdmin(administrator);
+        appController.saveAdmin(administrator);
+        administrator.getUndoStack().clear();
+        administrator.getRedoStack().clear();
+        adminUndoButton.setDisable(true);
+        adminRedoButton.setDisable(true);
+    }
+
+    /**
      * Logs out and saves the admin
      */
     @FXML

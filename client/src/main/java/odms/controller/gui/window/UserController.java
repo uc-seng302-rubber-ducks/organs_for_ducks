@@ -286,6 +286,18 @@ public class UserController {
         showUser(currentUser);
     }
 
+    /**
+     * saves the user when the save menu item is clicked
+     */
+    @FXML
+    void save() {
+        application.update(currentUser);
+        application.saveUser(currentUser);
+        currentUser.getRedoStack().clear();
+        currentUser.getUndoStack().clear();
+        updateUndoRedoButtons();
+    }
+
     public void showUser(User user) {
         changeCurrentUser(user);
         userProfileTabPageController.showUser(user);

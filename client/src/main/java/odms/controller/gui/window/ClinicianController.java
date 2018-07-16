@@ -443,6 +443,19 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
     }
 
     /**
+     * Save all changes for the current clinician
+     */
+    @FXML
+    void save() {
+        appController.updateClinicians(clinician);
+        appController.saveClinician(clinician);
+        clinician.getUndoStack().clear();
+        clinician.getRedoStack().clear();
+        undoButton.setDisable(true);
+        redoButton.setDisable(true);
+    }
+
+    /**
      * Returns the user to the login screen
      */
     @FXML
