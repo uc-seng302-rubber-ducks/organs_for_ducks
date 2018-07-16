@@ -4,6 +4,7 @@ package odms.commons.utils;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 import java.nio.ByteBuffer;
+import java.nio.charset.Charset;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
@@ -46,8 +47,7 @@ public final class PasswordManager {
      */
     public static String hash(String password, String salt) {
         char[] passwordChar = password.toCharArray();
-        Base64.Decoder dec = Base64.getUrlDecoder();
-        byte[] saltB = dec.decode(salt);
+        byte[] saltB = salt.toString().getBytes(Charset.forName("UTF-8"));
         PBEKeySpec spec = new PBEKeySpec(passwordChar, saltB, ITERATIONS, KEY_LENGTH);
         Arrays.fill(passwordChar, Character.MIN_VALUE);
         try {

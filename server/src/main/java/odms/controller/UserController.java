@@ -1,13 +1,12 @@
 package odms.controller;
 
 import odms.commons.model.User;
+import odms.commons.model.dto.UserOverview;
 import odms.commons.utils.DBHandler;
 import odms.commons.utils.JDBCDriver;
 import odms.commons.utils.Log;
 import odms.exception.NotFoundException;
 import odms.exception.ServerDBException;
-import odms.commons.model.dto.UserOverview;
-import odms.security.IsAdmin;
 import odms.security.IsUser;
 import odms.utils.DBManager;
 import org.springframework.http.HttpStatus;
@@ -107,4 +106,5 @@ public class UserController extends BaseController {
         }
         return new ResponseEntity(HttpStatus.OK);
     }
+
 }

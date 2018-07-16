@@ -20,9 +20,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -117,7 +115,7 @@ public class UserControllerTest {
     @Test(expected = ServerDBException.class)
     public void deleteUserShouldThrowExceptionWhenNoConnection() throws SQLException{
         when(driver.getConnection()).thenThrow(new SQLException());
-        controller.deleteUser("ABC1324");
+        controller.deleteUser("ABC1234");
     }
 
     @Test

@@ -2,7 +2,6 @@ package odms.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
 import java.util.HashSet;
 import java.util.Set;
 
@@ -20,9 +19,22 @@ public class TokenStore {
         knownAuthTokens = new HashSet<>();
     }
 
-    public AuthToken get(String token) {
+    /**
+     * Checks to see if a valid token is requested
+     *
+     * A timed out token will return the same as a token that does not exist
+     * and will be removed from the set of known tokens
+     *
+     * @param token token to look for
+     * @return Token for the
+     */
+    AuthToken get(String token) {
         for (AuthToken t : knownAuthTokens) {
             if (t.getToken().equals(token)){
+                if(!t.isTokenAlive()){
+                    remove(t.getToken());
+                    return null;
+                }
                 return t;
             }
         }
@@ -37,7 +49,7 @@ public class TokenStore {
         return knownAuthTokens.contains(authToken);
     }
 
-    public boolean contains(String tokenStr) {
+    boolean contains(String tokenStr) {
         return get(tokenStr) != null;
     }
 

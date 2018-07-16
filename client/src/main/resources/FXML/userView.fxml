@@ -89,7 +89,7 @@
                         <fx:include fx:id="diseasesTabPage" source="diseasesTabView.fxml"/>
                     </content>
                 </Tab>
-                <Tab text="Medication">
+                <Tab fx:id="medicationTab" text="Medication">
                     <content>
                         <fx:include fx:id="medicationTabPage" source="medicationTabView.fxml"/>
                     </content>
