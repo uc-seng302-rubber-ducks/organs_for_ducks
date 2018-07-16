@@ -20,6 +20,7 @@ import java.util.Set;
  */
 public class Bifrost {
     private static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+    public static final String TOKEN_HEADER = "x-auth-token";
     private OkHttpClient client;
     private String ip;
     private JsonHandler handler = new JsonHandler();

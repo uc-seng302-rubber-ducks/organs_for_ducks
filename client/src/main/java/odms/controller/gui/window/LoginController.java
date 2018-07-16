@@ -22,6 +22,7 @@ import odms.commons.utils.HttpRequester;
 import odms.commons.utils.JsonHandler;
 import odms.commons.utils.Log;
 import odms.controller.AppController;
+import odms.utils.ClinicianBridge;
 import odms.utils.LoginBridge;
 import odms.view.CLI;
 import okhttp3.*;
@@ -106,7 +107,7 @@ public class LoginController {
             userWarningLabel.setText("Please enter an NHI.");
             return;
         }
-        User user = getUser(wantedUser);
+        User user = null; //getUser(wantedUser);
         if (user == null) return;
 
         FXMLLoader userLoader = new FXMLLoader(getClass().getResource(USER_VIEW_URL));
@@ -129,6 +130,7 @@ public class LoginController {
      *
      * @return User if exists and authorized, Null otherwise
      */
+    /*
     private User getUser(String wantedUser) {
         User user;
         String networkError = "A network error occurred. Please try again or contact your IT department.";
@@ -171,6 +173,7 @@ public class LoginController {
 
         return user;
     }
+    */
 
     /**
      * Logs in the clinician
@@ -200,7 +203,7 @@ public class LoginController {
         }
         Clinician clinician = null;
         try {
-            clinician = getClinician(wantedClinician, token);
+            clinician = new ClinicianBridge(new OkHttpClient()).getClinician(wantedClinician, token);
         } catch (IOException e) {
             clinicianWarningLabel.setText("An unspecified error occurred. Please try again or contact your IT department.");
             Log.severe("Invalid request passed to the json handler", e);
@@ -223,43 +226,6 @@ public class LoginController {
                 Log.severe("failed to load clinician window", e);
             }
         }
-    }
-
-    private Clinician getClinician(String wantedClinician, String token) throws IOException {
-        System.out.println(token);
-        String networkError = "A network error occurred. Please try again or contact your IT department.";
-        Response response = null;
-        HttpRequester requester = new HttpRequester(new OkHttpClient());
-        try {
-            Headers headers = new Headers.Builder().add(appController.TOKEN_HEADER, token).build();
-            Request request = new Request.Builder()
-                    .url(appController.getServerURL() + "clinicians/"+ wantedClinician ).headers(headers).build();
-            response = requester.makeRequest(request);
-        } catch (IOException e) {
-            Log.severe(networkError, e);
-            return null;
-        }
-        if (response == null) {
-            Log.warning("A null response was returned to the user");
-            clinicianWarningLabel.setText(networkError);
-            return null;
-        }
-        int responseCode = response.code();
-        if(responseCode == 404 || responseCode == 401) {
-            clinicianWarningLabel
-                    .setText("User was not found or the username/password was incorrect.\nPlease try again");
-            return null;
-        } else if (responseCode == 500 || responseCode == 400) {
-            Log.warning("An Error occurred. code returned: " + responseCode);
-            clinicianWarningLabel.setText(networkError);
-            return null;
-        } else if (responseCode != 200) {
-            Log.warning("A non API response was returned code:" + responseCode);
-            clinicianWarningLabel.setText("An unspecified error occurred. Please try again or contact your IT department.");
-            return null;
-        }
-
-         return new JsonHandler().decodeClinician(response);
     }
 
 
