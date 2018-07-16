@@ -288,12 +288,16 @@ public class UserController {
     }
 
     public void showUser(User user) {
+
         changeCurrentUser(user);
         userProfileTabPageController.showUser(user);
         setContactPage();
         medicationTabPageController.refreshLists(user);
         donationTabPageController.populateOrganLists(user);
         receiverTabPageController.populateReceiverLists(user);
+
+        refreshCurrentlyReceivingList();
+        refreshCurrentlyDonating();
 
         procedureTabPageController.updateProcedureTables(user);
         if (user.getLastName() != null) {

@@ -213,6 +213,8 @@ public class User extends Undoable<User> implements Listenable {
             newUser.receiverDetails.getOrgans().put(o, detailHolders);
         }
 
+        newUser.commonOrgans = new HashSet<>(user.commonOrgans);
+
         newUser.currentDiseases = new ArrayList<>(user.currentDiseases);
         newUser.pastDiseases = new ArrayList<>(user.pastDiseases);
         newUser.medicalProcedures = new ArrayList<>();
@@ -1149,6 +1151,7 @@ public class User extends Undoable<User> implements Listenable {
         this.donorDetails.setAttachedUser(this);
         this.receiverDetails = other.receiverDetails;
         this.receiverDetails.setAttachedUser(this);
+        this.commonOrgans = other.commonOrgans;
 
         this.currentDiseases = other.currentDiseases;
         this.pastDiseases = other.pastDiseases;
