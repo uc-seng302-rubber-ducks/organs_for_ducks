@@ -16,23 +16,29 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import odms.controller.AppController;
-import odms.controller.gui.panel.TransplantWaitListController;
-import odms.controller.gui.popup.DeletedUserController;
-import odms.controller.gui.statusBarController;
 import odms.commons.model.Clinician;
-import odms.commons.model.TooltipTableRow;
 import odms.commons.model.User;
 import odms.commons.model._abstract.TransplantWaitListViewer;
 import odms.commons.model._enum.EventTypes;
 import odms.commons.model._enum.Organs;
+import odms.commons.model.dto.UserOverview;
 import odms.commons.utils.AttributeValidation;
 import odms.commons.utils.Log;
+import odms.controller.AppController;
+import odms.controller.gui.panel.TransplantWaitListController;
+import odms.controller.gui.popup.DeletedUserController;
+import odms.controller.gui.popup.utils.AlertWindowFactory;
+import odms.controller.gui.statusBarController;
+import odms.utils.UserBridge;
+import okhttp3.OkHttpClient;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Optional;
 
 /**
  * Class for the functionality of the Clinician view of the application
@@ -74,7 +80,7 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
     @FXML
     private Tooltip searchToolTip;
     @FXML
-    private TableView<User> searchTableView;
+    private TableView<UserOverview> searchTableView;
     @FXML
     private Pagination searchTablePagination;
 
@@ -113,13 +119,13 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
     private Stage stage;
     private AppController appController;
     private Clinician clinician;
-    private List<User> users;
+    private Collection<UserOverview> users;
     private ArrayList<Stage> openStages;
-    private FilteredList<User> fListUsers;
+    private FilteredList<UserOverview> fListUsers;
 
 
     //Initiliase table columns as class level so it is accessible for sorting in pagination methods
-    private TableColumn<User, String> lNameColumn;
+    private TableColumn<UserOverview, String> lNameColumn;
     private boolean filterVisible = false;
     private int searchCount;
 
@@ -151,7 +157,8 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
         }
         stage.setResizable(true);
         showClinician(clinician);
-        users = appController.getUsers();
+        new UserBridge(new OkHttpClient()).loadUsersToController(appController, 0, 30, "", "");
+        users = appController.getUserOverviews();
         searchCount = users.size();
         initSearchTable();
         transplantWaitListTabPageController.init(appController, this);
@@ -225,12 +232,12 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
      * initialises the search table, abstracted from main init function for clarity
      */
     private void initSearchTable() {
-        TableColumn<User, String> fNameColumn;
-        TableColumn<User, String> dobColumn;
-        TableColumn<User, String> dodColumn;
-        TableColumn<User, String> ageColumn;
-        TableColumn<User, HashSet<Organs>> organsColumn;
-        TableColumn<User, String> regionColumn;
+        TableColumn<UserOverview, String> fNameColumn;
+        TableColumn<UserOverview, String> dobColumn;
+        TableColumn<UserOverview, String> dodColumn;
+        TableColumn<UserOverview, String> ageColumn;
+        TableColumn<UserOverview, HashSet<Organs>> organsColumn;
+        TableColumn<UserOverview, String> regionColumn;
 
         endIndex = Math.min(startIndex + ROWS_PER_PAGE, users.size());
         if (users.isEmpty()) {
@@ -272,7 +279,7 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
         //set on-click behaviour
         searchTableView.setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
-                User user = searchTableView.getSelectionModel().getSelectedItem();
+                UserOverview user = searchTableView.getSelectionModel().getSelectedItem();
                 launchUser(user);
             }
         });
@@ -281,17 +288,19 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
     private void displaySearchTable() {
         //set up lists
         //table contents are SortedList of a FilteredList of an ObservableList of an ArrayList
-        ObservableList<User> oListUsers = FXCollections.observableList(users);
+        users = appController.getUserOverviews();
+        ObservableList<UserOverview> oListUsers = FXCollections.observableList(new ArrayList<>(users));
 
         fListUsers = new FilteredList<>(oListUsers);
         fListUsers = filter(fListUsers);
-        FilteredList<User> squished = new FilteredList<>(fListUsers);
+        FilteredList<UserOverview> squished = new FilteredList<>(fListUsers);
 
-        SortedList<User> sListUsers = new SortedList<>(squished.filtered(user -> !user.isDeleted()));
+        SortedList<UserOverview> sListUsers = new SortedList<>(squished);
+        //squished.filtered(user -> !user.isDeleted())
         sListUsers.comparatorProperty().bind(searchTableView.comparatorProperty());
 
         searchTableView.setItems(sListUsers);
-        searchTableView.setRowFactory((searchTableView) -> new TooltipTableRow<>(User::getTooltip));
+        //searchTableView.setRowFactory((searchTableView) -> new TooltipTableRow<>(User::getTooltip));
     }
 
 
@@ -305,7 +314,7 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
 
         int minIndex = Math.min(endIndex, fListUsers.size());
 
-        SortedList<User> sListUsers = new SortedList<>(FXCollections.observableArrayList(
+        SortedList<UserOverview> sListUsers = new SortedList<>(FXCollections.observableArrayList(
                 fListUsers.subList(Math.min(startIndex, minIndex), minIndex)));
         sListUsers.comparatorProperty().bind(searchTableView.comparatorProperty());
 
@@ -321,12 +330,13 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
     }
 
     /**
-     * @param user the selected user.
+     * @param userOverview A summary of the user to be launched
      */
-    public void launchUser(User user) {
+    public void launchUser(UserOverview userOverview) {
         FXMLLoader userLoader = new FXMLLoader(getClass().getResource("/FXML/userView.fxml"));
         Parent root;
         try {
+            User user = new UserBridge(new OkHttpClient()).getUser(userOverview.getNhi());
             root = userLoader.load();
             Stage userStage = new Stage();
             userStage.setScene(new Scene(root));
@@ -346,6 +356,7 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
             userStage.show();
         } catch (IOException e) {
             Log.severe("Clinician " + clinician.getStaffId() + " Failed to load user overview window", e);
+            AlertWindowFactory.generateError(e);
         }
     }
 
@@ -355,7 +366,7 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
      * @param fListUsers list to be filtered
      * @return filtered list with filter applied
      */
-    private FilteredList<User> filter(FilteredList<User> fListUsers) {
+    private FilteredList<UserOverview> filter(FilteredList<UserOverview> fListUsers) {
         setTextFieldListener(searchTextField, fListUsers);
         setTextFieldListener(regionSearchTextField, fListUsers);
         setCheckBoxListener(donorFilterCheckBox, fListUsers);
@@ -374,7 +385,7 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
      * @param inputTextField textfield to add the listener to
      * @param fListUsers     filteredList object of users to set predicate property of
      */
-    private void setTextFieldListener(TextField inputTextField, FilteredList<User> fListUsers) {
+    private void setTextFieldListener(TextField inputTextField, FilteredList<UserOverview> fListUsers) {
         inputTextField.textProperty()
                 .addListener((observable) -> setFilteredListPredicate(fListUsers));
     }
@@ -385,7 +396,7 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
      * @param checkBox   checkBox object to add the listener to
      * @param fListUsers filteredList object of users to set predicate property of
      */
-    private void setCheckBoxListener(CheckBox checkBox, FilteredList<User> fListUsers) {
+    private void setCheckBoxListener(CheckBox checkBox, FilteredList<UserOverview> fListUsers) {
         checkBox.selectedProperty()
                 .addListener(((observable) -> setFilteredListPredicate(fListUsers)));
     }
@@ -395,7 +406,7 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
      *
      * @param fList filteredList object to modify the predicate property of
      */
-    private void setFilteredListPredicate(FilteredList<User> fList) {
+    private void setFilteredListPredicate(FilteredList<UserOverview> fList) {
         searchCount = 0; //refresh the searchCount every time so it recalculates it each search
         fList.predicateProperty().bind(Bindings.createObjectBinding(() -> user -> {
             String lowerCaseFilterText = searchTextField.getText().toLowerCase();

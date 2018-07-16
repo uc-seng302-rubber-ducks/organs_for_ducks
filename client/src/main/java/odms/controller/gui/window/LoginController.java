@@ -24,9 +24,13 @@ import odms.commons.utils.Log;
 import odms.controller.AppController;
 import odms.utils.ClinicianBridge;
 import odms.utils.LoginBridge;
+import odms.controller.AppController;
+import odms.controller.gui.popup.utils.AlertWindowFactory;
+import odms.utils.UserBridge;
 import odms.view.CLI;
 import okhttp3.*;
 import org.json.simple.JSONObject;
+import okhttp3.OkHttpClient;
 
 import java.io.IOException;
 import java.util.Map;
@@ -102,9 +106,23 @@ public class LoginController {
     @FXML
     void loginUser() {
         userWarningLabel.setText("");
-        String wantedUser = userIDTextField.getText();
-        if (wantedUser.isEmpty()) {
+        String wantedDonor = userIDTextField.getText();
+        User user = null;
+
+        if (wantedDonor.isEmpty()) {
             userWarningLabel.setText("Please enter an NHI.");
+            return;
+        } else {
+            //user = appController.findUser(wantedDonor);
+            try {
+                user = new UserBridge(new OkHttpClient()).getUser(wantedDonor);
+            } catch (IOException e) {
+                AlertWindowFactory.generateError(e);
+            }
+        }
+        if (user == null || user.isDeleted()) {
+            userWarningLabel
+                    .setText("User was not found. \nTo register a new user, please click sign up.");
             return;
         }
         User user = null; //getUser(wantedUser);
