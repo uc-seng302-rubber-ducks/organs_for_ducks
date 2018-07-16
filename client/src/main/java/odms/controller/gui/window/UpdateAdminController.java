@@ -276,7 +276,7 @@ public class UpdateAdminController {
                 Log.warning(ex.getMessage(), ex);
                 //the text fields etc. are all null
             }
-            adminViewController.refreshTables(); //NEW
+            adminViewController.refreshTables();
             stage.close();
         }
     }
