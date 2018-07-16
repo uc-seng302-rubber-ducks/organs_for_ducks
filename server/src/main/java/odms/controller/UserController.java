@@ -65,7 +65,6 @@ public class UserController extends BaseController {
         }
     }
 
-    @IsUser
     @RequestMapping(method = RequestMethod.GET, value = "/users/{nhi}")
     public User getUser(@PathVariable("nhi") String nhi) {
         try (Connection connection = driver.getConnection()) {

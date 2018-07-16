@@ -5,16 +5,16 @@ import com.google.gson.reflect.TypeToken;
 import odms.commons.model.Disease;
 import odms.commons.model.MedicalProcedure;
 import odms.commons.model.User;
+import odms.commons.model._enum.Organs;
 import odms.commons.model.datamodel.Medication;
+import odms.commons.model.datamodel.ReceiverOrganDetailsHolder;
 import odms.commons.model.dto.UserOverview;
 import odms.commons.utils.Log;
 import odms.controller.AppController;
 import okhttp3.*;
 
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class UserBridge extends Bifrost {
 
@@ -27,7 +27,7 @@ public class UserBridge extends Bifrost {
     }
 
     public void loadUsersToController(AppController controller, int startIndex, int count, String name, String region) {
-        String url = ip + "/users?startIndex=" + startIndex + "&count=" + count;
+        String url = ip + "/users?startIndex=" + startIndex + "&count=" + count + "&q=" + name + "&region=" + region;
         Request request = new Request.Builder().url(url).build();
         User toReturn = null;
         client.newCall(request).enqueue(new Callback() {
@@ -241,5 +241,83 @@ public class UserBridge extends Bifrost {
             }
         });
     }
+
+    public void postReceivingOrgans(Map<Organs, ArrayList<ReceiverOrganDetailsHolder>> receiving, String nhi) {
+        String url = ip + "/users/" + nhi + "/receiving";
+        RequestBody body = RequestBody.create(JSON, new Gson().toJson(receiving));
+        Request request = new Request.Builder().url(url).post(body).build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.warning("Could not make a call to " + url, e);
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (!response.isSuccessful()) {
+                    throw new IOException("Failed to POST to " + url);
+                }
+            }
+        });
+    }
+
+    public void putReceivingOrgans(Map<Organs, ArrayList<ReceiverOrganDetailsHolder>> receiving, String nhi) {
+        String url = ip + "/users/" + nhi + "/receiving";
+        RequestBody body = RequestBody.create(JSON, new Gson().toJson(receiving));
+        Request request = new Request.Builder().url(url).put(body).build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.warning("Could not make a call to " + url, e);
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (!response.isSuccessful()) {
+                    throw new IOException("Failed to PUT to " + url);
+                }
+            }
+        });
+    }
+
+    public void postDonatingOrgans(List<Organs> donating, String nhi) {
+        String url = ip + "/users/" + nhi + "/donating";
+        RequestBody body = RequestBody.create(JSON, new Gson().toJson(donating));
+        Request request = new Request.Builder().url(url).post(body).build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.warning("Could not make a call to " + url, e);
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (!response.isSuccessful()) {
+                    throw new IOException("Failed to POST to " + url);
+                }
+            }
+        });
+    }
+
+    public void putDonatingOrgans(List<Organs> donating, String nhi) {
+        String url = ip + "/users/" + nhi + "/donating";
+        RequestBody body = RequestBody.create(JSON, new Gson().toJson(donating));
+        Request request = new Request.Builder().url(url).put(body).build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.warning("Could not make a call to " + url, e);
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (!response.isSuccessful()) {
+                    throw new IOException("Failed to PUT to " + url);
+                }
+            }
+        });
+    }
+
+
 
 }

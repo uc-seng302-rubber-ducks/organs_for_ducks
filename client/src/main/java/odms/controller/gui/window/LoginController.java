@@ -10,12 +10,15 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import odms.controller.AppController;
 import odms.commons.model.Administrator;
 import odms.commons.model.Clinician;
 import odms.commons.model.User;
 import odms.commons.utils.Log;
+import odms.controller.AppController;
+import odms.controller.gui.popup.utils.AlertWindowFactory;
+import odms.utils.UserBridge;
 import odms.view.CLI;
+import okhttp3.OkHttpClient;
 
 import java.io.IOException;
 
@@ -93,13 +96,18 @@ public class LoginController {
     void loginUser() {
         userWarningLabel.setText("");
         String wantedDonor = userIDTextField.getText();
-        User user;
+        User user = null;
 
         if (wantedDonor.isEmpty()) {
             userWarningLabel.setText("Please enter an NHI.");
             return;
         } else {
-            user = appController.findUser(wantedDonor);
+            //user = appController.findUser(wantedDonor);
+            try {
+                user = new UserBridge(new OkHttpClient()).getUser(wantedDonor);
+            } catch (IOException e) {
+                AlertWindowFactory.generateError(e);
+            }
         }
         if (user == null || user.isDeleted()) {
             userWarningLabel
