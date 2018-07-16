@@ -38,6 +38,46 @@ public class UserOverview {
         return overview;
     }
 
+    public String getNhi() {
+        return nhi;
+    }
+
+    public LocalDate getDob() {
+        return dob;
+    }
+
+    public LocalDate getDod() {
+        return dod;
+    }
+
+    public String getFirstName() {
+        return name.getFirstName();
+    }
+
+    public String getMiddleName() {
+        return name.getMiddleNames();
+    }
+
+    public String getLastName() {
+        return name.getLastName();
+    }
+
+    public Set<Organs> getDonating() {
+        return donating;
+    }
+
+    public boolean isDonor() {
+        return !donating.isEmpty();
+    }
+
+    public boolean isReceiver() {
+        return !receiving.isEmpty();
+    }
+
+    public Map<Organs, ArrayList<ReceiverOrganDetailsHolder>> getReceiving() {
+        return receiving;
+    }
+
     public static User toUser(UserOverview overview) {
         //TODO implement me
         throw new NullPointerException();

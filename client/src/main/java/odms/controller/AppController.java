@@ -620,4 +620,8 @@ public class AppController {
     public void setClinicians(List<Clinician> clinicians) {
         this.clinicians = clinicians;
     }
+
+    public Collection<UserOverview> getUserOverviews() {
+        return overviews;
+    }
 }

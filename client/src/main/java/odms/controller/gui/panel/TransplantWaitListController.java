@@ -9,13 +9,18 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
-import odms.controller.AppController;
 import odms.commons.model.User;
 import odms.commons.model._abstract.TransplantWaitListViewer;
 import odms.commons.model._enum.Organs;
 import odms.commons.model.datamodel.TransplantDetails;
+import odms.commons.model.dto.UserOverview;
 import odms.commons.utils.AttributeValidation;
+import odms.controller.AppController;
+import odms.controller.gui.popup.utils.AlertWindowFactory;
+import odms.utils.UserBridge;
+import okhttp3.OkHttpClient;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -165,8 +170,12 @@ public class TransplantWaitListController {
             transplantWaitListTableView.setOnMouseClicked(event -> {
                 if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
                     TransplantDetails transplantDetails = transplantWaitListTableView.getSelectionModel().getSelectedItem();
-                    User wantedUser = appController.findUser(transplantDetails.getNhi());
-                    parent.launchUser(wantedUser);
+                    try {
+                        User wantedUser = new UserBridge(new OkHttpClient()).getUser(transplantDetails.getNhi());
+                        parent.launchUser(UserOverview.fromUser(wantedUser)); //TODO: This is a bit disgusting fix
+                    } catch (IOException e) {
+                        AlertWindowFactory.generateError(e);
+                    }
                 }
             });
 
