@@ -835,7 +835,7 @@ public class DBHandler {
                 "  WHERE Address.fkContactId NOT IN (SELECT EmergencyContactDetails.fkContactId FROM EmergencyContactDetails)) Q ON U.nhi = Q.fkUserNhi\n" +
                 "  LEFT JOIN OrganAwaitingDates Dates ON awaitingId = Dates.fkAwaitingId\n" +
                 "    WHERE Dates.dateDeregistered IS NULL AND ((U.firstName LIKE ? OR U.middleName LIKE ? OR U.lastName LIKE ?) AND (IFNULL(Q.region, '') LIKE ?)\n");
-        if (organs != null) {
+        if (organs != null && organs.length > 0) {
             queryString.append("AND O.organName IN(");
 
             queryString.append("'").append(organs[0]).append("'");
