@@ -23,9 +23,9 @@ public class DBHandler {
      * SELECT_USER_ONE_TO_ONE_INFO_STMT is for getting all info that follows one-to-one relationship. eg: 1 user can only have 1 address.
      * the other SELECT_USER statements are for getting all info that follows one-to-many relationships. eg: 1 user can have many diseases.
      */
-    private static final String SELECT_USER_ONE_TO_ONE_INFO_STMT_FILTERED = "SELECT nhi FROM `User` a JOIN Address ON fkUserNhi = nhi " +
-            "WHERE (firstName LIKE ? OR lastName LIKE ?) AND region LIKE ? " +
-            "AND Address.fkContactId != (SELECT ContactDetails.contactId FROM ContactDetails JOIN EmergencyContactDetails E ON ContactDetails.contactId = E.fkContactId WHERE E.fkUserNhi = nhi)" +
+    private static final String SELECT_USER_ONE_TO_ONE_INFO_STMT_FILTERED = "SELECT nhi FROM `User` a JOIN Address ON fkUserNhi = nhi JOIN HealthDetails Detail ON a.nhi = Detail.fkUserNhi " +
+            "WHERE (firstName LIKE ? OR lastName LIKE ?) AND region LIKE ? AND gender LIKE ? " +
+            "AND Address.fkContactId != (SELECT ContactDetails.contactId FROM ContactDetails JOIN EmergencyContactDetails E ON ContactDetails.contactId = E.fkContactId WHERE E.fkUserNhi = nhi) " +
             "LIMIT ? OFFSET ?";
     private static final String SELECT_ONE_USER_INFO_STMT_FILTERED = "SELECT nhi, firstName, middleName, LastName, preferedName, timeCreated, lastModified, profilePicture, gender, birthGender, smoker, " +
             "alcoholConsumption, height, weight, dob, dod, bloodType " +
@@ -105,7 +105,7 @@ public class DBHandler {
      * @throws SQLException if there are any SQL errors
      */
     public Collection<User> getUsers(Connection connection, int count, int startIndex) throws SQLException {
-        return this.getUsers(connection, count, startIndex, "", "");
+        return this.getUsers(connection, count, startIndex, "", "", "");
     }
 
     /**
@@ -119,21 +119,23 @@ public class DBHandler {
      * @return a Collection of Users
      * @throws SQLException if there are any SQL errors
      */
-    public Collection<User> getUsers(Connection connection, int count, int startIndex, String name, String region) throws SQLException {
+    public Collection<User> getUsers(Connection connection, int count, int startIndex, String name, String region, String gender) throws SQLException {
         Collection<User> users = new ArrayList<>();
 
         try (PreparedStatement statement = connection.prepareStatement(SELECT_USER_ONE_TO_ONE_INFO_STMT_FILTERED)) {
             statement.setString(1, name + "%");
             statement.setString(2, name + "%");
             statement.setString(3, region + "%");
-            statement.setInt(4, count);
-            statement.setInt(5, startIndex);
+            statement.setString(4, gender + "%");
+            statement.setInt(5, count);
+            statement.setInt(6, startIndex);
             try (ResultSet resultSet = statement.executeQuery()) {
                 while (resultSet.next()) {
                     users.add(getOneUser(connection, resultSet.getString("nhi")));
                 }
             }
         }
+
         return users;
     }
 

@@ -10,7 +10,6 @@ import odms.commons.model.datamodel.Medication;
 import odms.commons.model.datamodel.ReceiverOrganDetailsHolder;
 import odms.commons.model.dto.UserOverview;
 import odms.commons.utils.Log;
-import odms.controller.AppController;
 import okhttp3.*;
 
 import java.io.IOException;
@@ -29,8 +28,9 @@ public class UserBridge extends Bifrost {
         super(client);
     }
 
-    public Collection<UserOverview> loadUsersToController(AppController controller, int startIndex, int count, String name, String region) throws IOException {
-        String url = ip + "/users?startIndex=" + startIndex + "&count=" + count + "&q=" + name + "&region=" + region;
+    public Collection<UserOverview> loadUsersToController(int startIndex, int count, String name, String region, String gender) throws IOException {
+        String url = ip + "/users?startIndex=" + startIndex + "&count=" + count + "&name=" + name + "&region=" + region + "&gender=" + gender;
+        System.out.println(url);
         Request request = new Request.Builder().url(url).build();
         Collection<UserOverview> overviews;
         try (Response response = client.newCall(request).execute()) {

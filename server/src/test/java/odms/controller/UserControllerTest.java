@@ -53,7 +53,7 @@ public class UserControllerTest {
         users.add(testUser);
         UserOverview expected = UserOverview.fromUser(testUser);
         when(handler.getUsers(any(Connection.class), anyInt(), anyInt())).thenReturn(users);
-        List<UserOverview> results = new ArrayList<>(controller.getUsers(0, 1, null, null));
+        List<UserOverview> results = new ArrayList<>(controller.getUsers(0, 1, "", "", ""));
 
         Assert.assertEquals(expected, results.get(0));
         Assert.assertEquals(results.size(), 1);
@@ -64,7 +64,7 @@ public class UserControllerTest {
         when(driver.getConnection()).thenThrow(new SQLException());
 
         //should throw an exception here
-        controller.getUsers(0, 1, null, null);
+        controller.getUsers(0, 1, "", "", "");
     }
 
 

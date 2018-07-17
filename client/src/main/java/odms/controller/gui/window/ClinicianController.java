@@ -1,5 +1,6 @@
 package odms.controller.gui.window;
 
+import javafx.animation.PauseTransition;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -16,6 +17,7 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import odms.commons.model.Clinician;
 import odms.commons.model.User;
 import odms.commons.model._abstract.TransplantWaitListViewer;
@@ -38,6 +40,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Class for the functionality of the Clinician view of the application
@@ -86,7 +89,7 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
     @FXML
     private AnchorPane filterAnchorPane;
     @FXML
-    private ComboBox genderComboBox;
+    private ComboBox<String> genderComboBox;
     @FXML
     private TextField regionSearchTextField;
     @FXML
@@ -118,6 +121,7 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
     private Collection<UserOverview> users;
     private ArrayList<Stage> openStages;
     private FilteredList<UserOverview> fListUsers;
+    private PauseTransition pause = new PauseTransition(Duration.millis(300));
 
 
     //Initiliase table columns as class level so it is accessible for sorting in pagination methods
@@ -157,7 +161,7 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
         stage.setResizable(true);
         showClinician(clinician);
         try {
-            users = new UserBridge(new OkHttpClient()).loadUsersToController(appController, 0, 30, "", "");
+            users = new UserBridge(new OkHttpClient()).loadUsersToController(0, 30, "", "", "");
         } catch (IOException ex) {
             AlertWindowFactory.generateError(ex);
         }
@@ -171,7 +175,6 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
         }
 
         setDefaultFilters();
-        searchCountLabel.setText("Showing results " + (searchCount == 0 ? startIndex : startIndex + 1) + " - " + (endIndex) + " of " + searchCount);
         openStages = new ArrayList<>();
 
 
@@ -317,7 +320,6 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
 
         search();
         fListUsers = new FilteredList<>(FXCollections.observableArrayList(users));
-        int minIndex = Math.min(endIndex, users.size());
         SortedList<UserOverview> sListUsers = new SortedList<>(fListUsers);
         sListUsers.comparatorProperty().bind(searchTableView.comparatorProperty());
 
@@ -327,7 +329,7 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
 
         int pageCount = searchCount / ROWS_PER_PAGE;
         searchTablePagination.setPageCount(pageCount > 0 ? pageCount + 1 : 1);
-        searchCountLabel.setText("Showing results " + (searchCount == 0 ? startIndex : startIndex + 1) + " - " + (minIndex) + " of " + searchCount);
+        searchCountLabel.setText("Showing results " + (searchCount == 0 ? startIndex : startIndex + 1) + " - " + (endIndex) + " of " + searchCount);
 
         return searchTableView;
     }
@@ -369,13 +371,16 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
      * @return filtered list with filter applied
      */
     private FilteredList<UserOverview> filter(FilteredList<UserOverview> fListUsers) {
-        setTextFieldListener(searchTextField, fListUsers);
-        setTextFieldListener(regionSearchTextField, fListUsers);
-        setCheckBoxListener(donorFilterCheckBox, fListUsers);
-        setCheckBoxListener(receiverFilterCheckBox, fListUsers);
-        setCheckBoxListener(allCheckBox, fListUsers);
+        setTextFieldListener(searchTextField);
+        setTextFieldListener(regionSearchTextField);
+        setCheckBoxListener(donorFilterCheckBox);
+        setCheckBoxListener(receiverFilterCheckBox);
+        setCheckBoxListener(allCheckBox);
         genderComboBox.valueProperty()
-                .addListener(observable -> search());
+                .addListener(observable -> {
+                    pause.setOnFinished(e -> search());
+                    pause.playFromStart();
+                });
 
         searchTablePagination.setPageCount(searchCount / ROWS_PER_PAGE);
         return fListUsers;
@@ -385,32 +390,40 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
      * Method to add the predicate trough the listener
      *
      * @param inputTextField textfield to add the listener to
-     * @param fListUsers     filteredList object of users to set predicate property of
      */
-    private void setTextFieldListener(TextField inputTextField, FilteredList<UserOverview> fListUsers) {
+    private void setTextFieldListener(TextField inputTextField) {
         inputTextField.textProperty()
-                .addListener(observable -> search());
+                .addListener(observable -> {
+                    pause.setOnFinished(e -> search());
+                    pause.playFromStart();
+                });
     }
 
     /**
      * Method to add the predicate trough the listener
      *
      * @param checkBox   checkBox object to add the listener to
-     * @param fListUsers filteredList object of users to set predicate property of
      */
-    private void setCheckBoxListener(CheckBox checkBox, FilteredList<UserOverview> fListUsers) {
+    private void setCheckBoxListener(CheckBox checkBox) {
         checkBox.selectedProperty()
-                .addListener(observable -> search());
+                .addListener(observable -> {
+                    pause.setOnFinished(e -> search());
+                    pause.playFromStart();
+                });
     }
 
     private void search() {
         try {
-            users = new UserBridge(new OkHttpClient()).loadUsersToController(appController, startIndex, ROWS_PER_PAGE, searchTextField.getText(), regionSearchTextField.getText());
+            users = new UserBridge(new OkHttpClient()).loadUsersToController(startIndex, ROWS_PER_PAGE, searchTextField.getText(), regionSearchTextField.getText(), genderComboBox.getValue());
         } catch (IOException ex) {
             AlertWindowFactory.generateError(ex);
         }
+        users = users.stream().filter(p -> (p.getDonating().isEmpty() != donorFilterCheckBox.isSelected() &&
+                p.getReceiving().isEmpty() != receiverFilterCheckBox.isSelected()) || allCheckBox.isSelected()).collect(Collectors.toList());
         searchCount = users.size();
+        endIndex = Math.min(startIndex + ROWS_PER_PAGE, users.size());
         displaySearchTable();
+        searchCountLabel.setText("Showing results " + (searchCount == 0 ? startIndex : startIndex + 1) + " - " + (endIndex) + " of " + searchCount);
     }
 
     /**
