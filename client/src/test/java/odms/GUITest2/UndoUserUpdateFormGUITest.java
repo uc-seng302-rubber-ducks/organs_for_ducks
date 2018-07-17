@@ -7,13 +7,11 @@ import odms.commons.model.User;
 import odms.controller.AppController;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.matcher.control.LabeledMatchers;
 import org.testfx.matcher.control.TextInputControlMatchers;
-import odms.TestUtils.CommonTestMethods;
 
 import java.time.LocalDate;
 import java.util.concurrent.TimeoutException;
@@ -22,10 +20,10 @@ import static org.testfx.api.FxAssert.verifyThat;
 
 public class UndoUserUpdateFormGUITest extends ApplicationTest {
 
-    @BeforeClass
-    public static void initialization() {
-        CommonTestMethods.runHeadless();
-    }
+//    @BeforeClass
+//    public static void initialization() {
+//        CommonTestMethods.runHeadless();
+//    }
 
     @Before
     public void setUp() throws TimeoutException {

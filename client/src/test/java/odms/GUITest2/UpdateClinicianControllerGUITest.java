@@ -2,10 +2,11 @@ package odms.GUITest2;
 
 import javafx.scene.Node;
 import odms.App;
-import odms.controller.AppController;
+import odms.TestUtils.CommonTestMethods;
 import odms.commons.model.Clinician;
 import odms.commons.model.datamodel.Address;
 import odms.commons.model.datamodel.ContactDetails;
+import odms.controller.AppController;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -14,14 +15,11 @@ import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.matcher.control.LabeledMatchers;
 import org.testfx.matcher.control.TextInputControlMatchers;
-import odms.TestUtils.CommonTestMethods;
 
 import java.util.concurrent.TimeoutException;
 
 import static javafx.scene.input.KeyCode.*;
-import static odms.TestUtils.FxRobotHelper.clickButton;
-import static odms.TestUtils.FxRobotHelper.setComboBoxValue;
-import static odms.TestUtils.FxRobotHelper.setTextField;
+import static odms.TestUtils.FxRobotHelper.*;
 import static org.testfx.api.FxAssert.verifyThat;
 
 /**
@@ -102,11 +100,15 @@ public class UpdateClinicianControllerGUITest extends ApplicationTest {
         interact(() -> {
             setComboBoxValue(this, "#countrySelector", "New Zealand");
             setComboBoxValue(this, "#regionSelector", "Otago");
-            verifyThat("#regionSelector", Node::isVisible);
-            clickButton(this, "#confirmButton");
-//            verifyThat("#regionLabel", LabeledMatchers.hasText("Otago")); //TODO: i saw label actually displays Otago (when running without headless mode) but assert says label was displaying canterbury. async problem? help - 17 july
-//            verifyThat("#countryLabel", LabeledMatchers.hasText("New Zealand"));
+
+
         });
+        verifyThat("#regionSelector", Node::isVisible);
+        interact(() -> {
+            clickButton(this, "#confirmButton");
+        });
+        verifyThat("#regionLabel", LabeledMatchers.hasText("Otago"));
+        verifyThat("#countryLabel", LabeledMatchers.hasText("New Zealand"));
     }
 
     @Test
@@ -114,10 +116,14 @@ public class UpdateClinicianControllerGUITest extends ApplicationTest {
         interact(() -> {
             setComboBoxValue(this, "#countrySelector", "Belgium");
             setTextField(this, "#regionTextField", "Flanders");
-            verifyThat("#regionTextField", Node::isVisible);
-            clickButton(this, "#confirmButton");
-//            verifyThat("#regionLabel", LabeledMatchers.hasText("Flanders")); //TODO: i saw label actually displays Flanders (when running without headless mode) but assert says label was displaying canterbury. async problem? help - 17 july
-//            verifyThat("#countryLabel", LabeledMatchers.hasText("Belgium"));
+
         });
+        verifyThat("#regionTextField", Node::isVisible);
+
+        interact(() -> {
+            clickButton(this, "#confirmButton");
+        });
+        verifyThat("#regionLabel", LabeledMatchers.hasText("Flanders"));
+        verifyThat("#countryLabel", LabeledMatchers.hasText("Belgium"));
     }
 }
