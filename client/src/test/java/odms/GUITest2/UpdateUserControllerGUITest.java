@@ -1,5 +1,6 @@
 package odms.GUITest2;
 
+import javafx.scene.Node;
 import odms.App;
 import odms.controller.AppController;
 import odms.commons.model.User;
@@ -13,6 +14,9 @@ import java.time.LocalDate;
 import java.util.concurrent.TimeoutException;
 
 import static javafx.scene.input.KeyCode.*;
+import static odms.TestUtils.FxRobotHelper.clickButton;
+import static odms.TestUtils.FxRobotHelper.setComboBoxValue;
+import static odms.TestUtils.FxRobotHelper.setTextField;
 import static org.testfx.api.FxAssert.verifyThat;
 
 public class UpdateUserControllerGUITest extends ApplicationTest {
@@ -120,13 +124,59 @@ public class UpdateUserControllerGUITest extends ApplicationTest {
     }
 
     @Test
-    @Ignore
-    public void testUpdateRegion() {
-        clickOn("#region");
-        write("catface@gmail.com", 0);
-        clickOn("#confirmButton");
-        clickOn("#detailsTab");
-        verifyThat("#pRegion", LabeledMatchers.hasText("catface@gmail.com"));
+    public void testUpdateRegionAndCountry() {
+        interact(() -> {
+            setComboBoxValue(this, "#countrySelector", "New Zealand");
+            setComboBoxValue(this, "#regionSelector", "Otago");
+            verifyThat("#regionSelector", Node::isVisible);
+            clickButton(this, "#confirmButton");
+            clickOn("#detailsTab");
+            verifyThat("#pRegion", LabeledMatchers.hasText("Otago"));
+            verifyThat("#country", LabeledMatchers.hasText("New Zealand"));
+        });
+    }
+
+    @Test
+    public void testUpdateRegionAndCountryNotNZ() {
+        interact(() -> {
+            setComboBoxValue(this, "#countrySelector", "Belgium");
+            setTextField(this, "#regionInput", "Flanders");
+            verifyThat("#regionInput", Node::isVisible);
+            clickButton(this, "#confirmButton");
+            clickOn("#detailsTab");
+            verifyThat("#pRegion", LabeledMatchers.hasText("Flanders"));
+            verifyThat("#country", LabeledMatchers.hasText("Belgium"));
+        });
+    }
+
+    @Test
+    public void testUpdateEmergencyContactRegionAndCountry() {
+        interact(() -> {
+            setTextField(this, "#ecName", "John Cena");
+            setTextField(this, "#ecCell", "0214583341");
+            setComboBoxValue(this, "#ecCountrySelector", "New Zealand");
+            setComboBoxValue(this, "#ecRegionSelector", "Chatham Islands");
+            verifyThat("#ecRegionSelector", Node::isVisible);
+            clickButton(this, "#confirmButton");
+            clickOn("#detailsTab");
+            verifyThat("#eRegion", LabeledMatchers.hasText("Chatham Islands"));
+            verifyThat("#ecCountry", LabeledMatchers.hasText("New Zealand"));
+        });
+    }
+
+    @Test
+    public void testUpdateEmergencyContactRegionAndCountryNotNZ() {
+        interact(() -> {
+            setTextField(this, "#ecName", "John Cena");
+            setTextField(this, "#ecCell", "0214583341");
+            setComboBoxValue(this, "#ecCountrySelector", "Belgium");
+            setTextField(this, "#ecRegionInput", "Flanders");
+            verifyThat("#ecRegionInput", Node::isVisible);
+            clickButton(this, "#confirmButton");
+            clickOn("#detailsTab");
+            verifyThat("#eRegion", LabeledMatchers.hasText("Flanders"));
+            verifyThat("#ecCountry", LabeledMatchers.hasText("Belgium"));
+        });
     }
 
     @Test
