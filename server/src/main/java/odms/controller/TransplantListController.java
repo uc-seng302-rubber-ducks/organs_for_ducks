@@ -32,8 +32,8 @@ public class TransplantListController extends BaseController {
     @RequestMapping(method = RequestMethod.GET, value = "/transplantList")
     public List<TransplantDetails> getWaitingFor(@RequestParam("startIndex") int startIndex,
                                                  @RequestParam("count") int count,
-                                                 @RequestParam(value = "name", required = false) String name,
-                                                 @RequestParam(value = "region", required = false) String region,
+                                                 @RequestParam(value = "name", required = false, defaultValue = "") String name,
+                                                 @RequestParam(value = "region", required = false, defaultValue = "") String region,
                                                  @RequestParam(value = "organs", required = false) String[] organs) {
         List<TransplantDetails> results;
         try (Connection connection = driver.getConnection()) {

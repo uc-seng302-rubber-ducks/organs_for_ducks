@@ -53,13 +53,6 @@ public class DBHandler {
             "LEFT JOIN Organ ON fkOrgansId = organId " +
             "WHERE fkUserNhi = ? " +
             "ORDER BY organId, dateRegistered";
-    private static final String SELECT_TRANSPLANT_WAITING_LIST_STMT_FILTERED = "SELECT U.nhi, U.firstName, U.middleName, U.lastName, O.organName, Dates.dateRegistered, Q.region FROM OrganAwaiting JOIN Organ O ON OrganAwaiting.fkOrgansId = O.organId\n" +
-            "  LEFT JOIN User U ON OrganAwaiting.fkUserNhi = U.nhi\n" +
-            "  LEFT JOIN  (SELECT Address.fkUserNhi, Address.region FROM Address JOIN ContactDetails Detail ON Address.fkContactId = Detail.contactId\n" +
-            "  WHERE Address.fkContactId NOT IN (SELECT EmergencyContactDetails.fkContactId FROM EmergencyContactDetails)) Q ON U.nhi = Q.fkUserNhi\n" +
-            "  LEFT JOIN OrganAwaitingDates Dates ON awaitingId = Dates.fkAwaitingId\n" +
-            "    WHERE Dates.dateDeregistered IS NULL AND ((U.firstName LIKE ? OR U.middleName LIKE ? OR U.lastName LIKE ?) OR Q.region LIKE ?)\n" +
-            "LIMIT ? OFFSET ?";
     private static final String SELECT_USER_CONTACT_DETAILS_ADDRESS_STMT = "SELECT homePhone, cellPhone, email, streetNumber, streetName, neighbourhood, city, region, zipCode, country " +
             "FROM ContactDetails cd " +
             "LEFT JOIN Address a ON a.fkContactId = cd.contactId " +
@@ -823,8 +816,37 @@ public class DBHandler {
         }
     }
 
+    /**
+     * gets all relevant details relating to users waiting to receive an organ transplant
+     * @see TransplantDetails
+     * @param conn connection to the target database
+     * @param startIndex row number to start reading from
+     * @param count number of results to return
+     * @param name string query to search in the name (first, middle, or last). should be an empty string if no restriction to be made
+     * @param region restrict results to a given region. search for regions LIKE the given string. should be an empty string if no restriction to be made
+     * @param organs restrict results to a given set of organs. should be null if no restriction to be made
+     * @return list of transplant details matching the above criteria
+     * @throws SQLException exception thrown during the transaction
+     */
     public List<TransplantDetails> getTransplantDetails(Connection conn, int startIndex, int count, String name, String region, String[] organs) throws SQLException{
-        try(PreparedStatement stmt = conn.prepareStatement(SELECT_TRANSPLANT_WAITING_LIST_STMT_FILTERED)) {
+        StringBuilder queryString = new StringBuilder("SELECT U.nhi, U.firstName, U.middleName, U.lastName, O.organName, Dates.dateRegistered, Q.region from OrganAwaiting JOIN Organ O ON OrganAwaiting.fkOrgansId = O.organId\n" +
+                "  LEFT JOIN User U ON OrganAwaiting.fkUserNhi = U.nhi\n" +
+                "  LEFT JOIN  (SELECT Address.fkUserNhi, Address.region from Address JOIN ContactDetails Detail ON Address.fkContactId = Detail.contactId\n" +
+                "  WHERE Address.fkContactId NOT IN (SELECT EmergencyContactDetails.fkContactId FROM EmergencyContactDetails)) Q ON U.nhi = Q.fkUserNhi\n" +
+                "  LEFT JOIN OrganAwaitingDates Dates ON awaitingId = Dates.fkAwaitingId\n" +
+                "    WHERE Dates.dateDeregistered IS NULL AND ((U.firstName LIKE ? OR U.middleName LIKE ? OR U.lastName LIKE ?) AND (IFNULL(Q.region, '') LIKE ?)\n");
+        if (organs != null) {
+            queryString.append("AND O.organName IN(");
+
+            queryString.append("'").append(organs[0]).append("'");
+            for (int i = 1; i < organs.length; i++) {
+                queryString.append(", ");
+                queryString.append("'").append(organs[i]).append("'");
+            }
+            queryString.append(" )");
+        }
+        queryString.append(") LIMIT ? OFFSET ?");
+        try(PreparedStatement stmt = conn.prepareStatement(queryString.toString())) {
             //first, middle, and last names
             stmt.setString(1, name + "%");
             stmt.setString(2, name + "%");
