@@ -319,11 +319,13 @@ public class UserOverviewController {
         Parent root;
         try {
             root = loader.load();
+            Stage newStage = new Stage();
+            newStage.setScene(new Scene(root));
+            newStage.show();
+            stage.close();
             LoginController loginController = loader.getController();
-            loginController.init(AppController.getInstance(), stage);
-            stage.setScene(new Scene(root));
-            stage.hide();
-            stage.show();
+            loginController.init(AppController.getInstance(), newStage);
+
             Log.info("successfully launched login window after logged out for User NHI: " + currentUser.getNhi());
         } catch (IOException e) {
             Log.severe("failed to launch login window after logged out for User NHI: " + currentUser.getNhi(), e);

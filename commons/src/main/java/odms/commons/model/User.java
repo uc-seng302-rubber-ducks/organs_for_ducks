@@ -224,6 +224,8 @@ public class User extends Undoable<User> implements Listenable {
             newUser.receiverDetails.getOrgans().put(o, detailHolders);
         }
 
+        newUser.commonOrgans = new HashSet<>(user.commonOrgans);
+
         newUser.currentDiseases = new ArrayList<>();
         for (Disease cd : user.currentDiseases) {
             Disease newcd = new Disease(cd.getName(), cd.getIsChronic(), cd.getIsCured(), cd.getDiagnosisDate());
@@ -910,7 +912,6 @@ public class User extends Undoable<User> implements Listenable {
     }
 
     public void addCurrentMedication(String medication) {
-        //this.saveStateForUndo();
         updateLastModified();
         if (!currentMedication.contains(new Medication(medication))) {
             currentMedication.add(new Medication(medication));
@@ -1176,6 +1177,7 @@ public class User extends Undoable<User> implements Listenable {
         this.donorDetails.setAttachedUser(this);
         this.receiverDetails = other.receiverDetails;
         this.receiverDetails.setAttachedUser(this);
+        this.commonOrgans = other.commonOrgans;
 
         this.currentDiseases = other.currentDiseases;
         this.pastDiseases = other.pastDiseases;
