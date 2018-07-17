@@ -76,7 +76,7 @@ public class ReceiverDetails {
     public boolean isCurrentlyWaitingFor(Organs organ) {
         boolean result = false;
 
-        if (organs.containsKey(organ) && organs.get(organ).size() != 0) { //if the specified organ has a key in the map (has been registered before)
+        if (organs.containsKey(organ) && !organs.get(organ).isEmpty()) { //if the specified organ has a key in the map (has been registered before)
             ReceiverOrganDetailsHolder holder = organs.get(organ).get(organs.get(organ).size() - 1);
             if ((holder.getStartDate() != null) && (holder.getStopDate() == null)) {
                 result = true; //If at least one of them is started but not stopped
@@ -203,7 +203,7 @@ public class ReceiverDetails {
         StringBuilder sb = new StringBuilder();
         for (Organs o : organs.keySet()) {
             if (isCurrentlyWaitingFor(o)) {
-                sb.append(o.organName);
+                sb.append(o.toString());
                 sb.append(" ");
             }
         }

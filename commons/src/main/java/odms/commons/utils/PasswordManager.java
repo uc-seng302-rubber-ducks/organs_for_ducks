@@ -3,10 +3,13 @@ package odms.commons.utils;
 
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
+import java.nio.ByteBuffer;
+import java.nio.charset.Charset;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.Random;
 
 /**
@@ -28,10 +31,11 @@ public final class PasswordManager {
      *
      * @return salt
      */
-    public static byte[] getNextSalt() {
+    public static String getNextSalt() {
         byte[] salt = new byte[16];
         RANDOM.nextBytes(salt);
-        return salt;
+        Base64.Encoder enc = Base64.getUrlEncoder().withoutPadding();
+        return enc.encodeToString(salt);
     }
 
     /**
@@ -41,13 +45,16 @@ public final class PasswordManager {
      * @param salt     byte[] salt to be used should be created by getNextSalt()
      * @return the hashed and salted password
      */
-    public static byte[] hash(String password, byte[] salt) {
+    public static String hash(String password, String salt) {
         char[] passwordChar = password.toCharArray();
-        PBEKeySpec spec = new PBEKeySpec(passwordChar, salt, ITERATIONS, KEY_LENGTH);
+        byte[] saltB = salt.toString().getBytes(Charset.forName("UTF-8"));
+        PBEKeySpec spec = new PBEKeySpec(passwordChar, saltB, ITERATIONS, KEY_LENGTH);
         Arrays.fill(passwordChar, Character.MIN_VALUE);
         try {
             SecretKeyFactory skf = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
-            return skf.generateSecret(spec).getEncoded();
+            byte[] hash =  skf.generateSecret(spec).getEncoded();
+            Base64.Encoder enc = Base64.getUrlEncoder().withoutPadding();
+            return enc.encodeToString(hash);
         } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {
             throw new AssertionError("Error while hashing a password: " + e.getMessage());
         } finally {
@@ -63,17 +70,9 @@ public final class PasswordManager {
      * @param expectedHash expected value for the hash
      * @return true if matches false otherwise
      */
-    public static boolean isExpectedPassword(String password, byte[] salt, byte[] expectedHash) {
-        byte[] passwordHash = hash(password, salt);
-        if (passwordHash.length != expectedHash.length) {
-            return false;
-        }
-        for (int i = 0; i < passwordHash.length; i++) {
-            if (passwordHash[i] != expectedHash[i]) {
-                return false;
-            }
-        }
-        return true;
+    public static boolean isExpectedPassword(String password, String salt, String expectedHash) {
+        String passwordHash = hash(password, salt);
+        return passwordHash.length() == expectedHash.length() && passwordHash.equals(expectedHash);
     }
 }
 

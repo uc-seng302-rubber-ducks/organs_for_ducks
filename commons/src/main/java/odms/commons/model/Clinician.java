@@ -5,9 +5,9 @@ import com.google.gson.annotations.Expose;
 import odms.commons.model._abstract.Listenable;
 import odms.commons.model._abstract.Undoable;
 import odms.commons.model._enum.EventTypes;
-import odms.commons.utils.PasswordManager;
 import odms.commons.model.datamodel.Address;
 import odms.commons.model.datamodel.ContactDetails;
+import odms.commons.utils.PasswordManager;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -27,7 +27,7 @@ public class Clinician extends Undoable<Clinician> implements Listenable {
     @Expose
     private ContactDetails workContactDetails;
     @Expose
-    private byte[] password;
+    private String password;
 
     @Expose
     private LocalDateTime dateCreated;
@@ -41,13 +41,19 @@ public class Clinician extends Undoable<Clinician> implements Listenable {
     @Expose
     private String lastName;
     @Expose
-    private byte[] salt;
+    private String salt;
     private transient PropertyChangeSupport pcs;
 
     //TODO make all updates to the clinician add to this 22/6
     private transient List<Change> changes;
 
     public Clinician() {
+        this.staffId = "";
+        setPassword("");
+        this.firstName = "";
+        this.middleName = "";
+        this.lastName = "";
+        this.workContactDetails = new ContactDetails();
         dateCreated = LocalDateTime.now();
         dateLastModified = LocalDateTime.now();
         changes = new ArrayList<>();
@@ -74,9 +80,7 @@ public class Clinician extends Undoable<Clinician> implements Listenable {
         dateLastModified = LocalDateTime.now();
         changes = new ArrayList<>();
         this.pcs = new PropertyChangeSupport(this);
-
     }
-
 
     /**
      * Constructor for Clinician
@@ -96,7 +100,6 @@ public class Clinician extends Undoable<Clinician> implements Listenable {
         this.dateLastModified = dateLastModified;
         changes = new ArrayList<>();
         this.pcs = new PropertyChangeSupport(this);
-
     }
 
     /**
@@ -167,7 +170,6 @@ public class Clinician extends Undoable<Clinician> implements Listenable {
         addChange(new Change("set last name to " + lastName));
         setDateLastModified(LocalDateTime.now());
     }
-
 
     public String getFullName() {
         String fullName;
@@ -285,14 +287,14 @@ public class Clinician extends Undoable<Clinician> implements Listenable {
     }
 
     /**
-     * Private setter as no one should be able to retrieve password outside of the class
+     * Public so that it can be stored within the database
+     * No one else should be able to retrieve password
      *
      * @return hash of the password
      */
-    private byte[] getPassword() {
+    public String getPassword() {
         return password;
     }
-
 
     /**
      * updates the password by hashing it and storing the new salt
@@ -304,11 +306,9 @@ public class Clinician extends Undoable<Clinician> implements Listenable {
         this.password = PasswordManager.hash(password, salt);
     }
 
-
-    public byte[] getSalt() {
+    public String getSalt() {
         return salt;
     }
-
 
     /**
      * A function to check the supplied password against the stored hash.
@@ -392,20 +392,23 @@ public class Clinician extends Undoable<Clinician> implements Listenable {
         addChange(new Change("redo"));
     }
 
-
     public static Clinician clone(Clinician clinician) {
         Clinician newClinician = new Clinician();
         newClinician.staffId = clinician.staffId;
         newClinician.password = clinician.password;
+        newClinician.salt = clinician.salt;
         newClinician.firstName = clinician.firstName;
         newClinician.middleName = clinician.middleName;
         newClinician.lastName = clinician.lastName;
 
-        Address workAddress = new Address(clinician.getStreetNumber(), clinician.getStreetName(), clinician.getNeighborhood(), clinician.getCity(), clinician.getRegion(), clinician.getZipCode(), clinician.getCountry());
+        Address workAddress = new Address(clinician.getStreetNumber(), clinician.getStreetName(),
+                clinician.getNeighborhood(), clinician.getCity(), clinician.getRegion(), clinician.getZipCode(), clinician.getCountry());
         newClinician.workContactDetails = new ContactDetails("", "", workAddress, "");;
 
         newClinician.dateCreated = clinician.dateCreated;
         newClinician.dateLastModified = clinician.dateLastModified;
+        newClinician.changes = new ArrayList<>(clinician.changes);
+        newClinician.pcs = new PropertyChangeSupport(clinician.pcs);
 
         return newClinician;
     }
@@ -418,12 +421,15 @@ public class Clinician extends Undoable<Clinician> implements Listenable {
     private void changeInto(Clinician clinician) {
         this.staffId = clinician.staffId;
         this.password = clinician.password;
+        this.salt = clinician.salt;
         this.firstName = clinician.firstName;
         this.middleName = clinician.middleName;
         this.lastName = clinician.lastName;
         this.workContactDetails = clinician.workContactDetails;
         this.dateCreated = clinician.dateCreated;
         this.dateLastModified = clinician.dateLastModified;
+        this.changes = clinician.changes;
+        this.pcs = clinician.pcs;
     }
 
     @Override

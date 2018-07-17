@@ -9,10 +9,12 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
+import javafx.scene.layout.Region;
 import javafx.stage.Modality;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import odms.controller.AppController;
+import odms.controller.gui.UnsavedChangesAlert;
 import odms.controller.gui.window.LoginController;
 import odms.controller.gui.window.UpdateUserController;
 import odms.commons.model.User;
@@ -275,7 +277,9 @@ public class UserOverviewController {
      */
     @FXML
     private void closeWindow() {
-        application.update(currentUser);
+        checkSave();
+        currentUser.getUndoStack().clear();
+        currentUser.getRedoStack().clear();
         stage.close();
         Log.info("Successfully closed update user window for User NHI: " + currentUser.getNhi());
     }
@@ -287,6 +291,7 @@ public class UserOverviewController {
     public void delete() {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setContentText("Are you sure you want to delete this user?");
+        alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
         Optional<ButtonType> result = alert.showAndWait();
 
         if (result.get() == ButtonType.OK) {
@@ -307,7 +312,9 @@ public class UserOverviewController {
      */
     @FXML
     private void logout() {
+        checkSave();
         currentUser.getUndoStack().clear();
+        currentUser.getRedoStack().clear();
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML/loginView.fxml"));
         Parent root;
         try {
@@ -321,9 +328,26 @@ public class UserOverviewController {
         } catch (IOException e) {
             Log.severe("failed to launch login window after logged out for User NHI: " + currentUser.getNhi(), e);
         }
-
-
     }
+
+    /**
+     * Popup that prompts the user if they want to save any unsaved changes before logging out or exiting the application
+     */
+    private void checkSave() {
+        boolean noChanges = currentUser.getUndoStack().isEmpty();
+        if (!noChanges) {
+            Optional<ButtonType> result = UnsavedChangesAlert.getAlertResult();
+            if (result.isPresent() && result.get() == ButtonType.YES) {
+                application.update(currentUser);
+                application.saveUser(currentUser);
+
+            } else {
+                User revertUser = currentUser.getUndoStack().firstElement().getState();
+                application.update(revertUser);
+            }
+        }
+    }
+
 
     /**
      * Disables logout buttons

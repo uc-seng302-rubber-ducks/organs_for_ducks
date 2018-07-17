@@ -13,10 +13,12 @@ public class CacheManager {
     private MedicationInteractionCache interactionCache;
 
     /**
+     *
      * instantiate and load all the caches on first start-up
      */
     private CacheManager() {
         interactionCache = new MedicationInteractionCache();
+
         try {
             interactionCache.load(DEFAULT_INTERACTIONS_CACHE);
         } catch (IOException ex) {
@@ -35,6 +37,7 @@ public class CacheManager {
     public MedicationInteractionCache getInteractionCache() {
         return interactionCache;
     }
+
 
     /**
      * group method to save contents of all active caches

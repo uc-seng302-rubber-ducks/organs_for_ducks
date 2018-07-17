@@ -1,66 +1,65 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
+<?import javafx.scene.text.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
-<AnchorPane xmlns:fx="http://javafx.com/fxml/1" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
-            minWidth="-Infinity" prefHeight="675.0" prefWidth="894.0" xmlns="http://javafx.com/javafx/8"
-            fx:controller="odms.controller.gui.window.UserController">
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="675.0" prefWidth="894.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="odms.controller.gui.window.UserController">
     <children>
-        <TabPane layoutY="-4.0" prefHeight="681.0" prefWidth="894.0" rotateGraphic="true" tabClosingPolicy="UNAVAILABLE"
-                 AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0"
-                 AnchorPane.topAnchor="45">
+        <TabPane layoutY="33.0" prefHeight="642.0" prefWidth="894.0" rotateGraphic="true" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="33.0">
             <tabs>
                 <Tab fx:id="userProfileTab" text="User Profile">
                     <content>
-                        <fx:include fx:id="userProfileTabPage" source="userProfileView.fxml"/>
+                        <fx:include fx:id="userProfileTabPage" source="userProfileView.fxml" />
                     </content>
                 </Tab>
                 <Tab fx:id="detailsTab" text="Contact Details">
                     <content>
                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                             <children>
-                                <Label layoutX="14.0" layoutY="14.0" text="Personal Contact Details"/>
-                                <Label layoutX="14.0" layoutY="50.0" text="Home Phone:"/>
-                                <Label layoutX="14.0" layoutY="80.0" text="Cell Phone:"/>
-                                <Label layoutX="14.0" layoutY="110.0" text="Address:"/>
-                                <Label layoutX="192.0" layoutY="161.0" text="Region:"/>
-                                <Label layoutX="14.0" layoutY="244.0" text="Email:"/>
-                                <Label layoutX="14.0" layoutY="276.0" text="Emergency Contact Details"/>
-                                <Label layoutX="17.0" layoutY="312.0" text="Name:"/>
-                                <Label layoutX="17.0" layoutY="342.0" text="Home Phone:"/>
-                                <Label layoutX="17.0" layoutY="372.0" text="Cell Phone:"/>
-                                <Label layoutX="17.0" layoutY="402.0" text="Address:"/>
-                                <Label layoutX="192.0" layoutY="450.0" text="Region:"/>
-                                <Label layoutX="17.0" layoutY="518.0" text="Email:"/>
-                                <Label layoutX="17.0" layoutY="548.0" text="Relationship:"/>
-                                <Separator layoutY="29.0" prefHeight="16.0" prefWidth="900.0"/>
-                                <Separator layoutY="294.0" prefHeight="10.0" prefWidth="894.0"/>
-                                <Separator layoutY="257.0" prefHeight="17.0" prefWidth="894.0"/>
-                                <Label fx:id="pHomePhone" layoutX="120.0" layoutY="50.0"/>
-                                <Label fx:id="pCellPhone" layoutX="120.0" layoutY="80.0"/>
-                                <Label fx:id="pAddress" layoutX="120.0" layoutY="110.0"/>
-                                <Label fx:id="pRegion" layoutX="260.0" layoutY="161.0"/>
-                                <Label fx:id="pEmail" layoutX="120.0" layoutY="246.0"/>
-                                <Label fx:id="eName" layoutX="120.0" layoutY="309.0"/>
-                                <Label fx:id="eHomePhone" layoutX="120.0" layoutY="343.0"/>
-                                <Label fx:id="eCellPhone" layoutX="120.0" layoutY="371.0"/>
-                                <Label fx:id="eAddress" layoutX="120.0" layoutY="402.0"/>
-                                <Label fx:id="eRegion" layoutX="260.0" layoutY="450.0"/>
-                                <Label fx:id="eEmail" layoutX="120.0" layoutY="521.0"/>
-                                <Label fx:id="relationship" layoutX="120.0" layoutY="550.0"/>
-                                <Label layoutX="14.0" layoutY="161.0" text="City:"/>
-                                <Label layoutX="14.0" layoutY="195.0" text="Zip Code:"/>
-                                <Label layoutX="192.0" layoutY="195.0" text="Country:"/>
-                                <Label layoutX="17.0" layoutY="450.0" text="City:"/>
-                                <Label layoutX="192.0" layoutY="480.0" text="Country:"/>
-                                <Label layoutX="17.0" layoutY="480.0" text="Zip Code:"/>
-                                <Label fx:id="ecCity" layoutX="120.0" layoutY="450.0"/>
-                                <Label fx:id="ecZipCode" layoutX="120.0" layoutY="480.0"/>
-                                <Label fx:id="ecCountry" layoutX="260.0" layoutY="480.0"/>
-                                <Label fx:id="city" layoutX="120.0" layoutY="161.0"/>
-                                <Label fx:id="zipCode" layoutX="120.0" layoutY="195.0"/>
-                                <Label fx:id="country" layoutX="260.0" layoutY="195.0"/>
+                                <Label layoutX="14.0" layoutY="14.0" text="Personal Contact Details" />
+                                <Label layoutX="14.0" layoutY="50.0" text="Home Phone:" />
+                                <Label layoutX="14.0" layoutY="80.0" text="Cell Phone:" />
+                                <Label layoutX="14.0" layoutY="110.0" text="Address:" />
+                                <Label layoutX="192.0" layoutY="161.0" text="Region:" />
+                                <Label layoutX="14.0" layoutY="244.0" text="Email:" />
+                                <Label layoutX="14.0" layoutY="276.0" text="Emergency Contact Details" />
+                                <Label layoutX="17.0" layoutY="312.0" text="Name:" />
+                                <Label layoutX="17.0" layoutY="342.0" text="Home Phone:" />
+                                <Label layoutX="17.0" layoutY="372.0" text="Cell Phone:" />
+                                <Label layoutX="17.0" layoutY="402.0" text="Address:" />
+                                <Label layoutX="192.0" layoutY="450.0" text="Region:" />
+                                <Label layoutX="17.0" layoutY="518.0" text="Email:" />
+                                <Label layoutX="17.0" layoutY="548.0" text="Relationship:" />
+                                <Separator layoutY="29.0" prefHeight="16.0" prefWidth="900.0" />
+                                <Separator layoutY="294.0" prefHeight="10.0" prefWidth="894.0" />
+                                <Separator layoutY="257.0" prefHeight="17.0" prefWidth="894.0" />
+                                <Label fx:id="pHomePhone" layoutX="120.0" layoutY="50.0" />
+                                <Label fx:id="pCellPhone" layoutX="120.0" layoutY="80.0" />
+                                <Label fx:id="pAddress" layoutX="120.0" layoutY="110.0" />
+                                <Label fx:id="pRegion" layoutX="260.0" layoutY="161.0" />
+                                <Label fx:id="pEmail" layoutX="120.0" layoutY="246.0" />
+                                <Label fx:id="eName" layoutX="120.0" layoutY="309.0" />
+                                <Label fx:id="eHomePhone" layoutX="120.0" layoutY="343.0" />
+                                <Label fx:id="eCellPhone" layoutX="120.0" layoutY="371.0" />
+                                <Label fx:id="eAddress" layoutX="120.0" layoutY="402.0" />
+                                <Label fx:id="eRegion" layoutX="260.0" layoutY="450.0" />
+                                <Label fx:id="eEmail" layoutX="120.0" layoutY="521.0" />
+                                <Label fx:id="relationship" layoutX="120.0" layoutY="550.0" />
+                                <Label layoutX="14.0" layoutY="161.0" text="City:" />
+                                <Label layoutX="14.0" layoutY="195.0" text="Zip Code:" />
+                                <Label layoutX="192.0" layoutY="195.0" text="Country:" />
+                                <Label layoutX="17.0" layoutY="450.0" text="City:" />
+                                <Label layoutX="192.0" layoutY="480.0" text="Country:" />
+                                <Label layoutX="17.0" layoutY="480.0" text="Zip Code:" />
+                                <Label fx:id="ecCity" layoutX="120.0" layoutY="450.0" />
+                                <Label fx:id="ecZipCode" layoutX="120.0" layoutY="480.0" />
+                                <Label fx:id="ecCountry" layoutX="260.0" layoutY="480.0" />
+                                <Label fx:id="city" layoutX="120.0" layoutY="161.0" />
+                                <Label fx:id="zipCode" layoutX="120.0" layoutY="195.0" />
+                                <Label fx:id="country" layoutX="260.0" layoutY="195.0" />
                             </children>
                         </AnchorPane>
                     </content>
@@ -69,51 +68,61 @@
                     <content>
                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                             <children>
-                                <TableView fx:id="historyTableView" layoutY="6.0" prefHeight="579.0" prefWidth="894.0"/>
+                                <TableView fx:id="historyTableView" layoutY="6.0" prefHeight="579.0" prefWidth="894.0" />
                             </children>
                         </AnchorPane>
                     </content>
                 </Tab>
                 <Tab fx:id="organsTab" text="Donation">
                     <content>
-                        <fx:include fx:id="donationTabPage" source="donationTabView.fxml"/>
+                        <fx:include fx:id="donationTabPage" source="donationTabView.fxml" />
                     </content>
                 </Tab>
                 <Tab fx:id="receiverTab" text="Receiver">
                     <content>
-                        <fx:include fx:id="receiverTabPage" source="receiverTabView.fxml"/>
+                        <fx:include fx:id="receiverTabPage" source="receiverTabView.fxml" />
                     </content>
                 </Tab>
                 <Tab fx:id="diseaseTab" text="Disease">
                     <content>
-                        <fx:include fx:id="diseasesTabPage" source="diseasesTabView.fxml"/>
+                        <fx:include fx:id="diseasesTabPage" source="diseasesTabView.fxml" />
                     </content>
                 </Tab>
-                <Tab text="Medication">
+                <Tab fx:id="medicationTab" text="Medication">
                     <content>
-                        <fx:include fx:id="medicationTabPage" source="medicationTabView.fxml"/>
+                        <fx:include fx:id="medicationTabPage" source="medicationTabView.fxml" />
                     </content>
                 </Tab>
                 <Tab text="Procedures">
                     <content>
-                        <fx:include fx:id="procedureTabPage" source="procedureTabView.fxml"/>
+                        <fx:include fx:id="procedureTabPage" source="procedureTabView.fxml" />
                     </content>
                 </Tab>
             </tabs>
         </TabPane>
-        <Label layoutX="256.0" layoutY="3.0" text="User">
-            <font>
-                <Font size="29.0"/>
-            </font>
-        </Label>
-        <Button fx:id="undoButton" layoutX="757.0" layoutY="9.0" mnemonicParsing="false" onAction="#undo" text="Undo"
-                AnchorPane.rightAnchor="84.0" AnchorPane.topAnchor="9.0"/>
-        <Button fx:id="redoButton" layoutX="828.0" layoutY="9.0" mnemonicParsing="false" onAction="#redo" text="Redo"
-                AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="9.0"/>
         <AnchorPane fx:id="StatusBar" AnchorPane.bottomAnchor="-5.0">
             <children>
-                <fx:include fx:id="statusBarPage" source="statusBar.fxml"/>
+                <fx:include fx:id="statusBarPage" source="statusBar.fxml" />
             </children>
         </AnchorPane>
+      <MenuBar layoutY="-1.0" prefHeight="35.0" prefWidth="894.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
+               AnchorPane.topAnchor="0.0">
+        <menus>
+          <Menu mnemonicParsing="false" text="File">
+            <items>
+              <MenuItem fx:id="saveUserMenuItem" mnemonicParsing="false" onAction="#save" text="Save"/>
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Edit">
+          </Menu>
+        </menus>
+      </MenuBar>
+        <Label layoutX="395.0" layoutY="-1.0" text="User" AnchorPane.leftAnchor="395.0" AnchorPane.rightAnchor="432.0">
+            <font>
+                <Font size="29.0" />
+            </font>
+        </Label>
+        <Button fx:id="undoButton" layoutX="758.0" layoutY="4.0" mnemonicParsing="false" onAction="#undo" text="Undo" AnchorPane.rightAnchor="84.0" AnchorPane.topAnchor="4.0" />
+        <Button fx:id="redoButton" layoutX="828.0" layoutY="4.0" mnemonicParsing="false" onAction="#redo" text="Redo" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="4.0" />
     </children>
 </AnchorPane>
