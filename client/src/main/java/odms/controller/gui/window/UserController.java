@@ -307,6 +307,8 @@ public class UserController {
         receiverTabPageController.populateReceiverLists(user);
         diseasesTabPageController.diseaseRefresh(false, false);
         procedureTabPageController.updateProcedureTables(user);
+        refreshCurrentlyReceivingList();
+        refreshCurrentlyDonating();
 
         if (user.getLastName() != null) {
             stage.setTitle("User Profile: " + user.getFirstName() + " " + user.getLastName());
