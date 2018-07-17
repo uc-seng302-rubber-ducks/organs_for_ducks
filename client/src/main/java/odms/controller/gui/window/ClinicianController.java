@@ -227,7 +227,7 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
         }
         undoButton.setDisable(clinician.getUndoStack().empty());
         redoButton.setDisable(clinician.getRedoStack().empty());
-        if (clinician.getChanges().size() > 0) {
+        if (!clinician.getChanges().isEmpty()) {
             statusBarPageController.updateStatus(clinician.getStaffId() + " " + clinician.getChanges().get(clinician.getChanges().size() - 1).getChange());
 
         }
