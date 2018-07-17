@@ -32,7 +32,7 @@ public class LoginController extends BaseController {
         boolean validLogin;
         try {
             String role = auth.getRole().toString();
-            validLogin = getHandler().isVaildLogIn(
+            validLogin = getHandler().isValidLogIn(
                     getDriver().getConnection(), auth.getPassword(), auth.getUsername(),role);
         } catch (SQLException e) {
             return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);

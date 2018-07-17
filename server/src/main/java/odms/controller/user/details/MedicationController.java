@@ -1,7 +1,7 @@
-package odms.controller.user.details.controllers;
+package odms.controller.user.details;
 
-import odms.commons.model.Disease;
 import odms.commons.model.User;
+import odms.commons.model.datamodel.Medication;
 import odms.commons.utils.DBHandler;
 import odms.commons.utils.JDBCDriver;
 import odms.commons.utils.Log;
@@ -19,50 +19,57 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @OdmsController
-public class DiseaseController extends BaseController {
+public class MedicationController extends BaseController {
+
     private DBHandler handler;
     private JDBCDriver driver;
 
-    public DiseaseController(DBManager manager) {
+    public MedicationController(DBManager manager) {
         super(manager);
         handler = super.getHandler();
         driver = super.getDriver();
     }
 
     @IsClinician
-    @RequestMapping(method = RequestMethod.POST, value = "/users/{nhi}/diseases")
-    public ResponseEntity postDisease(@PathVariable("nhi") String nhi,
-                                      @RequestBody Disease disease) {
+    @RequestMapping(method = RequestMethod.POST, value = "/users/{nhi}/medications")
+    public ResponseEntity postMedication(@PathVariable("nhi") String nhi,
+                                         @RequestBody Medication medication) {
         try (Connection connection = driver.getConnection()) {
             User user = handler.getOneUser(connection, nhi);
             if (user == null) {
                 return new ResponseEntity(HttpStatus.NOT_FOUND);
             }
-            addDiseaseToCorrectList(disease, user.getPastDiseases(), user.getCurrentDiseases());
+            addMedicationToCorrectList(medication, user.getPreviousMedication(), user.getCurrentMedication());
             handler.saveUser(user, connection);
         } catch (SQLException ex) {
-            Log.severe("Cannot add diseases to user " + nhi, ex);
+            Log.severe("Cannot add medications to user " + nhi, ex);
             throw new ServerDBException(ex);
         }
         return new ResponseEntity(HttpStatus.CREATED);
     }
 
     @IsClinician
-    @RequestMapping(method = RequestMethod.PUT, value = "/users/{nhi}/diseases")
-    public ResponseEntity putDiseases(@PathVariable("nhi") String nhi,
-                                      @RequestBody List<Disease> diseases) {
+    @RequestMapping(method = RequestMethod.PUT, value = "/users/{nhi}/medications")
+    public ResponseEntity putMedications(@PathVariable("nhi") String nhi,
+                                         @RequestBody List<Medication> medications) {
         try (Connection connection = driver.getConnection()) {
             User user = handler.getOneUser(connection, nhi);
             if (user == null) {
                 return new ResponseEntity(HttpStatus.NOT_FOUND);
             }
-            user.setCurrentDiseases(diseases.stream().filter(disease -> !disease.getIsCured()).collect(Collectors.toList()));
-            user.setPastDiseases(diseases.stream().filter(Disease::getIsCured).collect(Collectors.toList()));
+            Collection<Medication> currentMedications = new HashSet<>();
+            Collection<Medication> previousMedications = new HashSet<>();
+            for (Medication medication : medications) {
+                addMedicationToCorrectList(medication, previousMedications, currentMedications);
+            }
+            user.setCurrentMedication(new ArrayList<>(currentMedications));
+            user.setPreviousMedication(new ArrayList<>(previousMedications));
             handler.saveUser(user, connection);
         } catch (SQLException ex) {
             Log.severe("Failed to update the medications for user " + nhi, ex);
@@ -72,17 +79,17 @@ public class DiseaseController extends BaseController {
     }
 
     /**
-     * Determines if a disease belongs to current or past diseases and adds it to the appropriate list
+     * Determines if a medication belongs to current or past medications and adds it to the appropriate list
      *
-     * @param disease disease to determine
-     * @param past    Collection to add to if the disease was cured in the past
-     * @param current Collection to add to if the disease is being treated
+     * @param medication medication to determine
+     * @param past       Collection to add to if the medication was taken in the past
+     * @param current    Collection to add to if the medication is being taken
      */
-    private void addDiseaseToCorrectList(Disease disease, Collection<Disease> past, Collection<Disease> current) {
-        if (disease.getIsCured()) {
-            past.add(disease);
+    private void addMedicationToCorrectList(Medication medication, Collection<Medication> past, Collection<Medication> current) {
+        if (medication.getMedicationTimes().size() % 2 == 0) {
+            past.add(medication);
         } else {
-            current.add(disease);
+            current.add(medication);
         }
     }
 }
