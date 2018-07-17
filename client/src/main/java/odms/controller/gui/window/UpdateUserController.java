@@ -14,6 +14,7 @@ import javafx.stage.Stage;
 import odms.commons.exception.InvalidFieldsException;
 import odms.commons.model.EmergencyContact;
 import odms.commons.model.User;
+import odms.commons.model._enum.Regions;
 import odms.commons.utils.AttributeValidation;
 import odms.commons.utils.Log;
 import odms.controller.AppController;
@@ -183,10 +184,10 @@ public class UpdateUserController {
     public void init(User user, AppController controller, Stage stage) {
         countrySelector.setItems(FXCollections.observableList(controller.getAllowedCountries()));
         ecCountrySelector.setItems(FXCollections.observableList(controller.getAllowedCountries()));
-
-        regionSelector.setItems(FXCollections.observableList(controller.getAllNZRegion()));
-        ecRegionSelector.setItems(FXCollections.observableList(controller.getAllNZRegion()));
-
+        for (Regions regions : Regions.values()) {
+            regionSelector.getItems().add(regions.toString());
+            ecRegionSelector.getItems().add(regions.toString());
+        }
         this.stage = stage;
         oldUser = user;
         currentUser = User.clone(oldUser);

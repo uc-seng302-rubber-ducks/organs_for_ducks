@@ -9,15 +9,16 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
-import odms.controller.AppController;
 import odms.commons.exception.InvalidFieldsException;
 import odms.commons.model.EmergencyContact;
 import odms.commons.model.HealthDetails;
 import odms.commons.model.User;
+import odms.commons.model._enum.Regions;
 import odms.commons.utils.AttributeValidation;
 import odms.commons.utils.DataHandler;
 import odms.commons.utils.JsonHandler;
 import odms.commons.utils.Log;
+import odms.controller.AppController;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -140,9 +141,10 @@ public class NewUserController {
         ecCountrySelector.setItems(FXCollections.observableList(controller.getAllowedCountries()));
         countrySelector.getSelectionModel().select(defaultCountry);
         ecCountrySelector.getSelectionModel().select(defaultCountry);
-
-        regionSelector.setItems(FXCollections.observableList(controller.getAllNZRegion()));
-        ecRegionSelector.setItems(FXCollections.observableList(controller.getAllNZRegion()));
+        for (Regions regions : Regions.values()) {
+            regionSelector.getItems().add(regions.toString());
+            ecRegionSelector.getItems().add(regions.toString());
+        }
         regionSelector.getSelectionModel().selectFirst();
         ecRegionSelector.getSelectionModel().selectFirst();
 

@@ -13,6 +13,7 @@ import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import odms.commons.model.Clinician;
+import odms.commons.model._enum.Regions;
 import odms.commons.model.datamodel.Address;
 import odms.commons.model.datamodel.ContactDetails;
 import odms.commons.utils.Log;
@@ -122,9 +123,10 @@ public class UpdateClinicianController {
         this.ownStage = ownStage;
         undoClinicianFormButton.setDisable(true);
         redoClinicianFormButton.setDisable(true);
-
         countrySelector.setItems(FXCollections.observableList(controller.getAllowedCountries()));
-        regionSelector.setItems(FXCollections.observableList(controller.getAllNZRegion()));
+        for (Regions regions : Regions.values()) {
+            regionSelector.getItems().add(regions.toString());
+        }
 
         if (!newClinician) {
             oldClinician = Clinician.clone(clinician);
