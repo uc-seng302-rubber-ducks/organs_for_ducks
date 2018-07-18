@@ -9,6 +9,9 @@ import odms.commons.model.datamodel.Medication;
 import odms.commons.model.datamodel.ReceiverOrganDetailsHolder;
 import odms.commons.utils.Log;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.Collection;
@@ -43,6 +46,7 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
             "JOIN Address ON contactId = Address.fkContactId " +
             "SET contactName = ?, contactRelationship = ?, homePhone = ?, cellPhone = ?, email = ?, streetNumber = ?, streetName = ?, neighbourhood = ?, city = ?, region = ?, zipCode = ?, country = ? " +
             "WHERE EmergencyContactDetails.fkUserNhi = ?";
+    private static final String UPDATE_USER_PROFILE_PICTURE_STMT = "UPDATE User SET profilePicture= ? WHERE nhi = ?";
 
     private static final String DELETE_USER_STMT = "DELETE FROM User WHERE nhi = ?";
     private static final String CREATE_RECEIVING_ORGAN_DATE = "INSERT INTO OrganAwaitingDates (fkAwaitingId, dateRegistered, dateDeregistered) VALUES (?, ?, ?)";
@@ -719,6 +723,22 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
             createMedication.setString(1, userNhi);
             createMedication.setString(2, med.getMedName());
 
+            createMedication.executeUpdate();
+        }
+    }
+
+    /**
+     * adds or updates user's profile photo using the filepath to the photo
+     * @param user for which to update the profile photo in the database for
+     * @param connection A non null and active connection to the database
+     * @throws SQLException if there is an error with the database
+     * @throws FileNotFoundException if filepath provided does not lead to a file.
+     */
+    private void updateProfilePhoto(User user, Connection connection) throws SQLException, FileNotFoundException {
+        try (PreparedStatement createMedication = connection.prepareStatement(UPDATE_USER_PROFILE_PICTURE_STMT)) {
+            InputStream inputStream = new FileInputStream(user.getProfilePhotoFilePath());
+            createMedication.setBlob(1, inputStream);
+            createMedication.setString(2, user.getNhi());
             createMedication.executeUpdate();
         }
     }

@@ -20,8 +20,7 @@ import odms.controller.gui.window.UpdateUserController;
 import odms.commons.model.User;
 import odms.commons.utils.Log;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.text.DecimalFormat;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -226,7 +225,7 @@ public class UserOverviewController {
      * uploads an image using file picker. includes validation.
      */
     @FXML
-    private void uploadImage(){
+    private void uploadImage() throws FileNotFoundException{
         boolean isValid = true;
         String filename;
         List<String> extensions = new ArrayList<>();
@@ -244,6 +243,7 @@ public class UserOverviewController {
 
 
             if (isValid) {
+//                InputStream targetStream = new FileInputStream(inFile);
                 Image image = new Image("file:" + inFile.getPath(), 200, 200, false, true);
                 profilePicture.setImage(image);
             }
