@@ -15,13 +15,19 @@ import javafx.stage.Stage;
 import odms.commons.exception.InvalidFieldsException;
 import odms.commons.model.EmergencyContact;
 import odms.commons.model.User;
+import odms.commons.model._enum.Directory;
 import odms.commons.utils.AttributeValidation;
 import odms.commons.utils.Log;
 import odms.controller.AppController;
 import odms.controller.gui.FileSelectorController;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -505,9 +511,10 @@ public class UpdateUserController {
      * uploads an image using file picker. includes validation.
      */
     @FXML
-    private void uploadImage() throws FileNotFoundException {
+    private void uploadImage() throws IOException {
         boolean isValid = true;
         String filename;
+        String filePath;
         List<String> extensions = new ArrayList<>();
         extensions.add("*.jpg");
         extensions.add("*.png");
@@ -523,12 +530,40 @@ public class UpdateUserController {
 
 
             if (isValid) {
-                Image image = new Image("file:" + inFile.getPath(), 200, 200, false, true);
+                filePath = setUpImageFile(inFile);
+                currentUser.setProfilePhotoFilePath(filePath);
+                Image image = new Image("file:" + filePath, 200, 200, false, true);
                 profileImage.setImage(image);
-                currentUser.setProfilePhotoFilePath(inFile.getPath());
             }
         }
     }
+
+    /**
+     * sets up a temp folder and image folder (within temp folder).
+     * then make a copy of the desired image and store it in the image folder.
+     * @param inFile desired image file
+     * @return filepath to the image file
+     * @throws IOException if there are issues with handling files.
+     */
+    public String setUpImageFile(File inFile) throws IOException {
+        BufferedImage bImage;
+        if(currentUser.getProfilePhotoFilePath() != null) { //Prevent duplicated image files.
+            File oldFile = new File(currentUser.getProfilePhotoFilePath());
+            oldFile.delete();
+        }
+
+        String fileType = inFile.getName();
+        fileType = fileType.substring(fileType.lastIndexOf(".") + 1);
+
+        Files.createDirectories(Paths.get(Directory.TEMP.directory()+Directory.IMAGES));
+        File outFile = new File(Directory.TEMP.directory()+Directory.IMAGES +"/"+currentUser.getNhi()+"."+fileType);
+
+        bImage = ImageIO.read(inFile);
+        ImageIO.write(bImage, fileType, outFile);
+
+        return outFile.getPath();
+    }
+
 
 
     /**
