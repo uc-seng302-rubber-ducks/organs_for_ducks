@@ -14,9 +14,11 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Region;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import odms.controller.AppController;
+import odms.controller.gui.UnsavedChangesAlert;
 import odms.controller.gui.panel.TransplantWaitListController;
 import odms.controller.gui.popup.DeletedUserController;
 import odms.controller.gui.statusBarController;
@@ -180,10 +182,12 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
 
     }
 
-
+    /**
+     * Closes the clinician window
+     */
     @FXML
     private void goBack() {
-        appController.updateClinicians(clinician);
+        checkSave();
         stage.close();
         Log.info("Successfully closed update user window for Clinician StaffID: " + clinician.getStaffId());
     }
@@ -440,23 +444,59 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
     }
 
     /**
+     * Save all changes for the current clinician
+     */
+    @FXML
+    void save() {
+        appController.updateClinicians(clinician);
+        appController.saveClinician(clinician);
+        clinician.getUndoStack().clear();
+        clinician.getRedoStack().clear();
+        undoButton.setDisable(true);
+        redoButton.setDisable(true);
+    }
+
+    /**
      * Returns the user to the login screen
      */
     @FXML
     void logout() {
+        checkSave();
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML/loginView.fxml"));
         Parent root;
         try {
             root = loader.load();
-            stage.setScene(new Scene(root));
+            Stage newStage = new Stage();
+            newStage.setScene(new Scene(root));
+            newStage.show();
+            stage.close();
             LoginController loginController = loader.getController();
-            loginController.init(AppController.getInstance(), stage);
-            stage.hide();
-            stage.show();
+            loginController.init(AppController.getInstance(), newStage);
             Log.info("Clinician " + clinician.getStaffId() + " successfully launched login window after logout");
         } catch (IOException e) {
             Log.severe("Clinician " + clinician.getStaffId() + " failed to launch login window after logout", e);
         }
+    }
+
+    /**
+     * Popup that prompts the clinician to save any unsaved changes before logging out or exiting the application
+     */
+    private void checkSave() {
+        boolean noChanges = clinician.getUndoStack().isEmpty();
+        if (!noChanges) {
+            Optional<ButtonType> result = UnsavedChangesAlert.getAlertResult();
+            if (result.isPresent() && result.get() == ButtonType.YES) {
+                appController.updateClinicians(clinician);
+                appController.saveClinician(clinician);
+
+            } else {
+                Clinician revertClinician = clinician.getUndoStack().firstElement().getState();
+                appController.updateClinicians(revertClinician);
+            }
+        }
+
+        clinician.getUndoStack().clear();
+        clinician.getRedoStack().clear();
     }
 
     /**
@@ -531,6 +571,7 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
     private void deleteClinician() {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setContentText("Are you sure you want to delete this clinician?");
+        alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
         Optional<ButtonType> result = alert.showAndWait();
 
         if (result.get() == ButtonType.OK) {

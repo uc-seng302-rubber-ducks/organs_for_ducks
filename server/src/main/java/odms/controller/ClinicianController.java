@@ -45,7 +45,7 @@ public class ClinicianController extends BaseController {
 
     @IsClinician
     @RequestMapping(method = RequestMethod.GET, value = "/clinicians/{staffId}")
-    public Clinician getClinicians(@PathVariable("staffId") String staffId) throws SQLException {
+    public Clinician getClinician(@PathVariable("staffId") String staffId) throws SQLException {
         try (Connection connection = driver.getConnection()) {
             Clinician result = handler.getOneClinician(connection, staffId);
             if (result != null) {
