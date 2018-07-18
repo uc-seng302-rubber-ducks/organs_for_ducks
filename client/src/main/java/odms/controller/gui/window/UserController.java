@@ -15,6 +15,7 @@ import javafx.stage.Stage;
 import odms.commons.model.Change;
 import odms.commons.model.EmergencyContact;
 import odms.commons.model.User;
+import odms.commons.model._enum.Directory;
 import odms.commons.model._enum.OrganDeregisterReason;
 import odms.commons.model._enum.Organs;
 import odms.commons.utils.Log;
@@ -24,11 +25,12 @@ import odms.controller.gui.panel.*;
 import odms.controller.gui.statusBarController;
 
 import java.beans.PropertyChangeListener;
+import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.*;
 
 /**
  * Class for the functionality of the User view of the application
@@ -266,13 +268,19 @@ public class UserController {
 
     /**
      * Fires when the logout button is clicked Ends the users session, and takes back to the login
-     * window
+     * window.
+     * When fired, it also deleted the temp folder.
      */
     @FXML
-    private void logout() {
+    private void logout(){
         checkSave();
         currentUser.getUndoStack().clear();
         currentUser.getRedoStack().clear();
+        try {
+            deleteTempDirectory();
+        } catch (IOException e){
+            System.err.println(e);
+        }
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML/loginView.fxml"));
         Parent root;
         try {
@@ -288,6 +296,17 @@ public class UserController {
         } catch (IOException e) {
             Log.severe("failed to launch login window after logged out for User NHI: " + currentUser.getNhi(), e);
         }
+    }
+
+    /**
+     * for deleting temp folder directory
+     * @throws IOException if there are issues with handling files.
+     */
+    private void deleteTempDirectory() throws IOException{
+        Files.walk(Paths.get(Directory.TEMP.directory()))
+                .sorted(Comparator.reverseOrder())
+                .map(Path::toFile)
+                .forEach(File::delete);
     }
 
 
