@@ -17,6 +17,10 @@ import odms.controller.gui.statusBarController;
 import odms.controller.gui.window.AdministratorViewController;
 import odms.controller.gui.window.ClinicianController;
 import odms.controller.gui.window.UserController;
+import odms.utils.AdministratorBridge;
+import odms.utils.ClinicianBridge;
+import odms.utils.UserBridge;
+import okhttp3.OkHttpClient;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -40,6 +44,9 @@ public class AppController {
     private ArrayList<String[]> historyOfCommands = new ArrayList<>();
     private int historyPointer = 0;
     private DataHandler dataHandler = new JsonHandler();
+    private UserBridge userBridge = new UserBridge(new OkHttpClient());
+    private ClinicianBridge clinicianBridge = new ClinicianBridge(new OkHttpClient());
+    private AdministratorBridge administratorBridge = new AdministratorBridge(new OkHttpClient());
 
     private UserController userController = new UserController();
     private ClinicianController clinicianController = new ClinicianController();
@@ -648,5 +655,17 @@ public class AppController {
 
     public Collection<UserOverview> getUserOverviews() {
         return overviews;
+    }
+
+    public AdministratorBridge getAdministratorBridge() {
+        return administratorBridge;
+    }
+
+    public UserBridge getUserBridge() {
+        return userBridge;
+    }
+
+    public ClinicianBridge getClinicianBridge() {
+        return clinicianBridge;
     }
 }

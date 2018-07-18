@@ -12,5 +12,5 @@ public class AdministratorBridge extends Bifrost {
         super(client);
     }
 
-
+    public
 }

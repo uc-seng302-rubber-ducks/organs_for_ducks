@@ -30,7 +30,6 @@ public class UserBridge extends Bifrost {
 
     public Collection<UserOverview> loadUsersToController(int startIndex, int count, String name, String region, String gender) throws IOException {
         String url = ip + "/users?startIndex=" + startIndex + "&count=" + count + "&name=" + name + "&region=" + region + "&gender=" + gender;
-        System.out.println(url);
         Request request = new Request.Builder().url(url).build();
         Collection<UserOverview> overviews;
         try (Response response = client.newCall(request).execute()) {

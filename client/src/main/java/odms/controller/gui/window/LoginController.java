@@ -16,9 +16,7 @@ import odms.commons.model.User;
 import odms.commons.utils.Log;
 import odms.controller.AppController;
 import odms.controller.gui.popup.utils.AlertWindowFactory;
-import odms.utils.UserBridge;
 import odms.view.CLI;
-import okhttp3.OkHttpClient;
 
 import java.io.IOException;
 
@@ -104,7 +102,7 @@ public class LoginController {
         } else {
             //user = appController.findUser(wantedDonor);
             try {
-                user = new UserBridge(new OkHttpClient()).getUser(wantedDonor);
+                user = appController.getUserBridge().getUser(wantedDonor);
             } catch (IOException e) {
                 AlertWindowFactory.generateError(e);
             }

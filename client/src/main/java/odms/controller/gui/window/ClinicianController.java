@@ -19,7 +19,6 @@ import javafx.scene.layout.Region;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import odms.controller.gui.UnsavedChangesAlert;
 import odms.commons.model.Clinician;
 import odms.commons.model.User;
 import odms.commons.model._abstract.TransplantWaitListViewer;
@@ -28,12 +27,11 @@ import odms.commons.model._enum.Organs;
 import odms.commons.model.dto.UserOverview;
 import odms.commons.utils.Log;
 import odms.controller.AppController;
+import odms.controller.gui.UnsavedChangesAlert;
 import odms.controller.gui.panel.TransplantWaitListController;
 import odms.controller.gui.popup.DeletedUserController;
 import odms.controller.gui.popup.utils.AlertWindowFactory;
 import odms.controller.gui.statusBarController;
-import odms.utils.UserBridge;
-import okhttp3.OkHttpClient;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -163,7 +161,7 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
         stage.setResizable(true);
         showClinician(clinician);
         try {
-            users = new UserBridge(new OkHttpClient()).loadUsersToController(0, 30, "", "", "");
+            users = appController.getUserBridge().loadUsersToController(0, 30, "", "", "");
         } catch (IOException ex) {
             AlertWindowFactory.generateError(ex);
         }
@@ -345,7 +343,7 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
         FXMLLoader userLoader = new FXMLLoader(getClass().getResource("/FXML/userView.fxml"));
         Parent root;
         try {
-            User user = new UserBridge(new OkHttpClient()).getUser(userOverview.getNhi());
+            User user = appController.getUserBridge().getUser(userOverview.getNhi());
             root = userLoader.load();
             Stage userStage = new Stage();
             userStage.setScene(new Scene(root));
@@ -418,7 +416,7 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
 
     private void search() {
         try {
-            users = new UserBridge(new OkHttpClient()).loadUsersToController(startIndex, ROWS_PER_PAGE, searchTextField.getText(), regionSearchTextField.getText(), genderComboBox.getValue());
+            users = appController.getUserBridge().loadUsersToController(startIndex, ROWS_PER_PAGE, searchTextField.getText(), regionSearchTextField.getText(), genderComboBox.getValue());
         } catch (IOException ex) {
             AlertWindowFactory.generateError(ex);
         }
