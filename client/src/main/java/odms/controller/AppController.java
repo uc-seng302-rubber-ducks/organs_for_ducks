@@ -102,6 +102,7 @@ public class AppController {
         if (!defaultSeen) {
             Clinician defaultClinician = new Clinician("0", "admin", "Default", "", "");
             defaultClinician.setRegion("region");
+            defaultClinician.getUndoStack().clear();
             clinicians.add(defaultClinician);
             saveClinician(defaultClinician);
         }
