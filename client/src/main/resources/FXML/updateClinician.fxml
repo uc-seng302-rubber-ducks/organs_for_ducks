@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.*?>
-<?import javafx.scene.text.*?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
-
+<?import javafx.scene.text.Font?>
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="693.0" prefWidth="597.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="odms.controller.gui.window.UpdateClinicianController">
     <children>
         <Label fx:id="titleLabel" layoutX="12.0" layoutY="11.0" text="Update Clinician" AnchorPane.leftAnchor="12.0" AnchorPane.topAnchor="11.0">
@@ -25,7 +25,8 @@
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                <RowConstraints maxHeight="37.0" minHeight="10.0" prefHeight="32.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                <RowConstraints maxHeight="37.0" minHeight="10.0" prefHeight="32.0" vgrow="SOMETIMES"/>
             </rowConstraints>
             <padding>
                 <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
@@ -38,7 +39,8 @@
                 <Label text="Last Name:" GridPane.rowIndex="5" />
                 <Label fx:id="invalidStaffIDLabel" text="Staff ID already in use" textFill="#c63636" visible="false" GridPane.columnIndex="2" />
                 <Label fx:id="emptyPasswordLabel" text="Password cannot be empty" textFill="#c63636" visible="false" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-                <Label fx:id="emptyFNameLabel" text="First name cannot be empty" textFill="#c63636" visible="false" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                <Label fx:id="emptyFNameLabel" text="First name cannot be empty" textFill="#c63636" visible="false"
+                       GridPane.columnIndex="2" GridPane.rowIndex="4"/>
                 <Label text="Confirm Password: *" GridPane.rowIndex="2" />
                 <Label fx:id="incorrectPasswordLabel" text="Password does not match" textFill="#c63636" visible="false" GridPane.columnIndex="2" GridPane.rowIndex="2" />
                 <TextField fx:id="staffIDTextField" GridPane.columnIndex="1" />
@@ -47,6 +49,8 @@
                 <TextField fx:id="firstNameTextField" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                 <TextField fx:id="middleNameTextField" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                 <TextField fx:id="lastNameTextField" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                <ImageView fx:id="profileImage" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true"
+                           preserveRatio="true" GridPane.columnIndex="2" GridPane.rowIndex="3"/>
             </children>
         </GridPane>
       <GridPane hgap="5.0" layoutX="8.0" layoutY="334.0" prefHeight="322.0" prefWidth="582.0" vgap="5.0" AnchorPane.bottomAnchor="37.0" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="7.0" AnchorPane.topAnchor="334.0">
