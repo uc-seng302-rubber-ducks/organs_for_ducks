@@ -1,9 +1,6 @@
 package odms.controller.gui.window;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
-import com.sun.istack.internal.Nullable;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -24,10 +21,8 @@ import odms.controller.AppController;
 import odms.controller.gui.popup.utils.AlertWindowFactory;
 import odms.view.CLI;
 import okhttp3.*;
-import org.json.simple.JSONObject;
 
 import java.io.IOException;
-import java.util.Map;
 
 /**
  * Class for the login functionality of the application
