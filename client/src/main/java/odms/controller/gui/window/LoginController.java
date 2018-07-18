@@ -1,5 +1,9 @@
 package odms.controller.gui.window;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
+import com.sun.istack.internal.Nullable;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -13,48 +17,52 @@ import javafx.stage.Stage;
 import odms.commons.model.Administrator;
 import odms.commons.model.Clinician;
 import odms.commons.model.User;
+import odms.commons.utils.HttpRequester;
+import odms.commons.utils.JsonHandler;
 import odms.commons.utils.Log;
 import odms.controller.AppController;
 import odms.controller.gui.popup.utils.AlertWindowFactory;
 import odms.view.CLI;
+import okhttp3.*;
+import org.json.simple.JSONObject;
 
 import java.io.IOException;
+import java.util.Map;
 
 /**
  * Class for the login functionality of the application
  */
 public class LoginController {
 
+    private static final String USER_VIEW_URL = "/FXML/userView.fxml";
+    private static final String CLINICIAN_VIEW_URL = "/FXML/clinicianView.fxml";
+    private static final String ADMIN_VIEW_URL = "/FXML/adminView.fxml";
+    private static final String NEW_USER_VIEW_URL = "/FXML/createNewUser.fxml";
+    private static final String HELP_VIEW_URL = "/FXML/loginHelp.fxml";
     @FXML
     private TextField userIDTextField;
-
     @FXML
     private Label userWarningLabel;
-
     @FXML
     private TextField staffIdTextField;
-
     @FXML
     private TextField staffPasswordField;
-
     @FXML
     private Label clinicianWarningLabel;
-
     @FXML
     private TextField adminUsernameTextField;
-
     @FXML
     private TextField adminPasswordField;
-
     @FXML
     private Label adminWarningLabel;
-
     @FXML
     private TabPane loginTabPane;
-
     private Stage helpStage = null;
     private AppController appController;
     private Stage stage;
+    private HttpRequester requester = new HttpRequester(new OkHttpClient());
+    private JsonHandler jsonHandler = new JsonHandler();
+
 
     /**
      * Initializes the Login controller.
@@ -86,7 +94,6 @@ public class LoginController {
         });
     }
 
-
     /**
      * Logs in the user.
      */
@@ -113,7 +120,7 @@ public class LoginController {
             return;
         }
 
-        FXMLLoader userLoader = new FXMLLoader(getClass().getResource("/FXML/userView.fxml"));
+        FXMLLoader userLoader = new FXMLLoader(getClass().getResource(USER_VIEW_URL));
         Parent root;
         try {
             root = userLoader.load();
@@ -142,14 +149,23 @@ public class LoginController {
             wantedClinician = staffIdTextField.getText();
         }
         String clinicianPassword = staffPasswordField.getText();
-        Clinician clinician = appController.getClinician(wantedClinician);
+        String token = loginToServer(wantedClinician, clinicianPassword, "clinician");
+        if(token == null){
+            return;
+        }
+        Clinician clinician = null;
+        try {
+            clinician = getClinician(wantedClinician, token);
+        } catch (IOException e) {
+            clinicianWarningLabel.setText("An unspecified error occurred. Please try again or contact your IT department.");
+            Log.severe("Invalid request passed to the json handler", e);
+            return;
+        }
         if (clinician == null || clinician.isDeleted()) {
-            clinicianWarningLabel.setText("The Clinician does not exist");
-        } else if (!clinician.isPasswordCorrect(clinicianPassword)) {
-            clinicianWarningLabel.setText("Your password is incorrect please try again");
+            //clinicianWarningLabel.setText("The Clinician does not exist");
         } else {
             FXMLLoader clinicianLoader = new FXMLLoader(
-                    getClass().getResource("/FXML/clinicianView.fxml"));
+                    getClass().getResource(CLINICIAN_VIEW_URL));
             Parent root;
             try {
                 root = clinicianLoader.load();
@@ -163,6 +179,89 @@ public class LoginController {
             }
         }
     }
+
+    private String loginToServer(String wanted, String password, String role) {
+        String networkError = "A network error occurred. Please try again or contact your IT department.";
+        Response response = null;
+        JsonObject body = new JsonObject();
+        body.addProperty("username" , wanted);
+        body.addProperty("password", password);
+        body.addProperty("role", role);
+        clinicianWarningLabel.setText("");
+        adminWarningLabel.setText("");
+
+        RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), body.toString());
+        HttpRequester requester = new HttpRequester(new OkHttpClient());
+        try {
+            Request request = new Request.Builder().url(appController.getServerURL() + "login/" ).post(requestBody).build();
+            response = requester.makeRequest(request);
+        } catch (IOException e) {
+            Log.severe(networkError, e);
+            return null;
+        }
+        if (response == null) {
+            Log.warning("A null response was returned to the user");
+            clinicianWarningLabel.setText(networkError);
+            adminWarningLabel.setText(networkError);
+            return null;
+        }
+        int responseCode = response.code();
+        if(responseCode == 404 || responseCode == 401) {
+            clinicianWarningLabel.setText("Clinician was not found or the username/password was incorrect.\nPlease try again");
+            adminWarningLabel.setText("Admin was not found or the username/password was incorrect.\nPlease try again");
+            return null;
+        } else if (responseCode == 500 || responseCode == 400) {
+            Log.warning("An Error occurred. code returned: " + responseCode);
+            clinicianWarningLabel.setText(networkError);
+            adminWarningLabel.setText(networkError);
+            return null;
+        } else if (responseCode != 200) {
+            Log.warning("A non API response was returned code:" + responseCode);
+            clinicianWarningLabel.setText("An unspecified error occurred. Please try again or contact your IT department.");
+            adminWarningLabel.setText("An unspecified error occurred. Please try again or contact your IT department.");
+            return null;
+        }
+
+        return jsonHandler.decodeLogin(response);
+    }
+
+    private Clinician getClinician(String wantedClinician, String token) throws IOException {
+        System.out.println(token);
+        String networkError = "A network error occurred. Please try again or contact your IT department.";
+        Response response = null;
+        HttpRequester requester = new HttpRequester(new OkHttpClient());
+        try {
+            Headers headers = new Headers.Builder().add(appController.TOKEN_HEADER, token).build();
+            Request request = new Request.Builder()
+                    .url(appController.getServerURL() + "clinicians/"+ wantedClinician ).headers(headers).build();
+            response = requester.makeRequest(request);
+        } catch (IOException e) {
+            Log.severe(networkError, e);
+            return null;
+        }
+        if (response == null) {
+            Log.warning("A null response was returned to the user");
+            clinicianWarningLabel.setText(networkError);
+            return null;
+        }
+        int responseCode = response.code();
+        if(responseCode == 404 || responseCode == 401) {
+            clinicianWarningLabel
+                    .setText("User was not found or the username/password was incorrect.\nPlease try again");
+            return null;
+        } else if (responseCode == 500 || responseCode == 400) {
+            Log.warning("An Error occurred. code returned: " + responseCode);
+            clinicianWarningLabel.setText(networkError);
+            return null;
+        } else if (responseCode != 200) {
+            Log.warning("A non API response was returned code:" + responseCode);
+            clinicianWarningLabel.setText("An unspecified error occurred. Please try again or contact your IT department.");
+            return null;
+        }
+
+         return new JsonHandler().decodeClinician(response);
+    }
+
 
     /**
      * Logs the administrator in
@@ -212,7 +311,7 @@ public class LoginController {
     @FXML
     void signUp() {
 
-        FXMLLoader userLoader = new FXMLLoader(getClass().getResource("/FXML/createNewUser.fxml"));
+        FXMLLoader userLoader = new FXMLLoader(getClass().getResource(NEW_USER_VIEW_URL));
         Parent root;
         try {
             root = userLoader.load();
@@ -238,7 +337,7 @@ public class LoginController {
 
         if (helpStage == null) {
             try {
-                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/FXML/loginHelp.fxml"));
+                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(HELP_VIEW_URL));
                 Parent root = fxmlLoader.load();
                 helpStage = new Stage();
                 helpStage.setTitle("Login Help");
@@ -263,7 +362,7 @@ public class LoginController {
 
         CLI.main(new String[]{"gui"});
         stage.show();
-        FXMLLoader adminLoader = new FXMLLoader(getClass().getResource("/FXML/adminView.fxml"));
+        FXMLLoader adminLoader = new FXMLLoader(getClass().getResource(ADMIN_VIEW_URL));
         Parent root;
         try {
             root = adminLoader.load();
@@ -277,6 +376,10 @@ public class LoginController {
         } catch (IOException e) {
             Log.severe("could not load CLI", e);
         }
+    }
+
+    private void changeScene() {
+
     }
 }
 
