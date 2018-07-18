@@ -76,7 +76,7 @@ public class User extends Undoable<User> implements Listenable {
     private List<Disease> pastDiseases;
     @Expose
     private List<Disease> currentDiseases;
-
+    @Expose
     private String profilePhotoFilePath;
 
     private transient List<Change> changes;

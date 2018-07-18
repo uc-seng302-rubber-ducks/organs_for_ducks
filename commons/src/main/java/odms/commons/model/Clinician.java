@@ -44,6 +44,9 @@ public class Clinician extends Undoable<Clinician> implements Listenable {
     private String salt;
     private transient PropertyChangeSupport pcs;
 
+    @Expose
+    private String profilePhotoFilePath;
+
     //TODO make all updates to the clinician add to this 22/6
     private transient List<Change> changes;
 
@@ -58,6 +61,8 @@ public class Clinician extends Undoable<Clinician> implements Listenable {
         dateLastModified = LocalDateTime.now();
         changes = new ArrayList<>();
         this.pcs = new PropertyChangeSupport(this);
+        profilePhotoFilePath = "";
+
     }
 
     /**
@@ -80,6 +85,8 @@ public class Clinician extends Undoable<Clinician> implements Listenable {
         dateLastModified = LocalDateTime.now();
         changes = new ArrayList<>();
         this.pcs = new PropertyChangeSupport(this);
+        profilePhotoFilePath = "";
+
     }
 
     /**
@@ -100,6 +107,8 @@ public class Clinician extends Undoable<Clinician> implements Listenable {
         this.dateLastModified = dateLastModified;
         changes = new ArrayList<>();
         this.pcs = new PropertyChangeSupport(this);
+        profilePhotoFilePath = "";
+
     }
 
     /**
@@ -120,6 +129,7 @@ public class Clinician extends Undoable<Clinician> implements Listenable {
         dateLastModified = LocalDateTime.now();
         changes = new ArrayList<>();
         this.pcs = new PropertyChangeSupport(this);
+        profilePhotoFilePath = "";
     }
 
     public LocalDateTime getDateCreated() {
@@ -169,6 +179,14 @@ public class Clinician extends Undoable<Clinician> implements Listenable {
         this.lastName = name;
         addChange(new Change("set last name to " + lastName));
         setDateLastModified(LocalDateTime.now());
+    }
+
+    public String getProfilePhotoFilePath() {
+        return profilePhotoFilePath;
+    }
+
+    public void setProfilePhotoFilePath(String profilePhotoFilePath) {
+        this.profilePhotoFilePath = profilePhotoFilePath;
     }
 
     public String getFullName() {
