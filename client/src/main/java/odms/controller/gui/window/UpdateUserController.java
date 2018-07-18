@@ -4,6 +4,8 @@ package odms.controller.gui.window;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
@@ -16,8 +18,13 @@ import odms.commons.model.User;
 import odms.commons.utils.AttributeValidation;
 import odms.commons.utils.Log;
 import odms.controller.AppController;
+import odms.controller.gui.FileSelectorController;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -157,7 +164,11 @@ public class UpdateUserController {
 
     @FXML
     private Button redoUpdateButton;
+
+    @FXML
+    private ImageView profileImage;
     //</editor-fold>
+
 
     private Stage stage;
     private AppController appController;
@@ -373,6 +384,16 @@ public class UpdateUserController {
         } else {
             email.setText("");
         }
+        if (user.getProfilePhotoFilePath() != null) {
+            File inFile = new File(user.getProfilePhotoFilePath());
+            Image image = new Image("file:" + inFile.getPath(), 200, 200, false, true);
+            profileImage.setImage(image);
+        }
+//        } else {
+//
+//            Image image = new Image("/resources/theBestt.png", 200,200,false,true);
+//            profileImage.setImage(image);
+//        }
         //ec
         if (user.getContact() != null) {
             if (user.getContact().getName() != null) {
@@ -479,6 +500,36 @@ public class UpdateUserController {
         redoUpdateButton.setDisable(currentUser.getRedoStack().isEmpty());
 
     }
+
+    /**
+     * uploads an image using file picker. includes validation.
+     */
+    @FXML
+    private void uploadImage() throws FileNotFoundException {
+        boolean isValid = true;
+        String filename;
+        List<String> extensions = new ArrayList<>();
+        extensions.add("*.jpg");
+        extensions.add("*.png");
+        filename = FileSelectorController.getFileSelector(stage, extensions);
+
+        if (filename != null) {
+            File inFile = new File(filename);
+
+            if (inFile.length() > 2000000) { //if more than 2MB
+                System.out.println("image exceeded 2MB!"); //TODO: Replace with javafx label
+                isValid = false;
+            }
+
+
+            if (isValid) {
+                Image image = new Image("file:" + inFile.getPath(), 200, 200, false, true);
+                profileImage.setImage(image);
+                currentUser.setProfilePhotoFilePath(inFile.getPath());
+            }
+        }
+    }
+
 
     /**
      *

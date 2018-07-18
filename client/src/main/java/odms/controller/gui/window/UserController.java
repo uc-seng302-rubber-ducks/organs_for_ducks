@@ -10,6 +10,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.Region;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import odms.commons.model.Change;
@@ -116,6 +117,7 @@ public class UserController {
     private statusBarController statusBarPageController;  //</editor-fold>
 
     private User currentUser;
+    private boolean fromClinician;
     private Stage stage;
     private EmergencyContact contact = null;
     private ObservableList<Change> changelog;
@@ -140,6 +142,7 @@ public class UserController {
             }
             this.stage = stage;
             application = controller;
+            this.fromClinician = fromClinician;
 
             // This is the place to set visible and invisible controls for Clinician vs User
             medicationTabPageController.init(controller, user, fromClinician, this);
@@ -461,6 +464,29 @@ public class UserController {
         historyTableView.setItems(changelog);
         historyTableView.getColumns().addAll(timeColumn, changeColumn);
 
+    }
+
+
+    /**
+     * Creates a alert pop up to confirm that the user wants to delete the profile
+     */
+    @FXML
+    public void delete() {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setContentText("Are you sure you want to delete this user?");
+        alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
+        Optional<ButtonType> result = alert.showAndWait();
+
+        if (result.get() == ButtonType.OK) {
+            currentUser.setDeleted(true);
+            Log.info("Successfully deleted user profile for User NHI: " + currentUser.getNhi());
+            if (!fromClinician) {
+                application.deleteUser(currentUser);
+                logout();
+            } else {
+                stage.close();
+            }
+        }
     }
 
 
