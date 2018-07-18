@@ -10,10 +10,7 @@ import odms.commons.utils.db_strategies.AdminUpdateStrategy;
 import odms.commons.utils.db_strategies.ClinicianUpdateStrategy;
 import odms.commons.utils.db_strategies.UserUpdateStrategy;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.*;
 
 public class DBHandler {
@@ -72,6 +69,7 @@ public class DBHandler {
             "WHERE firstName LIKE ? OR lastName LIKE ? AND region LIKE ? " +
             "LIMIT ? OFFSET ?";
     private static final String SELECT_ADMIN_ONE_TO_ONE_INFO_STMT = "SELECT userName, firstName, middleName, lastName, timeCreated, lastModified  FROM Administrator";
+    private static final String SELECT_SINGLE_ADMIN_ONE_TO_ONE_INFO_STMT = "SELECT userName, firstName, middleName, lastName, timeCreated, lastModified  FROM Administrator WHERE userName = ?";
     private static final String SELECT_PASS_DETAILS = "SELECT hash,salt FROM PasswordDetails WHERE fkAdminUserName = ? OR fkStaffId = ?";
     private AbstractUpdateStrategy updateStrategy;
 
@@ -141,6 +139,28 @@ public class DBHandler {
 
 
     /**
+     * gets the info of a single administrator
+     *
+     * @param connection A valid connection to the database
+     * @param username   the username of the User
+     * @return an Afministrator
+     * @throws SQLException
+     */
+    public Administrator getOneAdministrator(Connection connection, String username) throws SQLException {
+        Administrator administrator = null;
+        try (PreparedStatement statement = connection.prepareStatement(SELECT_SINGLE_ADMIN_ONE_TO_ONE_INFO_STMT)) {
+            statement.setString(1, username);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet != null && resultSet.next()) {
+                    administrator = createAdmin(resultSet);
+                }
+            }
+
+        }
+        return administrator;
+    }
+
+    /**
      * Gets info of a single clinician based on clinician staffId provided
      *
      * @param connection A valid connection to the database
@@ -188,17 +208,16 @@ public class DBHandler {
             statement.setString(1, nhi);
 
             try (ResultSet resultSet = statement.executeQuery()) {
-
                 while (resultSet != null && resultSet.next()) {
                     user = getUserBasicDetails(resultSet);
-                    user.setTimeCreated(resultSet.getTimestamp(6).toLocalDateTime());
-                    user.setLastModified(resultSet.getTimestamp(7).toLocalDateTime());
-                    user.setGenderIdentity(resultSet.getString(9));
-                    user.setBirthGender(resultSet.getString(10));
-                    user.setSmoker(1 == resultSet.getInt(11));
-                    user.setAlcoholConsumption(resultSet.getString(12));
-                    user.setHeight(resultSet.getDouble(13));
-                    user.setWeight(resultSet.getDouble(14));
+                    user.setTimeCreated(resultSet.getTimestamp("timeCreated").toLocalDateTime());
+                    user.setLastModified(resultSet.getTimestamp("lastModified").toLocalDateTime());
+                    user.setGenderIdentity(resultSet.getString("gender"));
+                    user.setBirthGender(resultSet.getString("birthGender"));
+                    user.setSmoker(1 == resultSet.getInt("smoker"));
+                    user.setAlcoholConsumption(resultSet.getString("alcoholConsumption"));
+                    user.setHeight(resultSet.getDouble("height"));
+                    user.setWeight(resultSet.getDouble("weight"));
                     user.setBloodType(resultSet.getString("bloodType"));
 
                     try {
@@ -222,23 +241,29 @@ public class DBHandler {
         return user;
     }
 
+    /**
+     * get the basic details of a user from a result set
+     * @param resultSet result set with the cursor pointing at the desired row
+     * @return a Clinician
+     * @throws SQLException if there is an error extracting information from the resultSet
+     */
     private Clinician getClincianBasicDetails(ResultSet resultSet) throws SQLException {
         return new Clinician(resultSet.getString("firstName"), resultSet.getString("staffId"), null);
     }
 
     /**
-     *
+     * get the users health details
      * @param resultSet result set with the cursor pointing at the desired row
      * @return A user with a first name, middle name, last name, date of birth and date of death
      * @throws SQLException if there is an error extracting information from the resultSet
      */
     private User getUserBasicDetails(ResultSet resultSet) throws SQLException {
-        User user = new User(resultSet.getString(2), resultSet.getDate("dob").toLocalDate(), resultSet.getString(1));
+        User user = new User(resultSet.getString("firstName"), resultSet.getDate("dob").toLocalDate(), resultSet.getString("nhi"));
         if (resultSet.getString("dod") != null) {
             user.setDateOfDeath(resultSet.getDate("dod").toLocalDate());
         }
-        user.setMiddleName(resultSet.getString(3));
-        user.setLastName(resultSet.getString(4));
+        user.setMiddleName(resultSet.getString("middleName"));
+        user.setLastName(resultSet.getString("lastName"));
         return user;
     }
 
@@ -313,6 +338,12 @@ public class DBHandler {
         }
     }
 
+    /**
+     * gets all the info for the address for contact details and sets it
+     * @param contactDetails the contact details
+     * @param resultSet result set with the cursor pointing at the desired row
+     * @throws SQLException exception thrown during the transaction
+     */
     private void getAddressResults(ContactDetails contactDetails, ResultSet resultSet) throws SQLException {
         contactDetails.setStreetNumber(resultSet.getString("streetNumber"));
         contactDetails.setStreetName(resultSet.getString("streetName"));
@@ -337,7 +368,7 @@ public class DBHandler {
             stmt.setString(1, user.getNhi());
             try (ResultSet resultSet = stmt.executeQuery()) {
                 while (resultSet != null && resultSet.next()) {
-                    Disease pastDisease = new Disease(resultSet.getString(1), false, true, resultSet.getDate(2).toLocalDate());
+                    Disease pastDisease = new Disease(resultSet.getString("diseaseName"), false, true, resultSet.getDate("diagnosisDate").toLocalDate());
                     user.getPastDiseases().add(pastDisease);
                 }
             }
@@ -358,7 +389,7 @@ public class DBHandler {
             stmt.setString(1, user.getNhi());
             try (ResultSet resultSet = stmt.executeQuery()) {
                 while (resultSet != null && resultSet.next()) {
-                    Disease currentDisease = new Disease(resultSet.getString(1), resultSet.getBoolean(3), false, resultSet.getDate(2).toLocalDate());
+                    Disease currentDisease = new Disease(resultSet.getString("diseaseName"), resultSet.getBoolean("isChronic"), false, resultSet.getDate("diagnosisDate").toLocalDate());
                     user.getCurrentDiseases().add(currentDisease);
                 }
             }
@@ -378,7 +409,7 @@ public class DBHandler {
             stmt.setString(1, user.getNhi());
             try (ResultSet resultSet = stmt.executeQuery()) {
                 while (resultSet != null && resultSet.next()) {
-                    user.getDonorDetails().addOrgan(Organs.valueOf(resultSet.getString(1)));
+                    user.getDonorDetails().addOrgan(Organs.valueOf(resultSet.getString("organName")));
                 }
             }
         }
@@ -416,7 +447,7 @@ public class DBHandler {
                             }
                         }
                     }
-                    receiverOrganDetailsHolders = new ArrayList<>();
+                    receiverOrganDetailsHolders = new ArrayList<>(); //WARNING
                 }
                 user.getReceiverDetails().setOrgans(organs);
             }
@@ -586,19 +617,31 @@ public class DBHandler {
             try (ResultSet resultSet = statement.executeQuery()) {
 
                 while (resultSet != null && resultSet.next()) {
-                    Administrator administrator = new Administrator();
-                    administrator.setUserName(resultSet.getString(1));
-                    administrator.setFirstName(resultSet.getString(2));
-                    administrator.setMiddleName(resultSet.getString(3));
-                    administrator.setLastName(resultSet.getString(4));
-                    administrator.setDateCreated(resultSet.getTimestamp(5).toLocalDateTime());
-                    administrator.setDateLastModified(resultSet.getTimestamp(6).toLocalDateTime());
+                    Administrator administrator = createAdmin(resultSet);
                     administrators.add(administrator);
                 }
 
                 return administrators;
             }
         }
+    }
+
+    /**
+     * creates a admin from a result set
+     *
+     * @param resultSet result set with the cursor pointing at the desired row
+     * @return A new Administrator
+     * @throws SQLException when there are any SQL errors
+     */
+    private Administrator createAdmin(ResultSet resultSet) throws SQLException {
+        Administrator administrator = new Administrator();
+        administrator.setUserName(resultSet.getString(1));
+        administrator.setFirstName(resultSet.getString(2));
+        administrator.setMiddleName(resultSet.getString(3));
+        administrator.setLastName(resultSet.getString(4));
+        administrator.setDateCreated(resultSet.getTimestamp(5).toLocalDateTime());
+        administrator.setDateLastModified(resultSet.getTimestamp(6).toLocalDateTime());
+        return administrator;
     }
 
     /**
@@ -609,6 +652,18 @@ public class DBHandler {
      */
     public void saveAdministrators(Collection<Administrator> administrators, Connection connection) {
         updateStrategy = new AdminUpdateStrategy();
+        updateDatabase(administrators, connection);
+    }
+
+    /**
+     * Updates the administrators stored in active memory.
+     *
+     * @param administrator  Admin to update.
+     * @param connection Connection to the target database
+     */
+    public void saveAdministrator(Administrator administrator, Connection connection) {
+        updateStrategy = new AdminUpdateStrategy();
+        Collection<Administrator> administrators = Collections.singletonList(administrator);
         updateDatabase(administrators, connection);
     }
 
@@ -656,6 +711,41 @@ public class DBHandler {
         } catch (SQLException e) {
             Log.warning("Could not log in", e);
             return false;
+        }
+    }
+
+    /**
+     * replaces an existing clinician with a new version
+     * finds old administrator by username and marks it for deletion, then passes it and the new administrator to
+     *
+     * @param connection    connection to the target database
+     * @param username      (old) username of administrator
+     * @param administrator administrator to be put into database
+     * @throws SQLException exception thrown during the transaction
+     * @see this.saveAdministrator
+     */
+    public void updateAdministrator(Connection connection, String username, Administrator administrator) throws SQLException {
+        Administrator toReplace = getOneAdministrator(connection, username);
+        if (toReplace != null) {
+            toReplace.setDeleted(true);
+            administrator.addChange(new Change("Saved"));
+            Collection<Administrator> administrators = new ArrayList<>(Arrays.asList(toReplace, administrator));
+            saveAdministrators(administrators, connection);
+        }
+    }
+
+    /**
+     * finds a single Administrator and sets their deleted flag to true, then updates the Administrator on the db
+     *
+     * @param connection connection to the target database
+     * @param username   username of the Administrator to be deleted
+     * @throws SQLException exception thrown during the transaction
+     */
+    public void deleteAdministrator(Connection connection, String username) throws SQLException {
+        Administrator toDelete = getOneAdministrator(connection, username);
+        if (toDelete != null) {
+            toDelete.setDeleted(true);
+            saveAdministrators(Collections.singletonList(toDelete), connection);
         }
     }
 

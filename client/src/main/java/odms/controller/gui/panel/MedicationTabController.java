@@ -1,5 +1,6 @@
 package odms.controller.gui.panel;
 
+import javafx.beans.InvalidationListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -16,13 +17,13 @@ import odms.commons.utils.HttpRequester;
 import odms.commons.utils.Log;
 import odms.controller.AppController;
 import odms.controller.gui.popup.MedicationsTimeController;
+import odms.controller.gui.window.UserController;
 import okhttp3.OkHttpClient;
 import org.controlsfx.control.textfield.TextFields;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class MedicationTabController {
 
@@ -57,6 +58,7 @@ public class MedicationTabController {
     private ObservableList<String> previousMeds;
     private User currentUser;
     private HttpRequester httpRequester = new HttpRequester(new OkHttpClient());
+    private UserController parent;
 
     /**
      * Gives the user view the application controller and hides all label and buttons that are not
@@ -66,12 +68,13 @@ public class MedicationTabController {
      * @param user          the current user
      * @param fromClinician boolean value indication if from clinician view
      */
-    public void init(AppController controller, User user, boolean fromClinician) {
+    public void init(AppController controller, User user, boolean fromClinician, UserController parent) {
 
         application = controller;
         currentUser = user;
+        this.parent = parent;
         //ageValue.setText("");
-        //This is the place to set visable and invisable controls for Clinician vs User
+        //This is the place to set visible and invisible controls for Clinician vs User
         if (!fromClinician) {
             addMedicationButton.setVisible(false);
             medicationTextField.setVisible(false);
@@ -165,12 +168,15 @@ public class MedicationTabController {
 
     public void refreshLists(User user) {
         currentUser = user;
-        if (user.getCurrentMedication() != null) {
+
+        if (!user.getCurrentMedication().isEmpty()) {
             currentMeds.clear();
             currentMedicationListView.getItems().clear();
             List<String> medications = new ArrayList<>();
             for (Medication meds : user.getCurrentMedication()) {
-                medications.add(meds.getMedName());
+                if (!meds.isDeleted()) {
+                    medications.add(meds.getMedName());
+                }
             }
 
             currentMeds.addAll(medications);
@@ -178,16 +184,21 @@ public class MedicationTabController {
             currentMedicationListView.setItems(currentMeds);
         }
 
-        if (user.getPreviousMedication() != null) {
+        if (!user.getPreviousMedication().isEmpty()) {
             previousMeds.clear();
             previousMedicationListView.getItems().clear();
-            List<String> medications = new ArrayList<>();
+            List<String> medications2 = new ArrayList<>();
             for (Medication meds : user.getPreviousMedication()) {
-                medications.add(meds.getMedName());
+                if (!meds.isDeleted()) {
+                    medications2.add(meds.getMedName());
+                }
             }
-            previousMeds.addAll(medications);
+            previousMeds.addAll(medications2);
             previousMedicationListView.setItems(previousMeds);
         }
+
+        currentMedicationListView.refresh();
+        previousMedicationListView.refresh();
     }
 
     /**
@@ -205,9 +216,11 @@ public class MedicationTabController {
             Log.info("Medication: " + medication + " already exist, updated GUI instead of adding new medication for User NHI: " + currentUser.getNhi());
             return;
         }
+        currentUser.saveStateForUndo();
         medicationTextField.setText("");
         currentMeds.add(medication);
         currentUser.addCurrentMedication(medication);
+        parent.updateUndoRedoButtons();
         Log.info("Successfully added medication: " + medication + " for User NHI: " + currentUser.getNhi());
 
     }
@@ -221,6 +234,8 @@ public class MedicationTabController {
         String medPrevious = previousMedicationListView.getSelectionModel().getSelectedItem();
 
         if (medCurrent != null) {
+            currentUser.saveStateForUndo();
+            parent.updateUndoRedoButtons();
             currentMeds.remove(medCurrent);
             currentUser.removeCurrentMedication(medCurrent);
             Log.info("Successfully deleted current medication: " + medCurrent + " for User NHI: " + currentUser.getNhi());
@@ -229,6 +244,8 @@ public class MedicationTabController {
         }
 
         if (medPrevious != null) {
+            currentUser.saveStateForUndo();
+            parent.updateUndoRedoButtons();
             previousMeds.remove(medPrevious);
             currentUser.removePreviousMedication(medPrevious);
             Log.info("Successfully deleted previous medication: " + previousMeds + " for User NHI: " + currentUser.getNhi());
@@ -242,12 +259,13 @@ public class MedicationTabController {
      */
     @FXML
     void takeMedication() {
-        currentUser.saveStateForUndo();
         String med = previousMedicationListView.getSelectionModel().getSelectedItem();
         if (med == null) {
             Log.warning("Unable to take medication for User NHI: " + currentUser.getNhi() + " as it is empty");
             return;
         }
+        currentUser.saveStateForUndo();
+        parent.updateUndoRedoButtons();
         if (currentMeds.contains(med)) {
             currentUser.removePreviousMedication(med);
             previousMeds.remove(med);
@@ -266,12 +284,13 @@ public class MedicationTabController {
      */
     @FXML
     void untakeMedication() {
-        currentUser.saveStateForUndo();
         String med = currentMedicationListView.getSelectionModel().getSelectedItem();
         if (med == null) {
             Log.warning("Unable to un-take medication for User NHI: " + currentUser.getNhi() + " as it is empty");
             return;
         }
+        currentUser.saveStateForUndo();
+        parent.updateUndoRedoButtons();
         if (previousMeds.contains(med)) {
             currentUser.removeCurrentMedication(med);
             currentMeds.remove(med);

@@ -9,6 +9,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 import odms.commons.model.Clinician;
 import odms.commons.model.datamodel.Address;
@@ -145,6 +146,10 @@ public class UpdateClinicianController {
             changesListener(countryTextField);
 
             Scene scene = ownStage.getScene();
+
+            if (currentClinician.getStaffId().equals("0")) {
+                staffIDTextField.setDisable(true); // default clinician cannot change their staff ID
+            }
 
             final KeyCombination shortcutZ = new KeyCodeCombination(
                     KeyCode.Z, KeyCombination.CONTROL_DOWN);
@@ -438,6 +443,7 @@ public class UpdateClinicianController {
                         "You have unsaved changes, are you sure you want to cancel?",
                         ButtonType.YES, ButtonType.NO);
 
+                alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
                 Button yesButton = (Button) alert.getDialogPane().lookupButton(ButtonType.YES);
                 yesButton.setId("yesButton");
 
