@@ -4,9 +4,9 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.Region;
 import javafx.stage.Stage;
-import odms.controller.AppController;
 import odms.commons.model.Administrator;
 import odms.commons.utils.Log;
+import odms.controller.AppController;
 
 import java.util.Optional;
 
@@ -268,7 +268,8 @@ public class UpdateAdminController {
         updateAdmin();
         if (valid) {
             if (newAdmin) {
-                appController.updateAdmin(admin);
+                //appController.updateAdmin(admin);
+                appController.getAdministratorBridge().postAdmin(admin, "");
             }
             try {
                 adminClone.getRedoStack().clear();
