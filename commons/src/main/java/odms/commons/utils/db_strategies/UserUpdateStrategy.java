@@ -53,9 +53,6 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
     public <T> void update(Collection<T> roles, Connection connection) throws SQLException {
         Collection<User> users = (Collection<User>) roles;
         for (User user : users) {
-            if (user.getChanges().isEmpty()) {
-                continue;
-            }
             try (PreparedStatement stmt = connection.prepareStatement("SELECT nhi FROM User WHERE nhi = ?")) {
                 stmt.setString(1, user.getNhi());
                 try (ResultSet queryResults = stmt.executeQuery()) {

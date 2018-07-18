@@ -214,10 +214,10 @@ public class AppController {
      * @return The user with the matching nhi, or null if no user matches.
      */
     public User findUser(String nhi) {
-        for (User u : users) {
-            if ((u.getNhi()).equalsIgnoreCase(nhi) && !u.isDeleted()) {
-                return u;
-            }
+        try {
+            return userBridge.getUser(nhi);
+        } catch (IOException e) {
+            Log.warning("Failed to get user " + nhi);
         }
         return null;
     }
@@ -277,11 +277,13 @@ public class AppController {
      */
     public void saveUser(User user) {
         try {
-            dataHandler.saveUsers(users);
-            //JsonHandler.saveChangelog(changelogWrite, user.getFullName().toLowerCase().replace(" ", "_"));
-
+            if (userBridge.getUser(user.getNhi()) != null) {
+                userBridge.putUser(user, user.getNhi());
+            } else {
+                userBridge.postUser(user);
+            }
         } catch (IOException e) {
-            Log.warning("failed to update users with NHI: " + user.getNhi(), e);
+            Log.warning("Could not save user " + user.getNhi(), e);
         }
     }
 

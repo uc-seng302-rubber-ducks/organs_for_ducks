@@ -44,6 +44,7 @@ public class UserBridge extends Bifrost {
 
     public void postUser(User user) {
         String url = ip + "/users";
+        System.out.println(new Gson().toJson(user));
         RequestBody requestBody = RequestBody.create(JSON, new Gson().toJson(user));
         Request request = new Request.Builder().post(requestBody).url(url).build();
         client.newCall(request).enqueue(new Callback() {
@@ -93,6 +94,7 @@ public class UserBridge extends Bifrost {
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
+                System.out.println("ahahahhahahhahaha");
                 if (!response.isSuccessful()) {
                     throw new IOException("Failed to PUT to " + url);
                 }

@@ -7,7 +7,6 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
-import odms.controller.AppController;
 import odms.commons.exception.InvalidFieldsException;
 import odms.commons.model.EmergencyContact;
 import odms.commons.model.HealthDetails;
@@ -16,10 +15,10 @@ import odms.commons.utils.AttributeValidation;
 import odms.commons.utils.DataHandler;
 import odms.commons.utils.JsonHandler;
 import odms.commons.utils.Log;
+import odms.controller.AppController;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.List;
 
 
 /**
@@ -253,9 +252,7 @@ public class NewUserController {
                 newUser.getUndoStack().clear();
 
                 // add the new user to the list of users and save them
-                List<User> users = controller.getUsers();
-                users.add(newUser);
-                dataHandler.saveUsers(users);
+                controller.saveUser(newUser);
 
                 // load to the overview page
                 if (stage.getTitle().matches("Administrator*")) {
