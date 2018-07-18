@@ -77,6 +77,8 @@ public class User extends Undoable<User> implements Listenable {
     @Expose
     private List<Disease> currentDiseases;
 
+    private String profilePhotoFilePath;
+
     private transient List<Change> changes;
     private transient PropertyChangeSupport pcs;
     //</editor-fold>
@@ -254,6 +256,14 @@ public class User extends Undoable<User> implements Listenable {
         newUser.setUndoStack((Stack<Memento<User>>) user.getUndoStack().clone());
         newUser.setRedoStack((Stack<Memento<User>>) user.getRedoStack().clone());
         return newUser;
+    }
+
+    public String getProfilePhotoFilePath() {
+        return profilePhotoFilePath;
+    }
+
+    public void setProfilePhotoFilePath(String profilePhotoFilePath) {
+        this.profilePhotoFilePath = profilePhotoFilePath;
     }
 
     public ContactDetails getContactDetails() {
