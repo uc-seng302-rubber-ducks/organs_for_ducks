@@ -42,10 +42,10 @@ public class ClinicianBridge extends Bifrost {
         });
     }
 
-    public void postClinician(Clinician clinician) {
+    public void postClinician(Clinician clinician, String token) {
         String url = ip + "/clinicians";
         RequestBody requestBody = RequestBody.create(JSON, new Gson().toJson(clinician));
-        Request request = new Request.Builder().post(requestBody).url(url).build();
+        Request request = new Request.Builder().url(url).addHeader("x-auth-token", token).post(requestBody).build();
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -55,7 +55,8 @@ public class ClinicianBridge extends Bifrost {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 if (!response.isSuccessful()) {
-                    throw new IOException("Failed to make POST call to /clinicians");
+                    Log.warning("Failed to POST to " + url);
+                    throw new IOException("Failed to make POST call to " + url);
                 }
 
             }

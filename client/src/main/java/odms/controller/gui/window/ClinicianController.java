@@ -455,10 +455,10 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
      */
     @FXML
     void save() {
-        appController.updateClinicians(clinician);
-        appController.saveClinician(clinician);
         clinician.getUndoStack().clear();
         clinician.getRedoStack().clear();
+        appController.updateClinicians(clinician);
+        appController.getClinicianBridge().patchClinician(clinician, clinician.getStaffId());
         undoButton.setDisable(true);
         redoButton.setDisable(true);
     }
@@ -494,8 +494,7 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
             Optional<ButtonType> result = UnsavedChangesAlert.getAlertResult();
             if (result.isPresent() && result.get() == ButtonType.YES) {
                 appController.updateClinicians(clinician);
-                appController.saveClinician(clinician);
-
+                appController.getClinicianBridge().patchClinician(clinician, clinician.getStaffId());
             } else {
                 Clinician revertClinician = clinician.getUndoStack().firstElement().getState();
                 appController.updateClinicians(revertClinician);

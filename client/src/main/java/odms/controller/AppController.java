@@ -111,7 +111,7 @@ public class AppController {
             defaultClinician.setRegion("region");
             defaultClinician.getUndoStack().clear();
             clinicians.add(defaultClinician);
-            saveClinician(defaultClinician);
+            //saveClinician(defaultClinician); todo: temporary - jen 18/7
         }
     }
 
@@ -354,7 +354,7 @@ public class AppController {
      *
      * @param clinician The current clinician.
      */
-    public void updateClinicians(Clinician clinician) {
+    public void updateClinicians(Clinician clinician) { // todo: will we still need this? - jen 18/7
         if (clinicians.contains(clinician)) {
             clinicians.remove(clinician);
             clinicians.add(clinician);
@@ -368,7 +368,7 @@ public class AppController {
      *
      * @param clinician Clinician to be saved
      */
-    public void saveClinician(Clinician clinician) {
+    public void saveClinician(Clinician clinician) { // todo: REMOVE AFTER TESTING - jen 18/7
         try {
             dataHandler.saveClinicians(clinicians);
             Log.info("Successfully updated clinician with Staff ID: " + clinician.getStaffId());

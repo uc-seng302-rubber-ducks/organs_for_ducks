@@ -577,6 +577,7 @@ public class UpdateClinicianController {
             Address workAddress = new Address(streetNumber, streetName, neighbourhood, city, region, zipCode, country);
             clinician.setWorkContactDetails(new ContactDetails("", "", workAddress, ""));
             controller.updateClinicians(clinician);
+            controller.getClinicianBridge().postClinician(clinician, "");
             loadOverview(clinician);
 
         } else {
