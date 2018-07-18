@@ -263,6 +263,8 @@ public class User extends Undoable<User> implements Listenable {
     }
 
     public void setProfilePhotoFilePath(String profilePhotoFilePath) {
+        this.saveStateForUndo();
+        updateLastModified();
         this.profilePhotoFilePath = profilePhotoFilePath;
     }
 

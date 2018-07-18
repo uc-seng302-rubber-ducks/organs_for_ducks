@@ -10,7 +10,9 @@ public enum Directory {
     ROOT(System.getProperty("user.home") + "/.organs/"),
     JSON(ROOT.directory() + "JSON/"),
     LOGS(ROOT.directory() + "LOGS/"),
-    CACHE(ROOT.directory() + "CACHE/");
+    CACHE(ROOT.directory() + "CACHE/"),
+    TEMP(ROOT.directory() + "TEMP/"),
+    IMAGES(TEMP.directory() + "IMAGES/");
 
     private String directory;
 
