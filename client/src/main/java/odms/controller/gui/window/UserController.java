@@ -5,25 +5,30 @@ import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
-import odms.controller.AppController;
-import odms.controller.gui.panel.*;
-import odms.controller.gui.statusBarController;
 import odms.commons.model.Change;
 import odms.commons.model.EmergencyContact;
 import odms.commons.model.User;
 import odms.commons.model._enum.OrganDeregisterReason;
 import odms.commons.model._enum.Organs;
+import odms.commons.utils.Log;
+import odms.controller.AppController;
+import odms.controller.gui.UnsavedChangesAlert;
+import odms.controller.gui.panel.*;
+import odms.controller.gui.statusBarController;
 
 import java.beans.PropertyChangeListener;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Class for the functionality of the User view of the application
@@ -79,6 +84,12 @@ public class UserController {
 
     @FXML
     private TableView<Change> historyTableView;
+
+    @FXML
+    private MenuItem saveUserMenuItem;
+
+    @FXML
+    private MenuItem LogOut;
 
     private AppController application;
 
@@ -144,6 +155,15 @@ public class UserController {
             // Sets the button to be disabled
             updateUndoRedoButtons();
 
+            if (fromClinician) {
+                LogOut.setText("Go Back");
+                LogOut.setOnAction(e -> closeWindow());
+
+            } else {
+                LogOut.setText("Log Out");
+                LogOut.setOnAction(e -> logout());
+            }
+
             if (user.getNhi() != null) {
                 showUser(currentUser); // Assumes a donor with no name is a new sign up and does not pull values from a template
                 List<Change> changes = currentUser.getChanges();
@@ -162,6 +182,40 @@ public class UserController {
 
             userProfileTabPageController.init(controller, user, this.stage, fromClinician);
         }
+    }
+
+    /**
+     * Opens the update user details window
+     */
+    @FXML
+    private void updateDetails() {
+        FXMLLoader updateLoader = new FXMLLoader(getClass().getResource("/FXML/updateUser.fxml"));
+        Parent root;
+        try {
+            root = updateLoader.load();
+            UpdateUserController updateUserController = updateLoader.getController();
+            Stage stage = new Stage();
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setScene(new Scene(root));
+            updateUserController.init(currentUser, application, stage);
+            stage.show();
+            Log.info("Successfully launched update user window for User NHI: " + currentUser.getNhi());
+
+        } catch (IOException e) {
+            Log.severe("Failed to load update user window for User NHI: " + currentUser.getNhi(), e);
+        }
+    }
+
+    /**
+     * Closes current window.
+     */
+    @FXML
+    private void closeWindow() {
+        checkSave();
+        currentUser.getUndoStack().clear();
+        currentUser.getRedoStack().clear();
+        stage.close();
+        Log.info("Successfully closed update user window for User NHI: " + currentUser.getNhi());
     }
 
     public void refreshDiseases() {
@@ -189,6 +243,50 @@ public class UserController {
             changelog = FXCollections.observableArrayList(user.getChanges());
         } else {
             changelog = FXCollections.observableArrayList(new ArrayList<Change>());
+        }
+    }
+
+    /**
+     * Popup that prompts the user if they want to save any unsaved changes before logging out or exiting the application
+     */
+    private void checkSave() {
+        boolean noChanges = currentUser.getUndoStack().isEmpty();
+        if (!noChanges) {
+            Optional<ButtonType> result = UnsavedChangesAlert.getAlertResult();
+            if (result.isPresent() && result.get() == ButtonType.YES) {
+                application.update(currentUser);
+                application.saveUser(currentUser);
+
+            } else {
+                User revertUser = currentUser.getUndoStack().firstElement().getState();
+                application.update(revertUser);
+            }
+        }
+    }
+
+    /**
+     * Fires when the logout button is clicked Ends the users session, and takes back to the login
+     * window
+     */
+    @FXML
+    private void logout() {
+        checkSave();
+        currentUser.getUndoStack().clear();
+        currentUser.getRedoStack().clear();
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML/loginView.fxml"));
+        Parent root;
+        try {
+            root = loader.load();
+            Stage newStage = new Stage();
+            newStage.setScene(new Scene(root));
+            newStage.show();
+            stage.close();
+            LoginController loginController = loader.getController();
+            loginController.init(AppController.getInstance(), newStage);
+
+            Log.info("successfully launched login window after logged out for User NHI: " + currentUser.getNhi());
+        } catch (IOException e) {
+            Log.severe("failed to launch login window after logged out for User NHI: " + currentUser.getNhi(), e);
         }
     }
 
