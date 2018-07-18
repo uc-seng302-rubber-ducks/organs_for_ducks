@@ -58,7 +58,6 @@ public class AppController {
             Log.info(users.size() + " users were successfully loaded");
         } catch (FileNotFoundException e) {
             Log.warning("User file was not found", e);
-
         }
 
         try {
@@ -86,13 +85,9 @@ public class AppController {
             }
         }
         if (!defaultAdminSeen) {
-            admins.add(new Administrator("default", "", "", "", "admin"));
-
-            try {
-                dataHandler.saveAdmins(admins);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            Administrator defaultAdmin = new Administrator("default", "", "", "", "admin");
+            admins.add(defaultAdmin);
+            saveAdmin(defaultAdmin);
         }
 
         boolean defaultSeen = false;
@@ -103,15 +98,11 @@ public class AppController {
             }
         } //all code you wish to execute must be above this point!!!!!!!!
         if (!defaultSeen) {
-            Clinician c = new Clinician("0", "admin", "Default", "", "");
-            c.setRegion("region");
-            clinicians.add(c);
-            try {
-                dataHandler.saveClinicians(clinicians);
-                Log.info("Successfully saved clinicians to file");
-            } catch (IOException e) {
-                Log.warning("Could not save clinicians to file", e);
-            }
+            Clinician defaultClinician = new Clinician("0", "admin", "Default", "", "");
+            defaultClinician.setRegion("region");
+            defaultClinician.getUndoStack().clear();
+            clinicians.add(defaultClinician);
+            saveClinician(defaultClinician);
         }
     }
 
@@ -265,6 +256,14 @@ public class AppController {
             users.add(user);
             changelogWrite.add(new Change(LocalDateTime.now(), "Added user " + user.getFullName()));
         }
+    }
+
+    /**
+     * Saves the current list of users to the json
+     *
+     * @param user User to be saved
+     */
+    public void saveUser(User user) {
         try {
             dataHandler.saveUsers(users);
             //JsonHandler.saveChangelog(changelogWrite, user.getFullName().toLowerCase().replace(" ", "_"));
@@ -339,13 +338,25 @@ public class AppController {
     }
 
     /**
+     * Refreshes the list of clinicians with the updated clone
+     *
      * @param clinician The current clinician.
      */
     public void updateClinicians(Clinician clinician) {
-        if (!clinicians.contains(clinician)) {
+        if (clinicians.contains(clinician)) {
+            clinicians.remove(clinician);
+            clinicians.add(clinician);
+        } else {
             clinicians.add(clinician);
         }
+    }
 
+    /**
+     * Saves the current list of clinicians to the json
+     *
+     * @param clinician Clinician to be saved
+     */
+    public void saveClinician(Clinician clinician) {
         try {
             dataHandler.saveClinicians(clinicians);
             Log.info("Successfully updated clinician with Staff ID: " + clinician.getStaffId());
@@ -353,6 +364,8 @@ public class AppController {
             Log.warning("Failed to update clinician with Staff ID: " + clinician.getStaffId(), e);
         }
     }
+
+
 
     /**
      * Takes a passed clinician and removes them from the maintained list of clinicians
@@ -429,13 +442,25 @@ public class AppController {
 
 
     /**
+     * Refreshes the list of administrators with the updated admin
+     *
      * @param administrator the current administrator
      */
     public void updateAdmin(Administrator administrator) {
-        if (!admins.contains(administrator)) {
+        if (admins.contains(administrator)) {
+            admins.remove(administrator);
+            admins.add(administrator);
+        } else {
             admins.add(administrator);
         }
+    }
 
+    /**
+     * Saves the list of administrators
+     *
+     * @param administrator Administrator to be saved
+     */
+    public void saveAdmin(Administrator administrator) {
         try {
             dataHandler.saveAdmins(admins);
             Log.info("successfully updated the Administrator profile with user name: " + administrator.getUserName());

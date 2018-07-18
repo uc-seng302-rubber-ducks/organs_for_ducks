@@ -16,8 +16,16 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Region;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import odms.controller.AppController;
+import odms.controller.gui.FileSelectorController;
+import odms.controller.gui.UnsavedChangesAlert;
+import odms.controller.gui.panel.TransplantWaitListController;
+import odms.controller.gui.popup.AlertUnclosedWindowsController;
+import odms.controller.gui.popup.DeletedUserController;
+import odms.controller.gui.statusBarController;
 import odms.commons.exception.InvalidFileException;
 import odms.commons.model.Administrator;
 import odms.commons.model.Clinician;
@@ -27,12 +35,6 @@ import odms.commons.model._enum.EventTypes;
 import odms.commons.model._enum.Organs;
 import odms.commons.model.dto.UserOverview;
 import odms.commons.utils.*;
-import odms.controller.AppController;
-import odms.controller.gui.FileSelectorController;
-import odms.controller.gui.panel.TransplantWaitListController;
-import odms.controller.gui.popup.AlertUnclosedWindowsController;
-import odms.controller.gui.popup.DeletedUserController;
-import odms.controller.gui.statusBarController;
 import odms.utils.UserBridge;
 import odms.view.CLI;
 import okhttp3.OkHttpClient;
@@ -940,12 +942,25 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
     }
 
     /**
+     * Saves all admins when the save menu item is clicked
+     */
+    @FXML
+    void saveClicked() {
+        appController.updateAdmin(administrator);
+        appController.saveAdmin(administrator);
+        administrator.getUndoStack().clear();
+        administrator.getRedoStack().clear();
+        adminUndoButton.setDisable(true);
+        adminRedoButton.setDisable(true);
+    }
+
+    /**
      * Logs out and saves the admin
      */
     @FXML
     void logout() {
-        //check about saving
-        appController.updateAdmin(administrator);
+        checkSave();
+        administrator.getUndoStack().clear();
         FXMLLoader loginLoader = new FXMLLoader(getClass().getResource("/FXML/loginView.fxml"));
         Parent root;
         try {
@@ -959,6 +974,24 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
             Log.info(messageAdmin + administrator.getUserName() + " Successfully launched Login window after logout");
         } catch (IOException e) {
             Log.severe(messageAdmin + administrator.getUserName() + " Failed to load Login window after logout", e);
+        }
+    }
+
+    /**
+     * Popup that prompts the clinician to save any unsaved changes before logging out or exiting the application
+     */
+    private void checkSave() {
+        boolean noChanges = administrator.getUndoStack().isEmpty();
+        if (!noChanges) {
+            Optional<ButtonType> result = UnsavedChangesAlert.getAlertResult();
+            if (result.isPresent() && result.get() == ButtonType.YES) {
+                appController.updateAdmin(administrator);
+                appController.saveAdmin(administrator);
+
+            } else {
+                Administrator revertAdmin = administrator.getUndoStack().firstElement().getState();
+                appController.updateAdmin(revertAdmin);
+            }
         }
     }
 
@@ -1041,6 +1074,7 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
     void deleteAdminAccount() {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setContentText("Are you sure you want to delete this administrator?");
+        alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
         Optional<ButtonType> result = alert.showAndWait();
 
         if (result.get() == ButtonType.OK) {

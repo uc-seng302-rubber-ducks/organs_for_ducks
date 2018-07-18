@@ -82,19 +82,19 @@ public class ClinicianControllerTest {
     @Test(expected = ServerDBException.class)
     public void getClinicianShouldThrowExceptionWhenNoConnection() throws SQLException {
         when(driver.getConnection()).thenThrow(new SQLException());
-        controller.getClinicians("12");
+        controller.getClinician("12");
     }
 
     @Test(expected = NotFoundException.class)
     public void getClinicianShouldReturnNotFoundWhenNoClinicianFound() throws SQLException {
         when(handler.getOneClinician(any(Connection.class), anyString())).thenReturn(null);
-        controller.getClinicians("12");
+        controller.getClinician("12");
     }
 
     @Test
     public void getClinicianShouldReturnClinicianIfExists() throws SQLException {
         when(handler.getOneClinician(any(Connection.class), anyString())).thenReturn(testClinician);
-        Assert.assertEquals(testClinician, controller.getClinicians("12"));
+        Assert.assertEquals(testClinician, controller.getClinician("12"));
     }
 
     @Test(expected = ServerDBException.class)
