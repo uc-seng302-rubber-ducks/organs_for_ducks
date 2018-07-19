@@ -56,7 +56,7 @@ public class LoginBridge extends Bifrost{
             throw new ApiException(responseCode, "error code recieved");
         } else if (responseCode != 200) {
             Log.warning("A non API response was returned code:" + responseCode);
-            throw new ApiException(responseCode, "unexpected response code recieved");
+            throw new ApiException(responseCode, "unexpected response code received");
         }
 
         return handler.decodeLogin(response);
