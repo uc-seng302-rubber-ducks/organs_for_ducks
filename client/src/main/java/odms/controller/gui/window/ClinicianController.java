@@ -12,6 +12,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Region;
@@ -33,6 +35,7 @@ import odms.controller.gui.statusBarController;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
@@ -106,6 +109,8 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
     @FXML
     private MenuItem logoutMenu;
 
+    @FXML
+    private ImageView profileImage;
     @FXML
     private statusBarController statusBarPageController;
 
@@ -221,6 +226,11 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
         if (clinician.getChanges().size() > 0) {
             statusBarPageController.updateStatus(clinician.getStaffId() + " " + clinician.getChanges().get(clinician.getChanges().size() - 1).getChange());
 
+        }
+        if (clinician.getProfilePhotoFilePath() != null) {
+            File inFile = new File(clinician.getProfilePhotoFilePath());
+            Image image = new Image("file:" + inFile.getPath(), 200, 200, false, true);
+            profileImage.setImage(image);
         }
     }
 

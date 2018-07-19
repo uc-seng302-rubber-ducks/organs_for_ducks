@@ -233,6 +233,11 @@ public class UpdateClinicianController {
         } else {
             regionTextField.setText("");
         }
+        if (currentClinician.getProfilePhotoFilePath() != null) {
+            File inFile = new File(currentClinician.getProfilePhotoFilePath());
+            Image image = new Image("file:" + inFile.getPath(), 200, 200, false, true);
+            profileImage.setImage(image);
+        }
     }
 
 
