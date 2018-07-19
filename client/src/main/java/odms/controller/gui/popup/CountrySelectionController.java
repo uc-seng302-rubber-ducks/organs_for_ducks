@@ -46,22 +46,24 @@ public class CountrySelectionController {
      */
     private void initCountrySelectionList(){
         countrySelection.setItems(FXCollections.observableList(appController.getAllCountries()));
-        countrySelection.setCellFactory(CheckBoxListCell.forListView(new Callback<String, ObservableValue<Boolean>>() {
-            @Override
-            public ObservableValue<Boolean> call(String country) {
-                BooleanProperty observable = new SimpleBooleanProperty();
-                observable.addListener((obs, wasSelected, isNowSelected) ->
-                        {
-                            if (isNowSelected) {
-                                allowedCountries.add(country);
-                            } else if (wasSelected) {
-                                allowedCountries.remove(country);
-                            }
+        countrySelection.setCellFactory(CheckBoxListCell.forListView(country -> {
+            BooleanProperty observable = new SimpleBooleanProperty();
+            observable.addListener((obs, wasSelected, isNowSelected) ->
+                    {
+                        if (isNowSelected) {
+                            allowedCountries.add(country);
+                        } else if (wasSelected) {
+                            allowedCountries.remove(country);
                         }
-                );
-                return observable ;
-            }
+                    }
+            );
+            return observable ;
         }));
+    }
+
+    @FXML
+    void selectDeselectAll(){
+        //countrySelection.setCellFactory(CheckBoxListCell.forListView(i->i.setS));
     }
 
     /**
