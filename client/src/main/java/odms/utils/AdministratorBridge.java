@@ -1,11 +1,5 @@
 package odms.utils;
 
-import odms.commons.model.Administrator;
-import odms.commons.utils.JsonHandler;
-import okhttp3.OkHttpClient;
-import okhttp3.Response;
-
-import java.io.IOException;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import odms.commons.model.Administrator;
@@ -52,7 +46,7 @@ public class AdministratorBridge extends Bifrost {
     public void postAdmin(Administrator admin, String token) {
         String url = ip + "/admins";
         RequestBody body = RequestBody.create(JSON, new Gson().toJson(admin));
-        Request request = new Request.Builder().url(url).addHeader("x-auth-token", token).post(body).build();
+        Request request = new Request.Builder().url(url).addHeader(TOKEN_HEADER, token).post(body).build();
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -68,4 +62,50 @@ public class AdministratorBridge extends Bifrost {
             }
         });
     }
+
+    public void putAdmin(Administrator administrator, String username, String token) {
+        String url = ip + "/admins/" + username;
+        RequestBody requestBody = RequestBody.create(JSON, new Gson().toJson(administrator));
+        Request request = new Request.Builder().url(url).addHeader(TOKEN_HEADER, token).put(requestBody).build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.warning("Could not PUT to " + url, e);
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (!response.isSuccessful()) {
+                    throw new IOException("Failed to PUT to " + url);
+                }
+
+            }
+        });
+
+    }
+
+    public void deleteAdmin(Administrator administrator, String token) {
+        String url = ip + "/admins/" + administrator.getUserName();
+        Request request = new Request.Builder().url(url).addHeader(TOKEN_HEADER, token).delete().build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.warning("Could not DELETE " + url, e);
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (!response.isSuccessful()) {
+                    throw new IOException("Failed to DELETE to " + url);
+                }
+            }
+        });
+
+    }
+
+
+
+
+
+
 }
