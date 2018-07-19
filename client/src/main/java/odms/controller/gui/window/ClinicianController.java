@@ -17,11 +17,6 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Region;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import odms.controller.AppController;
-import odms.controller.gui.UnsavedChangesAlert;
-import odms.controller.gui.panel.TransplantWaitListController;
-import odms.controller.gui.popup.DeletedUserController;
-import odms.controller.gui.statusBarController;
 import odms.commons.model.Clinician;
 import odms.commons.model.TooltipTableRow;
 import odms.commons.model.User;
@@ -30,6 +25,11 @@ import odms.commons.model._enum.EventTypes;
 import odms.commons.model._enum.Organs;
 import odms.commons.utils.AttributeValidation;
 import odms.commons.utils.Log;
+import odms.controller.AppController;
+import odms.controller.gui.UnsavedChangesAlert;
+import odms.controller.gui.panel.TransplantWaitListController;
+import odms.controller.gui.popup.DeletedUserController;
+import odms.controller.gui.statusBarController;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -102,10 +102,9 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
     @FXML
     private Button redoButton;
     @FXML
-    private Button logoutButton;
-
+    private MenuItem deleteMenu;
     @FXML
-    private Button deleteClinicianButton;
+    private MenuItem logoutMenu;
 
     @FXML
     private statusBarController statusBarPageController;
@@ -160,7 +159,7 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
         statusBarPageController.init(appController);
 
         if (clinician.getStaffId().equals("0")) {
-            deleteClinicianButton.setDisable(true);
+            deleteMenu.setDisable(true);
         }
 
         setDefaultFilters();
@@ -173,11 +172,11 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
         searchTablePagination.currentPageIndexProperty().addListener(((observable, oldValue, newValue) -> changePage(newValue.intValue())));
 
         if (fromAdmin) {
-            logoutButton.setVisible(false);
-            backButton.setVisible(true);
+            logoutMenu.setText("Go Back");
+            logoutMenu.setOnAction(e -> goBack());
         } else {
-            logoutButton.setVisible(true);
-            backButton.setVisible(false);
+            logoutMenu.setText("Log Out");
+            logoutMenu.setOnAction(e -> logout());
         }
 
     }
@@ -583,10 +582,6 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
                 stage.close();
             }
         }
-    }
-
-    public void disableLogout() {
-        logoutButton.setVisible(false);
     }
 
     @Override

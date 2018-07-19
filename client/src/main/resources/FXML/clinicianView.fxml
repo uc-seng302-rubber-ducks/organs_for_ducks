@@ -15,13 +15,14 @@
                 <Menu mnemonicParsing="false" text="File">
                     <items>
                         <MenuItem fx:id="saveUserMenuItem" mnemonicParsing="false" onAction="#save" text="Save"/>
-                        <MenuItem mnemonicParsing="false" text="Log Out"/>
+                        <MenuItem fx:id="logoutMenu" mnemonicParsing="false" text="Log Out"/>
                     </items>
                 </Menu>
                 <Menu mnemonicParsing="false" text="Edit">
                     <items>
                         <MenuItem mnemonicParsing="false" onAction="#edit" text="Clinician Details"/>
-                        <MenuItem mnemonicParsing="false" onAction="#deleteClinician" text="Delete Profile"/>
+                        <MenuItem fx:id="deleteMenu" mnemonicParsing="false" onAction="#deleteClinician"
+                                  text="Delete Profile"/>
                     </items>
                 </Menu>
             </menus>

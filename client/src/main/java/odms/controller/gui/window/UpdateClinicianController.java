@@ -5,6 +5,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
@@ -12,13 +14,22 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 import odms.commons.model.Clinician;
+import odms.commons.model._enum.Directory;
 import odms.commons.model.datamodel.Address;
 import odms.commons.model.datamodel.ContactDetails;
 import odms.commons.utils.Log;
 import odms.controller.AppController;
+import odms.controller.gui.FileSelectorController;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static odms.commons.utils.UndoHelpers.removeFormChanges;
@@ -94,6 +105,9 @@ public class UpdateClinicianController {
 
     @FXML
     private Button redoClinicianFormButton;
+
+    @FXML
+    private ImageView profileImage;
     //</editor-fold>
 
     private AppController controller;
@@ -229,6 +243,65 @@ public class UpdateClinicianController {
      */
     private void changesListener(TextField field) {
         field.textProperty().addListener((observable, oldValue, newValue) -> update());
+    }
+
+    /**
+     * uploads an image using file picker. includes validation.
+     */
+    @FXML
+    private void UploadImage() throws IOException {
+        boolean isValid = true;
+        String filename;
+        String filePath;
+        List<String> extensions = new ArrayList<>();
+        extensions.add("*.jpg");
+        extensions.add("*.png");
+        filename = FileSelectorController.getFileSelector(stage, extensions);
+
+        if (filename != null) {
+            File inFile = new File(filename);
+
+            if (inFile.length() > 2000000) { //if more than 2MB
+                System.out.println("image exceeded 2MB!"); //TODO: Replace with javafx label or a pop up box
+                isValid = false;
+            }
+
+
+            if (isValid) {
+                filePath = setUpImageFile(inFile);
+                currentClinician.setProfilePhotoFilePath(filePath);
+                Image image = new Image("file:" + filePath, 200, 200, false, true);
+                profileImage.setImage(image);
+            }
+        }
+    }
+
+
+    /**
+     * sets up a temp folder and image folder (within temp folder).
+     * then make a copy of the desired image and store it in the image folder.
+     *
+     * @param inFile desired image file
+     * @return filepath to the image file
+     * @throws IOException if there are issues with handling files.
+     */
+    public String setUpImageFile(File inFile) throws IOException {
+        BufferedImage bImage;
+        if (currentClinician.getProfilePhotoFilePath() != null) { //Prevent duplicated image files.
+            File oldFile = new File(currentClinician.getProfilePhotoFilePath());
+            oldFile.delete();
+        }
+
+        String fileType = inFile.getName();
+        fileType = fileType.substring(fileType.lastIndexOf(".") + 1);
+
+        Files.createDirectories(Paths.get(Directory.TEMP.directory() + Directory.IMAGES));
+        File outFile = new File(Directory.TEMP.directory() + Directory.IMAGES + "/" + currentClinician.getStaffId() + "." + fileType);
+
+        bImage = ImageIO.read(inFile);
+        ImageIO.write(bImage, fileType, outFile);
+
+        return outFile.getPath();
     }
 
     /**
@@ -402,7 +475,6 @@ public class UpdateClinicianController {
                     ClinicianController clinicianController = loader.getController();
                     Stage clinicianStage = new Stage();
                     clinicianController.init(clinicianStage, AppController.getInstance(), clinician, true, null);
-                    clinicianController.disableLogout();
                     clinicianStage.setScene(new Scene(root));
                     clinicianStage.show();
                     ownStage.close();
