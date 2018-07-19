@@ -19,6 +19,7 @@ import odms.controller.gui.window.ClinicianController;
 import odms.controller.gui.window.UserController;
 import odms.utils.AdministratorBridge;
 import odms.utils.ClinicianBridge;
+import odms.utils.LoginBridge;
 import odms.utils.UserBridge;
 import okhttp3.OkHttpClient;
 
@@ -47,9 +48,11 @@ public class AppController {
     private ArrayList<String[]> historyOfCommands = new ArrayList<>();
     private int historyPointer = 0;
     private DataHandler dataHandler = new JsonHandler();
-    private UserBridge userBridge = new UserBridge(new OkHttpClient());
-    private ClinicianBridge clinicianBridge = new ClinicianBridge(new OkHttpClient());
-    private AdministratorBridge administratorBridge = new AdministratorBridge(new OkHttpClient());
+    private OkHttpClient client = new OkHttpClient();
+    private UserBridge userBridge = new UserBridge(client);
+    private ClinicianBridge clinicianBridge = new ClinicianBridge(client);
+    private AdministratorBridge administratorBridge = new AdministratorBridge(client);
+    private LoginBridge loginBridge = new LoginBridge(client);
 
     private UserController userController = new UserController();
     private ClinicianController clinicianController = new ClinicianController();
@@ -212,12 +215,13 @@ public class AppController {
      * @return The user with the matching nhi, or null if no user matches.
      */
     public User findUser(String nhi) {
+        User user = null;
         try {
-            return userBridge.getUser(nhi);
+            user = getUserBridge().getUser(nhi);
         } catch (IOException e) {
             Log.warning("Failed to get user " + nhi);
         }
-        return null;
+        return user;
     }
 
     /**
@@ -693,6 +697,10 @@ public class AppController {
 
     public ClinicianBridge getClinicianBridge() {
         return clinicianBridge;
+    }
+
+    public LoginBridge getLoginBridge() {
+        return loginBridge;
     }
 
     public void setToken(String token) {

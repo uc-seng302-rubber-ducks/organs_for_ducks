@@ -57,7 +57,7 @@ public class LoginController {
     private AppController appController;
     private Stage stage;
     private OkHttpClient client = new OkHttpClient();
-    private LoginBridge loginBridge = new LoginBridge(client);
+    private LoginBridge loginBridge = AppController.getInstance().getLoginBridge();
 
     /**
      * Initializes the Login controller.

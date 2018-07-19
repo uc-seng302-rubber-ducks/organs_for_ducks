@@ -10,6 +10,7 @@ import odms.commons.model.datamodel.Medication;
 import odms.commons.model.datamodel.ReceiverOrganDetailsHolder;
 import odms.commons.model.dto.UserOverview;
 import odms.commons.utils.Log;
+import odms.controller.AppController;
 import okhttp3.*;
 
 import java.io.IOException;
@@ -27,7 +28,7 @@ public class UserBridge extends Bifrost {
 
     public Collection<UserOverview> loadUsersToController(int startIndex, int count, String name, String region, String gender, String token) throws IOException {
         String url = ip + "/users?startIndex=" + startIndex + "&count=" + count + "&name=" + name + "&region=" + region + "&gender=" + gender;
-        Request request = new Request.Builder().header("x-auth-token", token).url(url).build();
+        Request request = new Request.Builder().header(TOKEN_HEADER, token).url(url).build();
         Collection<UserOverview> overviews;
         try (Response response = client.newCall(request).execute()) {
             overviews = new Gson().fromJson(response.body().string(), new TypeToken<Collection<UserOverview>>() {

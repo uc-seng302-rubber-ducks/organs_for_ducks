@@ -29,7 +29,7 @@ public class LoginBridge extends Bifrost{
      * @throws ApiException if any response other than the expected token is returned
      */
     public String loginToServer(String wanted, String password, String role) throws ApiException{
-        Response response = null;
+        Response response;
         JsonObject body = new JsonObject();
         body.addProperty("username" , wanted);
         body.addProperty("password", password);

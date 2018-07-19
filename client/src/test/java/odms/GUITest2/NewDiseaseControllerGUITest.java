@@ -5,6 +5,10 @@ import odms.App;
 import odms.controller.AppController;
 import odms.commons.model.Disease;
 import odms.commons.model.User;
+import odms.utils.AdministratorBridge;
+import odms.utils.ClinicianBridge;
+import odms.utils.LoginBridge;
+import odms.utils.UserBridge;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -14,17 +18,29 @@ import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 import odms.TestUtils.CommonTestMethods;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.concurrent.TimeoutException;
 
+import static odms.TestUtils.FxRobotHelper.clickOnButton;
+import static odms.TestUtils.FxRobotHelper.setTextField;
 import static org.junit.Assert.assertEquals;
 import static odms.TestUtils.TableViewsMethod.getCell;
 import static odms.TestUtils.TableViewsMethod.getCellValue;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class NewDiseaseControllerGUITest extends ApplicationTest {
 
     DateTimeFormatter sdf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    private AppController controller;
+    private UserBridge bridge;
+    private ClinicianBridge clinicianBridge;
+    private LoginBridge loginBridge;
+    private AdministratorBridge administratorBridge;
+    private User testUser;
 
     @BeforeClass
     public static void initialization() {
@@ -32,22 +48,34 @@ public class NewDiseaseControllerGUITest extends ApplicationTest {
     }
 
     @Before
-    public void setUpCreateScene() throws TimeoutException {
+    public void setUpCreateScene() throws TimeoutException, IOException {
+        controller = mock(AppController.class);
+        bridge = mock(UserBridge.class);
+        clinicianBridge = mock(ClinicianBridge.class);
+        loginBridge = mock(LoginBridge.class);
+        administratorBridge = mock(AdministratorBridge.class);
+
+        AppController.setInstance(controller);
+        when(controller.getUserBridge()).thenReturn(bridge);
+        when(controller.getClinicianBridge()).thenReturn(clinicianBridge);
+        when(controller.getAdministratorBridge()).thenReturn(administratorBridge);
+        when(controller.getLoginBridge()).thenReturn(loginBridge);
+
         FxToolkit.registerPrimaryStage();
         FxToolkit.setupApplication(App.class);
         AppController.getInstance().getUsers().clear();
         //DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        AppController.getInstance().getUsers().add(new User("Aa", LocalDate.parse("2000-01-20", sdf), "ABC1244"));
-        AppController.getInstance().getUsers().get(0).getCurrentDiseases().add(new Disease("A0", false, false, LocalDate.now()));
-        AppController.getInstance().getUsers().get(0).getPastDiseases().add(new Disease("B0", false, true, LocalDate.now()));
+        testUser = new User("Aa", LocalDate.parse("2000-01-20", sdf), "ABC1244");
+        testUser.getCurrentDiseases().add(new Disease("A0", false, false, LocalDate.now()));
+        testUser.getPastDiseases().add(new Disease("B0", false, true, LocalDate.now()));
+        when(bridge.getUser(anyString())).thenReturn(testUser);
+
 
         //Use default clinician
         clickOn("#clinicianTab");
-        clickOn("#staffIdTextField");
-        write("0", 0);
-        clickOn("#staffPasswordField");
-        write("admin", 0);
-        clickOn("#loginCButton");
+        setTextField(this,"#staffIdTextField", "0");
+        setTextField(this, "#staffPasswordField", "admin");
+        clickOnButton(this, "#loginCButton");
         //verifyThat("#staffIdLabel", LabeledMatchers.hasText("0"));
         clickOn("#searchTab");
         doubleClickOn(getCell("#searchTableView", 0, 0));
@@ -63,22 +91,20 @@ public class NewDiseaseControllerGUITest extends ApplicationTest {
 
     @Test
     public void createdDiseaseShouldBeInCurrentDiseaseTable() {
-        clickOn("#addDiseaseButton");
-        clickOn("#diseaseNameInput");
-        write("A1", 0);
+        clickOnButton(this,"#addDiseaseButton");
+        setTextField(this,"#diseaseNameInput", "A1");
         //Use default date
-        clickOn("#createButton");
+        clickOnButton(this,"#createButton");
         assertEquals("A1", getCellValue("#currentDiseaseTableView", 1, 1).toString());
 
     }
 
     @Test
     public void createdCuredDiseaseShouldBeInPastDiseaseTable() { //FAIL
-        clickOn("#addDiseaseButton");
-        clickOn("#diseaseNameInput");
-        write("A1", 0);
+        clickOnButton(this,"#addDiseaseButton");
+        setTextField(this,"#diseaseNameInput","A1");
         clickOn("#curedRadioButton");
-        clickOn("#createButton");
+        clickOnButton(this,"#createButton");
         assertEquals("A1", getCellValue("#pastDiseaseTableView", 1, 1).toString());
     }
 
@@ -132,9 +158,9 @@ public class NewDiseaseControllerGUITest extends ApplicationTest {
     @Test
     public void diseaseShouldMoveToCurrentDiseaseTableWhenNeitherCuredOrChronic() {
         clickOn(getCell("#pastDiseaseTableView", 0, 0));
-        clickOn("#updateDiseaseButton");
-        clickOn("#clearSelection");
-        clickOn("#createButton");
+        clickOnButton(this,"#updateDiseaseButton");
+        clickOnButton(this,"#clearSelection");
+        clickOnButton(this,"#createButton");
         assertEquals("B0", getCellValue("#currentDiseaseTableView", 1, 1).toString());
     }
 
