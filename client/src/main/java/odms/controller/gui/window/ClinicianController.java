@@ -161,7 +161,7 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
         stage.setResizable(true);
         showClinician(clinician);
         try {
-            users = appController.getUserBridge().loadUsersToController(0, 30, "", "", "");
+            users = appController.getUserBridge().loadUsersToController(0, 30, "", "", "", "");
         } catch (IOException ex) {
             AlertWindowFactory.generateError(ex);
         }
@@ -416,7 +416,7 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
 
     private void search() {
         try {
-            users = appController.getUserBridge().loadUsersToController(startIndex, ROWS_PER_PAGE, searchTextField.getText(), regionSearchTextField.getText(), genderComboBox.getValue());
+            users = appController.getUserBridge().loadUsersToController(startIndex, ROWS_PER_PAGE, searchTextField.getText(), regionSearchTextField.getText(), genderComboBox.getValue(), "");
         } catch (IOException ex) {
             AlertWindowFactory.generateError(ex);
         }
@@ -458,7 +458,7 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
         clinician.getUndoStack().clear();
         clinician.getRedoStack().clear();
         appController.updateClinicians(clinician);
-        appController.getClinicianBridge().patchClinician(clinician, clinician.getStaffId());
+        appController.saveClinician(clinician);
         undoButton.setDisable(true);
         redoButton.setDisable(true);
     }
@@ -494,7 +494,7 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
             Optional<ButtonType> result = UnsavedChangesAlert.getAlertResult();
             if (result.isPresent() && result.get() == ButtonType.YES) {
                 appController.updateClinicians(clinician);
-                appController.getClinicianBridge().patchClinician(clinician, clinician.getStaffId());
+                appController.saveClinician(clinician);
             } else {
                 Clinician revertClinician = clinician.getUndoStack().firstElement().getState();
                 appController.updateClinicians(revertClinician);

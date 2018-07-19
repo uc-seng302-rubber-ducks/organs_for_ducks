@@ -284,9 +284,14 @@ public class AppController {
      * @param user User to be saved
      */
     public void saveUser(User user) {
-
         try {
-            User originalUser = user.getUndoStack().firstElement().getState();
+            User originalUser;
+            if (!user.getUndoStack().isEmpty()) {
+                originalUser = user.getUndoStack().firstElement().getState();
+            } else {
+                originalUser = user;
+            }
+
             if (userBridge.getUser(originalUser.getNhi()) != null) {
                 userBridge.putUser(user, originalUser.getNhi());
             } else {
@@ -366,7 +371,7 @@ public class AppController {
      *
      * @param clinician The current clinician.
      */
-    public void updateClinicians(Clinician clinician) { // todo: will we still need this? - jen 18/7
+    public void updateClinicians(Clinician clinician) {
         if (clinicians.contains(clinician)) {
             clinicians.remove(clinician);
             clinicians.add(clinician);
@@ -376,16 +381,28 @@ public class AppController {
     }
 
     /**
-     * Saves the current list of clinicians to the json
+     * Gets the original clinician before any changes were made and searches the database for the entry.
+     * The clinician is saved to the database by a put request if the entry is found, otherwise by a post request.
      *
      * @param clinician Clinician to be saved
      */
-    public void saveClinician(Clinician clinician) { // todo: REMOVE AFTER TESTING - jen 18/7
+    public void saveClinician(Clinician clinician) {
         try {
-            dataHandler.saveClinicians(clinicians);
-            Log.info("Successfully updated clinician with Staff ID: " + clinician.getStaffId());
+            Clinician originalClinician;
+            if (!clinician.getUndoStack().isEmpty()) {
+                originalClinician = clinician.getUndoStack().firstElement().getState();
+            } else {
+                originalClinician = clinician;
+            }
+
+            // todo: add in tokens when available - jen 19/7
+            if (clinicianBridge.getClinician(originalClinician.getStaffId(), "") != null) {
+                clinicianBridge.putClinician(clinician, originalClinician.getStaffId(), "");
+            } else {
+                clinicianBridge.postClinician(clinician, "");
+            }
         } catch (IOException e) {
-            Log.warning("Failed to update clinician with Staff ID: " + clinician.getStaffId(), e);
+            Log.warning("Could not save user " + clinician.getStaffId(), e);
         }
     }
 

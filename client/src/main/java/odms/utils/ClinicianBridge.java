@@ -63,10 +63,10 @@ public class ClinicianBridge extends Bifrost {
         });
     }
 
-    public Clinician getClinician(String staffID) throws IOException {
+    public Clinician getClinician(String staffID, String token) throws IOException {
         Clinician toReturn;
         String url = ip + "/clinicians/" + staffID;
-        Request request = new Request.Builder().url(url).build();
+        Request request = new Request.Builder().url(url).addHeader("x-auth-token", token).build();
         try {
             try (Response response = client.newCall(request).execute()) {
                 if (response.isSuccessful()) {
@@ -82,28 +82,28 @@ public class ClinicianBridge extends Bifrost {
         return toReturn;
     }
 
-    public void patchClinician(Clinician clinician, String staffID) {
+    public void putClinician(Clinician clinician, String staffID, String token) {
         String url = ip + "/clinicians/" + staffID;
         RequestBody requestBody = RequestBody.create(JSON, new Gson().toJson(clinician));
-        Request request = new Request.Builder().url(url).patch(requestBody).build();
+        Request request = new Request.Builder().url(url).addHeader("x-auth-token", token).put(requestBody).build();
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                Log.warning("Could not PATCH to " + url, e);
+                Log.warning("Could not PUT to " + url, e);
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 if (!response.isSuccessful()) {
-                    throw new IOException("Failed to PATCH to " + url);
+                    throw new IOException("Failed to PUT to " + url);
                 }
             }
         });
     }
 
-    public void deleteClinician(Clinician clinician) {
+    public void deleteClinician(Clinician clinician, String token) {
         String url = ip + "/clinicians/" + clinician.getStaffId();
-        Request request = new Request.Builder().url(url).delete().build();
+        Request request = new Request.Builder().url(url).addHeader("x-auth-token", token).delete().build();
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {

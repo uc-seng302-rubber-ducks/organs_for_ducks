@@ -44,14 +44,14 @@ public class ClinicianFilterGUITest extends ApplicationTest {
         adam.setContact(new EmergencyContact("Letifa", "0118999124", "1456789"));
         adam.getUndoStack().clear();
         UserBridge bridge = mock(UserBridge.class);
-        when(bridge.loadUsersToController(anyInt(), anyInt(), anyString(), anyString(), anyString())).thenReturn(Collections.singletonList(UserOverview.fromUser(adam)));
+        when(bridge.loadUsersToController(anyInt(), anyInt(), anyString(), anyString(), anyString(), "")).thenReturn(Collections.singletonList(UserOverview.fromUser(adam)));
         when(bridge.getUser("ABC1234")).thenReturn(adam);
 
         ClinicianBridge clinicianBridge = mock(ClinicianBridge.class);
         Clinician clinician = new Clinician();
         clinician.setStaffId("0");
         clinician.setFirstName("default");
-        when(clinicianBridge.getClinician(anyString())).thenReturn(clinician);
+        when(clinicianBridge.getClinician(anyString(), "")).thenReturn(clinician);
 
         AppController application = mock(AppController.class);
         AppController.setInstance(application);
