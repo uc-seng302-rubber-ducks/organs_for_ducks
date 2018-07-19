@@ -10,7 +10,6 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 import odms.commons.model.CacheManager;
-import odms.commons.model._enum.Directory;
 import odms.commons.utils.Log;
 import odms.controller.AppController;
 import odms.controller.gui.window.LoginController;

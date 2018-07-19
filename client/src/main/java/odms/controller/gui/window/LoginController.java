@@ -11,6 +11,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import odms.commons.exception.ApiException;
 import odms.commons.model.Administrator;
 import odms.commons.model.Clinician;
 import odms.commons.model.User;
@@ -18,9 +19,17 @@ import odms.commons.utils.HttpRequester;
 import odms.commons.utils.JsonHandler;
 import odms.commons.utils.Log;
 import odms.controller.AppController;
+import odms.utils.ClinicianBridge;
+import odms.utils.LoginBridge;
+import odms.controller.AppController;
 import odms.controller.gui.popup.utils.AlertWindowFactory;
 import odms.view.CLI;
 import okhttp3.*;
+import odms.utils.UserBridge;
+import odms.view.CLI;
+import okhttp3.*;
+import org.json.simple.JSONObject;
+import okhttp3.OkHttpClient;
 
 import java.io.IOException;
 
@@ -116,6 +125,7 @@ public class LoginController {
                     .setText("User was not found. \nTo register a new user, please click sign up.");
             return;
         }
+        if (user == null) return;
 
         FXMLLoader userLoader = new FXMLLoader(getClass().getResource(USER_VIEW_URL));
         Parent root;
@@ -137,6 +147,7 @@ public class LoginController {
      *
      * @return User if exists and authorized, Null otherwise
      */
+    /*
     private User getUser(String wantedUser) {
         User user;
         Response response = null;
@@ -164,6 +175,7 @@ public class LoginController {
         }
         return user;
     }
+    */
 
     /**
      * Logs in the clinician
@@ -179,13 +191,21 @@ public class LoginController {
             wantedClinician = staffIdTextField.getText();
         }
         String clinicianPassword = staffPasswordField.getText();
-        String token = loginToServer(wantedClinician, clinicianPassword, "clinician");
+        String token = null;
+        try {
+            token = new LoginBridge(new OkHttpClient()).loginToServer(wantedClinician, clinicianPassword, "clinician");
+        }
+        catch (ApiException ex) {
+            clinicianWarningLabel.setText("An error occurred. Please try again later. response code " + ex.getResponseCode());
+            //TODO popup warning
+        }
+
         if(token == null){
             return;
         }
         Clinician clinician = null;
         try {
-            clinician = getClinician(wantedClinician, token);
+            clinician = new ClinicianBridge(new OkHttpClient()).getClinician(wantedClinician, token);
         } catch (IOException e) {
             clinicianWarningLabel.setText(UNSPECIFIED_ERROR);
             Log.severe("Invalid request passed to the json handler", e);
@@ -208,77 +228,6 @@ public class LoginController {
                 Log.severe("failed to load clinician window", e);
             }
         }
-    }
-
-    /**
-     * Logs the clinicians and users into the server and returns the generated token to use for an authenticated session
-     * with the server
-     * @param wanted userId wanting to log in
-     * @param password passwrod of the user attempting to log in
-     * @param role role they are attempting to log in as
-     * @return token to use for the session
-     */
-    private String loginToServer(String wanted, String password, String role) {
-        Response response = null;
-        JsonObject body = new JsonObject();
-        body.addProperty("username" , wanted);
-        body.addProperty("password", password);
-        body.addProperty("role", role);
-        clinicianWarningLabel.setText("");
-        adminWarningLabel.setText("");
-
-        RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), body.toString());
-        HttpRequester requester = new HttpRequester(new OkHttpClient());
-        try {
-            Request request = new Request.Builder().url(appController.getServerURL() + "login/" ).post(requestBody).build();
-            response = requester.makeRequest(request);
-        } catch (IOException e) {
-            Log.severe(NETWORK_ERROR, e);
-            return null;
-        }
-        if (response == null) {
-            Log.warning("A null response was returned to the user");
-            clinicianWarningLabel.setText(NETWORK_ERROR);
-            adminWarningLabel.setText(NETWORK_ERROR);
-            return null;
-        }
-        if (!checkResponse(response.code())) return null;
-
-        return jsonHandler.decodeLogin(response);
-    }
-
-    /**
-     * gets the clinician object to use for the session
-     *
-     * @param wantedClinician clinician to log in as
-     * @param token authentication token
-     * @return clinician for use in the session
-     * @throws IOException Thrown when the returned json is bad
-     */
-    private Clinician getClinician(String wantedClinician, String token) throws IOException {
-
-        String url = appController.getServerURL() + "clinicians/"+ wantedClinician;
-        Response response = getResponse(token, url);
-        if (response == null) return null;
-
-        return new JsonHandler().decodeClinician(response);
-    }
-
-    /**
-     * gets the administrator object to use for the session
-     *
-     * @param wantedAdmin administrator to log in as
-     * @param token authentication token
-     * @return administrator for use in the session
-     * @throws IOException Thrown when the returned json is bad
-     */
-    private Administrator getAdmin(String wantedAdmin, String token) throws IOException {
-
-        String url = appController.getServerURL() + "admins/"+ wantedAdmin;
-        Response response = getResponse(token, url);
-        if (response == null) return null;
-
-        return new JsonHandler().decodeAdmin(response);
     }
 
     /**

@@ -34,8 +34,7 @@ import java.util.*;
  */
 public class AppController {
 
-    public static final String TOKEN_HEADER = "x-auth-token";
-    private static final String SERVER_URL = "http://localhost:4941/odms/v1/";
+
     private static final String USERS_FILE = Directory.JSON.directory() + "/users.json";
     private static final String CLINICIAN_FILE = Directory.JSON.directory() + "/clinicians.json";
     private static final String ADMIN_FILE = Directory.JSON.directory() + "/administrators.json";
@@ -159,9 +158,6 @@ public class AppController {
         }
     }
 
-    public String getServerURL(){
-        return SERVER_URL;
-    }
     /**
      * When called queries the history pointer and acquires the command located at the appropriate
      * point
