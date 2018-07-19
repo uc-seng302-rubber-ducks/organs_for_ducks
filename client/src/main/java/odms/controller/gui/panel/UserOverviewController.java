@@ -12,6 +12,8 @@ import odms.controller.AppController;
 import java.text.DecimalFormat;
 import java.time.temporal.ChronoUnit;
 
+import static odms.commons.utils.PhotoHelper.displayImage;
+
 public class UserOverviewController {
 
     //the Home page attributes
@@ -115,10 +117,7 @@ public class UserOverviewController {
         fNameValue.setText(user.getFirstName());
         DOBValue.setText(user.getDateOfBirth().toString());
 
-        if (user.getProfilePhotoFilePath() != null) {
-            Image image = new Image("file:" + user.getProfilePhotoFilePath(), 200, 200, false, true);
-            profilePicture.setImage(image);
-        }
+        displayImage(profilePicture, user.getProfilePhotoFilePath());
 
         if (user.getMiddleName() != null) {
             mNameValue.setText(user.getMiddleName());

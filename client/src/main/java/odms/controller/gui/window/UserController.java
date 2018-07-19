@@ -33,6 +33,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 
+import static odms.commons.utils.PhotoHelper.deleteTempDirectory;
+
 /**
  * Class for the functionality of the User view of the application
  */
@@ -301,16 +303,7 @@ public class UserController {
         }
     }
 
-    /**
-     * for deleting temp folder directory
-     * @throws IOException if there are issues with handling files.
-     */
-    private void deleteTempDirectory() throws IOException{
-        Files.walk(Paths.get(Directory.TEMP.directory()))
-                .sorted(Comparator.reverseOrder())
-                .map(Path::toFile)
-                .forEach(File::delete);
-    }
+
 
 
     /**
