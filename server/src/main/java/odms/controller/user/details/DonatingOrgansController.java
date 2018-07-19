@@ -1,4 +1,4 @@
-package odms.controller.user.details.controllers;
+package odms.controller.user.details;
 
 import odms.commons.model.User;
 import odms.commons.model._enum.Organs;

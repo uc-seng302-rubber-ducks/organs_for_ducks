@@ -27,7 +27,7 @@ public class DBHandlerTest {
 
     @Before
     public void beforeTest() throws SQLException {
-        odms.TestUtils.SQLScriptRunner.run();
+        //odms.TestUtils.SQLScriptRunner.run();
 
         dbHandler = new DBHandler();
         connection = mock(Connection.class);
@@ -163,5 +163,13 @@ public class DBHandlerTest {
 
         dbHandler.saveAdministrators(admins, connection);
         verify(mockStmt, times(4)).executeUpdate();
+    }
+
+    @Test
+    public void testGetTransplantList() throws SQLException {
+        when(mockResultSet.next()).thenReturn(true, false);
+        DBHandlerMocker.setTransplantResultSet(mockResultSet);
+        dbHandler.getTransplantDetails(connection,0, 1, "", "", new String[] {});
+        verify(mockStmt, times(1)).executeQuery();
     }
 }

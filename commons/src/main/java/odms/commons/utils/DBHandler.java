@@ -5,12 +5,14 @@ import odms.commons.model._enum.Organs;
 import odms.commons.model.datamodel.ContactDetails;
 import odms.commons.model.datamodel.Medication;
 import odms.commons.model.datamodel.ReceiverOrganDetailsHolder;
+import odms.commons.model.datamodel.TransplantDetails;
 import odms.commons.utils.db_strategies.AbstractUpdateStrategy;
 import odms.commons.utils.db_strategies.AdminUpdateStrategy;
 import odms.commons.utils.db_strategies.ClinicianUpdateStrategy;
 import odms.commons.utils.db_strategies.UserUpdateStrategy;
 
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.*;
 
 public class DBHandler {
@@ -172,7 +174,7 @@ public class DBHandler {
             statement.setString(1, staffId);
             try (ResultSet resultSet = statement.executeQuery()) {
                 while (resultSet != null && resultSet.next()) {
-                    clinician = getClincianBasicDetails(resultSet);
+                    clinician = getClinicianBasicDetails(resultSet);
                     clinician.setMiddleName(resultSet.getString("middleName"));
                     clinician.setLastName(resultSet.getString("lastName"));
                     clinician.setDateLastModified(resultSet.getTimestamp("lastModified").toLocalDateTime());
@@ -245,7 +247,7 @@ public class DBHandler {
      * @return a Clinician
      * @throws SQLException if there is an error extracting information from the resultSet
      */
-    private Clinician getClincianBasicDetails(ResultSet resultSet) throws SQLException {
+    private Clinician getClinicianBasicDetails(ResultSet resultSet) throws SQLException {
         return new Clinician(resultSet.getString("firstName"), resultSet.getString("staffId"), null);
     }
 
@@ -688,7 +690,7 @@ public class DBHandler {
      * @param loginType type of login ot check for
      * @return if the password is correct
      */
-    public boolean isVaildLogIn(Connection connection, String guess, String id, String loginType) {
+    public boolean isValidLogIn(Connection connection, String guess, String id, String loginType) {
         try (PreparedStatement statement = connection.prepareStatement(SELECT_PASS_DETAILS)) {
             if (loginType.equalsIgnoreCase("admin")) {
                 statement.setString(1, id);
@@ -811,6 +813,66 @@ public class DBHandler {
         if (toDelete != null) {
             toDelete.setDeleted(true);
             saveUsers(Collections.singleton(toDelete), conn);
+        }
+    }
+
+    /**
+     * gets all relevant details relating to users waiting to receive an organ transplant
+     * @see TransplantDetails
+     * @param conn connection to the target database
+     * @param startIndex row number to start reading from
+     * @param count number of results to return
+     * @param name string query to search in the name (first, middle, or last). should be an empty string if no restriction to be made
+     * @param region restrict results to a given region. search for regions LIKE the given string. should be an empty string if no restriction to be made
+     * @param organs restrict results to a given set of organs. should be null if no restriction to be made
+     * @return list of transplant details matching the above criteria
+     * @throws SQLException exception thrown during the transaction
+     */
+    public List<TransplantDetails> getTransplantDetails(Connection conn, int startIndex, int count, String name, String region, String[] organs) throws SQLException{
+        StringBuilder queryString = new StringBuilder("SELECT U.nhi, U.firstName, U.middleName, U.lastName, O.organName, Dates.dateRegistered, Q.region from OrganAwaiting JOIN Organ O ON OrganAwaiting.fkOrgansId = O.organId\n" +
+                "  LEFT JOIN User U ON OrganAwaiting.fkUserNhi = U.nhi\n" +
+                "  LEFT JOIN  (SELECT Address.fkUserNhi, Address.region from Address JOIN ContactDetails Detail ON Address.fkContactId = Detail.contactId\n" +
+                "  WHERE Address.fkContactId NOT IN (SELECT EmergencyContactDetails.fkContactId FROM EmergencyContactDetails)) Q ON U.nhi = Q.fkUserNhi\n" +
+                "  LEFT JOIN OrganAwaitingDates Dates ON awaitingId = Dates.fkAwaitingId\n" +
+                "    WHERE Dates.dateDeregistered IS NULL AND ((U.firstName LIKE ? OR U.middleName LIKE ? OR U.lastName LIKE ?) AND (IFNULL(Q.region, '') LIKE ?)\n");
+        if (organs != null && organs.length > 0) {
+            queryString.append("AND O.organName IN(");
+
+            queryString.append("'").append(organs[0]).append("'");
+            for (int i = 1; i < organs.length; i++) {
+                queryString.append(", ");
+                queryString.append("'").append(organs[i]).append("'");
+            }
+            queryString.append(" )");
+        }
+        queryString.append(") LIMIT ? OFFSET ?");
+        try(PreparedStatement stmt = conn.prepareStatement(queryString.toString())) {
+            //first, middle, and last names
+            stmt.setString(1, name + "%");
+            stmt.setString(2, name + "%");
+            stmt.setString(3, name + "%");
+            stmt.setString(4, region + "%");
+
+            stmt.setInt(5, count);
+            stmt.setInt(6, startIndex);
+
+            List<TransplantDetails> detailsList = new ArrayList<>();
+            try (ResultSet results = stmt.executeQuery()) {
+                while (results.next()) {
+                    String nameBuilder = results.getString(2) +
+                            " " +
+                            results.getString(3) +
+                            " " +
+                            results.getString(4);
+                    Organs selectedOrgan = Organs.valueOf(results.getString(5));
+                    LocalDate dateRegistered = results.getDate(6).toLocalDate();
+                    detailsList.add(new TransplantDetails(
+                            results.getString(1),
+                            nameBuilder,
+                            selectedOrgan, dateRegistered, results.getString(7)));
+                }
+                return detailsList;
+            }
         }
     }
 }
