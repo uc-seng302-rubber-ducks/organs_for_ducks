@@ -20,7 +20,7 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
     //<editor-fold desc="constants">
     private static final String CREATE_USER_STMT = "INSERT INTO User (nhi, firstName, middleName, lastName, preferedName, dob, dod, timeCreated, lastModified) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
     private static final String CREATE_USER_CONTACT_STMT = "INSERT INTO ContactDetails (fkUserNhi, homePhone, email, cellPhone) VALUES (?, ?, ?, ?)";
-    private static final String CREATE_ADDRESS_STMT = "INSERT INTO Address (fkContactId, streetNumber, streetName, neighbourhood, city, region, country) VALUES (?, ?, ?, ?, ?, ?, ?)";
+    private static final String CREATE_ADDRESS_STMT = "INSERT INTO Address (fkContactId, streetNumber, streetName, neighbourhood, city, region, country, fkUserNhi) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
     private static final String CREATE_HEALTH_DETAILS = "INSERT INTO HealthDetails (fkUserNhi, gender, birthGender, smoker, alcoholConsumption, height, weight, bloodType) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
     private static final String CREATE_EMERGENCY_STMT = "INSERT INTO EmergencyContactDetails (fkContactId, contactName, contactRelationship, fkUserNhi) VALUES (?, ?, ?, ?)";
     private static final String GET_LATEST_CONTACT_ENTRY = "SELECT MAX(contactId) AS contactId FROM ContactDetails WHERE fkUserNhi=?";
@@ -146,6 +146,7 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
                 createAddrStatement.setString(5, contactDetails.getCity());
                 createAddrStatement.setString(6, contactDetails.getRegion());
                 createAddrStatement.setString(7, contactDetails.getCountry());
+                createAddrStatement.setString(8, userNhi);
 
                 createAddrStatement.executeUpdate();
             }
