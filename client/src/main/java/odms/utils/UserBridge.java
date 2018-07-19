@@ -70,7 +70,7 @@ public class UserBridge extends Bifrost {
         try {
             try (Response response = client.newCall(request).execute()) {
                 if (response.isSuccessful()) {
-                    toReturn = new Gson().fromJson(response.body().string(), User.class);
+                    toReturn = handler.decodeUser(response);
                 } else {
                     toReturn = null;
                 }

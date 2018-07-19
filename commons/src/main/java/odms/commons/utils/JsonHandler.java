@@ -333,5 +333,11 @@ public final class JsonHandler extends DataHandler {
     }
 
 
+    public Administrator decodeAdmin(Response response) throws IOException {
+
+        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss")
+                .create();
+        return gson.fromJson(response.body().string(), Administrator.class);
+    }
 }
 
