@@ -42,7 +42,7 @@ public class DeleteUserGUITest extends ApplicationTest {
     }
 
     @Test
-    public void deletedUser() {
+    public void deletedUser() { //this test is unstable
         clickOn("#deleteUser");
         clickOn("OK");
         clickOn("#userIDTextField");

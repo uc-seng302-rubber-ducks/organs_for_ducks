@@ -44,7 +44,7 @@ public class LoginControllerGUITest extends ApplicationTest {
     }
 
     @Test
-    public void validDonorLogin() {
+    public void validDonorLogin() { //this test is unstable
         AppController.getInstance().getUsers().add(new User("A", LocalDate.now(), "ABC1234"));
         clickOn("#userIDTextField");
         write("ABC1234");
