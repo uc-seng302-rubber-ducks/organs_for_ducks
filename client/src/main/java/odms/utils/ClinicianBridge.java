@@ -73,25 +73,6 @@ public class ClinicianBridge extends Bifrost {
         });
     }
 
-    public Clinician getClinician(String staffID, String token) throws IOException {
-        Clinician toReturn;
-        String url = ip + "/clinicians/" + staffID;
-        Request request = new Request.Builder().url(url).addHeader("x-auth-token", token).build();
-        try {
-            try (Response response = client.newCall(request).execute()) {
-                if (response.isSuccessful()) {
-                    toReturn = handler.decodeClinician(response);
-                } else {
-                    toReturn = null;
-                }
-            }
-        } catch (IOException ex) {
-            Log.warning("Could not make GET call to /clinicians/" + staffID, ex);
-            throw ex;
-        }
-        return toReturn;
-    }
-
     public void putClinician(Clinician clinician, String staffID, String token) {
         String url = ip + "/clinicians/" + staffID;
         RequestBody requestBody = RequestBody.create(JSON, new Gson().toJson(clinician));
@@ -128,11 +109,6 @@ public class ClinicianBridge extends Bifrost {
             }
         });
     }
-
-
-
-
-
 
     public Clinician getClinician(String wantedClinician, String token) throws ApiException {
         Response response = null;
