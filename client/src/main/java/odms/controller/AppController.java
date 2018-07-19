@@ -284,9 +284,11 @@ public class AppController {
      * @param user User to be saved
      */
     public void saveUser(User user) {
+
         try {
-            if (userBridge.getUser(user.getNhi()) != null) {
-                userBridge.putUser(user, user.getNhi());
+            User originalUser = user.getUndoStack().firstElement().getState();
+            if (userBridge.getUser(originalUser.getNhi()) != null) {
+                userBridge.putUser(user, originalUser.getNhi());
             } else {
                 userBridge.postUser(user);
             }

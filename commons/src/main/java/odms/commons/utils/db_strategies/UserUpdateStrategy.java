@@ -33,7 +33,7 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
     private static final String CREATE_DONATING_ORGAN = "INSERT INTO OrganDonating (fkUserNhi, fkOrgansId) VALUES (?, ?)";
     private static final String CREATE_RECEIVING_ORGAN = "INSERT INTO OrganAwaiting (fkUserNhi, fkOrgansId) VALUES (?, ?)";
 
-    private static final String UPDATE_USER_STMT = "UPDATE User SET firstName = ?, middleName = ?, lastName = ?, preferedName = ?, dob = ?, dod = ?, lastModified = ? WHERE nhi = ?";
+    private static final String UPDATE_USER_STMT = "UPDATE User SET nhi = ?, firstName = ?, middleName = ?, lastName = ?, preferedName = ?, dob = ?, dod = ?, lastModified = ? WHERE nhi = ?";
     private static final String UPDATE_USER_HEALTH_STMT = "UPDATE HealthDetails SET gender = ?, birthGender = ?, smoker = ?, alcoholConsumption = ?, height = ?, weight = ?, bloodType = ? WHERE fkUserNhi = ?";
 
     private static final String UPDATE_USER_CONTACT_STMT = "UPDATE ContactDetails JOIN Address ON contactId = fkContactId " +
@@ -544,18 +544,19 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
     private void updateUserDetails(User user, Connection connection) throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement(UPDATE_USER_STMT)) {
 
-            statement.setString(1, user.getFirstName());
-            statement.setString(2, user.getMiddleName());
-            statement.setString(3, user.getLastName());
-            statement.setString(4, user.getPreferredFirstName());
-            statement.setDate(5, Date.valueOf(user.getDateOfBirth()));
+            statement.setString(1, user.getNhi());
+            statement.setString(2, user.getFirstName());
+            statement.setString(3, user.getMiddleName());
+            statement.setString(4, user.getLastName());
+            statement.setString(5, user.getPreferredFirstName());
+            statement.setDate(6, Date.valueOf(user.getDateOfBirth()));
             if (user.getDateOfDeath() != null) {
-                statement.setDate(6, Date.valueOf(user.getDateOfDeath()));
+                statement.setDate(7, Date.valueOf(user.getDateOfDeath()));
             } else {
-                statement.setNull(6, Types.DATE);
+                statement.setNull(7, Types.DATE);
             }
-            statement.setTimestamp(7, Timestamp.valueOf(user.getLastModified()));
-            statement.setString(8, user.getNhi());
+            statement.setTimestamp(8, Timestamp.valueOf(user.getLastModified()));
+            statement.setString(9, user.getNhi());
 
             statement.executeUpdate();
         }
