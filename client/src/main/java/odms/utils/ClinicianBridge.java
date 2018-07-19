@@ -80,7 +80,7 @@ public class ClinicianBridge extends Bifrost {
         try {
             try (Response response = client.newCall(request).execute()) {
                 if (response.isSuccessful()) {
-                    toReturn = new Gson().fromJson(response.body().string(), Clinician.class);
+                    toReturn = handler.decodeClinician(response);
                 } else {
                     toReturn = null;
                 }

@@ -702,7 +702,9 @@ public class DBHandler {
                 statement.setString(2, id);
             }
             try (ResultSet rs = statement.executeQuery()) {
-                rs.next();
+                if(!rs.next()){
+                    return false;
+                }
                 String hash = rs.getString("hash");
                 String salt = rs.getString("salt");
                 return PasswordManager.isExpectedPassword(guess, salt, hash);
