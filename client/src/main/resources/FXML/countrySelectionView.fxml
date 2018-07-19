@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="odms.controller.gui.popup.CountrySelectionController">
+   <children>
+      <Button fx:id="saveCountrySelection" layoutX="451.0" layoutY="338.0" mnemonicParsing="false" onAction="#saveCountriesSelection" text="Save" />
+      <Button fx:id="cancelCountrySelection" layoutX="97.0" layoutY="338.0" mnemonicParsing="false" onAction="#cancelCountrySelection" text="Cancel" />
+      <TextField fx:id="searchCountry" layoutX="146.0" layoutY="41.0" prefHeight="25.0" prefWidth="308.0" />
+      <ListView fx:id="countrySelection" layoutX="130.0" layoutY="94.0" prefHeight="224.0" prefWidth="340.0" />
+   </children>
+</AnchorPane>

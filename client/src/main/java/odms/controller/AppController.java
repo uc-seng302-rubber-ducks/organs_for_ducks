@@ -9,6 +9,7 @@ import odms.commons.model.Change;
 import odms.commons.model.Clinician;
 import odms.commons.model.User;
 import odms.commons.model._enum.Directory;
+import odms.commons.model._enum.Regions;
 import odms.commons.model.datamodel.Medication;
 import odms.commons.model.datamodel.TransplantDetails;
 import odms.commons.utils.DataHandler;
@@ -114,7 +115,7 @@ public class AppController {
 
         allowedCountries = new ArrayList<>(); //TODO: removed this line after the functionality which enable clinician to filter countries is implemented.
         allowedCountries.addAll(allCountries); //TODO: removed this line after the functionality which enable clinician to filter countries is implemented.
-
+        allowedCountries.sort(String.CASE_INSENSITIVE_ORDER);
     }
 
     /**
@@ -165,6 +166,7 @@ public class AppController {
             Locale obj = new Locale("", countryCode);
             allCountries.add(obj.getDisplayCountry());
         }
+        allCountries.sort(String.CASE_INSENSITIVE_ORDER);
     }
 
     /**
@@ -179,17 +181,17 @@ public class AppController {
         return allowedCountries;
     }
 
+    public void setAllowedCountries(List<String> allowedCountries) {
+        this.allowedCountries = allowedCountries;
+    }
+
     /**
      * create a list of all New Zealand Region names.
      */
     private void generateAllNZRegion(){
-        allNZRegion = new ArrayList<String>() {
-            {
-                add("Canterbury");
-                add("Chatham Islands");
-                add("Otago");
-            }
-        };
+        allNZRegion = new ArrayList<>();
+        Arrays.asList(Regions.values()).forEach(region -> allNZRegion.add(region.toString()));
+        allNZRegion.sort(String.CASE_INSENSITIVE_ORDER);
     }
 
     /**

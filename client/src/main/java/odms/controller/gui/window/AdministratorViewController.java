@@ -24,6 +24,7 @@ import odms.controller.gui.FileSelectorController;
 import odms.controller.gui.UnsavedChangesAlert;
 import odms.controller.gui.panel.TransplantWaitListController;
 import odms.controller.gui.popup.AlertUnclosedWindowsController;
+import odms.controller.gui.popup.CountrySelectionController;
 import odms.controller.gui.popup.DeletedUserController;
 import odms.controller.gui.statusBarController;
 import odms.commons.exception.InvalidFileException;
@@ -574,6 +575,24 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
             importRoleJson(User.class, filename);
         } else {
             importRoleCsv(User.class, filename);
+        }
+    }
+
+    @FXML
+    void selectCountries(){
+        FXMLLoader countrySelectionLoader = new FXMLLoader(
+                getClass().getResource("/FXML/countrySelectionView.fxml"));
+        Parent root;
+        try {
+            root = countrySelectionLoader.load();
+            CountrySelectionController countrySelectionController = countrySelectionLoader.getController();
+            Stage stage = new Stage();
+            countrySelectionController.init(administrator, stage, appController);
+            stage.setScene(new Scene(root));
+            stage.show();
+            Log.info("successfully launched countrySelectionView pop-up window for admin user name: " + administrator.getUserName());
+        } catch (IOException e) {
+            Log.severe("failed to load countrySelectionView pop-up window admin user name: " + administrator.getUserName(), e);
         }
     }
 
