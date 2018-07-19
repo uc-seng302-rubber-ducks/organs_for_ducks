@@ -245,6 +245,14 @@ public class AppController {
     }
 
     /**
+     * Never use this unless testing. Please.
+     * @param appController controller instance to return
+     */
+    public static void setInstance(AppController appController) {
+        controller = appController;
+    }
+
+    /**
      * @param users An array list of users.
      */
     public void setUsers(ArrayList<User> users) {
