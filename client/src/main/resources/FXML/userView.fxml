@@ -113,8 +113,8 @@
           </Menu>
           <Menu mnemonicParsing="false" text="Edit">
               <items>
-                  <MenuItem mnemonicParsing="false" onAction="#delete" text="Delete Profile"/>
                   <MenuItem fx:id="editDetails" mnemonicParsing="false" onAction="#updateDetails" text="User Details"/>
+                  <MenuItem mnemonicParsing="false" onAction="#delete" text="Delete Profile"/>
               </items>
           </Menu>
         </menus>

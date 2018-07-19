@@ -24,7 +24,6 @@ import odms.controller.gui.FileSelectorController;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -524,7 +523,7 @@ public class UpdateUserController {
             File inFile = new File(filename);
 
             if (inFile.length() > 2000000) { //if more than 2MB
-                System.out.println("image exceeded 2MB!"); //TODO: Replace with javafx label
+                System.out.println("image exceeded 2MB!"); //TODO: Replace with javafx label or a pop up box
                 isValid = false;
             }
 
