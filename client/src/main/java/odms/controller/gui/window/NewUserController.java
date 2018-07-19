@@ -482,7 +482,7 @@ public class NewUserController {
         }
 
         String fName = fNameInput.getText();
-        valid = (AttributeValidation.checkRequiredString(fNameInput.getText()));
+        valid &= (AttributeValidation.checkRequiredString(fNameInput.getText()));
         if (!valid) {
             invalidFirstName.setVisible(true);
         }
@@ -507,7 +507,7 @@ public class NewUserController {
 
         if (valid && user == null) {
             createUser(nhi, fName, dob);
-        } else if (user != null) {
+        } else if (valid) { // user is not null
             existingNHI.setVisible(true);
         }
     }
