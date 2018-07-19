@@ -604,6 +604,8 @@ public class UpdateUserController {
     }
 
     private boolean checkChangedProperty(String newString, String oldString) {
+        oldString = oldString == null ? "" : oldString;
+        newString = newString == null ? "" : newString;
         return ((newString.isEmpty() && !oldString.isEmpty()) ||
                 (!newString.isEmpty() && !newString.equals(oldString)));
     }

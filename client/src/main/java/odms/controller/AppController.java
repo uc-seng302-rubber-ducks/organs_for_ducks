@@ -17,6 +17,10 @@ import odms.controller.gui.statusBarController;
 import odms.controller.gui.window.AdministratorViewController;
 import odms.controller.gui.window.ClinicianController;
 import odms.controller.gui.window.UserController;
+import odms.utils.AdministratorBridge;
+import odms.utils.ClinicianBridge;
+import odms.utils.UserBridge;
+import okhttp3.OkHttpClient;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -44,6 +48,10 @@ public class AppController {
     private ArrayList<String[]> historyOfCommands = new ArrayList<>();
     private int historyPointer = 0;
     private DataHandler dataHandler = new JsonHandler();
+    private UserBridge userBridge = new UserBridge(new OkHttpClient());
+    private ClinicianBridge clinicianBridge = new ClinicianBridge(new OkHttpClient());
+    private AdministratorBridge administratorBridge = new AdministratorBridge(new OkHttpClient());
+
     private UserController userController = new UserController();
     private ClinicianController clinicianController = new ClinicianController();
     private AdministratorViewController administratorViewController = new AdministratorViewController();
@@ -103,7 +111,7 @@ public class AppController {
             defaultClinician.setRegion("region");
             defaultClinician.getUndoStack().clear();
             clinicians.add(defaultClinician);
-            saveClinician(defaultClinician);
+            //saveClinician(defaultClinician); todo: temporary - jen 18/7
         }
     }
 
@@ -206,10 +214,10 @@ public class AppController {
      * @return The user with the matching nhi, or null if no user matches.
      */
     public User findUser(String nhi) {
-        for (User u : users) {
-            if ((u.getNhi()).equalsIgnoreCase(nhi) && !u.isDeleted()) {
-                return u;
-            }
+        try {
+            return userBridge.getUser(nhi);
+        } catch (IOException e) {
+            Log.warning("Failed to get user " + nhi);
         }
         return null;
     }
@@ -268,12 +276,16 @@ public class AppController {
      * @param user User to be saved
      */
     public void saveUser(User user) {
-        try {
-            dataHandler.saveUsers(users);
-            //JsonHandler.saveChangelog(changelogWrite, user.getFullName().toLowerCase().replace(" ", "_"));
 
+        try {
+            User originalUser = user.getUndoStack().firstElement().getState();
+            if (userBridge.getUser(originalUser.getNhi()) != null) {
+                userBridge.putUser(user, originalUser.getNhi());
+            } else {
+                userBridge.postUser(user);
+            }
         } catch (IOException e) {
-            Log.warning("failed to update users with NHI: " + user.getNhi(), e);
+            Log.warning("Could not save user " + user.getNhi(), e);
         }
     }
 
@@ -346,7 +358,7 @@ public class AppController {
      *
      * @param clinician The current clinician.
      */
-    public void updateClinicians(Clinician clinician) {
+    public void updateClinicians(Clinician clinician) { // todo: will we still need this? - jen 18/7
         if (clinicians.contains(clinician)) {
             clinicians.remove(clinician);
             clinicians.add(clinician);
@@ -360,7 +372,7 @@ public class AppController {
      *
      * @param clinician Clinician to be saved
      */
-    public void saveClinician(Clinician clinician) {
+    public void saveClinician(Clinician clinician) { // todo: REMOVE AFTER TESTING - jen 18/7
         try {
             dataHandler.saveClinicians(clinicians);
             Log.info("Successfully updated clinician with Staff ID: " + clinician.getStaffId());
@@ -643,5 +655,21 @@ public class AppController {
 
     public void setClinicians(List<Clinician> clinicians) {
         this.clinicians = clinicians;
+    }
+
+    public Collection<UserOverview> getUserOverviews() {
+        return overviews;
+    }
+
+    public AdministratorBridge getAdministratorBridge() {
+        return administratorBridge;
+    }
+
+    public UserBridge getUserBridge() {
+        return userBridge;
+    }
+
+    public ClinicianBridge getClinicianBridge() {
+        return clinicianBridge;
     }
 }

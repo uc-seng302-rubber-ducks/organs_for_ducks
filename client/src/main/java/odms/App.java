@@ -9,19 +9,16 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.layout.Region;
 import javafx.stage.Stage;
-import odms.controller.AppController;
-import odms.controller.gui.window.LoginController;
 import odms.commons.model.CacheManager;
 import odms.commons.model._enum.Directory;
 import odms.commons.utils.Log;
+import odms.controller.AppController;
+import odms.controller.gui.window.LoginController;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.Optional;
-import java.util.logging.*;
 
 /**
  * The main class of the application
@@ -38,26 +35,7 @@ public class App extends Application {
     public void start(Stage primaryStage) throws Exception {
 
         //<editor-fold desc="logging setup">
-        Logger logger = Logger.getLogger("ODMS");
-        Handler handler;
-        try {
-            //creates file/path if it doesn't already exist
-            Files.createDirectories(Paths.get(Directory.LOGS.directory()));
-            handler = new FileHandler(Directory.LOGS
-                    .directory() + bootTime + ".log", true);
-
-            SimpleFormatter formatter = new SimpleFormatter();
-            handler.setFormatter(formatter);
-            logger.addHandler(handler);
-
-            //disables logging to console
-            logger.setUseParentHandlers(false);
-
-        } catch (IOException ex) {
-            logger.log(Level.WARNING, "failed to set up logging to file", ex);
-        } catch (SecurityException ex) {
-            logger.log(Level.SEVERE, "failed to set up logging to file", ex);
-        }
+        Log.setup(false);
         //</editor-fold>
 
 

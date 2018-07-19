@@ -18,6 +18,7 @@ import odms.commons.utils.HttpRequester;
 import odms.commons.utils.JsonHandler;
 import odms.commons.utils.Log;
 import odms.controller.AppController;
+import odms.controller.gui.popup.utils.AlertWindowFactory;
 import odms.view.CLI;
 import okhttp3.*;
 
@@ -96,13 +97,25 @@ public class LoginController {
     @FXML
     void loginUser() {
         userWarningLabel.setText("");
-        String wantedUser = userIDTextField.getText();
-        if (wantedUser.isEmpty()) {
+        String wantedDonor = userIDTextField.getText();
+        User user = null;
+
+        if (wantedDonor.isEmpty()) {
             userWarningLabel.setText("Please enter an NHI.");
             return;
+        } else {
+            //user = appController.findUser(wantedDonor);
+            try {
+                user = appController.getUserBridge().getUser(wantedDonor);
+            } catch (IOException e) {
+                AlertWindowFactory.generateError(e);
+            }
         }
-        User user = getUser(wantedUser);
-        if (user == null) return;
+        if (user == null || user.isDeleted()) {
+            userWarningLabel
+                    .setText("User was not found. \nTo register a new user, please click sign up.");
+            return;
+        }
 
         FXMLLoader userLoader = new FXMLLoader(getClass().getResource(USER_VIEW_URL));
         Parent root;

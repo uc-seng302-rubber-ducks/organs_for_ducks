@@ -1,6 +1,13 @@
 package odms.commons.utils;
 
-import java.util.logging.Level;
+import odms.commons.model._enum.Directory;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.util.logging.*;
 
 /**
  * static logger class This is essentially a static wrapper for the java.utils.logger. Use info for
@@ -12,6 +19,42 @@ import java.util.logging.Level;
 public class Log {
 
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger("ODMS");
+    private static long bootTime = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC);
+
+    private Log() {
+    }
+
+    /**
+     * Sets up the Logger to start logging stuff
+     */
+    public static void setup(boolean server) {
+        Logger logger = Logger.getLogger("ODMS");
+        Handler handler;
+        try {
+            //creates file/path if it doesn't already exist
+            Files.createDirectories(Paths.get(Directory.SERVER_LOGS.directory()));
+            Files.createDirectories(Paths.get(Directory.CLIENT_LOGS.directory()));
+            if (server) {
+                handler = new FileHandler(Directory.SERVER_LOGS
+                        .directory() + bootTime + ".log", true);
+            } else {
+                handler = new FileHandler(Directory.CLIENT_LOGS
+                        .directory() + bootTime + ".log", true);
+            }
+
+            SimpleFormatter formatter = new SimpleFormatter();
+            handler.setFormatter(formatter);
+            logger.addHandler(handler);
+
+            //disables logging to console
+            logger.setUseParentHandlers(server);
+
+        } catch (IOException ex) {
+            logger.log(Level.WARNING, "failed to set up logging to file", ex);
+        } catch (SecurityException ex) {
+            logger.log(Level.SEVERE, "failed to set up logging to file", ex);
+        }
+    }
 
     /**
      * Creates a log entry at the INFO level. If there is an exception to be logged, please escalate

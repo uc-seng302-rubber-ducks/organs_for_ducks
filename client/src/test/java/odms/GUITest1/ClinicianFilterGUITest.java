@@ -1,9 +1,13 @@
 package odms.GUITest1;
 
 import odms.App;
-import odms.controller.AppController;
+import odms.TestUtils.CommonTestMethods;
+import odms.TestUtils.TableViewsMethod;
 import odms.commons.model.EmergencyContact;
 import odms.commons.model.User;
+import odms.commons.model.dto.UserOverview;
+import odms.controller.AppController;
+import odms.utils.UserBridge;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -11,12 +15,16 @@ import org.junit.Test;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.matcher.control.LabeledMatchers;
-import odms.TestUtils.CommonTestMethods;
-import odms.TestUtils.TableViewsMethod;
 
+import java.io.IOException;
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.concurrent.TimeoutException;
 
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 import static org.testfx.api.FxAssert.verifyThat;
 
 public class ClinicianFilterGUITest extends ApplicationTest {
@@ -27,7 +35,7 @@ public class ClinicianFilterGUITest extends ApplicationTest {
     }
 
     @Before
-    public void setUp() throws TimeoutException {
+    public void setUp() throws TimeoutException, IOException {
         FxToolkit.registerPrimaryStage();
         FxToolkit.setupApplication(App.class);
         AppController.getInstance().getUsers().clear();
@@ -40,7 +48,9 @@ public class ClinicianFilterGUITest extends ApplicationTest {
         write("0", 0);
         clickOn("#staffPasswordField");
         write("admin", 0);
-
+        UserBridge bridge = mock(UserBridge.class);
+        when(bridge.loadUsersToController(anyInt(), anyInt(), anyString(), anyString(), anyString())).thenReturn(Collections.singletonList(UserOverview.fromUser(adam)));
+        when(bridge.getUser("ABC1234")).thenReturn(adam);
     }
 
     @Test
@@ -49,7 +59,7 @@ public class ClinicianFilterGUITest extends ApplicationTest {
         clickOn("#searchTab");
         clickOn("#searchTextField");
         System.out.println(AppController.getInstance().getUsers());
-        write("Adam", 0);
+        write("Adam", 300);
         doubleClickOn(TableViewsMethod.getCell("#searchTableView", 0, 0));
         verifyThat("#NHIValue", LabeledMatchers.hasText("ABC1234"));
     }
@@ -65,7 +75,7 @@ public class ClinicianFilterGUITest extends ApplicationTest {
         clickOn("#loginCButton");
         clickOn("#searchTab");
         clickOn("#searchTextField");
-        write("Adam", 0);
+        write("Adam", 300);
         doubleClickOn(TableViewsMethod.getCell("#searchTableView", 0, 0));
         verifyThat("#NHIValue", LabeledMatchers.hasText("ABC1234"));
     }
