@@ -113,6 +113,7 @@ public class LoginController {
                     .setText("User was not found. \nTo register a new user, please click sign up.");
             return;
         }
+        appController.setToken(null);
 
         FXMLLoader userLoader = new FXMLLoader(getClass().getResource(USER_VIEW_URL));
         Parent root;
@@ -153,6 +154,7 @@ public class LoginController {
         if (token == null) {
             return;
         }
+
         Clinician clinician = null;
         try {
             clinician = appController.getClinicianBridge().getClinician(wantedClinician, token);
@@ -168,6 +170,7 @@ public class LoginController {
                     getClass().getResource(CLINICIAN_VIEW_URL));
             Parent root;
             try {
+                appController.setToken(token);
                 root = clinicianLoader.load();
                 stage.setScene(new Scene(root));
                 ClinicianController clinicianController = clinicianLoader.getController();

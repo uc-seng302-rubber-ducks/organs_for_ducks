@@ -57,6 +57,8 @@ public class AppController {
     private odms.controller.gui.statusBarController statusBarController = new statusBarController();
     private Stack<User> redoStack = new Stack<>();
 
+    private String token;
+
     /**
      * Creates new instance of AppController
      */
@@ -287,6 +289,12 @@ public class AppController {
             if (userBridge.getUser(originalUser.getNhi()) != null) {
                 userBridge.putUser(user, originalUser.getNhi());
                 userBridge.postDonatingOrgans(user.getDonorDetails().getOrgans(), originalUser.getNhi());
+                if (token != null) {
+                    userBridge.postReceivingOrgans(user.getReceiverDetails().getOrgans(), originalUser.getNhi(), token);
+                    userBridge.postUserProcedures(user.getMedicalProcedures(), originalUser.getNhi(), token);
+                    userBridge.postMedications(user.getCurrentMedication(), originalUser.getNhi(), token);
+                    userBridge.postDiseases(user.getCurrentDiseases(), originalUser.getNhi(), token);
+                }
             } else {
                 userBridge.postUser(user);
             }
@@ -685,5 +693,13 @@ public class AppController {
 
     public ClinicianBridge getClinicianBridge() {
         return clinicianBridge;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    public String getToken() {
+        return token;
     }
 }
