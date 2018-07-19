@@ -227,12 +227,8 @@ public class AppController {
         List<User> sessionList = getUsers();
         user.setDeleted(true);
         setUsers((ArrayList<User>) sessionList);
-        try {
-            dataHandler.saveUsers(sessionList);
 
-        } catch (IOException e) {
-            Log.warning("failed to delete a user with NHI: " + user.getNhi(), e);
-        }
+        userBridge.deleteUser(user);
     }
 
 
@@ -413,11 +409,7 @@ public class AppController {
     public void deleteClinician(Clinician clinician) {
         clinician.setDeleted(true);
 
-        try {
-            dataHandler.saveClinicians(clinicians);
-        } catch (IOException e) {
-            Log.warning("failed to delete a clinician", e);
-        }
+        clinicianBridge.deleteClinician(clinician, clinician.getStaffId());
     }
 
     /**
