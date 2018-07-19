@@ -2,13 +2,13 @@ package odms.GUITest2;
 
 import javafx.scene.input.KeyCode;
 import odms.App;
-import odms.controller.AppController;
+import odms.TestUtils.CommonTestMethods;
 import odms.commons.model.User;
+import odms.controller.AppController;
 import org.junit.*;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.matcher.control.LabeledMatchers;
-import odms.TestUtils.CommonTestMethods;
 
 import java.time.LocalDate;
 import java.util.concurrent.TimeoutException;
@@ -112,7 +112,6 @@ public class LoginControllerGUITest extends ApplicationTest {
 
     @Test
     public void invalidAdminLogin() {
-
         clickOn("#administratorTab");
         clickOn("#adminUsernameTextField");
         write("therock");

@@ -155,7 +155,7 @@ public class LoginController {
             return;
         }
 
-        Clinician clinician = null;
+        Clinician clinician;
         try {
             clinician = appController.getClinicianBridge().getClinician(wantedClinician, token);
         } catch (IOException e) {
@@ -198,7 +198,7 @@ public class LoginController {
             wantedAdmin = adminUsernameTextField.getText();
         }
         String adminPassword = adminPasswordField.getText();
-        String token = null;
+        String token;
         try {
             token = loginBridge.loginToServer(wantedAdmin, adminPassword, "admin");
         } catch (ApiException e) {
@@ -209,7 +209,7 @@ public class LoginController {
         if (token == null) {
             return;
         }
-        Administrator administrator = null;
+        Administrator administrator;
         try {
             administrator = appController.getAdministratorBridge().getAdmin(wantedAdmin, token);
         } catch (IOException e) {
