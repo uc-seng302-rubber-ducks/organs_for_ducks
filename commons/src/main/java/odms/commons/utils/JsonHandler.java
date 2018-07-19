@@ -42,10 +42,10 @@ public final class JsonHandler extends DataHandler {
         Gson gson = new GsonBuilder().registerTypeAdapter(DateTime.class, (JsonSerializer<DateTime>)
                 (json, typeOfSrc, context) -> new JsonPrimitive(ISODateTimeFormat.dateTime().print(json)))
                 .setPrettyPrinting().create();
-        FileWriter writer = new FileWriter(outFile);
-        String usersString = gson.toJson(users);
-        writer.write(usersString);
-        writer.close();
+        try (FileWriter writer = new FileWriter(outFile)) {
+            String usersString = gson.toJson(users);
+            writer.write(usersString);
+        }
         Log.info("Handler: successfully wrote user to file");
         return true;
     }
@@ -134,10 +134,10 @@ public final class JsonHandler extends DataHandler {
         Gson gson = new GsonBuilder().registerTypeAdapter(DateTime.class, (JsonSerializer<DateTime>)
                 (json, typeOfSrc, context) -> new JsonPrimitive(ISODateTimeFormat.dateTime().print(json)))
                 .create();
-        FileWriter writer = new FileWriter(outFile);
-        String usersString = gson.toJson(clinicians);
-        writer.write(usersString);
-        writer.close();
+        try (FileWriter writer = new FileWriter(outFile)) {
+            String usersString = gson.toJson(clinicians);
+            writer.write(usersString);
+        }
         Log.info("successfully wrote clinicians to file");
         return true;
     }
@@ -188,10 +188,10 @@ public final class JsonHandler extends DataHandler {
                 .excludeFieldsWithoutExposeAnnotation()
                 .create();
 
-        FileWriter writer = new FileWriter(outFile);
-        String adminsString = gson.toJson(admins);
-        writer.write(adminsString);
-        writer.close();
+        try (FileWriter writer = new FileWriter(outFile)) {
+            String adminsString = gson.toJson(admins);
+            writer.write(adminsString);
+        }
         return true;
     }
 
@@ -240,10 +240,10 @@ public final class JsonHandler extends DataHandler {
         Gson gson = new GsonBuilder().registerTypeAdapter(DateTime.class, (JsonSerializer<DateTime>)
                 (json, typeOfSrc, context) -> new JsonPrimitive(ISODateTimeFormat.dateTime().print(json)))
                 .create();
-        FileWriter writer = new FileWriter(outFile);
-        String usersString = gson.toJson(changes);
-        writer.write(usersString);
-        writer.close();
+        try (FileWriter writer = new FileWriter(outFile)) {
+            String usersString = gson.toJson(changes);
+            writer.write(usersString);
+        }
         Log.info("successfully wrote changelog to file");
     }
 

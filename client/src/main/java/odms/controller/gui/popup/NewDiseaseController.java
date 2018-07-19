@@ -100,7 +100,7 @@ public class NewDiseaseController {
         UserController userController = appController.getUserController();
         try {
             userController.showUser(currentUser);
-            userController.showDonorDiseases(currentUser, false);
+            //userController.showDonorDiseases(currentUser, false); //Pointless
             Log.info("successfully closed New Disease Window for User NHI: " + currentUser.getNhi());
         } catch (NullPointerException ex) {
             Log.severe("Failed to close New Disease Window for User NHI: " + currentUser.getNhi(), ex);

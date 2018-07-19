@@ -94,6 +94,7 @@ public class DiseasesTabPageController {
 
         ObservableList<Disease> pastDisease = FXCollections.observableList(user.getPastDiseases().stream().filter(d -> !d.isDeleted()).collect(Collectors.toList()));
         pastDiseaseTableView.setItems(pastDisease);
+
         if (init) {
             TableColumn<Disease, LocalDate> diagnosisDateColumn = new TableColumn<>("Diagnosis Date");
             diagnosisDateColumn.setMinWidth(110);
@@ -143,11 +144,9 @@ public class DiseasesTabPageController {
             nameColumn2.setCellValueFactory(new PropertyValueFactory<>("name"));
 
             pastDiseaseTableView.getColumns().addAll(diagnosisDateColumn2, nameColumn2);
-
-            currentDiseaseTableView.refresh();
-            pastDiseaseTableView.refresh();
-
         }
+        currentDiseaseTableView.refresh();
+        pastDiseaseTableView.refresh();
     }
 
     /**
@@ -157,11 +156,14 @@ public class DiseasesTabPageController {
      */
     @FXML
     private void updateDisease() {
+        currentUser.saveStateForUndo();
         if (currentDiseaseTableView.getSelectionModel().getSelectedItem()
                 != null) { //Might error, dunno what it returns if nothing is selected, hopefully -1?
             launchDiseasesGui(currentDiseaseTableView.getSelectionModel().getSelectedItem());
         } else if (pastDiseaseTableView.getSelectionModel().getSelectedItem() != null) {
             launchDiseasesGui(pastDiseaseTableView.getSelectionModel().getSelectedItem());
+        } else {
+            currentUser.getUndoStack().pop();
         }
     }
 
@@ -197,6 +199,7 @@ public class DiseasesTabPageController {
      */
     @FXML
     private void deleteDisease() {
+        currentUser.saveStateForUndo();
         if (currentDiseaseTableView.getSelectionModel().getSelectedIndex() >= 0) {
             if (!currentDiseaseTableView.getSelectionModel().getSelectedItem().getIsChronic()) {
                 currentDiseaseTableView.getSelectionModel().getSelectedItem().setDeleted(true);
@@ -209,9 +212,11 @@ public class DiseasesTabPageController {
             pastDiseaseTableView.getSelectionModel().getSelectedItem().setDeleted(true);
             Log.info("past disease: " + pastDiseaseTableView.getSelectionModel().getSelectedItem() + " deleted for User NHI: " + currentUser.getNhi());
         } else {
+            currentUser.getUndoStack().pop();
             Log.warning("Unable to delete past disease for User NHI: " + currentUser.getNhi() + ", no disease selected");
         }
 
+        parent.updateUndoRedoButtons();
         this.application.update(currentUser);
         showUserDiseases(currentUser, false); //Reload the scene?
     }

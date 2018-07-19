@@ -191,8 +191,19 @@ public class User extends Undoable<User> implements Listenable {
             newUser.updateHistory = new HashMap<>();
         }
         newUser.miscAttributes = new ArrayList<>(user.miscAttributes);
-        newUser.currentMedication = new ArrayList<>(user.currentMedication);
-        newUser.previousMedication = new ArrayList<>(user.previousMedication);
+
+        for (Medication currentMed : user.currentMedication) {
+            Medication newCurrentMed = new Medication(currentMed.getMedName(), currentMed.getMedicationTimes());
+            newCurrentMed.setDeleted(currentMed.isDeleted());
+            newUser.currentMedication.add(newCurrentMed);
+        }
+
+        for (Medication previousMed : user.previousMedication) {
+            Medication oldMed = new Medication(previousMed.getMedName(), previousMed.getMedicationTimes());
+            oldMed.setDeleted(previousMed.isDeleted());
+            newUser.previousMedication.add(oldMed);
+        }
+
         newUser.donorDetails = new DonorDetails(newUser);
         for (Organs o : user.donorDetails.getOrgans()) {
             newUser.donorDetails.getOrgans().add(o);
@@ -213,8 +224,21 @@ public class User extends Undoable<User> implements Listenable {
             newUser.receiverDetails.getOrgans().put(o, detailHolders);
         }
 
-        newUser.currentDiseases = new ArrayList<>(user.currentDiseases);
-        newUser.pastDiseases = new ArrayList<>(user.pastDiseases);
+        newUser.commonOrgans = new HashSet<>(user.commonOrgans);
+
+        newUser.currentDiseases = new ArrayList<>();
+        for (Disease cd : user.currentDiseases) {
+            Disease newcd = new Disease(cd.getName(), cd.getIsChronic(), cd.getIsCured(), cd.getDiagnosisDate());
+            newcd.setDeleted(cd.isDeleted());
+            newUser.currentDiseases.add(newcd);
+        }
+        newUser.pastDiseases = new ArrayList<>();
+        for (Disease pd : user.pastDiseases) {
+            Disease newpd = new Disease(pd.getName(), pd.getIsChronic(), pd.getIsCured(), pd.getDiagnosisDate());
+            newpd.setDeleted(pd.isDeleted());
+            newUser.pastDiseases.add(newpd);
+        }
+
         newUser.medicalProcedures = new ArrayList<>();
         for (MedicalProcedure m : user.medicalProcedures) {
             MedicalProcedure newMed = new MedicalProcedure();
@@ -222,6 +246,7 @@ public class User extends Undoable<User> implements Listenable {
             newMed.setDescription(m.getDescription());
             newMed.setProcedureDate(m.getProcedureDate());
             newMed.setOrgansAffected(new ArrayList<>(m.getOrgansAffected()));
+            newMed.setDeleted(m.isDeleted());
             newUser.medicalProcedures.add(newMed);
         }
 
@@ -782,6 +807,8 @@ public class User extends Undoable<User> implements Listenable {
     }
 
     public void addCurrentDisease(Disease currentDisease) {
+        this.saveStateForUndo();
+        updateLastModified();
         currentDiseases.add(currentDisease);
         addChange(new Change("Added current disease " + currentDisease.toString()));
     }
@@ -799,8 +826,10 @@ public class User extends Undoable<User> implements Listenable {
     }
 
     public void addPastDisease(Disease pastDisease) {
-        addChange(new Change("Added past disease " + pastDisease.toString()));
+        this.saveStateForUndo();
+        updateLastModified();
         this.pastDiseases.add(pastDisease);
+        addChange(new Change("Added past disease " + pastDisease.toString()));
     }
 
     public String getPreferredFirstName() {
@@ -883,7 +912,6 @@ public class User extends Undoable<User> implements Listenable {
     }
 
     public void addCurrentMedication(String medication) {
-        this.saveStateForUndo();
         updateLastModified();
         if (!currentMedication.contains(new Medication(medication))) {
             currentMedication.add(new Medication(medication));
@@ -1149,6 +1177,7 @@ public class User extends Undoable<User> implements Listenable {
         this.donorDetails.setAttachedUser(this);
         this.receiverDetails = other.receiverDetails;
         this.receiverDetails.setAttachedUser(this);
+        this.commonOrgans = other.commonOrgans;
 
         this.currentDiseases = other.currentDiseases;
         this.pastDiseases = other.pastDiseases;

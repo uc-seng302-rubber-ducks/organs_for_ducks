@@ -95,7 +95,15 @@ public class ReceiverTabController {
             notReceivingLabel.setVisible(false);
             currentlyReceivingListView.setVisible(false);
             notReceivingListView.setVisible(false);
-            notReceiverLabel.setVisible(true);
+
+            if (user.getReceiverDetails().getOrgans().isEmpty()) {
+                notReceiverLabel.setVisible(true);
+            } else {
+                currentlyReceivingLabel.setVisible(true);
+                notReceivingLabel.setVisible(true);
+                currentlyReceivingListView.setVisible(true);
+                notReceivingListView.setVisible(true);
+            }
         }
 
         //display registered and deregistered receiver organs if any
@@ -130,12 +138,11 @@ public class ReceiverTabController {
                         launchReceiverOrganDateView(currentlyReceivingOrgan);
                     }
                 });
-                parent.updateUndoRedoButtons();
                 Log.info("Successfully registered organ:" + toRegister.toString() + " for receiver NHI: " + currentUser.getNhi());
             } else {
                 Log.warning("Unable to register organ for receiver as organ: " + toRegister.toString() + " has already been registered for receiver NHI: " + currentUser.getNhi());
             }
-
+            parent.updateUndoRedoButtons();
             parent.refreshCurrentlyDonating();
             currentlyReceivingListView.refresh();
         } else {
