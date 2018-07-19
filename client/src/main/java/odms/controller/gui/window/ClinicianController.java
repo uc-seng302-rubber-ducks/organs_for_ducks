@@ -470,7 +470,7 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
             newStage.show();
             stage.close();
             LoginController loginController = loader.getController();
-            loginController.init(AppController.getInstance(), stage);
+            loginController.init(AppController.getInstance(), newStage);
             Log.info("Clinician " + clinician.getStaffId() + " successfully launched login window after logout");
         } catch (IOException e) {
             Log.severe("Clinician " + clinician.getStaffId() + " failed to launch login window after logout", e);
