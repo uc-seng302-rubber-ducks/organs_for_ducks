@@ -290,6 +290,7 @@ public class AppController {
 
             if (userBridge.getUser(originalUser.getNhi()) != null) {
                 userBridge.putUser(user, originalUser.getNhi());
+                userBridge.postDonatingOrgans(user.getDonorDetails().getOrgans(), originalUser.getNhi());
             } else {
                 userBridge.postUser(user);
             }

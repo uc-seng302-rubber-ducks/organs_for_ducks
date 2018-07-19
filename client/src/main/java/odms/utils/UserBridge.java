@@ -13,10 +13,7 @@ import odms.commons.utils.Log;
 import okhttp3.*;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class UserBridge extends Bifrost {
 
@@ -272,7 +269,7 @@ public class UserBridge extends Bifrost {
         });
     }
 
-    public void postDonatingOrgans(List<Organs> donating, String nhi) {
+    public void postDonatingOrgans(Set<Organs> donating, String nhi) {
         String url = ip + "/users/" + nhi + "/donating";
         RequestBody body = RequestBody.create(JSON, new Gson().toJson(donating));
         Request request = new Request.Builder().url(url).post(body).build();
