@@ -400,9 +400,8 @@ public class AppController {
                 originalClinician = clinician;
             }
 
-            // todo: add in tokens when available - jen 19/7
-            if (clinicianBridge.getClinician(originalClinician.getStaffId(), "") != null) {
-                clinicianBridge.putClinician(clinician, originalClinician.getStaffId(), "");
+            if (clinicianBridge.getClinician(originalClinician.getStaffId(), getToken()) != null) {
+                clinicianBridge.putClinician(clinician, originalClinician.getStaffId(), getToken());
             } else {
                 clinicianBridge.postClinician(clinician, "");
             }

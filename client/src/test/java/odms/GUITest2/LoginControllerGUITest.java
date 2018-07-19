@@ -5,6 +5,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import odms.App;
+import odms.TestUtils.CommonTestMethods;
 import odms.commons.exception.ApiException;
 import odms.commons.model.Administrator;
 import odms.commons.model.Clinician;
@@ -18,7 +19,6 @@ import org.junit.*;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.matcher.control.LabeledMatchers;
-import odms.TestUtils.CommonTestMethods;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -145,7 +145,7 @@ public class LoginControllerGUITest extends ApplicationTest {
     }
 
     @Test
-    public void invalidAdminLogin() throws IOException {
+    public void invalidAdminLogin() throws IOException{
         when(loginBridge.loginToServer(anyString(), anyString(), anyString())).thenThrow(new ApiException(404, "Not found"));
         clickOn("#administratorTab");
         setTextField(this,"#adminUsernameTextField", "therock");
