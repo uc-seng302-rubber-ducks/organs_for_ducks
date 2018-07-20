@@ -4,7 +4,7 @@ import odms.commons.model.User;
 import odms.commons.model._enum.Organs;
 import odms.commons.utils.DBHandler;
 import odms.commons.utils.JDBCDriver;
-import odms.controller.user.details.controllers.DonatingOrgansController;
+import odms.controller.user.details.DonatingOrgansController;
 import odms.exception.ServerDBException;
 import odms.utils.DBManager;
 import org.junit.Assert;
