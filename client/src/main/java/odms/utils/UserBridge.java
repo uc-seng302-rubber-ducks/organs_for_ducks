@@ -118,9 +118,9 @@ public class UserBridge extends Bifrost {
         });
     }
 
-    public void postUserProcedures(List<MedicalProcedure> procedures, String nhi, String token) {
+    public void postUserProcedures(MedicalProcedure procedure, String nhi, String token) {
         String url = ip + "/users/" + nhi + "/procedures";
-        RequestBody body = RequestBody.create(JSON, new Gson().toJson(procedures));
+        RequestBody body = RequestBody.create(JSON, new Gson().toJson(procedure));
         Request request = new Request.Builder().url(url).addHeader(TOKEN_HEADER, token).post(body).build();
         client.newCall(request).enqueue(new Callback() {
             @Override
@@ -156,9 +156,9 @@ public class UserBridge extends Bifrost {
         });
     }
 
-    public void postMedications(List<Medication> medications, String nhi, String token) {
+    public void postMedications(Medication medication, String nhi, String token) {
         String url = ip + "/users/" + nhi + "/medications";
-        RequestBody body = RequestBody.create(JSON, new Gson().toJson(medications));
+        RequestBody body = RequestBody.create(JSON, new Gson().toJson(medication));
         Request request = new Request.Builder().url(url).addHeader(TOKEN_HEADER, token).post(body).build();
         client.newCall(request).enqueue(new Callback() {
             @Override
@@ -194,9 +194,9 @@ public class UserBridge extends Bifrost {
         });
     }
 
-    public void postDiseases(List<Disease> diseases, String nhi, String token) {
+    public void postDiseases(Disease disease, String nhi, String token) {
         String url = ip + "/users/" + nhi + "/diseases";
-        RequestBody body = RequestBody.create(JSON, new Gson().toJson(diseases));
+        RequestBody body = RequestBody.create(JSON, new Gson().toJson(disease));
         Request request = new Request.Builder().url(url).addHeader(TOKEN_HEADER, token).post(body).build();
         client.newCall(request).enqueue(new Callback() {
             @Override
