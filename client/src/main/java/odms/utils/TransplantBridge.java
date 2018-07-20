@@ -62,6 +62,8 @@ public class TransplantBridge extends Bifrost {
             }
             return handler.decodeTransplantList(response);
 
+        } catch (ApiException ex) {
+            throw ex;
         } catch (IOException ex) {
             Log.warning("could not decode transplant list response from server", ex);
             return new ArrayList<>();
