@@ -1,5 +1,6 @@
 package odms.controller;
 
+import odms.commons.exception.ApiException;
 import odms.commons.exception.ProfileAlreadyExistsException;
 import odms.commons.exception.ProfileNotFoundException;
 import odms.commons.model.Administrator;
@@ -103,20 +104,18 @@ public class AppController {
             saveAdmin(defaultAdmin);
         }
 
-        boolean defaultSeen = false;
-        for (Clinician c : clinicians) {
-            if (c.getStaffId().equals("0")) {
-                defaultSeen = true;
-                break;//short circuit out if default clinician exists
+        try { // adds a clinician to the database if one does not already exist
+            if (clinicianBridge.getClinician("0", "") == null) {
+                Clinician defaultClinician = new Clinician("0", "admin", "Default", "", "");
+                defaultClinician.setRegion("region");
+                defaultClinician.getUndoStack().clear();
+                clinicians.add(defaultClinician);
+                clinicianBridge.postClinician(defaultClinician, "");
             }
-        } //all code you wish to execute must be above this point!!!!!!!!
-        if (!defaultSeen) {
-            Clinician defaultClinician = new Clinician("0", "admin", "Default", "", "");
-            defaultClinician.setRegion("region");
-            defaultClinician.getUndoStack().clear();
-            clinicians.add(defaultClinician);
-            //saveClinician(defaultClinician); todo: temporary - jen 18/7
+        } catch (ApiException e) {
+            Log.warning("Could not create the default clinician", e);
         }
+
     }
 
     /**
