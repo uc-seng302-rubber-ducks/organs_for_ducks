@@ -178,8 +178,6 @@ public class DBHandler {
             try (ResultSet resultSet = statement.executeQuery()) {
                 while (resultSet != null && resultSet.next()) {
                     clinician = getClinicianBasicDetails(resultSet);
-                    clinician.setFirstName(resultSet.getString("firstName"));
-                    clinician.setStaffId(resultSet.getString("staffId"));
                     clinician.setMiddleName(resultSet.getString("middleName"));
                     clinician.setLastName(resultSet.getString("lastName"));
                     clinician.setDateLastModified(resultSet.getTimestamp("lastModified").toLocalDateTime());
@@ -253,7 +251,7 @@ public class DBHandler {
      * @throws SQLException if there is an error extracting information from the resultSet
      */
     private Clinician getClinicianBasicDetails(ResultSet resultSet) throws SQLException {
-        return new Clinician(resultSet.getString("firstName"), resultSet.getString("staffId"), null);
+        return new Clinician(resultSet.getString("firstName"), resultSet.getString("staffId"), "");
     }
 
     /**

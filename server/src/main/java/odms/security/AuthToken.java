@@ -54,7 +54,10 @@ public class AuthToken extends AbstractAuthenticationToken {
 
     /**
      * Generates a random unique token
-     *
+
+        System.out.println("Password hash " + passwordHash);
+        System.out.println("expected " + expectedHash);
+        System.out.println(passwordHash.equals(expectedHash)); *
      * @return A token of our appreciation
      */
     public static String generateToken() {

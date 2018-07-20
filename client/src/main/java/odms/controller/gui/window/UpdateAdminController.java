@@ -268,8 +268,7 @@ public class UpdateAdminController {
         updateAdmin();
         if (valid) {
             if (newAdmin) {
-                //appController.updateAdmin(admin);
-                appController.getAdministratorBridge().postAdmin(admin, "");
+                appController.saveAdmin(admin);
             }
             try {
                 adminClone.getRedoStack().clear();
