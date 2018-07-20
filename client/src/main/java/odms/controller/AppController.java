@@ -91,18 +91,17 @@ public class AppController {
         String[] empty = {""};
         historyOfCommands.add(empty);//putting an empty string into the string array to be displayed if history pointer is 0
 
-        boolean defaultAdminSeen = false;
-        for (Administrator a : admins) {
-            if (a.getUserName().equals("default")) {
-                defaultAdminSeen = true;
-                break;
+
+        try {
+            if (administratorBridge.getAdmin("default", "") == null) {
+                Administrator defaultAdmin = new Administrator("default", "", "", "", "admin");
+                admins.add(defaultAdmin);
+                saveAdmin(defaultAdmin);
             }
+        } catch (ApiException e) {
+            Log.warning("Could not create the default Admin", e);
         }
-        if (!defaultAdminSeen) {
-            Administrator defaultAdmin = new Administrator("default", "", "", "", "admin");
-            admins.add(defaultAdmin);
-            saveAdmin(defaultAdmin);
-        }
+
 
         try { // adds a clinician to the database if one does not already exist
             if (clinicianBridge.getClinician("0", "") == null) {
@@ -432,17 +431,8 @@ public class AppController {
     public void deleteAdmin(Administrator admin) {
         admin.setDeleted(true);
 
-        try {
-            dataHandler.saveAdmins(admins);
-        } catch (IOException e) {
-            Log.warning("failed to delete an administrator", e);
-        }
-
-
+        administratorBridge.deleteAdmin(admin, token);
         admins.remove(admin);
-        // todo: will probably need undo/redo for this similar to how the deleteUser one has it
-        // auto save is on another branch..
-        Log.info("Successfully updated admin with user name: " + admin.getUserName());
     }
 
 
@@ -504,11 +494,22 @@ public class AppController {
      */
     public void saveAdmin(Administrator administrator) {
         try {
-            dataHandler.saveAdmins(admins);
-            Log.info("successfully updated the Administrator profile with user name: " + administrator.getUserName());
+            Administrator administrator1;
+            if (!administrator.getUndoStack().isEmpty()) {
+                administrator1 = administrator.getUndoStack().firstElement().getState();
+            } else {
+                administrator1 = administrator;
+            }
+
+            if (administratorBridge.getAdmin(administrator1.getUserName(), getToken()) != null) {
+                administratorBridge.putAdmin(administrator, administrator1.getUserName(), getToken());
+            } else {
+                administratorBridge.postAdmin(administrator, token);
+            }
         } catch (IOException e) {
-            Log.warning("Failed to update Administrator profiles with user name: " + administrator.getUserName(), e);
+            Log.warning("Could not save user " + administrator.getUserName(), e);
         }
+        getAdministratorBridge().postAdmin(administrator, token);
     }
 
     /**
