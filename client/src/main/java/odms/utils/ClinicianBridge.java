@@ -2,23 +2,15 @@ package odms.utils;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import odms.commons.exception.ApiException;
 import odms.commons.model.Clinician;
+import odms.commons.utils.JsonHandler;
 import odms.commons.utils.Log;
 import odms.controller.AppController;
 import okhttp3.*;
 
 import java.io.IOException;
 import java.util.List;
-import odms.commons.exception.ApiException;
-import odms.commons.model.Clinician;
-import odms.commons.utils.JsonHandler;
-import odms.commons.utils.Log;
-import okhttp3.Headers;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
-
-import java.io.IOException;
 
 public class ClinicianBridge extends Bifrost {
     public ClinicianBridge(OkHttpClient client, String ip) {
@@ -111,7 +103,7 @@ public class ClinicianBridge extends Bifrost {
     }
 
     public Clinician getClinician(String wantedClinician, String token) throws ApiException {
-        Response response = null;
+        Response response;
         try {
             Headers headers = new Headers.Builder().add(TOKEN_HEADER, token).build();
             Request request = new Request.Builder()

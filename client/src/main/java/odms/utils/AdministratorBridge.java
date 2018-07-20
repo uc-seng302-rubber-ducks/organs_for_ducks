@@ -2,7 +2,9 @@ package odms.utils;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import odms.commons.exception.ApiException;
 import odms.commons.model.Administrator;
+import odms.commons.utils.JsonHandler;
 import odms.commons.utils.Log;
 import okhttp3.*;
 
@@ -35,7 +37,7 @@ public class AdministratorBridge extends Bifrost {
      * @return administrator to be returned
      * @throws IOException Thrown on an invalid response being passed to the handler
      */
-    public Administrator getAdmin(String username, String token) throws IOException {
+    public Administrator getAdmins(String username, String token) throws IOException {
         String url = ip + "/admins/" + username;
         Request request = new Request.Builder().url(url).addHeader("x-auth-token", token).build();
         Response response = client.newCall(request).execute();
@@ -103,9 +105,46 @@ public class AdministratorBridge extends Bifrost {
 
     }
 
+    public Administrator getAdmin(String username, String token) throws ApiException {
+        Response response;
+        try {
+            Headers headers = new Headers.Builder().add(TOKEN_HEADER, token).build();
+            Request request = new Request.Builder()
+                    .url(ip + "/admins/" + username).headers(headers).build();
+            response = client.newCall(request).execute();
+        } catch (IOException e) {
+            Log.severe("failed to make request", e);
+            return null;
+        }
+        if (response == null) {
+            Log.warning("A null response was returned to the Admin");
+            return null;
+        }
+        int responseCode = response.code();
+        if (responseCode == 404 || responseCode == 401) {
+            throw new ApiException(responseCode, "could not get requested Admin");
+        } else if (responseCode == 500 || responseCode == 400) {
+            Log.warning("An Error occurred. code returned: " + responseCode);
+            throw new ApiException(responseCode, "error occurred when requesting Admin");
+        } else if (responseCode != 200) {
+            Log.warning("A non API response was returned code:" + responseCode);
+            throw new ApiException(responseCode, "received unexpected response Admin");
+        }
 
-
-
-
+        try {
+            return new JsonHandler().decodeAdmin(response);
+        } catch (IOException ex) {
+            Log.severe("could not interpret the given Admin", ex);
+            return null;
+        }
+    }
 
 }
+
+
+
+
+
+
+
+
