@@ -251,7 +251,6 @@ public class UpdateClinicianController {
     private void UploadImage() throws IOException {
         boolean isValid = true;
         String filename;
-        String filePath;
         List<String> extensions = new ArrayList<>();
         extensions.add("*.jpg");
         extensions.add("*.png");
@@ -265,6 +264,7 @@ public class UpdateClinicianController {
                 isValid = false;
             }
             if (isValid) {
+                update();
                 displayImage(profileImage, inFile.getPath());
             }
         }
@@ -288,9 +288,15 @@ public class UpdateClinicianController {
      */
     private void updateUndos() {
         boolean changed;
-        changed = updateDetails(staffIDTextField.getText(), firstNameTextField.getText(),
-                lastNameTextField.getText(), middleNameTextField.getText());
+        String photoPath;
+        if (inFile != null) {
+            photoPath = inFile.getPath();
+        } else {
+            photoPath = currentClinician.getProfilePhotoFilePath();
+        }
 
+        changed = updateDetails(staffIDTextField.getText(), firstNameTextField.getText(),
+                lastNameTextField.getText(), middleNameTextField.getText(), photoPath);
         boolean addressChanged;
         addressChanged = updateAddress(streetNoTextField.getText(), streetNameTextField.getText(), neighbourhoodTextField.getText(),
                 cityTextField.getText(), regionTextField.getText(), zipCodeTextField.getText(), countryTextField.getText());
@@ -314,7 +320,7 @@ public class UpdateClinicianController {
      * @param mName Middle name that may have been changed
      * @return true if any of the clinicians personal details has changed, false otherwise
      */
-    private boolean updateDetails(String staffId, String fName, String lName, String mName) {
+    private boolean updateDetails(String staffId, String fName, String lName, String mName, String photoPath) {
         boolean changed = false;
         if (!currentClinician.getStaffId().equals(staffId)) {
             currentClinician.setStaffId(staffId);
@@ -349,6 +355,11 @@ public class UpdateClinicianController {
                 currentClinician.setMiddleName(mName);
                 changed = true;
             }
+        }
+
+        if (!currentClinician.getProfilePhotoFilePath().equals(photoPath)) {
+            currentClinician.setProfilePhotoFilePath(photoPath);
+            changed = true;
         }
 
         return changed;
@@ -609,6 +620,9 @@ public class UpdateClinicianController {
             try {
                 String filePath = setUpImageFile(inFile, currentClinician.getProfilePhotoFilePath(), currentClinician.getStaffId());
                 currentClinician.setProfilePhotoFilePath(filePath);
+
+                //currentClinician.getUndoStack().pop();
+
             } catch (IOException e){
                 System.err.println(e);
             }
@@ -624,6 +638,7 @@ public class UpdateClinicianController {
             try {
                 String filePath = setUpImageFile(inFile, currentClinician.getProfilePhotoFilePath(), currentClinician.getStaffId());
                 currentClinician.setProfilePhotoFilePath(filePath);
+                currentClinician.getUndoStack().pop();
             } catch (IOException e){
                 System.err.println(e);
             }

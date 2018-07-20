@@ -517,7 +517,6 @@ public class UpdateUserController {
         extensions.add("*.jpg");
         extensions.add("*.png");
         filename = FileSelectorController.getFileSelector(stage, extensions);
-
         if (filename != null) {
             inFile = new File(filename);
 
@@ -527,6 +526,7 @@ public class UpdateUserController {
             }
 
             if (isValid) {
+                update();
                 displayImage(profileImage, inFile.getPath());
             }
         }
@@ -550,6 +550,7 @@ public class UpdateUserController {
             try {
                 String filePath = setUpImageFile(inFile, currentUser.getProfilePhotoFilePath(), currentUser.getNhi());
                 currentUser.setProfilePhotoFilePath(filePath);
+                currentUser.getUndoStack().pop();
                 currentUser.getRedoStack().clear();
                 oldUser.setDeleted(true);
                 userController.showUser(currentUser);
@@ -713,8 +714,14 @@ public class UpdateUserController {
      */
     private void updateUndos() {
         boolean changed;
+        String photoPath;
+        if (inFile != null) {
+            photoPath = inFile.getPath();
+        } else {
+            photoPath = currentUser.getProfilePhotoFilePath();
+        }
         changed = updatePersonalDetails(nhiInput.getText(), fNameInput.getText(), dobInput.getValue(),
-                dodInput.getValue());
+                dodInput.getValue(), photoPath);
         changed |= updateHealthDetails(heightInput.getText(), weightInput.getText());
         changed |= updateContactDetails();
         changed |= updateEmergencyContact();
@@ -735,7 +742,7 @@ public class UpdateUserController {
      * @param dob   The date of birth to be checked for changes and possibly updated.
      * @param dod   The date of death to be checked for changes and possibly updated.
      */
-    private boolean updatePersonalDetails(String nhi, String fName, LocalDate dob, LocalDate dod) {
+    private boolean updatePersonalDetails(String nhi, String fName, LocalDate dob, LocalDate dod, String photoPath) {
         boolean changed = false;
 
         if (!currentUser.getNhi().equals(nhi)) {
@@ -789,6 +796,11 @@ public class UpdateUserController {
             }
         } else if ((deathDate == null && dod != null) || deathDate != null) {
             currentUser.setDateOfDeath(dod);
+            changed = true;
+        }
+
+        if (checkChangedProperty(currentUser.getProfilePhotoFilePath(), photoPath)) {
+            currentUser.setProfilePhotoFilePath(photoPath);
             changed = true;
         }
 

@@ -186,7 +186,10 @@ public class Clinician extends Undoable<Clinician> implements Listenable {
     }
 
     public void setProfilePhotoFilePath(String profilePhotoFilePath) {
+        saveStateforUndo();
         this.profilePhotoFilePath = profilePhotoFilePath;
+        addChange(new Change("changed the photo"));
+        setDateLastModified(LocalDateTime.now());
     }
 
     public String getFullName() {
@@ -428,6 +431,8 @@ public class Clinician extends Undoable<Clinician> implements Listenable {
         newClinician.changes = new ArrayList<>(clinician.changes);
         newClinician.pcs = new PropertyChangeSupport(clinician.pcs);
 
+        newClinician.profilePhotoFilePath = clinician.profilePhotoFilePath;
+
         return newClinician;
     }
 
@@ -448,6 +453,7 @@ public class Clinician extends Undoable<Clinician> implements Listenable {
         this.dateLastModified = clinician.dateLastModified;
         this.changes = clinician.changes;
         this.pcs = clinician.pcs;
+        this.profilePhotoFilePath = clinician.profilePhotoFilePath;
     }
 
     @Override

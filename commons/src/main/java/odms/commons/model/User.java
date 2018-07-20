@@ -252,6 +252,8 @@ public class User extends Undoable<User> implements Listenable {
             newUser.medicalProcedures.add(newMed);
         }
 
+        newUser.profilePhotoFilePath = user.profilePhotoFilePath;
+
         newUser.changes = new ArrayList<>(user.changes);
         newUser.setUndoStack((Stack<Memento<User>>) user.getUndoStack().clone());
         newUser.setRedoStack((Stack<Memento<User>>) user.getRedoStack().clone());
@@ -265,6 +267,7 @@ public class User extends Undoable<User> implements Listenable {
     public void setProfilePhotoFilePath(String profilePhotoFilePath) {
         this.saveStateForUndo();
         updateLastModified();
+        addChange(new Change("changed the photo"));
         this.profilePhotoFilePath = profilePhotoFilePath;
     }
 
@@ -1194,6 +1197,8 @@ public class User extends Undoable<User> implements Listenable {
         this.currentDiseases = other.currentDiseases;
         this.pastDiseases = other.pastDiseases;
         this.medicalProcedures = other.medicalProcedures;
+
+        this.profilePhotoFilePath = other.profilePhotoFilePath;
 
         this.changes = other.changes;
     }

@@ -29,10 +29,10 @@ public final class PhotoHelper {
      */
     public static String setUpImageFile(File inFile, String photoFilePath, String id) throws IOException {
         BufferedImage bImage;
-        if (photoFilePath != null) { //Prevent duplicated image files.
-            File oldFile = new File(photoFilePath);
-            oldFile.delete();
-        }
+//        if (photoFilePath != null) { //Prevent duplicated image files.
+//            File oldFile = new File(photoFilePath);
+//            oldFile.delete();
+//        }
 
         String fileType = inFile.getName();
         fileType = fileType.substring(fileType.lastIndexOf(".") + 1);
