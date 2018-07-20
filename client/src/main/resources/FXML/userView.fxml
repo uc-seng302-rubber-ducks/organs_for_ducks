@@ -105,16 +105,16 @@
         <MenuBar layoutY="-1.0" prefHeight="35.0" prefWidth="894.0" AnchorPane.leftAnchor="0.0"
                  AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <menus>
-          <Menu mnemonicParsing="false" text="File">
+            <Menu fx:id="fileMenu" mnemonicParsing="false" text="File">
             <items>
                 <MenuItem fx:id="saveUserMenuItem" mnemonicParsing="false" onAction="#save" text="Save"/>
                 <MenuItem fx:id="LogOut" mnemonicParsing="false" text="Log Out"/>
             </items>
           </Menu>
-          <Menu mnemonicParsing="false" text="Edit">
+            <Menu fx:id="editMenu" mnemonicParsing="false" text="Edit">
               <items>
                   <MenuItem fx:id="editDetails" mnemonicParsing="false" onAction="#updateDetails" text="User Details"/>
-                  <MenuItem mnemonicParsing="false" onAction="#delete" text="Delete Profile"/>
+                  <MenuItem fx:id="deleteUser" mnemonicParsing="false" onAction="#delete" text="Delete Profile"/>
               </items>
           </Menu>
         </menus>

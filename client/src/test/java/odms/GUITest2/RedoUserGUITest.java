@@ -2,9 +2,10 @@ package odms.GUITest2;
 
 import javafx.scene.Node;
 import odms.App;
-import odms.controller.AppController;
+import odms.TestUtils.CommonTestMethods;
 import odms.commons.model.EmergencyContact;
 import odms.commons.model.User;
+import odms.controller.AppController;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -12,7 +13,6 @@ import org.junit.Test;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.matcher.control.LabeledMatchers;
-import odms.TestUtils.CommonTestMethods;
 
 import java.time.LocalDate;
 import java.util.concurrent.TimeoutException;
@@ -53,7 +53,8 @@ public class RedoUserGUITest extends ApplicationTest {
 
     @Test
     public void testRedoSingleUndo() {
-        clickOn("#editDetailsButton");
+        clickOn("#editMenu");
+        clickOn("#editDetails");
         clickOn("#lNameInput");
         write("Jefferson");
         clickOn("#confirmButton");
@@ -65,7 +66,8 @@ public class RedoUserGUITest extends ApplicationTest {
 
     @Test
     public void testRedoEqualUndos() {
-        clickOn("#editDetailsButton");
+        clickOn("#editMenu");
+        clickOn("#editDetails");
         clickOn("#lNameInput");
         write("Jefferson");
 

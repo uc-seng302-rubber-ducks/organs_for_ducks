@@ -2,14 +2,14 @@ package odms.GUITest2;
 
 import javafx.scene.Node;
 import odms.App;
-import odms.controller.AppController;
+import odms.TestUtils.CommonTestMethods;
 import odms.commons.model.EmergencyContact;
 import odms.commons.model.User;
+import odms.controller.AppController;
 import org.junit.*;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.matcher.control.LabeledMatchers;
-import odms.TestUtils.CommonTestMethods;
 
 import java.time.LocalDate;
 import java.util.concurrent.TimeoutException;
@@ -57,7 +57,8 @@ public class UndoDonorGUITest extends ApplicationTest {
      */
     @Test
     public void testSingleUndo() {
-        clickOn("#editDetailsButton");
+        clickOn("#editMenu");
+        clickOn("#editDetails");
         clickOn("#lNameInput");
         write("Jefferson");
         clickOn("#confirmButton");
@@ -71,7 +72,8 @@ public class UndoDonorGUITest extends ApplicationTest {
      */
     @Test
     public void testMultipleUndosWithoutSufficientChanges() {
-        clickOn("#editDetailsButton");
+        clickOn("#editMenu");
+        clickOn("#editDetails");
         clickOn("#lNameInput");
         write("Jefferson");
         clickOn("#confirmButton");
@@ -186,7 +188,8 @@ public class UndoDonorGUITest extends ApplicationTest {
      */
     @Test
     public void testNHIChange() {
-        clickOn("#editDetailsButton");
+        clickOn("#editMenu");
+        clickOn("#editDetails");
         doubleClickOn("#nhiInput");
 
         write("ABD1111");

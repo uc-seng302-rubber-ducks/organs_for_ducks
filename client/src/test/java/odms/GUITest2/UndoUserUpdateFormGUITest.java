@@ -2,6 +2,7 @@ package odms.GUITest2;
 
 import javafx.scene.Node;
 import odms.App;
+import odms.TestUtils.CommonTestMethods;
 import odms.commons.model.EmergencyContact;
 import odms.commons.model.User;
 import odms.controller.AppController;
@@ -13,7 +14,6 @@ import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.matcher.control.LabeledMatchers;
 import org.testfx.matcher.control.TextInputControlMatchers;
-import odms.TestUtils.CommonTestMethods;
 
 import java.time.LocalDate;
 import java.util.concurrent.TimeoutException;
@@ -50,7 +50,8 @@ public class UndoUserUpdateFormGUITest extends ApplicationTest {
 
     @Test
     public void SingleChangeSingleUndo() {
-        clickOn("#editDetailsButton");
+        clickOn("#editMenu");
+        clickOn("#editDetails");
         clickOn("#preferredFNameTextField");
         write("i", 0);
 
@@ -61,13 +62,15 @@ public class UndoUserUpdateFormGUITest extends ApplicationTest {
 
     @Test
     public void NoChangeUndoDisabled() {
-        clickOn("#editDetailsButton");
+        clickOn("#editMenu");
+        clickOn("#editDetails");
         verifyThat("#undoUpdateButton", Node::isDisabled);
     }
 
     @Test
     public void ChangesResetWhenCancelButtonClicked() {
-        clickOn("#editDetailsButton");
+        clickOn("#editMenu");
+        clickOn("#editDetails");
         clickOn("#mNameInput");
         write("geoff");
         clickOn("#smokerCheckBox");
@@ -87,7 +90,8 @@ public class UndoUserUpdateFormGUITest extends ApplicationTest {
 
     @Test
     public void MultipleChangesSummedInMainWindow() {
-        clickOn("#editDetailsButton");
+        clickOn("#editMenu");
+        clickOn("#editDetails");
         clickOn("#mNameInput");
         write("geoff");
         clickOn("#smokerCheckBox");
@@ -104,7 +108,8 @@ public class UndoUserUpdateFormGUITest extends ApplicationTest {
 
     @Test
     public void MultipleChangesSingleUndo() {
-        clickOn("#editDetailsButton");
+        clickOn("#editMenu");
+        clickOn("#editDetails");
         clickOn("#ecPhone");
         write("1234");
 
@@ -115,7 +120,8 @@ public class UndoUserUpdateFormGUITest extends ApplicationTest {
 
     @Test
     public void MultipleChangesEqualUndos() {
-        clickOn("#editDetailsButton");
+        clickOn("#editMenu");
+        clickOn("#editDetails");
 
 //    unable to check text in combo boxes as it is lazily created/populated
         clickOn("#genderIdComboBox");
@@ -139,7 +145,8 @@ public class UndoUserUpdateFormGUITest extends ApplicationTest {
     @Test
     public void MultipleActionsTwoUndosOneAction() {
         //check we can traverse the stack properly
-        clickOn("#editDetailsButton");
+        clickOn("#editMenu");
+        clickOn("#editDetails");
 
         doubleClickOn("#heightInput");
         write("1");

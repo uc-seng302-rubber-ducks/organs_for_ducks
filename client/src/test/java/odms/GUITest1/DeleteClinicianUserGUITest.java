@@ -2,8 +2,10 @@ package odms.GUITest1;
 
 
 import odms.App;
-import odms.controller.AppController;
+import odms.TestUtils.CommonTestMethods;
+import odms.TestUtils.TableViewsMethod;
 import odms.commons.model.User;
+import odms.controller.AppController;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -11,8 +13,6 @@ import org.junit.Test;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.matcher.control.LabeledMatchers;
-import odms.TestUtils.CommonTestMethods;
-import odms.TestUtils.TableViewsMethod;
 
 import java.time.LocalDate;
 import java.util.concurrent.TimeoutException;
@@ -51,6 +51,7 @@ public class DeleteClinicianUserGUITest extends ApplicationTest {
 
     @Test
     public void deleteUser() {
+        clickOn("#editMenu");
         clickOn("#deleteUser");
         clickOn("OK");
         verifyThat("#fNameLabel", LabeledMatchers.hasText("Default"));
@@ -59,9 +60,9 @@ public class DeleteClinicianUserGUITest extends ApplicationTest {
 
     @Test
     public void canceledDeleteUser() {
+        clickOn("#editMenu");
         clickOn("#deleteUser");
         clickOn("Cancel");
-        clickOn("#backButton");
         verifyThat("#fNameLabel", LabeledMatchers.hasText("Default"));
 
     }

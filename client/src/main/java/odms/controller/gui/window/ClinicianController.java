@@ -105,7 +105,7 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
     @FXML
     private Button redoButton;
     @FXML
-    private MenuItem deleteMenu;
+    private MenuItem delete;
     @FXML
     private MenuItem logoutMenu;
 
@@ -164,7 +164,7 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
         statusBarPageController.init(appController);
 
         if (clinician.getStaffId().equals("0")) {
-            deleteMenu.setDisable(true);
+            delete.setDisable(true);
         }
 
         setDefaultFilters();

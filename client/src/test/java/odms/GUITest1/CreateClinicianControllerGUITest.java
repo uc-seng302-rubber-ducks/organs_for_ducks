@@ -88,7 +88,6 @@ public class CreateClinicianControllerGUITest extends ApplicationTest {
         lookup("#regionTextField").queryAs(TextField.class).setText("Christchurch");
         clickOn("#confirmButton");
         // return to the creation screen
-        clickOn("#backButton");
         clickOn("#addClinicianButton");
         // create a new clinician with the same staff ID
         lookup("#staffIDTextField").queryAs(TextField.class).setText("Staff1");

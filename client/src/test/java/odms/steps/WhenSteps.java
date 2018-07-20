@@ -5,6 +5,7 @@ import cucumber.api.java.en.When;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import odms.App;
+import odms.TestUtils.TableViewsMethod;
 import odms.commands.CreateUser;
 import odms.commands.DeleteUser;
 import odms.commands.View;
@@ -13,9 +14,11 @@ import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 import picocli.CommandLine;
 import picocli.CommandLine.RunLast;
-import odms.TestUtils.TableViewsMethod;
 
 import java.time.LocalDateTime;
+
+import static odms.TestUtils.FxRobotHelper.clickOnButton;
+import static odms.TestUtils.FxRobotHelper.setText;
 
 public class WhenSteps extends ApplicationTest {
 
@@ -64,7 +67,7 @@ public class WhenSteps extends ApplicationTest {
 
     @When("^Clicked on the Create Profile button$")
     public void clickedOnTheCreateProfileButton() {
-        clickOn("#confirmButton");
+        clickOnButton(this, "#confirmButton");
     }
 
     @When("^I register a user using the GUI with the NHI \"([^\"]*)\", first name \"([^\"]*)\", date of birth \"([^\"]*)\" and date of death \"([^\"]*)\"$")
@@ -96,18 +99,18 @@ public class WhenSteps extends ApplicationTest {
     @When("^clicked on user Login button$")
     public void clickedOnUserLoginButton() {
         CucumberTestModel.setIsClinicianLogin(false);
-        clickOn("#loginUButton");
+        clickOnButton(this, "#loginUButton");
     }
 
     @When("^clicked on clinician Login button$")
     public void clickedOnClinicianLoginButton() {
         CucumberTestModel.setIsClinicianLogin(true);
-        clickOn("#loginCButton");
+        clickOnButton(this, "#loginCButton");
     }
 
     @When("^clicked on Create Button$")
     public void clickedOnCreateButton() {
-        clickOn("#createButton");
+        clickOnButton(this, "#createButton");
     }
 
     @When("^I clicked on Login As Clinician Button$")
@@ -148,10 +151,11 @@ public class WhenSteps extends ApplicationTest {
 
     @When("^The user is updated to have died on \"([^\"]*)\"$")
     public void theUserIsUpdatedToHaveDiedOn(String dod) {
-        clickOn("#editDetailsButton");
+        clickOn("#editMenu");
+        clickOn("#editDetails");
         clickOn("#dodInput");
         write(dod);
-        clickOn("#confirmButton");
+        clickOnButton(this, "#confirmButton");
     }
 
     @And("^I open the user page$")
@@ -165,8 +169,7 @@ public class WhenSteps extends ApplicationTest {
             String bGender, String height, String weight, String bloodType, String alcCons) {
         clickOn("#birthGenderComboBox");
         clickOn(bGender);
-        clickOn("#heightInput");
-        write(height);
+        setText(this, "#heightInput", height);
         clickOn("#weightInput");
         write(weight);
         clickOn("#bloodComboBox");
@@ -178,7 +181,8 @@ public class WhenSteps extends ApplicationTest {
     @When("^I go back to the clinician screen$")
     public void iGoBackToTheClinicianScreen() {
         clickOn("#userProfileTab");
-        clickOn("#backButton");
+        clickOn("#fileMenu");
+        clickOn("#logoutMenu");
     }
 
     @And("^I open the waiting list tab$")

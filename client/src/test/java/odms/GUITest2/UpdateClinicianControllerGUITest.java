@@ -1,10 +1,11 @@
 package odms.GUITest2;
 
 import odms.App;
-import odms.controller.AppController;
+import odms.TestUtils.CommonTestMethods;
 import odms.commons.model.Clinician;
 import odms.commons.model.datamodel.Address;
 import odms.commons.model.datamodel.ContactDetails;
+import odms.controller.AppController;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -13,7 +14,6 @@ import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.matcher.control.LabeledMatchers;
 import org.testfx.matcher.control.TextInputControlMatchers;
-import odms.TestUtils.CommonTestMethods;
 
 import java.util.concurrent.TimeoutException;
 
@@ -47,12 +47,14 @@ public class UpdateClinicianControllerGUITest extends ApplicationTest {
         clickOn("#staffPasswordField");
         write("secure");
         clickOn("#loginCButton");
-        clickOn("#editButton");
+        clickOn("#editMenu");
+        clickOn("#editDetails");
     }
 
     @After
     public void tearDown() throws TimeoutException {
-        clickOn("#logoutButton");
+        clickOn("#fileMenu");
+        clickOn("#logoutMenu");
         AppController.getInstance().getUsers().clear();
         AppController.getInstance().getClinicians().remove(AppController.getInstance().getClinician("Staff1"));
         FxToolkit.cleanupStages();
