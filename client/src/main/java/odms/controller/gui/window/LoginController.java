@@ -95,6 +95,7 @@ public class LoginController {
     @FXML
     void loginUser() {
         userWarningLabel.setText("");
+        appController.setToken(null);
         String wantedDonor = userIDTextField.getText();
         User user = null;
 
@@ -113,7 +114,6 @@ public class LoginController {
                     .setText("User was not found. \nTo register a new user, please click sign up.");
             return;
         }
-        appController.setToken(null);
 
         FXMLLoader userLoader = new FXMLLoader(getClass().getResource(USER_VIEW_URL));
         Parent root;
