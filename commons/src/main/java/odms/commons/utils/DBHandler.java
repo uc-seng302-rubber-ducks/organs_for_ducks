@@ -251,7 +251,7 @@ public class DBHandler {
      * @throws SQLException if there is an error extracting information from the resultSet
      */
     private Clinician getClinicianBasicDetails(ResultSet resultSet) throws SQLException {
-        return new Clinician(resultSet.getString("firstName"), resultSet.getString("staffId"), null);
+        return new Clinician(resultSet.getString("firstName"), resultSet.getString("staffId"), "");
     }
 
     /**
