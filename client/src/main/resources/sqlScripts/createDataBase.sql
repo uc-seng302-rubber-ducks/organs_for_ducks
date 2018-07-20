@@ -37,7 +37,8 @@ CREATE TABLE Clinician(
   middleName VARCHAR(255),
   lastName VARCHAR(255),
   timeCreated DATETIME,
-  lastModified DATETIME
+  lastModified DATETIME,
+  profilePicture BLOB
 );
 
 CREATE TABLE Administrator(

@@ -3,6 +3,10 @@ package odms.commons.utils.db_strategies;
 import odms.commons.model.Clinician;
 import odms.commons.utils.Log;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.*;
 import java.util.Collection;
 
@@ -17,6 +21,8 @@ public class ClinicianUpdateStrategy extends AbstractUpdateStrategy {
             "SET streetNumber = ?, streetName = ?, neighbourhood = ?, city = ?, region = ?, zipCode = ?, country = ? " +
             "WHERE ContactDetails.fkStaffId = ?";
     private static final String UPDATE_CLINICIAN_PSSWRD = "UPDATE PasswordDetails SET hash = ?, salt = ? WHERE fkStaffId = ?";
+    private static final String UPDATE_CLINICIAN_PHOTO_PICTURE_STMT = "UPDATE Clinician SET profilePicture= ? WHERE staffId = ?";
+
 
     private static final String DELETE_CLINICIAN_STMT = "DELETE FROM Clinician WHERE staffId = ?";
 
@@ -217,6 +223,11 @@ public class ClinicianUpdateStrategy extends AbstractUpdateStrategy {
                 updateClinicianDetails(clinician, connection);
                 updateClinicianAddress(clinician, connection);
                 updateClinicianPassword(clinician, connection);
+                try {
+                updateProfilePhoto(clinician, connection);
+                } catch (IOException e) {
+                    System.err.println(e);
+                }
             } catch (SQLException sqlEx) {
                 Log.severe("A fatal error in updating, cancelling operation", sqlEx);
                 connection.prepareStatement("ROLLBACK").execute();
@@ -297,6 +308,27 @@ public class ClinicianUpdateStrategy extends AbstractUpdateStrategy {
             statement.setString(6, clinician.getStaffId());
 
             statement.executeUpdate();
+        }
+    }
+
+    /**
+     * adds or updates user's profile photo using the filepath to the photo.
+     * pre-condition: user's profile photo filepath must be set.
+     * post-condition: adds or updates user's profile photo on database.
+     *
+     * @param clinician for which to update the profile photo in the database for
+     * @param connection A non null and active connection to the database
+     * @throws SQLException if there is an error with the database
+     * @throws FileNotFoundException if filepath provided does not lead to a file.
+     */
+    private void updateProfilePhoto(Clinician clinician, Connection connection) throws SQLException, FileNotFoundException {
+        if(clinician.getProfilePhotoFilePath() != null) {
+            try (PreparedStatement updateProfilePhoto = connection.prepareStatement(UPDATE_CLINICIAN_PHOTO_PICTURE_STMT)) {
+                InputStream inputStream = new FileInputStream(clinician.getProfilePhotoFilePath());
+                updateProfilePhoto.setBlob(1, inputStream);
+                updateProfilePhoto.setString(2, clinician.getStaffId());
+                updateProfilePhoto.executeUpdate();
+            }
         }
     }
 }
