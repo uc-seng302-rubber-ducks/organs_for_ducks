@@ -39,6 +39,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
+import static odms.commons.utils.PhotoHelper.deleteTempDirectory;
+
 /**
  * Class for the functionality of the Clinician view of the application
  */
@@ -467,6 +469,7 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
 
     /**
      * Returns the user to the login screen
+     * When fired, it also deleted the temp folder.
      */
     @FXML
     void logout() {
@@ -481,6 +484,11 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
             stage.close();
             LoginController loginController = loader.getController();
             loginController.init(AppController.getInstance(), newStage);
+            try {
+                deleteTempDirectory();
+            } catch (IOException e){
+                System.err.println(e);
+            }
             Log.info("Clinician " + clinician.getStaffId() + " successfully launched login window after logout");
         } catch (IOException e) {
             Log.severe("Clinician " + clinician.getStaffId() + " failed to launch login window after logout", e);

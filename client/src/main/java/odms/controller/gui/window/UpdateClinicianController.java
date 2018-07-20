@@ -14,24 +14,21 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 import odms.commons.model.Clinician;
-import odms.commons.model._enum.Directory;
 import odms.commons.model.datamodel.Address;
 import odms.commons.model.datamodel.ContactDetails;
 import odms.commons.utils.Log;
 import odms.controller.AppController;
 import odms.controller.gui.FileSelectorController;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static odms.commons.utils.PhotoHelper.displayImage;
+import static odms.commons.utils.PhotoHelper.setUpImageFile;
 import static odms.commons.utils.UndoHelpers.removeFormChanges;
 
 /**
@@ -117,6 +114,7 @@ public class UpdateClinicianController {
     private boolean newClinician;
     private int undoMarker;
     private Stage ownStage;
+    private File inFile;
 
     /**
      * Initializes the scene by setting all but the password text fields to contain the given clinicians attributes.
@@ -233,11 +231,7 @@ public class UpdateClinicianController {
         } else {
             regionTextField.setText("");
         }
-        if (currentClinician.getProfilePhotoFilePath() != null) {
-            File inFile = new File(currentClinician.getProfilePhotoFilePath());
-            Image image = new Image("file:" + inFile.getPath(), 200, 200, false, true);
-            profileImage.setImage(image);
-        }
+        displayImage(profileImage, currentClinician.getProfilePhotoFilePath());
     }
 
 
@@ -257,57 +251,25 @@ public class UpdateClinicianController {
     private void UploadImage() throws IOException {
         boolean isValid = true;
         String filename;
-        String filePath;
         List<String> extensions = new ArrayList<>();
         extensions.add("*.jpg");
         extensions.add("*.png");
         filename = FileSelectorController.getFileSelector(stage, extensions);
 
         if (filename != null) {
-            File inFile = new File(filename);
+            inFile = new File(filename);
 
             if (inFile.length() > 2000000) { //if more than 2MB
                 System.out.println("image exceeded 2MB!"); //TODO: Replace with javafx label or a pop up box
                 isValid = false;
             }
-
-
             if (isValid) {
-                filePath = setUpImageFile(inFile);
-                currentClinician.setProfilePhotoFilePath(filePath);
-                Image image = new Image("file:" + filePath, 200, 200, false, true);
-                profileImage.setImage(image);
+                update();
+                displayImage(profileImage, inFile.getPath());
             }
         }
     }
 
-
-    /**
-     * sets up a temp folder and image folder (within temp folder).
-     * then make a copy of the desired image and store it in the image folder.
-     *
-     * @param inFile desired image file
-     * @return filepath to the image file
-     * @throws IOException if there are issues with handling files.
-     */
-    public String setUpImageFile(File inFile) throws IOException {
-        BufferedImage bImage;
-        if (currentClinician.getProfilePhotoFilePath() != null) { //Prevent duplicated image files.
-            File oldFile = new File(currentClinician.getProfilePhotoFilePath());
-            oldFile.delete();
-        }
-
-        String fileType = inFile.getName();
-        fileType = fileType.substring(fileType.lastIndexOf(".") + 1);
-
-        Files.createDirectories(Paths.get(Directory.TEMP.directory() + Directory.IMAGES));
-        File outFile = new File(Directory.TEMP.directory() + Directory.IMAGES + "/" + currentClinician.getStaffId() + "." + fileType);
-
-        bImage = ImageIO.read(inFile);
-        ImageIO.write(bImage, fileType, outFile);
-
-        return outFile.getPath();
-    }
 
     /**
      * Updates the title bar depending on changes made to the user fields.
@@ -326,9 +288,15 @@ public class UpdateClinicianController {
      */
     private void updateUndos() {
         boolean changed;
-        changed = updateDetails(staffIDTextField.getText(), firstNameTextField.getText(),
-                lastNameTextField.getText(), middleNameTextField.getText());
+        String photoPath;
+        if (inFile != null) {
+            photoPath = inFile.getPath();
+        } else {
+            photoPath = currentClinician.getProfilePhotoFilePath();
+        }
 
+        changed = updateDetails(staffIDTextField.getText(), firstNameTextField.getText(),
+                lastNameTextField.getText(), middleNameTextField.getText(), photoPath);
         boolean addressChanged;
         addressChanged = updateAddress(streetNoTextField.getText(), streetNameTextField.getText(), neighbourhoodTextField.getText(),
                 cityTextField.getText(), regionTextField.getText(), zipCodeTextField.getText(), countryTextField.getText());
@@ -352,7 +320,7 @@ public class UpdateClinicianController {
      * @param mName Middle name that may have been changed
      * @return true if any of the clinicians personal details has changed, false otherwise
      */
-    private boolean updateDetails(String staffId, String fName, String lName, String mName) {
+    private boolean updateDetails(String staffId, String fName, String lName, String mName, String photoPath) {
         boolean changed = false;
         if (!currentClinician.getStaffId().equals(staffId)) {
             currentClinician.setStaffId(staffId);
@@ -387,6 +355,11 @@ public class UpdateClinicianController {
                 currentClinician.setMiddleName(mName);
                 changed = true;
             }
+        }
+
+        if (!currentClinician.getProfilePhotoFilePath().equals(photoPath)) {
+            currentClinician.setProfilePhotoFilePath(photoPath);
+            changed = true;
         }
 
         return changed;
@@ -644,6 +617,15 @@ public class UpdateClinicianController {
 
             currentClinician.setDateLastModified(LocalDateTime.now()); // updates the modified date
             sumAllChanged();
+            try {
+                String filePath = setUpImageFile(inFile, currentClinician.getProfilePhotoFilePath(), currentClinician.getStaffId());
+                currentClinician.setProfilePhotoFilePath(filePath);
+
+                //currentClinician.getUndoStack().pop();
+
+            } catch (IOException e){
+                System.err.println(e);
+            }
             currentClinician.getRedoStack().clear();
             controller.updateClinicians(currentClinician); // saves the clinician
             ownStage.close(); // returns to the clinician overview window
@@ -653,6 +635,13 @@ public class UpdateClinicianController {
             Clinician clinician = new Clinician(staffID, password, fName, mName, lName);
             Address workAddress = new Address(streetNumber, streetName, neighbourhood, city, region, zipCode, country);
             clinician.setWorkContactDetails(new ContactDetails("", "", workAddress, ""));
+            try {
+                String filePath = setUpImageFile(inFile, currentClinician.getProfilePhotoFilePath(), currentClinician.getStaffId());
+                currentClinician.setProfilePhotoFilePath(filePath);
+                currentClinician.getUndoStack().pop();
+            } catch (IOException e){
+                System.err.println(e);
+            }
             controller.updateClinicians(clinician);
             loadOverview(clinician);
 

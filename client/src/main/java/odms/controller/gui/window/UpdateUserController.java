@@ -15,22 +15,20 @@ import javafx.stage.Stage;
 import odms.commons.exception.InvalidFieldsException;
 import odms.commons.model.EmergencyContact;
 import odms.commons.model.User;
-import odms.commons.model._enum.Directory;
 import odms.commons.utils.AttributeValidation;
 import odms.commons.utils.Log;
 import odms.controller.AppController;
 import odms.controller.gui.FileSelectorController;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import static odms.commons.utils.PhotoHelper.displayImage;
+import static odms.commons.utils.PhotoHelper.setUpImageFile;
 
 /**
  * Class for updating the user
@@ -181,6 +179,7 @@ public class UpdateUserController {
     private User oldUser;
     private int undoMarker; //int used to hold the top of the stack before opening this window
     private boolean listen = true;
+    private File inFile;
 
 
     /**
@@ -394,6 +393,7 @@ public class UpdateUserController {
             Image image = new Image("file:" + inFile.getPath(), 200, 200, false, true);
             profileImage.setImage(image);
         }
+        displayImage(profileImage, user.getProfilePhotoFilePath()); //TODO: photo file path is null eventho its being set previously - 19 july
 //        } else {
 //
 //            Image image = new Image("/resources/theBestt.png", 200,200,false,true);
@@ -510,66 +510,33 @@ public class UpdateUserController {
      * uploads an image using file picker. includes validation.
      */
     @FXML
-    private void uploadImage() throws IOException {
+    private void uploadImage() {
         boolean isValid = true;
         String filename;
-        String filePath;
         List<String> extensions = new ArrayList<>();
         extensions.add("*.jpg");
         extensions.add("*.png");
         filename = FileSelectorController.getFileSelector(stage, extensions);
-
         if (filename != null) {
-            File inFile = new File(filename);
+            inFile = new File(filename);
 
             if (inFile.length() > 2000000) { //if more than 2MB
                 System.out.println("image exceeded 2MB!"); //TODO: Replace with javafx label or a pop up box
                 isValid = false;
             }
 
-
             if (isValid) {
-                filePath = setUpImageFile(inFile);
-                currentUser.setProfilePhotoFilePath(filePath);
-                Image image = new Image("file:" + filePath, 200, 200, false, true);
-                profileImage.setImage(image);
+                update();
+                displayImage(profileImage, inFile.getPath());
             }
         }
     }
 
     /**
-     * sets up a temp folder and image folder (within temp folder).
-     * then make a copy of the desired image and store it in the image folder.
-     * @param inFile desired image file
-     * @return filepath to the image file
-     * @throws IOException if there are issues with handling files.
-     */
-    public String setUpImageFile(File inFile) throws IOException {
-        BufferedImage bImage;
-        if(currentUser.getProfilePhotoFilePath() != null) { //Prevent duplicated image files.
-            File oldFile = new File(currentUser.getProfilePhotoFilePath());
-            oldFile.delete();
-        }
-
-        String fileType = inFile.getName();
-        fileType = fileType.substring(fileType.lastIndexOf(".") + 1);
-
-        Files.createDirectories(Paths.get(Directory.TEMP.directory()+Directory.IMAGES));
-        File outFile = new File(Directory.TEMP.directory()+Directory.IMAGES +"/"+currentUser.getNhi()+"."+fileType);
-
-        bImage = ImageIO.read(inFile);
-        ImageIO.write(bImage, fileType, outFile);
-
-        return outFile.getPath();
-    }
-
-
-
-    /**
      *
      */
     @FXML
-    public void confirmUpdate() {
+    public void confirmUpdate() throws IOException {
 
         hideErrorMessages();
         errorLabel.setText("Please make sure your details are correct.");
@@ -581,6 +548,9 @@ public class UpdateUserController {
             AppController appController = AppController.getInstance();
             UserController userController = appController.getUserController();
             try {
+                String filePath = setUpImageFile(inFile, currentUser.getProfilePhotoFilePath(), currentUser.getNhi());
+                currentUser.setProfilePhotoFilePath(filePath);
+                currentUser.getUndoStack().pop();
                 currentUser.getRedoStack().clear();
                 oldUser.setDeleted(true);
                 userController.showUser(currentUser);
@@ -744,8 +714,14 @@ public class UpdateUserController {
      */
     private void updateUndos() {
         boolean changed;
+        String photoPath;
+        if (inFile != null) {
+            photoPath = inFile.getPath();
+        } else {
+            photoPath = currentUser.getProfilePhotoFilePath();
+        }
         changed = updatePersonalDetails(nhiInput.getText(), fNameInput.getText(), dobInput.getValue(),
-                dodInput.getValue());
+                dodInput.getValue(), photoPath);
         changed |= updateHealthDetails(heightInput.getText(), weightInput.getText());
         changed |= updateContactDetails();
         changed |= updateEmergencyContact();
@@ -766,7 +742,7 @@ public class UpdateUserController {
      * @param dob   The date of birth to be checked for changes and possibly updated.
      * @param dod   The date of death to be checked for changes and possibly updated.
      */
-    private boolean updatePersonalDetails(String nhi, String fName, LocalDate dob, LocalDate dod) {
+    private boolean updatePersonalDetails(String nhi, String fName, LocalDate dob, LocalDate dod, String photoPath) {
         boolean changed = false;
 
         if (!currentUser.getNhi().equals(nhi)) {
@@ -820,6 +796,11 @@ public class UpdateUserController {
             }
         } else if ((deathDate == null && dod != null) || deathDate != null) {
             currentUser.setDateOfDeath(dod);
+            changed = true;
+        }
+
+        if (checkChangedProperty(currentUser.getProfilePhotoFilePath(), photoPath)) {
+            currentUser.setProfilePhotoFilePath(photoPath);
             changed = true;
         }
 
