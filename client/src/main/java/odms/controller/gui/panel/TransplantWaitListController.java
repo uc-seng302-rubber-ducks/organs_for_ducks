@@ -87,6 +87,8 @@ public class TransplantWaitListController {
     private List<User> users;
     private AppController appController;
     private TransplantWaitListViewer parent;
+    private int startIndex = 0;
+    private static final int TRANSPLANTS_PER_PAGE = 10;
 
     @FXML
     public void init(AppController controller, TransplantWaitListViewer parent) {
@@ -160,19 +162,6 @@ public class TransplantWaitListController {
                 appController.addTransplant(detail);
             }
         }
-//        for (User user : users) {
-//            if (user.isReceiver() && (user.getDeceased() != null && !user.getDeceased()) && !user.isDeleted()) {
-//                Set<Organs> organs = user.getReceiverDetails().getOrgans().keySet();
-//                for (Organs organ : organs) {
-//                    if (isReceiverNeedingFilteredOrgan(user.getNhi(), organs).contains(organ)) {
-//
-//                        appController.addTransplant(
-//                                new TransplantDetails(user.getNhi(), user.getFullName(), organ, LocalDate.now(),
-//                                        user.getRegion()));
-//                    }
-//                }
-//            }
-//        }
 
         ObservableList<TransplantDetails> observableTransplantList = FXCollections
                 .observableList(appController.getTransplantList());

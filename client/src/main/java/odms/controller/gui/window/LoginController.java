@@ -222,6 +222,7 @@ public class LoginController {
                 getClass().getResource(ADMIN_VIEW_URL));
         Parent root;
         try {
+            appController.setToken(token);
             root = administratorLoader.load();
             stage.setScene(new Scene(root));
             stage.setTitle("Administrator");
