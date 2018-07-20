@@ -4,8 +4,10 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializer;
+import com.google.gson.reflect.TypeToken;
 import odms.commons.model.*;
 import odms.commons.model._enum.Directory;
+import odms.commons.model.datamodel.TransplantDetails;
 import odms.commons.model.dto.LoginResponse;
 import okhttp3.Response;
 import org.joda.time.DateTime;
@@ -338,6 +340,15 @@ public final class JsonHandler extends DataHandler {
         Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss")
                 .create();
         return gson.fromJson(response.body().string(), Administrator.class);
+    }
+
+    /**
+     * converts a raw response into a list of transplant details
+     * @param response response to decode
+     * @return all valid TransplantDetails objects. will return empty list if none
+     */
+    public List<TransplantDetails> decodeTransplantList(Response response) throws IOException{
+        return new Gson().fromJson(response.body().string(), new TypeToken<List<TransplantDetails>>() {}.getType());
     }
 }
 

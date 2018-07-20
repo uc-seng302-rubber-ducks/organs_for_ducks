@@ -1,5 +1,7 @@
 package odms.controller.gui.panel;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -9,16 +11,22 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
+import odms.commons.exception.ApiException;
 import odms.commons.model.User;
 import odms.commons.model._abstract.TransplantWaitListViewer;
 import odms.commons.model._enum.Organs;
 import odms.commons.model.datamodel.TransplantDetails;
 import odms.commons.model.dto.UserOverview;
 import odms.commons.utils.AttributeValidation;
+import odms.commons.utils.Log;
 import odms.controller.AppController;
 import odms.controller.gui.popup.utils.AlertWindowFactory;
+import odms.utils.TransplantBridge;
 import odms.utils.UserBridge;
+import okhttp3.Call;
+import okhttp3.Callback;
 import okhttp3.OkHttpClient;
+import okhttp3.Response;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -141,19 +149,30 @@ public class TransplantWaitListController {
         //set up lists
         //table contents are SortedList of a FilteredList of an ObservableList of an ArrayList
         appController.getTransplantList().clear();
-        for (User user : users) {
-            if (user.isReceiver() && (user.getDeceased() != null && !user.getDeceased()) && !user.isDeleted()) {
-                Set<Organs> organs = user.getReceiverDetails().getOrgans().keySet();
-                for (Organs organ : organs) {
-                    if (isReceiverNeedingFilteredOrgan(user.getNhi(), organs).contains(organ)) {
-
-                        appController.addTransplant(
-                                new TransplantDetails(user.getNhi(), user.getFullName(), organ, LocalDate.now(),
-                                        user.getRegion()));
-                    }
-                }
+        List<TransplantDetails> details = null;
+        try {
+            details = appController.getTransplantBridge().getWaitingList(0, 10, "", "", new ArrayList<>());
+        } catch (ApiException ex) {
+            Log.warning("failed to get transplant details from server. got response code " + ex.getResponseCode(), ex);
+        }
+        if (details != null) {
+            for(TransplantDetails detail : details) {
+                appController.addTransplant(detail);
             }
         }
+//        for (User user : users) {
+//            if (user.isReceiver() && (user.getDeceased() != null && !user.getDeceased()) && !user.isDeleted()) {
+//                Set<Organs> organs = user.getReceiverDetails().getOrgans().keySet();
+//                for (Organs organ : organs) {
+//                    if (isReceiverNeedingFilteredOrgan(user.getNhi(), organs).contains(organ)) {
+//
+//                        appController.addTransplant(
+//                                new TransplantDetails(user.getNhi(), user.getFullName(), organ, LocalDate.now(),
+//                                        user.getRegion()));
+//                    }
+//                }
+//            }
+//        }
 
         ObservableList<TransplantDetails> observableTransplantList = FXCollections
                 .observableList(appController.getTransplantList());
