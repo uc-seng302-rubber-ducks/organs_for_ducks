@@ -1,6 +1,7 @@
 package odms.commons.utils;
 
 import odms.commons.model._enum.Directory;
+import okhttp3.OkHttpClient;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -33,6 +34,7 @@ public class Log {
         try {
             //creates file/path if it doesn't already exist
             Files.createDirectories(Paths.get(Directory.SERVER_LOGS.directory()));
+            Logger.getLogger(OkHttpClient.class.getName()).setLevel(Level.FINE);
             Files.createDirectories(Paths.get(Directory.CLIENT_LOGS.directory()));
             if (server) {
                 handler = new FileHandler(Directory.SERVER_LOGS
