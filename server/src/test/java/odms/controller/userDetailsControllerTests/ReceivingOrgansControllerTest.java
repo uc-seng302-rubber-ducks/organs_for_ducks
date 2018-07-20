@@ -5,7 +5,7 @@ import odms.commons.model._enum.Organs;
 import odms.commons.model.datamodel.ReceiverOrganDetailsHolder;
 import odms.commons.utils.DBHandler;
 import odms.commons.utils.JDBCDriver;
-import odms.controller.user.details.controllers.ReceivingOrgansController;
+import odms.controller.user.details.ReceivingOrgansController;
 import odms.exception.ServerDBException;
 import odms.utils.DBManager;
 import org.junit.Assert;
