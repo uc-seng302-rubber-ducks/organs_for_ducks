@@ -50,7 +50,7 @@ public class TransplantBridge extends Bifrost {
         if (!organs.isEmpty()) {
             for (Organs organ : organs) {
                 //repeated values are interpreted by the server as an array
-                url.append("&organs=").append(organ.toString());
+                url.append("&organs=").append(organ.name());
             }
         }
         Request request = new Request.Builder().get()
