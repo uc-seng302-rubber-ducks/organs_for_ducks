@@ -3,10 +3,16 @@ package odms.GUITest1;
 import javafx.scene.Node;
 import javafx.scene.input.KeyCode;
 import odms.App;
+import odms.commons.exception.ApiException;
+import odms.commons.model.Clinician;
+import odms.commons.model.dto.UserOverview;
 import odms.controller.AppController;
 import odms.commons.model.Disease;
 import odms.commons.model.User;
 import odms.commons.model._enum.Organs;
+import odms.utils.ClinicianBridge;
+import odms.utils.LoginBridge;
+import odms.utils.UserBridge;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -16,11 +22,21 @@ import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.matcher.control.LabeledMatchers;
 import odms.TestUtils.CommonTestMethods;
 
+import java.io.IOException;
+import java.lang.reflect.Array;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.concurrent.TimeoutException;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 import static org.testfx.api.FxAssert.verifyThat;
 import static odms.TestUtils.TableViewsMethod.getCell;
 import static odms.TestUtils.TableViewsMethod.getNumberOfRows;
@@ -35,14 +51,35 @@ public class DeregisterOrganReasonControllerGUITest extends ApplicationTest {
     }
 
     @Before
-    public void setUpCreateScene() throws TimeoutException {
-        FxToolkit.registerPrimaryStage();
-        FxToolkit.setupApplication(App.class);
+    public void setUpCreateScene() throws TimeoutException, IOException {
+
+        UserBridge bridge = mock(UserBridge.class);
+        ClinicianBridge clinicianBridge = mock(ClinicianBridge.class);
+        LoginBridge loginBridge = mock(LoginBridge.class);
+        AppController application = mock(AppController.class);
+
+        Clinician clinician = new Clinician();
+        clinician.setStaffId("0");
+
+        User testUser = new User("Aa", LocalDate.parse("2000-01-20", sdf), "ABC1244");
+
+        AppController.setInstance(application);
+        when(application.getUserBridge()).thenReturn(bridge);
+        when(application.getClinicianBridge()).thenReturn(clinicianBridge);
+        when(application.getLoginBridge()).thenReturn(loginBridge);
+        when(loginBridge.loginToServer(anyString(),anyString(), anyString())).thenReturn("lsdjfksd");
+        when(clinicianBridge.getClinician(anyString(), anyString())).thenReturn(clinician);
+        when(bridge.loadUsersToController(anyInt(), anyInt(), anyString(), anyString(), anyString(), anyString()))
+                .thenReturn(Collections.singletonList(UserOverview.fromUser(testUser)));
+        when(bridge.getUser("ABC1244")).thenReturn(testUser);
+        when(application.getUsers()).thenReturn(Arrays.asList(testUser)); // needs to be modidfed to return a list
         AppController.getInstance().getUsers().clear();
         //DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        AppController.getInstance().getUsers().add(new User("Aa", LocalDate.parse("2000-01-20", sdf), "ABC1244"));
-        AppController.getInstance().getUsers().get(0).getReceiverDetails().startWaitingForOrgan(Organs.HEART);
-        AppController.getInstance().getUsers().get(0).getCurrentDiseases().add(new Disease("A0", false, false, LocalDate.now()));
+        testUser.getReceiverDetails().startWaitingForOrgan(Organs.HEART);
+        testUser.getCurrentDiseases().add(new Disease("A0", false, false, LocalDate.now()));
+        AppController.getInstance().getUsers().add(testUser);
+        FxToolkit.registerPrimaryStage();
+        FxToolkit.setupApplication(App.class);
 
         //Use default clinician
         clickOn("#clinicianTab");

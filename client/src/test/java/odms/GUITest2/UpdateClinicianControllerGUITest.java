@@ -1,10 +1,16 @@
 package odms.GUITest2;
 
 import odms.App;
+import odms.commons.exception.ApiException;
+import odms.commons.model.User;
+import odms.commons.model.dto.UserOverview;
 import odms.controller.AppController;
 import odms.commons.model.Clinician;
 import odms.commons.model.datamodel.Address;
 import odms.commons.model.datamodel.ContactDetails;
+import odms.utils.ClinicianBridge;
+import odms.utils.LoginBridge;
+import odms.utils.UserBridge;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -15,9 +21,17 @@ import org.testfx.matcher.control.LabeledMatchers;
 import org.testfx.matcher.control.TextInputControlMatchers;
 import odms.TestUtils.CommonTestMethods;
 
+import java.io.IOException;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Collections;
 import java.util.concurrent.TimeoutException;
 
 import static javafx.scene.input.KeyCode.*;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 import static org.testfx.api.FxAssert.verifyThat;
 
 /**
@@ -31,15 +45,32 @@ public class UpdateClinicianControllerGUITest extends ApplicationTest {
     }
 
     @Before
-    public void setUpCreateScene() throws TimeoutException {
-        FxToolkit.registerPrimaryStage();
-        FxToolkit.setupApplication(App.class);
-        AppController.getInstance().getUsers().clear();
-        AppController.getInstance().getClinicians().remove(AppController.getInstance().getClinician("Staff1"));
+    public void setUpCreateScene() throws TimeoutException, IOException {
+
+        UserBridge bridge = mock(UserBridge.class);
+        ClinicianBridge clinicianBridge = mock(ClinicianBridge.class);
+        LoginBridge loginBridge = mock(LoginBridge.class);
+        AppController application = mock(AppController.class);
         Clinician c = new Clinician("Staff1", "secure", "Affie", "Ali", "Al");
-        Address workAddress = new Address("20", "Kirkwood Ave", "", "Christchurch", "Canterbury", "", "");
+        DateTimeFormatter sdf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        User testUser = new User("Aa", LocalDate.parse("2000-01-20", sdf), "ABC1244");
+
+        AppController.setInstance(application);
+        when(application.getClinicianBridge()).thenReturn(clinicianBridge);
+        when(application.getLoginBridge()).thenReturn(loginBridge);
+        when(loginBridge.loginToServer(anyString(),anyString(), anyString())).thenReturn("lsdjfksd");
+        when(clinicianBridge.getClinician(anyString(), anyString())).thenReturn(c);
+        when(bridge.loadUsersToController(anyInt(), anyInt(), anyString(), anyString(), anyString(), anyString()))
+                .thenReturn(Collections.singletonList(UserOverview.fromUser(testUser)));
+        when(bridge.getUser("ABC1244")).thenReturn(testUser);
+
+        Address workAddress = new Address("20", "Kirkwood Ave", "",
+                "Christchurch", "Canterbury", "", "");
         c.setWorkContactDetails(new ContactDetails("", "", workAddress, ""));
         AppController.getInstance().getClinicians().add(c);
+
+        FxToolkit.registerPrimaryStage();
+        FxToolkit.setupApplication(App.class);
         clickOn("#clinicianTab");
 
         clickOn("#staffIdTextField");
