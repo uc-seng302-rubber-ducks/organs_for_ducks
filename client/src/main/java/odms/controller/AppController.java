@@ -90,31 +90,6 @@ public class AppController {
 
         String[] empty = {""};
         historyOfCommands.add(empty);//putting an empty string into the string array to be displayed if history pointer is 0
-
-
-        try {
-            if (administratorBridge.getAdmin("default", "") == null) {
-                Administrator defaultAdmin = new Administrator("default", "", "", "", "admin");
-                admins.add(defaultAdmin);
-                saveAdmin(defaultAdmin);
-            }
-        } catch (ApiException e) {
-            Log.warning("Could not create the default Admin", e);
-        }
-
-
-        try { // adds a clinician to the database if one does not already exist
-            if (clinicianBridge.getClinician("0", "") == null) {
-                Clinician defaultClinician = new Clinician("0", "admin", "Default", "", "");
-                defaultClinician.setRegion("region");
-                defaultClinician.getUndoStack().clear();
-                clinicians.add(defaultClinician);
-                clinicianBridge.postClinician(defaultClinician, "");
-            }
-        } catch (ApiException e) {
-            Log.warning("Could not create the default clinician", e);
-        }
-
     }
 
     /**
