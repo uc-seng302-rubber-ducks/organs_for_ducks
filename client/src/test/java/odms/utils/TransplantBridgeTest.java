@@ -2,6 +2,7 @@ package odms.utils;
 
 import com.google.gson.Gson;
 import odms.commons.exception.ApiException;
+import odms.commons.model._enum.LoggerEnvironments;
 import odms.commons.model._enum.Organs;
 import odms.commons.model.datamodel.TransplantDetails;
 import odms.commons.utils.Log;
@@ -30,7 +31,7 @@ public class TransplantBridgeTest {
 
     @Before
     public void setUp() {
-        Log.setup(false);
+        Log.setup(LoggerEnvironments.TEST);
         Log.clearDebugLogs();
         List<TransplantDetails> details = new ArrayList<>();
         details.add(new TransplantDetails("ABC1234", "Steve", Organs.HEART, LocalDate.now(), "there"));
