@@ -91,6 +91,17 @@ public class DBHandlerTest {
     }
 
     @Test
+    public void testUpdateUserProfilePicture() throws SQLException {
+
+        testUser.setProfilePhotoFilePath("src/test/resources/Images/duck.jpg");
+        Collection<User> users = new ArrayList<>();
+        users.add(testUser);
+
+        dbHandler.saveUsers(users, connection);
+        verify(mockStmt, times(11)).executeUpdate();
+    }
+
+    @Test
     public void testAddUserDonatingOrgans() throws SQLException {
         testUser.getDonorDetails().addOrgan(Organs.LUNG);
         Collection<User> users = new ArrayList<>();
@@ -162,6 +173,16 @@ public class DBHandlerTest {
         Collection<Administrator> admins = new ArrayList<>(Collections.singleton(testAdmin));
 
         dbHandler.saveAdministrators(admins, connection);
+        verify(mockStmt, times(4)).executeUpdate();
+    }
+
+    @Test
+    public void testUpdateClinicianProfilePicture() throws SQLException {
+
+        testClinician.setProfilePhotoFilePath("src/test/resources/Images/duck.jpg");
+        Collection<Clinician> clinicians = new ArrayList<>(Collections.singleton(testClinician));
+
+        dbHandler.saveClinicians(clinicians, connection);
         verify(mockStmt, times(4)).executeUpdate();
     }
 
