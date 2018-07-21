@@ -101,6 +101,7 @@ public class AppController {
 
     /**
      * Never use this unless testing. Please.
+     * After the tests, make sure you reset it using setInstance(null)
      *
      * @param appController controller instance to return
      */

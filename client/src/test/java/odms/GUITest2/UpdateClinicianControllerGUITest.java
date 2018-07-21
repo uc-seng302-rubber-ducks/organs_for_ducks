@@ -84,7 +84,7 @@ public class UpdateClinicianControllerGUITest extends ApplicationTest {
     @After
     public void tearDown() throws TimeoutException {
         clickOn("#logoutButton");
-        AppController.getInstance().getUsers().clear();
+        AppController.setInstance(null);
         AppController.getInstance().getClinicians().remove(AppController.getInstance().getClinician("Staff1"));
         FxToolkit.cleanupStages();
     }

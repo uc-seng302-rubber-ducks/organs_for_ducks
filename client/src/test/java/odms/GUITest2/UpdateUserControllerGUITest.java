@@ -63,7 +63,7 @@ public class UpdateUserControllerGUITest extends ApplicationTest {
 
     @After
     public void tearDown() throws TimeoutException {
-        AppController.getInstance().getUsers().clear();
+        AppController.setInstance(null);
         FxToolkit.cleanupStages();
     }
 

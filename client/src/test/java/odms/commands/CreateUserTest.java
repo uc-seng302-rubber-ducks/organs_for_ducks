@@ -4,6 +4,7 @@ import odms.controller.AppController;
 import odms.commons.model.User;
 import odms.commons.model.datamodel.Address;
 import odms.utils.UserBridge;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -46,6 +47,11 @@ public class CreateUserTest {
 
         AppController.setInstance(controller);
         when(controller.getUserBridge()).thenReturn(bridge);
+    }
+
+    @After
+    public void tearDown() {
+        AppController.setInstance(null);
     }
 
     //<editor-fold>
