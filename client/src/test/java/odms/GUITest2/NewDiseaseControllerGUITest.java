@@ -2,6 +2,8 @@ package odms.GUITest2;
 
 import javafx.scene.input.KeyCode;
 import odms.App;
+import odms.commons.model.Clinician;
+import odms.commons.model.dto.UserOverview;
 import odms.controller.AppController;
 import odms.commons.model.Disease;
 import odms.commons.model.User;
@@ -21,6 +23,7 @@ import odms.TestUtils.CommonTestMethods;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Collections;
 import java.util.concurrent.TimeoutException;
 
 import static odms.TestUtils.FxRobotHelper.clickOnButton;
@@ -28,6 +31,7 @@ import static odms.TestUtils.FxRobotHelper.setTextField;
 import static org.junit.Assert.assertEquals;
 import static odms.TestUtils.TableViewsMethod.getCell;
 import static odms.TestUtils.TableViewsMethod.getCellValue;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -44,7 +48,7 @@ public class NewDiseaseControllerGUITest extends ApplicationTest {
 
     @BeforeClass
     public static void initialization() {
-        CommonTestMethods.runHeadless();
+        //CommonTestMethods.runHeadless();
     }
 
     @Before
@@ -55,21 +59,28 @@ public class NewDiseaseControllerGUITest extends ApplicationTest {
         loginBridge = mock(LoginBridge.class);
         administratorBridge = mock(AdministratorBridge.class);
 
+        Clinician clinician = new Clinician();
+        clinician.setStaffId("0");
+
         AppController.setInstance(controller);
         when(controller.getUserBridge()).thenReturn(bridge);
         when(controller.getClinicianBridge()).thenReturn(clinicianBridge);
         when(controller.getAdministratorBridge()).thenReturn(administratorBridge);
         when(controller.getLoginBridge()).thenReturn(loginBridge);
 
-        FxToolkit.registerPrimaryStage();
-        FxToolkit.setupApplication(App.class);
+        when(loginBridge.loginToServer(anyString(),anyString(), anyString())).thenReturn("lsdjfksd");
+        when(clinicianBridge.getClinician(anyString(), anyString())).thenReturn(clinician);
         AppController.getInstance().getUsers().clear();
         //DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         testUser = new User("Aa", LocalDate.parse("2000-01-20", sdf), "ABC1244");
         testUser.getCurrentDiseases().add(new Disease("A0", false, false, LocalDate.now()));
         testUser.getPastDiseases().add(new Disease("B0", false, true, LocalDate.now()));
+        when(bridge.loadUsersToController(anyInt(), anyInt(), anyString(), anyString(), anyString(), anyString()))
+                .thenReturn(Collections.singletonList(UserOverview.fromUser(testUser)));
         when(bridge.getUser(anyString())).thenReturn(testUser);
 
+        FxToolkit.registerPrimaryStage();
+        FxToolkit.setupApplication(App.class);
 
         //Use default clinician
         clickOn("#clinicianTab");
