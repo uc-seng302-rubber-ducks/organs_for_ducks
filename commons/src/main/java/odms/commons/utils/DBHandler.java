@@ -882,18 +882,8 @@ public class DBHandler {
     }
 
     /**
-     * adds or updates user's profile photo using the filepath to the photo.
-     * pre-condition: user's profile photo filepath must be set.
-     * post-condition: adds or updates user's profile photo on database.
-     *
-     * @param user for which to update the profile photo in the database for
-     * @param connection A non null and active connection to the database
-     * @throws SQLException if there is an error with the database
-     * @throws FileNotFoundException if filepath provided does not lead to a file.
-     */
-    /**
      * adds or updates user's profile photo on the database with the photo passed in.
-     * pre-condition: user's profile photo filepath must be set.
+     * pre-condition: user's profile photo, user id and type of user must be provided.
      * post-condition: adds or updates user's profile photo on database.
      *
      * @param role user's role. e.g. Clinician.class
@@ -918,6 +908,5 @@ public class DBHandler {
             updateProfilePhoto.setString(2, roleId);
             updateProfilePhoto.executeUpdate();
         }
-
     }
 }
