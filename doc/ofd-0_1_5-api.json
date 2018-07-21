@@ -924,10 +924,10 @@
             "Clinician": []
           }
         ],
-        "description": "Binary image (e.g., content of png or jpg image file).",
+        "description": "Binary image (e.g., content of png or jpg image file). returns 401 if file type is not jpg or png or image is more than 2 MB.",
         "responses": {
           "201": {
-            "description": "OK"
+            "description": "Created"
           },
           "400": {
             "description": "Bad request."
@@ -1034,10 +1034,10 @@
             "Clinician": []
           }
         ],
-        "description": "Binary image (e.g., content of png or jpg image file).",
+        "description": "Binary image (e.g., content of png or jpg image file). returns 401 if file type is not jpg or png or image is more than 2 MB.",
         "responses": {
           "201": {
-            "description": "OK"
+            "description": "Created"
           },
           "400": {
             "description": "Bad request."
