@@ -6,6 +6,10 @@ import odms.commons.utils.DBHandler;
 import org.junit.*;
 import seng302.TestUtils.DBHandlerMocker;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -91,14 +95,11 @@ public class DBHandlerTest {
     }
 
     @Test
-    public void testUpdateUserProfilePicture() throws SQLException {
+    public void testUpdateUserProfilePicture() throws SQLException, IOException {
+        InputStream inputStream = new FileInputStream("src/test/resources/Images/duck.jpg");
 
-        testUser.setProfilePhotoFilePath("src/test/resources/Images/duck.jpg");
-        Collection<User> users = new ArrayList<>();
-        users.add(testUser);
-
-        dbHandler.saveUsers(users, connection);
-        verify(mockStmt, times(11)).executeUpdate();
+        dbHandler.updateProfilePhoto(User.class, testUser.getNhi(), inputStream, connection);
+        verify(mockStmt, times(1)).executeUpdate();
     }
 
     @Test
@@ -177,13 +178,11 @@ public class DBHandlerTest {
     }
 
     @Test
-    public void testUpdateClinicianProfilePicture() throws SQLException {
+    public void testUpdateClinicianProfilePicture() throws SQLException, FileNotFoundException {
+        InputStream inputStream = new FileInputStream("src/test/resources/Images/duck.jpg");
 
-        testClinician.setProfilePhotoFilePath("src/test/resources/Images/duck.jpg");
-        Collection<Clinician> clinicians = new ArrayList<>(Collections.singleton(testClinician));
-
-        dbHandler.saveClinicians(clinicians, connection);
-        verify(mockStmt, times(4)).executeUpdate();
+        dbHandler.updateProfilePhoto(Clinician.class, testClinician.getStaffId(), inputStream, connection);
+        verify(mockStmt, times(1)).executeUpdate();
     }
 
     @Test
@@ -192,5 +191,12 @@ public class DBHandlerTest {
         DBHandlerMocker.setTransplantResultSet(mockResultSet);
         dbHandler.getTransplantDetails(connection,0, 1, "", "", new String[] {});
         verify(mockStmt, times(1)).executeQuery();
+    }
+
+    @Test (expected = UnsupportedOperationException.class)
+    public void testRoleNotSupportUpdateProfilePicture() throws SQLException, FileNotFoundException {
+        InputStream inputStream = new FileInputStream("src/test/resources/Images/duck.jpg");
+
+        dbHandler.updateProfilePhoto(Administrator.class, testAdmin.getUserName(), inputStream, connection);
     }
 }

@@ -11,6 +11,8 @@ import odms.commons.utils.db_strategies.AdminUpdateStrategy;
 import odms.commons.utils.db_strategies.ClinicianUpdateStrategy;
 import odms.commons.utils.db_strategies.UserUpdateStrategy;
 
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.sql.*;
 import java.time.LocalDate;
 import java.util.*;
@@ -73,6 +75,9 @@ public class DBHandler {
     private static final String SELECT_ADMIN_ONE_TO_ONE_INFO_STMT = "SELECT userName, firstName, middleName, lastName, timeCreated, lastModified  FROM Administrator";
     private static final String SELECT_SINGLE_ADMIN_ONE_TO_ONE_INFO_STMT = "SELECT userName, firstName, middleName, lastName, timeCreated, lastModified  FROM Administrator WHERE userName = ?";
     private static final String SELECT_PASS_DETAILS = "SELECT hash,salt FROM PasswordDetails WHERE fkAdminUserName = ? OR fkStaffId = ?";
+    private static final String UPDATE_USER_PROFILE_PHOTO_STMT = "UPDATE User SET profilePicture= ? WHERE nhi = ?";
+    private static final String UPDATE_CLINICIAN_PROFILE_PHOTO_STMT = "UPDATE Clinician SET profilePicture= ? WHERE staffId = ?";
+
     private AbstractUpdateStrategy updateStrategy;
 
 
@@ -874,5 +879,45 @@ public class DBHandler {
                 return detailsList;
             }
         }
+    }
+
+    /**
+     * adds or updates user's profile photo using the filepath to the photo.
+     * pre-condition: user's profile photo filepath must be set.
+     * post-condition: adds or updates user's profile photo on database.
+     *
+     * @param user for which to update the profile photo in the database for
+     * @param connection A non null and active connection to the database
+     * @throws SQLException if there is an error with the database
+     * @throws FileNotFoundException if filepath provided does not lead to a file.
+     */
+    /**
+     * adds or updates user's profile photo on the database with the photo passed in.
+     * pre-condition: user's profile photo filepath must be set.
+     * post-condition: adds or updates user's profile photo on database.
+     *
+     * @param role user's role. e.g. Clinician.class
+     * @param roleId id of user
+     * @param profilePhoto photo passed in
+     * @param connection connection to the target database
+     * @param <T> generic for type of the user
+     * @throws SQLException exception thrown during the transaction
+     */
+    public <T> void updateProfilePhoto(Class<T> role, String roleId, InputStream profilePhoto, Connection connection) throws SQLException {
+        String update_stmt;
+
+        if (role.isAssignableFrom(User.class)) {
+            update_stmt = UPDATE_USER_PROFILE_PHOTO_STMT;
+        } else if (role.isAssignableFrom(Clinician.class)){
+            update_stmt = UPDATE_CLINICIAN_PROFILE_PHOTO_STMT;
+        } else {
+            throw new UnsupportedOperationException("Role does not support profile picture");
+        }
+        try (PreparedStatement updateProfilePhoto = connection.prepareStatement(update_stmt)) {
+            updateProfilePhoto.setBlob(1, profilePhoto);
+            updateProfilePhoto.setString(2, roleId);
+            updateProfilePhoto.executeUpdate();
+        }
+
     }
 }

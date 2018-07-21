@@ -9,10 +9,6 @@ import odms.commons.model.datamodel.Medication;
 import odms.commons.model.datamodel.ReceiverOrganDetailsHolder;
 import odms.commons.utils.Log;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.Collection;
@@ -47,7 +43,6 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
             "JOIN Address ON contactId = Address.fkContactId " +
             "SET contactName = ?, contactRelationship = ?, homePhone = ?, cellPhone = ?, email = ?, streetNumber = ?, streetName = ?, neighbourhood = ?, city = ?, region = ?, zipCode = ?, country = ? " +
             "WHERE EmergencyContactDetails.fkUserNhi = ?";
-    private static final String UPDATE_USER_PHOTO_PICTURE_STMT = "UPDATE User SET profilePicture= ? WHERE nhi = ?";
 
     private static final String DELETE_USER_STMT = "DELETE FROM User WHERE nhi = ?";
     private static final String CREATE_RECEIVING_ORGAN_DATE = "INSERT INTO OrganAwaitingDates (fkAwaitingId, dateRegistered, dateDeregistered) VALUES (?, ?, ?)";
@@ -272,11 +267,6 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
             updateUserMedicalProcedures(user, connection);
             updateUserDiseases(user, connection);
             updateMedications(user, connection);
-            try {
-                updateProfilePhoto(user, connection);
-            } catch (IOException e) {
-                System.err.println(e);
-            }
         } catch (SQLException sqlEx) {
             Log.severe("A fatal error in deletion, cancelling operation", sqlEx);
             connection.prepareStatement("ROLLBACK").execute();
@@ -730,27 +720,6 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
             createMedication.setString(2, med.getMedName());
 
             createMedication.executeUpdate();
-        }
-    }
-
-    /**
-     * adds or updates user's profile photo using the filepath to the photo.
-     * pre-condition: user's profile photo filepath must be set.
-     * post-condition: adds or updates user's profile photo on database.
-     *
-     * @param user for which to update the profile photo in the database for
-     * @param connection A non null and active connection to the database
-     * @throws SQLException if there is an error with the database
-     * @throws FileNotFoundException if filepath provided does not lead to a file.
-     */
-    private void updateProfilePhoto(User user, Connection connection) throws SQLException, FileNotFoundException {
-        if(user.getProfilePhotoFilePath() != null) {
-            try (PreparedStatement updateProfilePhoto = connection.prepareStatement(UPDATE_USER_PHOTO_PICTURE_STMT)) {
-                InputStream inputStream = new FileInputStream(user.getProfilePhotoFilePath());
-                updateProfilePhoto.setBlob(1, inputStream);
-                updateProfilePhoto.setString(2, user.getNhi());
-                updateProfilePhoto.executeUpdate();
-            }
         }
     }
 }
