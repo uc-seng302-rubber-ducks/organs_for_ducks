@@ -53,6 +53,7 @@ public class TransplantBridge extends Bifrost {
                 url.append("&organs=").append(organ.name());
             }
         }
+        Log.debug(url.toString());
         Request request = new Request.Builder().get()
                 .header(TOKEN_HEADER, AppController.getInstance().getToken())
                 .url(url.toString()).build();

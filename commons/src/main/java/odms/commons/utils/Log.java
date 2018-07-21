@@ -4,10 +4,14 @@ import odms.commons.model._enum.Directory;
 import okhttp3.OkHttpClient;
 
 import java.io.IOException;
+import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.logging.*;
 
 /**
@@ -19,8 +23,10 @@ import java.util.logging.*;
  */
 public class Log {
 
-    private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger("ODMS");
+    private static final Logger logger = Logger.getLogger("ODMS");
+    private static final Logger debugLogger = Logger.getLogger("debug");
     private static long bootTime = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC);
+    private static List<String> debugLogs = new ArrayList<>();
 
     private Log() {
     }
@@ -51,11 +57,26 @@ public class Log {
             //disables logging to console
             logger.setUseParentHandlers(server);
 
+            //sets up debug logging
+            Handler debugHandler = new ConsoleHandler();
+            debugHandler.setFormatter(new Formatter() {
+                @Override
+                public String format(LogRecord record) {
+                    debugLogs.add(record.getMessage());
+                    return formatter.format(record);
+                }
+            });
+            debugLogger.setUseParentHandlers(false);
+            debugLogger.addHandler(debugHandler);
+
+
         } catch (IOException ex) {
             logger.log(Level.WARNING, "failed to set up logging to file", ex);
         } catch (SecurityException ex) {
             logger.log(Level.SEVERE, "failed to set up logging to file", ex);
         }
+
+
     }
 
     /**
@@ -96,5 +117,30 @@ public class Log {
      */
     public static void severe(String message, Throwable ex) {
         logger.log(Level.SEVERE, message, ex);
+    }
+
+
+    /**
+     * Creates a log entry at the FINE level. this uses the debug logger, not the production logger.
+     * This will also append to the debugLogs
+     * @param message String message to be logged
+     */
+    public static void debug(String message) {
+        debugLogger.log(Level.INFO, message);
+    }
+
+    /**
+     * simple getter for debug/test logs
+     * @return list of strings containing log messages
+     */
+    public static List<String> getDebugLogs() {
+        return debugLogs;
+    }
+
+    /**
+     * clears debug logs (for test teardown)
+     */
+    public static void clearDebugLogs() {
+        debugLogs.clear();
     }
 }

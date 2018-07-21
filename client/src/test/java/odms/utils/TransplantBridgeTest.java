@@ -4,8 +4,10 @@ import com.google.gson.Gson;
 import odms.commons.exception.ApiException;
 import odms.commons.model._enum.Organs;
 import odms.commons.model.datamodel.TransplantDetails;
+import odms.commons.utils.Log;
 import odms.controller.AppController;
 import okhttp3.*;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -13,11 +15,11 @@ import org.junit.Test;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class TransplantBridgeTest {
@@ -28,6 +30,8 @@ public class TransplantBridgeTest {
 
     @Before
     public void setUp() {
+        Log.setup(false);
+        Log.clearDebugLogs();
         List<TransplantDetails> details = new ArrayList<>();
         details.add(new TransplantDetails("ABC1234", "Steve", Organs.HEART, LocalDate.now(), "there"));
         details.add(new TransplantDetails("ABC1235", "Frank", Organs.KIDNEY, LocalDate.now(), "there"));
@@ -43,8 +47,14 @@ public class TransplantBridgeTest {
         bridge = new TransplantBridge(mockClient);
     }
 
+    @After
+    public void tearDown() {
+        //force it to re-create singleton instance as in production
+        AppController.setInstance(null);
+    }
+
     @Test(expected = ApiException.class)
-    public void getWaitingListShouldThrowExceptionOnBadResponseCode() throws IOException{
+    public void getWaitingListShouldThrowExceptionOnBadResponseCode() throws IOException {
         Call mockCall = mock(Call.class);
         Response mockResponse = mock(Response.class);
         when(mockResponse.code()).thenReturn(404);
@@ -55,8 +65,8 @@ public class TransplantBridgeTest {
     }
 
     @Test
-    public void getWaitingListShouldReturnEmptyListWhenNoData() throws IOException{
-        final String responseString = new Gson().toJson( new ArrayList<>());
+    public void getWaitingListShouldReturnEmptyListWhenNoData() throws IOException {
+        final String responseString = new Gson().toJson(new ArrayList<>());
 
         Call mockCall = mock(Call.class);
         Response mockResponse = mock(Response.class);
@@ -74,32 +84,96 @@ public class TransplantBridgeTest {
     }
 
     @Test
-    public void getWaitingListShouldReturnAllItemsWhenNoFilter() throws IOException{
+    public void getWaitingListShouldReturnEmptyListWhenNoResults() throws IOException {
+
         Call mockCall = mock(Call.class);
         Response mockResponse = mock(Response.class);
         ResponseBody mockResponseBody = mock(ResponseBody.class);
+
+        when(mockResponse.code()).thenReturn(200);
+        when(mockResponse.body()).thenReturn(mockResponseBody);
+        when(mockResponseBody.string()).thenReturn("[]");
+        when(mockCall.execute()).thenReturn(mockResponse);
+        when(mockClient.newCall(any(Request.class))).thenReturn(mockCall);
+        //returns a 200 code with body text of empty array
+
+        List<TransplantDetails> actual = bridge.getWaitingList(0, 10, "", "", new ArrayList<>());
+
+        Assert.assertNotNull(actual);
+        Assert.assertTrue(actual.isEmpty());
+    }
+
+    @Test
+    public void getWaitingListShouldHaveNoUrlFilter() throws IOException {
+        Call mockCall = mock(Call.class);
+        Response mockResponse = mock(Response.class);
+        ResponseBody mockResponseBody = mock(ResponseBody.class);
+
         when(mockResponse.code()).thenReturn(200);
         when(mockResponse.body()).thenReturn(mockResponseBody);
         when(mockResponseBody.string()).thenReturn(responseString);
         when(mockCall.execute()).thenReturn(mockResponse);
         when(mockClient.newCall(any(Request.class))).thenReturn(mockCall);
 
-        List<TransplantDetails> actual = bridge.getWaitingList(0, 10, "", "", new ArrayList<>());
+        bridge.getWaitingList(0, 10, "", "", new ArrayList<>());
+        List<String> logs = Log.getDebugLogs();
+        Assert.assertEquals("http://localhost:4941/odms/v1/transplantList?count=10&startIndex=0", logs.get(0));
+    }
 
-        Assert.assertTrue(actual.isEmpty());
+
+    @Test
+    public void getWaitingListShouldFilterByRegionInUrl() throws IOException {
+        Call mockCall = mock(Call.class);
+        Response mockResponse = mock(Response.class);
+        ResponseBody mockResponseBody = mock(ResponseBody.class);
+
+        when(mockResponse.code()).thenReturn(200);
+        when(mockResponse.body()).thenReturn(mockResponseBody);
+        when(mockResponseBody.string()).thenReturn(responseString);
+        when(mockCall.execute()).thenReturn(mockResponse);
+        when(mockClient.newCall(any(Request.class))).thenReturn(mockCall);
+
+        bridge.getWaitingList(0, 10, "", "here", new ArrayList<>());
+        List<String> logs = Log.getDebugLogs();
+        Assert.assertEquals("http://localhost:4941/odms/v1/transplantList?count=10&startIndex=0&region=here", logs.get(0));
     }
 
     @Test
-    public void getWaitingListShouldFilterByRegion() {
-        Assert.fail("not yet implemented");
+    public void getWaitingListShouldFilterByOrganInUrl() throws IOException {
+        Call mockCall = mock(Call.class);
+        Response mockResponse = mock(Response.class);
+        ResponseBody mockResponseBody = mock(ResponseBody.class);
+
+        when(mockResponse.code()).thenReturn(200);
+        when(mockResponse.body()).thenReturn(mockResponseBody);
+        when(mockResponseBody.string()).thenReturn(responseString);
+        when(mockCall.execute()).thenReturn(mockResponse);
+        when(mockClient.newCall(any(Request.class))).thenReturn(mockCall);
+
+        bridge.getWaitingList(0, 10, "", "", new ArrayList<>(Arrays.asList(Organs.LIVER, Organs.LUNG)));
+        List<String> logs = Log.getDebugLogs();
+
+        Assert.assertEquals("http://localhost:4941/odms/v1/transplantList?count=10&startIndex=0&organs=LIVER&organs=LUNG", logs.get(0));
     }
 
     @Test
-    public void getWaitingListShouldFilterByOrgan() {
-        Assert.fail("not yet implemented");
+    public void getWaitingListShouldPaginateInUrl() throws IOException {
+        Call mockCall = mock(Call.class);
+        Response mockResponse = mock(Response.class);
+        ResponseBody mockResponseBody = mock(ResponseBody.class);
+
+        when(mockResponse.code()).thenReturn(200);
+        when(mockResponse.body()).thenReturn(mockResponseBody);
+        when(mockResponseBody.string()).thenReturn(responseString);
+        when(mockCall.execute()).thenReturn(mockResponse);
+        when(mockClient.newCall(any(Request.class))).thenReturn(mockCall);
+
+        bridge.getWaitingList(34, 54, "", "", new ArrayList<>());
+        List<String> logs = Log.getDebugLogs();
+
+        Assert.assertEquals("http://localhost:4941/odms/v1/transplantList?count=54&startIndex=34", logs.get(0));
+
     }
-
-
 
 
 }
