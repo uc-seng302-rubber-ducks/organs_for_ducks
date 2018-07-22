@@ -11,7 +11,6 @@ import odms.commons.utils.db_strategies.AdminUpdateStrategy;
 import odms.commons.utils.db_strategies.ClinicianUpdateStrategy;
 import odms.commons.utils.db_strategies.UserUpdateStrategy;
 
-import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.sql.*;
 import java.time.LocalDate;
@@ -75,9 +74,10 @@ public class DBHandler {
     private static final String SELECT_ADMIN_ONE_TO_ONE_INFO_STMT = "SELECT userName, firstName, middleName, lastName, timeCreated, lastModified  FROM Administrator";
     private static final String SELECT_SINGLE_ADMIN_ONE_TO_ONE_INFO_STMT = "SELECT userName, firstName, middleName, lastName, timeCreated, lastModified  FROM Administrator WHERE userName = ?";
     private static final String SELECT_PASS_DETAILS = "SELECT hash,salt FROM PasswordDetails WHERE fkAdminUserName = ? OR fkStaffId = ?";
+    private static final String SELECT_USER_PROFILE_PHOTO_STMT = "SELECT profilePicture FROM User WHERE nhi = ?";
+    private static final String SELECT_CLINICIAN_PROFILE_PHOTO_STMT = "SELECT profilePicture FROM Clinician WHERE staffId = ?";
     private static final String UPDATE_USER_PROFILE_PHOTO_STMT = "UPDATE User SET profilePicture= ? WHERE nhi = ?";
     private static final String UPDATE_CLINICIAN_PROFILE_PHOTO_STMT = "UPDATE Clinician SET profilePicture= ? WHERE staffId = ?";
-
     private AbstractUpdateStrategy updateStrategy;
 
 
@@ -879,6 +879,38 @@ public class DBHandler {
                 return detailsList;
             }
         }
+    }
+
+    /**
+     * Gets the user's profile photo on the database based on user's ID.
+     *
+     * @param role user's role. e.g. Clinician.class
+     * @param roleId id of user
+     * @param connection connection to the target database
+     * @param <T> generic for type of the user
+     * @return Profile Picture of type Blob if such user exists or has a profile picture, null otherwise.
+     * @throws SQLException exception thrown during the transaction
+     */
+    public <T> Blob getProfilePhoto(Class<T> role, String roleId, Connection connection) throws SQLException {
+        String select_stmt;
+        Blob profilePicture = null;
+
+        if (role.isAssignableFrom(User.class)) {
+            select_stmt = SELECT_USER_PROFILE_PHOTO_STMT;
+        } else if (role.isAssignableFrom(Clinician.class)){
+            select_stmt = SELECT_CLINICIAN_PROFILE_PHOTO_STMT;
+        } else {
+            throw new UnsupportedOperationException("Role does not support profile picture");
+        }
+        try (PreparedStatement selectProfilePhoto = connection.prepareStatement(select_stmt)) {
+            selectProfilePhoto.setString(1, roleId);
+            try (ResultSet resultSet = selectProfilePhoto.executeQuery()) {
+                while (resultSet != null && resultSet.next()) {
+                    profilePicture = resultSet.getBlob("profilePicture");
+                }
+            }
+        }
+        return profilePicture;
     }
 
     /**

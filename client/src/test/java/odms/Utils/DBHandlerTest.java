@@ -104,6 +104,13 @@ public class DBHandlerTest {
     }
 
     @Test
+    public void getUserProfilePicture() throws SQLException{
+        when(mockResultSet.next()).thenReturn(true, false);
+        dbHandler.getProfilePhoto(User.class, testUser.getNhi(), connection);
+        verify(mockStmt, times(1)).executeQuery();
+    }
+
+    @Test
     public void testAddUserDonatingOrgans() throws SQLException {
         testUser.getDonorDetails().addOrgan(Organs.LUNG);
         Collection<User> users = new ArrayList<>();
@@ -186,6 +193,25 @@ public class DBHandlerTest {
         verify(mockStmt, times(1)).executeUpdate();
     }
 
+    @Test (expected = UnsupportedOperationException.class)
+    public void testRoleNotSupportUpdateProfilePicture() throws SQLException, FileNotFoundException {
+        InputStream inputStream = new FileInputStream(PHOTO_TEST_FILE_PATH);
+
+        dbHandler.updateProfilePhoto(Administrator.class, testAdmin.getUserName(), inputStream, connection);
+    }
+
+    @Test
+    public void testGetClinicianProfilePicture() throws SQLException {
+        when(mockResultSet.next()).thenReturn(true, false);
+        dbHandler.getProfilePhoto(Clinician.class, testClinician.getStaffId(), connection);
+        verify(mockStmt, times(1)).executeQuery();
+    }
+
+    @Test (expected = UnsupportedOperationException.class)
+    public void testRoleNotSupportGetProfilePicture() throws SQLException {
+        dbHandler.getProfilePhoto(Administrator.class, testAdmin.getUserName(), connection);
+    }
+
     @Test
     public void testGetTransplantList() throws SQLException {
         when(mockResultSet.next()).thenReturn(true, false);
@@ -194,10 +220,4 @@ public class DBHandlerTest {
         verify(mockStmt, times(1)).executeQuery();
     }
 
-    @Test (expected = UnsupportedOperationException.class)
-    public void testRoleNotSupportUpdateProfilePicture() throws SQLException, FileNotFoundException {
-        InputStream inputStream = new FileInputStream(PHOTO_TEST_FILE_PATH);
-
-        dbHandler.updateProfilePhoto(Administrator.class, testAdmin.getUserName(), inputStream, connection);
-    }
 }
