@@ -9,6 +9,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Comparator;
@@ -22,17 +23,12 @@ public final class PhotoHelper {
      * then make a copy of the desired image and store it in the image folder.
      *
      * @param inFile desired image file
-     * @param photoFilePath file path to the desired photo
      * @param id the id of the user/clinician
      * @return filepath to the image file
      * @throws IOException if there are issues with handling files.
      */
-    public static String setUpImageFile(File inFile, String photoFilePath, String id) throws IOException {
+    public static String setUpImageFile(File inFile, String id) throws IOException {
         BufferedImage bImage;
-//        if (photoFilePath != null) { //Prevent duplicated image files.
-//            File oldFile = new File(photoFilePath);
-//            oldFile.delete();
-//        }
 
         String fileType = inFile.getName();
         fileType = fileType.substring(fileType.lastIndexOf(".") + 1);
@@ -63,9 +59,13 @@ public final class PhotoHelper {
      * @throws IOException if there are issues with handling files.
      */
     public static void deleteTempDirectory() throws IOException{
-        Files.walk(Paths.get(Directory.TEMP.directory()))
-                .sorted(Comparator.reverseOrder())
-                .map(Path::toFile)
-                .forEach(File::delete);
+        try {
+            Files.walk(Paths.get(Directory.TEMP.directory()))
+                    .sorted(Comparator.reverseOrder())
+                    .map(Path::toFile)
+                    .forEach(File::delete);
+        } catch (NoSuchFileException e){
+            Log.info("TEMP folder is already deleted or does not exist.");
+        }
     }
 }

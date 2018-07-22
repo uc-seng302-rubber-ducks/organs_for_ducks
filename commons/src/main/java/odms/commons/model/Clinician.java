@@ -44,7 +44,6 @@ public class Clinician extends Undoable<Clinician> implements Listenable {
     private String salt;
     private transient PropertyChangeSupport pcs;
 
-    @Expose
     private String profilePhotoFilePath;
 
     //TODO make all updates to the clinician add to this 22/6

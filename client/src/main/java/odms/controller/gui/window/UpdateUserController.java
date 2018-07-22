@@ -547,10 +547,13 @@ public class UpdateUserController {
             removeFormChanges();
             AppController appController = AppController.getInstance();
             UserController userController = appController.getUserController();
-            try {
-                String filePath = setUpImageFile(inFile, currentUser.getProfilePhotoFilePath(), currentUser.getNhi());
+            if(inFile != null){
+                String filePath = setUpImageFile(inFile, currentUser.getNhi());
                 currentUser.setProfilePhotoFilePath(filePath);
                 currentUser.getUndoStack().pop();
+            }
+
+            try {
                 currentUser.getRedoStack().clear();
                 oldUser.setDeleted(true);
                 userController.showUser(currentUser);

@@ -5,7 +5,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
@@ -617,14 +616,16 @@ public class UpdateClinicianController {
 
             currentClinician.setDateLastModified(LocalDateTime.now()); // updates the modified date
             sumAllChanged();
-            try {
-                String filePath = setUpImageFile(inFile, currentClinician.getProfilePhotoFilePath(), currentClinician.getStaffId());
-                currentClinician.setProfilePhotoFilePath(filePath);
+            if(inFile != null) {
+                try {
+                    String filePath = setUpImageFile(inFile, currentClinician.getStaffId());
+                    currentClinician.setProfilePhotoFilePath(filePath);
 
-                //currentClinician.getUndoStack().pop();
+                    //currentClinician.getUndoStack().pop();
 
-            } catch (IOException e){
-                System.err.println(e);
+                } catch (IOException e) {
+                    System.err.println(e);
+                }
             }
             currentClinician.getRedoStack().clear();
             controller.updateClinicians(currentClinician); // saves the clinician
@@ -635,13 +636,16 @@ public class UpdateClinicianController {
             Clinician clinician = new Clinician(staffID, password, fName, mName, lName);
             Address workAddress = new Address(streetNumber, streetName, neighbourhood, city, region, zipCode, country);
             clinician.setWorkContactDetails(new ContactDetails("", "", workAddress, ""));
-            try {
-                String filePath = setUpImageFile(inFile, currentClinician.getProfilePhotoFilePath(), currentClinician.getStaffId());
-                currentClinician.setProfilePhotoFilePath(filePath);
-                currentClinician.getUndoStack().pop();
-            } catch (IOException e){
-                System.err.println(e);
+            if(inFile != null) {
+                try {
+                    String filePath = setUpImageFile(inFile, currentClinician.getStaffId());
+                    currentClinician.setProfilePhotoFilePath(filePath);
+                    currentClinician.getUndoStack().pop();
+                } catch (IOException e) {
+                    System.err.println(e);
+                }
             }
+
             controller.updateClinicians(clinician);
             loadOverview(clinician);
 

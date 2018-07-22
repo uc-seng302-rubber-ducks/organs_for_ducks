@@ -76,9 +76,8 @@ public class User extends Undoable<User> implements Listenable {
     private List<Disease> pastDiseases;
     @Expose
     private List<Disease> currentDiseases;
-    @Expose
-    private String profilePhotoFilePath;
 
+    private String profilePhotoFilePath;
     private transient List<Change> changes;
     private transient PropertyChangeSupport pcs;
     //</editor-fold>
@@ -122,6 +121,7 @@ public class User extends Undoable<User> implements Listenable {
         this.pcs = new PropertyChangeSupport(this);
         this.healthDetails = new HealthDetails();
         contact.setAttachedUser(this);
+        this.profilePhotoFilePath = "";
     }
 
 
@@ -145,6 +145,7 @@ public class User extends Undoable<User> implements Listenable {
         changes = FXCollections.observableArrayList();
         this.pcs = new PropertyChangeSupport(this);
         this.healthDetails = new HealthDetails();
+        this.profilePhotoFilePath = "";
     }
 
     public static User clone(User user) {
