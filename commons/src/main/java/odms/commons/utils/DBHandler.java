@@ -885,4 +885,28 @@ public class DBHandler {
             }
         }
     }
+
+    /**
+     * Uses the provided connection and queries data base of countries to retrieve the ones that are allowed to be used
+     * as a place of residence.
+     *
+     * @param connection connection to the database
+     * @return A set of countries
+     * @throws SQLException Thrown on bad connection ot the database
+     */
+    public Set getAllowedCountries(Connection connection) throws SQLException {
+        Set countries = new HashSet();
+        try(PreparedStatement statement = connection.prepareStatement("SELECT countryName FROM Countries WHERE allowed = 1")){
+            try(ResultSet rs = statement.executeQuery()) {
+                if (!rs.next()) {
+                    return countries;
+                }
+                do {
+                    countries.add(rs.getString("countryName"));
+                } while (rs.next());
+            }
+        }
+
+        return countries;
+    }
 }
