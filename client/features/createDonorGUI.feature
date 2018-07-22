@@ -7,7 +7,7 @@ Feature: As a client, I want to create a user account on the system.
 
 
   Scenario: I create a user profile with basic info
-    When I register a user using the GUI with the NHI "ADE1987", first name "Dwayne" and date of birth "3/1/2017"
+    When I register a user using the GUI with the NHI "ADE1987", first name "Dwayne" and date of birth "1/01/2000"
     And Clicked on the Create Profile button
     Then I should see my NHI "ADE1987" along with my other details at the user view screen
 

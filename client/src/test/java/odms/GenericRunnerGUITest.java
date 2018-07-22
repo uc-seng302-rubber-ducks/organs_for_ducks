@@ -23,7 +23,7 @@ import odms.TestUtils.CommonTestMethods;
 public class GenericRunnerGUITest {
     @BeforeClass
     public static void initialization() {
-        CommonTestMethods.runHeadless();
+        //CommonTestMethods.runHeadless();
     }
 
 

@@ -57,8 +57,8 @@ public class UndoDonorGUITest extends ApplicationTest {
      */
     @Test
     public void testSingleUndo() {
-        clickOn("#editMenu");
-        clickOn("#editDetails");
+        clickOn("#editMenuUser");
+        clickOn("#editDetailsUser");
         clickOn("#lNameInput");
         write("Jefferson");
         clickOn("#confirmButton");
@@ -72,8 +72,8 @@ public class UndoDonorGUITest extends ApplicationTest {
      */
     @Test
     public void testMultipleUndosWithoutSufficientChanges() {
-        clickOn("#editMenu");
-        clickOn("#editDetails");
+        clickOn("#editMenuUser");
+        clickOn("#editDetailsUser");
         clickOn("#lNameInput");
         write("Jefferson");
         clickOn("#confirmButton");
@@ -188,8 +188,8 @@ public class UndoDonorGUITest extends ApplicationTest {
      */
     @Test
     public void testNHIChange() {
-        clickOn("#editMenu");
-        clickOn("#editDetails");
+        clickOn("#editMenuUser");
+        clickOn("#editDetailsUser");
         doubleClickOn("#nhiInput");
 
         write("ABD1111");

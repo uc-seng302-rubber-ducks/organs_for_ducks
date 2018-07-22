@@ -94,7 +94,7 @@ public class UserController {
     private MenuItem saveUserMenuItem;
 
     @FXML
-    private MenuItem LogOut;
+    private MenuItem logoutUser;
 
     private AppController application;
 
@@ -163,12 +163,12 @@ public class UserController {
             updateUndoRedoButtons();
 
             if (fromClinician) {
-                LogOut.setText("Go Back");
-                LogOut.setOnAction(e -> closeWindow());
+                logoutUser.setText("Go Back");
+                logoutUser.setOnAction(e -> closeWindow());
 
             } else {
-                LogOut.setText("Log Out");
-                LogOut.setOnAction(e -> logout());
+                logoutUser.setText("Log Out");
+                logoutUser.setOnAction(e -> logout());
             }
 
             if (user.getNhi() != null) {

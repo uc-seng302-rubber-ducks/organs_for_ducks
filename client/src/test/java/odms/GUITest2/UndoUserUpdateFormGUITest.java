@@ -50,8 +50,8 @@ public class UndoUserUpdateFormGUITest extends ApplicationTest {
 
     @Test
     public void SingleChangeSingleUndo() {
-        clickOn("#editMenu");
-        clickOn("#editDetails");
+        clickOn("#editMenuUser");
+        clickOn("#editDetailsUser");
         clickOn("#preferredFNameTextField");
         write("i", 0);
 
@@ -62,15 +62,15 @@ public class UndoUserUpdateFormGUITest extends ApplicationTest {
 
     @Test
     public void NoChangeUndoDisabled() {
-        clickOn("#editMenu");
-        clickOn("#editDetails");
+        clickOn("#editMenuUser");
+        clickOn("#editDetailsUser");
         verifyThat("#undoUpdateButton", Node::isDisabled);
     }
 
     @Test
     public void ChangesResetWhenCancelButtonClicked() {
-        clickOn("#editMenu");
-        clickOn("#editDetails");
+        clickOn("#editMenuUser");
+        clickOn("#editDetailsUser");
         clickOn("#mNameInput");
         write("geoff");
         clickOn("#smokerCheckBox");
@@ -90,8 +90,8 @@ public class UndoUserUpdateFormGUITest extends ApplicationTest {
 
     @Test
     public void MultipleChangesSummedInMainWindow() {
-        clickOn("#editMenu");
-        clickOn("#editDetails");
+        clickOn("#editMenuUser");
+        clickOn("#editDetailsUser");
         clickOn("#mNameInput");
         write("geoff");
         clickOn("#smokerCheckBox");
@@ -108,8 +108,8 @@ public class UndoUserUpdateFormGUITest extends ApplicationTest {
 
     @Test
     public void MultipleChangesSingleUndo() {
-        clickOn("#editMenu");
-        clickOn("#editDetails");
+        clickOn("#editMenuUser");
+        clickOn("#editDetailsUser");
         clickOn("#ecPhone");
         write("1234");
 
@@ -120,8 +120,8 @@ public class UndoUserUpdateFormGUITest extends ApplicationTest {
 
     @Test
     public void MultipleChangesEqualUndos() {
-        clickOn("#editMenu");
-        clickOn("#editDetails");
+        clickOn("#editMenuUser");
+        clickOn("#editDetailsUser");
 
 //    unable to check text in combo boxes as it is lazily created/populated
         clickOn("#genderIdComboBox");
@@ -145,8 +145,8 @@ public class UndoUserUpdateFormGUITest extends ApplicationTest {
     @Test
     public void MultipleActionsTwoUndosOneAction() {
         //check we can traverse the stack properly
-        clickOn("#editMenu");
-        clickOn("#editDetails");
+        clickOn("#editMenuUser");
+        clickOn("#editDetailsUser");
 
         doubleClickOn("#heightInput");
         write("1");
