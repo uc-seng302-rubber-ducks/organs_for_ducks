@@ -3,14 +3,11 @@ package odms.GUITest2;
 import javafx.scene.input.KeyCode;
 import odms.App;
 import odms.commons.model.Clinician;
-import odms.commons.model.dto.UserOverview;
-import odms.controller.AppController;
 import odms.commons.model.Disease;
 import odms.commons.model.User;
-import odms.utils.AdministratorBridge;
-import odms.utils.ClinicianBridge;
-import odms.utils.LoginBridge;
-import odms.utils.UserBridge;
+import odms.commons.model.dto.UserOverview;
+import odms.controller.AppController;
+import odms.utils.*;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -18,21 +15,21 @@ import org.junit.Test;
 import org.testfx.api.FxRobotException;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
-import odms.TestUtils.CommonTestMethods;
 
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.concurrent.TimeoutException;
 
 import static odms.TestUtils.FxRobotHelper.clickOnButton;
 import static odms.TestUtils.FxRobotHelper.setTextField;
-import static org.junit.Assert.assertEquals;
 import static odms.TestUtils.TableViewsMethod.getCell;
 import static odms.TestUtils.TableViewsMethod.getCellValue;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -44,6 +41,7 @@ public class NewDiseaseControllerGUITest extends ApplicationTest {
     private ClinicianBridge clinicianBridge;
     private LoginBridge loginBridge;
     private AdministratorBridge administratorBridge;
+    private TransplantBridge transplantBridge;
     private User testUser;
 
     @BeforeClass
@@ -58,6 +56,7 @@ public class NewDiseaseControllerGUITest extends ApplicationTest {
         clinicianBridge = mock(ClinicianBridge.class);
         loginBridge = mock(LoginBridge.class);
         administratorBridge = mock(AdministratorBridge.class);
+        transplantBridge = mock(TransplantBridge.class);
 
         Clinician clinician = new Clinician();
         clinician.setStaffId("0");
@@ -70,11 +69,15 @@ public class NewDiseaseControllerGUITest extends ApplicationTest {
 
         when(loginBridge.loginToServer(anyString(),anyString(), anyString())).thenReturn("lsdjfksd");
         when(clinicianBridge.getClinician(anyString(), anyString())).thenReturn(clinician);
-        AppController.getInstance().getUsers().clear();
+        when(controller.getTransplantBridge()).thenReturn(transplantBridge);
+
+        when(transplantBridge.getWaitingList(anyInt(), anyInt(), anyString(), anyString(), any(Collection.class))).thenReturn(new ArrayList());
+
         //DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         testUser = new User("Aa", LocalDate.parse("2000-01-20", sdf), "ABC1244");
         testUser.getCurrentDiseases().add(new Disease("A0", false, false, LocalDate.now()));
         testUser.getPastDiseases().add(new Disease("B0", false, true, LocalDate.now()));
+
         when(bridge.loadUsersToController(anyInt(), anyInt(), anyString(), anyString(), anyString(), anyString()))
                 .thenReturn(Collections.singletonList(UserOverview.fromUser(testUser)));
         when(bridge.getUser(anyString())).thenReturn(testUser);

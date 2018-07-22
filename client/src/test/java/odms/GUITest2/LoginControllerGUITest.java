@@ -9,12 +9,9 @@ import odms.TestUtils.CommonTestMethods;
 import odms.commons.exception.ApiException;
 import odms.commons.model.Administrator;
 import odms.commons.model.Clinician;
-import odms.controller.AppController;
 import odms.commons.model.User;
-import odms.utils.AdministratorBridge;
-import odms.utils.ClinicianBridge;
-import odms.utils.LoginBridge;
-import odms.utils.UserBridge;
+import odms.controller.AppController;
+import odms.utils.*;
 import org.junit.*;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
@@ -22,14 +19,14 @@ import org.testfx.matcher.control.LabeledMatchers;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.concurrent.TimeoutException;
 
 import static odms.TestUtils.FxRobotHelper.clickOnButton;
 import static odms.TestUtils.FxRobotHelper.setTextField;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.mockingDetails;
 import static org.mockito.Mockito.when;
 import static org.testfx.api.FxAssert.verifyThat;
 
@@ -40,6 +37,7 @@ public class LoginControllerGUITest extends ApplicationTest {
     private ClinicianBridge clinicianBridge;
     private LoginBridge loginBridge;
     private AdministratorBridge administratorBridge;
+    private TransplantBridge transplantBridge = mock(TransplantBridge.class);
 
     @BeforeClass
     public static void initialization() {
@@ -47,7 +45,7 @@ public class LoginControllerGUITest extends ApplicationTest {
     }
 
     @Before
-    public void startUp() throws TimeoutException {
+    public void startUp() throws TimeoutException, ApiException {
         controller = mock(AppController.class);
         bridge = mock(UserBridge.class);
         clinicianBridge = mock(ClinicianBridge.class);
@@ -59,6 +57,9 @@ public class LoginControllerGUITest extends ApplicationTest {
         when(controller.getClinicianBridge()).thenReturn(clinicianBridge);
         when(controller.getAdministratorBridge()).thenReturn(administratorBridge);
         when(controller.getLoginBridge()).thenReturn(loginBridge);
+        when(controller.getTransplantBridge()).thenReturn(transplantBridge);
+
+        when(transplantBridge.getWaitingList(anyInt(), anyInt(), anyString(), anyString(), any(Collection.class))).thenReturn(new ArrayList());
 
         FxToolkit.registerPrimaryStage();
         FxToolkit.setupApplication(App.class);
