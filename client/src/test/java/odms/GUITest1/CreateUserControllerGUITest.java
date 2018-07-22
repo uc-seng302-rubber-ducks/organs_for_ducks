@@ -2,23 +2,23 @@ package odms.GUITest1;
 
 import javafx.scene.Node;
 import javafx.scene.control.DatePicker;
-import javafx.scene.control.TextField;
 import odms.App;
+import odms.TestUtils.CommonTestMethods;
 import odms.controller.AppController;
 import org.junit.*;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.matcher.control.LabeledMatchers;
-import odms.TestUtils.CommonTestMethods;
+
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.concurrent.TimeoutException;
 
 import static odms.TestUtils.FxRobotHelper.clickOnButton;
+import static odms.TestUtils.FxRobotHelper.setComboBox;
 import static odms.TestUtils.FxRobotHelper.setTextField;
 import static org.mockito.Mockito.mock;
-import static odms.TestUtils.FxRobotHelper.*;
 import static org.testfx.api.FxAssert.verifyThat;
 
 public class CreateUserControllerGUITest extends ApplicationTest {
@@ -191,16 +191,16 @@ public class CreateUserControllerGUITest extends ApplicationTest {
         interact(() -> {
             setTextField(this, "#nhiInput", "ADE1987");
             setTextField(this, "#fNameInput", "Dwayne");
-            setDatePickerValue(this, "#dobInput", "3/1/2017");
+            setTextField(this, "#dobInput", "3/1/2017");
             setTextField(this, "#streetNumber", "76B");
             setTextField(this, "#street", "Cambridge St");
             setTextField(this, "#neighborhood", "Kirkwood");
             setTextField(this, "#city", "Battlefield");
-            setComboBoxValue(this, "#regionSelector", "Otago");
+            setComboBox(this, "#regionSelector", "Otago");
             setTextField(this, "#zipCode", "8033");
-            setComboBoxValue(this, "#countrySelector", "New Zealand");
+            setComboBox(this, "#countrySelector", "New Zealand");
             verifyThat("#regionSelector", Node::isVisible);
-            clickButton(this, "#confirmButton");
+            clickOnButton(this, "#confirmButton");
             clickOn("#detailsTab");
             verifyThat("#pAddress", LabeledMatchers.hasText("76B Cambridge St\nKirkwood"));
             verifyThat("#city", LabeledMatchers.hasText("Battlefield"));
@@ -215,16 +215,16 @@ public class CreateUserControllerGUITest extends ApplicationTest {
         interact(() -> {
             setTextField(this, "#nhiInput", "ADE1987");
             setTextField(this, "#fNameInput", "Dwayne");
-            setDatePickerValue(this, "#dobInput", "3/1/2017");
+            setTextField(this, "#dobInput", "3/1/2017");
             setTextField(this, "#streetNumber", "12");
             setTextField(this, "#street", "Choc Rd");
             setTextField(this, "#neighborhood", "");
             setTextField(this, "#city", "Nice City");
             setTextField(this, "#zipCode", "25442232");
-            setComboBoxValue(this, "#countrySelector", "Belgium");
+            setComboBox(this, "#countrySelector", "Belgium");
             setTextField(this, "#regionInput", "Flanders");
             verifyThat("#regionInput", Node::isVisible);
-            clickButton(this, "#confirmButton");
+            clickOnButton(this, "#confirmButton");
             clickOn("#detailsTab");
             verifyThat("#pAddress", LabeledMatchers.hasText("12 Choc Rd\n"));
             verifyThat("#city", LabeledMatchers.hasText("Nice City"));
@@ -252,18 +252,18 @@ public class CreateUserControllerGUITest extends ApplicationTest {
         interact(() -> {
             setTextField(this, "#nhiInput", "ADE1987");
             setTextField(this, "#fNameInput", "Dwayne");
-            setDatePickerValue(this, "#dobInput", "3/1/2017");
+            setTextField(this, "#dobInput", "3/1/2017");
             setTextField(this, "#ecName", "John Cena");
             setTextField(this, "#ecCell", "0214583341");
             setTextField(this, "#ecStreetNumber", "55E");
             setTextField(this, "#ecStreet", "Oxford St");
             setTextField(this, "#ecNeighborhood", "Ilam");
             setTextField(this, "#ecCity", "Lichfield");
-            setComboBoxValue(this, "#ecRegionSelector", "Chatham Islands");
+            setComboBox(this, "#ecRegionSelector", "Chatham Islands");
             setTextField(this, "#ecZipCode", "8035");
-            setComboBoxValue(this, "#ecCountrySelector", "New Zealand");
+            setComboBox(this, "#ecCountrySelector", "New Zealand");
             verifyThat("#ecRegionSelector", Node::isVisible);
-            clickButton(this, "#confirmButton");
+            clickOnButton(this, "#confirmButton");
             clickOn("#detailsTab");
             verifyThat("#eAddress", LabeledMatchers.hasText("55E Oxford St\nIlam"));
             verifyThat("#ecCity", LabeledMatchers.hasText("Lichfield"));
@@ -278,7 +278,7 @@ public class CreateUserControllerGUITest extends ApplicationTest {
         interact(() -> {
             setTextField(this, "#nhiInput", "ADE1987");
             setTextField(this, "#fNameInput", "Dwayne");
-            setDatePickerValue(this, "#dobInput", "3/1/2017");
+            setTextField(this, "#dobInput", "3/1/2017");
             setTextField(this, "#ecName", "John Cena");
             setTextField(this, "#ecCell", "0214583341");
             setTextField(this, "#ecStreetNumber", "12");
@@ -286,10 +286,10 @@ public class CreateUserControllerGUITest extends ApplicationTest {
             setTextField(this, "#ecNeighborhood", "");
             setTextField(this, "#ecCity", "Nice City");
             setTextField(this, "#ecZipCode", "25442232");
-            setComboBoxValue(this, "#ecCountrySelector", "Belgium");
+            setComboBox(this, "#ecCountrySelector", "Belgium");
             setTextField(this, "#ecRegionInput", "Flanders");
             verifyThat("#ecRegionInput", Node::isVisible);
-            clickButton(this, "#confirmButton");
+            clickOnButton(this, "#confirmButton");
             clickOn("#detailsTab");
             verifyThat("#eAddress", LabeledMatchers.hasText("12 Choc Rd\n"));
             verifyThat("#ecCity", LabeledMatchers.hasText("Nice City"));

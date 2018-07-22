@@ -14,9 +14,7 @@ import org.testfx.matcher.control.LabeledMatchers;
 
 import java.util.concurrent.TimeoutException;
 
-import static odms.TestUtils.FxRobotHelper.clickButton;
-import static odms.TestUtils.FxRobotHelper.setComboBoxValue;
-import static odms.TestUtils.FxRobotHelper.setTextField;
+import static odms.TestUtils.FxRobotHelper.*;
 import static org.testfx.api.FxAssert.verifyThat;
 
 /**
@@ -92,11 +90,11 @@ public class CreateClinicianControllerGUITest extends ApplicationTest {
             setTextField(this, "#streetNameTextField", "Cambridge St");
             setTextField(this, "#neighbourhoodTextField", "Kirkwood");
             setTextField(this, "#cityTextField", "Battlefield");
-            setComboBoxValue(this, "#regionSelector", "Otago");
+            setComboBox(this, "#regionSelector", "Otago");
             setTextField(this, "#zipCodeTextField", "8033");
-            setComboBoxValue(this, "#countrySelector", "New Zealand");
+            setComboBox(this, "#countrySelector", "New Zealand");
             verifyThat("#regionSelector", Node::isVisible);
-            clickButton(this, "#confirmButton");
+            clickOnButton(this, "#confirmButton");
             verifyThat("#addressLabel", LabeledMatchers.hasText("76B Cambridge St\nKirkwood"));
             verifyThat("#cityLabel", LabeledMatchers.hasText("Battlefield"));
             verifyThat("#regionLabel", LabeledMatchers.hasText("Otago"));
@@ -117,10 +115,10 @@ public class CreateClinicianControllerGUITest extends ApplicationTest {
             setTextField(this, "#neighbourhoodTextField", "");
             setTextField(this, "#cityTextField", "Nice City");
             setTextField(this, "#zipCodeTextField", "25442232");
-            setComboBoxValue(this, "#countrySelector", "Belgium");
+            setComboBox(this, "#countrySelector", "Belgium");
             setTextField(this, "#regionTextField", "Flanders");
             verifyThat("#regionTextField", Node::isVisible);
-            clickButton(this, "#confirmButton");
+            clickOnButton(this, "#confirmButton");
             verifyThat("#addressLabel", LabeledMatchers.hasText("12 Choc Rd\n"));
             verifyThat("#cityLabel", LabeledMatchers.hasText("Nice City"));
             verifyThat("#regionLabel", LabeledMatchers.hasText("Flanders"));

@@ -130,14 +130,14 @@ public class UpdateClinicianControllerGUITest extends ApplicationTest {
     @Test
     public void testUpdateRegionAndCountry() {
         interact(() -> {
-            setComboBoxValue(this, "#countrySelector", "New Zealand");
-            setComboBoxValue(this, "#regionSelector", "Otago");
+            setComboBox(this, "#countrySelector", "New Zealand");
+            setComboBox(this, "#regionSelector", "Otago");
 
 
         });
         verifyThat("#regionSelector", Node::isVisible);
         interact(() -> {
-            clickButton(this, "#confirmButton");
+            clickOnButton(this, "#confirmButton");
         });
         verifyThat("#regionLabel", LabeledMatchers.hasText("Otago"));
         verifyThat("#countryLabel", LabeledMatchers.hasText("New Zealand"));
@@ -146,14 +146,14 @@ public class UpdateClinicianControllerGUITest extends ApplicationTest {
     @Test
     public void testUpdateRegionAndCountryNotNZ() {
         interact(() -> {
-            setComboBoxValue(this, "#countrySelector", "Belgium");
+            setComboBox(this, "#countrySelector", "Belgium");
             setTextField(this, "#regionTextField", "Flanders");
 
         });
         verifyThat("#regionTextField", Node::isVisible);
 
         interact(() -> {
-            clickButton(this, "#confirmButton");
+            clickOnButton(this, "#confirmButton");
         });
         verifyThat("#regionLabel", LabeledMatchers.hasText("Flanders"));
         verifyThat("#countryLabel", LabeledMatchers.hasText("Belgium"));
