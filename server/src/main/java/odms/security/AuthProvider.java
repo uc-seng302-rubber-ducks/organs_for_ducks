@@ -22,8 +22,10 @@ public class AuthProvider implements AuthenticationProvider {
         final AuthToken authTokenContainer = (AuthToken) auth;
         final String token = authTokenContainer.getToken();
 
-        if (!store.contains(token)) {
+        if (!store.contains(token) || !store.get(token).isTokenAlive()) {
             throw new BadCredentialsException("Invalid token: " + token);
+        } else {
+            store.get(token).renew();
         }
 
         return store.get(token);

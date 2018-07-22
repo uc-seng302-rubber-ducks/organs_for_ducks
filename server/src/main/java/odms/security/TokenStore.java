@@ -31,10 +31,6 @@ public class TokenStore {
     AuthToken get(String token) {
         for (AuthToken t : knownAuthTokens) {
             if (t.getToken().equals(token)){
-                if(!t.isTokenAlive()){
-                    remove(t.getToken());
-                    return null;
-                }
                 return t;
             }
         }

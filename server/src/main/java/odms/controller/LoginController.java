@@ -32,7 +32,7 @@ public class LoginController extends BaseController {
         boolean validLogin;
         try {
             String role = auth.getRole().toString();
-            validLogin = getHandler().isVaildLogIn(
+            validLogin = getHandler().isValidLogIn(
                     getDriver().getConnection(), auth.getPassword(), auth.getUsername(),role);
         } catch (SQLException e) {
             return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -40,7 +40,6 @@ public class LoginController extends BaseController {
         if (!validLogin){
             return new ResponseEntity(HttpStatus.UNAUTHORIZED);
         }
-        System.out.println((new Gson()).toJson(auth));
         AuthToken authToken = new AuthToken(
                 auth.getUsername(),
                 auth.getRole().toString(),

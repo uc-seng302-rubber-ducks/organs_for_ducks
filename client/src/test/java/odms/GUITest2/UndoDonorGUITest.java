@@ -2,18 +2,31 @@ package odms.GUITest2;
 
 import javafx.scene.Node;
 import odms.App;
+import odms.commons.model.Clinician;
+import odms.commons.model.dto.UserOverview;
 import odms.controller.AppController;
 import odms.commons.model.EmergencyContact;
 import odms.commons.model.User;
+import odms.utils.ClinicianBridge;
+import odms.utils.LoginBridge;
+import odms.utils.UserBridge;
 import org.junit.*;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.matcher.control.LabeledMatchers;
 import odms.TestUtils.CommonTestMethods;
 
+import java.io.IOException;
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.concurrent.TimeoutException;
 
+import static odms.TestUtils.FxRobotHelper.clickOnButton;
+import static odms.TestUtils.FxRobotHelper.setTextField;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 import static org.testfx.api.FxAssert.verifyThat;
 
 public class UndoDonorGUITest extends ApplicationTest {
@@ -24,23 +37,34 @@ public class UndoDonorGUITest extends ApplicationTest {
     }
 
     @Before
-    public void setUp() throws TimeoutException {
-        FxToolkit.registerPrimaryStage();
-        FxToolkit.setupApplication(App.class);
-        AppController.getInstance().getUsers().clear();
+    public void setUp() throws TimeoutException, IOException {
+        AppController application = mock(AppController.class);
+        UserBridge bridge = mock(UserBridge.class);
+
+        AppController.setInstance(application);
         User user = new User("Frank", LocalDate.now().minusDays(2), "ABC1234");
         user.setDateOfDeath(LocalDate.now());
         user.setContact(new EmergencyContact("", "", "01556677"));
         user.getUndoStack().clear();
+        when(application.getUserBridge()).thenReturn(bridge);
+        when(bridge.loadUsersToController(anyInt(), anyInt(), anyString(), anyString(), anyString(), anyString()))
+                .thenReturn(Collections.singletonList(UserOverview.fromUser(user)));
+        when(bridge.getUser("ABC1234")).thenReturn(user);
+
+        AppController.getInstance().getUsers().clear();
         AppController.getInstance().getUsers().add(user);
-        clickOn("#userIDTextField");
-        write("ABC1234", 0);
-        clickOn("#loginUButton");
+
+        FxToolkit.registerPrimaryStage();
+        FxToolkit.setupApplication(App.class);
+
+
+        setTextField(this, "#userIDTextField","ABC1234");
+        clickOnButton(this, "#loginUButton");
     }
 
     @After
     public void tearDown() throws TimeoutException {
-        AppController.getInstance().getUsers().clear();
+        AppController.setInstance(null);
         FxToolkit.cleanupStages();
     }
 
@@ -57,11 +81,10 @@ public class UndoDonorGUITest extends ApplicationTest {
      */
     @Test
     public void testSingleUndo() {
-        clickOn("#editDetailsButton");
-        clickOn("#lNameInput");
-        write("Jefferson");
-        clickOn("#confirmButton");
-        clickOn("#undoButton");
+        clickOnButton(this,"#editDetailsButton");
+        setTextField(this, "#lNameInput", "Jefferson");
+        clickOnButton(this,"#confirmButton");
+        clickOnButton(this,"#undoButton");
 
         verifyThat("#lNameValue", LabeledMatchers.hasText(""));
     }
@@ -71,11 +94,10 @@ public class UndoDonorGUITest extends ApplicationTest {
      */
     @Test
     public void testMultipleUndosWithoutSufficientChanges() {
-        clickOn("#editDetailsButton");
-        clickOn("#lNameInput");
-        write("Jefferson");
-        clickOn("#confirmButton");
-        clickOn("#undoButton");
+        clickOnButton(this,"#editDetailsButton");
+        setTextField(this, "#lNameInput", "Jefferson");
+        clickOnButton(this,"#confirmButton");
+        clickOnButton(this,"#undoButton");
 
         verifyThat("#undoButton", Node::isDisabled);
     }
@@ -84,28 +106,23 @@ public class UndoDonorGUITest extends ApplicationTest {
      * Multiple changes, multiple undos
      */
     @Test
-    @Ignore
     public void testEqualChangesEqualUndos() {
 
-        clickOn("#editDetailsButton");
-        clickOn("#lNameInput");
-        write("Jefferson");
-        clickOn("#confirmButton");
+        clickOnButton(this,"#editDetailsButton");
+        setTextField(this, "#lNameInput", "Jefferson");
+        clickOnButton(this,"#confirmButton");
 
-        clickOn("#editDetailsButton");
+        clickOnButton(this, "#editDetailsButton");
         clickOn("#genderIdComboBox");
         clickOn("Non Binary");
-        clickOn("#confirmButton");
+        clickOnButton(this,"#confirmButton");
 
-        clickOn("#editDetailsButton");
+        clickOnButton(this,"#editDetailsButton");
         clickOn("#smokerCheckBox");
-        clickOn("#confirmButton");
-
-        clickOn("#undoButton");
-
-        clickOn("#undoButton");
-
-        clickOn("#undoButton");
+        clickOnButton(this,"#confirmButton");
+        clickOnButton(this,"#undoButton");
+        clickOnButton(this,"#undoButton");
+        clickOnButton(this,"#undoButton");
 
         verifyThat("#lNameValue", LabeledMatchers.hasText(""));
         verifyThat("#genderIdentityValue", LabeledMatchers.hasText(""));
@@ -118,20 +135,19 @@ public class UndoDonorGUITest extends ApplicationTest {
     @Test
     @Ignore
     public void testMultipleChangesSingleUndo() {
-        clickOn("#editDetailsButton");
-        clickOn("#lNameInput");
-        write("Jefferson");
-        clickOn("#confirmButton");
+        clickOnButton(this,"#editDetailsButton");
+        setTextField(this, "#lNameInput", "Jefferson");
+        clickOnButton(this,"#confirmButton");
 
-        clickOn("#editDetailsButton");
+        clickOnButton(this,"#editDetailsButton");
         clickOn("#genderIdComboBox");
         clickOn("Non Binary");
-        clickOn("#confirmButton");
+        clickOnButton(this,"#confirmButton");
 
-        clickOn("#editDetailsButton");
+        clickOnButton(this,"#editDetailsButton");
         clickOn("#smokerCheckBox");
-        clickOn("#confirmButton");
-        clickOn("#undoButton");
+        clickOnButton(this,"#confirmButton");
+        clickOnButton(this,"#undoButton");;
 
         verifyThat("#lNameValue", LabeledMatchers.hasText("Jefferson"));
         verifyThat("#genderIdentityValue", LabeledMatchers.hasText("Non Binary"));
@@ -144,35 +160,32 @@ public class UndoDonorGUITest extends ApplicationTest {
     @Test
     @Ignore
     public void test3Changes1Undo2Changes3Undos() {
-        clickOn("#editDetailsButton");
-        clickOn("#lNameInput");
-        write("Jefferson");
-        clickOn("#confirmButton");
+        clickOnButton(this,"#editDetailsButton");
+        setTextField(this, "#lNameInput", "Jefferson");
+        clickOnButton(this,"#confirmButton");
 
-        clickOn("#editDetailsButton");
+        clickOnButton(this,"#editDetailsButton");
         clickOn("#genderIdComboBox");
         clickOn("Non Binary");
-        clickOn("#confirmButton");
+        clickOnButton(this,"#confirmButton");
 
-        clickOn("#editDetailsButton");
+        clickOnButton(this,"#editDetailsButton");
         clickOn("#smokerCheckBox");
-        clickOn("#confirmButton");
+        clickOnButton(this, "#confirmButton");
 
-        clickOn("#undoButton");
+        clickOnButton(this,"#undoButton");
 
-        clickOn("#editDetailsButton");
-        clickOn("#mNameInput");
-        write("John");
-        clickOn("#confirmButton");
+        clickOnButton(this,"#editDetailsButton");
+        setTextField(this, "#lNameInput", "John");
+        clickOnButton(this,"#confirmButton");
 
-        clickOn("#editDetailsButton");
-        clickOn("#cell");
-        write("0200838013");
-        clickOn("#confirmButton");
+        clickOnButton(this,"#editDetailsButton");
+        setTextField(this, "#cell", "0200838013");
+        clickOnButton(this,"#confirmButton");
 
-        clickOn("#undoButton");
-        clickOn("#undoButton");
-        clickOn("#undoButton");
+        clickOnButton(this,"#undoButton");
+        clickOnButton(this,"#undoButton");
+        clickOnButton(this,"#undoButton");
 
         verifyThat("#lNameValue", LabeledMatchers.hasText("Jefferson"));
         verifyThat("#genderIdentityValue", LabeledMatchers.hasText(""));
@@ -186,13 +199,13 @@ public class UndoDonorGUITest extends ApplicationTest {
      */
     @Test
     public void testNHIChange() {
-        clickOn("#editDetailsButton");
+        clickOnButton(this,"#editDetailsButton");
         doubleClickOn("#nhiInput");
 
         write("ABD1111");
-        clickOn("#confirmButton");
+        clickOnButton(this,"#confirmButton");
 
-        clickOn("#undoButton");
+        clickOnButton(this,"#undoButton");
 
         verifyThat("#NHIValue", LabeledMatchers.hasText("ABC1234"));
     }

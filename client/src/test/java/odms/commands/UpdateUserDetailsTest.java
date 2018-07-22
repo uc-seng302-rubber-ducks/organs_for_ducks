@@ -1,40 +1,51 @@
 package odms.commands;
 
-import odms.controller.AppController;
 import odms.commons.model.User;
+import odms.controller.AppController;
+import odms.utils.UserBridge;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import picocli.CommandLine;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.*;
 
 public class UpdateUserDetailsTest {
 
     AppController controller;
+    UserBridge bridge;
     DateTimeFormatter sdf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     String NHI = "";
 
     @Before
-    public void resetDonor() {
-
-
-        controller = AppController.getInstance();
+    public void resetDonor() throws IOException {
+        bridge = mock(UserBridge.class);
+        controller = mock(AppController.class);
+        doCallRealMethod().when(controller).setUsers(any(ArrayList.class));
+        AppController.setInstance(controller);
+        when(controller.getUserBridge()).thenReturn(bridge);
+        when(controller.findUser(anyString())).thenReturn(new User("test dummy", LocalDate.parse("1111-11-11", sdf), "ABC1234"));
         controller.setUsers(new ArrayList<>());
 
         try {
             controller.addUser(new User("test dummy", LocalDate.parse("1111-11-11", sdf), "ABC1234"));
             NHI = "ABC1234";
-            User user = controller.findUsers("test dummy").get(0);
+            User user = controller.findUser(NHI);
             user.setWeight(65.3);
             System.out.println("Users size: " + controller.getUsers().size());
         } catch (Exception ex) {
+            ex.printStackTrace();
             fail("exception thrown setting up tests");
         }
     }
@@ -45,11 +56,10 @@ public class UpdateUserDetailsTest {
         new CommandLine(new UpdateUserDetails())
                 .parseWithHandler(new CommandLine.RunLast(), System.err, args);
 
-        User mal = controller.findUsers("Mal dummy").get(0);
+        User mal = controller.findUser(NHI);
         Assert.assertNotNull(mal);
 
-        ArrayList<User> test = controller.findUsers("test dummy");
-        assert (test.size() == 0);
+        assertEquals("Mal", mal.getFirstName());
     }
 
     @Test
@@ -58,7 +68,7 @@ public class UpdateUserDetailsTest {
         new CommandLine(new UpdateUserDetails())
                 .parseWithHandler(new CommandLine.RunLast(), System.err, args);
 
-        User muppet = controller.findUsers("test muppet").get(0);
+        User muppet = controller.findUser(NHI);
         Assert.assertNotNull(muppet);
 
         ArrayList<User> test = controller.findUsers("test dummy");
@@ -71,11 +81,11 @@ public class UpdateUserDetailsTest {
         new CommandLine(new UpdateUserDetails())
                 .parseWithHandler(new CommandLine.RunLast(), System.err, args);
 
-        User alan = controller.findUsers("stephen hawking").get(0);
+        User alan = controller.findUser(NHI);
         Assert.assertNotNull(alan);
 
-        ArrayList<User> test = controller.findUsers("test dummy");
-        assert (test.size() == 0);
+        Assert.assertEquals("stephen", alan.getFirstName());
+        Assert.assertEquals("hawking", alan.getLastName());
     }
 
     @Test
@@ -86,7 +96,7 @@ public class UpdateUserDetailsTest {
         new CommandLine(new UpdateUserDetails())
                 .parseWithHandler(new CommandLine.RunLast(), System.err, args);
 
-        User test = controller.findUsers("test dummy").get(0);
+        User test = controller.findUser(NHI);
         assert (test.getWeight() == 100);
     }
 
@@ -97,7 +107,7 @@ public class UpdateUserDetailsTest {
         new CommandLine(new UpdateUserDetails())
                 .parseWithHandler(new CommandLine.RunLast(), System.err, args);
 
-        User test = controller.findUsers("test dummy").get(0);
+        User test = controller.findUser(NHI);
         assert (test.getWeight() == 65.3);
     }
 
@@ -110,7 +120,7 @@ public class UpdateUserDetailsTest {
         new CommandLine(new UpdateUserDetails())
                 .parseWithHandler(new CommandLine.RunLast(), System.err, args);
 
-        User test = controller.findUsers("test dummy").get(0);
+        User test = controller.findUser(NHI);
         try {
             assert (test.getDateOfBirth().equals(LocalDate.parse("2020-03-04", sdf)));
         } catch (DateTimeParseException ex) {
@@ -126,7 +136,7 @@ public class UpdateUserDetailsTest {
         new CommandLine(new UpdateUserDetails())
                 .parseWithHandler(new CommandLine.RunLast(), System.err, args);
 
-        User test = controller.findUsers("test dummy").get(0);
+        User test = controller.findUser(NHI);
         try {
             assert (test.getDateOfBirth().equals(LocalDate.parse("1111-11-11", sdf)));
         } catch (DateTimeParseException ex) {

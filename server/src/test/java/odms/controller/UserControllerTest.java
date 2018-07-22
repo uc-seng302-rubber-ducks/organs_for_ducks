@@ -47,16 +47,16 @@ public class UserControllerTest {
     }
 
     @Test
-    public void getUsersShouldReturnSingleUserOverview() throws SQLException{
+    public void getUsersShouldReturnSingleUserOverview() throws SQLException {
         //set up data
         Collection<User> users = new ArrayList<>();
         users.add(testUser);
         UserOverview expected = UserOverview.fromUser(testUser);
-        when(handler.getUsers(any(Connection.class), anyInt(), anyInt())).thenReturn(users);
-        List<UserOverview> results = new ArrayList<>(controller.getUsers(0, 1, null, null));
+        when(handler.getUsers(any(Connection.class), anyInt(), anyInt(), anyString(), anyString(), anyString())).thenReturn(users);
+        List<UserOverview> results = new ArrayList<>(controller.getUsers(0, 1, "", "", ""));
 
         Assert.assertEquals(expected, results.get(0));
-        Assert.assertEquals(results.size(), 1);
+        Assert.assertEquals(1, results.size());
     }
 
     @Test(expected = ServerDBException.class)
@@ -64,7 +64,7 @@ public class UserControllerTest {
         when(driver.getConnection()).thenThrow(new SQLException());
 
         //should throw an exception here
-        controller.getUsers(0, 1, null, null);
+        controller.getUsers(0, 1, "", "", "");
     }
 
 

@@ -22,7 +22,6 @@ import odms.controller.AppController;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.List;
 
 
 /**
@@ -303,9 +302,7 @@ public class NewUserController {
                 newUser.getUndoStack().clear();
 
                 // add the new user to the list of users and save them
-                List<User> users = controller.getUsers();
-                users.add(newUser);
-                dataHandler.saveUsers(users);
+                controller.saveUser(newUser);
 
                 // load to the overview page
                 if (stage.getTitle().matches("Administrator*")) {

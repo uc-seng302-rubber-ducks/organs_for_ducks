@@ -1,6 +1,6 @@
 package odms.commons.model._abstract;
 
-import odms.commons.model.User;
+import odms.commons.model.dto.UserOverview;
 
 /**
  * Interface that any controller that uses the transplant waiting list MUST implement.
@@ -12,5 +12,5 @@ public interface TransplantWaitListViewer {
      *
      * @param user The user to open
      */
-    void launchUser(User user);
+    void launchUser(UserOverview user);
 }

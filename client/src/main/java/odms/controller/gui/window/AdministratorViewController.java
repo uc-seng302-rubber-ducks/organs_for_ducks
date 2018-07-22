@@ -30,13 +30,15 @@ import odms.controller.gui.statusBarController;
 import odms.commons.exception.InvalidFileException;
 import odms.commons.model.Administrator;
 import odms.commons.model.Clinician;
-import odms.commons.model.TooltipTableRow;
 import odms.commons.model.User;
 import odms.commons.model._abstract.TransplantWaitListViewer;
 import odms.commons.model._enum.EventTypes;
 import odms.commons.model._enum.Organs;
+import odms.commons.model.dto.UserOverview;
 import odms.commons.utils.*;
+import odms.utils.UserBridge;
 import odms.view.CLI;
+import okhttp3.OkHttpClient;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -54,7 +56,7 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
     private static final int ROWS_PER_PAGE = 30;
     private static int searchCount = 0;
     @FXML
-    private TableView<User> userTableView;
+    private TableView<UserOverview> userTableView;
     @FXML
     private Label adminLastNameLabel;
     @FXML
@@ -125,10 +127,10 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
     private boolean owner;
     private int startIndex = 0;
     private int endIndex;
-    private FilteredList<User> fListUsers;
+    private FilteredList<UserOverview> fListUsers;
     private FilteredList<Clinician> fListClinicians;
     private FilteredList<Administrator> fListAdmins;
-    private TableColumn<User, String> lNameColumn;
+    private TableColumn<UserOverview, String> lNameColumn;
     private boolean filterVisible = false;
     private TableView<?> activeTableView;
     private String messageAdmin = "Admin ";
@@ -335,12 +337,12 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
      * initialises the search table, abstracted from main init function for clarity
      */
     private void initUserSearchTable() {
-        TableColumn<User, String> fNameColumn;
-        TableColumn<User, String> dobColumn;
-        TableColumn<User, String> dodColumn;
-        TableColumn<User, String> ageColumn;
-        TableColumn<User, HashSet<Organs>> organsColumn;
-        TableColumn<User, String> regionColumn;
+        TableColumn<UserOverview, String> fNameColumn;
+        TableColumn<UserOverview, String> dobColumn;
+        TableColumn<UserOverview, String> dodColumn;
+        TableColumn<UserOverview, String> ageColumn;
+        TableColumn<UserOverview, HashSet<Organs>> organsColumn;
+        TableColumn<UserOverview, String> regionColumn;
         List<User> users = appController.getUsers();
 
         endIndex = Math.min(startIndex + ROWS_PER_PAGE, users.size());
@@ -348,10 +350,9 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
             return;
         }
 
-        List<User> usersSublist = getSearchData(users);
         //set up lists
         //table contents are SortedList of a FilteredList of an ObservableList of an ArrayList
-        ObservableList<User> oListDonors = FXCollections.observableList(users);
+        ObservableList<UserOverview> oListDonors = FXCollections.observableList(new ArrayList<>(appController.getUserOverviews()));
 
         fNameColumn = new TableColumn<>("First name");
         fNameColumn.setCellValueFactory(new PropertyValueFactory<>("firstName"));
@@ -380,7 +381,7 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
         fListUsers = new FilteredList<>(oListDonors);
         fListUsers = filter(fListUsers);
 
-        SortedList<User> sListUsers = new SortedList<>(fListUsers);
+        SortedList<UserOverview> sListUsers = new SortedList<>(fListUsers);
         sListUsers.comparatorProperty().bind(userTableView.comparatorProperty());
 
         //predicate on this list not working properly
@@ -390,7 +391,7 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
         userTableView.getColumns().setAll(fNameColumn, lNameColumn, dobColumn, dodColumn, ageColumn, regionColumn, organsColumn);
         //searchTableView.setItems(FXCollections.observableList(sListDonors.subList(startIndex, endIndex)));
         userTableView.setItems(sListUsers);
-        userTableView.setRowFactory(searchTableView -> new TooltipTableRow<>(User::getTooltip));
+        //userTableView.setRowFactory(searchTableView -> new TooltipTableRow<>(User::getTooltip));
 
     }
 
@@ -493,7 +494,7 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
 
         int minIndex = Math.min(endIndex, fListUsers.size());
 
-        SortedList<User> sListDonors = new SortedList<>(FXCollections.observableArrayList(fListUsers.subList(Math.min(startIndex, minIndex), minIndex)));
+        SortedList<UserOverview> sListDonors = new SortedList<>(FXCollections.observableArrayList(fListUsers.subList(Math.min(startIndex, minIndex), minIndex)));
         sListDonors.comparatorProperty().bind(userTableView.comparatorProperty());
 
         lNameColumn.setSortType(TableColumn.SortType.ASCENDING);
@@ -848,14 +849,15 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
     /**
      * Launches the user overview screen for a selected user
      *
-     * @param user the selected user.
+     * @param overview the selected user.
      */
     @Override
-    public void launchUser(User user) {
-        if (user != null) {
+    public void launchUser(UserOverview overview) {
+        if (overview != null) {
             FXMLLoader userLoader = new FXMLLoader(getClass().getResource("/FXML/userView.fxml"));
             Parent root;
             try {
+                User user = new UserBridge(new OkHttpClient()).getUser(overview.getNhi());
                 root = userLoader.load();
                 Stage newStage = new Stage();
                 newStage.setScene(new Scene(root));
@@ -867,7 +869,7 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
                 newStage.show();
                 Log.info(messageAdmin + administrator.getUserName() + " successfully launched user overview window for User NHI: " + user.getNhi());
             } catch (IOException e) {
-                Log.severe(messageAdmin + administrator.getUserName() + " failed to load user overview window for User NHI: " + user.getNhi(), e);
+                Log.severe(messageAdmin + administrator.getUserName() + " failed to load user overview window for User NHI: " + overview.getNhi(), e);
             }
         }
     }

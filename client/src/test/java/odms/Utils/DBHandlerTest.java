@@ -4,7 +4,7 @@ import odms.commons.model.*;
 import odms.commons.model._enum.Organs;
 import odms.commons.utils.DBHandler;
 import org.junit.*;
-import seng302.TestUtils.DBHandlerMocker;
+import odms.TestUtils.DBHandlerMocker;
 
 import java.sql.*;
 import java.time.LocalDate;
@@ -163,5 +163,13 @@ public class DBHandlerTest {
 
         dbHandler.saveAdministrators(admins, connection);
         verify(mockStmt, times(4)).executeUpdate();
+    }
+
+    @Test
+    public void testGetTransplantList() throws SQLException {
+        when(mockResultSet.next()).thenReturn(true, false);
+        DBHandlerMocker.setTransplantResultSet(mockResultSet);
+        dbHandler.getTransplantDetails(connection,0, 1, "", "", new String[] {});
+        verify(mockStmt, times(1)).executeQuery();
     }
 }

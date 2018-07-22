@@ -1,6 +1,7 @@
-package seng302.TestUtils;
+package odms.TestUtils;
 
 import odms.commons.model.User;
+import odms.commons.model.datamodel.TransplantDetails;
 
 import java.sql.Date;
 import java.sql.ResultSet;
@@ -23,5 +24,15 @@ public class DBHandlerMocker {
         when(resultSet.getDate("dob")).thenReturn(Date.valueOf(user.getDateOfBirth()));
         when(resultSet.getDate("dod")).thenReturn(user.getDateOfDeath() == null ? null : Date.valueOf(user.getDateOfDeath()));
         when(resultSet.getString("alcoholConsumption")).thenReturn(user.getAlcoholConsumption());
+    }
+
+    public static void setTransplantResultSet(ResultSet resultSet) throws SQLException {
+        when(resultSet.getString(1)).thenReturn("ABC1234");
+        when(resultSet.getString(2)).thenReturn("Frank");
+        when(resultSet.getString(3)).thenReturn("Jeffery");
+        when(resultSet.getString(4)).thenReturn("Johnson");
+        when(resultSet.getString(5)).thenReturn("LIVER");
+        when(resultSet.getDate(6)).thenReturn(new Date(0));
+        when(resultSet.getString(7)).thenReturn("over there");
     }
 }
