@@ -77,7 +77,7 @@ public class DBHandler {
     private static final String SELECT_ADMIN_ONE_TO_ONE_INFO_STMT = "SELECT userName, firstName, middleName, lastName, timeCreated, lastModified  FROM Administrator";
     private static final String SELECT_SINGLE_ADMIN_ONE_TO_ONE_INFO_STMT = "SELECT userName, firstName, middleName, lastName, timeCreated, lastModified  FROM Administrator WHERE userName = ?";
     private static final String SELECT_PASS_DETAILS = "SELECT hash,salt FROM PasswordDetails WHERE fkAdminUserName = ? OR fkStaffId = ?";
-    private static final String SELECT_ONE_CLINICIAN = " SELECT * FROM Clinician WHERE staffId = ?";
+    private static final String SELECT_ONE_CLINICIAN = "SELECT * FROM Clinician LEFT JOIN Address ON staffId = fkStaffId WHERE staffId = ?";
     private AbstractUpdateStrategy updateStrategy;
 
 
@@ -186,13 +186,13 @@ public class DBHandler {
                     clinician.setLastName(resultSet.getString("lastName"));
                     clinician.setDateLastModified(resultSet.getTimestamp("lastModified").toLocalDateTime());
                     clinician.setDateCreated(resultSet.getTimestamp("timeCreated").toLocalDateTime());
-/*                    clinician.setStreetNumber(resultSet.getString("streetNumber"));
+                    clinician.setStreetNumber(resultSet.getString("streetNumber"));
                     clinician.setStreetName(resultSet.getString("streetName"));
-                    clinician.setNeighborhood(resultSet.getString("Neighborhood"));
+                    clinician.setNeighborhood(resultSet.getString("neighbourhood"));
                     clinician.setCity(resultSet.getString("city"));
                     clinician.setRegion(resultSet.getString("region"));
                     clinician.setCountry(resultSet.getString("country"));
-                    clinician.setZipCode(resultSet.getString("zipCode"));*/
+                    clinician.setZipCode(resultSet.getString("zipCode"));
                 }
             }
         }
