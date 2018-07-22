@@ -1,5 +1,6 @@
 package odms.controller;
 
+import odms.commons.model.Clinician;
 import odms.commons.model.User;
 import odms.commons.utils.DBHandler;
 import odms.commons.utils.JDBCDriver;
@@ -32,6 +33,7 @@ public class PhotoControllerTest {
     private DBManager manager;
     private DBHandler handler;
     private User testUser;
+    private Clinician testClinician;
     private static final String JPG_PHOTO_TEST_FILE_PATH = "../commons/src/test/java/resources/images/duck_jpg.jpg";
     private static final String PNG_PHOTO_TEST_FILE_PATH = "../commons/src/test/java/resources/images/duck_png.png";
     private static final String NOT_PHOTO_TEST_FILE_PATH = "../commons/src/test/java/resources/images/not_image.txt";
@@ -48,53 +50,106 @@ public class PhotoControllerTest {
         when(manager.getDriver()).thenReturn(driver);
         controller = new PhotoController(manager);
         testUser = new User("steve", LocalDate.now(), "ABC1234");
+        testClinician = new Clinician("steve", "12", "password");
     }
 
     @Test
-    public void putUserProfilePhotoJpgTest() throws SQLException, IOException{
+    public void putUserProfilePhotoJpgShouldReturnCreated() throws SQLException, IOException{
         when(handler.getOneUser(any(Connection.class), anyString())).thenReturn(testUser);
 
         Path path = Paths.get(JPG_PHOTO_TEST_FILE_PATH);
         MultipartFile multipartFile = new MockMultipartFile("duck_jpg.jpg", "duck_jpg.jpg", "image/jpg", Files.readAllBytes(path));
-        ResponseEntity res = controller.putProfilePhoto("ABC1234", multipartFile);
+        ResponseEntity res = controller.putUserProfilePhoto("ABC1234", multipartFile);
         Assert.assertEquals(HttpStatus.CREATED, res.getStatusCode());
     }
 
     @Test
-    public void putUserProfilePhotoPngTest() throws SQLException, IOException{
+    public void putUserProfilePhotoPngShouldReturnCreated() throws SQLException, IOException{
         when(handler.getOneUser(any(Connection.class), anyString())).thenReturn(testUser);
 
         Path path = Paths.get(PNG_PHOTO_TEST_FILE_PATH);
         MultipartFile multipartFile = new MockMultipartFile("duck_png.jpg", "duck_png.jpg", "image/png", Files.readAllBytes(path));
-        ResponseEntity res = controller.putProfilePhoto("ABC1234", multipartFile);
+        ResponseEntity res = controller.putUserProfilePhoto("ABC1234", multipartFile);
         Assert.assertEquals(HttpStatus.CREATED, res.getStatusCode());
     }
 
     @Test
-    public void putUserProfilePhotoUserNotFoundTest() throws SQLException, IOException{
+    public void putUserProfilePhotoUserShouldReturnNotFoundWhenNoUserFound() throws SQLException, IOException{
+        when(handler.getOneUser(any(Connection.class), anyString())).thenReturn(null);
+
         Path path = Paths.get(JPG_PHOTO_TEST_FILE_PATH);
         MultipartFile multipartFile = new MockMultipartFile("duck_jpg.jpg", "duck_jpg.jpg", "image/jpg", Files.readAllBytes(path));
-        ResponseEntity res = controller.putProfilePhoto("ZZZ1111", multipartFile);
+        ResponseEntity res = controller.putUserProfilePhoto("ZZZ1111", multipartFile);
         Assert.assertEquals(HttpStatus.NOT_FOUND, res.getStatusCode());
     }
 
     @Test
-    public void putUserProfilePhotoInvalidFileTypeTest() throws SQLException, IOException{
+    public void putUserProfilePhotoInvalidFileShouldReturnBadRequest() throws SQLException, IOException{
         when(handler.getOneUser(any(Connection.class), anyString())).thenReturn(testUser);
 
         Path path = Paths.get(NOT_PHOTO_TEST_FILE_PATH);
         MultipartFile multipartFile = new MockMultipartFile("not_image.txt", "not_image.txt", "text/plain", Files.readAllBytes(path));
-        ResponseEntity res = controller.putProfilePhoto("ABC1234", multipartFile);
+        ResponseEntity res = controller.putUserProfilePhoto("ABC1234", multipartFile);
         Assert.assertEquals(HttpStatus.BAD_REQUEST, res.getStatusCode());
     }
 
     @Test
-    public void putUserProfilePhoto2MBFileTest() throws SQLException, IOException{
+    public void putUserProfilePhoto2MBFileTestShouldReturnBadRequest() throws SQLException, IOException{
         when(handler.getOneUser(any(Connection.class), anyString())).thenReturn(testUser);
 
         Path path = Paths.get(TWO_MB_PHOTO_TEST_FILE_PATH);
         MultipartFile multipartFile = new MockMultipartFile("sample_2mb_image.jpg", "sample_2mb_image.jpg", "image/jpg", Files.readAllBytes(path));
-        ResponseEntity res = controller.putProfilePhoto("ABC1234", multipartFile);
+        ResponseEntity res = controller.putUserProfilePhoto("ABC1234", multipartFile);
+        Assert.assertEquals(HttpStatus.BAD_REQUEST, res.getStatusCode());
+    }
+
+    @Test
+    public void putClinicianProfilePhotoJpgShouldReturnCreated() throws SQLException, IOException{
+        when(handler.getOneClinician(any(Connection.class), anyString())).thenReturn(testClinician);
+
+        Path path = Paths.get(JPG_PHOTO_TEST_FILE_PATH);
+        MultipartFile multipartFile = new MockMultipartFile("duck_jpg.jpg", "duck_jpg.jpg", "image/jpg", Files.readAllBytes(path));
+        ResponseEntity res = controller.putClinicianProfilePhoto("12", multipartFile);
+        Assert.assertEquals(HttpStatus.CREATED, res.getStatusCode());
+    }
+
+    @Test
+    public void putClinicianProfilePhotoPngShouldReturnCreated() throws SQLException, IOException{
+        when(handler.getOneClinician(any(Connection.class), anyString())).thenReturn(testClinician);
+
+        Path path = Paths.get(PNG_PHOTO_TEST_FILE_PATH);
+        MultipartFile multipartFile = new MockMultipartFile("duck_png.jpg", "duck_png.jpg", "image/png", Files.readAllBytes(path));
+        ResponseEntity res = controller.putClinicianProfilePhoto("12", multipartFile);
+        Assert.assertEquals(HttpStatus.CREATED, res.getStatusCode());
+    }
+
+    @Test
+    public void putClinicianProfilePhotoClinicianShouldReturnNotFoundWhenNoClinicianFound() throws SQLException, IOException{
+        when(handler.getOneClinician(any(Connection.class), anyString())).thenReturn(null);
+
+        Path path = Paths.get(JPG_PHOTO_TEST_FILE_PATH);
+        MultipartFile multipartFile = new MockMultipartFile("duck_jpg.jpg", "duck_jpg.jpg", "image/jpg", Files.readAllBytes(path));
+        ResponseEntity res = controller.putClinicianProfilePhoto("qwqeq32", multipartFile);
+        Assert.assertEquals(HttpStatus.NOT_FOUND, res.getStatusCode());
+    }
+
+    @Test
+    public void putClinicianProfilePhotoInvalidFileShouldReturnBadRequest() throws SQLException, IOException{
+        when(handler.getOneClinician(any(Connection.class), anyString())).thenReturn(testClinician);
+
+        Path path = Paths.get(NOT_PHOTO_TEST_FILE_PATH);
+        MultipartFile multipartFile = new MockMultipartFile("not_image.txt", "not_image.txt", "text/plain", Files.readAllBytes(path));
+        ResponseEntity res = controller.putClinicianProfilePhoto("12", multipartFile);
+        Assert.assertEquals(HttpStatus.BAD_REQUEST, res.getStatusCode());
+    }
+
+    @Test
+    public void putClinicianProfilePhoto2MBFileTestShouldReturnBadRequest() throws SQLException, IOException{
+        when(handler.getOneClinician(any(Connection.class), anyString())).thenReturn(testClinician);
+
+        Path path = Paths.get(TWO_MB_PHOTO_TEST_FILE_PATH);
+        MultipartFile multipartFile = new MockMultipartFile("sample_2mb_image.jpg", "sample_2mb_image.jpg", "image/jpg", Files.readAllBytes(path));
+        ResponseEntity res = controller.putClinicianProfilePhoto("12", multipartFile);
         Assert.assertEquals(HttpStatus.BAD_REQUEST, res.getStatusCode());
     }
 }
