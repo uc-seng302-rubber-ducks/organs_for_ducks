@@ -3,7 +3,6 @@ package odms.controller.gui.panel;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import odms.commons.model.User;
@@ -91,18 +90,14 @@ public class UserOverviewController {
     private AppController application;
     private User currentUser;
     private Stage stage;
-    private boolean Clinician;
+    private boolean clinician;
 
     @FXML
     public void init(AppController controller, User user, Stage stage, boolean fromClinician) {
         this.stage = stage;
         this.application = controller;
         this.currentUser = user;
-        if (fromClinician) {
-            Clinician = true;
-        } else {
-            Clinician = false;
-        }
+        clinician = fromClinician;
         showUser(user);
     }
 
