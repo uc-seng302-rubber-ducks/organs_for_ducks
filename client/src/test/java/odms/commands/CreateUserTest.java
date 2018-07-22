@@ -1,8 +1,8 @@
 package odms.commands;
 
-import odms.controller.AppController;
 import odms.commons.model.User;
 import odms.commons.model.datamodel.Address;
+import odms.controller.AppController;
 import odms.utils.UserBridge;
 import org.junit.After;
 import org.junit.Assert;
@@ -18,9 +18,7 @@ import java.util.ArrayList;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class CreateUserTest {
 
@@ -31,8 +29,10 @@ public class CreateUserTest {
     private User maxInfo;
 
     @Before
-    public void setup() throws IOException {
+    public void setup() {
         controller = mock(AppController.class);
+        doCallRealMethod().when(controller).setUsers(any(ArrayList.class));
+        when(controller.addUser(any(User.class))).thenCallRealMethod();
         controller.setUsers(new ArrayList<>()); //reset users list between tests
 
         minInfo = new User("John Doe", LocalDate.parse("1961-02-12", format), "ABC1234");
@@ -44,9 +44,10 @@ public class CreateUserTest {
         maxInfo.getContactDetails().setAddress(new Address("42", "wallaby-way", "", "", "Sydney", "", ""));
 
         bridge = mock(UserBridge.class);
-
-        AppController.setInstance(controller);
         when(controller.getUserBridge()).thenReturn(bridge);
+        when(controller.getUsers()).thenCallRealMethod();
+        when(controller.findUser(anyString())).thenCallRealMethod();
+        AppController.setInstance(controller);
     }
 
     @After
@@ -60,16 +61,17 @@ public class CreateUserTest {
         String[] args = {"John", "Doe", "ABC1234", "1961-02-12"};
         when(bridge.getUser(anyString())).thenReturn(minInfo);
         new CommandLine(new CreateUser()).parseWithHandler(new CommandLine.RunLast(), System.err, args);
-        assertTrue(controller.findUser("ABC1234").equals(minInfo));
+        assertTrue(controller.getUsers().contains(minInfo));
     }
 
     @Test
-    public void ShouldRegisterDonorWithMaximumInfo() {
+    public void ShouldRegisterDonorWithMaximumInfo() throws IOException {
         String[] args = {"Gus", "Johnson", "BCD2345", "1990-04-03", "-dod=2010-05-16", "-he=1.85",
                 "-w=86.3",
                 "-g=m", "-n=42", "-s=wallaby-way", "-r=Sydney"};
+        when(bridge.getUser(anyString())).thenReturn(maxInfo);
         new CommandLine(new CreateUser()).parseWithHandler(new CommandLine.RunLast(), System.err, args);
-        User registered = null;
+        User registered;
         registered = controller.findUser("BCD2345");
         Assert.assertEquals(maxInfo, registered); //checks name and dob
         Assert.assertEquals(maxInfo.getDateOfDeath(), registered.getDateOfDeath());

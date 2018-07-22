@@ -1,6 +1,5 @@
 package odms.controller;
 
-import odms.commons.exception.ApiException;
 import odms.commons.exception.ProfileAlreadyExistsException;
 import odms.commons.exception.ProfileNotFoundException;
 import odms.commons.model.Administrator;
@@ -209,11 +208,9 @@ public class AppController {
      * @param user user to remove
      */
     public void deleteUser(User user) {
-        List<User> sessionList = getUsers();
         user.setDeleted(true);
-        setUsers((ArrayList<User>) sessionList);
 
-        userBridge.deleteUser(user);
+        getUserBridge().deleteUser(user);
     }
 
     public List<User> getUsers() {
@@ -261,16 +258,17 @@ public class AppController {
             }
 
             if (userBridge.getUser(originalUser.getNhi()) != null) {
-                userBridge.putUser(user, originalUser.getNhi());
-                userBridge.postDonatingOrgans(user.getDonorDetails().getOrgans(), originalUser.getNhi());
                 if (token != null) {
-                    userBridge.postReceivingOrgans(user.getReceiverDetails().getOrgans(), originalUser.getNhi(), token);
+                    userBridge.putReceivingOrgans(user.getReceiverDetails().getOrgans(), originalUser.getNhi(), token);
                     userBridge.putUserProcedures(user.getMedicalProcedures(), originalUser.getNhi(), token);
-                    userBridge.putMedications(user.getCurrentMedication(), originalUser.getNhi(), token);
                     userBridge.putMedications(user.getPreviousMedication(), originalUser.getNhi(), token);
-                    userBridge.putDiseases(user.getCurrentDiseases(), originalUser.getNhi(), token);
+                    userBridge.putMedications(user.getCurrentMedication(), originalUser.getNhi(), token);
                     userBridge.putDiseases(user.getPastDiseases(), originalUser.getNhi(), token);
+                    userBridge.putDiseases(user.getCurrentDiseases(), originalUser.getNhi(), token);
                 }
+                userBridge.postDonatingOrgans(user.getDonorDetails().getOrgans(), originalUser.getNhi());
+                userBridge.putUser(user, originalUser.getNhi());
+
             } else {
                 userBridge.postUser(user);
             }
@@ -394,7 +392,7 @@ public class AppController {
     public void deleteClinician(Clinician clinician) {
         clinician.setDeleted(true);
 
-        clinicianBridge.deleteClinician(clinician, clinician.getStaffId());
+        getClinicianBridge().deleteClinician(clinician, clinician.getStaffId());
     }
 
     /**
@@ -405,7 +403,7 @@ public class AppController {
     public void deleteAdmin(Administrator admin) {
         admin.setDeleted(true);
 
-        administratorBridge.deleteAdmin(admin, token);
+        getAdministratorBridge().deleteAdmin(admin, token);
         admins.remove(admin);
     }
 
@@ -677,5 +675,21 @@ public class AppController {
 
     public void setToken(String token) {
         this.token = token;
+    }
+
+    public void setAdministratorBridge(AdministratorBridge adminBridge) {
+        administratorBridge = adminBridge;
+    }
+
+    public void setClinicianBridge(ClinicianBridge cliBridge) {
+        clinicianBridge = cliBridge;
+    }
+
+    public void setLoginBridge(LoginBridge loginBridge) {
+        this.loginBridge = loginBridge;
+    }
+
+    public void setUserBridge(UserBridge userBridge) {
+        this.userBridge = userBridge;
     }
 }

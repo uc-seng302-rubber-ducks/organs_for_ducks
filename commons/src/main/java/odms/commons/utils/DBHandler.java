@@ -22,9 +22,13 @@ public class DBHandler {
      * SELECT_USER_ONE_TO_ONE_INFO_STMT is for getting all info that follows one-to-one relationship. eg: 1 user can only have 1 address.
      * the other SELECT_USER statements are for getting all info that follows one-to-many relationships. eg: 1 user can have many diseases.
      */
-    private static final String SELECT_USER_ONE_TO_ONE_INFO_STMT_FILTERED = "SELECT nhi FROM `User` a JOIN Address ON fkUserNhi = nhi JOIN HealthDetails Detail ON a.nhi = Detail.fkUserNhi " +
-            "WHERE (firstName LIKE ? OR lastName LIKE ?) AND region LIKE ? AND gender LIKE ? " +
-            "AND Address.fkContactId != (SELECT ContactDetails.contactId FROM ContactDetails JOIN EmergencyContactDetails E ON ContactDetails.contactId = E.fkContactId WHERE E.fkUserNhi = nhi) " +
+    private static final String SELECT_USER_ONE_TO_ONE_INFO_STMT_FILTERED = "SELECT nhi " +
+            "FROM User u LEFT JOIN Address a ON a.fkUserNhi = u.nhi " +
+            "LEFT JOIN HealthDetails hd ON u.nhi = hd.fkUserNhi " +
+            "WHERE (u.firstName LIKE ? OR u.lastName LIKE ?) " +
+            "AND (a.region LIKE ? OR a.region is NULL) " +
+            "AND (hd.gender LIKE ? OR hd.gender is NULL) " +
+            "AND (a.fkContactId != (SELECT contactId FROM ContactDetails cd JOIN EmergencyContactDetails ecd ON cd.contactId = ecd.fkContactId WHERE ecd.fkUserNhi = nhi) OR a.fkContactId is NULL) " +
             "LIMIT ? OFFSET ?";
     private static final String SELECT_ONE_USER_INFO_STMT_FILTERED = "SELECT nhi, firstName, middleName, LastName, preferedName, timeCreated, lastModified, profilePicture, gender, birthGender, smoker, " +
             "alcoholConsumption, height, weight, dob, dod, bloodType " +

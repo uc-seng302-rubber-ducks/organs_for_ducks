@@ -1,9 +1,9 @@
 package odms.commands;
 
-import odms.controller.AppController;
 import odms.commons.model.User;
 import odms.commons.utils.DataHandler;
 import odms.commons.utils.JsonHandler;
+import odms.controller.AppController;
 import odms.view.IoHelper;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
@@ -81,13 +81,14 @@ public class CreateUser implements Runnable {
         if (dob == null) {
             return;
         }
+        User user = new User(firstName + " " + lastName, dob, NHI);
         boolean success = controller.addUser(new User(firstName + " " + lastName, dob, NHI));
         if (!success) {
             System.out.println("An error occurred when creating registering the new user\n"
                     + "maybe a user with that NHI already exists?");
             return;
         }
-        User user = controller.findUser(NHI);
+
         if (user == null) {
             System.out.println("User with this NHI already exists");
             return;
