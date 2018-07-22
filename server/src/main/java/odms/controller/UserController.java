@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Collection;
@@ -69,8 +70,8 @@ public class UserController extends BaseController {
     @RequestMapping(method = RequestMethod.GET, value = "/users/{nhi}")
     public User getUser(@PathVariable("nhi") String nhi) {
         try (Connection connection = driver.getConnection()) {
-            User result =  handler.getOneUser(connection, nhi);
-            if(result != null) {
+            User result = handler.getOneUser(connection, nhi);
+            if (result != null) {
                 return result;
             }
             Log.warning("user not found with nhi " + nhi);
@@ -92,7 +93,7 @@ public class UserController extends BaseController {
             Log.severe("cannot put user " + nhi, ex);
             throw new ServerDBException(ex);
         }
-        return  new ResponseEntity(HttpStatus.OK);
+        return new ResponseEntity(HttpStatus.OK);
     }
 
     @IsUser
@@ -107,4 +108,17 @@ public class UserController extends BaseController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
+
+    @RequestMapping(method = RequestMethod.GET, value = "/users/{nhi}/photo")
+    public byte[] getUserProfilePicture(@PathVariable("nhi") String nhi) {
+        System.out.println("Lets get photogenic");
+        byte[] image;
+        try (Connection connection = driver.getConnection()) {
+            image = handler.getProfilePhoto(User.class, nhi, connection);
+        } catch (SQLException e) {
+            Log.severe("Cannot fetch profile picture for user " + nhi, e);
+            throw new ServerDBException(e);
+        }
+        return image;
+    }
 }

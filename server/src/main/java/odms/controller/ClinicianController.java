@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Collection;
@@ -96,4 +97,17 @@ public class ClinicianController extends BaseController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
+
+    @IsClinician
+    @RequestMapping(method = RequestMethod.GET, value = "/clinician/{staffId}/photo")
+    public byte[] getUserProfilePicture(@PathVariable("staffId") String staffId) {
+        byte[] image;
+        try (Connection connection = driver.getConnection()) {
+            image = handler.getProfilePhoto(Clinician.class, staffId, connection);
+        } catch (SQLException e) {
+            Log.severe("Cannot fetch profile picture for user " + staffId, e);
+            throw new ServerDBException(e);
+        }
+        return image;
+    }
 }

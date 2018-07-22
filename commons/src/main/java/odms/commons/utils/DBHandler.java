@@ -884,14 +884,14 @@ public class DBHandler {
     /**
      * Gets the user's profile photo on the database based on user's ID.
      *
+     * @param <T> generic for type of the user
      * @param role user's role. e.g. Clinician.class
      * @param roleId id of user
      * @param connection connection to the target database
-     * @param <T> generic for type of the user
-     * @return Profile Picture of type Blob if such user exists or has a profile picture, null otherwise.
+     * @return Profile Picture of type ImageStream if such user exists or has a profile picture, null otherwise.
      * @throws SQLException exception thrown during the transaction
      */
-    public <T> Blob getProfilePhoto(Class<T> role, String roleId, Connection connection) throws SQLException {
+    public <T> byte[] getProfilePhoto(Class<T> role, String roleId, Connection connection) throws SQLException {
         String select_stmt;
         Blob profilePicture = null;
 
@@ -910,7 +910,10 @@ public class DBHandler {
                 }
             }
         }
-        return profilePicture;
+        if(profilePicture == null){
+            return null;
+        }
+        return profilePicture.getBytes(1, (int) profilePicture.length());
     }
 
     /**
