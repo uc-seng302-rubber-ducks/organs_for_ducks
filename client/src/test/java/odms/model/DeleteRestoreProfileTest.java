@@ -11,6 +11,7 @@ import odms.utils.ClinicianBridge;
 import odms.utils.UserBridge;
 import org.junit.*;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
@@ -26,9 +27,9 @@ public class DeleteRestoreProfileTest {
     private static Clinician testClinician;
     private static Administrator testAdmin;
     private static AppController appC;
-    private static UserBridge userBridge;
-    private static ClinicianBridge clinicianBridge;
-    private static AdministratorBridge administratorBridge;
+    private static UserBridge userBridge = mock(UserBridge.class);
+    private static ClinicianBridge clinicianBridge = mock(ClinicianBridge.class);
+    private static AdministratorBridge administratorBridge = mock(AdministratorBridge.class);
     private static Collection<Administrator> activeAdmins;
     private static List<Clinician> activeClinicians;
     private static List<User> activeUsers;
@@ -40,21 +41,16 @@ public class DeleteRestoreProfileTest {
         testClinician = new Clinician("Bob", "id",  "1234");
         testAdmin = new Administrator("nameuser", "first", "middle", "last", "1234");
 
-        appC = mock(AppController.class);
-        userBridge = mock(UserBridge.class);
-        clinicianBridge = mock(ClinicianBridge.class);
-        administratorBridge = mock(AdministratorBridge.class);
+        appC = AppController.getInstance();
 
-        when(appC.getAdministratorBridge()).thenReturn(administratorBridge);
+        doNothing().when(userBridge).deleteUser(any(User.class));
+        doNothing().when(clinicianBridge).deleteClinician(any(Clinician.class), anyString());
         doNothing().when(administratorBridge).deleteAdmin(any(Administrator.class), anyString());
 
-        when(appC.getClinicianBridge()).thenReturn(clinicianBridge);
-        doNothing().when(clinicianBridge).deleteClinician(any(Clinician.class), anyString());
+        appC.setUserBridge(userBridge);
+        appC.setClinicianBridge(clinicianBridge);
+        appC.setAdministratorBridge(administratorBridge);
 
-        when(appC.getUserBridge()).thenReturn(userBridge);
-        doNothing().when(userBridge).deleteUser(any(User.class));
-
-        AppController.setInstance(appC);
         activeAdmins = appC.getAdmins();
         activeClinicians = appC.getClinicians();
         activeUsers = appC.getUsers();
@@ -128,9 +124,10 @@ public class DeleteRestoreProfileTest {
     }
 
     @Test
-    public void testRestoreUserExistsException() {
+    public void testRestoreUserExistsException() throws IOException {
         appC.deleteUser(testUser);
         User newUser = new User("NotStan", LocalDate.of(2000, 3, 5), "ABC4321");
+        when(userBridge.getUser(anyString())).thenReturn(newUser);
         activeUsers.add(newUser);
 
         try {

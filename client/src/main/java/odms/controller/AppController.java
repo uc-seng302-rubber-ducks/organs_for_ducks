@@ -1,6 +1,5 @@
 package odms.controller;
 
-import odms.commons.exception.ApiException;
 import odms.commons.exception.ProfileAlreadyExistsException;
 import odms.commons.exception.ProfileNotFoundException;
 import odms.commons.model.Administrator;
@@ -203,11 +202,9 @@ public class AppController {
      * @param user user to remove
      */
     public void deleteUser(User user) {
-        List<User> sessionList = getUsers();
         user.setDeleted(true);
-        setUsers((ArrayList<User>) sessionList);
 
-        userBridge.deleteUser(user);
+        getUserBridge().deleteUser(user);
     }
 
 
@@ -396,7 +393,7 @@ public class AppController {
     public void deleteClinician(Clinician clinician) {
         clinician.setDeleted(true);
 
-        clinicianBridge.deleteClinician(clinician, clinician.getStaffId());
+        getClinicianBridge().deleteClinician(clinician, clinician.getStaffId());
     }
 
     /**
@@ -407,7 +404,7 @@ public class AppController {
     public void deleteAdmin(Administrator admin) {
         admin.setDeleted(true);
 
-        administratorBridge.deleteAdmin(admin, token);
+        getAdministratorBridge().deleteAdmin(admin, token);
         admins.remove(admin);
     }
 
@@ -686,5 +683,21 @@ public class AppController {
 
     public String getToken() {
         return token;
+    }
+
+    public void setAdministratorBridge(AdministratorBridge adminBridge) {
+        administratorBridge = adminBridge;
+    }
+
+    public void setClinicianBridge(ClinicianBridge cliBridge) {
+        clinicianBridge = cliBridge;
+    }
+
+    public void setLoginBridge(LoginBridge loginBridge) {
+        this.loginBridge = loginBridge;
+    }
+
+    public void setUserBridge(UserBridge userBridge) {
+        this.userBridge = userBridge;
     }
 }
