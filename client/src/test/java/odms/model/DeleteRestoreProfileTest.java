@@ -1,18 +1,25 @@
 package odms.model;
 
-import odms.controller.AppController;
 import odms.commons.exception.ProfileAlreadyExistsException;
 import odms.commons.exception.ProfileNotFoundException;
 import odms.commons.model.Administrator;
 import odms.commons.model.Clinician;
 import odms.commons.model.User;
+import odms.controller.AppController;
+import odms.utils.AdministratorBridge;
+import odms.utils.ClinicianBridge;
+import odms.utils.UserBridge;
 import org.junit.*;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
 
 import static junit.framework.TestCase.fail;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.*;
 
 public class DeleteRestoreProfileTest {
 
@@ -20,6 +27,9 @@ public class DeleteRestoreProfileTest {
     private static Clinician testClinician;
     private static Administrator testAdmin;
     private static AppController appC;
+    private static UserBridge userBridge = mock(UserBridge.class);
+    private static ClinicianBridge clinicianBridge = mock(ClinicianBridge.class);
+    private static AdministratorBridge administratorBridge = mock(AdministratorBridge.class);
     private static Collection<Administrator> activeAdmins;
     private static List<Clinician> activeClinicians;
     private static List<User> activeUsers;
@@ -32,6 +42,15 @@ public class DeleteRestoreProfileTest {
         testAdmin = new Administrator("nameuser", "first", "middle", "last", "1234");
 
         appC = AppController.getInstance();
+
+        doNothing().when(userBridge).deleteUser(any(User.class));
+        doNothing().when(clinicianBridge).deleteClinician(any(Clinician.class), anyString());
+        doNothing().when(administratorBridge).deleteAdmin(any(Administrator.class), anyString());
+
+        appC.setUserBridge(userBridge);
+        appC.setClinicianBridge(clinicianBridge);
+        appC.setAdministratorBridge(administratorBridge);
+
         activeAdmins = appC.getAdmins();
         activeClinicians = appC.getClinicians();
         activeUsers = appC.getUsers();
@@ -105,9 +124,10 @@ public class DeleteRestoreProfileTest {
     }
 
     @Test
-    public void testRestoreUserExistsException() {
+    public void testRestoreUserExistsException() throws IOException {
         appC.deleteUser(testUser);
         User newUser = new User("NotStan", LocalDate.of(2000, 3, 5), "ABC4321");
+        when(userBridge.getUser(anyString())).thenReturn(newUser);
         activeUsers.add(newUser);
 
         try {

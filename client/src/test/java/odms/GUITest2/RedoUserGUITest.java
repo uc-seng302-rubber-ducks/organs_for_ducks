@@ -2,9 +2,15 @@ package odms.GUITest2;
 
 import javafx.scene.Node;
 import odms.App;
+import odms.commons.exception.ApiException;
+import odms.commons.model.Clinician;
+import odms.commons.model.dto.UserOverview;
 import odms.controller.AppController;
 import odms.commons.model.EmergencyContact;
 import odms.commons.model.User;
+import odms.utils.ClinicianBridge;
+import odms.utils.LoginBridge;
+import odms.utils.UserBridge;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -14,35 +20,59 @@ import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.matcher.control.LabeledMatchers;
 import odms.TestUtils.CommonTestMethods;
 
+import java.io.IOException;
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.concurrent.TimeoutException;
 
+import static odms.TestUtils.FxRobotHelper.clickOnButton;
+import static odms.TestUtils.FxRobotHelper.setTextField;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 import static org.testfx.api.FxAssert.verifyThat;
 
 public class RedoUserGUITest extends ApplicationTest {
 
     @BeforeClass
     public static void initialization() {
-        CommonTestMethods.runHeadless();
+        //CommonTestMethods.runHeadless();
     }
 
     @Before
-    public void setUp() throws TimeoutException {
-        FxToolkit.registerPrimaryStage();
-        FxToolkit.setupApplication(App.class);
-        AppController.getInstance().getUsers().clear();
+    public void setUp() throws TimeoutException, IOException {
+
+        AppController application = mock(AppController.class);
+        UserBridge bridge = mock(UserBridge.class);
+
+        Clinician clinician = new Clinician();
+        clinician.setStaffId("0");
         User user = new User("Frank", LocalDate.now().minusDays(2), "ABC1234");
+
+        AppController.setInstance(application);
+        when(application.getUserBridge()).thenReturn(bridge);
+
+        when(bridge.loadUsersToController(anyInt(), anyInt(), anyString(), anyString(), anyString(), anyString()))
+                .thenReturn(Collections.singletonList(UserOverview.fromUser(user)));
+        when(bridge.getUser("ABC1234")).thenReturn(user);
+
         user.setContact(new EmergencyContact("", "", "1456788"));
         user.getUndoStack().clear();
+
+        FxToolkit.registerPrimaryStage();
+        FxToolkit.setupApplication(App.class);
+
+        AppController.getInstance().getUsers().clear();
         AppController.getInstance().getUsers().add(user);
-        clickOn("#userIDTextField");
-        write("ABC1234", 0);
-        clickOn("#loginUButton");
+
+        setTextField(this, "#userIDTextField","ABC1234");
+        clickOnButton(this, "#loginUButton");
     }
 
     @After
     public void tearDown() throws TimeoutException {
-        AppController.getInstance().getUsers().clear();
+        AppController.setInstance(null);
         FxToolkit.cleanupStages();
     }
 
@@ -53,36 +83,34 @@ public class RedoUserGUITest extends ApplicationTest {
 
     @Test
     public void testRedoSingleUndo() {
-        clickOn("#editDetailsButton");
-        clickOn("#lNameInput");
-        write("Jefferson");
-        clickOn("#confirmButton");
-        clickOn("#undoButton");
-        clickOn("#redoButton");
+        clickOnButton(this,"#editDetailsButton");
+        setTextField(this, "#lNameInput", "Jefferson");
+        clickOnButton(this,"#confirmButton");
+        clickOnButton(this,"#undoButton");
+        clickOnButton(this,"#redoButton");
 
         verifyThat("#lNameValue", LabeledMatchers.hasText("Jefferson"));
     }
 
     @Test
     public void testRedoEqualUndos() {
-        clickOn("#editDetailsButton");
-        clickOn("#lNameInput");
-        write("Jefferson");
+        clickOnButton(this,"#editDetailsButton");
+        setTextField(this, "#lNameInput", "Jefferson");
 
         clickOn("#alcoholComboBox");
         clickOn("Low");
 
-        clickOn("#cell");
-        write("011899992");
-        clickOn("#confirmButton");
+        setTextField(this, "#cell", "011899992");
+        clickOnButton(this,"#confirmButton");
 
-        clickOn("#undoButton");
-        clickOn("#undoButton");
-        clickOn("#undoButton");
+        clickOnButton(this,"#undoButton");
+        clickOnButton(this,"#undoButton");
+        clickOnButton(this,"#undoButton");
 
-        clickOn("#redoButton");
-        clickOn("#redoButton");
-        clickOn("#redoButton");
+
+        clickOnButton(this,"#redoButton");
+        clickOnButton(this,"#redoButton");
+        clickOnButton(this,"#redoButton");
 
         verifyThat("#pCellPhone", LabeledMatchers.hasText("011899992"));
         verifyThat("#alcoholValue", LabeledMatchers.hasText("Low"));

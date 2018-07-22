@@ -22,9 +22,13 @@ public class DBHandler {
      * SELECT_USER_ONE_TO_ONE_INFO_STMT is for getting all info that follows one-to-one relationship. eg: 1 user can only have 1 address.
      * the other SELECT_USER statements are for getting all info that follows one-to-many relationships. eg: 1 user can have many diseases.
      */
-    private static final String SELECT_USER_ONE_TO_ONE_INFO_STMT_FILTERED = "SELECT nhi FROM `User` a JOIN Address ON fkUserNhi = nhi " +
-            "WHERE (firstName LIKE ? OR lastName LIKE ?) AND region LIKE ? " +
-            "AND Address.fkContactId != (SELECT ContactDetails.contactId FROM ContactDetails JOIN EmergencyContactDetails E ON ContactDetails.contactId = E.fkContactId WHERE E.fkUserNhi = nhi)" +
+    private static final String SELECT_USER_ONE_TO_ONE_INFO_STMT_FILTERED = "SELECT nhi " +
+            "FROM User u LEFT JOIN Address a ON a.fkUserNhi = u.nhi " +
+            "LEFT JOIN HealthDetails hd ON u.nhi = hd.fkUserNhi " +
+            "WHERE (u.firstName LIKE ? OR u.lastName LIKE ?) " +
+            "AND (a.region LIKE ? OR a.region is NULL) " +
+            "AND (hd.gender LIKE ? OR hd.gender is NULL) " +
+            "AND (a.fkContactId != (SELECT contactId FROM ContactDetails cd JOIN EmergencyContactDetails ecd ON cd.contactId = ecd.fkContactId WHERE ecd.fkUserNhi = nhi) OR a.fkContactId is NULL) " +
             "LIMIT ? OFFSET ?";
     private static final String SELECT_ONE_USER_INFO_STMT_FILTERED = "SELECT nhi, firstName, middleName, LastName, preferedName, timeCreated, lastModified, profilePicture, gender, birthGender, smoker, " +
             "alcoholConsumption, height, weight, dob, dod, bloodType " +
@@ -73,6 +77,7 @@ public class DBHandler {
     private static final String SELECT_ADMIN_ONE_TO_ONE_INFO_STMT = "SELECT userName, firstName, middleName, lastName, timeCreated, lastModified  FROM Administrator";
     private static final String SELECT_SINGLE_ADMIN_ONE_TO_ONE_INFO_STMT = "SELECT userName, firstName, middleName, lastName, timeCreated, lastModified  FROM Administrator WHERE userName = ?";
     private static final String SELECT_PASS_DETAILS = "SELECT hash,salt FROM PasswordDetails WHERE fkAdminUserName = ? OR fkStaffId = ?";
+    private static final String SELECT_ONE_CLINICIAN = "SELECT * FROM Clinician LEFT JOIN Address ON staffId = fkStaffId WHERE staffId = ?";
     private AbstractUpdateStrategy updateStrategy;
 
 
@@ -105,7 +110,7 @@ public class DBHandler {
      * @throws SQLException if there are any SQL errors
      */
     public Collection<User> getUsers(Connection connection, int count, int startIndex) throws SQLException {
-        return this.getUsers(connection, count, startIndex, "", "");
+        return this.getUsers(connection, count, startIndex, "", "", "");
     }
 
     /**
@@ -119,21 +124,23 @@ public class DBHandler {
      * @return a Collection of Users
      * @throws SQLException if there are any SQL errors
      */
-    public Collection<User> getUsers(Connection connection, int count, int startIndex, String name, String region) throws SQLException {
+    public Collection<User> getUsers(Connection connection, int count, int startIndex, String name, String region, String gender) throws SQLException {
         Collection<User> users = new ArrayList<>();
 
         try (PreparedStatement statement = connection.prepareStatement(SELECT_USER_ONE_TO_ONE_INFO_STMT_FILTERED)) {
             statement.setString(1, name + "%");
             statement.setString(2, name + "%");
             statement.setString(3, region + "%");
-            statement.setInt(4, count);
-            statement.setInt(5, startIndex);
+            statement.setString(4, gender + "%");
+            statement.setInt(5, count);
+            statement.setInt(6, startIndex);
             try (ResultSet resultSet = statement.executeQuery()) {
                 while (resultSet.next()) {
                     users.add(getOneUser(connection, resultSet.getString("nhi")));
                 }
             }
         }
+
         return users;
     }
 
@@ -169,8 +176,8 @@ public class DBHandler {
      * @throws SQLException if there are any SQL errors
      */
     public Clinician getOneClinician(Connection connection, String staffId) throws SQLException {
-        Clinician clinician = null;
-        try (PreparedStatement statement = connection.prepareStatement(SELECT_CLINICIAN_ONE_TO_ONE_INFO_STMT)) {
+        Clinician clinician = new Clinician();
+        try (PreparedStatement statement = connection.prepareStatement(SELECT_ONE_CLINICIAN)) {
             statement.setString(1, staffId);
             try (ResultSet resultSet = statement.executeQuery()) {
                 while (resultSet != null && resultSet.next()) {
@@ -181,7 +188,7 @@ public class DBHandler {
                     clinician.setDateCreated(resultSet.getTimestamp("timeCreated").toLocalDateTime());
                     clinician.setStreetNumber(resultSet.getString("streetNumber"));
                     clinician.setStreetName(resultSet.getString("streetName"));
-                    clinician.setNeighborhood(resultSet.getString("Neighborhood"));
+                    clinician.setNeighborhood(resultSet.getString("neighbourhood"));
                     clinician.setCity(resultSet.getString("city"));
                     clinician.setRegion(resultSet.getString("region"));
                     clinician.setCountry(resultSet.getString("country"));
@@ -248,7 +255,7 @@ public class DBHandler {
      * @throws SQLException if there is an error extracting information from the resultSet
      */
     private Clinician getClinicianBasicDetails(ResultSet resultSet) throws SQLException {
-        return new Clinician(resultSet.getString("firstName"), resultSet.getString("staffId"), null);
+        return new Clinician(resultSet.getString("firstName"), resultSet.getString("staffId"), "");
     }
 
     /**
@@ -512,6 +519,7 @@ public class DBHandler {
 
                     } else {
                         medicalProcedure = new MedicalProcedure(resultSet.getDate(2).toLocalDate(), resultSet.getString(1), resultSet.getString(3), null);
+                        System.out.println(resultSet.getString(4));
                         medicalProcedure.addOrgan(Organs.valueOf(resultSet.getString(4)));
                         user.getMedicalProcedures().add(medicalProcedure);
                     }
@@ -700,7 +708,9 @@ public class DBHandler {
                 statement.setString(2, id);
             }
             try (ResultSet rs = statement.executeQuery()) {
-                rs.next();
+                if(!rs.next()){
+                    return false;
+                }
                 String hash = rs.getString("hash");
                 String salt = rs.getString("salt");
                 return PasswordManager.isExpectedPassword(guess, salt, hash);
