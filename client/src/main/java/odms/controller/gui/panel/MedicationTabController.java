@@ -22,6 +22,7 @@ import okhttp3.OkHttpClient;
 import org.controlsfx.control.textfield.TextFields;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -301,6 +302,7 @@ public class MedicationTabController {
         currentMeds.remove(med);
         previousMeds.add(med);
         currentUser.addPreviousMedication(med);
+        currentUser.getPreviousMedicationTimes(med).add(LocalDateTime.now());
         Log.info("Successfully moved medication: " + med + " from current to previous medication for User NHI: " + currentUser.getNhi());
     }
 
