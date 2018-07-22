@@ -109,16 +109,4 @@ public class UserController extends BaseController {
     }
 
 
-    @RequestMapping(method = RequestMethod.GET, value = "/users/{nhi}/photo")
-    public byte[] getUserProfilePicture(@PathVariable("nhi") String nhi) {
-        System.out.println("Lets get photogenic");
-        byte[] image;
-        try (Connection connection = driver.getConnection()) {
-            image = handler.getProfilePhoto(User.class, nhi, connection);
-        } catch (SQLException e) {
-            Log.severe("Cannot fetch profile picture for user " + nhi, e);
-            throw new ServerDBException(e);
-        }
-        return image;
-    }
 }

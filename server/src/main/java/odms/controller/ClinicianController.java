@@ -98,16 +98,5 @@ public class ClinicianController extends BaseController {
     }
 
 
-    @IsClinician
-    @RequestMapping(method = RequestMethod.GET, value = "/clinician/{staffId}/photo")
-    public byte[] getUserProfilePicture(@PathVariable("staffId") String staffId) {
-        byte[] image;
-        try (Connection connection = driver.getConnection()) {
-            image = handler.getProfilePhoto(Clinician.class, staffId, connection);
-        } catch (SQLException e) {
-            Log.severe("Cannot fetch profile picture for user " + staffId, e);
-            throw new ServerDBException(e);
-        }
-        return image;
-    }
+
 }
