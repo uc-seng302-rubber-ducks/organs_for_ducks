@@ -1,31 +1,32 @@
 package odms.controller.gui.panel;
 
-import javafx.beans.binding.Bindings;
+import javafx.animation.PauseTransition;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
+import javafx.util.Duration;
+import odms.commons.exception.ApiException;
 import odms.commons.model.User;
 import odms.commons.model._abstract.TransplantWaitListViewer;
 import odms.commons.model._enum.Organs;
 import odms.commons.model.datamodel.TransplantDetails;
 import odms.commons.model.dto.UserOverview;
-import odms.commons.utils.AttributeValidation;
+import odms.commons.utils.Log;
 import odms.controller.AppController;
 import odms.controller.gui.popup.utils.AlertWindowFactory;
 import odms.utils.UserBridge;
 import okhttp3.OkHttpClient;
 
 import java.io.IOException;
-import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import static odms.commons.model._enum.Organs.*;
 
@@ -73,12 +74,23 @@ public class TransplantWaitListController {
     private TextField waitingRegionTextfield;
 
     @FXML
+    private Button transplantNextPageButton;
+
+    @FXML
+    private Button transplantPrevPageButton;
+
+    @FXML
     private TableView<TransplantDetails> transplantWaitListTableView;
 
     private ArrayList<CheckBox> filterCheckBoxList = new ArrayList<>();
     private List<User> users;
     private AppController appController;
     private TransplantWaitListViewer parent;
+    private int startIndex = 0;
+    private static final int TRANSPLANTS_PER_PAGE = 10;
+
+    //for delaying the request when typing into the region text field
+    private PauseTransition pause = new PauseTransition(Duration.millis(300));
 
     @FXML
     public void init(AppController controller, TransplantWaitListViewer parent) {
@@ -129,44 +141,64 @@ public class TransplantWaitListController {
         recipientRegionColumn.setCellValueFactory(new PropertyValueFactory<>("region"));
 
         transplantWaitListTableView.getColumns().setAll(recipientNameColumn, organNameColumn, organRegistrationDateColumn, recipientRegionColumn);
-        updateFiltersLabel();
+
         populateWaitListTable();
+        setInputOnClickBehaviour();
     }
 
     /**
-     * populates and add double click functionality to the Wait List Table.
+     * simplified version of the method to get the first page of results with no filters
      */
     public void populateWaitListTable() {
-        //transplantWaitListTableView.getItems().clear();
-        //set up lists
-        //table contents are SortedList of a FilteredList of an ObservableList of an ArrayList
-        appController.getTransplantList().clear();
-        for (User user : users) {
-            if (user.isReceiver() && (user.getDeceased() != null && !user.getDeceased()) && !user.isDeleted()) {
-                Set<Organs> organs = user.getReceiverDetails().getOrgans().keySet();
-                for (Organs organ : organs) {
-                    if (isReceiverNeedingFilteredOrgan(user.getNhi(), organs).contains(organ)) {
+        populateWaitListTable(0, TRANSPLANTS_PER_PAGE, waitingRegionTextfield.getText(), getAllFilteredOrgans());
+    }
 
-                        appController.addTransplant(
-                                new TransplantDetails(user.getNhi(), user.getFullName(), organ, LocalDate.now(),
-                                        user.getRegion()));
-                    }
-                }
+
+    /**
+     * populates the wait list table from the server based on the following filter information
+     * @param startIndex first result to return
+     * @param count number of results to return
+     * @param regionSearch partial string to filter region by (sql LIKE 'string%')
+     * @param allowedOrgans list of the organs to filter by. If this is empty, all will be returned
+     */
+    public void populateWaitListTable(int startIndex, int count, String regionSearch, List<Organs> allowedOrgans) {
+
+        appController.getTransplantList().clear();
+        List<TransplantDetails> details = null;
+        try {
+            //name searching not implemented in the GUI. empty string matches all names
+            details = appController.getTransplantBridge().getWaitingList(startIndex, count, "", regionSearch, allowedOrgans);
+        } catch (ApiException ex) {
+            Log.warning("failed to get transplant details from server. got response code " + ex.getResponseCode(), ex);
+        }
+        if (details != null) {
+            for(TransplantDetails detail : details) {
+                appController.addTransplant(detail);
             }
         }
 
-        ObservableList<TransplantDetails> observableTransplantList = FXCollections
+        ObservableList<TransplantDetails> oTransplantList = FXCollections
                 .observableList(appController.getTransplantList());
-        FilteredList<TransplantDetails> fTransplantList = new FilteredList<>(
-                observableTransplantList);
-        fTransplantList = filterTransplantDetails(fTransplantList);
-        SortedList<TransplantDetails> sTransplantList = new SortedList<>(fTransplantList);
+        SortedList<TransplantDetails> sTransplantList = new SortedList<>(oTransplantList);
         sTransplantList.comparatorProperty().bind(transplantWaitListTableView.comparatorProperty());
 
-        if (appController.getTransplantList().size() != 0) {
+        if (!appController.getTransplantList().isEmpty()) {
             transplantWaitListTableView.setItems(sTransplantList);
 
-            //set on-click behaviour
+        } else {
+            transplantWaitListTableView.setItems(null);
+            transplantWaitListTableView.setPlaceholder(new Label("No Receivers currently registered"));
+        }
+
+        //needs to be re-run each time as a handler on empty list will cause issues
+        setTableOnClickBehaviour();
+    }
+
+    /**
+     * sets table so that clicking an entry will take open that user in a new window
+     */
+    private void setTableOnClickBehaviour() {
+        if (!appController.getTransplantList().isEmpty()) {
             transplantWaitListTableView.setOnMouseClicked(event -> {
                 if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
                     TransplantDetails transplantDetails = transplantWaitListTableView.getSelectionModel().getSelectedItem();
@@ -178,94 +210,62 @@ public class TransplantWaitListController {
                     }
                 }
             });
-
         } else {
             transplantWaitListTableView.setOnMouseClicked(null);
-            transplantWaitListTableView.setItems(null);
-            transplantWaitListTableView.setPlaceholder(new Label("No Receivers currently registered"));
         }
     }
 
     /**
-     * Sets listeners for the transplant waiting list
-     *
-     * @param fListTransplantDetails filtered list to add listener to.
-     * @return the filtered list.
+     * setup all inputs to re-send a request when they are changed
      */
-    private FilteredList<TransplantDetails> filterTransplantDetails(FilteredList<TransplantDetails> fListTransplantDetails) {
-        waitingRegionTextfield.textProperty().addListener((observable, oldValue, newValue) -> {
-            setTransplantListPredicate(fListTransplantDetails);
-            updateFiltersLabel();
-            transplantWaitListTableView.refresh();
+    private void setInputOnClickBehaviour() {
+        for(CheckBox checkBox : filterCheckBoxList) {
+            //get the first page of results for the new filter settings
+            checkBox.selectedProperty().addListener((observable, oldValue, newValue) -> populateWaitListTable());
+        }
+        waitingRegionTextfield.textProperty().addListener(observable -> {
+            pause.setOnFinished(e -> populateWaitListTable());
+            pause.playFromStart();
         });
-        for (CheckBox checkBox : filterCheckBoxList) {
-            checkBox.selectedProperty().addListener((observable -> {
-                setTransplantListPredicate(fListTransplantDetails);
-                updateFiltersLabel();
-                transplantWaitListTableView.refresh();
-            }));
-        }
-
-        return fListTransplantDetails;
-    }
-
-    /**
-     * Updates the filters label to allow the user to easily see the filters that have been applied
-     */
-    private void updateFiltersLabel() {
-        StringBuilder labelText = new StringBuilder("Showing all receivers");
-        if (!waitingRegionTextfield.getText().isEmpty()) {
-            labelText.append(" from a place starting with ")
-                    .append(waitingRegionTextfield.getText());
-        }
-        if (!getAllFilteredOrgans().isEmpty()) {
-            labelText.append(" who need a ");
-        }
-        for (Organs organ : getAllFilteredOrgans()) {
-            labelText.append(organ.toString()).append(" or ");
-        }
-        if (!getAllFilteredOrgans().isEmpty()) {
-            labelText = new StringBuilder(labelText.substring(0, labelText.length() - 4));
-        }
-
-        filtersLabel.setText(labelText.toString());
-
 
     }
 
     /**
-     * Sets the predicate on the filteredList for Transplant details
-     * Cannot be overloaded as the the argument types are the same but have different erasures
-     *
-     * @param fList filteredList of TransplantDetails objects
+     * handler to move to the next page of the transplant list.
+     * checks if there is another page to go to and makes the request for new data
      */
-    private void setTransplantListPredicate(FilteredList<TransplantDetails> fList) {
-        fList.predicateProperty().bind(Bindings.createObjectBinding(() -> transplantDetails ->
-                (AttributeValidation.checkRegionMatches(waitingRegionTextfield.getText(), transplantDetails)
-                        &&
-                        (isReceiverNeedingFilteredOrgan(transplantDetails.getNhi(),
-                                new HashSet<>(getAllFilteredOrgans())).contains(transplantDetails.getOrgan())
-                                || !checkAnyTransplantFilterCheckBoxSelected()))
-        ));
+    @FXML
+    public void getNextPage() {
+        //this is the last page
+        if (appController.getTransplantList().size() < TRANSPLANTS_PER_PAGE) {
+            return;
+        }
+
+        startIndex += TRANSPLANTS_PER_PAGE;
+        List<Organs> organs = new ArrayList<>();
+        if (checkAnyTransplantFilterCheckBoxSelected()) {
+            organs = getAllFilteredOrgans();
+        }
+        populateWaitListTable(startIndex, TRANSPLANTS_PER_PAGE, waitingRegionTextfield.getText(), organs);
     }
 
     /**
-     * Takes an user with an existing nhi and the set of organs
-     *
-     * @param nhi    NHI of a user that exists within the system
-     * @param organs A set of organs for which the checkboxes are ticked
-     * @return An arraylist of Organs enums which the user with the NHI is receiving
+     * handler to move to the previous page of the transplant list.
+     * checks if there is prior page to go to and makes the request for new data
      */
-    private ArrayList<Organs> isReceiverNeedingFilteredOrgan(String nhi,
-                                                             Set<Organs> organs) {
-        ArrayList<Organs> result = new ArrayList<>();
-        for (Organs o : organs) {
-            if (appController.findUser(nhi).getReceiverDetails()
-                    .isCurrentlyWaitingFor(o)) {
-                result.add(o);
-            }
+    @FXML
+    public void getPrevPage() {
+        //this is the first page
+        if (startIndex - TRANSPLANTS_PER_PAGE < 0) {
+            return;
         }
-        return result;
+        startIndex -= TRANSPLANTS_PER_PAGE;
+        List<Organs> organs = new ArrayList<>();
+        if (checkAnyTransplantFilterCheckBoxSelected()) {
+            organs = getAllFilteredOrgans();
+        }
+        populateWaitListTable(startIndex, TRANSPLANTS_PER_PAGE, waitingRegionTextfield.getText(), organs);
+
     }
 
     /**
@@ -286,8 +286,8 @@ public class TransplantWaitListController {
      *
      * @return the relevant organs to filter by
      */
-    private ArrayList<Organs> getAllFilteredOrgans() {
-        ArrayList<Organs> organs = new ArrayList<>();
+    private List<Organs> getAllFilteredOrgans() {
+        List<Organs> organs = new ArrayList<>();
         if (boneCheckBox.isSelected())
             organs.add(BONE);
         if (boneMarrowCheckBox.isSelected())

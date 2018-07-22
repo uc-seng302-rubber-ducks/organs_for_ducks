@@ -519,6 +519,7 @@ public class DBHandler {
 
                     } else {
                         medicalProcedure = new MedicalProcedure(resultSet.getDate(2).toLocalDate(), resultSet.getString(1), resultSet.getString(3), null);
+                        System.out.println(resultSet.getString(4));
                         medicalProcedure.addOrgan(Organs.valueOf(resultSet.getString(4)));
                         user.getMedicalProcedures().add(medicalProcedure);
                     }

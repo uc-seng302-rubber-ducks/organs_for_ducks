@@ -1,4 +1,4 @@
-package seng302.TestUtils;
+package odms.TestUtils;
 
 import odms.commons.model.User;
 import odms.commons.model.datamodel.TransplantDetails;

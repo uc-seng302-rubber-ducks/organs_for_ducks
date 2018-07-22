@@ -2,6 +2,7 @@ package odms.controller;
 
 import odms.commons.model.Disease;
 import odms.commons.model.User;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -91,6 +92,10 @@ public class DiseasesTest {
             //System.out.println(ex);
             fail("Error setting up before test");
         }
+    }
+    @After
+    public void tearDown() {
+        AppController.setInstance(null);
     }
 
     /**

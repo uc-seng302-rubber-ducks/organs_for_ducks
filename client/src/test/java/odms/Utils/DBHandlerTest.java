@@ -4,7 +4,7 @@ import odms.commons.model.*;
 import odms.commons.model._enum.Organs;
 import odms.commons.utils.DBHandler;
 import org.junit.*;
-import seng302.TestUtils.DBHandlerMocker;
+import odms.TestUtils.DBHandlerMocker;
 
 import java.sql.*;
 import java.time.LocalDate;

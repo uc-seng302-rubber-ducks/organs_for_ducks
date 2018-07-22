@@ -4,6 +4,7 @@ import odms.commons.model.User;
 import odms.commons.model.datamodel.Address;
 import odms.controller.AppController;
 import odms.utils.UserBridge;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -47,6 +48,11 @@ public class CreateUserTest {
         when(controller.getUsers()).thenCallRealMethod();
         when(controller.findUser(anyString())).thenCallRealMethod();
         AppController.setInstance(controller);
+    }
+
+    @After
+    public void tearDown() {
+        AppController.setInstance(null);
     }
 
     //<editor-fold>

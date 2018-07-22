@@ -17,10 +17,7 @@ import odms.controller.gui.statusBarController;
 import odms.controller.gui.window.AdministratorViewController;
 import odms.controller.gui.window.ClinicianController;
 import odms.controller.gui.window.UserController;
-import odms.utils.AdministratorBridge;
-import odms.utils.ClinicianBridge;
-import odms.utils.LoginBridge;
-import odms.utils.UserBridge;
+import odms.utils.*;
 import okhttp3.OkHttpClient;
 
 import java.io.FileNotFoundException;
@@ -53,15 +50,13 @@ public class AppController {
     private ClinicianBridge clinicianBridge = new ClinicianBridge(client);
     private AdministratorBridge administratorBridge = new AdministratorBridge(client);
     private LoginBridge loginBridge = new LoginBridge(client);
-
+    private TransplantBridge transplantBridge = new TransplantBridge(client);
     private UserController userController = new UserController();
     private ClinicianController clinicianController = new ClinicianController();
     private AdministratorViewController administratorViewController = new AdministratorViewController();
     private odms.controller.gui.statusBarController statusBarController = new statusBarController();
     private Stack<User> redoStack = new Stack<>();
-
     private String token;
-
     /**
      * Creates new instance of AppController
      */
@@ -103,6 +98,19 @@ public class AppController {
         return controller;
     }
 
+    /**
+     * Never use this unless testing. Please.
+     * After the tests, make sure you reset it using setInstance(null)
+     *
+     * @param appController controller instance to return
+     */
+    public static void setInstance(AppController appController) {
+        controller = appController;
+    }
+
+    public TransplantBridge getTransplantBridge() {
+        return transplantBridge;
+    }
 
     /**
      * Sets the point in history
@@ -119,7 +127,6 @@ public class AppController {
     public void addToHistoryOfCommands(String[] command) {
         historyOfCommands.add(command);
     }
-
 
     /**
      * Updates the history pointer to ensure that the end of the array isnt overrun and the number
@@ -144,7 +151,6 @@ public class AppController {
     public String[] getCommand() {
         return historyOfCommands.get(historyPointer);
     }
-
 
     /**
      * Takes a users name and dob, finds the user in the session list and returns them.
@@ -207,17 +213,8 @@ public class AppController {
         getUserBridge().deleteUser(user);
     }
 
-
     public List<User> getUsers() {
         return users;
-    }
-
-    /**
-     * Never use this unless testing. Please.
-     * @param appController controller instance to return
-     */
-    public static void setInstance(AppController appController) {
-        controller = appController;
     }
 
     /**
@@ -327,6 +324,10 @@ public class AppController {
         return clinicians;
     }
 
+    public void setClinicians(List<Clinician> clinicians) {
+        this.clinicians = clinicians;
+    }
+
     public Collection<Administrator> getAdmins() {
         return admins;
     }
@@ -383,8 +384,6 @@ public class AppController {
         }
     }
 
-
-
     /**
      * Takes a passed clinician and removes them from the maintained list of clinicians
      *
@@ -407,7 +406,6 @@ public class AppController {
         getAdministratorBridge().deleteAdmin(admin, token);
         admins.remove(admin);
     }
-
 
     public UserController getUserController() {
         return userController;
@@ -444,7 +442,6 @@ public class AppController {
         }
         return null;
     }
-
 
     /**
      * Refreshes the list of administrators with the updated admin
@@ -600,7 +597,6 @@ public class AppController {
         }
     }
 
-
     /**
      * Restores the specified clinician object by adding it to the list of active clinicians and removing it from the
      * set of deleted clinicians.
@@ -649,16 +645,12 @@ public class AppController {
         transplantList.add(transplantDetails);
     }
 
-    public void setUserOverviews(Set<UserOverview> users) {
-        overviews = users;
-    }
-
-    public void setClinicians(List<Clinician> clinicians) {
-        this.clinicians = clinicians;
-    }
-
     public Collection<UserOverview> getUserOverviews() {
         return overviews;
+    }
+
+    public void setUserOverviews(Set<UserOverview> users) {
+        overviews = users;
     }
 
     public AdministratorBridge getAdministratorBridge() {
@@ -677,12 +669,12 @@ public class AppController {
         return loginBridge;
     }
 
-    public void setToken(String token) {
-        this.token = token;
-    }
-
     public String getToken() {
         return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 
     public void setAdministratorBridge(AdministratorBridge adminBridge) {
