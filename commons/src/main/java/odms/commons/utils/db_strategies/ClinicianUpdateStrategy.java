@@ -27,7 +27,7 @@ public class ClinicianUpdateStrategy extends AbstractUpdateStrategy {
             if (clinician.getChanges().size() <= 0) {
                 continue;
             }
-            PreparedStatement stmt = connection.prepareStatement("SELECT nhi FROM clinician WHERE nhi = ?");
+            PreparedStatement stmt = connection.prepareStatement("SELECT staffId FROM Clinician WHERE staffId = ?");
             stmt.setString(1, clinician.getStaffId());
             ResultSet queryResults = stmt.executeQuery();
             if (!queryResults.next() && !clinician.isDeleted()) {
@@ -60,7 +60,6 @@ public class ClinicianUpdateStrategy extends AbstractUpdateStrategy {
                 System.out.println("An error occurred"); //TODO: Make this a popup
             }
             connection.prepareStatement("COMMIT");
-            connection.close();
         } catch (SQLException sqlEx) {
             Log.warning("Error in connection to database", sqlEx);
             System.out.println("Error connecting to database");
@@ -194,7 +193,6 @@ public class ClinicianUpdateStrategy extends AbstractUpdateStrategy {
             }
 
             connection.prepareStatement("COMMIT");
-            connection.close();
         } catch (SQLException sqlEx) {
             Log.warning("Error in connection to database", sqlEx);
             System.out.println("Error connecting to database");
@@ -223,7 +221,6 @@ public class ClinicianUpdateStrategy extends AbstractUpdateStrategy {
             }
 
             connection.prepareStatement("COMMIT");
-            connection.close();
         } catch (SQLException sqlEx) {
             Log.warning("Error in connection to database", sqlEx);
             System.out.println("Error connecting to database");
