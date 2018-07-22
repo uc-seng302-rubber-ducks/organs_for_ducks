@@ -1,11 +1,14 @@
 package odms.model;
 
-import odms.controller.AppController;
 import odms.commons.exception.ProfileAlreadyExistsException;
 import odms.commons.exception.ProfileNotFoundException;
 import odms.commons.model.Administrator;
 import odms.commons.model.Clinician;
 import odms.commons.model.User;
+import odms.controller.AppController;
+import odms.utils.AdministratorBridge;
+import odms.utils.ClinicianBridge;
+import odms.utils.UserBridge;
 import org.junit.*;
 
 import java.time.LocalDate;
@@ -13,6 +16,9 @@ import java.util.Collection;
 import java.util.List;
 
 import static junit.framework.TestCase.fail;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.*;
 
 public class DeleteRestoreProfileTest {
 
@@ -20,6 +26,9 @@ public class DeleteRestoreProfileTest {
     private static Clinician testClinician;
     private static Administrator testAdmin;
     private static AppController appC;
+    private static UserBridge userBridge;
+    private static ClinicianBridge clinicianBridge;
+    private static AdministratorBridge administratorBridge;
     private static Collection<Administrator> activeAdmins;
     private static List<Clinician> activeClinicians;
     private static List<User> activeUsers;
@@ -31,7 +40,21 @@ public class DeleteRestoreProfileTest {
         testClinician = new Clinician("Bob", "id",  "1234");
         testAdmin = new Administrator("nameuser", "first", "middle", "last", "1234");
 
-        appC = AppController.getInstance();
+        appC = mock(AppController.class);
+        userBridge = mock(UserBridge.class);
+        clinicianBridge = mock(ClinicianBridge.class);
+        administratorBridge = mock(AdministratorBridge.class);
+
+        when(appC.getAdministratorBridge()).thenReturn(administratorBridge);
+        doNothing().when(administratorBridge).deleteAdmin(any(Administrator.class), anyString());
+
+        when(appC.getClinicianBridge()).thenReturn(clinicianBridge);
+        doNothing().when(clinicianBridge).deleteClinician(any(Clinician.class), anyString());
+
+        when(appC.getUserBridge()).thenReturn(userBridge);
+        doNothing().when(userBridge).deleteUser(any(User.class));
+
+        AppController.setInstance(appC);
         activeAdmins = appC.getAdmins();
         activeClinicians = appC.getClinicians();
         activeUsers = appC.getUsers();
