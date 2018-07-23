@@ -82,6 +82,7 @@ public class WhenSteps extends ApplicationTest {
         write(dob);
         clickOn("#dodInput");
         write(dod);
+        clickOn("#nhiInput");
         CucumberTestModel.setUserNhi(nhi);
     }
 

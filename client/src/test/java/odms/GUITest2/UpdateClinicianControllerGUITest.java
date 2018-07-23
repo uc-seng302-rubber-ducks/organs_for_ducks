@@ -56,7 +56,7 @@ public class UpdateClinicianControllerGUITest extends ApplicationTest {
         clickOn("#fileMenuClinician");
         clickOn("#logoutMenuClinician");
         AppController.getInstance().getUsers().clear();
-        AppController.getInstance().getClinicians().remove(AppController.getInstance().getClinician("Staff1"));
+        //AppController.getInstance().getClinicians().remove(AppController.getInstance().getClinician("Staff1"));
         FxToolkit.cleanupStages();
     }
 

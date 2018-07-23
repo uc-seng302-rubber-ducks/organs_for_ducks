@@ -46,7 +46,8 @@ public class UpdateAdminControllerGUITest extends ApplicationTest {
 
     @After
     public void tearDown() throws TimeoutException {
-        AppController.getInstance().getAdmins().remove(testAdmin);
+        //AppController.getInstance().getAdmins().remove(testAdmin);
+        AppController.getInstance().getUsers().clear();
         FxToolkit.cleanupStages();
     }
 
