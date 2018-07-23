@@ -308,6 +308,22 @@ public class UserBridge extends Bifrost {
         });
     }
 
+    /**
+     * checks whether a user can be found in the database
+     * @param nhi nhi of the user to search for
+     * @return true if the user can be found, false otherwise
+     */
+    public boolean getExists(String nhi) {
+        Request request = new Request.Builder().get().url(ip + "/users/exists" + nhi).build();
+
+        try (Response res = client.newCall(request).execute()) {
+            return res.body().string().equalsIgnoreCase("true");
+        } catch (NullPointerException | IOException ex) {
+            Log.warning("could not determine if the admin exists", ex);
+            return false;
+        }
+    }
+
 
 
 }

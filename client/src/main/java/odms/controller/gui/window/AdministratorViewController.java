@@ -136,9 +136,9 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
     private TableView<?> activeTableView;
     private String messageAdmin = "Admin ";
     private DataHandler dataHandler = new JsonHandler();
-    private UserBridge userBridge = appController.getUserBridge();
-    private ClinicianBridge clinicianBridge = appController.getClinicianBridge();
-    private AdministratorBridge adminBridge = appController.getAdministratorBridge();
+    private UserBridge userBridge;
+    private ClinicianBridge clinicianBridge;
+    private AdministratorBridge adminBridge;
 
     /**
      * Initialises scene for the administrator view
@@ -152,6 +152,9 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
         this.appController = appController;
         this.administrator = administrator;
         this.owner = owner;
+        this.userBridge = appController.getUserBridge();
+        this.clinicianBridge = appController.getClinicianBridge();
+        this.adminBridge = appController.getAdministratorBridge();
         statusBarPageController.init(appController);
         displayDetails();
         transplantWaitListTabPageController.init(appController, this);
@@ -951,6 +954,7 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
      */
     @FXML
     void saveClicked() {
+        String token = appController.getToken();
         //save self
         appController.updateAdmin(administrator);
         appController.saveAdmin(administrator);
@@ -961,9 +965,30 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
 
         //save other admins
         for (Administrator admin: appController.getAdmins()) {
-            adminBridge.
+            if (adminBridge.getExists(admin.getUserName())) {
+                adminBridge.postAdmin(admin, token);
+            } else {
+                adminBridge.putAdmin(admin, admin.getUserName(), token);
+            }
         }
 
+        //save clinicians
+        for (Clinician clinician: appController.getClinicians()) {
+            if (clinicianBridge.getExists(clinician.getStaffId())) {
+                clinicianBridge.postClinician(clinician, token);
+            } else {
+                clinicianBridge.putClinician(clinician, clinician.getStaffId(), token);
+            }
+        }
+
+        //save users
+        for (User user: appController.getUsers()) {
+            if (userBridge.getExists(user.getNhi())) {
+                userBridge.postUser(user);
+            } else {
+                userBridge.putUser(user, user.getNhi());
+            }
+        }
     }
 
     /**
