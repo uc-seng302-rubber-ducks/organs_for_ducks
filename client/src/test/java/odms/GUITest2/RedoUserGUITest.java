@@ -26,6 +26,7 @@ import java.util.Collections;
 import java.util.concurrent.TimeoutException;
 
 import static odms.TestUtils.FxRobotHelper.clickOnButton;
+import static odms.TestUtils.FxRobotHelper.setComboBox;
 import static odms.TestUtils.FxRobotHelper.setTextField;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -37,7 +38,7 @@ public class RedoUserGUITest extends ApplicationTest {
 
     @BeforeClass
     public static void initialization() {
-        //CommonTestMethods.runHeadless();
+        CommonTestMethods.runHeadless();
     }
 
     @Before
@@ -96,10 +97,13 @@ public class RedoUserGUITest extends ApplicationTest {
     public void testRedoEqualUndos() {
         clickOnButton(this,"#editDetailsButton");
         setTextField(this, "#lNameInput", "Jefferson");
+        clickOnButton(this,"#confirmButton");
 
-        clickOn("#alcoholComboBox");
-        clickOn("Low");
+        clickOnButton(this,"#editDetailsButton");
+        setComboBox(this, "#alcoholComboBox", "Low");
+        clickOnButton(this,"#confirmButton");
 
+        clickOnButton(this,"#editDetailsButton");
         setTextField(this, "#cell", "011899992");
         clickOnButton(this,"#confirmButton");
 

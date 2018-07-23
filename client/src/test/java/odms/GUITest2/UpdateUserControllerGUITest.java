@@ -5,6 +5,7 @@ import odms.commons.model.EmergencyContact;
 import odms.commons.model.dto.UserOverview;
 import odms.controller.AppController;
 import odms.commons.model.User;
+import odms.controller.gui.window.UserController;
 import odms.utils.UserBridge;
 import org.junit.*;
 import org.testfx.api.FxToolkit;
@@ -19,9 +20,12 @@ import java.util.concurrent.TimeoutException;
 
 import static javafx.scene.input.KeyCode.*;
 import static odms.TestUtils.FxRobotHelper.clickOnButton;
+import static odms.TestUtils.FxRobotHelper.setComboBox;
 import static odms.TestUtils.FxRobotHelper.setTextField;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.testfx.api.FxAssert.verifyThat;
@@ -50,6 +54,9 @@ public class UpdateUserControllerGUITest extends ApplicationTest {
                 .thenReturn(Collections.singletonList(UserOverview.fromUser(user)));
         when(bridge.getUser("ABC1234")).thenReturn(user);
 
+        doCallRealMethod().when(application).setUserController(any(UserController.class));
+        doCallRealMethod().when(application).getUserController();
+
 
         FxToolkit.registerPrimaryStage();
         FxToolkit.setupApplication(App.class);
@@ -69,7 +76,6 @@ public class UpdateUserControllerGUITest extends ApplicationTest {
 
     @Test
     public void testUpdateName() {
-        clickOn("#fNameInput").push(SHORTCUT, A).push(BACK_SPACE);
         setTextField(this, "#fNameInput","");
         setTextField(this, "#fNameInput","Kate");
         clickOnButton(this, "#confirmButton");
@@ -92,17 +98,14 @@ public class UpdateUserControllerGUITest extends ApplicationTest {
 
     @Test
     public void testUpdateDoB() {
-        clickOn("#dobInput").push(SHORTCUT, A).push(BACK_SPACE);
-        clickOn("#dobInput");
-        write("03/05/2018", 0);
-        clickOn("#confirmButton");
+        setComboBox(this,"#dobInput",LocalDate.of(2018, 5, 3));
+        clickOnButton(this,"#confirmButton");
         verifyThat("#DOBValue", LabeledMatchers.hasText("2018-05-03"));
     }
 
     @Test
     public void testUpdateDoD() {
-        clickOn("#dodInput");
-        write("03/05/2018", 0);
+        setComboBox(this, "#dodInput", LocalDate.of(2018, 5, 3));
         clickOn("#confirmButton");
         verifyThat("#DODValue", LabeledMatchers.hasText("2018-05-03"));
     }

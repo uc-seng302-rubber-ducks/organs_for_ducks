@@ -6,10 +6,8 @@ import odms.commons.model.Clinician;
 import odms.commons.model.dto.UserOverview;
 import odms.controller.AppController;
 import odms.commons.model.Administrator;
-import odms.utils.AdministratorBridge;
-import odms.utils.ClinicianBridge;
-import odms.utils.LoginBridge;
-import odms.utils.UserBridge;
+import odms.controller.gui.window.AdministratorViewController;
+import odms.utils.*;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -20,14 +18,15 @@ import org.testfx.matcher.control.LabeledMatchers;
 import org.testfx.matcher.control.TextInputControlMatchers;
 import odms.TestUtils.CommonTestMethods;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.concurrent.TimeoutException;
 
 import static javafx.scene.input.KeyCode.*;
 import static odms.TestUtils.FxRobotHelper.clickOnButton;
 import static odms.TestUtils.FxRobotHelper.setTextField;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.testfx.api.FxAssert.verifyThat;
@@ -36,10 +35,11 @@ import static org.testfx.api.FxAssert.verifyThat;
 public class UpdateAdminControllerGUITest extends ApplicationTest {
 
     private Administrator testAdmin;
+    private TransplantBridge transplantBridge = mock(TransplantBridge.class);
 
     @BeforeClass
     public static void initialization() {
-        //CommonTestMethods.runHeadless();
+        CommonTestMethods.runHeadless();
     }
 
     @Before
@@ -56,6 +56,11 @@ public class UpdateAdminControllerGUITest extends ApplicationTest {
         when(application.getLoginBridge()).thenReturn(loginBridge);
         when(loginBridge.loginToServer(anyString(),anyString(), anyString())).thenReturn("lsdjfksd");
         when(administratorBridge.getAdmin(anyString(), anyString())).thenReturn(testAdmin);
+        when(application.getTransplantBridge()).thenReturn(transplantBridge);
+        when(transplantBridge.getWaitingList(anyInt(), anyInt(), anyString(), anyString(), anyCollection())).thenReturn(new ArrayList<>());
+
+        doCallRealMethod().when(application).setAdministratorViewController(any(AdministratorViewController.class));
+        doCallRealMethod().when(application).getAdministratorViewController();
 
         AppController.getInstance().getAdmins().remove(testAdmin);
         AppController.getInstance().getAdmins().add(testAdmin);
@@ -93,7 +98,6 @@ public class UpdateAdminControllerGUITest extends ApplicationTest {
 
     @Test
     public void updateMiddleName() {
-        clickOn("#middleNameTextField").push(SHORTCUT, A).push(BACK_SPACE);
         setTextField(this,"#middleNameTextField","Grace");
         clickOnButton(this,"#confirmButton");
         verifyThat("#adminMiddleNameLabel", LabeledMatchers.hasText("Grace"));
@@ -101,7 +105,6 @@ public class UpdateAdminControllerGUITest extends ApplicationTest {
 
     @Test
     public void updateLastName() {
-        clickOn("#lastNameTextField").push(SHORTCUT, A).push(BACK_SPACE);
         setTextField(this,"#lastNameTextField","Anderson");
         clickOnButton(this,"#confirmButton");
         verifyThat("#adminLastNameLabel", LabeledMatchers.hasText("Anderson"));
@@ -130,12 +133,10 @@ public class UpdateAdminControllerGUITest extends ApplicationTest {
 
     @Test
     public void cancel() {
-        clickOn("#firstNameTextField").push(SHORTCUT, A).push(BACK_SPACE);
         setTextField(this,"#firstNameTextField","Annah");
         clickOn("#cancelButton");
         clickOn("#yesButton");
         verifyThat("#adminFirstnameLabel", LabeledMatchers.hasText("Anna"));
-
     }
 
 }

@@ -26,6 +26,7 @@ import java.util.Collections;
 import java.util.concurrent.TimeoutException;
 
 import static odms.TestUtils.FxRobotHelper.clickOnButton;
+import static odms.TestUtils.FxRobotHelper.setDateValue;
 import static odms.TestUtils.FxRobotHelper.setTextField;
 import static odms.TestUtils.TableViewsMethod.getCell;
 import static odms.TestUtils.TableViewsMethod.getCellValue;
@@ -137,16 +138,9 @@ public class NewDiseaseControllerGUITest extends ApplicationTest {
     public void updatedDiseaseDateShouldBeDisplayedCorrectly() {
         clickOn(getCell("#currentDiseaseTableView", 0, 0));
         clickOnButton(this, "#updateDiseaseButton");
-        clickOn("#diagnosisDateInput");
-        for (int i = 0; i < 10; i++) {
-            push(KeyCode.RIGHT);
-        }
-        for (int i = 0; i < 15; i++) {
-            push(KeyCode.BACK_SPACE);
-        }
-        write("12/01/2007", 0);
-        clickOn("#createButton");
-        assertEquals(LocalDate.parse("2007-01-12", sdf), getCellValue("#currentDiseaseTableView", 0, 0));
+        setDateValue(this, "#diagnosisDateInput",LocalDate.of(2007, 1, 12));
+        clickOnButton(this, "#createButton");
+        assertEquals(LocalDate.of(2007, 1, 12), getCellValue("#currentDiseaseTableView", 0, 0));
     }
 
     @Test
