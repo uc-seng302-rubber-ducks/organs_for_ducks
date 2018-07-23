@@ -16,6 +16,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.concurrent.TimeoutException;
 
 import static odms.TestUtils.FxRobotHelper.clickOnButton;
+import static odms.TestUtils.FxRobotHelper.setComboBox;
 import static odms.TestUtils.FxRobotHelper.setTextField;
 import static org.mockito.Mockito.mock;
 import static org.testfx.api.FxAssert.verifyThat;
@@ -190,9 +191,19 @@ public class CreateUserControllerGUITest extends ApplicationTest {
         setTextField(this,"#nhiInput","ADE1987");
         setTextField(this,"#fNameInput","Dwayne");
         lookup("#dobInput").queryAs(DatePicker.class).setValue(LocalDate.parse("3/1/2017", DateTimeFormatter.ofPattern("d/M/yyyy")));
-        setTextField(this,"#email","dwayneRock@gmail.com");
+        setTextField(this,"#streetNumber","2A");
+        setTextField(this, "#street", "Gary Place");
+        setComboBox(this, "#region", "Canterbury");
+        setTextField(this, "#neighborhood", "Burwood");
+        setTextField(this, "#city", "Christchurch");
+        setTextField(this, "#country", "New Zealand");
+        setTextField(this, "#zipCode", "1494");
         clickOnButton(this,"#confirmButton");
-        Assert.fail("this tests checks nothing so im making it fail JB 20/7/18 - should it be the same as testValidEmail");
+        verifyThat("#pAddress", LabeledMatchers.hasText("2A Gary Place\n" +
+                "Burwood"));
+        verifyThat("#pRegion", LabeledMatchers.hasText("Canterbury"));
+        verifyThat("#city", LabeledMatchers.hasText("Christchurch"));
+        verifyThat("#zipCode", LabeledMatchers.hasText("1494"));
     }
 
     @Test
@@ -241,7 +252,10 @@ public class CreateUserControllerGUITest extends ApplicationTest {
         clickOnButton(this,"#confirmButton");
         clickOn("#detailsTab");
         verifyThat("#eName", LabeledMatchers.hasText("John Cena"));
-        Assert.fail("This needs to check more labels to ensure it works");
+        verifyThat("#eHomePhone", LabeledMatchers.hasText("033594573"));
+        verifyThat("#eCellPhone", LabeledMatchers.hasText("0221557621"));
+        verifyThat("#eEmail", LabeledMatchers.hasText("johnCena@gmail.com"));
+        verifyThat("#relationship", LabeledMatchers.hasText("Leader"));
     }
 
 }

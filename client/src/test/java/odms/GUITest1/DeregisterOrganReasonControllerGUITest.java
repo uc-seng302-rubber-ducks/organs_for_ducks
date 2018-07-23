@@ -15,10 +15,7 @@ import odms.utils.ClinicianBridge;
 import odms.utils.LoginBridge;
 import odms.utils.TransplantBridge;
 import odms.utils.UserBridge;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.matcher.control.LabeledMatchers;
@@ -34,6 +31,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.concurrent.TimeoutException;
 
+import static odms.TestUtils.FxRobotHelper.clickOnButton;
+import static odms.TestUtils.FxRobotHelper.setTextField;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.anyCollection;
 import static org.mockito.ArgumentMatchers.anyInt;
@@ -52,6 +51,7 @@ public class DeregisterOrganReasonControllerGUITest extends ApplicationTest {
     private LoginBridge loginBridge = mock(LoginBridge.class);
     private AppController application = mock(AppController.class);
     private TransplantBridge transplantBridge = mock(TransplantBridge.class);
+    private User testUser;
 
     @BeforeClass
     public static void initialization() {
@@ -64,7 +64,7 @@ public class DeregisterOrganReasonControllerGUITest extends ApplicationTest {
         Clinician clinician = new Clinician();
         clinician.setStaffId("0");
 
-        User testUser = new User("Aa", LocalDate.parse("2000-01-20", sdf), "ABC1244");
+        testUser = new User("Aa", LocalDate.parse("2000-01-20", sdf), "ABC1244");
 
         AppController.setInstance(application);
         when(application.getUserBridge()).thenReturn(bridge);
@@ -78,7 +78,7 @@ public class DeregisterOrganReasonControllerGUITest extends ApplicationTest {
         when(clinicianBridge.getClinician(anyString(), anyString())).thenReturn(clinician);
         when(bridge.loadUsersToController(anyInt(), anyInt(), anyString(), anyString(), anyString(), anyString()))
                 .thenReturn(Collections.singletonList(UserOverview.fromUser(testUser)));
-        when(bridge.getUser("ABC1244")).thenReturn(testUser);
+        when(bridge.getUser(anyString())).thenReturn(testUser);
         when(application.getUsers()).thenReturn(Arrays.asList(testUser)); // needs to be modidfed to return a list
         when(transplantBridge.getWaitingList(anyInt(), anyInt(), anyString(), anyString(), anyCollection())).thenReturn(Collections.singletonList(new TransplantDetails(testUser.getNhi(),testUser.getFirstName(), Organs.HEART, LocalDate.now(), testUser.getRegion())));
 
@@ -90,12 +90,9 @@ public class DeregisterOrganReasonControllerGUITest extends ApplicationTest {
 
         //Use default clinician
         clickOn("#clinicianTab");
-        clickOn("#staffIdTextField");
-        write("0", 0);
-        clickOn("#staffPasswordField");
-        write("admin", 0);
-        clickOn("#loginCButton");
-        //verifyThat("#staffIdLabel", LabeledMatchers.hasText("0"));
+        setTextField(this, "#staffIdTextField", "0");
+        setTextField(this, "#staffPasswordField", "admin");
+        clickOnButton(this,"#loginCButton");
         clickOn("#searchTab");
         doubleClickOn(getCell("#searchTableView", 0, 0));
         clickOn("#receiverTab");
@@ -116,6 +113,7 @@ public class DeregisterOrganReasonControllerGUITest extends ApplicationTest {
         clickOn("#okButton");
         clickOn("#userProfileTab");
         clickOn("#backButton");
+        clickOn("Yes");
         clickOn("#transplantWaitListTab");
         assertEquals(0, getNumberOfRows("#transplantWaitListTableView"));
     }
@@ -126,6 +124,7 @@ public class DeregisterOrganReasonControllerGUITest extends ApplicationTest {
         clickOn("#okButton");
         clickOn("#userProfileTab");
         clickOn("#backButton");
+        clickOn("Yes");
         clickOn("#transplantWaitListTab");
         assertEquals(0, getNumberOfRows("#transplantWaitListTableView"));
     }
@@ -138,6 +137,7 @@ public class DeregisterOrganReasonControllerGUITest extends ApplicationTest {
         clickOn("#okButton");
         clickOn("#userProfileTab");
         clickOn("#backButton");
+        clickOn("Yes");
         clickOn("#transplantWaitListTab");
         assertEquals(0, getNumberOfRows("#transplantWaitListTableView"));
     }
@@ -148,6 +148,7 @@ public class DeregisterOrganReasonControllerGUITest extends ApplicationTest {
         clickOn("#okButton");
         clickOn("#userProfileTab");
         clickOn("#backButton");
+        clickOn("Yes");
         clickOn("#transplantWaitListTab");
         assertEquals(0, getNumberOfRows("#transplantWaitListTableView"));
     }
@@ -162,7 +163,6 @@ public class DeregisterOrganReasonControllerGUITest extends ApplicationTest {
 
     @Test
     public void deregisterOrganReasonTransplantReceivedDiseaseCuredDiseaseTable() {
-        boolean testPass = true;
         clickOn("#diseaseCuredRadioButton");
         clickOn("#diseaseNameComboBox");
         clickOn("A0");
@@ -176,8 +176,7 @@ public class DeregisterOrganReasonControllerGUITest extends ApplicationTest {
     public void deregisterOrganReasonTransplantReceivedReceiverDiedDOD() {
         clickOn("#receiverDiedRadioButton");
         clickOn("#okButton");
-        clickOn("#userProfileTab");
-        verifyThat("#DODValue", LabeledMatchers.hasText(LocalDate.now().toString()));
+        Assert.assertEquals(testUser.getDateOfDeath(), LocalDate.now());
     }
 
     @Test

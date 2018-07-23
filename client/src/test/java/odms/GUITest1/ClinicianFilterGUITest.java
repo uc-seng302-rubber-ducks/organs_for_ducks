@@ -44,6 +44,7 @@ public class ClinicianFilterGUITest extends ApplicationTest {
     private LoginBridge loginBridge;
     private TransplantBridge transplantBridge;
     private Collection<UserOverview> overviews;
+    private User adam;
 
     @BeforeClass
     public static void initialization() {
@@ -61,7 +62,7 @@ public class ClinicianFilterGUITest extends ApplicationTest {
 
         Clinician clinician = new Clinician();
         clinician.setStaffId("0");
-        User adam = new User("Adam", LocalDate.now(), "ABC1234");
+        adam = new User("Adam", LocalDate.now(), "ABC1234");
         adam.setContact(new EmergencyContact("Letifa", "0118999124", "1456789"));
         adam.getUndoStack().clear();
         overviews = new ArrayList<>();
@@ -105,11 +106,11 @@ public class ClinicianFilterGUITest extends ApplicationTest {
 
     @Test
     public void testFilterManyResults() {
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 50; i++) {
             User user = new User(Integer.toString(i), LocalDate.now(), "ABC00" + ((i < 10 ? "0" + i : i)));
             user.setFirstName("#");
             user.setLastName(Integer.toString(i));
-            AppController.getInstance().getUsers().add(user);
+            overviews.add(UserOverview.fromUser(user));
         }
         clickOnButton(this,"#loginCButton");
         clickOn("#searchTab");
