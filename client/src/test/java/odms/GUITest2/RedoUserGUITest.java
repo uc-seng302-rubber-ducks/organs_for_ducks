@@ -115,11 +115,11 @@ public class RedoUserGUITest extends ApplicationTest {
         verifyThat("#lNameValue", LabeledMatchers.hasText("Jefferson"));
 
         clickOn("#detailsTab");
-        clickOn("#undoButton");
+        clickOnButton(this,"#undoButton");
 
         verifyThat("#pCellPhone", LabeledMatchers.hasText(""));
 
-        clickOn("#redoButton");
+        clickOnButton(this,"#redoButton");
 
         verifyThat("#pCellPhone", LabeledMatchers.hasText("011899992"));
 
