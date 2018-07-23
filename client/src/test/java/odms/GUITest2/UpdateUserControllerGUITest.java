@@ -31,8 +31,8 @@ public class UpdateUserControllerGUITest extends ApplicationTest {
         clickOn("#userIDTextField");
         write("ABC1234");
         clickOn("#loginUButton");
-        clickOn("#editMenu");
-        clickOn("#editDetails");
+        clickOn("#editMenuUser"); //FAILS WHEN OTHER TESTS ARE RUN NOT STANDALONE
+        clickOn("#editDetailsUser");
     }
 
     @After

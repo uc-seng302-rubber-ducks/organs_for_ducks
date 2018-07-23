@@ -62,6 +62,7 @@ public class WhenSteps extends ApplicationTest {
         write(fName);
         clickOn("#dobInput");
         write(dob);
+        clickOn("#nhiInput");
         CucumberTestModel.setUserNhi(nhi);
     }
 
@@ -81,6 +82,7 @@ public class WhenSteps extends ApplicationTest {
         write(dob);
         clickOn("#dodInput");
         write(dod);
+        clickOn("#nhiInput");
         CucumberTestModel.setUserNhi(nhi);
     }
 
@@ -147,12 +149,13 @@ public class WhenSteps extends ApplicationTest {
             push(KeyCode.BACK_SPACE);
         }
         write(diagnosisDate);
+        clickOn("#diseaseNameInput");
     }
 
     @When("^The user is updated to have died on \"([^\"]*)\"$")
     public void theUserIsUpdatedToHaveDiedOn(String dod) {
-        clickOn("#editMenu");
-        clickOn("#editDetails");
+        clickOn("#editMenuUser");
+        clickOn("#editDetailsUser");
         clickOn("#dodInput");
         write(dod);
         clickOnButton(this, "#confirmButton");
@@ -181,8 +184,8 @@ public class WhenSteps extends ApplicationTest {
     @When("^I go back to the clinician screen$")
     public void iGoBackToTheClinicianScreen() {
         clickOn("#userProfileTab");
-        clickOn("#fileMenu");
-        clickOn("#logoutMenu");
+        clickOn("#fileMenuUser");
+        clickOn("#logoutUser");
     }
 
     @And("^I open the waiting list tab$")

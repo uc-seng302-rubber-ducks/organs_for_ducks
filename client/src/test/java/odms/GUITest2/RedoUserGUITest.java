@@ -53,8 +53,8 @@ public class RedoUserGUITest extends ApplicationTest {
 
     @Test
     public void testRedoSingleUndo() {
-        clickOn("#editMenu");
-        clickOn("#editDetails");
+        clickOn("#editMenuUser");
+        clickOn("#editDetailsUser");
         clickOn("#lNameInput");
         write("Jefferson");
         clickOn("#confirmButton");
@@ -66,8 +66,8 @@ public class RedoUserGUITest extends ApplicationTest {
 
     @Test
     public void testRedoEqualUndos() {
-        clickOn("#editMenu");
-        clickOn("#editDetails");
+        clickOn("#editMenuUser");
+        clickOn("#editDetailsUser");
         clickOn("#lNameInput");
         write("Jefferson");
 
