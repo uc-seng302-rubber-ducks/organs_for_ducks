@@ -5,6 +5,7 @@ import javafx.scene.input.KeyCode;
 import odms.App;
 import odms.commons.exception.ApiException;
 import odms.commons.model.Clinician;
+import odms.commons.model.datamodel.TransplantDetails;
 import odms.commons.model.dto.UserOverview;
 import odms.controller.AppController;
 import odms.commons.model.Disease;
@@ -12,6 +13,7 @@ import odms.commons.model.User;
 import odms.commons.model._enum.Organs;
 import odms.utils.ClinicianBridge;
 import odms.utils.LoginBridge;
+import odms.utils.TransplantBridge;
 import odms.utils.UserBridge;
 import org.junit.After;
 import org.junit.Before;
@@ -33,6 +35,7 @@ import java.util.Collections;
 import java.util.concurrent.TimeoutException;
 
 import static org.junit.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.anyCollection;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
@@ -48,6 +51,7 @@ public class DeregisterOrganReasonControllerGUITest extends ApplicationTest {
     private ClinicianBridge clinicianBridge = mock(ClinicianBridge.class);
     private LoginBridge loginBridge = mock(LoginBridge.class);
     private AppController application = mock(AppController.class);
+    private TransplantBridge transplantBridge = mock(TransplantBridge.class);
 
     @BeforeClass
     public static void initialization() {
@@ -66,6 +70,7 @@ public class DeregisterOrganReasonControllerGUITest extends ApplicationTest {
         when(application.getUserBridge()).thenReturn(bridge);
         when(application.getClinicianBridge()).thenReturn(clinicianBridge);
         when(application.getLoginBridge()).thenReturn(loginBridge);
+        when(application.getTransplantBridge()).thenReturn(transplantBridge);
         when(application.getToken()).thenReturn("Poggers");
         when(application.getUsers()).thenReturn(new ArrayList<>());
 
@@ -75,12 +80,11 @@ public class DeregisterOrganReasonControllerGUITest extends ApplicationTest {
                 .thenReturn(Collections.singletonList(UserOverview.fromUser(testUser)));
         when(bridge.getUser("ABC1244")).thenReturn(testUser);
         when(application.getUsers()).thenReturn(Arrays.asList(testUser)); // needs to be modidfed to return a list
+        when(transplantBridge.getWaitingList(anyInt(), anyInt(), anyString(), anyString(), anyCollection())).thenReturn(Collections.singletonList(new TransplantDetails(testUser.getNhi(),testUser.getFirstName(), Organs.HEART, LocalDate.now(), testUser.getRegion())));
 
-        AppController.getInstance().getUsers().clear();
         //DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         testUser.getReceiverDetails().startWaitingForOrgan(Organs.HEART);
         testUser.getCurrentDiseases().add(new Disease("A0", false, false, LocalDate.now()));
-        AppController.getInstance().getUsers().add(testUser);
         FxToolkit.registerPrimaryStage();
         FxToolkit.setupApplication(App.class);
 

@@ -2,6 +2,7 @@ package odms.GUITest2;
 
 import javafx.scene.input.KeyCode;
 import odms.App;
+import odms.TestUtils.CommonTestMethods;
 import odms.commons.model.Clinician;
 import odms.commons.model.Disease;
 import odms.commons.model.User;
@@ -46,7 +47,7 @@ public class NewDiseaseControllerGUITest extends ApplicationTest {
 
     @BeforeClass
     public static void initialization() {
-        //CommonTestMethods.runHeadless();
+        CommonTestMethods.runHeadless();
     }
 
     @Before
@@ -66,6 +67,7 @@ public class NewDiseaseControllerGUITest extends ApplicationTest {
         when(controller.getClinicianBridge()).thenReturn(clinicianBridge);
         when(controller.getAdministratorBridge()).thenReturn(administratorBridge);
         when(controller.getLoginBridge()).thenReturn(loginBridge);
+        when(controller.getToken()).thenReturn("EZ");
 
         when(loginBridge.loginToServer(anyString(),anyString(), anyString())).thenReturn("lsdjfksd");
         when(clinicianBridge.getClinician(anyString(), anyString())).thenReturn(clinician);
@@ -125,29 +127,16 @@ public class NewDiseaseControllerGUITest extends ApplicationTest {
     @Test
     public void updatedDiseaseNameShouldBeDisplayedCorrectly() {
         clickOn(getCell("#currentDiseaseTableView", 0, 0));
-        clickOn("#updateDiseaseButton");
-        clickOn("#diseaseNameInput");
-//        for(int i = 0; i < 10; i++) {
-//            push(KeyCode.RIGHT);
-//        }
-        push(KeyCode.RIGHT);
-        push(KeyCode.RIGHT);
-
-//        for(int i = 0; i < 30; i++) {
-//            push(KeyCode.BACK_SPACE);
-//        }
-        push(KeyCode.BACK_SPACE);
-        push(KeyCode.BACK_SPACE);
-
-        write("A1", 0);
-        clickOn("#createButton");
+        clickOnButton(this,"#updateDiseaseButton");
+        setTextField(this, "#diseaseNameInput","A1");
+        clickOnButton(this,"#createButton");
         assertEquals("A1", getCellValue("#currentDiseaseTableView", 1, 0).toString());
     }
 
     @Test
     public void updatedDiseaseDateShouldBeDisplayedCorrectly() {
         clickOn(getCell("#currentDiseaseTableView", 0, 0));
-        clickOn("#updateDiseaseButton");
+        clickOnButton(this, "#updateDiseaseButton");
         clickOn("#diagnosisDateInput");
         for (int i = 0; i < 10; i++) {
             push(KeyCode.RIGHT);
@@ -157,15 +146,15 @@ public class NewDiseaseControllerGUITest extends ApplicationTest {
         }
         write("12/01/2007", 0);
         clickOn("#createButton");
-        assertEquals(LocalDate.parse("2007-01-12", sdf), ((LocalDate) (getCellValue("#currentDiseaseTableView", 0, 0))));
+        assertEquals(LocalDate.parse("2007-01-12", sdf), getCellValue("#currentDiseaseTableView", 0, 0));
     }
 
     @Test
     public void diseaseShouldMoveToPastDiseaseTableWhenSetToCured() { //FAIL
         clickOn(getCell("#currentDiseaseTableView", 0, 0));
-        clickOn("#updateDiseaseButton");
+        clickOnButton(this,"#updateDiseaseButton");
         clickOn("#curedRadioButton");
-        clickOn("#createButton");
+        clickOnButton(this,"#createButton");
         assertEquals("A0", getCellValue("#pastDiseaseTableView", 1, 1).toString());
     }
 
@@ -181,14 +170,14 @@ public class NewDiseaseControllerGUITest extends ApplicationTest {
     @Test(expected = NullPointerException.class)
     public void deletedPastDiseaseShouldBeRemovedFromPastDiseases() {
         clickOn(getCell("#pastDiseaseTableView", 0, 0));
-        clickOn("#deleteDiseaseButton");
+        clickOnButton(this,"#deleteDiseaseButton");
         getCellValue("#pastDiseaseTableView", 0, 0);
     }
 
     @Test(expected = NullPointerException.class)
     public void deletedCurrentDiseaseShouldBeRemovedFromCurrentDisease() throws NullPointerException {
         clickOn(getCell("#currentDiseaseTableView", 0, 0));
-        clickOn("#deleteDiseaseButton");
+        clickOnButton(this,"#deleteDiseaseButton");
         getCellValue("#currentDiseaseTableView", 0, 0);
     }
 
@@ -201,6 +190,7 @@ public class NewDiseaseControllerGUITest extends ApplicationTest {
         clickOn("#createButton");
         clickOn(getCell("#currentDiseaseTableView", 0, 0));
         clickOn("#deleteDiseaseButton");
+        clickOn("OK");
         assertEquals("A0", getCellValue("#currentDiseaseTableView", 1, 0).toString());
 
     }
