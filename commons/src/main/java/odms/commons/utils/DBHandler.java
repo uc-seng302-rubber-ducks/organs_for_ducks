@@ -811,10 +811,10 @@ public class DBHandler {
         User toReplace = getOneUser(conn, nhi);
         if (toReplace != null) {
             toReplace.setDeleted(true);
+        }
             user.addChange(new Change("Saved"));
             Collection<User> users = new ArrayList<>(Arrays.asList(toReplace, user));
             saveUsers(users, conn);
-        }
     }
 
     /**

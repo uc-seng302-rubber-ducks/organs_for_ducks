@@ -145,7 +145,7 @@ public class AdministratorBridge extends Bifrost {
      * @return true if admin is in the db, false otherwise
      */
     public boolean getExists(String username) {
-        Request request = new Request.Builder().get().url(ip + "/admins/exists" + username).build();
+        Request request = new Request.Builder().get().url(ip + "/admins/exists/" + username).build();
 
         try (Response res = client.newCall(request).execute()) {
                 return res.body().string().equalsIgnoreCase("true");

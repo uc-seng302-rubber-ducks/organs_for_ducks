@@ -142,7 +142,7 @@ public class ClinicianBridge extends Bifrost {
      * @return true if staff id can be found, false otherwise
      */
     public boolean getExists(String staffId) {
-        Request request = new Request.Builder().get().url(ip + "/clinicians/exists" + staffId).build();
+        Request request = new Request.Builder().get().url(ip + "/clinicians/exists/" + staffId).build();
 
         try (Response res = client.newCall(request).execute()) {
             return res.body().string().equalsIgnoreCase("true");

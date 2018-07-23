@@ -955,38 +955,37 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
     @FXML
     void saveClicked() {
         String token = appController.getToken();
-        //save self
         appController.updateAdmin(administrator);
-        appController.saveAdmin(administrator);
         administrator.getUndoStack().clear();
         administrator.getRedoStack().clear();
         adminUndoButton.setDisable(true);
         adminRedoButton.setDisable(true);
 
-        //save other admins
+        //save admins
         for (Administrator admin: appController.getAdmins()) {
             if (adminBridge.getExists(admin.getUserName())) {
-                adminBridge.postAdmin(admin, token);
-            } else {
                 adminBridge.putAdmin(admin, admin.getUserName(), token);
+            } else {
+                adminBridge.postAdmin(admin, token);
             }
         }
 
         //save clinicians
         for (Clinician clinician: appController.getClinicians()) {
             if (clinicianBridge.getExists(clinician.getStaffId())) {
-                clinicianBridge.postClinician(clinician, token);
-            } else {
                 clinicianBridge.putClinician(clinician, clinician.getStaffId(), token);
+            } else {
+                clinicianBridge.postClinician(clinician, token);
             }
         }
 
         //save users
         for (User user: appController.getUsers()) {
             if (userBridge.getExists(user.getNhi())) {
-                userBridge.postUser(user);
-            } else {
                 userBridge.putUser(user, user.getNhi());
+            } else {
+                userBridge.postUser(user);
+
             }
         }
     }
