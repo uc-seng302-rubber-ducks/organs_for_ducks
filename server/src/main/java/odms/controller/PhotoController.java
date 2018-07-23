@@ -85,6 +85,32 @@ public class PhotoController extends BaseController {
         return new ResponseEntity(HttpStatus.CREATED);
     }
 
+
+    @RequestMapping(method = RequestMethod.GET, value = "/users/{nhi}/photo")
+    public byte[] getUserProfilePicture(@PathVariable("nhi") String nhi) {
+        byte[] image;
+        try (Connection connection = driver.getConnection()) {
+            image = handler.getProfilePhoto(User.class, nhi, connection);
+        } catch (SQLException e) {
+            Log.severe("Cannot fetch profile picture for user " + nhi, e);
+            throw new ServerDBException(e);
+        }
+        return image;
+    }
+
+    @IsClinician
+    @RequestMapping(method = RequestMethod.GET, value = "/clinician/{staffId}/photo")
+    public byte[] getClinicianProfilePicture(@PathVariable("staffId") String staffId) {
+        byte[] image;
+        try (Connection connection = driver.getConnection()) {
+            image = handler.getProfilePhoto(Clinician.class, staffId, connection);
+        } catch (SQLException e) {
+            Log.severe("Cannot fetch profile picture for user " + staffId, e);
+            throw new ServerDBException(e);
+        }
+        return image;
+    }
+
     /**
      * Validates image file
      *
