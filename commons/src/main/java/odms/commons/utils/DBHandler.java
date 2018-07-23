@@ -11,6 +11,8 @@ import odms.commons.utils.db_strategies.AdminUpdateStrategy;
 import odms.commons.utils.db_strategies.ClinicianUpdateStrategy;
 import odms.commons.utils.db_strategies.UserUpdateStrategy;
 
+import java.beans.PropertyVetoException;
+import java.lang.reflect.Type;
 import java.sql.*;
 import java.time.LocalDate;
 import java.util.*;
@@ -78,6 +80,9 @@ public class DBHandler {
     private static final String SELECT_SINGLE_ADMIN_ONE_TO_ONE_INFO_STMT = "SELECT userName, firstName, middleName, lastName, timeCreated, lastModified  FROM Administrator WHERE userName = ?";
     private static final String SELECT_PASS_DETAILS = "SELECT hash,salt FROM PasswordDetails WHERE fkAdminUserName = ? OR fkStaffId = ?";
     private static final String SELECT_ONE_CLINICIAN = "SELECT * FROM Clinician LEFT JOIN Address ON staffId = fkStaffId WHERE staffId = ?";
+    private static final String SELECT_IF_USER_EXISTS_BOOL = "SELECT EXISTS(SELECT 1 FROM User WHERE nhi = ?)";
+    private static final String SELECT_IF_CLINICIAN_EXISTS_BOOL = "SELECT EXISTS(SELECT 1 FROM Clinician WHERE staffId = ?)";
+    private static final String SELECT_IF_ADMIN_EXISTS_BOOL = "SELECT EXISTS(SELECT 1 FROM Administrator WHERE userName = ?)";
     private AbstractUpdateStrategy updateStrategy;
 
 
@@ -882,6 +887,41 @@ public class DBHandler {
                             selectedOrgan, dateRegistered, results.getString(7)));
                 }
                 return detailsList;
+            }
+        }
+    }
+
+
+    /**
+     * queries the database as to whether an end-user* exists or not
+     * * end-user meaning Admin, Clinician, or User
+     * @param conn connection to the target database
+     * @param type type of the end-user as defined above
+     * @param identifier username, (string version of a) staff id, or NHI
+     *                   The staff id, while in string form must be a valid integer
+     * @return true if the identifier can be found in the relevant table
+     * @throws SQLException exception thrown during the transaction
+     */
+    public boolean getExists(Connection conn, Type type, String identifier) throws SQLException{
+        String query = null;
+        if (type.equals(Administrator.class)) {
+            query = SELECT_IF_ADMIN_EXISTS_BOOL;
+        } else if (type.equals(Clinician.class)) {
+            query = SELECT_IF_CLINICIAN_EXISTS_BOOL;
+        } else if (type.equals(User.class)) {
+            query = SELECT_IF_USER_EXISTS_BOOL;
+        }
+
+        try (PreparedStatement stmt = conn.prepareStatement(query)) {
+            if (type.equals(Clinician.class)) {
+                stmt.setInt(1, Integer.valueOf(identifier));
+            } else {
+                stmt.setString(1, identifier);
+            }
+
+            try (ResultSet result = stmt.executeQuery()) {
+                result.next();
+                return result.getInt(1) == 1;
             }
         }
     }
