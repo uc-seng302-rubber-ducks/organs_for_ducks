@@ -8,6 +8,7 @@ import odms.commons.model.dto.UserOverview;
 import odms.controller.AppController;
 import odms.commons.model.EmergencyContact;
 import odms.commons.model.User;
+import odms.controller.gui.window.UserController;
 import odms.utils.ClinicianBridge;
 import odms.utils.LoginBridge;
 import odms.utils.UserBridge;
@@ -27,8 +28,10 @@ import java.util.concurrent.TimeoutException;
 
 import static odms.TestUtils.FxRobotHelper.clickOnButton;
 import static odms.TestUtils.FxRobotHelper.setTextField;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.testfx.api.FxAssert.verifyThat;
@@ -37,7 +40,7 @@ public class RedoUserGUITest extends ApplicationTest {
 
     @BeforeClass
     public static void initialization() {
-        //CommonTestMethods.runHeadless();
+        CommonTestMethods.runHeadless();
     }
 
     @Before
@@ -56,6 +59,9 @@ public class RedoUserGUITest extends ApplicationTest {
         when(bridge.loadUsersToController(anyInt(), anyInt(), anyString(), anyString(), anyString(), anyString()))
                 .thenReturn(Collections.singletonList(UserOverview.fromUser(user)));
         when(bridge.getUser("ABC1234")).thenReturn(user);
+
+        doCallRealMethod().when(application).setUserController(any(UserController.class));
+        doCallRealMethod().when(application).getUserController();
 
         user.setContact(new EmergencyContact("", "", "1456788"));
         user.getUndoStack().clear();
@@ -88,12 +94,11 @@ public class RedoUserGUITest extends ApplicationTest {
         clickOnButton(this,"#confirmButton");
         clickOnButton(this,"#undoButton");
         clickOnButton(this,"#redoButton");
-
         verifyThat("#lNameValue", LabeledMatchers.hasText("Jefferson"));
     }
 
     @Test
-    public void testRedoEqualUndos() {
+    public void testMergedRedosEqualMergedUndos() {
         clickOnButton(this,"#editDetailsButton");
         setTextField(this, "#lNameInput", "Jefferson");
 
@@ -104,16 +109,22 @@ public class RedoUserGUITest extends ApplicationTest {
         clickOnButton(this,"#confirmButton");
 
         clickOnButton(this,"#undoButton");
-        clickOnButton(this,"#undoButton");
-        clickOnButton(this,"#undoButton");
-
-
-        clickOnButton(this,"#redoButton");
-        clickOnButton(this,"#redoButton");
         clickOnButton(this,"#redoButton");
 
-        verifyThat("#pCellPhone", LabeledMatchers.hasText("011899992"));
         verifyThat("#alcoholValue", LabeledMatchers.hasText("Low"));
         verifyThat("#lNameValue", LabeledMatchers.hasText("Jefferson"));
+
+        clickOn("#detailsTab");
+        clickOn("#undoButton");
+
+        verifyThat("#pCellPhone", LabeledMatchers.hasText(""));
+
+        clickOn("#redoButton");
+
+        verifyThat("#pCellPhone", LabeledMatchers.hasText("011899992"));
+
+
+
+
     }
 }
