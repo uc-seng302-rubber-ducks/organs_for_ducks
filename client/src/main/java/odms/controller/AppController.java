@@ -1,5 +1,6 @@
 package odms.controller;
 
+import odms.commons.exception.ApiException;
 import odms.commons.exception.ProfileAlreadyExistsException;
 import odms.commons.exception.ProfileNotFoundException;
 import odms.commons.model.Administrator;
@@ -342,6 +343,13 @@ public class AppController {
                 return c;
             }
         }
+
+        try {
+            getClinicianBridge().getClinician(id, getToken());
+        } catch (ApiException ex) {
+            Log.warning("Error while trying to retrieve clinician "+id+" status "+ex.getResponseCode(), ex);
+        }
+        // Should I change this to use the ClinicianBridge???
         return null;
     }
 

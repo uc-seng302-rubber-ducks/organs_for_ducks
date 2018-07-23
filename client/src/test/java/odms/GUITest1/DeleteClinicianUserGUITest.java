@@ -7,10 +7,7 @@ import odms.commons.model.Clinician;
 import odms.commons.model.User;
 import odms.commons.model.dto.UserOverview;
 import odms.controller.AppController;
-import odms.utils.AdministratorBridge;
-import odms.utils.ClinicianBridge;
-import odms.utils.LoginBridge;
-import odms.utils.UserBridge;
+import odms.utils.*;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -25,6 +22,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.concurrent.TimeoutException;
 
+import static odms.TestUtils.FxRobotHelper.clickOnButton;
+import static odms.TestUtils.FxRobotHelper.setTextField;
+import static org.mockito.ArgumentMatchers.anyCollection;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
@@ -38,6 +38,7 @@ public class DeleteClinicianUserGUITest extends ApplicationTest {
     private ClinicianBridge clinicianBridge;
     private LoginBridge loginBridge;
     private AdministratorBridge administratorBridge;
+    private TransplantBridge transplantBridge;
     private Collection<UserOverview> overviews;
     private User testUser = new User("A", LocalDate.now(), "ABC1234");
     private User testUser2 = new User("Aa", LocalDate.now(), "ABC1244");
@@ -54,12 +55,14 @@ public class DeleteClinicianUserGUITest extends ApplicationTest {
         clinicianBridge = mock(ClinicianBridge.class);
         loginBridge = mock(LoginBridge.class);
         administratorBridge = mock(AdministratorBridge.class);
+        transplantBridge = mock(TransplantBridge.class);
 
         AppController.setInstance(controller);
         when(controller.getUserBridge()).thenReturn(bridge);
         when(controller.getClinicianBridge()).thenReturn(clinicianBridge);
         when(controller.getAdministratorBridge()).thenReturn(administratorBridge);
         when(controller.getLoginBridge()).thenReturn(loginBridge);
+        when(controller.getTransplantBridge()).thenReturn(transplantBridge);
 
         FxToolkit.registerPrimaryStage();
         FxToolkit.setupApplication(App.class);
@@ -74,13 +77,12 @@ public class DeleteClinicianUserGUITest extends ApplicationTest {
         when(bridge.getUser(anyString())).thenReturn(testUser);
         when(loginBridge.loginToServer(anyString(), anyString(), anyString())).thenReturn("haHAA");
         when(clinicianBridge.getClinician(anyString(), anyString())).thenReturn(new Clinician("Default", "0", "admin"));
+        when(transplantBridge.getWaitingList(anyInt(), anyInt(), anyString(), anyString(), anyCollection())).thenReturn(new ArrayList<>());
 
         clickOn("#clinicianTab");
-        clickOn("#staffIdTextField");
-        write("0");
-        clickOn("#staffPasswordField");
-        write("admin");
-        clickOn("#loginCButton");
+        setTextField(this,"#staffIdTextField", "0");
+        setTextField(this, "#staffPasswordField", "admin");
+        clickOnButton(this, "#loginCButton");
         clickOn("#searchTab");
         doubleClickOn(TableViewsMethod.getCell("#searchTableView", 0, 0));
     }
@@ -93,7 +95,7 @@ public class DeleteClinicianUserGUITest extends ApplicationTest {
 
     @Test
     public void deleteUser() {
-        clickOn("#deleteUser");
+        clickOnButton(this,"#deleteUser");
         clickOn("OK");
         verifyThat("#fNameLabel", LabeledMatchers.hasText("Default"));
 
@@ -101,9 +103,9 @@ public class DeleteClinicianUserGUITest extends ApplicationTest {
 
     @Test
     public void canceledDeleteUser() {
-        clickOn("#deleteUser");
+        clickOnButton(this,"#deleteUser");
         clickOn("Cancel");
-        clickOn("#backButton");
+        clickOnButton(this, "#backButton");
         verifyThat("#fNameLabel", LabeledMatchers.hasText("Default"));
 
     }

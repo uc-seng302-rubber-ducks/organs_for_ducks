@@ -44,6 +44,10 @@ import static odms.TestUtils.TableViewsMethod.getNumberOfRows;
 public class DeregisterOrganReasonControllerGUITest extends ApplicationTest {
 
     private DateTimeFormatter sdf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    private UserBridge bridge = mock(UserBridge.class);
+    private ClinicianBridge clinicianBridge = mock(ClinicianBridge.class);
+    private LoginBridge loginBridge = mock(LoginBridge.class);
+    private AppController application = mock(AppController.class);
 
     @BeforeClass
     public static void initialization() {
@@ -52,11 +56,6 @@ public class DeregisterOrganReasonControllerGUITest extends ApplicationTest {
 
     @Before
     public void setUpCreateScene() throws TimeoutException, IOException {
-
-        UserBridge bridge = mock(UserBridge.class);
-        ClinicianBridge clinicianBridge = mock(ClinicianBridge.class);
-        LoginBridge loginBridge = mock(LoginBridge.class);
-        AppController application = mock(AppController.class);
 
         Clinician clinician = new Clinician();
         clinician.setStaffId("0");
@@ -67,12 +66,16 @@ public class DeregisterOrganReasonControllerGUITest extends ApplicationTest {
         when(application.getUserBridge()).thenReturn(bridge);
         when(application.getClinicianBridge()).thenReturn(clinicianBridge);
         when(application.getLoginBridge()).thenReturn(loginBridge);
+        when(application.getToken()).thenReturn("Poggers");
+        when(application.getUsers()).thenReturn(new ArrayList<>());
+
         when(loginBridge.loginToServer(anyString(),anyString(), anyString())).thenReturn("lsdjfksd");
         when(clinicianBridge.getClinician(anyString(), anyString())).thenReturn(clinician);
         when(bridge.loadUsersToController(anyInt(), anyInt(), anyString(), anyString(), anyString(), anyString()))
                 .thenReturn(Collections.singletonList(UserOverview.fromUser(testUser)));
         when(bridge.getUser("ABC1244")).thenReturn(testUser);
         when(application.getUsers()).thenReturn(Arrays.asList(testUser)); // needs to be modidfed to return a list
+
         AppController.getInstance().getUsers().clear();
         //DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         testUser.getReceiverDetails().startWaitingForOrgan(Organs.HEART);

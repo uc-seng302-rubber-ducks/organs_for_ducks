@@ -79,10 +79,10 @@ public class CreateUserControllerGUITest extends ApplicationTest {
     @Test
     public void testFutureDOD() {
         setTextField(this,"#nhiInput","ADE1987");
-        setTextField(this,"#fNameInput","Dwayne");;
+        setTextField(this,"#fNameInput","Dwayne");
         lookup("#dobInput").queryAs(DatePicker.class).setValue(LocalDate.parse("3/1/2017", DateTimeFormatter.ofPattern("d/M/yyyy")));
         lookup("#dodInput").queryAs(DatePicker.class).setValue(LocalDate.now().plusYears(10));
-        clickOn("#confirmButton");
+        clickOnButton(this,"#confirmButton");
         verifyThat("#invalidDOD", Node::isVisible);
     }
 
