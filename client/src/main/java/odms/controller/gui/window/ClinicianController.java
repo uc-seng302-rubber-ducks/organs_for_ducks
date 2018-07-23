@@ -172,7 +172,6 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
         } catch (IOException ex) {
             AlertWindowFactory.generateError(ex);
         }
-        System.out.println(users);
         searchCount = users.size();
         initSearchTable();
         transplantWaitListTabPageController.init(appController, this);

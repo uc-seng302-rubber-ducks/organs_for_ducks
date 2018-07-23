@@ -374,10 +374,10 @@ public class AppController {
                 originalClinician = clinician;
             }
 
-            if (clinicianBridge.getClinician(originalClinician.getStaffId(), getToken()) != null) {
-                clinicianBridge.putClinician(clinician, originalClinician.getStaffId(), getToken());
+            if (clinicianBridge.findClinician(originalClinician.getStaffId(), getToken()) != null) {
+                clinicianBridge.putClinician(clinician, originalClinician.getStaffId(), token);
             } else {
-                clinicianBridge.postClinician(clinician, "");
+                clinicianBridge.postClinician(clinician, token);
             }
         } catch (IOException e) {
             Log.warning("Could not save user " + clinician.getStaffId(), e);
