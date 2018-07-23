@@ -1,6 +1,5 @@
 package odms.GUITest2;
 
-import javafx.scene.input.KeyCode;
 import odms.App;
 import odms.TestUtils.CommonTestMethods;
 import odms.commons.model.Clinician;
@@ -25,9 +24,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.concurrent.TimeoutException;
 
-import static odms.TestUtils.FxRobotHelper.clickOnButton;
-import static odms.TestUtils.FxRobotHelper.setDateValue;
-import static odms.TestUtils.FxRobotHelper.setTextField;
+import static odms.TestUtils.FxRobotHelper.*;
 import static odms.TestUtils.TableViewsMethod.getCell;
 import static odms.TestUtils.TableViewsMethod.getCellValue;
 import static org.junit.Assert.assertEquals;

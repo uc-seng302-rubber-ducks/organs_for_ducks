@@ -1,13 +1,14 @@
 package odms.GUITest2;
 
 import odms.App;
+import odms.TestUtils.CommonTestMethods;
 import odms.commons.exception.ApiException;
-import odms.commons.model.Clinician;
-import odms.commons.model.dto.UserOverview;
-import odms.controller.AppController;
 import odms.commons.model.Administrator;
+import odms.controller.AppController;
 import odms.controller.gui.window.AdministratorViewController;
-import odms.utils.*;
+import odms.utils.AdministratorBridge;
+import odms.utils.LoginBridge;
+import odms.utils.TransplantBridge;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -16,19 +17,17 @@ import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.matcher.control.LabeledMatchers;
 import org.testfx.matcher.control.TextInputControlMatchers;
-import odms.TestUtils.CommonTestMethods;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.concurrent.TimeoutException;
 
-import static javafx.scene.input.KeyCode.*;
 import static odms.TestUtils.FxRobotHelper.clickOnButton;
 import static odms.TestUtils.FxRobotHelper.setTextField;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.doCallRealMethod;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyCollection;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.*;
 import static org.testfx.api.FxAssert.verifyThat;
 
 
@@ -76,6 +75,7 @@ public class UpdateAdminControllerGUITest extends ApplicationTest {
     @After
     public void tearDown() throws TimeoutException {
         AppController.getInstance().getAdmins().remove(testAdmin);
+        AppController.setInstance(null);
         FxToolkit.cleanupStages();
     }
 
@@ -89,7 +89,6 @@ public class UpdateAdminControllerGUITest extends ApplicationTest {
 
     @Test
     public void updateFirstName() {
-        //clickOn("#firstNameTextField").push(SHORTCUT, A).push(BACK_SPACE);
         setTextField(this,"#firstNameTextField","Annah");
         clickOnButton(this,"#confirmButton");
         verifyThat("#adminFirstnameLabel", LabeledMatchers.hasText("Annah"));

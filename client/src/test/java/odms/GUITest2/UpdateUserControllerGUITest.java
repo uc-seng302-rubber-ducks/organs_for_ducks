@@ -1,33 +1,28 @@
 package odms.GUITest2;
 
 import odms.App;
+import odms.TestUtils.CommonTestMethods;
 import odms.commons.model.EmergencyContact;
+import odms.commons.model.User;
 import odms.commons.model.dto.UserOverview;
 import odms.controller.AppController;
-import odms.commons.model.User;
 import odms.controller.gui.window.UserController;
 import odms.utils.UserBridge;
 import org.junit.*;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.matcher.control.LabeledMatchers;
-import odms.TestUtils.CommonTestMethods;
 
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Collections;
 import java.util.concurrent.TimeoutException;
 
-import static javafx.scene.input.KeyCode.*;
-import static odms.TestUtils.FxRobotHelper.clickOnButton;
-import static odms.TestUtils.FxRobotHelper.setComboBox;
-import static odms.TestUtils.FxRobotHelper.setTextField;
+import static odms.TestUtils.FxRobotHelper.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.doCallRealMethod;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.testfx.api.FxAssert.verifyThat;
 
 public class UpdateUserControllerGUITest extends ApplicationTest {
@@ -98,16 +93,16 @@ public class UpdateUserControllerGUITest extends ApplicationTest {
 
     @Test
     public void testUpdateDoB() {
-        setComboBox(this,"#dobInput",LocalDate.of(2018, 5, 3));
+        setDateValue(this, "#dobInput", LocalDate.of(2018, 5, 3));
         clickOnButton(this,"#confirmButton");
-        verifyThat("#DOBValue", LabeledMatchers.hasText("2018-05-03"));
+        verifyThat("#DOBValue", LabeledMatchers.hasText(LocalDate.of(2018, 5, 3).toString()));
     }
 
     @Test
     public void testUpdateDoD() {
-        setComboBox(this, "#dodInput", LocalDate.of(2018, 5, 3));
+        setDateValue(this, "#dodInput", LocalDate.of(2018, 5, 3));
         clickOn("#confirmButton");
-        verifyThat("#DODValue", LabeledMatchers.hasText("2018-05-03"));
+        verifyThat("#DODValue", LabeledMatchers.hasText(LocalDate.of(2018, 5, 3).toString()));
     }
 
     @Test

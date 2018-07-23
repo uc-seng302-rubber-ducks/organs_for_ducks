@@ -2,6 +2,7 @@ package odms.GUITest1;
 
 
 import odms.App;
+import odms.TestUtils.CommonTestMethods;
 import odms.TestUtils.TableViewsMethod;
 import odms.commons.model.Clinician;
 import odms.commons.model.User;
@@ -24,9 +25,7 @@ import java.util.concurrent.TimeoutException;
 
 import static odms.TestUtils.FxRobotHelper.clickOnButton;
 import static odms.TestUtils.FxRobotHelper.setTextField;
-import static org.mockito.ArgumentMatchers.anyCollection;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.testfx.api.FxAssert.verifyThat;
@@ -45,7 +44,7 @@ public class DeleteClinicianUserGUITest extends ApplicationTest {
 
     @BeforeClass
     public static void initialization() {
-        //CommonTestMethods.runHeadless();
+        CommonTestMethods.runHeadless();
     }
 
     @Before

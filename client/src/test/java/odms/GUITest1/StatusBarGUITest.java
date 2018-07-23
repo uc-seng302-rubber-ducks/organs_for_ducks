@@ -1,9 +1,10 @@
 package odms.GUITest1;
 
 import odms.App;
+import odms.TestUtils.CommonTestMethods;
+import odms.commons.model.User;
 import odms.controller.AppController;
 import odms.controller.gui.window.UserController;
-import odms.commons.model.User;
 import odms.utils.*;
 import org.junit.After;
 import org.junit.Before;
@@ -12,20 +13,16 @@ import org.junit.Test;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.matcher.control.LabeledMatchers;
-import odms.TestUtils.CommonTestMethods;
 
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.concurrent.TimeoutException;
 
-import static javafx.scene.input.KeyCode.*;
 import static odms.TestUtils.FxRobotHelper.clickOnButton;
 import static odms.TestUtils.FxRobotHelper.setTextField;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.doCallRealMethod;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.testfx.api.FxAssert.verifyThat;
 
 public class StatusBarGUITest extends ApplicationTest {
@@ -39,7 +36,7 @@ public class StatusBarGUITest extends ApplicationTest {
 
     @BeforeClass
     public static void initialization() {
-        //CommonTestMethods.runHeadless();
+        CommonTestMethods.runHeadless();
     }
 
     @Before
