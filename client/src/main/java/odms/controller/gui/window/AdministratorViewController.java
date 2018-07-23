@@ -35,6 +35,8 @@ import odms.commons.model._enum.EventTypes;
 import odms.commons.model._enum.Organs;
 import odms.commons.model.dto.UserOverview;
 import odms.commons.utils.*;
+import odms.utils.AdministratorBridge;
+import odms.utils.ClinicianBridge;
 import odms.utils.UserBridge;
 import odms.view.CLI;
 import okhttp3.OkHttpClient;
@@ -134,6 +136,9 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
     private TableView<?> activeTableView;
     private String messageAdmin = "Admin ";
     private DataHandler dataHandler = new JsonHandler();
+    private UserBridge userBridge = appController.getUserBridge();
+    private ClinicianBridge clinicianBridge = appController.getClinicianBridge();
+    private AdministratorBridge adminBridge = appController.getAdministratorBridge();
 
     /**
      * Initialises scene for the administrator view
@@ -946,12 +951,19 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
      */
     @FXML
     void saveClicked() {
+        //save self
         appController.updateAdmin(administrator);
         appController.saveAdmin(administrator);
         administrator.getUndoStack().clear();
         administrator.getRedoStack().clear();
         adminUndoButton.setDisable(true);
         adminRedoButton.setDisable(true);
+
+        //save other admins
+        for (Administrator admin: appController.getAdmins()) {
+            adminBridge.
+        }
+
     }
 
     /**
