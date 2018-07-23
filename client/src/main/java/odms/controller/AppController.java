@@ -59,6 +59,7 @@ public class AppController {
     private TransplantBridge transplantBridge = new TransplantBridge(client);
     private UserController userController = new UserController();
     private ClinicianController clinicianController = new ClinicianController();
+    private CountriesBridge countriesBridge = new CountriesBridge(client);
     private AdministratorViewController administratorViewController = new AdministratorViewController();
     private odms.controller.gui.statusBarController statusBarController = new statusBarController();
     private Stack<User> redoStack = new Stack<>();
@@ -199,11 +200,20 @@ public class AppController {
     }
 
     public List<String> getAllowedCountries() {
+        Set s = null;
+        try {
+            s = countriesBridge.getAllowedCountries();
+        } catch (IOException e) {
+            Log.severe("Database threw IOE", e);
+        }
+        allowedCountries = new ArrayList(s);
+        allowedCountries.sort(String.CASE_INSENSITIVE_ORDER);
         return allowedCountries;
     }
 
     public void setAllowedCountries(List<String> allowedCountries) {
         this.allowedCountries = allowedCountries;
+        countriesBridge.putAllowedCountries(new HashSet<>(allowedCountries), token);
     }
 
     /**
@@ -288,7 +298,7 @@ public class AppController {
      * @param name The name of the user
      * @return an array list of users.
      */
-    public ArrayList<User> findUsers(String name) {
+    public List<User> findUsers(String name) {
         ArrayList<User> toReturn = new ArrayList<>();
         for (User user : users) {
             if (user.getFullName().toLowerCase().contains(name.toLowerCase()) && !user.isDeleted()) {
@@ -594,99 +604,6 @@ public class AppController {
         getAdministratorBridge().postAdmin(administrator, token);
     }
 
-    /**
-     * @param oldUser The user before they were updated.
-     * @param newUser The user after they were updated.
-     * @return An array list of changes between the old and new user.
-     * @deprecated
-     */
-    public ArrayList<Change> differenceInUsers(User oldUser, User newUser) {
-        ArrayList<String> diffs = new ArrayList<>();
-        try {
-            if (!oldUser.getFullName().equalsIgnoreCase(newUser.getFullName())) {
-                diffs.add("Changed Name from " + oldUser.getFullName() + " to " + newUser.getFullName());
-            }
-            if (oldUser.getDateOfBirth() != newUser.getDateOfBirth()) {
-                diffs.add("Changed DOB from  " + oldUser.getDateOfBirth().toString() + " to " + newUser
-                        .getDateOfBirth());
-            }
-            if (oldUser.getDateOfDeath() != newUser.getDateOfDeath()) {
-                diffs.add(
-                        "Changed DOD from " + oldUser.getDateOfDeath() + " to " + newUser.getDateOfDeath());
-            }
-            if (!oldUser.getAddress().equalsIgnoreCase(newUser.getAddress())) {
-                diffs.add("Changed Address from " + oldUser.getAddress() + " to " + newUser
-                        .getAddress());
-            }
-
-
-            if (!(oldUser.getBirthGender().equalsIgnoreCase(newUser.getBirthGender()))) {
-                diffs.add("Changed Gender from " + oldUser.getBirthGender() + " to " + newUser.getBirthGender());
-            }
-            if (oldUser.getHeight() != newUser.getHeight()) {
-                diffs.add("Changed Height from " + oldUser.getHeight() + " to " + newUser.getHeight());
-            }
-            if (oldUser.getWeight() != newUser.getWeight()) {
-                diffs.add("Changed Weight from " + oldUser.getWeight() + " to " + newUser.getWeight());
-            }
-            if (!oldUser.getBloodType().equalsIgnoreCase(newUser.getBloodType())) {
-                diffs.add(
-                        "Changed Blood Type from " + oldUser.getBloodType() + " to " + newUser.getBloodType());
-            }
-            if (!oldUser.getRegion().equalsIgnoreCase(newUser.getRegion())) {
-                diffs.add("Changes Region from " + oldUser.getRegion() + " to " + newUser.getRegion());
-            }
-            if (oldUser.getDeceased() != newUser.getDeceased()) {
-                diffs.add(
-                        "Changed From Deceased = " + oldUser.getDeceased() + " to " + newUser.getDeceased());
-            }
-            if (oldUser.getDonorDetails().getOrgans() != newUser.getDonorDetails().getOrgans()) {
-                diffs.add("Changed From Organs Donating = " + oldUser.getDonorDetails().getOrgans() + " to "
-                        + newUser
-                        .getDonorDetails().getOrgans());
-            }
-
-            for (Medication med : oldUser.getPreviousMedication()) {
-                if (!newUser.getPreviousMedication().contains(med)) {
-                    diffs.add("Started taking " + med + " again");
-                }
-            }
-            for (Medication med : newUser.getPreviousMedication()) {
-                if (!oldUser.getPreviousMedication().contains(med)) {
-                    diffs.add(med + " was removed from the  users records");
-                }
-            }
-            for (Medication med : oldUser.getCurrentMedication()) {
-                if (!newUser.getCurrentMedication().contains(med)) {
-                    diffs.add("Stopped taking " + med);
-                }
-            }
-            for (Medication med : newUser.getPreviousMedication()) {
-                if (!oldUser.getPreviousMedication().contains(med)) {
-                    diffs.add("Started taking " + med);
-                }
-            }
-        } catch (NullPointerException ex) {
-            Log.warning("encountered null when calculating diff between users", ex);
-            //no 'change', just added
-            //TODO add "added __ to __" messages
-        }
-        ArrayList<Change> changes = new ArrayList<>();
-        if (diffs.size() > 0) {
-            for (String diff : diffs) {
-                Change c = new Change(LocalDateTime.now(), diff);
-                newUser.addChange(c);
-                changes.add(c);
-            }
-            try {
-                JsonHandler.saveChangelog(changes, newUser.getFullName().toLowerCase().replace(" ", "_"));
-                Log.info("Successfully saved changelog");
-            } catch (IOException e) {
-                Log.warning("failed to save changelog", e);
-            }
-        }
-        return changes;
-    }
 
     /**
      * Method to remove the specified user object from the deleted user set and add it into the pool
@@ -749,7 +666,7 @@ public class AppController {
         }
     }
 
-    public ArrayList<TransplantDetails> getTransplantList() {
+    public List<TransplantDetails> getTransplantList() {
         return transplantList;
     }
 

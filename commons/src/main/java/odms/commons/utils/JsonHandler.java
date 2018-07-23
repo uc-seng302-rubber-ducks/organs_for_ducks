@@ -348,7 +348,12 @@ public final class JsonHandler extends DataHandler {
      * @return all valid TransplantDetails objects. will return empty list if none
      */
     public List<TransplantDetails> decodeTransplantList(Response response) throws IOException{
+
         return new Gson().fromJson(response.body().string(), new TypeToken<List<TransplantDetails>>() {}.getType());
+    }
+
+    public Set decodeCountries(Response response) throws IOException {
+        return new Gson().fromJson(response.body().string(), new TypeToken<HashSet<String>>() {}.getType());
     }
 }
 

@@ -713,6 +713,7 @@ public class DBHandler {
                 }
                 String hash = rs.getString("hash");
                 String salt = rs.getString("salt");
+                System.out.println("Am i at least here");
                 return PasswordManager.isExpectedPassword(guess, salt, hash);
             } catch (SQLException e) {
                 Log.warning("Could not log in", e);
@@ -911,11 +912,11 @@ public class DBHandler {
     }
 
     /**
+     *Puts the allowed countries onto the database
      *
-     *
-     * @param connection
-     * @param countries
-     * @throws SQLException
+     * @param connection connection to the database
+     * @param countries set of countries to add
+     * @throws SQLException thrown on invalid sql
      */
     public void putAllowedCountries(Connection connection, Set<String> countries) throws SQLException {
         String putStatment = "UPDATE Countries SET allowed = 1 where countryName =?";

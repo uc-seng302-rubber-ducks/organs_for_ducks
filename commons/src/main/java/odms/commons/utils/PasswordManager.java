@@ -72,6 +72,9 @@ public final class PasswordManager {
      */
     public static boolean isExpectedPassword(String password, String salt, String expectedHash) {
         String passwordHash = hash(password, salt);
+        System.out.println(salt);
+        System.out.println(passwordHash);
+        System.out.println(expectedHash);
         return passwordHash.length() == expectedHash.length() && passwordHash.equals(expectedHash);
     }
 }
