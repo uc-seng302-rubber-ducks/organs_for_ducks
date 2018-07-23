@@ -909,4 +909,25 @@ public class DBHandler {
 
         return countries;
     }
+
+    /**
+     *
+     *
+     * @param connection
+     * @param countries
+     * @throws SQLException
+     */
+    public void putAllowedCountries(Connection connection, Set<String> countries) throws SQLException {
+        String putStatment = "UPDATE Countries SET allowed = 1 where countryName =?";
+        try(PreparedStatement statement = connection.prepareStatement("UPDATE Countries SET allowed = 0 ")){
+            statement.execute();
+            for(String country : countries) {
+                try (PreparedStatement put = connection.prepareStatement(putStatment)){
+                    put.setString(1, country);
+                    put.execute();
+                }
+
+            }
+        }
+    }
 }
