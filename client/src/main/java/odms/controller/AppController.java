@@ -153,7 +153,7 @@ public class AppController {
     public List<String> getAllowedCountries() {
         Set s = null;
         try {
-            s = countriesBridge.getAllowedCountries();
+            s = getCountriesBridge().getAllowedCountries();
         } catch (IOException e) {
             Log.severe("Database threw IOE", e);
         }
