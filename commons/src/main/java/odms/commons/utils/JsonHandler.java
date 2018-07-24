@@ -354,10 +354,11 @@ public final class JsonHandler extends DataHandler {
         return new Gson().fromJson(response.body().string(), new TypeToken<List<TransplantDetails>>() {}.getType());
     }
 
-    public String decodeProfilePicture(ResponseBody body, String nhi) throws IOException {
-        return PhotoHelper.createTempImageFile(body.bytes(),nhi);
+    public String decodeProfilePicture(ResponseBody body, String userId) throws IOException {
+        return PhotoHelper.createTempImageFile(body.bytes(),userId);
 
     }
+
 
     public Set decodeCountries(Response response) throws IOException {
         return new Gson().fromJson(response.body().string(), new TypeToken<HashSet<String>>() {}.getType());

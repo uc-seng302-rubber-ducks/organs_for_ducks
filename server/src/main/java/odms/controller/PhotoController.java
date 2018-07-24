@@ -12,10 +12,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 
@@ -84,7 +82,7 @@ public class PhotoController extends BaseController {
 
     @IsClinician
     @RequestMapping(method = RequestMethod.GET, value = "/clinicians/{staffId}/photo", produces = "image/png")
-    public @ResponseBody byte[] getClinicianProfilePicture(@PathVariable("staffId") String staffId) {
+    public ResponseEntity<byte[]> getClinicianProfilePicture(@PathVariable("staffId") String staffId) {
         byte[] image;
         try (Connection connection = driver.getConnection()) {
             image = handler.getProfilePhoto(Clinician.class, staffId, connection);
@@ -93,7 +91,7 @@ public class PhotoController extends BaseController {
             Log.severe("Cannot fetch profile picture for user " + staffId, e);
             throw new ServerDBException(e);
         }
-        return image;
+        return ResponseEntity.ok().contentType(MediaType.IMAGE_PNG).body(image);
     }
 
 

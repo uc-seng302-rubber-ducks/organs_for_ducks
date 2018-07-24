@@ -28,7 +28,6 @@ public class ClinicianBridge extends Bifrost {
             @Override
             public void onFailure(Call call, IOException e) {
                 Log.warning("Could not make the call to /clinicians");
-                e.printStackTrace();
             }
 
             @Override
@@ -129,10 +128,28 @@ public class ClinicianBridge extends Bifrost {
         }
 
         try {
-            return new JsonHandler().decodeClinician(response);
+            Clinician c = new JsonHandler().decodeClinician(response);
+            c.setProfilePhotoFilePath(getProfilePicture(c.getStaffId(), token));
+            return c;
         } catch (IOException ex) {
             Log.severe("could not interpret the given clinician", ex);
             return null;
         }
     }
+
+    public String getProfilePicture(String staffId, String token) throws IOException {
+        String url = ip + "/clinicians/" + staffId + "/photo";
+        Headers headers =  new Headers.Builder().add(TOKEN_HEADER, token).build();
+        Request request = new Request.Builder().get().url(url).headers(headers).build();
+        try(Response response  = client.newCall(request).execute()) {
+            if (response.code() == 200) {
+                return handler.decodeProfilePicture(response.body(), staffId);
+            } else if(response.code() == 404){
+                return null;
+            } else {
+                throw new IOException("Failed to get profile picture");
+            }
+        }
+    }
+
 }

@@ -46,6 +46,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static odms.commons.utils.PhotoHelper.deleteTempDirectory;
+import static odms.commons.utils.PhotoHelper.displayImage;
 
 /**
  * Class for the functionality of the Clinician view of the application
@@ -171,7 +172,6 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
         } catch (IOException ex) {
             AlertWindowFactory.generateError(ex);
         }
-        System.out.println(users);
         searchCount = users.size();
         initSearchTable();
         transplantWaitListTabPageController.init(appController, this);
@@ -196,6 +196,8 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
             logoutMenuClinician.setText("Log Out");
             logoutMenuClinician.setOnAction(e -> logout());
         }
+
+        displayImage(profileImage, clinician.getProfilePhotoFilePath());
 
     }
 

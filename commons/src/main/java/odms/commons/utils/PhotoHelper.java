@@ -73,11 +73,11 @@ public final class PhotoHelper {
         }
     }
 
-    public static String createTempImageFile(byte[] image, String nhi) throws IOException {
+    public static String createTempImageFile(byte[] image, String userId) throws IOException {
         String format = "png";
 
         Files.createDirectories(Paths.get(Directory.TEMP.directory() + Directory.IMAGES));
-        File outFile = new File(Directory.TEMP.directory() + Directory.IMAGES + "/" + nhi + "." + format);
+        File outFile = new File(Directory.TEMP.directory() + Directory.IMAGES + "/" + userId + "." + format);
 
         InputStream in = new ByteArrayInputStream(image);
         BufferedImage buffImage = ImageIO.read(in);
