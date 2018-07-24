@@ -5,7 +5,6 @@ import cucumber.api.SnippetType;
 import cucumber.api.junit.Cucumber;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
-import odms.TestUtils.CommonTestMethods;
 
 /**
  * Class for running Cucumber tests
@@ -23,7 +22,7 @@ import odms.TestUtils.CommonTestMethods;
 public class GenericRunnerGUITest {
     @BeforeClass
     public static void initialization() {
-        CommonTestMethods.runHeadless();
+        //CommonTestMethods.runHeadless();
     }
 
 

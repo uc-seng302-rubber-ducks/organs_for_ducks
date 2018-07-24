@@ -700,4 +700,8 @@ public class AppController {
     public void setUserBridge(UserBridge userBridge) {
         this.userBridge = userBridge;
     }
+
+    public void setTransplantBridge(TransplantBridge transplantBridge) {
+        this.transplantBridge = transplantBridge;
+    }
 }

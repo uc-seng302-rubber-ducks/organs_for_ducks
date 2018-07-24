@@ -2,22 +2,22 @@ package odms.steps;
 
 import cucumber.api.java.en.Then;
 import javafx.scene.Node;
+import odms.TestUtils.TableViewsMethod;
 import odms.commons.model.User;
 import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.matcher.control.LabeledMatchers;
-import odms.TestUtils.TableViewsMethod;
 
 import java.util.ArrayList;
 
+import static odms.TestUtils.TableViewsMethod.getCellValue;
 import static org.junit.Assert.*;
 import static org.testfx.api.FxAssert.verifyThat;
-import static odms.TestUtils.TableViewsMethod.getCellValue;
 
 public class ThenSteps extends ApplicationTest {
     @Then("^There are two profiles with first name \"([^\"]*)\" and last name \"([^\"]*)\"$")
     public void thereAreTwoProfilesWithFirstNameAndLastName(String name, String arg2) {
         ArrayList<User> user = CucumberTestModel.getController().findUsers(name);
-        assertTrue(user.size() == 2);
+        assertEquals(2, user.size());
     }
 
     @Then("^The user should be stored within the application$")
@@ -29,7 +29,7 @@ public class ThenSteps extends ApplicationTest {
     @Then("^The user should no longer be in the system$")
     public void theUserShouldNoLongerBeInTheSystem() {
         assertTrue(
-                CucumberTestModel.getController().findUser(CucumberTestModel.getUserNhi()) == null);
+                CucumberTestModel.getController().findUser(CucumberTestModel.getUserNhi()).isDeleted());
     }
 
     @Then("^I should see my NHI \"([^\"]*)\" along with my other details at the user view screen")
@@ -102,9 +102,7 @@ public class ThenSteps extends ApplicationTest {
         if (CucumberTestModel.isClinicianLogin()) {
             verifyThat("#clinicianWarningLabel", LabeledMatchers.hasText(errorMessage));
         } else {
-            System.out.println(errorMessage);
             errorMessage = errorMessage.replaceAll("\\\\n", "\n");
-            System.out.println(errorMessage);
             verifyThat("#userWarningLabel", LabeledMatchers.hasText(errorMessage));
         }
     }
