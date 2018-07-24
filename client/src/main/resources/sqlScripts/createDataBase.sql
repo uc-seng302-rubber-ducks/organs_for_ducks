@@ -206,4 +206,4 @@ CREATE TABLE PasswordDetails(
 /*CREATE TABLE Countries(
   countryName VARCHAR(100) PRIMARY KEY,
   allowed BOOLEAN DEFAULT TRUE
-)*/
+);*/
