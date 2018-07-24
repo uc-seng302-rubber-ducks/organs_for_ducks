@@ -93,4 +93,14 @@ public class AdminController extends BaseController {
         }
         return new ResponseEntity(HttpStatus.OK);
     }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/admins/exists/{username}")
+    public boolean getExists(@PathVariable("username") String username) {
+        try (Connection connection = driver.getConnection()) {
+            return handler.getExists(connection, Administrator.class, username);
+        } catch (SQLException ex) {
+            Log.severe("cannot check whether admin exists", ex);
+            throw new ServerDBException(ex);
+        }
+    }
 }
