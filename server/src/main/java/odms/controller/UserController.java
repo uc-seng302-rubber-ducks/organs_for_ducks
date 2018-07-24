@@ -111,4 +111,13 @@ public class UserController extends BaseController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
+    @RequestMapping(method = RequestMethod.GET, value = "/users/exists/{nhi}")
+    public boolean getExists(@PathVariable("nhi") String nhi) {
+        try (Connection connection = driver.getConnection()) {
+            return handler.getExists(connection, User.class, nhi);
+        } catch (SQLException ex) {
+            Log.severe("cannot find whther user exists", ex);
+            throw  new ServerDBException(ex);
+        }
+    }
 }
