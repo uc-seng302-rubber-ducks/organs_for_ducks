@@ -50,11 +50,11 @@ public class AdminUpdateStrategy extends AbstractUpdateStrategy {
             connection.prepareStatement("START TRANSACTION").execute();
             try {
                 updateAdminDetails(admin, connection);
-                updateAdminPassword(admin, connection);
+                //updateAdminPassword(admin, connection);
             } catch (SQLException sqlEx) {
                 connection.prepareStatement("ROLLBACK").execute();
             }
-            connection.prepareStatement("COMMIT");
+            connection.prepareStatement("COMMIT").execute();
         } catch (SQLException sqlEx) {
             Log.warning("Error in connection to database", sqlEx);
             throw sqlEx;
@@ -80,7 +80,7 @@ public class AdminUpdateStrategy extends AbstractUpdateStrategy {
                 connection.prepareStatement("ROLLBACK").execute();
                 throw sqlEx;
             }
-            connection.prepareStatement("COMMIT");
+            connection.prepareStatement("COMMIT").execute();
         } catch (SQLException sqlEx) {
             Log.warning("Error in connection to database", sqlEx);
             System.out.println("Error connecting to database");
@@ -197,10 +197,9 @@ public class AdminUpdateStrategy extends AbstractUpdateStrategy {
             } catch (SQLException sqlEx) {
                 Log.severe("A fatal error in deletion, cancelling operation", sqlEx);
                 connection.prepareStatement("ROLLBACK").execute();
-                System.out.println("An error occured"); //TODO: Make this a popup
             }
 
-            connection.prepareStatement("COMMIT");
+            connection.prepareStatement("COMMIT").execute();
         } catch (SQLException sqlEx) {
             Log.warning("Error in connection to database", sqlEx);
             System.out.println("Error connecting to database");
