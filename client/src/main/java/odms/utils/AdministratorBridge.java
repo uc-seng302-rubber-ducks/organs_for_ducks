@@ -11,7 +11,7 @@ import okhttp3.*;
 import java.io.IOException;
 import java.util.Collection;
 
-public class AdministratorBridge extends Bifrost {
+public class AdministratorBridge extends RoleBridge {
 
     public AdministratorBridge(OkHttpClient client, String ip) {
         super(client, ip);
@@ -139,6 +139,21 @@ public class AdministratorBridge extends Bifrost {
         }
     }
 
+    /**
+     * checks whether an admin exists in the database
+     * @param username username to query for
+     * @return true if admin is in the db, false otherwise
+     */
+    public boolean getExists(String username) {
+        Request request = new Request.Builder().get().url(ip + "/admins/exists/" + username).build();
+
+        try (Response res = client.newCall(request).execute()) {
+                return res.body().string().equalsIgnoreCase("true");
+        } catch (NullPointerException | IOException ex) {
+            Log.warning("could not determine if the admin exists", ex);
+            return false;
+        }
+    }
 }
 
 

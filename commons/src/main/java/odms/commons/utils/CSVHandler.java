@@ -1,6 +1,7 @@
 package odms.commons.utils;
 
 
+import odms.commons.model.EmergencyContact;
 import odms.commons.model.User;
 import odms.commons.model.Administrator;
 import odms.commons.model.Clinician;
@@ -55,7 +56,7 @@ public class CSVHandler extends DataHandler {
             count++;
             // as column name maybe null this needs to be done by index
             User u = new User();
-            u.setNhi(record.get(0));
+            u.setNhi(record.get(0).trim());
             u.setFirstName(record.get(1));
             u.setLastName(record.get(2));
             try {
@@ -87,6 +88,7 @@ public class CSVHandler extends DataHandler {
             u.setHomePhone(record.get(18));
             u.setCellPhone(record.get(19));
             u.setEmail(record.get(20));
+            u.setContact(new EmergencyContact("", "", ""));
             correct++;
             users.add(u);
         }

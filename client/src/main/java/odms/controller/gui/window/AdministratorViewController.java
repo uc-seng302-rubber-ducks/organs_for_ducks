@@ -36,6 +36,8 @@ import odms.commons.model._enum.EventTypes;
 import odms.commons.model._enum.Organs;
 import odms.commons.model.dto.UserOverview;
 import odms.commons.utils.*;
+import odms.utils.AdministratorBridge;
+import odms.utils.ClinicianBridge;
 import odms.utils.UserBridge;
 import odms.view.CLI;
 import okhttp3.OkHttpClient;
@@ -47,6 +49,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Type;
 import java.util.*;
 
 public class AdministratorViewController implements PropertyChangeListener, TransplantWaitListViewer {
@@ -135,6 +138,9 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
     private TableView<?> activeTableView;
     private String messageAdmin = "Admin ";
     private DataHandler dataHandler = new JsonHandler();
+    private UserBridge userBridge;
+    private ClinicianBridge clinicianBridge;
+    private AdministratorBridge adminBridge;
 
     /**
      * Initialises scene for the administrator view
@@ -148,6 +154,9 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
         this.appController = appController;
         this.administrator = administrator;
         this.owner = owner;
+        this.userBridge = appController.getUserBridge();
+        this.clinicianBridge = appController.getClinicianBridge();
+        this.adminBridge = appController.getAdministratorBridge();
         statusBarPageController.init(appController);
         displayDetails();
         transplantWaitListTabPageController.init(appController, this);
@@ -459,7 +468,6 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
         fList.predicateProperty().bind(Bindings.createObjectBinding(() -> objectToFilter -> {
             String lowerCaseFilterText = adminSearchField.getText().toLowerCase();
             boolean regionMatch = AttributeValidation.checkRegionMatches(regionSearchTextField.getText(), objectToFilter);
-            //boolean genderMatch = AttributeValidation.checkGenderMatches(genderComboBox.getValue().toString(), objectToFilter);
 
             String fName = null;
             String lName = null;
@@ -630,6 +638,7 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
                         appController.addAdmin(newAdmin);
                     }
                 }
+                saveRole(Administrator.class, appController, appController.getToken());
                 messageBoxPopup("confirm");
                 try {
                     dataHandler.saveAdmins(appController.getAdmins());
@@ -658,6 +667,7 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
                         appController.addClinician(newClinician);
                     }
                 }
+                saveRole(Clinician.class, appController, appController.getToken());
                 messageBoxPopup("confirm");
                 try {
                     dataHandler.saveClinicians(appController.getClinicians());
@@ -686,7 +696,7 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
                         appController.addUser(newUser);
                     }
                 }
-                importSaveUsers(newUsers.size());
+                saveRole(User.class, appController, appController.getToken());
                 //</editor-fold>
             }
 
@@ -701,12 +711,17 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
         refreshTables();
     }
 
-    private <T> void importRoleCsv(Class<T> role, String filename) {
+    /**
+     * imports a given role from a CSV file
+     * @param role currently only accepts User.class, others will do nothing
+     * @param filename path to the selected .csv file
+     */
+    private void importRoleCsv(Type role, String filename) {
         if (!isAllWindowsClosed()) {
             launchAlertUnclosedWindowsGUI();
             return;
         }
-        if (role.isAssignableFrom(User.class)) {
+        if (role.equals(User.class)) {
             try {
                 Collection<User> existingUsers = appController.getUsers();
                 DataHandler csvHandler = new CSVHandler();
@@ -726,7 +741,7 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
                         appController.addUser(user);
                     }
                 }
-                importSaveUsers(newUsers.size());
+                saveRole(User.class, appController, appController.getToken());
             } catch (FileNotFoundException e) {
                 Log.warning("Failed to load file " + filename, e);
                 messageBoxPopup("error");
@@ -739,15 +754,47 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
         }
     }
 
-    private void importSaveUsers(int numNewUsers) {
-        messageBoxPopup("confirm");
-        try {
-            dataHandler.saveUsers(appController.getUsers());
-            Log.info("successfully imported " + numNewUsers + " User profiles");
-        } catch (IOException e) {
-            Log.warning("failed to save newly loaded users", e);
-            messageBoxPopup("error");
+
+
+    /**
+     * takes the current contents of the locally stored admins, clinicians, and users and saves them to the database.
+     * uses PUT method to update or delete, and POST to append new data
+     * @param type accepts Administrator.class, Clinician.class, or User.class. others types will do nothing
+     * @param controller AppController instance to use
+     * @param token auth token to use to access the server
+     */
+    private void saveRole(Type type, AppController controller, String token) {
+        if (type.equals(Administrator.class)) {
+            for (Administrator admin : controller.getAdmins()) {
+                if (adminBridge.getExists(admin.getUserName())) {
+                    adminBridge.putAdmin(admin, admin.getUserName(), token);
+                } else {
+                    adminBridge.postAdmin(admin, token);
+                }
+            }
+        } else if (type.equals(Clinician.class)) {
+            for (Clinician clinician : controller.getClinicians()) {
+                if (clinicianBridge.getExists(clinician.getStaffId())) {
+                    clinicianBridge.putClinician(clinician, clinician.getStaffId(), token);
+                } else {
+                    clinicianBridge.postClinician(clinician, token);
+                }
+            }
+        } else if (type.equals(User.class)) {
+            for (User user : controller.getUsers()) {
+                if (userBridge.getExists(user.getNhi())) {
+                    userBridge.putUser(user, user.getNhi());
+                } else {
+                    userBridge.postUser(user);
+
+                }
+            }
+        } else {
+            return;
         }
+        //make popups
+        Log.info("successfully imported data");
+
     }
 
     /**
