@@ -66,7 +66,7 @@ public class DeleteUserGUITest extends ApplicationTest {
 
     @Test
     public void deletedUser() {
-        clickOn("#editMenu");
+        clickOn("#editMenuUser");
         clickOn("#deleteUser");
         clickOn("OK");
         setTextField(this,"#userIDTextField", "ABC1234");
@@ -77,7 +77,7 @@ public class DeleteUserGUITest extends ApplicationTest {
 
     @Test
     public void canceledDeletedUser() {
-        clickOn("#editMenu");
+        clickOn("#editMenuUser");
         clickOn("#deleteUser");
         clickOn("Cancel");
         verifyThat("#NHIValue", LabeledMatchers.hasText("ABC1234"));

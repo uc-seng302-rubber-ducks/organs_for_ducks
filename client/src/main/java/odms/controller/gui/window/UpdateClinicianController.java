@@ -259,7 +259,9 @@ public class UpdateClinicianController {
             inFile = new File(filename);
 
             if (inFile.length() > 2000000) { //if more than 2MB
-                System.out.println("image exceeded 2MB!"); //TODO: Replace with javafx label or a pop up box
+                Alert imageTooLargeAlert = new Alert(Alert.AlertType.WARNING, "Could not upload the image as the image size exceeded 2MB");
+                imageTooLargeAlert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
+                imageTooLargeAlert.showAndWait();
                 isValid = false;
             }
             if (isValid) {

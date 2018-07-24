@@ -78,8 +78,8 @@ public class UpdateClinicianControllerGUITest extends ApplicationTest {
         clickOn("#staffPasswordField");
         write("secure");
         clickOn("#loginCButton");
-        clickOn("#editMenu");
-        clickOn("#editDetails");
+        clickOn("#editMenuClinician");
+        clickOn("#editDetailsClinician");
     }
 
     @After

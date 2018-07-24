@@ -97,7 +97,7 @@ public class DeleteClinicianUserGUITest extends ApplicationTest {
 
     @Test
     public void deleteUser() {
-        clickOn("#editMenu");
+        clickOn("#editMenuUser");
         clickOn("#deleteUser");
         clickOn("OK");
         verifyThat("#fNameLabel", LabeledMatchers.hasText("Default"));
@@ -106,7 +106,7 @@ public class DeleteClinicianUserGUITest extends ApplicationTest {
 
     @Test
     public void canceledDeleteUser() {
-        clickOn("#editMenu");
+        clickOn("#editMenuUser");
         clickOn("#deleteUser");
         clickOn("Cancel");
         verifyThat("#fNameLabel", LabeledMatchers.hasText("Default"));

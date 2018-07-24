@@ -122,9 +122,9 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
     @FXML
     private Button redoButton;
     @FXML
-    private MenuItem delete;
+    private MenuItem deleteClinician;
     @FXML
-    private MenuItem logoutMenu;
+    private MenuItem logoutMenuClinician;
 
     @FXML
     private ImageView profileImage;
@@ -190,7 +190,7 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
         statusBarPageController.init(appController);
 
         if (clinician.getStaffId().equals("0")) {
-            delete.setDisable(true);
+            deleteClinician.setDisable(true);
         }
 
         setDefaultFilters();
@@ -202,11 +202,11 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
         searchTablePagination.currentPageIndexProperty().addListener(((observable, oldValue, newValue) -> changePage(newValue.intValue())));
 
         if (fromAdmin) {
-            logoutMenu.setText("Go Back");
-            logoutMenu.setOnAction(e -> goBack());
+            logoutMenuClinician.setText("Go Back");
+            logoutMenuClinician.setOnAction(e -> goBack());
         } else {
-            logoutMenu.setText("Log Out");
-            logoutMenu.setOnAction(e -> logout());
+            logoutMenuClinician.setText("Log Out");
+            logoutMenuClinician.setOnAction(e -> logout());
         }
 
     }

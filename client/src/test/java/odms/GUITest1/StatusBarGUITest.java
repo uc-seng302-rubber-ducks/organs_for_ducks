@@ -35,8 +35,8 @@ public class StatusBarGUITest extends ApplicationTest {
         clickOn("#userIDTextField");
         write("ABC1234");
         clickOn("#loginUButton");
-        clickOn("#editMenu");
-        clickOn("#editDetails");
+        clickOn("#editMenuUser");
+        clickOn("#editDetailsUser");
         clickOn("#fNameInput").push(SHORTCUT, A).push(BACK_SPACE);
         clickOn("#fNameInput");
         write("Kate");

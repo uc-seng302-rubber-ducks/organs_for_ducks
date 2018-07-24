@@ -111,8 +111,8 @@ public class DeregisterOrganReasonControllerGUITest extends ApplicationTest {
         clickOn("#transplantReceivedRadioButton");
         clickOn("#okButton");
         clickOn("#userProfileTab");
-        clickOn("#fileMenu");
-        clickOn("#LogOut");
+        clickOn("#fileMenuUser");
+        clickOn("#logoutUser");
         clickOn("#transplantWaitListTab");
         assertEquals(0, getNumberOfRows("#transplantWaitListTableView"));
     }
@@ -122,8 +122,8 @@ public class DeregisterOrganReasonControllerGUITest extends ApplicationTest {
         clickOn("#registrationErrorRadioButton");
         clickOn("#okButton");
         clickOn("#userProfileTab");
-        clickOn("#fileMenu");
-        clickOn("#LogOut");
+        clickOn("#fileMenuUser");
+        clickOn("#logoutUser");
         clickOn("#transplantWaitListTab");
         assertEquals(0, getNumberOfRows("#transplantWaitListTableView"));
     }
@@ -135,8 +135,8 @@ public class DeregisterOrganReasonControllerGUITest extends ApplicationTest {
         clickOn("A0");
         clickOn("#okButton");
         clickOn("#userProfileTab");
-        clickOn("#fileMenu");
-        clickOn("#LogOut");
+        clickOn("#fileMenuUser");
+        clickOn("#logoutUser");
         clickOn("#transplantWaitListTab");
         assertEquals(0, getNumberOfRows("#transplantWaitListTableView"));
     }
@@ -146,8 +146,8 @@ public class DeregisterOrganReasonControllerGUITest extends ApplicationTest {
         clickOn("#receiverDiedRadioButton");
         clickOn("#okButton");
         clickOn("#userProfileTab");
-        clickOn("#fileMenu");
-        clickOn("#LogOut");
+        clickOn("#fileMenuUser");
+        clickOn("#logoutUser");
         clickOn("#transplantWaitListTab");
         assertEquals(0, getNumberOfRows("#transplantWaitListTableView"));
     }
