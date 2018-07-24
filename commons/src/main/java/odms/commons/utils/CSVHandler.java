@@ -56,7 +56,7 @@ public class CSVHandler extends DataHandler {
             count++;
             // as column name maybe null this needs to be done by index
             User u = new User();
-            u.setNhi(record.get(0));
+            u.setNhi(record.get(0).trim());
             u.setFirstName(record.get(1));
             u.setLastName(record.get(2));
             try {

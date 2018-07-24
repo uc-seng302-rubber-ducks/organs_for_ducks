@@ -479,7 +479,6 @@ public class AppController {
         } catch (IOException e) {
             Log.warning("Could not save user " + administrator.getUserName(), e);
         }
-        getAdministratorBridge().postAdmin(administrator, token);
     }
 
     /**
