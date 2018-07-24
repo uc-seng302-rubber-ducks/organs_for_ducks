@@ -47,7 +47,7 @@ public final class PasswordManager {
      */
     public static String hash(String password, String salt) {
         char[] passwordChar = password.toCharArray();
-        byte[] saltB = salt.toString().getBytes(Charset.forName("UTF-8"));
+        byte[] saltB = salt.getBytes();
         PBEKeySpec spec = new PBEKeySpec(passwordChar, saltB, ITERATIONS, KEY_LENGTH);
         Arrays.fill(passwordChar, Character.MIN_VALUE);
         try {
@@ -72,10 +72,7 @@ public final class PasswordManager {
      */
     public static boolean isExpectedPassword(String password, String salt, String expectedHash) {
         String passwordHash = hash(password, salt);
-        System.out.println(salt);
-        System.out.println(passwordHash);
-        System.out.println(expectedHash);
-        return passwordHash.length() == expectedHash.length() && passwordHash.equals(expectedHash);
+        return passwordHash.equals(expectedHash);
     }
 }
 

@@ -713,7 +713,6 @@ public class DBHandler {
                 }
                 String hash = rs.getString("hash");
                 String salt = rs.getString("salt");
-                System.out.println("Am i at least here");
                 return PasswordManager.isExpectedPassword(guess, salt, hash);
             } catch (SQLException e) {
                 Log.warning("Could not log in", e);
@@ -919,13 +918,14 @@ public class DBHandler {
      * @throws SQLException thrown on invalid sql
      */
     public void putAllowedCountries(Connection connection, Set<String> countries) throws SQLException {
-        String putStatment = "UPDATE Countries SET allowed = 1 where countryName =?";
-        try(PreparedStatement statement = connection.prepareStatement("UPDATE Countries SET allowed = 0 ")){
+        String putStatment = "INSERT INTO Countries(countryName,allowed) VALUES (?,1)";
+        try(PreparedStatement statement = connection.prepareStatement("DELETE FROM Countries")){
             statement.execute();
             for(String country : countries) {
                 try (PreparedStatement put = connection.prepareStatement(putStatment)){
+                    System.out.println("putting "+ country);
                     put.setString(1, country);
-                    put.execute();
+                    System.out.println(put.execute());
                 }
 
             }

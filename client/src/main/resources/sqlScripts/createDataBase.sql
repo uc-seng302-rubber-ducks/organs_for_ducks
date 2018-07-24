@@ -17,7 +17,7 @@ DROP TABLE IF EXISTS Organ;
 DROP TABLE IF EXISTS Administrator;
 DROP TABLE IF EXISTS Clinician;
 DROP TABLE IF EXISTS User;
-DROP TABLE IF EXISTS Countries;
+
 
 CREATE TABLE User(
   nhi varchar(7) PRIMARY KEY,
@@ -203,7 +203,7 @@ CREATE TABLE PasswordDetails(
   FOREIGN KEY (fkStaffId) REFERENCES Clinician(staffId) ON DELETE CASCADE
 );
 
-CREATE TABLE Countries(
+/*CREATE TABLE Countries(
   countryName VARCHAR(100) PRIMARY KEY,
   allowed BOOLEAN DEFAULT TRUE
-)
+)*/

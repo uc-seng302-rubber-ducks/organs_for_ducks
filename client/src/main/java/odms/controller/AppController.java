@@ -119,12 +119,10 @@ public class AppController {
             clinicians.add(defaultClinician);
             saveClinician(defaultClinician);
         }
-        generateAllCountries();
-        generateAllNZRegion();
 
-        allowedCountries = new ArrayList<>(); //TODO: removed this line after the functionality which enable clinician to filter countries is implemented.
-        allowedCountries.addAll(allCountries); //TODO: removed this line after the functionality which enable clinician to filter countries is implemented.
-        allowedCountries.sort(String.CASE_INSENSITIVE_ORDER);
+        this.allCountries = generateAllCountries();
+        generateAllNZRegion();
+        allowedCountries = getAllowedCountries();
     }
 
     /**
@@ -180,15 +178,16 @@ public class AppController {
     /**
      * create a list of all country names.
      */
-    private void generateAllCountries() {
-        allCountries = new ArrayList<>();
+    private List<String> generateAllCountries() {
+        List allCountry = new ArrayList<>();
         String[] locales = Locale.getISOCountries();
 
         for (String countryCode : locales) {
             Locale obj = new Locale("", countryCode);
-            allCountries.add(obj.getDisplayCountry());
+            allCountry.add(obj.getDisplayCountry());
         }
-        allCountries.sort(String.CASE_INSENSITIVE_ORDER);
+        allCountry.sort(String.CASE_INSENSITIVE_ORDER);
+        return allCountry;
     }
 
     /**

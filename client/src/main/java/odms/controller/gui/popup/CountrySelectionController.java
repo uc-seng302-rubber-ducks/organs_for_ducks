@@ -4,8 +4,11 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ListView;
+import javafx.scene.control.SkinBase;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.CheckBoxListCell;
 import javafx.stage.Stage;
@@ -22,6 +25,8 @@ public class CountrySelectionController {
 
     @FXML
     private TextField searchCountry;
+    @FXML
+    private CheckBox selectDeselectCountries;
 
     private Administrator admin;
     private Stage stage;
@@ -45,7 +50,7 @@ public class CountrySelectionController {
      * initialise  Country Selection List. includes rendering checkboxes for each row.
      */
     private void initCountrySelectionList(){
-        countrySelection.setItems(FXCollections.observableList(appController.getAllCountries()));
+        countrySelection.setItems((ObservableList<String>) appController.getAllCountries());
         countrySelection.setCellFactory(CheckBoxListCell.forListView(country -> {
             BooleanProperty observable = new SimpleBooleanProperty();
             observable.addListener((obs, wasSelected, isNowSelected) ->
@@ -59,11 +64,12 @@ public class CountrySelectionController {
             );
             return observable ;
         }));
+        allowedCountries = appController.getAllowedCountries();
     }
 
     @FXML
     void selectDeselectAll(){
-        //countrySelection.setCellFactory(CheckBoxListCell.forListView(i->i.setS));
+        //optional
     }
 
     /**

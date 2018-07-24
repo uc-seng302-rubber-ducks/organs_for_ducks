@@ -1,4 +1,4 @@
-package odms.Utils;
+package odms.utils;
 
 import odms.commons.model.*;
 import odms.commons.model._enum.Organs;
