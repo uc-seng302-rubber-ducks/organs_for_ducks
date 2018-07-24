@@ -2,6 +2,7 @@ package odms.controller;
 
 import odms.commons.model.Disease;
 import odms.commons.model.User;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -11,6 +12,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import static org.junit.Assert.fail;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class DiseasesTest {
 
@@ -22,13 +25,15 @@ public class DiseasesTest {
 
     @Before
     public void resetUsers() {
+        controller = mock(AppController.class);
+        AppController.setInstance(controller);
+
         DateTimeFormatter sdf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        controller = AppController.getInstance();
         controller.setUsers(new ArrayList<>());
         try {
-            controller.addUser(new User("Donor", LocalDate.parse("1978-03-06", sdf), "ABC1234"));
+            User user = new User("Donor", LocalDate.parse("1978-03-06", sdf), "ABC1234");
+            when(controller.findUser("ABC1234")).thenReturn(user);
             controller.addUser(new User("One Organ", LocalDate.parse("1997-02-05", sdf), "ASD2345"));
-            User user = controller.findUsers("Donor").get(0);
             Disease diseaseA1 = new Disease("A1", true, false, LocalDate.parse("2000-01-06", sdf));
             Disease diseaseA2 = new Disease("A2", false, false, LocalDate.parse("2000-01-05", sdf));
             Disease diseaseA3 = new Disease("A3", true, false, LocalDate.parse("2000-01-04", sdf));
@@ -87,6 +92,10 @@ public class DiseasesTest {
             //System.out.println(ex);
             fail("Error setting up before test");
         }
+    }
+    @After
+    public void tearDown() {
+        AppController.setInstance(null);
     }
 
     /**

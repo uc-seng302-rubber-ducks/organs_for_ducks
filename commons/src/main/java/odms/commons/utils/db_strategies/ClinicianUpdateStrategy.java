@@ -291,12 +291,11 @@ public class ClinicianUpdateStrategy extends AbstractUpdateStrategy {
     private void updateClinicianDetails(Clinician clinician, Connection connection) throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement(UPDATE_CLINICIAN_STMT)) {
 
-            statement.setString(1, clinician.getStaffId());
-            statement.setString(2, clinician.getFirstName());
-            statement.setString(3, clinician.getMiddleName());
-            statement.setString(4, clinician.getLastName());
-            statement.setTimestamp(5, Timestamp.valueOf(clinician.getDateLastModified()));
-            statement.setString(6, clinician.getStaffId());
+            statement.setString(1, clinician.getFirstName());
+            statement.setString(2, clinician.getMiddleName());
+            statement.setString(3, clinician.getLastName());
+            statement.setTimestamp(4, Timestamp.valueOf(clinician.getDateLastModified()));
+            statement.setString(5, clinician.getStaffId());
 
             statement.executeUpdate();
         }

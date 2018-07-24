@@ -9,6 +9,7 @@ import odms.commons.model.User;
 import odms.commons.model._enum.Directory;
 import odms.commons.model.datamodel.Medication;
 import odms.commons.model.datamodel.TransplantDetails;
+import odms.commons.model.dto.UserOverview;
 import odms.commons.utils.DataHandler;
 import odms.commons.utils.JsonHandler;
 import odms.commons.utils.Log;
@@ -16,15 +17,14 @@ import odms.controller.gui.statusBarController;
 import odms.controller.gui.window.AdministratorViewController;
 import odms.controller.gui.window.ClinicianController;
 import odms.controller.gui.window.UserController;
+import odms.utils.*;
+import okhttp3.OkHttpClient;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Stack;
+import java.util.*;
 
 
 /**
@@ -33,25 +33,30 @@ import java.util.Stack;
 public class AppController {
 
 
+    private static final String USERS_FILE = Directory.JSON.directory() + "/users.json";
+    private static final String CLINICIAN_FILE = Directory.JSON.directory() + "/clinicians.json";
+    private static final String ADMIN_FILE = Directory.JSON.directory() + "/administrators.json";
+    private static AppController controller;
     private Collection<Administrator> admins = new ArrayList<>();
     private List<User> users = new ArrayList<>();
     private ArrayList<TransplantDetails> transplantList = new ArrayList<>();
     private List<Clinician> clinicians = new ArrayList<>();
-    private static AppController controller;
+    private Set<UserOverview> overviews = new HashSet<>();
     private ArrayList<String[]> historyOfCommands = new ArrayList<>();
     private int historyPointer = 0;
     private DataHandler dataHandler = new JsonHandler();
-
+    private OkHttpClient client = new OkHttpClient();
+    private UserBridge userBridge = new UserBridge(client);
+    private ClinicianBridge clinicianBridge = new ClinicianBridge(client);
+    private AdministratorBridge administratorBridge = new AdministratorBridge(client);
+    private LoginBridge loginBridge = new LoginBridge(client);
+    private TransplantBridge transplantBridge = new TransplantBridge(client);
     private UserController userController = new UserController();
     private ClinicianController clinicianController = new ClinicianController();
     private AdministratorViewController administratorViewController = new AdministratorViewController();
     private odms.controller.gui.statusBarController statusBarController = new statusBarController();
     private Stack<User> redoStack = new Stack<>();
-
-    private static final String USERS_FILE = Directory.JSON.directory() + "/users.json";
-    private static final String CLINICIAN_FILE = Directory.JSON.directory() + "/clinicians.json";
-    private static final String ADMIN_FILE = Directory.JSON.directory() + "/administrators.json";
-
+    private String token;
     /**
      * Creates new instance of AppController
      */
@@ -79,34 +84,6 @@ public class AppController {
 
         String[] empty = {""};
         historyOfCommands.add(empty);//putting an empty string into the string array to be displayed if history pointer is 0
-
-        boolean defaultAdminSeen = false;
-        for (Administrator a : admins) {
-            if (a.getUserName().equals("default")) {
-                defaultAdminSeen = true;
-                break;
-            }
-        }
-        if (!defaultAdminSeen) {
-            Administrator defaultAdmin = new Administrator("default", "", "", "", "admin");
-            admins.add(defaultAdmin);
-            saveAdmin(defaultAdmin);
-        }
-
-        boolean defaultSeen = false;
-        for (Clinician c : clinicians) {
-            if (c.getStaffId().equals("0")) {
-                defaultSeen = true;
-                break;//short circuit out if default clinician exists
-            }
-        } //all code you wish to execute must be above this point!!!!!!!!
-        if (!defaultSeen) {
-            Clinician defaultClinician = new Clinician("0", "admin", "Default", "", "");
-            defaultClinician.setRegion("region");
-            defaultClinician.getUndoStack().clear();
-            clinicians.add(defaultClinician);
-            saveClinician(defaultClinician);
-        }
     }
 
     /**
@@ -121,6 +98,19 @@ public class AppController {
         return controller;
     }
 
+    /**
+     * Never use this unless testing. Please.
+     * After the tests, make sure you reset it using setInstance(null)
+     *
+     * @param appController controller instance to return
+     */
+    public static void setInstance(AppController appController) {
+        controller = appController;
+    }
+
+    public TransplantBridge getTransplantBridge() {
+        return transplantBridge;
+    }
 
     /**
      * Sets the point in history
@@ -137,7 +127,6 @@ public class AppController {
     public void addToHistoryOfCommands(String[] command) {
         historyOfCommands.add(command);
     }
-
 
     /**
      * Updates the history pointer to ensure that the end of the array isnt overrun and the number
@@ -162,7 +151,6 @@ public class AppController {
     public String[] getCommand() {
         return historyOfCommands.get(historyPointer);
     }
-
 
     /**
      * Takes a users name and dob, finds the user in the session list and returns them.
@@ -205,14 +193,14 @@ public class AppController {
      * @return The user with the matching nhi, or null if no user matches.
      */
     public User findUser(String nhi) {
-        for (User u : users) {
-            if ((u.getNhi()).equalsIgnoreCase(nhi) && !u.isDeleted()) {
-                return u;
-            }
+        User user = null;
+        try {
+            user = getUserBridge().getUser(nhi);
+        } catch (IOException e) {
+            Log.warning("Failed to get user " + nhi);
         }
-        return null;
+        return user;
     }
-
 
     /**
      * takes a passed user and removes them from the maintained list of users
@@ -220,20 +208,20 @@ public class AppController {
      * @param user user to remove
      */
     public void deleteUser(User user) {
-        List<User> sessionList = getUsers();
         user.setDeleted(true);
-        setUsers((ArrayList<User>) sessionList);
-        try {
-            dataHandler.saveUsers(sessionList);
 
-        } catch (IOException e) {
-            Log.warning("failed to delete a user with NHI: " + user.getNhi(), e);
-        }
+        getUserBridge().deleteUser(user);
     }
-
 
     public List<User> getUsers() {
         return users;
+    }
+
+    /**
+     * @param users An array list of users.
+     */
+    public void setUsers(ArrayList<User> users) {
+        this.users = users;
     }
 
     /**
@@ -262,20 +250,31 @@ public class AppController {
      */
     public void saveUser(User user) {
         try {
-            dataHandler.saveUsers(users);
-            //JsonHandler.saveChangelog(changelogWrite, user.getFullName().toLowerCase().replace(" ", "_"));
+            User originalUser;
+            if (!user.getUndoStack().isEmpty()) {
+                originalUser = user.getUndoStack().firstElement().getState();
+            } else {
+                originalUser = user;
+            }
 
+            if (userBridge.getUser(originalUser.getNhi()) != null) {
+                if (token != null) {
+                    userBridge.putReceivingOrgans(user.getReceiverDetails().getOrgans(), originalUser.getNhi(), token);
+                    userBridge.putUserProcedures(user.getMedicalProcedures(), originalUser.getNhi(), token);
+                    userBridge.putMedications(user.getPreviousMedication(), originalUser.getNhi(), token);
+                    userBridge.putMedications(user.getCurrentMedication(), originalUser.getNhi(), token);
+                    userBridge.putDiseases(user.getPastDiseases(), originalUser.getNhi(), token);
+                    userBridge.putDiseases(user.getCurrentDiseases(), originalUser.getNhi(), token);
+                }
+                userBridge.postDonatingOrgans(user.getDonorDetails().getOrgans(), originalUser.getNhi());
+                userBridge.putUser(user, originalUser.getNhi());
+
+            } else {
+                userBridge.postUser(user);
+            }
         } catch (IOException e) {
-            Log.warning("failed to update users with NHI: " + user.getNhi(), e);
+            Log.warning("Could not save user " + user.getNhi(), e);
         }
-    }
-
-
-    /**
-     * @param users An array list of users.
-     */
-    public void setUsers(ArrayList<User> users) {
-        this.users = users;
     }
 
     /**
@@ -325,6 +324,10 @@ public class AppController {
         return clinicians;
     }
 
+    public void setClinicians(List<Clinician> clinicians) {
+        this.clinicians = clinicians;
+    }
+
     public Collection<Administrator> getAdmins() {
         return admins;
     }
@@ -357,20 +360,29 @@ public class AppController {
     }
 
     /**
-     * Saves the current list of clinicians to the json
+     * Gets the original clinician before any changes were made and searches the database for the entry.
+     * The clinician is saved to the database by a put request if the entry is found, otherwise by a post request.
      *
      * @param clinician Clinician to be saved
      */
     public void saveClinician(Clinician clinician) {
         try {
-            dataHandler.saveClinicians(clinicians);
-            Log.info("Successfully updated clinician with Staff ID: " + clinician.getStaffId());
+            Clinician originalClinician;
+            if (!clinician.getUndoStack().isEmpty()) {
+                originalClinician = clinician.getUndoStack().firstElement().getState();
+            } else {
+                originalClinician = clinician;
+            }
+
+            if (clinicianBridge.getClinician(originalClinician.getStaffId(), getToken()) != null) {
+                clinicianBridge.putClinician(clinician, originalClinician.getStaffId(), getToken());
+            } else {
+                clinicianBridge.postClinician(clinician, "");
+            }
         } catch (IOException e) {
-            Log.warning("Failed to update clinician with Staff ID: " + clinician.getStaffId(), e);
+            Log.warning("Could not save user " + clinician.getStaffId(), e);
         }
     }
-
-
 
     /**
      * Takes a passed clinician and removes them from the maintained list of clinicians
@@ -380,11 +392,7 @@ public class AppController {
     public void deleteClinician(Clinician clinician) {
         clinician.setDeleted(true);
 
-        try {
-            dataHandler.saveClinicians(clinicians);
-        } catch (IOException e) {
-            Log.warning("failed to delete a clinician", e);
-        }
+        getClinicianBridge().deleteClinician(clinician, clinician.getStaffId());
     }
 
     /**
@@ -395,19 +403,9 @@ public class AppController {
     public void deleteAdmin(Administrator admin) {
         admin.setDeleted(true);
 
-        try {
-            dataHandler.saveAdmins(admins);
-        } catch (IOException e) {
-            Log.warning("failed to delete an administrator", e);
-        }
-
-
+        getAdministratorBridge().deleteAdmin(admin, token);
         admins.remove(admin);
-        // todo: will probably need undo/redo for this similar to how the deleteUser one has it
-        // auto save is on another branch..
-        Log.info("Successfully updated admin with user name: " + admin.getUserName());
     }
-
 
     public UserController getUserController() {
         return userController;
@@ -428,14 +426,13 @@ public class AppController {
         this.clinicianController = clinicianController;
     }
 
-    public void setAdministratorViewController(AdministratorViewController administratorViewController) {
-        this.administratorViewController = administratorViewController;
-    }
-
     public AdministratorViewController getAdministratorViewController() {
         return administratorViewController;
     }
 
+    public void setAdministratorViewController(AdministratorViewController administratorViewController) {
+        this.administratorViewController = administratorViewController;
+    }
 
     public Administrator getAdministrator(String username) {
         for (Administrator a : admins) {
@@ -445,7 +442,6 @@ public class AppController {
         }
         return null;
     }
-
 
     /**
      * Refreshes the list of administrators with the updated admin
@@ -468,11 +464,22 @@ public class AppController {
      */
     public void saveAdmin(Administrator administrator) {
         try {
-            dataHandler.saveAdmins(admins);
-            Log.info("successfully updated the Administrator profile with user name: " + administrator.getUserName());
+            Administrator administrator1;
+            if (!administrator.getUndoStack().isEmpty()) {
+                administrator1 = administrator.getUndoStack().firstElement().getState();
+            } else {
+                administrator1 = administrator;
+            }
+
+            if (administratorBridge.getAdmin(administrator1.getUserName(), getToken()) != null) {
+                administratorBridge.putAdmin(administrator, administrator1.getUserName(), getToken());
+            } else {
+                administratorBridge.postAdmin(administrator, token);
+            }
         } catch (IOException e) {
-            Log.warning("Failed to update Administrator profiles with user name: " + administrator.getUserName(), e);
+            Log.warning("Could not save user " + administrator.getUserName(), e);
         }
+        getAdministratorBridge().postAdmin(administrator, token);
     }
 
     /**
@@ -590,7 +597,6 @@ public class AppController {
         }
     }
 
-
     /**
      * Restores the specified clinician object by adding it to the list of active clinicians and removing it from the
      * set of deleted clinicians.
@@ -637,5 +643,53 @@ public class AppController {
 
     public void addTransplant(TransplantDetails transplantDetails) {
         transplantList.add(transplantDetails);
+    }
+
+    public Collection<UserOverview> getUserOverviews() {
+        return overviews;
+    }
+
+    public void setUserOverviews(Set<UserOverview> users) {
+        overviews = users;
+    }
+
+    public AdministratorBridge getAdministratorBridge() {
+        return administratorBridge;
+    }
+
+    public UserBridge getUserBridge() {
+        return userBridge;
+    }
+
+    public ClinicianBridge getClinicianBridge() {
+        return clinicianBridge;
+    }
+
+    public LoginBridge getLoginBridge() {
+        return loginBridge;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    public void setAdministratorBridge(AdministratorBridge adminBridge) {
+        administratorBridge = adminBridge;
+    }
+
+    public void setClinicianBridge(ClinicianBridge cliBridge) {
+        clinicianBridge = cliBridge;
+    }
+
+    public void setLoginBridge(LoginBridge loginBridge) {
+        this.loginBridge = loginBridge;
+    }
+
+    public void setUserBridge(UserBridge userBridge) {
+        this.userBridge = userBridge;
     }
 }

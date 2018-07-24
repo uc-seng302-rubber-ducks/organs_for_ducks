@@ -105,7 +105,7 @@
                         </AnchorPane>
                     </content>
                 </Tab>
-                <Tab fx:id="searchTab" text="Search">
+                <Tab fx:id="searchTab" text="Search" onSelectionChanged="#initSearchTable">
                     <content>
                         <SplitPane dividerPositions="50.0" minHeight="-Infinity" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0"> <!---->
                             <items>

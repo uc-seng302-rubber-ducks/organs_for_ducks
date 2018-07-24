@@ -16,7 +16,7 @@ public class FxRobotHelper {
         });
     }
 
-    public static void setText(ApplicationTest app, String query, String text) {
+    public static void setTextField(ApplicationTest app, String query, String text) {
         app.interact(() -> {
             app.lookup(query).queryAs(TextField.class).setText(text);
         });

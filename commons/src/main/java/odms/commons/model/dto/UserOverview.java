@@ -18,6 +18,7 @@ public class UserOverview {
     private LocalDate dob;
     private LocalDate dod;
     private Name name;
+    private String region;
     private Set<Organs> donating;
     private Map<Organs, ArrayList<ReceiverOrganDetailsHolder>> receiving;
 
@@ -35,7 +36,48 @@ public class UserOverview {
         overview.setNhi(user.getNhi());
         overview.setDonating(user.getDonorDetails().getOrgans());
         overview.setReceiving(user.getReceiverDetails().getOrgans());
+        overview.setRegion(user.getRegion());
         return overview;
+    }
+
+    public String getNhi() {
+        return nhi;
+    }
+
+    public LocalDate getDob() {
+        return dob;
+    }
+
+    public LocalDate getDod() {
+        return dod;
+    }
+
+    public String getFirstName() {
+        return name.getFirstName();
+    }
+
+    public String getMiddleName() {
+        return name.getMiddleNames();
+    }
+
+    public String getLastName() {
+        return name.getLastName();
+    }
+
+    public Set<Organs> getDonating() {
+        return donating;
+    }
+
+    public boolean isDonor() {
+        return !donating.isEmpty();
+    }
+
+    public boolean isReceiver() {
+        return !receiving.isEmpty();
+    }
+
+    public Map<Organs, ArrayList<ReceiverOrganDetailsHolder>> getReceiving() {
+        return receiving;
     }
 
     public static User toUser(UserOverview overview) {
@@ -53,6 +95,14 @@ public class UserOverview {
 
     public void setDod(LocalDate dod) {
         this.dod = dod;
+    }
+
+    public void setRegion(String region) {
+        this.region = region;
+    }
+
+    public String getRegion() {
+        return region;
     }
 
     @Override
@@ -79,5 +129,18 @@ public class UserOverview {
 
     public void setReceiving(Map<Organs, ArrayList<ReceiverOrganDetailsHolder>> receiving) {
         this.receiving = receiving;
+    }
+
+    @Override
+    public String toString() {
+        return "UserOverview{" +
+                "nhi='" + nhi + '\'' +
+                ", dob=" + dob +
+                ", dod=" + dod +
+                ", name=" + name +
+                ", region='" + region + '\'' +
+                ", donating=" + donating +
+                ", receiving=" + receiving +
+                '}';
     }
 }

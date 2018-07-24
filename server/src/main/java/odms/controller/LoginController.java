@@ -40,7 +40,6 @@ public class LoginController extends BaseController {
         if (!validLogin){
             return new ResponseEntity(HttpStatus.UNAUTHORIZED);
         }
-        System.out.println((new Gson()).toJson(auth));
         AuthToken authToken = new AuthToken(
                 auth.getUsername(),
                 auth.getRole().toString(),

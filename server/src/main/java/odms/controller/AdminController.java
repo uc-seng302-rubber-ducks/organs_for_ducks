@@ -16,6 +16,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Collection;
 
+@OdmsController
 public class AdminController extends BaseController {
 
     private JDBCDriver driver;

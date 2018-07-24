@@ -647,6 +647,7 @@ public class UpdateClinicianController {
             }
 
             controller.updateClinicians(clinician);
+            controller.getClinicianBridge().postClinician(clinician, ""); // todo: need to create a token as you login immediately - jen 19/7
             loadOverview(clinician);
 
         } else {

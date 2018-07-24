@@ -10,12 +10,13 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import odms.controller.AppController;
-import odms.controller.gui.popup.NewDiseaseController;
-import odms.controller.gui.window.UserController;
 import odms.commons.model.Disease;
 import odms.commons.model.User;
 import odms.commons.utils.Log;
+import odms.controller.AppController;
+import odms.controller.gui.popup.NewDiseaseController;
+import odms.controller.gui.popup.utils.AlertWindowFactory;
+import odms.controller.gui.window.UserController;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -188,6 +189,7 @@ public class DiseasesTabPageController {
             Log.info("successfully launched add/update Diseases pop-up window for User NHI: " + currentUser.getNhi());
         } catch (IOException e) {
             Log.severe("failed to load add/update Diseases pop-up window for User NHI: " + currentUser.getNhi(), e);
+            AlertWindowFactory.generateError(e);
         }
 
 
@@ -204,7 +206,8 @@ public class DiseasesTabPageController {
             if (!currentDiseaseTableView.getSelectionModel().getSelectedItem().getIsChronic()) {
                 currentDiseaseTableView.getSelectionModel().getSelectedItem().setDeleted(true);
             } else {
-                Log.warning("Unable to delete current disease for User NHI: " + currentUser.getNhi() + ", no disease selected");
+                Log.warning("Unable to delete current disease for User NHI: " + currentUser.getNhi() + ", disease is chronic");
+                AlertWindowFactory.generateError("This disease is chronic and therefore cannot be deleted until marked otherwise");
                 return;
             }
             Log.info("current disease: " + currentDiseaseTableView.getSelectionModel().getSelectedItem() + " deleted for User NHI: " + currentUser.getNhi());
@@ -214,6 +217,7 @@ public class DiseasesTabPageController {
         } else {
             currentUser.getUndoStack().pop();
             Log.warning("Unable to delete past disease for User NHI: " + currentUser.getNhi() + ", no disease selected");
+            AlertWindowFactory.generateInfoWindow("Please select a disease");
         }
 
         parent.updateUndoRedoButtons();
@@ -267,6 +271,7 @@ public class DiseasesTabPageController {
             Log.info("successfully launched add Diseases pop-up window for User NHI: " + currentUser.getNhi());
         } catch (IOException e) {
             Log.severe("failed to load add Diseases pop-up window for User NHI: " + currentUser.getNhi(), e);
+            AlertWindowFactory.generateError("Whoops! Something went wrong!");
         }
 
 

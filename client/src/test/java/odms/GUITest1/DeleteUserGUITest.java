@@ -2,8 +2,14 @@ package odms.GUITest1;
 
 import odms.App;
 import odms.TestUtils.CommonTestMethods;
+import odms.commons.model.Clinician;
+import odms.commons.model.dto.UserOverview;
+import odms.controller.AppController;
 import odms.commons.model.User;
 import odms.controller.AppController;
+import odms.utils.ClinicianBridge;
+import odms.utils.LoginBridge;
+import odms.utils.UserBridge;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -12,9 +18,17 @@ import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.matcher.control.LabeledMatchers;
 
+import java.io.IOException;
 import java.time.LocalDate;
+import java.util.Collections;
 import java.util.concurrent.TimeoutException;
 
+import static odms.TestUtils.FxRobotHelper.clickOnButton;
+import static odms.TestUtils.FxRobotHelper.setTextField;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 import static org.testfx.api.FxAssert.verifyThat;
 
 public class DeleteUserGUITest extends ApplicationTest {
@@ -25,19 +39,28 @@ public class DeleteUserGUITest extends ApplicationTest {
     }
 
     @Before
-    public void setUpCreateScene() throws TimeoutException {
+    public void setUpCreateScene() throws TimeoutException, IOException {
+
+        UserBridge bridge = mock(UserBridge.class);
+        AppController application = mock(AppController.class);
+        User testUser = new User("A", LocalDate.now(), "ABC1234");
+
+        AppController.setInstance(application);
+        when(application.getUserBridge()).thenReturn(bridge);
+        when(bridge.loadUsersToController(anyInt(), anyInt(), anyString(), anyString(), anyString(), anyString()))
+                .thenReturn(Collections.singletonList(UserOverview.fromUser(testUser)));
+        when(bridge.getUser("ABC1234")).thenReturn(testUser);
+        AppController.getInstance().getUsers().clear();
+        AppController.getInstance().getUsers().add(testUser);
         FxToolkit.registerPrimaryStage();
         FxToolkit.setupApplication(App.class);
-        AppController.getInstance().getUsers().clear();
-        AppController.getInstance().getUsers().add(new User("A", LocalDate.now(), "ABC1234"));
-        clickOn("#userIDTextField");
-        write("ABC1234");
-        clickOn("#loginUButton");
+        setTextField(this,"#userIDTextField","ABC1234");
+        clickOnButton(this,"#loginUButton");
     }
 
     @After
     public void tearDown() throws TimeoutException {
-        AppController.getInstance().getUsers().clear();
+        AppController.setInstance(null);
         FxToolkit.cleanupStages();
     }
 
@@ -46,9 +69,8 @@ public class DeleteUserGUITest extends ApplicationTest {
         clickOn("#editMenu");
         clickOn("#deleteUser");
         clickOn("OK");
-        clickOn("#userIDTextField");
-        write("ABC1234");
-        clickOn("#loginUButton");
+        setTextField(this,"#userIDTextField", "ABC1234");
+        clickOnButton(this,"#loginUButton");
         verifyThat("#userWarningLabel", LabeledMatchers
                 .hasText("User was not found. \nTo register a new user, please click sign up."));
     }
