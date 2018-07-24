@@ -73,33 +73,6 @@ public class AppController {
         String[] empty = {""};
         historyOfCommands.add(empty);//putting an empty string into the string array to be displayed if history pointer is 0
 
-        boolean defaultAdminSeen = false;
-        for (Administrator a : admins) {
-            if (a.getUserName().equals("default")) {
-                defaultAdminSeen = true;
-                break;
-            }
-        }
-        if (!defaultAdminSeen) {
-            Administrator defaultAdmin = new Administrator("default", "", "", "", "admin");
-            admins.add(defaultAdmin);
-            saveAdmin(defaultAdmin);
-        }
-
-        boolean defaultSeen = false;
-        for (Clinician c : clinicians) {
-            if (c.getStaffId().equals("0")) {
-                defaultSeen = true;
-                break;//short circuit out if default clinician exists
-            }
-        } //all code you wish to execute must be above this point!!!!!!!!
-        if (!defaultSeen) {
-            Clinician defaultClinician = new Clinician("0", "admin", "Default", "", "");
-            defaultClinician.setRegion("region");
-            defaultClinician.getUndoStack().clear();
-            clinicians.add(defaultClinician);
-            saveClinician(defaultClinician);
-        }
 
         this.allCountries = generateAllCountries();
         generateAllNZRegion();
