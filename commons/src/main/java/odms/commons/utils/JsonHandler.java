@@ -354,8 +354,8 @@ public final class JsonHandler extends DataHandler {
         return new Gson().fromJson(response.body().string(), new TypeToken<List<TransplantDetails>>() {}.getType());
     }
 
-    public Image decodeProfilePicture(ResponseBody body) throws IOException {
-        return new Image(new ByteArrayInputStream(body.bytes()), 200, 200, false, true);
+    public String decodeProfilePicture(ResponseBody body, String nhi) throws IOException {
+        return PhotoHelper.createTempImageFile(body.bytes(),nhi);
 
     }
 

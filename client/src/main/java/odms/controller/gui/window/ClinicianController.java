@@ -22,10 +22,10 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import odms.controller.AppController;
+import odms.controller.gui.StatusBarController;
 import odms.controller.gui.UnsavedChangesAlert;
 import odms.controller.gui.panel.TransplantWaitListController;
 import odms.controller.gui.popup.DeletedUserController;
-import odms.controller.gui.statusBarController;
 import odms.commons.model.Clinician;
 import odms.commons.model.User;
 import odms.commons.model._abstract.TransplantWaitListViewer;
@@ -33,19 +33,7 @@ import odms.commons.model._enum.EventTypes;
 import odms.commons.model._enum.Organs;
 import odms.commons.model.dto.UserOverview;
 import odms.commons.utils.Log;
-import odms.controller.AppController;
-import odms.controller.gui.UnsavedChangesAlert;
-import odms.controller.gui.panel.TransplantWaitListController;
-import odms.controller.gui.popup.DeletedUserController;
-import odms.controller.gui.statusBarController;
-import odms.controller.AppController;
-import odms.controller.gui.UnsavedChangesAlert;
-import odms.controller.gui.panel.TransplantWaitListController;
-import odms.controller.gui.popup.DeletedUserController;
 import odms.controller.gui.popup.utils.AlertWindowFactory;
-import odms.controller.gui.statusBarController;
-import odms.utils.UserBridge;
-import okhttp3.OkHttpClient;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -129,7 +117,7 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
     @FXML
     private ImageView profileImage;
     @FXML
-    private statusBarController statusBarPageController;
+    private StatusBarController statusBarPageController;
 
     //</editor-fold>
 

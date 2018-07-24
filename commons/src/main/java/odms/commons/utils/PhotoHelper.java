@@ -7,14 +7,15 @@ import odms.commons.model._enum.Directory;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Comparator;
-import java.util.stream.Stream;
 
 /**
  * Contains helper methods related to photos.
@@ -72,16 +73,16 @@ public final class PhotoHelper {
         }
     }
 
-    public static String createTempImageFile(Image image, String nhi) throws IOException {
+    public static String createTempImageFile(byte[] image, String nhi) throws IOException {
         String format = "png";
 
         Files.createDirectories(Paths.get(Directory.TEMP.directory() + Directory.IMAGES));
         File outFile = new File(Directory.TEMP.directory() + Directory.IMAGES + "/" + nhi + "." + format);
 
-        if(SwingFXUtils.fromFXImage(image, null) == null){
-            return "";
-        }
-        ImageIO.write(SwingFXUtils.fromFXImage(image, null), format,outFile);
+        InputStream in = new ByteArrayInputStream(image);
+        BufferedImage buffImage = ImageIO.read(in);
+        ImageIO.write(buffImage, format, outFile);
+
 
         return outFile.getPath();
 

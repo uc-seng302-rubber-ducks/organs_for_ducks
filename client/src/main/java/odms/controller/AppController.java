@@ -10,20 +10,18 @@ import odms.commons.model.Clinician;
 import odms.commons.model.User;
 import odms.commons.model._enum.Directory;
 import odms.commons.model._enum.Regions;
-import odms.commons.model.datamodel.Medication;
 import odms.commons.model.datamodel.TransplantDetails;
 import odms.commons.model.dto.UserOverview;
 import odms.commons.utils.DataHandler;
 import odms.commons.utils.JsonHandler;
 import odms.commons.utils.Log;
-import odms.controller.gui.statusBarController;
+import odms.controller.gui.StatusBarController;
 import odms.controller.gui.window.AdministratorViewController;
 import odms.controller.gui.window.ClinicianController;
 import odms.controller.gui.window.UserController;
 import odms.utils.*;
 import okhttp3.OkHttpClient;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -61,14 +59,13 @@ public class AppController {
     private ClinicianController clinicianController = new ClinicianController();
     private CountriesBridge countriesBridge = new CountriesBridge(client);
     private AdministratorViewController administratorViewController = new AdministratorViewController();
-    private odms.controller.gui.statusBarController statusBarController = new statusBarController();
+    private StatusBarController statusBarController = new StatusBarController();
     private Stack<User> redoStack = new Stack<>();
     private String token;
     /**
      * Creates new instance of AppController
      */
     private AppController() {
-
 
         String[] empty = {""};
         historyOfCommands.add(empty);//putting an empty string into the string array to be displayed if history pointer is 0
@@ -386,15 +383,15 @@ public class AppController {
     /**
      * @return
      */
-    public odms.controller.gui.statusBarController getStatusBarController() {
+    public StatusBarController getStatusBarController() {
         return statusBarController;
     }
 
     /**
-     * @param statusBarController
+     * @param StatusBarController
      */
-    public void setStatusBarController(odms.controller.gui.statusBarController statusBarController) {
-        this.statusBarController = statusBarController;
+    public void setStatusBarController(StatusBarController StatusBarController) {
+        this.statusBarController = StatusBarController;
     }
 
 

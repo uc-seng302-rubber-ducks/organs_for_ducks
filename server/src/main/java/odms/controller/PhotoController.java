@@ -9,13 +9,12 @@ import odms.exception.ServerDBException;
 import odms.security.IsClinician;
 import odms.utils.DBManager;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -34,59 +33,45 @@ public class PhotoController extends BaseController {
 
 
     @RequestMapping(method = RequestMethod.PUT, value = "/users/{nhi}/photo")
-    public ResponseEntity putUserProfilePhoto(@PathVariable String nhi, @RequestBody MultipartFile profileImageFile) {
-        if(isNotValidImageFile(profileImageFile)){
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);
-        }
+    public ResponseEntity putUserProfilePhoto(@PathVariable String nhi, @RequestBody byte[] profileImageFile) {
 
         try (Connection connection = driver.getConnection()) {
             User toModify = handler.getOneUser(connection, nhi);
             if (toModify == null) {
                 return new ResponseEntity(HttpStatus.NOT_FOUND);
             }
-            handler.updateProfilePhoto(User.class, toModify.getNhi(), profileImageFile.getInputStream(), connection);
+            handler.updateProfilePhoto(User.class, toModify.getNhi(), new ByteArrayInputStream(profileImageFile), connection);
 
         } catch (SQLException ex) {
             Log.severe("Could not add or update user's profile photo to user " + nhi, ex);
             throw new ServerDBException(ex);
 
-        } catch (IOException ex) {
-            Log.severe("Could not add or update user's profile photo to user " + nhi, ex);
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
-
         return new ResponseEntity(HttpStatus.CREATED);
     }
 
     @IsClinician
     @RequestMapping(method = RequestMethod.PUT, value = "/clinicians/{staffId}/photo")
-    public ResponseEntity putClinicianProfilePhoto(@PathVariable String staffId, @RequestBody MultipartFile profileImageFile) {
-        if(isNotValidImageFile(profileImageFile)){
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);
-        }
+    public ResponseEntity putClinicianProfilePhoto(@PathVariable String staffId, @RequestBody byte[] profileImageFile) {
 
         try (Connection connection = driver.getConnection()) {
             Clinician toModify = handler.getOneClinician(connection, staffId);
             if (toModify == null) {
                 return new ResponseEntity(HttpStatus.NOT_FOUND);
             }
-            handler.updateProfilePhoto(Clinician.class, toModify.getStaffId(), profileImageFile.getInputStream(), connection);
+            handler.updateProfilePhoto(Clinician.class, toModify.getStaffId(),new ByteArrayInputStream(profileImageFile), connection);
 
         } catch (SQLException ex) {
             Log.severe("Could not add or update clinician's profile photo to clinician " + staffId, ex);
             throw new ServerDBException(ex);
 
-        } catch (IOException ex) {
-            Log.severe("Could not add or update clinician's profile photo to clinician " + staffId, ex);
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
-
         return new ResponseEntity(HttpStatus.CREATED);
     }
 
 
-    @RequestMapping(method = RequestMethod.GET, value = "/users/{nhi}/photo")
-    public byte[] getUserProfilePicture(@PathVariable("nhi") String nhi) {
+    @RequestMapping(method = RequestMethod.GET, value = "/users/{nhi}/photo", produces = "image/png")
+    public ResponseEntity<byte[]> getUserProfilePicture(@PathVariable("nhi") String nhi) {
         byte[] image;
         try (Connection connection = driver.getConnection()) {
             image = handler.getProfilePhoto(User.class, nhi, connection);
@@ -94,15 +79,16 @@ public class PhotoController extends BaseController {
             Log.severe("Cannot fetch profile picture for user " + nhi, e);
             throw new ServerDBException(e);
         }
-        return image;
+        return ResponseEntity.ok().contentType(MediaType.IMAGE_PNG).body(image);
     }
 
     @IsClinician
-    @RequestMapping(method = RequestMethod.GET, value = "/clinician/{staffId}/photo")
-    public byte[] getClinicianProfilePicture(@PathVariable("staffId") String staffId) {
+    @RequestMapping(method = RequestMethod.GET, value = "/clinicians/{staffId}/photo", produces = "image/png")
+    public @ResponseBody byte[] getClinicianProfilePicture(@PathVariable("staffId") String staffId) {
         byte[] image;
         try (Connection connection = driver.getConnection()) {
             image = handler.getProfilePhoto(Clinician.class, staffId, connection);
+
         } catch (SQLException e) {
             Log.severe("Cannot fetch profile picture for user " + staffId, e);
             throw new ServerDBException(e);
@@ -110,18 +96,5 @@ public class PhotoController extends BaseController {
         return image;
     }
 
-    /**
-     * Validates image file
-     *
-     * @param profileImageFile desired image file
-     * @return true if invalid, false otherwise
-     */
-    private boolean isNotValidImageFile(MultipartFile profileImageFile){
-        String fileType = profileImageFile.getContentType();
 
-        if((!fileType.equalsIgnoreCase("image/jpg") && !fileType.equalsIgnoreCase("image/png")) || profileImageFile.getSize() > 2000000){
-            return true;
-        }
-        return false;
-    }
 }

@@ -19,6 +19,8 @@ import java.util.*;
 
 public class UserBridge extends Bifrost {
 
+    private static final String USERS = "/users/";
+
     public UserBridge(OkHttpClient client, String ip) {
         super(client, ip);
     }
@@ -43,14 +45,12 @@ public class UserBridge extends Bifrost {
 
     public void postUser(User user) {
         String url = ip + "/users";
-        System.out.println(new Gson().toJson(user));
         RequestBody requestBody = RequestBody.create(JSON, new Gson().toJson(user));
         Request request = new Request.Builder().post(requestBody).url(url).build();
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
                 Log.warning("Could not make the call to POST /users");
-                e.printStackTrace();
             }
 
             @Override
@@ -64,13 +64,14 @@ public class UserBridge extends Bifrost {
 
     public User getUser(String nhi) throws IOException {
         User toReturn;
-        String url = ip + "/users/" + nhi;
+        String url = ip + USERS + nhi;
         Request request = new Request.Builder().url(url).build();
         try {
             try (Response response = client.newCall(request).execute()) {
                 if (response.isSuccessful()) {
                     toReturn = handler.decodeUser(response);
-                    toReturn.profilePicture = getProfilePicture(nhi);
+                    toReturn.setProfilePhotoFilePath(getProfilePicture(nhi));
+                    System.out.println(toReturn.getProfilePhotoFilePath());
                 } else {
                     toReturn = null;
                 }
@@ -83,7 +84,7 @@ public class UserBridge extends Bifrost {
     }
 
     public void putUser(User user, String nhi) {
-        String url = ip + "/users/" + nhi;
+        String url = ip + USERS + nhi;
         RequestBody body = RequestBody.create(JSON, new Gson().toJson(user));
         Request request = new Request.Builder().url(url).put(body).build();
         client.newCall(request).enqueue(new Callback() {
@@ -103,7 +104,7 @@ public class UserBridge extends Bifrost {
     }
 
     public void deleteUser(User user) {
-        String url = ip + "/users/" + user.getNhi();
+        String url = ip + USERS + user.getNhi();
         Request request = new Request.Builder().url(url).delete().build();
         client.newCall(request).enqueue(new Callback() {
             @Override
@@ -121,7 +122,7 @@ public class UserBridge extends Bifrost {
     }
 
     public void postUserProcedures(MedicalProcedure procedure, String nhi, String token) {
-        String url = ip + "/users/" + nhi + "/procedures";
+        String url = ip + USERS + nhi + "/procedures";
         RequestBody body = RequestBody.create(JSON, new Gson().toJson(procedure));
         Request request = new Request.Builder().url(url).addHeader(TOKEN_HEADER, token).post(body).build();
         client.newCall(request).enqueue(new Callback() {
@@ -140,7 +141,7 @@ public class UserBridge extends Bifrost {
     }
 
     public void putUserProcedures(List<MedicalProcedure> procedures, String nhi, String token) {
-        String url = ip + "/users/" + nhi + "/procedures";
+        String url = ip + USERS + nhi + "/procedures";
         RequestBody body = RequestBody.create(JSON, new Gson().toJson(procedures));
         Request request = new Request.Builder().url(url).addHeader(TOKEN_HEADER, token).put(body).build();
         client.newCall(request).enqueue(new Callback() {
@@ -159,7 +160,7 @@ public class UserBridge extends Bifrost {
     }
 
     public void postMedications(Medication medication, String nhi, String token) {
-        String url = ip + "/users/" + nhi + "/medications";
+        String url = ip + USERS + nhi + "/medications";
         RequestBody body = RequestBody.create(JSON, new Gson().toJson(medication));
         Request request = new Request.Builder().url(url).addHeader(TOKEN_HEADER, token).post(body).build();
         client.newCall(request).enqueue(new Callback() {
@@ -178,7 +179,7 @@ public class UserBridge extends Bifrost {
     }
 
     public void putMedications(List<Medication> medications, String nhi, String token) {
-        String url = ip + "/users/" + nhi + "/medications";
+        String url = ip + USERS + nhi + "/medications";
         RequestBody body = RequestBody.create(JSON, new Gson().toJson(medications));
         Request request = new Request.Builder().url(url).addHeader(TOKEN_HEADER, token).put(body).build();
         client.newCall(request).enqueue(new Callback() {
@@ -197,7 +198,7 @@ public class UserBridge extends Bifrost {
     }
 
     public void postDiseases(Disease disease, String nhi, String token) {
-        String url = ip + "/users/" + nhi + "/diseases";
+        String url = ip + USERS + nhi + "/diseases";
         RequestBody body = RequestBody.create(JSON, new Gson().toJson(disease));
         Request request = new Request.Builder().url(url).addHeader(TOKEN_HEADER, token).post(body).build();
         client.newCall(request).enqueue(new Callback() {
@@ -216,7 +217,7 @@ public class UserBridge extends Bifrost {
     }
 
     public void putDiseases(List<Disease> diseases, String nhi, String token) {
-        String url = ip + "/users/" + nhi + "/diseases";
+        String url = ip + USERS + nhi + "/diseases";
         RequestBody body = RequestBody.create(JSON, new Gson().toJson(diseases));
         Request request = new Request.Builder().url(url).addHeader(TOKEN_HEADER, token).put(body).build();
         client.newCall(request).enqueue(new Callback() {
@@ -235,7 +236,7 @@ public class UserBridge extends Bifrost {
     }
 
     public void postReceivingOrgans(Map<Organs, ArrayList<ReceiverOrganDetailsHolder>> receiving, String nhi, String token) {
-        String url = ip + "/users/" + nhi + "/receiving";
+        String url = ip + USERS + nhi + "/receiving";
         RequestBody body = RequestBody.create(JSON, new Gson().toJson(receiving));
         Request request = new Request.Builder().url(url).addHeader(TOKEN_HEADER, token).post(body).build();
         client.newCall(request).enqueue(new Callback() {
@@ -254,7 +255,7 @@ public class UserBridge extends Bifrost {
     }
 
     public void putReceivingOrgans(Map<Organs, ArrayList<ReceiverOrganDetailsHolder>> receiving, String nhi, String token) {
-        String url = ip + "/users/" + nhi + "/receiving";
+        String url = ip + USERS + nhi + "/receiving";
         RequestBody body = RequestBody.create(JSON, new Gson().toJson(receiving));
         Request request = new Request.Builder().url(url).addHeader(TOKEN_HEADER, token).put(body).build();
         client.newCall(request).enqueue(new Callback() {
@@ -273,7 +274,7 @@ public class UserBridge extends Bifrost {
     }
 
     public void postDonatingOrgans(Set<Organs> donating, String nhi) {
-        String url = ip + "/users/" + nhi + "/donating";
+        String url = ip + USERS + nhi + "/donating";
         RequestBody body = RequestBody.create(JSON, new Gson().toJson(donating));
         Request request = new Request.Builder().url(url).post(body).build();
         client.newCall(request).enqueue(new Callback() {
@@ -292,7 +293,7 @@ public class UserBridge extends Bifrost {
     }
 
     public void putDonatingOrgans(List<Organs> donating, String nhi) {
-        String url = ip + "/users/" + nhi + "/donating";
+        String url = ip + USERS + nhi + "/donating";
         RequestBody body = RequestBody.create(JSON, new Gson().toJson(donating));
         Request request = new Request.Builder().url(url).put(body).build();
         client.newCall(request).enqueue(new Callback() {
@@ -310,12 +311,12 @@ public class UserBridge extends Bifrost {
         });
     }
 
-    public Image getProfilePicture(String nhi) throws IOException {
-        String url = ip + "/users/" + nhi + "/photo";
+    public String getProfilePicture(String nhi) throws IOException {
+        String url = ip + USERS + nhi + "/photo";
         Request request = new Request.Builder().get().url(url).build();
         try(Response response  = client.newCall(request).execute()) {
             if (response.isSuccessful()) {
-                return handler.decodeProfilePicture(response.body());
+                return handler.decodeProfilePicture(response.body(), nhi);
             } else if(response.code() == 404){
                 return null;
             } else {

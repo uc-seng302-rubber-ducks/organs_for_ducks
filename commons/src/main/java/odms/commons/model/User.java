@@ -82,7 +82,6 @@ public class User extends Undoable<User> implements Listenable {
     private transient List<Change> changes;
     private transient PropertyChangeSupport pcs;
     //</editor-fold>
-    public Image profilePicture;
 
 
     /**

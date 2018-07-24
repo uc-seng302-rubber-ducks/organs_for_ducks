@@ -16,21 +16,16 @@ import javafx.stage.Stage;
 import odms.commons.model.Change;
 import odms.commons.model.EmergencyContact;
 import odms.commons.model.User;
-import odms.commons.model._enum.Directory;
 import odms.commons.model._enum.OrganDeregisterReason;
 import odms.commons.model._enum.Organs;
 import odms.commons.utils.Log;
 import odms.controller.AppController;
 import odms.controller.gui.UnsavedChangesAlert;
 import odms.controller.gui.panel.*;
-import odms.controller.gui.statusBarController;
+import odms.controller.gui.StatusBarController;
 
 import java.beans.PropertyChangeListener;
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.*;
 
 import static odms.commons.utils.PhotoHelper.deleteTempDirectory;
@@ -116,7 +111,7 @@ public class UserController {
     @FXML
     private ReceiverTabController receiverTabPageController;
     @FXML
-    private statusBarController statusBarPageController;  //</editor-fold>
+    private StatusBarController statusBarPageController;  //</editor-fold>
 
     private User currentUser;
     private boolean fromClinician;
@@ -413,7 +408,6 @@ public class UserController {
      */
     public void showUser(User user) {
         changeCurrentUser(user);
-        userProfileTabPageController.showUser(user);
         setContactPage();
         medicationTabPageController.refreshLists(user);
         donationTabPageController.populateOrganLists(user);
