@@ -36,7 +36,7 @@ public class ClinicianController extends BaseController {
                                                @RequestParam(value = "q", required = false) String name,
                                                @RequestParam(value = "region", required = false) String region) {
         try (Connection connection = driver.getConnection()) {
-            return handler.loadClinicians(connection, startIndex, count);
+            return handler.loadClinicians(connection, startIndex, count, name, region);
         } catch (SQLException ex) {
             Log.severe("Could not get clinicians", ex);
             throw new ServerDBException(ex);

@@ -73,7 +73,7 @@ public class DBHandler {
             "LEFT JOIN Address a ON a.fkContactId = cd.contactId " +
             "WHERE cd.fkUserNhi = ?";
     private static final String SELECT_CLINICIAN_ONE_TO_ONE_INFO_STMT = "SELECT staffId, firstName, middleName, lastName, timeCreated, lastModified, " +
-            "streetNumber, streetName, neighbourhood, city, region, country " +
+            "streetNumber, streetName, neighbourhood, city, region, country, zipCode " +
             "FROM Clinician cl " +
             "LEFT JOIN Address a ON cl.staffId = a.fkStaffId " +
             "WHERE firstName LIKE ? OR lastName LIKE ? AND region LIKE ? " +

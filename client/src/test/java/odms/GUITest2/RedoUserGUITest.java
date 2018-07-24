@@ -2,14 +2,11 @@ package odms.GUITest2;
 
 import javafx.scene.Node;
 import odms.App;
-import odms.commons.exception.ApiException;
 import odms.commons.model.Clinician;
 import odms.commons.model.dto.UserOverview;
 import odms.controller.AppController;
 import odms.commons.model.EmergencyContact;
 import odms.commons.model.User;
-import odms.utils.ClinicianBridge;
-import odms.utils.LoginBridge;
 import odms.utils.UserBridge;
 import org.junit.After;
 import org.junit.Before;
@@ -18,7 +15,6 @@ import org.junit.Test;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.matcher.control.LabeledMatchers;
-import odms.TestUtils.CommonTestMethods;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -53,7 +49,7 @@ public class RedoUserGUITest extends ApplicationTest {
         AppController.setInstance(application);
         when(application.getUserBridge()).thenReturn(bridge);
 
-        when(bridge.loadUsersToController(anyInt(), anyInt(), anyString(), anyString(), anyString(), anyString()))
+        when(bridge.getUsers(anyInt(), anyInt(), anyString(), anyString(), anyString(), anyString()))
                 .thenReturn(Collections.singletonList(UserOverview.fromUser(user)));
         when(bridge.getUser("ABC1234")).thenReturn(user);
 

@@ -10,6 +10,9 @@ import odms.controller.AppController;
 import okhttp3.*;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 
 public class ClinicianBridge extends RoleBridge {
@@ -21,27 +24,14 @@ public class ClinicianBridge extends RoleBridge {
         super(client);
     }
 
-    public void getClinicians(AppController controller, int startIndex, int count, String token) {
-        String url = ip + "/clinicians?startIndex=" + startIndex + "&count=" + count;
+    public Collection<Clinician> getClinicians(int startIndex, int count, String name, String region, String token) throws IOException {
+        String url = ip + "/clinicians?startIndex=" + startIndex + "&count=" + count + "&q=" + name + "&region=" + region;
         Request request = new Request.Builder().addHeader("x-auth-token", token).url(url).build();
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                Log.warning("Could not make the call to /clinicians");
-                e.printStackTrace();
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                if (response.isSuccessful()) {
-                    try (ResponseBody body = response.body()) {
-                        List<Clinician> clinicians = new Gson().fromJson(body.string(), new TypeToken<List<Clinician>>() {
-                        }.getType());
-                        controller.setClinicians(clinicians);
-                    }
-                }
-            }
-        });
+        Response response = client.newCall(request).execute();
+        if (response.isSuccessful()) {
+            return handler.decodeClinicians(response.body().string());
+        }
+        return new ArrayList<>();
     }
 
     public void postClinician(Clinician clinician, String token) {

@@ -143,7 +143,6 @@
                                 </AnchorPane>
                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="617.0">
                                     <children>
-                                        <Pagination fx:id="searchTablePagination" layoutX="271.0" layoutY="5.0" maxPageIndicatorCount="1" prefHeight="368.0" prefWidth="593.0" AnchorPane.bottomAnchor="2.0" AnchorPane.leftAnchor="4.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="2.0" />
                                         <TableView fx:id="adminTableView" layoutY="32.0" prefHeight="240.0" prefWidth="592.0" AnchorPane.bottomAnchor="48.0" AnchorPane.leftAnchor="4.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="0.0">
                                             <tooltip>
                                                 <Tooltip fx:id="searchToolTip" text="Empty Tooltip" />
@@ -160,6 +159,12 @@
                                                 <Tooltip fx:id="searchToolTip2" text="Empty Tooltip" />
                                             </tooltip>
                                         </TableView>
+                              <HBox alignment="CENTER" layoutX="260.0" layoutY="191.0" AnchorPane.bottomAnchor="16.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                                 <children>
+                                    <Button alignment="CENTER" layoutX="260.0" layoutY="191.0" mnemonicParsing="false" onAction="#goToPrevPage" text="&lt;&lt;" />
+                                    <Button alignment="CENTER" contentDisplay="CENTER" layoutX="300.0" layoutY="191.0" mnemonicParsing="false" onAction="#goToNextPage" text="&gt;&gt;" />
+                                 </children>
+                              </HBox>
                                     </children>
                                 </AnchorPane>
                             </items>

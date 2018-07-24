@@ -31,14 +31,7 @@ import odms.commons.model._enum.EventTypes;
 import odms.commons.model._enum.Organs;
 import odms.commons.model.dto.UserOverview;
 import odms.commons.utils.Log;
-import odms.controller.AppController;
-import odms.controller.gui.UnsavedChangesAlert;
-import odms.controller.gui.panel.TransplantWaitListController;
-import odms.controller.gui.popup.DeletedUserController;
 import odms.controller.gui.popup.utils.AlertWindowFactory;
-import odms.controller.gui.statusBarController;
-import odms.utils.UserBridge;
-import okhttp3.OkHttpClient;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -168,7 +161,7 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
         stage.setResizable(true);
         showClinician(clinician);
         try {
-            users = appController.getUserBridge().loadUsersToController(0, 30, "", "", "", appController.getToken());
+            users = appController.getUserBridge().getUsers(0, 30, "", "", "", appController.getToken());
         } catch (IOException ex) {
             AlertWindowFactory.generateError(ex);
         }
@@ -424,7 +417,7 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
 
     private void search() {
         try {
-            users = appController.getUserBridge().loadUsersToController(startIndex, ROWS_PER_PAGE, searchTextField.getText(), regionSearchTextField.getText(), genderComboBox.getValue(), appController.getToken());
+            users = appController.getUserBridge().getUsers(startIndex, ROWS_PER_PAGE, searchTextField.getText(), regionSearchTextField.getText(), genderComboBox.getValue(), appController.getToken());
         } catch (IOException ex) {
             AlertWindowFactory.generateError(ex);
         }
