@@ -439,13 +439,7 @@ public class UpdateUserController {
             Image image = new Image("file:" + inFile.getPath(), 200, 200, false, true);
             profileImage.setImage(image);
         }
-        displayImage(profileImage, user.getProfilePhotoFilePath()); //TODO: photo file path is null eventho its being set previously - 19 july
-//        } else {
-//
-//            Image image = new Image("/resources/theBestt.png", 200,200,false,true);
-//            profileImage.setImage(image);
-//        }
-        //ec
+        displayImage(profileImage, user.getProfilePhotoFilePath());
         String ecRegion = user.getRegion() == null ? "": user.getContact().getRegion();
         String ecCountry = user.getContact().getCountry();
 
@@ -571,8 +565,8 @@ public class UpdateUserController {
         boolean isValid = true;
         String filename;
         List<String> extensions = new ArrayList<>();
-        extensions.add("*.jpg");
         extensions.add("*.png");
+        extensions.add("*.jpg");
         filename = FileSelectorController.getFileSelector(stage, extensions);
         if (filename != null) {
             inFile = new File(filename);
@@ -587,6 +581,7 @@ public class UpdateUserController {
             if (isValid) {
                 update();
                 displayImage(profileImage, inFile.getPath());
+                currentUser.setProfilePhotoFilePath(inFile.getPath());
             }
         }
     }
@@ -604,7 +599,6 @@ public class UpdateUserController {
 
         if (valid) {
             removeFormChanges();
-            AppController appController = AppController.getInstance();
             UserController userController = appController.getUserController();
             if(inFile != null){
                 String filePath = setUpImageFile(inFile, currentUser.getNhi());

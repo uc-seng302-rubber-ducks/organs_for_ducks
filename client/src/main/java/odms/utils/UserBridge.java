@@ -11,6 +11,7 @@ import odms.commons.model.datamodel.Medication;
 import odms.commons.model.datamodel.ReceiverOrganDetailsHolder;
 import odms.commons.model.dto.UserOverview;
 import odms.commons.utils.Log;
+import odms.commons.utils.PhotoHelper;
 import odms.controller.AppController;
 import okhttp3.*;
 
@@ -71,7 +72,6 @@ public class UserBridge extends Bifrost {
                 if (response.isSuccessful()) {
                     toReturn = handler.decodeUser(response);
                     toReturn.setProfilePhotoFilePath(getProfilePicture(nhi));
-                    System.out.println(toReturn.getProfilePhotoFilePath());
                 } else {
                     toReturn = null;
                 }
@@ -95,7 +95,6 @@ public class UserBridge extends Bifrost {
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                System.out.println("ahahahhahahhahaha");
                 if (!response.isSuccessful()) {
                     throw new IOException("Failed to PUT to " + url);
                 }
@@ -324,5 +323,24 @@ public class UserBridge extends Bifrost {
             }
         }
     }
+
+    public void putProfilePicture(String nhi, String profilePicturePath) throws IOException {
+        String url = ip + USERS + nhi + "/photo";
+        RequestBody body = RequestBody.create(MediaType.parse("image/png"), PhotoHelper.getBytesFromImage(profilePicturePath));
+        Request request = new Request.Builder().url(url).put(body).build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.warning("Could not PUT " + url, e);
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                Log.warning("Failed to PUT " + url);
+                throw new IOException("Could not PUT " + url);
+            }
+        });
+    }
+
 
 }

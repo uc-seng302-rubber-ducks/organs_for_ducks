@@ -1,16 +1,12 @@
 package odms.commons.utils;
 
-import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import odms.commons.model._enum.Directory;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
@@ -38,7 +34,7 @@ public final class PhotoHelper {
         fileType = fileType.substring(fileType.lastIndexOf(".") + 1);
 
         Files.createDirectories(Paths.get(Directory.TEMP.directory() + Directory.IMAGES));
-        File outFile = new File(Directory.TEMP.directory() + Directory.IMAGES + "/" + id + "." + fileType);
+        File outFile = new File(Directory.TEMP.directory() + Directory.IMAGES + "/" + id.toUpperCase() + "." + fileType);
 
         bImage = ImageIO.read(inFile);
         ImageIO.write(bImage, fileType, outFile);
@@ -77,14 +73,20 @@ public final class PhotoHelper {
         String format = "png";
 
         Files.createDirectories(Paths.get(Directory.TEMP.directory() + Directory.IMAGES));
-        File outFile = new File(Directory.TEMP.directory() + Directory.IMAGES + "/" + userId + "." + format);
+        File outFile = new File(Directory.TEMP.directory() + Directory.IMAGES + "/" + userId.toUpperCase() + "." + format);
 
         InputStream in = new ByteArrayInputStream(image);
         BufferedImage buffImage = ImageIO.read(in);
+        if(buffImage == null){
+            return "";
+        }
         ImageIO.write(buffImage, format, outFile);
 
 
         return outFile.getPath();
+    }
 
+    public static byte[] getBytesFromImage(String filepath) throws IOException {
+        return Files.readAllBytes(Paths.get(filepath));
     }
 }

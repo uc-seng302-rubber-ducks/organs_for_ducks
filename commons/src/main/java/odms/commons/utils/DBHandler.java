@@ -243,7 +243,6 @@ public class DBHandler {
                         getUserEmergencyContact(user, connection);
                     } catch (SQLException e) {
                         Log.warning("Unable to create instance of user with nhi " + user.getNhi(), e);
-                        System.err.println("Unable to create instance of user with nhi " + user.getNhi() + " due to SQL Error: " + e);
                         throw e;
                     }
                 }
@@ -524,7 +523,6 @@ public class DBHandler {
 
                     } else {
                         medicalProcedure = new MedicalProcedure(resultSet.getDate(2).toLocalDate(), resultSet.getString(1), resultSet.getString(3), null);
-                        System.out.println(resultSet.getString(4));
                         medicalProcedure.addOrgan(Organs.valueOf(resultSet.getString(4)));
                         user.getMedicalProcedures().add(medicalProcedure);
                     }

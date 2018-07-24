@@ -28,7 +28,7 @@ public class ClinicianUpdateStrategy extends AbstractUpdateStrategy {
             if (clinician.getChanges().size() <= 0) {
                 continue;
             }
-            PreparedStatement stmt = connection.prepareStatement("SELECT nhi FROM clinician WHERE nhi = ?");
+            PreparedStatement stmt = connection.prepareStatement("SELECT staffId FROM Clinician WHERE staffId = ?");
             stmt.setString(1, clinician.getStaffId());
             ResultSet queryResults = stmt.executeQuery();
             if (!queryResults.next() && !clinician.isDeleted()) {

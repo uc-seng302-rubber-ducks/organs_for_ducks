@@ -29,7 +29,7 @@ CREATE TABLE User(
   dod DATE,
   timeCreated DATETIME,
   lastModified DATETIME,
-  profilePicture BLOB
+  profilePicture MEDIUMBLOB
 );
 
 CREATE TABLE Clinician(

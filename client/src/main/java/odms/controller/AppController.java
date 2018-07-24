@@ -341,11 +341,13 @@ public class AppController {
                     userBridge.putDiseases(user.getPastDiseases(), originalUser.getNhi(), token);
                     userBridge.putDiseases(user.getCurrentDiseases(), originalUser.getNhi(), token);
                 }
-                userBridge.postDonatingOrgans(user.getDonorDetails().getOrgans(), originalUser.getNhi());
                 userBridge.putUser(user, originalUser.getNhi());
+                userBridge.postDonatingOrgans(user.getDonorDetails().getOrgans(), originalUser.getNhi());
+                userBridge.putProfilePicture(originalUser.getNhi(), user.getProfilePhotoFilePath());
 
             } else {
                 userBridge.postUser(user);
+                userBridge.putProfilePicture(originalUser.getNhi(), user.getProfilePhotoFilePath());
             }
         } catch (IOException e) {
             Log.warning("Could not save user " + user.getNhi(), e);
@@ -451,6 +453,9 @@ public class AppController {
 
             if (clinicianBridge.getClinician(originalClinician.getStaffId(), getToken()) != null) {
                 clinicianBridge.putClinician(clinician, originalClinician.getStaffId(), getToken());
+                if(!originalClinician.getProfilePhotoFilePath().equals(clinician.getProfilePhotoFilePath())) {
+                    clinicianBridge.putProfilePicture(originalClinician.getStaffId(),getToken(),clinician.getProfilePhotoFilePath());
+                }
             } else {
                 clinicianBridge.postClinician(clinician, "");
             }

@@ -6,6 +6,7 @@ import odms.commons.exception.ApiException;
 import odms.commons.model.Clinician;
 import odms.commons.utils.JsonHandler;
 import odms.commons.utils.Log;
+import odms.commons.utils.PhotoHelper;
 import odms.controller.AppController;
 import okhttp3.*;
 
@@ -150,6 +151,25 @@ public class ClinicianBridge extends Bifrost {
                 throw new IOException("Failed to get profile picture");
             }
         }
+    }
+
+    public void putProfilePicture(String staffId, String token, String profilePicturePath) throws IOException {
+        String url = ip + "/clinicians/" + staffId + "/photo";
+        Headers headers = new Headers.Builder().add(TOKEN_HEADER, token).build();
+        RequestBody body = RequestBody.create(MediaType.parse("image/png"), PhotoHelper.getBytesFromImage(profilePicturePath));
+        Request request = new Request.Builder().url(url).put(body).headers(headers).build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.warning("Could not PUT " + url, e);
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                Log.warning("Failed to PUT " + url);
+                throw new IOException("Could not PUT " + url);
+            }
+        });
     }
 
 }

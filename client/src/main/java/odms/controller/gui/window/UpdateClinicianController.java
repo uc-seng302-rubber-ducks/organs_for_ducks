@@ -21,6 +21,7 @@ import odms.commons.model.datamodel.ContactDetails;
 import odms.commons.utils.Log;
 import odms.controller.AppController;
 import odms.controller.gui.FileSelectorController;
+import odms.utils.ClinicianBridge;
 
 import java.io.File;
 import java.io.IOException;
@@ -288,12 +289,12 @@ public class UpdateClinicianController {
      * uploads an image using file picker. includes validation.
      */
     @FXML
-    private void UploadImage() throws IOException {
+    private void uploadImage() {
         boolean isValid = true;
         String filename;
         List<String> extensions = new ArrayList<>();
-        extensions.add("*.jpg");
         extensions.add("*.png");
+        extensions.add("*.jpg");
         filename = FileSelectorController.getFileSelector(stage, extensions);
 
         if (filename != null) {
@@ -308,6 +309,7 @@ public class UpdateClinicianController {
             if (isValid) {
                 update();
                 displayImage(profileImage, inFile.getPath());
+                currentClinician.setProfilePhotoFilePath(filename);
             }
         }
     }

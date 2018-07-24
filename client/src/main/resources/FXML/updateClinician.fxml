@@ -121,7 +121,7 @@
             <menus>
                 <Menu mnemonicParsing="false" text="Upload">
                     <items>
-                        <MenuItem mnemonicParsing="false" onAction="#UploadImage" text="Profile Image"/>
+                        <MenuItem mnemonicParsing="false" onAction="#uploadImage" text="Profile Image"/>
                     </items>
                 </Menu>
             </menus>
