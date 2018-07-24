@@ -8,7 +8,7 @@ import java.util.Collection;
 
 public class ClinicianUpdateStrategy extends AbstractUpdateStrategy {
 
-    private static final String CREATE_CLINICIAN_STMT = "INSERT INTO Clinician (staffId, firstName, middleName, lastName) VALUES (?, ?, ?, ?)";
+    private static final String CREATE_CLINICIAN_STMT = "INSERT INTO Clinician (staffId, firstName, middleName, lastName, timeCreated, lastModified) VALUES (?, ?, ?, ?, ?, ?)";
     private static final String CREATE_STAFF_CONTACT_STMT = "INSERT INTO ContactDetails (fkStaffId, homePhone, email, cellPhone) VALUES (?, ?, ?, ?)";
     private static final String CREATE_ADDRESS_STMT = "INSERT INTO Address (fkContactId, streetNumber, streetName, neighbourhood, city, region, country) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
@@ -82,6 +82,8 @@ public class ClinicianUpdateStrategy extends AbstractUpdateStrategy {
             statement.setString(2, clinician.getFirstName());
             statement.setString(3, clinician.getMiddleName());
             statement.setString(4, clinician.getLastName());
+            statement.setTimestamp(5, Timestamp.valueOf(clinician.getDateCreated()));
+            statement.setTimestamp(6, Timestamp.valueOf(clinician.getDateLastModified()));
 
             statement.executeUpdate();
         }
