@@ -87,7 +87,7 @@ public class CreateClinicianControllerGUITest extends ApplicationTest {
         lookup("#passwordField").queryAs(TextField.class).setText("secure");
         lookup("#confirmPasswordField").queryAs(TextField.class).setText("secure");
         lookup("#firstNameTextField").queryAs(TextField.class).setText("Affie");
-        lookup("#regionTextField").queryAs(TextField.class).setText("Christchurch");
+        setComboBox(this, "#regionSelector", "Christchurch");
         clickOnButton(this, "#confirmButton");
         verifyThat("#staffIdLabel", LabeledMatchers.hasText("Staff1"));
     }
@@ -156,7 +156,7 @@ public class CreateClinicianControllerGUITest extends ApplicationTest {
         lookup("#passwordField").queryAs(TextField.class).setText("secure");
         lookup("#confirmPasswordField").queryAs(TextField.class).setText("secure");
         lookup("#firstNameTextField").queryAs(TextField.class).setText("Affie");
-        lookup("#regionTextField").queryAs(TextField.class).setText("Christchurch");
+        setComboBox(this, "#regionSelector", "Christchurch");
         clickOnButton(this,"#confirmButton");
         // return to the creation screen
         clickOnButton(this,"#backButton");

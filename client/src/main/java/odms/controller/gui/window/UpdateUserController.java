@@ -395,7 +395,7 @@ public class UpdateUserController {
             regionSelector.setVisible(false);
 
         } else {
-            regionSelector.getSelectionModel().select(region); //region selector is visible by default if clinician's country is NZ.
+            regionSelector.setValue(region); //region selector is visible by default if clinician's country is NZ.
         }
 
         if (user.getZipCode() != null) {
