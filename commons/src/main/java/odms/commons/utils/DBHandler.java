@@ -770,12 +770,15 @@ public class DBHandler {
      */
     public void updateClinician(Connection connection, String staffId, Clinician clinician) throws SQLException {
         Clinician toReplace = getOneClinician(connection, staffId);
-        if (toReplace != null) {
+        Collection<Clinician> clinicians = new ArrayList<>();
+        if (toReplace != null && !staffId.equals(clinician.getStaffId())) {
             toReplace.setDeleted(true);
-            clinician.addChange(new Change("Saved"));
-            Collection<Clinician> clinicians = new ArrayList<>(Arrays.asList(toReplace, clinician));
-            saveClinicians(clinicians, connection);
+            clinicians.add(toReplace);
         }
+        clinician.addChange(new Change("Saved"));
+        clinicians.add(clinician);
+        Log.info(clinicians.toString());
+        saveClinicians(clinicians, connection);
     }
 
     /**

@@ -24,9 +24,6 @@ public class ClinicianUpdateStrategy extends AbstractUpdateStrategy {
     public <T> void update(Collection<T> roles, Connection connection) throws SQLException {
         Collection<Clinician> clinicians = (Collection<Clinician>) roles;
         for (Clinician clinician : clinicians) {
-            if (clinician.getChanges().size() <= 0) {
-                continue;
-            }
             PreparedStatement stmt = connection.prepareStatement("SELECT staffId FROM Clinician WHERE staffId = ?");
             stmt.setString(1, clinician.getStaffId());
             ResultSet queryResults = stmt.executeQuery();
@@ -35,6 +32,7 @@ public class ClinicianUpdateStrategy extends AbstractUpdateStrategy {
             } else if (clinician.isDeleted()) {
                 deleteRole(clinician, connection);
             } else {
+                Log.info(clinician.toString());
                 executeUpdate(clinician, connection);
             }
         }
@@ -59,7 +57,7 @@ public class ClinicianUpdateStrategy extends AbstractUpdateStrategy {
                 connection.prepareStatement("ROLLBACK").execute();
                 System.out.println("An error occurred"); //TODO: Make this a popup
             }
-            connection.prepareStatement("COMMIT");
+            connection.prepareStatement("COMMIT").execute();
         } catch (SQLException sqlEx) {
             Log.warning("Error in connection to database", sqlEx);
             System.out.println("Error connecting to database");
@@ -191,10 +189,10 @@ public class ClinicianUpdateStrategy extends AbstractUpdateStrategy {
             } catch (SQLException sqlEx) {
                 Log.severe("A fatal error in deletion, cancelling operation", sqlEx);
                 connection.prepareStatement("ROLLBACK").execute();
-                System.out.println("An error occurred"); //TODO: Make this a popup
+                System.out.println("An error occurred");
             }
 
-            connection.prepareStatement("COMMIT");
+            connection.prepareStatement("COMMIT").execute();
         } catch (SQLException sqlEx) {
             Log.warning("Error in connection to database", sqlEx);
             System.out.println("Error connecting to database");
@@ -216,13 +214,13 @@ public class ClinicianUpdateStrategy extends AbstractUpdateStrategy {
             try {
                 updateClinicianDetails(clinician, connection);
                 updateClinicianAddress(clinician, connection);
-                updateClinicianPassword(clinician, connection);
+                //updateClinicianPassword(clinician, connection);
             } catch (SQLException sqlEx) {
                 Log.severe("A fatal error in updating, cancelling operation", sqlEx);
                 connection.prepareStatement("ROLLBACK").execute();
             }
 
-            connection.prepareStatement("COMMIT");
+            connection.prepareStatement("COMMIT").execute();
         } catch (SQLException sqlEx) {
             Log.warning("Error in connection to database", sqlEx);
             System.out.println("Error connecting to database");

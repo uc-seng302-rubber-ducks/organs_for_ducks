@@ -462,10 +462,10 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
      */
     @FXML
     void save() {
-        clinician.getUndoStack().clear();
-        clinician.getRedoStack().clear();
         appController.updateClinicians(clinician);
         appController.saveClinician(clinician);
+        clinician.getUndoStack().clear();
+        clinician.getRedoStack().clear();
         undoButton.setDisable(true);
         redoButton.setDisable(true);
     }
