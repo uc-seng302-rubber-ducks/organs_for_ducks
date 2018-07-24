@@ -48,7 +48,7 @@ public class GivenSteps extends ApplicationTest {
 
     @Given("^I have started the CLI$")
     public void iHaveStartedTheCLI() {
-        controller = mock(AppController.class);
+        AppController.setInstance(CucumberTestModel.getController());
     }
 
     @Given("^I have started the GUI$")

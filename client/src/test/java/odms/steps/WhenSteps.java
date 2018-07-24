@@ -10,6 +10,7 @@ import odms.commands.CreateUser;
 import odms.commands.DeleteUser;
 import odms.commands.View;
 import odms.commons.model.UserBuilder;
+import odms.commons.model.dto.UserOverview;
 import odms.view.CLI;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
@@ -20,9 +21,11 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Collections;
 
 import static odms.TestUtils.FxRobotHelper.clickOnButton;
 import static odms.TestUtils.FxRobotHelper.setTextField;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
@@ -103,13 +106,14 @@ public class WhenSteps extends ApplicationTest {
     @When("^clicked on user Login button$")
     public void clickedOnUserLoginButton() {
         CucumberTestModel.setIsClinicianLogin(false);
-        clickOn("#loginUButton");
+        clickOnButton(this,"#loginUButton");
     }
 
     @When("^clicked on clinician Login button$")
-    public void clickedOnClinicianLoginButton() {
+    public void clickedOnClinicianLoginButton() throws IOException {
+        when(CucumberTestModel.getUserBridge().loadUsersToController(anyInt(), anyInt(), anyString(), anyString(), anyString(), anyString())).thenReturn(Collections.singletonList(UserOverview.fromUser(CucumberTestModel.getUser())));
         CucumberTestModel.setIsClinicianLogin(true);
-        clickOn("#loginCButton");
+        clickOnButton(this, "#loginCButton");
     }
 
     @When("^clicked on Create Button$")
@@ -161,7 +165,7 @@ public class WhenSteps extends ApplicationTest {
     }
 
     @And("^I open the user page$")
-    public void iOpenTheUserPage() {
+    public void iOpenTheUserPage() throws IOException {
         clickOn("#searchTab");
         doubleClickOn(TableViewsMethod.getCell("#searchTableView", 0, 0));
     }

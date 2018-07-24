@@ -3,6 +3,7 @@ package odms;
 import cucumber.api.CucumberOptions;
 import cucumber.api.SnippetType;
 import cucumber.api.junit.Cucumber;
+import odms.TestUtils.CommonTestMethods;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 

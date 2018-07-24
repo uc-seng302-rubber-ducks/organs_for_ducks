@@ -181,7 +181,7 @@ public class UpdateUserControllerGUITest extends ApplicationTest {
     @Test
     public void testUpdateWeight() {
         setTextField(this,"#weightInput","65");
-        clickOnButton(this,"#confirmButton");;
+        clickOnButton(this,"#confirmButton");
         verifyThat("#weightValue", LabeledMatchers.hasText("65.0"));
     }
 
