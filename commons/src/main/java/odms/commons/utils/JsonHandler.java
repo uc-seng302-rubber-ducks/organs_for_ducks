@@ -354,7 +354,7 @@ public final class JsonHandler extends DataHandler {
     }
 
     public String decodeProfilePicture(ResponseBody body, String nhi) throws IOException {
-        Image profilePhoto = new Image(new ByteArrayInputStream(body.string().getBytes()));
+        Image profilePhoto = new Image(new ByteArrayInputStream(body.toString().getBytes()));
         return PhotoHelper.createTempImageFile(profilePhoto, nhi);
     }
 }

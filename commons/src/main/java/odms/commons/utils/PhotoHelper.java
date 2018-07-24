@@ -78,6 +78,9 @@ public final class PhotoHelper {
         Files.createDirectories(Paths.get(Directory.TEMP.directory() + Directory.IMAGES));
         File outFile = new File(Directory.TEMP.directory() + Directory.IMAGES + "/" + nhi + "." + format);
 
+        if(SwingFXUtils.fromFXImage(image, null) == null){
+            return "";
+        }
         ImageIO.write(SwingFXUtils.fromFXImage(image, null), format,outFile);
 
         return outFile.getPath();
