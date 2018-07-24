@@ -70,7 +70,7 @@ public class UserBridge extends Bifrost {
             try (Response response = client.newCall(request).execute()) {
                 if (response.isSuccessful()) {
                     toReturn = handler.decodeUser(response);
-                    toReturn.setProfilePhotoFilePath(getProfilePicture(nhi));
+                    toReturn.profilePicture = getProfilePicture(nhi);
                 } else {
                     toReturn = null;
                 }
@@ -310,14 +310,14 @@ public class UserBridge extends Bifrost {
         });
     }
 
-    public String getProfilePicture(String nhi) throws IOException {
+    public Image getProfilePicture(String nhi) throws IOException {
         String url = ip + "/users/" + nhi + "/photo";
         Request request = new Request.Builder().get().url(url).build();
         try(Response response  = client.newCall(request).execute()) {
             if (response.isSuccessful()) {
-                return handler.decodeProfilePicture(response.body(), nhi);
+                return handler.decodeProfilePicture(response.body());
             } else if(response.code() == 404){
-                return "";
+                return null;
             } else {
                 throw new IOException("Failed to get profile picture");
             }

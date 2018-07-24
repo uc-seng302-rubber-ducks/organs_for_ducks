@@ -112,7 +112,9 @@ public class UserOverviewController {
         fNameValue.setText(user.getFirstName());
         DOBValue.setText(user.getDateOfBirth().toString());
 
-        displayImage(profilePicture, user.getProfilePhotoFilePath());
+        //displayImage(profilePicture, user.getProfilePhotoFilePath());
+        profilePicture.setImage(user.profilePicture);
+        profilePicture.setFitWidth(100);
 
         if (user.getMiddleName() != null) {
             mNameValue.setText(user.getMiddleName());
