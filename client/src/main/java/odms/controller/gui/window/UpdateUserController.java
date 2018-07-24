@@ -436,7 +436,7 @@ public class UpdateUserController {
             }
 
             if(ecCountry.isEmpty()){
-                ecRegionSelector.getSelectionModel().selectFirst(); //TODO: Not sure y select first doesnt work but select("Canterbury") works. -14 july
+                ecRegionSelector.setValue(ecRegion);
 
             } else if(!ecCountry.equals(defaultCountry)) {
                 ecRegionInput.setVisible(true);
@@ -474,12 +474,7 @@ public class UpdateUserController {
                 ecCity.setText("");
             }
 
-            if (!ecCountry.isEmpty()) {
-                ecCountrySelector.getSelectionModel().select(ecCountry);
-
-            } else {
-                ecCountrySelector.getSelectionModel().select(defaultCountry);
-            }
+            ecCountrySelector.setValue(ecCountry);
 
             if (user.getContact().getNeighborhood() != null) {
                 ecNeighborhood.setText(user.getContact().getNeighborhood());
