@@ -61,26 +61,7 @@ public class AppController {
      * Creates new instance of AppController
      */
     private AppController() {
-        try {
-            users = dataHandler.loadUsers(USERS_FILE);
-            Log.info(users.size() + " users were successfully loaded");
-        } catch (FileNotFoundException e) {
-            Log.warning("User file was not found", e);
-        }
 
-        try {
-            clinicians = dataHandler.loadClinicians(CLINICIAN_FILE);
-            Log.info(clinicians.size() + " clinicians were successfully loaded");
-        } catch (FileNotFoundException e) {
-            Log.warning("Clinician file was not found", e);
-        }
-
-        try {
-            admins = dataHandler.loadAdmins(ADMIN_FILE);
-            Log.info(admins.size() + " administrators were successfully loaded");
-        } catch (FileNotFoundException e) {
-            Log.severe("Administrator file was not found", e);
-        }
 
         String[] empty = {""};
         historyOfCommands.add(empty);//putting an empty string into the string array to be displayed if history pointer is 0
