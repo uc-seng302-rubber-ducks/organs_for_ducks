@@ -16,7 +16,7 @@ import okhttp3.*;
 import java.io.IOException;
 import java.util.*;
 
-public class UserBridge extends Bifrost {
+public class UserBridge extends RoleBridge {
 
     public UserBridge(OkHttpClient client, String ip) {
         super(client, ip);

@@ -12,7 +12,7 @@ import okhttp3.*;
 import java.io.IOException;
 import java.util.List;
 
-public class ClinicianBridge extends Bifrost {
+public class ClinicianBridge extends RoleBridge {
     public ClinicianBridge(OkHttpClient client, String ip) {
         super(client, ip);
     }
