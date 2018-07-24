@@ -123,6 +123,9 @@ public class AppController {
         this.allCountries = generateAllCountries();
         generateAllNZRegion();
         allowedCountries = getAllowedCountries();
+        if (allowedCountries.isEmpty()){
+            allowedCountries.add("New Zealand");
+        }
     }
 
     /**
