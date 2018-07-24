@@ -8,12 +8,12 @@ import java.util.Collection;
 
 public class AdminUpdateStrategy extends AbstractUpdateStrategy {
 
-    private static final String CREATE_ADMIN_STMT = "INSERT INTO Administrator (username, firstName, middleName, lastName) VALUES (?, ?, ?, ?)";
+    private static final String CREATE_ADMIN_STMT = "INSERT INTO Administrator (userName, firstName, middleName, lastName, timeCreated, lastModified) VALUES (?, ?, ?, ?, ?, ?)";
 
-    private static final String UPDATE_ADMIN_STMT = "UPDATE Administrator SET firstName = ?, middleName = ?, lastName = ?, lastModified = ? WHERE username = ?";
+    private static final String UPDATE_ADMIN_STMT = "UPDATE Administrator SET userName = ?, firstName = ?, middleName = ?, lastName = ?, lastModified = ? WHERE userName = ?";
     private static final String UPDATE_ADMIN_PSSWRD = "UPDATE PasswordDetails SET hash = ?, salt = ? WHERE fkAdminUserName = ?";
 
-    private static final String DELETE_ADMIN_STMT = "DELETE FROM Administrator WHERE username = ?";
+    private static final String DELETE_ADMIN_STMT = "DELETE FROM Administrator WHERE userName = ?";
 
     @Override
     public <T> void update(Collection<T> roles, Connection connection) throws SQLException {
@@ -22,7 +22,7 @@ public class AdminUpdateStrategy extends AbstractUpdateStrategy {
             if (admin.getChanges().isEmpty()) {
                 continue;
             }
-            try (PreparedStatement stmt = connection.prepareStatement("SELECT username FROM Administrator WHERE username = ?")) {
+            try (PreparedStatement stmt = connection.prepareStatement("SELECT userName FROM Administrator WHERE userName = ?")) {
                 stmt.setString(1, admin.getUserName());
                 try (ResultSet queryResults = stmt.executeQuery()) {
                     if (!queryResults.next() && !admin.isDeleted()) {
@@ -55,7 +55,6 @@ public class AdminUpdateStrategy extends AbstractUpdateStrategy {
                 connection.prepareStatement("ROLLBACK").execute();
             }
             connection.prepareStatement("COMMIT");
-            connection.close();
         } catch (SQLException sqlEx) {
             Log.warning("Error in connection to database", sqlEx);
             throw sqlEx;
@@ -82,7 +81,6 @@ public class AdminUpdateStrategy extends AbstractUpdateStrategy {
                 throw sqlEx;
             }
             connection.prepareStatement("COMMIT");
-            connection.close();
         } catch (SQLException sqlEx) {
             Log.warning("Error in connection to database", sqlEx);
             System.out.println("Error connecting to database");
@@ -101,11 +99,8 @@ public class AdminUpdateStrategy extends AbstractUpdateStrategy {
     private void createPassword(Administrator admin, Connection connection) throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement("INSERT INTO PasswordDetails (fkAdminUserName, hash, salt) VALUES (?, ?, ?)")) {
             statement.setString(1, admin.getUserName());
-
             statement.setString(2, admin.getPassword());
-
             statement.setString(3, admin.getSalt());
-
             statement.executeUpdate();
         }
     }
@@ -126,6 +121,8 @@ public class AdminUpdateStrategy extends AbstractUpdateStrategy {
             statement.setString(2, admin.getFirstName());
             statement.setString(3, admin.getMiddleName());
             statement.setString(4, admin.getLastName());
+            statement.setTimestamp(5, Timestamp.valueOf(admin.getDateCreated()));
+            statement.setTimestamp(6, Timestamp.valueOf(admin.getDateLastModified()));
 
             statement.executeUpdate();
         }
@@ -204,7 +201,6 @@ public class AdminUpdateStrategy extends AbstractUpdateStrategy {
             }
 
             connection.prepareStatement("COMMIT");
-            connection.close();
         } catch (SQLException sqlEx) {
             Log.warning("Error in connection to database", sqlEx);
             System.out.println("Error connecting to database");
