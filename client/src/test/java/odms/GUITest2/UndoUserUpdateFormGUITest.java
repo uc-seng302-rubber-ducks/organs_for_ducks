@@ -2,6 +2,7 @@ package odms.GUITest2;
 
 import javafx.scene.Node;
 import odms.App;
+import odms.TestUtils.CommonTestMethods;
 import odms.commons.model.EmergencyContact;
 import odms.commons.model.User;
 import odms.commons.model.dto.UserOverview;
@@ -15,7 +16,6 @@ import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.matcher.control.LabeledMatchers;
 import org.testfx.matcher.control.TextInputControlMatchers;
-import odms.TestUtils.CommonTestMethods;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -34,7 +34,7 @@ public class UndoUserUpdateFormGUITest extends ApplicationTest {
 
     @BeforeClass
     public static void initialization() {
-        //CommonTestMethods.runHeadless();
+        CommonTestMethods.runHeadless();
     }
 
     @Before

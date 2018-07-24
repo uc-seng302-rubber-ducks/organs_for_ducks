@@ -8,6 +8,7 @@ import org.testfx.matcher.control.LabeledMatchers;
 import odms.TestUtils.TableViewsMethod;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.Assert.*;
 import static org.testfx.api.FxAssert.verifyThat;
@@ -16,7 +17,7 @@ import static odms.TestUtils.TableViewsMethod.getCellValue;
 public class ThenSteps extends ApplicationTest {
     @Then("^There are two profiles with first name \"([^\"]*)\" and last name \"([^\"]*)\"$")
     public void thereAreTwoProfilesWithFirstNameAndLastName(String name, String arg2) {
-        ArrayList<User> user = CucumberTestModel.getController().findUsers(name);
+        List<User> user = CucumberTestModel.getController().findUsers(name);
         assertTrue(user.size() == 2);
     }
 
