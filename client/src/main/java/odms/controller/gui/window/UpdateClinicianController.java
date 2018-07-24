@@ -1,5 +1,7 @@
 package odms.controller.gui.window;
 
+import javafx.collections.FXCollections;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -13,6 +15,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 import odms.commons.model.Clinician;
+import odms.commons.model._enum.Regions;
 import odms.commons.model.datamodel.Address;
 import odms.commons.model.datamodel.ContactDetails;
 import odms.commons.utils.Log;
@@ -68,13 +71,13 @@ public class UpdateClinicianController {
 
     @FXML
     private TextField regionTextField;
-
+    @FXML
+    private ComboBox<String> regionSelector;
     @FXML
     private TextField zipCodeTextField;
 
     @FXML
-    private TextField countryTextField;
-
+    private ComboBox<String> countrySelector;
     @FXML
     private Label invalidStaffIDLabel;
 
@@ -114,6 +117,7 @@ public class UpdateClinicianController {
     private int undoMarker;
     private Stage ownStage;
     private File inFile;
+    private String defaultCountry = "New Zealand";
 
     /**
      * Initializes the scene by setting all but the password text fields to contain the given clinicians attributes.
@@ -131,6 +135,10 @@ public class UpdateClinicianController {
         this.ownStage = ownStage;
         undoClinicianFormButton.setDisable(true);
         redoClinicianFormButton.setDisable(true);
+        countrySelector.setItems(FXCollections.observableList(controller.getAllowedCountries()));
+        for (Regions regions : Regions.values()) {
+            regionSelector.getItems().add(regions.toString());
+        }
 
         if (!newClinician) {
             oldClinician = Clinician.clone(clinician);
@@ -154,7 +162,9 @@ public class UpdateClinicianController {
             changesListener(cityTextField);
             changesListener(regionTextField);
             changesListener(zipCodeTextField);
-            changesListener(countryTextField);
+
+            comboBoxListener(regionSelector);
+            comboBoxListener(countrySelector);
 
             Scene scene = ownStage.getScene();
 
@@ -171,14 +181,36 @@ public class UpdateClinicianController {
                 }
             });
 
+            if(! clinician.getCountry().equals(defaultCountry)){
+                regionSelector.setVisible(false);
+                regionTextField.setVisible(true);
+            }
+
+
         } else {
             ownStage.setTitle("Create New Clinician Profile");
             titleLabel.setText("Create Clinician");
             confirmButton.setText("Create Clinician Profile");
+            countrySelector.getSelectionModel().select(defaultCountry);
+            regionSelector.getSelectionModel().selectFirst();
         }
 
         ownStage.setOnCloseRequest(event -> cancelUpdate());
     }
+
+    /**
+     * If New Zealand is selected at the country combo box, the region combo box will appear.
+     * If country other than New Zealand is selected at the country combo box, the region combo box will
+     * be replaced with a text field.
+     * region text field is cleared by default when it appears.
+     * region combo box selects the first item by default when it appears.
+     * @param event from GUI
+     */
+    @FXML
+    private void countrySelectorListener(ActionEvent event) {
+        controller.countrySelectorEventHandler(countrySelector, regionSelector, regionTextField);
+    }
+
 
     /**
      * Prefills all the text fields as the attribute values.
@@ -196,7 +228,7 @@ public class UpdateClinicianController {
         String streetName = clinician.getStreetName();
         String neighbourhood = clinician.getNeighborhood();
         String city = clinician.getCity();
-        String region = clinician.getRegion();
+        String region = clinician.getRegion() == null ? "": clinician.getRegion();
         String zipCode = clinician.getZipCode();
         String country = clinician.getCountry();
 
@@ -223,16 +255,25 @@ public class UpdateClinicianController {
         neighbourhoodTextField.setText(neighbourhood);
         cityTextField.setText(city);
         zipCodeTextField.setText(zipCode);
-        countryTextField.setText(country);
+        countrySelector.getSelectionModel().select(country);
 
-        if (region != null) {
+        if(!country.equals(defaultCountry)) {
             regionTextField.setText(region);
+
         } else {
-            regionTextField.setText("");
+            regionSelector.getSelectionModel().select(region); //region selector is visible by default if clinician's country is NZ.
         }
         displayImage(profileImage, currentClinician.getProfilePhotoFilePath());
     }
 
+    /**
+     * Changes the title bar to add/remove an asterisk when a change is detected on the ComboBox.
+     *
+     * @param cb The current ComboBox.
+     */
+    private void comboBoxListener(ComboBox cb) {
+        cb.valueProperty().addListener((observable, oldValue, newValue) -> update());
+    }
 
     /**
      * Changes the title bar to contain an asterisk if a change was detected.
@@ -285,6 +326,18 @@ public class UpdateClinicianController {
     }
 
     /**
+     * gets the region from text input field or
+     * selected by users from combo box
+     * @return region from combo box or text input
+     */
+    private String getRegionInput(){
+        if(regionTextField.isVisible()){
+            return regionTextField.getText();
+        }
+        return regionSelector.getSelectionModel().getSelectedItem();
+    }
+
+    /**
      * updates the undo stack
      */
     private void updateUndos() {
@@ -300,7 +353,7 @@ public class UpdateClinicianController {
                 lastNameTextField.getText(), middleNameTextField.getText(), photoPath);
         boolean addressChanged;
         addressChanged = updateAddress(streetNoTextField.getText(), streetNameTextField.getText(), neighbourhoodTextField.getText(),
-                cityTextField.getText(), regionTextField.getText(), zipCodeTextField.getText(), countryTextField.getText());
+                cityTextField.getText(), getRegionInput(), zipCodeTextField.getText(), countrySelector.getSelectionModel().getSelectedItem());
 
         if (changed || addressChanged) {
             prefillFields(currentClinician);
@@ -561,7 +614,7 @@ public class UpdateClinicianController {
         String city = cityTextField.getText();
         String region = "";
         String zipCode = zipCodeTextField.getText();
-        String country = countryTextField.getText();
+        String country = countrySelector.getSelectionModel().getSelectedItem();
         boolean updatePassword = false;
 
         if (newClinician) {
@@ -604,11 +657,10 @@ public class UpdateClinicianController {
             streetName = streetNameTextField.getText();
         }
 
-        if ((regionTextField.getText()).isEmpty()) {
+        region = getRegionInput();
+        if (region.isEmpty()) {
             emptyRegionLabel.setVisible(true);
             valid = false;
-        } else {
-            region = regionTextField.getText();
         }
 
         if (valid && !newClinician) { // updates an existing clinician

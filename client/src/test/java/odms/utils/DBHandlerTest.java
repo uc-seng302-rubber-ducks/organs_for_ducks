@@ -1,4 +1,4 @@
-package odms.Utils;
+package odms.utils;
 
 import odms.commons.model.*;
 import odms.commons.model._enum.Organs;
@@ -32,7 +32,7 @@ public class DBHandlerTest {
 
     @Before
     public void beforeTest() throws SQLException {
-        //odms.TestUtils.SQLScriptRunner.run();
+        odms.TestUtils.SQLScriptRunner.resetResampleTestDB();
 
         dbHandler = new DBHandler();
         connection = mock(Connection.class);

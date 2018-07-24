@@ -1,6 +1,8 @@
 package odms.GUITest2;
 
+import javafx.scene.Node;
 import odms.App;
+import odms.TestUtils.CommonTestMethods;
 import odms.commons.exception.ApiException;
 import odms.commons.model.User;
 import odms.commons.model.dto.UserOverview;
@@ -8,6 +10,7 @@ import odms.TestUtils.CommonTestMethods;
 import odms.commons.model.Clinician;
 import odms.commons.model.datamodel.Address;
 import odms.commons.model.datamodel.ContactDetails;
+import odms.controller.AppController;
 import odms.utils.ClinicianBridge;
 import odms.utils.LoginBridge;
 import odms.utils.UserBridge;
@@ -28,6 +31,7 @@ import java.util.Collections;
 import java.util.concurrent.TimeoutException;
 
 import static javafx.scene.input.KeyCode.*;
+import static odms.TestUtils.FxRobotHelper.*;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
@@ -124,5 +128,37 @@ public class UpdateClinicianControllerGUITest extends ApplicationTest {
         clickOn("#cancelButton");
         clickOn("#yesButton");
         verifyThat("#fNameLabel", LabeledMatchers.hasText("Affie"));
+    }
+
+    @Test
+    public void testUpdateRegionAndCountry() {
+        interact(() -> {
+            setComboBox(this, "#countrySelector", "New Zealand");
+            setComboBox(this, "#regionSelector", "Otago");
+
+
+        });
+        verifyThat("#regionSelector", Node::isVisible);
+        interact(() -> {
+            clickOnButton(this, "#confirmButton");
+        });
+        verifyThat("#regionLabel", LabeledMatchers.hasText("Otago"));
+        verifyThat("#countryLabel", LabeledMatchers.hasText("New Zealand"));
+    }
+
+    @Test
+    public void testUpdateRegionAndCountryNotNZ() {
+        interact(() -> {
+            setComboBox(this, "#countrySelector", "Belgium");
+            setTextField(this, "#regionTextField", "Flanders");
+
+        });
+        verifyThat("#regionTextField", Node::isVisible);
+
+        interact(() -> {
+            clickOnButton(this, "#confirmButton");
+        });
+        verifyThat("#regionLabel", LabeledMatchers.hasText("Flanders"));
+        verifyThat("#countryLabel", LabeledMatchers.hasText("Belgium"));
     }
 }

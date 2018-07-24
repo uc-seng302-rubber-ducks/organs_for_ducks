@@ -26,8 +26,7 @@ public class Clinician extends Undoable<Clinician> implements Listenable {
     private String staffId;
     @Expose
     private ContactDetails workContactDetails;
-    @Expose
-    private String password;
+    private transient String password;
 
     @Expose
     private LocalDateTime dateCreated;
@@ -40,8 +39,7 @@ public class Clinician extends Undoable<Clinician> implements Listenable {
     private String middleName;
     @Expose
     private String lastName;
-    @Expose
-    private String salt;
+    private transient String salt;
     private transient PropertyChangeSupport pcs;
 
     private String profilePhotoFilePath;
