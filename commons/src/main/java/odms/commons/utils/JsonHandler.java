@@ -5,11 +5,13 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializer;
 import com.google.gson.reflect.TypeToken;
+import javafx.scene.image.Image;
 import odms.commons.model.*;
 import odms.commons.model._enum.Directory;
 import odms.commons.model.datamodel.TransplantDetails;
 import odms.commons.model.dto.LoginResponse;
 import okhttp3.Response;
+import okhttp3.ResponseBody;
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
 
@@ -349,6 +351,11 @@ public final class JsonHandler extends DataHandler {
      */
     public List<TransplantDetails> decodeTransplantList(Response response) throws IOException{
         return new Gson().fromJson(response.body().string(), new TypeToken<List<TransplantDetails>>() {}.getType());
+    }
+
+    public String decodeProfilePicture(ResponseBody body, String nhi) throws IOException {
+        Image profilePhoto = new Image(new ByteArrayInputStream(body.string().getBytes()));
+        return PhotoHelper.createTempImageFile(profilePhoto, nhi);
     }
 }
 

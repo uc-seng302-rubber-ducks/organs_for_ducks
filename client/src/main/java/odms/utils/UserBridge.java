@@ -2,6 +2,7 @@ package odms.utils;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import javafx.scene.image.Image;
 import odms.commons.model.Disease;
 import odms.commons.model.MedicalProcedure;
 import odms.commons.model.User;
@@ -69,6 +70,7 @@ public class UserBridge extends Bifrost {
             try (Response response = client.newCall(request).execute()) {
                 if (response.isSuccessful()) {
                     toReturn = handler.decodeUser(response);
+                    toReturn.setProfilePhotoFilePath(getProfilePicture(nhi));
                 } else {
                     toReturn = null;
                 }
@@ -308,6 +310,18 @@ public class UserBridge extends Bifrost {
         });
     }
 
-
+    public String getProfilePicture(String nhi) throws IOException {
+        String url = ip + "/users/" + nhi + "/photo";
+        Request request = new Request.Builder().get().url(url).build();
+        try(Response response  = client.newCall(request).execute()) {
+            if (response.isSuccessful()) {
+                return handler.decodeProfilePicture(response.body(), nhi);
+            } else if(response.code() == 404){
+                return "";
+            } else {
+                throw new IOException("Failed to get profile picture");
+            }
+        }
+    }
 
 }

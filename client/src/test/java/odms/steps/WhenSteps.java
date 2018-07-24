@@ -18,7 +18,8 @@ import picocli.CommandLine.RunLast;
 import java.time.LocalDateTime;
 
 import static odms.TestUtils.FxRobotHelper.clickOnButton;
-import static odms.TestUtils.FxRobotHelper.setText;
+import static odms.TestUtils.FxRobotHelper.setTextField;
+
 
 public class WhenSteps extends ApplicationTest {
 
@@ -169,7 +170,7 @@ public class WhenSteps extends ApplicationTest {
             String bGender, String height, String weight, String bloodType, String alcCons) {
         clickOn("#birthGenderComboBox");
         clickOn(bGender);
-        setText(this, "#heightInput", height);
+        setTextField(this, "#heightInput", height);
         clickOn("#weightInput");
         write(weight);
         clickOn("#bloodComboBox");

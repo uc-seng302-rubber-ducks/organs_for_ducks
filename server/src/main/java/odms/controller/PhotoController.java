@@ -7,7 +7,6 @@ import odms.commons.utils.JDBCDriver;
 import odms.commons.utils.Log;
 import odms.exception.ServerDBException;
 import odms.security.IsClinician;
-import odms.security.IsUser;
 import odms.utils.DBManager;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,7 +32,7 @@ public class PhotoController extends BaseController {
         handler = super.getHandler();
     }
 
-    @IsUser
+
     @RequestMapping(method = RequestMethod.PUT, value = "/users/{nhi}/photo")
     public ResponseEntity putUserProfilePhoto(@PathVariable String nhi, @RequestBody MultipartFile profileImageFile) {
         if(isNotValidImageFile(profileImageFile)){
