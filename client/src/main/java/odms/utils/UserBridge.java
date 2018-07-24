@@ -92,7 +92,6 @@ public class UserBridge extends Bifrost {
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                System.out.println("ahahahhahahhahaha");
                 response.close();
                 if (!response.isSuccessful()) {
                     throw new IOException("Failed to PUT to " + url);
