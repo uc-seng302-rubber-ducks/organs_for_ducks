@@ -444,7 +444,6 @@ public class AppController {
      * @param clinician Clinician to be saved
      */
     public void saveClinician(Clinician clinician) {
-        try {
             Clinician originalClinician;
             if (!clinician.getUndoStack().isEmpty()) {
                 originalClinician = clinician.getUndoStack().firstElement().getState();
@@ -452,14 +451,11 @@ public class AppController {
                 originalClinician = clinician;
             }
 
-            if (clinicianBridge.getClinician(originalClinician.getStaffId(), getToken()) != null) {
-                clinicianBridge.putClinician(clinician, originalClinician.getStaffId(), getToken());
+            if (clinicianBridge.getExists(originalClinician.getStaffId())) {
+                clinicianBridge.putClinician(clinician, originalClinician.getStaffId(), token);
             } else {
-                clinicianBridge.postClinician(clinician, "");
+                clinicianBridge.postClinician(clinician, token);
             }
-        } catch (IOException e) {
-            Log.warning("Could not save user " + clinician.getStaffId(), e);
-        }
     }
 
     /**
