@@ -32,7 +32,6 @@ public class ClinicianUpdateStrategy extends AbstractUpdateStrategy {
             } else if (clinician.isDeleted()) {
                 deleteRole(clinician, connection);
             } else {
-                Log.info(clinician.toString());
                 executeUpdate(clinician, connection);
             }
         }
@@ -55,12 +54,10 @@ public class ClinicianUpdateStrategy extends AbstractUpdateStrategy {
                 createClinicianContact(clinician, connection);
             } catch (SQLException sqlEx) {
                 connection.prepareStatement("ROLLBACK").execute();
-                System.out.println("An error occurred"); //TODO: Make this a popup
             }
             connection.prepareStatement("COMMIT").execute();
         } catch (SQLException sqlEx) {
             Log.warning("Error in connection to database", sqlEx);
-            System.out.println("Error connecting to database");
         }
     }
 
@@ -189,13 +186,11 @@ public class ClinicianUpdateStrategy extends AbstractUpdateStrategy {
             } catch (SQLException sqlEx) {
                 Log.severe("A fatal error in deletion, cancelling operation", sqlEx);
                 connection.prepareStatement("ROLLBACK").execute();
-                System.out.println("An error occurred");
             }
 
             connection.prepareStatement("COMMIT").execute();
         } catch (SQLException sqlEx) {
             Log.warning("Error in connection to database", sqlEx);
-            System.out.println("Error connecting to database");
         }
     }
 
@@ -223,7 +218,6 @@ public class ClinicianUpdateStrategy extends AbstractUpdateStrategy {
             connection.prepareStatement("COMMIT").execute();
         } catch (SQLException sqlEx) {
             Log.warning("Error in connection to database", sqlEx);
-            System.out.println("Error connecting to database");
         }
 
     }

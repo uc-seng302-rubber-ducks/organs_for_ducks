@@ -102,26 +102,6 @@ public class ClinicianBridge extends RoleBridge {
         });
     }
 
-    // todo: temporary until we can find out why getClinician returns a non-empty result set when creating a new clinician
-    public Clinician findClinician(String staffID, String token) throws IOException {
-        Clinician toReturn;
-        String url = ip + "/clinicians/" + staffID;
-        Request request = new Request.Builder().addHeader(TOKEN_HEADER, token).url(url).build();
-        try {
-            try (Response response = client.newCall(request).execute()) {
-                if (response.isSuccessful()) {
-                    toReturn = handler.decodeClinician(response);
-                } else {
-                    toReturn = null;
-                }
-            }
-        } catch (IOException ex) {
-            Log.warning("Could not make GET call to /clinicians/" + staffID, ex);
-            throw ex;
-        }
-        return toReturn;
-    }
-
     public Clinician getClinician(String wantedClinician, String token) throws ApiException {
         Response response;
         try {
