@@ -28,15 +28,11 @@ import static odms.TestUtils.TableViewsMethod.getCell;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.testfx.api.FxAssert.verifyThat;
 
 
 public class GivenSteps extends ApplicationTest {
-
-    AppController controller = AppController.getInstance();
-    String userNhi = null;
 
     @After
     public void tearDown() throws TimeoutException {
