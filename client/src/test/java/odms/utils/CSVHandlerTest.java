@@ -1,4 +1,4 @@
-package odms.Utils;
+package odms.utils;
 
 import odms.commons.model.User;
 import odms.commons.utils.CSVHandler;

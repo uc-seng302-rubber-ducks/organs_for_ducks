@@ -885,4 +885,50 @@ public class DBHandler {
             }
         }
     }
+
+    /**
+     * Uses the provided connection and queries data base of countries to retrieve the ones that are allowed to be used
+     * as a place of residence.
+     *
+     * @param connection connection to the database
+     * @return A set of countries
+     * @throws SQLException Thrown on bad connection ot the database
+     */
+    public Set getAllowedCountries(Connection connection) throws SQLException {
+        Set countries = new HashSet();
+        try(PreparedStatement statement = connection.prepareStatement("SELECT countryName FROM Countries WHERE allowed = 1")){
+            try(ResultSet rs = statement.executeQuery()) {
+                if (!rs.next()) {
+                    return countries;
+                }
+                do {
+                    countries.add(rs.getString("countryName"));
+                } while (rs.next());
+            }
+        }
+
+        return countries;
+    }
+
+    /**
+     *Puts the allowed countries onto the database
+     *
+     * @param connection connection to the database
+     * @param countries set of countries to add
+     * @throws SQLException thrown on invalid sql
+     */
+    public void putAllowedCountries(Connection connection, Set<String> countries) throws SQLException {
+        String putStatment = "INSERT INTO Countries(countryName,allowed) VALUES (?,1)";
+        try(PreparedStatement statement = connection.prepareStatement("DELETE FROM Countries")){
+            statement.execute();
+            for(String country : countries) {
+                try (PreparedStatement put = connection.prepareStatement(putStatment)){
+                    System.out.println("putting "+ country);
+                    put.setString(1, country);
+                    System.out.println(put.execute());
+                }
+
+            }
+        }
+    }
 }

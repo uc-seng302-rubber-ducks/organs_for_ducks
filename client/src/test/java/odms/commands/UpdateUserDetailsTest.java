@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -77,7 +78,7 @@ public class UpdateUserDetailsTest {
         User muppet = controller.findUser(NHI);
         Assert.assertNotNull(muppet);
 
-        ArrayList<User> test = controller.findUsers("test dummy");
+        List<User> test = controller.findUsers("test dummy");
         assert (test.size() == 0);
     }
 

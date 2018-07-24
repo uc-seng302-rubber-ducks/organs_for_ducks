@@ -23,7 +23,7 @@ public class JDBCDriver {
     private static final String USER = "seng302-team100";
     private static final String PASSWORD = "VicingSheds6258";
     private static final String TEST_DB = "/seng302-2018-team100-test";
-    private static final String PROD_DB = "/seng302-2018-team100-prod";
+    private static final String PROD_DB = "/seng302-2018-team100-prod"; //TODO Need connection for product db -19 july
 
     private ComboPooledDataSource comboPooledDataSource;
 

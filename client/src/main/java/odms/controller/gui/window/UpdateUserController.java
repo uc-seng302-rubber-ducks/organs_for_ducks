@@ -1,6 +1,8 @@
 package odms.controller.gui.window;
 
 
+import javafx.collections.FXCollections;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -13,6 +15,7 @@ import javafx.stage.Stage;
 import odms.commons.exception.InvalidFieldsException;
 import odms.commons.model.EmergencyContact;
 import odms.commons.model.User;
+import odms.commons.model._enum.Regions;
 import odms.commons.utils.AttributeValidation;
 import odms.commons.utils.Log;
 import odms.controller.AppController;
@@ -84,13 +87,16 @@ public class UpdateUserController {
     private TextField city;
 
     @FXML
-    private ComboBox<String> region;
+    private TextField regionInput;
+
+    @FXML
+    private ComboBox<String> regionSelector;
 
     @FXML
     private TextField zipCode;
 
     @FXML
-    private TextField country;
+    private ComboBox<String> countrySelector;
 
     @FXML
     private TextField email;
@@ -117,13 +123,16 @@ public class UpdateUserController {
     private TextField ecCity;
 
     @FXML
-    private ComboBox<String> ecRegion;
+    private TextField ecRegionInput;
+
+    @FXML
+    private ComboBox<String> ecRegionSelector;
 
     @FXML
     private TextField ecZipCode;
 
     @FXML
-    private TextField ecCountry;
+    private ComboBox<String> ecCountrySelector;
 
     @FXML
     private TextField ecEmail;
@@ -165,6 +174,7 @@ public class UpdateUserController {
     private User oldUser;
     private int undoMarker; //int used to hold the top of the stack before opening this window
     private boolean listen = true;
+    private String defaultCountry = "New Zealand";
 
 
     /**
@@ -173,6 +183,12 @@ public class UpdateUserController {
      * @param stage      The applications stage.
      */
     public void init(User user, AppController controller, Stage stage) {
+        countrySelector.setItems(FXCollections.observableList(controller.getAllowedCountries()));
+        ecCountrySelector.setItems(FXCollections.observableList(controller.getAllowedCountries()));
+        for (Regions regions : Regions.values()) {
+            regionSelector.getItems().add(regions.toString());
+            ecRegionSelector.getItems().add(regions.toString());
+        }
         this.stage = stage;
         oldUser = user;
         currentUser = User.clone(oldUser);
@@ -192,9 +208,9 @@ public class UpdateUserController {
 
         final TextField[] allTextFields = {nhiInput, fNameInput, preferredFNameTextField, mNameInput,
                 lNameInput,
-                heightInput, weightInput, phone, cell, street, streetNumber, city, neighborhood, country, zipCode, email,
-                ecName, ecPhone, ecCell, ecEmail, ecStreet, ecStreetNumber, ecCity, ecNeighborhood, ecCountry, ecZipCode,
-                ecRelationship};
+                heightInput, weightInput, phone, cell, street, streetNumber, city, neighborhood, zipCode, email,
+                ecName, ecPhone, ecCell, ecEmail, ecStreet, ecStreetNumber, ecCity, ecNeighborhood, ecZipCode,
+                ecRelationship, regionInput, ecRegionInput};
 
         // creates a listener for each text field
         for (TextField tf : allTextFields) {
@@ -205,8 +221,10 @@ public class UpdateUserController {
         comboBoxListener(genderIdComboBox);
         comboBoxListener(bloodComboBox);
         comboBoxListener(alcoholComboBox);
-        comboBoxListener(region);
-        comboBoxListener(ecRegion);
+        comboBoxListener(regionSelector);
+        comboBoxListener(ecRegionSelector);
+        comboBoxListener(countrySelector);
+        comboBoxListener(ecCountrySelector);
 
         datePickerListener(dobInput);
         datePickerListener(dodInput);
@@ -226,6 +244,32 @@ public class UpdateUserController {
             event.consume();
             goBack();
         });
+    }
+
+    /**
+     * If New Zealand is selected at the country combo box, the region combo box will appear.
+     * If country other than New Zealand is selected at the country combo box, the region combo box will
+     * be replaced with a text field.
+     * region text field is cleared by default when it appears.
+     * region combo box selects the first item by default when it appears.
+     * @param event from GUI
+     */
+    @FXML
+    private void countrySelectorListener(ActionEvent event) {
+        appController.countrySelectorEventHandler(countrySelector, regionSelector, regionInput);
+    }
+
+    /**
+     * If New Zealand is selected at the country combo box, the region combo box will appear.
+     * If country other than New Zealand is selected at the country combo box, the region combo box will
+     * be replaced with a text field.
+     * region text field is cleared by default when it appears.
+     * region combo box selects the first item by default when it appears.
+     * @param event from GUI
+     */
+    @FXML
+    private void ecCountrySelectorListener(ActionEvent event){
+        appController.countrySelectorEventHandler(ecCountrySelector, ecRegionSelector, ecRegionInput);
     }
 
     /**
@@ -290,6 +334,9 @@ public class UpdateUserController {
     @FXML
     private void setUserDetails(User user) {
         //personal
+        String region = user.getRegion() == null ? "": user.getRegion();
+        String country = user.getCountry();
+
         listen = false;
         fNameInput.setText(user.getFirstName());
 
@@ -334,11 +381,7 @@ public class UpdateUserController {
             city.setText("");
         }
 
-        if (user.getCountry() != null) {
-            country.setText(user.getCountry());
-        } else {
-            country.setText("");
-        }
+        countrySelector.getSelectionModel().select(user.getCountry());
 
         if (user.getNeighborhood() != null) {
             neighborhood.setText(user.getNeighborhood());
@@ -346,10 +389,13 @@ public class UpdateUserController {
             neighborhood.setText("");
         }
 
-        if (user.getRegion() != null) {
-            region.getSelectionModel().select(user.getRegion());
+        if(!country.equals(defaultCountry)) {
+            regionInput.setVisible(true);
+            regionInput.setText(region);
+            regionSelector.setVisible(false);
+
         } else {
-            region.getSelectionModel().selectFirst();
+            regionSelector.getSelectionModel().select(region); //region selector is visible by default if clinician's country is NZ.
         }
 
         if (user.getZipCode() != null) {
@@ -374,6 +420,9 @@ public class UpdateUserController {
             email.setText("");
         }
         //ec
+        String ecRegion = user.getRegion() == null ? "": user.getContact().getRegion();
+        String ecCountry = user.getContact().getCountry();
+
         if (user.getContact() != null) {
             if (user.getContact().getName() != null) {
                 ecName.setText(user.getContact().getName());
@@ -385,10 +434,17 @@ public class UpdateUserController {
             } else {
                 ecRelationship.setText("");
             }
-            if (user.getContact().getRegion() != null) {
-                ecRegion.getSelectionModel().select(user.getContact().getRegion());
-            } else {
-                ecRegion.getSelectionModel().selectFirst();
+
+            if(ecCountry.isEmpty()){
+                ecRegionSelector.getSelectionModel().selectFirst(); //TODO: Not sure y select first doesnt work but select("Canterbury") works. -14 july
+
+            } else if(!ecCountry.equals(defaultCountry)) {
+                ecRegionInput.setVisible(true);
+                ecRegionInput.setText(ecRegion);
+                ecRegionSelector.setVisible(false);
+
+            } else { //if ecCountry == NZ
+                ecRegionSelector.getSelectionModel().select(ecRegion); //region selector is visible by default if clinician's country is NZ.
             }
             if (user.getContact().getHomePhoneNumber() != null) {
                 ecPhone.setText(user.getContact().getHomePhoneNumber());
@@ -418,10 +474,11 @@ public class UpdateUserController {
                 ecCity.setText("");
             }
 
-            if (user.getContact().getCountry() != null) {
-                ecCountry.setText(user.getContact().getCountry());
+            if (!ecCountry.isEmpty()) {
+                ecCountrySelector.getSelectionModel().select(ecCountry);
+
             } else {
-                ecCountry.setText("");
+                ecCountrySelector.getSelectionModel().select(defaultCountry);
             }
 
             if (user.getContact().getNeighborhood() != null) {
@@ -642,8 +699,16 @@ public class UpdateUserController {
         //String eAddress = ecAddress.getText();
         //valid &= AttributeValidation.checkString(eAddress);
 
-        String eRegion = ecRegion.getSelectionModel().getSelectedItem();
+        String eRegion;
+        if(ecRegionInput.isVisible()){
+            eRegion = ecRegionInput.getText();
+
+        } else {
+            eRegion = ecRegionSelector.getSelectionModel().getSelectedItem();
+        }
         valid &= AttributeValidation.checkString(eRegion);
+
+        //TODO: do we need country validation? -14 july
 
         String eRelationship = ecRelationship.getText();
         valid &= AttributeValidation.checkString(eRelationship);
@@ -873,8 +938,8 @@ public class UpdateUserController {
 
         }
 
-        if (checkChangedProperty(country.getText(), currentUser.getCountry())) {
-            currentUser.setCountry(country.getText());
+        if (checkChangedProperty(countrySelector.getSelectionModel().getSelectedItem(), currentUser.getCountry())) {
+            currentUser.setCountry(countrySelector.getSelectionModel().getSelectedItem());
             changed = true;
 
         }
@@ -885,8 +950,15 @@ public class UpdateUserController {
 
         }
 
-        if (checkChangedProperty(region.getSelectionModel().getSelectedItem(), currentUser.getRegion())) {
-            currentUser.setRegion(region.getSelectionModel().getSelectedItem());
+        String region;
+        if(regionInput.isVisible()){
+            region = regionInput.getText();
+        } else {
+            region = regionSelector.getSelectionModel().getSelectedItem();
+        }
+
+        if (checkChangedProperty(region, currentUser.getRegion())) {
+            currentUser.setRegion(region);
             changed = true;
 
         }
@@ -935,8 +1007,8 @@ public class UpdateUserController {
             changed = true;
         }
 
-        if (checkChangedProperty(ecCountry.getText(), contact.getCountry())) {
-            currentUser.setECCountry(ecCountry.getText());
+        if (checkChangedProperty(ecCountrySelector.getSelectionModel().getSelectedItem(), contact.getCountry())) {
+            currentUser.setECCountry(ecCountrySelector.getSelectionModel().getSelectedItem());
             changed = true;
         }
 
@@ -945,8 +1017,15 @@ public class UpdateUserController {
             changed = true;
         }
 
-        if (checkChangedProperty(ecRegion.getSelectionModel().getSelectedItem(), contact.getRegion())) {
-            currentUser.setECRegion(ecRegion.getSelectionModel().getSelectedItem());
+        String ecRegion;
+        if(ecRegionInput.isVisible()){
+            ecRegion = ecRegionInput.getText();
+        } else {
+            ecRegion = ecRegionSelector.getSelectionModel().getSelectedItem();
+        }
+
+        if (checkChangedProperty(ecRegion, contact.getRegion())) {
+            currentUser.setECRegion(ecRegion);
             changed = true;
         }
 

@@ -2,14 +2,14 @@ package odms.GUITest1;
 
 import javafx.scene.Node;
 import javafx.scene.control.DatePicker;
-import javafx.scene.control.TextField;
 import odms.App;
+import odms.TestUtils.CommonTestMethods;
 import odms.controller.AppController;
 import org.junit.*;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.matcher.control.LabeledMatchers;
-import odms.TestUtils.CommonTestMethods;
+
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -188,22 +188,50 @@ public class CreateUserControllerGUITest extends ApplicationTest {
 
     @Test
     public void testValidAddress() {
-        setTextField(this,"#nhiInput","ADE1987");
-        setTextField(this,"#fNameInput","Dwayne");
-        lookup("#dobInput").queryAs(DatePicker.class).setValue(LocalDate.parse("3/1/2017", DateTimeFormatter.ofPattern("d/M/yyyy")));
-        setTextField(this,"#streetNumber","2A");
-        setTextField(this, "#street", "Gary Place");
-        setComboBox(this, "#region", "Canterbury");
-        setTextField(this, "#neighborhood", "Burwood");
-        setTextField(this, "#city", "Christchurch");
-        setTextField(this, "#country", "New Zealand");
-        setTextField(this, "#zipCode", "1494");
-        clickOnButton(this,"#confirmButton");
-        verifyThat("#pAddress", LabeledMatchers.hasText("2A Gary Place\n" +
-                "Burwood"));
-        verifyThat("#pRegion", LabeledMatchers.hasText("Canterbury"));
-        verifyThat("#city", LabeledMatchers.hasText("Christchurch"));
-        verifyThat("#zipCode", LabeledMatchers.hasText("1494"));
+        interact(() -> {
+            setTextField(this, "#nhiInput", "ADE1987");
+            setTextField(this, "#fNameInput", "Dwayne");
+            setTextField(this, "#dobInput", "3/1/2017");
+            setTextField(this, "#streetNumber", "76B");
+            setTextField(this, "#street", "Cambridge St");
+            setTextField(this, "#neighborhood", "Kirkwood");
+            setTextField(this, "#city", "Battlefield");
+            setComboBox(this, "#regionSelector", "Otago");
+            setTextField(this, "#zipCode", "8033");
+            setComboBox(this, "#countrySelector", "New Zealand");
+            verifyThat("#regionSelector", Node::isVisible);
+            clickOnButton(this, "#confirmButton");
+            clickOn("#detailsTab");
+            verifyThat("#pAddress", LabeledMatchers.hasText("76B Cambridge St\nKirkwood"));
+            verifyThat("#city", LabeledMatchers.hasText("Battlefield"));
+            verifyThat("#pRegion", LabeledMatchers.hasText("Otago"));
+            verifyThat("#country", LabeledMatchers.hasText("New Zealand"));
+            verifyThat("#zipCode", LabeledMatchers.hasText("8033"));
+                });
+    }
+
+    @Test
+    public void testValidAddressNotNZ() {
+        interact(() -> {
+            setTextField(this, "#nhiInput", "ADE1987");
+            setTextField(this, "#fNameInput", "Dwayne");
+            setTextField(this, "#dobInput", "3/1/2017");
+            setTextField(this, "#streetNumber", "12");
+            setTextField(this, "#street", "Choc Rd");
+            setTextField(this, "#neighborhood", "");
+            setTextField(this, "#city", "Nice City");
+            setTextField(this, "#zipCode", "25442232");
+            setComboBox(this, "#countrySelector", "Belgium");
+            setTextField(this, "#regionInput", "Flanders");
+            verifyThat("#regionInput", Node::isVisible);
+            clickOnButton(this, "#confirmButton");
+            clickOn("#detailsTab");
+            verifyThat("#pAddress", LabeledMatchers.hasText("12 Choc Rd\n"));
+            verifyThat("#city", LabeledMatchers.hasText("Nice City"));
+            verifyThat("#pRegion", LabeledMatchers.hasText("Flanders"));
+            verifyThat("#country", LabeledMatchers.hasText("Belgium"));
+            verifyThat("#zipCode", LabeledMatchers.hasText("25442232"));
+        });
     }
 
     @Test
@@ -217,6 +245,58 @@ public class CreateUserControllerGUITest extends ApplicationTest {
         clickOn("#detailsTab");
         verifyThat("#eName", LabeledMatchers.hasText("John Cena"));
         verifyThat("#eCellPhone", LabeledMatchers.hasText("0214583341"));
+    }
+
+    @Test
+    public void testValidEmergencyContactAddress() {
+        interact(() -> {
+            setTextField(this, "#nhiInput", "ADE1987");
+            setTextField(this, "#fNameInput", "Dwayne");
+            setTextField(this, "#dobInput", "3/1/2017");
+            setTextField(this, "#ecName", "John Cena");
+            setTextField(this, "#ecCell", "0214583341");
+            setTextField(this, "#ecStreetNumber", "55E");
+            setTextField(this, "#ecStreet", "Oxford St");
+            setTextField(this, "#ecNeighborhood", "Ilam");
+            setTextField(this, "#ecCity", "Lichfield");
+            setComboBox(this, "#ecRegionSelector", "Chatham Islands");
+            setTextField(this, "#ecZipCode", "8035");
+            setComboBox(this, "#ecCountrySelector", "New Zealand");
+            verifyThat("#ecRegionSelector", Node::isVisible);
+            clickOnButton(this, "#confirmButton");
+            clickOn("#detailsTab");
+            verifyThat("#eAddress", LabeledMatchers.hasText("55E Oxford St\nIlam"));
+            verifyThat("#ecCity", LabeledMatchers.hasText("Lichfield"));
+            verifyThat("#eRegion", LabeledMatchers.hasText("Chatham Islands"));
+            verifyThat("#ecCountry", LabeledMatchers.hasText("New Zealand"));
+            verifyThat("#ecZipCode", LabeledMatchers.hasText("8035"));
+                });
+    }
+
+    @Test
+    public void testValidEmergencyContactAddressNotNZ() {
+        interact(() -> {
+            setTextField(this, "#nhiInput", "ADE1987");
+            setTextField(this, "#fNameInput", "Dwayne");
+            setTextField(this, "#dobInput", "3/1/2017");
+            setTextField(this, "#ecName", "John Cena");
+            setTextField(this, "#ecCell", "0214583341");
+            setTextField(this, "#ecStreetNumber", "12");
+            setTextField(this, "#ecStreet", "Choc Rd");
+            setTextField(this, "#ecNeighborhood", "");
+            setTextField(this, "#ecCity", "Nice City");
+            setTextField(this, "#ecZipCode", "25442232");
+            setComboBox(this, "#ecCountrySelector", "Belgium");
+            setTextField(this, "#ecRegionInput", "Flanders");
+            verifyThat("#ecRegionInput", Node::isVisible);
+            clickOnButton(this, "#confirmButton");
+            clickOn("#detailsTab");
+            verifyThat("#eAddress", LabeledMatchers.hasText("12 Choc Rd\n"));
+            verifyThat("#ecCity", LabeledMatchers.hasText("Nice City"));
+            verifyThat("#eRegion", LabeledMatchers.hasText("Flanders"));
+            verifyThat("#ecCountry", LabeledMatchers.hasText("Belgium"));
+            verifyThat("#ecZipCode", LabeledMatchers.hasText("25442232"));
+        });
     }
 
     @Test
