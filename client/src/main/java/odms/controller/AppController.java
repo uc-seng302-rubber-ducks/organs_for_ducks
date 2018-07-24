@@ -448,7 +448,6 @@ public class AppController {
      * @param clinician Clinician to be saved
      */
     public void saveClinician(Clinician clinician) {
-        try {
             Clinician originalClinician;
             if (!clinician.getUndoStack().isEmpty()) {
                 originalClinician = clinician.getUndoStack().firstElement().getState();
@@ -456,14 +455,11 @@ public class AppController {
                 originalClinician = clinician;
             }
 
-            if (clinicianBridge.getClinician(originalClinician.getStaffId(), getToken()) != null) {
-                clinicianBridge.putClinician(clinician, originalClinician.getStaffId(), getToken());
+            if (clinicianBridge.getExists(originalClinician.getStaffId())) {
+                clinicianBridge.putClinician(clinician, originalClinician.getStaffId(), token);
             } else {
-                clinicianBridge.postClinician(clinician, "");
+                clinicianBridge.postClinician(clinician, token);
             }
-        } catch (IOException e) {
-            Log.warning("Could not save user " + clinician.getStaffId(), e);
-        }
     }
 
     /**
@@ -540,26 +536,22 @@ public class AppController {
     }
 
     /**
-     * Saves the list of administrators
+     * Saves the given administrator to the database
      *
      * @param administrator Administrator to be saved
      */
     public void saveAdmin(Administrator administrator) {
-        try {
-            Administrator administrator1;
-            if (!administrator.getUndoStack().isEmpty()) {
-                administrator1 = administrator.getUndoStack().firstElement().getState();
-            } else {
-                administrator1 = administrator;
-            }
+        Administrator originalAdmin;
+        if (!administrator.getUndoStack().isEmpty()) {
+            originalAdmin = administrator.getUndoStack().firstElement().getState();
+        } else {
+            originalAdmin = administrator;
+        }
 
-            if (administratorBridge.getAdmin(administrator1.getUserName(), getToken()) != null) {
-                administratorBridge.putAdmin(administrator, administrator1.getUserName(), getToken());
-            } else {
-                administratorBridge.postAdmin(administrator, token);
-            }
-        } catch (IOException e) {
-            Log.warning("Could not save user " + administrator.getUserName(), e);
+        if (administratorBridge.getExists(originalAdmin.getUserName())) {
+            administratorBridge.putAdmin(administrator, originalAdmin.getUserName(), getToken());
+        } else {
+            administratorBridge.postAdmin(administrator, token);
         }
     }
 

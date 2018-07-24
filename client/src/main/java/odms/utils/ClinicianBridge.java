@@ -24,20 +24,33 @@ public class ClinicianBridge extends RoleBridge {
         super(client);
     }
 
-    public Collection<Clinician> getClinicians(int startIndex, int count, String name, String region, String token) throws IOException {
-        String url = ip + "/clinicians?startIndex=" + startIndex + "&count=" + count + "&q=" + name + "&region=" + region;
-        Request request = new Request.Builder().addHeader("x-auth-token", token).url(url).build();
-        Response response = client.newCall(request).execute();
-        if (response.isSuccessful()) {
-            return handler.decodeClinicians(response.body().string());
-        }
-        return new ArrayList<>();
+    public void getClinicians(AppController controller, int startIndex, int count, String token) {
+        String url = ip + "/clinicians?startIndex=" + startIndex + "&count=" + count;
+        Request request = new Request.Builder().addHeader(TOKEN_HEADER, token).url(url).build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.warning("Could not make the call to /clinicians");
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    try (ResponseBody body = response.body()) {
+                        List<Clinician> clinicians = new Gson().fromJson(body.string(), new TypeToken<List<Clinician>>() {
+                        }.getType());
+                        controller.setClinicians(clinicians);
+                    }
+                }
+            }
+        });
     }
 
     public void postClinician(Clinician clinician, String token) {
         String url = ip + "/clinicians";
         RequestBody requestBody = RequestBody.create(JSON, new Gson().toJson(clinician));
-        Request request = new Request.Builder().url(url).addHeader("x-auth-token", token).post(requestBody).build();
+        Request request = new Request.Builder().url(url).addHeader(TOKEN_HEADER, token).post(requestBody).build();
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -58,7 +71,7 @@ public class ClinicianBridge extends RoleBridge {
     public void putClinician(Clinician clinician, String staffID, String token) {
         String url = ip + "/clinicians/" + staffID;
         RequestBody requestBody = RequestBody.create(JSON, new Gson().toJson(clinician));
-        Request request = new Request.Builder().url(url).addHeader("x-auth-token", token).put(requestBody).build();
+        Request request = new Request.Builder().url(url).addHeader(TOKEN_HEADER, token).put(requestBody).build();
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -76,7 +89,7 @@ public class ClinicianBridge extends RoleBridge {
 
     public void deleteClinician(Clinician clinician, String token) {
         String url = ip + "/clinicians/" + clinician.getStaffId();
-        Request request = new Request.Builder().url(url).addHeader("x-auth-token", token).delete().build();
+        Request request = new Request.Builder().url(url).addHeader(TOKEN_HEADER, token).delete().build();
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {

@@ -165,7 +165,6 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
         } catch (IOException ex) {
             AlertWindowFactory.generateError(ex);
         }
-        System.out.println(users);
         searchCount = users.size();
         initSearchTable();
         transplantWaitListTabPageController.init(appController, this);
@@ -456,10 +455,10 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
      */
     @FXML
     void save() {
-        clinician.getUndoStack().clear();
-        clinician.getRedoStack().clear();
         appController.updateClinicians(clinician);
         appController.saveClinician(clinician);
+        clinician.getUndoStack().clear();
+        clinician.getRedoStack().clear();
         undoButton.setDisable(true);
         redoButton.setDisable(true);
     }
