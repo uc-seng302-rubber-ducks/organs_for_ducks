@@ -748,11 +748,13 @@ public class DBHandler {
      */
     public void updateAdministrator(Connection connection, String username, Administrator administrator) throws SQLException {
         Administrator toReplace = getOneAdministrator(connection, username);
+        Collection<Administrator> administrators = new ArrayList<>();
         if (toReplace != null) {
             toReplace.setDeleted(true);
+            administrators.add(toReplace);
         }
         administrator.addChange(new Change("Saved"));
-        Collection<Administrator> administrators = new ArrayList<>(Arrays.asList(toReplace, administrator));
+        administrators.add(administrator);
         saveAdministrators(administrators, connection);
     }
 
