@@ -11,7 +11,11 @@ import odms.commons.utils.db_strategies.AdminUpdateStrategy;
 import odms.commons.utils.db_strategies.ClinicianUpdateStrategy;
 import odms.commons.utils.db_strategies.UserUpdateStrategy;
 
-import java.sql.*;
+import java.lang.reflect.Type;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -26,9 +30,9 @@ public class DBHandler {
             "FROM User u LEFT JOIN Address a ON a.fkUserNhi = u.nhi " +
             "LEFT JOIN HealthDetails hd ON u.nhi = hd.fkUserNhi " +
             "WHERE (u.firstName LIKE ? OR u.lastName LIKE ?) " +
-            "AND (a.region LIKE ? OR a.region is NULL) " +
-            "AND (hd.gender LIKE ? OR hd.gender is NULL) " +
-            "AND (a.fkContactId != (SELECT contactId FROM ContactDetails cd JOIN EmergencyContactDetails ecd ON cd.contactId = ecd.fkContactId WHERE ecd.fkUserNhi = nhi) OR a.fkContactId is NULL) " +
+            "AND (a.region LIKE ? OR a.region IS NULL) " +
+            "AND (hd.gender LIKE ? OR hd.gender IS NULL) " +
+            "AND (a.fkContactId != (SELECT contactId FROM ContactDetails cd JOIN EmergencyContactDetails ecd ON cd.contactId = ecd.fkContactId WHERE ecd.fkUserNhi = nhi) OR a.fkContactId IS NULL) " +
             "LIMIT ? OFFSET ?";
     private static final String SELECT_ONE_USER_INFO_STMT_FILTERED = "SELECT nhi, firstName, middleName, LastName, preferedName, timeCreated, lastModified, profilePicture, gender, birthGender, smoker, " +
             "alcoholConsumption, height, weight, dob, dod, bloodType " +
@@ -78,6 +82,9 @@ public class DBHandler {
     private static final String SELECT_SINGLE_ADMIN_ONE_TO_ONE_INFO_STMT = "SELECT userName, firstName, middleName, lastName, timeCreated, lastModified  FROM Administrator WHERE userName = ?";
     private static final String SELECT_PASS_DETAILS = "SELECT hash,salt FROM PasswordDetails WHERE fkAdminUserName = ? OR fkStaffId = ?";
     private static final String SELECT_ONE_CLINICIAN = "SELECT * FROM Clinician LEFT JOIN Address ON staffId = fkStaffId WHERE staffId = ?";
+    private static final String SELECT_IF_USER_EXISTS_BOOL = "SELECT EXISTS(SELECT 1 FROM User WHERE nhi = ?)";
+    private static final String SELECT_IF_CLINICIAN_EXISTS_BOOL = "SELECT EXISTS(SELECT 1 FROM Clinician WHERE staffId = ?)";
+    private static final String SELECT_IF_ADMIN_EXISTS_BOOL = "SELECT EXISTS(SELECT 1 FROM Administrator WHERE userName = ?)";
     private AbstractUpdateStrategy updateStrategy;
 
 
@@ -90,11 +97,11 @@ public class DBHandler {
      * @throws SQLException Thrown on bad statement
      */
     public ResultSet executeStatement(String statement, Connection conn) throws SQLException {
-        try{
+        try {
             try (PreparedStatement preparedStatement = conn.prepareStatement(statement)) {
                 return preparedStatement.executeQuery();
             }
-        } catch (SQLException e){
+        } catch (SQLException e) {
             Log.severe("Exception in executing statement " + statement, e);
             throw e;
         }
@@ -103,8 +110,9 @@ public class DBHandler {
     /**
      * Method with less filtering parameters to obtain all the users information from the database based on filtering provided.
      * User objects are instantiated and its attributes are set based on the de-serialised information.
+     *
      * @param connection A valid connection to the database
-     * @param count number of items returned
+     * @param count      number of items returned
      * @param startIndex number of items to skip
      * @return a Collection of Users
      * @throws SQLException if there are any SQL errors
@@ -116,11 +124,12 @@ public class DBHandler {
     /**
      * Method to obtain all the users information from the database based on filtering provided.
      * User objects are instantiated and its attributes are set based on the de-serialised information.
+     *
      * @param connection A valid connection to the database
-     * @param count number of items returned
+     * @param count      number of items returned
      * @param startIndex number of items to skip
-     * @param name name of a user
-     * @param region region of a user
+     * @param name       name of a user
+     * @param region     region of a user
      * @return a Collection of Users
      * @throws SQLException if there are any SQL errors
      */
@@ -200,11 +209,11 @@ public class DBHandler {
     }
 
 
-
     /**
      * Gets info of a single user based on user NHI provided
+     *
      * @param connection A valid connection to the database
-     * @param nhi user's NHI
+     * @param nhi        user's NHI
      * @return a user object, null if such user is not found
      * @throws SQLException if there are any SQL errors
      */
@@ -250,6 +259,7 @@ public class DBHandler {
 
     /**
      * get the basic details of a user from a result set
+     *
      * @param resultSet result set with the cursor pointing at the desired row
      * @return a Clinician
      * @throws SQLException if there is an error extracting information from the resultSet
@@ -260,6 +270,7 @@ public class DBHandler {
 
     /**
      * get the users health details
+     *
      * @param resultSet result set with the cursor pointing at the desired row
      * @return A user with a first name, middle name, last name, date of birth and date of death
      * @throws SQLException if there is an error extracting information from the resultSet
@@ -347,8 +358,9 @@ public class DBHandler {
 
     /**
      * gets all the info for the address for contact details and sets it
+     *
      * @param contactDetails the contact details
-     * @param resultSet result set with the cursor pointing at the desired row
+     * @param resultSet      result set with the cursor pointing at the desired row
      * @throws SQLException exception thrown during the transaction
      */
     private void getAddressResults(ContactDetails contactDetails, ResultSet resultSet) throws SQLException {
@@ -481,7 +493,7 @@ public class DBHandler {
 
                     if (resultSet.getTimestamp("dateStoppedTaking") == null) {
                         int medicationInstanceIndex = user.getPreviousMedication().indexOf(medication);
-                        if( medicationInstanceIndex != -1){ //if the medication instance already exist in this user's previousMedication attribute. This scenario happens when a user is currently taking a medication that had been taken before.
+                        if (medicationInstanceIndex != -1) { //if the medication instance already exist in this user's previousMedication attribute. This scenario happens when a user is currently taking a medication that had been taken before.
                             medication = user.getPreviousMedication().get(medicationInstanceIndex);
                             medication.addMedicationTime(resultSet.getTimestamp("dateStartedTaking").toLocalDateTime()); //updates the medication time array
                             user.getPreviousMedication().remove(medication);
@@ -665,8 +677,8 @@ public class DBHandler {
     /**
      * Updates the administrators stored in active memory.
      *
-     * @param administrator  Admin to update.
-     * @param connection Connection to the target database
+     * @param administrator Admin to update.
+     * @param connection    Connection to the target database
      */
     public void saveAdministrator(Administrator administrator, Connection connection) {
         updateStrategy = new AdminUpdateStrategy();
@@ -691,10 +703,11 @@ public class DBHandler {
 
     /**
      * Checks to see whether a correct password has been entered
+     *
      * @param connection connection ot the test database
-     * @param guess Guess at the password
-     * @param id ID to check password for
-     * @param loginType type of login ot check for
+     * @param guess      Guess at the password
+     * @param id         ID to check password for
+     * @param loginType  type of login ot check for
      * @return if the password is correct
      */
     public boolean isValidLogIn(Connection connection, String guess, String id, String loginType) {
@@ -707,7 +720,7 @@ public class DBHandler {
                 statement.setString(2, id);
             }
             try (ResultSet rs = statement.executeQuery()) {
-                if(!rs.next()){
+                if (!rs.next()) {
                     return false;
                 }
                 String hash = rs.getString("hash");
@@ -737,10 +750,10 @@ public class DBHandler {
         Administrator toReplace = getOneAdministrator(connection, username);
         if (toReplace != null) {
             toReplace.setDeleted(true);
-            administrator.addChange(new Change("Saved"));
-            Collection<Administrator> administrators = new ArrayList<>(Arrays.asList(toReplace, administrator));
-            saveAdministrators(administrators, connection);
         }
+        administrator.addChange(new Change("Saved"));
+        Collection<Administrator> administrators = new ArrayList<>(Arrays.asList(toReplace, administrator));
+        saveAdministrators(administrators, connection);
     }
 
     /**
@@ -762,11 +775,12 @@ public class DBHandler {
     /**
      * replaces an existing clinician with a new version
      * finds old clinician by staffId and marks it for deletion, then passes it and the new clinician to
-     * @see this.saveClinicians
+     *
      * @param connection connection to the target database
-     * @param staffId (old) staffId of clinician
-     * @param clinician clinician to be put into database
+     * @param staffId    (old) staffId of clinician
+     * @param clinician  clinician to be put into database
      * @throws SQLException exception thrown during the transaction
+     * @see this.saveClinicians
      */
     public void updateClinician(Connection connection, String staffId, Clinician clinician) throws SQLException {
         Clinician toReplace = getOneClinician(connection, staffId);
@@ -783,8 +797,9 @@ public class DBHandler {
 
     /**
      * finds a single Clinician and sets their deleted flag to true, then updates the Clinician on the db
+     *
      * @param connection connection to the target database
-     * @param staffId staffId of the clinician to be deleted
+     * @param staffId    staffId of the clinician to be deleted
      * @throws SQLException exception thrown during the transaction
      */
     public void deleteClinician(Connection connection, String staffId) throws SQLException {
@@ -798,26 +813,28 @@ public class DBHandler {
     /**
      * replaces an existing user with a new version
      * finds old user by nhi and marks it for deletion, then passes it and the new user to
-     * @see this.saveUsers
+     *
      * @param conn connection to the target database
-     * @param nhi (old) nhi of user
+     * @param nhi  (old) nhi of user
      * @param user user to be put into database
      * @throws SQLException exception thrown during the transaction
+     * @see this.saveUsers
      */
     public void updateUser(Connection conn, String nhi, User user) throws SQLException {
         User toReplace = getOneUser(conn, nhi);
         if (toReplace != null) {
             toReplace.setDeleted(true);
-            user.addChange(new Change("Saved"));
-            Collection<User> users = new ArrayList<>(Arrays.asList(toReplace, user));
-            saveUsers(users, conn);
         }
+        user.addChange(new Change("Saved"));
+        Collection<User> users = new ArrayList<>(Arrays.asList(toReplace, user));
+        saveUsers(users, conn);
     }
 
     /**
      * finds a single user and sets their deleted flag to true, then updates the user on the db
+     *
      * @param conn connection to the target database
-     * @param nhi nhi of the user to be deleted
+     * @param nhi  nhi of the user to be deleted
      * @throws SQLException exception thrown during the transaction
      */
     public void deleteUser(Connection conn, String nhi) throws SQLException {
@@ -830,17 +847,18 @@ public class DBHandler {
 
     /**
      * gets all relevant details relating to users waiting to receive an organ transplant
-     * @see TransplantDetails
-     * @param conn connection to the target database
+     *
+     * @param conn       connection to the target database
      * @param startIndex row number to start reading from
-     * @param count number of results to return
-     * @param name string query to search in the name (first, middle, or last). should be an empty string if no restriction to be made
-     * @param region restrict results to a given region. search for regions LIKE the given string. should be an empty string if no restriction to be made
-     * @param organs restrict results to a given set of organs. should be null if no restriction to be made
+     * @param count      number of results to return
+     * @param name       string query to search in the name (first, middle, or last). should be an empty string if no restriction to be made
+     * @param region     restrict results to a given region. search for regions LIKE the given string. should be an empty string if no restriction to be made
+     * @param organs     restrict results to a given set of organs. should be null if no restriction to be made
      * @return list of transplant details matching the above criteria
      * @throws SQLException exception thrown during the transaction
+     * @see TransplantDetails
      */
-    public List<TransplantDetails> getTransplantDetails(Connection conn, int startIndex, int count, String name, String region, String[] organs) throws SQLException{
+    public List<TransplantDetails> getTransplantDetails(Connection conn, int startIndex, int count, String name, String region, String[] organs) throws SQLException {
         StringBuilder queryString = new StringBuilder("SELECT U.nhi, U.firstName, U.middleName, U.lastName, O.organName, Dates.dateRegistered, Q.region from OrganAwaiting JOIN Organ O ON OrganAwaiting.fkOrgansId = O.organId\n" +
                 "  LEFT JOIN User U ON OrganAwaiting.fkUserNhi = U.nhi\n" +
                 "  LEFT JOIN  (SELECT Address.fkUserNhi, Address.region from Address JOIN ContactDetails Detail ON Address.fkContactId = Detail.contactId\n" +
@@ -858,7 +876,7 @@ public class DBHandler {
             queryString.append(" )");
         }
         queryString.append(") LIMIT ? OFFSET ?");
-        try(PreparedStatement stmt = conn.prepareStatement(queryString.toString())) {
+        try (PreparedStatement stmt = conn.prepareStatement(queryString.toString())) {
             //first, middle, and last names
             stmt.setString(1, name + "%");
             stmt.setString(2, name + "%");
@@ -884,6 +902,88 @@ public class DBHandler {
                             selectedOrgan, dateRegistered, results.getString(7)));
                 }
                 return detailsList;
+            }
+        }
+    }
+
+
+    /**
+     * queries the database as to whether an end-user* exists or not
+     * * end-user meaning Admin, Clinician, or User
+     *
+     * @param conn       connection to the target database
+     * @param type       type of the end-user as defined above
+     * @param identifier username, (string version of a) staff id, or NHI
+     *                   The staff id, while in string form must be a valid integer
+     * @return true if the identifier can be found in the relevant table
+     * @throws SQLException exception thrown during the transaction
+     */
+    public boolean getExists(Connection conn, Type type, String identifier) throws SQLException {
+        String query = null;
+        if (type.equals(Administrator.class)) {
+            query = SELECT_IF_ADMIN_EXISTS_BOOL;
+        } else if (type.equals(Clinician.class)) {
+            query = SELECT_IF_CLINICIAN_EXISTS_BOOL;
+        } else if (type.equals(User.class)) {
+            query = SELECT_IF_USER_EXISTS_BOOL;
+        }
+
+        try (PreparedStatement stmt = conn.prepareStatement(query)) {
+            if (type.equals(Clinician.class)) {
+                stmt.setInt(1, Integer.valueOf(identifier));
+            } else {
+                stmt.setString(1, identifier);
+            }
+
+            try (ResultSet result = stmt.executeQuery()) {
+                result.next();
+                return result.getInt(1) == 1;
+            }
+        }
+    }
+
+    /**
+     * Uses the provided connection and queries data base of countries to retrieve the ones that are allowed to be used
+     * as a place of residence.
+     *
+     * @param connection connection to the database
+     * @return A set of countries
+     * @throws SQLException Thrown on bad connection ot the database
+     */
+    public Set getAllowedCountries(Connection connection) throws SQLException {
+        Set countries = new HashSet();
+        try(PreparedStatement statement = connection.prepareStatement("SELECT countryName FROM Countries WHERE allowed = 1")){
+            try(ResultSet rs = statement.executeQuery()) {
+                if (!rs.next()) {
+                    return countries;
+                }
+                do {
+                    countries.add(rs.getString("countryName"));
+                } while (rs.next());
+            }
+        }
+
+        return countries;
+    }
+
+    /**
+     *Puts the allowed countries onto the database
+     *
+     * @param connection connection to the database
+     * @param countries set of countries to add
+     * @throws SQLException thrown on invalid sql
+     */
+    public void putAllowedCountries(Connection connection, Set<String> countries) throws SQLException {
+        String putStatment = "INSERT INTO Countries(countryName,allowed) VALUES (?,1)";
+        try(PreparedStatement statement = connection.prepareStatement("DELETE FROM Countries")){
+            statement.execute();
+            for(String country : countries) {
+                try (PreparedStatement put = connection.prepareStatement(putStatment)){
+                    System.out.println("putting "+ country);
+                    put.setString(1, country);
+                    System.out.println(put.execute());
+                }
+
             }
         }
     }

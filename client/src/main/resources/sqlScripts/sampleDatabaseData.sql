@@ -130,15 +130,15 @@ INSERT INTO Address(fkContactId, streetNumber, streetName, neighbourhood, city, 
 
 
 INSERT INTO PasswordDetails(password_id, fkAdminUserName, fkStaffId, hash, salt) VALUES
-  (1, 'ruth265', NULL, 'D1M46pKQGpUDZfn8LAzyQOdjQbx3UG06bWcj10K_ODU',
+  (1, 'ruth265', NULL, 'DNRVh97GMTUhGWnv8aobdTjPW9vvQBqXA46oEgLLOu8',
    '[-89, 50, 52, 79, 109, 49, -122, 1, -109, -113, -105, -9, 121, 13, -65, 94, 89, 67, 62, -31, 54, -127, 61, -85, 4
    , 96, -126, 39, 57, -113, -68, 88]'),
-  (2, 'fts34', NULL, 'SZUxdgVVFAFbDG8CHGNcZDCEkl1Q4ddWukJq1pJp9aE',
+  (2, 'fts34', NULL, '_HgR_4a1ZsniKwfzTQGcAvmGGwFJp8rZ5CGo-nrgbGw',
    '[-10, -70, 97, 89, 81, 64, -48, 32, 45, -90, -76, -79, 51, 81, -88, -22, -119, 125, -90, 84, 18, 116, -34,
     -119, -81, -100, 62, 96, 81, -34, 27, 75]'),
-  (3, NULL, '16', 'JWEoqV79LKYPPaxL7XJToqSkt18Z-kxV10D8Go8FkqA', '[-84, -6, 43, 63
+  (3, NULL, '16', 'uKFPQVlE4awK465dzxynFGAapt-2Np_6u9XAlBYyWsI', '[-84, -6, 43, 63
   , 105, -10, -15, 100, -126, -13, 22, 9, -77, -48, -46, 39, 22, -2, 111, 119, 73, -17, 120, -122, 110, -113, -59,
    96, -51, 43, 40, -105]'),
-  (4, NULL, '23', '5oUaZkqBUEF474GFGtrwuNZ5xgWBEMcX9_l4tfXMT7k', '[54, -71, 20,
+  (4, NULL, '23', 'qEm6pUtZyUc70w_goHbGUoHSSA4IDdM7vgtbYdzigLo', '[54, -71, 20,
   -65, -104, 56, -85, 73, -74, 123, -87, -13, 40, 9, 3, 44, -64, -105, 120, 47, -23, -63, 31, 51, 49, 23, -77,
   -10, 60, -29, -120, 117]');

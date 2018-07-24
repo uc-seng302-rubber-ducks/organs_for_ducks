@@ -86,7 +86,7 @@ public class ClinicianController extends BaseController {
 
     @IsClinician
     @RequestMapping(method = RequestMethod.DELETE, value = "/clinicians/{staffId}")
-    public ResponseEntity deleteClinician(@PathVariable("staffId") String staffId) throws SQLException {
+    public ResponseEntity deleteClinician(@PathVariable("staffId") String staffId) {
         try (Connection connection = driver.getConnection()) {
             handler.deleteClinician(connection, staffId);
         } catch (SQLException ex) {
@@ -94,6 +94,16 @@ public class ClinicianController extends BaseController {
             throw new ServerDBException(ex);
         }
         return new ResponseEntity(HttpStatus.OK);
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/clinicians/exists/{staffId}")
+    public boolean getExists(@PathVariable("staffId") String staffId) {
+        try (Connection connection = driver.getConnection()) {
+            return handler.getExists(connection, Clinician.class, staffId);
+        } catch (SQLException ex) {
+            Log.severe("cannot check whether clinician exists", ex);
+            throw new ServerDBException(ex);
+        }
     }
 
 }

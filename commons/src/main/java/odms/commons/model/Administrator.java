@@ -26,10 +26,8 @@ public class Administrator extends Undoable<Administrator> implements Listenable
     private String middleName;
     @Expose
     private String lastName;
-    @Expose
-    private String password;
-    @Expose
-    private String salt;
+    private transient String password;
+    private transient String salt;
     @Expose
     private LocalDateTime dateCreated;
     @Expose
@@ -187,6 +185,15 @@ public class Administrator extends Undoable<Administrator> implements Listenable
         salt = PasswordManager.getNextSalt();
         this.password = PasswordManager.hash(password, salt);
         addChange(new Change("Update password"));
+    }
+
+    /**
+     * Contract pre conditions:
+     * Password must already be changed to the desired password
+     * @param salt new salt
+     */
+    public void setSalt(String salt){
+        this.salt = salt;
     }
 
     public String getSalt() {

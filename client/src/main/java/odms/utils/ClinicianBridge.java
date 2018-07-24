@@ -12,7 +12,7 @@ import okhttp3.*;
 import java.io.IOException;
 import java.util.List;
 
-public class ClinicianBridge extends Bifrost {
+public class ClinicianBridge extends RoleBridge {
     public ClinicianBridge(OkHttpClient client, String ip) {
         super(client, ip);
     }
@@ -153,6 +153,22 @@ public class ClinicianBridge extends Bifrost {
         } catch (IOException ex) {
             Log.severe("could not interpret the given clinician", ex);
             return null;
+        }
+    }
+
+    /**
+     * checks whether a clinician exists in the db by staff id
+     * @param staffId staff id to search for
+     * @return true if staff id can be found, false otherwise
+     */
+    public boolean getExists(String staffId) {
+        Request request = new Request.Builder().get().url(ip + "/clinicians/exists/" + staffId).build();
+
+        try (Response res = client.newCall(request).execute()) {
+            return res.body().string().equalsIgnoreCase("true");
+        } catch (NullPointerException | IOException ex) {
+            Log.warning("could not determine if the clinician exists", ex);
+            return false;
         }
     }
 }
