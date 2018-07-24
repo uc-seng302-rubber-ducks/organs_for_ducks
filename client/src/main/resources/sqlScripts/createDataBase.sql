@@ -18,6 +18,7 @@ DROP TABLE IF EXISTS Administrator;
 DROP TABLE IF EXISTS Clinician;
 DROP TABLE IF EXISTS User;
 
+
 CREATE TABLE User(
   nhi varchar(7) PRIMARY KEY,
   firstName VARCHAR(255),
@@ -201,3 +202,8 @@ CREATE TABLE PasswordDetails(
   FOREIGN KEY (fkAdminUserName) REFERENCES Administrator(userName) ON DELETE CASCADE,
   FOREIGN KEY (fkStaffId) REFERENCES Clinician(staffId) ON DELETE CASCADE
 );
+
+/*CREATE TABLE Countries(
+  countryName VARCHAR(100) PRIMARY KEY,
+  allowed BOOLEAN DEFAULT TRUE
+);*/

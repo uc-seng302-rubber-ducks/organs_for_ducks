@@ -1,5 +1,7 @@
 package odms.controller;
 
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.TextField;
 import odms.commons.exception.ProfileAlreadyExistsException;
 import odms.commons.exception.ProfileNotFoundException;
 import odms.commons.model.Administrator;
@@ -7,6 +9,7 @@ import odms.commons.model.Change;
 import odms.commons.model.Clinician;
 import odms.commons.model.User;
 import odms.commons.model._enum.Directory;
+import odms.commons.model._enum.Regions;
 import odms.commons.model.datamodel.Medication;
 import odms.commons.model.datamodel.TransplantDetails;
 import odms.commons.model.dto.UserOverview;
@@ -43,6 +46,9 @@ public class AppController {
     private List<Clinician> clinicians = new ArrayList<>();
     private Set<UserOverview> overviews = new HashSet<>();
     private ArrayList<String[]> historyOfCommands = new ArrayList<>();
+    private List<String> allCountries;
+    private List<String> allowedCountries; //store the countries chosen by admin
+    private List<String> allNZRegion;
     private int historyPointer = 0;
     private DataHandler dataHandler = new JsonHandler();
     private OkHttpClient client = new OkHttpClient();
@@ -53,6 +59,7 @@ public class AppController {
     private TransplantBridge transplantBridge = new TransplantBridge(client);
     private UserController userController = new UserController();
     private ClinicianController clinicianController = new ClinicianController();
+    private CountriesBridge countriesBridge = new CountriesBridge(client);
     private AdministratorViewController administratorViewController = new AdministratorViewController();
     private odms.controller.gui.statusBarController statusBarController = new statusBarController();
     private Stack<User> redoStack = new Stack<>();
@@ -61,29 +68,18 @@ public class AppController {
      * Creates new instance of AppController
      */
     private AppController() {
-        try {
-            users = dataHandler.loadUsers(USERS_FILE);
-            Log.info(users.size() + " users were successfully loaded");
-        } catch (FileNotFoundException e) {
-            Log.warning("User file was not found", e);
-        }
 
-        try {
-            clinicians = dataHandler.loadClinicians(CLINICIAN_FILE);
-            Log.info(clinicians.size() + " clinicians were successfully loaded");
-        } catch (FileNotFoundException e) {
-            Log.warning("Clinician file was not found", e);
-        }
-
-        try {
-            admins = dataHandler.loadAdmins(ADMIN_FILE);
-            Log.info(admins.size() + " administrators were successfully loaded");
-        } catch (FileNotFoundException e) {
-            Log.severe("Administrator file was not found", e);
-        }
 
         String[] empty = {""};
         historyOfCommands.add(empty);//putting an empty string into the string array to be displayed if history pointer is 0
+
+
+        this.allCountries = generateAllCountries();
+        generateAllNZRegion();
+        allowedCountries = getAllowedCountries();
+        if (allowedCountries.isEmpty()){
+            allowedCountries.add("New Zealand");
+        }
     }
 
     /**
@@ -111,6 +107,88 @@ public class AppController {
     public TransplantBridge getTransplantBridge() {
         return transplantBridge;
     }
+    /**
+     * If New Zealand is selected at the country combo box, the region combo box will appear.
+     * If country other than New Zealand is selected at the country combo box, the region combo box will
+     * be replaced with a text field.
+     * region text field is cleared by default when it appears.
+     * region combo box selects the first item by default when it appears.
+     * @param countrySelector Combo Box
+     * @param regionSelector Combo Box
+     * @param regionInput Text Field
+     */
+    public void countrySelectorEventHandler(ComboBox countrySelector, ComboBox regionSelector, TextField regionInput){
+        if(! countrySelector.getSelectionModel().getSelectedItem().equals("New Zealand")) {
+            regionSelector.setVisible(false);
+            regionInput.setVisible(true);
+            //TODO: if the following line is removed, update javadoc of this method and all its callers. -14 july
+            regionInput.clear(); //TODO: redo stack for region is cleared when region input is cleared. try undo redo when selecting nz as country and selecting other countries + selecting/entering region. -14 july
+
+        } else {
+            regionSelector.setVisible(true);
+            regionSelector.getSelectionModel().selectFirst();
+            regionInput.setVisible(false);
+        }
+    }
+
+
+    /**
+     * create a list of all country names.
+     */
+    private List<String> generateAllCountries() {
+        List allCountry = new ArrayList<>();
+        String[] locales = Locale.getISOCountries();
+
+        for (String countryCode : locales) {
+            Locale obj = new Locale("", countryCode);
+            allCountry.add(obj.getDisplayCountry());
+        }
+        allCountry.sort(String.CASE_INSENSITIVE_ORDER);
+        return allCountry;
+    }
+
+    /**
+     *
+     * @return unmodifiable collection of all country names
+     */
+    public List<String> getAllCountries() {
+        return Collections.unmodifiableList(allCountries);
+    }
+
+    public List<String> getAllowedCountries() {
+        Set s = null;
+        try {
+            s = countriesBridge.getAllowedCountries();
+        } catch (IOException e) {
+            Log.severe("Database threw IOE", e);
+        }
+        allowedCountries = new ArrayList(s);
+        allowedCountries.sort(String.CASE_INSENSITIVE_ORDER);
+        return allowedCountries;
+    }
+
+    public void setAllowedCountries(List<String> allowedCountries) {
+        this.allowedCountries = allowedCountries;
+        countriesBridge.putAllowedCountries(new HashSet<>(allowedCountries), token);
+    }
+
+    /**
+     * create a list of all New Zealand Region names.
+     */
+    private void generateAllNZRegion(){
+        allNZRegion = new ArrayList<>();
+        Arrays.asList(Regions.values()).forEach(region -> allNZRegion.add(region.toString()));
+        allNZRegion.sort(String.CASE_INSENSITIVE_ORDER);
+    }
+
+    /**
+     *
+     * @return unmodifiable collection of all New Zealand region names
+     */
+    public List<String> getAllNZRegion() {
+        return Collections.unmodifiableList(allNZRegion);
+    }
+
 
     /**
      * Sets the point in history
@@ -176,7 +254,7 @@ public class AppController {
      * @param name The name of the user
      * @return an array list of users.
      */
-    public ArrayList<User> findUsers(String name) {
+    public List<User> findUsers(String name) {
         ArrayList<User> toReturn = new ArrayList<>();
         for (User user : users) {
             if (user.getFullName().toLowerCase().contains(name.toLowerCase()) && !user.isDeleted()) {
@@ -481,99 +559,6 @@ public class AppController {
         }
     }
 
-    /**
-     * @param oldUser The user before they were updated.
-     * @param newUser The user after they were updated.
-     * @return An array list of changes between the old and new user.
-     * @deprecated
-     */
-    public ArrayList<Change> differenceInUsers(User oldUser, User newUser) {
-        ArrayList<String> diffs = new ArrayList<>();
-        try {
-            if (!oldUser.getFullName().equalsIgnoreCase(newUser.getFullName())) {
-                diffs.add("Changed Name from " + oldUser.getFullName() + " to " + newUser.getFullName());
-            }
-            if (oldUser.getDateOfBirth() != newUser.getDateOfBirth()) {
-                diffs.add("Changed DOB from  " + oldUser.getDateOfBirth().toString() + " to " + newUser
-                        .getDateOfBirth());
-            }
-            if (oldUser.getDateOfDeath() != newUser.getDateOfDeath()) {
-                diffs.add(
-                        "Changed DOD from " + oldUser.getDateOfDeath() + " to " + newUser.getDateOfDeath());
-            }
-            if (!oldUser.getAddress().equalsIgnoreCase(newUser.getAddress())) {
-                diffs.add("Changed Address from " + oldUser.getAddress() + " to " + newUser
-                        .getAddress());
-            }
-
-
-            if (!(oldUser.getBirthGender().equalsIgnoreCase(newUser.getBirthGender()))) {
-                diffs.add("Changed Gender from " + oldUser.getBirthGender() + " to " + newUser.getBirthGender());
-            }
-            if (oldUser.getHeight() != newUser.getHeight()) {
-                diffs.add("Changed Height from " + oldUser.getHeight() + " to " + newUser.getHeight());
-            }
-            if (oldUser.getWeight() != newUser.getWeight()) {
-                diffs.add("Changed Weight from " + oldUser.getWeight() + " to " + newUser.getWeight());
-            }
-            if (!oldUser.getBloodType().equalsIgnoreCase(newUser.getBloodType())) {
-                diffs.add(
-                        "Changed Blood Type from " + oldUser.getBloodType() + " to " + newUser.getBloodType());
-            }
-            if (!oldUser.getRegion().equalsIgnoreCase(newUser.getRegion())) {
-                diffs.add("Changes Region from " + oldUser.getRegion() + " to " + newUser.getRegion());
-            }
-            if (oldUser.getDeceased() != newUser.getDeceased()) {
-                diffs.add(
-                        "Changed From Deceased = " + oldUser.getDeceased() + " to " + newUser.getDeceased());
-            }
-            if (oldUser.getDonorDetails().getOrgans() != newUser.getDonorDetails().getOrgans()) {
-                diffs.add("Changed From Organs Donating = " + oldUser.getDonorDetails().getOrgans() + " to "
-                        + newUser
-                        .getDonorDetails().getOrgans());
-            }
-
-            for (Medication med : oldUser.getPreviousMedication()) {
-                if (!newUser.getPreviousMedication().contains(med)) {
-                    diffs.add("Started taking " + med + " again");
-                }
-            }
-            for (Medication med : newUser.getPreviousMedication()) {
-                if (!oldUser.getPreviousMedication().contains(med)) {
-                    diffs.add(med + " was removed from the  users records");
-                }
-            }
-            for (Medication med : oldUser.getCurrentMedication()) {
-                if (!newUser.getCurrentMedication().contains(med)) {
-                    diffs.add("Stopped taking " + med);
-                }
-            }
-            for (Medication med : newUser.getPreviousMedication()) {
-                if (!oldUser.getPreviousMedication().contains(med)) {
-                    diffs.add("Started taking " + med);
-                }
-            }
-        } catch (NullPointerException ex) {
-            Log.warning("encountered null when calculating diff between users", ex);
-            //no 'change', just added
-            //TODO add "added __ to __" messages
-        }
-        ArrayList<Change> changes = new ArrayList<>();
-        if (diffs.size() > 0) {
-            for (String diff : diffs) {
-                Change c = new Change(LocalDateTime.now(), diff);
-                newUser.addChange(c);
-                changes.add(c);
-            }
-            try {
-                JsonHandler.saveChangelog(changes, newUser.getFullName().toLowerCase().replace(" ", "_"));
-                Log.info("Successfully saved changelog");
-            } catch (IOException e) {
-                Log.warning("failed to save changelog", e);
-            }
-        }
-        return changes;
-    }
 
     /**
      * Method to remove the specified user object from the deleted user set and add it into the pool
@@ -636,7 +621,7 @@ public class AppController {
         }
     }
 
-    public ArrayList<TransplantDetails> getTransplantList() {
+    public List<TransplantDetails> getTransplantList() {
         return transplantList;
     }
 
