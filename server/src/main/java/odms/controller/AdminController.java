@@ -22,10 +22,16 @@ public class AdminController extends BaseController {
     private JDBCDriver driver;
     private DBHandler handler;
 
-    public AdminController(DBManager manager) {
+    public AdminController(DBManager manager) throws SQLException {
         super(manager);
         driver = super.getDriver();
         handler = super.getHandler();
+        if (!handler.getExists(driver.getConnection(), Administrator.class, "default")) {
+            System.out.println("added new clinician");
+            Administrator administrator = new Administrator("default", "default", "", "", "admin");
+            handler.saveAdministrator(administrator, driver.getConnection());
+        }
+
 
     }
 

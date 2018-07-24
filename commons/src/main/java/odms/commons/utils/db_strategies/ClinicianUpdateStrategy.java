@@ -59,7 +59,7 @@ public class ClinicianUpdateStrategy extends AbstractUpdateStrategy {
                 connection.prepareStatement("ROLLBACK").execute();
                 System.out.println("An error occurred"); //TODO: Make this a popup
             }
-            connection.prepareStatement("COMMIT");
+            connection.prepareStatement("COMMIT").execute();
             connection.close();
         } catch (SQLException sqlEx) {
             Log.warning("Error in connection to database", sqlEx);
@@ -193,7 +193,7 @@ public class ClinicianUpdateStrategy extends AbstractUpdateStrategy {
                 System.out.println("An error occurred"); //TODO: Make this a popup
             }
 
-            connection.prepareStatement("COMMIT");
+            connection.prepareStatement("COMMIT").execute();
             connection.close();
         } catch (SQLException sqlEx) {
             Log.warning("Error in connection to database", sqlEx);
@@ -222,7 +222,7 @@ public class ClinicianUpdateStrategy extends AbstractUpdateStrategy {
                 connection.prepareStatement("ROLLBACK").execute();
             }
 
-            connection.prepareStatement("COMMIT");
+            connection.prepareStatement("COMMIT").execute();
             connection.close();
         } catch (SQLException sqlEx) {
             Log.warning("Error in connection to database", sqlEx);

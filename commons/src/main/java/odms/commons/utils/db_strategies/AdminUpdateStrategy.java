@@ -54,7 +54,7 @@ public class AdminUpdateStrategy extends AbstractUpdateStrategy {
             } catch (SQLException sqlEx) {
                 connection.prepareStatement("ROLLBACK").execute();
             }
-            connection.prepareStatement("COMMIT");
+            connection.prepareStatement("COMMIT").execute();
             connection.close();
         } catch (SQLException sqlEx) {
             Log.warning("Error in connection to database", sqlEx);
@@ -81,7 +81,7 @@ public class AdminUpdateStrategy extends AbstractUpdateStrategy {
                 connection.prepareStatement("ROLLBACK").execute();
                 throw sqlEx;
             }
-            connection.prepareStatement("COMMIT");
+            connection.prepareStatement("COMMIT").execute();
             connection.close();
         } catch (SQLException sqlEx) {
             Log.warning("Error in connection to database", sqlEx);
@@ -203,7 +203,7 @@ public class AdminUpdateStrategy extends AbstractUpdateStrategy {
                 System.out.println("An error occured"); //TODO: Make this a popup
             }
 
-            connection.prepareStatement("COMMIT");
+            connection.prepareStatement("COMMIT").execute();
             connection.close();
         } catch (SQLException sqlEx) {
             Log.warning("Error in connection to database", sqlEx);

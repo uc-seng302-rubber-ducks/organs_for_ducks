@@ -23,10 +23,15 @@ public class ClinicianController extends BaseController {
     private JDBCDriver driver;
     private DBHandler handler;
 
-    public ClinicianController(DBManager manager) {
+    public ClinicianController(DBManager manager) throws SQLException {
         super(manager);
         driver = super.getDriver();
         handler = super.getHandler();
+        if (!handler.getExists(driver.getConnection(), Clinician.class, "0")) {
+            System.out.println("added new clinician");
+            Clinician clinician = new Clinician("0", "admin", "default", "", "");
+            handler.saveClinician(clinician, driver.getConnection());
+        }
     }
 
     @IsAdmin
