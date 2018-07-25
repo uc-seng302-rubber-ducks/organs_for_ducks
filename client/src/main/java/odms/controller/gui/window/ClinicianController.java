@@ -465,7 +465,7 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
         try {
             appController.saveClinician(clinician);
         } catch (IOException e) {
-             //TODO: Fix this
+            AlertWindowFactory.generateError(e);
             return;
         }
         clinician.getUndoStack().clear();
@@ -514,7 +514,7 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
                 try {
                     appController.saveClinician(clinician);
                 } catch (IOException e) {
-                    //TODO Fix this
+                    AlertWindowFactory.generateError(e);
                     return;
                 }
             } else {

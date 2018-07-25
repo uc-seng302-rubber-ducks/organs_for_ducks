@@ -18,6 +18,9 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.util.concurrent.TimeoutException;
 
+import static javafx.scene.input.KeyCode.A;
+import static javafx.scene.input.KeyCode.BACK_SPACE;
+import static javafx.scene.input.KeyCode.SHORTCUT;
 import static odms.TestUtils.FxRobotHelper.clickOnButton;
 import static odms.TestUtils.FxRobotHelper.setTextField;
 import static org.mockito.ArgumentMatchers.any;

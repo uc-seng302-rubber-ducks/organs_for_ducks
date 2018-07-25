@@ -146,7 +146,7 @@ public class LoginController {
         try {
             token = loginBridge.loginToServer(wantedClinician, clinicianPassword, "clinician");
         } catch (ApiException ex) {
-            clinicianWarningLabel.setText("An error occurred. Please try again later. response code " + ex.getResponseCode());
+            clinicianWarningLabel.setText("An error occurred. Please try again later.");
         }
 
         if (token == null) {

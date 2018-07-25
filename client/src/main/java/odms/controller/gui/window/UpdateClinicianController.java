@@ -21,6 +21,7 @@ import odms.commons.model.datamodel.ContactDetails;
 import odms.commons.utils.Log;
 import odms.controller.AppController;
 import odms.controller.gui.FileSelectorController;
+import odms.controller.gui.popup.utils.AlertWindowFactory;
 
 
 import java.io.File;
@@ -708,8 +709,7 @@ public class UpdateClinicianController {
             try {
                 controller.saveClinician(clinician);
             } catch (IOException e) {
-                //todo fix me
-                return;
+                AlertWindowFactory.generateError(e);
             }
             loadOverview(clinician);
 
