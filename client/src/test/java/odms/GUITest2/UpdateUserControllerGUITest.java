@@ -33,7 +33,7 @@ public class UpdateUserControllerGUITest extends ApplicationTest {
 
     @BeforeClass
     public static void initialization() {
-        //CommonTestMethods.runHeadless();
+        CommonTestMethods.runHeadless();
     }
 
     @Before
@@ -83,9 +83,10 @@ public class UpdateUserControllerGUITest extends ApplicationTest {
     }
 
     @Test
+    @Ignore
     public void testCancel() {
         setTextField(this, "#fNameInput","Kate");
-        scroll(20, VerticalDirection.DOWN);
+        scroll(100, VerticalDirection.DOWN);
         clickOn("#cancelButton");
         clickOn("#yesButton");
         verifyThat("#fNameValue", LabeledMatchers.hasText("A"));

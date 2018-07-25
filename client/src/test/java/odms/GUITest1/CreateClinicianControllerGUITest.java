@@ -14,7 +14,10 @@ import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.matcher.control.LabeledMatchers;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.TimeoutException;
 
 import static odms.TestUtils.FxRobotHelper.*;
@@ -34,21 +37,26 @@ public class CreateClinicianControllerGUITest extends ApplicationTest {
     private AdministratorBridge administratorBridge  = mock(AdministratorBridge.class);
     private LoginBridge loginBridge = mock(LoginBridge.class);
     private TransplantBridge transplantBridge = mock(TransplantBridge.class);
+    private CountriesBridge countriesBridge = mock(CountriesBridge.class);
 
     @BeforeClass
     public static void initialization() {
-        CommonTestMethods.runHeadless();
+        //CommonTestMethods.runHeadless();
     }
 
     @Before
-    public void setUpCreateScene() throws TimeoutException, ApiException {
+    public void setUpCreateScene() throws TimeoutException, IOException {
         AppController.setInstance(application);
+        when(application.getCountriesBridge()).thenReturn(countriesBridge);
         when(application.getUserBridge()).thenReturn(bridge);
         when(application.getClinicianBridge()).thenReturn(clinicianBridge);
         when(application.getLoginBridge()).thenReturn(loginBridge);
         when(application.getTransplantBridge()).thenReturn(transplantBridge);
         when(application.getAdministratorBridge()).thenReturn(administratorBridge);
-
+        when(application.getCountriesBridge()).thenReturn(countriesBridge);
+        Set<String> countries = new HashSet<>();
+        countries.add("New Zealand");
+        when(countriesBridge.getAllowedCountries()).thenReturn(countries);
         when(transplantBridge.getWaitingList(anyInt(), anyInt(), anyString(), anyString(), anyCollection())).thenReturn(new ArrayList<>());
         when(loginBridge.loginToServer(anyString(),anyString(), anyString())).thenReturn("lsdjfksd");
         when(application.getToken()).thenReturn("fakeToken");
@@ -87,7 +95,11 @@ public class CreateClinicianControllerGUITest extends ApplicationTest {
         lookup("#passwordField").queryAs(TextField.class).setText("secure");
         lookup("#confirmPasswordField").queryAs(TextField.class).setText("secure");
         lookup("#firstNameTextField").queryAs(TextField.class).setText("Affie");
-        setComboBox(this, "#regionSelector", "Christchurch");
+        clickOn("#countrySelector");
+        sleep(10000);
+        clickOn("New Zealand");
+        clickOn("#regionSelector");
+        clickOn("Christchurch");
         clickOnButton(this, "#confirmButton");
         verifyThat("#staffIdLabel", LabeledMatchers.hasText("Staff1"));
     }
@@ -155,6 +167,7 @@ public class CreateClinicianControllerGUITest extends ApplicationTest {
         lookup("#passwordField").queryAs(TextField.class).setText("secure");
         lookup("#confirmPasswordField").queryAs(TextField.class).setText("secure");
         lookup("#firstNameTextField").queryAs(TextField.class).setText("Affie");
+        setComboBox(this, "#countrySelector", "New Zealand");
         setComboBox(this, "#regionSelector", "Christchurch");
         clickOnButton(this,"#confirmButton");
         // return to the creation screen
