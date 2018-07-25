@@ -127,7 +127,7 @@
                                             <children>
                                                 <Label text="Search" />
                                                 <TextField fx:id="adminSearchField" prefHeight="18.0" prefWidth="266.0" GridPane.columnIndex="1" GridPane.columnSpan="3" />
-                                                <Label text="Region:" GridPane.rowIndex="1" />
+                                                <Label fx:id="regionLabel" text="Region:" GridPane.rowIndex="1" />
                                                 <Button fx:id="deletedProfiles" alignment="CENTER_RIGHT" mnemonicParsing="false" onAction="#openDeletedProfiles" text="Recently Deleted Profiles" GridPane.columnIndex="4" GridPane.columnSpan="3" GridPane.rowIndex="1" />
                                                 <TextField fx:id="regionSearchTextField" prefHeight="25.0" prefWidth="239.0" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="1" />
                                                 <RadioButton fx:id="adminAdminRadioButton" mnemonicParsing="false" text="Admin" GridPane.columnIndex="6">

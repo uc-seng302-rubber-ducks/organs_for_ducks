@@ -118,6 +118,8 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
     private RadioButton adminAdminRadioButton;
     @FXML
     private ToggleGroup adminSearchRadios;
+    @FXML
+    private Label regionLabel;
 
     //</editor-fold>
     @FXML
@@ -236,10 +238,16 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
 
             if (adminUserRadioButton.isSelected()) {
                 userTableView.setVisible(true);
+                regionSearchTextField.setVisible(true);
+                regionLabel.setVisible(true);
             } else if (adminClinicianRadioButton.isSelected()) {
                 clinicianTableView.setVisible(true);
+                regionSearchTextField.setVisible(true);
+                regionLabel.setVisible(true);
             } else if (adminAdminRadioButton.isSelected()) {
                 adminTableView.setVisible(true);
+                regionSearchTextField.setVisible(false);
+                regionLabel.setVisible(false);
             }
 
         })));
@@ -1141,7 +1149,7 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
         } else if (adminClinicianRadioButton.isSelected()) {
             populateClinicianSearchTable(startIndex, ROWS_PER_PAGE, adminSearchField.getText(), regionSearchTextField.getText());
         } else if (adminAdminRadioButton.isSelected()) {
-            populateAdminSearchTable(startIndex, ROWS_PER_PAGE, adminSearchField.getText(), regionSearchTextField.getText());
+            populateAdminSearchTable(startIndex, ROWS_PER_PAGE, adminSearchField.getText());
 
         }
     }
@@ -1161,7 +1169,7 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
         } else if (adminClinicianRadioButton.isSelected()) {
             populateClinicianSearchTable(startIndex, ROWS_PER_PAGE, adminSearchField.getText(), regionSearchTextField.getText());
         } else if (adminAdminRadioButton.isSelected()) {
-            populateAdminSearchTable(startIndex, ROWS_PER_PAGE, adminSearchField.getText(), regionSearchTextField.getText());
+            populateAdminSearchTable(startIndex, ROWS_PER_PAGE, adminSearchField.getText());
         }
     }
 
@@ -1198,14 +1206,14 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
     }
 
     private void populateAdminSearchTable() {
-        populateAdminSearchTable(0, ROWS_PER_PAGE, adminSearchField.getText(), regionSearchTextField.getText());
+        populateAdminSearchTable(0, ROWS_PER_PAGE, adminSearchField.getText());
     }
 
-    private void populateAdminSearchTable(int startIndex, int rowsPerPage, String name, String region) {
+    private void populateAdminSearchTable(int startIndex, int rowsPerPage, String name) {
         appController.getAdmins().clear();
         Collection<Administrator> admins = null;
         try {
-            admins = adminBridge.getAdmins(startIndex, rowsPerPage, name, region, appController.getToken());
+            admins = adminBridge.getAdmins(startIndex, rowsPerPage, name,appController.getToken());
         } catch (IOException ex) {
             Log.warning("failed to get user overviews from server", ex);
         }

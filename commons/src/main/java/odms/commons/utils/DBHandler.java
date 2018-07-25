@@ -76,7 +76,7 @@ public class DBHandler {
             "streetNumber, streetName, neighbourhood, city, region, country, zipCode " +
             "FROM Clinician cl " +
             "LEFT JOIN Address a ON cl.staffId = a.fkStaffId " +
-            "WHERE firstName LIKE ? OR lastName LIKE ? AND region LIKE ? " +
+            "WHERE (firstName LIKE ? OR firstName IS NULL OR lastName LIKE ? OR lastName IS NULL )AND region LIKE ? or region IS NULL " +
             "LIMIT ? OFFSET ?";
     private static final String SELECT_ADMIN_ONE_TO_ONE_INFO_STMT = "SELECT userName, firstName, middleName, lastName, timeCreated, lastModified  FROM Administrator";
     private static final String SELECT_SINGLE_ADMIN_ONE_TO_ONE_INFO_STMT = "SELECT userName, firstName, middleName, lastName, timeCreated, lastModified  FROM Administrator WHERE userName = ?";
@@ -247,7 +247,6 @@ public class DBHandler {
                         getUserEmergencyContact(user, connection);
                     } catch (SQLException e) {
                         Log.warning("Unable to create instance of user with nhi " + user.getNhi(), e);
-                        System.err.println("Unable to create instance of user with nhi " + user.getNhi() + " due to SQL Error: " + e);
                         throw e;
                     }
                 }
@@ -594,7 +593,6 @@ public class DBHandler {
                     getAddressResults(clinician.getWorkContactDetails(), resultSet);
                     clinicians.add(clinician);
                 }
-
                 return clinicians;
             }
         }
@@ -981,9 +979,8 @@ public class DBHandler {
             statement.execute();
             for(String country : countries) {
                 try (PreparedStatement put = connection.prepareStatement(putStatment)){
-                    System.out.println("putting "+ country);
                     put.setString(1, country);
-                    System.out.println(put.execute());
+                    put.execute();
                 }
 
             }
