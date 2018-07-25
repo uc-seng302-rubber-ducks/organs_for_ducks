@@ -2,9 +2,7 @@ package odms.commons.utils;
 
 import odms.commons.model._enum.BloodTypes;
 
-import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDate;
-import java.util.Objects;
 
 
 /**
@@ -182,67 +180,5 @@ public class AttributeValidation {
             }
         }
         return false;
-    }
-
-    /**
-     * Check the entry of the string provided to see if the supplied objects region matches the text.
-     * <p>
-     * Will catch a NoSuchMethod exception print a stacktrace and return false if the object has no region object to get
-     *
-     * @param regionString String object to check against the object's region
-     * @param toMatch      an object containing a region
-     * @return true if the object's regions starts with the provided string
-     */
-    public static <T> boolean checkRegionMatches(String regionString, T toMatch) {
-        try {
-            if (toMatch.getClass().getMethod("getRegion").invoke(toMatch) == null) {
-                return regionString.equals("");
-            } else {
-                String region = (String) toMatch.getClass().getMethod("getRegion").invoke(toMatch);
-                return region.toLowerCase().startsWith(regionString.toLowerCase());
-            }
-        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-            Log.severe("Attribute validation Error checking region", e);
-            return false;
-        }
-    }
-
-    /**
-     * Takes an object with a birth gender and then invokes the method.
-     * This is then tested against the supplied gender to check for a match
-     * <p>
-     * If the object provided contains no getBirthGender method a NoSuchMethod exception will be caught,
-     * the stack trace printed and false returned
-     *
-     * @param genderValue String object to check against the object's gender
-     * @param toMatch     an object with a gender
-     * @return true if the objects gender starts with the provided string
-     */
-    public static <T> boolean checkGenderMatches(String genderValue, T toMatch) {
-        try {
-            if (toMatch.getClass().getMethod("getBirthGender").invoke(toMatch) == null) {
-                return genderValue.equals("All");
-            }
-            String gender = (String) toMatch.getClass().getMethod("getBirthGender").invoke(toMatch);
-            return (gender.equalsIgnoreCase(genderValue) ||
-                    genderValue.equalsIgnoreCase("All"));
-        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-            Log.severe("Attribute validation error checking gender matches", e);
-            return false;
-        }
-
-    }
-
-    public static boolean checkTextMatches(String text1, String text2) {
-        if (Objects.equals(text1, text2)) {
-            return true;
-        }
-        if (text1 == null) {
-            return text2.startsWith("");
-        }
-        if (text2 == null) {
-            return text1.startsWith("");
-        }
-        return text2.toLowerCase().startsWith(text1.toLowerCase());
     }
 }
