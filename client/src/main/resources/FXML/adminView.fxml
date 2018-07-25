@@ -1,21 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import javafx.collections.*?>
-<?import javafx.scene.text.*?>
 <?import javafx.collections.FXCollections?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
 <?import java.lang.String?>
-
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="400.0" minWidth="600.0" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="odms.controller.gui.window.AdministratorViewController">
     <children>
         <MenuBar prefHeight="50.0" prefWidth="600.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <menus>
-                <Menu mnemonicParsing="false" text="File">
+                <Menu fx:id="AdminFileMenu" mnemonicParsing="false" text="File">
                     <items>
+                        <MenuItem fx:id="refreshAdmin" mnemonicParsing="false" onAction="#refreshTables"
+                                  text="Refresh"/>
                         <MenuItem fx:id="saveAdminMenuItem" mnemonicParsing="false" onAction="#saveClicked" text="Save" />
+                        <MenuItem fx:id="AdminLogout" mnemonicParsing="false" onAction="#logout" text="Log Out"/>
                         <Menu mnemonicParsing="false" text="Import">
                             <items>
                                 <MenuItem fx:id="importAdminsMenuItem" mnemonicParsing="false" onAction="#importAdmins" text="Import Admins" />
@@ -24,6 +23,14 @@
                             </items>
                         </Menu>
                   <MenuItem fx:id="configMenuItem" mnemonicParsing="false" onAction="#selectCountries" text="Configuration" />
+                    </items>
+                </Menu>
+                <Menu fx:id="editAdminMenu" mnemonicParsing="false" text="Edit">
+                    <items>
+                        <MenuItem fx:id="updateAdminDetails" mnemonicParsing="false" onAction="#updateAdmin"
+                                  text="Admin Details"/>
+                        <MenuItem fx:id="deleteAdmin" mnemonicParsing="false" onAction="#deleteAdminAccount"
+                                  text="Delete Account"/>
                     </items>
                 </Menu>
             </menus>
@@ -48,7 +55,10 @@
                                                 <Label fx:id="succesFailLabel" layoutX="89.0" layoutY="98.0" AnchorPane.leftAnchor="103.0" AnchorPane.rightAnchor="167.0" />
                                                 <Button fx:id="addClinicianButton" layoutX="50.0" layoutY="190.0" mnemonicParsing="false" onAction="#addClinician" prefHeight="25.0" prefWidth="196.0" text="Add Clinician" AnchorPane.bottomAnchor="107.0" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="52.0" />
                                                 <Button fx:id="addAdminButton" layoutX="50.0" layoutY="233.0" mnemonicParsing="false" onAction="#addAdmin" prefHeight="25.0" prefWidth="194.0" text="Add Admin" AnchorPane.bottomAnchor="67.0" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="52.0" />
-                                                <Label alignment="CENTER" layoutX="103.0" layoutY="38.0" prefHeight="29.0" prefWidth="86.0" text="Add Users" textAlignment="CENTER" AnchorPane.leftAnchor="103.0" AnchorPane.rightAnchor="109.0">
+                                                <Label alignment="CENTER" layoutX="103.0" layoutY="38.0"
+                                                       prefHeight="29.0" prefWidth="103.0" text="Add Users"
+                                                       textAlignment="CENTER" AnchorPane.leftAnchor="103.0"
+                                                       AnchorPane.rightAnchor="92.0">
                                                     <font>
                                                         <Font size="18.0" />
                                                     </font>
@@ -74,11 +84,6 @@
                                                     <rowConstraints>
                                                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                     </rowConstraints>
-                                                    <children>
-                                                        <Button fx:id="updateButton" layoutX="166.0" layoutY="232.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#updateAdmin" text="Edit details" GridPane.columnIndex="1" />
-                                                        <!--<Button fx:id="updateButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" text="Edit details" GridPane.columnIndex="1" />-->
-                                                        <Button fx:id="deleteAdminButton" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#deleteAdminAccount" text="Delete Account" />
-                                                    </children>
                                                 </GridPane>
                                                 <Label fx:id="fileNotFoundLabel" layoutX="21.0" layoutY="2.0" prefHeight="42.0" prefWidth="259.0" text="Import aborted, either file not chosen or file not found!" textFill="#ee0404" visible="false" wrapText="true" />
                                             </children>
@@ -193,7 +198,6 @@
                 <Font size="24.0" />
             </font>
         </Label>
-        <Button fx:id="adminLogoutButton" layoutX="394.0" layoutY="2.0" mnemonicParsing="false" onAction="#logout" text="Logout" AnchorPane.rightAnchor="143.0" AnchorPane.topAnchor="2.0" />
         <Button fx:id="adminUndoButton" layoutX="464.0" layoutY="2.0" mnemonicParsing="false" onAction="#undo" text="Undo" AnchorPane.rightAnchor="84.0" AnchorPane.topAnchor="2.0" />
         <Button fx:id="adminRedoButton" layoutX="525.0" layoutY="2.0" mnemonicParsing="false" onAction="#redo" text="Redo" AnchorPane.rightAnchor="23.0" AnchorPane.topAnchor="2.0" />
         <AnchorPane fx:id="StatusBar" AnchorPane.bottomAnchor="-5.0">

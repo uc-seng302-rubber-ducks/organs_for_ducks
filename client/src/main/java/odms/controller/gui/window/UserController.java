@@ -11,14 +11,14 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
-import odms.controller.AppController;
-import odms.controller.gui.panel.*;
-import odms.controller.gui.statusBarController;
 import odms.commons.model.Change;
 import odms.commons.model.EmergencyContact;
 import odms.commons.model.User;
 import odms.commons.model._enum.OrganDeregisterReason;
 import odms.commons.model._enum.Organs;
+import odms.controller.AppController;
+import odms.controller.gui.panel.*;
+import odms.controller.gui.statusBarController;
 
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
@@ -370,6 +370,12 @@ public class UserController {
     public void updateUndoRedoButtons() {
         undoButton.setDisable(currentUser.getUndoStack().isEmpty());
         redoButton.setDisable(currentUser.getRedoStack().isEmpty());
+    }
+
+    @FXML
+    private void refreshUser() {
+        currentUser = application.findUser(currentUser.getNhi());
+        refreshUser();
     }
 
     public void showDonorDiseases(User user, boolean init) {

@@ -3,7 +3,6 @@ package odms.controller.gui.window;
 import com.sun.javafx.stage.StageHelper;
 import javafx.animation.PauseTransition;
 import javafx.beans.InvalidationListener;
-import javafx.beans.Observable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -21,15 +20,6 @@ import javafx.scene.layout.Region;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import odms.controller.AppController;
-import odms.controller.gui.FileSelectorController;
-import odms.controller.gui.UnsavedChangesAlert;
-import odms.controller.gui.panel.TransplantWaitListController;
-import odms.controller.gui.popup.AlertUnclosedWindowsController;
-import odms.controller.gui.popup.CountrySelectionController;
-import odms.controller.gui.popup.DeletedUserController;
-import odms.controller.gui.popup.utils.AlertWindowFactory;
-import odms.controller.gui.statusBarController;
 import odms.commons.exception.InvalidFileException;
 import odms.commons.model.Administrator;
 import odms.commons.model.Clinician;
@@ -38,7 +28,18 @@ import odms.commons.model._abstract.TransplantWaitListViewer;
 import odms.commons.model._enum.EventTypes;
 import odms.commons.model._enum.Organs;
 import odms.commons.model.dto.UserOverview;
-import odms.commons.utils.*;
+import odms.commons.utils.CSVHandler;
+import odms.commons.utils.DataHandler;
+import odms.commons.utils.JsonHandler;
+import odms.commons.utils.Log;
+import odms.controller.AppController;
+import odms.controller.gui.FileSelectorController;
+import odms.controller.gui.UnsavedChangesAlert;
+import odms.controller.gui.panel.TransplantWaitListController;
+import odms.controller.gui.popup.AlertUnclosedWindowsController;
+import odms.controller.gui.popup.CountrySelectionController;
+import odms.controller.gui.popup.DeletedUserController;
+import odms.controller.gui.statusBarController;
 import odms.utils.AdministratorBridge;
 import odms.utils.ClinicianBridge;
 import odms.utils.UserBridge;
@@ -120,6 +121,8 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
     private ToggleGroup adminSearchRadios;
     @FXML
     private Label regionLabel;
+    @FXML
+    private MenuItem deleteAdmin;
 
     //</editor-fold>
     @FXML
@@ -173,7 +176,7 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
         adminUndoButton.setDisable(true);
         adminRedoButton.setDisable(true);
         if (administrator.getUserName().equals("default")) {
-            deleteAdminButton.setDisable(true);
+            deleteAdmin.setDisable(true);
         }
 
         adminCliTextArea.setEditable(false);
@@ -1106,6 +1109,7 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
     /**
      * updates tables in the admin window with current version of underlying model
      */
+    @FXML
     public void refreshTables() {
         transplantWaitListTabPageController.populateWaitListTable();
         populateUserSearchTable();
