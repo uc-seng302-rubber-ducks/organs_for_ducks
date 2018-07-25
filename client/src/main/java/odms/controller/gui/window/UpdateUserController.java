@@ -435,11 +435,8 @@ public class UpdateUserController {
             email.setText("");
         }
         if (user.getProfilePhotoFilePath() != null) {
-            File inFile = new File(user.getProfilePhotoFilePath());
-            Image image = new Image("file:" + inFile.getPath(), 200, 200, false, true);
-            profileImage.setImage(image);
+            displayImage(profileImage, user.getProfilePhotoFilePath());
         }
-        displayImage(profileImage, user.getProfilePhotoFilePath());
         String ecRegion = user.getRegion() == null ? "": user.getContact().getRegion();
         String ecCountry = user.getContact().getCountry();
 

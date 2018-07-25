@@ -34,7 +34,6 @@ public class LoginBridge extends Bifrost{
         try {
             Request request = new Request.Builder().url(ip + "/login").post(requestBody).build();
             response = requester.makeRequest(request);
-            System.out.println(response.code());
         } catch (IOException e) {
             Log.severe("A network error occurred.", e);
             return null;
