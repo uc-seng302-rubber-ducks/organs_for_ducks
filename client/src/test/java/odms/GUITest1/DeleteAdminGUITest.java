@@ -19,10 +19,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.concurrent.TimeoutException;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 import static org.testfx.api.FxAssert.verifyThat;
 
 public class DeleteAdminGUITest extends ApplicationTest {
@@ -49,7 +48,7 @@ public class DeleteAdminGUITest extends ApplicationTest {
 
         when(tBridge.getWaitingList(anyInt(), anyInt(), anyString(), anyString(), any(Collection.class))).thenReturn(new ArrayList());
         when(uBridge.getUsers(anyInt(), anyInt(), anyString(), anyString(), anyString(), anyString())).thenReturn(new ArrayList<>());
-        doNothing().when(cBridge).getClinicians(anyInt(), anyInt(), anyString(), anyString(), anyString());
+        when(cBridge.getClinicians(anyInt(), anyInt(), anyString(), anyString(), anyString())).thenReturn(new ArrayList<>());
         when(lBridge.loginToServer(anyString(), anyString(), anyString())).thenReturn("haHAA");
         when(aBridge.getAdmin(anyString(), anyString())).thenReturn(new Administrator("default", null, null, null, "admin"));
 

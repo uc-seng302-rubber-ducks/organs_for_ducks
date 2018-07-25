@@ -1,22 +1,29 @@
 package odms.commands;
 
-import odms.controller.AppController;
 import odms.commons.model.Clinician;
+import odms.controller.AppController;
+import odms.utils.CountriesBridge;
 import odms.view.CLI;
 import org.junit.Before;
 import org.junit.Test;
 import picocli.CommandLine;
+
+import java.io.IOException;
+import java.util.HashSet;
 
 import static org.mockito.Mockito.*;
 
 public class DeleteClinicianTest {
 
     private AppController mockController = mock(AppController.class);
+    private CountriesBridge countriesBridge = mock(CountriesBridge.class);
     private Clinician testClinician;
 
     @Before
-    public void CreateClinician() {
+    public void CreateClinician() throws IOException {
         testClinician = new Clinician("frank", "3", "over there", "sydney", "password");
+        when(countriesBridge.getAllowedCountries()).thenReturn(new HashSet());
+        AppController.getInstance().setCountriesBridge(countriesBridge);
     }
 
     @Test

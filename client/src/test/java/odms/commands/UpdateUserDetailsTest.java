@@ -3,6 +3,7 @@ package odms.commands;
 import odms.commons.model.User;
 import odms.controller.AppController;
 import odms.utils.UserBridge;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -49,6 +50,11 @@ public class UpdateUserDetailsTest {
             ex.printStackTrace();
             fail("exception thrown setting up tests");
         }
+    }
+
+    @After
+    public void tearDown() {
+        AppController.setInstance(null);
     }
 
     @Test
