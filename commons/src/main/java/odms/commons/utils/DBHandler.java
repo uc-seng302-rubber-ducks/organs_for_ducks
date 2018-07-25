@@ -134,6 +134,7 @@ public class DBHandler {
      * @param startIndex number of items to skip
      * @param name       name of a user
      * @param region     region of a user
+     * @param gender     gender of the user
      * @return a Collection of Users
      * @throws SQLException if there are any SQL errors
      */
@@ -164,7 +165,7 @@ public class DBHandler {
      * @param connection A valid connection to the database
      * @param username   the username of the User
      * @return an Afministrator
-     * @throws SQLException
+     * @throws SQLException if there are errors with the SQL statements
      */
     public Administrator getOneAdministrator(Connection connection, String username) throws SQLException {
         Administrator administrator = null;
@@ -573,6 +574,10 @@ public class DBHandler {
      * Loads the clinicians from the database.
      *
      * @param connection a Connection to the target database
+     * @param startIndex starting value to receive from
+     * @param count count of clinicians
+     * @param name name of the clinicians
+     * @param region region the clinician resides in
      * @return the Collection of clinicians
      */
     public Collection<Clinician> loadClinicians(Connection connection, int startIndex, int count, String name, String region) throws SQLException {
@@ -629,7 +634,11 @@ public class DBHandler {
      * Loads the administrators from the database.
      *
      * @param connection Connection to the target database
+     * @param startIndex starting value to receive from
+     * @param count count of administrators
+     * @param name name of the administrators
      * @return the Collection of administrators
+     * @throws SQLException if there are errors with the SQL statements
      */
     public Collection<Administrator> loadAdmins(Connection connection, int startIndex, int count, String name) throws SQLException {
         Collection<Administrator> administrators = new ArrayList<>();
@@ -751,7 +760,6 @@ public class DBHandler {
      * @param username      (old) username of administrator
      * @param administrator administrator to be put into database
      * @throws SQLException exception thrown during the transaction
-     * @see this.saveAdministrator
      */
     public void updateAdministrator(Connection connection, String username, Administrator administrator) throws SQLException {
         Administrator toReplace = getOneAdministrator(connection, username);
@@ -789,7 +797,6 @@ public class DBHandler {
      * @param staffId    (old) staffId of clinician
      * @param clinician  clinician to be put into database
      * @throws SQLException exception thrown during the transaction
-     * @see this.saveClinicians
      */
     public void updateClinician(Connection connection, String staffId, Clinician clinician) throws SQLException {
         Clinician toReplace = getOneClinician(connection, staffId);
@@ -827,7 +834,6 @@ public class DBHandler {
      * @param nhi  (old) nhi of user
      * @param user user to be put into database
      * @throws SQLException exception thrown during the transaction
-     * @see this.saveUsers
      */
     public void updateUser(Connection conn, String nhi, User user) throws SQLException {
         User toReplace = getOneUser(conn, nhi);
