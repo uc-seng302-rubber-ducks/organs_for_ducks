@@ -5,7 +5,7 @@ import java.util.Properties;
 
 public class ConfigPropertiesLoader {
 
-    Properties prop;
+    private Properties prop;
 
     public ConfigPropertiesLoader() {
         prop = new Properties();
