@@ -462,7 +462,8 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
         Log.info("Importing Admins");
         List<String> extensions = new ArrayList<>();
         extensions.add("*.json");
-        String filename = FileSelectorController.getFileSelector(stage, extensions);
+        FileSelectorController fileSelectorController = new FileSelectorController();
+        String filename = fileSelectorController.getFileSelector(stage, extensions);
         if (filename == null) {
             Log.warning("File name not found");
             fileNotFoundLabel.setVisible(true);
@@ -480,7 +481,8 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
     void importClinicians() {
         List<String> extensions = new ArrayList<>();
         extensions.add("*.json");
-        String filename = FileSelectorController.getFileSelector(stage, extensions);
+        FileSelectorController fileSelectorController = new FileSelectorController();
+        String filename = fileSelectorController.getFileSelector(stage, extensions);
         if (filename == null) {
             Log.warning("File name not found");
             fileNotFoundLabel.setVisible(true);
@@ -498,7 +500,8 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
         List<String> extensions = new ArrayList<>();
         extensions.add("*.json");
         extensions.add("*.csv");
-        String filename = FileSelectorController.getFileSelector(stage, extensions);
+        FileSelectorController fileSelectorController = new FileSelectorController();
+        String filename = fileSelectorController.getFileSelector(stage, extensions);
         if (filename == null) {
             Log.warning("File name not found");
             fileNotFoundLabel.setVisible(true);
@@ -543,13 +546,7 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
             launchAlertUnclosedWindowsGUI();
             return;
         }
-//        String filename;
-//        filename = FileSelectorController.getJsonFileSelector(stage);
-//        if (filename == null) {
-//            Log.warning("File name not found");
-//            fileNotFoundLabel.setVisible(true);
-//            return;
-//        }
+
         try {
             if (role.isAssignableFrom(Administrator.class)) {
                 //<editor-fold desc="admin handler">

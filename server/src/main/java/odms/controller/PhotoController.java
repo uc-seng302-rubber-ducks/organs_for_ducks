@@ -31,7 +31,7 @@ public class PhotoController extends BaseController {
 
 
     @RequestMapping(method = RequestMethod.PUT, value = "/users/{nhi}/photo")
-    public ResponseEntity putUserProfilePhoto(@PathVariable String nhi, @RequestBody byte[] profileImageFile, @RequestHeader RequestHeader header) {
+    public ResponseEntity putUserProfilePhoto(@PathVariable String nhi, @RequestBody byte[] profileImageFile, @RequestHeader(value = "Content-Type") String header) {
 
         try (Connection connection = driver.getConnection()) {
             User toModify = handler.getOneUser(connection, nhi);
@@ -39,7 +39,7 @@ public class PhotoController extends BaseController {
                 return new ResponseEntity(HttpStatus.NOT_FOUND);
             }
             System.out.println(header);
-            handler.updateProfilePhoto(User.class, toModify.getNhi(), new ByteArrayInputStream(profileImageFile), connection);
+            handler.updateProfilePhoto(User.class, toModify.getNhi(), new ByteArrayInputStream(profileImageFile), header, connection);
 
         } catch (SQLException ex) {
             Log.severe("Could not add or update user's profile photo to user " + nhi, ex);
@@ -51,14 +51,14 @@ public class PhotoController extends BaseController {
 
     @IsClinician
     @RequestMapping(method = RequestMethod.PUT, value = "/clinicians/{staffId}/photo")
-    public ResponseEntity putClinicianProfilePhoto(@PathVariable String staffId, @RequestBody byte[] profileImageFile) {
+    public ResponseEntity putClinicianProfilePhoto(@PathVariable String staffId, @RequestBody byte[] profileImageFile,  @RequestHeader(value = "Content-Type") String header) {
 
         try (Connection connection = driver.getConnection()) {
             Clinician toModify = handler.getOneClinician(connection, staffId);
             if (toModify == null) {
                 return new ResponseEntity(HttpStatus.NOT_FOUND);
             }
-            handler.updateProfilePhoto(Clinician.class, toModify.getStaffId(),new ByteArrayInputStream(profileImageFile), connection);
+            handler.updateProfilePhoto(Clinician.class, toModify.getStaffId(),new ByteArrayInputStream(profileImageFile),header, connection);
 
         } catch (SQLException ex) {
             Log.severe("Could not add or update clinician's profile photo to clinician " + staffId, ex);
@@ -69,30 +69,36 @@ public class PhotoController extends BaseController {
     }
 
 
-    @RequestMapping(method = RequestMethod.GET, value = "/users/{nhi}/photo", produces = "image/png")
+    @RequestMapping(method = RequestMethod.GET, value = "/users/{nhi}/photo")
     public ResponseEntity<byte[]> getUserProfilePicture(@PathVariable("nhi") String nhi) {
         byte[] image;
+        String format;
         try (Connection connection = driver.getConnection()) {
             image = handler.getProfilePhoto(User.class, nhi, connection);
+            format = handler.getFormat(User.class, nhi, connection);
+            if(format == null || format.equals("")) format = "image/png";
+
         } catch (SQLException e) {
             Log.severe("Cannot fetch profile picture for user " + nhi, e);
             throw new ServerDBException(e);
         }
-        return ResponseEntity.ok().contentType(MediaType.IMAGE_PNG).body(image);
+        return ResponseEntity.ok().contentType(MediaType.parseMediaType(format)).body(image);
     }
 
     @IsClinician
-    @RequestMapping(method = RequestMethod.GET, value = "/clinicians/{staffId}/photo", produces = "image/png")
+    @RequestMapping(method = RequestMethod.GET, value = "/clinicians/{staffId}/photo")
     public ResponseEntity<byte[]> getClinicianProfilePicture(@PathVariable("staffId") String staffId) {
         byte[] image;
+        String format;
         try (Connection connection = driver.getConnection()) {
             image = handler.getProfilePhoto(Clinician.class, staffId, connection);
-
+            format = handler.getFormat(Clinician.class, staffId, connection);
+            if(format ==  null || format.equals("")) format = "image/png";
         } catch (SQLException e) {
             Log.severe("Cannot fetch profile picture for user " + staffId, e);
             throw new ServerDBException(e);
         }
-        return ResponseEntity.ok().contentType(MediaType.IMAGE_PNG).body(image);
+        return ResponseEntity.ok().header("Content-Type", format).body(image);
     }
 
 

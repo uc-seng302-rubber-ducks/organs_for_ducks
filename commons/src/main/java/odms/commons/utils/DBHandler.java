@@ -11,6 +11,7 @@ import odms.commons.utils.db_strategies.AdminUpdateStrategy;
 import odms.commons.utils.db_strategies.ClinicianUpdateStrategy;
 import odms.commons.utils.db_strategies.UserUpdateStrategy;
 
+import javax.management.Query;
 import java.io.InputStream;
 import java.sql.*;
 import java.lang.reflect.Type;
@@ -89,8 +90,8 @@ public class DBHandler {
     private static final String SELECT_PASS_DETAILS = "SELECT hash,salt FROM PasswordDetails WHERE fkAdminUserName = ? OR fkStaffId = ?";
     private static final String SELECT_USER_PROFILE_PHOTO_STMT = "SELECT profilePicture FROM User WHERE nhi = ?";
     private static final String SELECT_CLINICIAN_PROFILE_PHOTO_STMT = "SELECT profilePicture FROM Clinician WHERE staffId = ?";
-    private static final String UPDATE_USER_PROFILE_PHOTO_STMT = "UPDATE User SET profilePicture= ? WHERE nhi = ?";
-    private static final String UPDATE_CLINICIAN_PROFILE_PHOTO_STMT = "UPDATE Clinician SET profilePicture= ? WHERE staffId = ?";
+    private static final String UPDATE_USER_PROFILE_PHOTO_STMT = "UPDATE User SET profilePicture= ?, pictureFormat = ? WHERE nhi = ?";
+    private static final String UPDATE_CLINICIAN_PROFILE_PHOTO_STMT = "UPDATE Clinician SET profilePicture= ?, pictureFormat = ? WHERE staffId = ?";
     private static final String SELECT_ONE_CLINICIAN = "SELECT * FROM Clinician LEFT JOIN Address ON staffId = fkStaffId WHERE staffId = ?";
     private static final String SELECT_IF_USER_EXISTS_BOOL = "SELECT EXISTS(SELECT 1 FROM User WHERE nhi = ?)";
     private static final String SELECT_IF_CLINICIAN_EXISTS_BOOL = "SELECT EXISTS(SELECT 1 FROM Clinician WHERE staffId = ?)";
@@ -968,7 +969,7 @@ public class DBHandler {
      * @param <T> generic for type of the user
      * @throws SQLException exception thrown during the transaction
      */
-    public <T> void updateProfilePhoto(Class<T> role, String roleId, InputStream profilePhoto, Connection connection) throws SQLException {
+    public <T> void updateProfilePhoto(Class<T> role, String roleId, InputStream profilePhoto, String imageType, Connection connection) throws SQLException {
         String update_stmt;
 
         if (role.isAssignableFrom(User.class)) {
@@ -980,7 +981,8 @@ public class DBHandler {
         }
         try (PreparedStatement updateProfilePhoto = connection.prepareStatement(update_stmt)) {
             updateProfilePhoto.setBlob(1, profilePhoto);
-            updateProfilePhoto.setString(2, roleId);
+            updateProfilePhoto.setString(2, imageType);
+            updateProfilePhoto.setString(3, roleId);
             updateProfilePhoto.executeUpdate();
         }
     }
@@ -1062,6 +1064,38 @@ public class DBHandler {
                     put.execute();
                 }
 
+            }
+        }
+    }
+
+    /**
+     * Gets the image type that an image was sent with
+     * @param t type of role to query for
+     * @param userId id of the wanted profile pictures owner
+     * @param connection connection to the database
+     * @return the content type header string
+     * @throws SQLException on a bad db connection
+     */
+    public String getFormat(Type t, String userId, Connection connection) throws SQLException {
+
+        String statement = null;
+
+        if(t.equals(User.class)){
+            statement = "SELECT pictureFormat FROM User WHERE nhi = ?";
+        } else if (t.equals(Clinician.class)){
+            statement = "SELECT pictureFormat FROM Clinician WHERE staffId = ?";
+        }
+        if( statement == null){
+            return "";
+        }
+        try(PreparedStatement preparedStatement = connection.prepareStatement(statement)){
+            preparedStatement.setString(1, userId);
+            try (ResultSet rs = preparedStatement.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getString(1);
+                } else {
+                    return "";
+                }
             }
         }
     }

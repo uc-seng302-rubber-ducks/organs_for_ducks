@@ -345,7 +345,7 @@ public class AppController {
                     userBridge.putDiseases(user.getPastDiseases(), originalUser.getNhi(), token);
                     userBridge.putDiseases(user.getCurrentDiseases(), originalUser.getNhi(), token);
                 }
-                userBridge.putDonatingOrgans(user.getDonorDetails().getOrgans(), originalUser.getNhi());
+                //userBridge.putDonatingOrgans(user.getDonorDetails().getOrgans(), originalUser.getNhi());
                 userBridge.putProfilePicture(originalUser.getNhi(), user.getProfilePhotoFilePath());
                 userBridge.putUser(user, originalUser.getNhi());
 

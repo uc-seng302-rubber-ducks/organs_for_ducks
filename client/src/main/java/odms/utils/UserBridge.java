@@ -315,7 +315,10 @@ public class UserBridge extends RoleBridge {
         Request request = new Request.Builder().get().url(url).build();
         try(Response response  = client.newCall(request).execute()) {
             if (response.isSuccessful()) {
-                return handler.decodeProfilePicture(response.body(), nhi);
+                String contentType = response.header("Content-Type");
+                String[] bits = contentType.split("/");
+                String format = bits[bits.length-1];
+                return handler.decodeProfilePicture(response.body(), nhi, format);
             } else if(response.code() == 404){
                 return null;
             } else {
@@ -326,7 +329,9 @@ public class UserBridge extends RoleBridge {
 
     public void putProfilePicture(String nhi, String profilePicturePath) throws IOException {
         String url = ip + USERS + nhi + "/photo";
-        RequestBody body = RequestBody.create(MediaType.parse("image/png"), PhotoHelper.getBytesFromImage(profilePicturePath));
+        String[] bits = profilePicturePath.split("\\.");
+        String format = bits[bits.length-1];
+        RequestBody body = RequestBody.create(MediaType.parse("image/"+format), PhotoHelper.getBytesFromImage(profilePicturePath));
         Request request = new Request.Builder().url(url).put(body).build();
         client.newCall(request).enqueue(new Callback() {
             @Override

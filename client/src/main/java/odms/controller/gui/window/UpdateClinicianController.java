@@ -21,7 +21,7 @@ import odms.commons.model.datamodel.ContactDetails;
 import odms.commons.utils.Log;
 import odms.controller.AppController;
 import odms.controller.gui.FileSelectorController;
-import odms.utils.ClinicianBridge;
+
 
 import java.io.File;
 import java.io.IOException;
@@ -295,7 +295,9 @@ public class UpdateClinicianController {
         List<String> extensions = new ArrayList<>();
         extensions.add("*.png");
         extensions.add("*.jpg");
-        filename = FileSelectorController.getFileSelector(stage, extensions);
+        extensions.add("*.gif");
+        FileSelectorController fileSelectorController =  new FileSelectorController();
+        filename = fileSelectorController.getFileSelector(stage, extensions);
 
         if (filename != null) {
             inFile = new File(filename);

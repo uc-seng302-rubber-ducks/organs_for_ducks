@@ -148,8 +148,11 @@ public class ClinicianBridge extends RoleBridge {
         Headers headers =  new Headers.Builder().add(TOKEN_HEADER, token).build();
         Request request = new Request.Builder().get().url(url).headers(headers).build();
         try(Response response  = client.newCall(request).execute()) {
+            String contentType = response.header("Content-Type");
+            String[] bits = contentType.split("/");
+            String format = bits[bits.length-1];
             if (response.code() == 200) {
-                return handler.decodeProfilePicture(response.body(), staffId);
+                return handler.decodeProfilePicture(response.body(), staffId,format);
             } else if(response.code() == 404){
                 return null;
             } else {
@@ -160,8 +163,10 @@ public class ClinicianBridge extends RoleBridge {
 
     public void putProfilePicture(String staffId, String token, String profilePicturePath) throws IOException {
         String url = ip + "/clinicians/" + staffId + "/photo";
+        String[] bits = profilePicturePath.split("\\.");
+        String format = bits[bits.length-1];
         Headers headers = new Headers.Builder().add(TOKEN_HEADER, token).build();
-        RequestBody body = RequestBody.create(MediaType.parse("image/png"), PhotoHelper.getBytesFromImage(profilePicturePath));
+        RequestBody body = RequestBody.create(MediaType.parse("image/" + format), PhotoHelper.getBytesFromImage(profilePicturePath));
         Request request = new Request.Builder().url(url).put(body).headers(headers).build();
         client.newCall(request).enqueue(new Callback() {
             @Override
