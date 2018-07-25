@@ -31,7 +31,7 @@ recent-artifacts:
   stage: deploy
   script:
     - mvn -B clean install -DskipTests
-    - mvn -B site package -Punit-tests
+    - mvn -B package -Punit-tests
   artifacts:
     paths:
       - target/*.jar
@@ -47,13 +47,15 @@ release-artifacts:
   stage: deploy
   script:
     - mvn -B clean install -DskipTests
-    - mvn -B package -Pall
+    - mvn -B site sonar:sonar package
   artifacts:
     paths:
     - target/*.jar
     - client/target/*.jar
     - server/target/*.jar
-    - target/site/jacoco/*
+    - client/target/site/jacoco/*
+    - server/target/site/jacoco/*
+    - commons/target/site/jacoco/*
   only:
     - tags
     - schedules

@@ -1,10 +1,9 @@
-package odms.utils;
+package odms.commons.model;
 
-import odms.commons.model.*;
 import odms.commons.model._enum.Organs;
 import odms.commons.utils.DBHandler;
 import org.junit.*;
-import odms.TestUtils.DBHandlerMocker;
+import test_utils.DBHandlerMocker;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;

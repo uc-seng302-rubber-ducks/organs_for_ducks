@@ -307,7 +307,11 @@ public class UpdateUserController {
      * @param dp The current date picker.
      */
     private void datePickerListener(DatePicker dp) {
-        dp.valueProperty().addListener((observable, oldValue, newValue) -> update());
+        dp.valueProperty().addListener((observable, oldValue, newValue) -> {
+            if (listen) {
+                update();
+            }
+        });
     }
 
     /**
@@ -316,7 +320,11 @@ public class UpdateUserController {
      * @param checkBox The given CheckBox.
      */
     private void addCheckBoxListener(CheckBox checkBox) {
-        checkBox.selectedProperty().addListener((observable, oldValue, newValue) -> update());
+        checkBox.selectedProperty().addListener((observable, oldValue, newValue) ->{
+            if (listen) {
+                update();
+            }
+        });
     }
 
     /**
@@ -325,7 +333,11 @@ public class UpdateUserController {
      * @param cb The current ComboBox.
      */
     private void comboBoxListener(ComboBox cb) {
-        cb.valueProperty().addListener((observable, oldValue, newValue) -> update());
+        cb.valueProperty().addListener((observable, oldValue, newValue) ->{
+            if (listen) {
+            update();
+            }
+        });
     }
 
     /**

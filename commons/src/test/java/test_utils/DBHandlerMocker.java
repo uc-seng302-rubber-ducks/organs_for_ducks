@@ -1,7 +1,6 @@
-package odms.TestUtils;
+package test_utils;
 
 import odms.commons.model.User;
-import odms.commons.model.datamodel.TransplantDetails;
 
 import java.sql.Date;
 import java.sql.ResultSet;
