@@ -2,6 +2,10 @@ package odms.GUITest2;
 
 import javafx.scene.Node;
 import odms.App;
+import odms.TestUtils.CommonTestMethods;
+import odms.commons.model.User;
+import odms.commons.model.dto.UserOverview;
+import odms.controller.AppController;
 import odms.commons.model.Clinician;
 import odms.commons.model.User;
 import odms.commons.model.datamodel.Address;
@@ -74,7 +78,7 @@ public class UpdateClinicianControllerGUITest extends ApplicationTest {
         when(countriesBridge.getAllowedCountries()).thenReturn(new HashSet());
         when(clinicianBridge.getClinician(anyString(), anyString())).thenReturn(c);
         when(transplantBridge.getWaitingList(anyInt(), anyInt(), anyString(), anyString(), anyCollection())).thenReturn(new ArrayList<>());
-        when(bridge.loadUsersToController(anyInt(), anyInt(), anyString(), anyString(), anyString(), anyString()))
+        when(bridge.getUsers(anyInt(), anyInt(), anyString(), anyString(), anyString(), anyString()))
                 .thenReturn(overviews);
         when(bridge.getUser("ABC1244")).thenReturn(testUser);
 

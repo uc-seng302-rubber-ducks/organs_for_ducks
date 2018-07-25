@@ -3,7 +3,6 @@ package odms.GUITest1;
 import javafx.scene.Node;
 import javafx.scene.input.KeyCode;
 import odms.App;
-import odms.commons.exception.ApiException;
 import odms.commons.model.Clinician;
 import odms.commons.model.datamodel.TransplantDetails;
 import odms.commons.model.dto.UserOverview;
@@ -22,12 +21,9 @@ import org.testfx.matcher.control.LabeledMatchers;
 import odms.TestUtils.CommonTestMethods;
 
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.concurrent.TimeoutException;
 
@@ -76,7 +72,7 @@ public class DeregisterOrganReasonControllerGUITest extends ApplicationTest {
 
         when(loginBridge.loginToServer(anyString(),anyString(), anyString())).thenReturn("lsdjfksd");
         when(clinicianBridge.getClinician(anyString(), anyString())).thenReturn(clinician);
-        when(bridge.loadUsersToController(anyInt(), anyInt(), anyString(), anyString(), anyString(), anyString()))
+        when(bridge.getUsers(anyInt(), anyInt(), anyString(), anyString(), anyString(), anyString()))
                 .thenReturn(Collections.singletonList(UserOverview.fromUser(testUser)));
         when(bridge.getUser(anyString())).thenReturn(testUser);
         when(application.getUsers()).thenReturn(Arrays.asList(testUser)); // needs to be modidfed to return a list

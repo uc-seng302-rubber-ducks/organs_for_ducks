@@ -26,7 +26,7 @@ public class UserBridge extends RoleBridge {
         super(client);
     }
 
-    public Collection<UserOverview> loadUsersToController(int startIndex, int count, String name, String region, String gender, String token) throws IOException {
+    public Collection<UserOverview> getUsers(int startIndex, int count, String name, String region, String gender, String token) throws IOException {
         String url = ip + "/users?startIndex=" + startIndex + "&count=" + count + "&name=" + name + "&region=" + region + "&gender=" + gender;
         Request request = new Request.Builder().header(TOKEN_HEADER, token).url(url).build();
         Collection<UserOverview> overviews;
