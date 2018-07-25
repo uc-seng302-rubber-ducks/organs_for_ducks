@@ -78,7 +78,11 @@ public class DBHandler {
             "LEFT JOIN Address a ON cl.staffId = a.fkStaffId " +
             "WHERE (firstName LIKE ? OR firstName IS NULL OR lastName LIKE ? OR lastName IS NULL )AND region LIKE ? or region IS NULL " +
             "LIMIT ? OFFSET ?";
-    private static final String SELECT_ADMIN_ONE_TO_ONE_INFO_STMT = "SELECT userName, firstName, middleName, lastName, timeCreated, lastModified  FROM Administrator";
+    private static final String SELECT_ADMIN_ONE_TO_ONE_INFO_STMT = "SELECT userName, firstName, middleName, lastName, timeCreated, lastModified  FROM Administrator " +
+            "WHERE (firstName LIKE ? OR firstName IS NULL )" +
+            "OR (middleName LIKE ? OR middleName IS NULL)" +
+            "OR (lastName LIKE ? OR lastName IS NULL)" +
+            "LIMIT ? OFFSET ?";
     private static final String SELECT_SINGLE_ADMIN_ONE_TO_ONE_INFO_STMT = "SELECT userName, firstName, middleName, lastName, timeCreated, lastModified  FROM Administrator WHERE userName = ?";
     private static final String SELECT_PASS_DETAILS = "SELECT hash,salt FROM PasswordDetails WHERE fkAdminUserName = ? OR fkStaffId = ?";
     private static final String SELECT_ONE_CLINICIAN = "SELECT * FROM Clinician LEFT JOIN Address ON staffId = fkStaffId WHERE staffId = ?";
@@ -627,10 +631,15 @@ public class DBHandler {
      * @param connection Connection to the target database
      * @return the Collection of administrators
      */
-    public Collection<Administrator> loadAdmins(Connection connection) throws SQLException {
+    public Collection<Administrator> loadAdmins(Connection connection, int startIndex, int count, String name) throws SQLException {
         Collection<Administrator> administrators = new ArrayList<>();
 
         try (PreparedStatement statement = connection.prepareStatement(SELECT_ADMIN_ONE_TO_ONE_INFO_STMT)) {
+            statement.setString(1,name + "%");
+            statement.setString(2,name + "%");
+            statement.setString(3,name + "%");
+            statement.setInt(4,count);
+            statement.setInt(5,startIndex);
             try (ResultSet resultSet = statement.executeQuery()) {
 
                 while (resultSet != null && resultSet.next()) {
