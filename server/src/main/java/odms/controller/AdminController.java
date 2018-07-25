@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.time.LocalDateTime;
 import java.util.Collection;
 
 @OdmsController
@@ -29,8 +28,6 @@ public class AdminController extends BaseController {
         handler = super.getHandler();
         if (!handler.getExists(driver.getConnection(), Administrator.class, "default")) {
             Administrator administrator = new Administrator("default", "default", "", "", "admin");
-            administrator.setDateLastModified(LocalDateTime.now());
-            administrator.setDateCreated(LocalDateTime.now());
             handler.saveAdministrator(administrator, driver.getConnection());
         }
 
