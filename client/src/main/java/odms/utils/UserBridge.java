@@ -312,11 +312,9 @@ public class UserBridge extends RoleBridge {
 
     private String getProfilePicture(String nhi) throws IOException {
         String url = ip + USERS + nhi + "/photo";
-        System.out.println("ohhhh hes trying");
         Request request = new Request.Builder().get().url(url).build();
         try(Response response  = client.newCall(request).execute()) {
             if (response.isSuccessful()) {
-                System.out.println("Great success");
                 String contentType = response.header("Content-Type");
                 String[] bits = contentType.split("/");
                 String format = bits[bits.length-1];
@@ -331,7 +329,6 @@ public class UserBridge extends RoleBridge {
 
     public void putProfilePicture(String nhi, String profilePicturePath) throws IOException {
         String url = ip + USERS + nhi + "/photo";
-        System.out.println("Ohhhh hes putting");
         String[] bits = profilePicturePath.split("\\.");
         String format = bits[bits.length-1];
         RequestBody body = RequestBody.create(MediaType.parse("image/"+format), PhotoHelper.getBytesFromImage(profilePicturePath));

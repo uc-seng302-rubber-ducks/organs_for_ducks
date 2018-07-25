@@ -566,8 +566,8 @@ public class UpdateUserController {
         String filename;
         List<String> extensions = new ArrayList<>();
         extensions.add("*.png");
-        extensions.add("*.jpg");
-        extensions.add("*.gif");
+        //extensions.add("*.jpg");
+        //extensions.add("*.gif");
         FileSelectorController fileSelectorController = new FileSelectorController();
         filename = fileSelectorController.getFileSelector(stage, extensions);
         if (filename != null) {

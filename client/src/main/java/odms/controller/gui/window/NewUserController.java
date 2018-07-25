@@ -500,9 +500,8 @@ public class NewUserController {
             }
         }
 
-        //User user = controller.findUser(nhi); // checks if the nhi already exists within the system
-        System.out.println("i get called for some reason");
-        if (valid){// && user == null) {
+        User user = controller.findUser(nhi); // checks if the nhi already exists within the system
+        if (valid && user == null) {
             createUser(nhi, fName, dob);
         } else if (valid) { // user is not null
             existingNHI.setVisible(true);
