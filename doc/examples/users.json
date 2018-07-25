@@ -1,0 +1,1459 @@
+[
+  {
+    "nhi": "ADE1987",
+    "name": "Dwayne",
+    "dateOfBirth": {
+      "year": 2017,
+      "month": 1,
+      "day": 3
+    },
+    "height": 0.0,
+    "weight": 0.0,
+    "bloodType": "U",
+    "currentAddress": "",
+    "region": "",
+    "timeCreated": {
+      "date": {
+        "year": 2018,
+        "month": 5,
+        "day": 23
+      },
+      "time": {
+        "hour": 21,
+        "minute": 5,
+        "second": 47,
+        "nano": 66000000
+      }
+    },
+    "isDeceased": false,
+    "firstName": "Dwayne",
+    "preferredFirstName": "The Rock",
+    "middleName": "",
+    "lastName": "",
+    "birthGender": "",
+    "genderIdentity": "",
+    "alcoholConsumption": "None",
+    "smoker": false,
+    "homePhone": "",
+    "cellPhone": "",
+    "email": "",
+    "contact": {
+      "name": "",
+      "cellPhoneNumber": ""
+    },
+    "lastModified": {
+      "date": {
+        "year": 2018,
+        "month": 5,
+        "day": 24
+      },
+      "time": {
+        "hour": 12,
+        "minute": 47,
+        "second": 25,
+        "nano": 577000000
+      }
+    },
+    "miscAttributes": [],
+    "updateHistory": {},
+    "previousMedication": [],
+    "currentMedication": [],
+    "previousMedicationTimes": {},
+    "currentMedicationTimes": {},
+    "medicalProcedures": [],
+    "donorDetails": {
+      "organs": []
+    },
+    "receiverDetails": {
+      "organs": {}
+    },
+    "commonOrgans": [],
+    "pastDiseases": [],
+    "currentDiseases": [
+      {
+        "name": "Death Disease",
+        "isChronic": true,
+        "isCured": false,
+        "diagnosisDate": {
+          "year": 2018,
+          "month": 5,
+          "day": 23
+        }
+      },
+      {
+        "name": "Lazyness Disease",
+        "isChronic": false,
+        "isCured": false,
+        "diagnosisDate": {
+          "year": 2018,
+          "month": 5,
+          "day": 23
+        }
+      },
+      {
+        "name": "",
+        "isChronic": false,
+        "isCured": false,
+        "diagnosisDate": {
+          "year": 2018,
+          "month": 5,
+          "day": 23
+        }
+      },
+      {
+        "name": "",
+        "isChronic": false,
+        "isCured": false,
+        "diagnosisDate": {
+          "year": 2018,
+          "month": 5,
+          "day": 23
+        }
+      },
+      {
+        "name": "",
+        "isChronic": false,
+        "isCured": false,
+        "diagnosisDate": {
+          "year": 2018,
+          "month": 5,
+          "day": 23
+        }
+      }
+    ]
+  },
+  {
+    "nhi": "MDW1234",
+    "name": "Michael",
+    "dateOfBirth": {
+      "year": 2002,
+      "month": 5,
+      "day": 14
+    },
+    "dateOfDeath": {
+      "year": 2018,
+      "month": 5,
+      "day": 24
+    },
+    "height": 1.0,
+    "weight": 75.3,
+    "bloodType": "B+",
+    "currentAddress": "123 Scareview Rd",
+    "region": "Scaretown",
+    "timeCreated": {
+      "date": {
+        "year": 2018,
+        "month": 5,
+        "day": 24
+      },
+      "time": {
+        "hour": 13,
+        "minute": 24,
+        "second": 22,
+        "nano": 457000000
+      }
+    },
+    "isDeceased": true,
+    "firstName": "Michael",
+    "preferredFirstName": "Mike",
+    "middleName": "David",
+    "lastName": "Wazowski",
+    "birthGender": "Non Binary",
+    "genderIdentity": "Non Binary",
+    "alcoholConsumption": "Normal",
+    "smoker": true,
+    "homePhone": "033456789",
+    "cellPhone": "0210123456",
+    "email": "kingscarer@gmail.com",
+    "contact": {
+      "name": "James P Sullivan",
+      "homePhoneNumber": "033456789",
+      "cellPhoneNumber": "0219876543",
+      "address": "123 Scareview Rd",
+      "region": "Scaretown",
+      "email": "kitty@gmail.com",
+      "relationship": "Civil Union"
+    },
+    "lastModified": {
+      "date": {
+        "year": 2018,
+        "month": 5,
+        "day": 24
+      },
+      "time": {
+        "hour": 13,
+        "minute": 28,
+        "second": 6,
+        "nano": 622000000
+      }
+    },
+    "miscAttributes": [],
+    "updateHistory": {},
+    "previousMedication": [
+      "novacaine",
+      "tobacco"
+    ],
+    "currentMedication": [
+      "tylenol"
+    ],
+    "previousMedicationTimes": {
+      "novacaine": [
+        {
+          "date": {
+            "year": 2018,
+            "month": 5,
+            "day": 24
+          },
+          "time": {
+            "hour": 13,
+            "minute": 25,
+            "second": 22,
+            "nano": 928000000
+          }
+        }
+      ],
+      "tobacco": [
+        {
+          "date": {
+            "year": 2018,
+            "month": 5,
+            "day": 24
+          },
+          "time": {
+            "hour": 13,
+            "minute": 25,
+            "second": 32,
+            "nano": 145000000
+          }
+        }
+      ]
+    },
+    "currentMedicationTimes": {
+      "tylenol": [
+        {
+          "date": {
+            "year": 2018,
+            "month": 5,
+            "day": 24
+          },
+          "time": {
+            "hour": 13,
+            "minute": 25,
+            "second": 13,
+            "nano": 763000000
+          }
+        }
+      ],
+      "novacaine": [
+        {
+          "date": {
+            "year": 2018,
+            "month": 5,
+            "day": 24
+          },
+          "time": {
+            "hour": 13,
+            "minute": 25,
+            "second": 20,
+            "nano": 288000000
+          }
+        }
+      ],
+      "tobacco": [
+        {
+          "date": {
+            "year": 2018,
+            "month": 5,
+            "day": 24
+          },
+          "time": {
+            "hour": 13,
+            "minute": 25,
+            "second": 28,
+            "nano": 360000000
+          }
+        }
+      ]
+    },
+    "medicalProcedures": [
+      {
+        "procedureDate": {
+          "year": 2016,
+          "month": 5,
+          "day": 12
+        },
+        "summary": "Colonoscopy",
+        "description": "Routine colonoscopy",
+        "organsAffected": [
+          "Intestine"
+        ]
+      },
+      {
+        "procedureDate": {
+          "year": 2016,
+          "month": 5,
+          "day": 12
+        },
+        "summary": "Colonoscopy",
+        "description": "Routine colonoscopy",
+        "organsAffected": [
+          "Intestine"
+        ]
+      }
+    ],
+    "donorDetails": {
+      "organs": [
+        "Liver",
+        "Bone Marrow",
+        "Pancreas"
+      ]
+    },
+    "receiverDetails": {
+      "organs": {
+        "Liver": [
+          {
+            "startDate": {
+              "year": 2018,
+              "month": 5,
+              "day": 24
+            },
+            "stopDate": {
+              "year": 2018,
+              "month": 5,
+              "day": 24
+            },
+            "reason": "Receiver died"
+          }
+        ],
+        "Intestine": [
+          {
+            "startDate": {
+              "year": 2018,
+              "month": 5,
+              "day": 24
+            },
+            "stopDate": {
+              "year": 2018,
+              "month": 5,
+              "day": 24
+            },
+            "reason": "Transplant received"
+          }
+        ]
+      }
+    },
+    "commonOrgans": [],
+    "pastDiseases": [
+      {
+        "name": "Colon Cancer",
+        "isChronic": false,
+        "isCured": true,
+        "diagnosisDate": {
+          "year": 2013,
+          "month": 10,
+          "day": 23
+        }
+      }
+    ],
+    "currentDiseases": [
+      {
+        "name": "irritable Bowel Syndrome",
+        "isChronic": true,
+        "isCured": false,
+        "diagnosisDate": {
+          "year": 2015,
+          "month": 5,
+          "day": 29
+        }
+      }
+    ]
+  },
+  {
+    "nhi": "ABC1234",
+    "name": "Jack",
+    "dateOfBirth": {
+      "year": 1988,
+      "month": 7,
+      "day": 30
+    },
+    "height": 1.7,
+    "weight": 100.0,
+    "bloodType": "A+",
+    "currentAddress": "",
+    "region": "",
+    "timeCreated": {
+      "date": {
+        "year": 2018,
+        "month": 4,
+        "day": 20
+      },
+      "time": {
+        "hour": 21,
+        "minute": 5,
+        "second": 47,
+        "nano": 66000000
+      }
+    },
+    "isDeceased": false,
+    "firstName": "Jack",
+    "preferredFirstName": "",
+    "middleName": "",
+    "lastName": "Black",
+    "birthGender": "Male",
+    "genderIdentity": "",
+    "alcoholConsumption": "High",
+    "smoker": false,
+    "homePhone": "",
+    "cellPhone": "",
+    "email": "comedyking@yahoo.com",
+    "contact": {
+      "name": "",
+      "cellPhoneNumber": ""
+    },
+    "lastModified": {
+      "date": {
+        "year": 2018,
+        "month": 5,
+        "day": 24
+      },
+      "time": {
+        "hour": 12,
+        "minute": 47,
+        "second": 25,
+        "nano": 577000000
+      }
+    },
+    "miscAttributes": [],
+    "updateHistory": {},
+    "previousMedication": [],
+    "currentMedication": [],
+    "previousMedicationTimes": {},
+    "currentMedicationTimes": {},
+    "medicalProcedures": [],
+    "donorDetails": {
+      "organs": []
+    },
+    "receiverDetails": {
+      "organs": {}
+    },
+    "commonOrgans": [],
+    "pastDiseases": [],
+    "currentDiseases": [
+      {
+        "name": "Lung Disease",
+        "isChronic": true,
+        "isCured": false,
+        "diagnosisDate": {
+          "year": 2014,
+          "month": 9,
+          "day": 2
+        }
+      },
+      {
+        "name": "Gum Disease",
+        "isChronic": false,
+        "isCured": false,
+        "diagnosisDate": {
+          "year": 2000,
+          "month": 5,
+          "day": 23
+        }
+      },
+      {
+        "name": "",
+        "isChronic": true,
+        "isCured": false,
+        "diagnosisDate": {
+          "year": 2014,
+          "month": 9,
+          "day": 2
+        }
+      },
+      {
+        "name": "",
+        "isChronic": false,
+        "isCured": false,
+        "diagnosisDate": {
+          "year": 2000,
+          "month": 5,
+          "day": 23
+        }
+      },
+      {
+        "name": "",
+        "isChronic": false,
+        "isCured": false,
+        "diagnosisDate": {
+          "year": 2018,
+          "month": 5,
+          "day": 23
+        }
+      }
+    ]
+  },
+  {
+    "nhi": "AKE4747",
+    "name": "Anna",
+    "dateOfBirth": {
+      "year": 1985,
+      "month": 8,
+      "day": 7
+    },
+    "height": 1.4,
+    "weight": 69.3,
+    "bloodType": "A-",
+    "currentAddress": "94 Hollywood Blvd",
+    "region": "Los Angeles",
+    "timeCreated": {
+      "date": {
+        "year": 2018,
+        "month": 5,
+        "day": 19
+      },
+      "time": {
+        "hour": 13,
+        "minute": 24,
+        "second": 22,
+        "nano": 457000000
+      }
+    },
+    "isDeceased": false,
+    "firstName": "Anna",
+    "preferredFirstName": "Anna",
+    "middleName": "",
+    "lastName": "Kendrick",
+    "birthGender": "Female",
+    "genderIdentity": "Female",
+    "alcoholConsumption": "Normal",
+    "smoker": false,
+    "homePhone": "033529443",
+    "cellPhone": "0219872345",
+    "email": "AK47@gmail.com",
+    "contact": {
+      "name": "Brittany Snow",
+      "homePhoneNumber": "033925883",
+      "cellPhoneNumber": "0216798456",
+      "address": "345 Downtown Blvd",
+      "region": "Los Angeles",
+      "email": "snowden@gmail.com",
+      "relationship": "Friend"
+    },
+    "lastModified": {
+      "date": {
+        "year": 2018,
+        "month": 5,
+        "day": 24
+      },
+      "time": {
+        "hour": 13,
+        "minute": 28,
+        "second": 6,
+        "nano": 622000000
+      }
+    },
+    "miscAttributes": [],
+    "updateHistory": {},
+    "previousMedication": [
+      "novacaine"
+    ],
+    "currentMedication": [
+      "tylenol"
+    ],
+    "previousMedicationTimes": {
+      "novacaine": [
+        {
+          "date": {
+            "year": 2018,
+            "month": 5,
+            "day": 24
+          },
+          "time": {
+            "hour": 13,
+            "minute": 25,
+            "second": 22,
+            "nano": 928000000
+          }
+        }
+      ]
+    },
+    "currentMedicationTimes": {
+      "tylenol": [
+        {
+          "date": {
+            "year": 2018,
+            "month": 5,
+            "day": 24
+          },
+          "time": {
+            "hour": 13,
+            "minute": 25,
+            "second": 13,
+            "nano": 763000000
+          }
+        }
+      ],
+      "novacaine": [
+        {
+          "date": {
+            "year": 2018,
+            "month": 5,
+            "day": 24
+          },
+          "time": {
+            "hour": 13,
+            "minute": 25,
+            "second": 20,
+            "nano": 288000000
+          }
+        }
+      ]
+    },
+    "medicalProcedures": [
+      {
+        "procedureDate": {
+          "year": 2016,
+          "month": 5,
+          "day": 12
+        },
+        "summary": "Open Heart Surgery",
+        "description": "checking on valves",
+        "organsAffected": [
+          "Heart"
+        ]
+      },
+      {
+        "procedureDate": {
+          "year": 2016,
+          "month": 5,
+          "day": 12
+        },
+        "summary": "Open Heart Surgery",
+        "description": "checking on valves",
+        "organsAffected": [
+          "Heart"
+        ]
+      }
+    ],
+    "donorDetails": {
+      "organs": [
+        "Kidney",
+        "Bone Marrow",
+        "Pancreas"
+      ]
+    },
+    "receiverDetails": {
+      "organs": {
+        "Kidney": [
+          {
+            "startDate": {
+              "year": 2018,
+              "month": 5,
+              "day": 24
+            }
+          }
+        ],
+        "Heart": [
+          {
+            "startDate": {
+              "year": 2018,
+              "month": 5,
+              "day": 24
+            },
+            "stopDate": {
+              "year": 2018,
+              "month": 5,
+              "day": 24
+            },
+            "reason": "Transplant received"
+          }
+        ]
+      }
+    },
+    "commonOrgans": [],
+    "pastDiseases": [
+      {
+        "name": "Heart Murmur",
+        "isChronic": false,
+        "isCured": true,
+        "diagnosisDate": {
+          "year": 2013,
+          "month": 10,
+          "day": 23
+        }
+      }
+    ],
+    "currentDiseases": [
+      {
+        "name": "irritable Bowel Syndrome",
+        "isChronic": true,
+        "isCured": false,
+        "diagnosisDate": {
+          "year": 2015,
+          "month": 5,
+          "day": 29
+        }
+      }
+    ]
+  },
+  {
+    "nhi": "BAT8734",
+    "name": "Bruce",
+    "dateOfBirth": {
+      "year": 1967,
+      "month": 1,
+      "day": 3
+    },
+    "height": 0.0,
+    "weight": 0.0,
+    "bloodType": "U",
+    "currentAddress": "",
+    "region": "",
+    "timeCreated": {
+      "date": {
+        "year": 2018,
+        "month": 5,
+        "day": 23
+      },
+      "time": {
+        "hour": 21,
+        "minute": 5,
+        "second": 47,
+        "nano": 66000000
+      }
+    },
+    "isDeceased": false,
+    "firstName": "Bruce",
+    "preferredFirstName": "BATMAN",
+    "middleName": "",
+    "lastName": "Wayne",
+    "birthGender": "Male",
+    "genderIdentity": "",
+    "alcoholConsumption": "None",
+    "smoker": false,
+    "homePhone": "",
+    "cellPhone": "",
+    "email": "",
+    "contact": {
+      "name": "",
+      "cellPhoneNumber": ""
+    },
+    "lastModified": {
+      "date": {
+        "year": 2018,
+        "month": 5,
+        "day": 24
+      },
+      "time": {
+        "hour": 12,
+        "minute": 47,
+        "second": 25,
+        "nano": 577000000
+      }
+    },
+    "miscAttributes": [],
+    "updateHistory": {},
+    "previousMedication": [],
+    "currentMedication": [],
+    "previousMedicationTimes": {},
+    "currentMedicationTimes": {},
+    "medicalProcedures": [],
+    "donorDetails": {
+      "organs": []
+    },
+    "receiverDetails": {
+      "organs": {}
+    },
+    "commonOrgans": [],
+    "pastDiseases": [],
+    "currentDiseases": [
+      {
+        "name": "Orphan Disease",
+        "isChronic": true,
+        "isCured": false,
+        "diagnosisDate": {
+          "year": 1977,
+          "month": 5,
+          "day": 23
+        }
+      },
+      {
+        "name": "Lazyness Disease",
+        "isChronic": false,
+        "isCured": false,
+        "diagnosisDate": {
+          "year": 2018,
+          "month": 5,
+          "day": 23
+        }
+      },
+      {
+        "name": "",
+        "isChronic": false,
+        "isCured": false,
+        "diagnosisDate": {
+          "year": 2018,
+          "month": 5,
+          "day": 23
+        }
+      },
+      {
+        "name": "",
+        "isChronic": false,
+        "isCured": false,
+        "diagnosisDate": {
+          "year": 2018,
+          "month": 5,
+          "day": 23
+        }
+      },
+      {
+        "name": "",
+        "isChronic": false,
+        "isCured": false,
+        "diagnosisDate": {
+          "year": 2018,
+          "month": 5,
+          "day": 23
+        }
+      }
+    ]
+  },
+  {
+    "nhi": "SPI4333",
+    "name": "Peter",
+    "dateOfBirth": {
+      "year": 2002,
+      "month": 10,
+      "day": 31
+    },
+    "height": 1.0,
+    "weight": 75.3,
+    "bloodType": "AB+",
+    "currentAddress": "45 Black Widow Lane",
+    "region": "Webtown",
+    "timeCreated": {
+      "date": {
+        "year": 2018,
+        "month": 5,
+        "day": 24
+      },
+      "time": {
+        "hour": 13,
+        "minute": 24,
+        "second": 22,
+        "nano": 457000000
+      }
+    },
+    "isDeceased": false,
+    "firstName": "Peter",
+    "preferredFirstName": "Pete",
+    "middleName": "",
+    "lastName": "Parker",
+    "birthGender": "Male",
+    "genderIdentity": "Non Binary",
+    "alcoholConsumption": "Low",
+    "smoker": false,
+    "homePhone": "033456789",
+    "cellPhone": "0210123456",
+    "email": "spideysenses@gmail.com",
+    "contact": {
+      "name": "May Parker",
+      "homePhoneNumber": "033456789",
+      "cellPhoneNumber": "0219876543",
+      "address": "45 Black Widow Lane",
+      "region": "Webtown",
+      "email": "cluelessaunt@gmail.com",
+      "relationship": "Aunt"
+    },
+    "lastModified": {
+      "date": {
+        "year": 2018,
+        "month": 5,
+        "day": 24
+      },
+      "time": {
+        "hour": 13,
+        "minute": 28,
+        "second": 6,
+        "nano": 622000000
+      }
+    },
+    "miscAttributes": [],
+    "updateHistory": {},
+    "previousMedication": [],
+    "currentMedication": [],
+    "previousMedicationTimes": {},
+    "currentMedicationTimes": {},
+    "medicalProcedures": [
+      {
+        "procedureDate": {
+          "year": 2015,
+          "month": 5,
+          "day": 12
+        },
+        "summary": "Spider Bite",
+        "description": "Radioactive Spider Bite",
+        "organsAffected": []
+      },
+      {
+        "procedureDate": {
+          "year": 2015,
+          "month": 5,
+          "day": 12
+        },
+        "summary": "Spider Bite",
+        "description": "Radioactive Spider Bite",
+        "organsAffected": [
+        ]
+      }
+    ],
+    "donorDetails": {
+      "organs": [
+        "Liver",
+        "Bone Marrow",
+        "Pancreas"
+      ]
+    },
+    "receiverDetails": {
+      "organs": {
+      }
+    },
+    "commonOrgans": [],
+    "pastDiseases": [],
+    "currentDiseases": [
+      {
+        "name": "Spidey Senses",
+        "isChronic": true,
+        "isCured": false,
+        "diagnosisDate": {
+          "year": 2015,
+          "month": 5,
+          "day": 29
+        }
+      }
+    ]
+  },
+  {
+    "nhi": "AMY8375",
+    "name": "Patricia",
+    "dateOfBirth": {
+      "year": 1979,
+      "month": 6,
+      "day": 29
+    },
+    "height": 1.7,
+    "weight": 101.7,
+    "bloodType": "O+",
+    "currentAddress": "",
+    "region": "",
+    "timeCreated": {
+      "date": {
+        "year": 2018,
+        "month": 5,
+        "day": 23
+      },
+      "time": {
+        "hour": 21,
+        "minute": 5,
+        "second": 47,
+        "nano": 66000000
+      }
+    },
+    "isDeceased": false,
+    "firstName": "Patricia",
+    "preferredFirstName": "Fat Amy",
+    "middleName": "",
+    "lastName": "Hobart",
+    "birthGender": "Female",
+    "genderIdentity": "Unknown",
+    "alcoholConsumption": "High",
+    "smoker": false,
+    "homePhone": "",
+    "cellPhone": "",
+    "email": "",
+    "contact": {
+      "name": "",
+      "cellPhoneNumber": ""
+    },
+    "lastModified": {
+      "date": {
+        "year": 2018,
+        "month": 5,
+        "day": 24
+      },
+      "time": {
+        "hour": 12,
+        "minute": 47,
+        "second": 25,
+        "nano": 577000000
+      }
+    },
+    "miscAttributes": [],
+    "updateHistory": {},
+    "previousMedication": [],
+    "currentMedication": [],
+    "previousMedicationTimes": {},
+    "currentMedicationTimes": {},
+    "medicalProcedures": [],
+    "donorDetails": {
+      "organs": []
+    },
+    "receiverDetails": {
+      "organs": {}
+    },
+    "commonOrgans": [],
+    "pastDiseases": [],
+    "currentDiseases": [
+      {
+        "name": "Endometriosis",
+        "isChronic": true,
+        "isCured": false,
+        "diagnosisDate": {
+          "year": 2018,
+          "month": 5,
+          "day": 23
+        }
+      },
+      {
+        "name": "Polycystic Ovary Syndrome",
+        "isChronic": true,
+        "isCured": false,
+        "diagnosisDate": {
+          "year": 2018,
+          "month": 5,
+          "day": 23
+        }
+      }
+    ]
+  },
+  {
+    "nhi": "HAM1787",
+    "name": "Alexander",
+    "dateOfBirth": {
+      "year": 1755,
+      "month": 1,
+      "day": 11
+    },
+    "dateOfDeath": {
+      "year": 1804,
+      "month": 7,
+      "day": 12
+    },
+    "height": 0.0,
+    "weight": 0.0,
+    "bloodType": "B+",
+    "currentAddress": "",
+    "region": "Scaretown",
+    "timeCreated": {
+      "date": {
+        "year": 2018,
+        "month": 5,
+        "day": 24
+      },
+      "time": {
+        "hour": 13,
+        "minute": 24,
+        "second": 22,
+        "nano": 457000000
+      }
+    },
+    "isDeceased": true,
+    "firstName": "Alexander",
+    "preferredFirstName": "Alex",
+    "middleName": "",
+    "lastName": "Hamilton",
+    "birthGender": "Male",
+    "genderIdentity": "Male",
+    "alcoholConsumption": "Normal",
+    "smoker": true,
+    "homePhone": "",
+    "cellPhone": "",
+    "email": "",
+    "contact": {
+      "name": "",
+      "homePhoneNumber": "",
+      "cellPhoneNumber": "",
+      "address": "",
+      "region": "",
+      "email": "",
+      "relationship": ""
+    },
+    "lastModified": {
+      "date": {
+        "year": 2018,
+        "month": 5,
+        "day": 24
+      },
+      "time": {
+        "hour": 13,
+        "minute": 28,
+        "second": 6,
+        "nano": 622000000
+      }
+    },
+    "miscAttributes": [],
+    "updateHistory": {},
+    "previousMedication": [
+      "novacaine",
+      "tobacco"
+    ],
+    "currentMedication": [
+      "tylenol"
+    ],
+    "previousMedicationTimes": {},
+    "currentMedicationTimes": {},
+    "medicalProcedures": [],
+    "donorDetails": {
+      "organs": [
+        "Liver",
+        "Bone Marrow",
+        "Pancreas"
+      ]
+    },
+    "receiverDetails": {
+      "organs": {}
+    },
+    "commonOrgans": [],
+    "pastDiseases": [],
+    "currentDiseases": []
+  },
+  {
+    "nhi": "ROC1234",
+    "name": "Rocket",
+    "dateOfBirth": {
+      "year": 2017,
+      "month": 1,
+      "day": 3
+    },
+    "height": 0.0,
+    "weight": 0.0,
+    "bloodType": "U",
+    "currentAddress": "",
+    "region": "",
+    "timeCreated": {
+      "date": {
+        "year": 2018,
+        "month": 5,
+        "day": 23
+      },
+      "time": {
+        "hour": 21,
+        "minute": 5,
+        "second": 47,
+        "nano": 66000000
+      }
+    },
+    "isDeceased": false,
+    "firstName": "Rocket",
+    "preferredFirstName": "Rocket",
+    "middleName": "",
+    "lastName": "Racoon",
+    "birthGender": "",
+    "genderIdentity": "",
+    "alcoholConsumption": "None",
+    "smoker": false,
+    "homePhone": "",
+    "cellPhone": "",
+    "email": "",
+    "contact": {
+      "name": "",
+      "cellPhoneNumber": ""
+    },
+    "lastModified": {
+      "date": {
+        "year": 2018,
+        "month": 5,
+        "day": 24
+      },
+      "time": {
+        "hour": 12,
+        "minute": 47,
+        "second": 25,
+        "nano": 577000000
+      }
+    },
+    "miscAttributes": [],
+    "updateHistory": {},
+    "previousMedication": [],
+    "currentMedication": [],
+    "previousMedicationTimes": {},
+    "currentMedicationTimes": {},
+    "medicalProcedures": [],
+    "donorDetails": {
+      "organs": []
+    },
+    "receiverDetails": {
+      "organs": {}
+    },
+    "commonOrgans": [],
+    "pastDiseases": [],
+    "currentDiseases": [
+      {
+        "name": "Hothead Disease",
+        "isChronic": true,
+        "isCured": false,
+        "diagnosisDate": {
+          "year": 2018,
+          "month": 5,
+          "day": 23
+        }
+      },
+      {
+        "name": "Lazyness Disease",
+        "isChronic": false,
+        "isCured": false,
+        "diagnosisDate": {
+          "year": 2018,
+          "month": 5,
+          "day": 23
+        }
+      }
+    ]
+  },
+  {
+    "nhi": "JPS1234",
+    "name": "James",
+    "dateOfBirth": {
+      "year": 2000,
+      "month": 11,
+      "day": 18
+    },
+    "dateOfDeath": {
+      "year": 2018,
+      "month": 5,
+      "day": 24
+    },
+    "height": 1.0,
+    "weight": 75.3,
+    "bloodType": "B+",
+    "currentAddress": "123 Scareview Rd",
+    "region": "Scaretown",
+    "timeCreated": {
+      "date": {
+        "year": 2018,
+        "month": 5,
+        "day": 24
+      },
+      "time": {
+        "hour": 13,
+        "minute": 24,
+        "second": 22,
+        "nano": 457000000
+      }
+    },
+    "isDeceased": true,
+    "firstName": "James",
+    "preferredFirstName": "Sully",
+    "middleName": "P",
+    "lastName": "Sullivan",
+    "birthGender": "Non Binary",
+    "genderIdentity": "Non Binary",
+    "alcoholConsumption": "Normal",
+    "smoker": true,
+    "homePhone": "033456789",
+    "cellPhone": "0219876543",
+    "email": "kitty@gmail.com",
+    "contact": {
+      "name": "Michel Wazowski",
+      "homePhoneNumber": "033456789",
+      "cellPhoneNumber": "0210123456",
+      "address": "123 Scareview Rd",
+      "region": "Scaretown",
+      "email": "kingscarer@gmail.com",
+      "relationship": "Civil Union"
+    },
+    "lastModified": {
+      "date": {
+        "year": 2018,
+        "month": 5,
+        "day": 24
+      },
+      "time": {
+        "hour": 13,
+        "minute": 28,
+        "second": 6,
+        "nano": 622000000
+      }
+    },
+    "miscAttributes": [],
+    "updateHistory": {},
+    "previousMedication": [
+      "novacaine",
+      "tobacco"
+    ],
+    "currentMedication": [
+      "tylenol"
+    ],
+    "previousMedicationTimes": {
+      "novacaine": [
+        {
+          "date": {
+            "year": 2018,
+            "month": 5,
+            "day": 24
+          },
+          "time": {
+            "hour": 13,
+            "minute": 25,
+            "second": 22,
+            "nano": 928000000
+          }
+        }
+      ],
+      "tobacco": [
+        {
+          "date": {
+            "year": 2018,
+            "month": 5,
+            "day": 24
+          },
+          "time": {
+            "hour": 13,
+            "minute": 25,
+            "second": 32,
+            "nano": 145000000
+          }
+        }
+      ]
+    },
+    "currentMedicationTimes": {
+      "tylenol": [
+        {
+          "date": {
+            "year": 2018,
+            "month": 5,
+            "day": 24
+          },
+          "time": {
+            "hour": 13,
+            "minute": 25,
+            "second": 13,
+            "nano": 763000000
+          }
+        }
+      ],
+      "novacaine": [
+        {
+          "date": {
+            "year": 2018,
+            "month": 5,
+            "day": 24
+          },
+          "time": {
+            "hour": 13,
+            "minute": 25,
+            "second": 20,
+            "nano": 288000000
+          }
+        }
+      ],
+      "tobacco": [
+        {
+          "date": {
+            "year": 2018,
+            "month": 5,
+            "day": 24
+          },
+          "time": {
+            "hour": 13,
+            "minute": 25,
+            "second": 28,
+            "nano": 360000000
+          }
+        }
+      ]
+    },
+    "medicalProcedures": [
+      {
+        "procedureDate": {
+          "year": 2016,
+          "month": 5,
+          "day": 12
+        },
+        "summary": "Colonoscopy",
+        "description": "Routine colonoscopy",
+        "organsAffected": [
+          "Intestine"
+        ]
+      },
+      {
+        "procedureDate": {
+          "year": 2016,
+          "month": 5,
+          "day": 12
+        },
+        "summary": "Colonoscopy",
+        "description": "Routine colonoscopy",
+        "organsAffected": [
+          "Intestine"
+        ]
+      }
+    ],
+    "donorDetails": {
+      "organs": [
+        "Liver",
+        "Bone Marrow",
+        "Pancreas"
+      ]
+    },
+    "receiverDetails": {
+      "organs": {
+        "Liver": [
+          {
+            "startDate": {
+              "year": 2018,
+              "month": 5,
+              "day": 24
+            },
+            "stopDate": {
+              "year": 2018,
+              "month": 5,
+              "day": 24
+            },
+            "reason": "Receiver died"
+          }
+        ],
+        "Intestine": [
+          {
+            "startDate": {
+              "year": 2018,
+              "month": 5,
+              "day": 24
+            },
+            "stopDate": {
+              "year": 2018,
+              "month": 5,
+              "day": 24
+            },
+            "reason": "Transplant received"
+          }
+        ]
+      }
+    },
+    "commonOrgans": [],
+    "pastDiseases": [
+      {
+        "name": "Colon Cancer",
+        "isChronic": false,
+        "isCured": true,
+        "diagnosisDate": {
+          "year": 2013,
+          "month": 10,
+          "day": 23
+        }
+      }
+    ],
+    "currentDiseases": [
+      {
+        "name": "irritable Bowel Syndrome",
+        "isChronic": true,
+        "isCured": false,
+        "diagnosisDate": {
+          "year": 2015,
+          "month": 5,
+          "day": 29
+        }
+      }
+    ]
+  }
+]
