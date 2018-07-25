@@ -703,7 +703,12 @@ public class UpdateClinicianController {
             }
 
             controller.updateClinicians(clinician);
-            controller.saveClinician(clinician);
+            try {
+                controller.saveClinician(clinician);
+            } catch (IOException e) {
+                //todo fix me
+                return;
+            }
             loadOverview(clinician);
 
         } else {

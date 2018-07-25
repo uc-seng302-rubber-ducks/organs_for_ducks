@@ -4,9 +4,9 @@ INSERT INTO User(nhi, firstName, middleName, lastName, preferedName, dob, dod, t
   ('XYZ1234', 'Lily', 'Ruby Rose', 'Latifer', 'Li', '1987-01-01', NULL, '2013-11-04 18:12:43', '2018-05-05 13:14:32'),
   ('XYZ4321', 'Kenny', NULL, 'Roger', NULL, '1987-01-01', '2017-06-15', '2013-11-04 18:12:43', '2017-06-15 13:14:32');
 
-INSERT INTO Clinician(staffId, firstName, middleName, lastName, timeCreated, lastModified, profilePicture) VALUES
-  ('16','Remi','Fabinus','Rulie','1983-10-04 20:12:43','1984-01-05 01:14:32', NULL ),
-  ('23','Alex','King','Stone','1988-10-04 15:12:43','1988-12-05 14:14:32', NULL );
+INSERT INTO Clinician(staffId, firstName, middleName, lastName, timeCreated, lastModified) VALUES
+  ('16','Remi','Fabinus','Rulie','1983-10-04 20:12:43','1984-01-05 01:14:32' ),
+  ('23','Alex','King','Stone','1988-10-04 15:12:43','1988-12-05 14:14:32');
 
 INSERT INTO Administrator(userName, firstName, middleName, lastName, timeCreated, lastModified) VALUES
   ('ruth265','Remi','Fabinus','Rulie','1983-10-04 20:12:43','1984-01-05 01:14:32'),

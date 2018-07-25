@@ -31,13 +31,14 @@ public class PhotoController extends BaseController {
 
 
     @RequestMapping(method = RequestMethod.PUT, value = "/users/{nhi}/photo")
-    public ResponseEntity putUserProfilePhoto(@PathVariable String nhi, @RequestBody byte[] profileImageFile) {
+    public ResponseEntity putUserProfilePhoto(@PathVariable String nhi, @RequestBody byte[] profileImageFile, @RequestHeader RequestHeader header) {
 
         try (Connection connection = driver.getConnection()) {
             User toModify = handler.getOneUser(connection, nhi);
             if (toModify == null) {
                 return new ResponseEntity(HttpStatus.NOT_FOUND);
             }
+            System.out.println(header);
             handler.updateProfilePhoto(User.class, toModify.getNhi(), new ByteArrayInputStream(profileImageFile), connection);
 
         } catch (SQLException ex) {

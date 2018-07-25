@@ -29,8 +29,6 @@ import odms.controller.gui.panel.TransplantWaitListController;
 import odms.controller.gui.popup.AlertUnclosedWindowsController;
 import odms.controller.gui.popup.CountrySelectionController;
 import odms.controller.gui.popup.DeletedUserController;
-import odms.controller.gui.popup.utils.AlertWindowFactory;
-import odms.controller.gui.statusBarController;
 import odms.commons.exception.InvalidFileException;
 import odms.commons.model.Administrator;
 import odms.commons.model.Clinician;

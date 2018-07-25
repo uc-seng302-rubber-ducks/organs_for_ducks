@@ -345,9 +345,9 @@ public class AppController {
                     userBridge.putDiseases(user.getPastDiseases(), originalUser.getNhi(), token);
                     userBridge.putDiseases(user.getCurrentDiseases(), originalUser.getNhi(), token);
                 }
-                userBridge.putUser(user, originalUser.getNhi());
-                userBridge.postDonatingOrgans(user.getDonorDetails().getOrgans(), originalUser.getNhi());
+                userBridge.putDonatingOrgans(user.getDonorDetails().getOrgans(), originalUser.getNhi());
                 userBridge.putProfilePicture(originalUser.getNhi(), user.getProfilePhotoFilePath());
+                userBridge.putUser(user, originalUser.getNhi());
 
             } else {
                 userBridge.postUser(user);
@@ -446,7 +446,7 @@ public class AppController {
      *
      * @param clinician Clinician to be saved
      */
-    public void saveClinician(Clinician clinician) {
+    public void saveClinician(Clinician clinician) throws IOException {
             Clinician originalClinician;
             if (!clinician.getUndoStack().isEmpty()) {
                 originalClinician = clinician.getUndoStack().firstElement().getState();

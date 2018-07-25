@@ -171,8 +171,10 @@ public class ClinicianBridge extends RoleBridge {
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                Log.warning("Failed to PUT " + url);
-                throw new IOException("Could not PUT " + url);
+                if(!response.isSuccessful()) {
+                    Log.warning("Failed to PUT " + url);
+                    throw new IOException("Could not PUT " + url);
+                }
             }
         });
     }

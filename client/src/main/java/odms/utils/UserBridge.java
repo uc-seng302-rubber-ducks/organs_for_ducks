@@ -291,7 +291,7 @@ public class UserBridge extends RoleBridge {
         });
     }
 
-    public void putDonatingOrgans(List<Organs> donating, String nhi) {
+    public void putDonatingOrgans(Set<Organs> donating, String nhi) {
         String url = ip + USERS + nhi + "/donating";
         RequestBody body = RequestBody.create(JSON, new Gson().toJson(donating));
         Request request = new Request.Builder().url(url).put(body).build();
@@ -336,8 +336,10 @@ public class UserBridge extends RoleBridge {
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                Log.warning("Failed to PUT " + url);
-                throw new IOException("Could not PUT " + url);
+                if(!response.isSuccessful()) {
+                    Log.warning("Failed to PUT " + url);
+                    throw new IOException("Could not PUT " + url);
+                }
             }
         });
     }
