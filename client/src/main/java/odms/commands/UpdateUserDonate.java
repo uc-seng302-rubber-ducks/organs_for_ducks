@@ -66,6 +66,7 @@ public class UpdateUserDonate implements Runnable {
             System.out.println("User " + user.getNhi() + " updated");
             System.out.println(user.getDonorDetails().getOrgans().toString());
             controller.update(user);
+            controller.saveUser(user);
         }
     }
 

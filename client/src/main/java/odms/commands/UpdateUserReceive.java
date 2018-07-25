@@ -64,6 +64,7 @@ public class UpdateUserReceive implements Runnable {
             System.out.println("User " + user.getNhi() + " updated");
             System.out.println(user.getReceiverDetails().stringIsWaitingFor());
             controller.update(user);
+            controller.saveUser(user);
         }
     }
 
