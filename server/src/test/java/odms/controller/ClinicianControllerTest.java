@@ -49,7 +49,7 @@ public class ClinicianControllerTest {
         //set up data
         Collection<Clinician> clinicians = new ArrayList<>();
         clinicians.add(testClinician);
-        when(handler.loadClinicians(any(Connection.class), anyInt(), anyInt())).thenReturn(clinicians);
+        when(handler.loadClinicians(any(Connection.class), anyInt(), anyInt(), anyString(), anyString())).thenReturn(clinicians);
         List<Clinician> results = new ArrayList<>(controller.getClinicians(0, 1, "", ""));
 
         Assert.assertEquals(testClinician, results.get(0));
