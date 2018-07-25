@@ -156,8 +156,11 @@ public class AppController {
             s = getCountriesBridge().getAllowedCountries();
         } catch (IOException e) {
             Log.severe("Database threw IOE", e);
+            allowedCountries = new ArrayList<>();
         }
-        allowedCountries = new ArrayList(s);
+        if (s != null) {
+            allowedCountries = new ArrayList(s);
+        }
         if (allowedCountries.isEmpty()) {
             allowedCountries.add("New Zealand");
         }

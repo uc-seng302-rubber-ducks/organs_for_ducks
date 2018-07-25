@@ -8,10 +8,7 @@ import odms.commons.model.User;
 import odms.commons.model.dto.UserOverview;
 import odms.controller.AppController;
 import odms.utils.*;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 import org.testfx.api.FxRobotException;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
@@ -104,6 +101,7 @@ public class NewDiseaseControllerGUITest extends ApplicationTest {
     }
 
     @Test
+    @Ignore
     public void createdDiseaseShouldBeInCurrentDiseaseTable() {
         clickOnButton(this,"#addDiseaseButton");
         setTextField(this,"#diseaseNameInput", "A1");
