@@ -74,7 +74,9 @@ public class UpdateAdminControllerGUITest extends ApplicationTest {
         setTextField(this,"#adminUsernameTextField","admin1");
         setTextField(this,"#adminPasswordField","face");
         clickOnButton(this,"#loginAButton");
-        clickOnButton(this,"#updateButton");
+        clickOn("#editAdminMenu");
+        clickOn(
+                "#updateAdminDetails");
     }
 
     @After
@@ -119,7 +121,8 @@ public class UpdateAdminControllerGUITest extends ApplicationTest {
         setTextField(this,"#passwordTextField","hey");
         setTextField(this,"#cPasswordTextField","hey");
         clickOnButton(this,"#confirmButton");
-        clickOnButton(this,"#adminLogoutButton");
+        clickOn("#AdminFileMenu");
+        clickOn("#AdminLogout");
         clickOn("#administratorTab");
         setTextField(this,"#adminUsernameTextField","admin1");
         setTextField(this,"#adminPasswordField","hey");

@@ -1,6 +1,5 @@
-package odms.utils;
+package odms.commons.model;
 
-import odms.commons.model.User;
 import odms.commons.utils.CSVHandler;
 import org.apache.commons.csv.CSVRecord;
 import org.junit.Assert;
