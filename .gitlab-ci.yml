@@ -53,7 +53,7 @@ release-artifacts:
     - target/*.jar
     - client/target/*.jar
     - server/target/*.jar
-    - target/site/jacoco/*
+    - */target/site/jacoco/*
   only:
     - tags
     - schedules
