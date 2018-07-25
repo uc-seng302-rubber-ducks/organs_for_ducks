@@ -1,6 +1,5 @@
-package odms.controller;
+package odms.commons.model;
 
-import odms.commons.model.User;
 import odms.commons.model._enum.Organs;
 import odms.commons.model.datamodel.Medication;
 import org.junit.Assert;
