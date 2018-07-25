@@ -1,6 +1,5 @@
-package odms.model;
+package odms.commons.model;
 
-import odms.commons.model.MedicationInteractionCache;
 import odms.commons.model.datamodel.TimedCacheValue;
 import org.junit.Assert;
 import org.junit.Before;
