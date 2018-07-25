@@ -1,10 +1,9 @@
-package odms.model;
+package odms.commons.model;
 
-import odms.commons.model.Clinician;
-import org.junit.Before;
-import org.junit.Test;
 import odms.commons.model.datamodel.Address;
 import odms.commons.model.datamodel.ContactDetails;
+import org.junit.Before;
+import org.junit.Test;
 
 import static junit.framework.TestCase.assertEquals;
 

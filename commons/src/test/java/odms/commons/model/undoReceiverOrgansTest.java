@@ -1,6 +1,5 @@
-package odms.model;
+package odms.commons.model;
 
-import odms.commons.model.User;
 import odms.commons.model._enum.Organs;
 import org.junit.Assert;
 import org.junit.Before;

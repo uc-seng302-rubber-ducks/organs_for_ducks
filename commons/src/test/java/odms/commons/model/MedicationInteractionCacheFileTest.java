@@ -1,6 +1,5 @@
-package odms.model;
+package odms.commons.model;
 
-import odms.commons.model.MedicationInteractionCache;
 import odms.commons.model._enum.Directory;
 import odms.commons.model.datamodel.TimedCacheValue;
 import org.junit.After;
