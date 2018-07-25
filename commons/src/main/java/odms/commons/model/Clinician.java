@@ -26,7 +26,7 @@ public class Clinician extends Undoable<Clinician> implements Listenable {
     private String staffId;
     @Expose
     private ContactDetails workContactDetails;
-    private transient String password;
+    private String password;
 
     @Expose
     private LocalDateTime dateCreated;
@@ -39,7 +39,7 @@ public class Clinician extends Undoable<Clinician> implements Listenable {
     private String middleName;
     @Expose
     private String lastName;
-    private transient String salt;
+    private String salt;
     private transient PropertyChangeSupport pcs;
 
     //TODO make all updates to the clinician add to this 22/6
@@ -302,6 +302,17 @@ public class Clinician extends Undoable<Clinician> implements Listenable {
     public void setPassword(String password) {
         this.salt = PasswordManager.getNextSalt();
         this.password = PasswordManager.hash(password, salt);
+    }
+
+    /**
+     * updates the password by hashing it and storing the new salt
+     *
+     * @param password hashed password to be stored
+     * @param salt salt to be stored
+     */
+    public void setPassword(String password, String salt) {
+        this.salt = salt;
+        this.password = password;
     }
 
     public String getSalt() {
