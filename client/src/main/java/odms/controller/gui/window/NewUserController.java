@@ -248,10 +248,10 @@ public class NewUserController {
         valid &= (AttributeValidation.checkString(region));
 
         String homePhone = phone.getText();
-        valid &= (AttributeValidation.validatePhoneNumber(homePhone));
+        valid &= (AttributeValidation.validatePhoneNumber(homePhone.replaceAll(" ", "")));
 
         String cellPhone = cell.getText();
-        valid &= (AttributeValidation.validateCellNumber(cellPhone));
+        valid &= (AttributeValidation.validateCellNumber(cellPhone.replaceAll(" ", "")));
 
         String email = this.email.getText();
         valid &= (AttributeValidation.validateEmail(email));
@@ -392,10 +392,10 @@ public class NewUserController {
         valid = (AttributeValidation.checkString(ecName.getText()));
 
         String eCellPhone = ecCell.getText();
-        valid &= (AttributeValidation.validateCellNumber(ecCell.getText()));
+        valid &= (AttributeValidation.validateCellNumber(ecCell.getText().replaceAll(" ", "")));
 
         String eHomePhone = ecPhone.getText();
-        valid &= (AttributeValidation.validatePhoneNumber(ecPhone.getText()));
+        valid &= (AttributeValidation.validatePhoneNumber(ecPhone.getText().replaceAll(" ", "")));
 
         String eStreet = ecStreet.getText();
         valid &= (AttributeValidation.checkString(ecStreet.getText()));

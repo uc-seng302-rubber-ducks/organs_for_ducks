@@ -409,6 +409,7 @@ public class UserController {
     public void showUser(User user) {
         changeCurrentUser(user);
         setContactPage();
+        userProfileTabPageController.showUser(user);
         medicationTabPageController.refreshLists(user);
         donationTabPageController.populateOrganLists(user);
         receiverTabPageController.populateReceiverLists(user);

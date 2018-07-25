@@ -688,13 +688,13 @@ public class UpdateUserController {
         }
 
         String homePhone = phone.getText();
-        valid &= AttributeValidation.validatePhoneNumber(homePhone);
+        valid &= AttributeValidation.validatePhoneNumber(homePhone.replaceAll(" ", ""));
         if (!valid) {
             errorLabel.setVisible(true);
         }
 
         String cellPhone = cell.getText();
-        valid &= AttributeValidation.validateCellNumber(cellPhone);
+        valid &= AttributeValidation.validateCellNumber(cellPhone.replaceAll(" ", ""));
         if (!valid) {
             errorLabel.setVisible(true);
         }
@@ -731,13 +731,13 @@ public class UpdateUserController {
         }
 
         String emergencyPhone = ecPhone.getText();
-        valid &= AttributeValidation.validatePhoneNumber(emergencyPhone);
+        valid &= AttributeValidation.validatePhoneNumber(emergencyPhone.replaceAll(" ", ""));
         if (!valid) {
             errorLabel.setVisible(true);
         }
 
         String emergencyCell = ecCell.getText();
-        valid &= AttributeValidation.validateCellNumber(emergencyCell);
+        valid &= AttributeValidation.validateCellNumber(emergencyCell.replaceAll(" ", ""));
         if (!valid) {
             errorLabel.setVisible(true);
         }
