@@ -78,7 +78,7 @@ public class UndoUserUpdateFormGUITest extends ApplicationTest {
 
     @Test
     public void SingleChangeSingleUndo() {
-        clickOnButton(this,"#editMenu");
+        clickOn("#editMenu");
         clickOn("#editDetails");
         setTextField(this, "#preferredFNameTextField","i");
 
@@ -89,7 +89,7 @@ public class UndoUserUpdateFormGUITest extends ApplicationTest {
 
     @Test
     public void NoChangeUndoDisabled() {
-        clickOnButton(this,"#editMenu");
+        clickOn("#editMenuClinician");
         clickOn("#editDetails");
         verifyThat("#undoUpdateButton", Node::isDisabled);
     }
@@ -118,7 +118,7 @@ public class UndoUserUpdateFormGUITest extends ApplicationTest {
 
     @Test
     public void MultipleChangesSummedInMainWindow() {
-        clickOnButton(this,"#editMenu");
+        clickOn("#editMenu");
         clickOn("#editDetails");
         setTextField(this,"#mNameInput","geoff");
         clickOn("#smokerCheckBox");
@@ -135,7 +135,7 @@ public class UndoUserUpdateFormGUITest extends ApplicationTest {
 
     @Test
     public void MultipleChangesSingleUndo() {
-        clickOnButton(this,"#editMenu");
+        clickOn("#editMenu");
         clickOn("#editDetails");
         setTextField(this,"#ecPhone","1234");
 
@@ -146,7 +146,7 @@ public class UndoUserUpdateFormGUITest extends ApplicationTest {
 
     @Test
     public void MultipleChangesEqualUndos() {
-        clickOnButton(this,"#editMenu");
+        clickOn("#editMenu");
         clickOn("#editDetails");
 
 //    unable to check text in combo boxes as it is lazily created/populated
@@ -171,7 +171,7 @@ public class UndoUserUpdateFormGUITest extends ApplicationTest {
     @Test
     public void MultipleActionsTwoUndosOneAction() {
         //check we can traverse the stack properly
-        clickOnButton(this,"#editMenu");
+        clickOn("#editMenu");
         clickOn("#editDetails");
 
         clickOn("#heightInput");

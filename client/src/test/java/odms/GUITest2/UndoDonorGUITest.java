@@ -81,7 +81,8 @@ public class UndoDonorGUITest extends ApplicationTest {
      */
     @Test
     public void testSingleUndo() {
-        clickOnButton(this,"#editDetailsButton");
+        clickOn("#editMenu");
+        clickOn("#editDetails");
         setTextField(this, "#lNameInput", "Jefferson");
         clickOnButton(this,"#confirmButton");
         clickOnButton(this,"#undoButton");
@@ -94,7 +95,8 @@ public class UndoDonorGUITest extends ApplicationTest {
      */
     @Test
     public void testMultipleUndosWithoutSufficientChanges() {
-        clickOnButton(this,"#editDetailsButton");
+        clickOn("editMenu");
+        clickOn("#editDetails");
         setTextField(this, "#lNameInput", "Jefferson");
         clickOnButton(this,"#confirmButton");
         clickOnButton(this,"#undoButton");
@@ -107,8 +109,8 @@ public class UndoDonorGUITest extends ApplicationTest {
      */
     @Test
     public void testEqualChangesEqualUndos() {
-
-        clickOnButton(this,"#editDetailsButton");
+        clickOn("editMenu");
+        clickOn("#editDetails");
         setTextField(this, "#lNameInput", "Jefferson");
         clickOnButton(this,"#confirmButton");
 
@@ -199,7 +201,8 @@ public class UndoDonorGUITest extends ApplicationTest {
      */
     @Test
     public void testNHIChange() {
-        clickOnButton(this,"#editDetailsButton");
+        clickOn("editMenu");
+        clickOn("#editDetails");
         doubleClickOn("#nhiInput");
 
         write("ABD1111");

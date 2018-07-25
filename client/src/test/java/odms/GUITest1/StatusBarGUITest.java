@@ -70,7 +70,7 @@ public class StatusBarGUITest extends ApplicationTest {
         clickOn("#fNameInput").push(SHORTCUT, A).push(BACK_SPACE);
         clickOn("#fNameInput");
         write("Kate");
-        clickOn("#confirmButton");
+        clickOnButton(this,"#confirmButton");
     }
 
     @After

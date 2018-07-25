@@ -1,5 +1,6 @@
 package odms.GUITest2;
 
+import javafx.geometry.VerticalDirection;
 import odms.App;
 import odms.TestUtils.CommonTestMethods;
 import odms.commons.model.EmergencyContact;
@@ -32,7 +33,7 @@ public class UpdateUserControllerGUITest extends ApplicationTest {
 
     @BeforeClass
     public static void initialization() {
-        CommonTestMethods.runHeadless();
+        //CommonTestMethods.runHeadless();
     }
 
     @Before
@@ -63,8 +64,8 @@ public class UpdateUserControllerGUITest extends ApplicationTest {
 
         setTextField(this,"#userIDTextField", "ABC1234");
         clickOnButton(this,"#loginUButton");
-        clickOnButton(this,"#editMenu");
-        clickOn("#editDetails");
+        clickOn("#editMenuUser");
+        clickOn("#editDetailsUser");
     }
 
     @After
@@ -84,6 +85,7 @@ public class UpdateUserControllerGUITest extends ApplicationTest {
     @Test
     public void testCancel() {
         setTextField(this, "#fNameInput","Kate");
+        scroll(20, VerticalDirection.DOWN);
         clickOn("#cancelButton");
         clickOn("#yesButton");
         verifyThat("#fNameValue", LabeledMatchers.hasText("A"));
@@ -105,7 +107,7 @@ public class UpdateUserControllerGUITest extends ApplicationTest {
     @Test
     public void testUpdateDoD() {
         setDateValue(this, "#dodInput", LocalDate.of(2018, 5, 3));
-        clickOn("#confirmButton");
+        clickOnButton(this,"#confirmButton");
         verifyThat("#DODValue", LabeledMatchers.hasText(LocalDate.of(2018, 5, 3).toString()));
     }
 
