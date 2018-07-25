@@ -18,7 +18,7 @@ import okhttp3.*;
 import java.io.IOException;
 import java.util.*;
 
-public class UserBridge extends Bifrost {
+public class UserBridge extends RoleBridge {
 
     private static final String USERS = "/users/";
 
@@ -30,7 +30,7 @@ public class UserBridge extends Bifrost {
         super(client);
     }
 
-    public Collection<UserOverview> loadUsersToController(int startIndex, int count, String name, String region, String gender, String token) throws IOException {
+    public Collection<UserOverview> getUsers(int startIndex, int count, String name, String region, String gender, String token) throws IOException {
         String url = ip + "/users?startIndex=" + startIndex + "&count=" + count + "&name=" + name + "&region=" + region + "&gender=" + gender;
         Request request = new Request.Builder().header(TOKEN_HEADER, token).url(url).build();
         Collection<UserOverview> overviews;
@@ -341,6 +341,22 @@ public class UserBridge extends Bifrost {
             }
         });
     }
+    /**
+     * checks whether a user can be found in the database
+     * @param nhi nhi of the user to search for
+     * @return true if the user can be found, false otherwise
+     */
+    public boolean getExists(String nhi) {
+        Request request = new Request.Builder().get().url(ip + "/users/exists/" + nhi).build();
+
+        try (Response res = client.newCall(request).execute()) {
+            return res.body().string().equalsIgnoreCase("true");
+        } catch (NullPointerException | IOException ex) {
+            Log.warning("could not determine if the admin exists", ex);
+            return false;
+        }
+    }
+
 
 
 }

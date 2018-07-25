@@ -3,14 +3,12 @@ package odms.GUITest2;
 import javafx.scene.Node;
 import odms.App;
 import odms.TestUtils.CommonTestMethods;
-import odms.commons.exception.ApiException;
 import odms.commons.model.User;
 import odms.commons.model.dto.UserOverview;
 import odms.TestUtils.CommonTestMethods;
 import odms.commons.model.Clinician;
 import odms.commons.model.datamodel.Address;
 import odms.commons.model.datamodel.ContactDetails;
-import odms.controller.AppController;
 import odms.utils.ClinicianBridge;
 import odms.utils.LoginBridge;
 import odms.utils.UserBridge;
@@ -64,7 +62,7 @@ public class UpdateClinicianControllerGUITest extends ApplicationTest {
         when(application.getLoginBridge()).thenReturn(loginBridge);
         when(loginBridge.loginToServer(anyString(),anyString(), anyString())).thenReturn("lsdjfksd");
         when(clinicianBridge.getClinician(anyString(), anyString())).thenReturn(c);
-        when(bridge.loadUsersToController(anyInt(), anyInt(), anyString(), anyString(), anyString(), anyString()))
+        when(bridge.getUsers(anyInt(), anyInt(), anyString(), anyString(), anyString(), anyString()))
                 .thenReturn(Collections.singletonList(UserOverview.fromUser(testUser)));
         when(bridge.getUser("ABC1244")).thenReturn(testUser);
 

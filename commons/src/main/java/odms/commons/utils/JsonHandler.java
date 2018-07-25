@@ -362,5 +362,9 @@ public final class JsonHandler extends DataHandler {
     public Set decodeCountries(Response response) throws IOException {
         return new Gson().fromJson(response.body().string(), new TypeToken<HashSet<String>>() {}.getType());
     }
+
+    public Collection<Clinician> decodeClinicians(String response) throws IOException {
+        return new Gson().fromJson(response, new TypeToken<Collection<Clinician>>(){}.getType());
+    }
 }
 

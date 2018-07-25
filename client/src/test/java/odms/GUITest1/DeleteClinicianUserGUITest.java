@@ -74,7 +74,7 @@ public class DeleteClinicianUserGUITest extends ApplicationTest {
         overviews.add(UserOverview.fromUser(testUser));
         overviews.add(UserOverview.fromUser(testUser2));
         when(controller.getToken()).thenReturn("haHAA");
-        when(bridge.loadUsersToController(anyInt(), anyInt(), anyString(), anyString(), anyString(), anyString())).thenReturn(overviews);
+        when(bridge.getUsers(anyInt(), anyInt(), anyString(), anyString(), anyString(), anyString())).thenReturn(overviews);
         when(bridge.getUser(anyString())).thenReturn(testUser);
         when(loginBridge.loginToServer(anyString(), anyString(), anyString())).thenReturn("haHAA");
         when(clinicianBridge.getClinician(anyString(), anyString())).thenReturn(new Clinician("Default", "0", "admin"));

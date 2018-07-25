@@ -11,9 +11,12 @@ import odms.controller.AppController;
 import okhttp3.*;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 
-public class ClinicianBridge extends Bifrost {
+public class ClinicianBridge extends RoleBridge {
     public ClinicianBridge(OkHttpClient client, String ip) {
         super(client, ip);
     }
@@ -22,32 +25,18 @@ public class ClinicianBridge extends Bifrost {
         super(client);
     }
 
-    public void getClinicians(AppController controller, int startIndex, int count, String token) {
-        String url = ip + "/clinicians?startIndex=" + startIndex + "&count=" + count;
-        Request request = new Request.Builder().addHeader("x-auth-token", token).url(url).build();
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                Log.warning("Could not make the call to /clinicians");
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                if (response.isSuccessful()) {
-                    try (ResponseBody body = response.body()) {
-                        List<Clinician> clinicians = new Gson().fromJson(body.string(), new TypeToken<List<Clinician>>() {
-                        }.getType());
-                        controller.setClinicians(clinicians);
-                    }
-                }
-            }
-        });
+    public List<Clinician> getClinicians(int startIndex, int count, String name, String region, String token) throws IOException {
+        String url = ip + "/clinicians?startIndex=" + startIndex + "&count=" + count + "&q=" + name + "&region=" + region;
+        Request request = new Request.Builder().addHeader(TOKEN_HEADER, token).url(url).build();
+        Response response = client.newCall(request).execute();
+        ResponseBody body = response.body();
+        return new Gson().fromJson(body.string(), new TypeToken<List<Clinician>>() {}.getType());
     }
 
     public void postClinician(Clinician clinician, String token) {
         String url = ip + "/clinicians";
         RequestBody requestBody = RequestBody.create(JSON, new Gson().toJson(clinician));
-        Request request = new Request.Builder().url(url).addHeader("x-auth-token", token).post(requestBody).build();
+        Request request = new Request.Builder().url(url).addHeader(TOKEN_HEADER, token).post(requestBody).build();
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -68,7 +57,7 @@ public class ClinicianBridge extends Bifrost {
     public void putClinician(Clinician clinician, String staffID, String token) {
         String url = ip + "/clinicians/" + staffID;
         RequestBody requestBody = RequestBody.create(JSON, new Gson().toJson(clinician));
-        Request request = new Request.Builder().url(url).addHeader("x-auth-token", token).put(requestBody).build();
+        Request request = new Request.Builder().url(url).addHeader(TOKEN_HEADER, token).put(requestBody).build();
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -86,7 +75,7 @@ public class ClinicianBridge extends Bifrost {
 
     public void deleteClinician(Clinician clinician, String token) {
         String url = ip + "/clinicians/" + clinician.getStaffId();
-        Request request = new Request.Builder().url(url).addHeader("x-auth-token", token).delete().build();
+        Request request = new Request.Builder().url(url).addHeader(TOKEN_HEADER, token).delete().build();
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -135,6 +124,22 @@ public class ClinicianBridge extends Bifrost {
         } catch (IOException ex) {
             Log.severe("could not interpret the given clinician", ex);
             return null;
+        }
+    }
+
+    /**
+     * checks whether a clinician exists in the db by staff id
+     * @param staffId staff id to search for
+     * @return true if staff id can be found, false otherwise
+     */
+    public boolean getExists(String staffId) {
+        Request request = new Request.Builder().get().url(ip + "/clinicians/exists/" + staffId).build();
+
+        try (Response res = client.newCall(request).execute()) {
+            return res.body().string().equalsIgnoreCase("true");
+        } catch (NullPointerException | IOException ex) {
+            Log.warning("could not determine if the clinician exists", ex);
+            return false;
         }
     }
 

@@ -168,7 +168,7 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
         stage.setResizable(true);
         showClinician(clinician);
         try {
-            users = appController.getUserBridge().loadUsersToController(0, 30, "", "", "", appController.getToken());
+            users = appController.getUserBridge().getUsers(0, 30, "", "", "", appController.getToken());
         } catch (IOException ex) {
             AlertWindowFactory.generateError(ex);
         }
@@ -430,7 +430,7 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
 
     private void search() {
         try {
-            users = appController.getUserBridge().loadUsersToController(startIndex, ROWS_PER_PAGE, searchTextField.getText(), regionSearchTextField.getText(), genderComboBox.getValue(), appController.getToken());
+            users = appController.getUserBridge().getUsers(startIndex, ROWS_PER_PAGE, searchTextField.getText(), regionSearchTextField.getText(), genderComboBox.getValue(), appController.getToken());
         } catch (IOException ex) {
             AlertWindowFactory.generateError(ex);
         }
@@ -469,10 +469,10 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
      */
     @FXML
     void save() {
-        clinician.getUndoStack().clear();
-        clinician.getRedoStack().clear();
         appController.updateClinicians(clinician);
         appController.saveClinician(clinician);
+        clinician.getUndoStack().clear();
+        clinician.getRedoStack().clear();
         undoButton.setDisable(true);
         redoButton.setDisable(true);
     }

@@ -46,9 +46,7 @@ public class UserController extends BaseController {
                                              @RequestParam(value = "region", required = false) String region,
                                              @RequestParam(value = "gender", required = false) String gender) {
         try (Connection connection = driver.getConnection()) {
-            Log.info(gender);
             Collection<User> rawUsers = handler.getUsers(connection, count, startIndex, name, region, gender.equals("All") ? "" : gender);
-            Log.info(rawUsers.toString());
             Log.info("Getting all user overviews...");
             //converts each user in the collection to a userOverview and returns it
             return rawUsers.stream().map(UserOverview::fromUser).collect(Collectors.toList());
@@ -112,5 +110,13 @@ public class UserController extends BaseController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
-
+    @RequestMapping(method = RequestMethod.GET, value = "/users/exists/{nhi}")
+    public boolean getExists(@PathVariable("nhi") String nhi) {
+        try (Connection connection = driver.getConnection()) {
+            return handler.getExists(connection, User.class, nhi);
+        } catch (SQLException ex) {
+            Log.severe("cannot find whther user exists", ex);
+            throw  new ServerDBException(ex);
+        }
+    }
 }
