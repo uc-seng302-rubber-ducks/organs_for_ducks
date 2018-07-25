@@ -46,8 +46,7 @@ public class UpdateClinicianControllerGUITest extends ApplicationTest {
 
     @BeforeClass
     public static void initialization() {
-
-        //CommonTestMethods.runHeadless();
+        CommonTestMethods.runHeadless();
     }
 
     @Before
