@@ -122,7 +122,6 @@
                                 </AnchorPane>
                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="617.0">
                                     <children>
-                                        <Pagination fx:id="searchTablePagination" layoutX="271.0" layoutY="5.0" maxPageIndicatorCount="1" prefHeight="368.0" prefWidth="593.0" AnchorPane.bottomAnchor="2.0" AnchorPane.leftAnchor="4.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="2.0" />
                                         <TableView fx:id="searchTableView" prefHeight="331.0" prefWidth="600.0" AnchorPane.bottomAnchor="48.0" AnchorPane.leftAnchor="4.0" AnchorPane.rightAnchor="4.0" AnchorPane.topAnchor="2.0">
                                             <columns>
                                                 <TableColumn prefWidth="75.0" text="C1" />
@@ -133,6 +132,16 @@
                                             </tooltip>
                                         </TableView>
                                         <Label fx:id="searchCountLabel" layoutX="14.0" layoutY="336.0" text="" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="14.0" />
+                                        <HBox alignment="CENTER" layoutX="269.0" layoutY="244.0"
+                                              AnchorPane.bottomAnchor="16.0" AnchorPane.leftAnchor="0.0"
+                                              AnchorPane.rightAnchor="0.0">
+                                            <children>
+                                                <Button layoutX="269.0" layoutY="244.0" mnemonicParsing="false"
+                                                        onAction="#clinicianSearchPrevPage" text="&lt;&lt;"/>
+                                                <Button mnemonicParsing="false" onAction="#clinicianSearchNextPage"
+                                                        text="&gt;&gt;"/>
+                                            </children>
+                                        </HBox>
                                     </children>
                                 </AnchorPane>
                             </items>
