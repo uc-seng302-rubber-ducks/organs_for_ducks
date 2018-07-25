@@ -26,7 +26,7 @@ public class UserBridge extends RoleBridge {
         super(client);
     }
 
-    public Collection<UserOverview> loadUsersToController(int startIndex, int count, String name, String region, String gender, String token) throws IOException {
+    public Collection<UserOverview> getUsers(int startIndex, int count, String name, String region, String gender, String token) throws IOException {
         String url = ip + "/users?startIndex=" + startIndex + "&count=" + count + "&name=" + name + "&region=" + region + "&gender=" + gender;
         Request request = new Request.Builder().header(TOKEN_HEADER, token).url(url).build();
         Collection<UserOverview> overviews;
@@ -42,7 +42,6 @@ public class UserBridge extends RoleBridge {
 
     public void postUser(User user) {
         String url = ip + "/users";
-        System.out.println(new Gson().toJson(user));
         RequestBody requestBody = RequestBody.create(JSON, new Gson().toJson(user));
         Request request = new Request.Builder().post(requestBody).url(url).build();
         client.newCall(request).enqueue(new Callback() {
