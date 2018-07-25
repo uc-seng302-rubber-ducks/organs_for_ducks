@@ -295,6 +295,10 @@ public class AppController {
         return users;
     }
 
+    public void addUserOverview(UserOverview overview) {
+        this.overviews.add(overview);
+    }
+
     /**
      * @param users An array list of users.
      */
@@ -621,7 +625,7 @@ public class AppController {
         transplantList.add(transplantDetails);
     }
 
-    public Collection<UserOverview> getUserOverviews() {
+    public Set<UserOverview> getUserOverviews() {
         return overviews;
     }
 

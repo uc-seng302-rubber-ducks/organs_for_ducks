@@ -3,12 +3,10 @@ package odms.GUITest2;
 
 import javafx.application.Platform;
 import odms.App;
-import odms.commons.exception.ApiException;
 import odms.commons.model.Clinician;
 import odms.commons.model.dto.UserOverview;
 import odms.controller.AppController;
 import odms.commons.model.datamodel.ReceiverOrganDetailsHolder;
-import odms.controller.gui.window.UserController;
 import odms.commons.model.User;
 import odms.commons.model._enum.OrganDeregisterReason;
 import odms.commons.model._enum.Organs;
@@ -72,7 +70,7 @@ public class OrganReceiverGUITest extends ApplicationTest {
         when(application.getLoginBridge()).thenReturn(loginBridge);
         when(loginBridge.loginToServer(anyString(),anyString(), anyString())).thenReturn("lsdjfksd");
         when(clinicianBridge.getClinician(anyString(), anyString())).thenReturn(clinician);
-        when(bridge.loadUsersToController(anyInt(), anyInt(), anyString(), anyString(), anyString(), anyString()))
+        when(bridge.getUsers(anyInt(), anyInt(), anyString(), anyString(), anyString(), anyString()))
                 .thenReturn(Collections.singletonList(UserOverview.fromUser(testUser)));
         when(bridge.getUser("ABC1244")).thenReturn(testUser);
 

@@ -3,7 +3,6 @@ package odms.GUITest1;
 import odms.App;
 import odms.TestUtils.CommonTestMethods;
 import odms.TestUtils.TableViewsMethod;
-import odms.commons.exception.ApiException;
 import odms.commons.model.Clinician;
 import odms.commons.model.EmergencyContact;
 import odms.commons.model.User;
@@ -62,7 +61,7 @@ public class ClinicianFilterGUITest extends ApplicationTest {
         when(application.getLoginBridge()).thenReturn(loginBridge);
         when(loginBridge.loginToServer(anyString(),anyString(), anyString())).thenReturn("lsdjfksd");
         when(clinicianBridge.getClinician(anyString(), anyString())).thenReturn(clinician);
-        when(bridge.loadUsersToController(anyInt(), anyInt(), anyString(), anyString(), anyString(), anyString()))
+        when(bridge.getUsers(anyInt(), anyInt(), anyString(), anyString(), anyString(), anyString()))
                 .thenReturn(Collections.singletonList(UserOverview.fromUser(adam)));
         when(bridge.getUser("ABC1234")).thenReturn(adam);
 

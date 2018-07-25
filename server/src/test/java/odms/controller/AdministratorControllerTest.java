@@ -19,6 +19,7 @@ import java.util.Collection;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -49,7 +50,7 @@ public class AdministratorControllerTest {
         //set up data
         Collection<Administrator> administrators = new ArrayList<>();
         administrators.add(testAdministrator);
-        when(handler.loadAdmins(any(Connection.class))).thenReturn(administrators);
+        when(handler.loadAdmins(any(Connection.class),anyInt(),anyInt(),anyString())).thenReturn(administrators);
         List<Administrator> results = new ArrayList<>(controller.getAdministrator(0, 1, ""));
 
         Assert.assertEquals(testAdministrator, results.get(0));
