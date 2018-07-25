@@ -1,7 +1,7 @@
 package odms.commons.utils;
 
 import odms.commons.model._enum.Directory;
-import odms.commons.model._enum.LoggerEnvironments;
+import odms.commons.model._enum.Environments;
 import okhttp3.OkHttpClient;
 
 import java.io.IOException;
@@ -32,7 +32,7 @@ public class Log {
     /**
      * Sets up the Logger to start logging stuff
      */
-    public static void setup(LoggerEnvironments env) {
+    public static void setup(Environments env) {
         Logger logger = Logger.getLogger("ODMS");
         Handler handler;
         try {

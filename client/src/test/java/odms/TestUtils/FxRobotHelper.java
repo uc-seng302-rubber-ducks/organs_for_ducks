@@ -33,4 +33,10 @@ public class FxRobotHelper {
             app.lookup(query).queryAs(ComboBox.class).selectionModelProperty().setValue(value);
         });
     }
+
+    public static void setDateValue(ApplicationTest app, String query, LocalDate value) {
+        app.interact(() -> {
+            app.lookup(query).queryAs(DatePicker.class).setValue(value);
+        });
+    }
 }

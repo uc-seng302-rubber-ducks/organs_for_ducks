@@ -19,7 +19,6 @@ import odms.controller.AppController;
 import odms.controller.gui.popup.utils.AlertWindowFactory;
 import odms.utils.LoginBridge;
 import odms.view.CLI;
-import okhttp3.OkHttpClient;
 
 import java.io.IOException;
 
@@ -56,7 +55,6 @@ public class LoginController {
     private Stage helpStage = null;
     private AppController appController;
     private Stage stage;
-    private OkHttpClient client = new OkHttpClient();
     private LoginBridge loginBridge = AppController.getInstance().getLoginBridge();
 
     /**

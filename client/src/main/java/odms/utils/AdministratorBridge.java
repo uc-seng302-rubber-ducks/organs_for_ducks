@@ -13,10 +13,6 @@ import java.util.Collection;
 
 public class AdministratorBridge extends RoleBridge {
 
-    public AdministratorBridge(OkHttpClient client, String ip) {
-        super(client, ip);
-    }
-
     public AdministratorBridge(OkHttpClient client) {
         super(client);
     }

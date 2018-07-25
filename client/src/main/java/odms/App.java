@@ -10,7 +10,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 import odms.commons.model.CacheManager;
-import odms.commons.model._enum.LoggerEnvironments;
+import odms.commons.model._enum.Environments;
 import odms.commons.utils.Log;
 import odms.controller.AppController;
 import odms.controller.gui.window.LoginController;
@@ -35,7 +35,7 @@ public class App extends Application {
     public void start(Stage primaryStage) throws Exception {
 
         //<editor-fold desc="logging setup">
-        Log.setup(LoggerEnvironments.CLIENT);
+        Log.setup(Environments.CLIENT);
         //</editor-fold>
 
 
@@ -51,6 +51,7 @@ public class App extends Application {
         primaryStage.setMinHeight(420);
         primaryStage.setMinWidth(600);
         AppController controller = AppController.getInstance();
+        controller.getAllowedCountries();
         primaryStage.setOnCloseRequest(event -> {
             if (primaryStage.getTitle().contains("*")) {
                 Alert alert = new Alert(Alert.AlertType.WARNING,

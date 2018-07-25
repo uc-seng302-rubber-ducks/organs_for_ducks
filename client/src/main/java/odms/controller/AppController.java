@@ -2,6 +2,7 @@ package odms.controller;
 
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
+import odms.commons.exception.ApiException;
 import odms.commons.exception.ProfileAlreadyExistsException;
 import odms.commons.exception.ProfileNotFoundException;
 import odms.commons.model.Administrator;
@@ -73,10 +74,6 @@ public class AppController {
 
         this.allCountries = generateAllCountries();
         generateAllNZRegion();
-        allowedCountries = getAllowedCountries();
-        if (allowedCountries.isEmpty()){
-            allowedCountries.add("New Zealand");
-        }
     }
 
     /**
@@ -123,7 +120,7 @@ public class AppController {
 
         } else {
             regionSelector.setVisible(true);
-            regionSelector.getSelectionModel().selectFirst();
+            regionSelector.setValue("");
             regionInput.setVisible(false);
         }
     }
@@ -155,11 +152,17 @@ public class AppController {
     public List<String> getAllowedCountries() {
         Set s = null;
         try {
-            s = countriesBridge.getAllowedCountries();
+            s = getCountriesBridge().getAllowedCountries();
         } catch (IOException e) {
             Log.severe("Database threw IOE", e);
+            allowedCountries = new ArrayList<>();
         }
-        allowedCountries = new ArrayList(s);
+        if (s != null) {
+            allowedCountries = new ArrayList(s);
+        }
+        if (allowedCountries.isEmpty()) {
+            allowedCountries.add("New Zealand");
+        }
         allowedCountries.sort(String.CASE_INSENSITIVE_ORDER);
         return allowedCountries;
     }
@@ -423,6 +426,13 @@ public class AppController {
                 return c;
             }
         }
+
+        try {
+            getClinicianBridge().getClinician(id, getToken());
+        } catch (ApiException ex) {
+            Log.warning("Error while trying to retrieve clinician "+id+" status "+ex.getResponseCode(), ex);
+        }
+        // Should I change this to use the ClinicianBridge???
         return null;
     }
 
@@ -673,5 +683,17 @@ public class AppController {
 
     public void setUserBridge(UserBridge userBridge) {
         this.userBridge = userBridge;
+    }
+
+    public void setTransplantBridge(TransplantBridge transplantBridge) {
+        this.transplantBridge = transplantBridge;
+    }
+
+    public void setCountriesBridge(CountriesBridge countriesBridge) {
+        this.countriesBridge = countriesBridge;
+    }
+
+    public CountriesBridge getCountriesBridge() {
+        return countriesBridge;
     }
 }

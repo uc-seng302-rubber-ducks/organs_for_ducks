@@ -32,11 +32,8 @@ public class DBHandlerTest {
 
     @Before
     public void beforeTest() throws SQLException {
-        odms.TestUtils.SQLScriptRunner.resetResampleTestDB();
-
         dbHandler = new DBHandler();
         connection = mock(Connection.class);
-
         mockStmt = mock(PreparedStatement.class);
         mockResultSet = mock(ResultSet.class);
         when(mockResultSet.next()).thenReturn(true);

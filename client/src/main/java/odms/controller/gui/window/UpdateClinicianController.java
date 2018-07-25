@@ -192,8 +192,8 @@ public class UpdateClinicianController {
             ownStage.setTitle("Create New Clinician Profile");
             titleLabel.setText("Create Clinician");
             confirmButton.setText("Create Clinician Profile");
-            countrySelector.getSelectionModel().select(defaultCountry);
-            regionSelector.getSelectionModel().selectFirst();
+            countrySelector.setValue("");
+            regionSelector.setValue("");
         }
 
         ownStage.setOnCloseRequest(event -> cancelUpdate());

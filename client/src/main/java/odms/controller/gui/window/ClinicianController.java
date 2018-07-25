@@ -86,8 +86,6 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
     private Tooltip searchToolTip;
     @FXML
     private TableView<UserOverview> searchTableView;
-    @FXML
-    private Pagination searchTablePagination;
 
 
     @FXML
@@ -183,11 +181,6 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
 
         setDefaultFilters();
         openStages = new ArrayList<>();
-
-
-        int pageCount = searchCount / ROWS_PER_PAGE;
-        searchTablePagination.setPageCount(pageCount > 0 ? pageCount + 1 : 1);
-        searchTablePagination.currentPageIndexProperty().addListener(((observable, oldValue, newValue) -> changePage(newValue.intValue())));
 
         if (fromAdmin) {
             logoutMenuClinician.setText("Go Back");
@@ -299,12 +292,6 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
 
         displaySearchTable();
         //set on-click behaviour
-        searchTableView.setOnMouseClicked(event -> {
-            if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
-                UserOverview user = searchTableView.getSelectionModel().getSelectedItem();
-                launchUser(user);
-            }
-        });
     }
 
     @FXML
@@ -323,6 +310,12 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
 
         searchTableView.setItems(sListUsers);
         //searchTableView.setRowFactory((searchTableView) -> new TooltipTableRow<>(User::getTooltip));
+        searchTableView.setOnMouseClicked(event -> {
+            if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
+                UserOverview user = searchTableView.getSelectionModel().getSelectedItem();
+                launchUser(user);
+            }
+        });
     }
 
 
@@ -342,9 +335,6 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
         lNameColumn.setSortType(TableColumn.SortType.ASCENDING);
         searchTableView.setItems(sListUsers);
 
-
-        int pageCount = searchCount / ROWS_PER_PAGE;
-        searchTablePagination.setPageCount(pageCount > 0 ? pageCount + 1 : 1);
         searchCountLabel.setText("Showing results " + (searchCount == 0 ? startIndex : startIndex + 1) + " - " + (endIndex) + " of " + searchCount);
 
         return searchTableView;
@@ -394,11 +384,11 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
         setCheckBoxListener(allCheckBox);
         genderComboBox.valueProperty()
                 .addListener(observable -> {
+                    startIndex = 0;
                     pause.setOnFinished(e -> search());
                     pause.playFromStart();
                 });
 
-        searchTablePagination.setPageCount(searchCount / ROWS_PER_PAGE);
         return fListUsers;
     }
 
@@ -410,6 +400,7 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
     private void setTextFieldListener(TextField inputTextField) {
         inputTextField.textProperty()
                 .addListener(observable -> {
+                    startIndex = 0;
                     pause.setOnFinished(e -> search());
                     pause.playFromStart();
                 });
@@ -423,6 +414,7 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
     private void setCheckBoxListener(CheckBox checkBox) {
         checkBox.selectedProperty()
                 .addListener(observable -> {
+                    startIndex = 0;
                     pause.setOnFinished(e -> search());
                     pause.playFromStart();
                 });
@@ -629,5 +621,25 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
         if (evt.getPropertyName().equals(EventTypes.USER_UPDATE.name())) {
             refreshTables();
         }
+    }
+
+    @FXML
+    private void clinicianSearchNextPage() {
+        if (users.size() < ROWS_PER_PAGE) {
+            return;
+        }
+
+        startIndex += ROWS_PER_PAGE;
+        search();
+    }
+
+    @FXML
+    private void clinicianSearchPrevPage() {
+        if (startIndex - ROWS_PER_PAGE < 0) {
+            return;
+        }
+
+        startIndex -= ROWS_PER_PAGE;
+        search();
     }
 }

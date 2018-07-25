@@ -4,21 +4,21 @@ import javafx.scene.Node;
 import javafx.scene.input.KeyCode;
 import odms.App;
 import odms.TestUtils.CommonTestMethods;
+import odms.TestUtils.CommonTestMethods;
 import odms.commons.exception.ApiException;
 import odms.commons.model.Clinician;
-import odms.commons.model.dto.UserOverview;
-import odms.controller.AppController;
 import odms.commons.model.Disease;
 import odms.commons.model.User;
 import odms.commons.model._enum.Organs;
+import odms.commons.model.datamodel.TransplantDetails;
+import odms.commons.model.dto.UserOverview;
+import odms.controller.AppController;
 import odms.controller.AppController;
 import odms.utils.ClinicianBridge;
 import odms.utils.LoginBridge;
+import odms.utils.TransplantBridge;
 import odms.utils.UserBridge;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.matcher.control.LabeledMatchers;
@@ -26,13 +26,17 @@ import org.testfx.matcher.control.LabeledMatchers;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.concurrent.TimeoutException;
 
+import static odms.TestUtils.FxRobotHelper.clickOnButton;
+import static odms.TestUtils.FxRobotHelper.setTextField;
+import static odms.TestUtils.TableViewsMethod.getCell;
+import static odms.TestUtils.TableViewsMethod.getNumberOfRows;
 import static org.junit.Assert.assertEquals;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.testfx.api.FxAssert.verifyThat;
@@ -44,6 +48,12 @@ import static org.testfx.api.FxAssert.verifyThat;
 public class DeregisterOrganReasonControllerGUITest extends ApplicationTest {
 
     private DateTimeFormatter sdf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    private UserBridge bridge = mock(UserBridge.class);
+    private ClinicianBridge clinicianBridge = mock(ClinicianBridge.class);
+    private LoginBridge loginBridge = mock(LoginBridge.class);
+    private AppController application = mock(AppController.class);
+    private TransplantBridge transplantBridge = mock(TransplantBridge.class);
+    private User testUser;
 
     @BeforeClass
     public static void initialization() {
@@ -53,42 +63,38 @@ public class DeregisterOrganReasonControllerGUITest extends ApplicationTest {
     @Before
     public void setUpCreateScene() throws TimeoutException, IOException {
 
-        UserBridge bridge = mock(UserBridge.class);
-        ClinicianBridge clinicianBridge = mock(ClinicianBridge.class);
-        LoginBridge loginBridge = mock(LoginBridge.class);
-        AppController application = mock(AppController.class);
-
         Clinician clinician = new Clinician();
         clinician.setStaffId("0");
 
-        User testUser = new User("Aa", LocalDate.parse("2000-01-20", sdf), "ABC1244");
+        testUser = new User("Aa", LocalDate.parse("2000-01-20", sdf), "ABC1244");
 
         AppController.setInstance(application);
         when(application.getUserBridge()).thenReturn(bridge);
         when(application.getClinicianBridge()).thenReturn(clinicianBridge);
         when(application.getLoginBridge()).thenReturn(loginBridge);
+        when(application.getTransplantBridge()).thenReturn(transplantBridge);
+        when(application.getToken()).thenReturn("Poggers");
+        when(application.getUsers()).thenReturn(new ArrayList<>());
+
         when(loginBridge.loginToServer(anyString(),anyString(), anyString())).thenReturn("lsdjfksd");
         when(clinicianBridge.getClinician(anyString(), anyString())).thenReturn(clinician);
         when(bridge.getUsers(anyInt(), anyInt(), anyString(), anyString(), anyString(), anyString()))
                 .thenReturn(Collections.singletonList(UserOverview.fromUser(testUser)));
-        when(bridge.getUser("ABC1244")).thenReturn(testUser);
+        when(bridge.getUser(anyString())).thenReturn(testUser);
         when(application.getUsers()).thenReturn(Arrays.asList(testUser)); // needs to be modidfed to return a list
-        AppController.getInstance().getUsers().clear();
+        when(transplantBridge.getWaitingList(anyInt(), anyInt(), anyString(), anyString(), anyCollection())).thenReturn(Collections.singletonList(new TransplantDetails(testUser.getNhi(),testUser.getFirstName(), Organs.HEART, LocalDate.now(), testUser.getRegion())));
+
         //DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         testUser.getReceiverDetails().startWaitingForOrgan(Organs.HEART);
         testUser.getCurrentDiseases().add(new Disease("A0", false, false, LocalDate.now()));
-        AppController.getInstance().getUsers().add(testUser);
         FxToolkit.registerPrimaryStage();
         FxToolkit.setupApplication(App.class);
 
         //Use default clinician
         clickOn("#clinicianTab");
-        clickOn("#staffIdTextField");
-        write("0", 0);
-        clickOn("#staffPasswordField");
-        write("admin", 0);
-        clickOn("#loginCButton");
-        //verifyThat("#staffIdLabel", LabeledMatchers.hasText("0"));
+        setTextField(this, "#staffIdTextField", "0");
+        setTextField(this, "#staffPasswordField", "admin");
+        clickOnButton(this,"#loginCButton");
         clickOn("#searchTab");
         doubleClickOn(getCell("#searchTableView", 0, 0));
         clickOn("#receiverTab");
@@ -159,7 +165,6 @@ public class DeregisterOrganReasonControllerGUITest extends ApplicationTest {
 
     @Test
     public void deregisterOrganReasonTransplantReceivedDiseaseCuredDiseaseTable() {
-        boolean testPass = true;
         clickOn("#diseaseCuredRadioButton");
         clickOn("#diseaseNameComboBox");
         clickOn("A0");
@@ -173,8 +178,7 @@ public class DeregisterOrganReasonControllerGUITest extends ApplicationTest {
     public void deregisterOrganReasonTransplantReceivedReceiverDiedDOD() {
         clickOn("#receiverDiedRadioButton");
         clickOn("#okButton");
-        clickOn("#userProfileTab");
-        verifyThat("#DODValue", LabeledMatchers.hasText(LocalDate.now().toString()));
+        Assert.assertEquals(testUser.getDateOfDeath(), LocalDate.now());
     }
 
     @Test

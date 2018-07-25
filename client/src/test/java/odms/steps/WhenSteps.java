@@ -9,13 +9,25 @@ import odms.TestUtils.TableViewsMethod;
 import odms.commands.CreateUser;
 import odms.commands.DeleteUser;
 import odms.commands.View;
+import odms.commons.model.UserBuilder;
+import odms.commons.model.dto.UserOverview;
 import odms.view.CLI;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 import picocli.CommandLine;
 import picocli.CommandLine.RunLast;
 
+import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Collections;
+
+import static odms.TestUtils.FxRobotHelper.clickOnButton;
+import static odms.TestUtils.FxRobotHelper.setTextField;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.when;
 
 import static odms.TestUtils.FxRobotHelper.clickOnButton;
 import static odms.TestUtils.FxRobotHelper.setTextField;
@@ -47,38 +59,37 @@ public class WhenSteps extends ApplicationTest {
 
     @When("^I register a user with the NHI \"([^\"]*)\", first name \"([^\"]*)\", last name \"([^\"]*)\" and date of birth \"([^\"]*)\"$")
     public void iRegisterAUserWithTheNHIFirstNameLastNameAndDateOfBirth(String nhi, String fName,
-                                                                        String lName, String dob) {
+                                                                        String lName, String dob) throws IOException {
         CucumberTestModel.setUserNhi(nhi);
         String[] args = {fName, lName, nhi, dob};
         CreateUser command = new CreateUser();
         new CommandLine(command).parseWithHandler(new CommandLine.RunLast(), System.err, args);
+        when(CucumberTestModel.getUserBridge().getUser(anyString())).thenReturn(new UserBuilder().setNhi(nhi).setFirstName(fName).setLastName(lName).setDateOfBirth(LocalDate.parse(dob, DateTimeFormatter.ISO_LOCAL_DATE)).build());
     }
 
     @When("^I register a user using the GUI with the NHI \"([^\"]*)\", first name \"([^\"]*)\" and date of birth \"([^\"]*)\"$")
     public void iRegisterAUserUsingTheGUIWithTheNHIFirstNameAndDateOfBirth(String nhi, String fName,
                                                                            String dob) {
-        clickOn("#nhiInput");
-        write(nhi);
-        clickOn("#fNameInput");
-        write(fName);
+        setTextField(this, "#nhiInput", nhi);
+        setTextField(this, "#fNameInput", fName);
         clickOn("#dobInput");
         write(dob);
         clickOn("#nhiInput");
         CucumberTestModel.setUserNhi(nhi);
+        CucumberTestModel.setUser(new UserBuilder().setNhi(nhi).setFirstName(fName).setDateOfBirth(LocalDate.parse(dob, DateTimeFormatter.ofPattern("D/M/yyyy"))).build());
     }
 
     @When("^Clicked on the Create Profile button$")
-    public void clickedOnTheCreateProfileButton() {
+    public void clickedOnTheCreateProfileButton() throws IOException {
+        when(CucumberTestModel.getUserBridge().getUser(anyString())).thenReturn(CucumberTestModel.getUser());
         clickOnButton(this, "#confirmButton");
     }
 
     @When("^I register a user using the GUI with the NHI \"([^\"]*)\", first name \"([^\"]*)\", date of birth \"([^\"]*)\" and date of death \"([^\"]*)\"$")
     public void iRegisterAUserUsingTheGUIWithTheNHIFirstNameDateOfBirthAndDateOfDeath(String nhi,
                                                                                       String fName, String dob, String dod) {
-        clickOn("#nhiInput");
-        write(nhi);
-        clickOn("#fNameInput");
-        write(fName);
+        setTextField(this, "#nhiInput", nhi);
+        setTextField(this, "#fNameInput", fName);
         clickOn("#dobInput");
         write(dob);
         clickOn("#dodInput");
@@ -89,31 +100,32 @@ public class WhenSteps extends ApplicationTest {
 
     @When("^entered preferred name \"([^\"]*)\"$")
     public void enteredPreferredName(String pName) {
-        clickOn("#preferredFNameTextField");
-        write(pName);
+        setTextField(this, "#preferredFNameTextField", pName);
+        CucumberTestModel.getUser().setPreferredFirstName(pName);
     }
 
     @When("^I entered NHI \"([^\"]*)\"$")
     public void iEnteredNHI(String nhi) {
-        clickOn("#userIDTextField");
         (lookup("#userIDTextField")).queryAs(TextField.class).setText(nhi);
     }
 
     @When("^clicked on user Login button$")
     public void clickedOnUserLoginButton() {
         CucumberTestModel.setIsClinicianLogin(false);
-        clickOnButton(this, "#loginUButton");
+        clickOnButton(this,"#loginUButton");
     }
 
     @When("^clicked on clinician Login button$")
-    public void clickedOnClinicianLoginButton() {
+    public void clickedOnClinicianLoginButton() throws IOException {
+        when(CucumberTestModel.getUserBridge().getUsers(anyInt(), anyInt(), anyString(), anyString(), anyString(), anyString())).thenReturn(Collections.singletonList(UserOverview.fromUser(CucumberTestModel.getUser())));
         CucumberTestModel.setIsClinicianLogin(true);
         clickOnButton(this, "#loginCButton");
     }
 
     @When("^clicked on Create Button$")
-    public void clickedOnCreateButton() {
-        clickOnButton(this, "#createButton");
+    public void clickedOnCreateButton() throws IOException {
+        when(CucumberTestModel.getUserBridge().getUser(anyString())).thenReturn(CucumberTestModel.getUser());
+        clickOn("#createButton");
     }
 
     @When("^I clicked on Login As Clinician Button$")
@@ -123,10 +135,8 @@ public class WhenSteps extends ApplicationTest {
 
     @When("^I entered Staff ID \"([^\"]*)\" and Password \"([^\"]*)\"$")
     public void iEnteredStaffIDAndPassword(String staffId, String password) {
-        clickOn("#staffIdTextField");
-        write(staffId);
-        clickOn("#staffPasswordField");
-        write(password);
+        setTextField(this, "#staffIdTextField", staffId);
+        setTextField(this, "#staffPasswordField", password);
     }
 
     @When("^I entered Disease Name \"([^\"]*)\" and used the default Diagnosis Date$")
@@ -163,7 +173,7 @@ public class WhenSteps extends ApplicationTest {
     }
 
     @And("^I open the user page$")
-    public void iOpenTheUserPage() {
+    public void iOpenTheUserPage() throws IOException {
         clickOn("#searchTab");
         doubleClickOn(TableViewsMethod.getCell("#searchTableView", 0, 0));
     }

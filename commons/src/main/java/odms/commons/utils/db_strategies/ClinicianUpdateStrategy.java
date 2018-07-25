@@ -10,7 +10,7 @@ public class ClinicianUpdateStrategy extends AbstractUpdateStrategy {
 
     private static final String CREATE_CLINICIAN_STMT = "INSERT INTO Clinician (staffId, firstName, middleName, lastName, timeCreated, lastModified) VALUES (?, ?, ?, ?, ?, ?)";
     private static final String CREATE_STAFF_CONTACT_STMT = "INSERT INTO ContactDetails (fkStaffId, homePhone, email, cellPhone) VALUES (?, ?, ?, ?)";
-    private static final String CREATE_ADDRESS_STMT = "INSERT INTO Address (fkContactId, streetNumber, streetName, neighbourhood, city, region, country) VALUES (?, ?, ?, ?, ?, ?, ?)";
+    private static final String CREATE_ADDRESS_STMT = "INSERT INTO Address (fkContactId, fkStaffId, streetNumber, streetName, neighbourhood, city, region, country) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
     private static final String UPDATE_CLINICIAN_STMT = "UPDATE Clinician SET firstName = ?, middleName = ?, lastName = ?, lastModified = ? WHERE staffId = ?";
     private static final String UPDATE_CLINICIAN_ADDRESS = "UPDATE ContactDetails JOIN Address ON contactId = fkContactId " +
@@ -127,12 +127,13 @@ public class ClinicianUpdateStrategy extends AbstractUpdateStrategy {
             try (PreparedStatement addressStmt = connection.prepareStatement(CREATE_ADDRESS_STMT)) {
 
                 addressStmt.setInt(1, contactId);
-                addressStmt.setString(2, clinician.getStreetNumber());
-                addressStmt.setString(3, clinician.getStreetName());
-                addressStmt.setString(4, clinician.getNeighborhood());
-                addressStmt.setString(5, clinician.getCity());
-                addressStmt.setString(6, clinician.getRegion());
-                addressStmt.setString(7, clinician.getCountry());
+                addressStmt.setString(2, clinician.getStaffId());
+                addressStmt.setString(3, clinician.getStreetNumber());
+                addressStmt.setString(4, clinician.getStreetName());
+                addressStmt.setString(5, clinician.getNeighborhood());
+                addressStmt.setString(6, clinician.getCity());
+                addressStmt.setString(7, clinician.getRegion());
+                addressStmt.setString(8, clinician.getCountry());
 
                 addressStmt.executeUpdate();
             }

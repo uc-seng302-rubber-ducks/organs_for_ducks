@@ -8,6 +8,7 @@ Feature: Dead users should be deleted from the transplant waiting list
 
   Scenario: A deceased user should not be in the transplant waiting list
     Given The user is alive
+    And a clinician with Staff Id "0" and password "admin" exists
     When I clicked on Login As Clinician Button
     And I entered Staff ID "0" and Password "admin"
     And clicked on clinician Login button

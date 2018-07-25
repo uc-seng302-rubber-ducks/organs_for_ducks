@@ -22,10 +22,6 @@ public class UserBridge extends RoleBridge {
 
     private static final String USERS = "/users/";
 
-    public UserBridge(OkHttpClient client, String ip) {
-        super(client, ip);
-    }
-
     public UserBridge(OkHttpClient client) {
         super(client);
     }
@@ -45,7 +41,7 @@ public class UserBridge extends RoleBridge {
     }
 
     public void postUser(User user) {
-        String url = ip + "/users";
+        String url = ip + USERS;
         RequestBody requestBody = RequestBody.create(JSON, new Gson().toJson(user));
         Request request = new Request.Builder().post(requestBody).url(url).build();
         client.newCall(request).enqueue(new Callback() {

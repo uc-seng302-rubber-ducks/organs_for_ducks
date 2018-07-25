@@ -1,6 +1,6 @@
 package odms.commons.model._enum;
 
-public enum LoggerEnvironments {
+public enum Environments {
     CLIENT,
     SERVER,
     TEST

@@ -126,6 +126,7 @@ public class UpdateClinician implements Runnable {
 
         if (changed) {
             controller.updateClinicians(clinician);
+            controller.saveClinician(clinician);
         }
 
     }

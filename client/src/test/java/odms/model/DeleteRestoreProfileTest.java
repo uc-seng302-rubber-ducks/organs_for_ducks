@@ -98,7 +98,8 @@ public class DeleteRestoreProfileTest {
     }
 
     @Test
-    public void testRestoreUserSuccessful() {
+    public void testRestoreUserSuccessful() throws IOException {
+        when(userBridge.getUser(anyString())).thenReturn(null);
         appC.deleteUser(testUser);
 
         try {
@@ -190,7 +191,8 @@ public class DeleteRestoreProfileTest {
 
 
     @Test
-    public void testRestoreAdminSuccessful() {
+    public void testRestoreAdminSuccessful() throws IOException {
+        when(administratorBridge.getAdmin(anyString(), anyString())).thenReturn(null);
         appC.deleteAdmin(testAdmin);
 
         try {
@@ -216,9 +218,10 @@ public class DeleteRestoreProfileTest {
     }
 
     @Test
-    public void testRestoreAdminExistsException() {
+    public void testRestoreAdminExistsException() throws IOException {
         appC.deleteAdmin(testAdmin);
         Administrator newAdmin = new Administrator("nameuser", "Notfirst", "middle", "last", "1234");
+        when(administratorBridge.getAdmin(anyString(), anyString())).thenReturn(newAdmin);
         activeAdmins.add(newAdmin);
 
         try {
