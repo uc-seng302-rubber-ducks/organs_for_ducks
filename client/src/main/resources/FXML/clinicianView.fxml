@@ -1,14 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import javafx.collections.*?>
-<?import javafx.scene.text.*?>
 <?import javafx.collections.FXCollections?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
 <?import java.lang.String?>
-
 <AnchorPane prefHeight="359.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="odms.controller.gui.window.ClinicianController">
     <children>
         <MenuBar prefHeight="37.0" prefWidth="619.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"
@@ -72,9 +68,9 @@
                               <Label text="Zip Code:" GridPane.rowIndex="2" />
                               <Label fx:id="cityLabel" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                               <Label fx:id="zipLabel" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                                        <Label text="Region:" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                               <Label text="Region:" GridPane.columnIndex="2" GridPane.rowIndex="1"/>
                               <Label text="Country:" GridPane.columnIndex="2" GridPane.rowIndex="2" />
-                                        <Label fx:id="regionLabel" text="Label" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+                               <Label fx:id="regionLabel" text="Label" GridPane.columnIndex="3" GridPane.rowIndex="1"/>
                               <Label fx:id="countryLabel" text="Label" GridPane.columnIndex="3" GridPane.rowIndex="2" />
                            </children>
                         </GridPane>

@@ -3,7 +3,6 @@ package odms.GUITest1;
 import javafx.scene.Node;
 import javafx.scene.control.TextField;
 import odms.App;
-import odms.TestUtils.CommonTestMethods;
 import odms.commons.exception.ApiException;
 import odms.commons.model.Administrator;
 import odms.commons.model.Clinician;
@@ -37,7 +36,7 @@ public class CreateClinicianControllerGUITest extends ApplicationTest {
 
     @BeforeClass
     public static void initialization() {
-        CommonTestMethods.runHeadless();
+        //CommonTestMethods.runHeadless();
     }
 
     @Before
@@ -104,7 +103,6 @@ public class CreateClinicianControllerGUITest extends ApplicationTest {
 
     @Test
     public void testSignUpRequiredInfoAddress() {
-        interact(() -> {
             setTextField(this, "#staffIDTextField", "Staff1");
             setTextField(this, "#passwordField", "secure");
             setTextField(this, "#confirmPasswordField", "secure");
@@ -123,7 +121,6 @@ public class CreateClinicianControllerGUITest extends ApplicationTest {
             verifyThat("#regionLabel", LabeledMatchers.hasText("Otago"));
             verifyThat("#countryLabel", LabeledMatchers.hasText("New Zealand"));
             verifyThat("#zipLabel", LabeledMatchers.hasText("8033"));
-                });
     }
 
     @Test

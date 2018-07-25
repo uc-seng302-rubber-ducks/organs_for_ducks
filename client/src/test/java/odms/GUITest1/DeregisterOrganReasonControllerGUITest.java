@@ -3,13 +3,14 @@ package odms.GUITest1;
 import javafx.scene.Node;
 import javafx.scene.input.KeyCode;
 import odms.App;
+import odms.TestUtils.CommonTestMethods;
 import odms.commons.model.Clinician;
-import odms.commons.model.datamodel.TransplantDetails;
-import odms.commons.model.dto.UserOverview;
-import odms.controller.AppController;
 import odms.commons.model.Disease;
 import odms.commons.model.User;
 import odms.commons.model._enum.Organs;
+import odms.commons.model.datamodel.TransplantDetails;
+import odms.commons.model.dto.UserOverview;
+import odms.controller.AppController;
 import odms.utils.ClinicianBridge;
 import odms.utils.LoginBridge;
 import odms.utils.TransplantBridge;
@@ -17,27 +18,24 @@ import odms.utils.UserBridge;
 import org.junit.*;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
-import org.testfx.matcher.control.LabeledMatchers;
-import odms.TestUtils.CommonTestMethods;
 
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.concurrent.TimeoutException;
 
 import static odms.TestUtils.FxRobotHelper.clickOnButton;
 import static odms.TestUtils.FxRobotHelper.setTextField;
+import static odms.TestUtils.TableViewsMethod.getCell;
+import static odms.TestUtils.TableViewsMethod.getNumberOfRows;
 import static org.junit.Assert.assertEquals;
-import static org.mockito.ArgumentMatchers.anyCollection;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.testfx.api.FxAssert.verifyThat;
-import static odms.TestUtils.TableViewsMethod.getCell;
-import static odms.TestUtils.TableViewsMethod.getNumberOfRows;
 
 public class DeregisterOrganReasonControllerGUITest extends ApplicationTest {
 

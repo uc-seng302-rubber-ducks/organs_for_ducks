@@ -111,7 +111,7 @@ public class WhenSteps extends ApplicationTest {
 
     @When("^clicked on clinician Login button$")
     public void clickedOnClinicianLoginButton() throws IOException {
-        when(CucumberTestModel.getUserBridge().loadUsersToController(anyInt(), anyInt(), anyString(), anyString(), anyString(), anyString())).thenReturn(Collections.singletonList(UserOverview.fromUser(CucumberTestModel.getUser())));
+        when(CucumberTestModel.getUserBridge().getUsers(anyInt(), anyInt(), anyString(), anyString(), anyString(), anyString())).thenReturn(Collections.singletonList(UserOverview.fromUser(CucumberTestModel.getUser())));
         CucumberTestModel.setIsClinicianLogin(true);
         clickOnButton(this, "#loginCButton");
     }
