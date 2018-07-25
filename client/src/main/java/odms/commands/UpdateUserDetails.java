@@ -149,6 +149,7 @@ public class UpdateUserDetails implements Runnable {
         }
         if (changed) {
             controller.update(user);
+            controller.saveUser(user);
         }
     }
 }

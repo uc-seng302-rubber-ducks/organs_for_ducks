@@ -43,6 +43,7 @@ public class CreateClinician implements Runnable {
             Clinician clinician = new Clinician(id, password, firstName, "", "");
             clinician.setRegion(region);
             controller.updateClinicians(clinician);
+            controller.saveClinician(clinician);
             System.out.println(clinician.toString());
             System.out.println("Created new clinician with id " + id);
         } else {

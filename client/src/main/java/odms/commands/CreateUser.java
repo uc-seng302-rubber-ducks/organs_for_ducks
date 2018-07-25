@@ -129,11 +129,8 @@ public class CreateUser implements Runnable {
 
         System.out.println("User " + user.toString() + " has been registered with ID number");
         System.out.println(user.hashCode());
-        try {
-            dataHandler.saveUsers(controller.getUsers());
-        } catch (IOException ex) {
-            System.err.println("Error saving data to file\n" + ex.getMessage());
-        }
+        controller.update(user);
+        controller.saveUser(user);
     }
 
 }
