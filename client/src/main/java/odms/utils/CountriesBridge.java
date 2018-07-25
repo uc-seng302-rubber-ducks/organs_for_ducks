@@ -11,10 +11,6 @@ import java.util.Set;
 public class CountriesBridge extends Bifrost {
 
 
-    public CountriesBridge(OkHttpClient client, String ip) {
-        super(client, ip);
-    }
-
     public CountriesBridge(OkHttpClient client) {
         super(client);
     }
