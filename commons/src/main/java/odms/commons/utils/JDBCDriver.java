@@ -30,10 +30,10 @@ public class JDBCDriver {
 
     public JDBCDriver () throws PropertyVetoException {
         Properties prop = new ConfigPropertiesLoader().loadConfig("serverConfig.properties");
-        url = prop.getProperty("db.url");
-        user = prop.getProperty("db.user");
-        password = prop.getProperty("db.password");
-        database = prop.getProperty("db.database");
+        url = prop.getProperty("db.url", "");
+        user = prop.getProperty("db.user", "");
+        password = prop.getProperty("db.password", "");
+        database = prop.getProperty("db.database", "");
 
         createPool();
     }

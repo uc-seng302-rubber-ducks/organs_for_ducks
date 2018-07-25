@@ -5,12 +5,6 @@ import java.util.Properties;
 
 public class ConfigPropertiesLoader {
 
-    private Properties prop;
-
-    public ConfigPropertiesLoader() {
-        prop = new Properties();
-    }
-
     /**
      * attempts to load the config file into a properties object. returns empty Properies if unable to do so
      *
@@ -18,9 +12,10 @@ public class ConfigPropertiesLoader {
      * @return Properties object that may or may not contain info from the config file
      */
     public Properties loadConfig(String filename) {
+        Properties prop = new Properties();
         try {
             prop.load(this.getClass().getClassLoader().getResourceAsStream(filename));
-        } catch (IOException ex) {
+        } catch (IOException | NullPointerException ex) {
             Log.severe("failed to load config file: " + filename, ex);
         }
         return prop;
