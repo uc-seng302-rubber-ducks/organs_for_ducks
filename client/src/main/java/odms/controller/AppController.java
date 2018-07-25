@@ -121,7 +121,7 @@ public class AppController {
 
         } else {
             regionSelector.setVisible(true);
-            regionSelector.getSelectionModel().selectFirst();
+            regionSelector.setValue("");
             regionInput.setVisible(false);
         }
     }

@@ -68,7 +68,7 @@
                               <Label text="Zip Code:" GridPane.rowIndex="2" />
                               <Label fx:id="cityLabel" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                               <Label fx:id="zipLabel" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                               <Label text="Region:" GridPane.columnIndex="2" GridPane.rowIndex="1"/>
+                               <Label fx:id="asdf" text="Region:" GridPane.columnIndex="2" GridPane.rowIndex="1"/>
                               <Label text="Country:" GridPane.columnIndex="2" GridPane.rowIndex="2" />
                                <Label fx:id="regionLabel" text="Label" GridPane.columnIndex="3" GridPane.rowIndex="1"/>
                               <Label fx:id="countryLabel" text="Label" GridPane.columnIndex="3" GridPane.rowIndex="2" />
@@ -89,7 +89,7 @@
                         </AnchorPane>
                     </content>
                 </Tab>
-                <Tab fx:id="searchTab" text="Search" onSelectionChanged="#initSearchTable">
+                <Tab fx:id="searchTab" onSelectionChanged="#initSearchTable" text="Search">
                     <content>
                         <SplitPane dividerPositions="50.0" minHeight="-Infinity" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0">
                             <items>

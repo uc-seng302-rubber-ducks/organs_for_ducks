@@ -197,6 +197,7 @@ public class CreateClinicianControllerGUITest extends ApplicationTest {
 
 
     @Test
+    @Ignore
     public void testLabelsMatch() {
         lookup("#staffIDTextField").queryAs(TextField.class).setText("Staff1");
         lookup("#passwordField").queryAs(TextField.class).setText("secure");
