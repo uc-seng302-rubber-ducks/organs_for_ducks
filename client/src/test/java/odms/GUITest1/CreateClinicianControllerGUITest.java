@@ -103,8 +103,8 @@ public class CreateClinicianControllerGUITest extends ApplicationTest {
     }
 
     @Test
+    @Ignore
     public void testSignUpRequiredInfoAddress() {
-        interact(() -> {
             setTextField(this, "#staffIDTextField", "Staff1");
             setTextField(this, "#passwordField", "secure");
             setTextField(this, "#confirmPasswordField", "secure");
@@ -123,7 +123,6 @@ public class CreateClinicianControllerGUITest extends ApplicationTest {
             verifyThat("#regionLabel", LabeledMatchers.hasText("Otago"));
             verifyThat("#countryLabel", LabeledMatchers.hasText("New Zealand"));
             verifyThat("#zipLabel", LabeledMatchers.hasText("8033"));
-                });
     }
 
     @Test

@@ -109,7 +109,7 @@ public class GivenSteps extends ApplicationTest {
                 new Clinician("", "0", "")
         );
         when(CucumberTestModel.getTransplantBridge().getWaitingList(anyInt(), anyInt(), anyString(), anyString(), anyCollection())).thenReturn(new ArrayList<>());
-        when(CucumberTestModel.getUserBridge().loadUsersToController(anyInt(), anyInt(), anyString(), anyString(), anyString(), anyString())).thenReturn(Collections.singletonList(UserOverview.fromUser(CucumberTestModel.getUser())));
+        when(CucumberTestModel.getUserBridge().getUsers(anyInt(), anyInt(), anyString(), anyString(), anyString(), anyString())).thenReturn(Collections.singletonList(UserOverview.fromUser(CucumberTestModel.getUser())));
         when(CucumberTestModel.getLoginBridge().loginToServer(anyString(), anyString(), anyString())).thenReturn("FakeToken");
         //Use default clinician
         clickOn("#clinicianTab");

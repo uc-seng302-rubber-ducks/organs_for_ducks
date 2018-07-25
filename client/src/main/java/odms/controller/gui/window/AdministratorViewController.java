@@ -1,14 +1,15 @@
 package odms.controller.gui.window;
 
 import com.sun.javafx.stage.StageHelper;
-import javafx.beans.binding.Bindings;
+import javafx.animation.PauseTransition;
+import javafx.beans.InvalidationListener;
+import javafx.beans.Observable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -19,6 +20,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Region;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import odms.controller.AppController;
 import odms.controller.gui.FileSelectorController;
 import odms.controller.gui.UnsavedChangesAlert;
@@ -26,6 +28,7 @@ import odms.controller.gui.panel.TransplantWaitListController;
 import odms.controller.gui.popup.AlertUnclosedWindowsController;
 import odms.controller.gui.popup.CountrySelectionController;
 import odms.controller.gui.popup.DeletedUserController;
+import odms.controller.gui.popup.utils.AlertWindowFactory;
 import odms.controller.gui.statusBarController;
 import odms.commons.exception.InvalidFileException;
 import odms.commons.model.Administrator;
@@ -48,7 +51,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
 import java.util.*;
 
@@ -116,6 +118,8 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
     private RadioButton adminAdminRadioButton;
     @FXML
     private ToggleGroup adminSearchRadios;
+    @FXML
+    private Label regionLabel;
 
     //</editor-fold>
     @FXML
@@ -128,19 +132,17 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
     private ArrayList<String> pastCommands = new ArrayList<>();
     private int pastCommandIndex = -2;
     private boolean owner;
-    private int startIndex = 0;
-    private int endIndex;
-    private FilteredList<UserOverview> fListUsers;
     private FilteredList<Clinician> fListClinicians;
     private FilteredList<Administrator> fListAdmins;
     private TableColumn<UserOverview, String> lNameColumn;
     private boolean filterVisible = false;
-    private TableView<?> activeTableView;
     private String messageAdmin = "Admin ";
     private DataHandler dataHandler = new JsonHandler();
     private UserBridge userBridge;
     private ClinicianBridge clinicianBridge;
     private AdministratorBridge adminBridge;
+    private PauseTransition pause = new PauseTransition(Duration.millis(300));
+    private int startIndex = 0;
 
     /**
      * Initialises scene for the administrator view
@@ -236,10 +238,16 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
 
             if (adminUserRadioButton.isSelected()) {
                 userTableView.setVisible(true);
+                regionSearchTextField.setVisible(true);
+                regionLabel.setVisible(true);
             } else if (adminClinicianRadioButton.isSelected()) {
                 clinicianTableView.setVisible(true);
+                regionSearchTextField.setVisible(true);
+                regionLabel.setVisible(true);
             } else if (adminAdminRadioButton.isSelected()) {
                 adminTableView.setVisible(true);
+                regionSearchTextField.setVisible(false);
+                regionLabel.setVisible(false);
             }
 
         })));
@@ -261,6 +269,22 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
                 launchAdmin(adminTableView.getSelectionModel().getSelectedItem());
             }
         });
+
+        InvalidationListener textFieldListener = observable -> {
+            pause.setOnFinished(e -> {
+                startIndex = 0;
+                if (adminUserRadioButton.isSelected()) {
+                    AdministratorViewController.this.populateUserSearchTable();
+                } else if (adminClinicianRadioButton.isSelected()) {
+                    AdministratorViewController.this.populateClinicianSearchTable();
+                } else if (adminAdminRadioButton.isSelected()) {
+                    AdministratorViewController.this.populateAdminSearchTable();
+                }
+            });
+            pause.playFromStart();
+        };
+        adminSearchField.textProperty().addListener(textFieldListener);
+        regionSearchTextField.textProperty().addListener(textFieldListener);
     }
 
 
@@ -283,7 +307,6 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
      * Initialises table for the clinician table
      */
     private void initClinicianSearchTable() {
-        ObservableList<Clinician> clinicians = FXCollections.observableArrayList(appController.getClinicians());
 
         TableColumn<Clinician, String> firstNameColumn = new TableColumn<>("First Name");
         firstNameColumn.setCellValueFactory(new PropertyValueFactory<>("firstName"));
@@ -296,29 +319,17 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
 
         lastNameColumn.setSortType(TableColumn.SortType.ASCENDING);
 
-        fListClinicians = new FilteredList<>(clinicians);
-        fListClinicians = filter(fListClinicians);
-
-        SortedList<Clinician> clinicianSortedList = new SortedList<>(fListClinicians);
-        clinicianSortedList.comparatorProperty().bind(clinicianTableView.comparatorProperty());
         clinicianTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         clinicianTableView.getColumns().clear();
         clinicianTableView.getColumns().addAll(nhiColumn, firstNameColumn, lastNameColumn);
-        clinicianTableView.setItems(clinicianSortedList);
 
+        populateClinicianSearchTable();
     }
 
     /**
      * Initialises the columns for the admin table
      */
     private void initAdminSearchTable() {
-        ObservableList<Administrator> admins = FXCollections
-                .observableArrayList(appController.getAdmins());
-
-        endIndex = Math.min(startIndex + ROWS_PER_PAGE, admins.size());
-        if (admins.isEmpty()) {
-            return;
-        }
         TableColumn<Administrator, String> firstNameColumn = new TableColumn<>("First Name");
         firstNameColumn.setCellValueFactory(new PropertyValueFactory<>("firstName"));
 
@@ -330,15 +341,11 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
 
         lastNameColumn.setSortType(TableColumn.SortType.ASCENDING);
 
-        fListAdmins = new FilteredList<>(admins);
-        fListAdmins = filter(fListAdmins);
-
-        SortedList<Administrator> administratorSortedList = new SortedList<>(fListAdmins);
-        administratorSortedList.comparatorProperty().bind(adminTableView.comparatorProperty());
         adminTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         adminTableView.getColumns().clear();
         adminTableView.getColumns().addAll(userNameColumn, firstNameColumn, lastNameColumn);
-        adminTableView.setItems(administratorSortedList);
+
+        populateAdminSearchTable();
 
     }
 
@@ -352,16 +359,6 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
         TableColumn<UserOverview, String> ageColumn;
         TableColumn<UserOverview, HashSet<Organs>> organsColumn;
         TableColumn<UserOverview, String> regionColumn;
-        List<User> users = appController.getUsers();
-
-        endIndex = Math.min(startIndex + ROWS_PER_PAGE, users.size());
-        if (users.isEmpty()) {
-            return;
-        }
-
-        //set up lists
-        //table contents are SortedList of a FilteredList of an ObservableList of an ArrayList
-        ObservableList<UserOverview> oListDonors = FXCollections.observableList(new ArrayList<>(appController.getUserOverviews()));
 
         fNameColumn = new TableColumn<>("First name");
         fNameColumn.setCellValueFactory(new PropertyValueFactory<>("firstName"));
@@ -385,136 +382,65 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
         organsColumn = new TableColumn<>("Organs");
         organsColumn.setCellValueFactory(new PropertyValueFactory<>("organs"));
 
-        //add more columns as wanted/needed
-
-        fListUsers = new FilteredList<>(oListDonors);
-        fListUsers = filter(fListUsers);
-
-        SortedList<UserOverview> sListUsers = new SortedList<>(fListUsers);
-        sListUsers.comparatorProperty().bind(userTableView.comparatorProperty());
-
-        //predicate on this list not working properly
-        //should limit the number of items shown to ROWS_PER_PAGE
-        //set table columns and contents
         userTableView.getColumns().clear();
         userTableView.getColumns().setAll(fNameColumn, lNameColumn, dobColumn, dodColumn, ageColumn, regionColumn, organsColumn);
-        //searchTableView.setItems(FXCollections.observableList(sListDonors.subList(startIndex, endIndex)));
-        userTableView.setItems(sListUsers);
-        //userTableView.setRowFactory(searchTableView -> new TooltipTableRow<>(User::getTooltip));
 
+        populateUserSearchTable();
     }
 
     /**
-     * Takes a list and returns a sub section of it.
-     * <p>
-     * Works for all types
-     *
-     * @param list A list of any Type.
-     * @return A list of supplied type.
+     * adds new data to the user search table
      */
-    private <T> List<T> getSearchData(List<T> list) {
-        return list.subList(startIndex, endIndex);
+    private void populateUserSearchTable() {
+        populateUserSearchTable(0, ROWS_PER_PAGE, adminSearchField.getText(), regionSearchTextField.getText(), "");
     }
 
-
-    /**
-     * applies a change listener to the input text box and filters a filtered list accordingly
-     *
-     * @param toFilter list to be filtered
-     * @return filtered list with filter applied
-     */
-    private <T> FilteredList<T> filter(FilteredList<T> toFilter) {
-        setTextFieldListener(adminSearchField, toFilter);
-        setTextFieldListener(regionSearchTextField, toFilter);
-        setCheckBoxListener(donorFilterCheckBox, toFilter);
-        setCheckBoxListener(receiverFilterCheckBox, toFilter);
-        setCheckBoxListener(allCheckBox, toFilter);
-        genderComboBox.valueProperty()
-                .addListener((observable -> setFilteredListPredicate(toFilter)));
-
-        searchTablePagination.setPageCount(searchCount / ROWS_PER_PAGE);
-        return toFilter;
-    }
-
-    /**
-     * Method to add the predicate trough the listener
-     *
-     * @param inputTextField textfield to add the listener to
-     * @param filteredList   filteredList  of objects to set predicate property of
-     */
-    private <T> void setTextFieldListener(TextField inputTextField, FilteredList<T> filteredList) {
-        inputTextField.textProperty()
-                .addListener(observable -> setFilteredListPredicate(filteredList));
-    }
-
-    /**
-     * Method to add the predicate trough the listener
-     *
-     * @param checkBox     checkBox object to add the listener to
-     * @param filteredList filteredList of object T to set predicate property of
-     */
-    private <T> void setCheckBoxListener(CheckBox checkBox, FilteredList<T> filteredList) {
-        checkBox.selectedProperty()
-                .addListener((observable -> setFilteredListPredicate(filteredList)));
-    }
-
-    /**
-     * Sets the predicate property of filteredList to filter by specific properties
-     *
-     * @param fList filteredList object to modify the predicate property of
-     */
-    private <T> void setFilteredListPredicate(FilteredList<T> fList) {
-        searchCount = 0; //refresh the searchCount every time so it recalculates it each search
-        fList.predicateProperty().bind(Bindings.createObjectBinding(() -> objectToFilter -> {
-            String lowerCaseFilterText = adminSearchField.getText().toLowerCase();
-            boolean regionMatch = AttributeValidation.checkRegionMatches(regionSearchTextField.getText(), objectToFilter);
-
-            String fName = null;
-            String lName = null;
-            try {
-                fName = (String) objectToFilter.getClass().getMethod("getFirstName").invoke(objectToFilter); //if this breaks just ignore it,
-                lName = (String) objectToFilter.getClass().getMethod("getLastName").invoke(objectToFilter); // it will fix itself and not cause problems
-            } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-                e.printStackTrace();
+    private void populateUserSearchTable(int startIndex, int count, String name, String region, String gender) {
+        appController.getUserOverviews().clear();
+        Collection<UserOverview> users = null;
+        try {
+            users = userBridge.getUsers(startIndex, count, name, region, gender, appController.getToken());
+        } catch (IOException ex) {
+            Log.warning("failed to get user overviews from server", ex);
+        }
+        if (users != null) {
+            for(UserOverview overview: users) {
+                appController.addUserOverview(overview);
             }
-            if ((AttributeValidation.checkTextMatches(lowerCaseFilterText, fName) ||
-                    AttributeValidation.checkTextMatches(lowerCaseFilterText, lName)) &&
-                    (regionMatch)) {
-                searchCount++;
-                return true;
-            }/* TODO: reimplement and remove this
-             &&
-            (((user.isDonor() == donorFilterCheckBox.isSelected()) &&
-                    (user.isReceiver() == receiverFilterCheckBox.isSelected())) || allCheckBox.isSelected()))*/
-            //if (other test case) return true
-            return false;
-        }));
-        changePage(searchTablePagination.getCurrentPageIndex());
+        }
+
+        ObservableList<UserOverview> oUsers = FXCollections.observableList(new ArrayList<>(appController.getUserOverviews()));
+        SortedList<UserOverview> sUsers = new SortedList<>(oUsers);
+        sUsers.comparatorProperty().bind(userTableView.comparatorProperty());
+
+        if (!appController.getUserOverviews().isEmpty()) {
+            userTableView.setItems(sUsers);
+        } else {
+            userTableView.setItems(null);
+            userTableView.setPlaceholder(new Label("No users match this criteria"));
+        }
+
+        setTableOnClickBehaviour(User.class, userTableView);
     }
 
-    /**
-     * @param pageIndex the current page.
-     * @return the search table view node.
-     */
-    private Node changePage(int pageIndex) {
-        startIndex = pageIndex * ROWS_PER_PAGE;
-        endIndex = Math.min(startIndex + ROWS_PER_PAGE, appController.getUsers().size());
-
-        int minIndex = Math.min(endIndex, fListUsers.size());
-
-        SortedList<UserOverview> sListDonors = new SortedList<>(FXCollections.observableArrayList(fListUsers.subList(Math.min(startIndex, minIndex), minIndex)));
-        sListDonors.comparatorProperty().bind(userTableView.comparatorProperty());
-
-        lNameColumn.setSortType(TableColumn.SortType.ASCENDING);
-        userTableView.setItems(sListDonors);
-
-
-        int pageCount = searchCount / ROWS_PER_PAGE;
-        searchTablePagination.setPageCount(pageCount > 0 ? pageCount + 1 : 1);
-        searchCountLabel.setText("Showing results " + (searchCount == 0 ? startIndex : startIndex + 1) + " - " + (minIndex) + " of " + searchCount);
-
-        return userTableView;
+    private void setTableOnClickBehaviour(Type type, TableView tv) {
+        if (!appController.getUserOverviews().isEmpty()) {
+            tv.setOnMouseClicked(event -> {
+                if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
+                    if (type.equals(User.class)) {
+                        launchUser(userTableView.getSelectionModel().getSelectedItem());
+                    } else if (type.equals(Clinician.class)) {
+                        launchClinician(clinicianTableView.getSelectionModel().getSelectedItem());
+                    } else if (type.equals(Administrator.class)) {
+                        launchAdmin(adminTableView.getSelectionModel().getSelectedItem());
+                    }
+                }
+            });
+        } else {
+            userTableView.setOnMouseClicked(null);
+        }
     }
+
 
 
     /**
@@ -1106,7 +1032,7 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
         }
         adminUndoButton.setDisable(administrator.getUndoStack().isEmpty());
         adminRedoButton.setDisable(administrator.getRedoStack().isEmpty());
-        if (administrator.getChanges().size() > 0) {
+        if (administrator.getChanges().isEmpty()) {
             statusBarPageController.updateStatus(administrator.getUserName() + " " + administrator.getChanges().get(administrator.getChanges().size() - 1).getChange());
         }
         stage.setTitle("Administrator");
@@ -1182,8 +1108,8 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
      */
     public void refreshTables() {
         transplantWaitListTabPageController.populateWaitListTable();
-        initAdminSearchTable();
-        initClinicianSearchTable();
+        populateUserSearchTable();
+        populateClinicianSearchTable();
         initUserSearchTable();
     }
 
@@ -1202,5 +1128,112 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
         } else if (evt.getPropertyName().equals(EventTypes.CLINICIAN_UPDATE.name())) {
             refreshTables();
         }
+    }
+
+    /**
+     * moves the currently active tableview to the next page
+     */
+    @FXML
+    private void goToNextPage() {
+        if (appController.getUserOverviews().size() < ROWS_PER_PAGE && adminUserRadioButton.isSelected()) {
+            return;
+        } else if (appController.getClinicians().size() < ROWS_PER_PAGE && adminClinicianRadioButton.isSelected()) {
+            return;
+        } else if (appController.getAdmins().size() < ROWS_PER_PAGE && adminAdminRadioButton.isSelected()) {
+            return;
+        }
+
+        startIndex += ROWS_PER_PAGE;
+        if (adminUserRadioButton.isSelected()) {
+            populateUserSearchTable(startIndex, ROWS_PER_PAGE, adminSearchField.getText(), regionSearchTextField.getText(), "");
+        } else if (adminClinicianRadioButton.isSelected()) {
+            populateClinicianSearchTable(startIndex, ROWS_PER_PAGE, adminSearchField.getText(), regionSearchTextField.getText());
+        } else if (adminAdminRadioButton.isSelected()) {
+            populateAdminSearchTable(startIndex, ROWS_PER_PAGE, adminSearchField.getText());
+
+        }
+    }
+
+    /**
+     * moves the currently active tableview to the previous page
+     */
+    @FXML
+    private void goToPrevPage() {
+        if (startIndex - ROWS_PER_PAGE < 0) {
+            return;
+        }
+
+        startIndex -= ROWS_PER_PAGE;
+        if (adminUserRadioButton.isSelected()) {
+            populateUserSearchTable();
+        } else if (adminClinicianRadioButton.isSelected()) {
+            populateClinicianSearchTable(startIndex, ROWS_PER_PAGE, adminSearchField.getText(), regionSearchTextField.getText());
+        } else if (adminAdminRadioButton.isSelected()) {
+            populateAdminSearchTable(startIndex, ROWS_PER_PAGE, adminSearchField.getText());
+        }
+    }
+
+    private void populateClinicianSearchTable() {
+        populateClinicianSearchTable(0, ROWS_PER_PAGE, adminSearchField.getText(), regionSearchTextField.getText());
+    }
+
+    private void populateClinicianSearchTable(int startIndex, int rowsPerPage, String name, String region) {
+        appController.getClinicians().clear();
+        Collection<Clinician> clinicians = null;
+        try {
+            clinicians = clinicianBridge.getClinicians(startIndex, rowsPerPage, name, region, appController.getToken());
+        } catch (IOException ex) {
+            Log.warning("failed to get user overviews from server", ex);
+        }
+        if (clinicians != null) {
+            for(Clinician clinician : clinicians) {
+                appController.addClinician(clinician);
+            }
+        }
+
+        ObservableList<Clinician> oClinicians = FXCollections.observableList(new ArrayList<>(appController.getClinicians()));
+        SortedList<Clinician> sClinicians = new SortedList<>(oClinicians);
+        sClinicians.comparatorProperty().bind(clinicianTableView.comparatorProperty());
+
+        if (!appController.getClinicians().isEmpty()) {
+            clinicianTableView.setItems(sClinicians);
+        } else {
+            clinicianTableView.setItems(null);
+            clinicianTableView.setPlaceholder(new Label("No clinicians to show"));
+        }
+
+        setTableOnClickBehaviour(Clinician.class, clinicianTableView);
+    }
+
+    private void populateAdminSearchTable() {
+        populateAdminSearchTable(0, ROWS_PER_PAGE, adminSearchField.getText());
+    }
+
+    private void populateAdminSearchTable(int startIndex, int rowsPerPage, String name) {
+        appController.getAdmins().clear();
+        Collection<Administrator> admins = null;
+        try {
+            admins = adminBridge.getAdmins(startIndex, rowsPerPage, name,appController.getToken());
+        } catch (IOException ex) {
+            Log.warning("failed to get user overviews from server", ex);
+        }
+        if (admins != null) {
+            for(Administrator admin : admins) {
+                appController.addAdmin(admin);
+            }
+        }
+
+        ObservableList<Administrator> oAdmins = FXCollections.observableList(new ArrayList<>(appController.getAdmins()));
+        SortedList<Administrator> sAdmins = new SortedList<>(oAdmins);
+        sAdmins.comparatorProperty().bind(adminTableView.comparatorProperty());
+
+        if (!appController.getClinicians().isEmpty()) {
+            adminTableView.setItems(sAdmins);
+        } else {
+            adminTableView.setItems(null);
+            adminTableView.setPlaceholder(new Label("No admins to show"));
+        }
+
+        setTableOnClickBehaviour(Administrator.class, adminTableView);
     }
 }

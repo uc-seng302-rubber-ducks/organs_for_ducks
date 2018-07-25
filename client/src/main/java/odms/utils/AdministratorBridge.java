@@ -21,7 +21,7 @@ public class AdministratorBridge extends RoleBridge {
         super(client);
     }
 
-    public Collection<Administrator> getAdmins(int startIndex, int count, String name, String region, String token) throws IOException {
+    public Collection<Administrator> getAdmins(int startIndex, int count, String name,String token) throws IOException {
         String url = ip + "/admins?startIndex=" + startIndex + "&count=" + count + "&q=" + name;
         Request request = new Request.Builder().url(url).addHeader("x-auth-token", token).build();
         Response response = client.newCall(request).execute();

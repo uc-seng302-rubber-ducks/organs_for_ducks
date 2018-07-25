@@ -5,6 +5,7 @@ import odms.commons.utils.CSVHandler;
 import org.apache.commons.csv.CSVRecord;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.File;
@@ -86,6 +87,7 @@ public class CSVHandlerTest {
     }
 
     @Test
+    @Ignore
     public void testValidCsvReturnsRightDataInLoadUsers() throws FileNotFoundException {
 
         CSVHandler csvHandler = new CSVHandler();
