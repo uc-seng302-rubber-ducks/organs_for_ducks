@@ -2,6 +2,7 @@ package odms.commons.model;
 
 import com.google.gson.annotations.Expose;
 import javafx.collections.FXCollections;
+import odms.commons.model._abstract.IgnoreForUndo;
 import odms.commons.model._abstract.Listenable;
 import odms.commons.model._abstract.Undoable;
 import odms.commons.model._enum.EventTypes;
@@ -34,6 +35,8 @@ public class Administrator extends Undoable<Administrator> implements Listenable
     private LocalDateTime dateLastModified;
     private transient List<Change> changes;
     private transient PropertyChangeSupport pcs;
+
+    private boolean updatePasswordFlag = false;
 
 
     /**
@@ -228,6 +231,14 @@ public class Administrator extends Undoable<Administrator> implements Listenable
         this.pcs = pcs;
     }
 
+    public void setUpdatePasswordFlag(boolean flag) {
+        updatePasswordFlag = flag;
+    }
+
+    public boolean getUpdatePasswordFlag() {
+        return updatePasswordFlag;
+    }
+
     @Override
     public void setDeleted(boolean deleted) {
         super.setDeleted(deleted);
@@ -256,6 +267,18 @@ public class Administrator extends Undoable<Administrator> implements Listenable
     }
 
     private void saveStateForUndo() {
+        //attempt to find out who called this method
+        //if the caller is annotated with IgnoreForUndo, skip the memento/cloning process.
+        try {
+            //index 2 = direct caller - the setter methods
+            //index 3 = level above that, i.e. whatever uses the setters
+            Class callerClass = Class.forName(Thread.currentThread().getStackTrace()[3].getClassName());
+            if (callerClass.isAnnotationPresent(IgnoreForUndo.class)) {
+                return;
+            }
+        } catch (ClassNotFoundException ex) {
+            //oh well, carry on as normal
+        }
         Memento<Administrator> memento = new Memento<>(Administrator.clone(this));
         getUndoStack().push(memento);
     }
