@@ -47,7 +47,7 @@ release-artifacts:
   stage: deploy
   script:
     - mvn -B clean install -DskipTests
-    - mvn -B package -Pall
+    - mvn -B sonar:sonar package -Pall
   artifacts:
     paths:
     - target/*.jar
