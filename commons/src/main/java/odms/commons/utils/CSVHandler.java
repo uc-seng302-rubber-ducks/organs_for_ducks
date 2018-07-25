@@ -1,10 +1,10 @@
 package odms.commons.utils;
 
 
-import odms.commons.model.EmergencyContact;
-import odms.commons.model.User;
 import odms.commons.model.Administrator;
 import odms.commons.model.Clinician;
+import odms.commons.model.EmergencyContact;
+import odms.commons.model.User;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
@@ -31,6 +31,7 @@ public class CSVHandler extends DataHandler {
      *
      * @param csvFile CSV File to be parsed
      * @return A list of CSV records in the file
+     * @throws IOException when an error occurs while parsing the .csv file
      */
     public List<CSVRecord> parseCSV(File csvFile) throws IOException {
         Reader reader = new FileReader(csvFile);

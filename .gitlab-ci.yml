@@ -30,7 +30,8 @@ testFX-2:
 recent-artifacts:
   stage: deploy
   script:
-    - mvn -B clean package -Punit-tests
+    - mvn -B clean install -DskipTests
+    - mvn -B site package -Punit-tests
   artifacts:
     paths:
       - target/*.jar
@@ -45,7 +46,8 @@ recent-artifacts:
 release-artifacts:
   stage: deploy
   script:
-    - mvn -B clean package -Pall
+    - mvn -B clean install -DskipTests
+    - mvn -B package -Pall
   artifacts:
     paths:
     - target/*.jar

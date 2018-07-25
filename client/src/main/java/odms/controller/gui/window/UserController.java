@@ -23,6 +23,9 @@ import odms.controller.AppController;
 import odms.controller.gui.UnsavedChangesAlert;
 import odms.controller.gui.panel.*;
 import odms.controller.gui.StatusBarController;
+import odms.controller.AppController;
+import odms.controller.gui.panel.*;
+import odms.controller.gui.statusBarController;
 
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
@@ -501,6 +504,12 @@ public class UserController {
     public void updateUndoRedoButtons() {
         undoButton.setDisable(currentUser.getUndoStack().isEmpty());
         redoButton.setDisable(currentUser.getRedoStack().isEmpty());
+    }
+
+    @FXML
+    private void refreshUser() {
+        currentUser = application.findUser(currentUser.getNhi());
+        refreshUser();
     }
 
     public void showDonorDiseases(User user, boolean init) {
