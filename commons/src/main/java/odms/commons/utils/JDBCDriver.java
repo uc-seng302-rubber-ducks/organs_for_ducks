@@ -4,8 +4,8 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
 
 import java.beans.PropertyVetoException;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.Properties;
 
 
 /**
@@ -19,16 +19,22 @@ public class JDBCDriver {
     /**
      * String constants for connecting to the database
      */
-    private static final String URL = "//mysql2.csse.canterbury.ac.nz:3306";
-    private static final String USER = "seng302-team100";
-    private static final String PASSWORD = "VicingSheds6258";
-    private static final String TEST_DB = "/seng302-2018-team100-test";
-    private static final String PROD_DB = "/seng302-2018-team100-prod"; //TODO Need connection for product db -19 july
+    private String url;
+    private String user;
+    private String password;
+    private String database;
+
 
     private ComboPooledDataSource comboPooledDataSource;
 
 
     public JDBCDriver () throws PropertyVetoException {
+        Properties prop = new ConfigPropertiesLoader().loadConfig("serverConfig.properties");
+        url = prop.getProperty("db.url", "");
+        user = prop.getProperty("db.user", "");
+        password = prop.getProperty("db.password", "");
+        database = prop.getProperty("db.database", "");
+
         createPool();
     }
 
@@ -41,9 +47,9 @@ public class JDBCDriver {
             Log.warning("Could not create DB pool", e);
             throw  e;
         }
-        comboPooledDataSource.setJdbcUrl("jdbc:mysql:" + URL + TEST_DB + "?zeroDateTimeBehavior=convertToNull");
-        comboPooledDataSource.setUser(USER);
-        comboPooledDataSource.setPassword(PASSWORD);
+        comboPooledDataSource.setJdbcUrl("jdbc:mysql:" + url + database + "?zeroDateTimeBehavior=convertToNull");
+        comboPooledDataSource.setUser(user);
+        comboPooledDataSource.setPassword(password);
     }
 
 

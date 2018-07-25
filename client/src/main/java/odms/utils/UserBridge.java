@@ -10,18 +10,12 @@ import odms.commons.model.datamodel.Medication;
 import odms.commons.model.datamodel.ReceiverOrganDetailsHolder;
 import odms.commons.model.dto.UserOverview;
 import odms.commons.utils.Log;
-import odms.controller.AppController;
 import okhttp3.*;
 
 import java.io.IOException;
 import java.util.*;
 
 public class UserBridge extends RoleBridge {
-
-    public UserBridge(OkHttpClient client, String ip) {
-        super(client, ip);
-    }
-
     public UserBridge(OkHttpClient client) {
         super(client);
     }

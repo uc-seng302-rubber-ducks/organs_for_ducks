@@ -4,7 +4,6 @@ import com.mysql.jdbc.StringUtils;
 import odms.commons.exception.ApiException;
 import odms.commons.model._enum.Organs;
 import odms.commons.model.datamodel.TransplantDetails;
-import odms.commons.utils.JsonHandler;
 import odms.commons.utils.Log;
 import odms.controller.AppController;
 import okhttp3.OkHttpClient;
@@ -17,11 +16,6 @@ import java.util.Collection;
 import java.util.List;
 
 public class TransplantBridge extends Bifrost {
-
-    public TransplantBridge(OkHttpClient client, String ip) {
-        super(client, ip);
-    }
-
     public TransplantBridge(OkHttpClient client) {
         super(client);
     }

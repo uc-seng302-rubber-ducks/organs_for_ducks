@@ -1,6 +1,6 @@
 package odms;
 
-import odms.commons.model._enum.LoggerEnvironments;
+import odms.commons.model._enum.Environments;
 import odms.commons.utils.Log;
 import odms.security.AuthProvider;
 import org.springframework.boot.SpringApplication;
@@ -13,7 +13,7 @@ import org.springframework.security.authentication.AuthenticationProvider;
 @EnableAutoConfiguration
 public class Server {
     public static void main(String[] args) {
-        Log.setup(LoggerEnvironments.SERVER);
+        Log.setup(Environments.SERVER);
         SpringApplication.run(Server.class, args);
     }
 

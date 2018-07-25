@@ -1,7 +1,11 @@
 package odms.utils;
 
+import odms.commons.utils.ConfigPropertiesLoader;
 import odms.commons.utils.JsonHandler;
-import okhttp3.*;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+
+import java.util.Properties;
 
 
 /**
@@ -12,16 +16,14 @@ public class Bifrost {
     protected OkHttpClient client;
     protected String ip;
     protected MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-    protected static final String TOKEN_HEADER = "x-auth-token";
+    protected static String TOKEN_HEADER;
     protected JsonHandler handler = new JsonHandler();
 
-    public Bifrost(OkHttpClient client, String ip) {
-        this.client = client;
-        this.ip = ip;
-    }
-
     public Bifrost(OkHttpClient client) {
-        this(client, "http://localhost:4941/odms/v1");
+        Properties prop = new ConfigPropertiesLoader().loadConfig("clientConfig.properties");
+        TOKEN_HEADER = prop.getProperty("server.token.header", "x-auth-token");
+        this.ip = prop.getProperty("server.url", "http://localhost:4941/odms/v1");
+        this.client = client;
     }
 
 }

@@ -6,20 +6,12 @@ import odms.commons.exception.ApiException;
 import odms.commons.model.Clinician;
 import odms.commons.utils.JsonHandler;
 import odms.commons.utils.Log;
-import odms.controller.AppController;
 import okhttp3.*;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 
 public class ClinicianBridge extends RoleBridge {
-    public ClinicianBridge(OkHttpClient client, String ip) {
-        super(client, ip);
-    }
-
     public ClinicianBridge(OkHttpClient client) {
         super(client);
     }

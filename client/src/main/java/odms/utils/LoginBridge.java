@@ -9,12 +9,6 @@ import okhttp3.*;
 import java.io.IOException;
 
 public class LoginBridge extends Bifrost{
-
-
-    public LoginBridge(OkHttpClient client, String ip) {
-        super(client, ip);
-    }
-
     public LoginBridge(OkHttpClient client) {
         super(client);
     }
