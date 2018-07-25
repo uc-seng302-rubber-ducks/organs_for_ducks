@@ -1,8 +1,8 @@
 package odms.GUITest2;
 
 
-import javafx.application.Platform;
 import odms.App;
+import odms.TestUtils.CommonTestMethods;
 import odms.commons.model.Clinician;
 import odms.commons.model.dto.UserOverview;
 import odms.controller.AppController;
@@ -12,6 +12,7 @@ import odms.commons.model._enum.OrganDeregisterReason;
 import odms.commons.model._enum.Organs;
 import odms.utils.ClinicianBridge;
 import odms.utils.LoginBridge;
+import odms.utils.TransplantBridge;
 import odms.utils.UserBridge;
 import org.junit.*;
 import org.testfx.api.FxToolkit;
@@ -21,14 +22,15 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.concurrent.TimeoutException;
 
 import static odms.TestUtils.FxRobotHelper.clickOnButton;
+import static odms.TestUtils.FxRobotHelper.setComboBox;
 import static odms.TestUtils.FxRobotHelper.setTextField;
 import static org.junit.Assert.assertEquals;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.mock;
 import static odms.TestUtils.ListViewsMethod.getListView;
 import static odms.TestUtils.ListViewsMethod.getRowValue;
@@ -39,18 +41,11 @@ public class OrganReceiverGUITest extends ApplicationTest {
 
     private DateTimeFormatter sdf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     private User testUser = new User("Aa", LocalDate.parse("2000-01-20", sdf), "ABC1244");
+    private Collection<UserOverview> overviews = Collections.singletonList(UserOverview.fromUser(testUser));
 
     @BeforeClass
     public static void initialization() {
-        if (Boolean.getBoolean("headless")) {
-            System.setProperty("testfx.robot", "glass");
-            System.setProperty("testfx.headless", "true");
-            System.setProperty("prism.order", "sw");
-            System.setProperty("prism.text", "t2k");
-            System.setProperty("java.awt.headless", "true");
-            System.setProperty("headless.geometry", "1920x1080-32");
-            Platform.runLater(OrganReceiverGUITest::initialization);
-        }
+        CommonTestMethods.runHeadless();
     }
 
     @Before
@@ -60,6 +55,7 @@ public class OrganReceiverGUITest extends ApplicationTest {
         ClinicianBridge clinicianBridge = mock(ClinicianBridge.class);
         LoginBridge loginBridge = mock(LoginBridge.class);
         AppController application = mock(AppController.class);
+        TransplantBridge transplantBridge = mock(TransplantBridge.class);
 
         Clinician clinician = new Clinician();
         clinician.setStaffId("0");
@@ -68,10 +64,15 @@ public class OrganReceiverGUITest extends ApplicationTest {
         when(application.getUserBridge()).thenReturn(bridge);
         when(application.getClinicianBridge()).thenReturn(clinicianBridge);
         when(application.getLoginBridge()).thenReturn(loginBridge);
+        when(application.getTransplantBridge()).thenReturn(transplantBridge);
+        when(application.getToken()).thenReturn("ahaahahahahhaha");
+
+        when(transplantBridge.getWaitingList(anyInt(), anyInt(), anyString(), anyString(), anyCollection())).thenReturn(new ArrayList<>());
         when(loginBridge.loginToServer(anyString(),anyString(), anyString())).thenReturn("lsdjfksd");
         when(clinicianBridge.getClinician(anyString(), anyString())).thenReturn(clinician);
+
         when(bridge.getUsers(anyInt(), anyInt(), anyString(), anyString(), anyString(), anyString()))
-                .thenReturn(Collections.singletonList(UserOverview.fromUser(testUser)));
+                .thenReturn(overviews);
         when(bridge.getUser("ABC1244")).thenReturn(testUser);
 
         FxToolkit.registerPrimaryStage();
@@ -101,30 +102,27 @@ public class OrganReceiverGUITest extends ApplicationTest {
 
     @Test
     public void clinicianShouldBeAbleToStartADonorReceivingAnOrgan() {
-        clickOn("#organsComboBox");
-        clickOn("Kidney");
+        setComboBox(this,"#organsComboBox",Organs.KIDNEY);
         clickOnButton(this,"#registerButton");
         assertEquals("Kidney", getRowValue("#currentlyReceivingListView", 0).toString());
     }
 
     @Test
-    @Ignore
     public void organShouldMoveCorrectlyBetweenTablesWhenMoveButtonsClicked() {
         //Setup
-        clickOn("#organsComboBox");
-        clickOn("Kidney");
-        clickOn("#registerButton");
+        setComboBox(this,"#organsComboBox", Organs.KIDNEY);
+        clickOnButton(this,"#registerButton");
         getListView("#currentlyReceivingListView").getSelectionModel().select(0);
 
         //Test reRegister does nothing when already in currentlyReceiving
-        clickOn("#reRegisterButton");
+        clickOnButton(this, "#reRegisterButton");
         getListView("#currentlyReceivingListView").getSelectionModel().select(0);
         assertEquals("Kidney", getRowValue("#currentlyReceivingListView", 0).toString());
 
         //Test deRegister successfully moves organ to notReceiving
-        clickOn("#deRegisterButton");
+        clickOnButton(this, "#deRegisterButton");
         clickOn("#registrationErrorRadioButton");
-        clickOn("#okButton");
+        clickOnButton(this, "#okButton");
         assertEquals("Kidney", getRowValue("#notReceivingListView", 0).toString());
 
     }
@@ -132,16 +130,14 @@ public class OrganReceiverGUITest extends ApplicationTest {
     /**
      * I think this test has an issue with testUser not saving properly, the print statements seem to be working fine and manual testing shows good results
      */
-    @Ignore
-    @Test
+    @Test @Ignore
     public void reasonsAndDatesShouldBeCorrectlyStored() {
-        clickOn("#organsComboBox");
-        clickOn("Kidney");
-        clickOn("#registerButton");
+        setComboBox(this,"#organsComboBox",Organs.KIDNEY);
+        clickOnButton(this, "#registerButton");
         getListView("#currentlyReceivingListView").getSelectionModel().select(0);
-        clickOn("#deRegisterButton");
+        clickOnButton(this,"#deRegisterButton");
         clickOn("#registrationErrorRadioButton");
-        clickOn("#okButton");
+        clickOnButton(this,"#okButton");
         getListView("#notReceivingListView").getSelectionModel().select(0);
         clickOn("#reRegisterButton");
         ArrayList<ReceiverOrganDetailsHolder> holder = testUser.getReceiverDetails().getOrgans().get(Organs.KIDNEY);
@@ -149,7 +145,6 @@ public class OrganReceiverGUITest extends ApplicationTest {
         assertEquals(LocalDate.now(), holder.get(holder.size() - 1).getStartDate());
         assertEquals(OrganDeregisterReason.REGISTRATION_ERROR, holder.get(holder.size() - 1).getOrganDeregisterReason());
         assertEquals(LocalDate.now(), holder.get(0).getStartDate());
-
     }
 
 }

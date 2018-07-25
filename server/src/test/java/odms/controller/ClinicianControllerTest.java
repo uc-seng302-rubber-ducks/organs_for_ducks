@@ -49,11 +49,11 @@ public class ClinicianControllerTest {
         //set up data
         Collection<Clinician> clinicians = new ArrayList<>();
         clinicians.add(testClinician);
-        when(handler.loadClinicians(any(Connection.class), anyInt(), anyInt())).thenReturn(clinicians);
+        when(handler.loadClinicians(any(Connection.class), anyInt(), anyInt(), anyString(), anyString())).thenReturn(clinicians);
         List<Clinician> results = new ArrayList<>(controller.getClinicians(0, 1, "", ""));
 
         Assert.assertEquals(testClinician, results.get(0));
-        Assert.assertEquals(results.size(), 1);
+        Assert.assertEquals(1, results.size());
     }
 
     @Test(expected = ServerDBException.class)
@@ -116,7 +116,7 @@ public class ClinicianControllerTest {
     }
 
     @Test
-    public void deleteClinicianShouldReturnOK() throws SQLException {
+    public void deleteClinicianShouldReturnOK() {
         ResponseEntity res = controller.deleteClinician("12");
         Assert.assertEquals(HttpStatus.OK, res.getStatusCode());
     }

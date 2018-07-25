@@ -1,7 +1,7 @@
 package odms.commands;
 
-import odms.controller.AppController;
 import odms.commons.model.Clinician;
+import odms.controller.AppController;
 import org.junit.Before;
 import org.junit.Test;
 import picocli.CommandLine;

@@ -51,6 +51,7 @@ public class App extends Application {
         primaryStage.setMinHeight(420);
         primaryStage.setMinWidth(600);
         AppController controller = AppController.getInstance();
+        controller.getAllowedCountries();
         primaryStage.setOnCloseRequest(event -> {
             if (primaryStage.getTitle().contains("*")) {
                 Alert alert = new Alert(Alert.AlertType.WARNING,
