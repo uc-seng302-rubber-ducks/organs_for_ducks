@@ -21,6 +21,7 @@ import javafx.scene.layout.Region;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import odms.commons.exception.ApiException;
 import odms.controller.AppController;
 import odms.controller.gui.FileSelectorController;
 import odms.controller.gui.StatusBarController;
@@ -259,7 +260,13 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
 
         clinicianTableView.setOnMouseClicked(event -> {
             if (event.getClickCount() == 2 && event.getButton() == MouseButton.PRIMARY) {
-                launchClinician(clinicianTableView.getSelectionModel().getSelectedItem());
+                try {
+                    launchClinician(appController.getClinicianBridge().getClinician(
+                            clinicianTableView.getSelectionModel().getSelectedItem().getStaffId(),
+                                    appController.getToken()));
+                } catch (ApiException e) {
+                    Log.severe("Clinician Could not be fetched", e);
+                }
             }
         });
 

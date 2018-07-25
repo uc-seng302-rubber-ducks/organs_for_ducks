@@ -73,7 +73,6 @@ public final class PhotoHelper {
 
         Files.createDirectories(Paths.get(Directory.TEMP.directory() + Directory.IMAGES));
         File outFile = new File(Directory.TEMP.directory() + Directory.IMAGES + "/" + userId.toUpperCase() + "." + format);
-
         InputStream in = new ByteArrayInputStream(image);
         BufferedImage buffImage = ImageIO.read(in);
         if(buffImage == null){

@@ -143,7 +143,7 @@ public class ClinicianBridge extends RoleBridge {
         }
     }
 
-    public String getProfilePicture(String staffId, String token) throws IOException {
+    private String getProfilePicture(String staffId, String token) throws IOException {
         String url = ip + "/clinicians/" + staffId + "/photo";
         Headers headers =  new Headers.Builder().add(TOKEN_HEADER, token).build();
         Request request = new Request.Builder().get().url(url).headers(headers).build();

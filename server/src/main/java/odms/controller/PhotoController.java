@@ -39,7 +39,7 @@ public class PhotoController extends BaseController {
                 return new ResponseEntity(HttpStatus.NOT_FOUND);
             }
             System.out.println(header);
-            handler.updateProfilePhoto(User.class, toModify.getNhi(), new ByteArrayInputStream(profileImageFile), header, connection);
+            handler.updateProfilePhoto(User.class, nhi, new ByteArrayInputStream(profileImageFile), header, connection);
 
         } catch (SQLException ex) {
             Log.severe("Could not add or update user's profile photo to user " + nhi, ex);
@@ -69,36 +69,53 @@ public class PhotoController extends BaseController {
     }
 
 
-    @RequestMapping(method = RequestMethod.GET, value = "/users/{nhi}/photo")
+    @RequestMapping(method = RequestMethod.GET, value = "/users/{nhi}/photo", produces = "image/png")
     public ResponseEntity<byte[]> getUserProfilePicture(@PathVariable("nhi") String nhi) {
         byte[] image;
         String format;
+        MediaType mediaType;
         try (Connection connection = driver.getConnection()) {
             image = handler.getProfilePhoto(User.class, nhi, connection);
             format = handler.getFormat(User.class, nhi, connection);
-            if(format == null || format.equals("")) format = "image/png";
+            mediaType = getMediaType(format);
 
         } catch (SQLException e) {
             Log.severe("Cannot fetch profile picture for user " + nhi, e);
             throw new ServerDBException(e);
         }
-        return ResponseEntity.ok().contentType(MediaType.parseMediaType(format)).body(image);
+        return ResponseEntity.ok().contentType(mediaType).body(image);
+    }
+
+    private MediaType getMediaType(String format) {
+        MediaType mediaType = MediaType.IMAGE_PNG;
+        if(format == null || format.equals("")){
+            mediaType = MediaType.IMAGE_PNG;
+        } else if(format.equals("image/png")){
+            mediaType = MediaType.IMAGE_PNG;
+        } else if(format.equals("image/jpg")){
+            mediaType = MediaType.IMAGE_JPEG;
+        } else if(format.equals("image/gif")){
+            mediaType = MediaType.IMAGE_GIF;
+        }
+        return mediaType;
     }
 
     @IsClinician
-    @RequestMapping(method = RequestMethod.GET, value = "/clinicians/{staffId}/photo")
+    @RequestMapping(method = RequestMethod.GET, value = "/clinicians/{staffId}/photo", produces = "image/png")
     public ResponseEntity<byte[]> getClinicianProfilePicture(@PathVariable("staffId") String staffId) {
         byte[] image;
         String format;
+        MediaType mediaType;
         try (Connection connection = driver.getConnection()) {
             image = handler.getProfilePhoto(Clinician.class, staffId, connection);
             format = handler.getFormat(Clinician.class, staffId, connection);
-            if(format ==  null || format.equals("")) format = "image/png";
+            mediaType = getMediaType(format);
+
         } catch (SQLException e) {
             Log.severe("Cannot fetch profile picture for user " + staffId, e);
             throw new ServerDBException(e);
         }
-        return ResponseEntity.ok().header("Content-Type", format).body(image);
+        return ResponseEntity.ok().contentType(mediaType).body(image);
     }
 
 
