@@ -630,7 +630,7 @@ public class UpdateClinicianController {
             Address workAddress = new Address(streetNumber, streetName, neighbourhood, city, region, zipCode, country);
             clinician.setWorkContactDetails(new ContactDetails("", "", workAddress, ""));
             controller.updateClinicians(clinician);
-            controller.getClinicianBridge().postClinician(clinician, ""); // todo: need to create a token as you login immediately - jen 19/7
+            controller.saveClinician(clinician);
             loadOverview(clinician);
 
         } else {

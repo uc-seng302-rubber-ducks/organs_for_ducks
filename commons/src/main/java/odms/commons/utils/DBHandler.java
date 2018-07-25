@@ -531,7 +531,6 @@ public class DBHandler {
 
                     } else {
                         medicalProcedure = new MedicalProcedure(resultSet.getDate(2).toLocalDate(), resultSet.getString(1), resultSet.getString(3), null);
-                        System.out.println(resultSet.getString(4));
                         medicalProcedure.addOrgan(Organs.valueOf(resultSet.getString(4)));
                         user.getMedicalProcedures().add(medicalProcedure);
                     }
@@ -749,11 +748,13 @@ public class DBHandler {
      */
     public void updateAdministrator(Connection connection, String username, Administrator administrator) throws SQLException {
         Administrator toReplace = getOneAdministrator(connection, username);
+        Collection<Administrator> administrators = new ArrayList<>();
         if (toReplace != null) {
             toReplace.setDeleted(true);
+            administrators.add(toReplace);
         }
         administrator.addChange(new Change("Saved"));
-        Collection<Administrator> administrators = new ArrayList<>(Arrays.asList(toReplace, administrator));
+        administrators.add(administrator);
         saveAdministrators(administrators, connection);
     }
 
@@ -785,13 +786,15 @@ public class DBHandler {
      */
     public void updateClinician(Connection connection, String staffId, Clinician clinician) throws SQLException {
         Clinician toReplace = getOneClinician(connection, staffId);
-        if (toReplace != null) {
+        Collection<Clinician> clinicians = new ArrayList<>();
+        if (toReplace != null && !staffId.equals(clinician.getStaffId())) {
             toReplace.setDeleted(true);
+            clinicians.add(toReplace);
         }
         clinician.addChange(new Change("Saved"));
-        Collection<Clinician> clinicians = new ArrayList<>(Arrays.asList(toReplace, clinician));
+        clinicians.add(clinician);
+        Log.info(clinicians.toString());
         saveClinicians(clinicians, connection);
-
     }
 
     /**
