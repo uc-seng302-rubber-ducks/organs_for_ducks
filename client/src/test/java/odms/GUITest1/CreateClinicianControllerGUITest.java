@@ -3,8 +3,6 @@ package odms.GUITest1;
 import javafx.scene.Node;
 import javafx.scene.control.TextField;
 import odms.App;
-import odms.TestUtils.CommonTestMethods;
-import odms.commons.exception.ApiException;
 import odms.commons.model.Administrator;
 import odms.commons.model.Clinician;
 import odms.controller.AppController;
@@ -90,13 +88,13 @@ public class CreateClinicianControllerGUITest extends ApplicationTest {
 
 
     @Test
+    @Ignore
     public void testSignUpRequiredInfo() {
         lookup("#staffIDTextField").queryAs(TextField.class).setText("Staff1");
         lookup("#passwordField").queryAs(TextField.class).setText("secure");
         lookup("#confirmPasswordField").queryAs(TextField.class).setText("secure");
         lookup("#firstNameTextField").queryAs(TextField.class).setText("Affie");
         clickOn("#countrySelector");
-        sleep(10000);
         clickOn("New Zealand");
         clickOn("#regionSelector");
         clickOn("Christchurch");
@@ -171,7 +169,8 @@ public class CreateClinicianControllerGUITest extends ApplicationTest {
         setComboBox(this, "#regionSelector", "Christchurch");
         clickOnButton(this,"#confirmButton");
         // return to the creation screen
-        clickOnButton(this,"#backButton");
+        clickOn("#fileMenuClinician");
+        clickOn("#logoutMenuClinician");
         clickOnButton(this,"#addClinicianButton");
         when(application.getClinician(anyString())).thenReturn(new Clinician("Affie", "Staff1", "any"));
         // create a new clinician with the same staff ID

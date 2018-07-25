@@ -20,16 +20,16 @@ import odms.commons.model._enum.OrganDeregisterReason;
 import odms.commons.model._enum.Organs;
 import odms.commons.utils.Log;
 import odms.controller.AppController;
+import odms.controller.gui.StatusBarController;
 import odms.controller.gui.UnsavedChangesAlert;
 import odms.controller.gui.panel.*;
-import odms.controller.gui.StatusBarController;
-import odms.controller.AppController;
-import odms.controller.gui.panel.*;
-import odms.controller.gui.statusBarController;
 
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
 
 import static odms.commons.utils.PhotoHelper.deleteTempDirectory;
 

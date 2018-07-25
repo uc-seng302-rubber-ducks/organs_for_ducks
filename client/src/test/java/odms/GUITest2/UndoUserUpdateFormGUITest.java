@@ -25,9 +25,7 @@ import static odms.TestUtils.FxRobotHelper.setTextField;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.doCallRealMethod;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.testfx.api.FxAssert.verifyThat;
 
 public class UndoUserUpdateFormGUITest extends ApplicationTest {
@@ -130,10 +128,11 @@ public class UndoUserUpdateFormGUITest extends ApplicationTest {
     public void MultipleChangesSingleUndo() {
         clickOn("#editMenuUser");
         clickOn("#editDetailsUser");
+        setTextField(this,"#ecPhone","123");
         setTextField(this,"#ecPhone","1234");
 
         clickOnButton(this,"#undoUpdateButton");
-
+        sleep(1000);
         verifyThat("#ecPhone", TextInputControlMatchers.hasText("123"));
     }
 

@@ -3,21 +3,10 @@ package odms.GUITest2;
 import javafx.scene.Node;
 import odms.App;
 import odms.TestUtils.CommonTestMethods;
-import odms.commons.model.User;
-import odms.commons.model.dto.UserOverview;
-import odms.TestUtils.CommonTestMethods;
 import odms.commons.model.Clinician;
 import odms.commons.model.User;
 import odms.commons.model.datamodel.Address;
 import odms.commons.model.datamodel.ContactDetails;
-import odms.utils.ClinicianBridge;
-import odms.utils.LoginBridge;
-import odms.utils.UserBridge;
-import odms.controller.AppController;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
 import odms.commons.model.dto.UserOverview;
 import odms.controller.AppController;
 import odms.controller.gui.window.ClinicianController;
@@ -54,7 +43,7 @@ public class UpdateClinicianControllerGUITest extends ApplicationTest {
 
     @BeforeClass
     public static void initialization() {
-        //CommonTestMethods.runHeadless();
+        CommonTestMethods.runHeadless();
     }
 
     @Before
@@ -112,8 +101,8 @@ public class UpdateClinicianControllerGUITest extends ApplicationTest {
 
     @After
     public void tearDown() throws TimeoutException {
-        clickOn("#fileMenuClinician");
-        clickOn("#logoutMenuClinician");
+//        clickOn("#fileMenuClinician");
+//        clickOn("#logoutMenuClinician");
         AppController.setInstance(null);
         FxToolkit.cleanupStages();
     }

@@ -4,16 +4,12 @@ import javafx.scene.Node;
 import odms.App;
 import odms.TestUtils.CommonTestMethods;
 import odms.commons.model.Clinician;
-import odms.commons.model.dto.UserOverview;
-import odms.controller.AppController;
-import odms.TestUtils.CommonTestMethods;
 import odms.commons.model.EmergencyContact;
 import odms.commons.model.User;
 import odms.commons.model.dto.UserOverview;
 import odms.controller.AppController;
 import odms.controller.gui.window.UserController;
 import odms.utils.UserBridge;
-import odms.controller.AppController;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -87,8 +83,8 @@ public class RedoUserGUITest extends ApplicationTest {
 
     @Test
     public void testRedoSingleUndo() {
-        clickOn("#editMenu");
-        clickOn("#editUser");
+        clickOn("#editMenuUser");
+        clickOn("#editDetailsUser");
         setTextField(this, "#lNameInput", "Jefferson");
         clickOnButton(this,"#confirmButton");
         clickOnButton(this,"#undoButton");
@@ -98,19 +94,19 @@ public class RedoUserGUITest extends ApplicationTest {
 
     @Test
     public void testMergedRedosEqualMergedUndos() {
-        clickOn("#editMenu");
-        clickOn("#editUser");
+        clickOn("#editMenuUser");
+        clickOn("#editDetailsUser");
 
         setTextField(this, "#lNameInput", "Jefferson");
         clickOnButton(this,"#confirmButton");
 
-        clickOn("#editMenu");
-        clickOn("#editUser");
+        clickOn("#editMenuUser");
+        clickOn("#editDetailsUser");;
         setComboBox(this, "#alcoholComboBox", "Low");
         clickOnButton(this,"#confirmButton");
 
-        clickOn("#editMenu");
-        clickOn("#editUser");
+        clickOn("#editMenuUser");
+        clickOn("#editDetailsUser");
         setTextField(this, "#cell", "011899992");
         clickOnButton(this,"#confirmButton");
 

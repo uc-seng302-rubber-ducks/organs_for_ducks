@@ -30,7 +30,7 @@ public class FxRobotHelper {
 
     public static void setComboBox(ApplicationTest app, String query, Object value) {
         app.interact(() -> {
-            app.lookup(query).queryAs(ComboBox.class).selectionModelProperty().setValue(value);
+            app.lookup(query).queryAs(ComboBox.class).setValue(value);
         });
     }
 
