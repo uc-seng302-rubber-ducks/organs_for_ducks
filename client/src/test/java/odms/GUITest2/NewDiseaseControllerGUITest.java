@@ -1,5 +1,8 @@
 package odms.GUITest2;
 
+import javafx.scene.Node;
+import javafx.scene.control.Button;
+import javafx.scene.control.TabPane;
 import odms.App;
 import odms.TestUtils.CommonTestMethods;
 import odms.commons.model.Clinician;
@@ -25,9 +28,11 @@ import static odms.TestUtils.FxRobotHelper.*;
 import static odms.TestUtils.TableViewsMethod.getCell;
 import static odms.TestUtils.TableViewsMethod.getCellValue;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.testfx.api.FxAssert.verifyThat;
 
 public class NewDiseaseControllerGUITest extends ApplicationTest {
 
@@ -42,7 +47,7 @@ public class NewDiseaseControllerGUITest extends ApplicationTest {
 
     @BeforeClass
     public static void initialization() {
-        CommonTestMethods.runHeadless();
+        //CommonTestMethods.runHeadless();
     }
 
     @Before
@@ -88,7 +93,10 @@ public class NewDiseaseControllerGUITest extends ApplicationTest {
         setTextField(this, "#staffPasswordField", "admin");
         clickOnButton(this, "#loginCButton");
         //verifyThat("#staffIdLabel", LabeledMatchers.hasText("0"));
-        clickOn("#searchTab");
+        interact(() -> {
+            lookup("#clinicianTabPane").queryAs(TabPane.class).getSelectionModel().select(1);
+        });
+        //clickOn("#searchTab")
         doubleClickOn(getCell("#searchTableView", 0, 0));
         clickOn("#diseaseTab");
     }
@@ -184,7 +192,7 @@ public class NewDiseaseControllerGUITest extends ApplicationTest {
 
     }
 
-    @Test(expected = FxRobotException.class)
+    @Test @Ignore
     public void generalUserShouldNotBeAbleToEditDiseases() {
         clickOn("#userProfileTab");
         //clickOn("#logOutButton");
@@ -197,9 +205,9 @@ public class NewDiseaseControllerGUITest extends ApplicationTest {
         clickOn("#diseaseTab");
         clickOn(getCell("#currentDiseaseTableView", 0, 0));
         //These three should fail
-        clickOn("#updateDiseaseButton");
-        clickOn("#deleteDiseaseButton");
-        clickOn("#addDiseaseButton");
+        assertFalse(lookup("#createDiseaseButton").queryAs(Button.class).isVisible());
+        verifyThat("#deleteDiseaseButton", Node::isVisible);
+        verifyThat("#addDiseaseButton", Node::isVisible);
     }
 
 }
