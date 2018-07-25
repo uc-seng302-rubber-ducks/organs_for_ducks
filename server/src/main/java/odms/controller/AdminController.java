@@ -28,7 +28,6 @@ public class AdminController extends BaseController {
         driver = super.getDriver();
         handler = super.getHandler();
         if (!handler.getExists(driver.getConnection(), Administrator.class, "default")) {
-            System.out.println("added new clinician");
             Administrator administrator = new Administrator("default", "default", "", "", "admin");
             administrator.setDateLastModified(LocalDateTime.now());
             administrator.setDateCreated(LocalDateTime.now());

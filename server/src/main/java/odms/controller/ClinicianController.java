@@ -28,7 +28,6 @@ public class ClinicianController extends BaseController {
         driver = super.getDriver();
         handler = super.getHandler();
         if (!handler.getExists(driver.getConnection(), Clinician.class, "0")) {
-            System.out.println("added new clinician");
             Clinician clinician = new Clinician("0", "admin", "default", "", "");
             handler.saveClinician(clinician, driver.getConnection());
         }
