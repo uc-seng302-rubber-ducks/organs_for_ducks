@@ -25,21 +25,6 @@ public class AdministratorBridge extends RoleBridge {
         }.getType());
     }
 
-    /**
-     * makes a request and decodes it to return an Administrator
-     *
-     * @param username user to be returned
-     * @param token login token of an authenticated session
-     * @return administrator to be returned
-     * @throws IOException Thrown on an invalid response being passed to the handler
-     */
-    public Administrator getAdmins(String username, String token) throws IOException {
-        String url = ip + "/admins/" + username;
-        Request request = new Request.Builder().url(url).addHeader("x-auth-token", token).build();
-        Response response = client.newCall(request).execute();
-        return handler.decodeAdmin(response);
-    }
-
 
     public void postAdmin(Administrator admin, String token) {
         String url = ip + "/admins";

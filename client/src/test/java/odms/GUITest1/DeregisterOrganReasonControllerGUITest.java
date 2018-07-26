@@ -4,12 +4,15 @@ import javafx.scene.Node;
 import javafx.scene.input.KeyCode;
 import odms.App;
 import odms.TestUtils.CommonTestMethods;
+import odms.TestUtils.CommonTestMethods;
+import odms.commons.exception.ApiException;
 import odms.commons.model.Clinician;
 import odms.commons.model.Disease;
 import odms.commons.model.User;
 import odms.commons.model._enum.Organs;
 import odms.commons.model.datamodel.TransplantDetails;
 import odms.commons.model.dto.UserOverview;
+import odms.controller.AppController;
 import odms.controller.AppController;
 import odms.utils.ClinicianBridge;
 import odms.utils.LoginBridge;
@@ -18,6 +21,7 @@ import odms.utils.UserBridge;
 import org.junit.*;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
+import org.testfx.matcher.control.LabeledMatchers;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -35,6 +39,10 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.testfx.api.FxAssert.verifyThat;
+import static odms.TestUtils.TableViewsMethod.getCell;
+import static odms.TestUtils.TableViewsMethod.getNumberOfRows;
+import static org.junit.Assert.assertEquals;
 import static org.testfx.api.FxAssert.verifyThat;
 
 public class DeregisterOrganReasonControllerGUITest extends ApplicationTest {
@@ -106,8 +114,8 @@ public class DeregisterOrganReasonControllerGUITest extends ApplicationTest {
         clickOn("#transplantReceivedRadioButton");
         clickOn("#okButton");
         clickOn("#userProfileTab");
-        clickOn("#backButton");
-        clickOn("Yes");
+        clickOn("#fileMenuUser");
+        clickOn("#logoutUser");
         clickOn("#transplantWaitListTab");
         assertEquals(0, getNumberOfRows("#transplantWaitListTableView"));
     }
@@ -117,8 +125,8 @@ public class DeregisterOrganReasonControllerGUITest extends ApplicationTest {
         clickOn("#registrationErrorRadioButton");
         clickOn("#okButton");
         clickOn("#userProfileTab");
-        clickOn("#backButton");
-        clickOn("Yes");
+        clickOn("#fileMenuUser");
+        clickOn("#logoutUser");
         clickOn("#transplantWaitListTab");
         assertEquals(0, getNumberOfRows("#transplantWaitListTableView"));
     }
@@ -130,8 +138,8 @@ public class DeregisterOrganReasonControllerGUITest extends ApplicationTest {
         clickOn("A0");
         clickOn("#okButton");
         clickOn("#userProfileTab");
-        clickOn("#backButton");
-        clickOn("Yes");
+        clickOn("#fileMenuUser");
+        clickOn("#logoutUser");
         clickOn("#transplantWaitListTab");
         assertEquals(0, getNumberOfRows("#transplantWaitListTableView"));
     }
@@ -141,8 +149,8 @@ public class DeregisterOrganReasonControllerGUITest extends ApplicationTest {
         clickOn("#receiverDiedRadioButton");
         clickOn("#okButton");
         clickOn("#userProfileTab");
-        clickOn("#backButton");
-        clickOn("Yes");
+        clickOn("#fileMenuUser");
+        clickOn("#logoutUser");
         clickOn("#transplantWaitListTab");
         assertEquals(0, getNumberOfRows("#transplantWaitListTableView"));
     }

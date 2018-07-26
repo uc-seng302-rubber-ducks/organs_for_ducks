@@ -1,4 +1,4 @@
-package odms.model;
+package odms.commons.model;
 
 import odms.commons.utils.HttpRequester;
 import okhttp3.*;

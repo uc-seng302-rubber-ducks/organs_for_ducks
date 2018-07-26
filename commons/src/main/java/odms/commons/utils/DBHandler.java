@@ -11,11 +11,11 @@ import odms.commons.utils.db_strategies.AdminUpdateStrategy;
 import odms.commons.utils.db_strategies.ClinicianUpdateStrategy;
 import odms.commons.utils.db_strategies.UserUpdateStrategy;
 
+import javax.management.Query;
+import java.io.InputStream;
+import java.sql.*;
 import java.lang.reflect.Type;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -85,6 +85,10 @@ public class DBHandler {
             "LIMIT ? OFFSET ?";
     private static final String SELECT_SINGLE_ADMIN_ONE_TO_ONE_INFO_STMT = "SELECT userName, firstName, middleName, lastName, timeCreated, lastModified  FROM Administrator WHERE userName = ?";
     private static final String SELECT_PASS_DETAILS = "SELECT hash,salt FROM PasswordDetails WHERE fkAdminUserName = ? OR fkStaffId = ?";
+    private static final String SELECT_USER_PROFILE_PHOTO_STMT = "SELECT profilePicture FROM User WHERE nhi = ?";
+    private static final String SELECT_CLINICIAN_PROFILE_PHOTO_STMT = "SELECT profilePicture FROM Clinician WHERE staffId = ?";
+    private static final String UPDATE_USER_PROFILE_PHOTO_STMT = "UPDATE User SET profilePicture= ?, pictureFormat = ? WHERE nhi = ?";
+    private static final String UPDATE_CLINICIAN_PROFILE_PHOTO_STMT = "UPDATE Clinician SET profilePicture= ?, pictureFormat = ? WHERE staffId = ?";
     private static final String SELECT_ONE_CLINICIAN = "SELECT * FROM Clinician LEFT JOIN Address ON staffId = fkStaffId WHERE staffId = ?";
     private static final String SELECT_IF_USER_EXISTS_BOOL = "SELECT EXISTS(SELECT 1 FROM User WHERE nhi = ?)";
     private static final String SELECT_IF_CLINICIAN_EXISTS_BOOL = "SELECT EXISTS(SELECT 1 FROM Clinician WHERE staffId = ?)";
@@ -764,7 +768,7 @@ public class DBHandler {
     public void updateAdministrator(Connection connection, String username, Administrator administrator) throws SQLException {
         Administrator toReplace = getOneAdministrator(connection, username);
         Collection<Administrator> administrators = new ArrayList<>();
-        if (toReplace != null) {
+        if (toReplace != null && !toReplace.getUserName().equals(administrator.getUserName())) {
             toReplace.setDeleted(true);
             administrators.add(toReplace);
         }
@@ -921,6 +925,71 @@ public class DBHandler {
         }
     }
 
+    /**
+     * Gets the user's profile photo on the database based on user's ID.
+     *
+     * @param <T> generic for type of the user
+     * @param role user's role. e.g. Clinician.class
+     * @param roleId id of user
+     * @param connection connection to the target database
+     * @return Profile Picture of type ImageStream if such user exists or has a profile picture, null otherwise.
+     * @throws SQLException exception thrown during the transaction
+     */
+    public <T> byte[] getProfilePhoto(Class<T> role, String roleId, Connection connection) throws SQLException {
+        String select_stmt;
+        Blob profilePicture = null;
+
+        if (role.isAssignableFrom(User.class)) {
+            select_stmt = SELECT_USER_PROFILE_PHOTO_STMT;
+        } else if (role.isAssignableFrom(Clinician.class)){
+            select_stmt = SELECT_CLINICIAN_PROFILE_PHOTO_STMT;
+        } else {
+            throw new UnsupportedOperationException("Role does not support profile picture");
+        }
+        try (PreparedStatement selectProfilePhoto = connection.prepareStatement(select_stmt)) {
+            selectProfilePhoto.setString(1, roleId);
+            try (ResultSet resultSet = selectProfilePhoto.executeQuery()) {
+                while (resultSet != null && resultSet.next()) {
+                    profilePicture = resultSet.getBlob("profilePicture");
+                }
+            }
+        }
+        if(profilePicture == null){
+            return null;
+        }
+        return profilePicture.getBytes(1, (int) profilePicture.length());
+    }
+
+    /**
+     * adds or updates user's profile photo on the database with the photo passed in.
+     * pre-condition: user's profile photo, user id and type of user must be provided.
+     * post-condition: adds or updates user's profile photo on database.
+     *
+     * @param role user's role. e.g. Clinician.class
+     * @param roleId id of user
+     * @param profilePhoto photo passed in
+     * @param connection connection to the target database
+     * @param <T> generic for type of the user
+     * @throws SQLException exception thrown during the transaction
+     */
+    public <T> void updateProfilePhoto(Class<T> role, String roleId, InputStream profilePhoto, String imageType, Connection connection) throws SQLException {
+        String update_stmt;
+
+        if (role.isAssignableFrom(User.class)) {
+            update_stmt = UPDATE_USER_PROFILE_PHOTO_STMT;
+        } else if (role.isAssignableFrom(Clinician.class)){
+            update_stmt = UPDATE_CLINICIAN_PROFILE_PHOTO_STMT;
+        } else {
+            throw new UnsupportedOperationException("Role does not support profile picture");
+        }
+        try (PreparedStatement updateProfilePhoto = connection.prepareStatement(update_stmt)) {
+            updateProfilePhoto.setBlob(1, profilePhoto);
+            updateProfilePhoto.setString(2, imageType);
+            updateProfilePhoto.setString(3, roleId);
+            updateProfilePhoto.executeUpdate();
+        }
+    }
+
 
     /**
      * queries the database as to whether an end-user* exists or not
@@ -944,11 +1013,7 @@ public class DBHandler {
         }
 
         try (PreparedStatement stmt = conn.prepareStatement(query)) {
-            if (type.equals(Clinician.class)) {
-                stmt.setInt(1, Integer.valueOf(identifier));
-            } else {
                 stmt.setString(1, identifier);
-            }
 
             try (ResultSet result = stmt.executeQuery()) {
                 result.next();
@@ -1000,5 +1065,57 @@ public class DBHandler {
 
             }
         }
+    }
+
+    /**
+     * Gets the image type that an image was sent with
+     * @param t type of role to query for
+     * @param userId id of the wanted profile pictures owner
+     * @param connection connection to the database
+     * @return the content type header string
+     * @throws SQLException on a bad db connection
+     */
+    public String getFormat(Type t, String userId, Connection connection) throws SQLException {
+
+        String statement = null;
+
+        if(t.equals(User.class)){
+            statement = "SELECT pictureFormat FROM User WHERE nhi = ?";
+        } else if (t.equals(Clinician.class)){
+            statement = "SELECT pictureFormat FROM Clinician WHERE staffId = ?";
+        }
+        if( statement == null){
+            return "";
+        }
+        try(PreparedStatement preparedStatement = connection.prepareStatement(statement)){
+            preparedStatement.setString(1, userId);
+            try (ResultSet rs = preparedStatement.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getString(1);
+                } else {
+                    return "";
+                }
+            }
+        }
+    }
+
+    public List runSqlQuery(String query, Connection connection) throws SQLException {
+        List<String> results  = new ArrayList<>();
+        try(PreparedStatement preparedStatement = connection.prepareStatement(query)){
+            try (ResultSet rs = preparedStatement.executeQuery()) {
+                if (!rs.next()){
+                    return results;
+                }
+                do {
+                    ResultSetMetaData rsmd = rs.getMetaData();
+                    int columns = rsmd.getColumnCount();
+                    for(int i = 1; i <= columns; i++){
+                        String columnName = rs.getString(i);
+                        results.add(rsmd.getColumnName(i)+ " " + columnName );
+                    }
+                } while (rs.next());
+            }
+        }
+        return results;
     }
 }

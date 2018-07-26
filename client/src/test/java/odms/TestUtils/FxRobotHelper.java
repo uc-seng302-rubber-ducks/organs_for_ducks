@@ -22,9 +22,15 @@ public class FxRobotHelper {
         });
     }
 
+    public static void setDate(ApplicationTest app, String query, LocalDate date) {
+        app.interact(() -> {
+            app.lookup(query).queryAs(DatePicker.class).setValue(date);
+        });
+    }
+
     public static void setComboBox(ApplicationTest app, String query, Object value) {
         app.interact(() -> {
-            app.lookup(query).queryAs(ComboBox.class).getSelectionModel().select(value);
+            app.lookup(query).queryAs(ComboBox.class).setValue(value);
         });
     }
 

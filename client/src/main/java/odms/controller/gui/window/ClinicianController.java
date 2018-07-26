@@ -13,12 +13,19 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Region;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import odms.controller.AppController;
+import odms.controller.gui.StatusBarController;
+import odms.controller.gui.UnsavedChangesAlert;
+import odms.controller.gui.panel.TransplantWaitListController;
+import odms.controller.gui.popup.DeletedUserController;
 import odms.commons.model.Clinician;
 import odms.commons.model.User;
 import odms.commons.model._abstract.TransplantWaitListViewer;
@@ -26,21 +33,20 @@ import odms.commons.model._enum.EventTypes;
 import odms.commons.model._enum.Organs;
 import odms.commons.model.dto.UserOverview;
 import odms.commons.utils.Log;
-import odms.controller.AppController;
-import odms.controller.gui.UnsavedChangesAlert;
-import odms.controller.gui.panel.TransplantWaitListController;
-import odms.controller.gui.popup.DeletedUserController;
 import odms.controller.gui.popup.utils.AlertWindowFactory;
-import odms.controller.gui.statusBarController;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static odms.commons.utils.PhotoHelper.deleteTempDirectory;
+import static odms.commons.utils.PhotoHelper.displayImage;
 
 /**
  * Class for the functionality of the Clinician view of the application
@@ -103,13 +109,14 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
     @FXML
     private Button redoButton;
     @FXML
-    private Button logoutButton;
+    private MenuItem deleteClinician;
+    @FXML
+    private MenuItem logoutMenuClinician;
 
     @FXML
-    private Button deleteClinicianButton;
-
+    private ImageView profileImage;
     @FXML
-    private statusBarController statusBarPageController;
+    private StatusBarController statusBarPageController;
 
     //</editor-fold>
 
@@ -169,19 +176,21 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
         statusBarPageController.init(appController);
 
         if (clinician.getStaffId().equals("0")) {
-            deleteClinicianButton.setDisable(true);
+            deleteClinician.setDisable(true);
         }
 
         setDefaultFilters();
         openStages = new ArrayList<>();
 
         if (fromAdmin) {
-            logoutButton.setVisible(false);
-            backButton.setVisible(true);
+            logoutMenuClinician.setText("Go Back");
+            logoutMenuClinician.setOnAction(e -> goBack());
         } else {
-            logoutButton.setVisible(true);
-            backButton.setVisible(false);
+            logoutMenuClinician.setText("Log Out");
+            logoutMenuClinician.setOnAction(e -> logout());
         }
+
+        displayImage(profileImage, clinician.getProfilePhotoFilePath());
 
     }
 
@@ -225,6 +234,11 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
         if (!clinician.getChanges().isEmpty()) {
             statusBarPageController.updateStatus(clinician.getStaffId() + " " + clinician.getChanges().get(clinician.getChanges().size() - 1).getChange());
 
+        }
+        if (clinician.getProfilePhotoFilePath() != null) {
+            File inFile = new File(clinician.getProfilePhotoFilePath());
+            Image image = new Image("file:" + inFile.getPath(), 200, 200, false, true);
+            profileImage.setImage(image);
         }
     }
 
@@ -448,7 +462,12 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
     @FXML
     void save() {
         appController.updateClinicians(clinician);
-        appController.saveClinician(clinician);
+        try {
+            appController.saveClinician(clinician);
+        } catch (IOException e) {
+            AlertWindowFactory.generateError(e);
+            return;
+        }
         clinician.getUndoStack().clear();
         clinician.getRedoStack().clear();
         undoButton.setDisable(true);
@@ -457,6 +476,7 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
 
     /**
      * Returns the user to the login screen
+     * When fired, it also deleted the temp folder.
      */
     @FXML
     void logout() {
@@ -471,6 +491,11 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
             stage.close();
             LoginController loginController = loader.getController();
             loginController.init(AppController.getInstance(), newStage);
+            try {
+                deleteTempDirectory();
+            } catch (IOException e){
+                System.err.println(e);
+            }
             Log.info("Clinician " + clinician.getStaffId() + " successfully launched login window after logout");
         } catch (IOException e) {
             Log.severe("Clinician " + clinician.getStaffId() + " failed to launch login window after logout", e);
@@ -486,7 +511,12 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
             Optional<ButtonType> result = UnsavedChangesAlert.getAlertResult();
             if (result.isPresent() && result.get() == ButtonType.YES) {
                 appController.updateClinicians(clinician);
-                appController.saveClinician(clinician);
+                try {
+                    appController.saveClinician(clinician);
+                } catch (IOException e) {
+                    AlertWindowFactory.generateError(e);
+                    return;
+                }
             } else {
                 Clinician revertClinician = clinician.getUndoStack().firstElement().getState();
                 appController.updateClinicians(revertClinician);
@@ -581,10 +611,6 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
                 stage.close();
             }
         }
-    }
-
-    public void disableLogout() {
-        logoutButton.setVisible(false);
     }
 
     @Override

@@ -1,6 +1,5 @@
-package odms.model;
+package odms.commons.model;
 
-import odms.commons.model.Administrator;
 import org.junit.Before;
 import org.junit.Test;
 

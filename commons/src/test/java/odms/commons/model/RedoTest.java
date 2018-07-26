@@ -1,7 +1,5 @@
-package odms.model;
+package odms.commons.model;
 
-import odms.commons.model.Memento;
-import odms.commons.model.User;
 import odms.commons.model._enum.BloodTypes;
 import odms.commons.model._enum.Organs;
 import org.junit.Assert;

@@ -23,7 +23,7 @@ Feature: As an clinician, I want to create (add) new disease to User's profile.
     Then I should see error message for disease name "Invalid Disease Name"
 
   Scenario: I create new disease when diagnosis date is before date of birth
-    When I entered Disease Name "Lazyness Disease" and Diagnosis Date "3/1/1800"
+    When I entered Disease Name "Lazyness Disease" and Diagnosis Date "3/1/1000"
     And clicked on Create Button
     Then I should see error message for diagnosis date "Invalid Diagnosis Date"
 

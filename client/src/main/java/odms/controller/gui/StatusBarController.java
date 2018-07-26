@@ -7,7 +7,7 @@ import javafx.util.Duration;
 import odms.controller.AppController;
 import odms.controller.gui.window.UserController;
 
-public class statusBarController {
+public class StatusBarController {
 
 
     @FXML

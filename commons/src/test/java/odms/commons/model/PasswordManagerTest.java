@@ -1,4 +1,4 @@
-package odms.utils;
+package odms.commons.model;
 
 import odms.commons.utils.PasswordManager;
 import org.junit.Assert;

@@ -16,7 +16,7 @@ import odms.commons.model.dto.UserOverview;
 import odms.commons.utils.DataHandler;
 import odms.commons.utils.JsonHandler;
 import odms.commons.utils.Log;
-import odms.controller.gui.statusBarController;
+import odms.controller.gui.StatusBarController;
 import odms.controller.gui.window.AdministratorViewController;
 import odms.controller.gui.window.ClinicianController;
 import odms.controller.gui.window.UserController;
@@ -60,14 +60,15 @@ public class AppController {
     private ClinicianController clinicianController = new ClinicianController();
     private CountriesBridge countriesBridge = new CountriesBridge(client);
     private AdministratorViewController administratorViewController = new AdministratorViewController();
-    private odms.controller.gui.statusBarController statusBarController = new statusBarController();
+    private StatusBarController statusBarController = new StatusBarController();
     private Stack<User> redoStack = new Stack<>();
     private String token;
+    private SQLBridge sqlBridge = new SQLBridge(client);
+
     /**
      * Creates new instance of AppController
      */
     private AppController() {
-
 
         String[] empty = {""};
         historyOfCommands.add(empty);//putting an empty string into the string array to be displayed if history pointer is 0
@@ -147,7 +148,7 @@ public class AppController {
      * @return unmodifiable collection of all country names
      */
     public List<String> getAllCountries() {
-        return Collections.unmodifiableList(allCountries);
+        return allCountries;
     }
 
     public List<String> getAllowedCountries() {
@@ -349,11 +350,13 @@ public class AppController {
                     userBridge.putDiseases(user.getPastDiseases(), originalUser.getNhi(), token);
                     userBridge.putDiseases(user.getCurrentDiseases(), originalUser.getNhi(), token);
                 }
-                userBridge.postDonatingOrgans(user.getDonorDetails().getOrgans(), originalUser.getNhi());
+                userBridge.putProfilePicture(originalUser.getNhi(), user.getProfilePhotoFilePath());
+                userBridge.putDonatingOrgans(user.getDonorDetails().getOrgans(), originalUser.getNhi());
                 userBridge.putUser(user, originalUser.getNhi());
 
             } else {
                 userBridge.postUser(user);
+                userBridge.putProfilePicture(originalUser.getNhi(), user.getProfilePhotoFilePath());
             }
         } catch (IOException e) {
             Log.warning("Could not save user " + user.getNhi(), e);
@@ -391,15 +394,15 @@ public class AppController {
     /**
      * @return
      */
-    public odms.controller.gui.statusBarController getStatusBarController() {
+    public StatusBarController getStatusBarController() {
         return statusBarController;
     }
 
     /**
-     * @param statusBarController
+     * @param StatusBarController
      */
-    public void setStatusBarController(odms.controller.gui.statusBarController statusBarController) {
-        this.statusBarController = statusBarController;
+    public void setStatusBarController(StatusBarController StatusBarController) {
+        this.statusBarController = StatusBarController;
     }
 
 
@@ -455,7 +458,7 @@ public class AppController {
      *
      * @param clinician Clinician to be saved
      */
-    public void saveClinician(Clinician clinician) {
+    public void saveClinician(Clinician clinician) throws IOException {
             Clinician originalClinician;
             if (!clinician.getUndoStack().isEmpty()) {
                 originalClinician = clinician.getUndoStack().firstElement().getState();
@@ -465,6 +468,9 @@ public class AppController {
 
             if (clinicianBridge.getExists(originalClinician.getStaffId())) {
                 clinicianBridge.putClinician(clinician, originalClinician.getStaffId(), token);
+                if(!originalClinician.getProfilePhotoFilePath().equals(clinician.getProfilePhotoFilePath())) {
+                    clinicianBridge.putProfilePicture(originalClinician.getStaffId(),getToken(),clinician.getProfilePhotoFilePath());
+                }
             } else {
                 clinicianBridge.postClinician(clinician, token);
             }
@@ -691,5 +697,9 @@ public class AppController {
 
     public CountriesBridge getCountriesBridge() {
         return countriesBridge;
+    }
+
+    public SQLBridge getSqlBridge() {
+        return sqlBridge;
     }
 }

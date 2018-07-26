@@ -1,10 +1,13 @@
 package odms.commands;
 
 
+import odms.commons.utils.Log;
 import odms.controller.AppController;
 import odms.commons.model.Clinician;
 import odms.commons.utils.AttributeValidation;
 import picocli.CommandLine;
+
+import java.io.IOException;
 
 @CommandLine.Command(name = "clinician", description = "Allows the creation of a clinician. ot update use update clinician")
 public class CreateClinician implements Runnable {
@@ -43,7 +46,11 @@ public class CreateClinician implements Runnable {
             Clinician clinician = new Clinician(id, password, firstName, "", "");
             clinician.setRegion(region);
             controller.updateClinicians(clinician);
-            controller.saveClinician(clinician);
+            try {
+                controller.saveClinician(clinician);
+            } catch (IOException e) {
+                Log.warning("File is wrong", e);
+            }
             System.out.println(clinician.toString());
             System.out.println("Created new clinician with id " + id);
         } else {

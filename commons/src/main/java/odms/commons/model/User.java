@@ -2,6 +2,7 @@ package odms.commons.model;
 
 import com.google.gson.annotations.Expose;
 import javafx.collections.FXCollections;
+import javafx.scene.image.Image;
 import odms.commons.model._abstract.IgnoreForUndo;
 import odms.commons.model._abstract.Listenable;
 import odms.commons.model._abstract.Undoable;
@@ -77,6 +78,7 @@ public class User extends Undoable<User> implements Listenable {
     @Expose
     private List<Disease> currentDiseases;
 
+    private String profilePhotoFilePath;
     private transient List<Change> changes;
     private transient PropertyChangeSupport pcs;
     //</editor-fold>
@@ -120,6 +122,7 @@ public class User extends Undoable<User> implements Listenable {
         this.pcs = new PropertyChangeSupport(this);
         this.healthDetails = new HealthDetails();
         contact.setAttachedUser(this);
+        this.profilePhotoFilePath = "";
     }
 
 
@@ -143,6 +146,7 @@ public class User extends Undoable<User> implements Listenable {
         changes = FXCollections.observableArrayList();
         this.pcs = new PropertyChangeSupport(this);
         this.healthDetails = new HealthDetails();
+        this.profilePhotoFilePath = "";
     }
 
     public static User clone(User user) {
@@ -250,11 +254,23 @@ public class User extends Undoable<User> implements Listenable {
             newUser.medicalProcedures.add(newMed);
         }
 
+        newUser.profilePhotoFilePath = user.profilePhotoFilePath;
+
         newUser.changes = new ArrayList<>(user.changes);
         newUser.setUndoStack((Stack<Memento<User>>) user.getUndoStack().clone());
         newUser.setRedoStack((Stack<Memento<User>>) user.getRedoStack().clone());
         return newUser;
     }
+
+    public String getProfilePhotoFilePath() {
+        return profilePhotoFilePath;
+    }
+
+    public void setProfilePhotoFilePath(String profilePhotoFilePath) {
+        updateLastModified();
+        this.profilePhotoFilePath = profilePhotoFilePath;
+    }
+
 
     public ContactDetails getContactDetails() {
         return contactDetails;
@@ -1182,6 +1198,8 @@ public class User extends Undoable<User> implements Listenable {
         this.currentDiseases = other.currentDiseases;
         this.pastDiseases = other.pastDiseases;
         this.medicalProcedures = other.medicalProcedures;
+
+        this.profilePhotoFilePath = other.profilePhotoFilePath;
 
         this.changes = other.changes;
     }

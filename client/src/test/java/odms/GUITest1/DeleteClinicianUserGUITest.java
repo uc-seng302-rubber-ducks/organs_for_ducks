@@ -4,10 +4,10 @@ package odms.GUITest1;
 import odms.App;
 import odms.TestUtils.CommonTestMethods;
 import odms.TestUtils.TableViewsMethod;
-import odms.commons.model.Clinician;
 import odms.commons.model.User;
-import odms.commons.model.dto.UserOverview;
 import odms.controller.AppController;
+import odms.commons.model.Clinician;
+import odms.commons.model.dto.UserOverview;
 import odms.utils.*;
 import org.junit.After;
 import org.junit.Before;
@@ -94,6 +94,7 @@ public class DeleteClinicianUserGUITest extends ApplicationTest {
 
     @Test
     public void deleteUser() {
+        clickOn("#editMenuUser");
         clickOn("#deleteUser");
         clickOn("OK");
         verifyThat("#fNameLabel", LabeledMatchers.hasText("Default"));
@@ -102,9 +103,9 @@ public class DeleteClinicianUserGUITest extends ApplicationTest {
 
     @Test
     public void canceledDeleteUser() {
+        clickOn("#editMenuUser");
         clickOn("#deleteUser");
         clickOn("Cancel");
-        clickOn("#backButton");
         verifyThat("#fNameLabel", LabeledMatchers.hasText("Default"));
 
     }
