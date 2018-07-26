@@ -35,6 +35,6 @@ Feature: As an user, I want to login to the system, either as a User or Clinicia
     When I clicked on Login As Clinician Button
     And I entered Staff ID "0" and Password "garbledo"
     And clicked on clinician Login button
-    Then I should see error message "An error occurred. Please try again later. response code 401"
+    Then I should see error message "An error occurred. Please try again later."
 
 

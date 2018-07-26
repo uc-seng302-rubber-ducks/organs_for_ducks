@@ -2,6 +2,7 @@ package odms.utils;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import javafx.scene.image.Image;
 import odms.commons.model.Disease;
 import odms.commons.model.MedicalProcedure;
 import odms.commons.model.User;
@@ -10,12 +11,17 @@ import odms.commons.model.datamodel.Medication;
 import odms.commons.model.datamodel.ReceiverOrganDetailsHolder;
 import odms.commons.model.dto.UserOverview;
 import odms.commons.utils.Log;
+import odms.commons.utils.PhotoHelper;
+import odms.controller.AppController;
 import okhttp3.*;
 
 import java.io.IOException;
 import java.util.*;
 
 public class UserBridge extends RoleBridge {
+
+    private static final String USERS = "/users/";
+
     public UserBridge(OkHttpClient client) {
         super(client);
     }
@@ -35,14 +41,13 @@ public class UserBridge extends RoleBridge {
     }
 
     public void postUser(User user) {
-        String url = ip + "/users";
+        String url = ip + USERS;
         RequestBody requestBody = RequestBody.create(JSON, new Gson().toJson(user));
         Request request = new Request.Builder().post(requestBody).url(url).build();
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
                 Log.warning("Could not make the call to POST /users");
-                e.printStackTrace();
             }
 
             @Override
@@ -56,12 +61,13 @@ public class UserBridge extends RoleBridge {
 
     public User getUser(String nhi) throws IOException {
         User toReturn;
-        String url = ip + "/users/" + nhi;
+        String url = ip + USERS + nhi;
         Request request = new Request.Builder().url(url).build();
         try {
             try (Response response = client.newCall(request).execute()) {
                 if (response.isSuccessful()) {
                     toReturn = handler.decodeUser(response);
+                    toReturn.setProfilePhotoFilePath(getProfilePicture(nhi));
                 } else {
                     toReturn = null;
                 }
@@ -74,7 +80,7 @@ public class UserBridge extends RoleBridge {
     }
 
     public void putUser(User user, String nhi) {
-        String url = ip + "/users/" + nhi;
+        String url = ip + USERS + nhi;
         RequestBody body = RequestBody.create(JSON, new Gson().toJson(user));
         Request request = new Request.Builder().url(url).put(body).build();
         client.newCall(request).enqueue(new Callback() {
@@ -85,7 +91,6 @@ public class UserBridge extends RoleBridge {
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                response.close();
                 if (!response.isSuccessful()) {
                     throw new IOException("Failed to PUT to " + url);
                 }
@@ -94,7 +99,7 @@ public class UserBridge extends RoleBridge {
     }
 
     public void deleteUser(User user) {
-        String url = ip + "/users/" + user.getNhi();
+        String url = ip + USERS + user.getNhi();
         Request request = new Request.Builder().url(url).delete().build();
         client.newCall(request).enqueue(new Callback() {
             @Override
@@ -112,7 +117,7 @@ public class UserBridge extends RoleBridge {
     }
 
     public void postUserProcedures(MedicalProcedure procedure, String nhi, String token) {
-        String url = ip + "/users/" + nhi + "/procedures";
+        String url = ip + USERS + nhi + "/procedures";
         RequestBody body = RequestBody.create(JSON, new Gson().toJson(procedure));
         Request request = new Request.Builder().url(url).addHeader(TOKEN_HEADER, token).post(body).build();
         client.newCall(request).enqueue(new Callback() {
@@ -131,7 +136,7 @@ public class UserBridge extends RoleBridge {
     }
 
     public void putUserProcedures(List<MedicalProcedure> procedures, String nhi, String token) {
-        String url = ip + "/users/" + nhi + "/procedures";
+        String url = ip + USERS + nhi + "/procedures";
         RequestBody body = RequestBody.create(JSON, new Gson().toJson(procedures));
         Request request = new Request.Builder().url(url).addHeader(TOKEN_HEADER, token).put(body).build();
         client.newCall(request).enqueue(new Callback() {
@@ -150,7 +155,7 @@ public class UserBridge extends RoleBridge {
     }
 
     public void postMedications(Medication medication, String nhi, String token) {
-        String url = ip + "/users/" + nhi + "/medications";
+        String url = ip + USERS + nhi + "/medications";
         RequestBody body = RequestBody.create(JSON, new Gson().toJson(medication));
         Request request = new Request.Builder().url(url).addHeader(TOKEN_HEADER, token).post(body).build();
         client.newCall(request).enqueue(new Callback() {
@@ -169,7 +174,7 @@ public class UserBridge extends RoleBridge {
     }
 
     public void putMedications(List<Medication> medications, String nhi, String token) {
-        String url = ip + "/users/" + nhi + "/medications";
+        String url = ip + USERS + nhi + "/medications";
         RequestBody body = RequestBody.create(JSON, new Gson().toJson(medications));
         Request request = new Request.Builder().url(url).addHeader(TOKEN_HEADER, token).put(body).build();
         client.newCall(request).enqueue(new Callback() {
@@ -188,7 +193,7 @@ public class UserBridge extends RoleBridge {
     }
 
     public void postDiseases(Disease disease, String nhi, String token) {
-        String url = ip + "/users/" + nhi + "/diseases";
+        String url = ip + USERS + nhi + "/diseases";
         RequestBody body = RequestBody.create(JSON, new Gson().toJson(disease));
         Request request = new Request.Builder().url(url).addHeader(TOKEN_HEADER, token).post(body).build();
         client.newCall(request).enqueue(new Callback() {
@@ -207,7 +212,7 @@ public class UserBridge extends RoleBridge {
     }
 
     public void putDiseases(List<Disease> diseases, String nhi, String token) {
-        String url = ip + "/users/" + nhi + "/diseases";
+        String url = ip + USERS + nhi + "/diseases";
         RequestBody body = RequestBody.create(JSON, new Gson().toJson(diseases));
         Request request = new Request.Builder().url(url).addHeader(TOKEN_HEADER, token).put(body).build();
         client.newCall(request).enqueue(new Callback() {
@@ -226,7 +231,7 @@ public class UserBridge extends RoleBridge {
     }
 
     public void postReceivingOrgans(Map<Organs, ArrayList<ReceiverOrganDetailsHolder>> receiving, String nhi, String token) {
-        String url = ip + "/users/" + nhi + "/receiving";
+        String url = ip + USERS + nhi + "/receiving";
         RequestBody body = RequestBody.create(JSON, new Gson().toJson(receiving));
         Request request = new Request.Builder().url(url).addHeader(TOKEN_HEADER, token).post(body).build();
         client.newCall(request).enqueue(new Callback() {
@@ -245,7 +250,7 @@ public class UserBridge extends RoleBridge {
     }
 
     public void putReceivingOrgans(Map<Organs, ArrayList<ReceiverOrganDetailsHolder>> receiving, String nhi, String token) {
-        String url = ip + "/users/" + nhi + "/receiving";
+        String url = ip + USERS + nhi + "/receiving";
         RequestBody body = RequestBody.create(JSON, new Gson().toJson(receiving));
         Request request = new Request.Builder().url(url).addHeader(TOKEN_HEADER, token).put(body).build();
         client.newCall(request).enqueue(new Callback() {
@@ -264,7 +269,7 @@ public class UserBridge extends RoleBridge {
     }
 
     public void postDonatingOrgans(Set<Organs> donating, String nhi) {
-        String url = ip + "/users/" + nhi + "/donating";
+        String url = ip + USERS + nhi + "/donating";
         RequestBody body = RequestBody.create(JSON, new Gson().toJson(donating));
         Request request = new Request.Builder().url(url).post(body).build();
         client.newCall(request).enqueue(new Callback() {
@@ -282,8 +287,8 @@ public class UserBridge extends RoleBridge {
         });
     }
 
-    public void putDonatingOrgans(List<Organs> donating, String nhi) {
-        String url = ip + "/users/" + nhi + "/donating";
+    public void putDonatingOrgans(Set<Organs> donating, String nhi) {
+        String url = ip + USERS + nhi + "/donating";
         RequestBody body = RequestBody.create(JSON, new Gson().toJson(donating));
         Request request = new Request.Builder().url(url).put(body).build();
         client.newCall(request).enqueue(new Callback() {
@@ -301,6 +306,44 @@ public class UserBridge extends RoleBridge {
         });
     }
 
+    private String getProfilePicture(String nhi) throws IOException {
+        String url = ip + USERS + nhi + "/photo";
+        Request request = new Request.Builder().get().url(url).build();
+        try(Response response  = client.newCall(request).execute()) {
+            if (response.isSuccessful()) {
+                String contentType = response.header("Content-Type");
+                String[] bits = contentType.split("/");
+                String format = bits[bits.length-1];
+                return handler.decodeProfilePicture(response.body(), nhi, format);
+            } else if(response.code() == 404){
+                return null;
+            } else {
+                throw new IOException("Failed to get profile picture");
+            }
+        }
+    }
+
+    public void putProfilePicture(String nhi, String profilePicturePath) throws IOException {
+        String url = ip + USERS + nhi + "/photo";
+        String[] bits = profilePicturePath.split("\\.");
+        String format = bits[bits.length-1];
+        RequestBody body = RequestBody.create(MediaType.parse("image/"+format), PhotoHelper.getBytesFromImage(profilePicturePath));
+        Request request = new Request.Builder().url(url).put(body).build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.warning("Could not PUT " + url, e);
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if(!response.isSuccessful()) {
+                    Log.warning("Failed to PUT " + url);
+                    throw new IOException("Could not PUT " + url);
+                }
+            }
+        });
+    }
     /**
      * checks whether a user can be found in the database
      * @param nhi nhi of the user to search for

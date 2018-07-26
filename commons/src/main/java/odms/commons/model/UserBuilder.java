@@ -59,6 +59,11 @@ public class UserBuilder {
         return this;
     }
 
+    public UserBuilder setProfilePhotoFilePath(String profilePhotoFilePath) {
+        secret.setProfilePhotoFilePath(profilePhotoFilePath);
+        return this;
+    }
+
     public UserBuilder setContact(EmergencyContact contact) {
         secret.setContact(contact);
         return this;

@@ -29,6 +29,10 @@ import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
+import static odms.TestUtils.FxRobotHelper.clickOnButton;
+import static odms.TestUtils.FxRobotHelper.setTextField;
+
+
 public class WhenSteps extends ApplicationTest {
 
     @When("^I view the previously created user")
@@ -70,6 +74,7 @@ public class WhenSteps extends ApplicationTest {
         setTextField(this, "#fNameInput", fName);
         clickOn("#dobInput");
         write(dob);
+        clickOn("#nhiInput");
         CucumberTestModel.setUserNhi(nhi);
         CucumberTestModel.setUser(new UserBuilder().setNhi(nhi).setFirstName(fName).setDateOfBirth(LocalDate.parse(dob, DateTimeFormatter.ofPattern("D/M/yyyy"))).build());
     }
@@ -89,6 +94,7 @@ public class WhenSteps extends ApplicationTest {
         write(dob);
         clickOn("#dodInput");
         write(dod);
+        clickOn("#nhiInput");
         CucumberTestModel.setUserNhi(nhi);
     }
 
@@ -154,14 +160,16 @@ public class WhenSteps extends ApplicationTest {
             push(KeyCode.BACK_SPACE);
         }
         write(diagnosisDate);
+        clickOn("#diseaseNameInput");
     }
 
     @When("^The user is updated to have died on \"([^\"]*)\"$")
     public void theUserIsUpdatedToHaveDiedOn(String dod) {
-        clickOn("#editDetailsButton");
+        clickOn("#editMenuUser");
+        clickOn("#editDetailsUser");
         clickOn("#dodInput");
         write(dod);
-        clickOn("#confirmButton");
+        clickOnButton(this, "#confirmButton");
     }
 
     @And("^I open the user page$")
@@ -175,8 +183,7 @@ public class WhenSteps extends ApplicationTest {
             String bGender, String height, String weight, String bloodType, String alcCons) {
         clickOn("#birthGenderComboBox");
         clickOn(bGender);
-        clickOn("#heightInput");
-        write(height);
+        setTextField(this, "#heightInput", height);
         clickOn("#weightInput");
         write(weight);
         clickOn("#bloodComboBox");
@@ -188,7 +195,8 @@ public class WhenSteps extends ApplicationTest {
     @When("^I go back to the clinician screen$")
     public void iGoBackToTheClinicianScreen() {
         clickOn("#userProfileTab");
-        clickOn("#backButton");
+        clickOn("#fileMenuUser");
+        clickOn("#logoutUser");
     }
 
     @And("^I open the waiting list tab$")

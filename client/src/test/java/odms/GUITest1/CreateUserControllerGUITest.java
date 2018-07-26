@@ -187,14 +187,14 @@ public class CreateUserControllerGUITest extends ApplicationTest {
     public void testValidAddress() {
             setTextField(this, "#nhiInput", "ADE1987");
             setTextField(this, "#fNameInput", "Dwayne");
-        setDateValue(this, "#dobInput", LocalDate.now().minusYears(1));
+            setDateValue(this, "#dobInput", LocalDate.now().minusYears(1));
             setTextField(this, "#streetNumber", "76B");
             setTextField(this, "#street", "Cambridge St");
             setTextField(this, "#neighborhood", "Kirkwood");
             setTextField(this, "#city", "Battlefield");
+            setComboBox(this, "#countrySelector", "New Zealand");
             setComboBox(this, "#regionSelector", "Otago");
             setTextField(this, "#zipCode", "8033");
-            setComboBox(this, "#countrySelector", "New Zealand");
             verifyThat("#regionSelector", Node::isVisible);
             clickOnButton(this, "#confirmButton");
             clickOn("#detailsTab");

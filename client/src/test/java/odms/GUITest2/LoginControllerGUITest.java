@@ -119,7 +119,7 @@ public class LoginControllerGUITest extends ApplicationTest {
         setTextField(this,"#staffIdTextField", "0");
         setTextField(this, "#staffPasswordField", "garbledo");
         clickOnButton(this,"#loginCButton");
-        verifyThat("#clinicianWarningLabel", LabeledMatchers.hasText("An error occurred. Please try again later. response code 401"));
+        verifyThat("#clinicianWarningLabel", LabeledMatchers.hasText("An error occurred. Please try again later."));
     }
 
     @Test

@@ -18,6 +18,9 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.util.concurrent.TimeoutException;
 
+import static javafx.scene.input.KeyCode.A;
+import static javafx.scene.input.KeyCode.BACK_SPACE;
+import static javafx.scene.input.KeyCode.SHORTCUT;
 import static odms.TestUtils.FxRobotHelper.clickOnButton;
 import static odms.TestUtils.FxRobotHelper.setTextField;
 import static org.mockito.ArgumentMatchers.any;
@@ -56,11 +59,18 @@ public class StatusBarGUITest extends ApplicationTest {
 
         FxToolkit.registerPrimaryStage();
         FxToolkit.setupApplication(App.class);
-        setTextField(this, "#userIDTextField", "ABC1234");
-        clickOnButton(this, "#loginUButton");
-        clickOnButton(this, "#editDetailsButton");
-        setTextField(this, "#fNameInput", "Kate");
-        clickOnButton(this, "#confirmButton");
+        AppController.getInstance().getUsers().clear();
+        AppController.getInstance().getUsers().add(new User("A", LocalDate.now().minusDays(1000), "ABC1234"));
+        UserController userController = AppController.getInstance().getUserController();
+        clickOn("#userIDTextField");
+        write("ABC1234");
+        clickOn("#loginUButton");
+        clickOn("#editMenuUser");
+        clickOn("#editDetailsUser");
+        clickOn("#fNameInput").push(SHORTCUT, A).push(BACK_SPACE);
+        clickOn("#fNameInput");
+        write("Kate");
+        clickOnButton(this,"#confirmButton");
     }
 
     @After
@@ -76,7 +86,7 @@ public class StatusBarGUITest extends ApplicationTest {
 
     @Test
     public void checkStatusBarClears() throws InterruptedException {
-        Thread.sleep(6000);
+        Thread.sleep(7000);
         verifyThat("#statusBar", LabeledMatchers.hasText(""));
     }
 

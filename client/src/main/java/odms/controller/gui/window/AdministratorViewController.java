@@ -21,6 +21,7 @@ import javafx.scene.text.Font;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import odms.commons.exception.ApiException;
 import odms.commons.exception.InvalidFileException;
 import odms.commons.model.Administrator;
 import odms.commons.model.Clinician;
@@ -35,12 +36,12 @@ import odms.commons.utils.JsonHandler;
 import odms.commons.utils.Log;
 import odms.controller.AppController;
 import odms.controller.gui.FileSelectorController;
+import odms.controller.gui.StatusBarController;
 import odms.controller.gui.UnsavedChangesAlert;
 import odms.controller.gui.panel.TransplantWaitListController;
 import odms.controller.gui.popup.AlertUnclosedWindowsController;
 import odms.controller.gui.popup.CountrySelectionController;
 import odms.controller.gui.popup.DeletedUserController;
-import odms.controller.gui.statusBarController;
 import odms.utils.AdministratorBridge;
 import odms.utils.ClinicianBridge;
 import odms.utils.UserBridge;
@@ -130,7 +131,7 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
     @FXML
     private TransplantWaitListController transplantWaitListTabPageController;
     @FXML
-    private statusBarController statusBarPageController;
+    private StatusBarController statusBarPageController;
     private Stage stage;
     private AppController appController;
     private Administrator administrator;
@@ -266,7 +267,13 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
 
         clinicianTableView.setOnMouseClicked(event -> {
             if (event.getClickCount() == 2 && event.getButton() == MouseButton.PRIMARY) {
-                launchClinician(clinicianTableView.getSelectionModel().getSelectedItem());
+                try {
+                    launchClinician(appController.getClinicianBridge().getClinician(
+                            clinicianTableView.getSelectionModel().getSelectedItem().getStaffId(),
+                                    appController.getToken()));
+                } catch (ApiException e) {
+                    Log.severe("Clinician Could not be fetched", e);
+                }
             }
         });
 
@@ -469,7 +476,8 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
         Log.info("Importing Admins");
         List<String> extensions = new ArrayList<>();
         extensions.add("*.json");
-        String filename = FileSelectorController.getFileSelector(stage, extensions);
+        FileSelectorController fileSelectorController = new FileSelectorController();
+        String filename = fileSelectorController.getFileSelector(stage, extensions);
         if (filename == null) {
             Log.warning("File name not found");
             fileNotFoundLabel.setVisible(true);
@@ -487,7 +495,8 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
     void importClinicians() {
         List<String> extensions = new ArrayList<>();
         extensions.add("*.json");
-        String filename = FileSelectorController.getFileSelector(stage, extensions);
+        FileSelectorController fileSelectorController = new FileSelectorController();
+        String filename = fileSelectorController.getFileSelector(stage, extensions);
         if (filename == null) {
             Log.warning("File name not found");
             fileNotFoundLabel.setVisible(true);
@@ -505,7 +514,8 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
         List<String> extensions = new ArrayList<>();
         extensions.add("*.json");
         extensions.add("*.csv");
-        String filename = FileSelectorController.getFileSelector(stage, extensions);
+        FileSelectorController fileSelectorController = new FileSelectorController();
+        String filename = fileSelectorController.getFileSelector(stage, extensions);
         if (filename == null) {
             Log.warning("File name not found");
             fileNotFoundLabel.setVisible(true);
@@ -550,6 +560,7 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
             launchAlertUnclosedWindowsGUI();
             return;
         }
+
         try {
             if (role.isAssignableFrom(Administrator.class)) {
                 //<editor-fold desc="admin handler">
