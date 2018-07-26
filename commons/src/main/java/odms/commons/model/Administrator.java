@@ -36,8 +36,6 @@ public class Administrator extends Undoable<Administrator> implements Listenable
     private transient List<Change> changes;
     private transient PropertyChangeSupport pcs;
 
-    private boolean updatePasswordFlag = false;
-
 
     /**
      * Constructor to create a default Administrator
@@ -229,14 +227,6 @@ public class Administrator extends Undoable<Administrator> implements Listenable
 
     public void setPcs(PropertyChangeSupport pcs) {
         this.pcs = pcs;
-    }
-
-    public void setUpdatePasswordFlag(boolean flag) {
-        updatePasswordFlag = flag;
-    }
-
-    public boolean getUpdatePasswordFlag() {
-        return updatePasswordFlag;
     }
 
     @Override
