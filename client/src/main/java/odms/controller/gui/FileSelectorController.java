@@ -13,7 +13,7 @@ import java.util.List;
  * https://docs.oracle.com/javafx/2/ui_controls/file-chooser.htm
  */
 
-public final class FileSelectorController {
+public class FileSelectorController {
 
     /**
      * Opens a file selector
@@ -21,10 +21,10 @@ public final class FileSelectorController {
      * @param stage stage to open file selector on
      * @return the file path of the file
      */
-    public static String getFileSelector(final Stage stage, Collection<String> extensions) {
+    public String getFileSelector(final Stage stage, Collection<String> extensions) {
         stage.setTitle("File Selector");
 
-        final FileChooser fileChooser = new FileChooser();
+        FileChooser fileChooser = new FileChooser();
         configureFileChooser(fileChooser, extensions);
         File file = fileChooser.showOpenDialog(stage);
         if (file != null) {
@@ -40,7 +40,7 @@ public final class FileSelectorController {
      *
      * @param fileChooser fileChooser to configure
      */
-    private static void configureFileChooser(final FileChooser fileChooser, Collection<String> allowedExtensions) {
+    private void configureFileChooser(final FileChooser fileChooser, Collection<String> allowedExtensions) {
         fileChooser.setTitle("File Selector");
         fileChooser.setInitialDirectory(
                 new File(System.getProperty("user.home"))

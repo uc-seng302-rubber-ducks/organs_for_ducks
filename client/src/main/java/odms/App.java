@@ -28,7 +28,7 @@ public class App extends Application {
     private static long bootTime = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC);
 
     public static void main(String[] args) {
-        launch(args);
+            launch(args);
     }
 
     @Override

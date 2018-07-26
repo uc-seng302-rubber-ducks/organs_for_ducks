@@ -1,9 +1,14 @@
 package odms.GUITest1;
 
 import odms.App;
+import odms.TestUtils.CommonTestMethods;
+import odms.commons.model.Clinician;
 import odms.commons.model.dto.UserOverview;
 import odms.controller.AppController;
 import odms.commons.model.User;
+import odms.controller.AppController;
+import odms.utils.ClinicianBridge;
+import odms.utils.LoginBridge;
 import odms.utils.UserBridge;
 import org.junit.After;
 import org.junit.Before;
@@ -12,7 +17,6 @@ import org.junit.Test;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.matcher.control.LabeledMatchers;
-import odms.TestUtils.CommonTestMethods;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -61,7 +65,8 @@ public class DeleteUserGUITest extends ApplicationTest {
     }
 
     @Test
-    public void deletedUser() { //this test is unstable
+    public void deletedUser() {
+        clickOn("#editMenuUser");
         clickOn("#deleteUser");
         clickOn("OK");
         setTextField(this,"#userIDTextField", "ABC1234");
@@ -72,6 +77,7 @@ public class DeleteUserGUITest extends ApplicationTest {
 
     @Test
     public void canceledDeletedUser() {
+        clickOn("#editMenuUser");
         clickOn("#deleteUser");
         clickOn("Cancel");
         verifyThat("#NHIValue", LabeledMatchers.hasText("ABC1234"));

@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Collection;
@@ -73,8 +74,8 @@ public class UserController extends BaseController {
     @RequestMapping(method = RequestMethod.GET, value = "/users/{nhi}")
     public User getUser(@PathVariable("nhi") String nhi) {
         try (Connection connection = driver.getConnection()) {
-            User result =  handler.getOneUser(connection, nhi);
-            if(result != null) {
+            User result = handler.getOneUser(connection, nhi);
+            if (result != null) {
                 return result;
             }
             Log.warning("user not found with nhi " + nhi);
@@ -95,7 +96,7 @@ public class UserController extends BaseController {
             Log.severe("cannot put user " + nhi, ex);
             throw new ServerDBException(ex);
         }
-        return  new ResponseEntity(HttpStatus.OK);
+        return new ResponseEntity(HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.DELETE, value = "/users/{nhi}")

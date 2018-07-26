@@ -7,6 +7,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
@@ -19,11 +20,19 @@ import odms.commons.model.datamodel.Address;
 import odms.commons.model.datamodel.ContactDetails;
 import odms.commons.utils.Log;
 import odms.controller.AppController;
+import odms.controller.gui.FileSelectorController;
+import odms.controller.gui.popup.utils.AlertWindowFactory;
 
+
+import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
+import static odms.commons.utils.PhotoHelper.displayImage;
+import static odms.commons.utils.PhotoHelper.setUpImageFile;
 import static odms.commons.utils.UndoHelpers.removeFormChanges;
 
 /**
@@ -97,6 +106,9 @@ public class UpdateClinicianController {
 
     @FXML
     private Button redoClinicianFormButton;
+
+    @FXML
+    private ImageView profileImage;
     //</editor-fold>
 
     private AppController controller;
@@ -106,6 +118,7 @@ public class UpdateClinicianController {
     private boolean newClinician;
     private int undoMarker;
     private Stage ownStage;
+    private File inFile;
     private String defaultCountry = "New Zealand";
 
     /**
@@ -252,7 +265,7 @@ public class UpdateClinicianController {
         } else {
             regionSelector.getSelectionModel().select(region); //region selector is visible by default if clinician's country is NZ.
         }
-
+        displayImage(profileImage, currentClinician.getProfilePhotoFilePath());
     }
 
     /**
@@ -272,6 +285,38 @@ public class UpdateClinicianController {
     private void changesListener(TextField field) {
         field.textProperty().addListener((observable, oldValue, newValue) -> update());
     }
+
+    /**
+     * uploads an image using file picker. includes validation.
+     */
+    @FXML
+    private void uploadImage() {
+        boolean isValid = true;
+        String filename;
+        List<String> extensions = new ArrayList<>();
+        extensions.add("*.png");
+        //extensions.add("*.jpg");
+        //extensions.add("*.gif");
+        FileSelectorController fileSelectorController =  new FileSelectorController();
+        filename = fileSelectorController.getFileSelector(stage, extensions);
+
+        if (filename != null) {
+            inFile = new File(filename);
+
+            if (inFile.length() > 2000000) { //if more than 2MB
+                Alert imageTooLargeAlert = new Alert(Alert.AlertType.WARNING, "Could not upload the image as the image size exceeded 2MB");
+                imageTooLargeAlert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
+                imageTooLargeAlert.showAndWait();
+                isValid = false;
+            }
+            if (isValid) {
+                update();
+                displayImage(profileImage, inFile.getPath());
+                currentClinician.setProfilePhotoFilePath(filename);
+            }
+        }
+    }
+
 
     /**
      * Updates the title bar depending on changes made to the user fields.
@@ -302,9 +347,15 @@ public class UpdateClinicianController {
      */
     private void updateUndos() {
         boolean changed;
-        changed = updateDetails(staffIDTextField.getText(), firstNameTextField.getText(),
-                lastNameTextField.getText(), middleNameTextField.getText());
+        String photoPath;
+        if (inFile != null) {
+            photoPath = inFile.getPath();
+        } else {
+            photoPath = currentClinician.getProfilePhotoFilePath();
+        }
 
+        changed = updateDetails(staffIDTextField.getText(), firstNameTextField.getText(),
+                lastNameTextField.getText(), middleNameTextField.getText(), photoPath);
         boolean addressChanged;
         addressChanged = updateAddress(streetNoTextField.getText(), streetNameTextField.getText(), neighbourhoodTextField.getText(),
                 cityTextField.getText(), getRegionInput(), zipCodeTextField.getText(), countrySelector.getSelectionModel().getSelectedItem());
@@ -328,7 +379,7 @@ public class UpdateClinicianController {
      * @param mName Middle name that may have been changed
      * @return true if any of the clinicians personal details has changed, false otherwise
      */
-    private boolean updateDetails(String staffId, String fName, String lName, String mName) {
+    private boolean updateDetails(String staffId, String fName, String lName, String mName, String photoPath) {
         boolean changed = false;
         if (!currentClinician.getStaffId().equals(staffId)) {
             currentClinician.setStaffId(staffId);
@@ -363,6 +414,11 @@ public class UpdateClinicianController {
                 currentClinician.setMiddleName(mName);
                 changed = true;
             }
+        }
+
+        if (!currentClinician.getProfilePhotoFilePath().equals(photoPath)) {
+            currentClinician.setProfilePhotoFilePath(photoPath);
+            changed = true;
         }
 
         return changed;
@@ -422,7 +478,7 @@ public class UpdateClinicianController {
             }
         }
 
-        if (!currentClinician.getZipCode().equals(zipcode)) {
+        if (currentClinician.getZipCode() == null || !currentClinician.getZipCode().equals(zipcode)) {
             currentClinician.setZipCode(zipcode);
             changed = true;
         }
@@ -456,7 +512,6 @@ public class UpdateClinicianController {
                     ClinicianController clinicianController = loader.getController();
                     Stage clinicianStage = new Stage();
                     clinicianController.init(clinicianStage, AppController.getInstance(), clinician, true, null);
-                    clinicianController.disableLogout();
                     clinicianStage.setScene(new Scene(root));
                     clinicianStage.show();
                     ownStage.close();
@@ -620,6 +675,17 @@ public class UpdateClinicianController {
 
             currentClinician.setDateLastModified(LocalDateTime.now()); // updates the modified date
             sumAllChanged();
+            if(inFile != null) {
+                try {
+                    String filePath = setUpImageFile(inFile, currentClinician.getStaffId());
+                    currentClinician.setProfilePhotoFilePath(filePath);
+
+                    //currentClinician.getUndoStack().pop();
+
+                } catch (IOException e) {
+                    System.err.println(e);
+                }
+            }
             currentClinician.getRedoStack().clear();
             controller.updateClinicians(currentClinician); // saves the clinician
             ownStage.close(); // returns to the clinician overview window
@@ -629,8 +695,22 @@ public class UpdateClinicianController {
             Clinician clinician = new Clinician(staffID, password, fName, mName, lName);
             Address workAddress = new Address(streetNumber, streetName, neighbourhood, city, region, zipCode, country);
             clinician.setWorkContactDetails(new ContactDetails("", "", workAddress, ""));
+            if(inFile != null) {
+                try {
+                    String filePath = setUpImageFile(inFile, currentClinician.getStaffId());
+                    currentClinician.setProfilePhotoFilePath(filePath);
+                    currentClinician.getUndoStack().pop();
+                } catch (IOException e) {
+                    System.err.println(e);
+                }
+            }
+
             controller.updateClinicians(clinician);
-            controller.saveClinician(clinician);
+            try {
+                controller.saveClinician(clinician);
+            } catch (IOException e) {
+                AlertWindowFactory.generateError(e);
+            }
             loadOverview(clinician);
 
         } else {
@@ -708,7 +788,7 @@ public class UpdateClinicianController {
             currentClinician.setRegion(region);
         }
 
-        if (!currentClinician.getZipCode().equals(zipCode)) {
+        if (currentClinician.getZipCode() == null || !currentClinician.getZipCode().equals(zipCode)) {
             currentClinician.setZipCode(zipCode);
         }
 

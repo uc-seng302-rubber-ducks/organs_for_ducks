@@ -6,7 +6,9 @@ import odms.TestUtils.TableViewsMethod;
 import odms.commons.model.Clinician;
 import odms.commons.model.EmergencyContact;
 import odms.commons.model.User;
+import odms.commons.model._enum.Environments;
 import odms.commons.model.dto.UserOverview;
+import odms.commons.utils.Log;
 import odms.controller.AppController;
 import odms.utils.ClinicianBridge;
 import odms.utils.LoginBridge;
@@ -50,6 +52,7 @@ public class ClinicianFilterGUITest extends ApplicationTest {
 
     @Before
     public void setUp() throws TimeoutException, IOException {
+        Log.setup(Environments.TEST);
 
         application = mock(AppController.class);
         bridge = mock(UserBridge.class);
@@ -59,6 +62,7 @@ public class ClinicianFilterGUITest extends ApplicationTest {
 
         Clinician clinician = new Clinician();
         clinician.setStaffId("0");
+        clinician.setProfilePhotoFilePath("");
         adam = new User("Adam", LocalDate.now(), "ABC1234");
         adam.setContact(new EmergencyContact("Letifa", "0118999124", "1456789"));
         adam.getUndoStack().clear();
