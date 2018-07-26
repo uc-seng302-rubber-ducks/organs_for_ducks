@@ -2,21 +2,20 @@ package odms.controller.gui.popup;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ListView;
-import javafx.scene.control.SkinBase;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.CheckBoxListCell;
 import javafx.stage.Stage;
-import javafx.util.Callback;
 import odms.commons.model.Administrator;
 import odms.controller.AppController;
-;import java.util.ArrayList;
+
+import java.util.ArrayList;
 import java.util.List;
+
+;
 
 public class CountrySelectionController {
 
@@ -50,7 +49,7 @@ public class CountrySelectionController {
      * initialise  Country Selection List. includes rendering checkboxes for each row.
      */
     private void initCountrySelectionList(){
-        countrySelection.setItems((ObservableList<String>) appController.getAllCountries());
+        countrySelection.setItems(FXCollections.observableList(appController.getAllCountries()));
         countrySelection.setCellFactory(CheckBoxListCell.forListView(country -> {
             BooleanProperty observable = new SimpleBooleanProperty();
             observable.addListener((obs, wasSelected, isNowSelected) ->

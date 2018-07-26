@@ -147,7 +147,7 @@ public class AppController {
      * @return unmodifiable collection of all country names
      */
     public List<String> getAllCountries() {
-        return Collections.unmodifiableList(allCountries);
+        return allCountries;
     }
 
     public List<String> getAllowedCountries() {
