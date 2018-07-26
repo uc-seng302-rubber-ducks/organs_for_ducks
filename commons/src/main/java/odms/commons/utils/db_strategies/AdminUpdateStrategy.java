@@ -20,9 +20,6 @@ public class AdminUpdateStrategy extends AbstractUpdateStrategy {
     public <T> void update(Collection<T> roles, Connection connection) throws SQLException {
         Collection<Administrator> admins = (Collection<Administrator>) roles;
         for (Administrator admin : admins) {
-//            if (admin.getChanges().isEmpty()) {
-//                continue;
-//            }
             try (PreparedStatement stmt = connection.prepareStatement("SELECT userName FROM Administrator WHERE userName = ?")) {
                 stmt.setString(1, admin.getUserName());
                 try (ResultSet queryResults = stmt.executeQuery()) {

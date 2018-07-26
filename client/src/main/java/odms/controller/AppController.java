@@ -556,7 +556,7 @@ public class AppController {
             originalAdmin = administrator;
         }
 
-        if (administratorBridge.getExists(originalAdmin.getUserName())) { //HELLO
+        if (administratorBridge.getExists(originalAdmin.getUserName())) {
             administratorBridge.putAdmin(administrator, originalAdmin.getUserName(), getToken());
         } else {
             administratorBridge.postAdmin(administrator, token);
