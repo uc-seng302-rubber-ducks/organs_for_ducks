@@ -17,6 +17,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Region;
+import javafx.scene.text.Font;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -54,6 +55,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.lang.reflect.Type;
+import java.text.Normalizer;
 import java.util.*;
 
 public class AdministratorViewController implements PropertyChangeListener, TransplantWaitListViewer {
@@ -181,6 +183,7 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
         }
 
         adminCliTextArea.setEditable(false);
+        adminCliTextArea.setFont(Font.font("DialogInput"));
         adminCliTextArea.setFocusTraversable(false);
         cliInputTextField.setOnKeyPressed(e -> {
             if (e.getCode() == KeyCode.ENTER) {
@@ -224,7 +227,7 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
         pastCommands.add(cliInputTextField.getText());
         pastCommandIndex = pastCommands.size();
         CLI.parseInput(cliInputTextField.getText(), appController);
-        adminCliTextArea.appendText("\n" + areaOut.toString());
+        adminCliTextArea.appendText("\n" + areaOut.toString().replaceAll("\\[[0-9]+m", ""));
         System.setOut(stdOut);
         System.setErr(stdErr);
     }

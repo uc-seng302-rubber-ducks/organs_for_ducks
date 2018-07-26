@@ -15,10 +15,7 @@ import javax.management.Query;
 import java.io.InputStream;
 import java.sql.*;
 import java.lang.reflect.Type;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -1100,5 +1097,25 @@ public class DBHandler {
                 }
             }
         }
+    }
+
+    public List runSqlQuery(String query, Connection connection) throws SQLException {
+        List<String> results  = new ArrayList<>();
+        try(PreparedStatement preparedStatement = connection.prepareStatement(query)){
+            try (ResultSet rs = preparedStatement.executeQuery()) {
+                if (!rs.next()){
+                    return results;
+                }
+                do {
+                    ResultSetMetaData rsmd = rs.getMetaData();
+                    int columns = rsmd.getColumnCount();
+                    for(int i = 1; i <= columns; i++){
+                        String columnName = rs.getString(i);
+                        results.add(rsmd.getColumnName(i)+ " " + columnName );
+                    }
+                } while (rs.next());
+            }
+        }
+        return results;
     }
 }
