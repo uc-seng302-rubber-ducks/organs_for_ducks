@@ -2,6 +2,7 @@ package odms.commons.utils.db_strategies;
 
 import odms.commons.model.Administrator;
 import odms.commons.utils.Log;
+import odms.commons.utils.PasswordManager;
 
 import java.sql.*;
 import java.util.Collection;
@@ -19,9 +20,6 @@ public class AdminUpdateStrategy extends AbstractUpdateStrategy {
     public <T> void update(Collection<T> roles, Connection connection) throws SQLException {
         Collection<Administrator> admins = (Collection<Administrator>) roles;
         for (Administrator admin : admins) {
-            if (admin.getChanges().isEmpty()) {
-                continue;
-            }
             try (PreparedStatement stmt = connection.prepareStatement("SELECT userName FROM Administrator WHERE userName = ?")) {
                 stmt.setString(1, admin.getUserName());
                 try (ResultSet queryResults = stmt.executeQuery()) {
@@ -50,7 +48,9 @@ public class AdminUpdateStrategy extends AbstractUpdateStrategy {
             connection.prepareStatement("START TRANSACTION").execute();
             try {
                 updateAdminDetails(admin, connection);
-                //updateAdminPassword(admin, connection);
+                if (!PasswordManager.hash("", admin.getSalt()).equals(admin.getPassword())) {
+                    updateAdminPassword(admin, connection);
+                }
             } catch (SQLException sqlEx) {
                 connection.prepareStatement("ROLLBACK").execute();
             }

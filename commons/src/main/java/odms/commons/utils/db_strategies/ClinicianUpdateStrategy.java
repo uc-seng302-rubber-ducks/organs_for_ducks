@@ -2,6 +2,7 @@ package odms.commons.utils.db_strategies;
 
 import odms.commons.model.Clinician;
 import odms.commons.utils.Log;
+import odms.commons.utils.PasswordManager;
 
 import java.sql.*;
 import java.util.Collection;
@@ -50,7 +51,9 @@ public class ClinicianUpdateStrategy extends AbstractUpdateStrategy {
             connection.prepareStatement("START TRANSACTION").execute();
             try {
                 createClinician(clinician, connection);
-                createClinicianPassword(clinician, connection);
+                if (!PasswordManager.hash("", clinician.getSalt()).equals(clinician.getPassword())) {
+                    createClinicianPassword(clinician, connection);
+                }
                 createClinicianContact(clinician, connection);
             } catch (SQLException sqlEx) {
                 connection.prepareStatement("ROLLBACK").execute();

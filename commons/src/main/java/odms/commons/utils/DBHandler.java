@@ -764,7 +764,7 @@ public class DBHandler {
     public void updateAdministrator(Connection connection, String username, Administrator administrator) throws SQLException {
         Administrator toReplace = getOneAdministrator(connection, username);
         Collection<Administrator> administrators = new ArrayList<>();
-        if (toReplace != null) {
+        if (toReplace != null && !toReplace.getUserName().equals(administrator.getUserName())) {
             toReplace.setDeleted(true);
             administrators.add(toReplace);
         }
