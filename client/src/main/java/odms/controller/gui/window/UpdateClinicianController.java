@@ -478,7 +478,7 @@ public class UpdateClinicianController {
             }
         }
 
-        if (!currentClinician.getZipCode().equals(zipcode)) {
+        if (currentClinician.getZipCode() == null || !currentClinician.getZipCode().equals(zipcode)) {
             currentClinician.setZipCode(zipcode);
             changed = true;
         }
@@ -788,7 +788,7 @@ public class UpdateClinicianController {
             currentClinician.setRegion(region);
         }
 
-        if (!currentClinician.getZipCode().equals(zipCode)) {
+        if (currentClinician.getZipCode() == null || !currentClinician.getZipCode().equals(zipCode)) {
             currentClinician.setZipCode(zipCode);
         }
 

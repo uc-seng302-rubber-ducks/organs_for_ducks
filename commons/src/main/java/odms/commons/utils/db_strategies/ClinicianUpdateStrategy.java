@@ -10,7 +10,7 @@ public class ClinicianUpdateStrategy extends AbstractUpdateStrategy {
 
     private static final String CREATE_CLINICIAN_STMT = "INSERT INTO Clinician (staffId, firstName, middleName, lastName, timeCreated, lastModified) VALUES (?, ?, ?, ?, ?, ?)";
     private static final String CREATE_STAFF_CONTACT_STMT = "INSERT INTO ContactDetails (fkStaffId, homePhone, email, cellPhone) VALUES (?, ?, ?, ?)";
-    private static final String CREATE_ADDRESS_STMT = "INSERT INTO Address (fkContactId, fkStaffId, streetNumber, streetName, neighbourhood, city, region, country) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+    private static final String CREATE_ADDRESS_STMT = "INSERT INTO Address (fkContactId, fkStaffId, streetNumber, streetName, neighbourhood, city, region, country, zipCode) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
     private static final String UPDATE_CLINICIAN_STMT = "UPDATE Clinician SET firstName = ?, middleName = ?, lastName = ?, lastModified = ? WHERE staffId = ?";
     private static final String UPDATE_CLINICIAN_ADDRESS = "UPDATE ContactDetails JOIN Address ON contactId = fkContactId " +
@@ -134,6 +134,7 @@ public class ClinicianUpdateStrategy extends AbstractUpdateStrategy {
                 addressStmt.setString(6, clinician.getCity());
                 addressStmt.setString(7, clinician.getRegion());
                 addressStmt.setString(8, clinician.getCountry());
+                addressStmt.setString(9, clinician.getZipCode());
 
                 addressStmt.executeUpdate();
             }

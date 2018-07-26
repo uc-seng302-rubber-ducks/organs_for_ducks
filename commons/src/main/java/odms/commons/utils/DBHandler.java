@@ -1016,11 +1016,7 @@ public class DBHandler {
         }
 
         try (PreparedStatement stmt = conn.prepareStatement(query)) {
-            if (type.equals(Clinician.class)) {
-                stmt.setInt(1, Integer.valueOf(identifier));
-            } else {
                 stmt.setString(1, identifier);
-            }
 
             try (ResultSet result = stmt.executeQuery()) {
                 result.next();
