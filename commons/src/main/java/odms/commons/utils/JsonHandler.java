@@ -10,10 +10,12 @@ import odms.commons.model._enum.Directory;
 import odms.commons.model.datamodel.TransplantDetails;
 import odms.commons.model.dto.LoginResponse;
 import okhttp3.Response;
+import okhttp3.ResponseBody;
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
 
 import java.io.*;
+import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
@@ -358,6 +360,10 @@ public final class JsonHandler extends DataHandler {
 
     public Collection<Clinician> decodeClinicians(String response) throws IOException {
         return new Gson().fromJson(response, new TypeToken<Collection<Clinician>>(){}.getType());
+    }
+
+    public List<String> decodeQueryResult(ResponseBody body) throws IOException {
+        return new Gson().fromJson(body.string(), (Type) new ArrayList<String>());
     }
 }
 

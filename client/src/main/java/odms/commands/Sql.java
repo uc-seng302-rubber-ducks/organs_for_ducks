@@ -1,19 +1,15 @@
 package odms.commands;
 
 
-import odms.commons.utils.DBHandler;
-import odms.commons.utils.JDBCDriver;
 import odms.commons.utils.Log;
+import odms.controller.AppController;
+import odms.utils.SQLBridge;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
 
-import java.beans.PropertyVetoException;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
-import java.time.LocalDate;
+import java.io.IOException;
+import java.util.List;
 
 @Command(name = "sql", description = " Command used to enter sql select statements")
 public class Sql implements Runnable {
@@ -26,8 +22,9 @@ public class Sql implements Runnable {
 
     @Override
     public void run() {
-        DBHandler dbHandler = new DBHandler();
+        AppController controller = AppController.getInstance();
         StringBuilder sb = new StringBuilder();
+        SQLBridge sqlBridge = controller.getSqlBridge();
         String statement;
         for (String s : statementArray) {
             sb.append(s);
@@ -42,59 +39,23 @@ public class Sql implements Runnable {
             return;
         }
 
-        ResultSet resultSet = null;
-        Connection conn = null;
         try {
-            JDBCDriver jdbcDriver = null;
-            try {
-                jdbcDriver = new JDBCDriver();
-            } catch (PropertyVetoException e) {
-                Log.severe("Could not get connection",e);
-                return;
+            List<String> result = sqlBridge.excuteSqlStatement(statement,controller.getToken());
+            if(result.isEmpty()){
+                System.out.println("The result set was empty an invalid query may have been entered or this result was no rows");
+            } else {
+                System.out.println("----------------------------------------------------------------------------------------");
+                for(String s : result){
+                    System.out.println(s);
+                    System.out.println("----------------------------------------------------------------------------------------");
+                }
             }
-            conn = jdbcDriver.getConnection();
-            conn.prepareStatement(statement);
-        } catch (SQLException e) {
-            System.out.println("Failed to establish connection to the database. please try again or contact your " +
-                    "administrator if the problem persists");
-            return;
-        }
-        try {
-            resultSet = dbHandler.executeStatement(statement, conn);
-        } catch (SQLException e) {
-            System.out.println("An Invalid SQL statement was entered. Please ensure your command is in correct MySql syntax");
-            Log.warning("invalid SQL statement caught", e);
-            return;
-        }
-        if (resultSet == null) {
-            //a successful call should at least return an empty ResultSet
-            System.out.println("A database error has occurred, please try again or contact your administrator if the " +
-                    "problem persists");
-            return;
+
+
+        } catch (IOException e) {
+            Log.severe("Stuff went badly wrong", e);
+            System.out.println("A fatal error occured. Please try again");
         }
 
-        try {
-            if (!resultSet.next()){
-                System.out.println("No results were returned");
-            } else{
-                do {
-                    System.out.println("!--------------------------------------------------------------------------!" );
-                    ResultSetMetaData rsmd = resultSet.getMetaData();
-                   int columns = rsmd.getColumnCount();
-                   for(int i = 1; i <= columns; i++){
-                       String columnName = resultSet.getString(i);
-                       System.out.println( rsmd.getColumnName(i)+ " " + columnName );
-                   }
-                } while (resultSet.next());
-            }
-        } catch (SQLException e) {
-            System.out.println("SQL had an error retrieving the next result");
-            Log.warning("SQL had an error retrieving the next result", e);
-        }
-        try {
-            conn.close();
-        } catch (SQLException e) {
-            Log.warning("Connection could not be closed", e);
-        }
     }
 }

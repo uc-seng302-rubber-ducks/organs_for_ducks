@@ -63,6 +63,8 @@ public class AppController {
     private odms.controller.gui.statusBarController statusBarController = new statusBarController();
     private Stack<User> redoStack = new Stack<>();
     private String token;
+    private SQLBridge sqlBridge = new SQLBridge(client);
+
     /**
      * Creates new instance of AppController
      */
@@ -147,7 +149,7 @@ public class AppController {
      * @return unmodifiable collection of all country names
      */
     public List<String> getAllCountries() {
-        return Collections.unmodifiableList(allCountries);
+        return allCountries;
     }
 
     public List<String> getAllowedCountries() {
@@ -691,5 +693,9 @@ public class AppController {
 
     public CountriesBridge getCountriesBridge() {
         return countriesBridge;
+    }
+
+    public SQLBridge getSqlBridge() {
+        return sqlBridge;
     }
 }
