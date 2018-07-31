@@ -1,66 +1,52 @@
 package odms.commands;
 
-import odms.commons.model.User;
+import odms.commons.utils.Log;
 import odms.controller.AppController;
 import odms.view.IoHelper;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
+import picocli.CommandLine.Parameters;
 
-import java.time.LocalDate;
+import java.io.IOException;
 
-@Command(name = "view", description = "view all currently registered users based on set parameters.",subcommands = {ViewAll.class})
+@Command(name = "view", description = "view a set donor based on NHI.",subcommands = {ViewAll.class})
 public class View implements Runnable {
 
     @Option(names = {"-h", "help",
             ""}, required = false, usageHelp = true, description = "display a help message")
     private Boolean helpRequested = false;
 
-    @Option(names = {"-f", "-fname", "-n", "-name"})
-    private String firstName;
+    @Parameters(description = "ID of the user to be viewed")
+    String[] params;
 
-    @Option(names = {"-l", "-lname"})
-    private String lastName;
+    @Option(names ={"-u","-user"}, description = "Sets the user flag to specify that a user is the query target.\n" +
+            "This is the default option")
+    private boolean afterUser = true;
 
-    @Option(names = {"-dob"})
-    private String dobString;
+    @Option(names = {"-c","-clinician"}, description = "Sets the user flag to specify that a Clinician is the query target.")
+    private boolean afterClinician = false;
 
-    @Option(names = {"-NHI", "-nhi", "-NHI"})
-    private String NHI = "";
+    @Option(names = {"-a","-admin"}, description = "Sets the user flag to specify that an Admin is the query target.")
+    private boolean afterAdmin = false;
 
     @Override
     public void run() {
+        AppController appController = AppController.getInstance();
         if (helpRequested) {
-            System.out.println("help goes here");
+            IoHelper.display("help goes here");
         }
+        try {
 
-        AppController controller = AppController.getInstance();
-
-        if (!NHI.equals("")) {
-            System.out.println(controller.findUser(NHI));
-            return;
-        }
-
-        if (firstName != null) {
-            String name;
-            if (lastName != null) {
-                name = firstName + " " + lastName;
+            if (afterClinician) {
+                IoHelper.display(appController.getClinicianBridge().getClinician(params[0], appController.getToken()).toString());
+            } else if (afterAdmin) {
+                IoHelper.display(appController.getAdministratorBridge().getAdmin(params[0], appController.getToken()).toString());
             } else {
-                name = firstName;
+                IoHelper.display(appController.getUserBridge().getUser(params[0]).toString());
             }
-            if (dobString != null) {
-                LocalDate dob = IoHelper.readDate(dobString);
-                if (dob != null) {
-                    User user = controller.findUser(name, dob);
-                    if (user == null) {
-                        System.out.println("No donors found");
-                    } else {
-                        System.out.println(user);
-                    }
-                }
-            } else {
-                System.out.println(IoHelper
-                        .prettyStringUsers(controller.findUsers(name)));
-            }
+        } catch (IOException e){
+            IoHelper.display("No User by that name was found");
+            Log.severe("Io exception somehow occurred", e);
         }
     }
 }

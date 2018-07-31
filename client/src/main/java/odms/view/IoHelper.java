@@ -28,8 +28,8 @@ public class IoHelper {
         try {
             date = LocalDate.parse(rawDate, sdf);
         } catch (DateTimeParseException e) {
-            System.err.println("Error parsing date: " + rawDate);
-            System.err.println("Please use format yyyy-MM-dd");
+            display("Error parsing date: " + rawDate);
+            display("Please use format yyyy-MM-dd");
             date = null;
         }
         return date;
@@ -94,4 +94,7 @@ public class IoHelper {
         return sb.toString();
     }
 
+    public static void display(String toShow){
+        System.out.println(toShow);
+    }
 }

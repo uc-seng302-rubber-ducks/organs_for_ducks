@@ -12,10 +12,10 @@ import java.io.IOException;
 public class ViewAll implements Runnable {
 
    @Option(names={"-c", "-count"}, description = "How many results to return. Default = 10")
-    int count =10;
+    private int count =10;
 
     @Option(names={"-i", "-index", "-startIndex"}, description = "where in the set to start returning results from. default = 0")
-    int startIndex =0;
+    private int startIndex =0;
 
     @Option(names={"-n", "-name"},description = "Enters a first last or middle name to search by")
     private String name= "";
@@ -26,13 +26,16 @@ public class ViewAll implements Runnable {
     @Option(names={"-g", "-gender"}, description = "Allows the returned results to be filtered by birth gender")
     private String gender = "";
 
+    @Option(names={"-h", "-help", ""})
+    private Boolean helpRequested;
+
     @Override
     public void run() {
             try {
                 AppController controller = AppController.getInstance();
-                System.out.println(IoHelper.prettyStringUsers(controller.getUserBridge().getUsers(startIndex,count,name,region,gender,controller.getToken())));
+                IoHelper.display(IoHelper.prettyStringUsers(controller.getUserBridge().getUsers(startIndex,count,name,region,gender,controller.getToken())));
             } catch (IOException e) {
-                System.out.println("an error occurred");
+                IoHelper.display("an error occurred");
             }
 
     }
