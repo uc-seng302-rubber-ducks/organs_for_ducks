@@ -12,6 +12,8 @@ import java.io.IOException;
 @Command(name = "view", description = "view a set donor based on NHI.",subcommands = {ViewAll.class})
 public class View implements Runnable {
 
+    private AppController appController = AppController.getInstance();
+
     @Option(names = {"-h", "help",
             ""}, required = false, usageHelp = true, description = "display a help message")
     private Boolean helpRequested = false;
@@ -31,23 +33,27 @@ public class View implements Runnable {
 
     @Override
     public void run() {
-        AppController appController = AppController.getInstance();
+
         if (helpRequested) {
             IoHelper.display("help goes here");
         }
         try {
-
+            String id = params[0];
             if (afterClinician) {
-                IoHelper.display(appController.getClinicianBridge().getClinician(params[0], appController.getToken()).toString());
+                System.out.println(appController.getClinicianBridge().getClinician(id, appController.getToken()).toString());
             } else if (afterAdmin) {
-                IoHelper.display(appController.getAdministratorBridge().getAdmin(params[0], appController.getToken()).toString());
+                IoHelper.display(appController.getAdministratorBridge().getAdmin(id, appController.getToken()).toString());
             } else {
-                IoHelper.display(appController.getUserBridge().getUser(params[0]).toString());
+                IoHelper.display(appController.getUserBridge().getUser(id).toString());
             }
         } catch (IOException e){
             IoHelper.display("No User by that name was found");
             Log.severe("Io exception somehow occurred", e);
         }
+    }
+
+    public void setAppController(AppController appController){
+        this.appController = appController;
     }
 }
 
