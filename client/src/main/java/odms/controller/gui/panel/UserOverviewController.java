@@ -13,6 +13,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import odms.controller.AppController;
 import odms.controller.gui.UnsavedChangesAlert;
+import odms.controller.gui.popup.UpdateDeathDetailsController;
 import odms.controller.gui.window.LoginController;
 import odms.controller.gui.window.UpdateUserController;
 import odms.commons.model.User;
@@ -86,6 +87,15 @@ public class UserOverviewController {
 
     @FXML
     private Label bmiValue;
+
+    @FXML
+    private Label cityOfDeathValue;
+
+    @FXML
+    private Label regionOfDeathValue;
+
+    @FXML
+    private Label countryOfDeathValue;
 
     @FXML
     private Button deleteUser;
@@ -205,6 +215,25 @@ public class UserOverviewController {
             bmiValue.setText("");
         }
 
+        if (user.getDeathCity() != null) {
+            cityOfDeathValue.setText(user.getDeathCity());
+        } else {
+            cityOfDeathValue.setText("");
+        }
+
+        if (user.getDeathRegion() != null) {
+            regionOfDeathValue.setText(user.getDeathRegion());
+        } else {
+            regionOfDeathValue.setText("");
+        }
+
+        if (user.getDeathCountry() != null) {
+            countryOfDeathValue.setText(user.getDeathCountry());
+        } else {
+            countryOfDeathValue.setText("");
+        }
+
+
         if (user.getLastModified() != null) {
             lastModifiedValue.setText(user.getLastModified().toString());
         }
@@ -232,6 +261,29 @@ public class UserOverviewController {
 
         } catch (IOException e) {
             Log.severe("Failed to load update user window for User NHI: " + currentUser.getNhi(), e);
+        }
+    }
+
+    @FXML
+    private void updateDeathDetails() {
+        openUpdateDeathDetailsPopup();
+    }
+
+    private void openUpdateDeathDetailsPopup() {
+        FXMLLoader updateDeathDetailsLoader = new FXMLLoader(getClass().getResource("/FXML/updateDeathDetails.fxml"));
+        Parent root;
+        try {
+            root = updateDeathDetailsLoader.load();
+            UpdateDeathDetailsController updateDeathDetailsController = updateDeathDetailsLoader.getController();
+            Stage updateStage = new Stage();
+            updateStage.initModality(Modality.APPLICATION_MODAL);
+            updateStage.setScene(new Scene(root));
+            updateDeathDetailsController.init(application, updateStage, currentUser);
+            updateStage.show();
+            Log.info("Successfully launched update user window for User NHI: " + currentUser.getNhi());
+
+        } catch (IOException e) {
+            Log.severe("Failed to load edit death details window for User NHI: " + currentUser.getNhi(), e);
         }
     }
 
