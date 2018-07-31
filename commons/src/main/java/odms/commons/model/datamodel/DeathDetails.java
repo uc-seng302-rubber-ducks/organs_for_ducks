@@ -11,7 +11,7 @@ public class DeathDetails {
     private Address placeOfDeath;
 
     public DeathDetails() {
-        this.timeOfDeath = LocalDateTime.now();
+        this.timeOfDeath = null;
         this.placeOfDeath = new Address("", "", "", "", "", "", "");
     }
 

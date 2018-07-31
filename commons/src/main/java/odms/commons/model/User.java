@@ -95,7 +95,7 @@ public class User extends Undoable<User> implements Listenable {
         this.nhi = nhi;
         this.middleName = "";
         this.lastName = "";
-        this.deathDetails = null;
+        this.deathDetails = new DeathDetails();
         this.preferredFirstName = firstName;
         timeCreated = LocalDateTime.now();
         lastModified = LocalDateTime.now();
@@ -125,6 +125,7 @@ public class User extends Undoable<User> implements Listenable {
      */
     public User() {
         timeCreated = LocalDateTime.now();
+        this.deathDetails = new DeathDetails();
         miscAttributes = new ArrayList<>();
         this.currentMedication = new ArrayList<>();
         this.previousMedication = new ArrayList<>();
@@ -148,7 +149,6 @@ public class User extends Undoable<User> implements Listenable {
         newUser.dateOfBirth = user.dateOfBirth;
 
         Address placeOfDeath = new Address("", "", "", user.getDeathCity(), user.getDeathRegion(), "", user.getDeathCountry());
-
         newUser.deathDetails = new DeathDetails(user.deathDetails.getTimeOfDeath(), placeOfDeath);
 
         Address address = new Address(user.getStreetNumber(), user.getStreetName(), user.getNeighborhood(),
@@ -254,6 +254,46 @@ public class User extends Undoable<User> implements Listenable {
         newUser.setUndoStack((Stack<Memento<User>>) user.getUndoStack().clone());
         newUser.setRedoStack((Stack<Memento<User>>) user.getRedoStack().clone());
         return newUser;
+    }
+
+    public DeathDetails getDeathDetails() {
+        return deathDetails;
+    }
+
+    public void setDeathDetails(DeathDetails deathDetails) {
+        this.deathDetails = deathDetails;
+    }
+
+    public LocalDateTime getTimeOfDeath(){
+        return deathDetails.getTimeOfDeath();
+    }
+
+    public void setTimeOfDeath(LocalDateTime timeOfDeath){
+        this.deathDetails.setTimeOfDeath(timeOfDeath);
+    }
+
+    public String getDeathCity(){
+        return deathDetails.getCity();
+    }
+
+    public void setDeathCity(String city) {
+        this.deathDetails.setCity(city);
+    }
+
+    public String getDeathRegion() {
+        return deathDetails.getRegion();
+    }
+
+    public void setDeathRegion(String region) {
+        this.deathDetails.setRegion(region);
+    }
+
+    public String getDeathCountry() {
+        return deathDetails.getCountry();
+    }
+
+    public void setDeathCountry(String country) {
+        this.deathDetails.setCountry(country);
     }
 
     public ContactDetails getContactDetails() {
@@ -520,14 +560,28 @@ public class User extends Undoable<User> implements Listenable {
     }
 
     public LocalDate getDateOfDeath() {
-        return timeOfDeath.getTimeOfDeath();
+        if (deathDetails != null) {
+            LocalDateTime timeOfDeath = deathDetails.getTimeOfDeath();
+            if (timeOfDeath != null) {
+                return timeOfDeath.toLocalDate();
+            }  else {
+                return null;
+            }
+        } else {
+            return null;
+        }
     }
 
     public void setDateOfDeath(LocalDate dateOfDeath) {
         this.saveStateForUndo();
         updateLastModified();
-        this.timeOfDeath = dateOfDeath;
-        this.isDeceased = dateOfDeath != null;
+        if (dateOfDeath != null) {
+            this.deathDetails.setTimeOfDeath(dateOfDeath.atStartOfDay());
+            this.isDeceased = true;
+        } else {
+            this.deathDetails.setTimeOfDeath(null);
+            this.isDeceased = false;
+        }
         addChange(new Change(isDeceased ? ("Changed date of death to " + dateOfDeath.toString())
                 : "Removed date of death"));
     }
@@ -782,17 +836,17 @@ public class User extends Undoable<User> implements Listenable {
     }
 
     public String getStringAge() {
-        if (dateOfDeath != null) {
+        if (deathDetails.getTimeOfDeath() != null) {
 
-            return Long.toString(ChronoUnit.YEARS.between(dateOfBirth, dateOfDeath));
+            return Long.toString(ChronoUnit.YEARS.between(dateOfBirth, deathDetails.getTimeOfDeath()));
         }
         return Long.toString(ChronoUnit.YEARS.between(dateOfBirth, LocalDate.now()));
     }
 
     public int getAge() {
-        if (dateOfDeath != null) {
+        if (deathDetails.getTimeOfDeath() != null) {
 
-            return Math.toIntExact(ChronoUnit.YEARS.between(dateOfBirth, dateOfDeath));
+            return Math.toIntExact(ChronoUnit.YEARS.between(dateOfBirth, deathDetails.getTimeOfDeath()));
         }
         return Math.toIntExact(ChronoUnit.YEARS.between(dateOfBirth, java.time.LocalDate.now()));
     }
@@ -1098,7 +1152,7 @@ public class User extends Undoable<User> implements Listenable {
                 "nhi='" + nhi + '\'' +
                 ", name='" + name + '\'' +
                 ", dateOfBirth=" + dateOfBirth +
-                ", dateOfDeath=" + dateOfDeath +
+                ", deathDetails=" + deathDetails +
                 ", timeCreated=" + timeCreated +
                 ", isDeceased=" + isDeceased +
                 ", firstName='" + firstName + '\'' +
@@ -1153,7 +1207,7 @@ public class User extends Undoable<User> implements Listenable {
     private void changeInto(User other) {
         this.nhi = other.nhi;
         this.dateOfBirth = other.dateOfBirth;
-        this.dateOfDeath = other.dateOfDeath;
+        this.deathDetails = other.deathDetails;
         this.healthDetails = other.healthDetails;
 
 
