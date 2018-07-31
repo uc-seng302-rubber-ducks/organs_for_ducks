@@ -7,10 +7,7 @@ import odms.commons.model._abstract.Listenable;
 import odms.commons.model._abstract.Undoable;
 import odms.commons.model._enum.EventTypes;
 import odms.commons.model._enum.Organs;
-import odms.commons.model.datamodel.Address;
-import odms.commons.model.datamodel.ContactDetails;
-import odms.commons.model.datamodel.Medication;
-import odms.commons.model.datamodel.ReceiverOrganDetailsHolder;
+import odms.commons.model.datamodel.*;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -33,7 +30,7 @@ public class User extends Undoable<User> implements Listenable {
     @Expose
     private LocalDate dateOfBirth;
     @Expose
-    private LocalDate dateOfDeath;
+    private DeathDetails deathDetails;
     @Expose
     private LocalDateTime timeCreated;
     @Expose
@@ -98,7 +95,7 @@ public class User extends Undoable<User> implements Listenable {
         this.nhi = nhi;
         this.middleName = "";
         this.lastName = "";
-        this.dateOfDeath = null;
+        this.deathDetails = null;
         this.preferredFirstName = firstName;
         timeCreated = LocalDateTime.now();
         lastModified = LocalDateTime.now();
@@ -149,7 +146,10 @@ public class User extends Undoable<User> implements Listenable {
         User newUser = new User();
         newUser.nhi = user.nhi;
         newUser.dateOfBirth = user.dateOfBirth;
-        newUser.dateOfDeath = user.dateOfDeath;
+
+        Address placeOfDeath = new Address("", "", "", user.getDeathCity(), user.getDeathRegion(), "", user.getDeathCountry());
+
+        newUser.deathDetails = new DeathDetails(user.deathDetails.getTimeOfDeath(), placeOfDeath);
 
         Address address = new Address(user.getStreetNumber(), user.getStreetName(), user.getNeighborhood(),
                 user.getCity(), user.getRegion(), user.getZipCode(), user.getCountry());
@@ -520,13 +520,13 @@ public class User extends Undoable<User> implements Listenable {
     }
 
     public LocalDate getDateOfDeath() {
-        return dateOfDeath;
+        return timeOfDeath.getTimeOfDeath();
     }
 
     public void setDateOfDeath(LocalDate dateOfDeath) {
         this.saveStateForUndo();
         updateLastModified();
-        this.dateOfDeath = dateOfDeath;
+        this.timeOfDeath = dateOfDeath;
         this.isDeceased = dateOfDeath != null;
         addChange(new Change(isDeceased ? ("Changed date of death to " + dateOfDeath.toString())
                 : "Removed date of death"));
