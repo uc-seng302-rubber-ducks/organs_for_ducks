@@ -224,7 +224,7 @@ public class HttpRequester {
 
     public static void main(String[] args) throws Exception {
         OkHttpClient client = new OkHttpClient();
-        Request request = new Request.Builder().url("ws://localhost:4941/chat").build();
+        Request request = new Request.Builder().url("ws://localhost:4941/name").build();
         WebSocket socket = null;
         WebSocketListener listener = new WebSocketListener() {
             @Override
