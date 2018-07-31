@@ -5,6 +5,7 @@ import odms.commons.exception.ApiException;
 import odms.commons.model._enum.Environments;
 import odms.commons.model._enum.Organs;
 import odms.commons.model.datamodel.TransplantDetails;
+import odms.commons.utils.ConfigPropertiesLoader;
 import odms.commons.utils.Log;
 import odms.controller.AppController;
 import okhttp3.*;
@@ -28,6 +29,9 @@ public class TransplantBridgeTest {
     private TransplantBridge bridge;
     private OkHttpClient mockClient;
     private String responseString;
+    private String serverUrl = new ConfigPropertiesLoader()
+            .loadConfig("clientConfig.properties")
+            .getProperty("server.url");
 
     @Before
     public void setUp() {
@@ -118,7 +122,7 @@ public class TransplantBridgeTest {
 
         bridge.getWaitingList(0, 10, "", "", new ArrayList<>());
         List<String> logs = Log.getDebugLogs();
-        Assert.assertEquals("http://localhost:4941/odms/v1/transplantList?count=10&startIndex=0", logs.get(0));
+        Assert.assertEquals(serverUrl + "/transplantList?count=10&startIndex=0", logs.get(0));
     }
 
 
@@ -136,7 +140,7 @@ public class TransplantBridgeTest {
 
         bridge.getWaitingList(0, 10, "", "here", new ArrayList<>());
         List<String> logs = Log.getDebugLogs();
-        Assert.assertEquals("http://localhost:4941/odms/v1/transplantList?count=10&startIndex=0&region=here", logs.get(0));
+        Assert.assertEquals(serverUrl + "/transplantList?count=10&startIndex=0&region=here", logs.get(0));
     }
 
     @Test
@@ -154,7 +158,7 @@ public class TransplantBridgeTest {
         bridge.getWaitingList(0, 10, "", "", new ArrayList<>(Arrays.asList(Organs.LIVER, Organs.LUNG)));
         List<String> logs = Log.getDebugLogs();
 
-        Assert.assertEquals("http://localhost:4941/odms/v1/transplantList?count=10&startIndex=0&organs=LIVER&organs=LUNG", logs.get(0));
+        Assert.assertEquals(serverUrl + "/transplantList?count=10&startIndex=0&organs=LIVER&organs=LUNG", logs.get(0));
     }
 
     @Test
@@ -172,7 +176,7 @@ public class TransplantBridgeTest {
         bridge.getWaitingList(34, 54, "", "", new ArrayList<>());
         List<String> logs = Log.getDebugLogs();
 
-        Assert.assertEquals("http://localhost:4941/odms/v1/transplantList?count=54&startIndex=34", logs.get(0));
+        Assert.assertEquals(serverUrl + "/transplantList?count=54&startIndex=34", logs.get(0));
 
     }
 
