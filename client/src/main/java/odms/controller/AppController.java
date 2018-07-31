@@ -702,4 +702,5 @@ public class AppController {
     public SQLBridge getSqlBridge() {
         return sqlBridge;
     }
+
 }

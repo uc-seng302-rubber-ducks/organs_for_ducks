@@ -1,22 +1,19 @@
 package odms.commands;
 
-import odms.controller.AppController;
 import odms.commons.model.User;
+import odms.controller.AppController;
 import odms.view.IoHelper;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
 import java.time.LocalDate;
 
-@Command(name = "view", description = "view all currently registered users based on set parameters.")
+@Command(name = "view", description = "view all currently registered users based on set parameters.",subcommands = {ViewAll.class})
 public class View implements Runnable {
 
     @Option(names = {"-h", "help",
             ""}, required = false, usageHelp = true, description = "display a help message")
     private Boolean helpRequested = false;
-
-    @Option(names = {"-a", "all", "-all"})
-    private Boolean viewAll = false;
 
     @Option(names = {"-f", "-fname", "-n", "-name"})
     private String firstName;
@@ -37,10 +34,7 @@ public class View implements Runnable {
         }
 
         AppController controller = AppController.getInstance();
-        if (viewAll) {
-            System.out.println(IoHelper.prettyStringUsers(controller.getUsers()));
-            return;
-        }
+
         if (!NHI.equals("")) {
             System.out.println(controller.findUser(NHI));
             return;

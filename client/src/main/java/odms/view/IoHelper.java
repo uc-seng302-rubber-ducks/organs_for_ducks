@@ -1,10 +1,12 @@
 package odms.view;
 
 import odms.commons.model.User;
+import odms.commons.model.dto.UserOverview;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -66,7 +68,7 @@ public class IoHelper {
      */
     public static String prettyStringUsers(List<User> users) {
         StringBuilder sb = new StringBuilder();
-        if (users.size() > 0) {
+        if (!users.isEmpty()) {
             for (User u : users) {
                 sb.append(u.toString());
                 sb.append("\n");
@@ -77,4 +79,19 @@ public class IoHelper {
 
         return sb.toString();
     }
+
+    public static String prettyStringUsers(Collection<UserOverview> users) {
+        StringBuilder sb = new StringBuilder();
+        if (!users.isEmpty()) {
+            for (UserOverview u : users) {
+                sb.append(u.toString());
+                sb.append("\n");
+            }
+        } else {
+            sb.append("No users found");
+        }
+
+        return sb.toString();
+    }
+
 }
