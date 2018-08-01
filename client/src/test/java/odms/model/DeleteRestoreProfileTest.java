@@ -6,9 +6,9 @@ import odms.commons.model.Administrator;
 import odms.commons.model.Clinician;
 import odms.commons.model.User;
 import odms.controller.AppController;
-import odms.utils.AdministratorBridge;
-import odms.utils.ClinicianBridge;
-import odms.utils.UserBridge;
+import odms.bridge.AdministratorBridge;
+import odms.bridge.ClinicianBridge;
+import odms.bridge.UserBridge;
 import org.junit.*;
 
 import java.io.IOException;

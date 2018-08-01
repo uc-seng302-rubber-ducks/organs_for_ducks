@@ -16,7 +16,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 @Component
 public class SocketHandler extends TextWebSocketHandler {
 
-    private List<WebSocketSession> sessions = new CopyOnWriteArrayList<>();
+    private static List<WebSocketSession> sessions = new CopyOnWriteArrayList<>();
 
 
     @Override

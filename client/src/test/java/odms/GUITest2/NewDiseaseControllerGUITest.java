@@ -4,15 +4,13 @@ import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.TabPane;
 import odms.App;
-import odms.TestUtils.CommonTestMethods;
+import odms.bridge.*;
 import odms.commons.model.Clinician;
 import odms.commons.model.Disease;
 import odms.commons.model.User;
 import odms.commons.model.dto.UserOverview;
 import odms.controller.AppController;
-import odms.utils.*;
 import org.junit.*;
-import org.testfx.api.FxRobotException;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 

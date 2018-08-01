@@ -1,4 +1,4 @@
-package odms.utils;
+package odms.bridge;
 
 import okhttp3.OkHttpClient;
 

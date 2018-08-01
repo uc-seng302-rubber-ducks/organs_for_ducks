@@ -1,4 +1,4 @@
-package odms.utils;
+package odms.bridge;
 
 import com.mysql.jdbc.StringUtils;
 import odms.commons.exception.ApiException;

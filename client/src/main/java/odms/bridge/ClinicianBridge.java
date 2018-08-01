@@ -1,4 +1,4 @@
-package odms.utils;
+package odms.bridge;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -7,7 +7,6 @@ import odms.commons.model.Clinician;
 import odms.commons.utils.JsonHandler;
 import odms.commons.utils.Log;
 import odms.commons.utils.PhotoHelper;
-import odms.controller.AppController;
 import okhttp3.*;
 
 import java.io.IOException;

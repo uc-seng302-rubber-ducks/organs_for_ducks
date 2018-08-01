@@ -9,7 +9,7 @@ import odms.commons.model.User;
 import odms.commons.model.dto.UserOverview;
 import odms.controller.AppController;
 import odms.controller.gui.window.UserController;
-import odms.utils.UserBridge;
+import odms.bridge.UserBridge;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;

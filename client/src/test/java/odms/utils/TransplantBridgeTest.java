@@ -1,6 +1,7 @@
 package odms.utils;
 
 import com.google.gson.Gson;
+import odms.bridge.TransplantBridge;
 import odms.commons.exception.ApiException;
 import odms.commons.model._enum.Environments;
 import odms.commons.model._enum.Organs;

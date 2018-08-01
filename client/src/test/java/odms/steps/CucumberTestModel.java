@@ -1,11 +1,11 @@
 package odms.steps;
 
+import odms.bridge.*;
 import odms.commons.model.CacheManager;
 import odms.commons.model.MedicationInteractionCache;
 import odms.commons.model.User;
 import odms.commons.utils.HttpRequester;
 import odms.controller.AppController;
-import odms.utils.*;
 import okhttp3.OkHttpClient;
 
 import static org.mockito.Mockito.mock;

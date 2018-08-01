@@ -2,10 +2,10 @@ package odms.GUITest2;
 
 import odms.App;
 import odms.TestUtils.CommonTestMethods;
+import odms.bridge.*;
 import odms.commons.model.Administrator;
 import odms.controller.AppController;
 import odms.controller.gui.window.AdministratorViewController;
-import odms.utils.*;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
