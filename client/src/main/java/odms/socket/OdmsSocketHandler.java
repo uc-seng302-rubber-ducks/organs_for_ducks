@@ -21,11 +21,12 @@ public class OdmsSocketHandler implements Listenable{
     }
 
     public void start(String url) {
+        System.out.println(url);
         Request request = new Request.Builder().url(url).build();
         socket = client.newWebSocket(request, new WebSocketListener() {
             @Override
             public void onOpen(WebSocket webSocket, Response response) {
-                Log.info("websocket to server has been opened on port" + response.request().url().port());
+                Log.info("websocket to server has been opened on port " + response.request().url().port());
                 super.onOpen(webSocket, response);
             }
 

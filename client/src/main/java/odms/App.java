@@ -73,10 +73,11 @@ public class App extends Application {
                 }
             } else {
                 CacheManager.getInstance().saveAll();
+                AppController.getInstance().getSocketHandler().stop();
             }
 
         });
-        AppController.getInstance().getSocketHandler().start(prop.getProperty("server.url") + "/websocket");
+        AppController.getInstance().getSocketHandler().start(prop.getProperty("server.websocket.url"));
         loginController.init(controller, primaryStage);
         primaryStage.show();
     }
