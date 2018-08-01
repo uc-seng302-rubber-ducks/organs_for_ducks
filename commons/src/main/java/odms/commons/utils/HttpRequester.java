@@ -8,7 +8,9 @@ import odms.commons.model.MedicationInteractionCache;
 import odms.commons.model.datamodel.MedicationInteractionsResponse;
 import odms.commons.model.datamodel.SuggestedDrugsResponse;
 import odms.commons.model.datamodel.TimedCacheValue;
-import okhttp3.*;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 import java.io.IOException;
 import java.util.*;
@@ -220,47 +222,5 @@ public class HttpRequester {
         } catch (Exception ex) {
             return new String[]{};
         }
-    }
-
-    public static void main(String[] args) throws Exception {
-        OkHttpClient client = new OkHttpClient();
-        Request request = new Request.Builder().url("ws://localhost:4941/name").build();
-        WebSocket socket = null;
-        WebSocketListener listener = new WebSocketListener() {
-            @Override
-            public void onOpen(WebSocket webSocket, Response response) {
-                System.out.println("open");
-                super.onOpen(webSocket, response);
-            }
-
-            @Override
-            public void onMessage(WebSocket webSocket, String text) {
-                System.out.println("message: " + text);
-                super.onMessage(webSocket, text);
-            }
-
-            @Override
-            public void onClosing(WebSocket webSocket, int code, String reason) {
-                System.out.println("closing: " + reason);
-                super.onClosing(webSocket, code, reason);
-            }
-
-            @Override
-            public void onClosed(WebSocket webSocket, int code, String reason) {
-                System.out.println("closed: " + reason);
-                super.onClosed(webSocket, code, reason);
-            }
-
-            @Override
-            public void onFailure(WebSocket webSocket, Throwable t, Response response) {
-                System.out.println("failed");
-                super.onFailure(webSocket, t, response);
-            }
-        };
-        socket = client.newWebSocket(request, listener);
-        Thread.sleep(5000);
-        System.out.println("sending");
-        socket.send("hey there");
-        System.out.println("sent");
     }
 }
