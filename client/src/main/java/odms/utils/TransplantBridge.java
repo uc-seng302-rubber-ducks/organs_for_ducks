@@ -6,12 +6,9 @@ import odms.commons.model._enum.Organs;
 import odms.commons.model.datamodel.TransplantDetails;
 import odms.commons.utils.Log;
 import odms.controller.AppController;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
+import okhttp3.*;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -30,7 +27,7 @@ public class TransplantBridge extends Bifrost {
      * @param region     region to search by
      * @param organs     only return results for the selected organs
      */
-    public List<TransplantDetails> getWaitingList(int startIndex, int count, String name, String region, Collection<Organs> organs) throws ApiException{
+    public void getWaitingList(int startIndex, int count, String name, String region, Collection<Organs> organs) {
         StringBuilder url = new StringBuilder(ip);
         url.append("/transplantList?count=").append(count);
         url.append("&startIndex=").append(startIndex);
@@ -51,18 +48,23 @@ public class TransplantBridge extends Bifrost {
         Request request = new Request.Builder().get()
                 .header(TOKEN_HEADER, AppController.getInstance().getToken())
                 .url(url.toString()).build();
-        try (Response response =  client.newCall(request).execute()){
-            if (200 < response.code() || response.code() > 299) {
-                throw new ApiException(response.code(), "got response with code outside of 200 range");
-            }
-            return handler.decodeTransplantList(response);
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
 
-        } catch (ApiException ex) {
-            throw ex;
-        } catch (IOException ex) {
-            Log.warning("could not decode transplant list response from server", ex);
-            return new ArrayList<>();
-        }
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (200 < response.code() || response.code() > 299) {
+                    throw new ApiException(response.code(), "got response with code outside of 200 range");
+                }
+                List<TransplantDetails> transplantDetails = handler.decodeTransplantList(response);
+                for (TransplantDetails transplantDetail : transplantDetails) {
+                    AppController.getInstance().addTransplant(transplantDetail);
+                }
+            }
+        });
     }
 
 }

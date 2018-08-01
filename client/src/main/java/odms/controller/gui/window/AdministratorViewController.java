@@ -2,6 +2,7 @@ package odms.controller.gui.window;
 
 import com.sun.javafx.stage.StageHelper;
 import javafx.animation.PauseTransition;
+import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -92,7 +93,7 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
     @FXML
     private Button deleteAdminButton;
     @FXML
-    private ComboBox<?> genderComboBox;
+    private ComboBox<String> genderComboBox;
     @FXML
     private Label adminFirstnameLabel;
     @FXML
@@ -175,6 +176,9 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
                 administrator.addPropertyChangeListener(listener);
             }
         }
+        userBridge.getUsers(startIndex, ROWS_PER_PAGE, adminSearchField.getText(), regionSearchTextField.getText(), genderComboBox.getValue(), appController.getToken());
+        clinicianBridge.getClinicians(startIndex, ROWS_PER_PAGE, adminSearchField.getText(), regionSearchTextField.getText(), appController.getToken());
+
         adminUndoButton.setDisable(true);
         adminRedoButton.setDisable(true);
         if (administrator.getUserName().equals("default")) {
@@ -418,6 +422,14 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
     private void populateUserSearchTable(int startIndex, int count, String name, String region, String gender) {
         appController.getUserOverviews().clear();
         userBridge.getUsers(startIndex, count, name, region, gender, appController.getToken());
+
+        displayUserSearchTable();
+    }
+
+    /**
+     * Displays the userOverviews from the appcontroller. Abstracted from populate user search table to prevent cyclic recursion
+     */
+    private void displayUserSearchTable() {
         ObservableList<UserOverview> oUsers = FXCollections.observableList(new ArrayList<>(appController.getUserOverviews()));
         SortedList<UserOverview> sUsers = new SortedList<>(oUsers);
         sUsers.comparatorProperty().bind(userTableView.comparatorProperty());
@@ -426,10 +438,11 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
             userTableView.setItems(sUsers);
         } else {
             userTableView.setItems(null);
-            userTableView.setPlaceholder(new Label("No users match this criteria"));
+            Platform.runLater(() -> userTableView.setPlaceholder(new Label("No users match this criteria"))); // Do this to prevent threading issues when this method is not called on an FX thread;
         }
 
         setTableOnClickBehaviour(User.class, userTableView);
+        userTableView.refresh();
     }
 
     private void setTableOnClickBehaviour(Type type, TableView tv) {
@@ -1122,10 +1135,9 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
     @FXML
     public void refreshTables() {
         System.out.println("Called");
-        transplantWaitListTabPageController.populateWaitListTable();
-        populateUserSearchTable();
-        populateClinicianSearchTable();
-        initUserSearchTable();
+        transplantWaitListTabPageController.displayWaitListTable();
+        displayUserSearchTable();
+        displayClinicianSearchTable();
     }
 
     /**
@@ -1194,18 +1206,15 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
 
     private void populateClinicianSearchTable(int startIndex, int rowsPerPage, String name, String region) {
         appController.getClinicians().clear();
-        Collection<Clinician> clinicians;
-        try {
-            clinicianBridge.getClinicians(startIndex, rowsPerPage, name, region, appController.getToken());
-        } catch (IOException ex) {
-            Log.warning("failed to get user overviews from server", ex);
-        }
-        clinicians = appController.getClinicians();
-        if (clinicians != null) {
-            for(Clinician clinician : clinicians) {
-                appController.addClinician(clinician);
-            }
-        }
+        clinicianBridge.getClinicians(startIndex, rowsPerPage, name, region, appController.getToken());
+
+        displayClinicianSearchTable();
+    }
+
+    /**
+     * Displays the clinicians from the appcontroller. Abstracted to prevent cyclic recursion
+     */
+    private void displayClinicianSearchTable() {
 
         ObservableList<Clinician> oClinicians = FXCollections.observableList(new ArrayList<>(appController.getClinicians()));
         SortedList<Clinician> sClinicians = new SortedList<>(oClinicians);
@@ -1215,10 +1224,11 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
             clinicianTableView.setItems(sClinicians);
         } else {
             clinicianTableView.setItems(null);
-            clinicianTableView.setPlaceholder(new Label("No clinicians to show"));
+            Platform.runLater(() -> clinicianTableView.setPlaceholder(new Label("No clinicians to show"))); // Do this to prevent threading issues when this method is not called on an FX thread;
         }
 
         setTableOnClickBehaviour(Clinician.class, clinicianTableView);
+        clinicianTableView.refresh();
     }
 
     private void populateAdminSearchTable() {

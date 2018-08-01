@@ -4,7 +4,6 @@ import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.TabPane;
 import odms.App;
-import odms.TestUtils.CommonTestMethods;
 import odms.commons.model.Clinician;
 import odms.commons.model.Disease;
 import odms.commons.model.User;
@@ -12,7 +11,6 @@ import odms.commons.model.dto.UserOverview;
 import odms.controller.AppController;
 import odms.utils.*;
 import org.junit.*;
-import org.testfx.api.FxRobotException;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 
@@ -20,7 +18,6 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.concurrent.TimeoutException;
 
@@ -29,7 +26,7 @@ import static odms.TestUtils.TableViewsMethod.getCell;
 import static odms.TestUtils.TableViewsMethod.getCellValue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.testfx.api.FxAssert.verifyThat;
@@ -73,7 +70,7 @@ public class NewDiseaseControllerGUITest extends ApplicationTest {
         when(clinicianBridge.getClinician(anyString(), anyString())).thenReturn(clinician);
         when(controller.getTransplantBridge()).thenReturn(transplantBridge);
 
-        when(transplantBridge.getWaitingList(anyInt(), anyInt(), anyString(), anyString(), any(Collection.class))).thenReturn(new ArrayList());
+        when(controller.getTransplantList()).thenReturn(new ArrayList());
 
         //DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         testUser = new User("Aa", LocalDate.parse("2000-01-20", sdf), "ABC1244");

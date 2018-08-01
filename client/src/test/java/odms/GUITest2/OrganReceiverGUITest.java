@@ -4,12 +4,12 @@ package odms.GUITest2;
 import odms.App;
 import odms.TestUtils.CommonTestMethods;
 import odms.commons.model.Clinician;
-import odms.commons.model.dto.UserOverview;
-import odms.controller.AppController;
-import odms.commons.model.datamodel.ReceiverOrganDetailsHolder;
 import odms.commons.model.User;
 import odms.commons.model._enum.OrganDeregisterReason;
 import odms.commons.model._enum.Organs;
+import odms.commons.model.datamodel.ReceiverOrganDetailsHolder;
+import odms.commons.model.dto.UserOverview;
+import odms.controller.AppController;
 import odms.utils.ClinicianBridge;
 import odms.utils.LoginBridge;
 import odms.utils.TransplantBridge;
@@ -27,15 +27,13 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.concurrent.TimeoutException;
 
-import static odms.TestUtils.FxRobotHelper.clickOnButton;
-import static odms.TestUtils.FxRobotHelper.setComboBox;
-import static odms.TestUtils.FxRobotHelper.setTextField;
-import static org.junit.Assert.assertEquals;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.mock;
+import static odms.TestUtils.FxRobotHelper.*;
 import static odms.TestUtils.ListViewsMethod.getListView;
 import static odms.TestUtils.ListViewsMethod.getRowValue;
 import static odms.TestUtils.TableViewsMethod.getCell;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class OrganReceiverGUITest extends ApplicationTest {
@@ -68,7 +66,7 @@ public class OrganReceiverGUITest extends ApplicationTest {
         when(application.getTransplantBridge()).thenReturn(transplantBridge);
         when(application.getToken()).thenReturn("ahaahahahahhaha");
 
-        when(transplantBridge.getWaitingList(anyInt(), anyInt(), anyString(), anyString(), anyCollection())).thenReturn(new ArrayList<>());
+        when(application.getTransplantList()).thenReturn(new ArrayList<>());
         when(loginBridge.loginToServer(anyString(),anyString(), anyString())).thenReturn("lsdjfksd");
         when(clinicianBridge.getClinician(anyString(), anyString())).thenReturn(clinician);
 

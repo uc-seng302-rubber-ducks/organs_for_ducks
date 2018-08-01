@@ -27,7 +27,8 @@ import static odms.TestUtils.FxRobotHelper.setTextField;
 import static odms.TestUtils.TableViewsMethod.getCell;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.testfx.api.FxAssert.verifyThat;
 
@@ -108,7 +109,7 @@ public class GivenSteps extends ApplicationTest {
         when(CucumberTestModel.getClinicianBridge().getClinician(anyString(), anyString())).thenReturn(
                 new Clinician("", "0", "")
         );
-        when(CucumberTestModel.getTransplantBridge().getWaitingList(anyInt(), anyInt(), anyString(), anyString(), anyCollection())).thenReturn(new ArrayList<>());
+        when(CucumberTestModel.getController().getTransplantList()).thenReturn(new ArrayList<>());
         when(CucumberTestModel.getController().getUserOverviews()).thenReturn(Collections.singleton(UserOverview.fromUser(CucumberTestModel.getUser())));
         when(CucumberTestModel.getLoginBridge().loginToServer(anyString(), anyString(), anyString())).thenReturn("FakeToken");
         //Use default clinician

@@ -1,24 +1,20 @@
 package odms.controller.gui.panel;
 
 import javafx.animation.PauseTransition;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
-import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
 import javafx.util.Duration;
-import odms.commons.exception.ApiException;
 import odms.commons.model.User;
 import odms.commons.model._abstract.TransplantWaitListViewer;
 import odms.commons.model._enum.Organs;
 import odms.commons.model.datamodel.TransplantDetails;
 import odms.commons.model.dto.UserOverview;
-import odms.commons.utils.Log;
 import odms.controller.AppController;
 import odms.controller.gui.popup.utils.AlertWindowFactory;
 import odms.utils.UserBridge;
@@ -149,7 +145,7 @@ public class TransplantWaitListController {
     /**
      * simplified version of the method to get the first page of results with no filters
      */
-    public void populateWaitListTable() {
+    private void populateWaitListTable() {
         populateWaitListTable(0, TRANSPLANTS_PER_PAGE, waitingRegionTextfield.getText(), getAllFilteredOrgans());
     }
 
@@ -161,22 +157,13 @@ public class TransplantWaitListController {
      * @param regionSearch partial string to filter region by (sql LIKE 'string%')
      * @param allowedOrgans list of the organs to filter by. If this is empty, all will be returned
      */
-    public void populateWaitListTable(int startIndex, int count, String regionSearch, List<Organs> allowedOrgans) {
-
+    private void populateWaitListTable(int startIndex, int count, String regionSearch, List<Organs> allowedOrgans) {
         appController.getTransplantList().clear();
-        List<TransplantDetails> details = null;
-        try {
-            //name searching not implemented in the GUI. empty string matches all names
-            details = appController.getTransplantBridge().getWaitingList(startIndex, count, "", regionSearch, allowedOrgans);
-        } catch (ApiException ex) {
-            Log.warning("failed to get transplant details from server. got response code " + ex.getResponseCode(), ex);
-        }
-        if (details != null) {
-            for(TransplantDetails detail : details) {
-                appController.addTransplant(detail);
-            }
-        }
+        appController.getTransplantBridge().getWaitingList(startIndex, count, "", regionSearch, allowedOrgans);
+        displayWaitListTable();
+    }
 
+    public void displayWaitListTable() {
         ObservableList<TransplantDetails> oTransplantList = FXCollections
                 .observableList(appController.getTransplantList());
         SortedList<TransplantDetails> sTransplantList = new SortedList<>(oTransplantList);
@@ -187,12 +174,13 @@ public class TransplantWaitListController {
 
         } else {
             transplantWaitListTableView.setItems(null);
-            transplantWaitListTableView.setPlaceholder(new Label("No Receivers currently registered"));
+            Platform.runLater(() -> transplantWaitListTableView.setPlaceholder(new Label("No Receivers currently registered"))); // Do this to prevent threading issues when this method is not called on an FX thread;
         }
 
         //needs to be re-run each time as a handler on empty list will cause issues
         setTableOnClickBehaviour();
     }
+
 
     /**
      * sets table so that clicking an entry will take open that user in a new window

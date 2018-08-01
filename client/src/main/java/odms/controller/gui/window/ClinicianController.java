@@ -8,7 +8,6 @@ import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -21,11 +20,6 @@ import javafx.scene.layout.Region;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import odms.controller.AppController;
-import odms.controller.gui.StatusBarController;
-import odms.controller.gui.UnsavedChangesAlert;
-import odms.controller.gui.panel.TransplantWaitListController;
-import odms.controller.gui.popup.DeletedUserController;
 import odms.commons.model.Clinician;
 import odms.commons.model.User;
 import odms.commons.model._abstract.TransplantWaitListViewer;
@@ -33,6 +27,11 @@ import odms.commons.model._enum.EventTypes;
 import odms.commons.model._enum.Organs;
 import odms.commons.model.dto.UserOverview;
 import odms.commons.utils.Log;
+import odms.controller.AppController;
+import odms.controller.gui.StatusBarController;
+import odms.controller.gui.UnsavedChangesAlert;
+import odms.controller.gui.panel.TransplantWaitListController;
+import odms.controller.gui.popup.DeletedUserController;
 import odms.controller.gui.popup.utils.AlertWindowFactory;
 
 import java.beans.PropertyChangeEvent;
@@ -538,7 +537,8 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
      */
     @FXML
     public void refreshTables() {
-        transplantWaitListTabPageController.populateWaitListTable();
+        System.out.println("Hello there");
+        transplantWaitListTabPageController.displayWaitListTable();
         displaySearchTable();
     }
 

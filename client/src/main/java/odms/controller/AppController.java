@@ -304,6 +304,9 @@ public class AppController {
         if (clinicianController != null) {
             clinicianController.refreshTables();
         }
+        if (administratorViewController != null) {
+            administratorViewController.refreshTables();
+        }
     }
 
     /**

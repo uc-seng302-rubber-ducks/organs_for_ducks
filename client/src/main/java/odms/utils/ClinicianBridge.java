@@ -18,7 +18,7 @@ public class ClinicianBridge extends RoleBridge {
         super(client);
     }
 
-    public void getClinicians(int startIndex, int count, String name, String region, String token) throws IOException {
+    public void getClinicians(int startIndex, int count, String name, String region, String token) {
         String url = ip + "/clinicians?startIndex=" + startIndex + "&count=" + count + "&q=" + name + "&region=" + region;
         Request request = new Request.Builder().addHeader(TOKEN_HEADER, token).url(url).build();
         client.newCall(request).enqueue(new Callback() {

@@ -23,8 +23,6 @@ import java.util.concurrent.TimeoutException;
 import static odms.TestUtils.FxRobotHelper.clickOnButton;
 import static odms.TestUtils.FxRobotHelper.setTextField;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyCollection;
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 import static org.testfx.api.FxAssert.verifyThat;
@@ -60,7 +58,7 @@ public class UpdateAdminControllerGUITest extends ApplicationTest {
         when(loginBridge.loginToServer(anyString(),anyString(), anyString())).thenReturn("lsdjfksd");
         when(administratorBridge.getAdmin(anyString(), anyString())).thenReturn(testAdmin);
         when(application.getTransplantBridge()).thenReturn(transplantBridge);
-        when(transplantBridge.getWaitingList(anyInt(), anyInt(), anyString(), anyString(), anyCollection())).thenReturn(new ArrayList<>());
+        when(application.getTransplantList()).thenReturn(new ArrayList<>());
         when(application.getClinicians()).thenReturn(new ArrayList<>());
         when(application.getUserOverviews()).thenReturn(new HashSet<>());
 
