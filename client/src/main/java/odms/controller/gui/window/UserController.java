@@ -525,6 +525,7 @@ public class UserController {
     }
 
     public void disableLogout() {
-        userProfileTabPageController.disableLogout();
+        logoutUser.setText("Go Back");
+        logoutUser.setOnAction(e -> closeWindow());
     }
 }
