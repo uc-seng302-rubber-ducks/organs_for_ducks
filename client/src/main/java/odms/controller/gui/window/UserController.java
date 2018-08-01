@@ -5,25 +5,33 @@ import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.Region;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import odms.commons.model.Change;
 import odms.commons.model.EmergencyContact;
 import odms.commons.model.User;
 import odms.commons.model._enum.OrganDeregisterReason;
 import odms.commons.model._enum.Organs;
+import odms.commons.utils.Log;
 import odms.controller.AppController;
+import odms.controller.gui.StatusBarController;
+import odms.controller.gui.UnsavedChangesAlert;
 import odms.controller.gui.panel.*;
-import odms.controller.gui.statusBarController;
 
 import java.beans.PropertyChangeListener;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
+
+import static odms.commons.utils.PhotoHelper.deleteTempDirectory;
 
 /**
  * Class for the functionality of the User view of the application
@@ -80,6 +88,12 @@ public class UserController {
     @FXML
     private TableView<Change> historyTableView;
 
+    @FXML
+    private MenuItem saveUserMenuItem;
+
+    @FXML
+    private MenuItem logoutUser;
+
     private AppController application;
 
     @FXML
@@ -100,9 +114,10 @@ public class UserController {
     @FXML
     private ReceiverTabController receiverTabPageController;
     @FXML
-    private statusBarController statusBarPageController;  //</editor-fold>
+    private StatusBarController statusBarPageController;  //</editor-fold>
 
     private User currentUser;
+    private boolean fromClinician;
     private Stage stage;
     private EmergencyContact contact = null;
     private ObservableList<Change> changelog;
@@ -127,6 +142,7 @@ public class UserController {
             }
             this.stage = stage;
             application = controller;
+            this.fromClinician = fromClinician;
 
             // This is the place to set visible and invisible controls for Clinician vs User
             medicationTabPageController.init(controller, user, fromClinician, this);
@@ -143,6 +159,15 @@ public class UserController {
 
             // Sets the button to be disabled
             updateUndoRedoButtons();
+
+            if (fromClinician) {
+                logoutUser.setText("Go Back");
+                logoutUser.setOnAction(e -> closeWindow());
+
+            } else {
+                logoutUser.setText("Log Out");
+                logoutUser.setOnAction(e -> logout());
+            }
 
             if (user.getNhi() != null) {
                 showUser(currentUser); // Assumes a donor with no name is a new sign up and does not pull values from a template
@@ -162,6 +187,40 @@ public class UserController {
 
             userProfileTabPageController.init(controller, user, this.stage, fromClinician);
         }
+    }
+
+    /**
+     * Opens the update user details window
+     */
+    @FXML
+    private void updateDetails() {
+        FXMLLoader updateLoader = new FXMLLoader(getClass().getResource("/FXML/updateUser.fxml"));
+        Parent root;
+        try {
+            root = updateLoader.load();
+            UpdateUserController updateUserController = updateLoader.getController();
+            Stage stage = new Stage();
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setScene(new Scene(root));
+            updateUserController.init(currentUser, application, stage);
+            stage.show();
+            Log.info("Successfully launched update user window for User NHI: " + currentUser.getNhi());
+
+        } catch (IOException e) {
+            Log.severe("Failed to load update user window for User NHI: " + currentUser.getNhi(), e);
+        }
+    }
+
+    /**
+     * Closes current window.
+     */
+    @FXML
+    private void closeWindow() {
+        checkSave();
+        currentUser.getUndoStack().clear();
+        currentUser.getRedoStack().clear();
+        stage.close();
+        Log.info("Successfully closed update user window for User NHI: " + currentUser.getNhi());
     }
 
     public void refreshDiseases() {
@@ -191,6 +250,58 @@ public class UserController {
             changelog = FXCollections.observableArrayList(new ArrayList<Change>());
         }
     }
+
+    /**
+     * Popup that prompts the user if they want to save any unsaved changes before logging out or exiting the application
+     */
+    private void checkSave() {
+        boolean noChanges = currentUser.getUndoStack().isEmpty();
+        if (!noChanges) {
+            Optional<ButtonType> result = UnsavedChangesAlert.getAlertResult();
+            if (result.isPresent() && result.get() == ButtonType.YES) {
+                application.update(currentUser);
+                application.saveUser(currentUser);
+
+            } else {
+                User revertUser = currentUser.getUndoStack().firstElement().getState();
+                application.update(revertUser);
+            }
+        }
+    }
+
+    /**
+     * Fires when the logout button is clicked Ends the users session, and takes back to the login
+     * window.
+     * When fired, it also deleted the temp folder.
+     */
+    @FXML
+    private void logout(){
+        checkSave();
+        currentUser.getUndoStack().clear();
+        currentUser.getRedoStack().clear();
+        try {
+            deleteTempDirectory();
+        } catch (IOException e){
+            System.err.println(e);
+        }
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML/loginView.fxml"));
+        Parent root;
+        try {
+            root = loader.load();
+            Stage newStage = new Stage();
+            newStage.setScene(new Scene(root));
+            newStage.show();
+            stage.close();
+            LoginController loginController = loader.getController();
+            loginController.init(AppController.getInstance(), newStage);
+
+            Log.info("successfully launched login window after logged out for User NHI: " + currentUser.getNhi());
+        } catch (IOException e) {
+            Log.severe("failed to launch login window after logged out for User NHI: " + currentUser.getNhi(), e);
+        }
+    }
+
+
 
 
     /**
@@ -300,8 +411,8 @@ public class UserController {
      */
     public void showUser(User user) {
         changeCurrentUser(user);
-        userProfileTabPageController.showUser(user);
         setContactPage();
+        userProfileTabPageController.showUser(user);
         medicationTabPageController.refreshLists(user);
         donationTabPageController.populateOrganLists(user);
         receiverTabPageController.populateReceiverLists(user);
@@ -344,6 +455,29 @@ public class UserController {
         historyTableView.setItems(changelog);
         historyTableView.getColumns().addAll(timeColumn, changeColumn);
 
+    }
+
+
+    /**
+     * Creates a alert pop up to confirm that the user wants to delete the profile
+     */
+    @FXML
+    public void delete() {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setContentText("Are you sure you want to delete this user?");
+        alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
+        Optional<ButtonType> result = alert.showAndWait();
+
+        if (result.get() == ButtonType.OK) {
+            currentUser.setDeleted(true);
+            Log.info("Successfully deleted user profile for User NHI: " + currentUser.getNhi());
+            if (!fromClinician) {
+                application.deleteUser(currentUser);
+                logout();
+            } else {
+                stage.close();
+            }
+        }
     }
 
 

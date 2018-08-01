@@ -9,10 +9,12 @@ If it is not installed, it should be installed (see the section on this below).
 
 A tested, runnable jar can be built by navigating into the directory where the project has been downloaded to
 and using the command `mvn clean package`.
-This will create the directory target with the JAR in it (and remove any previous 
+This will create the directory target with multiple JARs (and remove any previous 
 Maven builds for this project).
-The project can then by run with the command 
-`java -jar target/team-100-Rubber-Duckies-X.X.jar`
+The server can be run with:
+`java -jar target/server/server-X.X.jar` (or similar) 
+and the client can be run with:
+`java -jar target/client/client-X.X.jar` (or similar)
 
 or by navigating to the target directory and running the command without `target/`
 
@@ -46,8 +48,9 @@ Select Maven and click import.
 The project should now be open. 
 
 # Basic Project Structure
- - `src/` Your application source
- - `doc/examples/donorGenerator.py` Script to generate users
+ - `client/src/` Application source code for the client
+ - `commons/src/` Application source code for classes common both client and server
+ - `server/src/` Application source code for the server
  
 # Using the Application
  
@@ -61,6 +64,7 @@ The project should now be open.
    - `update`
    - `delete`
    - `help`
+   - `sql`
     
 Entering the command and then `help` or `-h` will provide more details regarding the usage and avaliable flags.
 `help` and `quit` have no flags.
@@ -188,21 +192,27 @@ Commands:
   clinician  Allows a clinician to be deleted
 ```
 
+- sql
+```
+Usage: sql <query>
+Command to send a read only sql query to the connected database
+```
+
 # Storage
 All files used by the program will be stored in the .organs folder of your home directory, and under C:/Users/<Your User>/ for Windows. This contains 4 key items:
-1. JSON/users.json
-2. JSON/clinicians.json
-3. JSON/admin.json
-4. LOGS
+1. LOGS
+2. CACHE
 
 
 These files store data for each corresponding role 
 
 # Usage
-The login for the clinicians are:
-Staff ID: 0
-Password: admin
+An Internet connection is required to connect to the database, otherwise the application will fail to run smoothly.
 
-The default login for the default admin is:
-Username: default
-Password: admin
+The login for the clinicians are:  
+**Staff ID**: 0  
+**Password**: admin  
+
+The default login for the default admin is:  
+**Username**: default  
+**Password**: admin

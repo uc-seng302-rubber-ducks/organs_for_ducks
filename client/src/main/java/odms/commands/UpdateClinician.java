@@ -1,10 +1,13 @@
 package odms.commands;
 
+import odms.commons.utils.Log;
 import odms.controller.AppController;
 import odms.commons.model.Clinician;
 import odms.commons.utils.AttributeValidation;
 import picocli.CommandLine;
 import picocli.CommandLine.Option;
+
+import java.io.IOException;
 
 @CommandLine.Command(name = "clinician", description = "Allows the details for a clinician to be updated")
 public class UpdateClinician implements Runnable {
@@ -126,7 +129,11 @@ public class UpdateClinician implements Runnable {
 
         if (changed) {
             controller.updateClinicians(clinician);
-            controller.saveClinician(clinician);
+            try {
+                controller.saveClinician(clinician);
+            } catch (IOException e) {
+                Log.warning("File is wrong", e);
+            }
         }
 
     }

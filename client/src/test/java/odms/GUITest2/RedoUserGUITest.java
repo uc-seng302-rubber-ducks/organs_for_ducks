@@ -83,7 +83,8 @@ public class RedoUserGUITest extends ApplicationTest {
 
     @Test
     public void testRedoSingleUndo() {
-        clickOnButton(this,"#editDetailsButton");
+        clickOn("#editMenuUser");
+        clickOn("#editDetailsUser");
         setTextField(this, "#lNameInput", "Jefferson");
         clickOnButton(this,"#confirmButton");
         clickOnButton(this,"#undoButton");
@@ -93,15 +94,19 @@ public class RedoUserGUITest extends ApplicationTest {
 
     @Test
     public void testMergedRedosEqualMergedUndos() {
-        clickOnButton(this,"#editDetailsButton");
+        clickOn("#editMenuUser");
+        clickOn("#editDetailsUser");
+
         setTextField(this, "#lNameInput", "Jefferson");
         clickOnButton(this,"#confirmButton");
 
-        clickOnButton(this,"#editDetailsButton");
+        clickOn("#editMenuUser");
+        clickOn("#editDetailsUser");;
         setComboBox(this, "#alcoholComboBox", "Low");
         clickOnButton(this,"#confirmButton");
 
-        clickOnButton(this,"#editDetailsButton");
+        clickOn("#editMenuUser");
+        clickOn("#editDetailsUser");
         setTextField(this, "#cell", "011899992");
         clickOnButton(this,"#confirmButton");
 

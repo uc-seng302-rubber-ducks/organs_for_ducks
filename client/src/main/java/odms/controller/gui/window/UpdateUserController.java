@@ -6,6 +6,8 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
@@ -19,9 +21,17 @@ import odms.commons.model._enum.Regions;
 import odms.commons.utils.AttributeValidation;
 import odms.commons.utils.Log;
 import odms.controller.AppController;
+import odms.controller.gui.FileSelectorController;
 
+import java.io.File;
+import java.io.IOException;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+
+import static odms.commons.utils.PhotoHelper.displayImage;
+import static odms.commons.utils.PhotoHelper.setUpImageFile;
 
 /**
  * Class for updating the user
@@ -166,7 +176,11 @@ public class UpdateUserController {
 
     @FXML
     private Button redoUpdateButton;
+
+    @FXML
+    private ImageView profileImage;
     //</editor-fold>
+
 
     private Stage stage;
     private AppController appController;
@@ -174,6 +188,7 @@ public class UpdateUserController {
     private User oldUser;
     private int undoMarker; //int used to hold the top of the stack before opening this window
     private boolean listen = true;
+    private File inFile;
     private String defaultCountry = "New Zealand";
 
 
@@ -431,7 +446,9 @@ public class UpdateUserController {
         } else {
             email.setText("");
         }
-        //ec
+        if (user.getProfilePhotoFilePath() != null) {
+            displayImage(profileImage, user.getProfilePhotoFilePath());
+        }
         String ecRegion = user.getRegion() == null ? "": user.getContact().getRegion();
         String ecCountry = user.getContact().getCountry();
 
@@ -545,10 +562,41 @@ public class UpdateUserController {
     }
 
     /**
+     * uploads an image using file picker. includes validation.
+     */
+    @FXML
+    private void uploadImage() {
+        boolean isValid = true;
+        String filename;
+        List<String> extensions = new ArrayList<>();
+        extensions.add("*.png");
+        //extensions.add("*.jpg");
+        //extensions.add("*.gif");
+        FileSelectorController fileSelectorController = new FileSelectorController();
+        filename = fileSelectorController.getFileSelector(stage, extensions);
+        if (filename != null) {
+            inFile = new File(filename);
+
+            if (inFile.length() > 2000000) { //if more than 2MB
+                Alert imageTooLargeAlert = new Alert(Alert.AlertType.WARNING, "Could not upload the image as the image size exceeded 2MB");
+                imageTooLargeAlert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
+                imageTooLargeAlert.showAndWait();
+                isValid = false;
+            }
+
+            if (isValid) {
+                update();
+                displayImage(profileImage, inFile.getPath());
+                currentUser.setProfilePhotoFilePath(inFile.getPath());
+            }
+        }
+    }
+
+    /**
      *
      */
     @FXML
-    public void confirmUpdate() {
+    public void confirmUpdate() throws IOException {
 
         hideErrorMessages();
         errorLabel.setText("Please make sure your details are correct.");
@@ -557,8 +605,13 @@ public class UpdateUserController {
 
         if (valid) {
             removeFormChanges();
-            AppController appController = AppController.getInstance();
             UserController userController = appController.getUserController();
+            if(inFile != null){
+                String filePath = setUpImageFile(inFile, currentUser.getNhi());
+                currentUser.setProfilePhotoFilePath(filePath);
+                currentUser.getUndoStack().pop();
+            }
+
             try {
                 currentUser.getRedoStack().clear();
                 oldUser.setDeleted(true);
@@ -644,13 +697,13 @@ public class UpdateUserController {
         }
 
         String homePhone = phone.getText();
-        valid &= AttributeValidation.validatePhoneNumber(homePhone);
+        valid &= AttributeValidation.validatePhoneNumber(homePhone.replaceAll(" ", ""));
         if (!valid) {
             errorLabel.setVisible(true);
         }
 
         String cellPhone = cell.getText();
-        valid &= AttributeValidation.validateCellNumber(cellPhone);
+        valid &= AttributeValidation.validateCellNumber(cellPhone.replaceAll(" ", ""));
         if (!valid) {
             errorLabel.setVisible(true);
         }
@@ -687,13 +740,13 @@ public class UpdateUserController {
         }
 
         String emergencyPhone = ecPhone.getText();
-        valid &= AttributeValidation.validatePhoneNumber(emergencyPhone);
+        valid &= AttributeValidation.validatePhoneNumber(emergencyPhone.replaceAll(" ", ""));
         if (!valid) {
             errorLabel.setVisible(true);
         }
 
         String emergencyCell = ecCell.getText();
-        valid &= AttributeValidation.validateCellNumber(emergencyCell);
+        valid &= AttributeValidation.validateCellNumber(emergencyCell.replaceAll(" ", ""));
         if (!valid) {
             errorLabel.setVisible(true);
         }
@@ -733,8 +786,14 @@ public class UpdateUserController {
      */
     private void updateUndos() {
         boolean changed;
+        String photoPath;
+        if (inFile != null) {
+            photoPath = inFile.getPath();
+        } else {
+            photoPath = currentUser.getProfilePhotoFilePath();
+        }
         changed = updatePersonalDetails(nhiInput.getText(), fNameInput.getText(), dobInput.getValue(),
-                dodInput.getValue());
+                dodInput.getValue(), photoPath);
         changed |= updateHealthDetails(heightInput.getText(), weightInput.getText());
         changed |= updateContactDetails();
         changed |= updateEmergencyContact();
@@ -755,7 +814,7 @@ public class UpdateUserController {
      * @param dob   The date of birth to be checked for changes and possibly updated.
      * @param dod   The date of death to be checked for changes and possibly updated.
      */
-    private boolean updatePersonalDetails(String nhi, String fName, LocalDate dob, LocalDate dod) {
+    private boolean updatePersonalDetails(String nhi, String fName, LocalDate dob, LocalDate dod, String photoPath) {
         boolean changed = false;
 
         if (!currentUser.getNhi().equals(nhi)) {
@@ -809,6 +868,11 @@ public class UpdateUserController {
             }
         } else if ((deathDate == null && dod != null) || deathDate != null) {
             currentUser.setDateOfDeath(dod);
+            changed = true;
+        }
+
+        if (checkChangedProperty(currentUser.getProfilePhotoFilePath(), photoPath)) {
+            currentUser.setProfilePhotoFilePath(photoPath);
             changed = true;
         }
 

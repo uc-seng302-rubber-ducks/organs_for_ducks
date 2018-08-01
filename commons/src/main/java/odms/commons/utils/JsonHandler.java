@@ -5,15 +5,18 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializer;
 import com.google.gson.reflect.TypeToken;
+import javafx.scene.image.Image;
 import odms.commons.model.*;
 import odms.commons.model._enum.Directory;
 import odms.commons.model.datamodel.TransplantDetails;
 import odms.commons.model.dto.LoginResponse;
 import okhttp3.Response;
+import okhttp3.ResponseBody;
 import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
 
 import java.io.*;
+import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
@@ -22,7 +25,7 @@ import java.util.stream.Collectors;
 /**
  * Json Handler to import and save data
  */
-public final class JsonHandler extends DataHandler {
+public class JsonHandler extends DataHandler {
 
     /**
      * save the current users in the system to the filename given Based on:
@@ -288,7 +291,7 @@ public final class JsonHandler extends DataHandler {
      * @param name    User name to be changed must be passed in format firstname[_middlename(s)]_lastname
      * @throws IOException thrown if no file exists can be ignored as file is created
      */
-    public static void saveChangelog(ArrayList<Change> changes, String name) throws IOException {
+    public void saveChangelog(ArrayList<Change> changes, String name) throws IOException {
         Files.createDirectories(Paths.get(Directory.JSON.directory()));
         File outFile = new File(Directory.JSON.directory() + "/" + name + "changelog.json");
 
@@ -318,7 +321,7 @@ public final class JsonHandler extends DataHandler {
      * @throws FileNotFoundException thrown if file is not found. Indicates no changes have been made
      *                               to this user.
      */
-    public static List<Change> importHistoryFromFile(String name) throws FileNotFoundException {
+    public List<Change> importHistoryFromFile(String name) throws FileNotFoundException {
 
         File infile = new File(Directory.JSON.directory() + "/" + name + "changelog.json");
         if (!infile.exists()) {
@@ -348,9 +351,14 @@ public final class JsonHandler extends DataHandler {
      * @return all valid TransplantDetails objects. will return empty list if none
      */
     public List<TransplantDetails> decodeTransplantList(Response response) throws IOException{
-
         return new Gson().fromJson(response.body().string(), new TypeToken<List<TransplantDetails>>() {}.getType());
     }
+
+    public String decodeProfilePicture(ResponseBody body, String userId, String format) throws IOException {
+        return PhotoHelper.createTempImageFile(body.bytes(),userId, format);
+
+    }
+
 
     public Set decodeCountries(Response response) throws IOException {
         return new Gson().fromJson(response.body().string(), new TypeToken<HashSet<String>>() {}.getType());
@@ -358,6 +366,10 @@ public final class JsonHandler extends DataHandler {
 
     public Collection<Clinician> decodeClinicians(String response) throws IOException {
         return new Gson().fromJson(response, new TypeToken<Collection<Clinician>>(){}.getType());
+    }
+
+    public List<String> decodeQueryResult(ResponseBody body) throws IOException {
+        return new Gson().fromJson(body.string(), (Type) new ArrayList<String>());
     }
 }
 

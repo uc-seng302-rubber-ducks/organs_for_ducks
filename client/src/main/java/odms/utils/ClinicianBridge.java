@@ -6,6 +6,8 @@ import odms.commons.exception.ApiException;
 import odms.commons.model.Clinician;
 import odms.commons.utils.JsonHandler;
 import odms.commons.utils.Log;
+import odms.commons.utils.PhotoHelper;
+import odms.controller.AppController;
 import okhttp3.*;
 
 import java.io.IOException;
@@ -109,7 +111,9 @@ public class ClinicianBridge extends RoleBridge {
         }
 
         try {
-            return new JsonHandler().decodeClinician(response);
+            Clinician c = new JsonHandler().decodeClinician(response);
+            c.setProfilePhotoFilePath(getProfilePicture(c.getStaffId(), token));
+            return c;
         } catch (IOException ex) {
             Log.severe("could not interpret the given clinician", ex);
             return null;
@@ -131,4 +135,46 @@ public class ClinicianBridge extends RoleBridge {
             return false;
         }
     }
+
+    private String getProfilePicture(String staffId, String token) throws IOException {
+        String url = ip + "/clinicians/" + staffId + "/photo";
+        Headers headers =  new Headers.Builder().add(TOKEN_HEADER, token).build();
+        Request request = new Request.Builder().get().url(url).headers(headers).build();
+        try(Response response  = client.newCall(request).execute()) {
+            String contentType = response.header("Content-Type");
+            String[] bits = contentType.split("/");
+            String format = bits[bits.length-1];
+            if (response.code() == 200) {
+                return handler.decodeProfilePicture(response.body(), staffId,format);
+            } else if(response.code() == 404){
+                return null;
+            } else {
+                throw new IOException("Failed to get profile picture");
+            }
+        }
+    }
+
+    public void putProfilePicture(String staffId, String token, String profilePicturePath) throws IOException {
+        String url = ip + "/clinicians/" + staffId + "/photo";
+        String[] bits = profilePicturePath.split("\\.");
+        String format = bits[bits.length-1];
+        Headers headers = new Headers.Builder().add(TOKEN_HEADER, token).build();
+        RequestBody body = RequestBody.create(MediaType.parse("image/" + format), PhotoHelper.getBytesFromImage(profilePicturePath));
+        Request request = new Request.Builder().url(url).put(body).headers(headers).build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.warning("Could not PUT " + url, e);
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if(!response.isSuccessful()) {
+                    Log.warning("Failed to PUT " + url);
+                    throw new IOException("Could not PUT " + url);
+                }
+            }
+        });
+    }
+
 }

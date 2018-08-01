@@ -102,25 +102,22 @@ public class UserOverviewController {
 
     @FXML
     private Button logOutButton;
+
+    @FXML
+    private ImageView profilePicture;
     //</editor-fold>
 
     private AppController application;
     private User currentUser;
     private Stage stage;
-    private boolean Clinician;
+    private boolean clinician;
 
     @FXML
     public void init(AppController controller, User user, Stage stage, boolean fromClinician) {
         this.stage = stage;
         this.application = controller;
         this.currentUser = user;
-        if (fromClinician) {
-            Clinician = true;
-            logOutButton.setVisible(false);
-        } else {
-            Clinician = false;
-            backButton.setVisible(false);
-        }
+        clinician = fromClinician;
         showUser(user);
     }
 
@@ -134,6 +131,9 @@ public class UserOverviewController {
         NHIValue.setText(user.getNhi());
         fNameValue.setText(user.getFirstName());
         DOBValue.setText(user.getDateOfBirth().toString());
+
+        displayImage(profilePicture, user.getProfilePhotoFilePath());
+
 
         if (user.getMiddleName() != null) {
             mNameValue.setText(user.getMiddleName());

@@ -30,7 +30,8 @@ CREATE TABLE User(
   dod DATE,
   timeCreated DATETIME,
   lastModified DATETIME,
-  profilePicture BLOB
+  profilePicture MEDIUMBLOB,
+  pictureFormat VARCHAR(255)
 );
 
 CREATE TABLE Clinician(
@@ -39,7 +40,9 @@ CREATE TABLE Clinician(
   middleName VARCHAR(255),
   lastName VARCHAR(255),
   timeCreated DATETIME,
-  lastModified DATETIME
+  lastModified DATETIME,
+  profilePicture MEDIUMBLOB,
+  pictureFormat VARCHAR(255)
 );
 
 CREATE TABLE Administrator(

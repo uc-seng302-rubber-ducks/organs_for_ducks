@@ -2,16 +2,16 @@ package odms.GUITest2;
 
 import javafx.scene.Node;
 import odms.App;
-import odms.commons.model.dto.UserOverview;
-import odms.controller.AppController;
+import odms.TestUtils.CommonTestMethods;
 import odms.commons.model.EmergencyContact;
 import odms.commons.model.User;
+import odms.commons.model.dto.UserOverview;
+import odms.controller.AppController;
 import odms.utils.UserBridge;
 import org.junit.*;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.matcher.control.LabeledMatchers;
-import odms.TestUtils.CommonTestMethods;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -78,7 +78,8 @@ public class UndoDonorGUITest extends ApplicationTest {
      */
     @Test
     public void testSingleUndo() {
-        clickOnButton(this,"#editDetailsButton");
+        clickOn("#editMenuUser");
+        clickOn("#editDetailsUser");
         setTextField(this, "#lNameInput", "Jefferson");
         clickOnButton(this,"#confirmButton");
         clickOnButton(this,"#undoButton");
@@ -91,7 +92,8 @@ public class UndoDonorGUITest extends ApplicationTest {
      */
     @Test
     public void testMultipleUndosWithoutSufficientChanges() {
-        clickOnButton(this,"#editDetailsButton");
+        clickOn("#editMenuUser");
+        clickOn("#editDetailsUser");
         setTextField(this, "#lNameInput", "Jefferson");
         clickOnButton(this,"#confirmButton");
         clickOnButton(this,"#undoButton");
@@ -104,17 +106,19 @@ public class UndoDonorGUITest extends ApplicationTest {
      */
     @Test
     public void testEqualChangesEqualUndos() {
-
-        clickOnButton(this,"#editDetailsButton");
+        clickOn("#editMenuUser");
+        clickOn("#editDetailsUser");
         setTextField(this, "#lNameInput", "Jefferson");
         clickOnButton(this,"#confirmButton");
 
-        clickOnButton(this, "#editDetailsButton");
+        clickOn("#editMenuUser");
+        clickOn("#editDetailsUser");;
         clickOn("#genderIdComboBox");
         clickOn("Non Binary");
         clickOnButton(this,"#confirmButton");
 
-        clickOnButton(this,"#editDetailsButton");
+        clickOn("#editMenuUser");
+        clickOn("#editDetailsUser");
         clickOn("#smokerCheckBox");
         clickOnButton(this,"#confirmButton");
         clickOnButton(this,"#undoButton");
@@ -196,7 +200,8 @@ public class UndoDonorGUITest extends ApplicationTest {
      */
     @Test
     public void testNHIChange() {
-        clickOnButton(this,"#editDetailsButton");
+        clickOn("#editMenuUser");
+        clickOn("#editDetailsUser");
         doubleClickOn("#nhiInput");
 
         write("ABD1111");
