@@ -408,20 +408,17 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
         populateUserSearchTable(0, ROWS_PER_PAGE, adminSearchField.getText(), regionSearchTextField.getText(), "");
     }
 
+    /**
+     * Requests the filtered data from the server and populates the user overview table
+     * @param startIndex starting index to get the data from
+     * @param count amount of users to obtain
+     * @param name query for name, will obtain users that start with the name
+     * @param region search query for region
+     * @param gender search query for gender
+     */
     private void populateUserSearchTable(int startIndex, int count, String name, String region, String gender) {
         appController.getUserOverviews().clear();
-        Collection<UserOverview> users = null;
-        try {
-            users = userBridge.getUsers(startIndex, count, name, region, gender, appController.getToken());
-        } catch (IOException ex) {
-            Log.warning("failed to get user overviews from server", ex);
-        }
-        if (users != null) {
-            for(UserOverview overview: users) {
-                appController.addUserOverview(overview);
-            }
-        }
-
+        userBridge.getUsers(startIndex, count, name, region, gender, appController.getToken());
         ObservableList<UserOverview> oUsers = FXCollections.observableList(new ArrayList<>(appController.getUserOverviews()));
         SortedList<UserOverview> sUsers = new SortedList<>(oUsers);
         sUsers.comparatorProperty().bind(userTableView.comparatorProperty());

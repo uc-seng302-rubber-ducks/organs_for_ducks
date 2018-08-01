@@ -13,6 +13,7 @@ import odms.commons.model.dto.UserOverview;
 import odms.commons.utils.Log;
 import odms.commons.utils.PhotoHelper;
 import odms.controller.AppController;
+import odms.controller.gui.popup.utils.AlertWindowFactory;
 import okhttp3.*;
 
 import java.io.IOException;
@@ -26,18 +27,24 @@ public class UserBridge extends RoleBridge {
         super(client);
     }
 
-    public Collection<UserOverview> getUsers(int startIndex, int count, String name, String region, String gender, String token) throws IOException {
+    public void getUsers(int startIndex, int count, String name, String region, String gender, String token) {
         String url = ip + "/users?startIndex=" + startIndex + "&count=" + count + "&name=" + name + "&region=" + region + "&gender=" + gender;
         Request request = new Request.Builder().header(TOKEN_HEADER, token).url(url).build();
-        Collection<UserOverview> overviews;
-        try (Response response = client.newCall(request).execute()) {
-            overviews = new Gson().fromJson(response.body().string(), new TypeToken<Collection<UserOverview>>() {
-            }.getType());
-        } catch (IOException ex) {
-            Log.warning("Error occurred while executing call to " + url, ex);
-            throw ex;
-        }
-        return overviews;
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                AlertWindowFactory.generateError(e);
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                Collection<UserOverview> overviews = new Gson().fromJson(response.body().string(), new TypeToken<Collection<UserOverview>>() {
+                }.getType());
+                for (UserOverview overview : overviews) {
+                    AppController.getInstance().addUserOverview(overview);
+                }
+            }
+        });
     }
 
     public void postUser(User user) {

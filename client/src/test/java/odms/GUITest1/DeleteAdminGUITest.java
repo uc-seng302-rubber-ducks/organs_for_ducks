@@ -13,6 +13,7 @@ import org.testfx.framework.junit.ApplicationTest;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.concurrent.TimeoutException;
 
 import static org.mockito.ArgumentMatchers.*;
@@ -42,7 +43,7 @@ public class DeleteAdminGUITest extends ApplicationTest {
         when(appC.getTransplantBridge()).thenReturn(tBridge);
 
         when(tBridge.getWaitingList(anyInt(), anyInt(), anyString(), anyString(), any(Collection.class))).thenReturn(new ArrayList());
-        when(uBridge.getUsers(anyInt(), anyInt(), anyString(), anyString(), anyString(), anyString())).thenReturn(new ArrayList<>());
+        when(appC.getUserOverviews()).thenReturn(new HashSet<>());
         when(cBridge.getClinicians(anyInt(), anyInt(), anyString(), anyString(), anyString())).thenReturn(new ArrayList<>());
         when(lBridge.loginToServer(anyString(), anyString(), anyString())).thenReturn("haHAA");
         when(aBridge.getAdmin(anyString(), anyString())).thenReturn(new Administrator("default", null, null, null, "admin"));

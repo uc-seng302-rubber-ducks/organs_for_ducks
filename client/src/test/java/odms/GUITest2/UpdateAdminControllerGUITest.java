@@ -3,6 +3,7 @@ package odms.GUITest2;
 import odms.App;
 import odms.TestUtils.CommonTestMethods;
 import odms.commons.model.Administrator;
+import odms.commons.model.dto.UserOverview;
 import odms.controller.AppController;
 import odms.controller.gui.window.AdministratorViewController;
 import odms.utils.*;
@@ -17,6 +18,8 @@ import org.testfx.matcher.control.TextInputControlMatchers;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.concurrent.TimeoutException;
 
 import static odms.TestUtils.FxRobotHelper.clickOnButton;
@@ -61,7 +64,7 @@ public class UpdateAdminControllerGUITest extends ApplicationTest {
         when(application.getTransplantBridge()).thenReturn(transplantBridge);
         when(transplantBridge.getWaitingList(anyInt(), anyInt(), anyString(), anyString(), anyCollection())).thenReturn(new ArrayList<>());
         when(clinicianBridge.getClinicians(anyInt(), anyInt(), anyString(), anyString(), anyString())).thenReturn(new ArrayList<>());
-        when(userBridge.getUsers(anyInt(), anyInt(), anyString(), anyString(), anyString(), anyString())).thenReturn(new ArrayList<>());
+        when(application.getUserOverviews()).thenReturn(new HashSet<>());
 
         doCallRealMethod().when(application).setAdministratorViewController(any(AdministratorViewController.class));
         doCallRealMethod().when(application).getAdministratorViewController();

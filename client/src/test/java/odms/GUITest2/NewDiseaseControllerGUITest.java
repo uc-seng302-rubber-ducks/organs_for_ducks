@@ -80,8 +80,7 @@ public class NewDiseaseControllerGUITest extends ApplicationTest {
         testUser.getCurrentDiseases().add(new Disease("A0", false, false, LocalDate.now()));
         testUser.getPastDiseases().add(new Disease("B0", false, true, LocalDate.now()));
 
-        when(bridge.getUsers(anyInt(), anyInt(), anyString(), anyString(), anyString(), anyString()))
-                .thenReturn(Collections.singletonList(UserOverview.fromUser(testUser)));
+        when(controller.getUserOverviews()).thenReturn(Collections.singleton(UserOverview.fromUser(testUser)));
         when(bridge.getUser(anyString())).thenReturn(testUser);
 
         FxToolkit.registerPrimaryStage();

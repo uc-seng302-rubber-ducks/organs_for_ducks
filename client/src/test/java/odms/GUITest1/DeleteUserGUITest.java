@@ -47,8 +47,7 @@ public class DeleteUserGUITest extends ApplicationTest {
 
         AppController.setInstance(application);
         when(application.getUserBridge()).thenReturn(bridge);
-        when(bridge.getUsers(anyInt(), anyInt(), anyString(), anyString(), anyString(), anyString()))
-                .thenReturn(Collections.singletonList(UserOverview.fromUser(testUser)));
+        when(application.getUserOverviews()).thenReturn(Collections.singleton(UserOverview.fromUser(testUser)));
         when(bridge.getUser("ABC1234")).thenReturn(testUser);
         AppController.getInstance().getUsers().clear();
         AppController.getInstance().getUsers().add(testUser);

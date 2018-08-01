@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 
 /**
@@ -43,7 +44,7 @@ public class AppController {
     private List<User> users = new ArrayList<>();
     private ArrayList<TransplantDetails> transplantList = new ArrayList<>();
     private List<Clinician> clinicians = new ArrayList<>();
-    private Set<UserOverview> overviews = new HashSet<>();
+    private Set<UserOverview> overviews = new CopyOnWriteArraySet<>();
     private ArrayList<String[]> historyOfCommands = new ArrayList<>();
     private List<String> allCountries;
     private List<String> allowedCountries; //store the countries chosen by admin
@@ -299,6 +300,9 @@ public class AppController {
 
     public void addUserOverview(UserOverview overview) {
         this.overviews.add(overview);
+        if (clinicianController != null) {
+            clinicianController.refreshTables();
+        }
     }
 
     /**

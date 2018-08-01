@@ -21,6 +21,8 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.concurrent.TimeoutException;
 
 import static odms.TestUtils.FxRobotHelper.clickOnButton;
@@ -72,7 +74,7 @@ public class DeleteClinicianUserGUITest extends ApplicationTest {
         overviews.add(UserOverview.fromUser(testUser));
         overviews.add(UserOverview.fromUser(testUser2));
         when(controller.getToken()).thenReturn("haHAA");
-        when(bridge.getUsers(anyInt(), anyInt(), anyString(), anyString(), anyString(), anyString())).thenReturn(overviews);
+        when(controller.getUserOverviews()).thenReturn(new HashSet<>(overviews));
         when(bridge.getUser(anyString())).thenReturn(testUser);
         when(loginBridge.loginToServer(anyString(), anyString(), anyString())).thenReturn("haHAA");
         when(clinicianBridge.getClinician(anyString(), anyString())).thenReturn(new Clinician("Default", "0", "admin"));

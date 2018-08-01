@@ -74,8 +74,7 @@ public class UpdateClinicianControllerGUITest extends ApplicationTest {
         when(countriesBridge.getAllowedCountries()).thenReturn(new HashSet());
         when(clinicianBridge.getClinician(anyString(), anyString())).thenReturn(c);
         when(transplantBridge.getWaitingList(anyInt(), anyInt(), anyString(), anyString(), anyCollection())).thenReturn(new ArrayList<>());
-        when(bridge.getUsers(anyInt(), anyInt(), anyString(), anyString(), anyString(), anyString()))
-                .thenReturn(overviews);
+        when(application.getUserOverviews()).thenReturn(new HashSet<>(overviews));
         when(bridge.getUser("ABC1244")).thenReturn(testUser);
 
         doCallRealMethod().when(application).setClinicianController(any(ClinicianController.class));
