@@ -1,6 +1,8 @@
 package odms.socket;
 
+import com.google.gson.Gson;
 import odms.commons.model._abstract.Listenable;
+import odms.commons.model.dto.UpdateNotification;
 import odms.commons.utils.Log;
 import okhttp3.*;
 
@@ -9,7 +11,7 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
 
-public class OdmsSocketHandler implements Listenable{
+public class OdmsSocketHandler implements Listenable {
 
     private PropertyChangeSupport pcs;
     private OkHttpClient client;
@@ -32,8 +34,9 @@ public class OdmsSocketHandler implements Listenable{
 
             @Override
             public void onMessage(WebSocket webSocket, String text) {
-                //TODO change this to be more intelligent
-                fire(new PropertyChangeEvent(this, text, null, null));
+                UpdateNotification updateNotification = new Gson().fromJson(text, UpdateNotification.class);
+                fire(new PropertyChangeEvent(this, updateNotification.getEventType().name(),
+                        updateNotification.getOldId(), updateNotification.getNewId()));
             }
 
             @Override
@@ -54,8 +57,9 @@ public class OdmsSocketHandler implements Listenable{
     }
 
     public void stop() {
-        if(socket != null) {
-            socket.close(0, "socket closed by client");
+
+        if (socket != null) {
+            socket.close(1001, "socket closed by client");
             Log.info("websocket manually closed by client");
         }
     }

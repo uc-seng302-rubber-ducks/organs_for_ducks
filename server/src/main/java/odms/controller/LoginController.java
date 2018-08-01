@@ -1,6 +1,7 @@
 package odms.controller;
 
 import com.google.gson.Gson;
+import odms.commons.model._enum.EventTypes;
 import odms.security.AuthToken;
 import odms.security.IsAdmin;
 import odms.security.IsClinician;
@@ -63,7 +64,7 @@ public class LoginController extends BaseController {
     @RequestMapping(method = RequestMethod.GET, value = "/test")
     public ResponseEntity testEndpoint() {
         try {
-            socketHandler.broadcast();
+            socketHandler.broadcast(EventTypes.CLINICIAN_UPDATE, "", "");
         } catch (IOException e) {
             e.printStackTrace();
         }

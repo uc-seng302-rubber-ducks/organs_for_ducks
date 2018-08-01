@@ -21,6 +21,8 @@ import javafx.scene.layout.Region;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import odms.bridge.ClinicianBridge;
+import odms.commons.exception.ApiException;
 import odms.controller.AppController;
 import odms.controller.gui.StatusBarController;
 import odms.controller.gui.UnsavedChangesAlert;
@@ -127,7 +129,7 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
     private ArrayList<Stage> openStages;
     private FilteredList<UserOverview> fListUsers;
     private PauseTransition pause = new PauseTransition(Duration.millis(300));
-
+    private ClinicianBridge clinicianBridge;
 
     //Initiliase table columns as class level so it is accessible for sorting in pagination methods
     private TableColumn<UserOverview, String> lNameColumn;
@@ -151,18 +153,20 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
     public void init(Stage stage, AppController appController, Clinician clinician, boolean fromAdmin,
                      Collection<PropertyChangeListener> parentListeners) {
         this.appController = appController;
+        this.clinicianBridge = appController.getClinicianBridge();
         this.stage = stage;
         this.clinician = clinician;
         this.admin = fromAdmin;
 
         //add change listeners of parent controllers to the current clinician
+        appController.getSocketHandler().addPropertyChangeListener(this);
         this.parentListeners = new ArrayList<>();
-        if (parentListeners != null && !parentListeners.isEmpty()) {
-            for (PropertyChangeListener listener : parentListeners) {
-                clinician.addPropertyChangeListener(listener);
-            }
-            this.parentListeners.addAll(parentListeners);
-        }
+//        if (parentListeners != null && !parentListeners.isEmpty()) {
+//            for (PropertyChangeListener listener : parentListeners) {
+//                appController.getSocketHandler().addPropertyChangeListener(listener);
+//            }
+//            this.parentListeners.addAll(parentListeners);
+//        }
         stage.setResizable(true);
         showClinician(clinician);
         try {
@@ -620,6 +624,14 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
         //refresh view/tables etc. on change
         if (evt.getPropertyName().equals(EventTypes.USER_UPDATE.name())) {
             refreshTables();
+        } else if (evt.getPropertyName().equals(EventTypes.CLINICIAN_UPDATE.name()) && clinician.getStaffId().equals(evt.getOldValue())){
+            String newStaffId = (String) evt.getNewValue();
+            try {
+                clinicianBridge.getClinician(newStaffId, appController.getToken());
+            } catch (ApiException ex) {
+                Log.warning("failed to retrieve updated clinician. response code: " + ex.getResponseCode(), ex);
+                AlertWindowFactory.generateError(ex);
+            }
         }
     }
 

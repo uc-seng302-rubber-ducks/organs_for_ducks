@@ -1,5 +1,8 @@
 package odms.socket;
 
+import com.google.gson.Gson;
+import odms.commons.model._enum.EventTypes;
+import odms.commons.model.dto.UpdateNotification;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
@@ -41,10 +44,12 @@ public class SocketHandler extends TextWebSocketHandler {
         sessions.add(session);
     }
 
-    public void broadcast() throws IOException {
+    public void broadcast(EventTypes type, String newIdentifier, String oldIdentifier) throws IOException {
+
         for(WebSocketSession session: sessions) {
             if (session.isOpen()) {
-                session.sendMessage(new TextMessage("beep boop"));
+                UpdateNotification updateNotification = new UpdateNotification(type, oldIdentifier, newIdentifier);
+                session.sendMessage(new TextMessage(new Gson().toJson(updateNotification)));
             }
         }
         for (WebSocketSession session : sessions) {
