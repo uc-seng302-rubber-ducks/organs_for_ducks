@@ -38,10 +38,13 @@ public class ViewTest {
         clinicianBridge = mock(ClinicianBridge.class);
         administratorBridge = mock(AdministratorBridge.class);
         ioHelper = mock(IoHelper.class);
+        String token = "aaaa";
 
         when(appController.getUserBridge()).thenReturn(userBridge);
         when(appController.getClinicianBridge()).thenReturn(clinicianBridge);
         when(appController.getAdministratorBridge()).thenReturn(administratorBridge);
+        when(appController.getToken()).thenReturn(token);
+
 
         testClinician = new Clinician("16", "secure", "Affie", "Ali", "Al");
         DateTimeFormatter sdf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -49,8 +52,8 @@ public class ViewTest {
         testAdministrator = new Administrator("admin1", "Anna", "Kate", "Robertson", "face");
 
         when(userBridge.getUser(anyString())).thenReturn(testUser);
-        when(clinicianBridge.getClinician(anyString(),eq("ahahahahahahahahaha"))).thenReturn(testClinician);
-        when(administratorBridge.getAdmin(anyString(),eq("asdfasfsadf"))).thenReturn(testAdministrator);
+        when(clinicianBridge.getClinician(anyString(),anyString())).thenReturn(testClinician);
+        when(administratorBridge.getAdmin(anyString(),anyString())).thenReturn(testAdministrator);
 
         command = new View();
         command.setAppController(appController);
@@ -61,7 +64,7 @@ public class ViewTest {
         String[] args = {"ABC1234"};
 
         new CommandLine(command).parseWithHandler(new CommandLine.RunLast(), System.err, args);
-        verify(appController,times(1)).getUserBridge().getUser("ABC1234");
+        verify(appController,times(1)).getUserBridge();
     }
 
     @Test

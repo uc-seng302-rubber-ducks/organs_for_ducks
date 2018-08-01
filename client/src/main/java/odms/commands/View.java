@@ -40,7 +40,7 @@ public class View implements Runnable {
         try {
             String id = params[0];
             if (afterClinician) {
-                System.out.println(appController.getClinicianBridge().getClinician(id, appController.getToken()).toString());
+               IoHelper.display(appController.getClinicianBridge().getClinician(id, appController.getToken()).toString());
             } else if (afterAdmin) {
                 IoHelper.display(appController.getAdministratorBridge().getAdmin(id, appController.getToken()).toString());
             } else {
