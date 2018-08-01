@@ -18,12 +18,25 @@ public class ClinicianBridge extends RoleBridge {
         super(client);
     }
 
-    public List<Clinician> getClinicians(int startIndex, int count, String name, String region, String token) throws IOException {
+    public void getClinicians(int startIndex, int count, String name, String region, String token) throws IOException {
         String url = ip + "/clinicians?startIndex=" + startIndex + "&count=" + count + "&q=" + name + "&region=" + region;
         Request request = new Request.Builder().addHeader(TOKEN_HEADER, token).url(url).build();
-        Response response = client.newCall(request).execute();
-        ResponseBody body = response.body();
-        return new Gson().fromJson(body.string(), new TypeToken<List<Clinician>>() {}.getType());
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                ResponseBody body = response.body();
+                List<Clinician> clinicians = new Gson().fromJson(body.string(), new TypeToken<List<Clinician>>() {
+                }.getType());
+                for (Clinician clinician : clinicians) {
+                    AppController.getInstance().addClinician(clinician);
+                }
+            }
+        });
     }
 
     public void postClinician(Clinician clinician, String token) {

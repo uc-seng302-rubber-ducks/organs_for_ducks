@@ -44,7 +44,7 @@ public class DeleteAdminGUITest extends ApplicationTest {
 
         when(tBridge.getWaitingList(anyInt(), anyInt(), anyString(), anyString(), any(Collection.class))).thenReturn(new ArrayList());
         when(appC.getUserOverviews()).thenReturn(new HashSet<>());
-        when(cBridge.getClinicians(anyInt(), anyInt(), anyString(), anyString(), anyString())).thenReturn(new ArrayList<>());
+        when(appC.getClinicians()).thenReturn(new ArrayList<>());
         when(lBridge.loginToServer(anyString(), anyString(), anyString())).thenReturn("haHAA");
         when(aBridge.getAdmin(anyString(), anyString())).thenReturn(new Administrator("default", null, null, null, "admin"));
 

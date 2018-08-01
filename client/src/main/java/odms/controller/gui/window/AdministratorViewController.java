@@ -55,7 +55,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.lang.reflect.Type;
-import java.text.Normalizer;
 import java.util.*;
 
 public class AdministratorViewController implements PropertyChangeListener, TransplantWaitListViewer {
@@ -1122,6 +1121,7 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
      */
     @FXML
     public void refreshTables() {
+        System.out.println("Called");
         transplantWaitListTabPageController.populateWaitListTable();
         populateUserSearchTable();
         populateClinicianSearchTable();
@@ -1194,12 +1194,13 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
 
     private void populateClinicianSearchTable(int startIndex, int rowsPerPage, String name, String region) {
         appController.getClinicians().clear();
-        Collection<Clinician> clinicians = null;
+        Collection<Clinician> clinicians;
         try {
-            clinicians = clinicianBridge.getClinicians(startIndex, rowsPerPage, name, region, appController.getToken());
+            clinicianBridge.getClinicians(startIndex, rowsPerPage, name, region, appController.getToken());
         } catch (IOException ex) {
             Log.warning("failed to get user overviews from server", ex);
         }
+        clinicians = appController.getClinicians();
         if (clinicians != null) {
             for(Clinician clinician : clinicians) {
                 appController.addClinician(clinician);

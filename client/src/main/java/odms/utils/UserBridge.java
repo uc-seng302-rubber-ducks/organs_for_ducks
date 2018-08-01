@@ -2,7 +2,6 @@ package odms.utils;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import javafx.scene.image.Image;
 import odms.commons.model.Disease;
 import odms.commons.model.MedicalProcedure;
 import odms.commons.model.User;
@@ -13,7 +12,6 @@ import odms.commons.model.dto.UserOverview;
 import odms.commons.utils.Log;
 import odms.commons.utils.PhotoHelper;
 import odms.controller.AppController;
-import odms.controller.gui.popup.utils.AlertWindowFactory;
 import okhttp3.*;
 
 import java.io.IOException;
@@ -33,7 +31,7 @@ public class UserBridge extends RoleBridge {
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                AlertWindowFactory.generateError(e);
+                //AlertWindowFactory.generateError(e);
             }
 
             @Override
