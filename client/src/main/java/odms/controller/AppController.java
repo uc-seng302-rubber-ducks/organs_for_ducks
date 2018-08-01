@@ -400,6 +400,9 @@ public class AppController {
      */
     public void addAdmin(Administrator administrator) {
         admins.add(administrator);
+        if (administratorViewController != null) {
+            administratorViewController.refreshTables();
+        }
     }
 
     /**

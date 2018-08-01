@@ -1134,10 +1134,10 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
      */
     @FXML
     public void refreshTables() {
-        System.out.println("Called");
         transplantWaitListTabPageController.displayWaitListTable();
         displayUserSearchTable();
         displayClinicianSearchTable();
+        displayAdminSearchTable();
     }
 
     /**
@@ -1224,7 +1224,8 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
             clinicianTableView.setItems(sClinicians);
         } else {
             clinicianTableView.setItems(null);
-            Platform.runLater(() -> clinicianTableView.setPlaceholder(new Label("No clinicians to show"))); // Do this to prevent threading issues when this method is not called on an FX thread;
+            // Do this to prevent threading issues when this method is not called on an FX thread;
+            Platform.runLater(() -> clinicianTableView.setPlaceholder(new Label("No clinicians to show")));
         }
 
         setTableOnClickBehaviour(Clinician.class, clinicianTableView);
@@ -1237,18 +1238,12 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
 
     private void populateAdminSearchTable(int startIndex, int rowsPerPage, String name) {
         appController.getAdmins().clear();
-        Collection<Administrator> admins = null;
-        try {
-            admins = adminBridge.getAdmins(startIndex, rowsPerPage, name,appController.getToken());
-        } catch (IOException ex) {
-            Log.warning("failed to get user overviews from server", ex);
-        }
-        if (admins != null) {
-            for(Administrator admin : admins) {
-                appController.addAdmin(admin);
-            }
-        }
+        adminBridge.getAdmins(startIndex, rowsPerPage, name, appController.getToken());
 
+        displayAdminSearchTable();
+    }
+
+    private void displayAdminSearchTable() {
         ObservableList<Administrator> oAdmins = FXCollections.observableList(new ArrayList<>(appController.getAdmins()));
         SortedList<Administrator> sAdmins = new SortedList<>(oAdmins);
         sAdmins.comparatorProperty().bind(adminTableView.comparatorProperty());
@@ -1257,9 +1252,12 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
             adminTableView.setItems(sAdmins);
         } else {
             adminTableView.setItems(null);
-            adminTableView.setPlaceholder(new Label("No admins to show"));
+            // Do this to prevent threading issues when this method is not called on an FX thread;
+            Platform.runLater(() -> adminTableView.setPlaceholder(new Label("No admins to show")));
         }
 
         setTableOnClickBehaviour(Administrator.class, adminTableView);
     }
+
+
 }

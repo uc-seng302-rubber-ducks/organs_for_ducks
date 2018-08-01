@@ -6,6 +6,7 @@ import odms.commons.exception.ApiException;
 import odms.commons.model.Administrator;
 import odms.commons.utils.JsonHandler;
 import odms.commons.utils.Log;
+import odms.controller.AppController;
 import okhttp3.*;
 
 import java.io.IOException;
@@ -17,12 +18,24 @@ public class AdministratorBridge extends RoleBridge {
         super(client);
     }
 
-    public Collection<Administrator> getAdmins(int startIndex, int count, String name,String token) throws IOException {
+    public void getAdmins(int startIndex, int count, String name, String token) {
         String url = ip + "/admins?startIndex=" + startIndex + "&count=" + count + "&q=" + name;
         Request request = new Request.Builder().url(url).addHeader("x-auth-token", token).build();
-        Response response = client.newCall(request).execute();
-        return new Gson().fromJson(response.body().string(), new TypeToken<Collection<Administrator>>() {
-        }.getType());
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                Collection<Administrator> administrators = new Gson().fromJson(response.body().string(), new TypeToken<Collection<Administrator>>() {
+                }.getType());
+                for (Administrator administrator : administrators) {
+                    AppController.getInstance().addAdmin(administrator);
+                }
+            }
+        });
     }
 
 

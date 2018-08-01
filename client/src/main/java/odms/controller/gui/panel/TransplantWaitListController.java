@@ -83,7 +83,7 @@ public class TransplantWaitListController {
     private AppController appController;
     private TransplantWaitListViewer parent;
     private int startIndex = 0;
-    private static final int TRANSPLANTS_PER_PAGE = 10;
+    private static final int TRANSPLANTS_PER_PAGE = 30;
 
     //for delaying the request when typing into the region text field
     private PauseTransition pause = new PauseTransition(Duration.millis(300));
