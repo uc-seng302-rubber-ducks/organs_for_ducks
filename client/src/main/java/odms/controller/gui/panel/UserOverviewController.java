@@ -4,25 +4,21 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
-import javafx.scene.layout.Region;
+import javafx.scene.image.ImageView;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import odms.controller.AppController;
-import odms.controller.gui.UnsavedChangesAlert;
 import odms.controller.gui.popup.UpdateDeathDetailsController;
-import odms.controller.gui.window.LoginController;
-import odms.controller.gui.window.UpdateUserController;
 import odms.commons.model.User;
 import odms.commons.utils.Log;
 
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.time.temporal.ChronoUnit;
-import java.util.Optional;
+
+import static odms.commons.utils.PhotoHelper.displayImage;
 
 public class UserOverviewController {
 
@@ -242,27 +238,6 @@ public class UserOverviewController {
 
     }
 
-    /**
-     * Opens the update user details window
-     */
-    @FXML
-    private void updateDetails() {
-        FXMLLoader updateLoader = new FXMLLoader(getClass().getResource("/FXML/updateUser.fxml"));
-        Parent root;
-        try {
-            root = updateLoader.load();
-            UpdateUserController updateUserController = updateLoader.getController();
-            Stage stage = new Stage();
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.setScene(new Scene(root));
-            updateUserController.init(currentUser, application, stage);
-            stage.show();
-            Log.info("Successfully launched update user window for User NHI: " + currentUser.getNhi());
-
-        } catch (IOException e) {
-            Log.severe("Failed to load update user window for User NHI: " + currentUser.getNhi(), e);
-        }
-    }
 
     @FXML
     private void updateDeathDetails() {
@@ -286,85 +261,6 @@ public class UserOverviewController {
             Log.severe("Failed to load edit death details window for User NHI: " + currentUser.getNhi(), e);
         }
     }
-
-    /**
-     * Closes current window.
-     */
-    @FXML
-    private void closeWindow() {
-        checkSave();
-        currentUser.getUndoStack().clear();
-        currentUser.getRedoStack().clear();
-        stage.close();
-        Log.info("Successfully closed update user window for User NHI: " + currentUser.getNhi());
-    }
-
-    /**
-     * Creates a alert pop up to confirm that the user wants to delete the profile
-     */
-    @FXML
-    public void delete() {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setContentText("Are you sure you want to delete this user?");
-        alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
-        Optional<ButtonType> result = alert.showAndWait();
-
-        if (result.get() == ButtonType.OK) {
-            currentUser.setDeleted(true);
-            Log.info("Successfully deleted user profile for User NHI: " + currentUser.getNhi());
-            if (!Clinician) {
-                application.deleteUser(currentUser);
-                logout();
-            } else {
-                stage.close();
-            }
-        }
-    }
-
-    /**
-     * Fires when the logout button is clicked Ends the users session, and takes back to the login
-     * window
-     */
-    @FXML
-    private void logout() {
-        checkSave();
-        currentUser.getUndoStack().clear();
-        currentUser.getRedoStack().clear();
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML/loginView.fxml"));
-        Parent root;
-        try {
-            root = loader.load();
-            Stage newStage = new Stage();
-            newStage.setScene(new Scene(root));
-            newStage.show();
-            stage.close();
-            LoginController loginController = loader.getController();
-            loginController.init(AppController.getInstance(), newStage);
-
-            Log.info("successfully launched login window after logged out for User NHI: " + currentUser.getNhi());
-        } catch (IOException e) {
-            Log.severe("failed to launch login window after logged out for User NHI: " + currentUser.getNhi(), e);
-        }
-    }
-
-    /**
-     * Popup that prompts the user if they want to save any unsaved changes before logging out or exiting the application
-     */
-    private void checkSave() {
-        boolean noChanges = currentUser.getUndoStack().isEmpty();
-        if (!noChanges) {
-            Optional<ButtonType> result = UnsavedChangesAlert.getAlertResult();
-            if (result.isPresent() && result.get() == ButtonType.YES) {
-                application.update(currentUser);
-                application.saveUser(currentUser);
-
-            } else {
-                User revertUser = currentUser.getUndoStack().firstElement().getState();
-                application.update(revertUser);
-            }
-        }
-    }
-
 
     /**
      * Disables logout buttons

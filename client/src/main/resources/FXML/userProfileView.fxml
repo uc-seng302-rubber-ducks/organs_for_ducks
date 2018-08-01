@@ -100,5 +100,6 @@
             </children>
         </GridPane>
         <AnchorPane layoutX="447.0" layoutY="31.0" />
+      <Button fx:id="updateDeathDetailsButton" layoutX="447.0" layoutY="373.0" mnemonicParsing="false" onAction="#updateDeathDetails" text="Edit Death Details" />
     </children>
 </AnchorPane>
