@@ -1,9 +1,5 @@
 package odms.socket;
 
-import com.google.gson.Gson;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
@@ -22,7 +18,6 @@ public class SocketHandler extends TextWebSocketHandler {
     @Override
     public void handleTextMessage(WebSocketSession session, TextMessage message)
             throws InterruptedException, IOException {
-        System.out.println("recieved: " + message);
 
         for(WebSocketSession webSocketSession : sessions) {
             if (webSocketSession.isOpen()) {
@@ -33,21 +28,29 @@ public class SocketHandler extends TextWebSocketHandler {
         }
     }
 
+    public static List<WebSocketSession> getSessions() {
+        return sessions;
+    }
+
+    public static void setSessions(List<WebSocketSession> sessions1) {
+        sessions = sessions1;
+    }
+
     @Override
-    public void afterConnectionEstablished(WebSocketSession session) throws Exception {
-        System.out.println("added session");
+    public void afterConnectionEstablished(WebSocketSession session) {
         sessions.add(session);
     }
 
-    public void broadcast() throws IOException{
+    public void broadcast() throws IOException {
         for(WebSocketSession session: sessions) {
-            System.out.println(session);
+            if (session.isOpen()) {
+                session.sendMessage(new TextMessage("beep boop"));
+            }
+        }
+        for (WebSocketSession session : sessions) {
             if (!session.isOpen()) {
                 sessions.remove(session);
-                continue;
             }
-            session.sendMessage(new TextMessage("beep boop"));
         }
     }
-
 }
