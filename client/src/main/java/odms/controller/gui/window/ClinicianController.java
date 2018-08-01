@@ -566,7 +566,7 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
     }
 
     /**
-     * Callback method to refresh the tables in the view
+     * Callback method to refresh the tables and current clinician
      */
     @FXML
     public void refreshTables() {
@@ -622,15 +622,18 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
 
         //clinician controller watches user model
         //refresh view/tables etc. on change
+        Log.info("refresh listener fired in clinician controller");
         if (evt.getPropertyName().equals(EventTypes.USER_UPDATE.name())) {
             refreshTables();
         } else if (evt.getPropertyName().equals(EventTypes.CLINICIAN_UPDATE.name()) && clinician.getStaffId().equals(evt.getOldValue())){
             String newStaffId = (String) evt.getNewValue();
             try {
-                clinicianBridge.getClinician(newStaffId, appController.getToken());
+                //TODO should this be forced on the user? 1/8
+                this.clinician = clinicianBridge.getClinician(clinician.getStaffId(), appController.getToken());
+
             } catch (ApiException ex) {
                 Log.warning("failed to retrieve updated clinician. response code: " + ex.getResponseCode(), ex);
-                AlertWindowFactory.generateError(ex);
+                AlertWindowFactory.generateError(("could not refresh clinician from the server. Please check your connection before trying again."));
             }
         }
     }

@@ -64,7 +64,7 @@ public class LoginController extends BaseController {
     @RequestMapping(method = RequestMethod.GET, value = "/test")
     public ResponseEntity testEndpoint() {
         try {
-            socketHandler.broadcast(EventTypes.CLINICIAN_UPDATE, "", "");
+            socketHandler.broadcast(EventTypes.CLINICIAN_UPDATE, "0", "0");
         } catch (IOException e) {
             e.printStackTrace();
         }
