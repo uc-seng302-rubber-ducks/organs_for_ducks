@@ -12,7 +12,7 @@ import picocli.CommandLine.Parameters;
 import java.io.InputStream;
 import java.util.Scanner;
 
-@Command(name = "user", description = "first name, lastname, DOB. Required will locate user and prompt for deletion")
+@Command(name = "user", description = "Requires NHI to locate user and prompt for deletion")
 public class DeleteUser implements Runnable, Blockable {
 
     private InputStream inputStream = System.in;
