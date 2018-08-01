@@ -2,7 +2,6 @@ package odms.commons.model;
 
 import com.google.gson.annotations.Expose;
 import javafx.collections.FXCollections;
-import javafx.scene.image.Image;
 import odms.commons.model._abstract.IgnoreForUndo;
 import odms.commons.model._abstract.Listenable;
 import odms.commons.model._abstract.Undoable;
@@ -15,6 +14,7 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 
@@ -153,7 +153,7 @@ public class User extends Undoable<User> implements Listenable {
         newUser.dateOfBirth = user.dateOfBirth;
 
         Address placeOfDeath = new Address("", "", "", user.getDeathCity(), user.getDeathRegion(), "", user.getDeathCountry());
-        newUser.deathDetails = new DeathDetails(user.deathDetails.getTimeOfDeath(), placeOfDeath);
+        newUser.deathDetails = new DeathDetails(user.deathDetails.getDateOfDeath(), user.deathDetails.getTimeOfDeath(), placeOfDeath);
 
         Address address = new Address(user.getStreetNumber(), user.getStreetName(), user.getNeighborhood(),
                 user.getCity(), user.getRegion(), user.getZipCode(), user.getCountry());
@@ -270,11 +270,11 @@ public class User extends Undoable<User> implements Listenable {
         this.deathDetails = deathDetails;
     }
 
-    public LocalDateTime getTimeOfDeath(){
+    public LocalTime getTimeOfDeath(){
         return deathDetails.getTimeOfDeath();
     }
 
-    public void setTimeOfDeath(LocalDateTime timeOfDeath){
+    public void setTimeOfDeath(LocalTime timeOfDeath){
         this.deathDetails.setTimeOfDeath(timeOfDeath);
     }
 
@@ -576,23 +576,14 @@ public class User extends Undoable<User> implements Listenable {
     }
 
     public LocalDate getDateOfDeath() {
-        if (deathDetails != null) {
-            LocalDateTime timeOfDeath = deathDetails.getTimeOfDeath();
-            if (timeOfDeath != null) {
-                return timeOfDeath.toLocalDate();
-            }  else {
-                return null;
-            }
-        } else {
-            return null;
-        }
+        return deathDetails.getDateOfDeath();
     }
 
     public void setDateOfDeath(LocalDate dateOfDeath) {
         this.saveStateForUndo();
         updateLastModified();
         if (dateOfDeath != null) {
-            this.deathDetails.setTimeOfDeath(dateOfDeath.atStartOfDay());
+            this.deathDetails.setDateOfDeath(dateOfDeath);
             this.isDeceased = true;
         } else {
             this.deathDetails.setTimeOfDeath(null);
@@ -852,17 +843,17 @@ public class User extends Undoable<User> implements Listenable {
     }
 
     public String getStringAge() {
-        if (deathDetails.getTimeOfDeath() != null) {
+        if (deathDetails.getMomentOfDeath() != null) {
 
-            return Long.toString(ChronoUnit.YEARS.between(dateOfBirth, deathDetails.getTimeOfDeath()));
+            return Long.toString(ChronoUnit.YEARS.between(dateOfBirth, deathDetails.getMomentOfDeath()));
         }
         return Long.toString(ChronoUnit.YEARS.between(dateOfBirth, LocalDate.now()));
     }
 
     public int getAge() {
-        if (deathDetails.getTimeOfDeath() != null) {
+        if (deathDetails.getMomentOfDeath() != null) {
 
-            return Math.toIntExact(ChronoUnit.YEARS.between(dateOfBirth, deathDetails.getTimeOfDeath()));
+            return Math.toIntExact(ChronoUnit.YEARS.between(dateOfBirth, deathDetails.getMomentOfDeath()));
         }
         return Math.toIntExact(ChronoUnit.YEARS.between(dateOfBirth, java.time.LocalDate.now()));
     }
