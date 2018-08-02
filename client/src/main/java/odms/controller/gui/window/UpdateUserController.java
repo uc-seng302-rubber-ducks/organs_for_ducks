@@ -710,10 +710,10 @@ public class UpdateUserController {
             errorLabel.setVisible(true);
             valid = false;
         } else {
-            currentUser.setHeight(height);
-            currentUser.setWeight(weight);
-            currentUser.setHeightText("");
-            currentUser.setWeightText("");
+            //currentUser.setHeight(height);
+            //currentUser.setWeight(weight);
+            //currentUser.setHeightText("");
+            //currentUser.setWeightText("");
         }
 
         // validate contact info
