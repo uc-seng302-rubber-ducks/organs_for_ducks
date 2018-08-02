@@ -15,7 +15,7 @@ public class View implements Runnable {
     private AppController appController = AppController.getInstance();
 
     @Option(names = {"-h", "help",
-            ""}, required = false, usageHelp = true, description = "display a help message")
+            ""}, required = false, usageHelp = true, description = "Display a help message")
     private Boolean helpRequested = false;
 
     @Parameters(description = "ID of the user to be viewed")

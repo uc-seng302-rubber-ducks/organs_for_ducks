@@ -14,7 +14,7 @@ public class ViewAll implements Runnable {
    @Option(names={"-c", "-count"}, description = "How many results to return. Default = 10")
     private int count =10;
 
-    @Option(names={"-i", "-index", "-startIndex"}, description = "where in the set to start returning results from. default = 0")
+    @Option(names={"-i", "-index", "-startIndex"}, description = "Where in the set to start returning results from. default = 0")
     private int startIndex =0;
 
     @Option(names={"-n", "-name"},description = "Enters a first last or middle name to search by")

@@ -5,6 +5,7 @@ import odms.commons.utils.Log;
 import odms.controller.AppController;
 import odms.commons.model.Clinician;
 import odms.commons.utils.AttributeValidation;
+import odms.view.IoHelper;
 import picocli.CommandLine;
 
 import java.io.IOException;
@@ -33,7 +34,7 @@ public class CreateClinician implements Runnable {
     @Override
     public void run() {
         if (controller.getClinician(id) != null) {
-            System.out.println("Clinician with this id already exists");
+            IoHelper.display("Clinician with this id already exists");
             return;
         }
 
@@ -51,10 +52,10 @@ public class CreateClinician implements Runnable {
             } catch (IOException e) {
                 Log.warning("File is wrong", e);
             }
-            System.out.println(clinician.toString());
-            System.out.println("Created new clinician with id " + id);
+            IoHelper.display(clinician.toString());
+            IoHelper.display("Created new clinician with id " + id);
         } else {
-            System.out.println("Invalid fields entered");
+            IoHelper.display("Invalid fields entered");
         }
     }
 

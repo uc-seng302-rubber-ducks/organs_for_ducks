@@ -5,6 +5,7 @@ import odms.commons.model.Clinician;
 import odms.commons.model._abstract.Blockable;
 import odms.commons.utils.Log;
 import odms.view.CLI;
+import odms.view.IoHelper;
 import picocli.CommandLine;
 
 @CommandLine.Command(name = "clinician", description = "Allows a clinician to be deleted ")
@@ -25,12 +26,12 @@ public class DeleteClinician implements Runnable, Blockable {
     public void run() {
         toDelete = controller.getClinician(id);
         if (toDelete == null) {
-            System.out.println("Clinician with that ID not found");
+            IoHelper.display("Clinician with that ID not found");
             return;
         }
-        System.out.println("This will delete the following clinician:");
+        IoHelper.display("This will delete the following clinician:");
         System.out.println(toDelete);
-        System.out.println("Are you sure? y/n");
+        IoHelper.display("Are you sure? y/n");
         CLI.setBlockage(this);
     }
 
@@ -49,18 +50,18 @@ public class DeleteClinician implements Runnable, Blockable {
             try {
                 //old approach of using a scanner doesn't work in the new CLI
                 controller.deleteClinician(toDelete);
-                //TODO force listeners (Admin window) to update on deletion 22/6
-                System.out.println("Clinician successfully deleted");
+                //TODO force listeners (Admin window) to update on deletion 22/6 - check if this is still an issue 3/8
+                IoHelper.display("Clinician successfully deleted");
                 CLI.clearBlockage();
             } catch (Exception e) {
-                System.out.println("Could not delete clinician");
+                IoHelper.display("Could not delete clinician");
                 Log.warning("failed to delete clinician " + id + "via cli", e);
             }
         } else if (input.equalsIgnoreCase("n")) {
-            System.out.println("Cancelled");
+            IoHelper.display("Cancelled");
             CLI.clearBlockage();
         } else {
-            System.out.println("Invalid option, please enter y/n to confirm or cancel");
+            IoHelper.display("Invalid option, please enter y/n to confirm or cancel");
         }
     }
 }

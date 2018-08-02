@@ -3,6 +3,7 @@ package odms.commands;
 import odms.commons.model.User;
 import odms.controller.AppController;
 import odms.view.IoHelper;
+import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
@@ -13,8 +14,8 @@ import java.time.LocalDate;
 public class UpdateUserDetails implements Runnable {
 
 
-    @Option(names = {"-id", "-nhi", "-NHI"}, required = true)
-    private String nhi;
+    @CommandLine.Parameters(index = "0")
+    private String originalNhi;
 
     @Option(names = {"-h",
             "help"}, required = false, usageHelp = true, description = "display a help message")
@@ -23,10 +24,13 @@ public class UpdateUserDetails implements Runnable {
     @Option(names = {"-f", "-fname"})
     private String firstName;
 
+    @Option(names = {"-m", "-mname"})
+    private String middleName;
+
     @Option(names = {"-l", "-lname"})
     private String lastName;
 
-    @Option(names = {"-newNHI", "-newnhi"})
+    @Option(names = {"-id", "-nhi", "-NHI", "-newNHI", "-newnhi"})
     private String newNHI;
 
     @Option(names = {"-dob"}, description = "format 'yyyy-mm-dd'")
@@ -41,8 +45,11 @@ public class UpdateUserDetails implements Runnable {
     @Option(names = {"-he", "-height"}, description = "height in m. e.g. 1.85")
     private double height = -1;
 
-    @Option(names = {"-g", "-gender"}, description = "gender.")
+    @Option(names = {"-g", "-birthgender"}, description = "Users birth gender")
     private String gender;
+
+    @Option(names = {"-gi", "-genderIdentity"}, description = "Gender that the user identifies by")
+    private String genderIdentity;
 
     @Option(names = {"-b", "-bloodType"}, description = "blood type")
     private String bloodType;
@@ -80,12 +87,17 @@ public class UpdateUserDetails implements Runnable {
 
         User user;
         try {
-            user = controller.getUserBridge().getUser(nhi);
+            user = controller.getUserBridge().getUser(originalNhi);
         } catch (IOException e) {
             IoHelper.display("Donor could not be found");
             return;
         }
         changed = IoHelper.updateName(user, firstName, lastName);
+
+        if (middleName != null) {
+            user.setMiddleName(middleName);
+            changed = true;
+        }
 
         if (dobString != null) {
             LocalDate newDate = IoHelper.readDate(dobString);
@@ -112,6 +124,10 @@ public class UpdateUserDetails implements Runnable {
         }
         if (gender != null) {
             user.setBirthGender(gender);
+            changed = true;
+        }
+        if (genderIdentity != null) {
+            user.setGenderIdentity(genderIdentity);
             changed = true;
         }
         if (bloodType != null) {
@@ -155,7 +171,7 @@ public class UpdateUserDetails implements Runnable {
         if (changed) {
             controller.update(user);
             controller.saveUser(user);
-            IoHelper.display("Successfully updated user:"+ nhi);
+            IoHelper.display("Successfully updated user:"+ originalNhi);
         }
     }
 

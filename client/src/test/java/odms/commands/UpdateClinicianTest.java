@@ -41,7 +41,7 @@ public class UpdateClinicianTest {
     @Test
     public void shouldUpdateId() {
         when(clinicianBridge.getExists(anyString())).thenReturn(false);
-        String[] args = {"-id=0", "-newID=1"};
+        String[] args = {"0", "-newID=1"};
         new CommandLine(command)
                 .parseWithHandler(new CommandLine.RunLast(), System.err, args);
 
@@ -50,7 +50,7 @@ public class UpdateClinicianTest {
 
     @Test
     public void shouldUpdateMultipleAttributes() {
-        String[] args = {"-id=0", "-f=Buster", "-r=Canterbury", "-s=There"};
+        String[] args = {"0", "-f=Buster", "-r=Canterbury", "-s=There"};
         new CommandLine(command)
                 .parseWithHandler(new CommandLine.RunLast(), System.err, args);
 
@@ -61,7 +61,7 @@ public class UpdateClinicianTest {
 
     @Test
     public void shouldNotSaveClinicianWhenInvalidAttributeGiven() {
-        String[] args = {"-id=0", "-f=inval^d", "-r=region"};
+        String[] args = {"0", "-f=inval^d", "-r=region"};
         new CommandLine(command)
                 .parseWithHandler(new CommandLine.RunLast(), System.err, args);
 
@@ -74,7 +74,7 @@ public class UpdateClinicianTest {
 
     @Test
     public void shouldSaveClinicianWhenValidAttributesGiven() {
-        String[] args = {"-id=0", "-f=valid", "-r=region"};
+        String[] args = {"0", "-f=valid", "-r=region"};
         new CommandLine(command)
                 .parseWithHandler(new CommandLine.RunLast(), System.err, args);
 
@@ -87,7 +87,7 @@ public class UpdateClinicianTest {
 
     @Test
     public void shouldDoNothingWhenNoAttributesGiven() throws IOException {
-        String[] args = {"-id=0"};
+        String[] args = {"0"};
         new CommandLine(command)
                 .parseWithHandler(new CommandLine.RunLast(), System.err, args);
 
@@ -98,7 +98,7 @@ public class UpdateClinicianTest {
     @Test
     public void shouldNotBeAbleToHaveDuplicateClinicianId() {
         when(clinicianBridge.getExists(anyString())).thenReturn(true);
-        String[] args = {"-id=0", "-newID=2"};
+        String[] args = {"0", "-newID=2"};
         new CommandLine(command)
                 .parseWithHandler(new CommandLine.RunLast(), System.err, args);
         assert (testClinician.getStaffId().equals("0"));

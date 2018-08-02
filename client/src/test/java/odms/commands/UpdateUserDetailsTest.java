@@ -57,7 +57,7 @@ public class UpdateUserDetailsTest {
 
     @Test
     public void ShouldUpdateFirstName() throws IOException {
-        String[] args = {"-NHI=" + NHI, "-f=Mal"};
+        String[] args = {NHI, "-f=Mal"};
         new CommandLine(new UpdateUserDetails())
                 .parseWithHandler(new CommandLine.RunLast(), System.err, args);
 
@@ -69,7 +69,7 @@ public class UpdateUserDetailsTest {
 
     @Test
     public void ShouldUpdateLastName() throws IOException {
-        String[] args = {"-NHI=" + NHI, "-l=muppet"};
+        String[] args = {NHI, "-l=muppet"};
         new CommandLine(new UpdateUserDetails())
                 .parseWithHandler(new CommandLine.RunLast(), System.err, args);
 
@@ -80,7 +80,7 @@ public class UpdateUserDetailsTest {
 
     @Test
     public void ShouldUpdateFullName() throws IOException {
-        String[] args = {"-NHI=" + NHI, "-f=stephen", "-l=hawking"};
+        String[] args = {NHI, "-f=stephen", "-l=hawking"};
         new CommandLine(new UpdateUserDetails())
                 .parseWithHandler(new CommandLine.RunLast(), System.err, args);
 
@@ -95,7 +95,7 @@ public class UpdateUserDetailsTest {
     public void ShouldUpdateNumberField() throws IOException {
         //height and weight are identical, no use testing both
         //just checking it can parse numbers
-        String[] args = {"-NHI=" + NHI, "-w=100"};
+        String[] args = {NHI, "-w=100"};
         new CommandLine(new UpdateUserDetails())
                 .parseWithHandler(new CommandLine.RunLast(), System.err, args);
 
@@ -106,7 +106,7 @@ public class UpdateUserDetailsTest {
     @Test
     public void ShouldNotUpdateBadNumberField() throws IOException {
         //height and weight are identical, no use testing both
-        String[] args = {"-NHI=" + NHI, "-w=fat"};
+        String[] args = {NHI, "-w=fat"};
         new CommandLine(new UpdateUserDetails())
                 .parseWithHandler(new CommandLine.RunLast(), System.err, args);
 
@@ -118,7 +118,7 @@ public class UpdateUserDetailsTest {
     public void ShouldUpdateDateField() throws IOException {
         //dob and dod are identical, no use testing both
         //just checking it can parse dates
-        String[] args = {"-NHI=" + NHI, "-dob=2016-03-04"};
+        String[] args = {NHI, "-dob=2016-03-04"};
 
         new CommandLine(new UpdateUserDetails())
                 .parseWithHandler(new CommandLine.RunLast(), System.err, args);
@@ -134,7 +134,7 @@ public class UpdateUserDetailsTest {
     @Test
     public void ShouldNotUpdateBadDate() throws IOException {
         //dob and dod are identical, no use testing both
-        String[] args = {"-NHI=" + NHI, "-dob=1963"};
+        String[] args = {NHI, "-dob=1963"};
 
         new CommandLine(new UpdateUserDetails())
                 .parseWithHandler(new CommandLine.RunLast(), System.err, args);
@@ -154,7 +154,7 @@ public class UpdateUserDetailsTest {
         LocalDateTime oldTime = user.getLastModified();
         Thread.sleep(100);
         System.out.println(oldTime);
-        String[] args = {"-NHI=" + NHI, "-f=fred"};
+        String[] args = {NHI, "-f=fred"};
 
         new CommandLine(new UpdateUserDetails())
                 .parseWithHandler(new CommandLine.RunLast(), System.err, args);
@@ -174,7 +174,7 @@ public class UpdateUserDetailsTest {
         controller.addUser(new User("Frank", LocalDate.of(1990, 3, 3), "CDE1234"));
         User other = controller.findUser("CDE1234");
 
-        String[] args = {"-NHI=ABC1234", "-newNHI=CDE1234"};
+        String[] args = {"ABC1234", "-newNHI=CDE1234"};
         UpdateUserDetails updateUserDetails = new UpdateUserDetails();
         updateUserDetails.setAppController(controller);
         new CommandLine(updateUserDetails)
