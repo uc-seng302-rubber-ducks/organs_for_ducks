@@ -1110,31 +1110,30 @@ public class User extends Undoable<User> implements Listenable {
     @Override
     public String toString() {
         return "User{" +
-                "nhi='" + nhi + '\'' +
-                ", name='" + name + '\'' +
-                ", dateOfBirth=" + dateOfBirth +
-                ", dateOfDeath=" + dateOfDeath +
-                ", timeCreated=" + timeCreated +
-                ", isDeceased=" + isDeceased +
-                ", firstName='" + firstName + '\'' +
-                ", preferredFirstName='" + preferredFirstName + '\'' +
-                ", middleName='" + middleName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", contact=" + contact +
-                ", healthDetails=" + healthDetails +
-                ", lastModified=" + lastModified +
-                ", miscAttributes=" + miscAttributes +
-                ", updateHistory=" + updateHistory +
-                ", previousMedication=" + previousMedication +
-                ", currentMedication=" + currentMedication +
-                ", medicalProcedures=" + medicalProcedures +
-                ", donorDetails=" + donorDetails +
-                ", receiverDetails=" + receiverDetails +
-                ", commonOrgans=" + commonOrgans +
-                ", pastDiseases=" + pastDiseases +
-                ", currentDiseases=" + currentDiseases +
-                ", changes=" + changes +
-                ", pcs=" + pcs +
+                "\nnhi='" + nhi + '\'' +
+                ",\nname='" + name + '\'' +
+                ",\ndateOfBirth=" + dateOfBirth +
+                ",\ndateOfDeath=" + dateOfDeath +
+                ",\ntimeCreated=" + timeCreated +
+                ",\nisDeceased=" + isDeceased +
+                ",\nfirstName='" + firstName + '\'' +
+                ",\npreferredFirstName='" + preferredFirstName + '\'' +
+                ",\nmiddleName='" + middleName + '\'' +
+                ",\nlastName='" + lastName + '\'' +
+                ",\ncontact=" + contact +
+                ",\nhealthDetails=" + healthDetails +
+                ",\nlastModified=" + lastModified +
+                ",\nmiscAttributes=" + miscAttributes +
+                ",\nupdateHistory=" + updateHistory +
+                ",\npreviousMedication=" + previousMedication +
+                ",\ncurrentMedication=" + currentMedication +
+                ",\nmedicalProcedures=" + medicalProcedures +
+                ",\n" +donorDetails.toString() +
+                ",\n" + receiverDetails.toString() +
+                ",\ncommonOrgans=" + commonOrgans +
+                ",\npastDiseases=" + pastDiseases +
+                ",\ncurrentDiseases=" + currentDiseases +
+                ",\nchanges=" + changes +
                 '}';
     }
 

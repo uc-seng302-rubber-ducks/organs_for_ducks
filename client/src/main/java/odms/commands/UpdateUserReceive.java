@@ -29,7 +29,7 @@ public class UpdateUserReceive implements Runnable {
 
     @Override
     public void run() {
-        User user = null;
+        User user;
         try {
             user = controller.getUserBridge().getUser(nhi);
         } catch (IOException e) {
