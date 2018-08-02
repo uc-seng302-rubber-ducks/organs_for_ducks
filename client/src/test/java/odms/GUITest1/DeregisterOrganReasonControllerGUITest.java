@@ -1,12 +1,9 @@
 package odms.GUITest1;
 
-import javafx.collections.FXCollections;
 import javafx.scene.Node;
-import javafx.scene.control.TableView;
 import javafx.scene.input.KeyCode;
 import odms.App;
 import odms.TestUtils.AppControllerMocker;
-import odms.TestUtils.CommonTestMethods;
 import odms.bridge.ClinicianBridge;
 import odms.bridge.LoginBridge;
 import odms.bridge.TransplantBridge;
@@ -54,7 +51,7 @@ public class DeregisterOrganReasonControllerGUITest extends ApplicationTest {
 
     @BeforeClass
     public static void initialization() {
-        CommonTestMethods.runHeadless();
+        //CommonTestMethods.runHeadless();
     }
 
     @Before
@@ -71,13 +68,11 @@ public class DeregisterOrganReasonControllerGUITest extends ApplicationTest {
         when(application.getLoginBridge()).thenReturn(loginBridge);
         when(application.getTransplantBridge()).thenReturn(transplantBridge);
         when(application.getToken()).thenReturn("Poggers");
-        when(application.getUsers()).thenReturn(new ArrayList<>());
 
         when(loginBridge.loginToServer(anyString(),anyString(), anyString())).thenReturn("lsdjfksd");
         when(clinicianBridge.getClinician(anyString(), anyString())).thenReturn(clinician);
         Set<UserOverview> overviews = new HashSet<>();
         overviews.add(UserOverview.fromUser(testUser));
-        when(application.getUserOverviews()).thenReturn(overviews);
         when(bridge.getUser(anyString())).thenReturn(testUser);
         List<TransplantDetails> transplantDetails = new ArrayList<>();
         transplantDetails.add(new TransplantDetails(testUser.getNhi(), testUser.getFirstName(), Organs.HEART, LocalDate.now(), testUser.getRegion()));
@@ -85,6 +80,8 @@ public class DeregisterOrganReasonControllerGUITest extends ApplicationTest {
 
         doCallRealMethod().when(application).setUserController(any(UserController.class));
         doCallRealMethod().when(application).getUserController();
+        doCallRealMethod().when(application).setClinicianController(any());
+        doCallRealMethod().when(application).getClinicianController();
 
         //DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         testUser.getReceiverDetails().startWaitingForOrgan(Organs.HEART);
@@ -98,10 +95,7 @@ public class DeregisterOrganReasonControllerGUITest extends ApplicationTest {
         setTextField(this, "#staffPasswordField", "admin");
         clickOnButton(this,"#loginCButton");
         clickOn("#searchTab");
-        interact(() -> {
-            lookup("#searchTableView").queryAs(TableView.class).setItems(FXCollections.observableList(new ArrayList<>(overviews)));
-            lookup("#searchTableView").queryAs(TableView.class).refresh();
-        });
+        when(application.getUserOverviews()).thenReturn(overviews);
         doubleClickOn(getCell("#searchTableView", 0, 0));
         clickOn("#receiverTab");
         clickOn("Heart");

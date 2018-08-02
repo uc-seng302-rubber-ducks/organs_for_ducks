@@ -399,7 +399,7 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
         appController.setUserOverviews(appController.getUserOverviews().stream().filter(p -> (p.getDonating().isEmpty() != donorFilterCheckBox.isSelected() &&
                 p.getReceiving().isEmpty() != receiverFilterCheckBox.isSelected()) || allCheckBox.isSelected()).collect(Collectors.toSet()));
         searchCount = appController.getUserOverviews().size();
-        endIndex = Math.min(startIndex + ROWS_PER_PAGE, users.size());
+        endIndex = Math.min(startIndex + ROWS_PER_PAGE, appController.getUserOverviews().size());
         displaySearchTable();
         searchCountLabel.setText("Showing results " + (searchCount == 0 ? startIndex : startIndex + 1) + " - " + (endIndex) + " of " + searchCount);
     }
