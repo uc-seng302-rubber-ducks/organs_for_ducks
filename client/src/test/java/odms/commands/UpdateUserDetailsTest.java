@@ -3,7 +3,10 @@ package odms.commands;
 import odms.commons.model.User;
 import odms.controller.AppController;
 import odms.utils.UserBridge;
-import org.junit.*;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 import picocli.CommandLine;
 
 import java.io.IOException;
@@ -33,7 +36,7 @@ public class UpdateUserDetailsTest {
         when(controller.getUserBridge()).thenReturn(bridge);
         User u = new User("test dummy", LocalDate.parse("1111-11-11", sdf), "ABC1234");
         when(bridge.getUser("ABC1234")).thenReturn(u);
-        when(bridge.getExists("CDE1234")).thenReturn(false);
+        when(bridge.getExists("CDE1234")).thenReturn(true);
         controller.setUsers(new ArrayList<>());
 
         try {
@@ -163,7 +166,7 @@ public class UpdateUserDetailsTest {
         assert (newTime.isAfter(oldTime));
     }
 
-    @Ignore
+
     @Test
     public void ShouldNotUpdateNHItoDuplicateOfExistingUser() throws IOException {
         //one user cannot have the NHI changed to that of another user
@@ -177,7 +180,6 @@ public class UpdateUserDetailsTest {
         new CommandLine(updateUserDetails)
                 .parseWithHandler(new CommandLine.RunLast(), System.err, args);
 
-        Assert.assertEquals(controller.findUser("CDE1234"), other);
-        Assert.assertEquals(controller.findUser("ABC1234"), user);
+        Assert.assertEquals(controller.getUserBridge().getUser("ABC1234"), user);
     }
 }
