@@ -10,7 +10,9 @@ import odms.commons.model.datamodel.ReceiverOrganDetailsHolder;
 import odms.commons.utils.Log;
 
 import java.sql.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -47,6 +49,8 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
     private static final String DELETE_USER_STMT = "DELETE FROM User WHERE nhi = ?";
     private static final String CREATE_RECEIVING_ORGAN_DATE = "INSERT INTO OrganAwaitingDates (fkAwaitingId, dateRegistered, dateDeregistered) VALUES (?, ?, ?)";
     private static final String GET_RECEIVER_ID = "SELECT awaitingId FROM OrganAwaiting WHERE fkUserNhi = ? AND fkOrgansId = ?";
+    private static final String CREATE_DEATH_DETAILS = "INSERT INTO DeathDetails (fkUserNhi, dateOfDeath, timeOfDeath, city, region, country) VALUES (?, ?, ?, ?, ?, ?)";
+    private static final String UPDATE_DEATH_DETAILS = "";
     //</editor-fold>
 
     @Override
@@ -265,6 +269,7 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
             updateUserMedicalProcedures(user, connection);
             updateUserDiseases(user, connection);
             updateMedications(user, connection);
+            updateDeathDetails(user, connection);
         } catch (SQLException sqlEx) {
             Log.severe("A fatal error in deletion, cancelling operation", sqlEx);
             connection.prepareStatement("ROLLBACK").execute();
@@ -719,6 +724,25 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
             createMedication.setString(2, med.getMedName());
 
             createMedication.executeUpdate();
+        }
+    }
+
+    /**
+     * Creates or updates a deathDetails entry in the deathDetails table
+     * @param user to update or create for
+     * @param connection A non null and active connection to the database
+     * @throws SQLException If there is an error in the database
+     */
+    private void updateDeathDetails(User user, Connection connection) throws SQLException {
+        try (PreparedStatement createDeathDetails  = connection.prepareStatement(CREATE_DEATH_DETAILS)) {
+            createDeathDetails.setString(1, user.getNhi());
+            createDeathDetails.setDate(2, Date.valueOf(user.getDateOfDeath().toString()));
+            createDeathDetails.setTime(3, Time.valueOf(user.getTimeOfDeath().toString()));
+            createDeathDetails.setString(4, user.getDeathCity());
+            createDeathDetails.setString(5, user.getDeathRegion());
+            createDeathDetails.setString(6, user.getDeathCountry());
+
+            createDeathDetails.executeUpdate();
         }
     }
 }

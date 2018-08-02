@@ -7,6 +7,7 @@ import odms.commons.model.dto.UserOverview;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
 
@@ -34,9 +35,28 @@ public class UserBuilder {
         return this;
     }
 
-    //TODO Update for death detials -james 2/8
     public UserBuilder setDateOfDeath(LocalDate dateOfDeath) {
         secret.setDateOfDeath(dateOfDeath);
+        return this;
+    }
+
+    public UserBuilder setTimeOfDeath(LocalTime timeOfDeath) {
+        secret.setTimeOfDeath(timeOfDeath);
+        return this;
+    }
+
+    public UserBuilder setDeathCity(String deathCity) {
+        secret.setDeathCity(deathCity);
+        return this;
+    }
+
+    public UserBuilder setDeathRegion(String deathRegion) {
+        secret.setDeathRegion(deathRegion);
+        return this;
+    }
+
+    public UserBuilder setDeathCountry(String deathCountry) {
+        secret.setDeathCountry(deathCountry);
         return this;
     }
 

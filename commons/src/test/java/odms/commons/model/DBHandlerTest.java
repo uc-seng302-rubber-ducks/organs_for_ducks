@@ -1,6 +1,8 @@
 package odms.commons.model;
 
 import odms.commons.model._enum.Organs;
+import odms.commons.model.datamodel.Address;
+import odms.commons.model.datamodel.DeathDetails;
 import odms.commons.utils.DBHandler;
 import org.junit.*;
 import test_utils.DBHandlerMocker;
@@ -11,6 +13,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.sql.*;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -222,6 +225,23 @@ public class DBHandlerTest {
         DBHandlerMocker.setDeathDetailsResultSet(mockResultSet);
         dbHandler.getDeathDetails(testUser, connection);
         verify(mockStmt, times(1)).executeQuery();
+    }
+
+    @Ignore
+    @Test
+    public void testAddDeathDetails() throws SQLException {
+        Address address = new Address("", "", "", "Christchurch", "Canterbury", "", "New Zealand");
+        DeathDetails deathDetails = new DeathDetails(LocalDate.of(2010, 1, 1), LocalTime.of(2, 45), address);
+        testUser.setDeathDetails(deathDetails);
+
+        Collection<User> users = new ArrayList<>();
+        users.add(testUser);
+
+        dbHandler.saveUsers(users, connection);
+        verify(mockStmt, times(12)).executeUpdate();
+        verify(mockResultSet, times(1)).getInt("procedureId");
+        //verify(mockStmt, times(2)).setString(2, procedure.getSummary());
+        verify(mockStmt, times(1)).setInt(1, Organs.LUNG.getDbValue());
     }
 
 }
