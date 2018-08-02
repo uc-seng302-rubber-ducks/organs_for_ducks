@@ -58,7 +58,7 @@ The project should now be open.
  execution. If data is corrupted exiting the command interface by closing the terminal window
  will preserve the state from the last successful operation. 
  
- The following commands are avaliable in the application:
+ The following commands are available in the application:
    - `view`
    - `create`
    - `update`
@@ -74,17 +74,33 @@ Entering the command and then `help` or `-h` will provide more details regarding
 - view 
 
  ```
-    Usage: view [-a] [] [-dob=<dobString>] [-f=<firstName>] [-l=<lastName>]
-            [-NHI=<NHI>]
-View all currently registered users based on set parameters.
-      , -h, help              display a help message
-  -a, all, -all
-      -dob=<dobString>
-  -f, -n, -name, -fname=<firstName>
-
-  -l, -lname=<lastName>
-      -NHI, -nhi, -NHI=<NHI>
+  Usage: view [-h] <id> <-u | -c | -a>
+  View a single user, clinician or admin profile. 
+  The id is required to select the profile to view. All others are optional and must be tagged.
+    
+   <id>                NHI for users
+                       staffID for clinicians
+                       username for admins
+                        
+    -h, help           display a help message
+    -u, -user          search for the specified user
+    -c, -clinician     search for the specified clinician
+    -a, -admin         search for the specififed admin
   ```
+         
+ - view all
+ 
+ ```
+  Useage: view all [-h] [-c=<count>] [-i=<index>] [-n=<name>] [-r=<region>] [-g=<gender>]
+  View all currently registered users based on set parameters.
+    
+  All fields are optional
+   -c, -count=<count>                  How many results to return. Default = 10
+   -i, -index, -startIndex=<index>     Where in the set to start returning results from. Default = 0
+   -n, -name=<name>                    First, middle or last name to search by
+   -r, -region=<region>                Region to filter the search results by
+   -g, -gender=<gender>                Birth gender to filter the search results by
+ ```
          
  - create
 
@@ -92,8 +108,9 @@ View all currently registered users based on set parameters.
  Usage: create user [-h] [-a=<currentAddress>] [-b=<bloodType>] [-dod=<dodString>]
             [-g=<gender>] [-he=<height>] [-r=<region>] [-w=<weight>]
             <firstName> <lastName> <NHI> <dobString>
-first name, last name, and dob are required. all other are optional and must be
-tagged
+  first name, last name, and dob are required 
+  All others are optional and must be tagged
+  
       <firstName>
       <lastName>
       <NHI>                   NHI 'ABC1234'
@@ -111,36 +128,47 @@ tagged
   
   ```
   Usage: clinician [-h] <id> <firstName> <password> <region>
-Allows the creation of a clinician. ot update use update clinician
-      <id>
-      <firstName>
-      <password>
-      <region>
-  -h, help                    display a help message
+  Allows the creation of a clinician.
+    
+  <id>              staffID
+  <firstName>
+  <password>
+  <region>
+  -h, help          Display a help message
   ```
  - update
 
  ```
- update user details [-h] [-a=<currentAddress>] [-b=<bloodType>] [-dob=<dobString>]
-               [-dod=<dodString>] [-f=<firstName>] [-g=<gender>] [-he=<height>]
-               -id=<NHI> [-l=<lastName>] [-newNHI=<newNHI>] [-r=<region>]
-               [-w=<weight>]
-Use -id to identify the the user. All other tags will update values
-  -a, -addr, -currentAddress=<currentAddress>
-                              Current address (Address line 1)
-  -b, -bloodType=<bloodType>  blood type
-      -dob=<dobString>        format 'yyyy-mm-dd'
-      -dod=<dodString>        Date of death. same formatting as dob
-  -f, -fname=<firstName>
-  -g, -gender=<gender>        gender.
+ update user details [-h] <NHI> [-newNHI=<newNHI>] [-f=<firstName>] [-m=<middleName>] [-l=<lastName>]
+               [-dob=<dobString>] [-dod=<dodString>] [-b=<bloodType>] [-g=<birthGender>] [-gi=<genderIdentity>] 
+               [-he=<height>] [-w=<weight>] [-n=<streetNumber>] [-s=<streetName>] [-c=<city>] [-r=<region>] 
+               [-ne=<neighborhood>] [-z=<zipCode>] [-co=<country>]
+               
+  NHI is required, all other fields are optional.
   -h, help                    display a help message
-      -he, -height=<height>   height in m. e.g. 1.85
-      -id, -nhi, -NHI=<NHI>
-  -l, -lname=<lastName>
-      -newNHI, -newnhi=<newNHI>
+  
 
-  -r, -region=<region>        Region (Address line 2)
-  -w, -weight=<weight>        weight in kg e.g. 87.3
+  <NHI>                                     Used to identify the user to update
+  -id,  -nhi, -NHI, -newNHI, -newnhi        nhi to replace the current nhi
+  -f,   -fname=<firstName>
+  -m,   -mname=<middleName>
+  -l,   -lname=<lastName>
+  
+  -dob=<dobString>                          Date of birth. Format 'yyyy-mm-dd'
+  -dod=<dodString>                          Date of death. Same formatting as dob
+  -he,  -height=<height>                    height in m. e.g. 1.85
+  -w,   -weight=<weight>                    weight in kg e.g. 87.3
+  -b,   -bloodType=<bloodType>
+  -g,   -gender=<birthgender>               Gender which the user was born with
+  -gi,  -genderIdentity=<genderIdentity>    Gender which the user identifies as
+  
+  -n,   -streetNumber=<streetNumber>
+  -s,   -streetName=<streetName>
+  -ne,  -neighborhood=<neighborhood>
+  -c,   -city=<city>
+  -r,   -region=<region>
+  -z,   -zipCode=<zipCode>
+  -co,  -country=<country> 
 
 ```
 
@@ -152,12 +180,11 @@ Updates a user's organs to donate.
                                 spaces prefixed by + or /
                               e.g. +liver /bone_marrow would add liver and
                                 remove bone marrow
-  -h, help
 ```
 
 ```
 Usage: update user receive [-h] <nhi> [<rawOrgans>]...
-Updates a user's organs to donate.
+Updates a user's organs to receive.
       <nhi>                   The NHI of the user to be updated
       [<rawOrgans>]...        A list of the organs to be updated separated by
                                 spaces prefixed by + or /
@@ -166,30 +193,38 @@ Updates a user's organs to donate.
 ```
 
 ```
-Usage: update clinician [-a=<address>] [-f=<firstName>] [-id=<newId>] [-l=<lastName>]
-                 [-m=<middleName>] [-p=<password>] [-r=<region>] <originalId>
-Allows the details for a clinician to be updated
-      <originalId>
-  -a, -address=<address>
-  -f, -fname=<firstName>
-      -id, -ID=<newId>
-  -l, -lname=<lastName>
-  -m, -mname=<middleName>
-  -p, -password=<password>
-  -r, -region=<region>
+Usage: update clinician [-h] <originalId> [-id=<newId>] [-f=<firstName>] [-m=<middleName>] [-l=<lastName>]
+                  [-p=<password>] [-n=<streetNumber>] [-s=<streetName>] [-ne=<neighborhood>] 
+                  [-c=<city>] [-r=<region>] [-z=<zipCode>] [-co=<country>]
+                  
+  Allows the details for a clinician to be updated
+  
+  <originalId>                               staffID to identify the clinician to udpate
+  -id,  -ID, -newId, -newID=<newStaffID>     new staffID to replace the current staffID
+  -f,   -fname=<firstName>
+  -l,   -lname=<lastName>
+  -m,   -mname=<middleName>
+  -p,   -password=<password>
+  
+  -n,   -streetNumber=<streetNumber>
+  -s,   -streetName=<streetName>
+  -ne,  -neighborhood=<neighborhood>
+  -c,   -city=<city>
+  -r,   -region=<region>
+  -z,   -zipCode=<zipCode>
+  -co,  -country=<country>
 ```
 
 
 - delete
 
 ```
-Usage: delete
- Command used to start the deletion process. Is required to reach the deletion
-subcommands
-Commands:
-  user       first name, lastname, DOB. Required will locate user and prompt
-               for deletion
-  clinician  Allows a clinician to be deleted
+Usage: delete <user | clinician> <nhi | staffID>
+One of user/clinician fields as well as their corresponding id are required.
+Delete either a user or a clinician by using the following subcommands
+  
+  <user> <nhi>              nhi of the user to be deleted
+  <clinician> <staffID>     staffID of the clinician to be deleted
 ```
 
 - sql
