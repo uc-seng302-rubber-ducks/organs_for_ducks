@@ -69,7 +69,6 @@ public class UpdateClinician implements Runnable {
 
         if (newId != null) {
             if (!controller.getClinicianBridge().getExists(newId)) {
-                System.out.println(controller.getToken());
                 clinician.setStaffId(newId);
                 valid = AttributeValidation.checkRequiredString(newId);
             }
