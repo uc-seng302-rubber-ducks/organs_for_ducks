@@ -158,7 +158,7 @@ public class UndoUserUpdateFormGUITest extends ApplicationTest {
 
 
         verifyThat("#lNameInput", TextInputControlMatchers.hasText(""));
-        verifyThat("#heightInput", TextInputControlMatchers.hasText(""));
+        verifyThat("#heightInput", TextInputControlMatchers.hasText("0.0"));
     }
 
     @Test
@@ -179,7 +179,7 @@ public class UndoUserUpdateFormGUITest extends ApplicationTest {
         clickOn("#lNameInput");
         write("lasagna");
 
-        verifyThat("#heightInput", TextInputControlMatchers.hasText("1"));
+        verifyThat("#heightInput", TextInputControlMatchers.hasText("0.01"));
         verifyThat("#lNameInput", TextInputControlMatchers.hasText("lasagna"));
     }
 }

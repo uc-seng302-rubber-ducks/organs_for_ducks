@@ -579,7 +579,7 @@ public class User extends Undoable<User> implements Listenable {
     }
 
     public void setHeightText(String height) {
-        this.saveStateForUndo();
+        //this.saveStateForUndo();
         updateLastModified();
         if (!(healthDetails.getHeightText().equals(height))) {
             healthDetails.setHeightText(height);
@@ -592,7 +592,7 @@ public class User extends Undoable<User> implements Listenable {
     }
 
     public void setWeightText(String weight) {
-        this.saveStateForUndo();
+        //this.saveStateForUndo();
         updateLastModified();
         if (!(healthDetails.getWeightText().equals(weight))) {
             healthDetails.setWeightText(weight);
@@ -1072,6 +1072,7 @@ public class User extends Undoable<User> implements Listenable {
     }
 
     public void saveStateForUndo() {
+
 
         //attempt to find out who called this method
         //if the caller is annotated with IgnoreForUndo, skip the memento/cloning process.
