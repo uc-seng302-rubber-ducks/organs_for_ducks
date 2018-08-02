@@ -7,7 +7,6 @@ import odms.commons.model.Clinician;
 import odms.commons.utils.JsonHandler;
 import odms.commons.utils.Log;
 import odms.commons.utils.PhotoHelper;
-import odms.controller.AppController;
 import okhttp3.*;
 
 import java.io.IOException;
@@ -77,11 +76,15 @@ public class ClinicianBridge extends RoleBridge {
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
+                System.out.println(response.code());
                 if (!response.isSuccessful()) {
+                    response.close();
                     throw new IOException("Failed to DELETE to " + url);
                 }
             }
+
         });
+
     }
 
     public Clinician getClinician(String wantedClinician, String token) throws ApiException {

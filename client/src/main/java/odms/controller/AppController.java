@@ -484,7 +484,7 @@ public class AppController {
     public void deleteClinician(Clinician clinician) {
         clinician.setDeleted(true);
 
-        getClinicianBridge().deleteClinician(clinician, clinician.getStaffId());
+        getClinicianBridge().deleteClinician(clinician, getToken());
     }
 
     /**
