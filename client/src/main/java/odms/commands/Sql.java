@@ -4,6 +4,7 @@ package odms.commands;
 import odms.commons.utils.Log;
 import odms.controller.AppController;
 import odms.utils.SQLBridge;
+import odms.view.IoHelper;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
@@ -34,7 +35,7 @@ public class Sql implements Runnable {
 
         //command should only be select statement
         if (!statement.toUpperCase().startsWith("SELECT") || statement.contains("sleep(")) {
-            System.out.println("This database is read only in SQL mode and only select statements may be run");
+            IoHelper.display("This database is read only in SQL mode and only select statements may be run");
             Log.warning("User attempted to run non-select command: " + statement);
             return;
         }
@@ -42,19 +43,19 @@ public class Sql implements Runnable {
         try {
             List<String> result = sqlBridge.excuteSqlStatement(statement,controller.getToken());
             if(result.isEmpty()){
-                System.out.println("The result set was empty an invalid query may have been entered or this result was no rows");
+                IoHelper.display("The result set was empty an invalid query may have been entered or this result was no rows");
             } else {
-                System.out.println("----------------------------------------------------------------------------------------");
+                IoHelper.display("----------------------------------------------------------------------------------------");
                 for(String s : result){
-                    System.out.println(s);
-                    System.out.println("----------------------------------------------------------------------------------------");
+                    IoHelper.display(s);
+                    IoHelper.display("----------------------------------------------------------------------------------------");
                 }
             }
 
 
         } catch (IOException e) {
             Log.severe("Stuff went badly wrong", e);
-            System.out.println("A fatal error occured. Please try again");
+            IoHelper.display("A fatal error occurred. Please try again");
         }
 
     }

@@ -5,7 +5,6 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializer;
 import com.google.gson.reflect.TypeToken;
-import javafx.scene.image.Image;
 import odms.commons.model.*;
 import odms.commons.model._enum.Directory;
 import odms.commons.model.datamodel.TransplantDetails;
@@ -16,7 +15,6 @@ import org.joda.time.DateTime;
 import org.joda.time.format.ISODateTimeFormat;
 
 import java.io.*;
-import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
@@ -369,7 +367,7 @@ public class JsonHandler extends DataHandler {
     }
 
     public List<String> decodeQueryResult(ResponseBody body) throws IOException {
-        return new Gson().fromJson(body.string(), (Type) new ArrayList<String>());
+        return new Gson().fromJson(body.string(), new TypeToken<ArrayList<String>>(){}.getType());
     }
 }
 
