@@ -1,13 +1,16 @@
 package odms.commands;
 
 
-import odms.controller.AppController;
 import odms.commons.model.DonorDetails;
 import odms.commons.model.User;
 import odms.commons.model._enum.Organs;
+import odms.controller.AppController;
+import odms.utils.UserBridge;
 import org.junit.Before;
 import org.junit.Test;
 import picocli.CommandLine;
+
+import java.io.IOException;
 
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
@@ -17,13 +20,18 @@ public class UpdateUserDonateTest {
     private UpdateUserDonate command;
     private AppController controller;
     private User user;
+    private UserBridge userBridge
+            ;
 
     @Before
-    public void setUp() {
+    public void setUp() throws IOException {
 
         command = new UpdateUserDonate();
         controller = mock(AppController.class);
         user = mock(User.class);
+        userBridge = mock(UserBridge.class);
+        when(userBridge.getUser(anyString())).thenReturn(user);
+        when(controller.getUserBridge()).thenReturn(userBridge);
     }
 
     @Test
