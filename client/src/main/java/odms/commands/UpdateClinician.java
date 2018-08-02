@@ -17,10 +17,10 @@ public class UpdateClinician implements Runnable {
     AppController controller = AppController.getInstance();
     private boolean changed;
 
-    @Option(names = {"-id", "-staffID"}, required = true)
+    @CommandLine.Parameters(index = "0")
     private String originalId;
 
-    @Option(names = {"-newID", "-newId"})
+    @Option(names = {"-id", "-ID", "-newID", "-newId"})
     private String newId;
 
     @Option(names = {"-f", "-fname"})
@@ -68,11 +68,15 @@ public class UpdateClinician implements Runnable {
         }
 
         if (newId != null) {
-            if (!controller.getClinicianBridge().getExists(newId)) {
+            valid = AttributeValidation.checkString(newId);
+            if (!controller.getClinicianBridge().getExists(newId) && valid) {
                 clinician.setStaffId(newId);
-                valid = AttributeValidation.checkRequiredString(newId);
+                changed = true;
+            } else {
+                IoHelper.display("Could not update staff ID from " + originalId + " to " + newId);
             }
         }
+
         if (firstName != null) {
             clinician.setFirstName(firstName);
             valid &= AttributeValidation.checkRequiredString(firstName);
@@ -81,13 +85,13 @@ public class UpdateClinician implements Runnable {
 
         if (middleName != null) {
             clinician.setMiddleName(middleName);
-            valid &= AttributeValidation.checkString(middleName);
+            valid &= AttributeValidation.checkRequiredString(middleName);
             changed = true;
         }
 
         if (lastName != null) {
             clinician.setLastName(lastName);
-            valid &= AttributeValidation.checkString(lastName);
+            valid &= AttributeValidation.checkRequiredString(lastName);
             changed = true;
         }
 
