@@ -50,7 +50,7 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
     private static final String CREATE_RECEIVING_ORGAN_DATE = "INSERT INTO OrganAwaitingDates (fkAwaitingId, dateRegistered, dateDeregistered) VALUES (?, ?, ?)";
     private static final String GET_RECEIVER_ID = "SELECT awaitingId FROM OrganAwaiting WHERE fkUserNhi = ? AND fkOrgansId = ?";
     private static final String CREATE_DEATH_DETAILS = "INSERT INTO DeathDetails (fkUserNhi, dateOfDeath, timeOfDeath, city, region, country) VALUES (?, ?, ?, ?, ?, ?)";
-    private static final String UPDATE_DEATH_DETAILS = "";
+    private static final String UPDATE_DEATH_DETAILS = "UPDATE DeathDetails SET dateOfDeath = ?, timeOfDeath = ?, city = ?, region = ?, country = ? WHERE fkUserNhi = ?";
     //</editor-fold>
 
     @Override
@@ -88,6 +88,7 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
             createContact(user.getNhi(), user.getContactDetails(), connection);
             createHealthDetails(user.getNhi(), user, connection);
             executeUpdate(user, connection);
+            createDeathDetails(user, connection);
         } catch (SQLException sqlEx) {
             connection.prepareStatement("ROLLBACK").execute();
             throw sqlEx;
@@ -593,6 +594,40 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
     }
 
     /**
+     * Updates the database with the users new death details
+     * @param user for which to update the death details for
+     * @param connection A non null and active connection to the database
+     * @throws SQLException if there is an error with the database
+     */
+    private void updateDeathDetails(User user, Connection connection) throws SQLException {
+        LocalDate localDateOfDeath = user.getDateOfDeath();
+        LocalTime localTimeOfDeath = user.getTimeOfDeath();
+        Date deathDate;
+        Time deathTime;
+        if (localDateOfDeath != null) {
+            deathDate = Date.valueOf(localDateOfDeath.toString());
+        } else {
+            deathDate = null;
+        }
+        if (localTimeOfDeath != null) {
+            deathTime = Time.valueOf(localTimeOfDeath.toString());
+        } else {
+            deathTime = null;
+        }
+
+        try (PreparedStatement createDeathDetails  = connection.prepareStatement(UPDATE_DEATH_DETAILS)) {
+            createDeathDetails.setDate(1, deathDate);
+            createDeathDetails.setTime(2, deathTime);
+            createDeathDetails.setString(3, user.getDeathCity());
+            createDeathDetails.setString(4, user.getDeathRegion());
+            createDeathDetails.setString(5, user.getDeathCountry());
+            createDeathDetails.setString(6, user.getNhi());
+
+            createDeathDetails.executeUpdate();
+        }
+    }
+
+    /**
      * Creates a disease in the CurrentDisease table associated with the provided user nhi
      * @param userNhi user to associate the disease with
      * @param disease disease to insert into the database
@@ -733,11 +768,27 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
      * @param connection A non null and active connection to the database
      * @throws SQLException If there is an error in the database
      */
-    private void updateDeathDetails(User user, Connection connection) throws SQLException {
+    private void createDeathDetails(User user, Connection connection) throws SQLException {
+        LocalDate localDateOfDeath = user.getDateOfDeath();
+        LocalTime localTimeOfDeath = user.getTimeOfDeath();
+        Date deathDate;
+        Time deathTime;
+        if (localDateOfDeath != null) {
+            deathDate = Date.valueOf(user.getDateOfDeath().toString());
+        } else {
+            deathDate = null;
+        }
+        if (localTimeOfDeath != null) {
+            deathTime = Time.valueOf(user.getTimeOfDeath().toString());
+        } else {
+            deathTime = null;
+        }
+
         try (PreparedStatement createDeathDetails  = connection.prepareStatement(CREATE_DEATH_DETAILS)) {
+
             createDeathDetails.setString(1, user.getNhi());
-            createDeathDetails.setDate(2, Date.valueOf(user.getDateOfDeath().toString()));
-            createDeathDetails.setTime(3, Time.valueOf(user.getTimeOfDeath().toString()));
+            createDeathDetails.setDate(2, deathDate);
+            createDeathDetails.setTime(3, deathTime);
             createDeathDetails.setString(4, user.getDeathCity());
             createDeathDetails.setString(5, user.getDeathRegion());
             createDeathDetails.setString(6, user.getDeathCountry());
