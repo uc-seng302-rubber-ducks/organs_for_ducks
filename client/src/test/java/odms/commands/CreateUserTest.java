@@ -3,7 +3,7 @@ package odms.commands;
 import odms.commons.model.User;
 import odms.commons.model.datamodel.Address;
 import odms.controller.AppController;
-import odms.utils.UserBridge;
+import odms.bridge.UserBridge;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;

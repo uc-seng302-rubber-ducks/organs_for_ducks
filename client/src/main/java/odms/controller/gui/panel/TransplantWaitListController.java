@@ -1,13 +1,10 @@
 package odms.controller.gui.panel;
 
 import javafx.animation.PauseTransition;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
-import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
@@ -21,7 +18,7 @@ import odms.commons.model.dto.UserOverview;
 import odms.commons.utils.Log;
 import odms.controller.AppController;
 import odms.controller.gui.popup.utils.AlertWindowFactory;
-import odms.utils.UserBridge;
+import odms.bridge.UserBridge;
 import okhttp3.OkHttpClient;
 
 import java.io.IOException;

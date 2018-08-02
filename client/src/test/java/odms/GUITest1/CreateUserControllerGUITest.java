@@ -3,6 +3,7 @@ package odms.GUITest1;
 import javafx.scene.Node;
 import javafx.scene.control.DatePicker;
 import odms.App;
+import odms.TestUtils.AppControllerMocker;
 import odms.TestUtils.CommonTestMethods;
 import odms.controller.AppController;
 import org.junit.*;
@@ -27,7 +28,7 @@ public class CreateUserControllerGUITest extends ApplicationTest {
 
     @Before
     public void setUpCreateScene() throws TimeoutException {
-        AppController application = mock(AppController.class);
+        AppController application = AppControllerMocker.getFullMock();
 
         AppController.setInstance(application);
         FxToolkit.registerPrimaryStage();
