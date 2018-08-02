@@ -1,9 +1,10 @@
 package odms.commands;
 
-import odms.commons.utils.Log;
-import odms.controller.AppController;
+import odms.commons.exception.ApiException;
 import odms.commons.model.Clinician;
 import odms.commons.utils.AttributeValidation;
+import odms.commons.utils.Log;
+import odms.controller.AppController;
 import odms.view.IoHelper;
 import picocli.CommandLine;
 import picocli.CommandLine.Option;
@@ -58,14 +59,17 @@ public class UpdateClinician implements Runnable {
     @Override
     public void run() {
         boolean valid = true;
-        Clinician clinician = controller.getClinician(originalId);
-        if (clinician == null) {
+        Clinician clinician;
+        try {
+            clinician = controller.getClinicianBridge().getClinician(originalId,controller.getToken());
+        } catch (ApiException e) {
             IoHelper.display("That clinician id does not exist");
             return;
         }
 
         if (newId != null) {
-            if (controller.getClinician(newId) == null) {
+            if (!controller.getClinicianBridge().getExists(newId)) {
+                System.out.println(controller.getToken());
                 clinician.setStaffId(newId);
                 valid = AttributeValidation.checkRequiredString(newId);
             }

@@ -1,14 +1,16 @@
 package odms.commands;
 
-import odms.controller.AppController;
+import odms.commons.exception.ApiException;
 import odms.commons.model.Clinician;
+import odms.controller.AppController;
+import odms.utils.ClinicianBridge;
 import org.junit.Before;
 import org.junit.Test;
 import picocli.CommandLine;
 
 import java.io.IOException;
-import static org.junit.Assert.fail;
 
+import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
@@ -18,14 +20,18 @@ public class UpdateClinicianTest {
     private Clinician testClinician;
     private Clinician testClinician2;
     private UpdateClinician command;
+    private ClinicianBridge clinicianBridge;
 
     @Before
-    public void setUp() {
+    public void setUp() throws ApiException {
         testController = mock(AppController.class);
-        testClinician = mock(Clinician.class);
-        testClinician2 = mock(Clinician.class);
-        when(testController.getClinician("0")).thenReturn(testClinician);
-        when(testController.getClinician("2")).thenReturn(testClinician2);
+        testClinician = new Clinician();
+        testClinician.setStaffId("0");
+        clinicianBridge = mock(ClinicianBridge.class);
+        when(testController.getClinicianBridge()).thenReturn(clinicianBridge);
+        when(testController.getToken()).thenReturn(anyString());
+        when(clinicianBridge.getClinician(anyString(),"token")).thenReturn(testClinician);
+
         command = new UpdateClinician();
         command.setController(testController);
 
@@ -34,11 +40,12 @@ public class UpdateClinicianTest {
 
     @Test
     public void shouldUpdateId() {
+        when(clinicianBridge.getExists(anyString())).thenReturn(false);
         String[] args = {"-id=0", "-newID=1"};
         new CommandLine(command)
                 .parseWithHandler(new CommandLine.RunLast(), System.err, args);
 
-        verify(testClinician, times(1)).setStaffId("1");
+        assert (testClinician.getStaffId().equals("1"));
     }
 
     @Test
@@ -47,9 +54,9 @@ public class UpdateClinicianTest {
         new CommandLine(command)
                 .parseWithHandler(new CommandLine.RunLast(), System.err, args);
 
-        verify(testClinician, times(1)).setFirstName("Buster");
-        verify(testClinician, times(1)).setRegion("Canterbury");
-        verify(testClinician, times(1)).setStreetName("There");
+        assert (testClinician.getFirstName().equals("Buster"));
+        assert (testClinician.getRegion().equals("Canterbury"));
+        assert (testClinician.getStreetName().equals("There"));
     }
 
     @Test
@@ -79,22 +86,22 @@ public class UpdateClinicianTest {
     }
 
     @Test
-    public void shouldDoNothingWhenNoAttributesGiven() {
+    public void shouldDoNothingWhenNoAttributesGiven() throws IOException {
         String[] args = {"-id=0"};
         new CommandLine(command)
                 .parseWithHandler(new CommandLine.RunLast(), System.err, args);
 
-        verify(testController, times(0)).updateClinicians(any());
+        verify(testController, times(0)).saveClinician(any());
 
     }
 
     @Test
     public void shouldNotBeAbleToHaveDuplicateClinicianId() {
+        when(clinicianBridge.getExists(anyString())).thenReturn(true);
         String[] args = {"-id=0", "-newID=2"};
         new CommandLine(command)
                 .parseWithHandler(new CommandLine.RunLast(), System.err, args);
-
-        verify(testClinician, times(0)).setStaffId(anyString());
+        assert (testClinician.getStaffId().equals("0"));
 
     }
 
