@@ -294,7 +294,7 @@ public class NewUserController {
                 newUser.setStreetName(streetName);
                 newUser.setZipCode(zipcode);
                 ClassLoader classLoader = getClass().getClassLoader();
-                File file = new File(classLoader.getResource("theBestt.png").getFile());
+                File file = new File(classLoader.getResource("default-profile-picture.png").getFile());
                 newUser.setProfilePhotoFilePath(file.toString());
                 HealthDetails healthDetails = collectHealthDetails(birthGender, genderIdentity, height, weight, bloodType, alcoholConsumption, smoker);
                 newUser.setHealthDetails(healthDetails);

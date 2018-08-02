@@ -221,7 +221,7 @@ public class UpdateClinicianController {
     @FXML
     private void resetProfileImage() {
         ClassLoader classLoader = getClass().getClassLoader();
-        inFile = new File(classLoader.getResource("theBestt.png").getFile());
+        inFile = new File(classLoader.getResource("default-profile-picture.png").getFile());
         currentClinician.setProfilePhotoFilePath(inFile.toString());
         displayImage(profileImage, inFile.getPath());
     }
