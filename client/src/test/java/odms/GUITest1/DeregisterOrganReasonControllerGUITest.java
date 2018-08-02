@@ -4,6 +4,7 @@ import javafx.scene.Node;
 import javafx.scene.input.KeyCode;
 import odms.App;
 import odms.TestUtils.AppControllerMocker;
+import odms.TestUtils.CommonTestMethods;
 import odms.bridge.ClinicianBridge;
 import odms.bridge.LoginBridge;
 import odms.bridge.TransplantBridge;
@@ -51,7 +52,7 @@ public class DeregisterOrganReasonControllerGUITest extends ApplicationTest {
 
     @BeforeClass
     public static void initialization() {
-        //CommonTestMethods.runHeadless();
+        CommonTestMethods.runHeadless();
     }
 
     @Before
@@ -71,11 +72,13 @@ public class DeregisterOrganReasonControllerGUITest extends ApplicationTest {
 
         when(loginBridge.loginToServer(anyString(),anyString(), anyString())).thenReturn("lsdjfksd");
         when(clinicianBridge.getClinician(anyString(), anyString())).thenReturn(clinician);
-        Set<UserOverview> overviews = new HashSet<>();
-        overviews.add(UserOverview.fromUser(testUser));
         when(bridge.getUser(anyString())).thenReturn(testUser);
         List<TransplantDetails> transplantDetails = new ArrayList<>();
         transplantDetails.add(new TransplantDetails(testUser.getNhi(), testUser.getFirstName(), Organs.HEART, LocalDate.now(), testUser.getRegion()));
+
+        Set<UserOverview> overviews = new HashSet<>();
+        overviews.add(UserOverview.fromUser(testUser));
+        when(application.getUserOverviews()).thenReturn(overviews);
         when(application.getTransplantList()).thenReturn(transplantDetails);
 
         doCallRealMethod().when(application).setUserController(any(UserController.class));
@@ -95,7 +98,6 @@ public class DeregisterOrganReasonControllerGUITest extends ApplicationTest {
         setTextField(this, "#staffPasswordField", "admin");
         clickOnButton(this,"#loginCButton");
         clickOn("#searchTab");
-        when(application.getUserOverviews()).thenReturn(overviews);
         doubleClickOn(getCell("#searchTableView", 0, 0));
         clickOn("#receiverTab");
         clickOn("Heart");

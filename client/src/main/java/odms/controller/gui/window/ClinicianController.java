@@ -162,6 +162,7 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
             }
             this.parentListeners.addAll(parentListeners);
         }
+        setDefaultFilters();
         stage.setResizable(true);
         showClinician(clinician);
         appController.getUserBridge().getUsers(0, 30, "", "", "", appController.getToken());
@@ -174,7 +175,6 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
             deleteClinician.setDisable(true);
         }
 
-        setDefaultFilters();
         openStages = new ArrayList<>();
 
         if (fromAdmin) {
