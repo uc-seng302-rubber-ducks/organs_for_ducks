@@ -34,7 +34,7 @@ public class UpdateClinicianTest {
 
     @Test
     public void shouldUpdateId() {
-        String[] args = {"0", "-id=1"};
+        String[] args = {"-id=0", "-newID=1"};
         new CommandLine(command)
                 .parseWithHandler(new CommandLine.RunLast(), System.err, args);
 
@@ -43,7 +43,7 @@ public class UpdateClinicianTest {
 
     @Test
     public void shouldUpdateMultipleAttributes() {
-        String[] args = {"0", "-f=Buster", "-r=Canterbury", "-s=There"};
+        String[] args = {"-id=0", "-f=Buster", "-r=Canterbury", "-s=There"};
         new CommandLine(command)
                 .parseWithHandler(new CommandLine.RunLast(), System.err, args);
 
@@ -54,7 +54,7 @@ public class UpdateClinicianTest {
 
     @Test
     public void shouldNotSaveClinicianWhenInvalidAttributeGiven() {
-        String[] args = {"0", "-f=inval^d", "-r=region"};
+        String[] args = {"-id=0", "-f=inval^d", "-r=region"};
         new CommandLine(command)
                 .parseWithHandler(new CommandLine.RunLast(), System.err, args);
 
@@ -67,7 +67,7 @@ public class UpdateClinicianTest {
 
     @Test
     public void shouldSaveClinicianWhenValidAttributesGiven() {
-        String[] args = {"0", "-f=valid", "-r=region"};
+        String[] args = {"-id=0", "-f=valid", "-r=region"};
         new CommandLine(command)
                 .parseWithHandler(new CommandLine.RunLast(), System.err, args);
 
@@ -80,7 +80,7 @@ public class UpdateClinicianTest {
 
     @Test
     public void shouldDoNothingWhenNoAttributesGiven() {
-        String[] args = {"0"};
+        String[] args = {"-id=0"};
         new CommandLine(command)
                 .parseWithHandler(new CommandLine.RunLast(), System.err, args);
 
@@ -90,7 +90,7 @@ public class UpdateClinicianTest {
 
     @Test
     public void shouldNotBeAbleToHaveDuplicateClinicianId() {
-        String[] args = {"0", "-id=2"};
+        String[] args = {"-id=0", "-newID=2"};
         new CommandLine(command)
                 .parseWithHandler(new CommandLine.RunLast(), System.err, args);
 
