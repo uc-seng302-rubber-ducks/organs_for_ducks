@@ -216,4 +216,12 @@ public class DBHandlerTest {
         verify(mockStmt, times(1)).executeQuery();
     }
 
+    @Test
+    public void testGetDeathDetails() throws  SQLException {
+        when(mockResultSet.next()).thenReturn(true, false);
+        DBHandlerMocker.setDeathDetailsResultSet(mockResultSet);
+        dbHandler.getDeathDetails(testUser, connection);
+        verify(mockStmt, times(1)).executeQuery();
+    }
+
 }

@@ -93,6 +93,7 @@ public class DBHandler {
     private static final String SELECT_IF_USER_EXISTS_BOOL = "SELECT EXISTS(SELECT 1 FROM User WHERE nhi = ?)";
     private static final String SELECT_IF_CLINICIAN_EXISTS_BOOL = "SELECT EXISTS(SELECT 1 FROM Clinician WHERE staffId = ?)";
     private static final String SELECT_IF_ADMIN_EXISTS_BOOL = "SELECT EXISTS(SELECT 1 FROM Administrator WHERE userName = ?)";
+    private static final String SELECT_DEATH_DETAILS_STMT = "SELECT * FROM DeathDetails WHERE fkUserNhi = ?";
     private AbstractUpdateStrategy updateStrategy;
 
 
@@ -1117,5 +1118,21 @@ public class DBHandler {
             }
         }
         return results;
+    }
+
+    public void getDeathDetails(User user, Connection connection) throws  SQLException {
+        try (PreparedStatement stmt = connection.prepareStatement(SELECT_DEATH_DETAILS_STMT)) {
+            stmt.setString(1, user.getNhi());
+            try (ResultSet resultSet = stmt.executeQuery()) {
+                while (resultSet != null && resultSet.next()) {
+                    System.out.println(resultSet.getDate("dateOfDeath").toLocalDate());
+//                    user.setDateOfDeath(resultSet.getDate("dateOfDeath").toLocalDate());
+//                    user.setTimeOfDeath(resultSet.getTime("timeOfDeath").toLocalTime());
+                    user.setDeathCountry(resultSet.getString("city"));
+                    user.setDeathRegion(resultSet.getString("region"));
+                    user.setDeathCountry(resultSet.getString("country"));
+                }
+            }
+        }
     }
 }
