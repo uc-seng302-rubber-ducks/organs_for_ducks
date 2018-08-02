@@ -72,7 +72,7 @@ public class DeregisterOrganReasonControllerGUITest extends ApplicationTest {
         when(clinicianBridge.getClinician(anyString(), anyString())).thenReturn(clinician);
         when(application.getUserOverviews()).thenReturn(Collections.singleton(UserOverview.fromUser(testUser)));
         when(bridge.getUser(anyString())).thenReturn(testUser);
-        when(application.getUsers()).thenReturn(Arrays.asList(testUser)); // needs to be modidfed to return a list
+        when(application.getUsers()).thenReturn(Arrays.asList(testUser)); // needs to be modified to return a list
         when(application.getTransplantList()).thenReturn(Collections.singletonList(new TransplantDetails(testUser.getNhi(), testUser.getFirstName(), Organs.HEART, LocalDate.now(), testUser.getRegion())));
 
         //DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");

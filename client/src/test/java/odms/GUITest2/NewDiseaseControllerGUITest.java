@@ -4,6 +4,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.TabPane;
 import odms.App;
+import odms.TestUtils.CommonTestMethods;
 import odms.commons.model.Clinician;
 import odms.commons.model.Disease;
 import odms.commons.model.User;
@@ -70,7 +71,7 @@ public class NewDiseaseControllerGUITest extends ApplicationTest {
         when(clinicianBridge.getClinician(anyString(), anyString())).thenReturn(clinician);
         when(controller.getTransplantBridge()).thenReturn(transplantBridge);
 
-        when(controller.getTransplantList()).thenReturn(new ArrayList());
+        when(controller.getTransplantList()).thenReturn(new ArrayList<>());
 
         //DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         testUser = new User("Aa", LocalDate.parse("2000-01-20", sdf), "ABC1244");

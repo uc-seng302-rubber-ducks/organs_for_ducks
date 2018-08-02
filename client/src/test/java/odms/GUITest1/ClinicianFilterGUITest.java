@@ -1,5 +1,6 @@
 package odms.GUITest1;
 
+import javafx.scene.control.TableView;
 import odms.App;
 import odms.TestUtils.CommonTestMethods;
 import odms.TestUtils.TableViewsMethod;
@@ -21,6 +22,7 @@ import org.junit.Test;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.matcher.control.LabeledMatchers;
+import org.testfx.util.WaitForAsyncUtils;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -32,6 +34,7 @@ import java.util.concurrent.TimeoutException;
 import static odms.TestUtils.FxRobotHelper.clickOnButton;
 import static odms.TestUtils.FxRobotHelper.setTextField;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.testfx.api.FxAssert.verifyThat;
@@ -81,13 +84,10 @@ public class ClinicianFilterGUITest extends ApplicationTest {
         when(loginBridge.loginToServer(anyString(),anyString(), anyString())).thenReturn("lsdjfksd");
         when(clinicianBridge.getClinician(anyString(), anyString())).thenReturn(clinician);
         when(application.getUserOverviews()).thenReturn(new HashSet<>(overviews));
-        when(bridge.getUser("ABC1234")).thenReturn(adam);
+        when(bridge.getUser(eq("ABC1234"))).thenReturn(adam);
 
         FxToolkit.registerPrimaryStage();
         FxToolkit.setupApplication(App.class);
-
-        AppController.getInstance().getUsers().clear();
-        AppController.getInstance().getUsers().add(adam);
 
         clickOn("#clinicianTab");
         setTextField(this,"#staffIdTextField" ,"0");
@@ -101,6 +101,7 @@ public class ClinicianFilterGUITest extends ApplicationTest {
         clickOnButton(this,"#loginCButton");
         clickOn("#searchTab");
         setTextField(this, "#searchTextField","Adam" );
+        WaitForAsyncUtils.waitForFxEvents();
         doubleClickOn(TableViewsMethod.getCell("#searchTableView", 0, 0));
         verifyThat("#NHIValue", LabeledMatchers.hasText("ABC1234"));
     }
@@ -116,6 +117,7 @@ public class ClinicianFilterGUITest extends ApplicationTest {
         clickOnButton(this,"#loginCButton");
         clickOn("#searchTab");
         setTextField(this, "#searchTextField","Adam" );
+        System.out.println(lookup("#searchTableView").queryAs(TableView.class).getItems());
         doubleClickOn(TableViewsMethod.getCell("#searchTableView", 0, 0));
         verifyThat("#NHIValue", LabeledMatchers.hasText("ABC1234"));
     }
