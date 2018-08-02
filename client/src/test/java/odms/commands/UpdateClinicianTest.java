@@ -3,9 +3,11 @@ package odms.commands;
 import odms.controller.AppController;
 import odms.commons.model.Clinician;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import picocli.CommandLine;
+
+import java.io.IOException;
+import static org.junit.Assert.fail;
 
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
@@ -50,11 +52,30 @@ public class UpdateClinicianTest {
         verify(testClinician, times(1)).setStreetName("There");
     }
 
-    @Ignore
     @Test
-    public void shouldUpdateValidAttributesWhenInvalidGiven() {
-        //TODO Test this after input validation is ready
-        //if a bad
+    public void shouldNotSaveClinicianWhenInvalidAttributeGiven() {
+        String[] args = {"0", "-f=inval^d", "-r=region"};
+        new CommandLine(command)
+                .parseWithHandler(new CommandLine.RunLast(), System.err, args);
+
+        try {
+            verify(testController, times(0)).saveClinician(testClinician);
+        } catch (IOException e) {
+            fail("IOException should not be thrown");
+        }
+    }
+
+    @Test
+    public void shouldSaveClinicianWhenValidAttributesGiven() {
+        String[] args = {"0", "-f=valid", "-r=region"};
+        new CommandLine(command)
+                .parseWithHandler(new CommandLine.RunLast(), System.err, args);
+
+        try {
+            verify(testController, times(1)).saveClinician(testClinician);
+        } catch (IOException e) {
+            fail("IOException should not be thrown");
+        }
     }
 
     @Test
