@@ -122,6 +122,7 @@ public class UpdateClinicianController {
     private Stage ownStage;
     private File inFile;
     private String defaultCountry = "New Zealand";
+    private final int MAX_FILE_SIZE = 2097152;
 
     /**
      * Initializes the scene by setting all but the password text fields to contain the given clinicians attributes.
@@ -310,13 +311,14 @@ public class UpdateClinicianController {
         extensions.add("*.png");
         extensions.add("*.jpg");
         extensions.add("*.gif");
+        extensions.add("*.jpeg");
         FileSelectorController fileSelectorController =  new FileSelectorController();
         filename = fileSelectorController.getFileSelector(stage, extensions);
 
         if (filename != null) {
             inFile = new File(filename);
 
-            if (inFile.length() > 2000000) { //if more than 2MB
+            if (inFile.length() > MAX_FILE_SIZE ) { //if more than 2MB
                 Alert imageTooLargeAlert = new Alert(Alert.AlertType.WARNING, "Could not upload the image as the image size exceeded 2MB");
                 imageTooLargeAlert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
                 imageTooLargeAlert.showAndWait();

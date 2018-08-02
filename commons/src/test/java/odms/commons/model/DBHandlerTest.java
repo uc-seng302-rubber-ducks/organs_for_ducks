@@ -5,10 +5,6 @@ import odms.commons.utils.DBHandler;
 import org.junit.*;
 import test_utils.DBHandlerMocker;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
 import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -27,7 +23,7 @@ public class DBHandlerTest {
     private User testUser = new User("Eiran", LocalDate.of(2018, 2, 20), "ABC1111");
     private Clinician testClinician = new Clinician("Jon", "16", "password");
     private Administrator testAdmin = new Administrator("username", "James", "", "", "admin");
-    private static final String PHOTO_TEST_FILE_PATH = "../commons/src/test/java/resources/images/duck_jpg.jpg";
+    private static final String PHOTO_TEST_FILE_PATH = "../commons/src/test/java/resources/resources.images/duck_jpg.jpg";
 
     @Before
     public void beforeTest() throws SQLException {
