@@ -17,10 +17,18 @@ public class SocketHandler extends TextWebSocketHandler {
 
     private static List<WebSocketSession> sessions = new CopyOnWriteArrayList<>();
 
+    /**
+     * for testing only
+     * @return current sessions
+     */
     public static List<WebSocketSession> getSessions() {
         return sessions;
     }
 
+    /**
+     * for testing
+     * @param sessions1 desired list of (mock) sessions
+     */
     public static void setSessions(List<WebSocketSession> sessions1) {
         sessions = sessions1;
     }
