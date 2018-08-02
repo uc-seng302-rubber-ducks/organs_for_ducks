@@ -18,6 +18,7 @@
         </sonar.jacoco.reportPath>
     </properties>
 
+
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
