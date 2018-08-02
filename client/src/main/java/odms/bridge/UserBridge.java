@@ -42,6 +42,7 @@ public class UserBridge extends RoleBridge {
                 for (UserOverview overview : overviews) {
                     AppController.getInstance().addUserOverview(overview);
                 }
+                response.close();
             }
         });
     }
@@ -61,6 +62,7 @@ public class UserBridge extends RoleBridge {
                 if (!response.isSuccessful()) {
                     throw new IOException("Failed to make POST call to /users");
                 }
+                response.close();
             }
         });
     }
@@ -100,6 +102,7 @@ public class UserBridge extends RoleBridge {
                 if (!response.isSuccessful()) {
                     throw new IOException("Failed to PUT to " + url);
                 }
+                response.close();
             }
         });
     }
@@ -118,6 +121,7 @@ public class UserBridge extends RoleBridge {
                 if (!response.isSuccessful()) {
                     throw new IOException("Failed to DELETE to " + url);
                 }
+                response.close();
             }
         });
     }
@@ -137,6 +141,7 @@ public class UserBridge extends RoleBridge {
                 if (!response.isSuccessful()) {
                     throw new IOException("Failed to POST procedures to " + url);
                 }
+                response.close();
             }
         });
     }
@@ -156,6 +161,7 @@ public class UserBridge extends RoleBridge {
                 if (!response.isSuccessful()) {
                     throw new IOException("Failed to PUT to " + url);
                 }
+                response.close();
             }
         });
     }
@@ -175,6 +181,7 @@ public class UserBridge extends RoleBridge {
                 if (!response.isSuccessful()) {
                     throw new IOException("Failed to POST to " + url);
                 }
+                response.close();
             }
         });
     }
@@ -186,7 +193,7 @@ public class UserBridge extends RoleBridge {
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                Log.warning("Could not PUT procedures to " + url, e);
+                Log.warning("Could not PUT medications to " + url, e);
             }
 
             @Override
@@ -194,6 +201,7 @@ public class UserBridge extends RoleBridge {
                 if (!response.isSuccessful()) {
                     throw new IOException("Failed to PUT to " + url);
                 }
+                response.close();
             }
         });
     }
@@ -213,6 +221,7 @@ public class UserBridge extends RoleBridge {
                 if (!response.isSuccessful()) {
                     throw new IOException("Failed to POST to " + url);
                 }
+                response.close();
             }
         });
     }
@@ -232,6 +241,7 @@ public class UserBridge extends RoleBridge {
                 if (!response.isSuccessful()) {
                     throw new IOException("Failed to PUT to " + url);
                 }
+                response.close();
             }
         });
     }
@@ -251,6 +261,7 @@ public class UserBridge extends RoleBridge {
                 if (!response.isSuccessful()) {
                     throw new IOException("Failed to POST to " + url);
                 }
+                response.close();
             }
         });
     }
@@ -270,6 +281,7 @@ public class UserBridge extends RoleBridge {
                 if (!response.isSuccessful()) {
                     throw new IOException("Failed to PUT to " + url);
                 }
+                response.close();
             }
         });
     }
@@ -289,6 +301,7 @@ public class UserBridge extends RoleBridge {
                 if (!response.isSuccessful()) {
                     throw new IOException("Failed to POST to " + url);
                 }
+                response.close();
             }
         });
     }
@@ -308,6 +321,7 @@ public class UserBridge extends RoleBridge {
                 if (!response.isSuccessful()) {
                     throw new IOException("Failed to PUT to " + url);
                 }
+                response.close();
             }
         });
     }
@@ -347,6 +361,7 @@ public class UserBridge extends RoleBridge {
                     Log.warning("Failed to PUT " + url);
                     throw new IOException("Could not PUT " + url);
                 }
+                response.close();
             }
         });
     }

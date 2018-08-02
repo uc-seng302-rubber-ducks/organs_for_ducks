@@ -22,6 +22,9 @@ import javafx.scene.text.Font;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import odms.bridge.AdministratorBridge;
+import odms.bridge.ClinicianBridge;
+import odms.bridge.UserBridge;
 import odms.commons.exception.ApiException;
 import odms.commons.exception.InvalidFileException;
 import odms.commons.model.Administrator;
@@ -43,9 +46,6 @@ import odms.controller.gui.panel.TransplantWaitListController;
 import odms.controller.gui.popup.AlertUnclosedWindowsController;
 import odms.controller.gui.popup.CountrySelectionController;
 import odms.controller.gui.popup.DeletedUserController;
-import odms.bridge.AdministratorBridge;
-import odms.bridge.ClinicianBridge;
-import odms.bridge.UserBridge;
 import odms.view.CLI;
 
 import java.beans.PropertyChangeEvent;
@@ -147,7 +147,9 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
     private ClinicianBridge clinicianBridge;
     private AdministratorBridge adminBridge;
     private PauseTransition pause = new PauseTransition(Duration.millis(300));
-    private int startIndex = 0;
+    private int userStartIndex = 0;
+    private int clinicianStartIndex = 0;
+    private int adminStartIndex = 0;
 
     /**
      * Initialises scene for the administrator view
@@ -175,8 +177,8 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
                 administrator.addPropertyChangeListener(listener);
             }
         }
-        userBridge.getUsers(startIndex, ROWS_PER_PAGE, adminSearchField.getText(), regionSearchTextField.getText(), genderComboBox.getValue(), appController.getToken());
-        clinicianBridge.getClinicians(startIndex, ROWS_PER_PAGE, adminSearchField.getText(), regionSearchTextField.getText(), appController.getToken());
+        userBridge.getUsers(userStartIndex, ROWS_PER_PAGE, adminSearchField.getText(), regionSearchTextField.getText(), genderComboBox.getValue(), appController.getToken());
+        clinicianBridge.getClinicians(clinicianStartIndex, ROWS_PER_PAGE, adminSearchField.getText(), regionSearchTextField.getText(), appController.getToken());
 
         adminUndoButton.setDisable(true);
         adminRedoButton.setDisable(true);
@@ -287,7 +289,7 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
 
         InvalidationListener textFieldListener = observable -> {
             pause.setOnFinished(e -> {
-                startIndex = 0;
+                userStartIndex = 0;
                 if (adminUserRadioButton.isSelected()) {
                     AdministratorViewController.this.populateUserSearchTable();
                 } else if (adminClinicianRadioButton.isSelected()) {
@@ -441,7 +443,6 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
         }
 
         setTableOnClickBehaviour(User.class, userTableView);
-        userTableView.refresh();
     }
 
     private void setTableOnClickBehaviour(Type type, TableView tv) {
@@ -1169,13 +1170,15 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
             return;
         }
 
-        startIndex += ROWS_PER_PAGE;
         if (adminUserRadioButton.isSelected()) {
-            populateUserSearchTable(startIndex, ROWS_PER_PAGE, adminSearchField.getText(), regionSearchTextField.getText(), "");
+            userStartIndex += ROWS_PER_PAGE;
+            populateUserSearchTable(userStartIndex, ROWS_PER_PAGE, adminSearchField.getText(), regionSearchTextField.getText(), "");
         } else if (adminClinicianRadioButton.isSelected()) {
-            populateClinicianSearchTable(startIndex, ROWS_PER_PAGE, adminSearchField.getText(), regionSearchTextField.getText());
+            clinicianStartIndex += ROWS_PER_PAGE;
+            populateClinicianSearchTable(clinicianStartIndex, ROWS_PER_PAGE, adminSearchField.getText(), regionSearchTextField.getText());
         } else if (adminAdminRadioButton.isSelected()) {
-            populateAdminSearchTable(startIndex, ROWS_PER_PAGE, adminSearchField.getText());
+            adminStartIndex += ROWS_PER_PAGE;
+            populateAdminSearchTable(adminStartIndex, ROWS_PER_PAGE, adminSearchField.getText());
 
         }
     }
@@ -1185,17 +1188,24 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
      */
     @FXML
     private void goToPrevPage() {
-        if (startIndex - ROWS_PER_PAGE < 0) {
-            return;
-        }
-
-        startIndex -= ROWS_PER_PAGE;
         if (adminUserRadioButton.isSelected()) {
-            populateUserSearchTable();
+            if (userStartIndex - ROWS_PER_PAGE < 0) {
+                return;
+            }
+            userStartIndex -= ROWS_PER_PAGE;
+            populateUserSearchTable(userStartIndex, ROWS_PER_PAGE, adminSearchField.getText(), regionSearchTextField.getText(), genderComboBox.getValue());
         } else if (adminClinicianRadioButton.isSelected()) {
-            populateClinicianSearchTable(startIndex, ROWS_PER_PAGE, adminSearchField.getText(), regionSearchTextField.getText());
+            if (clinicianStartIndex - ROWS_PER_PAGE < 0) {
+                return;
+            }
+            clinicianStartIndex -= ROWS_PER_PAGE;
+            populateClinicianSearchTable(clinicianStartIndex, ROWS_PER_PAGE, adminSearchField.getText(), regionSearchTextField.getText());
         } else if (adminAdminRadioButton.isSelected()) {
-            populateAdminSearchTable(startIndex, ROWS_PER_PAGE, adminSearchField.getText());
+            if (adminStartIndex - ROWS_PER_PAGE < 0) {
+                return;
+            }
+            adminStartIndex -= ROWS_PER_PAGE;
+            populateAdminSearchTable(adminStartIndex, ROWS_PER_PAGE, adminSearchField.getText());
         }
     }
 

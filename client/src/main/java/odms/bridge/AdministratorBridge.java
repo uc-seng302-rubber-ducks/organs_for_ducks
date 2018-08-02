@@ -34,6 +34,7 @@ public class AdministratorBridge extends RoleBridge {
                 for (Administrator administrator : administrators) {
                     AppController.getInstance().addAdmin(administrator);
                 }
+                response.close();
             }
         });
     }
@@ -55,6 +56,7 @@ public class AdministratorBridge extends RoleBridge {
                     Log.warning("Failed to POST to " + url);
                     throw new IOException("Failed to POST to " + url);
                 }
+                response.close();
             }
         });
     }
@@ -74,7 +76,7 @@ public class AdministratorBridge extends RoleBridge {
                 if (!response.isSuccessful()) {
                     throw new IOException("Failed to PUT to " + url);
                 }
-
+                response.close();
             }
         });
 
@@ -94,6 +96,7 @@ public class AdministratorBridge extends RoleBridge {
                 if (!response.isSuccessful()) {
                     throw new IOException("Failed to DELETE to " + url);
                 }
+                response.close();
             }
         });
 
@@ -130,6 +133,8 @@ public class AdministratorBridge extends RoleBridge {
         } catch (IOException ex) {
             Log.severe("could not interpret the given Admin", ex);
             return null;
+        } finally {
+            response.close();
         }
     }
 

@@ -7,6 +7,7 @@ import odms.commons.model.Clinician;
 import odms.commons.utils.JsonHandler;
 import odms.commons.utils.Log;
 import odms.commons.utils.PhotoHelper;
+import odms.controller.AppController;
 import okhttp3.*;
 
 import java.io.IOException;
@@ -34,6 +35,7 @@ public class ClinicianBridge extends RoleBridge {
                 for (Clinician clinician : clinicians) {
                     AppController.getInstance().addClinician(clinician);
                 }
+                response.close();
             }
         });
     }
@@ -54,7 +56,7 @@ public class ClinicianBridge extends RoleBridge {
                     Log.warning("Failed to POST to " + url);
                     throw new IOException("Failed to make POST call to " + url);
                 }
-
+                response.close();
             }
         });
     }
@@ -74,6 +76,7 @@ public class ClinicianBridge extends RoleBridge {
                 if (!response.isSuccessful()) {
                     throw new IOException("Failed to PUT to " + url);
                 }
+                response.close();
             }
         });
     }
@@ -92,6 +95,7 @@ public class ClinicianBridge extends RoleBridge {
                 if (!response.isSuccessful()) {
                     throw new IOException("Failed to DELETE to " + url);
                 }
+                response.close();
             }
         });
     }
@@ -129,6 +133,8 @@ public class ClinicianBridge extends RoleBridge {
         } catch (IOException ex) {
             Log.severe("could not interpret the given clinician", ex);
             return null;
+        } finally {
+            response.close();
         }
     }
 
@@ -185,6 +191,7 @@ public class ClinicianBridge extends RoleBridge {
                     Log.warning("Failed to PUT " + url);
                     throw new IOException("Could not PUT " + url);
                 }
+                response.close();
             }
         });
     }
