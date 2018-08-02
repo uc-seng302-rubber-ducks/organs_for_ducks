@@ -34,6 +34,7 @@ public class UserBuilder {
         return this;
     }
 
+    //TODO Update for death detials -james 2/8
     public UserBuilder setDateOfDeath(LocalDate dateOfDeath) {
         secret.setDateOfDeath(dateOfDeath);
         return this;

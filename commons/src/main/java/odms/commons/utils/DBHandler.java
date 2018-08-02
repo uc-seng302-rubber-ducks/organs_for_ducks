@@ -255,6 +255,7 @@ public class DBHandler {
                         getUserOrganReceiveDetail(user, connection);
                         getUserContact(user, connection);
                         getUserEmergencyContact(user, connection);
+                        getDeathDetails(user, connection);
                     } catch (SQLException e) {
                         Log.warning("Unable to create instance of user with nhi " + user.getNhi(), e);
                         throw e;
@@ -1125,10 +1126,9 @@ public class DBHandler {
             stmt.setString(1, user.getNhi());
             try (ResultSet resultSet = stmt.executeQuery()) {
                 while (resultSet != null && resultSet.next()) {
-                    System.out.println(resultSet.getDate("dateOfDeath").toLocalDate());
-//                    user.setDateOfDeath(resultSet.getDate("dateOfDeath").toLocalDate());
-//                    user.setTimeOfDeath(resultSet.getTime("timeOfDeath").toLocalTime());
-                    user.setDeathCountry(resultSet.getString("city"));
+                    user.setDateOfDeath(resultSet.getDate("dateOfDeath").toLocalDate());
+                    user.setTimeOfDeath(resultSet.getTime("timeOfDeath").toLocalTime());
+                    user.setDeathCity(resultSet.getString("city"));
                     user.setDeathRegion(resultSet.getString("region"));
                     user.setDeathCountry(resultSet.getString("country"));
                 }

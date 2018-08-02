@@ -93,9 +93,9 @@ public class DeathDetails {
 
     @Override
     public String toString() {
-        return "DeathDetails{" +
-                "timeOfDeath='" + timeOfDeath + '\'' +
-                ", placeOfDeath='" + placeOfDeath + '\'' +
-                '}';
+        return
+                dateOfDeath + " " + '\n' +
+                        timeOfDeath + " " + '\n' +
+                        placeOfDeath;
     }
 }

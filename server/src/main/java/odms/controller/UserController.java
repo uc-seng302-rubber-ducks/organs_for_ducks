@@ -71,6 +71,7 @@ public class UserController extends BaseController {
         }
     }
 
+    //INSERT INTO `DeathDetails`(`fkUserNhi`, `dateOfDeath`, `timeOfDeath`, `city`, `region`, `country`) VALUES ("ABC1234","2010-01-01","02:45:00","Chrischurch","Cantebury","New Zealand");
     @RequestMapping(method = RequestMethod.GET, value = "/users/{nhi}")
     public User getUser(@PathVariable("nhi") String nhi) {
         try (Connection connection = driver.getConnection()) {
