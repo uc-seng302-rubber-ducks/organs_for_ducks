@@ -589,7 +589,6 @@ public class UpdateUserController {
         FileSelectorController fileSelectorController = new FileSelectorController();
         filename = fileSelectorController.getFileSelector(stage, extensions);
         if (filename != null) {
-            System.out.println(filename);
             inFile = new File(filename);
 
             if (inFile.length() > 2000000) { //if more than 2MB
