@@ -5,6 +5,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import odms.App;
+import odms.TestUtils.AppControllerMocker;
 import odms.TestUtils.CommonTestMethods;
 import odms.bridge.*;
 import odms.commons.exception.ApiException;
@@ -46,7 +47,7 @@ public class LoginControllerGUITest extends ApplicationTest {
 
     @Before
     public void startUp() throws TimeoutException, ApiException {
-        controller = mock(AppController.class);
+        controller = AppControllerMocker.getFullMock();
         bridge = mock(UserBridge.class);
         clinicianBridge = mock(ClinicianBridge.class);
         loginBridge = mock(LoginBridge.class);

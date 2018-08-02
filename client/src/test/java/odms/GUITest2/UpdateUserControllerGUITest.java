@@ -2,6 +2,7 @@ package odms.GUITest2;
 
 import javafx.geometry.VerticalDirection;
 import odms.App;
+import odms.TestUtils.AppControllerMocker;
 import odms.TestUtils.CommonTestMethods;
 import odms.commons.model.EmergencyContact;
 import odms.commons.model.User;
@@ -37,7 +38,7 @@ public class UpdateUserControllerGUITest extends ApplicationTest {
     public void setUpCreateScene() throws TimeoutException, IOException {
 
 
-        AppController application = mock(AppController.class);
+        AppController application = AppControllerMocker.getFullMock();
         UserBridge bridge = mock(UserBridge.class);
 
         AppController.setInstance(application);
