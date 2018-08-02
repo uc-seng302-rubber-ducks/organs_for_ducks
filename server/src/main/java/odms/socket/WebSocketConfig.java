@@ -1,14 +1,9 @@
 package odms.socket;
 
-import odms.commons.model.dto.OutputMessage;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.SendTo;
-import org.springframework.messaging.simp.config.MessageBrokerRegistry;
-import org.springframework.web.socket.config.annotation.*;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import org.springframework.web.socket.config.annotation.EnableWebSocket;
+import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
+import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
 
 @Configuration
 @EnableWebSocket

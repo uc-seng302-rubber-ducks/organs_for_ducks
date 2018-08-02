@@ -9,7 +9,7 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
 
-public class OdmsSocketHandler implements Listenable{
+public class OdmsSocketHandler implements Listenable {
 
     private PropertyChangeSupport pcs;
     private OkHttpClient client;
@@ -54,7 +54,7 @@ public class OdmsSocketHandler implements Listenable{
     }
 
     public void stop() {
-        if(socket != null) {
+        if (socket != null) {
             socket.close(0, "socket closed by client");
             Log.info("websocket manually closed by client");
         }
