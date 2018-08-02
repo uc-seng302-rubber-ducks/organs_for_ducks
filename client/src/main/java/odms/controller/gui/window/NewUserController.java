@@ -138,8 +138,11 @@ public class NewUserController {
 
         countrySelector.setItems(FXCollections.observableList(controller.getAllowedCountries()));
         ecCountrySelector.setItems(FXCollections.observableList(controller.getAllowedCountries()));
-        countrySelector.setValue("");
-        ecCountrySelector.setValue("");
+        if (!controller.getAllowedCountries().isEmpty() && !controller.getAllowedCountries().contains(defaultCountry)) {
+            defaultCountry = controller.getAllowedCountries().get(0);
+        }
+        countrySelector.setValue(defaultCountry);
+        ecCountrySelector.setValue(defaultCountry);
         for (Regions regions : Regions.values()) {
             regionSelector.getItems().add(regions.toString());
             ecRegionSelector.getItems().add(regions.toString());
