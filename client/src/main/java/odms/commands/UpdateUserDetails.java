@@ -1,11 +1,12 @@
 package odms.commands;
 
-import odms.controller.AppController;
 import odms.commons.model.User;
+import odms.controller.AppController;
 import odms.view.IoHelper;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
+import java.io.IOException;
 import java.time.LocalDate;
 
 @Command(name = "details", description = "Use -id to identify the the user. All other tags will update values")
@@ -13,7 +14,7 @@ public class UpdateUserDetails implements Runnable {
 
 
     @Option(names = {"-id", "-nhi", "-NHI"}, required = true)
-    private String NHI;
+    private String nhi;
 
     @Option(names = {"-h",
             "help"}, required = false, usageHelp = true, description = "display a help message")
@@ -67,17 +68,21 @@ public class UpdateUserDetails implements Runnable {
     @Option(names = {"-r", "-region"}, description = "Region (Address line 2)")
     private String region;
 
+    private AppController controller = AppController.getInstance();
+
     @Override
     public void run() {
         Boolean changed;
         if (helpRequested) {
-            System.out.println("help goes here");
+            IoHelper.display("help goes here");
             return;
         }
-        AppController controller = AppController.getInstance();
-        User user = controller.findUser(NHI);
-        if (user == null) {
-            System.err.println("Donor could not be found");
+
+        User user;
+        try {
+            user = controller.getUserBridge().getUser(nhi);
+        } catch (IOException e) {
+            IoHelper.display("Donor could not be found");
             return;
         }
         changed = IoHelper.updateName(user, firstName, lastName);
@@ -139,9 +144,9 @@ public class UpdateUserDetails implements Runnable {
             changed = true;
         }
         if (newNHI != null) {
-            User exists = controller.findUser(newNHI);
-            if (exists != null) {
-                System.out.println("User with this NHI already exists");
+            boolean exists = controller.getUserBridge().getExists(newNHI);
+            if (exists) {
+                IoHelper.display("User with this nhi already exists");
                 return;
             }
             user.setNhi(newNHI);
@@ -150,6 +155,11 @@ public class UpdateUserDetails implements Runnable {
         if (changed) {
             controller.update(user);
             controller.saveUser(user);
+            IoHelper.display("Successfully updated user:"+ nhi);
         }
+    }
+
+    public void setAppController(AppController appController){
+        this.controller = appController;
     }
 }
