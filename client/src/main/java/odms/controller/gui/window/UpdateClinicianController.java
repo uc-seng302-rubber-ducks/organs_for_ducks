@@ -108,6 +108,9 @@ public class UpdateClinicianController {
 
     @FXML
     private ImageView profileImage;
+
+    @FXML
+    private Button resetProfileImageClinician;
     //</editor-fold>
 
     private AppController controller;
@@ -210,6 +213,17 @@ public class UpdateClinicianController {
     @FXML
     private void countrySelectorListener(ActionEvent event) {
         controller.countrySelectorEventHandler(countrySelector, regionSelector, regionTextField);
+    }
+
+    /**
+     * sets the profile photo back to the default image
+     */
+    @FXML
+    private void resetProfileImage() {
+        ClassLoader classLoader = getClass().getClassLoader();
+        inFile = new File(classLoader.getResource("default-profile-picture.jpg").getFile());
+        currentClinician.setProfilePhotoFilePath(inFile.toString());
+        displayImage(profileImage, inFile.getPath());
     }
 
 
@@ -692,18 +706,10 @@ public class UpdateClinicianController {
 
         } else if (valid && newClinician) { // creates a new clinician
             Clinician clinician = new Clinician(staffID, password, fName, mName, lName);
+            currentClinician = clinician;
             Address workAddress = new Address(streetNumber, streetName, neighbourhood, city, region, zipCode, country);
             clinician.setWorkContactDetails(new ContactDetails("", "", workAddress, ""));
-            if(inFile != null) {
-                try {
-                    String filePath = setUpImageFile(inFile, currentClinician.getStaffId());
-                    currentClinician.setProfilePhotoFilePath(filePath);
-                    currentClinician.getUndoStack().pop();
-                } catch (IOException e) {
-                    System.err.println(e);
-                }
-            }
-
+            resetProfileImage();
             controller.updateClinicians(clinician);
             try {
                 controller.saveClinician(clinician);
