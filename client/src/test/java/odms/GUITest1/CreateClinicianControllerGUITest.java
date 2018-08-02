@@ -3,6 +3,7 @@ package odms.GUITest1;
 import javafx.scene.Node;
 import javafx.scene.control.TextField;
 import odms.App;
+import odms.TestUtils.AppControllerMocker;
 import odms.bridge.*;
 import odms.commons.model.Administrator;
 import odms.commons.model.Clinician;
@@ -29,7 +30,7 @@ import static org.testfx.api.FxAssert.verifyThat;
  */
 public class CreateClinicianControllerGUITest extends ApplicationTest {
 
-    private AppController application = mock(AppController.class);
+    private AppController application = AppControllerMocker.getFullMock();
     private UserBridge bridge = mock(UserBridge.class);
     private ClinicianBridge clinicianBridge = mock(ClinicianBridge.class);
     private AdministratorBridge administratorBridge  = mock(AdministratorBridge.class);

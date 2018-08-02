@@ -3,6 +3,7 @@ package odms.GUITest1;
 import javafx.scene.Node;
 import javafx.scene.input.KeyCode;
 import odms.App;
+import odms.TestUtils.AppControllerMocker;
 import odms.TestUtils.CommonTestMethods;
 import odms.commons.model.Clinician;
 import odms.commons.model.Disease;
@@ -45,7 +46,7 @@ public class DeregisterOrganReasonControllerGUITest extends ApplicationTest {
     private UserBridge bridge = mock(UserBridge.class);
     private ClinicianBridge clinicianBridge = mock(ClinicianBridge.class);
     private LoginBridge loginBridge = mock(LoginBridge.class);
-    private AppController application = mock(AppController.class);
+    private AppController application = AppControllerMocker.getFullMock();
     private TransplantBridge transplantBridge = mock(TransplantBridge.class);
     private User testUser;
 

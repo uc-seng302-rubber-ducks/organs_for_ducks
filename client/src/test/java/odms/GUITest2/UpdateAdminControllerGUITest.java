@@ -1,6 +1,7 @@
 package odms.GUITest2;
 
 import odms.App;
+import odms.TestUtils.AppControllerMocker;
 import odms.TestUtils.CommonTestMethods;
 import odms.bridge.*;
 import odms.commons.model.Administrator;
@@ -47,7 +48,7 @@ public class UpdateAdminControllerGUITest extends ApplicationTest {
         ClinicianBridge clinicianBridge = mock(ClinicianBridge.class);
         LoginBridge loginBridge = mock(LoginBridge.class);
         UserBridge userBridge = mock(UserBridge.class);
-        AppController application = mock(AppController.class);
+        AppController application = AppControllerMocker.getFullMock();
 
         AppController.setInstance(application);
 

@@ -17,20 +17,6 @@ public class SocketHandler extends TextWebSocketHandler {
 
     private static List<WebSocketSession> sessions = new CopyOnWriteArrayList<>();
 
-
-    @Override
-    public void handleTextMessage(WebSocketSession session, TextMessage message)
-            throws InterruptedException, IOException {
-
-        for(WebSocketSession webSocketSession : sessions) {
-            if (webSocketSession.isOpen()) {
-                webSocketSession.sendMessage(new TextMessage("Hello!"));
-            } else {
-                sessions.remove(webSocketSession);
-            }
-        }
-    }
-
     public static List<WebSocketSession> getSessions() {
         return sessions;
     }
@@ -40,13 +26,26 @@ public class SocketHandler extends TextWebSocketHandler {
     }
 
     @Override
+    public void handleTextMessage(WebSocketSession session, TextMessage message)
+            throws InterruptedException, IOException {
+
+        for (WebSocketSession webSocketSession : sessions) {
+            if (webSocketSession.isOpen()) {
+                webSocketSession.sendMessage(new TextMessage("Hello!"));
+            } else {
+                sessions.remove(webSocketSession);
+            }
+        }
+    }
+
+    @Override
     public void afterConnectionEstablished(WebSocketSession session) {
         sessions.add(session);
     }
 
     public void broadcast(EventTypes type, String newIdentifier, String oldIdentifier) throws IOException {
 
-        for(WebSocketSession session: sessions) {
+        for (WebSocketSession session : sessions) {
             if (session.isOpen()) {
                 UpdateNotification updateNotification = new UpdateNotification(type, oldIdentifier, newIdentifier);
                 session.sendMessage(new TextMessage(new Gson().toJson(updateNotification)));
