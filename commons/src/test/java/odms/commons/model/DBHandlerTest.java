@@ -5,10 +5,6 @@ import odms.commons.utils.DBHandler;
 import org.junit.*;
 import test_utils.DBHandlerMocker;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
 import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -215,5 +211,6 @@ public class DBHandlerTest {
         dbHandler.getTransplantDetails(connection,0, 1, "", "", new String[] {});
         verify(mockStmt, times(1)).executeQuery();
     }
+
 
 }

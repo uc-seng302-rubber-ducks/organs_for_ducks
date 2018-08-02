@@ -21,9 +21,12 @@ public class Sql implements Runnable {
     @Parameters(description = "String containing a select statement. e.g. SELECT * from User")
     private String[] statementArray;
 
+
+    AppController controller = AppController.getInstance();
+
     @Override
     public void run() {
-        AppController controller = AppController.getInstance();
+
         StringBuilder sb = new StringBuilder();
         SQLBridge sqlBridge = controller.getSqlBridge();
         String statement;
@@ -58,5 +61,9 @@ public class Sql implements Runnable {
             IoHelper.display("A fatal error occurred. Please try again");
         }
 
+    }
+
+    public void setAppController(AppController appController){
+        this.controller = appController;
     }
 }
