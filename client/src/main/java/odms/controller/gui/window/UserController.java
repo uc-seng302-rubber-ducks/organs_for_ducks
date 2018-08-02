@@ -25,6 +25,7 @@ import odms.controller.gui.UnsavedChangesAlert;
 import odms.controller.gui.panel.*;
 
 import java.beans.PropertyChangeListener;
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -163,7 +164,13 @@ public class UserController {
             if (fromClinician) {
                 logoutUser.setText("Go Back");
                 logoutUser.setOnAction(e -> closeWindow());
-
+                try {
+                    application.getUserBridge().getProfilePicture(user.getNhi());
+                } catch (IOException e) {
+                    ClassLoader classLoader = getClass().getClassLoader();
+                    File inFile = new File(classLoader.getResource("default-profile-picture.jpg").getFile());
+                    user.setProfilePhotoFilePath(inFile.toString());
+                }
             } else {
                 logoutUser.setText("Log Out");
                 logoutUser.setOnAction(e -> logout());

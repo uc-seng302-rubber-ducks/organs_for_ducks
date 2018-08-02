@@ -21,11 +21,6 @@ import javafx.scene.layout.Region;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import odms.controller.AppController;
-import odms.controller.gui.StatusBarController;
-import odms.controller.gui.UnsavedChangesAlert;
-import odms.controller.gui.panel.TransplantWaitListController;
-import odms.controller.gui.popup.DeletedUserController;
 import odms.commons.model.Clinician;
 import odms.commons.model.User;
 import odms.commons.model._abstract.TransplantWaitListViewer;
@@ -33,6 +28,11 @@ import odms.commons.model._enum.EventTypes;
 import odms.commons.model._enum.Organs;
 import odms.commons.model.dto.UserOverview;
 import odms.commons.utils.Log;
+import odms.controller.AppController;
+import odms.controller.gui.StatusBarController;
+import odms.controller.gui.UnsavedChangesAlert;
+import odms.controller.gui.panel.TransplantWaitListController;
+import odms.controller.gui.popup.DeletedUserController;
 import odms.controller.gui.popup.utils.AlertWindowFactory;
 
 import java.beans.PropertyChangeEvent;
@@ -185,6 +185,13 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
         if (fromAdmin) {
             logoutMenuClinician.setText("Go Back");
             logoutMenuClinician.setOnAction(e -> goBack());
+            try {
+                appController.getClinicianBridge().getProfilePicture(clinician.getStaffId(),appController.getToken());
+            } catch (IOException e) {
+                ClassLoader classLoader = getClass().getClassLoader();
+                File inFile = new File(classLoader.getResource("default-profile-picture.jpg").getFile());
+                clinician.setProfilePhotoFilePath(inFile.toString());
+            }
         } else {
             logoutMenuClinician.setText("Log Out");
             logoutMenuClinician.setOnAction(e -> logout());

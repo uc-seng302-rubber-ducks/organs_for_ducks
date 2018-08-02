@@ -2,7 +2,6 @@ package odms.utils;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import javafx.scene.image.Image;
 import odms.commons.model.Disease;
 import odms.commons.model.MedicalProcedure;
 import odms.commons.model.User;
@@ -12,7 +11,6 @@ import odms.commons.model.datamodel.ReceiverOrganDetailsHolder;
 import odms.commons.model.dto.UserOverview;
 import odms.commons.utils.Log;
 import odms.commons.utils.PhotoHelper;
-import odms.controller.AppController;
 import okhttp3.*;
 
 import java.io.IOException;
@@ -306,7 +304,7 @@ public class UserBridge extends RoleBridge {
         });
     }
 
-    private String getProfilePicture(String nhi) throws IOException {
+    public String getProfilePicture(String nhi) throws IOException {
         String url = ip + USERS + nhi + "/photo";
         Request request = new Request.Builder().get().url(url).build();
         try(Response response  = client.newCall(request).execute()) {
