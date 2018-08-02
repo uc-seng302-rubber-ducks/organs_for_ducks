@@ -3,6 +3,7 @@ package odms.GUITest1;
 import javafx.scene.Node;
 import javafx.scene.control.TextField;
 import odms.App;
+import odms.TestUtils.CommonTestMethods;
 import odms.commons.model.Administrator;
 import odms.commons.model.Clinician;
 import odms.controller.AppController;
@@ -39,7 +40,7 @@ public class CreateClinicianControllerGUITest extends ApplicationTest {
 
     @BeforeClass
     public static void initialization() {
-        //CommonTestMethods.runHeadless();
+        CommonTestMethods.runHeadless();
     }
 
     @Before

@@ -2,6 +2,8 @@ package odms.steps;
 
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.When;
+import javafx.collections.FXCollections;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import odms.App;
@@ -25,12 +27,8 @@ import java.util.Collections;
 
 import static odms.TestUtils.FxRobotHelper.clickOnButton;
 import static odms.TestUtils.FxRobotHelper.setTextField;
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
-
-import static odms.TestUtils.FxRobotHelper.clickOnButton;
-import static odms.TestUtils.FxRobotHelper.setTextField;
 
 
 public class WhenSteps extends ApplicationTest {
@@ -175,6 +173,10 @@ public class WhenSteps extends ApplicationTest {
     @And("^I open the user page$")
     public void iOpenTheUserPage() throws IOException {
         clickOn("#searchTab");
+        interact(() -> {
+            lookup("#searchTableView").queryAs(TableView.class).setItems(FXCollections.observableList(Collections.singletonList(UserOverview.fromUser(CucumberTestModel.getUser()))));
+            lookup("#searchTableView").queryAs(TableView.class).refresh();
+        });
         doubleClickOn(TableViewsMethod.getCell("#searchTableView", 0, 0));
     }
 

@@ -2,6 +2,8 @@ package odms.steps;
 
 import cucumber.api.java.After;
 import cucumber.api.java.en.Given;
+import javafx.collections.FXCollections;
+import javafx.scene.control.TableView;
 import odms.App;
 import odms.commons.exception.ApiException;
 import odms.commons.model.Clinician;
@@ -18,7 +20,6 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.concurrent.TimeoutException;
 
@@ -118,6 +119,10 @@ public class GivenSteps extends ApplicationTest {
         clickOnButton(this, "#loginCButton");
         verifyThat("#staffIdLabel", LabeledMatchers.hasText("0"));
         clickOn("#searchTab");
+        interact(() -> {
+            lookup("#searchTableView").queryAs(TableView.class).setItems(FXCollections.observableList(Collections.singletonList(UserOverview.fromUser(CucumberTestModel.getUser()))));
+            lookup("#searchTableView").queryAs(TableView.class).refresh();
+        });
         doubleClickOn(getCell("#searchTableView", 0, 0));
         clickOn("#diseaseTab");
         clickOn("#addDiseaseButton");
