@@ -109,8 +109,7 @@ public class GivenSteps extends ApplicationTest {
         when(CucumberTestModel.getClinicianBridge().getClinician(anyString(), anyString())).thenReturn(
                 new Clinician("", "0", "")
         );
-        when(CucumberTestModel.getController().getTransplantList()).thenReturn(new ArrayList<>());
-        when(CucumberTestModel.getController().getUserOverviews()).thenReturn(Collections.singleton(UserOverview.fromUser(CucumberTestModel.getUser())));
+        CucumberTestModel.getController().setUserOverviews(Collections.singleton(UserOverview.fromUser(CucumberTestModel.getUser())));
         when(CucumberTestModel.getLoginBridge().loginToServer(anyString(), anyString(), anyString())).thenReturn("FakeToken");
         //Use default clinician
         clickOn("#clinicianTab");
