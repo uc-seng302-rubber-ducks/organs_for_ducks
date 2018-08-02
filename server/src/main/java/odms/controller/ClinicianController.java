@@ -1,9 +1,11 @@
 package odms.controller;
 
 import odms.commons.model.Clinician;
+import odms.commons.model._enum.EventTypes;
 import odms.commons.utils.DBHandler;
 import odms.commons.utils.JDBCDriver;
 import odms.commons.utils.Log;
+import odms.controller.user.details.ModifyingController;
 import odms.exception.NotFoundException;
 import odms.exception.ServerDBException;
 import odms.security.IsAdmin;
@@ -13,13 +15,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Collection;
 
 @OdmsController
-public class ClinicianController extends BaseController {
+public class ClinicianController extends ModifyingController {
 
     private JDBCDriver driver;
     private DBHandler handler;
@@ -70,6 +71,7 @@ public class ClinicianController extends BaseController {
     public ResponseEntity postClinician(@RequestBody Clinician newClinician) throws SQLException {
         try (Connection connection = driver.getConnection()) {
             handler.saveClinician(newClinician, connection);
+            super.broadcast(EventTypes.CLINICIAN_UPDATE, newClinician.getStaffId(), newClinician.getStaffId());
             return new ResponseEntity(HttpStatus.ACCEPTED);
         } catch (SQLException ex) {
             Log.severe("cannot add new clinician to database ", ex);
@@ -82,6 +84,7 @@ public class ClinicianController extends BaseController {
     public ResponseEntity putClinician(@PathVariable("staffId") String staffId, @RequestBody Clinician clinician) {
         try (Connection connection = driver.getConnection()) {
             handler.updateClinician(connection, staffId, clinician);
+            super.broadcast(EventTypes.CLINICIAN_UPDATE, staffId, clinician.getStaffId());
         } catch (SQLException ex) {
             Log.severe("cannot put clinician " + staffId, ex);
             throw new ServerDBException(ex);
@@ -94,6 +97,7 @@ public class ClinicianController extends BaseController {
     public ResponseEntity deleteClinician(@PathVariable("staffId") String staffId) {
         try (Connection connection = driver.getConnection()) {
             handler.deleteClinician(connection, staffId);
+            super.broadcast(EventTypes.CLINICIAN_UPDATE, staffId, staffId);
         } catch (SQLException ex) {
             Log.severe("cannot delete clinician " + staffId, ex);
             throw new ServerDBException(ex);

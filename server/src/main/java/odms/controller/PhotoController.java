@@ -2,9 +2,11 @@ package odms.controller;
 
 import odms.commons.model.Clinician;
 import odms.commons.model.User;
+import odms.commons.model._enum.EventTypes;
 import odms.commons.utils.DBHandler;
 import odms.commons.utils.JDBCDriver;
 import odms.commons.utils.Log;
+import odms.controller.user.details.ModifyingController;
 import odms.exception.ServerDBException;
 import odms.security.IsClinician;
 import odms.utils.DBManager;
@@ -18,7 +20,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 @OdmsController
-public class PhotoController extends BaseController {
+public class PhotoController extends ModifyingController {
 
     private DBHandler handler;
     private JDBCDriver driver;
@@ -36,6 +38,7 @@ public class PhotoController extends BaseController {
         try (Connection connection = driver.getConnection()) {
             User toModify = handler.getOneUser(connection, nhi);
             if (toModify == null) {
+                super.broadcast(EventTypes.USER_UPDATE, nhi, nhi);
                 return new ResponseEntity(HttpStatus.NOT_FOUND);
             }
             System.out.println(header);
@@ -56,6 +59,7 @@ public class PhotoController extends BaseController {
         try (Connection connection = driver.getConnection()) {
             Clinician toModify = handler.getOneClinician(connection, staffId);
             if (toModify == null) {
+                super.broadcast(EventTypes.CLINICIAN_UPDATE, staffId, staffId);
                 return new ResponseEntity(HttpStatus.NOT_FOUND);
             }
             handler.updateProfilePhoto(Clinician.class, toModify.getStaffId(),new ByteArrayInputStream(profileImageFile),header, connection);

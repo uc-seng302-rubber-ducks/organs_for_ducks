@@ -1,10 +1,12 @@
 package odms.controller;
 
 import odms.commons.model.User;
+import odms.commons.model._enum.EventTypes;
 import odms.commons.model.dto.UserOverview;
 import odms.commons.utils.DBHandler;
 import odms.commons.utils.JDBCDriver;
 import odms.commons.utils.Log;
+import odms.controller.user.details.ModifyingController;
 import odms.exception.NotFoundException;
 import odms.exception.ServerDBException;
 import odms.security.IsClinician;
@@ -13,14 +15,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
 @OdmsController
-public class UserController extends BaseController {
+public class UserController extends ModifyingController {
 
     private DBHandler handler;
     private JDBCDriver driver;
@@ -64,6 +65,7 @@ public class UserController extends BaseController {
     public ResponseEntity postUser(@RequestBody User newUser) {
         try (Connection connection = driver.getConnection()) {
             handler.saveUser(newUser, connection);
+            super.broadcast(EventTypes.USER_UPDATE, newUser.getNhi(),newUser.getNhi());
             return new ResponseEntity(HttpStatus.ACCEPTED);
         } catch (SQLException ex) {
             Log.severe("cannot add new user to db", ex);
@@ -92,6 +94,7 @@ public class UserController extends BaseController {
     public ResponseEntity putUser(@PathVariable("nhi") String nhi, @RequestBody User user) {
         try (Connection connection = driver.getConnection()) {
             handler.updateUser(connection, nhi, user);
+            super.broadcast(EventTypes.USER_UPDATE,nhi,user.getNhi());
         } catch (SQLException ex) {
             Log.severe("cannot put user " + nhi, ex);
             throw new ServerDBException(ex);
@@ -103,6 +106,7 @@ public class UserController extends BaseController {
     public ResponseEntity deleteUser(@PathVariable("nhi") String nhi) {
         try (Connection connection = driver.getConnection()) {
             handler.deleteUser(connection, nhi);
+            super.broadcast(EventTypes.USER_UPDATE, nhi, nhi);
         } catch (SQLException ex) {
             Log.severe("cannot delete user " + nhi, ex);
             throw new ServerDBException(ex);
