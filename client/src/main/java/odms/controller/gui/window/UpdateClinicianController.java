@@ -23,7 +23,6 @@ import odms.controller.AppController;
 import odms.controller.gui.FileSelectorController;
 import odms.controller.gui.popup.utils.AlertWindowFactory;
 
-
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -295,8 +294,8 @@ public class UpdateClinicianController {
         String filename;
         List<String> extensions = new ArrayList<>();
         extensions.add("*.png");
-        //extensions.add("*.jpg");
-        //extensions.add("*.gif");
+        extensions.add("*.jpg");
+        extensions.add("*.gif");
         FileSelectorController fileSelectorController =  new FileSelectorController();
         filename = fileSelectorController.getFileSelector(stage, extensions);
 

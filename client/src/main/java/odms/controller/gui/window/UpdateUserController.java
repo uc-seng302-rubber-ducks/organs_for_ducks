@@ -6,7 +6,6 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
@@ -570,8 +569,8 @@ public class UpdateUserController {
         String filename;
         List<String> extensions = new ArrayList<>();
         extensions.add("*.png");
-        //extensions.add("*.jpg");
-        //extensions.add("*.gif");
+        extensions.add("*.jpg");
+        extensions.add("*.gif");
         FileSelectorController fileSelectorController = new FileSelectorController();
         filename = fileSelectorController.getFileSelector(stage, extensions);
         if (filename != null) {

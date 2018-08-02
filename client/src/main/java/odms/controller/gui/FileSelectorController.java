@@ -46,9 +46,19 @@ public class FileSelectorController {
                 new File(System.getProperty("user.home"))
         );
         List<FileChooser.ExtensionFilter> filters = new ArrayList<>();
+        String[] allowed = new String[allowedExtensions.size()];
+        int i = 0;
         for (String extension : allowedExtensions) {
+            allowed[i] = extension;
             filters.add(new FileChooser.ExtensionFilter(extension, extension));
+            i++;
         }
+        filters.add(new FileChooser.ExtensionFilter("All", allowed));
+        filters.sort((o1, o2) -> {
+            if(o1.getDescription().equals("All")) return -1;
+            if(o2.getDescription().equals("All")) return 1;
+            return 0;
+        });
         fileChooser.getExtensionFilters().addAll(filters);
     }
 

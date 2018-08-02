@@ -69,7 +69,7 @@ public class PhotoController extends BaseController {
     }
 
 
-    @RequestMapping(method = RequestMethod.GET, value = "/users/{nhi}/photo", produces = "image/png")
+    @RequestMapping(method = RequestMethod.GET, value = "/users/{nhi}/photo", produces = {"image/png","image/jpeg","image/gif"})
     public ResponseEntity<byte[]> getUserProfilePicture(@PathVariable("nhi") String nhi) {
         byte[] image;
         String format;
