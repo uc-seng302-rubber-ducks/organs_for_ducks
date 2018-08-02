@@ -20,6 +20,7 @@ import odms.commons.utils.JsonHandler;
 import odms.commons.utils.Log;
 import odms.controller.AppController;
 
+import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
 
@@ -292,7 +293,9 @@ public class NewUserController {
                 newUser.setStreetNumber(streetnum);
                 newUser.setStreetName(streetName);
                 newUser.setZipCode(zipcode);
-
+                ClassLoader classLoader = getClass().getClassLoader();
+                File file = new File(classLoader.getResource("theBestt.png").getFile());
+                newUser.setProfilePhotoFilePath(file.toString());
                 HealthDetails healthDetails = collectHealthDetails(birthGender, genderIdentity, height, weight, bloodType, alcoholConsumption, smoker);
                 newUser.setHealthDetails(healthDetails);
 

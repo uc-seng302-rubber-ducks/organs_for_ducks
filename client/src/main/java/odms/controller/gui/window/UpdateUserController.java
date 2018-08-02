@@ -178,6 +178,9 @@ public class UpdateUserController {
 
     @FXML
     private ImageView profileImage;
+
+    @FXML
+    private Button resetProfileImageUser;
     //</editor-fold>
 
 
@@ -561,6 +564,18 @@ public class UpdateUserController {
     }
 
     /**
+     * sets the profile photo back to the default image
+     */
+    @FXML
+    private void resetProfileImage() {
+        ClassLoader classLoader = getClass().getClassLoader();
+        inFile = new File(classLoader.getResource("theBestt.png").getFile());
+        currentUser.setProfilePhotoFilePath(inFile.getPath());
+        displayImage(profileImage, inFile.getPath());
+
+    }
+
+    /**
      * uploads an image using file picker. includes validation.
      */
     @FXML
@@ -574,6 +589,7 @@ public class UpdateUserController {
         FileSelectorController fileSelectorController = new FileSelectorController();
         filename = fileSelectorController.getFileSelector(stage, extensions);
         if (filename != null) {
+            System.out.println(filename);
             inFile = new File(filename);
 
             if (inFile.length() > 2000000) { //if more than 2MB
