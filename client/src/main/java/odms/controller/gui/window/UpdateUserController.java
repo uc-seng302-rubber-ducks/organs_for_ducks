@@ -569,7 +569,7 @@ public class UpdateUserController {
     @FXML
     private void resetProfileImage() {
         ClassLoader classLoader = getClass().getClassLoader();
-        inFile = new File(classLoader.getResource("default-profile-picture.png").getFile());
+        inFile = new File(classLoader.getResource("default-profile-picture.jpg").getFile());
         currentUser.setProfilePhotoFilePath(inFile.getPath());
         displayImage(profileImage, inFile.getPath());
 
