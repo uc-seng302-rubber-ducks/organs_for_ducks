@@ -342,16 +342,7 @@ public class AppController {
             }
 
             if (userBridge.getUser(originalUser.getNhi()) != null) {
-                if (token != null) {
-                    userBridge.putReceivingOrgans(user.getReceiverDetails().getOrgans(), originalUser.getNhi(), token);
-                    userBridge.putUserProcedures(user.getMedicalProcedures(), originalUser.getNhi(), token);
-                    userBridge.putMedications(user.getPreviousMedication(), originalUser.getNhi(), token);
-                    userBridge.putMedications(user.getCurrentMedication(), originalUser.getNhi(), token);
-                    userBridge.putDiseases(user.getPastDiseases(), originalUser.getNhi(), token);
-                    userBridge.putDiseases(user.getCurrentDiseases(), originalUser.getNhi(), token);
-                }
                 userBridge.putProfilePicture(originalUser.getNhi(), user.getProfilePhotoFilePath());
-                userBridge.putDonatingOrgans(user.getDonorDetails().getOrgans(), originalUser.getNhi());
                 userBridge.putUser(user, originalUser.getNhi());
 
             } else {
