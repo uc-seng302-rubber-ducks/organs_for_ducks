@@ -17,8 +17,6 @@ import odms.commons.model.datamodel.TransplantDetails;
 import odms.commons.model.dto.UserOverview;
 import odms.controller.AppController;
 import odms.controller.gui.popup.utils.AlertWindowFactory;
-import odms.utils.UserBridge;
-import okhttp3.OkHttpClient;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -191,7 +189,7 @@ public class TransplantWaitListController {
                 if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
                     TransplantDetails transplantDetails = transplantWaitListTableView.getSelectionModel().getSelectedItem();
                     try {
-                        User wantedUser = new UserBridge(new OkHttpClient()).getUser(transplantDetails.getNhi());
+                        User wantedUser = appController.getUserBridge().getUser(transplantDetails.getNhi());
                         parent.launchUser(UserOverview.fromUser(wantedUser)); //TODO: This is a bit disgusting fix
                     } catch (IOException e) {
                         AlertWindowFactory.generateError(e);

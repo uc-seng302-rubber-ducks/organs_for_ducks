@@ -1,6 +1,8 @@
 package odms.GUITest2;
 
 
+import javafx.collections.FXCollections;
+import javafx.scene.control.TableView;
 import odms.App;
 import odms.TestUtils.CommonTestMethods;
 import odms.commons.model.Clinician;
@@ -32,9 +34,9 @@ import static odms.TestUtils.ListViewsMethod.getListView;
 import static odms.TestUtils.ListViewsMethod.getRowValue;
 import static odms.TestUtils.TableViewsMethod.getCell;
 import static org.junit.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class OrganReceiverGUITest extends ApplicationTest {
 
@@ -69,6 +71,7 @@ public class OrganReceiverGUITest extends ApplicationTest {
         when(application.getTransplantList()).thenReturn(new ArrayList<>());
         when(loginBridge.loginToServer(anyString(),anyString(), anyString())).thenReturn("lsdjfksd");
         when(clinicianBridge.getClinician(anyString(), anyString())).thenReturn(clinician);
+        doNothing().when(application).addUserOverview(any(UserOverview.class));
 
         when(application.getUserOverviews()).thenReturn(new HashSet<>(overviews));
         when(bridge.getUser("ABC1244")).thenReturn(testUser);
@@ -87,6 +90,10 @@ public class OrganReceiverGUITest extends ApplicationTest {
         clickOnButton(this,"#loginCButton");
         //verifyThat("#staffIdLabel", LabeledMatchers.hasText("0"));
         clickOn("#searchTab");
+        interact(() -> {
+            lookup("#searchTableView").queryAs(TableView.class).setItems(FXCollections.observableList(Collections.singletonList(UserOverview.fromUser(testUser))));
+            lookup("#searchTableView").queryAs(TableView.class).refresh();
+        });
         doubleClickOn(getCell("#searchTableView", 0, 0));
         clickOn("#receiverTab");
     }

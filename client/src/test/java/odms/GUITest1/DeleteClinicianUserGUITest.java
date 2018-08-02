@@ -1,6 +1,8 @@
 package odms.GUITest1;
 
 
+import javafx.collections.FXCollections;
+import javafx.scene.control.TableView;
 import odms.App;
 import odms.TestUtils.CommonTestMethods;
 import odms.TestUtils.TableViewsMethod;
@@ -21,6 +23,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.concurrent.TimeoutException;
 
@@ -84,6 +87,10 @@ public class DeleteClinicianUserGUITest extends ApplicationTest {
         setTextField(this, "#staffPasswordField", "admin");
         clickOnButton(this, "#loginCButton");
         clickOn("#searchTab");
+        interact(() -> {
+            lookup("#searchTableView").queryAs(TableView.class).setItems(FXCollections.observableList(Collections.singletonList(UserOverview.fromUser(testUser))));
+            lookup("#searchTableView").queryAs(TableView.class).refresh();
+        });
         doubleClickOn(TableViewsMethod.getCell("#searchTableView", 0, 0));
     }
 

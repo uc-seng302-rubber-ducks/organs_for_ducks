@@ -1,8 +1,9 @@
 package odms.GUITest2;
 
+import javafx.collections.FXCollections;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
-import javafx.scene.control.TabPane;
+import javafx.scene.control.TableView;
 import odms.App;
 import odms.commons.model.Clinician;
 import odms.commons.model.Disease;
@@ -70,7 +71,7 @@ public class NewDiseaseControllerGUITest extends ApplicationTest {
         when(clinicianBridge.getClinician(anyString(), anyString())).thenReturn(clinician);
         when(controller.getTransplantBridge()).thenReturn(transplantBridge);
 
-        when(controller.getTransplantList()).thenReturn(new ArrayList());
+        when(controller.getTransplantList()).thenReturn(new ArrayList<>());
 
         //DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         testUser = new User("Aa", LocalDate.parse("2000-01-20", sdf), "ABC1244");
@@ -89,10 +90,11 @@ public class NewDiseaseControllerGUITest extends ApplicationTest {
         setTextField(this, "#staffPasswordField", "admin");
         clickOnButton(this, "#loginCButton");
         //verifyThat("#staffIdLabel", LabeledMatchers.hasText("0"));
+        clickOn("#searchTab");
         interact(() -> {
-            lookup("#clinicianTabPane").queryAs(TabPane.class).getSelectionModel().select(1);
+            lookup("#searchTableView").queryAs(TableView.class).setItems(FXCollections.observableList(Collections.singletonList(UserOverview.fromUser(testUser))));
+            lookup("#searchTableView").queryAs(TableView.class).refresh();
         });
-        //clickOn("#searchTab")
         doubleClickOn(getCell("#searchTableView", 0, 0));
         clickOn("#diseaseTab");
     }

@@ -47,7 +47,6 @@ import odms.utils.AdministratorBridge;
 import odms.utils.ClinicianBridge;
 import odms.utils.UserBridge;
 import odms.view.CLI;
-import okhttp3.OkHttpClient;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -856,7 +855,7 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
             FXMLLoader userLoader = new FXMLLoader(getClass().getResource("/FXML/userView.fxml"));
             Parent root;
             try {
-                User user = new UserBridge(new OkHttpClient()).getUser(overview.getNhi());
+                User user = appController.getUserBridge().getUser(overview.getNhi());
                 root = userLoader.load();
                 Stage newStage = new Stage();
                 newStage.setScene(new Scene(root));
