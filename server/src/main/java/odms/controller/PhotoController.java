@@ -20,6 +20,7 @@ import java.sql.SQLException;
 @OdmsController
 public class PhotoController extends BaseController {
 
+    private static final int MAX_FILE_SIZE = 2000000;
     private DBHandler handler;
     private JDBCDriver driver;
 
@@ -38,8 +39,11 @@ public class PhotoController extends BaseController {
             if (toModify == null) {
                 return new ResponseEntity(HttpStatus.NOT_FOUND);
             }
-            System.out.println(header);
-            handler.updateProfilePhoto(User.class, nhi, new ByteArrayInputStream(profileImageFile), header, connection);
+            ByteArrayInputStream inputStream = new ByteArrayInputStream(profileImageFile);
+            if(inputStream.available() <= 14 || inputStream.available() > MAX_FILE_SIZE){
+                return new ResponseEntity(HttpStatus.BAD_REQUEST);
+            }
+            handler.updateProfilePhoto(User.class, nhi, inputStream, header, connection);
 
         } catch (SQLException ex) {
             Log.severe("Could not add or update user's profile photo to user " + nhi, ex);
@@ -58,7 +62,11 @@ public class PhotoController extends BaseController {
             if (toModify == null) {
                 return new ResponseEntity(HttpStatus.NOT_FOUND);
             }
-            handler.updateProfilePhoto(Clinician.class, toModify.getStaffId(),new ByteArrayInputStream(profileImageFile),header, connection);
+            ByteArrayInputStream inputStream = new ByteArrayInputStream(profileImageFile);
+            if(inputStream.available() <= 14 || inputStream.available() > MAX_FILE_SIZE){
+                return new ResponseEntity(HttpStatus.BAD_REQUEST);
+            }
+            handler.updateProfilePhoto(Clinician.class, toModify.getStaffId(),inputStream,header, connection);
 
         } catch (SQLException ex) {
             Log.severe("Could not add or update clinician's profile photo to clinician " + staffId, ex);
