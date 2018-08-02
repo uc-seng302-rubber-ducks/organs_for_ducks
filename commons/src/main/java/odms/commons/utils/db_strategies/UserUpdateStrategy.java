@@ -605,12 +605,13 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
         Date deathDate;
         Time deathTime;
         if (localDateOfDeath != null) {
-            deathDate = Date.valueOf(localDateOfDeath.toString());
+            deathDate = java.sql.Date.valueOf(localDateOfDeath);
         } else {
             deathDate = null;
         }
         if (localTimeOfDeath != null) {
-            deathTime = Time.valueOf(localTimeOfDeath.toString());
+
+            deathTime = java.sql.Time.valueOf(localTimeOfDeath);
         } else {
             deathTime = null;
         }

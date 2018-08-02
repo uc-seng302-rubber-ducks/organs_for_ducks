@@ -69,7 +69,7 @@ public class DBHandlerTest {
 
         when(mockResultSet.next()).thenReturn(false).thenReturn(true);
         dbHandler.saveUsers(users, connection);
-        verify(mockStmt, times(17)).executeUpdate();
+        verify(mockStmt, times(19)).executeUpdate();
     }
 
     @Test
@@ -91,7 +91,7 @@ public class DBHandlerTest {
         users.add(testUser);
 
         dbHandler.saveUsers(users, connection);
-        verify(mockStmt, times(10)).executeUpdate();
+        verify(mockStmt, times(11)).executeUpdate();
     }
 /*
     @Test
@@ -116,7 +116,7 @@ public class DBHandlerTest {
         users.add(testUser);
 
         dbHandler.saveUsers(users, connection);
-        verify(mockStmt, times(11)).executeUpdate();
+        verify(mockStmt, times(12)).executeUpdate();
     }
 
     @Test
@@ -129,7 +129,7 @@ public class DBHandlerTest {
         users.add(testUser);
 
         dbHandler.saveUsers(users, connection);
-        verify(mockStmt, times(14)).executeUpdate();
+        verify(mockStmt, times(15)).executeUpdate();
         verify(mockStmt, never()).setNull(3, Types.DATE);
         verify(mockStmt, times(2)).setInt(2, Organs.CONNECTIVE_TISSUE.getDbValue());
         verify(mockStmt, times(2)).setInt(2, Organs.CORNEA.getDbValue());
@@ -145,7 +145,7 @@ public class DBHandlerTest {
         users.add(testUser);
 
         dbHandler.saveUsers(users, connection);
-        verify(mockStmt, times(12)).executeUpdate();
+        verify(mockStmt, times(13)).executeUpdate();
         verify(mockResultSet, times(1)).getInt("procedureId");
         verify(mockStmt, times(2)).setString(2, procedure.getSummary());
         verify(mockStmt, times(1)).setInt(1, Organs.LUNG.getDbValue());
@@ -158,7 +158,7 @@ public class DBHandlerTest {
         users.add(testUser);
 
         dbHandler.saveUsers(users, connection);
-        verify(mockStmt, times(12)).executeUpdate();
+        verify(mockStmt, times(13)).executeUpdate();
         verify(mockResultSet, times(1)).getInt("medicationInstanceId");
         verify(mockStmt, times(2)).setString(2, "panadol");
         verify(mockStmt, times(1)).setNull(3, Types.TIMESTAMP);
@@ -227,7 +227,7 @@ public class DBHandlerTest {
         verify(mockStmt, times(1)).executeQuery();
     }
 
-    @Ignore
+
     @Test
     public void testAddDeathDetails() throws SQLException {
         Address address = new Address("", "", "", "Christchurch", "Canterbury", "", "New Zealand");
@@ -238,10 +238,21 @@ public class DBHandlerTest {
         users.add(testUser);
 
         dbHandler.saveUsers(users, connection);
-        verify(mockStmt, times(12)).executeUpdate();
-        verify(mockResultSet, times(1)).getInt("procedureId");
-        //verify(mockStmt, times(2)).setString(2, procedure.getSummary());
-        verify(mockStmt, times(1)).setInt(1, Organs.LUNG.getDbValue());
+        verify(mockStmt, times(11)).executeUpdate();
+
+    }
+
+    @Test
+    public void testAddNullDeathDetails() throws SQLException {
+        Address address = new Address("", "", "", "", "", "", "");
+        DeathDetails deathDetails = new DeathDetails(null, null, address);
+        testUser.setDeathDetails(deathDetails);
+
+        Collection<User> users = new ArrayList<>();
+        users.add(testUser);
+
+        dbHandler.saveUsers(users, connection);
+        verify(mockStmt, times(11)).executeUpdate();
     }
 
 }
