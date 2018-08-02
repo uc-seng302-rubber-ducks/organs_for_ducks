@@ -215,7 +215,9 @@ public class ClinicianUpdateStrategy extends AbstractUpdateStrategy {
             try {
                 updateClinicianDetails(clinician, connection);
                 updateClinicianAddress(clinician, connection);
-                //updateClinicianPassword(clinician, connection);
+                if(!clinician.isPasswordCorrect("")){
+                    updateClinicianPassword(clinician, connection);
+                }
             } catch (SQLException sqlEx) {
                 Log.severe("A fatal error in updating, cancelling operation", sqlEx);
                 connection.prepareStatement("ROLLBACK").execute();
