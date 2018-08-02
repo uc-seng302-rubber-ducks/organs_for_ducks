@@ -2,13 +2,14 @@ package odms.GUITest2;
 
 import javafx.scene.Node;
 import odms.App;
+import odms.TestUtils.AppControllerMocker;
 import odms.TestUtils.CommonTestMethods;
 import odms.commons.model.EmergencyContact;
 import odms.commons.model.User;
 import odms.commons.model.dto.UserOverview;
 import odms.controller.AppController;
 import odms.controller.gui.window.UserController;
-import odms.utils.UserBridge;
+import odms.bridge.UserBridge;
 import org.junit.*;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
@@ -38,7 +39,7 @@ public class UndoUserUpdateFormGUITest extends ApplicationTest {
     @Before
     public void setUp() throws TimeoutException, IOException {
 
-        AppController application = mock(AppController.class);
+        AppController application = AppControllerMocker.getFullMock();
         UserBridge bridge = mock(UserBridge.class);
 
         AppController.setInstance(application);

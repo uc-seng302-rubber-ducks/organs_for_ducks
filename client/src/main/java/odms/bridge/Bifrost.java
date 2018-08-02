@@ -1,4 +1,4 @@
-package odms.utils;
+package odms.bridge;
 
 import odms.commons.utils.ConfigPropertiesLoader;
 import odms.commons.utils.JsonHandler;

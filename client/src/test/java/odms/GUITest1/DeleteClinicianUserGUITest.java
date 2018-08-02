@@ -2,13 +2,14 @@ package odms.GUITest1;
 
 
 import odms.App;
+import odms.TestUtils.AppControllerMocker;
 import odms.TestUtils.CommonTestMethods;
 import odms.TestUtils.TableViewsMethod;
+import odms.bridge.*;
 import odms.commons.model.User;
 import odms.controller.AppController;
 import odms.commons.model.Clinician;
 import odms.commons.model.dto.UserOverview;
-import odms.utils.*;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -49,7 +50,7 @@ public class DeleteClinicianUserGUITest extends ApplicationTest {
 
     @Before
     public void setUpCreateScene() throws TimeoutException, IOException {
-        controller = mock(AppController.class);
+        controller = AppControllerMocker.getFullMock();
         bridge = mock(UserBridge.class);
         clinicianBridge = mock(ClinicianBridge.class);
         loginBridge = mock(LoginBridge.class);
