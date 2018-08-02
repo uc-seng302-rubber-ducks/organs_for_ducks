@@ -32,6 +32,7 @@ public class HttpRequester {
     public Response makeRequest(Request request) throws IOException {
         return client.newCall(request).execute();
     }
+
     /**
      * uses ehealthme api to get interactions between two drugs
      *

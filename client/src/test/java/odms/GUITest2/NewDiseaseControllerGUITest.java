@@ -5,13 +5,14 @@ import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableView;
 import odms.App;
+import odms.TestUtils.AppControllerMocker;
 import odms.TestUtils.CommonTestMethods;
+import odms.bridge.*;
 import odms.commons.model.Clinician;
 import odms.commons.model.Disease;
 import odms.commons.model.User;
 import odms.commons.model.dto.UserOverview;
 import odms.controller.AppController;
-import odms.utils.*;
 import org.junit.*;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
@@ -46,12 +47,12 @@ public class NewDiseaseControllerGUITest extends ApplicationTest {
 
     @BeforeClass
     public static void initialization() {
-        //CommonTestMethods.runHeadless();
+        CommonTestMethods.runHeadless();
     }
 
     @Before
     public void setUpCreateScene() throws TimeoutException, IOException {
-        controller = mock(AppController.class);
+        controller = AppControllerMocker.getFullMock();
         bridge = mock(UserBridge.class);
         clinicianBridge = mock(ClinicianBridge.class);
         loginBridge = mock(LoginBridge.class);

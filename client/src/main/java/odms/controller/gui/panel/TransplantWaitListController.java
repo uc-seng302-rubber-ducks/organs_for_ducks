@@ -17,6 +17,8 @@ import odms.commons.model.datamodel.TransplantDetails;
 import odms.commons.model.dto.UserOverview;
 import odms.controller.AppController;
 import odms.controller.gui.popup.utils.AlertWindowFactory;
+import odms.bridge.UserBridge;
+import okhttp3.OkHttpClient;
 
 import java.io.IOException;
 import java.util.ArrayList;

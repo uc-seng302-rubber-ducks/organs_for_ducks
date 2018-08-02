@@ -43,9 +43,9 @@ import odms.controller.gui.panel.TransplantWaitListController;
 import odms.controller.gui.popup.AlertUnclosedWindowsController;
 import odms.controller.gui.popup.CountrySelectionController;
 import odms.controller.gui.popup.DeletedUserController;
-import odms.utils.AdministratorBridge;
-import odms.utils.ClinicianBridge;
-import odms.utils.UserBridge;
+import odms.bridge.AdministratorBridge;
+import odms.bridge.ClinicianBridge;
+import odms.bridge.UserBridge;
 import odms.view.CLI;
 
 import java.beans.PropertyChangeEvent;
