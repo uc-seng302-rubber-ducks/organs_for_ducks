@@ -2,6 +2,7 @@ package odms.controller.gui.window;
 
 import com.sun.javafx.stage.StageHelper;
 import javafx.animation.PauseTransition;
+import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -21,6 +22,9 @@ import javafx.scene.text.Font;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import odms.bridge.AdministratorBridge;
+import odms.bridge.ClinicianBridge;
+import odms.bridge.UserBridge;
 import odms.commons.exception.ApiException;
 import odms.commons.exception.InvalidFileException;
 import odms.commons.model.Administrator;
@@ -42,9 +46,7 @@ import odms.controller.gui.panel.TransplantWaitListController;
 import odms.controller.gui.popup.AlertUnclosedWindowsController;
 import odms.controller.gui.popup.CountrySelectionController;
 import odms.controller.gui.popup.DeletedUserController;
-import odms.bridge.AdministratorBridge;
-import odms.bridge.ClinicianBridge;
-import odms.bridge.UserBridge;
+import odms.controller.gui.popup.utils.AlertWindowFactory;
 import odms.view.CLI;
 import okhttp3.OkHttpClient;
 
@@ -664,10 +666,12 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
             return;
         }
         if (role.equals(User.class)) {
-            try {
-                Collection<User> existingUsers = appController.getUsers();
+            Thread thread = new Thread(() -> {
+                Platform.setImplicitExit(false);
+                Collection<User> newUsers = new ArrayList<>();
+                try {
                 DataHandler csvHandler = new CSVHandler();
-                Collection<User> newUsers = csvHandler.loadUsers(filename);
+                newUsers = csvHandler.loadUsers(filename);
 
                 //if imported contains any bad data, throw it out
                 for (User user : newUsers) {
@@ -677,11 +681,7 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
                 }
 
                 for (User user : newUsers) {
-                    if (existingUsers.contains(user)) {
-                        appController.update(user);
-                    } else {
-                        appController.addUser(user);
-                    }
+                    new Thread(() -> appController.getUserBridge().postUser(user)).start();
                 }
                 saveRole(User.class, appController, appController.getToken());
             } catch (FileNotFoundException e) {
@@ -692,7 +692,11 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
                 Log.warning(filename + "contained bad data", e);
                 messageBoxPopup("error");
             }
-            refreshTables();
+            Platform.runLater(this::refreshTables);
+                final int numberImported = newUsers.size();
+                Platform.runLater(() -> AlertWindowFactory.generateInfoWindow(numberImported +" Users Successfully imported"));
+            });
+            thread.start();
         }
     }
 
