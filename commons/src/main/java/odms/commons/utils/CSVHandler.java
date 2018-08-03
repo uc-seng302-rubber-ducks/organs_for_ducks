@@ -174,7 +174,4 @@ public class CSVHandler extends DataHandler {
         return malformed;
     }
 
-    public void setMalformed(int malformed) {
-        this.malformed = malformed;
-    }
 }
