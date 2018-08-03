@@ -11,6 +11,7 @@ import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 import odms.commons.model.CacheManager;
 import odms.commons.model._enum.Environments;
+import odms.commons.utils.ConfigPropertiesLoader;
 import odms.commons.utils.Log;
 import odms.controller.AppController;
 import odms.controller.gui.window.LoginController;
@@ -19,6 +20,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.Optional;
+import java.util.Properties;
 
 /**
  * The main class of the application
@@ -34,6 +36,7 @@ public class App extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
 
+        Properties prop = new ConfigPropertiesLoader().loadConfig("clientConfig.properties");
         //<editor-fold desc="logging setup">
         Log.setup(Environments.CLIENT);
         //</editor-fold>
@@ -70,9 +73,11 @@ public class App extends Application {
                 }
             } else {
                 CacheManager.getInstance().saveAll();
+                AppController.getInstance().getSocketHandler().stop();
             }
 
         });
+        AppController.getInstance().getSocketHandler().start(prop.getProperty("server.websocket.url"));
         loginController.init(controller, primaryStage);
         primaryStage.show();
     }

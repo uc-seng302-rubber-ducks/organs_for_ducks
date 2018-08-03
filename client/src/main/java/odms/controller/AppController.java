@@ -2,6 +2,7 @@ package odms.controller;
 
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
+import odms.bridge.*;
 import odms.commons.exception.ApiException;
 import odms.commons.exception.ProfileAlreadyExistsException;
 import odms.commons.exception.ProfileNotFoundException;
@@ -20,7 +21,7 @@ import odms.controller.gui.StatusBarController;
 import odms.controller.gui.window.AdministratorViewController;
 import odms.controller.gui.window.ClinicianController;
 import odms.controller.gui.window.UserController;
-import odms.utils.*;
+import odms.socket.OdmsSocketHandler;
 import okhttp3.OkHttpClient;
 
 import java.io.IOException;
@@ -64,6 +65,7 @@ public class AppController {
     private Stack<User> redoStack = new Stack<>();
     private String token;
     private SQLBridge sqlBridge = new SQLBridge(client);
+    private OdmsSocketHandler socketHandler = new OdmsSocketHandler(client);
 
     /**
      * Creates new instance of AppController
@@ -692,5 +694,9 @@ public class AppController {
 
     public SQLBridge getSqlBridge() {
         return sqlBridge;
+    }
+
+    public OdmsSocketHandler getSocketHandler() {
+        return socketHandler;
     }
 }

@@ -42,9 +42,9 @@ import odms.controller.gui.panel.TransplantWaitListController;
 import odms.controller.gui.popup.AlertUnclosedWindowsController;
 import odms.controller.gui.popup.CountrySelectionController;
 import odms.controller.gui.popup.DeletedUserController;
-import odms.utils.AdministratorBridge;
-import odms.utils.ClinicianBridge;
-import odms.utils.UserBridge;
+import odms.bridge.AdministratorBridge;
+import odms.bridge.ClinicianBridge;
+import odms.bridge.UserBridge;
 import odms.view.CLI;
 import okhttp3.OkHttpClient;
 
@@ -55,7 +55,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.lang.reflect.Type;
-import java.text.Normalizer;
 import java.util.*;
 
 public class AdministratorViewController implements PropertyChangeListener, TransplantWaitListViewer {

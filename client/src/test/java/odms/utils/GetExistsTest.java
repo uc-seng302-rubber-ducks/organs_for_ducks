@@ -1,5 +1,9 @@
 package odms.utils;
 
+import odms.bridge.AdministratorBridge;
+import odms.bridge.ClinicianBridge;
+import odms.bridge.RoleBridge;
+import odms.bridge.UserBridge;
 import okhttp3.*;
 import org.junit.Assert;
 import org.junit.Test;

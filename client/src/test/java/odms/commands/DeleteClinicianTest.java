@@ -2,7 +2,7 @@ package odms.commands;
 
 import odms.commons.model.Clinician;
 import odms.controller.AppController;
-import odms.utils.CountriesBridge;
+import odms.bridge.CountriesBridge;
 import odms.view.CLI;
 import org.junit.Before;
 import org.junit.Test;

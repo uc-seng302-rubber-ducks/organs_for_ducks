@@ -1,6 +1,7 @@
 package odms.GUITest1;
 
 import odms.App;
+import odms.TestUtils.AppControllerMocker;
 import odms.TestUtils.CommonTestMethods;
 import odms.TestUtils.TableViewsMethod;
 import odms.commons.model.Clinician;
@@ -10,10 +11,11 @@ import odms.commons.model._enum.Environments;
 import odms.commons.model.dto.UserOverview;
 import odms.commons.utils.Log;
 import odms.controller.AppController;
-import odms.utils.ClinicianBridge;
-import odms.utils.LoginBridge;
-import odms.utils.TransplantBridge;
-import odms.utils.UserBridge;
+import odms.bridge.ClinicianBridge;
+import odms.bridge.LoginBridge;
+import odms.bridge.TransplantBridge;
+import odms.bridge.UserBridge;
+import odms.socket.OdmsSocketHandler;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -54,7 +56,7 @@ public class ClinicianFilterGUITest extends ApplicationTest {
     public void setUp() throws TimeoutException, IOException {
         Log.setup(Environments.TEST);
 
-        application = mock(AppController.class);
+        application = AppControllerMocker.getFullMock();
         bridge = mock(UserBridge.class);
         clinicianBridge = mock(ClinicianBridge.class);
         loginBridge = mock(LoginBridge.class);
