@@ -1,7 +1,7 @@
 package odms.commands;
 
+import odms.bridge.SQLBridge;
 import odms.controller.AppController;
-import odms.utils.SQLBridge;
 import org.junit.Before;
 import org.junit.Test;
 import picocli.CommandLine;

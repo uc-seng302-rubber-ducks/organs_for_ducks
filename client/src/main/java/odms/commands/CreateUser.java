@@ -1,12 +1,12 @@
 package odms.commands;
 
+import odms.bridge.UserBridge;
 import odms.commons.model.User;
 import odms.commons.utils.AttributeValidation;
 import odms.commons.utils.DataHandler;
 import odms.commons.utils.JsonHandler;
 import odms.commons.utils.Log;
 import odms.controller.AppController;
-import odms.utils.UserBridge;
 import odms.view.IoHelper;
 import okhttp3.OkHttpClient;
 import picocli.CommandLine.Command;

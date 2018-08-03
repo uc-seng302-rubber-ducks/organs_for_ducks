@@ -1,9 +1,9 @@
 package odms.commands;
 
+import odms.bridge.ClinicianBridge;
 import odms.commons.exception.ApiException;
 import odms.commons.model.Clinician;
 import odms.controller.AppController;
-import odms.utils.ClinicianBridge;
 import org.junit.Before;
 import org.junit.Test;
 import picocli.CommandLine;
@@ -30,7 +30,7 @@ public class UpdateClinicianTest {
         clinicianBridge = mock(ClinicianBridge.class);
         when(testController.getClinicianBridge()).thenReturn(clinicianBridge);
         when(testController.getToken()).thenReturn(anyString());
-        when(clinicianBridge.getClinician(anyString(),"token")).thenReturn(testClinician);
+        when(clinicianBridge.getClinician(anyString(), "token")).thenReturn(testClinician);
 
         command = new UpdateClinician();
         command.setController(testController);

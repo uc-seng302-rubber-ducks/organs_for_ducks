@@ -1,11 +1,11 @@
 package odms.commands;
 
+import odms.bridge.UserBridge;
 import odms.commons.model.ReceiverDetails;
 import odms.commons.model.User;
 import odms.commons.model._enum.OrganDeregisterReason;
 import odms.commons.model._enum.Organs;
 import odms.controller.AppController;
-import odms.utils.UserBridge;
 import org.junit.Before;
 import org.junit.Test;
 import picocli.CommandLine;

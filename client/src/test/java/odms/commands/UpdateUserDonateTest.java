@@ -1,11 +1,11 @@
 package odms.commands;
 
 
+import odms.bridge.UserBridge;
 import odms.commons.model.DonorDetails;
 import odms.commons.model.User;
 import odms.commons.model._enum.Organs;
 import odms.controller.AppController;
-import odms.utils.UserBridge;
 import org.junit.Before;
 import org.junit.Test;
 import picocli.CommandLine;
@@ -20,8 +20,7 @@ public class UpdateUserDonateTest {
     private UpdateUserDonate command;
     private AppController controller;
     private User user;
-    private UserBridge userBridge
-            ;
+    private UserBridge userBridge;
 
     @Before
     public void setUp() throws IOException {

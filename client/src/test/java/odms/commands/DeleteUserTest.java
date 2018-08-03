@@ -1,8 +1,8 @@
 package odms.commands;
 
-import odms.controller.AppController;
+import odms.bridge.UserBridge;
 import odms.commons.model.User;
-import odms.utils.UserBridge;
+import odms.controller.AppController;
 import odms.view.CLI;
 import org.junit.Before;
 import org.junit.Test;
