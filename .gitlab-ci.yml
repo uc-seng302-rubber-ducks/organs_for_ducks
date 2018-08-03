@@ -47,7 +47,9 @@ release-artifacts:
   stage: deploy
   script:
     - mvn -B clean install -DskipTests
-    - mvn -B site sonar:sonar package dockerfile:build dockerfile:push
+    - mvn -B site sonar:sonar package
+    - docker build server .
+    - docker run -p 8080:8080 -t server
   artifacts:
     paths:
     - target/*.jar
