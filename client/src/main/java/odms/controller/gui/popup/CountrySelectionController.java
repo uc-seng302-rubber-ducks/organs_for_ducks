@@ -14,8 +14,8 @@ import odms.controller.AppController;
 
 import java.util.ArrayList;
 import java.util.List;
-
-;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class CountrySelectionController {
 
@@ -31,6 +31,7 @@ public class CountrySelectionController {
     private Stage stage;
     private AppController appController;
     private List<String> allowedCountries;
+    private List<String> allCountries;
 
     /**
      * initialise country selection pop up window.
@@ -41,15 +42,16 @@ public class CountrySelectionController {
         this.admin = admin;
         this.stage = stage;
         this.appController = appController;
-        initCountrySelectionList();
+        allCountries = appController.getAllCountries();
         allowedCountries = new ArrayList<>();
+        initCountrySelectionList();
     }
 
     /**
      * initialise  Country Selection List. includes rendering checkboxes for each row.
      */
     private void initCountrySelectionList(){
-        countrySelection.setItems(FXCollections.observableList(appController.getAllCountries()));
+        countrySelection.setItems(FXCollections.observableList(allCountries));
         countrySelection.setCellFactory(CheckBoxListCell.forListView(country -> {
             BooleanProperty observable = new SimpleBooleanProperty();
             observable.addListener((obs, wasSelected, isNowSelected) ->
@@ -87,5 +89,33 @@ public class CountrySelectionController {
         allowedCountries.sort(String.CASE_INSENSITIVE_ORDER);
         appController.setAllowedCountries(allowedCountries);
         stage.close();
+    }
+
+    /**
+     * gets the country names based on the search query and re-populates the table.
+     * This method ges fired on key release from search text field.
+     */
+    @FXML
+    void getDesiredCountries(){
+        String query = searchCountry.getText();
+        countrySelection.setItems(FXCollections.observableList(countriesQuery(query)));
+    }
+
+    /**
+     * gets the country names based on the search query
+     * @param queryStr query string
+     * @return list of desired country names
+     */
+    private List<String> countriesQuery(String queryStr) {
+        List<String> desiredCountries = new ArrayList<>();
+        Pattern pattern = Pattern.compile(queryStr+".*", Pattern.CASE_INSENSITIVE);
+
+        for (String country : allCountries) {
+            Matcher matcher = pattern.matcher(country);
+            if (matcher.lookingAt()) {
+                desiredCountries.add(country);
+            }
+        }
+        return desiredCountries;
     }
 }
