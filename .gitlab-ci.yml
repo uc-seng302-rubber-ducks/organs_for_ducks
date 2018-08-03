@@ -48,7 +48,7 @@ release-artifacts:
   script:
     - mvn -B clean install -DskipTests
     - mvn -B site sonar:sonar package
-    - docker build server .
+    - docker build server
     - docker run -p 8080:8080 -t server
   artifacts:
     paths:
