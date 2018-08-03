@@ -190,7 +190,7 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
             } catch (IOException e) {
                 ClassLoader classLoader = getClass().getClassLoader();
                 File inFile = new File(classLoader.getResource("default-profile-picture.jpg").getFile());
-                clinician.setProfilePhotoFilePath(inFile.toString());
+                clinician.setProfilePhotoFilePath(inFile.getPath());
             }
         } else {
             logoutMenuClinician.setText("Log Out");

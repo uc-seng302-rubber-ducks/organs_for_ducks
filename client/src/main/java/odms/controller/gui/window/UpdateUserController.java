@@ -624,7 +624,7 @@ public class UpdateUserController {
             if(inFile != null){
                 String filePath = setUpImageFile(inFile, currentUser.getNhi());
                 currentUser.setProfilePhotoFilePath(filePath);
-                currentUser.getUndoStack().pop();
+                //currentUser.getUndoStack().pop();
             }
 
             try {

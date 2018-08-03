@@ -169,7 +169,7 @@ public class UserController {
                 } catch (IOException e) {
                     ClassLoader classLoader = getClass().getClassLoader();
                     File inFile = new File(classLoader.getResource("default-profile-picture.jpg").getFile());
-                    user.setProfilePhotoFilePath(inFile.toString());
+                    user.setProfilePhotoFilePath(inFile.getPath());
                 }
             } else {
                 logoutUser.setText("Log Out");
