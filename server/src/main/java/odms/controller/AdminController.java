@@ -25,11 +25,13 @@ public class AdminController extends ModifyingController {
 
     private JDBCDriver driver;
     private DBHandler handler;
+    private SocketHandler socketHandler;
 
     public AdminController(DBManager manager, SocketHandler socketHandler) throws SQLException {
         super(manager);
         driver = super.getDriver();
         handler = super.getHandler();
+        this.socketHandler = socketHandler;
         if (!handler.getExists(driver.getConnection(), Administrator.class, "default")) {
             Administrator administrator = new Administrator("default", "default", "", "", "admin");
             handler.saveAdministrator(administrator, driver.getConnection());
@@ -59,12 +61,14 @@ public class AdminController extends ModifyingController {
     public ResponseEntity postAdministrator(@RequestBody Administrator newAdmin) throws SQLException {
         try (Connection connection = driver.getConnection()) {
             handler.saveAdministrator(newAdmin, connection);
-            super.broadcast(EventTypes.ADMIN_UPDATE, newAdmin.getUserName(), newAdmin.getUserName());
-            return new ResponseEntity(HttpStatus.ACCEPTED);
+            socketHandler.broadcast(EventTypes.ADMIN_UPDATE, newAdmin.getUserName(), newAdmin.getUserName());
         } catch (SQLException ex) {
             Log.severe("cannot put administrator", ex);
             throw new ServerDBException(ex);
+        } catch (IOException ex) {
+            Log.warning("failed to broadcast update after posting admin", ex);
         }
+        return new ResponseEntity(HttpStatus.ACCEPTED);
     }
 
     @IsAdmin
@@ -88,10 +92,12 @@ public class AdminController extends ModifyingController {
     public ResponseEntity putAdministrator(@PathVariable("username") String username, @RequestBody Administrator administrator) throws SQLException {
         try (Connection connection = driver.getConnection()) {
             handler.updateAdministrator(connection, username, administrator);
-            super.broadcast(EventTypes.ADMIN_UPDATE, username, administrator.getUserName());
+            socketHandler.broadcast(EventTypes.ADMIN_UPDATE, username, administrator.getUserName());
         } catch (SQLException ex) {
             Log.severe("cannot put administrator " + username, ex);
             throw new ServerDBException(ex);
+        } catch (IOException ex) {
+            Log.warning("failed to broadcast update after putting admin", ex);
         }
         return new ResponseEntity(HttpStatus.OK);
     }
@@ -101,10 +107,12 @@ public class AdminController extends ModifyingController {
     public ResponseEntity deleteAdministrator(@PathVariable("username") String username) {
         try (Connection connection = driver.getConnection()) {
             handler.deleteAdministrator(connection, username);
-            super.broadcast(EventTypes.ADMIN_UPDATE, username, null);
+            socketHandler.broadcast(EventTypes.ADMIN_UPDATE, username, null);
         } catch (SQLException ex) {
             Log.severe("cannot delete administrator", ex);
             throw new ServerDBException(ex);
+        } catch (IOException ex) {
+            Log.warning("failed to broadcast update after deleting admin", ex);
         }
         return new ResponseEntity(HttpStatus.OK);
     }

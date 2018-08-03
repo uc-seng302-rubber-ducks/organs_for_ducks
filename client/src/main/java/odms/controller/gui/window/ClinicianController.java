@@ -158,15 +158,8 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
         this.clinician = clinician;
         this.admin = fromAdmin;
 
-        //add change listeners of parent controllers to the current clinician
         appController.getSocketHandler().addPropertyChangeListener(this);
-        this.parentListeners = new ArrayList<>();
-//        if (parentListeners != null && !parentListeners.isEmpty()) {
-//            for (PropertyChangeListener listener : parentListeners) {
-//                appController.getSocketHandler().addPropertyChangeListener(listener);
-//            }
-//            this.parentListeners.addAll(parentListeners);
-//        }
+
         stage.setResizable(true);
         showClinician(clinician);
         try {
@@ -629,7 +622,7 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
             String newStaffId = (String) evt.getNewValue();
             try {
                 //TODO should this be forced on the user? 1/8
-                this.clinician = clinicianBridge.getClinician(clinician.getStaffId(), appController.getToken());
+                this.clinician = clinicianBridge.getClinician(newStaffId, appController.getToken());
 
             } catch (ApiException ex) {
                 Log.warning("failed to retrieve updated clinician. response code: " + ex.getResponseCode(), ex);

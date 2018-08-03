@@ -45,6 +45,7 @@ import odms.controller.gui.popup.DeletedUserController;
 import odms.bridge.AdministratorBridge;
 import odms.bridge.ClinicianBridge;
 import odms.bridge.UserBridge;
+import odms.controller.gui.popup.utils.AlertWindowFactory;
 import odms.view.CLI;
 import okhttp3.OkHttpClient;
 
@@ -169,12 +170,8 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
         transplantWaitListTabPageController.init(appController, this);
         stage.setTitle("Administrator");
 
-        //add change listeners of parent controllers to the current user
-        if (parentListeners != null && !parentListeners.isEmpty()) {
-            for (PropertyChangeListener listener : parentListeners) {
-                administrator.addPropertyChangeListener(listener);
-            }
-        }
+        appController.getSocketHandler().addPropertyChangeListener(this);
+
         adminUndoButton.setDisable(true);
         adminRedoButton.setDisable(true);
         if (administrator.getUserName().equals("default")) {
@@ -1130,22 +1127,6 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
         initUserSearchTable();
     }
 
-    /**
-     * event handler that fires when a property change event is emitted by any objects the controller is listening to
-     *
-     * @param evt event emitted
-     */
-    @Override
-    public void propertyChange(PropertyChangeEvent evt) {
-        //watches users and clinicians
-        //refresh view on change
-        //if/else not strictly necessary at this stage
-        if (evt.getPropertyName().equals(EventTypes.USER_UPDATE.name())) {
-            refreshTables();
-        } else if (evt.getPropertyName().equals(EventTypes.CLINICIAN_UPDATE.name())) {
-            refreshTables();
-        }
-    }
 
     /**
      * moves the currently active tableview to the next page
@@ -1252,5 +1233,25 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
         }
 
         setTableOnClickBehaviour(Administrator.class, adminTableView);
+    }
+
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        //clinician controller watches user model
+        //refresh view/tables etc. on change
+        Log.info("refresh listener fired in admin controller");
+        if (evt.getPropertyName().equals(EventTypes.USER_UPDATE.name()) || evt.getPropertyName().equals(EventTypes.CLINICIAN_UPDATE.name())) {
+            refreshTables();
+        } else if (evt.getPropertyName().equals(EventTypes.ADMIN_UPDATE.name()) && administrator.getUserName().equals(evt.getOldValue())){
+            String newUsername = (String) evt.getNewValue();
+            try {
+                //TODO should this be forced on the user? 1/8
+                this.administrator = adminBridge.getAdmin(newUsername, appController.getToken());
+
+            } catch (ApiException ex) {
+                Log.warning("failed to retrieve updated admin. response code: " + ex.getResponseCode(), ex);
+                AlertWindowFactory.generateError(("could not refresh admin from the server. Please check your connection before trying again."));
+            }
+        }
     }
 }
