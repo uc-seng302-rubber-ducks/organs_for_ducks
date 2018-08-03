@@ -2,6 +2,7 @@ package odms.GUITest2;
 
 
 import odms.App;
+import odms.TestUtils.AppControllerMocker;
 import odms.TestUtils.CommonTestMethods;
 import odms.commons.model.Clinician;
 import odms.commons.model.dto.UserOverview;
@@ -10,10 +11,10 @@ import odms.commons.model.datamodel.ReceiverOrganDetailsHolder;
 import odms.commons.model.User;
 import odms.commons.model._enum.OrganDeregisterReason;
 import odms.commons.model._enum.Organs;
-import odms.utils.ClinicianBridge;
-import odms.utils.LoginBridge;
-import odms.utils.TransplantBridge;
-import odms.utils.UserBridge;
+import odms.bridge.ClinicianBridge;
+import odms.bridge.LoginBridge;
+import odms.bridge.TransplantBridge;
+import odms.bridge.UserBridge;
 import org.junit.*;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
@@ -54,7 +55,7 @@ public class OrganReceiverGUITest extends ApplicationTest {
         UserBridge bridge = mock(UserBridge.class);
         ClinicianBridge clinicianBridge = mock(ClinicianBridge.class);
         LoginBridge loginBridge = mock(LoginBridge.class);
-        AppController application = mock(AppController.class);
+        AppController application = AppControllerMocker.getFullMock();
         TransplantBridge transplantBridge = mock(TransplantBridge.class);
 
         Clinician clinician = new Clinician();
