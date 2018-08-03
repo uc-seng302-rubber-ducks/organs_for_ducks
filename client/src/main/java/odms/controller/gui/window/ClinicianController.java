@@ -21,11 +21,6 @@ import javafx.scene.layout.Region;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import odms.controller.AppController;
-import odms.controller.gui.StatusBarController;
-import odms.controller.gui.UnsavedChangesAlert;
-import odms.controller.gui.panel.TransplantWaitListController;
-import odms.controller.gui.popup.DeletedUserController;
 import odms.commons.model.Clinician;
 import odms.commons.model.User;
 import odms.commons.model._abstract.TransplantWaitListViewer;
@@ -33,6 +28,11 @@ import odms.commons.model._enum.EventTypes;
 import odms.commons.model._enum.Organs;
 import odms.commons.model.dto.UserOverview;
 import odms.commons.utils.Log;
+import odms.controller.AppController;
+import odms.controller.gui.StatusBarController;
+import odms.controller.gui.UnsavedChangesAlert;
+import odms.controller.gui.panel.TransplantWaitListController;
+import odms.controller.gui.popup.DeletedUserController;
 import odms.controller.gui.popup.utils.AlertWindowFactory;
 
 import java.beans.PropertyChangeEvent;
@@ -359,10 +359,6 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
             userStage.show();
             Log.info("Clinician " + clinician.getStaffId()
                     + " successfully launched user overview window");
-
-            ArrayList<PropertyChangeListener> listeners = new ArrayList<>();
-            listeners.add(this);
-            userController.init(AppController.getInstance(), user, userStage, true, listeners);
             userStage.show();
         } catch (IOException e) {
             Log.severe("Clinician " + clinician.getStaffId() + " Failed to load user overview window", e);
