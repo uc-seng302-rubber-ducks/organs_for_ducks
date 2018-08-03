@@ -147,6 +147,8 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
     private ClinicianBridge clinicianBridge;
     private AdministratorBridge adminBridge;
     private PauseTransition pause = new PauseTransition(Duration.millis(300));
+    private Set<ClinicianController> clinicianControllers = new HashSet<>();
+    private Set<AdministratorViewController> administratorViewControllers = new HashSet<>();
     private int userStartIndex = 0;
     private int clinicianStartIndex = 0;
     private int adminStartIndex = 0;
@@ -886,6 +888,7 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
             Stage newStage = new Stage();
             newStage.setScene(new Scene(root));
             ClinicianController clinicianController = clinicianLoader.getController();
+            clinicianControllers.add(clinicianController);
             Collection<PropertyChangeListener> listeners = new ArrayList<>();
             listeners.add(this);
             clinicianController.init(newStage, AppController.getInstance(), clinician, owner, listeners);
@@ -909,6 +912,7 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
             Stage newStage = new Stage();
             newStage.setScene(new Scene(root));
             AdministratorViewController adminLoaderController = adminLoader.getController();
+            administratorViewControllers.add(adminLoaderController);
             adminLoaderController.init(administrator, AppController.getInstance(), newStage, false, null);
             newStage.show();
             Log.info(messageAdmin + administrator.getUserName() + " successfully launched administrator overview window");
@@ -1138,6 +1142,12 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
         displayUserSearchTable();
         displayClinicianSearchTable();
         displayAdminSearchTable();
+        for (AdministratorViewController adminController : administratorViewControllers) {
+            adminController.refreshTables();
+        }
+        for (ClinicianController clinicianController : clinicianControllers) {
+            clinicianController.refreshTables();
+        }
     }
 
     /**
