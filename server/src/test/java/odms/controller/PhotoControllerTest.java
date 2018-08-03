@@ -32,14 +32,15 @@ public class PhotoControllerTest {
     private DBHandler handler;
     private User testUser;
     private Clinician testClinician;
-    private static final String JPG_PHOTO_TEST_FILE_PATH = "../commons/src/test/java/resources/images/duck_jpg.jpg";
-    private static final String PNG_PHOTO_TEST_FILE_PATH = "../commons/src/test/java/resources/images/duck_png.png";
-    private static final String NOT_PHOTO_TEST_FILE_PATH = "../commons/src/test/java/resources/images/not_image.txt";
-    private static final String TWO_MB_PHOTO_TEST_FILE_PATH = "../commons/src/test/java/resources/images/sample_2mb_image.jpg";
+    private static final String JPG_PHOTO_TEST_FILE_PATH = "src/test/resources/images/duck_jpg.jpg";
+    private static final String PNG_PHOTO_TEST_FILE_PATH = "src/test/resources/images/duck_png.png";
+    private static final String NOT_PHOTO_TEST_FILE_PATH = "src/test/resources/images/not_image.txt";
+    private static final String THREE_MB_PHOTO_TEST_FILE_PATH = "src/test/resources/images/3mb_image.jpg";
 
     @Before
     public void setUp() throws SQLException {
         connection = mock(Connection.class);
+
         manager = mock(DBManager.class);
         handler = mock(DBHandler.class);
         driver = mock(JDBCDriver.class);
@@ -92,9 +93,9 @@ public class PhotoControllerTest {
     public void putUserProfilePhoto2MBFileTestShouldReturnBadRequest() throws SQLException, IOException{
         when(handler.getOneUser(any(Connection.class), anyString())).thenReturn(testUser);
 
-        byte[] multipartFile = PhotoHelper.getBytesFromImage(TWO_MB_PHOTO_TEST_FILE_PATH);
+        byte[] multipartFile = PhotoHelper.getBytesFromImage(THREE_MB_PHOTO_TEST_FILE_PATH);
         ResponseEntity res = controller.putUserProfilePhoto("ABC1234", multipartFile,"image/jpeg");
-        Assert.assertEquals(HttpStatus.BAD_REQUEST, res.getStatusCode());
+        Assert.assertEquals(HttpStatus.PAYLOAD_TOO_LARGE, res.getStatusCode());
     }
 
     @Test
@@ -133,9 +134,9 @@ public class PhotoControllerTest {
     public void putClinicianProfilePhoto2MBFileTestShouldReturnBadRequest() throws SQLException, IOException{
         when(handler.getOneClinician(any(Connection.class), anyString())).thenReturn(testClinician);
 
-        Path path = Paths.get(TWO_MB_PHOTO_TEST_FILE_PATH);
-        byte[] multipartFile = PhotoHelper.getBytesFromImage(TWO_MB_PHOTO_TEST_FILE_PATH);
+        Path path = Paths.get(THREE_MB_PHOTO_TEST_FILE_PATH);
+        byte[] multipartFile = PhotoHelper.getBytesFromImage(THREE_MB_PHOTO_TEST_FILE_PATH);
         ResponseEntity res = controller.putClinicianProfilePhoto("12", multipartFile,"image/jpeg");
-        Assert.assertEquals(HttpStatus.BAD_REQUEST, res.getStatusCode());
+        Assert.assertEquals(HttpStatus.PAYLOAD_TOO_LARGE, res.getStatusCode());
     }
 }

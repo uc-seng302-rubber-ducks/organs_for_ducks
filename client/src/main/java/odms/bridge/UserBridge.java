@@ -304,7 +304,7 @@ public class UserBridge extends RoleBridge {
         });
     }
 
-    private String getProfilePicture(String nhi) throws IOException {
+    public String getProfilePicture(String nhi) throws IOException {
         String url = ip + USERS + nhi + "/photo";
         Request request = new Request.Builder().get().url(url).build();
         try(Response response  = client.newCall(request).execute()) {
