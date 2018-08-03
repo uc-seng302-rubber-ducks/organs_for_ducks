@@ -694,7 +694,7 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
             }
             Platform.runLater(this::refreshTables);
                 final int numberImported = newUsers.size();
-                final int malformed =  csvHandler.malformed;
+                final int malformed =  csvHandler.getMalformed();
                 Platform.runLater(() -> AlertWindowFactory.generateInfoWindow(numberImported +" Users Successfully imported. " +
                         + malformed + " malformed users discarded"));
             });
