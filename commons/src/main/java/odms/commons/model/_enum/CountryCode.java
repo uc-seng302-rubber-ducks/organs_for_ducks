@@ -1,5 +1,8 @@
 package odms.commons.model._enum;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * Enum constructor for country codes
  */
@@ -189,7 +192,7 @@ public enum CountryCode {
     PW("Palau"),
     PY("Paraguay"),
     QA("Qatar"),
-    RE("Reunion"), //REMOVE SPECIAL? é
+    RE("Reunion"), //NO SPECIAL (é)
     RO("Romania"),
     RS("Serbia"),
     RU("Russia"),
@@ -262,8 +265,13 @@ public enum CountryCode {
         name = s;
     }
 
-    public boolean equalsName(String otherName) {
-        return name.equals(otherName);
+    public static Set<String> getEnums() {
+        Set<String> values = new HashSet<>();
+
+        for (CountryCode c: CountryCode.values()) {
+            values.add(c.name());
+        }
+        return values;
     }
 
     @Override
