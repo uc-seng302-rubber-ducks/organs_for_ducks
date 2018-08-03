@@ -136,6 +136,7 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
     private int startIndex = 0;
     private int endIndex;
     private int searchCount;
+    private Image oldImage = null;
 
     private Collection<PropertyChangeListener> parentListeners;
 
@@ -246,6 +247,7 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
             File inFile = new File(clinician.getProfilePhotoFilePath());
             Image image = new Image("file:" + inFile.getPath(), 200, 200, false, true);
             profileImage.setImage(image);
+            oldImage = profileImage.getImage();
         }
     }
 
@@ -514,6 +516,9 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
      */
     private void checkSave() {
         boolean noChanges = clinician.getUndoStack().isEmpty();
+        if ((oldImage != profileImage.getImage())) {
+            noChanges = false;
+        }
         if (!noChanges) {
             Optional<ButtonType> result = UnsavedChangesAlert.getAlertResult();
             if (result.isPresent() && result.get() == ButtonType.YES) {
