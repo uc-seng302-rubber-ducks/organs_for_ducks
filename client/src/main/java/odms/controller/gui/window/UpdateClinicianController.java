@@ -311,7 +311,6 @@ public class UpdateClinicianController {
         extensions.add("*.png");
         extensions.add("*.jpg");
         extensions.add("*.gif");
-        extensions.add("*.jpeg");
         FileSelectorController fileSelectorController =  new FileSelectorController();
         filename = fileSelectorController.getFileSelector(stage, extensions);
 
