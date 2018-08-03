@@ -669,8 +669,8 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
             Thread thread = new Thread(() -> {
                 Platform.setImplicitExit(false);
                 Collection<User> newUsers = new ArrayList<>();
+                CSVHandler csvHandler = new CSVHandler();
                 try {
-                DataHandler csvHandler = new CSVHandler();
                 newUsers = csvHandler.loadUsers(filename);
 
                 //if imported contains any bad data, throw it out
@@ -694,7 +694,9 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
             }
             Platform.runLater(this::refreshTables);
                 final int numberImported = newUsers.size();
-                Platform.runLater(() -> AlertWindowFactory.generateInfoWindow(numberImported +" Users Successfully imported"));
+                final int malformed =  csvHandler.malformed;
+                Platform.runLater(() -> AlertWindowFactory.generateInfoWindow(numberImported +" Users Successfully imported. " +
+                        + malformed + " malformed users discarded"));
             });
             thread.start();
         }
