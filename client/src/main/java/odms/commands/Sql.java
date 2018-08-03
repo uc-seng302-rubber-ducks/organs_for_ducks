@@ -3,7 +3,7 @@ package odms.commands;
 
 import odms.commons.utils.Log;
 import odms.controller.AppController;
-import odms.utils.SQLBridge;
+import odms.bridge.SQLBridge;
 import odms.view.IoHelper;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;

@@ -1,8 +1,7 @@
-package odms.utils;
+package odms.bridge;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import javafx.scene.image.Image;
 import odms.commons.model.Disease;
 import odms.commons.model.MedicalProcedure;
 import odms.commons.model.User;
@@ -12,7 +11,6 @@ import odms.commons.model.datamodel.ReceiverOrganDetailsHolder;
 import odms.commons.model.dto.UserOverview;
 import odms.commons.utils.Log;
 import odms.commons.utils.PhotoHelper;
-import odms.controller.AppController;
 import okhttp3.*;
 
 import java.io.IOException;
