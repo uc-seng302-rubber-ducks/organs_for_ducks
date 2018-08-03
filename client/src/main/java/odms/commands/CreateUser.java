@@ -3,8 +3,6 @@ package odms.commands;
 import odms.bridge.UserBridge;
 import odms.commons.model.User;
 import odms.commons.utils.AttributeValidation;
-import odms.commons.utils.DataHandler;
-import odms.commons.utils.JsonHandler;
 import odms.commons.utils.Log;
 import odms.controller.AppController;
 import odms.view.IoHelper;
@@ -17,52 +15,53 @@ import java.io.IOException;
 import java.time.LocalDate;
 
 
-@Command(name = "user", description = "first name, last name, and dob are required. all other are optional and must be tagged")
+@Command(name = "user", description = "NHI, first name and dob are required.\nAll others are optional and must be tagged")
 public class CreateUser implements Runnable {
 
     @Option(names = {"-h",
-            "help"}, required = false, usageHelp = true, description = "display a help message")
+            "help"}, usageHelp = true, description = "Display a help message")
     private Boolean helpRequested = false;
 
-    @Parameters(index = "0")
-    private String firstName;
-
-    @Parameters(index = "1")
-    private String lastName;
-
-    @Parameters(index = "2", description = "NHI 'ABC1234'")
+    @Parameters(index = "0", description = "NHI 'ABC1234'")
     private String NHI;
 
-    @Parameters(index = "3", description = "format 'yyyy-mm-dd'")
+    @Parameters(index = "1")
+    private String firstName;
+
+    @Parameters(index = "2", description = "Date of birth in the format 'yyyy-mm-dd'")
     private String dobString;
 
-    @Option(names = {"-dod"}, description = "Date of death. same formatting as dob")
+    @Option(names = {"-dod"}, description = "Date of death with the same formatting as dob")
     private String dodString;
 
-    @Option(names = {"-mn", "-middleName"}, description = "user's middle name")
+    @Option(names = {"-mn", "-middleName"}, description = "User's middle name")
     private String middleName;
 
-    @Option(names = {"-pn", "-preferredName"}, description = "user's middle name")
+    @Option(names = {"-pn", "-preferredName"}, description = "User's preferred first name")
     private String preferredName;
 
-    @Option(names = {"-w", "-weight"}, description = "weight in kg e.g. 87.3")
+    @Option(names = {"-l", "-lastName"}, description = "User's last name")
+    private String lastName;
+
+    @Option(names = {"-w", "-weight"}, description = "Weight in kg e.g. 87.3")
     private String weight;
 
-    @Option(names = {"-smo", "-smoker"}, description = "is this user a smoker. eg: 0 for false, 1 for true")
+    @Option(names = {"-smo", "-smoker"}, description = "Is this user a smoker\neg: 0 for false, 1 for true")
     private String smoker;
 
-    @Option(names = {"-ac", "-alcoholConsumption"}, description = "alcohol consumption of this user. eg: 0 for None, 1 for Low, 2 for Normal, 3 for High")
+    @Option(names = {"-ac", "-alcoholConsumption"}, description = "Alcohol consumption of this user\neg: 0 for None, 1 for Low, 2 for Normal, 3 for High")
     private String alcoholConsumption;
 
-    @Option(names = {"-he", "-height"}, description = "height in m. e.g. 1.85")
+    @Option(names = {"-he", "-height"}, description = "Height in m. e.g. 1.85")
     private String height;
 
-    @Option(names = {"-bg", "-birthGender"}, description = "birth Gender.")
+    @Option(names = {"-bg", "-birthGender"}, description = "The gender the user was born as")
     private String birthGender;
-    @Option(names = {"-g", "-gender"}, description = "gender.")
+
+    @Option(names = {"-g", "-genderIdentity"}, description = "The gender the user identifies as")
     private String gender;
 
-    @Option(names = {"-b", "-bloodType"}, description = "blood type")
+    @Option(names = {"-b", "-bloodType"}, description = "The blood type of the user")
     private String bloodType;
 
     @Option(names = {"-c", "-city"}, description = "Current address city")
@@ -83,10 +82,8 @@ public class CreateUser implements Runnable {
     @Option(names = {"-ne", "-neighborhood"}, description = "Current address neighborhood")
     private String neighborhood;
 
-    @Option(names = {"-r", "-region"}, description = "Region (Address line 2)")
+    @Option(names = {"-r", "-region"}, description = "Current address region")
     private String region;
-
-    private DataHandler dataHandler = new JsonHandler();
 
     public void run() {
         OkHttpClient client = new OkHttpClient();
@@ -94,16 +91,18 @@ public class CreateUser implements Runnable {
 
         AppController controller = AppController.getInstance();
         if (helpRequested) {
-            System.out.println("help goes here"); //TODO: update help command -2/8
             return;
         }
 
-        if(!AttributeValidation.validateNHI(NHI)){
+        if (!AttributeValidation.validateNHI(NHI)) {
             IoHelper.display("Invalid NHI");
             return;
+        } else if (userBridge.getExists(NHI)) {
+            IoHelper.display("A user with that NHI already exists");
+            return;
         }
 
-        if(!AttributeValidation.checkRequiredStringName(firstName)){
+        if (!AttributeValidation.checkRequiredStringName(firstName)) {
             IoHelper.display("Invalid first name");
             return;
         }
@@ -138,13 +137,15 @@ public class CreateUser implements Runnable {
             }
             user.setMiddleName(middleName);
         }
-        if(lastName != null){
-            if(!AttributeValidation.checkRequiredStringName(lastName)){
+
+        if (lastName != null) {
+            if (!AttributeValidation.checkRequiredStringName(lastName)) {
                 IoHelper.display("Invalid last name");
                 return;
             }
             user.setLastName(lastName);
         }
+
         if (preferredName != null) {
             if (!AttributeValidation.checkRequiredStringName(preferredName)) {
                 IoHelper.display("Invalid preferred name");
@@ -161,6 +162,7 @@ public class CreateUser implements Runnable {
             }
             user.setDateOfDeath(IoHelper.readDate(dodString));
         }
+
         if (weight != null) {
             Double w = AttributeValidation.validateDouble(weight);
             if (w == -1) {
@@ -169,6 +171,7 @@ public class CreateUser implements Runnable {
             }
             user.setWeight(w);
         }
+
         if (height != null) {
             Double h = AttributeValidation.validateDouble(height);
             if (h == -1) {
@@ -177,6 +180,7 @@ public class CreateUser implements Runnable {
             }
             user.setHeight(h);
         }
+
         if (birthGender != null) {
             if (!AttributeValidation.validateGender(birthGender)) {
                 IoHelper.display("Invalid birthGender");
@@ -184,6 +188,7 @@ public class CreateUser implements Runnable {
             }
             user.setBirthGender(birthGender);
         }
+
         if (gender != null) {
             if (!AttributeValidation.validateGender(gender)) {
                 IoHelper.display("Invalid gender");
@@ -191,6 +196,7 @@ public class CreateUser implements Runnable {
             }
             user.setGenderIdentity(gender);
         }
+
         if (bloodType != null) {
             if (!AttributeValidation.validateBlood(bloodType)) {
                 IoHelper.display("Invalid blood type");
@@ -198,18 +204,20 @@ public class CreateUser implements Runnable {
             }
             user.setBloodType(bloodType);
         }
+
         if (smoker != null) {
             if (smoker.equals("0")) {
                 user.setSmoker(false);
 
-            } else if (smoker.equals("1")){
+            } else if (smoker.equals("1")) {
                 user.setSmoker(true);
 
             } else {
-                IoHelper.display("Invalid smoker");
+                IoHelper.display("Invalid smoker value");
                 return;
             }
         }
+
         if (alcoholConsumption != null) {
             if (!AttributeValidation.validateAlcoholLevel(alcoholConsumption)) {
                 IoHelper.display("Invalid alcohol consumption");
@@ -217,6 +225,7 @@ public class CreateUser implements Runnable {
             }
             user.setAlcoholConsumption(alcoholConsumption);
         }
+
         if (city != null) {
             if (!AttributeValidation.checkString(city)) {
                 IoHelper.display("Invalid city");
@@ -224,6 +233,7 @@ public class CreateUser implements Runnable {
             }
             user.setCity(city);
         }
+
         if (country != null) {
             if (!AttributeValidation.checkString(country)) {
                 IoHelper.display("Invalid country");
@@ -231,6 +241,7 @@ public class CreateUser implements Runnable {
             }
             user.setCountry(country);
         }
+
         if (streetName != null) {
             if (!AttributeValidation.checkString(streetName)) {
                 IoHelper.display("Invalid street name");
@@ -238,6 +249,7 @@ public class CreateUser implements Runnable {
             }
             user.setStreetName(streetName);
         }
+
         if (number != null) {
             if (!AttributeValidation.checkString(number)) {
                 IoHelper.display("Invalid street number");
@@ -245,6 +257,7 @@ public class CreateUser implements Runnable {
             }
             user.setStreetNumber(number);
         }
+
         if (neighborhood != null) {
             if (!AttributeValidation.checkString(neighborhood)) {
                 IoHelper.display("Invalid neighborhood");
@@ -252,6 +265,7 @@ public class CreateUser implements Runnable {
             }
             user.setNeighborhood(neighborhood);
         }
+
         if (zipCode != null) {
             if (!AttributeValidation.checkString(zipCode)) {
                 IoHelper.display("Invalid ZIP Code");
@@ -259,6 +273,7 @@ public class CreateUser implements Runnable {
             }
             user.setZipCode(zipCode);
         }
+
         if (region != null) {
             if (!AttributeValidation.checkString(region)) {
                 IoHelper.display("Invalid region");
@@ -268,7 +283,7 @@ public class CreateUser implements Runnable {
         }
 
         IoHelper.display("User successfully registered with below details: ");
-        IoHelper.display("ID number: "+user.hashCode());
+        IoHelper.display("ID number: " + user.hashCode());
         IoHelper.display(user.toString());
         controller.update(user);
         controller.saveUser(user);

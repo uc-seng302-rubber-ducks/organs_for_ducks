@@ -24,6 +24,9 @@ public class UpdateUserDetails implements Runnable {
     @Option(names = {"-f", "-fname"})
     private String firstName;
 
+    @Option(names = {"-pn", "-pname"})
+    private String preferredName;
+
     @Option(names = {"-m", "-mname"})
     private String middleName;
 
@@ -53,6 +56,15 @@ public class UpdateUserDetails implements Runnable {
 
     @Option(names = {"-b", "-bloodType"}, description = "blood type")
     private String bloodType;
+
+    @Option(names = {"-hp", "-homePhone"}, description = "Home phone number")
+    private String homePhone;
+
+    @Option(names = {"-cp", "-cellPhone"}, description = "Cell phone number")
+    private String cellPhone;
+
+    @Option(names = {"-e", "-email"}, description = "email")
+    private String email;
 
     @Option(names = {"-c", "-city"}, description = "Current address city")
     private String city;
@@ -93,6 +105,11 @@ public class UpdateUserDetails implements Runnable {
             return;
         }
         changed = IoHelper.updateName(user, firstName, lastName);
+
+        if (preferredName != null) {
+            user.setMiddleName(preferredName);
+            changed = true;
+        }
 
         if (middleName != null) {
             user.setMiddleName(middleName);
@@ -168,6 +185,20 @@ public class UpdateUserDetails implements Runnable {
             user.setNhi(newNHI);
             changed = true;
         }
+
+        if (homePhone != null) {
+            user.setHomePhone(homePhone);
+            changed = true;
+        }
+        if (cellPhone != null) {
+            user.setCellPhone(cellPhone);
+            changed = true;
+        }
+        if (email != null) {
+            user.setEmail(email);
+            changed = true;
+        }
+
         if (changed) {
             controller.update(user);
             controller.saveUser(user);
