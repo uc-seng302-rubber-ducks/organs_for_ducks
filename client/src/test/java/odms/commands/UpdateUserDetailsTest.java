@@ -1,5 +1,6 @@
 package odms.commands;
 
+import com.mysql.fabric.xmlrpc.base.Array;
 import odms.commons.model.User;
 import odms.controller.AppController;
 import odms.bridge.UserBridge;
@@ -184,4 +185,45 @@ public class UpdateUserDetailsTest {
         Assert.assertEquals(controller.findUser("CDE1234"), other);
         Assert.assertEquals(controller.findUser("ABC1234"), user);
     }
+
+    @Test
+    public void shouldNotUpdateInvalidCountry() {
+        when(controller.getAllowedCountries()).thenReturn(new ArrayList<>());
+
+        String[] args = {"-NHI=" + NHI, "-co=Antarctica"};
+        new CommandLine(new UpdateUserDetails())
+                .parseWithHandler(new CommandLine.RunLast(), System.err, args);
+
+        User testUser = controller.findUser(NHI);
+        assertEquals("", testUser.getCountry());
+    }
+
+    @Test
+    public void shouldUpdateAvailableCountry() {
+        ArrayList<String> availableCountries = new ArrayList<>();
+        availableCountries.add("Antarctica");
+        when(controller.getAllowedCountries()).thenReturn(availableCountries);
+
+        String[] args = {"-NHI=" + NHI, "-co=Antarctica"};
+        new CommandLine(new UpdateUserDetails())
+                .parseWithHandler(new CommandLine.RunLast(), System.err, args);
+
+        User testUser = controller.findUser(NHI);
+        assertEquals("Antarctica", testUser.getCountry());
+    }
+
+    @Test
+    public void shouldUpdateMultiWordCountry() {
+        ArrayList<String> availableCountries = new ArrayList<>();
+        availableCountries.add("New Zealand");
+        when(controller.getAllowedCountries()).thenReturn(availableCountries);
+
+        String[] args = {"-NHI=" + NHI, "-co=New_Zealand"};
+        new CommandLine(new UpdateUserDetails())
+                .parseWithHandler(new CommandLine.RunLast(), System.err, args);
+
+        User testUser = controller.findUser(NHI);
+        assertEquals("New Zealand", testUser.getCountry());
+    }
+
 }

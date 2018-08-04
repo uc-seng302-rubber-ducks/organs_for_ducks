@@ -119,9 +119,8 @@ public class UpdateUserDetails implements Runnable {
             changed = true;
         }
         if (country != null) {
-
             List<String> allowedCountries = controller.getAllowedCountries();
-            if (allowedCountries.contains(country.replaceAll("_", " ")) || allowedCountries.isEmpty()) {
+            if (allowedCountries.contains(country.replaceAll("_", " "))) {
                 user.setCountry(country.replaceAll("_", " "));
                 changed = true;
             } else {

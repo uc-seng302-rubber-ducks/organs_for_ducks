@@ -125,7 +125,7 @@ public class UpdateClinician implements Runnable {
 
         if (country != null) {
             List<String> allowedCountries = controller.getAllowedCountries();
-            if (allowedCountries.isEmpty() || allowedCountries.contains(country.replaceAll("_", " "))) {
+            if (allowedCountries.contains(country.replaceAll("_", " "))) {
                 clinician.setCountry(country.replaceAll("_", " "));
                 changed = true;
             } else {
