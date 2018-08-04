@@ -183,7 +183,6 @@ public class Clinician extends Undoable<Clinician> implements Listenable {
     }
 
     public void setProfilePhotoFilePath(String profilePhotoFilePath) {
-        this.saveStateforUndo();
         this.profilePhotoFilePath = profilePhotoFilePath;
         addChange(new Change("profile photo was updated"));
         setDateLastModified(LocalDateTime.now());
