@@ -7,6 +7,7 @@ import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Command(name = "details", description = "Use -id to identify the the user. All other tags will update values")
 public class UpdateUserDetails implements Runnable {
@@ -118,8 +119,15 @@ public class UpdateUserDetails implements Runnable {
             changed = true;
         }
         if (country != null) {
-            user.setCountry(country);
-            changed = true;
+
+            List<String> allowedCountries = controller.getAllowedCountries();
+            if (allowedCountries.contains(country.replaceAll("_", " ")) || allowedCountries.isEmpty()) {
+                user.setCountry(country.replaceAll("_", " "));
+                changed = true;
+            } else {
+                System.out.println(country + " is not one of the allowed countries\n" +
+                        "For a list of the allowed countries use the command 'view countries'");
+            }
         }
         if (streetName != null) {
             user.setStreetName(streetName);

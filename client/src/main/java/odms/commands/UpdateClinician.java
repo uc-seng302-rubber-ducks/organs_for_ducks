@@ -8,6 +8,7 @@ import picocli.CommandLine;
 import picocli.CommandLine.Option;
 
 import java.io.IOException;
+import java.util.List;
 
 @CommandLine.Command(name = "clinician", description = "Allows the details for a clinician to be updated")
 public class UpdateClinician implements Runnable {
@@ -123,8 +124,14 @@ public class UpdateClinician implements Runnable {
         }
 
         if (country != null) {
-            clinician.setCountry(country);
-            changed = true;
+            List<String> allowedCountries = controller.getAllowedCountries();
+            if (allowedCountries.isEmpty() || allowedCountries.contains(country.replaceAll("_", " "))) {
+                clinician.setCountry(country.replaceAll("_", " "));
+                changed = true;
+            } else {
+                System.out.println(country + " is not one of the allowed countries\n" +
+                        "For a list of the allowed countries use the command 'view countries'");
+            }
         }
 
         if (changed) {

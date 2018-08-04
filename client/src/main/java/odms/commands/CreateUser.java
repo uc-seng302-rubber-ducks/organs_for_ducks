@@ -11,6 +11,7 @@ import picocli.CommandLine.Parameters;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.List;
 
 
 @Command(name = "user", description = "first name, last name, and dob are required. all other are optional and must be tagged")
@@ -112,7 +113,14 @@ public class CreateUser implements Runnable {
             user.setCity(city);
         }
         if (country != null) {
-            user.setCountry(country);
+            List<String> allowedCountries = controller.getAllowedCountries();
+            if (allowedCountries.contains(country.replaceAll("_", " ")) || allowedCountries.isEmpty()) {
+                user.setCountry(country.replaceAll("_", " "));
+            } else {
+                System.out.println(country + " is not one of the allowed countries\n" +
+                        "For a list of the allowed countries use the command 'view countries'");
+                return;
+            }
         }
         if (streetName != null) {
             user.setStreetName(streetName);
