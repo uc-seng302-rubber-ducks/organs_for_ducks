@@ -113,9 +113,7 @@ public class HealthDetails {
                 ",\nalcoholConsumption='" + alcoholConsumption + '\'' +
                 ",\nsmoker=" + smoker +
                 ",\nheight=" + height +
-                ",\nheightText='" + heightText + '\'' +
                 ",\nweight=" + weight +
-                ",\nweightText='" + weightText + '\'' +
                 ",\nbloodType='" + bloodType + '\'' +
                 '}';
     }

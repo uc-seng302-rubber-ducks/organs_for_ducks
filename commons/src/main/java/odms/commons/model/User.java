@@ -1120,10 +1120,10 @@ public class User extends Undoable<User> implements Listenable {
                 ",\npreferredFirstName='" + preferredFirstName + '\'' +
                 ",\nmiddleName='" + middleName + '\'' +
                 ",\nlastName='" + lastName + '\'' +
+                ",\ncontactDetails=" + contactDetails +
                 ",\ncontact=" + contact +
                 ",\nhealthDetails=" + healthDetails +
                 ",\nlastModified=" + lastModified +
-                ",\nmiscAttributes=" + miscAttributes +
                 ",\nupdateHistory=" + updateHistory +
                 ",\npreviousMedication=" + previousMedication +
                 ",\ncurrentMedication=" + currentMedication +
