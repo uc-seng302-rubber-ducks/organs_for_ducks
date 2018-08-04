@@ -245,6 +245,7 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
             File inFile = new File(clinician.getProfilePhotoFilePath());
             Image image = new Image("file:" + inFile.getPath(), 200, 200, false, true);
             profileImage.setImage(image);
+
         }
     }
 
