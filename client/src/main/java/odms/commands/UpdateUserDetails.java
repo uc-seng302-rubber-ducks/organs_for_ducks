@@ -111,7 +111,7 @@ public class UpdateUserDetails implements Runnable {
             IoHelper.display("Donor could not be found");
             return;
         }
-        changed = IoHelper.updateName(user, firstName.replaceAll("_", " "), lastName.replaceAll("_", " "));
+        changed = IoHelper.updateName(user, firstName, lastName);
 
         if (preferredName != null) {
             user.setMiddleName(preferredName.replaceAll("_", " "));
