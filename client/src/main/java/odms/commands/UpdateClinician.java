@@ -78,20 +78,20 @@ public class UpdateClinician implements Runnable {
         }
 
         if (firstName != null) {
-            clinician.setFirstName(firstName);
-            valid &= AttributeValidation.checkRequiredString(firstName);
+            clinician.setFirstName(firstName.replaceAll("_", " "));
+            valid &= AttributeValidation.checkRequiredString(firstName.replaceAll("_", " "));
             changed = true;
         }
 
         if (middleName != null) {
-            clinician.setMiddleName(middleName);
-            valid &= AttributeValidation.checkRequiredString(middleName);
+            clinician.setMiddleName(middleName.replaceAll("_", " "));
+            valid &= AttributeValidation.checkRequiredString(middleName.replaceAll("_", " "));
             changed = true;
         }
 
         if (lastName != null) {
-            clinician.setLastName(lastName);
-            valid &= AttributeValidation.checkRequiredString(lastName);
+            clinician.setLastName(lastName.replaceAll("_", " "));
+            valid &= AttributeValidation.checkRequiredString(lastName.replaceAll("_", " "));
             changed = true;
         }
 
@@ -107,26 +107,26 @@ public class UpdateClinician implements Runnable {
         }
 
         if (streetName != null) {
-            clinician.setStreetName(streetName);
-            valid &= AttributeValidation.checkString(streetName);
+            clinician.setStreetName(streetName.replaceAll("_", " "));
+            valid &= AttributeValidation.checkString(streetName.replaceAll("_", " "));
             changed = true;
         }
 
         if (neighborhood != null) {
-            clinician.setNeighborhood(neighborhood);
-            valid &= AttributeValidation.checkString(neighborhood);
+            clinician.setNeighborhood(neighborhood.replaceAll("_", " "));
+            valid &= AttributeValidation.checkString(neighborhood.replaceAll("_", " "));
             changed = true;
         }
 
         if (city != null) {
-            clinician.setCity(city);
-            valid &= AttributeValidation.checkString(city);
+            clinician.setCity(city.replaceAll("_", " "));
+            valid &= AttributeValidation.checkString(city.replaceAll("_", " "));
             changed = true;
         }
 
         if (region != null) {
-            clinician.setRegion(region);
-            valid &= AttributeValidation.checkString(region);
+            clinician.setRegion(region.replaceAll("_", " "));
+            valid &= AttributeValidation.checkString(region.replaceAll("_", " "));
             changed = true;
         }
 
@@ -137,8 +137,8 @@ public class UpdateClinician implements Runnable {
         }
 
         if (country != null) {
-            clinician.setCountry(country);
-            valid &= AttributeValidation.checkString(country);
+            clinician.setCountry(country.replaceAll("_", " "));
+            valid &= AttributeValidation.checkString(country.replaceAll("_", " "));
             changed = true;
         }
 

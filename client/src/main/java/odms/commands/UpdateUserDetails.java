@@ -111,15 +111,15 @@ public class UpdateUserDetails implements Runnable {
             IoHelper.display("Donor could not be found");
             return;
         }
-        changed = IoHelper.updateName(user, firstName, lastName);
+        changed = IoHelper.updateName(user, firstName.replaceAll("_", " "), lastName.replaceAll("_", " "));
 
         if (preferredName != null) {
-            user.setMiddleName(preferredName);
+            user.setMiddleName(preferredName.replaceAll("_", " "));
             changed = true;
         }
 
         if (middleName != null) {
-            user.setMiddleName(middleName);
+            user.setMiddleName(middleName.replaceAll("_", " "));
             changed = true;
         }
 
@@ -176,15 +176,15 @@ public class UpdateUserDetails implements Runnable {
         }
 
         if (city != null) {
-            user.setCity(city);
+            user.setCity(city.replaceAll("_", " "));
             changed = true;
         }
         if (country != null) {
-            user.setCountry(country);
+            user.setCountry(country.replaceAll("_", " "));
             changed = true;
         }
         if (streetName != null) {
-            user.setStreetName(streetName);
+            user.setStreetName(streetName.replaceAll("_", " "));
             changed = true;
         }
         if (number != null) {
@@ -192,12 +192,12 @@ public class UpdateUserDetails implements Runnable {
             changed = true;
         }
         if (neighborhood != null) {
-            user.setNeighborhood(neighborhood);
+            user.setNeighborhood(neighborhood.replaceAll("_", " "));
             changed = true;
         }
 
         if (region != null) {
-            user.setRegion(region);
+            user.setRegion(region.replaceAll("_", " "));
             changed = true;
         }
         if (newNHI != null) {

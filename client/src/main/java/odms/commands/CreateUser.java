@@ -102,7 +102,7 @@ public class CreateUser implements Runnable {
             return;
         }
 
-        if (!AttributeValidation.checkRequiredStringName(firstName)) {
+        if (!AttributeValidation.checkRequiredStringName(firstName.replaceAll("_", " "))) {
             IoHelper.display("Invalid first name");
             return;
         }
@@ -113,8 +113,8 @@ public class CreateUser implements Runnable {
             return;
         }
 
-        User user = new User(firstName, dob, NHI);
-        boolean success = controller.addUser(new User(firstName, dob, NHI));
+        User user = new User(firstName.replaceAll("_", " "), dob, NHI);
+        boolean success = controller.addUser(new User(firstName.replaceAll("_", " "), dob, NHI));
         if (!success) {
             IoHelper.display("An error occurred when creating registering the new user\n"
                     + "maybe a user with that NHI already exists?");
@@ -131,27 +131,27 @@ public class CreateUser implements Runnable {
         }
 
         if (middleName != null) {
-            if (!AttributeValidation.checkRequiredStringName(middleName)) {
+            if (!AttributeValidation.checkRequiredStringName(middleName.replaceAll("_", " "))) {
                 IoHelper.display("Invalid middle name");
                 return;
             }
-            user.setMiddleName(middleName);
+            user.setMiddleName(middleName.replaceAll("_", " "));
         }
 
         if (lastName != null) {
-            if (!AttributeValidation.checkRequiredStringName(lastName)) {
+            if (!AttributeValidation.checkRequiredStringName(lastName.replaceAll("_", " "))) {
                 IoHelper.display("Invalid last name");
                 return;
             }
-            user.setLastName(lastName);
+            user.setLastName(lastName.replaceAll("_", " "));
         }
 
         if (preferredName != null) {
-            if (!AttributeValidation.checkRequiredStringName(preferredName)) {
+            if (!AttributeValidation.checkRequiredStringName(preferredName.replaceAll("_", " "))) {
                 IoHelper.display("Invalid preferred name");
                 return;
             }
-            user.setPreferredFirstName(preferredName);
+            user.setPreferredFirstName(preferredName.replaceAll("_", " "));
         }
 
         if (dodString != null) {
@@ -227,27 +227,27 @@ public class CreateUser implements Runnable {
         }
 
         if (city != null) {
-            if (!AttributeValidation.checkString(city)) {
+            if (!AttributeValidation.checkString(city.replaceAll("_", " "))) {
                 IoHelper.display("Invalid city");
                 return;
             }
-            user.setCity(city);
+            user.setCity(city.replaceAll("_", " "));
         }
 
         if (country != null) {
-            if (!AttributeValidation.checkString(country)) {
+            if (!AttributeValidation.checkString(country.replaceAll("_", " "))) {
                 IoHelper.display("Invalid country");
                 return;
             }
-            user.setCountry(country);
+            user.setCountry(country.replaceAll("_", " "));
         }
 
         if (streetName != null) {
-            if (!AttributeValidation.checkString(streetName)) {
+            if (!AttributeValidation.checkString(streetName.replaceAll("_", " "))) {
                 IoHelper.display("Invalid street name");
                 return;
             }
-            user.setStreetName(streetName);
+            user.setStreetName(streetName.replaceAll("_", " "));
         }
 
         if (number != null) {
@@ -259,11 +259,11 @@ public class CreateUser implements Runnable {
         }
 
         if (neighborhood != null) {
-            if (!AttributeValidation.checkString(neighborhood)) {
+            if (!AttributeValidation.checkString(neighborhood.replaceAll("_", " "))) {
                 IoHelper.display("Invalid neighborhood");
                 return;
             }
-            user.setNeighborhood(neighborhood);
+            user.setNeighborhood(neighborhood.replaceAll("_", " "));
         }
 
         if (zipCode != null) {
@@ -275,11 +275,11 @@ public class CreateUser implements Runnable {
         }
 
         if (region != null) {
-            if (!AttributeValidation.checkString(region)) {
+            if (!AttributeValidation.checkString(region.replaceAll("_", " "))) {
                 IoHelper.display("Invalid region");
                 return;
             }
-            user.setRegion(region);
+            user.setRegion(region.replaceAll("_", " "));
         }
 
         IoHelper.display("User successfully registered with below details: ");

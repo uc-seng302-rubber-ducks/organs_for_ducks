@@ -39,13 +39,13 @@ public class CreateClinician implements Runnable {
         }
 
         boolean valid = AttributeValidation.checkRequiredString(id);
-        valid &= AttributeValidation.checkRequiredString(firstName);
+        valid &= AttributeValidation.checkRequiredString(firstName.replaceAll("_", " "));
         valid &= AttributeValidation.checkRequiredString(password);
-        valid &= AttributeValidation.checkRequiredString(region);
+        valid &= AttributeValidation.checkRequiredString(region.replaceAll("_", " "));
 
         if (valid) {
-            Clinician clinician = new Clinician(id, password, firstName, "", "");
-            clinician.setRegion(region);
+            Clinician clinician = new Clinician(id, password, firstName.replaceAll("_", " "), "", "");
+            clinician.setRegion(region.replaceAll("_", " "));
             controller.updateClinicians(clinician);
             try {
                 controller.saveClinician(clinician);
