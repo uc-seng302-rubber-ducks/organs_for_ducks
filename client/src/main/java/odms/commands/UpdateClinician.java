@@ -11,7 +11,7 @@ import picocli.CommandLine.Option;
 
 import java.io.IOException;
 
-@CommandLine.Command(name = "clinician", description = "Allows the details for a clinician to be updated")
+@CommandLine.Command(name = "clinician", description = "Allows the details for a clinician to be updated using the current staffID as the identifier")
 public class UpdateClinician implements Runnable {
 
     AppController controller = AppController.getInstance();
@@ -20,7 +20,7 @@ public class UpdateClinician implements Runnable {
     @CommandLine.Parameters(index = "0")
     private String originalId;
 
-    @Option(names = {"-id", "-ID", "-newID", "-newId"})
+    @Option(names = {"-id", "-ID", "-newID", "-newId"}, description = "The new staffID to replace the existing one")
     private String newId;
 
     @Option(names = {"-f", "-fname"})

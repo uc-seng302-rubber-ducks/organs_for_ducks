@@ -74,7 +74,8 @@ Entering the command and then `help` or `-h` will provide more details regarding
 - view 
 
  ```
-  Usage: view [-h] <id> <-u | -c | -a>
+  Usage:        view [-h] <id> -u
+  Alternative:  view <id> -c
   View a single user, clinician or admin profile. 
   The id is required to select the profile to view. All others are optional and must be tagged.
     
@@ -87,9 +88,7 @@ Entering the command and then `help` or `-h` will provide more details regarding
     -c, -clinician     search for the specified clinician
     -a, -admin         search for the specififed admin
   ```
-         
- - view all
- 
+          
  ```
   Useage: view all [-h] [-c=<count>] [-i=<index>] [-n=<name>] [-r=<region>] [-g=<gender>]
   View all currently registered users based on set parameters.
@@ -104,30 +103,45 @@ Entering the command and then `help` or `-h` will provide more details regarding
          
  - create
 
- ```
- Usage: create user [-h] [-a=<currentAddress>] [-b=<bloodType>] [-dod=<dodString>]
-            [-g=<gender>] [-he=<height>] [-r=<region>] [-w=<weight>]
-            <firstName> <lastName> <NHI> <dobString>
-  first name, last name, and dob are required 
+ ```            
+ Usage: create user [-h] <NHI> <firstName> <dobString> [-m=<middleName>] [-l=<lastName>]
+                [-dod=<dodString>] [-b=<bloodType>] [-g=<birthGender>] [-gi=<genderIdentity>] 
+                [-he=<height>] [-w=<weight>] [-n=<streetNumber>] [-s=<streetName>] [-c=<city>] 
+                [-r=<region>] [-ne=<neighborhood>] [-z=<zipCode>] [-co=<country>]
+  NHI, first name and dob are required.
   All others are optional and must be tagged
   
-      <firstName>
-      <lastName>
-      <NHI>                   NHI 'ABC1234'
-      <dobString>             format 'yyyy-mm-dd'
-  -a, -addr, -currentAddress=<currentAddress>
-                              Current address (Address line 1)
-  -b, -bloodType=<bloodType>  blood type
-      -dod=<dodString>        Date of death. same formatting as dob
-  -g, -gender=<gender>        gender.
-  -h, help                    display a help message
-      -he, -height=<height>   height in m. e.g. 1.85
-  -r, -region=<region>        Region (Address line 2)
-  -w, -weight=<weight>        weight in kg e.g. 87.3
+   -h, help                                 Display a help message
+   <NHI>                                    NHI 'ABC1234'
+   <firstName>
+   <dobString>                              Date of birth. Format 'yyyy-mm-dd'
+   
+   -m,   -mname=<middleName>
+   -l,   -lname=<lastName>
+   -pn,  -preferredName=<preferredName>
+     
+   -dod=<dodString>                          Date of death. Same formatting as dob
+   -he,  -height=<height>                    height in m. e.g. 1.85
+   -w,   -weight=<weight>                    weight in kg e.g. 87.3
+   -b,   -bloodType=<bloodType>
+   -g,   -gender=<birthgender>               Gender which the user was born with
+   -gi,  -genderIdentity=<genderIdentity>    Gender which the user identifies as
+   -smo, -smoker=<number>                    Flag to specify the user as a smoker.
+                                             0 for false, 1 for true
+   -ac, -alcoholConsumption=<number>         Alcohol consumption level for the user.
+                                             0 for None, 1 for Low, 2 for Normal, 3 for High
+     
+   -n,   -streetNumber=<streetNumber>
+   -s,   -streetName=<streetName>
+   -ne,  -neighborhood=<neighborhood>
+   -c,   -city=<city>
+   -r,   -region=<region>
+   -z,   -zipCode=<zipCode>
+   -co,  -country=<country> 
   ```
   
   ```
-  Usage: clinician [-h] <id> <firstName> <password> <region>
+  Usage: create clinician [-h] <id> <firstName> <password> <region>
   Allows the creation of a clinician.
     
   <id>              staffID
@@ -145,7 +159,7 @@ Entering the command and then `help` or `-h` will provide more details regarding
                [-ne=<neighborhood>] [-z=<zipCode>] [-co=<country>]
                
   NHI is required, all other fields are optional.
-  -h, help                    display a help message
+  -h, help                                  Display a help message
   
 
   <NHI>                                     Used to identify the user to update
@@ -161,6 +175,10 @@ Entering the command and then `help` or `-h` will provide more details regarding
   -b,   -bloodType=<bloodType>
   -g,   -gender=<birthgender>               Gender which the user was born with
   -gi,  -genderIdentity=<genderIdentity>    Gender which the user identifies as
+  -smo, -smoker=<number>                    Flag to specify the user as a smoker.
+                                            0 for false, 1 for true
+  -ac, -alcoholConsumption=<number>         Alcohol consumption level for the user.
+                                            0 for None, 1 for Low, 2 for Normal, 3 for High
   
   -n,   -streetNumber=<streetNumber>
   -s,   -streetName=<streetName>
@@ -219,12 +237,13 @@ Usage: update clinician [-h] <originalId> [-id=<newId>] [-f=<firstName>] [-m=<mi
 - delete
 
 ```
-Usage: delete <user | clinician> <nhi | staffID>
+Usage:          delete user <nhi>
+Alternative:    delete clinician <staffID>
 One of user/clinician fields as well as their corresponding id are required.
 Delete either a user or a clinician by using the following subcommands
   
-  <user> <nhi>              nhi of the user to be deleted
-  <clinician> <staffID>     staffID of the clinician to be deleted
+  <nhi>         nhi of the user to be deleted
+  <staffID>     staffID of the clinician to be deleted
 ```
 
 - sql

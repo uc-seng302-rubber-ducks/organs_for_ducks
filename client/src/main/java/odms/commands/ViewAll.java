@@ -26,17 +26,16 @@ public class ViewAll implements Runnable {
     @Option(names={"-g", "-gender"}, description = "Allows the returned results to be filtered by birth gender")
     private String gender = "";
 
-    @Option(names={"-h", "-help", ""})
+    @Option(names={"-h", "-help", ""}, usageHelp = true)
     private Boolean helpRequested;
 
     @Override
     public void run() {
-            try {
-                AppController controller = AppController.getInstance();
-                IoHelper.display(IoHelper.prettyStringUsers(controller.getUserBridge().getUsers(startIndex,count,name,region,gender,controller.getToken())));
-            } catch (IOException e) {
-                IoHelper.display("an error occurred");
-            }
-
+        try {
+            AppController controller = AppController.getInstance();
+            IoHelper.display(IoHelper.prettyStringUsers(controller.getUserBridge().getUsers(startIndex,count,name,region,gender,controller.getToken())));
+        } catch (IOException e) {
+            IoHelper.display("an error occurred");
+        }
     }
 }

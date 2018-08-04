@@ -10,7 +10,7 @@ import picocli.CommandLine;
 
 import java.io.IOException;
 
-@CommandLine.Command(name = "clinician", description = "Allows the creation of a clinician. ot update use update clinician")
+@CommandLine.Command(name = "clinician", description = "Allows the creation of a clinician")
 public class CreateClinician implements Runnable {
 
     AppController controller = AppController.getInstance();

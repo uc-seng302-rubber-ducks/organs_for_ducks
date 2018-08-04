@@ -3,7 +3,7 @@ package odms.commands;
 import picocli.CommandLine;
 import picocli.CommandLine.Option;
 
-@CommandLine.Command(name = "user", description = "subcommand specifying user updates. use this to access the donate or receive subcommands", subcommands = {
+@CommandLine.Command(name = "user", description = "Allows access to the user update sub-commands to update basic details, organ donations or organ receiving", subcommands = {
         UpdateUserDonate.class,
         UpdateUserReceive.class,
         UpdateUserDetails.class})

@@ -15,7 +15,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 
 
-@Command(name = "user", description = "NHI, first name and dob are required.\nAll others are optional and must be tagged")
+@Command(name = "user", description = "NHI, first name and dob are required. All others are optional and must be tagged")
 public class CreateUser implements Runnable {
 
     @Option(names = {"-h",
@@ -34,7 +34,7 @@ public class CreateUser implements Runnable {
     @Option(names = {"-dod"}, description = "Date of death with the same formatting as dob")
     private String dodString;
 
-    @Option(names = {"-mn", "-middleName"}, description = "User's middle name")
+    @Option(names = {"-m", "-middleName"}, description = "User's middle name")
     private String middleName;
 
     @Option(names = {"-pn", "-preferredName"}, description = "User's preferred first name")

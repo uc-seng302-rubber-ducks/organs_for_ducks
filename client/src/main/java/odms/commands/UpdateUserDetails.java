@@ -1,6 +1,7 @@
 package odms.commands;
 
 import odms.commons.model.User;
+import odms.commons.utils.AttributeValidation;
 import odms.controller.AppController;
 import odms.view.IoHelper;
 import picocli.CommandLine;
@@ -10,7 +11,7 @@ import picocli.CommandLine.Option;
 import java.io.IOException;
 import java.time.LocalDate;
 
-@Command(name = "details", description = "Use -id to identify the the user. All other tags will update values")
+@Command(name = "details", description = "The current NHI is required to identify the the user. All other tags will update values")
 public class UpdateUserDetails implements Runnable {
 
 
@@ -18,13 +19,13 @@ public class UpdateUserDetails implements Runnable {
     private String originalNhi;
 
     @Option(names = {"-h",
-            "help"}, required = false, usageHelp = true, description = "display a help message")
+            "help"}, required = false, usageHelp = true, description = "Display a help message")
     private Boolean helpRequested = false;
 
     @Option(names = {"-f", "-fname"})
     private String firstName;
 
-    @Option(names = {"-pn", "-pname"})
+    @Option(names = {"-pn", "-pname"}, description = "The preferred first name")
     private String preferredName;
 
     @Option(names = {"-m", "-mname"})
@@ -33,10 +34,10 @@ public class UpdateUserDetails implements Runnable {
     @Option(names = {"-l", "-lname"})
     private String lastName;
 
-    @Option(names = {"-id", "-nhi", "-NHI", "-newNHI", "-newnhi"})
+    @Option(names = {"-id", "-nhi", "-NHI", "-newNHI", "-newnhi"}, description = "The new NHI to replace the existing one")
     private String newNHI;
 
-    @Option(names = {"-dob"}, description = "format 'yyyy-mm-dd'")
+    @Option(names = {"-dob"}, description = "Date of birth. Format 'yyyy-mm-dd'")
     private String dobString;
 
     @Option(names = {"-dod"}, description = "Date of death. same formatting as dob")
@@ -56,6 +57,12 @@ public class UpdateUserDetails implements Runnable {
 
     @Option(names = {"-b", "-bloodType"}, description = "blood type")
     private String bloodType;
+
+    @Option(names = {"-smo", "-smoker"}, description = "Is this user a smoker\neg: 0 for false, 1 for true")
+    private String smoker;
+
+    @Option(names = {"-ac", "-alcoholConsumption"}, description = "Alcohol consumption of this user\neg: 0 for None, 1 for Low, 2 for Normal, 3 for High")
+    private String alcoholConsumption;
 
     @Option(names = {"-hp", "-homePhone"}, description = "Home phone number")
     private String homePhone;
@@ -151,6 +158,23 @@ public class UpdateUserDetails implements Runnable {
             user.setBloodType(bloodType);
             changed = true;
         }
+
+        if (smoker != null) {
+            switch (smoker) {
+                case "0": user.setSmoker(false); break;
+                case "1": user.setSmoker(true); break;
+                default: IoHelper.display("Invalid smoker value"); return;
+            }
+        }
+
+        if (alcoholConsumption != null) {
+            if (!AttributeValidation.validateAlcoholLevel(alcoholConsumption)) {
+                IoHelper.display("Invalid alcohol consumption value");
+                return;
+            }
+            user.setAlcoholConsumption(alcoholConsumption);
+        }
+
         if (city != null) {
             user.setCity(city);
             changed = true;
