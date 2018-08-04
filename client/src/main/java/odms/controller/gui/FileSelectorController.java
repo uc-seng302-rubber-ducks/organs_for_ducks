@@ -55,8 +55,8 @@ public class FileSelectorController {
         }
         filters.add(new FileChooser.ExtensionFilter("All", allowed));
         filters.sort((o1, o2) -> {
-            if(o1.getDescription().equals("All")) return -1;
-            if(o2.getDescription().equals("All")) return 1;
+            if (o1.getDescription().equals("All")) return -1;
+            if (o2.getDescription().equals("All")) return 1;
             return 0;
         });
         fileChooser.getExtensionFilters().addAll(filters);

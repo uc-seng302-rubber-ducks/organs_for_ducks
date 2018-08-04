@@ -573,7 +573,6 @@ public class UpdateUserController {
         inFile = new File(classLoader.getResource("default-profile-picture.jpg").getFile());
         currentUser.setProfilePhotoFilePath(inFile.getPath());
         displayImage(profileImage, inFile.getPath());
-
     }
 
     /**
@@ -624,7 +623,6 @@ public class UpdateUserController {
             if(inFile != null){
                 String filePath = setUpImageFile(inFile, currentUser.getNhi());
                 currentUser.setProfilePhotoFilePath(filePath);
-                //currentUser.getUndoStack().pop();
             }
 
             try {

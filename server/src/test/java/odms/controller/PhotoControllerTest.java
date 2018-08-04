@@ -53,7 +53,7 @@ public class PhotoControllerTest {
     }
 
     @Test
-    public void putUserProfilePhotoJpgShouldReturnCreated() throws SQLException, IOException{
+    public void putUserProfilePhotoJpgShouldReturnCreated() throws SQLException, IOException {
         when(handler.getOneUser(any(Connection.class), anyString())).thenReturn(testUser);
 
 
@@ -63,7 +63,7 @@ public class PhotoControllerTest {
     }
 
     @Test
-    public void putUserProfilePhotoPngShouldReturnCreated() throws SQLException, IOException{
+    public void putUserProfilePhotoPngShouldReturnCreated() throws SQLException, IOException {
         when(handler.getOneUser(any(Connection.class), anyString())).thenReturn(testUser);
 
         byte[] multipartFile = PhotoHelper.getBytesFromImage(PNG_PHOTO_TEST_FILE_PATH);
@@ -72,7 +72,7 @@ public class PhotoControllerTest {
     }
 
     @Test
-    public void putUserProfilePhotoUserShouldReturnNotFoundWhenNoUserFound() throws SQLException, IOException{
+    public void putUserProfilePhotoUserShouldReturnNotFoundWhenNoUserFound() throws SQLException, IOException {
         when(handler.getOneUser(any(Connection.class), anyString())).thenReturn(null);
 
         byte[] multipartFile = PhotoHelper.getBytesFromImage(JPG_PHOTO_TEST_FILE_PATH);
@@ -81,7 +81,7 @@ public class PhotoControllerTest {
     }
 
     @Test
-    public void putUserProfilePhotoInvalidFileShouldReturnBadRequest() throws SQLException, IOException{
+    public void putUserProfilePhotoInvalidFileShouldReturnBadRequest() throws SQLException, IOException {
         when(handler.getOneUser(any(Connection.class), anyString())).thenReturn(testUser);
 
         byte[] multipartFile = PhotoHelper.getBytesFromImage(NOT_PHOTO_TEST_FILE_PATH);
@@ -90,7 +90,7 @@ public class PhotoControllerTest {
     }
 
     @Test
-    public void putUserProfilePhoto2MBFileTestShouldReturnBadRequest() throws SQLException, IOException{
+    public void putUserProfilePhoto2MBFileTestShouldReturnBadRequest() throws SQLException, IOException {
         when(handler.getOneUser(any(Connection.class), anyString())).thenReturn(testUser);
 
         byte[] multipartFile = PhotoHelper.getBytesFromImage(THREE_MB_PHOTO_TEST_FILE_PATH);
@@ -99,7 +99,7 @@ public class PhotoControllerTest {
     }
 
     @Test
-    public void putClinicianProfilePhotoJpgShouldReturnCreated() throws SQLException, IOException{
+    public void putClinicianProfilePhotoJpgShouldReturnCreated() throws SQLException, IOException {
         when(handler.getOneClinician(any(Connection.class), anyString())).thenReturn(testClinician);
         byte[] multipartFile = PhotoHelper.getBytesFromImage(JPG_PHOTO_TEST_FILE_PATH);
         ResponseEntity res = controller.putClinicianProfilePhoto("12", multipartFile,"image/jpeg");
@@ -107,7 +107,7 @@ public class PhotoControllerTest {
     }
 
     @Test
-    public void putClinicianProfilePhotoPngShouldReturnCreated() throws SQLException, IOException{
+    public void putClinicianProfilePhotoPngShouldReturnCreated() throws SQLException, IOException {
         when(handler.getOneClinician(any(Connection.class), anyString())).thenReturn(testClinician);
         byte[] multipartFile = PhotoHelper.getBytesFromImage(PNG_PHOTO_TEST_FILE_PATH);
         ResponseEntity res = controller.putClinicianProfilePhoto("12", multipartFile,"image/png");
@@ -123,7 +123,7 @@ public class PhotoControllerTest {
     }
 
     @Test
-    public void putClinicianProfilePhotoInvalidFileShouldReturnBadRequest() throws SQLException, IOException{
+    public void putClinicianProfilePhotoInvalidFileShouldReturnBadRequest() throws SQLException, IOException {
         when(handler.getOneClinician(any(Connection.class), anyString())).thenReturn(testClinician);
         byte[] multipartFile = PhotoHelper.getBytesFromImage(NOT_PHOTO_TEST_FILE_PATH);
         ResponseEntity res = controller.putClinicianProfilePhoto("12", multipartFile,"image/jpeg");
@@ -131,7 +131,7 @@ public class PhotoControllerTest {
     }
 
     @Test
-    public void putClinicianProfilePhoto2MBFileTestShouldReturnBadRequest() throws SQLException, IOException{
+    public void putClinicianProfilePhoto2MBFileTestShouldReturnBadRequest() throws SQLException, IOException {
         when(handler.getOneClinician(any(Connection.class), anyString())).thenReturn(testClinician);
 
         Path path = Paths.get(THREE_MB_PHOTO_TEST_FILE_PATH);

@@ -215,7 +215,7 @@ public class ClinicianUpdateStrategy extends AbstractUpdateStrategy {
             try {
                 updateClinicianDetails(clinician, connection);
                 updateClinicianAddress(clinician, connection);
-                if(!clinician.isPasswordCorrect("")){
+                if (!clinician.isPasswordCorrect("")) {
                     updateClinicianPassword(clinician, connection);
                 }
             } catch (SQLException sqlEx) {
