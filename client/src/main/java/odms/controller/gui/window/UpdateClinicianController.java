@@ -139,7 +139,6 @@ public class UpdateClinicianController {
         this.controller = controller;
         this.stage = stage;
         this.ownStage = ownStage;
-        initialPath = clinician.getProfilePhotoFilePath();
         undoClinicianFormButton.setDisable(true);
         redoClinicianFormButton.setDisable(true);
         countrySelector.setItems(FXCollections.observableList(controller.getAllowedCountries()));
@@ -154,6 +153,7 @@ public class UpdateClinicianController {
             titleLabel.setText("Update Clinician");
             confirmButton.setText("Save Changes");
 
+            initialPath = clinician.getProfilePhotoFilePath();
             prefillFields(clinician);
 
             // checks if there was a change in any of the clinician input fields
