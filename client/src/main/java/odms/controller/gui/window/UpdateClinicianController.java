@@ -123,6 +123,7 @@ public class UpdateClinicianController {
     private File inFile;
     private String defaultCountry = "New Zealand";
     private final int MAX_FILE_SIZE = 2097152;
+    private String initialPath;
 
     /**
      * Initializes the scene by setting all but the password text fields to contain the given clinicians attributes.
@@ -138,6 +139,7 @@ public class UpdateClinicianController {
         this.controller = controller;
         this.stage = stage;
         this.ownStage = ownStage;
+        initialPath = clinician.getProfilePhotoFilePath();
         undoClinicianFormButton.setDisable(true);
         redoClinicianFormButton.setDisable(true);
         countrySelector.setItems(FXCollections.observableList(controller.getAllowedCountries()));
@@ -223,7 +225,7 @@ public class UpdateClinicianController {
     private void resetProfileImage() {
         ClassLoader classLoader = getClass().getClassLoader();
         inFile = new File(classLoader.getResource("default-profile-picture.jpg").getFile());
-        currentClinician.setProfilePhotoFilePath(inFile.toString());
+        currentClinician.setProfilePhotoFilePath(inFile.getPath());
         displayImage(profileImage, inFile.getPath());
     }
 
@@ -580,6 +582,7 @@ public class UpdateClinicianController {
                     ownStage.close();
                 }
             } else { // has no changes
+                currentClinician.setProfilePhotoFilePath(initialPath);
                 currentClinician.getRedoStack().clear();
                 ownStage.close();
                 Log.info("no changes made to Clinician Staff Id: " + currentClinician.getStaffId());
