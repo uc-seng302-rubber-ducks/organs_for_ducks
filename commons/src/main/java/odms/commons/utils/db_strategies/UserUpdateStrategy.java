@@ -610,7 +610,6 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
             deathDate = null;
         }
         if (localTimeOfDeath != null) {
-
             deathTime = java.sql.Time.valueOf(localTimeOfDeath);
         } else {
             deathTime = null;
