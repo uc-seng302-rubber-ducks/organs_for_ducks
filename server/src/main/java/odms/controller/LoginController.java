@@ -7,23 +7,27 @@ import odms.security.IsClinician;
 import odms.security.TokenStore;
 import odms.model.dto.LoginRequest;
 import odms.commons.model.dto.LoginResponse;
+import odms.socket.SocketHandler;
 import odms.utils.DBManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.sql.SQLException;
 
 @OdmsController
 public class LoginController extends BaseController {
 
     private final TokenStore store;
+    private SocketHandler socketHandler;
 
     @Autowired
-    public LoginController(TokenStore store, DBManager manager) {
+    public LoginController(TokenStore store, DBManager manager, SocketHandler socket) {
         super(manager);
         this.store = store;
+        this.socketHandler = socket;
     }
 
     @RequestMapping(method = RequestMethod.POST, path = "/login")
@@ -56,10 +60,14 @@ public class LoginController extends BaseController {
     }
 
 
-    @IsAdmin
     @RequestMapping(method = RequestMethod.GET, value = "/test")
     public ResponseEntity testEndpoint() {
-        return new ResponseEntity(HttpStatus.I_AM_A_TEAPOT);
+        try {
+            socketHandler.broadcast();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return new ResponseEntity(HttpStatus.OK);
     }
 
     @IsClinician

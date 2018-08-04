@@ -2,7 +2,9 @@ package odms.GUITest2;
 
 import javafx.scene.Node;
 import odms.App;
+import odms.TestUtils.AppControllerMocker;
 import odms.TestUtils.CommonTestMethods;
+import odms.bridge.*;
 import odms.commons.model.Clinician;
 import odms.commons.model.User;
 import odms.commons.model.datamodel.Address;
@@ -10,7 +12,6 @@ import odms.commons.model.datamodel.ContactDetails;
 import odms.commons.model.dto.UserOverview;
 import odms.controller.AppController;
 import odms.controller.gui.window.ClinicianController;
-import odms.utils.*;
 import org.junit.*;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
@@ -52,7 +53,7 @@ public class UpdateClinicianControllerGUITest extends ApplicationTest {
         UserBridge bridge = mock(UserBridge.class);
         ClinicianBridge clinicianBridge = mock(ClinicianBridge.class);
         LoginBridge loginBridge = mock(LoginBridge.class);
-        AppController application = mock(AppController.class);
+        AppController application = AppControllerMocker.getFullMock();
         TransplantBridge transplantBridge = mock(TransplantBridge.class);
         CountriesBridge countriesBridge = mock(CountriesBridge.class);
 
