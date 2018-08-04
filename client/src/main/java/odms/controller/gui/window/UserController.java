@@ -165,7 +165,8 @@ public class UserController {
                 logoutUser.setText("Go Back");
                 logoutUser.setOnAction(e -> closeWindow());
                 try {
-                    application.getUserBridge().getProfilePicture(user.getNhi());
+                    // ༼ つ ◕ ◕ ༽つ FIX APP ༼ つ ◕ ◕ ༽つ
+                    currentUser.setProfilePhotoFilePath(application.getUserBridge().getProfilePicture(user.getNhi()));
                 } catch (IOException e) {
                     ClassLoader classLoader = getClass().getClassLoader();
                     File inFile = new File(classLoader.getResource("default-profile-picture.jpg").getFile());

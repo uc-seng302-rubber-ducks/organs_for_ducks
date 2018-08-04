@@ -326,7 +326,7 @@ public class UpdateClinicianController {
             if (isValid) {
                 update();
                 displayImage(profileImage, inFile.getPath());
-                currentClinician.setProfilePhotoFilePath(filename);
+                currentClinician.setProfilePhotoFilePath(inFile.getPath());
             }
         }
     }
