@@ -85,6 +85,11 @@ View all currently registered users based on set parameters.
   -l, -lname=<lastName>
       -NHI, -nhi, -NHI=<NHI>
   ```
+ ```
+   Usage: view countries
+    
+   Displays all the available countries for easy access
+ ```
          
  - create
 

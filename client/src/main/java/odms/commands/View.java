@@ -8,7 +8,7 @@ import picocli.CommandLine.Option;
 
 import java.time.LocalDate;
 
-@Command(name = "view", description = "view all currently registered users based on set parameters.")
+@Command(name = "view", description = "view all currently registered users based on set parameters.", subcommands = {ViewCountries.class})
 public class View implements Runnable {
 
     @Option(names = {"-h", "help",
