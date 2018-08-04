@@ -198,6 +198,7 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
         }
 
         displayImage(profileImage, clinician.getProfilePhotoFilePath());
+        clinician.getUndoStack().clear();
 
     }
 
