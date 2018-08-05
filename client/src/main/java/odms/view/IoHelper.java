@@ -53,11 +53,11 @@ public class IoHelper {
         //TODO review logic for edge cases
         String[] names = user.getFullName().split(" ");
         if (firstName != null && lastName != null) {
-            user.setName(firstName, null, lastName);
+            user.setName(firstName.replaceAll("_", " "), null, lastName.replaceAll("_", " "));
         } else if (lastName == null && names.length > 1) {
-            user.setName(firstName, null, names[1]);
+            user.setName(firstName.replaceAll("_", " "), null, names[1]);
         } else if (firstName == null) {
-            user.setName(names[0], null, lastName);
+            user.setName(names[0], null, lastName.replaceAll("_", " "));
         }
         return true;
     }
