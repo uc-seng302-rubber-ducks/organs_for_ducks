@@ -1,20 +1,21 @@
 package odms.GUITest2;
 
 
+import javafx.scene.control.TableView;
 import odms.App;
 import odms.TestUtils.AppControllerMocker;
 import odms.TestUtils.CommonTestMethods;
-import odms.commons.model.Clinician;
-import odms.commons.model.dto.UserOverview;
-import odms.controller.AppController;
-import odms.commons.model.datamodel.ReceiverOrganDetailsHolder;
-import odms.commons.model.User;
-import odms.commons.model._enum.OrganDeregisterReason;
-import odms.commons.model._enum.Organs;
 import odms.bridge.ClinicianBridge;
 import odms.bridge.LoginBridge;
 import odms.bridge.TransplantBridge;
 import odms.bridge.UserBridge;
+import odms.commons.model.Clinician;
+import odms.commons.model.User;
+import odms.commons.model._enum.OrganDeregisterReason;
+import odms.commons.model._enum.Organs;
+import odms.commons.model.datamodel.ReceiverOrganDetailsHolder;
+import odms.commons.model.dto.UserOverview;
+import odms.controller.AppController;
 import org.junit.*;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
@@ -27,15 +28,13 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.concurrent.TimeoutException;
 
-import static odms.TestUtils.FxRobotHelper.clickOnButton;
-import static odms.TestUtils.FxRobotHelper.setComboBox;
-import static odms.TestUtils.FxRobotHelper.setTextField;
+import static odms.TestUtils.FxRobotHelper.*;
+import static odms.TestUtils.ListViewsMethod.getListView;
+import static odms.TestUtils.TableViewsMethod.getCell;
+import static odms.TestUtils.TableViewsMethod.getCellValue;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.mock;
-import static odms.TestUtils.ListViewsMethod.getListView;
-import static odms.TestUtils.ListViewsMethod.getRowValue;
-import static odms.TestUtils.TableViewsMethod.getCell;
 import static org.mockito.Mockito.when;
 
 public class OrganReceiverGUITest extends ApplicationTest {
@@ -105,7 +104,7 @@ public class OrganReceiverGUITest extends ApplicationTest {
     public void clinicianShouldBeAbleToStartADonorReceivingAnOrgan() {
         setComboBox(this,"#organsComboBox",Organs.KIDNEY);
         clickOnButton(this,"#registerButton");
-        assertEquals("Kidney", getRowValue("#currentlyReceivingListView", 0).toString());
+        assertEquals("Kidney", getCellValue("#currentlyWaitingFor", 0,0).toString());
     }
 
     @Test
@@ -113,18 +112,20 @@ public class OrganReceiverGUITest extends ApplicationTest {
         //Setup
         setComboBox(this,"#organsComboBox", Organs.KIDNEY);
         clickOnButton(this,"#registerButton");
-        getListView("#currentlyReceivingListView").getSelectionModel().select(0);
+        getCellValue("#currentlyWaitingFor",0,0);
 
         //Test reRegister does nothing when already in currentlyReceiving
         clickOnButton(this, "#reRegisterButton");
-        getListView("#currentlyReceivingListView").getSelectionModel().select(0);
-        assertEquals("Kidney", getRowValue("#currentlyReceivingListView", 0).toString());
+        assertEquals("Kidney", getCellValue("#currentlyWaitingFor", 0,0).toString());
 
         //Test deRegister successfully moves organ to notReceiving
-        clickOnButton(this, "#deRegisterButton");
+//        clickOn(getCell("#currentlywaitingFor",0,0 ));
+
+        interact(() -> lookup("#currentlyWaitingFor").queryAs(TableView.class).getSelectionModel().select(0));
+        clickOn( "#deRegisterButton");
         clickOn("#registrationErrorRadioButton");
-        clickOnButton(this, "#okButton");
-        assertEquals("Kidney", getRowValue("#notReceivingListView", 0).toString());
+        clickOn("#okButton");
+        assertEquals("Kidney", getCellValue("#noLongerWaitingForOrgan", 0,0).toString());
 
     }
 
