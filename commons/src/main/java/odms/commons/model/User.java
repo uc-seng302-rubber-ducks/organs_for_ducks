@@ -2,7 +2,6 @@ package odms.commons.model;
 
 import com.google.gson.annotations.Expose;
 import javafx.collections.FXCollections;
-import javafx.scene.image.Image;
 import odms.commons.model._abstract.IgnoreForUndo;
 import odms.commons.model._abstract.Listenable;
 import odms.commons.model._abstract.Undoable;
@@ -213,12 +212,11 @@ public class User extends Undoable<User> implements Listenable {
             newUser.donorDetails.getOrgans().add(o);
         }
         newUser.receiverDetails = new ReceiverDetails(newUser);
-        //Map<Organs, ArrayList<ReceiverOrganDetailsHolder>> organs = new EnumMap<Organs, ArrayList<ReceiverOrganDetailsHolder>>(this.receiverDetails.getOrgans());
-        //newUser.receiverDetails.setOrgans(organs);
+
         for (Organs o : user.receiverDetails.getOrgans().keySet()) {
             ArrayList<ReceiverOrganDetailsHolder> detailHolders = new ArrayList<>(user.receiverDetails.getOrgans().get(o));
             for (int i = 0; i < user.receiverDetails.getOrgans().get(o).size(); i++) {
-                ReceiverOrganDetailsHolder newHolder = new ReceiverOrganDetailsHolder(null, null, null);// = newUser.receiverDetails.getOrgans().get(o).get(i);
+                ReceiverOrganDetailsHolder newHolder = new ReceiverOrganDetailsHolder(null, null, null);
                 ReceiverOrganDetailsHolder oldHolder = user.receiverDetails.getOrgans().get(o).get(i);
                 newHolder.setStartDate(oldHolder.getStartDate());
                 newHolder.setStopDate(oldHolder.getStopDate());

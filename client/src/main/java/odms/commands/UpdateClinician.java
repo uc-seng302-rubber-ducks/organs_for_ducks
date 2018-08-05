@@ -63,11 +63,10 @@ public class UpdateClinician implements Runnable {
             return;
         }
 
-        if (newId != null) {
-            if (controller.getClinician(newId) == null) {
-                clinician.setStaffId(newId);
-                valid = AttributeValidation.checkRequiredString(newId);
-            }
+        if (newId != null && controller.getClinician(newId) == null) {
+            clinician.setStaffId(newId);
+            valid = AttributeValidation.checkRequiredString(newId);
+
         }
         if (firstName != null) {
             clinician.setFirstName(firstName);
