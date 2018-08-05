@@ -2,6 +2,8 @@ package odms.steps;
 
 import cucumber.api.java.After;
 import cucumber.api.java.en.Given;
+import javafx.collections.FXCollections;
+import javafx.scene.control.TableView;
 import odms.App;
 import odms.commons.exception.ApiException;
 import odms.commons.model.Clinician;
@@ -18,7 +20,6 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.concurrent.TimeoutException;
 
@@ -27,7 +28,8 @@ import static odms.TestUtils.FxRobotHelper.setTextField;
 import static odms.TestUtils.TableViewsMethod.getCell;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.testfx.api.FxAssert.verifyThat;
 
@@ -108,8 +110,7 @@ public class GivenSteps extends ApplicationTest {
         when(CucumberTestModel.getClinicianBridge().getClinician(anyString(), anyString())).thenReturn(
                 new Clinician("", "0", "")
         );
-        when(CucumberTestModel.getTransplantBridge().getWaitingList(anyInt(), anyInt(), anyString(), anyString(), anyCollection())).thenReturn(new ArrayList<>());
-        when(CucumberTestModel.getUserBridge().getUsers(anyInt(), anyInt(), anyString(), anyString(), anyString(), anyString())).thenReturn(Collections.singletonList(UserOverview.fromUser(CucumberTestModel.getUser())));
+        CucumberTestModel.getController().setUserOverviews(Collections.singleton(UserOverview.fromUser(CucumberTestModel.getUser())));
         when(CucumberTestModel.getLoginBridge().loginToServer(anyString(), anyString(), anyString())).thenReturn("FakeToken");
         //Use default clinician
         clickOn("#clinicianTab");
@@ -118,6 +119,10 @@ public class GivenSteps extends ApplicationTest {
         clickOnButton(this, "#loginCButton");
         verifyThat("#staffIdLabel", LabeledMatchers.hasText("0"));
         clickOn("#searchTab");
+        interact(() -> {
+            lookup("#searchTableView").queryAs(TableView.class).setItems(FXCollections.observableList(Collections.singletonList(UserOverview.fromUser(CucumberTestModel.getUser()))));
+            lookup("#searchTableView").queryAs(TableView.class).refresh();
+        });
         doubleClickOn(getCell("#searchTableView", 0, 0));
         clickOn("#diseaseTab");
         clickOn("#addDiseaseButton");
