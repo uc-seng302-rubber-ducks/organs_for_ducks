@@ -1,5 +1,15 @@
 FROM openjdk:8-jdk-alpine
-WORKDIR /home/sengstudent/
+
+RUN apt-get update
+RUN apt-get install -y maven
+
+WORKDIR /server
+
+COPY . /server
+
+RUN ["mvn", "dependency:resolve"]
+RUN ["mvn", "verify", "-DskipTest"]
+RUN ["mvn", "package", "-DskipTest"]
+
 EXPOSE 8080
-COPY server/target/server-*.jar server/
-ENTRYPOINT ["java", "-jar","/home/sengstudent/server/server.jar"]
+ENTRYPOINT ["java", "-jar","/server/target/server.jar"]
