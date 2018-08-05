@@ -1,16 +1,14 @@
 package odms.controller.gui.popup;
 
-import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
-import javafx.scene.control.cell.CheckBoxListCell;
 import javafx.stage.Stage;
 import odms.commons.model.Administrator;
 import odms.controller.AppController;
+import odms.controller.gui.widget.TextStringCheckBox;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +18,7 @@ import java.util.List;
 public class CountrySelectionController {
 
     @FXML
-    private ListView<String> countrySelection;
+    private ListView<TextStringCheckBox> countrySelection;
 
     @FXML
     private TextField searchCountry;
@@ -31,6 +29,8 @@ public class CountrySelectionController {
     private Stage stage;
     private AppController appController;
     private List<String> allowedCountries;
+    private List<String> initialCountries;
+    private boolean selectAll = false;
 
     /**
      * initialise country selection pop up window.
@@ -41,41 +41,44 @@ public class CountrySelectionController {
         this.admin = admin;
         this.stage = stage;
         this.appController = appController;
+        allowedCountries = appController.getAllowedCountries();
+        initialCountries = allowedCountries.subList(0, allowedCountries.size());
         initCountrySelectionList();
-        allowedCountries = new ArrayList<>();
     }
 
     /**
      * initialise  Country Selection List. includes rendering checkboxes for each row.
      */
     private void initCountrySelectionList(){
-        countrySelection.setItems(FXCollections.observableList(appController.getAllCountries()));
-        countrySelection.setCellFactory(CheckBoxListCell.forListView(country -> {
-            BooleanProperty observable = new SimpleBooleanProperty();
-            observable.addListener((obs, wasSelected, isNowSelected) ->
-                    {
-                        if (isNowSelected) {
-                            allowedCountries.add(country);
-                        } else if (wasSelected) {
-                            allowedCountries.remove(country);
-                        }
-                    }
-            );
-            return observable ;
-        }));
-        allowedCountries = appController.getAllowedCountries();
+        List<TextStringCheckBox> checkBoxes = new ArrayList<>();
+        for (String country : appController.getAllCountries()) {
+            TextStringCheckBox newCountry = new TextStringCheckBox(country);
+            newCountry.setSelected(appController.getAllowedCountries().contains(country));
+            newCountry.selectedProperty().addListener((observable, wasSelected, isNowSelected) -> {
+                if (isNowSelected) {
+                    allowedCountries.add(country);
+                } else if (wasSelected) {
+                    allowedCountries.remove(country);
+                }
+            });
+            checkBoxes.add(newCountry);
+        }
+        countrySelection.setItems(FXCollections.observableList(checkBoxes));
     }
 
     @FXML
     void selectDeselectAll(){
-        //optional
+        selectAll = !selectAll;
+        for (TextStringCheckBox checkBox : countrySelection.getItems()) {
+            checkBox.setSelected(selectAll);
+        }
     }
 
     /**
      * cancel the Country Selection and close the window.
      */
     @FXML
-    void cancelCountrySelection(){
+    void cancelCountrySelection() {
         stage.close();
     }
 
@@ -87,5 +90,15 @@ public class CountrySelectionController {
         allowedCountries.sort(String.CASE_INSENSITIVE_ORDER);
         appController.setAllowedCountries(allowedCountries);
         stage.close();
+    }
+
+    @FXML
+    private void resetInitialCountries() {
+        allowedCountries = appController.getAllowedCountries();
+        for (TextStringCheckBox checkBox : countrySelection.getItems()) {
+            checkBox.setSelected(allowedCountries.contains(checkBox.toString()));
+        }
+        selectDeselectCountries.setSelected(false);
+        selectAll = false;
     }
 }
