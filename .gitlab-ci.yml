@@ -43,12 +43,6 @@ recent-artifacts:
     - tags
     - schedules
 
-docker-deploy:
-  stage: deploy
-  script:
-    - docker build -t server .
-    - docker run -p 8080:8080 -t server
-
 release-artifacts:
   stage: deploy
   script:
@@ -67,3 +61,9 @@ release-artifacts:
   only:
     - tags
     - schedules
+
+docker-deploy:
+  stage: deploy
+  script:
+    - docker build -t server .
+    - docker run -p 8080:8080 -t server
