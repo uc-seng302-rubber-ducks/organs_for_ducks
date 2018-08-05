@@ -1,9 +1,9 @@
 package odms.commands;
 
-import odms.controller.AppController;
 import odms.commons.model.Clinician;
 import odms.commons.model._abstract.Blockable;
 import odms.commons.utils.Log;
+import odms.controller.AppController;
 import odms.view.CLI;
 import odms.view.IoHelper;
 import picocli.CommandLine;
@@ -30,7 +30,7 @@ public class DeleteClinician implements Runnable, Blockable {
             return;
         }
         IoHelper.display("This will delete the following clinician:");
-        System.out.println(toDelete);
+        IoHelper.display(toDelete.toString());
         IoHelper.display("Are you sure? y/n");
         CLI.setBlockage(this);
     }
