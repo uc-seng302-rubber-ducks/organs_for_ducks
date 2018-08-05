@@ -8,8 +8,8 @@ RUN apt-get install -y maven
 
 COPY . /server
 
-RUN ["mvn", "install", "-DskipTest"]
-RUN ["mvn", "package", "-DskipTest"]
+RUN ["mvn", "install", "-DskipTests"]
+RUN ["mvn", "package", "-DskipTests"]
 
 EXPOSE 8080
 ENTRYPOINT ["java", "-jar","/server/target/server.jar"]
