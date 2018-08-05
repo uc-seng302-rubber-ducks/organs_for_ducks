@@ -7,8 +7,7 @@ RUN apt-get install -y maven
 
 COPY . /server
 
-RUN ["mvn", "dependency:resolve"]
-RUN ["mvn", "verify", "-DskipTest"]
+RUN ["mvn", "install", "-DskipTest"]
 RUN ["mvn", "package", "-DskipTest"]
 
 EXPOSE 8080
