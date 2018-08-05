@@ -121,4 +121,4 @@ INSERT INTO PasswordDetails(password_id, fkAdminUserName, fkStaffId, hash, salt)
 
 INSERT INTO DeathDetails(fkUserNhi, dateOfDeath, timeOfDeath, city, region, country) VALUES
   ('ABC1234', '2018-08-05', '03:22','Christchurch','Canterbury','New Zealand'),
-  ('XYZ4321', '1988-01-02', '18:20','Singapore', NULL,'Singapore');
+  ('XYZ4321', '1988-01-02', '18:20','Singapore', "",'Singapore');
