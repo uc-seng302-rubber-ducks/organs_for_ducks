@@ -25,12 +25,14 @@ public class OdmsSocketHandlerTest {
     private OdmsSocketHandler handler;
     private WebSocketListener listener;
     private OkHttpClient client;
+    private ServerEventStore eventStore;
     private final String testUrl = "http://url.com"; //Request has regex/checking for format
 
     @Before
     public void setUp() {
         client = mock(OkHttpClient.class);
-        handler = new OdmsSocketHandler(client);
+        eventStore = mock(ServerEventStore.class);
+        handler = new OdmsSocketHandler(client, eventStore);
         listener = handler.getListener();
     }
     @Test

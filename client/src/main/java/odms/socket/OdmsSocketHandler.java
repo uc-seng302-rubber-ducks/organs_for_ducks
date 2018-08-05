@@ -18,6 +18,7 @@ public class OdmsSocketHandler implements Listenable {
     private PropertyChangeSupport pcs;
     private OkHttpClient client;
     private WebSocket socket;
+    private ServerEventStore eventStore;
     private WebSocketListener listener = new WebSocketListener() {
         @Override
         public void onOpen(WebSocket webSocket, Response response) {
@@ -28,8 +29,7 @@ public class OdmsSocketHandler implements Listenable {
         @Override
         public void onMessage(WebSocket webSocket, String text) {
             UpdateNotification updateNotification = new Gson().fromJson(text, UpdateNotification.class);
-            fire(new PropertyChangeEvent(this, updateNotification.getEventType().name(),
-                    updateNotification.getOldId(), updateNotification.getNewId()));
+            eventStore.fire(updateNotification);
         }
 
         @Override
@@ -49,9 +49,10 @@ public class OdmsSocketHandler implements Listenable {
         }
     };
 
-    public OdmsSocketHandler(OkHttpClient client) {
+    public OdmsSocketHandler(OkHttpClient client, ServerEventStore eventStore) {
         this.pcs = new PropertyChangeSupport(this);
         this.client = client;
+        this.eventStore = eventStore;
     }
 
     public WebSocketListener getListener() {

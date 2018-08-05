@@ -22,6 +22,7 @@ import odms.controller.gui.window.AdministratorViewController;
 import odms.controller.gui.window.ClinicianController;
 import odms.controller.gui.window.UserController;
 import odms.socket.OdmsSocketHandler;
+import odms.socket.ServerEventStore;
 import okhttp3.OkHttpClient;
 
 import java.io.IOException;
@@ -65,7 +66,7 @@ public class AppController {
     private Stack<User> redoStack = new Stack<>();
     private String token;
     private SQLBridge sqlBridge = new SQLBridge(client);
-    private OdmsSocketHandler socketHandler = new OdmsSocketHandler(client);
+    private OdmsSocketHandler socketHandler = new OdmsSocketHandler(client, ServerEventStore.getInstance());
 
     /**
      * Creates new instance of AppController

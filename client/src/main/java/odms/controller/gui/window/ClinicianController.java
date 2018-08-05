@@ -23,6 +23,8 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import odms.bridge.ClinicianBridge;
 import odms.commons.exception.ApiException;
+import odms.commons.model.dto.UpdateNotification;
+import odms.commons.model.event.UpdateNotificationEvent;
 import odms.controller.AppController;
 import odms.controller.gui.StatusBarController;
 import odms.controller.gui.UnsavedChangesAlert;
@@ -36,6 +38,7 @@ import odms.commons.model._enum.Organs;
 import odms.commons.model.dto.UserOverview;
 import odms.commons.utils.Log;
 import odms.controller.gui.popup.utils.AlertWindowFactory;
+import odms.socket.ServerEventStore;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -158,7 +161,7 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
         this.clinician = clinician;
         this.admin = fromAdmin;
 
-        appController.getSocketHandler().addPropertyChangeListener(this);
+        ServerEventStore.getInstance().addPropertyChangeListener(this);
 
         stage.setResizable(true);
         showClinician(clinician);
@@ -616,14 +619,24 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
         //clinician controller watches user model
         //refresh view/tables etc. on change
         Log.info("refresh listener fired in clinician controller");
-        if (evt.getPropertyName().equals(EventTypes.USER_UPDATE.name())) {
+        UpdateNotificationEvent event;
+        try {
+            event = (UpdateNotificationEvent) evt;
+        } catch (ClassCastException ex) {
+            return;
+        }
+        if (event == null) {
+            return;
+        }
+
+        if (event.getType().equals(EventTypes.USER_UPDATE)) {
             refreshTables();
-        } else if (evt.getPropertyName().equals(EventTypes.CLINICIAN_UPDATE.name()) && clinician.getStaffId().equals(evt.getOldValue())){
-            String newStaffId = (String) evt.getNewValue();
+        } else if (event.getType().equals(EventTypes.CLINICIAN_UPDATE) && clinician.getStaffId().equals(event.getOldIdentifier())){
+            String newStaffId = event.getNewIdentifier();
             try {
                 //TODO should this be forced on the user? 1/8
                 this.clinician = clinicianBridge.getClinician(newStaffId, appController.getToken());
-
+                showClinician(clinician);
             } catch (ApiException ex) {
                 Log.warning("failed to retrieve updated clinician. response code: " + ex.getResponseCode(), ex);
                 AlertWindowFactory.generateError(("could not refresh clinician from the server. Please check your connection before trying again."));
