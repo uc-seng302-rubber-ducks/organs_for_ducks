@@ -3,21 +3,21 @@ package odms.socket;
 import com.google.gson.Gson;
 import odms.commons.model._enum.EventTypes;
 import odms.commons.model.dto.UpdateNotification;
-import okhttp3.*;
-import org.junit.Assert;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.WebSocket;
+import okhttp3.WebSocketListener;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 import static org.mockito.internal.verification.VerificationModeFactory.times;
 
 public class OdmsSocketHandlerTest {
@@ -43,7 +43,7 @@ public class OdmsSocketHandlerTest {
 
 
     @Test
-    public void listenerShouldFireEventOnMessage() {
+    public void listenerShouldCallEventStoreOnMessage() {
         WebSocket mockSocket = mock(WebSocket.class);
         UpdateNotification notification = new UpdateNotification(EventTypes.USER_UPDATE, "ABC1234", "ABC1235");
         TestEventListener testEventListener = new TestEventListener();
@@ -51,11 +51,7 @@ public class OdmsSocketHandlerTest {
 
         listener.onMessage(mockSocket, new Gson().toJson(notification));
 
-        Assert.assertFalse(testEventListener.events.isEmpty());
-        PropertyChangeEvent event = testEventListener.events.get(0);
-        Assert.assertEquals(EventTypes.USER_UPDATE.name(), event.getPropertyName());
-        Assert.assertEquals("ABC1234", event.getOldValue());
-        Assert.assertEquals("ABC1235", event.getNewValue());
+        verify(eventStore, times(1)).fire(any(UpdateNotification.class));
     }
 
 

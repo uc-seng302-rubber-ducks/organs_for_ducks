@@ -8,9 +8,6 @@ import odms.commons.model.event.UpdateNotificationEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import java.util.List;
-import java.util.Queue;
-import java.util.concurrent.SynchronousQueue;
 
 /**
  * class to store incoming messages from the server so they can be read by other classes within the client
