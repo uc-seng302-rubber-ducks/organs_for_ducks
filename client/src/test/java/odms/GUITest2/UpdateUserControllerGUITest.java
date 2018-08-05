@@ -47,8 +47,7 @@ public class UpdateUserControllerGUITest extends ApplicationTest {
         user.setContact(new EmergencyContact("", "", "0187878"));
         user.getUndoStack().clear();
         when(application.getUserBridge()).thenReturn(bridge);
-        when(bridge.getUsers(anyInt(), anyInt(), anyString(), anyString(), anyString(), anyString()))
-                .thenReturn(Collections.singletonList(UserOverview.fromUser(user)));
+        when(application.getUserOverviews()).thenReturn(Collections.singleton(UserOverview.fromUser(user)));
         when(bridge.getUser("ABC1234")).thenReturn(user);
 
         doCallRealMethod().when(application).setUserController(any(UserController.class));

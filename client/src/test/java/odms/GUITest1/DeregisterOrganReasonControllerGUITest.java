@@ -5,6 +5,10 @@ import javafx.scene.input.KeyCode;
 import odms.App;
 import odms.TestUtils.AppControllerMocker;
 import odms.TestUtils.CommonTestMethods;
+import odms.bridge.ClinicianBridge;
+import odms.bridge.LoginBridge;
+import odms.bridge.TransplantBridge;
+import odms.bridge.UserBridge;
 import odms.commons.model.Clinician;
 import odms.commons.model.Disease;
 import odms.commons.model.User;
@@ -12,10 +16,7 @@ import odms.commons.model._enum.Organs;
 import odms.commons.model.datamodel.TransplantDetails;
 import odms.commons.model.dto.UserOverview;
 import odms.controller.AppController;
-import odms.bridge.ClinicianBridge;
-import odms.bridge.LoginBridge;
-import odms.bridge.TransplantBridge;
-import odms.bridge.UserBridge;
+import odms.controller.gui.window.UserController;
 import org.junit.*;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
@@ -24,8 +25,9 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.TimeoutException;
 
 import static odms.TestUtils.FxRobotHelper.clickOnButton;
@@ -33,11 +35,9 @@ import static odms.TestUtils.FxRobotHelper.setTextField;
 import static odms.TestUtils.TableViewsMethod.getCell;
 import static odms.TestUtils.TableViewsMethod.getNumberOfRows;
 import static org.junit.Assert.assertEquals;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-import static org.testfx.api.FxAssert.verifyThat;
-import static org.junit.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.*;
 import static org.testfx.api.FxAssert.verifyThat;
 
 public class DeregisterOrganReasonControllerGUITest extends ApplicationTest {
@@ -69,15 +69,22 @@ public class DeregisterOrganReasonControllerGUITest extends ApplicationTest {
         when(application.getLoginBridge()).thenReturn(loginBridge);
         when(application.getTransplantBridge()).thenReturn(transplantBridge);
         when(application.getToken()).thenReturn("Poggers");
-        when(application.getUsers()).thenReturn(new ArrayList<>());
 
         when(loginBridge.loginToServer(anyString(),anyString(), anyString())).thenReturn("lsdjfksd");
         when(clinicianBridge.getClinician(anyString(), anyString())).thenReturn(clinician);
-        when(bridge.getUsers(anyInt(), anyInt(), anyString(), anyString(), anyString(), anyString()))
-                .thenReturn(Collections.singletonList(UserOverview.fromUser(testUser)));
         when(bridge.getUser(anyString())).thenReturn(testUser);
-        when(application.getUsers()).thenReturn(Arrays.asList(testUser)); // needs to be modidfed to return a list
-        when(transplantBridge.getWaitingList(anyInt(), anyInt(), anyString(), anyString(), anyCollection())).thenReturn(Collections.singletonList(new TransplantDetails(testUser.getNhi(),testUser.getFirstName(), Organs.HEART, LocalDate.now(), testUser.getRegion())));
+        List<TransplantDetails> transplantDetails = new ArrayList<>();
+        transplantDetails.add(new TransplantDetails(testUser.getNhi(), testUser.getFirstName(), Organs.HEART, LocalDate.now(), testUser.getRegion()));
+
+        Set<UserOverview> overviews = new HashSet<>();
+        overviews.add(UserOverview.fromUser(testUser));
+        when(application.getUserOverviews()).thenReturn(overviews);
+        when(application.getTransplantList()).thenReturn(transplantDetails);
+
+        doCallRealMethod().when(application).setUserController(any(UserController.class));
+        doCallRealMethod().when(application).getUserController();
+        doCallRealMethod().when(application).setClinicianController(any());
+        doCallRealMethod().when(application).getClinicianController();
 
         //DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         testUser.getReceiverDetails().startWaitingForOrgan(Organs.HEART);
