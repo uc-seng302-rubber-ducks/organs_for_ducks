@@ -1196,10 +1196,21 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
         }
     }
 
+    /**
+     * Fires the request to search in the clinician search table with startIndex = 0
+     */
     private void populateClinicianSearchTable() {
         populateClinicianSearchTable(0, ROWS_PER_PAGE, adminSearchField.getText(), regionSearchTextField.getText());
     }
 
+    /**
+     * Fires the request to search in the clinician search table with startIndex = 0
+     *
+     * @param startIndex  Start index to search from
+     * @param rowsPerPage number of results to return
+     * @param name        name of the clinician
+     * @param region      region of the clinician
+     */
     private void populateClinicianSearchTable(int startIndex, int rowsPerPage, String name, String region) {
         appController.getClinicians().clear();
         Collection<Clinician> clinicians = null;
@@ -1228,10 +1239,19 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
         setTableOnClickBehaviour(Clinician.class, clinicianTableView);
     }
 
+    /**
+     * Fires the request to search in the admin search table with startIndex = 0
+     */
     private void populateAdminSearchTable() {
         populateAdminSearchTable(0, ROWS_PER_PAGE, adminSearchField.getText());
     }
 
+    /**
+     * Fires the request to search in the admin search table with startIndex = 0
+     * @param startIndex Start index to search from
+     * @param rowsPerPage number of results to return
+     * @param name name of the admin
+     */
     private void populateAdminSearchTable(int startIndex, int rowsPerPage, String name) {
         appController.getAdmins().clear();
         Collection<Administrator> admins = null;
