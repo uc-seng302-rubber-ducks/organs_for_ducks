@@ -32,8 +32,6 @@ recent-artifacts:
   script:
     - mvn -B clean install -DskipTests
     - mvn -B package -Punit-tests
-    - docker build -t server .
-    - docker run -p 8080:8080 -t server
   artifacts:
     paths:
       - target/*.jar
@@ -44,6 +42,12 @@ recent-artifacts:
   except:
     - tags
     - schedules
+
+docker-deploy:
+  stage: deploy
+  script:
+    - docker build -t server .
+    - docker run -p 8080:8080 -t server
 
 release-artifacts:
   stage: deploy
