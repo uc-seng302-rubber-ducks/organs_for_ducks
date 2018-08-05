@@ -12,4 +12,5 @@ RUN ["mvn", "install", "-DskipTests"]
 RUN ["mvn", "package", "-DskipTests"]
 
 EXPOSE 8080
-ENTRYPOINT ["java", "-jar","/server/target/server.jar"]
+RUN ["rename", "-v", "-e", "'s/-\d.\d//'", "server-*.jar"]
+ENTRYPOINT ["java", "-jar","/server/target/server-0.0.jar"]
