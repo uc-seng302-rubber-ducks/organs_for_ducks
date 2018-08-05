@@ -11,13 +11,14 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
 import javafx.stage.Stage;
 import odms.commons.model.Change;
+import odms.commons.model.ReceiverDetails;
 import odms.commons.model.User;
 import odms.commons.model._enum.OrganDeregisterReason;
 import odms.commons.model._enum.Organs;
+import odms.commons.model.datamodel.OrgansWithDates;
 import odms.commons.model.datamodel.ReceiverOrganDetailsHolder;
 import odms.commons.utils.Log;
 import odms.controller.AppController;
-import odms.controller.gui.popup.DeregisterOrganReasonController;
 import odms.controller.gui.popup.ReceiverOrganDateController;
 import odms.controller.gui.window.UserController;
 
@@ -34,10 +35,10 @@ public class ReceiverTabController {
     private Label organLabel;
 
     @FXML
-    private TableView<Organs> currentlyWaitingFor;
+    private TableView<OrgansWithDates> currentlyWaitingFor;
 
     @FXML
-    private TableView<Organs> noLongerWaitingForOrgan;
+    private TableView<OrgansWithDates> noLongerWaitingForOrgan;
 
     @FXML
     private Label currentlyReceivingLabel;
@@ -63,7 +64,7 @@ public class ReceiverTabController {
     private Stage stage;
     private UserController parent;
 
-    private ObservableList<Organs> currentlyRecieving;
+    private ObservableList<OrgansWithDates> currentlyRecieving;
     private OrganDeregisterReason organDeregisterationReason;
 
     /**
@@ -108,21 +109,21 @@ public class ReceiverTabController {
         }
 
         //display registered and deregistered receiver organs if any
-        populateReceiverLists(currentUser);
 
         TableColumn currentOrganNameColumn = new TableColumn("Organ");
         TableColumn currentOrganDateColumn = new TableColumn("Date");
         TableColumn noLongerOrganNameColumn = new TableColumn("Organ");
         TableColumn noLongerOrganDateColumn = new TableColumn("Date");
-        currentOrganNameColumn.setCellValueFactory(new PropertyValueFactory<Organs,String>("organName"));
-        noLongerOrganNameColumn.setCellValueFactory(new PropertyValueFactory<Organs,String>("organName"));
-        currentOrganDateColumn.setCellValueFactory(new PropertyValueFactory<ReceiverOrganDetailsHolder,LocalDate>("startDate"));
-        noLongerOrganDateColumn.setCellValueFactory(new PropertyValueFactory<ReceiverOrganDetailsHolder,LocalDate>("stopDate"));
+        currentOrganNameColumn.setCellValueFactory(new PropertyValueFactory<OrgansWithDates,String>("organName"));
+        noLongerOrganNameColumn.setCellValueFactory(new PropertyValueFactory<OrgansWithDates,String>("organName"));
+        currentOrganDateColumn.setCellValueFactory(new PropertyValueFactory<OrgansWithDates,LocalDate>("latestRegistration"));
+        noLongerOrganDateColumn.setCellValueFactory(new PropertyValueFactory<OrgansWithDates,LocalDate>("latestRegistration"));
         currentlyWaitingFor.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         noLongerWaitingForOrgan.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         currentlyWaitingFor.getColumns().addAll(currentOrganNameColumn,currentOrganDateColumn);
         noLongerWaitingForOrgan.getColumns().addAll(noLongerOrganNameColumn,noLongerOrganDateColumn);
         currentlyWaitingFor.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        populateReceiverLists(currentUser);
 
 
     }
@@ -135,7 +136,7 @@ public class ReceiverTabController {
         if (organsComboBox.getSelectionModel().getSelectedItem() != null) {
             Organs toRegister = organsComboBox.getSelectionModel().getSelectedItem();
             currentUser.getReceiverDetails().startWaitingForOrgan(toRegister);
-            currentlyRecieving.add(toRegister);
+            currentlyRecieving.add(new OrgansWithDates(toRegister, LocalDate.now()));
             organsComboBox.getItems().remove(toRegister);
             organsComboBox.setValue(null);// reset the combobox
             application.update(currentUser);
@@ -143,13 +144,13 @@ public class ReceiverTabController {
                 currentUser.getCommonOrgans().add(toRegister);
 
                 //set mouse click for currentlyWaitingFor
-                currentlyWaitingFor.setOnMouseClicked(event -> {
+/*                currentlyWaitingFor.setOnMouseClicked(event -> {
                     if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
                         Organs currentlyReceivingOrgan = currentlyWaitingFor.getSelectionModel()
                                 .getSelectedItem();
                         launchReceiverOrganDateView(currentlyReceivingOrgan);
                     }
-                });
+                });*/
                 Log.info("Successfully registered organ:" + toRegister.toString() + " for receiver NHI: " + currentUser.getNhi());
             } else {
                 Log.warning("Unable to register organ for receiver as organ: " + toRegister.toString() + " has already been registered for receiver NHI: " + currentUser.getNhi());
@@ -167,14 +168,15 @@ public class ReceiverTabController {
      */
     @FXML
     public void reRegisterOrgan() {
-        Organs toReRegister = noLongerWaitingForOrgan.getSelectionModel().getSelectedItem();
+        OrgansWithDates toReRegister = noLongerWaitingForOrgan.getSelectionModel().getSelectedItem();
         if (toReRegister != null) {
+            toReRegister.setLatestRegistration(LocalDate.now());
             currentlyWaitingFor.getItems().add(toReRegister);
-            currentUser.getReceiverDetails().startWaitingForOrgan(toReRegister);
+            currentUser.getReceiverDetails().startWaitingForOrgan(toReRegister.getOrganName());
             noLongerWaitingForOrgan.getItems().remove(toReRegister);
             Log.info("Successfully re-registered organ:" + toReRegister.toString() + " for receiver NHI: " + currentUser.getNhi());
-            if (currentUser.getReceiverDetails().isDonatingThisOrgan(toReRegister)) {
-                currentUser.getCommonOrgans().add(toReRegister);
+            if (currentUser.getReceiverDetails().isDonatingThisOrgan(toReRegister.getOrganName())) {
+                currentUser.getCommonOrgans().add(toReRegister.getOrganName());
             }
 
             //if notReceiving list view is empty, disable mouse click to prevent null pointer exception
@@ -182,13 +184,13 @@ public class ReceiverTabController {
                 noLongerWaitingForOrgan.setOnMouseClicked(null);
             }
             //set mouse click for currentlyWaitingFor
-            currentlyWaitingFor.setOnMouseClicked(event -> {
+/*            currentlyWaitingFor.setOnMouseClicked(event -> {
                 if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
                     Organs currentlyReceivingOrgan = currentlyWaitingFor.getSelectionModel()
                             .getSelectedItem();
                     launchReceiverOrganDateView(currentlyReceivingOrgan);
                 }
-            });
+            });*/
             parent.updateUndoRedoButtons();
         } else {
             Log.warning("Unable to re-register organ: null for receiver as no organ selected for receiver NHI: " + currentUser.getNhi());
@@ -204,7 +206,7 @@ public class ReceiverTabController {
      */
     @FXML
     private void deregisterOrganReason() {
-        Organs toDeRegister = currentlyWaitingFor.getSelectionModel().getSelectedItem();
+/*        OrgansWithDates toDeRegister = currentlyWaitingFor.getSelectionModel().getSelectedItem();
         if (toDeRegister != null) {
             FXMLLoader deregisterOrganReasonLoader = new FXMLLoader(
                     getClass().getResource("/FXML/deregisterOrganReasonView.fxml"));
@@ -221,7 +223,7 @@ public class ReceiverTabController {
             } catch (IOException e) {
                 Log.severe("unable to launch deregister organ reason window for receiver NHI: " + currentUser.getNhi(), e);
             }
-        }
+        }*/
     }
 
     /**
@@ -236,31 +238,23 @@ public class ReceiverTabController {
         if (receiverOrgans == null) {
             receiverOrgans = new EnumMap<>(Organs.class);
         }
-        currentlyRecieving = FXCollections.observableArrayList();
-        ObservableList<Organs> noLongerReceiving = FXCollections.observableArrayList();
-        if (!receiverOrgans.isEmpty()) {
-            for (Organs organ : receiverOrgans.keySet()) {
-                if (user.getReceiverDetails().isCurrentlyWaitingFor(organ)) {
-                    organs.remove(organ);
-                    currentlyRecieving.add(organ);
-                } else {
-                    organs.remove(organ);
-                    noLongerReceiving.add(organ);
-                }
-            }
-        }
+        currentlyRecieving = FXCollections.observableArrayList(getOrgansAndDates(user.getReceiverDetails(), true));
+        ObservableList<OrgansWithDates> noLongerReceiving = FXCollections.observableArrayList(getOrgansAndDates(user.getReceiverDetails(), false));
+
 
         currentlyWaitingFor.setItems(currentlyRecieving);
         noLongerWaitingForOrgan.setItems(noLongerReceiving);
         organsComboBox.setItems(FXCollections.observableList(organs));
+/*
 
         if (!noLongerWaitingForOrgan.getItems().isEmpty()) {
-            openOrganFromDoubleClick(noLongerWaitingForOrgan);
+            openOrganFromDoubleClick(noLongerWaitingForOrgan.getSelectionModel());
         }
 
         if (!currentlyWaitingFor.getItems().isEmpty()) {
             openOrganFromDoubleClick(currentlyWaitingFor);
         }
+*/
 
 
         //if user already died, user cannot receive organs
@@ -344,10 +338,12 @@ public class ReceiverTabController {
                 parent.refreshDiseases();
 
             } else if (organDeregisterationReason == OrganDeregisterReason.RECEIVER_DIED) {
-                List<Organs> currentlyReceiving = new ArrayList<>(currentlyWaitingFor.getItems());
-                for (Organs organ : currentlyReceiving) {
-                    noLongerWaitingForOrgan.getItems().add(organ);
+                List<OrgansWithDates> currentlyReceiving = new ArrayList<>(currentlyWaitingFor.getItems());
+                for (OrgansWithDates organ : currentlyReceiving) {
+
                     currentlyWaitingFor.getItems().remove(organ);
+                    organ.setLatestRegistration(LocalDate.now());
+                    noLongerWaitingForOrgan.getItems().add(organ);
                 }
                 currentUser.getReceiverDetails().stopWaitingForAllOrgans();
                 registerButton.setDisable(true);
@@ -355,7 +351,7 @@ public class ReceiverTabController {
             }
 
             if (organDeregisterationReason != OrganDeregisterReason.RECEIVER_DIED) {
-                noLongerWaitingForOrgan.getItems().add(toDeRegister);
+                noLongerWaitingForOrgan.getItems().add(new OrgansWithDates(toDeRegister,LocalDate.now()));
                 currentlyWaitingFor.getItems().remove(toDeRegister);
             }
 
@@ -368,13 +364,13 @@ public class ReceiverTabController {
                 currentlyWaitingFor.setOnMouseClicked(null);
             }
             //set mouse click for noLongerWaitingForOrgan
-            noLongerWaitingForOrgan.setOnMouseClicked(event -> {
+/*            noLongerWaitingForOrgan.setOnMouseClicked(event -> {
                 if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
                     Organs currentlyReceivingOrgan = noLongerWaitingForOrgan.getSelectionModel()
                             .getSelectedItem();
                     launchReceiverOrganDateView(currentlyReceivingOrgan);
                 }
-            });
+            });*/
             parent.updateUndoRedoButtons();
             application.update(currentUser);
             parent.refreshCurrentlyDonating();
@@ -400,5 +396,37 @@ public class ReceiverTabController {
 
     public boolean getIsSortedByName() {
         return false;
+    }
+
+
+    /**
+     * Takes a receivers details and returns the list of latest dates associated with that organ specified by the boolean flag
+     *
+     * @param organDetails Receiver details to be dealt with
+     * @param wantCurrentlyAwaiting If we are after the current organs or previous organs
+     *
+     * @return A list of the orgnas with the dates attached.
+     */
+    private List<OrgansWithDates> getOrgansAndDates(ReceiverDetails organDetails, boolean wantCurrentlyAwaiting) {
+        List<OrgansWithDates> results = new ArrayList<>();
+            Set<Organs> organs = organDetails.getOrgans().keySet();
+            for (Organs o : organs) {
+                if (organDetails.isCurrentlyWaitingFor(o) == wantCurrentlyAwaiting) {
+                    LocalDate latestDate = getLatestDate(organDetails, o);
+                    results.add(new OrgansWithDates(o, latestDate));
+                }
+            }
+
+        return results;
+    }
+
+    private LocalDate getLatestDate(ReceiverDetails organDetails, Organs organ){
+        List<LocalDate> organDates = organDetails.getOrganDates(organ);
+        organDates.sort((o1, o2) -> {
+            if(o1.isAfter(o2)) return 1;
+            if(o1.isBefore(o2)) return -1;
+            else return 0;
+        });
+        return organDates.get(0);
     }
 }
