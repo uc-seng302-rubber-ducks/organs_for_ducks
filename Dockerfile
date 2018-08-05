@@ -12,5 +12,5 @@ RUN ["mvn", "install", "-DskipTests"]
 RUN ["mvn", "package", "-DskipTests"]
 
 EXPOSE 8080
-RUN rename -v -e 's/-\d.\d//' server-*.jar
+RUN rename -v -e 's/-\d.\d//' /server/target/server-*.jar
 ENTRYPOINT ["java", "-jar","/server/target/server.jar"]
