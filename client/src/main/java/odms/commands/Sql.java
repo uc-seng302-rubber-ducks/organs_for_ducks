@@ -37,7 +37,7 @@ public class Sql implements Runnable {
         statement = sb.toString();
 
         //command should only be select statement
-        if (!statement.toUpperCase().startsWith("SELECT") || statement.toUpperCase().contains("sleep(")) {
+        if (!statement.toUpperCase().startsWith("SELECT") || statement.toUpperCase().contains("SLEEP(")) {
             IoHelper.display("This database is read only in SQL mode and only select statements may be run");
             Log.warning("User attempted to run non-select command: " + statement);
             return;

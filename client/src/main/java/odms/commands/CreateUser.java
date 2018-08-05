@@ -6,7 +6,6 @@ import odms.commons.utils.AttributeValidation;
 import odms.commons.utils.Log;
 import odms.controller.AppController;
 import odms.view.IoHelper;
-import okhttp3.OkHttpClient;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
@@ -86,10 +85,9 @@ public class CreateUser implements Runnable {
     private String region;
 
     public void run() {
-        OkHttpClient client = new OkHttpClient();
-        UserBridge userBridge = new UserBridge(client);
 
         AppController controller = AppController.getInstance();
+        UserBridge userBridge = controller.getUserBridge();
         if (helpRequested) {
             return;
         }

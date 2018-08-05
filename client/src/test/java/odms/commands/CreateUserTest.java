@@ -1,9 +1,9 @@
 package odms.commands;
 
+import odms.bridge.UserBridge;
 import odms.commons.model.User;
 import odms.commons.model.datamodel.Address;
 import odms.controller.AppController;
-import odms.bridge.UserBridge;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -58,6 +58,7 @@ public class CreateUserTest {
     //<editor-fold>
     @Test
     public void ShouldRegisterDonorWithMinimumInfo() throws IOException {
+        when(bridge.getExists(anyString())).thenReturn(false);
         String[] args = {"ABC1234", "John", "1961-02-12", "-l=Doe"};
         when(bridge.getUser(anyString())).thenReturn(minInfo);
         new CommandLine(new CreateUser()).parseWithHandler(new CommandLine.RunLast(), System.err, args);
