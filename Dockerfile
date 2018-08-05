@@ -1,9 +1,9 @@
 FROM openjdk:8-jdk-alpine
 
+WORKDIR /server
+
 RUN apt-get update
 RUN apt-get install -y maven
-
-WORKDIR /server
 
 COPY . /server
 
