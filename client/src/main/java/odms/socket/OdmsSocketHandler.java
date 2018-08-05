@@ -74,7 +74,7 @@ public class OdmsSocketHandler implements Listenable {
 
     public void stop() {
         if (socket != null) {
-            socket.close(1001, "socket closed by client");
+            socket.close(1000, "socket closed by client");
             Log.info("websocket manually closed by client");
         }
     }

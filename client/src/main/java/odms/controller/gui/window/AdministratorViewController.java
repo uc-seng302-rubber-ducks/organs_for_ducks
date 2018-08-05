@@ -21,6 +21,9 @@ import javafx.scene.text.Font;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import odms.bridge.AdministratorBridge;
+import odms.bridge.ClinicianBridge;
+import odms.bridge.UserBridge;
 import odms.commons.exception.ApiException;
 import odms.commons.exception.InvalidFileException;
 import odms.commons.model.Administrator;
@@ -42,9 +45,6 @@ import odms.controller.gui.panel.TransplantWaitListController;
 import odms.controller.gui.popup.AlertUnclosedWindowsController;
 import odms.controller.gui.popup.CountrySelectionController;
 import odms.controller.gui.popup.DeletedUserController;
-import odms.bridge.AdministratorBridge;
-import odms.bridge.ClinicianBridge;
-import odms.bridge.UserBridge;
 import odms.controller.gui.popup.utils.AlertWindowFactory;
 import odms.view.CLI;
 import okhttp3.OkHttpClient;
@@ -1171,10 +1171,21 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
         }
     }
 
+    /**
+     * Fires the request to search in the clinician search table with startIndex = 0
+     */
     private void populateClinicianSearchTable() {
         populateClinicianSearchTable(0, ROWS_PER_PAGE, adminSearchField.getText(), regionSearchTextField.getText());
     }
 
+    /**
+     * Fires the request to search in the clinician search table with startIndex = 0
+     *
+     * @param startIndex  Start index to search from
+     * @param rowsPerPage number of results to return
+     * @param name        name of the clinician
+     * @param region      region of the clinician
+     */
     private void populateClinicianSearchTable(int startIndex, int rowsPerPage, String name, String region) {
         appController.getClinicians().clear();
         Collection<Clinician> clinicians = null;
@@ -1203,10 +1214,19 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
         setTableOnClickBehaviour(Clinician.class, clinicianTableView);
     }
 
+    /**
+     * Fires the request to search in the admin search table with startIndex = 0
+     */
     private void populateAdminSearchTable() {
         populateAdminSearchTable(0, ROWS_PER_PAGE, adminSearchField.getText());
     }
 
+    /**
+     * Fires the request to search in the admin search table with startIndex = 0
+     * @param startIndex Start index to search from
+     * @param rowsPerPage number of results to return
+     * @param name name of the admin
+     */
     private void populateAdminSearchTable(int startIndex, int rowsPerPage, String name) {
         appController.getAdmins().clear();
         Collection<Administrator> admins = null;
