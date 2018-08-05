@@ -5,7 +5,6 @@ import odms.commons.model._enum.EventTypes;
 import odms.commons.utils.DBHandler;
 import odms.commons.utils.JDBCDriver;
 import odms.commons.utils.Log;
-import odms.controller.user.details.ModifyingController;
 import odms.exception.NotFoundException;
 import odms.exception.ServerDBException;
 import odms.security.IsAdmin;
@@ -21,7 +20,7 @@ import java.sql.SQLException;
 import java.util.Collection;
 
 @OdmsController
-public class AdminController extends ModifyingController {
+public class AdminController extends BaseController {
 
     private JDBCDriver driver;
     private DBHandler handler;

@@ -6,9 +6,9 @@ import odms.commons.model._enum.EventTypes;
 import odms.commons.utils.DBHandler;
 import odms.commons.utils.JDBCDriver;
 import odms.commons.utils.Log;
-import odms.controller.user.details.ModifyingController;
 import odms.exception.ServerDBException;
 import odms.security.IsClinician;
+import odms.socket.SocketHandler;
 import odms.utils.DBManager;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -16,19 +16,22 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 
 @OdmsController
-public class PhotoController extends ModifyingController {
+public class PhotoController extends BaseController {
 
     private DBHandler handler;
     private JDBCDriver driver;
+    private SocketHandler socketHandler;
 
-    public PhotoController(DBManager manager) {
+    public PhotoController(DBManager manager, SocketHandler socketHandler) {
         super(manager);
         driver = super.getDriver();
         handler = super.getHandler();
+        this.socketHandler = socketHandler;
     }
 
 
@@ -38,16 +41,18 @@ public class PhotoController extends ModifyingController {
         try (Connection connection = driver.getConnection()) {
             User toModify = handler.getOneUser(connection, nhi);
             if (toModify == null) {
-                super.broadcast(EventTypes.USER_UPDATE, nhi, nhi);
+                socketHandler.broadcast(EventTypes.USER_UPDATE, nhi, nhi);
                 return new ResponseEntity(HttpStatus.NOT_FOUND);
             }
-            System.out.println(header);
             handler.updateProfilePhoto(User.class, nhi, new ByteArrayInputStream(profileImageFile), header, connection);
+            socketHandler.broadcast(EventTypes.USER_UPDATE, nhi, nhi);
 
         } catch (SQLException ex) {
             Log.severe("Could not add or update user's profile photo to user " + nhi, ex);
             throw new ServerDBException(ex);
 
+        } catch (IOException ex) {
+            Log.warning("failed to broadcast update when putting user profile photo", ex);
         }
         return new ResponseEntity(HttpStatus.CREATED);
     }
@@ -59,15 +64,18 @@ public class PhotoController extends ModifyingController {
         try (Connection connection = driver.getConnection()) {
             Clinician toModify = handler.getOneClinician(connection, staffId);
             if (toModify == null) {
-                super.broadcast(EventTypes.CLINICIAN_UPDATE, staffId, staffId);
+                socketHandler.broadcast(EventTypes.CLINICIAN_UPDATE, staffId, staffId);
                 return new ResponseEntity(HttpStatus.NOT_FOUND);
             }
             handler.updateProfilePhoto(Clinician.class, toModify.getStaffId(),new ByteArrayInputStream(profileImageFile),header, connection);
+            socketHandler.broadcast(EventTypes.CLINICIAN_UPDATE, staffId, staffId);
 
         } catch (SQLException ex) {
             Log.severe("Could not add or update clinician's profile photo to clinician " + staffId, ex);
             throw new ServerDBException(ex);
 
+        } catch (IOException ex) {
+            Log.warning("failed to broadcast update when putting clinician profile photo", ex);
         }
         return new ResponseEntity(HttpStatus.CREATED);
     }

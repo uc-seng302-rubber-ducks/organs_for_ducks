@@ -5,30 +5,33 @@ import odms.commons.model._enum.EventTypes;
 import odms.commons.utils.DBHandler;
 import odms.commons.utils.JDBCDriver;
 import odms.commons.utils.Log;
-import odms.controller.user.details.ModifyingController;
 import odms.exception.NotFoundException;
 import odms.exception.ServerDBException;
 import odms.security.IsAdmin;
 import odms.security.IsClinician;
+import odms.socket.SocketHandler;
 import odms.utils.DBManager;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Collection;
 
 @OdmsController
-public class ClinicianController extends ModifyingController {
+public class ClinicianController extends BaseController {
 
     private JDBCDriver driver;
     private DBHandler handler;
+    private SocketHandler socketHandler;
 
-    public ClinicianController(DBManager manager) throws SQLException {
+    public ClinicianController(DBManager manager, SocketHandler socketHandler) throws SQLException {
         super(manager);
         driver = super.getDriver();
         handler = super.getHandler();
+        this.socketHandler = socketHandler;
         if (!handler.getExists(driver.getConnection(), Clinician.class, "0")) {
             Clinician clinician = new Clinician("0", "admin", "default", "", "");
             handler.saveClinician(clinician, driver.getConnection());
@@ -71,12 +74,15 @@ public class ClinicianController extends ModifyingController {
     public ResponseEntity postClinician(@RequestBody Clinician newClinician) throws SQLException {
         try (Connection connection = driver.getConnection()) {
             handler.saveClinician(newClinician, connection);
-            super.broadcast(EventTypes.CLINICIAN_UPDATE, newClinician.getStaffId(), newClinician.getStaffId());
-            return new ResponseEntity(HttpStatus.ACCEPTED);
+            socketHandler.broadcast(EventTypes.CLINICIAN_UPDATE, newClinician.getStaffId(), newClinician.getStaffId());
+
         } catch (SQLException ex) {
             Log.severe("cannot add new clinician to database ", ex);
             throw new ServerDBException(ex);
+        } catch (IOException ex) {
+            Log.warning("failed to broadcast update after posting clinician", ex);
         }
+        return new ResponseEntity(HttpStatus.ACCEPTED);
     }
 
     @IsClinician
@@ -84,10 +90,12 @@ public class ClinicianController extends ModifyingController {
     public ResponseEntity putClinician(@PathVariable("staffId") String staffId, @RequestBody Clinician clinician) {
         try (Connection connection = driver.getConnection()) {
             handler.updateClinician(connection, staffId, clinician);
-            super.broadcast(EventTypes.CLINICIAN_UPDATE, staffId, clinician.getStaffId());
+            socketHandler.broadcast(EventTypes.CLINICIAN_UPDATE, staffId, clinician.getStaffId());
         } catch (SQLException ex) {
             Log.severe("cannot put clinician " + staffId, ex);
             throw new ServerDBException(ex);
+        } catch (IOException ex) {
+            Log.warning("failed to broadcast update after putting clinician", ex);
         }
         return new ResponseEntity(HttpStatus.OK);
     }
@@ -97,10 +105,12 @@ public class ClinicianController extends ModifyingController {
     public ResponseEntity deleteClinician(@PathVariable("staffId") String staffId) {
         try (Connection connection = driver.getConnection()) {
             handler.deleteClinician(connection, staffId);
-            super.broadcast(EventTypes.CLINICIAN_UPDATE, staffId, staffId);
+            socketHandler.broadcast(EventTypes.CLINICIAN_UPDATE, staffId, staffId);
         } catch (SQLException ex) {
             Log.severe("cannot delete clinician " + staffId, ex);
             throw new ServerDBException(ex);
+        } catch (IOException ex) {
+            Log.warning("failed to broadcast update after deleting clinician", ex);
         }
         return new ResponseEntity(HttpStatus.OK);
     }
