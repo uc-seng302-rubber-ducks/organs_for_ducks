@@ -2,7 +2,6 @@ package odms.commons.model;
 
 import com.google.gson.annotations.Expose;
 import javafx.collections.FXCollections;
-import javafx.scene.image.Image;
 import odms.commons.model._abstract.IgnoreForUndo;
 import odms.commons.model._abstract.Listenable;
 import odms.commons.model._abstract.Undoable;
@@ -405,8 +404,6 @@ public class User extends Undoable<User> implements Listenable {
         updateLastModified();
         this.receiverDetails = receiverDetails;
     }
-
-    //TODO details object is set at initialization. will always return true 17/05
 
     public Collection<Organs> getCommonOrgans() {
         return commonOrgans;

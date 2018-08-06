@@ -83,11 +83,8 @@ public class ReceiverTabController {
         currentUser = user;
         this.stage = stage;
         this.parent = parent;
-        if (fromClinician) {
-            clinician = true;
-        } else {
-            clinician = false;
-
+        clinician = fromClinician;
+        if (!fromClinician) {
             organLabel.setVisible(false);
             organsComboBox.setVisible(false);
             registerButton.setVisible(false);
@@ -125,8 +122,6 @@ public class ReceiverTabController {
         noLongerWaitingForOrgan.getColumns().addAll(noLongerOrganNameColumn,noLongerOrganDateColumn);
         currentlyWaitingFor.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         populateReceiverLists(currentUser);
-
-
     }
 
     /**
@@ -185,13 +180,13 @@ public class ReceiverTabController {
                 noLongerWaitingForOrgan.setOnMouseClicked(null);
             }
             //set mouse click for currentlyWaitingFor
-/*            currentlyWaitingFor.setOnMouseClicked(event -> {
+            currentlyWaitingFor.setOnMouseClicked(event -> {
                 if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
                     Organs currentlyReceivingOrgan = currentlyWaitingFor.getSelectionModel()
-                            .getSelectedItem();
+                            .getSelectedItem().getOrganName();
                     launchReceiverOrganDateView(currentlyReceivingOrgan);
                 }
-            });*/
+            });
             parent.updateUndoRedoButtons();
         } else {
             Log.warning("Unable to re-register organ: null for receiver as no organ selected for receiver NHI: " + currentUser.getNhi());
@@ -409,7 +404,7 @@ public class ReceiverTabController {
      * @param organDetails Receiver details to be dealt with
      * @param wantCurrentlyAwaiting If we are after the current organs or previous organs
      *
-     * @return A list of the orgnas with the dates attached.
+     * @return A list of the organs with the dates attached.
      */
     private List<OrgansWithDates> getOrgansAndDates(ReceiverDetails organDetails, boolean wantCurrentlyAwaiting) {
         List<OrgansWithDates> results = new ArrayList<>();
