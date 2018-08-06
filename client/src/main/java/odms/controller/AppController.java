@@ -357,7 +357,6 @@ public class AppController {
 
             } else {
                 userBridge.postUser(user);
-                userBridge.putProfilePicture(originalUser.getNhi(), user.getProfilePhotoFilePath());
             }
         } catch (IOException e) {
             Log.warning("Could not save user " + user.getNhi(), e);
