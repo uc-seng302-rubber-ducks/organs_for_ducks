@@ -214,8 +214,7 @@ CREATE TABLE PasswordDetails(
 
 CREATE TABLE DeathDetails(
   fkUserNhi VARCHAR(7) NOT NULL PRIMARY KEY,
-  dateOfDeath DATE,
-  timeOfDeath TIME,
+  momentOfDeath DATETIME,
   city VARCHAR(255),
   region VARCHAR(255),
   country VARCHAR(255),

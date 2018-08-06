@@ -85,6 +85,7 @@ public final class PhotoHelper {
     }
 
     public static byte[] getBytesFromImage(String filepath) throws IOException {
+        if(filepath.equals("")) return new byte[0];
         return Files.readAllBytes(Paths.get(filepath));
     }
 }

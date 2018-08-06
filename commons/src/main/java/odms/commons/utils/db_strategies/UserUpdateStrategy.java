@@ -772,27 +772,31 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
     private void createDeathDetails(User user, Connection connection) throws SQLException {
         LocalDate localDateOfDeath = user.getDateOfDeath();
         LocalTime localTimeOfDeath = user.getTimeOfDeath();
-        Date deathDate;
-        Time deathTime;
-        if (localDateOfDeath != null) {
-            deathDate = Date.valueOf(user.getDateOfDeath().toString());
-        } else {
-            deathDate = null;
-        }
-        if (localTimeOfDeath != null) {
-            deathTime = Time.valueOf(user.getTimeOfDeath().toString());
-        } else {
-            deathTime = null;
-        }
+//        Date deathDate;
+//        Date deathTime;
+//        if (localDateOfDeath != null) {
+//            deathDate = Date.valueOf(user.getDateOfDeath().toString());
+//        } else {
+//            deathDate = null;
+//        }
+//        if (localTimeOfDeath != null) {
+//            deathTime = Date.valueOf(user.getTimeOfDeath().toString());
+//        } else {
+//            deathTime = null;
+//        }
+
+        LocalDateTime deathMoment = user.getDeathDetails().getMomentOfDeath();
+        java.sql.Timestamp sqlDeathMoment = java.sql.Timestamp.valueOf(deathMoment);
 
         try (PreparedStatement createDeathDetails  = connection.prepareStatement(CREATE_DEATH_DETAILS)) {
 
             createDeathDetails.setString(1, user.getNhi());
-            createDeathDetails.setDate(2, deathDate);
-            createDeathDetails.setTime(3, deathTime);
-            createDeathDetails.setString(4, user.getDeathCity());
-            createDeathDetails.setString(5, user.getDeathRegion());
-            createDeathDetails.setString(6, user.getDeathCountry());
+//            createDeathDetails.setDate(2, deathDate);
+//            createDeathDetails.setTime(3, deathTime);
+            createDeathDetails.setTimestamp(2, sqlDeathMoment);
+            createDeathDetails.setString(3, user.getDeathCity());
+            createDeathDetails.setString(4, user.getDeathRegion());
+            createDeathDetails.setString(5, user.getDeathCountry());
 
             createDeathDetails.executeUpdate();
         }
