@@ -22,7 +22,7 @@ import java.util.List;
  */
 public class CSVHandler extends DataHandler {
 
-
+    private int malformed = 0;
     /**
      * Takes a CSV file, opened by the file handler
      * and reads the file into a list separated by record
@@ -49,7 +49,7 @@ public class CSVHandler extends DataHandler {
     public Collection<User> decodeUsersFromCSV(List<CSVRecord> records) {
         Collection<User> users = new ArrayList<>();
         int count = 0;
-        int malformed = 0;
+        malformed = 0;
         int correct = 0;
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("M/d/yyyy");
 
@@ -172,4 +172,9 @@ public class CSVHandler extends DataHandler {
     public Collection<Administrator> loadAdmins(String location) throws FileNotFoundException {
         return null;
     }
+
+    public int getMalformed() {
+        return malformed;
+    }
+
 }
