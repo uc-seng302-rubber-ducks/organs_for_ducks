@@ -1,10 +1,12 @@
 package odms.view;
 
 import odms.commons.model.User;
+import odms.commons.model.dto.UserOverview;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -26,8 +28,8 @@ public class IoHelper {
         try {
             date = LocalDate.parse(rawDate, sdf);
         } catch (DateTimeParseException e) {
-            System.err.println("Error parsing date: " + rawDate);
-            System.err.println("Please use format yyyy-MM-dd");
+            display("Error parsing date: " + rawDate);
+            display("Please use format yyyy-MM-dd");
             date = null;
         }
         return date;
@@ -51,11 +53,11 @@ public class IoHelper {
         //TODO review logic for edge cases
         String[] names = user.getFullName().split(" ");
         if (firstName != null && lastName != null) {
-            user.setName(firstName, null, lastName);
+            user.setName(firstName.replaceAll("_", " "), null, lastName.replaceAll("_", " "));
         } else if (lastName == null && names.length > 1) {
-            user.setName(firstName, null, names[1]);
+            user.setName(firstName.replaceAll("_", " "), null, names[1]);
         } else if (firstName == null) {
-            user.setName(names[0], null, lastName);
+            user.setName(names[0], null, lastName.replaceAll("_", " "));
         }
         return true;
     }
@@ -66,7 +68,7 @@ public class IoHelper {
      */
     public static String prettyStringUsers(List<User> users) {
         StringBuilder sb = new StringBuilder();
-        if (users.size() > 0) {
+        if (!users.isEmpty()) {
             for (User u : users) {
                 sb.append(u.toString());
                 sb.append("\n");
@@ -76,5 +78,23 @@ public class IoHelper {
         }
 
         return sb.toString();
+    }
+
+    public static String prettyStringUsers(Collection<UserOverview> users) {
+        StringBuilder sb = new StringBuilder();
+        if (!users.isEmpty()) {
+            for (UserOverview u : users) {
+                sb.append(u.toString());
+                sb.append("\n");
+            }
+        } else {
+            sb.append("No users found");
+        }
+
+        return sb.toString();
+    }
+
+    public static void display(String toShow){
+        System.out.println(toShow);
     }
 }
