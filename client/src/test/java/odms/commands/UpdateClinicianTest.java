@@ -26,7 +26,7 @@ public class UpdateClinicianTest {
     public void setUp() throws ApiException {
         testController = mock(AppController.class);
         testClinician = new Clinician();
-        testClinician.setStaffId("0");
+        testClinician.setStaffId("1");
         clinicianBridge = mock(ClinicianBridge.class);
         when(testController.getClinicianBridge()).thenReturn(clinicianBridge);
         when(testController.getToken()).thenReturn(anyString());
@@ -41,16 +41,39 @@ public class UpdateClinicianTest {
     @Test
     public void shouldUpdateId() {
         when(clinicianBridge.getExists(anyString())).thenReturn(false);
-        String[] args = {"0", "-newID=1"};
+        String[] args = {"1", "-newID=2"};
         new CommandLine(command)
                 .parseWithHandler(new CommandLine.RunLast(), System.err, args);
 
-        assert (testClinician.getStaffId().equals("1"));
+        assert (testClinician.getStaffId().equals("2"));
+    }
+
+    @Test
+    public void shouldNotUpdateDefaultId() throws ApiException {
+        Clinician defaultClinician = new Clinician();
+        defaultClinician.setStaffId("0");
+        when(clinicianBridge.getClinician(anyString(), anyString())).thenReturn(defaultClinician);
+        String[] args = {"0", "-newID=2"};
+        new CommandLine(command)
+                .parseWithHandler(new CommandLine.RunLast(), System.err, args);
+
+        assert (defaultClinician.getStaffId().equals("0"));
+    }
+
+    @Test
+    public void shouldNotUpdateDefaultPassword() throws IOException {
+        Clinician defaultClinician = new Clinician("Bob", "0", "1234");
+        when(clinicianBridge.getClinician(anyString(), anyString())).thenReturn(defaultClinician);
+        String[] args = {"0", "-p=secure"};
+        new CommandLine(command)
+                .parseWithHandler(new CommandLine.RunLast(), System.err, args);
+
+        verify(testController, times(0)).saveClinician(defaultClinician);
     }
 
     @Test
     public void shouldUpdateMultipleAttributes() {
-        String[] args = {"0", "-f=Buster", "-r=Canterbury", "-s=There"};
+        String[] args = {"1", "-f=Buster", "-r=Canterbury", "-s=There"};
         new CommandLine(command)
                 .parseWithHandler(new CommandLine.RunLast(), System.err, args);
 
@@ -61,7 +84,7 @@ public class UpdateClinicianTest {
 
     @Test
     public void shouldNotSaveClinicianWhenInvalidAttributeGiven() {
-        String[] args = {"0", "-f=inval^d", "-r=region"};
+        String[] args = {"1", "-f=inval^d", "-r=region"};
         new CommandLine(command)
                 .parseWithHandler(new CommandLine.RunLast(), System.err, args);
 
@@ -74,7 +97,7 @@ public class UpdateClinicianTest {
 
     @Test
     public void shouldSaveClinicianWhenValidAttributesGiven() {
-        String[] args = {"0", "-f=valid", "-r=region"};
+        String[] args = {"1", "-f=valid", "-r=region"};
         new CommandLine(command)
                 .parseWithHandler(new CommandLine.RunLast(), System.err, args);
 
@@ -87,7 +110,7 @@ public class UpdateClinicianTest {
 
     @Test
     public void shouldDoNothingWhenNoAttributesGiven() throws IOException {
-        String[] args = {"0"};
+        String[] args = {"1"};
         new CommandLine(command)
                 .parseWithHandler(new CommandLine.RunLast(), System.err, args);
 
@@ -98,10 +121,10 @@ public class UpdateClinicianTest {
     @Test
     public void shouldNotBeAbleToHaveDuplicateClinicianId() {
         when(clinicianBridge.getExists(anyString())).thenReturn(true);
-        String[] args = {"0", "-newID=2"};
+        String[] args = {"1", "-newID=2"};
         new CommandLine(command)
                 .parseWithHandler(new CommandLine.RunLast(), System.err, args);
-        assert (testClinician.getStaffId().equals("0"));
+        assert (testClinician.getStaffId().equals("1"));
 
     }
 
