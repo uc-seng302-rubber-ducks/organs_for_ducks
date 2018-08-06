@@ -141,9 +141,10 @@ public class UpdateDeathDetailsController {
 
         if (validateFields()) {
 
-            currentUser.setDateOfDeath(updateDeathDetailsDatePicker.getValue());
+            LocalDate dateOfDeath = updateDeathDetailsDatePicker.getValue();
             LocalTime timeOfDeath = LocalTime.parse(updateDeathDetailsTimeTextField.getText());
-            currentUser.setTimeOfDeath(timeOfDeath);
+            currentUser.setMomentOfDeath(currentUser.getDeathDetails().createMomentOfDeath(dateOfDeath, timeOfDeath));
+
             currentUser.setDeathCity(updateDeathDetailsCityTextField.getText());
             if (isNewZealand) {
                 currentUser.setDeathRegion(updateDeathDetailsRegionChoiceBox.getValue());

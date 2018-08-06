@@ -7,7 +7,6 @@ import odms.commons.model.dto.UserOverview;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
 
@@ -37,11 +36,6 @@ public class UserBuilder {
 
     public UserBuilder setDateOfDeath(LocalDate dateOfDeath) {
         secret.setDateOfDeath(dateOfDeath);
-        return this;
-    }
-
-    public UserBuilder setTimeOfDeath(LocalTime timeOfDeath) {
-        secret.setTimeOfDeath(timeOfDeath);
         return this;
     }
 

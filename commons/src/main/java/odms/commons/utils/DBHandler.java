@@ -11,11 +11,9 @@ import odms.commons.utils.db_strategies.AdminUpdateStrategy;
 import odms.commons.utils.db_strategies.ClinicianUpdateStrategy;
 import odms.commons.utils.db_strategies.UserUpdateStrategy;
 
-import javax.management.Query;
 import java.io.InputStream;
 import java.sql.*;
 import java.lang.reflect.Type;
-import java.sql.*;
 import java.time.LocalDate;
 import java.util.*;
 

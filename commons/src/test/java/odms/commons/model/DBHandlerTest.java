@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.sql.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -231,7 +232,7 @@ public class DBHandlerTest {
     @Test
     public void testAddDeathDetails() throws SQLException {
         Address address = new Address("", "", "", "Christchurch", "Canterbury", "", "New Zealand");
-        DeathDetails deathDetails = new DeathDetails(LocalDate.of(2010, 1, 1), LocalTime.of(2, 45), address);
+        DeathDetails deathDetails = new DeathDetails(LocalDateTime.of(2010, 1, 1, 2, 45), address);
         testUser.setDeathDetails(deathDetails);
 
         Collection<User> users = new ArrayList<>();
@@ -245,7 +246,7 @@ public class DBHandlerTest {
     @Test
     public void testAddNullDeathDetails() throws SQLException {
         Address address = new Address("", "", "", "", "", "", "");
-        DeathDetails deathDetails = new DeathDetails(null, null, address);
+        DeathDetails deathDetails = new DeathDetails(null, address);
         testUser.setDeathDetails(deathDetails);
 
         Collection<User> users = new ArrayList<>();

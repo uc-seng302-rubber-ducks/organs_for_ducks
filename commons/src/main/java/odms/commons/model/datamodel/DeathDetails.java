@@ -9,37 +9,12 @@ import java.time.LocalTime;
  */
 public class DeathDetails {
 
-    private LocalDate dateOfDeath;
-    private LocalTime timeOfDeath;
     private LocalDateTime momentOfDeath;
     private Address placeOfDeath;
 
     public DeathDetails() {
-        this.dateOfDeath = null;
-        this.timeOfDeath = null;
+        this.momentOfDeath = null;
         this.placeOfDeath = new Address("", "", "", "", "", "", "");
-    }
-
-    public DeathDetails(LocalDate dateOfDeath, LocalTime timeOfDeath, Address placeOfDeath) {
-        this.dateOfDeath = dateOfDeath;
-        this.timeOfDeath = timeOfDeath;
-        this.placeOfDeath = placeOfDeath;
-    }
-
-    public LocalDate getDateOfDeath() {
-        return dateOfDeath;
-    }
-
-    public void setDateOfDeath(LocalDate dateOfDeath) {
-        this.dateOfDeath = dateOfDeath;
-    }
-
-    public LocalTime getTimeOfDeath() {
-        return timeOfDeath;
-    }
-
-    public void setTimeOfDeath(LocalTime timeOfDeath) {
-        this.timeOfDeath = timeOfDeath;
     }
 
     public LocalDateTime getMomentOfDeath() {
@@ -48,26 +23,51 @@ public class DeathDetails {
 
     public void setMomentOfDeath(LocalDateTime momentOfDeath) {
         this.momentOfDeath = momentOfDeath;
+    }
+
+    public DeathDetails(LocalDateTime momentOfDeath, Address placeOfDeath) {
+        this.momentOfDeath = momentOfDeath;
+        this.placeOfDeath = placeOfDeath;
+    }
+
+    /**
+     * Uses the moment of death to return a LocalDate version, useful for date pickers
+     * @return LocalDate portion of moment of death
+     */
+    public LocalDate getDateOfDeath() {
         if (momentOfDeath != null) {
-            this.dateOfDeath = momentOfDeath.toLocalDate();
-            this.timeOfDeath = momentOfDeath.toLocalTime();
+            return momentOfDeath.toLocalDate();
         } else {
-            this.dateOfDeath = null;
-            this.timeOfDeath = null;
+            return null;
         }
     }
+
     /**
-     * Combines the Date of Death and Time of Death into a LocalDateTime for easier use for other classes.
+     * Uses the moment of death to return a LocalTime version, useful for date independent time calculations
+     * @return LocalTime portion of moment of death
+     */
+    public LocalTime getTimeOfDeath() {
+        if (momentOfDeath != null) {
+            return momentOfDeath.toLocalTime();
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Combines a date and time into a LocalDateTime.
      * If Date of Death is null, Moment of Death is null
      * If only Time of Death is null, Moment of Death's time is set to 00:00
+     * @param date of death
+     * @param time of death
+     * @return LocalDateTime of death
      */
-    public LocalDateTime createMomentOfDeath() {
-        LocalTime timeofDeath = getTimeOfDeath();
-        if (timeofDeath == null) {
-            timeofDeath = LocalTime.MIDNIGHT;
+    public LocalDateTime createMomentOfDeath(LocalDate date, LocalTime time) {
+        if (time == null) {
+            time = LocalTime.MIDNIGHT;
         }
-        if (getDateOfDeath() != null) {
-            return timeofDeath.atDate(getDateOfDeath());
+        if (date != null) {
+            return time.atDate(date);
         } else {
             return null;
         }
@@ -77,7 +77,7 @@ public class DeathDetails {
         return placeOfDeath;
     }
 
-    public void setAddress(Address placeOfDeath) {
+    public void setDeathAddress(Address placeOfDeath) {
         this.placeOfDeath = placeOfDeath;
     }
 
@@ -108,8 +108,7 @@ public class DeathDetails {
     @Override
     public String toString() {
         return
-                dateOfDeath + " " + '\n' +
-                        timeOfDeath + " " + '\n' +
+                momentOfDeath + " " + '\n' +
                         placeOfDeath;
     }
 }

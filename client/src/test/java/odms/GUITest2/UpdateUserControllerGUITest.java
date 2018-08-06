@@ -22,8 +22,6 @@ import java.util.concurrent.TimeoutException;
 
 import static odms.TestUtils.FxRobotHelper.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 import static org.testfx.api.FxAssert.verifyThat;
 

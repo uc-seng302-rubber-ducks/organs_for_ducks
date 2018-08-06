@@ -602,7 +602,7 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
     private void updateDeathDetails(User user, Connection connection) throws SQLException {
 
         Timestamp sqlDeathMoment = null;
-        LocalDateTime deathMoment = user.getDeathDetails().createMomentOfDeath();
+        LocalDateTime deathMoment = user.getDeathDetails().createMomentOfDeath(user.getDateOfDeath(), user.getTimeOfDeath());
         if (deathMoment != null) {
             sqlDeathMoment = java.sql.Timestamp.valueOf(deathMoment);
         }
@@ -763,7 +763,7 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
     private void createDeathDetails(User user, Connection connection) throws SQLException {
 
         Timestamp sqlDeathMoment = null;
-        LocalDateTime deathMoment = user.getDeathDetails().createMomentOfDeath();
+        LocalDateTime deathMoment = user.getDeathDetails().createMomentOfDeath(user.getDateOfDeath(), user.getTimeOfDeath());
         if (deathMoment != null) {
             sqlDeathMoment = java.sql.Timestamp.valueOf(deathMoment);
         }

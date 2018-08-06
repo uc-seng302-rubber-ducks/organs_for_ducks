@@ -153,7 +153,7 @@ public class User extends Undoable<User> implements Listenable {
         newUser.dateOfBirth = user.dateOfBirth;
 
         Address placeOfDeath = new Address("", "", "", user.getDeathCity(), user.getDeathRegion(), "", user.getDeathCountry());
-        newUser.deathDetails = new DeathDetails(user.deathDetails.getDateOfDeath(), user.deathDetails.getTimeOfDeath(), placeOfDeath);
+        newUser.deathDetails = new DeathDetails(user.deathDetails.getMomentOfDeath(), placeOfDeath);
 
         Address address = new Address(user.getStreetNumber(), user.getStreetName(), user.getNeighborhood(),
                 user.getCity(), user.getRegion(), user.getZipCode(), user.getCountry());
@@ -218,7 +218,7 @@ public class User extends Undoable<User> implements Listenable {
         for (Organs o : user.receiverDetails.getOrgans().keySet()) {
             ArrayList<ReceiverOrganDetailsHolder> detailHolders = new ArrayList<>(user.receiverDetails.getOrgans().get(o));
             for (int i = 0; i < user.receiverDetails.getOrgans().get(o).size(); i++) {
-                ReceiverOrganDetailsHolder newHolder = new ReceiverOrganDetailsHolder(null, null, null);// = newUser.receiverDetails.getOrgans().get(o).get(i);
+                ReceiverOrganDetailsHolder newHolder = new ReceiverOrganDetailsHolder(null, null, null); // = newUser.receiverDetails.getOrgans().get(o).get(i);
                 ReceiverOrganDetailsHolder oldHolder = user.receiverDetails.getOrgans().get(o).get(i);
                 newHolder.setStartDate(oldHolder.getStartDate());
                 newHolder.setStopDate(oldHolder.getStopDate());
@@ -268,14 +268,6 @@ public class User extends Undoable<User> implements Listenable {
 
     public void setDeathDetails(DeathDetails deathDetails) {
         this.deathDetails = deathDetails;
-    }
-
-    public LocalTime getTimeOfDeath(){
-        return deathDetails.getTimeOfDeath();
-    }
-
-    public void setTimeOfDeath(LocalTime timeOfDeath){
-        this.deathDetails.setTimeOfDeath(timeOfDeath);
     }
 
     public String getDeathCity(){
@@ -575,6 +567,10 @@ public class User extends Undoable<User> implements Listenable {
         addChange(new Change("Changed date of birth to " + dateOfBirth.toString()));
     }
 
+    public LocalTime getTimeOfDeath() {
+        return deathDetails.getTimeOfDeath();
+    }
+
     public LocalDate getDateOfDeath() {
         return deathDetails.getDateOfDeath();
     }
@@ -583,14 +579,32 @@ public class User extends Undoable<User> implements Listenable {
         this.saveStateForUndo();
         updateLastModified();
         if (dateOfDeath != null) {
-            this.deathDetails.setDateOfDeath(dateOfDeath);
+            this.deathDetails.setMomentOfDeath(dateOfDeath.atStartOfDay());
             this.isDeceased = true;
         } else {
-            this.deathDetails.setTimeOfDeath(null);
+            this.deathDetails.setMomentOfDeath(null);
             this.isDeceased = false;
         }
-        addChange(new Change(isDeceased ? ("Changed date of death to " + dateOfDeath.toString())
-                : "Removed date of death"));
+        addChange(new Change(isDeceased ? ("Changed moment of death to " + dateOfDeath.toString())
+                : "Removed moment of death"));
+    }
+
+    public LocalDateTime getMomentDeath(){
+        return deathDetails.getMomentOfDeath();
+    }
+
+    public void setMomentOfDeath(LocalDateTime momentOfDeath) {
+        this.saveStateForUndo();
+        updateLastModified();
+        if (momentOfDeath != null) {
+            this.deathDetails.setMomentOfDeath(momentOfDeath);
+            this.isDeceased = true;
+        } else {
+            this.deathDetails.setMomentOfDeath(null);
+            this.isDeceased = false;
+        }
+        addChange(new Change(isDeceased ? ("Changed moment of death to " + momentOfDeath.toString())
+                : "Removed moment of death"));
     }
 
     public double getHeight() {
@@ -843,17 +857,17 @@ public class User extends Undoable<User> implements Listenable {
     }
 
     public String getStringAge() {
-        if (deathDetails.createMomentOfDeath() != null) {
+        if (deathDetails.getMomentOfDeath() != null) {
 
-            return Long.toString(ChronoUnit.YEARS.between(dateOfBirth, deathDetails.createMomentOfDeath()));
+            return Long.toString(ChronoUnit.YEARS.between(dateOfBirth, deathDetails.getMomentOfDeath()));
         }
         return Long.toString(ChronoUnit.YEARS.between(dateOfBirth, LocalDate.now()));
     }
 
     public int getAge() {
-        if (deathDetails.createMomentOfDeath() != null) {
+        if (deathDetails.getMomentOfDeath() != null) {
 
-            return Math.toIntExact(ChronoUnit.YEARS.between(dateOfBirth, deathDetails.createMomentOfDeath()));
+            return Math.toIntExact(ChronoUnit.YEARS.between(dateOfBirth, deathDetails.getMomentOfDeath()));
         }
         return Math.toIntExact(ChronoUnit.YEARS.between(dateOfBirth, java.time.LocalDate.now()));
     }
