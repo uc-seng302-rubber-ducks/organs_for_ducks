@@ -90,6 +90,9 @@ public class CSVHandler extends DataHandler {
             u.setCellPhone(record.get(19));
             u.setEmail(record.get(20));
             u.setContact(new EmergencyContact("", "", ""));
+            ClassLoader classLoader = getClass().getClassLoader();
+            File inFile = new File(classLoader.getResource("default-profile-picture.jpg").getFile());
+            u.setProfilePhotoFilePath(inFile.toString());
             correct++;
             users.add(u);
         }

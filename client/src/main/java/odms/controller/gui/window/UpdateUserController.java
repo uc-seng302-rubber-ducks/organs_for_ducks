@@ -178,6 +178,9 @@ public class UpdateUserController {
 
     @FXML
     private ImageView profileImage;
+
+    @FXML
+    private Button resetProfileImageUser;
     //</editor-fold>
 
 
@@ -189,6 +192,7 @@ public class UpdateUserController {
     private boolean listen = true;
     private File inFile;
     private String defaultCountry = "New Zealand";
+    private final int MAX_FILE_SIZE = 2097152;
 
 
     /**
@@ -561,6 +565,17 @@ public class UpdateUserController {
     }
 
     /**
+     * sets the profile photo back to the default image
+     */
+    @FXML
+    private void resetProfileImage() {
+        ClassLoader classLoader = getClass().getClassLoader();
+        inFile = new File(classLoader.getResource("default-profile-picture.jpg").getFile());
+        currentUser.setProfilePhotoFilePath(inFile.getPath());
+        displayImage(profileImage, inFile.getPath());
+    }
+
+    /**
      * uploads an image using file picker. includes validation.
      */
     @FXML
@@ -569,14 +584,14 @@ public class UpdateUserController {
         String filename;
         List<String> extensions = new ArrayList<>();
         extensions.add("*.png");
-        //extensions.add("*.jpg");
-        //extensions.add("*.gif");
+        extensions.add("*.jpg");
+        extensions.add("*.gif");
         FileSelectorController fileSelectorController = new FileSelectorController();
         filename = fileSelectorController.getFileSelector(stage, extensions);
         if (filename != null) {
             inFile = new File(filename);
 
-            if (inFile.length() > 2000000) { //if more than 2MB
+            if (inFile.length() > MAX_FILE_SIZE ) { //if more than 2MB
                 Alert imageTooLargeAlert = new Alert(Alert.AlertType.WARNING, "Could not upload the image as the image size exceeded 2MB");
                 imageTooLargeAlert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
                 imageTooLargeAlert.showAndWait();
@@ -608,7 +623,6 @@ public class UpdateUserController {
             if(inFile != null){
                 String filePath = setUpImageFile(inFile, currentUser.getNhi());
                 currentUser.setProfilePhotoFilePath(filePath);
-                currentUser.getUndoStack().pop();
             }
 
             try {
