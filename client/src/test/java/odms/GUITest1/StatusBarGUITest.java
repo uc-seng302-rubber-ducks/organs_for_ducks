@@ -1,11 +1,12 @@
 package odms.GUITest1;
 
 import odms.App;
+import odms.TestUtils.AppControllerMocker;
 import odms.TestUtils.CommonTestMethods;
+import odms.bridge.*;
 import odms.commons.model.User;
 import odms.controller.AppController;
 import odms.controller.gui.window.UserController;
-import odms.utils.*;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -22,7 +23,6 @@ import static javafx.scene.input.KeyCode.A;
 import static javafx.scene.input.KeyCode.BACK_SPACE;
 import static javafx.scene.input.KeyCode.SHORTCUT;
 import static odms.TestUtils.FxRobotHelper.clickOnButton;
-import static odms.TestUtils.FxRobotHelper.setTextField;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
@@ -30,7 +30,7 @@ import static org.testfx.api.FxAssert.verifyThat;
 
 public class StatusBarGUITest extends ApplicationTest {
 
-    private AppController controller = mock(AppController.class);
+    private AppController controller = AppControllerMocker.getFullMock();
     private UserBridge userBridge = mock(UserBridge.class);
     private ClinicianBridge clinicianBridge = mock(ClinicianBridge.class);
     private AdministratorBridge administratorBridge = mock(AdministratorBridge.class);

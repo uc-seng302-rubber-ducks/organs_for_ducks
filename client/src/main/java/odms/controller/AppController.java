@@ -2,6 +2,7 @@ package odms.controller;
 
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
+import odms.bridge.*;
 import odms.commons.exception.ApiException;
 import odms.commons.exception.ProfileAlreadyExistsException;
 import odms.commons.exception.ProfileNotFoundException;
@@ -20,13 +21,15 @@ import odms.controller.gui.StatusBarController;
 import odms.controller.gui.window.AdministratorViewController;
 import odms.controller.gui.window.ClinicianController;
 import odms.controller.gui.window.UserController;
-import odms.utils.*;
+import odms.socket.OdmsSocketHandler;
 import okhttp3.OkHttpClient;
 
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 
 /**
@@ -42,8 +45,8 @@ public class AppController {
     private Collection<Administrator> admins = new ArrayList<>();
     private List<User> users = new ArrayList<>();
     private ArrayList<TransplantDetails> transplantList = new ArrayList<>();
-    private List<Clinician> clinicians = new ArrayList<>();
-    private Set<UserOverview> overviews = new HashSet<>();
+    private List<Clinician> clinicians = new CopyOnWriteArrayList<>();
+    private Set<UserOverview> overviews = new CopyOnWriteArraySet<>();
     private ArrayList<String[]> historyOfCommands = new ArrayList<>();
     private List<String> allCountries;
     private List<String> allowedCountries; //store the countries chosen by admin
@@ -56,14 +59,15 @@ public class AppController {
     private AdministratorBridge administratorBridge = new AdministratorBridge(client);
     private LoginBridge loginBridge = new LoginBridge(client);
     private TransplantBridge transplantBridge = new TransplantBridge(client);
-    private UserController userController = new UserController();
-    private ClinicianController clinicianController = new ClinicianController();
+    private UserController userController = null;
+    private ClinicianController clinicianController = null;
     private CountriesBridge countriesBridge = new CountriesBridge(client);
-    private AdministratorViewController administratorViewController = new AdministratorViewController();
+    private AdministratorViewController administratorViewController = null;
     private StatusBarController statusBarController = new StatusBarController();
     private Stack<User> redoStack = new Stack<>();
     private String token;
     private SQLBridge sqlBridge = new SQLBridge(client);
+    private OdmsSocketHandler socketHandler = new OdmsSocketHandler(client);
 
     /**
      * Creates new instance of AppController
@@ -299,6 +303,12 @@ public class AppController {
 
     public void addUserOverview(UserOverview overview) {
         this.overviews.add(overview);
+        if (clinicianController != null) {
+            clinicianController.refreshTables();
+        }
+        if (administratorViewController != null) {
+            administratorViewController.refreshTables();
+        }
     }
 
     /**
@@ -380,6 +390,9 @@ public class AppController {
      */
     public void addClinician(Clinician clinician) {
         clinicians.add(clinician);
+        if (administratorViewController != null) {
+            administratorViewController.refreshTables();
+        }
     }
 
     /**
@@ -389,6 +402,9 @@ public class AppController {
      */
     public void addAdmin(Administrator administrator) {
         admins.add(administrator);
+        if (administratorViewController != null) {
+            administratorViewController.refreshTables();
+        }
     }
 
     /**
@@ -701,5 +717,9 @@ public class AppController {
 
     public SQLBridge getSqlBridge() {
         return sqlBridge;
+    }
+
+    public OdmsSocketHandler getSocketHandler() {
+        return socketHandler;
     }
 }

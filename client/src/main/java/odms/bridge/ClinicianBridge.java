@@ -1,4 +1,4 @@
-package odms.utils;
+package odms.bridge;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -18,12 +18,26 @@ public class ClinicianBridge extends RoleBridge {
         super(client);
     }
 
-    public List<Clinician> getClinicians(int startIndex, int count, String name, String region, String token) throws IOException {
+    public void getClinicians(int startIndex, int count, String name, String region, String token) {
         String url = ip + "/clinicians?startIndex=" + startIndex + "&count=" + count + "&q=" + name + "&region=" + region;
         Request request = new Request.Builder().addHeader(TOKEN_HEADER, token).url(url).build();
-        Response response = client.newCall(request).execute();
-        ResponseBody body = response.body();
-        return new Gson().fromJson(body.string(), new TypeToken<List<Clinician>>() {}.getType());
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                ResponseBody body = response.body();
+                List<Clinician> clinicians = new Gson().fromJson(body.string(), new TypeToken<List<Clinician>>() {
+                }.getType());
+                for (Clinician clinician : clinicians) {
+                    AppController.getInstance().addClinician(clinician);
+                }
+                response.close();
+            }
+        });
     }
 
     public void postClinician(Clinician clinician, String token) {
@@ -42,7 +56,7 @@ public class ClinicianBridge extends RoleBridge {
                     Log.warning("Failed to POST to " + url);
                     throw new IOException("Failed to make POST call to " + url);
                 }
-
+                response.close();
             }
         });
     }
@@ -62,6 +76,7 @@ public class ClinicianBridge extends RoleBridge {
                 if (!response.isSuccessful()) {
                     throw new IOException("Failed to PUT to " + url);
                 }
+                response.close();
             }
         });
     }
@@ -80,6 +95,7 @@ public class ClinicianBridge extends RoleBridge {
                 if (!response.isSuccessful()) {
                     throw new IOException("Failed to DELETE to " + url);
                 }
+                response.close();
             }
         });
     }
@@ -117,6 +133,8 @@ public class ClinicianBridge extends RoleBridge {
         } catch (IOException ex) {
             Log.severe("could not interpret the given clinician", ex);
             return null;
+        } finally {
+            response.close();
         }
     }
 
@@ -174,6 +192,7 @@ public class ClinicianBridge extends RoleBridge {
                     Log.warning("Failed to PUT " + url);
                     throw new IOException("Could not PUT " + url);
                 }
+                response.close();
             }
         });
     }

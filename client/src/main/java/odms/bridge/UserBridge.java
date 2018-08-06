@@ -1,8 +1,7 @@
-package odms.utils;
+package odms.bridge;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import javafx.scene.image.Image;
 import odms.commons.model.Disease;
 import odms.commons.model.MedicalProcedure;
 import odms.commons.model.User;
@@ -13,6 +12,7 @@ import odms.commons.model.dto.UserOverview;
 import odms.commons.utils.Log;
 import odms.commons.utils.PhotoHelper;
 import odms.controller.AppController;
+import odms.controller.gui.popup.utils.AlertWindowFactory;
 import okhttp3.*;
 
 import java.io.IOException;
@@ -26,18 +26,45 @@ public class UserBridge extends RoleBridge {
         super(client);
     }
 
-    public Collection<UserOverview> getUsers(int startIndex, int count, String name, String region, String gender, String token) throws IOException {
+    public void getUsers(int startIndex, int count, String name, String region, String gender, String token) {
         String url = ip + "/users?startIndex=" + startIndex + "&count=" + count + "&name=" + name + "&region=" + region + "&gender=" + gender;
         Request request = new Request.Builder().header(TOKEN_HEADER, token).url(url).build();
-        Collection<UserOverview> overviews;
-        try (Response response = client.newCall(request).execute()) {
-            overviews = new Gson().fromJson(response.body().string(), new TypeToken<Collection<UserOverview>>() {
-            }.getType());
-        } catch (IOException ex) {
-            Log.warning("Error occurred while executing call to " + url, ex);
-            throw ex;
-        }
-        return overviews;
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                AlertWindowFactory.generateError(e);
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                Collection<UserOverview> overviews = new Gson().fromJson(response.body().string(), new TypeToken<Collection<UserOverview>>() {
+                }.getType());
+                for (UserOverview overview : overviews) {
+                    AppController.getInstance().addUserOverview(overview);
+                }
+                response.close();
+            }
+        });
+    }
+
+    public void postUser(User user) {
+        String url = ip + USERS;
+        RequestBody requestBody = RequestBody.create(JSON, new Gson().toJson(user));
+        Request request = new Request.Builder().post(requestBody).url(url).build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.warning("Could not make the call to POST /users");
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (!response.isSuccessful()) {
+                    throw new IOException("Failed to make POST call to /users");
+                }
+                response.close();
+            }
+        });
     }
 
     public User getUser(String nhi) throws IOException {
@@ -60,25 +87,6 @@ public class UserBridge extends RoleBridge {
         return toReturn;
     }
 
-    public void postUser(User user) {
-        String url = ip + USERS;
-        RequestBody requestBody = RequestBody.create(JSON, new Gson().toJson(user));
-        Request request = new Request.Builder().url(url).post(requestBody).build();
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                Log.warning("Could not make the call to POST /users");
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                if (!response.isSuccessful()) {
-                    throw new IOException("Failed to make POST call to /users");
-                }
-            }
-        });
-    }
-
     public void putUser(User user, String nhi) {
         String url = ip + USERS + nhi;
         RequestBody body = RequestBody.create(JSON, new Gson().toJson(user));
@@ -94,6 +102,7 @@ public class UserBridge extends RoleBridge {
                 if (!response.isSuccessful()) {
                     throw new IOException("Failed to PUT to " + url + " Response code: " + response.code());
                 }
+                response.close();
             }
         });
     }
@@ -112,6 +121,7 @@ public class UserBridge extends RoleBridge {
                 if (!response.isSuccessful()) {
                     throw new IOException("Failed to DELETE to " + url);
                 }
+                response.close();
             }
         });
     }
@@ -131,6 +141,7 @@ public class UserBridge extends RoleBridge {
                 if (!response.isSuccessful()) {
                     throw new IOException("Failed to POST procedures to " + url);
                 }
+                response.close();
             }
         });
     }
@@ -150,6 +161,7 @@ public class UserBridge extends RoleBridge {
                 if (!response.isSuccessful()) {
                     throw new IOException("Failed to PUT to " + url);
                 }
+                response.close();
             }
         });
     }
@@ -169,6 +181,7 @@ public class UserBridge extends RoleBridge {
                 if (!response.isSuccessful()) {
                     throw new IOException("Failed to POST to " + url);
                 }
+                response.close();
             }
         });
     }
@@ -180,7 +193,7 @@ public class UserBridge extends RoleBridge {
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                Log.warning("Could not PUT procedures to " + url, e);
+                Log.warning("Could not PUT medications to " + url, e);
             }
 
             @Override
@@ -188,6 +201,7 @@ public class UserBridge extends RoleBridge {
                 if (!response.isSuccessful()) {
                     throw new IOException("Failed to PUT to " + url);
                 }
+                response.close();
             }
         });
     }
@@ -207,6 +221,7 @@ public class UserBridge extends RoleBridge {
                 if (!response.isSuccessful()) {
                     throw new IOException("Failed to POST to " + url);
                 }
+                response.close();
             }
         });
     }
@@ -226,6 +241,7 @@ public class UserBridge extends RoleBridge {
                 if (!response.isSuccessful()) {
                     throw new IOException("Failed to PUT to " + url);
                 }
+                response.close();
             }
         });
     }
@@ -245,6 +261,7 @@ public class UserBridge extends RoleBridge {
                 if (!response.isSuccessful()) {
                     throw new IOException("Failed to POST to " + url);
                 }
+                response.close();
             }
         });
     }
@@ -264,6 +281,7 @@ public class UserBridge extends RoleBridge {
                 if (!response.isSuccessful()) {
                     throw new IOException("Failed to PUT to " + url);
                 }
+                response.close();
             }
         });
     }
@@ -283,6 +301,7 @@ public class UserBridge extends RoleBridge {
                 if (!response.isSuccessful()) {
                     throw new IOException("Failed to POST to " + url);
                 }
+                response.close();
             }
         });
     }
@@ -302,6 +321,7 @@ public class UserBridge extends RoleBridge {
                 if (!response.isSuccessful()) {
                     throw new IOException("Failed to PUT to " + url);
                 }
+                response.close();
             }
         });
     }
@@ -342,6 +362,7 @@ public class UserBridge extends RoleBridge {
                     Log.warning("Failed to PUT " + url);
                     throw new IOException("Could not PUT " + url);
                 }
+                response.close();
             }
         });
     }

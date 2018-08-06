@@ -2,16 +2,14 @@ package odms.GUITest2;
 
 import javafx.geometry.VerticalDirection;
 import odms.App;
+import odms.TestUtils.AppControllerMocker;
 import odms.TestUtils.CommonTestMethods;
 import odms.commons.model.EmergencyContact;
 import odms.commons.model.User;
 import odms.commons.model.dto.UserOverview;
-import odms.TestUtils.CommonTestMethods;
-import odms.commons.model.User;
 import odms.controller.AppController;
 import odms.controller.gui.window.UserController;
-import odms.utils.UserBridge;
-import odms.controller.AppController;
+import odms.bridge.UserBridge;
 import org.junit.*;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
@@ -40,7 +38,7 @@ public class UpdateUserControllerGUITest extends ApplicationTest {
     public void setUpCreateScene() throws TimeoutException, IOException {
 
 
-        AppController application = mock(AppController.class);
+        AppController application = AppControllerMocker.getFullMock();
         UserBridge bridge = mock(UserBridge.class);
 
         AppController.setInstance(application);
@@ -49,8 +47,7 @@ public class UpdateUserControllerGUITest extends ApplicationTest {
         user.setContact(new EmergencyContact("", "", "0187878"));
         user.getUndoStack().clear();
         when(application.getUserBridge()).thenReturn(bridge);
-        when(bridge.getUsers(anyInt(), anyInt(), anyString(), anyString(), anyString(), anyString()))
-                .thenReturn(Collections.singletonList(UserOverview.fromUser(user)));
+        when(application.getUserOverviews()).thenReturn(Collections.singleton(UserOverview.fromUser(user)));
         when(bridge.getUser("ABC1234")).thenReturn(user);
 
         doCallRealMethod().when(application).setUserController(any(UserController.class));
