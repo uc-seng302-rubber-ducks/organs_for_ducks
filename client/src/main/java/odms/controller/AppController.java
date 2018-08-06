@@ -28,6 +28,8 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 
 /**
@@ -43,8 +45,8 @@ public class AppController {
     private Collection<Administrator> admins = new ArrayList<>();
     private List<User> users = new ArrayList<>();
     private ArrayList<TransplantDetails> transplantList = new ArrayList<>();
-    private List<Clinician> clinicians = new ArrayList<>();
-    private Set<UserOverview> overviews = new HashSet<>();
+    private List<Clinician> clinicians = new CopyOnWriteArrayList<>();
+    private Set<UserOverview> overviews = new CopyOnWriteArraySet<>();
     private ArrayList<String[]> historyOfCommands = new ArrayList<>();
     private List<String> allCountries;
     private List<String> allowedCountries; //store the countries chosen by admin
@@ -57,10 +59,10 @@ public class AppController {
     private AdministratorBridge administratorBridge = new AdministratorBridge(client);
     private LoginBridge loginBridge = new LoginBridge(client);
     private TransplantBridge transplantBridge = new TransplantBridge(client);
-    private UserController userController = new UserController();
-    private ClinicianController clinicianController = new ClinicianController();
+    private UserController userController = null;
+    private ClinicianController clinicianController = null;
     private CountriesBridge countriesBridge = new CountriesBridge(client);
-    private AdministratorViewController administratorViewController = new AdministratorViewController();
+    private AdministratorViewController administratorViewController = null;
     private StatusBarController statusBarController = new StatusBarController();
     private Stack<User> redoStack = new Stack<>();
     private String token;
@@ -301,6 +303,12 @@ public class AppController {
 
     public void addUserOverview(UserOverview overview) {
         this.overviews.add(overview);
+        if (clinicianController != null) {
+            clinicianController.refreshTables();
+        }
+        if (administratorViewController != null) {
+            administratorViewController.refreshTables();
+        }
     }
 
     /**
@@ -344,21 +352,11 @@ public class AppController {
             }
 
             if (userBridge.getUser(originalUser.getNhi()) != null) {
-                if (token != null) {
-                    userBridge.putReceivingOrgans(user.getReceiverDetails().getOrgans(), originalUser.getNhi(), token);
-                    userBridge.putUserProcedures(user.getMedicalProcedures(), originalUser.getNhi(), token);
-                    userBridge.putMedications(user.getPreviousMedication(), originalUser.getNhi(), token);
-                    userBridge.putMedications(user.getCurrentMedication(), originalUser.getNhi(), token);
-                    userBridge.putDiseases(user.getPastDiseases(), originalUser.getNhi(), token);
-                    userBridge.putDiseases(user.getCurrentDiseases(), originalUser.getNhi(), token);
-                }
                 userBridge.putProfilePicture(originalUser.getNhi(), user.getProfilePhotoFilePath());
-                userBridge.putDonatingOrgans(user.getDonorDetails().getOrgans(), originalUser.getNhi());
                 userBridge.putUser(user, originalUser.getNhi());
 
             } else {
                 userBridge.postUser(user);
-                userBridge.putProfilePicture(originalUser.getNhi(), user.getProfilePhotoFilePath());
             }
         } catch (IOException e) {
             Log.warning("Could not save user " + user.getNhi(), e);
@@ -382,6 +380,9 @@ public class AppController {
      */
     public void addClinician(Clinician clinician) {
         clinicians.add(clinician);
+        if (administratorViewController != null) {
+            administratorViewController.refreshTables();
+        }
     }
 
     /**
@@ -391,6 +392,9 @@ public class AppController {
      */
     public void addAdmin(Administrator administrator) {
         admins.add(administrator);
+        if (administratorViewController != null) {
+            administratorViewController.refreshTables();
+        }
     }
 
     /**
@@ -469,10 +473,8 @@ public class AppController {
             }
 
             if (clinicianBridge.getExists(originalClinician.getStaffId())) {
+                clinicianBridge.putProfilePicture(originalClinician.getStaffId(), getToken(), clinician.getProfilePhotoFilePath());
                 clinicianBridge.putClinician(clinician, originalClinician.getStaffId(), token);
-                if(!originalClinician.getProfilePhotoFilePath().equals(clinician.getProfilePhotoFilePath())) {
-                    clinicianBridge.putProfilePicture(originalClinician.getStaffId(),getToken(),clinician.getProfilePhotoFilePath());
-                }
             } else {
                 clinicianBridge.postClinician(clinician, token);
             }

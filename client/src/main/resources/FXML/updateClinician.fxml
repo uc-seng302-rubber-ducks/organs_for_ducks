@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.ImageView?>
@@ -130,5 +129,7 @@
                 text="Undo" AnchorPane.rightAnchor="84.0" AnchorPane.topAnchor="3.0"/>
         <Button fx:id="redoClinicianFormButton" layoutX="531.0" layoutY="3.0" mnemonicParsing="false" onAction="#redo"
                 text="Redo" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="3.0"/>
+        <Button fx:id="resetProfileImageClinician" layoutX="435.0" layoutY="320.0" mnemonicParsing="false"
+                onAction="#resetProfileImage" text="Reset Profile Image"/>
     </children>
 </AnchorPane>
