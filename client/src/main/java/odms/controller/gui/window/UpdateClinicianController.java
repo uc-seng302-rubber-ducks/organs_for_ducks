@@ -23,7 +23,6 @@ import odms.controller.AppController;
 import odms.controller.gui.FileSelectorController;
 import odms.controller.gui.popup.utils.AlertWindowFactory;
 
-
 import java.io.File;
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -109,6 +108,9 @@ public class UpdateClinicianController {
 
     @FXML
     private ImageView profileImage;
+
+    @FXML
+    private Button resetProfileImageClinician;
     //</editor-fold>
 
     private AppController controller;
@@ -120,6 +122,8 @@ public class UpdateClinicianController {
     private Stage ownStage;
     private File inFile;
     private String defaultCountry = "New Zealand";
+    private final int MAX_FILE_SIZE = 2097152;
+    private String initialPath;
 
     /**
      * Initializes the scene by setting all but the password text fields to contain the given clinicians attributes.
@@ -149,6 +153,7 @@ public class UpdateClinicianController {
             titleLabel.setText("Update Clinician");
             confirmButton.setText("Save Changes");
 
+            initialPath = clinician.getProfilePhotoFilePath();
             prefillFields(clinician);
 
             // checks if there was a change in any of the clinician input fields
@@ -213,6 +218,17 @@ public class UpdateClinicianController {
     @FXML
     private void countrySelectorListener(ActionEvent event) {
         controller.countrySelectorEventHandler(countrySelector, regionSelector, regionTextField);
+    }
+
+    /**
+     * sets the profile photo back to the default image
+     */
+    @FXML
+    private void resetProfileImage() {
+        ClassLoader classLoader = getClass().getClassLoader();
+        inFile = new File(classLoader.getResource("default-profile-picture.jpg").getFile());
+        currentClinician.setProfilePhotoFilePath(inFile.getPath());
+        displayImage(profileImage, inFile.getPath());
     }
 
 
@@ -297,15 +313,15 @@ public class UpdateClinicianController {
         String filename;
         List<String> extensions = new ArrayList<>();
         extensions.add("*.png");
-        //extensions.add("*.jpg");
-        //extensions.add("*.gif");
+        extensions.add("*.jpg");
+        extensions.add("*.gif");
         FileSelectorController fileSelectorController =  new FileSelectorController();
         filename = fileSelectorController.getFileSelector(stage, extensions);
 
         if (filename != null) {
             inFile = new File(filename);
 
-            if (inFile.length() > 2000000) { //if more than 2MB
+            if (inFile.length() > MAX_FILE_SIZE ) { //if more than 2MB
                 Alert imageTooLargeAlert = new Alert(Alert.AlertType.WARNING, "Could not upload the image as the image size exceeded 2MB");
                 imageTooLargeAlert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
                 imageTooLargeAlert.showAndWait();
@@ -314,7 +330,7 @@ public class UpdateClinicianController {
             if (isValid) {
                 update();
                 displayImage(profileImage, inFile.getPath());
-                currentClinician.setProfilePhotoFilePath(filename);
+                currentClinician.setProfilePhotoFilePath(inFile.getPath());
             }
         }
     }
@@ -568,6 +584,7 @@ public class UpdateClinicianController {
                     ownStage.close();
                 }
             } else { // has no changes
+                currentClinician.setProfilePhotoFilePath(initialPath);
                 currentClinician.getRedoStack().clear();
                 ownStage.close();
                 Log.info("no changes made to Clinician Staff Id: " + currentClinician.getStaffId());
@@ -695,18 +712,10 @@ public class UpdateClinicianController {
 
         } else if (valid && newClinician) { // creates a new clinician
             Clinician clinician = new Clinician(staffID, password, fName, mName, lName);
+            currentClinician = clinician;
             Address workAddress = new Address(streetNumber, streetName, neighbourhood, city, region, zipCode, country);
             clinician.setWorkContactDetails(new ContactDetails("", "", workAddress, ""));
-            if(inFile != null) {
-                try {
-                    String filePath = setUpImageFile(inFile, currentClinician.getStaffId());
-                    currentClinician.setProfilePhotoFilePath(filePath);
-                    currentClinician.getUndoStack().pop();
-                } catch (IOException e) {
-                    System.err.println(e);
-                }
-            }
-
+            resetProfileImage();
             controller.updateClinicians(clinician);
             try {
                 controller.saveClinician(clinician);

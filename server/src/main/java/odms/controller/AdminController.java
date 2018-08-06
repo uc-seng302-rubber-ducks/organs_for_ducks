@@ -40,9 +40,6 @@ public class AdminController extends BaseController {
                                                       @RequestParam("count") int count,
                                                       @RequestParam(value = "q", required = false) String name) {
         try (Connection connection = driver.getConnection()) {
-            System.out.println(startIndex);
-            System.out.println(count);
-            System.out.println(name);
             return handler.loadAdmins(connection,startIndex, count,name);
         } catch (SQLException ex) {
             Log.severe("could not get admins", ex);
