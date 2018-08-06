@@ -1,11 +1,12 @@
 package odms.commands;
 
+import odms.commons.model.dto.UserOverview;
 import odms.controller.AppController;
 import odms.view.IoHelper;
 import picocli.CommandLine;
 import picocli.CommandLine.Option;
 
-import java.io.IOException;
+import java.util.Set;
 
 @CommandLine.Command(name = "all", description = "view all currently registered users based on set parameters. " +
         "Returns an overview of each user, to view more use view <nhi>")
@@ -31,11 +32,11 @@ public class ViewAll implements Runnable {
 
     @Override
     public void run() {
-        try {
-            AppController controller = AppController.getInstance();
-            IoHelper.display(IoHelper.prettyStringUsers(controller.getUserBridge().getUsers(startIndex,count,name,region,gender,controller.getToken())));
-        } catch (IOException e) {
-            IoHelper.display("an error occurred");
+        AppController controller = AppController.getInstance();
+        controller.getUserBridge().getUsers(startIndex,count,name,region,gender,controller.getToken());
+        Set<UserOverview> overviewSet = controller.getUserOverviews();
+        for (UserOverview overview : overviewSet) {
+            IoHelper.display(overview.toString());
         }
     }
 }
