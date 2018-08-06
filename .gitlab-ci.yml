@@ -63,7 +63,7 @@ release-artifacts:
 docker-deploy:
   stage: deploy
   script:
-    - docker stop s302g1 || true && docker rm seng302g1 || true
+    - docker stop seng302g1 || true && docker rm seng302g1 || true
     - docker build -t server .
     - docker run -d -p 8080:4941 --name seng302g1 -t server
 #  only:
