@@ -8,7 +8,6 @@ import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -23,7 +22,6 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import odms.bridge.ClinicianBridge;
 import odms.commons.exception.ApiException;
-import odms.commons.model.dto.UpdateNotification;
 import odms.commons.model.event.UpdateNotificationEvent;
 import odms.controller.AppController;
 import odms.controller.gui.StatusBarController;
@@ -162,15 +160,11 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
         this.admin = fromAdmin;
 
         ServerEventStore.getInstance().addPropertyChangeListener(this);
-
+        setDefaultFilters();
         stage.setResizable(true);
         showClinician(clinician);
-        try {
-            users = appController.getUserBridge().getUsers(0, 30, "", "", "", appController.getToken());
-        } catch (IOException ex) {
-            AlertWindowFactory.generateError(ex);
-        }
-        searchCount = users.size();
+        appController.getUserBridge().getUsers(0, 30, "", "", "", appController.getToken());
+        searchCount = appController.getUserOverviews().size();
         initSearchTable();
         transplantWaitListTabPageController.init(appController, this);
         statusBarPageController.init(appController);
@@ -179,7 +173,6 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
             deleteClinician.setDisable(true);
         }
 
-        setDefaultFilters();
         openStages = new ArrayList<>();
 
         if (fromAdmin) {
@@ -254,10 +247,7 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
         TableColumn<UserOverview, HashSet<Organs>> organsColumn;
         TableColumn<UserOverview, String> regionColumn;
 
-        endIndex = Math.min(startIndex + ROWS_PER_PAGE, users.size());
-        if (users.isEmpty()) {
-            return;
-        }
+        endIndex = Math.min(startIndex + ROWS_PER_PAGE, appController.getUserOverviews().size());
 
         fNameColumn = new TableColumn<>("First name");
         fNameColumn.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getFirstName()));
@@ -285,11 +275,11 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
 
         //predicate on this list not working properly
         //should limit the number of items shown to ROWS_PER_PAGE
-        //squished = limit(fListUsers, sListUsers);
         //set table columns and contents
         searchTableView.getColumns().setAll(fNameColumn, lNameColumn, dobColumn, dodColumn, ageColumn, regionColumn, organsColumn);
-        //searchTableView.setItems(FXCollections.observableList(sListUsers.subList(startIndex, endIndex)));
-
+        if (appController.getUserOverviews().isEmpty()) {
+            return;
+        }
         displaySearchTable();
         //set on-click behaviour
     }
@@ -298,7 +288,7 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
     private void displaySearchTable() {
         //set up lists
         //table contents are SortedList of a FilteredList of an ObservableList of an ArrayList
-        ObservableList<UserOverview> oListUsers = FXCollections.observableList(new ArrayList<>(users));
+        ObservableList<UserOverview> oListUsers = FXCollections.observableList(new ArrayList<>(appController.getUserOverviews()));
 
         fListUsers = new FilteredList<>(oListUsers);
         fListUsers = filter(fListUsers);
@@ -309,35 +299,13 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
         sListUsers.comparatorProperty().bind(searchTableView.comparatorProperty());
 
         searchTableView.setItems(sListUsers);
-        //searchTableView.setRowFactory((searchTableView) -> new TooltipTableRow<>(User::getTooltip));
         searchTableView.setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
                 UserOverview user = searchTableView.getSelectionModel().getSelectedItem();
                 launchUser(user);
             }
         });
-    }
-
-
-    /**
-     * @param pageIndex the current page.
-     * @return the search table view node.
-     */
-    private Node changePage(int pageIndex) {
-        startIndex = pageIndex * ROWS_PER_PAGE;
-        endIndex = Math.min(startIndex + ROWS_PER_PAGE, users.size());
-
-        search();
-        fListUsers = new FilteredList<>(FXCollections.observableArrayList(users));
-        SortedList<UserOverview> sListUsers = new SortedList<>(fListUsers);
-        sListUsers.comparatorProperty().bind(searchTableView.comparatorProperty());
-
-        lNameColumn.setSortType(TableColumn.SortType.ASCENDING);
-        searchTableView.setItems(sListUsers);
-
-        searchCountLabel.setText("Showing results " + (searchCount == 0 ? startIndex : startIndex + 1) + " - " + (endIndex) + " of " + searchCount);
-
-        return searchTableView;
+        searchTableView.refresh();
     }
 
     /**
@@ -420,16 +388,16 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
                 });
     }
 
+    /**
+     * Sends a request to the server to obtain the user overviews for the search table
+     */
     private void search() {
-        try {
-            users = appController.getUserBridge().getUsers(startIndex, ROWS_PER_PAGE, searchTextField.getText(), regionSearchTextField.getText(), genderComboBox.getValue(), appController.getToken());
-        } catch (IOException ex) {
-            AlertWindowFactory.generateError(ex);
-        }
-        users = users.stream().filter(p -> (p.getDonating().isEmpty() != donorFilterCheckBox.isSelected() &&
-                p.getReceiving().isEmpty() != receiverFilterCheckBox.isSelected()) || allCheckBox.isSelected()).collect(Collectors.toList());
-        searchCount = users.size();
-        endIndex = Math.min(startIndex + ROWS_PER_PAGE, users.size());
+        appController.getUserOverviews().clear();
+        appController.getUserBridge().getUsers(startIndex, ROWS_PER_PAGE, searchTextField.getText(), regionSearchTextField.getText(), genderComboBox.getValue(), appController.getToken());
+        appController.setUserOverviews(appController.getUserOverviews().stream().filter(p -> (p.getDonating().isEmpty() != donorFilterCheckBox.isSelected() &&
+                p.getReceiving().isEmpty() != receiverFilterCheckBox.isSelected()) || allCheckBox.isSelected()).collect(Collectors.toSet()));
+        searchCount = appController.getUserOverviews().size();
+        endIndex = Math.min(startIndex + ROWS_PER_PAGE, appController.getUserOverviews().size());
         displaySearchTable();
         searchCountLabel.setText("Showing results " + (searchCount == 0 ? startIndex : startIndex + 1) + " - " + (endIndex) + " of " + searchCount);
     }
@@ -566,7 +534,7 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
      */
     @FXML
     public void refreshTables() {
-        transplantWaitListTabPageController.populateWaitListTable();
+        transplantWaitListTabPageController.displayWaitListTable();
         displaySearchTable();
     }
 
@@ -646,7 +614,7 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
 
     @FXML
     private void clinicianSearchNextPage() {
-        if (users.size() < ROWS_PER_PAGE) {
+        if (appController.getUserOverviews().size() < ROWS_PER_PAGE) {
             return;
         }
 
