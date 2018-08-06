@@ -1110,9 +1110,9 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
 
         if (result.get() == ButtonType.OK) {
             administrator.setDeleted(true);
+            appController.deleteAdmin(administrator);
             Log.info(messageAdmin + administrator.getUserName() + " Successfully deleted Admin account: ");
             if (owner) {
-                appController.deleteAdmin(administrator);
                 logout();
             } else {
                 stage.close();

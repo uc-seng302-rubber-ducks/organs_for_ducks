@@ -1,73 +1,59 @@
 package odms.commands;
 
+import odms.commons.utils.Log;
 import odms.controller.AppController;
-import odms.commons.model.User;
 import odms.view.IoHelper;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
+import picocli.CommandLine.Parameters;
 
-import java.time.LocalDate;
+import java.io.IOException;
 
-@Command(name = "view", description = "view all currently registered users based on set parameters.")
+@Command(name = "view", description = "View a specific user, clinician or admin",subcommands = {ViewAll.class})
 public class View implements Runnable {
 
+    private AppController appController = AppController.getInstance();
+
     @Option(names = {"-h", "help",
-            ""}, required = false, usageHelp = true, description = "display a help message")
+            ""}, required = false, usageHelp = true, description = "Display a help message")
     private Boolean helpRequested = false;
 
-    @Option(names = {"-a", "all", "-all"})
-    private Boolean viewAll = false;
+    @Parameters(description = "ID of the user to be viewed")
+    String[] params;
 
-    @Option(names = {"-f", "-fname", "-n", "-name"})
-    private String firstName;
+    @Option(names ={"-u","-user"}, description = "Sets the user flag to specify that a user is the query target.\n" +
+            "This is the default option")
+    private boolean afterUser = true;
 
-    @Option(names = {"-l", "-lname"})
-    private String lastName;
+    @Option(names = {"-c","-clinician"}, description = "Sets the user flag to specify that a Clinician is the query target.")
+    private boolean afterClinician = false;
 
-    @Option(names = {"-dob"})
-    private String dobString;
-
-    @Option(names = {"-NHI", "-nhi", "-NHI"})
-    private String NHI = "";
+    @Option(names = {"-a","-admin"}, description = "Sets the user flag to specify that an Admin is the query target.")
+    private boolean afterAdmin = false;
 
     @Override
     public void run() {
+
         if (helpRequested) {
-            System.out.println("help goes here");
+            IoHelper.display("help goes here");
         }
-
-        AppController controller = AppController.getInstance();
-        if (viewAll) {
-            System.out.println(IoHelper.prettyStringUsers(controller.getUsers()));
-            return;
-        }
-        if (!NHI.equals("")) {
-            System.out.println(controller.findUser(NHI));
-            return;
-        }
-
-        if (firstName != null) {
-            String name;
-            if (lastName != null) {
-                name = firstName + " " + lastName;
+        try {
+            String id = params[0];
+            if (afterClinician) {
+               IoHelper.display(appController.getClinicianBridge().getClinician(id, appController.getToken()).toString());
+            } else if (afterAdmin) {
+                IoHelper.display(appController.getAdministratorBridge().getAdmin(id, appController.getToken()).toString());
             } else {
-                name = firstName;
+                IoHelper.display(appController.getUserBridge().getUser(id).toString());
             }
-            if (dobString != null) {
-                LocalDate dob = IoHelper.readDate(dobString);
-                if (dob != null) {
-                    User user = controller.findUser(name, dob);
-                    if (user == null) {
-                        System.out.println("No donors found");
-                    } else {
-                        System.out.println(user);
-                    }
-                }
-            } else {
-                System.out.println(IoHelper
-                        .prettyStringUsers(controller.findUsers(name)));
-            }
+        } catch (IOException e){
+            IoHelper.display("No User by that name was found");
+            Log.severe("Io exception somehow occurred", e);
         }
+    }
+
+    public void setAppController(AppController appController){
+        this.appController = appController;
     }
 }
 

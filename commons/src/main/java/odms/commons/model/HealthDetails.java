@@ -108,15 +108,13 @@ public class HealthDetails {
     @Override
     public String toString() {
         return "HealthDetails{" +
-                "birthGender='" + birthGender + '\'' +
-                ", genderIdentity='" + genderIdentity + '\'' +
-                ", alcoholConsumption='" + alcoholConsumption + '\'' +
-                ", smoker=" + smoker +
-                ", height=" + height +
-                ", heightText='" + heightText + '\'' +
-                ", weight=" + weight +
-                ", weightText='" + weightText + '\'' +
-                ", bloodType='" + bloodType + '\'' +
+                "\nbirthGender='" + birthGender + '\'' +
+                ",\ngenderIdentity='" + genderIdentity + '\'' +
+                ",\nalcoholConsumption='" + alcoholConsumption + '\'' +
+                ",\nsmoker=" + smoker +
+                ",\nheight=" + height +
+                ",\nweight=" + weight +
+                ",\nbloodType='" + bloodType + '\'' +
                 '}';
     }
 }
