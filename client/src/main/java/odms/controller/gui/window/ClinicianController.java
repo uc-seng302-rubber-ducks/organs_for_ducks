@@ -135,7 +135,6 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
     private int startIndex = 0;
     private int endIndex;
     private int searchCount;
-
     private Collection<PropertyChangeListener> parentListeners;
 
     private boolean admin = false;
@@ -180,13 +179,20 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
         if (fromAdmin) {
             logoutMenuClinician.setText("Go Back");
             logoutMenuClinician.setOnAction(e -> goBack());
+            try {
+                // ༼ つ ◕ ◕ ༽つ FIX APP ༼ つ ◕ ◕ ༽つ
+                clinician.setProfilePhotoFilePath(appController.getClinicianBridge().getProfilePicture(clinician.getStaffId(), appController.getToken()));
+            } catch (IOException e) {
+                ClassLoader classLoader = getClass().getClassLoader();
+                File inFile = new File(classLoader.getResource("default-profile-picture.jpg").getFile());
+                clinician.setProfilePhotoFilePath(inFile.getPath());
+            }
         } else {
             logoutMenuClinician.setText("Log Out");
             logoutMenuClinician.setOnAction(e -> logout());
         }
 
         displayImage(profileImage, clinician.getProfilePhotoFilePath());
-
     }
 
     /**
@@ -234,6 +240,7 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
             File inFile = new File(clinician.getProfilePhotoFilePath());
             Image image = new Image("file:" + inFile.getPath(), 200, 200, false, true);
             profileImage.setImage(image);
+
         }
     }
 
