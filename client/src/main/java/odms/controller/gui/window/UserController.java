@@ -16,14 +16,18 @@ import javafx.stage.Stage;
 import odms.commons.model.Change;
 import odms.commons.model.EmergencyContact;
 import odms.commons.model.User;
+import odms.commons.model._enum.EventTypes;
 import odms.commons.model._enum.OrganDeregisterReason;
 import odms.commons.model._enum.Organs;
+import odms.commons.model.event.UpdateNotificationEvent;
 import odms.commons.utils.Log;
 import odms.controller.AppController;
 import odms.controller.gui.StatusBarController;
 import odms.controller.gui.UnsavedChangesAlert;
 import odms.controller.gui.panel.*;
+import odms.socket.ServerEventStore;
 
+import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -36,7 +40,7 @@ import static odms.commons.utils.PhotoHelper.deleteTempDirectory;
 /**
  * Class for the functionality of the User view of the application
  */
-public class UserController {
+public class UserController implements PropertyChangeListener {
 
 // the contact page attributes
 
@@ -186,6 +190,8 @@ public class UserController {
                     .setItems(changelog));
 
             userProfileTabPageController.init(controller, user, this.stage, fromClinician);
+
+            ServerEventStore.getInstance().addPropertyChangeListener(this);
         }
     }
 
@@ -509,7 +515,6 @@ public class UserController {
     @FXML
     private void refreshUser() {
         currentUser = application.findUser(currentUser.getNhi());
-        refreshUser();
     }
 
     public void showDonorDiseases(User user, boolean init) {
@@ -526,5 +531,22 @@ public class UserController {
 
     public void disableLogout() {
         userProfileTabPageController.disableLogout();
+    }
+
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        UpdateNotificationEvent event;
+        try {
+            event = (UpdateNotificationEvent) evt;
+        } catch (ClassCastException ex) {
+            return;
+        }
+        if (event == null) {
+            return;
+        }
+        if (event.getType().equals(EventTypes.USER_UPDATE) && event.getOldIdentifier().equalsIgnoreCase(currentUser.getNhi())) {
+            refreshUser();
+            showUser(currentUser);
+        }
     }
 }
