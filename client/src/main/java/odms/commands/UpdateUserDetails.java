@@ -10,6 +10,7 @@ import picocli.CommandLine.Option;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalTime;
 
 @Command(name = "details", description = "The current NHI is required to identify the the user. All other tags will update values")
 public class UpdateUserDetails implements Runnable {
@@ -93,6 +94,18 @@ public class UpdateUserDetails implements Runnable {
 
     @Option(names = {"-r", "-region"}, description = "Region (Address line 2)")
     private String region;
+
+    @Option(names = {"-tod", "-timeOfDeath"}, description = "Time of death. Format 'hh:mm'")
+    private String timeOfDeath;
+
+    @Option(names = {"-dc", "-deathCity"}, description = "City of death")
+    private String cityOfDeath;
+
+    @Option(names = {"-dr", "-deathRegion"}, description = "Region of death")
+    private String regionOfDeath;
+
+    @Option(names = {"-dco", "-deathCountry"}, description = "Country of death")
+    private String countryOfDeath;
 
     private AppController controller = AppController.getInstance();
 
@@ -220,6 +233,27 @@ public class UpdateUserDetails implements Runnable {
         }
         if (email != null) {
             user.setEmail(email);
+            changed = true;
+        }
+
+        if (timeOfDeath != null) {
+            if (AttributeValidation.validateTimeString(timeOfDeath) && user.getDateOfDeath() != null) {
+                user.getDeathDetails().createMomentOfDeath(user.getDateOfDeath(), LocalTime.parse(timeOfDeath));
+            }
+        }
+
+        if (cityOfDeath != null) {
+            user.setDeathCity(cityOfDeath);
+            changed = true;
+        }
+
+        if (regionOfDeath != null) {
+            user.setDeathRegion(regionOfDeath);
+            changed = true;
+        }
+
+        if (countryOfDeath != null) {
+            user.setDeathCountry(countryOfDeath);
             changed = true;
         }
 
