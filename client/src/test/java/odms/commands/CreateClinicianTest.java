@@ -49,7 +49,7 @@ public class CreateClinicianTest {
     @Test
     public void testDuplicateID() {
         String args[] = {"0", "B", "b", "B"};
-        when(testController.getClinician("0")).thenReturn(new Clinician("0", "A", null, "A", "a"));
+        when(testController.getClinician("0")).thenReturn(new Clinician("0", "A", "Anna", "A", "a"));
         CreateClinician command = new CreateClinician();
         command.setController(testController);
         new CommandLine(command).parseWithHandler(new CommandLine.RunLast(), System.err, args);

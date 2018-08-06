@@ -137,7 +137,7 @@ public class UserOverview {
                 "nhi='" + nhi + '\'' +
                 ", dob=" + dob +
                 ", dod=" + dod +
-                ", name=" + name +
+                ", name=" + name.toString() +
                 ", region='" + region + '\'' +
                 ", donating=" + donating +
                 ", receiving=" + receiving +

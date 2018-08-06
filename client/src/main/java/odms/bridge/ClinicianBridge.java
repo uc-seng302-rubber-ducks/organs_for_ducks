@@ -92,12 +92,16 @@ public class ClinicianBridge extends RoleBridge {
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
+                System.out.println(response.code());
                 if (!response.isSuccessful()) {
+                    response.close();
                     throw new IOException("Failed to DELETE to " + url);
                 }
                 response.close();
             }
+
         });
+
     }
 
     public Clinician getClinician(String wantedClinician, String token) throws ApiException {

@@ -1,5 +1,6 @@
 package odms.commons.utils;
 
+import odms.commons.model._enum.AlcoholLevel;
 import odms.commons.model._enum.BloodTypes;
 
 import java.time.LocalDate;
@@ -131,6 +132,26 @@ public class AttributeValidation {
         if (!blood.equals("")) {
             for (BloodTypes type : BloodTypes.values()) {
                 if ((type.toString()).equals(blood)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Gets the enum value of AlcoholLevel by iterating through the string literals
+     * and matching them to the given Alcohol Level.
+     *
+     * @param alcoholLvl the alcohol level.
+     * @return True if the provided object is valid
+     */
+    public static boolean validateAlcoholLevel(String alcoholLvl) {
+        if (!alcoholLvl.equals("")) {
+            for (AlcoholLevel lvl : AlcoholLevel.values()) {
+                if ((lvl.toString()).equals(alcoholLvl)) {
                     return true;
                 }
             }
