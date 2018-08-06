@@ -1,14 +1,18 @@
 package odms.GUITest1;
 
 
+import javafx.collections.FXCollections;
+import javafx.scene.control.TableView;
 import odms.App;
+import odms.TestUtils.AppControllerMocker;
 import odms.TestUtils.CommonTestMethods;
 import odms.TestUtils.TableViewsMethod;
+import odms.bridge.*;
 import odms.commons.model.User;
 import odms.controller.AppController;
 import odms.commons.model.Clinician;
+import odms.commons.model.User;
 import odms.commons.model.dto.UserOverview;
-import odms.utils.*;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -21,11 +25,13 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.concurrent.TimeoutException;
 
 import static odms.TestUtils.FxRobotHelper.clickOnButton;
 import static odms.TestUtils.FxRobotHelper.setTextField;
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.testfx.api.FxAssert.verifyThat;
@@ -49,7 +55,7 @@ public class DeleteClinicianUserGUITest extends ApplicationTest {
 
     @Before
     public void setUpCreateScene() throws TimeoutException, IOException {
-        controller = mock(AppController.class);
+        controller = AppControllerMocker.getFullMock();
         bridge = mock(UserBridge.class);
         clinicianBridge = mock(ClinicianBridge.class);
         loginBridge = mock(LoginBridge.class);
@@ -72,17 +78,21 @@ public class DeleteClinicianUserGUITest extends ApplicationTest {
         overviews.add(UserOverview.fromUser(testUser));
         overviews.add(UserOverview.fromUser(testUser2));
         when(controller.getToken()).thenReturn("haHAA");
-        when(bridge.getUsers(anyInt(), anyInt(), anyString(), anyString(), anyString(), anyString())).thenReturn(overviews);
+        when(controller.getUserOverviews()).thenReturn(new HashSet<>(overviews));
         when(bridge.getUser(anyString())).thenReturn(testUser);
         when(loginBridge.loginToServer(anyString(), anyString(), anyString())).thenReturn("haHAA");
         when(clinicianBridge.getClinician(anyString(), anyString())).thenReturn(new Clinician("Default", "0", "admin"));
-        when(transplantBridge.getWaitingList(anyInt(), anyInt(), anyString(), anyString(), anyCollection())).thenReturn(new ArrayList<>());
+        when(controller.getTransplantList()).thenReturn(new ArrayList<>());
 
         clickOn("#clinicianTab");
         setTextField(this,"#staffIdTextField", "0");
         setTextField(this, "#staffPasswordField", "admin");
         clickOnButton(this, "#loginCButton");
         clickOn("#searchTab");
+        interact(() -> {
+            lookup("#searchTableView").queryAs(TableView.class).setItems(FXCollections.observableList(Collections.singletonList(UserOverview.fromUser(testUser))));
+            lookup("#searchTableView").queryAs(TableView.class).refresh();
+        });
         doubleClickOn(TableViewsMethod.getCell("#searchTableView", 0, 0));
     }
 

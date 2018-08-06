@@ -2,12 +2,14 @@ package odms.GUITest2;
 
 import javafx.scene.Node;
 import odms.App;
+import odms.TestUtils.AppControllerMocker;
 import odms.TestUtils.CommonTestMethods;
 import odms.commons.model.EmergencyContact;
 import odms.commons.model.User;
 import odms.commons.model.dto.UserOverview;
 import odms.controller.AppController;
-import odms.utils.UserBridge;
+import odms.controller.gui.window.UserController;
+import odms.bridge.UserBridge;
 import org.junit.*;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
@@ -20,8 +22,10 @@ import java.util.concurrent.TimeoutException;
 
 import static odms.TestUtils.FxRobotHelper.clickOnButton;
 import static odms.TestUtils.FxRobotHelper.setTextField;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.testfx.api.FxAssert.verifyThat;
@@ -35,7 +39,7 @@ public class UndoDonorGUITest extends ApplicationTest {
 
     @Before
     public void setUp() throws TimeoutException, IOException {
-        AppController application = mock(AppController.class);
+        AppController application = AppControllerMocker.getFullMock();
         UserBridge bridge = mock(UserBridge.class);
 
         AppController.setInstance(application);
@@ -44,9 +48,11 @@ public class UndoDonorGUITest extends ApplicationTest {
         user.setContact(new EmergencyContact("", "", "01556677"));
         user.getUndoStack().clear();
         when(application.getUserBridge()).thenReturn(bridge);
-        when(bridge.getUsers(anyInt(), anyInt(), anyString(), anyString(), anyString(), anyString()))
-                .thenReturn(Collections.singletonList(UserOverview.fromUser(user)));
+        when(application.getUserOverviews()).thenReturn(Collections.singleton(UserOverview.fromUser(user)));
         when(bridge.getUser("ABC1234")).thenReturn(user);
+
+        doCallRealMethod().when(application).setUserController(any(UserController.class));
+        doCallRealMethod().when(application).getUserController();
 
         AppController.getInstance().getUsers().clear();
         AppController.getInstance().getUsers().add(user);

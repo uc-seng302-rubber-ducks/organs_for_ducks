@@ -1,4 +1,4 @@
-package odms.utils;
+package odms.bridge;
 
 import com.google.gson.JsonObject;
 import odms.commons.exception.ApiException;
