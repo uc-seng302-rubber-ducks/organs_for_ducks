@@ -63,5 +63,6 @@ release-artifacts:
 docker-deploy:
   stage: deploy
   script:
+    - docker stop s302g1_server
     - docker build -t server .
-    - docker run -d -p 8080:4941 -t server
+    - docker run -d -p 8080:4941 -t server --name s302g1_server
