@@ -75,7 +75,13 @@ public class UpdateDeathDetailsController {
             updateDeathDetailsCountryComboBox.getItems().add(country);
         }
 
-        updateDeathDetailsDatePicker.setValue(currentUser.getDateOfDeath());
+        if (currentUser.getDateOfDeath() != null) {
+            updateDeathDetailsDatePicker.setValue(currentUser.getDateOfDeath());
+        } else {
+            updateDeathDetailsDatePicker.setValue(LocalDate.now());
+        }
+
+
         String timeOfDeath;
         if (currentUser.getTimeOfDeath() != null) {
             timeOfDeath = currentUser.getTimeOfDeath().toString();
@@ -154,6 +160,7 @@ public class UpdateDeathDetailsController {
             }
             currentUser.setDeathCountry(updateDeathDetailsCountryComboBox.getValue());
 
+            currentUser.getRedoStack().clear();
             userController.showUser(currentUser);
             Log.info("Update User Death Details Successful for User NHI: " + currentUser.getNhi());
 
