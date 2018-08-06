@@ -579,7 +579,7 @@ public class User extends Undoable<User> implements Listenable {
         this.saveStateForUndo();
         updateLastModified();
         if (dateOfDeath != null) {
-            this.deathDetails.setMomentOfDeath(dateOfDeath.atStartOfDay());
+            this.deathDetails.setMomentOfDeath(deathDetails.createMomentOfDeath(dateOfDeath, deathDetails.getTimeOfDeath()));
             this.isDeceased = true;
         } else {
             this.deathDetails.setMomentOfDeath(null);
