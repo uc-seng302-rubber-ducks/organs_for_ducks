@@ -33,6 +33,7 @@ import odms.commons.model._abstract.TransplantWaitListViewer;
 import odms.commons.model._enum.EventTypes;
 import odms.commons.model._enum.Organs;
 import odms.commons.model.dto.UserOverview;
+import odms.commons.model.event.UpdateNotificationEvent;
 import odms.commons.utils.CSVHandler;
 import odms.commons.utils.DataHandler;
 import odms.commons.utils.JsonHandler;
@@ -46,6 +47,7 @@ import odms.controller.gui.popup.AlertUnclosedWindowsController;
 import odms.controller.gui.popup.CountrySelectionController;
 import odms.controller.gui.popup.DeletedUserController;
 import odms.controller.gui.popup.utils.AlertWindowFactory;
+import odms.socket.ServerEventStore;
 import odms.view.CLI;
 import okhttp3.OkHttpClient;
 
@@ -170,7 +172,7 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
         transplantWaitListTabPageController.init(appController, this);
         stage.setTitle("Administrator");
 
-        appController.getSocketHandler().addPropertyChangeListener(this);
+        ServerEventStore.getInstance().addPropertyChangeListener(this);
 
         adminUndoButton.setDisable(true);
         adminRedoButton.setDisable(true);
@@ -1259,15 +1261,23 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
     public void propertyChange(PropertyChangeEvent evt) {
         //clinician controller watches user model
         //refresh view/tables etc. on change
+        UpdateNotificationEvent event;
+        try {
+            event = (UpdateNotificationEvent) evt;
+        } catch (ClassCastException ex) {
+            return;
+        }
+        if (event == null) {
+            return;
+        }
         Log.info("refresh listener fired in admin controller");
-        if (evt.getPropertyName().equals(EventTypes.USER_UPDATE.name()) || evt.getPropertyName().equals(EventTypes.CLINICIAN_UPDATE.name())) {
+        if (event.getType().equals(EventTypes.USER_UPDATE) || event.getType().equals(EventTypes.CLINICIAN_UPDATE)) {
             refreshTables();
-        } else if (evt.getPropertyName().equals(EventTypes.ADMIN_UPDATE.name()) && administrator.getUserName().equals(evt.getOldValue())){
-            String newUsername = (String) evt.getNewValue();
+        } else if (event.getType().equals(EventTypes.ADMIN_UPDATE) && administrator.getUserName().equals(event.getOldIdentifier())) {
             try {
                 //TODO should this be forced on the user? 1/8
-                this.administrator = adminBridge.getAdmin(newUsername, appController.getToken());
-
+                this.administrator = adminBridge.getAdmin(event.getNewIdentifier(), appController.getToken());
+                displayDetails();
             } catch (ApiException ex) {
                 Log.warning("failed to retrieve updated admin. response code: " + ex.getResponseCode(), ex);
                 AlertWindowFactory.generateError(("could not refresh admin from the server. Please check your connection before trying again."));
