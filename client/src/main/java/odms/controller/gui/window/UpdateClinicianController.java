@@ -171,7 +171,9 @@ public class UpdateClinicianController {
             Scene scene = ownStage.getScene();
 
             if (currentClinician.getStaffId().equals("0")) {
-                staffIDTextField.setDisable(true); // default clinician cannot change their staff ID
+                staffIDTextField.setDisable(true); // default clinician cannot change their staff ID or password
+                passwordField.setDisable(true);
+                confirmPasswordField.setDisable(true);
             }
 
             final KeyCombination shortcutZ = new KeyCodeCombination(

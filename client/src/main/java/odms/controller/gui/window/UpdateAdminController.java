@@ -94,6 +94,12 @@ public class UpdateAdminController {
             changesListener(passwordTextField);
             changesListener(cPasswordTextField);
 
+            if (admin.getUserName().equals("default")) {
+                usernameTextField.setDisable(true); // default admin cannot change their staff ID or password
+                passwordTextField.setDisable(true);
+                cPasswordTextField.setDisable(true);
+            }
+
         } else {
             adminDetailInputTitle.setText("Create Admin");
             undoAdminUpdateButton.setVisible(false);

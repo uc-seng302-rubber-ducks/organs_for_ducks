@@ -1,33 +1,59 @@
 package odms.commands;
 
-
+import odms.bridge.ClinicianBridge;
 import odms.commons.utils.Log;
 import odms.controller.AppController;
 import odms.commons.model.Clinician;
 import odms.commons.utils.AttributeValidation;
 import odms.view.IoHelper;
-import picocli.CommandLine;
+import picocli.CommandLine.Command;
+import picocli.CommandLine.Option;
+import picocli.CommandLine.Parameters;
 
 import java.io.IOException;
 
-@CommandLine.Command(name = "clinician", description = "Allows the creation of a clinician")
+@Command(name = "clinician", description = "Allows the creation of a clinician")
 public class CreateClinician implements Runnable {
 
     AppController controller = AppController.getInstance();
 
-    @CommandLine.Parameters(index = "0")
+    @Parameters(index = "0")
     private String id = "";
 
-    @CommandLine.Parameters(index = "1")
+    @Parameters(index = "1")
     private String firstName = "";
 
-    @CommandLine.Parameters(index = "2")
+    @Parameters(index = "2")
     private String password = "";
 
-    @CommandLine.Parameters(index = "3..*")
+    @Parameters(index = "3")
     private String region = "";
 
-    @CommandLine.Option(names = {"-h",
+    @Option(names = {"-m", "-mname"})
+    private String middleName;
+
+    @Option(names = {"-l", "-lname"})
+    private String lastName;
+
+    @Option(names = {"-n", "-streetNumber"})
+    private String streetNumber;
+
+    @Option(names = {"-s", "-streetName"})
+    private String streetName;
+
+    @Option(names = {"-ne", "-neighborhood"})
+    private String neighborhood;
+
+    @Option(names = {"-c", "-city"})
+    private String city;
+
+    @Option(names = {"-z", "-zipCode"})
+    private String zipCode;
+
+    @Option(names = {"-co", "-country"})
+    private String country;
+
+    @Option(names = {"-h",
             "help"}, required = false, usageHelp = true, description = "display a help message")
     boolean helpRequested;
 
@@ -43,9 +69,61 @@ public class CreateClinician implements Runnable {
         valid &= AttributeValidation.checkRequiredString(password);
         valid &= AttributeValidation.checkRequiredString(region.replaceAll("_", " "));
 
+        Clinician clinician;
         if (valid) {
-            Clinician clinician = new Clinician(id, password, firstName.replaceAll("_", " "), "", "");
+
+            clinician = new Clinician(id, password, firstName.replaceAll("_", " "), "", "");
             clinician.setRegion(region.replaceAll("_", " "));
+        } else {
+            return;
+        }
+
+        if (middleName != null) {
+            clinician.setMiddleName(middleName.replaceAll("_", " "));
+            valid = AttributeValidation.checkRequiredStringName(middleName.replaceAll("_", " "));
+        }
+
+        if (lastName != null) {
+            clinician.setLastName(lastName.replaceAll("_", " "));
+            valid &= AttributeValidation.checkRequiredStringName(lastName.replaceAll("_", " "));
+        }
+
+        if (streetNumber != null) {
+            clinician.setStreetNumber(streetNumber);
+            valid &= AttributeValidation.checkString(streetNumber);
+        }
+
+        if (streetName != null) {
+            clinician.setStreetName(streetName.replaceAll("_", " "));
+            valid &= AttributeValidation.checkString(streetName.replaceAll("_", " "));
+        }
+
+        if (neighborhood != null) {
+            clinician.setNeighborhood(neighborhood.replaceAll("_", " "));
+            valid &= AttributeValidation.checkString(neighborhood.replaceAll("_", " "));
+        }
+
+        if (city != null) {
+            clinician.setCity(city.replaceAll("_", " "));
+            valid &= AttributeValidation.checkString(city.replaceAll("_", " "));
+        }
+
+        if (region != null) {
+            clinician.setRegion(region.replaceAll("_", " "));
+            valid &= AttributeValidation.checkString(region.replaceAll("_", " "));
+        }
+
+        if (zipCode != null) {
+            clinician.setZipCode(zipCode);
+            valid &= AttributeValidation.checkString(zipCode);
+        }
+
+        if (country != null) {
+            clinician.setCountry(country.replaceAll("_", " "));
+            valid &= AttributeValidation.checkString(country.replaceAll("_", " "));
+        }
+
+        if (valid) {
             controller.updateClinicians(clinician);
             try {
                 controller.saveClinician(clinician);

@@ -383,21 +383,6 @@ public class AppController {
         admins.add(administrator);
     }
 
-    /**
-     * @return
-     */
-    public StatusBarController getStatusBarController() {
-        return statusBarController;
-    }
-
-    /**
-     * @param StatusBarController
-     */
-    public void setStatusBarController(StatusBarController StatusBarController) {
-        this.statusBarController = StatusBarController;
-    }
-
-
     public List<Clinician> getClinicians() {
         return clinicians;
     }
@@ -411,22 +396,17 @@ public class AppController {
     }
 
     /**
+     * Retrieves the specified clinician from the database
+     *
      * @param id The staff id (unique identifier) of the clinician
      * @return The clinician that matches the given staff id, or null if no clinician matches.
      */
     public Clinician getClinician(String id) {
-        for (Clinician c : clinicians) {
-            if (c.getStaffId().equals(id) && !c.isDeleted()) {
-                return c;
-            }
-        }
-
         try {
-            getClinicianBridge().getClinician(id, getToken());
+            return getClinicianBridge().getClinician(id, getToken());
         } catch (ApiException ex) {
-            Log.warning("Error while trying to retrieve clinician "+id+" status "+ex.getResponseCode(), ex);
+            Log.warning("Error while trying to retrieve clinician " + id + " status "+ex.getResponseCode(), ex);
         }
-        // Should I change this to use the ClinicianBridge???
         return null;
     }
 
