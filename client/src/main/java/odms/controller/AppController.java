@@ -351,7 +351,7 @@ public class AppController {
                 originalUser = user;
             }
 
-            if (userBridge.getUser(originalUser.getNhi()) != null) {
+            if (userBridge.getExists(originalUser.getNhi())) {
                 userBridge.putProfilePicture(originalUser.getNhi(), user.getProfilePhotoFilePath());
                 userBridge.putUser(user, originalUser.getNhi());
 

@@ -78,7 +78,8 @@ public class User extends Undoable<User> implements Listenable {
     @Expose
     private List<Disease> currentDiseases;
 
-    private String profilePhotoFilePath;
+    @Expose
+    private transient String profilePhotoFilePath;
     private transient List<Change> changes;
     private transient PropertyChangeSupport pcs;
     //</editor-fold>
