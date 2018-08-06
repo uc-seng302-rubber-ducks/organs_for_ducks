@@ -23,6 +23,7 @@ import java.sql.SQLException;
 @OdmsController
 public class PhotoController extends BaseController {
 
+    private static final int MAX_FILE_SIZE = 3000000; // this is set at 3MB on server side to eliminate errors caused by padding making files too long
     private DBHandler handler;
     private JDBCDriver driver;
     private SocketHandler socketHandler;
@@ -44,7 +45,14 @@ public class PhotoController extends BaseController {
                 socketHandler.broadcast(EventTypes.USER_UPDATE, nhi, nhi);
                 return new ResponseEntity(HttpStatus.NOT_FOUND);
             }
-            handler.updateProfilePhoto(User.class, nhi, new ByteArrayInputStream(profileImageFile), header, connection);
+            ByteArrayInputStream inputStream = new ByteArrayInputStream(profileImageFile);
+            if (inputStream.available() <= 14) {
+                return new ResponseEntity(HttpStatus.BAD_REQUEST);
+            }
+            if (inputStream.available() > MAX_FILE_SIZE) {
+                return new ResponseEntity(HttpStatus.PAYLOAD_TOO_LARGE);
+            }
+            handler.updateProfilePhoto(User.class, nhi, inputStream, header, connection);
             socketHandler.broadcast(EventTypes.USER_UPDATE, nhi, nhi);
 
         } catch (SQLException ex) {
@@ -59,7 +67,7 @@ public class PhotoController extends BaseController {
 
     @IsClinician
     @RequestMapping(method = RequestMethod.PUT, value = "/clinicians/{staffId}/photo")
-    public ResponseEntity putClinicianProfilePhoto(@PathVariable String staffId, @RequestBody byte[] profileImageFile,  @RequestHeader(value = "Content-Type") String header) {
+    public ResponseEntity putClinicianProfilePhoto(@PathVariable String staffId, @RequestBody byte[] profileImageFile, @RequestHeader(value = "Content-Type") String header) {
 
         try (Connection connection = driver.getConnection()) {
             Clinician toModify = handler.getOneClinician(connection, staffId);
@@ -67,7 +75,14 @@ public class PhotoController extends BaseController {
                 socketHandler.broadcast(EventTypes.CLINICIAN_UPDATE, staffId, staffId);
                 return new ResponseEntity(HttpStatus.NOT_FOUND);
             }
-            handler.updateProfilePhoto(Clinician.class, toModify.getStaffId(),new ByteArrayInputStream(profileImageFile),header, connection);
+            ByteArrayInputStream inputStream = new ByteArrayInputStream(profileImageFile);
+            if (inputStream.available() <= 14) {
+                return new ResponseEntity(HttpStatus.BAD_REQUEST);
+            }
+            if (inputStream.available() >= MAX_FILE_SIZE) {
+                return new ResponseEntity(HttpStatus.PAYLOAD_TOO_LARGE);
+            }
+            handler.updateProfilePhoto(Clinician.class, toModify.getStaffId(), inputStream, header, connection);
             socketHandler.broadcast(EventTypes.CLINICIAN_UPDATE, staffId, staffId);
 
         } catch (SQLException ex) {
@@ -81,7 +96,7 @@ public class PhotoController extends BaseController {
     }
 
 
-    @RequestMapping(method = RequestMethod.GET, value = "/users/{nhi}/photo", produces = "image/png")
+    @RequestMapping(method = RequestMethod.GET, value = "/users/{nhi}/photo", produces = {"image/png", "image/jpeg", "image/gif"})
     public ResponseEntity<byte[]> getUserProfilePicture(@PathVariable("nhi") String nhi) {
         byte[] image;
         String format;
@@ -100,13 +115,13 @@ public class PhotoController extends BaseController {
 
     private MediaType getMediaType(String format) {
         MediaType mediaType = MediaType.IMAGE_PNG;
-        if(format == null || format.equals("")){
+        if (format == null || format.equals("")) {
             mediaType = MediaType.IMAGE_PNG;
-        } else if(format.equals("image/png")){
+        } else if (format.equals("image/png")) {
             mediaType = MediaType.IMAGE_PNG;
-        } else if(format.equals("image/jpg")){
+        } else if (format.equals("image/jpg")) {
             mediaType = MediaType.IMAGE_JPEG;
-        } else if(format.equals("image/gif")){
+        } else if (format.equals("image/gif")) {
             mediaType = MediaType.IMAGE_GIF;
         }
         return mediaType;

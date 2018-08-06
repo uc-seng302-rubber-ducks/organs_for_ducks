@@ -29,6 +29,7 @@ import odms.socket.ServerEventStore;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -167,7 +168,14 @@ public class UserController implements PropertyChangeListener {
             if (fromClinician) {
                 logoutUser.setText("Go Back");
                 logoutUser.setOnAction(e -> closeWindow());
-
+                try {
+                    // ༼ つ ◕ ◕ ༽つ FIX APP ༼ つ ◕ ◕ ༽つ
+                    currentUser.setProfilePhotoFilePath(application.getUserBridge().getProfilePicture(user.getNhi()));
+                } catch (IOException e) {
+                    ClassLoader classLoader = getClass().getClassLoader();
+                    File inFile = new File(classLoader.getResource("default-profile-picture.jpg").getFile());
+                    user.setProfilePhotoFilePath(inFile.getPath());
+                }
             } else {
                 logoutUser.setText("Log Out");
                 logoutUser.setOnAction(e -> logout());

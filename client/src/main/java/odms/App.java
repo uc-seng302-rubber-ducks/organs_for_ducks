@@ -38,7 +38,7 @@ public class App extends Application {
 
         Properties prop = new ConfigPropertiesLoader().loadConfig("clientConfig.properties");
         //<editor-fold desc="logging setup">
-        Log.setup(Environments.CLIENT);
+        Log.setup(Environments.TEST);
         //</editor-fold>
 
 
