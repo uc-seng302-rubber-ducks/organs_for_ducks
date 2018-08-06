@@ -11,6 +11,7 @@ public class DeathDetails {
 
     private LocalDate dateOfDeath;
     private LocalTime timeOfDeath;
+    private LocalDateTime momentOfDeath;
     private Address placeOfDeath;
 
     public DeathDetails() {
@@ -41,13 +42,26 @@ public class DeathDetails {
         this.timeOfDeath = timeOfDeath;
     }
 
+    public LocalDateTime getMomentOfDeath() {
+        return momentOfDeath;
+    }
 
+    public void setMomentOfDeath(LocalDateTime momentOfDeath) {
+        this.momentOfDeath = momentOfDeath;
+        if (momentOfDeath != null) {
+            this.dateOfDeath = momentOfDeath.toLocalDate();
+            this.timeOfDeath = momentOfDeath.toLocalTime();
+        } else {
+            this.dateOfDeath = null;
+            this.timeOfDeath = null;
+        }
+    }
     /**
      * Combines the Date of Death and Time of Death into a LocalDateTime for easier use for other classes.
      * If Date of Death is null, Moment of Death is null
      * If only Time of Death is null, Moment of Death's time is set to 00:00
      */
-    public LocalDateTime getMomentOfDeath() {
+    public LocalDateTime createMomentOfDeath() {
         LocalTime timeofDeath = getTimeOfDeath();
         if (timeofDeath == null) {
             timeofDeath = LocalTime.MIDNIGHT;

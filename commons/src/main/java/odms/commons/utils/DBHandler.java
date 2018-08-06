@@ -1126,8 +1126,12 @@ public class DBHandler {
             stmt.setString(1, user.getNhi());
             try (ResultSet resultSet = stmt.executeQuery()) {
                 while (resultSet != null && resultSet.next()) {
-                    user.setDateOfDeath(resultSet.getDate("dateOfDeath").toLocalDate());
-                    user.setTimeOfDeath(resultSet.getTime("timeOfDeath").toLocalTime());
+                    Timestamp momentOfDeath = resultSet.getTimestamp("momentOfDeath");
+                    if (momentOfDeath != null) {
+                        user.getDeathDetails().setMomentOfDeath(momentOfDeath.toLocalDateTime()); //FIX
+                    } else {
+                        user.getDeathDetails().setMomentOfDeath(null);
+                    }
                     user.setDeathCity(resultSet.getString("city"));
                     user.setDeathRegion(resultSet.getString("region"));
                     user.setDeathCountry(resultSet.getString("country"));

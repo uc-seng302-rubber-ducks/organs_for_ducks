@@ -49,8 +49,8 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
     private static final String DELETE_USER_STMT = "DELETE FROM User WHERE nhi = ?";
     private static final String CREATE_RECEIVING_ORGAN_DATE = "INSERT INTO OrganAwaitingDates (fkAwaitingId, dateRegistered, dateDeregistered) VALUES (?, ?, ?)";
     private static final String GET_RECEIVER_ID = "SELECT awaitingId FROM OrganAwaiting WHERE fkUserNhi = ? AND fkOrgansId = ?";
-    private static final String CREATE_DEATH_DETAILS = "INSERT INTO DeathDetails (fkUserNhi, dateOfDeath, timeOfDeath, city, region, country) VALUES (?, ?, ?, ?, ?, ?)";
-    private static final String UPDATE_DEATH_DETAILS = "UPDATE DeathDetails SET dateOfDeath = ?, timeOfDeath = ?, city = ?, region = ?, country = ? WHERE fkUserNhi = ?";
+    private static final String CREATE_DEATH_DETAILS = "INSERT INTO DeathDetails (fkUserNhi, momentOfDeath, city, region, country) VALUES (?, ?, ?, ?, ?)";
+    private static final String UPDATE_DEATH_DETAILS = "UPDATE DeathDetails SET momentOfDeath = ?, city = ?, region = ?, country = ? WHERE fkUserNhi = ?";
     //</editor-fold>
 
     @Override
@@ -600,29 +600,20 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
      * @throws SQLException if there is an error with the database
      */
     private void updateDeathDetails(User user, Connection connection) throws SQLException {
-        LocalDate localDateOfDeath = user.getDateOfDeath();
-        LocalTime localTimeOfDeath = user.getTimeOfDeath();
-        Date deathDate;
-        Time deathTime;
-        if (localDateOfDeath != null) {
-            deathDate = java.sql.Date.valueOf(localDateOfDeath);
-        } else {
-            deathDate = null;
-        }
-        if (localTimeOfDeath != null) {
 
-            deathTime = java.sql.Time.valueOf(localTimeOfDeath);
-        } else {
-            deathTime = null;
+        Timestamp sqlDeathMoment = null;
+        LocalDateTime deathMoment = user.getDeathDetails().createMomentOfDeath();
+        if (deathMoment != null) {
+            sqlDeathMoment = java.sql.Timestamp.valueOf(deathMoment);
         }
+
 
         try (PreparedStatement createDeathDetails  = connection.prepareStatement(UPDATE_DEATH_DETAILS)) {
-            createDeathDetails.setDate(1, deathDate);
-            createDeathDetails.setTime(2, deathTime);
-            createDeathDetails.setString(3, user.getDeathCity());
-            createDeathDetails.setString(4, user.getDeathRegion());
-            createDeathDetails.setString(5, user.getDeathCountry());
-            createDeathDetails.setString(6, user.getNhi());
+            createDeathDetails.setTimestamp(1, sqlDeathMoment);
+            createDeathDetails.setString(2, user.getDeathCity());
+            createDeathDetails.setString(3, user.getDeathRegion());
+            createDeathDetails.setString(4, user.getDeathCountry());
+            createDeathDetails.setString(5, user.getNhi());
 
             createDeathDetails.executeUpdate();
         }
@@ -770,29 +761,16 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
      * @throws SQLException If there is an error in the database
      */
     private void createDeathDetails(User user, Connection connection) throws SQLException {
-        LocalDate localDateOfDeath = user.getDateOfDeath();
-        LocalTime localTimeOfDeath = user.getTimeOfDeath();
-//        Date deathDate;
-//        Date deathTime;
-//        if (localDateOfDeath != null) {
-//            deathDate = Date.valueOf(user.getDateOfDeath().toString());
-//        } else {
-//            deathDate = null;
-//        }
-//        if (localTimeOfDeath != null) {
-//            deathTime = Date.valueOf(user.getTimeOfDeath().toString());
-//        } else {
-//            deathTime = null;
-//        }
 
-        LocalDateTime deathMoment = user.getDeathDetails().getMomentOfDeath();
-        java.sql.Timestamp sqlDeathMoment = java.sql.Timestamp.valueOf(deathMoment);
+        Timestamp sqlDeathMoment = null;
+        LocalDateTime deathMoment = user.getDeathDetails().createMomentOfDeath();
+        if (deathMoment != null) {
+            sqlDeathMoment = java.sql.Timestamp.valueOf(deathMoment);
+        }
 
         try (PreparedStatement createDeathDetails  = connection.prepareStatement(CREATE_DEATH_DETAILS)) {
 
             createDeathDetails.setString(1, user.getNhi());
-//            createDeathDetails.setDate(2, deathDate);
-//            createDeathDetails.setTime(3, deathTime);
             createDeathDetails.setTimestamp(2, sqlDeathMoment);
             createDeathDetails.setString(3, user.getDeathCity());
             createDeathDetails.setString(4, user.getDeathRegion());

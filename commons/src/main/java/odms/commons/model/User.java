@@ -843,17 +843,17 @@ public class User extends Undoable<User> implements Listenable {
     }
 
     public String getStringAge() {
-        if (deathDetails.getMomentOfDeath() != null) {
+        if (deathDetails.createMomentOfDeath() != null) {
 
-            return Long.toString(ChronoUnit.YEARS.between(dateOfBirth, deathDetails.getMomentOfDeath()));
+            return Long.toString(ChronoUnit.YEARS.between(dateOfBirth, deathDetails.createMomentOfDeath()));
         }
         return Long.toString(ChronoUnit.YEARS.between(dateOfBirth, LocalDate.now()));
     }
 
     public int getAge() {
-        if (deathDetails.getMomentOfDeath() != null) {
+        if (deathDetails.createMomentOfDeath() != null) {
 
-            return Math.toIntExact(ChronoUnit.YEARS.between(dateOfBirth, deathDetails.getMomentOfDeath()));
+            return Math.toIntExact(ChronoUnit.YEARS.between(dateOfBirth, deathDetails.createMomentOfDeath()));
         }
         return Math.toIntExact(ChronoUnit.YEARS.between(dateOfBirth, java.time.LocalDate.now()));
     }

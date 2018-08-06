@@ -348,6 +348,9 @@ public class UserBridge extends RoleBridge {
         String[] bits = profilePicturePath.split("\\.");
         String format = bits[bits.length-1];
         byte[] bytesFromImage = PhotoHelper.getBytesFromImage(profilePicturePath);
+        if(bytesFromImage.length == 0){
+            return;
+        }
         RequestBody body = RequestBody.create(MediaType.parse("image/"+format), bytesFromImage);
         Request request = new Request.Builder().url(url).put(body).build();
         client.newCall(request).enqueue(new Callback() {
