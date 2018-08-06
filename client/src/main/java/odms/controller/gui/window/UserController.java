@@ -553,8 +553,14 @@ public class UserController implements PropertyChangeListener {
             return;
         }
         if (event.getType().equals(EventTypes.USER_UPDATE) && event.getOldIdentifier().equalsIgnoreCase(currentUser.getNhi())) {
-            refreshUser();
-            showUser(currentUser);
+            try {
+                System.out.println(currentUser.getNhi());
+                currentUser = application.getUserBridge().getUser(event.getNewIdentifier());
+                showUser(currentUser);
+            } catch (IOException ex) {
+                Log.warning("failed to get updated user", ex);
+            }
+
         }
     }
 }
