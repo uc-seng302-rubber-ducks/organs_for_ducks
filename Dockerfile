@@ -11,6 +11,6 @@ COPY . /server
 RUN ["mvn", "install", "-DskipTests"]
 RUN ["mvn", "package", "-DskipTests"]
 
-EXPOSE 8080
+EXPOSE 4941
 RUN rename -v 's/-\d.\d//' server/target/server-*.jar
 ENTRYPOINT ["java", "-jar","server/target/server.jar"]

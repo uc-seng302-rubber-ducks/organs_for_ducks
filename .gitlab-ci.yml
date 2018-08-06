@@ -64,4 +64,4 @@ docker-deploy:
   stage: deploy
   script:
     - docker build -t server .
-    - docker run -p 8080:8080 -t server
+    - docker run -d -p 8080:8080 -t server
