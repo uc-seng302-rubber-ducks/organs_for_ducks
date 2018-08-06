@@ -127,6 +127,8 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
     private Label regionLabel;
     @FXML
     private MenuItem deleteAdmin;
+    @FXML
+    private ProgressIndicator progressIndicator;
 
     //</editor-fold>
     @FXML
@@ -206,7 +208,7 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
                 }
             }
         });
-
+        progressIndicator.setVisible(false);
         addListeners();
         initClinicianSearchTable();
         initAdminSearchTable();
@@ -666,7 +668,9 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
             return;
         }
         if (role.equals(User.class)) {
-            Thread thread = new Thread(() -> {
+            progressIndicator.setVisible(true);
+            progressIndicator.setProgress(ProgressIndicator.INDETERMINATE_PROGRESS);
+            new Thread(() -> {
                 Platform.setImplicitExit(false);
                 Collection<User> newUsers = new ArrayList<>();
                 CSVHandler csvHandler = new CSVHandler();
@@ -697,8 +701,8 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
                 final int malformed =  csvHandler.getMalformed();
                 Platform.runLater(() -> AlertWindowFactory.generateInfoWindow(numberImported +" Users Successfully imported. " +
                         + malformed + " malformed users discarded"));
-            });
-            thread.start();
+                Platform.runLater(() -> progressIndicator.setVisible(false));
+            }).start();
         }
     }
 
