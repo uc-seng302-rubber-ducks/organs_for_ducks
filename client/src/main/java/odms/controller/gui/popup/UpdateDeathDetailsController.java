@@ -56,6 +56,7 @@ public class UpdateDeathDetailsController {
         this.stage = stage;
         this.currentUser = currentUser;
 
+        stage.setTitle(currentUser.getNhi());
         updateDeathDetailsErrorLabel.setVisible(false);
         prefillFields();
     }
