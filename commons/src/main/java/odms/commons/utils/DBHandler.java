@@ -91,6 +91,16 @@ public class DBHandler {
     private static final String SELECT_IF_USER_EXISTS_BOOL = "SELECT EXISTS(SELECT 1 FROM User WHERE nhi = ?)";
     private static final String SELECT_IF_CLINICIAN_EXISTS_BOOL = "SELECT EXISTS(SELECT 1 FROM Clinician WHERE staffId = ?)";
     private static final String SELECT_IF_ADMIN_EXISTS_BOOL = "SELECT EXISTS(SELECT 1 FROM Administrator WHERE userName = ?)";
+    private static final String SELECT_AVAILABLE_ORGANS = "select * from OrganDonating " +
+            "JOIN DeathDetails ON OrganDonating.fkUserNhi = DeathDetails.fkUserNhi" +
+            "JOIN Organ O ON OrganDonating.fkOrgansId = O.organId" +
+            "JOIN HealthDetails ON OrganDonating.fkUserNhi = HealthDetails.fkUserNhi" +
+            "WHERE (bloodType LIKE ? OR bloodType IS NULL)" +
+            "AND (organName LIKE ? OR organName IS NULL )" +
+            "AND (DeathDetails.region LIKE ? or DeathDetails.region IS NULL)" +
+            "AND (DeathDetails.city LIKE ? or DeathDetails.city IS NULL)" +
+            "AND (DeathDetails.country LIKE ? or DeathDetails.country IS NULL)" +
+            "LIMIT ? OFFSET ?";
     private AbstractUpdateStrategy updateStrategy;
 
 
@@ -1117,8 +1127,28 @@ public class DBHandler {
         return results;
     }
 
-    public List<> getAvailableOrgans(int startIndex, int count, String organ, String region) {
-
+   public List<?> getAvailableOrgans(int startIndex,
+                                    int count,
+                                    String organ,
+                                    String region,
+                                    String bloodType,
+                                    String city,
+                                    String country,
+                                    Connection connection) throws SQLException {
+        List<?> results = new ArrayList<>();
+        try(PreparedStatement preparedStatement = connection.prepareStatement(SELECT_AVAILABLE_ORGANS)){
+            preparedStatement.setString(1,bloodType + "%");
+            preparedStatement.setString(2,organ + "%");
+            preparedStatement.setString(3,region + "%");
+            preparedStatement.setString(4,city + "%");
+            preparedStatement.setString(5,country + "%");
+            preparedStatement.setInt(6, count);
+            preparedStatement.setInt(7,startIndex);
+            try(ResultSet resultSet = preparedStatement.executeQuery()){
+                //TODO: actually create the objects from here and check them for expiry. May need to wait on how Eiran is going to put them into the table 7/8 JB
+            }
+        }
+        return results;
 
     }
 }
