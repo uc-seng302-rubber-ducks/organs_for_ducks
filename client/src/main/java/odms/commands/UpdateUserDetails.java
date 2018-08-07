@@ -256,17 +256,17 @@ public class UpdateUserDetails implements Runnable {
         }
 
         if (cityOfDeath != null) {
-            user.setDeathCity(cityOfDeath);
+            user.setDeathCity(cityOfDeath.replaceAll("_", " "));
             changed = true;
         }
 
         if (regionOfDeath != null) {
-            user.setDeathRegion(regionOfDeath);
+            user.setDeathRegion(regionOfDeath.replaceAll("_", " "));
             changed = true;
         }
 
         if (countryOfDeath != null) {
-            user.setDeathCountry(countryOfDeath);
+            user.setDeathCountry(countryOfDeath.replaceAll("_", " "));
             changed = true;
         }
 

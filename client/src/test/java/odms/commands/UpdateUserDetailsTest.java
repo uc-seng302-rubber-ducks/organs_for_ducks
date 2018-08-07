@@ -12,6 +12,7 @@ import picocli.CommandLine;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
@@ -24,13 +25,13 @@ import static org.mockito.Mockito.when;
 public class UpdateUserDetailsTest {
 
     AppController controller;
-    UserBridge bridge;
-    DateTimeFormatter sdf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-    String NHI = "";
+    //private UserBridge bridge;
+    private DateTimeFormatter sdf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    private String NHI = "";
 
     @Before
     public void resetDonor() throws IOException {
-        bridge = mock(UserBridge.class);
+        UserBridge bridge = mock(UserBridge.class);
         controller = mock(AppController.class);
         AppController.setInstance(controller);
         when(controller.getUserBridge()).thenReturn(bridge);
@@ -63,7 +64,6 @@ public class UpdateUserDetailsTest {
 
         User mal = controller.getUserBridge().getUser(NHI);
         Assert.assertNotNull(mal);
-
         assertEquals("Mal", mal.getFirstName());
     }
 
@@ -181,5 +181,89 @@ public class UpdateUserDetailsTest {
                 .parseWithHandler(new CommandLine.RunLast(), System.err, args);
 
         Assert.assertEquals(controller.getUserBridge().getUser("ABC1234"), user);
+    }
+
+    @Test
+    public void ShouldSetDateOfDeathToNullWhenPassedNull() throws IOException {
+        String[] args = {NHI, "-dod=null"};
+
+        new CommandLine(new UpdateUserDetails())
+                .parseWithHandler(new CommandLine.RunLast(), System.err, args);
+
+        User test = controller.getUserBridge().getUser(NHI);
+        try {
+            assert (test.getDateOfDeath() == null);
+        } catch (DateTimeParseException ex) {
+            fail("Could not parse date (error in tester)");
+        }
+    }
+
+    @Test
+    public void ShouldCorrectlyUpdateTimeOfDeathWithNoPreviousDeath() throws IOException {
+        String[] args = {NHI, "-tod=02:45"};
+
+        new CommandLine(new UpdateUserDetails())
+                .parseWithHandler(new CommandLine.RunLast(), System.err, args);
+
+        User test = controller.getUserBridge().getUser(NHI);
+        try {
+            assert (test.getMomentDeath().toLocalTime().equals(LocalTime.parse("02:45")));
+        } catch (DateTimeParseException ex) {
+            fail("Could not parse date (error in tester)");
+        }
+    }
+
+    @Test
+    public void ShouldCorrectlyUpdateTimeOfDeathWithPreviousDeath() throws IOException {
+        String[] args = {NHI, "-tod=02:45"};
+
+        User test = controller.getUserBridge().getUser(NHI);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        test.setDateOfDeath(LocalDate.parse("2010-01-01"));
+
+        new CommandLine(new UpdateUserDetails())
+                .parseWithHandler(new CommandLine.RunLast(), System.err, args);
+
+        try {
+            assert (test.getMomentDeath().equals(LocalDateTime.parse("2010-01-01 02:45", formatter)));
+        } catch (DateTimeParseException ex) {
+            fail("Could not parse date (error in tester)");
+        }
+    }
+
+    @Test
+    public void ShouldUpdateCityOfDeath() throws IOException {
+        String[] args = {NHI, "-dc=Christchurch"};
+
+        new CommandLine(new UpdateUserDetails())
+                .parseWithHandler(new CommandLine.RunLast(), System.err, args);
+
+        User test = controller.getUserBridge().getUser(NHI);
+
+        Assert.assertEquals("Christchurch", test.getDeathCity());
+    }
+
+    @Test
+    public void ShouldUpdateRegionOfDeath() throws IOException {
+        String[] args = {NHI, "-dr=Canterbury"};
+
+        new CommandLine(new UpdateUserDetails())
+                .parseWithHandler(new CommandLine.RunLast(), System.err, args);
+
+        User test = controller.getUserBridge().getUser(NHI);
+
+        Assert.assertEquals("Canterbury", test.getDeathRegion());
+    }
+
+    @Test
+    public void ShouldUpdateCountryOfDeath() throws IOException {
+        String[] args = {NHI, "-dco=New_Zealand"};
+
+        new CommandLine(new UpdateUserDetails())
+                .parseWithHandler(new CommandLine.RunLast(), System.err, args);
+
+        User test = controller.getUserBridge().getUser(NHI);
+
+        Assert.assertEquals("New Zealand", test.getDeathCountry());
     }
 }
