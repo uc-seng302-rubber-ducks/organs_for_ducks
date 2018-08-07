@@ -75,7 +75,8 @@ public class User extends Undoable<User> implements Listenable {
     @Expose
     private List<Disease> currentDiseases;
 
-    private String profilePhotoFilePath;
+    @Expose
+    private transient String profilePhotoFilePath;
     private transient List<Change> changes;
     private transient PropertyChangeSupport pcs;
     //</editor-fold>
@@ -1170,31 +1171,30 @@ public class User extends Undoable<User> implements Listenable {
     @Override
     public String toString() {
         return "User{" +
-                "nhi='" + nhi + '\'' +
-                ", name='" + name + '\'' +
-                ", dateOfBirth=" + dateOfBirth +
-                ", deathDetails=" + deathDetails +
-                ", timeCreated=" + timeCreated +
-                ", isDeceased=" + isDeceased +
-                ", firstName='" + firstName + '\'' +
-                ", preferredFirstName='" + preferredFirstName + '\'' +
-                ", middleName='" + middleName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", contact=" + contact +
-                ", healthDetails=" + healthDetails +
-                ", lastModified=" + lastModified +
-                ", miscAttributes=" + miscAttributes +
-                ", updateHistory=" + updateHistory +
-                ", previousMedication=" + previousMedication +
-                ", currentMedication=" + currentMedication +
-                ", medicalProcedures=" + medicalProcedures +
-                ", donorDetails=" + donorDetails +
-                ", receiverDetails=" + receiverDetails +
-                ", commonOrgans=" + commonOrgans +
-                ", pastDiseases=" + pastDiseases +
-                ", currentDiseases=" + currentDiseases +
-                ", changes=" + changes +
-                ", pcs=" + pcs +
+                "\nnhi='" + nhi + '\'' +
+                ",\nname='" + name + '\'' +
+                ",\ndateOfBirth=" + dateOfBirth +
+                ", \n deathDetails=" + deathDetails +
+                ",\ntimeCreated=" + timeCreated +
+                ",\nisDeceased=" + isDeceased +
+                ",\nfirstName='" + firstName + '\'' +
+                ",\npreferredFirstName='" + preferredFirstName + '\'' +
+                ",\nmiddleName='" + middleName + '\'' +
+                ",\nlastName='" + lastName + '\'' +
+                ",\ncontactDetails=" + contactDetails +
+                ",\ncontact=" + contact +
+                ",\nhealthDetails=" + healthDetails +
+                ",\nlastModified=" + lastModified +
+                ",\nupdateHistory=" + updateHistory +
+                ",\npreviousMedication=" + previousMedication +
+                ",\ncurrentMedication=" + currentMedication +
+                ",\nmedicalProcedures=" + medicalProcedures +
+                ",\n" +donorDetails.toString() +
+                ",\n" + receiverDetails.toString() +
+                ",\ncommonOrgans=" + commonOrgans +
+                ",\npastDiseases=" + pastDiseases +
+                ",\ncurrentDiseases=" + currentDiseases +
+                ",\nchanges=" + changes +
                 '}';
     }
 

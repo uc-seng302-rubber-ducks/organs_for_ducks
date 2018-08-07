@@ -24,8 +24,6 @@ public class UserOverviewController {
 
     //the Home page attributes
     //<editor-fold desc="FMXL declarations">
-    @FXML
-    private Button backButton;
 
     @FXML
     private Label ageValue;
@@ -101,6 +99,7 @@ public class UserOverviewController {
 
     @FXML
     private Button logOutButton;
+
 
     @FXML
     private ImageView profilePicture;
@@ -268,11 +267,5 @@ public class UserOverviewController {
         }
     }
 
-    /**
-     * Disables logout buttons
-     */
-    public void disableLogout() {
-        logOutButton.setVisible(false);
-        backButton.setVisible(true);
-    }
+
 }

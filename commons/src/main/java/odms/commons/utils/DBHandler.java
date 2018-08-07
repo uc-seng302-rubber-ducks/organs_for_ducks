@@ -12,7 +12,6 @@ import odms.commons.utils.db_strategies.ClinicianUpdateStrategy;
 import odms.commons.utils.db_strategies.UserUpdateStrategy;
 
 import java.io.InputStream;
-import java.sql.*;
 import java.lang.reflect.Type;
 import java.time.LocalDate;
 import java.util.*;
@@ -1099,7 +1098,7 @@ public class DBHandler {
         }
     }
 
-    public List runSqlQuery(String query, Connection connection) throws SQLException {
+    public List<String> runSqlQuery(String query, Connection connection) throws SQLException {
         List<String> results  = new ArrayList<>();
         try(PreparedStatement preparedStatement = connection.prepareStatement(query)){
             try (ResultSet rs = preparedStatement.executeQuery()) {
@@ -1108,11 +1107,13 @@ public class DBHandler {
                 }
                 do {
                     ResultSetMetaData rsmd = rs.getMetaData();
+                    StringBuilder sb = new StringBuilder();
                     int columns = rsmd.getColumnCount();
                     for(int i = 1; i <= columns; i++){
                         String columnName = rs.getString(i);
-                        results.add(rsmd.getColumnName(i)+ " " + columnName );
+                        sb.append(rsmd.getColumnName(i)).append(" ").append(columnName).append("\n");
                     }
+                    results.add(sb.toString());
                 } while (rs.next());
             }
         }

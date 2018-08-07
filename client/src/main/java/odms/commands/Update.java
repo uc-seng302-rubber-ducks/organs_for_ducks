@@ -10,7 +10,7 @@ import picocli.CommandLine.Option;
 import java.time.LocalDate;
 
 @Command(name = "update", description =
-        "Update details of a single user or clinician. Use the help flag to view subcommands"
+        "Update details of a single user or clinician. Use the help flag to view sub-commands "
                 + "to add or remove organs", subcommands = {UpdateUser.class, UpdateClinician.class})
 public class Update implements Runnable {
 
