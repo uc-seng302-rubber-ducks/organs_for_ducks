@@ -9,6 +9,7 @@ import odms.commons.utils.AttributeValidation;
 import odms.commons.utils.Log;
 import odms.controller.AppController;
 import odms.controller.gui.window.UserController;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 
@@ -86,15 +87,30 @@ public class UpdateDeathDetailsController {
         if (currentUser.getTimeOfDeath() != null) {
             timeOfDeath = currentUser.getTimeOfDeath().toString();
         } else {
-            timeOfDeath = "";
+            timeOfDeath = LocalTime.now().getHour() + ":" + LocalTime.now().getMinute();
         }
         updateDeathDetailsTimeTextField.setText(timeOfDeath);
-
-        updateDeathDetailsCityTextField.setText(currentUser.getCity());
-        updateDeathDetailsRegionChoiceBox.setValue(currentUser.getRegion());
-        updateDeathDetailsRegionTextField.setText(currentUser.getRegion());
-        updateDeathDetailsCountryComboBox.setValue(currentUser.getCountry());
         handleRegionPicker();
+
+
+        if (!currentUser.getDeathCity().isEmpty()) {
+            updateDeathDetailsCityTextField.setText(currentUser.getDeathCity());
+        } else {
+            updateDeathDetailsCityTextField.setText(currentUser.getCity());
+        }
+        if (!currentUser.getDeathRegion().isEmpty()) {
+            updateDeathDetailsRegionChoiceBox.setValue(currentUser.getDeathRegion());
+            updateDeathDetailsRegionTextField.setText(currentUser.getDeathRegion());
+        } else {
+            updateDeathDetailsRegionChoiceBox.setValue(currentUser.getRegion());
+            updateDeathDetailsRegionTextField.setText(currentUser.getRegion());
+        }
+        if (!currentUser.getDeathCountry().isEmpty()) {
+            updateDeathDetailsCountryComboBox.setValue(currentUser.getDeathCountry());
+        } else {
+            updateDeathDetailsCountryComboBox.setValue(currentUser.getCountry());
+        }
+
     }
 
     /**
