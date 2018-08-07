@@ -97,9 +97,6 @@ public class UserOverviewController {
     @FXML
     private Button deleteUser;
 
-    @FXML
-    private Button logOutButton;
-
 
     @FXML
     private ImageView profilePicture;
@@ -242,7 +239,6 @@ public class UserOverviewController {
         alcoholValue.setText(user.getAlcoholConsumption());
 
     }
-
 
     @FXML
     private void updateDeathDetails() {

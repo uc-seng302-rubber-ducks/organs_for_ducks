@@ -1174,7 +1174,7 @@ public class User extends Undoable<User> implements Listenable {
                 "\nnhi='" + nhi + '\'' +
                 ",\nname='" + name + '\'' +
                 ",\ndateOfBirth=" + dateOfBirth +
-                ", \n deathDetails=" + deathDetails +
+                ",\ndeathDetails=" + deathDetails +
                 ",\ntimeCreated=" + timeCreated +
                 ",\nisDeceased=" + isDeceased +
                 ",\nfirstName='" + firstName + '\'' +
