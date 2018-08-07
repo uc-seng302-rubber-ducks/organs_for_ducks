@@ -329,7 +329,6 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
             openStages.add(userStage);
             UserController userController = userLoader.getController();
             AppController.getInstance().setUserController(userController);
-            parentListeners.add(this);
             userController.init(AppController.getInstance(), user, userStage, true, parentListeners);
             userStage.show();
             Log.info("Clinician " + clinician.getStaffId()
