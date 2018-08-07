@@ -353,6 +353,7 @@ public class UserBridge extends RoleBridge {
         }
         RequestBody body = RequestBody.create(MediaType.parse("image/"+format), pictureData);
         Request request = new Request.Builder().url(url).put(body).build();
+        System.out.println(request.body().contentLength());
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {

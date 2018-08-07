@@ -80,6 +80,7 @@ public class GivenSteps extends ApplicationTest {
                                                                           String firstName, String lastName, String dateOfBirth) throws IOException {
         CucumberTestModel.setUserNhi(NHI);
         User user = new User(firstName, LocalDate.parse(dateOfBirth, DateTimeFormatter.ISO_LOCAL_DATE), NHI);
+        user.setLastName(lastName);
         CucumberTestModel.getController().addUser(user);
 
         if (CucumberTestModel.getController().findUser(CucumberTestModel.getUserNhi()) == null) {
