@@ -49,7 +49,6 @@ import odms.controller.gui.popup.CountrySelectionController;
 import odms.controller.gui.popup.DeletedUserController;
 import odms.controller.gui.popup.utils.AlertWindowFactory;
 import odms.socket.ServerEventStore;
-import odms.controller.gui.popup.utils.AlertWindowFactory;
 import odms.view.CLI;
 
 import java.beans.PropertyChangeEvent;
@@ -1308,9 +1307,10 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
             refreshTables();
         } else if (event.getType().equals(EventTypes.ADMIN_UPDATE) && administrator.getUserName().equals(event.getOldIdentifier())) {
             try {
-                //TODO should this be forced on the user? 1/8
                 this.administrator = adminBridge.getAdmin(event.getNewIdentifier(), appController.getToken());
-                displayDetails();
+                if(administrator != null) {
+                    displayDetails(); //TODO: fix when we solve the db race 7/8/18 jb
+                }
             } catch (ApiException ex) {
                 Log.warning("failed to retrieve updated admin. response code: " + ex.getResponseCode(), ex);
                 AlertWindowFactory.generateError(("could not refresh admin from the server. Please check your connection before trying again."));

@@ -22,19 +22,19 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import odms.bridge.ClinicianBridge;
 import odms.commons.exception.ApiException;
-import odms.commons.model.event.UpdateNotificationEvent;
-import odms.controller.AppController;
-import odms.controller.gui.StatusBarController;
-import odms.controller.gui.UnsavedChangesAlert;
-import odms.controller.gui.panel.TransplantWaitListController;
-import odms.controller.gui.popup.DeletedUserController;
 import odms.commons.model.Clinician;
 import odms.commons.model.User;
 import odms.commons.model._abstract.TransplantWaitListViewer;
 import odms.commons.model._enum.EventTypes;
 import odms.commons.model._enum.Organs;
 import odms.commons.model.dto.UserOverview;
+import odms.commons.model.event.UpdateNotificationEvent;
 import odms.commons.utils.Log;
+import odms.controller.AppController;
+import odms.controller.gui.StatusBarController;
+import odms.controller.gui.UnsavedChangesAlert;
+import odms.controller.gui.panel.TransplantWaitListController;
+import odms.controller.gui.popup.DeletedUserController;
 import odms.controller.gui.popup.utils.AlertWindowFactory;
 import odms.socket.ServerEventStore;
 
@@ -609,9 +609,10 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
         } else if (event.getType().equals(EventTypes.CLINICIAN_UPDATE) && clinician.getStaffId().equals(event.getOldIdentifier())){
             String newStaffId = event.getNewIdentifier();
             try {
-                //TODO should this be forced on the user? 1/8
                 this.clinician = clinicianBridge.getClinician(newStaffId, appController.getToken());
-                showClinician(clinician);
+                if (clinician != null) {
+                    showClinician(clinician); //TODO: fix when we solve the db race 7/8/18 jb
+                }
             } catch (ApiException ex) {
                 Log.warning("failed to retrieve updated clinician. response code: " + ex.getResponseCode(), ex);
                 AlertWindowFactory.generateError(("could not refresh clinician from the server. Please check your connection before trying again."));
