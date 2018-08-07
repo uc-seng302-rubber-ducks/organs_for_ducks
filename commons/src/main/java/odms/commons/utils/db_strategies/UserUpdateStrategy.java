@@ -271,6 +271,7 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
             throw sqlEx;
         }
         connection.prepareStatement("COMMIT").execute();
+
     }
 
     /**
