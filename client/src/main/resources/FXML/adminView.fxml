@@ -58,6 +58,7 @@
                                                     </font>
                                                 </Label>
                                                 <Button fx:id="addUserButton" layoutX="50.0" layoutY="149.0" mnemonicParsing="false" onAction="#addUser" prefHeight="25.0" prefWidth="197.0" text="Add Public User" AnchorPane.bottomAnchor="148.0" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="51.0" />
+                                    <ProgressIndicator fx:id="progressIndicator" layoutX="255.0" layoutY="228.0" progress="0.0" />
                                             </children>
                                         </AnchorPane>
                                         <AnchorPane prefHeight="320.0" prefWidth="298.0">
