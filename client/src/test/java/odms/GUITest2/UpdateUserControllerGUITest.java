@@ -4,12 +4,12 @@ import javafx.geometry.VerticalDirection;
 import odms.App;
 import odms.TestUtils.AppControllerMocker;
 import odms.TestUtils.CommonTestMethods;
+import odms.bridge.UserBridge;
 import odms.commons.model.EmergencyContact;
 import odms.commons.model.User;
 import odms.commons.model.dto.UserOverview;
 import odms.controller.AppController;
 import odms.controller.gui.window.UserController;
-import odms.bridge.UserBridge;
 import org.junit.*;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
@@ -98,13 +98,6 @@ public class UpdateUserControllerGUITest extends ApplicationTest {
         setDateValue(this, "#dobInput", LocalDate.of(2018, 5, 3));
         clickOnButton(this,"#confirmButton");
         verifyThat("#DOBValue", LabeledMatchers.hasText(LocalDate.of(2018, 5, 3).toString()));
-    }
-
-    @Test
-    public void testUpdateDoD() {
-        setDateValue(this, "#dodInput", LocalDate.of(2018, 5, 3));
-        clickOnButton(this,"#confirmButton");
-        verifyThat("#DODValue", LabeledMatchers.hasText(LocalDate.of(2018, 5, 3).toString()));
     }
 
     @Test

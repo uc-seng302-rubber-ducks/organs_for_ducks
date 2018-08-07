@@ -14,10 +14,13 @@ import odms.commons.model.Clinician;
 import odms.commons.model.User;
 import odms.commons.model.dto.UserOverview;
 import odms.controller.AppController;
-import org.junit.*;
+import odms.controller.gui.window.UserController;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
-import org.testfx.matcher.control.ButtonMatchers;
 import org.testfx.matcher.control.LabeledMatchers;
 
 import java.io.IOException;
@@ -29,9 +32,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.concurrent.TimeoutException;
 
-import static odms.TestUtils.FxRobotHelper.clickOnButton;
-import static odms.TestUtils.FxRobotHelper.setDateValue;
-import static odms.TestUtils.FxRobotHelper.setTextField;
+import static odms.TestUtils.FxRobotHelper.*;
 import static odms.TestUtils.TableViewsMethod.getCell;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -57,16 +58,20 @@ public class UpdateDeathDetailsControllerGUITest extends ApplicationTest{
         LoginBridge loginBridge = mock(LoginBridge.class);
         AppController application = AppControllerMocker.getFullMock();
         TransplantBridge transplantBridge = mock(TransplantBridge.class);
+        UserController userController = mock(UserController.class);
 
         Clinician clinician = new Clinician();
         clinician.setStaffId("0");
 
         AppController.setInstance(application);
+        doCallRealMethod().when(application).setUserController(any(UserController.class));
+        doCallRealMethod().when(application).getUserController();
         when(application.getUserBridge()).thenReturn(bridge);
         when(application.getClinicianBridge()).thenReturn(clinicianBridge);
         when(application.getLoginBridge()).thenReturn(loginBridge);
         when(application.getTransplantBridge()).thenReturn(transplantBridge);
         when(application.getToken()).thenReturn("ahaahahahahhaha");
+        doNothing().when(userController).showUser(any(User.class));
 
         when(application.getTransplantList()).thenReturn(new ArrayList<>());
         when(loginBridge.loginToServer(anyString(),anyString(), anyString())).thenReturn("lsdjfksd");
@@ -96,9 +101,7 @@ public class UpdateDeathDetailsControllerGUITest extends ApplicationTest{
         clickOn("#clinicianTab");
         setTextField(this,"#staffIdTextField" ,"0");
         setTextField(this, "#staffPasswordField","admin");
-
         clickOnButton(this,"#loginCButton");
-        //verifyThat("#staffIdLabel", LabeledMatchers.hasText("0"));
         clickOn("#searchTab");
         interact(() -> {
             lookup("#searchTableView").queryAs(TableView.class).setItems(FXCollections.observableList(Collections.singletonList(UserOverview.fromUser(testUser))));
@@ -153,8 +156,6 @@ public class UpdateDeathDetailsControllerGUITest extends ApplicationTest{
         verifyThat("#updateDeathDetailsErrorLabel", LabeledMatchers.hasText("The format of the Time of Death is incorrect"));
     }
 
-    //TODO Clicking confirm throws an error when showUser(currentUser) is called. Fix to use test. James 6/8/18 22:29
-    @Ignore
     @Test
     public void testOverviewUpdatesWhenConfirmClicked() {
         loginAsClinician();
@@ -162,17 +163,30 @@ public class UpdateDeathDetailsControllerGUITest extends ApplicationTest{
         setDateValue(this, "#updateDeathDetailsDatePicker", LocalDate.now());
         setTextField(this, "#updateDeathDetailsTimeTextField", "02:45");
         setTextField(this, "#updateDeathDetailsCityTextField", "Atlantis");
-        //TODO Mock the allowed countries to contain something clickable. James 6/8/18 22:26
-        //clickOn("#updateDeathDetailsCountryComboBox");
-        //clickOn("Afghanistan");
         setTextField(this, "#updateDeathDetailsRegionTextField", "Atlantic");
-        //clickOnButton(this, "#confirmUpdateDeathDetailsButton");
-        clickOn("#confirmUpdateDeathDetailsButton");
+        clickOnButton(this, "#confirmUpdateDeathDetailsButton");
 
         verifyThat("#DODValue", LabeledMatchers.hasText(LocalDate.now().toString()));
-        verifyThat("cityOfDeathValue", LabeledMatchers.hasText("Atlantis"));
-        verifyThat("regionOfDeathValue", LabeledMatchers.hasText("Atlantic"));
+        verifyThat("#cityOfDeathValue", LabeledMatchers.hasText("Atlantis"));
+        verifyThat("#regionOfDeathValue", LabeledMatchers.hasText("Atlantic"));
         //verifyThat("countryOfDeathValue", LabeledMatchers.hasText("Afghanistan"));
+    }
+
+    @Test
+    public void testOverviewUpdatesWhenCancelClicked() {
+        loginAsClinician();
+        clickOnButton(this, "#updateDeathDetailsButton");
+        setDateValue(this, "#updateDeathDetailsDatePicker", LocalDate.now());
+        setTextField(this, "#updateDeathDetailsTimeTextField", "02:45");
+        setTextField(this, "#updateDeathDetailsCityTextField", "Atlantis");
+        setTextField(this, "#updateDeathDetailsRegionTextField", "Atlantic");
+        clickOnButton(this, "#cancelUpdateDeathDetailsButton");
+
+        verifyThat("#DODValue", LabeledMatchers.hasText(""));
+        verifyThat("#cityOfDeathValue", LabeledMatchers.hasText(""));
+        verifyThat("#regionOfDeathValue", LabeledMatchers.hasText(""));
+
+
     }
 
 }

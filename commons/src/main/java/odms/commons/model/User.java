@@ -128,23 +128,36 @@ public class User extends Undoable<User> implements Listenable {
      * empty constructor to allow an empty user to be created for the gui
      */
     public User() {
-        timeCreated = LocalDateTime.now();
+        this.dateOfBirth = null;
+        this.name = firstName;
+        this.donorDetails = new DonorDetails(this);
+        this.firstName = "";
+        this.receiverDetails = new ReceiverDetails(this);
+        this.nhi = nhi;
+        this.middleName = "";
+        this.lastName = "";
         this.deathDetails = new DeathDetails();
-        miscAttributes = new ArrayList<>();
+        this.preferredFirstName = firstName;
+        timeCreated = LocalDateTime.now();
+        lastModified = LocalDateTime.now();
+        updateHistory = new HashMap<>();
+        this.contact = new EmergencyContact("", "", "");
+        updateHistory.put(dateToString(getTimeCreated()), "Profile created.");
+        this.miscAttributes = new ArrayList<>();
         this.currentMedication = new ArrayList<>();
         this.previousMedication = new ArrayList<>();
-
         this.currentDiseases = new ArrayList<>();
         this.pastDiseases = new ArrayList<>();
+        this.commonOrgans = new HashSet<>();
         this.contactDetails = new ContactDetails();
-        this.updateHistory = new HashMap<>();
-        this.medicalProcedures = new ArrayList<>();
         this.donorDetails = new DonorDetails(this);
         this.receiverDetails = new ReceiverDetails(this);
         this.commonOrgans = new HashSet<>();
-        changes = FXCollections.observableArrayList();
+        this.medicalProcedures = new ArrayList<>();
+        this.changes = FXCollections.observableArrayList();
         this.pcs = new PropertyChangeSupport(this);
         this.healthDetails = new HealthDetails();
+        contact.setAttachedUser(this);
         this.profilePhotoFilePath = "";
     }
 
