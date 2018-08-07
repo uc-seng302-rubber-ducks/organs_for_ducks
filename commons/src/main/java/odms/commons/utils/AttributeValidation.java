@@ -13,6 +13,8 @@ import java.time.LocalDate;
  */
 public class AttributeValidation {
 
+    private AttributeValidation() {
+    }
 
     /**
      * Checks that the NHI matches the correct format.

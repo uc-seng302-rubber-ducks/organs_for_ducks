@@ -11,9 +11,9 @@ public class HealthDetails {
     private String alcoholConsumption;
     private boolean smoker;
     private double height;
-    private transient String heightText;
+    private transient String heightText; //NOSONAR
     private double weight;
-    private transient String weightText;
+    private transient String weightText; //NOSONAR
     private String bloodType;
 
     public HealthDetails() {

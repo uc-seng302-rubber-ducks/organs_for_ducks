@@ -1,5 +1,6 @@
 package odms.commands;
 
+import odms.bridge.ClinicianBridge;
 import odms.commons.model.Clinician;
 import odms.controller.AppController;
 import org.junit.Before;
@@ -16,6 +17,8 @@ public class CreateClinicianTest {
     @Before
     public void setUp() {
         testController = mock(AppController.class);
+        when(testController.getClinicianBridge()).thenReturn(mock(ClinicianBridge.class));
+        when(testController.getClinicianBridge().getExists(anyString())).thenReturn(false);
     }
 
     @Test
@@ -48,6 +51,7 @@ public class CreateClinicianTest {
 
     @Test
     public void testDuplicateID() {
+        when(testController.getClinicianBridge().getExists(anyString())).thenReturn(true);
         String args[] = {"0", "B", "b", "B"};
         when(testController.getClinician("0")).thenReturn(new Clinician("0", "A", "Anna", "A", "a"));
         CreateClinician command = new CreateClinician();

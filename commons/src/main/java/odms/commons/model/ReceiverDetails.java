@@ -16,7 +16,7 @@ import java.util.Map;
  */
 public class ReceiverDetails {
 
-    private transient User attachedUser;
+    private transient User attachedUser; //NOSONAR
 
     @Expose
     private Map<Organs, ArrayList<ReceiverOrganDetailsHolder>> organs; // contains the organ start and stop dates

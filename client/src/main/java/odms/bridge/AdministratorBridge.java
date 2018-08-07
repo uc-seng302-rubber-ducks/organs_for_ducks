@@ -14,6 +14,8 @@ import java.util.Collection;
 
 public class AdministratorBridge extends RoleBridge {
 
+    public static final String ADMINS = "/admins/";
+
     public AdministratorBridge(OkHttpClient client) {
         super(client);
     }
@@ -42,8 +44,8 @@ public class AdministratorBridge extends RoleBridge {
 
     public void postAdmin(Administrator admin, String token) {
         String url = ip + "/admins";
-        RequestBody body = RequestBody.create(JSON, new Gson().toJson(admin));
-        Request request = new Request.Builder().url(url).addHeader(TOKEN_HEADER, token).post(body).build();
+        RequestBody body = RequestBody.create(json, new Gson().toJson(admin));
+        Request request = new Request.Builder().url(url).addHeader(tokenHeader, token).post(body).build();
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -62,9 +64,9 @@ public class AdministratorBridge extends RoleBridge {
     }
 
     public void putAdmin(Administrator administrator, String username, String token) {
-        String url = ip + "/admins/" + username;
-        RequestBody requestBody = RequestBody.create(JSON, new Gson().toJson(administrator));
-        Request request = new Request.Builder().url(url).addHeader(TOKEN_HEADER, token).put(requestBody).build();
+        String url = ip + ADMINS + username;
+        RequestBody requestBody = RequestBody.create(json, new Gson().toJson(administrator));
+        Request request = new Request.Builder().url(url).addHeader(tokenHeader, token).put(requestBody).build();
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -83,8 +85,8 @@ public class AdministratorBridge extends RoleBridge {
     }
 
     public void deleteAdmin(Administrator administrator, String token) {
-        String url = ip + "/admins/" + administrator.getUserName();
-        Request request = new Request.Builder().url(url).addHeader(TOKEN_HEADER, token).delete().build();
+        String url = ip + ADMINS + administrator.getUserName();
+        Request request = new Request.Builder().url(url).addHeader(tokenHeader, token).delete().build();
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -105,9 +107,9 @@ public class AdministratorBridge extends RoleBridge {
     public Administrator getAdmin(String username, String token) throws ApiException {
         Response response;
         try {
-            Headers headers = new Headers.Builder().add(TOKEN_HEADER, token).build();
+            Headers headers = new Headers.Builder().add(tokenHeader, token).build();
             Request request = new Request.Builder()
-                    .url(ip + "/admins/" + username).headers(headers).build();
+                    .url(ip + ADMINS + username).headers(headers).build();
             response = client.newCall(request).execute();
         } catch (IOException e) {
             Log.severe("failed to make request", e);

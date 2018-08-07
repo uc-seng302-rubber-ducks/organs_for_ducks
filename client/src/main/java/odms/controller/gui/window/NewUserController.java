@@ -15,8 +15,6 @@ import odms.commons.model.HealthDetails;
 import odms.commons.model.User;
 import odms.commons.model._enum.Regions;
 import odms.commons.utils.AttributeValidation;
-import odms.commons.utils.DataHandler;
-import odms.commons.utils.JsonHandler;
 import odms.commons.utils.Log;
 import odms.controller.AppController;
 
@@ -30,8 +28,8 @@ import java.time.LocalDate;
  */
 public class NewUserController {
 
-    AppController controller;
-    Stage stage;
+    private AppController controller;
+    private Stage stage;
     //<editor-fold desc="FXML declarations">
     @FXML
     private Label errorLabel;
@@ -123,8 +121,6 @@ public class NewUserController {
     private DatePicker dodInput;
     //</editor-fold>
     private Stage ownStage;
-    private DataHandler dataHandler = new JsonHandler();
-    private String defaultCountry = "New Zealand";
 
     /**
      * Initializes the NewUserController
@@ -156,6 +152,7 @@ public class NewUserController {
      * be replaced with a text field.
      * region text field is cleared by default when it appears.
      * region combo box selects the first item by default when it appears.
+     *
      * @param event from GUI
      */
     @FXML
@@ -169,16 +166,17 @@ public class NewUserController {
      * be replaced with a text field.
      * region text field is cleared by default when it appears.
      * region combo box selects the first item by default when it appears.
+     *
      * @param event from GUI
      */
     @FXML
-    private void ecCountrySelectorListener(ActionEvent event){
+    private void ecCountrySelectorListener(ActionEvent event) {
         controller.countrySelectorEventHandler(ecCountrySelector, ecRegionSelector, ecRegionInput);
     }
 
-        /**
-         * Returns the user to the login window.
-         */
+    /**
+     * Returns the user to the login window.
+     */
     @FXML
     private void cancelCreation() {
         ownStage.close();
@@ -239,7 +237,7 @@ public class NewUserController {
         valid &= (AttributeValidation.checkString(streetName));
 
         String region;
-        if(regionInput.isVisible()){
+        if (regionInput.isVisible()) {
             region = regionInput.getText();
 
         } else {
@@ -312,40 +310,14 @@ public class NewUserController {
                     ownStage.close();
                     FXMLLoader userLoader = new FXMLLoader(
                             getClass().getResource("/FXML/userView.fxml"));
-                    Parent root;
 
                     try {
-                        root = userLoader.load();
-                        Stage userStage = new Stage();
-                        userStage.setScene(new Scene(root));
-                        userStage.show();
-                        UserController userController = userLoader.getController();
-                        AppController.getInstance().setUserController(userController);
-                        //TODO pass listeners from any preceding controllers 22/6
-                        userController.init(AppController.getInstance(), newUser, userStage, false, null);
-                        userController.disableLogout();
-                        Log.info("Successfully launched User Overview for User NHI: " + nhi);
+                        launchUserScene(nhi, newUser, userLoader);
                     } catch (IOException e) {
                         Log.severe("Failed to load User Overview for User NHI: " + nhi, e);
                     }
                 } else {
-                    FXMLLoader userLoader = new FXMLLoader(
-                            getClass().getResource("/FXML/userView.fxml"));
-                    Parent root;
-
-                    try {
-                        root = userLoader.load();
-                        stage.setScene(new Scene(root));
-                        ownStage.close();
-                        UserController userController = userLoader.getController();
-                        controller.setUserController(userController);
-                        //TODO pass listeners from any preceding controllers 22/6
-                        userController.init(AppController.getInstance(), newUser, stage, false, null);
-
-                        Log.info("Successfully launched User Overview for User NHI: " + nhi);
-                    } catch (IOException e) {
-                        Log.severe("Failed to load User Overview for User NHI: " + nhi, e);
-                    }
+                    loadUserScene(nhi, newUser);
                 }
             } catch (InvalidFieldsException e) {
                 errorLabel.setText("Name and cell phone number are required for an emergency contact.");
@@ -355,6 +327,40 @@ public class NewUserController {
             errorLabel.setVisible(true);
         }
 
+    }
+
+    private void loadUserScene(String nhi, User newUser) {
+        FXMLLoader userLoader = new FXMLLoader(
+                getClass().getResource("/FXML/userView.fxml"));
+        Parent root;
+
+        try {
+            root = userLoader.load();
+            stage.setScene(new Scene(root));
+            ownStage.close();
+            UserController userController = userLoader.getController();
+            controller.setUserController(userController);
+            //TODO pass listeners from any preceding controllers 22/6
+            userController.init(AppController.getInstance(), newUser, stage, false, null);
+
+            Log.info("Successfully launched User Overview for User NHI: " + nhi);
+        } catch (IOException e) {
+            Log.severe("Failed to load User Overview for User NHI: " + nhi, e);
+        }
+    }
+
+    private void launchUserScene(String nhi, User newUser, FXMLLoader userLoader) throws IOException {
+        Parent root;
+        root = userLoader.load();
+        Stage userStage = new Stage();
+        userStage.setScene(new Scene(root));
+        userStage.show();
+        UserController userController = userLoader.getController();
+        AppController.getInstance().setUserController(userController);
+        //TODO pass listeners from any preceding controllers 22/6
+        userController.init(AppController.getInstance(), newUser, userStage, false, null);
+        userController.disableLogout();
+        Log.info("Successfully launched User Overview for User NHI: " + nhi);
     }
 
 
@@ -404,7 +410,7 @@ public class NewUserController {
         valid &= (AttributeValidation.checkString(ecStreet.getText()));
 
         String eRegion;
-        if(ecRegionInput.isVisible()){
+        if (ecRegionInput.isVisible()) {
             eRegion = ecRegionInput.getText();
 
         } else {

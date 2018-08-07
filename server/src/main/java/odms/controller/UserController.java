@@ -13,7 +13,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Collection;
@@ -115,7 +114,7 @@ public class UserController extends BaseController {
         try (Connection connection = driver.getConnection()) {
             return handler.getExists(connection, User.class, nhi);
         } catch (SQLException ex) {
-            Log.severe("cannot find whther user exists", ex);
+            Log.severe("cannot find whether user exists", ex);
             throw  new ServerDBException(ex);
         }
     }

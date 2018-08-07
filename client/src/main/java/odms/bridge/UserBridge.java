@@ -21,6 +21,9 @@ import java.util.*;
 public class UserBridge extends RoleBridge {
 
     private static final String USERS = "/users/";
+    public static final String FAILED_TO_PUT_TO = "Failed to PUT to ";
+    public static final String COULD_NOT_MAKE_A_CALL_TO = "Could not make a call to ";
+    public static final String FAILED_TO_POST_TO = "Failed to POST to ";
 
     public UserBridge(OkHttpClient client) {
         super(client);
@@ -28,7 +31,7 @@ public class UserBridge extends RoleBridge {
 
     public void getUsers(int startIndex, int count, String name, String region, String gender, String token) {
         String url = ip + "/users?startIndex=" + startIndex + "&count=" + count + "&name=" + name + "&region=" + region + "&gender=" + gender;
-        Request request = new Request.Builder().header(TOKEN_HEADER, token).url(url).build();
+        Request request = new Request.Builder().header(tokenHeader, token).url(url).build();
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -49,7 +52,7 @@ public class UserBridge extends RoleBridge {
 
     public void postUser(User user) {
         String url = ip + USERS;
-        RequestBody requestBody = RequestBody.create(JSON, new Gson().toJson(user));
+        RequestBody requestBody = RequestBody.create(json, new Gson().toJson(user));
         Request request = new Request.Builder().post(requestBody).url(url).build();
         client.newCall(request).enqueue(new Callback() {
             @Override
@@ -89,7 +92,7 @@ public class UserBridge extends RoleBridge {
 
     public void putUser(User user, String nhi) {
         String url = ip + USERS + nhi;
-        RequestBody body = RequestBody.create(JSON, new Gson().toJson(user));
+        RequestBody body = RequestBody.create(json, new Gson().toJson(user));
         Request request = new Request.Builder().url(url).put(body).build();
         client.newCall(request).enqueue(new Callback() {
             @Override
@@ -100,7 +103,7 @@ public class UserBridge extends RoleBridge {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 if (!response.isSuccessful()) {
-                    throw new IOException("Failed to PUT to " + url);
+                    throw new IOException(FAILED_TO_PUT_TO + url);
                 }
                 response.close();
             }
@@ -128,8 +131,8 @@ public class UserBridge extends RoleBridge {
 
     public void postUserProcedures(MedicalProcedure procedure, String nhi, String token) {
         String url = ip + USERS + nhi + "/procedures";
-        RequestBody body = RequestBody.create(JSON, new Gson().toJson(procedure));
-        Request request = new Request.Builder().url(url).addHeader(TOKEN_HEADER, token).post(body).build();
+        RequestBody body = RequestBody.create(json, new Gson().toJson(procedure));
+        Request request = new Request.Builder().url(url).addHeader(tokenHeader, token).post(body).build();
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -148,8 +151,8 @@ public class UserBridge extends RoleBridge {
 
     public void putUserProcedures(List<MedicalProcedure> procedures, String nhi, String token) {
         String url = ip + USERS + nhi + "/procedures";
-        RequestBody body = RequestBody.create(JSON, new Gson().toJson(procedures));
-        Request request = new Request.Builder().url(url).addHeader(TOKEN_HEADER, token).put(body).build();
+        RequestBody body = RequestBody.create(json, new Gson().toJson(procedures));
+        Request request = new Request.Builder().url(url).addHeader(tokenHeader, token).put(body).build();
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -159,7 +162,7 @@ public class UserBridge extends RoleBridge {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 if (!response.isSuccessful()) {
-                    throw new IOException("Failed to PUT to " + url);
+                    throw new IOException(FAILED_TO_PUT_TO + url);
                 }
                 response.close();
             }
@@ -168,8 +171,8 @@ public class UserBridge extends RoleBridge {
 
     public void postMedications(Medication medication, String nhi, String token) {
         String url = ip + USERS + nhi + "/medications";
-        RequestBody body = RequestBody.create(JSON, new Gson().toJson(medication));
-        Request request = new Request.Builder().url(url).addHeader(TOKEN_HEADER, token).post(body).build();
+        RequestBody body = RequestBody.create(json, new Gson().toJson(medication));
+        Request request = new Request.Builder().url(url).addHeader(tokenHeader, token).post(body).build();
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -179,7 +182,7 @@ public class UserBridge extends RoleBridge {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 if (!response.isSuccessful()) {
-                    throw new IOException("Failed to POST to " + url);
+                    throw new IOException(FAILED_TO_POST_TO + url);
                 }
                 response.close();
             }
@@ -188,8 +191,8 @@ public class UserBridge extends RoleBridge {
 
     public void putMedications(List<Medication> medications, String nhi, String token) {
         String url = ip + USERS + nhi + "/medications";
-        RequestBody body = RequestBody.create(JSON, new Gson().toJson(medications));
-        Request request = new Request.Builder().url(url).addHeader(TOKEN_HEADER, token).put(body).build();
+        RequestBody body = RequestBody.create(json, new Gson().toJson(medications));
+        Request request = new Request.Builder().url(url).addHeader(tokenHeader, token).put(body).build();
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -199,7 +202,7 @@ public class UserBridge extends RoleBridge {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 if (!response.isSuccessful()) {
-                    throw new IOException("Failed to PUT to " + url);
+                    throw new IOException(FAILED_TO_PUT_TO + url);
                 }
                 response.close();
             }
@@ -208,8 +211,8 @@ public class UserBridge extends RoleBridge {
 
     public void postDiseases(Disease disease, String nhi, String token) {
         String url = ip + USERS + nhi + "/diseases";
-        RequestBody body = RequestBody.create(JSON, new Gson().toJson(disease));
-        Request request = new Request.Builder().url(url).addHeader(TOKEN_HEADER, token).post(body).build();
+        RequestBody body = RequestBody.create(json, new Gson().toJson(disease));
+        Request request = new Request.Builder().url(url).addHeader(tokenHeader, token).post(body).build();
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -219,7 +222,7 @@ public class UserBridge extends RoleBridge {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 if (!response.isSuccessful()) {
-                    throw new IOException("Failed to POST to " + url);
+                    throw new IOException(FAILED_TO_POST_TO + url);
                 }
                 response.close();
             }
@@ -228,8 +231,8 @@ public class UserBridge extends RoleBridge {
 
     public void putDiseases(List<Disease> diseases, String nhi, String token) {
         String url = ip + USERS + nhi + "/diseases";
-        RequestBody body = RequestBody.create(JSON, new Gson().toJson(diseases));
-        Request request = new Request.Builder().url(url).addHeader(TOKEN_HEADER, token).put(body).build();
+        RequestBody body = RequestBody.create(json, new Gson().toJson(diseases));
+        Request request = new Request.Builder().url(url).addHeader(tokenHeader, token).put(body).build();
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -239,7 +242,7 @@ public class UserBridge extends RoleBridge {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 if (!response.isSuccessful()) {
-                    throw new IOException("Failed to PUT to " + url);
+                    throw new IOException(FAILED_TO_PUT_TO + url);
                 }
                 response.close();
             }
@@ -248,18 +251,18 @@ public class UserBridge extends RoleBridge {
 
     public void postReceivingOrgans(Map<Organs, ArrayList<ReceiverOrganDetailsHolder>> receiving, String nhi, String token) {
         String url = ip + USERS + nhi + "/receiving";
-        RequestBody body = RequestBody.create(JSON, new Gson().toJson(receiving));
-        Request request = new Request.Builder().url(url).addHeader(TOKEN_HEADER, token).post(body).build();
+        RequestBody body = RequestBody.create(json, new Gson().toJson(receiving));
+        Request request = new Request.Builder().url(url).addHeader(tokenHeader, token).post(body).build();
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                Log.warning("Could not make a call to " + url, e);
+                Log.warning(COULD_NOT_MAKE_A_CALL_TO + url, e);
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 if (!response.isSuccessful()) {
-                    throw new IOException("Failed to POST to " + url);
+                    throw new IOException(FAILED_TO_POST_TO + url);
                 }
                 response.close();
             }
@@ -268,18 +271,18 @@ public class UserBridge extends RoleBridge {
 
     public void putReceivingOrgans(Map<Organs, ArrayList<ReceiverOrganDetailsHolder>> receiving, String nhi, String token) {
         String url = ip + USERS + nhi + "/receiving";
-        RequestBody body = RequestBody.create(JSON, new Gson().toJson(receiving));
-        Request request = new Request.Builder().url(url).addHeader(TOKEN_HEADER, token).put(body).build();
+        RequestBody body = RequestBody.create(json, new Gson().toJson(receiving));
+        Request request = new Request.Builder().url(url).addHeader(tokenHeader, token).put(body).build();
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                Log.warning("Could not make a call to " + url, e);
+                Log.warning(COULD_NOT_MAKE_A_CALL_TO + url, e);
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 if (!response.isSuccessful()) {
-                    throw new IOException("Failed to PUT to " + url);
+                    throw new IOException(FAILED_TO_PUT_TO + url);
                 }
                 response.close();
             }
@@ -288,18 +291,18 @@ public class UserBridge extends RoleBridge {
 
     public void postDonatingOrgans(Set<Organs> donating, String nhi) {
         String url = ip + USERS + nhi + "/donating";
-        RequestBody body = RequestBody.create(JSON, new Gson().toJson(donating));
+        RequestBody body = RequestBody.create(json, new Gson().toJson(donating));
         Request request = new Request.Builder().url(url).post(body).build();
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                Log.warning("Could not make a call to " + url, e);
+                Log.warning(COULD_NOT_MAKE_A_CALL_TO + url, e);
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 if (!response.isSuccessful()) {
-                    throw new IOException("Failed to POST to " + url);
+                    throw new IOException(FAILED_TO_POST_TO + url);
                 }
                 response.close();
             }
@@ -308,18 +311,18 @@ public class UserBridge extends RoleBridge {
 
     public void putDonatingOrgans(Set<Organs> donating, String nhi) {
         String url = ip + USERS + nhi + "/donating";
-        RequestBody body = RequestBody.create(JSON, new Gson().toJson(donating));
+        RequestBody body = RequestBody.create(json, new Gson().toJson(donating));
         Request request = new Request.Builder().url(url).put(body).build();
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                Log.warning("Could not make a call to " + url, e);
+                Log.warning(COULD_NOT_MAKE_A_CALL_TO + url, e);
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 if (!response.isSuccessful()) {
-                    throw new IOException("Failed to PUT to " + url);
+                    throw new IOException(FAILED_TO_PUT_TO + url);
                 }
                 response.close();
             }
@@ -353,7 +356,6 @@ public class UserBridge extends RoleBridge {
         }
         RequestBody body = RequestBody.create(MediaType.parse("image/"+format), pictureData);
         Request request = new Request.Builder().url(url).put(body).build();
-        System.out.println(request.body().contentLength());
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {

@@ -26,6 +26,8 @@ import java.util.*;
 
 public class ReceiverTabController {
 
+    public static final String FOR_RECEIVER_NHI = " for receiver NHI: ";
+    public static final String SUCCESSFULLY_DE_REGISTERED_ORGAN = "Successfully de-registered organ:";
     @FXML
     private ComboBox<Organs> organsComboBox;
 
@@ -58,8 +60,7 @@ public class ReceiverTabController {
 
     private User currentUser;
     private AppController application;
-    private boolean Clinician;
-    private Stage stage;
+
     private UserController parent;
 
     private ObservableList<Organs> currentlyRecieving;
@@ -78,12 +79,11 @@ public class ReceiverTabController {
                      UserController parent) {
         application = controller;
         currentUser = user;
-        this.stage = stage;
+
         this.parent = parent;
         if (fromClinician) {
-            Clinician = true;
+            // Take the updated logic then remove clinician please JB 7/8
         } else {
-            Clinician = false;
 
             organLabel.setVisible(false);
             organsComboBox.setVisible(false);
@@ -138,7 +138,7 @@ public class ReceiverTabController {
                         launchReceiverOrganDateView(currentlyReceivingOrgan);
                     }
                 });
-                Log.info("Successfully registered organ:" + toRegister.toString() + " for receiver NHI: " + currentUser.getNhi());
+                Log.info("Successfully registered organ:" + toRegister.toString() + FOR_RECEIVER_NHI + currentUser.getNhi());
             } else {
                 Log.warning("Unable to register organ for receiver as organ: " + toRegister.toString() + " has already been registered for receiver NHI: " + currentUser.getNhi());
             }
@@ -160,8 +160,7 @@ public class ReceiverTabController {
             currentlyReceivingListView.getItems().add(toReRegister);
             currentUser.getReceiverDetails().startWaitingForOrgan(toReRegister);
             notReceivingListView.getItems().remove(toReRegister);
-            //AppController.getInstance().getClinicianController().refreshTables();
-            Log.info("Successfully re-registered organ:" + toReRegister.toString() + " for receiver NHI: " + currentUser.getNhi());
+            Log.info("Successfully re-registered organ:" + toReRegister.toString() + FOR_RECEIVER_NHI + currentUser.getNhi());
             if (currentUser.getReceiverDetails().isDonatingThisOrgan(toReRegister)) {
                 currentUser.getCommonOrgans().add(toReRegister);
             }
@@ -317,11 +316,11 @@ public class ReceiverTabController {
 
             if (organDeregisterationReason == OrganDeregisterReason.TRANSPLANT_RECEIVED) {
                 currentUser.getReceiverDetails().stopWaitingForOrgan(toDeRegister, OrganDeregisterReason.TRANSPLANT_RECEIVED);
-                Log.info("Successfully de-registered organ:" + toDeRegister.toString() + " for receiver NHI: " + currentUser.getNhi());
+                Log.info(SUCCESSFULLY_DE_REGISTERED_ORGAN + toDeRegister.toString() + FOR_RECEIVER_NHI + currentUser.getNhi());
 
             } else if (organDeregisterationReason == OrganDeregisterReason.REGISTRATION_ERROR) {
                 currentUser.getReceiverDetails().stopWaitingForOrgan(toDeRegister, OrganDeregisterReason.REGISTRATION_ERROR);
-                Log.info("Successfully de-registered organ:" + toDeRegister.toString() + " for receiver NHI: " + currentUser.getNhi());
+                Log.info(SUCCESSFULLY_DE_REGISTERED_ORGAN + toDeRegister.toString() + FOR_RECEIVER_NHI + currentUser.getNhi());
                 currentUser.getChanges().add(new Change(
                         "Initial registering of the organ " + toDeRegister.toString()
                                 + " was an error for receiver " + currentUser.getFullName()));
@@ -329,7 +328,7 @@ public class ReceiverTabController {
             } else if (organDeregisterationReason == OrganDeregisterReason.DISEASE_CURED) {
                 //refresh diseases table
                 currentUser.getReceiverDetails().stopWaitingForOrgan(toDeRegister, OrganDeregisterReason.DISEASE_CURED);
-                Log.info("Successfully de-registered organ:" + toDeRegister.toString() + " for receiver NHI: " + currentUser.getNhi());
+                Log.info(SUCCESSFULLY_DE_REGISTERED_ORGAN + toDeRegister.toString() + FOR_RECEIVER_NHI + currentUser.getNhi());
                 parent.refreshDiseases();
 
             } else if (organDeregisterationReason == OrganDeregisterReason.RECEIVER_DIED) {

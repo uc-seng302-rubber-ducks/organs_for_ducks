@@ -83,17 +83,9 @@ public class UserOverviewController {
     private ImageView profilePicture;
     //</editor-fold>
 
-    private AppController application;
-    private User currentUser;
-    private Stage stage;
-    private boolean clinician;
 
     @FXML
     public void init(AppController controller, User user, Stage stage, boolean fromClinician) {
-        this.stage = stage;
-        this.application = controller;
-        this.currentUser = user;
-        clinician = fromClinician;
         showUser(user);
     }
 
@@ -103,7 +95,6 @@ public class UserOverviewController {
      * @param user The current user.
      */
     public void showUser(User user) {
-        currentUser = user;
         NHIValue.setText(user.getNhi());
         fNameValue.setText(user.getFirstName());
         DOBValue.setText(user.getDateOfBirth().toString());
@@ -184,7 +175,7 @@ public class UserOverviewController {
         if (user.getHeight() > 0 && user.getWeight() > 0) {
             //TODO fix BMI kg/m^
             DecimalFormat df = new DecimalFormat("#.00");
-            double bmi = user.getWeight() / (user.getHeight() * user.getHeight());
+            double bmi = user.getWeight() / ((user.getHeight()) /100 * (user.getHeight()/100));
             String formattedBmi = df.format(bmi);
             bmiValue.setText(formattedBmi);
         } else {
