@@ -1,13 +1,12 @@
 package odms.controller;
 
-import com.google.gson.Gson;
 import odms.commons.model._enum.EventTypes;
+import odms.commons.model.dto.LoginResponse;
+import odms.commons.utils.Log;
+import odms.model.dto.LoginRequest;
 import odms.security.AuthToken;
-import odms.security.IsAdmin;
 import odms.security.IsClinician;
 import odms.security.TokenStore;
-import odms.model.dto.LoginRequest;
-import odms.commons.model.dto.LoginResponse;
 import odms.socket.SocketHandler;
 import odms.utils.DBManager;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,7 +65,7 @@ public class LoginController extends BaseController {
         try {
             socketHandler.broadcast(EventTypes.CLINICIAN_UPDATE, "0", "0");
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.warning("failed on test endpoint");
         }
         return new ResponseEntity(HttpStatus.OK);
     }

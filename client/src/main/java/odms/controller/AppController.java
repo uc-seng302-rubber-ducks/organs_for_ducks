@@ -161,7 +161,7 @@ public class AppController {
         try {
             s = getCountriesBridge().getAllowedCountries();
         } catch (IOException e) {
-            Log.severe("Database threw IOE", e);
+            Log.severe("Could not get allowed countries from the database", e);
             allowedCountries = new ArrayList<>();
         }
         if (s != null) {

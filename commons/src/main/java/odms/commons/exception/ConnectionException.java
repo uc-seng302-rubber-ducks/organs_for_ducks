@@ -1,6 +1,6 @@
 package odms.commons.exception;
 
-public class ConnectionException extends RuntimeException {
+public class ConnectionException extends Exception {
     public ConnectionException() {
     }
 

@@ -10,7 +10,6 @@ import okhttp3.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import java.io.IOException;
 
 
 public class OdmsSocketHandler implements Listenable {
@@ -19,11 +18,16 @@ public class OdmsSocketHandler implements Listenable {
     private OkHttpClient client;
     private WebSocket socket;
     private ServerEventStore eventStore;
+    private final int MAX_RETRIES = 5;
+    private final int RETRY_BACKOFF_MS = 3000;
+    private int numRetries = 0;
+    private String url = "";
     private WebSocketListener listener = new WebSocketListener() {
         @Override
         public void onOpen(WebSocket webSocket, Response response) {
             Log.info("websocket to server has been opened on port " + response.request().url().port());
-            super.onOpen(webSocket, response);
+            numRetries = 0;
+
         }
 
         @Override
@@ -45,7 +49,13 @@ public class OdmsSocketHandler implements Listenable {
         @Override
         public void onFailure(WebSocket webSocket, Throwable t, Response response) {
             Log.severe("failed to open websocket with server", t);
-            throw new ConnectionException(t);
+            try {
+                retry();
+            } catch (InterruptedException e) {
+                Log.severe("failed to retry connection, cancelling", e);
+                Thread.currentThread().interrupt();
+            }
+
         }
     };
 
@@ -71,6 +81,7 @@ public class OdmsSocketHandler implements Listenable {
     public void start(String url) {
         Request request = new Request.Builder().url(url).build();
         socket = client.newWebSocket(request, listener);
+        this.url = url;
     }
 
     public void stop() {
@@ -78,6 +89,15 @@ public class OdmsSocketHandler implements Listenable {
             socket.close(1000, "socket closed by client");
             Log.info("websocket manually closed by client");
         }
+    }
+
+    public void retry() throws InterruptedException {
+        if (numRetries < MAX_RETRIES) {
+            numRetries++;
+            Thread.sleep(RETRY_BACKOFF_MS);
+            start(url);
+        }
+        Log.warning("unable to connect websocket after " + numRetries);
     }
 
     @Override
