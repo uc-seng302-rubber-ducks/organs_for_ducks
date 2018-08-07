@@ -472,15 +472,15 @@ public class UserController {
     @FXML
     public void delete() {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setContentText("Are you sure you want to delete this user?");
+        alert.setContentText("Are you sure you want to delete this user? This action cannot be undone.");
         alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
         Optional<ButtonType> result = alert.showAndWait();
 
         if (result.get() == ButtonType.OK) {
             currentUser.setDeleted(true);
             Log.info("Successfully deleted user profile for User NHI: " + currentUser.getNhi());
+            application.deleteUser(currentUser);
             if (!fromClinician) {
-                application.deleteUser(currentUser);
                 logout();
             } else {
                 stage.close();
@@ -533,6 +533,7 @@ public class UserController {
     }
 
     public void disableLogout() {
-        userProfileTabPageController.disableLogout();
+        logoutUser.setText("Go Back");
+        logoutUser.setOnAction(e -> closeWindow());
     }
 }
