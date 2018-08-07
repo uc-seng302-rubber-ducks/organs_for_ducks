@@ -2,6 +2,7 @@ package odms.commands;
 
 import odms.commons.model.User;
 import odms.commons.utils.AttributeValidation;
+import odms.commons.utils.Log;
 import odms.controller.AppController;
 import odms.view.IoHelper;
 import picocli.CommandLine;
@@ -41,7 +42,7 @@ public class UpdateUserDetails implements Runnable {
     @Option(names = {"-dob"}, description = "Date of birth. Format 'yyyy-mm-dd'")
     private String dobString;
 
-    @Option(names = {"-dod"}, description = "Date of death. same formatting as dob")
+    @Option(names = {"-dod"}, description = "Date of death. Format 'yyyy-mm-dd'  *OR*  Can pass in 'null' to remove date of death")
     private String dodString;
 
     @Option(names = {"-w", "-weight"}, description = "weight in kg e.g. 87.3")
@@ -116,7 +117,7 @@ public class UpdateUserDetails implements Runnable {
             IoHelper.display("help goes here");
             return;
         }
-
+        Log.info(">:(");
         User user;
         try {
             user = controller.getUserBridge().getUser(originalNhi);
@@ -145,10 +146,15 @@ public class UpdateUserDetails implements Runnable {
         }
 
         if (dodString != null) {
-            LocalDate newDate = IoHelper.readDate(dobString);
-            if (newDate != null) {
-                user.setDateOfDeath(newDate);
+            if (dodString.equals("null")) { //Remove moment of death.
+                user.setMomentOfDeath(null);
                 changed = true;
+            } else {
+                LocalDate newDate = IoHelper.readDate(dodString);
+                if (newDate != null) {
+                    user.setDateOfDeath(newDate);
+                    changed = true;
+                }
             }
         }
         if (weight != -1) {
@@ -237,8 +243,15 @@ public class UpdateUserDetails implements Runnable {
         }
 
         if (timeOfDeath != null) {
-            if (AttributeValidation.validateTimeString(timeOfDeath) && user.getDateOfDeath() != null) {
-                user.getDeathDetails().createMomentOfDeath(user.getDateOfDeath(), LocalTime.parse(timeOfDeath));
+            if (!AttributeValidation.validateTimeString(timeOfDeath)) {
+                IoHelper.display("Please enter a valid time format: hh:mm");
+            } else if (user.getDateOfDeath() == null) {
+                IoHelper.display("No date of death for user found. Date of death set to current day with time set as specified");
+                user.setMomentOfDeath(user.getDeathDetails().createMomentOfDeath(LocalDate.now(), LocalTime.parse(timeOfDeath)));
+                changed = true;
+            } else {
+                user.setMomentOfDeath(user.getDeathDetails().createMomentOfDeath(user.getDateOfDeath(), LocalTime.parse(timeOfDeath)));
+                changed = true;
             }
         }
 
