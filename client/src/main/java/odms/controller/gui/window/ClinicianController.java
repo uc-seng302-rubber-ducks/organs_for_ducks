@@ -608,9 +608,10 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
         } else if (event.getType().equals(EventTypes.CLINICIAN_UPDATE) && clinician.getStaffId().equals(event.getOldIdentifier())){
             String newStaffId = event.getNewIdentifier();
             try {
-                //TODO should this be forced on the user? 1/8
                 this.clinician = clinicianBridge.getClinician(newStaffId, appController.getToken());
-                showClinician(clinician);
+                if (clinician != null) {
+                    showClinician(clinician); //TODO: fix when we solve the db race 7/8/18 jb
+                }
             } catch (ApiException ex) {
                 Log.warning("failed to retrieve updated clinician. response code: " + ex.getResponseCode(), ex);
                 AlertWindowFactory.generateError(("could not refresh clinician from the server. Please check your connection before trying again."));

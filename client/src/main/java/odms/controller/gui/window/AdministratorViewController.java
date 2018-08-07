@@ -128,6 +128,8 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
     private Label regionLabel;
     @FXML
     private MenuItem deleteAdmin;
+    @FXML
+    private ProgressIndicator progressIndicator;
 
     //</editor-fold>
     @FXML
@@ -210,7 +212,7 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
                 }
             }
         });
-
+        progressIndicator.setVisible(false);
         addListeners();
         initClinicianSearchTable();
         initAdminSearchTable();
@@ -675,10 +677,14 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
             return;
         }
         if (role.equals(User.class)) {
-            try {
-                Collection<User> existingUsers = appController.getUsers();
-                DataHandler csvHandler = new CSVHandler();
-                Collection<User> newUsers = csvHandler.loadUsers(filename);
+            progressIndicator.setVisible(true);
+            progressIndicator.setProgress(ProgressIndicator.INDETERMINATE_PROGRESS);
+            new Thread(() -> {
+                Platform.setImplicitExit(false);
+                Collection<User> newUsers = new ArrayList<>();
+                CSVHandler csvHandler = new CSVHandler();
+                try {
+                newUsers = csvHandler.loadUsers(filename);
 
                 //if imported contains any bad data, throw it out
                 for (User user : newUsers) {
@@ -688,11 +694,7 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
                 }
 
                 for (User user : newUsers) {
-                    if (existingUsers.contains(user)) {
-                        appController.update(user);
-                    } else {
-                        appController.addUser(user);
-                    }
+                    new Thread(() -> appController.getUserBridge().postUser(user)).start();
                 }
                 saveRole(User.class, appController, appController.getToken());
             } catch (FileNotFoundException e) {
@@ -703,7 +705,13 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
                 Log.warning(filename + "contained bad data", e);
                 messageBoxPopup("error");
             }
-            refreshTables();
+            Platform.runLater(this::refreshTables);
+                final int numberImported = newUsers.size();
+                final int malformed =  csvHandler.getMalformed();
+                Platform.runLater(() -> AlertWindowFactory.generateInfoWindow(numberImported +" Users Successfully imported. " +
+                        + malformed + " malformed users discarded"));
+                Platform.runLater(() -> progressIndicator.setVisible(false));
+            }).start();
         }
     }
 
@@ -1299,9 +1307,10 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
             refreshTables();
         } else if (event.getType().equals(EventTypes.ADMIN_UPDATE) && administrator.getUserName().equals(event.getOldIdentifier())) {
             try {
-                //TODO should this be forced on the user? 1/8
                 this.administrator = adminBridge.getAdmin(event.getNewIdentifier(), appController.getToken());
-                displayDetails();
+                if(administrator != null) {
+                    displayDetails(); //TODO: fix when we solve the db race 7/8/18 jb
+                }
             } catch (ApiException ex) {
                 Log.warning("failed to retrieve updated admin. response code: " + ex.getResponseCode(), ex);
                 AlertWindowFactory.generateError(("could not refresh admin from the server. Please check your connection before trying again."));
