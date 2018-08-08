@@ -59,7 +59,7 @@ public class WhenSteps extends ApplicationTest {
     public void iRegisterAUserWithTheNHIFirstNameLastNameAndDateOfBirth(String nhi, String fName,
                                                                         String lName, String dob) throws IOException {
         CucumberTestModel.setUserNhi(nhi);
-        String[] args = {fName, lName, nhi, dob};
+        String[] args = {nhi, fName, dob, "-l=" + lName};
         CreateUser command = new CreateUser();
         new CommandLine(command).parseWithHandler(new CommandLine.RunLast(), System.err, args);
         when(CucumberTestModel.getUserBridge().getUser(anyString())).thenReturn(new UserBuilder().setNhi(nhi).setFirstName(fName).setLastName(lName).setDateOfBirth(LocalDate.parse(dob, DateTimeFormatter.ISO_LOCAL_DATE)).build());

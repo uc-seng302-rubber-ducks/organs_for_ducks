@@ -20,6 +20,7 @@ import odms.commons.utils.JsonHandler;
 import odms.commons.utils.Log;
 import odms.controller.AppController;
 
+import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
 
@@ -162,7 +163,7 @@ public class NewUserController {
      */
     @FXML
     private void countrySelectorListener(ActionEvent event) {
-        controller.countrySelectorEventHandler(countrySelector, regionSelector, regionInput);
+        controller.countrySelectorEventHandler(countrySelector, regionSelector, regionInput, null, null);
     }
 
     /**
@@ -175,7 +176,7 @@ public class NewUserController {
      */
     @FXML
     private void ecCountrySelectorListener(ActionEvent event){
-        controller.countrySelectorEventHandler(ecCountrySelector, ecRegionSelector, ecRegionInput);
+        controller.countrySelectorEventHandler(ecCountrySelector, ecRegionSelector, ecRegionInput, null, null);
     }
 
         /**
@@ -295,7 +296,9 @@ public class NewUserController {
                 newUser.setStreetNumber(streetnum);
                 newUser.setStreetName(streetName);
                 newUser.setZipCode(zipcode);
-
+                ClassLoader classLoader = getClass().getClassLoader();
+                File file = new File(classLoader.getResource("default-profile-picture.jpg").getFile());
+                newUser.setProfilePhotoFilePath(file.getPath());
                 HealthDetails healthDetails = collectHealthDetails(birthGender, genderIdentity, height, weight, bloodType, alcoholConsumption, smoker);
                 newUser.setHealthDetails(healthDetails);
 

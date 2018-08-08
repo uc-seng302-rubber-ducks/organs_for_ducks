@@ -92,12 +92,16 @@ public class ClinicianBridge extends RoleBridge {
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
+                System.out.println(response.code());
                 if (!response.isSuccessful()) {
+                    response.close();
                     throw new IOException("Failed to DELETE to " + url);
                 }
                 response.close();
             }
+
         });
+
     }
 
     public Clinician getClinician(String wantedClinician, String token) throws ApiException {
@@ -154,7 +158,7 @@ public class ClinicianBridge extends RoleBridge {
         }
     }
 
-    private String getProfilePicture(String staffId, String token) throws IOException {
+    public String getProfilePicture(String staffId, String token) throws IOException {
         String url = ip + "/clinicians/" + staffId + "/photo";
         Headers headers =  new Headers.Builder().add(TOKEN_HEADER, token).build();
         Request request = new Request.Builder().get().url(url).headers(headers).build();

@@ -2,7 +2,6 @@ package odms.commons.utils.db_strategies;
 
 import odms.commons.model.Administrator;
 import odms.commons.utils.Log;
-import odms.commons.utils.PasswordManager;
 
 import java.sql.*;
 import java.util.Collection;
@@ -48,7 +47,7 @@ public class AdminUpdateStrategy extends AbstractUpdateStrategy {
             connection.prepareStatement("START TRANSACTION").execute();
             try {
                 updateAdminDetails(admin, connection);
-                if (!PasswordManager.hash("", admin.getSalt()).equals(admin.getPassword())) {
+                if (!admin.isPasswordCorrect("")) {
                     updateAdminPassword(admin, connection);
                 }
             } catch (SQLException sqlEx) {

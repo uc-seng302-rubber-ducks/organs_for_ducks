@@ -6,7 +6,6 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
@@ -179,6 +178,9 @@ public class UpdateUserController {
 
     @FXML
     private ImageView profileImage;
+
+    @FXML
+    private Button resetProfileImageUser;
     //</editor-fold>
 
 
@@ -190,6 +192,7 @@ public class UpdateUserController {
     private boolean listen = true;
     private File inFile;
     private String defaultCountry = "New Zealand";
+    private final int MAX_FILE_SIZE = 2097152;
 
 
     /**
@@ -274,7 +277,9 @@ public class UpdateUserController {
      */
     @FXML
     private void countrySelectorListener(ActionEvent event) {
-        appController.countrySelectorEventHandler(countrySelector, regionSelector, regionInput);
+        if (listen) {
+            appController.countrySelectorEventHandler(countrySelector, regionSelector, regionInput, currentUser, null);
+        }
     }
 
     /**
@@ -287,7 +292,9 @@ public class UpdateUserController {
      */
     @FXML
     private void ecCountrySelectorListener(ActionEvent event){
-        appController.countrySelectorEventHandler(ecCountrySelector, ecRegionSelector, ecRegionInput);
+        if (listen) {
+            appController.countrySelectorEventHandler(ecCountrySelector, ecRegionSelector, ecRegionInput, currentUser, null);
+        }
     }
 
     /**
@@ -297,7 +304,6 @@ public class UpdateUserController {
      */
     private void update() {
         updateUndos();
-
         if (!undoUpdateButton.isDisabled() && !stage.getTitle().endsWith("*")) {
             stage.setTitle(stage.getTitle() + "*");
         }
@@ -415,10 +421,11 @@ public class UpdateUserController {
         if (user.getCountry().equals("") || user.getCountry() == null) {
             if (appController.getAllowedCountries().contains(defaultCountry) || appController.getAllowedCountries().isEmpty()) {
                 countrySelector.setValue(defaultCountry);
-                user.setCountry(defaultCountry);
+                user.setCountryNoUndo(defaultCountry);
             } else {
                 countrySelector.setValue(appController.getAllowedCountries().get(0));
-                user.setCountry(appController.getAllowedCountries().get(0));
+                user.setCountryNoUndo(appController.getAllowedCountries().get(0));
+
             }
         } else {
             countrySelector.setValue(user.getCountry());
@@ -589,6 +596,17 @@ public class UpdateUserController {
     }
 
     /**
+     * sets the profile photo back to the default image
+     */
+    @FXML
+    private void resetProfileImage() {
+        ClassLoader classLoader = getClass().getClassLoader();
+        inFile = new File(classLoader.getResource("default-profile-picture.jpg").getFile());
+        currentUser.setProfilePhotoFilePath(inFile.getPath());
+        displayImage(profileImage, inFile.getPath());
+    }
+
+    /**
      * uploads an image using file picker. includes validation.
      */
     @FXML
@@ -597,20 +615,19 @@ public class UpdateUserController {
         String filename;
         List<String> extensions = new ArrayList<>();
         extensions.add("*.png");
-        //extensions.add("*.jpg");
-        //extensions.add("*.gif");
+        extensions.add("*.jpg");
+        extensions.add("*.gif");
         FileSelectorController fileSelectorController = new FileSelectorController();
         filename = fileSelectorController.getFileSelector(stage, extensions);
         if (filename != null) {
             inFile = new File(filename);
 
-            if (inFile.length() > 2000000) { //if more than 2MB
+            if (inFile.length() > MAX_FILE_SIZE ) { //if more than 2MB
                 Alert imageTooLargeAlert = new Alert(Alert.AlertType.WARNING, "Could not upload the image as the image size exceeded 2MB");
                 imageTooLargeAlert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
                 imageTooLargeAlert.showAndWait();
                 isValid = false;
             }
-
             if (isValid) {
                 update();
                 displayImage(profileImage, inFile.getPath());
@@ -636,9 +653,7 @@ public class UpdateUserController {
             if(inFile != null){
                 String filePath = setUpImageFile(inFile, currentUser.getNhi());
                 currentUser.setProfilePhotoFilePath(filePath);
-                currentUser.getUndoStack().pop();
             }
-
             try {
                 currentUser.getRedoStack().clear();
                 oldUser.setDeleted(true);
@@ -816,7 +831,6 @@ public class UpdateUserController {
         changed |= updateContactDetails();
         changed |= updateEmergencyContact();
         if (changed) {
-            //appController.update(currentUser);
             currentUser.getRedoStack().clear();
         }
         undoUpdateButton.setDisable(currentUser.getUndoStack().size() <= undoMarker);
