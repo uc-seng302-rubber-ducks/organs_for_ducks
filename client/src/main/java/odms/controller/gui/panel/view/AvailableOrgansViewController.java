@@ -1,6 +1,5 @@
 package odms.controller.gui.panel.view;
 
-import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -43,7 +42,9 @@ public class AvailableOrgansViewController {
     @FXML
     private TableColumn<AvailableOrganDetail, ProgressBarTableCell<LocalDateTime>> progressBarColumn;
 
-    private AvailableOrgansLogicController logicController = new AvailableOrgansLogicController();
+
+    private ObservableList<AvailableOrganDetail> availableOrganDetails = FXCollections.observableList(new ArrayList<>());
+    private AvailableOrgansLogicController logicController = new AvailableOrgansLogicController(availableOrganDetails);
 
     @FXML
     public void init() {
@@ -60,22 +61,35 @@ public class AvailableOrgansViewController {
         organColumn.setCellValueFactory(new PropertyValueFactory<>("organ"));
         deathMomentColumn.setCellValueFactory(new PropertyValueFactory<>("momentOfDeath"));
         // figure out how to do progress bars
-        // initialise table columns here
+        populateTables();
     }
 
 
     @FXML
     private void search() {
-        // Call logicController.search
+        logicController.search(0, availableOrganFilterComboBox.getValue(), regionFilterTextField.getText());
     }
 
     @FXML
     private void goToPreviousPage() {
-        // Call logic controller's things
+        logicController.goPrevPage();
     }
 
     @FXML
     private void goToNextPage() {
-        // Call logic controller's things
+        logicController.goNextPage();
+    }
+
+    public void populateTables() {
+        availableOrgansTableView.setItems(availableOrganDetails);
+        setOnClickBehaviour();
+    }
+
+    private void setOnClickBehaviour() {
+        availableOrgansTableView.setOnMouseClicked(event -> {
+            if (event.getClickCount() == 2) {
+                logicController.launchUser(availableOrgansTableView.getSelectionModel().getSelectedItem().getDonorNhi());
+            }
+        });
     }
 }
