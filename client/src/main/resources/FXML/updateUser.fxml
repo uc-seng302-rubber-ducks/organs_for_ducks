@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.text.*?>
-<?import javafx.collections.*?>
+<?import javafx.collections.FXCollections?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
 <?import java.lang.*?>
-
 <ScrollPane xmlns:fx="http://javafx.com/fxml/1" prefHeight="916.0" prefWidth="615.0" xmlns="http://javafx.com/javafx/8" fx:controller="odms.controller.gui.window.UpdateUserController">
    <content>
        <AnchorPane prefHeight="975.0" prefWidth="600.0">
@@ -283,6 +282,8 @@
                       text="Undo"/>
               <Button fx:id="redoUpdateButton" layoutX="535.0" layoutY="2.0" mnemonicParsing="false" onAction="#redo"
                       text="Redo"/>
+              <Button fx:id="resetProfileImageUser" layoutX="414.0" layoutY="281.0" mnemonicParsing="false"
+                      onAction="#resetProfileImage" text="Reset Profile Image"/>
           </children>
       </AnchorPane>
    </content>

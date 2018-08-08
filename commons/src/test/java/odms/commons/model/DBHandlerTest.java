@@ -27,7 +27,7 @@ public class DBHandlerTest {
     private User testUser = new User("Eiran", LocalDate.of(2018, 2, 20), "ABC1111");
     private Clinician testClinician = new Clinician("Jon", "16", "password");
     private Administrator testAdmin = new Administrator("username", "James", "", "", "admin");
-    private static final String PHOTO_TEST_FILE_PATH = "../commons/src/test/java/resources/images/duck_jpg.jpg";
+    private static final String PHOTO_TEST_FILE_PATH = "../server/src/test/resources/images/duck_jpg.jpg";
 
     @Before
     public void beforeTest() throws SQLException {
@@ -90,14 +90,14 @@ public class DBHandlerTest {
         dbHandler.saveUsers(users, connection);
         verify(mockStmt, times(10)).executeUpdate();
     }
-/*
+
     @Test
     public void testUpdateUserProfilePicture() throws SQLException, IOException {
         InputStream inputStream = new FileInputStream(PHOTO_TEST_FILE_PATH);
 
-        dbHandler.updateProfilePhoto(User.class, testUser.getNhi(), inputStream, connection);
+        dbHandler.updateProfilePhoto(User.class, testUser.getNhi(), inputStream, "image/jpg", connection);
         verify(mockStmt, times(1)).executeUpdate();
-    }*/
+    }
 
     @Test
     public void getUserProfilePicture() throws SQLException{
@@ -181,11 +181,11 @@ public class DBHandlerTest {
         verify(mockStmt, times(4)).executeUpdate();
     }
 
-/*    @Test
+    @Test
     public void testUpdateClinicianProfilePicture() throws SQLException, FileNotFoundException {
         InputStream inputStream = new FileInputStream(PHOTO_TEST_FILE_PATH);
 
-        dbHandler.updateProfilePhoto(Clinician.class, testClinician.getStaffId(), inputStream, connection);
+        dbHandler.updateProfilePhoto(Clinician.class, testClinician.getStaffId(), inputStream, "image/jpg", connection);
         verify(mockStmt, times(1)).executeUpdate();
     }
 
@@ -193,8 +193,8 @@ public class DBHandlerTest {
     public void testRoleNotSupportUpdateProfilePicture() throws SQLException, FileNotFoundException {
         InputStream inputStream = new FileInputStream(PHOTO_TEST_FILE_PATH);
 
-        dbHandler.updateProfilePhoto(Administrator.class, testAdmin.getUserName(), inputStream, connection);
-    }*/
+        dbHandler.updateProfilePhoto(Administrator.class, testAdmin.getUserName(), inputStream, "image/jpg", connection);
+    }
 
     @Test
     public void testGetClinicianProfilePicture() throws SQLException {
@@ -215,5 +215,6 @@ public class DBHandlerTest {
         dbHandler.getTransplantDetails(connection,0, 1, "", "", new String[] {});
         verify(mockStmt, times(1)).executeQuery();
     }
+
 
 }

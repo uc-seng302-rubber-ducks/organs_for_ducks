@@ -209,4 +209,14 @@ public class ReceiverDetails {
         }
         return sb.toString();
     }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Organs to receive:\n");
+        for (Organs o : organs.keySet()){
+            sb.append(o).append("\n");
+        }
+        return sb.toString();
+    }
 }

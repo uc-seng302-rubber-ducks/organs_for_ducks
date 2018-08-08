@@ -25,6 +25,7 @@ import odms.controller.gui.UnsavedChangesAlert;
 import odms.controller.gui.panel.*;
 
 import java.beans.PropertyChangeListener;
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -163,7 +164,14 @@ public class UserController {
             if (fromClinician) {
                 logoutUser.setText("Go Back");
                 logoutUser.setOnAction(e -> closeWindow());
-
+                try {
+                    // ༼ つ ◕ ◕ ༽つ FIX APP ༼ つ ◕ ◕ ༽つ
+                    currentUser.setProfilePhotoFilePath(application.getUserBridge().getProfilePicture(user.getNhi()));
+                } catch (IOException e) {
+                    ClassLoader classLoader = getClass().getClassLoader();
+                    File inFile = new File(classLoader.getResource("default-profile-picture.jpg").getFile());
+                    user.setProfilePhotoFilePath(inFile.getPath());
+                }
             } else {
                 logoutUser.setText("Log Out");
                 logoutUser.setOnAction(e -> logout());
@@ -464,15 +472,15 @@ public class UserController {
     @FXML
     public void delete() {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setContentText("Are you sure you want to delete this user?");
+        alert.setContentText("Are you sure you want to delete this user? This action cannot be undone.");
         alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
         Optional<ButtonType> result = alert.showAndWait();
 
         if (result.get() == ButtonType.OK) {
             currentUser.setDeleted(true);
             Log.info("Successfully deleted user profile for User NHI: " + currentUser.getNhi());
+            application.deleteUser(currentUser);
             if (!fromClinician) {
-                application.deleteUser(currentUser);
                 logout();
             } else {
                 stage.close();
@@ -525,6 +533,7 @@ public class UserController {
     }
 
     public void disableLogout() {
-        userProfileTabPageController.disableLogout();
+        logoutUser.setText("Go Back");
+        logoutUser.setOnAction(e -> closeWindow());
     }
 }

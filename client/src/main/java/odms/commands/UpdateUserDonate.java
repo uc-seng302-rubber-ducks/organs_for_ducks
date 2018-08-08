@@ -1,11 +1,14 @@
 package odms.commands;
 
-import odms.controller.AppController;
 import odms.commons.model.User;
 import odms.commons.model._enum.Organs;
+import odms.controller.AppController;
+import odms.view.IoHelper;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
+
+import java.io.IOException;
 
 @Command(name = "donate", description = "Updates a user's organs to donate.")
 public class UpdateUserDonate implements Runnable {
@@ -25,16 +28,18 @@ public class UpdateUserDonate implements Runnable {
 
     @Override
     public void run() {
-        User user = controller.findUser(nhi);
-        if (user == null) {
-            System.out.println("No users with this NHI could be found");
+        User user = null;
+        try {
+            user = controller.getUserBridge().getUser(nhi);
+        } catch (IOException e) {
+            IoHelper.display("No users with this NHI could be found");
             return;
         }
 
 
         boolean changed = false;
         if (rawOrgans == null) {
-            System.out.println("Please enter some organs to update");
+            IoHelper.display("Please enter some organs to update");
             return;
         }
         for (String rawOrgan : rawOrgans) {
@@ -44,7 +49,7 @@ public class UpdateUserDonate implements Runnable {
                 String org = rawOrgan.substring(1);
                 organ = Organs.valueOf(org.toUpperCase());
             } catch (IllegalArgumentException ex) {
-                System.out.println("Organ " + rawOrgan + " not recognised");
+                IoHelper.display("Organ " + rawOrgan + " not recognised");
                 //skip this organ and try the next one
                 continue;
             }
@@ -58,13 +63,13 @@ public class UpdateUserDonate implements Runnable {
                     changed = true;
                     break;
                 default:
-                    System.out.println("could not recognise argument" + rawOrgan);
+                    IoHelper.display("could not recognise argument" + rawOrgan);
                     break;
             }
         }
         if (changed) {
-            System.out.println("User " + user.getNhi() + " updated");
-            System.out.println(user.getDonorDetails().getOrgans().toString());
+            IoHelper.display("User " + user.getNhi() + " updated");
+            IoHelper.display(user.getDonorDetails().getOrgans().toString());
             controller.update(user);
             controller.saveUser(user);
         }

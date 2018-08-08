@@ -351,22 +351,12 @@ public class AppController {
                 originalUser = user;
             }
 
-            if (userBridge.getUser(originalUser.getNhi()) != null) {
-                if (token != null) {
-                    userBridge.putReceivingOrgans(user.getReceiverDetails().getOrgans(), originalUser.getNhi(), token);
-                    userBridge.putUserProcedures(user.getMedicalProcedures(), originalUser.getNhi(), token);
-                    userBridge.putMedications(user.getPreviousMedication(), originalUser.getNhi(), token);
-                    userBridge.putMedications(user.getCurrentMedication(), originalUser.getNhi(), token);
-                    userBridge.putDiseases(user.getPastDiseases(), originalUser.getNhi(), token);
-                    userBridge.putDiseases(user.getCurrentDiseases(), originalUser.getNhi(), token);
-                }
+            if (userBridge.getExists(originalUser.getNhi())) {
                 userBridge.putProfilePicture(originalUser.getNhi(), user.getProfilePhotoFilePath());
-                userBridge.putDonatingOrgans(user.getDonorDetails().getOrgans(), originalUser.getNhi());
                 userBridge.putUser(user, originalUser.getNhi());
 
             } else {
                 userBridge.postUser(user);
-                userBridge.putProfilePicture(originalUser.getNhi(), user.getProfilePhotoFilePath());
             }
         } catch (IOException e) {
             Log.warning("Could not save user " + user.getNhi(), e);
@@ -407,21 +397,6 @@ public class AppController {
         }
     }
 
-    /**
-     * @return
-     */
-    public StatusBarController getStatusBarController() {
-        return statusBarController;
-    }
-
-    /**
-     * @param StatusBarController
-     */
-    public void setStatusBarController(StatusBarController StatusBarController) {
-        this.statusBarController = StatusBarController;
-    }
-
-
     public List<Clinician> getClinicians() {
         return clinicians;
     }
@@ -435,22 +410,17 @@ public class AppController {
     }
 
     /**
+     * Retrieves the specified clinician from the database
+     *
      * @param id The staff id (unique identifier) of the clinician
      * @return The clinician that matches the given staff id, or null if no clinician matches.
      */
     public Clinician getClinician(String id) {
-        for (Clinician c : clinicians) {
-            if (c.getStaffId().equals(id) && !c.isDeleted()) {
-                return c;
-            }
-        }
-
         try {
-            getClinicianBridge().getClinician(id, getToken());
+            return getClinicianBridge().getClinician(id, getToken());
         } catch (ApiException ex) {
-            Log.warning("Error while trying to retrieve clinician "+id+" status "+ex.getResponseCode(), ex);
+            Log.warning("Error while trying to retrieve clinician " + id + " status "+ex.getResponseCode(), ex);
         }
-        // Should I change this to use the ClinicianBridge???
         return null;
     }
 
@@ -483,10 +453,8 @@ public class AppController {
             }
 
             if (clinicianBridge.getExists(originalClinician.getStaffId())) {
+                clinicianBridge.putProfilePicture(originalClinician.getStaffId(), getToken(), clinician.getProfilePhotoFilePath());
                 clinicianBridge.putClinician(clinician, originalClinician.getStaffId(), token);
-                if(!originalClinician.getProfilePhotoFilePath().equals(clinician.getProfilePhotoFilePath())) {
-                    clinicianBridge.putProfilePicture(originalClinician.getStaffId(),getToken(),clinician.getProfilePhotoFilePath());
-                }
             } else {
                 clinicianBridge.postClinician(clinician, token);
             }
@@ -500,7 +468,7 @@ public class AppController {
     public void deleteClinician(Clinician clinician) {
         clinician.setDeleted(true);
 
-        getClinicianBridge().deleteClinician(clinician, clinician.getStaffId());
+        getClinicianBridge().deleteClinician(clinician, getToken());
     }
 
     /**
