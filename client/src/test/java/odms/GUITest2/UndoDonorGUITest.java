@@ -4,6 +4,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Button;
 import odms.App;
 import odms.TestUtils.AppControllerMocker;
+import odms.TestUtils.CommonTestMethods;
 import odms.bridge.UserBridge;
 import odms.commons.model.EmergencyContact;
 import odms.commons.model.User;
@@ -30,7 +31,7 @@ public class UndoDonorGUITest extends ApplicationTest {
 
     @BeforeClass
     public static void initialization() {
-        //CommonTestMethods.runHeadless();
+        CommonTestMethods.runHeadless();
     }
 
     @Before
