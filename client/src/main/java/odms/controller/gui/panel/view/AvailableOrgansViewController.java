@@ -7,7 +7,6 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import javafx.scene.control.cell.ProgressBarTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import odms.commons.model._enum.Organs;
 import odms.commons.model.datamodel.AvailableOrganDetail;
@@ -40,7 +39,7 @@ public class AvailableOrgansViewController {
     private TableColumn<AvailableOrganDetail, LocalDateTime> deathMomentColumn;
 
     @FXML
-    private TableColumn<AvailableOrganDetail, ProgressBarTableCell<LocalDateTime>> progressBarColumn;
+    private TableColumn<AvailableOrganDetail, LocalDateTime> progressBarColumn;
 
 
     private ObservableList<AvailableOrganDetail> availableOrganDetails = FXCollections.observableList(new ArrayList<>());
@@ -52,6 +51,7 @@ public class AvailableOrgansViewController {
         for (Organs organ : Organs.values()) {
             organs.add(organ.toString());
         }
+        availableOrganFilterComboBox.setItems(organs);
         initAvailableOrgansTableView();
     }
 

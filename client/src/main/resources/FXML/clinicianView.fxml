@@ -161,7 +161,9 @@
                     </content>
                 </Tab>
                 <Tab text="Available Organs">
-                    <fx:include fx:id="availableOrgansView" source="availableOrgansPanel.fxml"/>
+                    <content>
+                        <fx:include fx:id="availableOrgansView" source="availableOrgansPanel.fxml"/>
+                    </content>
                 </Tab>
             </tabs>
         </TabPane>
