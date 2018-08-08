@@ -117,7 +117,6 @@ public class UpdateUserDetails implements Runnable {
             IoHelper.display("help goes here");
             return;
         }
-        Log.info(">:(");
         User user;
         try {
             user = controller.getUserBridge().getUser(originalNhi);

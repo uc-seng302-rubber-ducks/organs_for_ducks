@@ -115,7 +115,7 @@ public class UpdateUserDetailsTest {
     }
 
     @Test
-    public void ShouldUpdateDateField() throws IOException {
+    public void ShouldUpdateDateField() throws IOException, DateTimeParseException {
         //dob and dod are identical, no use testing both
         //just checking it can parse dates
         String[] args = {NHI, "-dob=2016-03-04"};
@@ -124,15 +124,13 @@ public class UpdateUserDetailsTest {
                 .parseWithHandler(new CommandLine.RunLast(), System.err, args);
 
         User test = controller.getUserBridge().getUser(NHI);
-        try {
-            assert (test.getDateOfBirth().equals(LocalDate.parse("2016-03-04", sdf)));
-        } catch (DateTimeParseException ex) {
-            fail("Could not parse date (error in tester)");
-        }
+
+        Assert.assertEquals(LocalDate.parse("2016-03-04", sdf), test.getDateOfBirth());
+
     }
 
     @Test
-    public void ShouldNotUpdateBadDate() throws IOException {
+    public void ShouldNotUpdateBadDate() throws IOException, DateTimeParseException {
         //dob and dod are identical, no use testing both
         String[] args = {NHI, "-dob=1963"};
 
@@ -140,11 +138,9 @@ public class UpdateUserDetailsTest {
                 .parseWithHandler(new CommandLine.RunLast(), System.err, args);
 
         User test = controller.getUserBridge().getUser(NHI);
-        try {
-            assert (test.getDateOfBirth().equals(LocalDate.parse("1111-11-11", sdf)));
-        } catch (DateTimeParseException ex) {
-            fail("Could not parse date (error in tester)");
-        }
+
+        Assert.assertEquals(LocalDate.parse("1111-11-11", sdf), test.getDateOfBirth());
+
 
     }
 
@@ -184,37 +180,33 @@ public class UpdateUserDetailsTest {
     }
 
     @Test
-    public void ShouldSetDateOfDeathToNullWhenPassedNull() throws IOException {
+    public void ShouldSetDateOfDeathToNullWhenPassedNull() throws IOException, DateTimeParseException {
         String[] args = {NHI, "-dod=null"};
 
         new CommandLine(new UpdateUserDetails())
                 .parseWithHandler(new CommandLine.RunLast(), System.err, args);
 
         User test = controller.getUserBridge().getUser(NHI);
-        try {
-            assert (test.getDateOfDeath() == null);
-        } catch (DateTimeParseException ex) {
-            fail("Could not parse date (error in tester)");
-        }
+
+        Assert.assertEquals (null, test.getDateOfDeath());
+
     }
 
     @Test
-    public void ShouldCorrectlyUpdateTimeOfDeathWithNoPreviousDeath() throws IOException {
+    public void ShouldCorrectlyUpdateTimeOfDeathWithNoPreviousDeath() throws IOException, DateTimeParseException {
         String[] args = {NHI, "-tod=02:45"};
 
         new CommandLine(new UpdateUserDetails())
                 .parseWithHandler(new CommandLine.RunLast(), System.err, args);
 
         User test = controller.getUserBridge().getUser(NHI);
-        try {
-            assert (test.getMomentDeath().toLocalTime().equals(LocalTime.parse("02:45")));
-        } catch (DateTimeParseException ex) {
-            fail("Could not parse date (error in tester)");
-        }
+
+        Assert.assertEquals(LocalTime.parse("02:45"), test.getMomentDeath().toLocalTime());
+
     }
 
     @Test
-    public void ShouldCorrectlyUpdateTimeOfDeathWithPreviousDeath() throws IOException {
+    public void ShouldCorrectlyUpdateTimeOfDeathWithPreviousDeath() throws IOException, DateTimeParseException {
         String[] args = {NHI, "-tod=02:45"};
 
         User test = controller.getUserBridge().getUser(NHI);
@@ -224,11 +216,8 @@ public class UpdateUserDetailsTest {
         new CommandLine(new UpdateUserDetails())
                 .parseWithHandler(new CommandLine.RunLast(), System.err, args);
 
-        try {
-            assert (test.getMomentDeath().equals(LocalDateTime.parse("2010-01-01 02:45", formatter)));
-        } catch (DateTimeParseException ex) {
-            fail("Could not parse date (error in tester)");
-        }
+        Assert.assertEquals(LocalDateTime.parse("2010-01-01 02:45", formatter), test.getMomentDeath());
+
     }
 
     @Test

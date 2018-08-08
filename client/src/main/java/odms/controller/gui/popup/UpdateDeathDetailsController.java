@@ -162,29 +162,28 @@ public class UpdateDeathDetailsController {
         updateDeathDetailsErrorLabel.setVisible(false);
         UserController userController = controller.getUserController();
 
-        if (validateFields()) {
-
-            LocalDate dateOfDeath = updateDeathDetailsDatePicker.getValue();
-            LocalTime timeOfDeath = LocalTime.parse(updateDeathDetailsTimeTextField.getText());
-            currentUser.setMomentOfDeath(currentUser.getDeathDetails().createMomentOfDeath(dateOfDeath, timeOfDeath));
-
-            currentUser.setDeathCity(updateDeathDetailsCityTextField.getText());
-            if (isNewZealand) {
-                currentUser.setDeathRegion(updateDeathDetailsRegionChoiceBox.getValue());
-            } else {
-                currentUser.setDeathRegion(updateDeathDetailsRegionTextField.getText());
-            }
-            currentUser.setDeathCountry(updateDeathDetailsCountryComboBox.getValue());
-
-            currentUser.getRedoStack().clear();
-            userController.showUser(currentUser);
-            Log.info("Update User Death Details Successful for User NHI: " + currentUser.getNhi());
-
-            stage.close();
-
-        } else {
+        if (!validateFields()) {
             updateDeathDetailsErrorLabel.setVisible(true);
+            return;
         }
+
+        LocalDate dateOfDeath = updateDeathDetailsDatePicker.getValue();
+        LocalTime timeOfDeath = LocalTime.parse(updateDeathDetailsTimeTextField.getText());
+        currentUser.setMomentOfDeath(currentUser.getDeathDetails().createMomentOfDeath(dateOfDeath, timeOfDeath));
+
+        currentUser.setDeathCity(updateDeathDetailsCityTextField.getText());
+        if (isNewZealand) {
+            currentUser.setDeathRegion(updateDeathDetailsRegionChoiceBox.getValue());
+        } else {
+            currentUser.setDeathRegion(updateDeathDetailsRegionTextField.getText());
+        }
+        currentUser.setDeathCountry(updateDeathDetailsCountryComboBox.getValue());
+
+        currentUser.getRedoStack().clear();
+        userController.showUser(currentUser);
+        Log.info("Update User Death Details Successful for User NHI: " + currentUser.getNhi());
+
+        stage.close();
     }
 
     /**

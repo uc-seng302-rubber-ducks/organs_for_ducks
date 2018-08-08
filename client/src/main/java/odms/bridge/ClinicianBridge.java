@@ -181,8 +181,7 @@ public class ClinicianBridge extends RoleBridge {
         String[] bits = profilePicturePath.split("\\.");
         String format = bits[bits.length-1];
         Headers headers = new Headers.Builder().add(TOKEN_HEADER, token).build();
-        byte[] bytesFromImage = PhotoHelper.getBytesFromImage(profilePicturePath);
-        RequestBody body = RequestBody.create(MediaType.parse("image/" + format), bytesFromImage);
+        RequestBody body = RequestBody.create(MediaType.parse("image/" + format), PhotoHelper.getBytesFromImage(profilePicturePath));
         Request request = new Request.Builder().url(url).put(body).headers(headers).build();
         client.newCall(request).enqueue(new Callback() {
             @Override

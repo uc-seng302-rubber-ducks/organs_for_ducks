@@ -44,6 +44,7 @@ public class UpdateDeathDetailsControllerGUITest extends ApplicationTest{
     private DateTimeFormatter sdf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     private User testUser = new User("Aa", LocalDate.parse("2000-01-20", sdf), "ABC1244");
     private Collection<UserOverview> overviews = Collections.singletonList(UserOverview.fromUser(testUser));
+    private final String dateErrorText = "There is an error with your Date of Death";
 
     @BeforeClass
     public static void initialization() {
@@ -124,7 +125,7 @@ public class UpdateDeathDetailsControllerGUITest extends ApplicationTest{
         setDateValue(this, "#updateDeathDetailsDatePicker", LocalDate.now().plusDays(1));
         setTextField(this, "#updateDeathDetailsTimeTextField", "02:45"); // Make sure time doesn't through an error
         clickOnButton(this, "#confirmUpdateDeathDetailsButton");
-        verifyThat("#updateDeathDetailsErrorLabel", LabeledMatchers.hasText("There is an error with your Date of Death"));
+        verifyThat("#updateDeathDetailsErrorLabel", LabeledMatchers.hasText(dateErrorText));
     }
 
     @Test
@@ -134,26 +135,27 @@ public class UpdateDeathDetailsControllerGUITest extends ApplicationTest{
         setDateValue(this, "#updateDeathDetailsDatePicker", testUser.getDateOfBirth().minusDays(1));
         setTextField(this, "#updateDeathDetailsTimeTextField", "02:45");
         clickOnButton(this, "#confirmUpdateDeathDetailsButton");
-        verifyThat("#updateDeathDetailsErrorLabel", LabeledMatchers.hasText("There is an error with your Date of Death"));
+        verifyThat("#updateDeathDetailsErrorLabel", LabeledMatchers.hasText(dateErrorText));
     }
 
     @Test
     public void testTimeOfDeathCannotBeInvalid() {
+        final String errorText = "The format of the Time of Death is incorrect";
         loginAsClinician();
         clickOnButton(this, "#updateDeathDetailsButton");
         setDateValue(this, "#updateDeathDetailsDatePicker", LocalDate.now()); //Make sure date is not invalid
         //Doing multiple in one test to speed up tests
         setTextField(this, "#updateDeathDetailsTimeTextField", "12:30pm");
         clickOnButton(this, "#confirmUpdateDeathDetailsButton");
-        verifyThat("#updateDeathDetailsErrorLabel", LabeledMatchers.hasText("The format of the Time of Death is incorrect"));
+        verifyThat("#updateDeathDetailsErrorLabel", LabeledMatchers.hasText(errorText));
 
         setTextField(this, "#updateDeathDetailsTimeTextField", "24:00");
         clickOnButton(this, "#confirmUpdateDeathDetailsButton");
-        verifyThat("#updateDeathDetailsErrorLabel", LabeledMatchers.hasText("The format of the Time of Death is incorrect"));
+        verifyThat("#updateDeathDetailsErrorLabel", LabeledMatchers.hasText(errorText));
 
         setTextField(this, "#updateDeathDetailsTimeTextField", "23:60");
         clickOnButton(this, "#confirmUpdateDeathDetailsButton");
-        verifyThat("#updateDeathDetailsErrorLabel", LabeledMatchers.hasText("The format of the Time of Death is incorrect"));
+        verifyThat("#updateDeathDetailsErrorLabel", LabeledMatchers.hasText(errorText));
     }
 
     @Test
