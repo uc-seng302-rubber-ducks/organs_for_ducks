@@ -4,6 +4,9 @@ import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.ListView;
 import javafx.scene.control.SelectionMode;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
 import odms.commons.model.User;
 import odms.commons.model._enum.Organs;
 import odms.commons.utils.Log;
@@ -11,13 +14,14 @@ import odms.commons.utils.OrganListCellFactory;
 import odms.controller.AppController;
 import odms.controller.gui.window.UserController;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 
 public class DonationTabPageController {
 
     @FXML
-    private ListView<Organs> currentlyDonating;
+    private TableView<Organs> currentlyDonating;
 
     @FXML
     private ListView<Organs> canDonate;
@@ -38,8 +42,16 @@ public class DonationTabPageController {
         application = controller;
         currentUser = user;
         this.parent = parent;
+
+        TableColumn<Organs, String> donatingOrganName = new TableColumn("Organ");
+        TableColumn<Organs, LocalDateTime> donatingOrganExpiry = new TableColumn("Expiry Countdown"); // todo: find out how the expiry time is being stored - jen 8/8
+
+        donatingOrganName.setCellValueFactory(new PropertyValueFactory<>("organName"));
+        donatingOrganExpiry.setCellValueFactory(new PropertyValueFactory<>("expiryTime"));
+
+        currentlyDonating.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        currentlyDonating.getColumns().addAll(donatingOrganName, donatingOrganExpiry);
         currentlyDonating.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-        currentlyDonating.setCellFactory(column -> OrganListCellFactory.generateListCell(currentUser));
 
         populateOrganLists(user);
     }
