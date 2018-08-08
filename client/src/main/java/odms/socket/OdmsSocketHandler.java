@@ -51,29 +51,20 @@ public class OdmsSocketHandler {
             }
         }
 
-        /**
-         * attempts to run the start method, incrementing a counter each time it is called.
-         * if the counter exceeds a maximum, it will log a warning and cease
-         *
-         * @throws InterruptedException if the wait time between attempts is interrupted
-         */
-        private void retry() throws InterruptedException {
-            final int maxRetries = 5;
-            final int retryBackoffMs = 3000;
-
-            if (numRetries < maxRetries) {
-                numRetries++;
-                Thread.sleep(retryBackoffMs);
-                start(url);
-            }
-            Log.warning("unable to connect websocket after " + numRetries);
-        }
     };
 
     public OdmsSocketHandler(OkHttpClient client, ServerEventNotifier eventStore) {
         this.pcs = new PropertyChangeSupport(this);
         this.client = client;
         this.eventStore = eventStore;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 
     public WebSocketListener getListener() {
@@ -106,4 +97,21 @@ public class OdmsSocketHandler {
     }
 
 
+    /**
+     * attempts to run the start method, incrementing a counter each time it is called.
+     * if the counter exceeds a maximum, it will log a warning and cease
+     *
+     * @throws InterruptedException if the wait time between attempts is interrupted
+     */
+    public void retry() throws InterruptedException {
+        int maxRetries = 5;
+        int retryBackoffMs = 3000;
+
+        if (numRetries < maxRetries) {
+            numRetries++;
+            Thread.sleep(retryBackoffMs);
+            start(url);
+        }
+        Log.warning("unable to connect websocket after " + numRetries);
+    }
 }
