@@ -1,6 +1,7 @@
 package odms.socket;
 
 import odms.commons.model._enum.Environments;
+import odms.commons.model._enum.EventTypes;
 import odms.commons.utils.Log;
 import org.junit.After;
 import org.junit.Assert;
@@ -51,7 +52,7 @@ public class SocketHandlerTest {
         sessions.add(mockSession2);
 
         SocketHandler.setSessions(sessions);
-        handler.broadcast();
+        handler.broadcast(EventTypes.USER_UPDATE, "", "");
 
         verify(mockSession1, times(1)).sendMessage(any(WebSocketMessage.class));
         verify(mockSession2, times(1)).sendMessage(any(WebSocketMessage.class));
@@ -70,7 +71,7 @@ public class SocketHandlerTest {
         sessions.add(mockSession2);
 
         SocketHandler.setSessions(sessions);
-        handler.broadcast();
+        handler.broadcast(EventTypes.USER_UPDATE, "", "");
 
         Assert.assertFalse(SocketHandler.getSessions().contains(mockSession1));
         verify(mockSession2, times(1)).sendMessage(any(WebSocketMessage.class));
