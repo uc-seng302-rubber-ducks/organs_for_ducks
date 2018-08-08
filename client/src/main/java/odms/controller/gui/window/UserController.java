@@ -16,14 +16,18 @@ import javafx.stage.Stage;
 import odms.commons.model.Change;
 import odms.commons.model.EmergencyContact;
 import odms.commons.model.User;
+import odms.commons.model._enum.EventTypes;
 import odms.commons.model._enum.OrganDeregisterReason;
 import odms.commons.model._enum.Organs;
+import odms.commons.model.event.UpdateNotificationEvent;
 import odms.commons.utils.Log;
 import odms.controller.AppController;
 import odms.controller.gui.StatusBarController;
 import odms.controller.gui.UnsavedChangesAlert;
 import odms.controller.gui.panel.*;
+import odms.socket.ServerEventNotifier;
 
+import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
@@ -37,7 +41,7 @@ import static odms.commons.utils.PhotoHelper.deleteTempDirectory;
 /**
  * Class for the functionality of the User view of the application
  */
-public class UserController {
+public class UserController implements PropertyChangeListener {
 
 // the contact page attributes
 
@@ -191,8 +195,11 @@ public class UserController {
         changelog.addListener((ListChangeListener.Change<? extends Change> change) -> historyTableView
                 .setItems(changelog));
 
-        userProfileTabPageController.init(controller, user, this.stage, fromClinician);
-    }
+            userProfileTabPageController.init(controller, user, this.stage, fromClinician);
+
+            ServerEventNotifier.getInstance().addPropertyChangeListener(this);
+        }
+
 
 
     /**
@@ -519,7 +526,6 @@ public class UserController {
     @FXML
     private void refreshUser() {
         currentUser = application.findUser(currentUser.getNhi());
-        refreshUser();
     }
 
     public void showDonorDiseases(User user, boolean init) {
@@ -537,5 +543,39 @@ public class UserController {
     public void disableLogout() {
         logoutUser.setText("Go Back");
         logoutUser.setOnAction(e -> closeWindow());
+    }
+
+    /**
+     * handles events fired by objects this is listening to.
+     * currently only handles UpdateNotificationEvents. Updates shown user to the one specified in that event
+     *
+     * @param evt PropertyChangeEvent to be handled.
+     * @see UpdateNotificationEvent
+     */
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        UpdateNotificationEvent event;
+        try {
+            event = (UpdateNotificationEvent) evt;
+        } catch (ClassCastException ex) {
+            return;
+        }
+        if (event == null) {
+            return;
+        }
+        if (event.getType().equals(EventTypes.USER_UPDATE)
+                && event.getOldIdentifier().equalsIgnoreCase(currentUser.getNhi())
+                || event.getNewIdentifier().equalsIgnoreCase(currentUser.getNhi())) {
+
+            try {
+                currentUser = application.getUserBridge().getUser(event.getNewIdentifier());
+                if (currentUser != null) {
+                    showUser(currentUser); //TODO: Apply change once we solve the DB race 7/8/18 JB
+                }
+            } catch (IOException ex) {
+                Log.warning("failed to get updated user", ex);
+            }
+
+        }
     }
 }
