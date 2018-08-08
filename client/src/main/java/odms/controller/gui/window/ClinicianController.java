@@ -36,7 +36,7 @@ import odms.controller.gui.UnsavedChangesAlert;
 import odms.controller.gui.panel.TransplantWaitListController;
 import odms.controller.gui.popup.DeletedUserController;
 import odms.controller.gui.popup.utils.AlertWindowFactory;
-import odms.socket.ServerEventStore;
+import odms.socket.ServerEventNotifier;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -158,7 +158,7 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
         this.clinician = clinician;
         this.admin = fromAdmin;
 
-        ServerEventStore.getInstance().addPropertyChangeListener(this);
+        ServerEventNotifier.getInstance().addPropertyChangeListener(this);
         setDefaultFilters();
         stage.setResizable(true);
         showClinician(clinician);

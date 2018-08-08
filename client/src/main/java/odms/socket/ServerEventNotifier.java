@@ -12,22 +12,28 @@ import java.beans.PropertyChangeSupport;
 /**
  * class to store incoming messages from the server so they can be read by other classes within the client
  */
-public class ServerEventStore implements Listenable {
+public class ServerEventNotifier implements Listenable {
 
-    private static ServerEventStore eventStore;
+    private static ServerEventNotifier eventNotifier;
     private PropertyChangeSupport pcs;
 
-    private ServerEventStore() {
+    private ServerEventNotifier() {
         this.pcs = new PropertyChangeSupport(this);
     }
 
-    public static ServerEventStore getInstance() {
-        if (eventStore == null) {
-            eventStore = new ServerEventStore();
+    public static ServerEventNotifier getInstance() {
+        if (eventNotifier == null) {
+            eventNotifier = new ServerEventNotifier();
         }
-        return eventStore;
+        return eventNotifier;
     }
 
+    /**
+     * calls the fire method after creating an UpdateNotificationEvent for the given notification. use this in preference to the overridden method
+     *
+     * @param notification update notification to be sent to listeners
+     * @see UpdateNotificationEvent
+     */
     public void fire(UpdateNotification notification) {
         fire(new UpdateNotificationEvent(this, notification));
     }
@@ -42,6 +48,11 @@ public class ServerEventStore implements Listenable {
         pcs.removePropertyChangeListener(listener);
     }
 
+    /**
+     * fires an event to all listeners on the main/javafx thread
+     *
+     * @param event PropertyChangeEvent to be fired
+     */
     @Override
     public void fire(PropertyChangeEvent event) {
         Platform.runLater(() -> pcs.firePropertyChange(event));

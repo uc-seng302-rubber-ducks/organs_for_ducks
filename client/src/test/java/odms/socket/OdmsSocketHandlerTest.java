@@ -10,11 +10,6 @@ import okhttp3.WebSocketListener;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
-import java.util.List;
-
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -25,13 +20,13 @@ public class OdmsSocketHandlerTest {
     private OdmsSocketHandler handler;
     private WebSocketListener listener;
     private OkHttpClient client;
-    private ServerEventStore eventStore;
+    private ServerEventNotifier eventStore;
     private final String testUrl = "http://url.com"; //Request has regex/checking for format
 
     @Before
     public void setUp() {
         client = mock(OkHttpClient.class);
-        eventStore = mock(ServerEventStore.class);
+        eventStore = mock(ServerEventNotifier.class);
         handler = new OdmsSocketHandler(client, eventStore);
         listener = handler.getListener();
     }
@@ -46,24 +41,9 @@ public class OdmsSocketHandlerTest {
     public void listenerShouldCallEventStoreOnMessage() {
         WebSocket mockSocket = mock(WebSocket.class);
         UpdateNotification notification = new UpdateNotification(EventTypes.USER_UPDATE, "ABC1234", "ABC1235");
-        TestEventListener testEventListener = new TestEventListener();
-        handler.addPropertyChangeListener(testEventListener);
 
         listener.onMessage(mockSocket, new Gson().toJson(notification));
 
         verify(eventStore, times(1)).fire(any(UpdateNotification.class));
-    }
-
-
-    /**
-     * very simple class to catch events fired by the web socket listener
-     */
-    private class TestEventListener implements PropertyChangeListener {
-        private List<PropertyChangeEvent> events = new ArrayList<>();
-
-        @Override
-        public void propertyChange(PropertyChangeEvent evt) {
-            events.add(evt);
-        }
     }
 }

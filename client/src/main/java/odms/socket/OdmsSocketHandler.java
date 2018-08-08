@@ -1,25 +1,19 @@
 package odms.socket;
 
 import com.google.gson.Gson;
-import odms.commons.exception.ConnectionException;
-import odms.commons.model._abstract.Listenable;
 import odms.commons.model.dto.UpdateNotification;
 import odms.commons.utils.Log;
 import okhttp3.*;
 
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
 
-public class OdmsSocketHandler implements Listenable {
+public class OdmsSocketHandler {
 
     private PropertyChangeSupport pcs;
     private OkHttpClient client;
     private WebSocket socket;
-    private ServerEventStore eventStore;
-    private final int MAX_RETRIES = 5;
-    private final int RETRY_BACKOFF_MS = 3000;
+    private ServerEventNotifier eventStore;
     private int numRetries = 0;
     private String url = "";
     private WebSocketListener listener = new WebSocketListener() {
@@ -55,11 +49,28 @@ public class OdmsSocketHandler implements Listenable {
                 Log.severe("failed to retry connection, cancelling", e);
                 Thread.currentThread().interrupt();
             }
+        }
 
+        /**
+         * attempts to run the start method, incrementing a counter each time it is called.
+         * if the counter exceeds a maximum, it will log a warning and cease
+         *
+         * @throws InterruptedException if the wait time between attempts is interrupted
+         */
+        private void retry() throws InterruptedException {
+            final int maxRetries = 5;
+            final int retryBackoffMs = 3000;
+
+            if (numRetries < maxRetries) {
+                numRetries++;
+                Thread.sleep(retryBackoffMs);
+                start(url);
+            }
+            Log.warning("unable to connect websocket after " + numRetries);
         }
     };
 
-    public OdmsSocketHandler(OkHttpClient client, ServerEventStore eventStore) {
+    public OdmsSocketHandler(OkHttpClient client, ServerEventNotifier eventStore) {
         this.pcs = new PropertyChangeSupport(this);
         this.client = client;
         this.eventStore = eventStore;
@@ -74,8 +85,8 @@ public class OdmsSocketHandler implements Listenable {
     }
 
     /**
-     * attempts to make a websocket with the given url. may throw a
-     * @see ConnectionException on error
+     * attempts to make a websocket with the given url.
+     *
      * @param url correctly formatted url (ws://your.address/here)
      */
     public void start(String url) {
@@ -84,6 +95,9 @@ public class OdmsSocketHandler implements Listenable {
         this.url = url;
     }
 
+    /**
+     * closes the socket with a 1000 (normal closure) code (if it exists)
+     */
     public void stop() {
         if (socket != null) {
             socket.close(1000, "socket closed by client");
@@ -91,27 +105,5 @@ public class OdmsSocketHandler implements Listenable {
         }
     }
 
-    public void retry() throws InterruptedException {
-        if (numRetries < MAX_RETRIES) {
-            numRetries++;
-            Thread.sleep(RETRY_BACKOFF_MS);
-            start(url);
-        }
-        Log.warning("unable to connect websocket after " + numRetries);
-    }
 
-    @Override
-    public void addPropertyChangeListener(PropertyChangeListener listener) {
-        pcs.addPropertyChangeListener(listener);
-    }
-
-    @Override
-    public void removePropertyChangeListener(PropertyChangeListener listener) {
-        pcs.removePropertyChangeListener(listener);
-    }
-
-    @Override
-    public void fire(PropertyChangeEvent event) {
-        pcs.firePropertyChange(event);
-    }
 }

@@ -25,7 +25,7 @@ import odms.controller.AppController;
 import odms.controller.gui.StatusBarController;
 import odms.controller.gui.UnsavedChangesAlert;
 import odms.controller.gui.panel.*;
-import odms.socket.ServerEventStore;
+import odms.socket.ServerEventNotifier;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -199,7 +199,7 @@ public class UserController implements PropertyChangeListener {
 
             userProfileTabPageController.init(controller, user, this.stage, fromClinician);
 
-            ServerEventStore.getInstance().addPropertyChangeListener(this);
+            ServerEventNotifier.getInstance().addPropertyChangeListener(this);
         }
     }
 
@@ -289,13 +289,13 @@ public class UserController implements PropertyChangeListener {
      * When fired, it also deleted the temp folder.
      */
     @FXML
-    private void logout(){
+    private void logout() {
         checkSave();
         currentUser.getUndoStack().clear();
         currentUser.getRedoStack().clear();
         try {
             deleteTempDirectory();
-        } catch (IOException e){
+        } catch (IOException e) {
             System.err.println(e);
         }
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML/loginView.fxml"));
@@ -314,8 +314,6 @@ public class UserController implements PropertyChangeListener {
             Log.severe("failed to launch login window after logged out for User NHI: " + currentUser.getNhi(), e);
         }
     }
-
-
 
 
     /**
@@ -360,7 +358,7 @@ public class UserController implements PropertyChangeListener {
                 relationship.setText("");
             }
         }
-            pRegion.setText(currentUser.getRegion());
+        pRegion.setText(currentUser.getRegion());
         pAddress.setText(currentUser.getContactDetails().getAddress().getStringAddress());
         city.setText(currentUser.getCity());
         country.setText(currentUser.getCountry());
@@ -542,6 +540,13 @@ public class UserController implements PropertyChangeListener {
         logoutUser.setOnAction(e -> closeWindow());
     }
 
+    /**
+     * handles events fired by objects this is listening to.
+     * currently only handles UpdateNotificationEvents. Updates shown user to the one specified in that event
+     *
+     * @param evt PropertyChangeEvent to be handled.
+     * @see UpdateNotificationEvent
+     */
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         UpdateNotificationEvent event;
@@ -559,7 +564,7 @@ public class UserController implements PropertyChangeListener {
 
             try {
                 currentUser = application.getUserBridge().getUser(event.getNewIdentifier());
-                if(currentUser != null){
+                if (currentUser != null) {
                     showUser(currentUser); //TODO: Apply change once we solve the DB race 7/8/18 JB
                 }
             } catch (IOException ex) {
