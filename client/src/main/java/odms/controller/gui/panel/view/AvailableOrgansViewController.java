@@ -1,6 +1,7 @@
 package odms.controller.gui.panel.view;
 
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
@@ -52,6 +53,7 @@ public class AvailableOrgansViewController {
             organs.add(organ.toString());
         }
         availableOrganFilterComboBox.setItems(organs);
+        availableOrganDetails.addListener((ListChangeListener<? super AvailableOrganDetail>) observable -> populateTables());
         initAvailableOrgansTableView();
     }
 

@@ -1,11 +1,9 @@
 package odms.controller.gui.panel.logic;
 
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import odms.commons.model.User;
 import odms.commons.model.datamodel.AvailableOrganDetail;
 import odms.controller.AppController;
-import odms.controller.gui.panel.view.AvailableOrgansViewController;
 import odms.controller.gui.popup.utils.AlertWindowFactory;
 
 import java.io.IOException;
@@ -17,14 +15,13 @@ public class AvailableOrgansLogicController {
     private String organ = "";
     private String region = "";
     private ObservableList<AvailableOrganDetail> availableOrganDetails;
-    private AvailableOrgansViewController availableOrgansViewController;
 
     public AvailableOrgansLogicController(ObservableList<AvailableOrganDetail> availableOrganDetails) {
         this.availableOrganDetails = availableOrganDetails;
-        availableOrganDetails.addListener((ListChangeListener<? super AvailableOrganDetail>) observable -> availableOrgansViewController.populateTables());
     }
 
     public void search(int startIndex, String organ, String region) {
+        availableOrganDetails.clear();
         this.organ = organ;
         this.region = region;
         this.startingIndex = startIndex;
@@ -53,6 +50,7 @@ public class AvailableOrgansLogicController {
         try {
             User user = AppController.getInstance().getUserBridge().getUser(donorNhi);
             // Make FXML calls to create the new window.
+
         } catch (IOException e) {
             AlertWindowFactory.generateError(e);
         }
