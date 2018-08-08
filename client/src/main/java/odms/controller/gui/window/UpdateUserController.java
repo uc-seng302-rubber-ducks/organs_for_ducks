@@ -660,9 +660,7 @@ public class UpdateUserController {
         if (!valid) {
             invalidNHI.setVisible(true);
         } else {
-            User user = appController.findUser(nhi);
-            if (user != null && !user.getNhi()
-                    .equals(nhi)) { // if a user was found, but it is not the current user
+            if (appController.getUserBridge().getExists(nhi) && !currentUser.getNhi().equals(nhi)) { // if a user was found, but it is not the current user
                 existingNHI.setVisible(true);
                 valid = false;
             }
