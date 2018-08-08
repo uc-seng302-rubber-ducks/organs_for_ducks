@@ -343,7 +343,6 @@ public class User extends Undoable<User> implements Listenable {
     public void setECRegion(String ecRegion) {
         this.saveStateForUndo();
         updateLastModified();
-        System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
         contact.setRegion(ecRegion);
         addChange(new Change("Changed emergency contact region to " + ecRegion));
     }
@@ -357,7 +356,6 @@ public class User extends Undoable<User> implements Listenable {
 
     public void setECCountry(String ecCountry) {
         this.saveStateForUndo();
-        System.out.println("PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP");
         updateLastModified();
         contact.setCountry(ecCountry);
         addChange(new Change("Changed emergency contact country to " + ecCountry));
@@ -728,14 +726,12 @@ public class User extends Undoable<User> implements Listenable {
 
     public void setCountry(String country) {
         this.saveStateForUndo();
-        System.out.println("RRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR");
         updateLastModified();
         contactDetails.getAddress().setCountry(country);
         addChange(new Change("Changed country to " + country));
     }
 
     public void setCountryNoUndo(String country) {
-        System.out.println("RRRRRRRRRRRRRRRRRRRRRRRRRRRcccccccccccc");
         updateLastModified();
         contactDetails.getAddress().setCountry(country);
         addChange(new Change("Changed country to " + country));
@@ -791,7 +787,6 @@ public class User extends Undoable<User> implements Listenable {
 
     public void setRegion(String region) {
         this.saveStateForUndo();
-        System.out.println("RRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR");
         updateLastModified();
         contactDetails.getAddress().setRegion(region);
         if (contactDetails.getAddress() != null && !contactDetails.getAddress().equals("")) {
@@ -1090,7 +1085,6 @@ public class User extends Undoable<User> implements Listenable {
             //index 2 = direct caller - the setter methods
             //index 3 = level above that, i.e. whatever uses the setters
             Class callerClass = Class.forName(Thread.currentThread().getStackTrace()[3].getClassName());
-            System.out.println(callerClass);
             if (callerClass.isAnnotationPresent(IgnoreForUndo.class)) {
                 return;
             }

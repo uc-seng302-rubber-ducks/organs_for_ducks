@@ -304,7 +304,6 @@ public class UpdateUserController {
      */
     private void update() {
         updateUndos();
-        System.out.println("KATEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE");
         if (!undoUpdateButton.isDisabled() && !stage.getTitle().endsWith("*")) {
             stage.setTitle(stage.getTitle() + "*");
         }
