@@ -117,7 +117,7 @@ public class AppController {
      * @param regionSelector Combo Box
      * @param regionInput Text Field
      */
-    public void countrySelectorEventHandler(ComboBox countrySelector, ComboBox regionSelector, TextField regionInput){
+    public void countrySelectorEventHandler(ComboBox countrySelector, ComboBox regionSelector, TextField regionInput, User user, Clinician clinician) {
         if(! countrySelector.getSelectionModel().getSelectedItem().equals("New Zealand")) {
             regionSelector.setVisible(false);
             regionInput.setVisible(true);
@@ -125,8 +125,16 @@ public class AppController {
             regionInput.clear(); //TODO: redo stack for region is cleared when region input is cleared. try undo redo when selecting nz as country and selecting other countries + selecting/entering region. -14 july
 
         } else {
+            if (!regionInput.getText().isEmpty()) {
+                regionInput.setText("");
+                if (user != null) {
+                    user.getUndoStack().pop();
+                } else {
+                    clinician.getUndoStack().pop();
+                }
+            }
+
             regionSelector.setVisible(true);
-            regionSelector.setValue("");
             regionInput.setVisible(false);
         }
     }

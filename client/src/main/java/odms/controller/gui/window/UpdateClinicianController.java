@@ -124,6 +124,7 @@ public class UpdateClinicianController {
     private String defaultCountry = "New Zealand";
     private final int MAX_FILE_SIZE = 2097152;
     private String initialPath;
+    private boolean Listen = true;
 
     /**
      * Initializes the scene by setting all but the password text fields to contain the given clinicians attributes.
@@ -219,7 +220,7 @@ public class UpdateClinicianController {
      */
     @FXML
     private void countrySelectorListener(ActionEvent event) {
-        controller.countrySelectorEventHandler(countrySelector, regionSelector, regionTextField);
+        controller.countrySelectorEventHandler(countrySelector, regionSelector, regionTextField, null, currentClinician);
     }
 
     /**
@@ -241,6 +242,7 @@ public class UpdateClinicianController {
      * @param clinician The current clinician.
      */
     private void prefillFields(Clinician clinician) {
+        Listen = false;
         staffIDTextField.setText(clinician.getStaffId());
 
         String fName = clinician.getFirstName();
@@ -291,6 +293,7 @@ public class UpdateClinicianController {
         }
 
         displayImage(profileImage, currentClinician.getProfilePhotoFilePath());
+        Listen = true;
     }
 
     /**
@@ -299,7 +302,11 @@ public class UpdateClinicianController {
      * @param cb The current ComboBox.
      */
     private void comboBoxListener(ComboBox cb) {
-        cb.valueProperty().addListener((observable, oldValue, newValue) -> update());
+        cb.valueProperty().addListener((observable, oldValue, newValue) -> {
+            if (Listen) {
+                update();
+            }
+        });
     }
 
     /**
@@ -308,7 +315,11 @@ public class UpdateClinicianController {
      * @param field The current textfield/password field element.
      */
     private void changesListener(TextField field) {
-        field.textProperty().addListener((observable, oldValue, newValue) -> update());
+        field.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (Listen) {
+                update();
+            }
+        });
     }
 
     /**

@@ -163,7 +163,7 @@ public class NewUserController {
      */
     @FXML
     private void countrySelectorListener(ActionEvent event) {
-        controller.countrySelectorEventHandler(countrySelector, regionSelector, regionInput);
+        controller.countrySelectorEventHandler(countrySelector, regionSelector, regionInput, null, null);
     }
 
     /**
@@ -176,7 +176,7 @@ public class NewUserController {
      */
     @FXML
     private void ecCountrySelectorListener(ActionEvent event){
-        controller.countrySelectorEventHandler(ecCountrySelector, ecRegionSelector, ecRegionInput);
+        controller.countrySelectorEventHandler(ecCountrySelector, ecRegionSelector, ecRegionInput, null, null);
     }
 
         /**
