@@ -20,12 +20,15 @@ import javafx.scene.layout.Region;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import odms.bridge.ClinicianBridge;
+import odms.commons.exception.ApiException;
 import odms.commons.model.Clinician;
 import odms.commons.model.User;
 import odms.commons.model._abstract.TransplantWaitListViewer;
 import odms.commons.model._enum.EventTypes;
 import odms.commons.model._enum.Organs;
 import odms.commons.model.dto.UserOverview;
+import odms.commons.model.event.UpdateNotificationEvent;
 import odms.commons.utils.Log;
 import odms.controller.AppController;
 import odms.controller.gui.StatusBarController;
@@ -33,6 +36,7 @@ import odms.controller.gui.UnsavedChangesAlert;
 import odms.controller.gui.panel.TransplantWaitListController;
 import odms.controller.gui.popup.DeletedUserController;
 import odms.controller.gui.popup.utils.AlertWindowFactory;
+import odms.socket.ServerEventNotifier;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -126,7 +130,7 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
     private ArrayList<Stage> openStages;
     private FilteredList<UserOverview> fListUsers;
     private PauseTransition pause = new PauseTransition(Duration.millis(300));
-
+    private ClinicianBridge clinicianBridge;
 
     //Initiliase table columns as class level so it is accessible for sorting in pagination methods
     private TableColumn<UserOverview, String> lNameColumn;
@@ -149,18 +153,12 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
     public void init(Stage stage, AppController appController, Clinician clinician, boolean fromAdmin,
                      Collection<PropertyChangeListener> parentListeners) {
         this.appController = appController;
+        this.clinicianBridge = appController.getClinicianBridge();
         this.stage = stage;
         this.clinician = clinician;
         this.admin = fromAdmin;
 
-        //add change listeners of parent controllers to the current clinician
-        this.parentListeners = new ArrayList<>();
-        if (parentListeners != null && !parentListeners.isEmpty()) {
-            for (PropertyChangeListener listener : parentListeners) {
-                clinician.addPropertyChangeListener(listener);
-            }
-            this.parentListeners.addAll(parentListeners);
-        }
+        ServerEventNotifier.getInstance().addPropertyChangeListener(this);
         setDefaultFilters();
         stage.setResizable(true);
         showClinician(clinician);
@@ -331,7 +329,6 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
             openStages.add(userStage);
             UserController userController = userLoader.getController();
             AppController.getInstance().setUserController(userController);
-            parentListeners.add(this);
             userController.init(AppController.getInstance(), user, userStage, true, parentListeners);
             userStage.show();
             Log.info("Clinician " + clinician.getStaffId()
@@ -539,7 +536,7 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
     }
 
     /**
-     * Callback method to refresh the tables in the view
+     * Callback method to refresh the tables and current clinician
      */
     @FXML
     public void refreshTables() {
@@ -595,8 +592,30 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
 
         //clinician controller watches user model
         //refresh view/tables etc. on change
-        if (evt.getPropertyName().equals(EventTypes.USER_UPDATE.name())) {
+        Log.info("refresh listener fired in clinician controller");
+        UpdateNotificationEvent event;
+        try {
+            event = (UpdateNotificationEvent) evt;
+        } catch (ClassCastException ex) {
+            return;
+        }
+        if (event == null) {
+            return;
+        }
+
+        if (event.getType().equals(EventTypes.USER_UPDATE)) {
             refreshTables();
+        } else if (event.getType().equals(EventTypes.CLINICIAN_UPDATE) && clinician.getStaffId().equals(event.getOldIdentifier())){
+            String newStaffId = event.getNewIdentifier();
+            try {
+                this.clinician = clinicianBridge.getClinician(newStaffId, appController.getToken());
+                if (clinician != null) {
+                    showClinician(clinician); //TODO: fix when we solve the db race 7/8/18 jb
+                }
+            } catch (ApiException ex) {
+                Log.warning("failed to retrieve updated clinician. response code: " + ex.getResponseCode(), ex);
+                AlertWindowFactory.generateError(("could not refresh clinician from the server. Please check your connection before trying again."));
+            }
         }
     }
 
