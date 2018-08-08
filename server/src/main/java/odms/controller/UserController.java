@@ -1,6 +1,7 @@
 package odms.controller;
 
 import odms.commons.model.User;
+import odms.commons.model._enum.EventTypes;
 import odms.commons.model.dto.UserOverview;
 import odms.commons.utils.DBHandler;
 import odms.commons.utils.JDBCDriver;
@@ -8,11 +9,13 @@ import odms.commons.utils.Log;
 import odms.exception.NotFoundException;
 import odms.exception.ServerDBException;
 import odms.security.IsClinician;
+import odms.socket.SocketHandler;
 import odms.utils.DBManager;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Collection;
@@ -23,11 +26,13 @@ public class UserController extends BaseController {
 
     private DBHandler handler;
     private JDBCDriver driver;
+    private SocketHandler socketHandler;
 
-    public UserController(DBManager manager) {
+    public UserController(DBManager manager, SocketHandler socketHandler) {
         super(manager);
         handler = super.getHandler();
         driver = super.getDriver();
+        this.socketHandler = socketHandler;
     }
 
     /**
@@ -63,11 +68,15 @@ public class UserController extends BaseController {
     public ResponseEntity postUser(@RequestBody User newUser) {
         try (Connection connection = driver.getConnection()) {
             handler.saveUser(newUser, connection);
-            return new ResponseEntity(HttpStatus.ACCEPTED);
+            socketHandler.broadcast(EventTypes.USER_UPDATE, newUser.getNhi(),newUser.getNhi());
+
         } catch (SQLException ex) {
             Log.severe("cannot add new user to db", ex);
             throw new ServerDBException(ex);
+        } catch (IOException ex) {
+            Log.warning("failed to broadcast update when posting user", ex);
         }
+        return new ResponseEntity(HttpStatus.ACCEPTED);
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/users/{nhi}")
@@ -91,9 +100,12 @@ public class UserController extends BaseController {
     public ResponseEntity putUser(@PathVariable("nhi") String nhi, @RequestBody User user) {
         try (Connection connection = driver.getConnection()) {
             handler.updateUser(connection, nhi, user);
+            socketHandler.broadcast(EventTypes.USER_UPDATE,nhi,user.getNhi());
         } catch (SQLException ex) {
             Log.severe("cannot put user " + nhi, ex);
             throw new ServerDBException(ex);
+        } catch (IOException ex) {
+            Log.warning("failed to broadcast update when putting user", ex);
         }
         return new ResponseEntity(HttpStatus.OK);
     }
@@ -102,9 +114,12 @@ public class UserController extends BaseController {
     public ResponseEntity deleteUser(@PathVariable("nhi") String nhi) {
         try (Connection connection = driver.getConnection()) {
             handler.deleteUser(connection, nhi);
+            socketHandler.broadcast(EventTypes.USER_UPDATE, nhi, nhi);
         } catch (SQLException ex) {
             Log.severe("cannot delete user " + nhi, ex);
             throw new ServerDBException(ex);
+        } catch (IOException ex) {
+            Log.warning("failed to broadcast update when deleting user", ex);
         }
         return new ResponseEntity(HttpStatus.OK);
     }
