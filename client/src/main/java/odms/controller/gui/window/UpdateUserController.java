@@ -709,11 +709,6 @@ public class UpdateUserController {
         if (height == -1 || weight == -1) {
             errorLabel.setVisible(true);
             valid = false;
-        } else {
-            //currentUser.setHeight(height);
-            //currentUser.setWeight(weight);
-            //currentUser.setHeightText("");
-            //currentUser.setWeightText("");
         }
 
         // validate contact info
@@ -783,8 +778,6 @@ public class UpdateUserController {
 
         String eStreetNumber = ecStreetNumber.getText();
         valid &= AttributeValidation.checkString(eStreetNumber);
-        //String eAddress = ecAddress.getText();
-        //valid &= AttributeValidation.checkString(eAddress);
 
         String eRegion;
         if(ecRegionInput.isVisible()){
@@ -794,8 +787,6 @@ public class UpdateUserController {
             eRegion = ecRegionSelector.getSelectionModel().getSelectedItem();
         }
         valid &= AttributeValidation.checkString(eRegion);
-
-        //TODO: do we need country validation? -14 july
 
         String eRelationship = ecRelationship.getText();
         valid &= AttributeValidation.checkString(eRelationship);
