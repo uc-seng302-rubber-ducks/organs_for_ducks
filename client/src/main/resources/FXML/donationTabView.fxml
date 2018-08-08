@@ -7,7 +7,15 @@
             fx:controller="odms.controller.gui.panel.DonationTabPageController">
     <children>
         <ListView fx:id="canDonate" layoutX="101.0" layoutY="86.0" prefHeight="424.0" prefWidth="200.0"/>
-        <TableView fx:id="currentlyDonating" layoutX="530.0" layoutY="73.0" prefHeight="437.0" prefWidth="300.0"/>
+        <TableView fx:id="currentlyDonating" layoutX="530.0" layoutY="73.0" prefHeight="437.0" prefWidth="300.0">
+            <columns>
+                <TableColumn fx:id="donatingOrganColumn" maxWidth="150" prefWidth="120" text="Organ"/>
+                <TableColumn fx:id="organExpiryColumn" maxWidth="180" prefWidth="180" text="Expiry Countdown"/>
+            </columns>
+            <columnResizePolicy>
+                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+            </columnResizePolicy>
+        </TableView>
         <Label layoutX="165.0" layoutY="66.0" text="Donatable"/>
         <Label layoutX="618.0" layoutY="51.0" text="Currently Donating"/>
         <Button fx:id="donate" layoutX="397.0" layoutY="184.0" mnemonicParsing="false"
