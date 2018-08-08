@@ -7,6 +7,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.WebSocket;
 import okhttp3.WebSocketListener;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -45,5 +46,20 @@ public class OdmsSocketHandlerTest {
         listener.onMessage(mockSocket, new Gson().toJson(notification));
 
         verify(eventStore, times(1)).fire(any(UpdateNotification.class));
+    }
+
+    @Test
+    public void listenerShouldRetryOnFailure() {
+        Assert.fail("not yet implemented");
+    }
+
+    @Test
+    public void stopShouldCloseSocketWithCode1000() {
+        Assert.fail("not yet implemented");
+    }
+
+    @Test
+    public void stopShouldNotFailOnNullSocket() {
+        Assert.fail("not yet implemented");
     }
 }
