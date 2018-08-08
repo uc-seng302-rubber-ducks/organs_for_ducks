@@ -133,12 +133,6 @@ public class UpdateClinician implements Runnable {
             changed = true;
         }
 
-        if (region != null) {
-            clinician.setRegion(region.replaceAll("_", " "));
-            valid &= AttributeValidation.checkString(region.replaceAll("_", " "));
-            changed = true;
-        }
-
         if (zipCode != null) {
             clinician.setZipCode(zipCode);
             valid &= AttributeValidation.checkString(zipCode);
@@ -151,8 +145,19 @@ public class UpdateClinician implements Runnable {
                 clinician.setCountry(country.replaceAll("_", " "));
                 changed = true;
             } else {
-                System.out.println(country + " is not one of the allowed countries\n" +
+                IoHelper.display(country + " is not one of the allowed countries\n" +
                         "For a list of the allowed countries use the command 'view countries'");
+            }
+        }
+
+        if (region != null) {
+            if (clinician.getCountry().equals("New Zealand") &&
+                    !controller.getAllNZRegion().contains(region.replaceAll("_", " "))) {
+                valid &= false;
+            } else {
+                clinician.setRegion(region.replaceAll("_", " "));
+                valid &= AttributeValidation.checkString(region.replaceAll("_", " "));
+                changed = true;
             }
         }
 

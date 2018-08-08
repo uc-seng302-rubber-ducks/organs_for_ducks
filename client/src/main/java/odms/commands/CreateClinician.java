@@ -11,6 +11,7 @@ import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
 
 import java.io.IOException;
+import java.util.List;
 
 @Command(name = "clinician", description = "Allows the creation of a clinician")
 public class CreateClinician implements Runnable {
@@ -108,19 +109,29 @@ public class CreateClinician implements Runnable {
             valid &= AttributeValidation.checkString(city.replaceAll("_", " "));
         }
 
-        if (region != null) {
-            clinician.setRegion(region.replaceAll("_", " "));
-            valid &= AttributeValidation.checkString(region.replaceAll("_", " "));
-        }
-
         if (zipCode != null) {
             clinician.setZipCode(zipCode);
             valid &= AttributeValidation.checkString(zipCode);
         }
 
         if (country != null) {
-            clinician.setCountry(country.replaceAll("_", " "));
-            valid &= AttributeValidation.checkString(country.replaceAll("_", " "));
+            List<String> allowedCountries = controller.getAllowedCountries();
+            if (allowedCountries.contains(country.replaceAll("_", " "))) {
+                clinician.setCountry(country.replaceAll("_", " "));
+            } else {
+                IoHelper.display(country + " is not one of the allowed countries\n" +
+                        "For a list of the allowed countries use the command 'view countries'");
+            }
+        }
+
+        if (region != null) {
+            if (clinician.getCountry().equals("New Zealand") &&
+                    controller.getAllNZRegion().contains(region.replaceAll("_", " "))) {
+                clinician.setRegion(region.replaceAll("_", " "));
+            } else if (!clinician.getCountry().equals("New Zealand")) {
+                clinician.setRegion(region.replaceAll("_", " "));
+                valid &= AttributeValidation.checkString(region.replaceAll("_", " "));
+            }
         }
 
         if (valid) {

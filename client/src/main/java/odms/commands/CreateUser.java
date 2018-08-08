@@ -238,7 +238,7 @@ public class CreateUser implements Runnable {
             if (allowedCountries.contains(country.replaceAll("_", " "))) {
                 user.setCountry(country.replaceAll("_", " "));
             } else {
-                System.out.println(country + " is not one of the allowed countries\n" +
+                IoHelper.display(country + " is not one of the allowed countries\n" +
                         "For a list of the allowed countries use the command 'view countries'");
                 return;
             }
@@ -279,6 +279,9 @@ public class CreateUser implements Runnable {
         if (region != null) {
             if (!AttributeValidation.checkString(region.replaceAll("_", " "))) {
                 IoHelper.display("Invalid region");
+                return;
+            } else if (user.getCountry().equals("New Zealand") && !controller.getAllNZRegion().contains(region.replaceAll("_", " "))) {
+                IoHelper.display("A New Zealand region must be given");
                 return;
             }
             user.setRegion(region.replaceAll("_", " "));
