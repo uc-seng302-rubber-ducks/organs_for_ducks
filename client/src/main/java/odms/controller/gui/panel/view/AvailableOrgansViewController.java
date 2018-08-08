@@ -54,6 +54,7 @@ public class AvailableOrgansViewController {
         }
         availableOrganFilterComboBox.setItems(organs);
         availableOrganDetails.addListener((ListChangeListener<? super AvailableOrganDetail>) observable -> populateTables());
+        regionFilterTextField.setOnKeyPressed(e -> logicController.test());
         initAvailableOrgansTableView();
     }
 

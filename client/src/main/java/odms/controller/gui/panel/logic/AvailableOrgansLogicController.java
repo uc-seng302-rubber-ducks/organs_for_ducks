@@ -11,7 +11,7 @@ import java.io.IOException;
 public class AvailableOrgansLogicController {
 
     private int startingIndex = 0;
-    private final int ROWS_PER_PAGE = 30;
+    private static final int ROWS_PER_PAGE = 30;
     private String organ = "";
     private String region = "";
     private ObservableList<AvailableOrganDetail> availableOrganDetails;
