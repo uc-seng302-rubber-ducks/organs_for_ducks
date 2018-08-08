@@ -22,6 +22,7 @@ import odms.controller.gui.window.AdministratorViewController;
 import odms.controller.gui.window.ClinicianController;
 import odms.controller.gui.window.UserController;
 import odms.socket.OdmsSocketHandler;
+import odms.socket.ServerEventNotifier;
 import okhttp3.OkHttpClient;
 
 import java.io.IOException;
@@ -67,7 +68,7 @@ public class AppController {
     private Stack<User> redoStack = new Stack<>();
     private String token;
     private SQLBridge sqlBridge = new SQLBridge(client);
-    private OdmsSocketHandler socketHandler = new OdmsSocketHandler(client);
+    private OdmsSocketHandler socketHandler = new OdmsSocketHandler(client, ServerEventNotifier.getInstance());
 
     /**
      * Creates new instance of AppController
@@ -160,7 +161,7 @@ public class AppController {
         try {
             s = getCountriesBridge().getAllowedCountries();
         } catch (IOException e) {
-            Log.severe("Database threw IOE", e);
+            Log.severe("Could not get allowed countries from the database", e);
             allowedCountries = new ArrayList<>();
         }
         if (s != null) {

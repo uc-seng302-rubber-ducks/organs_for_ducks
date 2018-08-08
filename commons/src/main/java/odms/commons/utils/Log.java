@@ -51,7 +51,7 @@ public class Log {
                     logger.addHandler(handler);
 
                     //disable logging to console
-                    logger.setUseParentHandlers(false);
+                    //logger.setUseParentHandlers(false);
                     break;
 
                 case SERVER:
