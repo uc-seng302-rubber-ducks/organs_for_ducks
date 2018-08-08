@@ -1,10 +1,15 @@
 package odms.controller.gui.panel.view;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import odms.commons.model._enum.Organs;
 import odms.controller.gui.panel.logic.AvailableOrgansLogicController;
+
+import java.util.ArrayList;
 
 public class AvailableOrgansViewController {
 
@@ -21,7 +26,15 @@ public class AvailableOrgansViewController {
 
     @FXML
     public void init() {
-        //populate the organs combobox and table columns
+        ObservableList<String> organs = FXCollections.observableList(new ArrayList<>());
+        for (Organs organ : Organs.values()) {
+            organs.add(organ.toString());
+        }
+        initAvailableOrgansTableView();
+    }
+
+    private void initAvailableOrgansTableView() {
+        // initialise table columns here
     }
 
 
