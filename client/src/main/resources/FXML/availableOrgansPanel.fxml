@@ -10,17 +10,17 @@
                    AnchorPane.bottomAnchor="48.0" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="8.0"
                    AnchorPane.topAnchor="101.0">
             <columns>
-                <TableColumn maxWidth="3000.0" prefWidth="75.0" text="Donor"/>
-                <TableColumn prefWidth="75.0" text="Region"/>
-                <TableColumn maxWidth="4500.0" prefWidth="195.0" text="Organ"/>
-                <TableColumn maxWidth="4000.0" prefWidth="75.0" text="Date of death"/>
-                <TableColumn maxWidth="7000.0" prefWidth="75.0" text="Time to expiry"/>
+                <TableColumn fx:id="nhiColumn" maxWidth="3000.0" prefWidth="75.0" text="Donor"/>
+                <TableColumn fx:id="regionColumn" prefWidth="75.0" text="Region"/>
+                <TableColumn fx:id="organColumn" maxWidth="4500.0" prefWidth="195.0" text="Organ"/>
+                <TableColumn fx:id="deathMomentColumn" maxWidth="4000.0" prefWidth="75.0" text="Date of death"/>
+                <TableColumn fx:id="progressBarColumn" maxWidth="7000.0" prefWidth="75.0" text="Time to expiry"/>
             </columns>
             <columnResizePolicy>
                 <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
             </columnResizePolicy>
         </TableView>
-        <TextField fx:id="regionFilterComboBox" layoutX="79.0" layoutY="54.0" onKeyPressed="#search" prefHeight="25.0"
+        <TextField fx:id="regionFilterTextField" layoutX="79.0" layoutY="54.0" onKeyPressed="#search" prefHeight="25.0"
                    prefWidth="300.0" AnchorPane.leftAnchor="79.0" AnchorPane.topAnchor="54.0"/>
         <Label layoutX="8.0" layoutY="59.0" prefHeight="15.0" prefWidth="71.0" text="Region:"
                AnchorPane.leftAnchor="8.0" AnchorPane.topAnchor="59.0"/>
