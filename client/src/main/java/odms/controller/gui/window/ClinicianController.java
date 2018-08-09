@@ -31,6 +31,7 @@ import odms.controller.AppController;
 import odms.controller.gui.StatusBarController;
 import odms.controller.gui.UnsavedChangesAlert;
 import odms.controller.gui.panel.TransplantWaitListController;
+import odms.controller.gui.panel.view.AvailableOrgansViewController;
 import odms.controller.gui.popup.DeletedUserController;
 import odms.controller.gui.popup.utils.AlertWindowFactory;
 
@@ -106,6 +107,8 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
     @FXML
     private TransplantWaitListController transplantWaitListTabPageController;
     @FXML
+    private AvailableOrgansViewController availableOrgansViewController;
+    @FXML
     private Button redoButton;
     @FXML
     private MenuItem deleteClinician;
@@ -169,6 +172,7 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
         initSearchTable();
         transplantWaitListTabPageController.init(appController, this);
         statusBarPageController.init(appController);
+        availableOrgansViewController.init();
 
         if (clinician.getStaffId().equals("0")) {
             deleteClinician.setDisable(true);
