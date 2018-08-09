@@ -2,7 +2,9 @@ package odms.commons.model._enum;
 
 public enum EventTypes {
     USER_UPDATE("USER"),
-    CLINICIAN_UPDATE("CLINICIAN");
+    CLINICIAN_UPDATE("CLINICIAN"),
+    ADMIN_UPDATE("ADMIN"),
+    COUNTRY_UPDATE("COUNTRY");
 
     private final String name;
 

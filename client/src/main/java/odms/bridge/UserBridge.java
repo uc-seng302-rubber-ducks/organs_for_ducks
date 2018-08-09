@@ -365,7 +365,7 @@ public class UserBridge extends RoleBridge {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 if(!response.isSuccessful()) {
-                    Log.warning("Failed to PUT " + url + "Response code: " + response.code());
+                    Log.warning("Failed to PUT " + url + " Response code: " + response.code());
                     throw new IOException("Could not PUT " + url);
                 }
                 response.close();

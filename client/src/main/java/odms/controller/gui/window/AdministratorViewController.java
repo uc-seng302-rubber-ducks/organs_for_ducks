@@ -33,6 +33,7 @@ import odms.commons.model._abstract.TransplantWaitListViewer;
 import odms.commons.model._enum.EventTypes;
 import odms.commons.model._enum.Organs;
 import odms.commons.model.dto.UserOverview;
+import odms.commons.model.event.UpdateNotificationEvent;
 import odms.commons.utils.CSVHandler;
 import odms.commons.utils.DataHandler;
 import odms.commons.utils.JsonHandler;
@@ -46,6 +47,7 @@ import odms.controller.gui.popup.AlertUnclosedWindowsController;
 import odms.controller.gui.popup.CountrySelectionController;
 import odms.controller.gui.popup.DeletedUserController;
 import odms.controller.gui.popup.utils.AlertWindowFactory;
+import odms.socket.ServerEventNotifier;
 import odms.view.CLI;
 
 import java.beans.PropertyChangeEvent;
@@ -177,12 +179,8 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
         transplantWaitListTabPageController.init(appController, this);
         stage.setTitle("Administrator");
 
-        //add change listeners of parent controllers to the current user
-        if (parentListeners != null && !parentListeners.isEmpty()) {
-            for (PropertyChangeListener listener : parentListeners) {
-                administrator.addPropertyChangeListener(listener);
-            }
-        }
+        ServerEventNotifier.getInstance().addPropertyChangeListener(this);
+
         userBridge.getUsers(userStartIndex, ROWS_PER_PAGE, adminSearchField.getText(), regionSearchTextField.getText(), genderComboBox.getValue(), appController.getToken());
         clinicianBridge.getClinicians(clinicianStartIndex, ROWS_PER_PAGE, adminSearchField.getText(), regionSearchTextField.getText(), appController.getToken());
 
@@ -406,11 +404,12 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
 
     /**
      * Requests the filtered data from the server and populates the user overview table
+     *
      * @param startIndex starting index to get the data from
-     * @param count amount of users to obtain
-     * @param name query for name, will obtain users that start with the name
-     * @param region search query for region
-     * @param gender search query for gender
+     * @param count      amount of users to obtain
+     * @param name       query for name, will obtain users that start with the name
+     * @param region     search query for region
+     * @param gender     search query for gender
      */
     private void populateUserSearchTable(int startIndex, int count, String name, String region, String gender) {
         appController.getUserOverviews().clear();
@@ -666,14 +665,14 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
                 Collection<User> newUsers = new ArrayList<>();
                 CSVHandler csvHandler = new CSVHandler();
                 try {
-                newUsers = csvHandler.loadUsers(filename);
+                    newUsers = csvHandler.loadUsers(filename);
 
-                //if imported contains any bad data, throw it out
-                for (User user : newUsers) {
-                    if (user.getNhi() == null) {
-                        throw new InvalidFileException();
+                    //if imported contains any bad data, throw it out
+                    for (User user : newUsers) {
+                        if (user.getNhi() == null) {
+                            throw new InvalidFileException();
+                        }
                     }
-                }
 
                 for (User user : newUsers) {
                     new Thread(() -> appController.getUserBridge().postUser(user)).start();
@@ -689,9 +688,9 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
             }
             Platform.runLater(this::refreshTables);
                 final int numberImported = newUsers.size();
-                final int malformed =  csvHandler.getMalformed();
-                Platform.runLater(() -> AlertWindowFactory.generateInfoWindow(numberImported +" Users Successfully imported. " +
-                        + malformed + " malformed users discarded"));
+                final int malformed = csvHandler.getMalformed();
+                Platform.runLater(() -> AlertWindowFactory.generateInfoWindow(numberImported + " Users Successfully imported. " +
+                        +malformed + " malformed users discarded"));
                 Platform.runLater(() -> progressIndicator.setVisible(false));
             }).start();
         }
@@ -1141,18 +1140,6 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
         }
     }
 
-    /**
-     * event handler that fires when a property change event is emitted by any objects the controller is listening to
-     *
-     * @param evt event emitted
-     */
-    @Override
-    public void propertyChange(PropertyChangeEvent evt) {
-        //watches users and clinicians
-        //refresh view on change
-        //if/else not strictly necessary at this stage
-        if (evt.getPropertyName().equals(EventTypes.USER_UPDATE.name()) || (evt.getPropertyName().equals(EventTypes.CLINICIAN_UPDATE.name()))) refreshTables();
-    }
 
     /**
      * moves the currently active tableview to the next page
@@ -1255,9 +1242,10 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
 
     /**
      * Fires the request to search in the admin search table with startIndex = 0
-     * @param startIndex Start index to search from
+     *
+     * @param startIndex  Start index to search from
      * @param rowsPerPage number of results to return
-     * @param name name of the admin
+     * @param name        name of the admin
      */
     private void populateAdminSearchTable(int startIndex, int rowsPerPage, String name) {
         appController.getAdmins().clear();
@@ -1282,5 +1270,39 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
         setTableOnClickBehaviour(Administrator.class, adminTableView);
     }
 
-
+    /**
+     * handles events fired by objects this is listening to. Currently only handles UpdateNotificationEvents.
+     * upon receiving, the tables and the currently logged-in admin will be updated where relevant
+     *
+     * @param evt PropertyChangeEvent to be handled
+     * @see UpdateNotificationEvent
+     */
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        //clinician controller watches user model
+        //refresh view/tables etc. on change
+        UpdateNotificationEvent event;
+        try {
+            event = (UpdateNotificationEvent) evt;
+        } catch (ClassCastException ex) {
+            return;
+        }
+        if (event == null) {
+            return;
+        }
+        Log.info("refresh listener fired in admin controller");
+        if (event.getType().equals(EventTypes.USER_UPDATE) || event.getType().equals(EventTypes.CLINICIAN_UPDATE)) {
+            refreshTables();
+        } else if (event.getType().equals(EventTypes.ADMIN_UPDATE) && administrator.getUserName().equals(event.getOldIdentifier())) {
+            try {
+                this.administrator = adminBridge.getAdmin(event.getNewIdentifier(), appController.getToken());
+                if (administrator != null) {
+                    displayDetails(); //TODO: fix when we solve the db race 7/8/18 jb
+                }
+            } catch (ApiException ex) {
+                Log.warning("failed to retrieve updated admin. response code: " + ex.getResponseCode(), ex);
+                AlertWindowFactory.generateError(("could not refresh admin from the server. Please check your connection before trying again."));
+            }
+        }
+    }
 }
