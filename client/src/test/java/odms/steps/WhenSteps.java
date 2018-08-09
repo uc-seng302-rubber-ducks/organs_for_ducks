@@ -199,7 +199,6 @@ public class WhenSteps extends ApplicationTest {
 
     @When("^I go back to the clinician screen$")
     public void iGoBackToTheClinicianScreen() {
-        clickOnButton(this, "#cancelUpdateDeathDetailsButton");
         clickOn("#userProfileTab");
         clickOn("#fileMenuUser");
         clickOn("#logoutUser");
