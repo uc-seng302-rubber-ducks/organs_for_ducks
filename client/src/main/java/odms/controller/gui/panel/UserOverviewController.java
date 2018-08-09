@@ -9,10 +9,10 @@ import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import odms.controller.AppController;
-import odms.controller.gui.popup.UpdateDeathDetailsController;
 import odms.commons.model.User;
 import odms.commons.utils.Log;
+import odms.controller.AppController;
+import odms.controller.gui.popup.UpdateDeathDetailsController;
 
 import java.io.IOException;
 import java.text.DecimalFormat;
@@ -102,11 +102,13 @@ public class UserOverviewController {
     private ImageView profilePicture;
     //</editor-fold>
 
+    private User currentUser;
 
     @FXML
     public void init(AppController controller, User user, Stage stage, boolean fromClinician) {
+        this.currentUser = user;
         showUser(user);
-        if (!clinician) {
+        if (!fromClinician) {
             updateDeathDetailsButton.setDisable(true);
         }
     }
@@ -245,7 +247,7 @@ public class UserOverviewController {
             Stage updateStage = new Stage();
             updateStage.initModality(Modality.APPLICATION_MODAL);
             updateStage.setScene(new Scene(root));
-            updateDeathDetailsController.init(application, updateStage, currentUser);
+            updateDeathDetailsController.init(AppController.getInstance(), updateStage, currentUser);
             updateStage.show();
             Log.info("Successfully launched update user window for User NHI: " + currentUser.getNhi());
 
