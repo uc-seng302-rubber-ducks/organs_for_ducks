@@ -89,9 +89,9 @@ public class DBHandler {
     private static final String SELECT_IF_CLINICIAN_EXISTS_BOOL = "SELECT EXISTS(SELECT 1 FROM Clinician WHERE staffId = ?)";
     private static final String SELECT_IF_ADMIN_EXISTS_BOOL = "SELECT EXISTS(SELECT 1 FROM Administrator WHERE userName = ?)";
     private static final String SELECT_AVAILABLE_ORGANS = "select * from OrganDonating " +
-            "JOIN DeathDetails ON OrganDonating.fkUserNhi = DeathDetails.fkUserNhi" +
-            "JOIN Organ O ON OrganDonating.fkOrgansId = O.organId" +
-            "JOIN HealthDetails ON OrganDonating.fkUserNhi = HealthDetails.fkUserNhi" +
+            "JOIN DeathDetails ON OrganDonating.fkUserNhi = DeathDetails.fkUserNhi " +
+            "JOIN Organ ON OrganDonating.fkOrgansId = organId " +
+            "JOIN HealthDetails ON OrganDonating.fkUserNhi = HealthDetails.fkUserNhi " +
             "WHERE (bloodType LIKE ? OR bloodType IS NULL)" +
             "AND (organName LIKE ? OR organName IS NULL )" +
             "AND (DeathDetails.region LIKE ? or DeathDetails.region IS NULL)" +
@@ -1142,14 +1142,16 @@ public class DBHandler {
             preparedStatement.setInt(6, count);
             preparedStatement.setInt(7,startIndex);
             try(ResultSet resultSet = preparedStatement.executeQuery()){
-                AvailableOrganDetail organDetail = new AvailableOrganDetail();
-                organDetail.setDonorNhi(resultSet.getString("fkUserNhi"));
-                organDetail.setBloodType(resultSet.getString("bloodType"));
-                organDetail.setMomentOfDeath(resultSet.getTimestamp("momentOfDeath").toLocalDateTime());
-                organDetail.setRegion(resultSet.getString("region"));
-                organDetail.setOrgan(Organs.valueOf(resultSet.getString("organName")));
-                if(organDetail.isOrganStillValid()){
-                    results.add(organDetail);
+                while(resultSet.next()) {
+                    AvailableOrganDetail organDetail = new AvailableOrganDetail();
+                    organDetail.setDonorNhi(resultSet.getString("fkUserNhi"));
+                    organDetail.setBloodType(resultSet.getString("bloodType"));
+                    organDetail.setMomentOfDeath(resultSet.getTimestamp("momentOfDeath").toLocalDateTime());
+                    organDetail.setRegion(resultSet.getString("region"));
+                    organDetail.setOrgan(Organs.valueOf(resultSet.getString("organName")));
+                    if (organDetail.isOrganStillValid()) {
+                        results.add(organDetail);
+                    }
                 }
             }
 
