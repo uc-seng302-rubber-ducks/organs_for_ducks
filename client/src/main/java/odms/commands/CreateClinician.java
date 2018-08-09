@@ -1,60 +1,124 @@
 package odms.commands;
 
-
-import odms.commons.utils.Log;
-import odms.controller.AppController;
 import odms.commons.model.Clinician;
 import odms.commons.utils.AttributeValidation;
-import picocli.CommandLine;
+import odms.commons.utils.Log;
+import odms.controller.AppController;
+import odms.view.IoHelper;
+import picocli.CommandLine.Command;
+import picocli.CommandLine.Option;
+import picocli.CommandLine.Parameters;
 
 import java.io.IOException;
 
-@CommandLine.Command(name = "clinician", description = "Allows the creation of a clinician. ot update use update clinician")
+@Command(name = "clinician", description = "Allows the creation of a clinician")
 public class CreateClinician implements Runnable {
 
     AppController controller = AppController.getInstance();
-
-    @CommandLine.Parameters(index = "0")
-    private String id = "";
-
-    @CommandLine.Parameters(index = "1")
-    private String firstName = "";
-
-    @CommandLine.Parameters(index = "2")
-    private String password = "";
-
-    @CommandLine.Parameters(index = "3..*")
-    private String region = "";
-
-    @CommandLine.Option(names = {"-h",
+    @Option(names = {"-h",
             "help"}, required = false, usageHelp = true, description = "display a help message")
     boolean helpRequested;
+    @Parameters(index = "0")
+    private String id = "";
+    @Parameters(index = "1")
+    private String firstName = "";
+    @Parameters(index = "2")
+    private String pword = "";
+    @Parameters(index = "3")
+    private String region = "";
+    @Option(names = {"-m", "-mname"})
+    private String middleName;
+    @Option(names = {"-l", "-lname"})
+    private String lastName;
+    @Option(names = {"-n", "-streetNumber"})
+    private String streetNumber;
+    @Option(names = {"-s", "-streetName"})
+    private String streetName;
+    @Option(names = {"-ne", "-neighborhood"})
+    private String neighborhood;
+    @Option(names = {"-c", "-city"})
+    private String city;
+    @Option(names = {"-z", "-zipCode"})
+    private String zipCode;
+    @Option(names = {"-co", "-country"})
+    private String country;
 
     @Override
     public void run() {
-        if (controller.getClinician(id) != null) {
-            System.out.println("Clinician with this id already exists");
+        if (controller.getClinicianBridge().getExists(id)) {
+            IoHelper.display("Clinician with this id already exists");
             return;
         }
 
         boolean valid = AttributeValidation.checkRequiredString(id);
         valid &= AttributeValidation.checkRequiredString(firstName);
-        valid &= AttributeValidation.checkRequiredString(password);
+        valid &= AttributeValidation.checkRequiredString(pword);
         valid &= AttributeValidation.checkRequiredString(region);
 
+        Clinician clinician;
         if (valid) {
-            Clinician clinician = new Clinician(id, password, firstName, "", "");
-            clinician.setRegion(region);
+            clinician = new Clinician(id, pword, firstName.replaceAll("_", " "), "", "");
+            clinician.setRegion(region.replaceAll("_", " "));
+        } else {
+            return;
+        }
+
+        if (middleName != null) {
+            clinician.setMiddleName(middleName.replaceAll("_", " "));
+            valid = AttributeValidation.checkRequiredStringName(middleName.replaceAll("_", " "));
+        }
+
+        if (lastName != null) {
+            clinician.setLastName(lastName.replaceAll("_", " "));
+            valid &= AttributeValidation.checkRequiredStringName(lastName.replaceAll("_", " "));
+        }
+
+        if (streetNumber != null) {
+            clinician.setStreetNumber(streetNumber);
+            valid &= AttributeValidation.checkString(streetNumber);
+        }
+
+        if (streetName != null) {
+            clinician.setStreetName(streetName.replaceAll("_", " "));
+            valid &= AttributeValidation.checkString(streetName.replaceAll("_", " "));
+        }
+
+        if (neighborhood != null) {
+            clinician.setNeighborhood(neighborhood.replaceAll("_", " "));
+            valid &= AttributeValidation.checkString(neighborhood.replaceAll("_", " "));
+        }
+
+        if (city != null) {
+            clinician.setCity(city.replaceAll("_", " "));
+            valid &= AttributeValidation.checkString(city.replaceAll("_", " "));
+        }
+
+        if (region != null) {
+            clinician.setRegion(region.replaceAll("_", " "));
+            valid &= AttributeValidation.checkString(region.replaceAll("_", " "));
+        }
+
+        if (zipCode != null) {
+            clinician.setZipCode(zipCode);
+            valid &= AttributeValidation.checkString(zipCode);
+        }
+
+        if (country != null) {
+            clinician.setCountry(country.replaceAll("_", " "));
+            valid &= AttributeValidation.checkString(country.replaceAll("_", " "));
+        }
+
+        if (valid) {
             controller.updateClinicians(clinician);
             try {
                 controller.saveClinician(clinician);
             } catch (IOException e) {
                 Log.warning("File is wrong", e);
             }
-            System.out.println(clinician.toString());
-            System.out.println("Created new clinician with id " + id);
+            IoHelper.display(clinician.toString());
+            IoHelper.display("Created new clinician with id " + id);
         } else {
-            System.out.println("Invalid fields entered");
+            IoHelper.display("Invalid fields entered");
         }
     }
 

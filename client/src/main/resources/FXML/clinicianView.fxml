@@ -1,20 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-
+<?import java.lang.String?>
 <?import javafx.collections.FXCollections?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
-<?import java.lang.String?>
+
 <AnchorPane prefHeight="504.0" prefWidth="724.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="odms.controller.gui.window.ClinicianController">
     <children>
         <MenuBar prefHeight="37.0" prefWidth="619.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <menus>
                 <Menu fx:id="fileMenuClinician" mnemonicParsing="false" text="File">
                     <items>
-                        <MenuItem fx:id="refreshClinician" mnemonicParsing="false" onAction="#refreshTables"
-                                  text="Refresh"/>
+                        <MenuItem fx:id="refreshClinician" mnemonicParsing="false" onAction="#refreshTables" text="Refresh" />
                         <MenuItem fx:id="saveUserMenuItem" mnemonicParsing="false" onAction="#save" text="Save" />
                         <MenuItem fx:id="logoutMenuClinician" mnemonicParsing="false" text="Log Out" />
                     </items>
@@ -74,9 +73,9 @@
                               <Label text="Zip Code:" GridPane.rowIndex="2" />
                               <Label fx:id="cityLabel" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                               <Label fx:id="zipLabel" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                               <Label fx:id="asdf" text="Region:" GridPane.columnIndex="2" GridPane.rowIndex="1"/>
+                               <Label fx:id="asdf" text="Region:" GridPane.columnIndex="2" GridPane.rowIndex="1" />
                               <Label text="Country:" GridPane.columnIndex="2" GridPane.rowIndex="2" />
-                               <Label fx:id="regionLabel" text="Label" GridPane.columnIndex="3" GridPane.rowIndex="1"/>
+                               <Label fx:id="regionLabel" text="Label" GridPane.columnIndex="3" GridPane.rowIndex="1" />
                               <Label fx:id="countryLabel" text="Label" GridPane.columnIndex="3" GridPane.rowIndex="2" />
                            </children>
                         </GridPane>
@@ -124,7 +123,7 @@
                                         <CheckBox fx:id="donorFilterCheckBox" layoutX="115.0" layoutY="121.0" mnemonicParsing="false" text="Donor" AnchorPane.leftAnchor="115.0" AnchorPane.topAnchor="121.0" />
                                         <CheckBox fx:id="receiverFilterCheckBox" layoutX="199.0" layoutY="121.0" mnemonicParsing="false" text="Receiver" AnchorPane.leftAnchor="199.0" AnchorPane.topAnchor="121.0" />
                                         <CheckBox fx:id="allCheckBox" layoutX="290.0" layoutY="121.0" mnemonicParsing="false" text="All" AnchorPane.leftAnchor="290.0" AnchorPane.topAnchor="121.0" />
-                                        <Button fx:id="recentlyDeletedButton" layoutX="393.0" layoutY="118.0" mnemonicParsing="false" onAction="#loadRecentlyDeleted" text="Show Recently Deleted Users" />
+                                        <Button fx:id="recentlyDeletedButton" layoutX="393.0" layoutY="118.0" mnemonicParsing="false" onAction="#loadRecentlyDeleted" text="Show Recently Deleted Users" visible="false" />
                                     </children>
                                 </AnchorPane>
                                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="617.0">
@@ -139,14 +138,10 @@
                                             </tooltip>
                                         </TableView>
                                         <Label fx:id="searchCountLabel" layoutX="14.0" layoutY="336.0" text="" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="14.0" />
-                                        <HBox alignment="CENTER" layoutX="269.0" layoutY="244.0"
-                                              AnchorPane.bottomAnchor="16.0" AnchorPane.leftAnchor="0.0"
-                                              AnchorPane.rightAnchor="0.0">
+                                        <HBox alignment="CENTER" layoutX="269.0" layoutY="244.0" AnchorPane.bottomAnchor="16.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
                                             <children>
-                                                <Button layoutX="269.0" layoutY="244.0" mnemonicParsing="false"
-                                                        onAction="#clinicianSearchPrevPage" text="&lt;&lt;"/>
-                                                <Button mnemonicParsing="false" onAction="#clinicianSearchNextPage"
-                                                        text="&gt;&gt;"/>
+                                                <Button layoutX="269.0" layoutY="244.0" mnemonicParsing="false" onAction="#clinicianSearchPrevPage" text="&lt;&lt;" />
+                                                <Button mnemonicParsing="false" onAction="#clinicianSearchNextPage" text="&gt;&gt;" />
                                             </children>
                                         </HBox>
                                     </children>

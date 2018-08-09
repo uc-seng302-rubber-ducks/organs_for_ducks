@@ -6,6 +6,7 @@ import odms.commons.utils.DBHandler;
 import odms.commons.utils.JDBCDriver;
 import odms.exception.NotFoundException;
 import odms.exception.ServerDBException;
+import odms.socket.SocketHandler;
 import odms.utils.DBManager;
 import org.junit.Assert;
 import org.junit.Before;
@@ -31,6 +32,7 @@ public class UserControllerTest {
     private JDBCDriver driver;
     private DBManager manager;
     private DBHandler handler;
+    private SocketHandler socketHandler;
     private User testUser;
 
     @Before
@@ -39,10 +41,11 @@ public class UserControllerTest {
         manager = mock(DBManager.class);
         handler = mock(DBHandler.class);
         driver = mock(JDBCDriver.class);
+        socketHandler = mock(SocketHandler.class);
         when(driver.getConnection()).thenReturn(connection);
         when(manager.getHandler()).thenReturn(handler);
         when(manager.getDriver()).thenReturn(driver);
-        controller = new UserController(manager);
+        controller = new UserController(manager, socketHandler);
         testUser = new User("steve", LocalDate.now(), "ABC1234");
     }
 

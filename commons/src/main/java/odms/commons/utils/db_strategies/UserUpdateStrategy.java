@@ -10,7 +10,9 @@ import odms.commons.model.datamodel.ReceiverOrganDetailsHolder;
 import odms.commons.utils.Log;
 
 import java.sql.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -47,6 +49,11 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
     private static final String DELETE_USER_STMT = "DELETE FROM User WHERE nhi = ?";
     private static final String CREATE_RECEIVING_ORGAN_DATE = "INSERT INTO OrganAwaitingDates (fkAwaitingId, dateRegistered, dateDeregistered) VALUES (?, ?, ?)";
     private static final String GET_RECEIVER_ID = "SELECT awaitingId FROM OrganAwaiting WHERE fkUserNhi = ? AND fkOrgansId = ?";
+    public static final String START_TRANSACTION = "START TRANSACTION";
+    public static final String ROLLBACK = "ROLLBACK";
+    public static final String COMMIT = "COMMIT";
+    private static final String CREATE_DEATH_DETAILS = "INSERT INTO DeathDetails (fkUserNhi, momentOfDeath, city, region, country) VALUES (?, ?, ?, ?, ?)";
+    private static final String UPDATE_DEATH_DETAILS = "UPDATE DeathDetails SET momentOfDeath = ?, city = ?, region = ?, country = ? WHERE fkUserNhi = ?";
     //</editor-fold>
 
     @Override
@@ -77,18 +84,19 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
      * @param connection Connection to the target database
      */
     private void executeCreation(User user, Connection connection) throws SQLException {
-        connection.prepareStatement("START TRANSACTION").execute();
+        connection.prepareStatement(START_TRANSACTION).execute();
         try {
             createUser(user, connection);
             createEmergencyContact(user.getNhi(), user, connection);
             createContact(user.getNhi(), user.getContactDetails(), connection);
             createHealthDetails(user.getNhi(), user, connection);
             executeUpdate(user, connection);
+            createDeathDetails(user, connection);
         } catch (SQLException sqlEx) {
-            connection.prepareStatement("ROLLBACK").execute();
+            connection.prepareStatement(ROLLBACK).execute();
             throw sqlEx;
         }
-        connection.prepareStatement("COMMIT").execute();
+        connection.prepareStatement(COMMIT).execute();
     }
 
     /**
@@ -231,7 +239,7 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
      * @param connection Connection to the target database
      */
     private void deleteRole(User user, Connection connection) throws SQLException {
-        connection.prepareStatement("START TRANSACTION").execute();
+        connection.prepareStatement(START_TRANSACTION).execute();
         try {
             try (PreparedStatement stmt = connection.prepareStatement(DELETE_USER_STMT)) {
                 stmt.setString(1, user.getNhi());
@@ -239,10 +247,10 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
             }
         } catch (SQLException sqlEx) {
             Log.severe("A fatal error in deletion, cancelling operation", sqlEx);
-            connection.prepareStatement("ROLLBACK").execute();
+            connection.prepareStatement(ROLLBACK).execute();
             throw sqlEx;
         }
-        connection.prepareStatement("COMMIT").execute();
+        connection.prepareStatement(COMMIT).execute();
     }
 
     /**
@@ -254,7 +262,7 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
      * @param connection Connection ot the target database
      */
     private void executeUpdate(User user, Connection connection) throws SQLException {
-        connection.prepareStatement("START TRANSACTION").execute();
+        connection.prepareStatement(START_TRANSACTION).execute();
         try {
             updateUserDetails(user, connection);
             updateUserContactDetails(user, connection);
@@ -265,12 +273,13 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
             updateUserMedicalProcedures(user, connection);
             updateUserDiseases(user, connection);
             updateMedications(user, connection);
+            updateDeathDetails(user, connection);
         } catch (SQLException sqlEx) {
             Log.severe("A fatal error in deletion, cancelling operation", sqlEx);
-            connection.prepareStatement("ROLLBACK").execute();
+            connection.prepareStatement(ROLLBACK).execute();
             throw sqlEx;
         }
-        connection.prepareStatement("COMMIT").execute();
+        connection.prepareStatement(COMMIT).execute();
     }
 
     /**
@@ -588,6 +597,32 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
     }
 
     /**
+     * Updates the database with the users new death details
+     * @param user for which to update the death details for
+     * @param connection A non null and active connection to the database
+     * @throws SQLException if there is an error with the database
+     */
+    private void updateDeathDetails(User user, Connection connection) throws SQLException {
+
+        Timestamp sqlDeathMoment = null;
+        LocalDateTime deathMoment = user.getDeathDetails().createMomentOfDeath(user.getDateOfDeath(), user.getTimeOfDeath());
+        if (deathMoment != null) {
+            sqlDeathMoment = java.sql.Timestamp.valueOf(deathMoment);
+        }
+
+
+        try (PreparedStatement createDeathDetails  = connection.prepareStatement(UPDATE_DEATH_DETAILS)) {
+            createDeathDetails.setTimestamp(1, sqlDeathMoment);
+            createDeathDetails.setString(2, user.getDeathCity());
+            createDeathDetails.setString(3, user.getDeathRegion());
+            createDeathDetails.setString(4, user.getDeathCountry());
+            createDeathDetails.setString(5, user.getNhi());
+
+            createDeathDetails.executeUpdate();
+        }
+    }
+
+    /**
      * Creates a disease in the CurrentDisease table associated with the provided user nhi
      * @param userNhi user to associate the disease with
      * @param disease disease to insert into the database
@@ -719,6 +754,33 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
             createMedication.setString(2, med.getMedName());
 
             createMedication.executeUpdate();
+        }
+    }
+
+    /**
+     * Creates or updates a deathDetails entry in the deathDetails table
+     * @param user to update or create for
+     * @param connection A non null and active connection to the database
+     * @throws SQLException If there is an error in the database
+     */
+    private void createDeathDetails(User user, Connection connection) throws SQLException {
+
+        Timestamp sqlDeathMoment = null;
+        LocalDateTime deathMoment = user.getDeathDetails().createMomentOfDeath(user.getDateOfDeath(), user.getTimeOfDeath());
+        System.out.print(deathMoment + "(Line 767 UserUpdateStrategy)");
+        if (deathMoment != null) {
+            sqlDeathMoment = java.sql.Timestamp.valueOf(deathMoment);
+        }
+
+        try (PreparedStatement createDeathDetails  = connection.prepareStatement(CREATE_DEATH_DETAILS)) {
+
+            createDeathDetails.setString(1, user.getNhi());
+            createDeathDetails.setTimestamp(2, sqlDeathMoment);
+            createDeathDetails.setString(3, user.getDeathCity());
+            createDeathDetails.setString(4, user.getDeathRegion());
+            createDeathDetails.setString(5, user.getDeathCountry());
+
+            createDeathDetails.executeUpdate();
         }
     }
 }

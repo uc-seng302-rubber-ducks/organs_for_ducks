@@ -81,7 +81,7 @@ public class DeregisterOrganReasonController {
         dODDatePicker.setDisable(true);
 
         List<Disease> diseases = currentUser.getCurrentDiseases();
-        if (diseases.size() == 0) { //if there are no current diseases, the diseaseCuredRadioButton will be disabled
+        if (diseases.isEmpty()) { //if there are no current diseases, the diseaseCuredRadioButton will be disabled
             diseaseCuredRadioButton.setDisable(true);
         }
         diseaseNameComboBox.setItems(FXCollections.observableList(diseases));
@@ -113,13 +113,10 @@ public class DeregisterOrganReasonController {
      */
     @FXML
     void cancelDeregistration() {
-        AppController appController = AppController.getInstance();
-        UserController userController = appController.getUserController();
         try {
             userController.showUser(currentUser);
             Log.info("cancelled organ: " + toDeRegister.toString() + " de-registration for Receiver with NHI: " + currentUser.getNhi());
         } catch (NullPointerException ex) {
-            //TODO causes npe if donor is new in this session
             //the text fields etc. are all null
             Log.severe("unable to cancel organ: " + toDeRegister.toString() + "  de-registration for Receiver with NHI: " + currentUser.getNhi(), ex);
         }
@@ -163,21 +160,16 @@ public class DeregisterOrganReasonController {
                 invalidDateErrorMessage.setVisible(true);
             } else {
                 currentUser.setDateOfDeath(dOD);
-                //currentUser.setDeceased(true);
                 userController.setOrganDeregisterationReason(OrganDeregisterReason.RECEIVER_DIED);
                 Log.info(logMessage + OrganDeregisterReason.RECEIVER_DIED);
             }
         }
 
         if (isValid) {
-            this.userController.deRegisterOrgan(toDeRegister);
-
-            AppController appController = AppController.getInstance();
-            UserController userController = appController.getUserController();
+            userController.deRegisterOrgan(toDeRegister);
             try {
                 userController.showUser(currentUser);
             } catch (NullPointerException ex) {
-                //TODO causes npe if donor is new in this session
                 //the text fields etc. are all null
                 Log.severe("Unable to load Receiver with NHI: " + currentUser.getNhi() + " when exiting Deregister Organ Reason window", ex);
             }

@@ -6,8 +6,8 @@ import javafx.stage.Stage;
 import odms.controller.gui.window.AdministratorViewController;
 
 public class AlertUnclosedWindowsController {
-    Stage stage;
-    AdministratorViewController controller;
+    private Stage stage;
+    private AdministratorViewController controller;
 
     /**
      * Initializes the AlertUnclosedWindowsController
