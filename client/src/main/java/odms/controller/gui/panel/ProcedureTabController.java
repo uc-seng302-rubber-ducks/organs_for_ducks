@@ -12,14 +12,14 @@ import javafx.scene.control.cell.TextFieldListCell;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
-import odms.controller.AppController;
-import odms.controller.gui.popup.OrgansAffectedController;
-import odms.controller.gui.window.UserController;
 import odms.commons.model.Change;
 import odms.commons.model.MedicalProcedure;
 import odms.commons.model.User;
 import odms.commons.model._enum.Organs;
 import odms.commons.utils.Log;
+import odms.controller.AppController;
+import odms.controller.gui.popup.OrgansAffectedController;
+import odms.controller.gui.window.UserController;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -27,6 +27,10 @@ import java.util.ArrayList;
 import java.util.stream.Collectors;
 
 public class ProcedureTabController {
+    public static final String FAILED_TO_ADD_PROCEDURE = "Failed to add procedure: ";
+    public static final String FOR_USER_NHI = " for User NHI: ";
+    public static final String AS_USER_INPUT_IS_INVALID = " as user input is invalid";
+    public static final String FAILED_TO_UPDATE_PROCEDURE = "Failed to update procedure: ";
     //procedures
 
     @FXML
@@ -152,7 +156,7 @@ public class ProcedureTabController {
     private void moveSelectedProcedureTo(TableView<MedicalProcedure> from,
                                          TableView<MedicalProcedure> to) {
         from.getSelectionModel().selectedItemProperty()
-                .addListener(ListChangeListener -> {
+                .addListener(listChangeListener -> {
                     to.getSelectionModel().select(null);
                     if (from.getSelectionModel().getSelectedItem() != null) {
                         showProcedure(from.getSelectionModel().getSelectedItem());
@@ -214,18 +218,18 @@ public class ProcedureTabController {
     void addProcedure() {
         String procedureName = procedureTextField.getText();
         if (procedureName.isEmpty()) {
-            Log.warning("Failed to add procedure: " + procedureName + " for User NHI: " + currentUser.getNhi() + " as user input is invalid");
+            Log.warning(FAILED_TO_ADD_PROCEDURE + procedureName + FOR_USER_NHI + currentUser.getNhi() + AS_USER_INPUT_IS_INVALID);
             procedureWarningLabel.setText("A name must be entered for a procedure");
             return;
         }
         LocalDate procedureDate = procedureDateSelector.getValue();
         if (procedureDate == null) {
-            Log.warning("Failed to add procedure: " + procedureName + " for User NHI: " + currentUser.getNhi() + " as user input is invalid");
+            Log.warning(FAILED_TO_ADD_PROCEDURE + procedureName + FOR_USER_NHI + currentUser.getNhi() + AS_USER_INPUT_IS_INVALID);
             procedureWarningLabel.setText("A valid date must be entered for a procedure");
             return;
         }
         if (procedureDate.isBefore(currentUser.getDateOfBirth())) {
-            Log.warning("Failed to add procedure: " + procedureName + " for User NHI: " + currentUser.getNhi() + " as user input is invalid");
+            Log.warning(FAILED_TO_ADD_PROCEDURE + procedureName + FOR_USER_NHI + currentUser.getNhi() + AS_USER_INPUT_IS_INVALID);
             procedureWarningLabel.setText("Procedures may not occur before a patient has been born");
             return;
         }
@@ -243,7 +247,7 @@ public class ProcedureTabController {
         clearProcedure();
         application.update(currentUser);
         parent.updateUndoRedoButtons();
-        Log.info("Successfully added procedure: " + procedureName + " for User NHI: " + currentUser.getNhi());
+        Log.info("Successfully added procedure: " + procedureName + FOR_USER_NHI + currentUser.getNhi());
     }
 
     /**
@@ -256,17 +260,17 @@ public class ProcedureTabController {
         LocalDate newDate = procedureDateSelector.getValue();
         String newDescription = descriptionTextArea.getText();
         if (newName.isEmpty()) {
-            Log.warning("Failed to update procedure: " + newName + " for User NHI: " + currentUser.getNhi() + " as user input is invalid");
+            Log.warning(FAILED_TO_UPDATE_PROCEDURE + newName + FOR_USER_NHI + currentUser.getNhi() + AS_USER_INPUT_IS_INVALID);
             procedureWarningLabel.setText("A name must be entered for a procedure");
             return;
         }
         if (newDate == null) {
-            Log.warning("Failed to update procedure: " + newName + " for User NHI: " + currentUser.getNhi() + " as user input is invalid");
+            Log.warning(FAILED_TO_UPDATE_PROCEDURE + newName + FOR_USER_NHI + currentUser.getNhi() + AS_USER_INPUT_IS_INVALID);
             procedureWarningLabel.setText("A valid date must be entered for a procedure");
             return;
         }
         if (newDate.isBefore(currentUser.getDateOfBirth())) {
-            Log.warning("Failed to update procedure: " + newName + " for User NHI: " + currentUser.getNhi() + " as user input is invalid");
+            Log.warning(FAILED_TO_UPDATE_PROCEDURE + newName + FOR_USER_NHI + currentUser.getNhi() + AS_USER_INPUT_IS_INVALID);
             procedureWarningLabel.setText("Procedures may not occur before a patient has been born");
             return;
         }
@@ -286,7 +290,7 @@ public class ProcedureTabController {
         }
 
         parent.updateUndoRedoButtons();
-        Log.info("Successfully updated procedure: " + newName + " for User NHI: " + currentUser.getNhi());
+        Log.info("Successfully updated procedure: " + newName + FOR_USER_NHI + currentUser.getNhi());
     }
 
     /**
@@ -357,14 +361,12 @@ public class ProcedureTabController {
     void removeProcedure() {
         currentUser.saveStateForUndo();
         if (previousProcedureTableView.getSelectionModel().getSelectedItem() != null) {
-            //medicalProcedures.remove(previousProcedureTableView.getSelectionModel().getSelectedItem());
             previousProcedureTableView.getSelectionModel().getSelectedItem().setDeleted(true);
-            Log.info("Successfully removed procedure: " + previousProcedureTableView.getSelectionModel().getSelectedItem().toString() + " for User NHI: " + currentUser.getNhi());
+            Log.info("Successfully removed procedure: " + previousProcedureTableView.getSelectionModel().getSelectedItem().toString() + FOR_USER_NHI + currentUser.getNhi());
             previousProcedures.remove(previousProcedureTableView.getSelectionModel().getSelectedItem());
         } else if (pendingProcedureTableView.getSelectionModel().getSelectedItem() != null) {
-            //medicalProcedures.remove(pendingProcedureTableView.getSelectionModel().getSelectedItem());
             pendingProcedureTableView.getSelectionModel().getSelectedItem().setDeleted(true);
-            Log.info("Successfully removed procedure: " + pendingProcedureTableView.getSelectionModel().getSelectedItem().toString() + " for User NHI: " + currentUser.getNhi());
+            Log.info("Successfully removed procedure: " + pendingProcedureTableView.getSelectionModel().getSelectedItem().toString() + FOR_USER_NHI + currentUser.getNhi());
             pendingProcedures.remove(pendingProcedureTableView.getSelectionModel().getSelectedItem());
         } else {
             currentUser.getUndoStack().pop();

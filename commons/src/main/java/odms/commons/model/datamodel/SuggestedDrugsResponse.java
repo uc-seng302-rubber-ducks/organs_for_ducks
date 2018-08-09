@@ -12,7 +12,7 @@ public class SuggestedDrugsResponse {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         for (String s : suggestions) {
-            sb.append(s + ",");
+            sb.append(s).append(",");
         }
         return sb.toString();
     }

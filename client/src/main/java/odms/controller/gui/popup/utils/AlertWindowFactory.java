@@ -3,6 +3,10 @@ package odms.controller.gui.popup.utils;
 import javafx.scene.control.Alert;
 
 public class AlertWindowFactory {
+
+    private AlertWindowFactory() {
+    }
+
     public static void generateError(Exception e) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Error");

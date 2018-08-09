@@ -29,7 +29,7 @@ public class SqlTest {
 
         when(controller.getSqlBridge()).thenReturn(sqlBridge);
         when(controller.getToken()).thenReturn("token");
-        when(sqlBridge.excuteSqlStatement(anyString(), anyString())).thenReturn(results);
+        when(sqlBridge.executeSqlStatement(anyString(), anyString())).thenReturn(results);
 
         command = new Sql();
         command.setAppController(controller);
@@ -40,7 +40,7 @@ public class SqlTest {
         String[] args = {"select * from User"};
 
         new CommandLine(command).parseWithHandler(new CommandLine.RunLast(), System.err, args);
-        verify(sqlBridge, times(1)).excuteSqlStatement(anyString(), anyString());
+        verify(sqlBridge, times(1)).executeSqlStatement(anyString(), anyString());
     }
 
     @Test
@@ -48,7 +48,7 @@ public class SqlTest {
         String[] args = {"Drop table User"};
 
         new CommandLine(command).parseWithHandler(new CommandLine.RunLast(), System.err, args);
-        verify(sqlBridge, times(0)).excuteSqlStatement(anyString(), anyString());
+        verify(sqlBridge, times(0)).executeSqlStatement(anyString(), anyString());
     }
 
     @Test
@@ -56,6 +56,6 @@ public class SqlTest {
         String[] args = {"select * from User sleep(100)"};
 
         new CommandLine(command).parseWithHandler(new CommandLine.RunLast(), System.err, args);
-        verify(sqlBridge, times(0)).excuteSqlStatement(anyString(), anyString());
+        verify(sqlBridge, times(0)).executeSqlStatement(anyString(), anyString());
     }
 }

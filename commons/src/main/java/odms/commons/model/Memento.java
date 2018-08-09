@@ -23,13 +23,7 @@ public class Memento<T> {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (!(obj instanceof Memento)) {
-            return false;
-        }
-        return (this.state.equals(((Memento) obj).state));
+        return obj instanceof Memento && (this.state.equals(((Memento) obj).state));
     }
 
     @Override

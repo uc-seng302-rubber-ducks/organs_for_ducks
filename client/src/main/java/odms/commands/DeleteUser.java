@@ -12,7 +12,7 @@ import picocli.CommandLine.Parameters;
 
 import java.io.IOException;
 
-@Command(name = "user", description = "Requires NHI to locate user and prompt for deletion")
+@Command(name = "user", description = "Requires nhi to locate user and prompt for deletion")
 public class DeleteUser implements Runnable, Blockable {
 
     private AppController controller = AppController.getInstance();
@@ -23,7 +23,7 @@ public class DeleteUser implements Runnable, Blockable {
     private Boolean helpRequested = false;
 
     @Parameters(index = "0")
-    private String NHI;
+    private String nhi;
 
     @Override
     public void run() {
@@ -33,9 +33,9 @@ public class DeleteUser implements Runnable, Blockable {
         }
 
         try {
-            toDelete = controller.getUserBridge().getUser(NHI);
+            toDelete = controller.getUserBridge().getUser(nhi);
         } catch (IOException e) {
-            Log.warning("Failed to get user " + NHI + " on the CLI to delete", e);
+            Log.warning("Failed to get user " + nhi + " on the CLI to delete", e);
         }
 
         if (toDelete == null) {
@@ -62,7 +62,7 @@ public class DeleteUser implements Runnable, Blockable {
                 CLI.clearBlockage();
             } catch (Exception e) {
                 IoHelper.display("Failed to delete user");
-                Log.warning("failed to delete user " + NHI, e);
+                Log.warning("failed to delete user " + nhi, e);
             }
         } else if (input.equalsIgnoreCase("n")) {
             IoHelper.display("Cancelled");

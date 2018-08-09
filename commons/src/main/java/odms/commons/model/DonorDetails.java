@@ -14,7 +14,7 @@ public class DonorDetails {
 
     @Expose
     private Set<Organs> organs;
-    private transient User attachedUser;
+    private transient User attachedUser; //NOSONAR
 
     /**
      * Constructor for organs for current user

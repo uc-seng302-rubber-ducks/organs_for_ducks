@@ -49,6 +49,9 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
     private static final String DELETE_USER_STMT = "DELETE FROM User WHERE nhi = ?";
     private static final String CREATE_RECEIVING_ORGAN_DATE = "INSERT INTO OrganAwaitingDates (fkAwaitingId, dateRegistered, dateDeregistered) VALUES (?, ?, ?)";
     private static final String GET_RECEIVER_ID = "SELECT awaitingId FROM OrganAwaiting WHERE fkUserNhi = ? AND fkOrgansId = ?";
+    public static final String START_TRANSACTION = "START TRANSACTION";
+    public static final String ROLLBACK = "ROLLBACK";
+    public static final String COMMIT = "COMMIT";
     private static final String CREATE_DEATH_DETAILS = "INSERT INTO DeathDetails (fkUserNhi, momentOfDeath, city, region, country) VALUES (?, ?, ?, ?, ?)";
     private static final String UPDATE_DEATH_DETAILS = "UPDATE DeathDetails SET momentOfDeath = ?, city = ?, region = ?, country = ? WHERE fkUserNhi = ?";
     //</editor-fold>
@@ -81,7 +84,7 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
      * @param connection Connection to the target database
      */
     private void executeCreation(User user, Connection connection) throws SQLException {
-        connection.prepareStatement("START TRANSACTION").execute();
+        connection.prepareStatement(START_TRANSACTION).execute();
         try {
             createUser(user, connection);
             createEmergencyContact(user.getNhi(), user, connection);
@@ -90,10 +93,10 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
             executeUpdate(user, connection);
             createDeathDetails(user, connection);
         } catch (SQLException sqlEx) {
-            connection.prepareStatement("ROLLBACK").execute();
+            connection.prepareStatement(ROLLBACK).execute();
             throw sqlEx;
         }
-        connection.prepareStatement("COMMIT").execute();
+        connection.prepareStatement(COMMIT).execute();
     }
 
     /**
@@ -236,7 +239,7 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
      * @param connection Connection to the target database
      */
     private void deleteRole(User user, Connection connection) throws SQLException {
-        connection.prepareStatement("START TRANSACTION").execute();
+        connection.prepareStatement(START_TRANSACTION).execute();
         try {
             try (PreparedStatement stmt = connection.prepareStatement(DELETE_USER_STMT)) {
                 stmt.setString(1, user.getNhi());
@@ -244,10 +247,10 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
             }
         } catch (SQLException sqlEx) {
             Log.severe("A fatal error in deletion, cancelling operation", sqlEx);
-            connection.prepareStatement("ROLLBACK").execute();
+            connection.prepareStatement(ROLLBACK).execute();
             throw sqlEx;
         }
-        connection.prepareStatement("COMMIT").execute();
+        connection.prepareStatement(COMMIT).execute();
     }
 
     /**
@@ -259,7 +262,7 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
      * @param connection Connection ot the target database
      */
     private void executeUpdate(User user, Connection connection) throws SQLException {
-        connection.prepareStatement("START TRANSACTION").execute();
+        connection.prepareStatement(START_TRANSACTION).execute();
         try {
             updateUserDetails(user, connection);
             updateUserContactDetails(user, connection);
@@ -273,10 +276,10 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
             updateDeathDetails(user, connection);
         } catch (SQLException sqlEx) {
             Log.severe("A fatal error in deletion, cancelling operation", sqlEx);
-            connection.prepareStatement("ROLLBACK").execute();
+            connection.prepareStatement(ROLLBACK).execute();
             throw sqlEx;
         }
-        connection.prepareStatement("COMMIT").execute();
+        connection.prepareStatement(COMMIT).execute();
     }
 
     /**

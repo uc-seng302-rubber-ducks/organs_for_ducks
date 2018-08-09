@@ -166,7 +166,7 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
         searchCount = appController.getUserOverviews().size();
         initSearchTable();
         transplantWaitListTabPageController.init(appController, this);
-        statusBarPageController.init(appController);
+        statusBarPageController.init();
 
         if (clinician.getStaffId().equals("0")) {
             deleteClinician.setDisable(true);
@@ -453,7 +453,7 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
      * When fired, it also deleted the temp folder.
      */
     @FXML
-    void logout() {
+    private void logout() {
         checkSave();
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML/loginView.fxml"));
         Parent root;
@@ -465,11 +465,7 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
             stage.close();
             LoginController loginController = loader.getController();
             loginController.init(AppController.getInstance(), newStage);
-            try {
-                deleteTempDirectory();
-            } catch (IOException e){
-                System.err.println(e);
-            }
+            deleteTempDirectory();
             Log.info("Clinician " + clinician.getStaffId() + " successfully launched login window after logout");
         } catch (IOException e) {
             Log.severe("Clinician " + clinician.getStaffId() + " failed to launch login window after logout", e);

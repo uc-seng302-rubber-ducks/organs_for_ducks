@@ -13,7 +13,7 @@ public class ReceiverOrganDetails {
     private LocalDate deRegisterDate;
 
     public ReceiverOrganDetails() {
-
+        //Why is this empty?
     }
 
     public LocalDate getDeRegisterDate() {
