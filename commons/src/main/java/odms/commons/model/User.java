@@ -347,6 +347,12 @@ public class User extends Undoable<User> implements Listenable {
         addChange(new Change("Changed emergency contact region to " + ecRegion));
     }
 
+    public void setECRegionNoUndo(String ecRegion) {
+        updateLastModified();
+        contact.setRegion(ecRegion);
+        addChange(new Change("Changed emergency contact region to " + ecRegion));
+    }
+
     public void setECZipCode(String ecZipCode) {
         this.saveStateForUndo();
         updateLastModified();
@@ -787,6 +793,14 @@ public class User extends Undoable<User> implements Listenable {
 
     public void setRegion(String region) {
         this.saveStateForUndo();
+        updateLastModified();
+        contactDetails.getAddress().setRegion(region);
+        if (contactDetails.getAddress() != null && !contactDetails.getAddress().equals("")) {
+            addChange(new Change("Changed region to " + region));
+        }
+    }
+
+    public void setRegionNoUndo(String region) {
         updateLastModified();
         contactDetails.getAddress().setRegion(region);
         if (contactDetails.getAddress() != null && !contactDetails.getAddress().equals("")) {

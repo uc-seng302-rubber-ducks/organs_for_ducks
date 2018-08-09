@@ -277,9 +277,9 @@ public class UpdateUserController {
      */
     @FXML
     private void countrySelectorListener(ActionEvent event) {
-        if (listen) {
+//        if (listen) {
             appController.countrySelectorEventHandler(countrySelector, regionSelector, regionInput, currentUser, null);
-        }
+//        }
     }
 
     /**
@@ -292,9 +292,9 @@ public class UpdateUserController {
      */
     @FXML
     private void ecCountrySelectorListener(ActionEvent event){
-        if (listen) {
+//        if (listen) {
             appController.countrySelectorEventHandler(ecCountrySelector, ecRegionSelector, ecRegionInput, currentUser, null);
-        }
+//        }
     }
 
     /**
@@ -360,6 +360,7 @@ public class UpdateUserController {
                 update();
             }
         });
+
     }
 
     /**

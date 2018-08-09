@@ -304,6 +304,12 @@ public class Clinician extends Undoable<Clinician> implements Listenable {
         setDateLastModified(LocalDateTime.now());
     }
 
+    public void setRegionNoUndo(String region) {
+        workContactDetails.setRegion(region);
+        addChange(new Change("set region to " + region));
+        setDateLastModified(LocalDateTime.now());
+    }
+
     /**
      * Public so that it can be stored within the database
      * No one else should be able to retrieve password
