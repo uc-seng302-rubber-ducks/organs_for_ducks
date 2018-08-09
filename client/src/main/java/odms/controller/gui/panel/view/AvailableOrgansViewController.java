@@ -5,13 +5,17 @@ import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.ProgressBarTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.util.Duration;
 import odms.commons.model._abstract.UserLauncher;
 import odms.commons.model._enum.Organs;
 import odms.commons.model.datamodel.AvailableOrganDetail;
+import odms.commons.utils.ProgressTask;
 import odms.controller.gui.panel.logic.AvailableOrgansLogicController;
 
 import java.time.LocalDateTime;
@@ -41,7 +45,7 @@ public class AvailableOrgansViewController {
     private TableColumn<AvailableOrganDetail, LocalDateTime> deathMomentColumn;
 
     @FXML
-    private TableColumn<AvailableOrganDetail, Double> progressBarColumn;
+    private TableColumn<ProgressTask, Double> progressBarColumn;
 
 
     private ObservableList<AvailableOrganDetail> availableOrganDetails = FXCollections.observableList(new ArrayList<>());
@@ -59,8 +63,9 @@ public class AvailableOrgansViewController {
         availableOrganFilterComboBox.setItems(organs);
         availableOrganDetails.addListener((ListChangeListener<? super AvailableOrganDetail>) observable -> populateTables());
         regionFilterTextField.setOnKeyPressed(event -> {
-            pause.setOnFinished(e -> search());
-            pause.playFromStart();
+            availableOrganDetails.add(new AvailableOrganDetail(Organs.LIVER, "", null, "", ""));
+//            pause.setOnFinished(e -> search());
+//            pause.playFromStart();
         });
         initAvailableOrgansTableView();
     }
@@ -95,7 +100,6 @@ public class AvailableOrgansViewController {
 
     public void populateTables() {
         availableOrgansTableView.setItems(availableOrganDetails);
-        availableOrganDetails.add(new AvailableOrganDetail(Organs.LIVER, "", null, ""));
         setOnClickBehaviour();
     }
 
