@@ -101,13 +101,6 @@ public class UpdateUserControllerGUITest extends ApplicationTest {
     }
 
     @Test
-    public void testUpdateDoD() {
-        setDateValue(this, "#dodInput", LocalDate.of(2018, 5, 3));
-        clickOnButton(this,"#confirmButton");
-        verifyThat("#DODValue", LabeledMatchers.hasText(LocalDate.of(2018, 5, 3).toString()));
-    }
-
-    @Test
     @Ignore
     public void testUpdateAddress() {
         setTextField(this,"#address","dkgfdjhb");

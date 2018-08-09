@@ -1,3 +1,4 @@
+DROP TABLE IF EXISTS DeathDetails;
 DROP TABLE IF EXISTS PasswordDetails;
 DROP TABLE IF EXISTS Address;
 DROP TABLE IF EXISTS EmergencyContactDetails;
@@ -186,7 +187,7 @@ CREATE TABLE Address(
   streetNumber VARCHAR(15),
   streetName VARCHAR(255),
   neighbourhood VARCHAR(255),
-  city VARCHAR(25),
+  city VARCHAR(255),
   region VARCHAR(255),
   zipCode VARCHAR(15),
   country VARCHAR(255),
@@ -221,3 +222,12 @@ CREATE TABLE DeathDetails(
   countryName VARCHAR(100) PRIMARY KEY,
   allowed BOOLEAN DEFAULT TRUE
 );*/
+
+CREATE TABLE DeathDetails(
+  fkUserNhi VARCHAR(7) NOT NULL PRIMARY KEY,
+  momentOfDeath DATETIME,
+  city VARCHAR(255),
+  region VARCHAR(255),
+  country VARCHAR(255),
+  FOREIGN KEY (fkUserNhi) REFERENCES User(nhi) ON DELETE CASCADE
+);

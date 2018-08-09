@@ -2,6 +2,7 @@ package odms.view;
 
 import odms.commons.model.User;
 import odms.commons.model.dto.UserOverview;
+import odms.commons.utils.Log;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -31,6 +32,7 @@ public class IoHelper {
         LocalDate date;
         try {
             date = LocalDate.parse(rawDate, sdf);
+            Log.info(date.toString());
         } catch (DateTimeParseException e) {
             display("Error parsing date: " + rawDate);
             display("Please use format yyyy-MM-dd");
