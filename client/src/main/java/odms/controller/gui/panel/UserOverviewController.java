@@ -1,13 +1,20 @@
 package odms.controller.gui.panel;
 
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
-import odms.commons.model.User;
 import odms.controller.AppController;
+import odms.controller.gui.popup.UpdateDeathDetailsController;
+import odms.commons.model.User;
+import odms.commons.utils.Log;
 
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.time.temporal.ChronoUnit;
 
@@ -76,6 +83,18 @@ public class UserOverviewController {
     private Label bmiValue;
 
     @FXML
+    private Button updateDeathDetailsButton;
+
+    @FXML
+    private Label cityOfDeathValue;
+
+    @FXML
+    private Label regionOfDeathValue;
+
+    @FXML
+    private Label countryOfDeathValue;
+
+    @FXML
     private Button deleteUser;
 
 
@@ -95,6 +114,9 @@ public class UserOverviewController {
         this.currentUser = user;
         clinician = fromClinician;
         showUser(user);
+        if (!clinician) {
+            updateDeathDetailsButton.setDisable(true);
+        }
     }
 
     /**
@@ -191,6 +213,25 @@ public class UserOverviewController {
             bmiValue.setText("");
         }
 
+        if (user.getDeathCity() != null) {
+            cityOfDeathValue.setText(user.getDeathCity());
+        } else {
+            cityOfDeathValue.setText("");
+        }
+
+        if (user.getDeathRegion() != null) {
+            regionOfDeathValue.setText(user.getDeathRegion());
+        } else {
+            regionOfDeathValue.setText("");
+        }
+
+        if (user.getDeathCountry() != null) {
+            countryOfDeathValue.setText(user.getDeathCountry());
+        } else {
+            countryOfDeathValue.setText("");
+        }
+
+
         if (user.getLastModified() != null) {
             lastModifiedValue.setText(user.getLastModified().toString());
         }
@@ -198,5 +239,29 @@ public class UserOverviewController {
         alcoholValue.setText(user.getAlcoholConsumption());
 
     }
+
+    @FXML
+    private void updateDeathDetails() {
+        openUpdateDeathDetailsPopup();
+    }
+
+    private void openUpdateDeathDetailsPopup() {
+        FXMLLoader updateDeathDetailsLoader = new FXMLLoader(getClass().getResource("/FXML/updateDeathDetails.fxml"));
+        Parent root;
+        try {
+            root = updateDeathDetailsLoader.load();
+            UpdateDeathDetailsController updateDeathDetailsController = updateDeathDetailsLoader.getController();
+            Stage updateStage = new Stage();
+            updateStage.initModality(Modality.APPLICATION_MODAL);
+            updateStage.setScene(new Scene(root));
+            updateDeathDetailsController.init(application, updateStage, currentUser);
+            updateStage.show();
+            Log.info("Successfully launched update user window for User NHI: " + currentUser.getNhi());
+
+        } catch (IOException e) {
+            Log.severe("Failed to load edit death details window for User NHI: " + currentUser.getNhi(), e);
+        }
+    }
+
 
 }

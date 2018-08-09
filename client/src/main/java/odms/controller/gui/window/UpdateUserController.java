@@ -54,9 +54,6 @@ public class UpdateUserController {
     private Label invalidDOB;
 
     @FXML
-    private Label invalidDOD;
-
-    @FXML
     private TextField nhiInput;
 
     @FXML
@@ -168,9 +165,6 @@ public class UpdateUserController {
     private DatePicker dobInput;
 
     @FXML
-    private DatePicker dodInput;
-
-    @FXML
     private Button undoUpdateButton;
 
     @FXML
@@ -248,7 +242,6 @@ public class UpdateUserController {
         comboBoxListener(ecCountrySelector);
 
         datePickerListener(dobInput);
-        datePickerListener(dodInput);
 
         addCheckBoxListener(smokerCheckBox);
 
@@ -398,7 +391,6 @@ public class UpdateUserController {
         }
 
         dobInput.setValue(user.getDateOfBirth());
-        dodInput.setValue(user.getDateOfDeath());
 
 
         if (user.getStreetNumber() != null) {
@@ -690,16 +682,13 @@ public class UpdateUserController {
         if (!valid) {
             invalidNHI.setVisible(true);
         } else {
-            User user = appController.findUser(nhi);
-            if (user != null && !user.getNhi()
-                    .equals(nhi)) { // if a user was found, but it is not the current user
+            if (appController.getUserBridge().getExists(nhi) && !currentUser.getNhi().equals(nhi)) { // if a user was found, but it is not the current user
                 existingNHI.setVisible(true);
                 valid = false;
             }
         }
 
         LocalDate dob = dobInput.getValue();
-        LocalDate dod = dodInput.getValue();
 
         String fName = fNameInput.getText();
         valid &= AttributeValidation.checkRequiredString(fName);
@@ -710,14 +699,6 @@ public class UpdateUserController {
         valid &= AttributeValidation.validateDateOfBirth(dob);
         if (!valid) {
             invalidDOB.setVisible(true);
-        }
-
-        if (dob != null) {
-            valid &= AttributeValidation.validateDateOfDeath(dob,
-                    dod); // checks if the dod is before tomorrow's date and that the dob is before the dod
-            if (!valid) {
-                invalidDOD.setVisible(true);
-            }
         }
 
         double height = AttributeValidation.validateDouble(heightInput.getText());
@@ -826,8 +807,7 @@ public class UpdateUserController {
         } else {
             photoPath = currentUser.getProfilePhotoFilePath();
         }
-        changed = updatePersonalDetails(nhiInput.getText(), fNameInput.getText(), dobInput.getValue(),
-                dodInput.getValue(), photoPath);
+        changed = updatePersonalDetails(nhiInput.getText(), fNameInput.getText(), dobInput.getValue(), photoPath);
         changed |= updateHealthDetails(heightInput.getText(), weightInput.getText());
         changed |= updateContactDetails();
         changed |= updateEmergencyContact();
@@ -845,9 +825,8 @@ public class UpdateUserController {
      * @param nhi   The national health index to be checked for changes and possibly updated.
      * @param fName The first name to be checked for changes and possibly updated.
      * @param dob   The date of birth to be checked for changes and possibly updated.
-     * @param dod   The date of death to be checked for changes and possibly updated.
      */
-    private boolean updatePersonalDetails(String nhi, String fName, LocalDate dob, LocalDate dod, String photoPath) {
+    private boolean updatePersonalDetails(String nhi, String fName, LocalDate dob, String photoPath) {
         boolean changed = false;
 
         if (!currentUser.getNhi().equals(nhi)) {
@@ -893,16 +872,6 @@ public class UpdateUserController {
             changed = true;
         }
 
-        LocalDate deathDate = currentUser.getDateOfDeath();
-        if (deathDate != null && dod != null) {
-            if (!deathDate.isEqual(dod)) {
-                currentUser.setDateOfDeath(dod);
-                changed = true;
-            }
-        } else if ((deathDate == null && dod != null) || deathDate != null) {
-            currentUser.setDateOfDeath(dod);
-            changed = true;
-        }
 
         if (checkChangedProperty(currentUser.getProfilePhotoFilePath(), photoPath)) {
             currentUser.setProfilePhotoFilePath(photoPath);
@@ -1227,7 +1196,6 @@ public class UpdateUserController {
         existingNHI.setVisible(false);
         invalidNHI.setVisible(false);
         invalidDOB.setVisible(false);
-        invalidDOD.setVisible(false);
         errorLabel.setVisible(false);
         invalidFirstName.setVisible(false);
     }

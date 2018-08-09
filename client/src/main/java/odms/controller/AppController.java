@@ -368,14 +368,17 @@ public class AppController {
             }
 
             if (userBridge.getExists(originalUser.getNhi())) {
-                userBridge.putProfilePicture(originalUser.getNhi(), user.getProfilePhotoFilePath());
                 userBridge.putUser(user, originalUser.getNhi());
+                Thread.sleep(100);
+                userBridge.putProfilePicture(user.getNhi(), user.getProfilePhotoFilePath());
 
             } else {
                 userBridge.postUser(user);
             }
         } catch (IOException e) {
             Log.warning("Could not save user " + user.getNhi(), e);
+        } catch (InterruptedException e) {
+            Log.warning("Thread sleep time was interrupted", e);
         }
     }
 
