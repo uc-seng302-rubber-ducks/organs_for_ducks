@@ -11,6 +11,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.util.Duration;
+import odms.commons.model._abstract.UserLauncher;
 import odms.commons.model._enum.Organs;
 import odms.commons.model.datamodel.AvailableOrganDetail;
 import odms.controller.gui.panel.logic.AvailableOrgansLogicController;
@@ -48,13 +49,15 @@ public class AvailableOrgansViewController {
     private ObservableList<AvailableOrganDetail> availableOrganDetails = FXCollections.observableList(new ArrayList<>());
     private AvailableOrgansLogicController logicController = new AvailableOrgansLogicController(availableOrganDetails);
     private PauseTransition pause = new PauseTransition(Duration.millis(300));
+    private UserLauncher parent;
 
     @FXML
-    public void init() {
+    public void init(UserLauncher parent) {
         ObservableList<String> organs = FXCollections.observableList(new ArrayList<>());
         for (Organs organ : Organs.values()) {
             organs.add(organ.toString());
         }
+        this.parent = parent;
         availableOrganFilterComboBox.setItems(organs);
         availableOrganDetails.addListener((ListChangeListener<? super AvailableOrganDetail>) observable -> populateTables());
         regionFilterTextField.setOnKeyPressed(event -> {
@@ -70,6 +73,7 @@ public class AvailableOrgansViewController {
         organColumn.setCellValueFactory(new PropertyValueFactory<>("organ"));
         deathMomentColumn.setCellValueFactory(new PropertyValueFactory<>("momentOfDeath"));
         // figure out how to do progress bars
+        search();
         populateTables();
     }
 
@@ -97,7 +101,7 @@ public class AvailableOrgansViewController {
     private void setOnClickBehaviour() {
         availableOrgansTableView.setOnMouseClicked(event -> {
             if (event.getClickCount() == 2) {
-                logicController.launchUser(availableOrgansTableView.getSelectionModel().getSelectedItem().getDonorNhi());
+                parent.launchUser(availableOrgansTableView.getSelectionModel().getSelectedItem().getDonorNhi());
             }
         });
     }

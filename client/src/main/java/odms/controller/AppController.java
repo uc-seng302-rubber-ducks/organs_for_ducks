@@ -57,6 +57,7 @@ public class AppController {
     private UserBridge userBridge = new UserBridge(client);
     private ClinicianBridge clinicianBridge = new ClinicianBridge(client);
     private AdministratorBridge administratorBridge = new AdministratorBridge(client);
+    private AvailableOrgansBridge availableOrgansBridge = new AvailableOrgansBridge(client);
     private LoginBridge loginBridge = new LoginBridge(client);
     private TransplantBridge transplantBridge = new TransplantBridge(client);
     private UserController userController = null;
@@ -709,5 +710,13 @@ public class AppController {
 
     public OdmsSocketHandler getSocketHandler() {
         return socketHandler;
+    }
+
+    public AvailableOrgansBridge getAvailableOrgansBridge() {
+        return availableOrgansBridge;
+    }
+
+    public void setAvailableOrgansBridge(AvailableOrgansBridge bridge) {
+        availableOrgansBridge = bridge;
     }
 }

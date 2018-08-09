@@ -1,12 +1,8 @@
 package odms.controller.gui.panel.logic;
 
 import javafx.collections.ObservableList;
-import odms.commons.model.User;
 import odms.commons.model.datamodel.AvailableOrganDetail;
 import odms.controller.AppController;
-import odms.controller.gui.popup.utils.AlertWindowFactory;
-
-import java.io.IOException;
 
 public class AvailableOrgansLogicController {
 
@@ -25,7 +21,9 @@ public class AvailableOrgansLogicController {
         this.organ = organ;
         this.region = region;
         this.startingIndex = startIndex;
+
         // Make the call to the bridge here, and hand the arraylist to the bridge function
+        AppController.getInstance().getAvailableOrgansBridge().getAvailableOrgansList(startIndex, ROWS_PER_PAGE, organ, region, "", "", "", availableOrganDetails);
     }
 
     public void goPrevPage() {
@@ -44,15 +42,5 @@ public class AvailableOrgansLogicController {
 
         startingIndex = startingIndex + ROWS_PER_PAGE;
         search(startingIndex, organ, region);
-    }
-
-    public void launchUser(String donorNhi) {
-        try {
-            User user = AppController.getInstance().getUserBridge().getUser(donorNhi);
-            // Make FXML calls to create the new window.
-
-        } catch (IOException e) {
-            AlertWindowFactory.generateError(e);
-        }
     }
 }

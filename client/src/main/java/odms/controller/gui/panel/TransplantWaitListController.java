@@ -11,14 +11,12 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
 import javafx.util.Duration;
 import odms.commons.model.User;
-import odms.commons.model._abstract.TransplantWaitListViewer;
+import odms.commons.model._abstract.UserLauncher;
 import odms.commons.model._enum.Organs;
 import odms.commons.model.datamodel.TransplantDetails;
 import odms.commons.model.dto.UserOverview;
 import odms.controller.AppController;
 import odms.controller.gui.popup.utils.AlertWindowFactory;
-import odms.bridge.UserBridge;
-import okhttp3.OkHttpClient;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -81,7 +79,7 @@ public class TransplantWaitListController {
     private ArrayList<CheckBox> filterCheckBoxList = new ArrayList<>();
     private List<User> users;
     private AppController appController;
-    private TransplantWaitListViewer parent;
+    private UserLauncher parent;
     private int startIndex = 0;
     private static final int TRANSPLANTS_PER_PAGE = 30;
 
@@ -89,7 +87,7 @@ public class TransplantWaitListController {
     private PauseTransition pause = new PauseTransition(Duration.millis(300));
 
     @FXML
-    public void init(AppController controller, TransplantWaitListViewer parent) {
+    public void init(AppController controller, UserLauncher parent) {
         this.parent = parent;
         appController = controller;
         users = controller.getUsers();
