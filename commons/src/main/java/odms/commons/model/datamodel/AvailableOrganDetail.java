@@ -9,12 +9,14 @@ public class AvailableOrganDetail {
     private String donorNhi;
     private LocalDateTime momentOfDeath;
     private String region;
+    private Double progress;
 
     public AvailableOrganDetail(Organs organ, String nhi, LocalDateTime momentOfDeath, String region) {
         this.organ = organ;
         this.donorNhi = nhi;
         this.momentOfDeath = momentOfDeath;
         this.region = region;
+        this.progress = 5.3;
     }
 
     public Organs getOrgan() {
@@ -39,5 +41,13 @@ public class AvailableOrganDetail {
 
     public void setRegion(String region) {
         this.region = region;
+    }
+
+    public double getProgress() {
+        return progress;
+    }
+
+    public void setProgress(double progress) {
+        this.progress = progress;
     }
 }
