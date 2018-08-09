@@ -25,7 +25,12 @@ public class AvailableOrgansTest {
     }
 
     @Test
-    public void testInvaildOrgan(){
-        Assert.assertTrue(organDetail.isOrganStillValid(time.plusHours(1000)));
+    public void testInvaildOrganJustInvalid(){
+        Assert.assertFalse(organDetail.isOrganStillValid(time.plusHours(24)));
+    }
+
+    @Test
+    public void testVaildOrganJustStillValid(){
+        Assert.assertTrue(organDetail.isOrganStillValid(time.plusHours(23).plusMinutes(59)));
     }
 }
