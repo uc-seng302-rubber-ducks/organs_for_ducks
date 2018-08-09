@@ -1,5 +1,6 @@
 package odms.controller;
 
+import odms.commons.model.datamodel.AvailableOrganDetail;
 import odms.commons.utils.DBHandler;
 import odms.commons.utils.JDBCDriver;
 import odms.exception.ServerDBException;
@@ -29,14 +30,14 @@ public class OrgansController extends BaseController {
 
     @IsClinician
     @RequestMapping(method = RequestMethod.GET, value="/availableOrgans")
-    public List<?> getAvailableOrgans(@RequestParam("startIndex") int startIndex,
-                                      @RequestParam("count") int count,
-                                      @RequestParam("organ") String organ,
-                                      @RequestParam("region") String region,
-                                      @RequestParam("bloodType") String bloodType,
-                                      @RequestParam("city") String city,
-                                      @RequestParam("country") String country){
-        try(Connection connection = driver.getConnection()){ //TODO: Tell Java what type of list it should return 7/8 JB
+    public List<AvailableOrganDetail> getAvailableOrgans(@RequestParam(value = "startIndex") int startIndex,
+                                                         @RequestParam(value = "count") int count,
+                                                         @RequestParam(value = "organ", required = false) String organ,
+                                                         @RequestParam(value = "region", required = false) String region,
+                                                         @RequestParam(value = "bloodType", required = false) String bloodType,
+                                                         @RequestParam(value = "city", required = false) String city,
+                                                         @RequestParam(value = "country", required = false) String country){
+        try(Connection connection = driver.getConnection()){
             return handler.getAvailableOrgans(startIndex, count, organ, region, bloodType, city, country, connection);
         } catch (SQLException e) {
             Log.error("Unable to retrieve organs from Db", e);

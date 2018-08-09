@@ -9,12 +9,17 @@ public class AvailableOrganDetail {
     private String donorNhi;
     private LocalDateTime momentOfDeath;
     private String region;
+    private String bloodType;
 
-    public AvailableOrganDetail(Organs organ, String nhi, LocalDateTime momentOfDeath, String region) {
+    public AvailableOrganDetail(Organs organ, String nhi, LocalDateTime momentOfDeath, String region, String bloodType) {
         this.organ = organ;
         this.donorNhi = nhi;
         this.momentOfDeath = momentOfDeath;
         this.region = region;
+        this.bloodType = bloodType;
+    }
+
+    public AvailableOrganDetail() {
     }
 
     public Organs getOrgan() {
@@ -39,5 +44,38 @@ public class AvailableOrganDetail {
 
     public void setRegion(String region) {
         this.region = region;
+    }
+
+    public String getBloodType() {
+        return bloodType;
+    }
+
+    public void setBloodType(String bloodType) {
+        this.bloodType = bloodType;
+    }
+
+    public void setOrgan(Organs organ) {
+        this.organ = organ;
+    }
+
+    public void setDonorNhi(String donorNhi) {
+        this.donorNhi = donorNhi;
+    }
+
+
+    /**
+     * takes a time and returns if the organ is still valid
+     *
+     * @param timeToaskabout time that the organ needs to be valid at
+     *
+     * @return trtue if valid; false if not
+     */
+    public boolean isOrganStillValid(LocalDateTime timeToaskabout){
+        int hoursOrganIsViable = organ.getStorageHours();
+        return (timeToaskabout.isBefore(momentOfDeath.plusHours(hoursOrganIsViable)));
+    }
+
+    public boolean isOrganStillValid(){
+        return isOrganStillValid(LocalDateTime.now());
     }
 }

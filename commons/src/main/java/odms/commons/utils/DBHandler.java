@@ -2,10 +2,7 @@ package odms.commons.utils;
 
 import odms.commons.model.*;
 import odms.commons.model._enum.Organs;
-import odms.commons.model.datamodel.ContactDetails;
-import odms.commons.model.datamodel.Medication;
-import odms.commons.model.datamodel.ReceiverOrganDetailsHolder;
-import odms.commons.model.datamodel.TransplantDetails;
+import odms.commons.model.datamodel.*;
 import odms.commons.utils.db_strategies.AbstractUpdateStrategy;
 import odms.commons.utils.db_strategies.AdminUpdateStrategy;
 import odms.commons.utils.db_strategies.ClinicianUpdateStrategy;
@@ -1127,15 +1124,15 @@ public class DBHandler {
         return results;
     }
 
-   public List<?> getAvailableOrgans(int startIndex,
-                                    int count,
-                                    String organ,
-                                    String region,
-                                    String bloodType,
-                                    String city,
-                                    String country,
-                                    Connection connection) throws SQLException {
-        List<?> results = new ArrayList<>();
+   public List<AvailableOrganDetail> getAvailableOrgans(int startIndex,
+                                                        int count,
+                                                        String organ,
+                                                        String region,
+                                                        String bloodType,
+                                                        String city,
+                                                        String country,
+                                                        Connection connection) throws SQLException {
+        List<AvailableOrganDetail> results = new ArrayList<>();
         try(PreparedStatement preparedStatement = connection.prepareStatement(SELECT_AVAILABLE_ORGANS)){
             preparedStatement.setString(1,bloodType + "%");
             preparedStatement.setString(2,organ + "%");
@@ -1145,8 +1142,17 @@ public class DBHandler {
             preparedStatement.setInt(6, count);
             preparedStatement.setInt(7,startIndex);
             try(ResultSet resultSet = preparedStatement.executeQuery()){
-                //TODO: actually create the objects from here and check them for expiry. May need to wait on how Eiran is going to put them into the table 7/8 JB
+                AvailableOrganDetail organDetail = new AvailableOrganDetail();
+                organDetail.setDonorNhi(resultSet.getString("fkUserNhi"));
+                organDetail.setBloodType(resultSet.getString("bloodType"));
+                organDetail.setMomentOfDeath(resultSet.getTimestamp("momentOfDeath").toLocalDateTime());
+                organDetail.setRegion(resultSet.getString("region"));
+                organDetail.setOrgan(Organs.valueOf(resultSet.getString("organName")));
+                if(organDetail.isOrganStillValid()){
+                    results.add(organDetail);
+                }
             }
+
         }
         return results;
 
