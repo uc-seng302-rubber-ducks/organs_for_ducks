@@ -1,5 +1,6 @@
 package odms.controller.gui.panel.view;
 
+import javafx.animation.PauseTransition;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -9,6 +10,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.util.Duration;
 import odms.commons.model._enum.Organs;
 import odms.commons.model.datamodel.AvailableOrganDetail;
 import odms.controller.gui.panel.logic.AvailableOrgansLogicController;
@@ -45,6 +47,7 @@ public class AvailableOrgansViewController {
 
     private ObservableList<AvailableOrganDetail> availableOrganDetails = FXCollections.observableList(new ArrayList<>());
     private AvailableOrgansLogicController logicController = new AvailableOrgansLogicController(availableOrganDetails);
+    private PauseTransition pause = new PauseTransition(Duration.millis(300));
 
     @FXML
     public void init() {
@@ -54,7 +57,10 @@ public class AvailableOrgansViewController {
         }
         availableOrganFilterComboBox.setItems(organs);
         availableOrganDetails.addListener((ListChangeListener<? super AvailableOrganDetail>) observable -> populateTables());
-        regionFilterTextField.setOnKeyPressed(e -> logicController.test());
+        regionFilterTextField.setOnKeyPressed(event -> {
+            pause.setOnFinished(e -> search());
+            pause.playFromStart();
+        });
         initAvailableOrgansTableView();
     }
 
