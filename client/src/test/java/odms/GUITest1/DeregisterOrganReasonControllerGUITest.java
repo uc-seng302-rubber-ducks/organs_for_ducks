@@ -5,10 +5,7 @@ import javafx.scene.input.KeyCode;
 import odms.App;
 import odms.TestUtils.AppControllerMocker;
 import odms.TestUtils.CommonTestMethods;
-import odms.bridge.ClinicianBridge;
-import odms.bridge.LoginBridge;
-import odms.bridge.TransplantBridge;
-import odms.bridge.UserBridge;
+import odms.bridge.*;
 import odms.commons.model.Clinician;
 import odms.commons.model.Disease;
 import odms.commons.model.User;
@@ -49,6 +46,7 @@ public class DeregisterOrganReasonControllerGUITest extends ApplicationTest {
     private AppController application = AppControllerMocker.getFullMock();
     private TransplantBridge transplantBridge = mock(TransplantBridge.class);
     private User testUser;
+    private AvailableOrgansBridge availableOrgansBridge = mock(AvailableOrgansBridge.class);
 
     @BeforeClass
     public static void initialization() {
@@ -69,10 +67,12 @@ public class DeregisterOrganReasonControllerGUITest extends ApplicationTest {
         when(application.getLoginBridge()).thenReturn(loginBridge);
         when(application.getTransplantBridge()).thenReturn(transplantBridge);
         when(application.getToken()).thenReturn("Poggers");
+        when(application.getAvailableOrgansBridge()).thenReturn(availableOrgansBridge);
 
         when(loginBridge.loginToServer(anyString(),anyString(), anyString())).thenReturn("lsdjfksd");
         when(clinicianBridge.getClinician(anyString(), anyString())).thenReturn(clinician);
         when(bridge.getUser(anyString())).thenReturn(testUser);
+        doNothing().when(availableOrgansBridge).getAvailableOrgansList(anyInt(), anyInt(), anyString(), anyString(), anyString(), anyString(), anyString(), any());
         List<TransplantDetails> transplantDetails = new ArrayList<>();
         transplantDetails.add(new TransplantDetails(testUser.getNhi(), testUser.getFirstName(), Organs.HEART, LocalDate.now(), testUser.getRegion()));
 
