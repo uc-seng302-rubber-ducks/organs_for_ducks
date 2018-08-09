@@ -75,7 +75,7 @@ public class AvailableOrgansViewController {
         regionColumn.setCellValueFactory(new PropertyValueFactory<>("region"));
         organColumn.setCellValueFactory(new PropertyValueFactory<>("organ"));
         deathMomentColumn.setCellValueFactory(new PropertyValueFactory<>("momentOfDeath"));
-        progressBarColumn.setCellValueFactory(new PropertyValueFactory<>("progressBar"));
+        progressBarColumn.setCellValueFactory(new PropertyValueFactory<>("progress"));
         progressBarColumn.setCellFactory(ProgressBarTableCell.forTableColumn());
         // figure out how to do progress bars
         search();
@@ -100,6 +100,7 @@ public class AvailableOrgansViewController {
 
     public void populateTables() {
         availableOrgansTableView.setItems(availableOrganDetails);
+
         setOnClickBehaviour();
     }
 

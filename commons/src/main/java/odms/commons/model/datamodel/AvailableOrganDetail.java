@@ -3,6 +3,7 @@ package odms.commons.model.datamodel;
 import odms.commons.model._enum.Organs;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 public class AvailableOrganDetail {
     private Organs organ;
@@ -18,10 +19,15 @@ public class AvailableOrganDetail {
         this.momentOfDeath = momentOfDeath;
         this.region = region;
         this.bloodType = bloodType;
+        this.progress = (double) momentOfDeath.until(momentOfDeath.plusHours(organ.getStorageHours()), ChronoUnit.SECONDS);
     }
 
     public AvailableOrganDetail() {
-        this.progress = 5.3;
+        this.donorNhi = "";
+        this.momentOfDeath = null;
+        this.organ = null;
+        this.region = "";
+        this.bloodType = "";
     }
 
     public Organs getOrgan() {
