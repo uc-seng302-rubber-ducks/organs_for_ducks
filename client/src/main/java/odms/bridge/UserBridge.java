@@ -100,7 +100,7 @@ public class UserBridge extends RoleBridge {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 if (!response.isSuccessful()) {
-                    throw new IOException("Failed to PUT to " + url);
+                    throw new IOException("Failed to PUT to " + url + " Response code: " + response.code());
                 }
                 response.close();
             }
@@ -347,11 +347,11 @@ public class UserBridge extends RoleBridge {
         String url = ip + USERS + nhi + "/photo";
         String[] bits = profilePicturePath.split("\\.");
         String format = bits[bits.length-1];
-        byte[] pictureData = PhotoHelper.getBytesFromImage(profilePicturePath);
-        if(pictureData.length == 0){
+        byte[] bytesFromImage = PhotoHelper.getBytesFromImage(profilePicturePath);
+        if(bytesFromImage.length == 0){
             return;
         }
-        RequestBody body = RequestBody.create(MediaType.parse("image/"+format), pictureData);
+        RequestBody body = RequestBody.create(MediaType.parse("image/"+format), bytesFromImage);
         Request request = new Request.Builder().url(url).put(body).build();
         System.out.println(request.body().contentLength());
         client.newCall(request).enqueue(new Callback() {

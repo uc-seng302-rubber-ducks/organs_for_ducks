@@ -44,8 +44,6 @@ public class NewUserController {
     @FXML
     private Label invalidDOB;
     @FXML
-    private Label invalidDOD;
-    @FXML
     private TextField nhiInput;
     @FXML
     private TextField fNameInput;
@@ -119,8 +117,7 @@ public class NewUserController {
     private ComboBox<String> alcoholComboBox;
     @FXML
     private DatePicker dobInput;
-    @FXML
-    private DatePicker dodInput;
+
     //</editor-fold>
     private Stage ownStage;
     private DataHandler dataHandler = new JsonHandler();
@@ -281,7 +278,6 @@ public class NewUserController {
             try {
                 newUser.setMiddleName(middleName);
                 newUser.setLastName(lastName);
-                newUser.setDateOfDeath(dodInput.getValue());
                 newUser.setPreferredFirstName(preferredFirstName);
                 newUser.setHomePhone(homePhone);
                 newUser.setCellPhone(cellPhone);
@@ -488,7 +484,6 @@ public class NewUserController {
         }
 
         LocalDate dob = dobInput.getValue();
-        LocalDate dod = dodInput.getValue();
 
         valid &= AttributeValidation.validateDateOfBirth(dob);
         if (!valid) {
@@ -496,9 +491,8 @@ public class NewUserController {
         }
 
         if (dob != null) {
-            valid &= AttributeValidation.validateDateOfDeath(dob, dod); // checks if the dod is before tomorrow's date and that the dob is before the dod
+            valid &= AttributeValidation.validateDateOfBirth(dob); // checks if the dod is before tomorrow's date and that the dob is before the dod
             if (!valid) {
-                invalidDOD.setVisible(true);
                 valid = false;
             }
         }
@@ -519,7 +513,6 @@ public class NewUserController {
         errorLabel.setVisible(false);
         invalidNHI.setVisible(false);
         invalidDOB.setVisible(false);
-        invalidDOD.setVisible(false);
         invalidFirstName.setVisible(false);
         existingNHI.setVisible(false);
     }
