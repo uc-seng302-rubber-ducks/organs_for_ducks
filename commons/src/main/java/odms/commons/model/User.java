@@ -658,7 +658,6 @@ public class User extends Undoable<User> implements Listenable {
     }
 
     public void setHeightText(String height) {
-        //this.saveStateForUndo();
         updateLastModified();
         if (!(healthDetails.getHeightText().equals(height))) {
             healthDetails.setHeightText(height);
@@ -671,7 +670,6 @@ public class User extends Undoable<User> implements Listenable {
     }
 
     public void setWeightText(String weight) {
-        //this.saveStateForUndo();
         updateLastModified();
         if (!(healthDetails.getWeightText().equals(weight))) {
             healthDetails.setWeightText(weight);

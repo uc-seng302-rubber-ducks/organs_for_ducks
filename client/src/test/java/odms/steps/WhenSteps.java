@@ -171,6 +171,7 @@ public class WhenSteps extends ApplicationTest {
         }
         write(dod);
         clickOnButton(this, "#confirmUpdateDeathDetailsButton");
+        clickOnButton(this, "#cancelUpdateDeathDetailsButton");
     }
 
     @And("^I open the user page$")
