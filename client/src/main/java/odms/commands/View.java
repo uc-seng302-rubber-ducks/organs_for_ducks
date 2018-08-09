@@ -19,7 +19,7 @@ public class View implements Runnable {
     private Boolean helpRequested = false;
 
     @Parameters(description = "ID of the user to be viewed")
-    String[] params;
+    private String[] params;
 
     @Option(names ={"-u","-user"}, description = "Sets the user flag to specify that a user is the query target.\n" +
             "This is the default option")

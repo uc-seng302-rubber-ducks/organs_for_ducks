@@ -21,20 +21,26 @@ public class ClinicianUpdateStrategy extends AbstractUpdateStrategy {
 
 
     private static final String DELETE_CLINICIAN_STMT = "DELETE FROM Clinician WHERE staffId = ?";
+    public static final String START_TRANSACTION = "START TRANSACTION";
+    public static final String ROLLBACK = "ROLLBACK";
+    public static final String COMMIT = "COMMIT";
+    public static final String ERROR_IN_CONNECTION_TO_DATABASE = "Error in connection to database";
 
     @Override
     public <T> void update(Collection<T> roles, Connection connection) throws SQLException {
         Collection<Clinician> clinicians = (Collection<Clinician>) roles;
         for (Clinician clinician : clinicians) {
-            PreparedStatement stmt = connection.prepareStatement("SELECT staffId FROM Clinician WHERE staffId = ?");
-            stmt.setString(1, clinician.getStaffId());
-            ResultSet queryResults = stmt.executeQuery();
-            if (!queryResults.next() && !clinician.isDeleted()) {
-                executeCreation(clinician, connection);
-            } else if (clinician.isDeleted()) {
-                deleteRole(clinician, connection);
-            } else {
-                executeUpdate(clinician, connection);
+            try (PreparedStatement stmt = connection.prepareStatement("SELECT staffId FROM Clinician WHERE staffId = ?")) {
+                stmt.setString(1, clinician.getStaffId());
+                try (ResultSet queryResults = stmt.executeQuery()) {
+                    if (!queryResults.next() && !clinician.isDeleted()) {
+                        executeCreation(clinician, connection);
+                    } else if (clinician.isDeleted()) {
+                        deleteRole(clinician, connection);
+                    } else {
+                        executeUpdate(clinician, connection);
+                    }
+                }
             }
         }
     }
@@ -49,7 +55,7 @@ public class ClinicianUpdateStrategy extends AbstractUpdateStrategy {
      */
     private void executeCreation(Clinician clinician, Connection connection) {
         try {
-            connection.prepareStatement("START TRANSACTION").execute();
+            connection.prepareStatement(START_TRANSACTION).execute();
             try {
                 createClinician(clinician, connection);
                 if (!PasswordManager.hash("", clinician.getSalt()).equals(clinician.getPassword())) {
@@ -57,11 +63,11 @@ public class ClinicianUpdateStrategy extends AbstractUpdateStrategy {
                 }
                 createClinicianContact(clinician, connection);
             } catch (SQLException sqlEx) {
-                connection.prepareStatement("ROLLBACK").execute();
+                connection.prepareStatement(ROLLBACK).execute();
             }
-            connection.prepareStatement("COMMIT").execute();
+            connection.prepareStatement(COMMIT).execute();
         } catch (SQLException sqlEx) {
-            Log.warning("Error in connection to database", sqlEx);
+            Log.warning(ERROR_IN_CONNECTION_TO_DATABASE, sqlEx);
         }
     }
 
@@ -181,7 +187,7 @@ public class ClinicianUpdateStrategy extends AbstractUpdateStrategy {
         String identifier;
         String sql;
         try {
-            connection.prepareStatement("START TRANSACTION").execute();
+            connection.prepareStatement(START_TRANSACTION).execute();
             try {
                 identifier = clinician.getStaffId();
                 sql = DELETE_CLINICIAN_STMT;
@@ -191,12 +197,12 @@ public class ClinicianUpdateStrategy extends AbstractUpdateStrategy {
                 stmt.executeUpdate();
             } catch (SQLException sqlEx) {
                 Log.severe("A fatal error in deletion, cancelling operation", sqlEx);
-                connection.prepareStatement("ROLLBACK").execute();
+                connection.prepareStatement(ROLLBACK).execute();
             }
 
-            connection.prepareStatement("COMMIT").execute();
+            connection.prepareStatement(COMMIT).execute();
         } catch (SQLException sqlEx) {
-            Log.warning("Error in connection to database", sqlEx);
+            Log.warning(ERROR_IN_CONNECTION_TO_DATABASE, sqlEx);
         }
     }
 
@@ -211,7 +217,7 @@ public class ClinicianUpdateStrategy extends AbstractUpdateStrategy {
     private void executeUpdate(Clinician clinician, Connection connection) {
 
         try {
-            connection.prepareStatement("START TRANSACTION").execute();
+            connection.prepareStatement(START_TRANSACTION).execute();
             try {
                 updateClinicianDetails(clinician, connection);
                 updateClinicianAddress(clinician, connection);
@@ -220,12 +226,12 @@ public class ClinicianUpdateStrategy extends AbstractUpdateStrategy {
                 }
             } catch (SQLException sqlEx) {
                 Log.severe("A fatal error in updating, cancelling operation", sqlEx);
-                connection.prepareStatement("ROLLBACK").execute();
+                connection.prepareStatement(ROLLBACK).execute();
             }
 
-            connection.prepareStatement("COMMIT").execute();
+            connection.prepareStatement(COMMIT).execute();
         } catch (SQLException sqlEx) {
-            Log.warning("Error in connection to database", sqlEx);
+            Log.warning(ERROR_IN_CONNECTION_TO_DATABASE, sqlEx);
         }
 
     }

@@ -14,14 +14,14 @@ import java.util.Properties;
 public class Bifrost {
 
     protected OkHttpClient client;
-    protected String ip;
-    protected MediaType JSON = MediaType.parse("application/json; charset=utf-8");
-    protected static String TOKEN_HEADER;
+    protected MediaType json = MediaType.parse("application/json; charset=utf-8");
+    String ip;
+    String tokenHeader;
     protected JsonHandler handler = new JsonHandler();
 
-    public Bifrost(OkHttpClient client) {
+    Bifrost(OkHttpClient client) {
         Properties prop = new ConfigPropertiesLoader().loadConfig("clientConfig.properties");
-        TOKEN_HEADER = prop.getProperty("server.token.header", "x-auth-token");
+        tokenHeader = prop.getProperty("server.token.header", "x-auth-token");
         this.ip = prop.getProperty("server.url", "http://localhost:4941/odms/v1");
         this.client = client;
     }

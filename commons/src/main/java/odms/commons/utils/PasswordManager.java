@@ -3,8 +3,6 @@ package odms.commons.utils;
 
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
-import java.nio.ByteBuffer;
-import java.nio.charset.Charset;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
@@ -52,7 +50,7 @@ public final class PasswordManager {
         Arrays.fill(passwordChar, Character.MIN_VALUE);
         try {
             SecretKeyFactory skf = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
-            byte[] hash =  skf.generateSecret(spec).getEncoded();
+            byte[] hash = skf.generateSecret(spec).getEncoded();
             Base64.Encoder enc = Base64.getUrlEncoder().withoutPadding();
             return enc.encodeToString(hash);
         } catch (NoSuchAlgorithmException | InvalidKeySpecException e) {

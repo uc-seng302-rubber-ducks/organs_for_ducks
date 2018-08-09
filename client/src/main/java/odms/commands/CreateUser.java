@@ -15,15 +15,15 @@ import java.time.LocalDate;
 import java.util.List;
 
 
-@Command(name = "user", description = "NHI, first name and dob are required. All others are optional and must be tagged")
+@Command(name = "user", description = "nhi, first name and dob are required. All others are optional and must be tagged")
 public class CreateUser implements Runnable {
 
     @Option(names = {"-h",
             "help"}, usageHelp = true, description = "Display a help message")
     private Boolean helpRequested = false;
 
-    @Parameters(index = "0", description = "NHI 'ABC1234'")
-    private String NHI;
+    @Parameters(index = "0", description = "nhi 'ABC1234'")
+    private String nhi;
 
     @Parameters(index = "1")
     private String firstName;
@@ -93,11 +93,11 @@ public class CreateUser implements Runnable {
             return;
         }
 
-        if (!AttributeValidation.validateNHI(NHI)) {
-            IoHelper.display("Invalid NHI");
+        if (!AttributeValidation.validateNHI(nhi)) {
+            IoHelper.display("Invalid nhi");
             return;
-        } else if (userBridge.getExists(NHI)) {
-            IoHelper.display("A user with that NHI already exists");
+        } else if (userBridge.getExists(nhi)) {
+            IoHelper.display("A user with that nhi already exists");
             return;
         }
 
@@ -112,17 +112,17 @@ public class CreateUser implements Runnable {
             return;
         }
 
-        User user = new User(firstName.replaceAll("_", " "), dob, NHI);
-        boolean success = controller.addUser(new User(firstName.replaceAll("_", " "), dob, NHI));
+        User user = new User(firstName.replaceAll("_", " "), dob, nhi);
+        boolean success = controller.addUser(new User(firstName.replaceAll("_", " "), dob, nhi));
         if (!success) {
             IoHelper.display("An error occurred when creating registering the new user\n"
-                    + "maybe a user with that NHI already exists?");
+                    + "maybe a user with that nhi already exists?");
             return;
         }
 
         try {
             if (userBridge.getUser(user.getNhi()) != null) {
-                IoHelper.display("User with this NHI "+user.getNhi()+" already exists");
+                IoHelper.display("User with this nhi "+user.getNhi()+" already exists");
                 return;
             }
         } catch (IOException e){

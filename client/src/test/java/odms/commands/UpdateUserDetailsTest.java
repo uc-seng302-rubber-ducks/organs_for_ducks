@@ -1,6 +1,5 @@
 package odms.commands;
 
-import com.mysql.fabric.xmlrpc.base.Array;
 import odms.commons.model.User;
 import odms.controller.AppController;
 import odms.bridge.UserBridge;
@@ -13,6 +12,7 @@ import picocli.CommandLine;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
@@ -24,14 +24,13 @@ import static org.mockito.Mockito.when;
 public class UpdateUserDetailsTest {
 
     AppController controller;
-    UserBridge bridge;
-    DateTimeFormatter sdf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-    String NHI = "";
+    private DateTimeFormatter sdf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    private String NHI = "";
     User testUser;
 
     @Before
     public void resetDonor() throws IOException {
-        bridge = mock(UserBridge.class);
+        UserBridge bridge = mock(UserBridge.class);
         controller = mock(AppController.class);
         AppController.setInstance(controller);
         when(controller.getUserBridge()).thenReturn(bridge);
@@ -64,7 +63,6 @@ public class UpdateUserDetailsTest {
 
         User mal = controller.getUserBridge().getUser(NHI);
         Assert.assertNotNull(mal);
-
         assertEquals("Mal", mal.getFirstName());
     }
 
@@ -115,7 +113,7 @@ public class UpdateUserDetailsTest {
     }
 
     @Test
-    public void ShouldUpdateDateField() throws IOException {
+    public void ShouldUpdateDateField() throws IOException, DateTimeParseException {
         //dob and dod are identical, no use testing both
         //just checking it can parse dates
         String[] args = {NHI, "-dob=2016-03-04"};
@@ -124,15 +122,12 @@ public class UpdateUserDetailsTest {
                 .parseWithHandler(new CommandLine.RunLast(), System.err, args);
 
         User test = controller.getUserBridge().getUser(NHI);
-        try {
-            assert (test.getDateOfBirth().equals(LocalDate.parse("2016-03-04", sdf)));
-        } catch (DateTimeParseException ex) {
-            fail("Could not parse date (error in tester)");
-        }
+
+        Assert.assertEquals(LocalDate.parse("2016-03-04", sdf), test.getDateOfBirth());
     }
 
     @Test
-    public void ShouldNotUpdateBadDate() throws IOException {
+    public void ShouldNotUpdateBadDate() throws IOException, DateTimeParseException {
         //dob and dod are identical, no use testing both
         String[] args = {NHI, "-dob=1963"};
 
@@ -140,12 +135,8 @@ public class UpdateUserDetailsTest {
                 .parseWithHandler(new CommandLine.RunLast(), System.err, args);
 
         User test = controller.getUserBridge().getUser(NHI);
-        try {
-            assert (test.getDateOfBirth().equals(LocalDate.parse("1111-11-11", sdf)));
-        } catch (DateTimeParseException ex) {
-            fail("Could not parse date (error in tester)");
-        }
 
+        Assert.assertEquals(LocalDate.parse("1111-11-11", sdf), test.getDateOfBirth());
     }
 
     @Test
@@ -181,6 +172,83 @@ public class UpdateUserDetailsTest {
                 .parseWithHandler(new CommandLine.RunLast(), System.err, args);
 
         Assert.assertEquals(controller.getUserBridge().getUser("ABC1234"), user);
+    }
+
+    @Test
+    public void ShouldSetDateOfDeathToNullWhenPassedNull() throws IOException, DateTimeParseException {
+        String[] args = {NHI, "-dod=null"};
+
+        new CommandLine(new UpdateUserDetails())
+                .parseWithHandler(new CommandLine.RunLast(), System.err, args);
+
+        User test = controller.getUserBridge().getUser(NHI);
+
+        Assert.assertEquals (null, test.getDateOfDeath());
+
+    }
+
+    @Test
+    public void ShouldCorrectlyUpdateTimeOfDeathWithNoPreviousDeath() throws IOException, DateTimeParseException {
+        String[] args = {NHI, "-tod=02:45"};
+
+        new CommandLine(new UpdateUserDetails())
+                .parseWithHandler(new CommandLine.RunLast(), System.err, args);
+
+        User test = controller.getUserBridge().getUser(NHI);
+
+        Assert.assertEquals(LocalTime.parse("02:45"), test.getMomentDeath().toLocalTime());
+
+    }
+
+    @Test
+    public void ShouldCorrectlyUpdateTimeOfDeathWithPreviousDeath() throws IOException, DateTimeParseException {
+        String[] args = {NHI, "-tod=02:45"};
+
+        User test = controller.getUserBridge().getUser(NHI);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        test.setDateOfDeath(LocalDate.parse("2010-01-01"));
+
+        new CommandLine(new UpdateUserDetails())
+                .parseWithHandler(new CommandLine.RunLast(), System.err, args);
+
+        Assert.assertEquals(LocalDateTime.parse("2010-01-01 02:45", formatter), test.getMomentDeath());
+
+    }
+
+    @Test
+    public void ShouldUpdateCityOfDeath() throws IOException {
+        String[] args = {NHI, "-dc=Christchurch"};
+
+        new CommandLine(new UpdateUserDetails())
+                .parseWithHandler(new CommandLine.RunLast(), System.err, args);
+
+        User test = controller.getUserBridge().getUser(NHI);
+
+        Assert.assertEquals("Christchurch", test.getDeathCity());
+    }
+
+    @Test
+    public void ShouldUpdateRegionOfDeath() throws IOException {
+        String[] args = {NHI, "-dr=Canterbury"};
+
+        new CommandLine(new UpdateUserDetails())
+                .parseWithHandler(new CommandLine.RunLast(), System.err, args);
+
+        User test = controller.getUserBridge().getUser(NHI);
+
+        Assert.assertEquals("Canterbury", test.getDeathRegion());
+    }
+
+    @Test
+    public void ShouldUpdateCountryOfDeath() throws IOException {
+        String[] args = {NHI, "-dco=New_Zealand"};
+
+        new CommandLine(new UpdateUserDetails())
+                .parseWithHandler(new CommandLine.RunLast(), System.err, args);
+
+        User test = controller.getUserBridge().getUser(NHI);
+
+        Assert.assertEquals("New Zealand", test.getDeathCountry());
     }
 
     @Test

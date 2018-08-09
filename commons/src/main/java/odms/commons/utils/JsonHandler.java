@@ -25,6 +25,9 @@ import java.util.stream.Collectors;
  */
 public class JsonHandler extends DataHandler {
 
+    public static final String YYYY_MM_DD_HH_MM_SS = "yyyy-MM-dd HH:mm:ss";
+    public static final String DELIMITER = "/";
+
     /**
      * save the current users in the system to the filename given Based on:
      * https://stackoverflow.com/questions/14996663/is-there-a-standard-implementation-for-a-gson-joda-time-serialiser
@@ -95,7 +98,7 @@ public class JsonHandler extends DataHandler {
     public List<User> loadUsers(String filename) throws FileNotFoundException {
         try {
             File inFile = new File(filename);
-            Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss")
+            Gson gson = new GsonBuilder().setDateFormat(YYYY_MM_DD_HH_MM_SS)
                     .create();
             Reader reader = new FileReader(inFile);
             User[] users = gson.fromJson(reader, User[].class);
@@ -129,7 +132,7 @@ public class JsonHandler extends DataHandler {
      * @throws IOException Thrown if response body cannot be read
      */
     public User decodeUser(Response response) throws IOException {
-        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss")
+        Gson gson = new GsonBuilder().setDateFormat(YYYY_MM_DD_HH_MM_SS)
                 .create();
         String responseBodyString = null;
         try {
@@ -170,7 +173,7 @@ public class JsonHandler extends DataHandler {
      * @throws IOException If the response body cannot be read
      */
     public Clinician decodeClinician(Response response) throws IOException {
-        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss")
+        Gson gson = new GsonBuilder().setDateFormat(YYYY_MM_DD_HH_MM_SS)
                 .create();
         return gson.fromJson(response.body().string(), Clinician.class);
     }
@@ -214,7 +217,7 @@ public class JsonHandler extends DataHandler {
     public List<Clinician> loadClinicians(String filename) throws FileNotFoundException {
         try {
             File inFile = new File(filename);
-            Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss")
+            Gson gson = new GsonBuilder().setDateFormat(YYYY_MM_DD_HH_MM_SS)
                     .create();
             Reader reader = new FileReader(inFile);
             Clinician[] clinicians = gson.fromJson(reader, Clinician[].class);
@@ -266,7 +269,7 @@ public class JsonHandler extends DataHandler {
     public Collection<Administrator> loadAdmins(String filename) throws FileNotFoundException {
         try {
             File inFile = new File(filename);
-            Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss")
+            Gson gson = new GsonBuilder().setDateFormat(YYYY_MM_DD_HH_MM_SS)
                     .create();
 
             Reader reader = new FileReader(inFile);
@@ -291,7 +294,7 @@ public class JsonHandler extends DataHandler {
      */
     public void saveChangelog(ArrayList<Change> changes, String name) throws IOException {
         Files.createDirectories(Paths.get(Directory.JSON.directory()));
-        File outFile = new File(Directory.JSON.directory() + "/" + name + "changelog.json");
+        File outFile = new File(Directory.JSON.directory() + DELIMITER + name + "changelog.json");
 
 
         if (outFile.exists()) {
@@ -321,12 +324,12 @@ public class JsonHandler extends DataHandler {
      */
     public List<Change> importHistoryFromFile(String name) throws FileNotFoundException {
 
-        File infile = new File(Directory.JSON.directory() + "/" + name + "changelog.json");
+        File infile = new File(Directory.JSON.directory() + DELIMITER + name + "changelog.json");
         if (!infile.exists()) {
             return new ArrayList<>();
         }
 
-        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss")
+        Gson gson = new GsonBuilder().setDateFormat(YYYY_MM_DD_HH_MM_SS)
                 .create();
         Reader reader = new FileReader(infile);
         Change[] changes = gson.fromJson(reader, Change[].class);
@@ -338,7 +341,7 @@ public class JsonHandler extends DataHandler {
 
     public Administrator decodeAdmin(Response response) throws IOException {
 
-        Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm:ss")
+        Gson gson = new GsonBuilder().setDateFormat(YYYY_MM_DD_HH_MM_SS)
                 .create();
         return gson.fromJson(response.body().string(), Administrator.class);
     }
@@ -362,7 +365,7 @@ public class JsonHandler extends DataHandler {
         return new Gson().fromJson(response.body().string(), new TypeToken<HashSet<String>>() {}.getType());
     }
 
-    public Collection<Clinician> decodeClinicians(String response) throws IOException {
+    public Collection<Clinician> decodeClinicians(String response) {
         return new Gson().fromJson(response, new TypeToken<Collection<Clinician>>(){}.getType());
     }
 

@@ -13,6 +13,8 @@ import java.time.LocalDate;
  */
 public class AttributeValidation {
 
+    private AttributeValidation() {
+    }
 
     /**
      * Checks that the NHI matches the correct format.
@@ -201,5 +203,14 @@ public class AttributeValidation {
             }
         }
         return false;
+    }
+
+    /**
+     * Checks if the string is in a 24 hour hh:mm format
+     * @param time String to be checked
+     * @return True if string is in correct format
+     */
+    public static boolean validateTimeString(String time) {
+        return time.matches("(([01][0-9])|(2[0-3])):([0-5][0-9])");
     }
 }

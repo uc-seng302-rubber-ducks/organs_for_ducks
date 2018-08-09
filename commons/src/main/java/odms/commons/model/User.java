@@ -7,16 +7,15 @@ import odms.commons.model._abstract.Listenable;
 import odms.commons.model._abstract.Undoable;
 import odms.commons.model._enum.EventTypes;
 import odms.commons.model._enum.Organs;
-import odms.commons.model.datamodel.Address;
-import odms.commons.model.datamodel.ContactDetails;
-import odms.commons.model.datamodel.Medication;
-import odms.commons.model.datamodel.ReceiverOrganDetailsHolder;
+import odms.commons.model.datamodel.*;
+
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 
@@ -33,7 +32,7 @@ public class User extends Undoable<User> implements Listenable {
     @Expose
     private LocalDate dateOfBirth;
     @Expose
-    private LocalDate dateOfDeath;
+    private DeathDetails deathDetails;
     @Expose
     private LocalDateTime timeCreated;
     @Expose
@@ -100,7 +99,7 @@ public class User extends Undoable<User> implements Listenable {
         this.nhi = nhi;
         this.middleName = "";
         this.lastName = "";
-        this.dateOfDeath = null;
+        this.deathDetails = new DeathDetails();
         this.preferredFirstName = firstName;
         timeCreated = LocalDateTime.now();
         lastModified = LocalDateTime.now();
@@ -130,22 +129,36 @@ public class User extends Undoable<User> implements Listenable {
      * empty constructor to allow an empty user to be created for the gui
      */
     public User() {
+        this.dateOfBirth = null;
+        this.name = firstName;
+        this.donorDetails = new DonorDetails(this);
+        this.firstName = "";
+        this.receiverDetails = new ReceiverDetails(this);
+        this.nhi = nhi;
+        this.middleName = "";
+        this.lastName = "";
+        this.deathDetails = new DeathDetails();
+        this.preferredFirstName = firstName;
         timeCreated = LocalDateTime.now();
-        miscAttributes = new ArrayList<>();
+        lastModified = LocalDateTime.now();
+        updateHistory = new HashMap<>();
+        this.contact = new EmergencyContact("", "", "");
+        updateHistory.put(dateToString(getTimeCreated()), "Profile created.");
+        this.miscAttributes = new ArrayList<>();
         this.currentMedication = new ArrayList<>();
         this.previousMedication = new ArrayList<>();
-
         this.currentDiseases = new ArrayList<>();
         this.pastDiseases = new ArrayList<>();
+        this.commonOrgans = new HashSet<>();
         this.contactDetails = new ContactDetails();
-        this.updateHistory = new HashMap<>();
-        this.medicalProcedures = new ArrayList<>();
         this.donorDetails = new DonorDetails(this);
         this.receiverDetails = new ReceiverDetails(this);
         this.commonOrgans = new HashSet<>();
-        changes = FXCollections.observableArrayList();
+        this.medicalProcedures = new ArrayList<>();
+        this.changes = FXCollections.observableArrayList();
         this.pcs = new PropertyChangeSupport(this);
         this.healthDetails = new HealthDetails();
+        contact.setAttachedUser(this);
         this.profilePhotoFilePath = "";
     }
 
@@ -153,7 +166,9 @@ public class User extends Undoable<User> implements Listenable {
         User newUser = new User();
         newUser.nhi = user.nhi;
         newUser.dateOfBirth = user.dateOfBirth;
-        newUser.dateOfDeath = user.dateOfDeath;
+
+        Address placeOfDeath = new Address("", "", "", user.getDeathCity(), user.getDeathRegion(), "", user.getDeathCountry());
+        newUser.deathDetails = new DeathDetails(user.deathDetails.getMomentOfDeath(), placeOfDeath);
 
         Address address = new Address(user.getStreetNumber(), user.getStreetName(), user.getNeighborhood(),
                 user.getCity(), user.getRegion(), user.getZipCode(), user.getCountry());
@@ -261,6 +276,38 @@ public class User extends Undoable<User> implements Listenable {
         return newUser;
     }
 
+    public DeathDetails getDeathDetails() {
+        return deathDetails;
+    }
+
+    public void setDeathDetails(DeathDetails deathDetails) {
+        this.deathDetails = deathDetails;
+    }
+
+    public String getDeathCity(){
+        return deathDetails.getCity();
+    }
+
+    public void setDeathCity(String city) {
+        this.deathDetails.setCity(city);
+    }
+
+    public String getDeathRegion() {
+        return deathDetails.getRegion();
+    }
+
+    public void setDeathRegion(String region) {
+        this.deathDetails.setRegion(region);
+    }
+
+    public String getDeathCountry() {
+        return deathDetails.getCountry();
+    }
+
+    public void setDeathCountry(String country) {
+        this.deathDetails.setCountry(country);
+    }
+
     public String getProfilePhotoFilePath() {
         return profilePhotoFilePath;
     }
@@ -342,6 +389,12 @@ public class User extends Undoable<User> implements Listenable {
 
     public void setECRegion(String ecRegion) {
         this.saveStateForUndo();
+        updateLastModified();
+        contact.setRegion(ecRegion);
+        addChange(new Change("Changed emergency contact region to " + ecRegion));
+    }
+
+    public void setECRegionNoUndo(String ecRegion) {
         updateLastModified();
         contact.setRegion(ecRegion);
         addChange(new Change("Changed emergency contact region to " + ecRegion));
@@ -534,17 +587,44 @@ public class User extends Undoable<User> implements Listenable {
         addChange(new Change("Changed date of birth to " + dateOfBirth.toString()));
     }
 
+    public LocalTime getTimeOfDeath() {
+        return deathDetails.getTimeOfDeath();
+    }
+
     public LocalDate getDateOfDeath() {
-        return dateOfDeath;
+        return deathDetails.getDateOfDeath();
     }
 
     public void setDateOfDeath(LocalDate dateOfDeath) {
         this.saveStateForUndo();
         updateLastModified();
-        this.dateOfDeath = dateOfDeath;
-        this.isDeceased = dateOfDeath != null;
-        addChange(new Change(isDeceased ? ("Changed date of death to " + dateOfDeath.toString())
-                : "Removed date of death"));
+        if (dateOfDeath != null) {
+            this.deathDetails.setMomentOfDeath(deathDetails.createMomentOfDeath(dateOfDeath, deathDetails.getTimeOfDeath()));
+            this.isDeceased = true;
+        } else {
+            this.deathDetails.setMomentOfDeath(null);
+            this.isDeceased = false;
+        }
+        addChange(new Change(isDeceased ? ("Changed moment of death to " + dateOfDeath.toString())
+                : "Removed moment of death"));
+    }
+
+    public LocalDateTime getMomentDeath(){
+        return deathDetails.getMomentOfDeath();
+    }
+
+    public void setMomentOfDeath(LocalDateTime momentOfDeath) {
+        this.saveStateForUndo();
+        updateLastModified();
+        if (momentOfDeath != null) {
+            this.deathDetails.setMomentOfDeath(momentOfDeath);
+            this.isDeceased = true;
+        } else {
+            this.deathDetails.setMomentOfDeath(null);
+            this.isDeceased = false;
+        }
+        addChange(new Change(isDeceased ? ("Changed moment of death to " + momentOfDeath.toString())
+                : "Removed moment of death"));
     }
 
     public double getHeight() {
@@ -578,7 +658,6 @@ public class User extends Undoable<User> implements Listenable {
     }
 
     public void setHeightText(String height) {
-        //this.saveStateForUndo();
         updateLastModified();
         if (!(healthDetails.getHeightText().equals(height))) {
             healthDetails.setHeightText(height);
@@ -591,7 +670,6 @@ public class User extends Undoable<User> implements Listenable {
     }
 
     public void setWeightText(String weight) {
-        //this.saveStateForUndo();
         updateLastModified();
         if (!(healthDetails.getWeightText().equals(weight))) {
             healthDetails.setWeightText(weight);
@@ -789,6 +867,14 @@ public class User extends Undoable<User> implements Listenable {
         this.saveStateForUndo();
         updateLastModified();
         contactDetails.getAddress().setRegion(region);
+        if (contactDetails.getAddress() != null && !contactDetails.getAddress().getRegion().equals("")) {
+            addChange(new Change("Changed region to " + region));
+        }
+    }
+
+    public void setRegionNoUndo(String region) {
+        updateLastModified();
+        contactDetails.getAddress().setRegion(region);
         if (contactDetails.getAddress() != null && !contactDetails.getAddress().equals("")) {
             addChange(new Change("Changed region to " + region));
         }
@@ -803,17 +889,17 @@ public class User extends Undoable<User> implements Listenable {
     }
 
     public String getStringAge() {
-        if (dateOfDeath != null) {
+        if (deathDetails.getMomentOfDeath() != null) {
 
-            return Long.toString(ChronoUnit.YEARS.between(dateOfBirth, dateOfDeath));
+            return Long.toString(ChronoUnit.YEARS.between(dateOfBirth, deathDetails.getMomentOfDeath()));
         }
         return Long.toString(ChronoUnit.YEARS.between(dateOfBirth, LocalDate.now()));
     }
 
     public int getAge() {
-        if (dateOfDeath != null) {
+        if (deathDetails.getMomentOfDeath() != null) {
 
-            return Math.toIntExact(ChronoUnit.YEARS.between(dateOfBirth, dateOfDeath));
+            return Math.toIntExact(ChronoUnit.YEARS.between(dateOfBirth, deathDetails.getMomentOfDeath()));
         }
         return Math.toIntExact(ChronoUnit.YEARS.between(dateOfBirth, java.time.LocalDate.now()));
     }
@@ -1019,6 +1105,8 @@ public class User extends Undoable<User> implements Listenable {
     }
 
     public List<Change> getChanges() {
+        if(changes == null)
+            changes = new ArrayList<>();
         return changes;
     }
 
@@ -1078,7 +1166,6 @@ public class User extends Undoable<User> implements Listenable {
 
     public void saveStateForUndo() {
 
-
         //attempt to find out who called this method
         //if the caller is annotated with IgnoreForUndo, skip the memento/cloning process.
         try {
@@ -1120,7 +1207,7 @@ public class User extends Undoable<User> implements Listenable {
                 "\nnhi='" + nhi + '\'' +
                 ",\nname='" + name + '\'' +
                 ",\ndateOfBirth=" + dateOfBirth +
-                ",\ndateOfDeath=" + dateOfDeath +
+                ",\ndeathDetails=" + deathDetails +
                 ",\ntimeCreated=" + timeCreated +
                 ",\nisDeceased=" + isDeceased +
                 ",\nfirstName='" + firstName + '\'' +
@@ -1174,7 +1261,7 @@ public class User extends Undoable<User> implements Listenable {
     private void changeInto(User other) {
         this.nhi = other.nhi;
         this.dateOfBirth = other.dateOfBirth;
-        this.dateOfDeath = other.dateOfDeath;
+        this.deathDetails = other.deathDetails;
         this.healthDetails = other.healthDetails;
 
 

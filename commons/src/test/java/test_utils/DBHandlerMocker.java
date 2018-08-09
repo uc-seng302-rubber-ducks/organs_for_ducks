@@ -2,10 +2,9 @@ package test_utils;
 
 import odms.commons.model.User;
 
-import java.sql.Date;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Timestamp;
+import java.sql.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 
 import static org.mockito.Mockito.when;
 
@@ -33,5 +32,29 @@ public class DBHandlerMocker {
         when(resultSet.getString(5)).thenReturn("LIVER");
         when(resultSet.getDate(6)).thenReturn(new Date(0));
         when(resultSet.getString(7)).thenReturn("over there");
+    }
+
+    public static void setDeathDetailsResultSet(ResultSet resultSet) throws SQLException {
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            java.util.Date dateOfDeath = sdf.parse("2010-01-01");
+            java.sql.Date sqlDate = new java.sql.Date(dateOfDeath.getTime());
+
+            SimpleDateFormat stf = new SimpleDateFormat("hh:mm");
+            long ms = stf.parse("02:45").getTime();
+            Time sqlTime = new Time(ms);
+
+            when(resultSet.getString("fkUserNhi")).thenReturn("ABC1234");
+            when(resultSet.getDate("dateOfDeath")).thenReturn(sqlDate);
+            when(resultSet.getTime("timeOfDeath")).thenReturn(sqlTime);
+            when(resultSet.getString("city")).thenReturn("Christchurch");
+            when(resultSet.getString("region")).thenReturn("Canterbury");
+            when(resultSet.getString("country")).thenReturn("New Zealand");
+
+        } catch (ParseException p) {
+            //Go away
+        }
+
+
     }
 }

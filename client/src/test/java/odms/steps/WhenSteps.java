@@ -163,11 +163,14 @@ public class WhenSteps extends ApplicationTest {
 
     @When("^The user is updated to have died on \"([^\"]*)\"$")
     public void theUserIsUpdatedToHaveDiedOn(String dod) {
-        clickOn("#editMenuUser");
-        clickOn("#editDetailsUser");
-        clickOn("#dodInput");
+
+        clickOn("#updateDeathDetailsButton");
+        clickOn("#updateDeathDetailsDatePicker");
+        for (int i = 0; i < 20; i++) { //arbitrarily long number to ensure all is deleted
+            push(KeyCode.BACK_SPACE);
+        }
         write(dod);
-        clickOnButton(this, "#confirmButton");
+        clickOnButton(this, "#confirmUpdateDeathDetailsButton");
     }
 
     @And("^I open the user page$")
@@ -196,6 +199,7 @@ public class WhenSteps extends ApplicationTest {
 
     @When("^I go back to the clinician screen$")
     public void iGoBackToTheClinicianScreen() {
+        clickOnButton(this, "#cancelUpdateDeathDetailsButton");
         clickOn("#userProfileTab");
         clickOn("#fileMenuUser");
         clickOn("#logoutUser");
