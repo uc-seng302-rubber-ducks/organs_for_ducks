@@ -1,19 +1,22 @@
 package odms.bridge;
 
 import com.mysql.jdbc.StringUtils;
+import javafx.collections.ObservableList;
 import odms.commons.exception.ApiException;
+import odms.commons.model.datamodel.AvailableOrganDetail;
 import odms.commons.utils.Log;
 import odms.controller.AppController;
 import okhttp3.*;
 
 import java.io.IOException;
+import java.util.List;
 
 public class AvailableOrgansBridge extends Bifrost {
     public AvailableOrgansBridge(OkHttpClient client) {
         super(client);
     }
 
-    public void getAvailableOrgansList(int startIndex, int count, String organ, String region, String bloodType, String city, String country) {
+    public void getAvailableOrgansList(int startIndex, int count, String organ, String region, String bloodType, String city, String country, ObservableList<AvailableOrganDetail> observableList) {
         StringBuilder url = new StringBuilder(ip);
         url.append("/availableOrgans?count=").append(count);
         url.append("&startIndex=").append(startIndex);
@@ -49,11 +52,8 @@ public class AvailableOrgansBridge extends Bifrost {
                     throw new ApiException(response.code(), "got response with code outside of 200 range");
                 }
 
-                //todo: skeleton to link up to the client side - jen 8/8
-//                List<AvailableOrgansDetail> availableOrgansDetails = handler.decodeAvailableOrgansList(response);
-//                for (AvailableOrgansDetail availableOrgansDetail : availableOrgansDetails) {
-//                    AppController.getInstance().addAvailableOrgan(availableOrgansDetail);
-//                }
+                List<AvailableOrganDetail> availableOrgansDetails = handler.decodeAvailableOrgansList(response);
+                observableList.addAll(availableOrgansDetails);
             }
         });
 

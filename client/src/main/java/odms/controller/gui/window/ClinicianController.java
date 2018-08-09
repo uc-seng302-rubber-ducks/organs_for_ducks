@@ -22,7 +22,7 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import odms.commons.model.Clinician;
 import odms.commons.model.User;
-import odms.commons.model._abstract.TransplantWaitListViewer;
+import odms.commons.model._abstract.UserLauncher;
 import odms.commons.model._enum.EventTypes;
 import odms.commons.model._enum.Organs;
 import odms.commons.model.dto.UserOverview;
@@ -51,7 +51,7 @@ import static odms.commons.utils.PhotoHelper.displayImage;
 /**
  * Class for the functionality of the Clinician view of the application
  */
-public class ClinicianController implements PropertyChangeListener, TransplantWaitListViewer {
+public class ClinicianController implements PropertyChangeListener, UserLauncher {
 
     //<editor-fold desc="FXML declarations">
     @FXML
@@ -155,6 +155,7 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
         this.stage = stage;
         this.clinician = clinician;
         this.admin = fromAdmin;
+        openStages = new ArrayList<>();
 
         //add change listeners of parent controllers to the current clinician
         this.parentListeners = new ArrayList<>();
@@ -172,13 +173,10 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
         initSearchTable();
         transplantWaitListTabPageController.init(appController, this);
         statusBarPageController.init(appController);
-        availableOrgansViewController.init();
-
+        availableOrgansViewController.init(this);
         if (clinician.getStaffId().equals("0")) {
             deleteClinician.setDisable(true);
         }
-
-        openStages = new ArrayList<>();
 
         if (fromAdmin) {
             logoutMenuClinician.setText("Go Back");
@@ -315,20 +313,20 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
         searchTableView.setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
                 UserOverview user = searchTableView.getSelectionModel().getSelectedItem();
-                launchUser(user);
+                launchUser(user.getNhi());
             }
         });
         searchTableView.refresh();
     }
 
     /**
-     * @param userOverview A summary of the user to be launched
+     * @param userNhi A summary of the user to be launched
      */
-    public void launchUser(UserOverview userOverview) {
+    public void launchUser(String userNhi) {
         FXMLLoader userLoader = new FXMLLoader(getClass().getResource("/FXML/userView.fxml"));
         Parent root;
         try {
-            User user = appController.getUserBridge().getUser(userOverview.getNhi());
+            User user = appController.getUserBridge().getUser(userNhi);
             root = userLoader.load();
             Stage userStage = new Stage();
             userStage.setScene(new Scene(root));

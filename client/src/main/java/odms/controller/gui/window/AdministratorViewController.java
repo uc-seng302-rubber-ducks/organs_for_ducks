@@ -30,7 +30,7 @@ import odms.commons.exception.InvalidFileException;
 import odms.commons.model.Administrator;
 import odms.commons.model.Clinician;
 import odms.commons.model.User;
-import odms.commons.model._abstract.TransplantWaitListViewer;
+import odms.commons.model._abstract.UserLauncher;
 import odms.commons.model._enum.EventTypes;
 import odms.commons.model._enum.Organs;
 import odms.commons.model.dto.UserOverview;
@@ -57,7 +57,7 @@ import java.io.PrintStream;
 import java.lang.reflect.Type;
 import java.util.*;
 
-public class AdministratorViewController implements PropertyChangeListener, TransplantWaitListViewer {
+public class AdministratorViewController implements PropertyChangeListener, UserLauncher {
 
     //<editor-fold desc="FXML stuff">
 
@@ -267,7 +267,7 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
 
         userTableView.setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
-                launchUser(userTableView.getSelectionModel().getSelectedItem());
+                launchUser(userTableView.getSelectionModel().getSelectedItem().getNhi());
             }
         });
 
@@ -452,7 +452,7 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
             tv.setOnMouseClicked(event -> {
                 if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
                     if (type.equals(User.class)) {
-                        launchUser(userTableView.getSelectionModel().getSelectedItem());
+                        launchUser(userTableView.getSelectionModel().getSelectedItem().getNhi());
                     } else if (type.equals(Clinician.class)) {
                         launchClinician(clinicianTableView.getSelectionModel().getSelectedItem());
                     } else if (type.equals(Administrator.class)) {
@@ -853,12 +853,12 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
      * @param overview the selected user.
      */
     @Override
-    public void launchUser(UserOverview overview) {
+    public void launchUser(String overview) {
         if (overview != null) {
             FXMLLoader userLoader = new FXMLLoader(getClass().getResource("/FXML/userView.fxml"));
             Parent root;
             try {
-                User user = appController.getUserBridge().getUser(overview.getNhi());
+                User user = appController.getUserBridge().getUser(overview);
                 root = userLoader.load();
                 Stage newStage = new Stage();
                 newStage.setScene(new Scene(root));
@@ -870,7 +870,7 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
                 newStage.show();
                 Log.info(messageAdmin + administrator.getUserName() + " successfully launched user overview window for User NHI: " + user.getNhi());
             } catch (IOException e) {
-                Log.severe(messageAdmin + administrator.getUserName() + " failed to load user overview window for User NHI: " + overview.getNhi(), e);
+                Log.severe(messageAdmin + administrator.getUserName() + " failed to load user overview window for User NHI: " + overview, e);
             }
         }
     }

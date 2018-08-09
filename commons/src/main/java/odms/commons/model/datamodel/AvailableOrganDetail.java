@@ -10,6 +10,7 @@ public class AvailableOrganDetail {
     private LocalDateTime momentOfDeath;
     private String region;
     private String bloodType;
+    private Double progress;
 
     public AvailableOrganDetail(Organs organ, String nhi, LocalDateTime momentOfDeath, String region, String bloodType) {
         this.organ = organ;
@@ -20,6 +21,7 @@ public class AvailableOrganDetail {
     }
 
     public AvailableOrganDetail() {
+        this.progress = 5.3;
     }
 
     public Organs getOrgan() {
@@ -77,5 +79,13 @@ public class AvailableOrganDetail {
 
     public boolean isOrganStillValid(){
         return isOrganStillValid(LocalDateTime.now());
+    }
+
+    public double getProgress() {
+        return progress;
+    }
+
+    public void setProgress(double progress) {
+        this.progress = progress;
     }
 }

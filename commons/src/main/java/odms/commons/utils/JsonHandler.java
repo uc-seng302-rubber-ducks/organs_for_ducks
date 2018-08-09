@@ -5,9 +5,9 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializer;
 import com.google.gson.reflect.TypeToken;
-import javafx.scene.image.Image;
 import odms.commons.model.*;
 import odms.commons.model._enum.Directory;
+import odms.commons.model.datamodel.AvailableOrganDetail;
 import odms.commons.model.datamodel.TransplantDetails;
 import odms.commons.model.dto.LoginResponse;
 import okhttp3.Response;
@@ -370,6 +370,11 @@ public class JsonHandler extends DataHandler {
 
     public List<String> decodeQueryResult(ResponseBody body) throws IOException {
         return new Gson().fromJson(body.string(), (Type) new ArrayList<String>());
+    }
+
+    public List<AvailableOrganDetail> decodeAvailableOrgansList(Response response) throws IOException {
+        return new Gson().fromJson(response.body().string(), new TypeToken<List<AvailableOrganDetail>>() {
+        }.getType());
     }
 }
 
