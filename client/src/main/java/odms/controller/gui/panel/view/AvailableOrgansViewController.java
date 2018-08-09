@@ -5,10 +5,8 @@ import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
+import javafx.scene.control.cell.ProgressBarTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.util.Duration;
 import odms.commons.model._abstract.UserLauncher;
@@ -43,7 +41,7 @@ public class AvailableOrgansViewController {
     private TableColumn<AvailableOrganDetail, LocalDateTime> deathMomentColumn;
 
     @FXML
-    private TableColumn<AvailableOrganDetail, LocalDateTime> progressBarColumn;
+    private TableColumn<AvailableOrganDetail, Double> progressBarColumn;
 
 
     private ObservableList<AvailableOrganDetail> availableOrganDetails = FXCollections.observableList(new ArrayList<>());
@@ -72,6 +70,8 @@ public class AvailableOrgansViewController {
         regionColumn.setCellValueFactory(new PropertyValueFactory<>("region"));
         organColumn.setCellValueFactory(new PropertyValueFactory<>("organ"));
         deathMomentColumn.setCellValueFactory(new PropertyValueFactory<>("momentOfDeath"));
+        progressBarColumn.setCellValueFactory(new PropertyValueFactory<>("progressBar"));
+        progressBarColumn.setCellFactory(ProgressBarTableCell.forTableColumn());
         // figure out how to do progress bars
         search();
         populateTables();
@@ -95,6 +95,7 @@ public class AvailableOrgansViewController {
 
     public void populateTables() {
         availableOrgansTableView.setItems(availableOrganDetails);
+        availableOrganDetails.add(new AvailableOrganDetail(Organs.LIVER, "", null, ""));
         setOnClickBehaviour();
     }
 
