@@ -329,6 +329,12 @@ public class NewUserController {
 
     }
 
+    /**
+     * Helper function to Load a user onto a new scene
+     *
+     * @param nhi Users NHI
+     * @param newUser User to be displayed
+     */
     private void loadUserScene(String nhi, User newUser) {
         FXMLLoader userLoader = new FXMLLoader(
                 getClass().getResource("/FXML/userView.fxml"));
@@ -349,6 +355,14 @@ public class NewUserController {
         }
     }
 
+    /**
+     * Launches a given FXML user scene
+     *
+     * @param nhi nuhi of User
+     * @param newUser User to launch
+     * @param userLoader loader to be launched
+     * @throws IOException when user loader is incorrectly passed and controller can not be found
+     */
     private void launchUserScene(String nhi, User newUser, FXMLLoader userLoader) throws IOException {
         Parent root;
         root = userLoader.load();
