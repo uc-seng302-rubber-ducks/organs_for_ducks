@@ -14,11 +14,8 @@ import odms.commons.model.User;
 import odms.commons.model._abstract.UserLauncher;
 import odms.commons.model._enum.Organs;
 import odms.commons.model.datamodel.TransplantDetails;
-import odms.commons.model.dto.UserOverview;
 import odms.controller.AppController;
-import odms.controller.gui.popup.utils.AlertWindowFactory;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -188,12 +185,7 @@ public class TransplantWaitListController {
             transplantWaitListTableView.setOnMouseClicked(event -> {
                 if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
                     TransplantDetails transplantDetails = transplantWaitListTableView.getSelectionModel().getSelectedItem();
-                    try {
-                        User wantedUser = appController.getUserBridge().getUser(transplantDetails.getNhi());
-                        parent.launchUser(UserOverview.fromUser(wantedUser)); //TODO: This is a bit disgusting fix
-                    } catch (IOException e) {
-                        AlertWindowFactory.generateError(e);
-                    }
+                    parent.launchUser(transplantDetails.getNhi());
                 }
             });
         } else {
