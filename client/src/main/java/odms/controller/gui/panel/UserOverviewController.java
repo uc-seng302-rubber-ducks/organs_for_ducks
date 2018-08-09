@@ -9,10 +9,10 @@ import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import odms.controller.AppController;
-import odms.controller.gui.popup.UpdateDeathDetailsController;
 import odms.commons.model.User;
 import odms.commons.utils.Log;
+import odms.controller.AppController;
+import odms.controller.gui.popup.UpdateDeathDetailsController;
 
 import java.io.IOException;
 import java.text.DecimalFormat;
@@ -102,19 +102,13 @@ public class UserOverviewController {
     private ImageView profilePicture;
     //</editor-fold>
 
-    private AppController application;
     private User currentUser;
-    private Stage stage;
-    private boolean clinician;
 
     @FXML
     public void init(AppController controller, User user, Stage stage, boolean fromClinician) {
-        this.stage = stage;
-        this.application = controller;
         this.currentUser = user;
-        clinician = fromClinician;
         showUser(user);
-        if (!clinician) {
+        if (!fromClinician) {
             updateDeathDetailsButton.setDisable(true);
         }
     }
@@ -125,7 +119,6 @@ public class UserOverviewController {
      * @param user The current user.
      */
     public void showUser(User user) {
-        currentUser = user;
         NHIValue.setText(user.getNhi());
         fNameValue.setText(user.getFirstName());
         DOBValue.setText(user.getDateOfBirth().toString());
@@ -206,7 +199,7 @@ public class UserOverviewController {
         if (user.getHeight() > 0 && user.getWeight() > 0) {
             //TODO fix BMI kg/m^
             DecimalFormat df = new DecimalFormat("#.00");
-            double bmi = user.getWeight() / (user.getHeight() * user.getHeight());
+            double bmi = user.getWeight() / ((user.getHeight()) /100 * (user.getHeight()/100));
             String formattedBmi = df.format(bmi);
             bmiValue.setText(formattedBmi);
         } else {
@@ -254,7 +247,7 @@ public class UserOverviewController {
             Stage updateStage = new Stage();
             updateStage.initModality(Modality.APPLICATION_MODAL);
             updateStage.setScene(new Scene(root));
-            updateDeathDetailsController.init(application, updateStage, currentUser);
+            updateDeathDetailsController.init(AppController.getInstance(), updateStage, currentUser);
             updateStage.show();
             Log.info("Successfully launched update user window for User NHI: " + currentUser.getNhi());
 

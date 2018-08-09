@@ -33,8 +33,9 @@ public class Administrator extends Undoable<Administrator> implements Listenable
     private LocalDateTime dateCreated;
     @Expose
     private LocalDateTime dateLastModified;
-    private transient List<Change> changes;
-    private transient PropertyChangeSupport pcs;
+    private transient List<Change> changes; //NOSONAR
+    private transient PropertyChangeSupport pcs; //NOSONAR
+    //The two above have sonarlint disabled as they need to not be serailised
 
 
     /**
@@ -245,16 +246,6 @@ public class Administrator extends Undoable<Administrator> implements Listenable
         return PasswordManager.isExpectedPassword(passwordAttempt, salt, getPassword());
     }
 
-
-    /**
-     * EWWWW gross but please forgive me. dont want the search to break just yet. the generic search requires a region
-     * so here we are
-     *
-     * @return does the needful
-     */
-    public String getRegion() {
-        return "";
-    }
 
     private void saveStateForUndo() {
         //attempt to find out who called this method

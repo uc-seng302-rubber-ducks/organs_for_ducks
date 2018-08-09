@@ -21,7 +21,7 @@ public class MedicationInteractionCache implements TimedEntryCache<String, Timed
 
     private ConcurrentMap<String, TimedCacheValue<String>> cache;
 
-    public MedicationInteractionCache() {
+    MedicationInteractionCache() {
         cache = new ConcurrentHashMap<>();
     }
 

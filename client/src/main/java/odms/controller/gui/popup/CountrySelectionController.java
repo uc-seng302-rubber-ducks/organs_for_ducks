@@ -25,11 +25,9 @@ public class CountrySelectionController {
     @FXML
     private CheckBox selectDeselectCountries;
 
-    private Administrator admin;
     private Stage stage;
     private AppController appController;
     private List<String> allowedCountries;
-    private List<String> initialCountries;
     private boolean selectAll = false;
 
     /**
@@ -38,11 +36,9 @@ public class CountrySelectionController {
      * @param stage gui stage
      */
     public void init(Administrator admin, Stage stage, AppController appController) {
-        this.admin = admin;
         this.stage = stage;
         this.appController = appController;
         allowedCountries = appController.getAllowedCountries();
-        initialCountries = allowedCountries.subList(0, allowedCountries.size());
         initCountrySelectionList();
     }
 

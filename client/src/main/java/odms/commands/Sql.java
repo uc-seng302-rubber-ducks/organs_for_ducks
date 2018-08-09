@@ -44,7 +44,7 @@ public class Sql implements Runnable {
         }
 
         try {
-            List<String> result = sqlBridge.excuteSqlStatement(statement,controller.getToken());
+            List<String> result = sqlBridge.executeSqlStatement(statement,controller.getToken());
             if(result.isEmpty()){
                 IoHelper.display("The result set was empty; an invalid query may have been entered or this result returned no rows");
             } else {

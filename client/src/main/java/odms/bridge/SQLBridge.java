@@ -16,10 +16,10 @@ public class SQLBridge extends Bifrost {
         super(client);
     }
 
-    public List<String> excuteSqlStatement(String query, String token) throws IOException {
+    public List<String> executeSqlStatement(String query, String token) throws IOException {
         String url = ip + "/sql";
-        RequestBody body = RequestBody.create(JSON, new Gson().toJson(query));
-        Request request = new Request.Builder().url(url).addHeader(TOKEN_HEADER, token).post(body).build();
+        RequestBody body = RequestBody.create(json, new Gson().toJson(query));
+        Request request = new Request.Builder().url(url).addHeader(tokenHeader, token).post(body).build();
         Response response = client.newCall(request).execute();
         if(response.isSuccessful()) {
             return handler.decodeQueryResult(response.body());

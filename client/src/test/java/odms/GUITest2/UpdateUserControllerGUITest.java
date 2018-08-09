@@ -182,7 +182,7 @@ public class UpdateUserControllerGUITest extends ApplicationTest {
 
     @Test
     public void updateBMIAfterUpdate() {
-        setTextField(this,"#heightInput","1.75");
+        setTextField(this,"#heightInput","175");
         setTextField(this,"#weightInput","65");
         clickOnButton(this,"#confirmButton");
         verifyThat("#bmiValue", LabeledMatchers.hasText("21.22"));

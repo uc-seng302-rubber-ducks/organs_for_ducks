@@ -15,6 +15,10 @@ import java.util.List;
  */
 public class IoHelper {
 
+    private IoHelper() {
+        //Hides the implicit constructor
+    }
+
     /**
      * tries to convert a string to a date
      * requires format yyyy-MM-dd
@@ -52,7 +56,6 @@ public class IoHelper {
             return false;
         }
 
-        //TODO review logic for edge cases
         String[] names = user.getFullName().split(" ");
         if (firstName != null && lastName != null) {
             user.setName(firstName.replaceAll("_", " "), null, lastName.replaceAll("_", " "));
@@ -97,6 +100,7 @@ public class IoHelper {
     }
 
     public static void display(String toShow){
-        System.out.println(toShow);
+        System.out.println(toShow); //NOSONAR
+        //This writes the strings to the GUI CLI
     }
 }

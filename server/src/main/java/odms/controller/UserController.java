@@ -129,7 +129,7 @@ public class UserController extends BaseController {
         try (Connection connection = driver.getConnection()) {
             return handler.getExists(connection, User.class, nhi);
         } catch (SQLException ex) {
-            Log.severe("cannot find whther user exists", ex);
+            Log.severe("cannot find whether user exists", ex);
             throw  new ServerDBException(ex);
         }
     }

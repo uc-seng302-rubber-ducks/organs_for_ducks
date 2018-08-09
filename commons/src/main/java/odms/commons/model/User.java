@@ -867,7 +867,7 @@ public class User extends Undoable<User> implements Listenable {
         this.saveStateForUndo();
         updateLastModified();
         contactDetails.getAddress().setRegion(region);
-        if (contactDetails.getAddress() != null && !contactDetails.getAddress().equals("")) {
+        if (contactDetails.getAddress() != null && !contactDetails.getAddress().getRegion().equals("")) {
             addChange(new Change("Changed region to " + region));
         }
     }
@@ -1105,6 +1105,8 @@ public class User extends Undoable<User> implements Listenable {
     }
 
     public List<Change> getChanges() {
+        if(changes == null)
+            changes = new ArrayList<>();
         return changes;
     }
 
