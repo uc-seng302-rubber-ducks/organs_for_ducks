@@ -15,7 +15,6 @@ import javafx.util.Duration;
 import odms.commons.model._abstract.UserLauncher;
 import odms.commons.model._enum.Organs;
 import odms.commons.model.datamodel.AvailableOrganDetail;
-import odms.commons.utils.ProgressTask;
 import odms.controller.gui.panel.logic.AvailableOrgansLogicController;
 
 import java.time.LocalDateTime;
@@ -45,7 +44,7 @@ public class AvailableOrgansViewController {
     private TableColumn<AvailableOrganDetail, LocalDateTime> deathMomentColumn;
 
     @FXML
-    private TableColumn<ProgressTask, Double> progressBarColumn;
+    private TableColumn<AvailableOrganDetail, Double> progressBarColumn;
 
 
     private ObservableList<AvailableOrganDetail> availableOrganDetails = FXCollections.observableList(new ArrayList<>());
@@ -63,7 +62,7 @@ public class AvailableOrgansViewController {
         availableOrganFilterComboBox.setItems(organs);
         availableOrganDetails.addListener((ListChangeListener<? super AvailableOrganDetail>) observable -> populateTables());
         regionFilterTextField.setOnKeyPressed(event -> {
-            availableOrganDetails.add(new AvailableOrganDetail(Organs.LIVER, "", null, "", ""));
+            availableOrganDetails.add(new AvailableOrganDetail(Organs.LIVER, "", LocalDateTime.now(), "", ""));
 //            pause.setOnFinished(e -> search());
 //            pause.playFromStart();
         });
@@ -102,6 +101,12 @@ public class AvailableOrgansViewController {
         availableOrgansTableView.setItems(availableOrganDetails);
 
         setOnClickBehaviour();
+
+        new Thread(() -> {
+            for (AvailableOrganDetail detail : availableOrgansTableView.getItems()) {
+                detail.getTask().run();
+            }
+        }).start();
     }
 
     private void setOnClickBehaviour() {

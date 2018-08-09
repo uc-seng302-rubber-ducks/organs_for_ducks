@@ -1,6 +1,7 @@
 package odms.commons.model.datamodel;
 
 import odms.commons.model._enum.Organs;
+import odms.commons.utils.ProgressTask;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -19,7 +20,6 @@ public class AvailableOrganDetail {
         this.momentOfDeath = momentOfDeath;
         this.region = region;
         this.bloodType = bloodType;
-        this.progress = (double) momentOfDeath.until(momentOfDeath.plusHours(organ.getStorageHours()), ChronoUnit.SECONDS);
     }
 
     public AvailableOrganDetail() {
@@ -87,8 +87,8 @@ public class AvailableOrganDetail {
         return isOrganStillValid(LocalDateTime.now());
     }
 
-    public double getProgress() {
-        return progress;
+    public ProgressTask getTask() {
+        return new ProgressTask((double) momentOfDeath.until(momentOfDeath.plusHours(organ.getStorageHours()), ChronoUnit.SECONDS), this);
     }
 
     public void setProgress(double progress) {
