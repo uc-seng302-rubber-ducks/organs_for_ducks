@@ -32,6 +32,12 @@ public class DonationTabPageController {
     @FXML
     private TableColumn<OrgansWithExpiry, String> organExpiryColumn;
 
+    @FXML
+    private TableColumn<OrgansWithExpiry, Boolean> expiredDonationColumn;
+
+    @FXML
+    private TableColumn<OrgansWithExpiry, String> expiryReasonColumn;
+
     private User currentUser;
     private AppController application;
     private UserController parent;
@@ -51,12 +57,14 @@ public class DonationTabPageController {
 
         donatingOrganColumn.setCellValueFactory(new PropertyValueFactory<>("organType"));
         organExpiryColumn.setCellValueFactory(new PropertyValueFactory<>("progressBar"));
+        expiredDonationColumn.setCellValueFactory(new PropertyValueFactory<>("hasExpired"));
+        expiryReasonColumn.setCellValueFactory(new PropertyValueFactory<>("expiryReason"));
 
         populateOrganLists(user);
     }
 
     /**
-     * Popoulates the organ lists of the user
+     * Populates the organ lists of the user
      *
      * @param user user to use to populate
      */
