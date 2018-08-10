@@ -1,19 +1,18 @@
 package odms.controller.gui.panel.view;
 
 import javafx.animation.PauseTransition;
-import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Service;
 import javafx.fxml.FXML;
-import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.util.Duration;
 import odms.commons.model._abstract.UserLauncher;
 import odms.commons.model._enum.Organs;
 import odms.commons.model.datamodel.AvailableOrganDetail;
+import odms.commons.utils.ProgressBarHelper;
 import odms.controller.gui.panel.logic.AvailableOrgansLogicController;
 
 import java.time.LocalDateTime;
@@ -68,41 +67,20 @@ public class AvailableOrgansViewController {
         initAvailableOrgansTableView();
     }
 
+    /**
+     * Binds each column of the available organs table to particular fields contained
+     * within the AvailableOrganDetail class
+     */
     private void initAvailableOrgansTableView() {
         nhiColumn.setCellValueFactory(new PropertyValueFactory<>("donorNhi"));
         regionColumn.setCellValueFactory(new PropertyValueFactory<>("region"));
         organColumn.setCellValueFactory(new PropertyValueFactory<>("organ"));
         deathMomentColumn.setCellValueFactory(new PropertyValueFactory<>("momentOfDeath"));
         progressBarColumn.setCellValueFactory(new PropertyValueFactory<>("progressTask"));
-        progressBarColumn.setCellFactory(callback -> {
-            ProgressBar progressBar = new ProgressBar(1.0F);
-            TableCell<AvailableOrganDetail, Service> cell = new TableCell<AvailableOrganDetail, Service>() {
-                @Override
-                protected void updateItem(Service item, boolean empty) {
-                    super.updateItem(item, empty);
-                    if (item != null) {
-                        progressBar.progressProperty().bind(item.progressProperty());
-                        progressBar.minWidthProperty().bind(progressBarColumn.widthProperty().subtract(10));
-                        System.out.println(item.getTotalWork());
-                        progressBar.setStyle("-fx-background-color: -fx-box-border, GREEN; -fx-accent: GREEN; ");
-
-                        if (!item.isRunning()) {
-                            item.restart();
-                        }
-                        if (item.getProgress() < 0.95) {
-                            progressBar.setStyle("-fx-background-color: -fx-box-border, RED; -fx-accent: RED; ");
-                        }
-                    }
-                }
-            };
-            cell.graphicProperty().bind(Bindings.when(cell.emptyProperty()).then((Node) null).otherwise(progressBar));
-            return cell;
-        });
-        // figure out how to do progress bars
+        progressBarColumn.setCellFactory(callback -> ProgressBarHelper.generateProgressBar(progressBarColumn));
         search();
         populateTables();
     }
-
 
     @FXML
     private void search() {

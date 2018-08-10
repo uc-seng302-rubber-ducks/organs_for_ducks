@@ -1,6 +1,11 @@
 package odms.commons.model.datamodel;
 
+import javafx.concurrent.Service;
+import javafx.concurrent.Task;
 import odms.commons.model._enum.Organs;
+import odms.commons.utils.ProgressTask;
+
+import java.time.LocalDateTime;
 
 /**
  * Used to populate the donation table
@@ -8,13 +13,18 @@ import odms.commons.model._enum.Organs;
 public class OrgansWithExpiry {
 
     private Organs organType;
-    private String progressBar;
+    private Service progressTask;
     private boolean hasExpired;
     private String expiryReason;
 
-    public OrgansWithExpiry(Organs organ) {
+    public OrgansWithExpiry(Organs organ, LocalDateTime momentOfDeath) {
         this.organType = organ;
-        this.progressBar = "temporary placeholder";
+        this.progressTask = new Service() {
+            @Override
+            protected Task createTask() {
+                return new ProgressTask(momentOfDeath, organ);
+            }
+        };
         this.hasExpired = false;
         this.expiryReason = "";
     }
@@ -41,13 +51,5 @@ public class OrgansWithExpiry {
 
     public void setExpiryReason(String expiryReason) {
         this.expiryReason = expiryReason;
-    }
-
-    public String getProgressBar() {
-        return progressBar;
-    }
-
-    public void setProgressBar(String progressBar) {
-        this.progressBar = progressBar;
     }
 }
