@@ -155,6 +155,11 @@
                         <fx:include fx:id="transplantWaitListTabPage" source="transplantWaitListView.fxml" />
                     </content>
                 </Tab>
+                <Tab text="Available Organs">
+                    <content>
+                        <fx:include fx:id="availableOrgansView" source="availableOrgansPanel.fxml"/>
+                    </content>
+                </Tab>
             </tabs>
         </TabPane>
         <AnchorPane fx:id="StatusBar" AnchorPane.bottomAnchor="0.0">

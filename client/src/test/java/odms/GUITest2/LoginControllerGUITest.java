@@ -25,9 +25,10 @@ import java.util.concurrent.TimeoutException;
 
 import static odms.TestUtils.FxRobotHelper.clickOnButton;
 import static odms.TestUtils.FxRobotHelper.setTextField;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.testfx.api.FxAssert.verifyThat;
 
 public class LoginControllerGUITest extends ApplicationTest {
@@ -38,6 +39,7 @@ public class LoginControllerGUITest extends ApplicationTest {
     private LoginBridge loginBridge;
     private AdministratorBridge administratorBridge;
     private TransplantBridge transplantBridge = mock(TransplantBridge.class);
+    private AvailableOrgansBridge availableOrgansBridge = mock(AvailableOrgansBridge.class);
 
     @BeforeClass
     public static void initialization() {
@@ -58,9 +60,10 @@ public class LoginControllerGUITest extends ApplicationTest {
         when(controller.getAdministratorBridge()).thenReturn(administratorBridge);
         when(controller.getLoginBridge()).thenReturn(loginBridge);
         when(controller.getTransplantBridge()).thenReturn(transplantBridge);
+        when(controller.getAvailableOrgansBridge()).thenReturn(availableOrgansBridge);
 
         when(controller.getTransplantList()).thenReturn(new ArrayList());
-
+        doNothing().when(availableOrgansBridge).getAvailableOrgansList(anyInt(), anyInt(), anyString(), anyString(), anyString(), anyString(), anyString(), any());
         FxToolkit.registerPrimaryStage();
         FxToolkit.setupApplication(App.class);
         AppController.getInstance().getUsers().clear();

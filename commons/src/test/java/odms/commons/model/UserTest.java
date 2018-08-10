@@ -106,7 +106,7 @@ public class UserTest {
     @Test
     public void AgeOfDeceasedUserShouldBeCorrect() {
         testUser.setDateOfDeath(LocalDate.of(1939, 2, 3));
-        Assert.assertEquals(testUser.getStringAge(), "1");
+        Assert.assertEquals("1", testUser.getStringAge());
     }
 
     @Test

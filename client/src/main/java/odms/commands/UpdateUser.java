@@ -14,7 +14,7 @@ public class UpdateUser implements Runnable {
 
     @Override
     public void run() {
-        CommandLine.usage(this, System.err);
+        CommandLine.usage(this, System.err);//NOSONAR
 
     }
 }

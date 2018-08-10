@@ -2,10 +2,7 @@ package odms.commons.utils;
 
 import odms.commons.model.*;
 import odms.commons.model._enum.Organs;
-import odms.commons.model.datamodel.ContactDetails;
-import odms.commons.model.datamodel.Medication;
-import odms.commons.model.datamodel.ReceiverOrganDetailsHolder;
-import odms.commons.model.datamodel.TransplantDetails;
+import odms.commons.model.datamodel.*;
 import odms.commons.utils.db_strategies.AbstractUpdateStrategy;
 import odms.commons.utils.db_strategies.AdminUpdateStrategy;
 import odms.commons.utils.db_strategies.ClinicianUpdateStrategy;
@@ -91,6 +88,17 @@ public class DBHandler {
     private static final String SELECT_IF_USER_EXISTS_BOOL = "SELECT EXISTS(SELECT 1 FROM User WHERE nhi = ?)";
     private static final String SELECT_IF_CLINICIAN_EXISTS_BOOL = "SELECT EXISTS(SELECT 1 FROM Clinician WHERE staffId = ?)";
     private static final String SELECT_IF_ADMIN_EXISTS_BOOL = "SELECT EXISTS(SELECT 1 FROM Administrator WHERE userName = ?)";
+    private static final String SELECT_AVAILABLE_ORGANS = "select * from OrganDonating " +
+            "JOIN DeathDetails ON OrganDonating.fkUserNhi = DeathDetails.fkUserNhi " +
+            "JOIN Organ ON OrganDonating.fkOrgansId = organId " +
+            "JOIN HealthDetails ON OrganDonating.fkUserNhi = HealthDetails.fkUserNhi " +
+            "WHERE (bloodType LIKE ? OR bloodType IS NULL)" +
+            "AND (organName LIKE ? OR organName IS NULL )" +
+            "AND (DeathDetails.region LIKE ? or DeathDetails.region IS NULL)" +
+            "AND (DeathDetails.city LIKE ? or DeathDetails.city IS NULL)" +
+            "AND (DeathDetails.country LIKE ? or DeathDetails.country IS NULL)" +
+            "LIMIT ? OFFSET ?";
+    private static final String SELECT_DEATH_DETAILS_STMT = "SELECT * FROM DeathDetails WHERE fkUserNhi = ?";
     private AbstractUpdateStrategy updateStrategy;
 
 
@@ -252,6 +260,7 @@ public class DBHandler {
                         getUserOrganReceiveDetail(user, connection);
                         getUserContact(user, connection);
                         getUserEmergencyContact(user, connection);
+                        getDeathDetails(user, connection);
                     } catch (SQLException e) {
                         Log.warning("Unable to create instance of user with nhi " + user.getNhi(), e);
                         throw e;
@@ -1117,5 +1126,60 @@ public class DBHandler {
             }
         }
         return results;
+    }
+
+   public List<AvailableOrganDetail> getAvailableOrgans(int startIndex,
+                                                        int count,
+                                                        String organ,
+                                                        String region,
+                                                        String bloodType,
+                                                        String city,
+                                                        String country,
+                                                        Connection connection) throws SQLException {
+        List<AvailableOrganDetail> results = new ArrayList<>();
+        try(PreparedStatement preparedStatement = connection.prepareStatement(SELECT_AVAILABLE_ORGANS)){
+            preparedStatement.setString(1,bloodType + "%");
+            preparedStatement.setString(2,organ + "%");
+            preparedStatement.setString(3,region + "%");
+            preparedStatement.setString(4,city + "%");
+            preparedStatement.setString(5,country + "%");
+            preparedStatement.setInt(6, count);
+            preparedStatement.setInt(7,startIndex);
+            try(ResultSet resultSet = preparedStatement.executeQuery()){
+                while(resultSet.next()) {
+                    AvailableOrganDetail organDetail = new AvailableOrganDetail();
+                    organDetail.setDonorNhi(resultSet.getString("fkUserNhi"));
+                    organDetail.setBloodType(resultSet.getString("bloodType"));
+                    organDetail.setMomentOfDeath(resultSet.getTimestamp("momentOfDeath").toLocalDateTime());
+                    organDetail.setRegion(resultSet.getString("region"));
+                    organDetail.setOrgan(Organs.valueOf(resultSet.getString("organName")));
+                    if (organDetail.isOrganStillValid()) {
+                        results.add(organDetail);
+                    }
+                }
+            }
+
+        }
+        return results;
+
+    }
+
+    public void getDeathDetails(User user, Connection connection) throws  SQLException {
+        try (PreparedStatement stmt = connection.prepareStatement(SELECT_DEATH_DETAILS_STMT)) {
+            stmt.setString(1, user.getNhi());
+            try (ResultSet resultSet = stmt.executeQuery()) {
+                while (resultSet != null && resultSet.next()) {
+                    Timestamp momentOfDeath = resultSet.getTimestamp("momentOfDeath");
+                    if (momentOfDeath != null) {
+                        user.getDeathDetails().setMomentOfDeath(momentOfDeath.toLocalDateTime()); //FIX
+                    } else {
+                        user.getDeathDetails().setMomentOfDeath(null);
+                    }
+                    user.setDeathCity(resultSet.getString("city"));
+                    user.setDeathRegion(resultSet.getString("region"));
+                    user.setDeathCountry(resultSet.getString("country"));
+                }
+            }
+        }
     }
 }

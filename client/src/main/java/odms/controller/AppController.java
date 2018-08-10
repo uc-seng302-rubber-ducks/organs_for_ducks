@@ -22,6 +22,7 @@ import odms.controller.gui.window.AdministratorViewController;
 import odms.controller.gui.window.ClinicianController;
 import odms.controller.gui.window.UserController;
 import odms.socket.OdmsSocketHandler;
+import odms.socket.ServerEventNotifier;
 import okhttp3.OkHttpClient;
 
 import java.io.IOException;
@@ -57,6 +58,7 @@ public class AppController {
     private UserBridge userBridge = new UserBridge(client);
     private ClinicianBridge clinicianBridge = new ClinicianBridge(client);
     private AdministratorBridge administratorBridge = new AdministratorBridge(client);
+    private AvailableOrgansBridge availableOrgansBridge = new AvailableOrgansBridge(client);
     private LoginBridge loginBridge = new LoginBridge(client);
     private TransplantBridge transplantBridge = new TransplantBridge(client);
     private UserController userController = null;
@@ -67,7 +69,7 @@ public class AppController {
     private Stack<User> redoStack = new Stack<>();
     private String token;
     private SQLBridge sqlBridge = new SQLBridge(client);
-    private OdmsSocketHandler socketHandler = new OdmsSocketHandler(client);
+    private OdmsSocketHandler socketHandler = new OdmsSocketHandler(client, ServerEventNotifier.getInstance());
 
     /**
      * Creates new instance of AppController
@@ -160,7 +162,7 @@ public class AppController {
         try {
             s = getCountriesBridge().getAllowedCountries();
         } catch (IOException e) {
-            Log.severe("Database threw IOE", e);
+            Log.severe("Could not get allowed countries from the database", e);
             allowedCountries = new ArrayList<>();
         }
         if (s != null) {
@@ -314,7 +316,7 @@ public class AppController {
     /**
      * @param users An array list of users.
      */
-    public void setUsers(ArrayList<User> users) {
+    public void setUsers(List<User> users) {
         this.users = users;
     }
 
@@ -352,14 +354,17 @@ public class AppController {
             }
 
             if (userBridge.getExists(originalUser.getNhi())) {
-                userBridge.putProfilePicture(originalUser.getNhi(), user.getProfilePhotoFilePath());
                 userBridge.putUser(user, originalUser.getNhi());
+                Thread.sleep(100);
+                userBridge.putProfilePicture(user.getNhi(), user.getProfilePhotoFilePath());
 
             } else {
                 userBridge.postUser(user);
             }
         } catch (IOException e) {
             Log.warning("Could not save user " + user.getNhi(), e);
+        } catch (InterruptedException e) {
+            Log.warning("Thread sleep time was interrupted", e);
         }
     }
 
@@ -689,5 +694,13 @@ public class AppController {
 
     public OdmsSocketHandler getSocketHandler() {
         return socketHandler;
+    }
+
+    public AvailableOrgansBridge getAvailableOrgansBridge() {
+        return availableOrgansBridge;
+    }
+
+    public void setAvailableOrgansBridge(AvailableOrgansBridge bridge) {
+        availableOrgansBridge = bridge;
     }
 }
