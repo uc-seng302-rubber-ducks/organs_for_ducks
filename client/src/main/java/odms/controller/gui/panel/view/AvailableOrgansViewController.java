@@ -84,13 +84,10 @@ public class AvailableOrgansViewController {
                         progressBar.progressProperty().bind(item.progressProperty());
                         progressBar.minWidthProperty().bind(progressBarColumn.widthProperty().subtract(10));
                         System.out.println(item.getTotalWork());
-                        progressBar.setStyle("-fx-background-color: -fx-box-border, GREEN; -fx-accent: GREEN; ");
+                        progressBar.setStyle(getColorStyle(0.5));
 
                         if (!item.isRunning()) {
                             item.restart();
-                        }
-                        if (item.getProgress() < 0.95) {
-                            progressBar.setStyle("-fx-background-color: -fx-box-border, RED; -fx-accent: RED; ");
                         }
                     }
                 }
@@ -101,6 +98,34 @@ public class AvailableOrgansViewController {
         // figure out how to do progress bars
         search();
         populateTables();
+    }
+
+
+    private String getColorStyle(double progress) {
+        // this doesn't work yet =/
+        String green;
+        String red;
+
+        double percent = progress * 100;
+        if (percent > 50.0) {
+            // more red as it is closer to expiring
+            green = Integer.toHexString((int) Math.round(percent * 255 * 2));
+            if (green.length() == 1) {
+                green = "0" + green;
+            }
+            red = "ff";
+        } else {
+            // more green as you there is more time
+            red = Integer.toHexString((int) Math.round(percent * 255 * 2));
+            if (red.length() == 1) {
+                red = "0" + red;
+            }
+            green = "ff";
+        }
+
+        String colour = red + green + "00";
+
+        return "-fx-background-color: -fx-box-border," + "linear-gradient(to left, green, red); -fx-accent: " + colour + ";";
     }
 
 
