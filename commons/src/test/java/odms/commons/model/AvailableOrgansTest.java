@@ -16,7 +16,7 @@ public class AvailableOrgansTest {
     @Before
     public void beforeTest(){
         time = LocalDateTime.of(2018, 9, 8, 14, 43);
-        organDetail = new AvailableOrganDetail(Organs.LIVER, "abc1234", time, "", "" );
+        organDetail = new AvailableOrganDetail(Organs.LIVER, "abc1234", time, "", "" , 30);
     }
 
     @Test

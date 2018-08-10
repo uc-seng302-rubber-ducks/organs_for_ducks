@@ -12,14 +12,16 @@ public class AvailableOrganDetail {
     private String region;
     private String bloodType;
     private Double progress;
+    private long age;
 
-    public AvailableOrganDetail(Organs organ, String nhi, LocalDateTime momentOfDeath, String region, String bloodType) {
+    public AvailableOrganDetail(Organs organ, String nhi, LocalDateTime momentOfDeath, String region, String bloodType, long age) {
         this.organ = organ;
         this.donorNhi = nhi;
         this.momentOfDeath = momentOfDeath;
         this.region = region;
         this.bloodType = bloodType;
         this.progress = (double) momentOfDeath.until(momentOfDeath.plusHours(organ.getStorageHours()), ChronoUnit.SECONDS);
+        this.age = age;
     }
 
     public AvailableOrganDetail() {
@@ -70,6 +72,13 @@ public class AvailableOrganDetail {
         this.donorNhi = donorNhi;
     }
 
+    public long getAge() {
+        return age;
+    }
+
+    public void setAge(long age) {
+        this.age = age;
+    }
 
     /**
      * takes a time and returns if the organ is still valid

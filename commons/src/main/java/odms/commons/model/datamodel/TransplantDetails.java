@@ -11,18 +11,22 @@ import java.time.LocalDate;
  * @author acb116
  */
 public class TransplantDetails {
+    private String bloodType;
     private String nhi;
     private String name;
     private Organs organ;
     private LocalDate ord; //Organ Registration Date
     private String region;
+    private long age;
 
-    public TransplantDetails(String nhi, String name, Organs organ, LocalDate ord, String region) {
+    public TransplantDetails(String nhi, String name, Organs organ, LocalDate ord, String region, long age, String bloodType) {
         this.nhi = nhi;
         this.name = name;
         this.organ = organ;
         this.ord = ord;
         this.region = region;
+        this.age = age;
+        this.bloodType = bloodType;
     }
 
     public String getNhi() {
@@ -48,4 +52,11 @@ public class TransplantDetails {
         return region;
     }
 
+    public long getAge() {
+        return age;
+    }
+
+    public String getBloodType() {
+        return bloodType;
+    }
 }
