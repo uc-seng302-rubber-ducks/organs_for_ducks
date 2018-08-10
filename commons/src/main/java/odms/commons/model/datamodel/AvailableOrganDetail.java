@@ -6,7 +6,6 @@ import odms.commons.model._enum.Organs;
 import odms.commons.utils.ProgressTask;
 
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 
 public class AvailableOrganDetail {
     private Organs organ;
@@ -25,7 +24,7 @@ public class AvailableOrganDetail {
         this.progressTask = new Service() {
             @Override
             protected Task createTask() {
-                return new ProgressTask((double) momentOfDeath.until(momentOfDeath.plusSeconds((long) organ.getStorageHours()), ChronoUnit.SECONDS));
+                return new ProgressTask(momentOfDeath, organ);
             }
         };
     }
@@ -39,7 +38,7 @@ public class AvailableOrganDetail {
         this.progressTask = new Service() {
             @Override
             protected Task createTask() {
-                return new ProgressTask((double) momentOfDeath.until(momentOfDeath.plusSeconds((long) organ.getStorageHours()), ChronoUnit.SECONDS));
+                return new ProgressTask(momentOfDeath, organ);
             }
         };
     }

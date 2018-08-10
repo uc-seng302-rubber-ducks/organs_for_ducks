@@ -83,8 +83,14 @@ public class AvailableOrgansViewController {
                     if (item != null) {
                         progressBar.progressProperty().bind(item.progressProperty());
                         progressBar.minWidthProperty().bind(progressBarColumn.widthProperty().subtract(10));
+                        System.out.println(item.getTotalWork());
+                        progressBar.setStyle("-fx-background-color: -fx-box-border, GREEN; -fx-accent: GREEN; ");
+
                         if (!item.isRunning()) {
                             item.restart();
+                        }
+                        if (item.getProgress() < 0.95) {
+                            progressBar.setStyle("-fx-background-color: -fx-box-border, RED; -fx-accent: RED; ");
                         }
                     }
                 }
