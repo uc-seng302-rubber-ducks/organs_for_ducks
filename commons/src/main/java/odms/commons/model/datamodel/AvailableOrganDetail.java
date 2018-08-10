@@ -1,5 +1,7 @@
 package odms.commons.model.datamodel;
 
+import javafx.concurrent.Service;
+import javafx.concurrent.Task;
 import odms.commons.model._enum.Organs;
 import odms.commons.utils.ProgressTask;
 
@@ -12,7 +14,7 @@ public class AvailableOrganDetail {
     private LocalDateTime momentOfDeath;
     private String region;
     private String bloodType;
-    private Double progress;
+    private transient Service progressTask;
 
     public AvailableOrganDetail(Organs organ, String nhi, LocalDateTime momentOfDeath, String region, String bloodType) {
         this.organ = organ;
@@ -20,6 +22,12 @@ public class AvailableOrganDetail {
         this.momentOfDeath = momentOfDeath;
         this.region = region;
         this.bloodType = bloodType;
+        this.progressTask = new Service() {
+            @Override
+            protected Task createTask() {
+                return new ProgressTask((double) momentOfDeath.until(momentOfDeath.plusSeconds((long) organ.getStorageHours()), ChronoUnit.SECONDS));
+            }
+        };
     }
 
     public AvailableOrganDetail() {
@@ -28,6 +36,12 @@ public class AvailableOrganDetail {
         this.organ = null;
         this.region = "";
         this.bloodType = "";
+        this.progressTask = new Service() {
+            @Override
+            protected Task createTask() {
+                return new ProgressTask((double) momentOfDeath.until(momentOfDeath.plusSeconds((long) organ.getStorageHours()), ChronoUnit.SECONDS));
+            }
+        };
     }
 
     public Organs getOrgan() {
@@ -79,19 +93,15 @@ public class AvailableOrganDetail {
      * @return trtue if valid; false if not
      */
     public boolean isOrganStillValid(LocalDateTime timeToaskabout){
-        int hoursOrganIsViable = organ.getStorageHours();
-        return (timeToaskabout.isBefore(momentOfDeath.plusHours(hoursOrganIsViable)));
+        double hoursOrganIsViable = organ.getStorageHours();
+        return (timeToaskabout.isBefore(momentOfDeath.plusHours((long) hoursOrganIsViable)));
     }
 
     public boolean isOrganStillValid(){
         return isOrganStillValid(LocalDateTime.now());
     }
 
-    public ProgressTask getTask() {
-        return new ProgressTask((double) momentOfDeath.until(momentOfDeath.plusHours(organ.getStorageHours()), ChronoUnit.SECONDS), this);
-    }
-
-    public void setProgress(double progress) {
-        this.progress = progress;
+    public Service getProgressTask() {
+        return progressTask;
     }
 }

@@ -1,15 +1,14 @@
 package odms.controller.gui.panel.view;
 
 import javafx.animation.PauseTransition;
+import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Service;
 import javafx.fxml.FXML;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
-import javafx.scene.control.cell.ProgressBarTableCell;
+import javafx.scene.Node;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.util.Duration;
 import odms.commons.model._abstract.UserLauncher;
@@ -44,7 +43,7 @@ public class AvailableOrgansViewController {
     private TableColumn<AvailableOrganDetail, LocalDateTime> deathMomentColumn;
 
     @FXML
-    private TableColumn<AvailableOrganDetail, Double> progressBarColumn;
+    private TableColumn<AvailableOrganDetail, Service> progressBarColumn;
 
 
     private ObservableList<AvailableOrganDetail> availableOrganDetails = FXCollections.observableList(new ArrayList<>());
@@ -74,8 +73,25 @@ public class AvailableOrgansViewController {
         regionColumn.setCellValueFactory(new PropertyValueFactory<>("region"));
         organColumn.setCellValueFactory(new PropertyValueFactory<>("organ"));
         deathMomentColumn.setCellValueFactory(new PropertyValueFactory<>("momentOfDeath"));
-        progressBarColumn.setCellValueFactory(new PropertyValueFactory<>("progress"));
-        progressBarColumn.setCellFactory(ProgressBarTableCell.forTableColumn());
+        progressBarColumn.setCellValueFactory(new PropertyValueFactory<>("progressTask"));
+        progressBarColumn.setCellFactory(callback -> {
+            ProgressBar progressBar = new ProgressBar(1.0F);
+            TableCell<AvailableOrganDetail, Service> cell = new TableCell<AvailableOrganDetail, Service>() {
+                @Override
+                protected void updateItem(Service item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (item != null) {
+                        progressBar.progressProperty().bind(item.progressProperty());
+                        progressBar.minWidthProperty().bind(progressBarColumn.widthProperty().subtract(10));
+                        if (!item.isRunning()) {
+                            item.restart();
+                        }
+                    }
+                }
+            };
+            cell.graphicProperty().bind(Bindings.when(cell.emptyProperty()).then((Node) null).otherwise(progressBar));
+            return cell;
+        });
         // figure out how to do progress bars
         search();
         populateTables();
@@ -101,17 +117,11 @@ public class AvailableOrgansViewController {
         availableOrgansTableView.setItems(availableOrganDetails);
 
         setOnClickBehaviour();
-
-        new Thread(() -> {
-            for (AvailableOrganDetail detail : availableOrgansTableView.getItems()) {
-                detail.getTask().run();
-            }
-        }).start();
     }
 
     private void setOnClickBehaviour() {
         availableOrgansTableView.setOnMouseClicked(event -> {
-            if (event.getClickCount() == 2) {
+            if (event.getClickCount() == 2 && availableOrgansTableView.getSelectionModel().getSelectedItem() != null) {
                 parent.launchUser(availableOrgansTableView.getSelectionModel().getSelectedItem().getDonorNhi());
             }
         });
