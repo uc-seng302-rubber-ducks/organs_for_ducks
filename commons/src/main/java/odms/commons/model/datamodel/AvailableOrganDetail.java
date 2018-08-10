@@ -85,7 +85,7 @@ public class AvailableOrganDetail {
      *
      * @param timeToaskabout time that the organ needs to be valid at
      *
-     * @return trtue if valid; false if not
+     * @return true if valid; false if not
      */
     public boolean isOrganStillValid(LocalDateTime timeToaskabout){
         int hoursOrganIsViable = organ.getStorageHours();
