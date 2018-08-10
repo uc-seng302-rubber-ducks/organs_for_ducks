@@ -406,7 +406,10 @@ public class User extends Undoable<User> implements Listenable {
     }
 
     public Collection<Organs> getCommonOrgans() {
-        return commonOrgans;
+
+        List<Organs> commonOrganList = new ArrayList<>(receiverDetails.getOrgans().keySet());
+        commonOrganList.retainAll(donorDetails.getOrgans());
+        return commonOrganList;
     }
 
     /**

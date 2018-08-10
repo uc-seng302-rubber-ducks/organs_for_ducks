@@ -1,5 +1,6 @@
 package odms.controller.gui.panel;
 
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -9,7 +10,9 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 import odms.commons.model.Change;
 import odms.commons.model.ReceiverDetails;
 import odms.commons.model.User;
@@ -122,6 +125,40 @@ public class ReceiverTabController {
         noLongerWaitingForOrgan.getColumns().addAll(noLongerOrganNameColumn,noLongerOrganDateColumn);
         currentlyWaitingFor.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         populateReceiverLists(currentUser);
+
+        currentOrganNameColumn.setCellFactory(new Callback<TableColumn<OrgansWithDates, String>, TableCell<OrgansWithDates, String>>() {
+            @Override
+            public TableCell<OrgansWithDates, String> call(TableColumn<OrgansWithDates, String> param) {
+
+                return new TableCell<OrgansWithDates, String>() {
+
+                    @Override
+                    public void updateItem(String item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (!isEmpty()) {
+                            if (user.getCommonOrgans().contains(Organs.valueOf(item)))
+                                this.setTextFill(Color.RED);
+                            setText(item);
+                        }
+                    }
+                };
+            }
+        });
+
+//        currentOrganNameColumn.setCellFactory(callback -> {
+//            TableCell<OrgansWithDates, String> cell; new TableCell<OrgansWithDates, String>() {
+//                @Override
+//                protected void updateItem(String item, boolean empty) {
+//                    super.updateItem(item, empty);
+//                    if (item != null) {
+//                        if (user.getCommonOrgans().contains(Organs.valueOf(item)))
+//                            this.setTextFill(Color.RED);
+//                        setText(item);
+//                    }
+//                }
+//            };
+//            return cell;
+//        });
     }
 
     /**
