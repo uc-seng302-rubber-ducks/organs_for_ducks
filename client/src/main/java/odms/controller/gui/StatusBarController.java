@@ -4,8 +4,6 @@ import javafx.animation.PauseTransition;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.util.Duration;
-import odms.controller.AppController;
-import odms.controller.gui.window.UserController;
 
 public class StatusBarController {
 
@@ -13,12 +11,10 @@ public class StatusBarController {
     @FXML
     private Label statusBar;
 
-    private AppController application;
-    private UserController parent;
+
 
     @FXML
-    public void init(AppController controller) {
-        application = controller;
+    public void init() {
         updateStatus("");
     }
 

@@ -5,6 +5,7 @@ import odms.commons.utils.DBHandler;
 import odms.commons.utils.JDBCDriver;
 import odms.exception.NotFoundException;
 import odms.exception.ServerDBException;
+import odms.socket.SocketHandler;
 import odms.utils.DBManager;
 import org.junit.Assert;
 import org.junit.Before;
@@ -29,6 +30,7 @@ public class AdministratorControllerTest {
     private Connection connection;
     private JDBCDriver driver;
     private DBManager manager;
+    private SocketHandler socketHandler;
     private DBHandler handler;
     private Administrator testAdministrator;
 
@@ -38,10 +40,11 @@ public class AdministratorControllerTest {
         manager = mock(DBManager.class);
         handler = mock(DBHandler.class);
         driver = mock(JDBCDriver.class);
+        socketHandler = mock(SocketHandler.class);
         when(driver.getConnection()).thenReturn(connection);
         when(manager.getHandler()).thenReturn(handler);
         when(manager.getDriver()).thenReturn(driver);
-        controller = new AdminController(manager);
+        controller = new AdminController(manager, socketHandler);
         testAdministrator = new Administrator("12", "Steve", "", "", "");
     }
 

@@ -1,6 +1,5 @@
 package odms.controller.gui.panel;
 
-import javafx.beans.InvalidationListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -23,11 +22,14 @@ import org.controlsfx.control.textfield.TextFields;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 public class MedicationTabController {
 
+    public static final String FOR_USER_NHI = " for User NHI: ";
+    public static final String AS_IT_IS_EMPTY = " as it is empty";
     @FXML
     private ListView<String> previousMedicationListView;
 
@@ -74,7 +76,6 @@ public class MedicationTabController {
         application = controller;
         currentUser = user;
         this.parent = parent;
-        //ageValue.setText("");
         //This is the place to set visible and invisible controls for Clinician vs User
         if (!fromClinician) {
             addMedicationButton.setVisible(false);
@@ -159,9 +160,10 @@ public class MedicationTabController {
                     values[i] = values[i].replace('"', ' ').trim();
                 }
                 TextFields.bindAutoCompletion(medicationTextField, values);
-                Log.info("Successfully loaded suggested medication names with user Input: " + newValue + " for User NHI: " + currentUser.getNhi());
+                Log.info("Successfully loaded suggested medication names with user Input: " + newValue + FOR_USER_NHI + currentUser.getNhi());
+
             } catch (IOException e) {
-                Log.severe("Failed to load suggested medication names with user Input: " + newValue + " for User NHI: " + currentUser.getNhi(), e);
+                Log.severe("Failed to load suggested medication names with user Input: " + newValue + FOR_USER_NHI + currentUser.getNhi(), e);
             }
 
         }
@@ -209,7 +211,7 @@ public class MedicationTabController {
     void addMedication() {
         String medication = medicationTextField.getText();
         if (medication.isEmpty()) {
-            Log.warning("Unable to add medication: " + medication + " for User NHI: " + currentUser.getNhi() + " as it is empty");
+            Log.warning("Unable to add medication: " + medication + FOR_USER_NHI + currentUser.getNhi() + AS_IT_IS_EMPTY);
             return;
         }
         if (currentMeds.contains(medication) || previousMeds.contains(medication)) {
@@ -222,7 +224,7 @@ public class MedicationTabController {
         currentMeds.add(medication);
         currentUser.addCurrentMedication(medication);
         parent.updateUndoRedoButtons();
-        Log.info("Successfully added medication: " + medication + " for User NHI: " + currentUser.getNhi());
+        Log.info("Successfully added medication: " + medication + FOR_USER_NHI + currentUser.getNhi());
 
     }
 
@@ -239,9 +241,9 @@ public class MedicationTabController {
             parent.updateUndoRedoButtons();
             currentMeds.remove(medCurrent);
             currentUser.removeCurrentMedication(medCurrent);
-            Log.info("Successfully deleted current medication: " + medCurrent + " for User NHI: " + currentUser.getNhi());
+            Log.info("Successfully deleted current medication: " + medCurrent + FOR_USER_NHI + currentUser.getNhi());
         } else {
-            Log.warning("Unable to delete current medication : " + medCurrent + " for User NHI: " + currentUser.getNhi() + " because it is empty");
+            Log.warning("Unable to delete current medication : " + medCurrent + FOR_USER_NHI + currentUser.getNhi() + " because it is empty");
         }
 
         if (medPrevious != null) {
@@ -249,9 +251,9 @@ public class MedicationTabController {
             parent.updateUndoRedoButtons();
             previousMeds.remove(medPrevious);
             currentUser.removePreviousMedication(medPrevious);
-            Log.info("Successfully deleted previous medication: " + previousMeds + " for User NHI: " + currentUser.getNhi());
+            Log.info("Successfully deleted previous medication: " + previousMeds + FOR_USER_NHI + currentUser.getNhi());
         } else {
-            Log.warning("Unable to delete previous medication: " + previousMeds + " for User NHI: " + currentUser.getNhi() + " because it is empty");
+            Log.warning("Unable to delete previous medication: " + previousMeds + FOR_USER_NHI + currentUser.getNhi() + " because it is empty");
         }
     }
 
@@ -262,7 +264,7 @@ public class MedicationTabController {
     void takeMedication() {
         String med = previousMedicationListView.getSelectionModel().getSelectedItem();
         if (med == null) {
-            Log.warning("Unable to take medication for User NHI: " + currentUser.getNhi() + " as it is empty");
+            Log.warning("Unable to take medication for User NHI: " + currentUser.getNhi() + AS_IT_IS_EMPTY);
             return;
         }
         currentUser.saveStateForUndo();
@@ -270,7 +272,7 @@ public class MedicationTabController {
         if (currentMeds.contains(med)) {
             currentUser.removePreviousMedication(med);
             previousMeds.remove(med);
-            Log.info("Successfully removed previous medication: " + med + " for User NHI: " + currentUser.getNhi());
+            Log.info("Successfully removed previous medication: " + med + FOR_USER_NHI + currentUser.getNhi());
             return;
         }
         currentMeds.add(med);
@@ -287,7 +289,7 @@ public class MedicationTabController {
     void untakeMedication() {
         String med = currentMedicationListView.getSelectionModel().getSelectedItem();
         if (med == null) {
-            Log.warning("Unable to un-take medication for User NHI: " + currentUser.getNhi() + " as it is empty");
+            Log.warning("Unable to un-take medication for User NHI: " + currentUser.getNhi() + AS_IT_IS_EMPTY);
             return;
         }
         currentUser.saveStateForUndo();
@@ -295,7 +297,7 @@ public class MedicationTabController {
         if (previousMeds.contains(med)) {
             currentUser.removeCurrentMedication(med);
             currentMeds.remove(med);
-            Log.info("Successfully un-take previous medication: " + med + " for User NHI: " + currentUser.getNhi());
+            Log.info("Successfully un-take previous medication: " + med + FOR_USER_NHI + currentUser.getNhi());
             return;
         }
         currentUser.removeCurrentMedication(med);

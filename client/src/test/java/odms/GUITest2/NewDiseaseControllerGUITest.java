@@ -199,10 +199,10 @@ public class NewDiseaseControllerGUITest extends ApplicationTest {
     @Test @Ignore
     public void generalUserShouldNotBeAbleToEditDiseases() {
         clickOn("#userProfileTab");
-        //clickOn("#logOutButton");
-        clickOn("#backButton");
-        clickOn("#detailsTab");
-        clickOn("#logoutButton");
+        clickOn("#fileMenuUser");
+        clickOn("#logoutUser");
+        clickOn("#fileMenuClinician");
+        clickOn("#logoutMenuClinician");
         clickOn("#userIDTextField");
         write("ABC1244", 0);
         clickOn("#loginButton");

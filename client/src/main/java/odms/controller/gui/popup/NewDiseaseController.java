@@ -6,12 +6,12 @@ import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-import odms.controller.AppController;
-import odms.controller.gui.window.UserController;
 import odms.commons.model.Disease;
 import odms.commons.model.User;
 import odms.commons.utils.AttributeValidation;
 import odms.commons.utils.Log;
+import odms.controller.AppController;
+import odms.controller.gui.window.UserController;
 
 import java.time.LocalDate;
 
@@ -77,8 +77,6 @@ public class NewDiseaseController {
      */
     @FXML
     void cancelCreation() {
-        AppController appController = AppController.getInstance();
-        UserController userController = appController.getUserController();
         try {
             userController.showUser(currentUser);
             Log.info("successfully cancelled creation of new disease for User NHI: " + currentUser.getNhi());
@@ -96,15 +94,13 @@ public class NewDiseaseController {
      * and show door's updated info.
      */
     private void closeNewDiseaseWindow() {
-        AppController appController = AppController.getInstance();
-        UserController userController = appController.getUserController();
         try {
             userController.showUser(currentUser);
             //userController.showDonorDiseases(currentUser, false); //Pointless
             Log.info("successfully closed New Disease Window for User NHI: " + currentUser.getNhi());
         } catch (NullPointerException ex) {
             Log.severe("Failed to close New Disease Window for User NHI: " + currentUser.getNhi(), ex);
-            //TODO causes npe if donor is new in this session
+
             //the text fields etc. are all null
         }
         this.controller.update(currentUser);

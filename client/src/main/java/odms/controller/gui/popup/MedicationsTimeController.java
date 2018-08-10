@@ -10,6 +10,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import odms.commons.model.User;
 import odms.commons.model.datamodel.MedicationDurations;
+import odms.commons.utils.Log;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -65,10 +66,10 @@ public class MedicationsTimeController {
             previous = new ArrayList<>();
         }
         if (current.size() > 1) {
-            System.out.println("Somehow the medicine wasn't stopped before starting again");// TODO: fix this properly
+            Log.info("Somehow the medicine wasn't stopped before starting again");
         }
         if (previous.size() > current.size()) {
-            System.out.println("Somehow we have stopped taking this medicine more times than we took it"); //TODO: fix this properly
+            Log.info("Somehow we have stopped taking this medicine more times than we took it");
         }
         if (previous.size() == current.size()) {
             for (int i = 0; i < previous.size(); i++) {
