@@ -204,14 +204,12 @@ public class WhenSteps extends ApplicationTest {
 
     @When("^I go back to the clinician screen$")
     public void iGoBackToTheClinicianScreen() {
-        //StageHelper.getStages();
-
-        try {
-            clickOn("#cancelDeathDetailsUpdateButton");
-        } catch (Exception e) {
-            Log.info("I ACTIVATED ________---------__________---------___________-----------__________------------_____________!!!!!!!!!!!");
+//        try {
+//            clickOn("#cancelDeathDetailsUpdateButton");
+//        } catch (Exception e) {
+//            Log.info("I ACTIVATED ________---------__________---------___________-----------__________------------_____________!!!!!!!!!!!");
             //Blocks unstable behaviour
-        }
+//        }
         clickOn("#userProfileTab");
         clickOn("#fileMenuUser");
         clickOn("#logoutUser");
