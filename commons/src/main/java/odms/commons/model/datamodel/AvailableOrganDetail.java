@@ -14,6 +14,7 @@ public class AvailableOrganDetail {
     private String region;
     private String bloodType;
     private transient Service progressTask;
+    private transient ExpiryReason expiryReason;
 
     public AvailableOrganDetail(Organs organ, String nhi, LocalDateTime momentOfDeath, String region, String bloodType) {
         this.organ = organ;
@@ -102,5 +103,9 @@ public class AvailableOrganDetail {
 
     public Service getProgressTask() {
         return progressTask;
+    }
+
+    public void setExpiryReason(ExpiryReason reason) {
+        expiryReason = reason;
     }
 }
