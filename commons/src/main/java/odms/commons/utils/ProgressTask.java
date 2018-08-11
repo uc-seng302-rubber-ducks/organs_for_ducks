@@ -70,9 +70,9 @@ public class ProgressTask extends Task<Void> {
     }
 
     private String getTimeRemaining() {
-        int hours = (int) (getProgress() * organ.getStorageHours() / 3600);
-        int mins = (int) (getProgress() * organ.getStorageHours() / 60) - hours * 60;
-        int seconds = (int) (getProgress() * organ.getStorageHours()) - hours * 3600 - mins * 60;
+        int hours = (int) (getProgress() * organ.getStorageSeconds() / 3600);
+        int mins = (int) (getProgress() * organ.getStorageSeconds() / 60) - hours * 60;
+        int seconds = (int) (getProgress() * organ.getStorageSeconds()) - hours * 3600 - mins * 60;
         return String.format("%d h %d m %d s remaining", hours, mins, seconds);
     }
 
