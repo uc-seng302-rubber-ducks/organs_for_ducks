@@ -767,7 +767,6 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
 
         Timestamp sqlDeathMoment = null;
         LocalDateTime deathMoment = user.getDeathDetails().createMomentOfDeath(user.getDateOfDeath(), user.getTimeOfDeath());
-        System.out.print(deathMoment + "(Line 767 UserUpdateStrategy)");
         if (deathMoment != null) {
             sqlDeathMoment = java.sql.Timestamp.valueOf(deathMoment);
         }

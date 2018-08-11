@@ -15,6 +15,7 @@ import odms.controller.gui.window.ClinicianController;
 import org.junit.*;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
+import org.testfx.matcher.control.ComboBoxMatchers;
 import org.testfx.matcher.control.LabeledMatchers;
 import org.testfx.matcher.control.TextInputControlMatchers;
 
@@ -120,7 +121,7 @@ public class UpdateClinicianControllerGUITest extends ApplicationTest {
         verifyThat("#middleNameTextField", TextInputControlMatchers.hasText("Ali"));
         verifyThat("#lastNameTextField", TextInputControlMatchers.hasText("Al"));
         verifyThat("#streetNameTextField", TextInputControlMatchers.hasText("Kirkwood Ave"));
-        verifyThat("#regionTextField", TextInputControlMatchers.hasText("Canterbury"));
+        verifyThat("#regionSelector", ComboBoxMatchers.hasSelectedItem("Canterbury"));
         clickOn("#cancelButton");
     }
 

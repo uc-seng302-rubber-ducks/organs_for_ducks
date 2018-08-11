@@ -1,5 +1,6 @@
 package odms.controller.gui.panel.logic;
 
+import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import odms.commons.model.datamodel.AvailableOrganDetail;
 import odms.controller.AppController;
@@ -17,6 +18,7 @@ public class AvailableOrgansLogicController {
     }
 
     public void search(int startIndex, String organ, String region) {
+        shutdownThreads();
         availableOrganDetails.clear();
         this.organ = organ;
         this.region = region;
@@ -44,7 +46,10 @@ public class AvailableOrgansLogicController {
         search(startingIndex, organ, region);
     }
 
-    public void shutdownThreads() {
+    public synchronized void shutdownThreads() {
+        if (!Platform.isFxApplicationThread()) {
+            return;
+        }
         for (AvailableOrganDetail detail : availableOrganDetails) {
             detail.getProgressTask().cancel();
         }

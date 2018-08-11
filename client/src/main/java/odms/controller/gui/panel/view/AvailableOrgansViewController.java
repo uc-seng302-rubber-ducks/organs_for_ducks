@@ -5,7 +5,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.util.Duration;
@@ -61,12 +60,8 @@ public class AvailableOrgansViewController {
         availableOrganFilterComboBox.setItems(organs);
         availableOrganDetails.addListener((ListChangeListener<? super AvailableOrganDetail>) observable -> populateTables());
         regionFilterTextField.setOnKeyPressed(event -> {
-            availableOrganDetails.add(new AvailableOrganDetail(Organs.LIVER, "", LocalDateTime.now(), "", ""));
-            if (event.isControlDown()) {
-                availableOrganDetails.clear();
-            }
-//            pause.setOnFinished(e -> search());
-//            pause.playFromStart();
+            pause.setOnFinished(e -> search());
+            pause.playFromStart();
         });
         initAvailableOrgansTableView();
     }
@@ -75,7 +70,7 @@ public class AvailableOrgansViewController {
      * Binds each column of the available organs table to particular fields contained
      * within the AvailableOrganDetail class
      */
-    private void initAvailableOrgansTableView() {
+    public void initAvailableOrgansTableView() {
         nhiColumn.setCellValueFactory(new PropertyValueFactory<>("donorNhi"));
         regionColumn.setCellValueFactory(new PropertyValueFactory<>("region"));
         organColumn.setCellValueFactory(new PropertyValueFactory<>("organ"));
@@ -85,10 +80,11 @@ public class AvailableOrgansViewController {
         // figure out how to do progress bars
         search();
         populateTables();
+        availableOrgansTableView.setItems(availableOrganDetails);
     }
 
     @FXML
-    private void search() {
+    public void search() {
         logicController.search(0, availableOrganFilterComboBox.getValue(), regionFilterTextField.getText());
     }
 
@@ -103,8 +99,6 @@ public class AvailableOrgansViewController {
     }
 
     public void populateTables() {
-        availableOrgansTableView.setItems(availableOrganDetails);
-
         setOnClickBehaviour();
     }
 

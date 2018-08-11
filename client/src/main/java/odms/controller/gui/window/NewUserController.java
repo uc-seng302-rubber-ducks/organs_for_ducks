@@ -118,6 +118,7 @@ public class NewUserController {
 
     //</editor-fold>
     private Stage ownStage;
+    private String defaultCountry = "New Zealand";
 
     /**
      * Initializes the NewUserController
@@ -132,8 +133,11 @@ public class NewUserController {
 
         countrySelector.setItems(FXCollections.observableList(controller.getAllowedCountries()));
         ecCountrySelector.setItems(FXCollections.observableList(controller.getAllowedCountries()));
-        countrySelector.setValue("");
-        ecCountrySelector.setValue("");
+        if (!controller.getAllowedCountries().isEmpty() && !controller.getAllowedCountries().contains(defaultCountry)) {
+            defaultCountry = controller.getAllowedCountries().get(0);
+        }
+        countrySelector.setValue(defaultCountry);
+        ecCountrySelector.setValue(defaultCountry);
         for (Regions regions : Regions.values()) {
             regionSelector.getItems().add(regions.toString());
             ecRegionSelector.getItems().add(regions.toString());
@@ -154,7 +158,7 @@ public class NewUserController {
      */
     @FXML
     private void countrySelectorListener(ActionEvent event) {
-        controller.countrySelectorEventHandler(countrySelector, regionSelector, regionInput);
+        controller.countrySelectorEventHandler(countrySelector, regionSelector, regionInput, null, null);
     }
 
     /**
@@ -167,8 +171,8 @@ public class NewUserController {
      * @param event from GUI
      */
     @FXML
-    private void ecCountrySelectorListener(ActionEvent event) {
-        controller.countrySelectorEventHandler(ecCountrySelector, ecRegionSelector, ecRegionInput);
+    private void ecCountrySelectorListener(ActionEvent event){
+        controller.countrySelectorEventHandler(ecCountrySelector, ecRegionSelector, ecRegionInput, null, null);
     }
 
     /**

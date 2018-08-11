@@ -9,7 +9,7 @@ import com.google.gson.annotations.SerializedName;
 public enum Organs {
 
     @SerializedName("Liver")
-    LIVER("Liver", 1, 0.01),
+    LIVER("Liver", 1, 0.05),
     @SerializedName("Kidney")
     KIDNEY("Kidney", 2, 72),
     @SerializedName("Pancreas")

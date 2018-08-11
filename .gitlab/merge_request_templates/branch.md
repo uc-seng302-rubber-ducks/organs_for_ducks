@@ -12,5 +12,5 @@ continued
 * Javadoc
 * Each feature MUST have a test
 * Each feature MUST meet the related ACs
-* Tests must confirm to the testing schema
+* Tests must conform to the testing schema
 * jar builds with maven commands (not intellij)
