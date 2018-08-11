@@ -43,18 +43,34 @@ public class ProgressTask extends Task<Void> {
         String green;
         String red;
         System.out.println(progress);
+        int colourNum;
         // more red as it is closer to expiring
-        green = Integer.toHexString((int) Math.round((progress) * 255));
-        if (green.length() == 1) {
-            green = "0" + green;
-        }
-        // more green as you there is more time
-        red = Integer.toHexString((int) Math.round((progress) * 255));
-        if (red.length() == 1) {
-            red = "0" + red;
+        if (progress < 0.5) {
+            colourNum = (int) Math.round(((progress) * 255));
+            green = Integer.toHexString(colourNum);
+            System.out.println(green);
+            if (green.length() == 1) {
+                green = "0" + green;
+            }
+
+            red = "ff";
+        } else {
+            System.out.println("whyyyyyyy");
+            // more green as you there is more time
+            colourNum = (int) Math.round(((1 - progress) * 2) * 255);
+            red = Integer.toHexString(colourNum);
+            if (red.length() == 1) {
+                red = "0" + red;
+            }
+            green = "ff";
         }
 
+
         String colour = "#" + red + green + "00";
+        if (progress == 0.5) {
+            System.out.println(colour + "hi");
+        }
+        System.out.println(colour);
 
         return "-fx-accent: " + colour;
     }
