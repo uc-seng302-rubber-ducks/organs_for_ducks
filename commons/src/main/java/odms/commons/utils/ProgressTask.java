@@ -30,7 +30,6 @@ public class ProgressTask extends Task<Void> {
         this.updateProgress(1, 1);
 
         for (int i = this.startTime; i < time; i++) {
-            System.out.println("task running");
             updateProgress(((time - i) / time), 1);
             bar.setStyle(getColorStyle(((time - i) / time)));
             Thread.sleep(1000);
