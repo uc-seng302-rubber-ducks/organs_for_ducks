@@ -70,7 +70,7 @@ public class AvailableOrgansViewController {
      * Binds each column of the available organs table to particular fields contained
      * within the AvailableOrganDetail class
      */
-    public void initAvailableOrgansTableView() {
+    private void initAvailableOrgansTableView() {
         nhiColumn.setCellValueFactory(new PropertyValueFactory<>("donorNhi"));
         regionColumn.setCellValueFactory(new PropertyValueFactory<>("region"));
         organColumn.setCellValueFactory(new PropertyValueFactory<>("organ"));
@@ -98,7 +98,7 @@ public class AvailableOrgansViewController {
         logicController.goNextPage();
     }
 
-    public void populateTables() {
+    private void populateTables() {
         setOnClickBehaviour();
     }
 
