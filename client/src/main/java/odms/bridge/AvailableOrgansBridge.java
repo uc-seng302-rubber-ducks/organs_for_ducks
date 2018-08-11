@@ -53,6 +53,9 @@ public class AvailableOrgansBridge extends Bifrost {
                 }
 
                 List<AvailableOrganDetail> availableOrgansDetails = handler.decodeAvailableOrgansList(response);
+                for (AvailableOrganDetail detail : availableOrgansDetails) {
+                    detail.generateProgressTask();
+                }
                 observableList.addAll(availableOrgansDetails);
             }
         });

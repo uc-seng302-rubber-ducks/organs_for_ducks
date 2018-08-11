@@ -63,17 +63,13 @@ public class AvailableOrgansViewController {
         availableOrganFilterComboBox.setItems(organs);
         availableOrganDetails.addListener((ListChangeListener<? super AvailableOrganDetail>) observable -> populateTables());
         regionFilterTextField.setOnKeyPressed(event -> {
-            availableOrganDetails.add(new AvailableOrganDetail(Organs.LIVER, "", LocalDateTime.now(), "", ""));
-            if (event.isControlDown()) {
-                availableOrganDetails.clear();
-            }
-//            pause.setOnFinished(e -> search());
-//            pause.playFromStart();
+            pause.setOnFinished(e -> search());
+            pause.playFromStart();
         });
         initAvailableOrgansTableView();
     }
 
-    private void initAvailableOrgansTableView() {
+    public void initAvailableOrgansTableView() {
         nhiColumn.setCellValueFactory(new PropertyValueFactory<>("donorNhi"));
         regionColumn.setCellValueFactory(new PropertyValueFactory<>("region"));
         organColumn.setCellValueFactory(new PropertyValueFactory<>("organ"));
@@ -83,11 +79,12 @@ public class AvailableOrgansViewController {
         // figure out how to do progress bars
         search();
         populateTables();
+        availableOrgansTableView.setItems(availableOrganDetails);
     }
 
 
     @FXML
-    private void search() {
+    public void search() {
         logicController.search(0, availableOrganFilterComboBox.getValue(), regionFilterTextField.getText());
     }
 
@@ -102,8 +99,6 @@ public class AvailableOrgansViewController {
     }
 
     public void populateTables() {
-        availableOrgansTableView.setItems(availableOrganDetails);
-
         setOnClickBehaviour();
     }
 
