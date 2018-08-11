@@ -30,9 +30,9 @@ public class ProgressTask extends Task<Void> {
         this.updateProgress(1, 1);
 
         for (int i = this.startTime; i < time; i++) {
+            System.out.println("task running");
             updateProgress(((time - i) / time), 1);
             bar.setStyle(getColorStyle(((time - i) / time)));
-            updateMessage(getTimeRemaining());
             Thread.sleep(1000);
         }
         this.updateProgress(0, 1);
@@ -43,20 +43,17 @@ public class ProgressTask extends Task<Void> {
         // this doesn't work yet =/
         String green;
         String red;
-        System.out.println(progress);
         int colourNum;
         // more red as it is closer to expiring
         if (progress < 0.5) {
-            colourNum = (int) Math.round(((progress) * 255));
+            colourNum = (int) Math.round(((progress * 2) * 255));
             green = Integer.toHexString(colourNum);
-            System.out.println(green);
             if (green.length() == 1) {
                 green = "0" + green;
             }
 
             red = "ff";
         } else {
-            System.out.println("whyyyyyyy");
             // more green as you there is more time
             colourNum = (int) Math.round(((1 - progress) * 2) * 255);
             red = Integer.toHexString(colourNum);
@@ -68,10 +65,6 @@ public class ProgressTask extends Task<Void> {
 
 
         String colour = "#" + red + green + "00";
-        if (progress == 0.5) {
-            System.out.println(colour + "hi");
-        }
-        System.out.println(colour);
 
         return "-fx-accent: " + colour;
     }
