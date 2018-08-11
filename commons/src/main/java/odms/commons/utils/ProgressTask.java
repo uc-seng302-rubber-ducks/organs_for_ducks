@@ -32,6 +32,7 @@ public class ProgressTask extends Task<Void> {
         for (int i = this.startTime; i < time; i++) {
             updateProgress(((time - i) / time), 1);
             bar.setStyle(getColorStyle(((time - i) / time)));
+            updateMessage(getTimeRemaining());
             Thread.sleep(1000);
         }
         this.updateProgress(0, 1);
@@ -73,6 +74,13 @@ public class ProgressTask extends Task<Void> {
         System.out.println(colour);
 
         return "-fx-accent: " + colour;
+    }
+
+    private String getTimeRemaining() {
+        int hours = (int) (getProgress() * organ.getStorageHours() / 3600);
+        int mins = (int) (getProgress() * organ.getStorageHours() / 60) - hours * 60;
+        int seconds = (int) (getProgress() * organ.getStorageHours()) - hours * 3600 - mins * 60;
+        return String.format("%d h %d m %d s remaining", hours, mins, seconds);
     }
 
     public void setProgressBar(ProgressBar progressBar) {
