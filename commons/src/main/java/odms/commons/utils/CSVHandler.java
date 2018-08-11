@@ -5,6 +5,7 @@ import odms.commons.model.Administrator;
 import odms.commons.model.Clinician;
 import odms.commons.model.EmergencyContact;
 import odms.commons.model.User;
+import odms.commons.model._enum.CountryCode;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
@@ -63,7 +64,7 @@ public class CSVHandler extends DataHandler {
             try {
                 u.setDateOfBirth(LocalDate.parse(record.get(3), dtf));
                 if (!record.get(4).equals("")) {
-                    //TODO: Make this a LocalDateTime when Time of death is added
+                    //TODO: Add a u.setTimeOfDeath and extract a LocalTime from record.get(4). (Needs deathDetails branch)
                     //here it is assumed that a non-empty DOD column implies a valid DOD should exist
                     u.setDateOfDeath(LocalDate.parse(record.get(4), dtf));
                 }
@@ -84,8 +85,13 @@ public class CSVHandler extends DataHandler {
             u.setCity(record.get(13));
             u.setZipCode(record.get(15));
             u.setRegion(record.get(14));
-            u.setCountry(record.get(16));
-            u.setBirthCountry(record.get(17));
+            if (CountryCode.getEnums().contains(record.get(16))) {
+                u.setCountry(CountryCode.valueOf(record.get(16)).toString());
+            } //else do not set country (it was invalid)
+
+            if (CountryCode.getEnums().contains(record.get(17))) {
+                u.setBirthCountry(CountryCode.valueOf(record.get(17)).toString());
+            }
             u.setHomePhone(record.get(18));
             u.setCellPhone(record.get(19));
             u.setEmail(record.get(20));
