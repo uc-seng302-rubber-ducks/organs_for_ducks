@@ -7,8 +7,8 @@ import odms.commons.utils.JDBCDriver;
 import odms.exception.ServerDBException;
 import odms.security.IsClinician;
 import odms.utils.DBManager;
+import odms.utils.OrganRanker;
 import org.jline.utils.Log;
-import org.springframework.data.util.Pair;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 @OdmsController
 public class OrgansController extends BaseController {
@@ -31,15 +32,15 @@ public class OrgansController extends BaseController {
     }
 
     @IsClinician
-    @RequestMapping(method = RequestMethod.GET, value="/availableOrgans")
+    @RequestMapping(method = RequestMethod.GET, value = "/availableOrgans")
     public List<AvailableOrganDetail> getAvailableOrgans(@RequestParam(value = "startIndex") int startIndex,
-                                                         @RequestParam(value = "count" ) int count,
-                                                         @RequestParam(value = "organ", defaultValue = "",required = false) String organ,
+                                                         @RequestParam(value = "count") int count,
+                                                         @RequestParam(value = "organ", defaultValue = "", required = false) String organ,
                                                          @RequestParam(value = "region", defaultValue = "", required = false) String region,
-                                                         @RequestParam(value = "bloodType", defaultValue = "",required = false) String bloodType,
-                                                         @RequestParam(value = "city", defaultValue = "",required = false) String city,
-                                                         @RequestParam(value = "country",defaultValue = "", required = false) String country){
-        try(Connection connection = driver.getConnection()){
+                                                         @RequestParam(value = "bloodType", defaultValue = "", required = false) String bloodType,
+                                                         @RequestParam(value = "city", defaultValue = "", required = false) String city,
+                                                         @RequestParam(value = "country", defaultValue = "", required = false) String country) {
+        try (Connection connection = driver.getConnection()) {
             Log.info("Getting all available organs");
             return handler.getAvailableOrgans(startIndex, count, organ, region, bloodType, city, country, connection);
         } catch (SQLException e) {
@@ -49,16 +50,21 @@ public class OrgansController extends BaseController {
     }
 
     @IsClinician
-    @RequestMapping(method = RequestMethod.GET, value="/matchingOrgans")
-    public List<TransplantDetails> getMatchingOrgans(@RequestParam(value = "organ") String organ,
-                                                     @RequestParam(value = "bloodType") String bloodType,
-                                                     @RequestParam(value = "city", defaultValue = "", required = false) String city,
-                                                     @RequestParam(value = "region") String region,
-                                                     @RequestParam(value = "country") String country){
-        try(Connection connection = driver.getConnection()){
+    @RequestMapping(method = RequestMethod.GET, value = "/matchingOrgans")
+    public Map<AvailableOrganDetail, TransplantDetails> getMatchingOrgans(@RequestParam(value = "organ", defaultValue = "", required = false) String organ,
+                                                                          @RequestParam(value = "bloodType", defaultValue = "", required = false) String bloodType,
+                                                                          @RequestParam(value = "city", defaultValue = "", required = false) String city,
+                                                                          @RequestParam(value = "region", defaultValue = "", required = false) String region,
+                                                                          @RequestParam(value = "country", defaultValue = "", required = false) String country) {
+        try (Connection connection = driver.getConnection()) {
             Log.info("Getting all matching organs");
-//            return handler.; //TODO: lik to db handler once implemented
-            return null;
+            String[] organs = {organ};
+
+            List<AvailableOrganDetail> availableOrganDetails = handler.getAvailableOrgans(0, Integer.MAX_VALUE, organ, region, bloodType, city, country, connection);
+            List<TransplantDetails> transplantDetails = handler.getTransplantDetails(connection, 0, Integer.MAX_VALUE, "", region, organs);
+            OrganRanker organRanker = new OrganRanker();
+            return organRanker.matchOrgansToReceivers(availableOrganDetails, transplantDetails);
+
         } catch (SQLException e) {
             Log.error("Unable to retrieve matching organs from Db", e);
             throw new ServerDBException(e);
