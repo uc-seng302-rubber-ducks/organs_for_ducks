@@ -17,6 +17,7 @@ public class AvailableOrgansLogicController {
     }
 
     public void search(int startIndex, String organ, String region) {
+        shutdownThreads();
         availableOrganDetails.clear();
         this.organ = organ;
         this.region = region;
