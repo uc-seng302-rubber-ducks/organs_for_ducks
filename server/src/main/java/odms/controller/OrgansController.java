@@ -51,7 +51,7 @@ public class OrgansController extends BaseController {
 
     @IsClinician
     @RequestMapping(method = RequestMethod.GET, value = "/matchingOrgans")
-    public Map<AvailableOrganDetail, TransplantDetails> getMatchingOrgans(@RequestParam(value = "organ", defaultValue = "", required = false) String organ,
+    public Map<AvailableOrganDetail, List<TransplantDetails>> getMatchingOrgans(@RequestParam(value = "organ", defaultValue = "", required = false) String organ,
                                                                           @RequestParam(value = "bloodType", defaultValue = "", required = false) String bloodType,
                                                                           @RequestParam(value = "city", defaultValue = "", required = false) String city,
                                                                           @RequestParam(value = "region", defaultValue = "", required = false) String region,
