@@ -4,16 +4,17 @@ import javafx.animation.PauseTransition;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
-import javafx.concurrent.Service;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.util.Duration;
 import odms.commons.model._abstract.UserLauncher;
 import odms.commons.model._enum.Organs;
 import odms.commons.model.datamodel.AvailableOrganDetail;
-import odms.commons.utils.ProgressBarHelper;
+import odms.commons.utils.ProgressBarService;
 import odms.controller.gui.panel.logic.AvailableOrgansLogicController;
+import odms.controller.gui.widget.ProgressBarTableCellFactory;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -42,7 +43,7 @@ public class AvailableOrgansViewController {
     private TableColumn<AvailableOrganDetail, LocalDateTime> deathMomentColumn;
 
     @FXML
-    private TableColumn<AvailableOrganDetail, Service> progressBarColumn;
+    private TableColumn<AvailableOrganDetail, ProgressBarService> progressBarColumn;
 
 
     private ObservableList<AvailableOrganDetail> availableOrganDetails = FXCollections.observableList(new ArrayList<>());
@@ -61,6 +62,9 @@ public class AvailableOrgansViewController {
         availableOrganDetails.addListener((ListChangeListener<? super AvailableOrganDetail>) observable -> populateTables());
         regionFilterTextField.setOnKeyPressed(event -> {
             availableOrganDetails.add(new AvailableOrganDetail(Organs.LIVER, "", LocalDateTime.now(), "", ""));
+            if (event.isControlDown()) {
+                availableOrganDetails.clear();
+            }
 //            pause.setOnFinished(e -> search());
 //            pause.playFromStart();
         });
@@ -77,7 +81,8 @@ public class AvailableOrgansViewController {
         organColumn.setCellValueFactory(new PropertyValueFactory<>("organ"));
         deathMomentColumn.setCellValueFactory(new PropertyValueFactory<>("momentOfDeath"));
         progressBarColumn.setCellValueFactory(new PropertyValueFactory<>("progressTask"));
-        progressBarColumn.setCellFactory(callback -> ProgressBarHelper.generateProgressBar(progressBarColumn));
+        progressBarColumn.setCellFactory(callback -> ProgressBarTableCellFactory.generateCell(progressBarColumn));
+        // figure out how to do progress bars
         search();
         populateTables();
     }
