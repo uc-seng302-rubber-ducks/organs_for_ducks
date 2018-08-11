@@ -1,9 +1,8 @@
 package odms.commons.model.datamodel;
 
 import javafx.concurrent.Service;
-import javafx.concurrent.Task;
 import odms.commons.model._enum.Organs;
-import odms.commons.utils.ProgressTask;
+import odms.commons.utils.ProgressBarService;
 
 import java.time.LocalDateTime;
 
@@ -13,7 +12,7 @@ public class AvailableOrganDetail {
     private LocalDateTime momentOfDeath;
     private String region;
     private String bloodType;
-    private transient Service progressTask;
+    private transient ProgressBarService progressTask;
 
     public AvailableOrganDetail(Organs organ, String nhi, LocalDateTime momentOfDeath, String region, String bloodType) {
         this.organ = organ;
@@ -21,26 +20,7 @@ public class AvailableOrganDetail {
         this.momentOfDeath = momentOfDeath;
         this.region = region;
         this.bloodType = bloodType;
-        this.progressTask = new Service() {
-            @Override
-            protected Task createTask() {
-                return new ProgressTask(momentOfDeath, organ);
-            }
-        };
-    }
-
-    public AvailableOrganDetail() {
-        this.donorNhi = "";
-        this.momentOfDeath = null;
-        this.organ = null;
-        this.region = "";
-        this.bloodType = "";
-        this.progressTask = new Service() {
-            @Override
-            protected Task createTask() {
-                return new ProgressTask(momentOfDeath, organ);
-            }
-        };
+        this.progressTask = new ProgressBarService(momentOfDeath, organ);
     }
 
     public Organs getOrgan() {

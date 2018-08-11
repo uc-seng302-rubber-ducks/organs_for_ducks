@@ -1147,12 +1147,11 @@ public class DBHandler {
             preparedStatement.setInt(7,startIndex);
             try(ResultSet resultSet = preparedStatement.executeQuery()){
                 while(resultSet.next()) {
-                    AvailableOrganDetail organDetail = new AvailableOrganDetail();
-                    organDetail.setDonorNhi(resultSet.getString("fkUserNhi"));
-                    organDetail.setBloodType(resultSet.getString("bloodType"));
-                    organDetail.setMomentOfDeath(resultSet.getTimestamp("momentOfDeath").toLocalDateTime());
-                    organDetail.setRegion(resultSet.getString("region"));
-                    organDetail.setOrgan(Organs.valueOf(resultSet.getString("organName")));
+                    AvailableOrganDetail organDetail = new AvailableOrganDetail(Organs.valueOf(resultSet.getString("organName")),
+                            resultSet.getString("fkUserNhi"),
+                            resultSet.getTimestamp("momentOfDeath").toLocalDateTime(),
+                            resultSet.getString("region"),
+                            resultSet.getString("bloodType"));
                     if (organDetail.isOrganStillValid()) {
                         results.add(organDetail);
                     }
