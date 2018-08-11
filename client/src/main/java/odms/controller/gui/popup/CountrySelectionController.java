@@ -12,7 +12,8 @@ import odms.controller.gui.widget.TextStringCheckBox;
 
 import java.util.ArrayList;
 import java.util.List;
-
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class CountrySelectionController {
 
@@ -95,5 +96,42 @@ public class CountrySelectionController {
         }
         selectDeselectCountries.setSelected(false);
         selectAll = false;
+    }
+
+    /**
+     * gets the country names based on the search query and re-populates the table.
+     * This method ges fired on key release from search text field.
+     */
+    @FXML
+    void getDesiredCountries(){
+        String query = searchCountry.getText();
+        countrySelection.setItems(FXCollections.observableList(countriesQuery(query)));
+    }
+
+    /**
+     * gets the country names based on the search query
+     * @param queryStr query string
+     * @return list of desired country names
+     */
+    private List<TextStringCheckBox> countriesQuery(String queryStr) {
+        List<TextStringCheckBox> desiredCountries = new ArrayList<>();
+        Pattern pattern = Pattern.compile(queryStr+".*", Pattern.CASE_INSENSITIVE);
+
+        for (String country : appController.getAllCountries()) {
+            Matcher matcher = pattern.matcher(country);
+            if (matcher.lookingAt()) {
+                TextStringCheckBox newCountry = new TextStringCheckBox(country);
+                newCountry.setSelected(appController.getAllowedCountries().contains(country));
+                newCountry.selectedProperty().addListener((observable, wasSelected, isNowSelected) -> {
+                    if (isNowSelected) {
+                        allowedCountries.add(country);
+                    } else if (wasSelected) {
+                        allowedCountries.remove(country);
+                    }
+                });
+                desiredCountries.add(newCountry);
+            }
+        }
+        return desiredCountries;
     }
 }
