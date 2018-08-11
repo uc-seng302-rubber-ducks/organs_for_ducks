@@ -88,6 +88,7 @@ public class UpdateDeathDetailsController {
             timeOfDeath = currentUser.getTimeOfDeath().toString();
         } else {
             timeOfDeath = LocalTime.now().getHour() + ":" + LocalTime.now().getMinute();
+            //timeOfDeath = "01:25";
         }
         updateDeathDetailsTimeTextField.setText(timeOfDeath);
         handleRegionPicker();

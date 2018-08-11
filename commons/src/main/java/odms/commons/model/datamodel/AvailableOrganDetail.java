@@ -1,9 +1,10 @@
 package odms.commons.model.datamodel;
 
+import javafx.concurrent.Service;
 import odms.commons.model._enum.Organs;
+import odms.commons.utils.ProgressBarService;
 
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 
 public class AvailableOrganDetail {
     private Organs organ;
@@ -11,7 +12,7 @@ public class AvailableOrganDetail {
     private LocalDateTime momentOfDeath;
     private String region;
     private String bloodType;
-    private Double progress;
+    private transient ProgressBarService progressTask;
 
     public AvailableOrganDetail(Organs organ, String nhi, LocalDateTime momentOfDeath, String region, String bloodType) {
         this.organ = organ;
@@ -19,15 +20,7 @@ public class AvailableOrganDetail {
         this.momentOfDeath = momentOfDeath;
         this.region = region;
         this.bloodType = bloodType;
-        this.progress = (double) momentOfDeath.until(momentOfDeath.plusHours(organ.getStorageHours()), ChronoUnit.SECONDS);
-    }
-
-    public AvailableOrganDetail() {
-        this.donorNhi = "";
-        this.momentOfDeath = null;
-        this.organ = null;
-        this.region = "";
-        this.bloodType = "";
+        this.progressTask = new ProgressBarService(momentOfDeath, organ);
     }
 
     public Organs getOrgan() {
@@ -79,19 +72,15 @@ public class AvailableOrganDetail {
      * @return trtue if valid; false if not
      */
     public boolean isOrganStillValid(LocalDateTime timeToaskabout){
-        int hoursOrganIsViable = organ.getStorageHours();
-        return (timeToaskabout.isBefore(momentOfDeath.plusHours(hoursOrganIsViable)));
+        double hoursOrganIsViable = organ.getStorageHours();
+        return (timeToaskabout.isBefore(momentOfDeath.plusHours((long) hoursOrganIsViable)));
     }
 
     public boolean isOrganStillValid(){
         return isOrganStillValid(LocalDateTime.now());
     }
 
-    public double getProgress() {
-        return progress;
-    }
-
-    public void setProgress(double progress) {
-        this.progress = progress;
+    public Service getProgressTask() {
+        return progressTask;
     }
 }

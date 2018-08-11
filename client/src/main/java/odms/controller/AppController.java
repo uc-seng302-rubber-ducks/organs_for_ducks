@@ -70,7 +70,6 @@ public class AppController {
     private String token;
     private SQLBridge sqlBridge = new SQLBridge(client);
     private OdmsSocketHandler socketHandler = new OdmsSocketHandler(client, ServerEventNotifier.getInstance());
-
     /**
      * Creates new instance of AppController
      */
@@ -109,6 +108,7 @@ public class AppController {
     public TransplantBridge getTransplantBridge() {
         return transplantBridge;
     }
+
     /**
      * If New Zealand is selected at the country combo box, the region combo box will appear.
      * If country other than New Zealand is selected at the country combo box, the region combo box will
@@ -119,16 +119,30 @@ public class AppController {
      * @param regionSelector Combo Box
      * @param regionInput Text Field
      */
-    public void countrySelectorEventHandler(ComboBox countrySelector, ComboBox regionSelector, TextField regionInput){
+    public void countrySelectorEventHandler(ComboBox countrySelector, ComboBox regionSelector, TextField regionInput, User user, Clinician clinician) {
         if(! countrySelector.getSelectionModel().getSelectedItem().equals("New Zealand")) {
             regionSelector.setVisible(false);
             regionInput.setVisible(true);
-            //TODO: if the following line is removed, update javadoc of this method and all its callers. -14 july
-            regionInput.clear(); //TODO: redo stack for region is cleared when region input is cleared. try undo redo when selecting nz as country and selecting other countries + selecting/entering region. -14 july
+
+            regionInput.clear();
 
         } else {
+            if (!regionInput.getText().isEmpty()) {
+
+                if (user != null) {
+                    if (countrySelector.getId().equals("ecCountrySelector")) {
+                        user.setECRegionNoUndo("");
+                    } else {
+                        user.setRegionNoUndo("");
+                    }
+                    regionInput.setText("");
+                } else {
+                    clinician.setRegionNoUndo("");
+                    regionInput.setText("");
+                }
+            }
+
             regionSelector.setVisible(true);
-            regionSelector.setValue("");
             regionInput.setVisible(false);
         }
     }

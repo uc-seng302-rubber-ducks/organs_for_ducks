@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0"
+            prefWidth="396.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1">
+    <children>
+        <Label layoutX="62.0" layoutY="32.0" text="Expiration of available organ">
+            <font>
+                <Font name="System Bold" size="20.0"/>
+            </font>
+        </Label>
+        <Label layoutX="62.0" layoutY="83.0" text="Donor of organ:"/>
+        <Label layoutX="62.0" layoutY="122.0" text="Organ:"/>
+        <Label fx:id="expirationNhi" layoutX="198.0" layoutY="83.0" text="Label"/>
+        <Label fx:id="expirationOrgan" layoutX="198.0" layoutY="122.0" text="Label"/>
+        <TextArea fx:id="expirationReasonTextArea" layoutX="62.0" layoutY="186.0" prefHeight="147.0" prefWidth="272.0"/>
+        <Label layoutX="62.0" layoutY="161.0" text="Reason:"/>
+        <Button layoutX="305.0" layoutY="349.0" mnemonicParsing="false" onAction="#confirmExpiration" text="Confirm"/>
+        <Button layoutX="36.0" layoutY="349.0" mnemonicParsing="false" onAction="#cancelExpiration" text="Cancel"/>
+    </children>
+</AnchorPane>

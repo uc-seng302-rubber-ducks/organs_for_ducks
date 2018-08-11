@@ -170,8 +170,9 @@ public class ClinicianController implements PropertyChangeListener, UserLauncher
         searchCount = appController.getUserOverviews().size();
         initSearchTable();
         transplantWaitListTabPageController.init(appController, this);
-        statusBarPageController.init(appController);
+        statusBarPageController.init();
         availableOrgansViewController.init(this);
+
         if (clinician.getStaffId().equals("0")) {
             deleteClinician.setDisable(true);
         }
@@ -192,6 +193,8 @@ public class ClinicianController implements PropertyChangeListener, UserLauncher
             logoutMenuClinician.setOnAction(e -> logout());
         }
 
+        stage.setOnCloseRequest(e -> availableOrgansViewController.shutdownThreads());
+
         displayImage(profileImage, clinician.getProfilePhotoFilePath());
     }
 
@@ -202,6 +205,7 @@ public class ClinicianController implements PropertyChangeListener, UserLauncher
     private void goBack() {
         checkSave();
         stage.close();
+        availableOrgansViewController.shutdownThreads();
         Log.info("Successfully closed update user window for Clinician StaffID: " + clinician.getStaffId());
     }
 
@@ -465,6 +469,7 @@ public class ClinicianController implements PropertyChangeListener, UserLauncher
             newStage.setScene(new Scene(root));
             newStage.show();
             stage.close();
+            availableOrgansViewController.shutdownThreads();
             LoginController loginController = loader.getController();
             loginController.init(AppController.getInstance(), newStage);
             deleteTempDirectory();
@@ -581,6 +586,7 @@ public class ClinicianController implements PropertyChangeListener, UserLauncher
                 logout();
             } else {
                 stage.close();
+                availableOrgansViewController.shutdownThreads();
             }
         }
     }

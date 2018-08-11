@@ -12,6 +12,7 @@ import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.sql.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 
 public class DBHandler {
@@ -885,8 +886,9 @@ public class DBHandler {
      * @see TransplantDetails
      */
     public List<TransplantDetails> getTransplantDetails(Connection conn, int startIndex, int count, String name, String region, String[] organs) throws SQLException {
-        StringBuilder queryString = new StringBuilder("SELECT U.nhi, U.firstName, U.middleName, U.lastName, O.organName, Dates.dateRegistered, Q.region from OrganAwaiting JOIN Organ O ON OrganAwaiting.fkOrgansId = O.organId\n" +
+        StringBuilder queryString = new StringBuilder("SELECT U.nhi, U.firstName, U.middleName, U.lastName, O.organName, Dates.dateRegistered, Q.region, DD.momentOfDeath from OrganAwaiting JOIN Organ O ON OrganAwaiting.fkOrgansId = O.organId\n" +
                 "  LEFT JOIN User U ON OrganAwaiting.fkUserNhi = U.nhi\n" +
+                "  LEFT JOIN DeathDetails DD ON DD.fkUserNhi = U.nhi\n" +
                 "  LEFT JOIN  (SELECT Address.fkUserNhi, Address.region from Address JOIN ContactDetails Detail ON Address.fkContactId = Detail.contactId\n" +
                 "  WHERE Address.fkContactId NOT IN (SELECT EmergencyContactDetails.fkContactId FROM EmergencyContactDetails)) Q ON U.nhi = Q.fkUserNhi\n" +
                 "  LEFT JOIN OrganAwaitingDates Dates ON awaitingId = Dates.fkAwaitingId\n" +
@@ -915,17 +917,19 @@ public class DBHandler {
             List<TransplantDetails> detailsList = new ArrayList<>();
             try (ResultSet results = stmt.executeQuery()) {
                 while (results.next()) {
-                    String nameBuilder = results.getString(2) +
-                            " " +
-                            results.getString(3) +
-                            " " +
-                            results.getString(4);
-                    Organs selectedOrgan = Organs.valueOf(results.getString(5));
-                    LocalDate dateRegistered = results.getDate(6).toLocalDate();
-                    detailsList.add(new TransplantDetails(
-                            results.getString(1),
-                            nameBuilder,
-                            selectedOrgan, dateRegistered, results.getString(7)));
+                    if (results.getTimestamp(8) == null) {
+                        String nameBuilder = results.getString(2) +
+                                " " +
+                                results.getString(3) +
+                                " " +
+                                results.getString(4);
+                        Organs selectedOrgan = Organs.valueOf(results.getString(5));
+                        LocalDate dateRegistered = results.getDate(6).toLocalDate();
+                        detailsList.add(new TransplantDetails(
+                                results.getString(1),
+                                nameBuilder,
+                                selectedOrgan, dateRegistered, results.getString(7)));
+                    }
                 }
                 return detailsList;
             }
@@ -1147,12 +1151,11 @@ public class DBHandler {
             preparedStatement.setInt(7,startIndex);
             try(ResultSet resultSet = preparedStatement.executeQuery()){
                 while(resultSet.next()) {
-                    AvailableOrganDetail organDetail = new AvailableOrganDetail();
-                    organDetail.setDonorNhi(resultSet.getString("fkUserNhi"));
-                    organDetail.setBloodType(resultSet.getString("bloodType"));
-                    organDetail.setMomentOfDeath(resultSet.getTimestamp("momentOfDeath").toLocalDateTime());
-                    organDetail.setRegion(resultSet.getString("region"));
-                    organDetail.setOrgan(Organs.valueOf(resultSet.getString("organName")));
+                    AvailableOrganDetail organDetail = new AvailableOrganDetail(Organs.valueOf(resultSet.getString("organName")),
+                            resultSet.getString("fkUserNhi"),
+                            resultSet.getTimestamp("momentOfDeath").toLocalDateTime(),
+                            resultSet.getString("region"),
+                            resultSet.getString("bloodType"));
                     if (organDetail.isOrganStillValid()) {
                         results.add(organDetail);
                     }
