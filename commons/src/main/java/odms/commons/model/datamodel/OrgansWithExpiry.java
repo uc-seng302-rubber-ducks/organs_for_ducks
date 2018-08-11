@@ -6,7 +6,7 @@ import odms.commons.utils.ProgressBarService;
 import java.time.LocalDateTime;
 
 /**
- * Used to populate the donation table
+ * Used to populate progress bar
  */
 public class OrgansWithExpiry {
 
