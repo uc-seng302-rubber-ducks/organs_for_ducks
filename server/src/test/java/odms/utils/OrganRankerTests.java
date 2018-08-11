@@ -15,9 +15,9 @@ import java.util.Map;
 
 public class OrganRankerTests {
 
-    List<TransplantDetails> transplantsWaiting;
-    List<AvailableOrganDetail> availableOrganDetails;
-    OrganRanker organRanker;
+    private List<TransplantDetails> transplantsWaiting;
+    private List<AvailableOrganDetail> availableOrganDetails;
+    private OrganRanker organRanker;
 
     @Before
     public void setUp(){
@@ -30,19 +30,22 @@ public class OrganRankerTests {
     @Test
     public void testTransplantsReturnTwoMatches(){
         LocalDateTime time = LocalDateTime.of(2018, 9, 8, 14, 43);
-        availableOrganDetails.add(new AvailableOrganDetail(Organs.LIVER, "abc1234", time, "Otago", "A+" , 30));
-        availableOrganDetails.add(new AvailableOrganDetail(Organs.KIDNEY, "abc1234", time, "Otago", "A+" , 30));
+        AvailableOrganDetail availableOrgan1 = new AvailableOrganDetail(Organs.LIVER, "abc1234", time, "Otago", "A+", 30);
+        availableOrganDetails.add(availableOrgan1);
+        AvailableOrganDetail availableOrgan2 = new AvailableOrganDetail(Organs.KIDNEY, "abc1234", time, "Otago", "A+", 30);
+        availableOrganDetails.add(availableOrgan2);
 
 
+        TransplantDetails transplant1 = new TransplantDetails("abc1222", "", Organs.LIVER,
+                LocalDate.of(2018, 7, 7), "Otago", 30, "A+");
+        transplantsWaiting.add(transplant1);
+        TransplantDetails transplant2 = new TransplantDetails("abc1222", "", Organs.KIDNEY,
+                LocalDate.of(2018, 7, 7), "Otago", 30, "A+");
+        transplantsWaiting.add(transplant2);
 
-
-        transplantsWaiting.add(new TransplantDetails("abc1222", "", Organs.LIVER,
-                LocalDate.of(2018, 7,7), "Otago", 30  ,"A+"));
-        transplantsWaiting.add(new TransplantDetails("abc1222", "", Organs.KIDNEY,
-                LocalDate.of(2018, 7,7), "Otago", 30  ,"A+"));
-
-        Map<AvailableOrganDetail, TransplantDetails> results = organRanker.matchOrgansToReceivers(availableOrganDetails,transplantsWaiting);
-        Assert.assertTrue(results.keySet().size() == 2);
+        Map<AvailableOrganDetail, List<TransplantDetails>> results = organRanker.matchOrgansToReceivers(availableOrganDetails,transplantsWaiting);
+        Assert.assertEquals(transplant1, results.get(availableOrgan1).get(0));
+        Assert.assertEquals(transplant2, results.get(availableOrgan2).get(0));
     }
 
     @Test
@@ -57,13 +60,14 @@ public class OrganRankerTests {
         transplantsWaiting.add(new TransplantDetails("abc1222", "", Organs.KIDNEY,
                 LocalDate.of(2018, 7,7), "Canterbury", 30  ,"A+"));
 
-        Map<AvailableOrganDetail, TransplantDetails> results = organRanker.matchOrgansToReceivers(availableOrganDetails,transplantsWaiting);
-        Assert.assertTrue(results.keySet().size() == 0);
+        Map<AvailableOrganDetail, List<TransplantDetails>> results = organRanker.matchOrgansToReceivers(availableOrganDetails,transplantsWaiting);
+        Assert.assertTrue(results.get(results.keySet().iterator().next()).isEmpty());
+        Assert.assertTrue(results.get(results.keySet().iterator().next()).isEmpty());
     }
 
 
     @Test
-    public void testTransplantThatIsEarlierIsReturnedWhenSecond(){
+    public void testTransplantsHaveTwoReturnedFor2Valid(){
         LocalDateTime time = LocalDateTime.of(2018, 9, 8, 14, 43);
         AvailableOrganDetail e = new AvailableOrganDetail(Organs.KIDNEY, "abc1234", time, "Canterbury", "A+", 30);
         availableOrganDetails.add(e);
@@ -75,25 +79,8 @@ public class OrganRankerTests {
                 LocalDate.of(2018, 6,7), "Canterbury", 30  ,"A+");
         transplantsWaiting.add(shouldBe);
 
-        Map<AvailableOrganDetail, TransplantDetails> results = organRanker.matchOrgansToReceivers(availableOrganDetails,transplantsWaiting);
-        Assert.assertEquals(shouldBe, results.get(e));
-    }
-
-    @Test
-    public void testTransplantThatIsEarlierIsReturnedWhenFirst(){
-        LocalDateTime time = LocalDateTime.of(2018, 9, 8, 14, 43);
-        AvailableOrganDetail e = new AvailableOrganDetail(Organs.KIDNEY, "abc1234", time, "Canterbury", "A+", 30);
-        availableOrganDetails.add(e);
-
-
-        TransplantDetails shouldBe = new TransplantDetails("abc1322", "", Organs.KIDNEY,
-                LocalDate.of(2018, 6,7), "Canterbury", 30  ,"A+");
-        transplantsWaiting.add(shouldBe);
-        transplantsWaiting.add(new TransplantDetails("abc1222", "", Organs.KIDNEY,
-                LocalDate.of(2018, 7,7), "Canterbury", 30  ,"A+"));
-
-        Map<AvailableOrganDetail, TransplantDetails> results = organRanker.matchOrgansToReceivers(availableOrganDetails,transplantsWaiting);
-        Assert.assertEquals(shouldBe, results.get(e));
+        Map<AvailableOrganDetail, List<TransplantDetails>> results = organRanker.matchOrgansToReceivers(availableOrganDetails,transplantsWaiting);
+        Assert.assertEquals(2, results.get(results.keySet().iterator().next()).size());
     }
 
 
@@ -105,8 +92,8 @@ public class OrganRankerTests {
         transplantsWaiting.add(new TransplantDetails("abc1222", "", Organs.KIDNEY,
                 LocalDate.of(2018, 7,7), "Canterbury", 30  ,"A+"));
 
-        Map<AvailableOrganDetail, TransplantDetails> results = organRanker.matchOrgansToReceivers(availableOrganDetails,transplantsWaiting);
-        Assert.assertTrue(results.keySet().size() == 0);
+        Map<AvailableOrganDetail, List<TransplantDetails>> results = organRanker.matchOrgansToReceivers(availableOrganDetails,transplantsWaiting);
+        Assert.assertTrue(results.get(results.keySet().iterator().next()).isEmpty());
     }
 
     @Test
@@ -117,8 +104,8 @@ public class OrganRankerTests {
         transplantsWaiting.add(new TransplantDetails("abc1222", "", Organs.KIDNEY,
                 LocalDate.of(2018, 7,7), "Canterbury", 30  ,"A+"));
 
-        Map<AvailableOrganDetail, TransplantDetails> results = organRanker.matchOrgansToReceivers(availableOrganDetails,transplantsWaiting);
-        Assert.assertTrue(results.keySet().size() == 0);
+        Map<AvailableOrganDetail, List<TransplantDetails>> results = organRanker.matchOrgansToReceivers(availableOrganDetails,transplantsWaiting);
+        Assert.assertTrue(results.get(results.keySet().iterator().next()).isEmpty());
     }
 
     @Test
@@ -129,8 +116,8 @@ public class OrganRankerTests {
         transplantsWaiting.add(new TransplantDetails("abc1222", "", Organs.KIDNEY,
                 LocalDate.of(2018, 7,7), "Canterbury", 12  ,"A+"));
 
-        Map<AvailableOrganDetail, TransplantDetails> results = organRanker.matchOrgansToReceivers(availableOrganDetails,transplantsWaiting);
-        Assert.assertTrue(results.keySet().size() == 1);
+        Map<AvailableOrganDetail, List<TransplantDetails>> results = organRanker.matchOrgansToReceivers(availableOrganDetails,transplantsWaiting);
+        Assert.assertFalse(results.get(results.keySet().iterator().next()).isEmpty());
     }
 
     @Test
@@ -141,8 +128,8 @@ public class OrganRankerTests {
         transplantsWaiting.add(new TransplantDetails("abc1222", "", Organs.KIDNEY,
                 LocalDate.of(2018, 7,7), "Canterbury", 46  ,"A+"));
 
-        Map<AvailableOrganDetail, TransplantDetails> results = organRanker.matchOrgansToReceivers(availableOrganDetails,transplantsWaiting);
-        Assert.assertTrue(results.keySet().size() == 0);
+        Map<AvailableOrganDetail, List<TransplantDetails>> results = organRanker.matchOrgansToReceivers(availableOrganDetails,transplantsWaiting);
+        Assert.assertTrue(results.get(results.keySet().iterator().next()).isEmpty() );
     }
 
     @Test
@@ -153,8 +140,8 @@ public class OrganRankerTests {
         transplantsWaiting.add(new TransplantDetails("abc1222", "", Organs.KIDNEY,
                 LocalDate.of(2018, 7,7), "Canterbury", 30  ,"A+"));
 
-        Map<AvailableOrganDetail, TransplantDetails> results = organRanker.matchOrgansToReceivers(availableOrganDetails,transplantsWaiting);
-        Assert.assertTrue(results.keySet().size() == 0);
+        Map<AvailableOrganDetail, List<TransplantDetails>>results = organRanker.matchOrgansToReceivers(availableOrganDetails,transplantsWaiting);
+        Assert.assertTrue(results.get(results.keySet().iterator().next()).isEmpty());
     }
 
 
@@ -166,8 +153,8 @@ public class OrganRankerTests {
         transplantsWaiting.add(new TransplantDetails("abc1222", "", Organs.KIDNEY,
                 LocalDate.of(2018, 7,7), "Canterbury", 30  ,"A+"));
 
-        Map<AvailableOrganDetail, TransplantDetails> results = organRanker.matchOrgansToReceivers(availableOrganDetails,transplantsWaiting);
-        Assert.assertTrue(results.keySet().size() == 0);
+        Map<AvailableOrganDetail, List<TransplantDetails>> results = organRanker.matchOrgansToReceivers(availableOrganDetails,transplantsWaiting);
+        Assert.assertTrue(results.get(results.keySet().iterator().next()).isEmpty());
     }
 
     @Test
@@ -183,8 +170,8 @@ public class OrganRankerTests {
         transplantsWaiting.add(new TransplantDetails("abc1222", "", Organs.KIDNEY,
                 LocalDate.of(2018, 6,7), "Otago", 30  ,"A+"));
 
-        Map<AvailableOrganDetail, TransplantDetails> results = organRanker.matchOrgansToReceivers(availableOrganDetails,transplantsWaiting);
-        Assert.assertEquals(shouldBe, results.get(e));
+        Map<AvailableOrganDetail, List<TransplantDetails>> results = organRanker.matchOrgansToReceivers(availableOrganDetails,transplantsWaiting);
+        Assert.assertEquals(shouldBe, results.get(results.keySet().iterator().next()).get(0));
     }
 
 
