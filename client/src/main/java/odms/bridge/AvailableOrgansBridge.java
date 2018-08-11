@@ -34,7 +34,7 @@ public class AvailableOrgansBridge extends Bifrost {
         }
 
         if (!StringUtils.isNullOrEmpty(country)){
-            url.append("&country").append(city);
+            url.append("&country=").append(city);
         }
 
         Request request = new Request.Builder().get()

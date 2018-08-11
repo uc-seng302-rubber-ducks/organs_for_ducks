@@ -12,6 +12,7 @@ import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.sql.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 
@@ -924,7 +925,7 @@ public class DBHandler {
                     Organs selectedOrgan = Organs.valueOf(results.getString(5));
                     LocalDate dateRegistered = results.getDate(6).toLocalDate();
                     String bloodType = results.getString("bloodType");
-                    long age = ChronoUnit.YEARS.between(results.getTimestamp("dob").toLocalDateTime(), LocalDate.now());
+                    long age = ChronoUnit.YEARS.between(results.getTimestamp("dob").toLocalDateTime(), LocalDateTime.now());
                     detailsList.add(new TransplantDetails(
                             results.getString(1),
                             nameBuilder,
