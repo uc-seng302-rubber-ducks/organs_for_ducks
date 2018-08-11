@@ -27,14 +27,14 @@ public class ProgressTask extends Task<Void> {
         if (bar == null) {
             return null; // Doesn't start the task without a progress bar
         }
-        this.updateProgress(1, 1);
+        this.updateProgress(0, 1);
 
         for (int i = this.startTime; i < time; i++) {
-            updateProgress(((time - i) / time), 1);
+            updateProgress(((i) / time), 1);
             bar.setStyle(getColorStyle(((time - i) / time)));
             Thread.sleep(1000);
         }
-        this.updateProgress(0, 1);
+        this.updateProgress(1, 1);
         return null;
     }
 
@@ -43,7 +43,6 @@ public class ProgressTask extends Task<Void> {
         String green;
         String red;
         int colourNum;
-        // more red as it is closer to expiring
         if (progress < 0.5) {
             colourNum = (int) Math.round(((progress * 2) * 255));
             green = Integer.toHexString(colourNum);
@@ -53,7 +52,6 @@ public class ProgressTask extends Task<Void> {
 
             red = "ff";
         } else {
-            // more green as you there is more time
             colourNum = (int) Math.round(((1 - progress) * 2) * 255);
             red = Integer.toHexString(colourNum);
             if (red.length() == 1) {
