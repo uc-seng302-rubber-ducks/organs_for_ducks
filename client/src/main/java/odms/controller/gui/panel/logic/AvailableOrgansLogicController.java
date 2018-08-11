@@ -43,4 +43,10 @@ public class AvailableOrgansLogicController {
         startingIndex = startingIndex + ROWS_PER_PAGE;
         search(startingIndex, organ, region);
     }
+
+    public void shutdownThreads() {
+        for (AvailableOrganDetail detail : availableOrganDetails) {
+            detail.getProgressTask().cancel();
+        }
+    }
 }
