@@ -4,29 +4,26 @@ import com.mysql.jdbc.StringUtils;
 import javafx.collections.ObservableList;
 import odms.commons.exception.ApiException;
 import odms.commons.model.datamodel.AvailableOrganDetail;
+import odms.commons.model.datamodel.TransplantDetails;
 import odms.commons.utils.Log;
 import odms.controller.AppController;
 import okhttp3.*;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
-public class AvailableOrgansBridge extends Bifrost {
-    public AvailableOrgansBridge(OkHttpClient client) {
+public class MatchingOrgansBridge extends Bifrost {
+    public MatchingOrgansBridge(OkHttpClient client) {
         super(client);
     }
 
-    public void getAvailableOrgansList(int startIndex, int count, String organ, String region, String bloodType, String city, String country, ObservableList<AvailableOrganDetail> observableList) {
+    public void getMatchingOrgansList(String organ, String bloodType, String city, String region, String country, ObservableList<Map<AvailableOrganDetail, List<TransplantDetails>>> observableList) {
         StringBuilder url = new StringBuilder(ip);
-        url.append("/availableOrgans?count=").append(count);
-        url.append("&startIndex=").append(startIndex);
+        url.append("/matchingOrgans?");
 
         if (!StringUtils.isNullOrEmpty(organ)) {
             url.append("&organ=").append(organ);
-        }
-
-        if (!StringUtils.isNullOrEmpty(region)) {
-            url.append("&region=").append(region);
         }
 
         if (!StringUtils.isNullOrEmpty(bloodType)) {
@@ -37,9 +34,15 @@ public class AvailableOrgansBridge extends Bifrost {
             url.append("&city=").append(city);
         }
 
+        if (!StringUtils.isNullOrEmpty(region)) {
+            url.append("&region=").append(region);
+        }
+
         if (!StringUtils.isNullOrEmpty(country)){
             url.append("&country").append(country);
         }
+
+        url = url.deleteCharAt(url.indexOf("&")); //removes first occurrence of "&"
 
         Request request = new Request.Builder().get()
                 .header(TOKEN_HEADER, AppController.getInstance().getToken())
@@ -47,7 +50,7 @@ public class AvailableOrgansBridge extends Bifrost {
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                Log.severe("Failed to GET the list of available organs", e);
+                Log.severe("Failed to GET the list of matching organs", e);
             }
 
             @Override
@@ -56,8 +59,8 @@ public class AvailableOrgansBridge extends Bifrost {
                     throw new ApiException(response.code(), "got response with code outside of 200 range");
                 }
 
-                List<AvailableOrganDetail> availableOrgansDetails = handler.decodeAvailableOrgansList(response);
-                observableList.addAll(availableOrgansDetails);
+                Map<AvailableOrganDetail, List<TransplantDetails>> matchingOrgansList = handler.decodeMatchingOrgansList(response);
+                observableList.addAll(matchingOrgansList);
             }
         });
 
