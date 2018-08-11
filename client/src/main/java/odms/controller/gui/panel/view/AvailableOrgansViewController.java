@@ -1,13 +1,14 @@
 package odms.controller.gui.panel.view;
 
 import javafx.animation.PauseTransition;
-import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.Node;
-import javafx.scene.control.*;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.util.Duration;
 import odms.commons.model._abstract.UserLauncher;
@@ -15,6 +16,7 @@ import odms.commons.model._enum.Organs;
 import odms.commons.model.datamodel.AvailableOrganDetail;
 import odms.commons.utils.ProgressBarService;
 import odms.controller.gui.panel.logic.AvailableOrgansLogicController;
+import odms.controller.gui.widget.ProgressBarTableCellFactory;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -62,6 +64,9 @@ public class AvailableOrgansViewController {
         availableOrganDetails.addListener((ListChangeListener<? super AvailableOrganDetail>) observable -> populateTables());
         regionFilterTextField.setOnKeyPressed(event -> {
             availableOrganDetails.add(new AvailableOrganDetail(Organs.LIVER, "", LocalDateTime.now(), "", ""));
+            if (event.isControlDown()) {
+                availableOrganDetails.clear();
+            }
 //            pause.setOnFinished(e -> search());
 //            pause.playFromStart();
         });
@@ -74,26 +79,7 @@ public class AvailableOrgansViewController {
         organColumn.setCellValueFactory(new PropertyValueFactory<>("organ"));
         deathMomentColumn.setCellValueFactory(new PropertyValueFactory<>("momentOfDeath"));
         progressBarColumn.setCellValueFactory(new PropertyValueFactory<>("progressTask"));
-        progressBarColumn.setCellFactory(callback -> {
-            ProgressBar progressBar = new ProgressBar(1.0F);
-            TableCell<AvailableOrganDetail, ProgressBarService> cell = new TableCell<AvailableOrganDetail, ProgressBarService>() {
-                @Override
-                protected void updateItem(ProgressBarService item, boolean empty) {
-                    super.updateItem(item, empty);
-
-                    if (item != null) {
-                        progressBar.progressProperty().bind(item.progressProperty());
-                        progressBar.minWidthProperty().bind(progressBarColumn.widthProperty().subtract(10));
-                        item.setProgressBar(progressBar);
-                        if (!item.isRunning()) {
-                            item.restart();
-                        }
-                    }
-                }
-            };
-            cell.graphicProperty().bind(Bindings.when(cell.emptyProperty()).then((Node) null).otherwise(progressBar));
-            return cell;
-        });
+        progressBarColumn.setCellFactory(callback -> ProgressBarTableCellFactory.generateCell(progressBarColumn));
         // figure out how to do progress bars
         search();
         populateTables();
