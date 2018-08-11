@@ -115,4 +115,8 @@ public class AvailableOrgansViewController {
             }
         });
     }
+
+    public void shutdownThreads() {
+        logicController.shutdownThreads();
+    }
 }

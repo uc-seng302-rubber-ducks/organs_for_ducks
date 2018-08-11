@@ -14,7 +14,6 @@ public class ProgressBarService extends Service {
     public ProgressBarService(LocalDateTime momentOfDeath, Organs organ) {
         super();
         this.task = new ProgressTask(momentOfDeath, organ);
-
     }
 
     @Override
