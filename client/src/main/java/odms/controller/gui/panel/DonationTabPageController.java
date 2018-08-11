@@ -2,7 +2,6 @@ package odms.controller.gui.panel;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.concurrent.Service;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -10,8 +9,9 @@ import odms.commons.model.User;
 import odms.commons.model._enum.Organs;
 import odms.commons.model.datamodel.OrgansWithExpiry;
 import odms.commons.utils.Log;
-import odms.commons.utils.ProgressBarHelper;
+import odms.commons.utils.ProgressBarService;
 import odms.controller.AppController;
+import odms.controller.gui.widget.ProgressBarTableCellFactory;
 import odms.controller.gui.window.UserController;
 
 import java.util.ArrayList;
@@ -30,7 +30,7 @@ public class DonationTabPageController {
     private TableColumn<OrgansWithExpiry, String> donatingOrganColumn;
 
     @FXML
-    private TableColumn<OrgansWithExpiry, Service> organExpiryColumn;
+    private TableColumn<OrgansWithExpiry, ProgressBarService> organExpiryColumn;
 
     @FXML
     private TableColumn<OrgansWithExpiry, Boolean> expiredDonationColumn;
@@ -58,7 +58,7 @@ public class DonationTabPageController {
         expiredDonationColumn.setCellValueFactory(new PropertyValueFactory<>("hasExpired"));
         expiryReasonColumn.setCellValueFactory(new PropertyValueFactory<>("expiryReason"));
         organExpiryColumn.setCellValueFactory(new PropertyValueFactory<>("progressTask"));
-        organExpiryColumn.setCellFactory(callback -> ProgressBarHelper.generateProgressBar(organExpiryColumn));
+        organExpiryColumn.setCellFactory(callback -> ProgressBarTableCellFactory.generateCell(organExpiryColumn));
 
         populateOrganLists(user);
     }

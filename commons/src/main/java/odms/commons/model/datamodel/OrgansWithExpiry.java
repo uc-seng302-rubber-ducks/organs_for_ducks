@@ -1,9 +1,7 @@
 package odms.commons.model.datamodel;
 
-import javafx.concurrent.Service;
-import javafx.concurrent.Task;
 import odms.commons.model._enum.Organs;
-import odms.commons.utils.ProgressTask;
+import odms.commons.utils.ProgressBarService;
 
 import java.time.LocalDateTime;
 
@@ -13,18 +11,13 @@ import java.time.LocalDateTime;
 public class OrgansWithExpiry {
 
     private Organs organType;
-    private Service progressTask;
+    private transient ProgressBarService progressTask;
     private boolean hasExpired;
     private String expiryReason;
 
     public OrgansWithExpiry(Organs organ, LocalDateTime momentOfDeath) {
         this.organType = organ;
-        this.progressTask = new Service() {
-            @Override
-            protected Task createTask() {
-                return new ProgressTask(momentOfDeath, organ);
-            }
-        };
+        this.progressTask = new ProgressBarService(momentOfDeath, organ);
         this.hasExpired = false;
         this.expiryReason = "";
     }

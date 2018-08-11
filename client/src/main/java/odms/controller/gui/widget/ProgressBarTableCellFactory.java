@@ -5,14 +5,13 @@ import javafx.scene.Node;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
-import odms.commons.model.datamodel.AvailableOrganDetail;
 import odms.commons.utils.ProgressBarService;
 
 public class ProgressBarTableCellFactory {
 
-    public static TableCell<AvailableOrganDetail, ProgressBarService> generateCell(TableColumn<AvailableOrganDetail, ProgressBarService> column) {
+    public static <T> TableCell<T, ProgressBarService> generateCell(TableColumn<T, ProgressBarService> column) {
         ProgressBar progressBar = new ProgressBar(1.0F);
-        TableCell<AvailableOrganDetail, ProgressBarService> cell = new TableCell<AvailableOrganDetail, ProgressBarService>() {
+        TableCell<T, ProgressBarService> cell = new TableCell<T, ProgressBarService>() {
             @Override
             protected void updateItem(ProgressBarService item, boolean empty) {
                 super.updateItem(item, empty);
