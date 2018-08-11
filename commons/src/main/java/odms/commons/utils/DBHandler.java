@@ -100,6 +100,7 @@ public class DBHandler {
             "AND (DeathDetails.country LIKE ? or DeathDetails.country IS NULL)" +
             "LIMIT ? OFFSET ?";
     private static final String SELECT_DEATH_DETAILS_STMT = "SELECT * FROM DeathDetails WHERE fkUserNhi = ?";
+    private static final String SELECT_EXPIRY_DETAILS_STMT = "SELECT * FROM OrganExpiryDetails WHERE fkUserNhi = ?";
     private AbstractUpdateStrategy updateStrategy;
 
 
@@ -1181,6 +1182,21 @@ public class DBHandler {
                     user.setDeathCity(resultSet.getString("city"));
                     user.setDeathRegion(resultSet.getString("region"));
                     user.setDeathCountry(resultSet.getString("country"));
+                }
+            }
+        }
+    }
+
+    public void getExpiryDetails(User user, Connection connection) throws  SQLException {
+        List<ExpiryReason> expiryReasons = new ArrayList<>();
+        try (PreparedStatement stmt = connection.prepareStatement(SELECT_EXPIRY_DETAILS_STMT)) {
+            stmt.setString(1, user.getNhi());
+            try (ResultSet resultSet = stmt.executeQuery()) {
+                while (resultSet != null && resultSet.next()) {
+
+                    ExpiryReason expiryReason = new ExpiryReason(resultSet.getString("fkStaffId"),
+                            resultSet.getTimestamp("timeOfExpiry").toLocalDateTime(),
+                            resultSet.getString("reason"));
                 }
             }
         }
