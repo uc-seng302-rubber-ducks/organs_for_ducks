@@ -63,6 +63,9 @@ public class AvailableOrganDetail {
         this.donorNhi = donorNhi;
     }
 
+    public void generateProgressTask() {
+        this.progressTask = new ProgressBarService(momentOfDeath, organ);
+    }
 
     /**
      * takes a time and returns if the organ is still valid
