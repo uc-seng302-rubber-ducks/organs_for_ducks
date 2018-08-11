@@ -102,8 +102,6 @@ public class UpdateClinicianControllerGUITest extends ApplicationTest {
 
     @After
     public void tearDown() throws TimeoutException {
-//        clickOn("#fileMenuClinician");
-//        clickOn("#logoutMenuClinician");
         AppController.setInstance(null);
         FxToolkit.cleanupStages();
     }

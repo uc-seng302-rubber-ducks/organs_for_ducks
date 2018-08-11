@@ -14,7 +14,7 @@ public class DonorDetails {
 
     @Expose
     private Set<Organs> organs;
-    private transient User attachedUser;
+    private transient User attachedUser; //NOSONAR
 
     /**
      * Constructor for organs for current user
@@ -104,5 +104,15 @@ public class DonorDetails {
 
     public User getAttachedUser() {
         return attachedUser;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Organs to donate:\n");
+        for (Organs o : organs){
+            sb.append(o).append("\n");
+        }
+        return sb.toString();
     }
 }

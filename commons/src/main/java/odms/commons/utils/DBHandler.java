@@ -98,6 +98,7 @@ public class DBHandler {
             "AND (DeathDetails.city LIKE ? or DeathDetails.city IS NULL)" +
             "AND (DeathDetails.country LIKE ? or DeathDetails.country IS NULL)" +
             "LIMIT ? OFFSET ?";
+    private static final String SELECT_DEATH_DETAILS_STMT = "SELECT * FROM DeathDetails WHERE fkUserNhi = ?";
     private AbstractUpdateStrategy updateStrategy;
 
 
@@ -259,6 +260,7 @@ public class DBHandler {
                         getUserOrganReceiveDetail(user, connection);
                         getUserContact(user, connection);
                         getUserEmergencyContact(user, connection);
+                        getDeathDetails(user, connection);
                     } catch (SQLException e) {
                         Log.warning("Unable to create instance of user with nhi " + user.getNhi(), e);
                         throw e;
@@ -1104,7 +1106,7 @@ public class DBHandler {
         }
     }
 
-    public List runSqlQuery(String query, Connection connection) throws SQLException {
+    public List<String> runSqlQuery(String query, Connection connection) throws SQLException {
         List<String> results  = new ArrayList<>();
         try(PreparedStatement preparedStatement = connection.prepareStatement(query)){
             try (ResultSet rs = preparedStatement.executeQuery()) {
@@ -1113,11 +1115,13 @@ public class DBHandler {
                 }
                 do {
                     ResultSetMetaData rsmd = rs.getMetaData();
+                    StringBuilder sb = new StringBuilder();
                     int columns = rsmd.getColumnCount();
                     for(int i = 1; i <= columns; i++){
                         String columnName = rs.getString(i);
-                        results.add(rsmd.getColumnName(i)+ " " + columnName );
+                        sb.append(rsmd.getColumnName(i)).append(" ").append(columnName).append("\n");
                     }
+                    results.add(sb.toString());
                 } while (rs.next());
             }
         }
@@ -1158,5 +1162,24 @@ public class DBHandler {
         }
         return results;
 
+    }
+
+    public void getDeathDetails(User user, Connection connection) throws  SQLException {
+        try (PreparedStatement stmt = connection.prepareStatement(SELECT_DEATH_DETAILS_STMT)) {
+            stmt.setString(1, user.getNhi());
+            try (ResultSet resultSet = stmt.executeQuery()) {
+                while (resultSet != null && resultSet.next()) {
+                    Timestamp momentOfDeath = resultSet.getTimestamp("momentOfDeath");
+                    if (momentOfDeath != null) {
+                        user.getDeathDetails().setMomentOfDeath(momentOfDeath.toLocalDateTime()); //FIX
+                    } else {
+                        user.getDeathDetails().setMomentOfDeath(null);
+                    }
+                    user.setDeathCity(resultSet.getString("city"));
+                    user.setDeathRegion(resultSet.getString("region"));
+                    user.setDeathCountry(resultSet.getString("country"));
+                }
+            }
+        }
     }
 }

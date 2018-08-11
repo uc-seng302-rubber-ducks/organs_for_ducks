@@ -5,11 +5,11 @@ import javafx.fxml.FXML;
 import javafx.scene.control.ListView;
 import javafx.scene.control.SelectionMode;
 import javafx.stage.Stage;
-import odms.controller.AppController;
 import odms.commons.model.MedicalProcedure;
 import odms.commons.model.User;
 import odms.commons.model._enum.Organs;
 import odms.commons.utils.Log;
+import odms.controller.AppController;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -45,11 +45,11 @@ public class OrgansAffectedController {
     public void init(AppController appController, Stage stage, MedicalProcedure procedure, User user) {
         organsListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         affectedOrgansListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-        organsListView.getSelectionModel().selectedItemProperty().addListener(ListChangeListener -> {
+        organsListView.getSelectionModel().selectedItemProperty().addListener(listChangeListener -> {
             if (organsListView.getSelectionModel().getSelectedItem() != null)
                 affectedOrgansListView.getSelectionModel().clearSelection();
         });
-        affectedOrgansListView.getSelectionModel().selectedItemProperty().addListener(ListChangeListener -> {
+        affectedOrgansListView.getSelectionModel().selectedItemProperty().addListener(listChangeListener -> {
             if (affectedOrgansListView.getSelectionModel().getSelectedItem() != null) {
                         organsListView.getSelectionModel().clearSelection();
                     }

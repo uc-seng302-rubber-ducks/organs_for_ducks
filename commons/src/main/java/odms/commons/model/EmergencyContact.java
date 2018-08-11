@@ -13,7 +13,7 @@ public class EmergencyContact extends ContactDetails {
     //declaring attributes
     private String name;
     private String relationship;
-    private transient User attachedUser;
+    private transient User attachedUser; //NOSONAR
 
 
     /**

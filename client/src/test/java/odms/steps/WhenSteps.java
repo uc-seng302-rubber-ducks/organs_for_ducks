@@ -59,7 +59,7 @@ public class WhenSteps extends ApplicationTest {
     public void iRegisterAUserWithTheNHIFirstNameLastNameAndDateOfBirth(String nhi, String fName,
                                                                         String lName, String dob) throws IOException {
         CucumberTestModel.setUserNhi(nhi);
-        String[] args = {fName, lName, nhi, dob};
+        String[] args = {nhi, fName, dob, "-l=" + lName};
         CreateUser command = new CreateUser();
         new CommandLine(command).parseWithHandler(new CommandLine.RunLast(), System.err, args);
         when(CucumberTestModel.getUserBridge().getUser(anyString())).thenReturn(new UserBuilder().setNhi(nhi).setFirstName(fName).setLastName(lName).setDateOfBirth(LocalDate.parse(dob, DateTimeFormatter.ISO_LOCAL_DATE)).build());
@@ -163,11 +163,14 @@ public class WhenSteps extends ApplicationTest {
 
     @When("^The user is updated to have died on \"([^\"]*)\"$")
     public void theUserIsUpdatedToHaveDiedOn(String dod) {
-        clickOn("#editMenuUser");
-        clickOn("#editDetailsUser");
-        clickOn("#dodInput");
+
+        clickOn("#updateDeathDetailsButton");
+        clickOn("#updateDeathDetailsDatePicker");
+        for (int i = 0; i < 20; i++) { //arbitrarily long number to ensure all is deleted
+            push(KeyCode.BACK_SPACE);
+        }
         write(dod);
-        clickOnButton(this, "#confirmButton");
+        clickOnButton(this, "#confirmUpdateDeathDetailsButton");
     }
 
     @And("^I open the user page$")
