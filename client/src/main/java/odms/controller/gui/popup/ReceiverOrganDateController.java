@@ -10,7 +10,6 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import odms.commons.model.User;
 import odms.commons.model._enum.Organs;
-import odms.commons.model.datamodel.ReceiverOrganDetails;
 import odms.commons.model.datamodel.ReceiverOrganDetailsHolder;
 import odms.commons.utils.Log;
 

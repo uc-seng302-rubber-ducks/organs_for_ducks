@@ -26,17 +26,17 @@ public class AvailableOrgansTest {
 
     @Test
     public void testInvalidOrganJustInvalid(){
-        Assert.assertFalse(organDetail.isOrganStillValid(time.plusSeconds(Organs.LIVER.getStorageSeconds())));
+        Assert.assertFalse(organDetail.isOrganStillValid(time.plusSeconds( Organs.LIVER.getStorageSeconds())));
     }
 
     @Test
     public void testValidOrganJustStillValid() {
-        Assert.assertTrue(organDetail.isOrganStillValid(time.plusSeconds(Organs.LIVER.getStorageSeconds() - 1)));
+        Assert.assertTrue(organDetail.isOrganStillValid(time.plusSeconds( Organs.LIVER.getStorageSeconds() - 1)));
     }
 
     @Test
     public void testCalculateExpiryDate() {
-        Assert.assertEquals(time.plusSeconds(Organs.LIVER.getStorageSeconds()), organDetail.getExpiryDate());
+        Assert.assertEquals(time.plusSeconds( Organs.LIVER.getStorageSeconds()), organDetail.getExpiryDate());
     }
 
     @Test
@@ -46,6 +46,6 @@ public class AvailableOrgansTest {
 
     @Test
     public void testCalculateTimeRemainingShouldBeZero() {
-        Assert.assertEquals(0, organDetail.calculateTimeLeft(time.plusSeconds(Organs.LIVER.getStorageSeconds() + 1)));
+        Assert.assertEquals(0, organDetail.calculateTimeLeft(time.plusSeconds( Organs.LIVER.getStorageSeconds() + 1)));
     }
 }

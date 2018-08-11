@@ -78,13 +78,13 @@ public class AvailableOrganDetail {
     /**
      * takes a time and returns if the organ is still valid
      *
-     * @param timeToaskabout time that the organ needs to be valid at
+     * @param timeToaskabout time that the organ needs to be valid at.
      *
      * @return trtue if valid; false if not
      */
     public boolean isOrganStillValid(LocalDateTime timeToaskabout) {
-        double secondsOrganIsViable = organ.getStorageSeconds();
-        return (timeToaskabout.isBefore(momentOfDeath.plusSeconds((long) secondsOrganIsViable)));
+        long secondsOrganIsViable = organ.getStorageSeconds();
+        return (timeToaskabout.isBefore(momentOfDeath.plusSeconds(secondsOrganIsViable)));
     }
 
     public boolean isOrganStillValid() {
@@ -115,7 +115,7 @@ public class AvailableOrganDetail {
      * @return LocalDateTime of when the organ will expire
      */
     private LocalDateTime calculateExpiryDate(LocalDateTime timeOfDeath, Organs organType) {
-        int expiryTime = organType.getStorageSeconds();
+        long expiryTime = organType.getStorageSeconds();
         return timeOfDeath.plusSeconds(expiryTime);
     }
 

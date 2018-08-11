@@ -36,13 +36,13 @@ public enum Organs {
     private String organName;
     private int dbValue;
     private static final int HOURS_TO_SECONDS = 3600;
-    private int storageSeconds;
+    private long storageSeconds;
 
 
     Organs(String organName, int dbValue, double storageSeconds) {
         this.organName = organName;
         this.dbValue = dbValue;
-        this.storageSeconds = (int) (storageSeconds * HOURS_TO_SECONDS);
+        this.storageSeconds = (long)(storageSeconds * HOURS_TO_SECONDS);
     }
 
     @Override
@@ -54,7 +54,7 @@ public enum Organs {
         return dbValue;
     }
 
-    public int getStorageSeconds() {
+    public long getStorageSeconds() {
         return storageSeconds;
     }
 }
