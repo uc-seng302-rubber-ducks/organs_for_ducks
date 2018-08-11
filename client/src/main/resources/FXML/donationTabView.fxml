@@ -10,6 +10,7 @@
 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="odms.controller.gui.panel.DonationTabPageController">
     <children>
         <ListView fx:id="canDonate" layoutX="41.0" layoutY="86.0" prefHeight="437.0" prefWidth="200.0" />
+        <ListView fx:id="currentOrgans" visible="false" layoutX="500.0" layoutY="86.0" prefHeight="437.0" prefWidth="200.0" />
         <TableView fx:id="currentlyDonating" layoutX="368.0" layoutY="86.0" prefHeight="437.0" prefWidth="487.0">
             <columns>
                 <TableColumn fx:id="donatingOrganColumn" maxWidth="150" prefWidth="120" text="Organ" />

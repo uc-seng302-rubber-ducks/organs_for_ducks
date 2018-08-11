@@ -1,5 +1,6 @@
 package odms.controller.gui.panel;
 
+import com.sun.org.apache.xpath.internal.operations.Or;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -25,6 +26,9 @@ public class DonationTabPageController {
 
     @FXML
     private ListView<Organs> canDonate;
+
+    @FXML
+    private ListView<Organs> currentOrgans;
 
     @FXML
     private TableColumn<OrgansWithExpiry, String> donatingOrganColumn;
@@ -76,13 +80,15 @@ public class DonationTabPageController {
         } catch (NullPointerException ex) {
             donating = new ArrayList<>();
         }
-        List<OrgansWithExpiry> results = new ArrayList<>();
-        for (Organs organ : donating) {
-            results.add(new OrgansWithExpiry(organ, currentUser.getMomentDeath()));
+
+        if (user.getMomentDeath() != null) {
+            populateTableView(donating);
+        } else {
+            currentlyDonating.setVisible(false);
+            currentOrgans.setVisible(true);
+            currentOrgans.setItems(FXCollections.observableList(donating));
         }
 
-        ObservableList<OrgansWithExpiry> donatingOrgans = FXCollections.observableArrayList(results);
-        currentlyDonating.setItems(donatingOrgans);
         ArrayList<Organs> leftOverOrgans = new ArrayList<>();
         Collections.addAll(leftOverOrgans, Organs.values());
         for (Organs o : donating) {
@@ -91,18 +97,43 @@ public class DonationTabPageController {
         canDonate.setItems(FXCollections.observableList(leftOverOrgans));
     }
 
+    /**
+     * Populates the table view of currently donating organs.
+     * This is only populated when the donor is deceased.
+     *
+     * @param donating An array list of the organs the user is donating
+     */
+    private void populateTableView(ArrayList<Organs> donating) {
+        currentOrgans.setVisible(false);
+        currentlyDonating.setVisible(true);
+
+        List<OrgansWithExpiry> results = new ArrayList<>();
+        for (Organs organ : donating) {
+            results.add(new OrgansWithExpiry(organ, currentUser.getMomentDeath()));
+        }
+
+        ObservableList<OrgansWithExpiry> donatingOrgans = FXCollections.observableArrayList(results);
+        currentlyDonating.setItems(donatingOrgans);
+    }
+
     public void refreshCurrentlyDonating() {
         currentlyDonating.refresh();
     }
 
     /**
-     * Moves selected organ from donatable to currently donating
+     * Moves selected organ from not donating to currently donating
      */
     @FXML
     void donate() {
         if (!canDonate.getSelectionModel().isEmpty()) {
             Organs toDonate = canDonate.getSelectionModel().getSelectedItem();
-            currentlyDonating.getItems().add(new OrgansWithExpiry(toDonate, currentUser.getMomentDeath()));
+
+            if (currentUser.getMomentDeath() != null) {
+                currentlyDonating.getItems().add(new OrgansWithExpiry(toDonate, currentUser.getMomentDeath()));
+            } else {
+                currentOrgans.getItems().add(toDonate);
+            }
+
             currentUser.getDonorDetails().addOrgan(toDonate);
             if (parent.currentlyReceivingContains(toDonate)) {
                 currentUser.getCommonOrgans().add(toDonate);
@@ -124,19 +155,29 @@ public class DonationTabPageController {
     @FXML
     void undonate() {
         if (!currentlyDonating.getSelectionModel().isEmpty()) {
-            OrgansWithExpiry toUndonate = currentlyDonating.getSelectionModel().getSelectedItem();
-            currentlyDonating.getItems().remove(toUndonate);
-            canDonate.getItems().add(toUndonate.getOrganType());
-            if (currentUser.getCommonOrgans().contains(toUndonate.getOrganType())) {
-                currentUser.getCommonOrgans().remove(toUndonate.getOrganType());
+
+            Organs organ = null;
+
+            if (currentUser.getMomentDeath() != null) {
+                OrgansWithExpiry toUndonate = currentlyDonating.getSelectionModel().getSelectedItem();
+                currentlyDonating.getItems().remove(toUndonate);
+                organ = toUndonate.getOrganType();
+            } else {
+                organ = currentOrgans.getSelectionModel().getSelectedItem();
+                currentOrgans.getItems().remove(organ);
+            }
+
+            canDonate.getItems().add(organ);
+            if (currentUser.getCommonOrgans().contains(organ)) {
+                currentUser.getCommonOrgans().remove(organ);
                 currentlyDonating.refresh();
             }
 
-            currentUser.getDonorDetails().removeOrgan(toUndonate.getOrganType());
+            currentUser.getDonorDetails().removeOrgan(organ);
             currentlyDonating.refresh();
             application.update(currentUser);
             parent.updateUndoRedoButtons();
-            Log.info("un-donated organ: " + toUndonate.getOrganType().toString() + "for User NHI: " + currentUser.getNhi());
+            Log.info("un-donated organ: " + organ + "for User NHI: " + currentUser.getNhi());
         } else {
             Log.warning("un-donate organs failed for User NHI: " + currentUser.getNhi() + ", no organs selected.");
         }
