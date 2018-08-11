@@ -12,13 +12,11 @@ public class OrgansWithExpiry {
 
     private Organs organType;
     private transient ProgressBarService progressTask;
-    private boolean hasExpired;
     private String expiryReason;
 
     public OrgansWithExpiry(Organs organ, LocalDateTime momentOfDeath) {
         this.organType = organ;
         this.progressTask = new ProgressBarService(momentOfDeath, organ);
-        this.hasExpired = false;
         this.expiryReason = "";
     }
 
@@ -28,14 +26,6 @@ public class OrgansWithExpiry {
 
     public void setOrganType(Organs organType) {
         this.organType = organType;
-    }
-
-    public boolean isHasExpired() {
-        return hasExpired;
-    }
-
-    public void setHasExpired(boolean hasExpired) {
-        this.hasExpired = hasExpired;
     }
 
     public String getExpiryReason() {

@@ -1,6 +1,5 @@
 package odms.controller.gui.panel;
 
-import com.sun.org.apache.xpath.internal.operations.Or;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -37,9 +36,6 @@ public class DonationTabPageController {
     private TableColumn<OrgansWithExpiry, ProgressBarService> organExpiryColumn;
 
     @FXML
-    private TableColumn<OrgansWithExpiry, Boolean> expiredDonationColumn;
-
-    @FXML
     private TableColumn<OrgansWithExpiry, String> expiryReasonColumn;
 
     private User currentUser;
@@ -59,7 +55,6 @@ public class DonationTabPageController {
         this.parent = parent;
 
         donatingOrganColumn.setCellValueFactory(new PropertyValueFactory<>("organType"));
-        expiredDonationColumn.setCellValueFactory(new PropertyValueFactory<>("hasExpired"));
         expiryReasonColumn.setCellValueFactory(new PropertyValueFactory<>("expiryReason"));
         organExpiryColumn.setCellValueFactory(new PropertyValueFactory<>("progressTask"));
         organExpiryColumn.setCellFactory(callback -> ProgressBarTableCellFactory.generateCell(organExpiryColumn));
@@ -155,8 +150,7 @@ public class DonationTabPageController {
     @FXML
     void undonate() {
         if (!currentlyDonating.getSelectionModel().isEmpty()) {
-
-            Organs organ = null;
+            Organs organ;
 
             if (currentUser.getMomentDeath() != null) {
                 OrgansWithExpiry toUndonate = currentlyDonating.getSelectionModel().getSelectedItem();

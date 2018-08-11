@@ -63,6 +63,9 @@ public class AvailableOrganDetail {
         this.donorNhi = donorNhi;
     }
 
+    public void generateProgressTask() {
+        this.progressTask = new ProgressBarService(momentOfDeath, organ);
+    }
 
     /**
      * takes a time and returns if the organ is still valid
@@ -72,8 +75,8 @@ public class AvailableOrganDetail {
      * @return trtue if valid; false if not
      */
     public boolean isOrganStillValid(LocalDateTime timeToaskabout){
-        double hoursOrganIsViable = organ.getStorageHours();
-        return (timeToaskabout.isBefore(momentOfDeath.plusHours((long) hoursOrganIsViable)));
+        double secondsOrganIsViable = organ.getStorageHours();
+        return (timeToaskabout.isBefore(momentOfDeath.plusSeconds((long) secondsOrganIsViable)));
     }
 
     public boolean isOrganStillValid(){
