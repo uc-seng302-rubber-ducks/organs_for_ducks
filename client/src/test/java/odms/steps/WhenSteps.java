@@ -1,8 +1,10 @@
 package odms.steps;
 
+import com.sun.javafx.stage.StageHelper;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.When;
 import javafx.collections.FXCollections;
+import javafx.scene.Node;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
@@ -13,7 +15,10 @@ import odms.commands.DeleteUser;
 import odms.commands.View;
 import odms.commons.model.UserBuilder;
 import odms.commons.model.dto.UserOverview;
+import odms.commons.utils.Log;
 import odms.view.CLI;
+import org.loadui.testfx.Assertions;
+import org.testfx.api.FxAssert;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 import picocli.CommandLine;
@@ -199,7 +204,11 @@ public class WhenSteps extends ApplicationTest {
 
     @When("^I go back to the clinician screen$")
     public void iGoBackToTheClinicianScreen() {
-        clickOnButton(this, "#cancelUpdateDeathDetailsButton");
+        try {
+            clickOn("#cancelDeathDetailsUpdateButton");
+        } catch (Exception e) {
+            //Blocks unstable behaviour
+        }
         clickOn("#userProfileTab");
         clickOn("#fileMenuUser");
         clickOn("#logoutUser");
