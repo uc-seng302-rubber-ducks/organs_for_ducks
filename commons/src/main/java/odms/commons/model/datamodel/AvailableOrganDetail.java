@@ -14,7 +14,7 @@ public class AvailableOrganDetail {
     private LocalDateTime expiryDate;
     private String region;
     private String bloodType;
-    private transient ProgressBarService progressTask;
+    private transient ProgressBarService progressTask; //NOSONAR
 
     public AvailableOrganDetail(Organs organ, String nhi, LocalDateTime momentOfDeath, String region, String bloodType) {
         this.organ = organ;
@@ -83,8 +83,8 @@ public class AvailableOrganDetail {
      * @return trtue if valid; false if not
      */
     public boolean isOrganStillValid(LocalDateTime timeToaskabout) {
-        double hoursOrganIsViable = organ.getStorageHours();
-        return (timeToaskabout.isBefore(momentOfDeath.plusHours((long) hoursOrganIsViable)));
+        double secondsOrganIsViable = organ.getStorageSeconds();
+        return (timeToaskabout.isBefore(momentOfDeath.plusSeconds((long) secondsOrganIsViable)));
     }
 
     public boolean isOrganStillValid() {
@@ -94,10 +94,12 @@ public class AvailableOrganDetail {
     /**
      * Uses the organs expiry date to return the seconds left until the organ expires
      *
+     * @param fromThisTime time to calculate expiry time for. Will most often be LocalDateTime.now()
+     *
      * @return long value of how many seconds are left
      */
-    public long calculateTimeLeft() {
-        long timeLeft = SECONDS.between(LocalDateTime.now(), expiryDate);
+    public long calculateTimeLeft(LocalDateTime fromThisTime) {
+        long timeLeft = SECONDS.between(fromThisTime, expiryDate);
         if (timeLeft < 0) {
             return 0;
         } else {
@@ -113,8 +115,8 @@ public class AvailableOrganDetail {
      * @return LocalDateTime of when the organ will expire
      */
     private LocalDateTime calculateExpiryDate(LocalDateTime timeOfDeath, Organs organType) {
-        int expiryTime = organType.getStorageHours();
-        return timeOfDeath.plusHours(expiryTime);
+        int expiryTime = organType.getStorageSeconds();
+        return timeOfDeath.plusSeconds(expiryTime);
     }
 
     public Service getProgressTask() {

@@ -54,7 +54,7 @@ public enum Organs {
         return dbValue;
     }
 
-    public int getStorageHours() {
+    public int getStorageSeconds() {
         return storageSeconds;
     }
 }

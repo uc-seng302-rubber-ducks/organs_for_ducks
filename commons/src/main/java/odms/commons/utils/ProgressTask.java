@@ -17,7 +17,7 @@ public class ProgressTask extends Task<Void> {
     public ProgressTask(LocalDateTime death, Organs organ) {
         this.organ = organ;
         this.death = death;
-        this.time = ((double) death.until(death.plusSeconds((long) organ.getStorageHours()), ChronoUnit.SECONDS));
+        this.time = ((double) death.until(death.plusSeconds((long) organ.getStorageSeconds()), ChronoUnit.SECONDS));
         this.startTime = (int) death.until(LocalDateTime.now(), ChronoUnit.SECONDS);
 
     }
