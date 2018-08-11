@@ -124,6 +124,7 @@ public class UpdateClinicianController {
     private String defaultCountry = "New Zealand";
     private final int MAX_FILE_SIZE = 2097152;
     private String initialPath;
+    private boolean Listen = true;
 
     /**
      * Initializes the scene by setting all but the password text fields to contain the given clinicians attributes.
@@ -190,7 +191,8 @@ public class UpdateClinicianController {
                 }
             });
 
-            if(! clinician.getCountry().equals(defaultCountry)){
+
+            if (!clinician.getCountry().equals(defaultCountry) && !clinician.getCountry().equals("")) {
                 regionSelector.setVisible(false);
                 regionTextField.setVisible(true);
             }
@@ -200,7 +202,7 @@ public class UpdateClinicianController {
             ownStage.setTitle("Create New Clinician Profile");
             titleLabel.setText("Create Clinician");
             confirmButton.setText("Create Clinician Profile");
-            countrySelector.setValue("");
+            countrySelector.setValue(defaultCountry);
             regionSelector.setValue("");
         }
 
@@ -213,11 +215,12 @@ public class UpdateClinicianController {
      * be replaced with a text field.
      * region text field is cleared by default when it appears.
      * region combo box selects the first item by default when it appears.
+     *
      * @param event from GUI
      */
     @FXML
     private void countrySelectorListener(ActionEvent event) {
-        controller.countrySelectorEventHandler(countrySelector, regionSelector, regionTextField);
+        controller.countrySelectorEventHandler(countrySelector, regionSelector, regionTextField, null, currentClinician);
     }
 
     /**
@@ -239,6 +242,7 @@ public class UpdateClinicianController {
      * @param clinician The current clinician.
      */
     private void prefillFields(Clinician clinician) {
+        Listen = false;
         staffIDTextField.setText(clinician.getStaffId());
 
         String fName = clinician.getFirstName();
@@ -248,7 +252,7 @@ public class UpdateClinicianController {
         String streetName = clinician.getStreetName();
         String neighbourhood = clinician.getNeighborhood();
         String city = clinician.getCity();
-        String region = clinician.getRegion() == null ? "": clinician.getRegion();
+        String region = clinician.getRegion() == null ? "" : clinician.getRegion();
         String zipCode = clinician.getZipCode();
         String country = clinician.getCountry();
 
@@ -275,15 +279,21 @@ public class UpdateClinicianController {
         neighbourhoodTextField.setText(neighbourhood);
         cityTextField.setText(city);
         zipCodeTextField.setText(zipCode);
-        countrySelector.getSelectionModel().select(country);
 
-        if(!country.equals(defaultCountry)) {
+        if (country.equals("")) {
+            countrySelector.getSelectionModel().select(defaultCountry);
+        } else {
+            countrySelector.getSelectionModel().select(country);
+        }
+
+        if (!countrySelector.getSelectionModel().getSelectedItem().equals(defaultCountry)) {
             regionTextField.setText(region);
-
         } else {
             regionSelector.getSelectionModel().select(region); //region selector is visible by default if clinician's country is NZ.
         }
+
         displayImage(profileImage, currentClinician.getProfilePhotoFilePath());
+        Listen = true;
     }
 
     /**
@@ -292,7 +302,11 @@ public class UpdateClinicianController {
      * @param cb The current ComboBox.
      */
     private void comboBoxListener(ComboBox cb) {
-        cb.valueProperty().addListener((observable, oldValue, newValue) -> update());
+        cb.valueProperty().addListener((observable, oldValue, newValue) -> {
+            if (Listen) {
+                update();
+            }
+        });
     }
 
     /**
@@ -301,7 +315,11 @@ public class UpdateClinicianController {
      * @param field The current textfield/password field element.
      */
     private void changesListener(TextField field) {
-        field.textProperty().addListener((observable, oldValue, newValue) -> update());
+        field.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (Listen) {
+                update();
+            }
+        });
     }
 
     /**
@@ -351,10 +369,11 @@ public class UpdateClinicianController {
     /**
      * gets the region from text input field or
      * selected by users from combo box
+     *
      * @return region from combo box or text input
      */
-    private String getRegionInput(){
-        if(regionTextField.isVisible()){
+    private String getRegionInput() {
+        if (regionTextField.isVisible()) {
             return regionTextField.getText();
         }
         return regionSelector.getSelectionModel().getSelectedItem();
@@ -387,14 +406,13 @@ public class UpdateClinicianController {
     }
 
 
-
     /**
      * Updates personal details of the current clinician to match the given values
      *
      * @param staffId StaffID that may have been changed
-     * @param fName First name that may have been changed
-     * @param lName Last name that may have been changed
-     * @param mName Middle name that may have been changed
+     * @param fName   First name that may have been changed
+     * @param lName   Last name that may have been changed
+     * @param mName   Middle name that may have been changed
      * @return true if any of the clinicians personal details has changed, false otherwise
      */
     private boolean updateDetails(String staffId, String fName, String lName, String mName, String photoPath) {
@@ -445,13 +463,13 @@ public class UpdateClinicianController {
     /**
      * Updates the work address of the current clinician to match the given values
      *
-     * @param streetNumber Street number that may have changed
-     * @param streetName Street name that may have been changed
+     * @param streetNumber  Street number that may have changed
+     * @param streetName    Street name that may have been changed
      * @param neighbourhood Neighbourhood that may have changed
-     * @param city City that may have changed
-     * @param region Region that may have been changed
-     * @param zipcode Zip code that may have changed
-     * @param country Country that may have changed
+     * @param city          City that may have changed
+     * @param region        Region that may have been changed
+     * @param zipcode       Zip code that may have changed
+     * @param country       Country that may have changed
      * @return true if there has been a change and any of the address values, false otherwise
      */
     private boolean updateAddress(String streetNumber, String streetName, String neighbourhood, String city, String region, String zipcode, String country) {
@@ -575,7 +593,7 @@ public class UpdateClinicianController {
                 yesButton.setId("yesButton");
 
                 Optional<ButtonType> result = alert.showAndWait();
-                if (result.get() == ButtonType.YES) {
+                if (result.isPresent() && result.get() == ButtonType.YES) {
                     Log.info("Clinician update cancelled for Clinician Staff Id: " + currentClinician.getStaffId());
                     removeFormChanges(0, currentClinician, undoMarker);
                     currentClinician.getRedoStack().clear();
@@ -596,7 +614,6 @@ public class UpdateClinicianController {
     }
 
     /**
-     * NO LONGER NEEDED I THINK
      * Turns all form changes into one memento on the stack
      */
     private void sumAllChanged() {
@@ -694,15 +711,13 @@ public class UpdateClinicianController {
 
             currentClinician.setDateLastModified(LocalDateTime.now()); // updates the modified date
             sumAllChanged();
-            if(inFile != null) {
+            if (inFile != null) {
                 try {
                     String filePath = setUpImageFile(inFile, currentClinician.getStaffId());
                     currentClinician.setProfilePhotoFilePath(filePath);
 
-                    //currentClinician.getUndoStack().pop();
-
                 } catch (IOException e) {
-                    System.err.println(e);
+                    Log.severe("Profile photo path failed to be set when updating clinician", e);
                 }
             }
             currentClinician.getRedoStack().clear();
@@ -728,6 +743,8 @@ public class UpdateClinicianController {
             Log.warning("Clinician not updated for Clinician Staff Id: " + staffID);
         }
     }
+
+
 
     /**
      * Only updates the personal detail values that have been changed.
@@ -755,14 +772,11 @@ public class UpdateClinicianController {
         String middle = currentClinician.getMiddleName();
         if (middle != null && !middle.equals(mName)) {
             currentClinician.setMiddleName(mName);
-        } else if (middle == null && mName != null) {
-            currentClinician.setMiddleName(mName);
         }
+
 
         String last = currentClinician.getLastName();
         if (last != null && !last.equals(lName)) {
-            currentClinician.setLastName(mName);
-        } else if (last == null && lName != null) {
             currentClinician.setLastName(lName);
         }
     }
