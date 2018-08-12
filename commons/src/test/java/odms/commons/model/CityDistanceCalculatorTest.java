@@ -9,8 +9,6 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-import static java.lang.Math.sqrt;
-
 public class CityDistanceCalculatorTest {
 
     private CityDistanceCalculator distanceCalculator = new CityDistanceCalculator();
@@ -18,7 +16,6 @@ public class CityDistanceCalculatorTest {
     private Regions testRegionB;
     private List<Double> testCoordA = new ArrayList<>();
     private List<Double> testCoordB = new ArrayList<>();
-    private List<Double> testVector = new ArrayList<>();
 
     @Before
     public void beforeTest() {
@@ -26,17 +23,26 @@ public class CityDistanceCalculatorTest {
         testRegionB = Regions.WELLINGTON;
         testCoordA.add(0.0);
         testCoordA.add(0.0);
-        testCoordB.add(3.0);
-        testCoordB.add(4.0);
-        testVector.add(1.0);
-        testVector.add(2.0);
-        testVector.add(3.0);
+        testCoordB.add(180.0);
+        testCoordB.add(0.0);
     }
 
     @Test
-    public void testVectorMagnitude() {
-        double vectorTest = distanceCalculator.vectorMagnitude(testVector);
-        Assert.assertEquals(sqrt(14), vectorTest, 0.1);
+    public void testCalculateDistance() {
+        double testDistance = distanceCalculator.haversineCalculation(testCoordA, testCoordB);
+        Assert.assertEquals(20015, testDistance, 2);
     }
 
+    @Test
+    public void testExtractCoordinatesFromRegion() {
+        List<Double> testCoord = distanceCalculator.extractCoordFromRegion(testRegionA);
+        Assert.assertEquals(-36.8485, testCoord.get(0), 0.0001);
+        Assert.assertEquals(174.7633, testCoord.get(1), 0.0001);
+    }
+
+    @Test
+    public void testDistanceBetweenRegions() {
+        double testDistance = distanceCalculator.distanceBetweenRegions(testRegionA,testRegionB);
+        Assert.assertEquals(492, testDistance, 2);
+    }
 }
