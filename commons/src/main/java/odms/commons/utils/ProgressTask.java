@@ -7,6 +7,8 @@ import odms.commons.model._enum.Organs;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
+import static java.time.temporal.ChronoUnit.SECONDS;
+
 public class ProgressTask extends Task<Void> {
     private final Double time;
     private Organs organ;
@@ -76,5 +78,25 @@ public class ProgressTask extends Task<Void> {
     public void setProgressBar(ProgressBar progressBar) {
         this.bar = progressBar;
     }
+
+    /**
+     * Uses the organs expiry date to return the seconds left until the organ expires
+     *
+     * @param fromThisTime time to calculate expiry time for. Will most often be LocalDateTime.now()
+     *
+     * @return long value of how many seconds are left
+     */
+    public long calculateTimeLeft(LocalDateTime fromThisTime) {
+        long timeLeft = SECONDS.between(fromThisTime, death.plusSeconds(organ.getStorageSeconds()));
+        //long timeLeft = SECONDS.between(fromThisTime, LocalDateTime.now().plusSeconds(organ.getStorageSeconds()));
+        System.out.println(organ.toString());
+        if (timeLeft < 0) {
+            return 0;
+        } else {
+            return timeLeft;
+        }
+    }
+
+
 
 }

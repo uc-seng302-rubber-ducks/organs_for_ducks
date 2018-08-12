@@ -21,6 +21,10 @@ public class ProgressBarService extends Service {
         return task;
     }
 
+    public ProgressTask getTask() {
+        return task;
+    }
+
     public void setProgressBar(ProgressBar bar) {
         task.setProgressBar(bar);
     }

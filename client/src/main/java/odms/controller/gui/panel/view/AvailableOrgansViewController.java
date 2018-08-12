@@ -20,6 +20,7 @@ import odms.controller.gui.widget.ProgressBarTableCellFactory;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 
 public class AvailableOrgansViewController {
 
@@ -80,7 +81,12 @@ public class AvailableOrgansViewController {
         search();
         populateTables();
         availableOrgansTableView.setItems(availableOrganDetails);
+        progressBarColumn.setSortType(TableColumn.SortType.ASCENDING);
+        progressBarColumn.setComparator(organTimeLeftComparator);
+        availableOrgansTableView.getSortOrder().add(progressBarColumn); //TODO:need to find a way for tableview to execute the organ time remaining comparator when table is fully initialised rather than executing the comparator of first column (Donor column) - 12/8
     }
+
+    private Comparator<ProgressBarService> organTimeLeftComparator = Comparator.comparingLong(p -> p.getTask().calculateTimeLeft(LocalDateTime.now()));
 
 
     @FXML
