@@ -69,7 +69,7 @@ public class AvailableOrgansViewController {
         initAvailableOrgansTableView();
     }
 
-    public void initAvailableOrgansTableView() {
+    private void initAvailableOrgansTableView() {
         nhiColumn.setCellValueFactory(new PropertyValueFactory<>("donorNhi"));
         regionColumn.setCellValueFactory(new PropertyValueFactory<>("region"));
         organColumn.setCellValueFactory(new PropertyValueFactory<>("organ"));
@@ -98,7 +98,7 @@ public class AvailableOrgansViewController {
         logicController.goNextPage();
     }
 
-    public void populateTables() {
+    private void populateTables() {
         setOnClickBehaviour();
     }
 

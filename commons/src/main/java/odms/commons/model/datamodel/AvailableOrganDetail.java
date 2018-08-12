@@ -3,9 +3,10 @@ package odms.commons.model.datamodel;
 import javafx.concurrent.Service;
 import odms.commons.model._enum.Organs;
 import odms.commons.utils.ProgressBarService;
-import static java.time.temporal.ChronoUnit.SECONDS;
 
 import java.time.LocalDateTime;
+
+import static java.time.temporal.ChronoUnit.SECONDS;
 
 public class AvailableOrganDetail {
     private Organs organ;
@@ -15,6 +16,7 @@ public class AvailableOrganDetail {
     private String region;
     private String bloodType;
     private transient ProgressBarService progressTask; //NOSONAR
+    private double timeLeft;
 
     public AvailableOrganDetail(Organs organ, String nhi, LocalDateTime momentOfDeath, String region, String bloodType) {
         this.organ = organ;
