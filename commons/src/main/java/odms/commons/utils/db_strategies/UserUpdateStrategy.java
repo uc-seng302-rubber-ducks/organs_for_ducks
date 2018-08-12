@@ -5,17 +5,17 @@ import odms.commons.model.MedicalProcedure;
 import odms.commons.model.User;
 import odms.commons.model._enum.Organs;
 import odms.commons.model.datamodel.ContactDetails;
+import odms.commons.model.datamodel.ExpiryReason;
 import odms.commons.model.datamodel.Medication;
 import odms.commons.model.datamodel.ReceiverOrganDetailsHolder;
 import odms.commons.utils.Log;
 
 import java.sql.*;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 public class UserUpdateStrategy extends AbstractUpdateStrategy {
 
@@ -34,6 +34,7 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
     private static final String CREATE_AFFECTED_ORGAN = "INSERT INTO MedicalProcedureOrgan (fkOrgansId, fkProcedureId) VALUES (?, ?)";
     private static final String CREATE_DONATING_ORGAN = "INSERT INTO OrganDonating (fkUserNhi, fkOrgansId) VALUES (?, ?)";
     private static final String CREATE_RECEIVING_ORGAN = "INSERT INTO OrganAwaiting (fkUserNhi, fkOrgansId) VALUES (?, ?)";
+    private static final String CREATE_EXPIRY_DETAILS = "INSERT INTO OrganExpiryDetails(fkStaffId, fkDonatingId, timeOfExpiry, reason) VALUES (?,?,?,?)";
 
     private static final String UPDATE_USER_STMT = "UPDATE User SET nhi = ?, firstName = ?, middleName = ?, lastName = ?, preferedName = ?, dob = ?, dod = ?, lastModified = ? WHERE nhi = ?";
     private static final String UPDATE_USER_HEALTH_STMT = "UPDATE HealthDetails SET gender = ?, birthGender = ?, smoker = ?, alcoholConsumption = ?, height = ?, weight = ?, bloodType = ? WHERE fkUserNhi = ?";
@@ -49,6 +50,7 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
     private static final String DELETE_USER_STMT = "DELETE FROM User WHERE nhi = ?";
     private static final String CREATE_RECEIVING_ORGAN_DATE = "INSERT INTO OrganAwaitingDates (fkAwaitingId, dateRegistered, dateDeregistered) VALUES (?, ?, ?)";
     private static final String GET_RECEIVER_ID = "SELECT awaitingId FROM OrganAwaiting WHERE fkUserNhi = ? AND fkOrgansId = ?";
+    private static final String GET_DONATING_ID = "SELECT fkDonatingId FROM OrganDonating LEFT JOIN OrganExpiryDetails ON fkDonatingId = donatingId WHERE fkUserNhi = ? AND fkOrgansId = ?";
     public static final String START_TRANSACTION = "START TRANSACTION";
     public static final String ROLLBACK = "ROLLBACK";
     public static final String COMMIT = "COMMIT";
@@ -344,7 +346,9 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
     }
 
     /**
-     * Updates the organs that the user is donating
+     * Updates the organs that the user is donating.
+     * Calls the updateUserOrganExpiry method after organs for donation
+     * are updated.
      *
      * @param user       user to associate the organs with.
      * @param connection A non null active connection to the database
@@ -358,9 +362,59 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
                 createDonatingOrgans.setInt(2, organ.getDbValue());
 
                 createDonatingOrgans.executeUpdate();
+                updateUserOrganExpiry(user, connection);
             }
         }
+    }
 
+    /**
+     * updates the organ expiry details.
+     *
+     * @param user       user to associate the organs expiry details with.
+     * @param connection A non null active connection to the database
+     * @throws SQLException if there is an error with the database
+     */
+    private void updateUserOrganExpiry(User user, Connection connection) throws SQLException {
+        deleteFieldsOfUser("OrganExpiryDetails", user.getNhi(), connection);
+        for(Map.Entry<Organs, ExpiryReason> organsExpiry: user.getDonorDetails().getOrganMap().entrySet()){
+            if(organsExpiry.getValue() != null) {
+                int organDBValue = organsExpiry.getKey().getDbValue();
+                int donatingId = getDonatingId(user.getNhi(), organDBValue, connection);
+
+                try (PreparedStatement createExpiryDetails = connection.prepareStatement(CREATE_EXPIRY_DETAILS)) {
+                    createExpiryDetails.setString(1, organsExpiry.getValue().getClinicianId());
+                    createExpiryDetails.setInt(2, donatingId);
+                    createExpiryDetails.setTimestamp(3, Timestamp.valueOf(organsExpiry.getValue().getTimeOrganExpired()));
+                    createExpiryDetails.setString(4, organsExpiry.getValue().getReason());
+                }
+            }
+        }
+    }
+
+    /**
+     * Retrieves the foreign key donating id referencing
+     * the Organ Donating table
+     *
+     * @param userNhi NHI of user
+     * @param organDBValue the database value of organ
+     * @param connection Connection to the database
+     * @return The foreign key donating id referencing the Organ Donating table
+     * @throws SQLException If there is an issue retrieving the contact id
+     */
+    private int getDonatingId(String userNhi, int organDBValue, Connection connection) throws SQLException {
+        int donatingId = -1;
+        try (PreparedStatement statement = connection.prepareStatement(GET_DONATING_ID)) {
+
+            statement.setString(1, userNhi);
+            statement.setInt(2, organDBValue);
+
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet != null && resultSet.next()) {
+                    donatingId = resultSet.getInt(1);
+                }
+            }
+        }
+        return donatingId;
     }
 
     /**
