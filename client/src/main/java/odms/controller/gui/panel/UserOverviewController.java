@@ -249,10 +249,10 @@ public class UserOverviewController {
             updateStage.setScene(new Scene(root));
             updateDeathDetailsController.init(AppController.getInstance(), updateStage, currentUser);
             updateStage.show();
-            Log.info("Successfully launched update user window for User NHI: " + currentUser.getNhi());
+            Log.info("Successfully launched update death details window for User NHI: " + currentUser.getNhi());
 
         } catch (IOException e) {
-            Log.severe("Failed to load edit death details window for User NHI: " + currentUser.getNhi(), e);
+            Log.severe("Failed to load update death details window for User NHI: " + currentUser.getNhi(), e);
         }
     }
 
