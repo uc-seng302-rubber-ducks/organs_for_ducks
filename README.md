@@ -69,6 +69,9 @@ The project should now be open.
 Entering the command and then `help` or `-h` will provide more details regarding the usage and avaliable flags.
 `help` and `quit` have no flags.
 
+To enter multiple words for one command option you must use an underscore _ instead of spaces.
+E.g. to add the country New Zealand, you  would use -co=New_Zealand (where -co is the flag for countries).
+
 
 # Command Details
 - view 

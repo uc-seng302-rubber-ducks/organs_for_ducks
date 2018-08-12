@@ -68,7 +68,10 @@ public class UpdateClinician implements Runnable {
             return;
         }
 
-        if (newId != null && !originalId.equals("0")) {
+        if (newId != null && originalId.equals("0")) {
+            IoHelper.display("The default clinician cannot update their ID");
+            return;
+        } else if (newId != null) {
             valid = AttributeValidation.checkString(newId);
             if (!controller.getClinicianBridge().getExists(newId) && valid) {
                 clinician.setStaffId(newId);
@@ -76,9 +79,6 @@ public class UpdateClinician implements Runnable {
             } else {
                 IoHelper.display("Could not update staff ID from " + originalId + " to " + newId);
             }
-        } else if (originalId.equals("0")) {
-            IoHelper.display("The default clinician cannot update their ID");
-            return;
         }
 
         if (firstName != null) {
