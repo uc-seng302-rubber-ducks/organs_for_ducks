@@ -55,7 +55,7 @@ public class UpdateUserDonate implements Runnable {
             }
             switch (prefix) {
                 case "+":
-                    user.getDonorDetails().addOrgan(organ);
+                    user.getDonorDetails().addOrgan(organ, null);
                     changed = true;
                     break;
                 case "/":

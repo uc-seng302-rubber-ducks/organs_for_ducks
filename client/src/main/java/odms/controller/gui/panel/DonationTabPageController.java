@@ -129,7 +129,7 @@ public class DonationTabPageController {
                 currentOrgans.getItems().add(toDonate);
             }
 
-            currentUser.getDonorDetails().addOrgan(toDonate);
+            currentUser.getDonorDetails().addOrgan(toDonate, null);
             if (parent.currentlyReceivingContains(toDonate)) {
                 currentUser.getCommonOrgans().add(toDonate);
             }

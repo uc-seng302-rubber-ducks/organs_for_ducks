@@ -112,7 +112,7 @@ public class DBHandlerTest {
 
     @Test
     public void testAddUserDonatingOrgans() throws SQLException {
-        testUser.getDonorDetails().addOrgan(Organs.LUNG);
+        testUser.getDonorDetails().addOrgan(Organs.LUNG, null);
         Collection<User> users = new ArrayList<>();
         users.add(testUser);
 
