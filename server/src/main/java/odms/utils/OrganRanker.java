@@ -1,14 +1,18 @@
 package odms.utils;
 
+import odms.commons.model._enum.Organs;
+import odms.commons.model._enum.Regions;
 import odms.commons.model.datamodel.AvailableOrganDetail;
 import odms.commons.model.datamodel.TransplantDetails;
+import odms.commons.utils.CityDistanceCalculator;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.*;
 
 public class OrganRanker {
+
+    private final double HELICOPTER_SPEED = 62.5; // Speed a helicopter flies in M/s. From a google search of how fast does a medical helicopter fly
 
 
     public OrganRanker() {
@@ -36,9 +40,13 @@ public class OrganRanker {
     public Map<AvailableOrganDetail, List<TransplantDetails>> matchOrgansToReceivers(List<AvailableOrganDetail> organsAvailable,
                                                                                      List<TransplantDetails> waitingTransplants) {
         Map<AvailableOrganDetail, List<TransplantDetails>> organMatches = new HashMap<>();
-
+        Set<String> regionsWithDistance = Regions.getEnums();
+        CityDistanceCalculator distanceCalculator = new CityDistanceCalculator();
         for (AvailableOrganDetail organAvailable : organsAvailable) {
             List<TransplantDetails> matches = new ArrayList<>();
+            LocalDateTime death = organAvailable.getMomentOfDeath();
+            Organs organ = organAvailable.getOrgan();
+            double timeRemaining = death.until(death.plusSeconds(organ.getStorageSeconds()), ChronoUnit.SECONDS);
             for (TransplantDetails awaitingTransplant : waitingTransplants) {
                 if (awaitingTransplant.getOrgan() != organAvailable.getOrgan()) {
                     continue;
@@ -54,8 +62,14 @@ public class OrganRanker {
                     continue;
                 }
 
-                if (!awaitingTransplant.getRegion().equalsIgnoreCase(organAvailable.getRegion())) {
-                    continue; //TODO: this just checks that the region is the same It needs some way of getting distances to be implemneted fully 10/8 JB
+                if(regionsWithDistance.contains(awaitingTransplant.getRegion()) && regionsWithDistance.contains(organAvailable.getRegion())){
+                    double distanceBetweenDonorAndReceiver = distanceCalculator.distanceBetweenRegions(
+                            awaitingTransplant.getRegion(),
+                            organAvailable.getRegion());
+                    double timeToDonor = distanceBetweenDonorAndReceiver/HELICOPTER_SPEED;
+                    if(timeToDonor > timeRemaining) continue;
+                } else if (!awaitingTransplant.getRegion().equalsIgnoreCase(organAvailable.getRegion())) {
+                    continue;
                 }
                 matches.add(awaitingTransplant);
             }

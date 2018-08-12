@@ -9,7 +9,7 @@ import static java.lang.Math.*;
 
 public class CityDistanceCalculator {
 
-    private static final double EARTH_RADIUS = 6371; //km
+    private static final double EARTH_RADIUS = 6371000; //m
 
     public List<Double> extractCoordFromRegion(Regions region) {
         List<Double> result = new ArrayList<>();
@@ -32,6 +32,15 @@ public class CityDistanceCalculator {
         List<Double> regionBCoord = extractCoordFromRegion(regionB);
 
         return haversineCalculation(regionACoord, regionBCoord);
+    }
+
+
+    public double distanceBetweenRegions(String regionA, String regionB) {
+
+        Regions r1 = Regions.valueOf(regionA.toUpperCase().replaceAll(" ", ""));
+        Regions r2 = Regions.valueOf(regionB.toUpperCase().replaceAll(" ", ""));
+
+        return distanceBetweenRegions(r1, r2);
     }
 
 

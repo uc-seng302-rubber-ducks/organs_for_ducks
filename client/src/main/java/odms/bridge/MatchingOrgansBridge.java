@@ -45,7 +45,7 @@ public class MatchingOrgansBridge extends Bifrost {
         url = url.deleteCharAt(url.indexOf("&")); //removes first occurrence of "&"
 
         Request request = new Request.Builder().get()
-                .header(TOKEN_HEADER, AppController.getInstance().getToken())
+                .header(tokenHeader, AppController.getInstance().getToken())
                 .url(url.toString()).build();
         client.newCall(request).enqueue(new Callback() {
             @Override

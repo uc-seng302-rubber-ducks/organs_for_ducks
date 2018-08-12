@@ -1,5 +1,8 @@
 package odms.commons.model._enum;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * See design decisions for reasons of coordinate choices
  */
@@ -50,5 +53,21 @@ public enum Regions {
         return this.region;
     }
 
+
+    /**
+     * returns a List of all regions with distance. This allows accurate calculations to be made for organ matching.
+     *
+     * @return Set of a all values in the Enum
+     */
+    public static Set<String> getEnums(){
+
+        HashSet<String> values = new HashSet<>();
+
+        for (Regions r: Regions.values()){
+            values.add(r.toString());
+        }
+
+        return values;
+    }
 
 }

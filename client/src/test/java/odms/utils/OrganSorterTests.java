@@ -39,6 +39,21 @@ public class OrganSorterTests {
         Assert.assertEquals(transplant2, transplantList.get(0));
     }
 
+    @Test
+    public void testSecondEntryIsReturnedFirstWhenDatesSameAndBetterDistanceSecond(){
+
+        TransplantDetails transplant1 = new TransplantDetails("abc1222", "", Organs.LIVER,
+                LocalDate.of(2018, 7, 7), "Canterbury", 30, "A+");
+        transplantList.add(transplant1);
+        TransplantDetails transplant2 = new TransplantDetails("abc1222", "", Organs.KIDNEY,
+                LocalDate.of(2018, 7, 7), "Otago", 30, "A+");
+        transplantList.add(transplant2);
+
+        transplantList = OrganSorter.sortOrgansIntoRankedOrder(organ, transplantList);
+
+        Assert.assertEquals(transplant2, transplantList.get(0));
+    }
+
 
     @Test
     public void testFirstEntryIsReturnedFirst(){

@@ -3,9 +3,11 @@ package odms.commons.model.datamodel;
 import javafx.concurrent.Service;
 import odms.commons.model._enum.Organs;
 import odms.commons.utils.ProgressBarService;
-import static java.time.temporal.ChronoUnit.SECONDS;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+
+import static java.time.temporal.ChronoUnit.SECONDS;
 
 public class AvailableOrganDetail {
     private Organs organ;
@@ -26,7 +28,7 @@ public class AvailableOrganDetail {
         this.bloodType = bloodType;
         this.progressTask = new ProgressBarService(momentOfDeath, organ);
         this.expiryDate = calculateExpiryDate(momentOfDeath, organ);
-        this.progress = (double) momentOfDeath.until(momentOfDeath.plusHours(organ.getStorageHours()), ChronoUnit.SECONDS);
+        this.progress = (double) momentOfDeath.until(momentOfDeath.plusHours(organ.getStorageSeconds()), ChronoUnit.SECONDS);
         this.age = age;
     }
 

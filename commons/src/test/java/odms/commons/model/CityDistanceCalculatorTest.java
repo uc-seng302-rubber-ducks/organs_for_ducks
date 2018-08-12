@@ -30,7 +30,7 @@ public class CityDistanceCalculatorTest {
     @Test
     public void testCalculateDistance() {
         double testDistance = distanceCalculator.haversineCalculation(testCoordA, testCoordB);
-        Assert.assertEquals(20015, testDistance, 2);
+        Assert.assertEquals(2.001508679602057E7, testDistance, 0.1E7);
     }
 
     @Test
@@ -43,6 +43,6 @@ public class CityDistanceCalculatorTest {
     @Test
     public void testDistanceBetweenRegions() {
         double testDistance = distanceCalculator.distanceBetweenRegions(testRegionA,testRegionB);
-        Assert.assertEquals(492, testDistance, 2);
+        Assert.assertEquals(493484.33925002784, testDistance, 2);
     }
 }

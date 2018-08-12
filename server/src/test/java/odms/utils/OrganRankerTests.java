@@ -51,14 +51,14 @@ public class OrganRankerTests {
     @Test
     public void testTransplantsReturnNoMatchesWhenRegionDifferent(){
         LocalDateTime time = LocalDateTime.of(2018, 9, 8, 14, 43);
-        availableOrganDetails.add(new AvailableOrganDetail(Organs.LIVER, "abc1234", time, "Otago", "A+" , 30));
-        availableOrganDetails.add(new AvailableOrganDetail(Organs.KIDNEY, "abc1234", time, "Otago", "A+" , 30));
+        availableOrganDetails.add(new AvailableOrganDetail(Organs.LIVER, "abc1234", time, "as", "A+" , 30));
+        availableOrganDetails.add(new AvailableOrganDetail(Organs.KIDNEY, "abc1234", time, "as", "A+" , 30));
 
 
         transplantsWaiting.add(new TransplantDetails("abc1222", "", Organs.LIVER,
-                LocalDate.of(2018, 7,7), "Canterbury", 30  ,"A+"));
+                LocalDate.of(2018, 7,7), "ae", 30  ,"A+"));
         transplantsWaiting.add(new TransplantDetails("abc1222", "", Organs.KIDNEY,
-                LocalDate.of(2018, 7,7), "Canterbury", 30  ,"A+"));
+                LocalDate.of(2018, 7,7), "ae", 30  ,"A+"));
 
         Map<AvailableOrganDetail, List<TransplantDetails>> results = organRanker.matchOrgansToReceivers(availableOrganDetails,transplantsWaiting);
         Assert.assertTrue(results.get(results.keySet().iterator().next()).isEmpty());
@@ -172,6 +172,34 @@ public class OrganRankerTests {
 
         Map<AvailableOrganDetail, List<TransplantDetails>> results = organRanker.matchOrgansToReceivers(availableOrganDetails,transplantsWaiting);
         Assert.assertEquals(shouldBe, results.get(results.keySet().iterator().next()).get(0));
+    }
+
+    @Test
+    public void testNothingIsReturnedWhenDistanceIsTooFar(){
+        LocalDateTime time = LocalDateTime.of(2018, 9, 8, 14, 43);
+        availableOrganDetails.add(new AvailableOrganDetail(Organs.LIVER, "abc1234", time, "Southland", "A+" , 30));
+
+
+        transplantsWaiting.add(new TransplantDetails("abc1222", "", Organs.LIVER,
+                LocalDate.of(2018, 7,7), "Northland", 30  ,"A+"));
+
+
+        Map<AvailableOrganDetail, List<TransplantDetails>> results = organRanker.matchOrgansToReceivers(availableOrganDetails,transplantsWaiting);
+        Assert.assertTrue(results.get(results.keySet().iterator().next()).isEmpty());
+    }
+
+    @Test
+    public void testMatchIsReturnedWhenDistanceIsOk(){
+        LocalDateTime time = LocalDateTime.of(2018, 9, 8, 14, 43);
+        availableOrganDetails.add(new AvailableOrganDetail(Organs.LIVER, "abc1234", time, "Canterbury", "A+" , 30));
+
+
+        transplantsWaiting.add(new TransplantDetails("abc1222", "", Organs.LIVER,
+                LocalDate.of(2018, 7,7), "West Coast", 30  ,"A+"));
+
+
+        Map<AvailableOrganDetail, List<TransplantDetails>> results = organRanker.matchOrgansToReceivers(availableOrganDetails,transplantsWaiting);
+        Assert.assertFalse(results.get(results.keySet().iterator().next()).isEmpty());
     }
 
 
