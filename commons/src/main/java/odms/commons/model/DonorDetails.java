@@ -2,8 +2,10 @@ package odms.commons.model;
 
 import com.google.gson.annotations.Expose;
 import odms.commons.model._enum.Organs;
+import odms.commons.model.datamodel.ExpiryReason;
 
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 
@@ -14,7 +16,12 @@ public class DonorDetails {
 
     @Expose
     private Set<Organs> organs;
+    private Map<Organs, ExpiryReason> organss;
     private transient User attachedUser; //NOSONAR
+
+    public void addOrgan(Map.Entry<Organs, ExpiryReason> organEntry) {
+
+    }
 
     /**
      * Constructor for organs for current user

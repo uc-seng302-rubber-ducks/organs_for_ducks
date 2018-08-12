@@ -50,7 +50,7 @@ public class DBHandler {
             "LEFT JOIN Organ o ON o.organId = mpo.fkOrgansId " +
             "WHERE mp.fkUserNhi = ? " +
             "ORDER BY procedureDate";
-    private static final String SELECT_USER_ORGAN_DONATING_STMT = "SELECT organName FROM OrganDonating LEFT JOIN Organ ON fkOrgansId = organId WHERE fkUserNhi = ?";
+    private static final String SELECT_USER_ORGAN_DONATING_STMT = "SELECT * FROM OrganDonating LEFT JOIN Organ ON fkOrgansId = organId LEFT JOIN OrganExpiryDetails ON fkDonatingId = donatingId WHERE fkUserNhi = ?";
     private static final String SELECT_USER_ORGAN_AWAITING_STMT = "SELECT dateRegistered, dateDeregistered, organId, organName " +
             "FROM OrganAwaiting " +
             "LEFT JOIN OrganAwaitingDates ON OrganAwaiting.awaitingId = OrganAwaitingDates.fkAwaitingId " +
@@ -100,7 +100,6 @@ public class DBHandler {
             "AND (DeathDetails.country LIKE ? or DeathDetails.country IS NULL)" +
             "LIMIT ? OFFSET ?";
     private static final String SELECT_DEATH_DETAILS_STMT = "SELECT * FROM DeathDetails WHERE fkUserNhi = ?";
-    private static final String SELECT_EXPIRY_DETAILS_STMT = "SELECT * FROM OrganExpiryDetails WHERE fkUserNhi = ?";
     private AbstractUpdateStrategy updateStrategy;
 
 
@@ -446,6 +445,14 @@ public class DBHandler {
             try (ResultSet resultSet = stmt.executeQuery()) {
                 while (resultSet != null && resultSet.next()) {
                     user.getDonorDetails().addOrgan(Organs.valueOf(resultSet.getString("organName")));
+
+                    if(resultSet.getString("reason") != null) { //if donor has expiry organ details
+                        ExpiryReason expiryReason = new ExpiryReason(resultSet.getString("fkStaffId"),
+                                resultSet.getTimestamp("timeOfExpiry").toLocalDateTime(),
+                                resultSet.getString("reason"));
+                    } else {
+                        //TODO: finish this after getting code from Jen.
+                    }
                 }
             }
         }
@@ -1182,21 +1189,6 @@ public class DBHandler {
                     user.setDeathCity(resultSet.getString("city"));
                     user.setDeathRegion(resultSet.getString("region"));
                     user.setDeathCountry(resultSet.getString("country"));
-                }
-            }
-        }
-    }
-
-    public void getExpiryDetails(User user, Connection connection) throws  SQLException {
-        List<ExpiryReason> expiryReasons = new ArrayList<>();
-        try (PreparedStatement stmt = connection.prepareStatement(SELECT_EXPIRY_DETAILS_STMT)) {
-            stmt.setString(1, user.getNhi());
-            try (ResultSet resultSet = stmt.executeQuery()) {
-                while (resultSet != null && resultSet.next()) {
-
-                    ExpiryReason expiryReason = new ExpiryReason(resultSet.getString("fkStaffId"),
-                            resultSet.getTimestamp("timeOfExpiry").toLocalDateTime(),
-                            resultSet.getString("reason"));
                 }
             }
         }
