@@ -8,6 +8,9 @@ import java.util.Optional;
 
 public class UnsavedChangesAlert {
 
+    private UnsavedChangesAlert() {
+    }
+
     public static Optional<ButtonType> getAlertResult() {
         Alert alert = new Alert(Alert.AlertType.WARNING,
                 "You have unsaved changes, do you want to save first?",

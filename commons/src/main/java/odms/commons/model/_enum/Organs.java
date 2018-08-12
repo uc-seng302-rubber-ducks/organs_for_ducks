@@ -7,8 +7,9 @@ import com.google.gson.annotations.SerializedName;
  * Enum for organs that can be received/donated
  */
 public enum Organs {
+
     @SerializedName("Liver")
-    LIVER("Liver", 1, 24),
+    LIVER("Liver", 1, 0.05),
     @SerializedName("Kidney")
     KIDNEY("Kidney", 2, 72),
     @SerializedName("Pancreas")
@@ -34,12 +35,14 @@ public enum Organs {
 
     private String organName;
     private int dbValue;
-    private int storageHours;
+    private static final int HOURS_TO_SECONDS = 3600;
+    private long storageSeconds;
 
-    Organs(String organName, int dbValue, int storageHours) {
+
+    Organs(String organName, int dbValue, double storageSeconds) {
         this.organName = organName;
         this.dbValue = dbValue;
-        this.storageHours = storageHours;
+        this.storageSeconds = (long)(storageSeconds * HOURS_TO_SECONDS);
     }
 
     @Override
@@ -51,7 +54,7 @@ public enum Organs {
         return dbValue;
     }
 
-    public int getStorageHours() {
-        return storageHours;
+    public long getStorageSeconds() {
+        return storageSeconds;
     }
 }

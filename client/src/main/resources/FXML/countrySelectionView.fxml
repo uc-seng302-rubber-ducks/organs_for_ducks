@@ -10,7 +10,7 @@
        <Button fx:id="cancelCountrySelection" layoutX="58.0" layoutY="338.0" mnemonicParsing="false"
                onAction="#cancelCountrySelection" prefHeight="25.0" prefWidth="72.0" text="Cancel"
                AnchorPane.bottomAnchor="37.0" AnchorPane.leftAnchor="58.0" AnchorPane.rightAnchor="470.0"/>
-       <TextField fx:id="searchCountry" layoutX="146.0" layoutY="41.0" prefHeight="25.0" prefWidth="308.0"
+       <TextField fx:id="searchCountry" layoutX="146.0" layoutY="41.0" onKeyReleased="#getDesiredCountries" prefHeight="25.0" prefWidth="308.0"
                   AnchorPane.leftAnchor="146.0" AnchorPane.rightAnchor="146.0" AnchorPane.topAnchor="41.0"/>
        <ListView fx:id="countrySelection" layoutX="130.0" layoutY="102.0" prefHeight="216.0" prefWidth="340.0"
                  AnchorPane.bottomAnchor="82.0" AnchorPane.leftAnchor="130.0" AnchorPane.rightAnchor="130.0"
@@ -21,5 +21,6 @@
        <Button layoutX="398.0" layoutY="73.0" mnemonicParsing="false" onAction="#resetInitialCountries"
                prefHeight="25.0" prefWidth="72.0" text="Reset" AnchorPane.leftAnchor="398.0"
                AnchorPane.rightAnchor="130.0" AnchorPane.topAnchor="73.0"/>
+      <Label layoutX="81.0" layoutY="46.0" text="Search:" />
    </children>
 </AnchorPane>

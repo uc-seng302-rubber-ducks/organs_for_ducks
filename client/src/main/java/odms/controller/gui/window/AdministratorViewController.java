@@ -6,7 +6,6 @@ import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -34,6 +33,7 @@ import odms.commons.model._abstract.UserLauncher;
 import odms.commons.model._enum.EventTypes;
 import odms.commons.model._enum.Organs;
 import odms.commons.model.dto.UserOverview;
+import odms.commons.model.event.UpdateNotificationEvent;
 import odms.commons.utils.CSVHandler;
 import odms.commons.utils.DataHandler;
 import odms.commons.utils.JsonHandler;
@@ -46,6 +46,8 @@ import odms.controller.gui.panel.TransplantWaitListController;
 import odms.controller.gui.popup.AlertUnclosedWindowsController;
 import odms.controller.gui.popup.CountrySelectionController;
 import odms.controller.gui.popup.DeletedUserController;
+import odms.controller.gui.popup.utils.AlertWindowFactory;
+import odms.socket.ServerEventNotifier;
 import odms.view.CLI;
 
 import java.beans.PropertyChangeEvent;
@@ -62,7 +64,12 @@ public class AdministratorViewController implements PropertyChangeListener, User
     //<editor-fold desc="FXML stuff">
 
     private static final int ROWS_PER_PAGE = 30;
-    private static int searchCount = 0;
+    public static final String JSON = "*.json";
+    public static final String FILE_NAME_NOT_FOUND = "File name not found";
+    public static final String FIRST_NAME = "firstName";
+    public static final String LAST_NAME = "lastName";
+    public static final String ERROR = "error";
+    public static final String FAILED_TO_GET_USER_OVERVIEWS_FROM_SERVER = "failed to get user overviews from server";
     @FXML
     private TableView<UserOverview> userTableView;
     @FXML
@@ -125,6 +132,8 @@ public class AdministratorViewController implements PropertyChangeListener, User
     private Label regionLabel;
     @FXML
     private MenuItem deleteAdmin;
+    @FXML
+    private ProgressIndicator progressIndicator;
 
     //</editor-fold>
     @FXML
@@ -137,9 +146,6 @@ public class AdministratorViewController implements PropertyChangeListener, User
     private ArrayList<String> pastCommands = new ArrayList<>();
     private int pastCommandIndex = -2;
     private boolean owner;
-    private FilteredList<Clinician> fListClinicians;
-    private FilteredList<Administrator> fListAdmins;
-    private TableColumn<UserOverview, String> lNameColumn;
     private boolean filterVisible = false;
     private String messageAdmin = "Admin ";
     private DataHandler dataHandler = new JsonHandler();
@@ -168,17 +174,13 @@ public class AdministratorViewController implements PropertyChangeListener, User
         this.userBridge = appController.getUserBridge();
         this.clinicianBridge = appController.getClinicianBridge();
         this.adminBridge = appController.getAdministratorBridge();
-        statusBarPageController.init(appController);
+        statusBarPageController.init();
         displayDetails();
         transplantWaitListTabPageController.init(appController, this);
         stage.setTitle("Administrator");
 
-        //add change listeners of parent controllers to the current user
-        if (parentListeners != null && !parentListeners.isEmpty()) {
-            for (PropertyChangeListener listener : parentListeners) {
-                administrator.addPropertyChangeListener(listener);
-            }
-        }
+        ServerEventNotifier.getInstance().addPropertyChangeListener(this);
+
         userBridge.getUsers(userStartIndex, ROWS_PER_PAGE, adminSearchField.getText(), regionSearchTextField.getText(), genderComboBox.getValue(), appController.getToken());
         clinicianBridge.getClinicians(clinicianStartIndex, ROWS_PER_PAGE, adminSearchField.getText(), regionSearchTextField.getText(), appController.getToken());
 
@@ -211,7 +213,7 @@ public class AdministratorViewController implements PropertyChangeListener, User
                 }
             }
         });
-
+        progressIndicator.setVisible(false);
         addListeners();
         initClinicianSearchTable();
         initAdminSearchTable();
@@ -225,8 +227,9 @@ public class AdministratorViewController implements PropertyChangeListener, User
      * the results to the textArea
      */
     private void sendInputToCLI() {
-        PrintStream stdOut = System.out;
-        PrintStream stdErr = System.err;
+        PrintStream stdOut = System.out; //NOSONAR
+        PrintStream stdErr = System.err; //NOSONAR
+        //The above two lines have Sonar turned off as they reroute our the streams to allow our GUI CLI to work
         ByteArrayOutputStream areaOut = new ByteArrayOutputStream();
         System.setOut(new PrintStream(areaOut));
         System.setErr(new PrintStream(areaOut));
@@ -276,7 +279,7 @@ public class AdministratorViewController implements PropertyChangeListener, User
                 try {
                     launchClinician(appController.getClinicianBridge().getClinician(
                             clinicianTableView.getSelectionModel().getSelectedItem().getStaffId(),
-                                    appController.getToken()));
+                            appController.getToken()));
                 } catch (ApiException e) {
                     Log.severe("Clinician Could not be fetched", e);
                 }
@@ -308,30 +311,15 @@ public class AdministratorViewController implements PropertyChangeListener, User
 
 
     /**
-     * Takes a boolean on weather specific fields should be visable and then set them according to the boolean
-     *
-     * @param shouldSee if the fields should be visible or not
-     */
-    private void userSpecificFilters(boolean shouldSee) {
-        donorStatusLabel.setVisible(shouldSee);
-        donorFilterCheckBox.setVisible(shouldSee);
-        receiverFilterCheckBox.setVisible(shouldSee);
-        allCheckBox.setVisible(shouldSee);
-        birthGenderLabel.setVisible(shouldSee);
-        genderComboBox.setVisible(shouldSee);
-    }
-
-
-    /**
      * Initialises table for the clinician table
      */
     private void initClinicianSearchTable() {
 
         TableColumn<Clinician, String> firstNameColumn = new TableColumn<>("First Name");
-        firstNameColumn.setCellValueFactory(new PropertyValueFactory<>("firstName"));
+        firstNameColumn.setCellValueFactory(new PropertyValueFactory<>(FIRST_NAME));
 
         TableColumn<Clinician, String> lastNameColumn = new TableColumn<>("Last Name");
-        lastNameColumn.setCellValueFactory(new PropertyValueFactory<>("lastName"));
+        lastNameColumn.setCellValueFactory(new PropertyValueFactory<>(LAST_NAME));
 
         TableColumn<Clinician, String> nhiColumn = new TableColumn<>("Staff Id");
         nhiColumn.setCellValueFactory(new PropertyValueFactory<>("staffId"));
@@ -350,10 +338,10 @@ public class AdministratorViewController implements PropertyChangeListener, User
      */
     private void initAdminSearchTable() {
         TableColumn<Administrator, String> firstNameColumn = new TableColumn<>("First Name");
-        firstNameColumn.setCellValueFactory(new PropertyValueFactory<>("firstName"));
+        firstNameColumn.setCellValueFactory(new PropertyValueFactory<>(FIRST_NAME));
 
         TableColumn<Administrator, String> lastNameColumn = new TableColumn<>("Last Name");
-        lastNameColumn.setCellValueFactory(new PropertyValueFactory<>("lastName"));
+        lastNameColumn.setCellValueFactory(new PropertyValueFactory<>(LAST_NAME));
 
         TableColumn<Administrator, String> userNameColumn = new TableColumn<>("User Name");
         userNameColumn.setCellValueFactory(new PropertyValueFactory<>("userName"));
@@ -380,10 +368,10 @@ public class AdministratorViewController implements PropertyChangeListener, User
         TableColumn<UserOverview, String> regionColumn;
 
         fNameColumn = new TableColumn<>("First name");
-        fNameColumn.setCellValueFactory(new PropertyValueFactory<>("firstName"));
+        fNameColumn.setCellValueFactory(new PropertyValueFactory<>(FIRST_NAME));
 
-        lNameColumn = new TableColumn<>("Last name");
-        lNameColumn.setCellValueFactory(new PropertyValueFactory<>("lastName"));
+        TableColumn<UserOverview, String> lNameColumn = new TableColumn<>("Last name");
+        lNameColumn.setCellValueFactory(new PropertyValueFactory<>(LAST_NAME));
         lNameColumn.setSortType(TableColumn.SortType.ASCENDING);
 
         dobColumn = new TableColumn<>("Date of Birth");
@@ -416,11 +404,12 @@ public class AdministratorViewController implements PropertyChangeListener, User
 
     /**
      * Requests the filtered data from the server and populates the user overview table
+     *
      * @param startIndex starting index to get the data from
-     * @param count amount of users to obtain
-     * @param name query for name, will obtain users that start with the name
-     * @param region search query for region
-     * @param gender search query for gender
+     * @param count      amount of users to obtain
+     * @param name       query for name, will obtain users that start with the name
+     * @param region     search query for region
+     * @param gender     search query for gender
      */
     private void populateUserSearchTable(int startIndex, int count, String name, String region, String gender) {
         appController.getUserOverviews().clear();
@@ -466,7 +455,6 @@ public class AdministratorViewController implements PropertyChangeListener, User
     }
 
 
-
     /**
      * Callback method to change the divider position to show advanced filtering options in the GUI
      */
@@ -486,11 +474,11 @@ public class AdministratorViewController implements PropertyChangeListener, User
     void importAdmins() {
         Log.info("Importing Admins");
         List<String> extensions = new ArrayList<>();
-        extensions.add("*.json");
+        extensions.add(JSON);
         FileSelectorController fileSelectorController = new FileSelectorController();
         String filename = fileSelectorController.getFileSelector(stage, extensions);
         if (filename == null) {
-            Log.warning("File name not found");
+            Log.warning(FILE_NAME_NOT_FOUND);
             fileNotFoundLabel.setVisible(true);
             return;
         }
@@ -500,16 +488,16 @@ public class AdministratorViewController implements PropertyChangeListener, User
     }
 
     /**
-     * Imports clinicians from a file chosen from a fileselector
+     * Imports clinicians from a file chosen from a file selector
      */
     @FXML
     void importClinicians() {
         List<String> extensions = new ArrayList<>();
-        extensions.add("*.json");
+        extensions.add(JSON);
         FileSelectorController fileSelectorController = new FileSelectorController();
         String filename = fileSelectorController.getFileSelector(stage, extensions);
         if (filename == null) {
-            Log.warning("File name not found");
+            Log.warning(FILE_NAME_NOT_FOUND);
             fileNotFoundLabel.setVisible(true);
             return;
         }
@@ -523,12 +511,12 @@ public class AdministratorViewController implements PropertyChangeListener, User
     @FXML
     void importUsers() {
         List<String> extensions = new ArrayList<>();
-        extensions.add("*.json");
+        extensions.add(JSON);
         extensions.add("*.csv");
         FileSelectorController fileSelectorController = new FileSelectorController();
         String filename = fileSelectorController.getFileSelector(stage, extensions);
         if (filename == null) {
-            Log.warning("File name not found");
+            Log.warning(FILE_NAME_NOT_FOUND);
             fileNotFoundLabel.setVisible(true);
             return;
         }
@@ -541,17 +529,17 @@ public class AdministratorViewController implements PropertyChangeListener, User
     }
 
     @FXML
-    void selectCountries(){
+    void selectCountries() {
         FXMLLoader countrySelectionLoader = new FXMLLoader(
                 getClass().getResource("/FXML/countrySelectionView.fxml"));
         Parent root;
         try {
             root = countrySelectionLoader.load();
             CountrySelectionController countrySelectionController = countrySelectionLoader.getController();
-            Stage stage = new Stage();
-            countrySelectionController.init(administrator, stage, appController);
-            stage.setScene(new Scene(root));
-            stage.show();
+            Stage countrySelectStage = new Stage();
+            countrySelectionController.init(administrator, countrySelectStage, appController);
+            countrySelectStage.setScene(new Scene(root));
+            countrySelectStage.show();
             Log.info("successfully launched countrySelectionView pop-up window for admin user name: " + administrator.getUserName());
         } catch (IOException e) {
             Log.severe("failed to load countrySelectionView pop-up window admin user name: " + administrator.getUserName(), e);
@@ -574,100 +562,94 @@ public class AdministratorViewController implements PropertyChangeListener, User
 
         try {
             if (role.isAssignableFrom(Administrator.class)) {
-                //<editor-fold desc="admin handler">
-                Collection<Administrator> existingAdmins = appController.getAdmins();
-                Collection<Administrator> newAdmins = dataHandler.loadAdmins(filename);
-
-                //if imported contains any bad data, throw it out
-                for (Administrator admin : newAdmins) {
-                    if (admin.getUserName() == null) {
-                        throw new InvalidFileException();
-                    }
-                }
-
-                for (Administrator newAdmin : newAdmins) {
-                    if (existingAdmins.contains(newAdmin)) {
-                        appController.updateAdmin(newAdmin);
-                    } else {
-                        appController.addAdmin(newAdmin);
-                    }
-                }
-                saveRole(Administrator.class, appController, appController.getToken());
-                messageBoxPopup("confirm");
-                try {
-                    dataHandler.saveAdmins(appController.getAdmins());
-                    Log.info("successfully imported " + newAdmins.size() + " Admin profiles");
-                } catch (IOException e) {
-                    Log.warning("failed to save newly loaded admins", e);
-                }
-                //</editor-fold>
-
+                importAdminJson(filename);
             } else if (role.isAssignableFrom(Clinician.class)) {
-                //<editor-fold desc="clinician handler">
-                Collection<Clinician> existingClinicians = appController.getClinicians();
-                Collection<Clinician> newClinicians = dataHandler.loadClinicians(filename);
-
-                //if imported contains any bad data, throw it out
-                for (Clinician clinician : newClinicians) {
-                    if (clinician.getStaffId() == null) {
-                        throw new InvalidFileException();
-                    }
-                }
-
-                for (Clinician newClinician : newClinicians) {
-                    if (existingClinicians.contains(newClinician)) {
-                        appController.updateClinicians(newClinician);
-                    } else {
-                        appController.addClinician(newClinician);
-                    }
-                }
-                saveRole(Clinician.class, appController, appController.getToken());
-                messageBoxPopup("confirm");
-                try {
-                    dataHandler.saveClinicians(appController.getClinicians());
-                    Log.info("successfully imported " + newClinicians.size() + " Clinician profiles");
-                } catch (IOException e) {
-                    Log.warning("failed to save newly loaded clinicians", e);
-                }
-                //</editor-fold>
-
+                importClinicianJson(filename);
             } else if (role.isAssignableFrom(User.class)) {
-                //<editor-fold desc="user handler">
-                Collection<User> existingUsers = appController.getUsers();
-                Collection<User> newUsers = dataHandler.loadUsers(filename);
-
-                //if imported contains any bad data, throw it out
-                for (User user : newUsers) {
-                    if (user.getNhi() == null) {
-                        throw new InvalidFileException();
-                    }
-                }
-
-                for (User newUser : newUsers) {
-                    if (existingUsers.contains(newUser)) {
-                        appController.update(newUser);
-                    } else {
-                        appController.addUser(newUser);
-                    }
-                }
-                saveRole(User.class, appController, appController.getToken());
-                //</editor-fold>
+                importUserJson(filename);
             }
 
         } catch (FileNotFoundException e) {
             Log.warning("Failed to load file " + filename, e);
-            messageBoxPopup("error");
+            messageBoxPopup(ERROR);
 
         } catch (InvalidFileException e) {
             Log.warning("File " + filename + " is invalid", e);
-            messageBoxPopup("error");
+            messageBoxPopup(ERROR);
         }
         refreshTables();
     }
 
+    private void importUserJson(String filename) throws FileNotFoundException, InvalidFileException {
+        Collection<User> existingUsers = appController.getUsers();
+        Collection<User> newUsers = dataHandler.loadUsers(filename);
+
+        //if imported contains any bad data, throw it out
+        for (User user : newUsers) {
+            if (user.getNhi() == null) {
+                throw new InvalidFileException();
+            }
+        }
+
+        for (User newUser : newUsers) {
+            if (existingUsers.contains(newUser)) {
+                appController.update(newUser);
+            } else {
+                appController.addUser(newUser);
+            }
+        }
+        saveRole(User.class, appController, appController.getToken());
+    }
+
+    private void importClinicianJson(String filename) throws FileNotFoundException, InvalidFileException {
+        Collection<Clinician> existingClinicians = appController.getClinicians();
+        Collection<Clinician> newClinicians = dataHandler.loadClinicians(filename);
+
+        //if imported contains any bad data, throw it out
+        for (Clinician clinician : newClinicians) {
+            if (clinician.getStaffId() == null) {
+                throw new InvalidFileException();
+            }
+        }
+
+        for (Clinician newClinician : newClinicians) {
+            if (existingClinicians.contains(newClinician)) {
+                appController.updateClinicians(newClinician);
+            } else {
+                appController.addClinician(newClinician);
+            }
+        }
+        saveRole(Clinician.class, appController, appController.getToken());
+        messageBoxPopup("confirm");
+        try {
+            dataHandler.saveClinicians(appController.getClinicians());
+            Log.info("successfully imported " + newClinicians.size() + " Clinician profiles");
+        } catch (IOException e) {
+            Log.warning("failed to save newly loaded clinicians", e);
+        }
+    }
+
+    private void importAdminJson(String filename) throws FileNotFoundException, InvalidFileException {
+        Collection<Administrator> newAdmins = dataHandler.loadAdmins(filename);
+
+        //if imported contains any bad data, throw it out
+        for (Administrator admin : newAdmins) {
+            if (admin.getUserName() == null) {
+                throw new InvalidFileException();
+            }
+        }
+
+        for (Administrator newAdmin : newAdmins) {
+            new Thread(()-> appController.getAdministratorBridge().putAdmin(newAdmin, newAdmin.getUserName(),appController.getToken())).start();
+        }
+        saveRole(Administrator.class, appController, appController.getToken());
+        messageBoxPopup("confirm");
+    }
+
     /**
      * imports a given role from a CSV file
-     * @param role currently only accepts User.class, others will do nothing
+     *
+     * @param role     currently only accepts User.class, others will do nothing
      * @param filename path to the selected .csv file
      */
     private void importRoleCsv(Type role, String filename) {
@@ -676,46 +658,52 @@ public class AdministratorViewController implements PropertyChangeListener, User
             return;
         }
         if (role.equals(User.class)) {
-            try {
-                Collection<User> existingUsers = appController.getUsers();
-                DataHandler csvHandler = new CSVHandler();
-                Collection<User> newUsers = csvHandler.loadUsers(filename);
+            progressIndicator.setVisible(true);
+            progressIndicator.setProgress(ProgressIndicator.INDETERMINATE_PROGRESS);
+            new Thread(() -> {
+                Platform.setImplicitExit(false);
+                Collection<User> newUsers = new ArrayList<>();
+                CSVHandler csvHandler = new CSVHandler();
+                try {
+                    newUsers = csvHandler.loadUsers(filename);
 
-                //if imported contains any bad data, throw it out
-                for (User user : newUsers) {
-                    if (user.getNhi() == null) {
-                        throw new InvalidFileException();
+                    //if imported contains any bad data, throw it out
+                    for (User user : newUsers) {
+                        if (user.getNhi() == null) {
+                            throw new InvalidFileException();
+                        }
                     }
-                }
 
                 for (User user : newUsers) {
-                    if (existingUsers.contains(user)) {
-                        appController.update(user);
-                    } else {
-                        appController.addUser(user);
-                    }
+                    new Thread(() -> appController.getUserBridge().postUser(user)).start();
                 }
                 saveRole(User.class, appController, appController.getToken());
             } catch (FileNotFoundException e) {
                 Log.warning("Failed to load file " + filename, e);
-                messageBoxPopup("error");
+                messageBoxPopup(ERROR);
 
             } catch (InvalidFileException e) {
                 Log.warning(filename + "contained bad data", e);
-                messageBoxPopup("error");
+                messageBoxPopup(ERROR);
             }
-            refreshTables();
+            Platform.runLater(this::refreshTables);
+                final int numberImported = newUsers.size();
+                final int malformed = csvHandler.getMalformed();
+                Platform.runLater(() -> AlertWindowFactory.generateInfoWindow(numberImported + " Users Successfully imported. " +
+                        +malformed + " malformed users discarded"));
+                Platform.runLater(() -> progressIndicator.setVisible(false));
+            }).start();
         }
     }
-
 
 
     /**
      * takes the current contents of the locally stored admins, clinicians, and users and saves them to the database.
      * uses PUT method to update or delete, and POST to append new data
-     * @param type accepts Administrator.class, Clinician.class, or User.class. others types will do nothing
+     *
+     * @param type       accepts Administrator.class, Clinician.class, or User.class. others types will do nothing
      * @param controller AppController instance to use
-     * @param token auth token to use to access the server
+     * @param token      auth token to use to access the server
      */
     private void saveRole(Type type, AppController controller, String token) {
         if (type.equals(Administrator.class)) {
@@ -764,7 +752,7 @@ public class AdministratorViewController implements PropertyChangeListener, User
         confirmAlert.setHeaderText("Load Confirmation");
         confirmAlert.setContentText("File successfully loaded.");
 
-        if (messageType.equals("error")) {
+        if (messageType.equals(ERROR)) {
             errorAlert.showAndWait().ifPresent(rs -> {
                 if (rs == ButtonType.OK) {
                     errorAlert.close();
@@ -815,10 +803,10 @@ public class AdministratorViewController implements PropertyChangeListener, User
             root.requestFocus(); //Currently the below code thinks that focus = selected so will always take the focused
             // thing in currentDiseases over the selected thing in pastDiseases. Trying to fix
             AlertUnclosedWindowsController alertUnclosedWindowsController = alertUnclosedWindowsLoader.getController();
-            Stage stage = new Stage();
-            alertUnclosedWindowsController.init(stage, this);
-            stage.setScene(new Scene(root));
-            stage.show();
+            Stage unclosedWindowStage = new Stage();
+            alertUnclosedWindowsController.init(unclosedWindowStage, this);
+            unclosedWindowStage.setScene(new Scene(root));
+            unclosedWindowStage.show();
         } catch (IOException e) {
             Log.severe("IOException encountered", e);
         }
@@ -1098,12 +1086,14 @@ public class AdministratorViewController implements PropertyChangeListener, User
         alert.setContentText("Are you sure you want to delete this administrator?");
         alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
         Optional<ButtonType> result = alert.showAndWait();
-
+        if (!result.isPresent()) {
+            return;
+        }
         if (result.get() == ButtonType.OK) {
             administrator.setDeleted(true);
+            appController.deleteAdmin(administrator);
             Log.info(messageAdmin + administrator.getUserName() + " Successfully deleted Admin account: ");
             if (owner) {
-                appController.deleteAdmin(administrator);
                 logout();
             } else {
                 stage.close();
@@ -1122,11 +1112,11 @@ public class AdministratorViewController implements PropertyChangeListener, User
         try {
             root = deletedUserLoader.load();
             DeletedUserController deletedUserController = deletedUserLoader.getController();
-            Stage stage = new Stage();
-            stage.setScene(new Scene(root));
+            Stage deleteStage = new Stage();
+            deleteStage.setScene(new Scene(root));
             deletedUserController.init(true);
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.showAndWait();
+            deleteStage.initModality(Modality.APPLICATION_MODAL);
+            deleteStage.showAndWait();
         } catch (IOException e) {
             Log.warning(e.getMessage());
         }
@@ -1150,36 +1140,17 @@ public class AdministratorViewController implements PropertyChangeListener, User
         }
     }
 
-    /**
-     * event handler that fires when a property change event is emitted by any objects the controller is listening to
-     *
-     * @param evt event emitted
-     */
-    @Override
-    public void propertyChange(PropertyChangeEvent evt) {
-        //watches users and clinicians
-        //refresh view on change
-        //if/else not strictly necessary at this stage
-        if (evt.getPropertyName().equals(EventTypes.USER_UPDATE.name())) {
-            refreshTables();
-        } else if (evt.getPropertyName().equals(EventTypes.CLINICIAN_UPDATE.name())) {
-            refreshTables();
-        }
-    }
 
     /**
      * moves the currently active tableview to the next page
      */
     @FXML
     private void goToNextPage() {
-        if (appController.getUserOverviews().size() < ROWS_PER_PAGE && adminUserRadioButton.isSelected()) {
-            return;
-        } else if (appController.getClinicians().size() < ROWS_PER_PAGE && adminClinicianRadioButton.isSelected()) {
-            return;
-        } else if (appController.getAdmins().size() < ROWS_PER_PAGE && adminAdminRadioButton.isSelected()) {
+        if ((appController.getUserOverviews().size() < ROWS_PER_PAGE && adminUserRadioButton.isSelected())
+            || (appController.getClinicians().size() < ROWS_PER_PAGE && adminClinicianRadioButton.isSelected())
+            || (appController.getAdmins().size() < ROWS_PER_PAGE && adminAdminRadioButton.isSelected())){
             return;
         }
-
         if (adminUserRadioButton.isSelected()) {
             userStartIndex += ROWS_PER_PAGE;
             populateUserSearchTable(userStartIndex, ROWS_PER_PAGE, adminSearchField.getText(), regionSearchTextField.getText(), "");
@@ -1271,9 +1242,10 @@ public class AdministratorViewController implements PropertyChangeListener, User
 
     /**
      * Fires the request to search in the admin search table with startIndex = 0
-     * @param startIndex Start index to search from
+     *
+     * @param startIndex  Start index to search from
      * @param rowsPerPage number of results to return
-     * @param name name of the admin
+     * @param name        name of the admin
      */
     private void populateAdminSearchTable(int startIndex, int rowsPerPage, String name) {
         appController.getAdmins().clear();
@@ -1298,5 +1270,39 @@ public class AdministratorViewController implements PropertyChangeListener, User
         setTableOnClickBehaviour(Administrator.class, adminTableView);
     }
 
-
+    /**
+     * handles events fired by objects this is listening to. Currently only handles UpdateNotificationEvents.
+     * upon receiving, the tables and the currently logged-in admin will be updated where relevant
+     *
+     * @param evt PropertyChangeEvent to be handled
+     * @see UpdateNotificationEvent
+     */
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        //clinician controller watches user model
+        //refresh view/tables etc. on change
+        UpdateNotificationEvent event;
+        try {
+            event = (UpdateNotificationEvent) evt;
+        } catch (ClassCastException ex) {
+            return;
+        }
+        if (event == null) {
+            return;
+        }
+        Log.info("refresh listener fired in admin controller");
+        if (event.getType().equals(EventTypes.USER_UPDATE) || event.getType().equals(EventTypes.CLINICIAN_UPDATE)) {
+            refreshTables();
+        } else if (event.getType().equals(EventTypes.ADMIN_UPDATE) && administrator.getUserName().equals(event.getOldIdentifier())) {
+            try {
+                this.administrator = adminBridge.getAdmin(event.getNewIdentifier(), appController.getToken());
+                if (administrator != null) {
+                    displayDetails(); //TODO: fix when we solve the db race 7/8/18 jb
+                }
+            } catch (ApiException ex) {
+                Log.warning("failed to retrieve updated admin. response code: " + ex.getResponseCode(), ex);
+                AlertWindowFactory.generateError(("could not refresh admin from the server. Please check your connection before trying again."));
+            }
+        }
+    }
 }

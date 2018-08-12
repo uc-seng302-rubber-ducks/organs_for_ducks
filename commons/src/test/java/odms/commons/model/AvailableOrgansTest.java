@@ -10,8 +10,8 @@ import java.time.LocalDateTime;
 
 public class AvailableOrgansTest {
 
-    AvailableOrganDetail organDetail;
-    LocalDateTime time;
+    private AvailableOrganDetail organDetail;
+    private LocalDateTime time;
 
     @Before
     public void beforeTest(){
@@ -20,17 +20,32 @@ public class AvailableOrgansTest {
     }
 
     @Test
-    public void testVaildOrgan(){
-        Assert.assertTrue(organDetail.isOrganStillValid(time.plusHours(1)));
+    public void testValidOrgan(){
+        Assert.assertTrue(organDetail.isOrganStillValid(time.plusSeconds(1)));
     }
 
     @Test
-    public void testInvaildOrganJustInvalid(){
-        Assert.assertFalse(organDetail.isOrganStillValid(time.plusHours(24)));
+    public void testInvalidOrganJustInvalid(){
+        Assert.assertFalse(organDetail.isOrganStillValid(time.plusSeconds( Organs.LIVER.getStorageSeconds())));
     }
 
     @Test
-    public void testVaildOrganJustStillValid(){
-        Assert.assertTrue(organDetail.isOrganStillValid(time.plusHours(23).plusMinutes(59)));
+    public void testValidOrganJustStillValid() {
+        Assert.assertTrue(organDetail.isOrganStillValid(time.plusSeconds( Organs.LIVER.getStorageSeconds() - 1)));
+    }
+
+    @Test
+    public void testCalculateExpiryDate() {
+        Assert.assertEquals(time.plusSeconds( Organs.LIVER.getStorageSeconds()), organDetail.getExpiryDate());
+    }
+
+    @Test
+    public void testCalculateTimeRemaining() {
+        Assert.assertEquals(Organs.LIVER.getStorageSeconds(), organDetail.calculateTimeLeft(time));
+    }
+
+    @Test
+    public void testCalculateTimeRemainingShouldBeZero() {
+        Assert.assertEquals(0, organDetail.calculateTimeLeft(time.plusSeconds( Organs.LIVER.getStorageSeconds() + 1)));
     }
 }

@@ -1,5 +1,6 @@
 package odms.commons.utils;
 
+import odms.commons.model._enum.AlcoholLevel;
 import odms.commons.model._enum.BloodTypes;
 
 import java.time.LocalDate;
@@ -12,6 +13,8 @@ import java.time.LocalDate;
  */
 public class AttributeValidation {
 
+    private AttributeValidation() {
+    }
 
     /**
      * Checks that the NHI matches the correct format.
@@ -140,6 +143,26 @@ public class AttributeValidation {
         return true;
     }
 
+    /**
+     * Gets the enum value of AlcoholLevel by iterating through the string literals
+     * and matching them to the given Alcohol Level.
+     *
+     * @param alcoholLvl the alcohol level.
+     * @return True if the provided object is valid
+     */
+    public static boolean validateAlcoholLevel(String alcoholLvl) {
+        if (!alcoholLvl.equals("")) {
+            for (AlcoholLevel lvl : AlcoholLevel.values()) {
+                if ((lvl.toString()).equals(alcoholLvl)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        return true;
+    }
+
 
     /**
      * Checks that the given value can be parsed as a double.
@@ -180,5 +203,14 @@ public class AttributeValidation {
             }
         }
         return false;
+    }
+
+    /**
+     * Checks if the string is in a 24 hour hh:mm format
+     * @param time String to be checked
+     * @return True if string is in correct format
+     */
+    public static boolean validateTimeString(String time) {
+        return time.matches("(([01][0-9])|(2[0-3])):([0-5][0-9])");
     }
 }

@@ -11,6 +11,12 @@ public class ReceiverOrganDetailsHolder {
     private OrganDeregisterReason reason = null; //Reason the organ was no longer needing to be received
 
     /**
+     * Empty constructor
+     */
+    public ReceiverOrganDetailsHolder() {
+    }
+
+    /**
      * Constructor
      *
      * @param startDate LocalDate date of starting needing to receive
@@ -47,29 +53,12 @@ public class ReceiverOrganDetailsHolder {
         reason = why;
     }
 
-    /**
-     * Thought I needed this when I wrote it, but I don't. Useful for debugging though
-     *
-     * @return string to print
-     */
     @Override
     public String toString() {
-        String start = "{\n    Start date: " + startDate.toString() + "\n";
-        String stringStop = "    End Date: ";
-        if (stopDate != null) {
-            stringStop += stopDate.toString() + "\n";
-        } else {
-            stringStop += "N/A\n";
-        }
-
-        String stringReason = "    Reason: ";
-        if (reason != null) {
-            stringReason += reason.toString() + "\n}";
-        } else {
-            stringReason += "N/A\n}";
-        }
-
-        return (start + stringStop + stringReason);
+        return "ReceiverOrganDetails{" +
+                "RegisterDate: " + startDate +
+                "Deregister date: " + stopDate +
+                "Deregister Reason: " + reason;
     }
 
 }

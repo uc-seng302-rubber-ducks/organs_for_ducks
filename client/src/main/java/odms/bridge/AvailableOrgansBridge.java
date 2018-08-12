@@ -42,7 +42,7 @@ public class AvailableOrgansBridge extends Bifrost {
         }
 
         Request request = new Request.Builder().get()
-                .header(TOKEN_HEADER, AppController.getInstance().getToken())
+                .header(tokenHeader, AppController.getInstance().getToken())
                 .url(url.toString()).build();
         client.newCall(request).enqueue(new Callback() {
             @Override
@@ -57,6 +57,9 @@ public class AvailableOrgansBridge extends Bifrost {
                 }
 
                 List<AvailableOrganDetail> availableOrgansDetails = handler.decodeAvailableOrgansList(response);
+                for (AvailableOrganDetail detail : availableOrgansDetails) {
+                    detail.generateProgressTask();
+                }
                 observableList.addAll(availableOrgansDetails);
             }
         });

@@ -46,18 +46,18 @@ public class TransplantBridge extends Bifrost {
         }
         Log.debug(url.toString());
         Request request = new Request.Builder().get()
-                .header(TOKEN_HEADER, AppController.getInstance().getToken())
+                .header(tokenHeader, AppController.getInstance().getToken())
                 .url(url.toString()).build();
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-
+                Log.warning("Could not get transplant list", e);
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 if (200 < response.code() || response.code() > 299) {
-                    throw new ApiException(response.code(), "got response with code outside of 200 range");
+                    throw new ApiException(response.code(), "Response code: " + response.code());
                 }
                 List<TransplantDetails> transplantDetails = handler.decodeTransplantList(response);
                 for (TransplantDetails transplantDetail : transplantDetails) {

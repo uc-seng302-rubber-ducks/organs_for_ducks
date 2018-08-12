@@ -9,14 +9,14 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import javafx.scene.control.cell.ProgressBarTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.util.Duration;
 import odms.commons.model._abstract.UserLauncher;
 import odms.commons.model._enum.Organs;
 import odms.commons.model.datamodel.AvailableOrganDetail;
-import odms.commons.utils.ProgressTask;
+import odms.commons.utils.ProgressBarService;
 import odms.controller.gui.panel.logic.AvailableOrgansLogicController;
+import odms.controller.gui.widget.ProgressBarTableCellFactory;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -45,7 +45,7 @@ public class AvailableOrgansViewController {
     private TableColumn<AvailableOrganDetail, LocalDateTime> deathMomentColumn;
 
     @FXML
-    private TableColumn<ProgressTask, Double> progressBarColumn;
+    private TableColumn<AvailableOrganDetail, ProgressBarService> progressBarColumn;
 
 
     private ObservableList<AvailableOrganDetail> availableOrganDetails = FXCollections.observableList(new ArrayList<>());
@@ -64,27 +64,28 @@ public class AvailableOrgansViewController {
         availableOrganDetails.addListener((ListChangeListener<? super AvailableOrganDetail>) observable -> populateTables());
         regionFilterTextField.setOnKeyPressed(event -> {
             availableOrganDetails.add(new AvailableOrganDetail(Organs.LIVER, "", null, "", "", 0));
-//            pause.setOnFinished(e -> search());
-//            pause.playFromStart();
+            pause.setOnFinished(e -> search());
+            pause.playFromStart();
         });
         initAvailableOrgansTableView();
     }
 
-    private void initAvailableOrgansTableView() {
+    public void initAvailableOrgansTableView() {
         nhiColumn.setCellValueFactory(new PropertyValueFactory<>("donorNhi"));
         regionColumn.setCellValueFactory(new PropertyValueFactory<>("region"));
         organColumn.setCellValueFactory(new PropertyValueFactory<>("organ"));
         deathMomentColumn.setCellValueFactory(new PropertyValueFactory<>("momentOfDeath"));
-        progressBarColumn.setCellValueFactory(new PropertyValueFactory<>("progress"));
-        progressBarColumn.setCellFactory(ProgressBarTableCell.forTableColumn());
+        progressBarColumn.setCellValueFactory(new PropertyValueFactory<>("progressTask"));
+        progressBarColumn.setCellFactory(callback -> ProgressBarTableCellFactory.generateCell(progressBarColumn));
         // figure out how to do progress bars
         search();
         populateTables();
+        availableOrgansTableView.setItems(availableOrganDetails);
     }
 
 
     @FXML
-    private void search() {
+    public void search() {
         logicController.search(0, availableOrganFilterComboBox.getValue(), regionFilterTextField.getText());
     }
 
@@ -99,16 +100,18 @@ public class AvailableOrgansViewController {
     }
 
     public void populateTables() {
-        availableOrgansTableView.setItems(availableOrganDetails);
-
         setOnClickBehaviour();
     }
 
     private void setOnClickBehaviour() {
         availableOrgansTableView.setOnMouseClicked(event -> {
-            if (event.getClickCount() == 2) {
+            if (event.getClickCount() == 2 && availableOrgansTableView.getSelectionModel().getSelectedItem() != null) {
                 parent.launchUser(availableOrgansTableView.getSelectionModel().getSelectedItem().getDonorNhi());
             }
         });
+    }
+
+    public void shutdownThreads() {
+        logicController.shutdownThreads();
     }
 }

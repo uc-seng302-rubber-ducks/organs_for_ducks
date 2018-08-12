@@ -1,17 +1,20 @@
 package odms.controller;
 
 import odms.commons.model.Administrator;
+import odms.commons.model._enum.EventTypes;
 import odms.commons.utils.DBHandler;
 import odms.commons.utils.JDBCDriver;
 import odms.commons.utils.Log;
 import odms.exception.NotFoundException;
 import odms.exception.ServerDBException;
 import odms.security.IsAdmin;
+import odms.socket.SocketHandler;
 import odms.utils.DBManager;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Collection;
@@ -21,11 +24,13 @@ public class AdminController extends BaseController {
 
     private JDBCDriver driver;
     private DBHandler handler;
+    private SocketHandler socketHandler;
 
-    public AdminController(DBManager manager) throws SQLException {
+    public AdminController(DBManager manager, SocketHandler socketHandler) throws SQLException {
         super(manager);
         driver = super.getDriver();
         handler = super.getHandler();
+        this.socketHandler = socketHandler;
         if (!handler.getExists(driver.getConnection(), Administrator.class, "default")) {
             Administrator administrator = new Administrator("default", "default", "", "", "admin");
             handler.saveAdministrator(administrator, driver.getConnection());
@@ -52,11 +57,14 @@ public class AdminController extends BaseController {
     public ResponseEntity postAdministrator(@RequestBody Administrator newAdmin) throws SQLException {
         try (Connection connection = driver.getConnection()) {
             handler.saveAdministrator(newAdmin, connection);
-            return new ResponseEntity(HttpStatus.ACCEPTED);
+            socketHandler.broadcast(EventTypes.ADMIN_UPDATE, newAdmin.getUserName(), newAdmin.getUserName());
         } catch (SQLException ex) {
             Log.severe("cannot put administrator", ex);
             throw new ServerDBException(ex);
+        } catch (IOException ex) {
+            Log.warning("failed to broadcast update after posting admin", ex);
         }
+        return new ResponseEntity(HttpStatus.ACCEPTED);
     }
 
     @IsAdmin
@@ -80,9 +88,12 @@ public class AdminController extends BaseController {
     public ResponseEntity putAdministrator(@PathVariable("username") String username, @RequestBody Administrator administrator) throws SQLException {
         try (Connection connection = driver.getConnection()) {
             handler.updateAdministrator(connection, username, administrator);
+            socketHandler.broadcast(EventTypes.ADMIN_UPDATE, username, administrator.getUserName());
         } catch (SQLException ex) {
             Log.severe("cannot put administrator " + username, ex);
             throw new ServerDBException(ex);
+        } catch (IOException ex) {
+            Log.warning("failed to broadcast update after putting admin", ex);
         }
         return new ResponseEntity(HttpStatus.OK);
     }
@@ -92,9 +103,12 @@ public class AdminController extends BaseController {
     public ResponseEntity deleteAdministrator(@PathVariable("username") String username) {
         try (Connection connection = driver.getConnection()) {
             handler.deleteAdministrator(connection, username);
+            socketHandler.broadcast(EventTypes.ADMIN_UPDATE, username, null);
         } catch (SQLException ex) {
             Log.severe("cannot delete administrator", ex);
             throw new ServerDBException(ex);
+        } catch (IOException ex) {
+            Log.warning("failed to broadcast update after deleting admin", ex);
         }
         return new ResponseEntity(HttpStatus.OK);
     }

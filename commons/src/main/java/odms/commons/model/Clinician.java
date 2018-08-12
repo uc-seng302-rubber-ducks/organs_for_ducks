@@ -40,13 +40,14 @@ public class Clinician extends Undoable<Clinician> implements Listenable {
     @Expose
     private String lastName;
     private String salt;
-    private transient PropertyChangeSupport pcs;
+    private transient PropertyChangeSupport pcs;//NOSONAR
 
     @Expose
-    private String profilePhotoFilePath;
+    private transient String profilePhotoFilePath;//NOSONAR
 
-    //TODO make all updates to the clinician add to this 22/6
-    private transient List<Change> changes;
+
+    private transient List<Change> changes;//NOSONAR
+
 
     public Clinician() {
         this.staffId = "";
@@ -304,6 +305,12 @@ public class Clinician extends Undoable<Clinician> implements Listenable {
         setDateLastModified(LocalDateTime.now());
     }
 
+    public void setRegionNoUndo(String region) {
+        workContactDetails.setRegion(region);
+        addChange(new Change("set region to " + region));
+        setDateLastModified(LocalDateTime.now());
+    }
+
     /**
      * Public so that it can be stored within the database
      * No one else should be able to retrieve password
@@ -432,7 +439,7 @@ public class Clinician extends Undoable<Clinician> implements Listenable {
 
         Address workAddress = new Address(clinician.getStreetNumber(), clinician.getStreetName(),
                 clinician.getNeighborhood(), clinician.getCity(), clinician.getRegion(), clinician.getZipCode(), clinician.getCountry());
-        newClinician.workContactDetails = new ContactDetails("", "", workAddress, "");;
+        newClinician.workContactDetails = new ContactDetails("", "", workAddress, "");
 
         newClinician.dateCreated = clinician.dateCreated;
         newClinician.dateLastModified = clinician.dateLastModified;
