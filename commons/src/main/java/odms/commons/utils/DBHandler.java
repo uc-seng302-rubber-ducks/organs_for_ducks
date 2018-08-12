@@ -12,7 +12,6 @@ import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.sql.*;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.*;
 
 public class DBHandler {
@@ -1151,13 +1150,17 @@ public class DBHandler {
             preparedStatement.setInt(7,startIndex);
             try(ResultSet resultSet = preparedStatement.executeQuery()){
                 while(resultSet.next()) {
-                    AvailableOrganDetail organDetail = new AvailableOrganDetail(Organs.valueOf(resultSet.getString("organName")),
-                            resultSet.getString("fkUserNhi"),
-                            resultSet.getTimestamp("momentOfDeath").toLocalDateTime(),
-                            resultSet.getString("region"),
-                            resultSet.getString("bloodType"));
-                    if (organDetail.isOrganStillValid()) {
-                        results.add(organDetail);
+                    try {
+                        AvailableOrganDetail organDetail = new AvailableOrganDetail(Organs.valueOf(resultSet.getString("organName")),
+                                resultSet.getString("fkUserNhi"),
+                                resultSet.getTimestamp("momentOfDeath").toLocalDateTime(),
+                                resultSet.getString("region"),
+                                resultSet.getString("bloodType"));
+                        if (organDetail.isOrganStillValid()) {
+                            results.add(organDetail);
+                        }
+                    } catch (NullPointerException e){
+                        Log.info("User who is not dead is present in the DeathDetails table");
                     }
                 }
             }
