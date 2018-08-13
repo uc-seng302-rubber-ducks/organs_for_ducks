@@ -15,6 +15,7 @@ import odms.controller.AppController;
 import odms.controller.gui.widget.ProgressBarTableCellFactory;
 import odms.controller.gui.window.UserController;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -38,6 +39,12 @@ public class DonationTabPageController {
     private TableColumn<OrgansWithExpiry, ProgressTask> organExpiryColumn;
 
     @FXML
+    private TableColumn<OrgansWithExpiry, LocalDateTime> manualExpiryTimeColumn;
+
+    @FXML
+    private TableColumn<OrgansWithExpiry, String> expiryStaffIdColumn;
+
+    @FXML
     private TableColumn<OrgansWithExpiry, String> expiryReasonColumn;
 
     private User currentUser;
@@ -58,6 +65,8 @@ public class DonationTabPageController {
 
         donatingOrganColumn.setCellValueFactory(new PropertyValueFactory<>("organType"));
         expiryReasonColumn.setCellValueFactory(new PropertyValueFactory<>("reason"));
+        manualExpiryTimeColumn.setCellValueFactory(new PropertyValueFactory<>("expiryTime"));
+        expiryStaffIdColumn.setCellValueFactory(new PropertyValueFactory<>("staffId"));
         organExpiryColumn.setCellValueFactory(new PropertyValueFactory<>("progressTask"));
         organExpiryColumn.setCellFactory(callback -> ProgressBarTableCellFactory.generateCell(organExpiryColumn));
 
@@ -88,9 +97,7 @@ public class DonationTabPageController {
 
         ArrayList<Organs> leftOverOrgans = new ArrayList<>();
         Collections.addAll(leftOverOrgans, Organs.values());
-        for (Organs o : donating) {
-            leftOverOrgans.remove(o);
-        }
+        leftOverOrgans.removeAll(donating);
         canDonate.setItems(FXCollections.observableList(leftOverOrgans));
     }
 
