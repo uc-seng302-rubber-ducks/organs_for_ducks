@@ -16,12 +16,19 @@ public class ProgressTask extends Task<Void> {
     private LocalDateTime death;
     private int startTime;
     private ProgressBar bar;
+    private double lowerBound = 0.0;
+    private double colourPercent = 0.0;
 
     public ProgressTask(LocalDateTime death, Organs organ) {
         this.organ = organ;
         this.death = death;
         this.time = ((double) death.until(death.plusSeconds(organ.getUpperBoundSeconds()), ChronoUnit.SECONDS));
         this.startTime = (int) death.until(LocalDateTime.now(), ChronoUnit.SECONDS);
+        if (organ.getUpperBoundSeconds() != organ.getLowerBoundSeconds()) {
+            this.lowerBound = 1.0 - (organ.getLowerBoundSeconds() / organ.getUpperBoundSeconds());
+            colourPercent = Math.round(this.lowerBound * 100);
+        }
+
 
     }
 
@@ -44,9 +51,6 @@ public class ProgressTask extends Task<Void> {
     }
 
     private String getColorStyle(double progress) {
-        boolean lowerBound = true;
-        double lowerboundd = 0.3;
-        // this doesn't work yet =/
         String green;
         String red;
         int colourNum;
@@ -56,7 +60,6 @@ public class ProgressTask extends Task<Void> {
             if (green.length() == 1) {
                 green = "0" + green;
             }
-
             red = "ff";
         } else {
             colourNum = (int) Math.round(((1 - progress) * 2) * 255);
@@ -66,20 +69,15 @@ public class ProgressTask extends Task<Void> {
             }
             green = "ff";
         }
-
-
         String colour = "#" + red + green + "00";
-        if (lowerBound) {
             // remove all green color from the  back ground
-            if (progress <= lowerboundd) {
+        if (progress <= (this.lowerBound)) {
                 // replace this when organs have a lower bound
                 colour = "#" + red + "00" + "00";
             }
-            return "-fx-accent: " + colour + "; -fx-control-inner-background: rgba(255, 255, 255, 0.1);  -fx-background-color: linear-gradient(to left, green , green 30% , transparent 30%); ";
-        } else {
-            return "-fx-accent: " + colour + "; -fx-control-inner-background: rgba(255, 255, 255, 0.1);";
+        return "-fx-accent: " + colour + "; -fx-control-inner-background: rgba(255, 255, 255, 0.1);  -fx-background-color: linear-gradient(to left, Maroon , Maroon " + colourPercent + "% , transparent " + colourPercent + "%); ";
         }
-    }
+
 
     private String getTimeRemaining() {
         int hours = (int) HOURS.between(LocalDateTime.now(), death.plusSeconds(organ.getUpperBoundSeconds()));
