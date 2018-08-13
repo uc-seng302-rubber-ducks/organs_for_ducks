@@ -2,6 +2,9 @@ package odms.controller.gui.panel.logic;
 
 import odms.commons.model.Clinician;
 import odms.commons.model.datamodel.AvailableOrganDetail;
+import odms.commons.model.datamodel.ExpiryReason;
+
+import java.time.LocalDateTime;
 
 public class OrganExpiryLogicController {
     private AvailableOrganDetail organDetail;
@@ -13,6 +16,6 @@ public class OrganExpiryLogicController {
     }
 
     public void setExpiryReason(String reason) {
-        //organDetail.setExpiryReason(new ExpiryReason(clinician.getStaffId(), LocalDateTime.now(), reason));
+        organDetail.setExpiryReason(new ExpiryReason(clinician.getStaffId(), LocalDateTime.now(), reason));
     }
 }
