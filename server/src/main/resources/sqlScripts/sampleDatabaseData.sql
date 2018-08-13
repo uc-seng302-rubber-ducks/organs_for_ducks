@@ -119,6 +119,6 @@ INSERT INTO PasswordDetails(password_id, fkAdminUserName, fkStaffId, hash, salt)
   -65, -104, 56, -85, 73, -74, 123, -87, -13, 40, 9, 3, 44, -64, -105, 120, 47, -23, -63, 31, 51, 49, 23, -77,
   -10, 60, -29, -120, 117]');
 
-INSERT INTO DeathDetails(fkUserNhi, dateOfDeath, timeOfDeath, city, region, country) VALUES
-  ('ABC1234', '2018-08-05', '03:22','Christchurch','Canterbury','New Zealand'),
-  ('XYZ4321', '1988-01-02', '18:20','Singapore', "",'Singapore');
+INSERT INTO DeathDetails(fkUserNhi, momentOfDeath, city, region, country) VALUES
+  ('ABC1234', '2018-08-05 03:22','Christchurch','Canterbury','New Zealand'),
+  ('XYZ4321', '1988-01-02 18:20','Singapore', "",'Singapore');

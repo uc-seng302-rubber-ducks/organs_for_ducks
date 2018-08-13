@@ -12,6 +12,7 @@ import picocli.CommandLine.Parameters;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.List;
 
 
 @Command(name = "user", description = "nhi, first name and dob are required. All others are optional and must be tagged")
@@ -233,11 +234,14 @@ public class CreateUser implements Runnable {
         }
 
         if (country != null) {
-            if (!AttributeValidation.checkString(country.replaceAll("_", " "))) {
-                IoHelper.display("Invalid country");
+            List<String> allowedCountries = controller.getAllowedCountries();
+            if (allowedCountries.contains(country.replaceAll("_", " "))) {
+                user.setCountry(country.replaceAll("_", " "));
+            } else {
+                IoHelper.display(country + " is not one of the allowed countries\n" +
+                        "For a list of the allowed countries use the command 'view countries'");
                 return;
             }
-            user.setCountry(country.replaceAll("_", " "));
         }
 
         if (streetName != null) {
@@ -275,6 +279,9 @@ public class CreateUser implements Runnable {
         if (region != null) {
             if (!AttributeValidation.checkString(region.replaceAll("_", " "))) {
                 IoHelper.display("Invalid region");
+                return;
+            } else if (user.getCountry().equals("New Zealand") && !controller.getAllNZRegion().contains(region.replaceAll("_", " "))) {
+                IoHelper.display("A New Zealand region must be given");
                 return;
             }
             user.setRegion(region.replaceAll("_", " "));

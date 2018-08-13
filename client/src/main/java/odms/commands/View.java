@@ -9,7 +9,7 @@ import picocli.CommandLine.Parameters;
 
 import java.io.IOException;
 
-@Command(name = "view", description = "View a specific user, clinician or admin",subcommands = {ViewAll.class})
+@Command(name = "view", description = "View a specific user, clinician or admin", subcommands = {ViewAll.class, ViewCountries.class})
 public class View implements Runnable {
 
     private AppController appController = AppController.getInstance();
