@@ -1,29 +1,46 @@
 package odms.commons.model.datamodel;
 
-import javafx.concurrent.Service;
+import odms.commons.model._abstract.Listenable;
 import odms.commons.model._enum.Organs;
-import odms.commons.utils.ProgressBarService;
-import static java.time.temporal.ChronoUnit.SECONDS;
+import odms.commons.utils.ProgressTask;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.time.LocalDateTime;
 
-public class AvailableOrganDetail {
+import static java.time.temporal.ChronoUnit.SECONDS;
+
+public class AvailableOrganDetail implements Listenable {
     private Organs organ;
     private String donorNhi;
     private LocalDateTime momentOfDeath;
     private LocalDateTime expiryDate;
     private String region;
     private String bloodType;
-    private transient ProgressBarService progressTask; //NOSONAR
+    private transient ProgressTask progressTask; //NOSONAR
+    private transient PropertyChangeSupport pcs; //NOSONAR
+    private long age;
 
-    public AvailableOrganDetail(Organs organ, String nhi, LocalDateTime momentOfDeath, String region, String bloodType) {
+    public AvailableOrganDetail(Organs organ, String nhi, LocalDateTime momentOfDeath, String region, String bloodType, long age) {
         this.organ = organ;
         this.donorNhi = nhi;
         this.momentOfDeath = momentOfDeath;
         this.region = region;
         this.bloodType = bloodType;
-        this.progressTask = new ProgressBarService(momentOfDeath, organ);
+        this.progressTask = new ProgressTask(this);
         this.expiryDate = calculateExpiryDate(momentOfDeath, organ);
+        this.age = age;
+        this.pcs = new PropertyChangeSupport(this);
+    }
+
+    public AvailableOrganDetail() {
+        this.donorNhi = "";
+        this.momentOfDeath = null;
+        this.organ = null;
+        this.region = "";
+        this.bloodType = "";
+        this.pcs = new PropertyChangeSupport(this);
     }
 
     public Organs getOrgan() {
@@ -66,6 +83,13 @@ public class AvailableOrganDetail {
         this.donorNhi = donorNhi;
     }
 
+    public long getAge() {
+        return age;
+    }
+
+    public void setAge(long age) {
+        this.age = age;
+    }
     public LocalDateTime getExpiryDate() {
         return this.expiryDate;
     }
@@ -75,7 +99,7 @@ public class AvailableOrganDetail {
     }
 
     public void generateProgressTask() {
-        this.progressTask = new ProgressBarService(momentOfDeath, organ);
+        this.progressTask = new ProgressTask(this);
     }
 
     /**
@@ -83,10 +107,10 @@ public class AvailableOrganDetail {
      *
      * @param timeToaskabout time that the organ needs to be valid at.
      *
-     * @return trtue if valid; false if not
+     * @return true if valid; false if not
      */
     public boolean isOrganStillValid(LocalDateTime timeToaskabout) {
-        long secondsOrganIsViable = organ.getStorageSeconds();
+        long secondsOrganIsViable = organ.getUpperBoundSeconds();
         return (timeToaskabout.isBefore(momentOfDeath.plusSeconds(secondsOrganIsViable)));
     }
 
@@ -118,11 +142,32 @@ public class AvailableOrganDetail {
      * @return LocalDateTime of when the organ will expire
      */
     private LocalDateTime calculateExpiryDate(LocalDateTime timeOfDeath, Organs organType) {
-        long expiryTime = organType.getStorageSeconds();
+        long expiryTime = organType.getUpperBoundSeconds();
         return timeOfDeath.plusSeconds(expiryTime);
     }
 
-    public Service getProgressTask() {
+    public ProgressTask getProgressTask() {
         return progressTask;
+    }
+
+    public void setDone(boolean done) {
+        if (done) {
+            fire(new PropertyChangeEvent(this, "done", false, true));
+        }
+    }
+
+    @Override
+    public void addPropertyChangeListener(PropertyChangeListener listener) {
+        pcs.addPropertyChangeListener(listener);
+    }
+
+    @Override
+    public void removePropertyChangeListener(PropertyChangeListener listener) {
+        pcs.removePropertyChangeListener(listener);
+    }
+
+    @Override
+    public void fire(PropertyChangeEvent event) {
+        pcs.firePropertyChange(event);
     }
 }

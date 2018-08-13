@@ -378,5 +378,15 @@ public class JsonHandler extends DataHandler {
         return new Gson().fromJson(response.body().string(), new TypeToken<List<AvailableOrganDetail>>() {
         }.getType());
     }
+
+    /**
+     * converts a raw response into a list of matching organs
+     * @param response response to decode
+     * @return a map of matching organs. will return empty map if none
+     */
+    public Map<AvailableOrganDetail, List<TransplantDetails>> decodeMatchingOrgansList(Response response) throws IOException {
+        return new Gson().fromJson(response.body().string(), new TypeToken<Map<AvailableOrganDetail, List<TransplantDetails>>>() {
+        }.getType());
+    }
 }
 
