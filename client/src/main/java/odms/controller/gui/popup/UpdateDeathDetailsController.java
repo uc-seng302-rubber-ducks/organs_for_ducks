@@ -46,6 +46,9 @@ public class UpdateDeathDetailsController {
     private Label updateDeathDetailsErrorLabel;
 
     @FXML
+    private Label updateDeathDetailsOverrideWarningLabel;
+
+    @FXML
     private Button removeUpdateDeathDetailsButton;
 
 
@@ -68,6 +71,15 @@ public class UpdateDeathDetailsController {
 
         stage.setTitle(currentUser.getNhi());
         updateDeathDetailsErrorLabel.setVisible(false);
+        updateDeathDetailsOverrideWarningLabel.setVisible(false);
+
+        if (false/*todo user has a manually expired organ*/) {
+            updateDeathDetailsOverrideWarningLabel.setVisible(true);
+            removeUpdateDeathDetailsButton.setDisable(true);
+            updateDeathDetailsDatePicker.setDisable(true);
+            updateDeathDetailsTimeTextField.setDisable(true);
+        }
+
         if (currentUser.getMomentDeath() == null) {
             removeUpdateDeathDetailsButton.setDisable(true);
         }
