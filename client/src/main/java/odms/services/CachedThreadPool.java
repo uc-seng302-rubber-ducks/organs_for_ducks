@@ -13,4 +13,15 @@ public class CachedThreadPool {
     private CachedThreadPool() {
         executor = Executors.newCachedThreadPool();
     }
+
+    public static CachedThreadPool getThreadPool() {
+        if (pool == null) {
+            pool = new CachedThreadPool();
+        }
+        return pool;
+    }
+
+    public ExecutorService getExecutor() {
+        return executor;
+    }
 }

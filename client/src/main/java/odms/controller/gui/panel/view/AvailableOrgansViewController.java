@@ -14,7 +14,7 @@ import javafx.util.Duration;
 import odms.commons.model._abstract.UserLauncher;
 import odms.commons.model._enum.Organs;
 import odms.commons.model.datamodel.AvailableOrganDetail;
-import odms.commons.utils.ProgressBarService;
+import odms.commons.utils.ProgressTask;
 import odms.controller.gui.panel.logic.AvailableOrgansLogicController;
 import odms.controller.gui.widget.ProgressBarTableCellFactory;
 
@@ -45,7 +45,7 @@ public class AvailableOrgansViewController {
     private TableColumn<AvailableOrganDetail, LocalDateTime> deathMomentColumn;
 
     @FXML
-    private TableColumn<AvailableOrganDetail, ProgressBarService> progressBarColumn;
+    private TableColumn<AvailableOrganDetail, ProgressTask> progressBarColumn;
 
 
     private ObservableList<AvailableOrganDetail> availableOrganDetails = FXCollections.observableList(new ArrayList<>());
