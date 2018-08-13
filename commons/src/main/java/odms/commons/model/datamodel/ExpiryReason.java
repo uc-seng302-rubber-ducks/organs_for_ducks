@@ -16,6 +16,12 @@ public class ExpiryReason {
         this.reason = reason;
     }
 
+    public ExpiryReason() {
+        this.clinicianId = "";
+        this.timeOrganExpired = null;
+        this.reason = "";
+    }
+
     public String getClinicianId() {
         return clinicianId;
     }

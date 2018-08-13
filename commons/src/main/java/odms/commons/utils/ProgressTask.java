@@ -5,6 +5,7 @@ import javafx.concurrent.Task;
 import javafx.scene.control.ProgressBar;
 import odms.commons.model._enum.Organs;
 import odms.commons.model.datamodel.AvailableOrganDetail;
+import odms.commons.model.datamodel.OrgansWithExpiry;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -31,8 +32,17 @@ public class ProgressTask extends Task<Void> {
             this.lowerBound = 1.0 - (organ.getLowerBoundSeconds() / organ.getUpperBoundSeconds());
             colourPercent = Math.round(this.lowerBound * 100);
         }
+    }
 
-
+    public ProgressTask(OrgansWithExpiry detail, LocalDateTime momentOfDeath) {
+        this.organ = detail.getOrganType();
+        this.death = momentOfDeath;
+        this.time = ((double) death.until(death.plusSeconds(organ.getUpperBoundSeconds()), ChronoUnit.SECONDS));
+        this.startTime = (int) death.until(LocalDateTime.now(), ChronoUnit.SECONDS);
+        if (organ.getUpperBoundSeconds() != organ.getLowerBoundSeconds()) {
+            this.lowerBound = 1.0 - (organ.getLowerBoundSeconds() / organ.getUpperBoundSeconds());
+            colourPercent = Math.round(this.lowerBound * 100);
+        }
     }
 
     @Override
@@ -49,7 +59,11 @@ public class ProgressTask extends Task<Void> {
             Platform.runLater(() -> bar.setStyle(getColorStyle(((time - finalI) / time))));
             Thread.sleep(1000);
         }
-        detail.setDone(true);
+
+        if (detail != null) {
+            detail.setDone(true);
+        }
+
         this.updateProgress(1, 1);
         return null;
     }

@@ -7,9 +7,10 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import odms.commons.model.User;
 import odms.commons.model._enum.Organs;
+import odms.commons.model.datamodel.ExpiryReason;
 import odms.commons.model.datamodel.OrgansWithExpiry;
 import odms.commons.utils.Log;
-import odms.commons.utils.ProgressBarService;
+import odms.commons.utils.ProgressTask;
 import odms.controller.AppController;
 import odms.controller.gui.widget.ProgressBarTableCellFactory;
 import odms.controller.gui.window.UserController;
@@ -17,6 +18,7 @@ import odms.controller.gui.window.UserController;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 public class DonationTabPageController {
 
@@ -33,7 +35,7 @@ public class DonationTabPageController {
     private TableColumn<OrgansWithExpiry, String> donatingOrganColumn;
 
     @FXML
-    private TableColumn<OrgansWithExpiry, ProgressBarService> organExpiryColumn;
+    private TableColumn<OrgansWithExpiry, ProgressTask> organExpiryColumn;
 
     @FXML
     private TableColumn<OrgansWithExpiry, String> expiryReasonColumn;
@@ -55,7 +57,7 @@ public class DonationTabPageController {
         this.parent = parent;
 
         donatingOrganColumn.setCellValueFactory(new PropertyValueFactory<>("organType"));
-        expiryReasonColumn.setCellValueFactory(new PropertyValueFactory<>("expiryReason"));
+        expiryReasonColumn.setCellValueFactory(new PropertyValueFactory<>("reason"));
         organExpiryColumn.setCellValueFactory(new PropertyValueFactory<>("progressTask"));
         organExpiryColumn.setCellFactory(callback -> ProgressBarTableCellFactory.generateCell(organExpiryColumn));
 
@@ -77,7 +79,7 @@ public class DonationTabPageController {
         }
 
         if (user.getMomentDeath() != null) {
-            populateTableView(donating);
+            populateTableView(currentUser.getDonorDetails().getOrganMap());
         } else {
             currentlyDonating.setVisible(false);
             currentOrgans.setVisible(true);
@@ -96,15 +98,15 @@ public class DonationTabPageController {
      * Populates the table view of currently donating organs.
      * This is only populated when the donor is deceased.
      *
-     * @param donating An array list of the organs the user is donating
+     * @param organsExpiryReasonMap A map containing key,value pairs of organs and expiry reasons
      */
-    private void populateTableView(ArrayList<Organs> donating) {
+    private void populateTableView(Map<Organs, ExpiryReason> organsExpiryReasonMap) {
         currentOrgans.setVisible(false);
         currentlyDonating.setVisible(true);
 
         List<OrgansWithExpiry> results = new ArrayList<>();
-        for (Organs organ : donating) {
-            results.add(new OrgansWithExpiry(organ, currentUser.getMomentDeath()));
+        for (Map.Entry<Organs, ExpiryReason> organEntry : organsExpiryReasonMap.entrySet()) {
+            results.add(new OrgansWithExpiry(organEntry.getKey(), organEntry.getValue(), currentUser.getMomentDeath()));
         }
 
         ObservableList<OrgansWithExpiry> donatingOrgans = FXCollections.observableArrayList(results);
@@ -124,7 +126,7 @@ public class DonationTabPageController {
             Organs toDonate = canDonate.getSelectionModel().getSelectedItem();
 
             if (currentUser.getMomentDeath() != null) {
-                currentlyDonating.getItems().add(new OrgansWithExpiry(toDonate, currentUser.getMomentDeath()));
+                currentlyDonating.getItems().add(new OrgansWithExpiry(toDonate, new ExpiryReason(), currentUser.getMomentDeath()));
             } else {
                 currentOrgans.getItems().add(toDonate);
             }
