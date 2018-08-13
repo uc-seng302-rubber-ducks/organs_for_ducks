@@ -10,13 +10,11 @@ import java.time.temporal.ChronoUnit;
 public class ProgressTask extends Task<Void> {
     private final Double time;
     private Organs organ;
-    private LocalDateTime death;
     private int startTime;
     private ProgressBar bar;
 
     public ProgressTask(LocalDateTime death, Organs organ) {
         this.organ = organ;
-        this.death = death;
         this.time = ((double) death.until(death.plusSeconds((long) organ.getStorageSeconds()), ChronoUnit.SECONDS));
         this.startTime = (int) death.until(LocalDateTime.now(), ChronoUnit.SECONDS);
 
@@ -63,7 +61,7 @@ public class ProgressTask extends Task<Void> {
 
         String colour = "#" + red + green + "00";
 
-        return "-fx-accent: " + colour;
+        return "-fx-accent: " + colour + "; -fx-control-inner-background: rgba(255, 255, 255, 0.1);  -fx-background-color: linear-gradient(to left, green , green 60% , transparent 60%); ";
     }
 
     private String getTimeRemaining() {
