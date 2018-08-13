@@ -8,7 +8,7 @@ import picocli.CommandLine.Option;
 
 import java.util.Set;
 
-@CommandLine.Command(name = "all", description = "view all currently registered users based on set parameters. " +
+@CommandLine.Command(name = "all", description = "View all currently registered users based on set parameters. " +
         "Returns an overview of each user, to view more use view <nhi>")
 public class ViewAll implements Runnable {
 
