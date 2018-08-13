@@ -180,7 +180,7 @@ public class OrganRankerTests {
         availableOrganDetails.add(new AvailableOrganDetail(Organs.LIVER, "abc1234", time, "Southland", "A+" , 30));
 
 
-        transplantsWaiting.add(new TransplantDetails("abc1222", "", Organs.LIVER,
+        transplantsWaiting.add(new TransplantDetails("abc1222", "", Organs.HEART,
                 LocalDate.of(2018, 7,7), "Northland", 30  ,"A+"));
 
 

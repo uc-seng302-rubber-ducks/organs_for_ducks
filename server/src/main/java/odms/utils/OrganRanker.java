@@ -46,7 +46,7 @@ public class OrganRanker {
             List<TransplantDetails> matches = new ArrayList<>();
             LocalDateTime death = organAvailable.getMomentOfDeath();
             Organs organ = organAvailable.getOrgan();
-            double timeRemaining = death.until(death.plusSeconds(organ.getStorageSeconds()), ChronoUnit.SECONDS);
+            double timeRemaining = death.until(death.plusSeconds(organ.getUpperBoundSeconds()), ChronoUnit.SECONDS);
             for (TransplantDetails awaitingTransplant : waitingTransplants) {
                 if (awaitingTransplant.getOrgan() != organAvailable.getOrgan()) {
                     continue;
