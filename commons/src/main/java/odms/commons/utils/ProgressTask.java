@@ -65,7 +65,7 @@ public class ProgressTask extends Task<Void> {
         if (detail != null) {
             detail.setDone(true);
         } else {
-            expiryDetails.setDone(true);
+            bar.setStyle("-fx-accent: red;");
         }
 
         this.updateProgress(1, 1);
