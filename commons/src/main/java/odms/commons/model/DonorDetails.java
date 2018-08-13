@@ -61,6 +61,11 @@ public class DonorDetails {
             attachedUser.addChange(new Change("Added organ " + organ.toString()));
 
             boolean changed = false;
+
+            if (reason == null) {
+                reason = new ExpiryReason();
+            }
+
             if (!organs.containsKey(organ)) {
                 organs.put(organ, reason);
                 changed = true;
