@@ -1,6 +1,7 @@
 package odms.controller.gui.panel.view;
 
 import javafx.animation.PauseTransition;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -157,7 +158,7 @@ public class AvailableOrgansViewController {
         sortedAvailableOrganDetails = new SortedList<>(filteredAvailableOrganDetails);
         sortedAvailableOrganDetails.comparatorProperty().bind(availableOrgansTableView.comparatorProperty());
         availableOrgansTableView.setItems(sortedAvailableOrganDetails);
-        availableOrgansTableView.getSortOrder().add(progressBarColumn); //TODO:need to find a way for tableview to execute the organ time remaining comparator when table is fully initialised rather than executing the comparator of first column (Donor column) - 12/8
+        Platform.runLater(() -> availableOrgansTableView.getSortOrder().add(progressBarColumn));
         setOnClickBehaviour();
     }
 
