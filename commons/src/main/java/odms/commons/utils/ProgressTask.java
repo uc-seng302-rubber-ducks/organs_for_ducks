@@ -94,4 +94,22 @@ public class ProgressTask extends Task<Void> {
         this.bar = progressBar;
     }
 
+    /**
+     * Uses the organs expiry date to return the seconds left until the organ expires
+     *
+     * @param fromThisTime time to calculate expiry time for. Will most often be LocalDateTime.now()
+     *
+     * @return long value of how many seconds are left
+     */
+    public long calculateTimeLeft(LocalDateTime fromThisTime) {
+        long timeLeft = SECONDS.between(fromThisTime, death.plusSeconds(organ.getUpperBoundSeconds()));
+        if (timeLeft < 0) {
+            return 0;
+        } else {
+            return timeLeft;
+        }
+    }
+
+
+
 }

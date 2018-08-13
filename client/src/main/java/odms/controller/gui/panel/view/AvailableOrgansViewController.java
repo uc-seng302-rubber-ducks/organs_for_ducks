@@ -1,6 +1,7 @@
 package odms.controller.gui.panel.view;
 
 import javafx.animation.PauseTransition;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -23,6 +24,7 @@ import odms.controller.gui.widget.ProgressBarTableCellFactory;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 
 public class AvailableOrgansViewController {
 
@@ -101,8 +103,11 @@ public class AvailableOrgansViewController {
         // figure out how to do progress bars
         search();
         populateTables();
-        availableOrgansTableView.setItems(sortedAvailableOrganDetails);
+        progressBarColumn.setSortType(TableColumn.SortType.ASCENDING);
+        progressBarColumn.setComparator(organTimeLeftComparator);
     }
+
+    private Comparator<ProgressTask> organTimeLeftComparator = Comparator.comparingLong(p -> p.calculateTimeLeft(LocalDateTime.now()));
 
     private void initMatchesTable(){
         TableColumn matchesNhiColumn = new TableColumn("NHI");
@@ -152,6 +157,9 @@ public class AvailableOrgansViewController {
         FilteredList<AvailableOrganDetail> filteredAvailableOrganDetails = new FilteredList<>(availableOrganDetails);
         filteredAvailableOrganDetails.setPredicate(AvailableOrganDetail::isOrganStillValid);
         sortedAvailableOrganDetails = new SortedList<>(filteredAvailableOrganDetails);
+        sortedAvailableOrganDetails.comparatorProperty().bind(availableOrgansTableView.comparatorProperty());
+        availableOrgansTableView.setItems(sortedAvailableOrganDetails);
+        Platform.runLater(() -> availableOrgansTableView.getSortOrder().add(progressBarColumn));
         setOnClickBehaviour();
     }
 
