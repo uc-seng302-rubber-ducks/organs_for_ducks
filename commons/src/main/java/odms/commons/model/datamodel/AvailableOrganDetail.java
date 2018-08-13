@@ -1,9 +1,13 @@
 package odms.commons.model.datamodel;
 
 import odms.commons.model._enum.Organs;
+import odms.commons.utils.ProgressBarService;
 import odms.commons.utils.ProgressTask;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+
+import static java.time.temporal.ChronoUnit.SECONDS;
 
 import static java.time.temporal.ChronoUnit.SECONDS;
 
@@ -16,8 +20,10 @@ public class AvailableOrganDetail {
     private String bloodType;
     private transient ProgressTask progressTask; //NOSONAR
     private double timeLeft;
+    private Double progress;
+    private long age;
 
-    public AvailableOrganDetail(Organs organ, String nhi, LocalDateTime momentOfDeath, String region, String bloodType) {
+    public AvailableOrganDetail(Organs organ, String nhi, LocalDateTime momentOfDeath, String region, String bloodType, long age) {
         this.organ = organ;
         this.donorNhi = nhi;
         this.momentOfDeath = momentOfDeath;
@@ -25,6 +31,16 @@ public class AvailableOrganDetail {
         this.bloodType = bloodType;
         this.progressTask = new ProgressTask(momentOfDeath, organ);
         this.expiryDate = calculateExpiryDate(momentOfDeath, organ);
+        this.progress = (double) momentOfDeath.until(momentOfDeath.plusHours(organ.getStorageSeconds()), ChronoUnit.SECONDS);
+        this.age = age;
+    }
+
+    public AvailableOrganDetail() {
+        this.donorNhi = "";
+        this.momentOfDeath = null;
+        this.organ = null;
+        this.region = "";
+        this.bloodType = "";
     }
 
     public Organs getOrgan() {
@@ -67,6 +83,13 @@ public class AvailableOrganDetail {
         this.donorNhi = donorNhi;
     }
 
+    public long getAge() {
+        return age;
+    }
+
+    public void setAge(long age) {
+        this.age = age;
+    }
     public LocalDateTime getExpiryDate() {
         return this.expiryDate;
     }
@@ -84,7 +107,7 @@ public class AvailableOrganDetail {
      *
      * @param timeToaskabout time that the organ needs to be valid at.
      *
-     * @return trtue if valid; false if not
+     * @return true if valid; false if not
      */
     public boolean isOrganStillValid(LocalDateTime timeToaskabout) {
         long secondsOrganIsViable = organ.getUpperBoundSeconds();

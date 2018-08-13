@@ -6,13 +6,15 @@ import odms.bridge.AvailableOrgansBridge;
 import odms.commons.model._enum.Organs;
 import odms.commons.model.datamodel.AvailableOrganDetail;
 import odms.controller.gui.panel.logic.AvailableOrgansLogicController;
-import okhttp3.*;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.concurrent.ExecutorService;
 
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -40,7 +42,7 @@ public class AvailableOrgansControllerTest {
     @Test
     public void testNextPageNoPages() {
         doNothing().when(call).enqueue(any(Callback.class));
-        availableOrganDetails.add(new AvailableOrganDetail(Organs.BONE, "ABC1234", LocalDateTime.now(), "Hutt Valley", "A+"));
+        availableOrganDetails.add(new AvailableOrganDetail(Organs.BONE, "ABC1234", LocalDateTime.now(), "Hutt Valley", "A+",0));
         availableOrgansLogicController.goNextPage();
         assertTrue(availableOrganDetails.size() == 1);
         verify(controller, times(0)).getAvailableOrgansBridge();
@@ -50,7 +52,7 @@ public class AvailableOrgansControllerTest {
     @Test
     public void testPrevPageNoPages() {
         doNothing().when(call).enqueue(any(Callback.class));
-        availableOrganDetails.add(new AvailableOrganDetail(Organs.HEART, "DEF2314", LocalDateTime.now(), "Canterbury", "B-"));
+        availableOrganDetails.add(new AvailableOrganDetail(Organs.HEART, "DEF2314", LocalDateTime.now(), "Canterbury", "B-", 0));
         availableOrgansLogicController.goPrevPage();
         assertTrue(availableOrganDetails.size() == 1);
         verify(controller, never()).getAvailableOrgansBridge();

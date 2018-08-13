@@ -65,6 +65,7 @@ public class AvailableOrgansViewController {
         availableOrganDetails.addListener((ListChangeListener<? super AvailableOrganDetail>) observable -> populateTables());
         availableOrganFilterComboBox.valueProperty().addListener(event -> search());
         regionFilterTextField.setOnKeyPressed(event -> {
+            availableOrganDetails.add(new AvailableOrganDetail(Organs.LIVER, "", null, "", "", 0));
             pause.setOnFinished(e -> search());
             pause.playFromStart();
         });
