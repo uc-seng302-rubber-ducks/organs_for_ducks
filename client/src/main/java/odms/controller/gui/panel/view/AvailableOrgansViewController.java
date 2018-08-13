@@ -172,6 +172,12 @@ public class AvailableOrgansViewController {
         availableOrgansTableView.getSelectionModel().selectedItemProperty().addListener((a) -> {
             logicController.showMatches(availableOrgansTableView.getSelectionModel().getSelectedItem());
         });
+
+        matchesView.setOnMouseClicked(event -> {
+            if(event.getClickCount() == 2 && matchesView.getSelectionModel().getSelectedItem() != null){
+                parent.launchUser(matchesView.getSelectionModel().getSelectedItem().getNhi());
+            }
+        });
     }
 
     public void shutdownThreads() {
