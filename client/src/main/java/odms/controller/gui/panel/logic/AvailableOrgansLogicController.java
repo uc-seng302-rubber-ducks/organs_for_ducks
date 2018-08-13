@@ -5,7 +5,10 @@ import javafx.collections.ObservableList;
 import odms.commons.model.datamodel.AvailableOrganDetail;
 import odms.controller.AppController;
 
-public class AvailableOrgansLogicController {
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+
+public class AvailableOrgansLogicController implements PropertyChangeListener {
 
     private int startingIndex = 0;
     private static final int ROWS_PER_PAGE = 30;
@@ -53,5 +56,10 @@ public class AvailableOrgansLogicController {
         for (AvailableOrganDetail detail : availableOrganDetails) {
             detail.getProgressTask().cancel(true);
         }
+    }
+
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        availableOrganDetails.removeIf(p -> !p.isOrganStillValid());
     }
 }

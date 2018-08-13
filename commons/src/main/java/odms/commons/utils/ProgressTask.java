@@ -4,6 +4,7 @@ import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.scene.control.ProgressBar;
 import odms.commons.model._enum.Organs;
+import odms.commons.model.datamodel.AvailableOrganDetail;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -16,14 +17,16 @@ public class ProgressTask extends Task<Void> {
     private LocalDateTime death;
     private int startTime;
     private ProgressBar bar;
+    private AvailableOrganDetail detail;
     private double lowerBound = 0.0;
     private double colourPercent = 0.0;
 
-    public ProgressTask(LocalDateTime death, Organs organ) {
-        this.organ = organ;
-        this.death = death;
+    public ProgressTask(AvailableOrganDetail detail) {
+        this.organ = detail.getOrgan();
+        this.death = detail.getMomentOfDeath();
         this.time = ((double) death.until(death.plusSeconds(organ.getUpperBoundSeconds()), ChronoUnit.SECONDS));
         this.startTime = (int) death.until(LocalDateTime.now(), ChronoUnit.SECONDS);
+        this.detail = detail;
         if (organ.getUpperBoundSeconds() != organ.getLowerBoundSeconds()) {
             this.lowerBound = 1.0 - (organ.getLowerBoundSeconds() / organ.getUpperBoundSeconds());
             colourPercent = Math.round(this.lowerBound * 100);
@@ -42,10 +45,11 @@ public class ProgressTask extends Task<Void> {
         for (int i = this.startTime; i < time; i++) {
             updateProgress(((i) / time), 1);
             updateMessage(getTimeRemaining());
-            final int a = i;
-            Platform.runLater(() -> bar.setStyle(getColorStyle(((time - a) / time))));
+            final int finalI = i; // This is entirely so that it can be used in Platform.runLater
+            Platform.runLater(() -> bar.setStyle(getColorStyle(((time - finalI) / time))));
             Thread.sleep(1000);
         }
+        detail.setDone(true);
         this.updateProgress(1, 1);
         return null;
     }
@@ -83,7 +87,7 @@ public class ProgressTask extends Task<Void> {
         int hours = (int) HOURS.between(LocalDateTime.now(), death.plusSeconds(organ.getUpperBoundSeconds()));
         int mins = (int) MINUTES.between(LocalDateTime.now(), death.plusSeconds(organ.getUpperBoundSeconds())) - hours * 60;
         int seconds = (int) SECONDS.between(LocalDateTime.now(), death.plusSeconds(organ.getUpperBoundSeconds())) - hours * 3600 - mins * 60;
-        return String.format("%d h %d m %d s remaining", hours, mins, seconds);
+        return String.format("%d h %d m %d s", hours, mins, seconds);
     }
 
     public void setProgressBar(ProgressBar progressBar) {

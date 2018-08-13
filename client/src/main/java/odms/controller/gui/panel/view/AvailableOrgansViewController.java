@@ -4,6 +4,8 @@ import javafx.animation.PauseTransition;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableColumn;
@@ -50,6 +52,7 @@ public class AvailableOrgansViewController {
 
     private ObservableList<AvailableOrganDetail> availableOrganDetails = FXCollections.observableList(new ArrayList<>());
     private AvailableOrgansLogicController logicController = new AvailableOrgansLogicController(availableOrganDetails);
+    private SortedList<AvailableOrganDetail> sortedAvailableOrganDetails;
     private PauseTransition pause = new PauseTransition(Duration.millis(300));
     private UserLauncher parent;
 
@@ -62,7 +65,14 @@ public class AvailableOrgansViewController {
         }
         this.parent = parent;
         availableOrganFilterComboBox.setItems(organs);
-        availableOrganDetails.addListener((ListChangeListener<? super AvailableOrganDetail>) observable -> populateTables());
+        availableOrganDetails.addListener((ListChangeListener<? super AvailableOrganDetail>) (observable) -> {
+            populateTables();
+            while (observable.next()) {
+                for (AvailableOrganDetail detail : observable.getAddedSubList()) {
+                    detail.addPropertyChangeListener(logicController);
+                }
+            }
+        });
         availableOrganFilterComboBox.valueProperty().addListener(event -> search());
         regionFilterTextField.setOnKeyPressed(event -> {
             availableOrganDetails.add(new AvailableOrganDetail(Organs.LIVER, "", null, "", "", 0));
@@ -85,7 +95,7 @@ public class AvailableOrgansViewController {
         // figure out how to do progress bars
         search();
         populateTables();
-        availableOrgansTableView.setItems(availableOrganDetails);
+        availableOrgansTableView.setItems(sortedAvailableOrganDetails);
     }
 
 
@@ -105,6 +115,9 @@ public class AvailableOrgansViewController {
     }
 
     private void populateTables() {
+        FilteredList<AvailableOrganDetail> filteredAvailableOrganDetails = new FilteredList<>(availableOrganDetails);
+        filteredAvailableOrganDetails.setPredicate(AvailableOrganDetail::isOrganStillValid);
+        sortedAvailableOrganDetails = new SortedList<>(filteredAvailableOrganDetails);
         setOnClickBehaviour();
     }
 

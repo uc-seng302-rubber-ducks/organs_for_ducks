@@ -1,14 +1,17 @@
 package odms.commons.model.datamodel;
 
+import odms.commons.model._abstract.Listenable;
 import odms.commons.model._enum.Organs;
 import odms.commons.utils.ProgressTask;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 
 import static java.time.temporal.ChronoUnit.SECONDS;
 
-public class AvailableOrganDetail {
+public class AvailableOrganDetail implements Listenable {
     private Organs organ;
     private String donorNhi;
     private LocalDateTime momentOfDeath;
@@ -16,8 +19,7 @@ public class AvailableOrganDetail {
     private String region;
     private String bloodType;
     private transient ProgressTask progressTask; //NOSONAR
-    private double timeLeft;
-    private Double progress;
+    private transient PropertyChangeSupport pcs; //NOSONAR
     private long age;
 
     public AvailableOrganDetail(Organs organ, String nhi, LocalDateTime momentOfDeath, String region, String bloodType, long age) {
@@ -26,10 +28,10 @@ public class AvailableOrganDetail {
         this.momentOfDeath = momentOfDeath;
         this.region = region;
         this.bloodType = bloodType;
-        this.progressTask = new ProgressTask(momentOfDeath, organ);
+        this.progressTask = new ProgressTask(this);
         this.expiryDate = calculateExpiryDate(momentOfDeath, organ);
-        this.progress = (double) momentOfDeath.until(momentOfDeath.plusHours(organ.getUpperBoundSeconds()), ChronoUnit.SECONDS);
         this.age = age;
+        this.pcs = new PropertyChangeSupport(this);
     }
 
     public AvailableOrganDetail() {
@@ -38,6 +40,7 @@ public class AvailableOrganDetail {
         this.organ = null;
         this.region = "";
         this.bloodType = "";
+        this.pcs = new PropertyChangeSupport(this);
     }
 
     public Organs getOrgan() {
@@ -96,7 +99,7 @@ public class AvailableOrganDetail {
     }
 
     public void generateProgressTask() {
-        this.progressTask = new ProgressTask(momentOfDeath, organ);
+        this.progressTask = new ProgressTask(this);
     }
 
     /**
@@ -145,5 +148,26 @@ public class AvailableOrganDetail {
 
     public ProgressTask getProgressTask() {
         return progressTask;
+    }
+
+    public void setDone(boolean done) {
+        if (done) {
+            fire(new PropertyChangeEvent(this, "done", false, true));
+        }
+    }
+
+    @Override
+    public void addPropertyChangeListener(PropertyChangeListener listener) {
+        pcs.addPropertyChangeListener(listener);
+    }
+
+    @Override
+    public void removePropertyChangeListener(PropertyChangeListener listener) {
+        pcs.removePropertyChangeListener(listener);
+    }
+
+    @Override
+    public void fire(PropertyChangeEvent event) {
+        pcs.firePropertyChange(event);
     }
 }
