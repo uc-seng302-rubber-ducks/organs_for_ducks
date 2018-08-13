@@ -154,6 +154,7 @@ public class UpdateClinician implements Runnable {
             if (clinician.getCountry().equals("New Zealand") &&
                     !controller.getAllNZRegion().contains(region.replaceAll("_", " "))) {
                 valid &= false;
+                IoHelper.display("A New Zealand region must be given");
             } else {
                 clinician.setRegion(region.replaceAll("_", " "));
                 valid &= AttributeValidation.checkString(region.replaceAll("_", " "));
