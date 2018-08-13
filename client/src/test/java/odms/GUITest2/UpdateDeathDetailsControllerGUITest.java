@@ -52,7 +52,7 @@ public class UpdateDeathDetailsControllerGUITest extends ApplicationTest{
 
     @BeforeClass
     public static void initialization() {
-        //CommonTestMethods.runHeadless();
+        CommonTestMethods.runHeadless();
     }
 
     @Before
@@ -170,13 +170,11 @@ public class UpdateDeathDetailsControllerGUITest extends ApplicationTest{
         setTextField(this, "#updateDeathDetailsTimeTextField", "02:45");
         setTextField(this, "#updateDeathDetailsCityTextField", "Atlantis");
         setTextField(this, "#updateDeathDetailsRegionTextField", "Atlantic");
-        //Click select a country for better testing
         clickOnButton(this, "#confirmUpdateDeathDetailsButton");
 
         verifyThat("#DODValue", LabeledMatchers.hasText(LocalDate.now().toString()));
         verifyThat("#cityOfDeathValue", LabeledMatchers.hasText("Atlantis"));
         verifyThat("#regionOfDeathValue", LabeledMatchers.hasText("Atlantic"));
-        //verifyThat("countryOfDeathValue", LabeledMatchers.hasText("Afghanistan"));
     }
 
     @Test
@@ -206,7 +204,6 @@ public class UpdateDeathDetailsControllerGUITest extends ApplicationTest{
         clickOnButton(this, "#removeUpdateDeathDetailsButton");
         clickOnButton(this, "#cancelRemoveDeathDetailsButton");
 
-        //Add a check for the datePicker
         verifyThat("#updateDeathDetailsTimeTextField", TextInputControlMatchers.hasText("02:45"));
         verifyThat("#updateDeathDetailsCityTextField", TextInputControlMatchers.hasText("Atlantis"));
         verifyThat("#updateDeathDetailsRegionTextField", TextInputControlMatchers.hasText("Atlantic"));
