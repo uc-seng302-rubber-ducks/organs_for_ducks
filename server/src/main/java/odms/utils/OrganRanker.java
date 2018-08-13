@@ -33,44 +33,44 @@ public class OrganRanker {
      * <p>
      * This version currently only checks they are in the same region
      *
-     * @param organsAvailable   A list of avaliable organs
-     * @param waitingTransplant transplant to be matched
+     * @param organAvailable   A list of avaliable organs
+     * @param waitingTransplants transplant to be matched
      * @return A map of organs to the best match, Note a receiver may be the best match for more than one organ
      */
-    public Map<AvailableOrganDetail, List<TransplantDetails>> matchOrgansToReceivers(List<AvailableOrganDetail> organsAvailable,
-                                                                                     TransplantDetails waitingTransplant) {
+    public Map<AvailableOrganDetail, List<TransplantDetails>> matchOrgansToReceivers(AvailableOrganDetail organAvailable,
+                                                                                     List<TransplantDetails> waitingTransplants) {
         Map<AvailableOrganDetail, List<TransplantDetails>> organMatches = new HashMap<>();
         Set<String> regionsWithDistance = Regions.getEnums();
         CityDistanceCalculator distanceCalculator = new CityDistanceCalculator();
-        for (AvailableOrganDetail organAvailable : organsAvailable) {
+        for (TransplantDetails transplantDetail : waitingTransplants) {
             List<TransplantDetails> matches = new ArrayList<>();
             LocalDateTime death = organAvailable.getMomentOfDeath();
             Organs organ = organAvailable.getOrgan();
             double timeRemaining = death.until(death.plusSeconds(organ.getUpperBoundSeconds()), ChronoUnit.SECONDS);
-            if (waitingTransplant.getOrgan() != organAvailable.getOrgan()) {
+            if (transplantDetail.getOrgan() != organAvailable.getOrgan()) {
                 continue;
             }
-            if ((organAvailable.getAge() <= 12 || waitingTransplant.getAge() <= 12) && (organAvailable.getAge() > 12 || waitingTransplant.getAge() > 12)) {
+            if ((organAvailable.getAge() <= 12 || transplantDetail.getAge() <= 12) && (organAvailable.getAge() > 12 || transplantDetail.getAge() > 12)) {
                 continue;
             } else {
-                if (organAvailable.getAge() >= waitingTransplant.getAge() + 15 || organAvailable.getAge() <= waitingTransplant.getAge() - 15) {
+                if (organAvailable.getAge() >= transplantDetail.getAge() + 15 || organAvailable.getAge() <= transplantDetail.getAge() - 15) {
                     continue;
                 }
             }
-            if (!organAvailable.getBloodType().equalsIgnoreCase(waitingTransplant.getBloodType())) {
+            if (!organAvailable.getBloodType().equalsIgnoreCase(transplantDetail.getBloodType())) {
                 continue;
             }
 
-            if (regionsWithDistance.contains(waitingTransplant.getRegion()) && regionsWithDistance.contains(organAvailable.getRegion())) {
+            if (regionsWithDistance.contains(transplantDetail.getRegion()) && regionsWithDistance.contains(organAvailable.getRegion())) {
                 double distanceBetweenDonorAndReceiver = distanceCalculator.distanceBetweenRegions(
-                        waitingTransplant.getRegion(),
+                        transplantDetail.getRegion(),
                         organAvailable.getRegion());
                 double timeToDonor = distanceBetweenDonorAndReceiver / HELICOPTER_SPEED;
                 if (timeToDonor > timeRemaining) continue;
-            } else if (!waitingTransplant.getRegion().equalsIgnoreCase(organAvailable.getRegion())) {
+            } else if (!transplantDetail.getRegion().equalsIgnoreCase(organAvailable.getRegion())) {
                 continue;
             }
-            matches.add(waitingTransplant);
+            matches.add(transplantDetail);
             organMatches.put(organAvailable, matches);
         }
 

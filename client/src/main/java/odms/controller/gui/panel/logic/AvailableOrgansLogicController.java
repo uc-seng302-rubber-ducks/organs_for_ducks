@@ -20,8 +20,9 @@ public class AvailableOrgansLogicController implements PropertyChangeListener {
     private ObservableList<TransplantDetails> transplantDetails;
     private AvailableOrganDetail availableOrgan;
 
-    public AvailableOrgansLogicController(ObservableList<AvailableOrganDetail> availableOrganDetails) {
+    public AvailableOrgansLogicController(ObservableList<AvailableOrganDetail> availableOrganDetails, ObservableList<TransplantDetails> transplantDetails) {
         this.availableOrganDetails = availableOrganDetails;
+        this.transplantDetails = transplantDetails;
     }
 
     public void search(int startIndex, String organ, String region) {
@@ -72,10 +73,13 @@ public class AvailableOrgansLogicController implements PropertyChangeListener {
     }
 
     private void searchMatches(int startingIndexMatches) {
+        if(availableOrgan == null){
+            return;
+        }
         transplantDetails.clear();
         this.startingIndexMatches = startingIndexMatches;
         AppController.getInstance().getOrgansBridge().getMatchingOrgansList(startingIndexMatches,
-                ROWS_PER_PAGE, availableOrgan.getDonorNhi(), availableOrgan.getOrgan().toString(), transplantDetails);
+                ROWS_PER_PAGE, availableOrgan.getDonorNhi(), availableOrgan.getOrgan().toString(), availableOrgan, transplantDetails);
     }
 
     public void goPrevPageMatches() {
@@ -94,6 +98,7 @@ public class AvailableOrgansLogicController implements PropertyChangeListener {
 
     public void showMatches(AvailableOrganDetail selectedItem) {
         this.availableOrgan = selectedItem;
+        searchMatches(0);
     }
 
     @Override

@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -54,30 +53,34 @@ public class OrgansController extends BaseController {
 
     @IsClinician
     @RequestMapping(method = RequestMethod.GET, value = "/matchingOrgans")
-    public Map<AvailableOrganDetail, List<TransplantDetails>> getMatchingOrgans(@RequestParam(value = "startIndex") int startIndex,
+    public List<TransplantDetails> getMatchingOrgans(@RequestParam(value = "startIndex") int startIndex,
                                                                                 @RequestParam(value = "count") int count,
                                                                                 @RequestParam(value = "donorNhi") String donorNhi,
                                                                                 @RequestParam(value = "organ") String organ) {
         try (Connection connection = driver.getConnection()) {
             Log.info("Getting all matching organs");
-            Map<AvailableOrganDetail, List<TransplantDetails>> sortedMatches = new HashMap<>();
+            List<TransplantDetails> sortedMatches = new ArrayList<>();
 
-            TransplantDetails transplantDetails = handler.getTransplantDetailsByNhi(connection, donorNhi, organ);
-            if(transplantDetails == null){
+            AvailableOrganDetail availableOrganDetail = handler.getAvailableOrgansbyNhi(organ.toString(), donorNhi, connection);
+
+            if(availableOrganDetail == null){
                 return sortedMatches;
             }
-            List<AvailableOrganDetail> availableOrganDetails = handler.getAvailableOrgans(0, Integer.MAX_VALUE, organ, transplantDetails.getBloodType(), transplantDetails.getRegion(), connection);
+            String[] organs = {organ};
+            List<TransplantDetails> transplantDetails = handler.getTransplantDetails(connection,0, Integer.MAX_VALUE, "" , "", organs);
             OrganRanker organRanker = new OrganRanker();
-            Map<AvailableOrganDetail, List<TransplantDetails>> matches = organRanker.matchOrgansToReceivers(availableOrganDetails, transplantDetails);
-            while(matches.entrySet().iterator().hasNext()){
-                Map.Entry<AvailableOrganDetail, List<TransplantDetails>> value = matches.entrySet().iterator().next();
+            Map<AvailableOrganDetail, List<TransplantDetails>> matches = organRanker.matchOrgansToReceivers(availableOrganDetail, transplantDetails);
+            for (Map.Entry<AvailableOrganDetail, List<TransplantDetails>> value : matches.entrySet()) {
                 List<TransplantDetails> sortedTransplantDetails = OrganSorter.sortOrgansIntoRankedOrder(value.getKey(), value.getValue());
                 List<TransplantDetails> sortedAndSizedTransplantDetails = new ArrayList<>();
 
-                for(int i=startIndex; i <count; i++ ){
+                for (int i = startIndex; i < count; i++) {
+                    if (i >= sortedTransplantDetails.size()) {
+                        break;
+                    }
                     sortedAndSizedTransplantDetails.add(sortedTransplantDetails.get(i));
                 }
-                sortedMatches.put(value.getKey(), sortedAndSizedTransplantDetails);
+                return sortedAndSizedTransplantDetails;
             }
             return sortedMatches;
         } catch (SQLException e) {

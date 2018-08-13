@@ -55,7 +55,8 @@ public class AvailableOrgansViewController {
 
 
     private ObservableList<AvailableOrganDetail> availableOrganDetails = FXCollections.observableList(new ArrayList<>());
-    private AvailableOrgansLogicController logicController = new AvailableOrgansLogicController(availableOrganDetails);
+    private ObservableList<TransplantDetails> transplantDetails = FXCollections.observableList(new ArrayList<>());
+    private AvailableOrgansLogicController logicController = new AvailableOrgansLogicController(availableOrganDetails, transplantDetails);
     private SortedList<AvailableOrganDetail> sortedAvailableOrganDetails;
     private PauseTransition pause = new PauseTransition(Duration.millis(300));
     private UserLauncher parent;
@@ -79,7 +80,6 @@ public class AvailableOrgansViewController {
         });
         availableOrganFilterComboBox.valueProperty().addListener(event -> search());
         regionFilterTextField.setOnKeyPressed(event -> {
-            availableOrganDetails.add(new AvailableOrganDetail(Organs.LIVER, "", null, "", "", 0));
             pause.setOnFinished(e -> search());
             pause.playFromStart();
         });
@@ -113,6 +113,7 @@ public class AvailableOrgansViewController {
 
         matchesView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         matchesView.getColumns().addAll(matchesNhiColumn,matchesRegionColumn);
+        matchesView.setItems(transplantDetails);
     }
 
 
@@ -159,6 +160,9 @@ public class AvailableOrgansViewController {
             if (event.getClickCount() == 2 && availableOrgansTableView.getSelectionModel().getSelectedItem() != null) {
                 parent.launchUser(availableOrgansTableView.getSelectionModel().getSelectedItem().getDonorNhi());
             }
+        });
+        availableOrgansTableView.getSelectionModel().selectedItemProperty().addListener((a) -> {
+            logicController.showMatches(availableOrgansTableView.getSelectionModel().getSelectedItem());
         });
     }
 
