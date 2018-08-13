@@ -14,6 +14,7 @@ public class CliRoot implements Runnable {
 
     @Override
     public void run() {
-        CommandLine.usage(this, System.err);
+        CommandLine.usage(this, System.err); //NOSONAR
+        //requires the system.err stream to be passed for the GUI CLI to work
     }
 }

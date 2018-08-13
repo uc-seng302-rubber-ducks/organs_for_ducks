@@ -1,14 +1,16 @@
 package odms.GUITest2;
 
 import javafx.scene.Node;
+import javafx.scene.control.Button;
 import odms.App;
 import odms.TestUtils.AppControllerMocker;
 import odms.TestUtils.CommonTestMethods;
+import odms.bridge.UserBridge;
 import odms.commons.model.EmergencyContact;
 import odms.commons.model.User;
 import odms.commons.model.dto.UserOverview;
 import odms.controller.AppController;
-import odms.bridge.UserBridge;
+import odms.controller.gui.window.UserController;
 import org.junit.*;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
@@ -21,8 +23,8 @@ import java.util.concurrent.TimeoutException;
 
 import static odms.TestUtils.FxRobotHelper.clickOnButton;
 import static odms.TestUtils.FxRobotHelper.setTextField;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.testfx.api.FxAssert.verifyThat;
@@ -45,9 +47,11 @@ public class UndoDonorGUITest extends ApplicationTest {
         user.setContact(new EmergencyContact("", "", "01556677"));
         user.getUndoStack().clear();
         when(application.getUserBridge()).thenReturn(bridge);
-        when(bridge.getUsers(anyInt(), anyInt(), anyString(), anyString(), anyString(), anyString()))
-                .thenReturn(Collections.singletonList(UserOverview.fromUser(user)));
+        when(application.getUserOverviews()).thenReturn(Collections.singleton(UserOverview.fromUser(user)));
         when(bridge.getUser("ABC1234")).thenReturn(user);
+
+        doCallRealMethod().when(application).setUserController(any(UserController.class));
+        doCallRealMethod().when(application).getUserController();
 
         AppController.getInstance().getUsers().clear();
         AppController.getInstance().getUsers().add(user);
@@ -99,7 +103,7 @@ public class UndoDonorGUITest extends ApplicationTest {
         clickOnButton(this,"#confirmButton");
         clickOnButton(this,"#undoButton");
 
-        verifyThat("#undoButton", Node::isDisabled);
+        Assert.assertTrue(lookup("#undoButton").queryAs(Button.class).isDisabled());
     }
 
     /**

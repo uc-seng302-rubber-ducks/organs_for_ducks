@@ -4,12 +4,12 @@ import javafx.geometry.VerticalDirection;
 import odms.App;
 import odms.TestUtils.AppControllerMocker;
 import odms.TestUtils.CommonTestMethods;
+import odms.bridge.UserBridge;
 import odms.commons.model.EmergencyContact;
 import odms.commons.model.User;
 import odms.commons.model.dto.UserOverview;
 import odms.controller.AppController;
 import odms.controller.gui.window.UserController;
-import odms.bridge.UserBridge;
 import org.junit.*;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
@@ -22,8 +22,6 @@ import java.util.concurrent.TimeoutException;
 
 import static odms.TestUtils.FxRobotHelper.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 import static org.testfx.api.FxAssert.verifyThat;
 
@@ -47,8 +45,7 @@ public class UpdateUserControllerGUITest extends ApplicationTest {
         user.setContact(new EmergencyContact("", "", "0187878"));
         user.getUndoStack().clear();
         when(application.getUserBridge()).thenReturn(bridge);
-        when(bridge.getUsers(anyInt(), anyInt(), anyString(), anyString(), anyString(), anyString()))
-                .thenReturn(Collections.singletonList(UserOverview.fromUser(user)));
+        when(application.getUserOverviews()).thenReturn(Collections.singleton(UserOverview.fromUser(user)));
         when(bridge.getUser("ABC1234")).thenReturn(user);
 
         doCallRealMethod().when(application).setUserController(any(UserController.class));
@@ -101,13 +98,6 @@ public class UpdateUserControllerGUITest extends ApplicationTest {
         setDateValue(this, "#dobInput", LocalDate.of(2018, 5, 3));
         clickOnButton(this,"#confirmButton");
         verifyThat("#DOBValue", LabeledMatchers.hasText(LocalDate.of(2018, 5, 3).toString()));
-    }
-
-    @Test
-    public void testUpdateDoD() {
-        setDateValue(this, "#dodInput", LocalDate.of(2018, 5, 3));
-        clickOnButton(this,"#confirmButton");
-        verifyThat("#DODValue", LabeledMatchers.hasText(LocalDate.of(2018, 5, 3).toString()));
     }
 
     @Test
@@ -192,7 +182,7 @@ public class UpdateUserControllerGUITest extends ApplicationTest {
 
     @Test
     public void updateBMIAfterUpdate() {
-        setTextField(this,"#heightInput","1.75");
+        setTextField(this,"#heightInput","175");
         setTextField(this,"#weightInput","65");
         clickOnButton(this,"#confirmButton");
         verifyThat("#bmiValue", LabeledMatchers.hasText("21.22"));

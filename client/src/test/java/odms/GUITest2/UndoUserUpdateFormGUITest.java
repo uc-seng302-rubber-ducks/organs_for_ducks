@@ -24,8 +24,6 @@ import java.util.concurrent.TimeoutException;
 import static odms.TestUtils.FxRobotHelper.clickOnButton;
 import static odms.TestUtils.FxRobotHelper.setTextField;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 import static org.testfx.api.FxAssert.verifyThat;
 
@@ -48,8 +46,7 @@ public class UndoUserUpdateFormGUITest extends ApplicationTest {
         user.setContact(new EmergencyContact("", "", "0187878"));
         user.getUndoStack().clear();
         when(application.getUserBridge()).thenReturn(bridge);
-        when(bridge.getUsers(anyInt(), anyInt(), anyString(), anyString(), anyString(), anyString()))
-                .thenReturn(Collections.singletonList(UserOverview.fromUser(user)));
+        when(application.getUserOverviews()).thenReturn(Collections.singleton(UserOverview.fromUser(user)));
         when(bridge.getUser("ABC1234")).thenReturn(user);
 
         doCallRealMethod().when(application).setUserController(any(UserController.class));
@@ -158,7 +155,7 @@ public class UndoUserUpdateFormGUITest extends ApplicationTest {
 
 
         verifyThat("#lNameInput", TextInputControlMatchers.hasText(""));
-        verifyThat("#heightInput", TextInputControlMatchers.hasText(""));
+        verifyThat("#heightInput", TextInputControlMatchers.hasText("0.0"));
     }
 
     @Test
@@ -179,7 +176,7 @@ public class UndoUserUpdateFormGUITest extends ApplicationTest {
         clickOn("#lNameInput");
         write("lasagna");
 
-        verifyThat("#heightInput", TextInputControlMatchers.hasText("1"));
+        verifyThat("#heightInput", TextInputControlMatchers.hasText("0.01"));
         verifyThat("#lNameInput", TextInputControlMatchers.hasText("lasagna"));
     }
 }

@@ -1,7 +1,11 @@
 package odms.steps;
 
+import com.sun.javafx.stage.StageHelper;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.When;
+import javafx.collections.FXCollections;
+import javafx.scene.Node;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import odms.App;
@@ -11,7 +15,10 @@ import odms.commands.DeleteUser;
 import odms.commands.View;
 import odms.commons.model.UserBuilder;
 import odms.commons.model.dto.UserOverview;
+import odms.commons.utils.Log;
 import odms.view.CLI;
+import org.loadui.testfx.Assertions;
+import org.testfx.api.FxAssert;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 import picocli.CommandLine;
@@ -25,12 +32,8 @@ import java.util.Collections;
 
 import static odms.TestUtils.FxRobotHelper.clickOnButton;
 import static odms.TestUtils.FxRobotHelper.setTextField;
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
-
-import static odms.TestUtils.FxRobotHelper.clickOnButton;
-import static odms.TestUtils.FxRobotHelper.setTextField;
 
 
 public class WhenSteps extends ApplicationTest {
@@ -61,7 +64,7 @@ public class WhenSteps extends ApplicationTest {
     public void iRegisterAUserWithTheNHIFirstNameLastNameAndDateOfBirth(String nhi, String fName,
                                                                         String lName, String dob) throws IOException {
         CucumberTestModel.setUserNhi(nhi);
-        String[] args = {fName, lName, nhi, dob};
+        String[] args = {nhi, fName, dob, "-l=" + lName};
         CreateUser command = new CreateUser();
         new CommandLine(command).parseWithHandler(new CommandLine.RunLast(), System.err, args);
         when(CucumberTestModel.getUserBridge().getUser(anyString())).thenReturn(new UserBuilder().setNhi(nhi).setFirstName(fName).setLastName(lName).setDateOfBirth(LocalDate.parse(dob, DateTimeFormatter.ISO_LOCAL_DATE)).build());
@@ -117,7 +120,7 @@ public class WhenSteps extends ApplicationTest {
 
     @When("^clicked on clinician Login button$")
     public void clickedOnClinicianLoginButton() throws IOException {
-        when(CucumberTestModel.getUserBridge().getUsers(anyInt(), anyInt(), anyString(), anyString(), anyString(), anyString())).thenReturn(Collections.singletonList(UserOverview.fromUser(CucumberTestModel.getUser())));
+        CucumberTestModel.getController().setUserOverviews(Collections.singleton(UserOverview.fromUser(CucumberTestModel.getUser())));
         CucumberTestModel.setIsClinicianLogin(true);
         clickOnButton(this, "#loginCButton");
     }
@@ -165,16 +168,23 @@ public class WhenSteps extends ApplicationTest {
 
     @When("^The user is updated to have died on \"([^\"]*)\"$")
     public void theUserIsUpdatedToHaveDiedOn(String dod) {
-        clickOn("#editMenuUser");
-        clickOn("#editDetailsUser");
-        clickOn("#dodInput");
+
+        clickOn("#updateDeathDetailsButton");
+        clickOn("#updateDeathDetailsDatePicker");
+        for (int i = 0; i < 20; i++) { //arbitrarily long number to ensure all is deleted
+            push(KeyCode.BACK_SPACE);
+        }
         write(dod);
-        clickOnButton(this, "#confirmButton");
+        clickOnButton(this, "#confirmUpdateDeathDetailsButton");
     }
 
     @And("^I open the user page$")
     public void iOpenTheUserPage() throws IOException {
         clickOn("#searchTab");
+        interact(() -> {
+            lookup("#searchTableView").queryAs(TableView.class).setItems(FXCollections.observableList(Collections.singletonList(UserOverview.fromUser(CucumberTestModel.getUser()))));
+            lookup("#searchTableView").queryAs(TableView.class).refresh();
+        });
         doubleClickOn(TableViewsMethod.getCell("#searchTableView", 0, 0));
     }
 
@@ -194,6 +204,11 @@ public class WhenSteps extends ApplicationTest {
 
     @When("^I go back to the clinician screen$")
     public void iGoBackToTheClinicianScreen() {
+        try {
+            clickOn("#cancelDeathDetailsUpdateButton");
+        } catch (Exception e) {
+            //Blocks unstable behaviour
+        }
         clickOn("#userProfileTab");
         clickOn("#fileMenuUser");
         clickOn("#logoutUser");

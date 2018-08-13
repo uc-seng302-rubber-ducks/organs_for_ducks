@@ -6,7 +6,6 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.Region;
-import odms.controller.AppController;
 import odms.commons.exception.ProfileAlreadyExistsException;
 import odms.commons.exception.ProfileNotFoundException;
 import odms.commons.model.Administrator;
@@ -16,15 +15,21 @@ import odms.commons.model.User;
 import odms.commons.model._abstract.Deletable;
 import odms.commons.model._enum.Organs;
 import odms.commons.utils.Log;
+import odms.controller.AppController;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class DeletedUserController {
 
 
+    public static final String FIRST_NAME = "First name";
+    public static final String FIRST_NAME1 = "firstName";
+    public static final String LAST_NAME = "Last name";
+    public static final String LAST_NAME1 = "lastName";
+    public static final String REGION = "Region";
+    public static final String REGION1 = "region";
     @FXML
     private TableView<User> deletedUserTableView;
 
@@ -93,12 +98,12 @@ public class DeletedUserController {
         oListUsers = FXCollections
                 .observableList(new ArrayList<>(AppController.getInstance().getUsers().stream().filter(Deletable::isDeleted).collect(Collectors.toList())));
 
-        TableColumn<User, String> fNameColumn = new TableColumn<>("First name");
-        fNameColumn.setCellValueFactory(new PropertyValueFactory<>("firstName"));
+        TableColumn<User, String> fNameColumn = new TableColumn<>(FIRST_NAME);
+        fNameColumn.setCellValueFactory(new PropertyValueFactory<>(FIRST_NAME1));
         fNameColumn.prefWidthProperty().bind(deletedUserTableView.widthProperty().divide(7));
 
-        TableColumn<User, String> lNameColumn = new TableColumn<>("Last name");
-        lNameColumn.setCellValueFactory(new PropertyValueFactory<>("lastName"));
+        TableColumn<User, String> lNameColumn = new TableColumn<>(LAST_NAME);
+        lNameColumn.setCellValueFactory(new PropertyValueFactory<>(LAST_NAME1));
         lNameColumn.prefWidthProperty().bind(deletedUserTableView.widthProperty().divide(7));
         lNameColumn.setSortType(TableColumn.SortType.ASCENDING);
 
@@ -114,8 +119,8 @@ public class DeletedUserController {
         ageColumn.setCellValueFactory(new PropertyValueFactory<>("age"));
         ageColumn.prefWidthProperty().bind(deletedUserTableView.widthProperty().divide(10));
 
-        TableColumn<User, String> regionColumn = new TableColumn<>("Region");
-        regionColumn.setCellValueFactory(new PropertyValueFactory<>("region"));
+        TableColumn<User, String> regionColumn = new TableColumn<>(REGION);
+        regionColumn.setCellValueFactory(new PropertyValueFactory<>(REGION1));
         regionColumn.prefWidthProperty().bind(deletedUserTableView.widthProperty().divide(8));
 
         TableColumn<User, ArrayList<Organs>> organsColumn = new TableColumn<>("Organs");
@@ -125,10 +130,9 @@ public class DeletedUserController {
         deletedUserTableView.getColumns()
                 .setAll(fNameColumn, lNameColumn, dobColumn, dodColumn, ageColumn, regionColumn,
                         organsColumn);
-        //searchTableView.setItems(FXCollections.observableList(sListDonors.subList(startIndex, endIndex)));
         deletedUserTableView.setItems(oListUsers);
         deletedUserTableView.setRowFactory(
-                searchTableView -> new TooltipTableRow<>((User user) -> user.getTooltip()));
+                searchTableView -> new TooltipTableRow<>(User::getTooltip));
     }
 
 
@@ -143,17 +147,17 @@ public class DeletedUserController {
         staffIDColumn.setCellValueFactory(new PropertyValueFactory<>("staffId"));
         staffIDColumn.prefWidthProperty().bind(deletedClinicianTableView.widthProperty().divide(4));
 
-        TableColumn<Clinician, String> fNameColumn = new TableColumn<>("First name");
-        fNameColumn.setCellValueFactory(new PropertyValueFactory<>("firstName"));
+        TableColumn<Clinician, String> fNameColumn = new TableColumn<>(FIRST_NAME);
+        fNameColumn.setCellValueFactory(new PropertyValueFactory<>(FIRST_NAME1));
         fNameColumn.prefWidthProperty().bind(deletedClinicianTableView.widthProperty().divide(4));
 
-        TableColumn<Clinician, String> lNameColumn = new TableColumn<>("Last name");
-        lNameColumn.setCellValueFactory(new PropertyValueFactory<>("lastName"));
+        TableColumn<Clinician, String> lNameColumn = new TableColumn<>(LAST_NAME);
+        lNameColumn.setCellValueFactory(new PropertyValueFactory<>(LAST_NAME1));
         lNameColumn.prefWidthProperty().bind(deletedClinicianTableView.widthProperty().divide(4));
         lNameColumn.setSortType(TableColumn.SortType.ASCENDING);
 
-        TableColumn<Clinician, String> regionColumn = new TableColumn<>("Region");
-        regionColumn.setCellValueFactory(new PropertyValueFactory<>("region"));
+        TableColumn<Clinician, String> regionColumn = new TableColumn<>(REGION);
+        regionColumn.setCellValueFactory(new PropertyValueFactory<>(REGION1));
         regionColumn.prefWidthProperty().bind(deletedClinicianTableView.widthProperty().divide(4));
 
         deletedClinicianTableView.getColumns()
@@ -173,17 +177,17 @@ public class DeletedUserController {
         usernameColumn.setCellValueFactory(new PropertyValueFactory<>("userName"));
         usernameColumn.prefWidthProperty().bind(deletedAdminTableView.widthProperty().divide(4));
 
-        TableColumn<Administrator, String> fNameColumn = new TableColumn<>("First name");
-        fNameColumn.setCellValueFactory(new PropertyValueFactory<>("firstName"));
+        TableColumn<Administrator, String> fNameColumn = new TableColumn<>(FIRST_NAME);
+        fNameColumn.setCellValueFactory(new PropertyValueFactory<>(FIRST_NAME1));
         fNameColumn.prefWidthProperty().bind(deletedAdminTableView.widthProperty().divide(4));
 
-        TableColumn<Administrator, String> lNameColumn = new TableColumn<>("Last name");
-        lNameColumn.setCellValueFactory(new PropertyValueFactory<>("lastName"));
+        TableColumn<Administrator, String> lNameColumn = new TableColumn<>(LAST_NAME);
+        lNameColumn.setCellValueFactory(new PropertyValueFactory<>(LAST_NAME1));
         lNameColumn.prefWidthProperty().bind(deletedAdminTableView.widthProperty().divide(4));
         lNameColumn.setSortType(TableColumn.SortType.ASCENDING);
 
-        TableColumn<Administrator, String> regionColumn = new TableColumn<>("Region");
-        regionColumn.setCellValueFactory(new PropertyValueFactory<>("region"));
+        TableColumn<Administrator, String> regionColumn = new TableColumn<>(REGION);
+        regionColumn.setCellValueFactory(new PropertyValueFactory<>(REGION1));
         regionColumn.prefWidthProperty().bind(deletedAdminTableView.widthProperty().divide(4));
 
 
@@ -235,6 +239,6 @@ public class DeletedUserController {
         Alert alert = new Alert(Alert.AlertType.INFORMATION, message, ButtonType.OK);
         alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
 
-        Optional<ButtonType> result = alert.showAndWait();
+        alert.showAndWait();
     }
 }

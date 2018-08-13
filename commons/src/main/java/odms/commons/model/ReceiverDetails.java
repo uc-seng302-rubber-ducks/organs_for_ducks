@@ -16,7 +16,7 @@ import java.util.Map;
  */
 public class ReceiverDetails {
 
-    private transient User attachedUser;
+    private transient User attachedUser; //NOSONAR
 
     @Expose
     private Map<Organs, ArrayList<ReceiverOrganDetailsHolder>> organs; // contains the organ start and stop dates
@@ -206,6 +206,16 @@ public class ReceiverDetails {
                 sb.append(o.toString());
                 sb.append(" ");
             }
+        }
+        return sb.toString();
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Organs to receive:\n");
+        for (Organs o : organs.keySet()){
+            sb.append(o).append("\n");
         }
         return sb.toString();
     }

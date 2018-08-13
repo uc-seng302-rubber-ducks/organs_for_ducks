@@ -11,12 +11,11 @@ import odms.commons.utils.db_strategies.AdminUpdateStrategy;
 import odms.commons.utils.db_strategies.ClinicianUpdateStrategy;
 import odms.commons.utils.db_strategies.UserUpdateStrategy;
 
-import javax.management.Query;
 import java.io.InputStream;
-import java.sql.*;
 import java.lang.reflect.Type;
 import java.sql.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 
 public class DBHandler {
@@ -93,6 +92,7 @@ public class DBHandler {
     private static final String SELECT_IF_USER_EXISTS_BOOL = "SELECT EXISTS(SELECT 1 FROM User WHERE nhi = ?)";
     private static final String SELECT_IF_CLINICIAN_EXISTS_BOOL = "SELECT EXISTS(SELECT 1 FROM Clinician WHERE staffId = ?)";
     private static final String SELECT_IF_ADMIN_EXISTS_BOOL = "SELECT EXISTS(SELECT 1 FROM Administrator WHERE userName = ?)";
+    private static final String SELECT_DEATH_DETAILS_STMT = "SELECT * FROM DeathDetails WHERE fkUserNhi = ?";
     private AbstractUpdateStrategy updateStrategy;
 
 
@@ -254,6 +254,7 @@ public class DBHandler {
                         getUserOrganReceiveDetail(user, connection);
                         getUserContact(user, connection);
                         getUserEmergencyContact(user, connection);
+                        getDeathDetails(user, connection);
                     } catch (SQLException e) {
                         Log.warning("Unable to create instance of user with nhi " + user.getNhi(), e);
                         throw e;
@@ -878,8 +879,9 @@ public class DBHandler {
      * @see TransplantDetails
      */
     public List<TransplantDetails> getTransplantDetails(Connection conn, int startIndex, int count, String name, String region, String[] organs) throws SQLException {
-        StringBuilder queryString = new StringBuilder("SELECT U.nhi, U.firstName, U.middleName, U.lastName, O.organName, Dates.dateRegistered, Q.region from OrganAwaiting JOIN Organ O ON OrganAwaiting.fkOrgansId = O.organId\n" +
+        StringBuilder queryString = new StringBuilder("SELECT U.nhi, U.firstName, U.middleName, U.lastName, O.organName, Dates.dateRegistered, Q.region, DD.momentOfDeath from OrganAwaiting JOIN Organ O ON OrganAwaiting.fkOrgansId = O.organId\n" +
                 "  LEFT JOIN User U ON OrganAwaiting.fkUserNhi = U.nhi\n" +
+                "  LEFT JOIN DeathDetails DD ON DD.fkUserNhi = U.nhi\n" +
                 "  LEFT JOIN  (SELECT Address.fkUserNhi, Address.region from Address JOIN ContactDetails Detail ON Address.fkContactId = Detail.contactId\n" +
                 "  WHERE Address.fkContactId NOT IN (SELECT EmergencyContactDetails.fkContactId FROM EmergencyContactDetails)) Q ON U.nhi = Q.fkUserNhi\n" +
                 "  LEFT JOIN OrganAwaitingDates Dates ON awaitingId = Dates.fkAwaitingId\n" +
@@ -908,17 +910,19 @@ public class DBHandler {
             List<TransplantDetails> detailsList = new ArrayList<>();
             try (ResultSet results = stmt.executeQuery()) {
                 while (results.next()) {
-                    String nameBuilder = results.getString(2) +
-                            " " +
-                            results.getString(3) +
-                            " " +
-                            results.getString(4);
-                    Organs selectedOrgan = Organs.valueOf(results.getString(5));
-                    LocalDate dateRegistered = results.getDate(6).toLocalDate();
-                    detailsList.add(new TransplantDetails(
-                            results.getString(1),
-                            nameBuilder,
-                            selectedOrgan, dateRegistered, results.getString(7)));
+                    if (results.getTimestamp(8) == null) {
+                        String nameBuilder = results.getString(2) +
+                                " " +
+                                results.getString(3) +
+                                " " +
+                                results.getString(4);
+                        Organs selectedOrgan = Organs.valueOf(results.getString(5));
+                        LocalDate dateRegistered = results.getDate(6).toLocalDate();
+                        detailsList.add(new TransplantDetails(
+                                results.getString(1),
+                                nameBuilder,
+                                selectedOrgan, dateRegistered, results.getString(7)));
+                    }
                 }
                 return detailsList;
             }
@@ -1099,7 +1103,7 @@ public class DBHandler {
         }
     }
 
-    public List runSqlQuery(String query, Connection connection) throws SQLException {
+    public List<String> runSqlQuery(String query, Connection connection) throws SQLException {
         List<String> results  = new ArrayList<>();
         try(PreparedStatement preparedStatement = connection.prepareStatement(query)){
             try (ResultSet rs = preparedStatement.executeQuery()) {
@@ -1108,14 +1112,35 @@ public class DBHandler {
                 }
                 do {
                     ResultSetMetaData rsmd = rs.getMetaData();
+                    StringBuilder sb = new StringBuilder();
                     int columns = rsmd.getColumnCount();
                     for(int i = 1; i <= columns; i++){
                         String columnName = rs.getString(i);
-                        results.add(rsmd.getColumnName(i)+ " " + columnName );
+                        sb.append(rsmd.getColumnName(i)).append(" ").append(columnName).append("\n");
                     }
+                    results.add(sb.toString());
                 } while (rs.next());
             }
         }
         return results;
+    }
+
+    public void getDeathDetails(User user, Connection connection) throws  SQLException {
+        try (PreparedStatement stmt = connection.prepareStatement(SELECT_DEATH_DETAILS_STMT)) {
+            stmt.setString(1, user.getNhi());
+            try (ResultSet resultSet = stmt.executeQuery()) {
+                while (resultSet != null && resultSet.next()) {
+                    Timestamp momentOfDeath = resultSet.getTimestamp("momentOfDeath");
+                    if (momentOfDeath != null) {
+                        user.getDeathDetails().setMomentOfDeath(momentOfDeath.toLocalDateTime()); //FIX
+                    } else {
+                        user.getDeathDetails().setMomentOfDeath(null);
+                    }
+                    user.setDeathCity(resultSet.getString("city"));
+                    user.setDeathRegion(resultSet.getString("region"));
+                    user.setDeathCountry(resultSet.getString("country"));
+                }
+            }
+        }
     }
 }
