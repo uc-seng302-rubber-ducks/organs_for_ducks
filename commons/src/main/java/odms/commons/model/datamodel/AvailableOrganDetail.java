@@ -1,11 +1,11 @@
 package odms.commons.model.datamodel;
 
-import javafx.concurrent.Service;
 import odms.commons.model._enum.Organs;
-import odms.commons.utils.ProgressBarService;
-import static java.time.temporal.ChronoUnit.SECONDS;
+import odms.commons.utils.ProgressTask;
 
 import java.time.LocalDateTime;
+
+import static java.time.temporal.ChronoUnit.SECONDS;
 
 public class AvailableOrganDetail {
     private Organs organ;
@@ -14,7 +14,8 @@ public class AvailableOrganDetail {
     private LocalDateTime expiryDate;
     private String region;
     private String bloodType;
-    private transient ProgressBarService progressTask; //NOSONAR
+    private transient ProgressTask progressTask; //NOSONAR
+    private double timeLeft;
 
     public AvailableOrganDetail(Organs organ, String nhi, LocalDateTime momentOfDeath, String region, String bloodType) {
         this.organ = organ;
@@ -22,7 +23,7 @@ public class AvailableOrganDetail {
         this.momentOfDeath = momentOfDeath;
         this.region = region;
         this.bloodType = bloodType;
-        this.progressTask = new ProgressBarService(momentOfDeath, organ);
+        this.progressTask = new ProgressTask(momentOfDeath, organ);
         this.expiryDate = calculateExpiryDate(momentOfDeath, organ);
     }
 
@@ -75,7 +76,7 @@ public class AvailableOrganDetail {
     }
 
     public void generateProgressTask() {
-        this.progressTask = new ProgressBarService(momentOfDeath, organ);
+        this.progressTask = new ProgressTask(momentOfDeath, organ);
     }
 
     /**
@@ -122,7 +123,7 @@ public class AvailableOrganDetail {
         return timeOfDeath.plusSeconds(expiryTime);
     }
 
-    public Service getProgressTask() {
+    public ProgressTask getProgressTask() {
         return progressTask;
     }
 }
