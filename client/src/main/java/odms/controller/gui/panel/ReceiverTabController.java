@@ -1,7 +1,10 @@
 package odms.controller.gui.panel;
 
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -114,54 +117,44 @@ public class ReceiverTabController {
 
         //display registered and deregistered receiver organs if any
 
-        TableColumn currentOrganNameColumn = new TableColumn("Organ");
-        TableColumn currentOrganDateColumn = new TableColumn("Date");
-        TableColumn noLongerOrganNameColumn = new TableColumn("Organ");
-        TableColumn noLongerOrganDateColumn = new TableColumn("Date");
-        currentOrganNameColumn.setCellValueFactory(new PropertyValueFactory<OrgansWithDates,String>("organName"));
-        noLongerOrganNameColumn.setCellValueFactory(new PropertyValueFactory<OrgansWithDates,String>("organName"));
-        currentOrganDateColumn.setCellValueFactory(new PropertyValueFactory<OrgansWithDates,LocalDate>("latestRegistration"));
-        noLongerOrganDateColumn.setCellValueFactory(new PropertyValueFactory<OrgansWithDates,LocalDate>("latestRegistration"));
+        TableColumn<OrgansWithDates, Organs> currentOrganNameColumn = new TableColumn<>("Organ");
+        TableColumn<OrgansWithDates, LocalDate> currentOrganDateColumn = new TableColumn<>("Date");
+        TableColumn<OrgansWithDates, String> noLongerOrganNameColumn = new TableColumn<>("Organ");
+        TableColumn<OrgansWithDates, LocalDate> noLongerOrganDateColumn = new TableColumn<>("Date");
+        currentOrganNameColumn.setCellValueFactory(new PropertyValueFactory<>("organName"));
+        noLongerOrganNameColumn.setCellValueFactory(new PropertyValueFactory<>("organName"));
+        currentOrganDateColumn.setCellValueFactory(new PropertyValueFactory<>("latestRegistration"));
+        noLongerOrganDateColumn.setCellValueFactory(new PropertyValueFactory<>("latestRegistration"));
         currentlyWaitingFor.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         noLongerWaitingForOrgan.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-        currentlyWaitingFor.getColumns().addAll(currentOrganNameColumn,currentOrganDateColumn);
-        noLongerWaitingForOrgan.getColumns().addAll(noLongerOrganNameColumn,noLongerOrganDateColumn);
+        currentlyWaitingFor.getColumns().add(currentOrganNameColumn);
+        currentlyWaitingFor.getColumns().add(currentOrganDateColumn);
+        noLongerWaitingForOrgan.getColumns().add(noLongerOrganNameColumn);
+        noLongerWaitingForOrgan.getColumns().add(noLongerOrganDateColumn);
         currentlyWaitingFor.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-        populateReceiverLists(currentUser);
 
-        currentOrganNameColumn.setCellFactory(new Callback<TableColumn<OrgansWithDates, String>, TableCell<OrgansWithDates, String>>() {
+        currentOrganNameColumn.setCellFactory(new Callback<TableColumn<OrgansWithDates, Organs>, TableCell<OrgansWithDates, Organs>>() {
             @Override
-            public TableCell<OrgansWithDates, String> call(TableColumn<OrgansWithDates, String> param) {
-
-                return new TableCell<OrgansWithDates, String>() {
-
+            public TableCell<OrgansWithDates, Organs> call(TableColumn<OrgansWithDates, Organs> soCalledOrganStringTableColumn) {
+                return new TableCell<OrgansWithDates, Organs>() {
                     @Override
-                    public void updateItem(String item, boolean empty) {
+                    public void updateItem(final Organs item, final boolean empty) {
                         super.updateItem(item, empty);
-                        if (!isEmpty()) {
-                            if (user.getCommonOrgans().contains(Organs.valueOf(item)))
+
+                        if (item != null) {
+                            if (currentUser.getCommonOrgans().contains(item)) {
                                 this.setTextFill(Color.RED);
-                            setText(item);
+                            } else {
+                                this.setTextFill(Color.BLACK);
+                            }
+                            setText(item.toString());
                         }
                     }
                 };
             }
         });
 
-//        currentOrganNameColumn.setCellFactory(callback -> {
-//            TableCell<OrgansWithDates, String> cell; new TableCell<OrgansWithDates, String>() {
-//                @Override
-//                protected void updateItem(String item, boolean empty) {
-//                    super.updateItem(item, empty);
-//                    if (item != null) {
-//                        if (user.getCommonOrgans().contains(Organs.valueOf(item)))
-//                            this.setTextFill(Color.RED);
-//                        setText(item);
-//                    }
-//                }
-//            };
-//            return cell;
-//        });
+        populateReceiverLists(currentUser);
     }
 
     /**
