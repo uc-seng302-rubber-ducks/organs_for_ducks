@@ -58,7 +58,7 @@ public class UpdateDeathDetailsControllerGUITest extends ApplicationTest{
         AppController application = AppControllerMocker.getFullMock();
         TransplantBridge transplantBridge = mock(TransplantBridge.class);
         UserController userController = mock(UserController.class);
-        AvailableOrgansBridge availableOrgansBridge = mock(AvailableOrgansBridge.class);
+        OrgansBridge organsBridge = mock(OrgansBridge.class);
 
         Clinician clinician = new Clinician();
         clinician.setStaffId("0");
@@ -82,8 +82,8 @@ public class UpdateDeathDetailsControllerGUITest extends ApplicationTest{
         when(bridge.getUser("ABC1244")).thenReturn(testUser);
 
 
-        when(application.getAvailableOrgansBridge()).thenReturn(availableOrgansBridge);
-        doNothing().when(availableOrgansBridge).getAvailableOrgansList(anyInt(),anyInt(),anyString(),anyString(),
+        when(application.getOrgansBridge()).thenReturn(organsBridge);
+        doNothing().when(organsBridge).getAvailableOrgansList(anyInt(),anyInt(),anyString(),anyString(),
                 anyString(),anyString(),anyString(),any(ObservableList.class));
 
         FxToolkit.registerPrimaryStage();

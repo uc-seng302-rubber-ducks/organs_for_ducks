@@ -44,7 +44,7 @@ public class DeleteClinicianUserGUITest extends ApplicationTest {
     private LoginBridge loginBridge;
     private AdministratorBridge administratorBridge;
     private TransplantBridge transplantBridge;
-    private AvailableOrgansBridge availableOrgansBridge;
+    private OrgansBridge organsBridge;
     private Collection<UserOverview> overviews;
     private User testUser = new User("A", LocalDate.now(), "ABC1234");
     private User testUser2 = new User("Aa", LocalDate.now(), "ABC1244");
@@ -62,7 +62,7 @@ public class DeleteClinicianUserGUITest extends ApplicationTest {
         loginBridge = mock(LoginBridge.class);
         administratorBridge = mock(AdministratorBridge.class);
         transplantBridge = mock(TransplantBridge.class);
-        availableOrgansBridge = mock(AvailableOrgansBridge.class);
+        organsBridge = mock(OrgansBridge.class);
 
         AppController.setInstance(controller);
         when(controller.getUserBridge()).thenReturn(bridge);
@@ -70,7 +70,7 @@ public class DeleteClinicianUserGUITest extends ApplicationTest {
         when(controller.getAdministratorBridge()).thenReturn(administratorBridge);
         when(controller.getLoginBridge()).thenReturn(loginBridge);
         when(controller.getTransplantBridge()).thenReturn(transplantBridge);
-        when(controller.getAvailableOrgansBridge()).thenReturn(availableOrgansBridge);
+        when(controller.getOrgansBridge()).thenReturn(organsBridge);
 
         FxToolkit.registerPrimaryStage();
         FxToolkit.setupApplication(App.class);
@@ -86,7 +86,7 @@ public class DeleteClinicianUserGUITest extends ApplicationTest {
         when(loginBridge.loginToServer(anyString(), anyString(), anyString())).thenReturn("haHAA");
         when(clinicianBridge.getClinician(anyString(), anyString())).thenReturn(new Clinician("Default", "0", "admin"));
         when(controller.getTransplantList()).thenReturn(new ArrayList<>());
-        doNothing().when(availableOrgansBridge).getAvailableOrgansList(anyInt(), anyInt(), anyString(), anyString(), anyString(), anyString(), anyString(), any());
+        doNothing().when(organsBridge).getAvailableOrgansList(anyInt(), anyInt(), anyString(), anyString(), anyString(), anyString(), anyString(), any());
 
         clickOn("#clinicianTab");
         setTextField(this,"#staffIdTextField", "0");

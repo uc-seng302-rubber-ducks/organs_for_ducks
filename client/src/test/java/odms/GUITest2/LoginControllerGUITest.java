@@ -39,7 +39,7 @@ public class LoginControllerGUITest extends ApplicationTest {
     private LoginBridge loginBridge;
     private AdministratorBridge administratorBridge;
     private TransplantBridge transplantBridge = mock(TransplantBridge.class);
-    private AvailableOrgansBridge availableOrgansBridge = mock(AvailableOrgansBridge.class);
+    private OrgansBridge organsBridge = mock(OrgansBridge.class);
 
     @BeforeClass
     public static void initialization() {
@@ -60,10 +60,10 @@ public class LoginControllerGUITest extends ApplicationTest {
         when(controller.getAdministratorBridge()).thenReturn(administratorBridge);
         when(controller.getLoginBridge()).thenReturn(loginBridge);
         when(controller.getTransplantBridge()).thenReturn(transplantBridge);
-        when(controller.getAvailableOrgansBridge()).thenReturn(availableOrgansBridge);
+        when(controller.getOrgansBridge()).thenReturn(organsBridge);
 
         when(controller.getTransplantList()).thenReturn(new ArrayList());
-        doNothing().when(availableOrgansBridge).getAvailableOrgansList(anyInt(), anyInt(), anyString(), anyString(), anyString(), anyString(), anyString(), any());
+        doNothing().when(organsBridge).getAvailableOrgansList(anyInt(), anyInt(), anyString(), anyString(), anyString(), anyString(), anyString(), any());
         FxToolkit.registerPrimaryStage();
         FxToolkit.setupApplication(App.class);
         AppController.getInstance().getUsers().clear();

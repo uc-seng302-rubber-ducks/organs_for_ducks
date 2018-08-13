@@ -2,7 +2,7 @@ package odms.controller;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import odms.bridge.AvailableOrgansBridge;
+import odms.bridge.OrgansBridge;
 import odms.commons.model._enum.Organs;
 import odms.commons.model.datamodel.AvailableOrganDetail;
 import odms.controller.gui.panel.logic.AvailableOrgansLogicController;
@@ -33,8 +33,8 @@ public class AvailableOrgansControllerTest {
     public void setUp() {
         availableOrganDetails = FXCollections.observableList(new ArrayList<>());
         availableOrgansLogicController = new AvailableOrgansLogicController(availableOrganDetails);
-        AvailableOrgansBridge bridge = new AvailableOrgansBridge(client);
-        when(controller.getAvailableOrgansBridge()).thenReturn(bridge);
+        OrgansBridge bridge = new OrgansBridge(client);
+        when(controller.getOrgansBridge()).thenReturn(bridge);
         when(client.newCall(any(Request.class))).thenReturn(call);
 
     }
@@ -45,7 +45,7 @@ public class AvailableOrgansControllerTest {
         availableOrganDetails.add(new AvailableOrganDetail(Organs.BONE, "ABC1234", LocalDateTime.now(), "Hutt Valley", "A+",0));
         availableOrgansLogicController.goNextPage();
         assertTrue(availableOrganDetails.size() == 1);
-        verify(controller, times(0)).getAvailableOrgansBridge();
+        verify(controller, times(0)).getOrgansBridge();
 
     }
 
@@ -55,7 +55,7 @@ public class AvailableOrgansControllerTest {
         availableOrganDetails.add(new AvailableOrganDetail(Organs.HEART, "DEF2314", LocalDateTime.now(), "Canterbury", "B-", 0));
         availableOrgansLogicController.goPrevPage();
         assertTrue(availableOrganDetails.size() == 1);
-        verify(controller, never()).getAvailableOrgansBridge();
+        verify(controller, never()).getOrgansBridge();
     }
 
 
