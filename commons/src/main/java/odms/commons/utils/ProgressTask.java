@@ -1,11 +1,14 @@
 package odms.commons.utils;
 
+import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.scene.control.ProgressBar;
 import odms.commons.model._enum.Organs;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+
+import static java.time.temporal.ChronoUnit.*;
 
 public class ProgressTask extends Task<Void> {
     private final Double time;
@@ -17,7 +20,7 @@ public class ProgressTask extends Task<Void> {
     public ProgressTask(LocalDateTime death, Organs organ) {
         this.organ = organ;
         this.death = death;
-        this.time = ((double) death.until(death.plusSeconds((long) organ.getStorageSeconds()), ChronoUnit.SECONDS));
+        this.time = ((double) death.until(death.plusSeconds(organ.getStorageSeconds()), ChronoUnit.SECONDS));
         this.startTime = (int) death.until(LocalDateTime.now(), ChronoUnit.SECONDS);
 
     }
@@ -31,7 +34,9 @@ public class ProgressTask extends Task<Void> {
 
         for (int i = this.startTime; i < time; i++) {
             updateProgress(((i) / time), 1);
-            bar.setStyle(getColorStyle(((time - i) / time)));
+            updateMessage(getTimeRemaining());
+            final int a = i;
+            Platform.runLater(() -> bar.setStyle(getColorStyle(((time - a) / time))));
             Thread.sleep(1000);
         }
         this.updateProgress(1, 1);
@@ -67,9 +72,9 @@ public class ProgressTask extends Task<Void> {
     }
 
     private String getTimeRemaining() {
-        int hours = (int) (getProgress() * organ.getStorageSeconds() / 3600);
-        int mins = (int) (getProgress() * organ.getStorageSeconds() / 60) - hours * 60;
-        int seconds = (int) (getProgress() * organ.getStorageSeconds()) - hours * 3600 - mins * 60;
+        int hours = (int) HOURS.between(LocalDateTime.now(), death.plusSeconds(organ.getStorageSeconds()));
+        int mins = (int) MINUTES.between(LocalDateTime.now(), death.plusSeconds(organ.getStorageSeconds())) - hours * 60;
+        int seconds = (int) SECONDS.between(LocalDateTime.now(), death.plusSeconds(organ.getStorageSeconds())) - hours * 3600 - mins * 60;
         return String.format("%d h %d m %d s remaining", hours, mins, seconds);
     }
 

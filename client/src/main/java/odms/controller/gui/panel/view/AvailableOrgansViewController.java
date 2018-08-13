@@ -76,6 +76,9 @@ public class AvailableOrgansViewController {
         deathMomentColumn.setCellValueFactory(new PropertyValueFactory<>("momentOfDeath"));
         progressBarColumn.setCellValueFactory(new PropertyValueFactory<>("progressTask"));
         progressBarColumn.setCellFactory(callback -> ProgressBarTableCellFactory.generateCell(progressBarColumn));
+        TableColumn<AvailableOrganDetail, String> timeLeftColumn = new TableColumn<>();
+        timeLeftColumn.setCellValueFactory(p -> p.getValue().getProgressTask().messageProperty());
+        availableOrgansTableView.getColumns().add(timeLeftColumn);
         // figure out how to do progress bars
         search();
         populateTables();

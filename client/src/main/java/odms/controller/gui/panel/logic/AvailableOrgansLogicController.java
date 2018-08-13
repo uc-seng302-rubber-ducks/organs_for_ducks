@@ -51,7 +51,7 @@ public class AvailableOrgansLogicController {
             return;
         }
         for (AvailableOrganDetail detail : availableOrganDetails) {
-            detail.getProgressTask().cancel();
+            detail.getProgressTask().cancel(true);
         }
     }
 }
