@@ -51,7 +51,9 @@ public class OrgansController extends BaseController {
 
     @IsClinician
     @RequestMapping(method = RequestMethod.GET, value = "/matchingOrgans")
-    public Map<AvailableOrganDetail, List<TransplantDetails>> getMatchingOrgans(@RequestParam(value = "organ", defaultValue = "", required = false) String organ,
+    public Map<AvailableOrganDetail, List<TransplantDetails>> getMatchingOrgans(@RequestParam(value = "startIndex") int startIndex,
+                                                                                @RequestParam(value = "count") int count,
+                                                                                @RequestParam(value = "organ", defaultValue = "", required = false) String organ,
                                                                           @RequestParam(value = "bloodType", defaultValue = "", required = false) String bloodType,
                                                                           @RequestParam(value = "city", defaultValue = "", required = false) String city,
                                                                           @RequestParam(value = "region", defaultValue = "", required = false) String region,
@@ -60,7 +62,7 @@ public class OrgansController extends BaseController {
             Log.info("Getting all matching organs");
             String[] organs = {organ};
 
-            List<AvailableOrganDetail> availableOrganDetails = handler.getAvailableOrgans(0, Integer.MAX_VALUE, organ, region, bloodType, city, country, connection);
+            List<AvailableOrganDetail> availableOrganDetails = handler.getAvailableOrgans(startIndex, count, organ, region, bloodType, city, country, connection);
             List<TransplantDetails> transplantDetails = handler.getTransplantDetails(connection, 0, Integer.MAX_VALUE, "", region, organs);
             OrganRanker organRanker = new OrganRanker();
             return organRanker.matchOrgansToReceivers(availableOrganDetails, transplantDetails);

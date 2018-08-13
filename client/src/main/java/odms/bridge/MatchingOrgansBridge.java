@@ -18,9 +18,12 @@ public class MatchingOrgansBridge extends Bifrost {
         super(client);
     }
 
-    public void getMatchingOrgansList(String organ, String bloodType, String city, String region, String country, ObservableList<Map<AvailableOrganDetail, List<TransplantDetails>>> observableList) {
+    public void getMatchingOrgansList(int startIndex, int count, String organ, String bloodType, String city, String region, String country, ObservableList<Map<AvailableOrganDetail, List<TransplantDetails>>> observableList) {
         StringBuilder url = new StringBuilder(ip);
         url.append("/matchingOrgans?");
+        url.append("&count=").append(count);
+        url.append("&startIndex=").append(startIndex);
+
 
         if (!StringUtils.isNullOrEmpty(organ)) {
             url.append("&organ=").append(organ);
