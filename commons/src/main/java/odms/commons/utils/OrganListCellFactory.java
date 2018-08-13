@@ -7,6 +7,9 @@ import odms.commons.model._enum.Organs;
 
 public class OrganListCellFactory {
 
+    private OrganListCellFactory() {
+        throw new IllegalStateException("Utility Class");
+    }
     /**
      * Generates a ListCell object and that recolours text based on certain fields
      *
