@@ -20,7 +20,7 @@ public class ProgressTask extends Task<Void> {
     public ProgressTask(LocalDateTime death, Organs organ) {
         this.organ = organ;
         this.death = death;
-        this.time = ((double) death.until(death.plusSeconds(organ.getStorageSeconds()), ChronoUnit.SECONDS));
+        this.time = ((double) death.until(death.plusSeconds(organ.getUpperBoundSeconds()), ChronoUnit.SECONDS));
         this.startTime = (int) death.until(LocalDateTime.now(), ChronoUnit.SECONDS);
 
     }
@@ -82,9 +82,9 @@ public class ProgressTask extends Task<Void> {
     }
 
     private String getTimeRemaining() {
-        int hours = (int) HOURS.between(LocalDateTime.now(), death.plusSeconds(organ.getStorageSeconds()));
-        int mins = (int) MINUTES.between(LocalDateTime.now(), death.plusSeconds(organ.getStorageSeconds())) - hours * 60;
-        int seconds = (int) SECONDS.between(LocalDateTime.now(), death.plusSeconds(organ.getStorageSeconds())) - hours * 3600 - mins * 60;
+        int hours = (int) HOURS.between(LocalDateTime.now(), death.plusSeconds(organ.getUpperBoundSeconds()));
+        int mins = (int) MINUTES.between(LocalDateTime.now(), death.plusSeconds(organ.getUpperBoundSeconds())) - hours * 60;
+        int seconds = (int) SECONDS.between(LocalDateTime.now(), death.plusSeconds(organ.getUpperBoundSeconds())) - hours * 3600 - mins * 60;
         return String.format("%d h %d m %d s remaining", hours, mins, seconds);
     }
 
