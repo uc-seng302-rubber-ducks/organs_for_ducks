@@ -45,6 +45,9 @@ public class UpdateDeathDetailsController {
     @FXML
     private Label updateDeathDetailsErrorLabel;
 
+    @FXML
+    private Button removeUpdateDeathDetailsButton;
+
 
     private AppController controller;
     private Stage stage;
@@ -65,6 +68,9 @@ public class UpdateDeathDetailsController {
 
         stage.setTitle(currentUser.getNhi());
         updateDeathDetailsErrorLabel.setVisible(false);
+        if (currentUser.getMomentDeath() == null) {
+            removeUpdateDeathDetailsButton.setDisable(true);
+        }
         prefillFields();
     }
 
