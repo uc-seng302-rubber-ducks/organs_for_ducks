@@ -17,17 +17,16 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 public class UpdateUserDetailsTest {
 
     AppController controller;
-    //private UserBridge bridge;
     private DateTimeFormatter sdf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     private String NHI = "";
+    User testUser;
 
     @Before
     public void resetDonor() throws IOException {
@@ -35,8 +34,8 @@ public class UpdateUserDetailsTest {
         controller = mock(AppController.class);
         AppController.setInstance(controller);
         when(controller.getUserBridge()).thenReturn(bridge);
-        User u = new User("test dummy", LocalDate.parse("1111-11-11", sdf), "ABC1234");
-        when(bridge.getUser("ABC1234")).thenReturn(u);
+        testUser = new User("test dummy", LocalDate.parse("1111-11-11", sdf), "ABC1234");
+        when(bridge.getUser("ABC1234")).thenReturn(testUser);
         when(bridge.getExists("CDE1234")).thenReturn(true);
         controller.setUsers(new ArrayList<>());
 
@@ -75,7 +74,6 @@ public class UpdateUserDetailsTest {
 
         User muppet = controller.getUserBridge().getUser(NHI);
         Assert.assertNotNull(muppet);
-
     }
 
     @Test
@@ -126,7 +124,6 @@ public class UpdateUserDetailsTest {
         User test = controller.getUserBridge().getUser(NHI);
 
         Assert.assertEquals(LocalDate.parse("2016-03-04", sdf), test.getDateOfBirth());
-
     }
 
     @Test
@@ -140,8 +137,6 @@ public class UpdateUserDetailsTest {
         User test = controller.getUserBridge().getUser(NHI);
 
         Assert.assertEquals(LocalDate.parse("1111-11-11", sdf), test.getDateOfBirth());
-
-
     }
 
     @Test
@@ -254,5 +249,69 @@ public class UpdateUserDetailsTest {
         User test = controller.getUserBridge().getUser(NHI);
 
         Assert.assertEquals("New Zealand", test.getDeathCountry());
+    }
+
+    @Test
+    public void shouldNotUpdateInvalidCountry() throws IOException {
+        when(controller.getAllowedCountries()).thenReturn(new ArrayList<>());
+
+        String[] args = {NHI, "-co=Antarctica"};
+        new CommandLine(new UpdateUserDetails())
+                .parseWithHandler(new CommandLine.RunLast(), System.err, args);
+
+        User testUser = controller.getUserBridge().getUser(NHI);
+        assertEquals("", testUser.getCountry());
+    }
+
+    @Test
+    public void shouldUpdateAvailableCountry() throws IOException {
+        ArrayList<String> availableCountries = new ArrayList<>();
+        availableCountries.add("Antarctica");
+        when(controller.getAllowedCountries()).thenReturn(availableCountries);
+
+        String[] args = {NHI, "-co=Antarctica"};
+        new CommandLine(new UpdateUserDetails())
+                .parseWithHandler(new CommandLine.RunLast(), System.err, args);
+
+        User testUser = controller.getUserBridge().getUser(NHI);
+        assertEquals("Antarctica", testUser.getCountry());
+    }
+
+    @Test
+    public void shouldUpdateMultiWordCountry() throws IOException {
+        ArrayList<String> availableCountries = new ArrayList<>();
+        availableCountries.add("New Zealand");
+        when(controller.getAllowedCountries()).thenReturn(availableCountries);
+
+        String[] args = {NHI, "-co=New_Zealand"};
+        new CommandLine(new UpdateUserDetails())
+                .parseWithHandler(new CommandLine.RunLast(), System.err, args);
+
+        User testUser = controller.getUserBridge().getUser(NHI);
+        assertEquals("New Zealand", testUser.getCountry());
+    }
+
+    @Test
+    public void shouldUpdateNonNZRegion() throws IOException {
+        testUser.setCountry("Algeria");
+
+        String[] args = {NHI, "-r=notInNZ"};
+        new CommandLine(new UpdateUserDetails())
+                .parseWithHandler(new CommandLine.RunLast(), System.err, args);
+
+        User resultUser = controller.getUserBridge().getUser(NHI);
+        assertEquals("notInNZ", resultUser.getRegion());
+    }
+
+    @Test
+    public void shouldNotUpdateNonNZRegion() throws IOException {
+        testUser.setCountry("New Zealand");
+
+        String[] args = {NHI, "-r=notInNZ"};
+        new CommandLine(new UpdateUserDetails())
+                .parseWithHandler(new CommandLine.RunLast(), System.err, args);
+
+        User resultUser = controller.getUserBridge().getUser(NHI);
+        assertNotEquals("notInNZ", resultUser.getRegion());
     }
 }
