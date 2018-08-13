@@ -9,9 +9,7 @@ import odms.commons.model.datamodel.AvailableOrganDetail;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
-import static java.time.temporal.ChronoUnit.HOURS;
-import static java.time.temporal.ChronoUnit.MINUTES;
-import static java.time.temporal.ChronoUnit.SECONDS;
+import static java.time.temporal.ChronoUnit.*;
 
 public class ProgressTask extends Task<Void> {
     private final Double time;
@@ -104,9 +102,7 @@ public class ProgressTask extends Task<Void> {
      * @return long value of how many seconds are left
      */
     public long calculateTimeLeft(LocalDateTime fromThisTime) {
-        long timeLeft = SECONDS.between(fromThisTime, death.plusSeconds(organ.getStorageSeconds()));
-        //long timeLeft = SECONDS.between(fromThisTime, LocalDateTime.now().plusSeconds(organ.getStorageSeconds()));
-        System.out.println(organ.toString());
+        long timeLeft = SECONDS.between(fromThisTime, death.plusSeconds(organ.getUpperBoundSeconds()));
         if (timeLeft < 0) {
             return 0;
         } else {

@@ -98,11 +98,9 @@ public class AvailableOrgansViewController {
         populateTables();
         progressBarColumn.setSortType(TableColumn.SortType.ASCENDING);
         progressBarColumn.setComparator(organTimeLeftComparator);
-        availableOrgansTableView.getSortOrder().add(progressBarColumn); //TODO:need to find a way for tableview to execute the organ time remaining comparator when table is fully initialised rather than executing the comparator of first column (Donor column) - 12/8
-        availableOrgansTableView.setItems(sortedAvailableOrganDetails);
     }
 
-    private Comparator<ProgressTask> organTimeLeftComparator = Comparator.comparingLong(p -> p.getTask().calculateTimeLeft(LocalDateTime.now()));
+    private Comparator<ProgressTask> organTimeLeftComparator = Comparator.comparingLong(p -> p.calculateTimeLeft(LocalDateTime.now()));
 
 
     @FXML
@@ -124,6 +122,9 @@ public class AvailableOrgansViewController {
         FilteredList<AvailableOrganDetail> filteredAvailableOrganDetails = new FilteredList<>(availableOrganDetails);
         filteredAvailableOrganDetails.setPredicate(AvailableOrganDetail::isOrganStillValid);
         sortedAvailableOrganDetails = new SortedList<>(filteredAvailableOrganDetails);
+        sortedAvailableOrganDetails.comparatorProperty().bind(availableOrgansTableView.comparatorProperty());
+        availableOrgansTableView.setItems(sortedAvailableOrganDetails);
+        availableOrgansTableView.getSortOrder().add(progressBarColumn); //TODO:need to find a way for tableview to execute the organ time remaining comparator when table is fully initialised rather than executing the comparator of first column (Donor column) - 12/8
         setOnClickBehaviour();
     }
 
