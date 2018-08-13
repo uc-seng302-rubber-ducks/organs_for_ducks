@@ -14,6 +14,7 @@ import java.io.InputStream;
 import java.sql.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -35,6 +36,7 @@ public class DBHandlerTest {
 
     @Before
     public void beforeTest() throws SQLException {
+        testUser.setDateOfBirth(LocalDate.of(2000,1,1));
         dbHandler = new DBHandler();
         connection = mock(Connection.class);
         mockStmt = mock(PreparedStatement.class);
@@ -216,6 +218,7 @@ public class DBHandlerTest {
     public void testGetTransplantList() throws SQLException {
         when(mockResultSet.next()).thenReturn(true, false);
         DBHandlerMocker.setTransplantResultSet(mockResultSet);
+        when(mockResultSet.getTimestamp("dob")).thenReturn(java.sql.Timestamp.valueOf(LocalDateTime.of(1,1,1,1,1)));
         dbHandler.getTransplantDetails(connection,0, 1, "", "", new String[] {});
         verify(mockStmt, times(1)).executeQuery();
     }

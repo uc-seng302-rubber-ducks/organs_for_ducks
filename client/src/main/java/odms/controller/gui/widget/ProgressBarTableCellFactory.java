@@ -5,24 +5,24 @@ import javafx.scene.Node;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
-import odms.commons.utils.ProgressBarService;
+import odms.commons.model.datamodel.AvailableOrganDetail;
+import odms.commons.utils.ProgressTask;
+import odms.services.CachedThreadPool;
 
 public class ProgressBarTableCellFactory {
 
-    public static <T> TableCell<T, ProgressBarService> generateCell(TableColumn<T, ProgressBarService> column) {
+    public static TableCell<AvailableOrganDetail, ProgressTask> generateCell(TableColumn<AvailableOrganDetail, ProgressTask> column) {
         ProgressBar progressBar = new ProgressBar(1.0F);
-        TableCell<T, ProgressBarService> cell = new TableCell<T, ProgressBarService>() {
+        TableCell<AvailableOrganDetail, ProgressTask> cell = new TableCell<AvailableOrganDetail, ProgressTask>() {
             @Override
-            protected void updateItem(ProgressBarService item, boolean empty) {
+            protected void updateItem(ProgressTask item, boolean empty) {
                 super.updateItem(item, empty);
 
                 if (item != null) {
                     progressBar.progressProperty().bind(item.progressProperty());
                     progressBar.minWidthProperty().bind(column.widthProperty().subtract(10));
                     item.setProgressBar(progressBar);
-                    if (!item.isRunning()) {
-                        item.restart();
-                    }
+                    CachedThreadPool.getThreadPool().getExecutor().submit(item);
                 }
             }
         };

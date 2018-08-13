@@ -3,15 +3,22 @@ package odms.controller.gui.panel.logic;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import odms.commons.model.datamodel.AvailableOrganDetail;
+import odms.commons.model.datamodel.TransplantDetails;
 import odms.controller.AppController;
 
-public class AvailableOrgansLogicController {
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+
+public class AvailableOrgansLogicController implements PropertyChangeListener {
 
     private int startingIndex = 0;
+    private int startingIndexMatches = 0;
     private static final int ROWS_PER_PAGE = 30;
     private String organ = "";
     private String region = "";
     private ObservableList<AvailableOrganDetail> availableOrganDetails;
+    private ObservableList<TransplantDetails> transplantDetails;
+    private AvailableOrganDetail availableOrgan;
 
     public AvailableOrgansLogicController(ObservableList<AvailableOrganDetail> availableOrganDetails) {
         this.availableOrganDetails = availableOrganDetails;
@@ -25,7 +32,7 @@ public class AvailableOrgansLogicController {
         this.startingIndex = startIndex;
 
         // Make the call to the bridge here, and hand the arraylist to the bridge function
-        AppController.getInstance().getAvailableOrgansBridge().getAvailableOrgansList(startIndex, ROWS_PER_PAGE, organ, region, "", "", "", availableOrganDetails);
+        AppController.getInstance().getOrgansBridge().getAvailableOrgansList(startIndex, ROWS_PER_PAGE, organ, region, "", "", "", availableOrganDetails);
     }
 
     public void goPrevPage() {
@@ -51,7 +58,46 @@ public class AvailableOrgansLogicController {
             return;
         }
         for (AvailableOrganDetail detail : availableOrganDetails) {
-            detail.getProgressTask().cancel();
+            detail.getProgressTask().cancel(true);
         }
+    }
+
+    public void goNextPageMatches() {
+        if(transplantDetails.size() < ROWS_PER_PAGE){
+            return;
+        }
+        startingIndexMatches += ROWS_PER_PAGE;
+        searchMatches(startingIndexMatches);
+
+    }
+
+    private void searchMatches(int startingIndexMatches) {
+        transplantDetails.clear();
+        this.startingIndexMatches = startingIndexMatches;
+        AppController.getInstance().getOrgansBridge().getMatchingOrgansList(startingIndexMatches,
+                ROWS_PER_PAGE, availableOrgan.getDonorNhi(), availableOrgan.getOrgan().toString(), transplantDetails);
+    }
+
+    public void goPrevPageMatches() {
+        if (startingIndexMatches - ROWS_PER_PAGE < 0) {
+            return;
+        }
+
+        startingIndexMatches -= ROWS_PER_PAGE;
+        searchMatches(startingIndexMatches);
+    }
+
+    public void expireOrgans() {
+
+
+    }
+
+    public void showMatches(AvailableOrganDetail selectedItem) {
+        this.availableOrgan = selectedItem;
+    }
+
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        availableOrganDetails.removeIf(p -> !p.isOrganStillValid());
     }
 }

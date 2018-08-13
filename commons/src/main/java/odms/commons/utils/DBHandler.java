@@ -13,6 +13,7 @@ import java.lang.reflect.Type;
 import java.sql.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 public class DBHandler {
@@ -93,11 +94,10 @@ public class DBHandler {
             "JOIN DeathDetails ON OrganDonating.fkUserNhi = DeathDetails.fkUserNhi " +
             "JOIN Organ ON OrganDonating.fkOrgansId = organId " +
             "JOIN HealthDetails ON OrganDonating.fkUserNhi = HealthDetails.fkUserNhi " +
+            "JOIN User U ON DeathDetails.fkUserNhi = U.nhi " +
             "WHERE (bloodType LIKE ? OR bloodType IS NULL)" +
             "AND (organName LIKE ? OR organName IS NULL )" +
             "AND (DeathDetails.region LIKE ? or DeathDetails.region IS NULL)" +
-            "AND (DeathDetails.city LIKE ? or DeathDetails.city IS NULL)" +
-            "AND (DeathDetails.country LIKE ? or DeathDetails.country IS NULL)" +
             "LIMIT ? OFFSET ?";
     private static final String SELECT_DEATH_DETAILS_STMT = "SELECT * FROM DeathDetails WHERE fkUserNhi = ?";
     private AbstractUpdateStrategy updateStrategy;
@@ -890,8 +890,9 @@ public class DBHandler {
      * @see TransplantDetails
      */
     public List<TransplantDetails> getTransplantDetails(Connection conn, int startIndex, int count, String name, String region, String[] organs) throws SQLException {
-        StringBuilder queryString = new StringBuilder("SELECT U.nhi, U.firstName, U.middleName, U.lastName, O.organName, Dates.dateRegistered, Q.region, DD.momentOfDeath from OrganAwaiting JOIN Organ O ON OrganAwaiting.fkOrgansId = O.organId\n" +
+        StringBuilder queryString = new StringBuilder("SELECT U.nhi, U.firstName, U.dob, U.middleName, U.lastName, O.organName, Dates.dateRegistered, Q.region, DD.momentOfDeath, H.bloodType from OrganAwaiting JOIN Organ O ON OrganAwaiting.fkOrgansId = O.organId\n" +
                 "  LEFT JOIN User U ON OrganAwaiting.fkUserNhi = U.nhi\n" +
+                "  LEFT JOIN HealthDetails H ON U.nhi = H.fkUserNhi\n" +
                 "  LEFT JOIN DeathDetails DD ON DD.fkUserNhi = U.nhi\n" +
                 "  LEFT JOIN  (SELECT Address.fkUserNhi, Address.region from Address JOIN ContactDetails Detail ON Address.fkContactId = Detail.contactId\n" +
                 "  WHERE Address.fkContactId NOT IN (SELECT EmergencyContactDetails.fkContactId FROM EmergencyContactDetails)) Q ON U.nhi = Q.fkUserNhi\n" +
@@ -921,6 +922,59 @@ public class DBHandler {
             List<TransplantDetails> detailsList = new ArrayList<>();
             try (ResultSet results = stmt.executeQuery()) {
                 while (results.next()) {
+                    if (results.getTimestamp("momentOfDeath") == null) {
+                        String nameBuilder = results.getString("firstName") +
+                                " " +
+                                results.getString("middleName") +
+                                " " +
+                                results.getString("lastName");
+                        Organs selectedOrgan = Organs.valueOf(results.getString("organName"));
+                        LocalDate dateRegistered = results.getDate("dateRegistered").toLocalDate();
+                        String bloodType = results.getString("bloodType");
+                        long age = ChronoUnit.YEARS.between(results.getTimestamp("dob").toLocalDateTime(), LocalDateTime.now());
+                        detailsList.add(new TransplantDetails(
+                                results.getString(1),
+                                nameBuilder,
+                                selectedOrgan, dateRegistered, results.getString("region"),age,bloodType ));
+                    }
+                }
+                return detailsList;
+            }
+        }
+    }
+
+    /**
+     * gets all relevant details relating to users waiting to receive an organ transplant
+     *
+     * @param conn       connection to the target database
+     * @param nhi nhi of user to find details for
+     * @return list of transplant details matching the above criteria
+     * @throws SQLException exception thrown during the transaction
+     * @see TransplantDetails
+     */
+    public TransplantDetails getTransplantDetailsByNhi(Connection conn, String nhi, String organ) throws SQLException {
+        String queryString = "SELECT U.nhi, U.firstName, U.middleName, U.lastName, U.dob, O.organName, Dates.dateRegistered, Q.region, DD.momentOfDeath,H.bloodType from OrganAwaiting " +
+                "JOIN Organ O ON OrganAwaiting.fkOrgansId = O.organId" +
+                " LEFT JOIN User U ON OrganAwaiting.fkUserNhi = U.nhi " +
+                " LEFT JOIN HealthDetails H ON U.nhi = H.fkUserNhi" +
+                " LEFT JOIN DeathDetails DD ON DD.fkUserNhi = U.nhi " +
+                " LEFT JOIN  " +
+                "(SELECT Address.fkUserNhi, Address.region from Address" +
+                " JOIN ContactDetails Detail ON Address.fkContactId = Detail.contactId " +
+                "WHERE Address.fkContactId NOT IN (SELECT EmergencyContactDetails.fkContactId " +
+                "FROM EmergencyContactDetails)) Q ON U.nhi = Q.fkUserNhi " +
+                "LEFT JOIN OrganAwaitingDates Dates ON awaitingId = Dates.fkAwaitingId" +
+                " WHERE Dates.dateDeregistered IS NULL AND U.nhi = ? AND organName = ?";
+
+
+
+        try (PreparedStatement stmt = conn.prepareStatement(queryString)) {
+            stmt.setString(1, nhi);
+            stmt.setString(2, organ);
+
+            List<TransplantDetails> detailsList = new ArrayList<>();
+            try (ResultSet results = stmt.executeQuery()) {
+                while (results.next()) {
                     if (results.getTimestamp(8) == null) {
                         String nameBuilder = results.getString(2) +
                                 " " +
@@ -929,15 +983,18 @@ public class DBHandler {
                                 results.getString(4);
                         Organs selectedOrgan = Organs.valueOf(results.getString(5));
                         LocalDate dateRegistered = results.getDate(6).toLocalDate();
-                        detailsList.add(new TransplantDetails(
+                        String bloodType = results.getString("bloodType");
+                        long age = ChronoUnit.YEARS.between(results.getTimestamp("dob").toLocalDateTime(), LocalDateTime.now());
+                        return new TransplantDetails(
                                 results.getString(1),
                                 nameBuilder,
-                                selectedOrgan, dateRegistered, results.getString(7)));
+                                selectedOrgan, dateRegistered, results.getString(7),age,bloodType );
                     }
                 }
-                return detailsList;
+
             }
         }
+        return null;
     }
 
     /**
@@ -1141,27 +1198,29 @@ public class DBHandler {
                                                         String organ,
                                                         String region,
                                                         String bloodType,
-                                                        String city,
-                                                        String country,
                                                         Connection connection) throws SQLException {
         List<AvailableOrganDetail> results = new ArrayList<>();
         try(PreparedStatement preparedStatement = connection.prepareStatement(SELECT_AVAILABLE_ORGANS)){
             preparedStatement.setString(1,bloodType + "%");
             preparedStatement.setString(2,organ + "%");
             preparedStatement.setString(3,region + "%");
-            preparedStatement.setString(4,city + "%");
-            preparedStatement.setString(5,country + "%");
-            preparedStatement.setInt(6, count);
-            preparedStatement.setInt(7,startIndex);
+            preparedStatement.setInt(4, count);
+            preparedStatement.setInt(5,startIndex);
             try(ResultSet resultSet = preparedStatement.executeQuery()){
                 while(resultSet.next()) {
-                    AvailableOrganDetail organDetail = new AvailableOrganDetail(Organs.valueOf(resultSet.getString("organName")),
-                            resultSet.getString("fkUserNhi"),
-                            resultSet.getTimestamp("momentOfDeath").toLocalDateTime(),
-                            resultSet.getString("region"),
-                            resultSet.getString("bloodType"));
-                    if (organDetail.isOrganStillValid()) {
-                        results.add(organDetail);
+                    try {
+                        AvailableOrganDetail organDetail = new AvailableOrganDetail();
+                        organDetail.setDonorNhi(resultSet.getString("fkUserNhi"));
+                        organDetail.setBloodType(resultSet.getString("bloodType"));
+                        organDetail.setMomentOfDeath(resultSet.getTimestamp("momentOfDeath").toLocalDateTime());
+                        organDetail.setRegion(resultSet.getString("region"));
+                        organDetail.setOrgan(Organs.valueOf(resultSet.getString("organName")));
+                        organDetail.setAge(ChronoUnit.YEARS.between(resultSet.getTimestamp("dob").toLocalDateTime(), organDetail.getMomentOfDeath()));
+                        if (organDetail.isOrganStillValid()) {
+                            results.add(organDetail);
+                        }
+                    } catch (NullPointerException e){
+                        Log.info("User who is not dead is present in the DeathDetails table");
                     }
                 }
             }

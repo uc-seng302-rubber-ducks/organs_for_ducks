@@ -1,15 +1,13 @@
 package odms.GUITest2;
 
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.control.TableView;
 import odms.App;
 import odms.TestUtils.AppControllerMocker;
 import odms.TestUtils.CommonTestMethods;
-import odms.bridge.ClinicianBridge;
-import odms.bridge.LoginBridge;
-import odms.bridge.TransplantBridge;
-import odms.bridge.UserBridge;
+import odms.bridge.*;
 import odms.commons.model.Clinician;
 import odms.commons.model.User;
 import odms.commons.model.dto.UserOverview;
@@ -60,6 +58,7 @@ public class UpdateDeathDetailsControllerGUITest extends ApplicationTest{
         AppController application = AppControllerMocker.getFullMock();
         TransplantBridge transplantBridge = mock(TransplantBridge.class);
         UserController userController = mock(UserController.class);
+        OrgansBridge organsBridge = mock(OrgansBridge.class);
 
         Clinician clinician = new Clinician();
         clinician.setStaffId("0");
@@ -81,6 +80,11 @@ public class UpdateDeathDetailsControllerGUITest extends ApplicationTest{
 
         when(application.getUserOverviews()).thenReturn(new HashSet<>(overviews));
         when(bridge.getUser("ABC1244")).thenReturn(testUser);
+
+
+        when(application.getOrgansBridge()).thenReturn(organsBridge);
+        doNothing().when(organsBridge).getAvailableOrgansList(anyInt(),anyInt(),anyString(),anyString(),
+                anyString(),anyString(),anyString(),any(ObservableList.class));
 
         FxToolkit.registerPrimaryStage();
         FxToolkit.setupApplication(App.class);

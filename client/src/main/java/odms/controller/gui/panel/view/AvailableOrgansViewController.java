@@ -4,6 +4,8 @@ import javafx.animation.PauseTransition;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -11,7 +13,8 @@ import javafx.util.Duration;
 import odms.commons.model._abstract.UserLauncher;
 import odms.commons.model._enum.Organs;
 import odms.commons.model.datamodel.AvailableOrganDetail;
-import odms.commons.utils.ProgressBarService;
+import odms.commons.model.datamodel.TransplantDetails;
+import odms.commons.utils.ProgressTask;
 import odms.controller.gui.panel.logic.AvailableOrgansLogicController;
 import odms.controller.gui.widget.ProgressBarTableCellFactory;
 
@@ -42,28 +45,43 @@ public class AvailableOrgansViewController {
     private TableColumn<AvailableOrganDetail, LocalDateTime> deathMomentColumn;
 
     @FXML
-    private TableColumn<AvailableOrganDetail, ProgressBarService> progressBarColumn;
+    private TableColumn<AvailableOrganDetail, ProgressTask> progressBarColumn;
+
+    @FXML
+    private TableView<TransplantDetails> matchesView;
 
 
     private ObservableList<AvailableOrganDetail> availableOrganDetails = FXCollections.observableList(new ArrayList<>());
     private AvailableOrgansLogicController logicController = new AvailableOrgansLogicController(availableOrganDetails);
+    private SortedList<AvailableOrganDetail> sortedAvailableOrganDetails;
     private PauseTransition pause = new PauseTransition(Duration.millis(300));
     private UserLauncher parent;
 
     @FXML
     public void init(UserLauncher parent) {
         ObservableList<String> organs = FXCollections.observableList(new ArrayList<>());
+        organs.add("");
         for (Organs organ : Organs.values()) {
             organs.add(organ.toString());
         }
         this.parent = parent;
         availableOrganFilterComboBox.setItems(organs);
-        availableOrganDetails.addListener((ListChangeListener<? super AvailableOrganDetail>) observable -> populateTables());
+        availableOrganDetails.addListener((ListChangeListener<? super AvailableOrganDetail>) (observable) -> {
+            populateTables();
+            while (observable.next()) {
+                for (AvailableOrganDetail detail : observable.getAddedSubList()) {
+                    detail.addPropertyChangeListener(logicController);
+                }
+            }
+        });
+        availableOrganFilterComboBox.valueProperty().addListener(event -> search());
         regionFilterTextField.setOnKeyPressed(event -> {
+            availableOrganDetails.add(new AvailableOrganDetail(Organs.LIVER, "", null, "", "", 0));
             pause.setOnFinished(e -> search());
             pause.playFromStart();
         });
         initAvailableOrgansTableView();
+        initMatchesTable();
     }
 
     /**
@@ -77,10 +95,25 @@ public class AvailableOrgansViewController {
         deathMomentColumn.setCellValueFactory(new PropertyValueFactory<>("momentOfDeath"));
         progressBarColumn.setCellValueFactory(new PropertyValueFactory<>("progressTask"));
         progressBarColumn.setCellFactory(callback -> ProgressBarTableCellFactory.generateCell(progressBarColumn));
+        TableColumn<AvailableOrganDetail, String> timeLeftColumn = new TableColumn<>("Time Remaining");
+        timeLeftColumn.setCellValueFactory(p -> p.getValue().getProgressTask().messageProperty());
+        availableOrgansTableView.getColumns().add(timeLeftColumn);
+        availableOrgansTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         // figure out how to do progress bars
         search();
         populateTables();
-        availableOrgansTableView.setItems(availableOrganDetails);
+        availableOrgansTableView.setItems(sortedAvailableOrganDetails);
+    }
+
+    private void initMatchesTable(){
+        TableColumn matchesNhiColumn = new TableColumn("NHI");
+        TableColumn matchesRegionColumn = new TableColumn("Region");
+
+        matchesNhiColumn.setCellValueFactory(new PropertyValueFactory<TransplantDetails, String>("nhi"));
+        matchesRegionColumn.setCellValueFactory(new PropertyValueFactory<TransplantDetails, String>("region"));
+
+        matchesView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        matchesView.getColumns().addAll(matchesNhiColumn,matchesRegionColumn);
     }
 
     @FXML
@@ -94,11 +127,30 @@ public class AvailableOrgansViewController {
     }
 
     @FXML
+    private void goToPreviousPageMatches() {
+        logicController.goPrevPageMatches();
+    }
+
+    @FXML
     private void goToNextPage() {
         logicController.goNextPage();
     }
 
+    @FXML
+    private void goToNextPageMatches() {
+        logicController.goNextPageMatches();
+    }
+
+    @FXML
+    private void expireOrgan(){
+        logicController.expireOrgans();
+    }
+
+
     private void populateTables() {
+        FilteredList<AvailableOrganDetail> filteredAvailableOrganDetails = new FilteredList<>(availableOrganDetails);
+        filteredAvailableOrganDetails.setPredicate(AvailableOrganDetail::isOrganStillValid);
+        sortedAvailableOrganDetails = new SortedList<>(filteredAvailableOrganDetails);
         setOnClickBehaviour();
     }
 
