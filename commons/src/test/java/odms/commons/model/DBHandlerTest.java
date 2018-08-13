@@ -34,6 +34,7 @@ public class DBHandlerTest {
 
     @Before
     public void beforeTest() throws SQLException {
+        testUser.setDateOfBirth(LocalDate.of(2000,1,1));
         dbHandler = new DBHandler();
         connection = mock(Connection.class);
         mockStmt = mock(PreparedStatement.class);
@@ -111,7 +112,7 @@ public class DBHandlerTest {
 
     @Test
     public void testAddUserDonatingOrgans() throws SQLException {
-        testUser.getDonorDetails().addOrgan(Organs.LUNG);
+        testUser.getDonorDetails().addOrgan(Organs.LUNG, null);
         Collection<User> users = new ArrayList<>();
         users.add(testUser);
 
@@ -215,6 +216,7 @@ public class DBHandlerTest {
     public void testGetTransplantList() throws SQLException {
         when(mockResultSet.next()).thenReturn(true, false);
         DBHandlerMocker.setTransplantResultSet(mockResultSet);
+        when(mockResultSet.getTimestamp("dob")).thenReturn(java.sql.Timestamp.valueOf(LocalDateTime.of(1,1,1,1,1)));
         dbHandler.getTransplantDetails(connection,0, 1, "", "", new String[] {});
         verify(mockStmt, times(1)).executeQuery();
     }

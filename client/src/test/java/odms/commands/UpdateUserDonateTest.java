@@ -83,8 +83,8 @@ public class UpdateUserDonateTest {
         command.setController(controller);
         new CommandLine(command)
                 .parseWithHandler(new CommandLine.RunLast(), System.err, args);
-        verify(details, times(1)).addOrgan(Organs.LIVER);
-        verify(details, times(1)).addOrgan(Organs.KIDNEY);
+        verify(details, times(1)).addOrgan(Organs.LIVER, null);
+        verify(details, times(1)).addOrgan(Organs.KIDNEY, null);
         verify(details, times(1)).removeOrgan(Organs.LUNG);
     }
 
@@ -99,8 +99,8 @@ public class UpdateUserDonateTest {
         command.setController(controller);
         new CommandLine(command)
                 .parseWithHandler(new CommandLine.RunLast(), System.err, args);
-        verify(details, times(1)).addOrgan(Organs.LUNG);
-        verify(details, times(1)).addOrgan(Organs.LIVER);
+        verify(details, times(1)).addOrgan(Organs.LUNG, null);
+        verify(details, times(1)).addOrgan(Organs.LIVER, null);
     }
 
 

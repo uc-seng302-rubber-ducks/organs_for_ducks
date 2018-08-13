@@ -122,3 +122,7 @@ INSERT INTO PasswordDetails(password_id, fkAdminUserName, fkStaffId, hash, salt)
 INSERT INTO DeathDetails(fkUserNhi, momentOfDeath, city, region, country) VALUES
   ('ABC1234', '2018-08-05 03:22','Christchurch','Canterbury','New Zealand'),
   ('XYZ4321', '1988-01-02 18:20','Singapore', "",'Singapore');
+
+INSERT INTO OrganExpiryDetails(fkStaffId, fkDonatingId, timeOfExpiry, reason) VALUES
+  ('16', 2, '2018-10-04 20:12:43', 'It smells pretty bad'),
+  ('16', 3, '2018-10-04 20:12:43', 'Its not fresh');

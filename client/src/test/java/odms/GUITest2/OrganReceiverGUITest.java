@@ -43,7 +43,7 @@ public class OrganReceiverGUITest extends ApplicationTest {
     private DateTimeFormatter sdf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     private User testUser = new User("Aa", LocalDate.parse("2000-01-20", sdf), "ABC1244");
     private Collection<UserOverview> overviews = Collections.singletonList(UserOverview.fromUser(testUser));
-    private AvailableOrgansBridge availableOrgansBridge = mock(AvailableOrgansBridge.class);
+    private OrgansBridge organsBridge = mock(OrgansBridge.class);
 
     @BeforeClass
     public static void initialization() {
@@ -68,12 +68,12 @@ public class OrganReceiverGUITest extends ApplicationTest {
         when(application.getLoginBridge()).thenReturn(loginBridge);
         when(application.getTransplantBridge()).thenReturn(transplantBridge);
         when(application.getToken()).thenReturn("ahaahahahahhaha");
-        when(application.getAvailableOrgansBridge()).thenReturn(availableOrgansBridge);
+        when(application.getOrgansBridge()).thenReturn(organsBridge);
 
         when(application.getTransplantList()).thenReturn(new ArrayList<>());
         when(loginBridge.loginToServer(anyString(),anyString(), anyString())).thenReturn("lsdjfksd");
         when(clinicianBridge.getClinician(anyString(), anyString())).thenReturn(clinician);
-        doNothing().when(availableOrgansBridge).getAvailableOrgansList(anyInt(), anyInt(), anyString(), anyString(), anyString(), anyString(), anyString(), any());
+        doNothing().when(organsBridge).getAvailableOrgansList(anyInt(), anyInt(), anyString(), anyString(), anyString(), anyString(), anyString(), any());
         doNothing().when(application).addUserOverview(any(UserOverview.class));
 
         when(application.getUserOverviews()).thenReturn(new HashSet<>(overviews));

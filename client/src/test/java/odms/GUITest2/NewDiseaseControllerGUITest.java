@@ -45,7 +45,7 @@ public class NewDiseaseControllerGUITest extends ApplicationTest {
     private AdministratorBridge administratorBridge;
     private TransplantBridge transplantBridge;
     private User testUser;
-    private AvailableOrgansBridge availableOrgansBridge = mock(AvailableOrgansBridge.class);
+    private OrgansBridge organsBridge = mock(OrgansBridge.class);
 
     @BeforeClass
     public static void initialization() {
@@ -74,7 +74,7 @@ public class NewDiseaseControllerGUITest extends ApplicationTest {
         when(loginBridge.loginToServer(anyString(),anyString(), anyString())).thenReturn("lsdjfksd");
         when(clinicianBridge.getClinician(anyString(), anyString())).thenReturn(clinician);
         when(controller.getTransplantBridge()).thenReturn(transplantBridge);
-        when(controller.getAvailableOrgansBridge()).thenReturn(availableOrgansBridge);
+        when(controller.getOrgansBridge()).thenReturn(organsBridge);
 
         when(controller.getTransplantList()).thenReturn(new ArrayList<>());
 
@@ -85,7 +85,7 @@ public class NewDiseaseControllerGUITest extends ApplicationTest {
 
         when(controller.getUserOverviews()).thenReturn(Collections.singleton(UserOverview.fromUser(testUser)));
         when(bridge.getUser(anyString())).thenReturn(testUser);
-        doNothing().when(availableOrgansBridge).getAvailableOrgansList(anyInt(), anyInt(), anyString(), anyString(), anyString(), anyString(), anyString(), any());
+        doNothing().when(organsBridge).getAvailableOrgansList(anyInt(), anyInt(), anyString(), anyString(), anyString(), anyString(), anyString(), any());
 
         FxToolkit.registerPrimaryStage();
         FxToolkit.setupApplication(App.class);

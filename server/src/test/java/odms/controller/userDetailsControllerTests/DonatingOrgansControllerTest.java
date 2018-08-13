@@ -2,6 +2,7 @@ package odms.controller.userDetailsControllerTests;
 
 import odms.commons.model.User;
 import odms.commons.model._enum.Organs;
+import odms.commons.model.datamodel.ExpiryReason;
 import odms.commons.utils.DBHandler;
 import odms.commons.utils.JDBCDriver;
 import odms.controller.user.details.DonatingOrgansController;
@@ -16,8 +17,8 @@ import org.springframework.http.ResponseEntity;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
 
 import static odms.commons.model._enum.Organs.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -49,9 +50,9 @@ public class DonatingOrgansControllerTest {
     @Test
     public void postReceivingOrganShouldReturnCreated() throws SQLException {
         when(handler.getOneUser(any(Connection.class), anyString())).thenReturn(testUser);
-        Set<Organs> donating = new HashSet<>();
-        donating.add(LIVER);
-        donating.add(HEART);
+        Map<Organs, ExpiryReason> donating = new HashMap<>();
+        donating.put(LIVER, null);
+        donating.put(HEART, null);
         ResponseEntity res = controller.postDonatingOrgans("ABC1234", donating);
         Assert.assertTrue(testUser.getDonorDetails().getOrgans().contains(LIVER));
         Assert.assertTrue(testUser.getDonorDetails().getOrgans().contains(HEART));
@@ -60,9 +61,9 @@ public class DonatingOrgansControllerTest {
 
     @Test
     public void postReceivingOrganShouldReturnNotFoundWhenNoUserExists() {
-        Set<Organs> donating = new HashSet<>();
-        donating.add(LIVER);
-        donating.add(HEART);
+        Map<Organs, ExpiryReason> donating = new HashMap<>();
+        donating.put(LIVER, null);
+        donating.put(HEART, null);
         ResponseEntity res = controller.postDonatingOrgans("ABC1234", donating);
         Assert.assertEquals(HttpStatus.NOT_FOUND, res.getStatusCode());
     }
@@ -70,20 +71,20 @@ public class DonatingOrgansControllerTest {
     @Test(expected = ServerDBException.class)
     public void postReceivingOrganShouldThrowServerDBErrorWhenNoConnection() throws SQLException {
         when(driver.getConnection()).thenThrow(new SQLException());
-        Set<Organs> donating = new HashSet<>();
-        donating.add(LIVER);
-        donating.add(HEART);
+        Map<Organs, ExpiryReason> donating = new HashMap<>();
+        donating.put(LIVER, null);
+        donating.put(HEART, null);
         controller.postDonatingOrgans("ABC1234", donating);
     }
 
     @Test
     public void putReceivingOrgansShouldReturnCreated() throws SQLException {
         when(handler.getOneUser(any(Connection.class), anyString())).thenReturn(testUser);
-        testUser.getDonorDetails().addOrgan(CORNEA);
-        testUser.getDonorDetails().addOrgan(BONE_MARROW);
-        Set<Organs> donating = new HashSet<>();
-        donating.add(LIVER);
-        donating.add(HEART);
+        testUser.getDonorDetails().addOrgan(CORNEA, null);
+        testUser.getDonorDetails().addOrgan(BONE_MARROW, null);
+        Map<Organs, ExpiryReason> donating = new HashMap<>();
+        donating.put(LIVER, null);
+        donating.put(HEART, null);
         ResponseEntity res = controller.putDonatingOrgans("ABC1234", donating);
         Assert.assertTrue(testUser.getDonorDetails().getOrgans().contains(LIVER));
         Assert.assertTrue(testUser.getDonorDetails().getOrgans().contains(HEART));
@@ -93,9 +94,9 @@ public class DonatingOrgansControllerTest {
 
     @Test
     public void putReceivingOrgansShouldReturnNotFoundWhenNoUser() {
-        Set<Organs> donating = new HashSet<>();
-        donating.add(LIVER);
-        donating.add(HEART);
+        Map<Organs, ExpiryReason> donating = new HashMap<>();
+        donating.put(LIVER, null);
+        donating.put(HEART, null);
         ResponseEntity res = controller.putDonatingOrgans("ABC1234", donating);
         Assert.assertEquals(HttpStatus.NOT_FOUND, res.getStatusCode());
     }
@@ -103,9 +104,9 @@ public class DonatingOrgansControllerTest {
     @Test(expected = ServerDBException.class)
     public void putReceivingOrgansShouldThrowExceptionAndReturn500() throws SQLException {
         when(driver.getConnection()).thenThrow(new SQLException());
-        Set<Organs> donating = new HashSet<>();
-        donating.add(LIVER);
-        donating.add(HEART);
+        Map<Organs, ExpiryReason> donating = new HashMap<>();
+        donating.put(LIVER, null);
+        donating.put(HEART, null);
         controller.putDonatingOrgans("ABC1234", donating);
     }
 }
