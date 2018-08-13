@@ -1,15 +1,20 @@
 package odms.commons.model.datamodel;
 
+import odms.commons.model._abstract.Listenable;
 import odms.commons.model._enum.Organs;
 import odms.commons.utils.ProgressTask;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.time.LocalDateTime;
 
 /**
  * Used to populate progress bar
  */
-public class OrgansWithExpiry {
+public class OrgansWithExpiry implements Listenable {
 
+    private PropertyChangeSupport pcs;
     private Organs organType;
     private transient ProgressTask progressTask; //NOSONAR
     private String reason;
@@ -23,13 +28,14 @@ public class OrgansWithExpiry {
         if (expiryReason.getTimeOrganExpired() != null) {
             reason = expiryReason.getReason();
             staffId = expiryReason.getClinicianId();
-            expiryTime = expiryReason.getTimeOrganExpired();
+            expiryTime = calculateExpiryDate(momentOfDeath, organType);
 
         } else {
             reason = "";
             staffId = "";
             expiryTime = null;
             this.progressTask = new ProgressTask(this, momentOfDeath);
+            this.pcs = new PropertyChangeSupport(this);
         }
     }
 
@@ -80,5 +86,38 @@ public class OrgansWithExpiry {
 
     public void setExpiryReason(String expiryReason) {
         this.reason = expiryReason;
+    }
+
+    /**
+     * Returns an expiry date for an organ given a time of death and organ type
+     *
+     * @param timeOfDeath LocalDateTime of when the donor died
+     * @param organType Organs enum of the type of organ
+     * @return LocalDateTime of when the organ will expire
+     */
+    private LocalDateTime calculateExpiryDate(LocalDateTime timeOfDeath, Organs organType) {
+        long expireTime = organType.getUpperBoundSeconds();
+        return timeOfDeath.plusSeconds(expireTime);
+    }
+
+    public void setDone(boolean done) {
+        if (done) {
+            fire(new PropertyChangeEvent(this, "done", false, true));
+        }
+    }
+
+    @Override
+    public void addPropertyChangeListener(PropertyChangeListener listener) {
+        pcs.addPropertyChangeListener(listener);
+    }
+
+    @Override
+    public void removePropertyChangeListener(PropertyChangeListener listener) {
+        pcs.removePropertyChangeListener(listener);
+    }
+
+    @Override
+    public void fire(PropertyChangeEvent event) {
+        pcs.firePropertyChange(event);
     }
 }

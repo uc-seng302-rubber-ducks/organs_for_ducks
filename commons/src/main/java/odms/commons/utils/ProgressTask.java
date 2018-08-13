@@ -19,6 +19,7 @@ public class ProgressTask extends Task<Void> {
     private int startTime;
     private ProgressBar bar;
     private AvailableOrganDetail detail;
+    private OrgansWithExpiry expiryDetails;
     private double lowerBound = 0.0;
     private double colourPercent = 0.0;
 
@@ -39,6 +40,7 @@ public class ProgressTask extends Task<Void> {
         this.death = momentOfDeath;
         this.time = ((double) death.until(death.plusSeconds(organ.getUpperBoundSeconds()), ChronoUnit.SECONDS));
         this.startTime = (int) death.until(LocalDateTime.now(), ChronoUnit.SECONDS);
+        this.expiryDetails = detail;
         if (organ.getUpperBoundSeconds() != organ.getLowerBoundSeconds()) {
             this.lowerBound = 1.0 - (organ.getLowerBoundSeconds() / organ.getUpperBoundSeconds());
             colourPercent = Math.round(this.lowerBound * 100);
@@ -62,6 +64,8 @@ public class ProgressTask extends Task<Void> {
 
         if (detail != null) {
             detail.setDone(true);
+        } else {
+            expiryDetails.setDone(true);
         }
 
         this.updateProgress(1, 1);
