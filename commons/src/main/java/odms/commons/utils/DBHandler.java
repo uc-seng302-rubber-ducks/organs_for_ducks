@@ -444,12 +444,9 @@ public class DBHandler {
             stmt.setString(1, user.getNhi());
             try (ResultSet resultSet = stmt.executeQuery()) {
                 while (resultSet != null && resultSet.next()) {
-                    ExpiryReason expiryReason = null;
-                    if (resultSet.getString("reason") != null) { //if donor has expiry organ details
-                        expiryReason = new ExpiryReason(resultSet.getString("fkStaffId"),
-                                resultSet.getTimestamp("timeOfExpiry").toLocalDateTime(),
-                                resultSet.getString("reason"));
-                    }
+                    ExpiryReason expiryReason = new ExpiryReason(resultSet.getString("fkStaffId"),
+                            resultSet.getTimestamp("timeOfExpiry") != null ? resultSet.getTimestamp("timeOfExpiry").toLocalDateTime() : null,
+                            resultSet.getString("reason"));
                     String organ = resultSet.getString("organName");
                     user.getDonorDetails().addOrgan(Organs.valueOf(organ), expiryReason);
                 }
