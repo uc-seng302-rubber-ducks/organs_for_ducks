@@ -108,26 +108,19 @@ public class UpdateDeathDetailsController {
             timeOfDeath = hour + ":" + minute;
         }
         updateDeathDetailsTimeTextField.setText(timeOfDeath);
-        handleRegionPicker();
-
 
         if (!currentUser.getDeathCity().isEmpty()) {
             updateDeathDetailsCityTextField.setText(currentUser.getDeathCity());
         } else {
             updateDeathDetailsCityTextField.setText(currentUser.getCity());
         }
-        if (!currentUser.getDeathRegion().isEmpty()) {
-            updateDeathDetailsRegionChoiceBox.setValue(currentUser.getDeathRegion());
-            updateDeathDetailsRegionTextField.setText(currentUser.getDeathRegion());
-        } else {
-            updateDeathDetailsRegionChoiceBox.setValue(currentUser.getRegion());
-            updateDeathDetailsRegionTextField.setText(currentUser.getRegion());
-        }
         if (!currentUser.getDeathCountry().isEmpty()) {
             updateDeathDetailsCountryComboBox.setValue(currentUser.getDeathCountry());
         } else {
             updateDeathDetailsCountryComboBox.setValue(currentUser.getCountry());
         }
+
+        handleRegionPicker();
 
     }
 
