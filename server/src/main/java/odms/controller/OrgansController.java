@@ -61,7 +61,7 @@ public class OrgansController extends BaseController {
             Log.info("Getting all matching organs");
             List<TransplantDetails> sortedMatches = new ArrayList<>();
 
-            AvailableOrganDetail availableOrganDetail = handler.getAvailableOrgansbyNhi(organ.toString(), donorNhi, connection);
+            AvailableOrganDetail availableOrganDetail = handler.getAvailableOrgansByNhi(organ.toString(), donorNhi, connection);
 
             if(availableOrganDetail == null){
                 return sortedMatches;

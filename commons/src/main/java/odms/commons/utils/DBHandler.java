@@ -1251,7 +1251,7 @@ public class DBHandler {
         }
     }
 
-    public AvailableOrganDetail getAvailableOrgansbyNhi(String organ, String donorNhi, Connection connection) throws SQLException {
+    public AvailableOrganDetail getAvailableOrgansByNhi(String organ, String donorNhi, Connection connection) throws SQLException {
         try(PreparedStatement preparedStatement = connection.prepareStatement(SELECT_AVAILABLE_ORGANS_BY_NHI)){
                 preparedStatement.setString(1,donorNhi);
                 preparedStatement.setString(2,organ);

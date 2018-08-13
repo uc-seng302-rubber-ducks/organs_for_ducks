@@ -42,10 +42,13 @@ public class OrganRanker {
         Map<AvailableOrganDetail, List<TransplantDetails>> organMatches = new HashMap<>();
         Set<String> regionsWithDistance = Regions.getEnums();
         CityDistanceCalculator distanceCalculator = new CityDistanceCalculator();
+        List<TransplantDetails> matches = new ArrayList<>();
         for (TransplantDetails transplantDetail : waitingTransplants) {
-            List<TransplantDetails> matches = new ArrayList<>();
             LocalDateTime death = organAvailable.getMomentOfDeath();
             Organs organ = organAvailable.getOrgan();
+            if(transplantDetail.getNhi().equalsIgnoreCase(organAvailable.getDonorNhi())){
+                continue;
+            }
             double timeRemaining = death.until(death.plusSeconds(organ.getUpperBoundSeconds()), ChronoUnit.SECONDS);
             if (transplantDetail.getOrgan() != organAvailable.getOrgan()) {
                 continue;
@@ -71,8 +74,8 @@ public class OrganRanker {
                 continue;
             }
             matches.add(transplantDetail);
-            organMatches.put(organAvailable, matches);
         }
+        organMatches.put(organAvailable, matches);
 
         return organMatches;
     }

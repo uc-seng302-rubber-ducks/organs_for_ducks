@@ -31,7 +31,9 @@ public enum Organs {
     @SerializedName("Bone")
     BONE("Bone", 11, 24 * 365 * 3, 24 * 365 * 10),
     @SerializedName("Connective Tissue")
-    CONNECTIVE_TISSUE("Connective Tissue", 12, 24 * 365 * 3, 24 * 365 * 10);
+    CONNECTIVE_TISSUE("Connective Tissue", 12, 24 * 365 * 3, 24 * 365 * 10),
+    @SerializedName("Test Organ")
+    TEST_ORGAN("Test Organ", 13, 0.5,1);// An oran to test progress bars and tests
 
     private String organName;
     private int dbValue;
