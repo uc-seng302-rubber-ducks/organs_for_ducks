@@ -44,6 +44,8 @@ public class ProgressTask extends Task<Void> {
     }
 
     private String getColorStyle(double progress) {
+        boolean lowerBound = true;
+        double lowerboundd = 0.3;
         // this doesn't work yet =/
         String green;
         String red;
@@ -67,8 +69,16 @@ public class ProgressTask extends Task<Void> {
 
 
         String colour = "#" + red + green + "00";
-
-        return "-fx-accent: " + colour;
+        if (lowerBound) {
+            // remove all green color from the  back ground
+            if (progress <= lowerboundd) {
+                // replace this when organs have a lower bound
+                colour = "#" + red + "00" + "00";
+            }
+            return "-fx-accent: " + colour + "; -fx-control-inner-background: rgba(255, 255, 255, 0.1);  -fx-background-color: linear-gradient(to left, green , green 30% , transparent 30%); ";
+        } else {
+            return "-fx-accent: " + colour + "; -fx-control-inner-background: rgba(255, 255, 255, 0.1);";
+        }
     }
 
     private String getTimeRemaining() {
