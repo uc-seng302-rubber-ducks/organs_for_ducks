@@ -40,7 +40,7 @@ import static org.testfx.api.FxAssert.verifyThat;
 public class UpdateClinicianControllerGUITest extends ApplicationTest {
 
     private Collection<UserOverview> overviews;
-    private AvailableOrgansBridge availableOrgansBridge = mock(AvailableOrgansBridge.class);
+    private OrgansBridge organsBridge = mock(OrgansBridge.class);
 
     @BeforeClass
     public static void initialization() {
@@ -70,7 +70,7 @@ public class UpdateClinicianControllerGUITest extends ApplicationTest {
         when(application.getTransplantBridge()).thenReturn(transplantBridge);
         when(application.getToken()).thenReturn("OMEGALUL");
         when(application.getCountriesBridge()).thenReturn(countriesBridge);
-        when(application.getAvailableOrgansBridge()).thenReturn(availableOrgansBridge);
+        when(application.getOrgansBridge()).thenReturn(organsBridge);
 
         when(loginBridge.loginToServer(anyString(),anyString(), anyString())).thenReturn("OMEGALUL");
         when(countriesBridge.getAllowedCountries()).thenReturn(new HashSet());
@@ -78,7 +78,7 @@ public class UpdateClinicianControllerGUITest extends ApplicationTest {
         when(application.getTransplantList()).thenReturn(new ArrayList<>());
         when(application.getUserOverviews()).thenReturn(new HashSet<>(overviews));
         when(bridge.getUser("ABC1244")).thenReturn(testUser);
-        doNothing().when(availableOrgansBridge).getAvailableOrgansList(anyInt(), anyInt(), anyString(), anyString(), anyString(), anyString(), anyString(), any());
+        doNothing().when(organsBridge).getAvailableOrgansList(anyInt(), anyInt(), anyString(), anyString(), anyString(), anyString(), anyString(), any());
 
         doCallRealMethod().when(application).setClinicianController(any(ClinicianController.class));
         doCallRealMethod().when(application).getClinicianController();

@@ -19,7 +19,7 @@ public class OrganRanker {
     }
 
     /**
-     * A mehtod that takes a list of Organs available and a list of people awaiting a transplant and then attempts to match
+     * A method that takes a list of Organs available and a list of people awaiting a transplant and then attempts to match
      * them based on the following criteria
      * <p>
      * Must match:
@@ -33,12 +33,12 @@ public class OrganRanker {
      * <p>
      * This version currently only checks they are in the same region
      *
-     * @param organsAvailable    A list of avaliable organs
-     * @param waitingTransplants A list of people awaiting a transplant
+     * @param organsAvailable   A list of avaliable organs
+     * @param waitingTransplant transplant to be matched
      * @return A map of organs to the best match, Note a receiver may be the best match for more than one organ
      */
     public Map<AvailableOrganDetail, List<TransplantDetails>> matchOrgansToReceivers(List<AvailableOrganDetail> organsAvailable,
-                                                                                     List<TransplantDetails> waitingTransplants) {
+                                                                                     TransplantDetails waitingTransplant) {
         Map<AvailableOrganDetail, List<TransplantDetails>> organMatches = new HashMap<>();
         Set<String> regionsWithDistance = Regions.getEnums();
         CityDistanceCalculator distanceCalculator = new CityDistanceCalculator();
@@ -47,35 +47,33 @@ public class OrganRanker {
             LocalDateTime death = organAvailable.getMomentOfDeath();
             Organs organ = organAvailable.getOrgan();
             double timeRemaining = death.until(death.plusSeconds(organ.getUpperBoundSeconds()), ChronoUnit.SECONDS);
-            for (TransplantDetails awaitingTransplant : waitingTransplants) {
-                if (awaitingTransplant.getOrgan() != organAvailable.getOrgan()) {
+            if (waitingTransplant.getOrgan() != organAvailable.getOrgan()) {
+                continue;
+            }
+            if ((organAvailable.getAge() <= 12 || waitingTransplant.getAge() <= 12) && (organAvailable.getAge() > 12 || waitingTransplant.getAge() > 12)) {
+                continue;
+            } else {
+                if (organAvailable.getAge() >= waitingTransplant.getAge() + 15 || organAvailable.getAge() <= waitingTransplant.getAge() - 15) {
                     continue;
                 }
-                if ((organAvailable.getAge() <= 12 || awaitingTransplant.getAge() <= 12) && (organAvailable.getAge() > 12 || awaitingTransplant.getAge() > 12)) {
-                    continue;
-                } else {
-                    if (organAvailable.getAge() >= awaitingTransplant.getAge() + 15 || organAvailable.getAge() <= awaitingTransplant.getAge() - 15) {
-                        continue;
-                    }
-                }
-                if (!organAvailable.getBloodType().equalsIgnoreCase(awaitingTransplant.getBloodType())) {
-                    continue;
-                }
-
-                if(regionsWithDistance.contains(awaitingTransplant.getRegion()) && regionsWithDistance.contains(organAvailable.getRegion())){
-                    double distanceBetweenDonorAndReceiver = distanceCalculator.distanceBetweenRegions(
-                            awaitingTransplant.getRegion(),
-                            organAvailable.getRegion());
-                    double timeToDonor = distanceBetweenDonorAndReceiver/HELICOPTER_SPEED;
-                    if(timeToDonor > timeRemaining) continue;
-                } else if (!awaitingTransplant.getRegion().equalsIgnoreCase(organAvailable.getRegion())) {
-                    continue;
-                }
-                matches.add(awaitingTransplant);
+            }
+            if (!organAvailable.getBloodType().equalsIgnoreCase(waitingTransplant.getBloodType())) {
+                continue;
             }
 
+            if (regionsWithDistance.contains(waitingTransplant.getRegion()) && regionsWithDistance.contains(organAvailable.getRegion())) {
+                double distanceBetweenDonorAndReceiver = distanceCalculator.distanceBetweenRegions(
+                        waitingTransplant.getRegion(),
+                        organAvailable.getRegion());
+                double timeToDonor = distanceBetweenDonorAndReceiver / HELICOPTER_SPEED;
+                if (timeToDonor > timeRemaining) continue;
+            } else if (!waitingTransplant.getRegion().equalsIgnoreCase(organAvailable.getRegion())) {
+                continue;
+            }
+            matches.add(waitingTransplant);
             organMatches.put(organAvailable, matches);
         }
+
         return organMatches;
     }
 

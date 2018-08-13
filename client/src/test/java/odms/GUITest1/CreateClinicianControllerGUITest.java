@@ -39,7 +39,7 @@ public class CreateClinicianControllerGUITest extends ApplicationTest {
     private LoginBridge loginBridge = mock(LoginBridge.class);
     private TransplantBridge transplantBridge = mock(TransplantBridge.class);
     private CountriesBridge countriesBridge = mock(CountriesBridge.class);
-    private AvailableOrgansBridge availableOrgansBridge = mock(AvailableOrgansBridge.class);
+    private OrgansBridge organsBridge = mock(OrgansBridge.class);
 
     @BeforeClass
     public static void initialization() {
@@ -56,13 +56,13 @@ public class CreateClinicianControllerGUITest extends ApplicationTest {
         when(application.getTransplantBridge()).thenReturn(transplantBridge);
         when(application.getAdministratorBridge()).thenReturn(administratorBridge);
         when(application.getCountriesBridge()).thenReturn(countriesBridge);
-        when(application.getAvailableOrgansBridge()).thenReturn(availableOrgansBridge);
+        when(application.getOrgansBridge()).thenReturn(organsBridge);
         Set<String> countries = new HashSet<>();
         countries.add("New Zealand");
         when(countriesBridge.getAllowedCountries()).thenReturn(countries);
         when(application.getTransplantList()).thenReturn(new ArrayList<>());
         when(loginBridge.loginToServer(anyString(),anyString(), anyString())).thenReturn("lsdjfksd");
-        doNothing().when(availableOrgansBridge).getAvailableOrgansList(anyInt(), anyInt(), anyString(), anyString(), anyString(), anyString(), anyString(), any());
+        doNothing().when(organsBridge).getAvailableOrgansList(anyInt(), anyInt(), anyString(), anyString(), anyString(), anyString(), anyString(), any());
         when(application.getToken()).thenReturn("fakeToken");
         when(administratorBridge.getAdmin(anyString(), anyString())).thenReturn(new Administrator("default", "", "", "", ""));
 

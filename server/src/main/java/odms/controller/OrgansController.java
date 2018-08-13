@@ -45,7 +45,7 @@ public class OrgansController extends BaseController {
                                                          @RequestParam(value = "country", defaultValue = "", required = false) String country) {
         try (Connection connection = driver.getConnection()) {
             Log.info("Getting all available organs");
-            return handler.getAvailableOrgans(startIndex, count, organ, region, bloodType, city, country, connection);
+            return handler.getAvailableOrgans(startIndex, count, organ,  bloodType, region,connection);
         } catch (SQLException e) {
             Log.error("Unable to retrieve organs from Db", e);
             throw new ServerDBException(e);
@@ -56,28 +56,25 @@ public class OrgansController extends BaseController {
     @RequestMapping(method = RequestMethod.GET, value = "/matchingOrgans")
     public Map<AvailableOrganDetail, List<TransplantDetails>> getMatchingOrgans(@RequestParam(value = "startIndex") int startIndex,
                                                                                 @RequestParam(value = "count") int count,
-                                                                                @RequestParam(value = "matchesStartIndex") int matchesStartIndex,
-                                                                                @RequestParam(value = "matchesCount") int matchesCount,
-                                                                                @RequestParam(value = "organ", defaultValue = "", required = false) String organ,
-                                                                          @RequestParam(value = "bloodType", defaultValue = "", required = false) String bloodType,
-                                                                          @RequestParam(value = "city", defaultValue = "", required = false) String city,
-                                                                          @RequestParam(value = "region", defaultValue = "", required = false) String region,
-                                                                          @RequestParam(value = "country", defaultValue = "", required = false) String country) {
+                                                                                @RequestParam(value = "donorNhi") String donorNhi,
+                                                                                @RequestParam(value = "organ") String organ) {
         try (Connection connection = driver.getConnection()) {
             Log.info("Getting all matching organs");
-            String[] organs = {organ};
+            Map<AvailableOrganDetail, List<TransplantDetails>> sortedMatches = new HashMap<>();
 
-            List<AvailableOrganDetail> availableOrganDetails = handler.getAvailableOrgans(startIndex, count, organ, region, bloodType, city, country, connection);
-            List<TransplantDetails> transplantDetails = handler.getTransplantDetails(connection, 0, Integer.MAX_VALUE, "", region, organs);
+            TransplantDetails transplantDetails = handler.getTransplantDetailsByNhi(connection, donorNhi, organ);
+            if(transplantDetails == null){
+                return sortedMatches;
+            }
+            List<AvailableOrganDetail> availableOrganDetails = handler.getAvailableOrgans(0, Integer.MAX_VALUE, organ, transplantDetails.getBloodType(), transplantDetails.getRegion(), connection);
             OrganRanker organRanker = new OrganRanker();
             Map<AvailableOrganDetail, List<TransplantDetails>> matches = organRanker.matchOrgansToReceivers(availableOrganDetails, transplantDetails);
-            Map<AvailableOrganDetail, List<TransplantDetails>> sortedMatches = new HashMap<>();
             while(matches.entrySet().iterator().hasNext()){
                 Map.Entry<AvailableOrganDetail, List<TransplantDetails>> value = matches.entrySet().iterator().next();
                 List<TransplantDetails> sortedTransplantDetails = OrganSorter.sortOrgansIntoRankedOrder(value.getKey(), value.getValue());
                 List<TransplantDetails> sortedAndSizedTransplantDetails = new ArrayList<>();
 
-                for(int i=matchesStartIndex; i <matchesCount; i++ ){
+                for(int i=startIndex; i <count; i++ ){
                     sortedAndSizedTransplantDetails.add(sortedTransplantDetails.get(i));
                 }
                 sortedMatches.put(value.getKey(), sortedAndSizedTransplantDetails);
