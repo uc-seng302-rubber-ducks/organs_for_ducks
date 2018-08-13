@@ -1,7 +1,11 @@
 package odms.controller.gui.popup;
 
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import odms.commons.model.User;
 import odms.commons.model._enum.Regions;
@@ -10,7 +14,9 @@ import odms.commons.utils.Log;
 import odms.controller.AppController;
 import odms.controller.gui.window.UserController;
 
+import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 /**
@@ -39,6 +45,9 @@ public class UpdateDeathDetailsController {
     @FXML
     private Label updateDeathDetailsErrorLabel;
 
+    @FXML
+    private Button removeUpdateDeathDetailsButton;
+
 
     private AppController controller;
     private Stage stage;
@@ -59,7 +68,14 @@ public class UpdateDeathDetailsController {
 
         stage.setTitle(currentUser.getNhi());
         updateDeathDetailsErrorLabel.setVisible(false);
+        if (currentUser.getMomentDeath() == null) {
+            removeUpdateDeathDetailsButton.setDisable(true);
+        }
         prefillFields();
+    }
+
+    Stage getStage() {
+        return stage;
     }
 
 
@@ -87,29 +103,24 @@ public class UpdateDeathDetailsController {
         if (currentUser.getTimeOfDeath() != null) {
             timeOfDeath = currentUser.getTimeOfDeath().toString();
         } else {
-            timeOfDeath = LocalTime.now().getHour() + ":" + LocalTime.now().getMinute();
+            String minute = String.format("%02d", LocalDateTime.now().getMinute());
+            String hour = String.format("%02d", LocalDateTime.now().getHour());
+            timeOfDeath = hour + ":" + minute;
         }
         updateDeathDetailsTimeTextField.setText(timeOfDeath);
-        handleRegionPicker();
-
 
         if (!currentUser.getDeathCity().isEmpty()) {
             updateDeathDetailsCityTextField.setText(currentUser.getDeathCity());
         } else {
             updateDeathDetailsCityTextField.setText(currentUser.getCity());
         }
-        if (!currentUser.getDeathRegion().isEmpty()) {
-            updateDeathDetailsRegionChoiceBox.setValue(currentUser.getDeathRegion());
-            updateDeathDetailsRegionTextField.setText(currentUser.getDeathRegion());
-        } else {
-            updateDeathDetailsRegionChoiceBox.setValue(currentUser.getRegion());
-            updateDeathDetailsRegionTextField.setText(currentUser.getRegion());
-        }
         if (!currentUser.getDeathCountry().isEmpty()) {
             updateDeathDetailsCountryComboBox.setValue(currentUser.getDeathCountry());
         } else {
             updateDeathDetailsCountryComboBox.setValue(currentUser.getCountry());
         }
+
+        handleRegionPicker();
 
     }
 
@@ -150,7 +161,7 @@ public class UpdateDeathDetailsController {
      */
     @FXML
     private void cancelUpdateDeathDetails() {
-        Log.info("Update death details update cancelled without change for User NHI: " + currentUser.getNhi());
+        Log.info("Death details update cancelled without change for User NHI: " + currentUser.getNhi());
         stage.close();
     }
 
@@ -184,6 +195,28 @@ public class UpdateDeathDetailsController {
         Log.info("Update User Death Details Successful for User NHI: " + currentUser.getNhi());
 
         stage.close();
+    }
+
+    /**
+     * Opens the alert window asking if the user really wants to remove the death details
+     */
+    @FXML
+    private void removeUpdateDeathDetails() {
+        FXMLLoader removeDeathDetailsLoader = new FXMLLoader(getClass().getResource("/FXML/removeDeathDetailsAlert.fxml"));
+        Parent root;
+        try {
+            root = removeDeathDetailsLoader.load();
+            RemoveDeathDetailsAlertController removeDeathDetailsController = removeDeathDetailsLoader.getController();
+            Stage updateStage = new Stage();
+            updateStage.initModality(Modality.APPLICATION_MODAL);
+            updateStage.setScene(new Scene(root));
+            removeDeathDetailsController.init(AppController.getInstance(), updateStage, currentUser, this);
+            updateStage.show();
+            Log.info("Successfully remove death details window for User NHI: " + currentUser.getNhi());
+
+        } catch (IOException e) {
+            Log.severe("Failed to load remove death details window for User NHI: " + currentUser.getNhi(), e);
+        }
     }
 
     /**

@@ -9,6 +9,7 @@ import odms.commons.model._enum.EventTypes;
 import odms.commons.model._enum.Organs;
 import odms.commons.model.datamodel.*;
 
+
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -227,12 +228,11 @@ public class User extends Undoable<User> implements Listenable {
             newUser.donorDetails.getOrgans().add(o);
         }
         newUser.receiverDetails = new ReceiverDetails(newUser);
-        //Map<Organs, ArrayList<ReceiverOrganDetailsHolder>> organs = new EnumMap<Organs, ArrayList<ReceiverOrganDetailsHolder>>(this.receiverDetails.getOrgans());
-        //newUser.receiverDetails.setOrgans(organs);
+
         for (Organs o : user.receiverDetails.getOrgans().keySet()) {
             ArrayList<ReceiverOrganDetailsHolder> detailHolders = new ArrayList<>(user.receiverDetails.getOrgans().get(o));
             for (int i = 0; i < user.receiverDetails.getOrgans().get(o).size(); i++) {
-                ReceiverOrganDetailsHolder newHolder = new ReceiverOrganDetailsHolder(null, null, null); // = newUser.receiverDetails.getOrgans().get(o).get(i);
+                ReceiverOrganDetailsHolder newHolder = new ReceiverOrganDetailsHolder(null, null, null);
                 ReceiverOrganDetailsHolder oldHolder = user.receiverDetails.getOrgans().get(o).get(i);
                 newHolder.setStartDate(oldHolder.getStartDate());
                 newHolder.setStopDate(oldHolder.getStopDate());
@@ -394,6 +394,12 @@ public class User extends Undoable<User> implements Listenable {
         addChange(new Change("Changed emergency contact region to " + ecRegion));
     }
 
+    public void setECRegionNoUndo(String ecRegion) {
+        updateLastModified();
+        contact.setRegion(ecRegion);
+        addChange(new Change("Changed emergency contact region to " + ecRegion));
+    }
+
     public void setECZipCode(String ecZipCode) {
         this.saveStateForUndo();
         updateLastModified();
@@ -452,10 +458,11 @@ public class User extends Undoable<User> implements Listenable {
         this.receiverDetails = receiverDetails;
     }
 
-    //TODO details object is set at initialization. will always return true 17/05
-
     public Collection<Organs> getCommonOrgans() {
-        return commonOrgans;
+
+        List<Organs> commonOrganList = new ArrayList<>(receiverDetails.getOrgans().keySet());
+        commonOrganList.retainAll(donorDetails.getOrgans());
+        return commonOrganList;
     }
 
     /**
@@ -652,7 +659,6 @@ public class User extends Undoable<User> implements Listenable {
     }
 
     public void setHeightText(String height) {
-        this.saveStateForUndo();
         updateLastModified();
         if (!(healthDetails.getHeightText().equals(height))) {
             healthDetails.setHeightText(height);
@@ -665,7 +671,6 @@ public class User extends Undoable<User> implements Listenable {
     }
 
     public void setWeightText(String weight) {
-        this.saveStateForUndo();
         updateLastModified();
         if (!(healthDetails.getWeightText().equals(weight))) {
             healthDetails.setWeightText(weight);
@@ -805,6 +810,12 @@ public class User extends Undoable<User> implements Listenable {
         addChange(new Change("Changed country to " + country));
     }
 
+    public void setCountryNoUndo(String country) {
+        updateLastModified();
+        contactDetails.getAddress().setCountry(country);
+        addChange(new Change("Changed country to " + country));
+    }
+
     public String getBirthCountry() {
         return birthCountry;
     }
@@ -858,6 +869,14 @@ public class User extends Undoable<User> implements Listenable {
         updateLastModified();
         contactDetails.getAddress().setRegion(region);
         if (contactDetails.getAddress() != null && !contactDetails.getAddress().getRegion().equals("")) {
+            addChange(new Change("Changed region to " + region));
+        }
+    }
+
+    public void setRegionNoUndo(String region) {
+        updateLastModified();
+        contactDetails.getAddress().setRegion(region);
+        if (contactDetails.getAddress() != null && !contactDetails.getAddress().equals("")) {
             addChange(new Change("Changed region to " + region));
         }
     }
