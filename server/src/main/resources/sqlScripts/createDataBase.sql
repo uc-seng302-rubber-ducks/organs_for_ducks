@@ -1,4 +1,6 @@
+DROP TRIGGER IF EXISTS removeZombies;
 DROP TABLE IF EXISTS DeathDetails;
+DROP TABLE IF EXISTS OrganExpiryDetails;
 DROP TABLE IF EXISTS PasswordDetails;
 DROP TABLE IF EXISTS Address;
 DROP TABLE IF EXISTS EmergencyContactDetails;
@@ -223,11 +225,22 @@ CREATE TABLE DeathDetails(
   allowed BOOLEAN DEFAULT TRUE
 );*/
 
-CREATE TABLE DeathDetails(
-  fkUserNhi VARCHAR(7) NOT NULL PRIMARY KEY,
-  momentOfDeath DATETIME,
-  city VARCHAR(255),
-  region VARCHAR(255),
-  country VARCHAR(255),
-  FOREIGN KEY (fkUserNhi) REFERENCES User(nhi) ON DELETE CASCADE
+CREATE TABLE OrganExpiryDetails (
+  fkDonatingId INT          NOT NULL PRIMARY KEY ,
+  fkStaffId    VARCHAR(255) NOT NULL,
+  timeOfExpiry DATETIME     NOT NULL,
+  reason       VARCHAR(255) NOT NULL,
+  FOREIGN KEY (fkStaffId) REFERENCES Clinician (staffId)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  FOREIGN KEY (fkDonatingId) REFERENCES OrganDonating (donatingId)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
 );
+
+
+CREATE TRIGGER removeZombies AFTER UPDATE ON DeathDetails
+  FOR EACH ROW
+  BEGIN
+    DELETE FROM DeathDetails WHERE DeathDetails.momentOfDeath IS NULL;
+  END;
