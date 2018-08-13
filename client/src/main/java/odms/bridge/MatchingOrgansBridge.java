@@ -14,16 +14,20 @@ import java.util.List;
 import java.util.Map;
 
 public class MatchingOrgansBridge extends Bifrost {
+
     public MatchingOrgansBridge(OkHttpClient client) {
         super(client);
     }
 
-    public void getMatchingOrgansList(int startIndex, int count, String organ, String bloodType, String city, String region, String country, ObservableList<Map<AvailableOrganDetail, List<TransplantDetails>>> observableList) {
+    public void getMatchingOrgansList(int startIndex, int count, int matchesStartIndex, int matchesCount, String organ,
+                                      String bloodType, String city, String region, String country,
+                                      ObservableList<Map<AvailableOrganDetail, List<TransplantDetails>>> observableList) {
         StringBuilder url = new StringBuilder(ip);
         url.append("/matchingOrgans?");
         url.append("&count=").append(count);
         url.append("&startIndex=").append(startIndex);
-
+        url.append("&matchesStartIndex=").append(matchesStartIndex);
+        url.append("&matchesCount=").append(matchesCount);
 
         if (!StringUtils.isNullOrEmpty(organ)) {
             url.append("&organ=").append(organ);

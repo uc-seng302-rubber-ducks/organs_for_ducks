@@ -1,8 +1,9 @@
-package odms.utils;
+package odms.commons.model;
 
 import odms.commons.model._enum.Organs;
 import odms.commons.model.datamodel.AvailableOrganDetail;
 import odms.commons.model.datamodel.TransplantDetails;
+import odms.commons.utils.OrganSorter;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
