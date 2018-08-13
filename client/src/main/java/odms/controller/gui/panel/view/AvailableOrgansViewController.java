@@ -56,13 +56,16 @@ public class AvailableOrgansViewController {
     @FXML
     public void init(UserLauncher parent) {
         ObservableList<String> organs = FXCollections.observableList(new ArrayList<>());
+        organs.add("");
         for (Organs organ : Organs.values()) {
             organs.add(organ.toString());
         }
         this.parent = parent;
         availableOrganFilterComboBox.setItems(organs);
         availableOrganDetails.addListener((ListChangeListener<? super AvailableOrganDetail>) observable -> populateTables());
+        availableOrganFilterComboBox.valueProperty().addListener(event -> search());
         regionFilterTextField.setOnKeyPressed(event -> {
+            availableOrganDetails.add(new AvailableOrganDetail(Organs.LIVER, "", null, "", "", 0));
             pause.setOnFinished(e -> search());
             pause.playFromStart();
         });
@@ -76,7 +79,7 @@ public class AvailableOrgansViewController {
         deathMomentColumn.setCellValueFactory(new PropertyValueFactory<>("momentOfDeath"));
         progressBarColumn.setCellValueFactory(new PropertyValueFactory<>("progressTask"));
         progressBarColumn.setCellFactory(callback -> ProgressBarTableCellFactory.generateCell(progressBarColumn));
-        TableColumn<AvailableOrganDetail, String> timeLeftColumn = new TableColumn<>();
+        TableColumn<AvailableOrganDetail, String> timeLeftColumn = new TableColumn<>("Time Remaining");
         timeLeftColumn.setCellValueFactory(p -> p.getValue().getProgressTask().messageProperty());
         availableOrgansTableView.getColumns().add(timeLeftColumn);
         // figure out how to do progress bars

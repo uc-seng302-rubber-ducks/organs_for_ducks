@@ -74,7 +74,7 @@ public class DeregisterOrganReasonControllerGUITest extends ApplicationTest {
         when(bridge.getUser(anyString())).thenReturn(testUser);
         doNothing().when(availableOrgansBridge).getAvailableOrgansList(anyInt(), anyInt(), anyString(), anyString(), anyString(), anyString(), anyString(), any());
         List<TransplantDetails> transplantDetails = new ArrayList<>();
-        transplantDetails.add(new TransplantDetails(testUser.getNhi(), testUser.getFirstName(), Organs.HEART, LocalDate.now(), testUser.getRegion()));
+        transplantDetails.add(new TransplantDetails(testUser.getNhi(), testUser.getFirstName(), Organs.HEART, LocalDate.now(), testUser.getRegion(), testUser.getAge(), testUser.getBloodType()));
 
         Set<UserOverview> overviews = new HashSet<>();
         overviews.add(UserOverview.fromUser(testUser));
