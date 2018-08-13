@@ -1,6 +1,7 @@
 package odms.controller.gui.panel.view;
 
 import javafx.animation.PauseTransition;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -20,6 +21,7 @@ import odms.controller.gui.widget.ProgressBarTableCellFactory;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 
 public class AvailableOrgansViewController {
 
@@ -52,7 +54,8 @@ public class AvailableOrgansViewController {
 
 
     private ObservableList<AvailableOrganDetail> availableOrganDetails = FXCollections.observableList(new ArrayList<>());
-    private AvailableOrgansLogicController logicController = new AvailableOrgansLogicController(availableOrganDetails);
+    private ObservableList<TransplantDetails> transplantDetails = FXCollections.observableList(new ArrayList<>());
+    private AvailableOrgansLogicController logicController = new AvailableOrgansLogicController(availableOrganDetails, transplantDetails);
     private SortedList<AvailableOrganDetail> sortedAvailableOrganDetails;
     private PauseTransition pause = new PauseTransition(Duration.millis(300));
     private UserLauncher parent;
@@ -76,7 +79,6 @@ public class AvailableOrgansViewController {
         });
         availableOrganFilterComboBox.valueProperty().addListener(event -> search());
         regionFilterTextField.setOnKeyPressed(event -> {
-            availableOrganDetails.add(new AvailableOrganDetail(Organs.LIVER, "", null, "", "", 0));
             pause.setOnFinished(e -> search());
             pause.playFromStart();
         });
@@ -102,8 +104,11 @@ public class AvailableOrgansViewController {
         // figure out how to do progress bars
         search();
         populateTables();
-        availableOrgansTableView.setItems(sortedAvailableOrganDetails);
+        progressBarColumn.setSortType(TableColumn.SortType.ASCENDING);
+        progressBarColumn.setComparator(organTimeLeftComparator);
     }
+
+    private Comparator<ProgressTask> organTimeLeftComparator = Comparator.comparingLong(p -> p.calculateTimeLeft(LocalDateTime.now()));
 
     private void initMatchesTable(){
         TableColumn matchesNhiColumn = new TableColumn("NHI");
@@ -114,6 +119,7 @@ public class AvailableOrgansViewController {
 
         matchesView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         matchesView.getColumns().addAll(matchesNhiColumn,matchesRegionColumn);
+        matchesView.setItems(transplantDetails);
     }
 
     @FXML
@@ -151,6 +157,9 @@ public class AvailableOrgansViewController {
         FilteredList<AvailableOrganDetail> filteredAvailableOrganDetails = new FilteredList<>(availableOrganDetails);
         filteredAvailableOrganDetails.setPredicate(AvailableOrganDetail::isOrganStillValid);
         sortedAvailableOrganDetails = new SortedList<>(filteredAvailableOrganDetails);
+        sortedAvailableOrganDetails.comparatorProperty().bind(availableOrgansTableView.comparatorProperty());
+        availableOrgansTableView.setItems(sortedAvailableOrganDetails);
+        Platform.runLater(() -> availableOrgansTableView.getSortOrder().add(progressBarColumn));
         setOnClickBehaviour();
     }
 
@@ -158,6 +167,15 @@ public class AvailableOrgansViewController {
         availableOrgansTableView.setOnMouseClicked(event -> {
             if (event.getClickCount() == 2 && availableOrgansTableView.getSelectionModel().getSelectedItem() != null) {
                 parent.launchUser(availableOrgansTableView.getSelectionModel().getSelectedItem().getDonorNhi());
+            }
+        });
+        availableOrgansTableView.getSelectionModel().selectedItemProperty().addListener((a) -> {
+            logicController.showMatches(availableOrgansTableView.getSelectionModel().getSelectedItem());
+        });
+
+        matchesView.setOnMouseClicked(event -> {
+            if(event.getClickCount() == 2 && matchesView.getSelectionModel().getSelectedItem() != null){
+                parent.launchUser(matchesView.getSelectionModel().getSelectedItem().getNhi());
             }
         });
     }
