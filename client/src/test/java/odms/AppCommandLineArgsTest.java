@@ -1,6 +1,7 @@
 package odms;
 
 import odms.commons.config.ConfigPropertiesSession;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -17,6 +18,11 @@ public class AppCommandLineArgsTest {
         mockSession = mock(ConfigPropertiesSession.class);
         ConfigPropertiesSession.getInstance(); //init if not there
         ConfigPropertiesSession.setInstance(mockSession);
+    }
+
+    @After
+    public void tearDown() {
+        ConfigPropertiesSession.setInstance(null);
     }
 
     @Test
