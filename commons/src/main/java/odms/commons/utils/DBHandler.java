@@ -99,7 +99,15 @@ public class DBHandler {
             "AND (organName LIKE ? OR organName IS NULL )" +
             "AND (DeathDetails.region LIKE ? or DeathDetails.region IS NULL)" +
             "LIMIT ? OFFSET ?";
+    private static final String SELECT_AVAILABLE_ORGANS_BY_NHI = "select * from OrganDonating " +
+            "JOIN DeathDetails ON OrganDonating.fkUserNhi = DeathDetails.fkUserNhi " +
+            "JOIN Organ ON OrganDonating.fkOrgansId = organId " +
+            "JOIN HealthDetails ON OrganDonating.fkUserNhi = HealthDetails.fkUserNhi " +
+            "JOIN User U ON DeathDetails.fkUserNhi = U.nhi " +
+            "WHERE (nhi = ?) " +
+            "AND organName = ?";
     private static final String SELECT_DEATH_DETAILS_STMT = "SELECT * FROM DeathDetails WHERE fkUserNhi = ?";
+    public static final String MOMENT_OF_DEATH = "momentOfDeath";
     private AbstractUpdateStrategy updateStrategy;
 
 
@@ -918,7 +926,7 @@ public class DBHandler {
             List<TransplantDetails> detailsList = new ArrayList<>();
             try (ResultSet results = stmt.executeQuery()) {
                 while (results.next()) {
-                    if (results.getTimestamp("momentOfDeath") == null) {
+                    if (results.getTimestamp(MOMENT_OF_DEATH) == null) {
                         String nameBuilder = results.getString("firstName") +
                                 " " +
                                 results.getString("middleName") +
@@ -968,23 +976,22 @@ public class DBHandler {
             stmt.setString(1, nhi);
             stmt.setString(2, organ);
 
-            List<TransplantDetails> detailsList = new ArrayList<>();
             try (ResultSet results = stmt.executeQuery()) {
                 while (results.next()) {
-                    if (results.getTimestamp(8) == null) {
-                        String nameBuilder = results.getString(2) +
+                    if (results.getTimestamp(MOMENT_OF_DEATH) != null) {
+                        String nameBuilder = results.getString("firstName") +
                                 " " +
-                                results.getString(3) +
+                                results.getString("middleName") +
                                 " " +
-                                results.getString(4);
-                        Organs selectedOrgan = Organs.valueOf(results.getString(5));
-                        LocalDate dateRegistered = results.getDate(6).toLocalDate();
+                                results.getString("lastName");
+                        Organs selectedOrgan = Organs.valueOf(results.getString("organName"));
+                        LocalDate dateRegistered = results.getDate("dateRegistered").toLocalDate();
                         String bloodType = results.getString("bloodType");
                         long age = ChronoUnit.YEARS.between(results.getTimestamp("dob").toLocalDateTime(), LocalDateTime.now());
                         return new TransplantDetails(
-                                results.getString(1),
+                                results.getString("nhi"),
                                 nameBuilder,
-                                selectedOrgan, dateRegistered, results.getString(7),age,bloodType );
+                                selectedOrgan, dateRegistered, results.getString("region"),age,bloodType );
                     }
                 }
 
@@ -1192,8 +1199,8 @@ public class DBHandler {
    public List<AvailableOrganDetail> getAvailableOrgans(int startIndex,
                                                         int count,
                                                         String organ,
-                                                        String region,
                                                         String bloodType,
+                                                        String region,
                                                         Connection connection) throws SQLException {
         List<AvailableOrganDetail> results = new ArrayList<>();
         try(PreparedStatement preparedStatement = connection.prepareStatement(SELECT_AVAILABLE_ORGANS)){
@@ -1208,7 +1215,7 @@ public class DBHandler {
                         AvailableOrganDetail organDetail = new AvailableOrganDetail();
                         organDetail.setDonorNhi(resultSet.getString("fkUserNhi"));
                         organDetail.setBloodType(resultSet.getString("bloodType"));
-                        organDetail.setMomentOfDeath(resultSet.getTimestamp("momentOfDeath").toLocalDateTime());
+                        organDetail.setMomentOfDeath(resultSet.getTimestamp(MOMENT_OF_DEATH).toLocalDateTime());
                         organDetail.setRegion(resultSet.getString("region"));
                         organDetail.setOrgan(Organs.valueOf(resultSet.getString("organName")));
                         organDetail.setAge(ChronoUnit.YEARS.between(resultSet.getTimestamp("dob").toLocalDateTime(), organDetail.getMomentOfDeath()));
@@ -1231,7 +1238,7 @@ public class DBHandler {
             stmt.setString(1, user.getNhi());
             try (ResultSet resultSet = stmt.executeQuery()) {
                 while (resultSet != null && resultSet.next()) {
-                    Timestamp momentOfDeath = resultSet.getTimestamp("momentOfDeath");
+                    Timestamp momentOfDeath = resultSet.getTimestamp(MOMENT_OF_DEATH);
                     if (momentOfDeath != null) {
                         user.getDeathDetails().setMomentOfDeath(momentOfDeath.toLocalDateTime()); //FIX
                     } else {
@@ -1243,5 +1250,32 @@ public class DBHandler {
                 }
             }
         }
+    }
+
+    public AvailableOrganDetail getAvailableOrgansByNhi(String organ, String donorNhi, Connection connection) throws SQLException {
+        try(PreparedStatement preparedStatement = connection.prepareStatement(SELECT_AVAILABLE_ORGANS_BY_NHI)){
+                preparedStatement.setString(1,donorNhi);
+                preparedStatement.setString(2,organ);
+            try(ResultSet resultSet = preparedStatement.executeQuery()){
+                while(resultSet.next()) {
+                    try {
+                        AvailableOrganDetail organDetail = new AvailableOrganDetail();
+                        organDetail.setDonorNhi(resultSet.getString("fkUserNhi"));
+                        organDetail.setBloodType(resultSet.getString("bloodType"));
+                        organDetail.setMomentOfDeath(resultSet.getTimestamp(MOMENT_OF_DEATH).toLocalDateTime());
+                        organDetail.setRegion(resultSet.getString("region"));
+                        organDetail.setOrgan(Organs.valueOf(resultSet.getString("organName")));
+                        organDetail.setAge(ChronoUnit.YEARS.between(resultSet.getTimestamp("dob").toLocalDateTime(), organDetail.getMomentOfDeath()));
+                        if (organDetail.isOrganStillValid()) {
+                            return organDetail;
+                        }
+                    } catch (NullPointerException e){
+                        Log.info("User who is not dead is present in the DeathDetails table");
+                    }
+                }
+            }
+
+        }
+        return null;
     }
 }

@@ -2,16 +2,14 @@ package odms.controller.gui.panel.view;
 
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.util.Duration;
 import odms.commons.model._abstract.UserLauncher;
@@ -57,8 +55,8 @@ public class AvailableOrgansViewController {
 
 
     private ObservableList<AvailableOrganDetail> availableOrganDetails = FXCollections.observableList(new ArrayList<>());
-    private AvailableOrgansLogicController logicController = new AvailableOrgansLogicController(availableOrganDetails);
-    private SortedList<AvailableOrganDetail> sortedAvailableOrganDetails;
+    private ObservableList<TransplantDetails> transplantDetails = FXCollections.observableList(new ArrayList<>());
+    private AvailableOrgansLogicController logicController = new AvailableOrgansLogicController(availableOrganDetails, transplantDetails);
     private PauseTransition pause = new PauseTransition(Duration.millis(300));
     private UserLauncher parent;
 
@@ -76,7 +74,7 @@ public class AvailableOrgansViewController {
         }
         this.parent = parent;
         availableOrganFilterComboBox.setItems(organs);
-        availableOrganDetails.addListener((ListChangeListener<? super AvailableOrganDetail>) (observable) -> {
+        availableOrganDetails.addListener((ListChangeListener<? super AvailableOrganDetail>) observable -> {
             populateTables();
             while (observable.next()) {
                 for (AvailableOrganDetail detail : observable.getAddedSubList()) {
@@ -86,7 +84,6 @@ public class AvailableOrgansViewController {
         });
         availableOrganFilterComboBox.valueProperty().addListener(event -> search());
         regionFilterTextField.setOnKeyPressed(event -> {
-            availableOrganDetails.add(new AvailableOrganDetail(Organs.LIVER, "", null, "", "", 0));
             pause.setOnFinished(e -> search());
             pause.playFromStart();
         });
@@ -108,7 +105,7 @@ public class AvailableOrgansViewController {
         timeLeftColumn.setCellValueFactory(p -> p.getValue().getProgressTask().messageProperty());
         availableOrgansTableView.getColumns().add(timeLeftColumn);
         availableOrgansTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-        // figure out how to do progress bars
+        availableOrgansTableView.prefHeightProperty().bind(Bindings.size(availableOrgansTableView.getItems()).multiply(availableOrgansTableView.getFixedCellSize()).add(30));
         search();
         populateTables();
         progressBarColumn.setSortType(TableColumn.SortType.ASCENDING);
@@ -121,14 +118,17 @@ public class AvailableOrgansViewController {
      * Initialises the table for potential recipients
      */
     private void initMatchesTable(){
-        TableColumn matchesNhiColumn = new TableColumn("NHI");
-        TableColumn matchesRegionColumn = new TableColumn("Region");
+        TableColumn<TransplantDetails,String> matchesNhiColumn = new TableColumn<>("NHI");
+        TableColumn<TransplantDetails, String> matchesRegionColumn = new TableColumn<>("Region");
 
-        matchesNhiColumn.setCellValueFactory(new PropertyValueFactory<TransplantDetails, String>("nhi"));
-        matchesRegionColumn.setCellValueFactory(new PropertyValueFactory<TransplantDetails, String>("region"));
+        matchesNhiColumn.setCellValueFactory(new PropertyValueFactory<>("nhi"));
+        matchesRegionColumn.setCellValueFactory(new PropertyValueFactory<>("region"));
 
         matchesView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-        matchesView.getColumns().addAll(matchesNhiColumn,matchesRegionColumn);
+        TableColumn[] tableColumns = {matchesNhiColumn, matchesRegionColumn};
+        matchesView.getColumns().addAll(tableColumns);
+        matchesView.setItems(transplantDetails);
+        matchesView.setPlaceholder(new Label("There are no matches for the selected Organ"));
     }
 
     /**
@@ -159,16 +159,11 @@ public class AvailableOrgansViewController {
         logicController.goNextPageMatches();
     }
 
-    @FXML
-    private void expireOrgan(){
-        logicController.expireOrgans();
-    }
-
 
     private void populateTables() {
         FilteredList<AvailableOrganDetail> filteredAvailableOrganDetails = new FilteredList<>(availableOrganDetails);
         filteredAvailableOrganDetails.setPredicate(AvailableOrganDetail::isOrganStillValid);
-        sortedAvailableOrganDetails = new SortedList<>(filteredAvailableOrganDetails);
+        SortedList<AvailableOrganDetail> sortedAvailableOrganDetails = new SortedList<>(filteredAvailableOrganDetails);
         sortedAvailableOrganDetails.comparatorProperty().bind(availableOrgansTableView.comparatorProperty());
         availableOrgansTableView.setItems(sortedAvailableOrganDetails);
         Platform.runLater(() -> availableOrgansTableView.getSortOrder().add(progressBarColumn));
@@ -179,6 +174,15 @@ public class AvailableOrgansViewController {
         availableOrgansTableView.setOnMouseClicked(event -> {
             if (event.getClickCount() == 2 && availableOrgansTableView.getSelectionModel().getSelectedItem() != null) {
                 parent.launchUser(availableOrgansTableView.getSelectionModel().getSelectedItem().getDonorNhi());
+            }
+        });
+        availableOrgansTableView.getSelectionModel().selectedItemProperty().addListener(a ->
+            logicController.showMatches(availableOrgansTableView.getSelectionModel().getSelectedItem()));
+
+
+        matchesView.setOnMouseClicked(event -> {
+            if(event.getClickCount() == 2 && matchesView.getSelectionModel().getSelectedItem() != null){
+                parent.launchUser(matchesView.getSelectionModel().getSelectedItem().getNhi());
             }
         });
     }

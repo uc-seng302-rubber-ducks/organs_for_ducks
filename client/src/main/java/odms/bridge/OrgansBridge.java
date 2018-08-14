@@ -1,6 +1,7 @@
 package odms.bridge;
 
 import com.mysql.jdbc.StringUtils;
+import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import odms.commons.exception.ApiException;
 import odms.commons.model.datamodel.AvailableOrganDetail;
@@ -12,7 +13,6 @@ import okhttp3.*;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 
 public class OrgansBridge extends Bifrost {
     public OrgansBridge(OkHttpClient client) {
@@ -63,13 +63,13 @@ public class OrgansBridge extends Bifrost {
                 for (AvailableOrganDetail detail : availableOrgansDetails) {
                     detail.generateProgressTask();
                 }
-                observableList.addAll(availableOrgansDetails);
+                Platform.runLater(()-> observableList.addAll(availableOrgansDetails));
             }
         });
 
     }
 
-    public void getMatchingOrgansList(int startIndex, int count, String donorNhi, String organ,
+    public void getMatchingOrgansList(int startIndex, int count, String donorNhi, String organ, AvailableOrganDetail organToDonate,
                                       ObservableList<TransplantDetails> observableList) {
         StringBuilder url = new StringBuilder(ip);
         url.append("/matchingOrgans?");
@@ -95,10 +95,13 @@ public class OrgansBridge extends Bifrost {
                     throw new ApiException(response.code(), "got response with code outside of 200 range");
                 }
 
-                Map<AvailableOrganDetail, List<TransplantDetails>> matchingOrgans = handler.decodeMatchingOrgansList(response);
-                for(Map.Entry<AvailableOrganDetail, List<TransplantDetails>> entry : matchingOrgans.entrySet()){
-                    observableList.addAll( OrganSorter.sortOrgansIntoRankedOrder(entry.getKey(), entry.getValue()));
-                }
+                List<TransplantDetails> matchingTransplants = handler.decodeMatchingOrgansList(response);
+
+                Platform.runLater(() ->{
+                    observableList.clear();
+                    observableList.addAll( OrganSorter.sortOrgansIntoRankedOrder(organToDonate, matchingTransplants));
+                } );
+
             }
         });
 

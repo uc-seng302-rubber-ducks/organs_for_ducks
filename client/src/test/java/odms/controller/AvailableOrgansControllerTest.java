@@ -5,6 +5,7 @@ import javafx.collections.ObservableList;
 import odms.bridge.OrgansBridge;
 import odms.commons.model._enum.Organs;
 import odms.commons.model.datamodel.AvailableOrganDetail;
+import odms.commons.model.datamodel.TransplantDetails;
 import odms.controller.gui.panel.logic.AvailableOrgansLogicController;
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -27,12 +28,13 @@ public class AvailableOrgansControllerTest {
     private Call call = mock(Call.class);
     private AvailableOrgansLogicController availableOrgansLogicController;
     private ObservableList<AvailableOrganDetail> availableOrganDetails;
-
+    private ObservableList<TransplantDetails> transplantDetails;
 
     @Before
     public void setUp() {
         availableOrganDetails = FXCollections.observableList(new ArrayList<>());
-        availableOrgansLogicController = new AvailableOrgansLogicController(availableOrganDetails);
+        transplantDetails = FXCollections.observableList(new ArrayList<>());
+        availableOrgansLogicController = new AvailableOrgansLogicController(availableOrganDetails,transplantDetails);
         OrgansBridge bridge = new OrgansBridge(client);
         when(controller.getOrgansBridge()).thenReturn(bridge);
         when(client.newCall(any(Request.class))).thenReturn(call);

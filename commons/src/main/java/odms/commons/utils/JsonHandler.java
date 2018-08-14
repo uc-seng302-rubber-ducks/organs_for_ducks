@@ -384,8 +384,8 @@ public class JsonHandler extends DataHandler {
      * @param response response to decode
      * @return a map of matching organs. will return empty map if none
      */
-    public Map<AvailableOrganDetail, List<TransplantDetails>> decodeMatchingOrgansList(Response response) throws IOException {
-        return new Gson().fromJson(response.body().string(), new TypeToken<Map<AvailableOrganDetail, List<TransplantDetails>>>() {
+    public List<TransplantDetails> decodeMatchingOrgansList(Response response) throws IOException {
+        return new Gson().fromJson(response.body().string(), new TypeToken<List<TransplantDetails>>() {
         }.getType());
     }
 }
