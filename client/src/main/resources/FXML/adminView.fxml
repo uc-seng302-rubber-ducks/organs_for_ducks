@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
 <?import java.lang.String?>
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="400.0" minWidth="600.0" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="odms.controller.gui.window.AdministratorViewController">
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="1200.0" minWidth="800.0" prefHeight="1200.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8" fx:controller="odms.controller.gui.window.AdministratorViewController">
     <children>
         <MenuBar prefHeight="50.0" prefWidth="600.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <menus>
@@ -187,7 +187,9 @@
                     </content>
                 </Tab>
                 <Tab text="Available organs">
-                    <fx:include fx:id="availableOrgansView" source="availableOrgansPanel.fxml" />
+                   <content>
+                       <fx:include fx:id="availableOrgansView" source="availableOrgansPanel.fxml" />
+                   </content>
                 </Tab>
             </tabs>
         </TabPane>
