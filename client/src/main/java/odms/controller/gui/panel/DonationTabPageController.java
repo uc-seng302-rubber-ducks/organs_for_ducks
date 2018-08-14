@@ -1,7 +1,9 @@
 package odms.controller.gui.panel;
 
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -27,6 +29,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Map;
 
 public class DonationTabPageController {
@@ -59,6 +62,7 @@ public class DonationTabPageController {
     private AppController application;
     private UserController parent;
     private ObservableList<OrgansWithExpiry> organsWithExpiries = FXCollections.observableList(new ArrayList<>());
+    private SortedList<OrgansWithExpiry> sortedOrgansWithExpiry;
 
     /**
      * Initializes the columns of the currently donating table
@@ -82,6 +86,8 @@ public class DonationTabPageController {
 
         populateOrganLists(user);
     }
+
+    private Comparator<ProgressTask> organTimeLeftComparator = Comparator.comparingLong(p -> p.calculateTimeLeft(LocalDateTime.now()));
 
     /**
      * Populates the organ lists of the user
@@ -126,6 +132,11 @@ public class DonationTabPageController {
             organsWithExpiries.add(new OrgansWithExpiry(organEntry.getKey(), organEntry.getValue(), currentUser.getMomentDeath()));
         }
 
+        sortedOrgansWithExpiry = new SortedList<>(organsWithExpiries);
+        sortedOrgansWithExpiry.comparatorProperty().bind(currentlyDonating.comparatorProperty());
+        currentlyDonating.setItems(sortedOrgansWithExpiry);
+        Platform.runLater(() -> currentlyDonating.getSortOrder().add(organExpiryColumn));
+
         currentlyDonating.setItems(organsWithExpiries);
     }
 
@@ -140,7 +151,7 @@ public class DonationTabPageController {
     void donate() {
         if (!canDonate.getSelectionModel().isEmpty()) {
             Organs toDonate = canDonate.getSelectionModel().getSelectedItem();
-            currentUser.getDonorDetails().addOrgan(toDonate, new ExpiryReason("0", LocalDateTime.now(), "testytest", "Anne"));
+            currentUser.getDonorDetails().addOrgan(toDonate, new ExpiryReason("0", LocalDateTime.now(), "testytest", ""));
 
             if (currentUser.getMomentDeath() != null) {
                 populateTableView(currentUser.getDonorDetails().getOrganMap());
