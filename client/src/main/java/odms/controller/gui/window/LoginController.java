@@ -71,6 +71,8 @@ public class LoginController {
         this.appController = appController;
         this.stage = stage;
         stage.setTitle("Login");
+        appController.setUsername("");
+        appController.setName("");
         Scene scene = stage.getScene();
 
         scene.setOnKeyPressed(e -> {
@@ -85,6 +87,8 @@ public class LoginController {
                 }
             }
         });
+
+
     }
 
     /**
