@@ -1,5 +1,7 @@
 DROP TABLE IF EXISTS OrganExpiryDetails;
+DROP TRIGGER IF EXISTS removeZombies;
 DROP TABLE IF EXISTS DeathDetails;
+DROP TABLE IF EXISTS OrganExpiryDetails;
 DROP TABLE IF EXISTS PasswordDetails;
 DROP TABLE IF EXISTS Address;
 DROP TABLE IF EXISTS EmergencyContactDetails;
@@ -234,3 +236,10 @@ CREATE TABLE OrganExpiryDetails (
     ON DELETE CASCADE
     ON UPDATE CASCADE
 );
+
+
+CREATE TRIGGER removeZombies AFTER UPDATE ON DeathDetails
+  FOR EACH ROW
+  BEGIN
+    DELETE FROM DeathDetails WHERE DeathDetails.momentOfDeath IS NULL;
+  END;

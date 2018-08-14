@@ -823,6 +823,8 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
         LocalDateTime deathMoment = user.getDeathDetails().createMomentOfDeath(user.getDateOfDeath(), user.getTimeOfDeath());
         if (deathMoment != null) {
             sqlDeathMoment = java.sql.Timestamp.valueOf(deathMoment);
+        } else {
+            return;
         }
 
         try (PreparedStatement createDeathDetails  = connection.prepareStatement(CREATE_DEATH_DETAILS)) {

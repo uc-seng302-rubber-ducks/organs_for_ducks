@@ -710,6 +710,18 @@ public class AppController {
         return socketHandler;
     }
 
+    /**
+     * forcibly stops all ongoing/networked resources
+     */
+    public void stop() {
+        this.getSocketHandler().stop();
+
+        //force stop all background threads for the http client
+        this.client.connectionPool().evictAll();
+        this.client.dispatcher().executorService().shutdown();
+
+    }
+
     public OrgansBridge getOrgansBridge() {
         return organsBridge;
     }

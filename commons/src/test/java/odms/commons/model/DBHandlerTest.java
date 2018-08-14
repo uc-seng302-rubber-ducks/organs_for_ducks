@@ -14,8 +14,6 @@ import java.io.InputStream;
 import java.sql.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -72,7 +70,7 @@ public class DBHandlerTest {
 
         when(mockResultSet.next()).thenReturn(false).thenReturn(true);
         dbHandler.saveUsers(users, connection);
-        verify(mockStmt, times(19)).executeUpdate();
+        verify(mockStmt, times(18)).executeUpdate();
     }
 
     @Test
