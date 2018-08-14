@@ -292,8 +292,20 @@ public class ReceiverTabController {
         currentlyWaitingFor.refresh();
     }
 
+    /**
+     * Loops through the Observable list of objects that populate the receivers tables to check if
+     * the given organ is present within the list
+     *
+     * @param toDonate the organ to find
+     * @return true if the given organ is present, false otherwise
+     */
     public boolean currentlyReceivingContains(Organs toDonate) {
-        return currentlyRecieving.contains(toDonate);
+        for (OrgansWithDates organsWithDates : currentlyRecieving) {
+            if (organsWithDates.getOrganName().equals(toDonate)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

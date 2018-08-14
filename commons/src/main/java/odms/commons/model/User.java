@@ -18,6 +18,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Class for handling calls to user
@@ -463,6 +464,7 @@ public class User extends Undoable<User> implements Listenable {
 
         List<Organs> commonOrganList = new ArrayList<>(receiverDetails.getOrgans().keySet());
         commonOrganList.retainAll(donorDetails.getOrgans());
+        commonOrganList = commonOrganList.stream().filter(p -> receiverDetails.isCurrentlyWaitingFor(p)).collect(Collectors.toList());
         return commonOrganList;
     }
 
