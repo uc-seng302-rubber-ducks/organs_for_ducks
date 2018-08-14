@@ -41,4 +41,20 @@ public class ExpiryReason {
         return name;
     }
 
+    public void setClinicianId(String clinicianId) {
+        this.clinicianId = clinicianId;
+    }
+
+    public void setTimeOrganExpired(LocalDateTime timeOrganExpired) {
+        this.timeOrganExpired = timeOrganExpired;
+    }
+
+    public void setReason(String reason) {
+        this.reason = reason;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
 }
