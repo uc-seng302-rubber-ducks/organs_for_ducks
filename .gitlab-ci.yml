@@ -39,6 +39,7 @@ recent-artifacts:
       - server/target/*.jar
       - target/site/jacoco/*
       - start.sh
+      - start.bat
     expire_in: 1 week
   except:
     - tags
@@ -58,6 +59,7 @@ release-artifacts:
     - server/target/site/jacoco/*
     - commons/target/site/jacoco/*
     - start.sh
+    - start.bat
   only:
     - tags
     - schedules
