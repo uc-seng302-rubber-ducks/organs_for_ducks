@@ -34,14 +34,19 @@ public class App extends Application {
      *
      * @param args arguments to interpret
      */
-    private static void getProperties(String[] args) {
-        ConfigPropertiesSession session = ConfigPropertiesSession.init("clientConfig.properties");
+    protected static void getProperties(String[] args) {
+        ConfigPropertiesSession session = ConfigPropertiesSession.getInstance();
+        session.loadFromFile("clientConfig.properties");
         if (args == null || args.length == 0) {
             return;
         }
         for (String arg : args) {
             String[] split = arg.split("=");
-            session.setProperty(split[0], split[1]);
+            if (split.length == 2) {
+                session.setProperty(split[0], split[1]);
+            } else {
+                Log.warning("bad commandline arg \"" + arg + "\" has been ignored");
+            }
         }
     }
 

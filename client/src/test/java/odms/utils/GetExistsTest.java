@@ -4,17 +4,21 @@ import odms.bridge.AdministratorBridge;
 import odms.bridge.ClinicianBridge;
 import odms.bridge.RoleBridge;
 import odms.bridge.UserBridge;
+import odms.commons.config.ConfigPropertiesSession;
 import okhttp3.*;
+import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -24,6 +28,18 @@ import static org.mockito.Mockito.when;
 @RunWith(Parameterized.class)
 public class GetExistsTest {
     private static OkHttpClient mockClient = mock(OkHttpClient.class);
+
+    @Before
+    public void setUp() {
+        ConfigPropertiesSession session = mock(ConfigPropertiesSession.class);
+        ConfigPropertiesSession.setInstance(session);
+        when(session.getProperty(eq("server.url"), anyString())).thenReturn("http://test.url/asdf");
+    }
+
+    @After
+    public void tearDown() {
+        ConfigPropertiesSession.setInstance(null);
+    }
 
     @Parameterized.Parameters
     public static Collection<RoleBridge> data() {
