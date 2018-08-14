@@ -1,10 +1,6 @@
 package odms.controller.gui.panel;
 
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -13,9 +9,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import javafx.util.Callback;
 import odms.commons.model.Change;
 import odms.commons.model.ReceiverDetails;
 import odms.commons.model.User;
@@ -24,6 +18,7 @@ import odms.commons.model._enum.Organs;
 import odms.commons.model.datamodel.OrgansWithDates;
 import odms.commons.model.datamodel.ReceiverOrganDetailsHolder;
 import odms.commons.utils.Log;
+import odms.commons.utils.OrganListCellFactory;
 import odms.controller.AppController;
 import odms.controller.gui.popup.DeregisterOrganReasonController;
 import odms.controller.gui.popup.ReceiverOrganDateController;
@@ -132,27 +127,7 @@ public class ReceiverTabController {
         noLongerWaitingForOrgan.getColumns().add(noLongerOrganNameColumn);
         noLongerWaitingForOrgan.getColumns().add(noLongerOrganDateColumn);
         currentlyWaitingFor.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-
-        currentOrganNameColumn.setCellFactory(new Callback<TableColumn<OrgansWithDates, Organs>, TableCell<OrgansWithDates, Organs>>() {
-            @Override
-            public TableCell<OrgansWithDates, Organs> call(TableColumn<OrgansWithDates, Organs> soCalledOrganStringTableColumn) {
-                return new TableCell<OrgansWithDates, Organs>() {
-                    @Override
-                    public void updateItem(final Organs item, final boolean empty) {
-                        super.updateItem(item, empty);
-
-                        if (item != null) {
-                            if (currentUser.getCommonOrgans().contains(item)) {
-                                this.setTextFill(Color.RED);
-                            } else {
-                                this.setTextFill(Color.BLACK);
-                            }
-                            setText(item.toString());
-                        }
-                    }
-                };
-            }
-        });
+        currentOrganNameColumn.setCellFactory(cell -> OrganListCellFactory.generateOrganTableCell(currentOrganNameColumn, currentUser));
 
         populateReceiverLists(currentUser);
     }

@@ -12,6 +12,7 @@ import odms.commons.model._enum.Organs;
 import odms.commons.model.datamodel.ExpiryReason;
 import odms.commons.model.datamodel.OrgansWithExpiry;
 import odms.commons.utils.Log;
+import odms.commons.utils.OrganListCellFactory;
 import odms.commons.utils.ProgressTask;
 import odms.controller.AppController;
 import odms.controller.gui.widget.ProgressBarTableCellFactory;
@@ -34,7 +35,7 @@ public class DonationTabPageController {
     private ListView<Organs> currentOrgans;
 
     @FXML
-    private TableColumn<OrgansWithExpiry, String> donatingOrganColumn;
+    private TableColumn<OrgansWithExpiry, Organs> donatingOrganColumn;
 
     @FXML
     private TableColumn<OrgansWithExpiry, ProgressTask> organExpiryColumn;
@@ -66,6 +67,7 @@ public class DonationTabPageController {
         this.parent = parent;
 
         donatingOrganColumn.setCellValueFactory(new PropertyValueFactory<>("organType"));
+        donatingOrganColumn.setCellFactory(cell -> OrganListCellFactory.generateOrganTableCell(donatingOrganColumn, currentUser));
         expiryReasonColumn.setCellValueFactory(new PropertyValueFactory<>("reason"));
         manualExpiryTimeColumn.setCellValueFactory(new PropertyValueFactory<>("expiryTime"));
         expiryStaffIdColumn.setCellValueFactory(new PropertyValueFactory<>("staffId"));
@@ -95,6 +97,7 @@ public class DonationTabPageController {
             currentlyDonating.setVisible(false);
             currentOrgans.setVisible(true);
             currentOrgans.setItems(FXCollections.observableList(donating));
+            currentOrgans.setCellFactory(column -> OrganListCellFactory.generateListCell(currentUser));
         }
 
         ArrayList<Organs> leftOverOrgans = new ArrayList<>();
@@ -115,7 +118,6 @@ public class DonationTabPageController {
         organsWithExpiries.clear();
         for (Map.Entry<Organs, ExpiryReason> organEntry : organsExpiryReasonMap.entrySet()) {
             organsWithExpiries.add(new OrgansWithExpiry(organEntry.getKey(), organEntry.getValue(), currentUser.getMomentDeath()));
-            System.out.println(organEntry.getKey() + " " + organEntry.getValue());
         }
 
         currentlyDonating.setItems(organsWithExpiries);
