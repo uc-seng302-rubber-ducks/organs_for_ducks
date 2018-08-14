@@ -49,6 +49,8 @@ public class Log {
                             .directory() + bootTime + ".log", true);
                     handler.setFormatter(formatter);
                     logger.addHandler(handler);
+                    //disable logging to console
+                    logger.setUseParentHandlers(false);
                     break;
 
                 case SERVER:
