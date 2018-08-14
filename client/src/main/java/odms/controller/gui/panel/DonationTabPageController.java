@@ -3,10 +3,14 @@ package odms.controller.gui.panel;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.ListView;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.Region;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import odms.commons.model.User;
 import odms.commons.model._enum.Organs;
 import odms.commons.model.datamodel.ExpiryReason;
@@ -15,9 +19,11 @@ import odms.commons.utils.Log;
 import odms.commons.utils.OrganListCellFactory;
 import odms.commons.utils.ProgressTask;
 import odms.controller.AppController;
+import odms.controller.gui.panel.view.OrganExpiryViewController;
 import odms.controller.gui.widget.ProgressBarTableCellFactory;
 import odms.controller.gui.window.UserController;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -134,7 +140,7 @@ public class DonationTabPageController {
     void donate() {
         if (!canDonate.getSelectionModel().isEmpty()) {
             Organs toDonate = canDonate.getSelectionModel().getSelectedItem();
-            currentUser.getDonorDetails().addOrgan(toDonate, new ExpiryReason("0", LocalDateTime.now(), "testytest"));
+            currentUser.getDonorDetails().addOrgan(toDonate, new ExpiryReason("0", LocalDateTime.now(), "testytest", "Anne"));
 
             if (currentUser.getMomentDeath() != null) {
                 populateTableView(currentUser.getDonorDetails().getOrganMap());
@@ -154,6 +160,34 @@ public class DonationTabPageController {
         }
         currentlyDonating.refresh();
         parent.refreshCurrentlyReceivingList();
+    }
+
+    @FXML
+    void expireOrgan() {
+        if (currentlyDonating.getItems().size() > 0) {
+            if (currentlyDonating.getSelectionModel().getSelectedItem() == null) {
+                currentlyDonating.getSelectionModel().select(0);
+            }
+            FXMLLoader organExpiryScreenLoader = new FXMLLoader(getClass().getResource("/FXML/organExpiryScreen.fxml"));
+            Parent root;
+            try {
+                root = organExpiryScreenLoader.load();
+                OrganExpiryViewController organExpiryViewController = organExpiryScreenLoader.getController();
+                Stage updateStage = new Stage();
+                updateStage.initModality(Modality.APPLICATION_MODAL);
+                updateStage.setScene(new Scene(root));
+                organExpiryViewController.init(this.application, currentlyDonating.getSelectionModel().getSelectedItem(), currentUser, updateStage);
+                updateStage.show();
+                Log.info("Successfully launched organ expiry window for User NHI: " + currentUser.getNhi());
+
+            } catch (IOException e) {
+                Log.severe("Failed to load update death details window for User NHI: " + currentUser.getNhi(), e);
+            }
+        } else {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION, "the user is not currently donating any organs", ButtonType.OK);
+            alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
+            alert.showAndWait();
+        }
     }
 
     /**

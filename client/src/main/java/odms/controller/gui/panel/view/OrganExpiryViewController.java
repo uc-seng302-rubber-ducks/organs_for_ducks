@@ -4,8 +4,9 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.stage.Stage;
-import odms.commons.model.Clinician;
-import odms.commons.model.datamodel.AvailableOrganDetail;
+import odms.commons.model.User;
+import odms.commons.model.datamodel.OrgansWithExpiry;
+import odms.controller.AppController;
 import odms.controller.gui.panel.logic.OrganExpiryLogicController;
 
 public class OrganExpiryViewController {
@@ -21,15 +22,16 @@ public class OrganExpiryViewController {
     private Stage stage;
 
     @FXML
-    private void init(AvailableOrganDetail detail, Clinician clinician, Stage stage) {
-        logicController = new OrganExpiryLogicController(detail, clinician);
+    public void init(AppController appController, OrgansWithExpiry detail, User user, Stage stage) {
+        logicController = new OrganExpiryLogicController(appController, detail);
+        expirationOrgan.setText(detail.getOrganType().toString());
+        expirationNhi.setText(user.getNhi());
         this.stage = stage;
-        expirationOrgan.setText(detail.getOrgan().toString());
-        expirationNhi.setText(detail.getDonorNhi());
     }
 
     public void confirmExpiration() {
         logicController.setExpiryReason(expirationReasonTextArea.getText());
+        stage.close();
     }
 
     public void cancelExpiration() {

@@ -70,6 +70,8 @@ public class AppController {
     private String token;
     private SQLBridge sqlBridge = new SQLBridge(client);
     private OdmsSocketHandler socketHandler = new OdmsSocketHandler(client, ServerEventNotifier.getInstance());
+    private String username;
+    private String Name;
     /**
      * Creates new instance of AppController
      */
@@ -147,6 +149,21 @@ public class AppController {
         }
     }
 
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getName() {
+        return Name;
+    }
+
+    public void setName(String name) {
+        Name = name;
+    }
 
     /**
      * create a list of all country names.

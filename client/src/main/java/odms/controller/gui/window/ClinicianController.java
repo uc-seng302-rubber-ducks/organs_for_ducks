@@ -335,7 +335,7 @@ public class ClinicianController implements PropertyChangeListener, UserLauncher
             openStages.add(userStage);
             UserController userController = userLoader.getController();
             AppController.getInstance().setUserController(userController);
-            userController.init(AppController.getInstance(), user, userStage, true, parentListeners);
+            userController.init(AppController.getInstance(), user, userStage, true, parentListeners, this.clinician);
             userStage.show();
             Log.info("Clinician " + clinician.getStaffId()
                     + " successfully launched user overview window");

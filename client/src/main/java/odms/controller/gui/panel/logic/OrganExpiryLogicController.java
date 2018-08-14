@@ -1,18 +1,23 @@
 package odms.controller.gui.panel.logic;
 
-import odms.commons.model.Clinician;
-import odms.commons.model.datamodel.AvailableOrganDetail;
+import odms.commons.model.datamodel.OrgansWithExpiry;
+import odms.controller.AppController;
+
+import java.time.LocalDateTime;
 
 public class OrganExpiryLogicController {
-    private AvailableOrganDetail organDetail;
-    private Clinician clinician;
+    private OrgansWithExpiry organsWithExpiry;
+    private AppController appController;
 
-    public OrganExpiryLogicController(AvailableOrganDetail organDetail, Clinician clinician) {
-        this.organDetail = organDetail;
-        this.clinician = clinician;
+    public OrganExpiryLogicController(AppController appController, OrgansWithExpiry organsWithExpiry) {
+        this.organsWithExpiry = organsWithExpiry;
+        this.appController = appController;
     }
 
     public void setExpiryReason(String reason) {
-        //organDetail.setExpiryReason(new ExpiryReason(clinician.getStaffId(), LocalDateTime.now(), reason));
+        organsWithExpiry.setExpiryReason(reason);
+        organsWithExpiry.setStaffId(appController.getUsername());
+        organsWithExpiry.setName(appController.getName());
+        organsWithExpiry.setExpiryTime(LocalDateTime.now());
     }
 }
