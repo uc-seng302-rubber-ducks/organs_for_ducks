@@ -87,7 +87,7 @@ public class App extends Application {
             }
 
         });
-        AppController.getInstance().getSocketHandler().start(ConfigPropertiesSession.getInstance().getProperty("server.websocket.url"));
+        AppController.getInstance().getSocketHandler().start(ConfigPropertiesSession.getInstance().getProperty("server.websocket.url", "ws://localhost:4941/websocket"));
         loginController.init(controller, primaryStage);
         primaryStage.show();
     }
