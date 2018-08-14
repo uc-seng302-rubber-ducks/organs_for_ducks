@@ -3,7 +3,6 @@ package odms.controller.gui.panel;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -29,7 +28,6 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Map;
 
 public class DonationTabPageController {
@@ -62,7 +60,6 @@ public class DonationTabPageController {
     private AppController application;
     private UserController parent;
     private ObservableList<OrgansWithExpiry> organsWithExpiries = FXCollections.observableList(new ArrayList<>());
-    private SortedList<OrgansWithExpiry> sortedOrgansWithExpiry;
 
     /**
      * Initializes the columns of the currently donating table
@@ -76,6 +73,12 @@ public class DonationTabPageController {
         currentUser = user;
         this.parent = parent;
 
+        donatingOrganColumn.setSortable(false);
+        expiryReasonColumn.setSortable(false);
+        manualExpiryTimeColumn.setSortable(false);
+        expiryStaffIdColumn.setSortable(false);
+        organExpiryColumn.setSortable(false);
+
         donatingOrganColumn.setCellValueFactory(new PropertyValueFactory<>("organType"));
         donatingOrganColumn.setCellFactory(cell -> OrganListCellFactory.generateOrganTableCell(donatingOrganColumn, currentUser));
         expiryReasonColumn.setCellValueFactory(new PropertyValueFactory<>("reason"));
@@ -86,8 +89,6 @@ public class DonationTabPageController {
 
         populateOrganLists(user);
     }
-
-    private Comparator<ProgressTask> organTimeLeftComparator = Comparator.comparingLong(p -> p.calculateTimeLeft(LocalDateTime.now()));
 
     /**
      * Populates the organ lists of the user
@@ -131,11 +132,6 @@ public class DonationTabPageController {
         for (Map.Entry<Organs, ExpiryReason> organEntry : organsExpiryReasonMap.entrySet()) {
             organsWithExpiries.add(new OrgansWithExpiry(organEntry.getKey(), organEntry.getValue(), currentUser.getMomentDeath()));
         }
-
-        sortedOrgansWithExpiry = new SortedList<>(organsWithExpiries);
-        sortedOrgansWithExpiry.comparatorProperty().bind(currentlyDonating.comparatorProperty());
-        currentlyDonating.setItems(sortedOrgansWithExpiry);
-        Platform.runLater(() -> currentlyDonating.getSortOrder().add(organExpiryColumn));
 
         currentlyDonating.setItems(organsWithExpiries);
     }
@@ -235,4 +231,12 @@ public class DonationTabPageController {
         parent.refreshCurrentlyReceivingList();
     }
 
+    public synchronized void shutdownThreads() {
+        if (!Platform.isFxApplicationThread()) {
+            return;
+        }
+        for (OrgansWithExpiry organ : organsWithExpiries) {
+            organ.getProgressTask().cancel(true);
+        }
+    }
 }
