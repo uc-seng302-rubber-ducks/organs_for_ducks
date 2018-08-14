@@ -21,9 +21,13 @@ import odms.commons.utils.AttributeValidation;
 import odms.commons.utils.Log;
 import odms.controller.AppController;
 import odms.controller.gui.FileSelectorController;
+import org.apache.commons.lang.ObjectUtils;
 
-import java.io.File;
-import java.io.IOException;
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.*;
+import java.net.URL;
+import java.nio.Buffer;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -544,11 +548,22 @@ public class UpdateUserController {
      * sets the profile photo back to the default image
      */
     @FXML
+    private void resetProfileImageOld() {
+        ClassLoader classLoader = getClass().getClassLoader();
+        inFile = new File(classLoader.getResource("default-profile-picture.jpg").getFile());
+
+        currentUser.setProfilePhotoFilePath(inFile.getPath());
+        displayImage(profileImage, inFile.getPath());
+    }
+
+    @FXML
     private void resetProfileImage() {
         ClassLoader classLoader = getClass().getClassLoader();
         inFile = new File(classLoader.getResource("default-profile-picture.jpg").getFile());
         currentUser.setProfilePhotoFilePath(inFile.getPath());
-        displayImage(profileImage, inFile.getPath());
+
+        URL url = getClass().getResource("/default-profile-picture.jpg");
+        displayImage(profileImage, url);
     }
 
     /**
