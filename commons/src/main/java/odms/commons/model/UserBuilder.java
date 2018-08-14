@@ -39,6 +39,21 @@ public class UserBuilder {
         return this;
     }
 
+    public UserBuilder setDeathCity(String deathCity) {
+        secret.setDeathCity(deathCity);
+        return this;
+    }
+
+    public UserBuilder setDeathRegion(String deathRegion) {
+        secret.setDeathRegion(deathRegion);
+        return this;
+    }
+
+    public UserBuilder setDeathCountry(String deathCountry) {
+        secret.setDeathCountry(deathCountry);
+        return this;
+    }
+
     public UserBuilder setPreferredFirstName(String preferredFirstName) {
         secret.setPreferredFirstName(preferredFirstName);
         return this;

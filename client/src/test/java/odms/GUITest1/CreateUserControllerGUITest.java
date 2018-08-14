@@ -3,6 +3,7 @@ package odms.GUITest1;
 import javafx.scene.Node;
 import javafx.scene.control.DatePicker;
 import odms.App;
+import odms.TestUtils.AppControllerMocker;
 import odms.TestUtils.CommonTestMethods;
 import odms.controller.AppController;
 import org.junit.*;
@@ -15,7 +16,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.concurrent.TimeoutException;
 
 import static odms.TestUtils.FxRobotHelper.*;
-import static org.mockito.Mockito.mock;
 import static org.testfx.api.FxAssert.verifyThat;
 
 public class CreateUserControllerGUITest extends ApplicationTest {
@@ -27,7 +27,7 @@ public class CreateUserControllerGUITest extends ApplicationTest {
 
     @Before
     public void setUpCreateScene() throws TimeoutException {
-        AppController application = mock(AppController.class);
+        AppController application = AppControllerMocker.getFullMock();
 
         AppController.setInstance(application);
         FxToolkit.registerPrimaryStage();
@@ -72,16 +72,6 @@ public class CreateUserControllerGUITest extends ApplicationTest {
         lookup("#dobInput").queryAs(DatePicker.class).setValue(LocalDate.now().plusYears(10));
         clickOnButton(this,"#confirmButton");
         verifyThat("#invalidDOB", Node::isVisible);
-    }
-
-    @Test
-    public void testFutureDOD() {
-        setTextField(this,"#nhiInput","ADE1987");
-        setTextField(this,"#fNameInput","Dwayne");
-        lookup("#dobInput").queryAs(DatePicker.class).setValue(LocalDate.parse("3/1/2017", DateTimeFormatter.ofPattern("d/M/yyyy")));
-        lookup("#dodInput").queryAs(DatePicker.class).setValue(LocalDate.now().plusYears(10));
-        clickOnButton(this,"#confirmButton");
-        verifyThat("#invalidDOD", Node::isVisible);
     }
 
     @Test

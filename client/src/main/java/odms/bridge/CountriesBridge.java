@@ -1,4 +1,4 @@
-package odms.utils;
+package odms.bridge;
 
 import com.google.gson.Gson;
 import odms.commons.utils.Log;
@@ -41,8 +41,8 @@ public class CountriesBridge extends Bifrost {
      */
     public void putAllowedCountries(Set countries, String token){
         String url = ip + "/countries";
-        RequestBody body = RequestBody.create(JSON, new Gson().toJson(countries));
-        Request request = new Request.Builder().addHeader(TOKEN_HEADER, token).put(body).url(url).build();
+        RequestBody body = RequestBody.create(json, new Gson().toJson(countries));
+        Request request = new Request.Builder().addHeader(tokenHeader, token).put(body).url(url).build();
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {

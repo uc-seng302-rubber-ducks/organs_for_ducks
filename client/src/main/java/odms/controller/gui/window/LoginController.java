@@ -17,7 +17,7 @@ import odms.commons.model.User;
 import odms.commons.utils.Log;
 import odms.controller.AppController;
 import odms.controller.gui.popup.utils.AlertWindowFactory;
-import odms.utils.LoginBridge;
+import odms.bridge.LoginBridge;
 import odms.view.CLI;
 
 import java.io.IOException;

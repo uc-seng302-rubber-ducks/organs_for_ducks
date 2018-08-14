@@ -1,9 +1,9 @@
 package odms.commands;
 
+import odms.bridge.UserBridge;
 import odms.commons.model.User;
 import odms.commons.model.datamodel.Address;
 import odms.controller.AppController;
-import odms.utils.UserBridge;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -58,7 +58,8 @@ public class CreateUserTest {
     //<editor-fold>
     @Test
     public void ShouldRegisterDonorWithMinimumInfo() throws IOException {
-        String[] args = {"John", "Doe", "ABC1234", "1961-02-12"};
+        when(bridge.getExists(anyString())).thenReturn(false);
+        String[] args = {"ABC1234", "John", "1961-02-12", "-l=Doe"};
         when(bridge.getUser(anyString())).thenReturn(minInfo);
         new CommandLine(new CreateUser()).parseWithHandler(new CommandLine.RunLast(), System.err, args);
         assertTrue(controller.getUsers().contains(minInfo));
@@ -66,7 +67,7 @@ public class CreateUserTest {
 
     @Test
     public void ShouldRegisterDonorWithMaximumInfo() throws IOException {
-        String[] args = {"Gus", "Johnson", "BCD2345", "1990-04-03", "-dod=2010-05-16", "-he=1.85",
+        String[] args = {"BCD2345", "Gus", "1990-04-03", "-l=Johnson", "-dod=2010-05-16", "-he=1.85",
                 "-w=86.3",
                 "-g=m", "-n=42", "-s=wallaby-way", "-r=Sydney"};
         when(bridge.getUser(anyString())).thenReturn(maxInfo);
@@ -92,21 +93,21 @@ public class CreateUserTest {
 
     @Test
     public void ShouldNotRegisterWhenMalformedParameters() {
-        String[] args = {"Frank", "Sinatra", "abcd-as-sa"}; //invalid date
+        String[] args = {"ABC3333", "Frank", "abcd-as-sa", "-l=Sinatra"}; //invalid date
         new CommandLine(new CreateUser()).parseWithHandler(new CommandLine.RunLast(), System.err, args);
         assertTrue(controller.getUsers().isEmpty());
     }
 
     @Test
     public void ShouldNotRegisterWhenMalformedOptions() {
-        String[] args = {"Ryan", "Clark", "1967-21-03", "-he=myheight"};
+        String[] args = {"ABC1111", "Ryan", "1967-21-03", "-l=Clark", "-he=myheight"};
         new CommandLine(new CreateUser()).parseWithHandler(new CommandLine.RunLast(), System.err, args);
         assertTrue(controller.getUsers().size() == 0);
     }
 
     @Test
     public void ShouldCancelRegistrationWhenHelpFlagPresent() {
-        String[] args = {"Les", "Claypool", "1967-21-03", "-h"};
+        String[] args = {"ABC2222", "Les", "1967-21-03", "-l=Claypool", "-h"};
         new CommandLine(new CreateUser()).parseWithHandler(new CommandLine.RunLast(), System.err, args);
         assertTrue(controller.getUsers().isEmpty());
     }

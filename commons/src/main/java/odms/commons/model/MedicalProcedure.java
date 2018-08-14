@@ -34,7 +34,7 @@ public class MedicalProcedure extends Deletable {
      * @param description    description of procedure
      * @param organsAffected affected organs
      */
-    public MedicalProcedure(LocalDate procedureDate, String summary, String description, ArrayList<Organs> organsAffected) {
+    public MedicalProcedure(LocalDate procedureDate, String summary, String description, List<Organs> organsAffected) {
 
         this.procedureDate = procedureDate;
         this.summary = summary;

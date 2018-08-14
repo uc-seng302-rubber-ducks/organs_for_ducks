@@ -9,6 +9,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.layout.Region;
 import javafx.stage.Stage;
+import odms.commons.config.ConfigPropertiesSession;
 import odms.commons.model.CacheManager;
 import odms.commons.model._enum.Environments;
 import odms.commons.utils.Log;
@@ -16,8 +17,6 @@ import odms.controller.AppController;
 import odms.controller.gui.window.LoginController;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.util.Optional;
 
 /**
@@ -25,20 +24,33 @@ import java.util.Optional;
  */
 public class App extends Application {
 
-    private static long bootTime = LocalDateTime.now().toEpochSecond(ZoneOffset.UTC);
-
     public static void main(String[] args) {
-            launch(args);
+        getProperties(args);
+        launch(args);
+    }
+
+    /**
+     * reads the command line args and and adds them to the ConfigPropertiesSession
+     *
+     * @param args arguments to interpret
+     */
+    private static void getProperties(String[] args) {
+        ConfigPropertiesSession session = ConfigPropertiesSession.init("clientConfig.properties");
+        if (args == null || args.length == 0) {
+            return;
+        }
+        for (String arg : args) {
+            String[] split = arg.split("=");
+            session.setProperty(split[0], split[1]);
+        }
     }
 
     @Override
     public void start(Stage primaryStage) throws Exception {
 
-        //<editor-fold desc="logging setup">
-        Log.setup(Environments.CLIENT);
-        //</editor-fold>
+        Log.setup(Environments.TEST);
 
-
+        //<editor-fold desc="fxml setup">
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML/loginView.fxml"));
         Parent root = null;
         try {
@@ -52,6 +64,9 @@ public class App extends Application {
         primaryStage.setMinWidth(600);
         AppController controller = AppController.getInstance();
         controller.getAllowedCountries();
+        //</editor-fold>
+
+        //app shutdown handler
         primaryStage.setOnCloseRequest(event -> {
             if (primaryStage.getTitle().contains("*")) {
                 Alert alert = new Alert(Alert.AlertType.WARNING,
@@ -62,18 +77,28 @@ public class App extends Application {
 
                 Optional<ButtonType> result = alert.showAndWait();
                 if (result.isPresent() && result.get() == ButtonType.YES) {
-                    CacheManager.getInstance().saveAll();
-                    Platform.exit();
-                    System.exit(0);
+                    shutdown();
                 } else {
                     event.consume();
                 }
             } else {
-                CacheManager.getInstance().saveAll();
+                //actually shutting down this time
+                shutdown();
             }
 
         });
+        AppController.getInstance().getSocketHandler().start(ConfigPropertiesSession.getInstance().getProperty("server.websocket.url", "ws://localhost:4941/websocket"));
         loginController.init(controller, primaryStage);
         primaryStage.show();
+    }
+
+    /**
+     * runs all the various methods needed to run at shutdown
+     */
+    private void shutdown() {
+        CacheManager.getInstance().saveAll();
+        AppController.getInstance().stop();
+        Platform.exit();
+        System.exit(0);
     }
 }

@@ -6,24 +6,29 @@ import odms.commons.model._enum.Directory;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
-import java.nio.file.NoSuchFileException;
-import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Comparator;
+
+import static odms.commons.model._enum.Directory.TEMP;
 
 /**
  * Contains helper methods related to photos.
  */
 public final class PhotoHelper {
 
+    public PhotoHelper() {
+    }
+
     /**
      * sets up a temp folder and image folder (within temp folder).
      * then make a copy of the desired image and store it in the image folder.
      *
      * @param inFile desired image file
-     * @param id the id of the user/clinician
+     * @param id     the id of the user/clinician
      * @return filepath to the image file
      * @throws IOException if there are issues with handling files.
      */
@@ -33,8 +38,8 @@ public final class PhotoHelper {
         String fileType = inFile.getName();
         fileType = fileType.substring(fileType.lastIndexOf(".") + 1);
 
-        Files.createDirectories(Paths.get(Directory.TEMP.directory() + Directory.IMAGES));
-        File outFile = new File(Directory.TEMP.directory() + Directory.IMAGES + "/" + id.toUpperCase() + "." + fileType);
+        Files.createDirectories(Paths.get(TEMP.directory() + Directory.IMAGES));
+        File outFile = new File(TEMP.directory() + Directory.IMAGES + "/" + id.toUpperCase() + "." + fileType);
 
         bImage = ImageIO.read(inFile);
         ImageIO.write(bImage, fileType, outFile);
@@ -44,11 +49,12 @@ public final class PhotoHelper {
 
     /**
      * displays the image
+     *
      * @param imageView JavaFX imageView object
-     * @param filePath file path to the desired photo
+     * @param filePath  file path to the desired photo
      */
-    public static void displayImage(ImageView imageView, String filePath){
-        if(filePath != null) {
+    public static void displayImage(ImageView imageView, String filePath) {
+        if (filePath != null) {
             Image image = new Image("file:" + filePath, 200, 200, false, true);
             imageView.setImage(image);
         }
@@ -56,26 +62,28 @@ public final class PhotoHelper {
 
     /**
      * for deleting temp folder directory
-     * @throws IOException if there are issues with handling files.
+     *
      */
     public static void deleteTempDirectory() throws IOException {
-        try {
-            Files.walk(Paths.get(Directory.TEMP.directory()))
-                    .sorted(Comparator.reverseOrder())
-                    .map(Path::toFile)
-                    .forEach(File::delete);
-        } catch (NoSuchFileException e) {
-            Log.info("TEMP folder is already deleted or does not exist.");
+        File f = new File(String.valueOf(Directory.TEMP));
+        if (f.isDirectory()) {
+            File[] fileList = f.listFiles();
+            if(fileList == null){
+                return;
+            }
+            for (File file : fileList) {
+                Files.deleteIfExists(file.toPath());
+            }
         }
     }
 
     public static String createTempImageFile(byte[] image, String userId, String format) throws IOException {
 
-        Files.createDirectories(Paths.get(Directory.TEMP.directory() + Directory.IMAGES));
-        File outFile = new File(Directory.TEMP.directory() + Directory.IMAGES + "/" + userId.toUpperCase() + "." + format);
+        Files.createDirectories(Paths.get(TEMP.directory() + Directory.IMAGES));
+        File outFile = new File(TEMP.directory() + Directory.IMAGES + "/" + userId.toUpperCase() + "." + format);
         InputStream in = new ByteArrayInputStream(image);
         BufferedImage buffImage = ImageIO.read(in);
-        if(buffImage == null){
+        if (buffImage == null) {
             return "";
         }
         ImageIO.write(buffImage, format, outFile);
@@ -85,6 +93,7 @@ public final class PhotoHelper {
     }
 
     public static byte[] getBytesFromImage(String filepath) throws IOException {
+        if(filepath.equals("")) return new byte[0];
         return Files.readAllBytes(Paths.get(filepath));
     }
 }

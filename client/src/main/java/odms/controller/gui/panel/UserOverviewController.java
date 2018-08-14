@@ -1,13 +1,20 @@
 package odms.controller.gui.panel;
 
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import odms.commons.model.User;
+import odms.commons.utils.Log;
 import odms.controller.AppController;
+import odms.controller.gui.popup.UpdateDeathDetailsController;
 
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.time.temporal.ChronoUnit;
 
@@ -17,8 +24,6 @@ public class UserOverviewController {
 
     //the Home page attributes
     //<editor-fold desc="FMXL declarations">
-    @FXML
-    private Button backButton;
 
     @FXML
     private Label ageValue;
@@ -78,27 +83,34 @@ public class UserOverviewController {
     private Label bmiValue;
 
     @FXML
-    private Button deleteUser;
+    private Button updateDeathDetailsButton;
 
     @FXML
-    private Button logOutButton;
+    private Label cityOfDeathValue;
+
+    @FXML
+    private Label regionOfDeathValue;
+
+    @FXML
+    private Label countryOfDeathValue;
+
+    @FXML
+    private Button deleteUser;
+
 
     @FXML
     private ImageView profilePicture;
     //</editor-fold>
 
-    private AppController application;
     private User currentUser;
-    private Stage stage;
-    private boolean clinician;
 
     @FXML
     public void init(AppController controller, User user, Stage stage, boolean fromClinician) {
-        this.stage = stage;
-        this.application = controller;
         this.currentUser = user;
-        clinician = fromClinician;
         showUser(user);
+        if (!fromClinician) {
+            updateDeathDetailsButton.setDisable(true);
+        }
     }
 
     /**
@@ -107,7 +119,6 @@ public class UserOverviewController {
      * @param user The current user.
      */
     public void showUser(User user) {
-        currentUser = user;
         NHIValue.setText(user.getNhi());
         fNameValue.setText(user.getFirstName());
         DOBValue.setText(user.getDateOfBirth().toString());
@@ -188,12 +199,31 @@ public class UserOverviewController {
         if (user.getHeight() > 0 && user.getWeight() > 0) {
             //TODO fix BMI kg/m^
             DecimalFormat df = new DecimalFormat("#.00");
-            double bmi = user.getWeight() / (user.getHeight() * user.getHeight());
+            double bmi = user.getWeight() / ((user.getHeight()) /100 * (user.getHeight()/100));
             String formattedBmi = df.format(bmi);
             bmiValue.setText(formattedBmi);
         } else {
             bmiValue.setText("");
         }
+
+        if (user.getDeathCity() != null) {
+            cityOfDeathValue.setText(user.getDeathCity());
+        } else {
+            cityOfDeathValue.setText("");
+        }
+
+        if (user.getDeathRegion() != null) {
+            regionOfDeathValue.setText(user.getDeathRegion());
+        } else {
+            regionOfDeathValue.setText("");
+        }
+
+        if (user.getDeathCountry() != null) {
+            countryOfDeathValue.setText(user.getDeathCountry());
+        } else {
+            countryOfDeathValue.setText("");
+        }
+
 
         if (user.getLastModified() != null) {
             lastModifiedValue.setText(user.getLastModified().toString());
@@ -203,12 +233,28 @@ public class UserOverviewController {
 
     }
 
-
-    /**
-     * Disables logout buttons
-     */
-    public void disableLogout() {
-        logOutButton.setVisible(false);
-        backButton.setVisible(true);
+    @FXML
+    private void updateDeathDetails() {
+        openUpdateDeathDetailsPopup();
     }
+
+    private void openUpdateDeathDetailsPopup() {
+        FXMLLoader updateDeathDetailsLoader = new FXMLLoader(getClass().getResource("/FXML/updateDeathDetails.fxml"));
+        Parent root;
+        try {
+            root = updateDeathDetailsLoader.load();
+            UpdateDeathDetailsController updateDeathDetailsController = updateDeathDetailsLoader.getController();
+            Stage updateStage = new Stage();
+            updateStage.initModality(Modality.APPLICATION_MODAL);
+            updateStage.setScene(new Scene(root));
+            updateDeathDetailsController.init(AppController.getInstance(), updateStage, currentUser);
+            updateStage.show();
+            Log.info("Successfully launched update death details window for User NHI: " + currentUser.getNhi());
+
+        } catch (IOException e) {
+            Log.severe("Failed to load update death details window for User NHI: " + currentUser.getNhi(), e);
+        }
+    }
+
+
 }

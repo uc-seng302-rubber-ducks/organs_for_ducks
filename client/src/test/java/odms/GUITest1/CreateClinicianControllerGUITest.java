@@ -3,10 +3,12 @@ package odms.GUITest1;
 import javafx.scene.Node;
 import javafx.scene.control.TextField;
 import odms.App;
+import odms.TestUtils.CommonTestMethods;
+import odms.TestUtils.AppControllerMocker;
+import odms.bridge.*;
 import odms.commons.model.Administrator;
 import odms.commons.model.Clinician;
 import odms.controller.AppController;
-import odms.utils.*;
 import org.junit.*;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
@@ -19,7 +21,7 @@ import java.util.Set;
 import java.util.concurrent.TimeoutException;
 
 import static odms.TestUtils.FxRobotHelper.*;
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.testfx.api.FxAssert.verifyThat;
@@ -29,7 +31,7 @@ import static org.testfx.api.FxAssert.verifyThat;
  */
 public class CreateClinicianControllerGUITest extends ApplicationTest {
 
-    private AppController application = mock(AppController.class);
+    private AppController application = AppControllerMocker.getFullMock();
     private UserBridge bridge = mock(UserBridge.class);
     private ClinicianBridge clinicianBridge = mock(ClinicianBridge.class);
     private AdministratorBridge administratorBridge  = mock(AdministratorBridge.class);
@@ -39,7 +41,7 @@ public class CreateClinicianControllerGUITest extends ApplicationTest {
 
     @BeforeClass
     public static void initialization() {
-        //CommonTestMethods.runHeadless();
+        CommonTestMethods.runHeadless();
     }
 
     @Before
@@ -55,7 +57,7 @@ public class CreateClinicianControllerGUITest extends ApplicationTest {
         Set<String> countries = new HashSet<>();
         countries.add("New Zealand");
         when(countriesBridge.getAllowedCountries()).thenReturn(countries);
-        when(transplantBridge.getWaitingList(anyInt(), anyInt(), anyString(), anyString(), anyCollection())).thenReturn(new ArrayList<>());
+        when(application.getTransplantList()).thenReturn(new ArrayList<>());
         when(loginBridge.loginToServer(anyString(),anyString(), anyString())).thenReturn("lsdjfksd");
         when(application.getToken()).thenReturn("fakeToken");
         when(administratorBridge.getAdmin(anyString(), anyString())).thenReturn(new Administrator("default", "", "", "", ""));
