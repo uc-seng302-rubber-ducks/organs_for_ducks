@@ -63,7 +63,7 @@ public class OrgansBridge extends Bifrost {
                 for (AvailableOrganDetail detail : availableOrgansDetails) {
                     detail.generateProgressTask();
                 }
-                observableList.addAll(availableOrgansDetails);
+                Platform.runLater(()-> observableList.addAll(availableOrgansDetails));
             }
         });
 

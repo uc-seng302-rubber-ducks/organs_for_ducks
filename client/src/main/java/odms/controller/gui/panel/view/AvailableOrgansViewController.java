@@ -146,11 +146,6 @@ public class AvailableOrgansViewController {
         logicController.goNextPageMatches();
     }
 
-    @FXML
-    private void expireOrgan(){
-        logicController.expireOrgans();
-    }
-
 
     private void populateTables() {
         FilteredList<AvailableOrganDetail> filteredAvailableOrganDetails = new FilteredList<>(availableOrganDetails);
