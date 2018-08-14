@@ -100,7 +100,7 @@ public class UserController extends BaseController {
     public ResponseEntity putUser(@PathVariable("nhi") String nhi, @RequestBody User user) {
         try (Connection connection = driver.getConnection()) {
             handler.updateUser(connection, nhi, user);
-            socketHandler.broadcast(EventTypes.USER_UPDATE,nhi,user.getNhi());
+            socketHandler.broadcast(EventTypes.USER_UPDATE,user.getNhi(),nhi);
         } catch (SQLException ex) {
             Log.severe("cannot put user " + nhi, ex);
             throw new ServerDBException(ex);
