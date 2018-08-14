@@ -132,10 +132,18 @@ public class UpdateDeathDetailsController {
         String currentChoiceRegion = "";
         if (updateDeathDetailsCountryComboBox.getValue() != null && updateDeathDetailsCountryComboBox.getValue().equals("New Zealand")) {
             isNewZealand = true;
-            currentChoiceRegion = currentUser.getRegion();
+            if (!currentUser.getDeathRegion().isEmpty()) {
+                currentChoiceRegion = currentUser.getDeathRegion();
+            } else {
+                currentChoiceRegion = currentUser.getRegion();
+            }
         } else {
             isNewZealand = false;
-            currentTextRegion = currentUser.getRegion();
+            if (!currentUser.getDeathRegion().isEmpty()) {
+                currentTextRegion = currentUser.getDeathRegion();
+            } else {
+                currentTextRegion = currentUser.getRegion();
+            }
         }
 
         updateDeathDetailsRegionTextField.setText(currentTextRegion);
