@@ -4,12 +4,12 @@ import javafx.scene.Node;
 import odms.App;
 import odms.TestUtils.AppControllerMocker;
 import odms.TestUtils.CommonTestMethods;
+import odms.bridge.UserBridge;
 import odms.commons.model.EmergencyContact;
 import odms.commons.model.User;
 import odms.commons.model.dto.UserOverview;
 import odms.controller.AppController;
 import odms.controller.gui.window.UserController;
-import odms.bridge.UserBridge;
 import org.junit.*;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
@@ -42,6 +42,7 @@ public class UndoUserUpdateFormGUITest extends ApplicationTest {
 
         AppController.setInstance(application);
         User user = new User("Frank", LocalDate.now().minusDays(2), "ABC1234");
+        user.setPreferredFirstName("Frank");
         user.setDateOfDeath(LocalDate.now());
         user.setContact(new EmergencyContact("", "", "0187878"));
         user.getUndoStack().clear();

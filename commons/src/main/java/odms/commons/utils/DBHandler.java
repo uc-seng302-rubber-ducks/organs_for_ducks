@@ -305,6 +305,7 @@ public class DBHandler {
         }
         user.setMiddleName(resultSet.getString("middleName"));
         user.setLastName(resultSet.getString("lastName"));
+        user.setPreferredFirstName(resultSet.getString("preferedName"));
         return user;
     }
 
