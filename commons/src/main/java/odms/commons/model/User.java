@@ -9,7 +9,6 @@ import odms.commons.model._enum.EventTypes;
 import odms.commons.model._enum.Organs;
 import odms.commons.model.datamodel.*;
 
-
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
@@ -100,7 +99,7 @@ public class User extends Undoable<User> implements Listenable {
         this.middleName = "";
         this.lastName = "";
         this.deathDetails = new DeathDetails();
-        this.preferredFirstName = firstName;
+        this.preferredFirstName = "";
         timeCreated = LocalDateTime.now();
         lastModified = LocalDateTime.now();
         updateHistory = new HashMap<>();
@@ -138,7 +137,7 @@ public class User extends Undoable<User> implements Listenable {
         this.middleName = "";
         this.lastName = "";
         this.deathDetails = new DeathDetails();
-        this.preferredFirstName = firstName;
+        this.preferredFirstName = "";
         timeCreated = LocalDateTime.now();
         lastModified = LocalDateTime.now();
         updateHistory = new HashMap<>();
@@ -458,10 +457,11 @@ public class User extends Undoable<User> implements Listenable {
         this.receiverDetails = receiverDetails;
     }
 
-    //TODO details object is set at initialization. will always return true 17/05
-
     public Collection<Organs> getCommonOrgans() {
-        return commonOrgans;
+
+        List<Organs> commonOrganList = new ArrayList<>(receiverDetails.getOrgans().keySet());
+        commonOrganList.retainAll(donorDetails.getOrgans());
+        return commonOrganList;
     }
 
     /**
@@ -526,10 +526,6 @@ public class User extends Undoable<User> implements Listenable {
     public void setFirstName(String name) {
         this.saveStateForUndo();
         updateLastModified();
-        // Changes the default case where the preferred name is the same as the first name
-        if (preferredFirstName == null || preferredFirstName.equals(firstName)) {
-            preferredFirstName = name;
-        }
         this.firstName = name;
         addChange(new Change("Changed first name to " + name));
 

@@ -1,4 +1,6 @@
-package odms.commons.utils;
+package odms.commons.config;
+
+import odms.commons.utils.Log;
 
 import java.io.IOException;
 import java.util.Properties;

@@ -54,6 +54,25 @@ The project should now be open.
  
 # Using the Application
  
+ #### Running the jar files
+ Either jar can be run using `java -jar client/target/client-x.x.jar` 
+ or `java -jar server/target/server-x.x.jar` respectively. 
+ To run using a local configuration (both parts running on one machine), start the server jar, then the client once the server has fully loaded.
+ to run using the remote server, run the client using the included `start.sh` script. You may need to run `chmod +x ./start.sh` to make it executable.
+ Please note that this script can be modified to use any server.
+ 
+ #### Default logins
+ An Internet connection is required to connect to the database, otherwise the application will fail to run smoothly.
+ 
+ The login for the default clinician is:  
+ **Staff ID**: 0  
+ **Password**: admin  
+ 
+ The login for the default admin is:  
+ **Username**: default  
+ **Password**: admin
+ 
+ #### Using the CLI
  The Command Line Interface(CLI) can be operated by opening the app and logging in as an admin. A CLI tab will visible, which contains and embedded command line. All commands save the state on successful
  execution. If data is corrupted exiting the command interface by closing the terminal window
  will preserve the state from the last successful operation. 
@@ -68,6 +87,9 @@ The project should now be open.
     
 Entering the command and then `help` or `-h` will provide more details regarding the usage and avaliable flags.
 `help` and `quit` have no flags.
+
+To enter multiple words for one command option you must use an underscore _ instead of spaces.
+E.g. to add the country New Zealand, you  would use -co=New_Zealand (where -co is the flag for countries).
 
 
 # Command Details
@@ -100,6 +122,11 @@ Entering the command and then `help` or `-h` will provide more details regarding
    -r, -region=<region>                Region to filter the search results by
    -g, -gender=<gender>                Birth gender to filter the search results by
  ```
+ ```
+  Usage: view countries
+     
+  Displays all the available countries for easy access
+  ```
          
  - create
 
@@ -256,17 +283,5 @@ Command to send a read only sql query to the connected database
 All files used by the program will be stored in the .organs folder of your home directory, and under C:/Users/<Your User>/ for Windows. This contains 4 key items:
 1. LOGS
 2. CACHE
+ 
 
-
-These files store data for each corresponding role 
-
-# Usage
-An Internet connection is required to connect to the database, otherwise the application will fail to run smoothly.
-
-The login for the clinicians are:  
-**Staff ID**: 0  
-**Password**: admin  
-
-The default login for the default admin is:  
-**Username**: default  
-**Password**: admin

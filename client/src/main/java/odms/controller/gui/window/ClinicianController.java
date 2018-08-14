@@ -340,10 +340,6 @@ public class ClinicianController implements PropertyChangeListener, UserLauncher
             userStage.show();
             Log.info("Clinician " + clinician.getStaffId()
                     + " successfully launched user overview window");
-
-            ArrayList<PropertyChangeListener> listeners = new ArrayList<>();
-            listeners.add(this);
-            userController.init(AppController.getInstance(), user, userStage, true, listeners);
             userStage.show();
         } catch (IOException e) {
             Log.severe("Clinician " + clinician.getStaffId() + " Failed to load user overview window", e);

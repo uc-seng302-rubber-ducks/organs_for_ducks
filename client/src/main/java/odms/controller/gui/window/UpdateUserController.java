@@ -37,147 +37,101 @@ import static odms.commons.utils.PhotoHelper.setUpImageFile;
  */
 public class UpdateUserController {
 
+    private final int MAX_FILE_SIZE = 2097152;
     //<editor-fold desc="fxml stuff">
     @FXML
     private Label errorLabel;
-
     @FXML
     private Label existingNHI;
-
     @FXML
     private Label invalidNHI;
-
     @FXML
     private Label invalidFirstName;
-
     @FXML
     private Label invalidDOB;
-
     @FXML
     private TextField nhiInput;
-
     @FXML
     private TextField fNameInput;
-
     @FXML
     private TextField preferredFNameTextField;
-
     @FXML
     private TextField mNameInput;
-
     @FXML
     private TextField lNameInput;
-
     @FXML
     private TextField heightInput;
-
     @FXML
     private TextField weightInput;
-
     @FXML
     private TextField phone;
-
     @FXML
     private TextField cell;
-
     @FXML
     private TextField streetNumber;
-
     @FXML
     private TextField street;
-
     @FXML
     private TextField neighborhood;
-
     @FXML
     private TextField city;
-
     @FXML
     private TextField regionInput;
-
     @FXML
     private ComboBox<String> regionSelector;
-
     @FXML
     private TextField zipCode;
-
     @FXML
     private ComboBox<String> countrySelector;
-
     @FXML
     private TextField email;
-
     @FXML
     private TextField ecName;
-
     @FXML
     private TextField ecPhone;
-
     @FXML
     private TextField ecCell;
-
     @FXML
     private TextField ecStreetNumber;
-
     @FXML
     private TextField ecStreet;
-
     @FXML
     private TextField ecNeighborhood;
-
     @FXML
     private TextField ecCity;
-
     @FXML
     private TextField ecRegionInput;
-
     @FXML
     private ComboBox<String> ecRegionSelector;
-
     @FXML
     private TextField ecZipCode;
-
     @FXML
     private ComboBox<String> ecCountrySelector;
-
     @FXML
     private TextField ecEmail;
-
     @FXML
     private TextField ecRelationship;
-
     @FXML
     private ComboBox<String> birthGenderComboBox;
-
     @FXML
     private ComboBox<String> genderIdComboBox;
-
     @FXML
     private ComboBox<String> bloodComboBox;
-
     @FXML
     private CheckBox smokerCheckBox;
-
     @FXML
     private ComboBox<String> alcoholComboBox;
-
     @FXML
     private DatePicker dobInput;
-
     @FXML
     private Button undoUpdateButton;
-
     @FXML
     private Button redoUpdateButton;
-
     @FXML
     private ImageView profileImage;
-
+    //</editor-fold>
     @FXML
     private Button resetProfileImageUser;
-    //</editor-fold>
-
-
     private Stage stage;
     private AppController appController;
     private User currentUser;
@@ -186,15 +140,14 @@ public class UpdateUserController {
     private boolean listen = true;
     private File inFile;
     private String defaultCountry = "New Zealand";
-    private final int MAX_FILE_SIZE = 2097152;
-
+    private UserController userController;
 
     /**
      * @param user       The current user.
      * @param controller An instance of the AppController class.
      * @param stage      The applications stage.
      */
-    public void init(User user, AppController controller, Stage stage) {
+    public void init(User user, AppController controller, Stage stage, UserController userController) {
         countrySelector.setItems(FXCollections.observableList(controller.getAllowedCountries()));
         ecCountrySelector.setItems(FXCollections.observableList(controller.getAllowedCountries()));
         for (Regions regions : Regions.values()) {
@@ -203,6 +156,7 @@ public class UpdateUserController {
         }
 
 
+        this.userController = userController;
 
         this.stage = stage;
         oldUser = user;
@@ -266,12 +220,13 @@ public class UpdateUserController {
      * be replaced with a text field.
      * region text field is cleared by default when it appears.
      * region combo box selects the first item by default when it appears.
+     *
      * @param event from GUI
      */
     @FXML
     private void countrySelectorListener(ActionEvent event) {
 //        if (listen) {
-            appController.countrySelectorEventHandler(countrySelector, regionSelector, regionInput, currentUser, null);
+        appController.countrySelectorEventHandler(countrySelector, regionSelector, regionInput, currentUser, null);
 //        }
     }
 
@@ -281,12 +236,13 @@ public class UpdateUserController {
      * be replaced with a text field.
      * region text field is cleared by default when it appears.
      * region combo box selects the first item by default when it appears.
+     *
      * @param event from GUI
      */
     @FXML
-    private void ecCountrySelectorListener(ActionEvent event){
+    private void ecCountrySelectorListener(ActionEvent event) {
 //        if (listen) {
-            appController.countrySelectorEventHandler(ecCountrySelector, ecRegionSelector, ecRegionInput, currentUser, null);
+        appController.countrySelectorEventHandler(ecCountrySelector, ecRegionSelector, ecRegionInput, currentUser, null);
 //        }
     }
 
@@ -322,7 +278,7 @@ public class UpdateUserController {
      * @param checkBox The given CheckBox.
      */
     private void addCheckBoxListener(CheckBox checkBox) {
-        checkBox.selectedProperty().addListener((observable, oldValue, newValue) ->{
+        checkBox.selectedProperty().addListener((observable, oldValue, newValue) -> {
             if (listen) {
                 update();
             }
@@ -335,9 +291,9 @@ public class UpdateUserController {
      * @param cb The current ComboBox.
      */
     private void comboBoxListener(ComboBox cb) {
-        cb.valueProperty().addListener((observable, oldValue, newValue) ->{
+        cb.valueProperty().addListener((observable, oldValue, newValue) -> {
             if (listen) {
-            update();
+                update();
             }
         });
     }
@@ -364,7 +320,7 @@ public class UpdateUserController {
     @FXML
     private void setUserDetails(User user) {
         //personal
-        String region = user.getRegion() == null ? "": user.getRegion();
+        String region = user.getRegion() == null ? "" : user.getRegion();
         String country = user.getCountry();
 
         listen = false;
@@ -383,11 +339,10 @@ public class UpdateUserController {
             mNameInput.setText("");
         }
 
-        if (user.getPreferredFirstName() != null && !user.getPreferredFirstName()
-                .equals(user.getFirstName())) {
+        if (user.getPreferredFirstName() != null) {
             preferredFNameTextField.setText(user.getPreferredFirstName());
         } else {
-            preferredFNameTextField.setText(user.getFirstName());
+            preferredFNameTextField.setText("");
         }
 
         dobInput.setValue(user.getDateOfBirth());
@@ -441,7 +396,7 @@ public class UpdateUserController {
             neighborhood.setText("");
         }
 
-        if(countrySelector.getSelectionModel().getSelectedItem() != null && !countrySelector.getSelectionModel().getSelectedItem().equals(defaultCountry)) {
+        if (countrySelector.getSelectionModel().getSelectedItem() != null && !countrySelector.getSelectionModel().getSelectedItem().equals(defaultCountry)) {
             regionInput.setVisible(true);
             regionInput.setText(region);
             regionSelector.setVisible(false);
@@ -474,7 +429,7 @@ public class UpdateUserController {
         if (user.getProfilePhotoFilePath() != null) {
             displayImage(profileImage, user.getProfilePhotoFilePath());
         }
-        String ecRegion = user.getRegion() == null ? "": user.getContact().getRegion();
+        String ecRegion = user.getRegion() == null ? "" : user.getContact().getRegion();
         String ecCountry = user.getContact().getCountry();
 
         if (user.getContact() != null) {
@@ -489,11 +444,11 @@ public class UpdateUserController {
                 ecRelationship.setText("");
             }
 
-            if(ecCountry.isEmpty()) {
+            if (ecCountry.isEmpty()) {
                 ecRegionSelector.setValue(ecRegion);
             }
 
-            if(ecCountrySelector.getSelectionModel().getSelectedItem() != null && !ecCountrySelector.getSelectionModel().getSelectedItem().equals(defaultCountry)) {
+            if (ecCountrySelector.getSelectionModel().getSelectedItem() != null && !ecCountrySelector.getSelectionModel().getSelectedItem().equals(defaultCountry)) {
                 ecRegionInput.setVisible(true);
                 ecRegionInput.setText(ecRegion);
                 ecRegionSelector.setVisible(false);
@@ -615,7 +570,7 @@ public class UpdateUserController {
         if (filename != null) {
             inFile = new File(filename);
 
-            if (inFile.length() > MAX_FILE_SIZE ) { //if more than 2MB
+            if (inFile.length() > MAX_FILE_SIZE) { //if more than 2MB
                 Alert imageTooLargeAlert = new Alert(Alert.AlertType.WARNING, "Could not upload the image as the image size exceeded 2MB");
                 imageTooLargeAlert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
                 imageTooLargeAlert.showAndWait();
@@ -642,7 +597,6 @@ public class UpdateUserController {
 
         if (valid) {
             removeFormChanges();
-            UserController userController = appController.getUserController();
             if(inFile != null){
                 String filePath = setUpImageFile(inFile, currentUser.getNhi());
                 currentUser.setProfilePhotoFilePath(filePath);
@@ -736,6 +690,9 @@ public class UpdateUserController {
         if (valid) { // only updates if everything is valid
             appController.update(currentUser);
         }
+        if(!currentUser.getNhi().equals(nhi) && AppController.getInstance().getUserBridge().getExists(nhi)){
+            valid = false;
+        }
         return valid;
     }
 
@@ -777,7 +734,7 @@ public class UpdateUserController {
         valid &= AttributeValidation.checkString(eStreetNumber);
 
         String eRegion;
-        if(ecRegionInput.isVisible()){
+        if (ecRegionInput.isVisible()) {
             eRegion = ecRegionInput.getText();
 
         } else {
@@ -838,23 +795,13 @@ public class UpdateUserController {
         if (checkChangedProperty(fNameInput.getText(), currentUser.getFirstName())) {
             currentUser.setFirstName(fNameInput.getText());
             changed = true;
-            if (currentUser.getPreferredFirstName().equals(currentUser.getFirstName())
-                    || preferredFNameTextField.getText().isEmpty()) {
-                listen = false;
-                preferredFNameTextField.setText(currentUser.getFirstName());
-                listen = true;
-            }
         }
 
         String prefName = preferredFNameTextField.getText();
         if (!currentUser.getPreferredFirstName().equals(prefName)) {
-            if (prefName.isEmpty() && !preferredFNameTextField.isFocused()) {
-                currentUser.setPreferredFirstName(fName);
-                changed = true;
-            } else {
-                currentUser.setPreferredFirstName(preferredFNameTextField.getText());
-                changed = true;
-            }
+            currentUser.setPreferredFirstName(preferredFNameTextField.getText());
+            changed = true;
+
         }
 
         if (checkChangedProperty(mNameInput.getText(), currentUser.getMiddleName())) {
@@ -1026,7 +973,7 @@ public class UpdateUserController {
         }
 
         String region;
-        if(regionInput.isVisible()){
+        if (regionInput.isVisible()) {
             region = regionInput.getText();
         } else {
             region = regionSelector.getSelectionModel().getSelectedItem();
@@ -1093,7 +1040,7 @@ public class UpdateUserController {
         }
 
         String ecRegion;
-        if(ecRegionInput.isVisible()){
+        if (ecRegionInput.isVisible()) {
             ecRegion = ecRegionInput.getText();
         } else {
             ecRegion = ecRegionSelector.getSelectionModel().getSelectedItem();

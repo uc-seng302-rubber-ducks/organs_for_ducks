@@ -70,7 +70,7 @@ public class DBHandlerTest {
 
         when(mockResultSet.next()).thenReturn(false).thenReturn(true);
         dbHandler.saveUsers(users, connection);
-        verify(mockStmt, times(19)).executeUpdate();
+        verify(mockStmt, times(18)).executeUpdate();
     }
 
     @Test

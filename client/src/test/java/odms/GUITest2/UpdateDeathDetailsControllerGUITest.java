@@ -4,6 +4,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import odms.App;
 import odms.TestUtils.AppControllerMocker;
 import odms.TestUtils.CommonTestMethods;
@@ -17,12 +18,15 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.loadui.testfx.categories.TestFX;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.matcher.control.LabeledMatchers;
+import org.testfx.matcher.control.TextInputControlMatchers;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -175,7 +179,6 @@ public class UpdateDeathDetailsControllerGUITest extends ApplicationTest{
         verifyThat("#DODValue", LabeledMatchers.hasText(LocalDate.now().toString()));
         verifyThat("#cityOfDeathValue", LabeledMatchers.hasText("Atlantis"));
         verifyThat("#regionOfDeathValue", LabeledMatchers.hasText("Atlantic"));
-        //verifyThat("countryOfDeathValue", LabeledMatchers.hasText("Afghanistan"));
     }
 
     @Test
@@ -192,6 +195,41 @@ public class UpdateDeathDetailsControllerGUITest extends ApplicationTest{
         verifyThat("#cityOfDeathValue", LabeledMatchers.hasText(""));
         verifyThat("#regionOfDeathValue", LabeledMatchers.hasText(""));
 
+    }
+
+    @Test
+    public void testNoChangeWhenRemoveDeathDetailsIsCancelled() {
+        loginAsClinician();
+        clickOnButton(this, "#updateDeathDetailsButton");
+        setDateValue(this, "#updateDeathDetailsDatePicker", LocalDate.now());
+        setTextField(this, "#updateDeathDetailsTimeTextField", "02:45");
+        setTextField(this, "#updateDeathDetailsCityTextField", "Atlantis");
+        setTextField(this, "#updateDeathDetailsRegionTextField", "Atlantic");
+        clickOnButton(this, "#removeUpdateDeathDetailsButton");
+        clickOnButton(this, "#cancelRemoveDeathDetailsButton");
+
+        verifyThat("#updateDeathDetailsTimeTextField", TextInputControlMatchers.hasText("02:45"));
+        verifyThat("#updateDeathDetailsCityTextField", TextInputControlMatchers.hasText("Atlantis"));
+        verifyThat("#updateDeathDetailsRegionTextField", TextInputControlMatchers.hasText("Atlantic"));
+    }
+
+    @Test
+    public void testOverviewUpdatesWhenDeathDetailsRemoved() {
+        LocalDateTime testNow = LocalDateTime.now();
+        testUser.setMomentOfDeath(testNow);
+        testUser.setDeathCity("Atlantis");
+        testUser.setDeathRegion("Atlantic");
+        testUser.setDeathCountry("Australia");
+
+        loginAsClinician();
+        clickOnButton(this, "#updateDeathDetailsButton");
+        clickOnButton(this, "#removeUpdateDeathDetailsButton");
+        clickOnButton(this, "#confirmRemoveDeathDetailsButton");
+
+        verifyThat("#DODValue", LabeledMatchers.hasText(""));
+        verifyThat("#cityOfDeathValue", LabeledMatchers.hasText(""));
+        verifyThat("#regionOfDeathValue", LabeledMatchers.hasText(""));
+        verifyThat("#countryOfDeathValue", LabeledMatchers.hasText(""));
 
     }
 
