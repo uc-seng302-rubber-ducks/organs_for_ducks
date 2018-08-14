@@ -53,7 +53,7 @@
         <dependency>
             <groupId>org.jline</groupId>
             <artifactId>jline</artifactId>
-            <version>3.5.1</version>
+            <version>3.9.0</version>
         </dependency>
         <!-- https://commons.apache.org/proper/commons-csv/ -->
         <dependency>
@@ -127,6 +127,12 @@
             <artifactId>mysql-connector-java</artifactId>
             <version>5.1.44</version>
         </dependency>
+        <dependency>
+            <groupId>org.sonarsource.scanner.maven</groupId>
+            <artifactId>sonar-maven-plugin</artifactId>
+            <version>3.4.0.905</version>
+        </dependency>
+
     </dependencies>
 
     <modules>
@@ -226,5 +232,21 @@
             </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>sonar</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <!-- Optional URL to server. Default value is http://localhost:9000 -->
+                <sonar.host.url>
+                    http://csse-s302g1.canterbury.ac.nz:8080/
+                </sonar.host.url>
+            </properties>
+        </profile>
+    </profiles>
+
 
 </project>

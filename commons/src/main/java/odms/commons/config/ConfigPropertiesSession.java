@@ -11,22 +11,8 @@ public class ConfigPropertiesSession {
     private Properties properties;
 
 
-    private ConfigPropertiesSession(String filepath) {
-        if (filepath != null) {
-            this.properties = new ConfigPropertiesLoader().loadConfig(filepath);
-        } else {
-            this.properties = new Properties();
-        }
-    }
-
-    /**
-     * forcibly sets the session to have new properties loaded from the given filepath. existing data will be overwritten/wiped.
-     *
-     * @param filepath relative location of the file (from the resources folder in the current package)
-     */
-    public static ConfigPropertiesSession init(String filepath) {
-        session = new ConfigPropertiesSession(filepath);
-        return session;
+    private ConfigPropertiesSession() {
+        this.properties = new Properties();
     }
 
     /**
@@ -34,9 +20,17 @@ public class ConfigPropertiesSession {
      */
     public static ConfigPropertiesSession getInstance() {
         if (session == null) {
-            session = new ConfigPropertiesSession(null);
+            session = new ConfigPropertiesSession();
         }
         return session;
+    }
+
+    public static void setInstance(ConfigPropertiesSession session1) {
+        session = session1;
+    }
+
+    public void loadFromFile(String filepath) {
+        this.properties = new ConfigPropertiesLoader().loadConfig(filepath);
     }
 
     public String getProperty(String key) {
@@ -49,5 +43,9 @@ public class ConfigPropertiesSession {
 
     public void setProperty(String key, String value) {
         properties.setProperty(key, value);
+    }
+
+    public Properties getProperties() {
+        return properties;
     }
 }

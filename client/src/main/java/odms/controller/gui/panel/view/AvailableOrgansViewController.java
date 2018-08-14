@@ -8,7 +8,10 @@ import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.util.Duration;
 import odms.commons.model._abstract.UserLauncher;
@@ -110,7 +113,7 @@ public class AvailableOrgansViewController {
 
     private Comparator<ProgressTask> organTimeLeftComparator = Comparator.comparingLong(p -> p.calculateTimeLeft(LocalDateTime.now()));
 
-    private void initMatchesTable(){
+    private void initMatchesTable() {
         TableColumn matchesNhiColumn = new TableColumn("NHI");
         TableColumn matchesRegionColumn = new TableColumn("Region");
 

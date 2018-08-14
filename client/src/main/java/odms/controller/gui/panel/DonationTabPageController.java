@@ -1,5 +1,6 @@
 package odms.controller.gui.panel;
 
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -72,6 +73,12 @@ public class DonationTabPageController {
         currentUser = user;
         this.parent = parent;
 
+        donatingOrganColumn.setSortable(false);
+        expiryReasonColumn.setSortable(false);
+        manualExpiryTimeColumn.setSortable(false);
+        expiryStaffIdColumn.setSortable(false);
+        organExpiryColumn.setSortable(false);
+
         donatingOrganColumn.setCellValueFactory(new PropertyValueFactory<>("organType"));
         donatingOrganColumn.setCellFactory(cell -> OrganListCellFactory.generateOrganTableCell(donatingOrganColumn, currentUser));
         expiryReasonColumn.setCellValueFactory(new PropertyValueFactory<>("reason"));
@@ -140,7 +147,7 @@ public class DonationTabPageController {
     void donate() {
         if (!canDonate.getSelectionModel().isEmpty()) {
             Organs toDonate = canDonate.getSelectionModel().getSelectedItem();
-            currentUser.getDonorDetails().addOrgan(toDonate, new ExpiryReason("0", LocalDateTime.now(), "testytest", "Anne"));
+            currentUser.getDonorDetails().addOrgan(toDonate, new ExpiryReason("0", LocalDateTime.now(), "testytest", ""));
 
             if (currentUser.getMomentDeath() != null) {
                 populateTableView(currentUser.getDonorDetails().getOrganMap());
@@ -225,4 +232,12 @@ public class DonationTabPageController {
         parent.refreshCurrentlyReceivingList();
     }
 
+    public synchronized void shutdownThreads() {
+        if (!Platform.isFxApplicationThread()) {
+            return;
+        }
+        for (OrgansWithExpiry organ : organsWithExpiries) {
+            organ.getProgressTask().cancel(true);
+        }
+    }
 }

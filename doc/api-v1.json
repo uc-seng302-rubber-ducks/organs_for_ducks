@@ -1,0 +1,3030 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "Api Documentation",
+    "version": "1.0",
+    "title": "Api Documentation",
+    "termsOfService": "urn:tos",
+    "contact": {},
+    "license": {
+      "name": "Apache 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0"
+    }
+  },
+  "host": "localhost:4941",
+  "basePath": "/",
+  "tags": [
+    {
+      "name": "admin-controller",
+      "description": "Admin Controller"
+    },
+    {
+      "name": "clinician-controller",
+      "description": "Clinician Controller"
+    },
+    {
+      "name": "countries-controller",
+      "description": "Countries Controller"
+    },
+    {
+      "name": "disease-controller",
+      "description": "Disease Controller"
+    },
+    {
+      "name": "donating-organs-controller",
+      "description": "Donating Organs Controller"
+    },
+    {
+      "name": "login-controller",
+      "description": "Login Controller"
+    },
+    {
+      "name": "medication-controller",
+      "description": "Medication Controller"
+    },
+    {
+      "name": "photo-controller",
+      "description": "Photo Controller"
+    },
+    {
+      "name": "procedure-controller",
+      "description": "Procedure Controller"
+    },
+    {
+      "name": "receiving-organs-controller",
+      "description": "Receiving Organs Controller"
+    },
+    {
+      "name": "sql-from-admin-controller",
+      "description": "SQL From Admin Controller"
+    },
+    {
+      "name": "transplant-list-controller",
+      "description": "Transplant List Controller"
+    },
+    {
+      "name": "user-controller",
+      "description": "User Controller"
+    }
+  ],
+  "paths": {
+    "/odms/v1/admins": {
+      "get": {
+        "tags": [
+          "admin-controller"
+        ],
+        "summary": "getAdministrator",
+        "operationId": "getAdministratorUsingGET_1",
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "count",
+            "in": "query",
+            "description": "count",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "description": "q",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "startIndex",
+            "in": "query",
+            "description": "startIndex",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Administrator"
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "deprecated": false
+      },
+      "post": {
+        "tags": [
+          "admin-controller"
+        ],
+        "summary": "postAdministrator",
+        "operationId": "postAdministratorUsingPOST",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "newAdmin",
+            "description": "newAdmin",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Administrator"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/ResponseEntity"
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/odms/v1/admins/exists/{username}": {
+      "get": {
+        "tags": [
+          "admin-controller"
+        ],
+        "summary": "getExists",
+        "operationId": "getExistsUsingGET",
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "username",
+            "in": "path",
+            "description": "username",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/odms/v1/admins/{username}": {
+      "get": {
+        "tags": [
+          "admin-controller"
+        ],
+        "summary": "getAdministrator",
+        "operationId": "getAdministratorUsingGET",
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "username",
+            "in": "path",
+            "description": "username",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/Administrator"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "deprecated": false
+      },
+      "put": {
+        "tags": [
+          "admin-controller"
+        ],
+        "summary": "putAdministrator",
+        "operationId": "putAdministratorUsingPUT",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "administrator",
+            "description": "administrator",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Administrator"
+            }
+          },
+          {
+            "name": "username",
+            "in": "path",
+            "description": "username",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/ResponseEntity"
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "deprecated": false
+      },
+      "delete": {
+        "tags": [
+          "admin-controller"
+        ],
+        "summary": "deleteAdministrator",
+        "operationId": "deleteAdministratorUsingDELETE",
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "username",
+            "in": "path",
+            "description": "username",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/ResponseEntity"
+            }
+          },
+          "204": {
+            "description": "No Content"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/odms/v1/clinicians": {
+      "get": {
+        "tags": [
+          "clinician-controller"
+        ],
+        "summary": "getClinicians",
+        "operationId": "getCliniciansUsingGET",
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "count",
+            "in": "query",
+            "description": "count",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "description": "q",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "region",
+            "in": "query",
+            "description": "region",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "startIndex",
+            "in": "query",
+            "description": "startIndex",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Clinician"
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "deprecated": false
+      },
+      "post": {
+        "tags": [
+          "clinician-controller"
+        ],
+        "summary": "postClinician",
+        "operationId": "postClinicianUsingPOST",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "newClinician",
+            "description": "newClinician",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Clinician"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/ResponseEntity"
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/odms/v1/clinicians/exists/{staffId}": {
+      "get": {
+        "tags": [
+          "clinician-controller"
+        ],
+        "summary": "getExists",
+        "operationId": "getExistsUsingGET_1",
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "staffId",
+            "in": "path",
+            "description": "staffId",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/odms/v1/clinicians/{staffId}": {
+      "get": {
+        "tags": [
+          "clinician-controller"
+        ],
+        "summary": "getClinician",
+        "operationId": "getClinicianUsingGET",
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "staffId",
+            "in": "path",
+            "description": "staffId",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/Clinician"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "deprecated": false
+      },
+      "put": {
+        "tags": [
+          "clinician-controller"
+        ],
+        "summary": "putClinician",
+        "operationId": "putClinicianUsingPUT",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "clinician",
+            "description": "clinician",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Clinician"
+            }
+          },
+          {
+            "name": "staffId",
+            "in": "path",
+            "description": "staffId",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/ResponseEntity"
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "deprecated": false
+      },
+      "delete": {
+        "tags": [
+          "clinician-controller"
+        ],
+        "summary": "deleteClinician",
+        "operationId": "deleteClinicianUsingDELETE",
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "staffId",
+            "in": "path",
+            "description": "staffId",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/ResponseEntity"
+            }
+          },
+          "204": {
+            "description": "No Content"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/odms/v1/clinicians/{staffId}/photo": {
+      "get": {
+        "tags": [
+          "photo-controller"
+        ],
+        "summary": "getClinicianProfilePicture",
+        "operationId": "getClinicianProfilePictureUsingGET",
+        "produces": [
+          "image/png"
+        ],
+        "parameters": [
+          {
+            "name": "staffId",
+            "in": "path",
+            "description": "staffId",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "string",
+              "format": "byte"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "deprecated": false
+      },
+      "put": {
+        "tags": [
+          "photo-controller"
+        ],
+        "summary": "putClinicianProfilePhoto",
+        "operationId": "putClinicianProfilePhotoUsingPUT",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "Content-Type",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "profileImageFile",
+            "description": "profileImageFile",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "byte"
+            }
+          },
+          {
+            "name": "staffId",
+            "in": "path",
+            "description": "staffId",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/ResponseEntity"
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/odms/v1/countries": {
+      "get": {
+        "tags": [
+          "countries-controller"
+        ],
+        "summary": "getAllowedCountries",
+        "operationId": "getAllowedCountriesUsingGET",
+        "produces": [
+          "*/*"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "deprecated": false
+      },
+      "put": {
+        "tags": [
+          "countries-controller"
+        ],
+        "summary": "putCountries",
+        "operationId": "putCountriesUsingPUT",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "countries",
+            "description": "countries",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/ResponseEntity"
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/odms/v1/login": {
+      "post": {
+        "tags": [
+          "login-controller"
+        ],
+        "summary": "login",
+        "operationId": "loginUsingPOST",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "auth",
+            "description": "auth",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/LoginRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object"
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/odms/v1/logout": {
+      "post": {
+        "tags": [
+          "login-controller"
+        ],
+        "summary": "logout",
+        "operationId": "logoutUsingPOST",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "header",
+            "description": "token",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/ResponseEntity"
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/odms/v1/sql": {
+      "post": {
+        "tags": [
+          "sql-from-admin-controller"
+        ],
+        "summary": "runSql",
+        "operationId": "runSqlUsingPOST",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "query",
+            "description": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              }
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/odms/v1/test": {
+      "get": {
+        "tags": [
+          "login-controller"
+        ],
+        "summary": "testEndpoint",
+        "operationId": "testEndpointUsingGET",
+        "produces": [
+          "*/*"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/ResponseEntity"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/odms/v1/test2": {
+      "get": {
+        "tags": [
+          "login-controller"
+        ],
+        "summary": "testOtherEndpoint",
+        "operationId": "testOtherEndpointUsingGET",
+        "produces": [
+          "*/*"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/ResponseEntity"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/odms/v1/transplantList": {
+      "get": {
+        "tags": [
+          "transplant-list-controller"
+        ],
+        "summary": "getWaitingFor",
+        "operationId": "getWaitingForUsingGET",
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "count",
+            "in": "query",
+            "description": "count",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "description": "name",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "organs",
+            "in": "query",
+            "description": "organs",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi"
+          },
+          {
+            "name": "region",
+            "in": "query",
+            "description": "region",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "startIndex",
+            "in": "query",
+            "description": "startIndex",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/TransplantDetails"
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/odms/v1/users": {
+      "get": {
+        "tags": [
+          "user-controller"
+        ],
+        "summary": "getUsers",
+        "operationId": "getUsersUsingGET",
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "count",
+            "in": "query",
+            "description": "count",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "gender",
+            "in": "query",
+            "description": "gender",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "description": "name",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "region",
+            "in": "query",
+            "description": "region",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "startIndex",
+            "in": "query",
+            "description": "startIndex",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/UserOverview"
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "deprecated": false
+      },
+      "post": {
+        "tags": [
+          "user-controller"
+        ],
+        "summary": "postUser",
+        "operationId": "postUserUsingPOST",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "newUser",
+            "description": "newUser",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/ResponseEntity"
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/odms/v1/users/exists/{nhi}": {
+      "get": {
+        "tags": [
+          "user-controller"
+        ],
+        "summary": "getExists",
+        "operationId": "getExistsUsingGET_2",
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "nhi",
+            "in": "path",
+            "description": "nhi",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/odms/v1/users/{nhi}": {
+      "get": {
+        "tags": [
+          "user-controller"
+        ],
+        "summary": "getUser",
+        "operationId": "getUserUsingGET",
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "nhi",
+            "in": "path",
+            "description": "nhi",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "deprecated": false
+      },
+      "put": {
+        "tags": [
+          "user-controller"
+        ],
+        "summary": "putUser",
+        "operationId": "putUserUsingPUT",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "nhi",
+            "in": "path",
+            "description": "nhi",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "user",
+            "description": "user",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/ResponseEntity"
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "deprecated": false
+      },
+      "delete": {
+        "tags": [
+          "user-controller"
+        ],
+        "summary": "deleteUser",
+        "operationId": "deleteUserUsingDELETE",
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "nhi",
+            "in": "path",
+            "description": "nhi",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/ResponseEntity"
+            }
+          },
+          "204": {
+            "description": "No Content"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/odms/v1/users/{nhi}/diseases": {
+      "post": {
+        "tags": [
+          "disease-controller"
+        ],
+        "summary": "postDisease",
+        "operationId": "postDiseaseUsingPOST",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "disease",
+            "description": "disease",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Disease"
+            }
+          },
+          {
+            "name": "nhi",
+            "in": "path",
+            "description": "nhi",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/ResponseEntity"
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "deprecated": false
+      },
+      "put": {
+        "tags": [
+          "disease-controller"
+        ],
+        "summary": "putDiseases",
+        "operationId": "putDiseasesUsingPUT",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "diseases",
+            "description": "diseases",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Disease"
+              }
+            }
+          },
+          {
+            "name": "nhi",
+            "in": "path",
+            "description": "nhi",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/ResponseEntity"
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/odms/v1/users/{nhi}/donating": {
+      "post": {
+        "tags": [
+          "donating-organs-controller"
+        ],
+        "summary": "postDonatingOrgans",
+        "operationId": "postDonatingOrgansUsingPOST",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "donating",
+            "description": "donating",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "Liver",
+                  "Kidney",
+                  "Pancreas",
+                  "Heart",
+                  "Lung",
+                  "Intestine",
+                  "Cornea",
+                  "Middle Ear",
+                  "Skin",
+                  "Bone Marrow",
+                  "Bone",
+                  "Connective Tissue"
+                ]
+              }
+            }
+          },
+          {
+            "name": "nhi",
+            "in": "path",
+            "description": "nhi",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/ResponseEntity"
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "deprecated": false
+      },
+      "put": {
+        "tags": [
+          "donating-organs-controller"
+        ],
+        "summary": "putDonatingOrgans",
+        "operationId": "putDonatingOrgansUsingPUT",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "donating",
+            "description": "donating",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "enum": [
+                  "Liver",
+                  "Kidney",
+                  "Pancreas",
+                  "Heart",
+                  "Lung",
+                  "Intestine",
+                  "Cornea",
+                  "Middle Ear",
+                  "Skin",
+                  "Bone Marrow",
+                  "Bone",
+                  "Connective Tissue"
+                ]
+              }
+            }
+          },
+          {
+            "name": "nhi",
+            "in": "path",
+            "description": "nhi",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/ResponseEntity"
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/odms/v1/users/{nhi}/medications": {
+      "post": {
+        "tags": [
+          "medication-controller"
+        ],
+        "summary": "postMedication",
+        "operationId": "postMedicationUsingPOST",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "medication",
+            "description": "medication",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Medication"
+            }
+          },
+          {
+            "name": "nhi",
+            "in": "path",
+            "description": "nhi",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/ResponseEntity"
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "deprecated": false
+      },
+      "put": {
+        "tags": [
+          "medication-controller"
+        ],
+        "summary": "putMedications",
+        "operationId": "putMedicationsUsingPUT",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "medications",
+            "description": "medications",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Medication"
+              }
+            }
+          },
+          {
+            "name": "nhi",
+            "in": "path",
+            "description": "nhi",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/ResponseEntity"
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/odms/v1/users/{nhi}/photo": {
+      "get": {
+        "tags": [
+          "photo-controller"
+        ],
+        "summary": "getUserProfilePicture",
+        "operationId": "getUserProfilePictureUsingGET",
+        "produces": [
+          "image/png"
+        ],
+        "parameters": [
+          {
+            "name": "nhi",
+            "in": "path",
+            "description": "nhi",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "string",
+              "format": "byte"
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "deprecated": false
+      },
+      "put": {
+        "tags": [
+          "photo-controller"
+        ],
+        "summary": "putUserProfilePhoto",
+        "operationId": "putUserProfilePhotoUsingPUT",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "Content-Type",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "nhi",
+            "in": "path",
+            "description": "nhi",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "profileImageFile",
+            "description": "profileImageFile",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "byte"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/ResponseEntity"
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/odms/v1/users/{nhi}/procedures": {
+      "post": {
+        "tags": [
+          "procedure-controller"
+        ],
+        "summary": "postMedicalProcedure",
+        "operationId": "postMedicalProcedureUsingPOST",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "nhi",
+            "in": "path",
+            "description": "nhi",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "procedure",
+            "description": "procedure",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/MedicalProcedure"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/ResponseEntity"
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "deprecated": false
+      },
+      "put": {
+        "tags": [
+          "procedure-controller"
+        ],
+        "summary": "putProcedure",
+        "operationId": "putProcedureUsingPUT",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "nhi",
+            "in": "path",
+            "description": "nhi",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "procedures",
+            "description": "procedures",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/MedicalProcedure"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/ResponseEntity"
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/odms/v1/users/{nhi}/receiving": {
+      "post": {
+        "tags": [
+          "receiving-organs-controller"
+        ],
+        "summary": "postOrgansToReceive",
+        "operationId": "postOrgansToReceiveUsingPOST",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "nhi",
+            "in": "path",
+            "description": "nhi",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "receiving",
+            "description": "receiving",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/ReceiverOrganDetailsHolder"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/ResponseEntity"
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "deprecated": false
+      },
+      "put": {
+        "tags": [
+          "receiving-organs-controller"
+        ],
+        "summary": "putOrganToReceive",
+        "operationId": "putOrganToReceiveUsingPUT",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "nhi",
+            "in": "path",
+            "description": "nhi",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "receiving",
+            "description": "receiving",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/definitions/ReceiverOrganDetailsHolder"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/ResponseEntity"
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "deprecated": false
+      }
+    }
+  },
+  "definitions": {
+    "Address": {
+      "type": "object",
+      "properties": {
+        "city": {
+          "type": "string"
+        },
+        "country": {
+          "type": "string"
+        },
+        "neighborhood": {
+          "type": "string"
+        },
+        "region": {
+          "type": "string"
+        },
+        "streetName": {
+          "type": "string"
+        },
+        "streetNumber": {
+          "type": "string"
+        },
+        "stringAddress": {
+          "type": "string"
+        },
+        "zipCode": {
+          "type": "string"
+        }
+      },
+      "title": "Address"
+    },
+    "Administrator": {
+      "type": "object",
+      "properties": {
+        "changes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Change"
+          }
+        },
+        "dateCreated": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "dateLastModified": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "deleted": {
+          "type": "boolean"
+        },
+        "firstName": {
+          "type": "string"
+        },
+        "fullName": {
+          "type": "string"
+        },
+        "lastName": {
+          "type": "string"
+        },
+        "middleName": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        },
+        "pcs": {
+          "$ref": "#/definitions/PropertyChangeSupport"
+        },
+        "redoStack": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Memento«Administrator»"
+          }
+        },
+        "region": {
+          "type": "string"
+        },
+        "salt": {
+          "type": "string"
+        },
+        "undoStack": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Memento«Administrator»"
+          }
+        },
+        "userName": {
+          "type": "string"
+        }
+      },
+      "title": "Administrator"
+    },
+    "Change": {
+      "type": "object",
+      "properties": {
+        "change": {
+          "type": "string"
+        },
+        "time": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "title": "Change"
+    },
+    "Clinician": {
+      "type": "object",
+      "properties": {
+        "changes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Change"
+          }
+        },
+        "city": {
+          "type": "string"
+        },
+        "country": {
+          "type": "string"
+        },
+        "dateCreated": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "dateLastModified": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "deleted": {
+          "type": "boolean"
+        },
+        "firstName": {
+          "type": "string"
+        },
+        "fullName": {
+          "type": "string"
+        },
+        "lastName": {
+          "type": "string"
+        },
+        "middleName": {
+          "type": "string"
+        },
+        "neighborhood": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        },
+        "profilePhotoFilePath": {
+          "type": "string"
+        },
+        "redoStack": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Memento«Clinician»"
+          }
+        },
+        "region": {
+          "type": "string"
+        },
+        "salt": {
+          "type": "string"
+        },
+        "staffId": {
+          "type": "string"
+        },
+        "streetName": {
+          "type": "string"
+        },
+        "streetNumber": {
+          "type": "string"
+        },
+        "undoStack": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Memento«Clinician»"
+          }
+        },
+        "workContactDetails": {
+          "$ref": "#/definitions/ContactDetails"
+        },
+        "zipCode": {
+          "type": "string"
+        }
+      },
+      "title": "Clinician"
+    },
+    "ContactDetails": {
+      "type": "object",
+      "properties": {
+        "address": {
+          "$ref": "#/definitions/Address"
+        },
+        "cellPhoneNumber": {
+          "type": "string"
+        },
+        "city": {
+          "type": "string"
+        },
+        "country": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "homePhoneNumber": {
+          "type": "string"
+        },
+        "neighborhood": {
+          "type": "string"
+        },
+        "region": {
+          "type": "string"
+        },
+        "streetName": {
+          "type": "string"
+        },
+        "streetNumber": {
+          "type": "string"
+        },
+        "zipCode": {
+          "type": "string"
+        }
+      },
+      "title": "ContactDetails"
+    },
+    "Disease": {
+      "type": "object",
+      "properties": {
+        "deleted": {
+          "type": "boolean"
+        },
+        "diagnosisDate": {
+          "type": "string",
+          "format": "date"
+        },
+        "isChronic": {
+          "type": "boolean"
+        },
+        "isCured": {
+          "type": "boolean"
+        },
+        "name": {
+          "type": "string"
+        }
+      },
+      "title": "Disease"
+    },
+    "DonorDetails": {
+      "type": "object",
+      "properties": {
+        "attachedUser": {
+          "$ref": "#/definitions/User"
+        },
+        "empty": {
+          "type": "boolean"
+        },
+        "organs": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "Liver",
+              "Kidney",
+              "Pancreas",
+              "Heart",
+              "Lung",
+              "Intestine",
+              "Cornea",
+              "Middle Ear",
+              "Skin",
+              "Bone Marrow",
+              "Bone",
+              "Connective Tissue"
+            ]
+          }
+        }
+      },
+      "title": "DonorDetails"
+    },
+    "EmergencyContact": {
+      "type": "object",
+      "properties": {
+        "address": {
+          "$ref": "#/definitions/Address"
+        },
+        "attachedUser": {
+          "$ref": "#/definitions/User"
+        },
+        "cellPhoneNumber": {
+          "type": "string"
+        },
+        "city": {
+          "type": "string"
+        },
+        "country": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "homePhoneNumber": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "neighborhood": {
+          "type": "string"
+        },
+        "region": {
+          "type": "string"
+        },
+        "relationship": {
+          "type": "string"
+        },
+        "streetName": {
+          "type": "string"
+        },
+        "streetNumber": {
+          "type": "string"
+        },
+        "zipCode": {
+          "type": "string"
+        }
+      },
+      "title": "EmergencyContact"
+    },
+    "HealthDetails": {
+      "type": "object",
+      "properties": {
+        "alcoholConsumption": {
+          "type": "string"
+        },
+        "birthGender": {
+          "type": "string"
+        },
+        "bloodType": {
+          "type": "string"
+        },
+        "genderIdentity": {
+          "type": "string"
+        },
+        "height": {
+          "type": "number",
+          "format": "double"
+        },
+        "heightText": {
+          "type": "string"
+        },
+        "smoker": {
+          "type": "boolean"
+        },
+        "weight": {
+          "type": "number",
+          "format": "double"
+        },
+        "weightText": {
+          "type": "string"
+        }
+      },
+      "title": "HealthDetails"
+    },
+    "LoginRequest": {
+      "type": "object",
+      "properties": {
+        "password": {
+          "type": "string"
+        },
+        "role": {
+          "type": "string",
+          "enum": [
+            "ADMIN",
+            "CLINICIAN",
+            "USER"
+          ]
+        },
+        "username": {
+          "type": "string"
+        }
+      },
+      "title": "LoginRequest"
+    },
+    "MedicalProcedure": {
+      "type": "object",
+      "properties": {
+        "deleted": {
+          "type": "boolean"
+        },
+        "description": {
+          "type": "string"
+        },
+        "key": {
+          "$ref": "#/definitions/ProcedureKey"
+        },
+        "organsAffected": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "Liver",
+              "Kidney",
+              "Pancreas",
+              "Heart",
+              "Lung",
+              "Intestine",
+              "Cornea",
+              "Middle Ear",
+              "Skin",
+              "Bone Marrow",
+              "Bone",
+              "Connective Tissue"
+            ]
+          }
+        },
+        "procedureDate": {
+          "type": "string",
+          "format": "date"
+        },
+        "summary": {
+          "type": "string"
+        }
+      },
+      "title": "MedicalProcedure"
+    },
+    "Medication": {
+      "type": "object",
+      "properties": {
+        "deleted": {
+          "type": "boolean"
+        },
+        "medName": {
+          "type": "string"
+        },
+        "medicationTimes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/LocalDateTime"
+          }
+        }
+      },
+      "title": "Medication"
+    },
+    "Memento«Administrator»": {
+      "type": "object",
+      "properties": {
+        "state": {
+          "$ref": "#/definitions/Administrator"
+        }
+      },
+      "title": "Memento«Administrator»"
+    },
+    "Memento«Clinician»": {
+      "type": "object",
+      "properties": {
+        "state": {
+          "$ref": "#/definitions/Clinician"
+        }
+      },
+      "title": "Memento«Clinician»"
+    },
+    "Memento«User»": {
+      "type": "object",
+      "properties": {
+        "state": {
+          "$ref": "#/definitions/User"
+        }
+      },
+      "title": "Memento«User»"
+    },
+    "ProcedureKey": {
+      "type": "object",
+      "properties": {
+        "date": {
+          "type": "string",
+          "format": "date"
+        },
+        "name": {
+          "type": "string"
+        }
+      },
+      "title": "ProcedureKey"
+    },
+    "PropertyChangeListener": {
+      "type": "object",
+      "title": "PropertyChangeListener"
+    },
+    "PropertyChangeSupport": {
+      "type": "object",
+      "properties": {
+        "propertyChangeListeners": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/PropertyChangeListener"
+          }
+        }
+      },
+      "title": "PropertyChangeSupport"
+    },
+    "ReceiverDetails": {
+      "type": "object",
+      "properties": {
+        "attachedUser": {
+          "$ref": "#/definitions/User"
+        },
+        "empty": {
+          "type": "boolean"
+        },
+        "organs": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/ReceiverOrganDetailsHolder"
+            }
+          }
+        }
+      },
+      "title": "ReceiverDetails"
+    },
+    "ReceiverOrganDetailsHolder": {
+      "type": "object",
+      "properties": {
+        "organDeregisterReason": {
+          "type": "string",
+          "enum": [
+            "Registration error",
+            "Disease cured",
+            "Receiver died",
+            "Transplant received"
+          ]
+        },
+        "startDate": {
+          "type": "string",
+          "format": "date"
+        },
+        "stopDate": {
+          "type": "string",
+          "format": "date"
+        }
+      },
+      "title": "ReceiverOrganDetailsHolder"
+    },
+    "ResponseEntity": {
+      "type": "object",
+      "properties": {
+        "body": {
+          "type": "object"
+        },
+        "statusCode": {
+          "type": "string",
+          "enum": [
+            "100",
+            "101",
+            "102",
+            "103",
+            "200",
+            "201",
+            "202",
+            "203",
+            "204",
+            "205",
+            "206",
+            "207",
+            "208",
+            "226",
+            "300",
+            "301",
+            "302",
+            "303",
+            "304",
+            "305",
+            "307",
+            "308",
+            "400",
+            "401",
+            "402",
+            "403",
+            "404",
+            "405",
+            "406",
+            "407",
+            "408",
+            "409",
+            "410",
+            "411",
+            "412",
+            "413",
+            "414",
+            "415",
+            "416",
+            "417",
+            "418",
+            "419",
+            "420",
+            "421",
+            "422",
+            "423",
+            "424",
+            "426",
+            "428",
+            "429",
+            "431",
+            "451",
+            "500",
+            "501",
+            "502",
+            "503",
+            "504",
+            "505",
+            "506",
+            "507",
+            "508",
+            "509",
+            "510",
+            "511"
+          ]
+        },
+        "statusCodeValue": {
+          "type": "integer",
+          "format": "int32"
+        }
+      },
+      "title": "ResponseEntity"
+    },
+    "TransplantDetails": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "nhi": {
+          "type": "string"
+        },
+        "ord": {
+          "type": "string",
+          "format": "date"
+        },
+        "organ": {
+          "type": "string",
+          "enum": [
+            "Liver",
+            "Kidney",
+            "Pancreas",
+            "Heart",
+            "Lung",
+            "Intestine",
+            "Cornea",
+            "Middle Ear",
+            "Skin",
+            "Bone Marrow",
+            "Bone",
+            "Connective Tissue"
+          ]
+        },
+        "region": {
+          "type": "string"
+        }
+      },
+      "title": "TransplantDetails"
+    },
+    "User": {
+      "type": "object",
+      "properties": {
+        "address": {
+          "type": "string"
+        },
+        "age": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "alcoholConsumption": {
+          "type": "string"
+        },
+        "birthCountry": {
+          "type": "string"
+        },
+        "birthGender": {
+          "type": "string"
+        },
+        "bloodType": {
+          "type": "string"
+        },
+        "cellPhone": {
+          "type": "string"
+        },
+        "changes": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Change"
+          }
+        },
+        "city": {
+          "type": "string"
+        },
+        "commonOrgans": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "Liver",
+              "Kidney",
+              "Pancreas",
+              "Heart",
+              "Lung",
+              "Intestine",
+              "Cornea",
+              "Middle Ear",
+              "Skin",
+              "Bone Marrow",
+              "Bone",
+              "Connective Tissue"
+            ]
+          }
+        },
+        "contact": {
+          "$ref": "#/definitions/EmergencyContact"
+        },
+        "contactDetails": {
+          "$ref": "#/definitions/ContactDetails"
+        },
+        "country": {
+          "type": "string"
+        },
+        "currentDiseases": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Disease"
+          }
+        },
+        "currentMedication": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Medication"
+          }
+        },
+        "dateOfBirth": {
+          "type": "string",
+          "format": "date"
+        },
+        "dateOfDeath": {
+          "type": "string",
+          "format": "date"
+        },
+        "deceased": {
+          "type": "boolean"
+        },
+        "deleted": {
+          "type": "boolean"
+        },
+        "donor": {
+          "type": "boolean"
+        },
+        "donorDetails": {
+          "$ref": "#/definitions/DonorDetails"
+        },
+        "eccellPhone": {
+          "type": "string"
+        },
+        "eccity": {
+          "type": "string"
+        },
+        "eccountry": {
+          "type": "string"
+        },
+        "ecemail": {
+          "type": "string"
+        },
+        "echomePhone": {
+          "type": "string"
+        },
+        "ecname": {
+          "type": "string"
+        },
+        "ecneighborhood": {
+          "type": "string"
+        },
+        "ecregion": {
+          "type": "string"
+        },
+        "ecrelationship": {
+          "type": "string"
+        },
+        "ecstreeName": {
+          "type": "string"
+        },
+        "ecstreetNumber": {
+          "type": "string"
+        },
+        "eczipCode": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "firstName": {
+          "type": "string"
+        },
+        "fullName": {
+          "type": "string"
+        },
+        "genderIdentity": {
+          "type": "string"
+        },
+        "healthDetails": {
+          "$ref": "#/definitions/HealthDetails"
+        },
+        "height": {
+          "type": "number",
+          "format": "double"
+        },
+        "heightText": {
+          "type": "string"
+        },
+        "homePhone": {
+          "type": "string"
+        },
+        "lastModified": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "lastName": {
+          "type": "string"
+        },
+        "medicalProcedures": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/MedicalProcedure"
+          }
+        },
+        "middleName": {
+          "type": "string"
+        },
+        "neighborhood": {
+          "type": "string"
+        },
+        "nhi": {
+          "type": "string"
+        },
+        "pastDiseases": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Disease"
+          }
+        },
+        "preferredFirstName": {
+          "type": "string"
+        },
+        "previousMedication": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Medication"
+          }
+        },
+        "profilePhotoFilePath": {
+          "type": "string"
+        },
+        "receiver": {
+          "type": "boolean"
+        },
+        "receiverDetails": {
+          "$ref": "#/definitions/ReceiverDetails"
+        },
+        "redoStack": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Memento«User»"
+          }
+        },
+        "region": {
+          "type": "string"
+        },
+        "smoker": {
+          "type": "boolean"
+        },
+        "streetName": {
+          "type": "string"
+        },
+        "streetNumber": {
+          "type": "string"
+        },
+        "stringAge": {
+          "type": "string"
+        },
+        "timeCreated": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "tooltip": {
+          "type": "string"
+        },
+        "undoStack": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Memento«User»"
+          }
+        },
+        "updateHistory": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "weight": {
+          "type": "number",
+          "format": "double"
+        },
+        "weightText": {
+          "type": "string"
+        },
+        "zipCode": {
+          "type": "string"
+        }
+      },
+      "title": "User"
+    },
+    "UserOverview": {
+      "type": "object",
+      "properties": {
+        "dob": {
+          "type": "string",
+          "format": "date"
+        },
+        "dod": {
+          "type": "string",
+          "format": "date"
+        },
+        "donating": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "Liver",
+              "Kidney",
+              "Pancreas",
+              "Heart",
+              "Lung",
+              "Intestine",
+              "Cornea",
+              "Middle Ear",
+              "Skin",
+              "Bone Marrow",
+              "Bone",
+              "Connective Tissue"
+            ]
+          }
+        },
+        "donor": {
+          "type": "boolean"
+        },
+        "firstName": {
+          "type": "string"
+        },
+        "lastName": {
+          "type": "string"
+        },
+        "middleName": {
+          "type": "string"
+        },
+        "nhi": {
+          "type": "string"
+        },
+        "receiver": {
+          "type": "boolean"
+        },
+        "receiving": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/ReceiverOrganDetailsHolder"
+            }
+          }
+        },
+        "region": {
+          "type": "string"
+        }
+      },
+      "title": "UserOverview"
+    }
+  }
+}

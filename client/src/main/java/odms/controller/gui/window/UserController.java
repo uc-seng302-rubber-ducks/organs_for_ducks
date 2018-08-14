@@ -438,6 +438,7 @@ public class UserController implements PropertyChangeListener {
         application.saveUser(currentUser);
         currentUser.getRedoStack().clear();
         currentUser.getUndoStack().clear();
+        donationTabPageController.shutdownThreads();
         updateUndoRedoButtons();
     }
 
