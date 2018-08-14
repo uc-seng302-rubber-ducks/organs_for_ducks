@@ -447,6 +447,7 @@ public class UserController implements PropertyChangeListener {
      * @param user Current user to be displayed
      */
     public void showUser(User user) {
+        currentUser = user;
         changeCurrentUser(user);
         setContactPage();
         userProfileTabPageController.showUser(user);
@@ -589,15 +590,19 @@ public class UserController implements PropertyChangeListener {
                 && event.getOldIdentifier().equalsIgnoreCase(currentUser.getNhi())
                 || event.getNewIdentifier().equalsIgnoreCase(currentUser.getNhi())) {
 
-            try {
-                currentUser = application.getUserBridge().getUser(event.getNewIdentifier());
-                if (currentUser != null) {
-                    showUser(currentUser); //TODO: Apply change once we solve the DB race 7/8/18 JB
-                }
-            } catch (IOException ex) {
-                Log.warning("failed to get updated user", ex);
-            }
 
+                        try {
+                            User updatedUser = application.getUserBridge().getUser(event.getNewIdentifier());
+                            if (updatedUser == null) {
+                                updatedUser = application.getUserBridge().getUser(event.getNewIdentifier());
+                            }
+                            if (updatedUser != null) {
+                                currentUser = updatedUser;
+                                showUser(currentUser); //TODO: Apply change once we solve the DB race 7/8/18 JB
+                            }
+                        } catch (IOException ex) {
+                            Log.warning("failed to get updated user", ex);
+                        }
         }
     }
 }
