@@ -117,7 +117,7 @@ public class DBHandlerTest {
         users.add(testUser);
 
         dbHandler.saveUsers(users, connection);
-        verify(mockStmt, times(12)).executeUpdate();
+        verify(mockStmt, times(13)).executeUpdate();
     }
 
     @Test

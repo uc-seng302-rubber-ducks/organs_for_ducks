@@ -386,7 +386,14 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
                 try (PreparedStatement createExpiryDetails = connection.prepareStatement(CREATE_EXPIRY_DETAILS)) {
                     createExpiryDetails.setString(1, organsExpiry.getValue().getClinicianId());
                     createExpiryDetails.setInt(2, donatingId);
-                    createExpiryDetails.setTimestamp(3, Timestamp.valueOf(organsExpiry.getValue().getTimeOrganExpired()));
+
+                    LocalDateTime time = organsExpiry.getValue().getTimeOrganExpired();
+                    Timestamp timestamp = null;
+                    if (time != null) {
+                        timestamp = Timestamp.valueOf(time);
+                    }
+
+                    createExpiryDetails.setTimestamp(3, timestamp);
                     createExpiryDetails.setString(4, organsExpiry.getValue().getReason());
                     createExpiryDetails.setString(5, organsExpiry.getValue().getName());
                     createExpiryDetails.executeUpdate();
