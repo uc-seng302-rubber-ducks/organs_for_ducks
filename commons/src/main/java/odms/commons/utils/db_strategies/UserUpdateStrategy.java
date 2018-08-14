@@ -362,9 +362,9 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
                 createDonatingOrgans.setInt(2, organ.getDbValue());
 
                 createDonatingOrgans.executeUpdate();
-                updateUserOrganExpiry(user, connection);
             }
         }
+        updateUserOrganExpiry(user, connection);
     }
 
     /**
@@ -379,11 +379,10 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
             deleteStatement.setString(1, user.getNhi());
             deleteStatement.execute();
         }
-        for(Map.Entry<Organs, ExpiryReason> organsExpiry: user.getDonorDetails().getOrganMap().entrySet()){
-            if(organsExpiry.getValue() != null) {
+        for (Map.Entry<Organs, ExpiryReason> organsExpiry: user.getDonorDetails().getOrganMap().entrySet()) {
+            if (organsExpiry.getValue() != null) {
                 int organDBValue = organsExpiry.getKey().getDbValue();
                 int donatingId = getDonatingId(user.getNhi(), organDBValue, connection);
-
                 try (PreparedStatement createExpiryDetails = connection.prepareStatement(CREATE_EXPIRY_DETAILS)) {
                     createExpiryDetails.setString(1, organsExpiry.getValue().getClinicianId());
                     createExpiryDetails.setInt(2, donatingId);

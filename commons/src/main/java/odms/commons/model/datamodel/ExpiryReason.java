@@ -17,7 +17,7 @@ public class ExpiryReason {
     }
 
     public ExpiryReason() {
-        this.clinicianId = "";
+        this.clinicianId = "0";
         this.timeOrganExpired = null;
         this.reason = "";
     }
