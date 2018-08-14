@@ -383,7 +383,6 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
             if(organsExpiry.getValue() != null) {
                 int organDBValue = organsExpiry.getKey().getDbValue();
                 int donatingId = getDonatingId(user.getNhi(), organDBValue, connection);
-                System.out.println(donatingId);
 
                 try (PreparedStatement createExpiryDetails = connection.prepareStatement(CREATE_EXPIRY_DETAILS)) {
                     createExpiryDetails.setString(1, organsExpiry.getValue().getClinicianId());
