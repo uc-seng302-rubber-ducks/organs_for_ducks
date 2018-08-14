@@ -41,7 +41,11 @@ public class App extends Application {
         }
         for (String arg : args) {
             String[] split = arg.split("=");
-            session.setProperty(split[0], split[1]);
+            if (split.length == 2) {
+                session.setProperty(split[0], split[1]);
+            } else {
+                Log.warning("bad commandline arg \"" + arg + "\" has been ignored");
+            }
         }
     }
 
