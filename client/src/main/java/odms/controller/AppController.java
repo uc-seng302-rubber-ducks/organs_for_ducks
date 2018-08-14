@@ -22,6 +22,7 @@ import odms.controller.gui.window.AdministratorViewController;
 import odms.controller.gui.window.ClinicianController;
 import odms.controller.gui.window.UserController;
 import odms.socket.OdmsSocketHandler;
+import odms.socket.ServerEventNotifier;
 import okhttp3.OkHttpClient;
 
 import java.io.IOException;
@@ -67,7 +68,7 @@ public class AppController {
     private Stack<User> redoStack = new Stack<>();
     private String token;
     private SQLBridge sqlBridge = new SQLBridge(client);
-    private OdmsSocketHandler socketHandler = new OdmsSocketHandler(client);
+    private OdmsSocketHandler socketHandler = new OdmsSocketHandler(client, ServerEventNotifier.getInstance());
 
     /**
      * Creates new instance of AppController
@@ -107,6 +108,7 @@ public class AppController {
     public TransplantBridge getTransplantBridge() {
         return transplantBridge;
     }
+
     /**
      * If New Zealand is selected at the country combo box, the region combo box will appear.
      * If country other than New Zealand is selected at the country combo box, the region combo box will
@@ -117,16 +119,30 @@ public class AppController {
      * @param regionSelector Combo Box
      * @param regionInput Text Field
      */
-    public void countrySelectorEventHandler(ComboBox countrySelector, ComboBox regionSelector, TextField regionInput){
+    public void countrySelectorEventHandler(ComboBox countrySelector, ComboBox regionSelector, TextField regionInput, User user, Clinician clinician) {
         if(! countrySelector.getSelectionModel().getSelectedItem().equals("New Zealand")) {
             regionSelector.setVisible(false);
             regionInput.setVisible(true);
-            //TODO: if the following line is removed, update javadoc of this method and all its callers. -14 july
-            regionInput.clear(); //TODO: redo stack for region is cleared when region input is cleared. try undo redo when selecting nz as country and selecting other countries + selecting/entering region. -14 july
+
+            regionInput.clear();
 
         } else {
+            if (!regionInput.getText().isEmpty()) {
+
+                if (user != null) {
+                    if (countrySelector.getId().equals("ecCountrySelector")) {
+                        user.setECRegionNoUndo("");
+                    } else {
+                        user.setRegionNoUndo("");
+                    }
+                    regionInput.setText("");
+                } else {
+                    clinician.setRegionNoUndo("");
+                    regionInput.setText("");
+                }
+            }
+
             regionSelector.setVisible(true);
-            regionSelector.setValue("");
             regionInput.setVisible(false);
         }
     }
@@ -160,7 +176,7 @@ public class AppController {
         try {
             s = getCountriesBridge().getAllowedCountries();
         } catch (IOException e) {
-            Log.severe("Database threw IOE", e);
+            Log.severe("Could not get allowed countries from the database", e);
             allowedCountries = new ArrayList<>();
         }
         if (s != null) {
@@ -314,7 +330,7 @@ public class AppController {
     /**
      * @param users An array list of users.
      */
-    public void setUsers(ArrayList<User> users) {
+    public void setUsers(List<User> users) {
         this.users = users;
     }
 
@@ -352,14 +368,17 @@ public class AppController {
             }
 
             if (userBridge.getExists(originalUser.getNhi())) {
-                userBridge.putProfilePicture(originalUser.getNhi(), user.getProfilePhotoFilePath());
                 userBridge.putUser(user, originalUser.getNhi());
+                Thread.sleep(100);
+                userBridge.putProfilePicture(user.getNhi(), user.getProfilePhotoFilePath());
 
             } else {
                 userBridge.postUser(user);
             }
         } catch (IOException e) {
             Log.warning("Could not save user " + user.getNhi(), e);
+        } catch (InterruptedException e) {
+            Log.warning("Thread sleep time was interrupted", e);
         }
     }
 
@@ -689,5 +708,17 @@ public class AppController {
 
     public OdmsSocketHandler getSocketHandler() {
         return socketHandler;
+    }
+
+    /**
+     * forcibly stops all ongoing/networked resources
+     */
+    public void stop() {
+        this.getSocketHandler().stop();
+
+        //force stop all background threads for the http client
+        this.client.connectionPool().evictAll();
+        this.client.dispatcher().executorService().shutdown();
+
     }
 }

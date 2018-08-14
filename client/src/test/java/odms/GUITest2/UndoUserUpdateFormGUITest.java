@@ -24,8 +24,6 @@ import java.util.concurrent.TimeoutException;
 import static odms.TestUtils.FxRobotHelper.clickOnButton;
 import static odms.TestUtils.FxRobotHelper.setTextField;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 import static org.testfx.api.FxAssert.verifyThat;
 
@@ -157,7 +155,7 @@ public class UndoUserUpdateFormGUITest extends ApplicationTest {
 
 
         verifyThat("#lNameInput", TextInputControlMatchers.hasText(""));
-        verifyThat("#heightInput", TextInputControlMatchers.hasText(""));
+        verifyThat("#heightInput", TextInputControlMatchers.hasText("0.0"));
     }
 
     @Test
@@ -178,7 +176,7 @@ public class UndoUserUpdateFormGUITest extends ApplicationTest {
         clickOn("#lNameInput");
         write("lasagna");
 
-        verifyThat("#heightInput", TextInputControlMatchers.hasText("1"));
+        verifyThat("#heightInput", TextInputControlMatchers.hasText("0.01"));
         verifyThat("#lNameInput", TextInputControlMatchers.hasText("lasagna"));
     }
 }

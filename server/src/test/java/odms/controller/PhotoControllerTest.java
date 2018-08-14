@@ -5,6 +5,7 @@ import odms.commons.model.User;
 import odms.commons.utils.DBHandler;
 import odms.commons.utils.JDBCDriver;
 import odms.commons.utils.PhotoHelper;
+import odms.socket.SocketHandler;
 import odms.utils.DBManager;
 import org.junit.Assert;
 import org.junit.Before;
@@ -30,6 +31,7 @@ public class PhotoControllerTest {
     private JDBCDriver driver;
     private DBManager manager;
     private DBHandler handler;
+    private SocketHandler socketHandler;
     private User testUser;
     private Clinician testClinician;
     private static final String JPG_PHOTO_TEST_FILE_PATH = "src/test/resources/images/duck_jpg.jpg";
@@ -40,14 +42,14 @@ public class PhotoControllerTest {
     @Before
     public void setUp() throws SQLException {
         connection = mock(Connection.class);
-
+        socketHandler = mock(SocketHandler.class);
         manager = mock(DBManager.class);
         handler = mock(DBHandler.class);
         driver = mock(JDBCDriver.class);
         when(driver.getConnection()).thenReturn(connection);
         when(manager.getHandler()).thenReturn(handler);
         when(manager.getDriver()).thenReturn(driver);
-        controller = new PhotoController(manager);
+        controller = new PhotoController(manager, socketHandler);
         testUser = new User("steve", LocalDate.now(), "ABC1234");
         testClinician = new Clinician("steve", "12", "password");
     }

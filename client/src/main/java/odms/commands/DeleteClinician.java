@@ -50,7 +50,6 @@ public class DeleteClinician implements Runnable, Blockable {
             try {
                 //old approach of using a scanner doesn't work in the new CLI
                 controller.deleteClinician(toDelete);
-                //TODO force listeners (Admin window) to update on deletion 22/6 - check if this is still an issue 3/8
                 IoHelper.display("Clinician successfully deleted");
                 CLI.clearBlockage();
             } catch (Exception e) {

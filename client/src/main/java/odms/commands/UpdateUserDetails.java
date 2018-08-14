@@ -10,6 +10,8 @@ import picocli.CommandLine.Option;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.List;
+import java.time.LocalTime;
 
 @Command(name = "details", description = "The current NHI is required to identify the the user. All other tags will update values")
 public class UpdateUserDetails implements Runnable {
@@ -40,7 +42,7 @@ public class UpdateUserDetails implements Runnable {
     @Option(names = {"-dob"}, description = "Date of birth. Format 'yyyy-mm-dd'")
     private String dobString;
 
-    @Option(names = {"-dod"}, description = "Date of death. same formatting as dob")
+    @Option(names = {"-dod"}, description = "Date of death. Format 'yyyy-mm-dd'  *OR*  Can pass in 'null' to remove date of death")
     private String dodString;
 
     @Option(names = {"-w", "-weight"}, description = "weight in kg e.g. 87.3")
@@ -94,6 +96,18 @@ public class UpdateUserDetails implements Runnable {
     @Option(names = {"-r", "-region"}, description = "Region (Address line 2)")
     private String region;
 
+    @Option(names = {"-tod", "-timeOfDeath"}, description = "Time of death. Format 'hh:mm'")
+    private String timeOfDeath;
+
+    @Option(names = {"-dc", "-deathCity"}, description = "City of death")
+    private String cityOfDeath;
+
+    @Option(names = {"-dr", "-deathRegion"}, description = "Region of death")
+    private String regionOfDeath;
+
+    @Option(names = {"-dco", "-deathCountry"}, description = "Country of death")
+    private String countryOfDeath;
+
     private AppController controller = AppController.getInstance();
 
     @Override
@@ -103,7 +117,6 @@ public class UpdateUserDetails implements Runnable {
             IoHelper.display("help goes here");
             return;
         }
-
         User user;
         try {
             user = controller.getUserBridge().getUser(originalNhi);
@@ -132,10 +145,15 @@ public class UpdateUserDetails implements Runnable {
         }
 
         if (dodString != null) {
-            LocalDate newDate = IoHelper.readDate(dobString);
-            if (newDate != null) {
-                user.setDateOfDeath(newDate);
+            if (dodString.equals("null")) { //Remove moment of death.
+                user.setMomentOfDeath(null);
                 changed = true;
+            } else {
+                LocalDate newDate = IoHelper.readDate(dodString);
+                if (newDate != null) {
+                    user.setDateOfDeath(newDate);
+                    changed = true;
+                }
             }
         }
         if (weight != -1) {
@@ -180,8 +198,14 @@ public class UpdateUserDetails implements Runnable {
             changed = true;
         }
         if (country != null) {
-            user.setCountry(country.replaceAll("_", " "));
-            changed = true;
+            List<String> allowedCountries = controller.getAllowedCountries();
+            if (allowedCountries.contains(country.replaceAll("_", " "))) {
+                user.setCountry(country.replaceAll("_", " "));
+                changed = true;
+            } else {
+                IoHelper.display(country + " is not one of the allowed countries\n" +
+                        "For a list of the allowed countries use the command 'view countries'");
+            }
         }
         if (streetName != null) {
             user.setStreetName(streetName.replaceAll("_", " "));
@@ -197,6 +221,14 @@ public class UpdateUserDetails implements Runnable {
         }
 
         if (region != null) {
+            if (!AttributeValidation.checkString(region.replaceAll("_", " "))) {
+                IoHelper.display("Invalid region");
+                return;
+            } else if (user.getCountry().equals("New Zealand") &&
+                    !controller.getAllNZRegion().contains(region.replaceAll("_", " "))) {
+                IoHelper.display("A New Zealand region must be given");
+                return;
+            }
             user.setRegion(region.replaceAll("_", " "));
             changed = true;
         }
@@ -220,6 +252,34 @@ public class UpdateUserDetails implements Runnable {
         }
         if (email != null) {
             user.setEmail(email);
+            changed = true;
+        }
+
+        if (timeOfDeath != null) {
+            if (!AttributeValidation.validateTimeString(timeOfDeath)) {
+                IoHelper.display("Please enter a valid time format: hh:mm");
+            } else if (user.getDateOfDeath() == null) {
+                IoHelper.display("No date of death for user found. Date of death set to current day with time set as specified");
+                user.setMomentOfDeath(user.getDeathDetails().createMomentOfDeath(LocalDate.now(), LocalTime.parse(timeOfDeath)));
+                changed = true;
+            } else {
+                user.setMomentOfDeath(user.getDeathDetails().createMomentOfDeath(user.getDateOfDeath(), LocalTime.parse(timeOfDeath)));
+                changed = true;
+            }
+        }
+
+        if (cityOfDeath != null) {
+            user.setDeathCity(cityOfDeath.replaceAll("_", " "));
+            changed = true;
+        }
+
+        if (regionOfDeath != null) {
+            user.setDeathRegion(regionOfDeath.replaceAll("_", " "));
+            changed = true;
+        }
+
+        if (countryOfDeath != null) {
+            user.setDeathCountry(countryOfDeath.replaceAll("_", " "));
             changed = true;
         }
 

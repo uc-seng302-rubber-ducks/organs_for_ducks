@@ -14,17 +14,20 @@ import java.io.IOException;
 import java.util.List;
 
 public class ClinicianBridge extends RoleBridge {
+
+    public static final String CLINICIANS = "/clinicians/";
+
     public ClinicianBridge(OkHttpClient client) {
         super(client);
     }
 
     public void getClinicians(int startIndex, int count, String name, String region, String token) {
         String url = ip + "/clinicians?startIndex=" + startIndex + "&count=" + count + "&q=" + name + "&region=" + region;
-        Request request = new Request.Builder().addHeader(TOKEN_HEADER, token).url(url).build();
+        Request request = new Request.Builder().addHeader(tokenHeader, token).url(url).build();
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-
+                Log.warning("Failed to get clinicians. On Failure Triggered", e);
             }
 
             @Override
@@ -42,8 +45,8 @@ public class ClinicianBridge extends RoleBridge {
 
     public void postClinician(Clinician clinician, String token) {
         String url = ip + "/clinicians";
-        RequestBody requestBody = RequestBody.create(JSON, new Gson().toJson(clinician));
-        Request request = new Request.Builder().url(url).addHeader(TOKEN_HEADER, token).post(requestBody).build();
+        RequestBody requestBody = RequestBody.create(json, new Gson().toJson(clinician));
+        Request request = new Request.Builder().url(url).addHeader(tokenHeader, token).post(requestBody).build();
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -62,9 +65,9 @@ public class ClinicianBridge extends RoleBridge {
     }
 
     public void putClinician(Clinician clinician, String staffID, String token) {
-        String url = ip + "/clinicians/" + staffID;
-        RequestBody requestBody = RequestBody.create(JSON, new Gson().toJson(clinician));
-        Request request = new Request.Builder().url(url).addHeader(TOKEN_HEADER, token).put(requestBody).build();
+        String url = ip + CLINICIANS + staffID;
+        RequestBody requestBody = RequestBody.create(json, new Gson().toJson(clinician));
+        Request request = new Request.Builder().url(url).addHeader(tokenHeader, token).put(requestBody).build();
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -82,8 +85,8 @@ public class ClinicianBridge extends RoleBridge {
     }
 
     public void deleteClinician(Clinician clinician, String token) {
-        String url = ip + "/clinicians/" + clinician.getStaffId();
-        Request request = new Request.Builder().url(url).addHeader(TOKEN_HEADER, token).delete().build();
+        String url = ip + CLINICIANS + clinician.getStaffId();
+        Request request = new Request.Builder().url(url).addHeader(tokenHeader, token).delete().build();
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -92,7 +95,6 @@ public class ClinicianBridge extends RoleBridge {
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                System.out.println(response.code());
                 if (!response.isSuccessful()) {
                     response.close();
                     throw new IOException("Failed to DELETE to " + url);
@@ -107,9 +109,9 @@ public class ClinicianBridge extends RoleBridge {
     public Clinician getClinician(String wantedClinician, String token) throws ApiException {
         Response response;
         try {
-            Headers headers = new Headers.Builder().add(TOKEN_HEADER, token).build();
+            Headers headers = new Headers.Builder().add(tokenHeader, token).build();
             Request request = new Request.Builder()
-                    .url(ip + "/clinicians/" + wantedClinician).headers(headers).build();
+                    .url(ip + CLINICIANS + wantedClinician).headers(headers).build();
             response = client.newCall(request).execute();
         } catch (IOException e) {
             Log.severe("failed to make request", e);
@@ -159,8 +161,8 @@ public class ClinicianBridge extends RoleBridge {
     }
 
     public String getProfilePicture(String staffId, String token) throws IOException {
-        String url = ip + "/clinicians/" + staffId + "/photo";
-        Headers headers =  new Headers.Builder().add(TOKEN_HEADER, token).build();
+        String url = ip + CLINICIANS + staffId + "/photo";
+        Headers headers =  new Headers.Builder().add(tokenHeader, token).build();
         Request request = new Request.Builder().get().url(url).headers(headers).build();
         try(Response response  = client.newCall(request).execute()) {
             String contentType = response.header("Content-Type");
@@ -177,10 +179,10 @@ public class ClinicianBridge extends RoleBridge {
     }
 
     public void putProfilePicture(String staffId, String token, String profilePicturePath) throws IOException {
-        String url = ip + "/clinicians/" + staffId + "/photo";
+        String url = ip + CLINICIANS + staffId + "/photo";
         String[] bits = profilePicturePath.split("\\.");
         String format = bits[bits.length-1];
-        Headers headers = new Headers.Builder().add(TOKEN_HEADER, token).build();
+        Headers headers = new Headers.Builder().add(tokenHeader, token).build();
         RequestBody body = RequestBody.create(MediaType.parse("image/" + format), PhotoHelper.getBytesFromImage(profilePicturePath));
         Request request = new Request.Builder().url(url).put(body).headers(headers).build();
         client.newCall(request).enqueue(new Callback() {

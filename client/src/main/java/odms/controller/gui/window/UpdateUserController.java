@@ -54,9 +54,6 @@ public class UpdateUserController {
     private Label invalidDOB;
 
     @FXML
-    private Label invalidDOD;
-
-    @FXML
     private TextField nhiInput;
 
     @FXML
@@ -168,9 +165,6 @@ public class UpdateUserController {
     private DatePicker dobInput;
 
     @FXML
-    private DatePicker dodInput;
-
-    @FXML
     private Button undoUpdateButton;
 
     @FXML
@@ -207,6 +201,9 @@ public class UpdateUserController {
             regionSelector.getItems().add(regions.toString());
             ecRegionSelector.getItems().add(regions.toString());
         }
+
+
+
         this.stage = stage;
         oldUser = user;
         currentUser = User.clone(oldUser);
@@ -245,7 +242,6 @@ public class UpdateUserController {
         comboBoxListener(ecCountrySelector);
 
         datePickerListener(dobInput);
-        datePickerListener(dodInput);
 
         addCheckBoxListener(smokerCheckBox);
 
@@ -274,7 +270,9 @@ public class UpdateUserController {
      */
     @FXML
     private void countrySelectorListener(ActionEvent event) {
-        appController.countrySelectorEventHandler(countrySelector, regionSelector, regionInput);
+//        if (listen) {
+            appController.countrySelectorEventHandler(countrySelector, regionSelector, regionInput, currentUser, null);
+//        }
     }
 
     /**
@@ -287,7 +285,9 @@ public class UpdateUserController {
      */
     @FXML
     private void ecCountrySelectorListener(ActionEvent event){
-        appController.countrySelectorEventHandler(ecCountrySelector, ecRegionSelector, ecRegionInput);
+//        if (listen) {
+            appController.countrySelectorEventHandler(ecCountrySelector, ecRegionSelector, ecRegionInput, currentUser, null);
+//        }
     }
 
     /**
@@ -297,7 +297,6 @@ public class UpdateUserController {
      */
     private void update() {
         updateUndos();
-
         if (!undoUpdateButton.isDisabled() && !stage.getTitle().endsWith("*")) {
             stage.setTitle(stage.getTitle() + "*");
         }
@@ -354,6 +353,7 @@ public class UpdateUserController {
                 update();
             }
         });
+
     }
 
     /**
@@ -391,7 +391,6 @@ public class UpdateUserController {
         }
 
         dobInput.setValue(user.getDateOfBirth());
-        dodInput.setValue(user.getDateOfDeath());
 
 
         if (user.getStreetNumber() != null) {
@@ -411,7 +410,30 @@ public class UpdateUserController {
             city.setText("");
         }
 
-        countrySelector.getSelectionModel().select(user.getCountry());
+        //Set the correct default country
+        if (user.getCountry().equals("") || user.getCountry() == null) {
+            if (appController.getAllowedCountries().contains(defaultCountry) || appController.getAllowedCountries().isEmpty()) {
+                countrySelector.setValue(defaultCountry);
+                user.setCountryNoUndo(defaultCountry);
+            } else {
+                countrySelector.setValue(appController.getAllowedCountries().get(0));
+                user.setCountryNoUndo(appController.getAllowedCountries().get(0));
+
+            }
+        } else {
+            countrySelector.setValue(user.getCountry());
+        }
+        if (user.getContact().getAddress().getCountry().equals("") || user.getContact().getAddress().getCountry() == null) {
+            if (appController.getAllowedCountries().contains(defaultCountry) || appController.getAllowedCountries().isEmpty()) {
+                ecCountrySelector.setValue(defaultCountry);
+                user.getContact().getAddress().setCountry(defaultCountry);
+            } else {
+                ecCountrySelector.setValue(appController.getAllowedCountries().get(0));
+                user.getContact().getAddress().setCountry(appController.getAllowedCountries().get(0));
+            }
+        } else {
+            ecCountrySelector.setValue(user.getContact().getAddress().getCountry());
+        }
 
         if (user.getNeighborhood() != null) {
             neighborhood.setText(user.getNeighborhood());
@@ -419,7 +441,7 @@ public class UpdateUserController {
             neighborhood.setText("");
         }
 
-        if(!country.equals(defaultCountry)) {
+        if(countrySelector.getSelectionModel().getSelectedItem() != null && !countrySelector.getSelectionModel().getSelectedItem().equals(defaultCountry)) {
             regionInput.setVisible(true);
             regionInput.setText(region);
             regionSelector.setVisible(false);
@@ -467,10 +489,11 @@ public class UpdateUserController {
                 ecRelationship.setText("");
             }
 
-            if(ecCountry.isEmpty()){
+            if(ecCountry.isEmpty()) {
                 ecRegionSelector.setValue(ecRegion);
+            }
 
-            } else if(!ecCountry.equals(defaultCountry)) {
+            if(ecCountrySelector.getSelectionModel().getSelectedItem() != null && !ecCountrySelector.getSelectionModel().getSelectedItem().equals(defaultCountry)) {
                 ecRegionInput.setVisible(true);
                 ecRegionInput.setText(ecRegion);
                 ecRegionSelector.setVisible(false);
@@ -506,8 +529,6 @@ public class UpdateUserController {
                 ecCity.setText("");
             }
 
-            ecCountrySelector.setValue(ecCountry);
-
             if (user.getContact().getNeighborhood() != null) {
                 ecNeighborhood.setText(user.getContact().getNeighborhood());
             } else {
@@ -541,7 +562,9 @@ public class UpdateUserController {
 
         genderIdComboBox.setValue(user.getGenderIdentity() == null ? "" : user.getGenderIdentity());
 
-        if (!user.getWeightText().equals("")) {
+
+        user.setWeightText(Double.toString(user.getWeight()));
+        if (user.getWeightText() != null && !user.getWeightText().equals("")) {
             weightInput.setText(user.getWeightText());
         } else if (user.getWeight() > 0) {
             weightInput.setText(Double.toString(user.getWeight()));
@@ -549,12 +572,13 @@ public class UpdateUserController {
             weightInput.setText("");
         }
 
-        if (!user.getHeightText().equals("")) {
+        user.setHeightText(Double.toString(user.getHeight()));
+        if (user.getHeightText() != null && !user.getHeightText().equals("")) {
             heightInput.setText(user.getHeightText());
         } else if (user.getHeight() > 0) {
             heightInput.setText(Double.toString(user.getHeight()));
         } else {
-            heightInput.setText("");
+            heightInput.setText("0.0");
         }
 
         listen = true;
@@ -597,7 +621,6 @@ public class UpdateUserController {
                 imageTooLargeAlert.showAndWait();
                 isValid = false;
             }
-
             if (isValid) {
                 update();
                 displayImage(profileImage, inFile.getPath());
@@ -624,7 +647,6 @@ public class UpdateUserController {
                 String filePath = setUpImageFile(inFile, currentUser.getNhi());
                 currentUser.setProfilePhotoFilePath(filePath);
             }
-
             try {
                 currentUser.getRedoStack().clear();
                 oldUser.setDeleted(true);
@@ -660,16 +682,13 @@ public class UpdateUserController {
         if (!valid) {
             invalidNHI.setVisible(true);
         } else {
-            User user = appController.findUser(nhi);
-            if (user != null && !user.getNhi()
-                    .equals(nhi)) { // if a user was found, but it is not the current user
+            if (appController.getUserBridge().getExists(nhi) && !currentUser.getNhi().equals(nhi)) { // if a user was found, but it is not the current user
                 existingNHI.setVisible(true);
                 valid = false;
             }
         }
 
         LocalDate dob = dobInput.getValue();
-        LocalDate dod = dodInput.getValue();
 
         String fName = fNameInput.getText();
         valid &= AttributeValidation.checkRequiredString(fName);
@@ -682,24 +701,11 @@ public class UpdateUserController {
             invalidDOB.setVisible(true);
         }
 
-        if (dob != null) {
-            valid &= AttributeValidation.validateDateOfDeath(dob,
-                    dod); // checks if the dod is before tomorrow's date and that the dob is before the dod
-            if (!valid) {
-                invalidDOD.setVisible(true);
-            }
-        }
-
         double height = AttributeValidation.validateDouble(heightInput.getText());
         double weight = AttributeValidation.validateDouble(weightInput.getText());
         if (height == -1 || weight == -1) {
             errorLabel.setVisible(true);
             valid = false;
-        } else {
-            currentUser.setHeight(height);
-            currentUser.setWeight(weight);
-            currentUser.setHeightText("");
-            currentUser.setWeightText("");
         }
 
         // validate contact info
@@ -769,8 +775,6 @@ public class UpdateUserController {
 
         String eStreetNumber = ecStreetNumber.getText();
         valid &= AttributeValidation.checkString(eStreetNumber);
-        //String eAddress = ecAddress.getText();
-        //valid &= AttributeValidation.checkString(eAddress);
 
         String eRegion;
         if(ecRegionInput.isVisible()){
@@ -780,8 +784,6 @@ public class UpdateUserController {
             eRegion = ecRegionSelector.getSelectionModel().getSelectedItem();
         }
         valid &= AttributeValidation.checkString(eRegion);
-
-        //TODO: do we need country validation? -14 july
 
         String eRelationship = ecRelationship.getText();
         valid &= AttributeValidation.checkString(eRelationship);
@@ -805,13 +807,11 @@ public class UpdateUserController {
         } else {
             photoPath = currentUser.getProfilePhotoFilePath();
         }
-        changed = updatePersonalDetails(nhiInput.getText(), fNameInput.getText(), dobInput.getValue(),
-                dodInput.getValue(), photoPath);
+        changed = updatePersonalDetails(nhiInput.getText(), fNameInput.getText(), dobInput.getValue(), photoPath);
         changed |= updateHealthDetails(heightInput.getText(), weightInput.getText());
         changed |= updateContactDetails();
         changed |= updateEmergencyContact();
         if (changed) {
-            //appController.update(currentUser);
             currentUser.getRedoStack().clear();
         }
         undoUpdateButton.setDisable(currentUser.getUndoStack().size() <= undoMarker);
@@ -825,9 +825,8 @@ public class UpdateUserController {
      * @param nhi   The national health index to be checked for changes and possibly updated.
      * @param fName The first name to be checked for changes and possibly updated.
      * @param dob   The date of birth to be checked for changes and possibly updated.
-     * @param dod   The date of death to be checked for changes and possibly updated.
      */
-    private boolean updatePersonalDetails(String nhi, String fName, LocalDate dob, LocalDate dod, String photoPath) {
+    private boolean updatePersonalDetails(String nhi, String fName, LocalDate dob, String photoPath) {
         boolean changed = false;
 
         if (!currentUser.getNhi().equals(nhi)) {
@@ -873,16 +872,6 @@ public class UpdateUserController {
             changed = true;
         }
 
-        LocalDate deathDate = currentUser.getDateOfDeath();
-        if (deathDate != null && dod != null) {
-            if (!deathDate.isEqual(dod)) {
-                currentUser.setDateOfDeath(dod);
-                changed = true;
-            }
-        } else if ((deathDate == null && dod != null) || deathDate != null) {
-            currentUser.setDateOfDeath(dod);
-            changed = true;
-        }
 
         if (checkChangedProperty(currentUser.getProfilePhotoFilePath(), photoPath)) {
             currentUser.setProfilePhotoFilePath(photoPath);
@@ -907,6 +896,7 @@ public class UpdateUserController {
             changed = true;
         } else if (!height.isEmpty() && !height.equals(currentUser.getHeightText())) {
             currentUser.setHeightText(height);
+            currentUser.setHeight(Double.parseDouble(height));
             changed = true;
         }
 
@@ -917,6 +907,7 @@ public class UpdateUserController {
             changed = true;
         } else if (!weight.isEmpty() && !weight.equals(currentUser.getWeightText())) {
             currentUser.setWeightText(weight);
+            currentUser.setWeight(Double.parseDouble(weight));
             changed = true;
         }
 
@@ -953,7 +944,7 @@ public class UpdateUserController {
         String blood =
                 AttributeValidation.validateBlood(bloodComboBox.getValue()) ? bloodComboBox.getValue()
                         : "";
-        if (bloodType != null && !bloodType.equals(blood)) {
+        if (bloodType != null && !bloodType.equals("U") && !bloodType.equals(blood)) {
             currentUser.setBloodType(blood);
             changed = true;
         } else if (bloodType == null && blood != null) {
@@ -1205,7 +1196,6 @@ public class UpdateUserController {
         existingNHI.setVisible(false);
         invalidNHI.setVisible(false);
         invalidDOB.setVisible(false);
-        invalidDOD.setVisible(false);
         errorLabel.setVisible(false);
         invalidFirstName.setVisible(false);
     }

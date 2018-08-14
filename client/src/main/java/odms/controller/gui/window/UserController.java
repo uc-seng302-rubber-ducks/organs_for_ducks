@@ -16,14 +16,18 @@ import javafx.stage.Stage;
 import odms.commons.model.Change;
 import odms.commons.model.EmergencyContact;
 import odms.commons.model.User;
+import odms.commons.model._enum.EventTypes;
 import odms.commons.model._enum.OrganDeregisterReason;
 import odms.commons.model._enum.Organs;
+import odms.commons.model.event.UpdateNotificationEvent;
 import odms.commons.utils.Log;
 import odms.controller.AppController;
 import odms.controller.gui.StatusBarController;
 import odms.controller.gui.UnsavedChangesAlert;
 import odms.controller.gui.panel.*;
+import odms.socket.ServerEventNotifier;
 
+import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
@@ -37,7 +41,7 @@ import static odms.commons.utils.PhotoHelper.deleteTempDirectory;
 /**
  * Class for the functionality of the User view of the application
  */
-public class UserController {
+public class UserController implements PropertyChangeListener {
 
 // the contact page attributes
 
@@ -134,32 +138,34 @@ public class UserController {
      */
     public void init(AppController controller, User user, Stage stage, boolean fromClinician,
                      Collection<PropertyChangeListener> parentListeners) {
-        if (user != null) {
-            //add change listeners of parent controllers to the current user
-            if (parentListeners != null && !parentListeners.isEmpty()) {
-                for (PropertyChangeListener listener : parentListeners) {
-                    user.addPropertyChangeListener(listener);
-                }
+        if (user == null) {
+            return;
+        }
+        //add change listeners of parent controllers to the current user
+        if (parentListeners != null && !parentListeners.isEmpty()) {
+            for (PropertyChangeListener listener : parentListeners) {
+                user.addPropertyChangeListener(listener);
             }
-            this.stage = stage;
-            application = controller;
-            this.fromClinician = fromClinician;
+        }
+        this.stage = stage;
+        application = controller;
+        this.fromClinician = fromClinician;
 
-            // This is the place to set visible and invisible controls for Clinician vs User
-            medicationTabPageController.init(controller, user, fromClinician, this);
-            procedureTabPageController.init(controller, user, fromClinician, this);
-            donationTabPageController.init(controller, user, this);
-            diseasesTabPageController.init(controller, user, fromClinician, this);
-            receiverTabPageController.init(controller, this.stage, user, fromClinician, this);
-            statusBarPageController.init(controller);
-            //arbitrary default values
+        // This is the place to set visible and invisible controls for Clinician vs User
+        medicationTabPageController.init(controller, user, fromClinician, this);
+        procedureTabPageController.init(controller, user, fromClinician, this);
+        donationTabPageController.init(controller, user, this);
+        diseasesTabPageController.init(controller, user, fromClinician, this);
+        receiverTabPageController.init(controller, this.stage, user, fromClinician, this);
+        statusBarPageController.init();
+        //arbitrary default values
 
-            undoButton.setVisible(true);
-            redoButton.setVisible(true);
-            changeCurrentUser(user);
+        undoButton.setVisible(true);
+        redoButton.setVisible(true);
+        changeCurrentUser(user);
 
-            // Sets the button to be disabled
-            updateUndoRedoButtons();
+        // Sets the button to be disabled
+        updateUndoRedoButtons();
 
             if (fromClinician) {
                 logoutUser.setText("Go Back");
@@ -177,25 +183,23 @@ public class UserController {
                 logoutUser.setOnAction(e -> logout());
             }
 
-            if (user.getNhi() != null) {
-                showUser(currentUser); // Assumes a donor with no name is a new sign up and does not pull values from a template
-                List<Change> changes = currentUser.getChanges();
-                if (changes != null) {
-                    changelog = FXCollections.observableList(changes);
-                } else {
-                    changelog = FXCollections.observableArrayList(new ArrayList<Change>());
-                }
-            } else {
-                changelog = FXCollections.observableArrayList(new ArrayList<Change>());
-            }
+        if (user.getNhi() != null) {
+            showUser(currentUser); // Assumes a donor with no name is a new sign up and does not pull values from a template
+            List<Change> changes = currentUser.getChanges();
+            changelog = FXCollections.observableList(changes);
+        } else {
+            changelog = FXCollections.observableArrayList(new ArrayList<Change>());
+        }
 
-            showDonorHistory();
-            changelog.addListener((ListChangeListener.Change<? extends Change> change) -> historyTableView
-                    .setItems(changelog));
+        showDonorHistory();
+        changelog.addListener((ListChangeListener.Change<? extends Change> change) -> historyTableView
+                .setItems(changelog));
 
             userProfileTabPageController.init(controller, user, this.stage, fromClinician);
+
+            ServerEventNotifier.getInstance().addPropertyChangeListener(this);
         }
-    }
+
 
     /**
      * Opens the update user details window
@@ -207,11 +211,11 @@ public class UserController {
         try {
             root = updateLoader.load();
             UpdateUserController updateUserController = updateLoader.getController();
-            Stage stage = new Stage();
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.setScene(new Scene(root));
-            updateUserController.init(currentUser, application, stage);
-            stage.show();
+            Stage updateStage = new Stage();
+            updateStage.initModality(Modality.APPLICATION_MODAL);
+            updateStage.setScene(new Scene(root));
+            updateUserController.init(currentUser, application, updateStage);
+            updateStage.show();
             Log.info("Successfully launched update user window for User NHI: " + currentUser.getNhi());
 
         } catch (IOException e) {
@@ -283,14 +287,14 @@ public class UserController {
      * When fired, it also deleted the temp folder.
      */
     @FXML
-    private void logout(){
+    private void logout() {
         checkSave();
         currentUser.getUndoStack().clear();
         currentUser.getRedoStack().clear();
         try {
             deleteTempDirectory();
-        } catch (IOException e){
-            System.err.println(e);
+        } catch (IOException e) {
+            Log.severe("An Issue occurred while removing the temporary files", e);
         }
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML/loginView.fxml"));
         Parent root;
@@ -310,51 +314,76 @@ public class UserController {
     }
 
 
-
-
     /**
      * Sets the users contact information on the contact tab of the user profile
      */
     @FXML
     private void setContactPage() {
         if (contact != null) {
-            eName.setText(contact.getName());
-            eCellPhone.setText(contact.getCellPhoneNumber());
-            if (contact.getAddress() != null) {
-                eAddress.setText(contact.getAddress().toString());
-            } else {
-                eAddress.setText("");
-            }
-
-            if (contact.getEmail() != null) {
-                eEmail.setText(contact.getEmail());
-            } else {
-                eEmail.setText("");
-            }
-
-            if (contact.getHomePhoneNumber() != null) {
-                eHomePhone.setText(contact.getHomePhoneNumber());
-            } else {
-                eHomePhone.setText("");
-            }
-
-            eAddress.setText(contact.getAddress().getStringAddress());
-
-            ecCity.setText(contact.getCity());
-
-            ecCountry.setText(contact.getCountry());
-
-            eRegion.setText(contact.getRegion());
-
-            ecZipCode.setText(contact.getZipCode());
-
-            if (contact.getRelationship() != null) {
-                relationship.setText(contact.getRelationship());
-            } else {
-                relationship.setText("");
-            }
+            showContactInfo();
         }
-            pRegion.setText(currentUser.getRegion());
+        pRegion.setText(currentUser.getRegion());
+        pAddress.setText(currentUser.getContactDetails().getAddress().getStringAddress());
+        city.setText(currentUser.getCity());
+        country.setText(currentUser.getCountry());
+        zipCode.setText(currentUser.getZipCode());
+
+        if (currentUser.getEmail() != null) {
+            pEmail.setText(currentUser.getEmail());
+        } else {
+            pEmail.setText("");
+        }
+        if (currentUser.getHomePhone() != null) {
+            pHomePhone.setText(currentUser.getHomePhone());
+        } else {
+            pHomePhone.setText("");
+        }
+        if (currentUser.getCellPhone() != null) {
+            pCellPhone.setText(currentUser.getCellPhone());
+        } else {
+            pCellPhone.setText("");
+        }
+
+
+    }
+
+    private void showContactInfo() {
+        eName.setText(contact.getName());
+        eCellPhone.setText(contact.getCellPhoneNumber());
+        if (contact.getAddress() != null) {
+            eAddress.setText(contact.getAddress().toString());
+        } else {
+            eAddress.setText("");
+        }
+
+        if (contact.getEmail() != null) {
+            eEmail.setText(contact.getEmail());
+        } else {
+            eEmail.setText("");
+        }
+
+        if (contact.getHomePhoneNumber() != null) {
+            eHomePhone.setText(contact.getHomePhoneNumber());
+        } else {
+            eHomePhone.setText("");
+        }
+
+        eAddress.setText(contact.getAddress().getStringAddress());
+
+        ecCity.setText(contact.getCity());
+
+        ecCountry.setText(contact.getCountry());
+
+        eRegion.setText(contact.getRegion());
+
+        ecZipCode.setText(contact.getZipCode());
+
+        if (contact.getRelationship() != null) {
+            relationship.setText(contact.getRelationship());
+        } else {
+            relationship.setText("");
+        }
+        pRegion.setText(currentUser.getRegion());
         pAddress.setText(currentUser.getContactDetails().getAddress().getStringAddress());
         city.setText(currentUser.getCity());
         country.setText(currentUser.getCountry());
@@ -475,7 +504,9 @@ public class UserController {
         alert.setContentText("Are you sure you want to delete this user? This action cannot be undone.");
         alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
         Optional<ButtonType> result = alert.showAndWait();
-
+        if (!result.isPresent()) {
+            return;
+        }
         if (result.get() == ButtonType.OK) {
             currentUser.setDeleted(true);
             Log.info("Successfully deleted user profile for User NHI: " + currentUser.getNhi());
@@ -517,7 +548,6 @@ public class UserController {
     @FXML
     private void refreshUser() {
         currentUser = application.findUser(currentUser.getNhi());
-        refreshUser();
     }
 
     public void showDonorDiseases(User user, boolean init) {
@@ -535,5 +565,39 @@ public class UserController {
     public void disableLogout() {
         logoutUser.setText("Go Back");
         logoutUser.setOnAction(e -> closeWindow());
+    }
+
+    /**
+     * handles events fired by objects this is listening to.
+     * currently only handles UpdateNotificationEvents. Updates shown user to the one specified in that event
+     *
+     * @param evt PropertyChangeEvent to be handled.
+     * @see UpdateNotificationEvent
+     */
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        UpdateNotificationEvent event;
+        try {
+            event = (UpdateNotificationEvent) evt;
+        } catch (ClassCastException ex) {
+            return;
+        }
+        if (event == null) {
+            return;
+        }
+        if (event.getType().equals(EventTypes.USER_UPDATE)
+                && event.getOldIdentifier().equalsIgnoreCase(currentUser.getNhi())
+                || event.getNewIdentifier().equalsIgnoreCase(currentUser.getNhi())) {
+
+            try {
+                currentUser = application.getUserBridge().getUser(event.getNewIdentifier());
+                if (currentUser != null) {
+                    showUser(currentUser); //TODO: Apply change once we solve the DB race 7/8/18 JB
+                }
+            } catch (IOException ex) {
+                Log.warning("failed to get updated user", ex);
+            }
+
+        }
     }
 }

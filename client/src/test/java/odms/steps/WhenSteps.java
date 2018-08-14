@@ -1,8 +1,10 @@
 package odms.steps;
 
+import com.sun.javafx.stage.StageHelper;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.When;
 import javafx.collections.FXCollections;
+import javafx.scene.Node;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
@@ -13,7 +15,10 @@ import odms.commands.DeleteUser;
 import odms.commands.View;
 import odms.commons.model.UserBuilder;
 import odms.commons.model.dto.UserOverview;
+import odms.commons.utils.Log;
 import odms.view.CLI;
+import org.loadui.testfx.Assertions;
+import org.testfx.api.FxAssert;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 import picocli.CommandLine;
@@ -163,11 +168,14 @@ public class WhenSteps extends ApplicationTest {
 
     @When("^The user is updated to have died on \"([^\"]*)\"$")
     public void theUserIsUpdatedToHaveDiedOn(String dod) {
-        clickOn("#editMenuUser");
-        clickOn("#editDetailsUser");
-        clickOn("#dodInput");
+
+        clickOn("#updateDeathDetailsButton");
+        clickOn("#updateDeathDetailsDatePicker");
+        for (int i = 0; i < 20; i++) { //arbitrarily long number to ensure all is deleted
+            push(KeyCode.BACK_SPACE);
+        }
         write(dod);
-        clickOnButton(this, "#confirmButton");
+        clickOnButton(this, "#confirmUpdateDeathDetailsButton");
     }
 
     @And("^I open the user page$")

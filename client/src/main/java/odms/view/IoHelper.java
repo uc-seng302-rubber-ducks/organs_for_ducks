@@ -2,6 +2,7 @@ package odms.view;
 
 import odms.commons.model.User;
 import odms.commons.model.dto.UserOverview;
+import odms.commons.utils.Log;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -13,6 +14,10 @@ import java.util.List;
  * Class to handle input and output
  */
 public class IoHelper {
+
+    private IoHelper() {
+        //Hides the implicit constructor
+    }
 
     /**
      * tries to convert a string to a date
@@ -27,6 +32,7 @@ public class IoHelper {
         LocalDate date;
         try {
             date = LocalDate.parse(rawDate, sdf);
+            Log.info(date.toString());
         } catch (DateTimeParseException e) {
             display("Error parsing date: " + rawDate);
             display("Please use format yyyy-MM-dd");
@@ -50,7 +56,6 @@ public class IoHelper {
             return false;
         }
 
-        //TODO review logic for edge cases
         String[] names = user.getFullName().split(" ");
         if (firstName != null && lastName != null) {
             user.setName(firstName.replaceAll("_", " "), null, lastName.replaceAll("_", " "));
@@ -95,6 +100,7 @@ public class IoHelper {
     }
 
     public static void display(String toShow){
-        System.out.println(toShow);
+        System.out.println(toShow); //NOSONAR
+        //This writes the strings to the GUI CLI
     }
 }
