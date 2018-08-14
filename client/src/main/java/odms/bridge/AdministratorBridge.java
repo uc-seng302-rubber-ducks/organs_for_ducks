@@ -120,13 +120,18 @@ public class AdministratorBridge extends RoleBridge {
             return null;
         }
         int responseCode = response.code();
-        if (responseCode == 404 || responseCode == 401) {
+
+        if (400 < responseCode && responseCode < 500) {
+            //generic error occurred
             throw new ApiException(responseCode, "could not get requested Admin");
-        } else if (responseCode == 500 || responseCode == 400) {
+        } else if (responseCode >= 500) {
+            //error but not my fault
             Log.warning("An Error occurred. code returned: " + responseCode);
             throw new ApiException(responseCode, "error occurred when requesting Admin");
+        } else if (responseCode == 400) {
+            throw new ApiException(responseCode, "bad request");
         } else if (responseCode != 200) {
-            Log.warning("A non API response was returned code:" + responseCode);
+            Log.warning("An unexpected response was returned with code:" + responseCode);
             throw new ApiException(responseCode, "received unexpected response Admin");
         }
 
