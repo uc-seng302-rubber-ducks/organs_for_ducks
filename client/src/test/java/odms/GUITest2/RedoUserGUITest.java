@@ -2,6 +2,7 @@ package odms.GUITest2;
 
 import javafx.scene.Node;
 import odms.App;
+import odms.TestUtils.AppControllerMocker;
 import odms.TestUtils.CommonTestMethods;
 import odms.commons.model.Clinician;
 import odms.commons.model.EmergencyContact;
@@ -9,7 +10,7 @@ import odms.commons.model.User;
 import odms.commons.model.dto.UserOverview;
 import odms.controller.AppController;
 import odms.controller.gui.window.UserController;
-import odms.utils.UserBridge;
+import odms.bridge.UserBridge;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -40,7 +41,7 @@ public class RedoUserGUITest extends ApplicationTest {
     @Before
     public void setUp() throws TimeoutException, IOException {
 
-        AppController application = mock(AppController.class);
+        AppController application = AppControllerMocker.getFullMock();
         UserBridge bridge = mock(UserBridge.class);
 
         Clinician clinician = new Clinician();
@@ -50,8 +51,7 @@ public class RedoUserGUITest extends ApplicationTest {
         AppController.setInstance(application);
         when(application.getUserBridge()).thenReturn(bridge);
 
-        when(bridge.getUsers(anyInt(), anyInt(), anyString(), anyString(), anyString(), anyString()))
-                .thenReturn(Collections.singletonList(UserOverview.fromUser(user)));
+        when(application.getUserOverviews()).thenReturn(Collections.singleton(UserOverview.fromUser(user)));
         when(bridge.getUser("ABC1234")).thenReturn(user);
 
         doCallRealMethod().when(application).setUserController(any(UserController.class));

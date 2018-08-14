@@ -1,11 +1,12 @@
 package odms.GUITest2;
 
 import odms.App;
+import odms.TestUtils.AppControllerMocker;
 import odms.TestUtils.CommonTestMethods;
+import odms.bridge.*;
 import odms.commons.model.Administrator;
 import odms.controller.AppController;
 import odms.controller.gui.window.AdministratorViewController;
-import odms.utils.*;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -17,13 +18,12 @@ import org.testfx.matcher.control.TextInputControlMatchers;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.concurrent.TimeoutException;
 
 import static odms.TestUtils.FxRobotHelper.clickOnButton;
 import static odms.TestUtils.FxRobotHelper.setTextField;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyCollection;
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 import static org.testfx.api.FxAssert.verifyThat;
@@ -47,7 +47,7 @@ public class UpdateAdminControllerGUITest extends ApplicationTest {
         ClinicianBridge clinicianBridge = mock(ClinicianBridge.class);
         LoginBridge loginBridge = mock(LoginBridge.class);
         UserBridge userBridge = mock(UserBridge.class);
-        AppController application = mock(AppController.class);
+        AppController application = AppControllerMocker.getFullMock();
 
         AppController.setInstance(application);
 
@@ -59,9 +59,9 @@ public class UpdateAdminControllerGUITest extends ApplicationTest {
         when(loginBridge.loginToServer(anyString(),anyString(), anyString())).thenReturn("lsdjfksd");
         when(administratorBridge.getAdmin(anyString(), anyString())).thenReturn(testAdmin);
         when(application.getTransplantBridge()).thenReturn(transplantBridge);
-        when(transplantBridge.getWaitingList(anyInt(), anyInt(), anyString(), anyString(), anyCollection())).thenReturn(new ArrayList<>());
-        when(clinicianBridge.getClinicians(anyInt(), anyInt(), anyString(), anyString(), anyString())).thenReturn(new ArrayList<>());
-        when(userBridge.getUsers(anyInt(), anyInt(), anyString(), anyString(), anyString(), anyString())).thenReturn(new ArrayList<>());
+        when(application.getTransplantList()).thenReturn(new ArrayList<>());
+        when(application.getClinicians()).thenReturn(new ArrayList<>());
+        when(application.getUserOverviews()).thenReturn(new HashSet<>());
 
         doCallRealMethod().when(application).setAdministratorViewController(any(AdministratorViewController.class));
         doCallRealMethod().when(application).getAdministratorViewController();

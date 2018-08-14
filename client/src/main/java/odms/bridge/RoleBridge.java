@@ -1,4 +1,4 @@
-package odms.utils;
+package odms.bridge;
 
 import okhttp3.OkHttpClient;
 
@@ -6,7 +6,7 @@ import okhttp3.OkHttpClient;
  *
  */
 public abstract class RoleBridge extends Bifrost {
-    public RoleBridge(OkHttpClient client) {
+    RoleBridge(OkHttpClient client) {
         super(client);
     }
 

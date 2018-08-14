@@ -5,13 +5,14 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import odms.App;
+import odms.TestUtils.AppControllerMocker;
 import odms.TestUtils.CommonTestMethods;
+import odms.bridge.*;
 import odms.commons.exception.ApiException;
 import odms.commons.model.Administrator;
 import odms.commons.model.Clinician;
 import odms.commons.model.User;
 import odms.controller.AppController;
-import odms.utils.*;
 import org.junit.*;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
@@ -20,12 +21,11 @@ import org.testfx.matcher.control.LabeledMatchers;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.concurrent.TimeoutException;
 
 import static odms.TestUtils.FxRobotHelper.clickOnButton;
 import static odms.TestUtils.FxRobotHelper.setTextField;
-import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.testfx.api.FxAssert.verifyThat;
@@ -46,7 +46,7 @@ public class LoginControllerGUITest extends ApplicationTest {
 
     @Before
     public void startUp() throws TimeoutException, ApiException {
-        controller = mock(AppController.class);
+        controller = AppControllerMocker.getFullMock();
         bridge = mock(UserBridge.class);
         clinicianBridge = mock(ClinicianBridge.class);
         loginBridge = mock(LoginBridge.class);
@@ -59,7 +59,7 @@ public class LoginControllerGUITest extends ApplicationTest {
         when(controller.getLoginBridge()).thenReturn(loginBridge);
         when(controller.getTransplantBridge()).thenReturn(transplantBridge);
 
-        when(transplantBridge.getWaitingList(anyInt(), anyInt(), anyString(), anyString(), any(Collection.class))).thenReturn(new ArrayList());
+        when(controller.getTransplantList()).thenReturn(new ArrayList());
 
         FxToolkit.registerPrimaryStage();
         FxToolkit.setupApplication(App.class);

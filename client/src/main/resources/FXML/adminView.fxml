@@ -11,10 +11,9 @@
             <menus>
                 <Menu fx:id="AdminFileMenu" mnemonicParsing="false" text="File">
                     <items>
-                        <MenuItem fx:id="refreshAdmin" mnemonicParsing="false" onAction="#refreshTables"
-                                  text="Refresh"/>
+                        <MenuItem fx:id="refreshAdmin" mnemonicParsing="false" onAction="#refreshTables" text="Refresh" />
                         <MenuItem fx:id="saveAdminMenuItem" mnemonicParsing="false" onAction="#saveClicked" text="Save" />
-                        <MenuItem fx:id="AdminLogout" mnemonicParsing="false" onAction="#logout" text="Log Out"/>
+                        <MenuItem fx:id="AdminLogout" mnemonicParsing="false" onAction="#logout" text="Log Out" />
                         <Menu mnemonicParsing="false" text="Import">
                             <items>
                                 <MenuItem fx:id="importAdminsMenuItem" mnemonicParsing="false" onAction="#importAdmins" text="Import Admins" />
@@ -27,10 +26,8 @@
                 </Menu>
                 <Menu fx:id="editAdminMenu" mnemonicParsing="false" text="Edit">
                     <items>
-                        <MenuItem fx:id="updateAdminDetails" mnemonicParsing="false" onAction="#updateAdmin"
-                                  text="Admin Details"/>
-                        <MenuItem fx:id="deleteAdmin" mnemonicParsing="false" onAction="#deleteAdminAccount"
-                                  text="Delete Account"/>
+                        <MenuItem fx:id="updateAdminDetails" mnemonicParsing="false" onAction="#updateAdmin" text="Admin Details" />
+                        <MenuItem fx:id="deleteAdmin" mnemonicParsing="false" onAction="#deleteAdminAccount" text="Delete Account" />
                     </items>
                 </Menu>
             </menus>
@@ -55,15 +52,13 @@
                                                 <Label fx:id="succesFailLabel" layoutX="89.0" layoutY="98.0" AnchorPane.leftAnchor="103.0" AnchorPane.rightAnchor="167.0" />
                                                 <Button fx:id="addClinicianButton" layoutX="50.0" layoutY="190.0" mnemonicParsing="false" onAction="#addClinician" prefHeight="25.0" prefWidth="196.0" text="Add Clinician" AnchorPane.bottomAnchor="107.0" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="52.0" />
                                                 <Button fx:id="addAdminButton" layoutX="50.0" layoutY="233.0" mnemonicParsing="false" onAction="#addAdmin" prefHeight="25.0" prefWidth="194.0" text="Add Admin" AnchorPane.bottomAnchor="67.0" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="52.0" />
-                                                <Label alignment="CENTER" layoutX="103.0" layoutY="38.0"
-                                                       prefHeight="29.0" prefWidth="103.0" text="Add Users"
-                                                       textAlignment="CENTER" AnchorPane.leftAnchor="103.0"
-                                                       AnchorPane.rightAnchor="92.0">
+                                                <Label alignment="CENTER" layoutX="103.0" layoutY="38.0" prefHeight="29.0" prefWidth="103.0" text="Add Users" textAlignment="CENTER" AnchorPane.leftAnchor="103.0" AnchorPane.rightAnchor="92.0">
                                                     <font>
                                                         <Font size="18.0" />
                                                     </font>
                                                 </Label>
                                                 <Button fx:id="addUserButton" layoutX="50.0" layoutY="149.0" mnemonicParsing="false" onAction="#addUser" prefHeight="25.0" prefWidth="197.0" text="Add Public User" AnchorPane.bottomAnchor="148.0" AnchorPane.leftAnchor="50.0" AnchorPane.rightAnchor="51.0" />
+                                    <ProgressIndicator fx:id="progressIndicator" layoutX="255.0" layoutY="228.0" progress="0.0" />
                                             </children>
                                         </AnchorPane>
                                         <AnchorPane prefHeight="320.0" prefWidth="298.0">
@@ -133,7 +128,7 @@
                                                 <Label text="Search" />
                                                 <TextField fx:id="adminSearchField" prefHeight="18.0" prefWidth="266.0" GridPane.columnIndex="1" GridPane.columnSpan="3" />
                                                 <Label fx:id="regionLabel" text="Region:" GridPane.rowIndex="1" />
-                                                <Button fx:id="deletedProfiles" alignment="CENTER_RIGHT" mnemonicParsing="false" onAction="#openDeletedProfiles" text="Recently Deleted Profiles" GridPane.columnIndex="4" GridPane.columnSpan="3" GridPane.rowIndex="1" />
+                                                <Button fx:id="deletedProfiles" alignment="CENTER_RIGHT" mnemonicParsing="false" onAction="#openDeletedProfiles" text="Recently Deleted Profiles" visible="false" GridPane.columnIndex="4" GridPane.columnSpan="3" GridPane.rowIndex="1" />
                                                 <TextField fx:id="regionSearchTextField" prefHeight="25.0" prefWidth="239.0" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.rowIndex="1" />
                                                 <RadioButton fx:id="adminAdminRadioButton" mnemonicParsing="false" text="Admin" GridPane.columnIndex="6">
                                                     <toggleGroup>

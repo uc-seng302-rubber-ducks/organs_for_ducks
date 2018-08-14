@@ -1,6 +1,8 @@
 package odms.commons.model;
 
 import odms.commons.model._enum.Organs;
+import odms.commons.model.datamodel.Address;
+import odms.commons.model.datamodel.DeathDetails;
 import odms.commons.utils.DBHandler;
 import org.junit.*;
 import test_utils.DBHandlerMocker;
@@ -11,6 +13,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.sql.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -27,7 +30,7 @@ public class DBHandlerTest {
     private User testUser = new User("Eiran", LocalDate.of(2018, 2, 20), "ABC1111");
     private Clinician testClinician = new Clinician("Jon", "16", "password");
     private Administrator testAdmin = new Administrator("username", "James", "", "", "admin");
-    private static final String PHOTO_TEST_FILE_PATH = "../commons/src/test/java/resources/images/duck_jpg.jpg";
+    private static final String PHOTO_TEST_FILE_PATH = "../server/src/test/resources/images/duck_jpg.jpg";
 
     @Before
     public void beforeTest() throws SQLException {
@@ -66,7 +69,7 @@ public class DBHandlerTest {
 
         when(mockResultSet.next()).thenReturn(false).thenReturn(true);
         dbHandler.saveUsers(users, connection);
-        verify(mockStmt, times(17)).executeUpdate();
+        verify(mockStmt, times(18)).executeUpdate();
     }
 
     @Test
@@ -88,16 +91,16 @@ public class DBHandlerTest {
         users.add(testUser);
 
         dbHandler.saveUsers(users, connection);
-        verify(mockStmt, times(10)).executeUpdate();
+        verify(mockStmt, times(11)).executeUpdate();
     }
-/*
+
     @Test
     public void testUpdateUserProfilePicture() throws SQLException, IOException {
         InputStream inputStream = new FileInputStream(PHOTO_TEST_FILE_PATH);
 
-        dbHandler.updateProfilePhoto(User.class, testUser.getNhi(), inputStream, connection);
+        dbHandler.updateProfilePhoto(User.class, testUser.getNhi(), inputStream, "image/jpg", connection);
         verify(mockStmt, times(1)).executeUpdate();
-    }*/
+    }
 
     @Test
     public void getUserProfilePicture() throws SQLException{
@@ -113,7 +116,7 @@ public class DBHandlerTest {
         users.add(testUser);
 
         dbHandler.saveUsers(users, connection);
-        verify(mockStmt, times(11)).executeUpdate();
+        verify(mockStmt, times(12)).executeUpdate();
     }
 
     @Test
@@ -126,7 +129,7 @@ public class DBHandlerTest {
         users.add(testUser);
 
         dbHandler.saveUsers(users, connection);
-        verify(mockStmt, times(14)).executeUpdate();
+        verify(mockStmt, times(15)).executeUpdate();
         verify(mockStmt, never()).setNull(3, Types.DATE);
         verify(mockStmt, times(2)).setInt(2, Organs.CONNECTIVE_TISSUE.getDbValue());
         verify(mockStmt, times(2)).setInt(2, Organs.CORNEA.getDbValue());
@@ -142,7 +145,7 @@ public class DBHandlerTest {
         users.add(testUser);
 
         dbHandler.saveUsers(users, connection);
-        verify(mockStmt, times(12)).executeUpdate();
+        verify(mockStmt, times(13)).executeUpdate();
         verify(mockResultSet, times(1)).getInt("procedureId");
         verify(mockStmt, times(2)).setString(2, procedure.getSummary());
         verify(mockStmt, times(1)).setInt(1, Organs.LUNG.getDbValue());
@@ -155,7 +158,7 @@ public class DBHandlerTest {
         users.add(testUser);
 
         dbHandler.saveUsers(users, connection);
-        verify(mockStmt, times(12)).executeUpdate();
+        verify(mockStmt, times(13)).executeUpdate();
         verify(mockResultSet, times(1)).getInt("medicationInstanceId");
         verify(mockStmt, times(2)).setString(2, "panadol");
         verify(mockStmt, times(1)).setNull(3, Types.TIMESTAMP);
@@ -181,11 +184,11 @@ public class DBHandlerTest {
         verify(mockStmt, times(4)).executeUpdate();
     }
 
-/*    @Test
+    @Test
     public void testUpdateClinicianProfilePicture() throws SQLException, FileNotFoundException {
         InputStream inputStream = new FileInputStream(PHOTO_TEST_FILE_PATH);
 
-        dbHandler.updateProfilePhoto(Clinician.class, testClinician.getStaffId(), inputStream, connection);
+        dbHandler.updateProfilePhoto(Clinician.class, testClinician.getStaffId(), inputStream, "image/jpg", connection);
         verify(mockStmt, times(1)).executeUpdate();
     }
 
@@ -193,8 +196,8 @@ public class DBHandlerTest {
     public void testRoleNotSupportUpdateProfilePicture() throws SQLException, FileNotFoundException {
         InputStream inputStream = new FileInputStream(PHOTO_TEST_FILE_PATH);
 
-        dbHandler.updateProfilePhoto(Administrator.class, testAdmin.getUserName(), inputStream, connection);
-    }*/
+        dbHandler.updateProfilePhoto(Administrator.class, testAdmin.getUserName(), inputStream, "image/jpg", connection);
+    }
 
     @Test
     public void testGetClinicianProfilePicture() throws SQLException {
@@ -214,6 +217,42 @@ public class DBHandlerTest {
         DBHandlerMocker.setTransplantResultSet(mockResultSet);
         dbHandler.getTransplantDetails(connection,0, 1, "", "", new String[] {});
         verify(mockStmt, times(1)).executeQuery();
+    }
+
+    @Test
+    public void testGetDeathDetails() throws  SQLException {
+        when(mockResultSet.next()).thenReturn(true, false);
+        DBHandlerMocker.setDeathDetailsResultSet(mockResultSet);
+        dbHandler.getDeathDetails(testUser, connection);
+        verify(mockStmt, times(1)).executeQuery();
+    }
+
+
+    @Test
+    public void testAddDeathDetails() throws SQLException {
+        Address address = new Address("", "", "", "Christchurch", "Canterbury", "", "New Zealand");
+        DeathDetails deathDetails = new DeathDetails(LocalDateTime.of(2010, 1, 1, 2, 45), address);
+        testUser.setDeathDetails(deathDetails);
+
+        Collection<User> users = new ArrayList<>();
+        users.add(testUser);
+
+        dbHandler.saveUsers(users, connection);
+        verify(mockStmt, times(11)).executeUpdate();
+
+    }
+
+    @Test
+    public void testAddNullDeathDetails() throws SQLException {
+        Address address = new Address("", "", "", "", "", "", "");
+        DeathDetails deathDetails = new DeathDetails(null, address);
+        testUser.setDeathDetails(deathDetails);
+
+        Collection<User> users = new ArrayList<>();
+        users.add(testUser);
+
+        dbHandler.saveUsers(users, connection);
+        verify(mockStmt, times(11)).executeUpdate();
     }
 
 }

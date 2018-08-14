@@ -2,6 +2,7 @@ package odms.controller;
 
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
+import odms.bridge.*;
 import odms.commons.exception.ApiException;
 import odms.commons.exception.ProfileAlreadyExistsException;
 import odms.commons.exception.ProfileNotFoundException;
@@ -20,13 +21,16 @@ import odms.controller.gui.StatusBarController;
 import odms.controller.gui.window.AdministratorViewController;
 import odms.controller.gui.window.ClinicianController;
 import odms.controller.gui.window.UserController;
-import odms.utils.*;
+import odms.socket.OdmsSocketHandler;
+import odms.socket.ServerEventNotifier;
 import okhttp3.OkHttpClient;
 
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 
 /**
@@ -42,8 +46,8 @@ public class AppController {
     private Collection<Administrator> admins = new ArrayList<>();
     private List<User> users = new ArrayList<>();
     private ArrayList<TransplantDetails> transplantList = new ArrayList<>();
-    private List<Clinician> clinicians = new ArrayList<>();
-    private Set<UserOverview> overviews = new HashSet<>();
+    private List<Clinician> clinicians = new CopyOnWriteArrayList<>();
+    private Set<UserOverview> overviews = new CopyOnWriteArraySet<>();
     private ArrayList<String[]> historyOfCommands = new ArrayList<>();
     private List<String> allCountries;
     private List<String> allowedCountries; //store the countries chosen by admin
@@ -56,14 +60,15 @@ public class AppController {
     private AdministratorBridge administratorBridge = new AdministratorBridge(client);
     private LoginBridge loginBridge = new LoginBridge(client);
     private TransplantBridge transplantBridge = new TransplantBridge(client);
-    private UserController userController = new UserController();
-    private ClinicianController clinicianController = new ClinicianController();
+    private UserController userController = null;
+    private ClinicianController clinicianController = null;
     private CountriesBridge countriesBridge = new CountriesBridge(client);
-    private AdministratorViewController administratorViewController = new AdministratorViewController();
+    private AdministratorViewController administratorViewController = null;
     private StatusBarController statusBarController = new StatusBarController();
     private Stack<User> redoStack = new Stack<>();
     private String token;
     private SQLBridge sqlBridge = new SQLBridge(client);
+    private OdmsSocketHandler socketHandler = new OdmsSocketHandler(client, ServerEventNotifier.getInstance());
 
     /**
      * Creates new instance of AppController
@@ -103,6 +108,7 @@ public class AppController {
     public TransplantBridge getTransplantBridge() {
         return transplantBridge;
     }
+
     /**
      * If New Zealand is selected at the country combo box, the region combo box will appear.
      * If country other than New Zealand is selected at the country combo box, the region combo box will
@@ -113,16 +119,30 @@ public class AppController {
      * @param regionSelector Combo Box
      * @param regionInput Text Field
      */
-    public void countrySelectorEventHandler(ComboBox countrySelector, ComboBox regionSelector, TextField regionInput){
+    public void countrySelectorEventHandler(ComboBox countrySelector, ComboBox regionSelector, TextField regionInput, User user, Clinician clinician) {
         if(! countrySelector.getSelectionModel().getSelectedItem().equals("New Zealand")) {
             regionSelector.setVisible(false);
             regionInput.setVisible(true);
-            //TODO: if the following line is removed, update javadoc of this method and all its callers. -14 july
-            regionInput.clear(); //TODO: redo stack for region is cleared when region input is cleared. try undo redo when selecting nz as country and selecting other countries + selecting/entering region. -14 july
+
+            regionInput.clear();
 
         } else {
+            if (!regionInput.getText().isEmpty()) {
+
+                if (user != null) {
+                    if (countrySelector.getId().equals("ecCountrySelector")) {
+                        user.setECRegionNoUndo("");
+                    } else {
+                        user.setRegionNoUndo("");
+                    }
+                    regionInput.setText("");
+                } else {
+                    clinician.setRegionNoUndo("");
+                    regionInput.setText("");
+                }
+            }
+
             regionSelector.setVisible(true);
-            regionSelector.setValue("");
             regionInput.setVisible(false);
         }
     }
@@ -156,7 +176,7 @@ public class AppController {
         try {
             s = getCountriesBridge().getAllowedCountries();
         } catch (IOException e) {
-            Log.severe("Database threw IOE", e);
+            Log.severe("Could not get allowed countries from the database", e);
             allowedCountries = new ArrayList<>();
         }
         if (s != null) {
@@ -299,12 +319,18 @@ public class AppController {
 
     public void addUserOverview(UserOverview overview) {
         this.overviews.add(overview);
+        if (clinicianController != null) {
+            clinicianController.refreshTables();
+        }
+        if (administratorViewController != null) {
+            administratorViewController.refreshTables();
+        }
     }
 
     /**
      * @param users An array list of users.
      */
-    public void setUsers(ArrayList<User> users) {
+    public void setUsers(List<User> users) {
         this.users = users;
     }
 
@@ -341,25 +367,18 @@ public class AppController {
                 originalUser = user;
             }
 
-            if (userBridge.getUser(originalUser.getNhi()) != null) {
-                if (token != null) {
-                    userBridge.putReceivingOrgans(user.getReceiverDetails().getOrgans(), originalUser.getNhi(), token);
-                    userBridge.putUserProcedures(user.getMedicalProcedures(), originalUser.getNhi(), token);
-                    userBridge.putMedications(user.getPreviousMedication(), originalUser.getNhi(), token);
-                    userBridge.putMedications(user.getCurrentMedication(), originalUser.getNhi(), token);
-                    userBridge.putDiseases(user.getPastDiseases(), originalUser.getNhi(), token);
-                    userBridge.putDiseases(user.getCurrentDiseases(), originalUser.getNhi(), token);
-                }
-                userBridge.putProfilePicture(originalUser.getNhi(), user.getProfilePhotoFilePath());
-                userBridge.putDonatingOrgans(user.getDonorDetails().getOrgans(), originalUser.getNhi());
+            if (userBridge.getExists(originalUser.getNhi())) {
                 userBridge.putUser(user, originalUser.getNhi());
+                Thread.sleep(100);
+                userBridge.putProfilePicture(user.getNhi(), user.getProfilePhotoFilePath());
 
             } else {
                 userBridge.postUser(user);
-                userBridge.putProfilePicture(originalUser.getNhi(), user.getProfilePhotoFilePath());
             }
         } catch (IOException e) {
             Log.warning("Could not save user " + user.getNhi(), e);
+        } catch (InterruptedException e) {
+            Log.warning("Thread sleep time was interrupted", e);
         }
     }
 
@@ -380,6 +399,9 @@ public class AppController {
      */
     public void addClinician(Clinician clinician) {
         clinicians.add(clinician);
+        if (administratorViewController != null) {
+            administratorViewController.refreshTables();
+        }
     }
 
     /**
@@ -389,22 +411,10 @@ public class AppController {
      */
     public void addAdmin(Administrator administrator) {
         admins.add(administrator);
+        if (administratorViewController != null) {
+            administratorViewController.refreshTables();
+        }
     }
-
-    /**
-     * @return
-     */
-    public StatusBarController getStatusBarController() {
-        return statusBarController;
-    }
-
-    /**
-     * @param StatusBarController
-     */
-    public void setStatusBarController(StatusBarController StatusBarController) {
-        this.statusBarController = StatusBarController;
-    }
-
 
     public List<Clinician> getClinicians() {
         return clinicians;
@@ -419,22 +429,17 @@ public class AppController {
     }
 
     /**
+     * Retrieves the specified clinician from the database
+     *
      * @param id The staff id (unique identifier) of the clinician
      * @return The clinician that matches the given staff id, or null if no clinician matches.
      */
     public Clinician getClinician(String id) {
-        for (Clinician c : clinicians) {
-            if (c.getStaffId().equals(id) && !c.isDeleted()) {
-                return c;
-            }
-        }
-
         try {
-            getClinicianBridge().getClinician(id, getToken());
+            return getClinicianBridge().getClinician(id, getToken());
         } catch (ApiException ex) {
-            Log.warning("Error while trying to retrieve clinician "+id+" status "+ex.getResponseCode(), ex);
+            Log.warning("Error while trying to retrieve clinician " + id + " status "+ex.getResponseCode(), ex);
         }
-        // Should I change this to use the ClinicianBridge???
         return null;
     }
 
@@ -467,10 +472,8 @@ public class AppController {
             }
 
             if (clinicianBridge.getExists(originalClinician.getStaffId())) {
+                clinicianBridge.putProfilePicture(originalClinician.getStaffId(), getToken(), clinician.getProfilePhotoFilePath());
                 clinicianBridge.putClinician(clinician, originalClinician.getStaffId(), token);
-                if(!originalClinician.getProfilePhotoFilePath().equals(clinician.getProfilePhotoFilePath())) {
-                    clinicianBridge.putProfilePicture(originalClinician.getStaffId(),getToken(),clinician.getProfilePhotoFilePath());
-                }
             } else {
                 clinicianBridge.postClinician(clinician, token);
             }
@@ -484,7 +487,7 @@ public class AppController {
     public void deleteClinician(Clinician clinician) {
         clinician.setDeleted(true);
 
-        getClinicianBridge().deleteClinician(clinician, clinician.getStaffId());
+        getClinicianBridge().deleteClinician(clinician, getToken());
     }
 
     /**
@@ -701,5 +704,21 @@ public class AppController {
 
     public SQLBridge getSqlBridge() {
         return sqlBridge;
+    }
+
+    public OdmsSocketHandler getSocketHandler() {
+        return socketHandler;
+    }
+
+    /**
+     * forcibly stops all ongoing/networked resources
+     */
+    public void stop() {
+        this.getSocketHandler().stop();
+
+        //force stop all background threads for the http client
+        this.client.connectionPool().evictAll();
+        this.client.dispatcher().executorService().shutdown();
+
     }
 }

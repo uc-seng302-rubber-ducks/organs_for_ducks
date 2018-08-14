@@ -1,4 +1,4 @@
-package odms.utils;
+package odms.bridge;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -6,6 +6,7 @@ import odms.commons.exception.ApiException;
 import odms.commons.model.Administrator;
 import odms.commons.utils.JsonHandler;
 import odms.commons.utils.Log;
+import odms.controller.AppController;
 import okhttp3.*;
 
 import java.io.IOException;
@@ -13,23 +14,38 @@ import java.util.Collection;
 
 public class AdministratorBridge extends RoleBridge {
 
+    public static final String ADMINS = "/admins/";
+
     public AdministratorBridge(OkHttpClient client) {
         super(client);
     }
 
-    public Collection<Administrator> getAdmins(int startIndex, int count, String name,String token) throws IOException {
+    public void getAdmins(int startIndex, int count, String name, String token) {
         String url = ip + "/admins?startIndex=" + startIndex + "&count=" + count + "&q=" + name;
         Request request = new Request.Builder().url(url).addHeader("x-auth-token", token).build();
-        Response response = client.newCall(request).execute();
-        return new Gson().fromJson(response.body().string(), new TypeToken<Collection<Administrator>>() {
-        }.getType());
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                Collection<Administrator> administrators = new Gson().fromJson(response.body().string(), new TypeToken<Collection<Administrator>>() {
+                }.getType());
+                for (Administrator administrator : administrators) {
+                    AppController.getInstance().addAdmin(administrator);
+                }
+                response.close();
+            }
+        });
     }
 
 
     public void postAdmin(Administrator admin, String token) {
         String url = ip + "/admins";
-        RequestBody body = RequestBody.create(JSON, new Gson().toJson(admin));
-        Request request = new Request.Builder().url(url).addHeader(TOKEN_HEADER, token).post(body).build();
+        RequestBody body = RequestBody.create(json, new Gson().toJson(admin));
+        Request request = new Request.Builder().url(url).addHeader(tokenHeader, token).post(body).build();
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -42,14 +58,15 @@ public class AdministratorBridge extends RoleBridge {
                     Log.warning("Failed to POST to " + url);
                     throw new IOException("Failed to POST to " + url);
                 }
+                response.close();
             }
         });
     }
 
     public void putAdmin(Administrator administrator, String username, String token) {
-        String url = ip + "/admins/" + username;
-        RequestBody requestBody = RequestBody.create(JSON, new Gson().toJson(administrator));
-        Request request = new Request.Builder().url(url).addHeader(TOKEN_HEADER, token).put(requestBody).build();
+        String url = ip + ADMINS + username;
+        RequestBody requestBody = RequestBody.create(json, new Gson().toJson(administrator));
+        Request request = new Request.Builder().url(url).addHeader(tokenHeader, token).put(requestBody).build();
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -61,15 +78,15 @@ public class AdministratorBridge extends RoleBridge {
                 if (!response.isSuccessful()) {
                     throw new IOException("Failed to PUT to " + url);
                 }
-
+                response.close();
             }
         });
 
     }
 
     public void deleteAdmin(Administrator administrator, String token) {
-        String url = ip + "/admins/" + administrator.getUserName();
-        Request request = new Request.Builder().url(url).addHeader(TOKEN_HEADER, token).delete().build();
+        String url = ip + ADMINS + administrator.getUserName();
+        Request request = new Request.Builder().url(url).addHeader(tokenHeader, token).delete().build();
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -81,6 +98,7 @@ public class AdministratorBridge extends RoleBridge {
                 if (!response.isSuccessful()) {
                     throw new IOException("Failed to DELETE to " + url);
                 }
+                response.close();
             }
         });
 
@@ -89,9 +107,9 @@ public class AdministratorBridge extends RoleBridge {
     public Administrator getAdmin(String username, String token) throws ApiException {
         Response response;
         try {
-            Headers headers = new Headers.Builder().add(TOKEN_HEADER, token).build();
+            Headers headers = new Headers.Builder().add(tokenHeader, token).build();
             Request request = new Request.Builder()
-                    .url(ip + "/admins/" + username).headers(headers).build();
+                    .url(ip + ADMINS + username).headers(headers).build();
             response = client.newCall(request).execute();
         } catch (IOException e) {
             Log.severe("failed to make request", e);
@@ -117,6 +135,8 @@ public class AdministratorBridge extends RoleBridge {
         } catch (IOException ex) {
             Log.severe("could not interpret the given Admin", ex);
             return null;
+        } finally {
+            response.close();
         }
     }
 

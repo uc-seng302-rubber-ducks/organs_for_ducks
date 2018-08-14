@@ -2,7 +2,9 @@ package odms.GUITest2;
 
 import javafx.scene.Node;
 import odms.App;
+import odms.TestUtils.AppControllerMocker;
 import odms.TestUtils.CommonTestMethods;
+import odms.bridge.*;
 import odms.commons.model.Clinician;
 import odms.commons.model.User;
 import odms.commons.model.datamodel.Address;
@@ -10,10 +12,10 @@ import odms.commons.model.datamodel.ContactDetails;
 import odms.commons.model.dto.UserOverview;
 import odms.controller.AppController;
 import odms.controller.gui.window.ClinicianController;
-import odms.utils.*;
 import org.junit.*;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
+import org.testfx.matcher.control.ComboBoxMatchers;
 import org.testfx.matcher.control.LabeledMatchers;
 import org.testfx.matcher.control.TextInputControlMatchers;
 
@@ -28,8 +30,6 @@ import java.util.concurrent.TimeoutException;
 
 import static odms.TestUtils.FxRobotHelper.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyCollection;
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 import static org.testfx.api.FxAssert.verifyThat;
@@ -52,7 +52,7 @@ public class UpdateClinicianControllerGUITest extends ApplicationTest {
         UserBridge bridge = mock(UserBridge.class);
         ClinicianBridge clinicianBridge = mock(ClinicianBridge.class);
         LoginBridge loginBridge = mock(LoginBridge.class);
-        AppController application = mock(AppController.class);
+        AppController application = AppControllerMocker.getFullMock();
         TransplantBridge transplantBridge = mock(TransplantBridge.class);
         CountriesBridge countriesBridge = mock(CountriesBridge.class);
 
@@ -73,9 +73,8 @@ public class UpdateClinicianControllerGUITest extends ApplicationTest {
         when(loginBridge.loginToServer(anyString(),anyString(), anyString())).thenReturn("OMEGALUL");
         when(countriesBridge.getAllowedCountries()).thenReturn(new HashSet());
         when(clinicianBridge.getClinician(anyString(), anyString())).thenReturn(c);
-        when(transplantBridge.getWaitingList(anyInt(), anyInt(), anyString(), anyString(), anyCollection())).thenReturn(new ArrayList<>());
-        when(bridge.getUsers(anyInt(), anyInt(), anyString(), anyString(), anyString(), anyString()))
-                .thenReturn(overviews);
+        when(application.getTransplantList()).thenReturn(new ArrayList<>());
+        when(application.getUserOverviews()).thenReturn(new HashSet<>(overviews));
         when(bridge.getUser("ABC1244")).thenReturn(testUser);
 
         doCallRealMethod().when(application).setClinicianController(any(ClinicianController.class));
@@ -101,8 +100,6 @@ public class UpdateClinicianControllerGUITest extends ApplicationTest {
 
     @After
     public void tearDown() throws TimeoutException {
-//        clickOn("#fileMenuClinician");
-//        clickOn("#logoutMenuClinician");
         AppController.setInstance(null);
         FxToolkit.cleanupStages();
     }
@@ -121,7 +118,7 @@ public class UpdateClinicianControllerGUITest extends ApplicationTest {
         verifyThat("#middleNameTextField", TextInputControlMatchers.hasText("Ali"));
         verifyThat("#lastNameTextField", TextInputControlMatchers.hasText("Al"));
         verifyThat("#streetNameTextField", TextInputControlMatchers.hasText("Kirkwood Ave"));
-        verifyThat("#regionTextField", TextInputControlMatchers.hasText("Canterbury"));
+        verifyThat("#regionSelector", ComboBoxMatchers.hasSelectedItem("Canterbury"));
         clickOn("#cancelButton");
     }
 
