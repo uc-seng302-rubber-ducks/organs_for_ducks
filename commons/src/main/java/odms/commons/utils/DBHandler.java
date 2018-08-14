@@ -107,6 +107,7 @@ public class DBHandler {
             "WHERE (nhi = ?) " +
             "AND organName = ?";
     private static final String SELECT_DEATH_DETAILS_STMT = "SELECT * FROM DeathDetails WHERE fkUserNhi = ?";
+    public static final String MOMENT_OF_DEATH = "momentOfDeath";
     private AbstractUpdateStrategy updateStrategy;
 
 
@@ -930,7 +931,7 @@ public class DBHandler {
             List<TransplantDetails> detailsList = new ArrayList<>();
             try (ResultSet results = stmt.executeQuery()) {
                 while (results.next()) {
-                    if (results.getTimestamp("momentOfDeath") == null) {
+                    if (results.getTimestamp(MOMENT_OF_DEATH) == null) {
                         String nameBuilder = results.getString("firstName") +
                                 " " +
                                 results.getString("middleName") +
@@ -982,7 +983,7 @@ public class DBHandler {
 
             try (ResultSet results = stmt.executeQuery()) {
                 while (results.next()) {
-                    if (results.getTimestamp("momentOfDeath") != null) {
+                    if (results.getTimestamp(MOMENT_OF_DEATH) != null) {
                         String nameBuilder = results.getString("firstName") +
                                 " " +
                                 results.getString("middleName") +
@@ -1203,8 +1204,8 @@ public class DBHandler {
    public List<AvailableOrganDetail> getAvailableOrgans(int startIndex,
                                                         int count,
                                                         String organ,
-                                                        String region,
                                                         String bloodType,
+                                                        String region,
                                                         Connection connection) throws SQLException {
         List<AvailableOrganDetail> results = new ArrayList<>();
         try(PreparedStatement preparedStatement = connection.prepareStatement(SELECT_AVAILABLE_ORGANS)){
@@ -1219,7 +1220,7 @@ public class DBHandler {
                         AvailableOrganDetail organDetail = new AvailableOrganDetail();
                         organDetail.setDonorNhi(resultSet.getString("fkUserNhi"));
                         organDetail.setBloodType(resultSet.getString("bloodType"));
-                        organDetail.setMomentOfDeath(resultSet.getTimestamp("momentOfDeath").toLocalDateTime());
+                        organDetail.setMomentOfDeath(resultSet.getTimestamp(MOMENT_OF_DEATH).toLocalDateTime());
                         organDetail.setRegion(resultSet.getString("region"));
                         organDetail.setOrgan(Organs.valueOf(resultSet.getString("organName")));
                         organDetail.setAge(ChronoUnit.YEARS.between(resultSet.getTimestamp("dob").toLocalDateTime(), organDetail.getMomentOfDeath()));
@@ -1242,7 +1243,7 @@ public class DBHandler {
             stmt.setString(1, user.getNhi());
             try (ResultSet resultSet = stmt.executeQuery()) {
                 while (resultSet != null && resultSet.next()) {
-                    Timestamp momentOfDeath = resultSet.getTimestamp("momentOfDeath");
+                    Timestamp momentOfDeath = resultSet.getTimestamp(MOMENT_OF_DEATH);
                     if (momentOfDeath != null) {
                         user.getDeathDetails().setMomentOfDeath(momentOfDeath.toLocalDateTime()); //FIX
                     } else {
@@ -1256,7 +1257,7 @@ public class DBHandler {
         }
     }
 
-    public AvailableOrganDetail getAvailableOrgansbyNhi(String organ, String donorNhi, Connection connection) throws SQLException {
+    public AvailableOrganDetail getAvailableOrgansByNhi(String organ, String donorNhi, Connection connection) throws SQLException {
         try(PreparedStatement preparedStatement = connection.prepareStatement(SELECT_AVAILABLE_ORGANS_BY_NHI)){
                 preparedStatement.setString(1,donorNhi);
                 preparedStatement.setString(2,organ);
@@ -1266,7 +1267,7 @@ public class DBHandler {
                         AvailableOrganDetail organDetail = new AvailableOrganDetail();
                         organDetail.setDonorNhi(resultSet.getString("fkUserNhi"));
                         organDetail.setBloodType(resultSet.getString("bloodType"));
-                        organDetail.setMomentOfDeath(resultSet.getTimestamp("momentOfDeath").toLocalDateTime());
+                        organDetail.setMomentOfDeath(resultSet.getTimestamp(MOMENT_OF_DEATH).toLocalDateTime());
                         organDetail.setRegion(resultSet.getString("region"));
                         organDetail.setOrgan(Organs.valueOf(resultSet.getString("organName")));
                         organDetail.setAge(ChronoUnit.YEARS.between(resultSet.getTimestamp("dob").toLocalDateTime(), organDetail.getMomentOfDeath()));

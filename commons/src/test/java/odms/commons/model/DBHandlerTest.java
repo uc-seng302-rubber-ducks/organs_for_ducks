@@ -216,7 +216,9 @@ public class DBHandlerTest {
     public void testGetTransplantList() throws SQLException {
         when(mockResultSet.next()).thenReturn(true, false);
         DBHandlerMocker.setTransplantResultSet(mockResultSet);
+        when(mockResultSet.getString(eq("organName"))).thenReturn("LIVER");
         when(mockResultSet.getTimestamp("dob")).thenReturn(java.sql.Timestamp.valueOf(LocalDateTime.of(1,1,1,1,1)));
+        when(mockResultSet.getDate(eq("dateRegistered"))).thenReturn(Date.valueOf(LocalDate.now()));
         dbHandler.getTransplantDetails(connection,0, 1, "", "", new String[] {});
         verify(mockStmt, times(1)).executeQuery();
     }

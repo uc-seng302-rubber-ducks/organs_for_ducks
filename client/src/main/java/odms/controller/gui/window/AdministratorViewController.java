@@ -43,6 +43,7 @@ import odms.controller.gui.FileSelectorController;
 import odms.controller.gui.StatusBarController;
 import odms.controller.gui.UnsavedChangesAlert;
 import odms.controller.gui.panel.TransplantWaitListController;
+import odms.controller.gui.panel.view.AvailableOrgansViewController;
 import odms.controller.gui.popup.AlertUnclosedWindowsController;
 import odms.controller.gui.popup.CountrySelectionController;
 import odms.controller.gui.popup.DeletedUserController;
@@ -134,6 +135,8 @@ public class AdministratorViewController implements PropertyChangeListener, User
     private MenuItem deleteAdmin;
     @FXML
     private ProgressIndicator progressIndicator;
+    @FXML
+    private AvailableOrgansViewController availableOrgansViewController;
 
     //</editor-fold>
     @FXML
@@ -178,7 +181,7 @@ public class AdministratorViewController implements PropertyChangeListener, User
         displayDetails();
         transplantWaitListTabPageController.init(appController, this);
         stage.setTitle("Administrator");
-
+        availableOrgansViewController.init(this);
         ServerEventNotifier.getInstance().addPropertyChangeListener(this);
 
         userBridge.getUsers(userStartIndex, ROWS_PER_PAGE, adminSearchField.getText(), regionSearchTextField.getText(), genderComboBox.getValue(), appController.getToken());
@@ -875,6 +878,8 @@ public class AdministratorViewController implements PropertyChangeListener, User
             root = clinicianLoader.load();
             Stage newStage = new Stage();
             newStage.setScene(new Scene(root));
+            newStage.setMinHeight(800);
+            newStage.setMinWidth(1200);
             ClinicianController clinicianController = clinicianLoader.getController();
             clinicianControllers.add(clinicianController);
             Collection<PropertyChangeListener> listeners = new ArrayList<>();
@@ -899,6 +904,8 @@ public class AdministratorViewController implements PropertyChangeListener, User
             root = adminLoader.load();
             Stage newStage = new Stage();
             newStage.setScene(new Scene(root));
+            newStage.setMinHeight(800);
+            newStage.setMinWidth(1200);
             AdministratorViewController adminLoaderController = adminLoader.getController();
             administratorViewControllers.add(adminLoaderController);
             adminLoaderController.init(administrator, AppController.getInstance(), newStage, false, null);

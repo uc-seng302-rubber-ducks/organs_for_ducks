@@ -293,6 +293,7 @@ public class ClinicianController implements PropertyChangeListener, UserLauncher
         if (appController.getUserOverviews().isEmpty()) {
             return;
         }
+        searchTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         displaySearchTable();
         //set on-click behaviour
     }

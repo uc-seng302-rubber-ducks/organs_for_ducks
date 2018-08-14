@@ -1,6 +1,7 @@
 package odms.bridge;
 
 import com.mysql.jdbc.StringUtils;
+import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import odms.commons.exception.ApiException;
 import odms.commons.model.datamodel.AvailableOrganDetail;
@@ -62,7 +63,7 @@ public class OrgansBridge extends Bifrost {
                 for (AvailableOrganDetail detail : availableOrgansDetails) {
                     detail.generateProgressTask();
                 }
-                observableList.addAll(availableOrgansDetails);
+                Platform.runLater(()-> observableList.addAll(availableOrgansDetails));
             }
         });
 
@@ -96,7 +97,10 @@ public class OrgansBridge extends Bifrost {
 
                 List<TransplantDetails> matchingTransplants = handler.decodeMatchingOrgansList(response);
 
-                observableList.addAll( OrganSorter.sortOrgansIntoRankedOrder(organToDonate, matchingTransplants));
+                Platform.runLater(() ->{
+                    observableList.clear();
+                    observableList.addAll( OrganSorter.sortOrgansIntoRankedOrder(organToDonate, matchingTransplants));
+                } );
 
             }
         });

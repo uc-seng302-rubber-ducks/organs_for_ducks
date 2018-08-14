@@ -27,7 +27,6 @@
         <Label layoutX="8.0" layoutY="59.0" prefHeight="15.0" prefWidth="71.0" text="Region:" AnchorPane.leftAnchor="8.0" AnchorPane.topAnchor="59.0" />
         <Label layoutX="8.0" layoutY="24.0" prefHeight="15.0" prefWidth="71.0" text="Organ:" AnchorPane.leftAnchor="8.0" AnchorPane.topAnchor="24.0" />
         <ComboBox fx:id="availableOrganFilterComboBox" layoutX="79.0" layoutY="19.0" prefHeight="25.0" prefWidth="300.0" AnchorPane.leftAnchor="79.0" AnchorPane.topAnchor="19.0" />
-      <Button layoutX="403.0" layoutY="32.0" mnemonicParsing="false" onAction="#expireOrgan" text="Expire Organ" />
       <AnchorPane layoutX="523.0" prefHeight="684.0" prefWidth="345.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="-5.0" AnchorPane.topAnchor="0.0">
          <children>
             <HBox alignment="CENTER" layoutX="63.0" layoutY="651.0" prefHeight="25.0" prefWidth="185.0">

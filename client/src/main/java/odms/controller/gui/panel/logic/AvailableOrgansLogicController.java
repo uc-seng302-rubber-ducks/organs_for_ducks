@@ -91,10 +91,6 @@ public class AvailableOrgansLogicController implements PropertyChangeListener {
         searchMatches(startingIndexMatches);
     }
 
-    public void expireOrgans() {
-
-
-    }
 
     public void showMatches(AvailableOrganDetail selectedItem) {
         this.availableOrgan = selectedItem;
