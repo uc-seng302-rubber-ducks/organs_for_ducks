@@ -229,6 +229,7 @@ CREATE TABLE OrganExpiryDetails (
   fkStaffId    VARCHAR(255) NOT NULL,
   timeOfExpiry DATETIME     NOT NULL,
   reason       VARCHAR(255) NOT NULL,
+  name         VARCHAR(255) NOT NULL,
   FOREIGN KEY (fkStaffId) REFERENCES Clinician (staffId)
     ON DELETE CASCADE
     ON UPDATE CASCADE,

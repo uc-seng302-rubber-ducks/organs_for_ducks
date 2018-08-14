@@ -14,18 +14,22 @@ public class OrgansWithExpiry {
     private transient ProgressTask progressTask; //NOSONAR
     private String reason;
     private String staffId;
+    private String name;
     private LocalDateTime expiryTime;
+    private ExpiryReason expiryReason;
 
     public OrgansWithExpiry(Organs organType, ExpiryReason expiry, LocalDateTime momentOfDeath) {
         this.organType = organType;
-
+        this.expiryReason = expiry;
         if (expiry.getTimeOrganExpired() != null) {
             reason = expiry.getReason();
             staffId = expiry.getClinicianId();
             expiryTime = expiry.getTimeOrganExpired();
+            this.name = expiry.getClinicianId();
 
         } else {
             reason = "";
+            this.name = "";
             staffId = "";
             expiryTime = null;
         }
@@ -80,4 +84,14 @@ public class OrgansWithExpiry {
     public void setExpiryReason(String expiryReason) {
         this.reason = expiryReason;
     }
+
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
 }

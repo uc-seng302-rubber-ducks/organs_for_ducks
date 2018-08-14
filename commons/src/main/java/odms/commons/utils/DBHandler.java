@@ -453,7 +453,7 @@ public class DBHandler {
                 while (resultSet != null && resultSet.next()) {
                     ExpiryReason expiryReason = new ExpiryReason(resultSet.getString("fkStaffId"),
                             resultSet.getTimestamp("timeOfExpiry") != null ? resultSet.getTimestamp("timeOfExpiry").toLocalDateTime() : null,
-                            resultSet.getString("reason"));
+                            resultSet.getString("reason"), resultSet.getString("name"));
                     String organ = resultSet.getString("organName");
                     user.getDonorDetails().addOrgan(Organs.valueOf(organ), expiryReason);
                 }
