@@ -8,7 +8,10 @@ import javafx.scene.control.*;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import odms.commons.model.User;
+import odms.commons.model._enum.Organs;
 import odms.commons.model._enum.Regions;
+import odms.commons.model.datamodel.ExpiryReason;
+import odms.commons.model.datamodel.OrgansWithExpiry;
 import odms.commons.utils.AttributeValidation;
 import odms.commons.utils.Log;
 import odms.controller.AppController;
@@ -18,6 +21,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Map;
 
 /**
  * Controller class for editing death details of a user
@@ -73,7 +77,14 @@ public class UpdateDeathDetailsController {
         updateDeathDetailsErrorLabel.setVisible(false);
         updateDeathDetailsOverrideWarningLabel.setVisible(false);
 
-        if (false/*todo user has a manually expired organ*/) {
+        //Check if the user has any expired organs
+        boolean hasOverridedExpiry = false;
+        for (Map.Entry<Organs, ExpiryReason> pair: currentUser.getDonorDetails().getOrganMap().entrySet()) {
+            if (pair.getValue() != null) {
+                hasOverridedExpiry = true;
+            }
+        }
+        if (hasOverridedExpiry) {
             updateDeathDetailsOverrideWarningLabel.setVisible(true);
             removeUpdateDeathDetailsButton.setDisable(true);
             updateDeathDetailsDatePicker.setDisable(true);
