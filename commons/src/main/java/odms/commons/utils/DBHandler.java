@@ -1199,8 +1199,8 @@ public class DBHandler {
    public List<AvailableOrganDetail> getAvailableOrgans(int startIndex,
                                                         int count,
                                                         String organ,
-                                                        String region,
                                                         String bloodType,
+                                                        String region,
                                                         Connection connection) throws SQLException {
         List<AvailableOrganDetail> results = new ArrayList<>();
         try(PreparedStatement preparedStatement = connection.prepareStatement(SELECT_AVAILABLE_ORGANS)){
