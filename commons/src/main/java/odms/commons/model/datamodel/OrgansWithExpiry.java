@@ -28,8 +28,8 @@ public class OrgansWithExpiry {
             reason = "";
             staffId = "";
             expiryTime = null;
-            this.progressTask = new ProgressTask(this, momentOfDeath);
         }
+        this.progressTask = new ProgressTask(this, momentOfDeath);
     }
 
     public ProgressTask getProgressTask() {

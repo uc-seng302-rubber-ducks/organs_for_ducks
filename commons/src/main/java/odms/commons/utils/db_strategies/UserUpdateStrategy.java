@@ -50,7 +50,7 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
     private static final String DELETE_USER_STMT = "DELETE FROM User WHERE nhi = ?";
     private static final String CREATE_RECEIVING_ORGAN_DATE = "INSERT INTO OrganAwaitingDates (fkAwaitingId, dateRegistered, dateDeregistered) VALUES (?, ?, ?)";
     private static final String GET_RECEIVER_ID = "SELECT awaitingId FROM OrganAwaiting WHERE fkUserNhi = ? AND fkOrgansId = ?";
-    private static final String GET_DONATING_ID = "SELECT fkDonatingId FROM OrganDonating LEFT JOIN OrganExpiryDetails ON fkDonatingId = donatingId WHERE fkUserNhi = ? AND fkOrgansId = ?";
+    private static final String GET_DONATING_ID = "SELECT donatingId FROM OrganDonating WHERE fkUserNhi = ? AND fkOrgansId = ?";
     public static final String START_TRANSACTION = "START TRANSACTION";
     public static final String ROLLBACK = "ROLLBACK";
     public static final String COMMIT = "COMMIT";
@@ -375,17 +375,22 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
      * @throws SQLException if there is an error with the database
      */
     private void updateUserOrganExpiry(User user, Connection connection) throws SQLException {
-        deleteFieldsOfUser("OrganExpiryDetails", user.getNhi(), connection);
+        try (PreparedStatement deleteStatement = connection.prepareStatement("DELETE FROM OrganExpiryDetails WHERE fkDonatingId IN (SELECT donatingId FROM OrganDonating WHERE fkUserNhi = ?)")) {
+            deleteStatement.setString(1, user.getNhi());
+            deleteStatement.execute();
+        }
         for(Map.Entry<Organs, ExpiryReason> organsExpiry: user.getDonorDetails().getOrganMap().entrySet()){
             if(organsExpiry.getValue() != null) {
                 int organDBValue = organsExpiry.getKey().getDbValue();
                 int donatingId = getDonatingId(user.getNhi(), organDBValue, connection);
+                System.out.println(donatingId);
 
                 try (PreparedStatement createExpiryDetails = connection.prepareStatement(CREATE_EXPIRY_DETAILS)) {
                     createExpiryDetails.setString(1, organsExpiry.getValue().getClinicianId());
                     createExpiryDetails.setInt(2, donatingId);
                     createExpiryDetails.setTimestamp(3, Timestamp.valueOf(organsExpiry.getValue().getTimeOrganExpired()));
                     createExpiryDetails.setString(4, organsExpiry.getValue().getReason());
+                    createExpiryDetails.executeUpdate();
                 }
             }
         }

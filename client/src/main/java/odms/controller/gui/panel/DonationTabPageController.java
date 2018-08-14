@@ -3,7 +3,9 @@ package odms.controller.gui.panel;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
+import javafx.scene.control.ListView;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import odms.commons.model.User;
 import odms.commons.model._enum.Organs;
@@ -18,7 +20,6 @@ import odms.controller.gui.window.UserController;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 
 public class DonationTabPageController {
@@ -50,6 +51,7 @@ public class DonationTabPageController {
     private User currentUser;
     private AppController application;
     private UserController parent;
+    private ObservableList<OrgansWithExpiry> organsWithExpiries = FXCollections.observableList(new ArrayList<>());
 
     /**
      * Initializes the columns of the currently donating table
@@ -110,18 +112,17 @@ public class DonationTabPageController {
     private void populateTableView(Map<Organs, ExpiryReason> organsExpiryReasonMap) {
         currentOrgans.setVisible(false);
         currentlyDonating.setVisible(true);
-
-        List<OrgansWithExpiry> results = new ArrayList<>();
+        organsWithExpiries.clear();
         for (Map.Entry<Organs, ExpiryReason> organEntry : organsExpiryReasonMap.entrySet()) {
-            results.add(new OrgansWithExpiry(organEntry.getKey(), organEntry.getValue(), currentUser.getMomentDeath()));
+            organsWithExpiries.add(new OrgansWithExpiry(organEntry.getKey(), organEntry.getValue(), currentUser.getMomentDeath()));
+            System.out.println(organEntry.getKey() + " " + organEntry.getValue());
         }
 
-        ObservableList<OrgansWithExpiry> donatingOrgans = FXCollections.observableArrayList(results);
-        currentlyDonating.setItems(donatingOrgans);
+        currentlyDonating.setItems(organsWithExpiries);
     }
 
     public void refreshCurrentlyDonating() {
-        currentlyDonating.refresh();
+        populateOrganLists(currentUser);
     }
 
     /**
@@ -131,14 +132,14 @@ public class DonationTabPageController {
     void donate() {
         if (!canDonate.getSelectionModel().isEmpty()) {
             Organs toDonate = canDonate.getSelectionModel().getSelectedItem();
+            currentUser.getDonorDetails().addOrgan(toDonate, new ExpiryReason("haHAA", LocalDateTime.now(), "testytest"));
 
             if (currentUser.getMomentDeath() != null) {
-                currentlyDonating.getItems().add(new OrgansWithExpiry(toDonate, new ExpiryReason(), currentUser.getMomentDeath()));
+                populateTableView(currentUser.getDonorDetails().getOrganMap());
             } else {
                 currentOrgans.getItems().add(toDonate);
             }
 
-            currentUser.getDonorDetails().addOrgan(toDonate, null);
             if (parent.currentlyReceivingContains(toDonate)) {
                 currentUser.getCommonOrgans().add(toDonate);
             }
@@ -158,12 +159,12 @@ public class DonationTabPageController {
      */
     @FXML
     void undonate() {
-        if (!currentlyDonating.getSelectionModel().isEmpty()) {
+        if (!currentlyDonating.getSelectionModel().isEmpty() || !currentOrgans.getSelectionModel().isEmpty()) {
             Organs organ;
 
             if (currentUser.getMomentDeath() != null) {
                 OrgansWithExpiry toUndonate = currentlyDonating.getSelectionModel().getSelectedItem();
-                currentlyDonating.getItems().remove(toUndonate);
+                organsWithExpiries.remove(toUndonate);
                 organ = toUndonate.getOrganType();
             } else {
                 organ = currentOrgans.getSelectionModel().getSelectedItem();
@@ -173,11 +174,9 @@ public class DonationTabPageController {
             canDonate.getItems().add(organ);
             if (currentUser.getCommonOrgans().contains(organ)) {
                 currentUser.getCommonOrgans().remove(organ);
-                currentlyDonating.refresh();
             }
 
             currentUser.getDonorDetails().removeOrgan(organ);
-            currentlyDonating.refresh();
             application.update(currentUser);
             parent.updateUndoRedoButtons();
             Log.info("un-donated organ: " + organ + "for User NHI: " + currentUser.getNhi());
