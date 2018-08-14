@@ -147,7 +147,7 @@ public class DonationTabPageController {
     void donate() {
         if (!canDonate.getSelectionModel().isEmpty()) {
             Organs toDonate = canDonate.getSelectionModel().getSelectedItem();
-            currentUser.getDonorDetails().addOrgan(toDonate, new ExpiryReason("0", LocalDateTime.now(), "testytest", ""));
+            currentUser.getDonorDetails().addOrgan(toDonate, new ExpiryReason());
 
             if (currentUser.getMomentDeath() != null) {
                 populateTableView(currentUser.getDonorDetails().getOrganMap());
