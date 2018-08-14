@@ -98,7 +98,6 @@ public class UserController extends BaseController {
 
     @RequestMapping(method = RequestMethod.PUT, value = "/users/{nhi}")
     public ResponseEntity putUser(@PathVariable("nhi") String nhi, @RequestBody User user) {
-        System.out.println(user);
         try (Connection connection = driver.getConnection()) {
             handler.updateUser(connection, nhi, user);
             socketHandler.broadcast(EventTypes.USER_UPDATE,nhi,user.getNhi());

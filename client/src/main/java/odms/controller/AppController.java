@@ -368,7 +368,6 @@ public class AppController {
             }
 
             if (userBridge.getExists(originalUser.getNhi())) {
-                System.out.println(user);
                 userBridge.putUser(user, originalUser.getNhi());
                 Thread.sleep(100);
                 userBridge.putProfilePicture(user.getNhi(), user.getProfilePhotoFilePath());
