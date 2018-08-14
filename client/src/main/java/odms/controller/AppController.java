@@ -70,8 +70,8 @@ public class AppController {
     private String token;
     private SQLBridge sqlBridge = new SQLBridge(client);
     private OdmsSocketHandler socketHandler = new OdmsSocketHandler(client, ServerEventNotifier.getInstance());
-    private String username;
-    private String Name;
+    private String username = "";
+    private String Name = "";
     /**
      * Creates new instance of AppController
      */

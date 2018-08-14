@@ -56,6 +56,9 @@ public class DonationTabPageController {
     @FXML
     private TableColumn<OrgansWithExpiry, String> expiryReasonColumn;
 
+    @FXML
+    private Button expireOrganButton;
+
     private User currentUser;
     private AppController application;
     private UserController parent;
@@ -88,6 +91,9 @@ public class DonationTabPageController {
         organExpiryColumn.setCellFactory(callback -> ProgressBarTableCellFactory.generateCell(organExpiryColumn));
 
         populateOrganLists(user);
+        if (user.getDeathDetails().getMomentOfDeath() == null || application.getUsername().isEmpty()) {
+            expireOrganButton.setVisible(false);
+        }
     }
 
     /**
