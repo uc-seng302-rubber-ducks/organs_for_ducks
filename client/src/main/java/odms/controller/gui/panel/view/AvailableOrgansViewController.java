@@ -62,6 +62,11 @@ public class AvailableOrgansViewController {
     private PauseTransition pause = new PauseTransition(Duration.millis(300));
     private UserLauncher parent;
 
+    /**
+     * Initialises the panel
+     *
+     * @param parent parent to launch the user from double click from
+     */
     @FXML
     public void init(UserLauncher parent) {
         ObservableList<String> organs = FXCollections.observableList(new ArrayList<>());
@@ -89,6 +94,9 @@ public class AvailableOrgansViewController {
         initMatchesTable();
     }
 
+    /**
+     * initialises the available organs table view
+     */
     private void initAvailableOrgansTableView() {
         nhiColumn.setCellValueFactory(new PropertyValueFactory<>("donorNhi"));
         regionColumn.setCellValueFactory(new PropertyValueFactory<>("region"));
@@ -109,6 +117,9 @@ public class AvailableOrgansViewController {
 
     private Comparator<ProgressTask> organTimeLeftComparator = Comparator.comparingLong(p -> p.calculateTimeLeft(LocalDateTime.now()));
 
+    /**
+     * Initialises the table for potential recipients
+     */
     private void initMatchesTable(){
         TableColumn matchesNhiColumn = new TableColumn("NHI");
         TableColumn matchesRegionColumn = new TableColumn("Region");
@@ -120,7 +131,9 @@ public class AvailableOrgansViewController {
         matchesView.getColumns().addAll(matchesNhiColumn,matchesRegionColumn);
     }
 
-
+    /**
+     * Sends a search request to the server to fill up the observable list
+     */
     @FXML
     public void search() {
         logicController.search(0, availableOrganFilterComboBox.getValue(), regionFilterTextField.getText());
