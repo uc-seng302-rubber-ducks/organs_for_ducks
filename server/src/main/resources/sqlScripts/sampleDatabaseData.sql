@@ -24,7 +24,8 @@ INSERT INTO Organ(organId, organName) VALUES
   (9,'SKIN'),
   (10,'BONE_MARROW'),
   (11,'BONE'),
-  (12,'CONNECTIVE_TISSUE');
+  (12, 'CONNECTIVE_TISSUE'),
+  (13, 'TEST_ORGAN');
 
 INSERT INTO PreviousDisease(diseaseName, diagnosisDate, fkUserNhi) VALUES
   ('Chicken Pox', '2015-10-04 19:12:43', 'ABC1234'),
