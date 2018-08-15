@@ -58,6 +58,7 @@ public class AppController {
     private UserBridge userBridge = new UserBridge(client);
     private ClinicianBridge clinicianBridge = new ClinicianBridge(client);
     private AdministratorBridge administratorBridge = new AdministratorBridge(client);
+    private OrgansBridge organsBridge = new OrgansBridge(client);
     private LoginBridge loginBridge = new LoginBridge(client);
     private TransplantBridge transplantBridge = new TransplantBridge(client);
     private UserController userController = null;
@@ -69,7 +70,6 @@ public class AppController {
     private String token;
     private SQLBridge sqlBridge = new SQLBridge(client);
     private OdmsSocketHandler socketHandler = new OdmsSocketHandler(client, ServerEventNotifier.getInstance());
-
     /**
      * Creates new instance of AppController
      */
@@ -464,6 +464,7 @@ public class AppController {
      * @param clinician Clinician to be saved
      */
     public void saveClinician(Clinician clinician) throws IOException {
+        try {
             Clinician originalClinician;
             if (!clinician.getUndoStack().isEmpty()) {
                 originalClinician = clinician.getUndoStack().firstElement().getState();
@@ -472,11 +473,15 @@ public class AppController {
             }
 
             if (clinicianBridge.getExists(originalClinician.getStaffId())) {
-                clinicianBridge.putProfilePicture(originalClinician.getStaffId(), getToken(), clinician.getProfilePhotoFilePath());
                 clinicianBridge.putClinician(clinician, originalClinician.getStaffId(), token);
+                Thread.sleep(100);
+                clinicianBridge.putProfilePicture(originalClinician.getStaffId(), token, clinician.getProfilePhotoFilePath());
             } else {
                 clinicianBridge.postClinician(clinician, token);
             }
+        } catch (InterruptedException e) {
+            Log.warning("Thread sleep time was interrupted", e);
+        }
     }
 
     /**
@@ -720,5 +725,13 @@ public class AppController {
         this.client.connectionPool().evictAll();
         this.client.dispatcher().executorService().shutdown();
 
+    }
+
+    public OrgansBridge getOrgansBridge() {
+        return organsBridge;
+    }
+
+    public void setOrgansBridge(OrgansBridge bridge) {
+        organsBridge = bridge;
     }
 }

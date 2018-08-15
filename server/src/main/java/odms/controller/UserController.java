@@ -69,12 +69,24 @@ public class UserController extends BaseController {
         try (Connection connection = driver.getConnection()) {
             handler.saveUser(newUser, connection);
             socketHandler.broadcast(EventTypes.USER_UPDATE, newUser.getNhi(),newUser.getNhi());
+        } catch (SQLException ex) {
+            Log.severe("cannot add new user to db", ex);
+            throw new ServerDBException(ex);
+        } catch (IOException e) {
+            Log.severe("cannot get user", e);
+            throw new ServerDBException(e);
+        }
+        return new ResponseEntity(HttpStatus.ACCEPTED);
+    }
+
+    @RequestMapping(method = RequestMethod.POST, value = "/usersSilent")
+    public ResponseEntity postUserSilently(@RequestBody User newUser) {
+        try (Connection connection = driver.getConnection()) {
+            handler.saveUser(newUser, connection);
 
         } catch (SQLException ex) {
             Log.severe("cannot add new user to db", ex);
             throw new ServerDBException(ex);
-        } catch (IOException ex) {
-            Log.warning("failed to broadcast update when posting user", ex);
         }
         return new ResponseEntity(HttpStatus.ACCEPTED);
     }

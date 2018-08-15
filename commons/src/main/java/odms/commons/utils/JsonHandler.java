@@ -7,6 +7,7 @@ import com.google.gson.JsonSerializer;
 import com.google.gson.reflect.TypeToken;
 import odms.commons.model.*;
 import odms.commons.model._enum.Directory;
+import odms.commons.model.datamodel.AvailableOrganDetail;
 import odms.commons.model.datamodel.TransplantDetails;
 import odms.commons.model.dto.LoginResponse;
 import okhttp3.Response;
@@ -371,6 +372,21 @@ public class JsonHandler extends DataHandler {
 
     public List<String> decodeQueryResult(ResponseBody body) throws IOException {
         return new Gson().fromJson(body.string(), new TypeToken<ArrayList<String>>(){}.getType());
+    }
+
+    public List<AvailableOrganDetail> decodeAvailableOrgansList(Response response) throws IOException {
+        return new Gson().fromJson(response.body().string(), new TypeToken<List<AvailableOrganDetail>>() {
+        }.getType());
+    }
+
+    /**
+     * converts a raw response into a list of matching organs
+     * @param response response to decode
+     * @return a map of matching organs. will return empty map if none
+     */
+    public List<TransplantDetails> decodeMatchingOrgansList(Response response) throws IOException {
+        return new Gson().fromJson(response.body().string(), new TypeToken<List<TransplantDetails>>() {
+        }.getType());
     }
 }
 

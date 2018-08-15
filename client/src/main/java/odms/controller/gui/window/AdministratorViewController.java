@@ -29,7 +29,7 @@ import odms.commons.exception.InvalidFileException;
 import odms.commons.model.Administrator;
 import odms.commons.model.Clinician;
 import odms.commons.model.User;
-import odms.commons.model._abstract.TransplantWaitListViewer;
+import odms.commons.model._abstract.UserLauncher;
 import odms.commons.model._enum.EventTypes;
 import odms.commons.model._enum.Organs;
 import odms.commons.model.dto.UserOverview;
@@ -43,6 +43,7 @@ import odms.controller.gui.FileSelectorController;
 import odms.controller.gui.StatusBarController;
 import odms.controller.gui.UnsavedChangesAlert;
 import odms.controller.gui.panel.TransplantWaitListController;
+import odms.controller.gui.panel.view.AvailableOrgansViewController;
 import odms.controller.gui.popup.AlertUnclosedWindowsController;
 import odms.controller.gui.popup.CountrySelectionController;
 import odms.controller.gui.popup.DeletedUserController;
@@ -59,7 +60,7 @@ import java.io.PrintStream;
 import java.lang.reflect.Type;
 import java.util.*;
 
-public class AdministratorViewController implements PropertyChangeListener, TransplantWaitListViewer {
+public class AdministratorViewController implements PropertyChangeListener, UserLauncher {
 
     //<editor-fold desc="FXML stuff">
 
@@ -134,6 +135,8 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
     private MenuItem deleteAdmin;
     @FXML
     private ProgressIndicator progressIndicator;
+    @FXML
+    private AvailableOrgansViewController availableOrgansViewController;
 
     //</editor-fold>
     @FXML
@@ -178,7 +181,7 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
         displayDetails();
         transplantWaitListTabPageController.init(appController, this);
         stage.setTitle("Administrator");
-
+        availableOrgansViewController.init(this);
         ServerEventNotifier.getInstance().addPropertyChangeListener(this);
 
         userBridge.getUsers(userStartIndex, ROWS_PER_PAGE, adminSearchField.getText(), regionSearchTextField.getText(), genderComboBox.getValue(), appController.getToken());
@@ -270,7 +273,7 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
 
         userTableView.setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
-                launchUser(userTableView.getSelectionModel().getSelectedItem());
+                launchUser(userTableView.getSelectionModel().getSelectedItem().getNhi());
             }
         });
 
@@ -441,7 +444,7 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
             tv.setOnMouseClicked(event -> {
                 if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
                     if (type.equals(User.class)) {
-                        launchUser(userTableView.getSelectionModel().getSelectedItem());
+                        launchUser(userTableView.getSelectionModel().getSelectedItem().getNhi());
                     } else if (type.equals(Clinician.class)) {
                         launchClinician(clinicianTableView.getSelectionModel().getSelectedItem());
                     } else if (type.equals(Administrator.class)) {
@@ -675,7 +678,7 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
                     }
 
                 for (User user : newUsers) {
-                    new Thread(() -> appController.getUserBridge().postUser(user)).start();
+                    new Thread(() -> appController.getUserBridge().postUserSilently(user)).start();
                 }
                 saveRole(User.class, appController, appController.getToken());
             } catch (FileNotFoundException e) {
@@ -841,12 +844,12 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
      * @param overview the selected user.
      */
     @Override
-    public void launchUser(UserOverview overview) {
+    public void launchUser(String overview) {
         if (overview != null) {
             FXMLLoader userLoader = new FXMLLoader(getClass().getResource("/FXML/userView.fxml"));
             Parent root;
             try {
-                User user = appController.getUserBridge().getUser(overview.getNhi());
+                User user = appController.getUserBridge().getUser(overview);
                 root = userLoader.load();
                 Stage newStage = new Stage();
                 newStage.setScene(new Scene(root));
@@ -858,7 +861,7 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
                 newStage.show();
                 Log.info(messageAdmin + administrator.getUserName() + " successfully launched user overview window for User NHI: " + user.getNhi());
             } catch (IOException e) {
-                Log.severe(messageAdmin + administrator.getUserName() + " failed to load user overview window for User NHI: " + overview.getNhi(), e);
+                Log.severe(messageAdmin + administrator.getUserName() + " failed to load user overview window for User NHI: " + overview, e);
             }
         }
     }
@@ -875,6 +878,8 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
             root = clinicianLoader.load();
             Stage newStage = new Stage();
             newStage.setScene(new Scene(root));
+            newStage.setMinHeight(800);
+            newStage.setMinWidth(1200);
             ClinicianController clinicianController = clinicianLoader.getController();
             clinicianControllers.add(clinicianController);
             Collection<PropertyChangeListener> listeners = new ArrayList<>();
@@ -899,6 +904,8 @@ public class AdministratorViewController implements PropertyChangeListener, Tran
             root = adminLoader.load();
             Stage newStage = new Stage();
             newStage.setScene(new Scene(root));
+            newStage.setMinHeight(800);
+            newStage.setMinWidth(1200);
             AdministratorViewController adminLoaderController = adminLoader.getController();
             administratorViewControllers.add(adminLoaderController);
             adminLoaderController.init(administrator, AppController.getInstance(), newStage, false, null);
