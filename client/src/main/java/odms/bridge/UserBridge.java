@@ -62,9 +62,8 @@ public class UserBridge extends RoleBridge {
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                System.out.println(response.code());
                 if (!response.isSuccessful()) {
-                    throw new IOException("Failed to make POST call to /users");
+                    throw new IOException("Failed to make POST call to /users code: " + response.code());
                 }
                 response.close();
             }
