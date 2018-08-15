@@ -333,10 +333,6 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
             userStage.show();
             Log.info("Clinician " + clinician.getStaffId()
                     + " successfully launched user overview window");
-
-            ArrayList<PropertyChangeListener> listeners = new ArrayList<>();
-            listeners.add(this);
-            userController.init(AppController.getInstance(), user, userStage, true, listeners);
             userStage.show();
         } catch (IOException e) {
             Log.severe("Clinician " + clinician.getStaffId() + " Failed to load user overview window", e);
@@ -600,6 +596,7 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
         }
 
         if (event.getType().equals(EventTypes.USER_UPDATE)) {
+            search();
             refreshTables();
         } else if (event.getType().equals(EventTypes.CLINICIAN_UPDATE) && clinician.getStaffId().equals(event.getOldIdentifier())){
             String newStaffId = event.getNewIdentifier();

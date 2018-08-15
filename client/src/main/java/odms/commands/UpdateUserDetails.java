@@ -2,7 +2,6 @@ package odms.commands;
 
 import odms.commons.model.User;
 import odms.commons.utils.AttributeValidation;
-import odms.commons.utils.Log;
 import odms.controller.AppController;
 import odms.view.IoHelper;
 import picocli.CommandLine;
@@ -11,6 +10,7 @@ import picocli.CommandLine.Option;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.List;
 import java.time.LocalTime;
 
 @Command(name = "details", description = "The current NHI is required to identify the the user. All other tags will update values")
@@ -198,8 +198,14 @@ public class UpdateUserDetails implements Runnable {
             changed = true;
         }
         if (country != null) {
-            user.setCountry(country.replaceAll("_", " "));
-            changed = true;
+            List<String> allowedCountries = controller.getAllowedCountries();
+            if (allowedCountries.contains(country.replaceAll("_", " "))) {
+                user.setCountry(country.replaceAll("_", " "));
+                changed = true;
+            } else {
+                IoHelper.display(country + " is not one of the allowed countries\n" +
+                        "For a list of the allowed countries use the command 'view countries'");
+            }
         }
         if (streetName != null) {
             user.setStreetName(streetName.replaceAll("_", " "));
@@ -215,6 +221,14 @@ public class UpdateUserDetails implements Runnable {
         }
 
         if (region != null) {
+            if (!AttributeValidation.checkString(region.replaceAll("_", " "))) {
+                IoHelper.display("Invalid region");
+                return;
+            } else if (user.getCountry().equals("New Zealand") &&
+                    !controller.getAllNZRegion().contains(region.replaceAll("_", " "))) {
+                IoHelper.display("A New Zealand region must be given");
+                return;
+            }
             user.setRegion(region.replaceAll("_", " "));
             changed = true;
         }

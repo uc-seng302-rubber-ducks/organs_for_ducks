@@ -2,11 +2,11 @@ package odms.utils;
 
 import com.google.gson.Gson;
 import odms.bridge.TransplantBridge;
+import odms.commons.config.ConfigPropertiesLoader;
 import odms.commons.exception.ApiException;
 import odms.commons.model._enum.Environments;
 import odms.commons.model._enum.Organs;
 import odms.commons.model.datamodel.TransplantDetails;
-import odms.commons.utils.ConfigPropertiesLoader;
 import odms.commons.utils.Log;
 import odms.controller.AppController;
 import okhttp3.*;

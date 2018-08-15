@@ -49,9 +49,8 @@ public class Log {
                             .directory() + bootTime + ".log", true);
                     handler.setFormatter(formatter);
                     logger.addHandler(handler);
-
                     //disable logging to console
-                    //logger.setUseParentHandlers(false);
+                    logger.setUseParentHandlers(false);
                     break;
 
                 case SERVER:
@@ -71,6 +70,7 @@ public class Log {
                         }
                     });
                     logger.addHandler(handler);
+                    logger.setLevel(Level.SEVERE);
                     logger.setUseParentHandlers(false);
                     break;
 
@@ -132,7 +132,7 @@ public class Log {
      * @param message String message to be logged
      */
     public static void debug(String message) {
-        logger.log(Level.INFO, message);
+        logger.log(Level.SEVERE, message);
     }
 
     /**

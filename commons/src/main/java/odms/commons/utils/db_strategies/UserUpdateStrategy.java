@@ -10,9 +10,7 @@ import odms.commons.model.datamodel.ReceiverOrganDetailsHolder;
 import odms.commons.utils.Log;
 
 import java.sql.*;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -767,9 +765,10 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
 
         Timestamp sqlDeathMoment = null;
         LocalDateTime deathMoment = user.getDeathDetails().createMomentOfDeath(user.getDateOfDeath(), user.getTimeOfDeath());
-        System.out.print(deathMoment + "(Line 767 UserUpdateStrategy)");
         if (deathMoment != null) {
             sqlDeathMoment = java.sql.Timestamp.valueOf(deathMoment);
+        } else {
+            return;
         }
 
         try (PreparedStatement createDeathDetails  = connection.prepareStatement(CREATE_DEATH_DETAILS)) {

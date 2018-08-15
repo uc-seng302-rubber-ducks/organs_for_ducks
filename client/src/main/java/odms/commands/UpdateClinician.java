@@ -10,6 +10,7 @@ import picocli.CommandLine;
 import picocli.CommandLine.Option;
 
 import java.io.IOException;
+import java.util.List;
 
 @CommandLine.Command(name = "clinician", description = "Allows the details for a clinician to be updated using the current staffID as the identifier")
 public class UpdateClinician implements Runnable {
@@ -67,7 +68,10 @@ public class UpdateClinician implements Runnable {
             return;
         }
 
-        if (newId != null && !originalId.equals("0")) {
+        if (newId != null && originalId.equals("0")) {
+            IoHelper.display("The default clinician cannot update their ID");
+            return;
+        } else if (newId != null) {
             valid = AttributeValidation.checkString(newId);
             if (!controller.getClinicianBridge().getExists(newId) && valid) {
                 clinician.setStaffId(newId);
@@ -75,9 +79,6 @@ public class UpdateClinician implements Runnable {
             } else {
                 IoHelper.display("Could not update staff ID from " + originalId + " to " + newId);
             }
-        } else if (originalId.equals("0")) {
-            IoHelper.display("The default clinician cannot update their ID");
-            return;
         }
 
         if (firstName != null) {
@@ -132,12 +133,6 @@ public class UpdateClinician implements Runnable {
             changed = true;
         }
 
-        if (region != null) {
-            clinician.setRegion(region.replaceAll("_", " "));
-            valid &= AttributeValidation.checkString(region.replaceAll("_", " "));
-            changed = true;
-        }
-
         if (zipCode != null) {
             clinician.setZipCode(zipCode);
             valid &= AttributeValidation.checkString(zipCode);
@@ -145,9 +140,26 @@ public class UpdateClinician implements Runnable {
         }
 
         if (country != null) {
-            clinician.setCountry(country.replaceAll("_", " "));
-            valid &= AttributeValidation.checkString(country.replaceAll("_", " "));
-            changed = true;
+            List<String> allowedCountries = controller.getAllowedCountries();
+            if (allowedCountries.contains(country.replaceAll("_", " "))) {
+                clinician.setCountry(country.replaceAll("_", " "));
+                changed = true;
+            } else {
+                IoHelper.display(country + " is not one of the allowed countries\n" +
+                        "For a list of the allowed countries use the command 'view countries'");
+            }
+        }
+
+        if (region != null) {
+            if (clinician.getCountry().equals("New Zealand") &&
+                    !controller.getAllNZRegion().contains(region.replaceAll("_", " "))) {
+                valid &= false;
+                IoHelper.display("A New Zealand region must be given");
+            } else {
+                clinician.setRegion(region.replaceAll("_", " "));
+                valid &= AttributeValidation.checkString(region.replaceAll("_", " "));
+                changed = true;
+            }
         }
 
         if (changed && valid) {

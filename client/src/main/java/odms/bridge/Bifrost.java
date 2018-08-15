@@ -1,11 +1,9 @@
 package odms.bridge;
 
-import odms.commons.utils.ConfigPropertiesLoader;
+import odms.commons.config.ConfigPropertiesSession;
 import odms.commons.utils.JsonHandler;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
-
-import java.util.Properties;
 
 
 /**
@@ -20,9 +18,8 @@ public class Bifrost {
     protected JsonHandler handler = new JsonHandler();
 
     Bifrost(OkHttpClient client) {
-        Properties prop = new ConfigPropertiesLoader().loadConfig("clientConfig.properties");
-        tokenHeader = prop.getProperty("server.token.header", "x-auth-token");
-        this.ip = prop.getProperty("server.url", "http://localhost:4941/odms/v1");
+        tokenHeader = ConfigPropertiesSession.getInstance().getProperty("server.token.header", "x-auth-token");
+        this.ip = ConfigPropertiesSession.getInstance().getProperty("server.url", "http://localhost:4941/odms/v1");
         this.client = client;
     }
 
