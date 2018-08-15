@@ -398,6 +398,7 @@ public class AdministratorViewController implements PropertyChangeListener, User
 
         userTableView.getColumns().clear();
         userTableView.getColumns().setAll(fNameColumn, lNameColumn, dobColumn, dodColumn, ageColumn, regionColumn, organsColumn);
+        userTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
         populateUserSearchTable();
     }
