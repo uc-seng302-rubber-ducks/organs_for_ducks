@@ -1,12 +1,14 @@
-package odms.commons.utils;
+package odms.commons.database;
 
+import odms.commons.database.db_strategies.AbstractUpdateStrategy;
+import odms.commons.database.db_strategies.AdminUpdateStrategy;
+import odms.commons.database.db_strategies.ClinicianUpdateStrategy;
+import odms.commons.database.db_strategies.UserUpdateStrategy;
 import odms.commons.model.*;
 import odms.commons.model._enum.Organs;
 import odms.commons.model.datamodel.*;
-import odms.commons.utils.db_strategies.AbstractUpdateStrategy;
-import odms.commons.utils.db_strategies.AdminUpdateStrategy;
-import odms.commons.utils.db_strategies.ClinicianUpdateStrategy;
-import odms.commons.utils.db_strategies.UserUpdateStrategy;
+import odms.commons.utils.Log;
+import odms.commons.utils.PasswordManager;
 
 import java.io.InputStream;
 import java.lang.reflect.Type;
@@ -18,6 +20,7 @@ import java.util.*;
 
 public class DBHandler {
 
+    public static final String MOMENT_OF_DEATH = "momentOfDeath";
     /**
      * SQL commands for select
      * SELECT_USER_ONE_TO_ONE_INFO_STMT is for getting all info that follows one-to-one relationship. eg: 1 user can only have 1 address.
@@ -95,9 +98,11 @@ public class DBHandler {
             "JOIN Organ ON OrganDonating.fkOrgansId = organId " +
             "JOIN HealthDetails ON OrganDonating.fkUserNhi = HealthDetails.fkUserNhi " +
             "JOIN User U ON DeathDetails.fkUserNhi = U.nhi " +
+            "JOIN OrganExpiryDetails OED ON OrganDonating.donatingId = OED.fkDonatingId " +
             "WHERE (bloodType LIKE ? OR bloodType IS NULL)" +
             "AND (organName LIKE ? OR organName IS NULL )" +
-            "AND (DeathDetails.region LIKE ? or DeathDetails.region IS NULL)" +
+            "AND (DeathDetails.region LIKE ? or DeathDetails.region IS NULL) " +
+            "AND (OED.timeOfExpiry is NULL ) " +
             "LIMIT ? OFFSET ?";
     private static final String SELECT_AVAILABLE_ORGANS_BY_NHI = "select * from OrganDonating " +
             "JOIN DeathDetails ON OrganDonating.fkUserNhi = DeathDetails.fkUserNhi " +
@@ -107,7 +112,6 @@ public class DBHandler {
             "WHERE (nhi = ?) " +
             "AND organName = ?";
     private static final String SELECT_DEATH_DETAILS_STMT = "SELECT * FROM DeathDetails WHERE fkUserNhi = ?";
-    public static final String MOMENT_OF_DEATH = "momentOfDeath";
     private AbstractUpdateStrategy updateStrategy;
 
 

@@ -1,10 +1,10 @@
 package odms.controller.user.details;
 
+import odms.commons.database.DBHandler;
+import odms.commons.database.JDBCDriver;
 import odms.commons.model.User;
 import odms.commons.model._enum.Organs;
 import odms.commons.model.datamodel.ExpiryReason;
-import odms.commons.utils.DBHandler;
-import odms.commons.utils.JDBCDriver;
 import odms.commons.utils.Log;
 import odms.controller.BaseController;
 import odms.controller.OdmsController;

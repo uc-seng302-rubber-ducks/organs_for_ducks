@@ -1,9 +1,9 @@
 package odms.controller;
 
+import odms.commons.database.DBHandler;
+import odms.commons.database.JDBCDriver;
 import odms.commons.model.Administrator;
 import odms.commons.model._enum.EventTypes;
-import odms.commons.utils.DBHandler;
-import odms.commons.utils.JDBCDriver;
 import odms.commons.utils.Log;
 import odms.exception.NotFoundException;
 import odms.exception.ServerDBException;

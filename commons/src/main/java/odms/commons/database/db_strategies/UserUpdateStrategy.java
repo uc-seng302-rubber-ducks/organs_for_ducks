@@ -1,4 +1,4 @@
-package odms.commons.utils.db_strategies;
+package odms.commons.database.db_strategies;
 
 import odms.commons.model.Disease;
 import odms.commons.model.MedicalProcedure;
@@ -19,6 +19,9 @@ import java.util.Map;
 
 public class UserUpdateStrategy extends AbstractUpdateStrategy {
 
+    public static final String START_TRANSACTION = "START TRANSACTION";
+    public static final String ROLLBACK = "ROLLBACK";
+    public static final String COMMIT = "COMMIT";
     //<editor-fold desc="constants">
     private static final String CREATE_USER_STMT = "INSERT INTO User (nhi, firstName, middleName, lastName, preferedName, dob, dod, timeCreated, lastModified) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
     private static final String CREATE_USER_CONTACT_STMT = "INSERT INTO ContactDetails (fkUserNhi, homePhone, email, cellPhone) VALUES (?, ?, ?, ?)";
@@ -35,10 +38,8 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
     private static final String CREATE_DONATING_ORGAN = "INSERT INTO OrganDonating (fkUserNhi, fkOrgansId) VALUES (?, ?)";
     private static final String CREATE_RECEIVING_ORGAN = "INSERT INTO OrganAwaiting (fkUserNhi, fkOrgansId) VALUES (?, ?)";
     private static final String CREATE_EXPIRY_DETAILS = "INSERT INTO OrganExpiryDetails(id, fkDonatingId, timeOfExpiry, reason, `name`) VALUES (?,?,?,?,?)";
-
     private static final String UPDATE_USER_STMT = "UPDATE User SET nhi = ?, firstName = ?, middleName = ?, lastName = ?, preferedName = ?, dob = ?, dod = ?, lastModified = ? WHERE nhi = ?";
     private static final String UPDATE_USER_HEALTH_STMT = "UPDATE HealthDetails SET gender = ?, birthGender = ?, smoker = ?, alcoholConsumption = ?, height = ?, weight = ?, bloodType = ? WHERE fkUserNhi = ?";
-
     private static final String UPDATE_USER_CONTACT_STMT = "UPDATE ContactDetails JOIN Address ON contactId = fkContactId " +
             "SET streetNumber = ?, streetName = ?, neighbourhood = ?, city = ?, region = ?, zipCode = ?, country = ?, homePhone = ?, cellPhone = ?, email = ? " +
             "WHERE ContactDetails.fkUserNhi = ? AND contactId != ?";
@@ -46,14 +47,10 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
             "JOIN Address ON contactId = Address.fkContactId " +
             "SET contactName = ?, contactRelationship = ?, homePhone = ?, cellPhone = ?, email = ?, streetNumber = ?, streetName = ?, neighbourhood = ?, city = ?, region = ?, zipCode = ?, country = ? " +
             "WHERE EmergencyContactDetails.fkUserNhi = ?";
-
     private static final String DELETE_USER_STMT = "DELETE FROM User WHERE nhi = ?";
     private static final String CREATE_RECEIVING_ORGAN_DATE = "INSERT INTO OrganAwaitingDates (fkAwaitingId, dateRegistered, dateDeregistered) VALUES (?, ?, ?)";
     private static final String GET_RECEIVER_ID = "SELECT awaitingId FROM OrganAwaiting WHERE fkUserNhi = ? AND fkOrgansId = ?";
     private static final String GET_DONATING_ID = "SELECT donatingId FROM OrganDonating WHERE fkUserNhi = ? AND fkOrgansId = ?";
-    public static final String START_TRANSACTION = "START TRANSACTION";
-    public static final String ROLLBACK = "ROLLBACK";
-    public static final String COMMIT = "COMMIT";
     private static final String CREATE_DEATH_DETAILS = "INSERT INTO DeathDetails (fkUserNhi, momentOfDeath, city, region, country) VALUES (?, ?, ?, ?, ?)";
     private static final String UPDATE_DEATH_DETAILS = "UPDATE DeathDetails SET momentOfDeath = ?, city = ?, region = ?, country = ? WHERE fkUserNhi = ?";
     //</editor-fold>
