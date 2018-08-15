@@ -144,13 +144,14 @@ public class UpdateUserController {
     private boolean listen = true;
     private File inFile;
     private String defaultCountry = "New Zealand";
+    private UserController userController;
 
     /**
      * @param user       The current user.
      * @param controller An instance of the AppController class.
      * @param stage      The applications stage.
      */
-    public void init(User user, AppController controller, Stage stage) {
+    public void init(User user, AppController controller, Stage stage, UserController userController) {
         countrySelector.setItems(FXCollections.observableList(controller.getAllowedCountries()));
         ecCountrySelector.setItems(FXCollections.observableList(controller.getAllowedCountries()));
         for (Regions regions : Regions.values()) {
@@ -158,6 +159,8 @@ public class UpdateUserController {
             ecRegionSelector.getItems().add(regions.toString());
         }
 
+
+        this.userController = userController;
 
         this.stage = stage;
         oldUser = user;
@@ -609,8 +612,7 @@ public class UpdateUserController {
 
         if (valid) {
             removeFormChanges();
-            UserController userController = appController.getUserController();
-            if (inFile != null) {
+            if(inFile != null){
                 String filePath = setUpImageFile(inFile, currentUser.getNhi());
                 currentUser.setProfilePhotoFilePath(filePath);
             }
