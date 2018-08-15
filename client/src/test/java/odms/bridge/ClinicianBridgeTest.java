@@ -4,10 +4,7 @@ import com.google.gson.Gson;
 import odms.commons.model.Clinician;
 import odms.controller.AppController;
 import okhttp3.*;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.*;
 import org.mockito.ArgumentCaptor;
 
 import java.io.IOException;
@@ -161,16 +158,41 @@ public class ClinicianBridgeTest {
 
     @Test
     public void getClinicianShouldReturnNullOnFailToSend() throws IOException {
-        Assert.fail("not yet implemented");
+        Call mockCall = mock(Call.class);
+        when(mockClient.newCall(any(Request.class))).thenReturn(mockCall);
+        when(mockCall.execute()).thenThrow(new IOException());
+
+        Clinician result = bridge.getClinician("0", "asdf");
+        Assert.assertNull(result);
     }
 
     @Test
-    public void getClinicianShouldReturnNullOnNullResponse() {
-        Assert.fail("not yet implemented");
+    public void getClinicianShouldReturnNullOnNullResponse() throws IOException {
+        Call mockCall = mock(Call.class);
+        when(mockClient.newCall(any(Request.class))).thenReturn(mockCall);
+        when(mockCall.execute()).thenReturn(null);
+
+        Clinician result = bridge.getClinician("0", "asdf");
+        Assert.assertNull(result);
     }
 
     @Test
-    public void getClinicianShouldReturnClinicianOnSuccess() {
-        Assert.fail("not yet implemented");
+    @Ignore // also needs to make a request to get profile picture.
+    public void getClinicianShouldReturnClinicianOnSuccess() throws IOException {
+        Clinician expected = new Clinician("geoff", "0", "password");
+        Call mockCall = mock(Call.class);
+        Response mockResponse = mock(Response.class);
+        ResponseBody mockResponseBody = mock(ResponseBody.class);
+        when(mockClient.newCall(any(Request.class))).thenReturn(mockCall);
+        when(mockCall.execute()).thenReturn(mockResponse);
+        when(mockResponse.code()).thenReturn(200);
+        when(mockResponse.header(eq("Content-Type"))).thenReturn("image/jpg");
+        when(mockResponse.body()).thenReturn(mockResponseBody);
+        when(mockResponseBody.string()).thenReturn(new Gson().toJson(expected));
+
+        Clinician actual = bridge.getClinician("0", "asdf");
+
+        Assert.assertEquals(expected, actual);
+
     }
 }
