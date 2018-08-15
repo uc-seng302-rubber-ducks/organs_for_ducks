@@ -99,6 +99,8 @@ public class OrganExpiryGUITest extends ApplicationTest {
         clickOn("#organsTab");
         clickOn("#canDonate");
         clickOnButton(this, "#donate");
+        clickOnButton(this, "#donate");
+
     }
 
 
@@ -109,26 +111,21 @@ public class OrganExpiryGUITest extends ApplicationTest {
     }
 
     @Test
-    public void expireOrgan() {
+    public void confirmExpireOrgan() {
         clickOnButton(this, "#expireOrganButton");
         clickOn("#expirationReasonTextArea");
         write("hello");
         clickOnButton(this, "#ExpiryConfirmButton");
-        assertEquals("hello", getCellValue("#currentlyDonating", 1, 1).toString());
-
-    }
-
-
-    @Test
-    public void removeExpiry() {
-        clickOnButton(this, "#");
-        clickOn("#Yes");
-
+        assertEquals("hello", getCellValue("#currentlyDonating", 2, 0).toString());
     }
 
     @Test
-    public void expireOrganCancel() {
-
+    public void CancelExpireOrgan() {
+        clickOnButton(this, "#expireOrganButton");
+        clickOn("#expirationReasonTextArea");
+        write("hello");
+        clickOnButton(this, "#cancelExpiryButton");
+        assertEquals("", getCellValue("#currentlyDonating", 2, 0).toString());
     }
 
 

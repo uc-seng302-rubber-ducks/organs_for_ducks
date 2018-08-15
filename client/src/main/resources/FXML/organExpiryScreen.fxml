@@ -20,6 +20,7 @@
         <Label layoutX="62.0" layoutY="161.0" text="Reason:"/>
         <Button fx:id="ExpiryConfirmButton" layoutX="305.0" layoutY="349.0" mnemonicParsing="false"
                 onAction="#confirmExpiration" text="Confirm"/>
-        <Button layoutX="36.0" layoutY="349.0" mnemonicParsing="false" onAction="#cancelExpiration" text="Cancel"/>
+        <Button fx:id="cancelExpiryButton" layoutX="36.0" layoutY="349.0" mnemonicParsing="false"
+                onAction="#cancelExpiration" text="Cancel"/>
     </children>
 </AnchorPane>

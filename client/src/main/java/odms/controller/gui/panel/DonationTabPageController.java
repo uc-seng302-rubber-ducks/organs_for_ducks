@@ -29,6 +29,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Map;
+import java.util.Optional;
 
 public class DonationTabPageController {
 
@@ -58,6 +59,9 @@ public class DonationTabPageController {
 
     @FXML
     private Button expireOrganButton;
+
+    @FXML
+    private Button removeExpiryReasonButton;
 
     private User currentUser;
     private AppController application;
@@ -97,9 +101,11 @@ public class DonationTabPageController {
     public void updateButton() {
         if (currentUser.getDeathDetails().getMomentOfDeath() == null || application.getUsername().isEmpty()) {
             expireOrganButton.setVisible(false);
+            removeExpiryReasonButton.setVisible(false);
+
         } else {
             expireOrganButton.setVisible(true);
-
+            removeExpiryReasonButton.setVisible(true);
         }
 
     }
@@ -108,10 +114,16 @@ public class DonationTabPageController {
     public void removeExpiry() {
         if (currentlyDonating.getItems().size() > 0) {
             if (currentlyDonating.getSelectionModel().getSelectedItem() != null) {
-                Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "please confirm you want to remove the manual expiry for " + currentlyDonating.getSelectionModel().getSelectedItem().getOrganType(), ButtonType.YES, ButtonType.NO, ButtonType.CANCEL);
-                alert.showAndWait();
+                Alert alert = new Alert(Alert.AlertType.WARNING,
+                        "please confirm you want to remove the manual expiry for ",
+                        ButtonType.YES, ButtonType.NO);
+
                 alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
-                if (alert.getResult() == ButtonType.YES) {
+                Button yesButton = (Button) alert.getDialogPane().lookupButton(ButtonType.YES);
+                yesButton.setId("yeseButton");
+
+                Optional<ButtonType> result = alert.showAndWait();
+                if (result.get() == ButtonType.YES) {
                     ExpiryReason expiryReason = currentUser.getDonorDetails().getOrganMap().get(currentlyDonating.getSelectionModel().getSelectedItem().getOrganType());
                     expiryReason.setName("");
                     expiryReason.setTimeOrganExpired(null);
