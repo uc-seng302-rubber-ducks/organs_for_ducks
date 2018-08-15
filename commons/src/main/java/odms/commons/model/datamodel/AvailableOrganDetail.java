@@ -20,6 +20,7 @@ public class AvailableOrganDetail implements Listenable {
     private String bloodType;
     private transient ProgressTask progressTask; //NOSONAR
     private transient PropertyChangeSupport pcs; //NOSONAR
+    private transient ExpiryReason expiryReason;
     private long age;
 
     public AvailableOrganDetail(Organs organ, String nhi, LocalDateTime momentOfDeath, String region, String bloodType, long age) {
@@ -170,4 +171,9 @@ public class AvailableOrganDetail implements Listenable {
     public void fire(PropertyChangeEvent event) {
         pcs.firePropertyChange(event);
     }
+
+    public void setExpiryReason(ExpiryReason reason) {
+        expiryReason = reason;
+    }
+
 }
