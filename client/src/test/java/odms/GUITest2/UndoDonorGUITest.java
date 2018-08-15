@@ -24,9 +24,7 @@ import java.util.concurrent.TimeoutException;
 import static odms.TestUtils.FxRobotHelper.clickOnButton;
 import static odms.TestUtils.FxRobotHelper.setTextField;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doCallRealMethod;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.testfx.api.FxAssert.verifyThat;
 
 public class UndoDonorGUITest extends ApplicationTest {
@@ -49,6 +47,8 @@ public class UndoDonorGUITest extends ApplicationTest {
         when(application.getUserBridge()).thenReturn(bridge);
         when(application.getUserOverviews()).thenReturn(Collections.singleton(UserOverview.fromUser(user)));
         when(bridge.getUser("ABC1234")).thenReturn(user);
+        when(application.getName()).thenReturn("Jeff");
+        when(application.getUsername()).thenReturn("erson");
 
         doCallRealMethod().when(application).setUserController(any(UserController.class));
         doCallRealMethod().when(application).getUserController();

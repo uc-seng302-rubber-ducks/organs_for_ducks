@@ -71,7 +71,7 @@ public class AppController {
     private SQLBridge sqlBridge = new SQLBridge(client);
     private OdmsSocketHandler socketHandler = new OdmsSocketHandler(client, ServerEventNotifier.getInstance());
     private String username = "";
-    private String Name = "";
+    private String name = "";
     /**
      * Creates new instance of AppController
      */
@@ -158,11 +158,11 @@ public class AppController {
     }
 
     public String getName() {
-        return Name;
+        return name;
     }
 
     public void setName(String name) {
-        Name = name;
+        this.name = name;
     }
 
     /**
