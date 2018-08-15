@@ -24,7 +24,7 @@ import odms.bridge.ClinicianBridge;
 import odms.commons.exception.ApiException;
 import odms.commons.model.Clinician;
 import odms.commons.model.User;
-import odms.commons.model._abstract.TransplantWaitListViewer;
+import odms.commons.model._abstract.UserLauncher;
 import odms.commons.model._enum.EventTypes;
 import odms.commons.model._enum.Organs;
 import odms.commons.model.dto.UserOverview;
@@ -34,6 +34,7 @@ import odms.controller.AppController;
 import odms.controller.gui.StatusBarController;
 import odms.controller.gui.UnsavedChangesAlert;
 import odms.controller.gui.panel.TransplantWaitListController;
+import odms.controller.gui.panel.view.AvailableOrgansViewController;
 import odms.controller.gui.popup.DeletedUserController;
 import odms.controller.gui.popup.utils.AlertWindowFactory;
 import odms.socket.ServerEventNotifier;
@@ -55,7 +56,7 @@ import static odms.commons.utils.PhotoHelper.displayImage;
 /**
  * Class for the functionality of the Clinician view of the application
  */
-public class ClinicianController implements PropertyChangeListener, TransplantWaitListViewer {
+public class ClinicianController implements PropertyChangeListener, UserLauncher {
 
     //<editor-fold desc="FXML declarations">
     @FXML
@@ -111,6 +112,8 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
     @FXML
     private TransplantWaitListController transplantWaitListTabPageController;
     @FXML
+    private AvailableOrgansViewController availableOrgansViewController;
+    @FXML
     private Button redoButton;
     @FXML
     private MenuItem deleteClinician;
@@ -158,6 +161,7 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
         this.stage = stage;
         this.clinician = clinician;
         this.admin = fromAdmin;
+        openStages = new ArrayList<>();
 
         ServerEventNotifier.getInstance().addPropertyChangeListener(this);
         setDefaultFilters();
@@ -168,12 +172,11 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
         initSearchTable();
         transplantWaitListTabPageController.init(appController, this);
         statusBarPageController.init();
+        availableOrgansViewController.init(this);
 
         if (clinician.getStaffId().equals("0")) {
             deleteClinician.setDisable(true);
         }
-
-        openStages = new ArrayList<>();
 
         if (fromAdmin) {
             logoutMenuClinician.setText("Go Back");
@@ -191,6 +194,9 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
             logoutMenuClinician.setOnAction(e -> logout());
         }
 
+        stage.setOnCloseRequest(e -> availableOrgansViewController.shutdownThreads());
+
+        displayImage(profileImage, clinician.getProfilePhotoFilePath());
         if (clinician.getProfilePhotoFilePath() == null || clinician.getProfilePhotoFilePath().equals("")) {
             URL url = getClass().getResource("/default-profile-picture.jpg");
             displayImage(profileImage, url);
@@ -206,6 +212,7 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
     private void goBack() {
         checkSave();
         stage.close();
+        availableOrgansViewController.shutdownThreads();
         Log.info("Successfully closed update user window for Clinician StaffID: " + clinician.getStaffId());
     }
 
@@ -295,6 +302,7 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
         if (appController.getUserOverviews().isEmpty()) {
             return;
         }
+        searchTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         displaySearchTable();
         //set on-click behaviour
     }
@@ -317,20 +325,20 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
         searchTableView.setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
                 UserOverview user = searchTableView.getSelectionModel().getSelectedItem();
-                launchUser(user);
+                launchUser(user.getNhi());
             }
         });
         searchTableView.refresh();
     }
 
     /**
-     * @param userOverview A summary of the user to be launched
+     * @param userNhi A summary of the user to be launched
      */
-    public void launchUser(UserOverview userOverview) {
+    public void launchUser(String userNhi) {
         FXMLLoader userLoader = new FXMLLoader(getClass().getResource("/FXML/userView.fxml"));
         Parent root;
         try {
-            User user = appController.getUserBridge().getUser(userOverview.getNhi());
+            User user = appController.getUserBridge().getUser(userNhi);
             root = userLoader.load();
             Stage userStage = new Stage();
             userStage.setScene(new Scene(root));
@@ -467,6 +475,7 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
             newStage.setScene(new Scene(root));
             newStage.show();
             stage.close();
+            availableOrgansViewController.shutdownThreads();
             LoginController loginController = loader.getController();
             loginController.init(AppController.getInstance(), newStage);
             deleteTempDirectory();
@@ -583,6 +592,7 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
                 logout();
             } else {
                 stage.close();
+                availableOrgansViewController.shutdownThreads();
             }
         }
     }
@@ -606,6 +616,7 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
         if (event.getType().equals(EventTypes.USER_UPDATE)) {
             search();
             refreshTables();
+            availableOrgansViewController.search();
         } else if (event.getType().equals(EventTypes.CLINICIAN_UPDATE) && clinician.getStaffId().equals(event.getOldIdentifier())){
             String newStaffId = event.getNewIdentifier();
             try {
