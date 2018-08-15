@@ -22,6 +22,8 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Map;
 
+import static java.lang.Thread.sleep;
+
 /**
  * Controller class for editing death details of a user
  */
@@ -79,6 +81,12 @@ public class UpdateDeathDetailsController {
         //Check if the user has any expired organs
         boolean hasOverridedExpiry = false;
         for (Map.Entry<Organs, ExpiryReason> pair: currentUser.getDonorDetails().getOrganMap().entrySet()) {
+            try {
+                sleep(10);
+            } catch (InterruptedException e) {
+                Log.warning("Sleep was interupted", e);
+                Thread.currentThread().interrupt();
+            }
             if (pair.getValue().getTimeOrganExpired() != null) {
                 hasOverridedExpiry = true;
                 break;
