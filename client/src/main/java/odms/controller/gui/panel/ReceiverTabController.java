@@ -67,6 +67,8 @@ public class ReceiverTabController {
 
     private UserController parent;
 
+    private boolean runStopWaitingForAllOrgans = true;
+
     private ObservableList<OrgansWithDates> currentlyRecieving;
     private OrganDeregisterReason organDeregisterationReason;
 
@@ -265,9 +267,10 @@ public class ReceiverTabController {
 
 
         //if user already died, user cannot receive organs
-        if (currentUser.getDeceased()) {
-            registerButton.setDisable(true);
-            reRegisterButton.setDisable(true);
+        if (currentUser.isDeceased()) {
+            deadMode(true);
+        } else {
+            deadMode(false);
         }
     }
 
@@ -357,16 +360,8 @@ public class ReceiverTabController {
                 parent.refreshDiseases();
 
             } else if (organDeregisterationReason == OrganDeregisterReason.RECEIVER_DIED) {
-                List<OrgansWithDates> currentlyReceiving = new ArrayList<>(currentlyWaitingFor.getItems());
-                for (OrgansWithDates organ : currentlyReceiving) {
-
-                    currentlyWaitingFor.getItems().remove(organ);
-                    organ.setLatestRegistration(LocalDate.now());
-                    noLongerWaitingForOrgan.getItems().add(organ);
-                }
-                currentUser.getReceiverDetails().stopWaitingForAllOrgans();
-                registerButton.setDisable(true);
-                reRegisterButton.setDisable(true);
+                runStopWaitingForAllOrgans = true;
+                deadMode(true);
             }
 
             if (organDeregisterationReason != OrganDeregisterReason.RECEIVER_DIED) {
@@ -397,6 +392,38 @@ public class ReceiverTabController {
 
         } else {
             Log.warning("Unable to de-register organ: null for receiver NHI: " + currentUser.getNhi());
+        }
+    }
+
+    /**
+     * Disables all buttons on Receiver Tab
+     * and moved any organs from waiting table to
+     * not waiting table.
+     *
+     * @param isDead true if current user is dead, false otherwise
+     */
+    private void deadMode(boolean isDead){
+        if(isDead){
+            registerButton.setDisable(true);
+            reRegisterButton.setDisable(true);
+            deRegisterButton.setDisable(true);
+            List<OrgansWithDates> currentlyReceiving = new ArrayList<>(currentlyWaitingFor.getItems());
+            for (OrgansWithDates organ : currentlyReceiving) {
+
+                currentlyWaitingFor.getItems().remove(organ);
+                organ.setLatestRegistration(LocalDate.now());
+                noLongerWaitingForOrgan.getItems().add(organ);
+            }
+
+            if (!currentUser.getReceiverDetails().getOrgans().isEmpty() && runStopWaitingForAllOrgans) {
+                currentUser.getReceiverDetails().stopWaitingForAllOrgans();
+                runStopWaitingForAllOrgans = false; //Prevents stopWaitingForAllOrgans from running more than once.
+            }
+
+        } else {
+            registerButton.setDisable(false);
+            reRegisterButton.setDisable(false);
+            deRegisterButton.setDisable(false);
         }
     }
 
