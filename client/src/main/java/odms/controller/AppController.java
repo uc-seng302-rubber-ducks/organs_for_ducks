@@ -464,6 +464,7 @@ public class AppController {
      * @param clinician Clinician to be saved
      */
     public void saveClinician(Clinician clinician) throws IOException {
+        try {
             Clinician originalClinician;
             if (!clinician.getUndoStack().isEmpty()) {
                 originalClinician = clinician.getUndoStack().firstElement().getState();
@@ -472,11 +473,15 @@ public class AppController {
             }
 
             if (clinicianBridge.getExists(originalClinician.getStaffId())) {
-                clinicianBridge.putProfilePicture(originalClinician.getStaffId(), getToken(), clinician.getProfilePhotoFilePath());
                 clinicianBridge.putClinician(clinician, originalClinician.getStaffId(), token);
+                Thread.sleep(100);
+                clinicianBridge.putProfilePicture(originalClinician.getStaffId(), token, clinician.getProfilePhotoFilePath());
             } else {
                 clinicianBridge.postClinician(clinician, token);
             }
+        } catch (InterruptedException e) {
+            Log.warning("Thread sleep time was interrupted", e);
+        }
     }
 
     /**

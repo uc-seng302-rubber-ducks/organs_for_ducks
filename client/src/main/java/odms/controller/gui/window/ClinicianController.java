@@ -43,6 +43,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -198,6 +199,12 @@ public class ClinicianController implements PropertyChangeListener, UserLauncher
         stage.setOnCloseRequest(e -> availableOrgansViewController.shutdownThreads());
 
         displayImage(profileImage, clinician.getProfilePhotoFilePath());
+        if (clinician.getProfilePhotoFilePath() == null || clinician.getProfilePhotoFilePath().equals("")) {
+            URL url = getClass().getResource("/default-profile-picture.jpg");
+            displayImage(profileImage, url);
+        } else {
+            displayImage(profileImage, clinician.getProfilePhotoFilePath());
+        }
     }
 
     /**
@@ -242,11 +249,13 @@ public class ClinicianController implements PropertyChangeListener, UserLauncher
             statusBarPageController.updateStatus(clinician.getStaffId() + " " + clinician.getChanges().get(clinician.getChanges().size() - 1).getChange());
 
         }
-        if (clinician.getProfilePhotoFilePath() != null) {
+        if (clinician.getProfilePhotoFilePath() == null || clinician.getProfilePhotoFilePath().equals("")) {
+            URL url = getClass().getResource("/default-profile-picture.jpg");
+            displayImage(profileImage, url);
+        } else {
             File inFile = new File(clinician.getProfilePhotoFilePath());
             Image image = new Image("file:" + inFile.getPath(), 200, 200, false, true);
             profileImage.setImage(image);
-
         }
     }
 

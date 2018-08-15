@@ -10,6 +10,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
@@ -57,6 +58,15 @@ public final class PhotoHelper {
         if (filePath != null) {
             Image image = new Image("file:" + filePath, 200, 200, false, true);
             imageView.setImage(image);
+        }
+    }
+
+    public static void displayImage(ImageView imageView, URL url) {
+        try {
+            Image image = new Image(url.openStream());
+            imageView.setImage(image);
+        } catch (IOException o){
+            //no
         }
     }
 

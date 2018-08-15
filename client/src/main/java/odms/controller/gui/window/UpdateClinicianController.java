@@ -25,6 +25,7 @@ import odms.controller.gui.popup.utils.AlertWindowFactory;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -155,6 +156,7 @@ public class UpdateClinicianController {
             confirmButton.setText("Save Changes");
 
             initialPath = clinician.getProfilePhotoFilePath();
+
             prefillFields(clinician);
 
             // checks if there was a change in any of the clinician input fields
@@ -228,10 +230,10 @@ public class UpdateClinicianController {
      */
     @FXML
     private void resetProfileImage() {
-        ClassLoader classLoader = getClass().getClassLoader();
-        inFile = new File(classLoader.getResource("default-profile-picture.jpg").getFile());
-        currentClinician.setProfilePhotoFilePath(inFile.getPath());
-        displayImage(profileImage, inFile.getPath());
+        currentClinician.setProfilePhotoFilePath("");
+        inFile = null;
+        URL url = getClass().getResource("/default-profile-picture.jpg");
+        displayImage(profileImage, url);
     }
 
 
@@ -292,7 +294,13 @@ public class UpdateClinicianController {
             regionSelector.getSelectionModel().select(region); //region selector is visible by default if clinician's country is NZ.
         }
 
-        displayImage(profileImage, currentClinician.getProfilePhotoFilePath());
+        if (clinician.getProfilePhotoFilePath() == null || clinician.getProfilePhotoFilePath().equals("")) {
+            URL url = getClass().getResource("/default-profile-picture.jpg");
+            displayImage(profileImage, url);
+        } else {
+            displayImage(profileImage, currentClinician.getProfilePhotoFilePath());
+        }
+
         Listen = true;
     }
 
