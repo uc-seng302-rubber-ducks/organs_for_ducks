@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public class OrganSorterTests {
+public class OrganSorterTest {
 
     List<TransplantDetails> transplantList;
     AvailableOrganDetail organ;
