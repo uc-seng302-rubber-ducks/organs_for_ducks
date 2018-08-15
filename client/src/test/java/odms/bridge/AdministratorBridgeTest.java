@@ -3,6 +3,7 @@ package odms.bridge;
 import com.google.gson.Gson;
 import odms.commons.exception.ApiException;
 import odms.commons.model.Administrator;
+import odms.commons.model.AdministratorBuilder;
 import odms.controller.AppController;
 import okhttp3.*;
 import org.junit.After;
@@ -219,17 +220,82 @@ public class AdministratorBridgeTest {
 
     @Test
     public void getAdminShouldThrowExceptionOn400range() throws IOException {
-        Assert.fail("not yet implemented");
+        Call mockCall = mock(Call.class);
+        Response mockResponse = mock(Response.class);
+        when(mockClient.newCall(any(Request.class))).thenReturn(mockCall);
+        when(mockCall.execute()).thenReturn(mockResponse);
+        when(mockResponse.code()).thenReturn(403);
+        try {
+            bridge.getAdmin("default", "tokenGoesHere");
+            Assert.fail("no exception thrown");
+        } catch (ApiException expectedEx) {
+            Assert.assertTrue(400 <= expectedEx.getResponseCode() && expectedEx.getResponseCode() <= 499);
+        }
     }
 
     @Test
     public void getAdminShouldThrowExceptionOn400response() throws IOException {
-        Assert.fail("not yet implemented");
+        Call mockCall = mock(Call.class);
+        Response mockResponse = mock(Response.class);
+        when(mockClient.newCall(any(Request.class))).thenReturn(mockCall);
+        when(mockCall.execute()).thenReturn(mockResponse);
+        when(mockResponse.code()).thenReturn(400);
+        try {
+            bridge.getAdmin("default", "tokenGoesHere");
+            Assert.fail("no exception thrown");
+        } catch (ApiException expectedEx) {
+            Assert.assertEquals(400, expectedEx.getResponseCode());
+        }
     }
 
     @Test
     public void getAdminShouldThrowExceptionOnNon200response() throws IOException {
-        Assert.fail("not yet implemented");
+        Call mockCall = mock(Call.class);
+        Response mockResponse = mock(Response.class);
+        when(mockClient.newCall(any(Request.class))).thenReturn(mockCall);
+        when(mockCall.execute()).thenReturn(mockResponse);
+        when(mockResponse.code()).thenReturn(201);
+        try {
+            bridge.getAdmin("default", "tokenGoesHere");
+            Assert.fail("no exception thrown");
+        } catch (ApiException expectedEx) {
+            Assert.assertEquals(201, expectedEx.getResponseCode());
+        }
+    }
+
+    @Test
+    public void getAdminShouldReturnAdminOnSucessfulRequest() throws IOException {
+        Administrator expected = new AdministratorBuilder().setUserName("hackerman").setFirstName("geoff").setLastName("geofferson").build();
+
+        Call mockCall = mock(Call.class);
+        Response mockResponse = mock(Response.class);
+        ResponseBody mockResponseBody = mock(ResponseBody.class);
+        when(mockClient.newCall(any(Request.class))).thenReturn(mockCall);
+        when(mockCall.execute()).thenReturn(mockResponse);
+        when(mockResponse.code()).thenReturn(200);
+        when(mockResponse.body()).thenReturn(mockResponseBody);
+        when(mockResponseBody.string()).thenReturn(new Gson().toJson(expected));
+
+        Administrator actual = bridge.getAdmin("default", "tokenGoesHere");
+        Assert.assertEquals(expected, actual);
+        Assert.assertEquals(expected.getFirstName(), actual.getFirstName());
+        Assert.assertEquals(expected.getLastName(), actual.getLastName());
+    }
+
+    @Test
+    public void getAdminShouldReturnNullWhenBadResponseBodyReceived() throws IOException {
+        Call mockCall = mock(Call.class);
+        Response mockResponse = mock(Response.class);
+        ResponseBody mockResponseBody = mock(ResponseBody.class);
+        when(mockClient.newCall(any(Request.class))).thenReturn(mockCall);
+        when(mockCall.execute()).thenReturn(mockResponse);
+        when(mockResponse.code()).thenReturn(200);
+        when(mockResponse.body()).thenReturn(mockResponseBody);
+        when(mockResponseBody.string()).thenThrow(new IOException());
+
+        Administrator response = bridge.getAdmin("default", "tokenGoesHere");
+
+        Assert.assertNull(response);
     }
 
 
