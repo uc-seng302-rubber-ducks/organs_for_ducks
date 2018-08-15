@@ -109,6 +109,9 @@ public class DonationTabPageController {
         });
     }
 
+    /**
+     * Hides the expire organ and cancel expiry buttons if there is no clinician/admin present or if the user is alive
+     */
     public void updateButton() {
         if (currentUser.getDeathDetails().getMomentOfDeath() == null || application.getUsername().isEmpty()) {
             expireOrganButton.setVisible(false);
@@ -118,9 +121,14 @@ public class DonationTabPageController {
             expireOrganButton.setVisible(true);
             removeExpiryReasonButton.setVisible(true);
         }
-
     }
 
+    /**
+     * Attempts to cancel the manual expiry of a donated organ.
+     * <p>
+     * If the organ has no manual expiry or no organ is selected,
+     * pop ups will be displayed with appropriate user feedback.
+     */
     @FXML
     public void removeExpiry() {
         if (currentlyDonating.getItems().size() > 0) {
@@ -153,7 +161,6 @@ public class DonationTabPageController {
             alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
             alert.showAndWait();
         }
-
     }
 
     /**
@@ -203,6 +210,9 @@ public class DonationTabPageController {
         currentlyDonating.setItems(organsWithExpiries);
     }
 
+    /**
+     * Calls a method to repopulate the donation tables based on changes to the user.
+     */
     public void refreshCurrentlyDonating() {
         populateOrganLists(currentUser);
     }
@@ -236,6 +246,11 @@ public class DonationTabPageController {
         parent.refreshCurrentlyReceivingList();
     }
 
+    /**
+     * Opens the window to manually expire the selected organ.
+     * If no organ is selected, or the organ has expired naturally,
+     * the appropriate user feedback will be displayed in a pop up.
+     */
     @FXML
     void expireOrgan() {
         if (currentlyDonating.getItems().size() > 0) {
@@ -260,12 +275,12 @@ public class DonationTabPageController {
                     Log.severe("Failed to load update death details window for User NHI: " + currentUser.getNhi(), e);
                 }
             } else {
-                Alert alert = new Alert(Alert.AlertType.INFORMATION, "the organ is expired, so it can't be changed", ButtonType.OK);
+                Alert alert = new Alert(Alert.AlertType.INFORMATION, "The organ is expired, so it can't be changed", ButtonType.OK);
                 alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
                 alert.showAndWait();
             }
         } else {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION, "the user is not currently donating any organs", ButtonType.OK);
+            Alert alert = new Alert(Alert.AlertType.INFORMATION, "The user is not currently donating any organs", ButtonType.OK);
             alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
             alert.showAndWait();
         }
@@ -304,6 +319,9 @@ public class DonationTabPageController {
         parent.refreshCurrentlyReceivingList();
     }
 
+    /**
+     * Shuts down all progress task threads for the donation table
+     */
     public synchronized void shutdownThreads() {
         if (!Platform.isFxApplicationThread()) {
             return;

@@ -29,6 +29,16 @@ public class OrganExpiryViewController {
     private Stage stage;
     private DonationTabPageController donationTabPageController;
 
+    /**
+     * Initializes the window with the option to manually expire the selected organ
+     *
+     * @param appController             main controller that holds the name and id of the account expiring the organ
+     * @param organs                    the organ to be manually expired
+     * @param expiryReason              the expiry detail object to be modified
+     * @param user                      the current user
+     * @param stage                     a new stage
+     * @param donationTabPageController the donation tab which holds tables that need to be refreshed
+     */
     @FXML
     public void init(AppController appController, Organs organs, ExpiryReason expiryReason, User user, Stage stage, DonationTabPageController donationTabPageController) {
         logicController = new OrganExpiryLogicController(appController, expiryReason);
@@ -41,6 +51,9 @@ public class OrganExpiryViewController {
         warningLabelOE.setText("");
     }
 
+    /**
+     * Confirms and updates the manual expiry of the selected organ
+     */
     public void confirmExpiration() {
         if( Pattern.compile(" *").matcher(expirationReasonTextArea.getText()).matches()){
             warningLabelOE.setText("A reason for expiry must be given");
@@ -51,6 +64,9 @@ public class OrganExpiryViewController {
         stage.close();
     }
 
+    /**
+     * Cancels the manual expiry
+     */
     public void cancelExpiration() {
         donationTabPageController.refreshCurrentlyDonating();
         stage.close();

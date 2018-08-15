@@ -7,7 +7,7 @@ import odms.commons.utils.ProgressTask;
 import java.time.LocalDateTime;
 
 /**
- * Used to populate progress bar
+ * Used to populate the donation table when the user is deceased
  */
 public class OrgansWithExpiry implements Expirable {
 

@@ -4,6 +4,7 @@ import javafx.collections.FXCollections;
 import javafx.scene.control.TableView;
 import odms.App;
 import odms.TestUtils.AppControllerMocker;
+import odms.TestUtils.CommonTestMethods;
 import odms.bridge.*;
 import odms.commons.model.Clinician;
 import odms.commons.model.User;
@@ -44,7 +45,7 @@ public class OrganExpiryGUITest extends ApplicationTest {
 
     @BeforeClass
     public static void initialization() {
-        //CommonTestMethods.runHeadless();
+        CommonTestMethods.runHeadless();
     }
 
     @Before
@@ -100,9 +101,7 @@ public class OrganExpiryGUITest extends ApplicationTest {
         clickOn("#canDonate");
         clickOnButton(this, "#donate");
         clickOnButton(this, "#donate");
-
     }
-
 
     @After
     public void tearDown() throws TimeoutException {
@@ -127,6 +126,5 @@ public class OrganExpiryGUITest extends ApplicationTest {
         clickOnButton(this, "#cancelExpiryButton");
         assertEquals("", getCellValue("#currentlyDonating", 2, 0).toString());
     }
-
 
 }

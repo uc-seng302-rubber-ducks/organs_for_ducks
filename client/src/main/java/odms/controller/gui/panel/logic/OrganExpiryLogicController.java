@@ -14,6 +14,12 @@ public class OrganExpiryLogicController {
         this.expiryReason = expiryReason;
     }
 
+    /**
+     * Updates the expiry reason object to contain the reason for expiry, the time of manual expiry
+     * and the name and id of the clinician/admin who expired it
+     *
+     * @param reason the given reason for why a donated organ was manually expired
+     */
     public void setExpiryReason(String reason) {
         expiryReason.setReason(reason);
         expiryReason.setId(appController.getUsername());

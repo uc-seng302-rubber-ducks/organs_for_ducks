@@ -47,8 +47,14 @@ public class ProgressTask extends Task<Void> {
         }
     }
 
+    /**
+     * Increases the percentage value of the progress bar
+     *
+     * @return null
+     * @throws InterruptedException if the thread was interrupted by external sources
+     */
     @Override
-    protected Void call() throws Exception {
+    protected Void call() throws InterruptedException {
         if (bar == null) {
             return null; // Doesn't start the task without a progress bar
         }
@@ -76,6 +82,13 @@ public class ProgressTask extends Task<Void> {
         return null;
     }
 
+    /**
+     * Converts the percentage of the organs life before expiry to a hex value
+     * and attaches the appropriate colour to the progress bar
+     *
+     * @param progress the time value populating the progress bar
+     * @return the colour value to attach to the progress bar
+     */
     private String getColorStyle(double progress) {
         String green;
         String red;
@@ -96,7 +109,7 @@ public class ProgressTask extends Task<Void> {
             green = "ff";
         }
         String colour = "#" + red + green + "00";
-            // remove all green color from the  back ground
+        // remove all green color from the  back ground
         if (progress <= (this.lowerBound)) {
             // replace this when organs have a lower bound
             colour = "#" + red + "00" + "00";
@@ -104,7 +117,12 @@ public class ProgressTask extends Task<Void> {
         return "-fx-accent: " + colour + "; -fx-control-inner-background: rgba(255, 255, 255, 0.1);  -fx-background-color: linear-gradient(to left, Maroon , Maroon " + colourPercent + "% , transparent " + colourPercent + "%); ";
     }
 
-
+    /**
+     * Calculates the time left before the organ naturally expires.
+     * Used to increase the progress on the corresponding progress bar.
+     *
+     * @return A string of the time left in hours, minutes and seconds
+     */
     private String getTimeRemaining() {
         int hours = (int) HOURS.between(LocalDateTime.now(), death.plusSeconds(organ.getUpperBoundSeconds()));
         int mins = (int) MINUTES.between(LocalDateTime.now(), death.plusSeconds(organ.getUpperBoundSeconds())) - hours * 60;
@@ -132,6 +150,11 @@ public class ProgressTask extends Task<Void> {
         }
     }
 
+    /**
+     * Checks if the organ that the progress bar corresponds to has been manually expired
+     *
+     * @return true if the organ is expired, false otherwise
+     */
     public boolean isExpired() {
         if (expiryDetails != null) {
             return expiryDetails.getExpired();
@@ -139,7 +162,5 @@ public class ProgressTask extends Task<Void> {
             return detail.getExpired();
         }
     }
-
-
 
 }
