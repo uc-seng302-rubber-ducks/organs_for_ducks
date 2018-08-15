@@ -44,12 +44,14 @@ import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static java.time.temporal.ChronoUnit.YEARS;
 import static odms.commons.utils.PhotoHelper.deleteTempDirectory;
 import static odms.commons.utils.PhotoHelper.displayImage;
 
@@ -285,7 +287,7 @@ public class ClinicianController implements PropertyChangeListener, UserLauncher
         dodColumn.setCellValueFactory(new PropertyValueFactory<>("dod"));
 
         ageColumn = new TableColumn<>("Age");
-        ageColumn.setCellValueFactory(new PropertyValueFactory<>("age"));
+        ageColumn.setCellValueFactory(c -> new SimpleStringProperty(Long.toString(YEARS.between(c.getValue().getDob(), LocalDateTime.now()))));
 
         regionColumn = new TableColumn<>("Region");
         regionColumn.setCellValueFactory(new PropertyValueFactory<>("region"));
