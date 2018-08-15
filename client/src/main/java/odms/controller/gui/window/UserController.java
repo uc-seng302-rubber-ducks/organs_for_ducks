@@ -151,6 +151,8 @@ public class UserController implements PropertyChangeListener {
         application = controller;
         this.fromClinician = fromClinician;
 
+        changeCurrentUser(user);
+
         // This is the place to set visible and invisible controls for Clinician vs User
         medicationTabPageController.init(controller, user, fromClinician, this);
         procedureTabPageController.init(controller, user, fromClinician, this);
@@ -162,7 +164,6 @@ public class UserController implements PropertyChangeListener {
 
         undoButton.setVisible(true);
         redoButton.setVisible(true);
-        changeCurrentUser(user);
 
         // Sets the button to be disabled
         updateUndoRedoButtons();

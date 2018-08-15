@@ -2,7 +2,8 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.AnchorPane?>
-<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="odms.controller.gui.panel.DonationTabPageController">
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" minHeight="0.0" minWidth="0.0" prefHeight="582.0" prefWidth="790.0"
+            xmlns="http://javafx.com/javafx/8" fx:controller="odms.controller.gui.panel.DonationTabPageController">
     <children>
         <ListView fx:id="canDonate" layoutX="41.0" layoutY="86.0" prefHeight="437.0" prefWidth="200.0" />
         <ListView fx:id="currentOrgans" layoutX="514.0" layoutY="86.0" prefHeight="437.0" prefWidth="200.0" />
@@ -24,5 +25,7 @@
         <Button fx:id="undonateButton" layoutX="284.0" layoutY="286.0" mnemonicParsing="false" onAction="#undonate" text="&lt;&lt;" />
         <Button fx:id="expireOrganButton" layoutX="567.0" layoutY="536.0" mnemonicParsing="false"
                 onAction="#expireOrgan" text="Expire seleted organ"/>
+        <Button fx:id="removeExpiryReasonButton" layoutX="421.0" layoutY="536.0" mnemonicParsing="false"
+                onAction="#removeExpiry" text="remove"/>
     </children>
 </AnchorPane>

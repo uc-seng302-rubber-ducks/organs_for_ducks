@@ -160,7 +160,8 @@ public class UndoUserUpdateFormGUITest extends ApplicationTest {
     }
 
     @Test
-    public void MultipleActionsTwoUndosOneAction() {
+    public void
+    MultipleActionsTwoUndosOneAction() {
         //check we can traverse the stack properly
         clickOn("#editMenuUser");
         clickOn("#editDetailsUser");

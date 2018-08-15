@@ -91,9 +91,7 @@ public class DonationTabPageController {
         organExpiryColumn.setCellFactory(callback -> ProgressBarTableCellFactory.generateCell(organExpiryColumn));
 
         populateOrganLists(user);
-        if (user.getDeathDetails().getMomentOfDeath() == null || application.getUsername().isEmpty()) {
-            expireOrganButton.setVisible(false);
-        }
+        updateButton();
     }
 
     public void updateButton() {
@@ -102,6 +100,34 @@ public class DonationTabPageController {
         } else {
             expireOrganButton.setVisible(true);
 
+        }
+
+    }
+
+    @FXML
+    public void removeExpiry() {
+        if (currentlyDonating.getItems().size() > 0) {
+            if (currentlyDonating.getSelectionModel().getSelectedItem() != null) {
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "please confirm you want to remove the manual expiry for " + currentlyDonating.getSelectionModel().getSelectedItem().getOrganType(), ButtonType.YES, ButtonType.NO, ButtonType.CANCEL);
+                alert.showAndWait();
+                alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
+                if (alert.getResult() == ButtonType.YES) {
+                    ExpiryReason expiryReason = currentUser.getDonorDetails().getOrganMap().get(currentlyDonating.getSelectionModel().getSelectedItem().getOrganType());
+                    expiryReason.setName("");
+                    expiryReason.setTimeOrganExpired(null);
+                    expiryReason.setId("");
+                    expiryReason.setReason("");
+                    refreshCurrentlyDonating();
+                }
+            } else {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION, "Please select an organ to remove an expiry from", ButtonType.OK);
+                alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
+                alert.showAndWait();
+            }
+        } else {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION, "the user is not currently donating any organs", ButtonType.OK);
+            alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
+            alert.showAndWait();
         }
 
     }
