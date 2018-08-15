@@ -42,6 +42,7 @@ public class OrganExpiryViewController {
     }
 
     public void cancelExpiration() {
+        donationTabPageController.refreshCurrentlyDonating();
         stage.close();
     }
 }

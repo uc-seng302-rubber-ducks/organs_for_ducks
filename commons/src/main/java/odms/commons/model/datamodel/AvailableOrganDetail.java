@@ -1,5 +1,6 @@
 package odms.commons.model.datamodel;
 
+import odms.commons.model._abstract.Expirable;
 import odms.commons.model._abstract.Listenable;
 import odms.commons.model._enum.Organs;
 import odms.commons.utils.ProgressTask;
@@ -11,7 +12,7 @@ import java.time.LocalDateTime;
 
 import static java.time.temporal.ChronoUnit.SECONDS;
 
-public class AvailableOrganDetail implements Listenable {
+public class AvailableOrganDetail implements Listenable, Expirable {
     private Organs organ;
     private String donorNhi;
     private LocalDateTime momentOfDeath;
@@ -176,4 +177,8 @@ public class AvailableOrganDetail implements Listenable {
         expiryReason = reason;
     }
 
+    @Override
+    public boolean getExpired() {
+        return false;
+    }
 }
