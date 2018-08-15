@@ -1,5 +1,6 @@
 package odms.commons.model.datamodel;
 
+import odms.commons.model._abstract.Expirable;
 import odms.commons.model._abstract.Listenable;
 import odms.commons.model._enum.Organs;
 import odms.commons.utils.ProgressTask;
@@ -11,7 +12,7 @@ import java.time.LocalDateTime;
 
 import static java.time.temporal.ChronoUnit.SECONDS;
 
-public class AvailableOrganDetail implements Listenable {
+public class AvailableOrganDetail implements Listenable, Expirable {
     private Organs organ;
     private String donorNhi;
     private LocalDateTime momentOfDeath;
@@ -20,6 +21,7 @@ public class AvailableOrganDetail implements Listenable {
     private String bloodType;
     private transient ProgressTask progressTask; //NOSONAR
     private transient PropertyChangeSupport pcs; //NOSONAR
+    private transient ExpiryReason expiryReason;
     private long age;
 
     public AvailableOrganDetail(Organs organ, String nhi, LocalDateTime momentOfDeath, String region, String bloodType, long age) {
@@ -169,5 +171,14 @@ public class AvailableOrganDetail implements Listenable {
     @Override
     public void fire(PropertyChangeEvent event) {
         pcs.firePropertyChange(event);
+    }
+
+    public void setExpiryReason(ExpiryReason reason) {
+        expiryReason = reason;
+    }
+
+    @Override
+    public boolean getExpired() {
+        return false;
     }
 }

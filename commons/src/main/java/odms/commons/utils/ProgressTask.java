@@ -59,6 +59,10 @@ public class ProgressTask extends Task<Void> {
             updateMessage(getTimeRemaining());
             final int finalI = i; // This is entirely so that it can be used in Platform.runLater
             Platform.runLater(() -> bar.setStyle(getColorStyle(((time - finalI) / time))));
+            if (expiryDetails != null && expiryDetails.getExpired()) {
+                updateProgress(1.0, 1.0);
+                break;
+            }
             Thread.sleep(1000);
         }
 
@@ -94,11 +98,11 @@ public class ProgressTask extends Task<Void> {
         String colour = "#" + red + green + "00";
             // remove all green color from the  back ground
         if (progress <= (this.lowerBound)) {
-                // replace this when organs have a lower bound
-                colour = "#" + red + "00" + "00";
-            }
-        return "-fx-accent: " + colour + "; -fx-control-inner-background: rgba(255, 255, 255, 0.1);  -fx-background-color: linear-gradient(to left, Maroon , Maroon " + colourPercent + "% , transparent " + colourPercent + "%); ";
+            // replace this when organs have a lower bound
+            colour = "#" + red + "00" + "00";
         }
+        return "-fx-accent: " + colour + "; -fx-control-inner-background: rgba(255, 255, 255, 0.1);  -fx-background-color: linear-gradient(to left, Maroon , Maroon " + colourPercent + "% , transparent " + colourPercent + "%); ";
+    }
 
 
     private String getTimeRemaining() {
@@ -125,6 +129,14 @@ public class ProgressTask extends Task<Void> {
             return 0;
         } else {
             return timeLeft;
+        }
+    }
+
+    public boolean isExpired() {
+        if (expiryDetails != null) {
+            return expiryDetails.getExpired();
+        } else {
+            return detail.getExpired();
         }
     }
 

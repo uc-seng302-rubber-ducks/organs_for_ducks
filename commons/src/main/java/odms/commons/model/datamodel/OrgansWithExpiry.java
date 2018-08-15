@@ -1,5 +1,6 @@
 package odms.commons.model.datamodel;
 
+import odms.commons.model._abstract.Expirable;
 import odms.commons.model._enum.Organs;
 import odms.commons.utils.ProgressTask;
 
@@ -8,7 +9,7 @@ import java.time.LocalDateTime;
 /**
  * Used to populate progress bar
  */
-public class OrgansWithExpiry {
+public class OrgansWithExpiry implements Expirable {
 
     private Organs organType;
     private transient ProgressTask progressTask; //NOSONAR
@@ -94,4 +95,8 @@ public class OrgansWithExpiry {
         this.name = name;
     }
 
+    @Override
+    public boolean getExpired() {
+        return expiryTime != null;
+    }
 }

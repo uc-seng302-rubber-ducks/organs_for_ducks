@@ -4,6 +4,7 @@ import com.google.gson.annotations.Expose;
 import odms.commons.model._enum.Organs;
 import odms.commons.model.datamodel.ExpiryReason;
 
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -25,7 +26,7 @@ public class DonorDetails {
      */
     DonorDetails(User attachedUser) {
         this.attachedUser = attachedUser;
-        this.organs = new HashMap<>();
+        this.organs = new EnumMap<>(Organs.class);
     }
 
     public void setOrgans(Map<Organs, ExpiryReason> organs) {
@@ -52,7 +53,7 @@ public class DonorDetails {
     public void addOrgan(Organs organ, ExpiryReason reason) { //The previous logic on this seemed like it had had an initial goal but had
         // been edited multiple times and never looked at as a whole
         if (organs == null) {
-            organs = new HashMap<>();
+            organs = new EnumMap<>(Organs.class);
         }
 
         if (attachedUser != null) {

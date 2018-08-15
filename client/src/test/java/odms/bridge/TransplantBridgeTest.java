@@ -1,7 +1,6 @@
-package odms.utils;
+package odms.bridge;
 
 import com.google.gson.Gson;
-import odms.bridge.TransplantBridge;
 import odms.commons.config.ConfigPropertiesLoader;
 import odms.commons.exception.ApiException;
 import odms.commons.model._enum.Environments;

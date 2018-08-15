@@ -10,6 +10,8 @@ import odms.TestUtils.CommonTestMethods;
 import odms.bridge.*;
 import odms.commons.model.Clinician;
 import odms.commons.model.User;
+import odms.commons.model._enum.Organs;
+import odms.commons.model.datamodel.ExpiryReason;
 import odms.commons.model.dto.UserOverview;
 import odms.controller.AppController;
 import odms.controller.gui.window.UserController;
@@ -26,10 +28,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
+import java.util.*;
 import java.util.concurrent.TimeoutException;
 
 import static odms.TestUtils.FxRobotHelper.*;
@@ -231,6 +230,20 @@ public class UpdateDeathDetailsControllerGUITest extends ApplicationTest{
         verifyThat("#regionOfDeathValue", LabeledMatchers.hasText(""));
         verifyThat("#countryOfDeathValue", LabeledMatchers.hasText(""));
 
+    }
+
+    @Test
+    public void testDateAndTimeCannotBeEditedIfOrganExpired() {
+        ExpiryReason testReason = new ExpiryReason("0", LocalDateTime.now(), "Testing", "Tester");
+        testUser.getDonorDetails().getOrganMap().put(Organs.LIVER, testReason);
+
+        loginAsClinician();
+        clickOnButton(this, "#updateDeathDetailsButton");
+
+        verifyThat("#updateDeathDetailsOverrideWarningLabel", Node::isVisible);
+        verifyThat("#updateDeathDetailsTimeTextField", Node::isDisabled);
+        verifyThat("#updateDeathDetailsDatePicker", Node::isDisabled);
+        verifyThat("#removeUpdateDeathDetailsButton", Node::isDisabled);
     }
 
 }

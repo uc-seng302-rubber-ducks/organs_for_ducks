@@ -11,6 +11,8 @@ import odms.controller.AppController;
 import odms.controller.gui.panel.DonationTabPageController;
 import odms.controller.gui.panel.logic.OrganExpiryLogicController;
 
+import java.util.regex.Pattern;
+
 public class OrganExpiryViewController {
     @FXML
     private Label expirationOrgan;
@@ -19,6 +21,9 @@ public class OrganExpiryViewController {
 
     @FXML
     private TextArea expirationReasonTextArea;
+
+    @FXML
+    private Label warningLabelOE;
 
     private OrganExpiryLogicController logicController;
     private Stage stage;
@@ -33,15 +38,21 @@ public class OrganExpiryViewController {
         expirationNhi.setText(user.getNhi());
         this.stage = stage;
         this.donationTabPageController = donationTabPageController;
+        warningLabelOE.setText("");
     }
 
     public void confirmExpiration() {
+        if( Pattern.compile(" *").matcher(expirationReasonTextArea.getText()).matches()){
+            warningLabelOE.setText("A reason for expiry must be given");
+            return;
+        }
         logicController.setExpiryReason(expirationReasonTextArea.getText());
         donationTabPageController.refreshCurrentlyDonating();
         stage.close();
     }
 
     public void cancelExpiration() {
+        donationTabPageController.refreshCurrentlyDonating();
         stage.close();
     }
 }

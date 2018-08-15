@@ -1,7 +1,7 @@
 package odms.utils;
 
-import odms.commons.utils.DBHandler;
-import odms.commons.utils.JDBCDriver;
+import odms.commons.database.DBHandler;
+import odms.commons.database.JDBCDriver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

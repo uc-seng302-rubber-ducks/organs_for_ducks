@@ -1,7 +1,8 @@
-package odms.commons.utils;
+package odms.commons.database;
 
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 import odms.commons.config.ConfigPropertiesLoader;
+import odms.commons.utils.Log;
 
 import java.beans.PropertyVetoException;
 import java.sql.Connection;

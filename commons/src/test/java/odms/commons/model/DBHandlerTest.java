@@ -1,9 +1,9 @@
 package odms.commons.model;
 
+import odms.commons.database.DBHandler;
 import odms.commons.model._enum.Organs;
 import odms.commons.model.datamodel.Address;
 import odms.commons.model.datamodel.DeathDetails;
-import odms.commons.utils.DBHandler;
 import org.junit.*;
 import test_utils.DBHandlerMocker;
 

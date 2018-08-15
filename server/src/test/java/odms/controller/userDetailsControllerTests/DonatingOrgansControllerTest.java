@@ -1,10 +1,10 @@
 package odms.controller.userDetailsControllerTests;
 
+import odms.commons.database.DBHandler;
+import odms.commons.database.JDBCDriver;
 import odms.commons.model.User;
 import odms.commons.model._enum.Organs;
 import odms.commons.model.datamodel.ExpiryReason;
-import odms.commons.utils.DBHandler;
-import odms.commons.utils.JDBCDriver;
 import odms.controller.user.details.DonatingOrgansController;
 import odms.exception.ServerDBException;
 import odms.utils.DBManager;
