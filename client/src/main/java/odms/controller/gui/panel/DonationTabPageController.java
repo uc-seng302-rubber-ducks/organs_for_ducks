@@ -91,10 +91,22 @@ public class DonationTabPageController {
         expiryReasonColumn.setCellValueFactory(new PropertyValueFactory<>("reason"));
         manualExpiryTimeColumn.setCellValueFactory(new PropertyValueFactory<>("expiryTime"));
         organExpiryColumn.setCellValueFactory(new PropertyValueFactory<>("progressTask"));
-        expiryStaffIdColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
-
+        expiryStaffIdColumn.setCellValueFactory(new PropertyValueFactory<>("ID"));
+        currentlyDonating.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         populateOrganLists(user);
         updateButton();
+        currentlyDonating.getSelectionModel().selectedItemProperty().addListener(a-> {
+            if(currentlyDonating.getSelectionModel().getSelectedItem() == null){
+                return;
+            }
+            if (!currentlyDonating.getSelectionModel().getSelectedItem().getExpired()){
+                removeExpiryReasonButton.setDisable(true);
+                expireOrganButton.setText("Expire Organ");
+            } else{
+                removeExpiryReasonButton.setDisable(false);
+                expireOrganButton.setText("Edit Expiry Details");
+            }
+        });
     }
 
     public void updateButton() {

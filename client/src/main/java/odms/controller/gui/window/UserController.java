@@ -150,7 +150,8 @@ public class UserController implements PropertyChangeListener {
         this.stage = stage;
         application = controller;
         this.fromClinician = fromClinician;
-
+        stage.setMinWidth(1200);
+        stage.setMinHeight(800);
         changeCurrentUser(user);
 
         // This is the place to set visible and invisible controls for Clinician vs User
