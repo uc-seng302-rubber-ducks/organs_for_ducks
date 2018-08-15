@@ -360,6 +360,7 @@ public class ReceiverTabController {
                 parent.refreshDiseases();
 
             } else if (organDeregisterationReason == OrganDeregisterReason.RECEIVER_DIED) {
+                runStopWaitingForAllOrgans = true;
                 deadMode(true);
             }
 
