@@ -1,9 +1,9 @@
 package odms.controller;
 
+import odms.commons.database.DBHandler;
+import odms.commons.database.JDBCDriver;
 import odms.commons.model.datamodel.AvailableOrganDetail;
 import odms.commons.model.datamodel.TransplantDetails;
-import odms.commons.utils.DBHandler;
-import odms.commons.utils.JDBCDriver;
 import odms.commons.utils.OrganSorter;
 import odms.exception.ServerDBException;
 import odms.security.IsClinician;

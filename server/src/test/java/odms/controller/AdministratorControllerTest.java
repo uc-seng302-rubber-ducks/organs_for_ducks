@@ -1,8 +1,8 @@
 package odms.controller;
 
+import odms.commons.database.DBHandler;
+import odms.commons.database.JDBCDriver;
 import odms.commons.model.Administrator;
-import odms.commons.utils.DBHandler;
-import odms.commons.utils.JDBCDriver;
 import odms.exception.NotFoundException;
 import odms.exception.ServerDBException;
 import odms.socket.SocketHandler;
@@ -19,9 +19,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 

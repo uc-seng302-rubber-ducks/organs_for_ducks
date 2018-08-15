@@ -1,4 +1,4 @@
-package odms.commons.utils.db_strategies;
+package odms.commons.database.db_strategies;
 
 import odms.commons.model.Clinician;
 import odms.commons.utils.Log;

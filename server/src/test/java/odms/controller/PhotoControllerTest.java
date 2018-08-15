@@ -1,9 +1,9 @@
 package odms.controller;
 
+import odms.commons.database.DBHandler;
+import odms.commons.database.JDBCDriver;
 import odms.commons.model.Clinician;
 import odms.commons.model.User;
-import odms.commons.utils.DBHandler;
-import odms.commons.utils.JDBCDriver;
 import odms.commons.utils.PhotoHelper;
 import odms.socket.SocketHandler;
 import odms.utils.DBManager;

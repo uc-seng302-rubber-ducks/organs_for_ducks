@@ -1,7 +1,7 @@
 package odms.controller;
 
-import odms.commons.utils.DBHandler;
-import odms.commons.utils.JDBCDriver;
+import odms.commons.database.DBHandler;
+import odms.commons.database.JDBCDriver;
 import odms.exception.ServerDBException;
 import odms.security.IsAdmin;
 import odms.utils.DBManager;

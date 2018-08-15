@@ -8,7 +8,9 @@ import javafx.scene.control.*;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import odms.commons.model.User;
+import odms.commons.model._enum.Organs;
 import odms.commons.model._enum.Regions;
+import odms.commons.model.datamodel.ExpiryReason;
 import odms.commons.utils.AttributeValidation;
 import odms.commons.utils.Log;
 import odms.controller.AppController;
@@ -18,6 +20,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Map;
 
 /**
  * Controller class for editing death details of a user
@@ -46,6 +49,9 @@ public class UpdateDeathDetailsController {
     private Label updateDeathDetailsErrorLabel;
 
     @FXML
+    private Label updateDeathDetailsOverrideWarningLabel;
+
+    @FXML
     private Button removeUpdateDeathDetailsButton;
 
 
@@ -68,6 +74,23 @@ public class UpdateDeathDetailsController {
 
         stage.setTitle(currentUser.getNhi());
         updateDeathDetailsErrorLabel.setVisible(false);
+        updateDeathDetailsOverrideWarningLabel.setVisible(false);
+
+        //Check if the user has any expired organs
+        boolean hasOverridedExpiry = false;
+        for (Map.Entry<Organs, ExpiryReason> pair: currentUser.getDonorDetails().getOrganMap().entrySet()) {
+            if (pair.getValue().getTimeOrganExpired() != null) {
+                hasOverridedExpiry = true;
+                break;
+            }
+        }
+        if (hasOverridedExpiry) {
+            updateDeathDetailsOverrideWarningLabel.setVisible(true);
+            removeUpdateDeathDetailsButton.setDisable(true);
+            updateDeathDetailsDatePicker.setDisable(true);
+            updateDeathDetailsTimeTextField.setDisable(true);
+        }
+
         if (currentUser.getMomentDeath() == null) {
             removeUpdateDeathDetailsButton.setDisable(true);
         }

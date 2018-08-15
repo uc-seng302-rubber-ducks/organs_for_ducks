@@ -68,7 +68,7 @@ public class OrgansBridge extends Bifrost {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 if (200 < response.code() || response.code() > 299) {
-                    throw new ApiException(response.code(), "got response with code outside of 200 range");
+                    throw new ApiException(response.code(), "got response with code outside of 200 range, Code: "+ response.code());
                 }
 
                 List<AvailableOrganDetail> availableOrgansDetails = handler.decodeAvailableOrgansList(response);

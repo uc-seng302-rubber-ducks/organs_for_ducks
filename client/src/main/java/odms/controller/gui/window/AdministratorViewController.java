@@ -4,6 +4,7 @@ import com.sun.javafx.stage.StageHelper;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.SortedList;
@@ -58,7 +59,10 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.lang.reflect.Type;
+import java.time.LocalDateTime;
 import java.util.*;
+
+import static java.time.temporal.ChronoUnit.YEARS;
 
 public class AdministratorViewController implements PropertyChangeListener, UserLauncher {
 
@@ -378,22 +382,23 @@ public class AdministratorViewController implements PropertyChangeListener, User
         lNameColumn.setSortType(TableColumn.SortType.ASCENDING);
 
         dobColumn = new TableColumn<>("Date of Birth");
-        dobColumn.setCellValueFactory(new PropertyValueFactory<>("dateOfBirth"));
+        dobColumn.setCellValueFactory(new PropertyValueFactory<>("dob"));
 
         dodColumn = new TableColumn<>("Date of Death");
-        dodColumn.setCellValueFactory(new PropertyValueFactory<>("dateOfDeath"));
+        dodColumn.setCellValueFactory(new PropertyValueFactory<>("dod"));
 
         ageColumn = new TableColumn<>("Age");
-        ageColumn.setCellValueFactory(new PropertyValueFactory<>("age"));
+        ageColumn.setCellValueFactory(c -> new SimpleStringProperty(Long.toString(YEARS.between(c.getValue().getDob(), LocalDateTime.now()))));
 
         regionColumn = new TableColumn<>("Region");
         regionColumn.setCellValueFactory(new PropertyValueFactory<>("region"));
 
         organsColumn = new TableColumn<>("Organs");
-        organsColumn.setCellValueFactory(new PropertyValueFactory<>("organs"));
+        organsColumn.setCellValueFactory(new PropertyValueFactory<>("donating"));
 
         userTableView.getColumns().clear();
         userTableView.getColumns().setAll(fNameColumn, lNameColumn, dobColumn, dodColumn, ageColumn, regionColumn, organsColumn);
+        userTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
         populateUserSearchTable();
     }
@@ -1300,6 +1305,7 @@ public class AdministratorViewController implements PropertyChangeListener, User
         Log.info("refresh listener fired in admin controller");
         if (event.getType().equals(EventTypes.USER_UPDATE) || event.getType().equals(EventTypes.CLINICIAN_UPDATE)) {
             refreshTables();
+            availableOrgansViewController.search();
         } else if (event.getType().equals(EventTypes.ADMIN_UPDATE) && administrator.getUserName().equals(event.getOldIdentifier())) {
             try {
                 this.administrator = adminBridge.getAdmin(event.getNewIdentifier(), appController.getToken());
