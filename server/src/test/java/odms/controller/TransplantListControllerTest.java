@@ -17,9 +17,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -46,7 +44,7 @@ public class TransplantListControllerTest {
     @Test
     public void shouldReturnResultsIfAvailable() throws SQLException{
         List<TransplantDetails> expected = new ArrayList<>();
-        expected.add(new TransplantDetails("ABC1234", "Geoff", Organs.HEART, LocalDate.now(), "over there"));
+        expected.add(new TransplantDetails("ABC1234", "Geoff", Organs.HEART, LocalDate.now(), "over there", 0, "A+"));
         when(handler.getTransplantDetails(any(Connection.class), anyInt(), anyInt(), anyString(), anyString(), any(String[].class)))
                 .thenReturn(expected);
 

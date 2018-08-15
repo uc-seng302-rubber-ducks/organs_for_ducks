@@ -10,6 +10,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import odms.bridge.LoginBridge;
 import odms.commons.exception.ApiException;
 import odms.commons.model.Administrator;
 import odms.commons.model.Clinician;
@@ -17,7 +18,6 @@ import odms.commons.model.User;
 import odms.commons.utils.Log;
 import odms.controller.AppController;
 import odms.controller.gui.popup.utils.AlertWindowFactory;
-import odms.bridge.LoginBridge;
 import odms.view.CLI;
 
 import java.io.IOException;
@@ -171,6 +171,8 @@ public class LoginController {
                 appController.setToken(token);
                 root = clinicianLoader.load();
                 stage.setScene(new Scene(root));
+                stage.setMinHeight(800);
+                stage.setMinWidth(1200);
                 ClinicianController clinicianController = clinicianLoader.getController();
                 AppController.getInstance().setClinicianController(clinicianController);
                 Log.info("Logging in as a clinician");
@@ -224,8 +226,8 @@ public class LoginController {
             root = administratorLoader.load();
             stage.setScene(new Scene(root));
             stage.setTitle("Administrator");
-            stage.setMinWidth(800);
-            stage.setMinHeight(600);
+            stage.setMinHeight(800);
+            stage.setMinWidth(1200);
             AdministratorViewController administratorController = administratorLoader.getController();
             AppController.getInstance().setAdministratorViewController(administratorController);
             Log.info("Logging in as an administrator");
@@ -301,8 +303,6 @@ public class LoginController {
             root = adminLoader.load();
             stage.setScene(new Scene(root));
             stage.setTitle("Administrator");
-            stage.setMinWidth(800);
-            stage.setMinHeight(600);
             AdministratorViewController administratorViewController = adminLoader.getController();
             administratorViewController.init(new Administrator(), appController, stage, true, null);
             Log.info("Successfully launched CLI");
