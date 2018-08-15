@@ -17,11 +17,7 @@ public class CachedThreadPool {
      * Private constructor to prevent multiple instances being created
      */
     private CachedThreadPool() {
-        executor = Executors.newCachedThreadPool(t -> {
-            Thread thread = new Thread();
-            thread.setDaemon(true);
-            return thread;
-        });
+        executor = Executors.newCachedThreadPool();
     }
 
     /**
