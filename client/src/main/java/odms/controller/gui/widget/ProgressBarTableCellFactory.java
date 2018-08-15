@@ -13,6 +13,7 @@ public class ProgressBarTableCellFactory {
 
     public static <T extends Expirable> TableCell<T, ProgressTask> generateCell(TableColumn<T, ProgressTask> column) {
         ProgressBar progressBar = new ProgressBar(1.0F);
+        progressBar.setStyle("-fx-accent: RED; -fx-control-inner-background: rgba(255, 255, 255, 0.1)");
         TableCell<T, ProgressTask> cell = new TableCell<T, ProgressTask>() {
             @Override
             protected void updateItem(ProgressTask item, boolean empty) {

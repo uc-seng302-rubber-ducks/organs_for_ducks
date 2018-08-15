@@ -281,8 +281,7 @@ public class DonationTabPageController {
         } else {
             Log.warning("un-donate organs failed for User NHI: " + currentUser.getNhi() + ", no organs selected.");
         }
-
-        currentlyDonating.refresh();
+        refreshCurrentlyDonating();
         parent.refreshCurrentlyReceivingList();
     }
 
