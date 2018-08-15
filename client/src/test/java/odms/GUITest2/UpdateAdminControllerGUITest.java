@@ -47,6 +47,7 @@ public class UpdateAdminControllerGUITest extends ApplicationTest {
         ClinicianBridge clinicianBridge = mock(ClinicianBridge.class);
         LoginBridge loginBridge = mock(LoginBridge.class);
         UserBridge userBridge = mock(UserBridge.class);
+        OrgansBridge organsBridge = mock(OrgansBridge.class);
         AppController application = AppControllerMocker.getFullMock();
 
         AppController.setInstance(application);
@@ -55,6 +56,7 @@ public class UpdateAdminControllerGUITest extends ApplicationTest {
         when(application.getLoginBridge()).thenReturn(loginBridge);
         when(application.getClinicianBridge()).thenReturn(clinicianBridge);
         when(application.getUserBridge()).thenReturn(userBridge);
+        when(application.getOrgansBridge()).thenReturn(organsBridge);
 
         when(loginBridge.loginToServer(anyString(),anyString(), anyString())).thenReturn("lsdjfksd");
         when(administratorBridge.getAdmin(anyString(), anyString())).thenReturn(testAdmin);

@@ -29,9 +29,10 @@ import static odms.TestUtils.TableViewsMethod.getCell;
 import static odms.TestUtils.TableViewsMethod.getCellValue;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.testfx.api.FxAssert.verifyThat;
 
 public class NewDiseaseControllerGUITest extends ApplicationTest {
@@ -44,6 +45,7 @@ public class NewDiseaseControllerGUITest extends ApplicationTest {
     private AdministratorBridge administratorBridge;
     private TransplantBridge transplantBridge;
     private User testUser;
+    private OrgansBridge organsBridge = mock(OrgansBridge.class);
 
     @BeforeClass
     public static void initialization() {
@@ -72,6 +74,7 @@ public class NewDiseaseControllerGUITest extends ApplicationTest {
         when(loginBridge.loginToServer(anyString(),anyString(), anyString())).thenReturn("lsdjfksd");
         when(clinicianBridge.getClinician(anyString(), anyString())).thenReturn(clinician);
         when(controller.getTransplantBridge()).thenReturn(transplantBridge);
+        when(controller.getOrgansBridge()).thenReturn(organsBridge);
 
         when(controller.getTransplantList()).thenReturn(new ArrayList<>());
 
@@ -82,6 +85,7 @@ public class NewDiseaseControllerGUITest extends ApplicationTest {
 
         when(controller.getUserOverviews()).thenReturn(Collections.singleton(UserOverview.fromUser(testUser)));
         when(bridge.getUser(anyString())).thenReturn(testUser);
+        doNothing().when(organsBridge).getAvailableOrgansList(anyInt(), anyInt(), anyString(), anyString(), anyString(), anyString(), anyString(), any());
 
         FxToolkit.registerPrimaryStage();
         FxToolkit.setupApplication(App.class);

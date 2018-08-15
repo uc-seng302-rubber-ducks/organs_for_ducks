@@ -3,8 +3,8 @@ package odms.GUITest1;
 import javafx.scene.Node;
 import javafx.scene.control.TextField;
 import odms.App;
-import odms.TestUtils.CommonTestMethods;
 import odms.TestUtils.AppControllerMocker;
+import odms.TestUtils.CommonTestMethods;
 import odms.bridge.*;
 import odms.commons.model.Administrator;
 import odms.commons.model.Clinician;
@@ -21,9 +21,10 @@ import java.util.Set;
 import java.util.concurrent.TimeoutException;
 
 import static odms.TestUtils.FxRobotHelper.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.testfx.api.FxAssert.verifyThat;
 
 /**
@@ -38,6 +39,7 @@ public class CreateClinicianControllerGUITest extends ApplicationTest {
     private LoginBridge loginBridge = mock(LoginBridge.class);
     private TransplantBridge transplantBridge = mock(TransplantBridge.class);
     private CountriesBridge countriesBridge = mock(CountriesBridge.class);
+    private OrgansBridge organsBridge = mock(OrgansBridge.class);
 
     @BeforeClass
     public static void initialization() {
@@ -54,11 +56,13 @@ public class CreateClinicianControllerGUITest extends ApplicationTest {
         when(application.getTransplantBridge()).thenReturn(transplantBridge);
         when(application.getAdministratorBridge()).thenReturn(administratorBridge);
         when(application.getCountriesBridge()).thenReturn(countriesBridge);
+        when(application.getOrgansBridge()).thenReturn(organsBridge);
         Set<String> countries = new HashSet<>();
         countries.add("New Zealand");
         when(countriesBridge.getAllowedCountries()).thenReturn(countries);
         when(application.getTransplantList()).thenReturn(new ArrayList<>());
         when(loginBridge.loginToServer(anyString(),anyString(), anyString())).thenReturn("lsdjfksd");
+        doNothing().when(organsBridge).getAvailableOrgansList(anyInt(), anyInt(), anyString(), anyString(), anyString(), anyString(), anyString(), any());
         when(application.getToken()).thenReturn("fakeToken");
         when(administratorBridge.getAdmin(anyString(), anyString())).thenReturn(new Administrator("default", "", "", "", ""));
 
