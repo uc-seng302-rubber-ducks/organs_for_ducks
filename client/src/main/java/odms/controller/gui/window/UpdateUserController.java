@@ -430,9 +430,14 @@ public class UpdateUserController {
         } else {
             email.setText("");
         }
-        if (user.getProfilePhotoFilePath() != null) {
+
+        if (user.getProfilePhotoFilePath() == null || user.getProfilePhotoFilePath().equals("")) {
+            URL url = getClass().getResource("/default-profile-picture.jpg");
+            displayImage(profileImage, url);
+        } else {
             displayImage(profileImage, user.getProfilePhotoFilePath());
         }
+
         String ecRegion = user.getRegion() == null ? "" : user.getContact().getRegion();
         String ecCountry = user.getContact().getCountry();
 
@@ -551,19 +556,8 @@ public class UpdateUserController {
      * sets the profile photo back to the default image
      */
     @FXML
-    private void resetProfileImageOld() {
-        ClassLoader classLoader = getClass().getClassLoader();
-        inFile = new File(classLoader.getResource("default-profile-picture.jpg").getFile());
-
-        currentUser.setProfilePhotoFilePath(inFile.getPath());
-        displayImage(profileImage, inFile.getPath());
-    }
-
-    @FXML
     private void resetProfileImage() {
-        ClassLoader classLoader = getClass().getClassLoader();
-        inFile = new File(classLoader.getResource("default-profile-picture.jpg").getFile());
-        currentUser.setProfilePhotoFilePath(inFile.getPath());
+        currentUser.setProfilePhotoFilePath("");
 
         URL url = getClass().getResource("/default-profile-picture.jpg");
         displayImage(profileImage, url);
