@@ -55,10 +55,9 @@ public class OrgansBridge extends Bifrost {
         if (!StringUtils.isNullOrEmpty(country)){
             url.append("&country=").append(city);
         }
-
         Request request = new Request.Builder().get()
                 .header(tokenHeader, AppController.getInstance().getToken())
-                .url(url.toString()).build();
+                .url(url.toString().replaceAll(" ", "_")).build();
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -103,7 +102,7 @@ public class OrgansBridge extends Bifrost {
 
         Request request = new Request.Builder().get()
                 .header(tokenHeader, AppController.getInstance().getToken())
-                .url(url.toString()).build();
+                .url(url.toString().replaceAll(" ", "_")).build();
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
