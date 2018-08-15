@@ -1,6 +1,6 @@
 package odms.TestUtils;
 
-import odms.commons.utils.JDBCDriver;
+import odms.commons.database.JDBCDriver;
 import odms.commons.utils.Log;
 
 import java.beans.PropertyVetoException;
@@ -103,7 +103,7 @@ public class SQLScriptRunner {
             runSqlScript(RESAMPLE_DATABASE_SCRIPT_FILEPATH, connection);
             populateCountriesTable(connection);
             connection.close();
-            Log.info("Database reset and resample is successful");
+            Log.info("database reset and resample is successful");
 
         } catch (SQLException e) {
             Log.severe("Error when running SQL Script", e);
@@ -135,7 +135,7 @@ public class SQLScriptRunner {
             runSqlScript(RESET_DATABASE_SCRIPT_FILEPATH, connection);
             populateCountriesTable(connection);
             connection.close();
-            Log.info("Database reset is successful");
+            Log.info("database reset is successful");
 
         } catch (SQLException e) {
             Log.severe("Error when running SQL Script", e);

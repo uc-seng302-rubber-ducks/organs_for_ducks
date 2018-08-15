@@ -90,8 +90,8 @@ public class UndoUserTest {
 
     @Test
     public void testOrgansChanged() {
-        testUser.getDonorDetails().addOrgan(Organs.BONE);
-        testUser.getDonorDetails().addOrgan(Organs.BONE_MARROW);
+        testUser.getDonorDetails().addOrgan(Organs.BONE, null);
+        testUser.getDonorDetails().addOrgan(Organs.BONE_MARROW, null);
 
         testUser.undo();
 

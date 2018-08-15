@@ -71,6 +71,8 @@ public class LoginController {
         this.appController = appController;
         this.stage = stage;
         stage.setTitle("Login");
+        appController.setUsername("");
+        appController.setName("");
         Scene scene = stage.getScene();
 
         scene.setOnKeyPressed(e -> {
@@ -168,6 +170,8 @@ public class LoginController {
                     getClass().getResource(CLINICIAN_VIEW_URL));
             Parent root;
             try {
+                appController.setName(clinician.getFullName());
+                appController.setUsername(clinician.getStaffId());
                 appController.setToken(token);
                 root = clinicianLoader.load();
                 stage.setScene(new Scene(root));
@@ -222,6 +226,8 @@ public class LoginController {
                 getClass().getResource(ADMIN_VIEW_URL));
         Parent root;
         try {
+            appController.setName(administrator.getFullName());
+            appController.setUsername(administrator.getUserName());
             appController.setToken(token);
             root = administratorLoader.load();
             stage.setScene(new Scene(root));

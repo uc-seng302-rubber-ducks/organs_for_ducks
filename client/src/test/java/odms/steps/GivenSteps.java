@@ -145,10 +145,10 @@ public class GivenSteps extends ApplicationTest {
 
     @Given("^The user is alive$")
     public void theUserIsAlive() {
-        if (CucumberTestModel.getController().findUser(CucumberTestModel.getUserNhi()).getDeceased()) {
+        if (CucumberTestModel.getController().findUser(CucumberTestModel.getUserNhi()).isDeceased()) {
             CucumberTestModel.getController().findUser(CucumberTestModel.getUserNhi()).setDateOfDeath(null);
         }
-        assertFalse(CucumberTestModel.getController().findUser(CucumberTestModel.getUserNhi()).getDeceased());
+        assertFalse(CucumberTestModel.getController().findUser(CucumberTestModel.getUserNhi()).isDeceased());
     }
 
     @Given("^the cache is empty$")

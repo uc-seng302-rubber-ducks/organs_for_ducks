@@ -92,7 +92,8 @@ public class AvailableOrgansViewController {
     }
 
     /**
-     * initialises the available organs table view
+     * Initialises the available organs table view by binding each column to particular fields contained
+     * within the AvailableOrganDetail class
      */
     private void initAvailableOrgansTableView() {
         nhiColumn.setCellValueFactory(new PropertyValueFactory<>("donorNhi"));
