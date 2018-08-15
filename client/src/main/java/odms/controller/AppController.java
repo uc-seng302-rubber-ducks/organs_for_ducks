@@ -58,6 +58,7 @@ public class AppController {
     private UserBridge userBridge = new UserBridge(client);
     private ClinicianBridge clinicianBridge = new ClinicianBridge(client);
     private AdministratorBridge administratorBridge = new AdministratorBridge(client);
+    private OrgansBridge organsBridge = new OrgansBridge(client);
     private LoginBridge loginBridge = new LoginBridge(client);
     private TransplantBridge transplantBridge = new TransplantBridge(client);
     private UserController userController = null;
@@ -69,7 +70,6 @@ public class AppController {
     private String token;
     private SQLBridge sqlBridge = new SQLBridge(client);
     private OdmsSocketHandler socketHandler = new OdmsSocketHandler(client, ServerEventNotifier.getInstance());
-
     /**
      * Creates new instance of AppController
      */
@@ -720,5 +720,13 @@ public class AppController {
         this.client.connectionPool().evictAll();
         this.client.dispatcher().executorService().shutdown();
 
+    }
+
+    public OrgansBridge getOrgansBridge() {
+        return organsBridge;
+    }
+
+    public void setOrgansBridge(OrgansBridge bridge) {
+        organsBridge = bridge;
     }
 }

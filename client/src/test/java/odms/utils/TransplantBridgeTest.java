@@ -36,11 +36,11 @@ public class TransplantBridgeTest {
         Log.setup(Environments.TEST);
         Log.clearDebugLogs();
         List<TransplantDetails> details = new ArrayList<>();
-        details.add(new TransplantDetails("ABC1234", "Steve", Organs.HEART, LocalDate.now(), "there"));
-        details.add(new TransplantDetails("ABC1235", "Frank", Organs.KIDNEY, LocalDate.now(), "there"));
-        details.add(new TransplantDetails("ABC1236", "Geoff", Organs.HEART, LocalDate.now(), "there"));
-        details.add(new TransplantDetails("ABC1237", "Jeff", Organs.HEART, LocalDate.now(), "canterbury"));
-        details.add(new TransplantDetails("ABC1238", "Mattias", Organs.BONE_MARROW, LocalDate.now(), "yonder"));
+        details.add(new TransplantDetails("ABC1234", "Steve", Organs.HEART, LocalDate.now(), "there", 0,"A+"));
+        details.add(new TransplantDetails("ABC1235", "Frank", Organs.KIDNEY, LocalDate.now(), "there", 0,"A+"));
+        details.add(new TransplantDetails("ABC1236", "Geoff", Organs.HEART, LocalDate.now(), "there", 0,"A+"));
+        details.add(new TransplantDetails("ABC1237", "Jeff", Organs.HEART, LocalDate.now(), "canterbury", 0,"A+"));
+        details.add(new TransplantDetails("ABC1238", "Mattias", Organs.BONE_MARROW, LocalDate.now(), "yonder", 0,"A+"));
         responseString = new Gson().toJson(details);
 
         mockClient = mock(OkHttpClient.class);

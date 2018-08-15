@@ -6,6 +6,7 @@ import javafx.collections.FXCollections;
 import odms.App;
 import odms.TestUtils.AppControllerMocker;
 import odms.TestUtils.CommonTestMethods;
+import odms.bridge.*;
 import odms.commons.model.Clinician;
 import odms.commons.model.User;
 import odms.commons.model._enum.OrganDeregisterReason;
@@ -13,10 +14,6 @@ import odms.commons.model._enum.Organs;
 import odms.commons.model.datamodel.ReceiverOrganDetailsHolder;
 import odms.commons.model.dto.UserOverview;
 import odms.controller.AppController;
-import odms.bridge.ClinicianBridge;
-import odms.bridge.LoginBridge;
-import odms.bridge.TransplantBridge;
-import odms.bridge.UserBridge;
 import org.junit.*;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
@@ -46,6 +43,7 @@ public class OrganReceiverGUITest extends ApplicationTest {
     private DateTimeFormatter sdf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     private User testUser = new User("Aa", LocalDate.parse("2000-01-20", sdf), "ABC1244");
     private Collection<UserOverview> overviews = Collections.singletonList(UserOverview.fromUser(testUser));
+    private OrgansBridge organsBridge = mock(OrgansBridge.class);
 
     @BeforeClass
     public static void initialization() {
@@ -70,10 +68,12 @@ public class OrganReceiverGUITest extends ApplicationTest {
         when(application.getLoginBridge()).thenReturn(loginBridge);
         when(application.getTransplantBridge()).thenReturn(transplantBridge);
         when(application.getToken()).thenReturn("ahaahahahahhaha");
+        when(application.getOrgansBridge()).thenReturn(organsBridge);
 
         when(application.getTransplantList()).thenReturn(new ArrayList<>());
         when(loginBridge.loginToServer(anyString(),anyString(), anyString())).thenReturn("lsdjfksd");
         when(clinicianBridge.getClinician(anyString(), anyString())).thenReturn(clinician);
+        doNothing().when(organsBridge).getAvailableOrgansList(anyInt(), anyInt(), anyString(), anyString(), anyString(), anyString(), anyString(), any());
         doNothing().when(application).addUserOverview(any(UserOverview.class));
 
         when(application.getUserOverviews()).thenReturn(new HashSet<>(overviews));
