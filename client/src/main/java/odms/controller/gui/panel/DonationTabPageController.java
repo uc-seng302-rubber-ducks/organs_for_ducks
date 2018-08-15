@@ -96,6 +96,16 @@ public class DonationTabPageController {
         }
     }
 
+    public void updateButton() {
+        if (currentUser.getDeathDetails().getMomentOfDeath() == null || application.getUsername().isEmpty()) {
+            expireOrganButton.setVisible(false);
+        } else {
+            expireOrganButton.setVisible(true);
+
+        }
+
+    }
+
     /**
      * Populates the organ lists of the user
      *

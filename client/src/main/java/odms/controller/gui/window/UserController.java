@@ -471,6 +471,7 @@ public class UserController implements PropertyChangeListener {
         if (changelog.size() > 0) {
             statusBarPageController.updateStatus(user.getNhi() + " " + changelog.get(changelog.size() - 1).getChange());
         }
+        donationTabPageController.updateButton();
     }
 
     /**
