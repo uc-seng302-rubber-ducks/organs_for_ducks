@@ -1300,6 +1300,7 @@ public class AdministratorViewController implements PropertyChangeListener, User
         Log.info("refresh listener fired in admin controller");
         if (event.getType().equals(EventTypes.USER_UPDATE) || event.getType().equals(EventTypes.CLINICIAN_UPDATE)) {
             refreshTables();
+            availableOrgansViewController.search();
         } else if (event.getType().equals(EventTypes.ADMIN_UPDATE) && administrator.getUserName().equals(event.getOldIdentifier())) {
             try {
                 this.administrator = adminBridge.getAdmin(event.getNewIdentifier(), appController.getToken());
