@@ -80,7 +80,7 @@ public class UpdateDeathDetailsController {
         //Check if the user has any expired organs
         boolean hasOverridedExpiry = false;
         for (Map.Entry<Organs, ExpiryReason> pair: currentUser.getDonorDetails().getOrganMap().entrySet()) {
-            if (pair.getValue() != null) {
+            if (pair.getValue().getTimeOrganExpired() != null) {
                 hasOverridedExpiry = true;
             }
         }
