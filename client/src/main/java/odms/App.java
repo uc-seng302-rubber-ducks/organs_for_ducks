@@ -103,6 +103,8 @@ public class App extends Application {
     private void shutdown() {
         CacheManager.getInstance().saveAll();
         AppController.getInstance().stop();
+        AppController.getInstance().getClient().connectionPool().evictAll();
+        AppController.getInstance().getClient().dispatcher().executorService().shutdown();
         Platform.exit();
         System.exit(0);
     }

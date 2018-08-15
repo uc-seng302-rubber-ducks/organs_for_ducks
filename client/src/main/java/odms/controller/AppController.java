@@ -746,4 +746,8 @@ public class AppController {
     public void setOrgansBridge(OrgansBridge bridge) {
         organsBridge = bridge;
     }
+
+    public OkHttpClient getClient() {
+        return client;
+    }
 }

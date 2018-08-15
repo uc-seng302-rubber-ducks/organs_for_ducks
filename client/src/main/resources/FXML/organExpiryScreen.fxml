@@ -27,5 +27,6 @@
          </font></Label>
         <Button fx:id="ExpiryConfirmButton" layoutX="264.0" layoutY="349.0" mnemonicParsing="false" onAction="#confirmExpiration" text="Confirm" />
         <Button fx:id="cancelExpiryButton" layoutX="62.0" layoutY="349.0" mnemonicParsing="false" onAction="#cancelExpiration" text="Cancel" />
+      <Label fx:id="warningLabelOE" layoutX="142.0" layoutY="162.0" text="Label" />
     </children>
 </AnchorPane>
