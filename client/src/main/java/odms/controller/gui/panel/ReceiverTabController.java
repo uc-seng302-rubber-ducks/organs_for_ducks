@@ -1,10 +1,6 @@
 package odms.controller.gui.panel;
 
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -13,9 +9,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import javafx.util.Callback;
 import odms.commons.model.Change;
 import odms.commons.model.ReceiverDetails;
 import odms.commons.model.User;
@@ -24,6 +18,7 @@ import odms.commons.model._enum.Organs;
 import odms.commons.model.datamodel.OrgansWithDates;
 import odms.commons.model.datamodel.ReceiverOrganDetailsHolder;
 import odms.commons.utils.Log;
+import odms.commons.utils.OrganListCellFactory;
 import odms.controller.AppController;
 import odms.controller.gui.popup.DeregisterOrganReasonController;
 import odms.controller.gui.popup.ReceiverOrganDateController;
@@ -71,6 +66,8 @@ public class ReceiverTabController {
     private AppController application;
 
     private UserController parent;
+
+    private boolean runStopWaitingForAllOrgans = true;
 
     private ObservableList<OrgansWithDates> currentlyRecieving;
     private OrganDeregisterReason organDeregisterationReason;
@@ -132,27 +129,7 @@ public class ReceiverTabController {
         noLongerWaitingForOrgan.getColumns().add(noLongerOrganNameColumn);
         noLongerWaitingForOrgan.getColumns().add(noLongerOrganDateColumn);
         currentlyWaitingFor.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
-
-        currentOrganNameColumn.setCellFactory(new Callback<TableColumn<OrgansWithDates, Organs>, TableCell<OrgansWithDates, Organs>>() {
-            @Override
-            public TableCell<OrgansWithDates, Organs> call(TableColumn<OrgansWithDates, Organs> soCalledOrganStringTableColumn) {
-                return new TableCell<OrgansWithDates, Organs>() {
-                    @Override
-                    public void updateItem(final Organs item, final boolean empty) {
-                        super.updateItem(item, empty);
-
-                        if (item != null) {
-                            if (currentUser.getCommonOrgans().contains(item)) {
-                                this.setTextFill(Color.RED);
-                            } else {
-                                this.setTextFill(Color.BLACK);
-                            }
-                            setText(item.toString());
-                        }
-                    }
-                };
-            }
-        });
+        currentOrganNameColumn.setCellFactory(cell -> OrganListCellFactory.generateOrganTableCell(currentOrganNameColumn, currentUser));
 
         populateReceiverLists(currentUser);
     }
@@ -290,9 +267,10 @@ public class ReceiverTabController {
 
 
         //if user already died, user cannot receive organs
-        if (currentUser.getDeceased()) {
-            registerButton.setDisable(true);
-            reRegisterButton.setDisable(true);
+        if (currentUser.isDeceased()) {
+            deadMode(true);
+        } else {
+            deadMode(false);
         }
     }
 
@@ -317,8 +295,20 @@ public class ReceiverTabController {
         currentlyWaitingFor.refresh();
     }
 
+    /**
+     * Loops through the Observable list of objects that populate the receivers tables to check if
+     * the given organ is present within the list
+     *
+     * @param toDonate the organ to find
+     * @return true if the given organ is present, false otherwise
+     */
     public boolean currentlyReceivingContains(Organs toDonate) {
-        return currentlyRecieving.contains(toDonate);
+        for (OrgansWithDates organsWithDates : currentlyRecieving) {
+            if (organsWithDates.getOrganName().equals(toDonate)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -370,16 +360,8 @@ public class ReceiverTabController {
                 parent.refreshDiseases();
 
             } else if (organDeregisterationReason == OrganDeregisterReason.RECEIVER_DIED) {
-                List<OrgansWithDates> currentlyReceiving = new ArrayList<>(currentlyWaitingFor.getItems());
-                for (OrgansWithDates organ : currentlyReceiving) {
-
-                    currentlyWaitingFor.getItems().remove(organ);
-                    organ.setLatestRegistration(LocalDate.now());
-                    noLongerWaitingForOrgan.getItems().add(organ);
-                }
-                currentUser.getReceiverDetails().stopWaitingForAllOrgans();
-                registerButton.setDisable(true);
-                reRegisterButton.setDisable(true);
+                runStopWaitingForAllOrgans = true;
+                deadMode(true);
             }
 
             if (organDeregisterationReason != OrganDeregisterReason.RECEIVER_DIED) {
@@ -410,6 +392,38 @@ public class ReceiverTabController {
 
         } else {
             Log.warning("Unable to de-register organ: null for receiver NHI: " + currentUser.getNhi());
+        }
+    }
+
+    /**
+     * Disables all buttons on Receiver Tab
+     * and moved any organs from waiting table to
+     * not waiting table.
+     *
+     * @param isDead true if current user is dead, false otherwise
+     */
+    private void deadMode(boolean isDead){
+        if(isDead){
+            registerButton.setDisable(true);
+            reRegisterButton.setDisable(true);
+            deRegisterButton.setDisable(true);
+            List<OrgansWithDates> currentlyReceiving = new ArrayList<>(currentlyWaitingFor.getItems());
+            for (OrgansWithDates organ : currentlyReceiving) {
+
+                currentlyWaitingFor.getItems().remove(organ);
+                organ.setLatestRegistration(LocalDate.now());
+                noLongerWaitingForOrgan.getItems().add(organ);
+            }
+
+            if (!currentUser.getReceiverDetails().getOrgans().isEmpty() && runStopWaitingForAllOrgans) {
+                currentUser.getReceiverDetails().stopWaitingForAllOrgans();
+                runStopWaitingForAllOrgans = false; //Prevents stopWaitingForAllOrgans from running more than once.
+            }
+
+        } else {
+            registerButton.setDisable(false);
+            reRegisterButton.setDisable(false);
+            deRegisterButton.setDisable(false);
         }
     }
 

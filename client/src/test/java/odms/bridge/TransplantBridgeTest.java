@@ -2,6 +2,7 @@ package odms.bridge;
 
 import com.google.gson.Gson;
 import odms.commons.config.ConfigPropertiesLoader;
+import odms.commons.config.ConfigPropertiesSession;
 import odms.commons.exception.ApiException;
 import odms.commons.model._enum.Environments;
 import odms.commons.model._enum.Organs;
@@ -17,7 +18,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -41,7 +42,11 @@ public class TransplantBridgeTest {
         details.add(new TransplantDetails("ABC1237", "Jeff", Organs.HEART, LocalDate.now(), "canterbury", 0,"A+"));
         details.add(new TransplantDetails("ABC1238", "Mattias", Organs.BONE_MARROW, LocalDate.now(), "yonder", 0,"A+"));
         responseString = new Gson().toJson(details);
+        ConfigPropertiesSession mockSession = mock(ConfigPropertiesSession.class);
 
+        when(mockSession.getProperty(eq("server.url"), anyString())).thenReturn(serverUrl);
+        when(mockSession.getProperty(eq("server.token.header"), anyString())).thenReturn("x-auth-token");
+        ConfigPropertiesSession.setInstance(mockSession);
         mockClient = mock(OkHttpClient.class);
         AppController mockController = mock(AppController.class);
         when(mockController.getToken()).thenReturn("abcd");
@@ -53,6 +58,7 @@ public class TransplantBridgeTest {
     public void tearDown() {
         //force it to re-create singleton instance as in production
         AppController.setInstance(null);
+        ConfigPropertiesSession.setInstance(null);
     }
 
     @Test(expected = ApiException.class)

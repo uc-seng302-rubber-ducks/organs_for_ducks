@@ -1,6 +1,7 @@
 package odms.commons.model;
 
 import odms.commons.model._enum.Organs;
+import odms.commons.model.datamodel.ExpiryReason;
 import odms.commons.model.datamodel.Medication;
 import org.junit.Assert;
 import org.junit.Before;
@@ -9,8 +10,10 @@ import org.junit.Test;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class UserTest {
@@ -45,8 +48,8 @@ public class UserTest {
     public void UserWithRecentlyEmptyDonorDetailsHasIsDonorFalse() {
         //create a user, give organs to donate, then remove
         //assert isDonor == false
-        HashSet<Organs> organs = new HashSet<>();
-        organs.add(Organs.CONNECTIVE_TISSUE);
+        Map<Organs, ExpiryReason> organs = new HashMap<>();
+        organs.put(Organs.CONNECTIVE_TISSUE, null);
         testUser.getDonorDetails().setOrgans(organs);
         testUser.getDonorDetails().removeOrgan(Organs.CONNECTIVE_TISSUE);
 
@@ -55,8 +58,8 @@ public class UserTest {
 
     @Test
     public void UserWithOrgansToDonateHasIsDonorTrue() {
-        HashSet<Organs> organs = new HashSet<>();
-        organs.add(Organs.CONNECTIVE_TISSUE);
+        Map<Organs, ExpiryReason> organs = new HashMap<>();
+        organs.put(Organs.CONNECTIVE_TISSUE, null);
         testUser.getDonorDetails().setOrgans(organs);
 
         Assert.assertTrue(testUser.isDonor());
@@ -69,8 +72,8 @@ public class UserTest {
 
     @Test
     public void UserWithRecentlyEmptyReceiverDetailsHasIsReceiverFalse() {
-        HashSet<Organs> organs = new HashSet<>();
-        organs.add(Organs.CONNECTIVE_TISSUE);
+        Map<Organs, ExpiryReason> organs = new HashMap<>();
+        organs.put(Organs.CONNECTIVE_TISSUE, null);
         testUser.getDonorDetails().setOrgans(organs);
 
         Assert.assertTrue(testUser.isDonor());
@@ -159,7 +162,7 @@ public class UserTest {
 
     @Test
     public void DonorToolTipShouldReturnNameAndOrgans() {
-        testUser.getDonorDetails().addOrgan(Organs.HEART);
+        testUser.getDonorDetails().addOrgan(Organs.HEART, null);
         String tooltip = testUser.getTooltip();
         String name = testUser.getFullName();
         Assert.assertEquals(name + ". Donor: Heart ", tooltip);

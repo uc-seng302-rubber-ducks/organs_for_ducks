@@ -150,6 +150,9 @@ public class UserController implements PropertyChangeListener {
         this.stage = stage;
         application = controller;
         this.fromClinician = fromClinician;
+        stage.setMinWidth(1200);
+        stage.setMinHeight(800);
+        changeCurrentUser(user);
 
         // This is the place to set visible and invisible controls for Clinician vs User
         medicationTabPageController.init(controller, user, fromClinician, this);
@@ -162,7 +165,6 @@ public class UserController implements PropertyChangeListener {
 
         undoButton.setVisible(true);
         redoButton.setVisible(true);
-        changeCurrentUser(user);
 
         // Sets the button to be disabled
         updateUndoRedoButtons();
@@ -253,7 +255,7 @@ public class UserController implements PropertyChangeListener {
      *
      * @param user user to change currentUser to
      */
-    private void changeCurrentUser(User user) {
+    public void changeCurrentUser(User user) {
         currentUser = user;
         contact = user.getContact();
         if (user.getChanges() != null) {
@@ -438,6 +440,7 @@ public class UserController implements PropertyChangeListener {
         application.saveUser(currentUser);
         currentUser.getRedoStack().clear();
         currentUser.getUndoStack().clear();
+        donationTabPageController.shutdownThreads();
         updateUndoRedoButtons();
     }
 
@@ -470,6 +473,7 @@ public class UserController implements PropertyChangeListener {
         if (changelog.size() > 0) {
             statusBarPageController.updateStatus(user.getNhi() + " " + changelog.get(changelog.size() - 1).getChange());
         }
+        donationTabPageController.updateButton();
     }
 
     /**

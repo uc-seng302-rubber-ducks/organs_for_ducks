@@ -43,6 +43,10 @@
       "description": "Medication Controller"
     },
     {
+      "name": "organs-controller",
+      "description": "Organs Controller"
+    },
+    {
       "name": "photo-controller",
       "description": "Photo Controller"
     },
@@ -333,6 +337,92 @@
           },
           "403": {
             "description": "Forbidden"
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/odms/v1/availableOrgans": {
+      "get": {
+        "tags": [
+          "organs-controller"
+        ],
+        "summary": "getAvailableOrgans",
+        "operationId": "getAvailableOrgansUsingGET",
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "bloodType",
+            "in": "query",
+            "description": "bloodType",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "city",
+            "in": "query",
+            "description": "city",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "count",
+            "in": "query",
+            "description": "count",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "country",
+            "in": "query",
+            "description": "country",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "organ",
+            "in": "query",
+            "description": "organ",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "region",
+            "in": "query",
+            "description": "region",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "startIndex",
+            "in": "query",
+            "description": "startIndex",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/AvailableOrganDetail"
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
           }
         },
         "deprecated": false
@@ -888,6 +978,71 @@
         "deprecated": false
       }
     },
+    "/odms/v1/matchingOrgans": {
+      "get": {
+        "tags": [
+          "organs-controller"
+        ],
+        "summary": "getMatchingOrgans",
+        "operationId": "getMatchingOrgansUsingGET",
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "name": "count",
+            "in": "query",
+            "description": "count",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "donorNhi",
+            "in": "query",
+            "description": "donorNhi",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "organ",
+            "in": "query",
+            "description": "organ",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "startIndex",
+            "in": "query",
+            "description": "startIndex",
+            "required": true,
+            "type": "integer",
+            "format": "int32"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/TransplantDetails"
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "deprecated": false
+      }
+    },
     "/odms/v1/sql": {
       "post": {
         "tags": [
@@ -918,7 +1073,7 @@
             "schema": {
               "type": "array",
               "items": {
-                "type": "object"
+                "type": "string"
               }
             }
           },
@@ -1487,23 +1642,9 @@
             "description": "donating",
             "required": true,
             "schema": {
-              "type": "array",
-              "items": {
-                "type": "string",
-                "enum": [
-                  "Liver",
-                  "Kidney",
-                  "Pancreas",
-                  "Heart",
-                  "Lung",
-                  "Intestine",
-                  "Cornea",
-                  "Middle Ear",
-                  "Skin",
-                  "Bone Marrow",
-                  "Bone",
-                  "Connective Tissue"
-                ]
+              "type": "object",
+              "additionalProperties": {
+                "$ref": "#/definitions/ExpiryReason"
               }
             }
           },
@@ -1556,23 +1697,9 @@
             "description": "donating",
             "required": true,
             "schema": {
-              "type": "array",
-              "items": {
-                "type": "string",
-                "enum": [
-                  "Liver",
-                  "Kidney",
-                  "Pancreas",
-                  "Heart",
-                  "Lung",
-                  "Intestine",
-                  "Cornea",
-                  "Middle Ear",
-                  "Skin",
-                  "Bone Marrow",
-                  "Bone",
-                  "Connective Tissue"
-                ]
+              "type": "object",
+              "additionalProperties": {
+                "$ref": "#/definitions/ExpiryReason"
               }
             }
           },
@@ -1724,7 +1851,9 @@
         "summary": "getUserProfilePicture",
         "operationId": "getUserProfilePictureUsingGET",
         "produces": [
-          "image/png"
+          "image/png",
+          "image/jpeg",
+          "image/gif"
         ],
         "parameters": [
           {
@@ -2042,6 +2171,53 @@
         },
         "deprecated": false
       }
+    },
+    "/odms/v1/usersSilent": {
+      "post": {
+        "tags": [
+          "user-controller"
+        ],
+        "summary": "postUserSilently",
+        "operationId": "postUserSilentlyUsingPOST",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "*/*"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "newUser",
+            "description": "newUser",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/ResponseEntity"
+            }
+          },
+          "201": {
+            "description": "Created"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        },
+        "deprecated": false
+      }
     }
   },
   "definitions": {
@@ -2119,9 +2295,6 @@
             "$ref": "#/definitions/Memento«Administrator»"
           }
         },
-        "region": {
-          "type": "string"
-        },
         "salt": {
           "type": "string"
         },
@@ -2136,6 +2309,60 @@
         }
       },
       "title": "Administrator"
+    },
+    "AvailableOrganDetail": {
+      "type": "object",
+      "properties": {
+        "age": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "bloodType": {
+          "type": "string"
+        },
+        "donorNhi": {
+          "type": "string"
+        },
+        "expired": {
+          "type": "boolean"
+        },
+        "expiryDate": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "momentOfDeath": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "organ": {
+          "type": "string",
+          "enum": [
+            "Liver",
+            "Kidney",
+            "Pancreas",
+            "Heart",
+            "Lung",
+            "Intestine",
+            "Cornea",
+            "Middle Ear",
+            "Skin",
+            "Bone Marrow",
+            "Bone",
+            "Connective Tissue",
+            "Test Organ"
+          ]
+        },
+        "organStillValid": {
+          "type": "boolean"
+        },
+        "progressTask": {
+          "$ref": "#/definitions/ProgressTask"
+        },
+        "region": {
+          "type": "string"
+        }
+      },
+      "title": "AvailableOrganDetail"
     },
     "Change": {
       "type": "object",
@@ -2206,6 +2433,9 @@
         "region": {
           "type": "string"
         },
+        "regionNoUndo": {
+          "type": "string"
+        },
         "salt": {
           "type": "string"
         },
@@ -2272,6 +2502,38 @@
       },
       "title": "ContactDetails"
     },
+    "DeathDetails": {
+      "type": "object",
+      "properties": {
+        "city": {
+          "type": "string"
+        },
+        "country": {
+          "type": "string"
+        },
+        "dateOfDeath": {
+          "type": "string",
+          "format": "date"
+        },
+        "deathAddress": {
+          "$ref": "#/definitions/Address"
+        },
+        "momentOfDeath": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "placeOfDeath": {
+          "$ref": "#/definitions/Address"
+        },
+        "region": {
+          "type": "string"
+        },
+        "timeOfDeath": {
+          "$ref": "#/definitions/LocalTime"
+        }
+      },
+      "title": "DeathDetails"
+    },
     "Disease": {
       "type": "object",
       "properties": {
@@ -2303,6 +2565,12 @@
         "empty": {
           "type": "boolean"
         },
+        "organMap": {
+          "type": "object",
+          "additionalProperties": {
+            "$ref": "#/definitions/ExpiryReason"
+          }
+        },
         "organs": {
           "type": "array",
           "items": {
@@ -2319,7 +2587,8 @@
               "Skin",
               "Bone Marrow",
               "Bone",
-              "Connective Tissue"
+              "Connective Tissue",
+              "Test Organ"
             ]
           }
         }
@@ -2374,6 +2643,75 @@
       },
       "title": "EmergencyContact"
     },
+    "Event": {
+      "type": "object",
+      "properties": {
+        "consumed": {
+          "type": "boolean"
+        },
+        "eventType": {
+          "$ref": "#/definitions/EventType«Event»"
+        },
+        "source": {
+          "type": "object"
+        },
+        "target": {
+          "$ref": "#/definitions/EventTarget"
+        }
+      },
+      "title": "Event"
+    },
+    "EventHandler«WorkerStateEvent»": {
+      "type": "object",
+      "title": "EventHandler«WorkerStateEvent»"
+    },
+    "EventTarget": {
+      "type": "object",
+      "title": "EventTarget"
+    },
+    "EventType«Event»": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "superType": {
+          "$ref": "#/definitions/EventType«object»"
+        }
+      },
+      "title": "EventType«Event»"
+    },
+    "EventType«object»": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "superType": {
+          "$ref": "#/definitions/EventType«object»"
+        }
+      },
+      "title": "EventType«object»"
+    },
+    "ExpiryReason": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "reason": {
+          "type": "string"
+        },
+        "timeOrganExpired": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "title": "ExpiryReason"
+    },
     "HealthDetails": {
       "type": "object",
       "properties": {
@@ -2408,6 +2746,28 @@
         }
       },
       "title": "HealthDetails"
+    },
+    "LocalTime": {
+      "type": "object",
+      "properties": {
+        "hour": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "minute": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "nano": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "second": {
+          "type": "integer",
+          "format": "int32"
+        }
+      },
+      "title": "LocalTime"
     },
     "LoginRequest": {
       "type": "object",
@@ -2457,7 +2817,8 @@
               "Skin",
               "Bone Marrow",
               "Bone",
-              "Connective Tissue"
+              "Connective Tissue",
+              "Test Organ"
             ]
           }
         },
@@ -2528,6 +2889,71 @@
         }
       },
       "title": "ProcedureKey"
+    },
+    "ProgressTask": {
+      "type": "object",
+      "properties": {
+        "cancelled": {
+          "type": "boolean"
+        },
+        "done": {
+          "type": "boolean"
+        },
+        "exception": {
+          "$ref": "#/definitions/Throwable"
+        },
+        "expired": {
+          "type": "boolean"
+        },
+        "message": {
+          "type": "string"
+        },
+        "onCancelled": {
+          "$ref": "#/definitions/EventHandler«WorkerStateEvent»"
+        },
+        "onFailed": {
+          "$ref": "#/definitions/EventHandler«WorkerStateEvent»"
+        },
+        "onRunning": {
+          "$ref": "#/definitions/EventHandler«WorkerStateEvent»"
+        },
+        "onScheduled": {
+          "$ref": "#/definitions/EventHandler«WorkerStateEvent»"
+        },
+        "onSucceeded": {
+          "$ref": "#/definitions/EventHandler«WorkerStateEvent»"
+        },
+        "progress": {
+          "type": "number",
+          "format": "double"
+        },
+        "running": {
+          "type": "boolean"
+        },
+        "state": {
+          "type": "string",
+          "enum": [
+            "READY",
+            "SCHEDULED",
+            "RUNNING",
+            "SUCCEEDED",
+            "CANCELLED",
+            "FAILED"
+          ]
+        },
+        "title": {
+          "type": "string"
+        },
+        "totalWork": {
+          "type": "number",
+          "format": "double"
+        },
+        "workDone": {
+          "type": "number",
+          "format": "double"
+        }
+      },
+      "title": "ProgressTask"
     },
     "PropertyChangeListener": {
       "type": "object",
@@ -2671,9 +3097,65 @@
       },
       "title": "ResponseEntity"
     },
+    "StackTraceElement": {
+      "type": "object",
+      "properties": {
+        "className": {
+          "type": "string"
+        },
+        "fileName": {
+          "type": "string"
+        },
+        "lineNumber": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "methodName": {
+          "type": "string"
+        },
+        "nativeMethod": {
+          "type": "boolean"
+        }
+      },
+      "title": "StackTraceElement"
+    },
+    "Throwable": {
+      "type": "object",
+      "properties": {
+        "cause": {
+          "$ref": "#/definitions/Throwable"
+        },
+        "localizedMessage": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        },
+        "stackTrace": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/StackTraceElement"
+          }
+        },
+        "suppressed": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Throwable"
+          }
+        }
+      },
+      "title": "Throwable"
+    },
     "TransplantDetails": {
       "type": "object",
       "properties": {
+        "age": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "bloodType": {
+          "type": "string"
+        },
         "name": {
           "type": "string"
         },
@@ -2698,7 +3180,8 @@
             "Skin",
             "Bone Marrow",
             "Bone",
-            "Connective Tissue"
+            "Connective Tissue",
+            "Test Organ"
           ]
         },
         "region": {
@@ -2757,7 +3240,8 @@
               "Skin",
               "Bone Marrow",
               "Bone",
-              "Connective Tissue"
+              "Connective Tissue",
+              "Test Organ"
             ]
           }
         },
@@ -2768,6 +3252,9 @@
           "$ref": "#/definitions/ContactDetails"
         },
         "country": {
+          "type": "string"
+        },
+        "countryNoUndo": {
           "type": "string"
         },
         "currentDiseases": {
@@ -2789,6 +3276,18 @@
         "dateOfDeath": {
           "type": "string",
           "format": "date"
+        },
+        "deathCity": {
+          "type": "string"
+        },
+        "deathCountry": {
+          "type": "string"
+        },
+        "deathDetails": {
+          "$ref": "#/definitions/DeathDetails"
+        },
+        "deathRegion": {
+          "type": "string"
         },
         "deceased": {
           "type": "boolean"
@@ -2824,6 +3323,9 @@
           "type": "string"
         },
         "ecregion": {
+          "type": "string"
+        },
+        "ecregionNoUndo": {
           "type": "string"
         },
         "ecrelationship": {
@@ -2879,6 +3381,14 @@
         "middleName": {
           "type": "string"
         },
+        "momentDeath": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "momentOfDeath": {
+          "type": "string",
+          "format": "date-time"
+        },
         "neighborhood": {
           "type": "string"
         },
@@ -2918,6 +3428,9 @@
         "region": {
           "type": "string"
         },
+        "regionNoUndo": {
+          "type": "string"
+        },
         "smoker": {
           "type": "boolean"
         },
@@ -2933,6 +3446,9 @@
         "timeCreated": {
           "type": "string",
           "format": "date-time"
+        },
+        "timeOfDeath": {
+          "$ref": "#/definitions/LocalTime"
         },
         "tooltip": {
           "type": "string"
@@ -2989,7 +3505,8 @@
               "Skin",
               "Bone Marrow",
               "Bone",
-              "Connective Tissue"
+              "Connective Tissue",
+              "Test Organ"
             ]
           }
         },
@@ -3025,6 +3542,68 @@
         }
       },
       "title": "UserOverview"
+    },
+    "Worker": {
+      "type": "object",
+      "properties": {
+        "exception": {
+          "$ref": "#/definitions/Throwable"
+        },
+        "message": {
+          "type": "string"
+        },
+        "progress": {
+          "type": "number",
+          "format": "double"
+        },
+        "running": {
+          "type": "boolean"
+        },
+        "state": {
+          "type": "string",
+          "enum": [
+            "READY",
+            "SCHEDULED",
+            "RUNNING",
+            "SUCCEEDED",
+            "CANCELLED",
+            "FAILED"
+          ]
+        },
+        "title": {
+          "type": "string"
+        },
+        "totalWork": {
+          "type": "number",
+          "format": "double"
+        },
+        "value": {
+          "type": "object"
+        },
+        "workDone": {
+          "type": "number",
+          "format": "double"
+        }
+      },
+      "title": "Worker"
+    },
+    "WorkerStateEvent": {
+      "type": "object",
+      "properties": {
+        "consumed": {
+          "type": "boolean"
+        },
+        "eventType": {
+          "$ref": "#/definitions/EventType«Event»"
+        },
+        "source": {
+          "$ref": "#/definitions/Worker"
+        },
+        "target": {
+          "$ref": "#/definitions/EventTarget"
+        }
+      },
+      "title": "WorkerStateEvent"
     }
   }
 }

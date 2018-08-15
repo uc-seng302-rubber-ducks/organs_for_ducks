@@ -55,10 +55,9 @@ public class OrgansBridge extends Bifrost {
         if (!StringUtils.isNullOrEmpty(country)){
             url.append("&country=").append(city);
         }
-
         Request request = new Request.Builder().get()
                 .header(tokenHeader, AppController.getInstance().getToken())
-                .url(url.toString()).build();
+                .url(url.toString().replaceAll(" ", "_")).build();
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -68,7 +67,7 @@ public class OrgansBridge extends Bifrost {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 if (200 < response.code() || response.code() > 299) {
-                    throw new ApiException(response.code(), "got response with code outside of 200 range");
+                    throw new ApiException(response.code(), "got response with code outside of 200 range, Code: "+ response.code());
                 }
 
                 List<AvailableOrganDetail> availableOrgansDetails = handler.decodeAvailableOrgansList(response);
@@ -103,7 +102,7 @@ public class OrgansBridge extends Bifrost {
 
         Request request = new Request.Builder().get()
                 .header(tokenHeader, AppController.getInstance().getToken())
-                .url(url.toString()).build();
+                .url(url.toString().replaceAll(" ", "_")).build();
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {

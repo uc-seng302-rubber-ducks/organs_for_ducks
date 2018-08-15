@@ -1,9 +1,9 @@
 package odms.commons.model;
 
+import odms.commons.database.DBHandler;
 import odms.commons.model._enum.Organs;
 import odms.commons.model.datamodel.Address;
 import odms.commons.model.datamodel.DeathDetails;
-import odms.commons.utils.DBHandler;
 import org.junit.*;
 import test_utils.DBHandlerMocker;
 
@@ -112,12 +112,12 @@ public class DBHandlerTest {
 
     @Test
     public void testAddUserDonatingOrgans() throws SQLException {
-        testUser.getDonorDetails().addOrgan(Organs.LUNG);
+        testUser.getDonorDetails().addOrgan(Organs.LUNG, null);
         Collection<User> users = new ArrayList<>();
         users.add(testUser);
 
         dbHandler.saveUsers(users, connection);
-        verify(mockStmt, times(12)).executeUpdate();
+        verify(mockStmt, times(13)).executeUpdate();
     }
 
     @Test

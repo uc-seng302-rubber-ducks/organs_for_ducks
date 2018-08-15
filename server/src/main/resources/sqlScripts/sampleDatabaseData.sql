@@ -24,7 +24,8 @@ INSERT INTO Organ(organId, organName) VALUES
   (9,'SKIN'),
   (10,'BONE_MARROW'),
   (11,'BONE'),
-  (12,'CONNECTIVE_TISSUE');
+  (12, 'CONNECTIVE_TISSUE'),
+  (13, 'TEST_ORGAN');
 
 INSERT INTO PreviousDisease(diseaseName, diagnosisDate, fkUserNhi) VALUES
   ('Chicken Pox', '2015-10-04 19:12:43', 'ABC1234'),
@@ -122,3 +123,7 @@ INSERT INTO PasswordDetails(password_id, fkAdminUserName, fkStaffId, hash, salt)
 INSERT INTO DeathDetails(fkUserNhi, momentOfDeath, city, region, country) VALUES
   ('ABC1234', '2018-08-05 03:22','Christchurch','Canterbury','New Zealand'),
   ('XYZ4321', '1988-01-02 18:20','Singapore', "",'Singapore');
+
+INSERT INTO OrganExpiryDetails (id, fkDonatingId, timeOfExpiry, reason, name) VALUES
+  ('16', 2, '2018-10-04 20:12:43', 'It smells pretty bad', 'Frank'),
+  ('16', 3, '2018-10-04 20:12:43', 'Its not fresh', 'Anne');

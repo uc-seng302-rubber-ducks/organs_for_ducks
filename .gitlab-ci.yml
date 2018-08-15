@@ -69,6 +69,6 @@ docker-deploy:
   script:
     - docker stop seng302g1 || true && docker rm seng302g1 || true
     - docker build -t server .
-    - docker run -d -p 8080:4941 --name seng302g1 -t server
+    - docker run -d -p 80:4941 --name seng302g1 -t server
   only:
     - master@seng302-2018/team-100
