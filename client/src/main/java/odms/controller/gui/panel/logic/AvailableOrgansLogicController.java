@@ -20,11 +20,23 @@ public class AvailableOrgansLogicController implements PropertyChangeListener {
     private ObservableList<TransplantDetails> transplantDetails;
     private AvailableOrganDetail availableOrgan;
 
+    /**
+     * Constructor to create a new logical instance of the controller
+     *
+     * @param availableOrganDetails observable list of AvailableOrganDetail to use to populate the available organs table
+     * @param transplantDetails     Observable list of TransplantDetails to use for populating the potential matches
+     */
     public AvailableOrgansLogicController(ObservableList<AvailableOrganDetail> availableOrganDetails, ObservableList<TransplantDetails> transplantDetails) {
         this.availableOrganDetails = availableOrganDetails;
         this.transplantDetails = transplantDetails;
     }
 
+    /**
+     * Sends a search request to the server to populate the observable list
+     * @param startIndex the number of entries to skip
+     * @param organ the organ to filter by
+     * @param region the region to filter by
+     */
     public void search(int startIndex, String organ, String region) {
         shutdownThreads();
         availableOrganDetails.clear();
@@ -36,6 +48,9 @@ public class AvailableOrgansLogicController implements PropertyChangeListener {
         AppController.getInstance().getOrgansBridge().getAvailableOrgansList(startIndex, ROWS_PER_PAGE, organ, region, "", "", "", availableOrganDetails);
     }
 
+    /**
+     * Goes to the previous page in the available organs table.
+     */
     public void goPrevPage() {
         if (startingIndex - ROWS_PER_PAGE < 0) {
             return;
@@ -45,6 +60,9 @@ public class AvailableOrgansLogicController implements PropertyChangeListener {
         search(startingIndex, organ, region);
     }
 
+    /**
+     * Goes to the next page in the available organs table
+     */
     public void goNextPage() {
         if (availableOrganDetails.size() < ROWS_PER_PAGE) {
             return;
@@ -54,6 +72,9 @@ public class AvailableOrgansLogicController implements PropertyChangeListener {
         search(startingIndex, organ, region);
     }
 
+    /**
+     * Shuts down all the running background tasks for the progress bars.
+     */
     public synchronized void shutdownThreads() {
         if (!Platform.isFxApplicationThread()) {
             return;
@@ -63,6 +84,9 @@ public class AvailableOrgansLogicController implements PropertyChangeListener {
         }
     }
 
+    /**
+     * Goes to the next page of the potential matches table
+     */
     public void goNextPageMatches() {
         if(transplantDetails.size() < ROWS_PER_PAGE){
             return;
@@ -72,6 +96,10 @@ public class AvailableOrgansLogicController implements PropertyChangeListener {
 
     }
 
+    /**
+     * Provides pagination functionality for the matches table
+     * @param startingIndexMatches how many entries to skip before returning
+     */
     private void searchMatches(int startingIndexMatches) {
         if(availableOrgan == null){
             return;
@@ -82,6 +110,9 @@ public class AvailableOrgansLogicController implements PropertyChangeListener {
                 ROWS_PER_PAGE, availableOrgan.getDonorNhi(), availableOrgan.getOrgan().toString(), availableOrgan, transplantDetails);
     }
 
+    /**
+     * Goes to the previous page of the potential matches table
+     */
     public void goPrevPageMatches() {
         if (startingIndexMatches - ROWS_PER_PAGE < 0) {
             return;
@@ -91,7 +122,10 @@ public class AvailableOrgansLogicController implements PropertyChangeListener {
         searchMatches(startingIndexMatches);
     }
 
-
+    /**
+     * Populates the potential matches for a selected organ
+     * @param selectedItem selected item in the available organs list
+     */
     public void showMatches(AvailableOrganDetail selectedItem) {
         this.availableOrgan = selectedItem;
         searchMatches(0);

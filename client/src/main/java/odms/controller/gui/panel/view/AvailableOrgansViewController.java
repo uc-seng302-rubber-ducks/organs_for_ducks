@@ -140,26 +140,42 @@ public class AvailableOrgansViewController {
         logicController.search(0, availableOrganFilterComboBox.getValue(), regionFilterTextField.getText());
     }
 
+    /**
+     * @see AvailableOrgansLogicController goPrevPage()
+     */
     @FXML
     private void goToPreviousPage() {
         logicController.goPrevPage();
     }
 
+    /**
+     * @see AvailableOrgansLogicController goPrevPageMatches()
+     */
     @FXML
     private void goToPreviousPageMatches() {
         logicController.goPrevPageMatches();
     }
 
+    /**
+     * @see AvailableOrgansLogicController goNextPage()
+     */
     @FXML
     private void goToNextPage() {
         logicController.goNextPage();
     }
 
+    /**
+     * @see AvailableOrgansLogicController goNextPageMatches()
+     */
     @FXML
     private void goToNextPageMatches() {
         logicController.goNextPageMatches();
     }
 
+
+    /**
+     * Populates the tables with the items in the availableOrganDetails ObservableList
+     */
     private void populateTables() {
         FilteredList<AvailableOrganDetail> filteredAvailableOrganDetails = new FilteredList<>(availableOrganDetails);
         filteredAvailableOrganDetails.setPredicate(AvailableOrganDetail::isOrganStillValid);
@@ -170,6 +186,10 @@ public class AvailableOrgansViewController {
         setOnClickBehaviour();
     }
 
+    /**
+     * Binds a double click to each row in the table to launch the user profile
+     * Also binds the selection to show potential matches
+     */
     private void setOnClickBehaviour() {
         availableOrgansTableView.setOnMouseClicked(event -> {
             if (event.getClickCount() == 2 && availableOrgansTableView.getSelectionModel().getSelectedItem() != null) {
@@ -177,7 +197,7 @@ public class AvailableOrgansViewController {
             }
         });
         availableOrgansTableView.getSelectionModel().selectedItemProperty().addListener(a ->
-            logicController.showMatches(availableOrgansTableView.getSelectionModel().getSelectedItem()));
+                logicController.showMatches(availableOrgansTableView.getSelectionModel().getSelectedItem()));
 
 
         matchesView.setOnMouseClicked(event -> {
@@ -187,6 +207,9 @@ public class AvailableOrgansViewController {
         });
     }
 
+    /**
+     * Shuts down the background threads
+     */
     public void shutdownThreads() {
         logicController.shutdownThreads();
     }

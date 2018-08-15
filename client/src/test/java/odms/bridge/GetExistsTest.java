@@ -1,9 +1,5 @@
-package odms.utils;
+package odms.bridge;
 
-import odms.bridge.AdministratorBridge;
-import odms.bridge.ClinicianBridge;
-import odms.bridge.RoleBridge;
-import odms.bridge.UserBridge;
 import odms.commons.config.ConfigPropertiesSession;
 import okhttp3.*;
 import org.junit.After;

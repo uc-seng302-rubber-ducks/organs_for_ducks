@@ -605,6 +605,7 @@ public class ClinicianController implements PropertyChangeListener, UserLauncher
         }
 
         if (event.getType().equals(EventTypes.USER_UPDATE)) {
+            search();
             refreshTables();
             availableOrgansViewController.search();
         } else if (event.getType().equals(EventTypes.CLINICIAN_UPDATE) && clinician.getStaffId().equals(event.getOldIdentifier())){
