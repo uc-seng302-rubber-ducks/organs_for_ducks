@@ -5,7 +5,7 @@ import odms.commons.model.datamodel.TransplantDetails;
 import java.util.Map;
 
 /**
- * simple sub-object of matching organs that
+ * simple sub-object of organs-receiver pairs that
  * contains a map of int and matching organs info pair.
  */
 public class MatchingOrgans {
