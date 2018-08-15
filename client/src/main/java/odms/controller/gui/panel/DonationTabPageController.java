@@ -229,21 +229,27 @@ public class DonationTabPageController {
             if (currentlyDonating.getSelectionModel().getSelectedItem() == null) {
                 currentlyDonating.getSelectionModel().select(0);
             }
-            ExpiryReason expir = currentUser.getDonorDetails().getOrganMap().get(currentlyDonating.getSelectionModel().getSelectedItem().getOrganType());
-            FXMLLoader organExpiryScreenLoader = new FXMLLoader(getClass().getResource("/FXML/organExpiryScreen.fxml"));
-            Parent root;
-            try {
-                root = organExpiryScreenLoader.load();
-                OrganExpiryViewController organExpiryViewController = organExpiryScreenLoader.getController();
-                Stage updateStage = new Stage();
-                updateStage.initModality(Modality.APPLICATION_MODAL);
-                updateStage.setScene(new Scene(root));
-                organExpiryViewController.init(this.application, currentlyDonating.getSelectionModel().getSelectedItem().getOrganType(), expir, currentUser, updateStage, this);
-                updateStage.show();
-                Log.info("Successfully launched organ expiry window for User NHI: " + currentUser.getNhi());
+            if (currentlyDonating.getSelectionModel().getSelectedItem().getProgressTask().calculateTimeLeft(LocalDateTime.now()) != 0) {
+                ExpiryReason expir = currentUser.getDonorDetails().getOrganMap().get(currentlyDonating.getSelectionModel().getSelectedItem().getOrganType());
+                FXMLLoader organExpiryScreenLoader = new FXMLLoader(getClass().getResource("/FXML/organExpiryScreen.fxml"));
+                Parent root;
+                try {
+                    root = organExpiryScreenLoader.load();
+                    OrganExpiryViewController organExpiryViewController = organExpiryScreenLoader.getController();
+                    Stage updateStage = new Stage();
+                    updateStage.initModality(Modality.APPLICATION_MODAL);
+                    updateStage.setScene(new Scene(root));
+                    organExpiryViewController.init(this.application, currentlyDonating.getSelectionModel().getSelectedItem().getOrganType(), expir, currentUser, updateStage, this);
+                    updateStage.show();
+                    Log.info("Successfully launched organ expiry window for User NHI: " + currentUser.getNhi());
 
-            } catch (IOException e) {
-                Log.severe("Failed to load update death details window for User NHI: " + currentUser.getNhi(), e);
+                } catch (IOException e) {
+                    Log.severe("Failed to load update death details window for User NHI: " + currentUser.getNhi(), e);
+                }
+            } else {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION, "the organ is expired, so it can't be changed", ButtonType.OK);
+                alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
+                alert.showAndWait();
             }
         } else {
             Alert alert = new Alert(Alert.AlertType.INFORMATION, "the user is not currently donating any organs", ButtonType.OK);
