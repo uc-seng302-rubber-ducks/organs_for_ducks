@@ -25,7 +25,7 @@
         <Button fx:id="undonateButton" layoutX="284.0" layoutY="286.0" mnemonicParsing="false" onAction="#undonate" text="&lt;&lt;" />
         <Button fx:id="expireOrganButton" layoutX="567.0" layoutY="536.0" mnemonicParsing="false"
                 onAction="#expireOrgan" text="Expire seleted organ"/>
-        <Button fx:id="removeExpiryReasonButton" layoutX="421.0" layoutY="536.0" mnemonicParsing="false"
-                onAction="#removeExpiry" text="remove"/>
+        <Button fx:id="removeExpiryReasonButton" layoutX="393.0" layoutY="536.0" mnemonicParsing="false"
+                onAction="#removeExpiry" text="Cancel Manual Expiry"/>
     </children>
 </AnchorPane>
