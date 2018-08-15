@@ -226,13 +226,10 @@ CREATE TABLE DeathDetails(
 
 CREATE TABLE OrganExpiryDetails (
   fkDonatingId INT          NOT NULL PRIMARY KEY ,
-  fkStaffId    VARCHAR(255) NOT NULL,
-  timeOfExpiry DATETIME     NOT NULL,
-  reason       VARCHAR(255) NOT NULL,
-  name         VARCHAR(255) NOT NULL,
-  FOREIGN KEY (fkStaffId) REFERENCES Clinician (staffId)
-    ON DELETE CASCADE
-    ON UPDATE CASCADE,
+  id           VARCHAR(255),
+  timeOfExpiry DATETIME,
+  reason       VARCHAR(255),
+  name         VARCHAR(255),
   FOREIGN KEY (fkDonatingId) REFERENCES OrganDonating (donatingId)
     ON DELETE CASCADE
     ON UPDATE CASCADE

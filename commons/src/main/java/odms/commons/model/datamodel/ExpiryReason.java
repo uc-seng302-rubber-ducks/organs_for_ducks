@@ -6,27 +6,27 @@ import java.time.LocalDateTime;
  * Stores all info for organ expiry.
  */
 public class ExpiryReason {
-    private String clinicianId;
+    private String id;
     private LocalDateTime timeOrganExpired;
     private String reason;
     private String name;
 
-    public ExpiryReason(String clinicianId, LocalDateTime dateTime, String reason, String name) {
-        this.clinicianId = clinicianId;
+    public ExpiryReason(String id, LocalDateTime dateTime, String reason, String name) {
+        this.id = id;
         this.timeOrganExpired = dateTime;
         this.reason = reason;
         this.name = name;
     }
 
     public ExpiryReason() {
-        this.clinicianId = "0";
+        this.id = "";
         this.timeOrganExpired = null;
         this.reason = "";
         this.name = "";
     }
 
-    public String getClinicianId() {
-        return clinicianId;
+    public String getId() {
+        return id;
     }
 
     public LocalDateTime getTimeOrganExpired() {
@@ -41,8 +41,8 @@ public class ExpiryReason {
         return name;
     }
 
-    public void setClinicianId(String clinicianId) {
-        this.clinicianId = clinicianId;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public void setTimeOrganExpired(LocalDateTime timeOrganExpired) {

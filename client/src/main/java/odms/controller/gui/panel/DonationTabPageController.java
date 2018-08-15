@@ -86,7 +86,7 @@ public class DonationTabPageController {
         donatingOrganColumn.setCellFactory(cell -> OrganListCellFactory.generateOrganTableCell(donatingOrganColumn, currentUser));
         expiryReasonColumn.setCellValueFactory(new PropertyValueFactory<>("reason"));
         manualExpiryTimeColumn.setCellValueFactory(new PropertyValueFactory<>("expiryTime"));
-        expiryStaffIdColumn.setCellValueFactory(new PropertyValueFactory<>("staffId"));
+        expiryStaffIdColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         organExpiryColumn.setCellValueFactory(new PropertyValueFactory<>("progressTask"));
         organExpiryColumn.setCellFactory(callback -> ProgressBarTableCellFactory.generateCell(organExpiryColumn));
 

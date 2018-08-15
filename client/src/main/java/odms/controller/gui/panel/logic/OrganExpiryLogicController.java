@@ -16,7 +16,7 @@ public class OrganExpiryLogicController {
 
     public void setExpiryReason(String reason) {
         expiryReason.setReason(reason);
-        expiryReason.setClinicianId(appController.getUsername());
+        expiryReason.setId(appController.getUsername());
         expiryReason.setName(appController.getName());
         if (expiryReason.getTimeOrganExpired() == null) {
             expiryReason.setTimeOrganExpired(LocalDateTime.now());

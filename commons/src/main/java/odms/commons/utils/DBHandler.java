@@ -453,7 +453,7 @@ public class DBHandler {
             stmt.setString(1, user.getNhi());
             try (ResultSet resultSet = stmt.executeQuery()) {
                 while (resultSet != null && resultSet.next()) {
-                    ExpiryReason expiryReason = new ExpiryReason(resultSet.getString("fkStaffId"),
+                    ExpiryReason expiryReason = new ExpiryReason(resultSet.getString("id"),
                             resultSet.getTimestamp("timeOfExpiry") != null ? resultSet.getTimestamp("timeOfExpiry").toLocalDateTime() : null,
                             resultSet.getString("reason"), resultSet.getString("name"));
                     String organ = resultSet.getString("organName");

@@ -34,7 +34,7 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
     private static final String CREATE_AFFECTED_ORGAN = "INSERT INTO MedicalProcedureOrgan (fkOrgansId, fkProcedureId) VALUES (?, ?)";
     private static final String CREATE_DONATING_ORGAN = "INSERT INTO OrganDonating (fkUserNhi, fkOrgansId) VALUES (?, ?)";
     private static final String CREATE_RECEIVING_ORGAN = "INSERT INTO OrganAwaiting (fkUserNhi, fkOrgansId) VALUES (?, ?)";
-    private static final String CREATE_EXPIRY_DETAILS = "INSERT INTO OrganExpiryDetails(fkStaffId, fkDonatingId, timeOfExpiry, reason, `name`) VALUES (?,?,?,?,?)";
+    private static final String CREATE_EXPIRY_DETAILS = "INSERT INTO OrganExpiryDetails(id, fkDonatingId, timeOfExpiry, reason, `name`) VALUES (?,?,?,?,?)";
 
     private static final String UPDATE_USER_STMT = "UPDATE User SET nhi = ?, firstName = ?, middleName = ?, lastName = ?, preferedName = ?, dob = ?, dod = ?, lastModified = ? WHERE nhi = ?";
     private static final String UPDATE_USER_HEALTH_STMT = "UPDATE HealthDetails SET gender = ?, birthGender = ?, smoker = ?, alcoholConsumption = ?, height = ?, weight = ?, bloodType = ? WHERE fkUserNhi = ?";
@@ -384,7 +384,7 @@ public class UserUpdateStrategy extends AbstractUpdateStrategy {
                 int organDBValue = organsExpiry.getKey().getDbValue();
                 int donatingId = getDonatingId(user.getNhi(), organDBValue, connection);
                 try (PreparedStatement createExpiryDetails = connection.prepareStatement(CREATE_EXPIRY_DETAILS)) {
-                    createExpiryDetails.setString(1, organsExpiry.getValue().getClinicianId());
+                    createExpiryDetails.setString(1, organsExpiry.getValue().getId());
                     createExpiryDetails.setInt(2, donatingId);
 
                     LocalDateTime time = organsExpiry.getValue().getTimeOrganExpired();

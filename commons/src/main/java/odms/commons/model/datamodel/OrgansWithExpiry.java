@@ -13,7 +13,7 @@ public class OrgansWithExpiry {
     private Organs organType;
     private transient ProgressTask progressTask; //NOSONAR
     private String reason;
-    private String staffId;
+    private String id;
     private String name;
     private LocalDateTime expiryTime;
     private ExpiryReason expiryReason;
@@ -23,14 +23,14 @@ public class OrgansWithExpiry {
         this.expiryReason = expiry;
         if (expiry.getTimeOrganExpired() != null) {
             reason = expiry.getReason();
-            staffId = expiry.getClinicianId();
+            id = expiry.getId();
             expiryTime = expiry.getTimeOrganExpired();
-            this.name = expiry.getClinicianId();
+            this.name = expiry.getName();
 
         } else {
             reason = "";
-            this.name = "";
-            staffId = "";
+            name = "";
+            id = "";
             expiryTime = null;
         }
         this.progressTask = new ProgressTask(this, momentOfDeath);
@@ -52,12 +52,12 @@ public class OrgansWithExpiry {
         this.reason = reason;
     }
 
-    public String getStaffId() {
-        return staffId;
+    public String getID() {
+        return id;
     }
 
-    public void setStaffId(String staffId) {
-        this.staffId = staffId;
+    public void setID(String id) {
+        this.id = id;
     }
 
     public LocalDateTime getExpiryTime() {
