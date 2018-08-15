@@ -59,13 +59,12 @@ public class TransplantBridge extends Bifrost {
                 if (200 < response.code() || response.code() > 299) {
                     throw new ApiException(response.code(), "Response code: " + response.code());
                 }
-                System.out.println("yeah nah im back");
+
                 List<TransplantDetails> transplantDetails = handler.decodeTransplantList(response);
-                System.out.println(transplantDetails.size());
+
                 for (TransplantDetails transplantDetail : transplantDetails) {
                     AppController.getInstance().addTransplant(transplantDetail);
-                    AppController.getInstance().getClinicianController().refreshTables();
-                }
+                                    }
             }
         });
     }
