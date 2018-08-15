@@ -678,7 +678,7 @@ public class AdministratorViewController implements PropertyChangeListener, User
                     }
 
                 for (User user : newUsers) {
-                    new Thread(() -> appController.getUserBridge().postUser(user)).start();
+                    new Thread(() -> appController.getUserBridge().postUserSilently(user)).start();
                 }
                 saveRole(User.class, appController, appController.getToken());
             } catch (FileNotFoundException e) {

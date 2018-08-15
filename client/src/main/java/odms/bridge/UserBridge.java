@@ -63,6 +63,26 @@ public class UserBridge extends RoleBridge {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 if (!response.isSuccessful()) {
+                    throw new IOException("Failed to make POST call to /users code: " + response.code());
+                }
+                response.close();
+            }
+        });
+    }
+
+    public void postUserSilently(User user) {
+        String url = ip + "/usersSilent/";
+        RequestBody requestBody = RequestBody.create(json, new Gson().toJson(user));
+        Request request = new Request.Builder().post(requestBody).url(url).build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.warning("Could not make the call to POST /users");
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (!response.isSuccessful()) {
                     throw new IOException("Failed to make POST call to /users");
                 }
                 response.close();
