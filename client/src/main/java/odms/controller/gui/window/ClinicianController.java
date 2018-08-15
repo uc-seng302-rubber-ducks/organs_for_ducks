@@ -596,6 +596,7 @@ public class ClinicianController implements PropertyChangeListener, TransplantWa
         }
 
         if (event.getType().equals(EventTypes.USER_UPDATE)) {
+            search();
             refreshTables();
         } else if (event.getType().equals(EventTypes.CLINICIAN_UPDATE) && clinician.getStaffId().equals(event.getOldIdentifier())){
             String newStaffId = event.getNewIdentifier();
