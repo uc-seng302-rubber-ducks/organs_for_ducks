@@ -67,6 +67,8 @@ public class ReceiverTabController {
 
     private UserController parent;
 
+    private boolean runStopWaitingForAllOrgans = true;
+
     private ObservableList<OrgansWithDates> currentlyRecieving;
     private OrganDeregisterReason organDeregisterationReason;
 
@@ -265,7 +267,7 @@ public class ReceiverTabController {
 
 
         //if user already died, user cannot receive organs
-        if (currentUser.getDateOfDeath() != null) {
+        if (currentUser.isDeceased()) {
             deadMode(true);
         } else {
             deadMode(false);
@@ -412,8 +414,9 @@ public class ReceiverTabController {
                 noLongerWaitingForOrgan.getItems().add(organ);
             }
 
-            if (!currentUser.getReceiverDetails().getOrgans().isEmpty()) {
+            if (!currentUser.getReceiverDetails().getOrgans().isEmpty() && runStopWaitingForAllOrgans) {
                 currentUser.getReceiverDetails().stopWaitingForAllOrgans();
+                runStopWaitingForAllOrgans = false; //Prevents stopWaitingForAllOrgans from running more than once.
             }
 
         } else {

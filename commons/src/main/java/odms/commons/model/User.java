@@ -903,9 +903,8 @@ public class User extends Undoable<User> implements Listenable {
         return Math.toIntExact(ChronoUnit.YEARS.between(dateOfBirth, java.time.LocalDate.now()));
     }
 
-    //TODO: refactor code to calculate off date od death and remove this variable 17/05
-    public Boolean getDeceased() {
-        return isDeceased;
+    public Boolean isDeceased() {
+        return this.getDateOfDeath() != null;
     }
 
     public List<Disease> getCurrentDiseases() {
