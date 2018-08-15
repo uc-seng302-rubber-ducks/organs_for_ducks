@@ -255,7 +255,7 @@ public class UserController implements PropertyChangeListener {
      *
      * @param user user to change currentUser to
      */
-    private void changeCurrentUser(User user) {
+    public void changeCurrentUser(User user) {
         currentUser = user;
         contact = user.getContact();
         if (user.getChanges() != null) {

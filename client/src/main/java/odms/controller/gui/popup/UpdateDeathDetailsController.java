@@ -11,7 +11,6 @@ import odms.commons.model.User;
 import odms.commons.model._enum.Organs;
 import odms.commons.model._enum.Regions;
 import odms.commons.model.datamodel.ExpiryReason;
-import odms.commons.model.datamodel.OrgansWithExpiry;
 import odms.commons.utils.AttributeValidation;
 import odms.commons.utils.Log;
 import odms.controller.AppController;
@@ -82,6 +81,7 @@ public class UpdateDeathDetailsController {
         for (Map.Entry<Organs, ExpiryReason> pair: currentUser.getDonorDetails().getOrganMap().entrySet()) {
             if (pair.getValue().getTimeOrganExpired() != null) {
                 hasOverridedExpiry = true;
+                break;
             }
         }
         if (hasOverridedExpiry) {

@@ -19,11 +19,13 @@ public class ProgressBarTableCellFactory {
             protected void updateItem(ProgressTask item, boolean empty) {
                 super.updateItem(item, empty);
 
-                if (item != null && !item.isExpired()) {
-                    progressBar.progressProperty().bind(item.progressProperty());
+                if (item != null) {
                     progressBar.minWidthProperty().bind(column.widthProperty().subtract(10));
-                    item.setProgressBar(progressBar);
-                    CachedThreadPool.getThreadPool().getExecutor().submit(item);
+                    if (!item.isExpired()) {
+                        progressBar.progressProperty().bind(item.progressProperty());
+                        item.setProgressBar(progressBar);
+                        CachedThreadPool.getThreadPool().getExecutor().submit(item);
+                    }
                 }
             }
         };

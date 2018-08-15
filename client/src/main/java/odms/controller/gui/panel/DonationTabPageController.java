@@ -134,13 +134,14 @@ public class DonationTabPageController {
                 yesButton.setId("yeseButton");
 
                 Optional<ButtonType> result = alert.showAndWait();
-                if (result.get() == ButtonType.YES) {
+                if (result.isPresent() && result.get() == ButtonType.YES) {
                     ExpiryReason expiryReason = currentUser.getDonorDetails().getOrganMap().get(currentlyDonating.getSelectionModel().getSelectedItem().getOrganType());
                     expiryReason.setName("");
                     expiryReason.setTimeOrganExpired(null);
                     expiryReason.setId("");
                     expiryReason.setReason("");
                     refreshCurrentlyDonating();
+                    parent.showUser(currentUser);
                 }
             } else {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION, "Please select an organ to remove an expiry from", ButtonType.OK);
