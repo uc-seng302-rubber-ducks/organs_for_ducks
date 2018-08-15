@@ -318,7 +318,6 @@ public class User extends Undoable<User> implements Listenable {
         this.profilePhotoFilePath = profilePhotoFilePath;
     }
 
-
     public ContactDetails getContactDetails() {
         return contactDetails;
     }
