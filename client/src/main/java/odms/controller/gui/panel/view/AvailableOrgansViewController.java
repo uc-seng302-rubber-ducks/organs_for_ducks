@@ -19,6 +19,7 @@ import odms.commons.model.datamodel.TransplantDetails;
 import odms.commons.utils.ProgressTask;
 import odms.controller.gui.panel.logic.AvailableOrgansLogicController;
 import odms.controller.gui.widget.ProgressBarTableCellFactory;
+import odms.services.TimeRemainingComparator;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -92,7 +93,8 @@ public class AvailableOrgansViewController {
     }
 
     /**
-     * initialises the available organs table view
+     * Initialises the available organs table view by binding each column to particular fields contained
+     * within the AvailableOrganDetail class
      */
     private void initAvailableOrgansTableView() {
         nhiColumn.setCellValueFactory(new PropertyValueFactory<>("donorNhi"));
@@ -110,6 +112,7 @@ public class AvailableOrgansViewController {
         populateTables();
         progressBarColumn.setSortType(TableColumn.SortType.ASCENDING);
         progressBarColumn.setComparator(organTimeLeftComparator);
+        timeLeftColumn.setComparator(new TimeRemainingComparator());
     }
 
     private Comparator<ProgressTask> organTimeLeftComparator = Comparator.comparingLong(p -> p.calculateTimeLeft(LocalDateTime.now()));

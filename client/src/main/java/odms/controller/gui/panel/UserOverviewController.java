@@ -15,6 +15,7 @@ import odms.controller.AppController;
 import odms.controller.gui.popup.UpdateDeathDetailsController;
 
 import java.io.IOException;
+import java.net.URL;
 import java.text.DecimalFormat;
 import java.time.temporal.ChronoUnit;
 
@@ -123,8 +124,12 @@ public class UserOverviewController {
         fNameValue.setText(user.getFirstName());
         DOBValue.setText(user.getDateOfBirth().toString());
 
-        displayImage(profilePicture, user.getProfilePhotoFilePath());
-
+        if (user.getProfilePhotoFilePath() == null || user.getProfilePhotoFilePath().equals("")) {
+            URL url = getClass().getResource("/default-profile-picture.jpg");
+            displayImage(profilePicture, url);
+        } else {
+            displayImage(profilePicture, user.getProfilePhotoFilePath());
+        }
 
         if (user.getMiddleName() != null) {
             mNameValue.setText(user.getMiddleName());

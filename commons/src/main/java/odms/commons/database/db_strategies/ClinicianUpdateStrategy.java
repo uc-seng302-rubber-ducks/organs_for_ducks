@@ -1,4 +1,4 @@
-package odms.commons.utils.db_strategies;
+package odms.commons.database.db_strategies;
 
 import odms.commons.model.Clinician;
 import odms.commons.utils.Log;
@@ -13,7 +13,7 @@ public class ClinicianUpdateStrategy extends AbstractUpdateStrategy {
     private static final String CREATE_STAFF_CONTACT_STMT = "INSERT INTO ContactDetails (fkStaffId, homePhone, email, cellPhone) VALUES (?, ?, ?, ?)";
     private static final String CREATE_ADDRESS_STMT = "INSERT INTO Address (fkContactId, fkStaffId, streetNumber, streetName, neighbourhood, city, region, country, zipCode) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-    private static final String UPDATE_CLINICIAN_STMT = "UPDATE Clinician SET firstName = ?, middleName = ?, lastName = ?, lastModified = ? WHERE staffId = ?";
+    private static final String UPDATE_CLINICIAN_STMT = "UPDATE Clinician SET firstName = ?, middleName = ?, lastName = ?, lastModified = ?, profilePicture = NULL WHERE staffId = ?";
     private static final String UPDATE_CLINICIAN_ADDRESS = "UPDATE ContactDetails JOIN Address ON contactId = fkContactId " +
             "SET streetNumber = ?, streetName = ?, neighbourhood = ?, city = ?, region = ?, zipCode = ?, country = ? " +
             "WHERE ContactDetails.fkStaffId = ?";

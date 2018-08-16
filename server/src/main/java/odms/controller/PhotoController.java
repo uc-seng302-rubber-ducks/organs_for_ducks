@@ -1,10 +1,10 @@
 package odms.controller;
 
+import odms.commons.database.DBHandler;
+import odms.commons.database.JDBCDriver;
 import odms.commons.model.Clinician;
 import odms.commons.model.User;
 import odms.commons.model._enum.EventTypes;
-import odms.commons.utils.DBHandler;
-import odms.commons.utils.JDBCDriver;
 import odms.commons.utils.Log;
 import odms.exception.ServerDBException;
 import odms.security.IsClinician;
@@ -68,7 +68,6 @@ public class PhotoController extends BaseController {
     @IsClinician
     @RequestMapping(method = RequestMethod.PUT, value = "/clinicians/{staffId}/photo")
     public ResponseEntity putClinicianProfilePhoto(@PathVariable String staffId, @RequestBody byte[] profileImageFile, @RequestHeader(value = "Content-Type") String header) {
-
         try (Connection connection = driver.getConnection()) {
             Clinician toModify = handler.getOneClinician(connection, staffId);
             if (toModify == null) {
@@ -82,7 +81,7 @@ public class PhotoController extends BaseController {
             if (inputStream.available() >= MAX_FILE_SIZE) {
                 return new ResponseEntity(HttpStatus.PAYLOAD_TOO_LARGE);
             }
-            handler.updateProfilePhoto(Clinician.class, toModify.getStaffId(), inputStream, header, connection);
+            handler.updateProfilePhoto(Clinician.class, staffId, inputStream, header, connection); //CHANGED
             socketHandler.broadcast(EventTypes.CLINICIAN_UPDATE, staffId, staffId);
 
         } catch (SQLException ex) {

@@ -4,13 +4,14 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
 import odms.App;
 import odms.TestUtils.AppControllerMocker;
 import odms.TestUtils.CommonTestMethods;
 import odms.bridge.*;
 import odms.commons.model.Clinician;
 import odms.commons.model.User;
+import odms.commons.model._enum.Organs;
+import odms.commons.model.datamodel.ExpiryReason;
 import odms.commons.model.dto.UserOverview;
 import odms.controller.AppController;
 import odms.controller.gui.window.UserController;
@@ -18,7 +19,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.loadui.testfx.categories.TestFX;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.matcher.control.LabeledMatchers;
@@ -28,10 +28,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
+import java.util.*;
 import java.util.concurrent.TimeoutException;
 
 import static odms.TestUtils.FxRobotHelper.*;
@@ -85,6 +82,8 @@ public class UpdateDeathDetailsControllerGUITest extends ApplicationTest{
         when(application.getUserOverviews()).thenReturn(new HashSet<>(overviews));
         when(bridge.getUser("ABC1244")).thenReturn(testUser);
 
+        when(application.getName()).thenReturn("Jeff");
+        when(application.getUsername()).thenReturn("erson");
 
         when(application.getOrgansBridge()).thenReturn(organsBridge);
         doNothing().when(organsBridge).getAvailableOrgansList(anyInt(),anyInt(),anyString(),anyString(),
@@ -231,6 +230,20 @@ public class UpdateDeathDetailsControllerGUITest extends ApplicationTest{
         verifyThat("#regionOfDeathValue", LabeledMatchers.hasText(""));
         verifyThat("#countryOfDeathValue", LabeledMatchers.hasText(""));
 
+    }
+
+    @Test
+    public void testDateAndTimeCannotBeEditedIfOrganExpired() {
+        ExpiryReason testReason = new ExpiryReason("0", LocalDateTime.now(), "Testing", "Tester");
+        testUser.getDonorDetails().getOrganMap().put(Organs.LIVER, testReason);
+
+        loginAsClinician();
+        clickOnButton(this, "#updateDeathDetailsButton");
+
+        verifyThat("#updateDeathDetailsOverrideWarningLabel", Node::isVisible);
+        verifyThat("#updateDeathDetailsTimeTextField", Node::isDisabled);
+        verifyThat("#updateDeathDetailsDatePicker", Node::isDisabled);
+        verifyThat("#removeUpdateDeathDetailsButton", Node::isDisabled);
     }
 
 }

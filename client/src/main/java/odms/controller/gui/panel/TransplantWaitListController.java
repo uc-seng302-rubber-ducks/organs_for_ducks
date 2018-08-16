@@ -3,6 +3,7 @@ package odms.controller.gui.panel;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
@@ -10,12 +11,10 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
 import javafx.util.Duration;
-import odms.commons.model.User;
 import odms.commons.model._abstract.UserLauncher;
 import odms.commons.model._enum.Organs;
 import odms.commons.model.datamodel.TransplantDetails;
 import odms.controller.AppController;
-import odms.controller.gui.popup.utils.AlertWindowFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,15 +57,19 @@ public class TransplantWaitListController {
     private Button transplantPrevPageButton;
     @FXML
     private TableView<TransplantDetails> transplantWaitListTableView;
-    private ArrayList<CheckBox> filterCheckBoxList = new ArrayList<>();
+    private List<CheckBox> filterCheckBoxList = new ArrayList<>();
     private AppController appController;
     private UserLauncher parent;
     private int startIndex = 0;
     //for delaying the request when typing into the region text field
     private PauseTransition pause = new PauseTransition(Duration.millis(300));
 
+    private ObservableList<TransplantDetails> transplantList;
+
     @FXML
     public void init(AppController controller, UserLauncher parent) {
+        this.transplantList = FXCollections.observableList(new ArrayList<>());
+        transplantList.addListener((ListChangeListener<? super TransplantDetails>) observable -> displayWaitListTable());
         this.parent = parent;
         appController = controller;
         groupCheckBoxes();
@@ -135,18 +138,16 @@ public class TransplantWaitListController {
      * @param allowedOrgans list of the organs to filter by. If this is empty, all will be returned
      */
     private void populateWaitListTable(int startIndex, int count, String regionSearch, List<Organs> allowedOrgans) {
-        appController.getTransplantList().clear();
-        appController.getTransplantBridge().getWaitingList(startIndex, count, "", regionSearch, allowedOrgans);
-        displayWaitListTable();
+        transplantList.clear();
+        appController.getTransplantBridge().getWaitingList(startIndex, count, "", regionSearch, allowedOrgans, transplantList);
     }
 
     public void displayWaitListTable() {
-        ObservableList<TransplantDetails> oTransplantList = FXCollections
-                .observableList(appController.getTransplantList());
-        SortedList<TransplantDetails> sTransplantList = new SortedList<>(oTransplantList);
+
+        SortedList<TransplantDetails> sTransplantList = new SortedList<>(transplantList);
         sTransplantList.comparatorProperty().bind(transplantWaitListTableView.comparatorProperty());
 
-        if (!appController.getTransplantList().isEmpty()) {
+        if (!transplantList.isEmpty()) {
             transplantWaitListTableView.setItems(sTransplantList);
 
         } else {
@@ -163,9 +164,9 @@ public class TransplantWaitListController {
      * sets table so that clicking an entry will take open that user in a new window
      */
     private void setTableOnClickBehaviour() {
-        if (!appController.getTransplantList().isEmpty()) {
+        if (!transplantList.isEmpty()) {
             transplantWaitListTableView.setOnMouseClicked(event -> {
-                if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2) {
+                if (event.getButton() == MouseButton.PRIMARY && event.getClickCount() == 2 && transplantWaitListTableView.getSelectionModel().getSelectedItem() != null) {
                     TransplantDetails transplantDetails = transplantWaitListTableView.getSelectionModel().getSelectedItem();
                     parent.launchUser(transplantDetails.getNhi());
                 }
@@ -197,7 +198,7 @@ public class TransplantWaitListController {
     @FXML
     public void getNextPage() {
         //this is the last page
-        if (appController.getTransplantList().size() < TRANSPLANTS_PER_PAGE) {
+        if (transplantList.size() < TRANSPLANTS_PER_PAGE) {
             return;
         }
 

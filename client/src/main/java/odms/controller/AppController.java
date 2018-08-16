@@ -70,6 +70,8 @@ public class AppController {
     private String token;
     private SQLBridge sqlBridge = new SQLBridge(client);
     private OdmsSocketHandler socketHandler = new OdmsSocketHandler(client, ServerEventNotifier.getInstance());
+    private String username = "";
+    private String name = "";
     /**
      * Creates new instance of AppController
      */
@@ -147,6 +149,21 @@ public class AppController {
         }
     }
 
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     /**
      * create a list of all country names.
@@ -464,6 +481,7 @@ public class AppController {
      * @param clinician Clinician to be saved
      */
     public void saveClinician(Clinician clinician) throws IOException {
+        try {
             Clinician originalClinician;
             if (!clinician.getUndoStack().isEmpty()) {
                 originalClinician = clinician.getUndoStack().firstElement().getState();
@@ -472,11 +490,15 @@ public class AppController {
             }
 
             if (clinicianBridge.getExists(originalClinician.getStaffId())) {
-                clinicianBridge.putProfilePicture(originalClinician.getStaffId(), getToken(), clinician.getProfilePhotoFilePath());
                 clinicianBridge.putClinician(clinician, originalClinician.getStaffId(), token);
+                Thread.sleep(100);
+                clinicianBridge.putProfilePicture(originalClinician.getStaffId(), token, clinician.getProfilePhotoFilePath());
             } else {
                 clinicianBridge.postClinician(clinician, token);
             }
+        } catch (InterruptedException e) {
+            Log.warning("Thread sleep time was interrupted", e);
+        }
     }
 
     /**
@@ -728,5 +750,9 @@ public class AppController {
 
     public void setOrgansBridge(OrgansBridge bridge) {
         organsBridge = bridge;
+    }
+
+    public OkHttpClient getClient() {
+        return client;
     }
 }

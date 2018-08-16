@@ -17,6 +17,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Class for handling calls to user
@@ -223,11 +224,12 @@ public class User extends Undoable<User> implements Listenable {
         }
 
         newUser.donorDetails = new DonorDetails(newUser);
-        for (Organs o : user.donorDetails.getOrgans()) {
-            newUser.donorDetails.getOrgans().add(o);
+        Set<Map.Entry<Organs, ExpiryReason>> organMap = user.donorDetails.getOrganMap().entrySet();
+        for (Map.Entry<Organs, ExpiryReason> entry : organMap) {
+            newUser.donorDetails.getOrganMap().put(entry.getKey(), entry.getValue());
         }
-        newUser.receiverDetails = new ReceiverDetails(newUser);
 
+        newUser.receiverDetails = new ReceiverDetails(newUser);
         for (Organs o : user.receiverDetails.getOrgans().keySet()) {
             ArrayList<ReceiverOrganDetailsHolder> detailHolders = new ArrayList<>(user.receiverDetails.getOrgans().get(o));
             for (int i = 0; i < user.receiverDetails.getOrgans().get(o).size(); i++) {
@@ -315,7 +317,6 @@ public class User extends Undoable<User> implements Listenable {
         updateLastModified();
         this.profilePhotoFilePath = profilePhotoFilePath;
     }
-
 
     public ContactDetails getContactDetails() {
         return contactDetails;
@@ -461,6 +462,7 @@ public class User extends Undoable<User> implements Listenable {
 
         List<Organs> commonOrganList = new ArrayList<>(receiverDetails.getOrgans().keySet());
         commonOrganList.retainAll(donorDetails.getOrgans());
+        commonOrganList = commonOrganList.stream().filter(p -> receiverDetails.isCurrentlyWaitingFor(p)).collect(Collectors.toList());
         return commonOrganList;
     }
 
@@ -900,9 +902,8 @@ public class User extends Undoable<User> implements Listenable {
         return Math.toIntExact(ChronoUnit.YEARS.between(dateOfBirth, java.time.LocalDate.now()));
     }
 
-    //TODO: refactor code to calculate off date od death and remove this variable 17/05
-    public Boolean getDeceased() {
-        return isDeceased;
+    public Boolean isDeceased() {
+        return this.getDateOfDeath() != null;
     }
 
     public List<Disease> getCurrentDiseases() {

@@ -1,9 +1,9 @@
 package odms.controller.userDetailsControllerTests;
 
+import odms.commons.database.DBHandler;
+import odms.commons.database.JDBCDriver;
 import odms.commons.model.MedicalProcedure;
 import odms.commons.model.User;
-import odms.commons.utils.DBHandler;
-import odms.commons.utils.JDBCDriver;
 import odms.controller.user.details.ProcedureController;
 import odms.exception.ServerDBException;
 import odms.utils.DBManager;

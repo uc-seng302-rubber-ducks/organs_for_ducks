@@ -2,6 +2,7 @@ package odms.bridge;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import javafx.application.Platform;
 import odms.commons.model.Disease;
 import odms.commons.model.MedicalProcedure;
 import odms.commons.model.User;
@@ -35,7 +36,7 @@ public class UserBridge extends RoleBridge {
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                AlertWindowFactory.generateError(e);
+                Platform.runLater(() -> AlertWindowFactory.generateError(e));
             }
 
             @Override
@@ -52,6 +53,26 @@ public class UserBridge extends RoleBridge {
 
     public void postUser(User user) {
         String url = ip + USERS;
+        RequestBody requestBody = RequestBody.create(json, new Gson().toJson(user));
+        Request request = new Request.Builder().post(requestBody).url(url).build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.warning("Could not make the call to POST /users");
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (!response.isSuccessful()) {
+                    throw new IOException("Failed to make POST call to /users code: " + response.code());
+                }
+                response.close();
+            }
+        });
+    }
+
+    public void postUserSilently(User user) {
+        String url = ip + "/usersSilent/";
         RequestBody requestBody = RequestBody.create(json, new Gson().toJson(user));
         Request request = new Request.Builder().post(requestBody).url(url).build();
         client.newCall(request).enqueue(new Callback() {

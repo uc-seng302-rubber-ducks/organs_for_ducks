@@ -108,8 +108,8 @@ public class RedoTest {
 
     @Test
     public void testOrgansRedo() {
-        testUser.getDonorDetails().addOrgan(Organs.BONE);
-        testUser.getDonorDetails().addOrgan(Organs.BONE_MARROW);
+        testUser.getDonorDetails().addOrgan(Organs.BONE, null);
+        testUser.getDonorDetails().addOrgan(Organs.BONE_MARROW, null);
 
         testUser.undo();
         testUser.redo();
