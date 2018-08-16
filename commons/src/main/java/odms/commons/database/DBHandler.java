@@ -903,7 +903,8 @@ public class DBHandler {
      * @see TransplantDetails
      */
     public List<TransplantDetails> getTransplantDetails(Connection conn, int startIndex, int count, String name, String region, String[] organs) throws SQLException {
-        StringBuilder queryString = new StringBuilder("SELECT U.nhi, U.firstName, U.dob, U.middleName, U.lastName, O.organName, Dates.dateRegistered, Q.region, DD.momentOfDeath, H.bloodType from OrganAwaiting JOIN Organ O ON OrganAwaiting.fkOrgansId = O.organId\n" +
+        StringBuilder queryString = new StringBuilder("SELECT U.nhi, U.firstName, U.dob, U.middleName, U.lastName, O.organName, Dates.dateRegistered, Q.region, DD.momentOfDeath, H.bloodType " +
+                "from OrganAwaiting JOIN Organ O ON OrganAwaiting.fkOrgansId = O.organId\n" +
                 "  LEFT JOIN User U ON OrganAwaiting.fkUserNhi = U.nhi\n" +
                 "  LEFT JOIN HealthDetails H ON U.nhi = H.fkUserNhi\n" +
                 "  LEFT JOIN DeathDetails DD ON DD.fkUserNhi = U.nhi\n" +

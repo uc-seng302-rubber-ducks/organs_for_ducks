@@ -1,6 +1,7 @@
 package odms.bridge;
 
 import com.google.gson.Gson;
+import javafx.collections.FXCollections;
 import odms.commons.config.ConfigPropertiesLoader;
 import odms.commons.config.ConfigPropertiesSession;
 import odms.commons.exception.ApiException;
@@ -70,7 +71,7 @@ public class TransplantBridgeTest {
         when(mockCall.execute()).thenReturn(mockResponse);
         when(mockClient.newCall(any(Request.class))).thenReturn(mockCall);
 
-        bridge.getWaitingList(0, 10, "", "", new ArrayList<>());
+        bridge.getWaitingList(0, 10, "", "", new ArrayList<>(), FXCollections.emptyObservableList());
     }
 
     @Test
@@ -85,7 +86,7 @@ public class TransplantBridgeTest {
         when(mockCall.execute()).thenReturn(mockResponse);
         when(mockClient.newCall(any(Request.class))).thenReturn(mockCall);
 
-        bridge.getWaitingList(0, 10, "", "", new ArrayList<>());
+        bridge.getWaitingList(0, 10, "", "", new ArrayList<>(), FXCollections.emptyObservableList());
         List<String> logs = Log.getDebugLogs();
         Assert.assertEquals(serverUrl + "/transplantList?count=10&startIndex=0", logs.get(0));
     }
@@ -103,7 +104,7 @@ public class TransplantBridgeTest {
         when(mockCall.execute()).thenReturn(mockResponse);
         when(mockClient.newCall(any(Request.class))).thenReturn(mockCall);
 
-        bridge.getWaitingList(0, 10, "", "here", new ArrayList<>());
+        bridge.getWaitingList(0, 10, "", "here", new ArrayList<>(), FXCollections.emptyObservableList());
         List<String> logs = Log.getDebugLogs();
         Assert.assertEquals(serverUrl + "/transplantList?count=10&startIndex=0&region=here", logs.get(0));
     }
@@ -120,7 +121,7 @@ public class TransplantBridgeTest {
         when(mockCall.execute()).thenReturn(mockResponse);
         when(mockClient.newCall(any(Request.class))).thenReturn(mockCall);
 
-        bridge.getWaitingList(0, 10, "", "", new ArrayList<>(Arrays.asList(Organs.LIVER, Organs.LUNG)));
+        bridge.getWaitingList(0, 10, "", "", new ArrayList<>(Arrays.asList(Organs.LIVER, Organs.LUNG)), FXCollections.emptyObservableList());
         List<String> logs = Log.getDebugLogs();
 
         Assert.assertEquals(serverUrl + "/transplantList?count=10&startIndex=0&organs=LIVER&organs=LUNG", logs.get(0));
@@ -138,7 +139,7 @@ public class TransplantBridgeTest {
         when(mockCall.execute()).thenReturn(mockResponse);
         when(mockClient.newCall(any(Request.class))).thenReturn(mockCall);
 
-        bridge.getWaitingList(34, 54, "", "", new ArrayList<>());
+        bridge.getWaitingList(34, 54, "", "", new ArrayList<>(), FXCollections.emptyObservableList());
         List<String> logs = Log.getDebugLogs();
 
         Assert.assertEquals(serverUrl + "/transplantList?count=54&startIndex=34", logs.get(0));

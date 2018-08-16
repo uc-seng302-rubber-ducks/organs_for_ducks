@@ -1,6 +1,7 @@
 package odms.bridge;
 
 import com.mysql.jdbc.StringUtils;
+import javafx.collections.ObservableList;
 import odms.commons.exception.ApiException;
 import odms.commons.model._enum.Organs;
 import odms.commons.model.datamodel.TransplantDetails;
@@ -27,7 +28,7 @@ public class TransplantBridge extends Bifrost {
      * @param region     region to search by
      * @param organs     only return results for the selected organs
      */
-    public void getWaitingList(int startIndex, int count, String name, String region, Collection<Organs> organs) {
+    public void getWaitingList(int startIndex, int count, String name, String region, Collection<Organs> organs, ObservableList<TransplantDetails> observableList) {
         StringBuilder url = new StringBuilder(ip);
         url.append("/transplantList?count=").append(count);
         url.append("&startIndex=").append(startIndex);
@@ -41,7 +42,7 @@ public class TransplantBridge extends Bifrost {
         if (!organs.isEmpty()) {
             for (Organs organ : organs) {
                 //repeated values are interpreted by the server as an array
-                url.append("&organs=").append(organ.name());
+                url.append("&organs=").append(organ.name().replaceAll(" ", "_"));
             }
         }
         Log.debug(url.toString());
@@ -59,10 +60,9 @@ public class TransplantBridge extends Bifrost {
                 if (200 < response.code() || response.code() > 299) {
                     throw new ApiException(response.code(), "Response code: " + response.code());
                 }
+
                 List<TransplantDetails> transplantDetails = handler.decodeTransplantList(response);
-                for (TransplantDetails transplantDetail : transplantDetails) {
-                    AppController.getInstance().addTransplant(transplantDetail);
-                }
+                observableList.addAll(transplantDetails);
             }
         });
     }
