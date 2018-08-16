@@ -1,6 +1,7 @@
 package odms.bridge;
 
 import com.mysql.jdbc.StringUtils;
+import javafx.collections.ObservableList;
 import odms.commons.exception.ApiException;
 import odms.commons.model._enum.Organs;
 import odms.commons.model.datamodel.TransplantDetails;
@@ -27,7 +28,7 @@ public class TransplantBridge extends Bifrost {
      * @param region     region to search by
      * @param organs     only return results for the selected organs
      */
-    public void getWaitingList(int startIndex, int count, String name, String region, Collection<Organs> organs) {
+    public void getWaitingList(int startIndex, int count, String name, String region, Collection<Organs> organs, ObservableList<TransplantDetails> observableList) {
         StringBuilder url = new StringBuilder(ip);
         url.append("/transplantList?count=").append(count);
         url.append("&startIndex=").append(startIndex);
@@ -61,10 +62,7 @@ public class TransplantBridge extends Bifrost {
                 }
 
                 List<TransplantDetails> transplantDetails = handler.decodeTransplantList(response);
-
-                for (TransplantDetails transplantDetail : transplantDetails) {
-                    AppController.getInstance().addTransplant(transplantDetail);
-                                    }
+                observableList.addAll(transplantDetails);
             }
         });
     }
