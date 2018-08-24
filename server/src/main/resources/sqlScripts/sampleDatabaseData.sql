@@ -127,3 +127,9 @@ INSERT INTO DeathDetails(fkUserNhi, momentOfDeath, city, region, country) VALUES
 INSERT INTO OrganExpiryDetails (id, fkDonatingId, timeOfExpiry, reason, name) VALUES
   ('16', 2, '2018-10-04 20:12:43', 'It smells pretty bad', 'Frank'),
   ('16', 3, '2018-10-04 20:12:43', 'Its not fresh', 'Anne');
+
+INSERT INTO AppointmentStatus(statusId, status) VALUES
+  (0, 'pending'),
+  (1, 'accepted'),
+  (2, 'rejected'),
+  (3, 'cancelled');
