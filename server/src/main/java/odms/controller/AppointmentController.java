@@ -3,6 +3,7 @@ package odms.controller;
 import odms.commons.database.DBHandler;
 import odms.commons.database.JDBCDriver;
 import odms.commons.model.Appointment;
+import odms.commons.model._enum.EventTypes;
 import odms.commons.utils.Log;
 import odms.exception.ServerDBException;
 import odms.socket.SocketHandler;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Collection;
@@ -49,10 +51,16 @@ public class AppointmentController extends BaseController {
     public ResponseEntity postAppointment(@RequestBody Appointment newAppointment) {
         try (Connection connection = driver.getConnection()) {
             handler.postAppointment(connection, newAppointment);
-            //TODO: This needs to broadcast
+
+            String appointmentId = Integer.toString(handler.getAppointmentId(connection, newAppointment));
+            socketHandler.broadcast(EventTypes.APPOINTMENT_UPDATE, appointmentId, appointmentId);
+            // TODO: still needs the client side broadcast implementation
+
         } catch (SQLException e) {
             Log.severe("Cannot add new appointment to db", e);
             throw new ServerDBException(e);
+        } catch (IOException ex) {
+            Log.warning("Failed to broadcast update after posting an appointment", ex);
         }
 
         return new ResponseEntity(HttpStatus.ACCEPTED);
