@@ -35,6 +35,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 import static org.testfx.api.FxAssert.verifyThat;
 
+@Ignore
 public class NewDiseaseControllerGUITest extends ApplicationTest {
 
     DateTimeFormatter sdf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
