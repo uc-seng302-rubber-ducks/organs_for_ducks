@@ -1296,7 +1296,6 @@ public class DBHandler {
 
 
     // TODO: move to somewhere more appropriate depending on how we are saving appointments
-
     /**
      * Creates a new appointment entry in the database
      *
@@ -1318,24 +1317,21 @@ public class DBHandler {
     }
 
     /**
-     * deletes the appointment based on appointment Id.
+     * Gets the unique identifier of the given appointment
      *
-     * @param appointment that needs to be deleted.
-     * @param connection connection to the database
-     * @throws SQLException on a bad db connection
+     * @param connection  Connection to the target database
+     * @param appointment Appointment that the unique identifier is from
+     * @throws SQLException If the entry does not exist or the connection is invalid
      */
-    public void deleteAppointment(Appointment appointment, Connection connection) throws SQLException {
-        connection.prepareStatement(START_TRANSACTION).execute();
-        try {
-            try (PreparedStatement stmt = connection.prepareStatement(DELETE_APPOINTMENT_STMT)) {
-                stmt.setInt(1, appointment.getAppointmentId());
-                stmt.executeUpdate();
+    public int getAppointmentId(Connection connection, Appointment appointment) throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT apptId FROM AppointmentDetails WHERE requestedTime = ? AND fkStatusId = ?")) {
+
+            preparedStatement.setTimestamp(1, Timestamp.valueOf(appointment.getRequestedDate()));
+            preparedStatement.setInt(2, appointment.getAppointmentStatus().getDbValue());
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                resultSet.next();
+                return resultSet.getInt("apptId");
             }
-        } catch (SQLException sqlEx) {
-            Log.severe("A fatal error in deletion, cancelling operation", sqlEx);
-            connection.prepareStatement(ROLLBACK).execute();
-            throw sqlEx;
         }
-        connection.prepareStatement(COMMIT).execute();
     }
 }
