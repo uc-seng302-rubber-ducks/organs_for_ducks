@@ -1334,4 +1334,26 @@ public class DBHandler {
             }
         }
     }
+
+    /**
+     * deletes the appointment based on appointment Id.
+     *
+     * @param appointment that needs to be deleted.
+     * @param connection connection to the database
+     * @throws SQLException on a bad db connection
+     */
+    public void deleteAppointment(Appointment appointment, Connection connection) throws SQLException {
+        connection.prepareStatement(START_TRANSACTION).execute();
+        try {
+            try (PreparedStatement stmt = connection.prepareStatement(DELETE_APPOINTMENT_STMT)) {
+                stmt.setInt(1, appointment.getAppointmentId());
+                stmt.executeUpdate();
+            }
+        } catch (SQLException sqlEx) {
+            Log.severe("A fatal error in deletion, cancelling operation", sqlEx);
+            connection.prepareStatement(ROLLBACK).execute();
+            throw sqlEx;
+        }
+        connection.prepareStatement(COMMIT).execute();
+    }
 }
