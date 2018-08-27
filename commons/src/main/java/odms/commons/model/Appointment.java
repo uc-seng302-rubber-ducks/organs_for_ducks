@@ -37,7 +37,6 @@ public class Appointment {
 
     /**
      * Constructor for Appointment class. Must take every information type (except the boolean hasSeen) that is associated with an Appointment.
-     * @param appointmentId Unique string id
      * @param requestingUser User requesting the appointment
      * @param requestedClinician clinician being requested to have the appointment with
      * @param appointmentCategory the generic type of the appointment
@@ -45,8 +44,7 @@ public class Appointment {
      * @param requestDescription a more detailed description of the appointment, possibly including a reason why it was requested
      * @param appointmentStatus the status of the appointment. This can be pending, accepted, rejected, or cancelled.
      */
-    public Appointment(String appointmentId, User requestingUser, Clinician requestedClinician, AppointmentCategory appointmentCategory, LocalDateTime requestedDate, String requestDescription, AppointmentStatus appointmentStatus) {
-        this.appointmentId = appointmentId;
+    public Appointment(User requestingUser, Clinician requestedClinician, AppointmentCategory appointmentCategory, LocalDateTime requestedDate, String requestDescription, AppointmentStatus appointmentStatus) {
         this.requestingUser = requestingUser;
         this.requestedClinician = requestedClinician;
         this.appointmentCategory = appointmentCategory;
@@ -54,17 +52,6 @@ public class Appointment {
         this.requestDescription = requestDescription;
         this.appointmentStatus = appointmentStatus;
     }
-
-    /**
-     * Generate a new unique id for an appointment
-     *
-     * @return Unique string id.
-     */
-    public String generateId() {
-        //unique generator function
-        return "";
-    }
-
 
     public String getAppointmentId() {
         return appointmentId;
