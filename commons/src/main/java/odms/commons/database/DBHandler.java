@@ -9,6 +9,7 @@ import odms.commons.model._enum.Organs;
 import odms.commons.model.datamodel.*;
 import odms.commons.utils.Log;
 import odms.commons.utils.PasswordManager;
+import org.joda.time.DateTime;
 
 import java.io.InputStream;
 import java.lang.reflect.Type;
@@ -112,6 +113,7 @@ public class DBHandler {
             "WHERE (nhi = ?) " +
             "AND organName = ?";
     private static final String SELECT_DEATH_DETAILS_STMT = "SELECT * FROM DeathDetails WHERE fkUserNhi = ?";
+    private static final String CREATE_APPOINTMENT_STMT = "INSERT INTO AppointmentDetails (fkUserNhi, fkStaffId, category, requestedTime, fkStatusId, description) VALUES (?,?,?,?,?,?)";
     private AbstractUpdateStrategy updateStrategy;
 
 
@@ -1288,4 +1290,26 @@ public class DBHandler {
         }
         return null;
     }
+
+
+    // TODO: waiting for the Appointment class - also this needs to move to somewhere more appropriate depending on how we are saving appointments
+//    /**
+//     * Creates a new appointment entry in the database
+//     *
+//     * @param connection Connection to the target database
+//     * @param appointment Appointment to create a database entry for
+//     * @throws SQLException If there is an error storing the appointment into the database or the connection is invalid
+//     */
+//    public void postAppointment(Connection connection, Appointment appointment) throws SQLException {
+//        try (PreparedStatement preparedStatement = connection.prepareStatement(CREATE_APPOINTMENT_STMT)) {
+//
+//            preparedStatement.setString(appointment.getRequestingUser().getNHI());
+//            preparedStatement.setString(appointment.getRequestedClinician().getStaffId());
+//            preparedStatement.setString(appointment.getAppointmentCategory());
+//            preparedStatement.setTimestamp(appointment.getRequestedDate().toLocalDateTime());
+//            preparedStatement.setString(appointment.getAppointmentStatus());
+//            preparedStatement.setString(appointment.getAppointmentDescription());
+//            preparedStatement.executeUpdate();
+//        }
+//    }
 }
