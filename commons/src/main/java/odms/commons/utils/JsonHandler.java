@@ -389,6 +389,12 @@ public class JsonHandler extends DataHandler {
         }.getType());
     }
 
+    /**
+     * Decodes raw json string into a collection of appointments
+     *
+     * @param bodyString raw json string
+     * @return Collection of appointments
+     */
     public Collection<Appointment> decodeAppointments(String bodyString) {
         return new Gson().fromJson(bodyString, new TypeToken<Collection<Appointment>>() {
         }.getType());
