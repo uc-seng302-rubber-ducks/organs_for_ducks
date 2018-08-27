@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
  */
 public class Appointment {
 
-    private String appointmentId;
+    private int appointmentId;
 
     private User requestingUser;
 
@@ -53,11 +53,11 @@ public class Appointment {
         this.appointmentStatus = appointmentStatus;
     }
 
-    public String getAppointmentId() {
+    public int getAppointmentId() {
         return appointmentId;
     }
 
-    public void setAppointmentId(String appointmentId) {
+    public void setAppointmentId(int appointmentId) {
         this.appointmentId = appointmentId;
     }
 
