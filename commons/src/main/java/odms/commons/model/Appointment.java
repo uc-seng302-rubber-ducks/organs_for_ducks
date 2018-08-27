@@ -1,5 +1,8 @@
 package odms.commons.model;
 
+import odms.commons.model._enum.AppointmentCategory;
+import odms.commons.model._enum.AppointmentStatus;
+
 import java.time.LocalDateTime;
 
 /**
@@ -14,17 +17,15 @@ public class Appointment {
 
     private Clinician requestedClinician;
 
-    private String appointmentCategory;
-    //private AppointmentCategory appointmentCategory; //TODO Replace the string with this when Enum is created. James 27/8
+    private AppointmentCategory appointmentCategory;
 
     private LocalDateTime requestedDate;
 
     private String requestDescription;
 
-    private String appointmentStatus;
-    //private AppointmentStatus appointmentStatus; //TODO Replace the string with this when Enum is created. James 27/8
+    private AppointmentStatus appointmentStatus;
 
-    private boolean hasSeen;
+    private boolean seen;
 
     /**
      * Empty constructor for Appointment. Useful for creating one from the database or specific customisation for tests.
@@ -44,7 +45,7 @@ public class Appointment {
      * @param requestDescription a more detailed description of the appointment, possibly including a reason why it was requested
      * @param appointmentStatus the status of the appointment. This can be pending, accepted, rejected, or cancelled.
      */
-    public Appointment(String appointmentId, User requestingUser, Clinician requestedClinician, String appointmentCategory, LocalDateTime requestedDate, String requestDescription, String appointmentStatus) {
+    public Appointment(String appointmentId, User requestingUser, Clinician requestedClinician, AppointmentCategory appointmentCategory, LocalDateTime requestedDate, String requestDescription, AppointmentStatus appointmentStatus) {
         this.appointmentId = appointmentId;
         this.requestingUser = requestingUser;
         this.requestedClinician = requestedClinician;
@@ -89,11 +90,11 @@ public class Appointment {
         this.requestedClinician = requestedClinician;
     }
 
-    public String getAppointmentCategory() {
+    public AppointmentCategory getAppointmentCategory() {
         return appointmentCategory;
     }
 
-    public void setAppointmentCategory(String appointmentCategory) {
+    public void setAppointmentCategory(AppointmentCategory appointmentCategory) {
         this.appointmentCategory = appointmentCategory;
     }
 
@@ -113,19 +114,19 @@ public class Appointment {
         this.requestDescription = requestDescription;
     }
 
-    public String getAppointmentStatus() {
+    public AppointmentStatus getAppointmentStatus() {
         return appointmentStatus;
     }
 
-    public void setAppointmentStatus(String appointmentStatus) {
+    public void setAppointmentStatus(AppointmentStatus appointmentStatus) {
         this.appointmentStatus = appointmentStatus;
     }
 
-    public boolean isHasSeen() {
-        return hasSeen;
+    public boolean isSeen() {
+        return seen;
     }
 
-    public void setHasSeen(boolean hasSeen) {
-        this.hasSeen = hasSeen;
+    public void setSeen(boolean hasSeen) {
+        this.seen = hasSeen;
     }
 }
