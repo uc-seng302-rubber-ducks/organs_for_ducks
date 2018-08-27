@@ -2,8 +2,18 @@ package odms.controller;
 
 import odms.commons.database.DBHandler;
 import odms.commons.database.JDBCDriver;
+import odms.commons.utils.Log;
+import odms.exception.ServerDBException;
 import odms.socket.SocketHandler;
 import odms.utils.DBManager;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+
+import java.sql.Connection;
+import java.sql.SQLException;
 
 @OdmsController
 public class AppointmentController extends BaseController {
@@ -17,18 +27,17 @@ public class AppointmentController extends BaseController {
         handler = super.getHandler();
         driver = super.getDriver();
         this.socketHandler = socketHandler;
-
     }
 
 
     // TODO: waiting for an Appointment class
-//    @RequestMapping(method = RequestMethod.POST, value = "")
+//    @RequestMapping(method = RequestMethod.POST, value = "/appointment")
 //    public ResponseEntity postAppointment(@RequestBody Appointment newAppointment) {
 //        try (Connection connection = driver.getConnection()) {
-//            handler.postAppointment();
+//            handler.postAppointment(connection, newAppointment);
 //
 //        } catch (SQLException e) {
-//            Log.severe("Cannot add new appointmetn to db", e);
+//            Log.severe("Cannot add new appointment to db", e);
 //            throw new ServerDBException(e);
 //        }
 //
