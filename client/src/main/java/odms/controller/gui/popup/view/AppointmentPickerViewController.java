@@ -5,6 +5,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextArea;
 import javafx.stage.Stage;
+import odms.commons.model.Clinician;
 import odms.commons.model.User;
 import odms.commons.model._enum.AppointmentCategory;
 import odms.controller.AppController;
@@ -41,6 +42,14 @@ public class AppointmentPickerViewController {
         this.user = user;
         this.appController = appController;
         this.logicController = new AppointmentPickerLogicController(user, stage, appController);
+        appointmentBookingTypeInput.getItems().addAll(AppointmentCategory.values());
+
+        //TODO: populate the preferred clinicians combobox with new GET clinicians api. -27/8
+//        appController.getClinicianBridge().getClinicians(0, Integer.MAX_VALUE, "", user.getRegion(), appController.getToken());
+//        for (Clinician clinician : appController.getClinicians()) {
+//            appointmentBookingPrefClinicianInput.getItems().add(clinician.getFullName());
+//        }
+
 
     }
 
