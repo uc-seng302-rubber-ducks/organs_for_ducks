@@ -2,6 +2,7 @@ package odms.controller;
 
 import odms.commons.database.DBHandler;
 import odms.commons.database.JDBCDriver;
+import odms.commons.model.Appointment;
 import odms.commons.utils.Log;
 import odms.exception.ServerDBException;
 import odms.socket.SocketHandler;
@@ -30,18 +31,17 @@ public class AppointmentController extends BaseController {
     }
 
 
-    // TODO: waiting for an Appointment class
-//    @RequestMapping(method = RequestMethod.POST, value = "/appointment")
-//    public ResponseEntity postAppointment(@RequestBody Appointment newAppointment) {
-//        try (Connection connection = driver.getConnection()) {
-//            handler.postAppointment(connection, newAppointment);
-//
-//        } catch (SQLException e) {
-//            Log.severe("Cannot add new appointment to db", e);
-//            throw new ServerDBException(e);
-//        }
-//
-//        return new ResponseEntity(HttpStatus.ACCEPTED);
-//    }
+    @RequestMapping(method = RequestMethod.POST, value = "/appointment")
+    public ResponseEntity postAppointment(@RequestBody Appointment newAppointment) {
+        try (Connection connection = driver.getConnection()) {
+            handler.postAppointment(connection, newAppointment);
+
+        } catch (SQLException e) {
+            Log.severe("Cannot add new appointment to db", e);
+            throw new ServerDBException(e);
+        }
+
+        return new ResponseEntity(HttpStatus.ACCEPTED);
+    }
 
 }

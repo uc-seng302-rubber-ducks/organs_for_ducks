@@ -113,7 +113,7 @@ public class DBHandler {
             "WHERE (nhi = ?) " +
             "AND organName = ?";
     private static final String SELECT_DEATH_DETAILS_STMT = "SELECT * FROM DeathDetails WHERE fkUserNhi = ?";
-    private static final String CREATE_APPOINTMENT_STMT = "INSERT INTO AppointmentDetails (fkUserNhi, fkStaffId, category, requestedTime, fkStatusId, description) VALUES (?,?,?,?,?,?)";
+    private static final String CREATE_APPOINTMENT_STMT = "INSERT INTO AppointmentDetails (fkUserNhi, fkStaffId, fkCategoryId, requestedTime, fkStatusId, description) VALUES (?,?,?,?,?,?)";
     private AbstractUpdateStrategy updateStrategy;
 
 
@@ -1292,24 +1292,25 @@ public class DBHandler {
     }
 
 
-    // TODO: waiting for the Appointment class - also this needs to move to somewhere more appropriate depending on how we are saving appointments
-//    /**
-//     * Creates a new appointment entry in the database
-//     *
-//     * @param connection Connection to the target database
-//     * @param appointment Appointment to create a database entry for
-//     * @throws SQLException If there is an error storing the appointment into the database or the connection is invalid
-//     */
-//    public void postAppointment(Connection connection, Appointment appointment) throws SQLException {
-//        try (PreparedStatement preparedStatement = connection.prepareStatement(CREATE_APPOINTMENT_STMT)) {
-//
-//            preparedStatement.setString(appointment.getRequestingUser().getNHI());
-//            preparedStatement.setString(appointment.getRequestedClinician().getStaffId());
-//            preparedStatement.setString(appointment.getAppointmentCategory());
-//            preparedStatement.setTimestamp(appointment.getRequestedDate().toLocalDateTime());
-//            preparedStatement.setString(appointment.getAppointmentStatus());
-//            preparedStatement.setString(appointment.getAppointmentDescription());
-//            preparedStatement.executeUpdate();
-//        }
-//    }
+    // TODO: move to somewhere more appropriate depending on how we are saving appointments
+
+    /**
+     * Creates a new appointment entry in the database
+     *
+     * @param connection  Connection to the target database
+     * @param appointment Appointment to create a database entry for
+     * @throws SQLException If there is an error storing the appointment into the database or the connection is invalid
+     */
+    public void postAppointment(Connection connection, Appointment appointment) throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(CREATE_APPOINTMENT_STMT)) {
+
+            preparedStatement.setString(1, appointment.getRequestingUser().getNhi());
+            preparedStatement.setString(2, appointment.getRequestedClinician().getStaffId());
+            preparedStatement.setInt(3, appointment.getAppointmentCategory().getDbValue());
+            preparedStatement.setTimestamp(4, Timestamp.valueOf(appointment.getRequestedDate()));
+            preparedStatement.setInt(5, appointment.getAppointmentStatus().getDbValue());
+            preparedStatement.setString(6, appointment.getRequestDescription());
+            preparedStatement.executeUpdate();
+        }
+    }
 }
