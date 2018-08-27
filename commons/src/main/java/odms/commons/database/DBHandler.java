@@ -1293,7 +1293,6 @@ public class DBHandler {
 
 
     // TODO: move to somewhere more appropriate depending on how we are saving appointments
-
     /**
      * Creates a new appointment entry in the database
      *
@@ -1311,6 +1310,25 @@ public class DBHandler {
             preparedStatement.setInt(5, appointment.getAppointmentStatus().getDbValue());
             preparedStatement.setString(6, appointment.getRequestDescription());
             preparedStatement.executeUpdate();
+        }
+    }
+
+    /**
+     * Gets the unique identifier of the given appointment
+     *
+     * @param connection  Connection to the target database
+     * @param appointment Appointment that the unique identifier is from
+     * @throws SQLException If the entry does not exist or the connection is invalid
+     */
+    public int getAppointmentId(Connection connection, Appointment appointment) throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT apptId FROM AppointmentDetails WHERE requestedTime = ? AND fkStatusId = ?")) {
+
+            preparedStatement.setTimestamp(1, Timestamp.valueOf(appointment.getRequestedDate()));
+            preparedStatement.setInt(2, appointment.getAppointmentStatus().getDbValue());
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                resultSet.next();
+                return resultSet.getInt("apptId");
+            }
         }
     }
 }
