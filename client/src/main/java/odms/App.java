@@ -39,7 +39,7 @@ public class App extends Application {
         ConfigPropertiesSession session = ConfigPropertiesSession.getInstance();
         AppConfigurator configurator = new AppConfigurator(session, controller);
         configurator.setupArguments(super.getParameters());
-        configurator.setupLogging(Environments.CLIENT);
+        configurator.setupLogging(Environments.TEST);
         configurator.setupWebsocket();
         //</editor-fold>
 

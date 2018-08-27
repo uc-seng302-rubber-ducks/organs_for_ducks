@@ -42,10 +42,9 @@ public class AppConfigurator {
     public void setupWebsocket() {
         String testConfigProperty = session.getProperty("testConfig", "false"); //defaults to "false" if it's not found
         if (testConfigProperty.equalsIgnoreCase("true")) {
-            ;
             return;
         }
-        controller.getSocketHandler().start(session.getProperty("server.websocket.url", "ws://localhost:4941/websocket"));
+        controller.getSocketHandler().start(session.getProperty("server.websocket.url"));
 
     }
 
