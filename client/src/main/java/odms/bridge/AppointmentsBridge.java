@@ -14,9 +14,15 @@ import java.io.IOException;
 
 public class AppointmentsBridge extends Bifrost {
     private static final String APPOINTMENTS = "/appointments";
+    private boolean quiet;
 
     public AppointmentsBridge(OkHttpClient client) {
         super(client);
+    }
+
+    public AppointmentsBridge(OkHttpClient client, boolean quiet) {
+        this(client);
+        this.quiet = quiet;
     }
 
     /**
@@ -89,7 +95,9 @@ public class AppointmentsBridge extends Bifrost {
      * @param message message to display to the user.
      */
     private void alertUser(String message) {
-        Platform.runLater(() -> AlertWindowFactory.generateError(message));
+        if (!quiet) {
+            Platform.runLater(() -> AlertWindowFactory.generateError(message));
+        }
     }
 
     /**
