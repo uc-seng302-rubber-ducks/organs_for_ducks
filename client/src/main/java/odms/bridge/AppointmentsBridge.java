@@ -1,0 +1,110 @@
+package odms.bridge;
+
+import com.google.gson.Gson;
+import javafx.application.Platform;
+import javafx.collections.ObservableList;
+import odms.commons.model.Appointment;
+import odms.commons.model._enum.UserType;
+import odms.commons.utils.JsonHandler;
+import odms.commons.utils.Log;
+import odms.controller.gui.popup.utils.AlertWindowFactory;
+import okhttp3.*;
+
+import java.io.IOException;
+
+public class AppointmentsBridge extends Bifrost {
+    private static final String APPOINTMENTS = "/appointments";
+
+    public AppointmentsBridge(OkHttpClient client) {
+        super(client);
+    }
+
+    /**
+     * Gets all the appointments
+     *
+     * @param client   OkHttp3Client to use to make the request
+     * @param count    the number of results to return
+     * @param toAddTo  Observable list to add to.
+     * @param user     user's unique ID
+     * @param userType UserType to determine whether they are a user, clinician or admin.
+     */
+    public void getAppointments(OkHttpClient client, int count, ObservableList<Appointment> toAddTo, String user, UserType userType) {
+        String url = String.format("%s%s?count=%d&user=%s&userType=%d", ip, APPOINTMENTS, count, user, userType.getValue());
+        Request request = new Request.Builder().url(url).build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.severe(e.getMessage(), e);
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    String bodyString = response.body().string();
+                    toAddTo.addAll(new JsonHandler().decodeAppointments(bodyString));
+                } else {
+                    logAndNotify(response);
+                }
+            }
+        });
+    }
+
+    /**
+     * Fire a post request to the server for creating appointments
+     *
+     * @param client      OkHttp3Client object to use to send the request with
+     * @param appointment Appointment to create
+     */
+    public void postAppointment(OkHttpClient client, Appointment appointment) {
+        String url = String.format("%s%s", ip, APPOINTMENTS);
+        RequestBody body = RequestBody.create(json, new Gson().toJson(appointment));
+        Request request = new Request.Builder().post(body).url(url).build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.severe(e.getMessage(), e);
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (!response.isSuccessful()) {
+                    logAndNotify(response);
+                }
+            }
+        });
+    }
+
+    /**
+     * Logs a bad response
+     *
+     * @param response response to log
+     */
+    private void logResponse(Response response) {
+        Log.warning("Bad response code from server. Error code: " + response.code() + ". Response was: \n" + response.message());
+    }
+
+    /**
+     * Alerts user with a alert window containing the given message
+     *
+     * @param message message to display to the user.
+     */
+    private void alertUser(String message) {
+        Platform.runLater(() -> AlertWindowFactory.generateError(message));
+    }
+
+    /**
+     * Checks the response code and logs the response. Depending on the response code, it will alert the user whether
+     * its their fault or not.
+     *
+     * @param response response check
+     */
+    private void logAndNotify(Response response) {
+        if (response.code() >= 400 && response.code() < 404) {
+            logResponse(response);
+            alertUser("Oops! Something went wrong. Please check your inputs and try again.");
+        } else {
+            logResponse(response);
+            alertUser("Oops! Something went wrong. Please try again later.");
+        }
+    }
+}

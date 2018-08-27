@@ -388,5 +388,10 @@ public class JsonHandler extends DataHandler {
         return new Gson().fromJson(response.body().string(), new TypeToken<List<TransplantDetails>>() {
         }.getType());
     }
+
+    public Collection<Appointment> decodeAppointments(String bodyString) {
+        return new Gson().fromJson(bodyString, new TypeToken<Collection<Appointment>>() {
+        }.getType());
+    }
 }
 
