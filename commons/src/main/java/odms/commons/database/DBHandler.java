@@ -9,6 +9,7 @@ import odms.commons.model._enum.Organs;
 import odms.commons.model.datamodel.*;
 import odms.commons.utils.Log;
 import odms.commons.utils.PasswordManager;
+import org.joda.time.DateTime;
 
 import java.io.InputStream;
 import java.lang.reflect.Type;
@@ -115,6 +116,7 @@ public class DBHandler {
             "WHERE (nhi = ?) " +
             "AND organName = ?";
     private static final String SELECT_DEATH_DETAILS_STMT = "SELECT * FROM DeathDetails WHERE fkUserNhi = ?";
+    private static final String CREATE_APPOINTMENT_STMT = "INSERT INTO AppointmentDetails (fkUserNhi, fkStaffId, fkCategoryId, requestedTime, fkStatusId, description) VALUES (?,?,?,?,?,?)";
     private AbstractUpdateStrategy updateStrategy;
     private static final String DELETE_APPOINTMENT_STMT = "DELETE FROM AppointmentDetails WHERE apptId = ?";
 
@@ -1290,6 +1292,29 @@ public class DBHandler {
 
         }
         return null;
+    }
+
+
+    // TODO: move to somewhere more appropriate depending on how we are saving appointments
+
+    /**
+     * Creates a new appointment entry in the database
+     *
+     * @param connection  Connection to the target database
+     * @param appointment Appointment to create a database entry for
+     * @throws SQLException If there is an error storing the appointment into the database or the connection is invalid
+     */
+    public void postAppointment(Connection connection, Appointment appointment) throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(CREATE_APPOINTMENT_STMT)) {
+
+            preparedStatement.setString(1, appointment.getRequestingUser().getNhi());
+            preparedStatement.setString(2, appointment.getRequestedClinician().getStaffId());
+            preparedStatement.setInt(3, appointment.getAppointmentCategory().getDbValue());
+            preparedStatement.setTimestamp(4, Timestamp.valueOf(appointment.getRequestedDate()));
+            preparedStatement.setInt(5, appointment.getAppointmentStatus().getDbValue());
+            preparedStatement.setString(6, appointment.getRequestDescription());
+            preparedStatement.executeUpdate();
+        }
     }
 
     /**
