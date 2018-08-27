@@ -1,4 +1,5 @@
 DROP TABLE IF EXISTS AppointmentDetails;
+DROP TABLE IF EXISTS AppointmentType;
 DROP TABLE IF EXISTS AppointmentStatus;
 DROP TABLE IF EXISTS OrganExpiryDetails;
 DROP TRIGGER IF EXISTS removeZombies;
@@ -242,11 +243,16 @@ CREATE TABLE AppointmentStatus (
   status   VARCHAR(255)
 );
 
+CREATE TABLE AppointmentCategory (
+  categoryId SMALLINT PRIMARY KEY,
+  category   VARCHAR(255)
+);
+
 CREATE TABLE AppointmentDetails (
   apptId        INT AUTO_INCREMENT PRIMARY KEY,
-  fkUserNhi     VARCHAR(7) UNIQUE,
-  fkStaffId     VARCHAR(255) UNIQUE,
-  type          VARCHAR(255),
+  fkUserNhi     VARCHAR(7),
+  fkStaffId     VARCHAR(255),
+  fkCategoryId  SMALLINT(255),
   requestedTime DATETIME,
   fkStatusId    SMALLINT,
   description   VARCHAR(255),
@@ -254,6 +260,9 @@ CREATE TABLE AppointmentDetails (
     ON DELETE CASCADE
     ON UPDATE CASCADE,
   FOREIGN KEY (fkStaffId) REFERENCES Clinician (staffId)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  FOREIGN KEY (fkCategoryId) REFERENCES AppointmentCategory (categoryId)
     ON DELETE CASCADE
     ON UPDATE CASCADE,
   FOREIGN KEY (fkStatusId) REFERENCES AppointmentStatus (statusId)

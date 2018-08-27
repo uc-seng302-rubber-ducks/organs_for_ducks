@@ -129,7 +129,17 @@ INSERT INTO OrganExpiryDetails (id, fkDonatingId, timeOfExpiry, reason, name) VA
   ('16', 3, '2018-10-04 20:12:43', 'Its not fresh', 'Anne');
 
 INSERT INTO AppointmentStatus(statusId, status) VALUES
-  (0, 'pending'),
-  (1, 'accepted'),
-  (2, 'rejected'),
-  (3, 'cancelled');
+  (1, 'pending'),
+  (2, 'accepted'),
+  (3, 'rejected'),
+  (4, 'cancelled');
+
+INSERT INTO AppointmentCategory(categoryId, category) VALUES
+  (1, 'blood test'),
+  (2, 'general check-up'),
+  (3, 'injection'),
+  (4, 'prescription renewal');
+
+INSERT INTO AppointmentDetails(apptId, fkUserNhi, fkStaffId, fkCategoryId, requestedTime, fkStatusId, description) VALUES
+  (1, 'DEF2314', '23', 4, '2018-01-10 16:15:01', 3, 'need stress relief due to SENG302'),
+  (2, 'DEF2314', '23', 2, '2018-01-11 16:15:01', 2, 'periodic check up');
