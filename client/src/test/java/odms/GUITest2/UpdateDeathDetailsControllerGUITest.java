@@ -15,10 +15,7 @@ import odms.commons.model.datamodel.ExpiryReason;
 import odms.commons.model.dto.UserOverview;
 import odms.controller.AppController;
 import odms.controller.gui.window.UserController;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.matcher.control.LabeledMatchers;
@@ -27,6 +24,7 @@ import org.testfx.matcher.control.TextInputControlMatchers;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.TimeoutException;
@@ -244,6 +242,49 @@ public class UpdateDeathDetailsControllerGUITest extends ApplicationTest{
         verifyThat("#updateDeathDetailsTimeTextField", Node::isDisabled);
         verifyThat("#updateDeathDetailsDatePicker", Node::isDisabled);
         verifyThat("#removeUpdateDeathDetailsButton", Node::isDisabled);
+    }
+
+    @Test
+    public void testTimeOfDeathCannotBeInFutureHighEdge() {
+        LocalTime actualTime = LocalTime.now();
+        String inputTime = actualTime.plusMinutes(1).format(DateTimeFormatter.ofPattern("HH:mm"));
+
+        loginAsClinician();
+        clickOnButton(this, "#updateDeathDetailsButton");
+        setDateValue(this, "#updateDeathDetailsDatePicker", LocalDate.now());
+        setTextField(this, "#updateDeathDetailsTimeTextField", inputTime);
+        clickOnButton(this, "#confirmUpdateDeathDetailsButton");
+
+        verifyThat("#updateDeathDetailsErrorLabel", LabeledMatchers.hasText("The time of death cannot be in the future"));
+
+    }
+
+    @Test
+    public void testTimeOfDeathCannotBeInFutureLowEdge() {
+        LocalTime actualTime = LocalTime.now();
+        String inputTime = actualTime.minusMinutes(1).format(DateTimeFormatter.ofPattern("HH:mm"));
+
+        loginAsClinician();
+        clickOnButton(this, "#updateDeathDetailsButton");
+        setDateValue(this, "#updateDeathDetailsDatePicker", LocalDate.now());
+        setTextField(this, "#updateDeathDetailsTimeTextField", inputTime);
+        clickOnButton(this, "#confirmUpdateDeathDetailsButton");
+
+        Assert.assertEquals(testUser.getTimeOfDeath().toString(), actualTime.minusMinutes(1).format(DateTimeFormatter.ofPattern("HH:mm")));
+    }
+
+    @Test
+    public void testTimeOfDeathCannotBeInFutureOnEdge() {
+        LocalTime actualTime = LocalTime.now();
+        String inputTime = actualTime.format(DateTimeFormatter.ofPattern("HH:mm"));
+
+        loginAsClinician();
+        clickOnButton(this, "#updateDeathDetailsButton");
+        setDateValue(this, "#updateDeathDetailsDatePicker", LocalDate.now());
+        setTextField(this, "#updateDeathDetailsTimeTextField", inputTime);
+        clickOnButton(this, "#confirmUpdateDeathDetailsButton");
+
+        Assert.assertEquals(testUser.getTimeOfDeath().toString(), actualTime.format(DateTimeFormatter.ofPattern("HH:mm")));
     }
 
 }
