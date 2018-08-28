@@ -57,7 +57,7 @@ public class AppointmentFetchStrategyTest {
         ArrayList<Appointment> appointments = new ArrayList<>(handler.getAppointments(connection, "ABC1234", UserType.USER, 30, 0));
         assertTrue(appointments.size() == 1);
         assertEquals(0, appointments.get(0).getAppointmentId());
-        assertEquals(LocalDateTime.of(2018, 12, 12, 10, 15, 3), appointments.get(0).getRequestedDate());
+        assertEquals(LocalDateTime.of(2018, 12, 10, 15, 3), appointments.get(0).getRequestedDate());
         assertEquals("ABC1234", appointments.get(0).getRequestingUser());
         assertEquals("0", appointments.get(0).getRequestedClinician());
         assertEquals(AppointmentCategory.BLOOD_TEST, appointments.get(0).getAppointmentCategory());
