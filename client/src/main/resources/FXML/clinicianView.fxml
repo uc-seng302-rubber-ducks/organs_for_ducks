@@ -1,12 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.lang.*?>
+<?import javafx.collections.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.text.*?>
 <?import javafx.collections.FXCollections?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
 <?import java.lang.String?>
-<AnchorPane xmlns:fx="http://javafx.com/fxml/1" prefHeight="800.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8.0.121" fx:controller="odms.controller.gui.window.ClinicianController">
+
+<AnchorPane prefHeight="800.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="odms.controller.gui.window.ClinicianController">
     <children>
         <MenuBar prefHeight="37.0" prefWidth="619.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <menus>
@@ -156,9 +161,14 @@
                 </Tab>
                 <Tab text="Available Organs">
                     <content>
-                        <fx:include fx:id="availableOrgansView" source="availableOrgansPanel.fxml"/>
+                        <fx:include fx:id="availableOrgansView" source="availableOrgansPanel.fxml" />
                     </content>
                 </Tab>
+            <Tab text="Appointment Requests">
+              <content>
+                  <fx:include fx:id="appointmentRequestsView" source="appointmentRequestsTabView.fxml" />
+              </content>
+            </Tab>
             </tabs>
         </TabPane>
         <AnchorPane fx:id="StatusBar" AnchorPane.bottomAnchor="0.0">
