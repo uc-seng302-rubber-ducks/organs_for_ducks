@@ -11,6 +11,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 public class FetchClincianAppointmentsStrategy extends AbstractFetchAppointmentStrategy {
+    /**
+     * @see AbstractFetchAppointmentStrategy
+     */
     @Override
     public Collection<Appointment> getAppointments(Connection connection, String userId, int count, int start) throws SQLException {
         Collection<Appointment> appointments = new ArrayList<>();

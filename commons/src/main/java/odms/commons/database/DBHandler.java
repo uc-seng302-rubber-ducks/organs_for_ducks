@@ -237,6 +237,17 @@ public class DBHandler {
         return clinician;
     }
 
+    /**
+     * Gets all the appointments from the database and converts it into a collection of appointments
+     *
+     * @param connection connection to the database
+     * @param id         identifier of the user
+     * @param type       UserType defining what user type it is.
+     * @param count      how many appointments to return
+     * @param start      how many appointments to skip before returning
+     * @return A collection of appointments
+     * @throws SQLException If there is an error with the database
+     */
     public Collection<Appointment> getAppointments(Connection connection, String id, UserType type, int count, int start) throws SQLException {
         if (type.equals(UserType.USER)) {
             fetchAppointmentStrategy = new FetchUserAppointmentsStrategy();
