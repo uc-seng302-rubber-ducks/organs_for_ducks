@@ -58,6 +58,7 @@ public class UserAppointmentViewController {
         userAppointmentStatusColumn.setCellValueFactory(new PropertyValueFactory<>("appointmentStatus"));
         populateTable();
         // TODO sort by status 28/08/2018
+        userAppointmentStatusColumn.setSortType(TableColumn.SortType.ASCENDING);
         setOnClickBehaviour();
     }
 
