@@ -22,6 +22,10 @@ public class UserAppointmentLogicController {
     }
 
     public void requestNewAppointment() {
+        launchAppointmentPicker(false);
+    }
+
+    public void launchAppointmentPicker(boolean viewOnly) {
         FXMLLoader appointmentRequestLoader = new FXMLLoader(getClass().getResource("/FXML/appointmentPicker.fxml"));
         Parent root;
 

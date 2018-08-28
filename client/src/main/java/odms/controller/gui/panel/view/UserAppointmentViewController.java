@@ -52,7 +52,11 @@ public class UserAppointmentViewController {
     }
 
     private void setOnClickBehaviour() {
-
+        userAppointmentsTableView.setOnMouseClicked(event -> {
+            if (event.getClickCount() == 2 && userAppointmentsTableView.getSelectionModel().getSelectedItem() != null) {
+                logicController.launchAppointmentPicker(true);
+            }
+        });
 
     }
 }
