@@ -7,20 +7,25 @@ package odms.commons.model.datamodel;
 public class ComboBoxClinician {
 
     private String name;
-    private int id;
+    private String id;
 
     /**
-     * Constructor for the comboBoxClinicians
-     * @param name Clinician's name
-     * @param id Clinician's id
+     * Empty constructor for the comboBoxClinicians
      */
-    public ComboBoxClinician(String name, int id) {
-        this.name = name;
-        this.id = id;
+    public ComboBoxClinician() {
+        //This class is only every constructed from an sql result, so is done incrementally
     }
 
-    public int getId() {
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getId() {
         return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     @Override

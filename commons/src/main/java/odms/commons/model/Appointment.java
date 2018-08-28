@@ -15,7 +15,7 @@ public class Appointment {
 
     private User requestingUser;
 
-    private int requestedClinicianId;
+    private String requestedClinicianId;
 
     private AppointmentCategory appointmentCategory;
 
@@ -44,7 +44,7 @@ public class Appointment {
      * @param requestDescription a more detailed description of the appointment, possibly including a reason why it was requested
      * @param appointmentStatus the status of the appointment. This can be pending, accepted, rejected, or cancelled.
      */
-    public Appointment(User requestingUser, int requestedClinicianId, AppointmentCategory appointmentCategory, LocalDateTime requestedDate, String requestDescription, AppointmentStatus appointmentStatus) {
+    public Appointment(User requestingUser, String requestedClinicianId, AppointmentCategory appointmentCategory, LocalDateTime requestedDate, String requestDescription, AppointmentStatus appointmentStatus) {
         this.requestingUser = requestingUser;
         this.requestedClinicianId = requestedClinicianId;
         this.appointmentCategory = appointmentCategory;
@@ -69,11 +69,11 @@ public class Appointment {
         this.requestingUser = requestingUser;
     }
 
-    public int getRequestedClinicianId() {
+    public String getRequestedClinicianId() {
         return requestedClinicianId;
     }
 
-    public void setRequestedClinicianId(int requestedClinicianId) {
+    public void setRequestedClinicianId(String requestedClinicianId) {
         this.requestedClinicianId = requestedClinicianId;
     }
 

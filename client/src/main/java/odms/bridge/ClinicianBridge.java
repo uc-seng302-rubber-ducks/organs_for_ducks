@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import odms.commons.exception.ApiException;
 import odms.commons.model.Clinician;
+import odms.commons.model.datamodel.ComboBoxClinician;
 import odms.commons.utils.JsonHandler;
 import odms.commons.utils.Log;
 import odms.commons.utils.PhotoHelper;
@@ -11,6 +12,7 @@ import odms.controller.AppController;
 import okhttp3.*;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ClinicianBridge extends RoleBridge {
@@ -41,6 +43,28 @@ public class ClinicianBridge extends RoleBridge {
                 response.close();
             }
         });
+    }
+
+    public List<ComboBoxClinician> getBasicClinicians(String region) {
+        List<ComboBoxClinician> returnList = new ArrayList<>();
+        String url = ip + "basic-clinicians/" + region;
+        Request request = new Request.Builder().url(url).build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.warning("Failed to get clinicians. On Failure Triggered", e);
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                ResponseBody body = response.body();
+                List<ComboBoxClinician> clinicians = new Gson().fromJson(body.string(), new TypeToken<List<ComboBoxClinician>>() {
+                }.getType());
+                returnList.addAll(clinicians);
+                response.close();
+            }
+        });
+        return returnList;
     }
 
     public void postClinician(Clinician clinician, String token) {

@@ -44,13 +44,9 @@ public class AppointmentPickerViewController {
         this.logicController = new AppointmentPickerLogicController(user, stage, appController);
         appointmentBookingTypeInput.getItems().addAll(AppointmentCategory.values());
 
-        //TODO: populate the preferred clinicians combobox with new GET clinicians api that doesn't require authentication. -27/8
-//        appController.getClinicianBridge().getClinicians(0, Integer.MAX_VALUE, "", user.getRegion(), appController.getToken());
-//        for (Clinician clinician : appController.getClinicians()) {
-//            appointmentBookingPrefClinicianInput.getItems().add(clinician.getFullName());
-//        }
-
-
+        for (ComboBoxClinician clinician :  appController.getClinicianBridge().getBasicClinicians(user.getRegion())) {
+            appointmentBookingPrefClinicianInput.getItems().add(clinician);
+        }
     }
 
     @FXML

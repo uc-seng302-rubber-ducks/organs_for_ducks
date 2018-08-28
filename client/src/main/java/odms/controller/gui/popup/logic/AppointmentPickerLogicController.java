@@ -39,7 +39,7 @@ public class AppointmentPickerLogicController {
      * @return true if  a new appointment booking is successfully
      * created, false otherwise.
      */
-    public boolean confirm(LocalDate date, AppointmentCategory type, int preferredClinician, String description) {
+    public boolean confirm(LocalDate date, AppointmentCategory type, String preferredClinician, String description) {
         Appointment appointment = new Appointment(user, preferredClinician, type, date.atStartOfDay(), description, AppointmentStatus.PENDING);
         appController.getAppointmentsBridge().postAppointment(appointment);
         return false;

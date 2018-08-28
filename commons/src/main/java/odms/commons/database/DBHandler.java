@@ -75,6 +75,10 @@ public class DBHandler {
             "LEFT JOIN Address a ON cl.staffId = a.fkStaffId " +
             "WHERE (firstName LIKE ? OR firstName IS NULL OR lastName LIKE ? OR lastName IS NULL )AND region LIKE ? or region IS NULL " +
             "LIMIT ? OFFSET ?";
+    private static final String SELECT_BASIC_CLINICIAN_ONE_TO_ONE_INFO_STMT = "SELECT staffId, firstName, middleName, lastName " +
+            "FROM Clinician cl " +
+            "LEFT JOIN Address a ON cl.staffId = a.fkStaffId " +
+            "WHERE region LIKE ? or region IS NULL";
     private static final String SELECT_ADMIN_ONE_TO_ONE_INFO_STMT = "SELECT userName, firstName, middleName, lastName, timeCreated, lastModified  FROM Administrator " +
             "WHERE (firstName LIKE ? OR firstName IS NULL )" +
             "OR (middleName LIKE ? OR middleName IS NULL)" +
@@ -627,6 +631,30 @@ public class DBHandler {
                     clinician.setDateCreated(resultSet.getTimestamp("timeCreated").toLocalDateTime());
                     clinician.setDateLastModified(resultSet.getTimestamp("lastModified").toLocalDateTime());
                     getAddressResults(clinician.getWorkContactDetails(), resultSet);
+                    clinicians.add(clinician);
+                }
+                return clinicians;
+            }
+        }
+    }
+
+    public Collection<ComboBoxClinician> getBasicClinicians(Connection connection, String region) throws SQLException {
+        Collection<ComboBoxClinician> clinicians = new ArrayList<>();
+        try (PreparedStatement statement = connection.prepareStatement(SELECT_BASIC_CLINICIAN_ONE_TO_ONE_INFO_STMT)) {
+            statement.setString(1, region + "%");
+
+            try (ResultSet resultSet = statement.executeQuery()) {
+
+                while (resultSet != null && resultSet.next()) {
+                    ComboBoxClinician clinician = new ComboBoxClinician();
+                    clinician.setId(resultSet.getString("staffId"));
+                    String fullName = "";
+                    fullName += resultSet.getString("firstName");
+                    if (!resultSet.getString("middleName").equals("")) {
+                        fullName += " " + resultSet.getString("middleName");
+                    }
+                    fullName += " " + resultSet.getString("lastName");
+                    clinician.setName(fullName);
                     clinicians.add(clinician);
                 }
                 return clinicians;

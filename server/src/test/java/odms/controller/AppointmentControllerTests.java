@@ -53,7 +53,7 @@ public class AppointmentControllerTests {
         User testUser = new User("Jeff", LocalDate.parse("9/11/1997", DateTimeFormatter.ofPattern("d/M/yyyy")), "JEF1234");
         Clinician testClinician = new Clinician("", "1234", "1234");
         LocalDateTime testDate = LocalDateTime.now().plusDays(2);
-        testAppointment = new Appointment(testUser, Integer.parseInt(testClinician.getStaffId()), AppointmentCategory.GENERAL_CHECK_UP, testDate, "Help", AppointmentStatus.PENDING);
+        testAppointment = new Appointment(testUser, testClinician.getStaffId(), AppointmentCategory.GENERAL_CHECK_UP, testDate, "Help", AppointmentStatus.PENDING);
     }
 
     @Test

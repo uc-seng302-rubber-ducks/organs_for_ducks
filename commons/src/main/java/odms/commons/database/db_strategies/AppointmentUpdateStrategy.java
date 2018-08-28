@@ -36,7 +36,7 @@ public class AppointmentUpdateStrategy extends AbstractUpdateStrategy {
         try (PreparedStatement preparedStatement = connection.prepareStatement(CREATE_APPOINTMENT_STMT)) {
 
             preparedStatement.setString(1, appointment.getRequestingUser().getNhi());
-            preparedStatement.setInt(2, appointment.getRequestedClinicianId());
+            preparedStatement.setString(2, appointment.getRequestedClinicianId());
             preparedStatement.setInt(3, appointment.getAppointmentCategory().getDbValue());
             preparedStatement.setTimestamp(4, Timestamp.valueOf(appointment.getRequestedDate()));
             preparedStatement.setInt(5, appointment.getAppointmentStatus().getDbValue());
