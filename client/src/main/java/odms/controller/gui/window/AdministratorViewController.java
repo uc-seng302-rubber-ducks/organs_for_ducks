@@ -913,7 +913,7 @@ public class AdministratorViewController implements PropertyChangeListener, User
             newStage.setMinWidth(1200);
             AdministratorViewController adminLoaderController = adminLoader.getController();
             administratorViewControllers.add(adminLoaderController);
-            adminLoaderController.init(administrator, AppController.getInstance(), newStage, false, null);
+            adminLoaderController.init(administrator, AppController.getInstance(), newStage, false);
             newStage.show();
             Log.info(messageAdmin + administrator.getUserName() + " successfully launched administrator overview window");
         } catch (IOException e) {
