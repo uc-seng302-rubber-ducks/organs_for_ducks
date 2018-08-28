@@ -25,7 +25,7 @@ public class GetExistsTest extends BridgeTestBase {
 
     @Parameterized.Parameters
     public static Collection<RoleBridge> data() {
-        before2();
+        staticBefore();
         return new ArrayList<>(Arrays.asList(new AdministratorBridge(mockClient), new ClinicianBridge(mockClient), new UserBridge(mockClient)));
     }
 

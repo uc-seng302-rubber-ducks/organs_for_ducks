@@ -22,7 +22,7 @@ public class BridgeTestBase {
      * static version of before. this is used for the parameterized GetExistsTest
      * as the setup needs to be run before params are created
      */
-    static void before2() {
+    static void staticBefore() {
         BridgeTestBase base = new BridgeTestBase();
         base.before();
     }
