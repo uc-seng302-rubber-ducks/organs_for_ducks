@@ -173,7 +173,7 @@ public class AdministratorViewController implements PropertyChangeListener, User
      * @param appController appController instance to get data from
      * @param stage         stage to display on
      */
-    public void init(Administrator administrator, AppController appController, Stage stage, boolean owner, Collection<PropertyChangeListener> parentListeners) {
+    public void init(Administrator administrator, AppController appController, Stage stage, boolean owner) {
         this.stage = stage;
         this.appController = appController;
         this.administrator = administrator;
@@ -438,7 +438,7 @@ public class AdministratorViewController implements PropertyChangeListener, User
             userTableView.setItems(sUsers);
         } else {
             userTableView.setItems(null);
-            Platform.runLater(() -> userTableView.setPlaceholder(new Label("No users match this criteria"))); // Do this to prevent threading issues when this method is not called on an FX thread;
+            Platform.runLater(() -> userTableView.setPlaceholder(new Label("No users match this criteria"))); // Do this to prevent threading issues when this method is not called on an FX thread
         }
 
         setTableOnClickBehaviour(User.class, userTableView);
@@ -1237,7 +1237,7 @@ public class AdministratorViewController implements PropertyChangeListener, User
             clinicianTableView.setItems(sClinicians);
         } else {
             clinicianTableView.setItems(null);
-            // Do this to prevent threading issues when this method is not called on an FX thread;
+            // Do this to prevent threading issues when this method is not called on an FX thread
             Platform.runLater(() -> clinicianTableView.setPlaceholder(new Label("No clinicians to show")));
         }
 
@@ -1275,7 +1275,7 @@ public class AdministratorViewController implements PropertyChangeListener, User
             adminTableView.setItems(sAdmins);
         } else {
             adminTableView.setItems(null);
-            // Do this to prevent threading issues when this method is not called on an FX thread;
+            // Do this to prevent threading issues when this method is not called on an FX thread
             Platform.runLater(() -> adminTableView.setPlaceholder(new Label("No admins to show")));
         }
 
