@@ -200,7 +200,7 @@ public class ClinicianController implements PropertyChangeListener, UserLauncher
         stage.setOnCloseRequest(e -> availableOrgansViewController.shutdownThreads());
 
         displayImage(profileImage, clinician.getProfilePhotoFilePath());
-        if (ConfigPropertiesSession.getInstance().getProperty("testconfig").equals("true")) {
+        if (ConfigPropertiesSession.getInstance().getProperty("testConfig", "false").equals("false")) {
             if (clinician.getProfilePhotoFilePath() == null || clinician.getProfilePhotoFilePath().equals("")) {
                 URL url = getClass().getResource("/default-profile-picture.jpg");
                 displayImage(profileImage, url);
@@ -252,13 +252,15 @@ public class ClinicianController implements PropertyChangeListener, UserLauncher
             statusBarPageController.updateStatus(clinician.getStaffId() + " " + clinician.getChanges().get(clinician.getChanges().size() - 1).getChange());
 
         }
-        if (clinician.getProfilePhotoFilePath() == null || clinician.getProfilePhotoFilePath().equals("")) {
-            URL url = getClass().getResource("/default-profile-picture.jpg");
-            displayImage(profileImage, url);
-        } else {
-            File inFile = new File(clinician.getProfilePhotoFilePath());
-            Image image = new Image("file:" + inFile.getPath(), 200, 200, false, true);
-            profileImage.setImage(image);
+        if (ConfigPropertiesSession.getInstance().getProperty("testConfig", "false").equals("false")) {
+            if (clinician.getProfilePhotoFilePath() == null || clinician.getProfilePhotoFilePath().equals("")) {
+                URL url = getClass().getResource("/default-profile-picture.jpg");
+                displayImage(profileImage, url);
+            } else {
+                File inFile = new File(clinician.getProfilePhotoFilePath());
+                Image image = new Image("file:" + inFile.getPath(), 200, 200, false, true);
+                profileImage.setImage(image);
+            }
         }
     }
 
