@@ -31,7 +31,7 @@ recent-artifacts:
   stage: deploy
   script:
     - mvn -B clean install -DskipTests
-    - mvn -B package -Punit-tests
+    - mvn -B sonar:sonar package
   artifacts:
     paths:
       - target/*.jar
