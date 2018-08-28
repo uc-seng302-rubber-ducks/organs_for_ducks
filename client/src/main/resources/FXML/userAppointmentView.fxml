@@ -26,6 +26,6 @@
             </columnResizePolicy>
         </TableView>
         <Button fx:id="requestAppointmentButton" layoutX="468.0" layoutY="12.0" mnemonicParsing="false"
-                onAction="#openAppointmentPicker" text="Request New Appointment" AnchorPane.rightAnchor="9.0"/>
+                onAction="#requestNewAppointment" text="Request New Appointment" AnchorPane.rightAnchor="9.0"/>
     </children>
 </AnchorPane>
