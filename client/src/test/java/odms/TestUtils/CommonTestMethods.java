@@ -7,6 +7,6 @@ public class CommonTestMethods {
         System.setProperty("prism.order", "sw");
         System.setProperty("prism.text", "t2k");
         System.setProperty("java.awt.headless", "true");
-        System.setProperty("headless.geometry", "1920x1080-32");
+        System.setProperty("headless.geometry", "1920x1440-32");
     }
 }

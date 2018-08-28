@@ -25,6 +25,13 @@
             <artifactId>commons</artifactId>
             <version>0.0</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>6.9.8</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <profiles>
@@ -37,7 +44,9 @@
                         <artifactId>maven-surefire-plugin</artifactId>
                         <version>2.21.0</version>
                         <configuration>
-                            <excludes>**/GUITest2/**</excludes>
+                            <suiteXmlFiles>
+                                <file>./src/test/resources/guiTests1.xml</file>
+                            </suiteXmlFiles>
                         </configuration>
                     </plugin>
                     <plugin>
@@ -84,7 +93,9 @@
                         <artifactId>maven-surefire-plugin</artifactId>
                         <version>2.21.0</version>
                         <configuration>
-                            <excludes>**/GUITest1/**</excludes>
+                            <suiteXmlFiles>
+                                <file>./src/test/resources/guiTests1.xml</file>
+                            </suiteXmlFiles>
                         </configuration>
                     </plugin>
                     <plugin>
@@ -163,88 +174,10 @@
                         <artifactId>maven-surefire-plugin</artifactId>
                         <version>2.21.0</version>
                         <configuration>
-                            <excludes>
-                                <excludes>**/GUITest1/**</excludes>
-                                <excludes>**/GUITest2/**</excludes>
-                                <excludes>**/*GUITest*</excludes>
-                            </excludes>
+                            <suiteXmlFiles>
+                                <file>./src/test/resources/unitTests.xml</file>
+                            </suiteXmlFiles>
                         </configuration>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-compiler-plugin</artifactId>
-                        <version>3.5.1</version>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-shade-plugin</artifactId>
-                        <version>2.4.3</version>
-                        <configuration>
-                            <transformers>
-                                <transformer
-                                        implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <manifestEntries>
-                                        <Main-Class>odms.App</Main-Class>
-                                        <X-Compile-Source-JDK>${maven.compiler.source}
-                                        </X-Compile-Source-JDK>
-                                        <X-Compile-Target-JDK>${maven.compiler.target}
-                                        </X-Compile-Target-JDK>
-                                    </manifestEntries>
-                                </transformer>
-                            </transformers>
-                        </configuration>
-                        <executions>
-                            <execution>
-                                <phase>package</phase>
-                                <goals>
-                                    <goal>shade</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-
-                    <plugin>
-                        <groupId>org.jacoco</groupId>
-                        <artifactId>jacoco-maven-plugin</artifactId>
-                        <version>0.8.0</version>
-                        <configuration>
-                            <destFile>${basedir}/target/coverage-reports/jacoco-unit.exec</destFile>
-                            <dataFile>${basedir}/target/coverage-reports/jacoco-unit.exec</dataFile>
-                        </configuration>
-                        <executions>
-                            <execution>
-                                <id>jacoco-initialize</id>
-                                <goals>
-                                    <goal>prepare-agent</goal>
-                                </goals>
-                            </execution>
-                            <execution>
-                                <id>report</id>
-                                <phase>prepare-package</phase>
-                                <goals>
-                                    <goal>report</goal>
-                                </goals>
-                            </execution>
-                            <execution>
-                                <id>jacoco-site</id>
-                                <phase>package</phase>
-                                <goals>
-                                    <goal>report</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-        <profile>
-            <id>all</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-surefire-plugin</artifactId>
-                        <version>2.21.0</version>
                     </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
@@ -380,6 +313,13 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.21.0</version>
+                <configuration>
+                    <suiteXmlFiles>
+                        <file>./src/test/resources/unitTests.xml</file>
+                        <file>./src/test/resources/guiTests1.xml</file>
+                        <file>./src/test/resources/guiTest2.xml</file>
+                    </suiteXmlFiles>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

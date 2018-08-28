@@ -1,0 +1,15 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="Unit Tests" verbose="2" annotations="JDK">
+    <test name="cl-unit-tests" preserve-order="false" junit="true">
+        <packages>
+            <package name="odms.bridge"/>
+            <package name="odms.commands"/>
+            <package name="odms.controller"/>
+            <package name="odms.model"/>
+            <package name="odms.socket"/>
+        </packages>
+        <classes>
+            <class name="odms.AppCommandLineArgsTest"/>
+        </classes>
+    </test>
+</suite>
