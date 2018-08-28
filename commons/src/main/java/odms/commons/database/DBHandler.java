@@ -1304,7 +1304,7 @@ public class DBHandler {
         try (PreparedStatement preparedStatement = connection.prepareStatement(CREATE_APPOINTMENT_STMT)) {
 
             preparedStatement.setString(1, appointment.getRequestingUser().getNhi());
-            preparedStatement.setString(2, appointment.getRequestedClinician().getStaffId());
+            preparedStatement.setString(2, appointment.getAppointmentId());
             preparedStatement.setInt(3, appointment.getAppointmentCategory().getDbValue());
             preparedStatement.setTimestamp(4, Timestamp.valueOf(appointment.getRequestedDate()));
             preparedStatement.setInt(5, appointment.getAppointmentStatus().getDbValue());

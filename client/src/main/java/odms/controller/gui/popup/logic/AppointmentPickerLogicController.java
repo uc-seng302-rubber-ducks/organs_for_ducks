@@ -1,8 +1,10 @@
 package odms.controller.gui.popup.logic;
 
 import javafx.stage.Stage;
+import odms.commons.model.Appointment;
 import odms.commons.model.User;
 import odms.commons.model._enum.AppointmentCategory;
+import odms.commons.model._enum.AppointmentStatus;
 import odms.controller.AppController;
 
 import java.time.LocalDate;
@@ -37,8 +39,10 @@ public class AppointmentPickerLogicController {
      * @return true if  a new appointment booking is successfully
      * created, false otherwise.
      */
-    public boolean confirm(LocalDate date, AppointmentCategory type, String preferredClinician, String description) {
-        return false; //TODO: implement functionality -27/8
+    public boolean confirm(LocalDate date, AppointmentCategory type, int preferredClinician, String description) {
+        Appointment appointment = new Appointment(user, preferredClinician, type, date.atStartOfDay(), description, AppointmentStatus.PENDING);
+        appController.getAppointmentsBridge().postAppointment(appointment);
+        return false;
     }
 
 

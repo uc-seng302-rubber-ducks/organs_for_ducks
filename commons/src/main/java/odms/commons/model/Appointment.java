@@ -15,7 +15,7 @@ public class Appointment {
 
     private User requestingUser;
 
-    private Clinician requestedClinician;
+    private int requestedClinicianId;
 
     private AppointmentCategory appointmentCategory;
 
@@ -38,15 +38,15 @@ public class Appointment {
     /**
      * Constructor for Appointment class. Must take every information type (except the boolean hasSeen) that is associated with an Appointment.
      * @param requestingUser User requesting the appointment
-     * @param requestedClinician clinician being requested to have the appointment with
+     * @param requestedClinicianId clinician being requested to have the appointment with
      * @param appointmentCategory the generic type of the appointment
      * @param requestedDate date the appointment is requested to be on
      * @param requestDescription a more detailed description of the appointment, possibly including a reason why it was requested
      * @param appointmentStatus the status of the appointment. This can be pending, accepted, rejected, or cancelled.
      */
-    public Appointment(User requestingUser, Clinician requestedClinician, AppointmentCategory appointmentCategory, LocalDateTime requestedDate, String requestDescription, AppointmentStatus appointmentStatus) {
+    public Appointment(User requestingUser, int requestedClinicianId, AppointmentCategory appointmentCategory, LocalDateTime requestedDate, String requestDescription, AppointmentStatus appointmentStatus) {
         this.requestingUser = requestingUser;
-        this.requestedClinician = requestedClinician;
+        this.requestedClinicianId = requestedClinicianId;
         this.appointmentCategory = appointmentCategory;
         this.requestedDate = requestedDate;
         this.requestDescription = requestDescription;
@@ -69,12 +69,12 @@ public class Appointment {
         this.requestingUser = requestingUser;
     }
 
-    public Clinician getRequestedClinician() {
-        return requestedClinician;
+    public int getRequestedClinicianId() {
+        return requestedClinicianId;
     }
 
-    public void setRequestedClinician(Clinician requestedClinician) {
-        this.requestedClinician = requestedClinician;
+    public void setRequestedClinicianId(int requestedClinicianId) {
+        this.requestedClinicianId = requestedClinicianId;
     }
 
     public AppointmentCategory getAppointmentCategory() {

@@ -5,9 +5,9 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextArea;
 import javafx.stage.Stage;
-import odms.commons.model.Clinician;
 import odms.commons.model.User;
 import odms.commons.model._enum.AppointmentCategory;
+import odms.commons.model.datamodel.ComboBoxClinician;
 import odms.controller.AppController;
 import odms.controller.gui.popup.logic.AppointmentPickerLogicController;
 
@@ -19,7 +19,7 @@ public class AppointmentPickerViewController {
     private ComboBox<AppointmentCategory> appointmentBookingTypeInput;
 
     @FXML
-    private ComboBox<String> appointmentBookingPrefClinicianInput;
+    private ComboBox<ComboBoxClinician> appointmentBookingPrefClinicianInput;
 
     @FXML
     private TextArea appointmentBookingDescriptionInput;
@@ -63,7 +63,7 @@ public class AppointmentPickerViewController {
         logicController.confirm(
                 appointmentBookingDateInput.getValue(),
                 appointmentBookingTypeInput.getSelectionModel().getSelectedItem(),
-                appointmentBookingPrefClinicianInput.getValue(),
+                appointmentBookingPrefClinicianInput.getValue().getId(),
                 appointmentBookingDescriptionInput.getText());
     }
 
