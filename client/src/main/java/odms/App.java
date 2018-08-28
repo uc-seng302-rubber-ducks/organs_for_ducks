@@ -34,13 +34,15 @@ public class App extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
 
-        AppController controller = AppController.getInstance();
         //<editor-fold desc="config">
         ConfigPropertiesSession session = ConfigPropertiesSession.getInstance();
-        AppConfigurator configurator = new AppConfigurator(session, controller);
+        AppConfigurator configurator = new AppConfigurator(session);
         configurator.setupArguments(super.getParameters());
         configurator.setupLogging(Environments.TEST);
-        configurator.setupWebsocket();
+
+
+        AppController controller = AppController.getInstance();
+        configurator.setupWebsocket(controller);
         //</editor-fold>
 
         //<editor-fold desc="fxml setupArguments">

@@ -14,11 +14,9 @@ import java.util.Map;
 public class AppConfigurator {
 
     private ConfigPropertiesSession session;
-    private AppController controller;
 
-    public AppConfigurator(ConfigPropertiesSession session, AppController controller) {
+    public AppConfigurator(ConfigPropertiesSession session) {
         this.session = session;
-        this.controller = controller;
     }
 
     /**
@@ -38,8 +36,9 @@ public class AppConfigurator {
     /**
      * sets up the websocket to listen to server.websocket.url
      * if --testConfig=true is found, this will be skipped
+     * @param controller AppController instance used as an entry point to the correct socket handler
      */
-    public void setupWebsocket() {
+    public void setupWebsocket(AppController controller) {
         String testConfigProperty = session.getProperty("testConfig", "false"); //defaults to "false" if it's not found
         if (testConfigProperty.equalsIgnoreCase("true")) {
             return;

@@ -23,7 +23,7 @@ public class AppConfiguratorTest {
     public void setUp() {
         session = mock(ConfigPropertiesSession.class);
         controller = mock(AppController.class);
-        configurator = new AppConfigurator(session, controller);
+        configurator = new AppConfigurator(session);
     }
 
     @Test
@@ -44,7 +44,7 @@ public class AppConfiguratorTest {
     public void webSocketShouldNotStartWhenTestConfigFlagPresent() {
         when(session.getProperty(eq("testConfig"), anyString())).thenReturn("true");
 
-        configurator.setupWebsocket();
+        configurator.setupWebsocket(controller);
 
         verify(controller, never()).getSocketHandler();
     }
@@ -54,7 +54,7 @@ public class AppConfiguratorTest {
         when(controller.getSocketHandler()).thenReturn(mock(OdmsSocketHandler.class));
         when(session.getProperty(eq("testConfig"), eq("false"))).thenReturn("false");
 
-        configurator.setupWebsocket();
+        configurator.setupWebsocket(controller);
 
         verify(controller, times(1)).getSocketHandler();
     }
