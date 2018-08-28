@@ -145,7 +145,7 @@ public class ClinicianBridge extends RoleBridge {
     }
 
     /**
-     * checks whether a clinician exists in the db by staff id
+     * checks whether a clinician exists in the database by staff id
      * @param staffId staff id to search for
      * @return true if staff id can be found, false otherwise
      */

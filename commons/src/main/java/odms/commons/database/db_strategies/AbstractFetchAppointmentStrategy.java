@@ -9,7 +9,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Collection;
 
-public abstract class AbstractFetchAppointmentStrategy {
+public abstract class AbstractFetchAppointmentStrategy { //NOSONAR - can't convert to interface because of shared method with a body.
     /**
      * Gets all the appointments of with the userid, depending on the user type.
      *

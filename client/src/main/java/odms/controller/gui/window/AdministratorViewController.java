@@ -1310,7 +1310,7 @@ public class AdministratorViewController implements PropertyChangeListener, User
             try {
                 this.administrator = adminBridge.getAdmin(event.getNewIdentifier(), appController.getToken());
                 if (administrator != null) {
-                    displayDetails(); //TODO: fix when we solve the db race 7/8/18 jb
+                    displayDetails(); //TODO: fix when we solve the database race 7/8/18 jb
                 }
             } catch (ApiException ex) {
                 Log.warning("failed to retrieve updated admin. response code: " + ex.getResponseCode(), ex);

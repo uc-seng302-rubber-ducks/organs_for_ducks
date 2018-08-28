@@ -1,6 +1,5 @@
-package odms.commons.db;
+package odms.commons.database;
 
-import odms.commons.database.DBHandler;
 import odms.commons.model.Appointment;
 import odms.commons.model._enum.AppointmentCategory;
 import odms.commons.model._enum.AppointmentStatus;
@@ -51,17 +50,31 @@ public class AppointmentFetchStrategyTest {
     }
 
     @Test
-    public void testCorrectAppointmentIsMade() throws SQLException {
+    public void testCorrectAppointmentIsMadeWhenUserCalled() throws SQLException {
         DBHandlerMocker.setAppointmentDetails(resultSet);
         when(resultSet.next()).thenReturn(true, false);
         ArrayList<Appointment> appointments = new ArrayList<>(handler.getAppointments(connection, "ABC1234", UserType.USER, 30, 0));
         assertTrue(appointments.size() == 1);
-        assertEquals(0, appointments.get(0).getAppointmentId());
-        assertEquals(LocalDateTime.of(2018, 12, 10, 15, 3), appointments.get(0).getRequestedDate());
-        assertEquals("ABC1234", appointments.get(0).getRequestingUser());
-        assertEquals("0", appointments.get(0).getRequestedClinician());
-        assertEquals(AppointmentCategory.BLOOD_TEST, appointments.get(0).getAppointmentCategory());
-        assertEquals(AppointmentStatus.PENDING, appointments.get(0).getAppointmentStatus());
-        assertEquals("A description", appointments.get(0).getRequestDescription());
+        checkAppointment(appointments.get(0));
     }
+
+    @Test
+    public void testCorrectAppointmentIsMadeWhenClinicianCalled() throws SQLException {
+        DBHandlerMocker.setAppointmentDetails(resultSet);
+        when(resultSet.next()).thenReturn(true, false);
+        ArrayList<Appointment> appointments = new ArrayList<>(handler.getAppointments(connection, "0", UserType.CLINICIAN, 30, 0));
+        assertTrue(appointments.size() == 1);
+        checkAppointment(appointments.get(0));
+    }
+
+    private void checkAppointment(Appointment appointment) {
+        assertEquals(0, appointment.getAppointmentId());
+        assertEquals(LocalDateTime.of(2018, 12, 10, 15, 3), appointment.getRequestedDate());
+        assertEquals("ABC1234", appointment.getRequestingUser());
+        assertEquals("0", appointment.getRequestedClinician());
+        assertEquals(AppointmentCategory.BLOOD_TEST, appointment.getAppointmentCategory());
+        assertEquals(AppointmentStatus.PENDING, appointment.getAppointmentStatus());
+        assertEquals("A description", appointment.getRequestDescription());
+    }
+
 }

@@ -825,7 +825,7 @@ public class DBHandler {
     }
 
     /**
-     * finds a single Administrator and sets their deleted flag to true, then updates the Administrator on the db
+     * finds a single Administrator and sets their deleted flag to true, then updates the Administrator on the database
      *
      * @param connection connection to the target database
      * @param username   username of the Administrator to be deleted
@@ -863,7 +863,7 @@ public class DBHandler {
     }
 
     /**
-     * finds a single Clinician and sets their deleted flag to true, then updates the Clinician on the db
+     * finds a single Clinician and sets their deleted flag to true, then updates the Clinician on the database
      *
      * @param connection connection to the target database
      * @param staffId    staffId of the clinician to be deleted
@@ -897,7 +897,7 @@ public class DBHandler {
     }
 
     /**
-     * finds a single user and sets their deleted flag to true, then updates the user on the db
+     * finds a single user and sets their deleted flag to true, then updates the user on the database
      *
      * @param conn connection to the target database
      * @param nhi  nhi of the user to be deleted
@@ -1180,7 +1180,7 @@ public class DBHandler {
      * @param userId id of the wanted profile pictures owner
      * @param connection connection to the database
      * @return the content type header string
-     * @throws SQLException on a bad db connection
+     * @throws SQLException on a bad database connection
      */
     public String getFormat(Type t, String userId, Connection connection) throws SQLException {
 
