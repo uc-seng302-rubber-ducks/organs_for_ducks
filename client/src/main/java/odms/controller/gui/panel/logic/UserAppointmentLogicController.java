@@ -16,15 +16,23 @@ public class UserAppointmentLogicController {
     private AppController appController;
     private User user;
 
+    /**
+     * Constructor to create a new logical instance of the controller
+     *
+     * @param appController Main controller
+     * @param user          User that the appointment panel belongs to
+     */
     public UserAppointmentLogicController(AppController appController, User user) {
         this.appController = appController;
         this.user = user;
     }
 
-    public void requestNewAppointment() {
-        launchAppointmentPicker(false);
-    }
 
+    /**
+     * Launches the pop-up to create and view requested appointments in more detail
+     *
+     * @param viewOnly boolean flag to change the state of the pop-up to be read-only vs modifiable
+     */
     public void launchAppointmentPicker(boolean viewOnly) {
         FXMLLoader appointmentRequestLoader = new FXMLLoader(getClass().getResource("/FXML/appointmentPicker.fxml"));
         Parent root;

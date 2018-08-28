@@ -35,28 +35,42 @@ public class UserAppointmentViewController {
     @FXML
     private TableColumn<Appointment, AppointmentStatus> userAppointmentStatusColumn;
 
+    /**
+     * Initialises the panel
+     *
+     * @param appController Main controller
+     * @param user          User that the panel belongs to
+     */
     public void init(AppController appController, User user) {
         logicController = new UserAppointmentLogicController(appController, user);
         initUserAppointmentsTableView();
     }
 
+    /**
+     * Populates the table view of appointments for the specified user
+     * Changes the default sorting order to sort by the appointment status
+     */
     private void initUserAppointmentsTableView() {
         // populate table
         setOnClickBehaviour();
     }
 
-
+    /**
+     * Launches a pop-up for the user to request a new appointment
+     */
     @FXML
     public void requestNewAppointment() {
-        logicController.requestNewAppointment();
+        logicController.launchAppointmentPicker(false);
     }
 
+    /**
+     * Binds a double click to each row in the table to launch a pop-up with more details about the selected appointment
+     */
     private void setOnClickBehaviour() {
         userAppointmentsTableView.setOnMouseClicked(event -> {
             if (event.getClickCount() == 2 && userAppointmentsTableView.getSelectionModel().getSelectedItem() != null) {
                 logicController.launchAppointmentPicker(true);
             }
         });
-
     }
 }
