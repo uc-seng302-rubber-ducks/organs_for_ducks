@@ -9,7 +9,7 @@
             <package name="odms.socket"/>
         </packages>
         <classes>
-            <class name="odms.AppCommandLineArgsTest"/>
+            <class name="odms.utils.AppConfiguratorTest"/>
         </classes>
     </test>
 </suite>
