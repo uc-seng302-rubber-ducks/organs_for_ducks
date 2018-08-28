@@ -5,6 +5,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
 import odms.commons.model.Appointment;
 import odms.commons.model.User;
 import odms.commons.model._enum.AppointmentCategory;
@@ -51,8 +52,17 @@ public class UserAppointmentViewController {
      * Changes the default sorting order to sort by the appointment status
      */
     private void initUserAppointmentsTableView() {
-        // populate table
+        userAppointmentDateColumn.setCellValueFactory(new PropertyValueFactory<>("requestedDate"));
+        userAppointmentCategoryColumn.setCellValueFactory(new PropertyValueFactory<>("appointmentCategory"));
+        userAppointmentClinicianIdColumn.setCellValueFactory(new PropertyValueFactory<>("requestedClinician"));
+        userAppointmentStatusColumn.setCellValueFactory(new PropertyValueFactory<>("appointmentStatus"));
+        populateTable();
+        // TODO sort by status 28/08/2018
         setOnClickBehaviour();
+    }
+
+    private void populateTable() {
+        userAppointmentsTableView.setItems(appointments);
     }
 
     /**
