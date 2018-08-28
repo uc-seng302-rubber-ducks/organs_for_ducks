@@ -28,7 +28,7 @@ public abstract class AbstractFetchAppointmentStrategy {
      * @return the appointment
      * @throws SQLException if there was an error with the result set
      */
-    protected Appointment decodeAppointmentFromResultSet(ResultSet results) throws SQLException {
+    Appointment decodeAppointmentFromResultSet(ResultSet results) throws SQLException {
         Appointment appointment = new Appointment();
         appointment.setAppointmentId(results.getInt("apptId"));
         appointment.setRequestedDate(results.getTimestamp("requestedTime").toLocalDateTime());
