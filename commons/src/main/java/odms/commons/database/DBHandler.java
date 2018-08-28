@@ -1,15 +1,12 @@
 package odms.commons.database;
 
-import odms.commons.database.db_strategies.AbstractUpdateStrategy;
-import odms.commons.database.db_strategies.AdminUpdateStrategy;
-import odms.commons.database.db_strategies.ClinicianUpdateStrategy;
-import odms.commons.database.db_strategies.UserUpdateStrategy;
+import odms.commons.database.db_strategies.*;
 import odms.commons.model.*;
 import odms.commons.model._enum.Organs;
+import odms.commons.model._enum.UserType;
 import odms.commons.model.datamodel.*;
 import odms.commons.utils.Log;
 import odms.commons.utils.PasswordManager;
-import org.joda.time.DateTime;
 
 import java.io.InputStream;
 import java.lang.reflect.Type;
@@ -114,7 +111,9 @@ public class DBHandler {
             "AND organName = ?";
     private static final String SELECT_DEATH_DETAILS_STMT = "SELECT * FROM DeathDetails WHERE fkUserNhi = ?";
     private static final String CREATE_APPOINTMENT_STMT = "INSERT INTO AppointmentDetails (fkUserNhi, fkStaffId, fkCategoryId, requestedTime, fkStatusId, description) VALUES (?,?,?,?,?,?)";
+
     private AbstractUpdateStrategy updateStrategy;
+    private AbstractFetchAppointmentStrategy fetchAppointmentStrategy;
 
 
     /**
@@ -236,6 +235,16 @@ public class DBHandler {
             }
         }
         return clinician;
+    }
+
+    public Collection<Appointment> getAppointments(Connection connection, String id, UserType type, int count, int start) throws SQLException {
+        if (type.equals(UserType.USER)) {
+            fetchAppointmentStrategy = new FetchUserAppointmentsStrategy();
+        } else if (type.equals(UserType.CLINICIAN)) {
+            fetchAppointmentStrategy = new FetchClincianAppointmentsStrategy();
+        }
+
+        return fetchAppointmentStrategy.getAppointments(connection, id, count, start);
     }
 
 
@@ -1303,8 +1312,8 @@ public class DBHandler {
     public void postAppointment(Connection connection, Appointment appointment) throws SQLException {
         try (PreparedStatement preparedStatement = connection.prepareStatement(CREATE_APPOINTMENT_STMT)) {
 
-            preparedStatement.setString(1, appointment.getRequestingUser().getNhi());
-            preparedStatement.setString(2, appointment.getRequestedClinician().getStaffId());
+            preparedStatement.setString(1, appointment.getRequestingUser());
+            preparedStatement.setString(2, appointment.getRequestedClinician());
             preparedStatement.setInt(3, appointment.getAppointmentCategory().getDbValue());
             preparedStatement.setTimestamp(4, Timestamp.valueOf(appointment.getRequestedDate()));
             preparedStatement.setInt(5, appointment.getAppointmentStatus().getDbValue());
