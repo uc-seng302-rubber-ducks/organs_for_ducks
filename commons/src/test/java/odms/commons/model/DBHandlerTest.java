@@ -264,7 +264,7 @@ public class DBHandlerTest {
     @Test
     public void testCreateAppointment() throws SQLException {
         LocalDateTime testDate = LocalDateTime.now().plusDays(2);
-        Appointment testAppointment = new Appointment(testUser, testClinician, AppointmentCategory.GENERAL_CHECK_UP, testDate, "Help", AppointmentStatus.PENDING);
+        Appointment testAppointment = new Appointment(testUser.getNhi(), testClinician.getStaffId(), AppointmentCategory.GENERAL_CHECK_UP, testDate, "Help", AppointmentStatus.PENDING);
 
         dbHandler.postAppointment(connection, testAppointment);
         verify(mockStmt, times(1)).executeUpdate();
@@ -273,7 +273,7 @@ public class DBHandlerTest {
     @Test
     public void testGetAppointmentId() throws SQLException {
         LocalDateTime testDate = LocalDateTime.now().plusDays(2);
-        Appointment testAppointment = new Appointment(testUser, testClinician, AppointmentCategory.GENERAL_CHECK_UP, testDate, "Help", AppointmentStatus.PENDING);
+        Appointment testAppointment = new Appointment(testUser.getNhi(), testClinician.getStaffId(), AppointmentCategory.GENERAL_CHECK_UP, testDate, "Help", AppointmentStatus.PENDING);
 
         when(mockResultSet.getInt("apptId")).thenReturn(0);
         int id = dbHandler.getAppointmentId(connection, testAppointment);
