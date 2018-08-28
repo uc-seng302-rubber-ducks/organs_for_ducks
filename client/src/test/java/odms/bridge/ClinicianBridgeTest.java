@@ -2,12 +2,14 @@ package odms.bridge;
 
 import com.google.gson.Gson;
 import odms.commons.model.Clinician;
+import odms.commons.model.datamodel.ComboBoxClinician;
 import odms.controller.AppController;
 import okhttp3.*;
 import org.junit.*;
 import org.mockito.ArgumentCaptor;
 
 import java.io.IOException;
+import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -53,6 +55,25 @@ public class ClinicianBridgeTest {
         callback.onResponse(mockCall, mockResponse);
 
         verify(mockController, times(1)).addClinician(any(Clinician.class));
+
+    }
+
+    @Ignore //TODO come back to this after actual implementation is done. Need to check manually if working because don't know if mocking is working 28/08
+    @Test
+    public void getBasicCliniciansShouldReturnListOfBasicCliniciansOnSuccess() throws IOException {
+        Call mockCall = mock(Call.class);
+        Response mockResponse = mock(Response.class);
+        ResponseBody mockResponseBody = mock(ResponseBody.class);
+        when(mockResponse.isSuccessful()).thenReturn(true);
+        when(mockClient.newCall(any(Request.class))).thenReturn(mockCall);
+        when(mockResponse.body()).thenReturn(mockResponseBody);
+        when(mockResponseBody.string()).thenReturn(new Gson().toJson(new ComboBoxClinician[]{
+                new ComboBoxClinician("geoff", "0")
+        }));
+
+        List<ComboBoxClinician> result = bridge.getBasicClinicians("");
+
+        Assert.assertEquals(1, result.size());
 
     }
 

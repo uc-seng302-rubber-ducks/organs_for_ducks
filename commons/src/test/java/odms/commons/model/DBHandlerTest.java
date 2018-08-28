@@ -5,6 +5,7 @@ import odms.commons.model._enum.AppointmentCategory;
 import odms.commons.model._enum.AppointmentStatus;
 import odms.commons.model._enum.Organs;
 import odms.commons.model.datamodel.Address;
+import odms.commons.model.datamodel.ComboBoxClinician;
 import odms.commons.model.datamodel.DeathDetails;
 import org.junit.*;
 import test_utils.DBHandlerMocker;
@@ -19,6 +20,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -271,5 +273,17 @@ public class DBHandlerTest {
         verify(mockStmt, times(1)).executeQuery();
         Assert.assertEquals(0, id);
 
+    }
+
+    @Test
+    public void testGetBasicClinicians() throws SQLException {
+        when(mockResultSet.next()).thenReturn(true, false);
+        testClinician.setMiddleName("mid");
+        testClinician.setLastName("last");
+        DBHandlerMocker.setClinicianResultSet(mockResultSet, testClinician);
+        Collection<ComboBoxClinician> clinicians = dbHandler.getBasicClinicians(connection,"");
+
+        verify(mockStmt, times(1)).executeQuery();
+        Assert.assertEquals("Jon mid last", clinicians.iterator().next().toString());
     }
 }
