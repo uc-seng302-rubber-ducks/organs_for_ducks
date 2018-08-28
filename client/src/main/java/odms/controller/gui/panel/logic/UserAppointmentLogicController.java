@@ -4,6 +4,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import odms.commons.model.Appointment;
 import odms.commons.model.User;
 import odms.commons.utils.Log;
 import odms.controller.AppController;
@@ -30,10 +31,8 @@ public class UserAppointmentLogicController {
 
     /**
      * Launches the pop-up to create and view requested appointments in more detail
-     *
-     * @param viewOnly boolean flag to change the state of the pop-up to be read-only vs modifiable
      */
-    public void launchAppointmentPicker(boolean viewOnly) {
+    public void launchAppointmentPicker() {
         FXMLLoader appointmentRequestLoader = new FXMLLoader(getClass().getResource("/FXML/appointmentPicker.fxml"));
         Parent root;
 
@@ -41,7 +40,7 @@ public class UserAppointmentLogicController {
             root = appointmentRequestLoader.load();
             AppointmentPickerViewController appointmentPickerViewController = appointmentRequestLoader.getController();
             Stage appointmentPickerStage = new Stage();
-            appointmentPickerViewController.init(user, appointmentPickerStage, appController); // todo: add a view/modify flag
+            appointmentPickerViewController.init(user, appointmentPickerStage, appController);
             appointmentPickerStage.setScene(new Scene(root));
             appointmentPickerStage.show();
             Log.info("Successfully launched the appointment picker pop-up window for user: " + user.getNhi());
@@ -49,6 +48,15 @@ public class UserAppointmentLogicController {
         } catch (IOException e) {
             Log.severe("Failed to load appointmentPicker pop-up window for user: " + user.getNhi(), e);
         }
+    }
+
+    /**
+     * Prompts the user with a confirmation pop-up to cancel the given appointment
+     *
+     * @param appointment The appointment to be cancelled
+     */
+    public void cancelAppointment(Appointment appointment) {
+
     }
 
 }

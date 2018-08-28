@@ -5,6 +5,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.cell.PropertyValueFactory;
 import odms.commons.model.Appointment;
 import odms.commons.model.User;
@@ -35,6 +36,9 @@ public class UserAppointmentViewController {
 
     @FXML
     private TableColumn<Appointment, AppointmentStatus> userAppointmentStatusColumn;
+
+    @FXML
+    private TextArea userAppointmentDetailsTextArea;
 
     /**
      * Initialises the panel
@@ -71,17 +75,31 @@ public class UserAppointmentViewController {
      */
     @FXML
     public void requestNewAppointment() {
-        logicController.launchAppointmentPicker(false);
+        logicController.launchAppointmentPicker();
     }
 
     /**
-     * Binds a double click to each row in the table to launch a pop-up with more details about the selected appointment
+     * Attempts to cancel the selected appointment
+     */
+    @FXML
+    public void cancelAppointment() {
+        logicController.cancelAppointment(userAppointmentsTableView.getSelectionModel().getSelectedItem());
+    }
+
+    /**
+     * Binds a table view row selection to show all details for that appointment
      */
     private void setOnClickBehaviour() {
-        userAppointmentsTableView.setOnMouseClicked(event -> {
-            if (event.getClickCount() == 2 && userAppointmentsTableView.getSelectionModel().getSelectedItem() != null) {
-                logicController.launchAppointmentPicker(true);
-            }
-        });
+        userAppointmentsTableView.getSelectionModel().selectedItemProperty().addListener(a ->
+                displayAppointmentDetails(userAppointmentsTableView.getSelectionModel().getSelectedItem()));
+    }
+
+    /**
+     * Displays the appointment details in a text area
+     *
+     * @param appointment The selected appointment to be displayed in more detail
+     */
+    private void displayAppointmentDetails(Appointment appointment) {
+        userAppointmentDetailsTextArea.setText(appointment.toString());
     }
 }
