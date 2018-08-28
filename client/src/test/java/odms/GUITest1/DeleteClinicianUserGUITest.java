@@ -73,7 +73,7 @@ public class DeleteClinicianUserGUITest extends ApplicationTest {
         when(controller.getOrgansBridge()).thenReturn(organsBridge);
 
         FxToolkit.registerPrimaryStage();
-        FxToolkit.setupApplication(App.class);
+        FxToolkit.setupApplication(App.class, "--testConfig=true");
         AppController.getInstance().getUsers().clear();
 
         overviews = new ArrayList<>();

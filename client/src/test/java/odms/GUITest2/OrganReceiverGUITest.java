@@ -1,8 +1,8 @@
 package odms.GUITest2;
 
 
-import javafx.scene.control.TableView;
 import javafx.collections.FXCollections;
+import javafx.scene.control.TableView;
 import odms.App;
 import odms.TestUtils.AppControllerMocker;
 import odms.TestUtils.CommonTestMethods;
@@ -32,8 +32,6 @@ import static odms.TestUtils.ListViewsMethod.getListView;
 import static odms.TestUtils.TableViewsMethod.getCell;
 import static odms.TestUtils.TableViewsMethod.getCellValue;
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
@@ -80,7 +78,7 @@ public class OrganReceiverGUITest extends ApplicationTest {
         when(bridge.getUser("ABC1244")).thenReturn(testUser);
 
         FxToolkit.registerPrimaryStage();
-        FxToolkit.setupApplication(App.class);
+        FxToolkit.setupApplication(App.class, "--testConfig=true");
 
         AppController.getInstance().getUsers().clear();
         AppController.getInstance().getUsers().add(testUser);

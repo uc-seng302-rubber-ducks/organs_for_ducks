@@ -65,7 +65,7 @@ public class LoginControllerGUITest extends ApplicationTest {
         when(controller.getTransplantList()).thenReturn(new ArrayList());
         doNothing().when(organsBridge).getAvailableOrgansList(anyInt(), anyInt(), anyString(), anyString(), anyString(), anyString(), anyString(), any());
         FxToolkit.registerPrimaryStage();
-        FxToolkit.setupApplication(App.class);
+        FxToolkit.setupApplication(App.class, "--testConfig=true");
         AppController.getInstance().getUsers().clear();
 
     }

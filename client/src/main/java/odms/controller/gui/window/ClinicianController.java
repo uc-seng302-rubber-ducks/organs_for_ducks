@@ -21,6 +21,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import odms.bridge.ClinicianBridge;
+import odms.commons.config.ConfigPropertiesSession;
 import odms.commons.exception.ApiException;
 import odms.commons.model.Clinician;
 import odms.commons.model.User;
@@ -199,11 +200,13 @@ public class ClinicianController implements PropertyChangeListener, UserLauncher
         stage.setOnCloseRequest(e -> availableOrgansViewController.shutdownThreads());
 
         displayImage(profileImage, clinician.getProfilePhotoFilePath());
-        if (clinician.getProfilePhotoFilePath() == null || clinician.getProfilePhotoFilePath().equals("")) {
-            URL url = getClass().getResource("/default-profile-picture.jpg");
-            displayImage(profileImage, url);
-        } else {
-            displayImage(profileImage, clinician.getProfilePhotoFilePath());
+        if (ConfigPropertiesSession.getInstance().getProperty("testconfig").equals("true")) {
+            if (clinician.getProfilePhotoFilePath() == null || clinician.getProfilePhotoFilePath().equals("")) {
+                URL url = getClass().getResource("/default-profile-picture.jpg");
+                displayImage(profileImage, url);
+            } else {
+                displayImage(profileImage, clinician.getProfilePhotoFilePath());
+            }
         }
     }
 

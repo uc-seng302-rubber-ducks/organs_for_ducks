@@ -90,7 +90,7 @@ public class DeregisterOrganReasonControllerGUITest extends ApplicationTest {
         testUser.getReceiverDetails().startWaitingForOrgan(Organs.HEART);
         testUser.getCurrentDiseases().add(new Disease("A0", false, false, LocalDate.now()));
         FxToolkit.registerPrimaryStage();
-        FxToolkit.setupApplication(App.class);
+        FxToolkit.setupApplication(App.class, "--testConfig=true");
 
         //Use default clinician
         clickOn("#clinicianTab");

@@ -89,7 +89,7 @@ public class UpdateClinicianControllerGUITest extends ApplicationTest {
         c.setWorkContactDetails(new ContactDetails("", "", workAddress, ""));
 
         FxToolkit.registerPrimaryStage();
-        FxToolkit.setupApplication(App.class);
+        FxToolkit.setupApplication(App.class, "--testConfig=true");
         clickOn("#clinicianTab");
 
         clickOn("#staffIdTextField");

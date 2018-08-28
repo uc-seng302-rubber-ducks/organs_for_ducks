@@ -71,7 +71,7 @@ public class UpdateAdminControllerGUITest extends ApplicationTest {
         AppController.getInstance().getAdmins().remove(testAdmin);
         AppController.getInstance().getAdmins().add(testAdmin);
         FxToolkit.registerPrimaryStage();
-        FxToolkit.setupApplication(App.class);
+        FxToolkit.setupApplication(App.class, "--testConfig=true");
         clickOn("#administratorTab");
         setTextField(this,"#adminUsernameTextField","admin1");
         setTextField(this,"#adminPasswordField","face");

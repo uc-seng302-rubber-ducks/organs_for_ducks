@@ -19,9 +19,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.util.concurrent.TimeoutException;
 
-import static javafx.scene.input.KeyCode.A;
-import static javafx.scene.input.KeyCode.BACK_SPACE;
-import static javafx.scene.input.KeyCode.SHORTCUT;
+import static javafx.scene.input.KeyCode.*;
 import static odms.TestUtils.FxRobotHelper.clickOnButton;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -58,7 +56,7 @@ public class StatusBarGUITest extends ApplicationTest {
         when(userBridge.getUser(anyString())).thenReturn(new User("A", LocalDate.now().minusDays(1000), "ABC1234"));
 
         FxToolkit.registerPrimaryStage();
-        FxToolkit.setupApplication(App.class);
+        FxToolkit.setupApplication(App.class, "--testConfig=true");
         AppController.getInstance().getUsers().clear();
         AppController.getInstance().getUsers().add(new User("A", LocalDate.now().minusDays(1000), "ABC1234"));
         UserController userController = AppController.getInstance().getUserController();
