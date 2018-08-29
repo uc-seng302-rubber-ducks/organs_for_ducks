@@ -26,7 +26,10 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.concurrent.TimeoutException;
 
 import static odms.TestUtils.FxRobotHelper.*;
@@ -45,7 +48,7 @@ public class UpdateDeathDetailsControllerGUITest extends ApplicationTest{
 
     @BeforeClass
     public static void initialization() {
-        CommonTestMethods.runHeadless();
+        CommonTestMethods.runMethods();
     }
 
     @Before
@@ -88,7 +91,7 @@ public class UpdateDeathDetailsControllerGUITest extends ApplicationTest{
                 anyString(),anyString(),anyString(),any(ObservableList.class));
 
         FxToolkit.registerPrimaryStage();
-        FxToolkit.setupApplication(App.class);
+        FxToolkit.setupApplication(App.class, "--testConfig=true");
 
         AppController.getInstance().getUsers().clear();
         AppController.getInstance().getUsers().add(testUser);
