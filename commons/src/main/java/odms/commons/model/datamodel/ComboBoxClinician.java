@@ -7,19 +7,19 @@ package odms.commons.model.datamodel;
 public class ComboBoxClinician {
 
     private String name;
-    private int id;
+    private String id;
 
     /**
      * Constructor for the comboBoxClinicians
      * @param name Clinician's name
      * @param id Clinician's id
      */
-    public ComboBoxClinician(String name, int id) {
+    public ComboBoxClinician(String name, String id) {
         this.name = name;
         this.id = id;
     }
 
-    public int getId() {
+    public String getId() {
         return id;
     }
 
