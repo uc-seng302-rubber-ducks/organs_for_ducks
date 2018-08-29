@@ -23,7 +23,7 @@ import org.junit.runner.RunWith;
 public class GenericRunnerGUITest {
     @BeforeClass
     public static void initialization() {
-        CommonTestMethods.runHeadless();
+        CommonTestMethods.runMethods();
     }
 
 

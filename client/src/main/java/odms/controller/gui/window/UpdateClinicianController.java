@@ -14,6 +14,7 @@ import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Region;
 import javafx.stage.Stage;
+import odms.commons.config.ConfigPropertiesSession;
 import odms.commons.model.Clinician;
 import odms.commons.model._enum.Regions;
 import odms.commons.model.datamodel.Address;
@@ -230,10 +231,12 @@ public class UpdateClinicianController {
      */
     @FXML
     private void resetProfileImage() {
-        currentClinician.setProfilePhotoFilePath("");
-        inFile = null;
-        URL url = getClass().getResource("/default-profile-picture.jpg");
-        displayImage(profileImage, url);
+        if (ConfigPropertiesSession.getInstance().getProperty("testConfig", "false").equals("false")) {
+            currentClinician.setProfilePhotoFilePath("");
+            inFile = null;
+            URL url = getClass().getResource("/default-profile-picture.jpg");
+            displayImage(profileImage, url);
+        }
     }
 
 
@@ -294,11 +297,13 @@ public class UpdateClinicianController {
             regionSelector.getSelectionModel().select(region); //region selector is visible by default if clinician's country is NZ.
         }
 
-        if (clinician.getProfilePhotoFilePath() == null || clinician.getProfilePhotoFilePath().equals("")) {
-            URL url = getClass().getResource("/default-profile-picture.jpg");
-            displayImage(profileImage, url);
-        } else {
-            displayImage(profileImage, currentClinician.getProfilePhotoFilePath());
+        if (ConfigPropertiesSession.getInstance().getProperty("testConfig", "false").equals("false")) {
+            if (clinician.getProfilePhotoFilePath() == null || clinician.getProfilePhotoFilePath().equals("")) {
+                URL url = getClass().getResource("/default-profile-picture.jpg");
+                displayImage(profileImage, url);
+            } else {
+                displayImage(profileImage, currentClinician.getProfilePhotoFilePath());
+            }
         }
 
         Listen = true;
