@@ -3,6 +3,9 @@ package odms.bridge;
 import com.google.gson.Gson;
 import odms.commons.model.Appointment;
 import odms.commons.model.Clinician;
+import odms.commons.model.User;
+import odms.commons.model._enum.AppointmentCategory;
+import odms.commons.model._enum.AppointmentStatus;
 import okhttp3.*;
 import org.junit.Assert;
 import org.junit.Before;
@@ -11,6 +14,8 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -198,4 +203,41 @@ public class ClinicianBridgeTest extends BridgeTestBase {
         List<Appointment> result = bridge.getAppointments("0", "asdf");
         Assert.assertNull(result);
     }
+
+    @Test
+    public void getAppointmentsShouldReturnNullOnNullResponse() throws IOException {
+        Call mockCall = mock(Call.class);
+        when(mockClient.newCall(any(Request.class))).thenReturn(mockCall);
+        when(mockCall.execute()).thenReturn(null);
+
+        List<Appointment> result = bridge.getAppointments("0", "asdf");
+        Assert.assertNull(result);
+    }
+
+    @Test
+    public void getAppointmentsShouldReturnAppointmentsOnSuccess() throws IOException {
+
+        User testUser = new User();
+        Clinician testClinician = new Clinician();
+        Appointment testAppointment = new Appointment(testUser, testClinician, AppointmentCategory.BLOOD_TEST, LocalDateTime.now(), "test", AppointmentStatus.PENDING);
+        testAppointment.setAppointmentId("0");
+        List<Appointment> expected = new ArrayList<>();
+        expected.add(testAppointment);
+
+        Call mockCall = mock(Call.class);
+        Response mockResponse = mock(Response.class);
+        ResponseBody mockResponseBody = mock(ResponseBody.class);
+        when(mockClient.newCall(any(Request.class))).thenReturn(mockCall);
+        when(mockCall.execute()).thenReturn(mockResponse);
+        when(mockResponse.code()).thenReturn(200);
+        when(mockResponse.header(eq("Content-Type"))).thenReturn("image/jpg");
+        when(mockResponse.body()).thenReturn(mockResponseBody);
+        when(mockResponseBody.string()).thenReturn(new Gson().toJson(expected));
+
+        List<Appointment> actual = bridge.getAppointments("0", "asdf");
+
+        Assert.assertEquals(expected.get(0), actual.get(0));
+
+    }
+
 }

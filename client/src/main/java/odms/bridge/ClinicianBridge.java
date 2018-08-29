@@ -10,6 +10,7 @@ import odms.commons.utils.Log;
 import odms.commons.utils.PhotoHelper;
 import odms.controller.AppController;
 import okhttp3.*;
+import org.apache.commons.lang.ObjectUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -212,21 +213,25 @@ public class ClinicianBridge extends RoleBridge {
         List<Appointment> results = new ArrayList<>();
         String url = ip + CLINICIANS + staffId + "/appointments";
         Request request = new Request.Builder().addHeader(tokenHeader, token).url(url).build();
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                Log.warning("Failed to get appointments for " + staffId + ". On Failure Triggered", e);
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
+        try (Response response = client.newCall(request).execute()) {
+            if (response == null) {
+                Log.warning("A null response was returned to the user");
+                results = null;
+            } else {
                 ResponseBody body = response.body();
-                List<Appointment> appointments = new Gson().fromJson(body.string(), new TypeToken<List<Appointment>>() {
-                }.getType());
-                results.addAll(appointments);
-                response.close();
+                if (body == null) {
+                    Log.warning("A null response body was returned to the user");
+                    results = null;
+                } else {
+                    List<Appointment> appointments = new Gson().fromJson(body.string(), new TypeToken<List<Appointment>>() {
+                    }.getType());
+                    results.addAll(appointments);
+                }
             }
-        });
+        } catch (IOException e) {
+            Log.warning("Failed to get appointments for " + staffId + ". On Failure Triggered", e);
+            results = null;
+        }
         return results;
     }
 
