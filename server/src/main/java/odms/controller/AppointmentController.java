@@ -48,7 +48,7 @@ public class AppointmentController extends BaseController {
     }
 
 
-    @RequestMapping(method = RequestMethod.POST, value = "/appointment")
+    @RequestMapping(method = RequestMethod.POST, value = "/appointments")
     public ResponseEntity postAppointment(@RequestBody Appointment newAppointment) {
         try (Connection connection = driver.getConnection()) {
             AppointmentUpdateStrategy appointmentStrategy = handler.getAppointmentStrategy();

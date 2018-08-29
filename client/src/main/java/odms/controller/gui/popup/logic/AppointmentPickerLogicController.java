@@ -41,18 +41,16 @@ public class AppointmentPickerLogicController {
      * @param type               category/type of appointment
      * @param preferredClinician name
      * @param description        of appointment
-     * @return true if  a new appointment booking is successfully
-     * created, false otherwise.
      */
-    public boolean confirm(LocalDate date, AppointmentCategory type, String preferredClinician, String description) {
+    public void confirm(LocalDate date, AppointmentCategory type, String preferredClinician, String description) {
         if (!validateDateOfAppointment(date)) {
             alertUser("Invalid Appointment Date! The earliest appointment date is tomorrow.");
-            return false;
+            return;
         }
 
         Appointment appointment = new Appointment(user.getNhi(), preferredClinician, type, date.atStartOfDay(), description, AppointmentStatus.PENDING);
         appController.getAppointmentsBridge().postAppointment(appointment);
-        return false;
+        stage.close();
     }
 
 

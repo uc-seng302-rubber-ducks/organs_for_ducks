@@ -62,8 +62,8 @@ public class AppointmentPickerViewController {
     public void confirm() {
         logicController.confirm(
                 appointmentBookingDateInput.getValue(),
-                appointmentBookingTypeInput.getSelectionModel().getSelectedItem(),
-                appointmentBookingPrefClinicianInput.getValue().getId(),
+                appointmentBookingTypeInput.getSelectionModel().getSelectedItem(), "0",
+                //appointmentBookingPrefClinicianInput.getValue().getId(),
                 appointmentBookingDescriptionInput.getText());
     }
 
