@@ -4,7 +4,8 @@ public enum EventTypes {
     USER_UPDATE("USER"),
     CLINICIAN_UPDATE("CLINICIAN"),
     ADMIN_UPDATE("ADMIN"),
-    COUNTRY_UPDATE("COUNTRY");
+    COUNTRY_UPDATE("COUNTRY"),
+    APPOINTMENT_UPDATE("APPOINTMENT");
 
     private final String name;
 

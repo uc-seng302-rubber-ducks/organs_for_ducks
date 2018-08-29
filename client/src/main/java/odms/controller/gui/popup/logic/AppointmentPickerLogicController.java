@@ -2,8 +2,10 @@ package odms.controller.gui.popup.logic;
 
 import javafx.application.Platform;
 import javafx.stage.Stage;
+import odms.commons.model.Appointment;
 import odms.commons.model.User;
 import odms.commons.model._enum.AppointmentCategory;
+import odms.commons.model._enum.AppointmentStatus;
 import odms.controller.AppController;
 import odms.controller.gui.popup.utils.AlertWindowFactory;
 
@@ -32,8 +34,8 @@ public class AppointmentPickerLogicController {
     }
 
     /**
-     * Created a new appointment booking. Creates a pop-up
-     * error window if input validation fails.
+     * Created a new appointment booking request.
+     * Creates a pop-up error window if input validation fails.
      *
      * @param date               desired date of appointment
      * @param type               category/type of appointment
@@ -43,12 +45,14 @@ public class AppointmentPickerLogicController {
      * created, false otherwise.
      */
     public boolean confirm(LocalDate date, AppointmentCategory type, String preferredClinician, String description) {
-        if(!validateDateOfAppointment(date)){
+        if (!validateDateOfAppointment(date)) {
             alertUser("Invalid Appointment Date! The earliest appointment date is tomorrow.");
             return false;
         }
 
-        return false; //TODO: implement functionality -27/8
+        Appointment appointment = new Appointment(user.getNhi(), preferredClinician, type, date.atStartOfDay(), description, AppointmentStatus.PENDING);
+        appController.getAppointmentsBridge().postAppointment(appointment);
+        return false;
     }
 
 

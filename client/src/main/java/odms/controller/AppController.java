@@ -66,9 +66,9 @@ public class AppController {
     private CountriesBridge countriesBridge = new CountriesBridge(client);
     private AdministratorViewController administratorViewController = null;
     private StatusBarController statusBarController = new StatusBarController();
-    private Stack<User> redoStack = new Stack<>();
     private String token;
     private SQLBridge sqlBridge = new SQLBridge(client);
+    private AppointmentsBridge appointmentsBridge = new AppointmentsBridge(client);
     private OdmsSocketHandler socketHandler = new OdmsSocketHandler(client, ServerEventNotifier.getInstance());
     private String username = "";
     private String name = "";
@@ -607,7 +607,6 @@ public class AppController {
         if (user.isDeleted()) {
             if (findUser(user.getNhi()) == null) {
                 user.setDeleted(false);
-                redoStack.push(user);
             } else {
                 throw new ProfileAlreadyExistsException();
             }
@@ -726,6 +725,10 @@ public class AppController {
 
     public SQLBridge getSqlBridge() {
         return sqlBridge;
+    }
+
+    public AppointmentsBridge getAppointmentsBridge() {
+        return appointmentsBridge;
     }
 
     public OdmsSocketHandler getSocketHandler() {
