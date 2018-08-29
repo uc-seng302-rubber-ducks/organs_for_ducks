@@ -3,8 +3,8 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
-<AnchorPane maxHeight="400.0" maxWidth="600.0" minHeight="391.0" minWidth="600.0" prefHeight="391.0" prefWidth="600.0"
-            xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" maxHeight="400.0" maxWidth="600.0" minHeight="391.0" minWidth="600.0"
+            prefHeight="391.0" prefWidth="600.0" stylesheets="@../gui.css" xmlns="http://javafx.com/javafx/8"
             fx:controller="odms.controller.gui.window.LoginController">
     <children>
         <TabPane fx:id="loginTabPane" prefHeight="400.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE">
@@ -19,8 +19,7 @@
                                     <children>
                                         <Button fx:id="loginUButton" mnemonicParsing="false" onAction="#loginUser"
                                                 prefHeight="25.0" prefWidth="146.0" text="Login"
-                                                GridPane.columnIndex="1"
-                                                GridPane.rowIndex="1"/>
+                                                GridPane.columnIndex="1" GridPane.rowIndex="1"/>
                                         <TextField fx:id="userIDTextField" GridPane.columnIndex="1"/>
                                         <Label text="NHI:"/>
                                         <Label fx:id="userWarningLabel" prefHeight="73.0" prefWidth="177.0" text="Label"
@@ -88,14 +87,13 @@
                                     <children>
                                         <Button fx:id="loginAButton" mnemonicParsing="false" onAction="#loginAdmin"
                                                 prefHeight="25.0" prefWidth="146.0" text="Login"
-                                                GridPane.columnIndex="1"
-                                                GridPane.rowIndex="2"/>
+                                                GridPane.columnIndex="1" GridPane.rowIndex="2"/>
                                         <TextField fx:id="adminUsernameTextField" GridPane.columnIndex="1"/>
                                         <Label text="Username:"/>
                                         <Label text="Password:" GridPane.rowIndex="1"/>
                                         <Label fx:id="adminWarningLabel" prefHeight="73.0" prefWidth="177.0"
-                                               text="Label"
-                                               wrapText="true" GridPane.columnIndex="2" GridPane.rowIndex="2"/>
+                                               text="Label" wrapText="true" GridPane.columnIndex="2"
+                                               GridPane.rowIndex="2"/>
                                         <PasswordField fx:id="adminPasswordField" GridPane.columnIndex="1"
                                                        GridPane.rowIndex="1"/>
                                     </children>

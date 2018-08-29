@@ -1,0 +1,45 @@
+/*
+    Document   : controlStyle2
+*/
+
+.root {
+    -fx-font-size: 16pt;
+    -fx-font-family: "Courier New";
+    -fx-base: yellow;
+    -fx-background: rgb(224, 255, 255);
+    -fx-font-style: rgb(255, 0, 0);
+}
+
+.button {
+    -fx-text-fill: rgb(49, 89, 23);
+    -fx-border-color: rgb(49, 89, 23);
+    -fx-border-radius: 5;
+    -fx-padding: 3 6 6 6;
+}
+
+.borders {
+    -fx-border-color: rgb(7, 130, 103);
+    -fx-border-style: dotted;
+    -fx-border-width: 1.5;
+    -fx-border-insets: -5;
+}
+
+.label {
+
+    color: blue;
+    -fx-background-color: green;
+    -fx-text-fill: red;
+}
+
+.text-field {
+    color: blue;
+    -fx-background-color: rgb(200, 231, 210);
+    -fx-text-fill: green;
+
+}
+
+.table-view {
+    color: blue;
+    -fx-background-color: powderblue;
+}
+
