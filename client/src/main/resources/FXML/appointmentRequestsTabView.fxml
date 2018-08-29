@@ -3,28 +3,39 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane prefHeight="368.0" prefWidth="585.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane prefHeight="735.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <AnchorPane prefHeight="289.0" prefWidth="585.0" AnchorPane.bottomAnchor="57.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <AnchorPane prefHeight="735.0" prefWidth="803.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="397.0" AnchorPane.topAnchor="0.0">
          <children>
-            <TableView fx:id="appointmentRequestView" layoutX="36.0" layoutY="33.0" prefHeight="254.0" prefWidth="514.0" AnchorPane.bottomAnchor="24.0" AnchorPane.leftAnchor="36.0" AnchorPane.rightAnchor="35.0" AnchorPane.topAnchor="33.0">
+            <TableView fx:id="clnicianAppointmentRequestView" layoutX="36.0" layoutY="69.0" prefHeight="642.0" prefWidth="732.0" AnchorPane.bottomAnchor="24.0" AnchorPane.leftAnchor="36.0" AnchorPane.rightAnchor="35.0" AnchorPane.topAnchor="69.0">
               <columns>
                 <TableColumn prefWidth="75.0" text="NHI" />
-                <TableColumn prefWidth="134.0" text="First Name" />
-                  <TableColumn prefWidth="104.0" text="Last Name" />
+                <TableColumn prefWidth="134.0" text="Name" />
                   <TableColumn prefWidth="85.0" text="Date" />
                   <TableColumn prefWidth="121.0" text="Category" />
               </columns>
                 <columnResizePolicy>
-                    <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+                    <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
                 </columnResizePolicy>
             </TableView>
          </children>
       </AnchorPane>
-      <AnchorPane layoutY="326.0" prefHeight="28.0" prefWidth="585.0" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+      <AnchorPane layoutX="803.0" layoutY="14.0" prefHeight="720.0" prefWidth="396.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="803.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <Button fx:id="rejectAppointment" mnemonicParsing="false" text="Reject" AnchorPane.rightAnchor="414.0" />
-            <Button fx:id="acceptAppointment" mnemonicParsing="false" text="Accept" AnchorPane.leftAnchor="407.0" />
+            <Button fx:id="clinicianRejectAppointmentBtn" layoutX="19.0" layoutY="677.0" mnemonicParsing="false" text="Reject Apppointment" AnchorPane.bottomAnchor="33.0" AnchorPane.rightAnchor="222.0" />
+            <Button fx:id="clinicianAcceptAppointmentBtn" layoutX="209.0" layoutY="677.0" mnemonicParsing="false" text="Accept Appointment" AnchorPane.bottomAnchor="33.0" AnchorPane.rightAnchor="37.0" />
+            <Label layoutX="24.0" layoutY="87.0" text="NHI: " />
+            <Label layoutX="24.0" layoutY="125.0" text="Name:" />
+            <Label layoutX="25.0" layoutY="171.0" text="Date:" />
+            <Label layoutX="27.0" layoutY="223.0" text="Time:" />
+            <Label layoutX="27.0" layoutY="312.0" text="Description:" />
+            <Label layoutX="26.0" layoutY="268.0" text="Category:" />
+            <DatePicker fx:id="appointmentRequestDate" layoutX="150.0" layoutY="166.0" />
+            <Label fx:id="appointmentRequestUserNhi" layoutX="150.0" layoutY="87.0" prefHeight="15.0" prefWidth="198.0" text="Label" />
+            <Label fx:id="appointmentRequestUserName" layoutX="150.0" layoutY="125.0" prefHeight="15.0" prefWidth="198.0" text="Label" />
+            <TextField fx:id="appointmentRequestTime" layoutX="150.0" layoutY="218.0" prefHeight="25.0" prefWidth="198.0" />
+            <ComboBox fx:id="appointmentRequestCategory" layoutX="150.0" layoutY="263.0" prefHeight="25.0" prefWidth="198.0" />
+            <TextArea fx:id="appointmentRequestDescription" layoutX="150.0" layoutY="312.0" prefHeight="275.0" prefWidth="198.0" />
          </children>
       </AnchorPane>
    </children>
