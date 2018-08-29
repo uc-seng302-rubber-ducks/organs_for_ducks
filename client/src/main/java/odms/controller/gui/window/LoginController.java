@@ -237,7 +237,7 @@ public class LoginController {
             AdministratorViewController administratorController = administratorLoader.getController();
             AppController.getInstance().setAdministratorViewController(administratorController);
             Log.info("Logging in as an administrator");
-            administratorController.init(administrator, appController, stage, true, null);
+            administratorController.init(administrator, appController, stage, true);
         } catch (IOException e) {
             Log.severe("failed to load administrator window", e);
         }
@@ -310,7 +310,7 @@ public class LoginController {
             stage.setScene(new Scene(root));
             stage.setTitle("Administrator");
             AdministratorViewController administratorViewController = adminLoader.getController();
-            administratorViewController.init(new Administrator(), appController, stage, true, null);
+            administratorViewController.init(new Administrator(), appController, stage, true);
             Log.info("Successfully launched CLI");
         } catch (IOException e) {
             Log.severe("could not load CLI", e);

@@ -5,6 +5,7 @@ import odms.commons.model.User;
 import java.sql.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 
 import static org.mockito.Mockito.when;
 
@@ -56,5 +57,21 @@ public class DBHandlerMocker {
         }
 
 
+    }
+
+    /**
+     * Sets the result set to return the details of a basic appointment.
+     *
+     * @param resultSet mocked resultset to return the basic appointment details
+     * @throws SQLException This shouldn't be thrown due to it being a mocked object.
+     */
+    public static void setAppointmentDetails(ResultSet resultSet) throws SQLException {
+        when(resultSet.getInt("apptId")).thenReturn(0);
+        when(resultSet.getTimestamp("requestedTime")).thenReturn(Timestamp.valueOf(LocalDateTime.of(2018, 12, 10, 15, 3)));
+        when(resultSet.getString("fkUserNhi")).thenReturn("ABC1234");
+        when(resultSet.getString("fkStaffId")).thenReturn("0");
+        when(resultSet.getString("description")).thenReturn("A description");
+        when(resultSet.getInt("fkCategoryId")).thenReturn(1);
+        when(resultSet.getInt("fkStatusId")).thenReturn(1);
     }
 }

@@ -1,11 +1,9 @@
 package odms.commons.database;
 
-import odms.commons.database.db_strategies.AbstractUpdateStrategy;
-import odms.commons.database.db_strategies.AdminUpdateStrategy;
-import odms.commons.database.db_strategies.ClinicianUpdateStrategy;
-import odms.commons.database.db_strategies.UserUpdateStrategy;
+import odms.commons.database.db_strategies.*;
 import odms.commons.model.*;
 import odms.commons.model._enum.Organs;
+import odms.commons.model._enum.UserType;
 import odms.commons.model.datamodel.*;
 import odms.commons.utils.Log;
 import odms.commons.utils.PasswordManager;
@@ -112,7 +110,10 @@ public class DBHandler {
             "WHERE (nhi = ?) " +
             "AND organName = ?";
     private static final String SELECT_DEATH_DETAILS_STMT = "SELECT * FROM DeathDetails WHERE fkUserNhi = ?";
+    private static final String CREATE_APPOINTMENT_STMT = "INSERT INTO AppointmentDetails (fkUserNhi, fkStaffId, fkCategoryId, requestedTime, fkStatusId, description) VALUES (?,?,?,?,?,?)";
+
     private AbstractUpdateStrategy updateStrategy;
+    private AbstractFetchAppointmentStrategy fetchAppointmentStrategy;
 
 
     /**
@@ -234,6 +235,27 @@ public class DBHandler {
             }
         }
         return clinician;
+    }
+
+    /**
+     * Gets all the appointments from the database and converts it into a collection of appointments
+     *
+     * @param connection connection to the database
+     * @param id         identifier of the user
+     * @param type       UserType defining what user type it is.
+     * @param count      how many appointments to return
+     * @param start      how many appointments to skip before returning
+     * @return A collection of appointments
+     * @throws SQLException If there is an error with the database
+     */
+    public Collection<Appointment> getAppointments(Connection connection, String id, UserType type, int count, int start) throws SQLException {
+        if (type.equals(UserType.USER)) {
+            fetchAppointmentStrategy = new FetchUserAppointmentsStrategy();
+        } else if (type.equals(UserType.CLINICIAN)) {
+            fetchAppointmentStrategy = new FetchClincianAppointmentsStrategy();
+        }
+
+        return fetchAppointmentStrategy.getAppointments(connection, id, count, start);
     }
 
 
@@ -803,7 +825,7 @@ public class DBHandler {
     }
 
     /**
-     * finds a single Administrator and sets their deleted flag to true, then updates the Administrator on the db
+     * finds a single Administrator and sets their deleted flag to true, then updates the Administrator on the database
      *
      * @param connection connection to the target database
      * @param username   username of the Administrator to be deleted
@@ -841,7 +863,7 @@ public class DBHandler {
     }
 
     /**
-     * finds a single Clinician and sets their deleted flag to true, then updates the Clinician on the db
+     * finds a single Clinician and sets their deleted flag to true, then updates the Clinician on the database
      *
      * @param connection connection to the target database
      * @param staffId    staffId of the clinician to be deleted
@@ -875,7 +897,7 @@ public class DBHandler {
     }
 
     /**
-     * finds a single user and sets their deleted flag to true, then updates the user on the db
+     * finds a single user and sets their deleted flag to true, then updates the user on the database
      *
      * @param conn connection to the target database
      * @param nhi  nhi of the user to be deleted
@@ -1158,7 +1180,7 @@ public class DBHandler {
      * @param userId id of the wanted profile pictures owner
      * @param connection connection to the database
      * @return the content type header string
-     * @throws SQLException on a bad db connection
+     * @throws SQLException on a bad database connection
      */
     public String getFormat(Type t, String userId, Connection connection) throws SQLException {
 
@@ -1287,5 +1309,46 @@ public class DBHandler {
 
         }
         return null;
+    }
+
+
+    // TODO: move to somewhere more appropriate depending on how we are saving appointments
+    /**
+     * Creates a new appointment entry in the database
+     *
+     * @param connection  Connection to the target database
+     * @param appointment Appointment to create a database entry for
+     * @throws SQLException If there is an error storing the appointment into the database or the connection is invalid
+     */
+    public void postAppointment(Connection connection, Appointment appointment) throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(CREATE_APPOINTMENT_STMT)) {
+
+            preparedStatement.setString(1, appointment.getRequestingUser());
+            preparedStatement.setString(2, appointment.getRequestedClinician());
+            preparedStatement.setInt(3, appointment.getAppointmentCategory().getDbValue());
+            preparedStatement.setTimestamp(4, Timestamp.valueOf(appointment.getRequestedDate()));
+            preparedStatement.setInt(5, appointment.getAppointmentStatus().getDbValue());
+            preparedStatement.setString(6, appointment.getRequestDescription());
+            preparedStatement.executeUpdate();
+        }
+    }
+
+    /**
+     * Gets the unique identifier of the given appointment
+     *
+     * @param connection  Connection to the target database
+     * @param appointment Appointment that the unique identifier is from
+     * @throws SQLException If the entry does not exist or the connection is invalid
+     */
+    public int getAppointmentId(Connection connection, Appointment appointment) throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT apptId FROM AppointmentDetails WHERE requestedTime = ? AND fkStatusId = ?")) {
+
+            preparedStatement.setTimestamp(1, Timestamp.valueOf(appointment.getRequestedDate()));
+            preparedStatement.setInt(2, appointment.getAppointmentStatus().getDbValue());
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                resultSet.next();
+                return resultSet.getInt("apptId");
+            }
+        }
     }
 }

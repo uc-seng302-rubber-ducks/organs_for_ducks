@@ -1,6 +1,8 @@
 package odms.commons.model;
 
 import odms.commons.database.DBHandler;
+import odms.commons.model._enum.AppointmentCategory;
+import odms.commons.model._enum.AppointmentStatus;
 import odms.commons.model._enum.Organs;
 import odms.commons.model.datamodel.Address;
 import odms.commons.model.datamodel.DeathDetails;
@@ -259,4 +261,24 @@ public class DBHandlerTest {
         verify(mockStmt, times(11)).executeUpdate();
     }
 
+    @Test
+    public void testCreateAppointment() throws SQLException {
+        LocalDateTime testDate = LocalDateTime.now().plusDays(2);
+        Appointment testAppointment = new Appointment(testUser.getNhi(), testClinician.getStaffId(), AppointmentCategory.GENERAL_CHECK_UP, testDate, "Help", AppointmentStatus.PENDING);
+
+        dbHandler.postAppointment(connection, testAppointment);
+        verify(mockStmt, times(1)).executeUpdate();
+    }
+
+    @Test
+    public void testGetAppointmentId() throws SQLException {
+        LocalDateTime testDate = LocalDateTime.now().plusDays(2);
+        Appointment testAppointment = new Appointment(testUser.getNhi(), testClinician.getStaffId(), AppointmentCategory.GENERAL_CHECK_UP, testDate, "Help", AppointmentStatus.PENDING);
+
+        when(mockResultSet.getInt("apptId")).thenReturn(0);
+        int id = dbHandler.getAppointmentId(connection, testAppointment);
+        verify(mockStmt, times(1)).executeQuery();
+        Assert.assertEquals(0, id);
+
+    }
 }

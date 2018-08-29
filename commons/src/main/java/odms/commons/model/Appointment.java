@@ -13,11 +13,11 @@ import java.util.Objects;
  */
 public class Appointment {
 
-    private String appointmentId;
+    private int appointmentId;
 
-    private User requestingUser;
+    private String requestingUser;
 
-    private Clinician requestedClinician;
+    private String requestedClinician;
 
     private AppointmentCategory appointmentCategory;
 
@@ -39,43 +39,43 @@ public class Appointment {
 
     /**
      * Constructor for Appointment class. Must take every information type (except the boolean hasSeen) that is associated with an Appointment.
-     * @param requestingUser User requesting the appointment
-     * @param requestedClinician clinician being requested to have the appointment with
+     * @param requestingUserId User requesting the appointment
+     * @param requestedClinicianId clinician being requested to have the appointment with
      * @param appointmentCategory the generic type of the appointment
      * @param requestedDate date the appointment is requested to be on
      * @param requestDescription a more detailed description of the appointment, possibly including a reason why it was requested
      * @param appointmentStatus the status of the appointment. This can be pending, accepted, rejected, or cancelled.
      */
-    public Appointment(User requestingUser, Clinician requestedClinician, AppointmentCategory appointmentCategory, LocalDateTime requestedDate, String requestDescription, AppointmentStatus appointmentStatus) {
-        this.requestingUser = requestingUser;
-        this.requestedClinician = requestedClinician;
+    public Appointment(String requestingUserId, String requestedClinicianId, AppointmentCategory appointmentCategory, LocalDateTime requestedDate, String requestDescription, AppointmentStatus appointmentStatus) {
+        this.requestingUser = requestingUserId;
+        this.requestedClinician = requestedClinicianId;
         this.appointmentCategory = appointmentCategory;
         this.requestedDate = requestedDate;
         this.requestDescription = requestDescription;
         this.appointmentStatus = appointmentStatus;
     }
 
-    public String getAppointmentId() {
+    public int getAppointmentId() {
         return appointmentId;
     }
 
-    public void setAppointmentId(String appointmentId) {
+    public void setAppointmentId(int appointmentId) {
         this.appointmentId = appointmentId;
     }
 
-    public User getRequestingUser() {
+    public String getRequestingUser() {
         return requestingUser;
     }
 
-    public void setRequestingUser(User requestingUser) {
+    public void setRequestingUser(String requestingUser) {
         this.requestingUser = requestingUser;
     }
 
-    public Clinician getRequestedClinician() {
+    public String getRequestedClinician() {
         return requestedClinician;
     }
 
-    public void setRequestedClinician(Clinician requestedClinician) {
+    public void setRequestedClinician(String requestedClinician) {
         this.requestedClinician = requestedClinician;
     }
 
