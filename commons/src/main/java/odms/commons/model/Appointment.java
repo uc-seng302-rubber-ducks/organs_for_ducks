@@ -13,9 +13,9 @@ public class Appointment {
 
     private String appointmentId;
 
-    private User requestingUser;
+    private String requestingUserId;
 
-    private int requestedClinicianId;
+    private String requestedClinicianId;
 
     private AppointmentCategory appointmentCategory;
 
@@ -44,8 +44,8 @@ public class Appointment {
      * @param requestDescription a more detailed description of the appointment, possibly including a reason why it was requested
      * @param appointmentStatus the status of the appointment. This can be pending, accepted, rejected, or cancelled.
      */
-    public Appointment(User requestingUser, int requestedClinicianId, AppointmentCategory appointmentCategory, LocalDateTime requestedDate, String requestDescription, AppointmentStatus appointmentStatus) {
-        this.requestingUser = requestingUser;
+    public Appointment(String requestingUser, String requestedClinicianId, AppointmentCategory appointmentCategory, LocalDateTime requestedDate, String requestDescription, AppointmentStatus appointmentStatus) {
+        this.requestingUserId = requestingUser;
         this.requestedClinicianId = requestedClinicianId;
         this.appointmentCategory = appointmentCategory;
         this.requestedDate = requestedDate;
@@ -61,19 +61,19 @@ public class Appointment {
         this.appointmentId = appointmentId;
     }
 
-    public User getRequestingUser() {
-        return requestingUser;
+    public String getRequestingUserId() {
+        return requestingUserId;
     }
 
-    public void setRequestingUser(User requestingUser) {
-        this.requestingUser = requestingUser;
+    public void setRequestingUserId(String requestingUser) {
+        this.requestingUserId = requestingUser;
     }
 
-    public int getRequestedClinicianId() {
+    public String getRequestedClinicianId() {
         return requestedClinicianId;
     }
 
-    public void setRequestedClinicianId(int requestedClinicianId) {
+    public void setRequestedClinicianId(String requestedClinicianId) {
         this.requestedClinicianId = requestedClinicianId;
     }
 
