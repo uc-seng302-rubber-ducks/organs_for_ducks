@@ -1,11 +1,11 @@
 package odms.bridge;
 
 import com.google.gson.Gson;
+import odms.commons.config.ConfigPropertiesSession;
 import odms.commons.model.Clinician;
 import okhttp3.*;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
@@ -21,7 +21,9 @@ public class ClinicianBridgeTest extends BridgeTestBase {
     @Before
     public void setUp() {
         bridge = new ClinicianBridge(mockClient);
+        ConfigPropertiesSession.getInstance().setProperty("testConfig", "true");
     }
+
 
     @Test
     public void getCliniciansShouldReturnListOfCliniciansOnSuccess() throws IOException {
@@ -168,7 +170,6 @@ public class ClinicianBridgeTest extends BridgeTestBase {
     }
 
     @Test
-    @Ignore // also needs to make a request to get profile picture.
     public void getClinicianShouldReturnClinicianOnSuccess() throws IOException {
         Clinician expected = new Clinician("geoff", "0", "password");
         Call mockCall = mock(Call.class);

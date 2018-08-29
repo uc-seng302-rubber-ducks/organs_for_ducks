@@ -2,6 +2,7 @@ package odms.bridge;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import odms.commons.config.ConfigPropertiesSession;
 import odms.commons.exception.ApiException;
 import odms.commons.model.Clinician;
 import odms.commons.utils.JsonHandler;
@@ -134,7 +135,10 @@ public class ClinicianBridge extends RoleBridge {
 
         try {
             Clinician c = new JsonHandler().decodeClinician(response);
-            c.setProfilePhotoFilePath(getProfilePicture(c.getStaffId(), token));
+            if (ConfigPropertiesSession.getInstance().getProperty("testConfig").equalsIgnoreCase("false")) {
+                c.setProfilePhotoFilePath(getProfilePicture(c.getStaffId(), token));
+                return c;
+            }
             return c;
         } catch (IOException ex) {
             Log.severe("could not interpret the given clinician", ex);

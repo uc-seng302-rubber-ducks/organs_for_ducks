@@ -1,8 +1,6 @@
 package odms.GUITest2;
 
 import javafx.collections.FXCollections;
-import javafx.scene.Node;
-import javafx.scene.control.Button;
 import javafx.scene.control.TableView;
 import odms.App;
 import odms.TestUtils.AppControllerMocker;
@@ -13,7 +11,10 @@ import odms.commons.model.Disease;
 import odms.commons.model.User;
 import odms.commons.model.dto.UserOverview;
 import odms.controller.AppController;
-import org.junit.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 
@@ -28,14 +29,12 @@ import static odms.TestUtils.FxRobotHelper.*;
 import static odms.TestUtils.TableViewsMethod.getCell;
 import static odms.TestUtils.TableViewsMethod.getCellValue;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
-import static org.testfx.api.FxAssert.verifyThat;
 
-@Ignore
+
 public class NewDiseaseControllerGUITest extends ApplicationTest {
 
     DateTimeFormatter sdf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -114,7 +113,6 @@ public class NewDiseaseControllerGUITest extends ApplicationTest {
     }
 
     @Test
-    @Ignore
     public void createdDiseaseShouldBeInCurrentDiseaseTable() {
         clickOnButton(this,"#addDiseaseButton");
         setTextField(this,"#diseaseNameInput", "A1");
@@ -196,23 +194,4 @@ public class NewDiseaseControllerGUITest extends ApplicationTest {
         assertEquals("A0", getCellValue("#currentDiseaseTableView", 1, 0).toString());
 
     }
-
-    @Test @Ignore
-    public void generalUserShouldNotBeAbleToEditDiseases() {
-        clickOn("#userProfileTab");
-        clickOn("#fileMenuUser");
-        clickOn("#logoutUser");
-        clickOn("#fileMenuClinician");
-        clickOn("#logoutMenuClinician");
-        clickOn("#userIDTextField");
-        write("ABC1244", 0);
-        clickOn("#loginButton");
-        clickOn("#diseaseTab");
-        clickOn(getCell("#currentDiseaseTableView", 0, 0));
-        //These three should fail
-        assertFalse(lookup("#createDiseaseButton").queryAs(Button.class).isVisible());
-        verifyThat("#deleteDiseaseButton", Node::isVisible);
-        verifyThat("#addDiseaseButton", Node::isVisible);
-    }
-
 }

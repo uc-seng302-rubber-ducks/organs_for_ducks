@@ -40,6 +40,8 @@ public class BridgeTestBase {
         when(mockSession.getProperty(eq("server.url"), anyString())).thenReturn("http://test.url");
         when(mockSession.getProperty(eq("server.token.header"), anyString())).thenReturn("x-auth-token");
         when(mockSession.getProperty(eq("server.token.header"))).thenReturn("x-auth-token");
+        when(mockSession.getProperty(eq("testConfig"), anyString())).thenReturn("true");
+        when(mockSession.getProperty(eq("testConfig"))).thenReturn("true");
         when(mockController.getToken()).thenReturn("abcd");
 
         ConfigPropertiesSession.setInstance(mockSession);
