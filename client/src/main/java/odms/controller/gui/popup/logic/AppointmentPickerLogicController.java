@@ -1,11 +1,15 @@
 package odms.controller.gui.popup.logic;
 
+import javafx.application.Platform;
 import javafx.stage.Stage;
 import odms.commons.model.User;
 import odms.commons.model._enum.AppointmentCategory;
 import odms.controller.AppController;
+import odms.controller.gui.popup.utils.AlertWindowFactory;
 
 import java.time.LocalDate;
+
+import static odms.commons.utils.AttributeValidation.validateDateOfAppointment;
 
 public class AppointmentPickerLogicController {
 
@@ -28,7 +32,8 @@ public class AppointmentPickerLogicController {
     }
 
     /**
-     * Created a new appointment booking
+     * Created a new appointment booking. Creates a pop-up
+     * error window if input validation fails.
      *
      * @param date               desired date of appointment
      * @param type               category/type of appointment
@@ -38,6 +43,11 @@ public class AppointmentPickerLogicController {
      * created, false otherwise.
      */
     public boolean confirm(LocalDate date, AppointmentCategory type, String preferredClinician, String description) {
+        if(!validateDateOfAppointment(date)){
+            alertUser("Invalid Appointment Date! The earliest appointment date is tomorrow.");
+            return false;
+        }
+
         return false; //TODO: implement functionality -27/8
     }
 
@@ -47,5 +57,14 @@ public class AppointmentPickerLogicController {
      */
     public void cancel() {
         stage.close();
+    }
+
+    /**
+     * Alerts user with a alert window containing the given message
+     *
+     * @param message message to display to the user.
+     */
+    private void alertUser(String message) {
+        Platform.runLater(() -> AlertWindowFactory.generateError(message));
     }
 }
