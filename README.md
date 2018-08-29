@@ -61,6 +61,11 @@ The project should now be open.
  to run using the remote server, run the client using the included `start.sh` script. You may need to run `chmod +x ./start.sh` to make it executable.
  Please note that this script can be modified to use any server.
  
+ ##### command line arguments
+ all command line arguments must be preceeded with `--`.
+ 
+ Some example recognised commands are: `--server.websocket.url=ws://url.goes/here` or `--server.url=http://url.goes/here`
+ 
  #### Default logins
  An Internet connection is required to connect to the database, otherwise the application will fail to run smoothly.
  

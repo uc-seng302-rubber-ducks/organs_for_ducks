@@ -2,9 +2,11 @@ package odms.bridge;
 
 import com.google.gson.Gson;
 import odms.commons.model.Clinician;
-import odms.controller.AppController;
 import okhttp3.*;
-import org.junit.*;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
 import java.io.IOException;
@@ -12,24 +14,13 @@ import java.io.IOException;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-public class ClinicianBridgeTest {
+public class ClinicianBridgeTest extends BridgeTestBase {
 
     private ClinicianBridge bridge;
-    private OkHttpClient mockClient;
-    private AppController mockController;
 
     @Before
     public void setUp() {
-        mockClient = mock(OkHttpClient.class);
-        mockController = mock(AppController.class);
-        when(mockController.getToken()).thenReturn("abcd");
-        AppController.setInstance(mockController);
         bridge = new ClinicianBridge(mockClient);
-    }
-
-    @After
-    public void tearDown() {
-        AppController.setInstance(null);
     }
 
     @Test

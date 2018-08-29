@@ -44,7 +44,7 @@ public class OrganExpiryGUITest extends ApplicationTest {
 
     @BeforeClass
     public static void initialization() {
-        CommonTestMethods.runHeadless();
+        CommonTestMethods.runMethods();
     }
 
     @Before
@@ -78,7 +78,7 @@ public class OrganExpiryGUITest extends ApplicationTest {
         when(bridge.getUser(eq("ABC1244"))).thenReturn(testUser);
 
         FxToolkit.registerPrimaryStage();
-        FxToolkit.setupApplication(App.class);
+        FxToolkit.setupApplication(App.class, "--testConfig=true");
 
         AppController.getInstance().getUsers().clear();
         AppController.getInstance().getUsers().add(testUser);
