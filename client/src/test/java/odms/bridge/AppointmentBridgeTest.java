@@ -5,7 +5,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import odms.commons.model.Appointment;
 import odms.commons.model._enum.UserType;
-import odms.controller.AppController;
 import okhttp3.*;
 import org.junit.Before;
 import org.junit.Test;
@@ -17,18 +16,12 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-public class AppointmentBridgeTest {
+public class AppointmentBridgeTest extends BridgeTestBase {
 
     private AppointmentsBridge appointmentsBridge;
-    private OkHttpClient mockClient;
-    private AppController mockController;
 
     @Before
     public void setUp() {
-        mockClient = mock(OkHttpClient.class);
-        mockController = mock(AppController.class);
-        when(mockController.getToken()).thenReturn("abcd");
-        AppController.setInstance(mockController);
         appointmentsBridge = new AppointmentsBridge(mockClient, true);
     }
 
