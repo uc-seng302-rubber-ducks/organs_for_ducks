@@ -1,6 +1,7 @@
 package odms.bridge;
 
 import com.google.gson.Gson;
+import odms.commons.model.Appointment;
 import odms.commons.model.Clinician;
 import okhttp3.*;
 import org.junit.Assert;
@@ -10,6 +11,7 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
 import java.io.IOException;
+import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -185,5 +187,15 @@ public class ClinicianBridgeTest extends BridgeTestBase {
 
         Assert.assertEquals(expected, actual);
 
+    }
+
+    @Test
+    public void getAppointmentsShouldReturnNullOnFailToSend() throws IOException {
+        Call mockCall = mock(Call.class);
+        when(mockClient.newCall(any(Request.class))).thenReturn(mockCall);
+        when(mockCall.execute()).thenThrow(new IOException());
+
+        List<Appointment> result = bridge.getAppointments("0", "asdf");
+        Assert.assertNull(result);
     }
 }

@@ -3,6 +3,7 @@ package odms.bridge;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import odms.commons.exception.ApiException;
+import odms.commons.model.Appointment;
 import odms.commons.model.Clinician;
 import odms.commons.utils.JsonHandler;
 import odms.commons.utils.Log;
@@ -11,6 +12,7 @@ import odms.controller.AppController;
 import okhttp3.*;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ClinicianBridge extends RoleBridge {
@@ -204,6 +206,28 @@ public class ClinicianBridge extends RoleBridge {
                 response.close();
             }
         });
+    }
+
+    public List<Appointment> getAppointments(String staffId, String token) {
+        List<Appointment> results = new ArrayList<>();
+        String url = ip + CLINICIANS + staffId + "/appointments";
+        Request request = new Request.Builder().addHeader(tokenHeader, token).url(url).build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.warning("Failed to get appointments for " + staffId + ". On Failure Triggered", e);
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                ResponseBody body = response.body();
+                List<Appointment> appointments = new Gson().fromJson(body.string(), new TypeToken<List<Appointment>>() {
+                }.getType());
+                results.addAll(appointments);
+                response.close();
+            }
+        });
+        return results;
     }
 
 }
