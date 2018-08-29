@@ -130,10 +130,6 @@ public class Appointment {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Appointment appointment = (Appointment) o;
-        if (appointmentId == null || appointment.appointmentId == null) {
-            Log.warning("Trying to compare appointments when at least one does not have a unique id. Comparison failed.");
-            return false;
-        }
-        return appointmentId.equals(appointment.appointmentId);
+        return appointmentId == appointment.appointmentId;
     }
 }
