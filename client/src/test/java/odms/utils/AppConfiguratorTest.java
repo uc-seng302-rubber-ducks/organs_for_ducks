@@ -34,7 +34,7 @@ public class AppConfiguratorTest {
         namedParams.put("hello", "there");
         when(testParams.getNamed()).thenReturn(namedParams);
 
-        configurator.setupArguments(testParams);
+        configurator.setupArguments(testParams, null);
 
         verify(session, times(1)).setProperty("test", "value");
         verify(session, times(1)).setProperty("hello", "there");
