@@ -19,7 +19,7 @@ public class Bifrost {
 
     Bifrost(OkHttpClient client) {
         tokenHeader = ConfigPropertiesSession.getInstance().getProperty("server.token.header", "x-auth-token");
-        this.ip = ConfigPropertiesSession.getInstance().getProperty("server.url", "http://localhost:4941/odms/v1");
+        this.ip = ConfigPropertiesSession.getInstance().getProperty("server.url");
         this.client = client;
     }
 

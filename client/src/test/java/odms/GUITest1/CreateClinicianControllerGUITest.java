@@ -68,7 +68,7 @@ public class CreateClinicianControllerGUITest extends ApplicationTest {
 
 
         FxToolkit.registerPrimaryStage();
-        FxToolkit.setupApplication(App.class);
+        FxToolkit.setupApplication(App.class, "--testConfig=true");
         AppController.getInstance().getUsers().clear();
         AppController.getInstance().getClinicians().remove(AppController.getInstance().getClinician("Staff1"));
         clickOn("#administratorTab");
