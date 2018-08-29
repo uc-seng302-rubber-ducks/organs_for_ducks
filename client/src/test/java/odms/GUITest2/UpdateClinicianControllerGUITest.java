@@ -3,6 +3,7 @@ package odms.GUITest2;
 import javafx.scene.Node;
 import odms.App;
 import odms.TestUtils.AppControllerMocker;
+import odms.TestUtils.CommonTestMethods;
 import odms.bridge.*;
 import odms.commons.model.Clinician;
 import odms.commons.model.User;
@@ -43,7 +44,7 @@ public class UpdateClinicianControllerGUITest extends ApplicationTest {
 
     @BeforeClass
     public static void initialization() {
-        //CommonTestMethods.runMethods();
+        CommonTestMethods.runMethods();
     }
 
     @Before
