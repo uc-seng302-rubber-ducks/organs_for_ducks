@@ -13,7 +13,7 @@ import java.util.Objects;
  */
 public class Appointment {
 
-    private int appointmentId;
+    private Integer appointmentId;
 
     private String requestingUser;
 
@@ -55,7 +55,7 @@ public class Appointment {
         this.appointmentStatus = appointmentStatus;
     }
 
-    public int getAppointmentId() {
+    public Integer getAppointmentId() {
         return appointmentId;
     }
 

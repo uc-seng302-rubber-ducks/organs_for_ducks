@@ -218,9 +218,11 @@ public class ClinicianBridgeTest extends BridgeTestBase {
     public void getAppointmentsShouldReturnAppointmentsOnSuccess() throws IOException {
 
         User testUser = new User();
+        testUser.setNhi("ABC1234");
         Clinician testClinician = new Clinician();
-        Appointment testAppointment = new Appointment(testUser, testClinician, AppointmentCategory.BLOOD_TEST, LocalDateTime.now(), "test", AppointmentStatus.PENDING);
-        testAppointment.setAppointmentId("0");
+        testClinician.setStaffId("0");
+        Appointment testAppointment = new Appointment(testUser.getNhi(), testClinician.getStaffId(), AppointmentCategory.BLOOD_TEST, LocalDateTime.now(), "test", AppointmentStatus.PENDING);
+        testAppointment.setAppointmentId(0);
         List<Appointment> expected = new ArrayList<>();
         expected.add(testAppointment);
 
