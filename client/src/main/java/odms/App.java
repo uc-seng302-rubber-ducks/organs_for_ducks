@@ -37,7 +37,7 @@ public class App extends Application {
         //<editor-fold desc="config">
         ConfigPropertiesSession session = ConfigPropertiesSession.getInstance();
         AppConfigurator configurator = new AppConfigurator(session);
-        configurator.setupArguments(super.getParameters());
+        configurator.setupArguments(super.getParameters(), "clientConfig.properties");
         configurator.setupLogging(Environments.TEST);
 
 

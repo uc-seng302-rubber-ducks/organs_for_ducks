@@ -22,7 +22,7 @@ public class CreateUserControllerGUITest extends ApplicationTest {
 
     @BeforeClass
     public static void initialization() {
-        CommonTestMethods.runHeadless();
+        CommonTestMethods.runMethods();
     }
 
     @Before
@@ -31,7 +31,7 @@ public class CreateUserControllerGUITest extends ApplicationTest {
 
         AppController.setInstance(application);
         FxToolkit.registerPrimaryStage();
-        FxToolkit.setupApplication(App.class);
+        FxToolkit.setupApplication(App.class, "--testConfig=true");
         AppController.getInstance().getUsers().clear();
         clickOn("#signUpButton");
     }
