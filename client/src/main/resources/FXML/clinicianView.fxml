@@ -164,7 +164,7 @@
                         <fx:include fx:id="availableOrgansView" source="availableOrgansPanel.fxml" />
                     </content>
                 </Tab>
-            <Tab text="Appointment Requests">
+            <Tab text="Appointments">
               <content>
                   <fx:include fx:id="appointmentRequestsView" source="appointmentRequestsTabView.fxml" />
               </content>
