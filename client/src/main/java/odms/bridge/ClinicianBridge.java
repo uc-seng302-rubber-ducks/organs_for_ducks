@@ -45,25 +45,21 @@ public class ClinicianBridge extends RoleBridge {
         });
     }
 
-    public List<ComboBoxClinician> getBasicClinicians(String region) {
+    public List<ComboBoxClinician> getBasicClinicians(String region) throws IOException{
         List<ComboBoxClinician> returnList = new ArrayList<>();
-        String url = ip + "basic-clinicians/" + region;
+        String url = ip + "/basic-clinicians/" + region;
         Request request = new Request.Builder().url(url).build();
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                Log.warning("Failed to get clinicians. On Failure Triggered", e);
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                ResponseBody body = response.body();
+        Response response = client.newCall(request).execute();
+        if(response.isSuccessful()){
+            ResponseBody body = response.body();
+                if (body.contentLength() == 2 ) { //if it returns empty array
+                    return returnList;
+                }
                 List<ComboBoxClinician> clinicians = new Gson().fromJson(body.string(), new TypeToken<List<ComboBoxClinician>>() {
                 }.getType());
                 returnList.addAll(clinicians);
-                response.close();
-            }
-        });
+        }
+
         return returnList;
     }
 

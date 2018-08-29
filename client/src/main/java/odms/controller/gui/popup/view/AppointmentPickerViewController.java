@@ -8,8 +8,13 @@ import javafx.stage.Stage;
 import odms.commons.model.User;
 import odms.commons.model._enum.AppointmentCategory;
 import odms.commons.model.datamodel.ComboBoxClinician;
+import odms.commons.utils.Log;
 import odms.controller.AppController;
 import odms.controller.gui.popup.logic.AppointmentPickerLogicController;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class AppointmentPickerViewController {
     @FXML
@@ -43,9 +48,20 @@ public class AppointmentPickerViewController {
         this.appController = appController;
         this.logicController = new AppointmentPickerLogicController(user, stage, appController);
         appointmentBookingTypeInput.getItems().addAll(AppointmentCategory.values());
+        List<ComboBoxClinician> comboBoxClinicians = new ArrayList<>();
+        try {
+            comboBoxClinicians = appController.getClinicianBridge().getBasicClinicians(user.getRegion());
+        } catch (IOException e){
+            Log.severe("Unable to get preferred clinicians.", e);
+        }
 
-        for (ComboBoxClinician clinician :  appController.getClinicianBridge().getBasicClinicians(user.getRegion())) {
-            appointmentBookingPrefClinicianInput.getItems().add(clinician);
+        if(comboBoxClinicians.isEmpty()){
+            ComboBoxClinician defaultClinician = new ComboBoxClinician( "default", "0");
+            appointmentBookingPrefClinicianInput.getItems().add(defaultClinician);
+        } else {
+            for (ComboBoxClinician clinician : comboBoxClinicians) {
+                appointmentBookingPrefClinicianInput.getItems().add(clinician);
+            }
         }
     }
 
