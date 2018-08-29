@@ -200,7 +200,7 @@ public class ClinicianBridgeTest extends BridgeTestBase {
         when(mockClient.newCall(any(Request.class))).thenReturn(mockCall);
         when(mockCall.execute()).thenThrow(new IOException());
 
-        List<Appointment> result = bridge.getAppointments("0", "asdf");
+        List<Appointment> result = bridge.getAppointments(0,1,"0", "asdf");
         Assert.assertNull(result);
     }
 
@@ -210,7 +210,7 @@ public class ClinicianBridgeTest extends BridgeTestBase {
         when(mockClient.newCall(any(Request.class))).thenReturn(mockCall);
         when(mockCall.execute()).thenReturn(null);
 
-        List<Appointment> result = bridge.getAppointments("0", "asdf");
+        List<Appointment> result = bridge.getAppointments(0,1,"0", "asdf");
         Assert.assertNull(result);
     }
 
@@ -219,8 +219,8 @@ public class ClinicianBridgeTest extends BridgeTestBase {
 
         User testUser = new User();
         Clinician testClinician = new Clinician();
-        Appointment testAppointment = new Appointment(testUser, testClinician, AppointmentCategory.BLOOD_TEST, LocalDateTime.now(), "test", AppointmentStatus.PENDING);
-        testAppointment.setAppointmentId("0");
+        Appointment testAppointment = new Appointment(testUser.getNhi(), testClinician.getStaffId(), AppointmentCategory.BLOOD_TEST, LocalDateTime.now(), "test", AppointmentStatus.PENDING);
+        testAppointment.setAppointmentId(0);
         List<Appointment> expected = new ArrayList<>();
         expected.add(testAppointment);
 
@@ -234,7 +234,7 @@ public class ClinicianBridgeTest extends BridgeTestBase {
         when(mockResponse.body()).thenReturn(mockResponseBody);
         when(mockResponseBody.string()).thenReturn(new Gson().toJson(expected));
 
-        List<Appointment> actual = bridge.getAppointments("0", "asdf");
+        List<Appointment> actual = bridge.getAppointments(0,1,"0", "asdf");
 
         Assert.assertEquals(expected.get(0), actual.get(0));
 

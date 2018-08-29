@@ -209,9 +209,9 @@ public class ClinicianBridge extends RoleBridge {
         });
     }
 
-    public List<Appointment> getAppointments(String staffId, String token) {
+    public List<Appointment> getAppointments(int startIndex, int count, String staffId, String token) {
         List<Appointment> results = new ArrayList<>();
-        String url = ip + CLINICIANS + staffId + "/appointments";
+        String url = ip + CLINICIANS + staffId + "/appointments?startIndex=" + startIndex + "&count=" + count;
         Request request = new Request.Builder().addHeader(tokenHeader, token).url(url).build();
         try (Response response = client.newCall(request).execute()) {
             if (response == null) {
