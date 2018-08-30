@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
  */
 public class Appointment {
 
-    private String appointmentId;
+    private int appointmentId;
 
     private String requestingUserId;
 
@@ -37,15 +37,15 @@ public class Appointment {
 
     /**
      * Constructor for Appointment class. Must take every information type (except the boolean hasSeen) that is associated with an Appointment.
-     * @param requestingUser User requesting the appointment
+     * @param requestingUserId User requesting the appointment
      * @param requestedClinicianId clinician being requested to have the appointment with
      * @param appointmentCategory the generic type of the appointment
      * @param requestedDate date the appointment is requested to be on
      * @param requestDescription a more detailed description of the appointment, possibly including a reason why it was requested
      * @param appointmentStatus the status of the appointment. This can be pending, accepted, rejected, or cancelled.
      */
-    public Appointment(String requestingUser, String requestedClinicianId, AppointmentCategory appointmentCategory, LocalDateTime requestedDate, String requestDescription, AppointmentStatus appointmentStatus) {
-        this.requestingUserId = requestingUser;
+    public Appointment(String requestingUserId, String requestedClinicianId, AppointmentCategory appointmentCategory, LocalDateTime requestedDate, String requestDescription, AppointmentStatus appointmentStatus) {
+        this.requestingUserId = requestingUserId;
         this.requestedClinicianId = requestedClinicianId;
         this.appointmentCategory = appointmentCategory;
         this.requestedDate = requestedDate;
@@ -53,11 +53,11 @@ public class Appointment {
         this.appointmentStatus = appointmentStatus;
     }
 
-    public String getAppointmentId() {
+    public int getAppointmentId() {
         return appointmentId;
     }
 
-    public void setAppointmentId(String appointmentId) {
+    public void setAppointmentId(int appointmentId) {
         this.appointmentId = appointmentId;
     }
 
