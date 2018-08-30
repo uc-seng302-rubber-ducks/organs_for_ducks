@@ -48,7 +48,7 @@ public class AppointmentControllerTests {
 
         controller = new AppointmentController(manager, socketHandler);
         LocalDateTime testDate = LocalDateTime.now().plusDays(2);
-        testAppointment = new Appointment(testUser.getNhi(), testClinician.getStaffId(), AppointmentCategory.GENERAL_CHECK_UP, testDate, "Help", AppointmentStatus.PENDING);
+        testAppointment = new Appointment("ABC1234", "0", AppointmentCategory.GENERAL_CHECK_UP, testDate, "Help", AppointmentStatus.PENDING);
     }
 
     @Test
