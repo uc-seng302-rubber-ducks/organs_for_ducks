@@ -110,7 +110,6 @@ public class DBHandler {
             "WHERE (nhi = ?) " +
             "AND organName = ?";
     private static final String SELECT_DEATH_DETAILS_STMT = "SELECT * FROM DeathDetails WHERE fkUserNhi = ?";
-    private static final String CREATE_APPOINTMENT_STMT = "INSERT INTO AppointmentDetails (fkUserNhi, fkStaffId, fkCategoryId, requestedTime, fkStatusId, description) VALUES (?,?,?,?,?,?)";
 
     private AbstractUpdateStrategy updateStrategy;
     private AbstractFetchAppointmentStrategy fetchAppointmentStrategy;

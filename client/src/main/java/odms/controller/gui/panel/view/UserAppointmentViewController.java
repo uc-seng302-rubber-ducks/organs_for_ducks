@@ -1,6 +1,7 @@
 package odms.controller.gui.panel.view;
 
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
@@ -47,7 +48,11 @@ public class UserAppointmentViewController {
      * @param user          User that the panel belongs to
      */
     public void init(AppController appController, User user) {
-        logicController = new UserAppointmentLogicController(appController, user);
+        appointments.addListener((ListChangeListener<? super Appointment>) observable -> {
+            populateTable();
+        });
+
+        logicController = new UserAppointmentLogicController(appointments, appController, user);
         initUserAppointmentsTableView();
     }
 

@@ -60,6 +60,7 @@ public class AppointmentPickerViewController {
 
     @FXML
     public void confirm() {
+        // todo: validate fields exist before it cries
         logicController.confirm(
                 appointmentBookingDateInput.getValue(),
                 appointmentBookingTypeInput.getSelectionModel().getSelectedItem(), "0",
