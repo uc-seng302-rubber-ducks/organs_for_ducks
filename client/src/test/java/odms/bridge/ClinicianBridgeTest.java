@@ -1,6 +1,8 @@
 package odms.bridge;
 
 import com.google.gson.Gson;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import odms.commons.model.Appointment;
 import odms.commons.model.Clinician;
 import odms.commons.model.User;
@@ -12,11 +14,11 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
+import org.testfx.api.FxToolkit;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -195,27 +197,32 @@ public class ClinicianBridgeTest extends BridgeTestBase {
     }
 
     @Test
-    public void getAppointmentsShouldReturnNullOnFailToSend() throws IOException {
+    public void getAppointmentsShouldNotPopulateListOnFailToSend() throws IOException {
+        ObservableList<Appointment> testList = FXCollections.emptyObservableList();
         Call mockCall = mock(Call.class);
         when(mockClient.newCall(any(Request.class))).thenReturn(mockCall);
         when(mockCall.execute()).thenThrow(new IOException());
 
-        List<Appointment> result = bridge.getAppointments(0,1,"0", "asdf");
-        Assert.assertNull(result);
+        bridge.getAppointments(0,1,"0", "asdf", testList);
+        Assert.assertTrue(testList.isEmpty());
     }
 
     @Test
-    public void getAppointmentsShouldReturnNullOnNullResponse() throws IOException {
+    public void getAppointmentsShouldNotPopulateOnNullResponse() throws IOException {
+        ObservableList<Appointment> testList = FXCollections.emptyObservableList();
         Call mockCall = mock(Call.class);
         when(mockClient.newCall(any(Request.class))).thenReturn(mockCall);
         when(mockCall.execute()).thenReturn(null);
 
-        List<Appointment> result = bridge.getAppointments(0,1,"0", "asdf");
-        Assert.assertNull(result);
+        bridge.getAppointments(0,1,"0", "asdf", testList);
+        Assert.assertTrue(testList.isEmpty());
     }
 
     @Test
-    public void getAppointmentsShouldReturnAppointmentsOnSuccess() throws IOException {
+    public void getAppointmentsShouldReturnAppointmentsOnSuccess() throws Exception {
+        FxToolkit.registerPrimaryStage();
+        List<Appointment> someList = new ArrayList<>();
+        ObservableList<Appointment> testList = FXCollections.observableList(someList);
 
         User testUser = new User();
         testUser.setNhi("ABC1234");
@@ -226,6 +233,7 @@ public class ClinicianBridgeTest extends BridgeTestBase {
         List<Appointment> expected = new ArrayList<>();
         expected.add(testAppointment);
 
+        ArgumentCaptor<Callback> callbackCaptor = ArgumentCaptor.forClass(Callback.class);
         Call mockCall = mock(Call.class);
         Response mockResponse = mock(Response.class);
         ResponseBody mockResponseBody = mock(ResponseBody.class);
@@ -236,9 +244,16 @@ public class ClinicianBridgeTest extends BridgeTestBase {
         when(mockResponse.body()).thenReturn(mockResponseBody);
         when(mockResponseBody.string()).thenReturn(new Gson().toJson(expected));
 
-        List<Appointment> actual = bridge.getAppointments(0,1,"0", "asdf");
-
-        Assert.assertEquals(expected.get(0), actual.get(0));
+        bridge.getAppointments(0,1,"0", "asdf", testList);
+        verify(mockCall).enqueue(callbackCaptor.capture());
+        Callback callback = callbackCaptor.getValue();
+        callback.onResponse(mockCall, mockResponse);
+        try {
+            waitForRunLater();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        Assert.assertEquals(expected.get(0), testList.get(0));
 
     }
 
