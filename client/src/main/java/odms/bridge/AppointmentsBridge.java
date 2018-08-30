@@ -40,8 +40,8 @@ public class AppointmentsBridge extends Bifrost {
      * @param user     user's unique ID
      * @param userType UserType to determine whether they are a user, clinician or admin.
      */
-    public void getAppointments(int count, ObservableList<Appointment> toAddTo, String user, UserType userType) {
-        String url = String.format("%s%s?count=%d&user=%s&userType=%d", ip, APPOINTMENTS, count, user, userType.getValue());
+    public void getAppointments(int startIndex, int count, ObservableList<Appointment> toAddTo, String user, UserType userType) {
+        String url = String.format("%s%s?startIndex=%d&count=%d&user=%s&userType=%d", ip, APPOINTMENTS, startIndex, count, user, userType.getValue());
         Request request = new Request.Builder().url(url).build();
         client.newCall(request).enqueue(new Callback() {
             @Override

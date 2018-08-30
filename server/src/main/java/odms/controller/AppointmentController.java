@@ -5,6 +5,7 @@ import odms.commons.database.JDBCDriver;
 import odms.commons.database.db_strategies.AppointmentUpdateStrategy;
 import odms.commons.model.Appointment;
 import odms.commons.model._enum.EventTypes;
+import odms.commons.model._enum.UserType;
 import odms.commons.utils.Log;
 import odms.exception.ServerDBException;
 import odms.socket.SocketHandler;
@@ -38,9 +39,18 @@ public class AppointmentController extends BaseController {
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/appointments")
-    public Collection<Appointment> getAppointments(@RequestParam(name = "count") int count) {
+    public Collection<Appointment> getAppointments(@RequestParam(name = "startIndex") int startIndex,
+                                                   @RequestParam(name = "count") int count,
+                                                   @RequestParam(name = "user") String user,
+                                                   @RequestParam(name = "userType") int userType) {
         try (Connection connection = driver.getConnection()) {
-            return null; //TODO: Replace this when DB stuff is done. - E
+            UserType type = null;
+            for (UserType ut : UserType.values()) {
+                if (ut.getValue() == userType) type = ut;
+            }
+
+            Log.info("Getting all appointments for user " + user);
+            return handler.getAppointments(connection, user, type, count, startIndex);
         } catch (SQLException e) {
             Log.severe("Got bad response from DB. SQL error code: " + e.getErrorCode(), e);
             throw new ServerDBException(e);
@@ -48,7 +58,7 @@ public class AppointmentController extends BaseController {
     }
 
 
-    @RequestMapping(method = RequestMethod.POST, value = "/appointment")
+    @RequestMapping(method = RequestMethod.POST, value = "/appointments")
     public ResponseEntity postAppointment(@RequestBody Appointment newAppointment) {
         try (Connection connection = driver.getConnection()) {
             AppointmentUpdateStrategy appointmentStrategy = handler.getAppointmentStrategy();
