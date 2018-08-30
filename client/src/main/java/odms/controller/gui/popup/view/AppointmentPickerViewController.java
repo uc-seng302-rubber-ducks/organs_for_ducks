@@ -24,9 +24,6 @@ public class AppointmentPickerViewController {
     @FXML
     private TextArea appointmentBookingDescriptionInput;
 
-    private User user;
-    private Stage stage;
-    private AppController appController;
     private AppointmentPickerLogicController logicController;
 
 
@@ -38,9 +35,6 @@ public class AppointmentPickerViewController {
      * @param stage         The applications stage.
      */
     public void init(User user, Stage stage, AppController appController) {
-        this.stage = stage;
-        this.user = user;
-        this.appController = appController;
         this.logicController = new AppointmentPickerLogicController(user, stage, appController);
         appointmentBookingTypeInput.getItems().addAll(AppointmentCategory.values());
 
@@ -60,10 +54,10 @@ public class AppointmentPickerViewController {
 
     @FXML
     public void confirm() {
-        // todo: validate fields exist before it cries
+        // todo: change back to using the clinician combobox when it is populated properly
         logicController.confirm(
                 appointmentBookingDateInput.getValue(),
-                appointmentBookingTypeInput.getSelectionModel().getSelectedItem(), "0",
+                appointmentBookingTypeInput.getValue(), "0",
                 //appointmentBookingPrefClinicianInput.getValue().getId(),
                 appointmentBookingDescriptionInput.getText());
     }

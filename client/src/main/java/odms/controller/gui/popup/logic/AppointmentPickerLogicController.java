@@ -43,14 +43,26 @@ public class AppointmentPickerLogicController {
      * @param description        of appointment
      */
     public void confirm(LocalDate date, AppointmentCategory type, String preferredClinician, String description) {
+        String message = "";
         if (!validateDateOfAppointment(date)) {
-            alertUser("Invalid Appointment Date! The earliest appointment date is tomorrow.");
-            return;
+            message = "Invalid Appointment Date! The earliest appointment date is tomorrow.\n";
         }
 
-        Appointment appointment = new Appointment(user.getNhi(), preferredClinician, type, date.atStartOfDay(), description, AppointmentStatus.PENDING);
-        appController.getAppointmentsBridge().postAppointment(appointment);
-        stage.close();
+        if (type == null) {
+            message += "A category must be selected.\n";
+        }
+
+        if (description.isEmpty()) {
+            message += "A description must be provided.";
+        }
+
+        if (message.isEmpty()) {
+            Appointment appointment = new Appointment(user.getNhi(), preferredClinician, type, date.atStartOfDay(), description, AppointmentStatus.PENDING);
+            appController.getAppointmentsBridge().postAppointment(appointment);
+            stage.close();
+        } else {
+            alertUser(message);
+        }
     }
 
 
