@@ -1,9 +1,6 @@
 package odms.commons.database;
 
-import odms.commons.database.db_strategies.AbstractUpdateStrategy;
-import odms.commons.database.db_strategies.AdminUpdateStrategy;
-import odms.commons.database.db_strategies.ClinicianUpdateStrategy;
-import odms.commons.database.db_strategies.UserUpdateStrategy;
+import odms.commons.database.db_strategies.*;
 import odms.commons.model.*;
 import odms.commons.model._enum.Organs;
 import odms.commons.model.datamodel.*;
@@ -112,6 +109,7 @@ public class DBHandler {
             "WHERE (nhi = ?) " +
             "AND organName = ?";
     private static final String SELECT_DEATH_DETAILS_STMT = "SELECT * FROM DeathDetails WHERE fkUserNhi = ?";
+    private static final String CREATE_APPOINTMENT_STMT = "INSERT INTO AppointmentDetails (fkUserNhi, fkStaffId, fkCategoryId, requestedTime, fkStatusId, description) VALUES (?,?,?,?,?,?)";
     private AbstractUpdateStrategy updateStrategy;
 
 
@@ -1287,5 +1285,34 @@ public class DBHandler {
 
         }
         return null;
+    }
+
+    /**
+     * Gets a appointment strategy and returns it to the appointment controller
+     *
+     * @return An AppointmentUpdateStrategy
+     */
+    public AppointmentUpdateStrategy getAppointmentStrategy() {
+        return new AppointmentUpdateStrategy();
+    }
+
+
+    /**
+     * Gets the unique identifier of the given appointment
+     *
+     * @param connection  Connection to the target database
+     * @param appointment Appointment that the unique identifier is from
+     * @throws SQLException If the entry does not exist or the connection is invalid
+     */
+    public int getAppointmentId(Connection connection, Appointment appointment) throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT apptId FROM AppointmentDetails WHERE requestedTime = ? AND fkStatusId = ?")) {
+
+            preparedStatement.setTimestamp(1, Timestamp.valueOf(appointment.getRequestedDate()));
+            preparedStatement.setInt(2, appointment.getAppointmentStatus().getDbValue());
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                resultSet.next();
+                return resultSet.getInt("apptId");
+            }
+        }
     }
 }
