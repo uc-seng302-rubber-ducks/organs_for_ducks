@@ -122,7 +122,7 @@ public class Appointment {
     @Override
     public int hashCode() {
 
-        return Objects.hash(requestingUser, requestedClinician, appointmentCategory, requestedDate, requestDescription, appointmentStatus, seen);
+        return Objects.hash(requestingUserId, requestedClinicianId, appointmentCategory, requestedDate, requestDescription, appointmentStatus, seen);
     }
 
     @Override
