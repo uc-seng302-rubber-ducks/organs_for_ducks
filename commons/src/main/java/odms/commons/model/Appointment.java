@@ -116,4 +116,13 @@ public class Appointment {
     public void setSeen(boolean hasSeen) {
         this.seen = hasSeen;
     }
+
+    public String displayDetails() {
+        return "User Id: " + requestingUserId + "\n" +
+                "Clinician Id: " + requestedClinicianId + '\n' +
+                "Category: " + appointmentCategory + "\n" +
+                "Date/Time: " + requestedDate + "\n" +
+                "Status: " + appointmentStatus + "\n" +
+                "Description: " + requestDescription;
+    }
 }

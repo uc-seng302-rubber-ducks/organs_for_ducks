@@ -9,16 +9,16 @@
         <AnchorPane layoutX="455.0" prefHeight="735.0" prefWidth="332.0" AnchorPane.bottomAnchor="0.0"
                     AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
-                <Button fx:id="userCancelAppointmentButton" layoutY="702.0" mnemonicParsing="false"
+                <Button fx:id="userCancelAppointmentButton" layoutY="662.0" mnemonicParsing="false"
                         onAction="#cancelAppointment" prefHeight="25.0" prefWidth="152.0" text="Cancel Appointment"
-                        AnchorPane.bottomAnchor="8.0" AnchorPane.rightAnchor="180.0"/>
+                        AnchorPane.bottomAnchor="48.0" AnchorPane.rightAnchor="180.0"/>
                 <Label layoutX="10.0" layoutY="54.0" text="Appointment Details" AnchorPane.rightAnchor="170.0">
                     <font>
                         <Font name="System Bold" size="13.0"/>
                     </font>
                 </Label>
-                <TextArea fx:id="userAppointmentDetailsTextArea" disable="true" prefHeight="364.0" prefWidth="200.0"
-                          wrapText="true" AnchorPane.bottomAnchor="44.0" AnchorPane.leftAnchor="0.0"
+                <TextArea fx:id="userAppointmentDetailsTextArea" editable="false" prefHeight="566.0" prefWidth="324.0"
+                          wrapText="true" AnchorPane.bottomAnchor="90.0" AnchorPane.leftAnchor="0.0"
                           AnchorPane.rightAnchor="8.0" AnchorPane.topAnchor="79.0"/>
             </children>
         </AnchorPane>
@@ -28,8 +28,8 @@
                 <Button fx:id="requestAppointmentButton" layoutX="256.0" layoutY="17.0" mnemonicParsing="false"
                         onAction="#requestNewAppointment" prefHeight="25.0" prefWidth="194.0"
                         text="Request New Appointment" AnchorPane.rightAnchor="6.0" AnchorPane.topAnchor="17.0"/>
-                <TableView fx:id="userAppointmentsTableView" prefHeight="427.0" prefWidth="442.0"
-                           AnchorPane.bottomAnchor="8.0" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="6.0"
+                <TableView fx:id="userAppointmentsTableView" prefHeight="634.0" prefWidth="845.0"
+                           AnchorPane.bottomAnchor="49.0" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="6.0"
                            AnchorPane.topAnchor="52.0">
                     <columns>
                         <TableColumn fx:id="userAppointmentDateColumn" maxWidth="3000.0" prefWidth="103.0"
@@ -44,6 +44,15 @@
                         <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
                     </columnResizePolicy>
                 </TableView>
+                <HBox alignment="CENTER" layoutX="191.0" layoutY="696.0" prefHeight="25.0" prefWidth="492.0"
+                      AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="191.0" AnchorPane.rightAnchor="176.0">
+                    <children>
+                        <Button layoutX="322.0" layoutY="465.0" mnemonicParsing="false" onAction="#goToPreviousPage"
+                                text="&lt;&lt;"/>
+                        <Button layoutX="362.0" layoutY="465.0" mnemonicParsing="false" onAction="#goToNextPage"
+                                text="&gt;&gt;"/>
+                    </children>
+                </HBox>
             </children>
         </AnchorPane>
         <Label prefHeight="24.0" prefWidth="355.0" text="Appointments" AnchorPane.leftAnchor="14.0"

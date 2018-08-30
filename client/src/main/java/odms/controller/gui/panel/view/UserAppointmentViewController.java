@@ -105,6 +105,6 @@ public class UserAppointmentViewController {
      * @param appointment The selected appointment to be displayed in more detail
      */
     private void displayAppointmentDetails(Appointment appointment) {
-        userAppointmentDetailsTextArea.setText(appointment.toString());
+        userAppointmentDetailsTextArea.setText(appointment.displayDetails());
     }
 }
