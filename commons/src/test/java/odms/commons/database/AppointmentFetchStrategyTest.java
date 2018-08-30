@@ -70,8 +70,8 @@ public class AppointmentFetchStrategyTest {
     private void checkAppointment(Appointment appointment) {
         assertEquals((Integer)0, appointment.getAppointmentId());
         assertEquals(LocalDateTime.of(2018, 12, 10, 15, 3), appointment.getRequestedDate());
-        assertEquals("ABC1234", appointment.getRequestingUser());
-        assertEquals("0", appointment.getRequestedClinician());
+        assertEquals("ABC1234", appointment.getRequestingUserId());
+        assertEquals("0", appointment.getRequestedClinicianId());
         assertEquals(AppointmentCategory.BLOOD_TEST, appointment.getAppointmentCategory());
         assertEquals(AppointmentStatus.PENDING, appointment.getAppointmentStatus());
         assertEquals("A description", appointment.getRequestDescription());

@@ -18,8 +18,15 @@ public class AppointmentsBridge extends Bifrost {
 
     public AppointmentsBridge(OkHttpClient client) {
         super(client);
+        quiet = false;
     }
 
+    /**
+     * Constructor to create a new Appointments bridge
+     *
+     * @param client OkhttpClient to make the calls with.
+     * @param quiet  Determines if alert windows are shown if there is an error.
+     */
     public AppointmentsBridge(OkHttpClient client, boolean quiet) {
         this(client);
         this.quiet = quiet;
@@ -28,13 +35,12 @@ public class AppointmentsBridge extends Bifrost {
     /**
      * Gets all the appointments
      *
-     * @param client   OkHttp3Client to use to make the request
      * @param count    the number of results to return
      * @param toAddTo  Observable list to add to.
      * @param user     user's unique ID
      * @param userType UserType to determine whether they are a user, clinician or admin.
      */
-    public void getAppointments(OkHttpClient client, int count, ObservableList<Appointment> toAddTo, String user, UserType userType) {
+    public void getAppointments(int count, ObservableList<Appointment> toAddTo, String user, UserType userType) {
         String url = String.format("%s%s?count=%d&user=%s&userType=%d", ip, APPOINTMENTS, count, user, userType.getValue());
         Request request = new Request.Builder().url(url).build();
         client.newCall(request).enqueue(new Callback() {
@@ -58,10 +64,9 @@ public class AppointmentsBridge extends Bifrost {
     /**
      * Fire a post request to the server for creating appointments
      *
-     * @param client      OkHttp3Client object to use to send the request with
      * @param appointment Appointment to create
      */
-    public void postAppointment(OkHttpClient client, Appointment appointment) {
+    public void postAppointment(Appointment appointment) {
         String url = String.format("%s%s", ip, APPOINTMENTS);
         RequestBody body = RequestBody.create(json, new Gson().toJson(appointment));
         Request request = new Request.Builder().post(body).url(url).build();

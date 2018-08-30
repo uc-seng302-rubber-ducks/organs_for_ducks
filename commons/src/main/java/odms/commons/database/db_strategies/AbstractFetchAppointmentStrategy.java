@@ -32,8 +32,8 @@ public abstract class AbstractFetchAppointmentStrategy { //NOSONAR - can't conve
         Appointment appointment = new Appointment();
         appointment.setAppointmentId(results.getInt("apptId"));
         appointment.setRequestedDate(results.getTimestamp("requestedTime").toLocalDateTime());
-        appointment.setRequestedClinician(results.getString("fkStaffId"));
-        appointment.setRequestingUser(results.getString("fkUserNhi"));
+        appointment.setRequestedClinicianId(results.getString("fkStaffId"));
+        appointment.setRequestingUserId(results.getString("fkUserNhi"));
         appointment.setRequestDescription(results.getString("description"));
         for (AppointmentCategory category : AppointmentCategory.values()) {
             if (category.getDbValue() == results.getInt("fkCategoryId")) {

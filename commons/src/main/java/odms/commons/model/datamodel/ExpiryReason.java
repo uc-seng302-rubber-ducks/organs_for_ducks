@@ -57,4 +57,13 @@ public class ExpiryReason {
         this.name = name;
     }
 
+    @Override
+    public String toString() {
+        return "ExpiryReason{" +
+                "id='" + id + '\'' +
+                ", timeOrganExpired=" + timeOrganExpired +
+                ", reason='" + reason + '\'' +
+                ", name='" + name + '\'' +
+                '}';
+    }
 }
