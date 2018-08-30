@@ -16,13 +16,12 @@
 }
 
 .background {
-    -fx-background-color: rgb(206, 235, 253);
+    -fx-background-color: rgb(207, 252, 234);
 }
 
 .button {
-    -fx-text-fill: rgb(255, 255, 255);
+    -fx-text-fill: rgb(49, 89, 23);
     -fx-border-color: rgb(49, 89, 23);
-    -fx-background-color: rgb(14, 86, 241);
     -fx-border-radius: 5;
     -fx-padding: 3 6 6 6;
 }
@@ -34,7 +33,6 @@
     -fx-border-insets: -5;
 }
 
-
 .text-field {
     color: blue;
     -fx-background-color: rgb(200, 231, 210);
@@ -44,14 +42,14 @@
 
 .table-view {
     color: blue;
-    -fx-background-color: powderblue;
+    -fx-background-color: rgb(183, 250, 223);
 }
 
 .title-label {
     -fx-text-fill: white;
-    -fx-background-color: rgb(46, 109, 243);
+    -fx-background-color: rgb(8, 117, 122);
 }
 
 .title-bar {
-    -fx-background-color: rgb(46, 109, 243);
+    -fx-background-color: rgb(8, 117, 122);
 }
