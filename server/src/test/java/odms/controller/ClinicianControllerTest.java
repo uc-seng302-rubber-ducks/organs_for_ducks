@@ -71,9 +71,7 @@ public class ClinicianControllerTest {
 
     @Test
     public void testGetBasicClinicians() throws SQLException {
-        ComboBoxClinician testComboBoxClinician = new ComboBoxClinician();
-        testComboBoxClinician.setName("steven");
-        testComboBoxClinician.setId("13");
+        ComboBoxClinician testComboBoxClinician = new ComboBoxClinician("13", "steven");
 
         List<ComboBoxClinician> clinicians = new ArrayList<>();
         clinicians.add(testComboBoxClinician);

@@ -670,15 +670,14 @@ public class DBHandler {
             try (ResultSet resultSet = statement.executeQuery()) {
 
                 while (resultSet != null && resultSet.next()) {
-                    ComboBoxClinician clinician = new ComboBoxClinician();
-                    clinician.setId(resultSet.getString("staffId"));
                     String fullName = "";
                     fullName += resultSet.getString("firstName");
                     if (!resultSet.getString("middleName").equals("")) {
                         fullName += " " + resultSet.getString("middleName");
                     }
                     fullName += " " + resultSet.getString("lastName");
-                    clinician.setName(fullName);
+
+                    ComboBoxClinician clinician = new ComboBoxClinician(resultSet.getString("staffId"), fullName);
                     clinicians.add(clinician);
                 }
                 return clinicians;
