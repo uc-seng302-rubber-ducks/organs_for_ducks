@@ -7,7 +7,7 @@ import okhttp3.OkHttpClient;
 
 
 /**
- * Serves as a link between the client and the server
+ * Stores data for bridges
  */
 public class Bifrost {
 
