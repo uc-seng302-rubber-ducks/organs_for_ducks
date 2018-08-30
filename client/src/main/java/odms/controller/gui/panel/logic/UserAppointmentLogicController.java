@@ -20,6 +20,7 @@ public class UserAppointmentLogicController {
     private AppController appController;
     private User user;
     private ObservableList<Appointment> appointments;
+    private int startingIndex = 0;
 
     /**
      * Constructor to create a new logical instance of the controller
@@ -33,7 +34,7 @@ public class UserAppointmentLogicController {
         this.appController = appController;
         this.user = user;
 
-        updateTable();
+        updateTable(startingIndex);
     }
 
 
@@ -52,7 +53,7 @@ public class UserAppointmentLogicController {
             appointmentPickerStage.setScene(new Scene(root));
             appointmentPickerStage.showAndWait();
             Log.info("Successfully launched the appointment picker pop-up window for user: " + user.getNhi());
-            updateTable();
+            updateTable(startingIndex);
 
         } catch (IOException e) {
             Log.severe("Failed to load appointmentPicker pop-up window for user: " + user.getNhi(), e);
@@ -71,23 +72,33 @@ public class UserAppointmentLogicController {
     /**
      * Calls the database to get updated appointment entries
      */
-    public void updateTable() {
+    private void updateTable(int startIndex) {
         appointments.clear();
-        appController.getAppointmentsBridge().getAppointments(ROWS_PER_PAGE, appointments, user.getNhi(), UserType.USER);
+        appController.getAppointmentsBridge().getAppointments(startIndex, ROWS_PER_PAGE, appointments, user.getNhi(), UserType.USER);
     }
 
     /**
      * Goes to the previous page in the user's appointments table
      */
     public void goToPreviousPage() {
+        if (startingIndex - ROWS_PER_PAGE < 0) {
+            return;
+        }
 
+        startingIndex = startingIndex - ROWS_PER_PAGE;
+        updateTable(startingIndex);
     }
 
     /**
      * Goes to the next page in the user's appointments table
      */
     public void goToNextPage() {
+        if (appointments.size() < ROWS_PER_PAGE) {
+            return;
+        }
 
+        startingIndex = startingIndex + ROWS_PER_PAGE;
+        updateTable(startingIndex);
     }
 
 }

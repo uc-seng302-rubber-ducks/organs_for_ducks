@@ -39,7 +39,8 @@ public class AppointmentController extends BaseController {
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/appointments")
-    public Collection<Appointment> getAppointments(@RequestParam(name = "count") int count,
+    public Collection<Appointment> getAppointments(@RequestParam(name = "startIndex") int startIndex,
+                                                   @RequestParam(name = "count") int count,
                                                    @RequestParam(name = "user") String user,
                                                    @RequestParam(name = "userType") int userType) {
         try (Connection connection = driver.getConnection()) {
@@ -49,7 +50,7 @@ public class AppointmentController extends BaseController {
             }
 
             Log.info("Getting all appointments for user " + user);
-            return handler.getAppointments(connection, user, type, count, 0);
+            return handler.getAppointments(connection, user, type, count, startIndex);
         } catch (SQLException e) {
             Log.severe("Got bad response from DB. SQL error code: " + e.getErrorCode(), e);
             throw new ServerDBException(e);
