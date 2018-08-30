@@ -4,9 +4,7 @@ import com.google.gson.Gson;
 import odms.commons.exception.ApiException;
 import odms.commons.model.Administrator;
 import odms.commons.model.AdministratorBuilder;
-import odms.controller.AppController;
 import okhttp3.*;
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -17,24 +15,13 @@ import java.io.IOException;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
-public class AdministratorBridgeTest {
+public class AdministratorBridgeTest extends BridgeTestBase {
 
     private AdministratorBridge bridge;
-    private OkHttpClient mockClient;
-    private AppController mockController;
 
     @Before
     public void setUp() {
-        mockClient = mock(OkHttpClient.class);
-        mockController = mock(AppController.class);
-        when(mockController.getToken()).thenReturn("abcd");
-        AppController.setInstance(mockController);
         bridge = new AdministratorBridge(mockClient);
-    }
-
-    @After
-    public void tearDown() {
-        AppController.setInstance(null);
     }
 
     @Test

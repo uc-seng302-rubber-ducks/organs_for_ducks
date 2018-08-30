@@ -131,7 +131,7 @@ public class SQLScriptRunner {
         }
 
         try {
-            //connection = jdbcDriver.getConnection(); //TODO: need connection for production db. -19 july
+            //connection = jdbcDriver.getConnection(); //TODO: need connection for production database. -19 july
             runSqlScript(RESET_DATABASE_SCRIPT_FILEPATH, connection);
             populateCountriesTable(connection);
             connection.close();

@@ -4,8 +4,6 @@ import odms.commons.database.DBHandler;
 import odms.commons.database.JDBCDriver;
 import odms.commons.database.db_strategies.AppointmentUpdateStrategy;
 import odms.commons.model.Appointment;
-import odms.commons.model.Clinician;
-import odms.commons.model.User;
 import odms.commons.model._enum.AppointmentCategory;
 import odms.commons.model._enum.AppointmentStatus;
 import odms.exception.ServerDBException;
@@ -19,9 +17,7 @@ import org.springframework.http.ResponseEntity;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -49,11 +45,10 @@ public class AppointmentControllerTests {
         when(manager.getHandler()).thenReturn(handler);
         when(manager.getDriver()).thenReturn(driver);
         when(handler.getAppointmentStrategy()).thenReturn(strategy);
+
         controller = new AppointmentController(manager, socketHandler);
-        User testUser = new User("Jeff", LocalDate.parse("9/11/1997", DateTimeFormatter.ofPattern("d/M/yyyy")), "JEF1234");
-        Clinician testClinician = new Clinician("", "1234", "1234");
         LocalDateTime testDate = LocalDateTime.now().plusDays(2);
-        testAppointment = new Appointment(testUser, testClinician.getStaffId(), AppointmentCategory.GENERAL_CHECK_UP, testDate, "Help", AppointmentStatus.PENDING);
+        testAppointment = new Appointment("ABC1234", "0", AppointmentCategory.GENERAL_CHECK_UP, testDate, "Help", AppointmentStatus.PENDING);
     }
 
     @Test

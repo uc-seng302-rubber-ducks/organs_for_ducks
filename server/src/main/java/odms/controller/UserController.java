@@ -55,7 +55,7 @@ public class UserController extends BaseController {
             //converts each user in the collection to a userOverview and returns it
             return rawUsers.stream().map(UserOverview::fromUser).collect(Collectors.toList());
         } catch (SQLException ex) {
-            Log.warning("cannot load all user data from db", ex);
+            Log.warning("cannot load all user data from database", ex);
             throw new ServerDBException(ex);
         } finally {
             Log.info("Finished");
@@ -70,7 +70,7 @@ public class UserController extends BaseController {
             handler.saveUser(newUser, connection);
             socketHandler.broadcast(EventTypes.USER_UPDATE, newUser.getNhi(),newUser.getNhi());
         } catch (SQLException ex) {
-            Log.severe("cannot add new user to db", ex);
+            Log.severe("cannot add new user to database", ex);
             throw new ServerDBException(ex);
         } catch (IOException e) {
             Log.severe("cannot get user", e);
@@ -85,7 +85,7 @@ public class UserController extends BaseController {
             handler.saveUser(newUser, connection);
 
         } catch (SQLException ex) {
-            Log.severe("cannot add new user to db", ex);
+            Log.severe("cannot add new user to database", ex);
             throw new ServerDBException(ex);
         }
         return new ResponseEntity(HttpStatus.ACCEPTED);

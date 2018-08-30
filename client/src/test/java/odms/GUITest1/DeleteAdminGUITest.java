@@ -30,7 +30,7 @@ public class DeleteAdminGUITest extends ApplicationTest {
 
     @BeforeClass
     public static void initialization() {
-        CommonTestMethods.runHeadless();
+        CommonTestMethods.runMethods();
     }
 
     @Before
@@ -49,7 +49,7 @@ public class DeleteAdminGUITest extends ApplicationTest {
 
         AppController.setInstance(appC);
         FxToolkit.registerPrimaryStage();
-        FxToolkit.setupApplication(App.class);
+        FxToolkit.setupApplication(App.class, "--testConfig=true");
         AppController.getInstance().getAdmins().clear();
 
         clickOn("#administratorTab");
