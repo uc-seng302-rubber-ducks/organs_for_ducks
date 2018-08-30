@@ -59,7 +59,7 @@ public class AppointmentController extends BaseController {
             // TODO: still needs the client side broadcast implementation
 
         } catch (SQLException e) {
-            Log.severe("Cannot add new appointment to db", e);
+            Log.severe("Cannot add new appointment to database", e);
             throw new ServerDBException(e);
         } catch (IOException ex) {
             Log.warning("Failed to broadcast update after posting an appointment", ex);

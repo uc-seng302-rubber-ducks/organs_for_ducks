@@ -148,7 +148,7 @@ public class AdministratorBridge extends RoleBridge {
     /**
      * checks whether an admin exists in the database
      * @param username username to query for
-     * @return true if admin is in the db, false otherwise
+     * @return true if admin is in the database, false otherwise
      */
     public boolean getExists(String username) {
         Request request = new Request.Builder().get().url(ip + "/admins/exists/" + username).build();

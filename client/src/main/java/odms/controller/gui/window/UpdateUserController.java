@@ -13,6 +13,7 @@ import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Region;
 import javafx.stage.Stage;
+import odms.commons.config.ConfigPropertiesSession;
 import odms.commons.exception.InvalidFieldsException;
 import odms.commons.model.EmergencyContact;
 import odms.commons.model.User;
@@ -21,13 +22,10 @@ import odms.commons.utils.AttributeValidation;
 import odms.commons.utils.Log;
 import odms.controller.AppController;
 import odms.controller.gui.FileSelectorController;
-import org.apache.commons.lang.ObjectUtils;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.net.URL;
-import java.nio.Buffer;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -431,11 +429,13 @@ public class UpdateUserController {
             email.setText("");
         }
 
-        if (user.getProfilePhotoFilePath() == null || user.getProfilePhotoFilePath().equals("")) {
-            URL url = getClass().getResource("/default-profile-picture.jpg");
-            displayImage(profileImage, url);
-        } else {
-            displayImage(profileImage, user.getProfilePhotoFilePath());
+        if (ConfigPropertiesSession.getInstance().getProperty("testConfig", "false").equals("false")) {
+            if (user.getProfilePhotoFilePath() == null || user.getProfilePhotoFilePath().equals("")) {
+                URL url = getClass().getResource("/default-profile-picture.jpg");
+                displayImage(profileImage, url);
+            } else {
+                displayImage(profileImage, user.getProfilePhotoFilePath());
+            }
         }
 
         String ecRegion = user.getRegion() == null ? "" : user.getContact().getRegion();

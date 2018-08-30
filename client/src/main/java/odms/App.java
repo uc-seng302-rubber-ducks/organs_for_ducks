@@ -15,6 +15,7 @@ import odms.commons.model._enum.Environments;
 import odms.commons.utils.Log;
 import odms.controller.AppController;
 import odms.controller.gui.window.LoginController;
+import utils.AppConfigurator;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -25,37 +26,26 @@ import java.util.Optional;
 public class App extends Application {
 
     public static void main(String[] args) {
-        getProperties(args);
         launch(args);
     }
 
-    /**
-     * reads the command line args and and adds them to the ConfigPropertiesSession
-     *
-     * @param args arguments to interpret
-     */
-    protected static void getProperties(String[] args) {
-        ConfigPropertiesSession session = ConfigPropertiesSession.getInstance();
-        session.loadFromFile("clientConfig.properties");
-        if (args == null || args.length == 0) {
-            return;
-        }
-        for (String arg : args) {
-            String[] split = arg.split("=");
-            if (split.length == 2) {
-                session.setProperty(split[0], split[1]);
-            } else {
-                Log.warning("bad commandline arg \"" + arg + "\" has been ignored");
-            }
-        }
-    }
+
 
     @Override
     public void start(Stage primaryStage) throws Exception {
 
-        Log.setup(Environments.TEST);
+        //<editor-fold desc="config">
+        ConfigPropertiesSession session = ConfigPropertiesSession.getInstance();
+        AppConfigurator configurator = new AppConfigurator(session);
+        configurator.setupArguments(super.getParameters(), "clientConfig.properties");
+        configurator.setupLogging(Environments.TEST);
 
-        //<editor-fold desc="fxml setup">
+
+        AppController controller = AppController.getInstance();
+        configurator.setupWebsocket(controller);
+        //</editor-fold>
+
+        //<editor-fold desc="fxml setupArguments">
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML/loginView.fxml"));
         Parent root = null;
         try {
@@ -67,7 +57,6 @@ public class App extends Application {
         primaryStage.setScene(new Scene(root));
         primaryStage.setMinHeight(420);
         primaryStage.setMinWidth(600);
-        AppController controller = AppController.getInstance();
         controller.getAllowedCountries();
         //</editor-fold>
 
@@ -92,7 +81,7 @@ public class App extends Application {
             }
 
         });
-        AppController.getInstance().getSocketHandler().start(ConfigPropertiesSession.getInstance().getProperty("server.websocket.url", "ws://localhost:4941/websocket"));
+
         loginController.init(controller, primaryStage);
         primaryStage.show();
     }
