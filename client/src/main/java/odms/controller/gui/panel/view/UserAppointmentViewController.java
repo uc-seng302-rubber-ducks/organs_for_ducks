@@ -107,4 +107,20 @@ public class UserAppointmentViewController {
     private void displayAppointmentDetails(Appointment appointment) {
         userAppointmentDetailsTextArea.setText(appointment.displayDetails());
     }
+
+    /**
+     * @see UserAppointmentLogicController goToPreviousPage()
+     */
+    @FXML
+    public void goToPreviousPage() {
+        logicController.goToPreviousPage();
+    }
+
+    /**
+     * @see UserAppointmentLogicController goToNextPage()
+     */
+    @FXML
+    public void goToNextPage() {
+        logicController.goToNextPage();
+    }
 }

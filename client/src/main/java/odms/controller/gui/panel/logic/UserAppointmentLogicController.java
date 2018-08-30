@@ -76,6 +76,18 @@ public class UserAppointmentLogicController {
         appController.getAppointmentsBridge().getAppointments(ROWS_PER_PAGE, appointments, user.getNhi(), UserType.USER);
     }
 
-    // todo: add pagination
+    /**
+     * Goes to the previous page in the user's appointments table
+     */
+    public void goToPreviousPage() {
+
+    }
+
+    /**
+     * Goes to the next page in the user's appointments table
+     */
+    public void goToNextPage() {
+
+    }
 
 }
