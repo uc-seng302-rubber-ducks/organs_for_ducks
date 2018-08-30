@@ -74,7 +74,7 @@ public class UserAppointmentLogicController {
      */
     private void updateTable(int startIndex) {
         appointments.clear();
-        appController.getAppointmentsBridge().getAppointments(startIndex, ROWS_PER_PAGE, appointments, user.getNhi(), UserType.USER);
+        appController.getAppointmentsBridge().getAppointments(ROWS_PER_PAGE, startIndex, appointments, user.getNhi(), UserType.USER);
     }
 
     /**
