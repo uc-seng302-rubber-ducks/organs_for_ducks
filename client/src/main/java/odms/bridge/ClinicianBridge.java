@@ -135,7 +135,7 @@ public class ClinicianBridge extends RoleBridge {
 
         try {
             Clinician c = new JsonHandler().decodeClinician(response);
-            if (ConfigPropertiesSession.getInstance().getProperty("testConfig").equalsIgnoreCase("false")) {
+            if (ConfigPropertiesSession.getInstance().getProperty("testConfig", "false").equalsIgnoreCase("false")) {
                 c.setProfilePhotoFilePath(getProfilePicture(c.getStaffId(), token));
                 return c;
             }

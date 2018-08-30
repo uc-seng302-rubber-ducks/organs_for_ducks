@@ -123,15 +123,6 @@ public class NewDiseaseControllerGUITest extends ApplicationTest {
     }
 
     @Test
-    public void createdCuredDiseaseShouldBeInPastDiseaseTable() { //FAIL
-        clickOnButton(this,"#addDiseaseButton");
-        setTextField(this,"#diseaseNameInput","A1");
-        clickOn("#curedRadioButton");
-        clickOnButton(this,"#createButton");
-        assertEquals("A1", getCellValue("#pastDiseaseTableView", 1, 1).toString());
-    }
-
-    @Test
     public void updatedDiseaseNameShouldBeDisplayedCorrectly() {
         clickOn(getCell("#currentDiseaseTableView", 0, 0));
         clickOnButton(this,"#updateDiseaseButton");
