@@ -2,6 +2,7 @@ package odms.bridge;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import odms.TestUtils.CommonTestMethods;
 import odms.commons.exception.ApiException;
 import odms.commons.model._enum.Organs;
 import odms.commons.model.datamodel.AvailableOrganDetail;
@@ -96,22 +97,29 @@ public class OrganBridgeTest extends BridgeTestBase {
     @Test
     public void getAvailableOrgansShouldAddToObservableListOnValidResponse() throws Exception {
         //initialise toolkit so platform.runlater works
+        CommonTestMethods.runHeadless();
         FxToolkit.registerPrimaryStage();
+        try {
+            List<AvailableOrganDetail> dummyList = Collections.singletonList(new AvailableOrganDetail());
+            ArgumentCaptor<Callback> callbackCaptor = ArgumentCaptor.forClass(Callback.class);
+            Call mockCall = mock(Call.class);
+            when(mockClient.newCall(any(Request.class))).thenReturn(mockCall);
+            ObservableList<AvailableOrganDetail> mockList = mock(ObservableList.class);
 
-        ArgumentCaptor<Callback> callbackCaptor = ArgumentCaptor.forClass(Callback.class);
-        Call mockCall = mock(Call.class);
-        when(mockClient.newCall(any(Request.class))).thenReturn(mockCall);
-        ObservableList<AvailableOrganDetail> mockList = mock(ObservableList.class);
+            //run method and catch the callback
+            bridge.getAvailableOrgansList(0, 10, null, null, null, null, null, mockList);
+            verify(mockCall).enqueue(callbackCaptor.capture());
+            Callback callback = callbackCaptor.getValue();
 
-        //run method and catch the callback
-        bridge.getAvailableOrgansList(0, 10, null, null, null, null, null, mockList);
-        verify(mockCall).enqueue(callbackCaptor.capture());
-        Callback callback = callbackCaptor.getValue();
+            //run the callback and check output
+            callback.onResponse(mockCall, jsonResponseMock(dummyList, 200));
+            waitForRunLater();
+            verify(mockList, times(1)).addAll(any(List.class));
 
-        //run the callback and check output
-        callback.onResponse(mockCall, jsonResponseMock(Collections.singletonList(new AvailableOrganDetail()), 200));
-        waitForRunLater();
-        verify(mockList, times(1)).addAll(any(List.class));
+        } finally {
+            FxToolkit.cleanupStages();
+        }
+
 
     }
 
@@ -133,22 +141,26 @@ public class OrganBridgeTest extends BridgeTestBase {
     @Test
     public void getMatchingOrgansShouldAddToObservableListOnValidResponse() throws Exception {
         //initialise toolkit so platform.runlater works
+        CommonTestMethods.runHeadless();
         FxToolkit.registerPrimaryStage();
+        try {
+            ArgumentCaptor<Callback> callbackCaptor = ArgumentCaptor.forClass(Callback.class);
+            Call mockCall = mock(Call.class);
+            when(mockClient.newCall(any(Request.class))).thenReturn(mockCall);
+            ObservableList<TransplantDetails> mockList = mock(ObservableList.class);
 
-        ArgumentCaptor<Callback> callbackCaptor = ArgumentCaptor.forClass(Callback.class);
-        Call mockCall = mock(Call.class);
-        when(mockClient.newCall(any(Request.class))).thenReturn(mockCall);
-        ObservableList<TransplantDetails> mockList = mock(ObservableList.class);
+            //run method and catch the callback
+            bridge.getMatchingOrgansList(0, 15, "TES4321",
+                    new AvailableOrganDetail(Organs.HEART, "", LocalDateTime.now(), "", "", Long.valueOf("0")), mockList);
+            verify(mockCall).enqueue(callbackCaptor.capture());
+            Callback callback = callbackCaptor.getValue();
 
-        //run method and catch the callback
-        bridge.getMatchingOrgansList(0, 15, "TES4321",
-                new AvailableOrganDetail(Organs.HEART, "", LocalDateTime.now(), "", "", Long.valueOf("0")), mockList);
-        verify(mockCall).enqueue(callbackCaptor.capture());
-        Callback callback = callbackCaptor.getValue();
-
-        //run the callback and check output
-        callback.onResponse(mockCall, jsonResponseMock(Collections.singletonList(mock(TransplantDetails.class)), 200));
-        waitForRunLater();
-        verify(mockList, times(1)).addAll(any(List.class));
+            //run the callback and check output
+            callback.onResponse(mockCall, jsonResponseMock(Collections.singletonList(mock(TransplantDetails.class)), 200));
+            waitForRunLater();
+            verify(mockList, times(1)).addAll(any(List.class));
+        } finally {
+            FxToolkit.cleanupStages();
+        }
     }
 }
