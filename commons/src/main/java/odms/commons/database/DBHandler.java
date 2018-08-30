@@ -1311,27 +1311,15 @@ public class DBHandler {
         return null;
     }
 
-
-    // TODO: move to somewhere more appropriate depending on how we are saving appointments
     /**
-     * Creates a new appointment entry in the database
+     * Gets a appointment strategy and returns it to the appointment controller
      *
-     * @param connection  Connection to the target database
-     * @param appointment Appointment to create a database entry for
-     * @throws SQLException If there is an error storing the appointment into the database or the connection is invalid
+     * @return An AppointmentUpdateStrategy
      */
-    public void postAppointment(Connection connection, Appointment appointment) throws SQLException {
-        try (PreparedStatement preparedStatement = connection.prepareStatement(CREATE_APPOINTMENT_STMT)) {
-
-            preparedStatement.setString(1, appointment.getRequestingUser());
-            preparedStatement.setString(2, appointment.getRequestedClinician());
-            preparedStatement.setInt(3, appointment.getAppointmentCategory().getDbValue());
-            preparedStatement.setTimestamp(4, Timestamp.valueOf(appointment.getRequestedDate()));
-            preparedStatement.setInt(5, appointment.getAppointmentStatus().getDbValue());
-            preparedStatement.setString(6, appointment.getRequestDescription());
-            preparedStatement.executeUpdate();
-        }
+    public AppointmentUpdateStrategy getAppointmentStrategy() {
+        return new AppointmentUpdateStrategy();
     }
+
 
     /**
      * Gets the unique identifier of the given appointment

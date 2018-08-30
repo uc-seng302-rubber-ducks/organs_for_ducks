@@ -31,7 +31,7 @@ public class UndoUserUpdateFormGUITest extends ApplicationTest {
 
     @BeforeClass
     public static void initialization() {
-        CommonTestMethods.runHeadless();
+        CommonTestMethods.runMethods();
     }
 
     @Before
@@ -59,7 +59,7 @@ public class UndoUserUpdateFormGUITest extends ApplicationTest {
         AppController.getInstance().getUsers().add(user);
 
         FxToolkit.registerPrimaryStage();
-        FxToolkit.setupApplication(App.class);
+        FxToolkit.setupApplication(App.class, "--testConfig=true");
 
 
         setTextField(this, "#userIDTextField","ABC1234");

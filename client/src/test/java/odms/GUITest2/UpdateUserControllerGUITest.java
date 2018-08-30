@@ -29,7 +29,7 @@ public class UpdateUserControllerGUITest extends ApplicationTest {
 
     @BeforeClass
     public static void initialization() {
-        CommonTestMethods.runHeadless();
+        CommonTestMethods.runMethods();
     }
 
     @Before
@@ -55,7 +55,7 @@ public class UpdateUserControllerGUITest extends ApplicationTest {
         doCallRealMethod().when(application).getUserController();
 
         FxToolkit.registerPrimaryStage();
-        FxToolkit.setupApplication(App.class);
+        FxToolkit.setupApplication(App.class, "--testConfig=true");
         AppController.getInstance().getUsers().clear();
         AppController.getInstance().getUsers().add(user);
 

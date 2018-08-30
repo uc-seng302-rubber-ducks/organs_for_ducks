@@ -2,6 +2,7 @@ package odms.controller;
 
 import odms.commons.database.DBHandler;
 import odms.commons.database.JDBCDriver;
+import odms.commons.database.db_strategies.AppointmentUpdateStrategy;
 import odms.commons.model.Appointment;
 import odms.commons.model._enum.EventTypes;
 import odms.commons.utils.Log;
@@ -50,7 +51,8 @@ public class AppointmentController extends BaseController {
     @RequestMapping(method = RequestMethod.POST, value = "/appointment")
     public ResponseEntity postAppointment(@RequestBody Appointment newAppointment) {
         try (Connection connection = driver.getConnection()) {
-            handler.postAppointment(connection, newAppointment);
+            AppointmentUpdateStrategy appointmentStrategy = handler.getAppointmentStrategy();
+            appointmentStrategy.postSingleAppointment(connection, newAppointment);
 
             String appointmentId = Integer.toString(handler.getAppointmentId(connection, newAppointment));
             socketHandler.broadcast(EventTypes.APPOINTMENT_UPDATE, appointmentId, appointmentId);
