@@ -8,15 +8,13 @@ import odms.commons.model._enum.EventTypes;
 import odms.commons.model._enum.UserType;
 import odms.commons.utils.Log;
 import odms.exception.ServerDBException;
+import odms.security.IsClinician;
 import odms.socket.SocketHandler;
 import odms.utils.DBManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -38,19 +36,25 @@ public class AppointmentController extends BaseController {
         this.socketHandler = socketHandler;
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/appointments")
-    public Collection<Appointment> getAppointments(@RequestParam(name = "startIndex") int startIndex,
-                                                   @RequestParam(name = "count") int count,
-                                                   @RequestParam(name = "user") String user,
-                                                   @RequestParam(name = "userType") int userType) {
+    @RequestMapping(method = RequestMethod.GET, value = "/users/{nhi}/appointments")
+    public Collection<Appointment> getUserAppointments(@RequestParam(name = "count") int count,
+                                                   @RequestParam(name = "startIndex") int start,
+                                                   @PathVariable(name = "nhi") String nhi) {
         try (Connection connection = driver.getConnection()) {
-            UserType type = null;
-            for (UserType ut : UserType.values()) {
-                if (ut.getValue() == userType) type = ut;
-            }
+            return handler.getAppointments(connection, nhi, UserType.USER, count, start);
+        } catch (SQLException e) {
+            Log.severe("Got bad response from DB. SQL error code: " + e.getErrorCode(), e);
+            throw new ServerDBException(e);
+        }
+    }
 
-            Log.info("Getting all appointments for user " + user);
-            return handler.getAppointments(connection, user, type, count, startIndex);
+    @IsClinician
+    @RequestMapping(method = RequestMethod.GET, value = "/clinicians/{staffId}/appointments")
+    public Collection<Appointment> getClinicianAppointments(@RequestParam(name = "count") int count,
+                                                   @RequestParam(name = "startIndex") int start,
+                                                   @PathVariable(name = "staffId") String staffId) {
+        try (Connection connection = driver.getConnection()) {
+            return handler.getAppointments(connection, staffId, UserType.CLINICIAN, count, start);
         } catch (SQLException e) {
             Log.severe("Got bad response from DB. SQL error code: " + e.getErrorCode(), e);
             throw new ServerDBException(e);
