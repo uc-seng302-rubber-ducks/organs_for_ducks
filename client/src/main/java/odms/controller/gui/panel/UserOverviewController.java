@@ -121,6 +121,7 @@ public class UserOverviewController {
      * @param user The current user.
      */
     public void showUser(User user) {
+        currentUser = user;
         NHIValue.setText(user.getNhi());
         fNameValue.setText(user.getFirstName());
         DOBValue.setText(user.getDateOfBirth().toString());
