@@ -1,11 +1,14 @@
 package odms.bridge;
 
+import javafx.application.Platform;
 import odms.TestUtils.AppControllerMocker;
 import odms.commons.config.ConfigPropertiesSession;
 import odms.controller.AppController;
 import okhttp3.OkHttpClient;
 import org.junit.After;
 import org.junit.Before;
+
+import java.util.concurrent.Semaphore;
 
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
@@ -50,5 +53,16 @@ public class BridgeTestBase {
     public void after() {
         AppController.setInstance(null);
         ConfigPropertiesSession.setInstance(null);
+    }
+
+    /**
+     * helper function to wait for a Platform.runLater call (often used for populating lists)
+     * stolen from stack overflow.
+     * @throws InterruptedException if the thread is interrupted
+     */
+    void waitForRunLater() throws InterruptedException {
+        Semaphore semaphore = new Semaphore(0);
+        Platform.runLater(semaphore::release);
+        semaphore.acquire();
     }
 }
