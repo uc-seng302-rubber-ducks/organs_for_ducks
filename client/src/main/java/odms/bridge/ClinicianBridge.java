@@ -54,9 +54,11 @@ public class ClinicianBridge extends RoleBridge {
             ResponseBody body = response.body();
             if (body == null) {
                 Log.warning("The response body was null");
+                response.close();
                 return returnList;
             }
             if (body.contentLength() == 2) { //if it returns empty array
+                response.close();
                 return returnList;
             }
             List<ComboBoxClinician> clinicians = new Gson().fromJson(body.string(), new TypeToken<List<ComboBoxClinician>>() {

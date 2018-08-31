@@ -63,7 +63,7 @@ public class UserAppointmentViewController {
     private void initUserAppointmentsTableView() {
         userAppointmentDateColumn.setCellValueFactory(new PropertyValueFactory<>("requestedDate"));
         userAppointmentCategoryColumn.setCellValueFactory(new PropertyValueFactory<>("appointmentCategory"));
-        userAppointmentClinicianIdColumn.setCellValueFactory(new PropertyValueFactory<>("requestedClinician"));
+        userAppointmentClinicianIdColumn.setCellValueFactory(new PropertyValueFactory<>("requestedClinicianId"));
         userAppointmentStatusColumn.setCellValueFactory(new PropertyValueFactory<>("appointmentStatus"));
         populateTable();
         // TODO sort by status 28/08/2018

@@ -75,8 +75,8 @@ public class AppointmentPickerViewController {
         // todo: validate fields exist before it cries
         logicController.confirm(
                 appointmentBookingDateInput.getValue(),
-                appointmentBookingTypeInput.getSelectionModel().getSelectedItem(), "0",
-                //appointmentBookingPrefClinicianInput.getValue().getId(),
+                appointmentBookingTypeInput.getSelectionModel().getSelectedItem(),
+                appointmentBookingPrefClinicianInput.getValue().getId(),
                 appointmentBookingDescriptionInput.getText());
     }
 
