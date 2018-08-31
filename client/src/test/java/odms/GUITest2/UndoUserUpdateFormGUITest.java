@@ -47,7 +47,7 @@ public class UndoUserUpdateFormGUITest extends ApplicationTest {
         User user = new User("Frank", LocalDate.now().minusDays(2), "ABC1234");
         user.setPreferredFirstName("Frank");
         user.setDateOfDeath(LocalDate.now());
-        user.setContact(new EmergencyContact("", "", "0187878"));
+        user.setContact(new EmergencyContact("", "", ""));
         user.getUndoStack().clear();
         when(application.getUserBridge()).thenReturn(bridge);
         when(application.getUserOverviews()).thenReturn(Collections.singleton(UserOverview.fromUser(user)));

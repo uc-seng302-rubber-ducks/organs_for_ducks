@@ -44,7 +44,7 @@ public class UpdateUserControllerGUITest extends ApplicationTest {
         AppController.setInstance(application);
         User user = new User("A", LocalDate.now().minusDays(1000), "ABC1234");
         user.setDateOfDeath(LocalDate.now());
-        user.setContact(new EmergencyContact("", "", "0187878"));
+        user.setContact(new EmergencyContact("", "", ""));
         user.getUndoStack().clear();
         when(application.getUserBridge()).thenReturn(bridge);
         when(application.getUserOverviews()).thenReturn(Collections.singleton(UserOverview.fromUser(user)));

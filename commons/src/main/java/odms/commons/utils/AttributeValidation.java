@@ -60,7 +60,7 @@ public class AttributeValidation {
      * @return true if the cell number is valid, false otherwise
      */
     public static boolean validateCellNumber(String cellNum) {
-        return (cellNum.matches("^\\+[0-9]{1,3}[0-9]{7,13}$")) || cellNum.isEmpty();
+        return (cellNum.matches("^\\+?[0-9]{1,3}[0-9]{7,13}$")) || cellNum.isEmpty();
     }
 
     /**
