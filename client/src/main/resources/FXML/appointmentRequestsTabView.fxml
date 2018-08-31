@@ -1,14 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.text.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-
-<AnchorPane prefHeight="735.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<?import javafx.scene.text.Font?>
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" prefHeight="735.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8"
+            fx:controller="odms.controller.gui.panel.view.ClinicianAppointmentRequestViewController">
    <children>
       <AnchorPane prefHeight="735.0" prefWidth="803.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="397.0" AnchorPane.topAnchor="0.0">
          <children>
-            <TableView fx:id="clnicianAppointmentRequestView" layoutX="36.0" layoutY="69.0" prefHeight="642.0" prefWidth="732.0" AnchorPane.bottomAnchor="24.0" AnchorPane.leftAnchor="36.0" AnchorPane.rightAnchor="35.0" AnchorPane.topAnchor="69.0">
+             <TableView fx:id="clnicianAppointmentRequestView" layoutX="36.0" layoutY="69.0" prefHeight="614.0"
+                        prefWidth="732.0" AnchorPane.bottomAnchor="52.0" AnchorPane.leftAnchor="36.0"
+                        AnchorPane.rightAnchor="35.0" AnchorPane.topAnchor="69.0">
               <columns>
                 <TableColumn prefWidth="75.0" text="NHI" />
                 <TableColumn prefWidth="134.0" text="Name" />
@@ -24,6 +26,12 @@
                   <Font name="System Bold" size="19.0" />
                </font>
             </Label>
+             <HBox alignment="CENTER" layoutX="178.0" layoutY="691.0" prefHeight="25.0" prefWidth="492.0">
+                 <children>
+                     <Button mnemonicParsing="false" onAction="#goToPreviousPage" text="&lt;&lt;"/>
+                     <Button mnemonicParsing="false" onAction="#goToNextPage" text="&gt;&gt;"/>
+                 </children>
+             </HBox>
          </children>
       </AnchorPane>
       <AnchorPane layoutX="803.0" layoutY="14.0" prefHeight="720.0" prefWidth="396.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="803.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
