@@ -17,7 +17,7 @@ import java.util.List;
 
 public class ClinicianBridge extends RoleBridge {
 
-    public static final String CLINICIANS = "/clinicians/";
+    private static final String CLINICIANS = "/clinicians/";
 
     public ClinicianBridge(OkHttpClient client) {
         super(client);
@@ -35,6 +35,11 @@ public class ClinicianBridge extends RoleBridge {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 ResponseBody body = response.body();
+                if (body == null) {
+                    Log.warning("The response body was null");
+                    response.close();
+                    return;
+                }
                 List<Clinician> clinicians = new Gson().fromJson(body.string(), new TypeToken<List<Clinician>>() {
                 }.getType());
                 for (Clinician clinician : clinicians) {
@@ -45,6 +50,12 @@ public class ClinicianBridge extends RoleBridge {
         });
     }
 
+    /**
+     * Gets a list of clinicians from a particular region. Does not require authentication and returns their full name
+     * and staff Id only
+     * @param region that the clinicians are registered to
+     * @return list of ComboBoxClinicians
+     */
     public List<ComboBoxClinician> getBasicClinicians(String region) throws IOException{
         List<ComboBoxClinician> returnList = new ArrayList<>();
         String url = ip + "/basic-clinicians/" + region;
@@ -192,6 +203,10 @@ public class ClinicianBridge extends RoleBridge {
         Request request = new Request.Builder().get().url(url).headers(headers).build();
         try(Response response  = client.newCall(request).execute()) {
             String contentType = response.header("Content-Type");
+            if (contentType == null) {
+                Log.warning("The content-type in the header was null");
+                return null;
+            }
             String[] bits = contentType.split("/");
             String format = bits[bits.length-1];
             if (response.code() == 200) {
