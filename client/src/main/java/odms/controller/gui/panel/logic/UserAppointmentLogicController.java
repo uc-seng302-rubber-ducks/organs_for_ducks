@@ -7,14 +7,19 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import odms.commons.model.Appointment;
 import odms.commons.model.User;
+import odms.commons.model._enum.EventTypes;
 import odms.commons.model._enum.UserType;
+import odms.commons.model.event.UpdateNotificationEvent;
 import odms.commons.utils.Log;
 import odms.controller.AppController;
 import odms.controller.gui.popup.view.AppointmentPickerViewController;
+import odms.socket.ServerEventNotifier;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.IOException;
 
-public class UserAppointmentLogicController {
+public class UserAppointmentLogicController implements PropertyChangeListener {
 
     private static final int ROWS_PER_PAGE = 30;
     private AppController appController;
@@ -33,6 +38,7 @@ public class UserAppointmentLogicController {
         this.appointments = appointments;
         this.appController = appController;
         this.user = user;
+        ServerEventNotifier.getInstance().addPropertyChangeListener(this);
 
         updateTable(startingIndex);
     }
@@ -53,7 +59,6 @@ public class UserAppointmentLogicController {
             appointmentPickerStage.setScene(new Scene(root));
             appointmentPickerStage.showAndWait();
             Log.info("Successfully launched the appointment picker pop-up window for user: " + user.getNhi());
-            updateTable(startingIndex);
 
         } catch (IOException e) {
             Log.severe("Failed to load appointmentPicker pop-up window for user: " + user.getNhi(), e);
@@ -101,4 +106,27 @@ public class UserAppointmentLogicController {
         updateTable(startingIndex);
     }
 
+
+    /**
+     * Handles events fired by appointments that are being listened to
+     * The user's appointments table will be updated when the given event is appropriate
+     *
+     * @param evt PropertyChangeEvent to be handled
+     * @see UpdateNotificationEvent
+     */
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+        UpdateNotificationEvent event;
+        try {
+            event = (UpdateNotificationEvent) evt;
+        } catch (ClassCastException ex) {
+            return;
+        }
+        if (event == null) {
+            return;
+        }
+        if (event.getType().equals(EventTypes.APPOINTMENT_UPDATE)) {
+            updateTable(startingIndex);
+        }
+    }
 }
