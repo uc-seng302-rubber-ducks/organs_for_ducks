@@ -86,6 +86,30 @@ public class AppointmentsBridge extends Bifrost {
     }
 
     /**
+     * Fires a put request to the server to update the appointment
+     *
+     * @param appointment the updated appointment
+     */
+    public void putAppointment(Appointment appointment) {
+        String url = String.format("%s/clinicians/%s%s/%d", ip, appointment.getRequestedClinicianId(), APPOINTMENTS, appointment.getAppointmentId());
+        RequestBody body = RequestBody.create(json, new Gson().toJson(appointment));
+        Request request = new Request.Builder().put(body).url(url).build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.severe(e.getMessage(), e);
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (!response.isSuccessful()) {
+                    logAndNotify(response);
+                }
+            }
+        });
+    }
+
+    /**
      * Logs a bad response
      *
      * @param response response to log
