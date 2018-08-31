@@ -2,8 +2,10 @@ package odms.commons.model;
 
 import odms.commons.model._enum.AppointmentCategory;
 import odms.commons.model._enum.AppointmentStatus;
+import odms.commons.utils.Log;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 /**
  * Appointment class that holds information about a user's appointment request to a clinician
@@ -11,7 +13,7 @@ import java.time.LocalDateTime;
  */
 public class Appointment {
 
-    private int appointmentId;
+    private Integer appointmentId;
 
     private String requestingUserId;
 
@@ -53,7 +55,7 @@ public class Appointment {
         this.appointmentStatus = appointmentStatus;
     }
 
-    public int getAppointmentId() {
+    public Integer getAppointmentId() {
         return appointmentId;
     }
 
@@ -115,5 +117,24 @@ public class Appointment {
 
     public void setSeen(boolean hasSeen) {
         this.seen = hasSeen;
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(requestingUserId, requestedClinicianId, appointmentCategory, requestedDate, requestDescription, appointmentStatus, seen);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Appointment appointment = (Appointment) o;
+        if (appointmentId == null || appointment.appointmentId == null) {
+            Log.warning("Trying to compare appointments when at least one does not have a unique id. Comparison failed.");
+            return false;
+        }
+        return appointmentId.equals(appointment.appointmentId);
+
     }
 }
