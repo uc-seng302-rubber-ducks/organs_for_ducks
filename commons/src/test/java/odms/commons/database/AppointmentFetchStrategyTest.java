@@ -68,7 +68,7 @@ public class AppointmentFetchStrategyTest {
     }
 
     private void checkAppointment(Appointment appointment) {
-        assertEquals(0, appointment.getAppointmentId());
+        assertEquals((Integer)0, appointment.getAppointmentId());
         assertEquals(LocalDateTime.of(2018, 12, 10, 15, 3), appointment.getRequestedDate());
         assertEquals("ABC1234", appointment.getRequestingUserId());
         assertEquals("0", appointment.getRequestedClinicianId());

@@ -93,4 +93,16 @@ public class AppointmentController extends BaseController {
         return new ResponseEntity(HttpStatus.ACCEPTED);
     }
 
+    @IsClinician
+    @RequestMapping(method = RequestMethod.GET, value = "/clinicians/{staffId}/appointments")
+    public Collection<Appointment> getClinicianAppointments(@RequestParam(name = "startIndex") int startIndex,
+                                                            @RequestParam(name = "count") int count,
+                                                            @PathVariable(value = "staffId") String staffId) {
+        try (Connection connection = driver.getConnection()) {
+            return handler.getAppointments(connection, staffId, UserType.CLINICIAN, count, startIndex);
+        } catch (SQLException e) {
+            Log.severe("Unable to get clinician requested appointments with staff id: "+staffId+". SQL error code: " + e.getErrorCode(), e);
+            throw new ServerDBException(e);
+        }
+    }
 }
