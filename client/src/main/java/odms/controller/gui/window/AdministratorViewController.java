@@ -173,7 +173,7 @@ public class AdministratorViewController implements PropertyChangeListener, User
      * @param appController appController instance to get data from
      * @param stage         stage to display on
      */
-    public void init(Administrator administrator, AppController appController, Stage stage, boolean owner, Collection<PropertyChangeListener> parentListeners) {
+    public void init(Administrator administrator, AppController appController, Stage stage, boolean owner) {
         this.stage = stage;
         this.appController = appController;
         this.administrator = administrator;
@@ -438,7 +438,7 @@ public class AdministratorViewController implements PropertyChangeListener, User
             userTableView.setItems(sUsers);
         } else {
             userTableView.setItems(null);
-            Platform.runLater(() -> userTableView.setPlaceholder(new Label("No users match this criteria"))); // Do this to prevent threading issues when this method is not called on an FX thread;
+            Platform.runLater(() -> userTableView.setPlaceholder(new Label("No users match this criteria"))); // Do this to prevent threading issues when this method is not called on an FX thread
         }
 
         setTableOnClickBehaviour(User.class, userTableView);
@@ -913,7 +913,7 @@ public class AdministratorViewController implements PropertyChangeListener, User
             newStage.setMinWidth(1200);
             AdministratorViewController adminLoaderController = adminLoader.getController();
             administratorViewControllers.add(adminLoaderController);
-            adminLoaderController.init(administrator, AppController.getInstance(), newStage, false, null);
+            adminLoaderController.init(administrator, AppController.getInstance(), newStage, false);
             newStage.show();
             Log.info(messageAdmin + administrator.getUserName() + " successfully launched administrator overview window");
         } catch (IOException e) {
@@ -1237,7 +1237,7 @@ public class AdministratorViewController implements PropertyChangeListener, User
             clinicianTableView.setItems(sClinicians);
         } else {
             clinicianTableView.setItems(null);
-            // Do this to prevent threading issues when this method is not called on an FX thread;
+            // Do this to prevent threading issues when this method is not called on an FX thread
             Platform.runLater(() -> clinicianTableView.setPlaceholder(new Label("No clinicians to show")));
         }
 
@@ -1275,7 +1275,7 @@ public class AdministratorViewController implements PropertyChangeListener, User
             adminTableView.setItems(sAdmins);
         } else {
             adminTableView.setItems(null);
-            // Do this to prevent threading issues when this method is not called on an FX thread;
+            // Do this to prevent threading issues when this method is not called on an FX thread
             Platform.runLater(() -> adminTableView.setPlaceholder(new Label("No admins to show")));
         }
 
@@ -1310,7 +1310,7 @@ public class AdministratorViewController implements PropertyChangeListener, User
             try {
                 this.administrator = adminBridge.getAdmin(event.getNewIdentifier(), appController.getToken());
                 if (administrator != null) {
-                    displayDetails(); //TODO: fix when we solve the db race 7/8/18 jb
+                    displayDetails(); //TODO: fix when we solve the database race 7/8/18 jb
                 }
             } catch (ApiException ex) {
                 Log.warning("failed to retrieve updated admin. response code: " + ex.getResponseCode(), ex);

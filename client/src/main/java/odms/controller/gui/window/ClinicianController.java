@@ -629,7 +629,7 @@ public class ClinicianController implements PropertyChangeListener, UserLauncher
             try {
                 this.clinician = clinicianBridge.getClinician(newStaffId, appController.getToken());
                 if (clinician != null) {
-                    showClinician(clinician); //TODO: fix when we solve the db race 7/8/18 jb
+                    showClinician(clinician); //TODO: fix when we solve the database race 7/8/18 jb
                 }
             } catch (ApiException ex) {
                 Log.warning("failed to retrieve updated clinician. response code: " + ex.getResponseCode(), ex);

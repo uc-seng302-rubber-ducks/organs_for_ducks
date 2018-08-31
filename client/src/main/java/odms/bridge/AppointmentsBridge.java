@@ -18,8 +18,15 @@ public class AppointmentsBridge extends Bifrost {
 
     public AppointmentsBridge(OkHttpClient client) {
         super(client);
+        quiet = false;
     }
 
+    /**
+     * Constructor to create a new Appointments bridge
+     *
+     * @param client OkhttpClient to make the calls with.
+     * @param quiet  Determines if alert windows are shown if there is an error.
+     */
     public AppointmentsBridge(OkHttpClient client, boolean quiet) {
         this(client);
         this.quiet = quiet;
