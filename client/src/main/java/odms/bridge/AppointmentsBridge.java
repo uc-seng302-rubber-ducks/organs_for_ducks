@@ -27,7 +27,7 @@ public class AppointmentsBridge extends Bifrost {
      * @param client OkhttpClient to make the calls with.
      * @param quiet  Determines if alert windows are shown if there is an error.
      */
-    public AppointmentsBridge(OkHttpClient client, boolean quiet) {
+    AppointmentsBridge(OkHttpClient client, boolean quiet) {
         this(client);
         this.quiet = quiet;
     }
@@ -52,11 +52,14 @@ public class AppointmentsBridge extends Bifrost {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 if (response.isSuccessful()) {
-                    String bodyString = response.body().string();
-                    toAddTo.addAll(new JsonHandler().decodeAppointments(bodyString));
+                    if (response.body() != null) {
+                        String bodyString = response.body().string();
+                        toAddTo.addAll(new JsonHandler().decodeAppointments(bodyString));
+                    }
                 } else {
                     logAndNotify(response);
                 }
+                response.close();
             }
         });
     }
@@ -81,6 +84,7 @@ public class AppointmentsBridge extends Bifrost {
                 if (!response.isSuccessful()) {
                     logAndNotify(response);
                 }
+                response.close();
             }
         });
     }

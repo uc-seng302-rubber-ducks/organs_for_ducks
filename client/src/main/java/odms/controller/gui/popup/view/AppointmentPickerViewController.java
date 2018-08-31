@@ -51,7 +51,7 @@ public class AppointmentPickerViewController {
         List<ComboBoxClinician> comboBoxClinicians = new ArrayList<>();
         try {
             comboBoxClinicians = appController.getClinicianBridge().getBasicClinicians(user.getRegion());
-        } catch (IOException e){
+        } catch (IOException e) {
             Log.severe("Unable to get preferred clinicians.", e);
         }
 

@@ -1,11 +1,11 @@
 package odms.steps;
 
+import cucumber.api.java.Before;
 import cucumber.api.java.After;
 import cucumber.api.java.en.Given;
 import javafx.collections.FXCollections;
 import javafx.scene.control.TableView;
 import odms.App;
-import odms.TestUtils.AppControllerMocker;
 import odms.commons.config.ConfigPropertiesSession;
 import odms.commons.exception.ApiException;
 import odms.commons.model.Clinician;
@@ -13,8 +13,6 @@ import odms.commons.model.User;
 import odms.commons.model._enum.Organs;
 import odms.commons.model.dto.UserOverview;
 import odms.controller.AppController;
-import okhttp3.OkHttpClient;
-import org.junit.Before;
 import org.mockito.AdditionalMatchers;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
@@ -43,17 +41,15 @@ public class GivenSteps extends ApplicationTest {
 
     @Before
     public void before() {
-        OkHttpClient mockClient = mock(OkHttpClient.class);
-        AppController mockController = AppControllerMocker.getFullMock();
+
         ConfigPropertiesSession mockSession = mock(ConfigPropertiesSession.class);
         when(mockSession.getProperty(eq("server.url"))).thenReturn("http://test.url");
         when(mockSession.getProperty(eq("server.url"), anyString())).thenReturn("http://test.url");
         when(mockSession.getProperty(eq("server.token.header"), anyString())).thenReturn("x-auth-token");
         when(mockSession.getProperty(eq("server.token.header"))).thenReturn("x-auth-token");
-        when(mockController.getToken()).thenReturn("abcd");
-
+        when(mockSession.getProperty(eq("testConfig"), anyString())).thenReturn("true");
         ConfigPropertiesSession.setInstance(mockSession);
-        AppController.setInstance(mockController);
+        AppController.setInstance(CucumberTestModel.getController());
     }
 
     @After
@@ -61,7 +57,9 @@ public class GivenSteps extends ApplicationTest {
         if (FxToolkit.isFXApplicationThreadRunning()) {
             FxToolkit.cleanupStages();
         }
+        ConfigPropertiesSession.setInstance(null);
         AppController.setInstance(null);
+
     }
 
     @Given("^I have started the CLI$")
@@ -71,7 +69,6 @@ public class GivenSteps extends ApplicationTest {
 
     @Given("^I have started the GUI$")
     public void iHaveStartedTheGUI() throws Throwable {
-        AppController.setInstance(CucumberTestModel.getController());
         FxToolkit.registerPrimaryStage();
         FxToolkit.setupApplication(App.class);
     }
