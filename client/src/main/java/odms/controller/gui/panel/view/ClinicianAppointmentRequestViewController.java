@@ -2,17 +2,15 @@ package odms.controller.gui.panel.view;
 
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import odms.commons.model.Appointment;
 import odms.controller.gui.panel.logic.AvailableOrgansLogicController;
 import odms.controller.gui.panel.logic.ClinicianAppointmentRequestLogicController;
 
 public class ClinicianAppointmentRequestViewController {
-    @FXML
-    private Button clinicianRejectAppointmentBtn;
-
-    @FXML
-    private Button clinicianAcceptAppointmentBtn;
 
     @FXML
     private TextArea appointmentRequestDescription;
@@ -63,6 +61,16 @@ public class ClinicianAppointmentRequestViewController {
     @FXML
     private void goToNextPage() {
         logicController.goNextPage();
+    }
+
+    @FXML
+    private void rejectAppointment() {
+
+    }
+
+    @FXML
+    private void acceptAppointment() {
+
     }
 
 
