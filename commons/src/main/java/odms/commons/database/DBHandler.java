@@ -1129,6 +1129,27 @@ public class DBHandler {
     }
 
     /**
+     * Queries the database to check whether the given user has an existing pending appointment request.
+     *
+     * @param nhi      unique identifier of the user
+     * @param statusId integer value of the pending status
+     * @return true if a pending request is found, false otherwise
+     */
+    public boolean pendingExists(Connection connection, String nhi, int statusId) throws SQLException {
+        String query = "";
+
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+//            stmt.setString(1, nhi);
+//            stmt.setInt(2, statusId);
+
+            try (ResultSet result = stmt.executeQuery()) {
+                result.next();
+                return result.getInt(1) == 1;
+            }
+        }
+    }
+
+    /**
      * Uses the provided connection and queries data base of countries to retrieve the ones that are allowed to be used
      * as a place of residence.
      *

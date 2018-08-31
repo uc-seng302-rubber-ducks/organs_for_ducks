@@ -41,7 +41,7 @@ public class AppointmentsBridge extends Bifrost {
      * @return true if the user has a pending appointment request, false otherwise
      */
     public boolean pendingExists(String nhi) {
-        String url = String.format("%s/users/%s%s%d", ip, nhi, APPOINTMENTS, AppointmentStatus.PENDING.getDbValue());
+        String url = String.format("%s/users/%s%s/exists?status=%d", ip, nhi, APPOINTMENTS, AppointmentStatus.PENDING.getDbValue());
         Request request = new Request.Builder().get().url(url).build();
 
         try (Response res = client.newCall(request).execute()) {

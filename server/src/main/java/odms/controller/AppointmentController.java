@@ -36,6 +36,17 @@ public class AppointmentController extends BaseController {
         this.socketHandler = socketHandler;
     }
 
+    @RequestMapping(method = RequestMethod.GET, value = "/users/{nhi}/appointments/exists")
+    public boolean pendingExists(@RequestParam(name = "nhi") String nhi,
+                                 @RequestParam(name = "status") int statusId) {
+        try (Connection connection = driver.getConnection()) {
+            return handler.pendingExists(connection, nhi, statusId);
+        } catch (SQLException e) {
+            Log.severe("", e);
+            throw new ServerDBException(e);
+        }
+    }
+
     @RequestMapping(method = RequestMethod.GET, value = "/users/{nhi}/appointments")
     public Collection<Appointment> getUserAppointments(@RequestParam(name = "count") int count,
                                                    @RequestParam(name = "startIndex") int start,
