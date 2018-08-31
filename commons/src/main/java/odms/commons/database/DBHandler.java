@@ -110,6 +110,8 @@ public class DBHandler {
             "WHERE (nhi = ?) " +
             "AND organName = ?";
     private static final String SELECT_DEATH_DETAILS_STMT = "SELECT * FROM DeathDetails WHERE fkUserNhi = ?";
+    private static final String SELECT_APPTMT_ID = "SELECT apptId FROM AppointmentDetails WHERE requestedTime = ? AND fkStatusId = ?";
+    private static final String PENDING_APPTMT_EXISTS = "SELECT EXISTS(SELECT 1 FROM AppointmentDetails WHERE fkUserNhi = ? AND fkStatusId = ?)";
 
     private AbstractUpdateStrategy updateStrategy;
     private AbstractFetchAppointmentStrategy fetchAppointmentStrategy;
@@ -1128,26 +1130,6 @@ public class DBHandler {
         }
     }
 
-    /**
-     * Queries the database to check whether the given user has an existing pending appointment request.
-     *
-     * @param nhi      unique identifier of the user
-     * @param statusId integer value of the pending status
-     * @return true if a pending request is found, false otherwise
-     */
-    public boolean pendingExists(Connection connection, String nhi, int statusId) throws SQLException {
-        String query = "";
-
-        try (PreparedStatement stmt = connection.prepareStatement(query)) {
-//            stmt.setString(1, nhi);
-//            stmt.setInt(2, statusId);
-
-            try (ResultSet result = stmt.executeQuery()) {
-                result.next();
-                return result.getInt(1) == 1;
-            }
-        }
-    }
 
     /**
      * Uses the provided connection and queries data base of countries to retrieve the ones that are allowed to be used
@@ -1331,6 +1313,7 @@ public class DBHandler {
         return null;
     }
 
+
     /**
      * Gets a appointment strategy and returns it to the appointment controller
      *
@@ -1349,13 +1332,33 @@ public class DBHandler {
      * @throws SQLException If the entry does not exist or the connection is invalid
      */
     public int getAppointmentId(Connection connection, Appointment appointment) throws SQLException {
-        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT apptId FROM AppointmentDetails WHERE requestedTime = ? AND fkStatusId = ?")) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(SELECT_APPTMT_ID)) {
 
             preparedStatement.setTimestamp(1, Timestamp.valueOf(appointment.getRequestedDate()));
             preparedStatement.setInt(2, appointment.getAppointmentStatus().getDbValue());
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 resultSet.next();
                 return resultSet.getInt("apptId");
+            }
+        }
+    }
+
+
+    /**
+     * Queries the database to check whether the given user has an existing pending appointment request.
+     *
+     * @param nhi      unique identifier of the user
+     * @param statusId integer value of the pending status
+     * @return true if a pending request is found, false otherwise
+     */
+    public boolean pendingExists(Connection connection, String nhi, int statusId) throws SQLException {
+        try (PreparedStatement stmt = connection.prepareStatement(PENDING_APPTMT_EXISTS)) {
+            stmt.setString(1, nhi);
+            stmt.setInt(2, statusId);
+
+            try (ResultSet result = stmt.executeQuery()) {
+                result.next();
+                return result.getInt(1) == 1;
             }
         }
     }
