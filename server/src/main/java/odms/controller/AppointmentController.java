@@ -37,7 +37,7 @@ public class AppointmentController extends BaseController {
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/users/{nhi}/appointments/exists")
-    public boolean pendingExists(@RequestParam(name = "nhi") String nhi,
+    public boolean pendingExists(@PathVariable(name = "nhi") String nhi,
                                  @RequestParam(name = "status") int statusId) {
         try (Connection connection = driver.getConnection()) {
             return handler.pendingExists(connection, nhi, statusId);
