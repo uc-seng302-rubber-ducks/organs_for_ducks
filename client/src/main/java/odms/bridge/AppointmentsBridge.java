@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import odms.commons.model.Appointment;
+import odms.commons.model._enum.AppointmentStatus;
 import odms.commons.model._enum.UserType;
 import odms.commons.utils.JsonHandler;
 import odms.commons.utils.Log;
@@ -31,6 +32,26 @@ public class AppointmentsBridge extends Bifrost {
         this(client);
         this.quiet = quiet;
     }
+
+
+    /**
+     * Checks if the given user has a pending appointment request
+     *
+     * @param nhi unique identifier of the user
+     * @return true if the user has a pending appointment request, false otherwise
+     */
+    public boolean pendingExists(String nhi) {
+        String url = String.format("%s/users/%s%s%d", ip, nhi, APPOINTMENTS, AppointmentStatus.PENDING.getDbValue());
+        Request request = new Request.Builder().get().url(url).build();
+
+        try (Response res = client.newCall(request).execute()) {
+            return res.body().string().equalsIgnoreCase("true");
+        } catch (NullPointerException | IOException ex) {
+            Log.warning("", ex);
+            return false;
+        }
+    }
+
 
     /**
      * Gets all the appointments
