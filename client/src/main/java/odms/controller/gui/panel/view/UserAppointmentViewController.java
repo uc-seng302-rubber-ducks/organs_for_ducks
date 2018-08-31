@@ -65,6 +65,7 @@ public class UserAppointmentViewController {
         userAppointmentCategoryColumn.setCellValueFactory(new PropertyValueFactory<>("appointmentCategory"));
         userAppointmentClinicianIdColumn.setCellValueFactory(new PropertyValueFactory<>("requestedClinician"));
         userAppointmentStatusColumn.setCellValueFactory(new PropertyValueFactory<>("appointmentStatus"));
+        logicController.updateTable(0);
         populateTable();
         // TODO sort by status 28/08/2018
         userAppointmentStatusColumn.setSortType(TableColumn.SortType.ASCENDING);

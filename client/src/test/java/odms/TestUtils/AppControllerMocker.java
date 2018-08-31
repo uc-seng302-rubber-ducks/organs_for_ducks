@@ -31,7 +31,6 @@ public class AppControllerMocker {
         when(application.getClinicianBridge()).thenReturn(clinicianBridge);
         when(application.getLoginBridge()).thenReturn(loginBridge);
         when(application.getTransplantBridge()).thenReturn(transplantBridge);
-        when(application.getSocketHandler()).thenReturn(socketHandler);
         when(application.getToken()).thenReturn("tokenGoesHere");
 
         return application;

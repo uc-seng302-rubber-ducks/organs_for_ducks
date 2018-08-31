@@ -1,6 +1,5 @@
 package odms.controller.gui.panel.logic;
 
-import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -42,8 +41,6 @@ public class UserAppointmentLogicController implements PropertyChangeListener {
         this.appController = appController;
         this.user = user;
         ServerEventNotifier.getInstance().addPropertyChangeListener(this);
-
-        updateTable(startingIndex);
     }
 
 
@@ -87,7 +84,7 @@ public class UserAppointmentLogicController implements PropertyChangeListener {
     /**
      * Calls the database to get updated appointment entries
      */
-    private void updateTable(int startIndex) {
+    public void updateTable(int startIndex) {
         appointments.clear();
         appController.getAppointmentsBridge().getAppointments(ROWS_PER_PAGE, startIndex, appointments, user.getNhi(), UserType.USER);
     }
@@ -123,7 +120,7 @@ public class UserAppointmentLogicController implements PropertyChangeListener {
      * @param message message to display to the user.
      */
     private void alertUser(String message) {
-        Platform.runLater(() -> AlertWindowFactory.generateError(message));
+        AlertWindowFactory.generateError(message);
     }
 
 
