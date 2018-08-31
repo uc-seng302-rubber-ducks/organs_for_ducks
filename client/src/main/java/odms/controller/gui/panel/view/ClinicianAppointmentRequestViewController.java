@@ -1,11 +1,14 @@
 package odms.controller.gui.panel.view;
 
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import odms.commons.model.Appointment;
 import odms.controller.gui.panel.logic.AvailableOrgansLogicController;
 import odms.controller.gui.panel.logic.ClinicianAppointmentRequestLogicController;
+
+import java.util.ArrayList;
 
 public class ClinicianAppointmentRequestViewController {
     @FXML
@@ -29,8 +32,7 @@ public class ClinicianAppointmentRequestViewController {
     @FXML
     private Label appointmentRequestUserNhi;
 
-    private ObservableList<Appointment> availableAppointments;
-
+    private ObservableList<Appointment> availableAppointments = FXCollections.observableList(new ArrayList<>());
     private ClinicianAppointmentRequestLogicController logicController = new ClinicianAppointmentRequestLogicController(availableAppointments);
 
 
