@@ -1,5 +1,6 @@
 package odms.controller.gui.panel.logic;
 
+import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -12,12 +13,14 @@ import odms.commons.model._enum.UserType;
 import odms.commons.model.event.UpdateNotificationEvent;
 import odms.commons.utils.Log;
 import odms.controller.AppController;
+import odms.controller.gui.popup.utils.AlertWindowFactory;
 import odms.controller.gui.popup.view.AppointmentPickerViewController;
 import odms.socket.ServerEventNotifier;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
+import java.time.LocalDateTime;
 
 public class UserAppointmentLogicController implements PropertyChangeListener {
 
@@ -71,7 +74,14 @@ public class UserAppointmentLogicController implements PropertyChangeListener {
      * @param appointment The appointment to be cancelled
      */
     public void cancelAppointment(Appointment appointment) {
+        // todo: notify the clinician when a user cancels their appointment - task in story 101C
 
+        if (appointment.getRequestedDate().minusDays(1).isBefore(LocalDateTime.now())) {
+            alertUser("You cannot cancel this appointment as it is within 24 hours of the scheduled time");
+            return;
+        }
+
+        // delete the appointment
     }
 
     /**
@@ -104,6 +114,16 @@ public class UserAppointmentLogicController implements PropertyChangeListener {
 
         startingIndex = startingIndex + ROWS_PER_PAGE;
         updateTable(startingIndex);
+    }
+
+
+    /**
+     * Alerts user with a alert window containing the given message
+     *
+     * @param message message to display to the user.
+     */
+    private void alertUser(String message) {
+        Platform.runLater(() -> AlertWindowFactory.generateError(message));
     }
 
 
