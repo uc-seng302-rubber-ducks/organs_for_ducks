@@ -83,11 +83,9 @@ public class BridgeTestBase {
     Response jsonResponseMock(Object toJsonify, int code) throws IOException {
         Response mockResponse = mock(Response.class);
         ResponseBody mockResponseBody = mock(ResponseBody.class);
-
         when(mockResponse.body()).thenReturn(mockResponseBody);
         when(mockResponse.code()).thenReturn(code);
         when(mockResponseBody.string()).thenReturn(new Gson().toJson(toJsonify));
-
         return mockResponse;
     }
 }
