@@ -50,16 +50,20 @@ public class ClinicianBridge extends RoleBridge {
         String url = ip + "/basic-clinicians/" + region;
         Request request = new Request.Builder().url(url).build();
         Response response = client.newCall(request).execute();
-        if(response.isSuccessful()){
+        if (response.isSuccessful()) {
             ResponseBody body = response.body();
-                if (body.contentLength() == 2 ) { //if it returns empty array
-                    return returnList;
-                }
-                List<ComboBoxClinician> clinicians = new Gson().fromJson(body.string(), new TypeToken<List<ComboBoxClinician>>() {
-                }.getType());
-                returnList.addAll(clinicians);
+            if (body == null) {
+                Log.warning("The response body was null");
+                return returnList;
+            }
+            if (body.contentLength() == 2) { //if it returns empty array
+                return returnList;
+            }
+            List<ComboBoxClinician> clinicians = new Gson().fromJson(body.string(), new TypeToken<List<ComboBoxClinician>>() {
+            }.getType());
+            returnList.addAll(clinicians);
         }
-
+        response.close();
         return returnList;
     }
 

@@ -50,14 +50,16 @@ public class ClinicianBridgeTest extends BridgeTestBase {
 
     }
 
-    @Ignore //TODO come back to this after actual implementation is done. Need to check manually if working because don't know if mocking is working 28/08
     @Test
     public void getBasicCliniciansShouldReturnListOfBasicCliniciansOnSuccess() throws IOException {
         Call mockCall = mock(Call.class);
         Response mockResponse = mock(Response.class);
         ResponseBody mockResponseBody = mock(ResponseBody.class);
-        when(mockResponse.isSuccessful()).thenReturn(true);
+
         when(mockClient.newCall(any(Request.class))).thenReturn(mockCall);
+        when(mockCall.execute()).thenReturn(mockResponse);
+        when(mockResponse.isSuccessful()).thenReturn(true);
+
         when(mockResponse.body()).thenReturn(mockResponseBody);
         when(mockResponseBody.string()).thenReturn(new Gson().toJson(new ComboBoxClinician[]{
                 new ComboBoxClinician("geoff", "0")

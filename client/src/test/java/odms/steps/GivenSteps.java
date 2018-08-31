@@ -5,12 +5,16 @@ import cucumber.api.java.en.Given;
 import javafx.collections.FXCollections;
 import javafx.scene.control.TableView;
 import odms.App;
+import odms.TestUtils.AppControllerMocker;
+import odms.commons.config.ConfigPropertiesSession;
 import odms.commons.exception.ApiException;
 import odms.commons.model.Clinician;
 import odms.commons.model.User;
 import odms.commons.model._enum.Organs;
 import odms.commons.model.dto.UserOverview;
 import odms.controller.AppController;
+import okhttp3.OkHttpClient;
+import org.junit.Before;
 import org.mockito.AdditionalMatchers;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
@@ -30,11 +34,27 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.testfx.api.FxAssert.verifyThat;
 
 
 public class GivenSteps extends ApplicationTest {
+
+    @Before
+    public void before() {
+        OkHttpClient mockClient = mock(OkHttpClient.class);
+        AppController mockController = AppControllerMocker.getFullMock();
+        ConfigPropertiesSession mockSession = mock(ConfigPropertiesSession.class);
+        when(mockSession.getProperty(eq("server.url"))).thenReturn("http://test.url");
+        when(mockSession.getProperty(eq("server.url"), anyString())).thenReturn("http://test.url");
+        when(mockSession.getProperty(eq("server.token.header"), anyString())).thenReturn("x-auth-token");
+        when(mockSession.getProperty(eq("server.token.header"))).thenReturn("x-auth-token");
+        when(mockController.getToken()).thenReturn("abcd");
+
+        ConfigPropertiesSession.setInstance(mockSession);
+        AppController.setInstance(mockController);
+    }
 
     @After
     public void tearDown() throws TimeoutException {
@@ -108,6 +128,7 @@ public class GivenSteps extends ApplicationTest {
 
     @Given("^The Create New Disease screen is loaded$")
     public void theCreateNewDiseaseScreenIsLoaded() throws IOException {
+
         when(CucumberTestModel.getClinicianBridge().getClinician(anyString(), anyString())).thenReturn(
                 new Clinician("", "0", "")
         );

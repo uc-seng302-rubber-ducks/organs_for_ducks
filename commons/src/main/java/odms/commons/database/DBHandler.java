@@ -675,8 +675,7 @@ public class DBHandler {
                         fullName += " " + resultSet.getString("middleName");
                     }
                     fullName += " " + resultSet.getString("lastName");
-
-                    ComboBoxClinician clinician = new ComboBoxClinician(resultSet.getString("staffId"), fullName);
+                    ComboBoxClinician clinician = new ComboBoxClinician(fullName, resultSet.getString("staffId"));
                     clinicians.add(clinician);
                 }
                 return clinicians;
