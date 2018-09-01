@@ -40,19 +40,19 @@ public class ClinicianAppointmentRequestViewController {
     private Label appointmentRequestUserNhi;
 
     @FXML
-    private TableView<Appointment> clinicianAppointmentsRequestView;
+    private TableView<Appointment> clinicianAppointmentsRequestView  = new TableView<>();
 
     @FXML
-    private TableColumn<Appointment, LocalDateTime> clinicianAppointmentDateColumn;
+    private TableColumn<Appointment, String> clinicianAppointmentUserIdColumn = new TableColumn<>();
 
     @FXML
-    private TableColumn<Appointment, String> clinicianAppointmentClinicianIdColumn;
+    private TableColumn<Appointment, AppointmentStatus> clinicianAppointmentUserNameColumn = new TableColumn<>();
 
     @FXML
-    private TableColumn<Appointment, AppointmentCategory> clinicianAppointmentCategoryColumn;
+    private TableColumn<Appointment, LocalDateTime> clinicianAppointmentDateColumn = new TableColumn<>();
 
     @FXML
-    private TableColumn<Appointment, AppointmentStatus> clinicianAppointmentStatusColumn;
+    private TableColumn<Appointment, AppointmentCategory> clinicianAppointmentCategoryColumn = new TableColumn<>();
 
 
     private ObservableList<Appointment> availableAppointments = FXCollections.observableList(new ArrayList<>());
@@ -64,9 +64,7 @@ public class ClinicianAppointmentRequestViewController {
      */
     public void init(AppController appController, Clinician clinician) {
         System.out.println("Hello yes");
-        availableAppointments.addListener((ListChangeListener<? super Appointment>) observable -> {
-            populateTable();
-        });
+        availableAppointments.addListener((ListChangeListener<? super Appointment>) observable -> populateTable());
 
         logicController = new ClinicianAppointmentRequestLogicController(availableAppointments, appController, clinician);
         initAppointmentTable();
@@ -77,13 +75,12 @@ public class ClinicianAppointmentRequestViewController {
      * Changes the default sorting order to sort by the appointment status
      */
     private void initAppointmentTable() {
+        clinicianAppointmentUserIdColumn.setCellValueFactory(new PropertyValueFactory<>("requestingUserId"));
+        clinicianAppointmentUserNameColumn.setCellValueFactory(new PropertyValueFactory<>("appointmentStatus")); //Somehow get the user's names
         clinicianAppointmentDateColumn.setCellValueFactory(new PropertyValueFactory<>("requestedDate"));
         clinicianAppointmentCategoryColumn.setCellValueFactory(new PropertyValueFactory<>("appointmentCategory"));
-        clinicianAppointmentClinicianIdColumn.setCellValueFactory(new PropertyValueFactory<>("requestedClinician"));
-        clinicianAppointmentStatusColumn.setCellValueFactory(new PropertyValueFactory<>("appointmentStatus"));
         logicController.updateTable(0);
         populateTable();
-        clinicianAppointmentStatusColumn.setSortType(TableColumn.SortType.ASCENDING);
         setOnClickBehaviour();
     }
 
