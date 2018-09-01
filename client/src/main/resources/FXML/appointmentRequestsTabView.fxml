@@ -8,7 +8,7 @@
    <children>
       <AnchorPane prefHeight="735.0" prefWidth="803.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="397.0" AnchorPane.topAnchor="0.0">
          <children>
-             <TableView fx:id="clnicianAppointmentRequestView" layoutX="36.0" layoutY="69.0" prefHeight="614.0"
+             <TableView fx:id="clinicianAppointmentsRequestView" layoutX="36.0" layoutY="69.0" prefHeight="614.0"
                         prefWidth="732.0" AnchorPane.bottomAnchor="52.0" AnchorPane.leftAnchor="36.0"
                         AnchorPane.rightAnchor="35.0" AnchorPane.topAnchor="69.0">
               <columns>

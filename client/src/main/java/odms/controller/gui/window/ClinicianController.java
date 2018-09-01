@@ -36,6 +36,7 @@ import odms.controller.gui.StatusBarController;
 import odms.controller.gui.UnsavedChangesAlert;
 import odms.controller.gui.panel.TransplantWaitListController;
 import odms.controller.gui.panel.view.AvailableOrgansViewController;
+import odms.controller.gui.panel.view.ClinicianAppointmentRequestViewController;
 import odms.controller.gui.popup.DeletedUserController;
 import odms.controller.gui.popup.utils.AlertWindowFactory;
 import odms.socket.ServerEventNotifier;
@@ -114,8 +115,11 @@ public class ClinicianController implements PropertyChangeListener, UserLauncher
     private Button expandButton;
     @FXML
     private TransplantWaitListController transplantWaitListTabPageController;
+
     @FXML
     private AvailableOrgansViewController availableOrgansViewController;
+    @FXML
+    private ClinicianAppointmentRequestViewController appointmentRequestViewController;
     @FXML
     private Button redoButton;
     @FXML
@@ -159,6 +163,7 @@ public class ClinicianController implements PropertyChangeListener, UserLauncher
      */
     public void init(Stage stage, AppController appController, Clinician clinician, boolean fromAdmin,
                      Collection<PropertyChangeListener> parentListeners) {
+        System.out.println(transplantWaitListTabPageController);
         this.appController = appController;
         this.clinicianBridge = appController.getClinicianBridge();
         this.stage = stage;
@@ -175,7 +180,11 @@ public class ClinicianController implements PropertyChangeListener, UserLauncher
         initSearchTable();
         transplantWaitListTabPageController.init(appController, this);
         statusBarPageController.init();
+        System.out.println(availableOrgansViewController);
         availableOrgansViewController.init(this);
+        System.out.println(appController);
+        System.out.println(clinician);
+        System.out.println(appointmentRequestViewController);
 
         if (clinician.getStaffId().equals("0")) {
             deleteClinician.setDisable(true);
