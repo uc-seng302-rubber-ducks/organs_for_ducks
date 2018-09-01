@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="411.0"
-            prefWidth="344.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="441.0"
+            prefWidth="344.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="odms.controller.gui.popup.view.RejectAppointmentReasonViewController">
     <children>
         <GridPane layoutX="29.0" layoutY="14.0">
             <columnConstraints>
@@ -20,7 +20,9 @@
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
             </rowConstraints>
             <children>
-                <Label layoutX="29.0" layoutY="14.0" text="Rejection of appointment" GridPane.columnSpan="2">
+                <Label alignment="CENTER" layoutX="29.0" layoutY="14.0" prefHeight="30.0" prefWidth="293.0"
+                       text="Rejection of appointment" GridPane.columnSpan="2" GridPane.halignment="CENTER"
+                       GridPane.valignment="CENTER">
                     <font>
                         <Font name="System Bold" size="20.0"/>
                     </font>
@@ -46,7 +48,10 @@
                 <Label fx:id="apptDate" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
             </children>
         </GridPane>
-        <TextArea layoutX="13.0" layoutY="236.0" prefHeight="161.0" prefWidth="320.0"/>
+        <TextArea fx:id="reasonTextArea" layoutX="13.0" layoutY="236.0" prefHeight="161.0" prefWidth="320.0"/>
         <Label layoutX="14.0" layoutY="214.0" text="Reason for rejection*:"/>
+        <Button onAction="#confirmRejectionReason" layoutX="274.0" layoutY="407.0" mnemonicParsing="false"
+                text="Confirm"/>
+        <Button onAction="#cancelRejectionReason" layoutX="14.0" layoutY="407.0" mnemonicParsing="false" text="Cancel"/>
     </children>
 </AnchorPane>
