@@ -57,7 +57,7 @@ public class AppointmentStrategyTest {
         Appointment testAppointment = new Appointment("ABC1234", "id1234", AppointmentCategory.GENERAL_CHECK_UP, testDate, "Help", AppointmentStatus.ACCEPTED);
         testAppointment.setAppointmentId(100);
 
-        appointmentStrategy.updateSingleAppointment(connection, testAppointment);
+        appointmentStrategy.putSingleAppointment(connection, testAppointment);
         verify(mockStmt, times(1)).executeUpdate();
     }
 }

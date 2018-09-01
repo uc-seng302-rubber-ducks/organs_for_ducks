@@ -52,7 +52,7 @@ public class AppointmentUpdateStrategy extends AbstractUpdateStrategy {
      * @param appointment Appointment to updated details from
      * @throws SQLException If there is an error updating the appointment in the database or the connection is invalid
      */
-    public void updateSingleAppointment(Connection connection, Appointment appointment) throws SQLException {
+    public void putSingleAppointment(Connection connection, Appointment appointment) throws SQLException {
         try (PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_APPOINTMENT_STMT)) {
             preparedStatement.setInt(1, appointment.getAppointmentCategory().getDbValue());
             preparedStatement.setTimestamp(2, Timestamp.valueOf(appointment.getRequestedDate()));
