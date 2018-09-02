@@ -27,6 +27,7 @@ public class AppointmentController extends BaseController {
     private DBHandler handler;
     private JDBCDriver driver;
     private SocketHandler socketHandler;
+    private static final String BAD_DB_RESPONSE = "Got bad response from DB. SQL error code: ";
 
     @Autowired
     public AppointmentController(DBManager manager, SocketHandler socketHandler) {
@@ -54,7 +55,7 @@ public class AppointmentController extends BaseController {
         try (Connection connection = driver.getConnection()) {
             return handler.getAppointments(connection, nhi, UserType.USER, count, start);
         } catch (SQLException e) {
-            Log.severe("Got bad response from DB. SQL error code: " + e.getErrorCode(), e);
+            Log.severe(BAD_DB_RESPONSE + e.getErrorCode(), e);
             throw new ServerDBException(e);
         }
     }
@@ -67,11 +68,20 @@ public class AppointmentController extends BaseController {
         try (Connection connection = driver.getConnection()) {
             return handler.getAppointments(connection, staffId, UserType.CLINICIAN, count, start);
         } catch (SQLException e) {
-            Log.severe("Got bad response from DB. SQL error code: " + e.getErrorCode(), e);
+            Log.severe(BAD_DB_RESPONSE + e.getErrorCode(), e);
             throw new ServerDBException(e);
         }
     }
 
+    @RequestMapping(method = RequestMethod.GET, value = "/users/{nhi}/appointments/unseen")
+    public Appointment getUnseenUserAppointments(@PathVariable(name = "nhi") String nhi) {
+        try (Connection connection = driver.getConnection()) {
+            return handler.getUnseenAppointment(connection, nhi);
+        } catch (SQLException e) {
+            Log.severe(BAD_DB_RESPONSE + e.getErrorCode(), e);
+            throw new ServerDBException(e);
+        }
+    }
 
     @RequestMapping(method = RequestMethod.POST, value = "/appointments")
     public ResponseEntity postAppointment(@RequestBody Appointment newAppointment) {

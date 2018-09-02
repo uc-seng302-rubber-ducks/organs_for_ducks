@@ -94,4 +94,17 @@ public class AppointmentControllerTests {
         controller.getClinicianAppointments(30, 0, "0");
     }
 
+    @Test
+    public void getUnseenUserAppointmentShouldReturnAppointmentIfConnectionValid() throws SQLException {
+        when(handler.getUnseenAppointment(any(Connection.class), eq("ABC1234"))).thenReturn(testAppointment);
+        Appointment appointment = controller.getUnseenUserAppointments( "ABC1234");
+        Assert.assertEquals(testAppointment, appointment);
+    }
+
+    @Test(expected = ServerDBException.class)
+    public void getUnseenUserAppointmentShouldThrowExceptionWhenNoConnection() throws SQLException {
+        when(driver.getConnection()).thenThrow(new SQLException());
+        controller.getUnseenUserAppointments("ABC1234");
+    }
+
 }

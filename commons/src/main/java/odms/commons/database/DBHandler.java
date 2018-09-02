@@ -74,7 +74,7 @@ public class DBHandler {
             "streetNumber, streetName, neighbourhood, city, region, country, zipCode " +
             "FROM Clinician cl " +
             "LEFT JOIN Address a ON cl.staffId = a.fkStaffId " +
-            "WHERE (firstName LIKE ? OR firstName IS NULL OR lastName LIKE ? OR lastName IS NULL )AND region LIKE ? or region IS NULL " +
+            "WHERE (firstName LIKE ? OR firstName IS NULL OR lastName LIKE ? OR lastName IS NULL )AND region LIKE ? OR region IS NULL " +
             "LIMIT ? OFFSET ?";
     private static final String SELECT_ADMIN_ONE_TO_ONE_INFO_STMT = "SELECT userName, firstName, middleName, lastName, timeCreated, lastModified  FROM Administrator " +
             "WHERE (firstName LIKE ? OR firstName IS NULL )" +
@@ -91,7 +91,7 @@ public class DBHandler {
     private static final String SELECT_IF_USER_EXISTS_BOOL = "SELECT EXISTS(SELECT 1 FROM User WHERE nhi = ?)";
     private static final String SELECT_IF_CLINICIAN_EXISTS_BOOL = "SELECT EXISTS(SELECT 1 FROM Clinician WHERE staffId = ?)";
     private static final String SELECT_IF_ADMIN_EXISTS_BOOL = "SELECT EXISTS(SELECT 1 FROM Administrator WHERE userName = ?)";
-    private static final String SELECT_AVAILABLE_ORGANS = "select * from OrganDonating " +
+    private static final String SELECT_AVAILABLE_ORGANS = "SELECT * FROM OrganDonating " +
             "JOIN DeathDetails ON OrganDonating.fkUserNhi = DeathDetails.fkUserNhi " +
             "JOIN Organ ON OrganDonating.fkOrgansId = organId " +
             "JOIN HealthDetails ON OrganDonating.fkUserNhi = HealthDetails.fkUserNhi " +
@@ -99,10 +99,10 @@ public class DBHandler {
             "JOIN OrganExpiryDetails OED ON OrganDonating.donatingId = OED.fkDonatingId " +
             "WHERE (bloodType LIKE ? OR bloodType IS NULL)" +
             "AND (organName LIKE ? OR organName IS NULL )" +
-            "AND (DeathDetails.region LIKE ? or DeathDetails.region IS NULL) " +
-            "AND (OED.timeOfExpiry is NULL ) " +
+            "AND (DeathDetails.region LIKE ? OR DeathDetails.region IS NULL) " +
+            "AND (OED.timeOfExpiry IS NULL ) " +
             "LIMIT ? OFFSET ?";
-    private static final String SELECT_AVAILABLE_ORGANS_BY_NHI = "select * from OrganDonating " +
+    private static final String SELECT_AVAILABLE_ORGANS_BY_NHI = "SELECT * FROM OrganDonating " +
             "JOIN DeathDetails ON OrganDonating.fkUserNhi = DeathDetails.fkUserNhi " +
             "JOIN Organ ON OrganDonating.fkOrgansId = organId " +
             "JOIN HealthDetails ON OrganDonating.fkUserNhi = HealthDetails.fkUserNhi " +
@@ -627,9 +627,9 @@ public class DBHandler {
      *
      * @param connection a Connection to the target database
      * @param startIndex starting value to receive from
-     * @param count count of clinicians
-     * @param name name of the clinicians
-     * @param region region the clinician resides in
+     * @param count      count of clinicians
+     * @param name       name of the clinicians
+     * @param region     region the clinician resides in
      * @return the Collection of clinicians
      */
     public Collection<Clinician> loadClinicians(Connection connection, int startIndex, int count, String name, String region) throws SQLException {
@@ -687,8 +687,8 @@ public class DBHandler {
      *
      * @param connection Connection to the target database
      * @param startIndex starting value to receive from
-     * @param count count of administrators
-     * @param name name of the administrators
+     * @param count      count of administrators
+     * @param name       name of the administrators
      * @return the Collection of administrators
      * @throws SQLException if there are errors with the SQL statements
      */
@@ -696,11 +696,11 @@ public class DBHandler {
         Collection<Administrator> administrators = new ArrayList<>();
 
         try (PreparedStatement statement = connection.prepareStatement(SELECT_ADMIN_ONE_TO_ONE_INFO_STMT)) {
-            statement.setString(1,name + "%");
-            statement.setString(2,name + "%");
-            statement.setString(3,name + "%");
-            statement.setInt(4,count);
-            statement.setInt(5,startIndex);
+            statement.setString(1, name + "%");
+            statement.setString(2, name + "%");
+            statement.setString(3, name + "%");
+            statement.setInt(4, count);
+            statement.setInt(5, startIndex);
             try (ResultSet resultSet = statement.executeQuery()) {
 
                 while (resultSet != null && resultSet.next()) {
@@ -972,7 +972,7 @@ public class DBHandler {
                         detailsList.add(new TransplantDetails(
                                 results.getString(1),
                                 nameBuilder,
-                                selectedOrgan, dateRegistered, results.getString("region"),age,bloodType ));
+                                selectedOrgan, dateRegistered, results.getString("region"), age, bloodType));
                     }
                 }
                 return detailsList;
@@ -983,26 +983,25 @@ public class DBHandler {
     /**
      * gets all relevant details relating to users waiting to receive an organ transplant
      *
-     * @param conn       connection to the target database
-     * @param nhi nhi of user to find details for
+     * @param conn connection to the target database
+     * @param nhi  nhi of user to find details for
      * @return list of transplant details matching the above criteria
      * @throws SQLException exception thrown during the transaction
      * @see TransplantDetails
      */
     public TransplantDetails getTransplantDetailsByNhi(Connection conn, String nhi, String organ) throws SQLException {
-        String queryString = "SELECT U.nhi, U.firstName, U.middleName, U.lastName, U.dob, O.organName, Dates.dateRegistered, Q.region, DD.momentOfDeath,H.bloodType from OrganAwaiting " +
+        String queryString = "SELECT U.nhi, U.firstName, U.middleName, U.lastName, U.dob, O.organName, Dates.dateRegistered, Q.region, DD.momentOfDeath,H.bloodType FROM OrganAwaiting " +
                 "JOIN Organ O ON OrganAwaiting.fkOrgansId = O.organId" +
                 " LEFT JOIN User U ON OrganAwaiting.fkUserNhi = U.nhi " +
                 " LEFT JOIN HealthDetails H ON U.nhi = H.fkUserNhi" +
                 " LEFT JOIN DeathDetails DD ON DD.fkUserNhi = U.nhi " +
                 " LEFT JOIN  " +
-                "(SELECT Address.fkUserNhi, Address.region from Address" +
+                "(SELECT Address.fkUserNhi, Address.region FROM Address" +
                 " JOIN ContactDetails Detail ON Address.fkContactId = Detail.contactId " +
                 "WHERE Address.fkContactId NOT IN (SELECT EmergencyContactDetails.fkContactId " +
                 "FROM EmergencyContactDetails)) Q ON U.nhi = Q.fkUserNhi " +
                 "LEFT JOIN OrganAwaitingDates Dates ON awaitingId = Dates.fkAwaitingId" +
                 " WHERE Dates.dateDeregistered IS NULL AND U.nhi = ? AND organName = ?";
-
 
 
         try (PreparedStatement stmt = conn.prepareStatement(queryString)) {
@@ -1024,7 +1023,7 @@ public class DBHandler {
                         return new TransplantDetails(
                                 results.getString("nhi"),
                                 nameBuilder,
-                                selectedOrgan, dateRegistered, results.getString("region"),age,bloodType );
+                                selectedOrgan, dateRegistered, results.getString("region"), age, bloodType);
                     }
                 }
 
@@ -1036,9 +1035,9 @@ public class DBHandler {
     /**
      * Gets the user's profile photo on the database based on user's ID.
      *
-     * @param <T> generic for type of the user
-     * @param role user's role. e.g. Clinician.class
-     * @param roleId id of user
+     * @param <T>        generic for type of the user
+     * @param role       user's role. e.g. Clinician.class
+     * @param roleId     id of user
      * @param connection connection to the target database
      * @return Profile Picture of type ImageStream if such user exists or has a profile picture, null otherwise.
      * @throws SQLException exception thrown during the transaction
@@ -1049,7 +1048,7 @@ public class DBHandler {
 
         if (role.isAssignableFrom(User.class)) {
             select_stmt = SELECT_USER_PROFILE_PHOTO_STMT;
-        } else if (role.isAssignableFrom(Clinician.class)){
+        } else if (role.isAssignableFrom(Clinician.class)) {
             select_stmt = SELECT_CLINICIAN_PROFILE_PHOTO_STMT;
         } else {
             throw new UnsupportedOperationException("Role does not support profile picture");
@@ -1062,7 +1061,7 @@ public class DBHandler {
                 }
             }
         }
-        if(profilePicture == null){
+        if (profilePicture == null) {
             return null;
         }
         return profilePicture.getBytes(1, (int) profilePicture.length());
@@ -1073,11 +1072,11 @@ public class DBHandler {
      * pre-condition: user's profile photo, user id and type of user must be provided.
      * post-condition: adds or updates user's profile photo on database.
      *
-     * @param role user's role. e.g. Clinician.class
-     * @param roleId id of user
+     * @param role         user's role. e.g. Clinician.class
+     * @param roleId       id of user
      * @param profilePhoto photo passed in
-     * @param connection connection to the target database
-     * @param <T> generic for type of the user
+     * @param connection   connection to the target database
+     * @param <T>          generic for type of the user
      * @throws SQLException exception thrown during the transaction
      */
     public <T> void updateProfilePhoto(Class<T> role, String roleId, InputStream profilePhoto, String imageType, Connection connection) throws SQLException {
@@ -1085,7 +1084,7 @@ public class DBHandler {
 
         if (role.isAssignableFrom(User.class)) {
             update_stmt = UPDATE_USER_PROFILE_PHOTO_STMT;
-        } else if (role.isAssignableFrom(Clinician.class)){
+        } else if (role.isAssignableFrom(Clinician.class)) {
             update_stmt = UPDATE_CLINICIAN_PROFILE_PHOTO_STMT;
         } else {
             throw new UnsupportedOperationException("Role does not support profile picture");
@@ -1121,7 +1120,7 @@ public class DBHandler {
         }
 
         try (PreparedStatement stmt = conn.prepareStatement(query)) {
-                stmt.setString(1, identifier);
+            stmt.setString(1, identifier);
 
             try (ResultSet result = stmt.executeQuery()) {
                 result.next();
@@ -1141,8 +1140,8 @@ public class DBHandler {
      */
     public Set getAllowedCountries(Connection connection) throws SQLException {
         Set countries = new HashSet();
-        try(PreparedStatement statement = connection.prepareStatement("SELECT countryName FROM Countries WHERE allowed = 1")){
-            try(ResultSet rs = statement.executeQuery()) {
+        try (PreparedStatement statement = connection.prepareStatement("SELECT countryName FROM Countries WHERE allowed = 1")) {
+            try (ResultSet rs = statement.executeQuery()) {
                 if (!rs.next()) {
                     return countries;
                 }
@@ -1156,18 +1155,18 @@ public class DBHandler {
     }
 
     /**
-     *Puts the allowed countries onto the database
+     * Puts the allowed countries onto the database
      *
      * @param connection connection to the database
-     * @param countries set of countries to add
+     * @param countries  set of countries to add
      * @throws SQLException thrown on invalid sql
      */
     public void putAllowedCountries(Connection connection, Set<String> countries) throws SQLException {
         String putStatment = "INSERT INTO Countries(countryName,allowed) VALUES (?,1)";
-        try(PreparedStatement statement = connection.prepareStatement("DELETE FROM Countries")){
+        try (PreparedStatement statement = connection.prepareStatement("DELETE FROM Countries")) {
             statement.execute();
-            for(String country : countries) {
-                try (PreparedStatement put = connection.prepareStatement(putStatment)){
+            for (String country : countries) {
+                try (PreparedStatement put = connection.prepareStatement(putStatment)) {
                     put.setString(1, country);
                     put.execute();
                 }
@@ -1178,8 +1177,9 @@ public class DBHandler {
 
     /**
      * Gets the image type that an image was sent with
-     * @param t type of role to query for
-     * @param userId id of the wanted profile pictures owner
+     *
+     * @param t          type of role to query for
+     * @param userId     id of the wanted profile pictures owner
      * @param connection connection to the database
      * @return the content type header string
      * @throws SQLException on a bad database connection
@@ -1188,15 +1188,15 @@ public class DBHandler {
 
         String statement = null;
 
-        if(t.equals(User.class)){
+        if (t.equals(User.class)) {
             statement = "SELECT pictureFormat FROM User WHERE nhi = ?";
-        } else if (t.equals(Clinician.class)){
+        } else if (t.equals(Clinician.class)) {
             statement = "SELECT pictureFormat FROM Clinician WHERE staffId = ?";
         }
-        if( statement == null){
+        if (statement == null) {
             return "";
         }
-        try(PreparedStatement preparedStatement = connection.prepareStatement(statement)){
+        try (PreparedStatement preparedStatement = connection.prepareStatement(statement)) {
             preparedStatement.setString(1, userId);
             try (ResultSet rs = preparedStatement.executeQuery()) {
                 if (rs.next()) {
@@ -1209,17 +1209,17 @@ public class DBHandler {
     }
 
     public List<String> runSqlQuery(String query, Connection connection) throws SQLException {
-        List<String> results  = new ArrayList<>();
-        try(PreparedStatement preparedStatement = connection.prepareStatement(query)){
+        List<String> results = new ArrayList<>();
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             try (ResultSet rs = preparedStatement.executeQuery()) {
-                if (!rs.next()){
+                if (!rs.next()) {
                     return results;
                 }
                 do {
                     ResultSetMetaData rsmd = rs.getMetaData();
                     StringBuilder sb = new StringBuilder();
                     int columns = rsmd.getColumnCount();
-                    for(int i = 1; i <= columns; i++){
+                    for (int i = 1; i <= columns; i++) {
                         String columnName = rs.getString(i);
                         sb.append(rsmd.getColumnName(i)).append(" ").append(columnName).append("\n");
                     }
@@ -1230,21 +1230,21 @@ public class DBHandler {
         return results;
     }
 
-   public List<AvailableOrganDetail> getAvailableOrgans(int startIndex,
-                                                        int count,
-                                                        String organ,
-                                                        String bloodType,
-                                                        String region,
-                                                        Connection connection) throws SQLException {
+    public List<AvailableOrganDetail> getAvailableOrgans(int startIndex,
+                                                         int count,
+                                                         String organ,
+                                                         String bloodType,
+                                                         String region,
+                                                         Connection connection) throws SQLException {
         List<AvailableOrganDetail> results = new ArrayList<>();
-        try(PreparedStatement preparedStatement = connection.prepareStatement(SELECT_AVAILABLE_ORGANS)){
-            preparedStatement.setString(1,bloodType + "%");
-            preparedStatement.setString(2,organ + "%");
-            preparedStatement.setString(3,region + "%");
+        try (PreparedStatement preparedStatement = connection.prepareStatement(SELECT_AVAILABLE_ORGANS)) {
+            preparedStatement.setString(1, bloodType + "%");
+            preparedStatement.setString(2, organ + "%");
+            preparedStatement.setString(3, region + "%");
             preparedStatement.setInt(4, count);
-            preparedStatement.setInt(5,startIndex);
-            try(ResultSet resultSet = preparedStatement.executeQuery()){
-                while(resultSet.next()) {
+            preparedStatement.setInt(5, startIndex);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
                     try {
                         AvailableOrganDetail organDetail = new AvailableOrganDetail();
                         organDetail.setDonorNhi(resultSet.getString("fkUserNhi"));
@@ -1256,7 +1256,7 @@ public class DBHandler {
                         if (organDetail.isOrganStillValid()) {
                             results.add(organDetail);
                         }
-                    } catch (NullPointerException e){
+                    } catch (NullPointerException e) {
                         Log.info("User who is not dead is present in the DeathDetails table");
                     }
                 }
@@ -1267,7 +1267,7 @@ public class DBHandler {
 
     }
 
-    public void getDeathDetails(User user, Connection connection) throws  SQLException {
+    public void getDeathDetails(User user, Connection connection) throws SQLException {
         try (PreparedStatement stmt = connection.prepareStatement(SELECT_DEATH_DETAILS_STMT)) {
             stmt.setString(1, user.getNhi());
             try (ResultSet resultSet = stmt.executeQuery()) {
@@ -1287,11 +1287,11 @@ public class DBHandler {
     }
 
     public AvailableOrganDetail getAvailableOrgansByNhi(String organ, String donorNhi, Connection connection) throws SQLException {
-        try(PreparedStatement preparedStatement = connection.prepareStatement(SELECT_AVAILABLE_ORGANS_BY_NHI)){
-                preparedStatement.setString(1,donorNhi);
-                preparedStatement.setString(2,organ);
-            try(ResultSet resultSet = preparedStatement.executeQuery()){
-                while(resultSet.next()) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(SELECT_AVAILABLE_ORGANS_BY_NHI)) {
+            preparedStatement.setString(1, donorNhi);
+            preparedStatement.setString(2, organ);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet.next()) {
                     try {
                         AvailableOrganDetail organDetail = new AvailableOrganDetail();
                         organDetail.setDonorNhi(resultSet.getString("fkUserNhi"));
@@ -1303,12 +1303,11 @@ public class DBHandler {
                         if (organDetail.isOrganStillValid()) {
                             return organDetail;
                         }
-                    } catch (NullPointerException e){
+                    } catch (NullPointerException e) {
                         Log.info("User who is not dead is present in the DeathDetails table");
                     }
                 }
             }
-
         }
         return null;
     }
@@ -1361,5 +1360,17 @@ public class DBHandler {
                 return result.getInt(1) == 1;
             }
         }
+    }
+
+    /**
+     * Gets an appointment from the database that is accepted or rejected and has not been seen by the specified user.
+     * @param connection Connection to the target database
+     * @param nhi        Nhi of the user to check appointments for
+     * @return           Appointment that the user has not seen but has been updated
+     * @throws SQLException If the entry does not exist or the connection is invalid
+     */
+    public Appointment getUnseenAppointment(Connection connection, String nhi) throws SQLException {
+        FetchUserAppointmentsStrategy fetchUserAppointmentStrategy = new FetchUserAppointmentsStrategy();
+        return fetchUserAppointmentStrategy.getUnseenAppointment(connection, nhi);
     }
 }
