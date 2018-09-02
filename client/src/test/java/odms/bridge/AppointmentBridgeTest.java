@@ -73,58 +73,52 @@ public class AppointmentBridgeTest extends BridgeTestBase {
     }
 
     @Test
-    public void testGetUnseenAppointment_ReturnsAppointmentOnSuccess() throws IOException {
-//        Appointment appointment;
-//
-//        Call mockCall = mock(Call.class);
-//        Response mockResponse = mock(Response.class);
-//        ResponseBody mockResponseBody = mock(ResponseBody.class);
-//        when(mockResponse.body()).thenReturn(mockResponseBody);
-//
-//        when(mockResponseBody.string()).thenReturn(new Gson().toJson(new Appointment[]{
-//                new Appointment()
-//        }));
-//
-//        when(mockResponse.body()).thenReturn(mockResponseBody);
-//        when(mockClient.newCall(any(Request.class))).thenReturn(mockCall);
-//
-//        appointment = appointmentsBridge.getUnseenAppointment("ABC1234");
-//
-//
-//        Assert.assertNotNull(appointment);
-    }
-
-    @Test
-    public void testGetUnseenAppointment_ReturnsNullOnEmptyList() {
-
-    }
-
-    @Test
-    public void testGetUnseenAppointment_ReturnsNullOnNullBody() {
-
-    }
-
-    @Test
-    public void testGetUnseenAppointment_ReturnsNullOnNullPointerException() throws IOException {
-        Appointment appointment;
+    public void testGetUnseenAppointment_ReturnsAppointment_OnSuccess() throws IOException {
+        Appointment expected = new Appointment();
+        expected.setAppointmentId(0);
 
         Call mockCall = mock(Call.class);
         Response mockResponse = mock(Response.class);
-        when(mockResponse.code()).thenReturn(400);
         ResponseBody mockResponseBody = mock(ResponseBody.class);
-        when(mockResponseBody.string()).thenReturn("{}");
-
-        when(mockResponse.body()).thenReturn(mockResponseBody);
         when(mockClient.newCall(any(Request.class))).thenReturn(mockCall);
+        when(mockCall.execute()).thenReturn(mockResponse);
+        when(mockResponse.code()).thenReturn(200);
+        when(mockResponse.body()).thenReturn(mockResponseBody);
+        when(mockResponseBody.string()).thenReturn(new Gson().toJson(expected));
 
-        appointment = appointmentsBridge.getUnseenAppointment("ABC1234");
+        Appointment actual = appointmentsBridge.getUnseenAppointment("default");
+        Assert.assertEquals(expected, actual);
+    }
 
 
-        Assert.assertNull(appointment);
+    @Test
+    public void testGetUnseenAppointment_ReturnsNull_OnNullBody() throws IOException{
+        Call mockCall = mock(Call.class);
+        Response mockResponse = mock(Response.class);
+        when(mockClient.newCall(any(Request.class))).thenReturn(mockCall);
+        when(mockCall.execute()).thenReturn(mockResponse);
+        when(mockResponse.code()).thenReturn(200);
+        when(mockResponse.body()).thenReturn(null);
+
+        Appointment actual = appointmentsBridge.getUnseenAppointment("default");
+        Assert.assertNull(actual);
     }
 
     @Test
-    public void testGetUnseenAppointment_ReturnsNullOnIOException() {
+    public void testGetUnseenAppointment_ReturnsNull_OnNullPointerException() {
+        when(mockClient.newCall(any(Request.class))).thenReturn(null);
 
+        Appointment actual = appointmentsBridge.getUnseenAppointment("default");
+        Assert.assertNull(actual);
+    }
+
+    @Test
+    public void testGetUnseenAppointment_ReturnsNull_OnIOException() throws IOException{
+        Call mockCall = mock(Call.class);
+        when(mockClient.newCall(any(Request.class))).thenReturn(mockCall);
+        when(mockCall.execute()).thenThrow(new IOException());
+
+        Appointment actual = appointmentsBridge.getUnseenAppointment("default");
+        Assert.assertNull(actual);
     }
 }

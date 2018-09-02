@@ -12,9 +12,6 @@ import odms.controller.gui.popup.utils.AlertWindowFactory;
 import okhttp3.*;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 
 public class AppointmentsBridge extends Bifrost {
     private static final String APPOINTMENTS = "/appointments";
@@ -105,13 +102,7 @@ public class AppointmentsBridge extends Bifrost {
 
         try (Response res = client.newCall(request).execute()) {
             if (res.body() != null) {
-                Collection<Appointment> collectionResults = new JsonHandler().decodeAppointments(res.body().string());
-                List<Appointment> listResults = new ArrayList<>(collectionResults);
-                if (!listResults.isEmpty()) {
-                    return listResults.get(0);
-                } else {
-                    return null;
-                }
+                return new JsonHandler().decodeOneAppointment(res.body().string());
             } else {
                 Log.warning("The response body was null");
                 return null;
@@ -138,7 +129,7 @@ public class AppointmentsBridge extends Bifrost {
             }
 
             @Override
-            public void onResponse(Call call, Response response) throws IOException {
+            public void onResponse(Call call, Response response) {
                 if (!response.isSuccessful()) {
                     logAndNotify(response);
                 }
