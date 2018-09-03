@@ -55,20 +55,20 @@ public class AppController {
     private int historyPointer = 0;
     private DataHandler dataHandler = new JsonHandler();
     private OkHttpClient client = new OkHttpClient();
-    private UserBridge userBridge = new UserBridge(client);
-    private ClinicianBridge clinicianBridge = new ClinicianBridge(client);
-    private AdministratorBridge administratorBridge = new AdministratorBridge(client);
-    private OrgansBridge organsBridge = new OrgansBridge(client);
-    private LoginBridge loginBridge = new LoginBridge(client);
-    private TransplantBridge transplantBridge = new TransplantBridge(client);
+    private UserBridge userBridge;
+    private ClinicianBridge clinicianBridge;
+    private AdministratorBridge administratorBridge;
+    private OrgansBridge organsBridge;
+    private LoginBridge loginBridge;
+    private TransplantBridge transplantBridge;
     private UserController userController = null;
     private ClinicianController clinicianController = null;
-    private CountriesBridge countriesBridge = new CountriesBridge(client);
+    private CountriesBridge countriesBridge;
     private AdministratorViewController administratorViewController = null;
     private StatusBarController statusBarController = new StatusBarController();
-    private Stack<User> redoStack = new Stack<>();
     private String token;
     private SQLBridge sqlBridge = new SQLBridge(client);
+    private AppointmentsBridge appointmentsBridge = new AppointmentsBridge(client);
     private OdmsSocketHandler socketHandler = new OdmsSocketHandler(client, ServerEventNotifier.getInstance());
     private String username = "";
     private String name = "";
@@ -83,6 +83,13 @@ public class AppController {
 
         this.allCountries = generateAllCountries();
         generateAllNZRegion();
+        administratorBridge = new AdministratorBridge(client);
+        clinicianBridge = new ClinicianBridge(client);
+        userBridge = new UserBridge(client);
+        organsBridge = new OrgansBridge(client);
+        loginBridge = new LoginBridge(client);
+        transplantBridge = new TransplantBridge(client);
+        countriesBridge = new CountriesBridge(client);
     }
 
     /**
@@ -607,7 +614,6 @@ public class AppController {
         if (user.isDeleted()) {
             if (findUser(user.getNhi()) == null) {
                 user.setDeleted(false);
-                redoStack.push(user);
             } else {
                 throw new ProfileAlreadyExistsException();
             }
@@ -726,6 +732,10 @@ public class AppController {
 
     public SQLBridge getSqlBridge() {
         return sqlBridge;
+    }
+
+    public AppointmentsBridge getAppointmentsBridge() {
+        return appointmentsBridge;
     }
 
     public OdmsSocketHandler getSocketHandler() {

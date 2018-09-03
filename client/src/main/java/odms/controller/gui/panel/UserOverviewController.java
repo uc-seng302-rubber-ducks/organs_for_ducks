@@ -9,6 +9,7 @@ import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import odms.commons.config.ConfigPropertiesSession;
 import odms.commons.model.User;
 import odms.commons.utils.Log;
 import odms.controller.AppController;
@@ -120,15 +121,18 @@ public class UserOverviewController {
      * @param user The current user.
      */
     public void showUser(User user) {
+        currentUser = user;
         NHIValue.setText(user.getNhi());
         fNameValue.setText(user.getFirstName());
         DOBValue.setText(user.getDateOfBirth().toString());
 
-        if (user.getProfilePhotoFilePath() == null || user.getProfilePhotoFilePath().equals("")) {
-            URL url = getClass().getResource("/default-profile-picture.jpg");
-            displayImage(profilePicture, url);
-        } else {
-            displayImage(profilePicture, user.getProfilePhotoFilePath());
+        if (ConfigPropertiesSession.getInstance().getProperty("testConfig", "false").equals("false")) {
+            if (user.getProfilePhotoFilePath() == null || user.getProfilePhotoFilePath().equals("")) {
+                URL url = getClass().getResource("/default-profile-picture.jpg");
+                displayImage(profilePicture, url);
+            } else {
+                displayImage(profilePicture, user.getProfilePhotoFilePath());
+            }
         }
 
         if (user.getMiddleName() != null) {
