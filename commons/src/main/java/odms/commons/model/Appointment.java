@@ -119,6 +119,12 @@ public class Appointment {
         this.seen = hasSeen;
     }
 
+
+    /**
+     * A toString that only shows details about the appointment that the user should see.
+     *
+     * @return A string containing details of the appointment
+     */
     public String displayDetails() {
         return "User Id: " + requestingUserId + "\n" +
                 "Clinician Id: " + requestedClinicianId + '\n' +
