@@ -25,18 +25,23 @@ public class UserAppointmentAlertController {
     public void checkForUnseenUpdates(String userId) {
         Appointment appointment = controller.getAppointmentsBridge().getUnseenAppointment(userId);
         if (appointment != null) {
-            System.out.println("Here we go");
             createAlert(appointment);
         }
     }
 
     /**
      * Creates an alert window based on the data in the appointment object. It then updates the appointment's seen status
+     * If a message "ABORT" is returned, then an incorrect appointment status was retrieved from the database.
      * @param appointment Appointment to create an alert about
      */
     public void createAlert(Appointment appointment) { //Sonarlint this will be called by the broadcast listener so shut your mouth
-        AlertWindowFactory.generateAlertWindow(createMessage(appointment));
-        updateAppointmentSeenStatus(appointment);
+        String message = createMessage(appointment);
+        if (!message.equals("ABORT")) {
+            AlertWindowFactory.generateAlertWindow(message);
+            updateAppointmentSeenStatus(appointment);
+        } else {
+            Log.info("The alert creation was successfully aborted");
+        }
     }
 
     /**
@@ -55,8 +60,8 @@ public class UserAppointmentAlertController {
             //Uses the description of the appointment here because haven't actually got a way to store a clinician's reason for rejection yet.
 
         } else {
-            Log.warning("The user has been notified about an appointment with an incorrect status");
-            return "There was an error in generating this alert";
+            Log.warning("A notification attempt about an appointment with an incorrect status was made");
+            return "ABORT";
         }
 
 
