@@ -78,7 +78,7 @@ public class UserAppointmentLogicController implements PropertyChangeListener {
             return;
         }
 
-        // delete the appointment
+
     }
 
     /**
