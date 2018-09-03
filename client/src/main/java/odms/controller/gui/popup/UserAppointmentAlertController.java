@@ -10,17 +10,12 @@ import odms.controller.gui.popup.utils.AlertWindowFactory;
  * Handles the alert creation for when there is an appointment status update the user should know about.
  * Makes appropriate changes to the appointment once the user hsa seen the alert.
  */
-public class userAppointmentAlertController {
+public class UserAppointmentAlertController {
 
     private AppController controller;
-    private String userId;
 
-    /**
-     * Initialise the controller by giving it appcontroller so it can access the appointments bridge
-     * @param controller AppController through which it can access the bridge
-     */
-    public userAppointmentAlertController(AppController controller) {
-        this. controller = controller;
+    public void setAppController(AppController controller) {
+        this.controller = controller;
     }
 
     /**
@@ -28,18 +23,19 @@ public class userAppointmentAlertController {
      * @param userId Id of the user to check for unseen updates for
      */
     public void checkForUnseenUpdates(String userId) {
-//        Appointment appointment = controller.getAppointmentsBridge().getUnseenAppointment();
-//        if (appointment != null) {
-//            createAlert(appointment);
-//        }
+        Appointment appointment = controller.getAppointmentsBridge().getUnseenAppointment(userId);
+        if (appointment != null) {
+            System.out.println("Here we go");
+            createAlert(appointment);
+        }
     }
 
     /**
      * Creates an alert window based on the data in the appointment object. It then updates the appointment's seen status
      * @param appointment Appointment to create an alert about
      */
-    public void createAlert(Appointment appointment) { //Sonarlint this will be called by the broadcast listener so shut yor mouth
-        AlertWindowFactory.generateInfoWindow(createMessage(appointment));
+    public void createAlert(Appointment appointment) { //Sonarlint this will be called by the broadcast listener so shut your mouth
+        AlertWindowFactory.generateAlertWindow(createMessage(appointment));
         updateAppointmentSeenStatus(appointment);
     }
 

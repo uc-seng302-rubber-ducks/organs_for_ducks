@@ -26,6 +26,7 @@ import odms.controller.gui.StatusBarController;
 import odms.controller.gui.UnsavedChangesAlert;
 import odms.controller.gui.panel.*;
 import odms.controller.gui.panel.view.UserAppointmentViewController;
+import odms.controller.gui.popup.UserAppointmentAlertController;
 import odms.socket.ServerEventNotifier;
 
 import java.beans.PropertyChangeEvent;
@@ -131,6 +132,7 @@ public class UserController implements PropertyChangeListener {
     private Stage stage;
     private EmergencyContact contact = null;
     private ObservableList<Change> changelog;
+    private UserAppointmentAlertController userAppointmentAlertController = new UserAppointmentAlertController();
 
     /**
      * Gives the user view the application controller and hides all label and buttons that are not
@@ -203,10 +205,15 @@ public class UserController implements PropertyChangeListener {
         changelog.addListener((ListChangeListener.Change<? extends Change> change) -> historyTableView
                 .setItems(changelog));
 
-            userProfileTabPageController.init(controller, user, this.stage, fromClinician);
+        userProfileTabPageController.init(controller, user, this.stage, fromClinician);
 
-            ServerEventNotifier.getInstance().addPropertyChangeListener(this);
-        }
+        ServerEventNotifier.getInstance().addPropertyChangeListener(this);
+
+        userAppointmentAlertController.setAppController(controller);
+        userAppointmentAlertController.checkForUnseenUpdates(user.getNhi());
+    }
+
+
 
 
     /**
