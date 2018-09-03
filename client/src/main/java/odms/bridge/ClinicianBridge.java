@@ -230,14 +230,10 @@ public class ClinicianBridge extends RoleBridge {
                     Log.warning("A null response body was returned to the user");
                     return;
                 }
-//                List<Appointment> appointments = new Gson().fromJson(body.string(), new TypeToken<List<Appointment>>() {
-//                }.getType());
                 String bodyString = response.body().string();
-//                observableAppointments.addAll(new JsonHandler().decodeAppointments(bodyString));
 
                 Platform.runLater(() -> {
                     observableAppointments.clear();
-                    //observableAppointments.addAll(appointments);
                     observableAppointments.addAll(new JsonHandler().decodeAppointments(bodyString));
                 });
             }

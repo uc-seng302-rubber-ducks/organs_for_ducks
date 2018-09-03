@@ -63,7 +63,6 @@ public class ClinicianAppointmentRequestViewController {
      * Initialises the panel
      */
     public void init(AppController appController, Clinician clinician) {
-        System.out.println("Hello yes");
         availableAppointments.addListener((ListChangeListener<? super Appointment>) observable -> populateTable());
 
         logicController = new ClinicianAppointmentRequestLogicController(availableAppointments, appController, clinician);

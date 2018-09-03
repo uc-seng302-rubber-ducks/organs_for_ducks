@@ -19,8 +19,8 @@ public class FetchClincianAppointmentsStrategy extends AbstractFetchAppointmentS
         Collection<Appointment> appointments = new ArrayList<>();
         try (PreparedStatement preparedStatement = connection.prepareStatement(AppointmentStatement.GET_APPTS_FOR_CLINICIAN.getStatement())) {
             preparedStatement.setString(1, userId);
-            preparedStatement.setInt(2, count);
-            preparedStatement.setInt(3, start);
+            preparedStatement.setInt(2, start);
+            preparedStatement.setInt(3, count);
             try (ResultSet results = preparedStatement.executeQuery()) {
                 while (results.next()) {
                     appointments.add(decodeAppointmentFromResultSet(results));
