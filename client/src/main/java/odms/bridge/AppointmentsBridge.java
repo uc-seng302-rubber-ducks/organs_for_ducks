@@ -61,6 +61,36 @@ public class AppointmentsBridge extends Bifrost {
         });
     }
 
+    public void getClinicianAppointments(int startIndex, int count, String staffId, String token, ObservableList<Appointment> observableAppointments) {
+        String url = ip + APPOINTMENTS + "/clinicians/" + staffId + "?startIndex=" + startIndex + "&count=" + count;
+        Request request = new Request.Builder().addHeader(tokenHeader, token).url(url).build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.warning("Failed to get clinicians. On Failure Triggered", e);
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (response == null) {
+                    Log.warning("A null response was returned to the user");
+                    return;
+                }
+                ResponseBody body = response.body();
+                if (body == null) {
+                    Log.warning("A null response body was returned to the user");
+                    return;
+                }
+                String bodyString = response.body().string();
+
+                Platform.runLater(() -> {
+                    observableAppointments.clear();
+                    observableAppointments.addAll(new JsonHandler().decodeAppointments(bodyString));
+                });
+            }
+        });
+    }
+
     /**
      * Fire a post request to the server for creating appointments
      *

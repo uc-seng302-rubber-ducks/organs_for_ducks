@@ -44,7 +44,7 @@ public class ClinicianAppointmentRequestLogicController implements PropertyChang
 
     public void updateTable(int startIndex) {
         availableAppointments.clear();
-        appController.getClinicianBridge().getAppointments(startIndex, ROWS_PER_PAGE, clinician.getStaffId(), appController.getToken(), availableAppointments);
+        appController.getAppointmentsBridge().getClinicianAppointments(startIndex, ROWS_PER_PAGE, clinician.getStaffId(), appController.getToken(), availableAppointments);
     }
 
     /**
