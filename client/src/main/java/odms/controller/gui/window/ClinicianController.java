@@ -223,13 +223,15 @@ public class ClinicianController implements PropertyChangeListener, UserLauncher
         }
 
         //Todo: add method to correctly populate the notification circle jb 4/9
-
         showAppointmentNotifications(-10);
     }
 
     /**
+     *Takes the number of new appointments to notify a Clinician about and then populates a notification bubble on the appointment tab with them
      *
-     * @param notificationsPending
+     * Will show 9+ for notifications over 10 due to size constraints
+     *
+     * @param notificationsPending number of notification to inform clinician about
      */
     private void showAppointmentNotifications(int notificationsPending) {
         String notifications;
