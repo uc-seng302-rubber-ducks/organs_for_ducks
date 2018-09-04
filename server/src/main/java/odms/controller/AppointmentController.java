@@ -99,7 +99,7 @@ public class AppointmentController extends BaseController {
         try (Connection connection = driver.getConnection()) {
             handler.deleteAppointment(appointmentToDelete, connection);
 
-            String appointmentId = Integer.toString(handler.getAppointmentId(connection, appointmentToDelete));
+            String appointmentId = Integer.toString(appointmentToDelete.getAppointmentId());
             socketHandler.broadcast(EventTypes.APPOINTMENT_UPDATE, appointmentId, appointmentId);
 
         } catch (SQLException e) {

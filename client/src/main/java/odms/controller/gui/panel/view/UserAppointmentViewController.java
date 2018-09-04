@@ -106,7 +106,11 @@ public class UserAppointmentViewController {
      * @param appointment The selected appointment to be displayed in more detail
      */
     private void displayAppointmentDetails(Appointment appointment) {
-        userAppointmentDetailsTextArea.setText(appointment.displayDetails());
+        if (appointment != null) {
+            userAppointmentDetailsTextArea.setText(appointment.displayDetails());
+        } else {
+            userAppointmentDetailsTextArea.clear();
+        }
     }
 
     /**

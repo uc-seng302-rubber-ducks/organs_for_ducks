@@ -4,6 +4,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
 import odms.commons.model.Appointment;
 import odms.commons.model.User;
@@ -20,6 +21,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 public class UserAppointmentLogicController implements PropertyChangeListener {
 
@@ -78,7 +80,15 @@ public class UserAppointmentLogicController implements PropertyChangeListener {
             return;
         }
 
+        Optional<ButtonType> result = AlertWindowFactory.generateConfirmation("Are you sure you want to delete this appointment?");
 
+        if (!result.isPresent()) {
+            return;
+        }
+
+        if (result.get() == ButtonType.OK) {
+            appController.getAppointmentsBridge().deleteAppointment(appointment);
+        }
     }
 
     /**
