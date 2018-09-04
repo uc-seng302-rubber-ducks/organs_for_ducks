@@ -118,7 +118,7 @@ public class ClinicianController implements PropertyChangeListener, UserLauncher
     @FXML
     private AvailableOrgansViewController availableOrgansViewController;
     @FXML
-    private ClinicianAppointmentRequestViewController appointmentRequestViewController = new ClinicianAppointmentRequestViewController();
+    private ClinicianAppointmentRequestViewController appointmentRequestViewController;
     @FXML
     private Button redoButton;
     @FXML
