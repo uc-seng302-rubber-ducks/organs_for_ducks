@@ -8,10 +8,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.control.cell.TextFieldListCell;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.util.StringConverter;
 import odms.commons.model.Change;
 import odms.commons.model.MedicalProcedure;
 import odms.commons.model.User;
@@ -19,11 +17,13 @@ import odms.commons.model._enum.Organs;
 import odms.commons.utils.Log;
 import odms.controller.AppController;
 import odms.controller.gui.popup.OrgansAffectedController;
+import odms.controller.gui.widget.TextStringCheckBox;
 import odms.controller.gui.window.UserController;
 
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class ProcedureTabController {
@@ -61,7 +61,7 @@ public class ProcedureTabController {
     private TableView<MedicalProcedure> pendingProcedureTableView;
 
     @FXML
-    private ListView<Organs> organsAffectedByProcedureListView;
+    private ListView<TextStringCheckBox> organsAffectedByProcedureListView;
 
     @FXML
     private TextArea descriptionTextArea;
@@ -89,15 +89,6 @@ public class ProcedureTabController {
         application = controller;
         currentUser = user;
         this.parent = parent;
-        if (!fromClinician) {
-            procedureDateSelector.setEditable(false);
-            procedureTextField.setEditable(false);
-            descriptionTextArea.setEditable(false);
-            addProcedureButton.setVisible(false);
-            removeProcedureButton.setVisible(false);
-            updateProceduresButton.setVisible(false);
-            modifyOrgansProcedureButton.setVisible(false);
-        }
 
         procedureWarningLabel.setText("");
         procedureDateSelector.setValue(LocalDate.now());
@@ -107,8 +98,22 @@ public class ProcedureTabController {
         previousProcedureTableView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         moveSelectedProcedureTo(previousProcedureTableView, pendingProcedureTableView);
         moveSelectedProcedureTo(pendingProcedureTableView, previousProcedureTableView);
-
+        descriptionTextArea.setWrapText(true);
         constructTables();
+        if (!fromClinician) {
+            procedureDateSelector.setEditable(false);
+            procedureTextField.setEditable(false);
+            descriptionTextArea.setEditable(false);
+            addProcedureButton.setVisible(false);
+            removeProcedureButton.setVisible(false);
+            updateProceduresButton.setVisible(false);
+            modifyOrgansProcedureButton.setVisible(false);
+            List<TextStringCheckBox> organs = organsAffectedByProcedureListView.getItems();
+            for(TextStringCheckBox organ : organs){
+                organ.setDisable(true);
+            }
+        }
+
         modifyOrgansProcedureButton.setVisible(false);
     }
 
@@ -129,7 +134,12 @@ public class ProcedureTabController {
         pendingProcedureTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         previousProcedureTableView.getColumns().addAll(previousProcedureColumn, previousDateColumn);
         pendingProcedureTableView.getColumns().addAll(pendingProcedureColumn, pendingDateColumn);
-        organsAffectedByProcedureListView.setCellFactory(oabp -> {
+        ObservableList<TextStringCheckBox> allOrgans = FXCollections.observableList(new ArrayList<>());
+        for(Organs organ : Organs.values()){
+            allOrgans.add(new TextStringCheckBox(organ.toString()));
+        }
+        organsAffectedByProcedureListView.setItems(allOrgans);
+/*        organsAffectedByProcedureListView.setCellFactory(oabp -> {
             TextFieldListCell<Organs> cell = new TextFieldListCell<>();
             cell.setConverter(new StringConverter<Organs>() {
                 @Override
@@ -143,7 +153,7 @@ public class ProcedureTabController {
                 }
             });
             return cell;
-        });
+        });*/
     }
 
     /**
@@ -330,8 +340,16 @@ public class ProcedureTabController {
         procedureTextField.setText(procedure.getSummary());
         procedureDateSelector.setValue(procedure.getProcedureDate());
         descriptionTextArea.setText(procedure.getDescription());
-        organsAffectedByProcedureListView
-                .setItems(FXCollections.observableList(procedure.getOrgansAffected()));
+
+        List<Organs> organsAffected = procedure.getOrgansAffected();
+        List<TextStringCheckBox> listOrgans = organsAffectedByProcedureListView.getItems();
+        for(TextStringCheckBox organCheck : listOrgans){
+            organCheck.setSelected(false);
+            if(organsAffected.contains(Organs.valueOf(organCheck.toString().toUpperCase().replaceAll(" ", "_")))){
+                organCheck.setSelected(true);
+            }
+        }
+
         parent.updateUndoRedoButtons();
         pendingProcedureTableView.refresh();
         previousProcedureTableView.refresh();
