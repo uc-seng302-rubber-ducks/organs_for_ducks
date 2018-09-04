@@ -61,6 +61,13 @@ public class AppointmentsBridge extends Bifrost {
         });
     }
 
+    /**
+     * Gets the count of a clinicians pending appointments
+     *
+     * @param staffId clinicians appointments to get
+     * @param token auth token for the server
+     * @return number of appointments pending
+     */
     public int getPendingAppointments(String staffId, String token) {
         String url = String.format("%s/appointments/%s/pending", ip, staffId);
         Request request = new Request.Builder().url(url).addHeader(tokenHeader, token).build();
