@@ -61,6 +61,24 @@ public class AppointmentsBridge extends Bifrost {
         });
     }
 
+    public int getPendingAppointments(String staffId, String token) {
+        String url = String.format("%s/appointments/%s/pending", ip, staffId);
+        Request request = new Request.Builder().url(url).addHeader(tokenHeader, token).build();
+        try (Response res = client.newCall(request).execute()) {
+            try {
+                return Integer.parseInt(res.body().string().replaceAll("\\[", "").replaceAll("]", ""));
+            } catch (IOException e) {
+                Log.severe("response body for pending appointments could not be parsed", e);
+            } catch (NumberFormatException e) {
+                Log.severe("Invalid pending appointment response returned.", e);
+            }
+            return 0;
+        } catch (IOException e) {
+            Log.severe("request to pending appointments failed", e);
+        }
+        return 0;
+    }
+
     /**
      * Fire a post request to the server for creating appointments
      *

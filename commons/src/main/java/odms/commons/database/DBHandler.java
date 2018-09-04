@@ -1339,4 +1339,15 @@ public class DBHandler {
             }
         }
     }
+
+    public int getPendingAppointments(Connection connection, String staffId) throws SQLException {
+        try(PreparedStatement preparedStatement = connection.prepareStatement("SELECT count(*) FROM AppointmentDetails JOIN AppointmentCategory ON fkCategoryId = categoryId WHERE fkStaffId = ? AND fkStatusId = 2")){
+            preparedStatement.setString(1, staffId);
+            try(ResultSet resultSet = preparedStatement.executeQuery()){
+                resultSet.next();
+                return resultSet.getInt(1);
+            }
+        }
+
+    }
 }

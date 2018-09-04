@@ -26,6 +26,7 @@ import javafx.scene.text.TextBoundsType;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import odms.bridge.AppointmentsBridge;
 import odms.bridge.ClinicianBridge;
 import odms.commons.config.ConfigPropertiesSession;
 import odms.commons.exception.ApiException;
@@ -161,6 +162,7 @@ public class ClinicianController implements PropertyChangeListener, UserLauncher
     private Collection<PropertyChangeListener> parentListeners;
 
     private boolean admin = false;
+    private AppointmentsBridge appointmentsBridge;
 
     /**
      * Initializes the controller class for the clinician overview.
@@ -176,6 +178,7 @@ public class ClinicianController implements PropertyChangeListener, UserLauncher
         this.stage = stage;
         this.clinician = clinician;
         this.admin = fromAdmin;
+        this.appointmentsBridge = appController.getAppointmentsBridge();
         openStages = new ArrayList<>();
 
         ServerEventNotifier.getInstance().addPropertyChangeListener(this);
@@ -223,7 +226,10 @@ public class ClinicianController implements PropertyChangeListener, UserLauncher
         }
 
         //Todo: add method to correctly populate the notification circle jb 4/9
-        showAppointmentNotifications(-10);
+        //ObservableList<Integer> n = FXCollections.observableList(notifications);
+        int notifications = appointmentsBridge.getPendingAppointments(clinician.getStaffId(),appController.getToken());
+        showAppointmentNotifications(notifications);
+        //n.addListener((ListChangeListener<? super Integer>) (ListChangeListener) -> showAppointmentNotifications(notifications));
     }
 
     /**
@@ -231,9 +237,10 @@ public class ClinicianController implements PropertyChangeListener, UserLauncher
      *
      * Will show 9+ for notifications over 10 due to size constraints
      *
-     * @param notificationsPending number of notification to inform clinician about
+     * @param notificationsPending number of notifications to inform clinician about
      */
     private void showAppointmentNotifications(int notificationsPending) {
+
         String notifications;
         Text numberOfNotifications = new Text();
         if(notificationsPending <= 0 ){
