@@ -14,6 +14,7 @@ import odms.commons.model._enum.AppointmentCategory;
 import odms.commons.model._enum.AppointmentStatus;
 import odms.controller.AppController;
 import odms.controller.gui.panel.logic.UserAppointmentLogicController;
+import odms.controller.gui.popup.utils.AlertWindowFactory;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -89,6 +90,11 @@ public class UserAppointmentViewController {
      */
     @FXML
     public void cancelAppointment() {
+        if (userAppointmentsTableView.getSelectionModel().getSelectedItem() == null) {
+            AlertWindowFactory.generateInfoWindow("You must select an appointment to delete");
+            return;
+        }
+
         logicController.cancelAppointment(userAppointmentsTableView.getSelectionModel().getSelectedItem());
     }
 
