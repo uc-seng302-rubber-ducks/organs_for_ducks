@@ -18,17 +18,15 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 public class ClinicianAppointmentRequestViewController {
-    @FXML
-    private Button clinicianRejectAppointmentBtn;
 
     @FXML
-    private Button clinicianAcceptAppointmentBtn;
+    private DatePicker appointmentRequestDate;
 
     @FXML
     private TextArea appointmentRequestDescription;
 
     @FXML
-    private ComboBox appointmentRequestCategory;
+    private ComboBox<AppointmentCategory> appointmentRequestCategory;
 
     @FXML
     private TextField appointmentRequestTime;
@@ -112,11 +110,38 @@ public class ClinicianAppointmentRequestViewController {
     }
 
     /**
-     * Displays the appointment details in the text area
+     * Displays the appointment details in separated fields
+     *
      * @param appointment The selected appointment to be displayed in more detail
      */
     private void displayAppointmentDetails(Appointment appointment) {
-        appointmentRequestDescription.setText(appointment.getRequestDescription()); //appointment.displayDetails does not exist in this branch. Replace getDescription with it when possible
+        if (appointment != null) {
+            appointmentRequestUserNhi.setText(appointment.getRequestingUserId());
+            appointmentRequestCategory.setValue(appointment.getAppointmentCategory());
+            appointmentRequestDate.setValue(appointment.getRequestedDate().toLocalDate());
+            appointmentRequestTime.setText(getAppointmentTime(appointment.getRequestedDate()));
+            appointmentRequestDescription.setText(appointment.getRequestDescription());
+        } else {
+            appointmentRequestUserNhi.setText("");
+            appointmentRequestCategory.setValue(null);
+            appointmentRequestDate.setValue(null);
+            appointmentRequestTime.clear();
+            appointmentRequestDescription.clear();
+        }
+    }
+
+    /**
+     * Extracts the appointment time and formats it to be human readable
+     *
+     * @param dateTime The local date time object of the appointment
+     * @return The appointment time as a String
+     */
+    private String getAppointmentTime(LocalDateTime dateTime) {
+        String appointmentTime;
+        String minute = String.format("%02d", dateTime.getMinute());
+        String hour = String.format("%02d", dateTime.getHour());
+        appointmentTime = hour + ":" + minute;
+        return appointmentTime;
     }
 
     /**
@@ -134,6 +159,4 @@ public class ClinicianAppointmentRequestViewController {
     private void goToNextPage() {
         logicController.goNextPage();
     }
-
-
 }
