@@ -95,7 +95,8 @@ public class AppointmentControllerTests {
     }
 
     @Test
-    public void DeleteAppointmentShouldReturnOKIfConnectionValid() throws SQLException {
+    public void deleteAppointmentShouldReturnOKIfConnectionValid() throws SQLException {
+        testAppointment.setAppointmentId(1);
         ResponseEntity res = controller.deleteAppointment(testAppointment);
         Assert.assertEquals(HttpStatus.OK, res.getStatusCode());
     }
