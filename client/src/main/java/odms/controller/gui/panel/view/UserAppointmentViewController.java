@@ -1,5 +1,6 @@
 package odms.controller.gui.panel.view;
 
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -15,7 +16,7 @@ import odms.commons.model._enum.AppointmentStatus;
 import odms.controller.AppController;
 import odms.controller.gui.panel.logic.UserAppointmentLogicController;
 
-import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 public class UserAppointmentViewController {
@@ -27,7 +28,7 @@ public class UserAppointmentViewController {
     private TableView<Appointment> userAppointmentsTableView;
 
     @FXML
-    private TableColumn<Appointment, LocalDateTime> userAppointmentDateColumn;
+    private TableColumn<Appointment, String> userAppointmentDateColumn;
 
     @FXML
     private TableColumn<Appointment, String> userAppointmentClinicianIdColumn;
@@ -40,6 +41,8 @@ public class UserAppointmentViewController {
 
     @FXML
     private TextArea userAppointmentDetailsTextArea;
+
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd hh:mm");
 
     /**
      * Initialises the panel
@@ -61,7 +64,7 @@ public class UserAppointmentViewController {
      * Changes the default sorting order to sort by the appointment status
      */
     private void initUserAppointmentsTableView() {
-        userAppointmentDateColumn.setCellValueFactory(new PropertyValueFactory<>("requestedDate"));
+        userAppointmentDateColumn.setCellValueFactory(foo -> new SimpleStringProperty(foo.getValue().getRequestedDate().format(formatter)));
         userAppointmentCategoryColumn.setCellValueFactory(new PropertyValueFactory<>("appointmentCategory"));
         userAppointmentClinicianIdColumn.setCellValueFactory(new PropertyValueFactory<>("requestedClinician"));
         userAppointmentStatusColumn.setCellValueFactory(new PropertyValueFactory<>("appointmentStatus"));
