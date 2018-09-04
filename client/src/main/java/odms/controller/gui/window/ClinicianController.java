@@ -17,6 +17,12 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Region;
+import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextBoundsType;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -131,6 +137,8 @@ public class ClinicianController implements PropertyChangeListener, UserLauncher
     @FXML
     private StatusBarController statusBarPageController;
 
+    @FXML Tab appointmentsTab;
+
     //</editor-fold>
 
     private Stage stage;
@@ -141,6 +149,7 @@ public class ClinicianController implements PropertyChangeListener, UserLauncher
     private FilteredList<UserOverview> fListUsers;
     private PauseTransition pause = new PauseTransition(Duration.millis(300));
     private ClinicianBridge clinicianBridge;
+    private StackPane notificationBadge = new StackPane();
 
     //Initiliase table columns as class level so it is accessible for sorting in pagination methods
     private TableColumn<UserOverview, String> lNameColumn;
@@ -212,6 +221,35 @@ public class ClinicianController implements PropertyChangeListener, UserLauncher
                 displayImage(profileImage, clinician.getProfilePhotoFilePath());
             }
         }
+
+        //Todo: add method to correctly populate the notification circle jb 4/9
+
+        showAppointmentNotifications(-10);
+    }
+
+    /**
+     *
+     * @param notificationsPending
+     */
+    private void showAppointmentNotifications(int notificationsPending) {
+        String notifications;
+        Text numberOfNotifications = new Text();
+        if(notificationsPending <= 0 ){
+            return;
+        } else if(notificationsPending > 9){
+            notifications = "9+";
+            numberOfNotifications.setFont(new Font(8));
+        } else {
+            notifications = String.valueOf(notificationsPending);
+        }
+        Circle notificationCircle = new Circle(0, 0, 10);
+        notificationCircle.setFill(Color.RED);
+        numberOfNotifications.setText(notifications);
+        numberOfNotifications.setBoundsType(TextBoundsType.VISUAL);
+
+        notificationBadge.getChildren().add(notificationCircle);
+        notificationBadge.getChildren().add(numberOfNotifications);
+        appointmentsTab.setGraphic(notificationBadge);
     }
 
     /**
