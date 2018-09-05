@@ -19,6 +19,9 @@ import java.util.*;
 public class DBHandler {
 
     public static final String MOMENT_OF_DEATH = "momentOfDeath";
+    public static final String START_TRANSACTION = "START TRANSACTION";
+    public static final String ROLLBACK = "ROLLBACK";
+    public static final String COMMIT = "COMMIT";
     /**
      * SQL commands for select
      * SELECT_USER_ONE_TO_ONE_INFO_STMT is for getting all info that follows one-to-one relationship. eg: 1 user can only have 1 address.
@@ -116,6 +119,7 @@ public class DBHandler {
     private AbstractUpdateStrategy updateStrategy;
     private AbstractFetchAppointmentStrategy fetchAppointmentStrategy;
 
+    private static final String DELETE_APPOINTMENT_STMT = "DELETE FROM AppointmentDetails WHERE apptId = ?";
 
     /**
      * Takes a generic, valid SQL String as an argument and executes it and returns the result
@@ -1372,5 +1376,26 @@ public class DBHandler {
     public Appointment getUnseenAppointment(Connection connection, String nhi) throws SQLException {
         FetchUserAppointmentsStrategy fetchUserAppointmentStrategy = new FetchUserAppointmentsStrategy();
         return fetchUserAppointmentStrategy.getUnseenAppointment(connection, nhi);
+    }
+
+    /**
+     * deletes the appointment based on appointment Id.
+     *
+     * @param appointment that needs to be deleted.
+     * @param connection connection to the database
+     * @throws SQLException on a bad db connection
+     */
+    public void deleteAppointment(Appointment appointment, Connection connection) throws SQLException {
+        connection.prepareStatement(START_TRANSACTION).execute();
+        try (PreparedStatement stmt = connection.prepareStatement(DELETE_APPOINTMENT_STMT)){
+                stmt.setInt(1, appointment.getAppointmentId());
+                stmt.executeUpdate();
+
+        } catch (SQLException sqlEx) {
+            Log.severe("A fatal error in deletion, cancelling operation", sqlEx);
+            connection.prepareStatement(ROLLBACK).execute();
+            throw sqlEx;
+        }
+        connection.prepareStatement(COMMIT).execute();
     }
 }
