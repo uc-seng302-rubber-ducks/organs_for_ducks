@@ -32,7 +32,7 @@ public class ClinicianAppointmentRequestViewController {
     private TextField appointmentRequestTime;
 
     @FXML
-    private Label appointmentRequestUserName;
+    private Label appointmentRequestStatus;
 
     @FXML
     private Label appointmentRequestUserNhi;
@@ -117,12 +117,14 @@ public class ClinicianAppointmentRequestViewController {
     private void displayAppointmentDetails(Appointment appointment) {
         if (appointment != null) {
             appointmentRequestUserNhi.setText(appointment.getRequestingUserId());
+            appointmentRequestStatus.setText(appointment.getAppointmentStatus().toString());
             appointmentRequestCategory.setValue(appointment.getAppointmentCategory());
             appointmentRequestDate.setValue(appointment.getRequestedDate().toLocalDate());
             appointmentRequestTime.setText(getAppointmentTime(appointment.getRequestedDate()));
             appointmentRequestDescription.setText(appointment.getRequestDescription());
         } else {
             appointmentRequestUserNhi.setText("");
+            appointmentRequestStatus.setText("");
             appointmentRequestCategory.setValue(null);
             appointmentRequestDate.setValue(null);
             appointmentRequestTime.clear();
