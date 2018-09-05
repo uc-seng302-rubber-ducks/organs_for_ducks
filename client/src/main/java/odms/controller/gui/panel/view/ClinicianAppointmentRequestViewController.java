@@ -149,7 +149,7 @@ public class ClinicianAppointmentRequestViewController {
      */
     @FXML
     private void goToPreviousPage() {
-        logicController.goPrevPage();
+        logicController.goToPreviousPage();
     }
 
     /**
@@ -157,6 +157,6 @@ public class ClinicianAppointmentRequestViewController {
      */
     @FXML
     private void goToNextPage() {
-        logicController.goNextPage();
+        logicController.goToNextPage();
     }
 }

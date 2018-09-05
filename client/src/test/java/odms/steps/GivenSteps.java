@@ -1,10 +1,12 @@
 package odms.steps;
 
 import cucumber.api.java.After;
+import cucumber.api.java.Before;
 import cucumber.api.java.en.Given;
 import javafx.collections.FXCollections;
 import javafx.scene.control.TableView;
 import odms.App;
+import odms.commons.config.ConfigPropertiesSession;
 import odms.commons.exception.ApiException;
 import odms.commons.model.Clinician;
 import odms.commons.model.User;
@@ -30,17 +32,32 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.testfx.api.FxAssert.verifyThat;
 
 
 public class GivenSteps extends ApplicationTest {
 
+    @Before
+    public void before() {
+        ConfigPropertiesSession mockSession = mock(ConfigPropertiesSession.class);
+        when(mockSession.getProperty(eq("server.url"))).thenReturn("http://test.url");
+        when(mockSession.getProperty(eq("server.url"), anyString())).thenReturn("http://test.url");
+        when(mockSession.getProperty(eq("server.token.header"), anyString())).thenReturn("x-auth-token");
+        when(mockSession.getProperty(eq("server.token.header"))).thenReturn("x-auth-token");
+        when(mockSession.getProperty(eq("testConfig"), anyString())).thenReturn("true");
+        ConfigPropertiesSession.setInstance(mockSession);
+        AppController.setInstance(CucumberTestModel.getController());
+
+    }
+
     @After
     public void tearDown() throws TimeoutException {
         if (FxToolkit.isFXApplicationThreadRunning()) {
             FxToolkit.cleanupStages();
         }
+        ConfigPropertiesSession.setInstance(null);
         AppController.setInstance(null);
     }
 
