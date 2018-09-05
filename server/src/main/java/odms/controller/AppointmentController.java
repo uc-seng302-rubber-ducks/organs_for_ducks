@@ -107,12 +107,16 @@ public class AppointmentController extends BaseController {
     @RequestMapping(method = RequestMethod.PATCH, value = "/appointments/{appointmentId}/status")
     public ResponseEntity patchAppointmentStatus(@RequestBody int statusId,
                                                  @PathVariable(name = "appointmentId") int appointmentId) {
-
         try (Connection connection = driver.getConnection()) {
             AppointmentUpdateStrategy appointmentUpdateStrategy = handler.getAppointmentStrategy();
-            appointmentUpdateStrategy.patchAppointmentStatus(connection, statusId, appointmentId);
-            String idString = Integer.toString(appointmentId);
-            socketHandler.broadcast(EventTypes.APPOINTMENT_UPDATE, idString, idString);
+
+            if (checkStatusUpdateAllowed(appointmentId, statusId)) {
+                appointmentUpdateStrategy.patchAppointmentStatus(connection, statusId, appointmentId);
+                String idString = Integer.toString(appointmentId);
+                socketHandler.broadcast(EventTypes.APPOINTMENT_UPDATE, idString, idString);
+            } else {
+                Log.warning("A user tried to update an appointment status that they are not allowed to.");
+            }
             // TODO: still needs the client side broadcast implementation
         } catch (SQLException e) {
             Log.severe("Cannot patch appointment status to database", e);
@@ -143,9 +147,26 @@ public class AppointmentController extends BaseController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
-    private boolean verifyDeleteRejected(int apptId) {
-        //Do nuk
-        return false;
+    /**
+     * Checks if the appointment associated with the given id has a REJECTED status. If so, returns true indicating that
+     * appointment is safe to delete from the database
+     * @param apptId Id of the appointment to check
+     * @return boolean describing whether the appointment can be deleted.
+     */
+    private boolean checkStatusUpdateAllowed(int apptId, int statusId) {
+        int acceptedId = 2;
+        int acceptedSeenId = 6;
+        int rejectId = 3;
+        int rejectedSeenId = 7;
+        Integer currentStatus = null;
+        try (Connection connection = driver.getConnection()) {
+            currentStatus = handler.getAppointmentStatus(connection, apptId);
+        } catch (SQLException e) {
+            Log.severe("Cannot delete appointment at db", e);
+            throw new ServerDBException(e);
+        }
+        //This logic statement ensures that the user can only edit the status if it is going from ACCEPTED to ACCEPTED_SEEN
+        //or if it is going from REJECTED to REJECTED_SEEN
+        return((statusId == acceptedSeenId && currentStatus == acceptedId) || (statusId == rejectId && currentStatus == rejectedSeenId));
     }
-
 }

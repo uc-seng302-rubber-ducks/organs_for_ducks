@@ -137,6 +137,11 @@ public class AppointmentsBridge extends Bifrost {
         });
     }
 
+    /**
+     * Fire a patch request to the server for updating the status of an appointment
+     * @param appointmentId Id of the appointment to be updated.
+     * @param statusId status to be changed to.
+     */
     public void patchAppointmentStatus(Integer appointmentId, int statusId) {
         String url = String.format("%s%s", ip, APPOINTMENTS + "/" + appointmentId + "/status");
         RequestBody body = RequestBody.create(json, new Gson().toJson(statusId));

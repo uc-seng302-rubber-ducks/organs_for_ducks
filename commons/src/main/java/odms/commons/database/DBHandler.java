@@ -115,6 +115,7 @@ public class DBHandler {
     private static final String SELECT_DEATH_DETAILS_STMT = "SELECT * FROM DeathDetails WHERE fkUserNhi = ?";
     private static final String SELECT_APPTMT_ID = "SELECT apptId FROM AppointmentDetails WHERE requestedTime = ? AND fkStatusId = ?";
     private static final String PENDING_APPTMT_EXISTS = "SELECT EXISTS(SELECT 1 FROM AppointmentDetails WHERE fkUserNhi = ? AND fkStatusId = ?)";
+    private static final String SELECT_APPOINTMENT_STATUS_STMT = "SELECT fkStatusId FROM AppointmentDetails WHERE apptId = ?";
 
     private AbstractUpdateStrategy updateStrategy;
     private AbstractFetchAppointmentStrategy fetchAppointmentStrategy;
@@ -1397,5 +1398,25 @@ public class DBHandler {
             throw sqlEx;
         }
         connection.prepareStatement(COMMIT).execute();
+    }
+
+    /**
+     * Gets the status id of the appointment with the specified id
+     * @param connection connection to the database
+     * @param apptId Id of the appointment to update
+     * @return integer of the status id
+     * @throws SQLException on a bad db connection
+     */
+    public Integer getAppointmentStatus(Connection connection, int apptId) throws SQLException {
+        Integer result;
+        try (PreparedStatement preparedStatement = connection.prepareStatement(SELECT_APPOINTMENT_STATUS_STMT)) {
+            preparedStatement.setInt(1, apptId);
+            try (ResultSet results= preparedStatement.executeQuery()) {
+
+                result = results.getInt(1);
+
+            }
+        }
+        return result;
     }
 }

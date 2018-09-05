@@ -71,8 +71,7 @@ public class UserAppointmentAlertController {
     }
 
     /**
-     * Updates the status of an appointment to _SEEN based on whether is was accepted or rejected. If it was rejected, a call
-     * to the server to delete that request is made
+     * Updates the status of an appointment to _SEEN based on whether is was accepted or rejected.
      * @param appointment Appointment to update the status of
      */
     private void updateAppointmentSeenStatus(Appointment appointment) {

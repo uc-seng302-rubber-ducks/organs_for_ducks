@@ -35,7 +35,6 @@ public class UserAppointmentAlertControllerTest {
         testAppointment.setAppointmentStatus(AppointmentStatus.PENDING);
         alertController.createAlert(testAppointment);
         List<String> logs = Log.getDebugLogs();
-        System.out.println(logs);
         //Yo if I want to test something by checking that a Log has been written, how do I do that? I'm pretty I've seen it in code before but can't find it again
     }
 

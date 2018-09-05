@@ -45,6 +45,13 @@ public class AppointmentUpdateStrategy extends AbstractUpdateStrategy {
         }
     }
 
+    /**
+     * Updates the status of an appointment in the database
+     * @param connection Connection to the database
+     * @param statusId id of the status to update to
+     * @param appointmentId id of the appointment to update
+     * @throws SQLException If there is an error updating the appointment in the database or the connection is invalid
+     */
     public void patchAppointmentStatus(Connection connection, int statusId, int appointmentId) throws SQLException {
         try (PreparedStatement preparedStatement = connection.prepareStatement(PATCH_APPOINTMENT_STATUS_STMT)) {
 

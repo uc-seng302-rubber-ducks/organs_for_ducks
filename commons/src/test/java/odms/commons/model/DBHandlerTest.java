@@ -272,12 +272,19 @@ public class DBHandlerTest {
         Assert.assertEquals(0, id);
 
     }
+
     @Test
     public void testDeleteAppointment() throws SQLException {
         Appointment appointment = new Appointment();
         appointment.setAppointmentId(1);
         dbHandler.deleteAppointment(appointment, connection);
         verify(mockStmt, times(1)).executeUpdate();
+    }
+
+    @Test
+    public void testGetAppointmentStatus() throws SQLException {
+        dbHandler.getAppointmentStatus(connection, 0);
+        verify(mockStmt, times(1)).executeQuery();
     }
 
 }
