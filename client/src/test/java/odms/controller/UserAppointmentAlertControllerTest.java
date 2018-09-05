@@ -1,15 +1,12 @@
 package odms.controller;
 
-import com.sun.xml.internal.messaging.saaj.soap.impl.EnvelopeImpl;
 import odms.commons.model.Appointment;
 import odms.commons.model._enum.AppointmentCategory;
 import odms.commons.model._enum.AppointmentStatus;
-import odms.commons.model._enum.Environments;
 import odms.commons.utils.Log;
 import odms.controller.gui.popup.UserAppointmentAlertController;
 import org.junit.Before;
 import org.junit.Test;
-import org.omg.IOP.ENCODING_CDR_ENCAPS;
 
 import java.time.LocalDateTime;
 import java.util.List;
