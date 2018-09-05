@@ -103,7 +103,29 @@ public class AppointmentController extends BaseController {
         return new ResponseEntity(HttpStatus.ACCEPTED);
     }
 
-    @RequestMapping(method = RequestMethod.DELETE, value = "/appointment")
+
+    @RequestMapping(method = RequestMethod.PATCH, value = "/appointments/{appointmentId}/status")
+    public ResponseEntity patchAppointmentStatus(@RequestBody int statusId,
+                                                 @PathVariable(name = "appointmentId") int appointmentId) {
+
+        try (Connection connection = driver.getConnection()) {
+            AppointmentUpdateStrategy appointmentUpdateStrategy = handler.getAppointmentStrategy();
+            appointmentUpdateStrategy.patchAppointmentStatus(connection, statusId, appointmentId);
+            String idString = Integer.toString(appointmentId);
+            socketHandler.broadcast(EventTypes.APPOINTMENT_UPDATE, idString, idString);
+            // TODO: still needs the client side broadcast implementation
+        } catch (SQLException e) {
+            Log.severe("Cannot patch appointment status to database", e);
+            throw new ServerDBException(e);
+        } catch (IOException ex) {
+            Log.warning("Failed to broadcast update after patching an appointment", ex);
+        }
+        return new ResponseEntity(HttpStatus.ACCEPTED);
+    }
+
+
+
+    @RequestMapping(method = RequestMethod.DELETE, value = "/appointments")
     public ResponseEntity deleteAppointment(@RequestBody Appointment appointmentToDelete) {
         try (Connection connection = driver.getConnection()) {
             handler.deleteAppointment(appointmentToDelete, connection);
@@ -119,6 +141,11 @@ public class AppointmentController extends BaseController {
         }
 
         return new ResponseEntity(HttpStatus.OK);
+    }
+
+    private boolean verifyDeleteRejected(int apptId) {
+        //Do nuk
+        return false;
     }
 
 }

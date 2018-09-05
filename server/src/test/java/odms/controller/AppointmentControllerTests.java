@@ -69,6 +69,18 @@ public class AppointmentControllerTests {
     }
 
     @Test
+    public void patchAppointmentStatusShouldReturnAcceptedIfConnectionValid() throws SQLException {
+        ResponseEntity res = controller.postAppointment(testAppointment);
+        Assert.assertEquals(res.getStatusCode(), HttpStatus.ACCEPTED);
+    }
+
+    @Test(expected = ServerDBException.class)
+    public void patchAppointmentStatusShouldThrowExceptionWhenNoConnection() throws SQLException {
+        when(driver.getConnection()).thenThrow(new SQLException());
+        controller.postAppointment(testAppointment);
+    }
+
+    @Test
     public void getUserAppointmentShouldReturnCollectionIfConnectionValid() throws SQLException {
         when(handler.getAppointments(any(Connection.class), eq("ABC1234"), any(UserType.class), anyInt(), anyInt())).thenReturn(Collections.singleton(testAppointment));
         Collection<Appointment> appointments = controller.getUserAppointments(30, 0, "ABC1234");

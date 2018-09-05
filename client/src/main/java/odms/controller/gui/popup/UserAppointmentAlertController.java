@@ -78,18 +78,11 @@ public class UserAppointmentAlertController {
     private void updateAppointmentSeenStatus(Appointment appointment) {
         if (appointment.getAppointmentStatus() == AppointmentStatus.ACCEPTED) {
             appointment.setAppointmentStatus(AppointmentStatus.ACCEPTED_SEEN);
+            controller.getAppointmentsBridge().patchAppointmentStatus(appointment.getAppointmentId(), AppointmentStatus.ACCEPTED_SEEN.getDbValue());
         } else if (appointment.getAppointmentStatus() == AppointmentStatus.REJECTED) {
             appointment.setAppointmentStatus(AppointmentStatus.REJECTED_SEEN);
-            deleteSeenRejectedAppointment(appointment.getAppointmentId());
+            controller.getAppointmentsBridge().patchAppointmentStatus(appointment.getAppointmentId(), AppointmentStatus.REJECTED_SEEN.getDbValue());
         }
     }
 
-    /**
-     * Calls the server to delete a REJECTED_SEEN appointment
-     * @param appointmentId Id of the appointment to be deleted.
-     */
-    private void deleteSeenRejectedAppointment(Integer appointmentId) {
-//        controller.getAppointmentsBridge().deletedRejectedSeen(appointmentId);//m
-//        This probably needs some extra verification on server side so non-rejected appointments cannot be deleted.
-    }
 }

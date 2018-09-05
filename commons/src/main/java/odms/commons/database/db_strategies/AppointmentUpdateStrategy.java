@@ -11,7 +11,7 @@ import java.util.Collection;
 public class AppointmentUpdateStrategy extends AbstractUpdateStrategy {
 
     private static final String CREATE_APPOINTMENT_STMT = "INSERT INTO AppointmentDetails (fkUserNhi, fkStaffId, fkCategoryId, requestedTime, fkStatusId, description) VALUES (?,?,?,?,?,?)";
-
+    private static final String PATCH_APPOINTMENT_STATUS_STMT = "UPDATE AppointmentDetails SET fkStatusId = ? WHERE apptId = ?";
     /**
      * Updates a collection of recurring appointments
      *
@@ -41,6 +41,15 @@ public class AppointmentUpdateStrategy extends AbstractUpdateStrategy {
             preparedStatement.setTimestamp(4, Timestamp.valueOf(appointment.getRequestedDate()));
             preparedStatement.setInt(5, appointment.getAppointmentStatus().getDbValue());
             preparedStatement.setString(6, appointment.getRequestDescription());
+            preparedStatement.executeUpdate();
+        }
+    }
+
+    public void patchAppointmentStatus(Connection connection, int statusId, int appointmentId) throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(PATCH_APPOINTMENT_STATUS_STMT)) {
+
+            preparedStatement.setInt(1, statusId);
+            preparedStatement.setInt(2, appointmentId);
             preparedStatement.executeUpdate();
         }
     }

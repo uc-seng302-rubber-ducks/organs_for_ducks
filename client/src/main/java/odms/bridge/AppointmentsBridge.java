@@ -137,6 +137,25 @@ public class AppointmentsBridge extends Bifrost {
         });
     }
 
+    public void patchAppointmentStatus(Integer appointmentId, int statusId) {
+        String url = String.format("%s%s", ip, APPOINTMENTS + "/" + appointmentId + "/status");
+        RequestBody body = RequestBody.create(json, new Gson().toJson(statusId));
+        Request request = new Request.Builder().patch(body).url(url).build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.severe(e.getMessage(), e);
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) {
+                if (!response.isSuccessful()) {
+                    logAndNotify(response);
+                }
+            }
+        });
+    }
+
     /**
      * Logs a bad response
      *
