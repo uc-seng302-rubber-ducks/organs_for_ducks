@@ -81,7 +81,7 @@ public class AppointmentController extends BaseController {
     }
 
     @IsClinician
-    @RequestMapping(method = RequestMethod.PUT, value = "/appointment/{staffId}/appointments/{appointmentId}")
+    @RequestMapping(method = RequestMethod.PUT, value = "/clinicians/{staffId}/appointments/{appointmentId}")
     public ResponseEntity putAppointment(@PathVariable(value = "staffId") String staffId,
                                          @PathVariable(value = "appointmentId") Integer appointmentId,
                                          @RequestBody Appointment appointment) {
