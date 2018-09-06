@@ -5,17 +5,16 @@ import odms.commons.database.JDBCDriver;
 import odms.commons.database.db_strategies.AppointmentUpdateStrategy;
 import odms.commons.model.Appointment;
 import odms.commons.model._enum.EventTypes;
+import odms.commons.model._enum.UserType;
 import odms.commons.utils.Log;
 import odms.exception.ServerDBException;
+import odms.security.IsClinician;
 import odms.socket.SocketHandler;
 import odms.utils.DBManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -66,6 +65,36 @@ public class AppointmentController extends BaseController {
         }
 
         return new ResponseEntity(HttpStatus.ACCEPTED);
+    }
+
+    @IsClinician
+    @RequestMapping(method = RequestMethod.GET, value = "/clinicians/{staffId}/appointments")
+    public Collection<Appointment> getClinicianAppointments(@RequestParam(name = "startIndex") int startIndex,
+                                                            @RequestParam(name = "count") int count,
+                                                            @PathVariable(value = "staffId") String staffId) {
+        try (Connection connection = driver.getConnection()) {
+            return handler.getAppointments(connection, staffId, UserType.CLINICIAN, count, startIndex);
+        } catch (SQLException e) {
+            Log.severe("Unable to get clinician requested appointments with staff id: "+staffId+". SQL error code: " + e.getErrorCode(), e);
+            throw new ServerDBException(e);
+        }
+    }
+    @RequestMapping(method = RequestMethod.DELETE, value = "/appointment")
+    public ResponseEntity deleteAppointment(@RequestBody Appointment appointmentToDelete) {
+        try (Connection connection = driver.getConnection()) {
+            handler.deleteAppointment(appointmentToDelete, connection);
+
+            String appointmentId = Integer.toString(handler.getAppointmentId(connection, appointmentToDelete));
+            socketHandler.broadcast(EventTypes.APPOINTMENT_UPDATE, appointmentId, appointmentId);
+
+        } catch (SQLException e) {
+            Log.severe("Cannot delete appointment at db", e);
+            throw new ServerDBException(e);
+        } catch (IOException ex) {
+            Log.warning("Failed to broadcast update after deleting an appointment", ex);
+        }
+
+        return new ResponseEntity(HttpStatus.OK);
     }
 
 }

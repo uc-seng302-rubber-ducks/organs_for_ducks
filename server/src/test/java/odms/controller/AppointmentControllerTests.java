@@ -6,6 +6,7 @@ import odms.commons.database.db_strategies.AppointmentUpdateStrategy;
 import odms.commons.model.Appointment;
 import odms.commons.model._enum.AppointmentCategory;
 import odms.commons.model._enum.AppointmentStatus;
+import odms.commons.model._enum.UserType;
 import odms.exception.ServerDBException;
 import odms.socket.SocketHandler;
 import odms.utils.DBManager;
@@ -18,7 +19,12 @@ import org.springframework.http.ResponseEntity;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collection;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -63,4 +69,31 @@ public class AppointmentControllerTests {
         controller.postAppointment(testAppointment);
     }
 
+    @Test
+    public void getClinicianAppointmentsShouldReturnSingleAppointmentRequest() throws SQLException {
+        Collection<Appointment> appointments = new ArrayList<>();
+        appointments.add(testAppointment);
+        when(handler.getAppointments(any(Connection.class), anyString(), any(UserType.class), anyInt(), anyInt())).thenReturn(appointments);
+        Collection<Appointment> res = controller.getClinicianAppointments(0, 1, "");
+        Assert.assertEquals(testAppointment, res.iterator().next());
+        Assert.assertEquals(1, res.size());
+    }
+
+    @Test(expected = ServerDBException.class)
+    public void getClinicianAppointmentsShouldThrowExceptionWhenNoConnection() throws SQLException {
+        when(driver.getConnection()).thenThrow(new SQLException());
+        controller.getClinicianAppointments(0, 1, "");
+    }
+
+    @Test
+    public void DeleteAppointmentShouldReturnOKIfConnectionValid() throws SQLException {
+        ResponseEntity res = controller.deleteAppointment(testAppointment);
+        Assert.assertEquals(HttpStatus.OK, res.getStatusCode());
+    }
+
+    @Test(expected = ServerDBException.class)
+    public void deleteAppointmentShouldThrowExceptionWhenNoConnection() throws SQLException {
+        when(driver.getConnection()).thenThrow(new SQLException());
+        controller.deleteAppointment(testAppointment);
+    }
 }

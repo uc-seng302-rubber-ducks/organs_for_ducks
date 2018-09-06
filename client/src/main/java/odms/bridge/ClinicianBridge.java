@@ -2,8 +2,11 @@ package odms.bridge;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import javafx.application.Platform;
+import javafx.collections.ObservableList;
 import odms.commons.config.ConfigPropertiesSession;
 import odms.commons.exception.ApiException;
+import odms.commons.model.Appointment;
 import odms.commons.model.Clinician;
 import odms.commons.utils.JsonHandler;
 import odms.commons.utils.Log;
@@ -112,6 +115,7 @@ public class ClinicianBridge extends RoleBridge {
 
     /**
      * checks whether a clinician exists in the database by staff id
+     *
      * @param staffId staff id to search for
      * @return true if staff id can be found, false otherwise
      */
@@ -128,15 +132,15 @@ public class ClinicianBridge extends RoleBridge {
 
     public String getProfilePicture(String staffId, String token) throws IOException {
         String url = ip + CLINICIANS + staffId + "/photo";
-        Headers headers =  new Headers.Builder().add(tokenHeader, token).build();
+        Headers headers = new Headers.Builder().add(tokenHeader, token).build();
         Request request = new Request.Builder().get().url(url).headers(headers).build();
-        try(Response response  = client.newCall(request).execute()) {
+        try (Response response = client.newCall(request).execute()) {
             String contentType = response.header("Content-Type");
             String[] bits = contentType.split("/");
-            String format = bits[bits.length-1];
+            String format = bits[bits.length - 1];
             if (response.code() == 200) {
-                return handler.decodeProfilePicture(response.body(), staffId,format);
-            } else if(response.code() == 404){
+                return handler.decodeProfilePicture(response.body(), staffId, format);
+            } else if (response.code() == 404) {
                 return null;
             } else {
                 throw new IOException("Failed to get profile picture");
@@ -147,9 +151,9 @@ public class ClinicianBridge extends RoleBridge {
     public void putProfilePicture(String staffId, String token, String profilePicturePath) throws IOException {
         String url = ip + CLINICIANS + staffId + "/photo";
         String[] bits = profilePicturePath.split("\\.");
-        String format = bits[bits.length-1];
-        byte[] bytesFromImage =  PhotoHelper.getBytesFromImage(profilePicturePath);
-        if(bytesFromImage.length == 0){
+        String format = bits[bits.length - 1];
+        byte[] bytesFromImage = PhotoHelper.getBytesFromImage(profilePicturePath);
+        if (bytesFromImage.length == 0) {
             return;
         }
         Headers headers = new Headers.Builder().add(tokenHeader, token).build();
@@ -163,11 +167,42 @@ public class ClinicianBridge extends RoleBridge {
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-                if(!response.isSuccessful()) {
+                if (!response.isSuccessful()) {
                     Log.warning("Failed to PUT " + url);
                     throw new IOException("Could not PUT " + url);
                 }
                 response.close();
+            }
+        });
+    }
+
+    public void getAppointments(int startIndex, int count, String staffId, String token, ObservableList<Appointment> observableAppointments) {
+        String url = ip + CLINICIANS + staffId + "/appointments?startIndex=" + startIndex + "&count=" + count;
+        Request request = new Request.Builder().addHeader(tokenHeader, token).url(url).build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.warning("Failed to get clinicians. On Failure Triggered", e);
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (response == null) {
+                    Log.warning("A null response was returned to the user");
+                    return;
+                }
+                ResponseBody body = response.body();
+                if (body == null) {
+                    Log.warning("A null response body was returned to the user");
+                    return;
+                }
+                List<Appointment> appointments = new Gson().fromJson(body.string(), new TypeToken<List<Appointment>>() {
+                }.getType());
+
+                Platform.runLater(() -> {
+                    observableAppointments.clear();
+                    observableAppointments.addAll(appointments);
+                });
             }
         });
     }
