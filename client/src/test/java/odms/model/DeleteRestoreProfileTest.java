@@ -23,7 +23,7 @@ import static org.mockito.Mockito.mock;
 
 public class DeleteRestoreProfileTest {
 
-    private AppController appC;
+    private AppController appC = AppController.getInstance();
     private UserBridge userBridge = mock(UserBridge.class);
     private ClinicianBridge clinicianBridge = mock(ClinicianBridge.class);
     private AdministratorBridge administratorBridge = mock(AdministratorBridge.class);
@@ -34,7 +34,7 @@ public class DeleteRestoreProfileTest {
 //        testClinician = new Clinician("Bob", "id", "1234");
 //        testAdmin = new Administrator("nameuser", "first", "middle", "last", "1234");
 
-        appC = AppController.getInstance();
+        //appC = AppController.getInstance();
 
 //        doNothing().when(userBridge).deleteUser(any(User.class));
 //        doNothing().when(clinicianBridge).deleteClinician(any(Clinician.class), anyString());
@@ -68,7 +68,7 @@ public class DeleteRestoreProfileTest {
 //        testClinician.setDeleted(false);
 //        testUser.setDeleted(false);
 
-        AppController.setInstance(null);
+        //AppController.setInstance(null);
     }
 
     @Test

@@ -514,8 +514,8 @@ public class AppController {
      * @param clinician The clinician to be deleted
      */
     public void deleteClinician(Clinician clinician) {
-        clinician.setDeleted(true);
         System.out.println("Life has many doors");
+        clinician.setDeleted(true);
         System.out.println(clinician.isDeleted());
         System.out.println("Ed boy");
         getClinicianBridge().deleteClinician(clinician, getToken());
