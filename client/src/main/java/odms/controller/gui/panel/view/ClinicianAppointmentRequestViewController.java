@@ -119,6 +119,20 @@ public class ClinicianAppointmentRequestViewController {
         appointmentRequestDescription.setText(appointment.getRequestDescription()); //appointment.displayDetails does not exist in this branch. Replace getDescription with it when possible
     }
 
+    private void initdetailedAppointment() {
+        ObservableList<String> categorys = FXCollections.observableList(new ArrayList<>());
+        categorys.add("");
+        for (AppointmentCategory appointmentCategory : AppointmentCategory.values()) {
+            categorys.add(appointmentCategory.toString());
+        }
+        System.out.println(categorys);
+        appointmentRequestCategory.setItems(categorys);
+        appointmentRequestDescription.setText("");
+        appointmentRequestTime.setText("");
+        appointmentRequestUserName.setText("");
+        appointmentRequestUserNhi.setText("");
+    }
+
     /**
      * @see AvailableOrgansLogicController goPrevPage()
      */
