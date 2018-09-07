@@ -3,6 +3,7 @@ package odms.controller.gui.popup.view;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import odms.bridge.AppointmentsBridge;
 import odms.commons.model.Appointment;
@@ -14,7 +15,7 @@ public class RejectAppointmentReasonViewController {
     private Label apptPatient;
 
     @FXML
-    private Label apptDescription;
+    private Text apptDescription;
 
     @FXML
     private Label apptDate;
