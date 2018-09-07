@@ -70,7 +70,6 @@ public class UserAppointmentViewController {
         userAppointmentStatusColumn.setCellValueFactory(new PropertyValueFactory<>("appointmentStatus"));
         logicController.updateTable(0);
         populateTable();
-        // TODO sort by status 28/08/2018
         userAppointmentStatusColumn.setSortType(TableColumn.SortType.ASCENDING);
         setOnClickBehaviour();
     }
@@ -109,7 +108,11 @@ public class UserAppointmentViewController {
      * @param appointment The selected appointment to be displayed in more detail
      */
     private void displayAppointmentDetails(Appointment appointment) {
-        userAppointmentDetailsTextArea.setText(appointment.displayDetails());
+        if (appointment != null) {
+            userAppointmentDetailsTextArea.setText(appointment.displayDetails());
+        } else {
+            userAppointmentDetailsTextArea.clear();
+        }
     }
 
     /**

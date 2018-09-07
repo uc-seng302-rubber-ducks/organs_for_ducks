@@ -126,11 +126,11 @@ public class Appointment {
      * @return A string containing details of the appointment
      */
     public String displayDetails() {
-        return "User Id: " + requestingUserId + "\n" +
-                "Clinician Id: " + requestedClinicianId + '\n' +
-                "Category: " + appointmentCategory + "\n" +
-                "Date/Time: " + requestedDate + "\n" +
-                "Status: " + appointmentStatus + "\n" +
+        return "User Id: " + requestingUserId + "\n\n" +
+                "Clinician Id: " + requestedClinicianId + "\n\n" +
+                "Category: " + appointmentCategory + "\n\n" +
+                "Date/Time: " + requestedDate + "\n\n" +
+                "Status: " + appointmentStatus + "\n\n" +
                 "Description: " + requestDescription;
     }
 
