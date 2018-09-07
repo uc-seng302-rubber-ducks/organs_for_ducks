@@ -106,11 +106,17 @@ public class DeleteRestoreProfileTest {
         doNothing().when(administratorBridge).deleteAdmin(any(Administrator.class), anyString());
         appC.setAdministratorBridge(administratorBridge);
 
+        System.out.println(testAdmin.isDeleted());
         Collection<Administrator> activeAdmins = appC.getAdmins();
+        System.out.println(testAdmin.isDeleted());
         activeAdmins.remove(testAdmin);
+        System.out.println(testAdmin.isDeleted());
         activeAdmins.add(testAdmin);
+        System.out.println(testAdmin.isDeleted());
 
         appC.deleteAdmin(testAdmin);
+        System.out.println(testAdmin.isDeleted());
         Assert.assertTrue(testAdmin.isDeleted());
+        System.out.println(testAdmin.isDeleted());
     }
 }
