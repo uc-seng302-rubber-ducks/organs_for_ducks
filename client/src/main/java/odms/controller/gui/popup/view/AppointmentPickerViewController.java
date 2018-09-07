@@ -66,7 +66,7 @@ public class AppointmentPickerViewController {
 
     @FXML
     public void confirm() {
-        // todo: validate fields exist before it cries
+        //todo: Check that the fields are not empty before exiting the window
         logicController.confirm(
                 appointmentBookingDateInput.getValue(),
                 appointmentBookingTypeInput.getSelectionModel().getSelectedItem(),

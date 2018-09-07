@@ -136,6 +136,4 @@ public class ClinicianController extends BaseController {
         }
     }
 
-
-
 }
