@@ -26,7 +26,6 @@ import java.util.Optional;
 public class UserAppointmentLogicController implements PropertyChangeListener {
 
     private static final int ROWS_PER_PAGE = 30;
-    private AppController appController;
     private User user;
     private ObservableList<Appointment> appointments;
     private int startingIndex = 0;
@@ -35,12 +34,10 @@ public class UserAppointmentLogicController implements PropertyChangeListener {
      * Constructor to create a new logical instance of the controller
      *
      * @param appointments  Observable list of appointments used to populate the users appointments table
-     * @param appController Main controller
      * @param user          User that the appointment panel belongs to
      */
-    public UserAppointmentLogicController(ObservableList<Appointment> appointments, AppController appController, User user) {
+    public UserAppointmentLogicController(ObservableList<Appointment> appointments, User user) {
         this.appointments = appointments;
-        this.appController = appController;
         this.user = user;
         ServerEventNotifier.getInstance().addPropertyChangeListener(this);
     }
@@ -57,7 +54,7 @@ public class UserAppointmentLogicController implements PropertyChangeListener {
             root = appointmentRequestLoader.load();
             AppointmentPickerViewController appointmentPickerViewController = appointmentRequestLoader.getController();
             Stage appointmentPickerStage = new Stage();
-            appointmentPickerViewController.init(user, appointmentPickerStage, appController);
+            appointmentPickerViewController.init(user, appointmentPickerStage);
             appointmentPickerStage.setScene(new Scene(root));
             appointmentPickerStage.showAndWait();
             Log.info("Successfully launched the appointment picker pop-up window for user: " + user.getNhi());
@@ -87,7 +84,7 @@ public class UserAppointmentLogicController implements PropertyChangeListener {
         }
 
         if (result.get() == ButtonType.OK) {
-            appController.getAppointmentsBridge().deleteAppointment(appointment);
+            AppController.getInstance().getAppointmentsBridge().deleteAppointment(appointment);
         }
     }
 
@@ -106,7 +103,7 @@ public class UserAppointmentLogicController implements PropertyChangeListener {
      */
     public void updateTable(int startIndex) {
         appointments.clear();
-        appController.getAppointmentsBridge().getAppointments(ROWS_PER_PAGE, startIndex, appointments, user.getNhi(), UserType.USER);
+        AppController.getInstance().getAppointmentsBridge().getAppointments(ROWS_PER_PAGE, startIndex, appointments, user.getNhi(), UserType.USER);
     }
 
     /**

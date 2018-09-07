@@ -12,7 +12,6 @@ import odms.commons.model.Appointment;
 import odms.commons.model.User;
 import odms.commons.model._enum.AppointmentCategory;
 import odms.commons.model._enum.AppointmentStatus;
-import odms.controller.AppController;
 import odms.controller.gui.panel.logic.UserAppointmentLogicController;
 import odms.controller.gui.popup.utils.AlertWindowFactory;
 
@@ -45,15 +44,14 @@ public class UserAppointmentViewController {
     /**
      * Initialises the panel
      *
-     * @param appController Main controller
      * @param user          User that the panel belongs to
      */
-    public void init(AppController appController, User user) {
+    public void init(User user) {
         appointments.addListener((ListChangeListener<? super Appointment>) observable -> {
             populateTable();
         });
 
-        logicController = new UserAppointmentLogicController(appointments, appController, user);
+        logicController = new UserAppointmentLogicController(appointments, user);
         initUserAppointmentsTableView();
     }
 

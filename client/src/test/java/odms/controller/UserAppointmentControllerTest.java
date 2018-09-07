@@ -52,7 +52,7 @@ public class UserAppointmentControllerTest {
 
         appointments = FXCollections.observableList(new ArrayList<>());
         User testUser = new User("Jeff", LocalDate.parse("9/11/1997", DateTimeFormatter.ofPattern("d/M/yyyy")), "ABC1234");
-        userAppointmentLogicController = spy(new UserAppointmentLogicController(appointments, controller, testUser));
+        userAppointmentLogicController = spy(new UserAppointmentLogicController(appointments, testUser));
         AppointmentsBridge appointmentsBridge = new AppointmentsBridge(client);
 
         when(controller.getAppointmentsBridge()).thenReturn(appointmentsBridge);
@@ -122,7 +122,7 @@ public class UserAppointmentControllerTest {
 
         appointments.add(testAppointment);
 
-        doReturn(Optional.of(ButtonType.NO)).when(userAppointmentLogicController).confirmOption(anyString());
+        doReturn(Optional.of(ButtonType.CANCEL)).when(userAppointmentLogicController).confirmOption(anyString());
         userAppointmentLogicController.cancelAppointment(testAppointment);
 
         assertTrue(appointments.size() == 1);
