@@ -96,7 +96,6 @@ public class UserAppointmentControllerTest {
         doReturn(Optional.of(ButtonType.OK)).when(userAppointmentLogicController).confirmOption(anyString());
         userAppointmentLogicController.cancelAppointment(testAppointment);
 
-        //assertTrue(appointments.size() == 0);
         verify(controller, times(1)).getAppointmentsBridge();
     }
 
