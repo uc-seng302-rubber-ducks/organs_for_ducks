@@ -113,12 +113,13 @@ public class DBHandler {
             "WHERE (nhi = ?) " +
             "AND organName = ?";
     private static final String SELECT_DEATH_DETAILS_STMT = "SELECT * FROM DeathDetails WHERE fkUserNhi = ?";
-    private static final String CREATE_APPOINTMENT_STMT = "INSERT INTO AppointmentDetails (fkUserNhi, fkStaffId, fkCategoryId, requestedTime, fkStatusId, description) VALUES (?,?,?,?,?,?)";
+    private static final String SELECT_APPTMT_ID = "SELECT apptId FROM AppointmentDetails WHERE requestedTime = ? AND fkStatusId = ?";
+    private static final String PENDING_APPTMT_EXISTS = "SELECT EXISTS(SELECT 1 FROM AppointmentDetails WHERE fkUserNhi = ? AND fkStatusId = ?)";
+    private static final String DELETE_APPOINTMENT_STMT = "DELETE FROM AppointmentDetails WHERE apptId = ?";
 
     private AbstractUpdateStrategy updateStrategy;
     private AbstractFetchAppointmentStrategy fetchAppointmentStrategy;
 
-    private static final String DELETE_APPOINTMENT_STMT = "DELETE FROM AppointmentDetails WHERE apptId = ?";
 
     /**
      * Takes a generic, valid SQL String as an argument and executes it and returns the result
@@ -1133,6 +1134,7 @@ public class DBHandler {
         }
     }
 
+
     /**
      * Uses the provided connection and queries data base of countries to retrieve the ones that are allowed to be used
      * as a place of residence.
@@ -1315,6 +1317,7 @@ public class DBHandler {
         return null;
     }
 
+
     /**
      * Gets a appointment strategy and returns it to the appointment controller
      *
@@ -1333,7 +1336,7 @@ public class DBHandler {
      * @throws SQLException If the entry does not exist or the connection is invalid
      */
     public int getAppointmentId(Connection connection, Appointment appointment) throws SQLException {
-        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT apptId FROM AppointmentDetails WHERE requestedTime = ? AND fkStatusId = ?")) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(SELECT_APPTMT_ID)) {
 
             preparedStatement.setTimestamp(1, Timestamp.valueOf(appointment.getRequestedDate()));
             preparedStatement.setInt(2, appointment.getAppointmentStatus().getDbValue());
@@ -1344,8 +1347,29 @@ public class DBHandler {
         }
     }
 
+
     /**
-     * deletes the appointment based on appointment Id.
+     * Queries the database to check whether the given user has an existing pending appointment request.
+     *
+     * @param nhi      unique identifier of the user
+     * @param statusId integer value of the pending status
+     * @return true if a pending request is found, false otherwise
+     */
+    public boolean pendingExists(Connection connection, String nhi, int statusId) throws SQLException {
+        try (PreparedStatement stmt = connection.prepareStatement(PENDING_APPTMT_EXISTS)) {
+            stmt.setString(1, nhi);
+            stmt.setInt(2, statusId);
+
+            try (ResultSet result = stmt.executeQuery()) {
+                result.next();
+                return result.getInt(1) == 1;
+            }
+        }
+    }
+
+
+    /**
+     * Deletes the appointment based on appointment Id.
      *
      * @param appointment that needs to be deleted.
      * @param connection connection to the database

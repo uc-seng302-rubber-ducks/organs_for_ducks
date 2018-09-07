@@ -1,6 +1,7 @@
 package odms.controller.gui.popup.utils;
 
 import javafx.scene.control.Alert;
+import javafx.scene.layout.Region;
 
 public class AlertWindowFactory {
 
@@ -21,6 +22,7 @@ public class AlertWindowFactory {
         alert.setTitle("Error");
         alert.setHeaderText(null);
         alert.setContentText(message);
+        alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
 
         alert.showAndWait();
     }
