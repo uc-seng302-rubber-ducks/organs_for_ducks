@@ -100,4 +100,23 @@ public class AppointmentController extends BaseController {
 
         return new ResponseEntity(HttpStatus.ACCEPTED);
     }
+
+    @RequestMapping(method = RequestMethod.DELETE, value = "/appointment")
+    public ResponseEntity deleteAppointment(@RequestBody Appointment appointmentToDelete) {
+        try (Connection connection = driver.getConnection()) {
+            handler.deleteAppointment(appointmentToDelete, connection);
+
+            String appointmentId = Integer.toString(handler.getAppointmentId(connection, appointmentToDelete));
+            socketHandler.broadcast(EventTypes.APPOINTMENT_UPDATE, appointmentId, appointmentId);
+
+        } catch (SQLException e) {
+            Log.severe("Cannot delete appointment at db", e);
+            throw new ServerDBException(e);
+        } catch (IOException ex) {
+            Log.warning("Failed to broadcast update after deleting an appointment", ex);
+        }
+
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
 }
