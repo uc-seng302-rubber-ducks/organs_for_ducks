@@ -1,12 +1,13 @@
 package odms.controller.gui.panel.view;
 
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TextArea;
 import javafx.scene.control.cell.PropertyValueFactory;
 import odms.commons.model.Appointment;
 import odms.commons.model.User;
@@ -15,7 +16,7 @@ import odms.commons.model._enum.AppointmentStatus;
 import odms.controller.gui.panel.logic.UserAppointmentLogicController;
 import odms.controller.gui.popup.utils.AlertWindowFactory;
 
-import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 public class UserAppointmentViewController {
@@ -27,7 +28,7 @@ public class UserAppointmentViewController {
     private TableView<Appointment> userAppointmentsTableView;
 
     @FXML
-    private TableColumn<Appointment, LocalDateTime> userAppointmentDateColumn;
+    private TableColumn<Appointment, String> userAppointmentDateColumn;
 
     @FXML
     private TableColumn<Appointment, String> userAppointmentClinicianIdColumn;
@@ -39,7 +40,9 @@ public class UserAppointmentViewController {
     private TableColumn<Appointment, AppointmentStatus> userAppointmentStatusColumn;
 
     @FXML
-    private TextArea userAppointmentDetailsTextArea;
+    private Label userAppointmentDetailsLabel;
+
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd hh:mm");
 
     /**
      * Initialises the panel
@@ -60,13 +63,12 @@ public class UserAppointmentViewController {
      * Changes the default sorting order to sort by the appointment status
      */
     private void initUserAppointmentsTableView() {
-        userAppointmentDateColumn.setCellValueFactory(new PropertyValueFactory<>("requestedDate"));
+        userAppointmentDateColumn.setCellValueFactory(foo -> new SimpleStringProperty(foo.getValue().getRequestedDate().format(formatter)));
         userAppointmentCategoryColumn.setCellValueFactory(new PropertyValueFactory<>("appointmentCategory"));
-        userAppointmentClinicianIdColumn.setCellValueFactory(new PropertyValueFactory<>("requestedClinician"));
+        userAppointmentClinicianIdColumn.setCellValueFactory(new PropertyValueFactory<>("requestedClinicianId"));
         userAppointmentStatusColumn.setCellValueFactory(new PropertyValueFactory<>("appointmentStatus"));
         logicController.updateTable(0);
         populateTable();
-        // TODO sort by status 28/08/2018
         userAppointmentStatusColumn.setSortType(TableColumn.SortType.ASCENDING);
         setOnClickBehaviour();
     }
@@ -111,10 +113,28 @@ public class UserAppointmentViewController {
      */
     private void displayAppointmentDetails(Appointment appointment) {
         if (appointment != null) {
-            userAppointmentDetailsTextArea.setText(appointment.displayDetails());
+            userAppointmentDetailsLabel.setText(displayDetails(appointment));
         } else {
-            userAppointmentDetailsTextArea.clear();
+            userAppointmentDetailsLabel.setText("");
         }
+    }
+
+    /**
+     * Formats the given appointment's details into multiple lines so it is more readable.
+     *
+     * @param appointment The appointment to be viewed
+     * @return A string containing details of the appointment
+     */
+    private String displayDetails(Appointment appointment) {
+        String newLines = "\n\n\n";
+        String details = appointment.getAppointmentStatus().toString() + newLines;
+        details += appointment.getRequestedDate().toLocalDate().toString() + newLines;
+        details += appointment.getRequestedDate().toLocalTime().toString() + newLines;
+        details += appointment.getRequestedClinicianId() + newLines;
+        details += appointment.getAppointmentCategory().toString() + newLines;
+        details += appointment.getRequestDescription();
+
+        return details;
     }
 
     /**

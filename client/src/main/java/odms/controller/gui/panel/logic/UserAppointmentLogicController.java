@@ -47,6 +47,11 @@ public class UserAppointmentLogicController implements PropertyChangeListener {
      * Launches the pop-up to create and view requested appointments in more detail
      */
     public void launchAppointmentPicker() {
+        if (appController.getAppointmentsBridge().pendingExists(user.getNhi())) {
+            alertUser("You cannot request a new appointment as you already have one pending approval.");
+            return;
+        }
+
         FXMLLoader appointmentRequestLoader = new FXMLLoader(getClass().getResource("/FXML/appointmentPicker.fxml"));
         Parent root;
 

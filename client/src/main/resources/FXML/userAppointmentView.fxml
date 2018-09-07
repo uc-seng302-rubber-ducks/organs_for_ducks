@@ -9,17 +9,23 @@
         <AnchorPane layoutX="455.0" prefHeight="735.0" prefWidth="332.0" AnchorPane.bottomAnchor="0.0"
                     AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <children>
-                <Button fx:id="userCancelAppointmentButton" layoutY="662.0" mnemonicParsing="false"
+                <Button fx:id="userCancelAppointmentButton" layoutX="9.0" layoutY="668.0" mnemonicParsing="false"
                         onAction="#cancelAppointment" prefHeight="25.0" prefWidth="152.0" text="Cancel Appointment"
-                        AnchorPane.bottomAnchor="48.0" AnchorPane.rightAnchor="180.0"/>
-                <Label layoutX="10.0" layoutY="54.0" text="Appointment Details" AnchorPane.rightAnchor="170.0">
+                        AnchorPane.bottomAnchor="50.0" AnchorPane.rightAnchor="171.0"/>
+                <Label layoutX="11.0" layoutY="56.0" text="Appointment Details" AnchorPane.rightAnchor="158.0">
+                    <font>
+                        <Font name="System Bold" size="14.0"/>
+                    </font>
+                </Label>
+                <Label alignment="TOP_LEFT" layoutX="14.0" layoutY="103.0" prefHeight="271.0" prefWidth="117.0"
+                       text="Status:&#10;&#10;&#10;Date:&#10;&#10;&#10;Time:&#10;&#10;&#10;Clinician Id:&#10;&#10;&#10;Category:&#10;&#10;&#10;Description:"
+                       wrapText="true">
                     <font>
                         <Font name="System Bold" size="13.0"/>
                     </font>
                 </Label>
-                <TextArea fx:id="userAppointmentDetailsTextArea" editable="false" prefHeight="566.0" prefWidth="324.0"
-                          wrapText="true" AnchorPane.bottomAnchor="90.0" AnchorPane.leftAnchor="0.0"
-                          AnchorPane.rightAnchor="8.0" AnchorPane.topAnchor="79.0"/>
+                <Label fx:id="userAppointmentDetailsLabel" alignment="TOP_LEFT" layoutX="131.0" layoutY="103.0"
+                       prefHeight="545.0" prefWidth="188.0" wrapText="true"/>
             </children>
         </AnchorPane>
         <AnchorPane prefHeight="735.0" prefWidth="859.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
