@@ -14,8 +14,21 @@ import odms.controller.gui.panel.logic.ClinicianAppointmentRequestLogicControlle
 import odms.controller.gui.popup.view.RejectAppointmentReasonViewController;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 
 public class ClinicianAppointmentRequestViewController {
+
+    @FXML
+    public TableColumn<Appointment, String> categoryTableColumn;
+
+    @FXML
+    private TableColumn<Appointment, LocalDateTime> dateTimeTableColumn;
+
+    @FXML
+    private TableColumn<Appointment, String> nameTableColumn;
+
+    @FXML
+    private TableColumn<Appointment, String> nhiTableColumn;
 
     @FXML
     private TableView<Appointment> clinicianAppointmentRequestView;
@@ -37,7 +50,7 @@ public class ClinicianAppointmentRequestViewController {
 
     private ObservableList<Appointment> availableAppointments;
 
-    private ClinicianAppointmentRequestLogicController logicController = new ClinicianAppointmentRequestLogicController(availableAppointments);
+    private ClinicianAppointmentRequestLogicController logicController;
 
 
     /**
@@ -80,10 +93,11 @@ public class ClinicianAppointmentRequestViewController {
         Parent root;
         try {
             root = loader.load();
-            RejectAppointmentReasonViewController loginController = loader.getController();
+            RejectAppointmentReasonViewController rejectionController = loader.getController();
             rejectionStage.setScene(new Scene(root));
 
-            loginController.init(selectedAppointment, rejectionStage);
+            rejectionController.init(selectedAppointment, rejectionStage);
+            rejectionStage.show();
         } catch (IOException e) {
             Log.severe("failed to load login window FXML", e);
         }
