@@ -526,7 +526,9 @@ public class AppController {
      */
     public void deleteAdmin(Administrator admin) {
         admin.setDeleted(true);
-
+        System.out.println("NANI THE");
+        System.out.println(admin.isDeleted());
+        System.out.println("FFFFFFFFFFFFFKKKKKKKKK");
         getAdministratorBridge().deleteAdmin(admin, token);
     }
 
