@@ -59,7 +59,6 @@ public class GivenSteps extends ApplicationTest {
         }
         ConfigPropertiesSession.setInstance(null);
         AppController.setInstance(null);
-
     }
 
     @Given("^I have started the CLI$")
@@ -125,7 +124,6 @@ public class GivenSteps extends ApplicationTest {
 
     @Given("^The Create New Disease screen is loaded$")
     public void theCreateNewDiseaseScreenIsLoaded() throws IOException {
-
         when(CucumberTestModel.getClinicianBridge().getClinician(anyString(), anyString())).thenReturn(
                 new Clinician("", "0", "")
         );

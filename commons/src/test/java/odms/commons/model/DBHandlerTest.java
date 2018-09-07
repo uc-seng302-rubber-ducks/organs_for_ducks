@@ -7,7 +7,10 @@ import odms.commons.model._enum.Organs;
 import odms.commons.model.datamodel.Address;
 import odms.commons.model.datamodel.ComboBoxClinician;
 import odms.commons.model.datamodel.DeathDetails;
-import org.junit.*;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 import test_utils.DBHandlerMocker;
 
 import java.io.FileInputStream;
@@ -170,23 +173,21 @@ public class DBHandlerTest {
     }
 
     @Test
-    @Ignore //TODO: Unignore when changes have been properly made.
     public void testAddClinician() throws SQLException {
         testClinician.addChange(new Change("Created clinician"));
         Collection<Clinician> clinicians = new ArrayList<>(Collections.singleton(testClinician));
 
         dbHandler.saveClinicians(clinicians, connection);
-        verify(mockStmt, times(4)).executeUpdate();
+        verify(mockStmt, times(3)).executeUpdate();
     }
 
     @Test
-    @Ignore //TODO: Unignore when changes have been properly made.
     public void testAddAdmin() throws SQLException {
         testAdmin.addChange(new Change("Created administrator"));
         Collection<Administrator> admins = new ArrayList<>(Collections.singleton(testAdmin));
 
         dbHandler.saveAdministrators(admins, connection);
-        verify(mockStmt, times(4)).executeUpdate();
+        verify(mockStmt, times(2)).executeUpdate();
     }
 
     @Test
@@ -286,4 +287,13 @@ public class DBHandlerTest {
         verify(mockStmt, times(1)).executeQuery();
         Assert.assertEquals("Jon mid last", clinicians.iterator().next().toString());
     }
+
+    @Test
+    public void testDeleteAppointment() throws SQLException {
+        Appointment appointment = new Appointment();
+        appointment.setAppointmentId(1);
+        dbHandler.deleteAppointment(appointment, connection);
+        verify(mockStmt, times(1)).executeUpdate();
+    }
+
 }

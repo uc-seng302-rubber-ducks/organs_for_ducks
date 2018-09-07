@@ -1,7 +1,6 @@
 package odms.TestUtils;
 
 import odms.bridge.*;
-import odms.commons.model.Appointment;
 import odms.controller.AppController;
 import odms.socket.OdmsSocketHandler;
 

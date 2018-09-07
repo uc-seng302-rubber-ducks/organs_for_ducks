@@ -29,9 +29,6 @@ public class AppointmentPickerViewController {
     @FXML
     private TextArea appointmentBookingDescriptionInput;
 
-    private User user;
-    private Stage stage;
-    private AppController appController;
     private AppointmentPickerLogicController logicController;
 
 
@@ -43,9 +40,6 @@ public class AppointmentPickerViewController {
      * @param stage         The applications stage.
      */
     public void init(User user, Stage stage, AppController appController) {
-        this.stage = stage;
-        this.user = user;
-        this.appController = appController;
         this.logicController = new AppointmentPickerLogicController(user, stage, appController);
         appointmentBookingTypeInput.getItems().addAll(AppointmentCategory.values());
         List<ComboBoxClinician> comboBoxClinicians = new ArrayList<>();
