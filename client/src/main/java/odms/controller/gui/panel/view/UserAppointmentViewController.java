@@ -5,9 +5,9 @@ import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TextArea;
 import javafx.scene.control.cell.PropertyValueFactory;
 import odms.commons.model.Appointment;
 import odms.commons.model.User;
@@ -40,7 +40,7 @@ public class UserAppointmentViewController {
     private TableColumn<Appointment, AppointmentStatus> userAppointmentStatusColumn;
 
     @FXML
-    private TextArea userAppointmentDetailsTextArea;
+    private Label userAppointmentDetailsLabel;
 
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd hh:mm");
 
@@ -109,10 +109,28 @@ public class UserAppointmentViewController {
      */
     private void displayAppointmentDetails(Appointment appointment) {
         if (appointment != null) {
-            userAppointmentDetailsTextArea.setText(appointment.displayDetails());
+            userAppointmentDetailsLabel.setText(displayDetails(appointment));
         } else {
-            userAppointmentDetailsTextArea.clear();
+            userAppointmentDetailsLabel.setText("");
         }
+    }
+
+    /**
+     * Formats the given appointment's details into multiple lines so it is more readable.
+     *
+     * @param appointment The appointment to be viewed
+     * @return A string containing details of the appointment
+     */
+    private String displayDetails(Appointment appointment) {
+        String newLines = "\n\n\n";
+        String details = appointment.getAppointmentStatus().toString() + newLines;
+        details += appointment.getRequestedDate().toLocalDate().toString() + newLines;
+        details += appointment.getRequestedDate().toLocalTime().toString() + newLines;
+        details += appointment.getRequestedClinicianId() + newLines;
+        details += appointment.getAppointmentCategory().toString() + newLines;
+        details += appointment.getRequestDescription();
+
+        return details;
     }
 
     /**
