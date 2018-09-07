@@ -94,4 +94,15 @@ public class AppointmentControllerTests {
         controller.getClinicianAppointments(30, 0, "0");
     }
 
+    @Test
+    public void DeleteAppointmentShouldReturnOKIfConnectionValid() throws SQLException {
+        ResponseEntity res = controller.deleteAppointment(testAppointment);
+        Assert.assertEquals(HttpStatus.OK, res.getStatusCode());
+    }
+
+    @Test(expected = ServerDBException.class)
+    public void deleteAppointmentShouldThrowExceptionWhenNoConnection() throws SQLException {
+        when(driver.getConnection()).thenThrow(new SQLException());
+        controller.deleteAppointment(testAppointment);
+    }
 }
