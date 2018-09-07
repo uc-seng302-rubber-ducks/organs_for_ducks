@@ -30,44 +30,11 @@ public class DeleteRestoreProfileTest {
 
     @Before
     public void setUp() {
-//        testUser = new User("Stan", LocalDate.of(2000, 3, 5), "ABC4321");
-//        testClinician = new Clinician("Bob", "id", "1234");
-//        testAdmin = new Administrator("nameuser", "first", "middle", "last", "1234");
-        //AppController.setInstance(null);
         appC = AppController.getInstance();
-
-//        doNothing().when(userBridge).deleteUser(any(User.class));
-//        doNothing().when(clinicianBridge).deleteClinician(any(Clinician.class), anyString());
-//        doNothing().when(administratorBridge).deleteAdmin(any(Administrator.class), anyString());
-//
-//        appC.setUserBridge(userBridge);
-//        appC.setClinicianBridge(clinicianBridge);
-//        appC.setAdministratorBridge(administratorBridge);
-//
-//        activeAdmins = appC.getAdmins();
-//        activeClinicians = appC.getClinicians();
-//        activeUsers = appC.getUsers();
-//
-//        activeAdmins.remove(testAdmin);
-//        activeClinicians.remove(testClinician);
-//        activeUsers.remove(testUser);
-//
-//        activeAdmins.add(testAdmin);
-//        activeClinicians.add(testClinician);
-//        activeUsers.add(testUser);
     }
 
     @After
     public void tearDown() {
-//        activeAdmins.remove(testAdmin);
-//        activeClinicians.remove(testClinician);
-//        activeUsers.remove(testUser);
-//
-//
-//        testAdmin.setDeleted(false);
-//        testClinician.setDeleted(false);
-//        testUser.setDeleted(false);
-
         AppController.setInstance(null);
     }
 
@@ -106,17 +73,11 @@ public class DeleteRestoreProfileTest {
         doNothing().when(administratorBridge).deleteAdmin(any(Administrator.class), anyString());
         appC.setAdministratorBridge(administratorBridge);
 
-        System.out.println(testAdmin.isDeleted());
         Collection<Administrator> activeAdmins = appC.getAdmins();
-        System.out.println(testAdmin.isDeleted());
         activeAdmins.remove(testAdmin);
-        System.out.println(testAdmin.isDeleted());
         activeAdmins.add(testAdmin);
-        System.out.println(testAdmin.isDeleted());
 
         appC.deleteAdmin(testAdmin);
-        System.out.println(testAdmin.isDeleted());
         Assert.assertTrue(testAdmin.isDeleted());
-        System.out.println(testAdmin.isDeleted());
     }
 }

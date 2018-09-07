@@ -514,10 +514,7 @@ public class AppController {
      * @param clinician The clinician to be deleted
      */
     public void deleteClinician(Clinician clinician) {
-        System.out.println("Life has many doors");
         clinician.setDeleted(true);
-        System.out.println(clinician.isDeleted());
-        System.out.println("Ed boy");
         getClinicianBridge().deleteClinician(clinician, getToken());
     }
 
@@ -527,10 +524,7 @@ public class AppController {
      * @param admin The given admin
      */
     public void deleteAdmin(Administrator admin) {
-        System.out.println("NANI THE");
         admin.setDeleted(true);
-        System.out.println(admin.isDeleted());
-        System.out.println("FFFFFFFFFFFFFKKKKKKKKK");
         getAdministratorBridge().deleteAdmin(admin, token);
     }
 
