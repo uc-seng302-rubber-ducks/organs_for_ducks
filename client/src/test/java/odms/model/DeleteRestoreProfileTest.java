@@ -33,7 +33,7 @@ public class DeleteRestoreProfileTest {
 //        testUser = new User("Stan", LocalDate.of(2000, 3, 5), "ABC4321");
 //        testClinician = new Clinician("Bob", "id", "1234");
 //        testAdmin = new Administrator("nameuser", "first", "middle", "last", "1234");
-        AppController.setInstance(null);
+        //AppController.setInstance(null);
         appC = AppController.getInstance();
 
 //        doNothing().when(userBridge).deleteUser(any(User.class));
