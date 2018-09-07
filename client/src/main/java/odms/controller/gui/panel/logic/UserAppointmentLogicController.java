@@ -80,7 +80,7 @@ public class UserAppointmentLogicController implements PropertyChangeListener {
             return;
         }
 
-        Optional<ButtonType> result = AlertWindowFactory.generateConfirmation("Are you sure you want to delete this appointment?");
+        Optional<ButtonType> result = confirmOption("Are you sure you want to delete this appointment?");
 
         if (!result.isPresent()) {
             return;
@@ -89,6 +89,16 @@ public class UserAppointmentLogicController implements PropertyChangeListener {
         if (result.get() == ButtonType.OK) {
             appController.getAppointmentsBridge().deleteAppointment(appointment);
         }
+    }
+
+    /**
+     * Creates a confirmation alert pop-up with the given message
+     * Extracted for easier testability
+     *
+     * @return the confirmation alert window result
+     */
+    public Optional<ButtonType> confirmOption(String message) {
+        return AlertWindowFactory.generateConfirmation(message);
     }
 
     /**
@@ -129,7 +139,7 @@ public class UserAppointmentLogicController implements PropertyChangeListener {
      *
      * @param message message to display to the user.
      */
-    private void alertUser(String message) {
+    public void alertUser(String message) {
         AlertWindowFactory.generateError(message);
     }
 
