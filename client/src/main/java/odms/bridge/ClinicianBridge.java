@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
+import odms.commons.config.ConfigPropertiesSession;
 import odms.commons.exception.ApiException;
 import odms.commons.model.Appointment;
 import odms.commons.model.Clinician;
@@ -71,55 +72,17 @@ public class ClinicianBridge extends RoleBridge {
         String url = ip + CLINICIANS + staffID;
         RequestBody requestBody = RequestBody.create(json, new Gson().toJson(clinician));
         Request request = new Request.Builder().url(url).addHeader(tokenHeader, token).put(requestBody).build();
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                Log.warning("Could not PUT to " + url, e);
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                if (!response.isSuccessful()) {
-                    throw new IOException("Failed to PUT to " + url);
-                }
-                response.close();
-            }
-        });
+        client.newCall(request).enqueue(CommonMethods.loggedCallback("PUT", url));
     }
 
     public void deleteClinician(Clinician clinician, String token) {
         String url = ip + CLINICIANS + clinician.getStaffId();
         Request request = new Request.Builder().url(url).addHeader(tokenHeader, token).delete().build();
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                Log.warning("Could not DELETE " + url, e);
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                if (!response.isSuccessful()) {
-                    response.close();
-                    throw new IOException("Failed to DELETE to " + url);
-                }
-                response.close();
-            }
-
-        });
-
+        client.newCall(request).enqueue(CommonMethods.loggedCallback("DELETE", url));
     }
 
     public Clinician getClinician(String wantedClinician, String token) throws ApiException {
-        Response response;
-        try {
-            Headers headers = new Headers.Builder().add(tokenHeader, token).build();
-            Request request = new Request.Builder()
-                    .url(ip + CLINICIANS + wantedClinician).headers(headers).build();
-            response = client.newCall(request).execute();
-        } catch (IOException e) {
-            Log.severe("failed to make request", e);
-            return null;
-        }
+        Response response = CommonMethods.getRole(client, ip, CLINICIANS, wantedClinician, tokenHeader, token);
         if (response == null) {
             Log.warning("A null response was returned to the user");
             return null;
@@ -137,7 +100,10 @@ public class ClinicianBridge extends RoleBridge {
 
         try {
             Clinician c = new JsonHandler().decodeClinician(response);
-            c.setProfilePhotoFilePath(getProfilePicture(c.getStaffId(), token));
+            if (ConfigPropertiesSession.getInstance().getProperty("testConfig", "false").equalsIgnoreCase("false")) {
+                c.setProfilePhotoFilePath(getProfilePicture(c.getStaffId(), token));
+                return c;
+            }
             return c;
         } catch (IOException ex) {
             Log.severe("could not interpret the given clinician", ex);

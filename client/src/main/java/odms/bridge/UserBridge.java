@@ -274,80 +274,28 @@ public class UserBridge extends RoleBridge {
         String url = ip + USERS + nhi + "/receiving";
         RequestBody body = RequestBody.create(json, new Gson().toJson(receiving));
         Request request = new Request.Builder().url(url).addHeader(tokenHeader, token).post(body).build();
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                Log.warning(COULD_NOT_MAKE_A_CALL_TO + url, e);
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                if (!response.isSuccessful()) {
-                    throw new IOException(FAILED_TO_POST_TO + url);
-                }
-                response.close();
-            }
-        });
+        client.newCall(request).enqueue(CommonMethods.loggedCallback("POST", url));
     }
 
     public void putReceivingOrgans(Map<Organs, ArrayList<ReceiverOrganDetailsHolder>> receiving, String nhi, String token) {
         String url = ip + USERS + nhi + "/receiving";
         RequestBody body = RequestBody.create(json, new Gson().toJson(receiving));
         Request request = new Request.Builder().url(url).addHeader(tokenHeader, token).put(body).build();
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                Log.warning(COULD_NOT_MAKE_A_CALL_TO + url, e);
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                if (!response.isSuccessful()) {
-                    throw new IOException(FAILED_TO_PUT_TO + url);
-                }
-                response.close();
-            }
-        });
+        client.newCall(request).enqueue(CommonMethods.loggedCallback("PUT", url));
     }
 
     public void postDonatingOrgans(Set<Organs> donating, String nhi) {
         String url = ip + USERS + nhi + "/donating";
         RequestBody body = RequestBody.create(json, new Gson().toJson(donating));
         Request request = new Request.Builder().url(url).post(body).build();
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                Log.warning(COULD_NOT_MAKE_A_CALL_TO + url, e);
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                if (!response.isSuccessful()) {
-                    throw new IOException(FAILED_TO_POST_TO + url);
-                }
-                response.close();
-            }
-        });
+        client.newCall(request).enqueue(CommonMethods.loggedCallback("POST", url));
     }
 
     public void putDonatingOrgans(Set<Organs> donating, String nhi) {
         String url = ip + USERS + nhi + "/donating";
         RequestBody body = RequestBody.create(json, new Gson().toJson(donating));
         Request request = new Request.Builder().url(url).put(body).build();
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                Log.warning(COULD_NOT_MAKE_A_CALL_TO + url, e);
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                if (!response.isSuccessful()) {
-                    throw new IOException(FAILED_TO_PUT_TO + url);
-                }
-                response.close();
-            }
-        });
+        client.newCall(request).enqueue(CommonMethods.loggedCallback("PUT", url));
     }
 
     public String getProfilePicture(String nhi) throws IOException {

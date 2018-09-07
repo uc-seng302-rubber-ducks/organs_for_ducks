@@ -48,7 +48,7 @@ public class AttributeValidation {
      * @return True if the phone number is valid, false otherwise
      */
     public static boolean validatePhoneNumber(String phoneNum) {
-        return (phoneNum.matches("^[0][34679][ \\-]?[2-9][0-9]{2}[ \\-]?[0-9]{4}$")) || phoneNum.isEmpty();
+        return (phoneNum.matches("^\\+?[0-9]{1,3}([ \\-]?[0-9]{2,4}){2,3}$")) || phoneNum.isEmpty();
     }
 
 
@@ -60,7 +60,7 @@ public class AttributeValidation {
      * @return true if the cell number is valid, false otherwise
      */
     public static boolean validateCellNumber(String cellNum) {
-        return (cellNum.matches("^[0-9]{7,13}$")) || cellNum.isEmpty();
+        return (cellNum.matches("^\\+?[0-9]{1,3}[0-9]{7,13}$")) || cellNum.isEmpty();
     }
 
     /**
@@ -70,11 +70,7 @@ public class AttributeValidation {
      * @return true if the attribute meets the specified criteria, false otherwise
      */
     public static boolean checkString(String attribute) {
-        if (attribute != null) {
-            return (attribute.matches("[a-zA-Z '\\-0-9]*"));
-        } else {
-            return false;
-        }
+        return attribute != null && (attribute.matches("[a-zA-Z '\\-0-9]*"));
     }
 
     /**
@@ -84,11 +80,7 @@ public class AttributeValidation {
      * @return true if the attribute meets the specified criteria, false otherwise
      */
     public static boolean checkRequiredString(String attribute) {
-        if (attribute != null) {
-            return (attribute.matches("[a-zA-Z '\\-0-9]+"));
-        } else {
-            return false;
-        }
+        return attribute != null && (attribute.matches("[a-zA-Z '\\-0-9]+"));
     }
 
     /**
@@ -98,11 +90,7 @@ public class AttributeValidation {
      * @return true if the attribute meets the specified criteria, false otherwise
      */
     public static boolean checkRequiredStringName(String attribute) {
-        if (attribute != null) {
-            return (attribute.matches("[a-zA-Z '\\-]+"));
-        } else {
-            return false;
-        }
+        return attribute != null && (attribute.matches("[a-zA-Z '\\-]+"));
     }
 
     /**

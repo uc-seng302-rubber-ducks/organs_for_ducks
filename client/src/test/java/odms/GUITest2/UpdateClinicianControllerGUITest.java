@@ -12,7 +12,10 @@ import odms.commons.model.datamodel.ContactDetails;
 import odms.commons.model.dto.UserOverview;
 import odms.controller.AppController;
 import odms.controller.gui.window.ClinicianController;
-import org.junit.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.matcher.control.ComboBoxMatchers;
@@ -141,7 +144,6 @@ public class UpdateClinicianControllerGUITest extends ApplicationTest {
     }
 
     @Test
-    @Ignore
     public void testUpdateRegionAndCountry() {
         clickOn("#countrySelector");
         clickOn("New Zealand");
@@ -150,22 +152,5 @@ public class UpdateClinicianControllerGUITest extends ApplicationTest {
         clickOnButton(this, "#confirmButton");
         verifyThat("#regionLabel", LabeledMatchers.hasText("Otago"));
         verifyThat("#countryLabel", LabeledMatchers.hasText("New Zealand"));
-    }
-
-    @Test
-    @Ignore
-    public void testUpdateRegionAndCountryNotNZ() {
-        interact(() -> {
-            setComboBox(this, "#countrySelector", "Belgium");
-            setTextField(this, "#regionTextField", "Flanders");
-
-        });
-        verifyThat("#regionTextField", Node::isVisible);
-
-        interact(() -> {
-            clickOnButton(this, "#confirmButton");
-        });
-        verifyThat("#regionLabel", LabeledMatchers.hasText("Flanders"));
-        verifyThat("#countryLabel", LabeledMatchers.hasText("Belgium"));
     }
 }
