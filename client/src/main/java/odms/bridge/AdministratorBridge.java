@@ -67,60 +67,24 @@ public class AdministratorBridge extends RoleBridge {
         String url = ip + ADMINS + username;
         RequestBody requestBody = RequestBody.create(json, new Gson().toJson(administrator));
         Request request = new Request.Builder().url(url).addHeader(tokenHeader, token).put(requestBody).build();
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                Log.warning("Could not PUT to " + url, e);
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                if (!response.isSuccessful()) {
-                    throw new IOException("Failed to PUT to " + url);
-                }
-                response.close();
-            }
-        });
+        client.newCall(request).enqueue(CommonMethods.loggedCallback("PUT", url));
 
     }
 
     public void deleteAdmin(Administrator administrator, String token) {
         String url = ip + ADMINS + administrator.getUserName();
         Request request = new Request.Builder().url(url).addHeader(tokenHeader, token).delete().build();
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                Log.warning("Could not DELETE " + url, e);
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                if (!response.isSuccessful()) {
-                    throw new IOException("Failed to DELETE to " + url);
-                }
-                response.close();
-            }
-        });
+        client.newCall(request).enqueue(CommonMethods.loggedCallback("DELETE", url));
 
     }
 
     public Administrator getAdmin(String username, String token) throws ApiException {
-        Response response;
-        try {
-            Headers headers = new Headers.Builder().add(tokenHeader, token).build();
-            Request request = new Request.Builder()
-                    .url(ip + ADMINS + username).headers(headers).build();
-            response = client.newCall(request).execute();
-        } catch (IOException e) {
-            Log.severe("failed to make request", e);
-            return null;
-        }
+        Response response = CommonMethods.getRole(client, ip, ADMINS, username, tokenHeader, token);
         if (response == null) {
             Log.warning("A null response was returned to the Admin");
             return null;
         }
         int responseCode = response.code();
-
         if (400 < responseCode && responseCode < 500) {
             //generic error occurred
             throw new ApiException(responseCode, "could not get requested Admin");

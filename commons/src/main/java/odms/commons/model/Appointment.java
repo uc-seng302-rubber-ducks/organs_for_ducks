@@ -119,15 +119,6 @@ public class Appointment {
         this.seen = hasSeen;
     }
 
-    public String displayDetails() {
-        return "User Id: " + requestingUserId + "\n" +
-                "Clinician Id: " + requestedClinicianId + '\n' +
-                "Category: " + appointmentCategory + "\n" +
-                "Date/Time: " + requestedDate + "\n" +
-                "Status: " + appointmentStatus + "\n" +
-                "Description: " + requestDescription;
-    }
-
     @Override
     public int hashCode() {
 

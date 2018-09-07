@@ -115,12 +115,12 @@ public class DBHandler {
     private static final String SELECT_DEATH_DETAILS_STMT = "SELECT * FROM DeathDetails WHERE fkUserNhi = ?";
     private static final String SELECT_APPTMT_ID = "SELECT apptId FROM AppointmentDetails WHERE requestedTime = ? AND fkStatusId = ?";
     private static final String PENDING_APPTMT_EXISTS = "SELECT EXISTS(SELECT 1 FROM AppointmentDetails WHERE fkUserNhi = ? AND fkStatusId = ?)";
+    private static final String DELETE_APPOINTMENT_STMT = "DELETE FROM AppointmentDetails WHERE apptId = ?";
     private static final String SELECT_APPOINTMENT_STATUS_STMT = "SELECT fkStatusId FROM AppointmentDetails WHERE apptId = ?";
 
     private AbstractUpdateStrategy updateStrategy;
     private AbstractFetchAppointmentStrategy fetchAppointmentStrategy;
 
-    private static final String DELETE_APPOINTMENT_STMT = "DELETE FROM AppointmentDetails WHERE apptId = ?";
 
     /**
      * Takes a generic, valid SQL String as an argument and executes it and returns the result
@@ -1380,7 +1380,7 @@ public class DBHandler {
     }
 
     /**
-     * deletes the appointment based on appointment Id.
+     * Deletes the appointment based on appointment Id.
      *
      * @param appointment that needs to be deleted.
      * @param connection connection to the database

@@ -43,11 +43,6 @@ public class AppointmentPickerLogicController {
      * @param description        of appointment
      */
     public void confirm(LocalDate date, AppointmentCategory type, String preferredClinician, String description) {
-        if (appController.getAppointmentsBridge().pendingExists(user.getNhi())) {
-            alertUser("You cannot request a new appointment as you already have one pending approval.");
-            return;
-        }
-
         String message = "";
         if (!validateDateOfAppointment(date)) {
             message = "Invalid Appointment Date! The earliest appointment date is tomorrow.\n";
