@@ -515,7 +515,9 @@ public class AppController {
      */
     public void deleteClinician(Clinician clinician) {
         clinician.setDeleted(true);
-
+        System.out.println("Life has many doors");
+        System.out.println(clinician.isDeleted());
+        System.out.println("Ed boy");
         getClinicianBridge().deleteClinician(clinician, getToken());
     }
 
