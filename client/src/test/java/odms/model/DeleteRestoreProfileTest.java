@@ -73,6 +73,8 @@ public class DeleteRestoreProfileTest {
         testAdmin.setDeleted(false);
         testClinician.setDeleted(false);
         testUser.setDeleted(false);
+
+        AppController.setInstance(null);
     }
 
     @Test
