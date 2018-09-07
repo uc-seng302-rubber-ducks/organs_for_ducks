@@ -4,13 +4,13 @@ import javafx.scene.Node;
 import odms.App;
 import odms.TestUtils.AppControllerMocker;
 import odms.TestUtils.CommonTestMethods;
+import odms.bridge.UserBridge;
 import odms.commons.model.Clinician;
 import odms.commons.model.EmergencyContact;
 import odms.commons.model.User;
 import odms.commons.model.dto.UserOverview;
 import odms.controller.AppController;
 import odms.controller.gui.window.UserController;
-import odms.bridge.UserBridge;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -26,8 +26,6 @@ import java.util.concurrent.TimeoutException;
 
 import static odms.TestUtils.FxRobotHelper.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 import static org.testfx.api.FxAssert.verifyThat;
 
@@ -35,7 +33,7 @@ public class RedoUserGUITest extends ApplicationTest {
 
     @BeforeClass
     public static void initialization() {
-        CommonTestMethods.runHeadless();
+        CommonTestMethods.runMethods();
     }
 
     @Before
@@ -57,11 +55,11 @@ public class RedoUserGUITest extends ApplicationTest {
         doCallRealMethod().when(application).setUserController(any(UserController.class));
         doCallRealMethod().when(application).getUserController();
 
-        user.setContact(new EmergencyContact("", "", "1456788"));
+        user.setContact(new EmergencyContact("", "", ""));
         user.getUndoStack().clear();
 
         FxToolkit.registerPrimaryStage();
-        FxToolkit.setupApplication(App.class);
+        FxToolkit.setupApplication(App.class, "--testConfig=true");
 
         AppController.getInstance().getUsers().clear();
         AppController.getInstance().getUsers().add(user);

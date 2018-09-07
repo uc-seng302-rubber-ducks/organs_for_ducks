@@ -1,20 +1,21 @@
 package odms.GUITest2;
 
 
-import javafx.scene.control.TableView;
 import javafx.collections.FXCollections;
+import javafx.scene.control.TableView;
 import odms.App;
 import odms.TestUtils.AppControllerMocker;
 import odms.TestUtils.CommonTestMethods;
 import odms.bridge.*;
 import odms.commons.model.Clinician;
 import odms.commons.model.User;
-import odms.commons.model._enum.OrganDeregisterReason;
 import odms.commons.model._enum.Organs;
-import odms.commons.model.datamodel.ReceiverOrganDetailsHolder;
 import odms.commons.model.dto.UserOverview;
 import odms.controller.AppController;
-import org.junit.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 
@@ -28,12 +29,9 @@ import java.util.HashSet;
 import java.util.concurrent.TimeoutException;
 
 import static odms.TestUtils.FxRobotHelper.*;
-import static odms.TestUtils.ListViewsMethod.getListView;
 import static odms.TestUtils.TableViewsMethod.getCell;
 import static odms.TestUtils.TableViewsMethod.getCellValue;
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
@@ -47,7 +45,7 @@ public class OrganReceiverGUITest extends ApplicationTest {
 
     @BeforeClass
     public static void initialization() {
-        CommonTestMethods.runHeadless();
+        CommonTestMethods.runMethods();
     }
 
     @Before
@@ -80,7 +78,7 @@ public class OrganReceiverGUITest extends ApplicationTest {
         when(bridge.getUser("ABC1244")).thenReturn(testUser);
 
         FxToolkit.registerPrimaryStage();
-        FxToolkit.setupApplication(App.class);
+        FxToolkit.setupApplication(App.class, "--testConfig=true");
 
         AppController.getInstance().getUsers().clear();
         AppController.getInstance().getUsers().add(testUser);
@@ -136,25 +134,4 @@ public class OrganReceiverGUITest extends ApplicationTest {
         assertEquals("Kidney", getCellValue("#noLongerWaitingForOrgan", 0,0).toString());
 
     }
-
-    /**
-     * I think this test has an issue with testUser not saving properly, the print statements seem to be working fine and manual testing shows good results
-     */
-    @Test @Ignore
-    public void reasonsAndDatesShouldBeCorrectlyStored() {
-        setComboBox(this,"#organsComboBox",Organs.KIDNEY);
-        clickOnButton(this, "#registerButton");
-        getListView("#currentlyReceivingListView").getSelectionModel().select(0);
-        clickOnButton(this,"#deRegisterButton");
-        clickOn("#registrationErrorRadioButton");
-        clickOnButton(this,"#okButton");
-        getListView("#notReceivingListView").getSelectionModel().select(0);
-        clickOn("#reRegisterButton");
-        ArrayList<ReceiverOrganDetailsHolder> holder = testUser.getReceiverDetails().getOrgans().get(Organs.KIDNEY);
-//        System.out.println(holder.get(holder.size() - 1).toString());
-        assertEquals(LocalDate.now(), holder.get(holder.size() - 1).getStartDate());
-        assertEquals(OrganDeregisterReason.REGISTRATION_ERROR, holder.get(holder.size() - 1).getOrganDeregisterReason());
-        assertEquals(LocalDate.now(), holder.get(0).getStartDate());
-    }
-
 }

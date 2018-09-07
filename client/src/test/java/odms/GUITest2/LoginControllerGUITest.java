@@ -9,11 +9,13 @@ import odms.TestUtils.AppControllerMocker;
 import odms.TestUtils.CommonTestMethods;
 import odms.bridge.*;
 import odms.commons.exception.ApiException;
-import odms.commons.model.Administrator;
 import odms.commons.model.Clinician;
 import odms.commons.model.User;
 import odms.controller.AppController;
-import org.junit.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.matcher.control.LabeledMatchers;
@@ -43,7 +45,7 @@ public class LoginControllerGUITest extends ApplicationTest {
 
     @BeforeClass
     public static void initialization() {
-        CommonTestMethods.runHeadless();
+        CommonTestMethods.runMethods();
     }
 
     @Before
@@ -65,7 +67,7 @@ public class LoginControllerGUITest extends ApplicationTest {
         when(controller.getTransplantList()).thenReturn(new ArrayList());
         doNothing().when(organsBridge).getAvailableOrgansList(anyInt(), anyInt(), anyString(), anyString(), anyString(), anyString(), anyString(), any());
         FxToolkit.registerPrimaryStage();
-        FxToolkit.setupApplication(App.class);
+        FxToolkit.setupApplication(App.class, "--testConfig=true");
         AppController.getInstance().getUsers().clear();
 
     }
@@ -131,21 +133,6 @@ public class LoginControllerGUITest extends ApplicationTest {
         setTextField(this, "#userIDTextField", "ABC1234");
         press(KeyCode.ENTER);
         verifyThat("#NHIValue", LabeledMatchers.hasText("ABC1234"));
-    }
-
-    @Ignore
-    @Test
-    public void validAdminLogin() throws IOException {
-        when(loginBridge.loginToServer(anyString(), anyString(), anyString())).thenReturn("FeelsAdminMan");
-        when(administratorBridge.getAdmin(anyString(), anyString())).thenReturn(new Administrator("default", "", "", "", "admin"));
-        //use default admin
-        clickOn("#administratorTab");
-        clickOn("#adminUsernameTextField");
-        write("default");
-        clickOn("#adminPasswordField");
-        write("admin");
-        clickOn("#loginAButton");
-        //verifyThat();
     }
 
     @Test

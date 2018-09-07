@@ -1,11 +1,9 @@
 package odms.commons.database;
 
-import odms.commons.database.db_strategies.AbstractUpdateStrategy;
-import odms.commons.database.db_strategies.AdminUpdateStrategy;
-import odms.commons.database.db_strategies.ClinicianUpdateStrategy;
-import odms.commons.database.db_strategies.UserUpdateStrategy;
+import odms.commons.database.db_strategies.*;
 import odms.commons.model.*;
 import odms.commons.model._enum.Organs;
+import odms.commons.model._enum.UserType;
 import odms.commons.model.datamodel.*;
 import odms.commons.utils.Log;
 import odms.commons.utils.PasswordManager;
@@ -21,6 +19,9 @@ import java.util.*;
 public class DBHandler {
 
     public static final String MOMENT_OF_DEATH = "momentOfDeath";
+    public static final String START_TRANSACTION = "START TRANSACTION";
+    public static final String ROLLBACK = "ROLLBACK";
+    public static final String COMMIT = "COMMIT";
     /**
      * SQL commands for select
      * SELECT_USER_ONE_TO_ONE_INFO_STMT is for getting all info that follows one-to-one relationship. eg: 1 user can only have 1 address.
@@ -112,8 +113,12 @@ public class DBHandler {
             "WHERE (nhi = ?) " +
             "AND organName = ?";
     private static final String SELECT_DEATH_DETAILS_STMT = "SELECT * FROM DeathDetails WHERE fkUserNhi = ?";
-    private AbstractUpdateStrategy updateStrategy;
+    private static final String CREATE_APPOINTMENT_STMT = "INSERT INTO AppointmentDetails (fkUserNhi, fkStaffId, fkCategoryId, requestedTime, fkStatusId, description) VALUES (?,?,?,?,?,?)";
 
+    private AbstractUpdateStrategy updateStrategy;
+    private AbstractFetchAppointmentStrategy fetchAppointmentStrategy;
+
+    private static final String DELETE_APPOINTMENT_STMT = "DELETE FROM AppointmentDetails WHERE apptId = ?";
 
     /**
      * Takes a generic, valid SQL String as an argument and executes it and returns the result
@@ -234,6 +239,27 @@ public class DBHandler {
             }
         }
         return clinician;
+    }
+
+    /**
+     * Gets all the appointments from the database and converts it into a collection of appointments
+     *
+     * @param connection connection to the database
+     * @param id         identifier of the user
+     * @param type       UserType defining what user type it is.
+     * @param count      how many appointments to return
+     * @param start      how many appointments to skip before returning
+     * @return A collection of appointments
+     * @throws SQLException If there is an error with the database
+     */
+    public Collection<Appointment> getAppointments(Connection connection, String id, UserType type, int count, int start) throws SQLException {
+        if (type.equals(UserType.USER)) {
+            fetchAppointmentStrategy = new FetchUserAppointmentsStrategy();
+        } else if (type.equals(UserType.CLINICIAN)) {
+            fetchAppointmentStrategy = new FetchClincianAppointmentsStrategy();
+        }
+
+        return fetchAppointmentStrategy.getAppointments(connection, id, count, start);
     }
 
 
@@ -803,7 +829,7 @@ public class DBHandler {
     }
 
     /**
-     * finds a single Administrator and sets their deleted flag to true, then updates the Administrator on the db
+     * finds a single Administrator and sets their deleted flag to true, then updates the Administrator on the database
      *
      * @param connection connection to the target database
      * @param username   username of the Administrator to be deleted
@@ -841,7 +867,7 @@ public class DBHandler {
     }
 
     /**
-     * finds a single Clinician and sets their deleted flag to true, then updates the Clinician on the db
+     * finds a single Clinician and sets their deleted flag to true, then updates the Clinician on the database
      *
      * @param connection connection to the target database
      * @param staffId    staffId of the clinician to be deleted
@@ -875,7 +901,7 @@ public class DBHandler {
     }
 
     /**
-     * finds a single user and sets their deleted flag to true, then updates the user on the db
+     * finds a single user and sets their deleted flag to true, then updates the user on the database
      *
      * @param conn connection to the target database
      * @param nhi  nhi of the user to be deleted
@@ -1158,7 +1184,7 @@ public class DBHandler {
      * @param userId id of the wanted profile pictures owner
      * @param connection connection to the database
      * @return the content type header string
-     * @throws SQLException on a bad db connection
+     * @throws SQLException on a bad database connection
      */
     public String getFormat(Type t, String userId, Connection connection) throws SQLException {
 
@@ -1287,5 +1313,55 @@ public class DBHandler {
 
         }
         return null;
+    }
+
+    /**
+     * Gets a appointment strategy and returns it to the appointment controller
+     *
+     * @return An AppointmentUpdateStrategy
+     */
+    public AppointmentUpdateStrategy getAppointmentStrategy() {
+        return new AppointmentUpdateStrategy();
+    }
+
+
+    /**
+     * Gets the unique identifier of the given appointment
+     *
+     * @param connection  Connection to the target database
+     * @param appointment Appointment that the unique identifier is from
+     * @throws SQLException If the entry does not exist or the connection is invalid
+     */
+    public int getAppointmentId(Connection connection, Appointment appointment) throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT apptId FROM AppointmentDetails WHERE requestedTime = ? AND fkStatusId = ?")) {
+
+            preparedStatement.setTimestamp(1, Timestamp.valueOf(appointment.getRequestedDate()));
+            preparedStatement.setInt(2, appointment.getAppointmentStatus().getDbValue());
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                resultSet.next();
+                return resultSet.getInt("apptId");
+            }
+        }
+    }
+
+    /**
+     * deletes the appointment based on appointment Id.
+     *
+     * @param appointment that needs to be deleted.
+     * @param connection connection to the database
+     * @throws SQLException on a bad db connection
+     */
+    public void deleteAppointment(Appointment appointment, Connection connection) throws SQLException {
+        connection.prepareStatement(START_TRANSACTION).execute();
+        try (PreparedStatement stmt = connection.prepareStatement(DELETE_APPOINTMENT_STMT)){
+                stmt.setInt(1, appointment.getAppointmentId());
+                stmt.executeUpdate();
+
+        } catch (SQLException sqlEx) {
+            Log.severe("A fatal error in deletion, cancelling operation", sqlEx);
+            connection.prepareStatement(ROLLBACK).execute();
+            throw sqlEx;
+        }
+        connection.prepareStatement(COMMIT).execute();
     }
 }
