@@ -12,6 +12,7 @@ public class AppointmentUpdateStrategy extends AbstractUpdateStrategy {
 
     private static final String CREATE_APPOINTMENT_STMT = "INSERT INTO AppointmentDetails (fkUserNhi, fkStaffId, fkCategoryId, requestedTime, fkStatusId, description) VALUES (?,?,?,?,?,?)";
     private static final String PATCH_APPOINTMENT_STATUS_STMT = "UPDATE AppointmentDetails SET fkStatusId = ? WHERE apptId = ?";
+    private static final String DELETE_APPOINTMENT_REJECTED_SEEN = "DELETE FROM AppointmentDetails WHERE apptId = ? AND fkStatusId = 7";
     /**
      * Updates a collection of recurring appointments
      *
@@ -57,6 +58,20 @@ public class AppointmentUpdateStrategy extends AbstractUpdateStrategy {
 
             preparedStatement.setInt(1, statusId);
             preparedStatement.setInt(2, appointmentId);
+            preparedStatement.executeUpdate();
+        }
+    }
+
+    /**
+     * Runs sql to delete an appointment in the database with status of rejected seen (id 7)
+     * @param connection Connection to the database
+     * @param appointmentId id fo the appointment to update
+     * @throws SQLException If there is an error updating the appointment in the database or the connection is invalid
+     */
+    public void deleteRejectedSeenStatus(Connection connection, int appointmentId) throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(DELETE_APPOINTMENT_REJECTED_SEEN)) {
+
+            preparedStatement.setInt(1, appointmentId);
             preparedStatement.executeUpdate();
         }
     }

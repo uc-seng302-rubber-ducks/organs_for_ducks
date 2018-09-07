@@ -56,4 +56,10 @@ public class AppointmentStrategyTest {
         appointmentStrategy.patchAppointmentStatus(connection, 7, 0);
         verify(mockStmt, times(1)).executeUpdate();
     }
+
+    @Test
+    public void testDeleteRejectedSeenStatus() throws SQLException {
+        appointmentStrategy.deleteRejectedSeenStatus(connection, 0);
+        verify(mockStmt, times(1)).executeUpdate();
+    }
 }

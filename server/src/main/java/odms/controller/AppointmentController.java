@@ -112,6 +112,9 @@ public class AppointmentController extends BaseController {
 
             if (checkStatusUpdateAllowed(appointmentId, statusId)) {
                 appointmentUpdateStrategy.patchAppointmentStatus(connection, statusId, appointmentId);
+
+                deleteRejectedSeen(connection, appointmentUpdateStrategy, statusId, appointmentId);
+
                 String idString = Integer.toString(appointmentId);
                 socketHandler.broadcast(EventTypes.APPOINTMENT_UPDATE, idString, idString);
             } else {
@@ -127,6 +130,23 @@ public class AppointmentController extends BaseController {
         return new ResponseEntity(HttpStatus.ACCEPTED);
     }
 
+    /**
+     * If the appointment status is being changed to rejected seen, this function deletes that appointment from the database
+     * @param statusId Id of the status the appointment is being changed to. The function will do nothing if this is not 7
+     * @param appointmentId Id of the appointment to delete id the status is correct
+     */
+    private void deleteRejectedSeen(Connection connection, AppointmentUpdateStrategy appointmentUpdateStrategy, int statusId, int appointmentId) {
+        int rejectedSeenId = 7;
+        if (statusId == rejectedSeenId) {
+            try {
+                appointmentUpdateStrategy.deleteRejectedSeenStatus(connection, appointmentId);
+            } catch (SQLException e) {
+                Log.severe("Could not delete an appointment after it was set to rejected seen", e);
+                throw new ServerDBException(e);
+            }
+        }
+    }
+
 
 
     @RequestMapping(method = RequestMethod.DELETE, value = "/appointments")
@@ -138,7 +158,7 @@ public class AppointmentController extends BaseController {
             socketHandler.broadcast(EventTypes.APPOINTMENT_UPDATE, appointmentId, appointmentId);
 
         } catch (SQLException e) {
-            Log.severe("Cannot delete appointment at db", e);
+            Log.severe("Cannot delete appointment in db", e);
             throw new ServerDBException(e);
         } catch (IOException ex) {
             Log.warning("Failed to broadcast update after deleting an appointment", ex);
@@ -153,10 +173,10 @@ public class AppointmentController extends BaseController {
      * @param apptId Id of the appointment to check
      * @return boolean describing whether the appointment can be deleted.
      */
-    private boolean checkStatusUpdateAllowed(int apptId, int statusId) {
+    public boolean checkStatusUpdateAllowed(int apptId, int statusId) {
         int acceptedId = 2;
         int acceptedSeenId = 6;
-        int rejectId = 3;
+        int rejectedId = 3;
         int rejectedSeenId = 7;
         Integer currentStatus = null;
         try (Connection connection = driver.getConnection()) {
@@ -167,6 +187,6 @@ public class AppointmentController extends BaseController {
         }
         //This logic statement ensures that the user can only edit the status if it is going from ACCEPTED to ACCEPTED_SEEN
         //or if it is going from REJECTED to REJECTED_SEEN
-        return((statusId == acceptedSeenId && currentStatus == acceptedId) || (statusId == rejectId && currentStatus == rejectedSeenId));
+        return((statusId == acceptedSeenId && currentStatus == acceptedId) || (statusId == rejectedSeenId && currentStatus == rejectedId));
     }
 }

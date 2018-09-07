@@ -1412,9 +1412,8 @@ public class DBHandler {
         try (PreparedStatement preparedStatement = connection.prepareStatement(SELECT_APPOINTMENT_STATUS_STMT)) {
             preparedStatement.setInt(1, apptId);
             try (ResultSet results= preparedStatement.executeQuery()) {
-
+                results.next();
                 result = results.getInt(1);
-
             }
         }
         return result;
