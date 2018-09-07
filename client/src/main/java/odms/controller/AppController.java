@@ -528,7 +528,6 @@ public class AppController {
         admin.setDeleted(true);
 
         getAdministratorBridge().deleteAdmin(admin, token);
-        admins.remove(admin);
     }
 
     public UserController getUserController() {
