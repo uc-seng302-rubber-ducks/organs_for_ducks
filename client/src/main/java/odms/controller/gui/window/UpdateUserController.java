@@ -4,6 +4,7 @@ package odms.controller.gui.window;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
@@ -639,55 +640,59 @@ public class UpdateUserController {
      * Calls methods to update the changes if all fields are valid.
      */
     private boolean validateFields() {
-        boolean valid;
+        boolean valid = true;
         String nhi = nhiInput.getText();
-        valid = AttributeValidation.validateNHI(nhi);
-        if (!valid) {
+        if (!AttributeValidation.validateNHI(nhi)) {
+            invalidateTextField(nhiInput);
             invalidNHI.setVisible(true);
-        } else {
-            if (appController.getUserBridge().getExists(nhi) && !currentUser.getNhi().equals(nhi)) { // if a user was found, but it is not the current user
-                existingNHI.setVisible(true);
-                valid = false;
-            }
+            valid = false;
+        } else if (appController.getUserBridge().getExists(nhi) && !oldUser.getNhi().equals(nhi)) { // if a user was found, but it is not the current user
+            invalidateTextField(nhiInput);
+            existingNHI.setVisible(true);
+            valid = false;
         }
 
         LocalDate dob = dobInput.getValue();
 
         String fName = fNameInput.getText();
-        valid &= AttributeValidation.checkRequiredString(fName);
-        if (!valid) {
+        if (!AttributeValidation.checkRequiredString(fName)) {
+            invalidateTextField(fNameInput);
             invalidFirstName.setVisible(true);
+            valid = false;
         }
 
-        valid &= AttributeValidation.validateDateOfBirth(dob);
-        if (!valid) {
+        if (!AttributeValidation.validateDateOfBirth(dob)) {
+            invalidateTextField(dobInput);
             invalidDOB.setVisible(true);
+            valid = false;
         }
 
         double height = AttributeValidation.validateDouble(heightInput.getText());
         double weight = AttributeValidation.validateDouble(weightInput.getText());
         if (height == -1 || weight == -1) {
+            invalidateTextField(heightInput);
+            invalidateTextField(weightInput);
             errorLabel.setVisible(true);
             valid = false;
         }
 
         // validate contact info
-        String email = this.email.getText();
-        valid &= AttributeValidation.validateEmail(email);
-        if (!valid) {
+        if (!AttributeValidation.validateEmail(this.email.getText())) {
+            invalidateTextField(this.email);
             errorLabel.setVisible(true);
+            valid = false;
         }
 
-        String homePhone = phone.getText();
-        valid &= AttributeValidation.validatePhoneNumber(homePhone.replaceAll(" ", ""));
-        if (!valid) {
+        if (!AttributeValidation.validatePhoneNumber(phone.getText().replaceAll(" ", ""))) {
+            invalidateTextField(phone);
             errorLabel.setVisible(true);
+            valid = false;
         }
 
-        String cellPhone = cell.getText();
-        valid &= AttributeValidation.validateCellNumber(cellPhone.replaceAll(" ", ""));
-        if (!valid) {
+        if (!AttributeValidation.validateCellNumber(cell.getText().replaceAll(" ", ""))) {
+            invalidateTextField(cell);
             errorLabel.setVisible(true);
+            valid = false;
         }
 
         try {
@@ -699,10 +704,16 @@ public class UpdateUserController {
         if (valid) { // only updates if everything is valid
             appController.update(currentUser);
         }
-        if(!currentUser.getNhi().equals(nhi) && AppController.getInstance().getUserBridge().getExists(nhi)){
-            valid = false;
-        }
         return valid;
+    }
+
+    /**
+     * Method to add a style class onto a node to make it appear invalid
+     *
+     * @param node node to add styleclass to
+     */
+    private void invalidateTextField(Node node) {
+        node.getStyleClass().add("invalid");
     }
 
     private boolean checkChangedProperty(String newString, String oldString) {

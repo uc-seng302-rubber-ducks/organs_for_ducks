@@ -40,6 +40,11 @@
     -fx-font-size: 12px;
 }
 
+.label-error {
+    -fx-font-size: 10px;
+    -fx-text-fill: #C63636;
+}
+
 /****************************************
 *                                       *
 * BUTTON                            *
@@ -86,11 +91,6 @@
 *                                       *
 ****************************************/
 
-.text-field-invalid {
-    -fx-border-color: #FF4136;
-    -fx-background-color: rgba(100%, 25%, 21%, 0.5);
-}
-
 .text-field {
     -fx-background-color: #fff;
     -fx-border-width: 1px;
@@ -101,6 +101,15 @@
 
 .text-field:disabled {
     -fx-opacity: 0.45;
+}
+
+.invalid {
+    -fx-border-color: #FF4136;
+    -fx-background-color: rgba(100%, 25%, 21%, 0.5);
+}
+
+.invalid > .text-field {
+    -fx-background-color: rgba(100%, 25%, 21%, 0.5);
 }
 
 /****************************************

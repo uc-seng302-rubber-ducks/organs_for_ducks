@@ -31,18 +31,22 @@
                         <Label text="Middle Name:" GridPane.rowIndex="3" />
                         <Label text="Last Name:" GridPane.rowIndex="4" />
                         <Label text="Date of Birth*:" GridPane.rowIndex="5" />
-                        <Label fx:id="invalidFirstName" text="Invalid first name" textFill="#c63636" visible="false" GridPane.columnIndex="2" GridPane.rowIndex="1">
+                        <Label labelFor="$fNameInput" fx:id="invalidFirstName" text="Invalid first name"
+                               styleClass="label-error" visible="false" GridPane.columnIndex="2" GridPane.rowIndex="1">
                             <GridPane.margin>
                                 <Insets />
                             </GridPane.margin>
                         </Label>
-                        <Label fx:id="existingNHI" text="NHI already in use" textFill="#c63636" visible="false" GridPane.columnIndex="2">
+                        <Label labelFor="$nhiInput" fx:id="existingNHI" text="NHI already in use"
+                               styleClass="label-error" visible="false" GridPane.columnIndex="2">
                             <GridPane.margin>
                                 <Insets />
                             </GridPane.margin>
                         </Label>
-                        <Label fx:id="invalidDOB" text="Invalid date of birth" textFill="#c63636" visible="false" GridPane.columnIndex="2" GridPane.rowIndex="5" />
-                        <Label fx:id="invalidNHI" text="Invalid NHI" textFill="#c63636" visible="false" GridPane.columnIndex="2" />
+                        <Label labelFor="$dobInput" fx:id="invalidDOB" text="Invalid date of birth"
+                               styleClass="label-error" visible="false" GridPane.columnIndex="2" GridPane.rowIndex="5"/>
+                        <Label labelFor="$nhiInput" fx:id="invalidNHI" text="Invalid NHI" styleClass="label-error"
+                               visible="false" GridPane.columnIndex="2"/>
                         <Label text="Preferred First Name:" GridPane.rowIndex="2" />
                         <TextField fx:id="nhiInput" prefHeight="25.0" prefWidth="131.0" GridPane.columnIndex="1" />
                         <TextField fx:id="fNameInput" prefHeight="25.0" prefWidth="162.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />

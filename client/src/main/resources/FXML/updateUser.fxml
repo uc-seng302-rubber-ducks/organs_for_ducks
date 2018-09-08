@@ -43,13 +43,12 @@
                               <Insets />
                           </GridPane.margin>
                       </Label>
-                      <Label fx:id="existingNHI" text="NHI already in use" textFill="#c63636" visible="false" GridPane.columnIndex="2">
-                          <GridPane.margin>
-                              <Insets />
-                          </GridPane.margin>
-                      </Label>
-                      <Label fx:id="invalidDOB" text="Invalid date of birth" textFill="#c63636" visible="false" GridPane.columnIndex="2" GridPane.rowIndex="5" />
-                      <Label fx:id="invalidNHI" text="Invalid NHI" textFill="#c63636" visible="false" GridPane.columnIndex="2" />
+                      <Label labelFor="$nhiInput" fx:id="existingNHI" text="NHI already in use" visible="false"
+                             GridPane.columnIndex="2" styleClass="label-error"/>
+                      <Label labelFor="$dobInput" fx:id="invalidDOB" text="Invalid date of birth"
+                             styleClass="label-error" visible="false" GridPane.columnIndex="2" GridPane.rowIndex="5"/>
+                      <Label labelFor="$nhiInput" fx:id="invalidNHI" text="Invalid NHI" styleClass="label-error"
+                             visible="false" GridPane.columnIndex="2"/>
                       <Label styleClass="label-title" text="Preferred First Name:" GridPane.rowIndex="2"/>
                       <ImageView fx:id="profileImage" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true"
                                  preserveRatio="true" GridPane.columnIndex="2" GridPane.rowIndex="3"/>
@@ -264,7 +263,7 @@
               </Label>
               <Separator layoutY="308.0" prefHeight="3.0" prefWidth="600.0"/>
               <Label fx:id="errorLabel" layoutX="81.0" layoutY="911.0" prefHeight="42.0" prefWidth="386.0" text="Label"
-                     textFill="#c63636"/>
+                     styleClass="label-error"/>
               <AnchorPane>
                   <children>
                       <MenuBar prefHeight="28.0" prefWidth="599.0">
