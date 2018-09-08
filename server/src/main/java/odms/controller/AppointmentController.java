@@ -36,10 +36,36 @@ public class AppointmentController extends BaseController {
         this.socketHandler = socketHandler;
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/appointments")
-    public Collection<Appointment> getAppointments(@RequestParam(name = "count") int count) {
+    @RequestMapping(method = RequestMethod.GET, value = "/users/{nhi}/appointments/exists")
+    public boolean pendingExists(@PathVariable(name = "nhi") String nhi,
+                                 @RequestParam(name = "status") int statusId) {
         try (Connection connection = driver.getConnection()) {
-            return null; //TODO: Replace this when DB stuff is done. - E
+            return handler.pendingExists(connection, nhi, statusId);
+        } catch (SQLException e) {
+            Log.severe("", e);
+            throw new ServerDBException(e);
+        }
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/users/{nhi}/appointments")
+    public Collection<Appointment> getUserAppointments(@RequestParam(name = "count") int count,
+                                                   @RequestParam(name = "startIndex") int start,
+                                                   @PathVariable(name = "nhi") String nhi) {
+        try (Connection connection = driver.getConnection()) {
+            return handler.getAppointments(connection, nhi, UserType.USER, count, start);
+        } catch (SQLException e) {
+            Log.severe("Got bad response from DB. SQL error code: " + e.getErrorCode(), e);
+            throw new ServerDBException(e);
+        }
+    }
+
+    @IsClinician
+    @RequestMapping(method = RequestMethod.GET, value = "/clinicians/{staffId}/appointments")
+    public Collection<Appointment> getClinicianAppointments(@RequestParam(name = "count") int count,
+                                                   @RequestParam(name = "startIndex") int start,
+                                                   @PathVariable(name = "staffId") String staffId) {
+        try (Connection connection = driver.getConnection()) {
+            return handler.getAppointments(connection, staffId, UserType.CLINICIAN, count, start);
         } catch (SQLException e) {
             Log.severe("Got bad response from DB. SQL error code: " + e.getErrorCode(), e);
             throw new ServerDBException(e);
@@ -47,7 +73,7 @@ public class AppointmentController extends BaseController {
     }
 
 
-    @RequestMapping(method = RequestMethod.POST, value = "/appointment")
+    @RequestMapping(method = RequestMethod.POST, value = "/appointments")
     public ResponseEntity postAppointment(@RequestBody Appointment newAppointment) {
         try (Connection connection = driver.getConnection()) {
             AppointmentUpdateStrategy appointmentStrategy = handler.getAppointmentStrategy();
@@ -67,18 +93,19 @@ public class AppointmentController extends BaseController {
         return new ResponseEntity(HttpStatus.ACCEPTED);
     }
 
-    @IsClinician
-    @RequestMapping(method = RequestMethod.GET, value = "/clinicians/{staffId}/appointments")
-    public Collection<Appointment> getClinicianAppointments(@RequestParam(name = "startIndex") int startIndex,
-                                                            @RequestParam(name = "count") int count,
-                                                            @PathVariable(value = "staffId") String staffId) {
-        try (Connection connection = driver.getConnection()) {
-            return handler.getAppointments(connection, staffId, UserType.CLINICIAN, count, startIndex);
-        } catch (SQLException e) {
-            Log.severe("Unable to get clinician requested appointments with staff id: "+staffId+". SQL error code: " + e.getErrorCode(), e);
-            throw new ServerDBException(e);
-        }
-    }
+//    @IsClinician
+//    @RequestMapping(method = RequestMethod.GET, value = "/clinicians/{staffId}/appointments")
+//    public Collection<Appointment> getClinicianAppointments(@RequestParam(name = "startIndex") int startIndex,
+//                                                            @RequestParam(name = "count") int count,
+//                                                            @PathVariable(value = "staffId") String staffId) {
+//        try (Connection connection = driver.getConnection()) {
+//            return handler.getAppointments(connection, staffId, UserType.CLINICIAN, count, startIndex);
+//        } catch (SQLException e) {
+//            Log.severe("Unable to get clinician requested appointments with staff id: "+staffId+". SQL error code: " + e.getErrorCode(), e);
+//            throw new ServerDBException(e);
+//        }
+//    }
+
     @RequestMapping(method = RequestMethod.DELETE, value = "/appointment")
     public ResponseEntity deleteAppointment(@RequestBody Appointment appointmentToDelete) {
         try (Connection connection = driver.getConnection()) {

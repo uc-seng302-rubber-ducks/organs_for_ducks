@@ -25,6 +25,7 @@ import odms.controller.AppController;
 import odms.controller.gui.StatusBarController;
 import odms.controller.gui.UnsavedChangesAlert;
 import odms.controller.gui.panel.*;
+import odms.controller.gui.panel.view.UserAppointmentViewController;
 import odms.socket.ServerEventNotifier;
 
 import java.beans.PropertyChangeEvent;
@@ -118,8 +119,12 @@ public class UserController implements PropertyChangeListener {
 
     @FXML
     private ReceiverTabController receiverTabPageController;
+
     @FXML
-    private StatusBarController statusBarPageController;  //</editor-fold>
+    private StatusBarController statusBarPageController;
+
+    @FXML
+    private UserAppointmentViewController appointmentTabPageController; //</editor-fold>
 
     private User currentUser;
     private boolean fromClinician;
@@ -153,6 +158,7 @@ public class UserController implements PropertyChangeListener {
         stage.setMinWidth(1200);
         stage.setMinHeight(800);
         changeCurrentUser(user);
+        stage.setMaximized(true);
 
         // This is the place to set visible and invisible controls for Clinician vs User
         medicationTabPageController.init(controller, user, fromClinician, this);
@@ -160,6 +166,7 @@ public class UserController implements PropertyChangeListener {
         donationTabPageController.init(controller, user, this);
         diseasesTabPageController.init(controller, user, fromClinician, this);
         receiverTabPageController.init(controller, this.stage, user, fromClinician, this);
+        appointmentTabPageController.init(controller, user);
         statusBarPageController.init();
         //arbitrary default values
 
@@ -538,7 +545,7 @@ public class UserController implements PropertyChangeListener {
     }
 
     public void refreshCurrentlyReceivingList() {
-        receiverTabPageController.refreshCurrentlyReceiving();
+        receiverTabPageController.populateReceiverLists(currentUser);
     }
 
     /**

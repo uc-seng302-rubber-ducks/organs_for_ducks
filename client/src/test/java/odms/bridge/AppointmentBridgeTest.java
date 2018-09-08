@@ -41,7 +41,7 @@ public class AppointmentBridgeTest extends BridgeTestBase {
         when(mockClient.newCall(any(Request.class))).thenReturn(mockCall);
         ArgumentCaptor<Callback> callbackCaptor = ArgumentCaptor.forClass(Callback.class);
 
-        appointmentsBridge.getAppointments(30, appointments, "0", UserType.CLINICIAN);
+        appointmentsBridge.getAppointments(30, 0, appointments, "0", UserType.CLINICIAN);
         verify(mockCall).enqueue(callbackCaptor.capture());
         Callback callback = callbackCaptor.getValue();
 
@@ -63,7 +63,7 @@ public class AppointmentBridgeTest extends BridgeTestBase {
         when(mockClient.newCall(any(Request.class))).thenReturn(mockCall);
         ArgumentCaptor<Callback> callbackCaptor = ArgumentCaptor.forClass(Callback.class);
 
-        appointmentsBridge.getAppointments(30, appointments, "0", UserType.CLINICIAN);
+        appointmentsBridge.getAppointments(30, 0, appointments, "0", UserType.CLINICIAN);
         verify(mockCall).enqueue(callbackCaptor.capture());
         Callback callback = callbackCaptor.getValue();
 
