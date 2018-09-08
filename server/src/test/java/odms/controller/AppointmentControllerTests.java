@@ -59,13 +59,25 @@ public class AppointmentControllerTests {
     @Test
     public void postAppointmentShouldReturnAcceptedIfConnectionValid() throws SQLException {
         ResponseEntity res = controller.postAppointment(testAppointment);
-        Assert.assertEquals(res.getStatusCode(), HttpStatus.ACCEPTED);
+        Assert.assertEquals(HttpStatus.ACCEPTED, res.getStatusCode());
     }
 
     @Test(expected = ServerDBException.class)
     public void postAppointmentShouldThrowExceptionWhenNoConnection() throws SQLException {
         when(driver.getConnection()).thenThrow(new SQLException());
         controller.postAppointment(testAppointment);
+    }
+
+    @Test
+    public void patchAppointmentStatusShouldReturnAcceptedIfConnectionValid() throws SQLException {
+        ResponseEntity res = controller.patchAppointmentStatus(6, 0);
+        Assert.assertEquals(HttpStatus.ACCEPTED, res.getStatusCode());
+    }
+
+    @Test(expected = ServerDBException.class)
+    public void patchAppointmentStatusShouldThrowExceptionWhenNoConnection() throws SQLException {
+        when(driver.getConnection()).thenThrow(new SQLException());
+        controller.patchAppointmentStatus(7, 0);
     }
 
     @Test
@@ -95,6 +107,19 @@ public class AppointmentControllerTests {
     }
 
     @Test
+    public void getUnseenUserAppointmentShouldReturnAppointmentIfConnectionValid() throws SQLException {
+        when(handler.getUnseenAppointment(any(Connection.class), eq("ABC1234"))).thenReturn(testAppointment);
+        Appointment appointment = controller.getUnseenUserAppointments( "ABC1234");
+        Assert.assertEquals(testAppointment, appointment);
+    }
+
+    @Test(expected = ServerDBException.class)
+    public void getUnseenUserAppointmentShouldThrowExceptionWhenNoConnection() throws SQLException {
+        when(driver.getConnection()).thenThrow(new SQLException());
+        controller.getUnseenUserAppointments("ABC1234");
+    }
+
+    @Test
     public void deleteAppointmentShouldReturnOKIfConnectionValid() throws SQLException {
         testAppointment.setAppointmentId(1);
         ResponseEntity res = controller.deleteAppointment(testAppointment);
@@ -106,4 +131,45 @@ public class AppointmentControllerTests {
         when(driver.getConnection()).thenThrow(new SQLException());
         controller.deleteAppointment(testAppointment);
     }
+
+    @Test
+    public void testCheckStatusUpdateAllowed_ReturnsTrue_OnAcceptedSeen() throws SQLException {
+        int currentStatus = 2;
+        int newStatus = 6;
+        when(driver.getConnection()).thenReturn(connection);
+        when(handler.getAppointmentStatus(connection, 0)).thenReturn(currentStatus);
+
+        Assert.assertTrue(controller.checkStatusUpdateAllowed(0, newStatus));
+    }
+
+    @Test
+    public void testCheckStatusUpdateAllowed_ReturnsTrue_OnRejectedSeen() throws SQLException {
+        int currentStatus = 3;
+        int newStatus = 7;
+        when(driver.getConnection()).thenReturn(connection);
+        when(handler.getAppointmentStatus(connection, 0)).thenReturn(currentStatus);
+
+        Assert.assertTrue(controller.checkStatusUpdateAllowed(0, newStatus));
+    }
+
+    @Test
+    public void testCheckStatusUpdateAllowed_ReturnsFalse_CurrentNotMatchNew1() throws SQLException {
+        int currentStatus = 2;
+        int newStatus = 7;
+        when(driver.getConnection()).thenReturn(connection);
+        when(handler.getAppointmentStatus(connection, 0)).thenReturn(currentStatus);
+
+        Assert.assertFalse(controller.checkStatusUpdateAllowed(0, newStatus));
+    }
+
+    @Test
+    public void testCheckStatusUpdateAllowed_ReturnsFalse_CurrentNotMatchNew2() throws SQLException {
+        int currentStatus = 3;
+        int newStatus = 6;
+        when(driver.getConnection()).thenReturn(connection);
+        when(handler.getAppointmentStatus(connection, 0)).thenReturn(currentStatus);
+
+        Assert.assertFalse(controller.checkStatusUpdateAllowed(0, newStatus));
+    }
+
 }

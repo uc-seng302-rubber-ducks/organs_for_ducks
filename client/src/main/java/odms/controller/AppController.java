@@ -515,7 +515,6 @@ public class AppController {
      */
     public void deleteClinician(Clinician clinician) {
         clinician.setDeleted(true);
-
         getClinicianBridge().deleteClinician(clinician, getToken());
     }
 
@@ -526,9 +525,7 @@ public class AppController {
      */
     public void deleteAdmin(Administrator admin) {
         admin.setDeleted(true);
-
         getAdministratorBridge().deleteAdmin(admin, token);
-        admins.remove(admin);
     }
 
     public UserController getUserController() {

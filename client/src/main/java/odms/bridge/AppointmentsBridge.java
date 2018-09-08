@@ -92,6 +92,28 @@ public class AppointmentsBridge extends Bifrost {
     }
 
     /**
+     * Calls the server and asks if the user has any appointments that are accepted or rejected but not seen
+     * @param nhi of the user that is being checked for unseen appointments
+     * @return An appointment that is unseen if it exists, otherwise null.
+     */
+    public Appointment getUnseenAppointment(String nhi) {
+        String url = String.format("%s/users/%s%s/unseen", ip, nhi, APPOINTMENTS);
+        Request request = new Request.Builder().get().url(url).build();
+
+        try (Response res = client.newCall(request).execute()) {
+            if (res.body() != null) {
+                return new JsonHandler().decodeOneAppointment(res.body().string());
+            } else {
+                Log.warning("The response body was null");
+                return null;
+            }
+        } catch (NullPointerException | IOException ex) {
+            Log.warning("", ex);
+            return null;
+        }
+    }
+
+    /**
      * Fire a post request to the server for creating appointments
      *
      * @param appointment Appointment to create
@@ -107,7 +129,31 @@ public class AppointmentsBridge extends Bifrost {
             }
 
             @Override
-            public void onResponse(Call call, Response response) throws IOException {
+            public void onResponse(Call call, Response response) {
+                if (!response.isSuccessful()) {
+                    logAndNotify(response);
+                }
+            }
+        });
+    }
+
+    /**
+     * Fire a patch request to the server for updating the status of an appointment
+     * @param appointmentId Id of the appointment to be updated.
+     * @param statusId status to be changed to.
+     */
+    public void patchAppointmentStatus(Integer appointmentId, int statusId) {
+        String url = String.format("%s%s", ip, APPOINTMENTS + "/" + appointmentId + "/status");
+        RequestBody body = RequestBody.create(json, new Gson().toJson(statusId));
+        Request request = new Request.Builder().patch(body).url(url).build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.severe(e.getMessage(), e);
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) {
                 if (!response.isSuccessful()) {
                     logAndNotify(response);
                 }

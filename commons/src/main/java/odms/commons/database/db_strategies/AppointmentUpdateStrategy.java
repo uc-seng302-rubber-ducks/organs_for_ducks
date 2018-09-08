@@ -11,7 +11,8 @@ import java.util.Collection;
 public class AppointmentUpdateStrategy extends AbstractUpdateStrategy {
 
     private static final String CREATE_APPOINTMENT_STMT = "INSERT INTO AppointmentDetails (fkUserNhi, fkStaffId, fkCategoryId, requestedTime, fkStatusId, description) VALUES (?,?,?,?,?,?)";
-
+    private static final String PATCH_APPOINTMENT_STATUS_STMT = "UPDATE AppointmentDetails SET fkStatusId = ? WHERE apptId = ?";
+    private static final String DELETE_APPOINTMENT_REJECTED_SEEN = "DELETE FROM AppointmentDetails WHERE apptId = ? AND fkStatusId = 7";
     /**
      * Updates a collection of recurring appointments
      *
@@ -41,6 +42,36 @@ public class AppointmentUpdateStrategy extends AbstractUpdateStrategy {
             preparedStatement.setTimestamp(4, Timestamp.valueOf(appointment.getRequestedDate()));
             preparedStatement.setInt(5, appointment.getAppointmentStatus().getDbValue());
             preparedStatement.setString(6, appointment.getRequestDescription());
+            preparedStatement.executeUpdate();
+        }
+    }
+
+    /**
+     * Updates the status of an appointment in the database
+     * @param connection Connection to the database
+     * @param statusId id of the status to update to
+     * @param appointmentId id of the appointment to update
+     * @throws SQLException If there is an error updating the appointment in the database or the connection is invalid
+     */
+    public void patchAppointmentStatus(Connection connection, int statusId, int appointmentId) throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(PATCH_APPOINTMENT_STATUS_STMT)) {
+
+            preparedStatement.setInt(1, statusId);
+            preparedStatement.setInt(2, appointmentId);
+            preparedStatement.executeUpdate();
+        }
+    }
+
+    /**
+     * Runs sql to delete an appointment in the database with status of rejected seen (id 7)
+     * @param connection Connection to the database
+     * @param appointmentId id fo the appointment to update
+     * @throws SQLException If there is an error updating the appointment in the database or the connection is invalid
+     */
+    public void deleteRejectedSeenStatus(Connection connection, int appointmentId) throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(DELETE_APPOINTMENT_REJECTED_SEEN)) {
+
+            preparedStatement.setInt(1, appointmentId);
             preparedStatement.executeUpdate();
         }
     }
