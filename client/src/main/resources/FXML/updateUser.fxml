@@ -33,11 +33,11 @@
                       <TextField fx:id="mNameInput" prefHeight="25.0" prefWidth="367.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                       <TextField fx:id="lNameInput" prefHeight="25.0" prefWidth="178.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                       <DatePicker fx:id="dobInput" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-                      <Label text="NHI*:" />
-                      <Label text="First Name*:" GridPane.rowIndex="1" />
-                      <Label text="Middle Name:" GridPane.rowIndex="3" />
-                      <Label text="Last Name:" GridPane.rowIndex="4" />
-                      <Label text="Date of Birth*:" GridPane.rowIndex="5" />
+                      <Label styleClass="label-title" text="NHI*:"/>
+                      <Label styleClass="label-title" text="First Name*:" GridPane.rowIndex="1"/>
+                      <Label styleClass="label-title" text="Middle Name:" GridPane.rowIndex="3"/>
+                      <Label styleClass="label-title" text="Last Name:" GridPane.rowIndex="4"/>
+                      <Label styleClass="label-title" text="Date of Birth*:" GridPane.rowIndex="5"/>
                       <Label fx:id="invalidFirstName" text="Invalid first name" textFill="#c63636" visible="false" GridPane.columnIndex="2" GridPane.rowIndex="1">
                           <GridPane.margin>
                               <Insets />
@@ -50,7 +50,7 @@
                       </Label>
                       <Label fx:id="invalidDOB" text="Invalid date of birth" textFill="#c63636" visible="false" GridPane.columnIndex="2" GridPane.rowIndex="5" />
                       <Label fx:id="invalidNHI" text="Invalid NHI" textFill="#c63636" visible="false" GridPane.columnIndex="2" />
-                      <Label text="Preferred First Name:" GridPane.rowIndex="2" />
+                      <Label styleClass="label-title" text="Preferred First Name:" GridPane.rowIndex="2"/>
                       <ImageView fx:id="profileImage" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true"
                                  preserveRatio="true" GridPane.columnIndex="2" GridPane.rowIndex="3"/>
                   </children>
@@ -114,10 +114,12 @@
                               </FXCollections>
                           </items>
                       </ComboBox>
-                      <Label prefHeight="20.0" prefWidth="89.0" text="Birth Gender:" />
-                      <Label prefHeight="15.0" prefWidth="81.0" text="Height (m):" GridPane.rowIndex="2" />
-                      <Label prefHeight="15.0" prefWidth="86.0" text="Weight (kg):" GridPane.rowIndex="3" />
-                      <Label text="Blood Type:" GridPane.columnIndex="2" />
+                      <Label prefHeight="20.0" prefWidth="89.0" styleClass="label-title" text="Birth Gender:"/>
+                      <Label prefHeight="15.0" prefWidth="81.0" styleClass="label-title" text="Height (m):"
+                             GridPane.rowIndex="2"/>
+                      <Label prefHeight="15.0" prefWidth="86.0" styleClass="label-title" text="Weight (kg):"
+                             GridPane.rowIndex="3"/>
+                      <Label styleClass="label-title" text="Blood Type:" GridPane.columnIndex="2"/>
                       <ComboBox fx:id="alcoholComboBox" prefWidth="150.0" GridPane.columnIndex="3" GridPane.rowIndex="1">
                           <items>
                               <FXCollections fx:factory="observableArrayList">
@@ -131,9 +133,10 @@
                               <String fx:value="None" />
                           </value>
                       </ComboBox>
-                      <Label text="Smoker:" GridPane.columnIndex="2" GridPane.rowIndex="2" />
-                      <Label text="Alcohol Consumption:" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-                      <Label text="Gender Identity:" GridPane.rowIndex="1" />
+                      <Label styleClass="label-title" text="Smoker:" GridPane.columnIndex="2" GridPane.rowIndex="2"/>
+                      <Label styleClass="label-title" text="Alcohol Consumption:" GridPane.columnIndex="2"
+                             GridPane.rowIndex="1"/>
+                      <Label styleClass="label-title" text="Gender Identity:" GridPane.rowIndex="1"/>
                   <CheckBox fx:id="smokerCheckBox" mnemonicParsing="false" text="Yes" GridPane.columnIndex="3" GridPane.rowIndex="2" />
                   </children>
                   <padding>
@@ -167,17 +170,17 @@
                       <ComboBox fx:id="regionSelector" prefHeight="25.0" prefWidth="168.0" GridPane.columnIndex="1" GridPane.rowIndex="6" />
                       <TextField fx:id="zipCode" GridPane.columnIndex="1" GridPane.rowIndex="7" />
                       <TextField fx:id="email" GridPane.columnIndex="1" GridPane.rowIndex="9" />
-                      <Label text="Home Phone:" />
-                      <Label text="Cell Phone:" GridPane.rowIndex="1" />
-                      <Label text="Street Number:" GridPane.rowIndex="2" />
-                      <Label text="Region:" GridPane.rowIndex="6" />
-                      <Label text="Email:" GridPane.rowIndex="9" />
-                      <Label text="Country:" GridPane.rowIndex="8" />
-                      <Label text="Zip Code:" GridPane.rowIndex="7" />
+                      <Label styleClass="label-title" text="Home Phone:"/>
+                      <Label styleClass="label-title" text="Cell Phone:" GridPane.rowIndex="1"/>
+                      <Label styleClass="label-title" text="Street Number:" GridPane.rowIndex="2"/>
+                      <Label styleClass="label-title" text="Region:" GridPane.rowIndex="6"/>
+                      <Label styleClass="label-title" text="Email:" GridPane.rowIndex="9"/>
+                      <Label styleClass="label-title" text="Country:" GridPane.rowIndex="8"/>
+                      <Label styleClass="label-title" text="Zip Code:" GridPane.rowIndex="7"/>
                       <Label GridPane.rowIndex="6" />
-                      <Label text="City:" GridPane.rowIndex="5" />
-                      <Label text="Neighborhood:" GridPane.rowIndex="4" />
-                      <Label text="Street Name:" GridPane.rowIndex="3" />
+                      <Label styleClass="label-title" text="City:" GridPane.rowIndex="5"/>
+                      <Label styleClass="label-title" text="Neighborhood:" GridPane.rowIndex="4"/>
+                      <Label styleClass="label-title" text="Street Name:" GridPane.rowIndex="3"/>
                   <ComboBox fx:id="countrySelector" onAction="#countrySelectorListener" prefHeight="25.0" prefWidth="173.0" GridPane.columnIndex="1" GridPane.rowIndex="8" />
                   <TextField fx:id="regionInput" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="6" />
                   </children>
@@ -216,18 +219,18 @@
                       <TextField fx:id="ecZipCode" GridPane.columnIndex="1" GridPane.rowIndex="8" />
                       <TextField fx:id="ecEmail" GridPane.columnIndex="1" GridPane.rowIndex="10" />
                       <TextField fx:id="ecRelationship" GridPane.columnIndex="1" GridPane.rowIndex="11" />
-                      <Label text="Home Phone:" GridPane.rowIndex="1" />
-                      <Label text="Cell Phone:" GridPane.rowIndex="2" />
-                      <Label text="Street Name:" GridPane.rowIndex="4" />
-                      <Label text="Region:" GridPane.rowIndex="7" />
-                      <Label text="Email:" GridPane.rowIndex="10" />
-                      <Label text="Relationship:" GridPane.rowIndex="11" />
-                      <Label text="Name:" />
-                      <Label text="Street Number:" GridPane.rowIndex="3" />
-                      <Label text="Neighborhood:" GridPane.rowIndex="5" />
-                      <Label text="City:" GridPane.rowIndex="6" />
-                      <Label text="Zip Code:" GridPane.rowIndex="8" />
-                      <Label text="Country" GridPane.rowIndex="9" />
+                      <Label styleClass="label-title" text="Home Phone:" GridPane.rowIndex="1"/>
+                      <Label styleClass="label-title" text="Cell Phone:" GridPane.rowIndex="2"/>
+                      <Label styleClass="label-title" text="Street Name:" GridPane.rowIndex="4"/>
+                      <Label styleClass="label-title" text="Region:" GridPane.rowIndex="7"/>
+                      <Label styleClass="label-title" text="Email:" GridPane.rowIndex="10"/>
+                      <Label styleClass="label-title" text="Relationship:" GridPane.rowIndex="11"/>
+                      <Label styleClass="label-title" text="Name:"/>
+                      <Label styleClass="label-title" text="Street Number:" GridPane.rowIndex="3"/>
+                      <Label styleClass="label-title" text="Neighborhood:" GridPane.rowIndex="5"/>
+                      <Label styleClass="label-title" text="City:" GridPane.rowIndex="6"/>
+                      <Label styleClass="label-title" text="Zip Code:" GridPane.rowIndex="8"/>
+                      <Label styleClass="label-title" text="Country" GridPane.rowIndex="9"/>
                   <ComboBox fx:id="ecCountrySelector" onAction="#ecCountrySelectorListener" prefHeight="25.0" prefWidth="176.0" GridPane.columnIndex="1" GridPane.rowIndex="9" />
                   <TextField fx:id="ecRegionInput" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="7" />
                   </children>

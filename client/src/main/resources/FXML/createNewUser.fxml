@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-
 <?import javafx.collections.FXCollections?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
 <?import java.lang.*?>
-<ScrollPane xmlns:fx="http://javafx.com/fxml/1" prefHeight="907.0" prefWidth="650.0" xmlns="http://javafx.com/javafx/8"
-            fx:controller="odms.controller.gui.window.NewUserController">
+<ScrollPane xmlns:fx="http://javafx.com/fxml/1" prefHeight="907.0" prefWidth="650.0" stylesheets="@../gui.css"
+            xmlns="http://javafx.com/javafx/8" fx:controller="odms.controller.gui.window.NewUserController">
     <content>
         <AnchorPane prefHeight="907.0" prefWidth="600.0">
             <children>

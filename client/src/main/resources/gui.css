@@ -9,16 +9,35 @@
 }
 
 .label {
-    -fx-background-color: transparent;
-    -fx-text-fill: black;
+    -fx-font-size: 12px;
+    -fx-text-fill: BLACK;
 }
 
+.label {
+    -fx-font-family: sans-serif;
+}
+
+.label-sub-title {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+
+}
+
+.label-main-title {
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+}
+
+.label-title {
+    -fx-font-weight: bold;
+    -fx-font-size: 12px;
+
+}
 .button:disabled {
     -fx-opacity: 0.45;
 }
 
 .button {
-    -fx-border-radius: 5;
     -fx-padding: 3 6 6 6;
     -fx-border-style: solid;
     -fx-border-width: 0 1px 4px 1px;
@@ -68,11 +87,6 @@
 .table-view {
     color: blue;
     -fx-background-color: rgb(183, 250, 223);
-}
-
-.title-label {
-    -fx-text-fill: white;
-    -fx-background-color: rgb(8, 117, 122);
 }
 
 .title-bar {

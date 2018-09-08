@@ -4,9 +4,9 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="430.0"
-            prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="odms.controller.gui.window.UpdateAdminController">
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
+            minWidth="-Infinity" prefHeight="430.0" prefWidth="600.0" stylesheets="@../gui.css"
+            xmlns="http://javafx.com/javafx/8" fx:controller="odms.controller.gui.window.UpdateAdminController">
     <children>
         <Label fx:id="adminDetailInputTitle" layoutX="29.0" layoutY="23.0" text="Update Administrator">
             <font>
@@ -28,35 +28,38 @@
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
             </rowConstraints>
             <children>
-                <Label text="Username:" GridPane.halignment="RIGHT" GridPane.valignment="CENTER">
-                    <padding>
-                        <Insets right="15.0"/>
-                    </padding>
-                </Label>
-                <Label text="First Name:" GridPane.halignment="RIGHT" GridPane.rowIndex="1"
+                <Label styleClass="label-title" text="Username:" GridPane.halignment="RIGHT"
                        GridPane.valignment="CENTER">
                     <padding>
                         <Insets right="15.0"/>
                     </padding>
                 </Label>
-                <Label text="Middle Name:" GridPane.halignment="RIGHT" GridPane.rowIndex="2"
+                <Label styleClass="label-title" text="First Name:" GridPane.halignment="RIGHT" GridPane.rowIndex="1"
                        GridPane.valignment="CENTER">
                     <padding>
                         <Insets right="15.0"/>
                     </padding>
                 </Label>
-                <Label text="Last Name:" GridPane.halignment="RIGHT" GridPane.rowIndex="3" GridPane.valignment="CENTER">
-                    <padding>
-                        <Insets right="15.0"/>
-                    </padding>
-                </Label>
-                <Label text="Password:" GridPane.halignment="RIGHT" GridPane.rowIndex="4" GridPane.valignment="CENTER">
-                    <padding>
-                        <Insets right="15.0"/>
-                    </padding>
-                </Label>
-                <Label text="Confirm Password:" GridPane.halignment="RIGHT" GridPane.rowIndex="5"
+                <Label styleClass="label-title" text="Middle Name:" GridPane.halignment="RIGHT" GridPane.rowIndex="2"
                        GridPane.valignment="CENTER">
+                    <padding>
+                        <Insets right="15.0"/>
+                    </padding>
+                </Label>
+                <Label styleClass="label-title" text="Last Name:" GridPane.halignment="RIGHT" GridPane.rowIndex="3"
+                       GridPane.valignment="CENTER">
+                    <padding>
+                        <Insets right="15.0"/>
+                    </padding>
+                </Label>
+                <Label styleClass="label-title" text="Password:" GridPane.halignment="RIGHT" GridPane.rowIndex="4"
+                       GridPane.valignment="CENTER">
+                    <padding>
+                        <Insets right="15.0"/>
+                    </padding>
+                </Label>
+                <Label styleClass="label-title" text="Confirm Password:" GridPane.halignment="RIGHT"
+                       GridPane.rowIndex="5" GridPane.valignment="CENTER">
                     <padding>
                         <Insets right="15.0"/>
                     </padding>

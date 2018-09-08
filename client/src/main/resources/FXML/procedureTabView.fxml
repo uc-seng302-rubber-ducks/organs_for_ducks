@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.AnchorPane?>
-<AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0"
-            xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" minHeight="0.0" minWidth="0.0" prefHeight="620.0" prefWidth="894.0"
+            stylesheets="@../gui.css" xmlns="http://javafx.com/javafx/8"
             fx:controller="odms.controller.gui.panel.ProcedureTabController">
     <children>
         <TableView fx:id="previousProcedureTableView" layoutX="42.0" layoutY="312.0" prefHeight="200.0"
@@ -22,18 +21,16 @@
         <Button fx:id="removeProcedureButton" layoutX="334.0" layoutY="525.0" mnemonicParsing="false"
                 onAction="#removeProcedure" text="Remove"/>
         <Label fx:id="procedureWarningLabel" layoutX="85.0" layoutY="14.0" text="Label"/>
-        <TextArea fx:id="descriptionTextArea" layoutX="40.0" layoutY="105.0" prefHeight="175.0"
-                  prefWidth="285.0"/>
+        <TextArea fx:id="descriptionTextArea" layoutX="40.0" layoutY="105.0" prefHeight="175.0" prefWidth="285.0"/>
         <Label layoutX="45.0" layoutY="81.0" text="Description:"/>
         <Button fx:id="updateProceduresButton" layoutX="580.0" layoutY="525.0" mnemonicParsing="false"
                 onAction="#updateProcedures" text="Update"/>
         <Button fx:id="clearProcedureButton" layoutX="421.0" layoutY="525.0" mnemonicParsing="false"
                 onAction="#clearProcedure" text="Clear"/>
-        <ListView fx:id="organsAffectedByProcedureListView" layoutX="396.0" layoutY="105.0"
-                  prefHeight="178.0" prefWidth="265.0"/>
+        <ListView fx:id="organsAffectedByProcedureListView" layoutX="396.0" layoutY="105.0" prefHeight="178.0"
+                  prefWidth="265.0"/>
         <Label layoutX="396.0" layoutY="81.0" text="Organs Affected:"/>
-        <Button fx:id="modifyOrgansProcedureButton" layoutX="178.0" layoutY="525.0"
-                mnemonicParsing="false" onAction="#modifyProcedureOrgans" prefHeight="25.0" prefWidth="129.0"
-                text="Modify Organs"/>
+        <Button fx:id="modifyOrgansProcedureButton" layoutX="178.0" layoutY="525.0" mnemonicParsing="false"
+                onAction="#modifyProcedureOrgans" prefHeight="25.0" prefWidth="129.0" text="Modify Organs"/>
     </children>
 </AnchorPane>
