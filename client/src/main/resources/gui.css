@@ -86,6 +86,35 @@
     -fx-background-color: rgb(8, 117, 122);
 }
 
+.progress-bar {
+    color: #fff;
+    -fx-text-alignment: center;
+    -fx-background-color: #158CBA;
+}
+
+.tab-pane {
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.tab {
+    -fx-background-color: #fff;
+    -fx-border-color: #f0f0f0;
+}
+
+.tab:selected {
+    -fx-background-color: #D7D7D7;
+    -fx-border-color: #f0f0f0;
+    -fx-scale-y: 1.1;
+    -fx-scale-x: 1.1;
+}
+
+.tab:hover {
+    border-color: #f0f0f0;
+    -fx-scale-y: 1.1;
+    -fx-scale-x: 1.1;
+
+}
+
 .custom-control {
     position: relative;
     display: block;
