@@ -1,12 +1,13 @@
 package odms.GUITest1;
 
-import javafx.scene.control.TextField;
 import odms.App;
 import odms.TestUtils.CommonTestMethods;
 import odms.bridge.*;
 import odms.commons.model.Administrator;
 import odms.controller.AppController;
-import org.junit.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 
@@ -61,14 +62,4 @@ public class DeleteAdminGUITest extends ApplicationTest {
         AppController.setInstance(null);
         FxToolkit.cleanupStages();
     }
-
-    @Test
-    @Ignore
-    public void testCannotDeleteDefaultAdmin() {
-        write("default", 0);
-        lookup("#adminPasswordField").queryAs(TextField.class).setText("admin");
-        clickOn("#loginAButton");
-        clickOn("#editAdminMenu");
-    }
-
 }

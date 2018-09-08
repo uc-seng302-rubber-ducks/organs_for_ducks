@@ -1,6 +1,5 @@
 package odms.GUITest2;
 
-import javafx.geometry.VerticalDirection;
 import odms.App;
 import odms.TestUtils.AppControllerMocker;
 import odms.TestUtils.CommonTestMethods;
@@ -10,7 +9,10 @@ import odms.commons.model.User;
 import odms.commons.model.dto.UserOverview;
 import odms.controller.AppController;
 import odms.controller.gui.window.UserController;
-import org.junit.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.matcher.control.LabeledMatchers;
@@ -42,7 +44,7 @@ public class UpdateUserControllerGUITest extends ApplicationTest {
         AppController.setInstance(application);
         User user = new User("A", LocalDate.now().minusDays(1000), "ABC1234");
         user.setDateOfDeath(LocalDate.now());
-        user.setContact(new EmergencyContact("", "", "0187878"));
+        user.setContact(new EmergencyContact("", "", ""));
         user.getUndoStack().clear();
         when(application.getUserBridge()).thenReturn(bridge);
         when(application.getUserOverviews()).thenReturn(Collections.singleton(UserOverview.fromUser(user)));
@@ -80,16 +82,6 @@ public class UpdateUserControllerGUITest extends ApplicationTest {
     }
 
     @Test
-    @Ignore
-    public void testCancel() {
-        setTextField(this, "#fNameInput","Kate");
-        scroll(100, VerticalDirection.DOWN);
-        clickOn("#cancelButton");
-        clickOn("#yesButton");
-        verifyThat("#fNameValue", LabeledMatchers.hasText("A"));
-    }
-
-    @Test
     public void testUpdateNothing() {
         clickOnButton(this,"#confirmButton");
         verifyThat("#fNameValue", LabeledMatchers.hasText("A"));
@@ -100,15 +92,6 @@ public class UpdateUserControllerGUITest extends ApplicationTest {
         setDateValue(this, "#dobInput", LocalDate.of(2018, 5, 3));
         clickOnButton(this,"#confirmButton");
         verifyThat("#DOBValue", LabeledMatchers.hasText(LocalDate.of(2018, 5, 3).toString()));
-    }
-
-    @Test
-    @Ignore
-    public void testUpdateAddress() {
-        setTextField(this,"#address","dkgfdjhb");
-        clickOnButton(this,"#confirmButton");
-        clickOn("#detailsTab");
-        verifyThat("#pAddress", LabeledMatchers.hasText("dkgfdjhb"));
     }
 
     @Test
@@ -136,15 +119,6 @@ public class UpdateUserControllerGUITest extends ApplicationTest {
     }
 
     @Test
-    @Ignore
-    public void testUpdateRegion() {
-        setTextField(this,"#region","catface@gmail.com");
-        clickOnButton(this,"#confirmButton");
-        clickOn("#detailsTab");
-        verifyThat("#pRegion", LabeledMatchers.hasText("catface@gmail.com"));
-    }
-
-    @Test
     public void testUpdateBloodType() {
         clickOn("#bloodComboBox");
         clickOn("B+");
@@ -165,14 +139,6 @@ public class UpdateUserControllerGUITest extends ApplicationTest {
         clickOn("Low");
         clickOnButton(this,"#confirmButton");
         verifyThat("#alcoholValue", LabeledMatchers.hasText("Low"));
-    }
-
-    @Test
-    @Ignore
-    public void testUpdateHeight() {
-        setTextField(this,"#heightInput","1.75");
-        clickOnButton(this,"#confirmButton");
-        verifyThat("#heightValue", LabeledMatchers.hasText("1.75"));
     }
 
     @Test
