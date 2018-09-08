@@ -4,7 +4,8 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="467.0"
-            prefWidth="479.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
+            prefWidth="479.0" stylesheets="@../gui.css" xmlns="http://javafx.com/javafx/8"
+            xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="odms.controller.gui.popup.DeregisterOrganReasonController">
     <children>
         <Label fx:id="receiverName" layoutX="194.0" layoutY="14.0" text="receiverName"/>
@@ -41,9 +42,8 @@
                     </toggleGroup>
                 </RadioButton>
                 <RadioButton fx:id="registrationErrorRadioButton" mnemonicParsing="false"
-                             text="the initial registering of the organ was an error"
-                             toggleGroup="$deregisterReason" wrapText="true" GridPane.columnIndex="1"
-                             GridPane.rowIndex="2"/>
+                             text="the initial registering of the organ was an error" toggleGroup="$deregisterReason"
+                             wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
                 <RadioButton fx:id="receiverDiedRadioButton" mnemonicParsing="false" text="the receiver has died"
                              toggleGroup="$deregisterReason" wrapText="true" GridPane.columnIndex="1"
                              GridPane.rowIndex="5"/>
