@@ -8,6 +8,12 @@
     -fx-background-color: #F5F5FF;
 }
 
+/****************************************
+*                                       *
+* LABEL                            *
+*                                       *
+****************************************/
+
 .label {
     -fx-font-size: 12px;
     -fx-text-fill: BLACK;
@@ -31,8 +37,14 @@
 .label-title {
     -fx-font-weight: bold;
     -fx-font-size: 12px;
-
 }
+
+/****************************************
+*                                       *
+* BUTTON                            *
+*                                       *
+****************************************/
+
 .button:disabled {
     -fx-opacity: 0.45;
 }
@@ -67,6 +79,12 @@
     -fx-border-color: #d7d6d6;
 }
 
+/****************************************
+*                                       *
+* TEXT_FIELD                            *
+*                                       *
+****************************************/
+
 .text-field-invalid {
     -fx-border-color: #FF4136;
     -fx-background-color: rgba(100%, 25%, 21%, 0.5);
@@ -84,20 +102,34 @@
     -fx-opacity: 0.45;
 }
 
+/****************************************
+*                                       *
+* TABLE-VIEW                            *
+*                                       *
+****************************************/
+
 .table-view {
     color: blue;
     -fx-background-color: rgb(183, 250, 223);
 }
 
-.title-bar {
-    -fx-background-color: rgb(8, 117, 122);
-}
+/****************************************
+*                                       *
+* PROGRESS-BAR                            *
+*                                       *
+****************************************/
 
 .progress-bar {
     color: #fff;
     -fx-text-alignment: center;
     -fx-background-color: #158CBA;
 }
+
+/****************************************
+*                                       *
+* TAB-PANE                            *
+*                                       *
+****************************************/
 
 .tab-pane:bottom {
     -fx-border-width: 1px;
@@ -131,6 +163,12 @@
     -fx-padding: 2px;
 }
 
+/****************************************
+*                                       *
+* RADIO-BUTTON                            *
+*                                       *
+****************************************/
+
 .radio-button > .radio {
     -fx-border-radius: 50%;
     -fx-border-color: GREY;
@@ -147,6 +185,11 @@
     -fx-alignment: CENTER;
 }
 
+/****************************************
+*                                       *
+* CHECK-BOX                            *
+*                                       *
+****************************************/
 .check-box > .box {
     -fx-border-radius: 0.25em;
     -fx-background-color: #FFF;
