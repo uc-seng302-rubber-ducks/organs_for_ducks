@@ -8,7 +8,6 @@ import javafx.stage.Stage;
 import odms.commons.model.User;
 import odms.commons.model._enum.AppointmentCategory;
 import odms.commons.model.datamodel.ComboBoxClinician;
-import odms.controller.AppController;
 import odms.controller.gui.popup.logic.AppointmentPickerLogicController;
 
 public class AppointmentPickerViewController {
@@ -31,11 +30,10 @@ public class AppointmentPickerViewController {
      * Initializes the AppointmentPickerViewController
      *
      * @param user          Current user
-     * @param appController The applications controller.
      * @param stage         The applications stage.
      */
-    public void init(User user, Stage stage, AppController appController) {
-        this.logicController = new AppointmentPickerLogicController(user, stage, appController);
+    public void init(User user, Stage stage) {
+        this.logicController = new AppointmentPickerLogicController(user, stage);
         appointmentBookingTypeInput.getItems().addAll(AppointmentCategory.values());
 
         //TODO: populate the preferred clinicians combobox with new GET clinicians api that doesn't require authentication. -27/8

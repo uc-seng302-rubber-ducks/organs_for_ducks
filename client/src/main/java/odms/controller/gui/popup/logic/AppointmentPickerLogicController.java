@@ -17,20 +17,16 @@ public class AppointmentPickerLogicController {
 
     private User user;
     private Stage stage;
-    private AppController appController;
 
     /**
      * Initializes the AppointmentPickerLogicController
      *
      * @param user          Current user
-     * @param appController The applications controller.
      * @param stage         The applications stage.
      */
-    public AppointmentPickerLogicController(User user, Stage stage, AppController appController) {
+    public AppointmentPickerLogicController(User user, Stage stage) {
         this.user = user;
         this.stage = stage;
-        this.appController = appController;
-
     }
 
     /**
@@ -43,6 +39,11 @@ public class AppointmentPickerLogicController {
      * @param description        of appointment
      */
     public void confirm(LocalDate date, AppointmentCategory type, String preferredClinician, String description) {
+        if (AppController.getInstance().getAppointmentsBridge().pendingExists(user.getNhi())) {
+            alertUser("You cannot request a new appointment as you already have one pending approval.");
+            return;
+        }
+
         String message = "";
         if (!validateDateOfAppointment(date)) {
             message = "Invalid Appointment Date! The earliest appointment date is tomorrow.\n";
@@ -58,7 +59,7 @@ public class AppointmentPickerLogicController {
 
         if (message.isEmpty()) {
             Appointment appointment = new Appointment(user.getNhi(), preferredClinician, type, date.atStartOfDay(), description, AppointmentStatus.PENDING);
-            appController.getAppointmentsBridge().postAppointment(appointment);
+            AppController.getInstance().getAppointmentsBridge().postAppointment(appointment);
             stage.close();
         } else {
             alertUser(message);

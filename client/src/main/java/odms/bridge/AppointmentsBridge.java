@@ -115,6 +115,32 @@ public class AppointmentsBridge extends Bifrost {
         });
     }
 
+
+    /**
+     * Fires a delete request to the server for the given appointment
+     *
+     * @param appointment Appointment to be deleted
+     */
+    public void deleteAppointment(Appointment appointment) {
+        String url = String.format("%s%s", ip, APPOINTMENTS);
+        RequestBody body = RequestBody.create(json, new Gson().toJson(appointment));
+        Request request = new Request.Builder().delete(body).url(url).build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.severe(e.getMessage(), e);
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (!response.isSuccessful()) {
+                    logAndNotify(response);
+                }
+            }
+        });
+    }
+
+
     /**
      * Logs a bad response
      *
