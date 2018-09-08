@@ -1,17 +1,18 @@
 package odms.controller;
 
+import odms.TestUtils.AppControllerMocker;
 import odms.commons.model.Appointment;
 import odms.commons.model._enum.AppointmentCategory;
 import odms.commons.model._enum.AppointmentStatus;
-import odms.commons.utils.Log;
+import odms.commons.model._enum.UserType;
 import odms.controller.gui.popup.UserAppointmentAlertController;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
-import static org.mockito.Mockito.mock;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.*;
 
 public class UserAppointmentAlertControllerTest {
 
@@ -21,21 +22,96 @@ public class UserAppointmentAlertControllerTest {
 
     @Before
     public void setUpTest() {
-        controller = mock(AppController.class);
+        controller = AppControllerMocker.getFullMock();
         AppController.setInstance(controller);
 
-        alertController = new UserAppointmentAlertController();
+        alertController = spy(new UserAppointmentAlertController());
         alertController.setAppController(controller);
         testAppointment = new Appointment("ABC1234", "0", AppointmentCategory.BLOOD_TEST, LocalDateTime.now(), "TEST", AppointmentStatus.ACCEPTED);
-
     }
 
     @Test
-    public void testCreateAlert_SuccessfullyAborts_OnIncorrectStatus() {
+    public void testCreateAlert_UnseenAccepted_AndCancelledAppointments() {
+        when(controller.getAppointmentsBridge().getUnseenAppointment(anyString())).thenReturn(testAppointment);
+        when(controller.getAppointmentsBridge().checkAppointmentStatusExists(anyString(), eq(UserType.USER), eq(AppointmentStatus.CANCELLED_BY_CLINICIAN))).thenReturn(true);
+        doNothing().when(alertController).generateAlertWindow(anyString());
+
+        alertController.checkForUnseenUpdates("");
+        verify(alertController, times(1)).generateAlertWindow(anyString());
+    }
+
+    @Test
+    public void testCreateAlert_UnseenAccepted_AndNoCancelledAppointments() {
+        when(controller.getAppointmentsBridge().getUnseenAppointment(anyString())).thenReturn(testAppointment);
+        when(controller.getAppointmentsBridge().checkAppointmentStatusExists(anyString(), eq(UserType.USER), eq(AppointmentStatus.CANCELLED_BY_CLINICIAN))).thenReturn(false);
+        doNothing().when(alertController).generateAlertWindow(anyString());
+
+        alertController.checkForUnseenUpdates("");
+        verify(alertController, times(1)).generateAlertWindow(anyString());
+    }
+
+    @Test
+    public void testCreateAlert_UnseenRejected_AndCancelledAppointments() {
+        testAppointment.setAppointmentStatus(AppointmentStatus.REJECTED);
+        when(controller.getAppointmentsBridge().getUnseenAppointment(anyString())).thenReturn(testAppointment);
+        when(controller.getAppointmentsBridge().checkAppointmentStatusExists(anyString(), eq(UserType.USER), eq(AppointmentStatus.CANCELLED_BY_CLINICIAN))).thenReturn(true);
+        doNothing().when(alertController).generateAlertWindow(anyString());
+
+        alertController.checkForUnseenUpdates("");
+        verify(alertController, times(1)).generateAlertWindow(anyString());
+    }
+
+    @Test
+    public void testCreateAlert_UnseenRejected_AndNoCancelledAppointments() {
+        testAppointment.setAppointmentStatus(AppointmentStatus.REJECTED);
+        when(controller.getAppointmentsBridge().getUnseenAppointment(anyString())).thenReturn(testAppointment);
+        when(controller.getAppointmentsBridge().checkAppointmentStatusExists(anyString(), eq(UserType.USER), eq(AppointmentStatus.CANCELLED_BY_CLINICIAN))).thenReturn(false);
+        doNothing().when(alertController).generateAlertWindow(anyString());
+
+        alertController.checkForUnseenUpdates("");
+        verify(alertController, times(1)).generateAlertWindow(anyString());
+    }
+
+    @Test
+    public void testCreateAlert_CancelledAppointments_AndNoUnseen() {
+        when(controller.getAppointmentsBridge().getUnseenAppointment(anyString())).thenReturn(null);
+        when(controller.getAppointmentsBridge().checkAppointmentStatusExists(anyString(), eq(UserType.USER), eq(AppointmentStatus.CANCELLED_BY_CLINICIAN))).thenReturn(true);
+        doNothing().when(alertController).generateAlertWindow(anyString());
+
+        alertController.checkForUnseenUpdates("");
+        verify(alertController, times(1)).generateAlertWindow(anyString());
+    }
+
+    @Test
+    public void testNoAlertCreated_NoCancelled_NoUnseen() {
+        when(controller.getAppointmentsBridge().getUnseenAppointment(anyString())).thenReturn(null);
+        when(controller.getAppointmentsBridge().checkAppointmentStatusExists(anyString(), eq(UserType.USER), eq(AppointmentStatus.CANCELLED_BY_CLINICIAN))).thenReturn(false);
+        doNothing().when(alertController).generateAlertWindow(anyString());
+
+        alertController.checkForUnseenUpdates("");
+        verify(alertController, times(0)).generateAlertWindow(anyString());
+    }
+
+    @Test
+    public void testCreateAlert_CancelledAppointments_AndIncorrectUnseenType() {
         testAppointment.setAppointmentStatus(AppointmentStatus.PENDING);
-        alertController.createAlert(testAppointment);
-        List<String> logs = Log.getDebugLogs();
-        //Yo if I want to test something by checking that a Log has been written, how do I do that? I'm pretty I've seen it in code before but can't find it again
+        when(controller.getAppointmentsBridge().getUnseenAppointment(anyString())).thenReturn(testAppointment);
+        when(controller.getAppointmentsBridge().checkAppointmentStatusExists(anyString(), eq(UserType.USER), eq(AppointmentStatus.CANCELLED_BY_CLINICIAN))).thenReturn(true);
+        doNothing().when(alertController).generateAlertWindow(anyString());
+
+        alertController.checkForUnseenUpdates("");
+        verify(alertController, times(1)).generateAlertWindow(anyString());
+    }
+
+    @Test
+    public void testNoAlertCreated_IncorrectUnseenType() {
+        testAppointment.setAppointmentStatus(AppointmentStatus.PENDING);
+        when(controller.getAppointmentsBridge().getUnseenAppointment(anyString())).thenReturn(testAppointment);
+        when(controller.getAppointmentsBridge().checkAppointmentStatusExists(anyString(), eq(UserType.USER), eq(AppointmentStatus.CANCELLED_BY_CLINICIAN))).thenReturn(false);
+        doNothing().when(alertController).generateAlertWindow(anyString());
+
+        alertController.checkForUnseenUpdates("");
+        verify(alertController, times(0)).generateAlertWindow(anyString());
     }
 
 }

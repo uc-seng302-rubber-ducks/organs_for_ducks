@@ -2,13 +2,10 @@ package odms.controller.gui.popup;
 
 import odms.commons.model.Appointment;
 import odms.commons.model._enum.AppointmentStatus;
+import odms.commons.model._enum.UserType;
 import odms.commons.utils.Log;
 import odms.controller.AppController;
 import odms.controller.gui.popup.utils.AlertWindowFactory;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 
 /**
  * Handles the alert creation for when there is an appointment status update the user should know about.
@@ -27,26 +24,32 @@ public class UserAppointmentAlertController {
      * @param userId Id of the user to check for unseen updates for
      */
     public void checkForUnseenUpdates(String userId) {
-        List<Appointment> appointments = new ArrayList<>(controller.getAppointmentsBridge().getUnseenAppointment(userId));
-        if (!appointments.isEmpty()) {
-            createAlert(appointments.get(0));
+        String message = "";
+        Appointment appointment = controller.getAppointmentsBridge().getUnseenAppointment(userId);
+        boolean hasCanceled = controller.getAppointmentsBridge().checkAppointmentStatusExists(userId, UserType.USER, AppointmentStatus.CANCELLED_BY_CLINICIAN);
+        if (appointment != null) {
+            message += createMessage(appointment);
+        }
+
+        if (hasCanceled) {
+            message += "\nYou have other appointments that have been cancelled. Please check your list of appointments.";
+        }
+
+        if (!message.equals("")) {
+            generateAlertWindow(message);
+            if (appointment != null) {
+                updateAppointmentSeenStatus(appointment);
+            }
+
         }
     }
 
     /**
-     * Creates an alert window based on the data in the appointment object. It then updates the appointment's seen status
-     * If a message "ABORT" is returned, then an incorrect appointment status was retrieved from the database.
-     * @param appointment Appointment to create an alert about
+     * Generates an alert window. Is split up in this way to assist testing this class
+     * @param message to be displayed on the alert window
      */
-    public void createAlert(Appointment appointment) {
-
-        String message = createMessage(appointment);
-        if (!message.equals("ABORT")) {
-            AlertWindowFactory.generateAlertWindow(message);
-            updateAppointmentSeenStatus(appointment);
-        } else {
-            Log.info("The alert creation was successfully aborted");
-        }
+    public void generateAlertWindow(String message) {
+        AlertWindowFactory.generateAlertWindow(message);
     }
 
     /**
@@ -66,9 +69,8 @@ public class UserAppointmentAlertController {
 
         } else {
             Log.warning("A notification attempt about an appointment with an incorrect status was made");
-            return "ABORT";
+            return "";
         }
-
 
         return "Your appointment request for a \"" + appointment.getAppointmentCategory().toString() +
                 "\" on the " + appointment.getRequestedDate().toLocalDate() +

@@ -20,10 +20,8 @@ import org.springframework.http.ResponseEntity;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.mock;
@@ -110,12 +108,9 @@ public class AppointmentControllerTests {
 
     @Test
     public void getUnseenUserAppointmentShouldReturnAppointmentIfConnectionValid() throws SQLException {
-        List<Appointment> appointments = new ArrayList<>();
-        appointments.add(testAppointment);
-        when(handler.getUnseenAppointment(any(Connection.class), eq("ABC1234"))).thenReturn(appointments);
-        List<Appointment> results = new ArrayList<>(controller.getUnseenUserAppointments( "ABC1234"));
-        Appointment appointment = results.get(0);
-        Assert.assertEquals(testAppointment, appointment);
+        when(handler.getUnseenAppointment(any(Connection.class), eq("ABC1234"))).thenReturn(testAppointment);
+        Appointment actual = controller.getUnseenUserAppointments( "ABC1234");
+        Assert.assertEquals(testAppointment, actual);
     }
 
     @Test(expected = ServerDBException.class)
@@ -140,7 +135,7 @@ public class AppointmentControllerTests {
     @Test
     public void testCheckStatusUpdateAllowed_ReturnsTrue_OnAcceptedSeen() throws SQLException {
         int currentStatus = 2;
-        int newStatus = 6;
+        int newStatus = 7;
         when(driver.getConnection()).thenReturn(connection);
         when(handler.getAppointmentStatus(connection, 0)).thenReturn(currentStatus);
 
@@ -150,7 +145,7 @@ public class AppointmentControllerTests {
     @Test
     public void testCheckStatusUpdateAllowed_ReturnsTrue_OnRejectedSeen() throws SQLException {
         int currentStatus = 3;
-        int newStatus = 7;
+        int newStatus = 8;
         when(driver.getConnection()).thenReturn(connection);
         when(handler.getAppointmentStatus(connection, 0)).thenReturn(currentStatus);
 
@@ -160,7 +155,7 @@ public class AppointmentControllerTests {
     @Test
     public void testCheckStatusUpdateAllowed_ReturnsFalse_CurrentNotMatchNew1() throws SQLException {
         int currentStatus = 2;
-        int newStatus = 7;
+        int newStatus = 8;
         when(driver.getConnection()).thenReturn(connection);
         when(handler.getAppointmentStatus(connection, 0)).thenReturn(currentStatus);
 
@@ -170,7 +165,7 @@ public class AppointmentControllerTests {
     @Test
     public void testCheckStatusUpdateAllowed_ReturnsFalse_CurrentNotMatchNew2() throws SQLException {
         int currentStatus = 3;
-        int newStatus = 6;
+        int newStatus = 7;
         when(driver.getConnection()).thenReturn(connection);
         when(handler.getAppointmentStatus(connection, 0)).thenReturn(currentStatus);
 

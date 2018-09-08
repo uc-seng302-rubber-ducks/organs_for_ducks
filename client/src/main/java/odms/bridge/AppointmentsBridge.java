@@ -12,8 +12,6 @@ import odms.controller.gui.popup.utils.AlertWindowFactory;
 import okhttp3.*;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
 
 public class AppointmentsBridge extends Bifrost {
     private static final String APPOINTMENTS = "/appointments";
@@ -105,21 +103,20 @@ public class AppointmentsBridge extends Bifrost {
      * @param nhi of the user that is being checked for unseen appointments
      * @return An appointment that is unseen if it exists, otherwise null.
      */
-    public Collection<Appointment> getUnseenAppointment(String nhi) {
-        ArrayList<Appointment> results = new ArrayList<>();
+    public Appointment getUnseenAppointment(String nhi) {
         String url = String.format("%s/users/%s%s/unseen", ip, nhi, APPOINTMENTS);
         Request request = new Request.Builder().get().url(url).build();
 
         try (Response res = client.newCall(request).execute()) {
             if (res.body() != null) {
-                return new JsonHandler().decodeAppointments(res.body().string());
+                return new JsonHandler().decodeOneAppointment(res.body().string());
             } else {
                 Log.warning("The response body was null");
-                return results;
+                return null;
             }
         } catch (NullPointerException | IOException ex) {
             Log.warning("", ex);
-            return results;
+            return null;
         }
     }
 

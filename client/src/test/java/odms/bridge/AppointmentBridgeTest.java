@@ -12,8 +12,6 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -88,13 +86,13 @@ public class AppointmentBridgeTest extends BridgeTestBase {
         when(mockResponse.body()).thenReturn(mockResponseBody);
         when(mockResponseBody.string()).thenReturn(new Gson().toJson(expected));
 
-        List<Appointment> actual = new ArrayList<>(appointmentsBridge.getUnseenAppointment("default"));
-        Assert.assertEquals(expected, actual.get(0));
+        Appointment actual = (appointmentsBridge.getUnseenAppointment("default"));
+        Assert.assertEquals(expected, actual);
     }
 
 
     @Test
-    public void testGetUnseenAppointment_ReturnsEmptyList_OnNullBody() throws IOException{
+    public void testGetUnseenAppointment_ReturnsNull_OnNullBody() throws IOException{
         Call mockCall = mock(Call.class);
         Response mockResponse = mock(Response.class);
         when(mockClient.newCall(any(Request.class))).thenReturn(mockCall);
@@ -102,25 +100,25 @@ public class AppointmentBridgeTest extends BridgeTestBase {
         when(mockResponse.code()).thenReturn(200);
         when(mockResponse.body()).thenReturn(null);
 
-        List<Appointment> actual = new ArrayList<>(appointmentsBridge.getUnseenAppointment("default"));
-        Assert.assertTrue(actual.isEmpty());
+        Appointment actual = (appointmentsBridge.getUnseenAppointment("default"));
+        Assert.assertNull(actual);
     }
 
     @Test
-    public void testGetUnseenAppointment_ReturnsEmptyList_OnNullPointerException() {
+    public void testGetUnseenAppointment_ReturnsNull_OnNullPointerException() {
         when(mockClient.newCall(any(Request.class))).thenReturn(null);
 
-        List<Appointment> actual = new ArrayList<>(appointmentsBridge.getUnseenAppointment("default"));
-        Assert.assertTrue(actual.isEmpty());
+        Appointment actual = (appointmentsBridge.getUnseenAppointment("default"));
+        Assert.assertNull(actual);
     }
 
     @Test
-    public void testGetUnseenAppointment_ReturnsEmptyList_OnIOException() throws IOException{
+    public void testGetUnseenAppointment_ReturnsNull_OnIOException() throws IOException{
         Call mockCall = mock(Call.class);
         when(mockClient.newCall(any(Request.class))).thenReturn(mockCall);
         when(mockCall.execute()).thenThrow(new IOException());
 
-        List<Appointment> actual = new ArrayList<>(appointmentsBridge.getUnseenAppointment("default"));
-        Assert.assertTrue(actual.isEmpty());
+        Appointment actual = (appointmentsBridge.getUnseenAppointment("default"));
+        Assert.assertNull(actual);
     }
 }

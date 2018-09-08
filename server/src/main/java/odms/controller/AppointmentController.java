@@ -48,7 +48,7 @@ public class AppointmentController extends BaseController {
         }
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/clinician/{staffId}/appointments/exists")
+    @RequestMapping(method = RequestMethod.GET, value = "/clinicians/{staffId}/appointments/exists")
     public boolean clinicianAppointmentStatusExists(@PathVariable(name = "staffId") String staffId,
                                  @RequestParam(name = "status") int statusId) {
         try (Connection connection = driver.getConnection()) {
@@ -85,7 +85,7 @@ public class AppointmentController extends BaseController {
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/users/{nhi}/appointments/unseen")
-    public Collection<Appointment> getUnseenUserAppointments(@PathVariable(name = "nhi") String nhi) {
+    public Appointment getUnseenUserAppointments(@PathVariable(name = "nhi") String nhi) {
         try (Connection connection = driver.getConnection()) {
             return handler.getUnseenAppointment(connection, nhi);
         } catch (SQLException e) {
@@ -147,7 +147,7 @@ public class AppointmentController extends BaseController {
      * @param appointmentId Id of the appointment to delete id the status is correct
      */
     private void deleteRejectedSeen(Connection connection, AppointmentUpdateStrategy appointmentUpdateStrategy, int statusId, int appointmentId) {
-        int rejectedSeenId = 7;
+        int rejectedSeenId = 8;
         if (statusId == rejectedSeenId) {
             try {
                 appointmentUpdateStrategy.deleteRejectedSeenStatus(connection, appointmentId);
@@ -186,9 +186,9 @@ public class AppointmentController extends BaseController {
      */
     public boolean checkStatusUpdateAllowed(int apptId, int statusId) {
         int acceptedId = 2;
-        int acceptedSeenId = 6;
+        int acceptedSeenId = 7;
         int rejectedId = 3;
-        int rejectedSeenId = 7;
+        int rejectedSeenId = 8;
         Integer currentStatus = null;
         try (Connection connection = driver.getConnection()) {
             currentStatus = handler.getAppointmentStatus(connection, apptId);

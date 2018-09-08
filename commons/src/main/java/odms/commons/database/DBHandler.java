@@ -1382,7 +1382,7 @@ public class DBHandler {
      * @return           Appointment that the user has not seen but has been updated
      * @throws SQLException If the entry does not exist or the connection is invalid
      */
-    public Collection<Appointment> getUnseenAppointment(Connection connection, String nhi) throws SQLException {
+    public Appointment getUnseenAppointment(Connection connection, String nhi) throws SQLException {
         FetchUserAppointmentsStrategy fetchUserAppointmentStrategy = new FetchUserAppointmentsStrategy();
         return fetchUserAppointmentStrategy.getUnseenAppointment(connection, nhi);
     }

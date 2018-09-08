@@ -1,7 +1,6 @@
 package odms.commons.database.db_strategies;
 
 import odms.commons.model.Appointment;
-import odms.commons.model._enum.AppointmentStatus;
 import odms.commons.model._enum.db.appointment.statements.AppointmentStatement;
 
 import java.sql.Connection;
@@ -10,7 +9,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 public class FetchUserAppointmentsStrategy extends AbstractFetchAppointmentStrategy {
     /**
@@ -42,16 +40,16 @@ public class FetchUserAppointmentsStrategy extends AbstractFetchAppointmentStrat
      * @return An unseen appointment that will be used to populate an alert window before being marked as seen
      * @throws SQLException if the connection is invalid or there is an error with the database
      */
-    public Collection<Appointment> getUnseenAppointment(Connection connection, String userId) throws SQLException {
-        List<Appointment> appointments = new ArrayList<>();
+    public Appointment getUnseenAppointment(Connection connection, String userId) throws SQLException {
+        Appointment appointment = null;
         try (PreparedStatement preparedStatement = connection.prepareStatement(AppointmentStatement.GET_UNSEEN_APPTS_FOR_USER.getStatement())) {
             preparedStatement.setString(1, userId);
             try (ResultSet results= preparedStatement.executeQuery()) {
                 while (results.next()) {
-                    appointments.add(decodeAppointmentFromResultSet(results));
+                    appointment = decodeAppointmentFromResultSet(results);
                 }
             }
         }
-        return appointments;
+        return appointment;
     }
 }
