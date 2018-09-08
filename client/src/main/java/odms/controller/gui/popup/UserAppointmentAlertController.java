@@ -34,7 +34,7 @@ public class UserAppointmentAlertController {
      * If a message "ABORT" is returned, then an incorrect appointment status was retrieved from the database.
      * @param appointment Appointment to create an alert about
      */
-    public void createAlert(Appointment appointment) { //Sonarlint this will be called by the broadcast listener so shut your mouth
+    private void createAlert(Appointment appointment) {
         String message = createMessage(appointment);
         if (!message.equals("ABORT")) {
             AlertWindowFactory.generateAlertWindow(message);

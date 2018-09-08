@@ -615,6 +615,8 @@ public class UserController implements PropertyChangeListener {
                 Log.warning("failed to get updated user", ex);
             }
 
+        } else if (event.getType().equals(EventTypes.REQUEST_UPDATE)) {
+            userAppointmentAlertController.checkForUnseenUpdates(currentUser.getNhi());
         }
     }
 }
