@@ -3,9 +3,9 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
-<AnchorPane xmlns:fx="http://javafx.com/fxml/1" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
-            minWidth="-Infinity" prefHeight="800.0" prefWidth="1200.0" stylesheets="@../gui.css"
-            xmlns="http://javafx.com/javafx/8" fx:controller="odms.controller.gui.window.UserController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0"
+            prefWidth="1200.0" stylesheets="@../gui.css" xmlns="http://javafx.com/javafx/8"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="odms.controller.gui.window.UserController">
     <children>
       <AnchorPane prefHeight="675.0" prefWidth="894.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
@@ -128,8 +128,10 @@
                       <Font size="29.0" />
                   </font>
               </Label>
-              <Button fx:id="undoButton" mnemonicParsing="false" onAction="#undo" text="Undo" AnchorPane.rightAnchor="84.0" AnchorPane.topAnchor="4.0" />
-              <Button fx:id="redoButton" mnemonicParsing="false" onAction="#redo" text="Redo" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="4.0" />
+             <Button fx:id="undoButton" mnemonicParsing="false" onAction="#undo" styleClass="button-secondary"
+                     text="Undo" AnchorPane.rightAnchor="84.0" AnchorPane.topAnchor="4.0"/>
+             <Button fx:id="redoButton" mnemonicParsing="false" onAction="#redo" styleClass="button-secondary"
+                     text="Redo" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="4.0"/>
          </children>
       </AnchorPane>
     </children>

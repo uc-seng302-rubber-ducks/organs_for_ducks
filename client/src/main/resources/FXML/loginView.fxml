@@ -3,8 +3,8 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
-<AnchorPane xmlns:fx="http://javafx.com/fxml/1" maxHeight="400.0" maxWidth="600.0" minHeight="391.0" minWidth="600.0"
-            prefHeight="391.0" prefWidth="600.0" stylesheets="@../gui.css" xmlns="http://javafx.com/javafx/8"
+<AnchorPane maxHeight="400.0" maxWidth="600.0" minHeight="391.0" minWidth="600.0" prefHeight="391.0" prefWidth="600.0"
+            stylesheets="@../gui.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="odms.controller.gui.window.LoginController">
     <children>
         <TabPane fx:id="loginTabPane" prefHeight="400.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE">
@@ -14,12 +14,13 @@
                         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="368.0" prefWidth="600.0">
                             <children>
                                 <Button fx:id="signUpButton" layoutX="465.0" layoutY="327.0" mnemonicParsing="false"
-                                        onAction="#signUp" prefHeight="25.0" prefWidth="131.0" text="Sign up"/>
+                                        onAction="#signUp" prefHeight="25.0" prefWidth="131.0"
+                                        styleClass="button-primary" text="Sign up"/>
                                 <GridPane layoutX="121.0" layoutY="81.0" prefHeight="195.0" prefWidth="412.0">
                                     <children>
                                         <Button fx:id="loginUButton" mnemonicParsing="false" onAction="#loginUser"
-                                                prefHeight="25.0" prefWidth="146.0" text="Login"
-                                                GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                                                prefHeight="25.0" prefWidth="146.0" styleClass="button-primary"
+                                                text="Login" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
                                         <TextField fx:id="userIDTextField" GridPane.columnIndex="1"/>
                                         <Label text="NHI:"/>
                                         <Label fx:id="userWarningLabel" prefHeight="73.0" prefWidth="177.0" text="Label"

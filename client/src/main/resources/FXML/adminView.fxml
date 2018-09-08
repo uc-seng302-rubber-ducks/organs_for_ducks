@@ -5,7 +5,9 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
 <?import java.lang.String?>
-<AnchorPane xmlns:fx="http://javafx.com/fxml/1" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="1200.0" minWidth="800.0" prefHeight="1200.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8" fx:controller="odms.controller.gui.window.AdministratorViewController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="1200.0" minWidth="800.0" prefHeight="1200.0"
+            prefWidth="800.0" stylesheets="@../gui.css" xmlns="http://javafx.com/javafx/8"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="odms.controller.gui.window.AdministratorViewController">
     <children>
         <MenuBar prefHeight="50.0" prefWidth="600.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
             <menus>
@@ -198,8 +200,10 @@
                 <Font size="24.0" />
             </font>
         </Label>
-        <Button fx:id="adminUndoButton" layoutX="464.0" layoutY="2.0" mnemonicParsing="false" onAction="#undo" text="Undo" AnchorPane.rightAnchor="84.0" AnchorPane.topAnchor="2.0" />
-        <Button fx:id="adminRedoButton" layoutX="525.0" layoutY="2.0" mnemonicParsing="false" onAction="#redo" text="Redo" AnchorPane.rightAnchor="23.0" AnchorPane.topAnchor="2.0" />
+        <Button fx:id="adminUndoButton" layoutX="464.0" layoutY="2.0" mnemonicParsing="false" onAction="#undo"
+                styleClass="button-secondary" text="Undo" AnchorPane.rightAnchor="84.0" AnchorPane.topAnchor="2.0"/>
+        <Button fx:id="adminRedoButton" layoutX="525.0" layoutY="2.0" mnemonicParsing="false" onAction="#redo"
+                styleClass="button-secondary" text="Redo" AnchorPane.rightAnchor="23.0" AnchorPane.topAnchor="2.0"/>
         <AnchorPane fx:id="StatusBar" AnchorPane.bottomAnchor="-5.0">
             <children>
                 <fx:include fx:id="statusBarPage" source="statusBar.fxml" />

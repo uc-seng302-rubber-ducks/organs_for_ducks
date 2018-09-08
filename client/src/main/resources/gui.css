@@ -4,6 +4,7 @@
 .root {
     -fx-font-family-sans-serif: "Source Sans Pro", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
     -fx-font-family-monospace: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    -fx-background-color: #F5F5FF;
 }
 
 .label {
@@ -11,32 +12,39 @@
     -fx-text-fill: black;
 }
 
+.button:disabled {
+    -fx-opacity: 0.45;
+}
+
 .button {
-    -fx-border-color: #127ba3;
-    -fx-background-color: #158CBA;
     -fx-border-radius: 5;
     -fx-padding: 3 6 6 6;
     -fx-border-style: solid;
     -fx-border-width: 0 1px 4px 1px;
     -fx-font-size: 12px;
     -fx-font-weight: bold;
+    -fx-text-fill: WHITE;
+}
+
+.button {
+    -fx-border-color: #127ba3;
+    -fx-background-color: #158CBA;
 }
 
 .button:hover {
-    -fx-color: #fff;
     -fx-background-color: #117298;
     -fx-border-color: #106a8c;
 }
 
-.button:disabled {
-    -fx-opacity: 0.65;
+.button-secondary {
+    -fx-background-color: #f0f0f0;
+    -fx-border-color: #c7c6c6;
+    -fx-text-fill: BLACK;
 }
 
-.borders {
-    -fx-border-color: rgb(7, 130, 103);
-    -fx-border-style: dotted;
-    -fx-border-width: 1.5;
-    -fx-border-insets: -5;
+.button-secondary:hover {
+    -fx-background-color: #dddddd;
+    -fx-border-color: #d7d6d6;
 }
 
 .text-field {
