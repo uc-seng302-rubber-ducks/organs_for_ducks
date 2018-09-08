@@ -57,6 +57,46 @@ public class AppointmentControllerTests {
     }
 
     @Test
+    public void testCheckUserAppointmentStatusExistsReturnsTrue() throws SQLException {
+        when(handler.checkAppointmentStatusExists(connection, "ABC1234", 0, UserType.USER)).thenReturn(true);
+        boolean result = controller.userAppointmentStatusExists("ABC1234", 0);
+        Assert.assertTrue(result);
+    }
+
+    @Test
+    public void testCheckUserAppointmentStatusExistsReturnsFalse() throws SQLException {
+        when(handler.checkAppointmentStatusExists(connection, "ABC1234", 0, UserType.USER)).thenReturn(false);
+        boolean result = controller.clinicianAppointmentStatusExists("ABC1234", 0);
+        Assert.assertFalse(result);
+    }
+
+    @Test(expected = ServerDBException.class)
+    public void testCheckUserAppointmentStatusExistsThrowsException() throws SQLException {
+        when(driver.getConnection()).thenThrow(new SQLException());
+        controller.userAppointmentStatusExists("ABC1234", 0);
+    }
+
+    @Test
+    public void testCheckClinicianAppointmentStatusExistsReturnsTrue() throws SQLException {
+        when(handler.checkAppointmentStatusExists(connection, "staff1", 0, UserType.CLINICIAN)).thenReturn(true);
+        boolean result = controller.clinicianAppointmentStatusExists("staff1", 0);
+        Assert.assertTrue(result);
+    }
+
+    @Test
+    public void testCheckClinicianAppointmentStatusExistsReturnsFalse() throws SQLException {
+        when(handler.checkAppointmentStatusExists(connection, "staff1", 0, UserType.CLINICIAN)).thenReturn(false);
+        boolean result = controller.clinicianAppointmentStatusExists("staff1", 0);
+        Assert.assertFalse(result);
+    }
+
+    @Test(expected = ServerDBException.class)
+    public void testCheckClinicianAppointmentStatusExistsThrowsException() throws SQLException {
+        when(driver.getConnection()).thenThrow(new SQLException());
+        controller.clinicianAppointmentStatusExists("staff1", 0);
+    }
+
+    @Test
     public void postAppointmentShouldReturnAcceptedIfConnectionValid() throws SQLException {
         ResponseEntity res = controller.postAppointment(testAppointment);
         Assert.assertEquals(HttpStatus.ACCEPTED, res.getStatusCode());
@@ -70,14 +110,15 @@ public class AppointmentControllerTests {
 
     @Test
     public void patchAppointmentStatusShouldReturnAcceptedIfConnectionValid() throws SQLException {
-        ResponseEntity res = controller.patchAppointmentStatus(6, 0);
+        when(handler.getAppointmentStatus(connection, 0)).thenReturn(2);
+        ResponseEntity res = controller.patchAppointmentStatus(7, 0);
         Assert.assertEquals(HttpStatus.ACCEPTED, res.getStatusCode());
     }
 
     @Test(expected = ServerDBException.class)
     public void patchAppointmentStatusShouldThrowExceptionWhenNoConnection() throws SQLException {
         when(driver.getConnection()).thenThrow(new SQLException());
-        controller.patchAppointmentStatus(7, 0);
+        controller.patchAppointmentStatus(8, 0);
     }
 
     @Test

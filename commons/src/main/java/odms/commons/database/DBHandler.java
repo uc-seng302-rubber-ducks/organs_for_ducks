@@ -1355,7 +1355,7 @@ public class DBHandler {
      * @param role     specifies if the given user type is a user or a clinician
      * @return true if an appointment is found with the given status, false otherwise
      */
-    public boolean checkAppointmemtStatusExists(Connection connection, String id, int statusId, UserType role) throws SQLException {
+    public boolean checkAppointmentStatusExists(Connection connection, String id, int statusId, UserType role) throws SQLException {
         String checkStatusExists = null;
 
         if (role == UserType.USER) {

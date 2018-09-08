@@ -41,7 +41,7 @@ public class AppointmentController extends BaseController {
     public boolean userAppointmentStatusExists(@PathVariable(name = "nhi") String nhi,
                                  @RequestParam(name = "status") int statusId) {
         try (Connection connection = driver.getConnection()) {
-            return handler.checkAppointmemtStatusExists(connection, nhi, statusId, UserType.USER);
+            return handler.checkAppointmentStatusExists(connection, nhi, statusId, UserType.USER);
         } catch (SQLException e) {
             Log.severe("", e);
             throw new ServerDBException(e);
@@ -52,7 +52,7 @@ public class AppointmentController extends BaseController {
     public boolean clinicianAppointmentStatusExists(@PathVariable(name = "staffId") String staffId,
                                  @RequestParam(name = "status") int statusId) {
         try (Connection connection = driver.getConnection()) {
-            return handler.checkAppointmemtStatusExists(connection, staffId, statusId, UserType.CLINICIAN);
+            return handler.checkAppointmentStatusExists(connection, staffId, statusId, UserType.CLINICIAN);
         } catch (SQLException e) {
             Log.severe("", e);
             throw new ServerDBException(e);
