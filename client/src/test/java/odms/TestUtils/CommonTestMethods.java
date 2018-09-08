@@ -8,7 +8,7 @@ public class CommonTestMethods {
         runTestMode();
     }
 
-    private static void runHeadless() {
+    public static void runHeadless() {
         System.setProperty("testfx.robot", "glass");
         System.setProperty("testfx.headless", "true");
         System.setProperty("prism.order", "sw");

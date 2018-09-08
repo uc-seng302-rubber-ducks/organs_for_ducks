@@ -1,5 +1,6 @@
 package odms.controller;
 
+
 import odms.commons.database.DBHandler;
 import odms.commons.database.JDBCDriver;
 import odms.commons.database.db_strategies.AppointmentUpdateStrategy;
@@ -19,12 +20,10 @@ import org.springframework.http.ResponseEntity;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -70,19 +69,40 @@ public class AppointmentControllerTests {
     }
 
     @Test
-    public void getClinicianAppointmentsShouldReturnSingleAppointmentRequest() throws SQLException {
-        Collection<Appointment> appointments = new ArrayList<>();
-        appointments.add(testAppointment);
-        when(handler.getAppointments(any(Connection.class), anyString(), any(UserType.class), anyInt(), anyInt())).thenReturn(appointments);
-        Collection<Appointment> res = controller.getClinicianAppointments(0, 1, "");
-        Assert.assertEquals(testAppointment, res.iterator().next());
-        Assert.assertEquals(1, res.size());
+    public void getUserAppointmentShouldReturnCollectionIfConnectionValid() throws SQLException {
+        when(handler.getAppointments(any(Connection.class), eq("ABC1234"), any(UserType.class), anyInt(), anyInt())).thenReturn(Collections.singleton(testAppointment));
+        Collection<Appointment> appointments = controller.getUserAppointments(30, 0, "ABC1234");
+        Assert.assertTrue(appointments.size() == 1);
     }
 
     @Test(expected = ServerDBException.class)
-    public void getClinicianAppointmentsShouldThrowExceptionWhenNoConnection() throws SQLException {
+    public void getUserAppointmentShouldThrowExceptionWhenNoConnection() throws SQLException {
         when(driver.getConnection()).thenThrow(new SQLException());
-        controller.getClinicianAppointments(0, 1, "");
+        controller.getUserAppointments(30, 0, "ABC1234");
     }
 
+    @Test
+    public void getClinicianAppointmentShouldReturnCollectionIfConnectionValid() throws SQLException {
+        when(handler.getAppointments(any(Connection.class), eq("0"), any(UserType.class), anyInt(), anyInt())).thenReturn(Collections.singleton(testAppointment));
+        Collection<Appointment> appointments = controller.getClinicianAppointments(30, 0, "0");
+        Assert.assertTrue(appointments.size() == 1);
+    }
+
+    @Test(expected = ServerDBException.class)
+    public void getClinicianAppointmentShouldThrowExceptionWhenNoConnection() throws SQLException {
+        when(driver.getConnection()).thenThrow(new SQLException());
+        controller.getClinicianAppointments(30, 0, "0");
+    }
+
+    @Test
+    public void DeleteAppointmentShouldReturnOKIfConnectionValid() throws SQLException {
+        ResponseEntity res = controller.deleteAppointment(testAppointment);
+        Assert.assertEquals(HttpStatus.OK, res.getStatusCode());
+    }
+
+    @Test(expected = ServerDBException.class)
+    public void deleteAppointmentShouldThrowExceptionWhenNoConnection() throws SQLException {
+        when(driver.getConnection()).thenThrow(new SQLException());
+        controller.deleteAppointment(testAppointment);
+    }
 }
