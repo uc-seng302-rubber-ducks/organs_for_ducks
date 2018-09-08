@@ -727,31 +727,37 @@ public class UpdateUserController {
      * Validates the Emergency Contact Details section of the form.
      */
     private void validateEmergencyContactDetails() throws InvalidFieldsException {
-        boolean valid;
+        boolean valid = true;
         // validate emergency contact info
-        String emergencyEmail = ecEmail.getText();
-        valid = AttributeValidation.validateEmail(emergencyEmail);
-        if (!valid) {
+        if (!AttributeValidation.validateEmail(ecEmail.getText())) {
+            invalidateTextField(ecEmail);
             errorLabel.setVisible(true);
+            valid = false;
         }
 
-        String emergencyPhone = ecPhone.getText();
-        valid &= AttributeValidation.validatePhoneNumber(emergencyPhone.replaceAll(" ", ""));
-        if (!valid) {
+        if (!AttributeValidation.validatePhoneNumber(ecPhone.getText().replaceAll(" ", ""))) {
+            invalidateTextField(ecPhone);
             errorLabel.setVisible(true);
+            valid = false;
         }
 
-        String emergencyCell = ecCell.getText();
-        valid &= AttributeValidation.validateCellNumber(emergencyCell.replaceAll(" ", ""));
-        if (!valid) {
+        if (!AttributeValidation.validateCellNumber(ecCell.getText().replaceAll(" ", ""))) {
+            invalidateTextField(ecCell);
             errorLabel.setVisible(true);
+            valid = false;
         }
 
-        String eName = ecName.getText();
-        valid &= AttributeValidation.checkString(eName);
+        if (!AttributeValidation.checkString(ecName.getText())) {
+            invalidateTextField(ecName);
+            errorLabel.setVisible(true);
+            valid = false;
+        }
 
-        String eStreetNumber = ecStreetNumber.getText();
-        valid &= AttributeValidation.checkString(eStreetNumber);
+        if (!AttributeValidation.checkString(ecStreetNumber.getText())) {
+            invalidateTextField(ecStreetNumber);
+            errorLabel.setVisible(true);
+            valid = false;
+        }
 
         String eRegion;
         if (ecRegionInput.isVisible()) {
@@ -760,13 +766,25 @@ public class UpdateUserController {
         } else {
             eRegion = ecRegionSelector.getSelectionModel().getSelectedItem();
         }
-        valid &= AttributeValidation.checkString(eRegion);
+        if (!AttributeValidation.checkString(eRegion)) {
+            invalidateTextField(ecRegionInput);
+            errorLabel.setVisible(true);
+            valid = false;
+        }
 
-        String eRelationship = ecRelationship.getText();
-        valid &= AttributeValidation.checkString(eRelationship);
+        if (!AttributeValidation.checkString(ecRelationship.getText())) {
+            invalidateTextField(ecRelationship);
+            errorLabel.setVisible(true);
+            valid = false;
+        }
 
+        if (ecName.getText().isEmpty() != ecCell.getText().isEmpty()) {
+            invalidateTextField(ecName);
+            invalidateTextField(ecCell);
+            valid = false;
+        }
         // the name and cell number are required if any other attributes are filled out
-        if ((eName.isEmpty() != emergencyCell.isEmpty()) && !valid) {
+        if (!valid) {
             errorLabel.setText("Name and cell phone number are required for an emergency contact.");
             errorLabel.setVisible(true);
             throw new InvalidFieldsException();
