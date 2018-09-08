@@ -9,25 +9,41 @@
 }
 
 .root {
-    -fx-font-family: "Astloch";
-    -fx-base: yellow;
-    -fx-background: rgb(224, 255, 255);
-    -fx-font-style: rgb(255, 0, 0);
-}
-
-.background {
-    -fx-background-color: rgb(207, 252, 234);
+    --blue: #158CBA;
+    --indigo: #6610f2;
+    --purple: #6f42c1;
+    --pink: #e83e8c;
+    --red: #FF4136;
+    --orange: #fd7e14;
+    --yellow: #FF851B;
+    --green: #28B62C;
+    --teal: #20c997;
+    --cyan: #75CAEB;
+    --white: #fff;
+    --gray: #999;
+    --gray-dark: #333;
+    --primary: #158CBA;
+    --secondary: #f0f0f0;
+    --success: #28B62C;
+    --info: #75CAEB;
+    --warning: #FF851B;
+    --danger: #FF4136;
+    --light: #f6f6f6;
+    --dark: #555;
+    --breakpoint-xs: 0;
+    --breakpoint-sm: 576px;
+    --breakpoint-md: 768px;
+    --breakpoint-lg: 992px;
+    --breakpoint-xl: 1200px;
+    --font-family-sans-serif: "Source Sans Pro", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+    --font-family-monospace: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 }
 
 .button {
-    -fx-text-fill: rgb(49, 89, 23);
     -fx-border-color: #127ba3;
     -fx-background-color: #158CBA;
     -fx-border-radius: 5;
     -fx-padding: 3 6 6 6;
-}
-
-.button {
     -fx-border-style: solid;
     -fx-border-width: 0 1px 4px 1px;
     -fx-font-size: 12px;
@@ -38,6 +54,10 @@
     -fx-color: #fff;
     -fx-background-color: #117298;
     -fx-border-color: #106a8c;
+}
+
+.button:disabled {
+    -fx-opacity: 0.65;
 }
 
 .borders {
