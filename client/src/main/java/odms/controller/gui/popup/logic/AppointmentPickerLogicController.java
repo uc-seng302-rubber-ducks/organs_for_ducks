@@ -53,7 +53,11 @@ public class AppointmentPickerLogicController {
         }
 
         if (description.isEmpty()) {
-            message += "A description must be provided.";
+            message += "A description must be provided.\n";
+        }
+
+        if (preferredClinician.isEmpty()) {
+            message += "A preferred clinician must be selected.\n";
         }
 
         if (message.isEmpty()) {

@@ -49,7 +49,7 @@ public class AppointmentPickerViewController {
             Log.severe("Unable to get preferred clinicians.", e);
         }
 
-        if(comboBoxClinicians.isEmpty()){
+        if (comboBoxClinicians.isEmpty()){
             ComboBoxClinician defaultClinician = new ComboBoxClinician( "default", "0");
             appointmentBookingPrefClinicianInput.getItems().add(defaultClinician);
         } else {
@@ -66,10 +66,14 @@ public class AppointmentPickerViewController {
 
     @FXML
     public void confirm() {
+        String clinicianId = "";
+        if (appointmentBookingPrefClinicianInput.getValue() != null) {
+            clinicianId = appointmentBookingPrefClinicianInput.getValue().getId();
+        }
         logicController.confirm(
                 appointmentBookingDateInput.getValue(),
                 appointmentBookingTypeInput.getSelectionModel().getSelectedItem(),
-                appointmentBookingPrefClinicianInput.getValue().getId(),
+                clinicianId,
                 appointmentBookingDescriptionInput.getText());
     }
 
