@@ -34,6 +34,12 @@
     -fx-font-weight: bold;
 }
 
+.button:hover {
+    -fx-color: #fff;
+    -fx-background-color: #117298;
+    -fx-border-color: #106a8c;
+}
+
 .borders {
     -fx-border-color: rgb(7, 130, 103);
     -fx-border-style: dotted;
