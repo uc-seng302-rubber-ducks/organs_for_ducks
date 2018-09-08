@@ -114,7 +114,6 @@ public class DBHandler {
             "AND organName = ?";
     private static final String SELECT_DEATH_DETAILS_STMT = "SELECT * FROM DeathDetails WHERE fkUserNhi = ?";
     private static final String SELECT_APPTMT_ID = "SELECT apptId FROM AppointmentDetails WHERE requestedTime = ? AND fkStatusId = ?";
-    private static final String PENDING_APPTMT_EXISTS = "SELECT EXISTS(SELECT 1 FROM AppointmentDetails WHERE fkUserNhi = ? AND fkStatusId = ?)";
     private static final String DELETE_APPOINTMENT_STMT = "DELETE FROM AppointmentDetails WHERE apptId = ?";
     private static final String SELECT_APPOINTMENT_STATUS_STMT = "SELECT fkStatusId FROM AppointmentDetails WHERE apptId = ?";
 
@@ -1349,16 +1348,25 @@ public class DBHandler {
 
 
     /**
-     * Queries the database to check whether the given user has an existing pending appointment request.
+     * Queries the database to check whether the given user type has an existing appointment with the given status type.
      *
-     * @param nhi      unique identifier of the user
-     * @param statusId integer value of the pending status
-     * @return true if a pending request is found, false otherwise
+     * @param id       unique identifier of the user
+     * @param statusId integer value of the status type
+     * @param role     specifies if the given user type is a user or a clinician
+     * @return true if an appointment is found with the given status, false otherwise
      */
-    public boolean pendingExists(Connection connection, String nhi, int statusId) throws SQLException {
-        try (PreparedStatement stmt = connection.prepareStatement(PENDING_APPTMT_EXISTS)) {
-            stmt.setString(1, nhi);
-            stmt.setInt(2, statusId);
+    public boolean checkAppointmemtStatusExists(Connection connection, String id, int statusId, UserType role) throws SQLException {
+        String checkStatusExists = null;
+
+        if (role == UserType.USER) {
+            checkStatusExists = "SELECT EXISTS(SELECT 1 FROM AppointmentDetails WHERE fkStatusId = ? AND fkUserNhi = ?)";
+        } else if (role == UserType.CLINICIAN) {
+            checkStatusExists = "SELECT EXISTS(SELECT 1 FROM AppointmentDetails WHERE fkStatusId = ? AND fkStaffId = ?)";
+        }
+
+        try (PreparedStatement stmt = connection.prepareStatement(checkStatusExists)) {
+            stmt.setInt(1, statusId);
+            stmt.setString(2, id);
 
             try (ResultSet result = stmt.executeQuery()) {
                 result.next();
@@ -1374,7 +1382,7 @@ public class DBHandler {
      * @return           Appointment that the user has not seen but has been updated
      * @throws SQLException If the entry does not exist or the connection is invalid
      */
-    public Appointment getUnseenAppointment(Connection connection, String nhi) throws SQLException {
+    public Collection<Appointment> getUnseenAppointment(Connection connection, String nhi) throws SQLException {
         FetchUserAppointmentsStrategy fetchUserAppointmentStrategy = new FetchUserAppointmentsStrategy();
         return fetchUserAppointmentStrategy.getUnseenAppointment(connection, nhi);
     }

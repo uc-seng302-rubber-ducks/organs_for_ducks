@@ -8,6 +8,7 @@ import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
 import odms.commons.model.Appointment;
 import odms.commons.model.User;
+import odms.commons.model._enum.AppointmentStatus;
 import odms.commons.model._enum.EventTypes;
 import odms.commons.model._enum.UserType;
 import odms.commons.model.event.UpdateNotificationEvent;
@@ -47,7 +48,7 @@ public class UserAppointmentLogicController implements PropertyChangeListener {
      * Launches the pop-up to create and view requested appointments in more detail
      */
     public void launchAppointmentPicker() {
-        if (AppController.getInstance().getAppointmentsBridge().pendingExists(user.getNhi())) {
+        if (AppController.getInstance().getAppointmentsBridge().checkAppointmentStatusExists(user.getNhi(), UserType.USER, AppointmentStatus.PENDING)) {
             alertUser("You cannot request a new appointment as you already have one pending approval.");
             return;
         }

@@ -12,6 +12,8 @@ import odms.controller.gui.popup.utils.AlertWindowFactory;
 import okhttp3.*;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
 
 public class AppointmentsBridge extends Bifrost {
     private static final String APPOINTMENTS = "/appointments";
@@ -33,21 +35,28 @@ public class AppointmentsBridge extends Bifrost {
         this.quiet = quiet;
     }
 
-
     /**
-     * Checks if the given user has a pending appointment request
+     * Checks if the given user/clinician has cancelled appointments
      *
-     * @param nhi unique identifier of the user
-     * @return true if the user has a pending appointment request, false otherwise
+     * @param id    The unique identifier of the user/clinician
+     * @param type  Role specifying either a user or a clinician
+     * @return      True if the user/clinician has cancelled appointments, false otherwise
      */
-    public boolean pendingExists(String nhi) {
-        String url = String.format("%s/users/%s%s/exists?status=%d", ip, nhi, APPOINTMENTS, AppointmentStatus.PENDING.getDbValue());
+    public boolean checkAppointmentStatusExists(String id, UserType type, AppointmentStatus status) {
+        String url = "";
+        if (type == UserType.USER) {
+            url = String.format("%s/users/%s%s/exists?status=%d", ip, id, APPOINTMENTS, status.getDbValue());
+
+        } else if (type == UserType.CLINICIAN) {
+            url = String.format("%s/clinicians/%s%s/exists?status=%d", ip, id, APPOINTMENTS, status.getDbValue());
+        }
+
         Request request = new Request.Builder().get().url(url).build();
 
         try (Response res = client.newCall(request).execute()) {
             return res.body().string().equalsIgnoreCase("true");
         } catch (NullPointerException | IOException ex) {
-            Log.warning("", ex);
+            Log.warning("Failed to check for cancelled appointments", ex);
             return false;
         }
     }
@@ -96,20 +105,21 @@ public class AppointmentsBridge extends Bifrost {
      * @param nhi of the user that is being checked for unseen appointments
      * @return An appointment that is unseen if it exists, otherwise null.
      */
-    public Appointment getUnseenAppointment(String nhi) {
+    public Collection<Appointment> getUnseenAppointment(String nhi) {
+        ArrayList<Appointment> results = new ArrayList<>();
         String url = String.format("%s/users/%s%s/unseen", ip, nhi, APPOINTMENTS);
         Request request = new Request.Builder().get().url(url).build();
 
         try (Response res = client.newCall(request).execute()) {
             if (res.body() != null) {
-                return new JsonHandler().decodeOneAppointment(res.body().string());
+                return new JsonHandler().decodeAppointments(res.body().string());
             } else {
                 Log.warning("The response body was null");
-                return null;
+                return results;
             }
         } catch (NullPointerException | IOException ex) {
             Log.warning("", ex);
-            return null;
+            return results;
         }
     }
 

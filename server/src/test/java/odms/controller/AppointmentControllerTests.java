@@ -20,8 +20,10 @@ import org.springframework.http.ResponseEntity;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.mock;
@@ -108,8 +110,11 @@ public class AppointmentControllerTests {
 
     @Test
     public void getUnseenUserAppointmentShouldReturnAppointmentIfConnectionValid() throws SQLException {
-        when(handler.getUnseenAppointment(any(Connection.class), eq("ABC1234"))).thenReturn(testAppointment);
-        Appointment appointment = controller.getUnseenUserAppointments( "ABC1234");
+        List<Appointment> appointments = new ArrayList<>();
+        appointments.add(testAppointment);
+        when(handler.getUnseenAppointment(any(Connection.class), eq("ABC1234"))).thenReturn(appointments);
+        List<Appointment> results = new ArrayList<>(controller.getUnseenUserAppointments( "ABC1234"));
+        Appointment appointment = results.get(0);
         Assert.assertEquals(testAppointment, appointment);
     }
 

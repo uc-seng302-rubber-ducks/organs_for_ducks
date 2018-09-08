@@ -6,6 +6,10 @@ import odms.commons.utils.Log;
 import odms.controller.AppController;
 import odms.controller.gui.popup.utils.AlertWindowFactory;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
 /**
  * Handles the alert creation for when there is an appointment status update the user should know about.
  * Makes appropriate changes to the appointment once the user hsa seen the alert.
@@ -23,9 +27,9 @@ public class UserAppointmentAlertController {
      * @param userId Id of the user to check for unseen updates for
      */
     public void checkForUnseenUpdates(String userId) {
-        Appointment appointment = controller.getAppointmentsBridge().getUnseenAppointment(userId);
-        if (appointment != null) {
-            createAlert(appointment);
+        List<Appointment> appointments = new ArrayList<>(controller.getAppointmentsBridge().getUnseenAppointment(userId));
+        if (!appointments.isEmpty()) {
+            createAlert(appointments.get(0));
         }
     }
 
@@ -34,7 +38,8 @@ public class UserAppointmentAlertController {
      * If a message "ABORT" is returned, then an incorrect appointment status was retrieved from the database.
      * @param appointment Appointment to create an alert about
      */
-    private void createAlert(Appointment appointment) {
+    public void createAlert(Appointment appointment) {
+
         String message = createMessage(appointment);
         if (!message.equals("ABORT")) {
             AlertWindowFactory.generateAlertWindow(message);

@@ -38,10 +38,21 @@ public class AppointmentController extends BaseController {
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/users/{nhi}/appointments/exists")
-    public boolean pendingExists(@PathVariable(name = "nhi") String nhi,
+    public boolean userAppointmentStatusExists(@PathVariable(name = "nhi") String nhi,
                                  @RequestParam(name = "status") int statusId) {
         try (Connection connection = driver.getConnection()) {
-            return handler.pendingExists(connection, nhi, statusId);
+            return handler.checkAppointmemtStatusExists(connection, nhi, statusId, UserType.USER);
+        } catch (SQLException e) {
+            Log.severe("", e);
+            throw new ServerDBException(e);
+        }
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/clinician/{staffId}/appointments/exists")
+    public boolean clinicianAppointmentStatusExists(@PathVariable(name = "staffId") String staffId,
+                                 @RequestParam(name = "status") int statusId) {
+        try (Connection connection = driver.getConnection()) {
+            return handler.checkAppointmemtStatusExists(connection, staffId, statusId, UserType.CLINICIAN);
         } catch (SQLException e) {
             Log.severe("", e);
             throw new ServerDBException(e);
@@ -74,7 +85,7 @@ public class AppointmentController extends BaseController {
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/users/{nhi}/appointments/unseen")
-    public Appointment getUnseenUserAppointments(@PathVariable(name = "nhi") String nhi) {
+    public Collection<Appointment> getUnseenUserAppointments(@PathVariable(name = "nhi") String nhi) {
         try (Connection connection = driver.getConnection()) {
             return handler.getUnseenAppointment(connection, nhi);
         } catch (SQLException e) {
