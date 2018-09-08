@@ -2,15 +2,36 @@ package odms.controller.gui.panel.view;
 
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.stage.Stage;
 import odms.commons.model.Appointment;
+import odms.commons.utils.Log;
 import odms.controller.gui.panel.logic.AvailableOrgansLogicController;
 import odms.controller.gui.panel.logic.ClinicianAppointmentRequestLogicController;
+import odms.controller.gui.popup.view.RejectAppointmentReasonViewController;
+
+import java.io.IOException;
+import java.time.LocalDateTime;
 
 public class ClinicianAppointmentRequestViewController {
+
+    @FXML
+    public TableColumn<Appointment, String> categoryTableColumn;
+
+    @FXML
+    private TableColumn<Appointment, LocalDateTime> dateTimeTableColumn;
+
+    @FXML
+    private TableColumn<Appointment, String> nameTableColumn;
+
+    @FXML
+    private TableColumn<Appointment, String> nhiTableColumn;
+
+    @FXML
+    private TableView<Appointment> clinicianAppointmentRequestView;
 
     @FXML
     private TextArea appointmentRequestDescription;
@@ -29,7 +50,7 @@ public class ClinicianAppointmentRequestViewController {
 
     private ObservableList<Appointment> availableAppointments;
 
-    private ClinicianAppointmentRequestLogicController logicController = new ClinicianAppointmentRequestLogicController(availableAppointments);
+    private ClinicianAppointmentRequestLogicController logicController;
 
 
     /**
@@ -65,7 +86,21 @@ public class ClinicianAppointmentRequestViewController {
 
     @FXML
     private void rejectAppointment() {
+        Appointment selectedAppointment = clinicianAppointmentRequestView.getSelectionModel().getSelectedItem();
 
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML/appointmentRejection.fxml"));
+        Stage rejectionStage = new Stage();
+        Parent root;
+        try {
+            root = loader.load();
+            RejectAppointmentReasonViewController rejectionController = loader.getController();
+            rejectionStage.setScene(new Scene(root));
+
+            rejectionController.init(selectedAppointment, rejectionStage);
+            rejectionStage.show();
+        } catch (IOException e) {
+            Log.severe("failed to load login window FXML", e);
+        }
     }
 
     @FXML
