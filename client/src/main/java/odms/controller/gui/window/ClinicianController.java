@@ -131,9 +131,6 @@ public class ClinicianController implements PropertyChangeListener, UserLauncher
     @FXML
     private StatusBarController statusBarPageController;
 
-    @FXML
-    private ClinicianAppointmentRequestViewController appointmentRequestViewController;
-
     //</editor-fold>
 
     private Stage stage;
