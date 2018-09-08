@@ -55,17 +55,13 @@
 
 .text-field {
     -fx-content-display: block;
-    -fx-pref-width: 100%;
+    /*-fx-pref-width: 100%;*/
     -fx-pref-height: 206%;
     -fx-background-color: #fff;
     -fx-border-width: 1px;
     -fx-border-style: solid;
     -fx-border-color: #ced4da;
     -fx-border-radius: 2.5%;
-    -webkit-transition: border-color 0.15s ease-in-out, -webkit-box-shadow 0.15s ease-in-out;
-    transition: border-color 0.15s ease-in-out, -webkit-box-shadow 0.15s ease-in-out;
-    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
-    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out, -webkit-box-shadow 0.15s ease-in-out;
 }
 
 .text-field:disabled {
@@ -140,4 +136,27 @@
     -fx-alignment: CENTER;
 }
 
+.check-box > .box {
+    -fx-border-radius: 0.25em;
+    -fx-background-color: #FFF;
+    -fx-border-color: GREY;
+}
 
+.check-box:selected > .box {
+    -fx-background-color: #158CBA;
+}
+
+.check-box:selected > .box > .mark {
+    -fx-shape: "M9 21.035l-9-8.638 2.791-2.87 6.156 5.874 12.21-12.436 2.843 2.817z";
+    -fx-background-color: WHITE;
+}
+
+/****************************************
+*                                       *
+* DATEPICKER                            *
+*                                       *
+****************************************/
+
+.date-picker > .text-field {
+    -fx-pref-width: 1em;
+}
