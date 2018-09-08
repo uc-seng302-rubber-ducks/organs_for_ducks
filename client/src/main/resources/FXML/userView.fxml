@@ -104,6 +104,11 @@
                               <fx:include fx:id="procedureTabPage" source="procedureTabView.fxml" />
                           </content>
                       </Tab>
+                      <Tab text="Appointments">
+                          <content>
+                              <fx:include fx:id="appointmentTabPage" source="userAppointmentView.fxml"/>
+                          </content>
+                      </Tab>
                   </tabs>
               </TabPane>
               <AnchorPane fx:id="StatusBar" AnchorPane.bottomAnchor="-5.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="814.0" AnchorPane.topAnchor="649.0">
