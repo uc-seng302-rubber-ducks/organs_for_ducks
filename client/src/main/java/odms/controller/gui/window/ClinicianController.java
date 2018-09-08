@@ -165,6 +165,7 @@ public class ClinicianController implements PropertyChangeListener, UserLauncher
         this.clinician = clinician;
         this.admin = fromAdmin;
         openStages = new ArrayList<>();
+        stage.setMaximized(true);
 
         ServerEventNotifier.getInstance().addPropertyChangeListener(this);
         setDefaultFilters();
