@@ -108,8 +108,18 @@ public class ClinicianAppointmentRequestViewController {
      * Binds a table view row to show all details for that appointment
      */
     private void setOnClickBehaviour() {
-        clinicianAppointmentsRequestView.getSelectionModel().selectedItemProperty().addListener(a ->
-        displayAppointmentDetails(clinicianAppointmentsRequestView.getSelectionModel().getSelectedItem()));
+        clinicianAppointmentsRequestView.getSelectionModel().selectedItemProperty().addListener(a -> {
+            Appointment selectedAppointment = clinicianAppointmentsRequestView.getSelectionModel().getSelectedItem();
+            if (selectedAppointment != null) {
+                displayAppointmentDetails(selectedAppointment);
+
+                if (selectedAppointment.getAppointmentStatus() == AppointmentStatus.CANCELLED_BY_USER) {
+                    selectedAppointment.setAppointmentStatus(AppointmentStatus.CANCELLED_BY_USER_SEEN);
+                    AppController.getInstance().getAppointmentsBridge().patchAppointmentStatus(selectedAppointment.getAppointmentId(),
+                            AppointmentStatus.CANCELLED_BY_USER_SEEN.getDbValue());
+                }
+            }
+        });
     }
 
     /**
