@@ -1,15 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.collections.*?>
+<?import javafx.collections.FXCollections?>
 <?import javafx.geometry.*?>
-<?import javafx.scene.image.*?>
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
-
-<AnchorPane prefHeight="453.0" prefWidth="694.0" stylesheets="@../gui.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="FXML.Updateuserr">
+<?import java.lang.*?>
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" prefHeight="453.0" prefWidth="694.0" stylesheets="@../gui.css" xmlns="http://javafx.com/javafx/9.0.1" fx:controller="FXML.Updateuserr">
    <children>
       <TabPane layoutY="46.0" prefHeight="439.0" prefWidth="694.0" tabClosingPolicy="UNAVAILABLE">
         <tabs>
@@ -19,12 +16,27 @@
                      <children>
                         <GridPane hgap="10.0" layoutY="51.0" prefHeight="292.0" prefWidth="395.0">
                            <children>
-                              <TextField fx:id="nhiInput" prefHeight="25.0" prefWidth="131.0" GridPane.columnIndex="1" />
-                              <TextField fx:id="fNameInput" prefHeight="25.0" prefWidth="162.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                              <TextField fx:id="preferredFNameTextField" layoutX="136.0" layoutY="56.0" prefHeight="25.0" prefWidth="162.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                              <VBox alignment="CENTER" GridPane.columnIndex="1">
+                                 <children>
+                                    <TextField fx:id="nhiInput" prefHeight="25.0" prefWidth="131.0" />
+                                    <Label fx:id="nhiErrorLabel" styleClass="label-error" text="Label" visible="false" />
+                                 </children>
+                              </VBox>
+                              <VBox alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                 <children>
+                                    <TextField fx:id="fNameInput" alignment="TOP_LEFT" prefHeight="25.0" prefWidth="162.0" />
+                                    <Label fx:id="fNameErrorLabel" styleClass="label-error" text="Label" visible="false" />
+                                 </children>
+                              </VBox>
+                              <TextField fx:id="preferredFNameTextField" prefHeight="25.0" prefWidth="162.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                               <TextField fx:id="mNameInput" prefHeight="25.0" prefWidth="367.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                               <TextField fx:id="lNameInput" prefHeight="25.0" prefWidth="178.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                              <DatePicker fx:id="dobInput" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                              <VBox alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="5">
+                                 <children>
+                                    <DatePicker fx:id="dobInput" />
+                                    <Label fx:id="dobErrorLabel" styleClass="label-error" text="Label" visible="false" />
+                                 </children>
+                              </VBox>
                               <Label styleClass="label-title" text="NHI*:" />
                               <Label styleClass="label-title" text="First Name*:" GridPane.rowIndex="1" />
                               <Label styleClass="label-title" text="Middle Name:" GridPane.rowIndex="3" />
@@ -49,7 +61,12 @@
                            </rowConstraints>
                         </GridPane>
                         <Button layoutX="522.0" layoutY="301.0" mnemonicParsing="false" text="Reset profile image" />
-                        <Button layoutX="395.0" layoutY="300.0" mnemonicParsing="false" text="upload photo" />
+                        <VBox layoutX="395.0" layoutY="300.0">
+                           <children>
+                              <Button mnemonicParsing="false" text="upload photo" />
+                              <Label fx:id="photoErrorLabel" styleClass="label-error" text="Label" visible="false" />
+                           </children>
+                        </VBox>
                         <ImageView fx:id="profileImage" fitHeight="216.0" fitWidth="298.0" layoutX="393.0" layoutY="62.0" pickOnBounds="true" preserveRatio="true" />
                         <Button layoutX="14.0" layoutY="361.0" mnemonicParsing="false" text="Cancel" />
                         <Button layoutX="571.0" layoutY="358.0" mnemonicParsing="false" text="Update Profile" />
@@ -85,8 +102,18 @@
                                     </FXCollections>
                                  </items>
                               </ComboBox>
-                              <TextField fx:id="heightInput" prefHeight="25.0" prefWidth="375.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                              <TextField fx:id="weightInput" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                              <VBox alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                                 <children>
+                                    <TextField fx:id="heightInput" prefHeight="25.0" prefWidth="375.0" />
+                                    <Label styleClass="label-error" text="Label" visible="false" />
+                                 </children>
+                              </VBox>
+                              <VBox alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                                 <children>
+                                    <TextField fx:id="weightInput" />
+                                    <Label styleClass="label-error" text="Label" visible="false" />
+                                 </children>
+                              </VBox>
                               <ComboBox fx:id="bloodComboBox" prefHeight="25.0" prefWidth="151.0" GridPane.columnIndex="3">
                                  <items>
                                     <FXCollections fx:factory="observableArrayList">
@@ -171,15 +198,31 @@
                      <children>
                         <GridPane layoutY="49.0" prefHeight="299.0" prefWidth="682.0">
                            <children>
-                              <TextField fx:id="phone" GridPane.columnIndex="1" />
-                              <TextField fx:id="cell" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                              <VBox alignment="CENTER_LEFT" GridPane.columnIndex="1">
+                                 <children>
+                                    <TextField fx:id="phone" />
+                                    <Label styleClass="label-error" text="Label" visible="false" />
+                                 </children>
+                              </VBox>
+                              <VBox alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                 <children>
+                                    <TextField fx:id="cell" />
+                                    <Label styleClass="label-error" text="Label" visible="false" />
+                                 </children>
+                              </VBox>
                               <TextField fx:id="streetNumber" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                               <TextField fx:id="street" prefHeight="7.0" prefWidth="183.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                               <TextField fx:id="neighborhood" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                               <TextField fx:id="city" GridPane.columnIndex="1" GridPane.rowIndex="5" />
                               <ComboBox fx:id="regionSelector" prefHeight="25.0" prefWidth="168.0" GridPane.columnIndex="3" />
                               <TextField fx:id="zipCode" GridPane.columnIndex="3" GridPane.rowIndex="1" />
-                              <TextField fx:id="email" GridPane.columnIndex="3" GridPane.rowIndex="3" />
+                              <ComboBox fx:id="countrySelector" onAction="#countrySelectorListener" prefHeight="25.0" prefWidth="173.0" GridPane.columnIndex="3" GridPane.rowIndex="2" />
+                              <VBox alignment="CENTER_LEFT" GridPane.columnIndex="3" GridPane.rowIndex="3">
+                                 <children>
+                                    <TextField fx:id="email" />
+                                    <Label styleClass="label-error" text="Label" visible="false" />
+                                 </children>
+                              </VBox>
                               <Label styleClass="label-title" text="Home Phone:">
                                  <padding>
                                     <Insets left="5.0" />
@@ -230,7 +273,6 @@
                                     <Insets left="5.0" />
                                  </padding>
                               </Label>
-                              <ComboBox fx:id="countrySelector" onAction="#countrySelectorListener" prefHeight="25.0" prefWidth="173.0" GridPane.columnIndex="3" GridPane.rowIndex="2" />
                            </children>
                            <columnConstraints>
                               <ColumnConstraints hgrow="SOMETIMES" maxWidth="136.0" minWidth="10.0" prefWidth="104.0" />
@@ -263,16 +305,36 @@
                      <children>
                         <GridPane layoutY="38.0" prefHeight="316.0" prefWidth="675.0">
                            <children>
-                              <TextField fx:id="ecName" GridPane.columnIndex="1" />
-                              <TextField fx:id="ecPhone" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                              <VBox GridPane.columnIndex="1">
+                                 <children>
+                                    <TextField fx:id="ecName" />
+                                    <Label styleClass="label-error" text="Label" visible="false" />
+                                 </children>
+                              </VBox>
+                              <VBox GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                 <children>
+                                    <TextField fx:id="ecPhone" />
+                                    <Label styleClass="label-error" text="Label" visible="false" />
+                                 </children>
+                              </VBox>
                               <TextField fx:id="ecCell" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                               <TextField fx:id="ecStreetNumber" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                               <TextField fx:id="ecStreet" prefHeight="15.0" prefWidth="187.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                               <TextField fx:id="ecNeighborhood" GridPane.columnIndex="1" GridPane.rowIndex="5" />
                               <TextField fx:id="ecCity" GridPane.columnIndex="1" GridPane.rowIndex="6" />
                               <ComboBox fx:id="ecRegionSelector" prefHeight="25.0" prefWidth="187.0" GridPane.columnIndex="3" />
-                              <TextField fx:id="ecZipCode" GridPane.columnIndex="3" GridPane.rowIndex="1" />
-                              <TextField fx:id="ecEmail" GridPane.columnIndex="3" GridPane.rowIndex="3" />
+                              <VBox GridPane.columnIndex="3" GridPane.rowIndex="1">
+                                 <children>
+                                    <TextField fx:id="ecZipCode" />
+                                    <Label styleClass="label-error" text="Label" visible="false" />
+                                 </children>
+                              </VBox>
+                              <VBox GridPane.columnIndex="3" GridPane.rowIndex="3">
+                                 <children>
+                                    <TextField fx:id="ecEmail" />
+                                    <Label styleClass="label-error" text="Label" visible="false" />
+                                 </children>
+                              </VBox>
                               <TextField fx:id="ecRelationship" GridPane.columnIndex="3" GridPane.rowIndex="4" />
                               <Label styleClass="label-title" text="Home Phone:" GridPane.rowIndex="1" />
                               <Label styleClass="label-title" text="Street Number:" GridPane.rowIndex="3" />
@@ -307,7 +369,12 @@
                                  </padding>
                               </Label>
                               <ComboBox fx:id="ecCountrySelector" onAction="#ecCountrySelectorListener" prefHeight="25.0" prefWidth="176.0" GridPane.columnIndex="3" GridPane.rowIndex="2" />
-                              <TextField fx:id="ecCellPhone" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                              <VBox GridPane.columnIndex="1" GridPane.rowIndex="2">
+                                 <children>
+                                    <TextField fx:id="ecCellPhone" />
+                                    <Label styleClass="label-error" text="Label" visible="false" />
+                                 </children>
+                              </VBox>
                            </children>
                            <columnConstraints>
                               <ColumnConstraints hgrow="SOMETIMES" maxWidth="133.0" minWidth="10.0" prefWidth="103.0" />
