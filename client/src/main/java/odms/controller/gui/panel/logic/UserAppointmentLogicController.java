@@ -76,8 +76,6 @@ public class UserAppointmentLogicController implements PropertyChangeListener {
      * @param appointment The appointment to be cancelled
      */
     public void cancelAppointment(Appointment appointment) {
-        // todo: notify the clinician when a user cancels their appointment - task in story 101C
-
         if (appointment.getRequestedDate().minusDays(1).isBefore(LocalDateTime.now())) {
             alertUser("You cannot cancel this appointment as it is within 24 hours of the scheduled time");
             return;
@@ -90,7 +88,9 @@ public class UserAppointmentLogicController implements PropertyChangeListener {
         }
 
         if (result.get() == ButtonType.OK) {
-            AppController.getInstance().getAppointmentsBridge().deleteAppointment(appointment);
+            appointment.setAppointmentStatus(AppointmentStatus.CANCELLED_BY_USER);
+            AppController.getInstance().getAppointmentsBridge().patchAppointmentStatus(appointment.getAppointmentId(),
+                    AppointmentStatus.CANCELLED_BY_USER.getDbValue());
         }
     }
 
