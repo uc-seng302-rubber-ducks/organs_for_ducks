@@ -501,6 +501,7 @@ public class ClinicianController implements PropertyChangeListener, UserLauncher
             newStage.show();
             stage.close();
             availableOrgansViewController.shutdownThreads();
+            appointmentRequestViewController.shutdownPropertyChangeListener();
             LoginController loginController = loader.getController();
             loginController.init(AppController.getInstance(), newStage);
             deleteTempDirectory();

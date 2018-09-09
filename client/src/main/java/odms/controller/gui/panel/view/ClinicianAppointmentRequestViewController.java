@@ -13,6 +13,7 @@ import odms.commons.model._enum.AppointmentStatus;
 import odms.controller.AppController;
 import odms.controller.gui.panel.logic.AvailableOrgansLogicController;
 import odms.controller.gui.panel.logic.ClinicianAppointmentRequestLogicController;
+import odms.socket.ServerEventNotifier;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -147,6 +148,14 @@ public class ClinicianAppointmentRequestViewController {
     @FXML
     private void goToNextPage() {
         logicController.goToNextPage();
+    }
+
+    /**
+     * Removes the property change listener on logout so user appointment events do not trigger the
+     * clinician tables to update.
+     */
+    public void shutdownPropertyChangeListener() {
+        ServerEventNotifier.getInstance().removePropertyChangeListener(logicController);
     }
 
 
