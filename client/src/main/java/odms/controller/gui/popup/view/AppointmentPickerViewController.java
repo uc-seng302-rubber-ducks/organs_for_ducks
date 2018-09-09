@@ -8,7 +8,6 @@ import javafx.stage.Stage;
 import odms.commons.model.User;
 import odms.commons.model._enum.AppointmentCategory;
 import odms.commons.model.datamodel.ComboBoxClinician;
-import odms.controller.AppController;
 import odms.controller.gui.popup.logic.AppointmentPickerLogicController;
 
 public class AppointmentPickerViewController {
@@ -24,9 +23,6 @@ public class AppointmentPickerViewController {
     @FXML
     private TextArea appointmentBookingDescriptionInput;
 
-    private User user;
-    private Stage stage;
-    private AppController appController;
     private AppointmentPickerLogicController logicController;
 
 
@@ -34,14 +30,10 @@ public class AppointmentPickerViewController {
      * Initializes the AppointmentPickerViewController
      *
      * @param user          Current user
-     * @param appController The applications controller.
      * @param stage         The applications stage.
      */
-    public void init(User user, Stage stage, AppController appController) {
-        this.stage = stage;
-        this.user = user;
-        this.appController = appController;
-        this.logicController = new AppointmentPickerLogicController(user, stage, appController);
+    public void init(User user, Stage stage) {
+        this.logicController = new AppointmentPickerLogicController(user, stage);
         appointmentBookingTypeInput.getItems().addAll(AppointmentCategory.values());
 
         //TODO: populate the preferred clinicians combobox with new GET clinicians api that doesn't require authentication. -27/8
@@ -60,10 +52,11 @@ public class AppointmentPickerViewController {
 
     @FXML
     public void confirm() {
+        // todo: change back to using the clinician combobox when it is populated properly
         logicController.confirm(
                 appointmentBookingDateInput.getValue(),
-                appointmentBookingTypeInput.getSelectionModel().getSelectedItem(),
-                appointmentBookingPrefClinicianInput.getValue().getId(),
+                appointmentBookingTypeInput.getValue(), "0",
+                //appointmentBookingPrefClinicianInput.getValue().getId(),
                 appointmentBookingDescriptionInput.getText());
     }
 
