@@ -231,7 +231,7 @@ public class AppointmentController extends BaseController {
             try (Connection connection = driver.getConnection()) {
                 currentStatus = handler.getAppointmentStatus(connection, apptId);
             } catch (SQLException e) {
-                Log.severe("Cannot delete appointment at db", e);
+                Log.severe("Cannot update appointment status at db", e);
                 throw new ServerDBException(e);
             }
             // This logic statement ensures that the user can only edit the status if it is going from X to X_SEEN e.g. ACCEPTED to ACCEPTED_SEEN
