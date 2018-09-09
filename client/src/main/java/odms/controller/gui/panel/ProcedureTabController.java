@@ -6,32 +6,28 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.SelectionMode;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 import odms.commons.model.Change;
 import odms.commons.model.MedicalProcedure;
 import odms.commons.model.User;
-import odms.commons.model._enum.Organs;
 import odms.commons.utils.Log;
 import odms.controller.AppController;
-import odms.controller.gui.popup.OrgansAffectedController;
-import odms.controller.gui.widget.TextStringCheckBox;
+import odms.controller.gui.popup.utils.AlertWindowFactory;
+import odms.controller.gui.popup.view.ProcedureModificationViewController;
 import odms.controller.gui.window.UserController;
 
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.stream.Collectors;
 
 public class ProcedureTabController {
-    public static final String FAILED_TO_ADD_PROCEDURE = "Failed to add procedure: ";
     public static final String FOR_USER_NHI = " for User NHI: ";
-    public static final String AS_USER_INPUT_IS_INVALID = " as user input is invalid";
-    public static final String FAILED_TO_UPDATE_PROCEDURE = "Failed to update procedure: ";
-    //procedures
+
 
     @FXML
     private Button removeProcedureButton;
@@ -39,20 +35,6 @@ public class ProcedureTabController {
     @FXML
     private Button addProcedureButton;
 
-    @FXML
-    private Button updateProceduresButton;
-
-    @FXML
-    private Button modifyOrgansProcedureButton;
-
-    @FXML
-    private DatePicker procedureDateSelector;
-
-    @FXML
-    private TextField procedureTextField;
-
-    @FXML
-    private Label procedureWarningLabel;
 
     @FXML
     private TableView<MedicalProcedure> previousProcedureTableView;
@@ -60,11 +42,6 @@ public class ProcedureTabController {
     @FXML
     private TableView<MedicalProcedure> pendingProcedureTableView;
 
-    @FXML
-    private ListView<TextStringCheckBox> organsAffectedByProcedureListView;
-
-    @FXML
-    private TextArea descriptionTextArea;
 
     private TableView<MedicalProcedure> currentProcedureList;
     private ObservableList<MedicalProcedure> medicalProcedures;
@@ -90,31 +67,18 @@ public class ProcedureTabController {
         currentUser = user;
         this.parent = parent;
 
-        procedureWarningLabel.setText("");
-        procedureDateSelector.setValue(LocalDate.now());
         previousProcedures = FXCollections.observableArrayList();
         pendingProcedures = FXCollections.observableArrayList();
         pendingProcedureTableView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         previousProcedureTableView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         moveSelectedProcedureTo(previousProcedureTableView, pendingProcedureTableView);
         moveSelectedProcedureTo(pendingProcedureTableView, previousProcedureTableView);
-        descriptionTextArea.setWrapText(true);
         constructTables();
         if (!fromClinician) {
-            procedureDateSelector.setEditable(false);
-            procedureTextField.setEditable(false);
-            descriptionTextArea.setEditable(false);
             addProcedureButton.setVisible(false);
             removeProcedureButton.setVisible(false);
-            updateProceduresButton.setVisible(false);
-            modifyOrgansProcedureButton.setVisible(false);
-            List<TextStringCheckBox> organs = organsAffectedByProcedureListView.getItems();
-            for(TextStringCheckBox organ : organs){
-                organ.setDisable(true);
-            }
         }
 
-        modifyOrgansProcedureButton.setVisible(false);
     }
 
     private void constructTables() {
@@ -134,26 +98,18 @@ public class ProcedureTabController {
         pendingProcedureTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         previousProcedureTableView.getColumns().addAll(previousProcedureColumn, previousDateColumn);
         pendingProcedureTableView.getColumns().addAll(pendingProcedureColumn, pendingDateColumn);
-        ObservableList<TextStringCheckBox> allOrgans = FXCollections.observableList(new ArrayList<>());
-        for(Organs organ : Organs.values()){
-            allOrgans.add(new TextStringCheckBox(organ.toString()));
-        }
-        organsAffectedByProcedureListView.setItems(allOrgans);
-/*        organsAffectedByProcedureListView.setCellFactory(oabp -> {
-            TextFieldListCell<Organs> cell = new TextFieldListCell<>();
-            cell.setConverter(new StringConverter<Organs>() {
-                @Override
-                public String toString(Organs object) {
-                    return object.toString();
-                }
+        previousProcedureTableView.setOnMouseClicked(event -> {
+            if (event.getClickCount() == 2) {
+                openProceduresPopUp(previousProcedureTableView.getSelectionModel().getSelectedItem());
+            }
+        });
 
-                @Override
-                public Organs fromString(String string) {
-                    return null;
-                }
-            });
-            return cell;
-        });*/
+        pendingProcedureTableView.setOnMouseClicked(event -> {
+            if(event.getClickCount() ==2) {
+                openProceduresPopUp(pendingProcedureTableView.getSelectionModel().getSelectedItem());
+            }
+        });
+
     }
 
     /**
@@ -169,8 +125,7 @@ public class ProcedureTabController {
                 .addListener(listChangeListener -> {
                     to.getSelectionModel().select(null);
                     if (from.getSelectionModel().getSelectedItem() != null) {
-                        showProcedure(from.getSelectionModel().getSelectedItem());
-                        modifyOrgansProcedureButton.setVisible(true);
+                        addProcedureButton.setVisible(false);
                         currentProcedureList = from;
                     }
                 });
@@ -226,81 +181,13 @@ public class ProcedureTabController {
      */
     @FXML
     void addProcedure() {
-        String procedureName = procedureTextField.getText();
-        if (procedureName.isEmpty()) {
-            Log.warning(FAILED_TO_ADD_PROCEDURE + procedureName + FOR_USER_NHI + currentUser.getNhi() + AS_USER_INPUT_IS_INVALID);
-            procedureWarningLabel.setText("A name must be entered for a procedure");
-            return;
-        }
-        LocalDate procedureDate = procedureDateSelector.getValue();
-        if (procedureDate == null) {
-            Log.warning(FAILED_TO_ADD_PROCEDURE + procedureName + FOR_USER_NHI + currentUser.getNhi() + AS_USER_INPUT_IS_INVALID);
-            procedureWarningLabel.setText("A valid date must be entered for a procedure");
-            return;
-        }
-        if (procedureDate.isBefore(currentUser.getDateOfBirth())) {
-            Log.warning(FAILED_TO_ADD_PROCEDURE + procedureName + FOR_USER_NHI + currentUser.getNhi() + AS_USER_INPUT_IS_INVALID);
-            procedureWarningLabel.setText("Procedures may not occur before a patient has been born");
-            return;
-        }
-        currentUser.saveStateForUndo();
-
-        MedicalProcedure procedure = new MedicalProcedure(procedureDate, procedureName,
-                descriptionTextArea.getText(), new ArrayList<>());
-        medicalProcedures.add(procedure);
-        currentUser.addMedicalProcedure(procedure);
-        if (procedure.getProcedureDate().isBefore(LocalDate.now())) {
-            previousProcedures.add(procedure);
-        } else {
-            pendingProcedures.add(procedure);
-        }
+        openProceduresPopUp(null);
         clearProcedure();
         application.update(currentUser);
         parent.updateUndoRedoButtons();
-        Log.info("Successfully added procedure: " + procedureName + FOR_USER_NHI + currentUser.getNhi());
-    }
 
-    /**
-     * Updates an existing procedures information
-     */
-    @FXML
-    void updateProcedures() {
-        procedureWarningLabel.setText("");
-        String newName = procedureTextField.getText();
-        LocalDate newDate = procedureDateSelector.getValue();
-        String newDescription = descriptionTextArea.getText();
-        if (newName.isEmpty()) {
-            Log.warning(FAILED_TO_UPDATE_PROCEDURE + newName + FOR_USER_NHI + currentUser.getNhi() + AS_USER_INPUT_IS_INVALID);
-            procedureWarningLabel.setText("A name must be entered for a procedure");
-            return;
-        }
-        if (newDate == null) {
-            Log.warning(FAILED_TO_UPDATE_PROCEDURE + newName + FOR_USER_NHI + currentUser.getNhi() + AS_USER_INPUT_IS_INVALID);
-            procedureWarningLabel.setText("A valid date must be entered for a procedure");
-            return;
-        }
-        if (newDate.isBefore(currentUser.getDateOfBirth())) {
-            Log.warning(FAILED_TO_UPDATE_PROCEDURE + newName + FOR_USER_NHI + currentUser.getNhi() + AS_USER_INPUT_IS_INVALID);
-            procedureWarningLabel.setText("Procedures may not occur before a patient has been born");
-            return;
-        }
-        currentUser.saveStateForUndo();
-        currentUser.getRedoStack().clear();
-
-        if (previousProcedureTableView.getSelectionModel().getSelectedItem() != null) {
-            MedicalProcedure procedure = previousProcedureTableView.getSelectionModel().getSelectedItem();
-
-            updateProcedure(procedure, newName, newDate, newDescription);
-        } else if (pendingProcedureTableView.getSelectionModel().getSelectedItem() != null) {
-            MedicalProcedure procedure = pendingProcedureTableView.getSelectionModel().getSelectedItem();
-
-            updateProcedure(procedure, newName, newDate, newDescription);
-        } else {
-            currentUser.getUndoStack().pop(); // no procedure was selected to be updated so the last undo has no changes
-        }
-
-        parent.updateUndoRedoButtons();
-        Log.info("Successfully updated procedure: " + newName + FOR_USER_NHI + currentUser.getNhi());
+        previousProcedureTableView.refresh();
+        pendingProcedureTableView.refresh();
     }
 
     /**
@@ -331,49 +218,21 @@ public class ProcedureTabController {
         application.update(currentUser);
     }
 
-    /**
-     * Shows all the information for a given procedure
-     *
-     * @param procedure current medical procedure
-     */
-    private void showProcedure(MedicalProcedure procedure) {
-        procedureTextField.setText(procedure.getSummary());
-        procedureDateSelector.setValue(procedure.getProcedureDate());
-        descriptionTextArea.setText(procedure.getDescription());
-
-        List<Organs> organsAffected = procedure.getOrgansAffected();
-        List<TextStringCheckBox> listOrgans = organsAffectedByProcedureListView.getItems();
-        for(TextStringCheckBox organCheck : listOrgans){
-            organCheck.setSelected(false);
-            if(organsAffected.contains(Organs.valueOf(organCheck.toString().toUpperCase().replaceAll(" ", "_")))){
-                organCheck.setSelected(true);
-            }
-        }
-
-        parent.updateUndoRedoButtons();
-        pendingProcedureTableView.refresh();
-        previousProcedureTableView.refresh();
-    }
 
     /**
      * Clears the information of a shown procedure
      */
     @FXML
     void clearProcedure() {
-        procedureWarningLabel.setText("");
-        procedureTextField.setText("");
-        procedureDateSelector.setValue(LocalDate.now());
-        descriptionTextArea.setText("");
         pendingProcedureTableView.getSelectionModel().select(null);
         previousProcedureTableView.getSelectionModel().select(null);
-        organsAffectedByProcedureListView.setItems(FXCollections.observableList(new ArrayList<>()));
-        modifyOrgansProcedureButton.setVisible(false);
         currentProcedureList = null;
+        addProcedureButton.setVisible(true);
         Log.info("Successfully cleared procedure for User NHI: " + currentUser.getNhi());
     }
 
     /**
-     * Removes a procedure from the curernt users profile
+     * Removes a procedure from the current users profile
      */
     @FXML
     void removeProcedure() {
@@ -396,31 +255,21 @@ public class ProcedureTabController {
         parent.updateUndoRedoButtons();
     }
 
-    /**
-     * Opens the modify procedure organs window for the selected procedure
-     */
-    @FXML
-    void modifyProcedureOrgans() {
-        currentUser.saveStateForUndo();
-        currentUser.getRedoStack().clear();
-
-        MedicalProcedure procedure = currentProcedureList.getSelectionModel().getSelectedItem();
-        FXMLLoader affectedOrganLoader = new FXMLLoader(
-                getClass().getResource("/FXML/organsAffectedView.fxml"));
+    private void openProceduresPopUp(MedicalProcedure procedure){
+        FXMLLoader procedureModificationLoader = new FXMLLoader(
+                getClass().getResource("/FXML/proceduresPopUp.fxml"));
         Parent root;
         try {
-            root = affectedOrganLoader.load();
-            Stage s = new Stage();
-            s.setScene(new Scene(root));
-            s.initModality(Modality.APPLICATION_MODAL);
-            OrgansAffectedController organsAffectedController = affectedOrganLoader.getController();
-            organsAffectedController.init(application, s, procedure, currentUser);
-            s.showAndWait();
-            showProcedure(procedure);
-            Log.info("Successfully launched Modify Procedure Organs window for User NHI: " + currentUser.getNhi());
+            root = procedureModificationLoader.load();
+            ProcedureModificationViewController procedureModificationViewController = procedureModificationLoader.getController();
+            Stage stage = new Stage();
+            procedureModificationViewController.init(procedure, stage, currentUser);
+            stage.setScene(new Scene(root));
+            stage.show();
+            Log.info("successfully launched add procedures pop-up window for User NHI: " + currentUser.getNhi());
         } catch (IOException e) {
-            Log.severe("unable to launch Modify Procedure Organs window for User NHI: " + currentUser.getNhi(), e);
+            Log.severe("failed to load add procedures pop-up window for User NHI: " + currentUser.getNhi(), e);
+            AlertWindowFactory.generateError("Whoops! Something went wrong!");
         }
-        parent.updateUndoRedoButtons();
     }
 }

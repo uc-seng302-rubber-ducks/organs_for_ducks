@@ -2,50 +2,23 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
+<?import javafx.scene.text.Font?>
 <AnchorPane xmlns:fx="http://javafx.com/fxml/1" minHeight="800.0" minWidth="1200.0" prefHeight="595.0" prefWidth="811.0" xmlns="http://javafx.com/javafx/8" fx:controller="odms.controller.gui.panel.ProcedureTabController">
     <children>
       <AnchorPane prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-              <Label layoutX="81.0" layoutY="38.0" text="Previous Procedures" AnchorPane.topAnchor="25.0">
+              <Label layoutX="81.0" layoutY="38.0" text="Previous Procedures" AnchorPane.leftAnchor="25.0" AnchorPane.topAnchor="25.0">
                <font>
                   <Font name="System Bold" size="13.0" />
                </font></Label>
-              <Label layoutX="399.0" layoutY="104.0" text="Pending Procedures" AnchorPane.topAnchor="25.0">
+              <Label layoutX="625.0" layoutY="25.0" text="Pending Procedures" AnchorPane.rightAnchor="425.0" AnchorPane.topAnchor="25.0">
                <font>
                   <Font name="System Bold" size="13.0" />
                </font></Label>
-              <Label layoutX="772.0" layoutY="25.0" text="Procedure Name* :" AnchorPane.rightAnchor="300.0" AnchorPane.topAnchor="25.0">
-               <font>
-                  <Font name="System Bold" size="13.0" />
-               </font></Label>
-              <DatePicker fx:id="procedureDateSelector" layoutX="952.0" layoutY="63.0" prefHeight="25.0" prefWidth="228.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="75.0" />
-              <Label layoutX="762.0" layoutY="125.0" text="Procedure Date:" AnchorPane.rightAnchor="318.0" AnchorPane.topAnchor="75.0">
-               <font>
-                  <Font name="System Bold" size="13.0" />
-               </font></Label>
-              <TextField fx:id="procedureTextField" layoutX="948.0" layoutY="63.0" prefHeight="25.0" prefWidth="228.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="25.0" />
-              <Button fx:id="addProcedureButton" layoutX="695.0" layoutY="169.0" mnemonicParsing="false" onAction="#addProcedure" text="Add" />
-              <Button fx:id="removeProcedureButton" layoutX="681.0" layoutY="220.0" mnemonicParsing="false" onAction="#removeProcedure" text="Remove" />
-              <Label fx:id="procedureWarningLabel" layoutX="735.0" layoutY="671.0" text="Label">
-               <font>
-                  <Font name="System Bold" size="13.0" />
-               </font></Label>
-              <Label layoutX="759.0" layoutY="125.0" text="Description:" AnchorPane.rightAnchor="351.0" AnchorPane.topAnchor="125.0">
-               <font>
-                  <Font name="System Bold" size="13.0" />
-               </font></Label>
-              <Button fx:id="updateProceduresButton" layoutX="691.0" layoutY="415.0" mnemonicParsing="false" onAction="#updateProcedures" text="Update" />
-              <Button fx:id="clearProcedureButton" layoutX="698.0" layoutY="346.0" mnemonicParsing="false" onAction="#clearProcedure" text="Clear" />
-              <Label layoutX="759.0" layoutY="356.0" text="Organs Affected:" AnchorPane.rightAnchor="316.0" AnchorPane.topAnchor="350.0">
-               <font>
-                  <Font name="System Bold" size="13.0" />
-               </font></Label>
-              <Button fx:id="modifyOrgansProcedureButton" layoutX="659.0" layoutY="300.0" mnemonicParsing="false" onAction="#modifyProcedureOrgans" prefHeight="25.0" prefWidth="129.0" text="Modify Organs" />
-              <ListView fx:id="organsAffectedByProcedureListView" layoutX="885.0" layoutY="372.0" prefHeight="398.0" prefWidth="242.0" AnchorPane.bottomAnchor="50.0" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="350.0" />
-              <TextArea fx:id="descriptionTextArea" layoutX="924.0" layoutY="119.0" prefHeight="175.0" prefWidth="242.0" wrapText="true" AnchorPane.rightAnchor="50.0" AnchorPane.topAnchor="125.0" />
-              <TableView fx:id="pendingProcedureTableView" layoutX="343.0" layoutY="129.0" prefHeight="709.0" prefWidth="250.0" AnchorPane.bottomAnchor="50.0" AnchorPane.leftAnchor="350.0" AnchorPane.topAnchor="50.0" />
-              <TableView fx:id="previousProcedureTableView" layoutX="36.0" layoutY="129.0" prefHeight="724.0" prefWidth="250.0" AnchorPane.bottomAnchor="50.0" AnchorPane.leftAnchor="36.0" AnchorPane.topAnchor="50.0" />
+              <Button fx:id="addProcedureButton" layoutX="625.0" layoutY="701.0" mnemonicParsing="false" onAction="#addProcedure" text="Add" AnchorPane.bottomAnchor="74.0" AnchorPane.rightAnchor="531.0" />
+              <Button fx:id="removeProcedureButton" layoutX="503.0" layoutY="701.0" mnemonicParsing="false" onAction="#removeProcedure" text="Remove" AnchorPane.bottomAnchor="74.0" AnchorPane.leftAnchor="503.0" />
+              <TableView fx:id="pendingProcedureTableView" layoutX="640.0" layoutY="50.0" prefHeight="625.0" prefWidth="550.0" AnchorPane.bottomAnchor="103.0" AnchorPane.rightAnchor="25.0" AnchorPane.topAnchor="50.0" />
+              <TableView fx:id="previousProcedureTableView" layoutX="36.0" layoutY="129.0" prefHeight="625.0" prefWidth="550.0" AnchorPane.bottomAnchor="103.0" AnchorPane.leftAnchor="25.0" AnchorPane.topAnchor="50.0" />
          </children>
       </AnchorPane>
     </children>
