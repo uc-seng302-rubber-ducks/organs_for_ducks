@@ -38,6 +38,7 @@ import odms.controller.gui.StatusBarController;
 import odms.controller.gui.UnsavedChangesAlert;
 import odms.controller.gui.panel.TransplantWaitListController;
 import odms.controller.gui.panel.view.AvailableOrgansViewController;
+import odms.controller.gui.panel.view.ClinicianAppointmentRequestViewController;
 import odms.controller.gui.popup.DeletedUserController;
 import odms.controller.gui.popup.utils.AlertWindowFactory;
 import odms.socket.ServerEventNotifier;
@@ -119,6 +120,8 @@ public class ClinicianController implements PropertyChangeListener, UserLauncher
     @FXML
     private AvailableOrgansViewController availableOrgansViewController;
     @FXML
+    private ClinicianAppointmentRequestViewController appointmentRequestViewController;
+    @FXML
     private Button redoButton;
     @FXML
     private MenuItem deleteClinician;
@@ -178,6 +181,7 @@ public class ClinicianController implements PropertyChangeListener, UserLauncher
         transplantWaitListTabPageController.init(appController, this);
         statusBarPageController.init();
         availableOrgansViewController.init(this);
+        appointmentRequestViewController.init(appController, clinician);
 
         if (clinician.getStaffId().equals("0")) {
             deleteClinician.setDisable(true);

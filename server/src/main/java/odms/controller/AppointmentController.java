@@ -80,7 +80,7 @@ public class AppointmentController extends BaseController {
         try (Connection connection = driver.getConnection()) {
             return handler.getAppointments(connection, staffId, UserType.CLINICIAN, count, start);
         } catch (SQLException e) {
-            Log.severe(BAD_DB_RESPONSE + e.getErrorCode(), e);
+            Log.severe("Unable to get clinician requested appointments with staff id: "+staffId+". SQL error code: " + e.getErrorCode(), e);
             throw new ServerDBException(e);
         }
     }

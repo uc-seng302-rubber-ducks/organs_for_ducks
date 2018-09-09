@@ -1,7 +1,7 @@
 package odms.steps;
 
-import cucumber.api.java.Before;
 import cucumber.api.java.After;
+import cucumber.api.java.Before;
 import cucumber.api.java.en.Given;
 import javafx.collections.FXCollections;
 import javafx.scene.control.TableView;
@@ -41,7 +41,6 @@ public class GivenSteps extends ApplicationTest {
 
     @Before
     public void before() {
-
         ConfigPropertiesSession mockSession = mock(ConfigPropertiesSession.class);
         when(mockSession.getProperty(eq("server.url"))).thenReturn("http://test.url");
         when(mockSession.getProperty(eq("server.url"), anyString())).thenReturn("http://test.url");
@@ -50,6 +49,7 @@ public class GivenSteps extends ApplicationTest {
         when(mockSession.getProperty(eq("testConfig"), anyString())).thenReturn("true");
         ConfigPropertiesSession.setInstance(mockSession);
         AppController.setInstance(CucumberTestModel.getController());
+
     }
 
     @After
