@@ -107,7 +107,7 @@ public class AvailableOrgansLogicController implements PropertyChangeListener {
         transplantDetails.clear();
         this.startingIndexMatches = startingIndexMatches;
         AppController.getInstance().getOrgansBridge().getMatchingOrgansList(startingIndexMatches,
-                ROWS_PER_PAGE, availableOrgan.getDonorNhi(), availableOrgan.getOrgan().toString(), availableOrgan, transplantDetails);
+                ROWS_PER_PAGE, availableOrgan.getDonorNhi(), availableOrgan, transplantDetails);
     }
 
     /**

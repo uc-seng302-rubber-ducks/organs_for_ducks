@@ -10,7 +10,10 @@ import odms.commons.model.User;
 import odms.commons.model.dto.UserOverview;
 import odms.controller.AppController;
 import odms.controller.gui.window.UserController;
-import org.junit.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.matcher.control.LabeledMatchers;
@@ -44,7 +47,7 @@ public class UndoUserUpdateFormGUITest extends ApplicationTest {
         User user = new User("Frank", LocalDate.now().minusDays(2), "ABC1234");
         user.setPreferredFirstName("Frank");
         user.setDateOfDeath(LocalDate.now());
-        user.setContact(new EmergencyContact("", "", "0187878"));
+        user.setContact(new EmergencyContact("", "", ""));
         user.getUndoStack().clear();
         when(application.getUserBridge()).thenReturn(bridge);
         when(application.getUserOverviews()).thenReturn(Collections.singleton(UserOverview.fromUser(user)));
@@ -91,7 +94,6 @@ public class UndoUserUpdateFormGUITest extends ApplicationTest {
     }
 
     @Test
-    @Ignore
     public void ChangesResetWhenCancelButtonClicked() {
         //Dont change me to the new methods ill break
         clickOn("#editMenuUser");

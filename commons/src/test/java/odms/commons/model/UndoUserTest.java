@@ -3,13 +3,11 @@ package odms.commons.model;
 import odms.commons.model._enum.Organs;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.time.LocalDate;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 
 /**
  * These tests are done on Users but are more focused on testing the undo stacks/memento system
@@ -37,24 +35,6 @@ public class UndoUserTest {
         testUser.undo();
         testUser.undo();
         assertEquals("Frank", testUser.getFullName());
-    }
-
-    @Test
-    @Ignore
-    public void testMultipleChangeMultipleUndo() {
-        testUser.setBloodType("B+");
-        testUser.setStreetName("wallaby way");
-        testUser.setStreetNumber("42");
-        testUser.setRegion("Sydney");
-
-        testUser.undo();
-        assertNull(testUser.getRegion());
-
-        testUser.undo();
-        assertNull(testUser.getAddress());
-
-        testUser.undo();
-        assertEquals("U", testUser.getBloodType());
     }
 
     @Test
