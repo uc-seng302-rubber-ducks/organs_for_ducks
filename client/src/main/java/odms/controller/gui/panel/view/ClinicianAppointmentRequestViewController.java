@@ -1,5 +1,6 @@
 package odms.controller.gui.panel.view;
 
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -15,6 +16,7 @@ import odms.controller.gui.panel.logic.AvailableOrgansLogicController;
 import odms.controller.gui.panel.logic.ClinicianAppointmentRequestLogicController;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 public class ClinicianAppointmentRequestViewController {
@@ -44,17 +46,18 @@ public class ClinicianAppointmentRequestViewController {
     private TableColumn<Appointment, String> clinicianAppointmentUserIdColumn = new TableColumn<>();
 
     @FXML
-    private TableColumn<Appointment, AppointmentStatus> clinicianAppointmentUserNameColumn = new TableColumn<>();
-
-    @FXML
-    private TableColumn<Appointment, LocalDateTime> clinicianAppointmentDateColumn = new TableColumn<>();
+    private TableColumn<Appointment, AppointmentStatus> clinicianAppointmentStatusColumn = new TableColumn<>();
 
     @FXML
     private TableColumn<Appointment, AppointmentCategory> clinicianAppointmentCategoryColumn = new TableColumn<>();
 
+    @FXML
+    private TableColumn<Appointment, String> clinicianAppointmentDateColumn = new TableColumn<>();
 
     private ObservableList<Appointment> availableAppointments = FXCollections.observableList(new ArrayList<>());
     private ClinicianAppointmentRequestLogicController logicController;
+
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd hh:mm");
 
 
     /**
@@ -73,8 +76,8 @@ public class ClinicianAppointmentRequestViewController {
      */
     private void initAppointmentTable() {
         clinicianAppointmentUserIdColumn.setCellValueFactory(new PropertyValueFactory<>("requestingUserId"));
-        clinicianAppointmentUserNameColumn.setCellValueFactory(new PropertyValueFactory<>("appointmentStatus")); //Somehow get the user's names
-        clinicianAppointmentDateColumn.setCellValueFactory(new PropertyValueFactory<>("requestedDate"));
+        clinicianAppointmentStatusColumn.setCellValueFactory(new PropertyValueFactory<>("appointmentStatus"));
+        clinicianAppointmentDateColumn.setCellValueFactory(foo -> new SimpleStringProperty(foo.getValue().getRequestedDate().format(formatter)));
         clinicianAppointmentCategoryColumn.setCellValueFactory(new PropertyValueFactory<>("appointmentCategory"));
         logicController.updateTable(0);
         populateTable();
@@ -105,8 +108,12 @@ public class ClinicianAppointmentRequestViewController {
      * Binds a table view row to show all details for that appointment
      */
     private void setOnClickBehaviour() {
-        clinicianAppointmentsRequestView.getSelectionModel().selectedItemProperty().addListener(a ->
-        displayAppointmentDetails(clinicianAppointmentsRequestView.getSelectionModel().getSelectedItem()));
+        clinicianAppointmentsRequestView.getSelectionModel().selectedItemProperty().addListener(a -> {
+            Appointment selectedAppointment = clinicianAppointmentsRequestView.getSelectionModel().getSelectedItem();
+            if (selectedAppointment != null) {
+                displayAppointmentDetails(selectedAppointment);
+            }
+        });
     }
 
     /**

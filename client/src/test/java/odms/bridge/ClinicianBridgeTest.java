@@ -1,23 +1,25 @@
 package odms.bridge;
 
 import com.google.gson.Gson;
+import odms.commons.config.ConfigPropertiesSession;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import odms.TestUtils.CommonTestMethods;
 import odms.commons.model.Appointment;
 import odms.commons.model.Clinician;
+import odms.commons.model.datamodel.ComboBoxClinician;
 import odms.commons.model.User;
 import odms.commons.model._enum.AppointmentCategory;
 import odms.commons.model._enum.AppointmentStatus;
 import okhttp3.*;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.testfx.api.FxToolkit;
 
 import java.io.IOException;
+import java.util.List;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -31,7 +33,9 @@ public class ClinicianBridgeTest extends BridgeTestBase {
     @Before
     public void setUp() {
         bridge = new ClinicianBridge(mockClient);
+        ConfigPropertiesSession.getInstance().setProperty("testConfig", "true");
     }
+
 
     @Test
     public void getCliniciansShouldReturnListOfCliniciansOnSuccess() throws IOException {
@@ -54,6 +58,27 @@ public class ClinicianBridgeTest extends BridgeTestBase {
         callback.onResponse(mockCall, mockResponse);
 
         verify(mockController, times(1)).addClinician(any(Clinician.class));
+
+    }
+
+    @Test
+    public void getBasicCliniciansShouldReturnListOfBasicCliniciansOnSuccess() throws IOException {
+        Call mockCall = mock(Call.class);
+        Response mockResponse = mock(Response.class);
+        ResponseBody mockResponseBody = mock(ResponseBody.class);
+
+        when(mockClient.newCall(any(Request.class))).thenReturn(mockCall);
+        when(mockCall.execute()).thenReturn(mockResponse);
+        when(mockResponse.isSuccessful()).thenReturn(true);
+
+        when(mockResponse.body()).thenReturn(mockResponseBody);
+        when(mockResponseBody.string()).thenReturn(new Gson().toJson(new ComboBoxClinician[]{
+                new ComboBoxClinician("geoff", "0")
+        }));
+
+        List<ComboBoxClinician> result = bridge.getBasicClinicians("");
+
+        Assert.assertEquals(1, result.size());
 
     }
 
@@ -178,7 +203,6 @@ public class ClinicianBridgeTest extends BridgeTestBase {
     }
 
     @Test
-    @Ignore // also needs to make a request to get profile picture.
     public void getClinicianShouldReturnClinicianOnSuccess() throws IOException {
         Clinician expected = new Clinician("geoff", "0", "password");
         Call mockCall = mock(Call.class);

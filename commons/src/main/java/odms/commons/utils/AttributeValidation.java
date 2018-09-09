@@ -48,7 +48,7 @@ public class AttributeValidation {
      * @return True if the phone number is valid, false otherwise
      */
     public static boolean validatePhoneNumber(String phoneNum) {
-        return (phoneNum.matches("^[0][34679][ \\-]?[2-9][0-9]{2}[ \\-]?[0-9]{4}$")) || phoneNum.isEmpty();
+        return (phoneNum.matches("^\\+?[0-9]{1,3}([ \\-]?[0-9]{2,4}){2,3}$")) || phoneNum.isEmpty();
     }
 
 
@@ -60,7 +60,7 @@ public class AttributeValidation {
      * @return true if the cell number is valid, false otherwise
      */
     public static boolean validateCellNumber(String cellNum) {
-        return (cellNum.matches("^[0-9]{7,13}$")) || cellNum.isEmpty();
+        return (cellNum.matches("^\\+?[0-9]{1,3}[0-9]{7,13}$")) || cellNum.isEmpty();
     }
 
     /**
@@ -70,11 +70,7 @@ public class AttributeValidation {
      * @return true if the attribute meets the specified criteria, false otherwise
      */
     public static boolean checkString(String attribute) {
-        if (attribute != null) {
-            return (attribute.matches("[a-zA-Z '\\-0-9]*"));
-        } else {
-            return false;
-        }
+        return attribute != null && (attribute.matches("[a-zA-Z '\\-0-9]*"));
     }
 
     /**
@@ -84,11 +80,7 @@ public class AttributeValidation {
      * @return true if the attribute meets the specified criteria, false otherwise
      */
     public static boolean checkRequiredString(String attribute) {
-        if (attribute != null) {
-            return (attribute.matches("[a-zA-Z '\\-0-9]+"));
-        } else {
-            return false;
-        }
+        return attribute != null && (attribute.matches("[a-zA-Z '\\-0-9]+"));
     }
 
     /**
@@ -98,11 +90,7 @@ public class AttributeValidation {
      * @return true if the attribute meets the specified criteria, false otherwise
      */
     public static boolean checkRequiredStringName(String attribute) {
-        if (attribute != null) {
-            return (attribute.matches("[a-zA-Z '\\-]+"));
-        } else {
-            return false;
-        }
+        return attribute != null && (attribute.matches("[a-zA-Z '\\-]+"));
     }
 
     /**
@@ -118,10 +106,29 @@ public class AttributeValidation {
         return death == null || (birth.isBefore(death.plusDays(1)) && death.isBefore(LocalDate.now().plusDays(1)));
     }
 
+    /**
+     * checks that date of birth is before tomorrow's date if the
+     * date of birth is not null.
+     *
+     * @param birth date
+     * @return true if date of death is
+     * before the current date, false otherwise.
+     */
     public static boolean validateDateOfBirth(LocalDate birth) {
         return birth != null && birth.isBefore(LocalDate.now().plusDays(1));
     }
 
+    /**
+     * checks that appointment date is after
+     * today's date if appointment date is not null.
+     *
+     * @param apptDate appointment date
+     * @return true if appointment date is
+     * after the current date, false otherwise.
+     */
+    public static boolean validateDateOfAppointment(LocalDate apptDate) {
+        return apptDate != null && apptDate.isAfter(LocalDate.now());
+    }
 
     /**
      * Gets the enum value of BloodTypes by iterating through the string literals
