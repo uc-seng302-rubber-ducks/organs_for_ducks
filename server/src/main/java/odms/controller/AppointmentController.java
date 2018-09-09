@@ -19,7 +19,9 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.List;
 
 @OdmsController
 public class AppointmentController extends BaseController {
@@ -119,4 +121,45 @@ public class AppointmentController extends BaseController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
+    /**
+     * Validates the Requested Appointment Booking date and time based on the following rules:
+     * a) date and time must be in future
+     * b) the values of minutes and seconds must be 0, only date and hours are permitted.
+     * c) date and time must be between 8am-5pm
+     * d) date and time must not clash with accepted appointment bookings date and time.
+     *
+     * @param staffId of clinician
+     * @param requestedDateTime of requested appointment booking
+     * @return true if validation passes based on rules stated above, false otherwise.
+     * @throws SQLException if there are any database errors.
+     */
+    private boolean validateRequestedAppointmentTime(String staffId, LocalDateTime requestedDateTime) throws SQLException {
+        int startHour = 8;
+        int endHour = 17; //5pm
+        int requestedTime = requestedDateTime.getHour();
+        List<LocalDateTime> bookedAppointmentTimes;
+
+        if (requestedDateTime.isBefore(LocalDateTime.now())) {
+            return false;
+        }
+
+        if (requestedDateTime.getMinute() != 0 || requestedDateTime.getSecond() != 0) {
+            return false;
+        }
+
+        if (requestedTime < startHour || requestedTime > endHour) {
+            return false;
+        }
+
+        try (Connection connection = driver.getConnection()) {
+            bookedAppointmentTimes = handler.getBookedAppointmentTimes(connection, staffId);
+            for (LocalDateTime bookedAppointmentTime : bookedAppointmentTimes) {
+                if(bookedAppointmentTime.isEqual(requestedDateTime)) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
 }
