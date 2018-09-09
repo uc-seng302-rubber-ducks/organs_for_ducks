@@ -5,6 +5,7 @@ import odms.commons.database.db_strategies.AppointmentUpdateStrategy;
 import odms.commons.model.Appointment;
 import odms.commons.model._enum.AppointmentCategory;
 import odms.commons.model._enum.AppointmentStatus;
+import odms.commons.model._enum.UserType;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -61,5 +62,23 @@ public class AppointmentStrategyTest {
     public void testDeleteRejectedSeenStatus() throws SQLException {
         appointmentStrategy.deleteRejectedSeenStatus(connection, 0);
         verify(mockStmt, times(1)).executeUpdate();
+    }
+
+    @Test
+    public void testDeleteUsersCancelledAppointments() throws SQLException {
+        appointmentStrategy.deleteCancelledAppointments(connection, "ABC1234", UserType.USER);
+        verify(mockStmt, times(1)).executeUpdate();
+    }
+
+    @Test
+    public void testDeleteCliniciansCancelledAppointments() throws SQLException {
+        appointmentStrategy.deleteCancelledAppointments(connection, "staff1", UserType.CLINICIAN);
+        verify(mockStmt, times(1)).executeUpdate();
+    }
+
+    @Test
+    public void testDeleteCancelledAppointmentsFails() throws SQLException {
+        when(connection.prepareStatement(anyString())).thenThrow(new SQLException());
+        verify(mockStmt, times(0)).executeUpdate();
     }
 }
