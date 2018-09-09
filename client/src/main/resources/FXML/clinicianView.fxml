@@ -161,7 +161,7 @@
                 </Tab>
             <Tab fx:id="appointmentsTab" text="Appointments">
               <content>
-                  <fx:include fx:id="appointmentRequestsView" source="appointmentRequestsTabView.fxml" />
+                  <fx:include fx:id="appointmentRequestView" source="appointmentRequestsTabView.fxml" />
               </content>
             </Tab>
             </tabs>

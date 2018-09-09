@@ -42,15 +42,19 @@ public class ClinicianAppointmentRequestLogicController implements PropertyChang
         Log.warning("Not implemented yet");
     }
 
+    /**
+     * Calls the server to get updated appointment entries
+     * @param startIndex index to display entries from (eg. 60 will display entries 60 to 60+ROWS_PER_PAGE)
+     */
     public void updateTable(int startIndex) {
         availableAppointments.clear();
-        appController.getClinicianBridge().getAppointments(startIndex, ROWS_PER_PAGE, clinician.getStaffId(), appController.getToken(), availableAppointments);
+        appController.getAppointmentsBridge().getClinicianAppointments(startIndex, ROWS_PER_PAGE, clinician.getStaffId(), appController.getToken(), availableAppointments);
     }
 
     /**
      * Goes to the previous page in the available organs table.
      */
-    public void goPrevPage() {
+    public void goToPreviousPage() {
         if (startingIndex - ROWS_PER_PAGE < 0) {
             return;
         }
@@ -62,7 +66,7 @@ public class ClinicianAppointmentRequestLogicController implements PropertyChang
     /**
      * Goes to the next page in the available organs table
      */
-    public void goNextPage() {
+    public void goToNextPage() {
         if (availableAppointments.size() < ROWS_PER_PAGE) {
             return;
         }

@@ -122,4 +122,5 @@ public class AppointmentController extends BaseController {
 
         return new ResponseEntity(HttpStatus.OK);
     }
+
 }
