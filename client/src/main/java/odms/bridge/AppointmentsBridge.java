@@ -28,7 +28,7 @@ public class AppointmentsBridge extends Bifrost {
      * @param client OkhttpClient to make the calls with.
      * @param quiet  Determines if alert windows are shown if there is an error.
      */
-    public AppointmentsBridge(OkHttpClient client, boolean quiet) {
+    AppointmentsBridge(OkHttpClient client, boolean quiet) {
         this(client);
         this.quiet = quiet;
     }
@@ -82,11 +82,14 @@ public class AppointmentsBridge extends Bifrost {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 if (response.isSuccessful()) {
-                    String bodyString = response.body().string();
-                    toAddTo.addAll(new JsonHandler().decodeAppointments(bodyString));
+                    if (response.body() != null) {
+                        String bodyString = response.body().string();
+                        toAddTo.addAll(new JsonHandler().decodeAppointments(bodyString));
+                    }
                 } else {
                     logAndNotify(response);
                 }
+                response.close();
             }
         });
     }
@@ -141,9 +144,36 @@ public class AppointmentsBridge extends Bifrost {
                 if (!response.isSuccessful()) {
                     logAndNotify(response);
                 }
+                response.close();
             }
         });
     }
+
+
+    /**
+     * Fires a delete request to the server for the given appointment
+     *
+     * @param appointment Appointment to be deleted
+     */
+    public void deleteAppointment(Appointment appointment) {
+        String url = String.format("%s%s", ip, APPOINTMENTS);
+        RequestBody body = RequestBody.create(json, new Gson().toJson(appointment));
+        Request request = new Request.Builder().delete(body).url(url).build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.severe(e.getMessage(), e);
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (!response.isSuccessful()) {
+                    logAndNotify(response);
+                }
+            }
+        });
+    }
+
 
     /**
      * Logs a bad response

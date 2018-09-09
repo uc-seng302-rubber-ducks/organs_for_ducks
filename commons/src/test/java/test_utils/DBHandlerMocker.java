@@ -1,5 +1,6 @@
 package test_utils;
 
+import odms.commons.model.Clinician;
 import odms.commons.model.User;
 
 import java.sql.*;
@@ -23,6 +24,15 @@ public class DBHandlerMocker {
         when(resultSet.getDate("dob")).thenReturn(Date.valueOf(user.getDateOfBirth()));
         when(resultSet.getDate("dod")).thenReturn(user.getDateOfDeath() == null ? null : Date.valueOf(user.getDateOfDeath()));
         when(resultSet.getString("alcoholConsumption")).thenReturn(user.getAlcoholConsumption());
+    }
+
+    public static void setClinicianResultSet(ResultSet resultSet, Clinician clinician) throws SQLException {
+        when(resultSet.getString("staffId")).thenReturn(clinician.getStaffId());
+        when(resultSet.getString("firstName")).thenReturn(clinician.getFirstName());
+        when(resultSet.getString("middleName")).thenReturn(clinician.getMiddleName());
+        when(resultSet.getString("lastName")).thenReturn(clinician.getLastName());
+        when(resultSet.getTimestamp("timeCreated")).thenReturn(Timestamp.valueOf(clinician.getDateCreated()));
+        when(resultSet.getTimestamp("lastModified")).thenReturn(Timestamp.valueOf(clinician.getDateLastModified()));
     }
 
     public static void setTransplantResultSet(ResultSet resultSet) throws SQLException {

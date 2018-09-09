@@ -92,12 +92,13 @@ public class AppointmentController extends BaseController {
         return new ResponseEntity(HttpStatus.ACCEPTED);
     }
 
-    @RequestMapping(method = RequestMethod.DELETE, value = "/appointment")
+
+    @RequestMapping(method = RequestMethod.DELETE, value = "/appointments")
     public ResponseEntity deleteAppointment(@RequestBody Appointment appointmentToDelete) {
         try (Connection connection = driver.getConnection()) {
             handler.deleteAppointment(appointmentToDelete, connection);
 
-            String appointmentId = Integer.toString(handler.getAppointmentId(connection, appointmentToDelete));
+            String appointmentId = Integer.toString(appointmentToDelete.getAppointmentId());
             socketHandler.broadcast(EventTypes.APPOINTMENT_UPDATE, appointmentId, appointmentId);
 
         } catch (SQLException e) {

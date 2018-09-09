@@ -4,6 +4,7 @@ import odms.commons.database.DBHandler;
 import odms.commons.database.JDBCDriver;
 import odms.commons.model.Clinician;
 import odms.commons.model._enum.EventTypes;
+import odms.commons.model.datamodel.ComboBoxClinician;
 import odms.commons.utils.Log;
 import odms.exception.NotFoundException;
 import odms.exception.ServerDBException;
@@ -48,6 +49,16 @@ public class ClinicianController extends BaseController {
             return handler.loadClinicians(connection, startIndex, count, name, region);
         } catch (SQLException ex) {
             Log.severe("Could not get clinicians", ex);
+            throw new ServerDBException(ex);
+        }
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/basic-clinicians/{region}")
+    public Collection<ComboBoxClinician> getBasicClinicians(@PathVariable("region") String region) {
+        try (Connection connection = driver.getConnection()) {
+            return handler.getBasicClinicians(connection, region);
+        } catch (SQLException ex) {
+            Log.severe("Could not get basic clinicians", ex);
             throw new ServerDBException(ex);
         }
     }
