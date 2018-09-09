@@ -174,6 +174,37 @@ public class AppointmentsBridge extends Bifrost {
 
 
     /**
+     * Deletes all cancelled appointments belonging to the given user type that they have seen.
+     *
+     * @param id   unique identifier of the user / clinician
+     * @param role specifies if the given user type is a user or clinician
+     */
+    public void deleteCancelledAppointments(String id, UserType role) {
+        String url = "";
+        if (role == UserType.USER) {
+            url = String.format("%s/users/%s%s/cancelled", ip, id, APPOINTMENTS);
+        } else if (role == UserType.CLINICIAN) {
+            url = String.format("%s/clinicians/%s%s/cancelled", ip, id, APPOINTMENTS);
+        }
+        RequestBody body = RequestBody.create(json, new Gson().toJson(id));
+        Request request = new Request.Builder().delete(body).url(url).build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.severe(e.getMessage(), e);
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) {
+                if (!response.isSuccessful()) {
+                    logAndNotify(response);
+                }
+            }
+        });
+    }
+
+
+    /**
      * Fires a delete request to the server for the given appointment
      *
      * @param appointment Appointment to be deleted

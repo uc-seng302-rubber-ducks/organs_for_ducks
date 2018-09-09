@@ -157,7 +157,39 @@ public class AppointmentController extends BaseController {
         }
     }
 
+    @RequestMapping(method = RequestMethod.DELETE, value = "/users/{nhi}/appointments/cancelled")
+    public ResponseEntity deleteUsersCancelledAppointments(@PathVariable(name = "nhi") String nhi) throws SQLException {
+        try (Connection connection = driver.getConnection()) {
+            AppointmentUpdateStrategy updateStrategy = handler.getAppointmentStrategy();
+            updateStrategy.deleteCancelledAppointments(connection, nhi, UserType.USER);
 
+            socketHandler.broadcast(EventTypes.APPOINTMENT_UPDATE, "", "");
+        } catch (SQLException ex) {
+            Log.severe("Cannot delete user " + nhi + "'s cancelled appointments in db", ex);
+            throw new ServerDBException(ex);
+        } catch (IOException ex) {
+            Log.warning("Failed to broadcast update after deleting multiple appointments", ex);
+        }
+
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
+    @RequestMapping(method = RequestMethod.DELETE, value = "/clinicians/{staffId}/appointments/cancelled")
+    public ResponseEntity deleteCliniciansCancelledAppointments(@PathVariable(name = "staffId") String staffId) throws SQLException {
+        try (Connection connection = driver.getConnection()) {
+            AppointmentUpdateStrategy updateStrategy = handler.getAppointmentStrategy();
+            updateStrategy.deleteCancelledAppointments(connection, staffId, UserType.CLINICIAN);
+
+            socketHandler.broadcast(EventTypes.APPOINTMENT_UPDATE, "", "");
+        } catch (SQLException ex) {
+            Log.severe("Cannot delete clinician " + staffId + "'s cancelled appointments in db", ex);
+            throw new ServerDBException(ex);
+        } catch (IOException ex) {
+            Log.warning("Failed to broadcast update after deleting multiple appointments", ex);
+        }
+
+        return new ResponseEntity(HttpStatus.OK);
+    }
 
     @RequestMapping(method = RequestMethod.DELETE, value = "/appointments")
     public ResponseEntity deleteAppointment(@RequestBody Appointment appointmentToDelete) {
