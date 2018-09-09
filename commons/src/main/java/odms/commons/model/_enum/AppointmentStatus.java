@@ -7,10 +7,10 @@ public enum AppointmentStatus {
     CANCELLED_BY_USER("Cancelled By User", 4),
     CANCELLED_BY_CLINICIAN("Cancelled By Clinician", 5),
     UPDATED("Updated", 6),
-    ACCEPTED_SEEN("Accepted Seen", 7),
-    REJECTED_SEEN("Rejected Seen", 8),
-    CANCELLED_BY_USER_SEEN("Cancelled By User Seen", 9),
-    CANCELLED_BY_CLINICIAN_SEEN("Cancelled By Clinician Seen", 10);
+    ACCEPTED_SEEN("Accepted", 7),
+    REJECTED_SEEN("Rejected", 8),
+    CANCELLED_BY_USER_SEEN("Cancelled By User", 9),
+    CANCELLED_BY_CLINICIAN_SEEN("Cancelled By Clinician", 10);
 
     private final String name;
     private final int dbValue;
