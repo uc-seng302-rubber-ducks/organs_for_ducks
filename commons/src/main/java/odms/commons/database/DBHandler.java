@@ -1403,9 +1403,9 @@ public class DBHandler {
      */
     public void deleteAppointment(Appointment appointment, Connection connection) throws SQLException {
         connection.prepareStatement(START_TRANSACTION).execute();
-        try (PreparedStatement stmt = connection.prepareStatement(DELETE_APPOINTMENT_STMT)){
-                stmt.setInt(1, appointment.getAppointmentId());
-                stmt.executeUpdate();
+        try (PreparedStatement stmt = connection.prepareStatement(DELETE_APPOINTMENT_STMT)) {
+            stmt.setInt(1, appointment.getAppointmentId());
+            stmt.executeUpdate();
 
         } catch (SQLException sqlEx) {
             Log.severe("A fatal error in deletion, cancelling operation", sqlEx);

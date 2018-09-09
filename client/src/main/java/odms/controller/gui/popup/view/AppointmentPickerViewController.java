@@ -36,15 +36,14 @@ public class AppointmentPickerViewController {
      * Initializes the AppointmentPickerViewController
      *
      * @param user          Current user
-     * @param appController The applications controller.
      * @param stage         The applications stage.
      */
-    public void init(User user, Stage stage, AppController appController) {
-        this.logicController = new AppointmentPickerLogicController(user, stage, appController);
+    public void init(User user, Stage stage) {
+        this.logicController = new AppointmentPickerLogicController(user, stage);
         appointmentBookingTypeInput.getItems().addAll(AppointmentCategory.values());
         List<ComboBoxClinician> comboBoxClinicians = new ArrayList<>();
         try {
-            comboBoxClinicians = appController.getClinicianBridge().getBasicClinicians(user.getRegion());
+            comboBoxClinicians = AppController.getInstance().getClinicianBridge().getBasicClinicians(user.getRegion());
         } catch (IOException e) {
             Log.severe("Unable to get preferred clinicians.", e);
         }
