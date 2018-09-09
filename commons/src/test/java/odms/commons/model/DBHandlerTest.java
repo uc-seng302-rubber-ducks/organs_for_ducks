@@ -22,6 +22,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -273,6 +274,17 @@ public class DBHandlerTest {
         Assert.assertEquals(0, id);
 
     }
+
+    @Test
+    public void testGetBookedAppointmentTimes() throws SQLException {
+        when(mockResultSet.next()).thenReturn(true, false);
+        when(mockResultSet.getTimestamp("requestedTime")).thenReturn(Timestamp.valueOf(LocalDateTime.now()));
+
+        List<LocalDateTime> bookedAppointmentTimes = dbHandler.getBookedAppointmentTimes(connection, anyString());
+        verify(mockStmt, times(1)).executeQuery();
+        Assert.assertEquals(1, bookedAppointmentTimes.size());
+    }
+
     @Test
     public void testDeleteAppointment() throws SQLException {
         Appointment appointment = new Appointment();

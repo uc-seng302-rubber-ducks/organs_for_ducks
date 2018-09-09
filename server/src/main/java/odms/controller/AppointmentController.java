@@ -133,7 +133,7 @@ public class AppointmentController extends BaseController {
      * @return true if validation passes based on rules stated above, false otherwise.
      * @throws SQLException if there are any database errors.
      */
-    private boolean validateRequestedAppointmentTime(String staffId, LocalDateTime requestedDateTime) throws SQLException {
+    public boolean validateRequestedAppointmentTime(String staffId, LocalDateTime requestedDateTime) throws SQLException {
         int startHour = 8;
         int endHour = 17; //5pm
         int requestedTime = requestedDateTime.getHour();
