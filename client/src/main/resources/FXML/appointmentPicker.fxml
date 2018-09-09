@@ -31,12 +31,12 @@
                 <DatePicker fx:id="appointmentBookingDateInput" GridPane.columnIndex="2" />
                 <Button fx:id="appointmentBookingOkButton" mnemonicParsing="false" onAction="#confirm" text="OK" GridPane.columnIndex="2" GridPane.halignment="RIGHT" GridPane.rowIndex="5" />
                 <Button fx:id="appointmentBookingCancelButton" mnemonicParsing="false" onAction="#cancel" text="Cancel" GridPane.rowIndex="5" />
-                <Label text="Date" />
-                <Label text="Appointment Type" GridPane.columnSpan="2" GridPane.rowIndex="1" />
-                <Label text="Preferred Clinician" GridPane.columnSpan="2" GridPane.rowIndex="2" />
-                <Label text="Description" GridPane.rowIndex="3" GridPane.valignment="TOP">
+                <Label text="Date*:" />
+                <Label text="Appointment Type*:" GridPane.columnSpan="2" GridPane.rowIndex="1" />
+                <Label text="Preferred Clinician*:" GridPane.columnSpan="2" GridPane.rowIndex="2" />
+                <Label text="Description:" GridPane.rowIndex="3" GridPane.valignment="TOP">
                     <GridPane.margin>
-                        <Insets top="20.0" />
+                        <Insets />
                     </GridPane.margin>
                 </Label>
                 <TextArea fx:id="appointmentBookingDescriptionInput" prefHeight="200.0" prefWidth="200.0" wrapText="true" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="3" GridPane.rowSpan="2" />
