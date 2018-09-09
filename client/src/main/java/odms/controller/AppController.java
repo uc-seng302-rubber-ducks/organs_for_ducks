@@ -90,6 +90,7 @@ public class AppController {
         loginBridge = new LoginBridge(client);
         transplantBridge = new TransplantBridge(client);
         countriesBridge = new CountriesBridge(client);
+        appointmentsBridge = new AppointmentsBridge(client);
     }
 
     /**

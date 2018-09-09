@@ -168,5 +168,17 @@ public class UserAppointmentLogicController implements PropertyChangeListener {
         if (event.getType().equals(EventTypes.APPOINTMENT_UPDATE)) {
             updateTable(startingIndex);
         }
+
+        if (event.getType().equals(EventTypes.USER_UPDATE) && event.getOldIdentifier().equalsIgnoreCase(user.getNhi()) || event.getNewIdentifier().equalsIgnoreCase(user.getNhi())) {
+
+            try {
+                User newUser = AppController.getInstance().getUserBridge().getUser(event.getNewIdentifier());
+                if (newUser != null) {
+                    user = newUser;                }
+            } catch (IOException ex) {
+                Log.warning("failed to get updated user", ex);
+            }
+
+        }
     }
 }
