@@ -225,22 +225,18 @@ public class ClinicianController implements PropertyChangeListener, UserLauncher
             }
         }
 
-        //Todo: add method to correctly populate the notification circle jb 4/9
-        //ObservableList<Integer> n = FXCollections.observableList(notifications);
-        int notifications = appointmentsBridge.getPendingAppointments(clinician.getStaffId(),appController.getToken());
-        showAppointmentNotifications(notifications);
-        //n.addListener((ListChangeListener<? super Integer>) (ListChangeListener) -> showAppointmentNotifications(notifications));
+        showAppointmentNotifications();
     }
 
     /**
-     *Takes the number of new appointments to notify a Clinician about and then populates a notification bubble on the appointment tab with them
+     * Finds the nmber of pending appointments for a clinician and shows it to them
      *
      * Will show 9+ for notifications over 10 due to size constraints
      *
-     * @param notificationsPending number of notifications to inform clinician about
      */
-    private void showAppointmentNotifications(int notificationsPending) {
+    private void showAppointmentNotifications() {
 
+        int notificationsPending = appointmentsBridge.getPendingAppointments(clinician.getStaffId(),appController.getToken());
         String notifications;
         Text numberOfNotifications = new Text();
         if(notificationsPending <= 0 ){
@@ -686,6 +682,9 @@ public class ClinicianController implements PropertyChangeListener, UserLauncher
                 Log.warning("failed to retrieve updated clinician. response code: " + ex.getResponseCode(), ex);
                 AlertWindowFactory.generateError(("could not refresh clinician from the server. Please check your connection before trying again."));
             }
+        } else if(event.getType().equals(EventTypes.APPOINTMENT_UPDATE)){
+
+            showAppointmentNotifications();
         }
     }
 
