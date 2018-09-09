@@ -4,6 +4,7 @@ import odms.commons.database.DBHandler;
 import odms.commons.database.JDBCDriver;
 import odms.commons.database.db_strategies.AppointmentUpdateStrategy;
 import odms.commons.model.Appointment;
+import odms.commons.model._enum.AppointmentStatus;
 import odms.commons.model._enum.EventTypes;
 import odms.commons.model._enum.UserType;
 import odms.commons.utils.Log;
@@ -102,7 +103,6 @@ public class AppointmentController extends BaseController {
 
             String appointmentId = Integer.toString(handler.getAppointmentId(connection, newAppointment));
             socketHandler.broadcast(EventTypes.APPOINTMENT_UPDATE, appointmentId, appointmentId);
-            // TODO: still needs the client side broadcast implementation
 
         } catch (SQLException e) {
             Log.severe("Cannot add new appointment to database", e);
@@ -147,8 +147,7 @@ public class AppointmentController extends BaseController {
      * @param appointmentId Id of the appointment to delete id the status is correct
      */
     private void deleteRejectedSeen(Connection connection, AppointmentUpdateStrategy appointmentUpdateStrategy, int statusId, int appointmentId) {
-        int rejectedSeenId = 8;
-        if (statusId == rejectedSeenId) {
+        if (statusId == AppointmentStatus.REJECTED_SEEN.getDbValue()) {
             try {
                 appointmentUpdateStrategy.deleteRejectedSeenStatus(connection, appointmentId);
             } catch (SQLException e) {
@@ -179,25 +178,35 @@ public class AppointmentController extends BaseController {
     }
 
     /**
-     * Checks if the appointment associated with the given id has a REJECTED status. If so, returns true indicating that
-     * appointment is safe to delete from the database
+     * Checks the appointment previous status to confirm that the status update is valid.
+     *
      * @param apptId Id of the appointment to check
-     * @return boolean describing whether the appointment can be deleted.
+     * @return true if the status update is valid, false otherwise
      */
     public boolean checkStatusUpdateAllowed(int apptId, int statusId) {
-        int acceptedId = 2;
-        int acceptedSeenId = 7;
-        int rejectedId = 3;
-        int rejectedSeenId = 8;
-        Integer currentStatus = null;
-        try (Connection connection = driver.getConnection()) {
-            currentStatus = handler.getAppointmentStatus(connection, apptId);
-        } catch (SQLException e) {
-            Log.severe("Cannot delete appointment at db", e);
-            throw new ServerDBException(e);
+        if (statusId == AppointmentStatus.CANCELLED_BY_USER.getDbValue() || statusId == AppointmentStatus.CANCELLED_BY_CLINICIAN.getDbValue()) {
+            return true;
+        } else {
+            int acceptedId = 2;
+            int acceptedSeenId = 7;
+            int rejectedId = 3;
+            int rejectedSeenId = 8;
+            int cancelledByUserId = AppointmentStatus.CANCELLED_BY_USER.getDbValue();
+            int cancelledByUserSeenId = AppointmentStatus.CANCELLED_BY_USER_SEEN.getDbValue();
+            int cancelledByClinicianId = AppointmentStatus.CANCELLED_BY_CLINICIAN.getDbValue();
+            int cancelledByClinicianSeenId = AppointmentStatus.CANCELLED_BY_CLINICIAN_SEEN.getDbValue();
+            Integer currentStatus = null;
+            try (Connection connection = driver.getConnection()) {
+                currentStatus = handler.getAppointmentStatus(connection, apptId);
+            } catch (SQLException e) {
+                Log.severe("Cannot delete appointment at db", e);
+                throw new ServerDBException(e);
+            }
+            // This logic statement ensures that the user can only edit the status if it is going from X to X_SEEN e.g. ACCEPTED to ACCEPTED_SEEN
+            return ((statusId == acceptedSeenId && currentStatus == acceptedId) ||
+                    (statusId == rejectedSeenId && currentStatus == rejectedId) ||
+                    (statusId == cancelledByUserSeenId && currentStatus == cancelledByUserId) ||
+                    (statusId == cancelledByClinicianSeenId && currentStatus == cancelledByClinicianId));
         }
-        //This logic statement ensures that the user can only edit the status if it is going from ACCEPTED to ACCEPTED_SEEN
-        //or if it is going from REJECTED to REJECTED_SEEN
-        return((statusId == acceptedSeenId && currentStatus == acceptedId) || (statusId == rejectedSeenId && currentStatus == rejectedId));
     }
 }
