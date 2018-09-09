@@ -102,7 +102,7 @@ public class AppointmentsBridge extends Bifrost {
     }
 
     public void getClinicianAppointments(int startIndex, int count, String staffId, String token, ObservableList<Appointment> observableAppointments) {
-        String url = ip + APPOINTMENTS + "/clinicians/" + staffId + "?startIndex=" + startIndex + "&count=" + count;
+        String url = String.format("%s/clinicians/%s%s?count=%d&startIndex=%d", ip, staffId, APPOINTMENTS, count, startIndex);
         Request request = new Request.Builder().addHeader(tokenHeader, token).url(url).build();
         client.newCall(request).enqueue(new Callback() {
             @Override
