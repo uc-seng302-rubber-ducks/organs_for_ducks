@@ -110,9 +110,7 @@ public class ClinicianAppointmentRequestViewController {
     private void setOnClickBehaviour() {
         clinicianAppointmentsRequestView.getSelectionModel().selectedItemProperty().addListener(a -> {
             Appointment selectedAppointment = clinicianAppointmentsRequestView.getSelectionModel().getSelectedItem();
-            if (selectedAppointment != null) {
-                displayAppointmentDetails(selectedAppointment);
-            }
+            displayAppointmentDetails(selectedAppointment);
         });
     }
 

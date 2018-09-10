@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.collections.FXCollections?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
+<?import java.lang.*?>
 <AnchorPane prefHeight="735.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="odms.controller.gui.panel.view.ClinicianAppointmentRequestViewController">
    <children>
       <AnchorPane prefHeight="735.0" prefWidth="803.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="397.0" AnchorPane.topAnchor="0.0">
@@ -59,7 +61,20 @@
              <TextField fx:id="appointmentRequestTime" layoutX="130.0" layoutY="240.0" prefHeight="25.0"
                         prefWidth="218.0" AnchorPane.rightAnchor="49.0" AnchorPane.topAnchor="240.0"/>
              <ComboBox fx:id="appointmentRequestCategory" layoutX="130.0" layoutY="285.0" prefHeight="25.0"
-                       prefWidth="218.0" AnchorPane.rightAnchor="49.0" AnchorPane.topAnchor="285.0"/>
+                       prefWidth="218.0" AnchorPane.rightAnchor="49.0" AnchorPane.topAnchor="285.0">
+                 <items>
+                     <FXCollections fx:factory="observableArrayList">
+                         <String fx:value="Blood test"/>
+                         <String fx:value="General check-up"/>
+                         <String fx:value="Health advice"/>
+                         <String fx:value="Prescription renewal"/>
+                         <String fx:value="Other"/>
+                     </FXCollections>
+                 </items>
+                 <value>
+                     <String fx:value=""/>
+                 </value>
+             </ComboBox>
              <TextArea fx:id="appointmentRequestDescription" layoutX="150.0" layoutY="328.0" prefHeight="313.0"
                        prefWidth="218.0" AnchorPane.bottomAnchor="108.0" AnchorPane.rightAnchor="49.0"
                        AnchorPane.topAnchor="328.0"/>
