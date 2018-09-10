@@ -55,7 +55,7 @@ public class AppointmentControllerTests {
         when(handler.getAppointmentStrategy()).thenReturn(strategy);
 
         controller = new AppointmentController(manager, socketHandler);
-        LocalDateTime testDate = LocalDateTime.now().plusDays(2);
+        LocalDateTime testDate = LocalDate.now().plusDays(2).atTime(9, 0, 0);
         testAppointment = new Appointment("ABC1234", "0", AppointmentCategory.GENERAL_CHECK_UP, testDate, "Help", AppointmentStatus.PENDING);
     }
 
@@ -89,6 +89,13 @@ public class AppointmentControllerTests {
         testAppointment.setAppointmentId(100);
         ResponseEntity res = controller.putAppointment("0", 100, testAppointment);
         Assert.assertEquals(HttpStatus.ACCEPTED, res.getStatusCode());
+    }
+
+    @Test
+    public void putAppointmentShouldReturnBadRequestWhenDateTimeClashesWhenAppointmentDateTimeIsBefore8am() {
+        testAppointment.setRequestedDate( LocalDate.now().plusDays(1).atTime(7, 0));
+        ResponseEntity res = controller.putAppointment("0", 100, testAppointment);
+        Assert.assertEquals(HttpStatus.BAD_REQUEST, res.getStatusCode());
     }
 
     @Test(expected = ServerDBException.class)

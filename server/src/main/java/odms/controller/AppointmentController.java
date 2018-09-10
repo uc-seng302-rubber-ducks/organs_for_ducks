@@ -102,6 +102,10 @@ public class AppointmentController extends BaseController {
                                          @PathVariable(value = "appointmentId") Integer appointmentId,
                                          @RequestBody Appointment appointment) {
         try (Connection connection = driver.getConnection()) {
+            if (!validateRequestedAppointmentTime(appointment.getRequestedClinicianId(), appointment.getRequestedDate())) {
+                return new ResponseEntity(HttpStatus.BAD_REQUEST);
+            }
+
             AppointmentUpdateStrategy appointmentStrategy = handler.getAppointmentStrategy();
             appointmentStrategy.putSingleAppointment(connection, appointment);
 
