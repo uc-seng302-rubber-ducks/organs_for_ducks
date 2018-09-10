@@ -5,9 +5,9 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
-<AnchorPane xmlns:fx="http://javafx.com/fxml/1" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
-            minWidth="-Infinity" prefHeight="734.0" prefWidth="597.0" stylesheets="@../gui.css"
-            xmlns="http://javafx.com/javafx/8" fx:controller="odms.controller.gui.window.UpdateClinicianController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="734.0"
+            prefWidth="597.0" stylesheets="@../gui.css" xmlns="http://javafx.com/javafx/8.0.121"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="odms.controller.gui.window.UpdateClinicianController">
     <children>
         <Label fx:id="titleLabel" layoutX="12.0" layoutY="32.0" text="Update Clinician" AnchorPane.leftAnchor="12.0"
                AnchorPane.topAnchor="32.0">
@@ -126,9 +126,9 @@
             </menus>
         </MenuBar>
         <Button fx:id="undoClinicianFormButton" layoutX="461.0" layoutY="3.0" mnemonicParsing="false" onAction="#undo"
-                text="Undo" AnchorPane.rightAnchor="84.0" AnchorPane.topAnchor="3.0"/>
+                styleClass="button-secondary" text="Undo" AnchorPane.rightAnchor="84.0" AnchorPane.topAnchor="3.0"/>
         <Button fx:id="redoClinicianFormButton" layoutX="531.0" layoutY="3.0" mnemonicParsing="false" onAction="#redo"
-                text="Redo" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="3.0"/>
+                styleClass="button-secondary" text="Redo" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="3.0"/>
         <Button fx:id="resetProfileImageClinician" layoutX="435.0" layoutY="320.0" mnemonicParsing="false"
                 onAction="#resetProfileImage" text="Reset Profile Image"/>
     </children>
