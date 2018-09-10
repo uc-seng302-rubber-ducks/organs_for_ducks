@@ -269,6 +269,10 @@ public class UpdateUserController {
 
         // creates a listener for each text field
         for (TextField tf : allTextFields) {
+
+            if (tf == null) {
+            System.out.println(tf);
+            }
             textFieldListener(tf);
         }
 

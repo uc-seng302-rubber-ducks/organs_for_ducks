@@ -429,7 +429,7 @@
                      </children></AnchorPane>
               </content>
             </Tab>
-            <Tab text="Death Details">
+            <Tab fx:id="deathtab" text="Death Details">
               <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
@@ -465,8 +465,8 @@
                         </GridPane>
                         <Label fx:id="updateDeathDetailsErrorLabel" layoutX="14.0" layoutY="321.0" text="Error message" textFill="RED" />
                         <Button fx:id="removeUpdateDeathDetailsButton" layoutX="287.0" layoutY="363.0" mnemonicParsing="false" onAction="#removeUpdateDeathDetails" text="Remove Death Details" />
-                        <Button fx:id="confirmUpdateDeathDetailsButton" layoutX="571.0" layoutY="364.0" mnemonicParsing="false" onAction="#confirmUpdateDeathDetails" text="Update Profile" />
-                        <Button fx:id="cancelUpdateDeathDetailsButton" layoutX="14.0" layoutY="365.0" mnemonicParsing="false" onAction="#cancelUpdateDeathDetails" text="Cancel" />
+                        <Button fx:id="confirmUpdateDeathDetailsButton" layoutX="571.0" layoutY="364.0" mnemonicParsing="false" text="Update Profile" />
+                        <Button fx:id="cancelUpdateDeathDetailsButton" layoutX="14.0" layoutY="365.0" mnemonicParsing="false" text="Cancel" />
                         <Label fx:id="updateDeathDetailsOverrideWarningLabel" layoutX="22.0" layoutY="129.0" prefHeight="45.0" prefWidth="437.0" text="You cannot change the date and time of death if the user has a manually expired organ" textFill="#fc940d" wrapText="true" />
                         <Separator layoutY="27.0" prefHeight="9.0" prefWidth="706.0" />
                         <Label layoutX="8.0" layoutY="6.0" styleClass="label-sub-title" text="Death Details" />
