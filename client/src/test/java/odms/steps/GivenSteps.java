@@ -1,7 +1,7 @@
 package odms.steps;
 
-import cucumber.api.java.After;
 import cucumber.api.java.Before;
+import cucumber.api.java.After;
 import cucumber.api.java.en.Given;
 import javafx.collections.FXCollections;
 import javafx.scene.control.TableView;
@@ -52,12 +52,12 @@ public class GivenSteps extends ApplicationTest {
         AppController.setInstance(CucumberTestModel.getController());
     }
 
-
     @After
     public void tearDown() throws TimeoutException {
         if (FxToolkit.isFXApplicationThreadRunning()) {
             FxToolkit.cleanupStages();
         }
+        ConfigPropertiesSession.setInstance(null);
         AppController.setInstance(null);
     }
 

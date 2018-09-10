@@ -1,6 +1,7 @@
 DROP TABLE IF EXISTS AppointmentDetails;
 DROP TABLE IF EXISTS AppointmentType;
 DROP TABLE IF EXISTS AppointmentStatus;
+DROP TABLE IF EXISTS AppointmentCategory;
 DROP TABLE IF EXISTS OrganExpiryDetails;
 DROP TRIGGER IF EXISTS removeZombies;
 DROP TABLE IF EXISTS DeathDetails;
