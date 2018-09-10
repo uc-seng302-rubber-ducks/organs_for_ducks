@@ -21,7 +21,6 @@ import odms.controller.gui.panel.logic.AvailableOrgansLogicController;
 import odms.controller.gui.panel.logic.ClinicianAppointmentRequestLogicController;
 import odms.controller.gui.popup.view.RejectAppointmentReasonViewController;
 
-import java.time.LocalDateTime;
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -29,19 +28,7 @@ import java.util.ArrayList;
 public class ClinicianAppointmentRequestViewController {
 
     @FXML
-    public TableColumn<Appointment, String> categoryTableColumn;
-
-    @FXML
-    private TableColumn<Appointment, LocalDateTime> dateTimeTableColumn;
-
-    @FXML
-    private TableColumn<Appointment, String> nameTableColumn;
-
-    @FXML
-    private TableColumn<Appointment, String> nhiTableColumn;
-
-    @FXML
-    private TableView<Appointment> clinicianAppointmentRequestView;
+    private TableView<Appointment> clinicianAppointmentsRequestView;
 
     @FXML
     private DatePicker appointmentRequestDate;
@@ -60,9 +47,6 @@ public class ClinicianAppointmentRequestViewController {
 
     @FXML
     private Label appointmentRequestUserNhi;
-
-    @FXML
-    private TableView<Appointment> clinicianAppointmentsRequestView  = new TableView<>();
 
     @FXML
     private TableColumn<Appointment, String> clinicianAppointmentUserIdColumn = new TableColumn<>();
@@ -161,7 +145,7 @@ public class ClinicianAppointmentRequestViewController {
 
     @FXML
     private void rejectAppointment() {
-        Appointment selectedAppointment = clinicianAppointmentRequestView.getSelectionModel().getSelectedItem();
+        Appointment selectedAppointment = clinicianAppointmentsRequestView.getSelectionModel().getSelectedItem();
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML/appointmentRejection.fxml"));
         Stage rejectionStage = new Stage();
