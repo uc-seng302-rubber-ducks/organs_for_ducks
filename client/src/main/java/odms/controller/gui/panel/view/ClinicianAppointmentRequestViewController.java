@@ -107,22 +107,6 @@ public class ClinicianAppointmentRequestViewController {
     }
 
     /**
-     * Launches a pop-up for the clinician to accept an appointment and pick a time
-     */
-    @FXML
-    public void clinicianAcceptAppointmentBtn() {
-        logicController.launchAcceptedPopup();
-    }
-
-    /**
-     * Launches a pop-up for the clinician to reject an appoint and enter a reason why
-     */
-    @FXML
-    public void clinicianRejectAppointmentBtn() {
-        logicController.launchRejectedPopup();
-    }
-
-    /**
      * Binds a table view row to show all details for that appointment
      */
     private void setOnClickBehaviour() {
