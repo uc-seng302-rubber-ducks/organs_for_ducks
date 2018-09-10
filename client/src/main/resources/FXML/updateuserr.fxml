@@ -6,9 +6,8 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
 <?import java.lang.*?>
-<AnchorPane xmlns:fx="http://javafx.com/fxml/1" prefHeight="453.0" prefWidth="694.0" stylesheets="@../gui.css"
-            xmlns="http://javafx.com/javafx/8.0.151"
-            fx:controller="odms.controller.gui.window.UpdateUserController">
+<AnchorPane prefHeight="453.0" prefWidth="694.0" stylesheets="@../gui.css" xmlns="http://javafx.com/javafx/8"
+            xmlns:fx="http://javafx.com/fxml/1" fx:controller="odms.controller.gui.window.UpdateUserController">
    <children>
       <TabPane layoutY="46.0" prefHeight="439.0" prefWidth="694.0" tabClosingPolicy="UNAVAILABLE">
         <tabs>
@@ -66,20 +65,20 @@
                               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                            </rowConstraints>
                         </GridPane>
-                        <Button layoutX="522.0" layoutY="301.0" mnemonicParsing="false" text="Reset profile image"
-                                onAction="#resetProfileImage"/>
+                        <Button layoutX="522.0" layoutY="301.0" mnemonicParsing="false" onAction="#resetProfileImage"
+                                text="Reset profile image"/>
                         <VBox layoutX="395.0" layoutY="300.0">
                            <children>
-                              <Button mnemonicParsing="false" text="Upload photo" onAction="#uploadImage"/>
+                              <Button mnemonicParsing="false" onAction="#uploadImage" text="Upload photo"/>
                               <Label fx:id="photoErrorLabel" styleClass="label-error"
                                      text="The maximum file size is 2MB" visible="false"/>
                            </children>
                         </VBox>
                         <ImageView fx:id="profileImage" fitHeight="216.0" fitWidth="298.0" layoutX="393.0" layoutY="62.0" pickOnBounds="true" preserveRatio="true" />
-                        <Button layoutX="14.0" layoutY="361.0" mnemonicParsing="false" text="Cancel"
-                                onAction="#goBack"/>
-                        <Button layoutX="571.0" layoutY="358.0" mnemonicParsing="false" text="Update Profile"
-                                onAction="#confirmUpdate"/>
+                        <Button layoutX="14.0" layoutY="361.0" mnemonicParsing="false" onAction="#goBack"
+                                text="Cancel"/>
+                        <Button layoutX="571.0" layoutY="358.0" mnemonicParsing="false" onAction="#confirmUpdate"
+                                text="Update Profile"/>
                         <Separator layoutY="30.0" prefHeight="9.0" prefWidth="706.0" />
                         <Label layoutX="7.0" layoutY="7.0" styleClass="label-sub-title" text="User Details" />
                      </children>
@@ -196,10 +195,10 @@
                               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                            </rowConstraints>
                         </GridPane>
-                        <Button layoutX="571.0" layoutY="359.0" mnemonicParsing="false" text="Update Profile"
-                                onAction="#confirmUpdate"/>
-                        <Button layoutX="14.0" layoutY="359.0" mnemonicParsing="false" text="Cancel"
-                                onAction="#goBack"/>
+                        <Button layoutX="571.0" layoutY="359.0" mnemonicParsing="false" onAction="#confirmUpdate"
+                                text="Update Profile"/>
+                        <Button layoutX="14.0" layoutY="359.0" mnemonicParsing="false" onAction="#goBack"
+                                text="Cancel"/>
                         <Separator layoutY="34.0" prefHeight="9.0" prefWidth="706.0" />
                         <Label layoutX="9.0" layoutY="9.0" styleClass="label-sub-title" text="Health Details" />
                      </children>
@@ -215,15 +214,15 @@
                               <VBox alignment="CENTER_LEFT" GridPane.columnIndex="1">
                                  <children>
                                     <TextField fx:id="phone" />
-                                    <Label styleClass="label-error" text="Invalid phone number" visible="false"
-                                           fx:id="phoneErrorLabel"/>
+                                    <Label fx:id="phoneErrorLabel" styleClass="label-error" text="Invalid phone number"
+                                           visible="false"/>
                                  </children>
                               </VBox>
                               <VBox alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="1">
                                  <children>
                                     <TextField fx:id="cell" />
-                                    <Label styleClass="label-error" text="Invalid cell number" visible="false"
-                                           fx:id="cellErrorLabel"/>
+                                    <Label fx:id="cellErrorLabel" styleClass="label-error" text="Invalid cell number"
+                                           visible="false"/>
                                  </children>
                               </VBox>
                               <TextField fx:id="streetNumber" GridPane.columnIndex="1" GridPane.rowIndex="2" />
@@ -231,15 +230,15 @@
                               <TextField fx:id="neighborhood" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                               <TextField fx:id="city" GridPane.columnIndex="1" GridPane.rowIndex="5" />
                               <ComboBox fx:id="regionSelector" prefHeight="25.0" prefWidth="168.0" GridPane.columnIndex="3" />
-                              <TextField fx:id="regionInput" prefHeight="25.0" prefWidth="168.0"
-                                         GridPane.columnIndex="3" visible="false"/>
+                              <TextField fx:id="regionInput" prefHeight="25.0" prefWidth="168.0" visible="false"
+                                         GridPane.columnIndex="3"/>
                               <TextField fx:id="zipCode" GridPane.columnIndex="3" GridPane.rowIndex="1" />
                               <ComboBox fx:id="countrySelector" onAction="#countrySelectorListener" prefHeight="25.0" prefWidth="173.0" GridPane.columnIndex="3" GridPane.rowIndex="2" />
                               <VBox alignment="CENTER_LEFT" GridPane.columnIndex="3" GridPane.rowIndex="3">
                                  <children>
                                     <TextField fx:id="email" />
-                                    <Label styleClass="label-error" text="Invalid email address" visible="false"
-                                           fx:id="emailErrorLabel"/>
+                                    <Label fx:id="emailErrorLabel" styleClass="label-error" text="Invalid email address"
+                                           visible="false"/>
                                  </children>
                               </VBox>
                               <Label styleClass="label-title" text="Home Phone:">
@@ -311,8 +310,8 @@
                               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                            </rowConstraints>
                         </GridPane>
-                        <Button layoutX="570.0" layoutY="366.0" mnemonicParsing="false" text="Update Profile"
-                                onAction="#confirmUpdate"/>
+                        <Button layoutX="570.0" layoutY="366.0" mnemonicParsing="false" onAction="#confirmUpdate"
+                                text="Update Profile"/>
                         <Button layoutX="14.0" layoutY="362.0" mnemonicParsing="false" text="Cancel" />
                         <Label layoutX="14.0" layoutY="9.0" styleClass="label-sub-title" text="Contact Details" />
                         <Separator layoutX="-13.0" layoutY="31.0" prefHeight="9.0" prefWidth="706.0" />
@@ -328,43 +327,43 @@
                               <VBox GridPane.columnIndex="1">
                                  <children>
                                     <TextField fx:id="ecName" />
-                                    <Label styleClass="label-error" text="Label" visible="false"
-                                           fx:id="ecNameErrorLabel"/>
+                                    <Label fx:id="ecNameErrorLabel" styleClass="label-error" text="Label"
+                                           visible="false"/>
                                  </children>
                               </VBox>
                               <VBox GridPane.columnIndex="1" GridPane.rowIndex="1">
                                  <children>
                                     <TextField fx:id="ecPhone" />
-                                    <Label styleClass="label-error" text="Invalid phone number" visible="false"
-                                           fx:id="ecPhoneErrorLabel"/>
+                                    <Label fx:id="ecPhoneErrorLabel" styleClass="label-error"
+                                           text="Invalid phone number" visible="false"/>
                                  </children>
                               </VBox>
                               <VBox GridPane.columnIndex="1" GridPane.rowIndex="2">
                                  <children>
                                     <TextField fx:id="ecCell" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
-                                    <Label styleClass="label-error" text="Invalid cell number" visible="false"
-                                           fx:id="ecCellPhoneErrorLabel"/>
+                                    <Label fx:id="ecCellPhoneErrorLabel" styleClass="label-error"
+                                           text="Invalid cell number" visible="false"/>
                                  </children>
                               </VBox>
                               <TextField fx:id="ecStreetNumber" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                               <TextField fx:id="ecStreet" prefHeight="15.0" prefWidth="187.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                               <TextField fx:id="ecNeighborhood" GridPane.columnIndex="1" GridPane.rowIndex="5" />
                               <TextField fx:id="ecCity" GridPane.columnIndex="1" GridPane.rowIndex="6" />
-                              <TextField fx:id="ecRegionInput" prefHeight="25.0" prefWidth="168.0"
-                                         GridPane.columnIndex="3" visible="false"/>
+                              <TextField fx:id="ecRegionInput" prefHeight="25.0" prefWidth="168.0" visible="false"
+                                         GridPane.columnIndex="3"/>
                               <ComboBox fx:id="ecRegionSelector" prefHeight="25.0" prefWidth="187.0" GridPane.columnIndex="3" />
                               <VBox GridPane.columnIndex="3" GridPane.rowIndex="1">
                                  <children>
                                     <TextField fx:id="ecZipCode" />
-                                    <Label styleClass="label-error" text="Label" visible="false"
-                                           fx:id="ecZipCodeErrorLabel"/>
+                                    <Label fx:id="ecZipCodeErrorLabel" styleClass="label-error" text="Label"
+                                           visible="false"/>
                                  </children>
                               </VBox>
                               <VBox GridPane.columnIndex="3" GridPane.rowIndex="3">
                                  <children>
                                     <TextField fx:id="ecEmail" />
-                                    <Label styleClass="label-error" text="Label" visible="false"
-                                           fx:id="ecEmailErrorLabel"/>
+                                    <Label fx:id="ecEmailErrorLabel" styleClass="label-error" text="Label"
+                                           visible="false"/>
                                  </children>
                               </VBox>
                               <TextField fx:id="ecRelationship" GridPane.columnIndex="3" GridPane.rowIndex="4" />
@@ -422,8 +421,8 @@
                            </rowConstraints>
                         </GridPane>
                         <Button layoutX="10.0" layoutY="364.0" mnemonicParsing="false" text="Cancel" />
-                        <Button layoutX="571.0" layoutY="364.0" mnemonicParsing="false" text="Update Profile"
-                                onAction="#confirmUpdate"/>
+                        <Button layoutX="571.0" layoutY="364.0" mnemonicParsing="false" onAction="#confirmUpdate"
+                                text="Update Profile"/>
                         <Separator layoutY="29.0" prefHeight="9.0" prefWidth="706.0" />
                         <Label layoutX="7.0" layoutY="7.0" styleClass="label-sub-title" text="Emergency Contact" />
                         <Separator layoutX="-6.0" layoutY="357.0" prefHeight="4.0" prefWidth="710.0" />
@@ -479,5 +478,7 @@
       <Label layoutX="11.0" layoutY="10.0" styleClass="label-sub-title" text="Update User" />
       <Button fx:id="redoUpdateButton" layoutX="630.0" layoutY="5.0" mnemonicParsing="false" onAction="#redo" text="Redo" />
       <Button fx:id="undoUpdateButton" layoutX="569.0" layoutY="5.0" mnemonicParsing="false" onAction="#undo" text="Undo" />
+      <Label fx:id="genericErrorLabel" layoutX="88.0" layoutY="449.0" styleClass="label-error"
+             text="There is an error with one of the entered fields. Please double check your input" visible="false"/>
    </children>
 </AnchorPane>

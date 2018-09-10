@@ -46,6 +46,9 @@ public class UpdateUserController {
     private Label fNameErrorLabel;
 
     @FXML
+    private Label genericErrorLabel;
+
+    @FXML
     private Label phoneErrorLabel;
 
     @FXML
@@ -644,6 +647,8 @@ public class UpdateUserController {
                 Log.severe("Update user failed for User NHI: " + currentUser.getNhi(), ex);
             }
             stage.close();
+        } else {
+            genericErrorLabel.setVisible(true);
         }
     }
 
