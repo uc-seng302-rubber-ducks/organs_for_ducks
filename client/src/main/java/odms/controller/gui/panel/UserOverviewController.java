@@ -13,8 +13,6 @@ import odms.commons.config.ConfigPropertiesSession;
 import odms.commons.model.User;
 import odms.commons.utils.Log;
 import odms.controller.AppController;
-import odms.controller.gui.popup.UpdateDeathDetailsController;
-
 import java.io.IOException;
 import java.net.URL;
 import java.text.DecimalFormat;
@@ -242,28 +240,7 @@ public class UserOverviewController {
 
     }
 
-    @FXML
-    private void updateDeathDetails() {
-        openUpdateDeathDetailsPopup();
-    }
 
-    private void openUpdateDeathDetailsPopup() {
-        FXMLLoader updateDeathDetailsLoader = new FXMLLoader(getClass().getResource("/FXML/updateDeathDetails.fxml"));
-        Parent root;
-        try {
-            root = updateDeathDetailsLoader.load();
-            UpdateDeathDetailsController updateDeathDetailsController = updateDeathDetailsLoader.getController();
-            Stage updateStage = new Stage();
-            updateStage.initModality(Modality.APPLICATION_MODAL);
-            updateStage.setScene(new Scene(root));
-            updateDeathDetailsController.init(AppController.getInstance(), updateStage, currentUser);
-            updateStage.show();
-            Log.info("Successfully launched update death details window for User NHI: " + currentUser.getNhi());
-
-        } catch (IOException e) {
-            Log.severe("Failed to load update death details window for User NHI: " + currentUser.getNhi(), e);
-        }
-    }
 
 
 }

@@ -498,7 +498,7 @@ public class UpdateUserController {
             Stage updateStage = new Stage();
             updateStage.initModality(Modality.APPLICATION_MODAL);
             updateStage.setScene(new Scene(root));
-            removeDeathDetailsController.init(AppController.getInstance(), updateStage, currentUser, this);
+            removeDeathDetailsController.init(AppController.getInstance(), updateStage, currentUser);
             updateStage.show();
             Log.info("Successfully remove death details window for User NHI: " + currentUser.getNhi());
 
