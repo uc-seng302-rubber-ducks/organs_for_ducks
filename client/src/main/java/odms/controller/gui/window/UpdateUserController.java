@@ -1454,14 +1454,6 @@ public class UpdateUserController {
         heightErrorLabel.setVisible(false);
     }
 
-    public void deathCountrySelectorListener() {
-
-    }
-
-    public void removeUpdateDeathDetails() {
-
-    }
-
     public void confirmUpdateDeathDetails() {
 
     }
