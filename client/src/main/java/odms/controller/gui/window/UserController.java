@@ -215,7 +215,7 @@ public class UserController implements PropertyChangeListener {
      */
     @FXML
     private void updateDetails() {
-        FXMLLoader updateLoader = new FXMLLoader(getClass().getResource("/FXML/updateUser.fxml"));
+        FXMLLoader updateLoader = new FXMLLoader(getClass().getResource("/FXML/updateuserr.fxml"));
         Parent root;
         try {
             root = updateLoader.load();

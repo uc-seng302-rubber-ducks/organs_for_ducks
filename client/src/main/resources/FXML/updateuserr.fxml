@@ -9,7 +9,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane prefHeight="453.0" prefWidth="694.0" stylesheets="@../gui.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="FXML.Updateuserr">
+<AnchorPane prefHeight="453.0" prefWidth="694.0" stylesheets="@../gui.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="odms.controller.gui.window.UpdateUserController">
    <children>
       <TabPane layoutY="46.0" prefHeight="439.0" prefWidth="694.0" tabClosingPolicy="UNAVAILABLE">
         <tabs>
@@ -231,6 +231,7 @@
                                  </padding>
                               </Label>
                               <ComboBox fx:id="countrySelector" onAction="#countrySelectorListener" prefHeight="25.0" prefWidth="173.0" GridPane.columnIndex="3" GridPane.rowIndex="2" />
+                              <TextField fx:id="regionInput" GridPane.columnIndex="3" />
                            </children>
                            <columnConstraints>
                               <ColumnConstraints hgrow="SOMETIMES" maxWidth="136.0" minWidth="10.0" prefWidth="104.0" />
@@ -308,6 +309,7 @@
                               </Label>
                               <ComboBox fx:id="ecCountrySelector" onAction="#ecCountrySelectorListener" prefHeight="25.0" prefWidth="176.0" GridPane.columnIndex="3" GridPane.rowIndex="2" />
                               <TextField fx:id="ecCellPhone" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                              <TextField fx:id="ecRegionInput" GridPane.columnIndex="3" />
                            </children>
                            <columnConstraints>
                               <ColumnConstraints hgrow="SOMETIMES" maxWidth="133.0" minWidth="10.0" prefWidth="103.0" />
@@ -336,7 +338,7 @@
                      </children></AnchorPane>
               </content>
             </Tab>
-            <Tab text="Death Details">
+            <Tab fx:id="deathtab" text="Death Details">
               <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
@@ -372,8 +374,8 @@
                         </GridPane>
                         <Label fx:id="updateDeathDetailsErrorLabel" layoutX="14.0" layoutY="321.0" text="Error message" textFill="RED" />
                         <Button fx:id="removeUpdateDeathDetailsButton" layoutX="287.0" layoutY="363.0" mnemonicParsing="false" onAction="#removeUpdateDeathDetails" text="Remove Death Details" />
-                        <Button fx:id="confirmUpdateDeathDetailsButton" layoutX="571.0" layoutY="364.0" mnemonicParsing="false" onAction="#confirmUpdateDeathDetails" text="Update Profile" />
-                        <Button fx:id="cancelUpdateDeathDetailsButton" layoutX="14.0" layoutY="365.0" mnemonicParsing="false" onAction="#cancelUpdateDeathDetails" text="Cancel" />
+                        <Button fx:id="confirmUpdateDeathDetailsButton" layoutX="571.0" layoutY="364.0" mnemonicParsing="false" text="Update Profile" />
+                        <Button fx:id="cancelUpdateDeathDetailsButton" layoutX="14.0" layoutY="365.0" mnemonicParsing="false" text="Cancel" />
                         <Label fx:id="updateDeathDetailsOverrideWarningLabel" layoutX="22.0" layoutY="129.0" prefHeight="45.0" prefWidth="437.0" text="You cannot change the date and time of death if the user has a manually expired organ" textFill="#fc940d" wrapText="true" />
                         <Separator layoutY="27.0" prefHeight="9.0" prefWidth="706.0" />
                         <Label layoutX="8.0" layoutY="6.0" styleClass="label-sub-title" text="Death Details" />

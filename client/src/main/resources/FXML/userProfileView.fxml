@@ -99,9 +99,6 @@
                 <Label fx:id="alcoholValue" text="aa" GridPane.columnIndex="1" GridPane.rowIndex="6" />
                 <Label styleClass="label-title" text="BMI:" GridPane.rowIndex="7"/>
                 <Label fx:id="bmiValue" text="aa" GridPane.columnIndex="1" GridPane.rowIndex="7" />
-                <Button fx:id="updateDeathDetailsButton" mnemonicParsing="false" onAction="#updateDeathDetails"
-                        prefHeight="25.0" prefWidth="145.0" styleClass="button-primary" text="Edit Death Details"
-                        GridPane.rowIndex="14"/>
                 <Label styleClass="label-title" text="City of Death: " GridPane.rowIndex="11"/>
                 <Label styleClass="label-title" text="Region of Death: " GridPane.rowIndex="12"/>
                 <Label styleClass="label-title" text="Country of Death:" GridPane.rowIndex="13"/>

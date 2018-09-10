@@ -200,7 +200,6 @@ public class UpdateUserController {
         redoUpdateButton.setDisable(true);
         updateDeathDetailsErrorLabel.setVisible(false);
         updateDeathDetailsOverrideWarningLabel.setVisible(false);
-        errorLabel.setText("");
         undoMarker = currentUser.getUndoStack().size();
         if (user.getLastName() != null) {
             stage.setTitle("Update User: " + user.getFirstName() + " " + user.getLastName());
@@ -244,6 +243,10 @@ public class UpdateUserController {
 
         // creates a listener for each text field
         for (TextField tf : allTextFields) {
+
+            if (tf == null) {
+            System.out.println(tf);
+            }
             textFieldListener(tf);
         }
 

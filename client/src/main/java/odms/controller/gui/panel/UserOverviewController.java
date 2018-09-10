@@ -83,9 +83,6 @@ public class UserOverviewController {
     private Label bmiValue;
 
     @FXML
-    private Button updateDeathDetailsButton;
-
-    @FXML
     private Label cityOfDeathValue;
 
     @FXML
@@ -108,9 +105,6 @@ public class UserOverviewController {
     public void init(AppController controller, User user, Stage stage, boolean fromClinician) {
         this.currentUser = user;
         showUser(user);
-        if (!fromClinician) {
-            updateDeathDetailsButton.setDisable(true);
-        }
     }
 
     /**
