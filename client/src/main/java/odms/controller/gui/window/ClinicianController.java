@@ -179,7 +179,7 @@ public class ClinicianController implements PropertyChangeListener, UserLauncher
         transplantWaitListTabPageController.init(appController, this);
         statusBarPageController.init();
         availableOrgansViewController.init(this);
-        appointmentRequestViewController.init(appController, clinician);
+        appointmentRequestViewController.init();
 
         if (clinician.getStaffId().equals("0")) {
             deleteClinician.setDisable(true);

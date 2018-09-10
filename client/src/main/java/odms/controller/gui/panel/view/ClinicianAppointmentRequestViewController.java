@@ -5,20 +5,44 @@ import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Stage;
 import odms.commons.model.Appointment;
 import odms.commons.model.Clinician;
 import odms.commons.model._enum.AppointmentCategory;
 import odms.commons.model._enum.AppointmentStatus;
 import odms.controller.AppController;
+import odms.commons.utils.Log;
 import odms.controller.gui.panel.logic.AvailableOrgansLogicController;
 import odms.controller.gui.panel.logic.ClinicianAppointmentRequestLogicController;
+import odms.controller.gui.popup.view.RejectAppointmentReasonViewController;
+
+import java.io.IOException;
+import java.time.LocalDateTime;
 
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 public class ClinicianAppointmentRequestViewController {
+
+    @FXML
+    public TableColumn<Appointment, String> categoryTableColumn;
+
+    @FXML
+    private TableColumn<Appointment, LocalDateTime> dateTimeTableColumn;
+
+    @FXML
+    private TableColumn<Appointment, String> nameTableColumn;
+
+    @FXML
+    private TableColumn<Appointment, String> nhiTableColumn;
+
+    @FXML
+    private TableView<Appointment> clinicianAppointmentRequestView;
 
     @FXML
     private TextArea appointmentRequestDescription;
@@ -38,6 +62,7 @@ public class ClinicianAppointmentRequestViewController {
     @FXML
     private TableView<Appointment> clinicianAppointmentsRequestView  = new TableView<>();
 
+    private ClinicianAppointmentRequestLogicController logicController;
     @FXML
     private TableColumn<Appointment, String> clinicianAppointmentUserIdColumn = new TableColumn<>();
 
@@ -48,11 +73,10 @@ public class ClinicianAppointmentRequestViewController {
     @FXML
     private TableColumn<Appointment, AppointmentCategory> clinicianAppointmentCategoryColumn = new TableColumn<>();
 
-
-    private ObservableList<Appointment> availableAppointments = FXCollections.observableList(new ArrayList<>());
-    private ClinicianAppointmentRequestLogicController logicController;
     @FXML
     private TableColumn<Appointment, String> clinicianAppointmentDateColumn = new TableColumn<>();
+    
+    private ObservableList<Appointment> availableAppointments = FXCollections.observableList(new ArrayList<>());
 
 
     /**
@@ -133,6 +157,30 @@ public class ClinicianAppointmentRequestViewController {
     @FXML
     private void goToNextPage() {
         logicController.goToNextPage();
+    }
+
+    @FXML
+    private void rejectAppointment() {
+        Appointment selectedAppointment = clinicianAppointmentRequestView.getSelectionModel().getSelectedItem();
+
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML/appointmentRejection.fxml"));
+        Stage rejectionStage = new Stage();
+        Parent root;
+        try {
+            root = loader.load();
+            RejectAppointmentReasonViewController rejectionController = loader.getController();
+            rejectionStage.setScene(new Scene(root));
+
+            rejectionController.init(selectedAppointment, rejectionStage);
+            rejectionStage.show();
+        } catch (IOException e) {
+            Log.severe("failed to load login window FXML", e);
+        }
+    }
+
+    @FXML
+    private void acceptAppointment() {
+
     }
 
 
