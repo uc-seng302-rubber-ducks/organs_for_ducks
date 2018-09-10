@@ -98,7 +98,7 @@
                 <Font size="22.0" />
             </font>
         </Label>
-      <ImageView fx:id="logoImageView" fitHeight="170.0" fitWidth="170.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="230.0" AnchorPane.rightAnchor="230.0" AnchorPane.topAnchor="34.0" />
+      <ImageView fx:id="logoImageView" fitHeight="150.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="225.0" AnchorPane.rightAnchor="225.0" AnchorPane.topAnchor="42.0" />
       <Label fx:id="poweredByLabel" text="Powered By Rubber Duck Software" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0">
          <font>
             <Font size="9.0" />

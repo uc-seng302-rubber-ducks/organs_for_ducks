@@ -77,8 +77,8 @@ public class LoginController {
         clinicianWarningLabel.setText("");
         adminWarningLabel.setText("");
 //        poweredByLabel.setText("Powered by Rubber Duck Software\u2122");
-//        poweredByLabel.setText("Powered by Rubber Duck Software Group");
-        poweredByLabel.setText("Powered by Quacks\u2122");
+        poweredByLabel.setText("Powered by Rubber Duck Software Group");
+//        poweredByLabel.setText("Powered by Quacks\u2122");
         this.appController = appController;
         this.stage = stage;
         stage.setTitle("Login");
@@ -103,6 +103,7 @@ public class LoginController {
     }
 
     private void loadLogoImage() {
+//        URL url = getClass().getResource("/logos/LoveDuck.png");
         URL url = getClass().getResource("/logos/HeartDuck.png");
         if (url == null) {
             Log.warning("Could not load the icon for the taskbar. Check that the filepath is correct");
