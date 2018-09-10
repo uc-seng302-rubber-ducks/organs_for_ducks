@@ -118,6 +118,8 @@ public class ClinicianController implements PropertyChangeListener, UserLauncher
     @FXML
     private AvailableOrgansViewController availableOrgansViewController;
     @FXML
+    private ClinicianAppointmentRequestViewController appointmentRequestViewController;
+    @FXML
     private Button redoButton;
     @FXML
     private MenuItem deleteClinician;
@@ -128,9 +130,6 @@ public class ClinicianController implements PropertyChangeListener, UserLauncher
     private ImageView profileImage;
     @FXML
     private StatusBarController statusBarPageController;
-
-    @FXML
-    private ClinicianAppointmentRequestViewController appointmentRequestViewController;
 
     //</editor-fold>
 
@@ -180,7 +179,7 @@ public class ClinicianController implements PropertyChangeListener, UserLauncher
         transplantWaitListTabPageController.init(appController, this);
         statusBarPageController.init();
         availableOrgansViewController.init(this);
-        appointmentRequestViewController.init();
+        appointmentRequestViewController.init(appController, clinician);
 
         if (clinician.getStaffId().equals("0")) {
             deleteClinician.setDisable(true);
