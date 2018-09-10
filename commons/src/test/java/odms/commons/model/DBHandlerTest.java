@@ -5,6 +5,7 @@ import odms.commons.model._enum.AppointmentCategory;
 import odms.commons.model._enum.AppointmentStatus;
 import odms.commons.model._enum.Organs;
 import odms.commons.model.datamodel.Address;
+import odms.commons.model.datamodel.ComboBoxClinician;
 import odms.commons.model.datamodel.DeathDetails;
 import org.junit.After;
 import org.junit.Assert;
@@ -283,6 +284,19 @@ public class DBHandlerTest {
         List<LocalDateTime> bookedAppointmentTimes = dbHandler.getBookedAppointmentTimes(connection, anyString());
         verify(mockStmt, times(1)).executeQuery();
         Assert.assertEquals(1, bookedAppointmentTimes.size());
+    }
+
+
+    @Test
+    public void testGetBasicClinicians() throws SQLException {
+        when(mockResultSet.next()).thenReturn(true, false);
+        testClinician.setMiddleName("mid");
+        testClinician.setLastName("last");
+        DBHandlerMocker.setClinicianResultSet(mockResultSet, testClinician);
+        Collection<ComboBoxClinician> clinicians = dbHandler.getBasicClinicians(connection,"");
+
+        verify(mockStmt, times(1)).executeQuery();
+        Assert.assertEquals("Jon mid last", clinicians.iterator().next().toString());
     }
 
     @Test
