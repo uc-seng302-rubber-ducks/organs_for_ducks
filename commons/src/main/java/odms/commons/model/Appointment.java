@@ -29,6 +29,8 @@ public class Appointment {
 
     private boolean seen;
 
+    private String rejectionReason;
+
     /**
      * Empty constructor for Appointment. Useful for creating one from the database or specific customisation for tests.
      * Be careful that an Appointment created by this method may have null fields
@@ -136,5 +138,13 @@ public class Appointment {
         }
         return appointmentId.equals(appointment.appointmentId);
 
+    }
+
+    public String getRejectionReason() {
+        return rejectionReason;
+    }
+
+    public void setRejectionReason(String rejectionReason) {
+        this.rejectionReason = rejectionReason;
     }
 }

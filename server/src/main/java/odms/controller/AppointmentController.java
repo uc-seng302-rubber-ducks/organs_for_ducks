@@ -111,4 +111,25 @@ public class AppointmentController extends BaseController {
 
         return new ResponseEntity(HttpStatus.OK);
     }
+
+    @IsClinician
+    @RequestMapping(method = RequestMethod.PUT, value = "/clinicians/{staffId}/appointments/{appointmentId}")
+    public ResponseEntity putAppointment(@PathVariable(value = "staffId") String staffId,
+                                         @PathVariable(value = "appointmentId") Integer appointmentId,
+                                         @RequestBody Appointment appointment) {
+        try (Connection connection = driver.getConnection()) {
+            AppointmentUpdateStrategy appointmentStrategy = handler.getAppointmentStrategy();
+            appointmentStrategy.putSingleAppointment(connection, appointment);
+
+            socketHandler.broadcast(EventTypes.APPOINTMENT_UPDATE, Integer.toString(appointmentId), Integer.toString(appointmentId));
+
+        } catch (SQLException s) {
+            Log.severe("Cannot send updated appointment to database", s);
+            throw new ServerDBException(s);
+        } catch (IOException i) {
+            Log.warning("Failed to broadcast update after putting an appointment", i);
+        }
+
+        return new ResponseEntity(HttpStatus.ACCEPTED);
+    }
 }
