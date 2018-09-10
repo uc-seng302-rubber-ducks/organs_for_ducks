@@ -4,6 +4,7 @@ import odms.commons.database.DBHandler;
 import odms.commons.database.JDBCDriver;
 import odms.commons.model.User;
 import odms.commons.model._enum.EventTypes;
+import odms.commons.model.datamodel.ComboBoxClinician;
 import odms.commons.model.dto.UserOverview;
 import odms.commons.utils.Log;
 import odms.exception.NotFoundException;
@@ -143,6 +144,16 @@ public class UserController extends BaseController {
         } catch (SQLException ex) {
             Log.severe("cannot find whether user exists", ex);
             throw  new ServerDBException(ex);
+        }
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/user/{nhi}/preferred-clinician") //WHERE
+    public ComboBoxClinician getPreferredClinician(@PathVariable("nhi") String userNhi) {
+        try (Connection connection = driver.getConnection()) {
+            return handler.getPreferredBasicClinician(connection, userNhi);
+        } catch (SQLException ex) {
+            Log.severe("Could not get basic clinicians", ex);
+            throw new ServerDBException(ex);
         }
     }
 }

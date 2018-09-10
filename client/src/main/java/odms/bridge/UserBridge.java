@@ -7,6 +7,7 @@ import odms.commons.model.Disease;
 import odms.commons.model.MedicalProcedure;
 import odms.commons.model.User;
 import odms.commons.model._enum.Organs;
+import odms.commons.model.datamodel.ComboBoxClinician;
 import odms.commons.model.datamodel.Medication;
 import odms.commons.model.datamodel.ReceiverOrganDetailsHolder;
 import odms.commons.model.dto.UserOverview;
@@ -356,6 +357,61 @@ public class UserBridge extends RoleBridge {
             return false;
         }
     }
+
+    /**
+     * Asks the server to get the preferred clinician for the specified user
+     * @param nhi of the user to get the preferred clinician for.
+     * @return comboBoxClinician representing the preferred clinician
+     */
+    public ComboBoxClinician getPreferredClinician(String nhi) throws IOException{ //WHERE
+        ComboBoxClinician clinician = null;
+        String url = ip + USERS + nhi + "/preferred-clinician";
+        Request request = new Request.Builder().url(url).build();
+        Response response = client.newCall(request).execute();
+        if (response.isSuccessful()) {
+            ResponseBody body = response.body();
+            if (body == null) {
+                Log.warning("The response body was null");
+                response.close();
+                return null;
+            }
+            if (body.contentLength() == 2) { //if it returns empty array
+                response.close();
+                return null;
+            }
+            clinician = new Gson().fromJson(body.string(), new TypeToken<ComboBoxClinician>() {
+            }.getType());
+        }
+        response.close();
+        return clinician;
+    }
+
+//    /**
+//     * Asks the server to get the preferred clinician for the specified user
+//     * @param nhi of the user to get the preferred clinician for.
+//     * @return comboBoxClinician representing the preferred clinician
+//     */
+//    public ComboBoxClinician putPreferredClinician(String nhi, String staffId) throws IOException{ //WHERE
+//        String url = ip + USERS + nhi + "/preferred-clinician";
+//        Request request = new Request.Builder().put(body).url(url).build();
+//        Response response = client.newCall(request).execute();
+//        if (response.isSuccessful()) {
+//            ResponseBody body = response.body();
+//            if (body == null) {
+//                Log.warning("The response body was null");
+//                response.close();
+//                return null;
+//            }
+//            if (body.contentLength() == 2) { //if it returns empty array
+//                response.close();
+//                return null;
+//            }
+//            clinician = new Gson().fromJson(body.string(), new TypeToken<ComboBoxClinician>() {
+//            }.getType());
+//        }
+//        response.close();
+//        return clinician;
+//    }
 
 
 
