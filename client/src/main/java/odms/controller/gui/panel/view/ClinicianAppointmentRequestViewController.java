@@ -15,15 +15,14 @@ import odms.commons.model.Appointment;
 import odms.commons.model.Clinician;
 import odms.commons.model._enum.AppointmentCategory;
 import odms.commons.model._enum.AppointmentStatus;
-import odms.controller.AppController;
 import odms.commons.utils.Log;
+import odms.controller.AppController;
 import odms.controller.gui.panel.logic.AvailableOrgansLogicController;
 import odms.controller.gui.panel.logic.ClinicianAppointmentRequestLogicController;
 import odms.controller.gui.popup.view.RejectAppointmentReasonViewController;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
@@ -75,7 +74,7 @@ public class ClinicianAppointmentRequestViewController {
 
     @FXML
     private TableColumn<Appointment, String> clinicianAppointmentDateColumn = new TableColumn<>();
-    
+
     private ObservableList<Appointment> availableAppointments = FXCollections.observableList(new ArrayList<>());
 
 
