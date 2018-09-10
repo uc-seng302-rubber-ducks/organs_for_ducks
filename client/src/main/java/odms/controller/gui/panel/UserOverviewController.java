@@ -13,7 +13,6 @@ import odms.commons.config.ConfigPropertiesSession;
 import odms.commons.model.User;
 import odms.commons.utils.Log;
 import odms.controller.AppController;
-import odms.controller.gui.popup.UpdateDeathDetailsController;
 
 import java.io.IOException;
 import java.net.URL;
@@ -21,6 +20,8 @@ import java.text.DecimalFormat;
 import java.time.temporal.ChronoUnit;
 
 import static odms.commons.utils.PhotoHelper.displayImage;
+
+//import odms.controller.gui.popup.UpdateDeathDetailsController;
 
 public class UserOverviewController {
 
@@ -190,7 +191,7 @@ public class UserOverviewController {
         }
 
         String weight;
-        if (user.getWeight() > 0) {
+        if (user.getWeight() != null && user.getWeight() > 0) {
             weight = java.lang.Double.toString(user.getWeight());
             weightValue.setText(weight);
         } else {
@@ -198,14 +199,14 @@ public class UserOverviewController {
         }
 
         String height;
-        if (user.getHeight() > 0) {
+        if (user.getHeight() != null && user.getHeight() > 0) {
             height = java.lang.Double.toString(user.getHeight());
             heightValue.setText(height);
         } else {
             heightValue.setText("");
         }
 
-        if (user.getHeight() > 0 && user.getWeight() > 0) {
+        if (user.getHeight() != null && user.getWeight() != null && user.getHeight() > 0 && user.getWeight() > 0) {
             //TODO fix BMI kg/m^
             DecimalFormat df = new DecimalFormat("#.00");
             double bmi = user.getWeight() / ((user.getHeight()) /100 * (user.getHeight()/100));
@@ -252,11 +253,11 @@ public class UserOverviewController {
         Parent root;
         try {
             root = updateDeathDetailsLoader.load();
-            UpdateDeathDetailsController updateDeathDetailsController = updateDeathDetailsLoader.getController();
+            //UpdateDeathDetailsController updateDeathDetailsController = updateDeathDetailsLoader.getController();
             Stage updateStage = new Stage();
             updateStage.initModality(Modality.APPLICATION_MODAL);
             updateStage.setScene(new Scene(root));
-            updateDeathDetailsController.init(AppController.getInstance(), updateStage, currentUser);
+            //updateDeathDetailsController.init(AppController.getInstance(), updateStage, currentUser);
             updateStage.show();
             Log.info("Successfully launched update death details window for User NHI: " + currentUser.getNhi());
 

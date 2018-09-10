@@ -219,7 +219,7 @@ public class UserController implements PropertyChangeListener {
         Parent root;
         try {
             root = updateLoader.load();
-            FakeUpdateUserController updateUserController = updateLoader.getController();
+            UpdateUserController updateUserController = updateLoader.getController();
             Stage updateStage = new Stage();
             updateStage.initModality(Modality.APPLICATION_MODAL);
             updateStage.setScene(new Scene(root));

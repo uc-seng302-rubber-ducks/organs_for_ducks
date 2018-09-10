@@ -8,7 +8,7 @@
 <?import java.lang.*?>
 <AnchorPane xmlns:fx="http://javafx.com/fxml/1" prefHeight="453.0" prefWidth="694.0" stylesheets="@../gui.css"
             xmlns="http://javafx.com/javafx/8.0.151"
-            fx:controller="odms.controller.gui.window.FakeUpdateUserController">
+            fx:controller="odms.controller.gui.window.UpdateUserController">
    <children>
       <TabPane layoutY="46.0" prefHeight="439.0" prefWidth="694.0" tabClosingPolicy="UNAVAILABLE">
         <tabs>
@@ -115,13 +115,15 @@
                               <VBox alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="2">
                                  <children>
                                     <TextField fx:id="heightInput" prefHeight="25.0" prefWidth="375.0" />
-                                    <Label styleClass="label-error" text="Label" visible="false" />
+                                    <Label fx:id="heightErrorLabel" styleClass="label-error"
+                                           text="This must be a positive integer" visible="false"/>
                                  </children>
                               </VBox>
                               <VBox alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="3">
                                  <children>
                                     <TextField fx:id="weightInput" />
-                                    <Label styleClass="label-error" text="Label" visible="false" />
+                                    <Label fx:id="weightErrorLabel" styleClass="label-error"
+                                           text="This must be a positive integer" visible="false"/>
                                  </children>
                               </VBox>
                               <ComboBox fx:id="bloodComboBox" prefHeight="25.0" prefWidth="151.0" GridPane.columnIndex="3">
@@ -196,7 +198,8 @@
                         </GridPane>
                         <Button layoutX="571.0" layoutY="359.0" mnemonicParsing="false" text="Update Profile"
                                 onAction="#confirmUpdate"/>
-                        <Button layoutX="14.0" layoutY="359.0" mnemonicParsing="false" text="Cancel" />
+                        <Button layoutX="14.0" layoutY="359.0" mnemonicParsing="false" text="Cancel"
+                                onAction="#goBack"/>
                         <Separator layoutY="34.0" prefHeight="9.0" prefWidth="706.0" />
                         <Label layoutX="9.0" layoutY="9.0" styleClass="label-sub-title" text="Health Details" />
                      </children>
@@ -212,14 +215,14 @@
                               <VBox alignment="CENTER_LEFT" GridPane.columnIndex="1">
                                  <children>
                                     <TextField fx:id="phone" />
-                                    <Label styleClass="label-error" text="Label" visible="false"
+                                    <Label styleClass="label-error" text="Invalid phone number" visible="false"
                                            fx:id="phoneErrorLabel"/>
                                  </children>
                               </VBox>
                               <VBox alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="1">
                                  <children>
                                     <TextField fx:id="cell" />
-                                    <Label styleClass="label-error" text="Label" visible="false"
+                                    <Label styleClass="label-error" text="Invalid cell number" visible="false"
                                            fx:id="cellErrorLabel"/>
                                  </children>
                               </VBox>
@@ -235,7 +238,7 @@
                               <VBox alignment="CENTER_LEFT" GridPane.columnIndex="3" GridPane.rowIndex="3">
                                  <children>
                                     <TextField fx:id="email" />
-                                    <Label styleClass="label-error" text="Label" visible="false"
+                                    <Label styleClass="label-error" text="Invalid email address" visible="false"
                                            fx:id="emailErrorLabel"/>
                                  </children>
                               </VBox>
@@ -332,14 +335,14 @@
                               <VBox GridPane.columnIndex="1" GridPane.rowIndex="1">
                                  <children>
                                     <TextField fx:id="ecPhone" />
-                                    <Label styleClass="label-error" text="Label" visible="false"
+                                    <Label styleClass="label-error" text="Invalid phone number" visible="false"
                                            fx:id="ecPhoneErrorLabel"/>
                                  </children>
                               </VBox>
                               <VBox GridPane.columnIndex="1" GridPane.rowIndex="2">
                                  <children>
                                     <TextField fx:id="ecCell" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
-                                    <Label styleClass="label-error" text="Label" visible="false"
+                                    <Label styleClass="label-error" text="Invalid cell number" visible="false"
                                            fx:id="ecCellPhoneErrorLabel"/>
                                  </children>
                               </VBox>

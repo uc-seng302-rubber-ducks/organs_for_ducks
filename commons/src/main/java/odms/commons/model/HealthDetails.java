@@ -10,9 +10,9 @@ public class HealthDetails {
     private String genderIdentity;
     private String alcoholConsumption;
     private boolean smoker;
-    private double height;
+    private Double height;
     private transient String heightText; //NOSONAR
-    private double weight;
+    private Double weight;
     private transient String weightText; //NOSONAR
     private String bloodType;
 
@@ -29,19 +29,19 @@ public class HealthDetails {
     }
 
 
-    public double getHeight() {
+    public Double getHeight() {
         return height;
     }
 
-    public void setHeight(double height) {
+    public void setHeight(Double height) {
         this.height = height;
     }
 
-    public double getWeight() {
+    public Double getWeight() {
         return weight;
     }
 
-    public void setWeight(double weight) {
+    public void setWeight(Double weight) {
         this.weight = weight;
     }
 

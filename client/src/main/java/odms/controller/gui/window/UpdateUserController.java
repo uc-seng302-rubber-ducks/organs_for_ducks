@@ -43,17 +43,40 @@ public class UpdateUserController {
     private final int MAX_FILE_SIZE = 2097152;
     //<editor-fold desc="fxml stuff">
     @FXML
-    private Label errorLabel;
+    private Label fNameErrorLabel;
+
     @FXML
-    private Label existingNHI;
+    private Label phoneErrorLabel;
+
     @FXML
-    private Label invalidNHI;
+    private Label cellErrorLabel;
+
     @FXML
-    private Label invalidFirstName;
+    private Label emailErrorLabel;
+
     @FXML
-    private Label invalidDOB;
+    private Label ecCellPhoneErrorLabel;
+    @FXML
+    private Label ecEmailErrorLabel;
+    @FXML
+    private Label ecZipCodeErrorLabel;
+    @FXML
+    private Label ecPhoneErrorLabel;
+    @FXML
+    private Label ecNameErrorLabel;
+    @FXML
+    private Label heightErrorLabel;
+    @FXML
+    private Label weightErrorLabel;
+
+    @FXML
+    private Label nhiErrorLabel;
+    @FXML
+    private Label dobErrorLabel;
     @FXML
     private TextField nhiInput;
+    @FXML
+    private Label photoErrorLabel;
     @FXML
     private TextField fNameInput;
     @FXML
@@ -168,7 +191,7 @@ public class UpdateUserController {
         setUserDetails(currentUser);
         undoUpdateButton.setDisable(true);
         redoUpdateButton.setDisable(true);
-        errorLabel.setText("");
+
         undoMarker = currentUser.getUndoStack().size();
         if (user.getLastName() != null) {
             stage.setTitle("Update User: " + user.getFirstName() + " " + user.getLastName());
@@ -270,6 +293,7 @@ public class UpdateUserController {
     private void datePickerListener(DatePicker dp) {
         dp.valueProperty().addListener((observable, oldValue, newValue) -> {
             if (listen) {
+                dp.getStyleClass().remove("invalid");
                 update();
             }
         });
@@ -309,6 +333,7 @@ public class UpdateUserController {
     private void textFieldListener(TextField field) {
         field.textProperty().addListener((observable, oldValue, newValue) -> {
             if (listen) {
+                field.getStyleClass().remove("invalid");
                 update();
             }
         });
@@ -543,7 +568,7 @@ public class UpdateUserController {
         } else if (user.getHeight() > 0) {
             heightInput.setText(Double.toString(user.getHeight()));
         } else {
-            heightInput.setText("0.0");
+            heightInput.setText("");
         }
 
         listen = true;
@@ -581,9 +606,7 @@ public class UpdateUserController {
             inFile = new File(filename);
 
             if (inFile.length() > MAX_FILE_SIZE) { //if more than 2MB
-                Alert imageTooLargeAlert = new Alert(Alert.AlertType.WARNING, "Could not upload the image as the image size exceeded 2MB");
-                imageTooLargeAlert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
-                imageTooLargeAlert.showAndWait();
+                photoErrorLabel.setVisible(true);
                 isValid = false;
             }
             if (isValid) {
@@ -601,13 +624,12 @@ public class UpdateUserController {
     public void confirmUpdate() throws IOException {
 
         hideErrorMessages();
-        errorLabel.setText("Please make sure your details are correct.");
         boolean valid = validateFields();
 
 
         if (valid) {
             removeFormChanges();
-            if(inFile != null){
+            if (inFile != null) {
                 String filePath = setUpImageFile(inFile, currentUser.getNhi());
                 currentUser.setProfilePhotoFilePath(filePath);
             }
@@ -644,11 +666,13 @@ public class UpdateUserController {
         String nhi = nhiInput.getText();
         if (!AttributeValidation.validateNHI(nhi)) {
             invalidateTextField(nhiInput);
-            invalidNHI.setVisible(true);
+            nhiErrorLabel.setText("Enter a valid NHI. e.g. ABC1234");
+            nhiErrorLabel.setVisible(true);
             valid = false;
         } else if (appController.getUserBridge().getExists(nhi) && !oldUser.getNhi().equals(nhi)) { // if a user was found, but it is not the current user
             invalidateTextField(nhiInput);
-            existingNHI.setVisible(true);
+            nhiErrorLabel.setText("This NHI is already in use");
+            nhiErrorLabel.setVisible(true);
             valid = false;
         }
 
@@ -657,41 +681,46 @@ public class UpdateUserController {
         String fName = fNameInput.getText();
         if (!AttributeValidation.checkRequiredString(fName)) {
             invalidateTextField(fNameInput);
-            invalidFirstName.setVisible(true);
+            fNameErrorLabel.setVisible(true);
             valid = false;
         }
 
         if (!AttributeValidation.validateDateOfBirth(dob)) {
             invalidateTextField(dobInput);
-            invalidDOB.setVisible(true);
+            dobErrorLabel.setVisible(true);
             valid = false;
         }
 
         double height = AttributeValidation.validateDouble(heightInput.getText());
         double weight = AttributeValidation.validateDouble(weightInput.getText());
-        if (height == -1 || weight == -1) {
+        if (height == -1) {
             invalidateTextField(heightInput);
+            heightErrorLabel.setVisible(true);
+            valid = false;
+        }
+
+        if (weight == -1) {
             invalidateTextField(weightInput);
-            errorLabel.setVisible(true);
+            weightErrorLabel.setVisible(true);
             valid = false;
         }
 
         // validate contact info
         if (!AttributeValidation.validateEmail(this.email.getText())) {
             invalidateTextField(this.email);
-            errorLabel.setVisible(true);
+            emailErrorLabel.setVisible(true);
             valid = false;
         }
 
         if (!AttributeValidation.validatePhoneNumber(phone.getText().replaceAll(" ", ""))) {
             invalidateTextField(phone);
-            errorLabel.setVisible(true);
+            phoneErrorLabel.setVisible(true);
             valid = false;
         }
 
         if (!AttributeValidation.validateCellNumber(cell.getText().replaceAll(" ", ""))) {
             invalidateTextField(cell);
-            errorLabel.setVisible(true);
+            cellErrorLabel.setVisible(true);
             valid = false;
         }
 
@@ -731,31 +760,34 @@ public class UpdateUserController {
         // validate emergency contact info
         if (!AttributeValidation.validateEmail(ecEmail.getText())) {
             invalidateTextField(ecEmail);
-            errorLabel.setVisible(true);
+            ecEmailErrorLabel.setText("Invalid email address");
+            ecEmailErrorLabel.setVisible(true);
             valid = false;
         }
 
         if (!AttributeValidation.validatePhoneNumber(ecPhone.getText().replaceAll(" ", ""))) {
             invalidateTextField(ecPhone);
-            errorLabel.setVisible(true);
+            ecPhoneErrorLabel.setText("Invalid phone number");
+            ecPhoneErrorLabel.setVisible(true);
             valid = false;
         }
 
         if (!AttributeValidation.validateCellNumber(ecCell.getText().replaceAll(" ", ""))) {
             invalidateTextField(ecCell);
-            errorLabel.setVisible(true);
+            ecCellPhoneErrorLabel.setText("Invalid cell phone number");
+            ecCellPhoneErrorLabel.setVisible(true);
             valid = false;
         }
 
         if (!AttributeValidation.checkString(ecName.getText())) {
             invalidateTextField(ecName);
-            errorLabel.setVisible(true);
+            ecNameErrorLabel.setText("Names cannot contain special characters");
+            ecNameErrorLabel.setVisible(true);
             valid = false;
         }
 
         if (!AttributeValidation.checkString(ecStreetNumber.getText())) {
             invalidateTextField(ecStreetNumber);
-            errorLabel.setVisible(true);
             valid = false;
         }
 
@@ -768,25 +800,25 @@ public class UpdateUserController {
         }
         if (!AttributeValidation.checkString(eRegion)) {
             invalidateTextField(ecRegionInput);
-            errorLabel.setVisible(true);
             valid = false;
         }
 
         if (!AttributeValidation.checkString(ecRelationship.getText())) {
             invalidateTextField(ecRelationship);
-            errorLabel.setVisible(true);
             valid = false;
         }
 
         if (ecName.getText().isEmpty() != ecCell.getText().isEmpty()) {
             invalidateTextField(ecName);
             invalidateTextField(ecCell);
+            ecNameErrorLabel.setText("A name and cell must be provided");
+            ecCellPhoneErrorLabel.setText("A name and cell must be provided");
+            ecNameErrorLabel.setVisible(true);
+            ecCellPhoneErrorLabel.setVisible(true);
             valid = false;
         }
         // the name and cell number are required if any other attributes are filled out
         if (!valid) {
-            errorLabel.setText("Name and cell phone number are required for an emergency contact.");
-            errorLabel.setVisible(true);
             throw new InvalidFieldsException();
         }
     }
@@ -877,7 +909,8 @@ public class UpdateUserController {
 
         if (height.isEmpty() && (currentUser.getHeightText() != null && !currentUser.getHeightText()
                 .isEmpty())) {
-            currentUser.setHeightText(null);
+            currentUser.setHeightText("");
+            currentUser.setHeight(-1.0);
             changed = true;
         } else if (!height.isEmpty() && !height.equals(currentUser.getHeightText())) {
             currentUser.setHeightText(height);
@@ -888,7 +921,7 @@ public class UpdateUserController {
 
         if (weight.isEmpty() && (currentUser.getWeightText() != null && !currentUser.getWeightText()
                 .isEmpty())) {
-            currentUser.setWeightText(null);
+            currentUser.setWeightText("");
             changed = true;
         } else if (!weight.isEmpty() && !weight.equals(currentUser.getWeightText())) {
             currentUser.setWeightText(weight);
@@ -1178,10 +1211,34 @@ public class UpdateUserController {
      * Makes all the error messages no longer visible.
      */
     private void hideErrorMessages() {
-        existingNHI.setVisible(false);
-        invalidNHI.setVisible(false);
-        invalidDOB.setVisible(false);
-        errorLabel.setVisible(false);
-        invalidFirstName.setVisible(false);
+        nhiErrorLabel.setVisible(false);
+        dobErrorLabel.setVisible(false);
+        fNameErrorLabel.setVisible(false);
+        photoErrorLabel.setVisible(false);
+        phoneErrorLabel.setVisible(false);
+        cellErrorLabel.setVisible(false);
+        emailErrorLabel.setVisible(false);
+        ecCellPhoneErrorLabel.setVisible(false);
+        ecEmailErrorLabel.setVisible(false);
+        ecZipCodeErrorLabel.setVisible(false);
+        ecPhoneErrorLabel.setVisible(false);
+        ecNameErrorLabel.setVisible(false);
+        weightErrorLabel.setVisible(false);
+        heightErrorLabel.setVisible(false);
+    }
+
+    public void deathCountrySelectorListener() {
+
+    }
+
+    public void removeUpdateDeathDetails() {
+
+    }
+
+    public void confirmUpdateDeathDetails() {
+
+    }
+
+    public void cancelUpdateDeathDetails() {
     }
 }

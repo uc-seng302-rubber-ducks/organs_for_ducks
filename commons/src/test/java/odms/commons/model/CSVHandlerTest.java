@@ -33,7 +33,7 @@ public class CSVHandlerTest {
         expected.setGenderIdentity("Male");
         expected.setBloodType("Male");
         expected.setHeight(1.94);
-        expected.setWeight(105);
+        expected.setWeight(105.0);
         expected.setStreetNumber("2158");
         expected.setStreetName("Melody");
         expected.setNeighborhood("Bình Thủy");

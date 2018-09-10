@@ -625,24 +625,28 @@ public class User extends Undoable<User> implements Listenable {
                 : "Removed moment of death"));
     }
 
-    public double getHeight() {
+    public Double getHeight() {
         return healthDetails.getHeight();
     }
 
-    public void setHeight(double height) {
+    public void setHeight(Double height) {
         if (healthDetails.getHeight() != height) {
             this.saveStateForUndo();
             updateLastModified();
-            healthDetails.setHeight(height);
+            if (height == -1) {
+                healthDetails.setHeight(null);
+            } else {
+                healthDetails.setHeight(height);
+            }
             addChange(new Change("Changed height to " + height));
         }
     }
 
-    public double getWeight() {
+    public Double getWeight() {
         return healthDetails.getWeight();
     }
 
-    public void setWeight(double weight) {
+    public void setWeight(Double weight) {
         if (weight != healthDetails.getWeight()) {
             this.saveStateForUndo();
             updateLastModified();
