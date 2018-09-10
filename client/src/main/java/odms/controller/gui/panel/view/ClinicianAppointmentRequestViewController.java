@@ -5,21 +5,43 @@ import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Stage;
 import odms.commons.model.Appointment;
 import odms.commons.model.Clinician;
 import odms.commons.model._enum.AppointmentCategory;
 import odms.commons.model._enum.AppointmentStatus;
+import odms.commons.utils.Log;
 import odms.controller.AppController;
 import odms.controller.gui.panel.logic.AvailableOrgansLogicController;
 import odms.controller.gui.panel.logic.ClinicianAppointmentRequestLogicController;
+import odms.controller.gui.popup.view.RejectAppointmentReasonViewController;
 
 import java.time.LocalDateTime;
+import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 public class ClinicianAppointmentRequestViewController {
+
+    @FXML
+    public TableColumn<Appointment, String> categoryTableColumn;
+
+    @FXML
+    private TableColumn<Appointment, LocalDateTime> dateTimeTableColumn;
+
+    @FXML
+    private TableColumn<Appointment, String> nameTableColumn;
+
+    @FXML
+    private TableColumn<Appointment, String> nhiTableColumn;
+
+    @FXML
+    private TableView<Appointment> clinicianAppointmentRequestView;
 
     @FXML
     private DatePicker appointmentRequestDate;
@@ -89,22 +111,6 @@ public class ClinicianAppointmentRequestViewController {
     }
 
     /**
-     * Launches a pop-up for the clinician to accept an appointment and pick a time
-     */
-    @FXML
-    public void clinicianAcceptAppointmentBtn() {
-        logicController.launchAcceptedPopup();
-    }
-
-    /**
-     * Launches a pop-up for the clinician to reject an appoint and enter a reason why
-     */
-    @FXML
-    public void clinicianRejectAppointmentBtn() {
-        logicController.launchRejectedPopup();
-    }
-
-    /**
      * Binds a table view row to show all details for that appointment
      */
     private void setOnClickBehaviour() {
@@ -125,7 +131,7 @@ public class ClinicianAppointmentRequestViewController {
             appointmentRequestStatus.setText(appointment.getAppointmentStatus().toString());
             appointmentRequestCategory.setValue(appointment.getAppointmentCategory());
             appointmentRequestDate.setValue(appointment.getRequestedDate().toLocalDate());
-            appointmentRequestTime.setText(getAppointmentTime(appointment.getRequestedDate()));
+            appointmentRequestTime.setText(appointment.getRequestedDate().toLocalTime().toString());
             appointmentRequestDescription.setText(appointment.getRequestDescription());
         } else {
             appointmentRequestUserNhi.setText("");
@@ -135,20 +141,6 @@ public class ClinicianAppointmentRequestViewController {
             appointmentRequestTime.clear();
             appointmentRequestDescription.clear();
         }
-    }
-
-    /**
-     * Extracts the appointment time and formats it to be human readable
-     *
-     * @param dateTime The local date time object of the appointment
-     * @return The appointment time as a String
-     */
-    private String getAppointmentTime(LocalDateTime dateTime) {
-        String appointmentTime;
-        String minute = String.format("%02d", dateTime.getMinute());
-        String hour = String.format("%02d", dateTime.getHour());
-        appointmentTime = hour + ":" + minute;
-        return appointmentTime;
     }
 
     /**
@@ -165,5 +157,29 @@ public class ClinicianAppointmentRequestViewController {
     @FXML
     private void goToNextPage() {
         logicController.goToNextPage();
+    }
+
+    @FXML
+    private void rejectAppointment() {
+        Appointment selectedAppointment = clinicianAppointmentRequestView.getSelectionModel().getSelectedItem();
+
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML/appointmentRejection.fxml"));
+        Stage rejectionStage = new Stage();
+        Parent root;
+        try {
+            root = loader.load();
+            RejectAppointmentReasonViewController rejectionController = loader.getController();
+            rejectionStage.setScene(new Scene(root));
+
+            rejectionController.init(selectedAppointment, rejectionStage);
+            rejectionStage.show();
+        } catch (IOException e) {
+            Log.severe("failed to load login window FXML", e);
+        }
+    }
+
+    @FXML
+    private void acceptAppointment() {
+
     }
 }
