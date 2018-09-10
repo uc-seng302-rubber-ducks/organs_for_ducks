@@ -125,7 +125,6 @@ public class ProcedureTabController {
                 .addListener(listChangeListener -> {
                     to.getSelectionModel().select(null);
                     if (from.getSelectionModel().getSelectedItem() != null) {
-                        addProcedureButton.setVisible(false);
                         currentProcedureList = from;
                     }
                 });

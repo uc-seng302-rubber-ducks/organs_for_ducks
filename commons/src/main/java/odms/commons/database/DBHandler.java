@@ -581,7 +581,8 @@ public class DBHandler {
             try (ResultSet resultSet = stmt.executeQuery()) {
                 MedicalProcedure medicalProcedure = null;
                 while (resultSet != null && resultSet.next()) {
-                    if (medicalProcedure != null) {
+                    MedicalProcedure holdingMedicalProcedure = new MedicalProcedure(resultSet.getDate(2).toLocalDate(), resultSet.getString(1), resultSet.getString(3), null);
+                    if (medicalProcedure != null && medicalProcedure.equals(holdingMedicalProcedure)) {
                         medicalProcedure.addOrgan(Organs.valueOf(resultSet.getString(4)));
 
                     } else {
