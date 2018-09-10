@@ -47,6 +47,31 @@
 
 /****************************************
 *                                       *
+* COMBO_BOX                             *
+*                                       *
+****************************************/
+
+.combo-box {
+    -fx-background-color: white;
+    -fx-border-color: #ced4da;
+    -fx-border-radius: 2.5%;
+
+}
+
+.combo-box:focused {
+    -fx-background-color: white;
+    -fx-border-width: 2;
+    -fx-border-color: #78c9e9;
+    -fx-border-radius: 2.5%;
+}
+
+.combo-box-popup .list-view .list-cell:filled:hover
+{
+    -fx-background-color: #9ab87c;
+}
+
+/****************************************
+*                                       *
 * BUTTON                            *
 *                                       *
 ****************************************/
@@ -102,6 +127,13 @@
 
 .text-field:disabled {
     -fx-opacity: 0.45;
+}
+
+.text-field:focused {
+    -fx-background-color: white;
+    -fx-border-color: #78c9e9;
+    -fx-border-width: 2;
+    -fx-border-radius: 2.5%;
 }
 
 .invalid {

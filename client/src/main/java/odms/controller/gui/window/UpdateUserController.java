@@ -4,7 +4,9 @@ package odms.controller.gui.window;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
@@ -13,25 +15,33 @@ import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Region;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import odms.commons.config.ConfigPropertiesSession;
 import odms.commons.exception.InvalidFieldsException;
 import odms.commons.model.EmergencyContact;
 import odms.commons.model.User;
+import odms.commons.model._enum.Organs;
 import odms.commons.model._enum.Regions;
+import odms.commons.model.datamodel.ExpiryReason;
 import odms.commons.utils.AttributeValidation;
 import odms.commons.utils.Log;
 import odms.controller.AppController;
 import odms.controller.gui.FileSelectorController;
+import odms.controller.gui.popup.RemoveDeathDetailsAlertController;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
+import static java.lang.Thread.sleep;
 import static odms.commons.utils.PhotoHelper.displayImage;
 import static odms.commons.utils.PhotoHelper.setUpImageFile;
 
@@ -158,6 +168,24 @@ public class UpdateUserController {
     private Button redoUpdateButton;
     @FXML
     private ImageView profileImage;
+    @FXML
+    private DatePicker updateDeathDetailsDatePicker;
+    @FXML
+    private TextField updateDeathDetailsTimeTextField;
+    @FXML
+    private TextField updateDeathDetailsCityTextField;
+    @FXML
+    private TextField updateDeathDetailsRegionTextField;
+    @FXML
+    private ChoiceBox<String> updateDeathDetailsRegionChoiceBox;
+    @FXML
+    private ComboBox<String> updateDeathDetailsCountryComboBox;
+    @FXML
+    private Label updateDeathDetailsErrorLabel;
+    @FXML
+    private Label updateDeathDetailsOverrideWarningLabel;
+    @FXML
+    private Button removeUpdateDeathDetailsButton;
     //</editor-fold>
     @FXML
     private Button resetProfileImageUser;
@@ -170,6 +198,8 @@ public class UpdateUserController {
     private File inFile;
     private String defaultCountry = "New Zealand";
     private UserController userController;
+    private boolean isNewZealand;
+
 
     /**
      * @param user       The current user.
@@ -194,7 +224,8 @@ public class UpdateUserController {
         setUserDetails(currentUser);
         undoUpdateButton.setDisable(true);
         redoUpdateButton.setDisable(true);
-
+        updateDeathDetailsErrorLabel.setVisible(false);
+        updateDeathDetailsOverrideWarningLabel.setVisible(false);
         undoMarker = currentUser.getUndoStack().size();
         if (user.getLastName() != null) {
             stage.setTitle("Update User: " + user.getFirstName() + " " + user.getLastName());
@@ -203,6 +234,32 @@ public class UpdateUserController {
         }
 
         Scene scene = stage.getScene();
+
+        boolean hasOverridedExpiry = false;
+        for (Map.Entry<Organs, ExpiryReason> pair: currentUser.getDonorDetails().getOrganMap().entrySet()) {
+            try {
+                sleep(10);
+            } catch (InterruptedException e) {
+                Log.warning("Sleep was interupted", e);
+                Thread.currentThread().interrupt();
+            }
+            if (pair.getValue().getTimeOrganExpired() != null) {
+                hasOverridedExpiry = true;
+                break;
+            }
+        }
+        if (hasOverridedExpiry) {
+            updateDeathDetailsOverrideWarningLabel.setVisible(true);
+            removeUpdateDeathDetailsButton.setDisable(true);
+            updateDeathDetailsDatePicker.setDisable(true);
+            updateDeathDetailsTimeTextField.setDisable(true);
+        }
+
+        if (currentUser.getMomentDeath() == null) {
+            removeUpdateDeathDetailsButton.setDisable(true);
+        }
+
+        prefillDeathDetailsTab();
 
         final TextField[] allTextFields = {nhiInput, fNameInput, preferredFNameTextField, mNameInput,
                 lNameInput,
@@ -342,6 +399,141 @@ public class UpdateUserController {
         });
 
     }
+
+    /**
+     * Fills in the location text fields with the users current contact location. Can still be edited if that is not
+     * where they died.
+     */
+    @FXML
+    private void prefillDeathDetailsTab() {
+        for (Regions regions : Regions.values()) {
+            updateDeathDetailsRegionChoiceBox.getItems().add(regions.toString());
+        }
+        for (String country : appController.getAllCountries()) {
+            updateDeathDetailsCountryComboBox.getItems().add(country);
+        }
+
+        if (currentUser.getDateOfDeath() != null) {
+            updateDeathDetailsDatePicker.setValue(currentUser.getDateOfDeath());
+        } else {
+            updateDeathDetailsDatePicker.setValue(LocalDate.now());
+        }
+
+
+        String timeOfDeath;
+        if (currentUser.getTimeOfDeath() != null) {
+            timeOfDeath = currentUser.getTimeOfDeath().toString();
+        } else {
+            String minute = String.format("%02d", LocalDateTime.now().getMinute());
+            String hour = String.format("%02d", LocalDateTime.now().getHour());
+            timeOfDeath = hour + ":" + minute;
+        }
+        updateDeathDetailsTimeTextField.setText(timeOfDeath);
+
+        if (!currentUser.getDeathCity().isEmpty()) {
+            updateDeathDetailsCityTextField.setText(currentUser.getDeathCity());
+        } else {
+            updateDeathDetailsCityTextField.setText(currentUser.getCity());
+        }
+        if (!currentUser.getDeathCountry().isEmpty()) {
+            updateDeathDetailsCountryComboBox.setValue(currentUser.getDeathCountry());
+        } else {
+            updateDeathDetailsCountryComboBox.setValue(currentUser.getCountry());
+        }
+
+        handleRegionPicker();
+    }
+
+    /**
+     * Changes the region selector based on whether New Zealand is selected or not
+     */
+    private void handleRegionPicker() {
+        String currentTextRegion = "";
+        String currentChoiceRegion = "";
+        if (updateDeathDetailsCountryComboBox.getValue() != null && updateDeathDetailsCountryComboBox.getValue().equals("New Zealand")) {
+            isNewZealand = true;
+            if (!currentUser.getDeathRegion().isEmpty()) {
+                currentChoiceRegion = currentUser.getDeathRegion();
+            } else {
+                currentChoiceRegion = currentUser.getRegion();
+            }
+        } else {
+            isNewZealand = false;
+            if (!currentUser.getDeathRegion().isEmpty()) {
+                currentTextRegion = currentUser.getDeathRegion();
+            } else {
+                currentTextRegion = currentUser.getRegion();
+            }
+        }
+
+        updateDeathDetailsRegionTextField.setText(currentTextRegion);
+        updateDeathDetailsRegionTextField.setDisable(isNewZealand);
+        updateDeathDetailsRegionTextField.setVisible(!isNewZealand);
+
+        updateDeathDetailsRegionChoiceBox.setValue(currentChoiceRegion);
+        updateDeathDetailsRegionChoiceBox.setDisable(!isNewZealand);
+        updateDeathDetailsRegionChoiceBox.setVisible(isNewZealand);
+
+    }
+
+    /**
+     * Updates the region selector type when the country selector is interacted with
+     */
+    @FXML
+    private void deathCountrySelectorListener() {
+        handleRegionPicker();
+    }
+
+
+    /**
+     * Checks if the entry fields are of a valid format and sensible time (death date after birth date)
+     * Combobox entries automatically validates country and region if from New Zealand
+     * @return True if fields are valid.
+     */
+    private boolean validateDeathDetailsFields() {
+        boolean isValid = true;
+
+        LocalDate dateOfDeath = updateDeathDetailsDatePicker.getValue();
+        String timeOfDeath = updateDeathDetailsTimeTextField.getText();
+
+        if (!(AttributeValidation.validateDateOfDeath(currentUser.getDateOfBirth(), dateOfDeath))) {
+            updateDeathDetailsErrorLabel.setText("There is an error with your Date of Death");
+            isValid = false;
+        }
+
+        if (!(AttributeValidation.validateTimeString(timeOfDeath))) {
+            updateDeathDetailsErrorLabel.setText("The format of the Time of Death is incorrect");
+            isValid = false;
+        } else if (LocalTime.parse(updateDeathDetailsTimeTextField.getText()).isAfter(LocalTime.now())) {
+            updateDeathDetailsErrorLabel.setText("The time of death cannot be in the future");
+            isValid = false;
+        }
+
+        return isValid;
+    }
+
+    /**
+     * Opens the alert window asking if the user really wants to remove the death details
+     */
+    @FXML
+    private void removeUpdateDeathDetails() {
+        FXMLLoader removeDeathDetailsLoader = new FXMLLoader(getClass().getResource("/FXML/removeDeathDetailsAlert.fxml"));
+        Parent root;
+        try {
+            root = removeDeathDetailsLoader.load();
+            RemoveDeathDetailsAlertController removeDeathDetailsController = removeDeathDetailsLoader.getController();
+            Stage updateStage = new Stage();
+            updateStage.initModality(Modality.APPLICATION_MODAL);
+            updateStage.setScene(new Scene(root));
+            removeDeathDetailsController.init(AppController.getInstance(), updateStage, currentUser);
+            updateStage.show();
+            Log.info("Successfully remove death details window for User NHI: " + currentUser.getNhi());
+
+        } catch (IOException e) {
+            Log.severe("Failed to load remove death details window for User NHI: " + currentUser.getNhi(), e);
+        }
+    }
+
 
     /**
      * Sets the details for the current user
@@ -734,10 +926,16 @@ public class UpdateUserController {
         } catch (InvalidFieldsException e) {
             valid = false;
         }
+        if (!validateDeathDetailsFields()){
+            valid = false;
+        }
 
         if (valid) { // only updates if everything is valid
             appController.update(currentUser);
         }
+
+
+
         return valid;
     }
 
@@ -828,6 +1026,23 @@ public class UpdateUserController {
         }
     }
 
+    private boolean updateDeathDetails(){
+        boolean changed = false;
+        LocalDate dateOfDeath = updateDeathDetailsDatePicker.getValue();
+        LocalTime timeOfDeath = LocalTime.parse(updateDeathDetailsTimeTextField.getText());
+        currentUser.setMomentOfDeath(currentUser.getDeathDetails().createMomentOfDeath(dateOfDeath, timeOfDeath));
+
+        currentUser.setDeathCity(updateDeathDetailsCityTextField.getText());
+        if (isNewZealand) {
+            //if checkChangedProperty(u)
+            currentUser.setDeathRegion(updateDeathDetailsRegionChoiceBox.getValue());
+        } else {
+            currentUser.setDeathRegion(updateDeathDetailsRegionTextField.getText());
+        }
+        currentUser.setDeathCountry(updateDeathDetailsCountryComboBox.getValue());
+        return changed;
+    }
+
     /**
      * Updates the undo stacks of the form.
      */
@@ -843,6 +1058,7 @@ public class UpdateUserController {
         changed |= updateHealthDetails(heightInput.getText(), weightInput.getText());
         changed |= updateContactDetails();
         changed |= updateEmergencyContact();
+        changed |= updateDeathDetails();
         if (changed) {
             currentUser.getRedoStack().clear();
         }
@@ -902,6 +1118,8 @@ public class UpdateUserController {
 
         return changed;
     }
+
+
 
     /**
      * Updates all health details that have changed.
