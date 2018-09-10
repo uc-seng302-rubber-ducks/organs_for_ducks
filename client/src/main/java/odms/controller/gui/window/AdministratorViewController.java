@@ -928,7 +928,7 @@ public class AdministratorViewController implements PropertyChangeListener, User
     @FXML
     void addClinician() {
 
-        FXMLLoader clinicianLoader = new FXMLLoader(getClass().getResource("/FXML/updateClinician.fxml"));
+        FXMLLoader clinicianLoader = new FXMLLoader(getClass().getResource("/FXML/updateCliniciann.fxml"));
         Parent root;
         try {
             root = clinicianLoader.load();

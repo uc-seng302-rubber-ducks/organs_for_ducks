@@ -4,6 +4,7 @@ import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -42,6 +43,25 @@ import static odms.commons.utils.UndoHelpers.removeFormChanges;
 public class UpdateClinicianController {
 
     //<editor-fold desc="fxml stuff">
+    @FXML
+    private Label staffIdErrorLabel;
+
+    @FXML
+    private Label passwordErrorLabel;
+
+    @FXML
+    private Label confirmPasswordErrorLabel;
+
+    @FXML
+    private Label firstNameErrorLabel;
+
+    @FXML
+    private Label regionErrorLabel;
+
+    @FXML
+    private Label clinicianGenericErrorLabel;
+
+
     @FXML
     private TextField staffIDTextField;
 
@@ -634,6 +654,15 @@ public class UpdateClinicianController {
     }
 
     /**
+     * Invalidates a node to have a red border and red background
+     *
+     * @param node node to invalidate
+     */
+    private void invalidateNode(Node node) {
+        node.getStyleClass().add("invalid");
+    }
+
+    /**
      * Saves the clinician if all updated attributes are valid, otherwise error messages are displayed.
      * Upon a successful save, the window closes.
      */
@@ -645,16 +674,22 @@ public class UpdateClinicianController {
 
         if (!staffID.isEmpty()) {
             Clinician foundClinician = controller.getClinician(staffID);
-
-            if (!(foundClinician == null || (!newClinician && staffID.equals(currentClinician.getStaffId())))) { // no clinician exists with the updated staff ID
-                invalidStaffIDLabel.setText("Staff ID already in use");
-                invalidStaffIDLabel.setVisible(true);
+            if (foundClinician != null && newClinician) {
+                staffIdErrorLabel.setText("Staff ID already in use");
+                staffIdErrorLabel.setVisible(true);
+                invalidateNode(staffIDTextField);
+                valid = false;
+            } else if ((foundClinician != null && !staffID.equals(oldClinician.getStaffId()))) { // no clinician exists with the updated staff ID
+                staffIdErrorLabel.setText("Staff ID already in use");
+                staffIdErrorLabel.setVisible(true);
+                invalidateNode(staffIDTextField);
                 valid = false;
             }
 
         } else {
-            invalidStaffIDLabel.setText("Staff ID cannot be empty");
-            invalidStaffIDLabel.setVisible(true);
+            staffIdErrorLabel.setText("Staff ID cannot be empty");
+            staffIdErrorLabel.setVisible(true);
+            invalidateNode(staffIDTextField);
             valid = false;
         }
 
@@ -674,18 +709,22 @@ public class UpdateClinicianController {
         if (newClinician) {
             if (passwordField.getText().isEmpty() || confirmPasswordField.getText().isEmpty()) {
                 valid = false;
-                emptyPasswordLabel.setVisible(true);
+                invalidateNode(passwordField);
+                passwordErrorLabel.setText("Passwords cannot be empty");
+                passwordErrorLabel.setVisible(true);
             } else if (passwordField.getText().equals(confirmPasswordField.getText())) {
                 password = passwordField.getText();
             } else {
                 valid = false;
-                incorrectPasswordLabel.setVisible(true);
+                invalidateNode(confirmPasswordField);
+                confirmPasswordErrorLabel.setVisible(true);
             }
         } else {
             if ((passwordField.getText().isEmpty() || (confirmPasswordField.getText().isEmpty()))) {
                 //this stops the rest of the if statement executing if the passwords are blank avoiding NPE
             } else if (!(confirmPasswordField.getText()).equals(passwordField.getText()) || currentClinician.isPasswordCorrect(passwordField.getText())) {
-                incorrectPasswordLabel.setVisible(true);
+                invalidateNode(confirmPasswordField);
+                confirmPasswordErrorLabel.setVisible(true);
                 valid = false;
             } else {
                 updatePassword = true;
@@ -713,7 +752,8 @@ public class UpdateClinicianController {
 
         region = getRegionInput();
         if (region.isEmpty()) {
-            emptyRegionLabel.setVisible(true);
+            regionErrorLabel.setVisible(true);
+            invalidateNode(regionTextField);
             valid = false;
         }
 
@@ -754,6 +794,7 @@ public class UpdateClinicianController {
 
         } else {
             Log.warning("Clinician not updated for Clinician Staff Id: " + staffID);
+            clinicianGenericErrorLabel.setVisible(true);
         }
     }
 
@@ -840,11 +881,12 @@ public class UpdateClinicianController {
      * Hides all error messages from the user.
      */
     private void hideErrorMessages() {
-        invalidStaffIDLabel.setVisible(false);
-        emptyPasswordLabel.setVisible(false);
-        incorrectPasswordLabel.setVisible(false);
-        emptyFNameLabel.setVisible(false);
-        emptyRegionLabel.setVisible(false);
+        regionErrorLabel.setVisible(false);
+        clinicianGenericErrorLabel.setVisible(false);
+        passwordErrorLabel.setVisible(false);
+        confirmPasswordErrorLabel.setVisible(false);
+        firstNameErrorLabel.setVisible(false);
+        staffIdErrorLabel.setVisible(false);
     }
 
     /**

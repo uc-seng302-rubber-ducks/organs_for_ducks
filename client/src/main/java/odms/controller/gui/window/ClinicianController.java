@@ -523,7 +523,7 @@ public class ClinicianController implements PropertyChangeListener, UserLauncher
      */
     @FXML
     void edit() {
-        FXMLLoader updateLoader = new FXMLLoader(getClass().getResource("/FXML/updateClinician.fxml"));
+        FXMLLoader updateLoader = new FXMLLoader(getClass().getResource("/FXML/updateCliniciann.fxml"));
         Parent root;
         try {
             root = updateLoader.load();
