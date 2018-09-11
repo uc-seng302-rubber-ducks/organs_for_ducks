@@ -17,6 +17,7 @@ public class AppointmentUpdateStrategy extends AbstractUpdateStrategy {
     private static final String DELETE_APPOINTMENT_REJECTED_SEEN = "DELETE FROM AppointmentDetails WHERE apptId = ? AND fkStatusId = 7";
     private static final String DELETE_USER_CANCELLED_APPOINTMENTS = "DELETE FROM AppointmentDetails WHERE fkStatusId = ? AND fkUserNhi = ?";
     private static final String DELETE_CLINICIAN_CANCELLED_APPOINTMENTS = "DELETE FROM AppointmentDetails WHERE fkStatusId = ? AND fkStaffId = ?";
+    private static final String UPDATE_APPOINTMENT_STMT = "UPDATE AppointmentDetails SET fkCategoryId = ?, requestedTime = ?, fkStatusId = ?, description = ? WHERE apptId = ?";
 
     /**
      * Updates a collection of recurring appointments
@@ -81,7 +82,6 @@ public class AppointmentUpdateStrategy extends AbstractUpdateStrategy {
         }
     }
 
-
     /**
      * Removes all cancelled appointments that have been seen by the user / clinician from the database.
      *
@@ -106,6 +106,23 @@ public class AppointmentUpdateStrategy extends AbstractUpdateStrategy {
             stmt.setInt(1, status);
             stmt.setString(2, id);
             stmt.executeUpdate();
+        }
+    }
+
+    /**
+     * Updates an existing appointment in the database
+     * @param connection Connection to the target database
+     * @param appointment Appointment to updated details from
+     * @throws SQLException If there is an error updating the appointment in the database or the connection is invalid
+     */
+    public void putSingleAppointment(Connection connection, Appointment appointment) throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_APPOINTMENT_STMT)) {
+            preparedStatement.setInt(1, appointment.getAppointmentCategory().getDbValue());
+            preparedStatement.setTimestamp(2, Timestamp.valueOf(appointment.getRequestedDate()));
+            preparedStatement.setInt(3, appointment.getAppointmentStatus().getDbValue());
+            preparedStatement.setString(4, appointment.getRequestDescription());
+            preparedStatement.setInt(5, appointment.getAppointmentId());
+            preparedStatement.executeUpdate();
         }
     }
 }

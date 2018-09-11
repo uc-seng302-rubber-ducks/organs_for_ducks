@@ -5,7 +5,6 @@ import odms.commons.model.Appointment;
 import odms.commons.model.Clinician;
 import odms.commons.model._enum.EventTypes;
 import odms.commons.model.event.UpdateNotificationEvent;
-import odms.commons.utils.Log;
 import odms.controller.AppController;
 import odms.socket.ServerEventNotifier;
 
@@ -26,20 +25,6 @@ public class ClinicianAppointmentRequestLogicController implements PropertyChang
         this.appController = controller;
         this.clinician = clinician;
         ServerEventNotifier.getInstance().addPropertyChangeListener(this);
-    }
-
-    /**
-     * Launches the pop-up to view a requested appointment and choose a time for it before accepting
-     */
-    public void launchAcceptedPopup() {
-        Log.warning("Not implemented yet");
-    }
-
-    /**
-     * Launches the pop-up to view a requested appointment and enter a rejection reason before rejecting it.
-     */
-    public void launchRejectedPopup() {
-        Log.warning("Not implemented yet");
     }
 
     /**
