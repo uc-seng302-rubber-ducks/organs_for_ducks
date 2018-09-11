@@ -43,6 +43,7 @@ public class RejectAppointmentReasonViewController {
     @FXML
     private void confirmRejectionReason() {
         logicController.rejectAppointment(appointment, reasonTextArea.getText(), new AppointmentsBridge(AppController.getInstance().getClient()));
+        stage.close();
     }
 
     /**
