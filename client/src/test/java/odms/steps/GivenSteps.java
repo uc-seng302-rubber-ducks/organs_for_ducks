@@ -68,6 +68,7 @@ public class GivenSteps extends ApplicationTest {
 
     @Given("^I have started the GUI$")
     public void iHaveStartedTheGUI() throws Throwable {
+        AppController.setInstance(CucumberTestModel.getController());
         FxToolkit.registerPrimaryStage();
         FxToolkit.setupApplication(App.class);
     }

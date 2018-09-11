@@ -74,7 +74,6 @@ public class AppointmentController extends BaseController {
         }
     }
 
-
     @RequestMapping(method = RequestMethod.POST, value = "/appointments")
     public ResponseEntity postAppointment(@RequestBody Appointment newAppointment) {
         try (Connection connection = driver.getConnection()) {
@@ -94,7 +93,6 @@ public class AppointmentController extends BaseController {
 
         return new ResponseEntity(HttpStatus.ACCEPTED);
     }
-
 
     @IsClinician
     @RequestMapping(method = RequestMethod.PUT, value = "/clinicians/{staffId}/appointments/{appointmentId}")

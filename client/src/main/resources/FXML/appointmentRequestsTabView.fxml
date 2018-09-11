@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.collections.FXCollections?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
-<AnchorPane xmlns:fx="http://javafx.com/fxml/1" prefHeight="730.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8"
-            fx:controller="odms.controller.gui.panel.view.ClinicianAppointmentRequestViewController">
+<?import java.lang.*?>
+<AnchorPane prefHeight="735.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="odms.controller.gui.panel.view.ClinicianAppointmentRequestViewController">
    <children>
       <AnchorPane prefHeight="735.0" prefWidth="803.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="397.0" AnchorPane.topAnchor="0.0">
          <children>
              <TableView fx:id="clinicianAppointmentsRequestView" layoutX="36.0" layoutY="69.0" prefHeight="614.0" prefWidth="732.0" AnchorPane.bottomAnchor="52.0" AnchorPane.leftAnchor="36.0" AnchorPane.rightAnchor="35.0" AnchorPane.topAnchor="69.0">
               <columns>
                 <TableColumn fx:id="clinicianAppointmentUserIdColumn" prefWidth="75.0" text="NHI" />
-                <TableColumn fx:id="clinicianAppointmentUserNameColumn" prefWidth="134.0" text="Name" />
+                  <TableColumn fx:id="clinicianAppointmentStatusColumn" prefWidth="134.0" text="Status"/>
                   <TableColumn fx:id="clinicianAppointmentDateColumn" prefWidth="85.0" text="Date/Time" />
                   <TableColumn fx:id="clinicianAppointmentCategoryColumn" prefWidth="121.0" text="Category" />
               </columns>
@@ -35,10 +36,10 @@
       </AnchorPane>
       <AnchorPane layoutX="803.0" layoutY="14.0" prefHeight="720.0" prefWidth="396.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="803.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-             <Button onAction="#rejectAppointment" layoutX="9.0" layoutY="653.0" mnemonicParsing="false"
-                     text="Reject Appointment" AnchorPane.bottomAnchor="52.0" AnchorPane.rightAnchor="232.0"/>
-             <Button onAction="#acceptAppointment" layoutX="199.0" layoutY="653.0" mnemonicParsing="false"
-                     text="Accept Appointment" AnchorPane.bottomAnchor="52.0" AnchorPane.rightAnchor="47.0"/>
+             <Button onAction="#rejectAppointment" layoutX="23.0" layoutY="686.0" mnemonicParsing="false"
+                     text="Reject Appointment" AnchorPane.bottomAnchor="24.0" AnchorPane.rightAnchor="218.0"/>
+             <Button onAction="#acceptAppointment" layoutX="199.0" layoutY="686.0" mnemonicParsing="false"
+                     text="Accept Appointment" AnchorPane.bottomAnchor="24.0" AnchorPane.rightAnchor="47.0"/>
              <Label layoutX="7.0" layoutY="109.0" text="NHI: " AnchorPane.rightAnchor="358.0"
                     AnchorPane.topAnchor="109.0"/>
              <Label layoutX="7.0" layoutY="147.0" text="Status:" AnchorPane.rightAnchor="347.0"
@@ -60,7 +61,20 @@
              <TextField fx:id="appointmentRequestTime" layoutX="130.0" layoutY="240.0" prefHeight="25.0"
                         prefWidth="218.0" AnchorPane.rightAnchor="49.0" AnchorPane.topAnchor="240.0"/>
              <ComboBox fx:id="appointmentRequestCategory" layoutX="130.0" layoutY="285.0" prefHeight="25.0"
-                       prefWidth="218.0" AnchorPane.rightAnchor="49.0" AnchorPane.topAnchor="285.0"/>
+                       prefWidth="218.0" AnchorPane.rightAnchor="49.0" AnchorPane.topAnchor="285.0">
+                 <items>
+                     <FXCollections fx:factory="observableArrayList">
+                         <String fx:value="Blood test"/>
+                         <String fx:value="General check-up"/>
+                         <String fx:value="Health advice"/>
+                         <String fx:value="Prescription renewal"/>
+                         <String fx:value="Other"/>
+                     </FXCollections>
+                 </items>
+                 <value>
+                     <String fx:value=""/>
+                 </value>
+             </ComboBox>
              <TextArea fx:id="appointmentRequestDescription" layoutX="150.0" layoutY="328.0" prefHeight="313.0"
                        prefWidth="218.0" AnchorPane.bottomAnchor="108.0" AnchorPane.rightAnchor="49.0"
                        AnchorPane.topAnchor="328.0"/>

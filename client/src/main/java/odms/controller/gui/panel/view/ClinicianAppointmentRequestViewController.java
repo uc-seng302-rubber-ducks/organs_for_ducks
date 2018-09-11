@@ -1,5 +1,6 @@
 package odms.controller.gui.panel.view;
 
+import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -11,6 +12,7 @@ import javafx.scene.control.*;
 import javafx.stage.Stage;
 import odms.bridge.AppointmentsBridge;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Stage;
 import odms.commons.model.Appointment;
 import odms.commons.utils.AttributeValidation;
 import odms.commons.utils.Log;
@@ -18,18 +20,18 @@ import odms.controller.AppController;
 import odms.commons.model.Clinician;
 import odms.commons.model._enum.AppointmentCategory;
 import odms.commons.model._enum.AppointmentStatus;
-import odms.controller.AppController;
 import odms.controller.gui.panel.logic.AvailableOrgansLogicController;
 import odms.controller.gui.panel.logic.ClinicianAppointmentRequestLogicController;
 import odms.controller.gui.popup.view.RejectAppointmentReasonViewController;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
-
-import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 public class ClinicianAppointmentRequestViewController {
+
+    @FXML
+    private TableView<Appointment> clinicianAppointmentsRequestView;
 
     @FXML
     private DatePicker appointmentRequestDate;
@@ -50,23 +52,21 @@ public class ClinicianAppointmentRequestViewController {
     private Label appointmentRequestUserNhi;
 
     @FXML
-    private TableView<Appointment> clinicianAppointmentsRequestView  = new TableView<>();
-
-    @FXML
     private TableColumn<Appointment, String> clinicianAppointmentUserIdColumn = new TableColumn<>();
 
     @FXML
-    private TableColumn<Appointment, AppointmentStatus> clinicianAppointmentUserNameColumn = new TableColumn<>();
-
-    @FXML
-    private TableColumn<Appointment, LocalDateTime> clinicianAppointmentDateColumn = new TableColumn<>();
+    private TableColumn<Appointment, AppointmentStatus> clinicianAppointmentStatusColumn = new TableColumn<>();
 
     @FXML
     private TableColumn<Appointment, AppointmentCategory> clinicianAppointmentCategoryColumn = new TableColumn<>();
 
+    @FXML
+    private TableColumn<Appointment, String> clinicianAppointmentDateColumn = new TableColumn<>();
 
     private ObservableList<Appointment> availableAppointments = FXCollections.observableList(new ArrayList<>());
     private ClinicianAppointmentRequestLogicController logicController;
+
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd hh:mm");
 
 
     /**
@@ -85,8 +85,8 @@ public class ClinicianAppointmentRequestViewController {
      */
     private void initAppointmentTable() {
         clinicianAppointmentUserIdColumn.setCellValueFactory(new PropertyValueFactory<>("requestingUserId"));
-        clinicianAppointmentUserNameColumn.setCellValueFactory(new PropertyValueFactory<>("appointmentStatus")); //Somehow get the user's names
-        clinicianAppointmentDateColumn.setCellValueFactory(new PropertyValueFactory<>("requestedDate"));
+        clinicianAppointmentStatusColumn.setCellValueFactory(new PropertyValueFactory<>("appointmentStatus"));
+        clinicianAppointmentDateColumn.setCellValueFactory(foo -> new SimpleStringProperty(foo.getValue().getRequestedDate().format(formatter)));
         clinicianAppointmentCategoryColumn.setCellValueFactory(new PropertyValueFactory<>("appointmentCategory"));
         logicController.updateTable(0);
         populateTable();
@@ -98,27 +98,13 @@ public class ClinicianAppointmentRequestViewController {
     }
 
     /**
-     * Launches a pop-up for the clinician to accept an appointment and pick a time
-     */
-    @FXML
-    public void clinicianAcceptAppointmentBtn() {
-        logicController.launchAcceptedPopup();
-    }
-
-    /**
-     * Launches a pop-up for the clinician to reject an appoint and enter a reason why
-     */
-    @FXML
-    public void clinicianRejectAppointmentBtn() {
-        logicController.launchRejectedPopup();
-    }
-
-    /**
      * Binds a table view row to show all details for that appointment
      */
     private void setOnClickBehaviour() {
-        clinicianAppointmentsRequestView.getSelectionModel().selectedItemProperty().addListener(a ->
-        displayAppointmentDetails(clinicianAppointmentsRequestView.getSelectionModel().getSelectedItem()));
+        clinicianAppointmentsRequestView.getSelectionModel().selectedItemProperty().addListener(a -> {
+            Appointment selectedAppointment = clinicianAppointmentsRequestView.getSelectionModel().getSelectedItem();
+            displayAppointmentDetails(selectedAppointment);
+        });
     }
 
     /**
@@ -132,7 +118,7 @@ public class ClinicianAppointmentRequestViewController {
             appointmentRequestStatus.setText(appointment.getAppointmentStatus().toString());
             appointmentRequestCategory.setValue(appointment.getAppointmentCategory());
             appointmentRequestDate.setValue(appointment.getRequestedDate().toLocalDate());
-            appointmentRequestTime.setText(getAppointmentTime(appointment.getRequestedDate()));
+            appointmentRequestTime.setText(appointment.getRequestedDate().toLocalTime().toString());
             appointmentRequestDescription.setText(appointment.getRequestDescription());
         } else {
             appointmentRequestUserNhi.setText("");
@@ -142,20 +128,6 @@ public class ClinicianAppointmentRequestViewController {
             appointmentRequestTime.clear();
             appointmentRequestDescription.clear();
         }
-    }
-
-    /**
-     * Extracts the appointment time and formats it to be human readable
-     *
-     * @param dateTime The local date time object of the appointment
-     * @return The appointment time as a String
-     */
-    private String getAppointmentTime(LocalDateTime dateTime) {
-        String appointmentTime;
-        String minute = String.format("%02d", dateTime.getMinute());
-        String hour = String.format("%02d", dateTime.getHour());
-        appointmentTime = hour + ":" + minute;
-        return appointmentTime;
     }
 
     /**
@@ -211,6 +183,4 @@ public class ClinicianAppointmentRequestViewController {
     private Appointment getSelectedAppointment() {
         return clinicianAppointmentsRequestView.getSelectionModel().getSelectedItem();
     }
-
-
 }
