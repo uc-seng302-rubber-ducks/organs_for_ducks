@@ -5,24 +5,18 @@ import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.stage.Stage;
 import odms.commons.model.Appointment;
 import odms.commons.model.Clinician;
 import odms.commons.model._enum.AppointmentCategory;
 import odms.commons.model._enum.AppointmentStatus;
-import odms.commons.utils.Log;
 import odms.controller.AppController;
 import odms.controller.gui.panel.logic.AvailableOrgansLogicController;
 import odms.controller.gui.panel.logic.ClinicianAppointmentRequestLogicController;
-import odms.controller.gui.popup.view.RejectAppointmentReasonViewController;
+import odms.controller.gui.popup.utils.AlertWindowFactory;
 import odms.socket.ServerEventNotifier;
 
-import java.io.IOException;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
@@ -48,6 +42,12 @@ public class ClinicianAppointmentRequestViewController {
 
     @FXML
     private Label appointmentRequestUserNhi;
+
+    @FXML
+    private Button rejectAppointmentButton;
+
+    @FXML
+    private Button acceptAppointmentButton;
 
     @FXML
     private TableColumn<Appointment, String> clinicianAppointmentUserIdColumn = new TableColumn<>();
@@ -103,10 +103,21 @@ public class ClinicianAppointmentRequestViewController {
             Appointment selectedAppointment = clinicianAppointmentsRequestView.getSelectionModel().getSelectedItem();
             displayAppointmentDetails(selectedAppointment);
             if (selectedAppointment != null) {
+
+
                 if (selectedAppointment.getAppointmentStatus() == AppointmentStatus.CANCELLED_BY_USER) {
                     selectedAppointment.setAppointmentStatus(AppointmentStatus.CANCELLED_BY_USER_SEEN);
                     AppController.getInstance().getAppointmentsBridge().patchAppointmentStatus(selectedAppointment.getAppointmentId(),
                             AppointmentStatus.CANCELLED_BY_USER_SEEN.getDbValue());
+                }
+
+                if (selectedAppointment.getAppointmentStatus() == AppointmentStatus.ACCEPTED ||
+                        selectedAppointment.getAppointmentStatus() == AppointmentStatus.ACCEPTED_SEEN) {
+                    rejectAppointmentButton.setText("Cancel Appointment");
+                    acceptAppointmentButton.setText("Update Appointment");
+                } else {
+                    rejectAppointmentButton.setText("Reject Appointment");
+                    acceptAppointmentButton.setText("Accept Appointment");
                 }
             }
         });
@@ -151,28 +162,32 @@ public class ClinicianAppointmentRequestViewController {
         logicController.goToNextPage();
     }
 
+    /**
+     * @see ClinicianAppointmentRequestLogicController rejectAppointment()
+     */
     @FXML
     private void rejectAppointment() {
         Appointment selectedAppointment = clinicianAppointmentsRequestView.getSelectionModel().getSelectedItem();
-
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML/appointmentRejection.fxml"));
-        Stage rejectionStage = new Stage();
-        Parent root;
-        try {
-            root = loader.load();
-            RejectAppointmentReasonViewController rejectionController = loader.getController();
-            rejectionStage.setScene(new Scene(root));
-
-            rejectionController.init(selectedAppointment, rejectionStage);
-            rejectionStage.show();
-        } catch (IOException e) {
-            Log.severe("failed to load login window FXML", e);
+        if (selectedAppointment == null) {
+            AlertWindowFactory.generateInfoWindow("You must select an appointment to reject");
+            return;
         }
+
+        logicController.rejectAppointment(selectedAppointment);
     }
 
+    /**
+     * @see ClinicianAppointmentRequestLogicController rejectAppointment()
+     */
     @FXML
     private void acceptAppointment() {
+        Appointment selectedAppointment = clinicianAppointmentsRequestView.getSelectionModel().getSelectedItem();
+        if (selectedAppointment == null) {
+            AlertWindowFactory.generateInfoWindow("You must select an appointment to accept");
+            return;
+        }
 
+        logicController.acceptAppointment(selectedAppointment);
     }
 
     /**
