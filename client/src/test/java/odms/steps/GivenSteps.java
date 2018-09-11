@@ -12,6 +12,7 @@ import odms.commons.model.User;
 import odms.commons.model._enum.Organs;
 import odms.commons.model.dto.UserOverview;
 import odms.controller.AppController;
+import org.junit.Before;
 import org.mockito.AdditionalMatchers;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
