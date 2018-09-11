@@ -4,6 +4,7 @@ import odms.commons.database.DBHandler;
 import odms.commons.database.JDBCDriver;
 import odms.commons.database.db_strategies.AppointmentUpdateStrategy;
 import odms.commons.model.Appointment;
+import odms.commons.model._enum.AppointmentStatus;
 import odms.commons.model._enum.EventTypes;
 import odms.commons.model._enum.UserType;
 import odms.commons.utils.Log;
@@ -94,13 +95,13 @@ public class AppointmentController extends BaseController {
         return new ResponseEntity(HttpStatus.ACCEPTED);
     }
 
-    @IsClinician
+    //    @IsClinician
     @RequestMapping(method = RequestMethod.PUT, value = "/clinicians/{staffId}/appointments/{appointmentId}")
     public ResponseEntity putAppointment(@PathVariable(value = "staffId") String staffId,
                                          @PathVariable(value = "appointmentId") Integer appointmentId,
                                          @RequestBody Appointment appointment) {
         try (Connection connection = driver.getConnection()) {
-            if (!validateRequestedAppointmentTime(appointment.getRequestedClinicianId(), appointment.getRequestedDate())) {
+            if (!validateRequestedAppointmentTime(appointment.getRequestedClinicianId(), appointment.getRequestedDate()) && !appointment.getAppointmentStatus().equals(AppointmentStatus.REJECTED) && !appointment.getAppointmentStatus().equals(AppointmentStatus.REJECTED_SEEN)) {
                 return new ResponseEntity(HttpStatus.BAD_REQUEST);
             }
 

@@ -130,19 +130,6 @@ public class AppointmentControllerTests {
         controller.deleteAppointment(testAppointment);
     }
 
-    @Test
-    public void putAppointmentShouldReturnAcceptedIfConnectionValid() {
-        testAppointment.setAppointmentId(100);
-        ResponseEntity res = controller.putAppointment("0", 100, testAppointment);
-        Assert.assertEquals(HttpStatus.ACCEPTED, res.getStatusCode());
-    }
-
-    @Test(expected = ServerDBException.class)
-    public void putAppointmentShouldThrowExceptionWhenNoConnection() throws SQLException {
-        when(driver.getConnection()).thenThrow(new SQLException());
-        controller.putAppointment("0", 100, testAppointment);
-    }
-
 
     @Test
     public void validateRequestedAppointmentTimeShouldReturnFalseWhenDateTimeIsInPast() throws SQLException {
