@@ -3,7 +3,7 @@
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<AnchorPane prefHeight="453.0" prefWidth="694.0" stylesheets="@../gui.css" xmlns="http://javafx.com/javafx/8.0.121"
+<AnchorPane prefHeight="453.0" prefWidth="694.0" stylesheets="@../gui.css" xmlns="http://javafx.com/javafx/8"
             xmlns:fx="http://javafx.com/fxml/1" fx:controller="odms.controller.gui.window.UpdateAdminController">
    <children>
       <TabPane layoutY="43.0" prefHeight="409.0" prefWidth="694.0" tabClosingPolicy="UNAVAILABLE">
@@ -54,16 +54,18 @@
                               <TextField fx:id="lastNameTextField" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                               <PasswordField fx:id="passwordTextField" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                               <PasswordField fx:id="cPasswordTextField" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-                               <Label fx:id="errorLabel" styleClass="label-error" text="Passwords do not match"
-                                      GridPane.columnIndex="1" GridPane.rowIndex="5" GridPane.valignment="BOTTOM"/>
+                               <Label fx:id="confirmPasswordErrorLabel" styleClass="label-error"
+                                      text="Passwords do not match" visible="false" GridPane.columnIndex="1"
+                                      GridPane.rowIndex="5" GridPane.valignment="BOTTOM"/>
                                <Label fx:id="invalidFName" styleClass="label-error"
-                                      text="Only alphanumeric characters are allowed" GridPane.columnIndex="1"
-                                      GridPane.rowIndex="1" GridPane.valignment="BOTTOM"/>
+                                      text="Only alphanumeric characters are allowed" visible="false"
+                                      GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.valignment="BOTTOM"/>
                                <Label fx:id="invalidUsername" styleClass="label-error"
-                                      text="Only alphanumeric characters are allowed" GridPane.columnIndex="1"
-                                      GridPane.valignment="BOTTOM"/>
-                               <Label fx:id="passwordLabel" styleClass="label-error" text="Passwords cannot be empty"
-                                      GridPane.columnIndex="1" GridPane.rowIndex="4" GridPane.valignment="BOTTOM"/>
+                                      text="Only alphanumeric characters are allowed" visible="false"
+                                      GridPane.columnIndex="1" GridPane.valignment="BOTTOM"/>
+                               <Label fx:id="passwordErrorLabel" styleClass="label-error"
+                                      text="Passwords cannot be empty" visible="false" GridPane.columnIndex="1"
+                                      GridPane.rowIndex="4" GridPane.valignment="BOTTOM"/>
                            </children>
                            <columnConstraints>
                               <ColumnConstraints hgrow="SOMETIMES" maxWidth="284.0" minWidth="10.0" prefWidth="172.0" />
@@ -93,6 +95,6 @@
        <Button fx:id="redoAdminUpdateButton" layoutX="622.0" layoutY="9.0" mnemonicParsing="false"
                onAction="#redoAdminUpdate" styleClass="button-secondary" text="Redo"/>
        <Label fx:id="adminGenericErrorLabel" layoutX="86.0" layoutY="417.0" styleClass="label-error"
-              text="There is an error in the fields. Please double check your inputs"/>
+              text="There is an error in the fields. Please double check your inputs" visible="false"/>
    </children>
 </AnchorPane>

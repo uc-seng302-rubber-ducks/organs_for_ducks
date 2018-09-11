@@ -111,6 +111,10 @@
     -fx-border-color: #d7d6d6;
 }
 
+.button:pressed {
+    -fx-background-color: #005a7c;
+}
+
 /****************************************
 *                                       *
 * TEXT_FIELD                            *

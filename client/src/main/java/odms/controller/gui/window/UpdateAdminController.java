@@ -1,6 +1,7 @@
 package odms.controller.gui.window;
 
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.Region;
 import javafx.stage.Stage;
@@ -14,6 +15,9 @@ import static odms.commons.utils.AttributeValidation.checkRequiredStringName;
 import static odms.commons.utils.UndoHelpers.removeFormChanges;
 
 public class UpdateAdminController {
+
+    @FXML
+    private Label confirmPasswordErrorLabel;
     @FXML
     private TextField usernameTextField;
 
@@ -45,9 +49,6 @@ public class UpdateAdminController {
     private Label invalidFName;
 
     @FXML
-    private Label errorLabel;
-
-    @FXML
     private Label adminDetailInputTitle;
 
     private Administrator admin;
@@ -75,7 +76,7 @@ public class UpdateAdminController {
         stage.getScene();
         invalidUsername.setText("");
         invalidFName.setText("");
-        errorLabel.setText("");
+        //errorLabel.setText("");
 
         if (!newAdmin) {
             adminClone = Administrator.clone(admin);
@@ -113,7 +114,10 @@ public class UpdateAdminController {
      * @param field The current textfield/password field
      */
     private void changesListener(TextField field) {
-        field.textProperty().addListener((observable, oldValue, newValue) -> detectChanges());
+        field.textProperty().addListener((observable, oldValue, newValue) -> {
+            field.getStyleClass().remove("invalid");
+            detectChanges();
+        });
     }
 
     /**
@@ -223,12 +227,13 @@ public class UpdateAdminController {
         valid = true;
         invalidUsername.setVisible(false);
         invalidFName.setVisible(false);
-        errorLabel.setVisible(false);
+        //confirmPasswordErrorLabel.setVisible(false);
         // waiting for the string validation to be finished
         if (!usernameTextField.getText().isEmpty() && !usernameTextField.getText().equals(admin.getUserName())) {
             Administrator foundAdministrator = appController.getAdministrator(usernameTextField.getText());
 
             if (!(foundAdministrator == null || (!newAdmin && usernameTextField.getText().equals(admin.getUserName())))) { // no clinician exists with the updated staff ID
+                invalidateNode(usernameTextField);
                 invalidUsername.setText("Staff username already in use");
                 invalidUsername.setVisible(true);
                 valid = false;
@@ -240,6 +245,7 @@ public class UpdateAdminController {
             if (checkRequiredStringName(firstNameTextField.getText())) {
                 admin.setFirstName(firstNameTextField.getText());
             } else {
+                invalidateNode(firstNameTextField);
                 invalidFName.setText("That is not a valid first name");
                 invalidFName.setVisible(true);
                 valid = false;
@@ -257,12 +263,16 @@ public class UpdateAdminController {
             if (passwordTextField.getText().equals(cPasswordTextField.getText())) {
                 admin.setPassword(passwordTextField.getText());
             } else {
-                errorLabel.setText("Your passwords don't match");
-                errorLabel.setVisible(true);
+                confirmPasswordErrorLabel.setText("Your passwords don't match");
+                confirmPasswordErrorLabel.setVisible(true);
                 valid = false;
             }
         }
         admin.getRedoStack().clear();
+    }
+
+    private void invalidateNode(Node node) {
+        node.getStyleClass().add("invalid");
     }
 
 
@@ -285,6 +295,8 @@ public class UpdateAdminController {
             }
             adminViewController.refreshTables();
             stage.close();
+        } else {
+
         }
     }
 
