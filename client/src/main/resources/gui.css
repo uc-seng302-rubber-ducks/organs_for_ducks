@@ -47,18 +47,18 @@
 
 /****************************************
 *                                       *
-* COMBO_BOX                             *
+* COMBO_BOX & CHOICE_BOX                *
 *                                       *
 ****************************************/
 
-.combo-box {
+.combo-box, .choice-box {
     -fx-background-color: white;
     -fx-border-color: #ced4da;
     -fx-border-radius: 2.5%;
 
 }
 
-.combo-box:focused {
+.combo-box:focused, .choice-box:focused {
     -fx-background-color: white;
     -fx-border-width: 2;
     -fx-border-color: #78c9e9;
@@ -66,6 +66,16 @@
 }
 
 .combo-box-popup .list-view .list-cell:filled:hover
+{
+    -fx-background-color: #9ab87c;
+}
+
+.combo-box-popup .list-view .list-cell:filled:selected, .combo-box-popup .list-view .list-cell:filled:selected:hover
+{
+    -fx-background-color: #9ab87c;
+}
+
+.choice-box .menu-item:focused
 {
     -fx-background-color: #9ab87c;
 }
