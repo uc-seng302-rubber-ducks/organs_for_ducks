@@ -363,7 +363,7 @@ public class UserBridge extends RoleBridge {
      * @param nhi of the user to get the preferred clinician for.
      * @return comboBoxClinician representing the preferred clinician
      */
-    public ComboBoxClinician getPreferredClinician(String nhi) throws IOException{ //WHERE
+    public ComboBoxClinician getPreferredClinician(String nhi) throws IOException{
         ComboBoxClinician clinician = null;
         String url = ip + USERS + nhi + "/preferred-clinician";
         Request request = new Request.Builder().url(url).build();
@@ -391,7 +391,7 @@ public class UserBridge extends RoleBridge {
      * @param nhi of the user to get the preferred clinician for.
      * @param staffId the id of the preferred clinician
      */
-    public void putPreferredClinician(String nhi, String staffId) { //WHERE
+    public void putPreferredClinician(String nhi, String staffId) {
         String url = ip + USERS + nhi + "/preferred-clinician";
         RequestBody body = RequestBody.create(json, new Gson().toJson(staffId));
         Request request = new Request.Builder().put(body).url(url).build();

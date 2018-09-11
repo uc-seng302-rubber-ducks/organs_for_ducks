@@ -147,7 +147,7 @@ public class UserController extends BaseController {
         }
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/user/{nhi}/preferred-clinician") //WHERE
+    @RequestMapping(method = RequestMethod.GET, value = "/users/{nhi}/preferred-clinician")
     public ComboBoxClinician getPreferredClinician(@PathVariable("nhi") String userNhi) {
         try (Connection connection = driver.getConnection()) {
             return handler.getPreferredBasicClinician(connection, userNhi);
@@ -157,7 +157,7 @@ public class UserController extends BaseController {
         }
     }
 
-    @RequestMapping(method = RequestMethod.PUT, value = "/user/{nhi}/preferred-clinician") //WHERE
+    @RequestMapping(method = RequestMethod.PUT, value = "/users/{nhi}/preferred-clinician")
     public ResponseEntity putPreferredClinician(@PathVariable("nhi") String userNhi, @RequestBody String staffId) {
         try (Connection connection = driver.getConnection()) {
             handler.putPreferredBasicClinician(connection, userNhi, staffId);

@@ -123,9 +123,9 @@ public class DBHandler {
     private static final String SELECT_PREFERRED_BASIC_CLINICIAN_STMT = "SELECT staffId, firstName, middleName, lastName " +
             "FROM Clinician cl " +
             "LEFT JOIN PreferredClinician a ON cl.staffId = a.fkStaffId " +
-            "WHERE fkUserId = ?";
-    private static final String INSERT_ELSE_UPDATE_PREFERRED_CLINICIAN = "INSERT INTO PreferredClinician (fkUserId, staffId) " +
-            "VALUES (?, ?) ON DUPLICATE KEY UPDATE fkUserId=?, fkStaffId=?";
+            "WHERE fkUserNhi = ?";
+    private static final String INSERT_ELSE_UPDATE_PREFERRED_CLINICIAN = "INSERT INTO PreferredClinician (fkUserNhi, fkStaffId) " +
+            "VALUES (?, ?) ON DUPLICATE KEY UPDATE fkUserNhi=?, fkStaffId=?";
 
     private AbstractUpdateStrategy updateStrategy;
     private AbstractFetchAppointmentStrategy fetchAppointmentStrategy;
@@ -1435,22 +1435,24 @@ public class DBHandler {
      * @return the Collection of clinicians
      * @throws SQLException if there are errors with the SQL statements
      */
-    public ComboBoxClinician getPreferredBasicClinician(Connection connection, String userNhi) throws SQLException { //WHERE
+    public ComboBoxClinician getPreferredBasicClinician(Connection connection, String userNhi) throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement(SELECT_PREFERRED_BASIC_CLINICIAN_STMT)) {
-            statement.setString(1, userNhi + "%");
+            statement.setString(1, userNhi);
 
             try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
 
-                resultSet.next();
-                String fullName = "";
-                fullName += resultSet.getString("firstName");
-                if (!resultSet.getString("middleName").equals("")) {
-                    fullName += " " + resultSet.getString("middleName");
+                    String fullName = "";
+                    fullName += resultSet.getString("firstName");
+                    if (!resultSet.getString("middleName").equals("")) {
+                        fullName += " " + resultSet.getString("middleName");
+                    }
+                    fullName += " " + resultSet.getString("lastName");
+                    return new ComboBoxClinician(fullName, resultSet.getString("staffId"));
                 }
-                fullName += " " + resultSet.getString("lastName");
-                return new ComboBoxClinician(fullName, resultSet.getString("staffId"));
             }
         }
+        return null;
     }
 
     /**
@@ -1460,7 +1462,7 @@ public class DBHandler {
      * @param staffId identifier for the preferred clinician
      * @throws SQLException if there are errors with the SQL statements
      */
-    public void putPreferredBasicClinician(Connection connection, String userNhi, String staffId) throws SQLException { //WHERE
+    public void putPreferredBasicClinician(Connection connection, String userNhi, String staffId) throws SQLException {
         try (PreparedStatement statement = connection.prepareStatement(INSERT_ELSE_UPDATE_PREFERRED_CLINICIAN)) {
             statement.setString(1, userNhi);
             statement.setString(2, staffId);
