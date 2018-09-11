@@ -99,6 +99,12 @@
     -fx-border-color: #106a8c;
 }
 
+.button:pressed {
+    -fx-background-color: #004a6c;
+    -fx-border-color: #004a6c;
+}
+
+
 .button-secondary {
     -fx-border-width: 1 1px 4px 1px;
     -fx-background-color: #f0f0f0;
@@ -111,10 +117,10 @@
     -fx-border-color: #d7d6d6;
 }
 
-.button:pressed {
-    -fx-background-color: #005a7c;
+.button-secondary:pressed {
+    -fx-background-color: #b7b6b6;
+    -fx-border-color: #b7b6b6;
 }
-
 /****************************************
 *                                       *
 * TEXT_FIELD                            *
