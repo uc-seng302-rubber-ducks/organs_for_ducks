@@ -1,7 +1,10 @@
 package odms.controller.gui.popup.utils;
 
 import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.layout.Region;
+
+import java.util.Optional;
 
 public class AlertWindowFactory {
 
@@ -34,5 +37,14 @@ public class AlertWindowFactory {
         alert.setContentText(message);
 
         alert.showAndWait();
+    }
+
+    public static Optional<ButtonType> generateConfirmation(String message) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Confirmation");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+
+        return alert.showAndWait();
     }
 }

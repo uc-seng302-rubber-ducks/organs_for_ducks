@@ -166,7 +166,7 @@ public class UserController implements PropertyChangeListener {
         donationTabPageController.init(controller, user, this);
         diseasesTabPageController.init(controller, user, fromClinician, this);
         receiverTabPageController.init(controller, this.stage, user, fromClinician, this);
-        appointmentTabPageController.init(controller, user);
+        appointmentTabPageController.init(user);
         statusBarPageController.init();
         //arbitrary default values
 
