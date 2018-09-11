@@ -22,50 +22,35 @@ import odms.controller.gui.panel.logic.ClinicianAppointmentRequestLogicControlle
 import odms.controller.gui.popup.view.RejectAppointmentReasonViewController;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 public class ClinicianAppointmentRequestViewController {
 
     @FXML
-    public TableColumn<Appointment, String> categoryTableColumn;
+    private TableView<Appointment> clinicianAppointmentsRequestView;
 
     @FXML
-    private TableColumn<Appointment, LocalDateTime> dateTimeTableColumn;
-
-    @FXML
-    private TableColumn<Appointment, String> nameTableColumn;
-
-    @FXML
-    private TableColumn<Appointment, String> nhiTableColumn;
-
-    @FXML
-    private TableView<Appointment> clinicianAppointmentRequestView;
+    private DatePicker appointmentRequestDate;
 
     @FXML
     private TextArea appointmentRequestDescription;
 
     @FXML
-    private ComboBox appointmentRequestCategory;
+    private ComboBox<AppointmentCategory> appointmentRequestCategory;
 
     @FXML
     private TextField appointmentRequestTime;
 
     @FXML
-    private Label appointmentRequestUserName;
+    private Label appointmentRequestStatus;
 
     @FXML
     private Label appointmentRequestUserNhi;
 
     @FXML
-    private TableView<Appointment> clinicianAppointmentsRequestView  = new TableView<>();
-
-    private ClinicianAppointmentRequestLogicController logicController;
-    @FXML
     private TableColumn<Appointment, String> clinicianAppointmentUserIdColumn = new TableColumn<>();
 
-    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd hh:mm");
     @FXML
     private TableColumn<Appointment, AppointmentStatus> clinicianAppointmentStatusColumn = new TableColumn<>();
 
@@ -76,6 +61,9 @@ public class ClinicianAppointmentRequestViewController {
     private TableColumn<Appointment, String> clinicianAppointmentDateColumn = new TableColumn<>();
 
     private ObservableList<Appointment> availableAppointments = FXCollections.observableList(new ArrayList<>());
+    private ClinicianAppointmentRequestLogicController logicController;
+
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd hh:mm");
 
 
     /**
@@ -112,18 +100,31 @@ public class ClinicianAppointmentRequestViewController {
     private void setOnClickBehaviour() {
         clinicianAppointmentsRequestView.getSelectionModel().selectedItemProperty().addListener(a -> {
             Appointment selectedAppointment = clinicianAppointmentsRequestView.getSelectionModel().getSelectedItem();
-            if (selectedAppointment != null) {
-                displayAppointmentDetails(selectedAppointment);
-            }
+            displayAppointmentDetails(selectedAppointment);
         });
     }
 
     /**
-     * Displays the appointment details in the text area
+     * Displays the appointment details in separated fields
+     *
      * @param appointment The selected appointment to be displayed in more detail
      */
     private void displayAppointmentDetails(Appointment appointment) {
-        appointmentRequestDescription.setText(appointment.getRequestDescription()); //appointment.displayDetails does not exist in this branch. Replace getDescription with it when possible
+        if (appointment != null) {
+            appointmentRequestUserNhi.setText(appointment.getRequestingUserId());
+            appointmentRequestStatus.setText(appointment.getAppointmentStatus().toString());
+            appointmentRequestCategory.setValue(appointment.getAppointmentCategory());
+            appointmentRequestDate.setValue(appointment.getRequestedDate().toLocalDate());
+            appointmentRequestTime.setText(appointment.getRequestedDate().toLocalTime().toString());
+            appointmentRequestDescription.setText(appointment.getRequestDescription());
+        } else {
+            appointmentRequestUserNhi.setText("");
+            appointmentRequestStatus.setText("");
+            appointmentRequestCategory.setValue(null);
+            appointmentRequestDate.setValue(null);
+            appointmentRequestTime.clear();
+            appointmentRequestDescription.clear();
+        }
     }
 
     /**
@@ -144,7 +145,7 @@ public class ClinicianAppointmentRequestViewController {
 
     @FXML
     private void rejectAppointment() {
-        Appointment selectedAppointment = clinicianAppointmentRequestView.getSelectionModel().getSelectedItem();
+        Appointment selectedAppointment = clinicianAppointmentsRequestView.getSelectionModel().getSelectedItem();
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML/appointmentRejection.fxml"));
         Stage rejectionStage = new Stage();
@@ -165,6 +166,4 @@ public class ClinicianAppointmentRequestViewController {
     private void acceptAppointment() {
 
     }
-
-
 }
