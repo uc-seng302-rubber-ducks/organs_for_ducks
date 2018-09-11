@@ -214,7 +214,7 @@ public class AppointmentsBridge extends Bifrost {
      * @param response response to log
      */
     private void logResponse(Response response) {
-        System.out.println("Bad response code from server. Error code: " + response.code() + ". Response was: \n" + response.message());
+        Log.warning("Bad response code from server. Error code: " + response.code() + ". Response was: \n" + response.message());
     }
 
     /**

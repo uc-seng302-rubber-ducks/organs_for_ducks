@@ -95,7 +95,7 @@ public class AppointmentController extends BaseController {
         return new ResponseEntity(HttpStatus.ACCEPTED);
     }
 
-    //    @IsClinician
+    @IsClinician
     @RequestMapping(method = RequestMethod.PUT, value = "/clinicians/{staffId}/appointments/{appointmentId}")
     public ResponseEntity putAppointment(@PathVariable(value = "staffId") String staffId,
                                          @PathVariable(value = "appointmentId") Integer appointmentId,
