@@ -152,8 +152,19 @@ public class UserController extends BaseController {
         try (Connection connection = driver.getConnection()) {
             return handler.getPreferredBasicClinician(connection, userNhi);
         } catch (SQLException ex) {
-            Log.severe("Could not get basic clinicians", ex);
+            Log.severe("Could not get basic clinician", ex);
             throw new ServerDBException(ex);
         }
+    }
+
+    @RequestMapping(method = RequestMethod.PUT, value = "/user/{nhi}/preferred-clinician") //WHERE
+    public ResponseEntity putPreferredClinician(@PathVariable("nhi") String userNhi, @RequestBody String staffId) {
+        try (Connection connection = driver.getConnection()) {
+            handler.putPreferredBasicClinician(connection, userNhi, staffId);
+        } catch (SQLException ex) {
+            Log.severe("cannot put preferred clinician " + staffId + " to user " + userNhi, ex);
+            throw new ServerDBException(ex);
+        }
+        return new ResponseEntity(HttpStatus.OK);
     }
 }

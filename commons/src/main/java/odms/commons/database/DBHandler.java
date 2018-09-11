@@ -124,6 +124,8 @@ public class DBHandler {
             "FROM Clinician cl " +
             "LEFT JOIN PreferredClinician a ON cl.staffId = a.fkStaffId " +
             "WHERE fkUserId = ?";
+    private static final String INSERT_ELSE_UPDATE_PREFERRED_CLINICIAN = "INSERT INTO PreferredClinician (fkUserId, staffId) " +
+            "VALUES (?, ?) ON DUPLICATE KEY UPDATE fkUserId=?, fkStaffId=?";
 
     private AbstractUpdateStrategy updateStrategy;
     private AbstractFetchAppointmentStrategy fetchAppointmentStrategy;
@@ -1434,7 +1436,7 @@ public class DBHandler {
      * @throws SQLException if there are errors with the SQL statements
      */
     public ComboBoxClinician getPreferredBasicClinician(Connection connection, String userNhi) throws SQLException { //WHERE
-        try (PreparedStatement statement = connection.prepareStatement(SELECT_BASIC_CLINICIAN_ONE_TO_ONE_INFO_STMT)) {
+        try (PreparedStatement statement = connection.prepareStatement(SELECT_PREFERRED_BASIC_CLINICIAN_STMT)) {
             statement.setString(1, userNhi + "%");
 
             try (ResultSet resultSet = statement.executeQuery()) {
@@ -1448,6 +1450,23 @@ public class DBHandler {
                 fullName += " " + resultSet.getString("lastName");
                 return new ComboBoxClinician(fullName, resultSet.getString("staffId"));
             }
+        }
+    }
+
+    /**
+     * Updates the preferred clinician of a user.
+     * @param connection Connection to the target database
+     * @param userNhi nhi of the user to ge the preferred clinician from
+     * @param staffId identifier for the preferred clinician
+     * @throws SQLException if there are errors with the SQL statements
+     */
+    public void putPreferredBasicClinician(Connection connection, String userNhi, String staffId) throws SQLException { //WHERE
+        try (PreparedStatement statement = connection.prepareStatement(INSERT_ELSE_UPDATE_PREFERRED_CLINICIAN)) {
+            statement.setString(1, userNhi);
+            statement.setString(2, staffId);
+            statement.setString(3, userNhi);
+            statement.setString(4, staffId);
+            statement.executeUpdate();
         }
     }
 

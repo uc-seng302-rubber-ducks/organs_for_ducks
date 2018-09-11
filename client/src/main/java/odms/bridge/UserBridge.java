@@ -386,32 +386,30 @@ public class UserBridge extends RoleBridge {
         return clinician;
     }
 
-//    /**
-//     * Asks the server to get the preferred clinician for the specified user
-//     * @param nhi of the user to get the preferred clinician for.
-//     * @return comboBoxClinician representing the preferred clinician
-//     */
-//    public ComboBoxClinician putPreferredClinician(String nhi, String staffId) throws IOException{ //WHERE
-//        String url = ip + USERS + nhi + "/preferred-clinician";
-//        Request request = new Request.Builder().put(body).url(url).build();
-//        Response response = client.newCall(request).execute();
-//        if (response.isSuccessful()) {
-//            ResponseBody body = response.body();
-//            if (body == null) {
-//                Log.warning("The response body was null");
-//                response.close();
-//                return null;
-//            }
-//            if (body.contentLength() == 2) { //if it returns empty array
-//                response.close();
-//                return null;
-//            }
-//            clinician = new Gson().fromJson(body.string(), new TypeToken<ComboBoxClinician>() {
-//            }.getType());
-//        }
-//        response.close();
-//        return clinician;
-//    }
+    /**
+     * Updates the preferred clinician of the user
+     * @param nhi of the user to get the preferred clinician for.
+     * @param staffId the id of the preferred clinician
+     */
+    public void putPreferredClinician(String nhi, String staffId) { //WHERE
+        String url = ip + USERS + nhi + "/preferred-clinician";
+        RequestBody body = RequestBody.create(json, new Gson().toJson(staffId));
+        Request request = new Request.Builder().put(body).url(url).build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.warning("Could not PUT preferred clinician to " + url);
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (!response.isSuccessful()) {
+                    throw new IOException(FAILED_TO_PUT_TO + url);
+                }
+                response.close();
+            }
+        });
+    }
 
 
 
