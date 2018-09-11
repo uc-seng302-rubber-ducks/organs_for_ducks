@@ -16,8 +16,7 @@ import static odms.commons.utils.UndoHelpers.removeFormChanges;
 
 public class UpdateAdminController {
 
-    @FXML
-    private Label confirmPasswordErrorLabel;
+
     @FXML
     private TextField usernameTextField;
 
@@ -47,6 +46,21 @@ public class UpdateAdminController {
 
     @FXML
     private Label invalidFName;
+
+    @FXML
+    private Label invalidMName;
+
+    @FXML
+    private Label invalidLName;
+
+    @FXML
+    private Label passwordErrorLabel;
+
+    @FXML
+    private Label confirmPasswordErrorLabel;
+
+    @FXML
+    private Label adminGenericErrorLabel;
 
     @FXML
     private Label adminDetailInputTitle;
@@ -227,7 +241,11 @@ public class UpdateAdminController {
         valid = true;
         invalidUsername.setVisible(false);
         invalidFName.setVisible(false);
-        //confirmPasswordErrorLabel.setVisible(false);
+        invalidMName.setVisible(false);
+        invalidLName.setVisible(false);
+        passwordErrorLabel.setVisible(false);
+        confirmPasswordErrorLabel.setVisible(false);
+        adminGenericErrorLabel.setVisible(false);
         // waiting for the string validation to be finished
         if (!usernameTextField.getText().isEmpty() && !usernameTextField.getText().equals(admin.getUserName())) {
             Administrator foundAdministrator = appController.getAdministrator(usernameTextField.getText());
@@ -252,11 +270,23 @@ public class UpdateAdminController {
             }
         }
         if (!middleNameTextField.getText().isEmpty() && !middleNameTextField.getText().equals(admin.getMiddleName())) {
-            admin.setMiddleName(middleNameTextField.getText());
+            if (checkRequiredStringName(middleNameTextField.getText())) {
+                admin.setMiddleName(middleNameTextField.getText());
+            } else {
+                invalidateNode(middleNameTextField);
+                invalidMName.setVisible(true);
+                valid = false;
+            }
         }
 
         if (!lastNameTextField.getText().isEmpty() && !lastNameTextField.getText().equals(admin.getLastName())) {
-            admin.setLastName(lastNameTextField.getText());
+            if (checkRequiredStringName(lastNameTextField.getText())) {
+                admin.setLastName(lastNameTextField.getText());
+            } else {
+                invalidateNode(lastNameTextField);
+                invalidLName.setVisible(true);
+                valid = false;
+            }
         }
 
         if (!passwordTextField.getText().isEmpty() && !cPasswordTextField.getText().isEmpty()) {
@@ -296,7 +326,7 @@ public class UpdateAdminController {
             adminViewController.refreshTables();
             stage.close();
         } else {
-
+            adminGenericErrorLabel.setVisible(true);
         }
     }
 

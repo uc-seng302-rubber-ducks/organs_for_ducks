@@ -3,8 +3,8 @@
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<AnchorPane prefHeight="453.0" prefWidth="694.0" stylesheets="@../gui.css" xmlns="http://javafx.com/javafx/8"
-            xmlns:fx="http://javafx.com/fxml/1" fx:controller="odms.controller.gui.window.UpdateAdminController">
+<AnchorPane xmlns:fx="http://javafx.com/fxml/1" prefHeight="453.0" prefWidth="694.0" stylesheets="@../gui.css"
+            xmlns="http://javafx.com/javafx/8" fx:controller="odms.controller.gui.window.UpdateAdminController">
    <children>
       <TabPane layoutY="43.0" prefHeight="409.0" prefWidth="694.0" tabClosingPolicy="UNAVAILABLE">
         <tabs>
@@ -66,6 +66,12 @@
                                <Label fx:id="passwordErrorLabel" styleClass="label-error"
                                       text="Passwords cannot be empty" visible="false" GridPane.columnIndex="1"
                                       GridPane.rowIndex="4" GridPane.valignment="BOTTOM"/>
+                               <Label fx:id="invalidMName" styleClass="label-error"
+                                      text="Only alphanumeric characters are allowed" visible="false"
+                                      GridPane.columnIndex="1" GridPane.rowIndex="2" GridPane.valignment="BOTTOM"/>
+                               <Label fx:id="invalidLName" styleClass="label-error"
+                                      text="Only alphanumeric characters are allowed" visible="false"
+                                      GridPane.columnIndex="1" GridPane.rowIndex="3" GridPane.valignment="BOTTOM"/>
                            </children>
                            <columnConstraints>
                               <ColumnConstraints hgrow="SOMETIMES" maxWidth="284.0" minWidth="10.0" prefWidth="172.0" />
