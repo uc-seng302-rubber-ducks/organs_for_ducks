@@ -2,13 +2,14 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import odms.controller.gui.widget.LoadingTableView?>
 <AnchorPane xmlns:fx="http://javafx.com/fxml/1" minHeight="-Infinity" minWidth="-Infinity" prefHeight="690.0"
             prefWidth="1168.0" stylesheets="@../gui.css" xmlns="http://javafx.com/javafx/8"
             fx:controller="odms.controller.gui.panel.view.AvailableOrgansViewController">
     <children>
       <AnchorPane prefHeight="690.0" prefWidth="787.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="381.0" AnchorPane.topAnchor="0.0">
          <children>
-              <TableView fx:id="availableOrgansTableView" prefHeight="528.0" prefWidth="758.0" AnchorPane.bottomAnchor="48.0" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="21.0" AnchorPane.topAnchor="114.0">
+              <LoadingTableView fx:id="availableOrgansTableView" prefHeight="528.0" prefWidth="758.0" AnchorPane.bottomAnchor="48.0" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="21.0" AnchorPane.topAnchor="114.0">
                   <columns>
                       <TableColumn fx:id="nhiColumn" maxWidth="3000.0" prefWidth="75.0" text="Donor" />
                       <TableColumn fx:id="regionColumn" prefWidth="75.0" text="Region" />
@@ -16,7 +17,7 @@
                       <TableColumn fx:id="deathMomentColumn" maxWidth="4000.0" prefWidth="121.0" text="Date of death" />
                       <TableColumn fx:id="progressBarColumn" maxWidth="7000.0" prefWidth="136.0" text="Time to expiry" />
                   </columns>
-              </TableView>
+              </LoadingTableView>
               <HBox alignment="CENTER" layoutX="150.0" layoutY="543.0" prefHeight="25.0" prefWidth="492.0" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="150.0" AnchorPane.rightAnchor="221.0">
                   <children>
                       <Button layoutX="322.0" layoutY="465.0" mnemonicParsing="false" onAction="#goToPreviousPage" text="&lt;&lt;" />
@@ -39,7 +40,7 @@
                   <Button layoutX="362.0" layoutY="465.0" mnemonicParsing="false" onAction="#goToNextPageMatches" text="&gt;&gt;" />
                </children>
             </HBox>
-            <TableView fx:id="matchesView" layoutX="14.0" layoutY="116.0" prefHeight="528.0" prefWidth="310.0" />
+            <LoadingTableView fx:id="matchesView" layoutX="14.0" layoutY="116.0" prefHeight="528.0" prefWidth="310.0" />
          </children>
       </AnchorPane>
     </children>

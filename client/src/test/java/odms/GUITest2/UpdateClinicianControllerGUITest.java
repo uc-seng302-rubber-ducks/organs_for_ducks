@@ -81,7 +81,7 @@ public class UpdateClinicianControllerGUITest extends ApplicationTest {
         when(application.getTransplantList()).thenReturn(new ArrayList<>());
         when(application.getUserOverviews()).thenReturn(new HashSet<>(overviews));
         when(bridge.getUser("ABC1244")).thenReturn(testUser);
-        doNothing().when(organsBridge).getAvailableOrgansList(anyInt(), anyInt(), anyString(), anyString(), anyString(), anyString(), anyString(), any());
+        doNothing().when(organsBridge).getAvailableOrgansList(anyInt(), anyInt(), anyString(), anyString(), anyString(), anyString(), anyString(), any(), null);
 
         doCallRealMethod().when(application).setClinicianController(any(ClinicianController.class));
         doCallRealMethod().when(application).getClinicianController();

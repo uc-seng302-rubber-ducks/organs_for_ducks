@@ -8,7 +8,7 @@ import odms.commons.model.Administrator;
 import odms.commons.utils.JsonHandler;
 import odms.commons.utils.Log;
 import odms.controller.AppController;
-import odms.controller.gui.widget.LoadingTableView;
+import odms.controller.gui.widget.LoadingWidget;
 import okhttp3.*;
 
 import java.io.IOException;
@@ -22,7 +22,7 @@ public class AdministratorBridge extends RoleBridge {
         super(client);
     }
 
-    public void getAdmins(int startIndex, int count, String name, String token, LoadingTableView<Administrator> adminTableView) {
+    public void getAdmins(int startIndex, int count, String name, String token, LoadingWidget adminTableView) {
         String url = ip + "/admins?startIndex=" + startIndex + "&count=" + count + "&q=" + name;
         Request request = new Request.Builder().url(url).addHeader("x-auth-token", token).build();
         client.newCall(request).enqueue(new Callback() {

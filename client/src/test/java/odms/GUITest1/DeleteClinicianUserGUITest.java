@@ -86,7 +86,7 @@ public class DeleteClinicianUserGUITest extends ApplicationTest {
         when(loginBridge.loginToServer(anyString(), anyString(), anyString())).thenReturn("haHAA");
         when(clinicianBridge.getClinician(anyString(), anyString())).thenReturn(new Clinician("Default", "0", "admin"));
         when(controller.getTransplantList()).thenReturn(new ArrayList<>());
-        doNothing().when(organsBridge).getAvailableOrgansList(anyInt(), anyInt(), anyString(), anyString(), anyString(), anyString(), anyString(), any());
+        doNothing().when(organsBridge).getAvailableOrgansList(anyInt(), anyInt(), anyString(), anyString(), anyString(), anyString(), anyString(), any(), null);
 
         clickOn("#clinicianTab");
         setTextField(this,"#staffIdTextField", "0");

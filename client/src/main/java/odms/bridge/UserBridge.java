@@ -14,7 +14,7 @@ import odms.commons.utils.Log;
 import odms.commons.utils.PhotoHelper;
 import odms.controller.AppController;
 import odms.controller.gui.popup.utils.AlertWindowFactory;
-import odms.controller.gui.widget.LoadingTableView;
+import odms.controller.gui.widget.LoadingWidget;
 import okhttp3.*;
 
 import java.io.IOException;
@@ -33,7 +33,7 @@ public class UserBridge extends RoleBridge {
         super(client);
     }
 
-    public void getUsers(int startIndex, int count, String name, String region, String gender, String token, LoadingTableView tableview) {
+    public void getUsers(int startIndex, int count, String name, String region, String gender, String token, LoadingWidget tableview) {
         if (inProgress != null) {
             inProgress.cancel();
         }

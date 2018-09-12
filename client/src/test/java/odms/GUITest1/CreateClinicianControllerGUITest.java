@@ -65,7 +65,7 @@ public class CreateClinicianControllerGUITest extends ApplicationTest {
         when(countriesBridge.getAllowedCountries()).thenReturn(countries);
         when(application.getTransplantList()).thenReturn(new ArrayList<>());
         when(loginBridge.loginToServer(anyString(),anyString(), anyString())).thenReturn("lsdjfksd");
-        doNothing().when(organsBridge).getAvailableOrgansList(anyInt(), anyInt(), anyString(), anyString(), anyString(), anyString(), anyString(), any());
+        doNothing().when(organsBridge).getAvailableOrgansList(anyInt(), anyInt(), anyString(), anyString(), anyString(), anyString(), anyString(), any(), null);
         when(application.getToken()).thenReturn("fakeToken");
         when(administratorBridge.getAdmin(anyString(), anyString())).thenReturn(new Administrator("default", "", "", "", ""));
 

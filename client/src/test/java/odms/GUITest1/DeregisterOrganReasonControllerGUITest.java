@@ -72,7 +72,7 @@ public class DeregisterOrganReasonControllerGUITest extends ApplicationTest {
         when(loginBridge.loginToServer(anyString(),anyString(), anyString())).thenReturn("lsdjfksd");
         when(clinicianBridge.getClinician(anyString(), anyString())).thenReturn(clinician);
         when(bridge.getUser(anyString())).thenReturn(testUser);
-        doNothing().when(organsBridge).getAvailableOrgansList(anyInt(), anyInt(), anyString(), anyString(), anyString(), anyString(), anyString(), any());
+        doNothing().when(organsBridge).getAvailableOrgansList(anyInt(), anyInt(), anyString(), anyString(), anyString(), anyString(), anyString(), any(), null);
         List<TransplantDetails> transplantDetails = new ArrayList<>();
         transplantDetails.add(new TransplantDetails(testUser.getNhi(), testUser.getFirstName(), Organs.HEART, LocalDate.now(), testUser.getRegion(), testUser.getAge(), testUser.getBloodType()));
 

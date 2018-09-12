@@ -88,7 +88,7 @@ public class UpdateDeathDetailsControllerGUITest extends ApplicationTest{
 
         when(application.getOrgansBridge()).thenReturn(organsBridge);
         doNothing().when(organsBridge).getAvailableOrgansList(anyInt(),anyInt(),anyString(),anyString(),
-                anyString(),anyString(),anyString(),any(ObservableList.class));
+                anyString(),anyString(),anyString(),any(ObservableList.class), null);
 
         FxToolkit.registerPrimaryStage();
         FxToolkit.setupApplication(App.class, "--testConfig=true");

@@ -85,7 +85,7 @@ public class NewDiseaseControllerGUITest extends ApplicationTest {
 
         when(controller.getUserOverviews()).thenReturn(Collections.singleton(UserOverview.fromUser(testUser)));
         when(bridge.getUser(anyString())).thenReturn(testUser);
-        doNothing().when(organsBridge).getAvailableOrgansList(anyInt(), anyInt(), anyString(), anyString(), anyString(), anyString(), anyString(), any());
+        doNothing().when(organsBridge).getAvailableOrgansList(anyInt(), anyInt(), anyString(), anyString(), anyString(), anyString(), anyString(), any(), null);
 
         FxToolkit.registerPrimaryStage();
         FxToolkit.setupApplication(App.class, "--testConfig=true");
