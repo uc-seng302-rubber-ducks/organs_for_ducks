@@ -189,7 +189,7 @@ public class AdministratorViewController implements PropertyChangeListener, User
         availableOrgansViewController.init(this);
         ServerEventNotifier.getInstance().addPropertyChangeListener(this);
         stage.setMaximized(true);
-
+        userTableView.setWaiting(true);
         userBridge.getUsers(userStartIndex, ROWS_PER_PAGE, adminSearchField.getText(), regionSearchTextField.getText(), genderComboBox.getValue(), appController.getToken(), userTableView);
         clinicianBridge.getClinicians(clinicianStartIndex, ROWS_PER_PAGE, adminSearchField.getText(), regionSearchTextField.getText(), appController.getToken());
 
@@ -423,6 +423,8 @@ public class AdministratorViewController implements PropertyChangeListener, User
      */
     private void populateUserSearchTable(int startIndex, int count, String name, String region, String gender) {
         appController.getUserOverviews().clear();
+        userTableView.setItems(FXCollections.observableArrayList(appController.getUserOverviews()));
+        userTableView.setWaiting(true);
         userBridge.getUsers(startIndex, count, name, region, gender, appController.getToken(), userTableView);
 
         displayUserSearchTable();
@@ -438,12 +440,10 @@ public class AdministratorViewController implements PropertyChangeListener, User
 
         if (!appController.getUserOverviews().isEmpty()) {
             userTableView.setItems(sUsers);
-        } else {
-            userTableView.setItems(null);
-            Platform.runLater(() -> userTableView.setPlaceholder(new Label("No users match this criteria"))); // Do this to prevent threading issues when this method is not called on an FX thread
         }
 
         setTableOnClickBehaviour(User.class, userTableView);
+        userTableView.refresh();
     }
 
     private void setTableOnClickBehaviour(Type type, TableView tv) {

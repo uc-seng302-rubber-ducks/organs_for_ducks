@@ -27,15 +27,20 @@ public class UserBridge extends RoleBridge {
     public static final String COULD_NOT_MAKE_A_CALL_TO = "Could not make a call to ";
     private static final String FAILED_TO_POST_TO = "Failed to POST to ";
 
+    private Call inProgress;
+
     public UserBridge(OkHttpClient client) {
         super(client);
     }
 
-    public Call getUsers(int startIndex, int count, String name, String region, String gender, String token, LoadingTableView tableview) {
+    public void getUsers(int startIndex, int count, String name, String region, String gender, String token, LoadingTableView tableview) {
+        if (inProgress != null) {
+            inProgress.cancel();
+        }
         String url = ip + "/users?startIndex=" + startIndex + "&count=" + count + "&name=" + name + "&region=" + region + "&gender=" + gender;
         Request request = new Request.Builder().header(tokenHeader, token).url(url).build();
-        Call call = client.newCall(request);
-        call.enqueue(new Callback() {
+        inProgress = client.newCall(request);
+        inProgress.enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
                 if (!e.getMessage().equals("Canceled")) {
@@ -56,7 +61,6 @@ public class UserBridge extends RoleBridge {
                 response.close();
             }
         });
-        return call;
     }
 
     public void postUser(User user) {
