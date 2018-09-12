@@ -766,4 +766,8 @@ public class AppController {
     public OkHttpClient getClient() {
         return client;
     }
+
+    public void setAppointmentsBridge(AppointmentsBridge appointmentsBridge) {
+        this.appointmentsBridge = appointmentsBridge;
+    }
 }

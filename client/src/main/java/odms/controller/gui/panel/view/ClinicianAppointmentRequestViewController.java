@@ -9,17 +9,15 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.stage.Stage;
-import odms.bridge.AppointmentsBridge;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import odms.commons.model.Appointment;
-import odms.commons.utils.AttributeValidation;
-import odms.commons.utils.Log;
-import odms.controller.AppController;
 import odms.commons.model.Clinician;
 import odms.commons.model._enum.AppointmentCategory;
 import odms.commons.model._enum.AppointmentStatus;
+import odms.commons.utils.AttributeValidation;
+import odms.commons.utils.Log;
+import odms.controller.AppController;
 import odms.controller.gui.panel.logic.AvailableOrgansLogicController;
 import odms.controller.gui.panel.logic.ClinicianAppointmentRequestLogicController;
 import odms.controller.gui.popup.view.RejectAppointmentReasonViewController;
@@ -169,7 +167,7 @@ public class ClinicianAppointmentRequestViewController {
     private void acceptAppointment() {
         Appointment selectedAppointment = getSelectedAppointment();
         if (AttributeValidation.validateTimeString(appointmentRequestTime.getText())) {
-            logicController.acceptAppointment(selectedAppointment, appointmentRequestTime.getText(), new AppointmentsBridge(AppController.getInstance().getClient()));
+            logicController.acceptAppointment(selectedAppointment, appointmentRequestTime.getText(), AppController.getInstance().getAppointmentsBridge());
         } else {
             appointmentRequestTime.setStyle("-fx-background-color: rgba(100%, 0%, 0%, 0.25); -fx-border-color: RED");
         }

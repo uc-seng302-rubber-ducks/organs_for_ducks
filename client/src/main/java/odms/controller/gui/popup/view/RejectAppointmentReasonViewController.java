@@ -5,7 +5,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import odms.bridge.AppointmentsBridge;
 import odms.commons.model.Appointment;
 import odms.controller.AppController;
 import odms.controller.gui.popup.logic.RejectAppointmentReasonLogicController;
@@ -42,7 +41,7 @@ public class RejectAppointmentReasonViewController {
      */
     @FXML
     private void confirmRejectionReason() {
-        logicController.rejectAppointment(appointment, reasonTextArea.getText(), new AppointmentsBridge(AppController.getInstance().getClient()));
+        logicController.rejectAppointment(appointment, reasonTextArea.getText(), AppController.getInstance().getAppointmentsBridge());
         stage.close();
     }
 
