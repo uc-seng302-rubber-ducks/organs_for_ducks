@@ -1,10 +1,10 @@
 package odms.bridge;
 
 import com.google.gson.Gson;
-import odms.commons.config.ConfigPropertiesSession;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import odms.TestUtils.CommonTestMethods;
+import odms.commons.config.ConfigPropertiesSession;
 import odms.commons.model.Appointment;
 import odms.commons.model.Clinician;
 import odms.commons.model.User;
@@ -19,7 +19,8 @@ import org.testfx.api.FxToolkit;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -49,7 +50,7 @@ public class ClinicianBridgeTest extends BridgeTestBase {
         ArgumentCaptor<Callback> callbackCaptor = ArgumentCaptor.forClass(Callback.class);
 
 
-        bridge.getClinicians(0, 10, "hackerman", "here", "asdf");
+        bridge.getClinicians(0, 10, "hackerman", "here", "asdf", null);
         verify(mockCall).enqueue(callbackCaptor.capture());
         Callback callback = callbackCaptor.getValue();
 

@@ -4,7 +4,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ProgressIndicator;
 import javafx.scene.control.TableView;
 
-public class LoadingTableView<T> extends TableView<T> {
+public class LoadingTableView<T> extends TableView<T> implements LoadingWidget {
     public void setWaiting(boolean waiting) {
         if (waiting) {
             ProgressIndicator indicator = new ProgressIndicator(ProgressIndicator.INDETERMINATE_PROGRESS);

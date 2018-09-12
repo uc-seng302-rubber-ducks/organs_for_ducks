@@ -83,11 +83,11 @@ public class AdministratorViewController implements PropertyChangeListener, User
     @FXML
     private CheckBox allCheckBox;
     @FXML
-    private TableView<Clinician> clinicianTableView;
+    private LoadingTableView<Clinician> clinicianTableView;
     @FXML
     private TextField cliInputTextField;
     @FXML
-    private TableView<Administrator> adminTableView;
+    private LoadingTableView<Administrator> adminTableView;
     @FXML
     private TextArea adminCliTextArea;
     @FXML
@@ -191,7 +191,7 @@ public class AdministratorViewController implements PropertyChangeListener, User
         stage.setMaximized(true);
         userTableView.setWaiting(true);
         userBridge.getUsers(userStartIndex, ROWS_PER_PAGE, adminSearchField.getText(), regionSearchTextField.getText(), genderComboBox.getValue(), appController.getToken(), userTableView);
-        clinicianBridge.getClinicians(clinicianStartIndex, ROWS_PER_PAGE, adminSearchField.getText(), regionSearchTextField.getText(), appController.getToken());
+        clinicianBridge.getClinicians(clinicianStartIndex, ROWS_PER_PAGE, adminSearchField.getText(), regionSearchTextField.getText(), appController.getToken(), clinicianTableView);
 
         adminUndoButton.setDisable(true);
         adminRedoButton.setDisable(true);
@@ -1221,7 +1221,9 @@ public class AdministratorViewController implements PropertyChangeListener, User
      */
     private void populateClinicianSearchTable(int startIndex, int rowsPerPage, String name, String region) {
         appController.getClinicians().clear();
-        clinicianBridge.getClinicians(startIndex, rowsPerPage, name, region, appController.getToken());
+        clinicianTableView.setItems(FXCollections.observableArrayList(appController.getClinicians()));
+        clinicianTableView.setWaiting(true);
+        clinicianBridge.getClinicians(startIndex, rowsPerPage, name, region, appController.getToken(), clinicianTableView);
 
         displayClinicianSearchTable();
     }
@@ -1237,10 +1239,6 @@ public class AdministratorViewController implements PropertyChangeListener, User
 
         if (!appController.getClinicians().isEmpty()) {
             clinicianTableView.setItems(sClinicians);
-        } else {
-            clinicianTableView.setItems(null);
-            // Do this to prevent threading issues when this method is not called on an FX thread
-            Platform.runLater(() -> clinicianTableView.setPlaceholder(new Label("No clinicians to show")));
         }
 
         setTableOnClickBehaviour(Clinician.class, clinicianTableView);
@@ -1263,7 +1261,8 @@ public class AdministratorViewController implements PropertyChangeListener, User
      */
     private void populateAdminSearchTable(int startIndex, int rowsPerPage, String name) {
         appController.getAdmins().clear();
-        adminBridge.getAdmins(startIndex, rowsPerPage, name, appController.getToken());
+        adminTableView.setWaiting(true);
+        adminBridge.getAdmins(startIndex, rowsPerPage, name, appController.getToken(), adminTableView);
 
         displayAdminSearchTable();
     }
@@ -1275,10 +1274,6 @@ public class AdministratorViewController implements PropertyChangeListener, User
 
         if (!appController.getClinicians().isEmpty()) {
             adminTableView.setItems(sAdmins);
-        } else {
-            adminTableView.setItems(null);
-            // Do this to prevent threading issues when this method is not called on an FX thread
-            Platform.runLater(() -> adminTableView.setPlaceholder(new Label("No admins to show")));
         }
 
         setTableOnClickBehaviour(Administrator.class, adminTableView);

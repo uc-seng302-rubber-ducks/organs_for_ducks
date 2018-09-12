@@ -12,6 +12,7 @@ import odms.commons.utils.JsonHandler;
 import odms.commons.utils.Log;
 import odms.commons.utils.PhotoHelper;
 import odms.controller.AppController;
+import odms.controller.gui.widget.LoadingTableView;
 import okhttp3.*;
 
 import java.io.IOException;
@@ -25,7 +26,7 @@ public class ClinicianBridge extends RoleBridge {
         super(client);
     }
 
-    public void getClinicians(int startIndex, int count, String name, String region, String token) {
+    public void getClinicians(int startIndex, int count, String name, String region, String token, LoadingTableView clinicianTableView) {
         String url = ip + "/clinicians?startIndex=" + startIndex + "&count=" + count + "&q=" + name + "&region=" + region;
         Request request = new Request.Builder().addHeader(tokenHeader, token).url(url).build();
         client.newCall(request).enqueue(new Callback() {
@@ -41,6 +42,9 @@ public class ClinicianBridge extends RoleBridge {
                 }.getType());
                 for (Clinician clinician : clinicians) {
                     AppController.getInstance().addClinician(clinician);
+                }
+                if (clinicianTableView != null) {
+                    Platform.runLater(() -> clinicianTableView.setWaiting(false));
                 }
                 response.close();
             }
