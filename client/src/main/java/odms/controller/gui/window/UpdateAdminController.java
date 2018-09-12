@@ -119,7 +119,26 @@ public class UpdateAdminController {
             adminDetailInputTitle.setText("Create Admin");
             undoAdminUpdateButton.setVisible(false);
             redoAdminUpdateButton.setVisible(false);
+
+            styleListener(usernameTextField);
+            styleListener(firstNameTextField);
+            styleListener(middleNameTextField);
+            styleListener(lastNameTextField);
+            styleListener(passwordTextField);
+            styleListener(cPasswordTextField);
         }
+    }
+
+    /**
+     * Listens for user input on all of the fields to remove invalid css for that field.
+     * Used only when creating a new administrator.
+     *
+     * @param field The current textfield/password field
+     */
+    private void styleListener(TextField field) {
+        field.textProperty().addListener((observable, oldValue, newValue) -> {
+            field.getStyleClass().remove("invalid");
+        });
     }
 
     /**
@@ -265,7 +284,7 @@ public class UpdateAdminController {
             valid = false;
         }
 
-        if (!firstNameTextField.getText().equals(admin.getFirstName())) {
+        if (!firstNameTextField.getText().equals(admin.getFirstName()) || newAdmin) {
             if (checkRequiredStringName(firstNameTextField.getText())) {
                 admin.setFirstName(firstNameTextField.getText());
             } else {
@@ -275,7 +294,7 @@ public class UpdateAdminController {
                 valid = false;
             }
         }
-        if (!middleNameTextField.getText().isEmpty() && !middleNameTextField.getText().equals(admin.getMiddleName())) {
+        if (!middleNameTextField.getText().isEmpty() && (!middleNameTextField.getText().equals(admin.getMiddleName()) || newAdmin)) {
             if (checkRequiredStringName(middleNameTextField.getText())) {
                 admin.setMiddleName(middleNameTextField.getText());
             } else {
@@ -285,7 +304,7 @@ public class UpdateAdminController {
             }
         }
 
-        if (!lastNameTextField.getText().isEmpty() && !lastNameTextField.getText().equals(admin.getLastName())) {
+        if (!lastNameTextField.getText().isEmpty() && (!lastNameTextField.getText().equals(admin.getLastName()) || newAdmin)) {
             if (checkRequiredStringName(lastNameTextField.getText())) {
                 admin.setLastName(lastNameTextField.getText());
             } else {
@@ -295,7 +314,7 @@ public class UpdateAdminController {
             }
         }
 
-        if (!passwordTextField.getText().isEmpty()) {
+        if (!passwordTextField.getText().isEmpty() || newAdmin) {
             String password = cPasswordTextField.getText();
             if (passwordTextField.getText().equals(password)) {
                 if (checkRequiredString(passwordTextField.getText())) {
