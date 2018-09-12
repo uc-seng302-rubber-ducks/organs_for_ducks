@@ -141,7 +141,7 @@ public class AppointmentsBridge extends Bifrost {
      * @return number of appointments pending
      */
     public int getPendingAppointments(String staffId, String token) {
-        String url = String.format("%s/appointments/%s/pending", ip, staffId);
+        String url = String.format("%s/clinicians/%s/appointments/pending", ip, staffId);
         Request request = new Request.Builder().url(url).addHeader(tokenHeader, token).build();
         try (Response res = client.newCall(request).execute()) {
             try {

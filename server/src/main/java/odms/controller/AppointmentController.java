@@ -73,10 +73,10 @@ public class AppointmentController extends BaseController {
     }
 
     @IsClinician
-    @RequestMapping(method = RequestMethod.GET, value = "appointments/{staffId}/pending")
+    @RequestMapping(method = RequestMethod.GET, value = "clinicians/{staffId}/appointments/pending")
     public int getPendingAppointments(@PathVariable String staffId) {
         try (Connection connection = driver.getConnection()) {
-            return handler.getPendingAppointments(connection, staffId);
+            return handler.getPendingAppointmentsCount(connection, staffId);
         } catch (SQLException e) {
             Log.severe("Got bad response from DB. SQL error code: " + e.getErrorCode(), e);
             throw new ServerDBException(e);
