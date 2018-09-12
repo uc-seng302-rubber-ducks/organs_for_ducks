@@ -395,20 +395,7 @@ public class UserBridge extends RoleBridge {
         String url = ip + USERS + nhi + "/preferred-clinician";
         RequestBody body = RequestBody.create(json, new Gson().toJson(staffId));
         Request request = new Request.Builder().put(body).url(url).build();
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                Log.warning("Could not PUT preferred clinician to " + url);
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                if (!response.isSuccessful()) {
-                    throw new IOException(FAILED_TO_PUT_TO + url);
-                }
-                response.close();
-            }
-        });
+        client.newCall(request).enqueue(CommonMethods.loggedCallback("PUT", url));
     }
 
 
