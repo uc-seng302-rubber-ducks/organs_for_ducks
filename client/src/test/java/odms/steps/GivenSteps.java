@@ -53,7 +53,7 @@ public class GivenSteps extends ApplicationTest {
     public void iHaveStartedTheGUI() throws Throwable {
         AppController.setInstance(CucumberTestModel.getController());
         FxToolkit.registerPrimaryStage();
-        FxToolkit.setupApplication(App.class);
+        FxToolkit.setupApplication(App.class, "--testConfig=true");
     }
 
     @Given("^a user with the NHI \"([^\"]*)\" exists$")
