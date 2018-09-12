@@ -23,7 +23,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -304,6 +303,24 @@ public class DBHandlerTest {
         Appointment appointment = new Appointment();
         appointment.setAppointmentId(1);
         dbHandler.deleteAppointment(appointment, connection);
+        verify(mockStmt, times(1)).executeUpdate();
+    }
+
+    @Test
+    public void testGetPreferredBasicClinician() throws SQLException {
+        when(mockResultSet.next()).thenReturn(true, false);
+        testClinician.setMiddleName("mid");
+        testClinician.setLastName("last");
+        DBHandlerMocker.setClinicianResultSet(mockResultSet, testClinician);
+        ComboBoxClinician clinician = dbHandler.getPreferredBasicClinician(connection,"ABC1234");
+
+        verify(mockStmt, times(1)).executeQuery();
+        Assert.assertEquals("Jon mid last", clinician.toString());
+    }
+
+    @Test
+    public void testPutPreferredBasicClinician() throws SQLException {
+        dbHandler.putPreferredBasicClinician(connection, "ABC1234", "0");
         verify(mockStmt, times(1)).executeUpdate();
     }
 

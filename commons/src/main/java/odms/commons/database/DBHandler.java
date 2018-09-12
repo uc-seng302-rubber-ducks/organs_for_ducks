@@ -122,6 +122,12 @@ public class DBHandler {
     private static final String SELECT_APPTMT_ID = "SELECT apptId FROM AppointmentDetails WHERE requestedTime = ? AND fkStatusId = ?";
     private static final String PENDING_APPTMT_EXISTS = "SELECT EXISTS(SELECT 1 FROM AppointmentDetails WHERE fkUserNhi = ? AND fkStatusId = ?)";
     private static final String DELETE_APPOINTMENT_STMT = "DELETE FROM AppointmentDetails WHERE apptId = ?";
+    private static final String SELECT_PREFERRED_BASIC_CLINICIAN_STMT = "SELECT staffId, firstName, middleName, lastName " +
+            "FROM Clinician cl " +
+            "LEFT JOIN PreferredClinician a ON cl.staffId = a.fkStaffId " +
+            "WHERE fkUserNhi = ?";
+    private static final String INSERT_ELSE_UPDATE_PREFERRED_CLINICIAN = "INSERT INTO PreferredClinician (fkUserNhi, fkStaffId) " +
+            "VALUES (?, ?) ON DUPLICATE KEY UPDATE fkUserNhi=?, fkStaffId=?";
 
     private AbstractUpdateStrategy updateStrategy;
     private AbstractFetchAppointmentStrategy fetchAppointmentStrategy;
@@ -669,6 +675,13 @@ public class DBHandler {
         }
     }
 
+    /**
+     * Gets a list of clinicians with only their id and names, from a specific region
+     * @param connection  Connection to the target database
+     * @param region region the clinician resides in
+     * @return the Collection of clinicians
+     * @throws SQLException if there are errors with the SQL statements
+     */
     public Collection<ComboBoxClinician> getBasicClinicians(Connection connection, String region) throws SQLException {
         Collection<ComboBoxClinician> clinicians = new ArrayList<>();
         try (PreparedStatement statement = connection.prepareStatement(SELECT_BASIC_CLINICIAN_ONE_TO_ONE_INFO_STMT)) {
@@ -1262,12 +1275,12 @@ public class DBHandler {
         return results;
     }
 
-   public List<AvailableOrganDetail> getAvailableOrgans(int startIndex,
-                                                        int count,
-                                                        String organ,
-                                                        String bloodType,
-                                                        String region,
-                                                        Connection connection) throws SQLException {
+    public List<AvailableOrganDetail> getAvailableOrgans(int startIndex,
+                                                    int count,
+                                                    String organ,
+                                                    String bloodType,
+                                                    String region,
+                                                    Connection connection) throws SQLException {
         List<AvailableOrganDetail> results = new ArrayList<>();
         try(PreparedStatement preparedStatement = connection.prepareStatement(SELECT_AVAILABLE_ORGANS)){
             preparedStatement.setString(1,bloodType + "%");
@@ -1275,6 +1288,7 @@ public class DBHandler {
             preparedStatement.setString(3,region + "%");
             preparedStatement.setInt(4, count);
             preparedStatement.setInt(5,startIndex);
+
             try(ResultSet resultSet = preparedStatement.executeQuery()){
                 while(resultSet.next()) {
                     try {
@@ -1293,9 +1307,8 @@ public class DBHandler {
                     }
                 }
             }
-
         }
-        return results;
+    return results;
 
     }
 
@@ -1437,4 +1450,49 @@ public class DBHandler {
         }
         connection.prepareStatement(COMMIT).execute();
     }
+
+    /**
+     * Gets a list of clinicians with only their id and names, from a specific region
+     * @param connection  Connection to the target database
+     * @param userNhi nhi of the user to ge the preferred clinician from
+     * @return the Collection of clinicians
+     * @throws SQLException if there are errors with the SQL statements
+     */
+    public ComboBoxClinician getPreferredBasicClinician(Connection connection, String userNhi) throws SQLException {
+        try (PreparedStatement statement = connection.prepareStatement(SELECT_PREFERRED_BASIC_CLINICIAN_STMT)) {
+            statement.setString(1, userNhi);
+
+            try (ResultSet resultSet = statement.executeQuery()) {
+                if (resultSet.next()) {
+
+                    String fullName = "";
+                    fullName += resultSet.getString("firstName");
+                    if (!resultSet.getString("middleName").equals("")) {
+                        fullName += " " + resultSet.getString("middleName");
+                    }
+                    fullName += " " + resultSet.getString("lastName");
+                    return new ComboBoxClinician(fullName, resultSet.getString("staffId"));
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Updates the preferred clinician of a user.
+     * @param connection Connection to the target database
+     * @param userNhi nhi of the user to ge the preferred clinician from
+     * @param staffId identifier for the preferred clinician
+     * @throws SQLException if there are errors with the SQL statements
+     */
+    public void putPreferredBasicClinician(Connection connection, String userNhi, String staffId) throws SQLException {
+        try (PreparedStatement statement = connection.prepareStatement(INSERT_ELSE_UPDATE_PREFERRED_CLINICIAN)) {
+            statement.setString(1, userNhi);
+            statement.setString(2, staffId);
+            statement.setString(3, userNhi);
+            statement.setString(4, staffId);
+            statement.executeUpdate();
+        }
+    }
+
 }
