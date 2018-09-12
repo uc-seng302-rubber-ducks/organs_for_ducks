@@ -163,6 +163,16 @@ public class ClinicianAppointmentRequestViewController {
         }
     }
 
+
+    /**
+     *
+     */
+    @FXML
+    private void populateClinicianTimes(){
+
+
+    }
+
     @FXML
     private void acceptAppointment() {
         Appointment selectedAppointment = getSelectedAppointment();

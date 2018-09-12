@@ -85,6 +85,12 @@ public class ClinicianAppointmentRequestLogicController implements PropertyChang
         appointmentsBridge.putAppointment(selectedAppointment);
     }
 
+
+    public void get(AppointmentsBridge appointmentsBridge){
+        System.out.println(availableAppointments.toString());
+
+    }
+
     /**
      * Handles events fired by appointments that are being listened to
      * The user's appointments table will be updated when the given event is appropriate
