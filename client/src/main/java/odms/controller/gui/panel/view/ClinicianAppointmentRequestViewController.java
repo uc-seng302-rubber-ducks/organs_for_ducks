@@ -17,6 +17,7 @@ import odms.commons.model.Appointment;
 import odms.commons.model.Clinician;
 import odms.commons.model._enum.AppointmentCategory;
 import odms.commons.model._enum.AppointmentStatus;
+import odms.commons.utils.AttributeValidation;
 import odms.commons.utils.Log;
 import odms.controller.AppController;
 import odms.controller.gui.panel.logic.AvailableOrgansLogicController;
@@ -171,7 +172,7 @@ public class ClinicianAppointmentRequestViewController {
 
     @FXML
     private void rejectAppointment() {
-        Appointment selectedAppointment = clinicianAppointmentsRequestView.getSelectionModel().getSelectedItem();
+        Appointment selectedAppointment = getSelectedAppointment();
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML/appointmentRejection.fxml"));
         Stage rejectionStage = new Stage();
@@ -190,7 +191,21 @@ public class ClinicianAppointmentRequestViewController {
 
     @FXML
     private void acceptAppointment() {
+        Appointment selectedAppointment = getSelectedAppointment();
+        if (AttributeValidation.validateTimeString(appointmentRequestTime.getText())) {
+            logicController.acceptAppointment(selectedAppointment, appointmentRequestTime.getText(), AppController.getInstance().getAppointmentsBridge());
+        } else {
+            appointmentRequestTime.setStyle("-fx-background-color: rgba(100%, 0%, 0%, 0.25); -fx-border-color: RED");
+        }
+    }
 
+    /**
+     * Grabs and returns the selected appointment from the table
+     *
+     * @return the currently selected appointment
+     */
+    private Appointment getSelectedAppointment() {
+        return clinicianAppointmentsRequestView.getSelectionModel().getSelectedItem();
     }
 
     @FXML
