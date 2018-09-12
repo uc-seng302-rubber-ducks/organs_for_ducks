@@ -75,11 +75,6 @@ public class ClinicianAppointmentRequestViewController {
     @FXML
     private Toggle tableViewToggle;
 
-    @FXML
-    private Button previousBtn;
-
-    @FXML
-    private Button nextBtn;
 
     private ObservableList<Appointment> availableAppointments = FXCollections.observableList(new ArrayList<>());
     private ClinicianAppointmentRequestLogicController logicController;
@@ -96,11 +91,11 @@ public class ClinicianAppointmentRequestViewController {
         logicController = new ClinicianAppointmentRequestLogicController(availableAppointments, appController, clinician);
         initAppointmentTable();
         CalendarView calendarView = CalendarWidget.createCalendar();
-//        calendarView.setPrefWidth(1000);
-//        calendarView.setPrefHeight(614);
         calendarViewPane.getChildren().add(calendarView);
-//        calendarViewPane.getChildren().get(0).setLayoutX(36);
-//        calendarViewPane.getChildren().get(0).setLayoutY(69);
+        AnchorPane.setTopAnchor(calendarView,0.0);
+        AnchorPane.setBottomAnchor(calendarView,0.0);
+        AnchorPane.setLeftAnchor(calendarView,10.0);
+        AnchorPane.setRightAnchor(calendarView, 10.0);
     }
 
     /**
@@ -212,14 +207,11 @@ public class ClinicianAppointmentRequestViewController {
     private void tableCalendarViewToggle() {
         if(calendarViewToggle.isSelected()){
             calendarViewPane.setVisible(true);
-//            tableViewPane.setVisible(false);
-            previousBtn.setVisible(false);
-            nextBtn.setVisible(false);
+            tableViewPane.setVisible(false);
+
         } else if(tableViewToggle.isSelected()) {
             calendarViewPane.setVisible(false);
-//            tableViewPane.setVisible(true);
-            previousBtn.setVisible(true);
-            nextBtn.setVisible(true);
+            tableViewPane.setVisible(true);
         }
     }
 }

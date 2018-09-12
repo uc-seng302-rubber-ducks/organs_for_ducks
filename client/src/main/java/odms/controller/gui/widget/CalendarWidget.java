@@ -45,7 +45,8 @@ public class CalendarWidget {
         appointmentCategories.getCalendars().addAll(bloodTestCalendar, generalCheckUpCalendar, healthAdviceCalendar, prescriptionCalendar, otherCalendar);
         calendarView.getCalendarSources().add(appointmentCategories);
         calendarView.setRequestedTime(LocalTime.now());
-
+        calendarView.setStartTime(LocalTime.of(8, 0));
+        calendarView.setEndTime(LocalTime.of(18, 0)); //6pm
         return calendarView;
     }
 }
