@@ -49,6 +49,7 @@ import odms.controller.gui.popup.AlertUnclosedWindowsController;
 import odms.controller.gui.popup.CountrySelectionController;
 import odms.controller.gui.popup.DeletedUserController;
 import odms.controller.gui.popup.utils.AlertWindowFactory;
+import odms.controller.gui.widget.LoadingTableView;
 import odms.socket.ServerEventNotifier;
 import odms.view.CLI;
 
@@ -76,7 +77,7 @@ public class AdministratorViewController implements PropertyChangeListener, User
     public static final String ERROR = "error";
     public static final String FAILED_TO_GET_USER_OVERVIEWS_FROM_SERVER = "failed to get user overviews from server";
     @FXML
-    private TableView<UserOverview> userTableView;
+    private LoadingTableView<UserOverview> userTableView;
     @FXML
     private Label adminLastNameLabel;
     @FXML
@@ -189,7 +190,7 @@ public class AdministratorViewController implements PropertyChangeListener, User
         ServerEventNotifier.getInstance().addPropertyChangeListener(this);
         stage.setMaximized(true);
 
-        userBridge.getUsers(userStartIndex, ROWS_PER_PAGE, adminSearchField.getText(), regionSearchTextField.getText(), genderComboBox.getValue(), appController.getToken());
+        userBridge.getUsers(userStartIndex, ROWS_PER_PAGE, adminSearchField.getText(), regionSearchTextField.getText(), genderComboBox.getValue(), appController.getToken(), userTableView);
         clinicianBridge.getClinicians(clinicianStartIndex, ROWS_PER_PAGE, adminSearchField.getText(), regionSearchTextField.getText(), appController.getToken());
 
         adminUndoButton.setDisable(true);
@@ -422,7 +423,7 @@ public class AdministratorViewController implements PropertyChangeListener, User
      */
     private void populateUserSearchTable(int startIndex, int count, String name, String region, String gender) {
         appController.getUserOverviews().clear();
-        userBridge.getUsers(startIndex, count, name, region, gender, appController.getToken());
+        userBridge.getUsers(startIndex, count, name, region, gender, appController.getToken(), userTableView);
 
         displayUserSearchTable();
     }

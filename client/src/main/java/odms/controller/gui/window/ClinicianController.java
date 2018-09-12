@@ -38,7 +38,9 @@ import odms.controller.gui.panel.TransplantWaitListController;
 import odms.controller.gui.panel.view.AvailableOrgansViewController;
 import odms.controller.gui.popup.DeletedUserController;
 import odms.controller.gui.popup.utils.AlertWindowFactory;
+import odms.controller.gui.widget.LoadingTableView;
 import odms.socket.ServerEventNotifier;
+import okhttp3.Call;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -93,7 +95,7 @@ public class ClinicianController implements PropertyChangeListener, UserLauncher
     @FXML
     private Tooltip searchToolTip;
     @FXML
-    private TableView<UserOverview> searchTableView;
+    private LoadingTableView<UserOverview> searchTableView;
 
 
     @FXML
@@ -147,6 +149,7 @@ public class ClinicianController implements PropertyChangeListener, UserLauncher
     private int endIndex;
     private int searchCount;
     private Collection<PropertyChangeListener> parentListeners;
+    private Call getUsersCall;
 
     private boolean admin = false;
 
@@ -171,7 +174,8 @@ public class ClinicianController implements PropertyChangeListener, UserLauncher
         setDefaultFilters();
         stage.setResizable(true);
         showClinician(clinician);
-        appController.getUserBridge().getUsers(0, 30, "", "", "", appController.getToken());
+        searchTableView.setWaiting(true);
+        getUsersCall = appController.getUserBridge().getUsers(0, ROWS_PER_PAGE, "", "", "", appController.getToken(), searchTableView);
         searchCount = appController.getUserOverviews().size();
         initSearchTable();
         transplantWaitListTabPageController.init(appController, this);
@@ -418,8 +422,11 @@ public class ClinicianController implements PropertyChangeListener, UserLauncher
      * Sends a request to the server to obtain the user overviews for the search table
      */
     private void search() {
+        if (getUsersCall != null)
+            getUsersCall.cancel();
         appController.getUserOverviews().clear();
-        appController.getUserBridge().getUsers(startIndex, ROWS_PER_PAGE, searchTextField.getText(), regionSearchTextField.getText(), genderComboBox.getValue(), appController.getToken());
+        getUsersCall = appController.getUserBridge().getUsers(startIndex, ROWS_PER_PAGE, searchTextField.getText(), regionSearchTextField.getText(), genderComboBox.getValue(), appController.getToken(), searchTableView);
+        searchTableView.setWaiting(true);
         appController.setUserOverviews(appController.getUserOverviews().stream().filter(p -> (p.getDonating().isEmpty() != donorFilterCheckBox.isSelected() &&
                 p.getReceiving().isEmpty() != receiverFilterCheckBox.isSelected()) || allCheckBox.isSelected()).collect(Collectors.toSet()));
         searchCount = appController.getUserOverviews().size();

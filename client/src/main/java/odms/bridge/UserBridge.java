@@ -14,6 +14,7 @@ import odms.commons.utils.Log;
 import odms.commons.utils.PhotoHelper;
 import odms.controller.AppController;
 import odms.controller.gui.popup.utils.AlertWindowFactory;
+import odms.controller.gui.widget.LoadingTableView;
 import okhttp3.*;
 
 import java.io.IOException;
@@ -22,21 +23,24 @@ import java.util.*;
 public class UserBridge extends RoleBridge {
 
     private static final String USERS = "/users/";
-    public static final String FAILED_TO_PUT_TO = "Failed to PUT to ";
+    private static final String FAILED_TO_PUT_TO = "Failed to PUT to ";
     public static final String COULD_NOT_MAKE_A_CALL_TO = "Could not make a call to ";
-    public static final String FAILED_TO_POST_TO = "Failed to POST to ";
+    private static final String FAILED_TO_POST_TO = "Failed to POST to ";
 
     public UserBridge(OkHttpClient client) {
         super(client);
     }
 
-    public void getUsers(int startIndex, int count, String name, String region, String gender, String token) {
+    public Call getUsers(int startIndex, int count, String name, String region, String gender, String token, LoadingTableView tableview) {
         String url = ip + "/users?startIndex=" + startIndex + "&count=" + count + "&name=" + name + "&region=" + region + "&gender=" + gender;
         Request request = new Request.Builder().header(tokenHeader, token).url(url).build();
-        client.newCall(request).enqueue(new Callback() {
+        Call call = client.newCall(request);
+        call.enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                Platform.runLater(() -> AlertWindowFactory.generateError(e));
+                if (!e.getMessage().equals("Canceled")) {
+                    Platform.runLater(() -> AlertWindowFactory.generateError(e));
+                }
             }
 
             @Override
@@ -46,9 +50,13 @@ public class UserBridge extends RoleBridge {
                 for (UserOverview overview : overviews) {
                     AppController.getInstance().addUserOverview(overview);
                 }
+                if (overviews.isEmpty() && tableview != null) {
+                    Platform.runLater(() -> tableview.setWaiting(false));
+                }
                 response.close();
             }
         });
+        return call;
     }
 
     public void postUser(User user) {
