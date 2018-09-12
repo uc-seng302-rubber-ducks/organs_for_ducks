@@ -60,7 +60,6 @@ public class AppointmentsBridge extends Bifrost {
         }
     }
 
-
     /**
      * Gets all the appointments
      *
@@ -212,7 +211,6 @@ public class AppointmentsBridge extends Bifrost {
         });
     }
 
-
     /**
      * Deletes all cancelled appointments belonging to the given user type that they have seen.
      *
@@ -243,7 +241,6 @@ public class AppointmentsBridge extends Bifrost {
         });
     }
 
-
     /**
      * Fires a delete request to the server for the given appointment
      *
@@ -267,7 +264,6 @@ public class AppointmentsBridge extends Bifrost {
             }
         });
     }
-
 
     /**
      * Fires a put request to the server to update the appointment
