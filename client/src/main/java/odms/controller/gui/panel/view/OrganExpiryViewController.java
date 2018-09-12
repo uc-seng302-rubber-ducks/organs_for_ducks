@@ -25,6 +25,9 @@ public class OrganExpiryViewController {
     @FXML
     private Label warningLabelOE;
 
+    @FXML
+    private Label organProhibitingLabel;
+
     private OrganExpiryLogicController logicController;
     private Stage stage;
     private DonationTabPageController donationTabPageController;
@@ -40,7 +43,7 @@ public class OrganExpiryViewController {
      * @param donationTabPageController the donation tab which holds tables that need to be refreshed
      */
     @FXML
-    public void init(AppController appController, Organs organs, ExpiryReason expiryReason, User user, Stage stage, DonationTabPageController donationTabPageController) {
+    public void init(AppController appController, Organs organs, ExpiryReason expiryReason, User user, Stage stage, DonationTabPageController donationTabPageController, boolean isExpiry) {
         logicController = new OrganExpiryLogicController(appController, expiryReason);
         expirationOrgan.setText(organs.toString());
         expirationReasonTextArea.setText(expiryReason
@@ -49,6 +52,11 @@ public class OrganExpiryViewController {
         this.stage = stage;
         this.donationTabPageController = donationTabPageController;
         warningLabelOE.setText("");
+        if (isExpiry) {
+            organProhibitingLabel.setText("Expiration of available organ");
+        } else {
+            organProhibitingLabel.setText("Disqualification of organ");
+        }
     }
 
     /**
@@ -60,6 +68,19 @@ public class OrganExpiryViewController {
             return;
         }
         logicController.setExpiryReason(expirationReasonTextArea.getText());
+        donationTabPageController.refreshCurrentlyDonating();
+        stage.close();
+    }
+
+    /**
+     * Confirms and updates the disqualification of the selected organ
+     */
+    public void confirmDisqualification() {
+        if( Pattern.compile(" *").matcher(expirationReasonTextArea.getText()).matches()){
+            warningLabelOE.setText("A reason for expiry must be given");
+            return;
+        }
+//      //No commented out code here logicController.s/*Or here*/etDisqualificationReason(expirationReasonTextArea.getText()); //Not over here either
         donationTabPageController.refreshCurrentlyDonating();
         stage.close();
     }
