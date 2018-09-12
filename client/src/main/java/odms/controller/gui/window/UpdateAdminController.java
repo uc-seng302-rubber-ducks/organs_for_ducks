@@ -11,6 +11,7 @@ import odms.controller.AppController;
 
 import java.util.Optional;
 
+import static odms.commons.utils.AttributeValidation.checkRequiredString;
 import static odms.commons.utils.AttributeValidation.checkRequiredStringName;
 import static odms.commons.utils.UndoHelpers.removeFormChanges;
 
@@ -90,7 +91,6 @@ public class UpdateAdminController {
         stage.getScene();
         invalidUsername.setText("");
         invalidFName.setText("");
-        //errorLabel.setText("");
 
         if (!newAdmin) {
             adminClone = Administrator.clone(admin);
@@ -258,7 +258,13 @@ public class UpdateAdminController {
             } else {
                 admin.setUserName(usernameTextField.getText());
             }
+        } else if (usernameTextField.getText().isEmpty()) {
+            invalidateNode(usernameTextField);
+            invalidUsername.setText("Staff username cannot be blank");
+            invalidUsername.setVisible(true);
+            valid = false;
         }
+
         if (!firstNameTextField.getText().equals(admin.getFirstName())) {
             if (checkRequiredStringName(firstNameTextField.getText())) {
                 admin.setFirstName(firstNameTextField.getText());
@@ -289,22 +295,46 @@ public class UpdateAdminController {
             }
         }
 
-        if (!passwordTextField.getText().isEmpty() && !cPasswordTextField.getText().isEmpty()) {
-            if (passwordTextField.getText().equals(cPasswordTextField.getText())) {
-                admin.setPassword(passwordTextField.getText());
+        if (!passwordTextField.getText().isEmpty()) {
+            String password = cPasswordTextField.getText();
+            if (passwordTextField.getText().equals(password)) {
+                if (checkRequiredString(passwordTextField.getText())) {
+                    admin.setPassword(password);
+                } else {
+                    displayPasswordError("Only alphanumeric characters are allowed");
+                }
             } else {
-                confirmPasswordErrorLabel.setText("Your passwords don't match");
-                confirmPasswordErrorLabel.setVisible(true);
-                valid = false;
+                displayPasswordError("Your passwords don't match");
             }
+
+        } else if (!cPasswordTextField.getText().isEmpty()) {
+            displayPasswordError("Your passwords don't match");
         }
+
         admin.getRedoStack().clear();
     }
 
+    /**
+     * Invalidates the given node by applying red highlighting to the node background.
+     *
+     * @param node The node to be invalidated
+     */
     private void invalidateNode(Node node) {
         node.getStyleClass().add("invalid");
     }
 
+    /**
+     * Invalidates both password text fields and displays an error message for each.
+     */
+    private void displayPasswordError(String errorMessage) {
+        invalidateNode(passwordTextField);
+        invalidateNode(cPasswordTextField);
+        passwordErrorLabel.setText(errorMessage);
+        passwordErrorLabel.setVisible(true);
+        confirmPasswordErrorLabel.setText(errorMessage);
+        confirmPasswordErrorLabel.setVisible(true);
+        valid = false;
+    }
 
     /**
      * checks that all input is valid then updates the Admin
