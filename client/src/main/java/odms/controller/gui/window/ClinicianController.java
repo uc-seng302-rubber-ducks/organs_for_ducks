@@ -236,6 +236,7 @@ public class ClinicianController implements PropertyChangeListener, UserLauncher
         checkSave();
         stage.close();
         availableOrgansViewController.shutdownThreads();
+        appointmentRequestViewController.shutdownPropertyChangeListener();
         Log.info("Successfully closed update user window for Clinician StaffID: " + clinician.getStaffId());
     }
 
