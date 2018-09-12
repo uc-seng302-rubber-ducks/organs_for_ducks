@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import odms.commons.model.Appointment;
+import odms.commons.model._enum.AppointmentStatus;
 import odms.commons.model._enum.UserType;
 import odms.commons.utils.JsonHandler;
 import odms.commons.utils.Log;
@@ -27,10 +28,30 @@ public class AppointmentsBridge extends Bifrost {
      * @param client OkhttpClient to make the calls with.
      * @param quiet  Determines if alert windows are shown if there is an error.
      */
-    public AppointmentsBridge(OkHttpClient client, boolean quiet) {
+    AppointmentsBridge(OkHttpClient client, boolean quiet) {
         this(client);
         this.quiet = quiet;
     }
+
+
+    /**
+     * Checks if the given user has a pending appointment request
+     *
+     * @param nhi unique identifier of the user
+     * @return true if the user has a pending appointment request, false otherwise
+     */
+    public boolean pendingExists(String nhi) {
+        String url = String.format("%s/users/%s%s/exists?status=%d", ip, nhi, APPOINTMENTS, AppointmentStatus.PENDING.getDbValue());
+        Request request = new Request.Builder().get().url(url).build();
+
+        try (Response res = client.newCall(request).execute()) {
+            return res.body().string().equalsIgnoreCase("true");
+        } catch (NullPointerException | IOException ex) {
+            Log.warning("", ex);
+            return false;
+        }
+    }
+
 
     /**
      * Gets all the appointments
@@ -40,8 +61,17 @@ public class AppointmentsBridge extends Bifrost {
      * @param user     user's unique ID
      * @param userType UserType to determine whether they are a user, clinician or admin.
      */
-    public void getAppointments(int count, ObservableList<Appointment> toAddTo, String user, UserType userType) {
-        String url = String.format("%s%s?count=%d&user=%s&userType=%d", ip, APPOINTMENTS, count, user, userType.getValue());
+    public void getAppointments(int count, int start, ObservableList<Appointment> toAddTo, String user, UserType userType) {
+        String url = null;
+        if (userType.equals(UserType.USER)) {
+            url = String.format("%s/users/%s%s?count=%d&startIndex=%d", ip, user, APPOINTMENTS, count, start);
+        } else if (userType.equals(UserType.CLINICIAN)) {
+            url = String.format("%s/clinicians/%s%s?count=%d&startIndex=%d", ip, user, APPOINTMENTS, count, start);
+        }
+
+        if (url == null) {
+            return;
+        }
         Request request = new Request.Builder().url(url).build();
         client.newCall(request).enqueue(new Callback() {
             @Override
@@ -52,11 +82,53 @@ public class AppointmentsBridge extends Bifrost {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 if (response.isSuccessful()) {
-                    String bodyString = response.body().string();
-                    toAddTo.addAll(new JsonHandler().decodeAppointments(bodyString));
+                    if (response.body() != null) {
+                        String bodyString = response.body().string();
+                        toAddTo.addAll(new JsonHandler().decodeAppointments(bodyString));
+                    }
                 } else {
                     logAndNotify(response);
                 }
+                response.close();
+            }
+        });
+    }
+
+    /**
+     * Gets all the appointments for a specified clinician
+     *
+     * @param startIndex             Index to get results from
+     * @param count                  Amount of results to get at once
+     * @param staffId                Id of the staff to get appointments for
+     * @param token                  Authentication required to get the appointments.
+     * @param observableAppointments List to update with the gotten appointments
+     */
+    public void getClinicianAppointments(int startIndex, int count, String staffId, String token, ObservableList<Appointment> observableAppointments) {
+        String url = ip + "/clinicians/" + staffId + APPOINTMENTS + "?startIndex=" + startIndex + "&count=" + count;
+        Request request = new Request.Builder().addHeader(tokenHeader, token).url(url).build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.warning("Failed to get clinicians. On Failure Triggered", e);
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (response == null) {
+                    Log.warning("A null response was returned to the user");
+                    return;
+                }
+                ResponseBody body = response.body();
+                if (body == null) {
+                    Log.warning("A null response body was returned to the user");
+                    return;
+                }
+                String bodyString = response.body().string();
+
+                Platform.runLater(() -> {
+                    observableAppointments.clear();
+                    observableAppointments.addAll(new JsonHandler().decodeAppointments(bodyString));
+                });
             }
         });
     }
@@ -70,6 +142,57 @@ public class AppointmentsBridge extends Bifrost {
         String url = String.format("%s%s", ip, APPOINTMENTS);
         RequestBody body = RequestBody.create(json, new Gson().toJson(appointment));
         Request request = new Request.Builder().post(body).url(url).build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.severe(e.getMessage(), e);
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (!response.isSuccessful()) {
+                    logAndNotify(response);
+                }
+                response.close();
+            }
+        });
+    }
+
+
+    /**
+     * Fires a delete request to the server for the given appointment
+     *
+     * @param appointment Appointment to be deleted
+     */
+    public void deleteAppointment(Appointment appointment) {
+        String url = String.format("%s%s", ip, APPOINTMENTS);
+        RequestBody body = RequestBody.create(json, new Gson().toJson(appointment));
+        Request request = new Request.Builder().delete(body).url(url).build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.severe(e.getMessage(), e);
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (!response.isSuccessful()) {
+                    logAndNotify(response);
+                }
+            }
+        });
+    }
+
+
+    /**
+     * Fires a put request to the server to update the appointment
+     *
+     * @param appointment the updated appointment
+     */
+    public void putAppointment(Appointment appointment) {
+        String url = String.format("%s/clinicians/%s%s/%d", ip, appointment.getRequestedClinicianId(), APPOINTMENTS, appointment.getAppointmentId());
+        RequestBody body = RequestBody.create(json, new Gson().toJson(appointment));
+        Request request = new Request.Builder().put(body).url(url).build();
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {

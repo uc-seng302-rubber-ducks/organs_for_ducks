@@ -79,6 +79,10 @@ public class DBHandler {
             "LEFT JOIN Address a ON cl.staffId = a.fkStaffId " +
             "WHERE (firstName LIKE ? OR firstName IS NULL OR lastName LIKE ? OR lastName IS NULL )AND region LIKE ? or region IS NULL " +
             "LIMIT ? OFFSET ?";
+    private static final String SELECT_BASIC_CLINICIAN_ONE_TO_ONE_INFO_STMT = "SELECT staffId, firstName, middleName, lastName " +
+            "FROM Clinician cl " +
+            "LEFT JOIN Address a ON cl.staffId = a.fkStaffId " +
+            "WHERE region LIKE ? or region IS NULL";
     private static final String SELECT_ADMIN_ONE_TO_ONE_INFO_STMT = "SELECT userName, firstName, middleName, lastName, timeCreated, lastModified  FROM Administrator " +
             "WHERE (firstName LIKE ? OR firstName IS NULL )" +
             "OR (middleName LIKE ? OR middleName IS NULL)" +
@@ -88,8 +92,8 @@ public class DBHandler {
     private static final String SELECT_PASS_DETAILS = "SELECT hash,salt FROM PasswordDetails WHERE fkAdminUserName = ? OR fkStaffId = ?";
     private static final String SELECT_USER_PROFILE_PHOTO_STMT = "SELECT profilePicture FROM User WHERE nhi = ?";
     private static final String SELECT_CLINICIAN_PROFILE_PHOTO_STMT = "SELECT profilePicture FROM Clinician WHERE staffId = ?";
-    private static final String UPDATE_USER_PROFILE_PHOTO_STMT = "UPDATE User SET profilePicture= ?, pictureFormat = ? WHERE nhi = ?";
-    private static final String UPDATE_CLINICIAN_PROFILE_PHOTO_STMT = "UPDATE Clinician SET profilePicture= ?, pictureFormat = ? WHERE staffId = ?";
+    private static final String UPDATE_USER_PROFILE_PHOTO_STMT = "UPDATE User SET profilePicture = ?, pictureFormat = ? WHERE nhi = ?";
+    private static final String UPDATE_CLINICIAN_PROFILE_PHOTO_STMT = "UPDATE Clinician SET profilePicture = ?, pictureFormat = ? WHERE staffId = ?";
     private static final String SELECT_ONE_CLINICIAN = "SELECT * FROM Clinician LEFT JOIN Address ON staffId = fkStaffId WHERE staffId = ?";
     private static final String SELECT_IF_USER_EXISTS_BOOL = "SELECT EXISTS(SELECT 1 FROM User WHERE nhi = ?)";
     private static final String SELECT_IF_CLINICIAN_EXISTS_BOOL = "SELECT EXISTS(SELECT 1 FROM Clinician WHERE staffId = ?)";
@@ -113,12 +117,15 @@ public class DBHandler {
             "WHERE (nhi = ?) " +
             "AND organName = ?";
     private static final String SELECT_DEATH_DETAILS_STMT = "SELECT * FROM DeathDetails WHERE fkUserNhi = ?";
+    private static final String SELECT_BOOKED_APPOINTMENTS_DATETIME_STMT =  "SELECT requestedTime FROM AppointmentDetails WHERE fkStaffId = ? AND fkStatusId = 2";
     private static final String CREATE_APPOINTMENT_STMT = "INSERT INTO AppointmentDetails (fkUserNhi, fkStaffId, fkCategoryId, requestedTime, fkStatusId, description) VALUES (?,?,?,?,?,?)";
+    private static final String SELECT_APPTMT_ID = "SELECT apptId FROM AppointmentDetails WHERE requestedTime = ? AND fkStatusId = ?";
+    private static final String PENDING_APPTMT_EXISTS = "SELECT EXISTS(SELECT 1 FROM AppointmentDetails WHERE fkUserNhi = ? AND fkStatusId = ?)";
+    private static final String DELETE_APPOINTMENT_STMT = "DELETE FROM AppointmentDetails WHERE apptId = ?";
 
     private AbstractUpdateStrategy updateStrategy;
     private AbstractFetchAppointmentStrategy fetchAppointmentStrategy;
 
-    private static final String DELETE_APPOINTMENT_STMT = "DELETE FROM AppointmentDetails WHERE apptId = ?";
 
     /**
      * Takes a generic, valid SQL String as an argument and executes it and returns the result
@@ -662,6 +669,28 @@ public class DBHandler {
         }
     }
 
+    public Collection<ComboBoxClinician> getBasicClinicians(Connection connection, String region) throws SQLException {
+        Collection<ComboBoxClinician> clinicians = new ArrayList<>();
+        try (PreparedStatement statement = connection.prepareStatement(SELECT_BASIC_CLINICIAN_ONE_TO_ONE_INFO_STMT)) {
+            statement.setString(1, region + "%");
+
+            try (ResultSet resultSet = statement.executeQuery()) {
+
+                while (resultSet != null && resultSet.next()) {
+                    String fullName = "";
+                    fullName += resultSet.getString("firstName");
+                    if (!resultSet.getString("middleName").equals("")) {
+                        fullName += " " + resultSet.getString("middleName");
+                    }
+                    fullName += " " + resultSet.getString("lastName");
+                    ComboBoxClinician clinician = new ComboBoxClinician(fullName, resultSet.getString("staffId"));
+                    clinicians.add(clinician);
+                }
+                return clinicians;
+            }
+        }
+    }
+
     /**
      * Method to save a single Clinician to the database
      *
@@ -1133,6 +1162,7 @@ public class DBHandler {
         }
     }
 
+
     /**
      * Uses the provided connection and queries data base of countries to retrieve the ones that are allowed to be used
      * as a place of residence.
@@ -1315,6 +1345,7 @@ public class DBHandler {
         return null;
     }
 
+
     /**
      * Gets a appointment strategy and returns it to the appointment controller
      *
@@ -1333,7 +1364,7 @@ public class DBHandler {
      * @throws SQLException If the entry does not exist or the connection is invalid
      */
     public int getAppointmentId(Connection connection, Appointment appointment) throws SQLException {
-        try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT apptId FROM AppointmentDetails WHERE requestedTime = ? AND fkStatusId = ?")) {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(SELECT_APPTMT_ID)) {
 
             preparedStatement.setTimestamp(1, Timestamp.valueOf(appointment.getRequestedDate()));
             preparedStatement.setInt(2, appointment.getAppointmentStatus().getDbValue());
@@ -1345,7 +1376,49 @@ public class DBHandler {
     }
 
     /**
-     * deletes the appointment based on appointment Id.
+     * gets all date and time of booked appointments of a clinician.
+     *
+     * @param connection Connection to the target database
+     * @param staffId of a clinician
+     * @return List of date and time of booked appointments.
+     * @throws SQLException If the entry does not exist or the connection is invalid
+     */
+    public List<LocalDateTime> getBookedAppointmentTimes(Connection connection, String staffId) throws SQLException {
+        List<LocalDateTime> bookedAppointmentTimes = new ArrayList<>();
+        try (PreparedStatement preparedStatement = connection.prepareStatement(SELECT_BOOKED_APPOINTMENTS_DATETIME_STMT)) {
+
+            preparedStatement.setString(1, staffId);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet != null && resultSet.next()) {
+                    bookedAppointmentTimes.add(resultSet.getTimestamp("requestedTime").toLocalDateTime());
+                }
+            }
+        }
+        return bookedAppointmentTimes;
+    }
+
+    /**
+     * Queries the database to check whether the given user has an existing pending appointment request.
+     *
+     * @param nhi      unique identifier of the user
+     * @param statusId integer value of the pending status
+     * @return true if a pending request is found, false otherwise
+     */
+    public boolean pendingExists(Connection connection, String nhi, int statusId) throws SQLException {
+        try (PreparedStatement stmt = connection.prepareStatement(PENDING_APPTMT_EXISTS)) {
+            stmt.setString(1, nhi);
+            stmt.setInt(2, statusId);
+
+            try (ResultSet result = stmt.executeQuery()) {
+                result.next();
+                return result.getInt(1) == 1;
+            }
+        }
+    }
+
+
+    /**
+     * Deletes the appointment based on appointment Id.
      *
      * @param appointment that needs to be deleted.
      * @param connection connection to the database
@@ -1353,9 +1426,9 @@ public class DBHandler {
      */
     public void deleteAppointment(Appointment appointment, Connection connection) throws SQLException {
         connection.prepareStatement(START_TRANSACTION).execute();
-        try (PreparedStatement stmt = connection.prepareStatement(DELETE_APPOINTMENT_STMT)){
-                stmt.setInt(1, appointment.getAppointmentId());
-                stmt.executeUpdate();
+        try (PreparedStatement stmt = connection.prepareStatement(DELETE_APPOINTMENT_STMT)) {
+            stmt.setInt(1, appointment.getAppointmentId());
+            stmt.executeUpdate();
 
         } catch (SQLException sqlEx) {
             Log.severe("A fatal error in deletion, cancelling operation", sqlEx);
