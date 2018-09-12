@@ -117,6 +117,8 @@ public class DBHandler {
             "WHERE (nhi = ?) " +
             "AND organName = ?";
     private static final String SELECT_DEATH_DETAILS_STMT = "SELECT * FROM DeathDetails WHERE fkUserNhi = ?";
+    private static final String SELECT_BOOKED_APPOINTMENTS_DATETIME_STMT =  "SELECT requestedTime FROM AppointmentDetails WHERE fkStaffId = ? AND fkStatusId = 2";
+    private static final String CREATE_APPOINTMENT_STMT = "INSERT INTO AppointmentDetails (fkUserNhi, fkStaffId, fkCategoryId, requestedTime, fkStatusId, description) VALUES (?,?,?,?,?,?)";
     private static final String SELECT_APPTMT_ID = "SELECT apptId FROM AppointmentDetails WHERE requestedTime = ? AND fkStatusId = ?";
     private static final String PENDING_APPTMT_EXISTS = "SELECT EXISTS(SELECT 1 FROM AppointmentDetails WHERE fkUserNhi = ? AND fkStatusId = ?)";
     private static final String DELETE_APPOINTMENT_STMT = "DELETE FROM AppointmentDetails WHERE apptId = ?";
@@ -1391,6 +1393,27 @@ public class DBHandler {
 
     }
 
+    /**
+     * gets all date and time of booked appointments of a clinician.
+     *
+     * @param connection Connection to the target database
+     * @param staffId of a clinician
+     * @return List of date and time of booked appointments.
+     * @throws SQLException If the entry does not exist or the connection is invalid
+     */
+    public List<LocalDateTime> getBookedAppointmentTimes(Connection connection, String staffId) throws SQLException {
+        List<LocalDateTime> bookedAppointmentTimes = new ArrayList<>();
+        try (PreparedStatement preparedStatement = connection.prepareStatement(SELECT_BOOKED_APPOINTMENTS_DATETIME_STMT)) {
+
+            preparedStatement.setString(1, staffId);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                while (resultSet != null && resultSet.next()) {
+                    bookedAppointmentTimes.add(resultSet.getTimestamp("requestedTime").toLocalDateTime());
+                }
+            }
+        }
+        return bookedAppointmentTimes;
+    }
 
     /**
      * Queries the database to check whether the given user has an existing pending appointment request.
