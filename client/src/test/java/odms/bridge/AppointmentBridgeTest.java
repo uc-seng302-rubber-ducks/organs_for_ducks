@@ -147,7 +147,7 @@ public class AppointmentBridgeTest extends BridgeTestBase {
     }
 
     @Test
-    public void testGetUnseenAppointment_ReturnsAppointment_OnSuccess() throws IOException {
+    public void testGetUnseenAppointmentReturnsAppointmentOnSuccess() throws IOException {
         Appointment expected = new Appointment();
         expected.setAppointmentId(0);
 
@@ -166,7 +166,7 @@ public class AppointmentBridgeTest extends BridgeTestBase {
 
 
     @Test
-    public void testGetUnseenAppointment_ReturnsNull_OnNullBody() throws IOException{
+    public void testGetUnseenAppointmentReturnsNullOnNullBody() throws IOException {
         Call mockCall = mock(Call.class);
         Response mockResponse = mock(Response.class);
         when(mockClient.newCall(any(Request.class))).thenReturn(mockCall);
@@ -179,7 +179,7 @@ public class AppointmentBridgeTest extends BridgeTestBase {
     }
 
     @Test
-    public void testGetUnseenAppointment_ReturnsNull_OnNullPointerException() {
+    public void testGetUnseenAppointmentReturnsNullOnNullPointerException() {
         when(mockClient.newCall(any(Request.class))).thenReturn(null);
 
         Appointment actual = (appointmentsBridge.getUnseenAppointment("default"));
@@ -187,7 +187,7 @@ public class AppointmentBridgeTest extends BridgeTestBase {
     }
 
     @Test
-    public void testGetUnseenAppointment_ReturnsNull_OnIOException() throws IOException{
+    public void testGetUnseenAppointmentReturnsNullOnIOException() throws IOException {
         Call mockCall = mock(Call.class);
         when(mockClient.newCall(any(Request.class))).thenReturn(mockCall);
         when(mockCall.execute()).thenThrow(new IOException());
