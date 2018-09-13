@@ -211,10 +211,11 @@ public class ClinicianAppointmentRequestViewController {
 
         if (valid) {
             if (status == AppointmentStatus.PENDING) {
-                logicController.acceptAppointment(selectedAppointment, appointmentRequestTime.getText(), AppController.getInstance().getAppointmentsBridge());
+                logicController.updateAppointment(selectedAppointment, appointmentRequestCategory.getValue(),
+                        appointmentRequestDate.getValue(), appointmentRequestTime.getText(), appointmentRequestDescription.getText(), true);
             } else if (status == AppointmentStatus.ACCEPTED || status == AppointmentStatus.ACCEPTED_SEEN) {
                 logicController.updateAppointment(selectedAppointment, appointmentRequestCategory.getValue(),
-                        appointmentRequestDate.getValue(), appointmentRequestTime.getText(), appointmentRequestDescription.getText());
+                        appointmentRequestDate.getValue(), appointmentRequestTime.getText(), appointmentRequestDescription.getText(), false);
             } else {
                 AlertWindowFactory.generateInfoWindow("This appointment is no longer available");
             }

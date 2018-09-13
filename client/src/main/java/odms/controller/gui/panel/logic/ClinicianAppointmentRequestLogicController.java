@@ -6,7 +6,6 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
-import odms.bridge.AppointmentsBridge;
 import odms.commons.model.Appointment;
 import odms.commons.model.Clinician;
 import odms.commons.model._enum.AppointmentCategory;
@@ -146,25 +145,17 @@ public class ClinicianAppointmentRequestLogicController implements PropertyChang
     }
 
     /**
-     * Method to make a request to the server to accept the appointment for the given time.
-     *
-     * @param selectedAppointment appointment to update
-     */
-    public void acceptAppointment(Appointment selectedAppointment, String time, AppointmentsBridge appointmentsBridge) {
-        String[] timeParts = time.split(":");
-        selectedAppointment.setRequestedDate(LocalDateTime.of(selectedAppointment.getRequestedDate().toLocalDate(), LocalTime.of(Integer.valueOf(timeParts[0]), Integer.valueOf(timeParts[1]))));
-        selectedAppointment.setAppointmentStatus(AppointmentStatus.ACCEPTED);
-        appointmentsBridge.putAppointment(selectedAppointment, AppController.getInstance().getToken());
-    }
-
-    /**
-     * Updates the given appointment to the new values given
+     * Updates / accepts the given appointment with the given values
      *
      * @param appointment Appointment to be updated
      */
-    public void updateAppointment(Appointment appointment, AppointmentCategory category, LocalDate date, String time, String description) {
+    public void updateAppointment(Appointment appointment, AppointmentCategory category, LocalDate date, String time, String description, boolean pending) {
         String[] timeParts = time.split(":");
         LocalTime localTime = LocalTime.of(Integer.valueOf(timeParts[0]), Integer.valueOf(timeParts[1]));
+
+        if (pending) {
+            appointment.setAppointmentStatus(AppointmentStatus.ACCEPTED);
+        }
 
         appointment.setRequestedDate(LocalDateTime.of(date, localTime));
         appointment.setAppointmentCategory(category);
