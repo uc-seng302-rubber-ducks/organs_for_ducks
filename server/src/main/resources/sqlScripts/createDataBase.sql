@@ -1,3 +1,5 @@
+DROP EVENT IF EXISTS qualifyOrgans;
+DROP TABLE IF EXISTS DisqualifiedOrgans;
 DROP TABLE IF EXISTS AppointmentDetails;
 DROP TABLE IF EXISTS AppointmentType;
 DROP TABLE IF EXISTS AppointmentStatus;
@@ -25,6 +27,7 @@ DROP TABLE IF EXISTS Administrator;
 DROP TABLE IF EXISTS Clinician;
 DROP TABLE IF EXISTS User;
 
+SET GLOBAL event_scheduler = TRUE ;
 
 CREATE TABLE User(
   nhi            varchar(7) PRIMARY KEY ,
@@ -270,6 +273,25 @@ CREATE TABLE AppointmentDetails (
     ON UPDATE CASCADE
 );
 
+CREATE TABLE DisqualifiedOrgans(
+  disqulifiedId  INT AUTO_INCREMENT PRIMARY KEY,
+  fkUserNhi VARCHAR(7),
+  description TEXT,
+  fkOrgan SMALLINT,
+  fkStaffId VARCHAR(255),
+  dateDisqulified DATE,
+  dateEligable DATE,
+  isCurrentlyDisqulifed BOOL,
+  FOREIGN KEY (fkUserNhi) REFERENCES User(nhi)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  FOREIGN KEY (fkOrgan) REFERENCES Organ(organId)
+    ON UPDATE CASCADE
+    ON DELETE CASCADE,
+  FOREIGN KEY (fkStaffId) REFERENCES Clinician(staffId)
+    ON UPDATE CASCADE
+    ON DELETE CASCADE
+);
 
 
 CREATE TRIGGER removeZombies AFTER UPDATE ON DeathDetails
@@ -277,3 +299,11 @@ CREATE TRIGGER removeZombies AFTER UPDATE ON DeathDetails
   BEGIN
     DELETE FROM DeathDetails WHERE DeathDetails.momentOfDeath IS NULL;
   END;
+
+CREATE EVENT qualifyOrgans
+  ON SCHEDULE AT Current_timestamp + Interval 1 DAY
+  ON COMPLETION PRESERVE
+  DO
+    UPDATE DisqualifiedOrgans set isCurrentlyDisqulifed = 0
+    WHERE dateEligable <= CURDATE();
+
