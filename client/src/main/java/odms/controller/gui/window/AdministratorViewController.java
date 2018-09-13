@@ -69,11 +69,11 @@ public class AdministratorViewController implements PropertyChangeListener, User
     //<editor-fold desc="FXML stuff">
 
     private static final int ROWS_PER_PAGE = 30;
-    public static final String JSON = "*.json";
-    public static final String FILE_NAME_NOT_FOUND = "File name not found";
-    public static final String FIRST_NAME = "firstName";
-    public static final String LAST_NAME = "lastName";
-    public static final String ERROR = "error";
+    private static final String JSON = "*.json";
+    private static final String FILE_NAME_NOT_FOUND = "File name not found";
+    private static final String FIRST_NAME = "firstName";
+    private static final String LAST_NAME = "lastName";
+    private static final String ERROR = "error";
     public static final String FAILED_TO_GET_USER_OVERVIEWS_FROM_SERVER = "failed to get user overviews from server";
     @FXML
     private TableView<UserOverview> userTableView;
