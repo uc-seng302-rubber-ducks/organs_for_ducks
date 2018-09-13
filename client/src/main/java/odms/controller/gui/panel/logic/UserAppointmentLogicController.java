@@ -76,6 +76,13 @@ public class UserAppointmentLogicController implements PropertyChangeListener {
      * @param appointment The appointment to be cancelled
      */
     public void cancelAppointment(Appointment appointment) {
+        AppointmentStatus status = appointment.getAppointmentStatus();
+
+        if (!(status == AppointmentStatus.ACCEPTED || status == AppointmentStatus.ACCEPTED_SEEN || status == AppointmentStatus.PENDING)) {
+            alertUser("This appointment is no longer available");
+            return;
+        }
+
         if (appointment.getRequestedDate().minusDays(1).isBefore(LocalDateTime.now())) {
             alertUser("You cannot cancel this appointment as it is within 24 hours of the scheduled time");
             return;
