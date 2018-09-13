@@ -56,7 +56,7 @@ public class TransplantBridgeTest extends BridgeTestBase {
         when(mockCall.execute()).thenReturn(mockResponse);
         when(mockClient.newCall(any(Request.class))).thenReturn(mockCall);
 
-        bridge.getWaitingList(0, 10, "", "", new ArrayList<>(), FXCollections.emptyObservableList());
+        bridge.getWaitingList(0, 10, "", "", new ArrayList<>(), FXCollections.emptyObservableList(), null);
         List<String> logs = Log.getDebugLogs();
         Assert.assertTrue(logs.get(0).endsWith("/transplantList?count=10&startIndex=0"));
     }
@@ -74,7 +74,7 @@ public class TransplantBridgeTest extends BridgeTestBase {
         when(mockCall.execute()).thenReturn(mockResponse);
         when(mockClient.newCall(any(Request.class))).thenReturn(mockCall);
 
-        bridge.getWaitingList(0, 10, "", "here", new ArrayList<>(), FXCollections.emptyObservableList());
+        bridge.getWaitingList(0, 10, "", "here", new ArrayList<>(), FXCollections.emptyObservableList(), null);
         List<String> logs = Log.getDebugLogs();
         Assert.assertTrue(logs.get(0).endsWith("/transplantList?count=10&startIndex=0&region=here"));
     }
@@ -91,7 +91,7 @@ public class TransplantBridgeTest extends BridgeTestBase {
         when(mockCall.execute()).thenReturn(mockResponse);
         when(mockClient.newCall(any(Request.class))).thenReturn(mockCall);
 
-        bridge.getWaitingList(0, 10, "", "", new ArrayList<>(Arrays.asList(Organs.LIVER, Organs.LUNG)), FXCollections.emptyObservableList());
+        bridge.getWaitingList(0, 10, "", "", new ArrayList<>(Arrays.asList(Organs.LIVER, Organs.LUNG)), FXCollections.emptyObservableList(), null);
         List<String> logs = Log.getDebugLogs();
 
         Assert.assertTrue(logs.get(0).endsWith("/transplantList?count=10&startIndex=0&organs=LIVER&organs=LUNG"));
@@ -109,7 +109,7 @@ public class TransplantBridgeTest extends BridgeTestBase {
         when(mockCall.execute()).thenReturn(mockResponse);
         when(mockClient.newCall(any(Request.class))).thenReturn(mockCall);
 
-        bridge.getWaitingList(34, 54, "", "", new ArrayList<>(), FXCollections.emptyObservableList());
+        bridge.getWaitingList(34, 54, "", "", new ArrayList<>(), FXCollections.emptyObservableList(), null);
         List<String> logs = Log.getDebugLogs();
 
         Assert.assertTrue(logs.get(0).endsWith("/transplantList?count=54&startIndex=34"));
