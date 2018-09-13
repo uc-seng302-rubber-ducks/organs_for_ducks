@@ -72,10 +72,8 @@ public class ClinicianController implements PropertyChangeListener, UserLauncher
     //<editor-fold desc="FXML declarations">
     @FXML
     private Button undoButton;
-
     @FXML
     private Button backButton;
-
     @FXML
     private Label staffIdLabel;
     @FXML
@@ -96,14 +94,10 @@ public class ClinicianController implements PropertyChangeListener, UserLauncher
     private Label countryLabel;
     @FXML
     private TextField searchTextField;
-
-
     @FXML
     private Tooltip searchToolTip;
     @FXML
     private TableView<UserOverview> searchTableView;
-
-
     @FXML
     private Label searchCountLabel;
     @FXML
@@ -132,7 +126,6 @@ public class ClinicianController implements PropertyChangeListener, UserLauncher
     private MenuItem deleteClinician;
     @FXML
     private MenuItem logoutMenuClinician;
-
     @FXML
     private ImageView profileImage;
     @FXML
