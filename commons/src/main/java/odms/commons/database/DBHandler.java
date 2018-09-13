@@ -97,10 +97,12 @@ public class DBHandler {
             "JOIN HealthDetails ON OrganDonating.fkUserNhi = HealthDetails.fkUserNhi " +
             "JOIN User U ON DeathDetails.fkUserNhi = U.nhi " +
             "JOIN OrganExpiryDetails OED ON OrganDonating.donatingId = OED.fkDonatingId " +
+            "LEFT JOIN DisqualifiedOrgans D ON Organ.organId = D.fkOrgan And U.nhi = D.fkUserNhi " +
             "WHERE (bloodType LIKE ? OR bloodType IS NULL)" +
             "AND (organName LIKE ? OR organName IS NULL )" +
             "AND (DeathDetails.region LIKE ? or DeathDetails.region IS NULL) " +
             "AND (OED.timeOfExpiry is NULL ) " +
+            "AND (D.isCurrentlyDisqulifed = 0 OR D.isCurrentlyDisqulifed is NULL ) " +
             "LIMIT ? OFFSET ?";
     private static final String SELECT_AVAILABLE_ORGANS_BY_NHI = "select * from OrganDonating " +
             "JOIN DeathDetails ON OrganDonating.fkUserNhi = DeathDetails.fkUserNhi " +
