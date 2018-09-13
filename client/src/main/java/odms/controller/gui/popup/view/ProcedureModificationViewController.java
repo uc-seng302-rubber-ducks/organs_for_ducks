@@ -1,6 +1,5 @@
 package odms.controller.gui.popup.view;
 
-import com.sun.istack.internal.Nullable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -41,7 +40,7 @@ public class ProcedureModificationViewController {
     private ProcedureTabController procedureTabController;
     private MedicalProcedure procedure;
 
-    public void init(@Nullable MedicalProcedure procedure, Stage stage, User currentUser, ProcedureTabController procedureTabController){
+    public void init(MedicalProcedure procedure, Stage stage, User currentUser, ProcedureTabController procedureTabController){
         this.stage = stage;
         this.user = currentUser;
         this.procedureTabController = procedureTabController;
