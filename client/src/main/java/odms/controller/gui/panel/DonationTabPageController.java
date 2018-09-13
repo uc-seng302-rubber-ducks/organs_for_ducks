@@ -214,17 +214,6 @@ public class DonationTabPageController {
         }
     }
 
-//    public void updateButton() {
-//        if (currentUser.getDeathDetails().getMomentOfDeath() == null || application.getUsername().isEmpty() || application.getUsername() == null) {
-//            expireOrganButton.setVisible(false);
-//            removeExpiryReasonButton.setVisible(false);
-//
-//        } else {
-//            expireOrganButton.setVisible(true);
-//            removeExpiryReasonButton.setVisible(true);
-//        }
-//    }
-
 
     /**
      * Attempts to cancel the manual expiry of a donated organ.
