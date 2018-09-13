@@ -13,6 +13,7 @@ import odms.commons.model.Appointment;
 import odms.commons.model.User;
 import odms.commons.model._enum.AppointmentCategory;
 import odms.commons.model._enum.AppointmentStatus;
+import odms.controller.AppController;
 import odms.controller.gui.panel.logic.UserAppointmentLogicController;
 import odms.controller.gui.popup.utils.AlertWindowFactory;
 
@@ -67,6 +68,8 @@ public class UserAppointmentViewController {
         userAppointmentCategoryColumn.setCellValueFactory(new PropertyValueFactory<>("appointmentCategory"));
         userAppointmentClinicianIdColumn.setCellValueFactory(new PropertyValueFactory<>("requestedClinicianId"));
         userAppointmentStatusColumn.setCellValueFactory(new PropertyValueFactory<>("appointmentStatus"));
+        userAppointmentStatusColumn.setCellFactory(cell -> AppointmentTableCellFactory.generateAppointmentTableCell());
+
         logicController.updateTable(0);
         populateTable();
         userAppointmentStatusColumn.setSortType(TableColumn.SortType.ASCENDING);
@@ -102,8 +105,16 @@ public class UserAppointmentViewController {
      * Binds a table view row selection to show all details for that appointment
      */
     private void setOnClickBehaviour() {
-        userAppointmentsTableView.getSelectionModel().selectedItemProperty().addListener(a ->
-                displayAppointmentDetails(userAppointmentsTableView.getSelectionModel().getSelectedItem()));
+        userAppointmentsTableView.getSelectionModel().selectedItemProperty().addListener(a -> {
+            Appointment selectedAppointment = userAppointmentsTableView.getSelectionModel().getSelectedItem();
+            displayAppointmentDetails(selectedAppointment);
+
+            if (selectedAppointment != null && selectedAppointment.getAppointmentStatus() == AppointmentStatus.CANCELLED_BY_CLINICIAN) {
+                selectedAppointment.setAppointmentStatus(AppointmentStatus.CANCELLED_BY_CLINICIAN_SEEN);
+                AppController.getInstance().getAppointmentsBridge().patchAppointmentStatus(selectedAppointment.getAppointmentId(),
+                        AppointmentStatus.CANCELLED_BY_CLINICIAN_SEEN.getDbValue());
+            }
+        });
     }
 
     /**

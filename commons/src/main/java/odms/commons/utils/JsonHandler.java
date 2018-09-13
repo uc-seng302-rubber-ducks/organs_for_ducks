@@ -401,11 +401,20 @@ public class JsonHandler extends DataHandler {
         }.getType());
     }
 
+    /**
+     * Decodes raw json string into an appointment object
+     * @param bodyString raw json string
+     * @return an appointment object
+     */
+    public Appointment decodeOneAppointment(String bodyString) {
+        return new Gson().fromJson(bodyString, new TypeToken<Appointment>() {
+        }.getType());
+    }
+
     public Collection<LocalDateTime> decodeDateTimes(String bodyString) {
         return new Gson().fromJson(bodyString, new TypeToken<Collection<LocalDateTime>>(){
 
         }.getType());
     }
-
 }
 

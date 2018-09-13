@@ -1,6 +1,10 @@
 package odms.controller.gui.panel.logic;
 
 import javafx.collections.ObservableList;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 import odms.bridge.AppointmentsBridge;
 import odms.commons.model.Appointment;
 import odms.commons.model._enum.AppointmentStatus;
@@ -10,11 +14,14 @@ import java.time.LocalTime;
 import odms.commons.model.Clinician;
 import odms.commons.model._enum.EventTypes;
 import odms.commons.model.event.UpdateNotificationEvent;
+import odms.commons.utils.Log;
 import odms.controller.AppController;
+import odms.controller.gui.popup.view.RejectAppointmentReasonViewController;
 import odms.socket.ServerEventNotifier;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.IOException;
 
 
 public class ClinicianAppointmentRequestLogicController implements PropertyChangeListener {
@@ -52,7 +59,7 @@ public class ClinicianAppointmentRequestLogicController implements PropertyChang
         }
 
         startingIndex = startingIndex - ROWS_PER_PAGE;
-        search(startingIndex);
+        updateTable(startingIndex);
     }
 
     /**
@@ -64,14 +71,39 @@ public class ClinicianAppointmentRequestLogicController implements PropertyChang
         }
 
         startingIndex = startingIndex + ROWS_PER_PAGE;
-        search(startingIndex);
+        updateTable(startingIndex);
+    }
+
+    /**
+     * @param selectedAppointment
+     */
+    public void rejectAppointment(Appointment selectedAppointment) {
+        AppointmentStatus status = selectedAppointment.getAppointmentStatus();
+
+        if (status == AppointmentStatus.PENDING) {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML/appointmentRejection.fxml"));
+            Stage rejectionStage = new Stage();
+            Parent root;
+            try {
+                root = loader.load();
+                RejectAppointmentReasonViewController rejectionController = loader.getController();
+                rejectionStage.setScene(new Scene(root));
+
+                rejectionController.init(selectedAppointment, rejectionStage);
+                rejectionStage.show();
+            } catch (IOException e) {
+                Log.severe("failed to load login window FXML", e);
+            }
+        } else if (status == AppointmentStatus.ACCEPTED || status == AppointmentStatus.ACCEPTED_SEEN) {
+            cancelAppointment(selectedAppointment);
+        }
     }
 
     /**
      *
+     * @param appointment
      */
-    public void search(int startingIndex) {
-        //TODO this
+    private void cancelAppointment(Appointment appointment) {
 
     }
 
@@ -94,6 +126,14 @@ public class ClinicianAppointmentRequestLogicController implements PropertyChang
 
 
 
+
+    }
+
+    /**
+     *
+     * @param appointment
+     */
+    private void updateAppointment(Appointment appointment) {
 
     }
 

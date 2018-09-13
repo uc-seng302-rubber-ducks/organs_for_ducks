@@ -20,7 +20,9 @@ import odms.commons.utils.Log;
 import odms.controller.AppController;
 import odms.controller.gui.panel.logic.AvailableOrgansLogicController;
 import odms.controller.gui.panel.logic.ClinicianAppointmentRequestLogicController;
+import odms.controller.gui.popup.utils.AlertWindowFactory;
 import odms.controller.gui.popup.view.RejectAppointmentReasonViewController;
+import odms.socket.ServerEventNotifier;
 
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
@@ -48,6 +50,12 @@ public class ClinicianAppointmentRequestViewController {
 
     @FXML
     private Label appointmentRequestUserNhi;
+
+    @FXML
+    private Button rejectAppointmentButton;
+
+    @FXML
+    private Button acceptAppointmentButton;
 
     @FXML
     private TableColumn<Appointment, String> clinicianAppointmentUserIdColumn = new TableColumn<>();
@@ -102,6 +110,24 @@ public class ClinicianAppointmentRequestViewController {
         clinicianAppointmentsRequestView.getSelectionModel().selectedItemProperty().addListener(a -> {
             Appointment selectedAppointment = clinicianAppointmentsRequestView.getSelectionModel().getSelectedItem();
             displayAppointmentDetails(selectedAppointment);
+            if (selectedAppointment != null) {
+
+
+                if (selectedAppointment.getAppointmentStatus() == AppointmentStatus.CANCELLED_BY_USER) {
+                    selectedAppointment.setAppointmentStatus(AppointmentStatus.CANCELLED_BY_USER_SEEN);
+                    AppController.getInstance().getAppointmentsBridge().patchAppointmentStatus(selectedAppointment.getAppointmentId(),
+                            AppointmentStatus.CANCELLED_BY_USER_SEEN.getDbValue());
+                }
+
+                if (selectedAppointment.getAppointmentStatus() == AppointmentStatus.ACCEPTED ||
+                        selectedAppointment.getAppointmentStatus() == AppointmentStatus.ACCEPTED_SEEN) {
+                    rejectAppointmentButton.setText("Cancel Appointment");
+                    acceptAppointmentButton.setText("Update Appointment");
+                } else {
+                    rejectAppointmentButton.setText("Reject Appointment");
+                    acceptAppointmentButton.setText("Accept Appointment");
+                }
+            }
         });
     }
 
@@ -144,9 +170,17 @@ public class ClinicianAppointmentRequestViewController {
         logicController.goToNextPage();
     }
 
+    /**
+     * @see ClinicianAppointmentRequestLogicController rejectAppointment()
+     */
     @FXML
     private void rejectAppointment() {
         Appointment selectedAppointment = getSelectedAppointment();
+
+        if (selectedAppointment == null) {
+            AlertWindowFactory.generateInfoWindow("You must select an appointment to reject");
+            return;
+        }
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML/appointmentRejection.fxml"));
         Stage rejectionStage = new Stage();
@@ -161,8 +195,29 @@ public class ClinicianAppointmentRequestViewController {
         } catch (IOException e) {
             Log.severe("failed to load login window FXML", e);
         }
+
+         // logicController.rejectAppointment(selectedAppointment);
     }
 
+    /**
+     * @see ClinicianAppointmentRequestLogicController rejectAppointment()
+     */
+    @FXML
+    private void acceptAppointment() {
+        Appointment selectedAppointment = getSelectedAppointment();
+        if (selectedAppointment == null) {
+            AlertWindowFactory.generateInfoWindow("You must select an appointment to accept");
+            return;
+        }
+
+        if (AttributeValidation.validateTimeString(appointmentRequestTime.getText())) {
+            logicController.acceptAppointment(selectedAppointment, appointmentRequestTime.getText(), AppController.getInstance().getAppointmentsBridge());
+        } else {
+            appointmentRequestTime.setStyle("-fx-background-color: rgba(100%, 0%, 0%, 0.25); -fx-border-color: RED");
+        }
+
+        //         logicController.acceptAppointment(selectedAppointment);
+    }
 
     /**
      *
@@ -173,16 +228,6 @@ public class ClinicianAppointmentRequestViewController {
 
     }
 
-    @FXML
-    private void acceptAppointment() {
-        Appointment selectedAppointment = getSelectedAppointment();
-        if (AttributeValidation.validateTimeString(appointmentRequestTime.getText())) {
-            logicController.acceptAppointment(selectedAppointment, appointmentRequestTime.getText(), AppController.getInstance().getAppointmentsBridge());
-        } else {
-            appointmentRequestTime.setStyle("-fx-background-color: rgba(100%, 0%, 0%, 0.25); -fx-border-color: RED");
-        }
-    }
-
     /**
      * Grabs and returns the selected appointment from the table
      *
@@ -190,5 +235,13 @@ public class ClinicianAppointmentRequestViewController {
      */
     private Appointment getSelectedAppointment() {
         return clinicianAppointmentsRequestView.getSelectionModel().getSelectedItem();
+    }
+
+    /**
+     * Removes the property change listener on logout so user appointment events do not trigger the
+     * clinician tables to update.
+     */
+    public void shutdownPropertyChangeListener() {
+        ServerEventNotifier.getInstance().removePropertyChangeListener(logicController);
     }
 }
