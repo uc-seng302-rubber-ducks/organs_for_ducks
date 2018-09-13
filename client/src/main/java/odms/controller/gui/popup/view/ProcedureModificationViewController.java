@@ -35,6 +35,8 @@ public class ProcedureModificationViewController {
     private TextField procedureTextField;
     @FXML
     private Button newProcedureConfirm;
+    @FXML
+    private Label titleLabel;
     private Stage stage;
     private User user;
     private ProcedureTabController procedureTabController;
@@ -46,8 +48,13 @@ public class ProcedureModificationViewController {
         this.procedureTabController = procedureTabController;
         this.procedure = procedure;
         setupOrgans();
+        titleLabel.setText("Edit Procedure");
+        newProcedureConfirm.setText("Update");
         if(procedure != null){
+            newProcedureConfirm.setText("Confirm");
+            titleLabel.setText("Add New Procedure");
             showProcedureToEdit(procedure);
+            procedureDateSelector.setValue(LocalDate.now());
         }
     }
 

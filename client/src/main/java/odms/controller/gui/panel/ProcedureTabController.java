@@ -72,17 +72,18 @@ public class ProcedureTabController {
         pendingProcedureTableView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         previousProcedureTableView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);;
         constructTables();
-        removeProcedureButton.setVisible(false);
+        removeProcedureButton.setDisable(true);
         if (!fromClinician) {
+            removeProcedureButton.setVisible(false);
             addProcedureButton.setVisible(false);
         }
     }
 
     private void constructTables() {
         TableColumn pendingProcedureColumn = new TableColumn("Procedure");
-        TableColumn pendingDateColumn = new TableColumn("Date");
+        TableColumn pendingDateColumn = new TableColumn("Date Of Procedure");
         TableColumn previousProcedureColumn = new TableColumn("Procedure");
-        TableColumn previousDateColumn = new TableColumn("Date");
+        TableColumn previousDateColumn = new TableColumn("Date Of Procedure");
         pendingProcedureColumn
                 .setCellValueFactory(new PropertyValueFactory<MedicalProcedure, String>("summary"));
         previousProcedureColumn
@@ -95,29 +96,31 @@ public class ProcedureTabController {
         pendingProcedureTableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
         previousProcedureTableView.getColumns().addAll(previousProcedureColumn, previousDateColumn);
         pendingProcedureTableView.getColumns().addAll(pendingProcedureColumn, pendingDateColumn);
+
         previousProcedureTableView.setOnMouseClicked(event -> {
-            if (event.getClickCount() == 2) {
+            if (event.getClickCount() == 2 && !previousProcedureTableView.getSelectionModel().getSelectedCells().isEmpty()) {
                 openProceduresPopUp(previousProcedureTableView.getSelectionModel().getSelectedItem());
             }
         });
 
         pendingProcedureTableView.setOnMouseClicked(event -> {
-            if(event.getClickCount() ==2) {
+            if(event.getClickCount() ==2 && !pendingProcedureTableView.getSelectionModel().getSelectedCells().isEmpty()) {
                 openProceduresPopUp(pendingProcedureTableView.getSelectionModel().getSelectedItem());
             }
         });
         previousProcedureTableView.getSelectionModel().selectedItemProperty().addListener(a ->{
-            pendingProcedureTableView.getSelectionModel().select(null);
-            removeProcedureButton.setVisible(true);
+            pendingProcedureTableView.getSelectionModel().select(-1);
+            removeProcedureButton.setDisable(false);
             if(previousProcedureTableView.getSelectionModel().getSelectedCells().isEmpty()){
-                removeProcedureButton.setVisible(false);
+                removeProcedureButton.setDisable(true);
             }
         });
+
         pendingProcedureTableView.getSelectionModel().selectedItemProperty().addListener(a ->{
-            previousProcedureTableView.getSelectionModel().select(null);
-            removeProcedureButton.setVisible(true);
+            previousProcedureTableView.getSelectionModel().select(-1);
+            removeProcedureButton.setDisable(false);
             if(pendingProcedureTableView.getSelectionModel().getSelectedCells().isEmpty()){
-                removeProcedureButton.setVisible(false);
+                removeProcedureButton.setDisable(true);
             }
         });
 
