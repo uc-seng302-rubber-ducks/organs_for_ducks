@@ -70,15 +70,12 @@ public class ProcedureTabController {
         previousProcedures = FXCollections.observableArrayList();
         pendingProcedures = FXCollections.observableArrayList();
         pendingProcedureTableView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-        previousProcedureTableView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-        moveSelectedProcedureTo(previousProcedureTableView, pendingProcedureTableView);
-        moveSelectedProcedureTo(pendingProcedureTableView, previousProcedureTableView);
+        previousProcedureTableView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);;
         constructTables();
+        removeProcedureButton.setVisible(false);
         if (!fromClinician) {
             addProcedureButton.setVisible(false);
-            removeProcedureButton.setVisible(false);
         }
-
     }
 
     private void constructTables() {
@@ -109,26 +106,23 @@ public class ProcedureTabController {
                 openProceduresPopUp(pendingProcedureTableView.getSelectionModel().getSelectedItem());
             }
         });
+        previousProcedureTableView.getSelectionModel().selectedItemProperty().addListener(a ->{
+            pendingProcedureTableView.getSelectionModel().select(null);
+            removeProcedureButton.setVisible(true);
+            if(previousProcedureTableView.getSelectionModel().getSelectedCells().isEmpty()){
+                removeProcedureButton.setVisible(false);
+            }
+        });
+        pendingProcedureTableView.getSelectionModel().selectedItemProperty().addListener(a ->{
+            previousProcedureTableView.getSelectionModel().select(null);
+            removeProcedureButton.setVisible(true);
+            if(pendingProcedureTableView.getSelectionModel().getSelectedCells().isEmpty()){
+                removeProcedureButton.setVisible(false);
+            }
+        });
 
     }
 
-    /**
-     * A method to add a listener to the from TableView to unselect from one list and show procedure
-     * from the appropriate list
-     *
-     * @param from a TableView object holding medical procedures
-     * @param to   a TableView object to deselect from
-     */
-    private void moveSelectedProcedureTo(TableView<MedicalProcedure> from,
-                                         TableView<MedicalProcedure> to) {
-        from.getSelectionModel().selectedItemProperty()
-                .addListener(listChangeListener -> {
-                    to.getSelectionModel().select(null);
-                    if (from.getSelectionModel().getSelectedItem() != null) {
-                        currentProcedureList = from;
-                    }
-                });
-    }
 
     /**
      * Updates the procedure tables and ensure that the selected item is not changed.
