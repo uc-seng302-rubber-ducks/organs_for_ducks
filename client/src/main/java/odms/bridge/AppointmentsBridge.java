@@ -104,7 +104,7 @@ public class AppointmentsBridge extends Bifrost {
      * @param observableAppointments List to update with the gotten appointments
      */
     public void getClinicianAppointments(int startIndex, int count, String staffId, String token, ObservableList<Appointment> observableAppointments) {
-        String url = ip  + "/clinicians/" + staffId + APPOINTMENTS + "/" + "?startIndex=" + startIndex + "&count=" + count;
+        String url = ip + "/clinicians/" + staffId + APPOINTMENTS + "?startIndex=" + startIndex + "&count=" + count;
         Request request = new Request.Builder().addHeader(tokenHeader, token).url(url).build();
         client.newCall(request).enqueue(new Callback() {
             @Override
@@ -141,7 +141,7 @@ public class AppointmentsBridge extends Bifrost {
      * @return number of appointments pending
      */
     public int getPendingAppointments(String staffId, String token) {
-        String url = String.format("%s/appointments/%s/pending", ip, staffId);
+        String url = String.format("%s/clinicians/%s/appointments/pending", ip, staffId);
         Request request = new Request.Builder().url(url).addHeader(tokenHeader, token).build();
         try (Response res = client.newCall(request).execute()) {
             try {

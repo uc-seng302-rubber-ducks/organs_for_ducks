@@ -9,63 +9,51 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.stage.Stage;
+import odms.bridge.AppointmentsBridge;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import odms.commons.model.Appointment;
+import odms.commons.utils.AttributeValidation;
+import odms.commons.utils.Log;
+import odms.controller.AppController;
 import odms.commons.model.Clinician;
 import odms.commons.model._enum.AppointmentCategory;
 import odms.commons.model._enum.AppointmentStatus;
-import odms.commons.utils.Log;
-import odms.controller.AppController;
 import odms.controller.gui.panel.logic.AvailableOrgansLogicController;
 import odms.controller.gui.panel.logic.ClinicianAppointmentRequestLogicController;
 import odms.controller.gui.popup.view.RejectAppointmentReasonViewController;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 public class ClinicianAppointmentRequestViewController {
 
     @FXML
-    public TableColumn<Appointment, String> categoryTableColumn;
+    private TableView<Appointment> clinicianAppointmentsRequestView;
 
     @FXML
-    private TableColumn<Appointment, LocalDateTime> dateTimeTableColumn;
-
-    @FXML
-    private TableColumn<Appointment, String> nameTableColumn;
-
-    @FXML
-    private TableColumn<Appointment, String> nhiTableColumn;
-
-    @FXML
-    private TableView<Appointment> clinicianAppointmentRequestView;
+    private DatePicker appointmentRequestDate;
 
     @FXML
     private TextArea appointmentRequestDescription;
 
     @FXML
-    private ComboBox appointmentRequestCategory;
+    private ComboBox<AppointmentCategory> appointmentRequestCategory;
 
     @FXML
     private TextField appointmentRequestTime;
 
     @FXML
-    private Label appointmentRequestUserName;
+    private Label appointmentRequestStatus;
 
     @FXML
     private Label appointmentRequestUserNhi;
 
     @FXML
-    private TableView<Appointment> clinicianAppointmentsRequestView  = new TableView<>();
-
-    private ClinicianAppointmentRequestLogicController logicController;
-    @FXML
     private TableColumn<Appointment, String> clinicianAppointmentUserIdColumn = new TableColumn<>();
 
-    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd hh:mm");
     @FXML
     private TableColumn<Appointment, AppointmentStatus> clinicianAppointmentStatusColumn = new TableColumn<>();
 
@@ -76,6 +64,9 @@ public class ClinicianAppointmentRequestViewController {
     private TableColumn<Appointment, String> clinicianAppointmentDateColumn = new TableColumn<>();
 
     private ObservableList<Appointment> availableAppointments = FXCollections.observableList(new ArrayList<>());
+    private ClinicianAppointmentRequestLogicController logicController;
+
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd hh:mm");
 
 
     /**
@@ -112,18 +103,31 @@ public class ClinicianAppointmentRequestViewController {
     private void setOnClickBehaviour() {
         clinicianAppointmentsRequestView.getSelectionModel().selectedItemProperty().addListener(a -> {
             Appointment selectedAppointment = clinicianAppointmentsRequestView.getSelectionModel().getSelectedItem();
-            if (selectedAppointment != null) {
-                displayAppointmentDetails(selectedAppointment);
-            }
+            displayAppointmentDetails(selectedAppointment);
         });
     }
 
     /**
-     * Displays the appointment details in the text area
+     * Displays the appointment details in separated fields
+     *
      * @param appointment The selected appointment to be displayed in more detail
      */
     private void displayAppointmentDetails(Appointment appointment) {
-        appointmentRequestDescription.setText(appointment.getRequestDescription()); //appointment.displayDetails does not exist in this branch. Replace getDescription with it when possible
+        if (appointment != null) {
+            appointmentRequestUserNhi.setText(appointment.getRequestingUserId());
+            appointmentRequestStatus.setText(appointment.getAppointmentStatus().toString());
+            appointmentRequestCategory.setValue(appointment.getAppointmentCategory());
+            appointmentRequestDate.setValue(appointment.getRequestedDate().toLocalDate());
+            appointmentRequestTime.setText(appointment.getRequestedDate().toLocalTime().toString());
+            appointmentRequestDescription.setText(appointment.getRequestDescription());
+        } else {
+            appointmentRequestUserNhi.setText("");
+            appointmentRequestStatus.setText("");
+            appointmentRequestCategory.setValue(null);
+            appointmentRequestDate.setValue(null);
+            appointmentRequestTime.clear();
+            appointmentRequestDescription.clear();
+        }
     }
 
     /**
@@ -144,7 +148,7 @@ public class ClinicianAppointmentRequestViewController {
 
     @FXML
     private void rejectAppointment() {
-        Appointment selectedAppointment = clinicianAppointmentRequestView.getSelectionModel().getSelectedItem();
+        Appointment selectedAppointment = getSelectedAppointment();
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML/appointmentRejection.fxml"));
         Stage rejectionStage = new Stage();
@@ -163,8 +167,20 @@ public class ClinicianAppointmentRequestViewController {
 
     @FXML
     private void acceptAppointment() {
-
+        Appointment selectedAppointment = getSelectedAppointment();
+        if (AttributeValidation.validateTimeString(appointmentRequestTime.getText())) {
+            logicController.acceptAppointment(selectedAppointment, appointmentRequestTime.getText(), new AppointmentsBridge(AppController.getInstance().getClient()));
+        } else {
+            appointmentRequestTime.setStyle("-fx-background-color: rgba(100%, 0%, 0%, 0.25); -fx-border-color: RED");
+        }
     }
 
-
+    /**
+     * Grabs and returns the selected appointment from the table
+     *
+     * @return the currently selected appointment
+     */
+    private Appointment getSelectedAppointment() {
+        return clinicianAppointmentsRequestView.getSelectionModel().getSelectedItem();
+    }
 }

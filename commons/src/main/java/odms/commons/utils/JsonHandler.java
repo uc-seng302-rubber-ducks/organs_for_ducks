@@ -396,7 +396,6 @@ public class JsonHandler extends DataHandler {
      * @return Collection of appointments
      */
     public Collection<Appointment> decodeAppointments(String bodyString) {
-        System.out.println(bodyString);
         return new Gson().fromJson(bodyString, new TypeToken<Collection<Appointment>>() {
         }.getType());
     }

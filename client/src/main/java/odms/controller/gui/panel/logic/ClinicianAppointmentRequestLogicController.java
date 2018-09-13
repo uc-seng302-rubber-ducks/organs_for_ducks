@@ -1,7 +1,12 @@
 package odms.controller.gui.panel.logic;
 
 import javafx.collections.ObservableList;
+import odms.bridge.AppointmentsBridge;
 import odms.commons.model.Appointment;
+import odms.commons.model._enum.AppointmentStatus;
+
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import odms.commons.model.Clinician;
 import odms.commons.model._enum.EventTypes;
 import odms.commons.model.event.UpdateNotificationEvent;
@@ -66,6 +71,18 @@ public class ClinicianAppointmentRequestLogicController implements PropertyChang
     public void search(int startingIndex) {
         //TODO this
 
+    }
+
+    /**
+     * Method to make a request to the server to accept the appointment for the given time.
+     *
+     * @param selectedAppointment appointment to update
+     */
+    public void acceptAppointment(Appointment selectedAppointment, String time, AppointmentsBridge appointmentsBridge) {
+        String[] timeParts = time.split(":");
+        selectedAppointment.setRequestedDate(LocalDateTime.of(selectedAppointment.getRequestedDate().toLocalDate(), LocalTime.of(Integer.valueOf(timeParts[0]), Integer.valueOf(timeParts[1]))));
+        selectedAppointment.setAppointmentStatus(AppointmentStatus.ACCEPTED);
+        appointmentsBridge.putAppointment(selectedAppointment);
     }
 
     /**
