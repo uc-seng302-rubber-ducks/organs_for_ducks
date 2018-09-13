@@ -55,7 +55,7 @@ public class RedoUserGUITest extends ApplicationTest {
         doCallRealMethod().when(application).setUserController(any(UserController.class));
         doCallRealMethod().when(application).getUserController();
 
-        user.setContact(new EmergencyContact("", "", "1456788"));
+        user.setContact(new EmergencyContact("", "", ""));
         user.getUndoStack().clear();
 
         FxToolkit.registerPrimaryStage();
