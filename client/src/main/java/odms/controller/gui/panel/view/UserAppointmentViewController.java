@@ -1,9 +1,11 @@
 package odms.controller.gui.panel.view;
 
+import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
@@ -19,6 +21,7 @@ import odms.controller.gui.popup.utils.AlertWindowFactory;
 
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Comparator;
 
 public class UserAppointmentViewController {
 
@@ -59,6 +62,8 @@ public class UserAppointmentViewController {
         initUserAppointmentsTableView();
     }
 
+    private Comparator<AppointmentStatus> statusComparator = Comparator.comparingInt(AppointmentStatus::getDbValue);
+
     /**
      * Populates the table view of appointments for the specified user
      * Changes the default sorting order to sort by the appointment status
@@ -72,12 +77,16 @@ public class UserAppointmentViewController {
 
         logicController.updateTable(0);
         populateTable();
-        userAppointmentStatusColumn.setSortType(TableColumn.SortType.ASCENDING);
         setOnClickBehaviour();
+        userAppointmentStatusColumn.setSortType(TableColumn.SortType.ASCENDING);
+        userAppointmentStatusColumn.setComparator(statusComparator);
     }
 
     private void populateTable() {
+        SortedList<Appointment> sortedAppointments = new SortedList<>(appointments);
+        sortedAppointments.comparatorProperty().bind(userAppointmentsTableView.comparatorProperty());
         userAppointmentsTableView.setItems(appointments);
+        Platform.runLater(() -> userAppointmentsTableView.getSortOrder().add(userAppointmentStatusColumn));
     }
 
     /**
