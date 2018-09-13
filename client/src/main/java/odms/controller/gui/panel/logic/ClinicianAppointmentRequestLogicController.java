@@ -4,6 +4,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
 import odms.bridge.AppointmentsBridge;
 import odms.commons.model.Appointment;
@@ -14,6 +15,7 @@ import odms.commons.model._enum.EventTypes;
 import odms.commons.model.event.UpdateNotificationEvent;
 import odms.commons.utils.Log;
 import odms.controller.AppController;
+import odms.controller.gui.popup.utils.AlertWindowFactory;
 import odms.controller.gui.popup.view.RejectAppointmentReasonViewController;
 import odms.socket.ServerEventNotifier;
 
@@ -23,6 +25,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Optional;
 
 
 public class ClinicianAppointmentRequestLogicController implements PropertyChangeListener {
@@ -74,12 +77,11 @@ public class ClinicianAppointmentRequestLogicController implements PropertyChang
     }
 
     /**
-     * Displays the pop-up for rejecting appointments.
+     * Displays the pop-up for rejecting a pending appointment.
      *
      * @param selectedAppointment The appointment to be rejected
      */
     public void rejectAppointment(Appointment selectedAppointment) {
-
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/FXML/appointmentRejection.fxml"));
         Stage rejectionStage = new Stage();
         Parent root;
@@ -96,11 +98,51 @@ public class ClinicianAppointmentRequestLogicController implements PropertyChang
     }
 
     /**
+     * Cancels the given appointment if it has already been accepted.
      *
-     * @param appointment
+     * @param appointment Appointment to be cancelled
      */
     public void cancelAppointment(Appointment appointment) {
+        if (appointment.getAppointmentStatus() != AppointmentStatus.ACCEPTED && appointment.getAppointmentStatus() != AppointmentStatus.ACCEPTED_SEEN) {
+            alertClinician("You cannot cancel this type of appointment");
+            return;
+        }
 
+        if (appointment.getRequestedDate().minusDays(1).isBefore(LocalDateTime.now())) {
+            alertClinician("You cannot cancel this appointment as it is within 24 hours of the scheduled time");
+            return;
+        }
+
+        Optional<ButtonType> result = confirmOption("Are you sure you want to delete this appointment?");
+
+        if (!result.isPresent()) {
+            return;
+        }
+
+        if (result.get() == ButtonType.OK) {
+            appointment.setAppointmentStatus(AppointmentStatus.CANCELLED_BY_CLINICIAN);
+            AppController.getInstance().getAppointmentsBridge().patchAppointmentStatus(appointment.getAppointmentId(),
+                    AppointmentStatus.CANCELLED_BY_CLINICIAN.getDbValue());
+        }
+    }
+
+    /**
+     * Alerts the clinician with an alert window containing the given message
+     *
+     * @param message message to display to the user.
+     */
+    public void alertClinician(String message) {
+        AlertWindowFactory.generateError(message);
+    }
+
+    /**
+     * Creates a confirmation alert pop-up with the given message
+     * Extracted for easier testability
+     *
+     * @return the confirmation alert window result
+     */
+    public Optional<ButtonType> confirmOption(String message) {
+        return AlertWindowFactory.generateConfirmation(message);
     }
 
     /**
