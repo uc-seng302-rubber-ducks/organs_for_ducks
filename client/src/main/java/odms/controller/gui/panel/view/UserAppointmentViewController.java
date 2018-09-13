@@ -64,9 +64,15 @@ public class UserAppointmentViewController {
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd hh:mm");
 
     /**
+     * Compares the appointment status value so that when applied to the table view, pending appointments will be
+     * displayed at the top of the table
+     */
+    private Comparator<AppointmentStatus> statusComparator = Comparator.comparingInt(AppointmentStatus::getDbValue);
+
+    /**
      * Initialises the panel
      *
-     * @param user          User that the panel belongs to
+     * @param user User that the panel belongs to
      */
     public void init(User user) {
         appointments.addListener((ListChangeListener<? super Appointment>) observable -> {
@@ -76,8 +82,6 @@ public class UserAppointmentViewController {
         logicController = new UserAppointmentLogicController(appointments, user);
         initUserAppointmentsTableView();
     }
-
-    private Comparator<AppointmentStatus> statusComparator = Comparator.comparingInt(AppointmentStatus::getDbValue);
 
     /**
      * Populates the table view of appointments for the specified user
@@ -97,6 +101,10 @@ public class UserAppointmentViewController {
         userAppointmentStatusColumn.setComparator(statusComparator);
     }
 
+    /**
+     * Creates a sorted list to change the default ordering of the table view and then populates the table
+     * with all of the users appointments
+     */
     private void populateTable() {
         SortedList<Appointment> sortedAppointments = new SortedList<>(appointments);
         sortedAppointments.comparatorProperty().bind(userAppointmentsTableView.comparatorProperty());

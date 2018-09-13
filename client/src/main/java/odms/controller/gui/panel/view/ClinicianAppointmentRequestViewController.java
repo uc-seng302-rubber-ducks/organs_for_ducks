@@ -1,9 +1,11 @@
 package odms.controller.gui.panel.view;
 
+import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -20,6 +22,7 @@ import odms.socket.ServerEventNotifier;
 
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Comparator;
 
 public class ClinicianAppointmentRequestViewController {
 
@@ -80,6 +83,12 @@ public class ClinicianAppointmentRequestViewController {
     }
 
     /**
+     * Compares the appointment status value so that when applied to the table view, pending appointments will be
+     * displayed at the top of the table
+     */
+    private Comparator<AppointmentStatus> statusComparator = Comparator.comparingInt(AppointmentStatus::getDbValue);
+
+    /**
      * Populates the table view of appointments for the specified clinician
      * Changes the default sorting order to sort by the appointment status
      */
@@ -91,10 +100,19 @@ public class ClinicianAppointmentRequestViewController {
         logicController.updateTable(0);
         populateTable();
         setOnClickBehaviour();
+        clinicianAppointmentStatusColumn.setSortType(TableColumn.SortType.ASCENDING);
+        clinicianAppointmentStatusColumn.setComparator(statusComparator);
     }
 
+    /**
+     * Creates a sorted list to change the default ordering of the table view and then populates the table
+     * with all of the clinicians appointments
+     */
     private void populateTable() {
+        SortedList<Appointment> sortedAppointments = new SortedList<>(availableAppointments);
+        sortedAppointments.comparatorProperty().bind(clinicianAppointmentsRequestView.comparatorProperty());
         clinicianAppointmentsRequestView.setItems(availableAppointments);
+        Platform.runLater(() -> clinicianAppointmentsRequestView.getSortOrder().add(clinicianAppointmentStatusColumn));
     }
 
     /**
