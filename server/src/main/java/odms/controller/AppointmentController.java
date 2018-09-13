@@ -73,7 +73,7 @@ public class AppointmentController extends BaseController {
     }
 
     @IsClinician
-    @RequestMapping(method = RequestMethod.GET, value = "appointments/{staffId}/pending")
+    @RequestMapping(method = RequestMethod.GET, value = "/appointments/{staffId}/pending")
     public int getPendingAppointments(@PathVariable String staffId) {
         try (Connection connection = driver.getConnection()) {
             return handler.getPendingAppointments(connection, staffId);
