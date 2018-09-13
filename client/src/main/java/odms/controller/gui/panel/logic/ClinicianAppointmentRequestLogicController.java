@@ -1,5 +1,6 @@
 package odms.controller.gui.panel.logic;
 
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -9,6 +10,7 @@ import odms.bridge.AppointmentsBridge;
 import odms.commons.model.Appointment;
 import odms.commons.model._enum.AppointmentStatus;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import odms.commons.model.Clinician;
@@ -22,6 +24,7 @@ import odms.socket.ServerEventNotifier;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.IOException;
+import java.util.ArrayList;
 
 
 public class ClinicianAppointmentRequestLogicController implements PropertyChangeListener {
@@ -31,13 +34,15 @@ public class ClinicianAppointmentRequestLogicController implements PropertyChang
     private ObservableList<Appointment> availableAppointments;
     private AppController appController;
     private Clinician clinician;
-    private ObservableList<LocalDateTime> availableTimes;
+    private ObservableList<LocalTime> availableTimes;
     private ObservableList<LocalDateTime> bookedTimes;
 
-    public ClinicianAppointmentRequestLogicController(ObservableList<Appointment> availableAppointment, AppController controller, Clinician clinician) {
+    public ClinicianAppointmentRequestLogicController(ObservableList<Appointment> availableAppointment, AppController controller, Clinician clinician, ObservableList<LocalTime> availableTimes) {
         this.availableAppointments = availableAppointment;
         this.appController = controller;
         this.clinician = clinician;
+        this.availableTimes = availableTimes;
+        this.bookedTimes = FXCollections.observableList(new ArrayList<>());
         ServerEventNotifier.getInstance().addPropertyChangeListener(this);
     }
 
@@ -120,13 +125,12 @@ public class ClinicianAppointmentRequestLogicController implements PropertyChang
     }
 
 
-    public void refreshClincianAvaliableTimes(AppointmentsBridge appointmentsBridge){
-
-
-
-
-
-
+    public void refreshClincianAvaliableTimes(AppointmentsBridge appointmentsbridge, LocalDate wantedDate){
+        System.out.println(wantedDate.toString() + " 00:00");
+        System.out.println(wantedDate.toString() + " 19:00");
+        appointmentsbridge.getClinicianAppointmentsTimes(clinician.getStaffId(), wantedDate.atStartOfDay().toString(),wantedDate.atStartOfDay().plusHours(24).toString(), appController.getToken(), bookedTimes);
+        availableTimes.add(LocalTime.of(8,00));
+        System.out.println(availableTimes + "hello");
     }
 
     /**

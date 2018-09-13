@@ -98,7 +98,7 @@ public class AppointmentController extends BaseController {
     }
 
     @IsClinician
-    @RequestMapping(method = RequestMethod.GET, value = "/clinicians/{staffId}/appoointmentsTimes")
+    @RequestMapping(method = RequestMethod.GET, value = "/clinicians/{staffId}/appointmentsTimes")
     public Collection<LocalDateTime> getClinicainAppoinmentsTimes(@PathVariable(name = "staffId") String staffid,
                                                                   @RequestParam(name = "startDateTime") String startDate,
                                                                   @RequestParam(name = "endDateTime") String endDate

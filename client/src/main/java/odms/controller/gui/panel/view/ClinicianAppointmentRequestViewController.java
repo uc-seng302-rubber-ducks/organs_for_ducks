@@ -25,6 +25,8 @@ import odms.controller.gui.popup.view.RejectAppointmentReasonViewController;
 import odms.socket.ServerEventNotifier;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
@@ -43,7 +45,7 @@ public class ClinicianAppointmentRequestViewController {
     private ComboBox<AppointmentCategory> appointmentRequestCategory;
 
     @FXML
-    private TextField appointmentRequestTime;
+    private ComboBox<LocalTime> appointmentRequestTime;
 
     @FXML
     private Label appointmentRequestStatus;
@@ -70,6 +72,7 @@ public class ClinicianAppointmentRequestViewController {
     private TableColumn<Appointment, String> clinicianAppointmentDateColumn = new TableColumn<>();
 
     private ObservableList<Appointment> availableAppointments = FXCollections.observableList(new ArrayList<>());
+    private ObservableList<LocalTime> availableTimes = FXCollections.observableList(new ArrayList<>());
     private ClinicianAppointmentRequestLogicController logicController;
 
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd hh:mm");
@@ -80,9 +83,10 @@ public class ClinicianAppointmentRequestViewController {
      */
     public void init(AppController appController, Clinician clinician) {
         availableAppointments.addListener((ListChangeListener<? super Appointment>) observable -> populateTable());
-
-        logicController = new ClinicianAppointmentRequestLogicController(availableAppointments, appController, clinician);
+        logicController = new ClinicianAppointmentRequestLogicController(availableAppointments, appController, clinician, availableTimes);
         initAppointmentTable();
+        logicController.refreshClincianAvaliableTimes(AppController.getInstance().getAppointmentsBridge(), LocalDate.now());
+        populateClinicianTimes();
     }
 
     /**
@@ -142,14 +146,14 @@ public class ClinicianAppointmentRequestViewController {
             appointmentRequestStatus.setText(appointment.getAppointmentStatus().toString());
             appointmentRequestCategory.setValue(appointment.getAppointmentCategory());
             appointmentRequestDate.setValue(appointment.getRequestedDate().toLocalDate());
-            appointmentRequestTime.setText(appointment.getRequestedDate().toLocalTime().toString());
+            appointmentRequestTime.setValue(appointment.getRequestedDate().toLocalTime());
             appointmentRequestDescription.setText(appointment.getRequestDescription());
         } else {
             appointmentRequestUserNhi.setText("");
             appointmentRequestStatus.setText("");
             appointmentRequestCategory.setValue(null);
             appointmentRequestDate.setValue(null);
-            appointmentRequestTime.clear();
+            appointmentRequestTime.setValue(null);
             appointmentRequestDescription.clear();
         }
     }
@@ -210,8 +214,8 @@ public class ClinicianAppointmentRequestViewController {
             return;
         }
 
-        if (AttributeValidation.validateTimeString(appointmentRequestTime.getText())) {
-            logicController.acceptAppointment(selectedAppointment, appointmentRequestTime.getText(), AppController.getInstance().getAppointmentsBridge());
+        if (AttributeValidation.validateTimeString(appointmentRequestTime.getSelectionModel().getSelectedItem().toString())) {
+            logicController.acceptAppointment(selectedAppointment, appointmentRequestTime.getSelectionModel().getSelectedItem().toString(), AppController.getInstance().getAppointmentsBridge());
         } else {
             appointmentRequestTime.setStyle("-fx-background-color: rgba(100%, 0%, 0%, 0.25); -fx-border-color: RED");
         }
@@ -224,6 +228,12 @@ public class ClinicianAppointmentRequestViewController {
      */
     @FXML
     private void populateClinicianTimes(){
+        if (appointmentRequestDate.getValue() != null) {
+            logicController.refreshClincianAvaliableTimes(AppController.getInstance().getAppointmentsBridge(), appointmentRequestDate.getValue());
+            appointmentRequestTime.setItems(availableTimes);
+            //TODO change text field to combo box 1-9-2018
+        }
+
 
 
     }

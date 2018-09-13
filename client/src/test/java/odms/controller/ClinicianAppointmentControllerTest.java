@@ -16,6 +16,8 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 
 import static org.junit.Assert.assertTrue;
@@ -26,6 +28,7 @@ import static org.mockito.Mockito.*;
 public class ClinicianAppointmentControllerTest {
 
     private ObservableList<Appointment> appointments;
+    private ObservableList<LocalTime> availableTimes;
     private AppController controller = AppControllerMocker.getFullMock();
     private OkHttpClient client = mock(OkHttpClient.class);
     private Call call = mock(Call.class);
@@ -35,8 +38,9 @@ public class ClinicianAppointmentControllerTest {
     @Before
     public void setUp() {
         appointments = FXCollections.observableList(new ArrayList<>());
+        availableTimes = FXCollections.observableList(new ArrayList<>());
         Clinician testClinician = new Clinician("default", "0", "password");
-        clinicianAppointmentRequestLogicController = new ClinicianAppointmentRequestLogicController(appointments, controller, testClinician);
+        clinicianAppointmentRequestLogicController = new ClinicianAppointmentRequestLogicController(appointments, controller, testClinician, availableTimes);
         AppointmentsBridge appointmentsBridge = new AppointmentsBridge(client);
 
         when(controller.getAppointmentsBridge()).thenReturn(appointmentsBridge);

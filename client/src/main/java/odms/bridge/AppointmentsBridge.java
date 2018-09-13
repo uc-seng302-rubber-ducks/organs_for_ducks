@@ -143,7 +143,7 @@ public class AppointmentsBridge extends Bifrost {
     }
 
     public void getClinicianAppointmentsTimes(String staffId, String startDate, String endDate, String token,ObservableList<LocalDateTime> observableDateTimes){
-        String url = ip + "/clincians/" + staffId + "appoointmentsTimes" + "?startDate=" + startDate + "&endDate=" + endDate;
+        String url = String.format("%s/clinicians/%s/appointmentsTimes?startDateTime=%s&endDateTime=%s", ip,staffId,startDate,endDate);
         Request request = new Request.Builder().addHeader(tokenHeader, token).url(url).build();
         client.newCall(request).enqueue(new Callback() {
             @Override
@@ -163,6 +163,7 @@ public class AppointmentsBridge extends Bifrost {
                     return;
                 }
                 String bodyString = response.body().string();
+                System.out.println(bodyString);
 
                 Platform.runLater(() -> {
                     observableDateTimes.clear();
