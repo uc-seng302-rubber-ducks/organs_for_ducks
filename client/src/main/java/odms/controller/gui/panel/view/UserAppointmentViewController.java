@@ -44,7 +44,22 @@ public class UserAppointmentViewController {
     private TableColumn<Appointment, AppointmentStatus> userAppointmentStatusColumn;
 
     @FXML
-    private Label userAppointmentDetailsLabel;
+    private Label userAppointmentDescriptionLabel;
+
+    @FXML
+    private Label userAppointmentStatusLabel;
+
+    @FXML
+    private Label userAppointmentDateLabel;
+
+    @FXML
+    private Label userAppointmentTimeLabel;
+
+    @FXML
+    private Label userAppointmentClinicianIdLabel;
+
+    @FXML
+    private Label userAppointmentCategoryLabel;
 
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd hh:mm");
 
@@ -133,28 +148,20 @@ public class UserAppointmentViewController {
      */
     private void displayAppointmentDetails(Appointment appointment) {
         if (appointment != null) {
-            userAppointmentDetailsLabel.setText(displayDetails(appointment));
+            userAppointmentStatusLabel.setText(appointment.getAppointmentStatus().toString());
+            userAppointmentDateLabel.setText(appointment.getRequestedDate().toLocalDate().toString());
+            userAppointmentTimeLabel.setText(appointment.getRequestedDate().toLocalTime().toString());
+            userAppointmentClinicianIdLabel.setText(appointment.getRequestedClinicianId());
+            userAppointmentCategoryLabel.setText(appointment.getAppointmentCategory().toString());
+            userAppointmentDescriptionLabel.setText(appointment.getRequestDescription());
         } else {
-            userAppointmentDetailsLabel.setText("");
+            userAppointmentStatusLabel.setText("");
+            userAppointmentDateLabel.setText("");
+            userAppointmentTimeLabel.setText("");
+            userAppointmentClinicianIdLabel.setText("");
+            userAppointmentCategoryLabel.setText("");
+            userAppointmentDescriptionLabel.setText("");
         }
-    }
-
-    /**
-     * Formats the given appointment's details into multiple lines so it is more readable.
-     *
-     * @param appointment The appointment to be viewed
-     * @return A string containing details of the appointment
-     */
-    private String displayDetails(Appointment appointment) {
-        String newLines = "\n\n\n";
-        String details = appointment.getAppointmentStatus().toString() + newLines;
-        details += appointment.getRequestedDate().toLocalDate().toString() + newLines;
-        details += appointment.getRequestedDate().toLocalTime().toString() + newLines;
-        details += appointment.getRequestedClinicianId() + newLines;
-        details += appointment.getAppointmentCategory().toString() + newLines;
-        details += appointment.getRequestDescription();
-
-        return details;
     }
 
     /**
