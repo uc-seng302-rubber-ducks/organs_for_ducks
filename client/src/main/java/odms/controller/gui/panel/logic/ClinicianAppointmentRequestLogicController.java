@@ -24,6 +24,8 @@ public class ClinicianAppointmentRequestLogicController implements PropertyChang
     private ObservableList<Appointment> availableAppointments;
     private AppController appController;
     private Clinician clinician;
+    private ObservableList<LocalDateTime> availableTimes;
+    private ObservableList<LocalDateTime> bookedTimes;
 
     public ClinicianAppointmentRequestLogicController(ObservableList<Appointment> availableAppointment, AppController controller, Clinician clinician) {
         this.availableAppointments = availableAppointment;
@@ -86,8 +88,12 @@ public class ClinicianAppointmentRequestLogicController implements PropertyChang
     }
 
 
-    public void get(AppointmentsBridge appointmentsBridge){
-        System.out.println(availableAppointments.toString());
+    public void refreshClincianAvaliableTimes(AppointmentsBridge appointmentsBridge){
+
+
+
+
+
 
     }
 

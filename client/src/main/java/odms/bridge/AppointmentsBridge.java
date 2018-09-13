@@ -134,8 +134,35 @@ public class AppointmentsBridge extends Bifrost {
         });
     }
 
-    public void getClinicianAppointmentsTimes(String staffId, String startDate, String endDate, String Token,ObservableList<LocalDateTime> observableDateTimes){
-        String url = ip + "/clincians/" + staffId + "appoointmentsTimes";
+    public void getClinicianAppointmentsTimes(String staffId, String startDate, String endDate, String token,ObservableList<LocalDateTime> observableDateTimes){
+        String url = ip + "/clincians/" + staffId + "appoointmentsTimes" + "?startDate=" + startDate + "&endDate=" + endDate;
+        Request request = new Request.Builder().addHeader(tokenHeader, token).url(url).build();
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.warning("Failed to get appointments. On Failure Triggered", e);
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (response == null) {
+                    Log.warning("A null response was returned to the user");
+                    return;
+                }
+                ResponseBody body = response.body();
+                if (body == null) {
+                    Log.warning("A null response body was returned to the user");
+                    return;
+                }
+                String bodyString = response.body().string();
+
+                Platform.runLater(() -> {
+                    observableDateTimes.clear();
+                    observableDateTimes.addAll(new JsonHandler().decodeDateTimes(bodyString));
+                });
+
+            }
+        });
     }
 
     /**
