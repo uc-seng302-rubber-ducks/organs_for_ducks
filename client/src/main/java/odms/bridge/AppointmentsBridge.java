@@ -12,6 +12,7 @@ import odms.controller.gui.popup.utils.AlertWindowFactory;
 import okhttp3.*;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 
 public class AppointmentsBridge extends Bifrost {
     private static final String APPOINTMENTS = "/appointments";
@@ -131,6 +132,10 @@ public class AppointmentsBridge extends Bifrost {
                 });
             }
         });
+    }
+
+    public void getClinicianAppointmentsTimes(String staffId, String startDate, String endDate, String Token,ObservableList<LocalDateTime> observableDateTimes){
+        String url = ip + "/clincians/" + staffId + "appoointmentsTimes";
     }
 
     /**
