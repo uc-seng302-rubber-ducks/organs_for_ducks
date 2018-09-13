@@ -15,6 +15,7 @@ import javafx.stage.Stage;
 import odms.commons.model.User;
 import odms.commons.model._enum.Organs;
 import odms.commons.model.datamodel.ExpiryReason;
+import odms.commons.model.datamodel.OrgansWithDisqualification;
 import odms.commons.model.datamodel.OrgansWithExpiry;
 import odms.commons.utils.Log;
 import odms.commons.utils.OrganListCellFactory;
@@ -25,6 +26,7 @@ import odms.controller.gui.widget.ProgressBarTableCellFactory;
 import odms.controller.gui.window.UserController;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -32,6 +34,12 @@ import java.util.Map;
 import java.util.Optional;
 
 public class DonationTabPageController {
+
+    @FXML
+    private Label donatingOrgansTableLabel;
+
+    @FXML
+    private Label disqualifiedOrgansTableLabel;
 
     @FXML
     private TableView<OrgansWithExpiry> currentlyDonating;
@@ -63,10 +71,29 @@ public class DonationTabPageController {
     @FXML
     private Button removeExpiryReasonButton;
 
+    @FXML
+    private TableView<OrgansWithDisqualification> userDisqualifiedOrgansTable;
+
+    @FXML
+    private TableColumn<OrgansWithDisqualification, Organs> disqualifiedOrganColumn;
+
+    @FXML
+    private TableColumn<OrgansWithDisqualification, String> disqualifiedReasonColumn;
+
+    @FXML
+    private TableColumn<OrgansWithDisqualification, LocalDate> disqualifiedDateColumn;
+
+    @FXML
+    private TableColumn<OrgansWithDisqualification, String> disqualifiedStaffIdColumn;
+
+    @FXML
+    private Button toggleDisqualificationExpiryButton;
+
     private User currentUser;
     private AppController application;
     private UserController parent;
     private ObservableList<OrgansWithExpiry> organsWithExpiries = FXCollections.observableList(new ArrayList<>());
+    private ObservableList<OrgansWithDisqualification> organsWithDisqualifications = FXCollections.observableList(new ArrayList<>());
 
     /**
      * Initializes the columns of the currently donating table
@@ -93,6 +120,7 @@ public class DonationTabPageController {
         organExpiryColumn.setCellValueFactory(new PropertyValueFactory<>("progressTask"));
         expiryStaffIdColumn.setCellValueFactory(new PropertyValueFactory<>("ID"));
         currentlyDonating.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        currentlyDonating.setVisible(false);
         populateOrganLists(user);
         updateButton();
         currentlyDonating.getSelectionModel().selectedItemProperty().addListener(a-> {
@@ -107,21 +135,96 @@ public class DonationTabPageController {
                 expireOrganButton.setText("Edit Expiry Details");
             }
         });
+
+        disqualifiedOrganColumn.setCellValueFactory(new PropertyValueFactory<>("organType"));
+        disqualifiedReasonColumn.setCellValueFactory(new PropertyValueFactory<>("reason"));
+        disqualifiedDateColumn.setCellValueFactory(new PropertyValueFactory<>("date"));
+        disqualifiedStaffIdColumn.setCellValueFactory(new PropertyValueFactory<>("staffID"));
+
+        userDisqualifiedOrgansTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        userDisqualifiedOrgansTable.setVisible(false);
+
+        showOrHideExpiryTable();
+
+
     }
 
     /**
-     * Hides the expire organ and cancel expiry buttons if there is no clinician/admin present or if the user is alive
+     * If the user is dead, the expiry table, expiry/disqualified tables toggle button will be shown. If role is clinician
+     * or admin the relative expire/disqualify buttons for organs will be shown too.
      */
-    public void updateButton() {
-        if (currentUser.getDeathDetails().getMomentOfDeath() == null || application.getUsername().isEmpty()) {
+    private void showOrHideExpiryTable() {
+        if (currentUser.getDeathDetails().getMomentOfDeath() == null) {
+            //user is alive, only show disqualified table, don't show toggle
+            currentlyDonating.setVisible(false);
             expireOrganButton.setVisible(false);
             removeExpiryReasonButton.setVisible(false);
 
+            userDisqualifiedOrgansTable.setVisible(true);
+            toggleDisqualificationExpiryButton.setVisible(false);
+
         } else {
-            expireOrganButton.setVisible(true);
-            removeExpiryReasonButton.setVisible(true);
+            toggleDisqualificationExpiryButton.setVisible(true);
+            disqualifiedOrgansTableLabel.setVisible(false);
+            userDisqualifiedOrgansTable.setLayoutX(368);
+            toggleDisqualifiedExpired(true);
         }
     }
+
+    /**
+     * Sets what table and relating buttons are visible on the organ donating screen.
+     * @param goToExpiryMode boolean describing to the function should show the expiry table. If false, it will show
+     *                       the disqualified table.
+     */
+    private void toggleDisqualifiedExpired(boolean goToExpiryMode) {
+
+        if (goToExpiryMode) {
+            toggleDisqualificationExpiryButton.setText("Show disqualified organs ");
+            donatingOrgansTableLabel.setText("Currently Donating");
+        } else {
+            toggleDisqualificationExpiryButton.setText("Show organ expiry details");
+            donatingOrgansTableLabel.setText("Disqualified Organs");
+        }
+
+        currentlyDonating.setVisible(goToExpiryMode);
+        expireOrganButton.setVisible(goToExpiryMode);
+        removeExpiryReasonButton.setVisible(goToExpiryMode);
+
+        userDisqualifiedOrgansTable.setVisible(!goToExpiryMode);
+        //disqualify button set visible !goToExpiryMode
+        //un-disqualify button set visible !goToExpiryMode
+
+        updateButton();
+    }
+
+    @FXML
+    private void toggleDisqualificationExpiry() {
+        toggleDisqualifiedExpired(userDisqualifiedOrgansTable.isVisible());
+    }
+
+    /**
+     * Hides the expire organ and cancel expiry buttons if there is no clinician/admin present
+     */
+    public void updateButton() {
+        if (application.getUsername() == null || application.getUsername().isEmpty()) {
+            expireOrganButton.setVisible(false);
+            removeExpiryReasonButton.setVisible(false);
+            //disqualify organ setVisible false
+            //un-disqualify organ setVisible false
+        }
+    }
+
+//    public void updateButton() {
+//        if (currentUser.getDeathDetails().getMomentOfDeath() == null || application.getUsername().isEmpty() || application.getUsername() == null) {
+//            expireOrganButton.setVisible(false);
+//            removeExpiryReasonButton.setVisible(false);
+//
+//        } else {
+//            expireOrganButton.setVisible(true);
+//            removeExpiryReasonButton.setVisible(true);
+//        }
+//    }
+
 
     /**
      * Attempts to cancel the manual expiry of a donated organ.
