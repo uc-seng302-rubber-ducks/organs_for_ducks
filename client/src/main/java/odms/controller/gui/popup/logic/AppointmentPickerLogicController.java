@@ -81,4 +81,14 @@ public class AppointmentPickerLogicController {
     private void alertUser(String message) {
         Platform.runLater(() -> AlertWindowFactory.generateError(message));
     }
+
+
+    /**
+     * Sets the default preferred clinician for the user if the checkbox in the appointment picker is checked
+     * @param staffId Id of the clinician to set.
+     */
+    public void setDefaultPreferredClinician(String staffId) {
+        AppController.getInstance().getUserBridge().putPreferredClinician(user.getNhi(), staffId);
+    }
+
 }

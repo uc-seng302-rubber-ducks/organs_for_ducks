@@ -5,9 +5,13 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import odms.bridge.AppointmentsBridge;
 import odms.commons.model.Appointment;
-import odms.commons.model.Clinician;
 import odms.commons.model._enum.AppointmentStatus;
+
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import odms.commons.model.Clinician;
 import odms.commons.model._enum.EventTypes;
 import odms.commons.model.event.UpdateNotificationEvent;
 import odms.commons.utils.Log;
@@ -102,14 +106,15 @@ public class ClinicianAppointmentRequestLogicController implements PropertyChang
     }
 
     /**
+     * Method to make a request to the server to accept the appointment for the given time.
      *
-     * @param selectedAppointment
+     * @param selectedAppointment appointment to update
      */
-    public void acceptAppointment(Appointment selectedAppointment) {
-        AppointmentStatus status = selectedAppointment.getAppointmentStatus();
-        if (status == AppointmentStatus.ACCEPTED || status == AppointmentStatus.ACCEPTED_SEEN) {
-            updateAppointment(selectedAppointment);
-        }
+    public void acceptAppointment(Appointment selectedAppointment, String time, AppointmentsBridge appointmentsBridge) {
+        String[] timeParts = time.split(":");
+        selectedAppointment.setRequestedDate(LocalDateTime.of(selectedAppointment.getRequestedDate().toLocalDate(), LocalTime.of(Integer.valueOf(timeParts[0]), Integer.valueOf(timeParts[1]))));
+        selectedAppointment.setAppointmentStatus(AppointmentStatus.ACCEPTED);
+        appointmentsBridge.putAppointment(selectedAppointment);
     }
 
     /**
@@ -119,7 +124,6 @@ public class ClinicianAppointmentRequestLogicController implements PropertyChang
     private void updateAppointment(Appointment appointment) {
 
     }
-
 
     /**
      * Handles events fired by appointments that are being listened to
