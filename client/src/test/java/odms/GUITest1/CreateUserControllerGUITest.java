@@ -6,7 +6,10 @@ import odms.App;
 import odms.TestUtils.AppControllerMocker;
 import odms.TestUtils.CommonTestMethods;
 import odms.controller.AppController;
-import org.junit.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.matcher.control.LabeledMatchers;
@@ -22,7 +25,7 @@ public class CreateUserControllerGUITest extends ApplicationTest {
 
     @BeforeClass
     public static void initialization() {
-        CommonTestMethods.runHeadless();
+        CommonTestMethods.runMethods();
     }
 
     @Before
@@ -31,7 +34,7 @@ public class CreateUserControllerGUITest extends ApplicationTest {
 
         AppController.setInstance(application);
         FxToolkit.registerPrimaryStage();
-        FxToolkit.setupApplication(App.class);
+        FxToolkit.setupApplication(App.class, "--testConfig=true");
         AppController.getInstance().getUsers().clear();
         clickOn("#signUpButton");
     }
@@ -196,29 +199,6 @@ public class CreateUserControllerGUITest extends ApplicationTest {
     }
 
     @Test
-    @Ignore
-    public void testValidAddressNotNZ() {
-            setTextField(this, "#nhiInput", "ADE1987");
-            setTextField(this, "#fNameInput", "Dwayne");
-            setTextField(this, "#dobInput", "3/1/2017");
-            setTextField(this, "#streetNumber", "12");
-            setTextField(this, "#street", "Choc Rd");
-            setTextField(this, "#neighborhood", "");
-            setTextField(this, "#city", "Nice City");
-            setTextField(this, "#zipCode", "25442232");
-            setComboBox(this, "#countrySelector", "Belgium");
-            setTextField(this, "#regionInput", "Flanders");
-            verifyThat("#regionInput", Node::isVisible);
-            clickOnButton(this, "#confirmButton");
-            clickOn("#detailsTab");
-            verifyThat("#pAddress", LabeledMatchers.hasText("12 Choc Rd\n"));
-            verifyThat("#city", LabeledMatchers.hasText("Nice City"));
-            verifyThat("#pRegion", LabeledMatchers.hasText("Flanders"));
-            verifyThat("#country", LabeledMatchers.hasText("Belgium"));
-            verifyThat("#zipCode", LabeledMatchers.hasText("25442232"));
-    }
-
-    @Test
     public void testValidEmergencyContact() {
         setTextField(this,"#nhiInput","ADE1987");
         setTextField(this,"#fNameInput","Dwayne");
@@ -253,31 +233,6 @@ public class CreateUserControllerGUITest extends ApplicationTest {
             verifyThat("#eRegion", LabeledMatchers.hasText("Chatham Islands"));
             verifyThat("#ecCountry", LabeledMatchers.hasText("New Zealand"));
             verifyThat("#ecZipCode", LabeledMatchers.hasText("8035"));
-    }
-
-    @Test
-    @Ignore
-    public void testValidEmergencyContactAddressNotNZ() {
-            setTextField(this, "#nhiInput", "ADE1987");
-            setTextField(this, "#fNameInput", "Dwayne");
-            setTextField(this, "#dobInput", "3/1/2017");
-            setTextField(this, "#ecName", "John Cena");
-            setTextField(this, "#ecCell", "0214583341");
-            setTextField(this, "#ecStreetNumber", "12");
-            setTextField(this, "#ecStreet", "Choc Rd");
-            setTextField(this, "#ecNeighborhood", "");
-            setTextField(this, "#ecCity", "Nice City");
-            setTextField(this, "#ecZipCode", "25442232");
-            setComboBox(this, "#ecCountrySelector", "Belgium");
-            setTextField(this, "#ecRegionInput", "Flanders");
-            verifyThat("#ecRegionInput", Node::isVisible);
-            clickOnButton(this, "#confirmButton");
-            clickOn("#detailsTab");
-            verifyThat("#eAddress", LabeledMatchers.hasText("12 Choc Rd\n"));
-            verifyThat("#ecCity", LabeledMatchers.hasText("Nice City"));
-            verifyThat("#eRegion", LabeledMatchers.hasText("Flanders"));
-            verifyThat("#ecCountry", LabeledMatchers.hasText("Belgium"));
-            verifyThat("#ecZipCode", LabeledMatchers.hasText("25442232"));
     }
 
     @Test

@@ -9,7 +9,10 @@ import odms.bridge.*;
 import odms.commons.model.Administrator;
 import odms.commons.model.Clinician;
 import odms.controller.AppController;
-import org.junit.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.testfx.api.FxToolkit;
 import org.testfx.framework.junit.ApplicationTest;
 import org.testfx.matcher.control.LabeledMatchers;
@@ -43,7 +46,7 @@ public class CreateClinicianControllerGUITest extends ApplicationTest {
 
     @BeforeClass
     public static void initialization() {
-        CommonTestMethods.runHeadless();
+        CommonTestMethods.runMethods();
     }
 
     @Before
@@ -68,7 +71,7 @@ public class CreateClinicianControllerGUITest extends ApplicationTest {
 
 
         FxToolkit.registerPrimaryStage();
-        FxToolkit.setupApplication(App.class);
+        FxToolkit.setupApplication(App.class, "--testConfig=true");
         AppController.getInstance().getUsers().clear();
         AppController.getInstance().getClinicians().remove(AppController.getInstance().getClinician("Staff1"));
         clickOn("#administratorTab");
@@ -92,23 +95,6 @@ public class CreateClinicianControllerGUITest extends ApplicationTest {
         verifyThat("#confirmButton", LabeledMatchers.hasText("Create Clinician Profile"));
     }
 
-
-    @Test
-    @Ignore
-    public void testSignUpRequiredInfo() {
-        lookup("#staffIDTextField").queryAs(TextField.class).setText("Staff1");
-        lookup("#passwordField").queryAs(TextField.class).setText("secure");
-        lookup("#confirmPasswordField").queryAs(TextField.class).setText("secure");
-        lookup("#firstNameTextField").queryAs(TextField.class).setText("Affie");
-        clickOn("#countrySelector");
-        clickOn("New Zealand");
-        clickOn("#regionSelector");
-        clickOn("Christchurch");
-        clickOnButton(this, "#confirmButton");
-        verifyThat("#staffIdLabel", LabeledMatchers.hasText("Staff1"));
-    }
-
-
     @Test
     public void testSignUpNoInfo() {
         clickOnButton(this, "#confirmButton");
@@ -116,52 +102,6 @@ public class CreateClinicianControllerGUITest extends ApplicationTest {
         verifyThat("#invalidStaffIDLabel", LabeledMatchers.hasText("Staff ID cannot be empty"));
         verifyThat("#emptyPasswordLabel", Node::isVisible);
         verifyThat("#emptyFNameLabel", Node::isVisible);
-    }
-
-    @Test
-    @Ignore
-    public void testSignUpRequiredInfoAddress() {
-            setTextField(this, "#staffIDTextField", "Staff1");
-            setTextField(this, "#passwordField", "secure");
-            setTextField(this, "#confirmPasswordField", "secure");
-            setTextField(this, "#firstNameTextField", "Affie");
-            setTextField(this, "#streetNoTextField", "76B");
-            setTextField(this, "#streetNameTextField", "Cambridge St");
-            setTextField(this, "#neighbourhoodTextField", "Kirkwood");
-            setTextField(this, "#cityTextField", "Battlefield");
-            setComboBox(this, "#regionSelector", "Otago");
-            setTextField(this, "#zipCodeTextField", "8033");
-            setComboBox(this, "#countrySelector", "New Zealand");
-            verifyThat("#regionSelector", Node::isVisible);
-            clickOnButton(this, "#confirmButton");
-            verifyThat("#addressLabel", LabeledMatchers.hasText("76B Cambridge St\nKirkwood"));
-            verifyThat("#cityLabel", LabeledMatchers.hasText("Battlefield"));
-            verifyThat("#regionLabel", LabeledMatchers.hasText("Otago"));
-            verifyThat("#countryLabel", LabeledMatchers.hasText("New Zealand"));
-            verifyThat("#zipLabel", LabeledMatchers.hasText("8033"));
-    }
-
-    @Test
-    @Ignore
-    public void testSignUpRequiredInfoAddressNotNZ() {
-        setTextField(this, "#staffIDTextField", "Staff1");
-        setTextField(this, "#passwordField", "secure");
-        setTextField(this, "#confirmPasswordField", "secure");
-        setTextField(this, "#firstNameTextField", "Affie");
-        setTextField(this, "#streetNoTextField", "12");
-        setTextField(this, "#streetNameTextField", "Choc Rd");
-        setTextField(this, "#neighbourhoodTextField", "");
-        setTextField(this, "#cityTextField", "Nice City");
-        setTextField(this, "#zipCodeTextField", "25442232");
-        clickOn("#countrySelector");
-        clickOn("Belgium");
-        setTextField(this, "#regionTextField", "Flanders");
-        clickOnButton(this, "#confirmButton");
-        verifyThat("#addressLabel", LabeledMatchers.hasText("12 Choc Rd\n"));
-        verifyThat("#cityLabel", LabeledMatchers.hasText("Nice City"));
-        verifyThat("#regionLabel", LabeledMatchers.hasText("Flanders"));
-        verifyThat("#countryLabel", LabeledMatchers.hasText("Belgium"));
-        verifyThat("#zipLabel", LabeledMatchers.hasText("25442232"));
     }
 
     @Test
@@ -212,24 +152,4 @@ public class CreateClinicianControllerGUITest extends ApplicationTest {
         clickOnButton(this,"#confirmButton");
         verifyThat("#incorrectPasswordLabel", Node::isVisible);
     }
-
-
-    @Test
-    @Ignore
-    public void testLabelsMatch() {
-        lookup("#staffIDTextField").queryAs(TextField.class).setText("Staff1");
-        lookup("#passwordField").queryAs(TextField.class).setText("secure");
-        lookup("#confirmPasswordField").queryAs(TextField.class).setText("secure");
-        lookup("#firstNameTextField").queryAs(TextField.class).setText("Affie");
-        lookup("#middleNameTextField").queryAs(TextField.class).setText("Ali");
-        lookup("#lastNameTextField").queryAs(TextField.class).setText("Al");
-        setComboBox(this, "#regionSelector", "Canterbury");
-        clickOnButton(this,"#confirmButton");
-        verifyThat("#staffIdLabel", LabeledMatchers.hasText("Staff1"));
-        verifyThat("#fNameLabel", LabeledMatchers.hasText("Affie"));
-        verifyThat("#mNameLabel", LabeledMatchers.hasText("Ali"));
-        verifyThat("#lNameLabel", LabeledMatchers.hasText("Al"));
-        verifyThat("#regionLabel", LabeledMatchers.hasText("Canterbury"));
-    }
-
 }

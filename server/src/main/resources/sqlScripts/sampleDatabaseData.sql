@@ -127,3 +127,24 @@ INSERT INTO DeathDetails(fkUserNhi, momentOfDeath, city, region, country) VALUES
 INSERT INTO OrganExpiryDetails (id, fkDonatingId, timeOfExpiry, reason, name) VALUES
   ('16', 2, '2018-10-04 20:12:43', 'It smells pretty bad', 'Frank'),
   ('16', 3, '2018-10-04 20:12:43', 'Its not fresh', 'Anne');
+
+INSERT INTO AppointmentStatus(statusId, status) VALUES
+  (1, 'pending'), -- Used when clinician hasn't seen or approved it
+  (2, 'accepted'), -- Used when clinician has confirmed the appointment but the user has not seen it.
+  (3, 'rejected'), -- Used when the clinician has rejected the appointment but the user has not seen it.
+  (4, 'cancelled'), -- Used when the appointment is cancelled by either party
+  (5, 'updated'), -- Used when the appointment is updated by the clinician
+  (6, 'accepted_seen'), -- Used when the appointment has been accepted and seen by the user
+  (7, 'rejected_seen'), -- Used when the appointment has been rejected and seen by the user
+  (8, 'cancelled_seen'); -- Used when the appointment has been cancelled and seen by the user
+
+INSERT INTO AppointmentCategory(categoryId, category) VALUES
+  (1, 'Blood test'),
+  (2, 'General check-up'),
+  (3, 'Health advice'),
+  (4, 'Prescription renewal'),
+  (5, 'Other');
+
+INSERT INTO AppointmentDetails(apptId, fkUserNhi, fkStaffId, fkCategoryId, requestedTime, fkStatusId, description) VALUES
+  (1, 'DEF2314', '23', 4, '2018-01-10 16:15:01', 3, 'need stress relief due to SENG302'),
+  (2, 'DEF2314', '23', 2, '2018-01-11 16:15:01', 2, 'periodic check up');

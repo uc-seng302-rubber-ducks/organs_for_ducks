@@ -21,6 +21,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import odms.bridge.ClinicianBridge;
+import odms.commons.config.ConfigPropertiesSession;
 import odms.commons.exception.ApiException;
 import odms.commons.model.Clinician;
 import odms.commons.model.User;
@@ -35,6 +36,7 @@ import odms.controller.gui.StatusBarController;
 import odms.controller.gui.UnsavedChangesAlert;
 import odms.controller.gui.panel.TransplantWaitListController;
 import odms.controller.gui.panel.view.AvailableOrgansViewController;
+import odms.controller.gui.panel.view.ClinicianAppointmentRequestViewController;
 import odms.controller.gui.popup.DeletedUserController;
 import odms.controller.gui.popup.utils.AlertWindowFactory;
 import odms.socket.ServerEventNotifier;
@@ -116,6 +118,8 @@ public class ClinicianController implements PropertyChangeListener, UserLauncher
     @FXML
     private AvailableOrgansViewController availableOrgansViewController;
     @FXML
+    private ClinicianAppointmentRequestViewController appointmentRequestViewController;
+    @FXML
     private Button redoButton;
     @FXML
     private MenuItem deleteClinician;
@@ -175,6 +179,7 @@ public class ClinicianController implements PropertyChangeListener, UserLauncher
         transplantWaitListTabPageController.init(appController, this);
         statusBarPageController.init();
         availableOrgansViewController.init(this);
+        appointmentRequestViewController.init(appController, clinician);
 
         if (clinician.getStaffId().equals("0")) {
             deleteClinician.setDisable(true);
@@ -199,11 +204,13 @@ public class ClinicianController implements PropertyChangeListener, UserLauncher
         stage.setOnCloseRequest(e -> availableOrgansViewController.shutdownThreads());
 
         displayImage(profileImage, clinician.getProfilePhotoFilePath());
-        if (clinician.getProfilePhotoFilePath() == null || clinician.getProfilePhotoFilePath().equals("")) {
-            URL url = getClass().getResource("/default-profile-picture.jpg");
-            displayImage(profileImage, url);
-        } else {
-            displayImage(profileImage, clinician.getProfilePhotoFilePath());
+        if (ConfigPropertiesSession.getInstance().getProperty("testConfig", "false").equals("false")) {
+            if (clinician.getProfilePhotoFilePath() == null || clinician.getProfilePhotoFilePath().equals("")) {
+                URL url = getClass().getResource("/default-profile-picture.jpg");
+                displayImage(profileImage, url);
+            } else {
+                displayImage(profileImage, clinician.getProfilePhotoFilePath());
+            }
         }
     }
 
@@ -249,13 +256,15 @@ public class ClinicianController implements PropertyChangeListener, UserLauncher
             statusBarPageController.updateStatus(clinician.getStaffId() + " " + clinician.getChanges().get(clinician.getChanges().size() - 1).getChange());
 
         }
-        if (clinician.getProfilePhotoFilePath() == null || clinician.getProfilePhotoFilePath().equals("")) {
-            URL url = getClass().getResource("/default-profile-picture.jpg");
-            displayImage(profileImage, url);
-        } else {
-            File inFile = new File(clinician.getProfilePhotoFilePath());
-            Image image = new Image("file:" + inFile.getPath(), 200, 200, false, true);
-            profileImage.setImage(image);
+        if (ConfigPropertiesSession.getInstance().getProperty("testConfig", "false").equals("false")) {
+            if (clinician.getProfilePhotoFilePath() == null || clinician.getProfilePhotoFilePath().equals("")) {
+                URL url = getClass().getResource("/default-profile-picture.jpg");
+                displayImage(profileImage, url);
+            } else {
+                File inFile = new File(clinician.getProfilePhotoFilePath());
+                Image image = new Image("file:" + inFile.getPath(), 200, 200, false, true);
+                profileImage.setImage(image);
+            }
         }
     }
 
@@ -624,7 +633,7 @@ public class ClinicianController implements PropertyChangeListener, UserLauncher
             try {
                 this.clinician = clinicianBridge.getClinician(newStaffId, appController.getToken());
                 if (clinician != null) {
-                    showClinician(clinician); //TODO: fix when we solve the db race 7/8/18 jb
+                    showClinician(clinician); //TODO: fix when we solve the database race 7/8/18 jb
                 }
             } catch (ApiException ex) {
                 Log.warning("failed to retrieve updated clinician. response code: " + ex.getResponseCode(), ex);

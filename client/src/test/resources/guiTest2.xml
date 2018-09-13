@@ -1,0 +1,8 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="GUI Tests 2" verbose="2" annotations="JDK" junit="true">
+    <test name="cl-gui-t2" preserve-order="false">
+        <packages>
+            <package name="odms.GUITest2"/>
+        </packages>
+    </test>
+</suite>

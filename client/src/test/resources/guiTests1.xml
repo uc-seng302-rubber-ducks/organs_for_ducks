@@ -1,0 +1,11 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="clientTests" verbose="2" annotations="JDK">
+    <test name="cl-gui-t1" preserve-order="false" junit="true">
+        <packages>
+            <package name="odms.GUITest1"/>
+        </packages>
+        <classes>
+            <class name="odms.GenericRunnerGUITest"/>
+        </classes>
+    </test>
+</suite>

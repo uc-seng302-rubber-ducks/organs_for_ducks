@@ -4,6 +4,7 @@ import odms.commons.database.DBHandler;
 import odms.commons.database.JDBCDriver;
 import odms.commons.model.User;
 import odms.commons.model._enum.EventTypes;
+import odms.commons.model.datamodel.ComboBoxClinician;
 import odms.commons.model.dto.UserOverview;
 import odms.commons.utils.Log;
 import odms.exception.NotFoundException;
@@ -55,7 +56,7 @@ public class UserController extends BaseController {
             //converts each user in the collection to a userOverview and returns it
             return rawUsers.stream().map(UserOverview::fromUser).collect(Collectors.toList());
         } catch (SQLException ex) {
-            Log.warning("cannot load all user data from db", ex);
+            Log.warning("cannot load all user data from database", ex);
             throw new ServerDBException(ex);
         } finally {
             Log.info("Finished");
@@ -70,7 +71,7 @@ public class UserController extends BaseController {
             handler.saveUser(newUser, connection);
             socketHandler.broadcast(EventTypes.USER_UPDATE, newUser.getNhi(),newUser.getNhi());
         } catch (SQLException ex) {
-            Log.severe("cannot add new user to db", ex);
+            Log.severe("cannot add new user to database", ex);
             throw new ServerDBException(ex);
         } catch (IOException e) {
             Log.severe("cannot get user", e);
@@ -85,7 +86,7 @@ public class UserController extends BaseController {
             handler.saveUser(newUser, connection);
 
         } catch (SQLException ex) {
-            Log.severe("cannot add new user to db", ex);
+            Log.severe("cannot add new user to database", ex);
             throw new ServerDBException(ex);
         }
         return new ResponseEntity(HttpStatus.ACCEPTED);
@@ -144,5 +145,26 @@ public class UserController extends BaseController {
             Log.severe("cannot find whether user exists", ex);
             throw  new ServerDBException(ex);
         }
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/users/{nhi}/preferred-clinician")
+    public ComboBoxClinician getPreferredClinician(@PathVariable("nhi") String userNhi) {
+        try (Connection connection = driver.getConnection()) {
+            return handler.getPreferredBasicClinician(connection, userNhi);
+        } catch (SQLException ex) {
+            Log.severe("Could not get basic clinician", ex);
+            throw new ServerDBException(ex);
+        }
+    }
+
+    @RequestMapping(method = RequestMethod.PUT, value = "/users/{nhi}/preferred-clinician")
+    public ResponseEntity putPreferredClinician(@PathVariable("nhi") String userNhi, @RequestBody String staffId) {
+        try (Connection connection = driver.getConnection()) {
+            handler.putPreferredBasicClinician(connection, userNhi, staffId);
+        } catch (SQLException ex) {
+            Log.severe("cannot put preferred clinician " + staffId + " to user " + userNhi, ex);
+            throw new ServerDBException(ex);
+        }
+        return new ResponseEntity(HttpStatus.OK);
     }
 }

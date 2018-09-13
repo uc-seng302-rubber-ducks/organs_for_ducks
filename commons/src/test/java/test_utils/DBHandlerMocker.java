@@ -1,10 +1,12 @@
 package test_utils;
 
+import odms.commons.model.Clinician;
 import odms.commons.model.User;
 
 import java.sql.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 
 import static org.mockito.Mockito.when;
 
@@ -22,6 +24,15 @@ public class DBHandlerMocker {
         when(resultSet.getDate("dob")).thenReturn(Date.valueOf(user.getDateOfBirth()));
         when(resultSet.getDate("dod")).thenReturn(user.getDateOfDeath() == null ? null : Date.valueOf(user.getDateOfDeath()));
         when(resultSet.getString("alcoholConsumption")).thenReturn(user.getAlcoholConsumption());
+    }
+
+    public static void setClinicianResultSet(ResultSet resultSet, Clinician clinician) throws SQLException {
+        when(resultSet.getString("staffId")).thenReturn(clinician.getStaffId());
+        when(resultSet.getString("firstName")).thenReturn(clinician.getFirstName());
+        when(resultSet.getString("middleName")).thenReturn(clinician.getMiddleName());
+        when(resultSet.getString("lastName")).thenReturn(clinician.getLastName());
+        when(resultSet.getTimestamp("timeCreated")).thenReturn(Timestamp.valueOf(clinician.getDateCreated()));
+        when(resultSet.getTimestamp("lastModified")).thenReturn(Timestamp.valueOf(clinician.getDateLastModified()));
     }
 
     public static void setTransplantResultSet(ResultSet resultSet) throws SQLException {
@@ -56,5 +67,21 @@ public class DBHandlerMocker {
         }
 
 
+    }
+
+    /**
+     * Sets the result set to return the details of a basic appointment.
+     *
+     * @param resultSet mocked resultset to return the basic appointment details
+     * @throws SQLException This shouldn't be thrown due to it being a mocked object.
+     */
+    public static void setAppointmentDetails(ResultSet resultSet) throws SQLException {
+        when(resultSet.getInt("apptId")).thenReturn(0);
+        when(resultSet.getTimestamp("requestedTime")).thenReturn(Timestamp.valueOf(LocalDateTime.of(2018, 12, 10, 15, 3)));
+        when(resultSet.getString("fkUserNhi")).thenReturn("ABC1234");
+        when(resultSet.getString("fkStaffId")).thenReturn("0");
+        when(resultSet.getString("description")).thenReturn("A description");
+        when(resultSet.getInt("fkCategoryId")).thenReturn(1);
+        when(resultSet.getInt("fkStatusId")).thenReturn(1);
     }
 }

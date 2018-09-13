@@ -4,7 +4,6 @@ import odms.commons.utils.CSVHandler;
 import org.apache.commons.csv.CSVRecord;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.File;
@@ -82,31 +81,6 @@ public class CSVHandlerTest {
         Assert.assertTrue (actual.getStreetName().equals(expected.getStreetName()));
         Assert.assertTrue (actual.getNeighborhood().equals(expected.getNeighborhood()));
         Assert.assertTrue (actual.getCity().equals(expected.getCity()));
-
-    }
-
-    @Test
-    @Ignore
-    public void testValidCsvReturnsRightDataInLoadUsers() throws FileNotFoundException {
-
-        CSVHandler csvHandler = new CSVHandler();
-        ArrayList<User> users = (ArrayList<User>) csvHandler.loadUsers("src/test/resources/csvData/csvTestData.csv");
-        User toTest = users.get(2);
-        Assert.assertTrue (toTest.getNhi().equals(expected.getNhi()));
-        Assert.assertTrue (toTest.getFirstName().equals(expected.getFirstName()));
-        Assert.assertTrue (toTest.getLastName().equals(expected.getLastName()));
-        Assert.assertTrue (toTest.getDateOfBirth().equals(expected.getDateOfBirth()));
-        Assert.assertTrue (toTest.getDateOfDeath().equals(expected.getDateOfDeath()));
-        Assert.assertTrue (toTest.getBirthGender().equals(expected.getBirthGender()));
-        Assert.assertTrue (toTest.getGenderIdentity().equals(expected.getGenderIdentity()));
-        Assert.assertTrue (toTest.getHeight() == expected.getHeight());
-        Assert.assertTrue (toTest.getWeight() == expected.getWeight());
-        Assert.assertTrue (toTest.getRegion().equals(expected.getRegion()));
-        Assert.assertTrue (toTest.getHomePhone().equals(expected.getHomePhone()));
-        Assert.assertTrue (toTest.getStreetNumber().equals(expected.getStreetNumber()));
-        Assert.assertTrue (toTest.getStreetName().equals(expected.getStreetName()));
-        Assert.assertTrue (toTest.getNeighborhood().equals(expected.getNeighborhood()));
-        Assert.assertTrue (toTest.getCity().equals(expected.getCity()));
 
     }
 
